@@ -4,6 +4,9 @@
   "description": "Réserver sa place d'examen pratique du permis de conduire",
   "main": "index.js",
   "scripts": {
+    "build": "babel src -d dist",
+    "prestart": "npm run build",
+    "start": "node dist/index.js",
     "test": "jest"
   },
   "keywords": [
@@ -17,6 +20,11 @@
   "author": "Ministère de l'intérieur",
   "license": "ISC",
   "dependencies": {
+    "@babel/core": "^7.2.2",
     "express": "^4.16.4"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/preset-env": "^7.2.3"
   }
 }
