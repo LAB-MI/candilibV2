@@ -1,0 +1,19 @@
+{
+  "name": "candilib",
+  "version": "2.0.0-alpha.0",
+  "description": "Réserver sa place d'examen pratique du permis de conduire",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "Candidat",
+    "libre",
+    "examen",
+    "pratique",
+    "permis",
+    "conduire"
+  ],
+  "author": "Ministère de l'intérieur",
+  "license": "ISC"
+}
