@@ -13,4 +13,5 @@ mongoConnect()
   })
   .catch(error => {
     logger.error(`Server could not connect to DB, exiting`)
+    logger.error(error)
   })

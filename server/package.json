@@ -7,6 +7,8 @@
     "build": "babel src -d dist",
     "dev": "nodemon --inspect --watch src boot-dev.js",
     "format": "prettier-eslint --write 'src/**/*.js'",
+    "lint:only": "eslint src",
+    "prelint": "npm run format",
     "lint": "eslint src",
     "prestart": "npm run build",
     "start": "node dist/index.js",
@@ -42,11 +44,22 @@
     "eslint-plugin-node": "^8.0.0",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
+    "husky": "^1.2.1",
     "jest": "^23.6.0",
+    "lint-staged": "^8.1.0",
     "nodemon": "^1.18.9",
     "prettier-eslint-cli": "^4.7.1",
     "regenerator-runtime": "^0.13.1",
     "supertest": "^3.3.0"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm test"
+    }
+  },
+  "lint-staged": {
+    "*.js": ["npm run lint -s", "git add"]
   },
   "jest": {
     "setupFiles": [
