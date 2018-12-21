@@ -1,7 +1,7 @@
 import express from 'express'
 import morgan from 'morgan'
 
-import logger, { loggerStream } from './logger'
+import { loggerStream } from './logger'
 
 const app = express()
 
