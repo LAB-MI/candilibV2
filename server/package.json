@@ -21,13 +21,30 @@
   "author": "Ministère de l'intérieur",
   "license": "ISC",
   "dependencies": {
-    "@babel/core": "^7.2.2",
-    "express": "^4.16.4",
-    "nodemon": "^1.18.9"
+    "express": "^4.16.4"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
     "@babel/preset-env": "^7.2.3",
-    "@babel/register": "^7.0.0"
+    "@babel/register": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.9",
+    "regenerator-runtime": "^0.13.1",
+    "supertest": "^3.3.0"
+  },
+  "jest": {
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
+    "testMatch": [
+      "<rootDir>/src/**/?(*.)(spec).{js,jsx,mjs}"
+    ],
+    "testEnvironment": "node",
+    "transformIgnorePatterns": [
+      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
+    ]
   }
 }
