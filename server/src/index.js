@@ -1,12 +1,12 @@
 import http from 'http'
 
 import app from './app'
-import mongoConnect from './mongo-connection'
+import { connect } from './mongo-connection'
 import logger from './logger'
 
 const PORT = process.env.PORT || 8000
 
-mongoConnect()
+connect()
   .then(() => {
     http.createServer(app).listen(PORT, 'localhost')
     logger.info(`Server running at http://localhost:${PORT}/`)
