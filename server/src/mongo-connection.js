@@ -10,17 +10,20 @@ const connectToMongo = async () => {
   try {
     await mongoose.connect(
       mongoURL,
-      { useNewUrlParser: true },
+      { useNewUrlParser: true }
     )
     console.log('Connected to Mongo!')
     return true
   } catch (err) {
     --mongoConnectionAttempt
     if (mongoConnectionAttempt > 0) {
-      console.warn(`Could not connect to Mongo, ${mongoConnectionAttempt} tries left`)
+      console.warn(
+        `Could not connect to Mongo, ${mongoConnectionAttempt} tries left`
+      )
       return delay(delayBeforeAttempt).then(connectToMongo)
     } else {
-      const errorMessage = 'Could not connect to Mongo, make sure it is started and listening on the appropriate port'
+      const errorMessage =
+        'Could not connect to Mongo, make sure it is started and listening on the appropriate port'
       throw new Error(errorMessage)
     }
   }
