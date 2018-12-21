@@ -1,6 +1,8 @@
 import delay from 'delay'
 import mongoose from 'mongoose'
 
+import logger from './logger'
+
 const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/candilib'
 
 let mongoConnectionAttempt = 10
@@ -12,12 +14,12 @@ const connectToMongo = async () => {
       mongoURL,
       { useNewUrlParser: true }
     )
-    console.log('Connected to Mongo!')
+    logger.info('Connected to Mongo!')
     return true
   } catch (err) {
     --mongoConnectionAttempt
     if (mongoConnectionAttempt > 0) {
-      console.warn(
+      logger.warn(
         `Could not connect to Mongo, ${mongoConnectionAttempt} tries left`
       )
       return delay(delayBeforeAttempt).then(connectToMongo)
