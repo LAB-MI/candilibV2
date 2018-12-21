@@ -26,6 +26,7 @@
   "author": "Ministère de l'intérieur",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "delay": "^4.1.0",
     "express": "^4.16.4",
     "mongoose": "^5.4.0",
@@ -59,7 +60,10 @@
     }
   },
   "lint-staged": {
-    "*.js": ["npm run lint -s", "git add"]
+    "*.js": [
+      "npm run lint -s",
+      "git add"
+    ]
   },
   "jest": {
     "setupFiles": [
