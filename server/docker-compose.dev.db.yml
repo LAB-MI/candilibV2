@@ -1,0 +1,8 @@
+version: '3.4'
+services:
+  db:
+    image: mongo:latest
+    volumes:
+      - ./mongo-dev/db:/data/db
+    ports:
+      - "${WEB_PORT:-27017}:27017"
