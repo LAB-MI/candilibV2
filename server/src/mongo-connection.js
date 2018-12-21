@@ -8,21 +8,21 @@ const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/candilib'
 let mongoConnectionAttempt = 10
 const delayBeforeAttempt = process.env.NODE_ENV === 'production' ? 2000 : 1000
 
-const connectToMongo = async () => {
+export const connect = async () => {
   try {
     await mongoose.connect(
       mongoURL,
       { useNewUrlParser: true }
     )
     logger.info('Connected to Mongo!')
-    return true
+    return mongoose
   } catch (err) {
     --mongoConnectionAttempt
     if (mongoConnectionAttempt > 0) {
       logger.warn(
         `Could not connect to Mongo, ${mongoConnectionAttempt} tries left`
       )
-      return delay(delayBeforeAttempt).then(connectToMongo)
+      return delay(delayBeforeAttempt).then(connect)
     } else {
       const errorMessage =
         'Could not connect to Mongo, make sure it is started and listening on the appropriate port'
@@ -31,4 +31,7 @@ const connectToMongo = async () => {
   }
 }
 
-export default connectToMongo
+export const disconnect = async () => {
+  await mongoose.disconnect()
+  logger.info('Disconnected from Mongo')
+}

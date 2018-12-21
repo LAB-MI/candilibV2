@@ -6,14 +6,28 @@ Code source de l'application pour que les usagers réservent eux-même leur plac
 
 ### Dev
 
-#### Lancer le conteneur de la base de données (mongodb) :
+#### Lancer le conteneur de la base de données (mongodb)
 
 ```bash
 cd server
 docker-compose -f docker-compose.dev.db.yml up
 ```
 
-#### Lancer serveur en mode dev :
+#### Lancer les tests côté serveur
+
+```bash
+cd server
+npm test
+```
+
+#### Lancer les tests côté serveur en mode surveillance
+
+```bash
+cd server
+npm test:watch
+```
+
+#### Lancer le serveur en mode dev
 
 Le serveur sera rechargé à chaque modification du code serveur
 (toute modification dans `server/src`)

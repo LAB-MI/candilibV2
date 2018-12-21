@@ -1,5 +1,4 @@
 import { createLogger, format, transports } from 'winston'
-import morgan from 'morgan'
 
 const { combine } = format
 
@@ -14,18 +13,11 @@ const options = {
   },
 }
 
-const logFormat = format.printf(info => (
-  `${info.level}: ${info.message}\n`
-))
+const logFormat = format.printf(info => `${info.level}: ${info.message}\n`)
 
 const logger = createLogger({
-  format: combine(
-    format.colorize(),
-    logFormat,
-  ),
-  transports: [
-    new transports.Console(options.console),
-  ],
+  format: combine(format.colorize(), logFormat),
+  transports: [new transports.Console(options.console)],
   exitOnError: false,
 })
 
