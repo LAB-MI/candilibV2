@@ -1,0 +1,8 @@
+version: '3.4'
+services:
+  api:
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    build:
+      context: ./
+      dockerfile: Dockerfile-prod-api
