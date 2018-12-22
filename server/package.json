@@ -12,6 +12,7 @@
     "lint": "eslint src",
     "prestart": "npm run build",
     "start": "node dist/index.js",
+    "start:prod": "node dist/index.js",
     "test:watch": "jest --watch",
     "test": "jest"
   },
@@ -30,11 +31,13 @@
     "delay": "^4.1.0",
     "express": "^4.16.4",
     "mongoose": "^5.4.0",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
+    "@babel/polyfill": "^7.2.3",
     "@babel/preset-env": "^7.2.3",
     "@babel/register": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
