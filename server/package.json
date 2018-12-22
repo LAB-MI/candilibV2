@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "babel src -d dist",
-    "prebuild": "npm run lint ; npm run test",
+    "prebuild": "npm run lint",
     "dev": "nodemon --inspect --watch src boot-dev.js",
     "format": "prettier-eslint --write 'src/**/*.js'",
     "lint:only": "eslint src",
@@ -31,11 +31,13 @@
     "delay": "^4.1.0",
     "express": "^4.16.4",
     "mongoose": "^5.4.0",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
+    "@babel/polyfill": "^7.2.5",
     "@babel/preset-env": "^7.2.3",
     "@babel/register": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
