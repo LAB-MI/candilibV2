@@ -183,3 +183,4 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/vim,node,macos,linux,windows,visualstudiocode
 
 server/dist/
+mongo-dev

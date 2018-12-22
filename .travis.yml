@@ -28,15 +28,14 @@ before_script:
   - docker version
 
 script:
-  - git fetch --unshallow && git tag -l
-  - echo "# build & run back"
+  - ( git fetch --unshallow || true ) && git tag -l
+  - echo "# build & run back in dev mode"
   - ( cd server && docker-compose -f docker-compose.dev.yml build )
   - docker images
-  - ( cd server && docker-compose -f docker-compose.dev.db.yml up -d )
   - ( cd server && docker-compose -f docker-compose.dev.yml up -d --no-build )
   - docker ps
-  - echo "# TODO: make test-up"
+  - echo "# test-up"
+  - ( cd server && docker-compose -f docker-compose.dev.yml exec -T back npm test )
   - ( cd server && docker-compose -f docker-compose.dev.yml down )
-  - ( cd server && docker-compose -f docker-compose.dev.db.yml down )
 after_script:
   - echo "END"

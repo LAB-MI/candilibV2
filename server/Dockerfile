@@ -19,8 +19,7 @@ RUN if [ ! -z "$proxy" ] ; then \
 COPY . ./
 # Install dependencies and build whatever you have to build 
 # (babel, grunt, webpack, etc.)
-RUN set -ex ; npm install pm2 -g ; \
-    npm install && \
+RUN set -ex ; npm install  && \
     npm run build
 
 EXPOSE 8000

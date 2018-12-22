@@ -11,9 +11,20 @@ services:
         proxy: ${http_proxy}
         no_proxy: ${no_proxy}
         npm_registry: ${NPM_REGISTRY}
+    volumes:
+      - .:/app:delegated
+      - ./package.json:/package.json
+      - ./package-lock.json:/package-lock.json
+      # this is a workaround to prevent host node_modules from accidently getting mounted in container
+      # in case you want to use node/npm both outside container for test/lint etc. and also inside container
+      # this will overwrite the default node_modules dir in container so it won't conflict with our
+      # /opt/node_modules location. Thanks to PR from @brnluiz
+      - notused:/app/node_modules
     container_name: ${APP:-candilibv2}_back
+    depends_on:
+      - db
     ports:
-      - "${WEB_PORT:-8000}:8000"
+      - "${PORT:-8000}:8000"
 #    env_file:
 #      - ${cnf:-.env}
     environment:
@@ -21,8 +32,19 @@ services:
       MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
     networks:
       - candilib-network
+  db:
+    image: mongo:latest
+    volumes:
+      - mongodata:/data/db
+    ports:
+      - "27017"
+    networks:
+      - candilib-network
 networks:
   candilib-network:
     driver: bridge
     driver_opts:
       com.docker.network.driver.mtu: 1450
+volumes:
+  notused:
+  mongodata:
