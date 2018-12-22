@@ -1,0 +1,42 @@
+dist: trusty
+sudo: required
+
+language: minimal
+
+services:
+  - docker
+
+env:
+  - DOCKER_COMPOSE_VERSION=1.19.0
+
+addons:
+  apt:
+    packages:
+      - docker-ce
+
+before_install:
+  - sudo rm -rf /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin/
+  - sudo apt-get -q update
+  - sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl
+
+before_script:
+  - uname -a
+  - type -a docker-compose && docker-compose version
+  - docker version
+
+script:
+  - git fetch --unshallow && git tag -l
+  - echo "# build & run back"
+  - ( cd server && docker-compose -f docker-compose.dev.yml build )
+  - docker images
+  - ( cd server && docker-compose -f docker-compose.dev.db.yml up -d )
+  - ( cd server && docker-compose -f docker-compose.dev.yml up -d --no-build )
+  - docker ps
+  - echo "# TODO: make test-up"
+  - ( cd server && docker-compose -f docker-compose.dev.yml down )
+  - ( cd server && docker-compose -f docker-compose.dev.db.yml down )
+after_script:
+  - echo "END"

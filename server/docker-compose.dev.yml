@@ -1,0 +1,28 @@
+# development mode
+version: '3.4'
+services:
+  back:
+    image: ${APP:-candilibv2}_back:${APP_VERSION:-latest}
+    build:
+      target: builder
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        npm_registry: ${NPM_REGISTRY}
+    container_name: ${APP:-candilibv2}_back
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+#    env_file:
+#      - ${cnf:-.env}
+    environment:
+      NODE_ENV: production
+      MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
+    networks:
+      - candilib-network
+networks:
+  candilib-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
