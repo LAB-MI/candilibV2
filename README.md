@@ -1,6 +1,10 @@
 # Candilib
 
+<<<<<<< 0bdaf33372a3e86d71e225394d764351bc5e538a
 Code source de l'application pour que les usagers réservent eux-mêmes leur place d'examen
+=======
+Code source de l'application de réservation en ligne de places à l'examen pratique du permis de conduire. Ce service public est à destination des usagers [inscrits sur le système de l'ANTS](https://permisdeconduire.ants.gouv.fr/Services-associes/Effectuer-une-demande-de-permis-de-conduire-en-ligne) et ayant réussi l'épreuve pratique du code de la route.
+>>>>>>> Update Architecture.md
 
 ## Utilisation
 
