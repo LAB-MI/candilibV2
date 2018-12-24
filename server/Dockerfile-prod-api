@@ -1,20 +1,42 @@
-FROM keymetrics/pm2:10-alpine
+FROM keymetrics/pm2:10-alpine as base
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
-EXPOSE 8000
-
-# Bundle APP files
-COPY src src/
-COPY babel.config.js package.json package-lock.json ./
-COPY ecosystem.config.js .
-
-# Install app dependencies
-ENV NPM_CONFIG_LOGLEVEL warn
-RUN npm install
-RUN npm run build
-
 # Expose the listening port of your app
 EXPOSE 8000
+
+############################
+#   "development" target   #
+############################
+
+FROM base as development
+COPY src src/
+COPY babel.config.js package.json package-lock.json ./
+# Install app dependencies
+RUN npm install
+
+CMD ["npm", "start"]
+
+######################
+#   "build" target   #
+######################
+FROM development as build
+ENV NPM_CONFIG_LOGLEVEL warn
+# Transpile the code with babel
+RUN npm run build
+
+###########################
+#   "production" target   #
+###########################
+
+FROM build as production
+# Copy the transpiled code to use in production
+COPY --from=build /usr/src/app/dist ./
+# Install production dependencies
+ENV NODE_ENV=production
+COPY package.json package-lock.json ./
+RUN npm install --production
+# Copy the pm2 config
+COPY ecosystem.config.js .
 
 CMD [ "pm2-runtime", "start", "ecosystem.config.js" ]
