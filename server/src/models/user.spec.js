@@ -1,4 +1,10 @@
-import { createUser, updateUserEmail, deleteUserByEmail } from './user'
+import {
+  createUser,
+  updateUserEmail,
+  deleteUserByEmail,
+  deleteUser,
+  findUserByEmail,
+} from './user'
 import { connect, disconnect } from '../mongo-connection'
 
 const validEmail = 'dontusethis@example.com'
@@ -18,7 +24,7 @@ describe('User', () => {
     await disconnect()
   })
 
-  describe('Creating User', () => {
+  describe('Saving User', () => {
     afterEach(async () => {
       await Promise.all([
         deleteUserByEmail(validEmail).catch(() => true),
@@ -111,8 +117,10 @@ describe('User', () => {
         console.error(error)
       }
     })
+  })
 
-    it('should update a user', async () => {
+  describe('Updating User', () => {
+    it('should update a user′s email', async () => {
       try {
         // Given
         const email = validEmail
@@ -129,6 +137,44 @@ describe('User', () => {
         expect(sameUserDifferentEmail).toBeDefined()
         expect(sameUserDifferentEmail._id.toString()).toBe(user._id.toString())
         expect(sameUserDifferentEmail.email).not.toBe(user.email)
+      } catch (error) {
+        console.error(error)
+      }
+    })
+  })
+
+  describe('Deleting User', () => {
+    it('should delete a user', async () => {
+      try {
+        // Given
+        const email = validEmail
+        const password = validPassword
+        user = await createUser(email, password)
+
+        // When
+        const deletedUser = await deleteUser(user)
+        const noUser = await findUserByEmail(deletedUser.email)
+
+        // Then
+        expect(noUser).toBe(null)
+      } catch (error) {
+        console.error(error)
+      }
+    })
+
+    it('should delete a user by its email', async () => {
+      try {
+        // Given
+        const email = validEmail
+        const password = validPassword
+        user = await createUser(email, password)
+
+        // When
+        const deletedUser = await deleteUserByEmail(validEmail)
+        const noUser = await findUserByEmail(deletedUser.email)
+
+        // Then
+        expect(noUser).toBe(null)
       } catch (error) {
         console.error(error)
       }
