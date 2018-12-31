@@ -6,6 +6,7 @@ module.exports = {
         targets: {
           node: process.versions.node
         },
+        useBuiltIns: "entry",
       },
     ],
   ],
