@@ -20,8 +20,10 @@ describe('User', () => {
 
   describe('Creating User', () => {
     afterEach(async () => {
-      await deleteUserByEmail(validEmail).catch(() => true)
-      await deleteUserByEmail(anotherValidEmail).catch(() => true)
+      await Promise.all([
+        deleteUserByEmail(validEmail).catch(() => true),
+        deleteUserByEmail(anotherValidEmail).catch(() => true),
+      ])
     })
 
     it('should not save a user with an empty password', async () => {
