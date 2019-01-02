@@ -1,6 +1,4 @@
-import jwt from 'jsonwebtoken'
-
-import config from '../config'
+import { checkToken } from '../util'
 
 export function verifyToken (req, res, next) {
   const authHeader = req.headers.authorization
@@ -15,7 +13,7 @@ export function verifyToken (req, res, next) {
   }
 
   try {
-    const decoded = jwt.verify(token, config.secret)
+    const decoded = checkToken(token)
     const { level } = decoded
     req.userLevel = level
     next()

@@ -1,33 +1,25 @@
 import request from 'supertest'
 import express from 'express'
-import jwt from 'jsonwebtoken'
+
+import { createToken } from '../util'
 
 import { verifyToken } from './verify-token'
-import { apiPrefix } from '../app'
-import config from '../config'
 
-const validToken = jwt.sign(
-  {
-    email: 'admin@example.com',
-    level: 0,
-  },
-  config.secret,
-  {
-    expiresIn: '30s',
-  }
-)
+const email = 'admin@example.com'
+
+const validToken = createToken(email, 'candidat')
 
 const invalidToken = validToken + '0'
 
+const app = express()
+app.use(verifyToken)
+app.get('/', (req, res) => res.json({ ok: true }))
+
 describe('Verify-token', () => {
   it('Should respond a json with a message for missing token', async () => {
-    // Given
-    const app = express()
-    app.use(verifyToken)
-
     // When
     const { body, status } = await request(app)
-      .get(apiPrefix)
+      .get('/')
       .set('Accept', 'application/json')
 
     // Then
@@ -37,13 +29,9 @@ describe('Verify-token', () => {
   })
 
   it('Should respond a json with a message for invalid token', async () => {
-    // Given
-    const app = express()
-    app.use(verifyToken)
-
     // When
     const { body, status } = await request(app)
-      .get(apiPrefix)
+      .get('/')
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${invalidToken}`)
 
@@ -54,14 +42,9 @@ describe('Verify-token', () => {
   })
 
   it('Should respond a 404', async () => {
-    // Given
-    const app = express()
-    app.use(verifyToken)
-    app.get(apiPrefix, (req, res) => res.json({ ok: true }))
-
     // When
     const { body, status } = await request(app)
-      .get(apiPrefix)
+      .get('/')
       .set('Accept', 'application/json')
       .set('Authorization', `Bearer ${validToken}`)
 

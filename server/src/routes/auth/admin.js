@@ -1,8 +1,6 @@
 import express from 'express'
-import jwt from 'jsonwebtoken'
 
-import config from '../../config'
-import { compareToHash } from '../../util/crypto'
+import { compareToHash, createToken } from '../../util'
 import { findUserByEmail } from '../../models/user'
 
 const router = express.Router()
@@ -44,22 +42,4 @@ export async function getToken (req, res) {
       success: false,
     })
   }
-}
-
-function createToken (email, userStatus) {
-  const token = jwt.sign(
-    {
-      email: email,
-      level: config.USER_STATUS_LEVEL[userStatus] || 0,
-    },
-    config.secret,
-    {
-      expiresIn:
-        config[`${userStatus}TokenExpiration`] === undefined
-          ? '0'
-          : config[`${userStatus}TokenExpiration`],
-    }
-  )
-
-  return token
 }

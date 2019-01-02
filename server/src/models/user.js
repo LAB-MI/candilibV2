@@ -1,10 +1,10 @@
 import mongoose from 'mongoose'
-import util from '../util'
-
-const {
-  regex,
-  crypto: { compareToHash, getHash },
-} = util
+import {
+  compareToHash,
+  email as regexEmail,
+  strongEnoughPassword,
+  getHash,
+} from '../util'
 
 const { Schema } = mongoose
 
@@ -13,7 +13,7 @@ const UserSchema = new Schema({
     type: String,
     trim: true,
     unique: true,
-    match: regex.email,
+    match: regexEmail,
     required: true,
   },
   password: {
@@ -40,7 +40,7 @@ UserSchema.pre('save', async function preSave () {
   // Only hash the password if it has been modified (or is new)
   if (!user.isModified('password')) return
 
-  const isPasswordStrongEnough = regex.strongEnoughPassword.every(regex =>
+  const isPasswordStrongEnough = strongEnoughPassword.every(regex =>
     regex.test(user.password)
   )
 
@@ -76,7 +76,7 @@ export const findUserByCredentials = async (email, password) => {
 }
 
 export const createUser = async (email, password) => {
-  const isPasswordStrongEnough = util.regex.strongEnoughPassword.every(regex =>
+  const isPasswordStrongEnough = strongEnoughPassword.every(regex =>
     regex.test(password)
   )
   if (!isPasswordStrongEnough) {
