@@ -22,6 +22,7 @@ const config = {
   },
 
   USER_STATUS_LEVEL: {
+    candidat: 0,
     admin: 1,
   },
 }
