@@ -34,22 +34,22 @@ const UserSchema = new Schema({
   },
 })
 
-UserSchema.pre('save', function preSave (next) {
+UserSchema.pre('save', async function preSave () {
   var user = this
 
   // Only hash the password if it has been modified (or is new)
-  if (!user.isModified('password')) return next()
+  if (!user.isModified('password')) return
 
   const isPasswordStrongEnough = regex.strongEnoughPassword.every(regex =>
     regex.test(user.password)
   )
+
   if (!isPasswordStrongEnough) {
     throw new Error('weak_password')
   }
 
   // Generate a hash
   user.password = getHash(user.password)
-  next()
 })
 
 UserSchema.methods.comparePassword = function comparePassword (
