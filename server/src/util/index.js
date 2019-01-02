@@ -1,7 +1,3 @@
-import * as crypto from './crypto'
-import * as regex from './regex'
-
-export default {
-  crypto,
-  regex,
-}
+export * from './crypto'
+export * from './regex'
+export * from './token'
