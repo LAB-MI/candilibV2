@@ -3,10 +3,11 @@ import { createLogger, format, transports } from 'winston'
 const { combine } = format
 
 const isProd = process.env.NODE_ENV === 'production'
+const isTest = process.env.NODE_ENV === 'test'
 
 const options = {
   console: {
-    level: isProd ? 'warn' : 'debug',
+    level: isProd || isTest ? 'warn' : 'debug',
     handleExceptions: true,
     json: false,
     colorize: true,
