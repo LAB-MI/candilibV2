@@ -1,7 +1,7 @@
 import express from 'express'
 import jwt from 'jsonwebtoken'
 
-import serverConfig from '../../config'
+import config from '../../config'
 import { compareToHash } from '../../util/crypto'
 import { findUserByEmail } from '../../models/user'
 
@@ -50,14 +50,14 @@ function createToken (email, userStatus) {
   const token = jwt.sign(
     {
       email: email,
-      level: serverConfig.USER_STATUS_LEVEL[userStatus] || 0,
+      level: config.USER_STATUS_LEVEL[userStatus] || 0,
     },
-    serverConfig.secret,
+    config.secret,
     {
       expiresIn:
-        serverConfig[`${userStatus}TokenExpiration`] === undefined
+        config[`${userStatus}TokenExpiration`] === undefined
           ? '0'
-          : serverConfig[`${userStatus}TokenExpiration`],
+          : config[`${userStatus}TokenExpiration`],
     }
   )
 
