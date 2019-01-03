@@ -1,7 +1,17 @@
-import { synchroAurige } from '../../util'
+import { synchroAurige } from './business/synchro-aurige'
 
 export const importCandidats = async (req, res) => {
-  const jsonFile = req.files.file
+  const files = req.files
+
+  if (!files || !files.file) {
+    res.status(400).json({
+      success: false,
+      message: 'Fichier manquant',
+    })
+    return
+  }
+
+  const jsonFile = files.file
   try {
     const result = await synchroAurige(jsonFile.data)
     res.status(200).send({

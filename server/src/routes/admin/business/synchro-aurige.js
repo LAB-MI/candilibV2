@@ -1,24 +1,24 @@
 import latinize from 'latinize'
 import moment from 'moment'
 
-import config from '../config'
+import config from '../../../config'
 import {
   CANDIDAT_EXISTANT,
   EPREUVE_PRATIQUE_OK,
   EPREUVE_ETG_KO,
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
-} from './constants'
-import { createToken } from './token'
-import { findCandidatByNomNeph, deleteCandidat } from '../models/candidat'
-import logger from '../logger'
-import { sendMailToAccount, sendMagicLink } from './send-mail'
+  createToken,
+  sendMailToAccount,
+  sendMagicLink,
+} from '../../../util'
+import { findCandidatByNomNeph, deleteCandidat } from '../../../models/candidat'
+import logger from '../../../logger'
 
 const getCandidatStatus = (nom, neph, status) => ({ nom, neph, status })
 
-export const epreuveEtgInvalid = candidatAurige =>
-  !candidatAurige.dateReussiteETG ||
-  !moment(candidatAurige.dateReussiteETG).isValid()
+export const epreuveEtgInvalid = ({ dateReussiteETG }) =>
+  !dateReussiteETG || !moment(dateReussiteETG).isValid()
 
 const isETGStillValid = dateReussiteETG =>
   moment().diff(dateReussiteETG, 'years', true) > 5
@@ -60,38 +60,39 @@ export const synchroAurige = async buffer => {
 
       if (candidatExistant === CANDIDAT_NOK) {
         await deleteCandidat(candidat)
-        logger.warn(`Ce candidat ${email} a été detruit: NEPH inconnu`)
+        logger.warn(`Ce candidat ${email} sera supprimé : NEPH inconnu`)
         mailType = CANDIDAT_NOK
         recipient = candidat
       }
       if (candidatExistant === CANDIDAT_NOK_NOM) {
         await deleteCandidat(candidat)
-        logger.warn(`Ce candidat ${email} a été detruit: Nom inconnu`)
+        logger.warn(`Ce candidat ${email} sera supprimé : Nom inconnu`)
         mailType = CANDIDAT_NOK_NOM
         recipient = candidat
       }
       if (epreuveEtgInvalid(candidatAurige)) {
         await deleteCandidat(candidat)
         logger.warn(
-          `Ce candidat ${email} a été detruit: dateReussiteETG invalide`
+          `Ce candidat ${email} sera supprimé : dateReussiteETG invalide`
         )
         mailType = CANDIDAT_NOK_NOM
         recipient = candidat
       }
       if (isETGStillValid(dateReussiteETG)) {
         await deleteCandidat(candidat)
-        logger.warn(`Ce candidat ${email} a été detruit: Date ETG KO`)
+        logger.warn(`Ce candidat ${email} sera supprimé : Date ETG KO`)
         mailType = EPREUVE_ETG_KO
         recipient = candidatAurige
       }
       if (reussitePratique === EPREUVE_PRATIQUE_OK) {
         await deleteCandidat(candidat)
-        logger.warn(`Ce candidat ${email} a été detruit: PRATIQUE OK`)
+        logger.warn(`Ce candidat ${email} sera supprimé : PRATIQUE OK`)
         mailType = EPREUVE_PRATIQUE_OK
         recipient = candidatAurige
       }
       if (mailType) {
         sendMailToAccount(recipient, mailType)
+        logger.warn(`Envoi de mail ${mailType} à ${email}`)
         return getCandidatStatus(nomNaissance, codeNeph, 'success')
       }
 
@@ -117,6 +118,7 @@ export const synchroAurige = async buffer => {
                 config.USER_STATUS_LEVEL.candidat
               )
 
+              logger.info(`Envoi d'un magic link à ${email}`)
               sendMagicLink(candidat, token)
               return getCandidatStatus(nomNaissance, codeNeph, 'success')
             }

@@ -30,7 +30,7 @@ const UserSchema = new Schema({
   },
   status: {
     type: String,
-    default: 'candidat',
+    default: 'admin',
   },
 })
 

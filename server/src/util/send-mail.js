@@ -30,16 +30,16 @@ export const sendMail = async (to, { subject, content: html }) => {
 }
 
 export const sendMailToAccount = async (candidat, flag) => {
-  const message = mailMessage(candidat, flag)
+  const message = await mailMessage(candidat, flag)
   sendMail(candidat.email, message)
 }
 
 export const sendMagicLink = async (candidat, token) => {
   const flag = 'CHECK_OK'
-  const url = `${config.PUBLIC_URL}${
-    config.authentificationRoute
-  }?token=${encodeURIComponent(token)}&redirect=calendar`
+  const authUrl = `${config.PUBLIC_URL}${config.authentificationRoute}`
 
-  const message = mailMessage(candidat, flag, url)
+  const url = `${authUrl}?token=${encodeURIComponent(token)}&redirect=calendar`
+
+  const message = await mailMessage(candidat, flag, url)
   sendMail(candidat.email, message)
 }

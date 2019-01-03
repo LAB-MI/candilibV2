@@ -23,6 +23,11 @@ const SiteSchema = new Schema({
 
 export const Site = mongoose.model('Site', SiteSchema)
 
+export const findAllSites = async () => {
+  const sites = await Site.findOne({})
+  return sites
+}
+
 export const findSiteByName = async nom => {
   const site = await Site.findOne({ nom })
   return site

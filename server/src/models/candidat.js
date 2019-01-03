@@ -60,8 +60,7 @@ const CandidatSchema = new Schema({
   },
   isValid: {
     type: Boolean,
-    required: true,
-    default: false,
+    default: null,
   },
   creneau: {
     type: Object,
@@ -95,6 +94,16 @@ export const createCandidat = async ({
 
 export const findCandidatByEmail = async email => {
   const candidat = await Candidat.findOne({ email })
+  return candidat
+}
+
+export const findActiveCandidatByEmail = async email => {
+  const candidat = await Candidat.findOne({ email, archived: undefined })
+  return candidat
+}
+
+export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
+  const candidat = await Candidat.findOne({ nomNaissance, codeNeph })
   return candidat
 }
 

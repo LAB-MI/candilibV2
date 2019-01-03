@@ -1,4 +1,5 @@
 import moment from 'moment'
+
 import {
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
@@ -10,9 +11,11 @@ import {
   AURIGE_OK,
   MAIL_CONVOCATION,
   ANNULATION_CONVOCATION,
-} from './constant'
-import sites from '../inbox/sites.json'
-import serverConfig from '../config'
+} from './constants'
+import config from '../config'
+import { findAllSites } from '../models/sites'
+
+const getSites = async () => findAllSites()
 
 const getHtmlBody = content => `<!DOCTYPE html>
 <html>
@@ -153,10 +156,10 @@ const getHtmlBody = content => `<!DOCTYPE html>
   </body>
 </html>`
 
-const getMailData = (candidatAurige, flag, urlMagicLink) => {
-  const urlFAQ = `${serverConfig.PUBLIC_URL}/informations`
-  const urlRESA = `${serverConfig.PUBLIC_URL}/auth?redirect=calendar`
-  const urlConnexion = `${serverConfig.PUBLIC_URL}`
+const getMailData = async (candidatAurige, flag, urlMagicLink) => {
+  const urlFAQ = `${config.PUBLIC_URL}/informations`
+  const urlRESA = `${config.PUBLIC_URL}/auth?redirect=calendar`
+  const urlConnexion = `${config.PUBLIC_URL}`
 
   const { codeNeph, nomNaissance, creneau } = candidatAurige
 
@@ -173,6 +176,7 @@ const getMailData = (candidatAurige, flag, urlMagicLink) => {
   let siteAdresse = []
 
   if (creneau && creneau.title) {
+    const sites = await getSites()
     siteAdresse = sites.find(item => item.nom.toUpperCase() === creneau.title)
   }
 
@@ -286,7 +290,7 @@ const getMailData = (candidatAurige, flag, urlMagicLink) => {
       Ce lien est valable 3 jours à compter de la réception de cet email.
   </p>
   <p>
-     Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse email ${
+    Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse email ${
   candidatAurige.email
 } dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
   </p>
