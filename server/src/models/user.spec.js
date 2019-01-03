@@ -110,6 +110,12 @@ describe('User', () => {
   })
 
   describe('Updating User', () => {
+    afterEach(async () => {
+      await Promise.all([
+        deleteUserByEmail(anotherValidEmail).catch(() => true),
+      ])
+    })
+
     it('should update a user′s email', async () => {
       // Given
       const email = validEmail
