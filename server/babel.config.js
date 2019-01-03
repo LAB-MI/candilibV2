@@ -1,13 +1,16 @@
 module.exports = {
   presets: [
     [
-      "@babel/env",
+      '@babel/env',
       {
         targets: {
-          node: process.versions.node
+          node: process.versions.node,
         },
-        useBuiltIns: "entry",
       },
     ],
+  ],
+  plugins: [
+    'dynamic-import-node',
+    '@babel/plugin-syntax-dynamic-import',
   ],
 }
