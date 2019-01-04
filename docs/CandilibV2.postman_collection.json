@@ -23,7 +23,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"admin@example.com\",\n\t\"password\": \"test\"\n}"
+							"raw": "{\n\t\"email\": \"admin@example.com\",\n\t\"password\": \"Admin*78\"\n}"
 						},
 						"url": {
 							"raw": "http://{{HOST}}:{{PORT}}/api/v2/auth/admin/token",
@@ -38,6 +38,135 @@
 								"auth",
 								"admin",
 								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Synchro candidats",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/x-www-form-urlencoded",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"candidats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Exports candidats",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"candidats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Liste places d'examen",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "file",
+									"type": "file",
+									"src": ""
+								}
+							]
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"candidats"
 							]
 						}
 					},

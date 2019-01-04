@@ -1,6 +1,6 @@
 import express from 'express'
 
-import admin from './admin'
+import admin from './admin.routes'
 
 const router = express.Router()
 
