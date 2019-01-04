@@ -1,4 +1,4 @@
-import { synchroAurige } from './business/synchro-aurige'
+import { synchroAurige, getCandidatsAsCsv } from './business'
 
 export const importCandidats = async (req, res) => {
   const files = req.files
@@ -20,10 +20,20 @@ export const importCandidats = async (req, res) => {
       message: `Le fichier ${jsonFile.name} a été synchronisé.`,
       candidats: result,
     })
-  } catch (err) {
-    console.error(err) // eslint-disable-line no-console
-    return res.status(500).send(err)
+  } catch (error) {
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+      error,
+    })
   }
 }
 
-export const exportCandidats = (req, res) => {}
+export const exportCandidats = async (req, res) => {
+  const candidatsAsCsv = await getCandidatsAsCsv()
+  const filename = 'candidatsLibresPrintel.csv'
+  res
+    .status(200)
+    .attachment(filename)
+    .send(candidatsAsCsv)
+}

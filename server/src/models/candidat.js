@@ -92,6 +92,11 @@ export const createCandidat = async ({
   return candidat
 }
 
+export const findAllCandidatsLean = async () => {
+  const candidats = await Candidat.find({}).lean()
+  return candidats
+}
+
 export const findCandidatByEmail = async email => {
   const candidat = await Candidat.findOne({ email })
   return candidat
