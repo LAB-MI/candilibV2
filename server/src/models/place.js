@@ -47,3 +47,8 @@ export const findAllPlaces = async () => {
   const places = await Place.find({})
   return places
 }
+
+export const findPlaceById = async id => {
+  const place = await Place.findById(id)
+  return place
+}

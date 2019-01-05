@@ -62,7 +62,7 @@ const CandidatSchema = new Schema({
     type: Boolean,
     default: null,
   },
-  creneau: {
+  place: {
     type: Object,
     default: {},
   },
