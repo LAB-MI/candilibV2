@@ -13,7 +13,7 @@ import {
   sendMagicLink,
 } from '../../../util'
 import { findCandidatByNomNeph, deleteCandidat } from '../../../models/candidat'
-import logger from '../../../logger'
+import logger from '../../../util/logger'
 
 const getCandidatStatus = (nom, neph, status) => ({ nom, neph, status })
 

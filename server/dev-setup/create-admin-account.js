@@ -1,6 +1,6 @@
 import { createUser } from '../src/models/user'
 
-import logger from '../src/logger'
+import logger from '../src/util/logger'
 
 logger.info('Creating admin')
 

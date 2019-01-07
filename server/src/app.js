@@ -3,7 +3,7 @@ import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import fileupload from 'express-fileupload'
 
-import { loggerStream } from './logger'
+import { loggerStream } from './util/logger'
 import routes from './routes'
 
 const app = express()

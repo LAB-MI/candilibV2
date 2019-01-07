@@ -1,6 +1,6 @@
 import { createSite } from '../src/models/site'
 
-import logger from '../src/logger'
+import logger from '../src/util/logger'
 import sites from './sites'
 
 logger.info('Creating sites')

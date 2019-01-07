@@ -1,7 +1,7 @@
 import delay from 'delay'
 import mongoose from 'mongoose'
 
-import logger from './logger'
+import logger from './util/logger'
 
 const isTest = process.env.NODE_ENV === 'test'
 const dbName = isTest ? 'candilib_test' : 'candilib'

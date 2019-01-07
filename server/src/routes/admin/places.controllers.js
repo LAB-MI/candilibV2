@@ -1,7 +1,7 @@
 import * as csvParser from 'fast-csv'
 import moment from 'moment'
 
-import logger from '../../logger'
+import logger from '../../util/logger'
 import {
   PLACE_ALREADY_IN_DB_ERROR,
   findAllPlaces,
