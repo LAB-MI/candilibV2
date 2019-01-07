@@ -5,7 +5,7 @@ import logger from '../../logger'
 import {
   PLACE_ALREADY_IN_DB_ERROR,
   findAllPlaces,
-  savePlace,
+  createPlace,
 } from '../../models/place'
 
 export const importPlaces = (req, res, next) => {
@@ -30,7 +30,7 @@ export const importPlaces = (req, res, next) => {
       }
 
       try {
-        await savePlace(place)
+        await createPlace(place)
         logger.info(`Place ${centre} ${inspecteur} ${date} enregistrée en base`)
       } catch (error) {
         if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
