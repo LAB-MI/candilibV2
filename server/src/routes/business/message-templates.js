@@ -11,9 +11,9 @@ import {
   AURIGE_OK,
   MAIL_CONVOCATION,
   ANNULATION_CONVOCATION,
-} from './constants'
-import config from '../config'
-import { findAllSites } from '../models/site'
+} from '../../util/constants'
+import config from '../../config'
+import { findAllSites } from '../../models/site'
 
 const getSites = async () => findAllSites()
 

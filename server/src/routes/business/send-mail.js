@@ -3,8 +3,8 @@ import smtpTransport from 'nodemailer-smtp-transport'
 import { htmlToText } from 'nodemailer-html-to-text'
 
 import mailMessage from './message-templates'
-import config, { smtpOptions } from '../config'
-import logger from '../util/logger'
+import config, { smtpOptions } from '../../config'
+import logger from '../../util/logger'
 
 export const sendMail = async (to, { subject, content: html }) => {
   const transporter = nodemailer.createTransport(smtpTransport(smtpOptions))

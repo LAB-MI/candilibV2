@@ -9,9 +9,9 @@ import {
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
   createToken,
-  sendMailToAccount,
-  sendMagicLink,
 } from '../../../util'
+import { sendMailToAccount, sendMagicLink } from '../../business'
+
 import { findCandidatByNomNeph, deleteCandidat } from '../../../models/candidat'
 import logger from '../../../util/logger'
 
