@@ -7,8 +7,11 @@ import {
   addWhitelist,
   deleteCandidat,
 } from './whitelisted.controllers'
+import { verifyAdminLevel } from './middlewares'
 
 const router = express.Router()
+
+router.use(verifyAdminLevel)
 
 router.get('/candidats', getCandidats)
 router.post('/candidats', importCandidats)

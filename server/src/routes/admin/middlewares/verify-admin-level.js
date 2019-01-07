@@ -1,4 +1,4 @@
-import config from '../config'
+import config from '../../../config'
 
 export function verifyAdminLevel (req, res, next) {
   try {
