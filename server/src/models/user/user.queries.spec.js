@@ -4,8 +4,8 @@ import {
   deleteUserByEmail,
   deleteUser,
   findUserByEmail,
-} from './user'
-import { connect, disconnect } from '../mongo-connection'
+} from './'
+import { connect, disconnect } from '../../mongo-connection'
 
 const validEmail = 'dontusethis@example.com'
 const anotherValidEmail = 'dontusethis@example.fr'
@@ -41,7 +41,7 @@ describe('User', () => {
 
       // Then
       expect(error).toBeInstanceOf(Error)
-      expect(error.message).toBe('weak_password')
+      expect(error.message).toContain('`password` is required')
     })
 
     it('should not save a user with an empty password', async () => {
@@ -54,7 +54,7 @@ describe('User', () => {
 
       // Then
       expect(error).toBeInstanceOf(Error)
-      expect(error.message).toBe('weak_password')
+      expect(error.message).toContain('`password` is required')
     })
 
     it('should not save a user with a short password', async () => {

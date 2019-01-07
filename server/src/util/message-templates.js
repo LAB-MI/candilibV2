@@ -13,7 +13,7 @@ import {
   ANNULATION_CONVOCATION,
 } from './constants'
 import config from '../config'
-import { findAllSites } from '../models/sites'
+import { findAllSites } from '../models/site'
 
 const getSites = async () => findAllSites()
 

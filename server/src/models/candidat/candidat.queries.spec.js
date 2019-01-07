@@ -4,8 +4,8 @@ import {
   deleteCandidatByEmail,
   deleteCandidat,
   findCandidatByEmail,
-} from './candidat'
-import { connect, disconnect } from '../mongo-connection'
+} from './'
+import { connect, disconnect } from '../../mongo-connection'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'

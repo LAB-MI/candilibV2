@@ -1,4 +1,4 @@
-import { createSite } from '../src/models/sites'
+import { createSite } from '../src/models/site'
 
 import logger from '../src/logger'
 import sites from './sites'
