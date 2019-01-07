@@ -1,10 +1,11 @@
 import mongoose from 'mongoose'
+import sanitizeHtml from 'sanitize-html'
 
 import { email as emailRegex } from '../../util/regex'
 
 const { Schema } = mongoose
 
-const whitelistedSchema = new Schema({
+const WhitelistedSchema = new Schema({
   email: {
     type: String,
     required: false,
@@ -14,4 +15,10 @@ const whitelistedSchema = new Schema({
   },
 })
 
-export default mongoose.model('Whitelisted', whitelistedSchema, 'whitelisted')
+WhitelistedSchema.pre('save', async function preSave () {
+  const whitelisted = this
+
+  whitelisted.email = sanitizeHtml(whitelisted.email)
+})
+
+export default mongoose.model('Whitelisted', WhitelistedSchema, 'whitelisted')

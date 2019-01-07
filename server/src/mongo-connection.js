@@ -3,7 +3,10 @@ import mongoose from 'mongoose'
 
 import logger from './logger'
 
-const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/candilib'
+const isTest = process.env.NODE_ENV === 'test'
+const dbName = isTest ? 'candilib_test' : 'candilib'
+
+const mongoURL = process.env.MONGO_URL || `mongodb://localhost:27017/${dbName}`
 
 let mongoConnectionAttempt = 30
 const delayBeforeAttempt = process.env.NODE_ENV === 'production' ? 2000 : 1000

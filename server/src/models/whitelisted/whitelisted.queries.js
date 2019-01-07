@@ -1,5 +1,10 @@
 import Whitelisted from './whitelisted.model'
 
+export const findAllWhitelisted = async email => {
+  const whitelisted = await Whitelisted.find({}).sort('-dateAdded')
+  return whitelisted
+}
+
 export const findWhitelistedByEmail = async email => {
   const whitelisted = await Whitelisted.findOne({ email })
   return whitelisted
@@ -25,10 +30,11 @@ export const deleteWhitelistedByEmail = async email => {
   return whitelisted
 }
 
-export const deleteWhitelisted = async whitelisted => {
-  if (!whitelisted) {
+export const deleteWhitelisted = async id => {
+  if (!id) {
     throw new Error('No whitelisted given')
   }
+  const whitelisted = await findWhitelistedById(id)
   await whitelisted.delete()
   return whitelisted
 }

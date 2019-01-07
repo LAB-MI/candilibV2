@@ -15,8 +15,8 @@
     "prestart": "npm run build",
     "start": "node dist/index.js",
     "start:prod": "node dist/index.js",
-    "test:watch": "jest --watch",
-    "test": "jest"
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test": "cross-env NODE_ENV=test jest"
   },
   "keywords": [
     "Candidat",
@@ -30,6 +30,7 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cross-env": "^5.2.0",
     "delay": "^4.1.0",
     "express": "^4.16.4",
     "express-fileupload": "^1.1.1-alpha.1",
@@ -43,6 +44,7 @@
     "nodemailer": "^5.0.0",
     "nodemailer-html-to-text": "^3.0.0",
     "nodemailer-smtp-transport": "^2.7.4",
+    "sanitize-html": "^1.20.0",
     "winston": "^3.1.0"
   },
   "devDependencies": {
