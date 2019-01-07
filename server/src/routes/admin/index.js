@@ -1,7 +1,7 @@
 import express from 'express'
 
-import { getCandidats, importCandidats } from './candidats.routes'
-import { getPlaces, importPlaces } from './places.routes'
+import { getCandidats, importCandidats } from './candidats.controllers'
+import { getPlaces, importPlaces } from './places.controllers'
 import {
   getWhitelisted,
   addWhitelist,

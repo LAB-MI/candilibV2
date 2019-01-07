@@ -1,20 +1,12 @@
-import express from 'express'
-
 import { compareToHash, createToken } from '../../util'
 import { findUserByEmail } from '../../models/user'
-
-const router = express.Router()
-
-router.post('/token', getToken)
-
-export default router
 
 const badCredentialsBody = {
   success: false,
   message: 'Mauvaise combinaison email/mot de passe.',
 }
 
-export async function getToken (req, res) {
+export const getAdminToken = async (req, res) => {
   const { email, password } = req.body
 
   try {
