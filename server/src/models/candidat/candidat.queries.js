@@ -8,7 +8,7 @@ export const createCandidat = async ({
   email,
   adresse,
 }) => {
-  const candidat = new Candidat({
+  const candidat = await new Candidat({
     codeNeph,
     nomNaissance,
     prenom,

@@ -20,6 +20,7 @@ const autreCodeNeph = '123456789013'
 
 describe('Candidat', () => {
   let candidat
+  let candidat2
   beforeAll(async () => {
     await connect()
   })
@@ -32,6 +33,7 @@ describe('Candidat', () => {
     afterEach(async () => {
       await Promise.all([
         deleteCandidat(candidat).catch(() => true),
+        deleteCandidat(candidat2).catch(() => true),
         deleteCandidatByEmail(validEmail).catch(() => true),
         deleteCandidatByEmail(anotherValidEmail).catch(() => true),
       ])
@@ -82,6 +84,60 @@ describe('Candidat', () => {
       expect(error).toBeInstanceOf(Error)
     })
 
+    it('should save a candidat with an existing NEPH', async () => {
+      // Given
+      const email = validEmail
+      candidat = await createCandidat({
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+      })
+
+      // When
+      candidat2 = await createCandidat({
+        codeNeph,
+        nomNaissance: autreNomNaissance,
+        prenom,
+        email: anotherValidEmail,
+        portable,
+        adresse,
+      }).catch(error => error)
+
+      // Then
+      expect(candidat.isNew).toBe(false)
+      expect(candidat2.isNew).toBe(false)
+    })
+
+    it('should save a candidat with an existing nomNaissance', async () => {
+      // Given
+      const email = validEmail
+      candidat = await createCandidat({
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+      })
+
+      // When
+      candidat2 = await createCandidat({
+        codeNeph: autreCodeNeph,
+        nomNaissance,
+        prenom,
+        email: anotherValidEmail,
+        portable,
+        adresse,
+      }).catch(error => error)
+
+      // Then
+      expect(candidat.isNew).toBe(false)
+      expect(candidat2.isNew).toBe(false)
+    })
+
     it('should not save a candidat with an existing NEPH/nom', async () => {
       // Given
       const email = validEmail
@@ -107,6 +163,7 @@ describe('Candidat', () => {
       // Then
       expect(candidat.isNew).toBe(false)
       expect(error).toBeInstanceOf(Error)
+      expect(error.message).toContain('codeNeph_1_nomNaissance_1 dup key')
     })
 
     it('should not save a candidat with an invalid email', async () => {

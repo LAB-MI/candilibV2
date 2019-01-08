@@ -14,7 +14,6 @@ const CandidatSchema = new Schema({
     required: true,
     uppercase: true,
     trim: true,
-    unique: false,
   },
   prenom: {
     type: String,
@@ -25,7 +24,6 @@ const CandidatSchema = new Schema({
     type: String,
     required: true,
     match: nephRegex,
-    unique: false,
   },
   dateReussiteETG: {
     type: Date,
