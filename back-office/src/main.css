@@ -1,0 +1,34 @@
+@font-face {
+  font-family: Poppins-Regular;
+  src:url('./assets/fonts/poppins/Poppins-Regular.ttf');
+}
+@font-face {
+  font-family: Poppins-Medium;
+  src:url('./assets/fonts/poppins/Poppins-Medium.ttf');
+}
+@font-face {
+  font-family: Poppins-Bold;
+  src:url('./assets/fonts/poppins/Poppins-Bold.ttf');
+ }
+@font-face {
+  font-family: Poppins-SemiBold;
+  src:url('./assets/fonts/poppins/Poppins-SemiBold.ttf');
+}
+
+
+.col-red {
+  color: #C00;
+}
+
+h2 {
+  font-family: 'Poppins-Bold';
+  font-size: 2.5em;
+  font-weight: normal;
+  color: #777;
+}
+
+h3 {
+  font-family: 'Poppins-Bold';
+  color: #888;
+  font-size: 1.5em;
+}
