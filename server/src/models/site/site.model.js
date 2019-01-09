@@ -19,6 +19,11 @@ const SiteSchema = new Schema({
     required: true,
     trim: true,
   },
+  departement: {
+    type: String,
+    required: true,
+    trim: true,
+  },
 })
 
 export default mongoose.model('Site', SiteSchema)
