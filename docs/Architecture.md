@@ -10,7 +10,7 @@ L'application Candilib s'articule autour de 3 parties :
 
 L'application s'adresse aux candidats et aux agents qui impliqués dans la gestion des examens pratiques sur l'ensemble du territoir. La partie ``frontal`` est séparée en deux parties distinctes pour chacune de ces populations. De plus, chaque composant dispose de ces propres routes vers la partie ``back`` qui assure le filtrage en fonction de l'origine des requêtes.
 
-La partie ``back`` assure le traitement applicatif de Candilib. Elle est constitué d'un composant qui met à disposition via des API les différents services applicatifs. Ces derniers sont dédiés à un ``frontal`` et aux composants internes de gestion.
+La partie ``back`` assure le traitement applicatif de Candilib. Elle est constituée d'un composant qui met à disposition via des API les différents services applicatifs. Ces derniers sont dédiés à un ``frontal`` et aux composants internes de gestion.
 
 La partie ``persistance des données`` garantie :
 
@@ -18,4 +18,6 @@ La partie ``persistance des données`` garantie :
 * la fiabilité
 * l'intégrité
 
-Le schéma ci-dessous synthésite ces principes d'architecture.
+Le schéma ci-dessous synthétise ces principes d'architecture.
+
+![Architecture générale](https://raw.github.com/LAB-MI/candilibV2/docs/principes/docs/archi_gene_candilib-Page-2.svg?sanitize=true)
