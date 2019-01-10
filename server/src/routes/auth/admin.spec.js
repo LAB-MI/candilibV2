@@ -24,6 +24,7 @@ describe('Test the auth admin', () => {
   afterAll(async () => {
     await deleteUserByEmail(email)
     await disconnect()
+    await app.close()
   })
 
   it('Should response the POST method with a 401 for an unknown user', async () => {

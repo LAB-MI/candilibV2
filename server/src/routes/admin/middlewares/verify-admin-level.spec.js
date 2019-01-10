@@ -30,6 +30,10 @@ app.use(verifyToken, verifyAdminLevel)
 app.get(apiPrefix, (req, res) => res.json({ ok: true }))
 
 describe('Verify-token', () => {
+  afterAll(async () => {
+    await app.close()
+  })
+
   it('Should respond a 403', async () => {
     // When
     const { body, status } = await request(app)
