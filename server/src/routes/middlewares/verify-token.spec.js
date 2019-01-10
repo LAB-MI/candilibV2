@@ -1,7 +1,7 @@
 import request from 'supertest'
 import express from 'express'
 
-import { createToken } from '../util'
+import { createToken } from '../../util'
 
 import { verifyToken } from './verify-token'
 

@@ -22,7 +22,22 @@ const config = {
   },
 
   USER_STATUS_LEVEL: {
+    candidat: 0,
     admin: 1,
+  },
+
+  smtpServer: process.env.SMTP_SERVER || '<server>',
+  smtpService: process.env.SMTP_SERVICE || undefined,
+  smtpPort: process.env.SMTP_PORT || 25,
+}
+
+export const smtpOptions = {
+  host: config.smtpServer,
+  port: config.smtpPort,
+  secure: false,
+  tls: {
+    // do not failed with selfsign certificates
+    rejectUnauthorized: false,
   },
 }
 

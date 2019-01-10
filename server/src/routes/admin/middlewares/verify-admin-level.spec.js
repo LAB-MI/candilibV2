@@ -2,10 +2,10 @@ import request from 'supertest'
 import express from 'express'
 import jwt from 'jsonwebtoken'
 
-import { verifyToken } from './verify-token'
+import { verifyToken } from '../../middlewares'
 import { verifyAdminLevel } from './verify-admin-level'
-import { apiPrefix } from '../app'
-import config from '../config'
+import { apiPrefix } from '../../../app'
+import config from '../../../config'
 
 const basicData = {
   email: 'user@example.com',

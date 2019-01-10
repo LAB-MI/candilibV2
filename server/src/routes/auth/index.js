@@ -1,9 +1,9 @@
 import express from 'express'
 
-import admin from './admin'
+import { getAdminToken } from './admin.controllers'
 
 const router = express.Router()
 
-router.use('/admin', admin)
+router.post('/admin/token', getAdminToken)
 
 export default router
