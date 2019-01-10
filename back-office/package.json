@@ -7,6 +7,7 @@
     "build": "vue-cli-service build",
     "format": "vue-cli-service lint",
     "lint": "vue-cli-service lint",
+    "test": "npm run test:unit -s",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"
   },
@@ -41,7 +42,8 @@
   "eslintConfig": {
     "root": true,
     "env": {
-      "node": true
+      "node": true,
+      "jest": true
     },
     "parserOptions": {
       "parser": "babel-eslint"
@@ -73,6 +75,9 @@
     "not ie <= 8"
   ],
   "jest": {
+    "setupFiles": [
+      "<rootDir>/tests/setup.js"
+    ],
     "moduleFileExtensions": [
       "js",
       "jsx",
@@ -91,7 +96,7 @@
       "jest-serializer-vue"
     ],
     "testMatch": [
-      "**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
+      "**/src/**/*.spec.js|**/tests/unit/**/*.spec.(js|jsx|ts|tsx)|**/__tests__/*.(js|jsx|ts|tsx)"
     ],
     "testURL": "http://localhost/"
   }
