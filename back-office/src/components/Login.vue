@@ -29,6 +29,7 @@
           :rules="passwordRules"
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
+          v-model="password"
         ></v-text-field>
       </div>
       <div class="form-input">
@@ -54,8 +55,8 @@
 
 <script>
 import backgroundImgUrl from '../assets/bg-login.jpg'
-
 import { email as emailRegex } from '../util'
+import { FETCH_TOKEN_REQUEST } from '../store'
 
 export default {
   name: 'Login',
@@ -81,7 +82,8 @@ export default {
       console.log('Hiding modal')
     },
     getToken () {
-      console.log('Getting token')
+      const { email, password } = this
+      this.$store.dispatch(FETCH_TOKEN_REQUEST, { email, password })
     },
   },
 }
