@@ -21,8 +21,8 @@ const mongooseOpts = {
 }
 
 export const connect = async () => {
+  let mongoUri
   try {
-    let mongoUri
     if (isTest) {
       mongoUri = await mongoServer.getConnectionString()
     } else {
@@ -37,7 +37,9 @@ export const connect = async () => {
   } catch (err) {
     --reconnectTries
     if (reconnectTries > 0) {
-      logger.warn(`Could not connect to Mongo, ${reconnectTries} tries left`)
+      logger.warn(
+        `Could not connect to Mongo at ${mongoUri}, ${reconnectTries} tries left`
+      )
       return delay(reconnectInterval).then(connect)
     } else {
       const errorMessage =
