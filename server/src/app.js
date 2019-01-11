@@ -1,12 +1,20 @@
 import express from 'express'
 import morgan from 'morgan'
+import bodyParser from 'body-parser'
+import fileupload from 'express-fileupload'
 
-import { loggerStream } from './logger'
+import { loggerStream } from './util/logger'
+import routes from './routes'
 
 const app = express()
 
+export const apiPrefix = '/api/v2'
+
 app.use(morgan('combined', { stream: loggerStream }))
+app.use(bodyParser.json({ limit: '20mb' }))
+app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+app.use(fileupload({ limits: { fileSize: 50 * 1024 * 1024 } }))
 
-app.get('/', (req, res) => res.send('Hello World!'))
+app.use(apiPrefix, routes)
 
-module.exports = app
+export default app

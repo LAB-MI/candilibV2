@@ -1,10 +1,14 @@
 const request = require('supertest')
 
-const app = require('./app')
+const { default: app, apiPrefix } = require('./app')
 
 describe('Test the root path', () => {
+  afterAll(async () => {
+    await app.close()
+  })
   it('Should response the GET method', async () => {
-    const response = await request(app).get('/')
-    expect(response.statusCode).toBe(200)
+    await request(app)
+      .get(`${apiPrefix}`)
+      .expect(404)
   })
 })

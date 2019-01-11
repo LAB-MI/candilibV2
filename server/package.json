@@ -4,7 +4,12 @@
   "description": "Réserver sa place d'examen pratique du permis de conduire",
   "main": "index.js",
   "scripts": {
+    "prebuild": "npm run test",
     "build": "babel src -d dist",
+    "db": "docker-compose -f docker-compose.dev.db.yml up -d",
+    "db:down": "docker-compose -f docker-compose.dev.db.yml down",
+    "build:all": "docker-compose -f docker-compose.prod.api.yml build",
+    "dev-setup": "node dev-setup/index.js",
     "dev": "nodemon --inspect --watch src boot-dev.js",
     "format": "prettier-eslint --write 'src/**/*.js'",
     "lint:only": "eslint src",
@@ -13,8 +18,9 @@
     "prestart": "npm run build",
     "start": "node dist/index.js",
     "start:prod": "node dist/index.js",
-    "test:watch": "jest --watch",
-    "test": "jest"
+    "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "pretest": "npm run lint",
+    "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit"
   },
   "keywords": [
     "Candidat",
@@ -28,20 +34,36 @@
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cross-env": "^5.2.0",
     "delay": "^4.1.0",
     "express": "^4.16.4",
+    "express-fileupload": "^1.1.1-alpha.1",
+    "fast-csv": "^2.4.1",
+    "json2csv": "^4.3.2",
+    "jsonwebtoken": "^8.4.0",
+    "latinize": "^0.4.0",
+    "moment": "^2.23.0",
+    "mongodb-memory-server": "^2.9.1",
     "mongoose": "^5.4.0",
     "morgan": "^1.9.1",
+    "nodemailer": "^5.0.0",
+    "nodemailer-html-to-text": "^3.0.0",
+    "nodemailer-smtp-transport": "^2.7.4",
+    "sanitize-html": "^1.20.0",
     "winston": "^3.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@babel/polyfill": "^7.2.3",
     "@babel/preset-env": "^7.2.3",
     "@babel/register": "^7.0.0",
     "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
     "babel-jest": "^23.6.0",
+    "babel-plugin-dynamic-import-node": "^2.2.0",
+    "dotenv": "^6.2.0",
     "eslint": "^5.10.0",
     "eslint-config-standard": "^12.0.0",
     "eslint-plugin-import": "^2.14.0",
@@ -69,9 +91,6 @@
     ]
   },
   "jest": {
-    "setupFiles": [
-      "<rootDir>/config/polyfills.js"
-    ],
     "testMatch": [
       "<rootDir>/src/**/?(*.)(spec).{js,jsx,mjs}"
     ],
@@ -81,14 +100,31 @@
     ]
   },
   "eslintConfig": {
+    "parser": "babel-eslint",
     "env": {
       "jest": true,
       "node": true
     },
     "extends": [
+      "plugin:import/errors",
+      "plugin:import/warnings",
       "standard"
     ],
+    "plugins": [
+      "import"
+    ],
     "rules": {
+      "import/no-unresolved": [
+        2,
+        {
+          "commonjs": true,
+          "amd": true
+        }
+      ],
+      "import/named": 2,
+      "import/namespace": 2,
+      "import/default": 2,
+      "import/export": 2,
       "jsx-quotes": [
         2,
         "prefer-double"

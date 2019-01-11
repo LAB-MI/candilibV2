@@ -1,0 +1,38 @@
+# production mode
+version: '3.4'
+services:
+  db:
+    image: mongo:latest
+    ports:
+      - "27017"
+    networks:
+      - candilib-network
+    container_name: candilib_mongo
+    volumes:
+      - ${DBDATA:-../mongo}:/data/db
+  api:
+    image: candilib_api:${APP_VERSION:-latest}
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        npm_registry: ${NPM_REGISTRY}
+    container_name: candilib_api
+    depends_on:
+      - db
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+#    env_file:
+#      - ${cnf:-.env}
+    environment:
+      NODE_ENV: production
+      MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
+    networks:
+      - candilib-network
+networks:
+  candilib-network:
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
