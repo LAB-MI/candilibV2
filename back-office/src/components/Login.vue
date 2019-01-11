@@ -47,16 +47,14 @@
           data-toggle="modal"
         >Mot de passe oublié ?</a>
       </div>
-      <!--
-      -->
     </v-form>
   </div>
 </template>
 
 <script>
-import backgroundImgUrl from '../assets/bg-login.jpg'
-import { email as emailRegex } from '../util'
-import { FETCH_TOKEN_REQUEST } from '../store'
+import backgroundImgUrl from '@/assets/bg-login.jpg'
+import { email as emailRegex } from '@/util'
+import { FETCH_TOKEN_REQUEST } from '@/store'
 
 export default {
   name: 'Login',

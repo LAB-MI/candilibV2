@@ -1,5 +1,7 @@
-import api from '../api'
-import { STORAGE_TOKEN_KEY } from '../constants'
+import api from '@/api'
+import { STORAGE_TOKEN_KEY } from '@/constants'
+
+export const CHECK_TOKEN = 'CHECK_TOKEN'
 
 export const FETCH_TOKEN_REQUEST = 'FETCH_TOKEN_REQUEST'
 export const FETCH_TOKEN_FAILURE = 'FETCH_TOKEN_FAILURE'
@@ -7,24 +9,16 @@ export const FETCH_TOKEN_SUCCESS = 'FETCH_TOKEN_SUCCESS'
 
 export const REMOVE_TOKEN = 'REMOVE_TOKEN'
 export const SET_TOKEN = 'SET_TOKEN'
-export const BAD_CREDENTIALS = 'BAD_CREDENTIALS'
+export const SIGN_OUT = 'SIGN_OUT'
 
 export const FETCHING_TOKEN = 'FETCHING_TOKEN'
+export const BAD_CREDENTIALS = 'BAD_CREDENTIALS'
 export const SIGNED_IN = 'SIGNED_IN'
-export const SIGN_OUT = 'SIGN_OUT'
 export const SIGNED_OUT = 'SIGNED_OUT'
 
 export default {
   state: {
     status: null,
-  },
-
-  getters: {
-    articlesNb: (state) => {
-      return Object.entries(state.content).reduce((acc, [key, value]) => {
-        return acc + value
-      }, 0)
-    },
   },
 
   mutations: {
@@ -43,6 +37,13 @@ export default {
   },
 
   actions: {
+    async [CHECK_TOKEN] ({ commit }) {
+      const token = localStorage.getItem(STORAGE_TOKEN_KEY)
+      const { auth } = await api.verifyToken(token)
+      if (auth) {
+        commit(SET_TOKEN)
+      }
+    },
     async [FETCH_TOKEN_REQUEST] ({ commit }, { email, password }) {
       commit(FETCH_TOKEN_REQUEST)
       try {
@@ -59,6 +60,7 @@ export default {
     },
 
     async [SIGN_OUT] ({ commit }) {
+      localStorage.removeItem(STORAGE_TOKEN_KEY)
       commit(SIGN_OUT)
     },
   },
