@@ -44,6 +44,7 @@ export default {
         commit(SET_TOKEN)
       }
     },
+
     async [FETCH_TOKEN_REQUEST] ({ commit }, { email, password }) {
       commit(FETCH_TOKEN_REQUEST)
       try {
