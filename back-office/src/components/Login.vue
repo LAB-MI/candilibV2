@@ -2,8 +2,8 @@
   <div class="login" v-bind:style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }">
     <div class="login-bg-filter"></div>
     <v-form v-model="valid" class="login-form" @submit.prevent="getToken">
-      <h2>ADMINISTRATEUR</h2>
-      <h3>
+      <h2 class="text--center">ADMINISTRATEUR</h2>
+      <h3 class="text--center">
         C<span class="col-red">A</span>NDILIB
       </h3>
       <div class="form-input">
