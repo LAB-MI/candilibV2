@@ -1,8 +1,10 @@
 <template>
   <div class="admin">
-    <v-toolbar fixed>
+    <v-toolbar dark fixed>
       <v-toolbar-title>
-        <h1 class="logo"><router-link to="/admin" class="home-link">C<span class="col-red">A</span>NDILIB</router-link></h1>
+        <h1 class="logo">
+          <router-link to="/admin" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
+        </h1>
       </v-toolbar-title>
       <v-spacer></v-spacer>
       <v-toolbar-side-icon></v-toolbar-side-icon>
