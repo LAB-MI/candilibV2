@@ -1,15 +1,7 @@
 <template>
   <div class="admin">
     <v-container>
-      <v-navigation-drawer
-        v-model="drawer"
-        absolute
-        dark
-        temporary
-      >
-      </v-navigation-drawer>
       <v-toolbar dark fixed>
-        <v-toolbar-side-icon large @click.stop="drawer = !drawer"></v-toolbar-side-icon>
         <v-toolbar-title>
           <h1 class="logo">
             <router-link to="/admin" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
