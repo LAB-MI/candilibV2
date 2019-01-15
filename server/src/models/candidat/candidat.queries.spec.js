@@ -1,9 +1,9 @@
 import {
   createCandidat,
   updateCandidatEmail,
-  deleteCandidatByEmail,
   deleteCandidat,
-  findCandidatByEmail,
+  deleteCandidatByNomNeph,
+  findCandidatByNomNeph,
 } from './'
 import { connect, disconnect } from '../../mongo-connection'
 
@@ -34,8 +34,6 @@ describe('Candidat', () => {
       await Promise.all([
         deleteCandidat(candidat).catch(() => true),
         deleteCandidat(candidat2).catch(() => true),
-        deleteCandidatByEmail(validEmail).catch(() => true),
-        deleteCandidatByEmail(anotherValidEmail).catch(() => true),
       ])
     })
 
@@ -228,7 +226,10 @@ describe('Candidat', () => {
 
       // When
       const deletedCandidat = await deleteCandidat(candidat)
-      const noCandidat = await findCandidatByEmail(deletedCandidat.email)
+      const noCandidat = await findCandidatByNomNeph(
+        deletedCandidat.nomNaissance,
+        deletedCandidat.codeNeph
+      )
 
       // Then
       expect(noCandidat).toBe(null)
@@ -247,8 +248,14 @@ describe('Candidat', () => {
       })
 
       // When
-      const deletedCandidat = await deleteCandidatByEmail(validEmail)
-      const noCandidat = await findCandidatByEmail(deletedCandidat.email)
+      const deletedCandidat = await deleteCandidatByNomNeph(
+        nomNaissance,
+        codeNeph
+      )
+      const noCandidat = await findCandidatByNomNeph(
+        deletedCandidat.nomNaissance,
+        deletedCandidat.codeNeph
+      )
 
       // Then
       expect(noCandidat).toBe(null)

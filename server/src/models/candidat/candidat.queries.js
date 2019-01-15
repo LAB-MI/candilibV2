@@ -40,8 +40,8 @@ export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
   return candidat
 }
 
-export const deleteCandidatByEmail = async email => {
-  const candidat = await Candidat.findOne({ email })
+export const deleteCandidatByNomNeph = async (nomNaissance, codeNeph) => {
+  const candidat = await Candidat.findOne({ nomNaissance, codeNeph })
   if (!candidat) {
     throw new Error('No candidat found')
   }
