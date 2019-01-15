@@ -10,15 +10,6 @@ export const findSiteByName = async nom => {
   return site
 }
 
-export const findSiteByCredentials = async (email, password) => {
-  const site = await Site.findOne({ email })
-  const isValidCredentials = site.comparePassword(password)
-  if (!isValidCredentials) {
-    return null
-  }
-  return site
-}
-
 export const createSite = async (nom, label, adresse) => {
   const site = new Site({ nom, label, adresse })
   await site.save()
