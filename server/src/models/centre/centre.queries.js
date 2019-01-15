@@ -1,4 +1,4 @@
-import Site from './site.model'
+import Site from './centre.model'
 
 export const findAllSites = async () => {
   const sites = await Site.findOne({})
