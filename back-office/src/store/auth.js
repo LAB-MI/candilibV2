@@ -49,6 +49,9 @@ export default {
       commit(FETCH_TOKEN_REQUEST)
       try {
         const { token } = await api.requestToken(email, password)
+        if (!token) {
+          throw new Error(BAD_CREDENTIALS)
+        }
         localStorage.setItem(STORAGE_TOKEN_KEY, token)
         commit(SET_TOKEN)
       } catch (error) {

@@ -79,6 +79,10 @@ export default {
         this.$router.push(`/?nextPath=${this.$route.fullPath}&from=App`)
       }
     },
+    async disconnect () {
+      await this.$store.dispatch(SIGN_OUT)
+      this.$router.push('/')
+    },
   },
 
   mounted () {
