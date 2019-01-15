@@ -34,7 +34,7 @@
         </p>
         <p :id="ids.adminAurige" :style="{height: '200vh'}">
           Import / export de fichier Aurige
-          <input-file />
+          <input-file title="Choisir un fichier..." />
         </p>
         <p :id="ids.adminWhitelist">
           Liste blanche
@@ -107,7 +107,7 @@ export default {
     async checkAuth () {
       await this.$store.dispatch(CHECK_TOKEN)
       if (this.authStatus !== SIGNED_IN) {
-        this.$router.push(`/?nextPath=${this.$route.fullPath}&from=App`)
+        this.$router.push(`/?nextPath=${this.$route.fullPath}`)
       }
     },
     async disconnect () {
