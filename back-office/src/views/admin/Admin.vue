@@ -9,47 +9,35 @@
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <div class="text-xs-center d-flex align-center">
+          <header-icon
+            :key="icon.routerTo"
+            v-for="icon in headerIcons"
+            :scrollToEl="icon.scrollToEl"
+            :routerTo="icon.routerTo"
+            :iconName="icon.iconName"
+            :tooltipText="icon.tooltipText"
+          />
           <v-tooltip bottom>
-            <v-btn icon slot="activator">
-              <v-icon>calendar_today</v-icon>
+            <v-btn icon @click.prevent="disconnect" slot="activator">
+              <v-icon>exit_to_app</v-icon>
             </v-btn>
-            <span>Calendrier</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <v-btn icon slot="activator">
-              <v-icon>format_list_numbered</v-icon>
-            </v-btn>
-            <span>Liste des candidats</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <v-btn icon slot="activator">
-              <v-icon>import_export</v-icon>
-            </v-btn>
-            <span>Import/Export Aurige</span>
-          </v-tooltip>
-          <v-tooltip bottom>
-            <v-btn icon slot="activator">
-              <v-icon>favorite</v-icon>
-            </v-btn>
-            <span>Liste blanche</span>
+            <span>Déconnexion</span>
           </v-tooltip>
         </div>
       </v-toolbar>
       <div :style="{margin: '4em 1em 1em 1em'}">
-        <p>
-          test 1
+        <p :id="ids.adminCalendar" :style="{height: '200vh'}">
+          Calendrier en premier
         </p>
-        <p :style="{height: '200vh'}">
-          test 2
+        <p :id="ids.adminCandidats">
+          Liste des candidats inscrits (ou ayant réservé)
         </p>
-        <p id="admin-calendar">
-          test 3
+        <p :id="ids.adminAurige" :style="{height: '200vh'}">
+          Import / export de fichier Aurige
+          <input-file />
         </p>
-        <p :style="{height: '200vh'}">
-          test 4
-        </p>
-        <p>
-          test 5
+        <p :id="ids.adminWhitelist">
+          Liste blanche
         </p>
       </div>
     </v-container>
@@ -57,12 +45,55 @@
 </template>
 
 <script>
-import { CHECK_TOKEN, SIGNED_IN } from '@/store'
+import { CHECK_TOKEN, SIGN_OUT, SIGNED_IN } from '@/store'
+import { InputFile } from '@/components'
+import HeaderIcon from './HeaderIcon.vue'
+
+const ids = {
+  adminCalendar: 'admin-calendar',
+  adminCandidats: 'admin-candidats',
+  adminAurige: 'admin-aurige',
+  adminWhitelist: 'admin-whitelist',
+}
+
+const headerIcons = [
+  {
+    routerTo: '/admin/calendar',
+    scrollToEl: `#${ids.adminCalendar}`,
+    iconName: 'calendar_today',
+    tooltipText: 'Calendrier',
+  },
+  {
+    routerTo: '/admin/candidats',
+    scrollToEl: `#${ids.adminCandidats}`,
+    iconName: 'format_list_numbered',
+    tooltipText: 'Liste des candidats',
+  },
+  {
+    routerTo: '/admin/aurige',
+    scrollToEl: `#${ids.adminAurige}`,
+    iconName: 'import_export',
+    tooltipText: 'Import / Export Aurige',
+  },
+  {
+    routerTo: '/admin/whitelist',
+    scrollToEl: `#${ids.adminWhitelist}`,
+    iconName: 'favorite',
+    tooltipText: 'Liste blanche',
+  },
+]
 
 export default {
+  components: {
+    InputFile,
+    HeaderIcon,
+  },
+
   data () {
     return {
       drawer: false,
+      headerIcons,
+      ids,
     }
   },
 
