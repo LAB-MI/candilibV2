@@ -1,8 +1,20 @@
 <template>
   <div class="input-file-container">
-    <input :id="this.inputId" type="file" @change="fileSelected">
-    <label class="input-file-label" :for="this.inputId">
-      <span :class="{ok: isFileSelected}">{{ label }}</span>
+    <input :id="this.inputId" type="file" class="u-transparent" @change="fileSelected">
+    <label class="input-file-label" :for="this.inputId" ref="label">
+      <v-text-field
+        class="d-inline-block"
+        :label="label"
+        :placeholder="inputPlaceholder"
+        :value="filename"
+        aria-readonly
+        readonly
+        @focus="selectFile"
+      ></v-text-field>
+
+      <span class="d-inline-block ">
+        <v-icon large class="upload-icon">file_upload</v-icon>
+      </span>
     </label>
   </div>
 </template>
@@ -13,18 +25,24 @@ export default {
   props: {
     selectedCallback: Function,
     title: String,
+    placeholder: String,
   },
   data () {
     return {
       inputId: this.key + '_' + Math.random().toString().substring(2),
       isFileSelected: false,
       label: this.title,
+      inputPlaceholder: this.placeholder,
+      filename: this.placeholder,
     }
   },
   methods: {
+    selectFile () {
+      setTimeout(() => this.$refs.label.click(), 200)
+    },
     fileSelected (e) {
       const file = e.target.files[0]
-      this.label = file.name || this.title
+      this.filename = file.name || this.inputPlaceholder
       this.isFileSelected = !!file
       if (this.selectedCallback) {
         if (file) {
@@ -42,7 +60,7 @@ export default {
 .input-file-container {
   position: relative;
   display: inline-block;
-  height: calc(2.25rem + 2px);
+  height: calc(4rem + 2px);
   margin-bottom: 0;
 }
 
@@ -55,31 +73,22 @@ export default {
   height: calc(2.25rem + 2px);
   padding: 0.375rem 0.75rem;
   line-height: 1.5;
-  color: #495057;
-  background-color: #fff;
-  border: 1px solid #ced4da;
-  border-radius: 0.25rem;
+  width: 25em;
 
-  &:after {
-    content: 'Parcourir...';
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 3;
-    display: block;
-    height: 2.25rem;
-    padding: 0.375rem 0.75rem;
-    line-height: 1.5;
-    color: #495057;
-    background-color: #e9ecef;
-    border-left: 1px solid #ced4da;
-    border-radius: 0 0.25rem 0.25rem 0;
+  &:hover .upload-icon {
+    color: #c00
   }
-
 }
 
-.ok {
-  color: #000;
+.upload-icon {
+  cursor: pointer;
+
+  &:hover {
+    color: #c00
+  }
+}
+
+.u-transparent {
+  opacity: 0;
 }
 </style>
