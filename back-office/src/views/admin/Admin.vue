@@ -43,8 +43,8 @@
 
 <script>
 import { CHECK_TOKEN, SIGN_OUT, SIGNED_IN } from '@/store'
-import HeaderIcon from './HeaderIcon.vue'
-import AdminAurige from './Aurige.vue'
+import HeaderIcon from './components/HeaderIcon.vue'
+import AdminAurige from './components/Aurige.vue'
 
 const ids = {
   adminCalendar: 'admin-calendar',
