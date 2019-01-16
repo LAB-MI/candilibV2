@@ -14,18 +14,17 @@
         <v-btn @click="getCandidatsAsCsv">Export</v-btn>
       </div>
     </div>
-    <app-snackbar :snackbar="snackbar" :message="message" :onClose="onSnackbarClose" :timeout="1000" />
   </div>
 </template>
 
 <script>
-import { AppSnackbar, InputFile } from '@/components'
+import { InputFile } from '@/components'
 import api from '@/api'
 import { downloadContent } from '@/util'
+import { SHOW_INFO, SHOW_SUCCESS } from '@/store'
 
 export default {
   components: {
-    AppSnackbar,
     InputFile,
   },
 
@@ -36,8 +35,6 @@ export default {
   data () {
     return {
       file: undefined,
-      snackbar: false,
-      message: 'Snackbar message',
     }
   },
 
@@ -54,27 +51,21 @@ export default {
   methods: {
     async fileSelected (file) {
       this.file = file
-      this.snackbar = true
-      this.message = `Fichier ${file.name} prêt à être syncronisé`
+      const message = `Fichier ${file.name} prêt à être synchronisé ${SHOW_INFO}`
+      this.$store.dispatch(SHOW_INFO, message, 1000)
     },
 
     async uploadCandidats () {
       const data = new FormData()
       data.append('file', this.file)
       const result = await api.uploadCandidatsJson(data)
-      console.log(result.message)
-      this.snackbar = true
-      this.message = result.message
+      this.$store.dispatch(SHOW_SUCCESS, result.message)
       this.file = null
     },
 
     async getCandidatsAsCsv () {
       const response = await api.exportCsv()
       downloadContent(response)
-    },
-
-    onSnackbarClose () {
-      this.snackbar = false
     },
   },
 }
