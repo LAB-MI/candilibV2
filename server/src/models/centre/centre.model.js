@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 const { Schema } = mongoose
 
-const SiteSchema = new Schema({
+const CentreSchema = new Schema({
   nom: {
     type: String,
     required: true,
@@ -19,6 +19,11 @@ const SiteSchema = new Schema({
     required: true,
     trim: true,
   },
+  departement: {
+    type: String,
+    required: true,
+    trim: true,
+  },
 })
 
-export default mongoose.model('Site', SiteSchema)
+export default mongoose.model('Centre', CentreSchema)

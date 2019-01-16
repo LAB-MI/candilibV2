@@ -8,7 +8,7 @@ export * from './auth'
 
 Vue.use(Vuex)
 
-const store = new Vuex.Store({
+export default new Vuex.Store({
   state: {
     auth: {},
   },
@@ -17,5 +17,3 @@ const store = new Vuex.Store({
     auth,
   },
 })
-
-export default store

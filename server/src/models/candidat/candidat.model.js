@@ -56,6 +56,7 @@ const CandidatSchema = new Schema({
     type: String,
     default: '',
   },
+  // retourAurige
   isValid: {
     type: Boolean,
     default: null,

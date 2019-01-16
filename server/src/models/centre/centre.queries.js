@@ -1,4 +1,4 @@
-import Site from './site.model'
+import Site from './centre.model'
 
 export const findAllSites = async () => {
   const sites = await Site.findOne({})
@@ -7,15 +7,6 @@ export const findAllSites = async () => {
 
 export const findSiteByName = async nom => {
   const site = await Site.findOne({ nom })
-  return site
-}
-
-export const findSiteByCredentials = async (email, password) => {
-  const site = await Site.findOne({ email })
-  const isValidCredentials = site.comparePassword(password)
-  if (!isValidCredentials) {
-    return null
-  }
   return site
 }
 

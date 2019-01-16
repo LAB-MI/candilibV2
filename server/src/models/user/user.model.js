@@ -20,6 +20,9 @@ const UserSchema = new Schema({
     type: String,
     required: true,
   },
+  departement: {
+    type: Array,
+  },
   isDeleted: {
     type: Boolean,
     default: false,
