@@ -13,6 +13,7 @@
     "test:unit": "vue-cli-service test:unit"
   },
   "dependencies": {
+    "delay": "^4.1.0",
     "normalize.css": "^8.0.1",
     "postcss-current-selector": "0.0.3",
     "postcss-nested": "^4.1.1",

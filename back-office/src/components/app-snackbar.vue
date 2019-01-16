@@ -1,15 +1,17 @@
 <template>
   <v-snackbar
-    :value="val"
+    :value="message.show"
+    :color="message.color"
     bottom
-    :timeout="timeout"
+    :timeout="message.timeout"
+    @input="onClose"
   >
-    {{ message }}
+    {{ message.content }}
     <v-btn icon
       flat
-      @click="close"
+      @click="onClose"
     >
-      <v-icon color="pink">
+      <v-icon color="white">
         close
       </v-icon>
     </v-btn>
@@ -17,23 +19,19 @@
 </template>
 
 <script>
-export default {
-  props: {
-    timeout: Number,
-    snackbar: Boolean,
-    message: String,
-    onClose: Function,
-  },
+import { mapState } from 'vuex'
+import { HIDE_MESSAGE } from '@/store'
 
-  data () {
-    return {
-      val: this.snackbar,
-    }
+export default {
+  computed: {
+    ...mapState([
+      'message',
+    ]),
   },
 
   methods: {
-    close () {
-      this.onClose()
+    onClose () {
+      this.$store.dispatch(HIDE_MESSAGE)
     },
   },
 }
