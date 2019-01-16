@@ -3,6 +3,7 @@
     <input :id="this.inputId" type="file" class="u-transparent" @change="fileSelected">
     <label class="input-file-label" :for="this.inputId" ref="label">
       <v-text-field
+        :dark="dark"
         class="d-inline-block"
         :label="label"
         :placeholder="inputPlaceholder"
@@ -12,8 +13,8 @@
         @focus="selectFile"
       ></v-text-field>
 
-      <span class="d-inline-block ">
-        <v-icon large class="upload-icon">file_upload</v-icon>
+      <span class="d-inline-block">
+        <v-icon :dark="dark" large class="upload-icon">file_upload</v-icon>
       </span>
     </label>
   </div>
@@ -23,33 +24,28 @@
 export default {
   name: 'upload-button',
   props: {
+    dark: Boolean,
     selectedCallback: Function,
     title: String,
     placeholder: String,
+    filename: String,
   },
   data () {
     return {
       inputId: this.key + '_' + Math.random().toString().substring(2),
-      isFileSelected: false,
       label: this.title,
       inputPlaceholder: this.placeholder,
-      filename: this.placeholder,
     }
   },
   methods: {
     selectFile () {
       setTimeout(() => this.$refs.label.click(), 200)
     },
+
     fileSelected (e) {
       const file = e.target.files[0]
-      this.filename = file.name || this.inputPlaceholder
-      this.isFileSelected = !!file
       if (this.selectedCallback) {
-        if (file) {
-          this.selectedCallback(file)
-        } else {
-          this.selectedCallback(null)
-        }
+        this.selectedCallback(file)
       }
     },
   },

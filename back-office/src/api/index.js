@@ -59,7 +59,7 @@ const getTokenHeader = () => {
 
 export default {
   async requestToken (email, password) {
-    const json = await apiClient.post(apiPaths.login, {
+    const json = await apiClient.post(apiPaths.admin.login, {
       headers: {
         'Content-Type': 'application/json',
       },
@@ -72,7 +72,7 @@ export default {
   },
 
   async verifyToken (token) {
-    const json = await apiClient.get(`${apiPaths.verifyToken}?token=${token}`, {
+    const json = await apiClient.get(`${apiPaths.admin.verifyToken}?token=${token}`, {
       headers: {
         'Content-Type': 'application/json',
       },
