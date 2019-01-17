@@ -73,7 +73,7 @@ export default {
       password: '',
       emailRules: [
         v => !!v || 'Veuillez renseigner votre email',
-        v => emailRegex.test(v) || 'E-mail must be valid',
+        v => emailRegex.test(v) || 'L\'email doit être valide',
       ],
       passwordRules: [v => !!v || 'Veuillez renseigner votre mot de passe'],
       showPassword: false,

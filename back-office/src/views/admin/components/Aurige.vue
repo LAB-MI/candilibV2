@@ -1,5 +1,8 @@
 <template>
   <div :id="id" class="wrapper">
+    <h2>
+      Interaction Aurige
+    </h2>
     <div class="aurige">
       <div class="aurige-action  aurige-action--file">
         <h4 class="aurige-subtitle">Fichier</h4>

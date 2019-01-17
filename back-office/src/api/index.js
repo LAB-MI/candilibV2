@@ -131,10 +131,10 @@ export default {
     return json
   },
 
-  async addToWhitelist (candidat) {
+  async addToWhitelist (email) {
     const json = await apiClient.post(apiPaths.admin.whitelist, {
       headers: getHeadersForJson(),
-      body: JSON.stringify(candidat),
+      body: JSON.stringify({ email }),
     })
     return json
   },
