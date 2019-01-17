@@ -10,8 +10,8 @@ export const findSiteByName = async nom => {
   return site
 }
 
-export const createSite = async (nom, label, adresse) => {
-  const site = new Site({ nom, label, adresse })
+export const createSite = async (nom, label, adresse, departement) => {
+  const site = new Site({ nom, label, adresse, departement })
   await site.save()
   return site
 }
