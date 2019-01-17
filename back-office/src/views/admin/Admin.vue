@@ -1,41 +1,12 @@
 <template>
   <div class="admin">
     <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0 }">
-      <v-toolbar dark fixed>
-        <v-toolbar-title>
-          <h1 class="logo">
-            <router-link to="/admin" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
-          </h1>
-        </v-toolbar-title>
-        <v-spacer></v-spacer>
-        <div class="text-xs-center d-flex align-center">
-          <header-icon
-            :key="icon.routerTo"
-            v-for="icon in headerIcons"
-            :scrollToEl="icon.scrollToEl"
-            :routerTo="icon.routerTo"
-            :iconName="icon.iconName"
-            :tooltipText="icon.tooltipText"
-          />
-          <v-tooltip bottom>
-            <v-btn icon @click.prevent="disconnect" slot="activator">
-              <v-icon>exit_to_app</v-icon>
-            </v-btn>
-            <span>Déconnexion</span>
-          </v-tooltip>
-        </div>
-      </v-toolbar>
+      <admin-header :ids="ids" :header-icons="headerIcons" />
       <div :style="{margin: '4em 0 0 0'}">
-        <p :id="ids.adminCalendar">
-          Calendrier en premier
-        </p>
-        <p :id="ids.adminCandidats">
-          Liste des candidats inscrits (ou ayant réservé)
-        </p>
+        <admin-calendar :id="ids.adminCalendar" />
+        <candidats-list :id="ids.adminCandidats" />
         <admin-aurige :id="ids.adminAurige" />
-        <p :id="ids.adminWhitelist">
-          Liste blanche
-        </p>
+        <whitelist :id="ids.adminWhitelist" />
       </div>
     </v-container>
   </div>
@@ -43,8 +14,19 @@
 
 <script>
 import { CHECK_TOKEN, SIGN_OUT, SIGNED_IN } from '@/store'
-import HeaderIcon from './components/HeaderIcon.vue'
+import AdminHeader from './components/AdminHeader.vue'
 import AdminAurige from './components/Aurige.vue'
+import Whitelist from './components/Whitelist.vue'
+import AdminCalendar from './components/AdminCalendar.vue'
+import CandidatsList from './components/CandidatsList.vue'
+
+const components = {
+  AdminHeader,
+  AdminAurige,
+  AdminCalendar,
+  CandidatsList,
+  Whitelist,
+}
 
 const ids = {
   adminCalendar: 'admin-calendar',
@@ -81,17 +63,14 @@ const headerIcons = [
 ]
 
 export default {
-  components: {
-    HeaderIcon,
-    AdminAurige,
-  },
+  components,
 
   data () {
     return {
       drawer: false,
-      headerIcons,
       ids,
       file: undefined,
+      headerIcons,
     }
   },
 
@@ -120,24 +99,3 @@ export default {
   },
 }
 </script>
-
-<style lang="postcss" scoped>
-.admin-header {
-  display: flex;
-  padding: 0 1em;
-  background-color: black;
-  margin-top: 4em;
-}
-
-.logo {
-  flex-grow: 1;
-}
-
-.home-link {
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-  letter-spacing: 0.1rem;
-  font-size: 1em;
-}
-</style>
