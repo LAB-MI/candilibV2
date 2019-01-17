@@ -13,9 +13,9 @@ import {
   ANNULATION_CONVOCATION,
 } from '../../util/constants'
 import config from '../../config'
-import { findAllSites } from '../../models/centre'
+import { findAllCentres } from '../../models/centre'
 
-const getSites = async () => findAllSites()
+const getCentres = async () => findAllCentres()
 
 const getHtmlBody = content => `<!DOCTYPE html>
 <html>
@@ -176,7 +176,7 @@ const getMailData = async (candidatAurige, flag, urlMagicLink) => {
   let siteAdresse = []
 
   if (creneau && creneau.title) {
-    const sites = await getSites()
+    const sites = await getCentres()
     siteAdresse = sites.find(item => item.nom.toUpperCase() === creneau.title)
   }
 
