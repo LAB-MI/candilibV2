@@ -20,7 +20,6 @@ export default {
   methods: {
     async checkAuth () {
       await this.$store.dispatch(CHECK_TOKEN)
-      console.log('nextPath', this.$route.query.nextPath)
       if (this.authStatus === SIGNED_IN) {
         this.$router.push(this.$route.query.nextPath || '/admin')
       }

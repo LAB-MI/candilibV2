@@ -21,7 +21,13 @@ const router = new Router({
     {
       path: '/admin',
       name: 'admin',
-      component: () => import('./views/Admin.vue'),
+      component: () => import('./views/admin'),
+      children: [
+        {
+          path: ':tool',
+          name: 'adminTool',
+        },
+      ],
       meta: {
         requiresAuth: true,
       },

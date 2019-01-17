@@ -2,8 +2,8 @@
   <div class="login" v-bind:style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }">
     <div class="login-bg-filter"></div>
     <v-form v-model="valid" class="login-form" @submit.prevent="getToken">
-      <h2>ADMINISTRATEUR</h2>
-      <h3>
+      <h2 class="text--center">ADMINISTRATEUR</h2>
+      <h3 class="text--center">
         C<span class="col-red">A</span>NDILIB
       </h3>
       <div class="form-input">
@@ -38,6 +38,7 @@
           <div class="submit-label">Connexion</div>
         </button>
       </div>
+      <!--
       <div class="text-center">
         <a
           tag="a"
@@ -47,14 +48,30 @@
           data-toggle="modal"
         >Mot de passe oublié ?</a>
       </div>
+      -->
     </v-form>
+    <v-snackbar
+      v-model="snackbar"
+      bottom
+      :timeout="snackbarTimeout"
+    >
+      {{ snackbarMessage }}
+      <v-btn icon
+        flat
+        @click="snackbar = false"
+      >
+        <v-icon color="pink">
+          close
+        </v-icon>
+      </v-btn>
+    </v-snackbar>
   </div>
 </template>
 
 <script>
 import backgroundImgUrl from '@/assets/bg-login.jpg'
 import { email as emailRegex } from '@/util'
-import { FETCH_TOKEN_REQUEST } from '@/store'
+import { BAD_CREDENTIALS, FETCH_TOKEN_REQUEST, SIGNED_IN } from '@/store'
 
 export default {
   name: 'Login',
@@ -69,8 +86,16 @@ export default {
       ],
       passwordRules: [v => !!v || 'Veuillez renseigner votre mot de passe'],
       showPassword: false,
+      snackbar: false,
+      snackbarTimeout: 6000,
+      snackbarMessage: '',
       valid: false,
     }
+  },
+  computed: {
+    authStatus () {
+      return this.$store.state.auth.status
+    },
   },
   methods: {
     showModal () {
@@ -79,9 +104,21 @@ export default {
     hideModal () {
       console.log('Hiding modal')
     },
-    getToken () {
+    async getToken () {
+      if (!this.valid) {
+        this.snackbarMessage = 'Veuillez remplir le formulaire'
+        this.snackbar = true
+        return
+      }
       const { email, password } = this
-      this.$store.dispatch(FETCH_TOKEN_REQUEST, { email, password })
+      await this.$store.dispatch(FETCH_TOKEN_REQUEST, { email, password })
+      if (this.authStatus === SIGNED_IN) {
+        this.$router.push(this.$route.query.nextPath || '/admin')
+      }
+      if (this.authStatus === BAD_CREDENTIALS) {
+        this.snackbarMessage = 'Identifiants invalides'
+        this.snackbar = true
+      }
     },
   },
 }
