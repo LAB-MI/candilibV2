@@ -1,4 +1,8 @@
-import { synchroAurige, getCandidatsAsCsv } from './business'
+import {
+  synchroAurige,
+  getCandidatsAsCsv,
+  getBookedCandidatsAsCsv,
+} from './business'
 import { findAllCandidatsLean } from '../../models/candidat'
 import { findPlaceById } from '../../models/place'
 
@@ -33,7 +37,8 @@ export const importCandidats = async (req, res) => {
 
 export const exportCandidats = async (req, res) => {
   const candidatsAsCsv = await getCandidatsAsCsv()
-  const filename = 'candidatsLibresPrintel.csv'
+  let filename = 'candidatsLibresPrintel.csv'
+
   res
     .status(200)
     .attachment(filename)
@@ -42,9 +47,9 @@ export const exportCandidats = async (req, res) => {
 
 export const getCandidats = async (req, res) => {
   const {
-    query: { format },
+    query: { format, filter },
   } = req
-  if (format && format === 'csv') {
+  if (format && format === 'csv' && (!filter || filter === 'aurige')) {
     exportCandidats(req, res)
     return
   }
@@ -61,5 +66,14 @@ export const getCandidats = async (req, res) => {
     })
   )
 
+  if (format && format === 'csv' && filter && filter === 'resa') {
+    const candidatsAsCsv = await getBookedCandidatsAsCsv(candidats)
+    const filename = 'candidatsLibresReserve.csv'
+    res
+      .status(200)
+      .attachment(filename)
+      .send(candidatsAsCsv)
+    return
+  }
   res.json(candidats)
 }
