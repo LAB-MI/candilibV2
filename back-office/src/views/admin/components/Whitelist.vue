@@ -13,7 +13,7 @@
         >
           <v-list-tile-action v-if="whitelisted !== 'new'" @click="removeFromWhitelist(whitelisted._id)">
             <v-btn icon>
-              <v-icon color="pink">delete</v-icon>
+              <v-icon color="#17a2b8">delete</v-icon>
             </v-btn>
           </v-list-tile-action>
 
@@ -27,13 +27,13 @@
 
             <v-list-tile-action>
               <v-btn icon>
-                <v-icon color="pink">save</v-icon>
+                <v-icon color="#17a2b8">save</v-icon>
               </v-btn>
             </v-list-tile-action>
 
             <v-list-tile-action @click="hideForm">
               <v-btn icon>
-                <v-icon color="pink">close</v-icon>
+                <v-icon color="#17a2b8">close</v-icon>
               </v-btn>
             </v-list-tile-action>
 
@@ -42,7 +42,7 @@
               v-model="newEmail"
               :autofocus="adding"
               :rules="emailRules"
-              color="pink"
+              color="#17a2b8"
               @keyup.escape="hideForm"
             >
             </v-text-field>
@@ -50,7 +50,7 @@
         </v-form>
       </v-list>
       <v-btn icon v-if="!adding" @click="showForm">
-        <v-icon color="pink">
+        <v-icon color="#17a2b8">
           add_circle
         </v-icon>
       </v-btn>
