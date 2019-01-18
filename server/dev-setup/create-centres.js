@@ -1,21 +1,21 @@
 import { createSite } from '../src/models/centre'
 
 import logger from '../src/util/logger'
-import sites from './sites'
+import centres from './centres'
 
-logger.info('Creating sites')
+logger.info('Creating centres')
 
-const sitesInCreation = []
+const centresInCreation = []
 
 export default async () => {
-  for (const { nom, label, adresse, departement } of sites) {
+  for (const { nom, label, adresse, departement } of centres) {
     const createdSites = createSite(nom, label, adresse, departement)
       .then(() => {
         logger.info(`Site ${nom} créé !`)
       })
       .catch(error => logger.error(error))
-    sitesInCreation.push(createdSites)
+    centresInCreation.push(createdSites)
   }
 
-  return Promise.all(sitesInCreation)
+  return Promise.all(centresInCreation)
 }
