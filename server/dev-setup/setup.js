@@ -4,14 +4,16 @@ import logger from '../src/util/logger'
 connect()
   .then(async () => {
     const { default: createAdmin } = await import('./create-admin-account')
-    const { default: createSites } = await import('./create-sites')
+    const { default: createCandidats } = await import('./create-candidats')
+    const { default: createCentres } = await import('./create-centres')
     return Promise.all([
       createAdmin(),
-      createSites(),
+      createCandidats(),
+      createCentres(),
     ])
   })
   .catch(error => {
     logger.error(`Server could not connect to DB, exiting`)
     logger.error(error)
   })
-  .then(() => disconnect())
+  .finally(() => disconnect())
