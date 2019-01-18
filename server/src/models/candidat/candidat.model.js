@@ -24,6 +24,7 @@ const CandidatSchema = new Schema({
     type: String,
     required: true,
     match: nephRegex,
+    trim: true,
   },
   dateReussiteETG: {
     type: Date,
@@ -36,6 +37,7 @@ const CandidatSchema = new Schema({
   reussitePratique: {
     type: String,
     required: false,
+    trim: true,
   },
   email: {
     type: String,
@@ -55,6 +57,7 @@ const CandidatSchema = new Schema({
   adresse: {
     type: String,
     default: '',
+    trim: true,
   },
   // retourAurige
   isValid: {
