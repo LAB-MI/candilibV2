@@ -21,7 +21,7 @@ export const epreuveEtgInvalid = ({ dateReussiteETG }) =>
   !dateReussiteETG || !moment(dateReussiteETG).isValid()
 
 const isETGStillValid = dateReussiteETG =>
-  moment().diff(dateReussiteETG, 'years', true) > 5
+  moment().diff(dateReussiteETG, 'years', true) <= 5
 
 export const synchroAurige = async buffer => {
   const retourAurige = JSON.parse(buffer.toString())
@@ -63,28 +63,24 @@ export const synchroAurige = async buffer => {
         logger.warn(`Ce candidat ${email} sera supprimé : NEPH inconnu`)
         mailType = CANDIDAT_NOK
         recipient = candidat
-      }
-      if (candidatExistant === CANDIDAT_NOK_NOM) {
+      } else if (candidatExistant === CANDIDAT_NOK_NOM) {
         await deleteCandidat(candidat)
         logger.warn(`Ce candidat ${email} sera supprimé : Nom inconnu`)
         mailType = CANDIDAT_NOK_NOM
         recipient = candidat
-      }
-      if (epreuveEtgInvalid(candidatAurige)) {
+      } else if (epreuveEtgInvalid(candidatAurige)) {
         await deleteCandidat(candidat)
         logger.warn(
           `Ce candidat ${email} sera supprimé : dateReussiteETG invalide`
         )
-        mailType = CANDIDAT_NOK_NOM
+        mailType = EPREUVE_ETG_KO
         recipient = candidat
-      }
-      if (isETGStillValid(dateReussiteETG)) {
+      } else if (isETGStillValid(dateReussiteETG)) {
         await deleteCandidat(candidat)
         logger.warn(`Ce candidat ${email} sera supprimé : Date ETG KO`)
         mailType = EPREUVE_ETG_KO
         recipient = candidatAurige
-      }
-      if (reussitePratique === EPREUVE_PRATIQUE_OK) {
+      } else if (reussitePratique === EPREUVE_PRATIQUE_OK) {
         await deleteCandidat(candidat)
         logger.warn(`Ce candidat ${email} sera supprimé : PRATIQUE OK`)
         mailType = EPREUVE_PRATIQUE_OK
