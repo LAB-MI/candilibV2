@@ -8,7 +8,7 @@ logger.info('Creating centres')
 const centresInCreation = []
 
 export default async () => {
-  for (const { nom, label, adresse, departement } of sites) {
+  for (const { nom, label, adresse, departement } of centres) {
     const createdSites = createSite(nom, label, adresse, departement)
       .then(() => {
         logger.info(`Site ${nom} créé !`)
