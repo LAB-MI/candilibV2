@@ -1,10 +1,7 @@
 import { Parser as Json2csvParser } from 'json2csv'
 import moment from 'moment'
-import { findAllCandidatsLean } from '../../../models/candidat'
 
-export const getCandidatsAsCsv = async () => {
-  const candidats = await findAllCandidatsLean()
-
+export const getCandidatsAsCsv = async candidats => {
   const fields = [
     {
       label: 'Code NEPH',
