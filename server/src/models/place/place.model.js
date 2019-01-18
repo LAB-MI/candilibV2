@@ -7,10 +7,12 @@ const PlaceSchema = new Schema({
   inspecteur: {
     type: String,
     required: false,
+    trim: true,
   },
   centre: {
     type: String,
     required: false,
+    trim: true,
   },
   date: {
     type: Date,
