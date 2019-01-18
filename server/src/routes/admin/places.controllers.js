@@ -18,15 +18,15 @@ export const importPlaces = (req, res, next) => {
 
       const [day, time, inspecteur, centre] = data
 
-      const myDate = `${day} ${time}`
+      const myDate = `${day.trim()} ${time.trim()}`
       const date = moment(
         moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss')
       )
 
       const place = {
         date,
-        centre,
-        inspecteur,
+        centre: centre.trim(),
+        inspecteur: inspecteur.trim(),
       }
 
       try {
