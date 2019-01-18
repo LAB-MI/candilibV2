@@ -5,6 +5,7 @@ import {
 } from './business'
 import { findAllCandidatsLean } from '../../models/candidat'
 import { findPlaceById } from '../../models/place'
+import { findBookedCandidats } from '../../models/candidat/booked.candidat.queries'
 
 export const importCandidats = async (req, res) => {
   const files = req.files
@@ -36,9 +37,17 @@ export const importCandidats = async (req, res) => {
 }
 
 export const exportCandidats = async (req, res) => {
-  const candidatsAsCsv = await getCandidatsAsCsv()
+  const candidatsAsCsv = await getCandidatsAsCsv(req.candidats)
   let filename = 'candidatsLibresPrintel.csv'
+  res
+    .status(200)
+    .attachment(filename)
+    .send(candidatsAsCsv)
+}
 
+export const exportBookedCandidats = async (req, res) => {
+  const candidatsAsCsv = await getBookedCandidatsAsCsv(req.candidats)
+  const filename = 'candidatsLibresReserve.csv'
   res
     .status(200)
     .attachment(filename)
@@ -49,8 +58,9 @@ export const getCandidats = async (req, res) => {
   const {
     query: { format, filter },
   } = req
-  if (format && format === 'csv' && (!filter || filter === 'aurige')) {
-    exportCandidats(req, res)
+
+  if (filter === 'resa') {
+    getBookedCandidats(req, res)
     return
   }
 
@@ -65,14 +75,23 @@ export const getCandidats = async (req, res) => {
       return candidat
     })
   )
+  if (format && format === 'csv') {
+    exportCandidats(req, res)
+    return
+  }
+  res.json(candidats)
+}
 
-  if (format && format === 'csv' && filter && filter === 'resa') {
-    const candidatsAsCsv = await getBookedCandidatsAsCsv(candidats)
-    const filename = 'candidatsLibresReserve.csv'
-    res
-      .status(200)
-      .attachment(filename)
-      .send(candidatsAsCsv)
+export const getBookedCandidats = async (req, res) => {
+  const {
+    query: { format, date, inspecteur, centre },
+  } = req
+
+  const candidats = await findBookedCandidats(date, inspecteur, centre)
+
+  if (format && format === 'csv') {
+    req.candidats = candidats
+    exportBookedCandidats(req, res)
     return
   }
   res.json(candidats)
