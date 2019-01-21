@@ -8,7 +8,8 @@
     "format": "vue-cli-service lint",
     "lint": "vue-cli-service lint",
     "start": "npm run serve",
-    "test": "npm run test:unit -s",
+    "test": "npm run -s test:unit",
+    "test:watch": "npm run -s test:unit -- --watch",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit"
   },
@@ -16,6 +17,7 @@
     "ag-grid-community": "^20.0.0",
     "ag-grid-vue": "^20.0.0",
     "delay": "^4.1.0",
+    "luxon": "^1.10.0",
     "normalize.css": "^8.0.1",
     "register-service-worker": "^1.5.2",
     "vue": "^2.5.21",
