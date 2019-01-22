@@ -41,5 +41,5 @@ export const sendMagicLink = async (candidat, token) => {
   const url = `${authUrl}?token=${encodeURIComponent(token)}&redirect=calendar`
 
   const message = await mailMessage(candidat, flag, url)
-  sendMail(candidat.email, message)
+  return sendMail(candidat.email, message)
 }

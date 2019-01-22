@@ -103,17 +103,11 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": ""
-								}
-							]
+							"mode": "raw",
+							"raw": ""
 						},
 						"url": {
-							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats",
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats?format=csv",
 							"protocol": "http",
 							"host": [
 								"{{HOST}}"
@@ -124,6 +118,12 @@
 								"v2",
 								"admin",
 								"candidats"
+							],
+							"query": [
+								{
+									"key": "format",
+									"value": "csv"
+								}
 							]
 						}
 					},
@@ -146,14 +146,8 @@
 							}
 						],
 						"body": {
-							"mode": "formdata",
-							"formdata": [
-								{
-									"key": "file",
-									"type": "file",
-									"src": ""
-								}
-							]
+							"mode": "raw",
+							"raw": ""
 						},
 						"url": {
 							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats",
@@ -167,6 +161,83 @@
 								"v2",
 								"admin",
 								"candidats"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Liste des emails en liste blanche",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{TOKEN}}"
+							},
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/whitelist",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"whitelist"
+							]
+						},
+						"description": "Get list of email of the whitelist"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "candidat",
+			"item": [
+				{
+					"name": "Envoi Magic Link",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"user@example.com\"\n}"
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/auth/candidat/magic-link",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"auth",
+								"candidat",
+								"magic-link"
 							]
 						}
 					},

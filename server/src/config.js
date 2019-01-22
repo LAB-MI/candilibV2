@@ -26,7 +26,7 @@ const config = {
     admin: 1,
   },
 
-  smtpServer: process.env.SMTP_SERVER || '<server>',
+  smtpServer: process.env.SMTP_SERVER || 'localhost',
   smtpService: process.env.SMTP_SERVICE || undefined,
   smtpPort: process.env.SMTP_PORT || 25,
 }
