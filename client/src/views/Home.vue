@@ -1,32 +1,24 @@
 <template>
-  <Login />
+  <div class="u-fullvp-height  u-flex-center">
+    <div class="d-flex">
+      <v-btn dark tag="a" to="/candidat" color="#33ADC0">
+        Candidat
+      </v-btn>
+      <v-btn dark tag="a" to="/admin" color="#CC0000">
+        Admin
+      </v-btn>
+    </div>
+  </div>
 </template>
 
-<script>
-// @ is an alias to /src
-import Login from '@/components/Login.vue'
-import { CHECK_TOKEN, SIGNED_IN } from '@/store'
+<style lang="postcss" scoped>
+  .u-fullvp-height {
+    height: 100vh;
+  }
 
-export default {
-  name: 'home',
-  components: {
-    Login,
-  },
-  computed: {
-    authStatus () {
-      return this.$store.state.auth.status
-    },
-  },
-  methods: {
-    async checkAuth () {
-      await this.$store.dispatch(CHECK_TOKEN)
-      if (this.authStatus === SIGNED_IN) {
-        this.$router.push(this.$route.query.nextPath || '/admin')
-      }
-    },
-  },
-  mounted () {
-    this.checkAuth()
-  },
-}
-</script>
+  .u-flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+</style>

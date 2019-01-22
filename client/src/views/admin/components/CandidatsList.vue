@@ -54,7 +54,7 @@ export default {
 
   computed: {
     rowData () {
-      return this.$store.state.candidats.list
+      return this.$store.state.candidats.list || []
     },
   },
 

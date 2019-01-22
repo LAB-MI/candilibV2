@@ -26,6 +26,8 @@
 </template>
 
 <script>
+import { SIGN_OUT } from '@/store'
+
 import HeaderIcon from './HeaderIcon'
 
 export default {
@@ -36,6 +38,12 @@ export default {
   props: {
     ids: Object,
     headerIcons: Array,
+  },
+  methods: {
+    async disconnect () {
+      await this.$store.dispatch(SIGN_OUT)
+      this.$router.push({ name: 'admin-login' })
+    },
   },
 }
 </script>

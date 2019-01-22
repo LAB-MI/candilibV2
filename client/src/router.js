@@ -2,15 +2,17 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Home from '@/views/Home.vue'
+import AdminHome from '@/views/AdminHome.vue'
+import CandidatHome from '@/views/CandidatHome.vue'
 import Error404 from '@/views/Error404.vue'
 
 Vue.use(Router)
 
-const routes = [
+const adminRoutes = [
   {
-    path: '/',
-    name: 'login',
-    component: Home,
+    path: '/admin-login',
+    name: 'admin-login',
+    component: AdminHome,
     meta: {
       guest: true,
     },
@@ -29,6 +31,36 @@ const routes = [
       requiresAuth: true,
     },
   },
+]
+
+const candidatRoutes = [
+  {
+    path: '/login',
+    name: 'candidat-login',
+    component: CandidatHome,
+    meta: {
+      guest: true,
+    },
+  },
+  {
+    path: '/candidat',
+    name: 'candidat',
+    component: () => import('./views/candidat'),
+    meta: {
+      requiresAuth: true,
+    },
+  },
+]
+
+const commonRoutes = [
+  {
+    path: '/',
+    name: 'home',
+    component: Home,
+    meta: {
+      guest: true,
+    },
+  },
   {
     path: '/*',
     name: '404',
@@ -37,6 +69,12 @@ const routes = [
       requiresAuth: true,
     },
   },
+]
+
+const routes = [
+  ...adminRoutes,
+  ...candidatRoutes,
+  ...commonRoutes,
 ]
 
 const router = new Router({
