@@ -8,7 +8,7 @@
     </h2>
     <v-form>
       Sign up form
-      <v-btn @click="toggleForm">
+      <v-btn flat @click="toggleForm">
         Déjà inscrit ?
       </v-btn>
     </v-form>
