@@ -1,5 +1,8 @@
 <template>
   <div :id="id" class="wrapper">
+    <h2>
+      Interaction Aurige
+    </h2>
     <div class="aurige">
       <div class="aurige-action  aurige-action--file">
         <h4 class="aurige-subtitle">Fichier</h4>
@@ -7,11 +10,11 @@
       </div>
       <div class="aurige-action">
         <h4 class="aurige-subtitle">Synchronisation JSON</h4>
-        <v-btn :disabled="disabled" :aria-disabled="disabled" @click="uploadCandidats">Synchro</v-btn>
+        <v-btn color="#17a2b8" dark :disabled="disabled" :aria-disabled="disabled" @click="uploadCandidats">Synchro</v-btn>
       </div>
       <div class="aurige-action  aurige-action--export">
         <h4 class="aurige-subtitle">Export CSV</h4>
-        <v-btn @click="getCandidatsAsCsv">Export</v-btn>
+        <v-btn color="#17a2b8" dark @click="getCandidatsAsCsv">Export</v-btn>
       </div>
     </div>
   </div>
