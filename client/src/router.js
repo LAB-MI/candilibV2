@@ -8,6 +8,12 @@ import Error404 from '@/views/Error404.vue'
 
 Vue.use(Router)
 
+const { CLIENT_BUILD_TARGET, NODE_ENV } = process.env
+
+const isBuildWithAll = NODE_ENV !== 'production' || ['ALL', undefined].includes(CLIENT_BUILD_TARGET)
+const isBuildWithCandidat = NODE_ENV !== 'production' || ['ALL', 'CANDIDAT'].includes(CLIENT_BUILD_TARGET)
+const isBuildWithAdmin = NODE_ENV !== 'production' || ['ALL', 'ADMIN'].includes(CLIENT_BUILD_TARGET)
+
 const adminRoutes = [
   {
     path: '/admin-login',
@@ -52,11 +58,13 @@ const candidatRoutes = [
   },
 ]
 
+const HomeComponent = isBuildWithAll ? Home : (isBuildWithAdmin ? AdminHome : CandidatHome)
+
 const commonRoutes = [
   {
     path: '/',
     name: 'home',
-    component: Home,
+    component: HomeComponent,
     meta: {
       guest: true,
     },
@@ -72,8 +80,8 @@ const commonRoutes = [
 ]
 
 const routes = [
-  ...adminRoutes,
-  ...candidatRoutes,
+  ...(isBuildWithCandidat ? candidatRoutes : []),
+  ...(isBuildWithAdmin ? adminRoutes : []),
   ...commonRoutes,
 ]
 
