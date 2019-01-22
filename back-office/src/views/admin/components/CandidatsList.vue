@@ -26,7 +26,7 @@
 
 <script>
 import { AgGridVue } from 'ag-grid-vue'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
@@ -39,7 +39,8 @@ export default {
   },
 
   mounted () {
-    this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: Date.now(), until: moment() })
+    const now = DateTime.local()
+    this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }) })
   },
 
   data () {
