@@ -56,3 +56,16 @@ h3 {
   color: #C00;
 }
 
+.u-absolute {
+  position: absolute;
+}
+
+.u-full {
+  &-width {
+    width: 100%;
+  }
+
+  &-height {
+    height: 100%;
+  }
+}
