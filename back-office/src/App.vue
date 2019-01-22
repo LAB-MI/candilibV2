@@ -3,14 +3,15 @@
     <v-content>
       <router-view/>
     </v-content>
+    <app-snackbar />
   </v-app>
 </template>
 
-<style lang="postcss">
-body {
-  font-family: 'Poppins-Regular', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  color: #2c3e50;
+<script>
+import { AppSnackbar } from '@/components'
+export default {
+  components: {
+    AppSnackbar,
+  },
 }
-</style>
+</script>

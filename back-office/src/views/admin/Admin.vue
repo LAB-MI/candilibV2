@@ -1,6 +1,6 @@
 <template>
   <div class="admin">
-    <v-container>
+    <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0 }">
       <v-toolbar dark fixed>
         <v-toolbar-title>
           <h1 class="logo">
@@ -25,17 +25,14 @@
           </v-tooltip>
         </div>
       </v-toolbar>
-      <div :style="{margin: '4em 1em 1em 1em'}">
-        <p :id="ids.adminCalendar" :style="{height: '200vh'}">
+      <div :style="{margin: '4em 0 0 0'}">
+        <p :id="ids.adminCalendar">
           Calendrier en premier
         </p>
         <p :id="ids.adminCandidats">
           Liste des candidats inscrits (ou ayant réservé)
         </p>
-        <p :id="ids.adminAurige" :style="{height: '200vh'}">
-          Import / export de fichier Aurige
-          <input-file />
-        </p>
+        <admin-aurige :id="ids.adminAurige" />
         <p :id="ids.adminWhitelist">
           Liste blanche
         </p>
@@ -46,8 +43,8 @@
 
 <script>
 import { CHECK_TOKEN, SIGN_OUT, SIGNED_IN } from '@/store'
-import { InputFile } from '@/components'
-import HeaderIcon from './HeaderIcon.vue'
+import HeaderIcon from './components/HeaderIcon.vue'
+import AdminAurige from './components/Aurige.vue'
 
 const ids = {
   adminCalendar: 'admin-calendar',
@@ -85,8 +82,8 @@ const headerIcons = [
 
 export default {
   components: {
-    InputFile,
     HeaderIcon,
+    AdminAurige,
   },
 
   data () {
@@ -94,6 +91,7 @@ export default {
       drawer: false,
       headerIcons,
       ids,
+      file: undefined,
     }
   },
 
@@ -107,9 +105,10 @@ export default {
     async checkAuth () {
       await this.$store.dispatch(CHECK_TOKEN)
       if (this.authStatus !== SIGNED_IN) {
-        this.$router.push(`/?nextPath=${this.$route.fullPath}&from=App`)
+        this.$router.push(`/?nextPath=${this.$route.fullPath}`)
       }
     },
+
     async disconnect () {
       await this.$store.dispatch(SIGN_OUT)
       this.$router.push('/')
@@ -132,10 +131,6 @@ export default {
 
 .logo {
   flex-grow: 1;
-}
-
-.menu-burger {
-  color: #fff
 }
 
 .home-link {

@@ -50,28 +50,19 @@
       </div>
       -->
     </v-form>
-    <v-snackbar
-      v-model="snackbar"
-      bottom
-      :timeout="snackbarTimeout"
-    >
-      {{ snackbarMessage }}
-      <v-btn icon
-        flat
-        @click="snackbar = false"
-      >
-        <v-icon color="pink">
-          close
-        </v-icon>
-      </v-btn>
-    </v-snackbar>
   </div>
 </template>
 
 <script>
 import backgroundImgUrl from '@/assets/bg-login.jpg'
 import { email as emailRegex } from '@/util'
-import { BAD_CREDENTIALS, FETCH_TOKEN_REQUEST, SIGNED_IN } from '@/store'
+import {
+  BAD_CREDENTIALS,
+  FETCH_TOKEN_REQUEST,
+  SHOW_INFO,
+  SHOW_ERROR,
+  SIGNED_IN,
+} from '@/store'
 
 export default {
   name: 'Login',
@@ -86,28 +77,37 @@ export default {
       ],
       passwordRules: [v => !!v || 'Veuillez renseigner votre mot de passe'],
       showPassword: false,
-      snackbar: false,
-      snackbarTimeout: 6000,
-      snackbarMessage: '',
       valid: false,
     }
   },
+
   computed: {
     authStatus () {
       return this.$store.state.auth.status
     },
   },
+
   methods: {
     showModal () {
       console.log('Showing modal')
     },
+
     hideModal () {
       console.log('Hiding modal')
     },
+
+    showMessage (content) {
+      this.$store.dispatch(SHOW_INFO, content)
+    },
+
+    showError (content) {
+      this.$store.dispatch(SHOW_ERROR, content)
+    },
+
     async getToken () {
       if (!this.valid) {
-        this.snackbarMessage = 'Veuillez remplir le formulaire'
-        this.snackbar = true
+        const message = 'Veuillez remplir le formulaire'
+        this.showError(message)
         return
       }
       const { email, password } = this
@@ -116,8 +116,8 @@ export default {
         this.$router.push(this.$route.query.nextPath || '/admin')
       }
       if (this.authStatus === BAD_CREDENTIALS) {
-        this.snackbarMessage = 'Identifiants invalides'
-        this.snackbar = true
+        const message = 'Identifiants invalides'
+        this.showError(message)
       }
     },
   },

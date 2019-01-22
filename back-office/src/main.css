@@ -15,9 +15,11 @@
   src:url('./assets/fonts/poppins/Poppins-SemiBold.ttf');
 }
 
-
-.col-red {
-  color: #C00;
+body {
+  font-family: 'Poppins-Regular', Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: #2c3e50;
 }
 
 h2 {
@@ -36,3 +38,21 @@ h3 {
 .text--center {
   text-align: center;
 }
+
+.u-flex {
+  display: flex;
+
+  &--center {
+    justify-content: center;
+    align-items: center;
+  }
+
+  &--column {
+    flex-direction: column;
+  }
+}
+
+.col-red {
+  color: #C00;
+}
+
