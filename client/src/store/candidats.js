@@ -57,10 +57,17 @@ export default {
       commit(FETCH_CANDIDATS_REQUEST)
       try {
         const list = await api.getCandidats({ since, until })
+        if (list.success === false) {
+          let error = new Error(list.message || 'Error while fetching candidats')
+          if (list.isTokenInvalid) {
+            error.message = 'Vous devez être connecté'
+          }
+          throw error
+        }
         commit(FETCH_CANDIDATS_SUCCESS, list)
       } catch (error) {
         commit(FETCH_CANDIDATS_FAILURE)
-        return dispatch(SHOW_ERROR, 'Error while fetching candidats')
+        return dispatch(SHOW_ERROR, error.message)
       }
     },
   },

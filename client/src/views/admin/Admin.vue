@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import { CHECK_TOKEN, SIGN_OUT, SIGNED_IN } from '@/store'
+import { CHECK_TOKEN, SIGNED_IN } from '@/store'
 import AdminHeader from './components/AdminHeader.vue'
 import AdminAurige from './components/Aurige.vue'
 import Whitelist from './components/Whitelist.vue'
@@ -84,14 +84,10 @@ export default {
     async checkAuth () {
       await this.$store.dispatch(CHECK_TOKEN)
       if (this.authStatus !== SIGNED_IN) {
-        this.$router.push(`/?nextPath=${this.$route.fullPath}`)
+        this.$router.push({ name: 'admin-login', query: { nextPath: this.$route.fullPath } })
       }
     },
 
-    async disconnect () {
-      await this.$store.dispatch(SIGN_OUT)
-      this.$router.push('/')
-    },
   },
 
   mounted () {

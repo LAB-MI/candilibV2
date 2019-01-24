@@ -4,11 +4,11 @@
 
 <script>
 // @ is an alias to /src
-import Login from '@/components/Login.vue'
+import Login from './admin/components/Login.vue'
 import { CHECK_TOKEN, SIGNED_IN } from '@/store'
 
 export default {
-  name: 'home',
+  name: 'admin-home',
   components: {
     Login,
   },
@@ -21,7 +21,7 @@ export default {
     async checkAuth () {
       await this.$store.dispatch(CHECK_TOKEN)
       if (this.authStatus === SIGNED_IN) {
-        this.$router.push(this.$route.query.nextPath || '/admin')
+        this.$router.push(this.$route.query.nextPath || { name: 'admin' })
       }
     },
   },
