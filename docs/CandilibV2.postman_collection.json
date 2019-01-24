@@ -242,6 +242,131 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Inscription candidat sans données",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/candidat/preinscription",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"candidat",
+								"preinscription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inscription candidat avec données incomplètes",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nomNaissance\": \"Dupont\",\n\t\"codeNeph\": \"123456789012\"\n}"
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/candidat/preinscription",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"candidat",
+								"preinscription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inscription candidat avec email invalide",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nomNaissance\": \"Dupont\",\n\t\"codeNeph\": \"123456789012\",\n\t\"email\": \"user.example.com\",\n\t\"portable\": \"0645789872\",\n\t\"adresse\": \"10 avenue du Gérénal Leclerc Villepinte\"\n}"
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/candidat/preinscription",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"candidat",
+								"preinscription"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inscription candidat valide",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"nomNaissance\": \"Dupont\",\n\t\"codeNeph\": \"123456789012\",\n\t\"email\": \"user@example.com\",\n\t\"portable\": \"0645789872\",\n\t\"adresse\": \"10 avenue du Gérénal Leclerc Villepinte\"\n}"
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/candidat/preinscription",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"candidat",
+								"preinscription"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
