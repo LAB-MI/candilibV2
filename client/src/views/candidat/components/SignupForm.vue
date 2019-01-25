@@ -18,7 +18,7 @@
               @blur="removeNephPlaceholder"
               :placeholder="nephPlaceholder"
               aria-placeholder="012345678912"
-              autofocus
+              :autofocus="!showDialog"
               hint="ex. : 0123456789"
               label="NEPH"
               required
@@ -143,7 +143,7 @@
                         @blur="removeEmailPlaceholder"
                         :placeholder="emailPlaceholder"
                         aria-placeholder="jean@dupont.fr"
-                        autofocus
+                        :autofocus="showDialog"
                         hint="ex. : jean@dupont.fr"
                         label="Courriel"
                         required
