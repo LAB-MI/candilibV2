@@ -12,5 +12,8 @@ router.get('/admin/verify-token', verifyToken, verifyAdminLevel, (req, res) =>
   res.json({ auth: true })
 )
 router.post('/candidat/magic-link', postMagicLink)
+router.get('/candidat/verify-token', verifyToken, (req, res) =>
+  res.json({ auth: true })
+)
 
 export default router

@@ -59,6 +59,15 @@ const getTokenHeader = () => {
 
 export default {
   candidat: {
+    async verifyToken (token) {
+      const json = await apiClient.get(`${apiPaths.candidat.verifyToken}?token=${token}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      return json
+    },
+
     async presignup (candidat) {
       const json = await apiClient.post(apiPaths.candidat.presignup, {
         headers: {

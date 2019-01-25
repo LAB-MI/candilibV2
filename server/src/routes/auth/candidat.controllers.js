@@ -35,6 +35,7 @@ export const postMagicLink = async (req, res) => {
     )
 
     try {
+      logger.info('token: ' + token)
       const response = await sendMagicLink(candidat, token)
       res.status(200).send({
         success: true,

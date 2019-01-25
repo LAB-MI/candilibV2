@@ -61,7 +61,7 @@ import {
   FETCH_TOKEN_REQUEST,
   SHOW_INFO,
   SHOW_ERROR,
-  SIGNED_IN,
+  SIGNED_IN_AS_ADMIN,
 } from '@/store'
 
 export default {
@@ -112,7 +112,7 @@ export default {
       }
       const { email, password } = this
       await this.$store.dispatch(FETCH_TOKEN_REQUEST, { email, password })
-      if (this.authStatus === SIGNED_IN) {
+      if (this.authStatus === SIGNED_IN_AS_ADMIN) {
         this.$router.push(this.$route.query.nextPath || '/admin')
       }
       if (this.authStatus === BAD_CREDENTIALS) {

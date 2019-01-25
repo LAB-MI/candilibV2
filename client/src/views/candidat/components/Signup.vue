@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import { SignupForm } from './'
+import SignupForm from './SignupForm'
 
 export default {
   components: {
@@ -26,7 +26,7 @@ export default {
   background-position: center;
   background-size: cover;
 
-  @media (max-width: 1170px) {
+  @media (max-width: 599px) {
     background: linear-gradient(to bottom, #7579ff, #b224ef);
   }
   &-signup {
@@ -35,15 +35,10 @@ export default {
 }
 
 .c-form-wrapper {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-
   display: flex;
   justify-content: center;
   align-items: center;
+  margin: 2em;
 }
 
 .c-signup-form {

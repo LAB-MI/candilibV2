@@ -1,19 +1,22 @@
 import api from '@/api'
 import { STORAGE_TOKEN_KEY } from '@/constants'
 
-export const CHECK_TOKEN = 'CHECK_TOKEN'
+export const CHECK_ADMIN_TOKEN = 'CHECK_ADMIN_TOKEN'
+export const CHECK_CANDIDAT_TOKEN = 'CHECK_CANDIDAT_TOKEN'
 
 export const FETCH_TOKEN_REQUEST = 'FETCH_TOKEN_REQUEST'
 export const FETCH_TOKEN_FAILURE = 'FETCH_TOKEN_FAILURE'
 export const FETCH_TOKEN_SUCCESS = 'FETCH_TOKEN_SUCCESS'
 
 export const REMOVE_TOKEN = 'REMOVE_TOKEN'
-export const SET_TOKEN = 'SET_TOKEN'
+export const SET_ADMIN_TOKEN = 'SET_ADMIN_TOKEN'
+export const SET_CANDIDAT_TOKEN = 'SET_CANDIDAT_TOKEN'
 export const SIGN_OUT = 'SIGN_OUT'
 
 export const FETCHING_TOKEN = 'FETCHING_TOKEN'
 export const BAD_CREDENTIALS = 'BAD_CREDENTIALS'
-export const SIGNED_IN = 'SIGNED_IN'
+export const SIGNED_IN_AS_ADMIN = 'SIGNED_IN_AS_ADMIN'
+export const SIGNED_IN_AS_CANDIDAT = 'SIGNED_IN_AS_CANDIDAT'
 export const SIGNED_OUT = 'SIGNED_OUT'
 
 export default {
@@ -25,8 +28,11 @@ export default {
     [FETCH_TOKEN_REQUEST] (state, token) {
       state.status = FETCHING_TOKEN
     },
-    [SET_TOKEN] (state) {
-      state.status = SIGNED_IN
+    [SET_ADMIN_TOKEN] (state) {
+      state.status = SIGNED_IN_AS_ADMIN
+    },
+    [SET_CANDIDAT_TOKEN] (state) {
+      state.status = SIGNED_IN_AS_CANDIDAT
     },
     [BAD_CREDENTIALS] (state, token) {
       state.status = BAD_CREDENTIALS
@@ -37,11 +43,25 @@ export default {
   },
 
   actions: {
-    async [CHECK_TOKEN] ({ commit }) {
+    async [CHECK_ADMIN_TOKEN] ({ commit }) {
       const token = localStorage.getItem(STORAGE_TOKEN_KEY)
       const { auth } = await api.admin.verifyToken(token)
       if (auth) {
-        commit(SET_TOKEN)
+        commit(SET_ADMIN_TOKEN)
+      }
+    },
+    
+    async [CHECK_CANDIDAT_TOKEN] ({ commit }, queryToken) {
+      const token = queryToken || localStorage.getItem(STORAGE_TOKEN_KEY)
+      if (!token) {
+        commit(SIGN_OUT)
+      }
+      const { auth } = await api.candidat.verifyToken(token)
+      if (auth) {
+        localStorage.setItem(STORAGE_TOKEN_KEY, token)
+        commit(SET_CANDIDAT_TOKEN)
+      } else {
+        commit(SIGN_OUT)
       }
     },
 
@@ -53,7 +73,7 @@ export default {
           throw new Error(BAD_CREDENTIALS)
         }
         localStorage.setItem(STORAGE_TOKEN_KEY, token)
-        commit(SET_TOKEN)
+        commit(SET_ADMIN_TOKEN)
       } catch (error) {
         commit(BAD_CREDENTIALS)
       }

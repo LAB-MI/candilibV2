@@ -6,6 +6,8 @@ import AdminHome from '@/views/AdminHome.vue'
 import CandidatHome from '@/views/CandidatHome.vue'
 import Error404 from '@/views/Error404.vue'
 
+import store from '@/store'
+
 Vue.use(Router)
 
 const { CLIENT_BUILD_TARGET, NODE_ENV } = process.env
@@ -13,6 +15,24 @@ const { CLIENT_BUILD_TARGET, NODE_ENV } = process.env
 const isBuildWithAll = NODE_ENV !== 'production' || ['ALL', undefined].includes(CLIENT_BUILD_TARGET)
 const isBuildWithCandidat = NODE_ENV !== 'production' || ['ALL', 'CANDIDAT'].includes(CLIENT_BUILD_TARGET)
 const isBuildWithAdmin = NODE_ENV !== 'production' || ['ALL', 'ADMIN'].includes(CLIENT_BUILD_TARGET)
+
+function requireCandidatAuth(to, from, next) {
+  if (!localStorage.getItem('token') || !!from.query.token) {
+    next({
+      name: 'candidat-signup'
+    })
+  }
+  next()
+}
+
+function requireAdminAuth(to, from, next) {
+  if (!localStorage.getItem('token')) {
+    next({
+      name: 'admin-login'
+    })
+  }
+  next()
+}
 
 const adminRoutes = [
   {
@@ -27,6 +47,7 @@ const adminRoutes = [
     path: '/admin',
     name: 'admin',
     component: () => import('./views/admin'),
+    beforeEnter: requireAdminAuth,
     children: [
       {
         path: ':tool',
@@ -41,26 +62,9 @@ const adminRoutes = [
 
 const candidatRoutes = [
   {
-    path: '/candidat',
-    name: 'candidat-home',
+    path: '/candidat-signup',
+    name: 'candidat-signup',
     component: CandidatHome,
-    children: [
-      {
-        path: 'signup',
-        name: 'candidat-signup',
-        meta: {
-          showSignup: true,
-        },
-      },
-      {
-        path: 'login',
-        name: 'candidat-login',
-        meta: {
-          showSignup: false,
-        },
-      },
-    ],
-
     meta: {
       guest: true,
     },
@@ -69,6 +73,7 @@ const candidatRoutes = [
     path: '/candidat',
     name: 'candidat',
     component: () => import('./views/candidat'),
+    beforeEnter: requireCandidatAuth,
     meta: {
       requiresAuth: true,
     },
