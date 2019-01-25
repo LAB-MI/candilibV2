@@ -59,8 +59,9 @@ import { email as emailRegex } from '@/util'
 import {
   BAD_CREDENTIALS,
   FETCH_TOKEN_REQUEST,
-  SHOW_INFO,
   SHOW_ERROR,
+  SHOW_INFO,
+  SHOW_SUCCESS,
   SIGNED_IN_AS_ADMIN,
 } from '@/store'
 
@@ -100,6 +101,10 @@ export default {
       this.$store.dispatch(SHOW_INFO, content)
     },
 
+    showSuccess (content) {
+      this.$store.dispatch(SHOW_SUCCESS, content)
+    },
+
     showError (content) {
       this.$store.dispatch(SHOW_ERROR, content)
     },
@@ -111,8 +116,10 @@ export default {
         return
       }
       const { email, password } = this
+      this.showMessage('Vérification des identifiants en cours...')
       await this.$store.dispatch(FETCH_TOKEN_REQUEST, { email, password })
       if (this.authStatus === SIGNED_IN_AS_ADMIN) {
+      this.showSuccess('Vous êtes identifié')
         this.$router.push(this.$route.query.nextPath || '/admin')
       }
       if (this.authStatus === BAD_CREDENTIALS) {

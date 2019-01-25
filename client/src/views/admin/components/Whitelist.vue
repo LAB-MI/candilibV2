@@ -97,7 +97,13 @@ export default {
     },
 
     async removeFromWhitelist (id) {
-      await this.$store.dispatch(DELETE_EMAIL_REQUEST, id)
+      try {
+        await this.$store.dispatch(DELETE_EMAIL_REQUEST, id)
+      } catch (error) {
+        if (error.auth === false) {
+          this.$router.push({ name: 'admin-login', nextPath: this.$route.fullPath })
+        }
+      }
     },
 
     hideForm () {

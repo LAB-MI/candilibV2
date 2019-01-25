@@ -18,11 +18,6 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    auth: {},
-    message: {},
-    whitelist: {},
-    candidats: {},
-    candidat: {},
   },
 
   modules: {

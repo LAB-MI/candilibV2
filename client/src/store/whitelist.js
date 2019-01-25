@@ -36,7 +36,7 @@ export default {
     [DELETE_EMAIL_REQUEST] (state) {
       state.isUpdating = true
     },
-    [DELETE_EMAIL_SUCCESS] (state, ema) {
+    [DELETE_EMAIL_SUCCESS] (state) {
       state.isUpdating = false
     },
     [DELETE_EMAIL_FAILURE] (state) {
@@ -46,7 +46,7 @@ export default {
     [SAVE_EMAIL_REQUEST] (state) {
       state.isUpdating = true
     },
-    [SAVE_EMAIL_SUCCESS] (state, ema) {
+    [SAVE_EMAIL_SUCCESS] (state) {
       state.isUpdating = false
     },
     [SAVE_EMAIL_FAILURE] (state) {
@@ -59,10 +59,16 @@ export default {
       commit(FETCH_WHITELIST_REQUEST)
       try {
         const list = await api.admin.getWhitelist()
+        if (list.success === false && list.isTokenValid === false) {
+          const error = new Error('Vous n\êtes plus identifié')
+          error.auth = false
+          throw error
+        }
         commit(FETCH_WHITELIST_SUCCESS, list)
       } catch (error) {
         commit(FETCH_WHITELIST_FAILURE)
-        return dispatch(SHOW_ERROR, 'Error while fetching whitelist')
+        dispatch(SHOW_ERROR, error.message)
+        throw error
       }
     },
 
@@ -71,8 +77,8 @@ export default {
       try {
         const result = await api.admin.removeFromWhitelist(email)
         commit(DELETE_EMAIL_SUCCESS, email)
-        dispatch(FETCH_WHITELIST_REQUEST)
-        return dispatch(SHOW_SUCCESS, `${result.email} supprimé de la liste blanche`)
+        dispatch(SHOW_SUCCESS, `${result.email} supprimé de la liste blanche`)
+        return dispatch(FETCH_WHITELIST_REQUEST)
       } catch (error) {
         commit(DELETE_EMAIL_FAILURE)
         return dispatch(SHOW_ERROR, error.message)
