@@ -58,7 +58,7 @@ export default {
     async [FETCH_WHITELIST_REQUEST] ({ commit, dispatch }, content, timeout) {
       commit(FETCH_WHITELIST_REQUEST)
       try {
-        const list = await api.getWhitelist()
+        const list = await api.admin.getWhitelist()
         commit(FETCH_WHITELIST_SUCCESS, list)
       } catch (error) {
         commit(FETCH_WHITELIST_FAILURE)
@@ -69,7 +69,7 @@ export default {
     async [DELETE_EMAIL_REQUEST] ({ commit, dispatch }, email) {
       commit(DELETE_EMAIL_REQUEST)
       try {
-        const result = await api.removeFromWhitelist(email)
+        const result = await api.admin.removeFromWhitelist(email)
         commit(DELETE_EMAIL_SUCCESS, email)
         dispatch(FETCH_WHITELIST_REQUEST)
         return dispatch(SHOW_SUCCESS, `${result.email} supprimé de la liste blanche`)
@@ -82,7 +82,7 @@ export default {
     async [SAVE_EMAIL_REQUEST] ({ commit, dispatch }, emailToAdd) {
       commit(SAVE_EMAIL_REQUEST)
       try {
-        const { email, message, success } = await api.addToWhitelist(emailToAdd)
+        const { email, message, success } = await api.admin.addToWhitelist(emailToAdd)
         if (success === false && message) {
           if (message.includes('duplicate key error')) {
             throw new Error(`Email déjà existant : '${emailToAdd}'`)

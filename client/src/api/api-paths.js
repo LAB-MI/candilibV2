@@ -1,6 +1,9 @@
 const apiPrefix = `${process.env.PUBLIC_URL || ''}/api/v2`
 
 export default {
+  candidat: {
+    presignup: `${apiPrefix}/candidat/preinscription`,
+  },
   admin: {
     login: `${apiPrefix}/auth/admin/token`,
     verifyToken: `${apiPrefix}/auth/admin/verify-token`,

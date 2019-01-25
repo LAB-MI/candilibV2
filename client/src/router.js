@@ -41,9 +41,26 @@ const adminRoutes = [
 
 const candidatRoutes = [
   {
-    path: '/login',
-    name: 'candidat-login',
+    path: '/candidat',
+    name: 'candidat-home',
     component: CandidatHome,
+    children: [
+      {
+        path: 'signup',
+        name: 'candidat-signup',
+        meta: {
+          showSignup: true,
+        },
+      },
+      {
+        path: 'login',
+        name: 'candidat-login',
+        meta: {
+          showSignup: false,
+        },
+      },
+    ],
+
     meta: {
       guest: true,
     },

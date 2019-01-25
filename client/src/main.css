@@ -47,11 +47,38 @@ h3 {
     align-items: center;
   }
 
+  &--space-between {
+    justify-content: space-between;
+  }
+
   &--column {
     flex-direction: column;
   }
+
 }
 
 .col-red {
   color: #C00;
+}
+
+
+.u-separator {
+  width: 100%;
+  margin: 10px auto 15px;
+  position: relative;
+  height: 1px;
+  backface-visibility: hidden;
+  transform: translateZ(0) scale(1, 1);
+  color: transparent;
+
+  &::after {
+    position: absolute;
+    width: 100%;
+    left: 0;
+    bottom: -1px;
+    height: 2px;
+    background: #fff;
+    background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.09) 35%, rgba(255, 255, 255, 0.09) 70%, transparent 100%);
+    content: "";
+  }
 }

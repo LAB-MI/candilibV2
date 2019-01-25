@@ -61,13 +61,13 @@ export default {
     async uploadCandidats () {
       const data = new FormData()
       data.append('file', this.file)
-      const result = await api.uploadCandidatsJson(data)
+      const result = await api.admin.uploadCandidatsJson(data)
       this.$store.dispatch(SHOW_SUCCESS, result.message)
       this.file = null
     },
 
     async getCandidatsAsCsv () {
-      const response = await api.exportCsv()
+      const response = await api.admin.exportCsv()
       downloadContent(response)
     },
   },

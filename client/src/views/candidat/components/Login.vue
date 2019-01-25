@@ -1,9 +1,9 @@
 <template>
   <div class="u-flex  u-flex--center">
-    <div class="transitional">
+    <div :class="{transitional: true, 'transitional-signup': showSignup}">
       <transition name="fade">
-        <login-form class="c-login-form" v-if="!showSignup" :toggleForm="toggleForm" />
-        <signup-form class="c-signup-form" v-else :toggleForm="toggleForm" />
+        <login-form class="c-form-wrapper" v-if="!showSignup" />
+        <signup-form class="c-form-wrapper" v-else />
       </transition>
     </div>
   </div>
@@ -18,15 +18,9 @@ export default {
     LoginForm,
   },
 
-  data () {
-    return {
-      showSignup: false,
-    }
-  },
-
-  methods: {
-    toggleForm () {
-      this.showSignup = !this.showSignup
+  computed: {
+    showSignup () {
+      return this.$route.meta.showSignup
     },
   },
 }
@@ -35,37 +29,42 @@ export default {
 <style lang="postcss" scoped>
 .transitional {
   position: relative;
-  height: 100vh;
+  min-height: 100vh;
   width: 100vw;
+  background-image: url(../../../assets/bg-presignup.jpg);
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+
+  @media (max-width: 1170px) {
+    background: linear-gradient(to bottom, #7579ff, #b224ef);
+  }
+  &-signup {
+    height: 55em;
+  }
 }
 
 .fade-enter-active, .fade-leave-active {
-  transition: opacity 1s;
+  transition: opacity .5s;
 }
 .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
   opacity: 0;
 }
 
-.c-login-form {
+.c-form-wrapper {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 90%;
-  max-width: 40em;
-  transform: translate(-50%, -50%);
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 
-  @media (max-width: 1170px) {
-    width: 20em;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .c-signup-form {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 90%;
   max-width: 40em;
-  transform: translate(-50%, -50%);
 
   @media (max-width: 1170px) {
     width: 20em;

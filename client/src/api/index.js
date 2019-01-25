@@ -58,84 +58,97 @@ const getTokenHeader = () => {
 }
 
 export default {
-  async requestToken (email, password) {
-    const json = await apiClient.post(apiPaths.admin.login, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    })
-    return json
+  candidat: {
+    async presignup (candidat) {
+      const json = await apiClient.post(apiPaths.candidat.presignup, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(candidat),
+      })
+      return json
+    },
   },
+  admin: {
+    async requestToken (email, password) {
+      const json = await apiClient.post(apiPaths.admin.login, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      })
+      return json
+    },
 
-  async verifyToken (token) {
-    const json = await apiClient.get(`${apiPaths.admin.verifyToken}?token=${token}`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    })
-    return json
-  },
+    async verifyToken (token) {
+      const json = await apiClient.get(`${apiPaths.admin.verifyToken}?token=${token}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      return json
+    },
 
-  async getCandidats () {
-    const json = await apiClient.get(apiPaths.admin.candidats, {
-      headers: getHeadersForJson(),
-    })
-    return json
-  },
+    async getCandidats () {
+      const json = await apiClient.get(apiPaths.admin.candidats, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
 
-  async getCreneaux () {
-    const json = await apiClient.get(apiPaths.creneaux(), {
-      headers: getHeadersForJson(),
-    })
-    return json
-  },
+    async getCreneaux () {
+      const json = await apiClient.get(apiPaths.creneaux(), {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
 
-  async uploadCandidatsJson (body) {
-    const json = await apiClient.post(apiPaths.admin.uploadCandidatsJson, {
-      headers: getTokenHeader(),
-      body,
-    })
-    return json
-  },
+    async uploadCandidatsJson (body) {
+      const json = await apiClient.post(apiPaths.admin.uploadCandidatsJson, {
+        headers: getTokenHeader(),
+        body,
+      })
+      return json
+    },
 
-  async exportCsv () {
-    const json = await apiClient.getRaw(apiPaths.admin.exportCsv, {
-      headers: getTokenHeader(),
-    })
-    return json
-  },
+    async exportCsv () {
+      const json = await apiClient.getRaw(apiPaths.admin.exportCsv, {
+        headers: getTokenHeader(),
+      })
+      return json
+    },
 
-  async uploadPlacesCSV (body) {
-    const json = await apiClient.post(apiPaths.admin.uploadPlacesCSV, {
-      headers: getTokenHeader(),
-      body,
-    })
-    return json
-  },
+    async uploadPlacesCSV (body) {
+      const json = await apiClient.post(apiPaths.admin.uploadPlacesCSV, {
+        headers: getTokenHeader(),
+        body,
+      })
+      return json
+    },
 
-  async getWhitelist () {
-    const json = await apiClient.get(apiPaths.admin.whitelist, {
-      headers: getTokenHeader(),
-    })
-    return json
-  },
+    async getWhitelist () {
+      const json = await apiClient.get(apiPaths.admin.whitelist, {
+        headers: getTokenHeader(),
+      })
+      return json
+    },
 
-  async removeFromWhitelist (id) {
-    const json = await apiClient.delete(`${apiPaths.admin.whitelist}/${id}`, {
-      headers: getTokenHeader(),
-    })
-    return json
-  },
+    async removeFromWhitelist (id) {
+      const json = await apiClient.delete(`${apiPaths.admin.whitelist}/${id}`, {
+        headers: getTokenHeader(),
+      })
+      return json
+    },
 
-  async addToWhitelist (email) {
-    const json = await apiClient.post(apiPaths.admin.whitelist, {
-      headers: getHeadersForJson(),
-      body: JSON.stringify({ email }),
-    })
-    return json
+    async addToWhitelist (email) {
+      const json = await apiClient.post(apiPaths.admin.whitelist, {
+        headers: getHeadersForJson(),
+        body: JSON.stringify({ email }),
+      })
+      return json
+    },
   },
 }

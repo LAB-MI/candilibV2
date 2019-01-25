@@ -39,7 +39,7 @@ export default {
   actions: {
     async [CHECK_TOKEN] ({ commit }) {
       const token = localStorage.getItem(STORAGE_TOKEN_KEY)
-      const { auth } = await api.verifyToken(token)
+      const { auth } = await api.admin.verifyToken(token)
       if (auth) {
         commit(SET_TOKEN)
       }
@@ -48,7 +48,7 @@ export default {
     async [FETCH_TOKEN_REQUEST] ({ commit }, { email, password }) {
       commit(FETCH_TOKEN_REQUEST)
       try {
-        const { token } = await api.requestToken(email, password)
+        const { token } = await api.admin.requestToken(email, password)
         if (!token) {
           throw new Error(BAD_CREDENTIALS)
         }
