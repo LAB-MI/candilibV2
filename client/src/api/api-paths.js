@@ -3,6 +3,7 @@ const apiPrefix = `${process.env.PUBLIC_URL || ''}/api/v2`
 export default {
   candidat: {
     presignup: `${apiPrefix}/candidat/preinscription`,
+    magicLink: `${apiPrefix}/auth/candidat/magic-link`,
   },
   admin: {
     login: `${apiPrefix}/auth/admin/token`,

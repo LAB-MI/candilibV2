@@ -1,27 +1,17 @@
 <template>
   <div class="u-flex  u-flex--center">
-    <div :class="{transitional: true, 'transitional-signup': showSignup}">
-      <transition name="fade">
-        <login-form class="c-form-wrapper" v-if="!showSignup" />
-        <signup-form class="c-form-wrapper" v-else />
-      </transition>
+    <div class="transitional">
+        <signup-form class="c-form-wrapper" />
     </div>
   </div>
 </template>
 
 <script>
-import { SignupForm, LoginForm } from './'
+import { SignupForm } from './'
 
 export default {
   components: {
     SignupForm,
-    LoginForm,
-  },
-
-  computed: {
-    showSignup () {
-      return this.$route.meta.showSignup
-    },
   },
 }
 </script>
@@ -42,13 +32,6 @@ export default {
   &-signup {
     height: 55em;
   }
-}
-
-.fade-enter-active, .fade-leave-active {
-  transition: opacity .5s;
-}
-.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  opacity: 0;
 }
 
 .c-form-wrapper {

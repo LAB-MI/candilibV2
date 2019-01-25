@@ -113,9 +113,58 @@
             <v-btn depressed color="#fff" tag="a" :to="{ name: 'legal' }" tabindex="9">
               Mentions légales
             </v-btn>
-            <v-btn depressed color="#fff" tag="a" :to="{ name: 'candidat-login' }" tabindex="8">
-              Déjà inscrit ?
-            </v-btn>
+            <v-dialog
+              v-model="showDialog"
+              width="500"
+            >
+              <v-btn
+                slot="activator"
+                depressed
+                color="#fff"
+                tabindex="8"
+              >
+                Déjà inscrit ?
+              </v-btn>
+
+              <v-card>
+                <v-card-title
+                  class="headline grey lighten-2"
+                  primary-title
+                >
+                  Recevez un magic link dans votre boîte email
+                </v-card-title>
+
+                <v-form v-model="magicLinkValid" @submit.prevent="sendMagicLink">
+                  <div class="u-flex  u-flex--center">
+                    <div class="form-input">
+                      <v-text-field
+                        prepend-icon="email"
+                        @focus="setEmailPlaceholder"
+                        @blur="removeEmailPlaceholder"
+                        :placeholder="emailPlaceholder"
+                        aria-placeholder="jean@dupont.fr"
+                        autofocus
+                        hint="ex. : jean@dupont.fr"
+                        label="Courriel"
+                        required
+                        :rules="emailRules"
+                        tabindex="1"
+                        v-model="email"
+                      ></v-text-field>
+                    </div>
+                  </div>
+
+                  <v-divider></v-divider>
+
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn dark type="submit" tabindex="2" color="#28a745">
+                      <div class="submit-label">Envoyer le magic link</div>
+                    </v-btn>
+                  </v-card-actions>
+                </v-form>
+              </v-card>
+            </v-dialog>
             <v-btn depressed color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
               Une question ?
             </v-btn>
@@ -138,7 +187,12 @@
 
 <script>
 import { email as emailRegex, neph as nephRegex, phone as phoneRegex } from '@/util'
-import { PRESIGNUP_REQUEST, SHOW_ERROR } from '@/store'
+import {
+  PRESIGNUP_REQUEST,
+  SEND_MAGIC_LINK_REQUEST,
+  SHOW_ERROR,
+  SHOW_SUCCESS
+} from '@/store'
 
 import logoMI from '@/assets/images/logo_mi_40x50.png'
 import logoLabMI from '@/assets/images/lab_100.png'
@@ -153,6 +207,7 @@ export default {
       logoMI,
       logoLabMI,
       logoSR,
+      magicLinkValid: false,
       nephPlaceholder: '',
       codeNeph: '',
       nephRules: [
@@ -176,6 +231,7 @@ export default {
       adressePlaceholder: '',
       adresse: '',
       valid: false,
+      showDialog: false,
     }
   },
   methods: {
@@ -249,6 +305,14 @@ export default {
       } catch (error) {
 
       }
+    },
+    async sendMagicLink () {
+      if (!this.magicLinkValid) {
+        return this.$store.dispatch(SHOW_ERROR, 'Veuillez fournir votre adresse courriel')
+      }
+      await this.$store.dispatch(SEND_MAGIC_LINK_REQUEST, this.email)
+      await this.$store.dispatch(SHOW_SUCCESS, 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel')
+      this.showDialog = false
     },
   },
 }

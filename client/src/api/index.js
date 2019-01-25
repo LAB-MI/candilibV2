@@ -68,6 +68,15 @@ export default {
       })
       return json
     },
+    async sendMagicLink (email) {
+      const json = await apiClient.post(apiPaths.candidat.magicLink, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+      return json
+    },
   },
   admin: {
     async requestToken (email, password) {

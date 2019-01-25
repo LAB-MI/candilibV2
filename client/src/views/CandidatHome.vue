@@ -1,16 +1,16 @@
 <template>
-  <Login />
+  <signup />
 </template>
 
 <script>
 // @ is an alias to /src
-import Login from './candidat/components/Login.vue'
+import Signup from './candidat/components/Signup.vue'
 import { CHECK_TOKEN, SIGNED_IN } from '@/store'
 
 export default {
   name: 'candidat-home',
   components: {
-    Login,
+    Signup,
   },
   computed: {
     authStatus () {
