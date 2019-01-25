@@ -3,9 +3,11 @@ import {
   getCandidatsAsCsv,
   getBookedCandidatsAsCsv,
 } from './business'
-import { findAllCandidatsLean } from '../../models/candidat'
+import {
+  findAllCandidatsLean,
+  findBookedCandidats,
+} from '../../models/candidat'
 import { findPlaceById } from '../../models/place'
-import { findBookedCandidats } from '../../models/candidat/booked.candidat.queries'
 
 export const importCandidats = async (req, res) => {
   const files = req.files
