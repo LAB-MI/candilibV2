@@ -60,7 +60,7 @@ export default {
       try {
         const list = await api.admin.getWhitelist()
         if (list.success === false && list.isTokenValid === false) {
-          const error = new Error('Vous n\êtes plus identifié')
+          const error = new Error('Vous n\'êtes plus identifié')
           error.auth = false
           throw error
         }

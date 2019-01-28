@@ -11,7 +11,6 @@
 </template>
 
 <script>
-import { CHECK_CANDIDAT_TOKEN, SIGNED_IN_AS_CANDIDAT } from '@/store'
 import CandidatHeader from './components/CandidatHeader'
 
 export default {

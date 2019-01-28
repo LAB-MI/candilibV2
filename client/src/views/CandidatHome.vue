@@ -15,7 +15,7 @@ export default {
   name: 'candidat-home',
   data () {
     return {
-      SIGNED_IN_AS_CANDIDAT
+      SIGNED_IN_AS_CANDIDAT,
     }
   },
   components: {

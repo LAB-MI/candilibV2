@@ -119,7 +119,7 @@ export default {
       this.showMessage('Vérification des identifiants en cours...')
       await this.$store.dispatch(FETCH_TOKEN_REQUEST, { email, password })
       if (this.authStatus === SIGNED_IN_AS_ADMIN) {
-      this.showSuccess('Vous êtes identifié')
+        this.showSuccess('Vous êtes identifié')
         this.$router.push(this.$route.query.nextPath || '/admin')
       }
       if (this.authStatus === BAD_CREDENTIALS) {

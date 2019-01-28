@@ -13,7 +13,7 @@ export const SET_ADMIN_TOKEN = 'SET_ADMIN_TOKEN'
 export const SET_CANDIDAT_TOKEN = 'SET_CANDIDAT_TOKEN'
 export const SIGN_OUT = 'SIGN_OUT'
 
-export const FETCHING_TOKEN = 'FETCHING_TOKEN'
+export const CHECKING_AUTH = 'CHECKING_AUTH'
 export const BAD_CREDENTIALS = 'BAD_CREDENTIALS'
 export const SIGNED_IN_AS_ADMIN = 'SIGNED_IN_AS_ADMIN'
 export const SIGNED_IN_AS_CANDIDAT = 'SIGNED_IN_AS_CANDIDAT'
@@ -25,8 +25,8 @@ export default {
   },
 
   mutations: {
-    [FETCH_TOKEN_REQUEST] (state, token) {
-      state.status = FETCHING_TOKEN
+    [CHECKING_AUTH] (state, token) {
+      state.status = CHECKING_AUTH
     },
     [SET_ADMIN_TOKEN] (state) {
       state.status = SIGNED_IN_AS_ADMIN
@@ -50,8 +50,9 @@ export default {
         commit(SET_ADMIN_TOKEN)
       }
     },
-    
+
     async [CHECK_CANDIDAT_TOKEN] ({ commit }, queryToken) {
+      commit(CHECKING_AUTH)
       const token = queryToken || localStorage.getItem(STORAGE_TOKEN_KEY)
       if (!token) {
         commit(SIGN_OUT)
@@ -66,7 +67,7 @@ export default {
     },
 
     async [FETCH_TOKEN_REQUEST] ({ commit }, { email, password }) {
-      commit(FETCH_TOKEN_REQUEST)
+      commit(CHECKING_AUTH)
       try {
         const { token } = await api.admin.requestToken(email, password)
         if (!token) {
@@ -80,7 +81,7 @@ export default {
     },
 
     async [FETCH_TOKEN_SUCCESS] ({ commit }, token) {
-      commit(SET_TOKEN, token)
+      commit(SET_ADMIN_TOKEN, token)
     },
 
     async [SIGN_OUT] ({ commit }) {

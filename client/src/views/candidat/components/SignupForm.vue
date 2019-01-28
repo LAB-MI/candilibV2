@@ -116,6 +116,7 @@
             <v-dialog
               v-model="showDialog"
               width="500"
+              class="already-signed-up"
             >
               <v-btn
                 slot="activator"
@@ -191,7 +192,7 @@ import {
   PRESIGNUP_REQUEST,
   SEND_MAGIC_LINK_REQUEST,
   SHOW_ERROR,
-  SHOW_SUCCESS
+  SHOW_SUCCESS,
 } from '@/store'
 
 import logoMI from '@/assets/images/logo_mi_40x50.png'
@@ -326,7 +327,7 @@ export default {
   border-radius: 1em;
   box-shadow: 0.05em 0.1em 0.1em 0.3em #fff;
 
-  @media (max-width: 1170px) {
+  @media (max-width: 599px) {
     width: 24em;
   }
 
@@ -370,14 +371,16 @@ export default {
   display: flex;
   justify-content: center;
 
-  @media (max-width: 1170px) {
+  @media (max-width: 599px) {
     width: 100%;
     flex-wrap: wrap;
     justify-content: center;
   }
+}
 
-  &-group {
-    justify-content: space-between;
+.already-signed-up {
+  @media (max-width: 599px) {
+    order: -1;
   }
 }
 
