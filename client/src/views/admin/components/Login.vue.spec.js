@@ -1,5 +1,5 @@
 import { shallowMount } from '@vue/test-utils'
-import Login from '@/components/Login.vue'
+import Login from './Login.vue'
 
 describe('Login.vue', () => {
   it('renders props.msg when passed', () => {

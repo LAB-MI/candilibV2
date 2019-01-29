@@ -2,6 +2,10 @@ const request = require('supertest')
 
 const { connect, disconnect } = require('../../mongo-connection')
 const { deleteCandidatByNomNeph } = require('../../models/candidat')
+const {
+  createWhitelisted,
+  deleteWhitelistedByEmail,
+} = require('../../models/whitelisted')
 const { default: app, apiPrefix } = require('../../app')
 
 const validEmail = 'candidat@example.com'
@@ -84,10 +88,24 @@ describe('Test the candidat signup', () => {
       .post(`${apiPrefix}/candidat/preinscription`)
       .send(validCandidat)
       .set('Accept', 'application/json')
+      .expect(401)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).not.toHaveProperty('candidat')
+  })
+
+  it('Should response 200 for a valid form', async () => {
+    await createWhitelisted(validEmail)
+
+    const { body } = await request(app)
+      .post(`${apiPrefix}/candidat/preinscription`)
+      .send(validCandidat)
+      .set('Accept', 'application/json')
       .expect(200)
 
     expect(body).not.toHaveProperty('success', false)
     expect(body).not.toHaveProperty('fieldsWithErrors')
     expect(body).toHaveProperty('candidat')
+    await deleteWhitelistedByEmail(validEmail)
   })
 })
