@@ -12,6 +12,7 @@
         <v-form dark v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
           <div class="form-input">
             <v-text-field
+              label="NEPH (obligatoire) *"
               prepend-icon="assignment"
               dark
               color="#fff"
@@ -21,7 +22,6 @@
               aria-placeholder="012345678912"
               :autofocus="!showDialog"
               hint="ex. : 0123456789"
-              label="NEPH"
               required
               :rules="nephRules"
               tabindex="1"
@@ -38,7 +38,7 @@
               :placeholder="nomPlaceholder"
               aria-placeholder="Dupont"
               hint="ex. : Dupont"
-              label="Nom de naissance"
+              label="Nom de naissance (obligatoire) *"
               required
               tabindex="2"
               v-model="nomNaissance"
@@ -70,7 +70,7 @@
               :placeholder="emailPlaceholder"
               aria-placeholder="jean@dupont.fr"
               hint="ex. : jean@dupont.fr"
-              label="Courriel"
+              label="Courriel (obligatoire) *"
               required
               :rules="emailRules"
               tabindex="4"
@@ -87,7 +87,7 @@
               :placeholder="portablePlaceholder"
               aria-placeholder="Jean"
               hint="ex. : 0612345678"
-              label="Portable"
+              label="Portable (obligatoire) *"
               required
               tabindex="5"
               :rules="portableRules"
@@ -106,10 +106,10 @@
               v-model="adresse"
               hint="ex. : 10 avenue du général Leclerc Villepinte 93420"
               :items="adresses"
-              label="Adresse"
-              persistent-hint
+              label="Adresse (obligatoire) *"
               prepend-icon="location_city"
               tabindex="6"
+              no-filter
               :search-input.sync="searchAdresses"
             >
             </v-autocomplete>
@@ -120,7 +120,7 @@
             </v-btn>
           </div>
           <div class="form-input  form-input-group">
-            <v-btn depressed color="#fff" tag="a" :to="{ name: 'legal' }" tabindex="9">
+            <v-btn flat color="#fff" tag="a" :to="{ name: 'legal' }" tabindex="9">
               Mentions légales
             </v-btn>
             <v-dialog
@@ -156,7 +156,7 @@
                         aria-placeholder="jean@dupont.fr"
                         :autofocus="showDialog"
                         hint="ex. : jean@dupont.fr"
-                        label="Courriel"
+                        label="Courriel (obligatoire) *"
                         required
                         :rules="emailRules"
                         tabindex="1"
@@ -176,7 +176,7 @@
                 </v-form>
               </v-card>
             </v-dialog>
-            <v-btn depressed color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
+            <v-btn flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
               Une question ?
             </v-btn>
           </div>
@@ -348,7 +348,7 @@ export default {
         const adresses = await getAdresses(val)
         this.adresses = (adresses.features && adresses.features.length)
           ? adresses.features
-            .filter(adr => adr.properties.type === 'housenumber')
+            .filter(adr => adr.properties.type.includes('housenumber'))
             .map(feature => feature.properties.label)
           : []
       } catch (error) {

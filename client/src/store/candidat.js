@@ -46,8 +46,11 @@ export default {
     async [PRESIGNUP_REQUEST] ({ commit, dispatch }, candidatData) {
       commit(PRESIGNUP_REQUEST)
       try {
-        const candidat = await api.candidat.presignup(candidatData)
-        commit(PRESIGNUP_SUCCESS, candidat)
+        const response = await api.candidat.presignup(candidatData)
+        if (response.success === false) {
+          throw new Error(response.message)
+        }
+        commit(PRESIGNUP_SUCCESS, response)
       } catch (error) {
         commit(PRESIGNUP_FAILURE)
         dispatch(SHOW_ERROR, error.message)

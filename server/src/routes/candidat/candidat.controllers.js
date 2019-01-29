@@ -1,6 +1,7 @@
 // import { synchroAurige, getCandidatsAsCsv } from './business'
 import { email as emailRegex, logger } from '../../util'
-import { createCandidat } from '../../models/candidat'
+import { createCandidat, findCandidatByEmail } from '../../models/candidat'
+import { findWhitelistedByEmail } from '../../models/whitelisted'
 
 export async function preSignup (req, res) {
   const candidatData = req.body
@@ -40,6 +41,26 @@ export async function preSignup (req, res) {
       success: false,
       message: "L'email renseigné n'est pas valide",
       fieldsWithErrors: ['email'],
+    })
+    return
+  }
+
+  const isCandidatWhitelisted = await findWhitelistedByEmail(email)
+
+  if (!isCandidatWhitelisted) {
+    res.status(401).json({
+      success: false,
+      message: 'Ce site sera ouvert prochainement.',
+    })
+    return
+  }
+
+  const candidatWithSameEmail = await findCandidatByEmail(email)
+  if (candidatWithSameEmail) {
+    res.status(409).json({
+      success: false,
+      message:
+        'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit"',
     })
     return
   }
