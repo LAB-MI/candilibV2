@@ -169,4 +169,14 @@ export default {
       return json
     },
   },
+
+  util: {
+    async searchAdresses (query) {
+      const json = await apiClient.get(apiPaths.util.adressesQuery(query), {
+        headers: {
+        },
+      })
+      return json
+    },
+  },
 }

@@ -25,9 +25,14 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   whitelist: `${apiPrefix}/admin/whitelisted`,
 }
 
+const utilPaths = {
+  adressesQuery (search) { return `https://api-adresse.data.gouv.fr/search/?q=${search}` },
+}
+
 const apiPaths = {
   candidat: candidatApiPaths,
   admin: adminApiPaths,
+  util: utilPaths,
 }
 
 export default apiPaths

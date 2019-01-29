@@ -9,11 +9,12 @@
           Réservez votre place d'examen
         </h2>
         <hr class="u-separator" />
-        <v-form dark v-model="valid" class="presignup-form" @submit.prevent="presignup">
+        <v-form dark v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
           <div class="form-input">
             <v-text-field
               prepend-icon="assignment"
               dark
+              color="#fff"
               @focus="setNephPlaceholder"
               @blur="removeNephPlaceholder"
               :placeholder="nephPlaceholder"
@@ -31,6 +32,7 @@
             <v-text-field
               prepend-icon="account_box"
               dark
+              color="#fff"
               @focus="setNomPlaceholder"
               @blur="removeNomPlaceholder"
               :placeholder="nomPlaceholder"
@@ -46,6 +48,7 @@
             <v-text-field
               prepend-icon="perm_identity"
               dark
+              color="#fff"
               @focus="setPrenomPlaceholder"
               @blur="removePrenomPlaceholder"
               :placeholder="prenomPlaceholder"
@@ -61,6 +64,7 @@
             <v-text-field
               prepend-icon="email"
               dark
+              color="#fff"
               @focus="setEmailPlaceholder"
               @blur="removeEmailPlaceholder"
               :placeholder="emailPlaceholder"
@@ -77,6 +81,7 @@
             <v-text-field
               prepend-icon="smartphone"
               dark
+              color="#fff"
               @focus="setPortablePlaceholder"
               @blur="removePortablePlaceholder"
               :placeholder="portablePlaceholder"
@@ -90,19 +95,24 @@
             ></v-text-field>
           </div>
           <div class="form-input">
-            <v-text-field
-              prepend-icon="local_offer"
+            <v-autocomplete
               dark
+              color="#fff"
               @focus="setAdressePlaceholder"
               @blur="removeAdressePlaceholder"
               :placeholder="adressePlaceholder"
               aria-placeholder="Jean"
-              hint="ex. : 10 avenue du général Leclerc Villepinte 93420"
-              label="Adresse"
-              required
-              tabindex="6"
+              :loading="isFetchingMatchingAdresses"
               v-model="adresse"
-            ></v-text-field>
+              hint="ex. : 10 avenue du général Leclerc Villepinte 93420"
+              :items="adresses"
+              label="Adresse"
+              persistent-hint
+              prepend-icon="location_city"
+              tabindex="6"
+              :search-input.sync="searchAdresses"
+            >
+            </v-autocomplete>
           </div>
           <div class="form-input">
             <v-btn type="submit" class="submit-button" dark tabindex="7" color="#28a745">
@@ -187,6 +197,8 @@
 </template>
 
 <script>
+import pDebounce from 'p-debounce'
+
 import { email as emailRegex, neph as nephRegex, phone as phoneRegex } from '@/util'
 import {
   PRESIGNUP_REQUEST,
@@ -195,9 +207,14 @@ import {
   SHOW_SUCCESS,
 } from '@/store'
 
+import api from '@/api'
 import logoMI from '@/assets/images/logo_mi_40x50.png'
 import logoLabMI from '@/assets/images/lab_100.png'
 import logoSR from '@/assets/images/securite_routiere_70x27.png'
+
+const getAdresses = pDebounce((query) => {
+  return api.util.searchAdresses(query)
+}, 300)
 
 export default {
   props: {
@@ -221,7 +238,7 @@ export default {
       emailPlaceholder: '',
       email: '',
       emailRules: [
-        v => !!v || 'Veuillez renseigner votre adresse courriel',
+        v => v !== '' || 'Veuillez renseigner votre adresse courriel',
         v => emailRegex.test(v) || 'L\'adresse courriel doit être valide',
       ],
       portablePlaceholder: '',
@@ -233,8 +250,18 @@ export default {
       adresse: '',
       valid: false,
       showDialog: false,
+      adresses: [],
+      searchAdresses: null,
+      isFetchingMatchingAdresses: false,
     }
   },
+
+  watch: {
+    searchAdresses (val) {
+      val && val !== this.select && this.fetchMatchingAdresses(val)
+    },
+  },
+
   methods: {
     async setEmailPlaceholder () {
       this.emailPlaceholder = 'jean@dupont.fr'
@@ -272,14 +299,6 @@ export default {
     async removeAdressePlaceholder () {
       this.adressePlaceholder = ''
     },
-    resetForm () {
-      this.codeNeph = ''
-      this.nomNaissance = ''
-      this.prenom = ''
-      this.email = ''
-      this.portable = ''
-      this.adresse = ''
-    },
     async presignup () {
       if (!this.valid) {
         return this.$store.dispatch(SHOW_ERROR, 'Veuillez remplir le formulaire')
@@ -302,18 +321,39 @@ export default {
           portable,
           adresse,
         })
-        this.resetForm()
+        this.$store.dispatch(SHOW_SUCCESS, 'Votre demande d’inscription est en cours de vérification, vous recevrez une information sous 48h hors week-end et jours fériés.')
+        this.$refs.presignupForm.reset()
       } catch (error) {
 
       }
     },
+
     async sendMagicLink () {
       if (!this.magicLinkValid) {
         return this.$store.dispatch(SHOW_ERROR, 'Veuillez fournir votre adresse courriel')
       }
-      await this.$store.dispatch(SEND_MAGIC_LINK_REQUEST, this.email)
-      await this.$store.dispatch(SHOW_SUCCESS, 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel')
+      try {
+        await this.$store.dispatch(SEND_MAGIC_LINK_REQUEST, this.email)
+        this.$refs.presignupForm.reset()
+        this.$store.dispatch(SHOW_SUCCESS, 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel')
+      } catch (error) {
+        this.$store.dispatch(SHOW_ERROR, error.message)
+      }
       this.showDialog = false
+    },
+
+    async fetchMatchingAdresses (val) {
+      this.isFetchingMatchingAdresses = true
+      try {
+        const adresses = await getAdresses(val)
+        this.adresses = (adresses.features && adresses.features.length)
+          ? adresses.features
+            .filter(adr => adr.properties.type === 'housenumber')
+            .map(feature => feature.properties.label)
+          : []
+      } catch (error) {
+      }
+      this.isFetchingMatchingAdresses = false
     },
   },
 }
