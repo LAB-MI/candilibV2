@@ -60,6 +60,14 @@ export default {
   margin-bottom: 0;
 }
 
+.upload-icon {
+  cursor: pointer;
+
+  &:hover {
+    color: #c00;
+  }
+}
+
 .input-file-label {
   position: absolute;
   top: 0;
@@ -72,15 +80,7 @@ export default {
   width: 25em;
 
   &:hover .upload-icon {
-    color: #c00
-  }
-}
-
-.upload-icon {
-  cursor: pointer;
-
-  &:hover {
-    color: #c00
+    color: #c00;
   }
 }
 

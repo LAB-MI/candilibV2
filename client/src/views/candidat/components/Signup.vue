@@ -29,6 +29,7 @@ export default {
   @media (max-width: 599px) {
     background: linear-gradient(to bottom, #7579ff, #b224ef);
   }
+
   &-signup {
     height: 55em;
   }

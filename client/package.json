@@ -5,15 +5,17 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "cross-env CLIENT_BUILD_TARGET=ALL vue-cli-service build",
+    "test": "npm run -s test:unit",
     "build:admin": "cross-env CLIENT_BUILD_TARGET=ADMIN vue-cli-service build",
     "build:candidat": "cross-env CLIENT_BUILD_TARGET=CANDIDAT vue-cli-service build",
-    "format": "vue-cli-service lint",
-    "lint": "vue-cli-service lint",
+    "format": "run-s lint:js",
+    "lint": "run-p lint:*",
+    "lint:js": "vue-cli-service lint",
+    "lint:style": "vue-cli-service lint:style",
     "start": "npm run serve",
-    "test": "npm run -s test:unit",
-    "test:watch": "npm run -s test:unit -- --watch",
     "test:e2e": "vue-cli-service test:e2e",
-    "test:unit": "vue-cli-service test:unit"
+    "test:unit": "vue-cli-service test:unit",
+    "test:watch": "npm run -s test:unit -- --watch"
   },
   "dependencies": {
     "ag-grid-community": "^20.0.0",
@@ -32,6 +34,7 @@
     "whatwg-fetch": "^3.0.0"
   },
   "devDependencies": {
+    "@ascendancyy/vue-cli-plugin-stylelint": "^1.1.2",
     "@vue/cli-plugin-babel": "^3.3.0",
     "@vue/cli-plugin-e2e-cypress": "^3.3.0",
     "@vue/cli-plugin-eslint": "^3.3.0",
@@ -47,6 +50,7 @@
     "eslint": "^5.12.1",
     "eslint-plugin-vue": "^5.0.0",
     "node-sass": "^4.11.0",
+    "npm-run-all": "^4.1.5",
     "postcss-current-selector": "0.0.3",
     "postcss-nested": "^4.1.1",
     "postcss-nested-ancestors": "^2.0.0",
@@ -54,6 +58,7 @@
     "postcss-preset-env": "^6.5.0",
     "resolve-url-loader": "^3.0.0",
     "sass-loader": "^7.1.0",
+    "stylelint-config-standard": "^18.2.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
     "vue-cli-plugin-vuetify": "^0.4.6",

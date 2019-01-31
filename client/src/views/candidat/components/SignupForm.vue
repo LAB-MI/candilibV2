@@ -182,7 +182,7 @@
           </div>
         </v-form>
         <hr class="u-separator" />
-        <div class="u-flex  u-flex--center  u-flex--space-between" style="width: 80%">
+        <div class="u-flex  u-flex--center  u-flex--space-between" style="width: 80%;">
           <a href="https://www.interieur.gouv.fr/">
             <img :src="logoMI">
           </a>
@@ -381,20 +381,20 @@ export default {
     &-title {
       margin: 0.2em 0;
       line-height: 1;
-      font-family: 'Poppins-Regular';
+      font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
       font-size: 60px;
       letter-spacing: 5px;
       color: #fff;
       text-align: center;
       text-transform: uppercase;
-      text-shadow: 3px 3px 0px #000;
+      text-shadow: 3px 3px 0 #000;
       text-shadow: 8px 8px 12px #333;
     }
 
     &-subtitle {
       padding: 5px 0 15px 0;
       line-height: 1;
-      font-family: 'Poppins-Medium';
+      font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
       font-size: 18px;
       color: #fff;
       letter-spacing: 3px;

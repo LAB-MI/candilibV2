@@ -143,10 +143,9 @@ export default {
   background-size: cover;
   background-position: center;
   position: relative;
-
 }
 
-.login:before {
+.login::before {
   content: "";
   display: block;
   position: absolute;
@@ -163,7 +162,7 @@ export default {
   background: #fff;
   border-radius: 10px;
   padding: 3.5em 3.5em 2em 3.5em;
-  box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.9);
 }
 
 .form-input {
@@ -172,7 +171,7 @@ export default {
 
 .submit-btn {
   position: relative;
-  font-family: Poppins-Medium;
+  font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
   font-size: 15px;
   color: #fff;
   line-height: 1.2;

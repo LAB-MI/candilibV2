@@ -76,7 +76,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wrapper {
-  background-color: #3D4353;
+  background-color: #3d4353;
 }
 
 .aurige {
@@ -109,6 +109,7 @@ export default {
       @media (max-width: 1170px) {
         border-top: 1px solid rgba(200, 200, 200, 0.3);
       }
+
       @media (min-width: 1171px) {
         border-left: 1px solid rgba(200, 200, 200, 0.3);
       }
