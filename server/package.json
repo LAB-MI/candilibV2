@@ -96,6 +96,7 @@
     ]
   },
   "jest": {
+    "globalTeardown": "<rootDir>/teardown-tests.js",
     "testMatch": [
       "<rootDir>/src/**/?(*.)(spec).{js,jsx,mjs}"
     ],
