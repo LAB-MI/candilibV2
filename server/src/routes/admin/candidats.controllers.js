@@ -1,5 +1,12 @@
-import { synchroAurige, getCandidatsAsCsv } from './business'
-import { findAllCandidatsLean } from '../../models/candidat'
+import {
+  synchroAurige,
+  getCandidatsAsCsv,
+  getBookedCandidatsAsCsv,
+} from './business'
+import {
+  findAllCandidatsLean,
+  findBookedCandidats,
+} from '../../models/candidat'
 import { findPlaceById } from '../../models/place'
 
 export const importCandidats = async (req, res) => {
@@ -32,8 +39,17 @@ export const importCandidats = async (req, res) => {
 }
 
 export const exportCandidats = async (req, res) => {
-  const candidatsAsCsv = await getCandidatsAsCsv()
-  const filename = 'candidatsLibresPrintel.csv'
+  const candidatsAsCsv = await getCandidatsAsCsv(req.candidats)
+  let filename = 'candidatsLibresPrintel.csv'
+  res
+    .status(200)
+    .attachment(filename)
+    .send(candidatsAsCsv)
+}
+
+export const exportBookedCandidats = async (req, res) => {
+  const candidatsAsCsv = await getBookedCandidatsAsCsv(req.candidats)
+  const filename = 'candidatsLibresReserve.csv'
   res
     .status(200)
     .attachment(filename)
@@ -42,10 +58,11 @@ export const exportCandidats = async (req, res) => {
 
 export const getCandidats = async (req, res) => {
   const {
-    query: { format },
+    query: { format, filter },
   } = req
-  if (format && format === 'csv') {
-    exportCandidats(req, res)
+
+  if (filter === 'resa') {
+    getBookedCandidats(req, res)
     return
   }
 
@@ -60,6 +77,24 @@ export const getCandidats = async (req, res) => {
       return candidat
     })
   )
+  if (format && format === 'csv') {
+    exportCandidats(req, res)
+    return
+  }
+  res.json(candidats)
+}
 
+export const getBookedCandidats = async (req, res) => {
+  const {
+    query: { format, date, inspecteur, centre },
+  } = req
+
+  const candidats = await findBookedCandidats(date, inspecteur, centre)
+
+  if (format && format === 'csv') {
+    req.candidats = candidats
+    exportBookedCandidats(req, res)
+    return
+  }
   res.json(candidats)
 }

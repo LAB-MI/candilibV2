@@ -6,9 +6,15 @@ import fileupload from 'express-fileupload'
 import { loggerStream } from './util/logger'
 import routes from './routes'
 
+import npmVersion from '../package.json'
+
 const app = express()
 
 export const apiPrefix = '/api/v2'
+
+app.get(`${apiPrefix}/version`, function (req, res) {
+  res.send(npmVersion.version)
+})
 
 app.use(morgan('combined', { stream: loggerStream }))
 app.use(bodyParser.json({ limit: '20mb' }))

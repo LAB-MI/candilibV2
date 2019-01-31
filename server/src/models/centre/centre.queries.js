@@ -1,43 +1,43 @@
-import Site from './centre.model'
+import Centre from './centre.model'
 
-export const findAllSites = async () => {
-  const sites = await Site.findOne({})
-  return sites
+export const findAllCentres = async () => {
+  const centres = await Centre.findOne({})
+  return centres
 }
 
-export const findSiteByName = async nom => {
-  const site = await Site.findOne({ nom })
-  return site
+export const findCentreByName = async nom => {
+  const centre = await Centre.findOne({ nom })
+  return centre
 }
 
-export const createSite = async (nom, label, adresse) => {
-  const site = new Site({ nom, label, adresse })
-  await site.save()
-  return site
+export const createCentre = async (nom, label, adresse, departement) => {
+  const centre = new Centre({ nom, label, adresse, departement })
+  await centre.save()
+  return centre
 }
 
-export const deleteSiteByName = async nom => {
-  const site = await Site.findOne({ nom })
-  if (!site) {
-    throw new Error('No site found')
+export const deleteCentreByName = async nom => {
+  const centre = await Centre.findOne({ nom })
+  if (!centre) {
+    throw new Error('No centre found')
   }
-  await site.delete()
-  return site
+  await centre.delete()
+  return centre
 }
 
-export const deleteSite = async site => {
-  if (!site) {
-    throw new Error('No site given')
+export const deleteCentre = async centre => {
+  if (!centre) {
+    throw new Error('No centre given')
   }
-  await site.delete()
-  return site
+  await centre.delete()
+  return centre
 }
 
-export const updateSiteLabel = async (site, name, label, adresse) => {
-  if (!site) {
-    throw new Error('site is undefined')
+export const updateCentreLabel = async (centre, name, label, adresse) => {
+  if (!centre) {
+    throw new Error('centre is undefined')
   }
-  await site.update({ name, label, adresse })
-  const updatedSite = await Site.findById(site._id)
-  return updatedSite
+  await centre.update({ name, label, adresse })
+  const updatedCentre = await Centre.findById(centre._id)
+  return updatedCentre
 }
