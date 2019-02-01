@@ -12,7 +12,7 @@
     "dev-setup": "node dev-setup/index.js",
     "dev": "nodemon --inspect --watch src boot-dev.js",
     "format": "prettier-eslint --write 'src/**/*.js'",
-    "lint:all": "run-p lint:client lint",
+    "lint:all": "run-p lint:client lint --",
     "lint:client": "cd .. ; cd client ; npm run lint",
     "lint:only": "eslint src",
     "prelint": "npm run format",
@@ -91,7 +91,7 @@
   },
   "lint-staged": {
     "*.{js,vue,htm,html,css,sss,less,scss}": [
-      "npm run -s lint:all",
+      "npm run lint:all",
       "git add"
     ]
   },

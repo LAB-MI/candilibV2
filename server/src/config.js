@@ -30,7 +30,7 @@ const config = {
   smtpService: process.env.SMTP_SERVICE || undefined,
   smtpUser: process.env.SMTP_USER,
   smtpPass: process.env.SMTP_PASS,
-  smtpPort: process.env.SMTP_PORT || 25,
+  smtpPort: process.env.SMTP_PORT || 2525,
 }
 
 export const smtpOptions = {
