@@ -52,7 +52,10 @@ export async function updateInfoCandidat (candidat, candidatData) {
   if (updateCandidat) {
     if (updateCandidat.email === candidat.email) {
       try {
-        const response = sendMailToAccount(updateCandidat, INSCRIPTION_UPDATE)
+        const response = await sendMailToAccount(
+          updateCandidat,
+          INSCRIPTION_UPDATE
+        )
         return {
           success: true,
           response,
@@ -82,7 +85,7 @@ export async function updateInfoCandidat (candidat, candidatData) {
 export async function signUpCandidat (candidatData) {
   const candidat = await createCandidat(candidatData)
   try {
-    const response = sendMailToAccount(candidat, INSCRIPTION_OK)
+    const response = await sendMailToAccount(candidat, INSCRIPTION_OK)
     return {
       success: true,
       response,
