@@ -9,7 +9,7 @@ Code source de l'application de réservation en ligne de places à l'examen prat
 
 ```bash
 cd server
-docker-compose -f docker-compose.dev.db.yml up
+npm run db
 ```
 
 #### Lancer les tests côté serveur
@@ -52,10 +52,5 @@ C'est le fichier `index.js` dans ce répertoire qui est lancé.
 
 ## TODO
 
-- Gestion des jwt (en cours)
-- Définition des routes (en cours)
-- Structure des données mongo
-- Client Front-office (FO)
-- Client Back-office (BO)
-- Définition des conteneurs db.prod, back, client-fo, client-bo (en cours)
-- Définition des docker-compose
+- Structure des données mongo pour les nouvelles données à prendre en compte
+- Définition des parcours utilisateurs

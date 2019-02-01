@@ -81,6 +81,6 @@ export default {
 
 <style lang="postcss">
 .ag-theme-material .ag-menu {
-  box-shadow: 0px 2px 2px 1px rgba(50, 50, 50, 0.2);
+  box-shadow: 0 2px 2px 1px rgba(50, 50, 50, 0.2);
 }
 </style>

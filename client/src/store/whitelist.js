@@ -36,7 +36,7 @@ export default {
     [DELETE_EMAIL_REQUEST] (state) {
       state.isUpdating = true
     },
-    [DELETE_EMAIL_SUCCESS] (state, ema) {
+    [DELETE_EMAIL_SUCCESS] (state) {
       state.isUpdating = false
     },
     [DELETE_EMAIL_FAILURE] (state) {
@@ -46,7 +46,7 @@ export default {
     [SAVE_EMAIL_REQUEST] (state) {
       state.isUpdating = true
     },
-    [SAVE_EMAIL_SUCCESS] (state, ema) {
+    [SAVE_EMAIL_SUCCESS] (state) {
       state.isUpdating = false
     },
     [SAVE_EMAIL_FAILURE] (state) {
@@ -58,21 +58,27 @@ export default {
     async [FETCH_WHITELIST_REQUEST] ({ commit, dispatch }, content, timeout) {
       commit(FETCH_WHITELIST_REQUEST)
       try {
-        const list = await api.getWhitelist()
+        const list = await api.admin.getWhitelist()
+        if (list.success === false && list.isTokenValid === false) {
+          const error = new Error('Vous n\'êtes plus identifié')
+          error.auth = false
+          throw error
+        }
         commit(FETCH_WHITELIST_SUCCESS, list)
       } catch (error) {
         commit(FETCH_WHITELIST_FAILURE)
-        return dispatch(SHOW_ERROR, 'Error while fetching whitelist')
+        dispatch(SHOW_ERROR, error.message)
+        throw error
       }
     },
 
     async [DELETE_EMAIL_REQUEST] ({ commit, dispatch }, email) {
       commit(DELETE_EMAIL_REQUEST)
       try {
-        const result = await api.removeFromWhitelist(email)
+        const result = await api.admin.removeFromWhitelist(email)
         commit(DELETE_EMAIL_SUCCESS, email)
-        dispatch(FETCH_WHITELIST_REQUEST)
-        return dispatch(SHOW_SUCCESS, `${result.email} supprimé de la liste blanche`)
+        dispatch(SHOW_SUCCESS, `${result.email} supprimé de la liste blanche`)
+        return dispatch(FETCH_WHITELIST_REQUEST)
       } catch (error) {
         commit(DELETE_EMAIL_FAILURE)
         return dispatch(SHOW_ERROR, error.message)
@@ -82,7 +88,7 @@ export default {
     async [SAVE_EMAIL_REQUEST] ({ commit, dispatch }, emailToAdd) {
       commit(SAVE_EMAIL_REQUEST)
       try {
-        const { email, message, success } = await api.addToWhitelist(emailToAdd)
+        const { email, message, success } = await api.admin.addToWhitelist(emailToAdd)
         if (success === false && message) {
           if (message.includes('duplicate key error')) {
             throw new Error(`Email déjà existant : '${emailToAdd}'`)

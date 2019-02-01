@@ -1,5 +1,5 @@
 export * from './constants'
 export * from './crypto'
-export * from './logger'
+export { default as logger } from './logger'
 export * from './regex'
 export * from './token'

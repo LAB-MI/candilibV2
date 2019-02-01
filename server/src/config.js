@@ -26,9 +26,11 @@ const config = {
     admin: 1,
   },
 
-  smtpServer: process.env.SMTP_SERVER || '<server>',
+  smtpServer: process.env.SMTP_SERVER || 'localhost',
   smtpService: process.env.SMTP_SERVICE || undefined,
-  smtpPort: process.env.SMTP_PORT || 25,
+  smtpUser: process.env.SMTP_USER,
+  smtpPass: process.env.SMTP_PASS,
+  smtpPort: process.env.SMTP_PORT || 2525,
 }
 
 export const smtpOptions = {
@@ -39,6 +41,13 @@ export const smtpOptions = {
     // do not failed with selfsign certificates
     rejectUnauthorized: false,
   },
+}
+
+if (config.smtpUser) {
+  smtpOptions.auth = {
+    user: config.smtpUser,
+    pass: config.smtpPass,
+  }
 }
 
 export default config

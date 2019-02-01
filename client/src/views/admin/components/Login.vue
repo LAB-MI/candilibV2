@@ -59,9 +59,10 @@ import { email as emailRegex } from '@/util'
 import {
   BAD_CREDENTIALS,
   FETCH_TOKEN_REQUEST,
-  SHOW_INFO,
   SHOW_ERROR,
-  SIGNED_IN,
+  SHOW_INFO,
+  SHOW_SUCCESS,
+  SIGNED_IN_AS_ADMIN,
 } from '@/store'
 
 export default {
@@ -100,6 +101,10 @@ export default {
       this.$store.dispatch(SHOW_INFO, content)
     },
 
+    showSuccess (content) {
+      this.$store.dispatch(SHOW_SUCCESS, content)
+    },
+
     showError (content) {
       this.$store.dispatch(SHOW_ERROR, content)
     },
@@ -111,8 +116,10 @@ export default {
         return
       }
       const { email, password } = this
+      this.showMessage('Vérification des identifiants en cours...')
       await this.$store.dispatch(FETCH_TOKEN_REQUEST, { email, password })
-      if (this.authStatus === SIGNED_IN) {
+      if (this.authStatus === SIGNED_IN_AS_ADMIN) {
+        this.showSuccess('Vous êtes identifié')
         this.$router.push(this.$route.query.nextPath || '/admin')
       }
       if (this.authStatus === BAD_CREDENTIALS) {
@@ -136,10 +143,9 @@ export default {
   background-size: cover;
   background-position: center;
   position: relative;
-
 }
 
-.login:before {
+.login::before {
   content: "";
   display: block;
   position: absolute;
@@ -156,7 +162,7 @@ export default {
   background: #fff;
   border-radius: 10px;
   padding: 3.5em 3.5em 2em 3.5em;
-  box-shadow: 0 5px 10px 0px rgba(0, 0, 0, 0.9);
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.9);
 }
 
 .form-input {
@@ -165,7 +171,7 @@ export default {
 
 .submit-btn {
   position: relative;
-  font-family: Poppins-Medium;
+  font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
   font-size: 15px;
   color: #fff;
   line-height: 1.2;

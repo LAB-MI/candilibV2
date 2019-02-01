@@ -12,6 +12,8 @@
     "dev-setup": "node dev-setup/index.js",
     "dev": "nodemon --inspect --watch src boot-dev.js",
     "format": "prettier-eslint --write 'src/**/*.js'",
+    "lint:all": "run-p lint:client lint --",
+    "lint:client": "cd .. ; cd client ; npm run lint",
     "lint:only": "eslint src",
     "prelint": "npm run format",
     "lint": "eslint src",
@@ -20,6 +22,8 @@
     "start:prod": "node dist/index.js",
     "test:watch": "cross-env NODE_ENV=test jest --watch",
     "pretest": "npm run lint",
+    "test:all": "run-s test test:client",
+    "test:client": "cd .. ; cd client ; npm test",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit"
   },
   "keywords": [
@@ -69,11 +73,12 @@
     "eslint-plugin-node": "^8.0.1",
     "eslint-plugin-promise": "^4.0.1",
     "eslint-plugin-standard": "^4.0.0",
-    "husky": "^1.2.1",
+    "husky": "^1.3.1",
     "jest": "^23.6.0",
     "lint-staged": "^8.1.1",
     "mongodb-memory-server": "^2.9.3",
     "nodemon": "^1.18.9",
+    "npm-run-all": "^4.1.5",
     "prettier-eslint-cli": "^4.7.1",
     "regenerator-runtime": "^0.13.1",
     "supertest": "^3.4.2"
@@ -81,12 +86,12 @@
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm test"
+      "pre-push": "npm run test:all"
     }
   },
   "lint-staged": {
-    "*.js": [
-      "npm run lint -s",
+    "*.{js,vue,htm,html,css,sss,less,scss}": [
+      "npm run lint:all",
       "git add"
     ]
   },

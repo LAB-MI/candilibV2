@@ -61,13 +61,13 @@ export default {
     async uploadCandidats () {
       const data = new FormData()
       data.append('file', this.file)
-      const result = await api.uploadCandidatsJson(data)
+      const result = await api.admin.uploadCandidatsJson(data)
       this.$store.dispatch(SHOW_SUCCESS, result.message)
       this.file = null
     },
 
     async getCandidatsAsCsv () {
-      const response = await api.exportCsv()
+      const response = await api.admin.exportCsv()
       downloadContent(response)
     },
   },
@@ -76,7 +76,7 @@ export default {
 
 <style lang="postcss" scoped>
 .wrapper {
-  background-color: #3D4353;
+  background-color: #3d4353;
 }
 
 .aurige {
@@ -109,6 +109,7 @@ export default {
       @media (max-width: 1170px) {
         border-top: 1px solid rgba(200, 200, 200, 0.3);
       }
+
       @media (min-width: 1171px) {
         border-left: 1px solid rgba(200, 200, 200, 0.3);
       }

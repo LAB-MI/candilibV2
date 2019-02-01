@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import sanitizeHtml from 'sanitize-html'
 
 import {
   email as emailRegex,
@@ -8,7 +9,7 @@ import {
 
 const { Schema } = mongoose
 
-const CandidatSchema = new Schema({
+const candidatFields = {
   nomNaissance: {
     type: String,
     required: true,
@@ -66,10 +67,30 @@ const CandidatSchema = new Schema({
   },
   place: {
     type: Object,
-    default: {},
+    default: undefined,
   },
-})
+}
+
+const CandidatSchema = new Schema(candidatFields)
 
 CandidatSchema.index({ codeNeph: 1, nomNaissance: 1 }, { unique: true })
+
+CandidatSchema.pre('save', async function preSave () {
+  const candidat = this
+
+  Object.keys(candidatFields).map(key => {
+    const value = candidat[key]
+    if (value) {
+      candidat[key] = sanitizeHtml(value)
+    }
+  })
+
+  candidat.prenom =
+    candidat.prenom &&
+    candidat.prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  candidat.nom =
+    candidat.nom &&
+    candidat.nom.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+})
 
 export default mongoose.model('Candidat', CandidatSchema)

@@ -6,7 +6,9 @@ import {
   findCandidatByNomNeph,
   findAllCandidatsLean,
   findBookedCandidats,
+  updateCandidatSignUp,
 } from './'
+
 import { connect, disconnect } from '../../mongo-connection'
 import { deletePlace, createPlace, findAllPlaces } from '../place'
 import moment from 'moment'
@@ -108,6 +110,11 @@ const autreNomNaissance = 'Dupond'
 const prenom = 'Jean'
 const codeNeph = '123456789012'
 const autreCodeNeph = '123456789013'
+
+const validEmail1 = 'test@example.com'
+const portable1 = '0612345679'
+const adresse1 = '110 Rue Hoche 93420 Villepinte'
+const prenom1 = 'Test prenom'
 
 describe('Candidat', () => {
   let candidat
@@ -350,6 +357,32 @@ describe('Candidat', () => {
 
       // Then
       expect(noCandidat).toBe(null)
+    })
+
+    it('should update a candidat', async () => {
+      // Given
+      const email = validEmail
+      candidat = await createCandidat({
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+      })
+
+      const candidat1 = await updateCandidatSignUp(candidat, {
+        prenom: prenom1,
+        email: validEmail1,
+        adresse: adresse1,
+        portable: portable1,
+      })
+
+      expect(candidat1).not.toBe(null)
+      expect(candidat1).toHaveProperty('prenom', prenom1)
+      expect(candidat1).toHaveProperty('portable', portable1)
+      expect(candidat1).toHaveProperty('adresse', adresse1)
+      expect(candidat1).toHaveProperty('email', validEmail1)
     })
   })
 

@@ -6,6 +6,13 @@ import AdminHome from '@/views/AdminHome.vue'
 import CandidatHome from '@/views/CandidatHome.vue'
 import Error404 from '@/views/Error404.vue'
 
+import {
+  requireAdminAuth,
+  requireCandidatAuth,
+  checkAdminToken,
+  checkCandidatToken,
+} from './router-checks'
+
 Vue.use(Router)
 
 const { CLIENT_BUILD_TARGET, NODE_ENV } = process.env
@@ -19,42 +26,34 @@ const adminRoutes = [
     path: '/admin-login',
     name: 'admin-login',
     component: AdminHome,
-    meta: {
-      guest: true,
-    },
+    beforeEnter: checkAdminToken,
   },
   {
     path: '/admin',
     name: 'admin',
     component: () => import('./views/admin'),
+    beforeEnter: requireAdminAuth,
     children: [
       {
         path: ':tool',
         name: 'adminTool',
       },
     ],
-    meta: {
-      requiresAuth: true,
-    },
   },
 ]
 
 const candidatRoutes = [
   {
-    path: '/login',
-    name: 'candidat-login',
+    path: '/candidat-signup',
+    name: 'candidat-signup',
     component: CandidatHome,
-    meta: {
-      guest: true,
-    },
+    beforeEnter: checkCandidatToken,
   },
   {
     path: '/candidat',
     name: 'candidat',
     component: () => import('./views/candidat'),
-    meta: {
-      requiresAuth: true,
-    },
+    beforeEnter: requireCandidatAuth,
   },
 ]
 
