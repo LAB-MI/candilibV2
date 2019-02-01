@@ -77,12 +77,20 @@ export default {
       })
       return json
     },
+
     async sendMagicLink (email) {
       const json = await apiClient.post(apiPaths.candidat.magicLink, {
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({ email }),
+      })
+      return json
+    },
+
+    async getMyProfile () {
+      const json = await apiClient.get(apiPaths.candidat.myProfile, {
+        headers: getHeadersForJson(),
       })
       return json
     },

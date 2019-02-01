@@ -1,10 +1,11 @@
 import express from 'express'
-import { verifyToken } from '../middlewares'
 
-export { preSignup } from './candidat.controllers'
+import { getMe } from './candidat.controllers'
 
 const router = express.Router()
 
-router.use(verifyToken)
+router.get('/me', getMe)
+
+export { preSignup } from './candidat.controllers'
 
 export default router

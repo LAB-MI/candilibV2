@@ -14,7 +14,8 @@ export function verifyToken (req, res, next) {
 
   try {
     const decoded = checkToken(token)
-    const { level } = decoded
+    const { id, level } = decoded
+    req.userId = id
     req.userLevel = level
     next()
   } catch (err) {

@@ -1,10 +1,8 @@
 <template>
   <v-tooltip bottom fixed>
-    <router-link class="d-block" slot="activator" v-scroll-to="scrollToEl" :to="routerTo">
-      <v-btn icon>
-        <v-icon>{{iconName}}</v-icon>
-      </v-btn>
-    </router-link>
+    <v-btn icon slot="activator">
+      <v-icon>{{iconName}}</v-icon>
+    </v-btn>
     <span>{{tooltipText}}</span>
   </v-tooltip>
 </template>
