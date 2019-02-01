@@ -32,6 +32,11 @@ export const findCandidatByEmail = async email => {
   return candidat
 }
 
+export const findCandidatById = async (id, options) => {
+  const candidat = await Candidat.findById(id, options)
+  return candidat
+}
+
 export const findActiveCandidatByEmail = async email => {
   const candidat = await Candidat.findOne({ email, archived: undefined })
   return candidat
