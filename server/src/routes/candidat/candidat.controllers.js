@@ -1,11 +1,36 @@
 // import { synchroAurige, getCandidatsAsCsv } from './business'
 import { email as emailRegex, logger } from '../../util'
-import { createCandidat, findCandidatByEmail } from '../../models/candidat'
+import { findCandidatByEmail } from '../../models/candidat'
+
 import { findWhitelistedByEmail } from '../../models/whitelisted'
+import {
+  CheckCandidatIsSignedBefore,
+  updateInfoCandidat,
+  signUpCandidat,
+} from './candidat.business'
 
 export async function preSignup (req, res) {
   const candidatData = req.body
-  const { codeNeph, nomNaissance, portable, adresse, email } = candidatData
+  const candidatDataTrim = {
+    codeNeph: candidatData.codeNeph
+      ? candidatData.codeNeph.trim()
+      : candidatData.codeNeph,
+    nomNaissance: candidatData.nomNaissance
+      ? candidatData.nomNaissance.trim()
+      : candidatData.nomNaissance,
+    prenom: candidatData.prenom
+      ? candidatData.prenom.trim()
+      : candidatData.prenom,
+    portable: candidatData.portable
+      ? candidatData.portable.trim()
+      : candidatData.portable,
+    adresse: candidatData.adresse
+      ? candidatData.adresse.trim()
+      : candidatData.adresse,
+    email: candidatData.email ? candidatData.email.trim() : candidatData.email,
+  }
+
+  const { codeNeph, nomNaissance, portable, adresse, email } = candidatDataTrim
 
   const isFormFilled = [codeNeph, nomNaissance, email, portable, adresse].every(
     e => !!e
@@ -55,8 +80,22 @@ export async function preSignup (req, res) {
     return
   }
 
+  const isSigned = await CheckCandidatIsSignedBefore(candidatDataTrim)
+  if (isSigned && isSigned.result) {
+    res.status(409).json(isSigned.result)
+    return
+  }
+
   const candidatWithSameEmail = await findCandidatByEmail(email)
-  if (candidatWithSameEmail) {
+
+  if (
+    candidatWithSameEmail &&
+    !(
+      isSigned &&
+      isSigned.candidat &&
+      isSigned.candidat.email === candidatWithSameEmail.email
+    )
+  ) {
     res.status(409).json({
       success: false,
       message:
@@ -65,9 +104,23 @@ export async function preSignup (req, res) {
     return
   }
 
+  if (isSigned && isSigned.candidat) {
+    const updateresult = await updateInfoCandidat(
+      isSigned.candidat,
+      candidatDataTrim
+    )
+
+    if (updateresult.success) {
+      res.status(200).json(updateresult)
+    } else {
+      res.status(409).json(updateresult)
+    }
+    return
+  }
+
   try {
-    const candidat = await createCandidat(candidatData)
-    res.status(200).json({ success: true, candidat })
+    const response = await signUpCandidat(candidatDataTrim)
+    res.status(200).json(response)
   } catch (error) {
     logger.error(error)
     res.status(500).json({ success: false, ...error })

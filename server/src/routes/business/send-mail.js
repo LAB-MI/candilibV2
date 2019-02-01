@@ -31,7 +31,7 @@ export const sendMail = async (to, { subject, content: html }) => {
 
 export const sendMailToAccount = async (candidat, flag) => {
   const message = await mailMessage(candidat, flag)
-  sendMail(candidat.email, message)
+  return sendMail(candidat.email, message)
 }
 
 export const sendMagicLink = async (candidat, token) => {

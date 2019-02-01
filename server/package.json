@@ -91,7 +91,7 @@
   },
   "lint-staged": {
     "*.{js,vue,htm,html,css,sss,less,scss}": [
-      "npm run lint:all -s",
+      "npm run -s lint:all",
       "git add"
     ]
   },

@@ -103,3 +103,14 @@ export const findBookedCandidats = async (date, inspecteur, centre) => {
   }
   return null
 }
+
+export const updateCandidatSignUp = async (candidat, data) => {
+  const { prenom, email, portable, adresse } = data
+
+  if (!candidat) {
+    throw new Error('candidat is undefined')
+  }
+  await candidat.update({ prenom, email, portable, adresse })
+  const updatedCandidat = await Candidat.findById(candidat._id)
+  return updatedCandidat
+}
