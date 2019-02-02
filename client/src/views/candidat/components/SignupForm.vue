@@ -324,7 +324,7 @@ export default {
         this.$store.dispatch(SHOW_SUCCESS, 'Votre demande d’inscription est en cours de vérification, vous recevrez une information sous 48h hors week-end et jours fériés.')
         this.$refs.presignupForm.reset()
       } catch (error) {
-
+        this.$store.dispatch(SHOW_ERROR, 'Un problème technique est survenu durant votre pré-inscription. Merci de réessayer ultérieurement.')
       }
     },
 
