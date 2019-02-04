@@ -54,6 +54,11 @@ const candidatRoutes = [
     name: 'candidat',
     component: () => import('./views/candidat'),
     beforeEnter: requireCandidatAuth,
+    children: [
+      {
+        path: ':subpage',
+      },
+    ],
   },
 ]
 

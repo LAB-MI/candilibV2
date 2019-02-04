@@ -28,7 +28,7 @@
 <script>
 import { SIGN_OUT } from '@/store'
 
-import HeaderIcon from './HeaderIcon'
+import HeaderIcon from '@/components/HeaderIcon'
 
 export default {
   components: {
@@ -39,6 +39,7 @@ export default {
     ids: Object,
     headerIcons: Array,
   },
+
   methods: {
     async disconnect () {
       await this.$store.dispatch(SIGN_OUT)

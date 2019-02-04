@@ -26,14 +26,14 @@ body {
 }
 
 h2 {
-  font-family: 'Poppins-Bold', Arial, Helvetica, sans-serif;
+  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
   font-size: 2.5em;
   font-weight: normal;
   color: #777;
 }
 
 h3 {
-  font-family: 'Poppins-Bold', Arial, Helvetica, sans-serif;
+  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
   color: #888;
   font-size: 1.5em;
 }
@@ -56,6 +56,20 @@ h3 {
 
   &--column {
     flex-direction: column;
+
+    &-on-mobile {
+      @media (max-width: 599px) {
+        flex-direction: column;
+      }
+    }
+  }
+
+  &__item {
+    flex: 1 1 auto;
+
+    &--grow {
+      flex-grow: 1;
+    }
   }
 }
 
@@ -81,5 +95,35 @@ h3 {
     background: #fff;
     background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.09) 35%, rgba(255, 255, 255, 0.09) 70%, transparent 100%);
     content: "";
+  }
+}
+
+.u-max-width {
+  max-width: 1140px;
+  margin-right: auto;
+  margin-left: auto;
+
+  &-parent {
+    .v-toolbar__content {
+      max-width: 1140px;
+      margin-right: auto;
+      margin-left: auto;
+    }
+  }
+}
+
+.u-fixed-header {
+  position: fixed;
+}
+
+.u-only-on-desktop {
+  @media (max-width: 599px) {
+    display: none;
+  }
+}
+
+.u-only-on-mobile {
+  @media (min-width: 600px) {
+    display: none;
   }
 }

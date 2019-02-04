@@ -1,7 +1,6 @@
 // import { synchroAurige, getCandidatsAsCsv } from './business'
 import { email as emailRegex, logger } from '../../util'
-import { findCandidatByEmail } from '../../models/candidat'
-
+import { findCandidatByEmail, findCandidatById } from '../../models/candidat'
 import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
   CheckCandidatIsSignedBefore,
@@ -124,5 +123,31 @@ export async function preSignup (req, res) {
   } catch (error) {
     logger.error(error)
     res.status(500).json({ success: false, ...error })
+  }
+}
+
+export async function getMe (req, res) {
+  try {
+    const options = {
+      _id: 0,
+      nomNaissance: 1,
+      prenom: 1,
+      codeNeph: 1,
+      email: 1,
+      portable: 1,
+      adresse: 1,
+    }
+
+    const candidat = await findCandidatById(req.userId, options)
+
+    res.json({
+      candidat,
+    })
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error: JSON.stringify(error),
+    })
   }
 }
