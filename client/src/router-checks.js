@@ -6,7 +6,7 @@ import store, {
 } from '@/store'
 
 export async function requireCandidatAuth (to, from, next) {
-  const token = from.query.token || localStorage.getItem('token')
+  const token = to.query.token || localStorage.getItem('token')
   const signupRoute = {
     name: 'candidat-signup',
     query: { nextPath: to.fullPath },
@@ -20,11 +20,12 @@ export async function requireCandidatAuth (to, from, next) {
     next(signupRoute)
     return
   }
+  delete to.query.token
   next()
 }
 
 export async function requireAdminAuth (to, from, next) {
-  const token = from.query.token || localStorage.getItem('token')
+  const token = localStorage.getItem('token')
   const signinRoute = {
     name: 'admin-login',
     query: { nextPath: to.fullPath },
@@ -53,7 +54,7 @@ export async function checkAdminToken (to, from, next) {
 }
 
 export async function checkCandidatToken (to, from, next) {
-  const token = from.query.token || localStorage.getItem('token')
+  const token = to.query.token || localStorage.getItem('token')
   if (!token) {
     next()
     return
