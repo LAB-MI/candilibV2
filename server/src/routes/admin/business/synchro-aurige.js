@@ -75,7 +75,7 @@ export const synchroAurige = async buffer => {
         )
         mailType = EPREUVE_ETG_KO
         recipient = candidat
-      } else if (isETGStillValid(dateReussiteETG)) {
+      } else if (!isETGStillValid(dateReussiteETG)) {
         await deleteCandidat(candidat)
         logger.warn(`Ce candidat ${email} sera supprimé : Date ETG KO`)
         mailType = EPREUVE_ETG_KO
