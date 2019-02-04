@@ -1,6 +1,5 @@
 import delay from 'delay'
 import mongoose from 'mongoose'
-import MongoMemoryServer from 'mongodb-memory-server'
 
 import logger from './util/logger'
 
@@ -9,7 +8,7 @@ mongoose.Promise = Promise
 const isTest = process.env.NODE_ENV === 'test'
 const dbName = 'candilib'
 
-const mongoServer = new MongoMemoryServer()
+let mongoServer
 
 const mongoURL = process.env.MONGO_URL || `mongodb://localhost:27017/${dbName}`
 
@@ -24,7 +23,10 @@ export const connect = async () => {
   let mongoUri
   try {
     if (isTest) {
-      mongoUri = await mongoServer.getConnectionString()
+      const {
+        getMongoServerConnectionString,
+      } = await import('./mongo-memory-server-setup')
+      mongoUri = await getMongoServerConnectionString()
     } else {
       mongoUri = mongoURL
     }
@@ -56,3 +58,5 @@ export const disconnect = async () => {
     logger.info('Disconnected from Mongo')
   }
 }
+
+export const stopMongoMemoryServer = () => mongoServer && mongoServer.stop()

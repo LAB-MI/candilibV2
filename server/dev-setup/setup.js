@@ -1,4 +1,5 @@
 import { connect, disconnect } from '../src/mongo-connection'
+import { stopMongoMemoryServer } from '../src/mongo-memory-server-setup'
 import logger from '../src/util/logger'
 
 connect()
@@ -16,4 +17,7 @@ connect()
     logger.error(`Server could not connect to DB, exiting`)
     logger.error(error)
   })
-  .finally(() => disconnect())
+  .then(() => disconnect())
+  .then(() => logger.info('Disconnected from mongo-memory-server'))
+  .then(() => stopMongoMemoryServer())
+  .then(() => logger.info(`mongo-memory-server stopped`))
