@@ -4,7 +4,7 @@ services:
   db:
     image: mongo:latest
     ports:
-      - "27017"
+      - "27017:27017"
     networks:
       - candilib-network
     volumes:
@@ -21,8 +21,8 @@ services:
         npm_registry: ${NPM_REGISTRY}
     volumes:
       - .:/app:delegated
-      - ./package.json:/package.json
-      - ./package-lock.json:/package-lock.json
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
       # this is a workaround to prevent host node_modules from accidently getting mounted in container
       # in case you want to use node/npm both outside container for test/lint etc. and also inside container
       # this will overwrite the default node_modules dir in container so it won't conflict with our
@@ -31,15 +31,32 @@ services:
     container_name: candilib_api
     depends_on:
       - db
+      - fakesmtp
     ports:
       - "${WEB_PORT:-8000}:8000"
+      - "9229:9229"
 #    env_file:
 #      - ${cnf:-.env}
     environment:
-      NODE_ENV: production
+      NODE_ENV: development
       MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
+      SMTP_SERVER: candilib_smtp
+      SMTP_PORT: 25
+      MAIL_FROM: noreply@interieur.gouv.fr
+      CANDIDAT_EXPIREDIN: 72h
+      PUBLIC_URL: http://localhost:8080
     networks:
       - candilib-network
+  fakesmtp:
+    image: digiplant/fake-smtp
+    container_name: candilib_smtp
+    volumes:
+      - ../../output:/var/mail
+    ports:
+    - "25:2525"
+    networks:
+      - candilib-network
+
 networks:
   candilib-network:
     driver: bridge
