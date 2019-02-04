@@ -26,7 +26,7 @@
           <v-list-tile v-show="adding">
 
             <v-list-tile-action>
-              <v-btn icon>
+              <v-btn type="submit" icon>
                 <v-icon color="#17a2b8">save</v-icon>
               </v-btn>
             </v-list-tile-action>
