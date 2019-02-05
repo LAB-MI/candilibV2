@@ -8,28 +8,24 @@ import {
   signUpCandidat,
 } from './candidat.business'
 
-export async function preSignup (req, res) {
-  const candidatData = req.body
-  const candidatDataTrim = {
-    codeNeph: candidatData.codeNeph
-      ? candidatData.codeNeph.trim()
-      : candidatData.codeNeph,
-    nomNaissance: candidatData.nomNaissance
-      ? candidatData.nomNaissance.trim()
-      : candidatData.nomNaissance,
-    prenom: candidatData.prenom
-      ? candidatData.prenom.trim()
-      : candidatData.prenom,
-    portable: candidatData.portable
-      ? candidatData.portable.trim()
-      : candidatData.portable,
-    adresse: candidatData.adresse
-      ? candidatData.adresse.trim()
-      : candidatData.adresse,
-    email: candidatData.email ? candidatData.email.trim() : candidatData.email,
-  }
+const mandatoryFields = [
+  'codeNeph',
+  'nomNaissance',
+  'email',
+  'portable',
+  'adresse',
+]
 
-  const { codeNeph, nomNaissance, portable, adresse, email } = candidatDataTrim
+const trimEveryValue = obj =>
+  Object.entries(obj).reduce((acc, [key, value]) => {
+    acc[key] = value && (typeof value === 'string' ? value.trim() : value)
+    return acc
+  }, {})
+
+export async function preSignup (req, res) {
+  const candidatData = trimEveryValue(req.body)
+
+  const { codeNeph, nomNaissance, portable, adresse, email } = candidatData
 
   const isFormFilled = [codeNeph, nomNaissance, email, portable, adresse].every(
     e => !!e
@@ -38,13 +34,7 @@ export async function preSignup (req, res) {
   const isValidEmail = emailRegex.test(email)
 
   if (!isFormFilled) {
-    const fieldsWithErrors = [
-      'codeNeph',
-      'nomNaissance',
-      'email',
-      'portable',
-      'adresse',
-    ]
+    const fieldsWithErrors = mandatoryFields
       .map(key => (candidatData[key] ? '' : key))
       .filter(e => e)
 
@@ -79,7 +69,7 @@ export async function preSignup (req, res) {
     return
   }
 
-  const isSigned = await checkCandidatIsSignedBefore(candidatDataTrim)
+  const isSigned = await checkCandidatIsSignedBefore(candidatData)
   if (isSigned && isSigned.result) {
     res.status(409).json(isSigned.result)
     return
@@ -106,7 +96,7 @@ export async function preSignup (req, res) {
   if (isSigned && isSigned.candidat) {
     const updateresult = await updateInfoCandidat(
       isSigned.candidat,
-      candidatDataTrim
+      candidatData
     )
 
     if (updateresult.success) {
@@ -118,7 +108,7 @@ export async function preSignup (req, res) {
   }
 
   try {
-    const response = await signUpCandidat(candidatDataTrim)
+    const response = await signUpCandidat(candidatData)
     res.status(200).json(response)
   } catch (error) {
     logger.error(error)
