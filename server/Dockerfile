@@ -30,7 +30,8 @@ COPY babel.config.js package.json package-lock.json teardown-tests.js ./
 # Install app dependencies
 RUN npm install
 
-CMD ["npm", "start"]
+#CMD ["npm", "start"]
+CMD ["npm","run",  "dev"]
 
 ##########################
 # Step 3: "build" target #

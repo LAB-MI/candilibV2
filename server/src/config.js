@@ -1,5 +1,11 @@
 import moment from 'moment'
 
+const isProduction = process.env.NODE_ENV === 'production'
+
+const DEFAULT_PUBLIC_URL = isProduction
+  ? 'https://beta.interieur.gouv.fr/candilib'
+  : 'http://localhost:8080/candilib'
+
 const config = {
   secret: process.env.SECRET || 'secret',
   candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '1h',
@@ -30,7 +36,11 @@ const config = {
   smtpService: process.env.SMTP_SERVICE || undefined,
   smtpUser: process.env.SMTP_USER,
   smtpPass: process.env.SMTP_PASS,
-  smtpPort: process.env.SMTP_PORT || 2525,
+  smtpPort: process.env.SMTP_PORT || 25,
+
+  PUBLIC_URL: process.env.PUBLIC_URL || DEFAULT_PUBLIC_URL,
+  CANDIDAT_ROUTE: '/candidat',
+  ADMIN_ROUTE: '/admin',
 }
 
 export const smtpOptions = {
