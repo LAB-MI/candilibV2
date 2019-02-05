@@ -6,7 +6,7 @@ import {
   createCandidat,
 } from '../../models/candidat'
 
-export async function CheckCandidatIsSignedBefore (candidatData) {
+export async function checkCandidatIsSignedBefore (candidatData) {
   const {
     nomNaissance,
     codeNeph,
@@ -37,7 +37,7 @@ export async function CheckCandidatIsSignedBefore (candidatData) {
         result: {
           success: false,
           message:
-            'Vous avez déjà pré-inscrist sur Candilib, votre compte est en cours de vérification',
+            'Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification.',
         },
       }
     }
@@ -60,7 +60,7 @@ export async function updateInfoCandidat (candidat, candidatData) {
           success: true,
           response,
           message:
-            'La modification des vos informations ont bien été prise en compte. Veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
+            'Les modifications de vos informations ont bien été prises en compte. Veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
           candidat: updateCandidat,
         }
       } catch (error) {
@@ -73,12 +73,12 @@ export async function updateInfoCandidat (candidat, candidatData) {
       success: true,
       candidat: updateCandidat,
       message:
-        'La modification des vos informations ont bien été prise en compte.',
+        'Les modifications de vos informations ont bien été prises en compte.',
     }
   }
   return {
     success: false,
-    message: 'Echec de mise à jours de votre compte',
+    message: 'Échec de la mise à jour de votre compte',
   }
 }
 

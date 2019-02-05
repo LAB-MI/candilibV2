@@ -3,7 +3,7 @@ import { email as emailRegex, logger } from '../../util'
 import { findCandidatByEmail, findCandidatById } from '../../models/candidat'
 import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
-  CheckCandidatIsSignedBefore,
+  checkCandidatIsSignedBefore,
   updateInfoCandidat,
   signUpCandidat,
 } from './candidat.business'
@@ -79,7 +79,7 @@ export async function preSignup (req, res) {
     return
   }
 
-  const isSigned = await CheckCandidatIsSignedBefore(candidatDataTrim)
+  const isSigned = await checkCandidatIsSignedBefore(candidatDataTrim)
   if (isSigned && isSigned.result) {
     res.status(409).json(isSigned.result)
     return
