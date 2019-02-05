@@ -181,7 +181,7 @@ describe('Test the candidat signup', () => {
       } catch (error) {}
     })
 
-    it('Update existing candidat', async () => {
+    it('Should response 409 for an existing candidat', async () => {
       const { body } = await request(app)
         .post(`${apiPrefix}/candidat/preinscription`)
         .send(validCandidat)
@@ -202,7 +202,7 @@ describe('Test the candidat signup', () => {
       expect(candidat).toHaveProperty('email', validCandidat.email)
     })
 
-    it('Update candidat with existing email', async () => {
+    it('Should response 409 with an existing email', async () => {
       const { body } = await request(app)
         .post(`${apiPrefix}/candidat/preinscription`)
         .send(updateFailedCandidatWithEmailExist)
@@ -222,7 +222,7 @@ describe('Test the candidat signup', () => {
       )
     })
 
-    it('Update candidat', async () => {
+    it('Should successfully update the candidat', async () => {
       const { body } = await request(app)
         .post(`${apiPrefix}/candidat/preinscription`)
         .send(updateCandidat)
