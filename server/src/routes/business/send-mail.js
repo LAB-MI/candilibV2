@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer'
 import smtpTransport from 'nodemailer-smtp-transport'
 import { htmlToText } from 'nodemailer-html-to-text'
 
-import mailMessage from './message-templates'
+import getMailData from './message-templates'
 import config, { smtpOptions } from '../../config'
 import logger from '../../util/logger'
 
@@ -30,7 +30,7 @@ export const sendMail = async (to, { subject, content: html }) => {
 }
 
 export const sendMailToAccount = async (candidat, flag) => {
-  const message = await mailMessage(candidat, flag)
+  const message = await getMailData(candidat, flag)
   return sendMail(candidat.email, message)
 }
 
@@ -40,6 +40,6 @@ export const sendMagicLink = async (candidat, token) => {
 
   const url = `${authUrl}?token=${encodeURIComponent(token)}&redirect=calendar`
 
-  const message = await mailMessage(candidat, flag, url)
+  const message = await getMailData(candidat, flag, url)
   return sendMail(candidat.email, message)
 }
