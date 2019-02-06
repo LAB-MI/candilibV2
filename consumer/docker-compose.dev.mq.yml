@@ -1,0 +1,6 @@
+version: '3.4'
+services:
+  mq:
+    image: rabbitmq:latest
+    ports:
+      - "${DB_PORT:-5672}:5672"

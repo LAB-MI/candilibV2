@@ -38,6 +38,7 @@
   "author": "Ministère de l'intérieur",
   "license": "ISC",
   "dependencies": {
+    "amqplib": "^0.5.3",
     "bcryptjs": "^2.4.3",
     "cross-env": "^5.2.0",
     "delay": "^4.1.0",

@@ -1,0 +1,23 @@
+{
+  "name": "candilib-msg-receiver",
+  "version": "0.0.1",
+  "description": "",
+  "main": "boot-dev.js",
+  "scripts": {
+    "dev": "nodemon --watch src boot-dev.js",
+    "test": "jest"
+  },
+  "author": "Stanislas Ormières, LAB-MI",
+  "license": "ISC",
+  "dependencies": {
+    "amqplib": "^0.5.3"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "@babel/register": "^7.0.0",
+    "dotenv": "^6.2.0",
+    "nodemon": "^1.18.9"
+  }
+}
