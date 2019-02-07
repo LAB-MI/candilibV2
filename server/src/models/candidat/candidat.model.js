@@ -61,9 +61,13 @@ const candidatFields = {
     trim: true,
   },
   // retourAurige
-  isValid: {
+  isValidatedByAurige: {
     type: Boolean,
     default: null,
+  },
+  presignedUpAt: {
+    type: Date,
+    default: undefined,
   },
   place: {
     type: Object,
@@ -75,6 +79,14 @@ const candidatFields = {
   },
   emailValidationHash: {
     type: String,
+    default: undefined,
+  },
+  emailValidatedAt: {
+    type: Date,
+    default: undefined,
+  },
+  aurigeValidatedAt: {
+    type: Date,
     default: undefined,
   },
 }

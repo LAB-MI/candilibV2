@@ -182,7 +182,7 @@ export default {
 
     async addToWhitelist (email) {
       const json = await apiClient.post(apiPaths.admin.whitelist, {
-        headers: getHeadersForJson(),
+        headers: getHeadersForAdminJson(),
         body: JSON.stringify({ email }),
       })
       return json

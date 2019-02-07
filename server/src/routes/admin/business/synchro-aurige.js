@@ -87,24 +87,24 @@ export const synchroAurige = async buffer => {
         recipient = candidatAurige
       }
       if (mailType) {
-        sendMailToAccount(recipient, mailType)
+        await sendMailToAccount(recipient, mailType)
         logger.info(`Envoi de mail ${mailType} à ${email}`)
         return getCandidatStatus(nomNaissance, codeNeph, 'success')
       }
 
       if (candidatExistant === CANDIDAT_EXISTANT) {
-        const { isValid } = candidat
+        const { isValidatedByAurige } = candidat
 
         candidat.set({
           dateReussiteETG,
           dateDernierEchecPratique,
           reussitePratique,
-          isValid: true,
+          isValidatedByAurige: true,
         })
         return candidat
           .save()
           .then(candidat => {
-            if (isValid) {
+            if (isValidatedByAurige) {
               logger.info(`Ce candidat ${candidat.email} a été mis à jour`)
               return getCandidatStatus(nomNaissance, codeNeph, 'success')
             } else {

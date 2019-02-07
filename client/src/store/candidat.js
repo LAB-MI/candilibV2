@@ -2,6 +2,18 @@ import api from '@/api'
 
 import { SHOW_ERROR } from '@/store'
 
+import {
+  EMAIL_VALIDATION_IS_PENDING_TITLE,
+  EMAIL_VALIDATION_IS_PENDING,
+  EMAIL_VALIDATION_IN_PROGRESS_TITLE,
+  EMAIL_VALIDATION_IN_PROGRESS,
+  EMAIL_VALIDATION_CHECKED_TITLE,
+  DEFAULT_MESSAGE_TYPE,
+  INFO_MESSAGE_TYPE,
+  SUCCESS_MESSAGE_TYPE,
+  ERROR_MESSAGE_TYPE,
+} from '@/constants'
+
 export const DISPLAY_NAV_DRAWER = 'DISPLAY_NAV_DRAWER'
 export const SET_MESSAGE = 'SET_MESSAGE'
 
@@ -21,25 +33,17 @@ export const FETCH_MY_PROFILE_REQUEST = 'FETCH_MY_PROFILE_REQUEST'
 export const FETCH_MY_PROFILE_FAILURE = 'FETCH_MY_PROFILE_FAILURE'
 export const FETCH_MY_PROFILE_SUCCESS = 'FETCH_MY_PROFILE_SUCCESS'
 
-const EMAIL_VALIDATION_IN_PROGRESS = 'Veuillez patienter pendant la validation de votre adresse courriel...'
-const EMAIL_VALIDATION_IS_PENDING = `Vous allez bientôt recevoir un courriel à l'adresse que vous nous avez indiqué.
-        Veuillez consulter votre boîte, et valider votre adresse courriel en cliquant sur le lien indiqué dans le message.`
-
-const INFO_MESSAGE_TYPE = 'info'
-const DEFAULT_MESSAGE_TYPE = INFO_MESSAGE_TYPE
-const ERROR_MESSAGE_TYPE = 'error'
-const SUCCESS_MESSAGE_TYPE = 'success'
-
 export default {
   state: {
     isCheckingEmail: false,
-    isSending: false,
-    isSendingMail: false,
+    isSendingPresignup: false,
+    isSendingMagicLink: false,
     isFetchingProfile: false,
     me: undefined,
     displayNavDrawer: false,
     message: '',
     messageType: undefined,
+    messageTitle: '',
   },
 
   mutations: {
@@ -54,10 +58,14 @@ export default {
 
     [CHECK_TOKEN_FOR_EMAIL_VALIDATION_REQUEST] (state) {
       state.isCheckingEmail = true
+      state.messageTitle = EMAIL_VALIDATION_IN_PROGRESS_TITLE
       state.message = EMAIL_VALIDATION_IN_PROGRESS
       state.messageType = DEFAULT_MESSAGE_TYPE
     },
-    [CHECK_TOKEN_FOR_EMAIL_VALIDATION_SUCCESS] (state, candidat) {
+    [CHECK_TOKEN_FOR_EMAIL_VALIDATION_SUCCESS] (state, response) {
+      state.messageTitle = response.messageTitle || EMAIL_VALIDATION_CHECKED_TITLE
+      state.message = response.message
+      state.messageType = SUCCESS_MESSAGE_TYPE
       state.isCheckingEmail = false
     },
     [CHECK_TOKEN_FOR_EMAIL_VALIDATION_FAILURE] (state) {
@@ -65,25 +73,26 @@ export default {
     },
 
     [PRESIGNUP_REQUEST] (state) {
-      state.isSending = true
+      state.isSendingPresignup = true
     },
     [PRESIGNUP_SUCCESS] (state, candidat) {
-      state.isSending = false
+      state.isSendingPresignup = false
+      state.messageTitle = EMAIL_VALIDATION_IS_PENDING_TITLE
       state.message = EMAIL_VALIDATION_IS_PENDING
-      state.messageType = DEFAULT_MESSAGE_TYPE
+      state.messageType = INFO_MESSAGE_TYPE
     },
     [PRESIGNUP_FAILURE] (state) {
-      state.isSending = false
+      state.isSendingPresignup = false
     },
 
     [SEND_MAGIC_LINK_REQUEST] (state) {
-      state.isSendingMail = true
+      state.isSendingMagicLink = true
     },
     [SEND_MAGIC_LINK_SUCCESS] (state, candidat) {
-      state.isSendingMail = false
+      state.isSendingMagicLink = false
     },
     [SEND_MAGIC_LINK_FAILURE] (state) {
-      state.isSendingMail = false
+      state.isSendingMagicLink = false
     },
 
     [FETCH_MY_PROFILE_REQUEST] (state) {
@@ -114,7 +123,7 @@ export default {
         commit(CHECK_TOKEN_FOR_EMAIL_VALIDATION_SUCCESS, response)
       } catch (error) {
         commit(CHECK_TOKEN_FOR_EMAIL_VALIDATION_FAILURE)
-        commit(SET_MESSAGE, { message: error.message, messageType: ERROR_MESSAGE_TYPE })
+        commit(SET_MESSAGE, { messageTitle: 'Un problème est survenu', message: error.message, messageType: ERROR_MESSAGE_TYPE })
         dispatch(SHOW_ERROR, error.message)
         throw error
       }

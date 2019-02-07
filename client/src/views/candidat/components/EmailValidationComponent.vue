@@ -1,17 +1,27 @@
 <template>
   <div>
     <v-alert
-      v-model="show"
+      value="true"
       :type="messageType"
       class="rounded-corner"
     >
+      <h3 class="message-title">
+        {{
+          messageTitle
+        }}
+      </h3>
       {{
         message
       }}
     </v-alert>
     <div class="text--center">
       <router-link :to="{name: 'candidat-presignup'}">
-        <v-btn flat dark>
+        <v-btn
+        flat
+        dark
+        :disabled="isCheckingEmail"
+        :aria-disabled="isCheckingEmail"
+      >
           Retour au formulaire de pré-inscription
         </v-btn>
       </router-link>
@@ -23,11 +33,11 @@
 import {
   CHECK_TOKEN_FOR_EMAIL_VALIDATION_REQUEST,
 } from '@/store'
-
-const EMAIL_VALIDATION_IS_PENDING = `Vous allez bientôt recevoir un courriel à l'adresse que vous nous avez indiqué.
-        Veuillez consulter votre boîte, et valider votre adresse courriel en cliquant sur le lien indiqué dans le message.`
-const EMAIL_VALIDATION_IN_PROGRESS = 'Veuillez patienter pendant la validation de votre adresse courriel...'
-const EMAIL_VALIDATION_CHECKED = 'Votre email est validé, vous allez recevoir un email de confirmation de pré-inscription.'
+import {
+  EMAIL_VALIDATION_IS_PENDING,
+  EMAIL_VALIDATION_IN_PROGRESS,
+  EMAIL_VALIDATION_CHECKED,
+} from '@/constants'
 
 export default {
   computed: {
@@ -35,17 +45,17 @@ export default {
       return this.$store.state.candidat
     },
     message () {
-      return this.$store.state.candidat.message || EMAIL_VALIDATION_IS_PENDING
+      return this.candidatData.message || EMAIL_VALIDATION_IS_PENDING
     },
     messageType () {
-      return this.$store.state.candidat.messageType || 'info'
+      return this.candidatData.messageType || 'info'
     },
-  },
-
-  data () {
-    return {
-      show: true,
-    }
+    messageTitle () {
+      return this.candidatData.messageTitle || this.messageType
+    },
+    isCheckingEmail () {
+      return this.$store.state.candidat.isCheckingEmail
+    },
   },
 
   async mounted () {
@@ -68,7 +78,7 @@ export default {
       }
     } else {
       this.alertType = 'warning'
-      this.message = 'email ou Hash de validation introuvable'
+      this.message = 'email ou hash de validation introuvable'
     }
   },
 }
@@ -77,5 +87,9 @@ export default {
 <style lang="postcss" scoped>
   .rounded-corner {
     border-radius: 0.3em;
+  }
+
+  .message-title {
+    color: #fff;
   }
 </style>

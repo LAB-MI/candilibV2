@@ -19,6 +19,7 @@ export const createCandidat = async ({
     email,
     emailValidationHash,
     adresse,
+    presignedUpAt: new Date(),
   })
   await candidat.save()
   return candidat

@@ -106,7 +106,14 @@
         </v-autocomplete>
       </div>
       <div class="form-input">
-        <v-btn type="submit" class="submit-button" dark tabindex="7" color="#28a745">
+        <v-btn
+          type="submit"
+          :disabled="isSendingPresignup"
+          :aria-disabled="isSendingPresignup"
+          class="submit-button"
+          dark
+          tabindex="7"
+          color="#28a745">
           <div class="submit-label">Pré-inscription</div>
         </v-btn>
       </div>
@@ -160,7 +167,13 @@
 
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn dark type="submit" :disabled="isSending" tabindex="2" color="#28a745">
+                <v-btn
+                dark
+                type="submit"
+                :disabled="isSendingMagicLink"
+                :aria-disabled="isSendingMagicLink"
+                tabindex="2"
+                color="#28a745">
                   <div class="submit-label">Envoyer le magic link</div>
                 </v-btn>
               </v-card-actions>
@@ -230,8 +243,11 @@ export default {
   },
 
   computed: {
-    isSending () {
-      return this.$store.state.candidat.isSending
+    isSendingPresignup () {
+      return this.$store.state.candidat.isSendingPresignup
+    },
+    isSendingMagicLink () {
+      return this.$store.state.candidat.isSendingMagicLink
     },
   },
 

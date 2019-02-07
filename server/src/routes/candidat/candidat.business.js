@@ -26,7 +26,7 @@ export async function checkCandidatIsSignedBefore (candidatData) {
   const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
 
   if (candidat) {
-    if (candidat.isValid === true) {
+    if (candidat.isValidatedByAurige === true) {
       return {
         result: {
           success: false,
@@ -113,6 +113,7 @@ export async function validateEmail (email, hash) {
     const updatedCandidat = await updateCandidatById(candidat._id, {
       isValidatedEmail: true,
       emailValidationHash: undefined,
+      emailValidatedAt: new Date(),
     })
 
     if (candidat.emailValidationHash !== hash) {
