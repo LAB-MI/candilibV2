@@ -8,7 +8,7 @@ import store, {
 export async function requireCandidatAuth (to, from, next) {
   const token = to.query.token || localStorage.getItem('token')
   const signupRoute = {
-    name: 'candidat-signup',
+    name: 'candidat-presignup',
     query: { nextPath: to.fullPath },
   }
   if (!token) {

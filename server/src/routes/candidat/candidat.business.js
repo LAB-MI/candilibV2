@@ -1,10 +1,18 @@
 import { sendMailToAccount } from '../business/send-mail'
-import { INSCRIPTION_UPDATE, INSCRIPTION_OK } from '../../util'
+import {
+  INSCRIPTION_UPDATE,
+  INSCRIPTION_OK,
+  VALIDATION_EMAIL,
+} from '../../util'
 import {
   updateCandidatSignUp,
+  updateCandidatById,
   findCandidatByNomNeph,
   createCandidat,
+  findCandidatByEmail,
 } from '../../models/candidat'
+
+const uuidv4 = require('uuid/v4')
 
 export async function checkCandidatIsSignedBefore (candidatData) {
   const {
@@ -64,9 +72,10 @@ export async function updateInfoCandidat (candidat, candidatData) {
           candidat: updateCandidat,
         }
       } catch (error) {
-        throw new Error(
-          "Un problème est survenu lors de l'envoi du lien de connexion. Nous vous prions de réessayer plus tard."
-        )
+        return {
+          success: false,
+          message: error.message,
+        }
       }
     }
     return {
@@ -82,20 +91,42 @@ export async function updateInfoCandidat (candidat, candidatData) {
   }
 }
 
-export async function signUpCandidat (candidatData) {
+export async function presignUpCandidat (candidatData) {
+  candidatData.emailValidationHash = uuidv4()
+
   const candidat = await createCandidat(candidatData)
+  const response = await sendMailToAccount(candidat, VALIDATION_EMAIL)
+  return {
+    success: true,
+    response,
+    message: `Un email a été envoyé à ${
+      candidatData.email
+    }, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).`,
+    candidat,
+  }
+}
+
+export async function validateEmail (email, hash) {
   try {
+    const candidat = await findCandidatByEmail(email)
+
+    const updatedCandidat = await updateCandidatById(candidat._id, {
+      isValidatedEmail: true,
+      emailValidationHash: undefined,
+    })
+
+    if (candidat.emailValidationHash !== hash) {
+      throw new Error('La validation de votre email a échouée.')
+    }
     const response = await sendMailToAccount(candidat, INSCRIPTION_OK)
     return {
       success: true,
       response,
       message:
-        'Votre demande a été prise en compte, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
-      candidat,
+        'Votre email a été validé, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
+      updatedCandidat,
     }
   } catch (error) {
-    throw new Error(
-      "Un problème est survenu lors de l'envoi du lien de connexion. Nous vous prions de réessayer plus tard."
-    )
+    throw error
   }
 }

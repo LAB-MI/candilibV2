@@ -94,6 +94,17 @@ export default {
       })
       return json
     },
+
+    async validateEmail (email, hash) {
+      const json = await apiClient.put(apiPaths.candidat.myProfile, {
+        headers: getHeadersForJson(),
+        body: JSON.stringify({
+          email,
+          hash,
+        }),
+      })
+      return json
+    },
   },
   admin: {
     async requestToken (email, password) {

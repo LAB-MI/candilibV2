@@ -11,7 +11,8 @@ import {
   AURIGE_OK,
   MAIL_CONVOCATION,
   ANNULATION_CONVOCATION,
-} from '../../util/constants'
+  VALIDATION_EMAIL,
+} from '../../util'
 import config from '../../config'
 import { findAllCentres } from '../../models/centre'
 
@@ -131,7 +132,7 @@ const getHtmlBody = content => `<!DOCTYPE html>
                                               <tr>
                                                   <td class="w30"  width="30"></td>
                                                   <td class="w580"  width="580" valign="top">
-                                                      <p align="right" class="pagebottom-content-left"><span style="color:rgba(0,0,0, 0.54)">&copy; 2018 Candilib</span>
+                                                      <p align="right" class="pagebottom-content-left"><span style="color:rgba(0,0,0, 0.54)">&copy; 2019 Candilib</span>
                                                       </p>
                                                   </td>
 
@@ -161,7 +162,17 @@ const getMailData = async (candidatAurige, flag, urlMagicLink) => {
   const urlRESA = `${config.PUBLIC_URL}/auth?redirect=calendar`
   const urlConnexion = `${config.PUBLIC_URL}`
 
-  const { codeNeph, nomNaissance, creneau } = candidatAurige
+  const {
+    codeNeph,
+    nomNaissance,
+    creneau,
+    email,
+    emailValidationHash,
+  } = candidatAurige
+
+  const urlValidationEmail = `${
+    config.PUBLIC_URL
+  }/email-validation?e=${email}&h=${emailValidationHash}`
 
   const message = {}
 
@@ -278,12 +289,15 @@ const getMailData = async (candidatAurige, flag, urlMagicLink) => {
   <br>
   <p>Bienvenue sur Candilib !</p>
   <br>
-  <p>Vous êtes inscrit sur le site de réservation de l'examen pratique du permis de conduire.</p>
+  <p>
+    Vous êtes inscrit sur
+    le site de réservation de l'examen pratique du permis de conduire.
+  </p>
   <br/>
   <p>
-  <a href="${urlMagicLink}">
-    Se connecter
-  </a>
+    <a href="${urlMagicLink}">
+      Se connecter
+    </a>
   </p>
   <br/>
   <p>
@@ -293,6 +307,34 @@ const getMailData = async (candidatAurige, flag, urlMagicLink) => {
     Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse email ${
   candidatAurige.email
 } dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
+  </p>
+  <p>
+    Lorsque vous recevrez l’email, cliquez sur "Se connecter".
+  </p>
+  <br/>
+  <p>
+  <strong>Attention:</strong>vous ne devez transmettre cet email à personne. Il permet d'accéder à votre compte personnel, de créer ou modifier votre réservation.
+  </p>
+
+  <p align="right">L'équipe Candilib</p>`
+
+  const VALIDATION_EMAIL_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
+  <br>
+  <p>Bienvenue sur Candilib !</p>
+  <br>
+  <p>Vous avez demandé à être inscrit·e sur le site de réservation de l'examen pratique du permis de conduire.</p>
+  <br/>
+  <p>
+    <a href="${urlValidationEmail}">
+      Valider mon adresse email
+    </a>
+  </p>
+  <br/>
+  <p>
+      Ce lien est valable 2 heures à compter de la réception de cet email.
+  </p>
+  <p>
+    Passé ce délai, vous devrez de nouveau faire une demande de pré-inscription sur <a href="${urlConnexion}">Candilib</a>.
   </p>
   <p>
     Lorsque vous recevrez l’email, cliquez sur "Se connecter".
@@ -340,8 +382,11 @@ const getMailData = async (candidatAurige, flag, urlMagicLink) => {
   <p align="right">L'équipe Candilib</p>`
 
   const INSCRIPTION_VALID_MSG = `<p>Bonjour Mr/Mme ${nomMaj},</p>
-  <p>Votre demande d’inscription est en cours de vérification,
-  vous recevrez une information sous 48h hors week-end et jours fériés.</p>
+  <p>
+    Votre adresse courriel a été validée, et
+    votre demande d’inscription est en cours de vérification,
+    vous recevrez une information sous 48h hors week-end et jours fériés.
+  </p>
   <br>
   <p align="right">L'équipe Candilib</p>`
 
@@ -349,6 +394,10 @@ const getMailData = async (candidatAurige, flag, urlMagicLink) => {
     case CANDIDAT_NOK:
       message.content = getHtmlBody(INSCRIPTION_KO_MSG)
       message.subject = 'Inscription Candilib non validée'
+      return message
+    case VALIDATION_EMAIL:
+      message.content = getHtmlBody(VALIDATION_EMAIL_MSG)
+      message.subject = "Validation d'adresse email pour Candilib"
       return message
     case INSCRIPTION_VALID:
       message.content = getHtmlBody(INSCRIPTION_VALID_MSG)

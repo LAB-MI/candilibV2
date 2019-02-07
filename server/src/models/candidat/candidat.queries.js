@@ -8,6 +8,7 @@ export const createCandidat = async ({
   prenom,
   portable,
   email,
+  emailValidationHash,
   adresse,
 }) => {
   const candidat = await new Candidat({
@@ -16,6 +17,7 @@ export const createCandidat = async ({
     prenom,
     portable,
     email,
+    emailValidationHash,
     adresse,
   })
   await candidat.save()
@@ -118,4 +120,9 @@ export const updateCandidatSignUp = async (candidat, data) => {
   await candidat.update({ prenom, email, portable, adresse })
   const updatedCandidat = await Candidat.findById(candidat._id)
   return updatedCandidat
+}
+
+export const updateCandidatById = async (id, updatedData) => {
+  const updateInfo = await Candidat.findByIdAndUpdate(id, updatedData)
+  return updateInfo
 }

@@ -69,6 +69,14 @@ const candidatFields = {
     type: Object,
     default: undefined,
   },
+  isValidatedEmail: {
+    type: Boolean,
+    default: false,
+  },
+  emailValidationHash: {
+    type: String,
+    default: undefined,
+  },
 }
 
 const CandidatSchema = new Schema(candidatFields)
@@ -80,7 +88,7 @@ CandidatSchema.pre('save', async function preSave () {
 
   Object.keys(candidatFields).map(key => {
     const value = candidat[key]
-    if (value) {
+    if (value && typeof value === 'string') {
       candidat[key] = sanitizeHtml(value)
     }
   })

@@ -5,7 +5,8 @@ import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
   checkCandidatIsSignedBefore,
   updateInfoCandidat,
-  signUpCandidat,
+  presignUpCandidat,
+  validateEmail,
 } from './candidat.business'
 
 const mandatoryFields = [
@@ -108,7 +109,7 @@ export async function preSignup (req, res) {
   }
 
   try {
-    const response = await signUpCandidat(candidatData)
+    const response = await presignUpCandidat(candidatData)
     res.status(200).json(response)
   } catch (error) {
     logger.error(error)
@@ -138,6 +139,39 @@ export async function getMe (req, res) {
       success: false,
       message: error.message,
       error: JSON.stringify(error),
+    })
+  }
+}
+
+export async function emailValidation (req, res) {
+  const { email, hash } = req.body
+  try {
+    const candidat = await findCandidatByEmail(email)
+
+    if (!candidat) {
+      throw new Error('Votre adresse courriel est inconnue.')
+    }
+
+    if (candidat.isValidatedEmail) {
+      res.status(200).json({
+        success: true,
+        message: 'Votre adresse courriel est déjà validée.',
+      })
+      return
+    }
+
+    if (candidat.emailValidationHash !== hash) {
+      throw new Error('Le hash ne correspond pas.')
+    }
+
+    const emailValidationResult = await validateEmail(email, hash)
+
+    res.status(200).json(emailValidationResult)
+  } catch (error) {
+    res.status(422).json({
+      success: false,
+      message:
+        'Impossible de valider votre adresse courriel : ' + error.message,
     })
   }
 }
