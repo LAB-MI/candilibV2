@@ -39,6 +39,7 @@ const adminRoutes = [
     children: [
       {
         path: ':tool',
+        name: 'adminTool',
       },
     ],
   },

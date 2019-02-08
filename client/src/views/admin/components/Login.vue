@@ -90,7 +90,7 @@ export default {
 
   computed: {
     authStatus () {
-      return this.$store.state.auth.status
+      return this.$store.state.auth.statusAdmin
     },
   },
 

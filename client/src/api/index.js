@@ -1,12 +1,12 @@
 import 'whatwg-fetch'
 
-import store, { SIGN_OUT } from '../store'
+import store, { SHOW_ERROR } from '../store'
 import apiPaths from './api-paths'
-import { STORAGE_TOKEN_KEY } from '../constants'
+import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '../constants'
 
 const checkStatus = async (response) => {
   if (response.status === 401) {
-    store.dispatch(SIGN_OUT)
+    await store.dispatch(SHOW_ERROR, 'Vous n\'êtes plus connecté')
   }
   return response
 }
@@ -43,15 +43,23 @@ const apiClient = {
 }
 
 const getHeadersForJson = () => {
-  const token = localStorage.getItem(STORAGE_TOKEN_KEY)
+  const token = localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
   return {
     'Content-Type': 'application/json',
     'Authorization': `Bearer ${token}`,
   }
 }
 
-const getTokenHeader = () => {
-  const token = localStorage.getItem(STORAGE_TOKEN_KEY)
+const getHeadersForAdminJson = () => {
+  const token = localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY)
+  return {
+    'Content-Type': 'application/json',
+    'Authorization': `Bearer ${token}`,
+  }
+}
+
+const getAdminTokenHeader = () => {
+  const token = localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY)
   return {
     'Authorization': `Bearer ${token}`,
   }
@@ -131,21 +139,21 @@ export default {
 
     async getCandidats () {
       const json = await apiClient.get(apiPaths.admin.candidats, {
-        headers: getHeadersForJson(),
+        headers: getHeadersForAdminJson(),
       })
       return json
     },
 
     async getCreneaux () {
       const json = await apiClient.get(apiPaths.creneaux(), {
-        headers: getHeadersForJson(),
+        headers: getHeadersForAdminJson(),
       })
       return json
     },
 
     async uploadCandidatsJson (body) {
       const json = await apiClient.post(apiPaths.admin.uploadCandidatsJson, {
-        headers: getTokenHeader(),
+        headers: getAdminTokenHeader(),
         body,
       })
       return json
@@ -153,14 +161,14 @@ export default {
 
     async exportCsv () {
       const json = await apiClient.getRaw(apiPaths.admin.exportCsv, {
-        headers: getTokenHeader(),
+        headers: getAdminTokenHeader(),
       })
       return json
     },
 
     async uploadPlacesCSV (body) {
       const json = await apiClient.post(apiPaths.admin.uploadPlacesCSV, {
-        headers: getTokenHeader(),
+        headers: getAdminTokenHeader(),
         body,
       })
       return json
@@ -168,21 +176,21 @@ export default {
 
     async getWhitelist () {
       const json = await apiClient.get(apiPaths.admin.whitelist, {
-        headers: getTokenHeader(),
+        headers: getAdminTokenHeader(),
       })
       return json
     },
 
     async removeFromWhitelist (id) {
       const json = await apiClient.delete(`${apiPaths.admin.whitelist}/${id}`, {
-        headers: getTokenHeader(),
+        headers: getAdminTokenHeader(),
       })
       return json
     },
 
     async addToWhitelist (email) {
       const json = await apiClient.post(apiPaths.admin.whitelist, {
-        headers: getHeadersForJson(),
+        headers: getHeadersForAdminJson(),
         body: JSON.stringify({ email }),
       })
       return json

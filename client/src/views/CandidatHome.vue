@@ -24,7 +24,7 @@ export default {
   },
   computed: {
     signedIn () {
-      return this.$store.state.auth.status === SIGNED_IN_AS_CANDIDAT
+      return this.$store.state.auth.statusCandidat === SIGNED_IN_AS_CANDIDAT
     },
   },
 }
