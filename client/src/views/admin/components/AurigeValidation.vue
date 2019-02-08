@@ -48,18 +48,22 @@ export default {
   },
 
   beforeMount () {
+    const StatusRenderer = (param) => {
+      const StatusIcon = {
+        'success': 'done',
+        'error': 'clear',
+      }
+      return '<i class="material-icons">' + StatusIcon[param.value] + '</i>'
+    }
     this.columnDefs = [
-      { headerName: 'NEPH', field: 'neph' },
-      { headerName: 'Nom', field: 'nom' },
       {
         headerName: 'Etat',
         field: 'status',
-        cellRenderer: (param) => {
-          console.log(param)
-          return param.value === 'success' ? '<i class="material-icons"> done </i>' : '<i class="material-icons"> clear </i>'
-        },
-
+        cellRenderer: StatusRenderer,
+        filter: false,
       },
+      { headerName: 'NEPH', field: 'neph' },
+      { headerName: 'Nom', field: 'nom' },
     ]
     this.gridOptions = {
     }
