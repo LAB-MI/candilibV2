@@ -17,6 +17,7 @@
         <v-btn color="#17a2b8" dark @click="getCandidatsAsCsv">Export</v-btn>
       </div>
     </div>
+    <aurige-validation />
   </div>
 </template>
 
@@ -24,11 +25,13 @@
 import { InputFile } from '@/components'
 import api from '@/api'
 import { downloadContent } from '@/util'
-import { SHOW_INFO, SHOW_SUCCESS } from '@/store'
+import { SHOW_INFO, SHOW_SUCCESS, SHOW_AURIGE_RESULT } from '@/store'
+import AurigeValidation from './AurigeValidation'
 
 export default {
   components: {
     InputFile,
+    AurigeValidation,
   },
 
   props: {
@@ -62,6 +65,7 @@ export default {
       const data = new FormData()
       data.append('file', this.file)
       const result = await api.admin.uploadCandidatsJson(data)
+      this.$store.dispatch(SHOW_AURIGE_RESULT, result)
       this.$store.dispatch(SHOW_SUCCESS, result.message)
       this.file = null
     },
