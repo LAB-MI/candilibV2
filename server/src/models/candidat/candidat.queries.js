@@ -1,6 +1,8 @@
+import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
 import moment from 'moment'
+import { logger } from '../../util'
 
 export const createCandidat = async ({
   codeNeph,
@@ -62,6 +64,16 @@ export const deleteCandidatByNomNeph = async (nomNaissance, codeNeph) => {
 export const deleteCandidat = async candidat => {
   if (!candidat) {
     throw new Error('No candidat given')
+  }
+  try {
+    const cleanedCandidat = candidat.toObject ? candidat.toObject() : candidat
+    delete cleanedCandidat._id
+    await ArchivedCandidat.create(cleanedCandidat)
+  } catch (error) {
+    logger.warn(
+      `Could not archive candidat: ${candidat.nomNaissance} ${candidat.codeNeph}
+      ${error.message}`
+    )
   }
   await candidat.delete()
   return candidat
