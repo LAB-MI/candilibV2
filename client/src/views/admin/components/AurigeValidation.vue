@@ -3,6 +3,7 @@
     <h2>Validation Aurige</h2>
     <v-card style="background-color: unset;">
       <ag-grid-vue style="max-width: 100%; height: 350px;" class="ag-theme-material"
+        :gridOptions="gridOptions"
         :columnDefs="columnDefs"
         :rowData="rowData"
         :sideBar="sideBar"
@@ -36,6 +37,7 @@ export default {
       showGrid: false,
       sideBar: false,
       rowCount: null,
+      gridOptions: null,
     }
   },
 
@@ -49,9 +51,20 @@ export default {
     this.columnDefs = [
       { headerName: 'NEPH', field: 'neph' },
       { headerName: 'Nom', field: 'nom' },
-      { headerName: 'Etat', field: 'status' },
+      {
+        headerName: 'Etat',
+        field: 'status',
+        cellRenderer: (param) => {
+          console.log(param)
+          return param.value === 'success' ? '<i class="material-icons"> done </i>' : '<i class="material-icons"> clear </i>'
+        },
+
+      },
     ]
+    this.gridOptions = {
+    }
   },
+
   methods: {
     onReady ({ type, api, columnApi }) {
       api.sizeColumnsToFit()
