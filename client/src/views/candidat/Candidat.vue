@@ -2,7 +2,7 @@
   <div class="candidat">
     <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0 }">
       <candidat-header :links="links" />
-      <div class="u-flex  with-top-margin  u-max-width">
+      <div class="u-flex  with-top-margin u-max-width">
         <faq v-if="isFaq" />
         <legal v-if="isLegal" />
         <div v-if="isCalendar" class="u-flex  u-flex__item--grow  u-flex--column-on-mobile">
@@ -18,6 +18,7 @@
           </div>
         </div>
       </div>
+      <candidat-footer style="margin-top: 10px" />
     </v-container>
     <navigation-drawer
       :links="links"
@@ -27,6 +28,7 @@
 
 <script>
 import CandidatHeader from './components/CandidatHeader'
+import CandidatFooter from './components/CandidatFooter'
 import NavigationDrawer from './components/NavigationDrawer'
 
 import Faq from './Faq'
@@ -36,6 +38,7 @@ import MyProfile from './components/MyProfile'
 export default {
   components: {
     CandidatHeader,
+    CandidatFooter,
     Faq,
     Legal,
     MyProfile,

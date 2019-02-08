@@ -49,6 +49,7 @@
         >Mot de passe oublié ?</a>
       </div>
       -->
+      <admin-version/>
     </v-form>
   </div>
 </template>
@@ -65,7 +66,12 @@ import {
   SIGNED_IN_AS_ADMIN,
 } from '@/store'
 
+import AdminVersion from '../../../components/AppVersion.vue'
+
 export default {
+  components: {
+    AdminVersion,
+  },
   name: 'Login',
   data () {
     return {
@@ -215,4 +221,5 @@ export default {
 .v-messages {
   min-height: 1.2em;
 }
+
 </style>

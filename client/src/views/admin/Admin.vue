@@ -8,6 +8,7 @@
         <admin-aurige :id="ids.adminAurige" />
         <whitelist :id="ids.adminWhitelist" />
       </div>
+      <admin-footer />
     </v-container>
   </div>
 </template>
@@ -15,6 +16,7 @@
 <script>
 import { CHECK_ADMIN_TOKEN, SIGNED_IN_AS_ADMIN } from '@/store'
 import AdminHeader from './components/AdminHeader.vue'
+import AdminFooter from './components/AdminFooter.vue'
 import AdminAurige from './components/Aurige.vue'
 import Whitelist from './components/Whitelist.vue'
 import AdminCalendar from './components/AdminCalendar.vue'
@@ -26,6 +28,7 @@ const components = {
   AdminCalendar,
   CandidatsList,
   Whitelist,
+  AdminFooter,
 }
 
 const ids = {

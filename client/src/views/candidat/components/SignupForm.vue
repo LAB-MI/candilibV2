@@ -191,6 +191,9 @@
             <img :src="logoSR">
           </a>
         </div>
+        <div style="margin-top: 10px">
+          <app-version/>
+        </div>
       </div>
     </div>
   </div>
@@ -211,12 +214,16 @@ import api from '@/api'
 import logoMI from '@/assets/images/logo_mi_40x50.png'
 import logoLabMI from '@/assets/images/lab_100.png'
 import logoSR from '@/assets/images/securite_routiere_70x27.png'
+import AppVersion from '../../../components/AppVersion.vue'
 
 const getAdresses = pDebounce((query) => {
   return api.util.searchAdresses(query)
 }, 300)
 
 export default {
+  components: {
+    AppVersion,
+  },
   props: {
     toggleForm: Function,
   },
