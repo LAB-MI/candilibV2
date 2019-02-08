@@ -26,7 +26,7 @@ RUN if [ ! -z "$proxy" ] ; then \
 ################################
 FROM base as development
 COPY src src/
-COPY babel.config.js package.json package-lock.json teardown-tests.js ./
+COPY babel.config.js package.json package-lock.json ./
 # Install app dependencies
 RUN npm install
 

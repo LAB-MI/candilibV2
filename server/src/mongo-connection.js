@@ -8,8 +8,6 @@ mongoose.Promise = Promise
 const isTest = process.env.NODE_ENV === 'test'
 const dbName = 'candilib'
 
-let mongoServer
-
 const mongoURL = process.env.MONGO_URL || `mongodb://localhost:27017/${dbName}`
 
 let reconnectTries = 30
@@ -54,9 +52,13 @@ export const connect = async () => {
 export const disconnect = async () => {
   try {
     await mongoose.disconnect()
+    if (isTest) {
+      const {
+        stopMongoMemoryServer,
+      } = await import('./mongo-memory-server-setup')
+      stopMongoMemoryServer()
+    }
   } catch (error) {
     logger.info('Disconnected from Mongo')
   }
 }
-
-export const stopMongoMemoryServer = () => mongoServer && mongoServer.stop()
