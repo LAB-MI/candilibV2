@@ -18,7 +18,7 @@
           </div>
         </div>
       </div>
-      <candidat-footer style="margin-top: 10px" />
+      <candidat-footer style="margin-top: 10px;" />
     </v-container>
     <navigation-drawer
       :links="links"

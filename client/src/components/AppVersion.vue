@@ -20,7 +20,7 @@ export default {
 .text-version {
   text-align: center;
   width: 100%;
-  font-size: 10px
+  font-size: 10px;
 }
 
 </style>

@@ -23,7 +23,7 @@
           <img :src="logoSR">
         </a>
       </div>
-      <div style="margin-top: 10px">
+      <div style="margin-top: 10px;">
         <app-version/>
       </div>
     </div>

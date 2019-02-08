@@ -82,6 +82,7 @@ export default {
   background-color: unset;
   filter: invert(100%);
 }
+
 .ag-theme-material >>> .ag-header {
   background-color: unset;
 }
