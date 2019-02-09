@@ -1,14 +1,17 @@
 import delay from 'delay'
 import mongoose from 'mongoose'
 
+import { dbOptions } from './config'
 import logger from './util/logger'
 
 mongoose.Promise = Promise
 
 const isTest = process.env.NODE_ENV === 'test'
-const dbName = 'candilib'
+const dbName = dbOptions.db
+const dbAdmin = dbOptions.user
+const dbPassword = dbOptions.pass
 
-const mongoURL = process.env.MONGO_URL || `mongodb://localhost:27017/${dbName}`
+const mongoURL = process.env.MONGO_URL || `mongodb://${dbAdmin}:${dbPassword}@localhost:27017/${dbName}`
 
 let reconnectTries = 30
 const reconnectInterval = process.env.NODE_ENV === 'production' ? 2000 : 1000

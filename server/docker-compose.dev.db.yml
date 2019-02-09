@@ -6,3 +6,4 @@ services:
       - ../mongo-dev/db:/data/db
     ports:
       - "${DB_PORT:-27017}:27017"
+    command: mongod --auth
