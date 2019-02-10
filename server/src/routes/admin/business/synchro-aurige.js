@@ -88,7 +88,7 @@ export const synchroAurige = async buffer => {
       }
       if (mailType) {
         sendMailToAccount(recipient, mailType)
-        logger.warn(`Envoi de mail ${mailType} à ${email}`)
+        logger.info(`Envoi de mail ${mailType} à ${email}`)
         return getCandidatStatus(nomNaissance, codeNeph, 'success')
       }
 
@@ -105,10 +105,10 @@ export const synchroAurige = async buffer => {
           .save()
           .then(candidat => {
             if (isValid) {
-              logger.warn(`Ce candidat ${candidat.email} a été mis à jour`)
+              logger.info(`Ce candidat ${candidat.email} a été mis à jour`)
               return getCandidatStatus(nomNaissance, codeNeph, 'success')
             } else {
-              logger.warn(`Ce candidat ${candidat.email} a été validé`)
+              logger.info(`Ce candidat ${candidat.email} a été validé`)
               const token = createToken(
                 candidat.id,
                 config.USER_STATUS_LEVEL.candidat
