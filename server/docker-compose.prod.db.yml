@@ -1,0 +1,14 @@
+# production mode
+version: '3.4'
+services:
+  db:
+    image: mongo:latest
+    ports:
+      - "27017"
+    container_name: candilib_mongo
+    volumes:
+      - ${DBDATA:-../mongo}:/data/db
+networks:
+  default:
+    external:
+      name: ${APP}-network
