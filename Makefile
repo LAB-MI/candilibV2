@@ -193,11 +193,33 @@ publish: publish-$(APP_VERSION) publish-$(LATEST_VERSION) ## Publish all artifac
 
 publish-$(APP_VERSION):
 	@echo "Publish $(APP) $(APP_VERSION) artifacts"
-	bash ci/publish.sh ${APP_VERSION} ${APP_VERSION}
+	if [ -z "${PUBLISH_URL}" -o -z "${PUBLISH_AUTH_TOKEN}" ] ; then exit 1; fi
+	for file in \
+		"${APP}-VERSION ${APP}-VERSION" \
+		"${FILE_ARCHIVE_APP_VERSION} ${FILE_ARCHIVE_APP_VERSION}" \
+		"${FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION} ${FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION}" \
+		"${FILE_IMAGE_FRONT_ADMIN_APP_VERSION} ${FILE_IMAGE_FRONT_ADMIN_APP_VERSION}" \
+		"${FILE_IMAGE_API_APP_VERSION} ${FILE_IMAGE_API_APP_VERSION}" \
+		"${FILE_IMAGE_DB_APP_VERSION} ${FILE_IMAGE_DB_APP_VERSION}" \
+		; do \
+	  echo "$${file}" | while read src dst ; do bash ci/publish.sh $${src} $${dst} ${APP_VERSION} ; done ; \
+	done ; \
+	curl -k -H 'X-Auth-Token: ${PUBLISH_AUTH_TOKEN}' "${PUBLISH_URL}/${PUBLISH_URL_BASE}?prefix=${APP_VERSION}/&format=json" -s --fail ;
 
 publish-$(LATEST_VERSION):
 	@echo "Publish $(APP) $(LATEST_VERSION) artifacts"
-	bash ci/publish.sh ${APP_VERSION} ${LATEST_VERSION}
+	if [ -z "${PUBLISH_URL}" -o -z "${PUBLISH_AUTH_TOKEN}" ] ; then exit 1; fi
+	for file in \
+		"${APP}-VERSION ${APP}-VERSION" \
+		"${FILE_ARCHIVE_APP_VERSION} ${FILE_ARCHIVE_LATEST_VERSION}" \
+		"${FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION} ${FILE_IMAGE_FRONT_CANDIDAT_LATEST_VERSION}" \
+		"${FILE_IMAGE_FRONT_ADMIN_APP_VERSION} ${FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION}" \
+		"${FILE_IMAGE_API_APP_VERSION} ${FILE_IMAGE_API_LATEST_VERSION}" \
+		"${FILE_IMAGE_DB_APP_VERSION} ${FILE_IMAGE_DB_LATEST_VERSION}" \
+		; do \
+	  echo "$${file}" | while read src dst ; do bash ci/publish.sh $${src} $${dst} ${LATEST_VERSION} ; done ; \
+	done ; \
+	curl -k -H 'X-Auth-Token: ${PUBLISH_AUTH_TOKEN}' "${PUBLISH_URL}/${PUBLISH_URL_BASE}?prefix=${LATEST_VERSION}/&format=json" -s --fail
 #
 # test
 #
