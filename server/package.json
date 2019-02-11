@@ -21,6 +21,7 @@
     "start": "node dist/index.js",
     "start:prod": "node dist/index.js",
     "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test:only": "cross-env NODE_ENV=test jest",
     "pretest": "npm run lint",
     "test:all": "run-s test test:client",
     "test:client": "cd .. ; cd client ; npm test",
@@ -53,6 +54,7 @@
     "nodemailer-html-to-text": "^3.0.0",
     "nodemailer-smtp-transport": "^2.7.4",
     "sanitize-html": "^1.20.0",
+    "uuid": "^3.3.2",
     "winston": "^3.2.1"
   },
   "devDependencies": {

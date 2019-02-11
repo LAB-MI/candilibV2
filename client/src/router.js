@@ -4,6 +4,8 @@ import Router from 'vue-router'
 import Home from '@/views/Home.vue'
 import AdminHome from '@/views/AdminHome.vue'
 import CandidatHome from '@/views/CandidatHome.vue'
+import MessageView from '@/views/Message.vue'
+import EmailValidationComponent from '@/views/candidat/components/EmailValidationComponent.vue'
 import Error404 from '@/views/Error404.vue'
 
 import {
@@ -12,6 +14,7 @@ import {
   checkAdminToken,
   checkCandidatToken,
 } from './router-checks'
+import { SignupForm } from './views/candidat/components'
 
 Vue.use(Router)
 
@@ -36,7 +39,6 @@ const adminRoutes = [
     children: [
       {
         path: ':tool',
-        name: 'adminTool',
       },
     ],
   },
@@ -44,10 +46,26 @@ const adminRoutes = [
 
 const candidatRoutes = [
   {
-    path: '/candidat-signup',
-    name: 'candidat-signup',
-    component: CandidatHome,
-    beforeEnter: checkCandidatToken,
+    path: '/guest',
+    component: MessageView,
+    children: [
+      {
+        path: '/candidat-presignup',
+        name: 'candidat-presignup',
+        component: SignupForm,
+        beforeEnter: checkCandidatToken,
+      },
+      {
+        path: '/email-en-attente-de-validation',
+        name: 'email-validation-pending',
+        component: EmailValidationComponent,
+      },
+      {
+        path: '/email-validation',
+        name: 'email-validation',
+        component: EmailValidationComponent,
+      },
+    ],
   },
   {
     path: '/candidat',
@@ -69,17 +87,11 @@ const commonRoutes = [
     path: '/',
     name: 'home',
     component: HomeComponent,
-    meta: {
-      guest: true,
-    },
   },
   {
     path: '/*',
     name: '404',
     component: Error404,
-    meta: {
-      requiresAuth: true,
-    },
   },
 ]
 

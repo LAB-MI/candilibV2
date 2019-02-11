@@ -18,7 +18,7 @@ export const postMagicLink = async (req, res) => {
       throw error
     }
 
-    if (!candidat.isValid) {
+    if (!candidat.isValidatedByAurige) {
       const error = new Error('Utiliseur en attente de validation.')
       error.status = 401
       throw error

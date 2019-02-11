@@ -3,33 +3,30 @@ import { email as emailRegex, logger } from '../../util'
 import { findCandidatByEmail, findCandidatById } from '../../models/candidat'
 import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
-  CheckCandidatIsSignedBefore,
+  checkCandidatIsSignedBefore,
   updateInfoCandidat,
-  signUpCandidat,
+  presignUpCandidat,
+  validateEmail,
 } from './candidat.business'
 
-export async function preSignup (req, res) {
-  const candidatData = req.body
-  const candidatDataTrim = {
-    codeNeph: candidatData.codeNeph
-      ? candidatData.codeNeph.trim()
-      : candidatData.codeNeph,
-    nomNaissance: candidatData.nomNaissance
-      ? candidatData.nomNaissance.trim()
-      : candidatData.nomNaissance,
-    prenom: candidatData.prenom
-      ? candidatData.prenom.trim()
-      : candidatData.prenom,
-    portable: candidatData.portable
-      ? candidatData.portable.trim()
-      : candidatData.portable,
-    adresse: candidatData.adresse
-      ? candidatData.adresse.trim()
-      : candidatData.adresse,
-    email: candidatData.email ? candidatData.email.trim() : candidatData.email,
-  }
+const mandatoryFields = [
+  'codeNeph',
+  'nomNaissance',
+  'email',
+  'portable',
+  'adresse',
+]
 
-  const { codeNeph, nomNaissance, portable, adresse, email } = candidatDataTrim
+const trimEveryValue = obj =>
+  Object.entries(obj).reduce((acc, [key, value]) => {
+    acc[key] = value && (typeof value === 'string' ? value.trim() : value)
+    return acc
+  }, {})
+
+export async function preSignup (req, res) {
+  const candidatData = trimEveryValue(req.body)
+
+  const { codeNeph, nomNaissance, portable, adresse, email } = candidatData
 
   const isFormFilled = [codeNeph, nomNaissance, email, portable, adresse].every(
     e => !!e
@@ -38,13 +35,7 @@ export async function preSignup (req, res) {
   const isValidEmail = emailRegex.test(email)
 
   if (!isFormFilled) {
-    const fieldsWithErrors = [
-      'codeNeph',
-      'nomNaissance',
-      'email',
-      'portable',
-      'adresse',
-    ]
+    const fieldsWithErrors = mandatoryFields
       .map(key => (candidatData[key] ? '' : key))
       .filter(e => e)
 
@@ -79,7 +70,7 @@ export async function preSignup (req, res) {
     return
   }
 
-  const isSigned = await CheckCandidatIsSignedBefore(candidatDataTrim)
+  const isSigned = await checkCandidatIsSignedBefore(candidatData)
   if (isSigned && isSigned.result) {
     res.status(409).json(isSigned.result)
     return
@@ -106,7 +97,7 @@ export async function preSignup (req, res) {
   if (isSigned && isSigned.candidat) {
     const updateresult = await updateInfoCandidat(
       isSigned.candidat,
-      candidatDataTrim
+      candidatData
     )
 
     if (updateresult.success) {
@@ -118,7 +109,7 @@ export async function preSignup (req, res) {
   }
 
   try {
-    const response = await signUpCandidat(candidatDataTrim)
+    const response = await presignUpCandidat(candidatData)
     res.status(200).json(response)
   } catch (error) {
     logger.error(error)
@@ -148,6 +139,39 @@ export async function getMe (req, res) {
       success: false,
       message: error.message,
       error: JSON.stringify(error),
+    })
+  }
+}
+
+export async function emailValidation (req, res) {
+  const { email, hash } = req.body
+  try {
+    const candidat = await findCandidatByEmail(email)
+
+    if (!candidat) {
+      throw new Error('Votre adresse courriel est inconnue.')
+    }
+
+    if (candidat.isValidatedEmail) {
+      res.status(200).json({
+        success: true,
+        message: 'Votre adresse courriel est déjà validée.',
+      })
+      return
+    }
+
+    if (candidat.emailValidationHash !== hash) {
+      throw new Error('Le hash ne correspond pas.')
+    }
+
+    const emailValidationResult = await validateEmail(email, hash)
+
+    res.status(200).json(emailValidationResult)
+  } catch (error) {
+    res.status(422).json({
+      success: false,
+      message:
+        'Impossible de valider votre adresse courriel : ' + error.message,
     })
   }
 }

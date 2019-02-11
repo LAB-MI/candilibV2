@@ -1,201 +1,190 @@
 <template>
-  <div>
-    <div class="presignup">
-      <div class="presignup-form">
-        <h1 class="presignup-form-title">
-          CANDILIB
-        </h1>
-        <h2 class="presignup-form-subtitle">
-          Réservez votre place d'examen
-        </h2>
-        <hr class="u-separator" />
-        <v-form dark v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
-          <div class="form-input">
-            <v-text-field
-              label="NEPH (obligatoire) *"
-              prepend-icon="assignment"
-              dark
-              color="#fff"
-              @focus="setNephPlaceholder"
-              @blur="removeNephPlaceholder"
-              :placeholder="nephPlaceholder"
-              aria-placeholder="012345678912"
-              :autofocus="!showDialog"
-              hint="ex. : 0123456789"
-              required
-              :rules="nephRules"
-              tabindex="1"
-              v-model="codeNeph"
-            ></v-text-field>
-          </div>
-          <div class="form-input">
-            <v-text-field
-              prepend-icon="account_box"
-              dark
-              color="#fff"
-              @focus="setNomPlaceholder"
-              @blur="removeNomPlaceholder"
-              :placeholder="nomPlaceholder"
-              aria-placeholder="Dupont"
-              hint="ex. : Dupont"
-              label="Nom de naissance (obligatoire) *"
-              required
-              tabindex="2"
-              v-model="nomNaissance"
-            ></v-text-field>
-          </div>
-          <div class="form-input">
-            <v-text-field
-              prepend-icon="perm_identity"
-              dark
-              color="#fff"
-              @focus="setPrenomPlaceholder"
-              @blur="removePrenomPlaceholder"
-              :placeholder="prenomPlaceholder"
-              aria-placeholder="Jean"
-              hint="ex. : Jean"
-              label="Prénom"
-              required
-              tabindex="3"
-              v-model="prenom"
-            ></v-text-field>
-          </div>
-          <div class="form-input">
-            <v-text-field
-              prepend-icon="email"
-              dark
-              color="#fff"
-              @focus="setEmailPlaceholder"
-              @blur="removeEmailPlaceholder"
-              :placeholder="emailPlaceholder"
-              aria-placeholder="jean@dupont.fr"
-              hint="ex. : jean@dupont.fr"
-              label="Courriel (obligatoire) *"
-              required
-              :rules="emailRules"
-              tabindex="4"
-              v-model="email"
-            ></v-text-field>
-          </div>
-          <div class="form-input">
-            <v-text-field
-              prepend-icon="smartphone"
-              dark
-              color="#fff"
-              @focus="setPortablePlaceholder"
-              @blur="removePortablePlaceholder"
-              :placeholder="portablePlaceholder"
-              aria-placeholder="Jean"
-              hint="ex. : 0612345678"
-              label="Portable (obligatoire) *"
-              required
-              tabindex="5"
-              :rules="portableRules"
-              v-model="portable"
-            ></v-text-field>
-          </div>
-          <div class="form-input">
-            <v-autocomplete
-              dark
-              color="#fff"
-              @focus="setAdressePlaceholder"
-              @blur="removeAdressePlaceholder"
-              :placeholder="adressePlaceholder"
-              aria-placeholder="Jean"
-              :loading="isFetchingMatchingAdresses"
-              v-model="adresse"
-              hint="ex. : 10 avenue du général Leclerc Villepinte 93420"
-              :items="adresses"
-              label="Adresse (obligatoire) *"
-              prepend-icon="location_city"
-              tabindex="6"
-              no-filter
-              :search-input.sync="searchAdresses"
-            >
-            </v-autocomplete>
-          </div>
-          <div class="form-input">
-            <v-btn type="submit" class="submit-button" dark tabindex="7" color="#28a745">
-              <div class="submit-label">Pré-inscription</div>
-            </v-btn>
-          </div>
-          <div class="form-input  form-input-group">
-            <v-btn flat color="#fff" tag="a" :to="{ name: 'legal' }" tabindex="9">
-              Mentions légales
-            </v-btn>
-            <v-dialog
-              v-model="showDialog"
-              width="500"
-              class="already-signed-up"
-            >
-              <v-btn
-                slot="activator"
-                depressed
-                color="#fff"
-                tabindex="8"
-              >
-                Déjà inscrit ?
-              </v-btn>
-
-              <v-card>
-                <v-card-title
-                  class="headline grey lighten-2"
-                  primary-title
-                >
-                  Recevez un magic link dans votre boîte email
-                </v-card-title>
-
-                <v-form v-model="magicLinkValid" @submit.prevent="sendMagicLink">
-                  <div class="u-flex  u-flex--center">
-                    <div class="form-input">
-                      <v-text-field
-                        prepend-icon="email"
-                        @focus="setEmailPlaceholder"
-                        @blur="removeEmailPlaceholder"
-                        :placeholder="emailPlaceholder"
-                        aria-placeholder="jean@dupont.fr"
-                        :autofocus="showDialog"
-                        hint="ex. : jean@dupont.fr"
-                        label="Courriel (obligatoire) *"
-                        required
-                        :rules="emailRules"
-                        tabindex="1"
-                        v-model="email"
-                      ></v-text-field>
-                    </div>
-                  </div>
-
-                  <v-divider></v-divider>
-
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn dark type="submit" tabindex="2" color="#28a745">
-                      <div class="submit-label">Envoyer le magic link</div>
-                    </v-btn>
-                  </v-card-actions>
-                </v-form>
-              </v-card>
-            </v-dialog>
-            <v-btn flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
-              Une question ?
-            </v-btn>
-          </div>
-        </v-form>
-        <hr class="u-separator" />
-        <div class="u-flex  u-flex--center  u-flex--space-between" style="width: 80%;">
-          <a href="https://www.interieur.gouv.fr/">
-            <img :src="logoMI">
-          </a>
-          <img :src="logoLabMI">
-          <a href="http://www.securite-routiere.gouv.fr/">
-            <img :src="logoSR">
-          </a>
-        </div>
-        <div style="margin-top: 10px">
-          <app-version/>
-        </div>
+  <div class="presignup-form">
+    <v-form dark v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
+      <div class="form-input">
+        <v-text-field
+          label="NEPH (obligatoire) *"
+          prepend-icon="assignment"
+          dark
+          color="#fff"
+          @focus="setNephPlaceholder"
+          @blur="removeNephPlaceholder"
+          :placeholder="nephPlaceholder"
+          aria-placeholder="012345678912"
+          :autofocus="!showDialog"
+          hint="ex. : 0123456789"
+          required
+          :rules="nephRules"
+          tabindex="1"
+          v-model="codeNeph"
+        ></v-text-field>
       </div>
-    </div>
+      <div class="form-input">
+        <v-text-field
+          prepend-icon="account_box"
+          dark
+          color="#fff"
+          @focus="setNomPlaceholder"
+          @blur="removeNomPlaceholder"
+          :placeholder="nomPlaceholder"
+          aria-placeholder="Dupont"
+          hint="ex. : Dupont"
+          label="Nom de naissance (obligatoire) *"
+          required
+          tabindex="2"
+          v-model="nomNaissance"
+        ></v-text-field>
+      </div>
+      <div class="form-input">
+        <v-text-field
+          prepend-icon="perm_identity"
+          dark
+          color="#fff"
+          @focus="setPrenomPlaceholder"
+          @blur="removePrenomPlaceholder"
+          :placeholder="prenomPlaceholder"
+          aria-placeholder="Jean"
+          hint="ex. : Jean"
+          label="Prénom"
+          required
+          tabindex="3"
+          v-model="prenom"
+        ></v-text-field>
+      </div>
+      <div class="form-input">
+        <v-text-field
+          prepend-icon="email"
+          dark
+          color="#fff"
+          @focus="setEmailPlaceholder"
+          @blur="removeEmailPlaceholder"
+          :placeholder="emailPlaceholder"
+          aria-placeholder="jean@dupont.fr"
+          hint="ex. : jean@dupont.fr"
+          label="Courriel (obligatoire) *"
+          required
+          :rules="emailRules"
+          tabindex="4"
+          v-model="email"
+        ></v-text-field>
+      </div>
+      <div class="form-input">
+        <v-text-field
+          prepend-icon="smartphone"
+          dark
+          color="#fff"
+          @focus="setPortablePlaceholder"
+          @blur="removePortablePlaceholder"
+          :placeholder="portablePlaceholder"
+          aria-placeholder="Jean"
+          hint="ex. : 0612345678"
+          label="Portable (obligatoire) *"
+          required
+          tabindex="5"
+          :rules="portableRules"
+          v-model="portable"
+        ></v-text-field>
+      </div>
+      <div class="form-input">
+        <v-autocomplete
+          dark
+          color="#fff"
+          @focus="setAdressePlaceholder"
+          @blur="removeAdressePlaceholder"
+          :placeholder="adressePlaceholder"
+          aria-placeholder="Jean"
+          :loading="isFetchingMatchingAdresses"
+          v-model="adresse"
+          hint="ex. : 10 avenue du général Leclerc Villepinte 93420"
+          :items="adresses"
+          label="Adresse (obligatoire) *"
+          prepend-icon="location_city"
+          tabindex="6"
+          no-filter
+          :search-input.sync="searchAdresses"
+        >
+        </v-autocomplete>
+      </div>
+      <div class="form-input">
+        <v-btn
+          type="submit"
+          :disabled="isSendingPresignup"
+          :aria-disabled="isSendingPresignup"
+          class="submit-button"
+          dark
+          tabindex="7"
+          color="#28a745">
+          <div class="submit-label">Pré-inscription</div>
+        </v-btn>
+      </div>
+      <div class="form-input  form-input-group">
+        <v-btn flat color="#fff" tag="a" :to="{ name: 'legal' }" tabindex="9">
+          Mentions légales
+        </v-btn>
+        <v-dialog
+          v-model="showDialog"
+          width="500"
+          class="already-signed-up"
+        >
+          <v-btn
+            slot="activator"
+            depressed
+            color="#fff"
+            tabindex="8"
+          >
+            Déjà inscrit ?
+          </v-btn>
+
+          <v-card>
+            <v-card-title
+              class="headline grey lighten-2"
+              primary-title
+            >
+              Recevez un magic link dans votre boîte email
+            </v-card-title>
+
+            <v-form v-model="magicLinkValid" @submit.prevent="sendMagicLink">
+              <div class="u-flex  u-flex--center">
+                <div class="form-input">
+                  <v-text-field
+                    prepend-icon="email"
+                    @focus="setEmailPlaceholder"
+                    @blur="removeEmailPlaceholder"
+                    :placeholder="emailPlaceholder"
+                    aria-placeholder="jean@dupont.fr"
+                    :autofocus="showDialog"
+                    hint="ex. : jean@dupont.fr"
+                    label="Courriel (obligatoire) *"
+                    required
+                    :rules="emailRules"
+                    tabindex="1"
+                    v-model="email"
+                  ></v-text-field>
+                </div>
+              </div>
+
+              <v-divider></v-divider>
+
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                dark
+                type="submit"
+                :disabled="isSendingMagicLink"
+                :aria-disabled="isSendingMagicLink"
+                tabindex="2"
+                color="#28a745">
+                  <div class="submit-label">Envoyer le magic link</div>
+                </v-btn>
+              </v-card-actions>
+            </v-form>
+          </v-card>
+        </v-dialog>
+        <v-btn flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
+          Une question ?
+        </v-btn>
+      </div>
+    </v-form>
   </div>
 </template>
 
@@ -211,27 +200,17 @@ import {
 } from '@/store'
 
 import api from '@/api'
-import logoMI from '@/assets/images/logo_mi_40x50.png'
-import logoLabMI from '@/assets/images/lab_100.png'
-import logoSR from '@/assets/images/securite_routiere_70x27.png'
-import AppVersion from '../../../components/AppVersion.vue'
 
 const getAdresses = pDebounce((query) => {
   return api.util.searchAdresses(query)
 }, 300)
 
 export default {
-  components: {
-    AppVersion,
-  },
   props: {
     toggleForm: Function,
   },
   data: function () {
     return {
-      logoMI,
-      logoLabMI,
-      logoSR,
       magicLinkValid: false,
       nephPlaceholder: '',
       codeNeph: '',
@@ -261,6 +240,15 @@ export default {
       searchAdresses: null,
       isFetchingMatchingAdresses: false,
     }
+  },
+
+  computed: {
+    isSendingPresignup () {
+      return this.$store.state.candidat.isSendingPresignup
+    },
+    isSendingMagicLink () {
+      return this.$store.state.candidat.isSendingMagicLink
+    },
   },
 
   watch: {
@@ -320,7 +308,7 @@ export default {
       } = this
 
       try {
-        await this.$store.dispatch(PRESIGNUP_REQUEST, {
+        const response = await this.$store.dispatch(PRESIGNUP_REQUEST, {
           codeNeph,
           nomNaissance,
           prenom,
@@ -328,10 +316,10 @@ export default {
           portable,
           adresse,
         })
-        this.$store.dispatch(SHOW_SUCCESS, 'Votre demande d’inscription est en cours de vérification, vous recevrez une information sous 48h hors week-end et jours fériés.')
         this.$refs.presignupForm.reset()
+        this.$router.push({ name: 'email-validation', params: { response } })
       } catch (error) {
-        this.$store.dispatch(SHOW_ERROR, 'Un problème technique est survenu durant votre pré-inscription. Merci de réessayer ultérieurement.')
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
 
@@ -367,49 +355,12 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.presignup {
-  width: 40em;
-  padding: 1em;
-  background: linear-gradient(to bottom, #17a2b8, #063852);
-  border-radius: 1em;
-  box-shadow: 0.05em 0.1em 0.1em 0.3em #fff;
-
-  @media (max-width: 599px) {
-    width: 24em;
-  }
-
-  &-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-
-    &-title {
-      margin: 0.2em 0;
-      line-height: 1;
-      font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
-      font-size: 60px;
-      letter-spacing: 5px;
-      color: #fff;
-      text-align: center;
-      text-transform: uppercase;
-      text-shadow: 3px 3px 0 #000;
-      text-shadow: 8px 8px 12px #333;
-    }
-
-    &-subtitle {
-      padding: 5px 0 15px 0;
-      line-height: 1;
-      font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
-      font-size: 18px;
-      color: #fff;
-      letter-spacing: 3px;
-      text-align: center;
-      text-transform: uppercase;
-      text-shadow: 8px 8px 12px #333;
-    }
-  }
+.presignup-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
 }
 
 .form-input {

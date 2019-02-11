@@ -1,12 +1,20 @@
 import { sendMailToAccount } from '../business/send-mail'
-import { INSCRIPTION_UPDATE, INSCRIPTION_OK } from '../../util'
+import {
+  INSCRIPTION_UPDATE,
+  INSCRIPTION_OK,
+  VALIDATION_EMAIL,
+} from '../../util'
 import {
   updateCandidatSignUp,
+  updateCandidatById,
   findCandidatByNomNeph,
   createCandidat,
+  findCandidatByEmail,
 } from '../../models/candidat'
 
-export async function CheckCandidatIsSignedBefore (candidatData) {
+const uuidv4 = require('uuid/v4')
+
+export async function checkCandidatIsSignedBefore (candidatData) {
   const {
     nomNaissance,
     codeNeph,
@@ -18,7 +26,7 @@ export async function CheckCandidatIsSignedBefore (candidatData) {
   const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
 
   if (candidat) {
-    if (candidat.isValid === true) {
+    if (candidat.isValidatedByAurige === true) {
       return {
         result: {
           success: false,
@@ -37,7 +45,7 @@ export async function CheckCandidatIsSignedBefore (candidatData) {
         result: {
           success: false,
           message:
-            'Vous avez déjà pré-inscrist sur Candilib, votre compte est en cours de vérification',
+            'Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification.',
         },
       }
     }
@@ -60,42 +68,66 @@ export async function updateInfoCandidat (candidat, candidatData) {
           success: true,
           response,
           message:
-            'La modification des vos informations ont bien été prise en compte. Veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
+            'Les modifications de vos informations ont bien été prises en compte. Veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
           candidat: updateCandidat,
         }
       } catch (error) {
-        throw new Error(
-          "Un problème est survenu lors de l'envoi du lien de connexion. Nous vous prions de réessayer plus tard."
-        )
+        return {
+          success: false,
+          message: error.message,
+        }
       }
     }
     return {
       success: true,
       candidat: updateCandidat,
       message:
-        'La modification des vos informations ont bien été prise en compte.',
+        'Les modifications de vos informations ont bien été prises en compte.',
     }
   }
   return {
     success: false,
-    message: 'Echec de mise à jours de votre compte',
+    message: 'Échec de la mise à jour de votre compte',
   }
 }
 
-export async function signUpCandidat (candidatData) {
+export async function presignUpCandidat (candidatData) {
+  candidatData.emailValidationHash = uuidv4()
+
   const candidat = await createCandidat(candidatData)
+  const response = await sendMailToAccount(candidat, VALIDATION_EMAIL)
+  return {
+    success: true,
+    response,
+    message: `Un email a été envoyé à ${
+      candidatData.email
+    }, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).`,
+    candidat,
+  }
+}
+
+export async function validateEmail (email, hash) {
   try {
+    const candidat = await findCandidatByEmail(email)
+
+    const updatedCandidat = await updateCandidatById(candidat._id, {
+      isValidatedEmail: true,
+      emailValidationHash: undefined,
+      emailValidatedAt: new Date(),
+    })
+
+    if (candidat.emailValidationHash !== hash) {
+      throw new Error('La validation de votre email a échouée.')
+    }
     const response = await sendMailToAccount(candidat, INSCRIPTION_OK)
     return {
       success: true,
       response,
       message:
-        'Votre demande a été prise en compte, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
-      candidat,
+        'Votre email a été validé, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
+      updatedCandidat,
     }
   } catch (error) {
-    throw new Error(
-      "Un problème est survenu lors de l'envoi du lien de connexion. Nous vous prions de réessayer plus tard."
-    )
+    throw error
   }
 }

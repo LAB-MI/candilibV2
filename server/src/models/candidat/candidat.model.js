@@ -61,12 +61,32 @@ const candidatFields = {
     trim: true,
   },
   // retourAurige
-  isValid: {
+  isValidatedByAurige: {
     type: Boolean,
     default: null,
   },
+  presignedUpAt: {
+    type: Date,
+    default: undefined,
+  },
   place: {
     type: Object,
+    default: undefined,
+  },
+  isValidatedEmail: {
+    type: Boolean,
+    default: false,
+  },
+  emailValidationHash: {
+    type: String,
+    default: undefined,
+  },
+  emailValidatedAt: {
+    type: Date,
+    default: undefined,
+  },
+  aurigeValidatedAt: {
+    type: Date,
     default: undefined,
   },
 }
@@ -80,7 +100,7 @@ CandidatSchema.pre('save', async function preSave () {
 
   Object.keys(candidatFields).map(key => {
     const value = candidat[key]
-    if (value) {
+    if (value && typeof value === 'string') {
       candidat[key] = sanitizeHtml(value)
     }
   })

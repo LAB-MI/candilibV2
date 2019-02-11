@@ -1,11 +1,12 @@
 import express from 'express'
 
-import { getMe } from './candidat.controllers'
+import { getMe, emailValidation } from './candidat.controllers'
 
 const router = express.Router()
 
 router.get('/me', getMe)
+router.put('/me', emailValidation)
 
-export { preSignup } from './candidat.controllers'
+export { preSignup, emailValidation } from './candidat.controllers'
 
 export default router
