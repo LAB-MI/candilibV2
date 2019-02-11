@@ -8,7 +8,7 @@
     "build": "babel src -d dist",
     "db": "docker-compose -f docker-compose.dev.db.yml up -d",
     "db:down": "docker-compose -f docker-compose.dev.db.yml down",
-    "build:all": "docker-compose -f docker-compose.prod.api.yml build",
+    "build:all": "docker-compose -f docker-compose.prod.all.yml build",
     "dev-setup": "node dev-setup/index.js",
     "dev": "nodemon --inspect --watch src boot-dev.js",
     "format": "prettier-eslint --write 'src/**/*.js'",
