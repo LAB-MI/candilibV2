@@ -204,7 +204,7 @@ publish-$(LATEST_VERSION):
 test-all: wait-db test-up-db test-up-api # test-up-$(APP) ## Test running container (db,app)
 
 wait-db: ## wait db up and running
-	time bash tests/wait-db.sh
+	time bash -x tests/wait-db.sh
 test-up-api: ## test api container up and runnng
 	time bash -x tests/test-up-api.sh
 test-up-db: ## test db container up and runnng

@@ -10,6 +10,13 @@ services:
     container_name: candilib_mongo
     volumes:
       - ${DBDATA:-../mongo}:/data/db
+      - ./db/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_PASS:-changeme}
+      MONGO_INITDB_DATABASE: ${DB_NAME:-candilib}
+      DB_USER: ${DB_USER:-adminCandilib}
+      DB_PASS: ${DB_PASS:-changeme78}
   api:
     image: candilib_api:${APP_VERSION:-latest}
     build:
@@ -29,6 +36,15 @@ services:
     environment:
       NODE_ENV: production
       MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
+      SMTP_SERVER: ${SMTP_SERVER:-smtp}
+      SMTP_PORT: ${SMTP_PORT:-25}
+      MAIL_FROM: ${MAIL_FROM:-noreply@interieur.gouv.fr}
+      CANDIDAT_EXPIREDIN: ${CANDIDAT_EXPIREDIN:-72h}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
+      DB_NAME: ${DB_NAME:-candilib}
+      DB_USER: ${DB_USER:-adminCandilib}
+      DB_PASS: ${DB_PASS:-changeme78}
+
     networks:
       - candilib-network
 networks:

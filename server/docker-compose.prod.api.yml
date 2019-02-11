@@ -18,6 +18,15 @@ services:
     environment:
       NODE_ENV: production
       MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
+      SMTP_SERVER: ${SMTP_SERVER:-smtp}
+      SMTP_PORT: ${SMTP_PORT:-25}
+      MAIL_FROM: ${MAIL_FROM:-noreply@interieur.gouv.fr}
+      CANDIDAT_EXPIREDIN: ${CANDIDAT_EXPIREDIN:-72h}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
+      DB_NAME: ${DB_NAME:-candilib}
+      DB_USER: ${DB_USER:-adminCandilib}
+      DB_PASS: ${DB_PASS:-changeme78}
+
 networks:
   default:
     external:
