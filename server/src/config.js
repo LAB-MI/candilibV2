@@ -32,6 +32,10 @@ const config = {
     admin: 1,
   },
 
+  dbName: process.env.DB_NAME,
+  dbUser: process.env.DB_USER,
+  dbPass: process.env.DB_PASS,
+
   smtpServer: process.env.SMTP_SERVER || 'localhost',
   smtpService: process.env.SMTP_SERVICE || undefined,
   smtpUser: process.env.SMTP_USER,
@@ -41,6 +45,12 @@ const config = {
   PUBLIC_URL: process.env.PUBLIC_URL || DEFAULT_PUBLIC_URL,
   CANDIDAT_ROUTE: '/candidat',
   ADMIN_ROUTE: '/admin',
+}
+
+export const dbOptions = {
+  db: config.dbName,
+  user: config.dbUser,
+  pass: config.dbPass,
 }
 
 export const smtpOptions = {
