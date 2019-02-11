@@ -56,34 +56,28 @@ export const synchroAurige = async buffer => {
       const { email } = candidat
 
       let aurigeFeedback
-      let recipient
 
       if (candidatExistant === CANDIDAT_NOK) {
         logger.warn(`Ce candidat ${email} sera archivé : NEPH inconnu`)
         aurigeFeedback = CANDIDAT_NOK
-        recipient = candidat
       } else if (candidatExistant === CANDIDAT_NOK_NOM) {
         logger.warn(`Ce candidat ${email} sera archivé : Nom inconnu`)
         aurigeFeedback = CANDIDAT_NOK_NOM
-        recipient = candidat
       } else if (epreuveEtgInvalid(candidatAurige)) {
         logger.warn(
           `Ce candidat ${email} sera archivé : dateReussiteETG invalide`
         )
         aurigeFeedback = EPREUVE_ETG_KO
-        recipient = candidat
       } else if (!isETGStillValid(dateReussiteETG)) {
         logger.warn(`Ce candidat ${email} sera archivé : Date ETG KO`)
         aurigeFeedback = EPREUVE_ETG_KO
-        recipient = candidatAurige
       } else if (reussitePratique === EPREUVE_PRATIQUE_OK) {
         logger.warn(`Ce candidat ${email} sera archivé : PRATIQUE OK`)
         aurigeFeedback = EPREUVE_PRATIQUE_OK
-        recipient = candidatAurige
       }
       if (aurigeFeedback) {
         await deleteCandidat(candidat, aurigeFeedback)
-        await sendMailToAccount(recipient, aurigeFeedback)
+        await sendMailToAccount(candidat, aurigeFeedback)
         logger.info(`Envoi de mail ${aurigeFeedback} à ${email}`)
         return getCandidatStatus(nomNaissance, codeNeph, 'success')
       }

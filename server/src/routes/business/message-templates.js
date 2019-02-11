@@ -157,18 +157,12 @@ const getHtmlBody = content => `<!DOCTYPE html>
   </body>
 </html>`
 
-const getMailData = async (candidatAurige, flag, urlMagicLink) => {
+const getMailData = async (candidat, flag, urlMagicLink) => {
   const urlFAQ = `${config.PUBLIC_URL}/informations`
   const urlRESA = `${config.PUBLIC_URL}/auth?redirect=calendar`
   const urlConnexion = `${config.PUBLIC_URL}`
 
-  const {
-    codeNeph,
-    nomNaissance,
-    creneau,
-    email,
-    emailValidationHash,
-  } = candidatAurige
+  const { codeNeph, nomNaissance, place, email, emailValidationHash } = candidat
 
   const urlValidationEmail = `${
     config.PUBLIC_URL
@@ -178,17 +172,17 @@ const getMailData = async (candidatAurige, flag, urlMagicLink) => {
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : ''
 
-  const site = creneau && creneau.title ? creneau.title : ''
+  const site = place && place.title ? place.title : ''
   const dateCreneau =
-    creneau && creneau.start ? moment(creneau.start).format('DD MMMM YYYY') : ''
+    place && place.start ? moment(place.start).format('DD MMMM YYYY') : ''
   const heureCreneau =
-    creneau && creneau.start ? moment(creneau.start).format('HH:mm') : ''
+    place && place.start ? moment(place.start).format('HH:mm') : ''
 
   let siteAdresse = []
 
-  if (creneau && creneau.title) {
+  if (place && place.title) {
     const sites = await getCentres()
-    siteAdresse = sites.find(item => item.nom.toUpperCase() === creneau.title)
+    siteAdresse = sites.find(item => item.nom.toUpperCase() === place.title)
   }
 
   const ANNULATION_CONVOCATION_MSG = `<p>Madame, Monsieur ${nomMaj},</p>
@@ -304,9 +298,7 @@ const getMailData = async (candidatAurige, flag, urlMagicLink) => {
       Ce lien est valable 3 jours à compter de la réception de cet email.
   </p>
   <p>
-    Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse email ${
-  candidatAurige.email
-} dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
+    Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse email ${email} dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
   </p>
   <p>
     Lorsque vous recevrez l’email, cliquez sur "Se connecter".
