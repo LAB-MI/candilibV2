@@ -15,6 +15,7 @@ BUILD_DIR     := ${APP_PATH}/${APP}-${APP_VERSION}-build
 DOCKER   := $(shell type -p docker)
 DC       := $(shell type -p docker-compose)
 http_proxy    := $(shell echo $$http_proxy)
+https_proxy    := $(shell echo $$https_proxy)
 no_proxy := $(shell echo $$no_proxy)
 
 # detect tty
@@ -43,7 +44,9 @@ DC_APP_BUILD_PROD := $(APP_API_PATH)/docker-compose.prod.all.yml
 DC_APP_RUN_PROD   := $(APP_API_PATH)/docker-compose.prod.all.yml
 # (one container in one compose)
 DC_APP_FRONT_CANDIDAT_BUILD_PROD := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
+DC_APP_FRONT_CANDIDAT_RUN_PROD := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
 DC_APP_FRONT_ADMIN_BUILD_PROD    := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
+DC_APP_FRONT_ADMIN_RUN_PROD    := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
 DC_APP_API_BUILD_PROD            := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_API_RUN_PROD              := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_DB_BUILD_PROD             := $(APP_DB_PATH)/docker-compose.prod.db.yml
@@ -78,7 +81,9 @@ dollar = $(shell echo \$$)
 
 # Build env
 #  Private npm miror
-NPM_REGISTRY = $(shell echo $$NPM_REGISTRY )
+NPM_REGISTRY  := $(shell echo $$NPM_REGISTRY )
+SASS_REGISTRY  := $(shell echo $$SASS_REGISTRY )
+CYPRESS_DOWNLOAD_MIRROR  := $(shell echo $$CYPRESS_DOWNLOAD_MIRROR )
 
 # Run env
 #  Mongo DB volume path
