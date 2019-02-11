@@ -1,0 +1,88 @@
+SHELL := /bin/bash
+APP   := candilibV2
+# get version (from git or static VERSION file)
+APP_VERSION := $(shell bash ./ci/version.sh 2>&- || cat VERSION)
+LATEST_VERSION := latest
+
+APP_PATH       := $(shell pwd)
+APP_FRONT_PATH := $(APP_PATH)/client
+APP_API_PATH   := $(APP_PATH)/server
+APP_DB_PATH    := $(APP_PATH)/server
+
+BUILD_DIR     := ${APP_PATH}/${APP}-${APP_VERSION}-build
+
+# binaries
+DOCKER   := $(shell type -p docker)
+DC       := $(shell type -p docker-compose)
+http_proxy    := $(shell echo $$http_proxy)
+no_proxy := $(shell echo $$no_proxy)
+
+# detect tty
+DOCKER_USE_TTY := $(shell test -t 1 && echo "-t" )
+DC_USE_TTY     := $(shell test -t 1 && echo "-T" )
+
+# cli docker-compose
+DC_BUILD_ARGS := --pull --no-cache --force-rm
+DC_RUN_ARGS   := -d --no-build
+
+# docker-compose file: development (build or run time)
+# (all containers in one compose)
+DC_APP_BUILD_DEV := $(APP_API_PATH)/docker-compose.dev.yml
+DC_APP_RUN_DEV   := $(APP_API_PATH)/docker-compose.dev.yml
+# (one container in one compose)
+DC_APP_FRONT_CANDIDAT_BUILD_DEV  := $(APP_FRONT_PATH)/docker-compose.dev.yml
+DC_APP_FRONT_ADMIN_BUILD_DEV  := $(APP_FRONT_PATH)/docker-compose.dev.yml
+DC_APP_API_BUILD_DEV   := $(APP_API_PATH)/docker-compose.dev.yml
+DC_APP_API_RUN_DEV     := $(APP_API_PATH)/docker-compose.dev.yml
+DC_APP_DB_BUILD_DEV    := $(APP_DB_PATH)/docker-compose.dev.db.yml
+DC_APP_DB_RUN_DEV      := $(APP_DB_PATH)/docker-compose.dev.db.yml
+
+# docker-compose file: production (build or run time)
+# (all containers in one compose)
+DC_APP_BUILD_PROD := $(APP_API_PATH)/docker-compose.prod.all.yml
+DC_APP_RUN_PROD   := $(APP_API_PATH)/docker-compose.prod.all.yml
+# (one container in one compose)
+DC_APP_FRONT_CANDIDAT_BUILD_PROD := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
+DC_APP_FRONT_ADMIN_BUILD_PROD    := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
+DC_APP_API_BUILD_PROD            := $(APP_API_PATH)/docker-compose.prod.api.yml
+DC_APP_API_RUN_PROD              := $(APP_API_PATH)/docker-compose.prod.api.yml
+DC_APP_DB_BUILD_PROD             := $(APP_DB_PATH)/docker-compose.prod.db.yml
+DC_APP_DB_RUN_PROD               := $(APP_DB_PATH)/docker-compose.prod.db.yml
+
+# source archive
+FILE_ARCHIVE_APP_VERSION = $(APP)-$(APP_VERSION)-archive.tar.gz
+FILE_ARCHIVE_LATEST_VERSION = $(APP)-$(LATEST_VERSION)-archive.tar.gz
+ 
+# docker image name save
+FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION = $(APP)-front-candidat-$(APP_VERSION)-image.tar
+FILE_IMAGE_FRONT_CANDIDAT_LATEST_VERSION = $(APP)-front-candidat-$(LATEST_VERSION)-image.tar
+
+FILE_IMAGE_FRONT_ADMIN_APP_VERSION = $(APP)-front-admin-$(APP_VERSION)-image.tar
+FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION = $(APP)-front-admin-$(LATEST_VERSION)-image.tar
+
+FILE_IMAGE_API_APP_VERSION = $(APP)-back-$(APP_VERSION)-image.tar
+FILE_IMAGE_API_LATEST_VERSION = $(APP)-back-$(LATEST_VERSION)-image.tar
+
+FILE_IMAGE_DB_APP_VERSION = $(APP)-db-$(APP_VERSION)-image.tar
+FILE_IMAGE_DB_LATEST_VERSION = $(APP)-db-$(LATEST_VERSION)-image.tar
+
+# Publish URL (docker image and archive)
+PUBLISH_AUTH_TOKEN         :=
+PUBLISH_URL                :=
+PUBLISH_URL_BASE           := ${APP}-docker-images
+PUBLISH_URL_APP_VERSION    := $(PUBLISH_URL_BASE)/$(APP_VERSION)
+PUBLISH_URL_LATEST_VERSION := $(PUBLISH_URL_BASE)/$(LATEST_VERSION)
+
+# escape dollar
+dollar = $(shell echo \$$)
+
+# Build env
+#  Private npm miror
+NPM_REGISTRY = $(shell echo $$NPM_REGISTRY )
+
+# Run env
+#  Mongo DB volume path
+DBDATA := ${APP_PATH}/db-data
+
+# export all variables in subshell
+export
