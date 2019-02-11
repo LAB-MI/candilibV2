@@ -55,40 +55,36 @@ export const synchroAurige = async buffer => {
 
       const { email } = candidat
 
-      let mailType
+      let aurigeFeedback
       let recipient
 
       if (candidatExistant === CANDIDAT_NOK) {
-        await deleteCandidat(candidat)
-        logger.warn(`Ce candidat ${email} sera supprimé : NEPH inconnu`)
-        mailType = CANDIDAT_NOK
+        logger.warn(`Ce candidat ${email} sera archivé : NEPH inconnu`)
+        aurigeFeedback = CANDIDAT_NOK
         recipient = candidat
       } else if (candidatExistant === CANDIDAT_NOK_NOM) {
-        await deleteCandidat(candidat)
-        logger.warn(`Ce candidat ${email} sera supprimé : Nom inconnu`)
-        mailType = CANDIDAT_NOK_NOM
+        logger.warn(`Ce candidat ${email} sera archivé : Nom inconnu`)
+        aurigeFeedback = CANDIDAT_NOK_NOM
         recipient = candidat
       } else if (epreuveEtgInvalid(candidatAurige)) {
-        await deleteCandidat(candidat)
         logger.warn(
-          `Ce candidat ${email} sera supprimé : dateReussiteETG invalide`
+          `Ce candidat ${email} sera archivé : dateReussiteETG invalide`
         )
-        mailType = EPREUVE_ETG_KO
+        aurigeFeedback = EPREUVE_ETG_KO
         recipient = candidat
       } else if (!isETGStillValid(dateReussiteETG)) {
-        await deleteCandidat(candidat)
-        logger.warn(`Ce candidat ${email} sera supprimé : Date ETG KO`)
-        mailType = EPREUVE_ETG_KO
+        logger.warn(`Ce candidat ${email} sera archivé : Date ETG KO`)
+        aurigeFeedback = EPREUVE_ETG_KO
         recipient = candidatAurige
       } else if (reussitePratique === EPREUVE_PRATIQUE_OK) {
-        await deleteCandidat(candidat)
-        logger.warn(`Ce candidat ${email} sera supprimé : PRATIQUE OK`)
-        mailType = EPREUVE_PRATIQUE_OK
+        logger.warn(`Ce candidat ${email} sera archivé : PRATIQUE OK`)
+        aurigeFeedback = EPREUVE_PRATIQUE_OK
         recipient = candidatAurige
       }
-      if (mailType) {
-        await sendMailToAccount(recipient, mailType)
-        logger.info(`Envoi de mail ${mailType} à ${email}`)
+      if (aurigeFeedback) {
+        await deleteCandidat(candidat, aurigeFeedback)
+        await sendMailToAccount(recipient, aurigeFeedback)
+        logger.info(`Envoi de mail ${aurigeFeedback} à ${email}`)
         return getCandidatStatus(nomNaissance, codeNeph, 'success')
       }
 

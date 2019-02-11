@@ -52,22 +52,27 @@ export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
   return candidat
 }
 
-export const deleteCandidatByNomNeph = async (nomNaissance, codeNeph) => {
-  const candidat = await Candidat.findOne({ nomNaissance, codeNeph })
+export const deleteCandidatByNomNeph = async (
+  nomNaissance,
+  codeNeph,
+  reason
+) => {
+  const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
   if (!candidat) {
     throw new Error('No candidat found')
   }
-  await candidat.delete()
+  await deleteCandidat(candidat, reason)
   return candidat
 }
 
-export const deleteCandidat = async candidat => {
+export const deleteCandidat = async (candidat, reason) => {
   if (!candidat) {
     throw new Error('No candidat given')
   }
   try {
     const cleanedCandidat = candidat.toObject ? candidat.toObject() : candidat
     delete cleanedCandidat._id
+    cleanedCandidat.archiveReason = reason
     await ArchivedCandidat.create(cleanedCandidat)
   } catch (error) {
     logger.warn(
@@ -75,7 +80,7 @@ export const deleteCandidat = async candidat => {
       ${error.message}`
     )
   }
-  await candidat.delete()
+  await Candidat.findByIdAndDelete(candidat._id)
   return candidat
 }
 

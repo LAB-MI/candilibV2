@@ -91,6 +91,10 @@ const ArchivedCandidatFields = {
     type: Date,
     default: undefined,
   },
+  archiveReason: {
+    type: String,
+    default: undefined,
+  },
 }
 
 const ArchivedCandidatSchema = new Schema(ArchivedCandidatFields)
