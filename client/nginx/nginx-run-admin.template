@@ -1,0 +1,31 @@
+# conf front admin
+server {
+  listen 80 default_server;
+
+  location / {
+    try_files $uri @rew;
+  }
+
+  location @rew {
+    return 302 $scheme://$http_host/candilib/;
+  }
+
+  location /candilib {
+    alias /usr/share/nginx/html;
+    try_files $uri $uri/ @rewrites;
+  }
+
+  location @rewrites {
+    rewrite ^(.+)$ /candilib/index.html last;
+  }
+
+  location ~ "^/candilib/api/v2" {
+    rewrite "^/candilib(.*)$" $1 break;
+    add_header Access-Control-Allow-Origin '$http_origin';
+    proxy_pass http://<API_HOST>:<API_PORT>;
+    proxy_redirect off;
+    proxy_buffering off;
+    proxy_http_version 1.1;
+  }
+
+}

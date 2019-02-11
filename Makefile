@@ -102,18 +102,32 @@ network-down:
 # front candidat
 #
 build-front-candidat:
+	${DC} -f ${DC_APP_FRONT_CANDIDAT_BUILD_PROD} build ${DC_BUILD_ARGS} front_candidat
 check-build-front-candidat:
+	${DC} -f ${DC_APP_FRONT_CANDIDAT_BUILD_PROD} config
 up-front-candidat:
+	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} up ${DC_RUN_ARGS} front_candidat
+check-up-front-candidat:
+	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} config
 down-front-candidat:
+	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} down
 stop-front-candidat:
+	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} stop front_candidat
 #
 # front admin
 #
 build-front-admin:
+	${DC} -f ${DC_APP_FRONT_ADMIN_BUILD_PROD} build ${DC_BUILD_ARGS} front_admin
 check-build-front-admin:
+	${DC} -f ${DC_APP_FRONT_ADMIN_BUILD_PROD} config
 up-front-admin:
+	${DC} -f ${DC_APP_FRONT_ADMIN_RUN_PROD} up ${DC_RUN_ARGS} front_admin
+check-up-front-admin:
+	${DC} -f ${DC_APP_FRONT_ADMIN_RUN_PROD} config
 down-front-admin:
+	${DC} -f ${DC_APP_FRONT_ADMIN_RUN_PROD} down
 stop-front-admin:
+	${DC} -f ${DC_APP_FRONT_ADMIN_RUN_PROD} stop front_admin
 #
 # api
 #
