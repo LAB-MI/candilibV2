@@ -1,6 +1,10 @@
-import { createCandidat, findAllCandidatsLean, deleteCandidat } from '../'
+import {
+  createCandidat,
+  findAllCandidatsLean,
+  deleteCandidat,
+} from '../candidat'
 
-import { createPlace, findAllPlaces, deletePlace } from '../../place'
+import { createPlace, findAllPlaces, deletePlace } from '../place'
 import moment from 'moment'
 
 export const candidats = [
@@ -29,7 +33,7 @@ export const candidats = [
     adresse: '10 Rue Oberkampf 75011 Paris',
   },
 ]
-const places = [
+export const places = [
   {
     date: (() =>
       moment()

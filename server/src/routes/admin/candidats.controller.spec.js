@@ -9,7 +9,7 @@ const {
   deletePlaces,
   candidats,
   NUMBER_RESA,
-} = require('../../models/candidat/__TESTS__/candidats')
+} = require('../../models/__tests__/candidats')
 
 const { default: app, apiPrefix } = require('../../app')
 

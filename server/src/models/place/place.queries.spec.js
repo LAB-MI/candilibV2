@@ -6,8 +6,18 @@ import {
   deletePlace,
   findPlaceById,
   findAllPlaces,
+  findPlaceByCandidatId,
 } from '.'
+
 import { connect, disconnect } from '../../mongo-connection'
+
+import {
+  createCandidats,
+  createPlaces,
+  makeResas,
+  deletePlaces,
+  deleteCandidats,
+} from '../__tests__/candidats'
 
 const date = moment()
   .date(28)
@@ -105,6 +115,32 @@ describe('Place', () => {
       // Then
       expect(foundPlace).not.toBe(null)
       expect(noPlace).toBe(null)
+    })
+  })
+
+  describe('Findind Place by Candidat', () => {
+    let candidats
+    let places
+    beforeAll(async () => {
+      await connect()
+      candidats = await createCandidats()
+      places = await createPlaces()
+      await makeResas()
+    })
+
+    afterAll(async () => {
+      await deletePlaces()
+      await deleteCandidats()
+      await disconnect()
+    })
+
+    it('Should find place with candidat Id ', async () => {
+      const foundPlaces = await findPlaceByCandidatId(candidats[0]._id)
+      expect(foundPlaces).toBeDefined()
+      expect(foundPlaces.length).toBeGreaterThan(0)
+      expect(foundPlaces[0]).toHaveProperty('centre', places[0].centre)
+      expect(foundPlaces[0]).toHaveProperty('inspecteur', places[0].inspecteur)
+      expect(foundPlaces[0]).toHaveProperty('date', places[0].date)
     })
   })
 })

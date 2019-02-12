@@ -7,7 +7,7 @@ import {
   findAllCandidatsLean,
   findBookedCandidats,
 } from '../../models/candidat'
-import { findPlaceById } from '../../models/place'
+import { findPlaceByCandidatId } from '../../models/place'
 
 export const importCandidats = async (req, res) => {
   const files = req.files
@@ -69,11 +69,18 @@ export const getCandidats = async (req, res) => {
   const candidatsLean = await findAllCandidatsLean()
   const candidats = await Promise.all(
     candidatsLean.map(async candidat => {
-      const { place: placeId } = candidat
-      if (placeId) {
-        const place = await findPlaceById(placeId)
-        candidat.place = place
+      const { _id } = candidat
+      const places = await findPlaceByCandidatId(_id)
+      if (places.length > 1) {
+        console.warn(
+          'le candidat ' +
+            candidat.codeNeph +
+            '/' +
+            candidat.nomNaissance +
+            "a plusieurs places d'examens"
+        )
       }
+      candidat.place = places[0] || {}
       return candidat
     })
   )
