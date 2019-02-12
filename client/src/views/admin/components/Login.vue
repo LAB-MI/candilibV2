@@ -38,17 +38,6 @@
           <div class="submit-label">Connexion</div>
         </button>
       </div>
-      <!--
-      <div class="text-center">
-        <a
-          tag="a"
-          tabindex="4"
-          @click="showModal"
-          class="forgotten-password"
-          data-toggle="modal"
-        >Mot de passe oublié ?</a>
-      </div>
-      -->
       <admin-version/>
     </v-form>
   </div>
@@ -90,19 +79,11 @@ export default {
 
   computed: {
     authStatus () {
-      return this.$store.state.auth.status
+      return this.$store.state.auth.statusAdmin
     },
   },
 
   methods: {
-    showModal () {
-      console.log('Showing modal')
-    },
-
-    hideModal () {
-      console.log('Hiding modal')
-    },
-
     showMessage (content) {
       this.$store.dispatch(SHOW_INFO, content)
     },

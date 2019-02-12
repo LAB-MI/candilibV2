@@ -18,7 +18,7 @@
           </v-card-text>
         </v-card>
       </v-dialog>
-      <router-view/>
+      <router-view />
     </v-content>
     <app-snackbar />
   </v-app>
@@ -26,15 +26,22 @@
 
 <script>
 import { AppSnackbar } from '@/components'
-import { CHECKING_AUTH } from '@/store'
+import { CHECKING_AUTH_ADMIN, CHECKING_AUTH_CANDIDAT } from '@/store'
 
 export default {
   components: {
     AppSnackbar,
   },
   computed: {
-    authStatus () {
-      return this.$store.state.auth.status === CHECKING_AUTH
+    authStatus: {
+      get () {
+        const isChecking = this.$store.state.auth.statusAdmin === CHECKING_AUTH_ADMIN ||
+          this.$store.state.auth.statusCandidat === CHECKING_AUTH_CANDIDAT
+        return isChecking
+      },
+      set (value) {
+
+      },
     },
   },
 }

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import { SIGN_OUT } from '@/store'
+import { SIGN_OUT_ADMIN } from '@/store'
 
 import HeaderIcon from '@/components/HeaderIcon'
 
@@ -42,7 +42,7 @@ export default {
 
   methods: {
     async disconnect () {
-      await this.$store.dispatch(SIGN_OUT)
+      await this.$store.dispatch(SIGN_OUT_ADMIN)
       this.$router.push({ name: 'admin-login' })
     },
   },

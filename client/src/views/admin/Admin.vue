@@ -14,7 +14,6 @@
 </template>
 
 <script>
-import { CHECK_ADMIN_TOKEN, SIGNED_IN_AS_ADMIN } from '@/store'
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
 import AdminAurige from './components/Aurige.vue'
@@ -79,22 +78,8 @@ export default {
 
   computed: {
     authStatus () {
-      return this.$store.state.auth.status
+      return this.$store.state.auth.statusAdmin
     },
-  },
-
-  methods: {
-    async checkAuth () {
-      await this.$store.dispatch(CHECK_ADMIN_TOKEN)
-      if (this.authStatus !== SIGNED_IN_AS_ADMIN) {
-        this.$router.push({ name: 'admin-login', query: { nextPath: this.$route.fullPath } })
-      }
-    },
-
-  },
-
-  mounted () {
-    this.checkAuth()
   },
 }
 </script>
