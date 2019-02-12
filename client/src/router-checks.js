@@ -1,5 +1,6 @@
 import {
   ADMIN_TOKEN_STORAGE_KEY,
+  CANDIDAT_TOKEN_STORAGE_KEY,
 } from '@/constants'
 
 import store, {
@@ -10,7 +11,7 @@ import store, {
 } from '@/store'
 
 export async function requireCandidatAuth (to, from, next) {
-  const token = to.query.token || localStorage.getItem('token')
+  const token = to.query.token || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
   const signupRoute = {
     name: 'candidat-presignup',
     query: { nextPath: to.fullPath },
@@ -62,7 +63,7 @@ export async function checkAdminToken (to, from, next) {
 }
 
 export async function checkCandidatToken (to, from, next) {
-  const token = to.query.token || localStorage.getItem('token')
+  const token = to.query.token || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
   if (!token) {
     next()
     return
