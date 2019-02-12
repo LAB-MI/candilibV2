@@ -16,7 +16,7 @@ import {
   makeResas,
   deletePlaces,
   deleteCandidats,
-} from './__TESTS__/candidats'
+} from '../__tests__/candidats'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'

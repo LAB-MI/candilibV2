@@ -1,4 +1,5 @@
 import Place from './place.model'
+import mongoose from 'mongoose'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
@@ -27,4 +28,9 @@ export const findAllPlaces = async () => {
 export const findPlaceById = async id => {
   const place = await Place.findById(id)
   return place
+}
+
+export const findPlaceByCandidatId = async id => {
+  const places = await Place.find({ bookedBy: new mongoose.Types.ObjectId(id) })
+  return places
 }
