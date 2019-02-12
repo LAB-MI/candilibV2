@@ -8,7 +8,8 @@
         :columnDefs="columnDefs"
         :rowData="rowData"
         :sideBar="sideBar"
-
+        :pagination="true"
+        :paginationPageSize="8"
         :defaultColDef="{
           sortable: true,
           resizable: true,
@@ -60,6 +61,14 @@ export default {
 
   beforeMount () {
     this.columnDefs = [
+      { headerName: 'Centre', field: 'place.centre' },
+      { headerName: 'Inspecteur', field: 'place.inspecteur' },
+      { headerName: 'Date',
+        field: 'place.date',
+        valueFormatter: param => {
+          return param.value ? DateTime.fromISO(param.value).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS) : ''
+        },
+      },
       { headerName: 'NEPH', field: 'codeNeph' },
       { headerName: 'Nom', field: 'nomNaissance' },
       { headerName: 'Prénom', field: 'prenom' },
