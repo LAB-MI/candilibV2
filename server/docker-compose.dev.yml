@@ -1,5 +1,5 @@
 # development mode
-version: '3.4'
+version: '3.5'
 services:
   db:
     image: mongo:latest
@@ -47,7 +47,7 @@ services:
 #      - ${cnf:-.env}
     environment:
       NODE_ENV: development
-      MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
+      MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
       SMTP_SERVER: candilib_smtp
       SMTP_PORT: 25
       MAIL_FROM: noreply@interieur.gouv.fr
@@ -56,9 +56,9 @@ services:
       DB_NAME: ${DB_NAME:-candilib}
       DB_USER: ${DB_USER:-adminCandilib}
       DB_PASS: ${DB_PASS:-changeme78}
-
     networks:
       - candilib-network
+
   fakesmtp:
     image: digiplant/fake-smtp
     container_name: candilib_smtp
@@ -71,9 +71,11 @@ services:
 
 networks:
   candilib-network:
+    name: candilib-network
     driver: bridge
     driver_opts:
       com.docker.network.driver.mtu: 1450
+
 volumes:
   notused:
   mongodata:
