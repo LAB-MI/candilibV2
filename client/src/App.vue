@@ -37,7 +37,6 @@ export default {
       get () {
         const isChecking = this.$store.state.auth.statusAdmin === CHECKING_AUTH_ADMIN ||
           this.$store.state.auth.statusCandidat === CHECKING_AUTH_CANDIDAT
-        console.log('isChecking', isChecking)
         return isChecking
       },
       set (value) {
