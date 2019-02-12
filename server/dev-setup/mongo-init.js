@@ -1,15 +1,11 @@
-db.createUser(
+db.createUser({
+  user: 'adminCandilib',
+  pwd: 'changeme78',
+  roles: [
     {
-        user: "candilibAdmin",
-        pwd: "Admin*78",
-        roles: [
-            {
-                role: "dbOwner",
-                db: "candilib",
-            },
-        ],
-        mechanisms: [
-            "SCRAM-SHA-1",
-        ],
-    }
-)
+      role: 'dbOwner',
+      db: 'candilib',
+    },
+  ],
+  mechanisms: ['SCRAM-SHA-1'],
+})
