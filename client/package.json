@@ -5,6 +5,10 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "prebuild:admin": "cp .env.admin .env",
+    "build:admin": "vue-cli-service build",
+    "prebuild:candidat": "cp .env.candidat .env",
+    "build:candidat": "vue-cli-service build",
     "test": "npm run -s test:unit",
     "format": "run-s lint:js",
     "lint": "run-p lint:*",
