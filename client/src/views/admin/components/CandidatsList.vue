@@ -17,6 +17,7 @@
         }"
 
         :groupHeaders="true"
+        :localeText="localeText"
 
         @grid-ready="onReady"
       >
@@ -33,6 +34,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 import { FETCH_CANDIDATS_REQUEST } from '@/store'
+import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './AgGridUtils'
 
 export default {
   components: {
@@ -50,6 +52,7 @@ export default {
       showGrid: false,
       sideBar: false,
       rowCount: null,
+      localeText: null,
     }
   },
 
@@ -60,14 +63,17 @@ export default {
   },
 
   beforeMount () {
+    this.localeText = AgGridLocaleText
     this.columnDefs = [
-      { headerName: 'Centre', field: 'place.centre' },
+      { headerName: 'Centre',
+        field: 'place.centre',
+        filter: 'agTextColumnFilter' },
       { headerName: 'Inspecteur', field: 'place.inspecteur' },
       { headerName: 'Date',
         field: 'place.date',
-        valueFormatter: param => {
-          return param.value ? DateTime.fromISO(param.value).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS) : ''
-        },
+        valueFormatter: valueDateFormatter,
+        filter: 'agDateColumnFilter',
+        filterParams: filterDateParams,
       },
       { headerName: 'NEPH', field: 'codeNeph' },
       { headerName: 'Nom', field: 'nomNaissance' },
@@ -79,8 +85,6 @@ export default {
   methods: {
     onReady ({ type, api, columnApi }) {
       this.api = api
-      // this.columnApi = columnApi
-
       this.api.sizeColumnsToFit()
     },
   },

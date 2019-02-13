@@ -14,6 +14,7 @@
           resizable: true,
           filter: true
         }"
+        :localeText="localeText"
         @grid-ready="onReady"
       >
       </ag-grid-vue>
@@ -27,6 +28,8 @@ import { AgGridVue } from 'ag-grid-vue'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
+import { AgGridLocaleText } from './AgGridUtils'
+
 export default {
   components: {
     AgGridVue,
@@ -38,6 +41,7 @@ export default {
       sideBar: false,
       rowCount: null,
       gridOptions: null,
+      localeText: null,
     }
   },
 
@@ -48,6 +52,7 @@ export default {
   },
 
   beforeMount () {
+    this.localeText = AgGridLocaleText
     const StatusRenderer = (param) => {
       const StatusIcon = {
         'success': 'done',
