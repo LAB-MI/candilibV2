@@ -46,7 +46,7 @@
 </template>
 
 <script>
-import { DISPLAY_NAV_DRAWER, SIGN_OUT } from '@/store'
+import { DISPLAY_NAV_DRAWER, SIGN_OUT_CANDIDAT } from '@/store'
 
 import IconWithTooltip from '@/components/IconWithTooltip'
 
@@ -68,8 +68,8 @@ export default {
 
   methods: {
     async disconnect () {
-      await this.$store.dispatch(SIGN_OUT)
-      this.$router.push({ name: 'admin-login' })
+      await this.$store.dispatch(SIGN_OUT_CANDIDAT)
+      this.$router.push({ name: 'candidat-presignup' })
     },
     toggleDrawer () {
       const currentDrawerState = this.$store.state.candidat.displayNavDrawer
