@@ -28,7 +28,7 @@ import { AgGridVue } from 'ag-grid-vue'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
-import { AgGridLocaleText } from './AgGridUtils'
+import { AgGridLocaleText } from './ag-grid-utils'
 
 export default {
   components: {
