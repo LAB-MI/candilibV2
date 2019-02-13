@@ -1,3 +1,4 @@
+import logger from '../../util/logger'
 import {
   synchroAurige,
   getCandidatsAsCsv,
@@ -72,7 +73,7 @@ export const getCandidats = async (req, res) => {
       const { _id } = candidat
       const places = await findPlaceByCandidatId(_id)
       if (places.length > 1) {
-        console.warn(
+        logger.warn(
           'le candidat ' +
             candidat.codeNeph +
             '/' +
