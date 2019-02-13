@@ -1,14 +1,10 @@
 <template>
-  <div>
-    <candidat v-if="signedIn" />
-    <signup v-else />
-  </div>
+  <signup-form />
 </template>
 
 <script>
 // @ is an alias to /src
-import { Signup } from './candidat/components'
-import Candidat from './candidat'
+import { SignupForm } from './candidat/components'
 import { SIGNED_IN_AS_CANDIDAT } from '@/store'
 
 export default {
@@ -19,8 +15,7 @@ export default {
     }
   },
   components: {
-    Signup,
-    Candidat,
+    SignupForm,
   },
   computed: {
     signedIn () {
