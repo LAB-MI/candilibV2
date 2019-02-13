@@ -34,7 +34,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 import { FETCH_CANDIDATS_REQUEST } from '@/store'
-import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './AgGridUtils'
+import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './ag-grid-utils'
 
 export default {
   components: {
