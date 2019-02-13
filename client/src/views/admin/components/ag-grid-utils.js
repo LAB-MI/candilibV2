@@ -13,6 +13,8 @@ export const AgGridLocaleText = {
   notContains: 'Ne contient pas',
   startsWith: 'Commence par',
   endsWith: 'Finit par',
+  AND: 'Et',
+  OR: 'Ou',
 }
 
 export const valueDateFormatter = param => {
@@ -23,7 +25,7 @@ export const filterDateParams = {
     const cellDate = DateTime.fromISO(cellValue)
     const selectedDate = DateTime.fromJSDate(filterLocalDateAtMidnight)
     const diffDate = cellDate.diff(selectedDate, [ 'days', 'hours' ])
-    return diffDate.days
+    return Object.is(diffDate.values.days, -0) ? -1 : diffDate.days
   },
   browserDatePicker: true,
 }
