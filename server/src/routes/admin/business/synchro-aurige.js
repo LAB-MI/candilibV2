@@ -93,7 +93,7 @@ export const synchroAurige = async buffer => {
         })
         return candidat
           .save()
-          .then(candidat => {
+          .then(async candidat => {
             if (isValidatedByAurige) {
               logger.info(`Ce candidat ${candidat.email} a été mis à jour`)
               return getCandidatStatus(nomNaissance, codeNeph, 'success')
@@ -105,7 +105,7 @@ export const synchroAurige = async buffer => {
               )
 
               logger.info(`Envoi d'un magic link à ${email}`)
-              sendMagicLink(candidat, token)
+              await sendMagicLink(candidat, token)
               return getCandidatStatus(nomNaissance, codeNeph, 'success')
             }
           })
