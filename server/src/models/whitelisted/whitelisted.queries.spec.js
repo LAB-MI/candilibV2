@@ -50,8 +50,8 @@ describe('Whitelisted', () => {
       // Then
       expect(whitelisted.isNew).toBe(false)
       expect(error).toBeInstanceOf(Error)
-      expect(error.message).toContain('duplicate key error')
-      expect(error.message).toContain('email_1 dup key')
+      expect(error.message).toContain('duplicate key')
+      expect(error.message).toContain(email)
     })
 
     it('should not save a whitelisted with an invalid email', async () => {
