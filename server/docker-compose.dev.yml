@@ -41,7 +41,7 @@ services:
       - db
       - fakesmtp
     ports:
-      - "${WEB_PORT:-8000}:8000"
+      - "${API_PORT:-8000}:8000"
       - "9229:9229"
 #    env_file:
 #      - ${cnf:-.env}
@@ -53,9 +53,7 @@ services:
       MAIL_FROM: noreply@interieur.gouv.fr
       CANDIDAT_EXPIREDIN: 72h
       PUBLIC_URL: http://localhost:8080
-      DB_NAME: ${DB_NAME:-candilib}
-      DB_USER: ${DB_USER:-adminCandilib}
-      DB_PASS: ${DB_PASS:-changeme78}
+
     networks:
       - candilib-network
 

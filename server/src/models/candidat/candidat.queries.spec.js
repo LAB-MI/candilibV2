@@ -177,7 +177,9 @@ describe('Candidat', () => {
       // Then
       expect(candidat.isNew).toBe(false)
       expect(error).toBeInstanceOf(Error)
-      expect(error.message).toContain('codeNeph_1_nomNaissance_1 dup key')
+      expect(error.message).toContain('duplicate key')
+      expect(error.message).toContain(codeNeph)
+      expect(error.message).toContain(nomNaissance.toUpperCase())
     })
 
     it('should not save a candidat with an invalid email', async () => {
