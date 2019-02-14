@@ -2,33 +2,18 @@ import ArchivedCandidat from './archived-candidat.model'
 import Place from '../place/place.model'
 import moment from 'moment'
 
-export const createArchivedCandidat = async ({
-  codeNeph,
-  nomNaissance,
-  prenom,
-  portable,
-  email,
-  emailValidationHash,
-  adresse,
-}) => {
-  const candidat = await new ArchivedCandidat({
-    codeNeph,
-    nomNaissance,
-    prenom,
-    portable,
-    email,
-    emailValidationHash,
-    adresse,
-    presignedUpAt: new Date(),
-  })
-  await candidat.save()
+export const createArchivedCandidat = async candidatData => {
+  const candidat = await ArchivedCandidat.create(candidatData)
   return candidat
 }
 
 export const countArchivedCandidats = async () => ArchivedCandidat.count()
 
-export const findAllArchivedCandidatsLean = async () => {
-  const candidats = await ArchivedCandidat.find({}).lean()
+export const findAllArchivedCandidatsLean = async (limit = 20, skip = 0) => {
+  const candidats = await ArchivedCandidat.find({}, null, {
+    limit,
+    skip,
+  }).lean()
   return candidats
 }
 

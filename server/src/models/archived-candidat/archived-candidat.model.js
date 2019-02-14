@@ -75,10 +75,6 @@ const ArchivedCandidatFields = {
     type: Boolean,
     default: false,
   },
-  emailValidationHash: {
-    type: String,
-    default: undefined,
-  },
   emailValidatedAt: {
     type: Date,
     default: undefined,

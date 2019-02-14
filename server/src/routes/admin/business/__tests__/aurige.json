@@ -1,0 +1,35 @@
+[
+  {
+    "codeNeph": "093631754283",
+    "nomNaissance": "MCAFFEE",
+    "nomUsage": "",
+    "prenom": "FIFI",
+    "email": "fifimcaffee@candilib.com",
+    "dateReussiteETG": "2018-05-10T00:00:00.000Z",
+    "dateDernierEchecPratique": "",
+    "reussitePratique": "",
+    "candidatExistant": "OK"
+  },
+  {
+      "codeNeph": "093496239512",
+      "nomNaissance": "SWAISEY",
+      "nomUsage": "",
+      "prenom": "MAY",
+      "email": "mayswaisey@candilib.com",
+      "dateReussiteETG": "2018-08-15T00:00:00.000Z",
+      "dateDernierEchecPratique": "",
+      "reussitePratique": "",
+      "candidatExistant": "OK"
+  },
+  {
+      "codeNeph": "093874320865",
+      "nomNaissance": "ZANETTI",
+      "nomUsage": "",
+      "prenom": "BUBBA",
+      "email": "bubbazanetti@candilib.com",
+      "dateReussiteETG": "2018-10-25T00:00:00.000Z",
+      "dateDernierEchecPratique": "2019-01-10T00:00:00.000Z",
+      "reussitePratique": "",
+      "candidatExistant": "OK"
+  }
+]
