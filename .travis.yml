@@ -36,7 +36,7 @@ script:
   - time make up-all FRONT_ADMIN_PORT=81
   - docker ps
   - echo "# test all services up&running"
-  - time make test-all
+  - time make test-all FRONT_ADMIN_PORT=81
   - echo "# remove all services"
   - time make down-all
 after_script:

@@ -237,7 +237,7 @@ publish-$(LATEST_VERSION):
 #
 # test
 #
-test-all: wait-db test-up-db test-up-api # test-up-$(APP) ## Test running container (db,app)
+test-all: wait-db test-up-db test-up-api test-up-front-admin test-up-front-candidat # test-up-$(APP) ## Test running container (db,app)
 
 wait-db: ## wait db up and running
 	time bash -x tests/wait-db.sh
@@ -245,5 +245,9 @@ test-up-api: ## test api container up and runnng
 	time bash -x tests/test-up-api.sh
 test-up-db: ## test db container up and runnng
 	time bash -x tests/test-up-db.sh
+test-up-front-candidat: ## test front-candidat container up and runnng
+	time bash -x tests/test-up-front-candidat.sh
+test-up-front-admin: ## test front-admin container up and runnng
+	time bash -x tests/test-up-front-admin.sh
 test-up-${APP}: ## test app up and running
 	time bash tests/test-up-${APP}.sh
