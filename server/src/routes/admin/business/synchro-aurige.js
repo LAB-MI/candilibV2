@@ -8,6 +8,13 @@ import {
   EPREUVE_ETG_KO,
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
+  EMAIL_NOT_VERIFIED_EXPIRED,
+  EMAIL_NOT_VERIFIED_YET,
+  NO_NAME,
+  NOT_FOUND,
+  OK,
+  OK_MAIL_PB,
+  OK_UPDATED,
   createToken,
 } from '../../../util'
 import { sendMailToAccount, sendMagicLink } from '../../business'
@@ -48,7 +55,7 @@ export const synchroAurige = async buffer => {
       logger.warn(
         `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`
       )
-      return getCandidatStatus(nomNaissance, codeNeph, 'error', 'NO_NAME')
+      return getCandidatStatus(nomNaissance, codeNeph, 'error', NO_NAME)
     }
 
     nomNaissance = latinize(nomNaissance).toUpperCase()
@@ -58,7 +65,7 @@ export const synchroAurige = async buffer => {
 
       if (candidat === undefined || candidat === null) {
         logger.warn(`Candidat ${codeNeph}/${nomNaissance} non trouvé`)
-        return getCandidatStatus(nomNaissance, codeNeph, 'error', 'NOT_FOUND')
+        return getCandidatStatus(nomNaissance, codeNeph, 'error', NOT_FOUND)
       }
 
       if (!candidat.isValidatedEmail) {
@@ -70,7 +77,7 @@ export const synchroAurige = async buffer => {
             nomNaissance,
             codeNeph,
             'error',
-            'EMAIL_NOT_VERIFIED_EXPIRED'
+            EMAIL_NOT_VERIFIED_EXPIRED
           )
         }
         logger.warn(
@@ -80,7 +87,7 @@ export const synchroAurige = async buffer => {
           nomNaissance,
           codeNeph,
           'warning',
-          'EMAIL_NOT_VERIFIED_YET'
+          EMAIL_NOT_VERIFIED_YET
         )
       }
 
@@ -136,7 +143,7 @@ export const synchroAurige = async buffer => {
                 nomNaissance,
                 codeNeph,
                 'success',
-                'OK_UPDATED'
+                OK_UPDATED
               )
             } else {
               logger.info(`Ce candidat ${candidat.email} a été validé`)
@@ -148,12 +155,7 @@ export const synchroAurige = async buffer => {
               logger.info(`Envoi d'un magic link à ${email}`)
               try {
                 await sendMagicLink(candidat, token)
-                return getCandidatStatus(
-                  nomNaissance,
-                  codeNeph,
-                  'success',
-                  'OK'
-                )
+                return getCandidatStatus(nomNaissance, codeNeph, 'success', OK)
               } catch (error) {
                 logger.info(
                   `Impossible d'envoyer un mail à ce candidat ${
@@ -164,7 +166,7 @@ export const synchroAurige = async buffer => {
                   nomNaissance,
                   codeNeph,
                   'warning',
-                  'OK_MAIL_PB'
+                  OK_MAIL_PB
                 )
               }
             }
