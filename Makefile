@@ -162,7 +162,19 @@ stop-db: ## Down db container
 #
 # save images
 #
-save-images: build-dir save-image-db save-image-api ## Save images
+save-images: build-dir save-image-db save-image-api save-image-front-candidat save-image-front-admin ## Save images
+
+save-image-front-candidat: ## Save front_candidat image
+	front_candidat_image_name=$$(${DC} -f $(DC_APP_FRONT_CANDIDAT_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["front_candidat"]["image"]') ; \
+          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION) $$front_candidat_image_name && \
+          cp $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION) $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_LATEST_VERSION)
+
+
+save-image-front-admin: ## Save front_admin image
+	front_admin_image_name=$$(${DC} -f $(DC_APP_FRONT_ADMIN_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["front_admin"]["image"]') ; \
+          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) $$front_admin_image_name && \
+          cp $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION)
+
 
 save-image-db: ## Save db image
 	db_image_name=$$(${DC} -f $(DC_APP_DB_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["db"]["image"]') ; \
@@ -177,7 +189,17 @@ save-image-api: ## Save api image
 #
 # clean image
 #
-clean-images: clean-image-api clean-image-db ## Remove all docker images
+clean-images: clean-image-api clean-image-db clean-image-front-candidat clean-image-front-admin ## Remove all docker images
+
+clean-image-front-candidat: ## Remove front_candidat docker image
+	front_candidat_image_name=$$(${DC} -f $(DC_APP_FRONT_CANDIDAT_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["front_candidat"]["image"]') ; \
+          docker rmi $$front_candidat_image_name || true
+
+
+clean-image-front-admin: ## Remove front_admin docker image
+	front_admin_image_name=$$(${DC} -f $(DC_APP_FRONT_ADMIN_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["front_admin"]["image"]') ; \
+          docker rmi $$front_admin_image_name || true
+
 
 clean-image-db: ## Remove db docker image
 	db_image_name=$$(${DC} -f $(DC_APP_DB_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["db"]["image"]') ; \
