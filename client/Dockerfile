@@ -59,6 +59,7 @@ COPY --from=build /app/dist ./dist
 COPY package.json package-lock.json ./
 # Install production dependencies and clean cache
 RUN npm install --production && \
+    npm audit --json --registry=https://registry.npmjs.org && \
     npm cache clean --force
 
 # Deliver the dist folder with Nginx
