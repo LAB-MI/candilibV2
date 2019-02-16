@@ -14,6 +14,7 @@ services:
         npm_registry: ${NPM_REGISTRY}
         sass_registry: ${SASS_REGISTRY}
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
+        NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         CLIENT_BUILD_TARGET: candidat
 #    env_file:
 #      - ${cnf:-.env}
@@ -38,6 +39,7 @@ services:
         npm_registry: ${NPM_REGISTRY}
         sass_registry: ${SASS_REGISTRY}
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
+        NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         CLIENT_BUILD_TARGET: admin
 #    env_file:
 #      - ${cnf:-.env}

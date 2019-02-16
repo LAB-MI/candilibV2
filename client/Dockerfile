@@ -53,13 +53,14 @@ RUN set -x ; npm run format && npm run test && npm run build:${CLIENT_BUILD_TARG
 ###############################
 
 FROM build as production
+ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
 # Copy the transpiled code to use in production (in /app)
 COPY --from=build /app/dist ./dist
 COPY package.json package-lock.json ./
 # Install production dependencies and clean cache
 RUN npm install --production && \
-    npm audit --json --registry=https://registry.npmjs.org && \
+    npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force
 
 # Deliver the dist folder with Nginx
