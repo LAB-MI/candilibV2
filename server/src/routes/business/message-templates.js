@@ -26,16 +26,16 @@ const getHtmlBody = content => `<!DOCTYPE html>
   <meta content="width=device-width">
   <style type="text/css">
   /* Fonts and Content */
-  body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; font-size:14px; color:rgba(0,0,0, 0.54); }
+  body, td { font-family: Roboto,'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; font-size:14px; color:rgba(0,0,0, 0.54); }
   body { background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust:none; -ms-text-size-adjust:none; }
-  h2{ padding-top:12px; /* ne fonctionnera pas sous Outlook 2007+ */color:rgba(0,0,0, 0.54); font-size:22px; }
+  h2{ color:black; font-size:3em; }
 
   @media only screen and (max-width: 480px) {
 
-      table[class=w275], td[class=w275], img[class=w275] { width:135px !important; }
-      table[class=w30], td[class=w30], img[class=w30] { width:10px !important; }
-      table[class=w580], td[class=w580], img[class=w580] { width:280px !important; }
-      table[class=w640], td[class=w640], img[class=w640] { width:300px !important; }
+      table[class=w275], td[class=w275], img[class=w275] { width:135px !important; vertical-align:"middle"; }
+      table[class=w30], td[class=w30], img[class=w30] { width:10px !important; vertical-align:"middle"; }
+      table[class=w580], td[class=w580], img[class=w580] { width:280px !important; vertical-align:"middle"; }
+      table[class=w640], td[class=w640], img[class=w640] { width:300px !important; vertical-align:"middle"; }
       img{ height:auto;}
       /*illisible, on passe donc sur 3 lignes */
       table[class=w180], td[class=w180], img[class=w180] {
@@ -92,9 +92,9 @@ const getHtmlBody = content => `<!DOCTYPE html>
                                                                   <td>
                                                                     <img width="80px" src="https://www.cartaplac.com/images/logo-securite-routiere.jpg" />
                                                                   </td>
-                                                                  <td class="w580"  width="580" align="center" bgcolor="#64b5f6">
+                                                                  <td class="w580">
                                                                       <h2>
-                                                                          CANDILIB
+                                                                          C<span style="color:red;">A</span>NDILIB
                                                                       </h2>
                                                                   </td>
                                                               </tr>
