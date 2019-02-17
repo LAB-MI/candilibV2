@@ -21,3 +21,17 @@ La partie ``persistance des données`` garantie :
 Le schéma ci-dessous synthétise ces principes d'architecture.
 
 ![Architecture générale](https://raw.github.com/LAB-MI/candilibV2/docs/principes/docs/archi_gene_candilib-Page-2.svg?sanitize=true)
+
+## Modèle de données
+
+Le modèle de données actuel est modélisé dans le schéma ci-dessous. Il comprends une structure `candidats` qui comprte l'ensemble des données relatives à la personne, sa situation adminitrative et son statut dans l'application candilib. Le lien entre une place d'examen et un lieu n'est pas formalisé et relève de la convention d'utiliser la même dénomination pour les champs `centre` de la structure `places` et `nom` de la structure `centres`.
+
+![Modèle de données v1](./candilib_V1_data_model.png)
+
+Le schéma suivant est une proposition de structuration des données pour la version 2 de candilib. Elle ressort les données de la situation administrative du candidat ainsi que sa gestion au sein de l'application.
+
+De même les données relatives aux `places` d'examen sont liées formellement avec les structures externes des `centres` et des `inspecteurs`.
+
+![Modèle de données v2](./candilib_V2_data_model.png)
+
+La structure `utilisateurs` est renommée en `agents` et l'information de `status` est renommée en `profile`.
