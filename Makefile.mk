@@ -37,6 +37,8 @@ DC_APP_API_BUILD_DEV   := $(APP_API_PATH)/docker-compose.dev.yml
 DC_APP_API_RUN_DEV     := $(APP_API_PATH)/docker-compose.dev.yml
 DC_APP_DB_BUILD_DEV    := $(APP_DB_PATH)/docker-compose.dev.db.yml
 DC_APP_DB_RUN_DEV      := $(APP_DB_PATH)/docker-compose.dev.db.yml
+DC_APP_MQ_BUILD_DEV    := $(APP_MQ_PATH)/docker-compose.dev.mq.yml
+DC_APP_MQ_RUN_DEV      := $(APP_MQ_PATH)/docker-compose.dev.mq.yml
 
 # docker-compose file: production (build or run time)
 # (all containers in one compose)
@@ -51,6 +53,9 @@ DC_APP_API_BUILD_PROD            := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_API_RUN_PROD              := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_DB_BUILD_PROD             := $(APP_DB_PATH)/docker-compose.prod.db.yml
 DC_APP_DB_RUN_PROD               := $(APP_DB_PATH)/docker-compose.prod.db.yml
+DC_APP_MQ_BUILD_PROD             := $(APP_DB_PATH)/docker-compose.prod.mq.yml
+DC_APP_MQ_RUN_PROD               := $(APP_DB_PATH)/docker-compose.prod.mq.yml
+
 
 # source archive
 FILE_ARCHIVE_APP_VERSION = $(APP)-$(APP_VERSION)-archive.tar.gz
@@ -68,6 +73,10 @@ FILE_IMAGE_API_LATEST_VERSION = $(APP)-api-$(LATEST_VERSION)-image.tar
 
 FILE_IMAGE_DB_APP_VERSION = $(APP)-db-$(APP_VERSION)-image.tar
 FILE_IMAGE_DB_LATEST_VERSION = $(APP)-db-$(LATEST_VERSION)-image.tar
+
+FILE_IMAGE_MQ_APP_VERSION = $(APP)-mq-$(APP_VERSION)-image.tar
+FILE_IMAGE_MQ_LATEST_VERSION = $(APP)-mq-$(LATEST_VERSION)-image.tar
+
 
 # Publish URL (docker image and archive)
 PUBLISH_AUTH_TOKEN         :=

@@ -19,6 +19,7 @@ services:
     environment:
       NODE_ENV: production
       MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
+      AMQP_HOST: ${AMQP_HOST:-mq}
       SMTP_SERVER: ${SMTP_SERVER:-smtp}
       SMTP_PORT: ${SMTP_PORT:-25}
       MAIL_FROM: ${MAIL_FROM:-noreply@interieur.gouv.fr}

@@ -84,12 +84,12 @@ stop-prod-db: ## Stop db container in production mode
 #
 build: check-prerequisites build-dir build-archive build-prod ## Create archive, Build production images
 
-build-all: build-db build-api build-front-candidat build-front-admin ## Build the release and production (web && && api && db)
+build-all: build-db build-mq build-api build-front-candidat build-front-admin ## Build the release and production (web && && api && db)
 #
 # All container front candidat + front admin + api + db
 #
-up-all: check-prerequisites network-up up-db wait-db up-api up-front-candidat up-front-admin ## Build the release and production (web && && api && db)
-down-all: down-front-candidat down-front-admin down-api down-db network-down  ## Build the release and production (web && && api && db)
+up-all: check-prerequisites network-up up-db wait-db up-mq up-api up-front-candidat up-front-admin ## Build the release and production (web && && api && db)
+down-all: down-front-candidat down-front-admin down-api down-db down-mq network-down  ## Build the release and production (web && && api && db)
 
 network-up:
 	@echo creating ${APP}-network docker network
@@ -97,6 +97,23 @@ network-up:
 network-down:
 	@echo cleaning ${APP}-network docker network
 	docker network rm ${APP}-network || true
+
+#
+# AMQP
+#
+build-mq:
+	${DC} -f ${DC_APP_MQ_BUILD_PROD} pull mq
+	${DC} -f ${DC_APP_MQ_BUILD_PROD} build ${DC_BUILD_ARGS} mq
+check-build-mq:
+	${DC} -f ${DC_APP_MQ_BUILD_PROD} config
+up-mq:
+	${DC} -f ${DC_APP_MQ_RUN_PROD} up ${DC_RUN_ARGS} mq
+check-up-mq:
+	${DC} -f ${DC_APP_MQ_RUN_PROD} config
+down-mq:
+	${DC} -f ${DC_APP_MQ_RUN_PROD} down
+stop-mq:
+	${DC} -f ${DC_APP_MQ_RUN_PROD} stop mq
 
 #
 # front candidat
@@ -162,7 +179,7 @@ stop-db: ## Down db container
 #
 # save images
 #
-save-images: build-dir save-image-db save-image-api save-image-front-candidat save-image-front-admin ## Save images
+save-images: build-dir save-image-mq save-image-db save-image-api save-image-front-candidat save-image-front-admin ## Save images
 
 save-image-front-candidat: ## Save front_candidat image
 	front_candidat_image_name=$$(${DC} -f $(DC_APP_FRONT_CANDIDAT_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["front_candidat"]["image"]') ; \
@@ -175,6 +192,10 @@ save-image-front-admin: ## Save front_admin image
           docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) $$front_admin_image_name && \
           cp $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION)
 
+save-image-mq: ## Save mq image
+	mq_image_name=$$(${DC} -f $(DC_APP_MQ_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["mq"]["image"]') ; \
+          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_MQ_APP_VERSION) $$mq_image_name && \
+          cp $(BUILD_DIR)/$(FILE_IMAGE_MQ_APP_VERSION) $(BUILD_DIR)/$(FILE_IMAGE_MQ_LATEST_VERSION)
 
 save-image-db: ## Save db image
 	db_image_name=$$(${DC} -f $(DC_APP_DB_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["db"]["image"]') ; \
@@ -189,7 +210,7 @@ save-image-api: ## Save api image
 #
 # clean image
 #
-clean-images: clean-image-api clean-image-db clean-image-front-candidat clean-image-front-admin ## Remove all docker images
+clean-images: clean-image-mq clean-image-api clean-image-db clean-image-front-candidat clean-image-front-admin ## Remove all docker images
 
 clean-image-front-candidat: ## Remove front_candidat docker image
 	front_candidat_image_name=$$(${DC} -f $(DC_APP_FRONT_CANDIDAT_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["front_candidat"]["image"]') ; \
@@ -200,6 +221,10 @@ clean-image-front-admin: ## Remove front_admin docker image
 	front_admin_image_name=$$(${DC} -f $(DC_APP_FRONT_ADMIN_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["front_admin"]["image"]') ; \
           docker rmi $$front_admin_image_name || true
 
+
+clean-image-mq: ## Remove mq docker image
+	mq_image_name=$$(${DC} -f $(DC_APP_MQ_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["mq"]["image"]') ; \
+          docker rmi $$mq_image_name || true
 
 clean-image-db: ## Remove db docker image
 	db_image_name=$$(${DC} -f $(DC_APP_DB_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["db"]["image"]') ; \
@@ -237,6 +262,7 @@ publish-$(APP_VERSION):
 		"${FILE_IMAGE_FRONT_ADMIN_APP_VERSION} ${FILE_IMAGE_FRONT_ADMIN_APP_VERSION}" \
 		"${FILE_IMAGE_API_APP_VERSION} ${FILE_IMAGE_API_APP_VERSION}" \
 		"${FILE_IMAGE_DB_APP_VERSION} ${FILE_IMAGE_DB_APP_VERSION}" \
+		"${FILE_IMAGE_MQ_APP_VERSION} ${FILE_IMAGE_MQ_APP_VERSION}" \
 		; do \
 	  echo "$${file}" | while read src dst ; do bash ci/publish.sh $${src} $${dst} ${APP_VERSION} ; done ; \
 	done ; \
@@ -252,6 +278,7 @@ publish-$(LATEST_VERSION):
 		"${FILE_IMAGE_FRONT_ADMIN_APP_VERSION} ${FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION}" \
 		"${FILE_IMAGE_API_APP_VERSION} ${FILE_IMAGE_API_LATEST_VERSION}" \
 		"${FILE_IMAGE_DB_APP_VERSION} ${FILE_IMAGE_DB_LATEST_VERSION}" \
+		"${FILE_IMAGE_MQ_APP_VERSION} ${FILE_IMAGE_MQ_LATEST_VERSION}" \
 		; do \
 	  echo "$${file}" | while read src dst ; do bash ci/publish.sh $${src} $${dst} ${LATEST_VERSION} ; done ; \
 	done ; \
@@ -259,12 +286,14 @@ publish-$(LATEST_VERSION):
 #
 # test
 #
-test-all: wait-db test-up-db test-up-api test-up-front-admin test-up-front-candidat # test-up-$(APP) ## Test running container (db,app)
+test-all: wait-db test-up-db test-up-mq test-up-api test-up-front-admin test-up-front-candidat # test-up-$(APP) ## Test running container (db,app)
 
 wait-db: ## wait db up and running
 	time bash -x tests/wait-db.sh
 test-up-api: ## test api container up and runnng
 	time bash -x tests/test-up-api.sh
+test-up-mq: ## test mq container up and runnng
+	time bash -x tests/test-up-mq.sh
 test-up-db: ## test db container up and runnng
 	time bash -x tests/test-up-db.sh
 test-up-front-candidat: ## test front-candidat container up and runnng
