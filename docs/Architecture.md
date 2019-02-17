@@ -35,3 +35,12 @@ De même les données relatives aux `places` d'examen sont liées formellement a
 ![Modèle de données v2](./candilib_V2_data_model.png)
 
 La structure `utilisateurs` est renommée en `agents` et l'information de `status` est renommée en `profile`.
+
+### Principes de cloisonnement
+
+Dans la configuration proposée, la notion de `departement` est positionnée pour les `agents`, les `centres` et les `inspecteurs`. Cet élément permet de contrôler que seuls les agents d'un département peuvent gérer les places d'examen et les inspecteurs de leur département.
+
+En revanche, il n'y a pas de filtrage sur les candidats qui peuvent être consultés par n'importe quel agent indépendamment d'une éventuelle réservation de place d'examen. Le lien `candidat/place` étant assuré au niveau des places d'examen, la consultation de la place réservée par un candidat ne peut se faire que par un agent en ayant la gestion. L'information `placeBooked` indique si le candidat a réservé une place d'examen. Si il existe une réservation il faut consulter les `places` en utilisant `bookedBy` avec l'`id` du candidat pour obtenir les détails.
+
+Cette configuration permet aux agents de gérer les candidats qui pourraient changer de département pour le passage de leur épreuve pratique. Elle garantie également une confidentialité au niveau département des détails (lieu, date et inspecteur) aux seuls agents ayant en gestion ce département.
+
