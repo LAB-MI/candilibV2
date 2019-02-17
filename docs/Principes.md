@@ -17,14 +17,14 @@ Le passage de l'épreuve pratique du permis de conduire nécessite que les candi
 * un NEPH valide et correspondant au Nom fournit
 * avoir réussi l'épreuve théorique du code de la route depuis moins de 5 ans
 * ne pas avoir échoué plus de 3 fois à l'épreuve pratique
-* et bien sur ne pas être déjà en pocession d'un permis valide 
+* et bien sur ne pas être déjà en possession d'un permis valide 
 
 Le respect de l'ensemble de ces critères permet de valider l'inscription au service Candilib.
 
 ## Critères post inscription
 Des contrôles réguliers sont effectués pour réévaluer les critères des candidats inscrits. Ce travail de vérification porte sur les points suivants :
 * réussite de l'épreuve pratique
-* date d'obtention du code suppérieure à 5 ans
+* date d'obtention du code supérieure à 5 ans
 * plus de 3 échecs à l'épreuve pratique
 
 Si un candidat entre dans un de ces trois critères, il n'est plus en mesure de se présenter à l'épreuve pratique et est donc supprimé de la liste des utilisateurs de Candilib.

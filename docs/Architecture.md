@@ -8,7 +8,7 @@ L'application Candilib s'articule autour de 3 parties :
 * ``back`` qui dispose d'un ensemble d'api utilisée par les applications web et par les composants de gestion
 * ``persistance des données`` qui persiste les informations nécessaires au fonctionnement de Candilib
 
-L'application s'adresse aux candidats et aux agents qui impliqués dans la gestion des examens pratiques sur l'ensemble du territoir. La partie ``frontal`` est séparée en deux parties distinctes pour chacune de ces populations. De plus, chaque composant dispose de ces propres routes vers la partie ``back`` qui assure le filtrage en fonction de l'origine des requêtes.
+L'application s'adresse aux candidats et aux agents impliqués dans la gestion des examens pratiques sur l'ensemble du territoire. La partie ``frontal`` est séparée en deux parties distinctes pour chacune de ces populations. De plus, chaque composant dispose de ses propres routes vers la partie ``back`` qui assure le filtrage en fonction de l'origine des requêtes.
 
 La partie ``back`` assure le traitement applicatif de Candilib. Elle est constituée d'un composant qui met à disposition via des API les différents services applicatifs. Ces derniers sont dédiés à un ``frontal`` et aux composants internes de gestion.
 
@@ -24,7 +24,7 @@ Le schéma ci-dessous synthétise ces principes d'architecture.
 
 ## Modèle de données
 
-Le modèle de données actuel est modélisé dans le schéma ci-dessous. Il comprends une structure `candidats` qui comprte l'ensemble des données relatives à la personne, sa situation adminitrative et son statut dans l'application candilib. Le lien entre une place d'examen et un lieu n'est pas formalisé et relève de la convention d'utiliser la même dénomination pour les champs `centre` de la structure `places` et `nom` de la structure `centres`.
+Le modèle de données actuel est modélisé dans le schéma ci-dessous. Il comprend une structure `candidats` qui comporte l'ensemble des données relatives à la personne, sa situation adminitrative et son statut dans l'application candilib. Le lien entre une place d'examen et un lieu n'est pas formalisé et relève de la convention d'utiliser la même dénomination pour les champs `centre` de la structure `places` et `nom` de la structure `centres`.
 
 ![Modèle de données v1](./candilib_V1_data_model.png)
 
