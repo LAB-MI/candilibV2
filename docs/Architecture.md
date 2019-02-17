@@ -20,7 +20,7 @@ La partie ``persistance des données`` garantie :
 
 Le schéma ci-dessous synthétise ces principes d'architecture.
 
-![Architecture générale](https://raw.github.com/LAB-MI/candilibV2/docs/principes/docs/archi_gene_candilib-Page-2.svg?sanitize=true)
+![Architecture générale](./archi_gene_candilib-Page-2.png)
 
 ## Modèle de données
 
