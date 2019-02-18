@@ -60,6 +60,7 @@ COPY --from=build /app/dist ./dist
 COPY package.json package-lock.json ./
 # Install production dependencies and clean cache
 RUN npm install --production && \
+    npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force
 
