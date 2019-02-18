@@ -1,4 +1,4 @@
-include Makefile.inc
+include Makefile.mk
 
 build-dev:
 	${DC} -f ${DC_APP_BUILD_DEV} build --no-cache
