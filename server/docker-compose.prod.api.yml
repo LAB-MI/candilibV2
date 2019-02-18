@@ -10,6 +10,7 @@ services:
         proxy: ${http_proxy}
         no_proxy: ${no_proxy}
         npm_registry: ${NPM_REGISTRY}
+        NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
     container_name: candilib_api
     ports:
       - "${API_PORT:-8000}:8000"

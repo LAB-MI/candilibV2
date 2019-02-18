@@ -2,7 +2,8 @@
 # Step 1: Base target #
 #######################
 FROM node:10-slim as base
-ARG proxy
+ARG http_proxy
+ARG https_proxy
 ARG npm_registry
 ARG no_proxy
 
@@ -13,10 +14,10 @@ EXPOSE 8000
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone
 # use proxy & private npm registry
-RUN if [ ! -z "$proxy" ] ; then \
+RUN if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \
-        npm config set proxy $proxy; \
-        npm config set https-proxy $proxy ; \
+        npm config set proxy $http_proxy; \
+        npm config set https-proxy $https_proxy ; \
         npm config set no-proxy $no_proxy; \
    fi ; \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry
@@ -46,13 +47,15 @@ RUN npm run build
 ###############################
 
 FROM build as production
+ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
 # Copy the transpiled code to use in production (in /app)
 COPY --from=build /app/dist ./dist
 COPY package.json package-lock.json ./
 # Install production dependencies and clean cache
 RUN npm install --production && \
-    npm audit --json --registry=https://registry.npmjs.org && \
+    npm config set audit-level moderate && \
+    npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force
 # Install pm2
 RUN npm install pm2 -g
