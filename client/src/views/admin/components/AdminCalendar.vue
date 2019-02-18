@@ -1,5 +1,6 @@
 <template>
   <div>
+    <admin-import-places/>
     <h2>
       Calendrier
     </h2>
@@ -11,11 +12,13 @@
 import { DateTime } from 'luxon'
 
 import SimpleCalendar from './SimpleCalendar'
+import AdminImportPlaces from './AdminImportPlaces.vue'
 
 export default {
   name: 'admin-calendar',
   components: {
     SimpleCalendar,
+    AdminImportPlaces,
   },
 
   data () {

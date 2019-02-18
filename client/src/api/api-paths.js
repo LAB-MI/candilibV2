@@ -20,9 +20,9 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   verifyToken: `${apiPrefix}/auth/admin/verify-token`,
   candidats: `${apiPrefix}/admin/candidats`,
   uploadCandidatsJson: `${apiPrefix}/admin/candidats`,
-  uploadCandidatsCsv: `${apiPrefix}/admin/places`,
+  // uploadCandidatsCsv: `${apiPrefix}/admin/places`,
   exportCsv: `${apiPrefix}/admin/candidats?for=aurige&format=csv`,
-  uploadPlacesCSV: `${apiPrefix}/admin/candidats`,
+  uploadPlacesCSV: `${apiPrefix}/admin/places`,
   whitelist: `${apiPrefix}/admin/whitelisted`,
 }
 

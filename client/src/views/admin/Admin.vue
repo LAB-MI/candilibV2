@@ -3,6 +3,7 @@
     <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0 }">
       <admin-header :ids="ids" :header-icons="headerIcons" />
       <div :style="{margin: '4em 0 0 0'}">
+
         <admin-calendar :id="ids.adminCalendar" />
         <candidats-list :id="ids.adminCandidats" />
         <admin-aurige :id="ids.adminAurige" />
@@ -20,10 +21,12 @@ import AdminAurige from './components/Aurige.vue'
 import Whitelist from './components/Whitelist.vue'
 import AdminCalendar from './components/AdminCalendar.vue'
 import CandidatsList from './components/CandidatsList.vue'
+import AdminImportPlaces from './components/AdminImportPlaces.vue'
 
 const components = {
   AdminHeader,
   AdminAurige,
+  AdminImportPlaces,
   AdminCalendar,
   CandidatsList,
   Whitelist,
