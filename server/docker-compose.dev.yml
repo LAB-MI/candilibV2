@@ -24,7 +24,8 @@ services:
       context: ./
       dockerfile: Dockerfile
       args:
-        proxy: ${http_proxy}
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
         no_proxy: ${no_proxy}
         npm_registry: ${NPM_REGISTRY}
     volumes:
