@@ -1,30 +1,43 @@
 import { createLogger, format, transports } from 'winston'
 
-const { combine } = format
-
 const isProd = process.env.NODE_ENV === 'production'
 const isTest = process.env.NODE_ENV === 'test'
 
 const options = {
   console: {
-    level: isProd || isTest ? 'warn' : 'debug',
+    level: isProd || isTest ? 'info' : 'debug',
     handleExceptions: true,
     json: false,
     colorize: true,
   },
 }
 
-const logFormat = format.printf(info => `${info.level}: ${info.message}\n`)
+const logJsonFormat = format.printf(({ level, message }) =>
+  JSON.stringify({
+    level,
+    message,
+    at: new Date().toISOString(),
+  })
+)
 
-const logger = createLogger({
-  format: combine(format.colorize(), logFormat),
+const logFormat = format.printf(({ level, message }) => `${level} ${message}`)
+
+export const simpleLogger = createLogger({
+  format: logFormat,
   transports: [new transports.Console(options.console)],
   exitOnError: false,
 })
 
+export const jsonLogger = createLogger({
+  format: logJsonFormat,
+  transports: [new transports.Console(options.console)],
+  exitOnError: false,
+})
+
+const logger = isTest ? simpleLogger : jsonLogger
+
 export const loggerStream = {
-  write: function (message, encoding) {
-    // use the 'info' log level so the output will be picked up by both transports (file and console)
+  write (message, encoding) {
     logger.info(message)
   },
 }
