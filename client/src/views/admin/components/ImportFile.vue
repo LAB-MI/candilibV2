@@ -2,11 +2,11 @@
   <div class="import-file">
     <div class="import-file-action  import-file-action--file">
       <h4 class="import-file-subtitle">Fichier</h4>
-      <input-file title="Choisir un fichier..." :selectedCallback="fileSelected" :filename="filename" />
+      <input-file :dark='dark' title="Choisir un fichier..." :selectedCallback="fileSelected" :filename="filename" />
     </div>
     <div class="import-file-action">
       <h4 class="import-file-subtitle">{{subtitle}}</h4>
-      <v-btn :disabled="disabled" :aria-disabled="disabled" @click="uploadFile">{{uploadLabel}}</v-btn>
+      <v-btn :dark='dark' color="#17a2b8" :disabled="disabled" :aria-disabled="disabled" @click="uploadFile">{{uploadLabel}}</v-btn>
     </div>
   </div>
 </template>
@@ -23,6 +23,7 @@ export default {
     subtitle: String,
     uploadLabel: String,
     uploadFunc: Function,
+    dark: String,
   },
 
   data () {

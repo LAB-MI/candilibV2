@@ -4,14 +4,7 @@
       Interaction Aurige
     </h2>
     <div class="aurige">
-      <div class="aurige-action  aurige-action--file">
-        <h4 class="aurige-subtitle">Fichier</h4>
-        <input-file dark title="Choisir un fichier..." :selectedCallback="fileSelected" :filename="filename" />
-      </div>
-      <div class="aurige-action">
-        <h4 class="aurige-subtitle">Synchronisation JSON</h4>
-        <v-btn color="#17a2b8" dark :disabled="disabled" :aria-disabled="disabled" @click="uploadCandidats">Synchro</v-btn>
-      </div>
+      <import-file dark subtitle="Synchronisation JSON" uploadLabel="Synchro" :upload-func="uploadCandidats" />
       <div class="aurige-action  aurige-action--export">
         <h4 class="aurige-subtitle">Export CSV</h4>
         <v-btn color="#17a2b8" dark @click="getCandidatsAsCsv">Export</v-btn>
@@ -22,17 +15,17 @@
 </template>
 
 <script>
-import { InputFile } from '@/components'
 import api from '@/api'
 import { downloadContent } from '@/util'
-import { SHOW_INFO, SHOW_SUCCESS, SHOW_AURIGE_RESULT } from '@/store'
+import { SHOW_INFO, SHOW_AURIGE_RESULT } from '@/store'
 import AurigeValidation from './AurigeValidation'
+import ImportFile from './ImportFile.vue'
 
 export default {
   name: 'admin-aurige',
   components: {
-    InputFile,
     AurigeValidation,
+    ImportFile,
   },
 
   props: {
@@ -62,13 +55,10 @@ export default {
       this.$store.dispatch(SHOW_INFO, message, 1000)
     },
 
-    async uploadCandidats () {
-      const data = new FormData()
-      data.append('file', this.file)
+    async uploadCandidats (data) {
       const result = await api.admin.uploadCandidatsJson(data)
       this.$store.dispatch(SHOW_AURIGE_RESULT, result)
-      this.$store.dispatch(SHOW_SUCCESS, result.message)
-      this.file = null
+      return Promise.resolve(result)
     },
 
     async getCandidatsAsCsv () {
@@ -97,6 +87,10 @@ export default {
     flex-direction: column;
   }
 
+  .import-file {
+    flex-grow: 1;
+  }
+
   &-action {
     display: flex;
     justify-content: center;
@@ -105,10 +99,6 @@ export default {
     padding: 1em;
     margin: 1em;
     flex-grow: 1;
-
-    &--file {
-      flex-grow: 5;
-    }
 
     &--export {
       @media (max-width: 1170px) {
@@ -121,9 +111,5 @@ export default {
     }
   }
 
-  &-subtitle {
-    text-transform: uppercase;
-    font-size: 1.2em;
-  }
 }
 </style>
