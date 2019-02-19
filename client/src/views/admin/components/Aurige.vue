@@ -17,7 +17,7 @@
 <script>
 import api from '@/api'
 import { downloadContent } from '@/util'
-import { SHOW_INFO, SHOW_SUCCESS, SHOW_AURIGE_RESULT } from '@/store'
+import { SHOW_INFO, SHOW_SUCCESS, SHOW_ERROR, SHOW_AURIGE_RESULT } from '@/store'
 import AurigeValidation from './AurigeValidation'
 import ImportFile from './ImportFile.vue'
 
@@ -64,14 +64,14 @@ export default {
         this.file = null
         const result = await api.admin.uploadCandidatsJson(data)
         if (result.success === false) {
-          throw new Error(result.message || 'Error in uploadCandidats at uploadCandidatsJson')
+          throw new Error(result.message)
         }
         this.$store.dispatch(SHOW_AURIGE_RESULT, result)
         this.$store.dispatch(SHOW_SUCCESS, result.message)
         this.lastFile = null
       } catch (error) {
         this.file = this.lastFile
-        throw new Error(error.message || 'Error in uploadCandidats at uploadCandidatsJson')
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
 
