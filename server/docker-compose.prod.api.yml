@@ -3,15 +3,16 @@ version: '3.4'
 services:
   api:
     image: candilib_api:${APP_VERSION:-latest}
+    container_name: candilib_api
     build:
       context: ./
       dockerfile: Dockerfile
       args:
-        proxy: ${http_proxy}
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
         no_proxy: ${no_proxy}
         npm_registry: ${NPM_REGISTRY}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
-    container_name: candilib_api
     ports:
       - "${API_PORT:-8000}:8000"
 #    env_file:
