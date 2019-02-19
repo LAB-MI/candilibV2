@@ -1,26 +1,31 @@
 import { createLogger, format, transports } from 'winston'
+const { combine, timestamp, label, printf } = format
 
 const isProd = process.env.NODE_ENV === 'production'
 const isTest = process.env.NODE_ENV === 'test'
 
+const TECH_LABEL = 'tech'
+const APP_LABEL = 'app'
+
 const options = {
   console: {
-    level: isProd || isTest ? 'info' : 'debug',
+    level: isProd ? 'info' : isTest ? 'warn' : 'debug',
     handleExceptions: true,
     json: false,
     colorize: true,
   },
 }
 
-const logJsonFormat = format.printf(({ level, message }) =>
+const logJsonFormat = printf(({ label, level, message, timestamp }) =>
   JSON.stringify({
     level,
+    label,
+    timestamp,
     message,
-    at: new Date().toISOString(),
   })
 )
 
-const logFormat = format.printf(({ level, message }) => `${level} ${message}`)
+const logFormat = printf(({ level, message }) => `${level} ${message}`)
 
 export const simpleLogger = createLogger({
   format: logFormat,
@@ -28,18 +33,28 @@ export const simpleLogger = createLogger({
   exitOnError: false,
 })
 
-export const jsonLogger = createLogger({
-  format: logJsonFormat,
+export const techLogger = createLogger({
+  format: combine(
+    label({ label: TECH_LABEL }),
+    timestamp(),
+    isTest ? logFormat : logJsonFormat
+  ),
   transports: [new transports.Console(options.console)],
   exitOnError: false,
 })
 
-const logger = isTest ? simpleLogger : jsonLogger
+export const appLogger = createLogger({
+  format: combine(
+    label({ label: APP_LABEL }),
+    timestamp(),
+    isTest ? logFormat : logJsonFormat
+  ),
+  transports: [new transports.Console(options.console)],
+  exitOnError: false,
+})
 
 export const loggerStream = {
   write (message, encoding) {
-    logger.info(message)
+    appLogger.info(message)
   },
 }
-
-export default logger

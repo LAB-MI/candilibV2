@@ -4,7 +4,7 @@ import { htmlToText } from 'nodemailer-html-to-text'
 
 import getMailData from './message-templates'
 import config, { smtpOptions } from '../../config'
-import logger from '../../util/logger'
+import { appLogger, techLogger } from '../../util'
 import { getConvocationBody } from './build-mail-convocation'
 
 export const sendMail = async (to, { subject, content: html }) => {
@@ -21,9 +21,9 @@ export const sendMail = async (to, { subject, content: html }) => {
 
   try {
     const info = await transporter.sendMail(mailOptions)
-    logger.info('Mail sent: ' + info.response)
+    appLogger.info('Mail sent: ' + info.response)
   } catch (error) {
-    logger.error(error)
+    techLogger.error(error)
     throw error
   } finally {
     transporter.close()
@@ -36,7 +36,7 @@ export const sendMailToAccount = async (candidat, flag) => {
 }
 
 export const sendMailConvocation = async reservation => {
-  logger.debug(
+  appLogger.debug(
     JSON.stringify({ func: sendMailConvocation, arg: { reservation } })
   )
 
@@ -52,7 +52,7 @@ export const sendMailConvocation = async reservation => {
     throw new Error("Le candidat n'a pas de courriel")
   }
   const message = getConvocationBody(reservation)
-  logger.debug(JSON.stringify(message))
+  appLogger.debug(JSON.stringify(message))
   return sendMail(email, message)
 }
 

@@ -1,13 +1,13 @@
 import jwt from 'jsonwebtoken'
 
-import { logger } from '../../util'
+import { appLogger } from '../../util'
 import config from '../../config'
 import { findActiveCandidatByEmail } from '../../models/candidat'
 import { sendMagicLink } from '../business'
 
 export const postMagicLink = async (req, res) => {
   const { email } = req.body
-  logger.info(email)
+  appLogger.info(email)
 
   try {
     const candidat = await findActiveCandidatByEmail(email)
@@ -35,7 +35,7 @@ export const postMagicLink = async (req, res) => {
     )
 
     try {
-      logger.info('token: ' + token)
+      appLogger.info('token: ' + token)
       const response = await sendMagicLink(candidat, token)
       res.status(200).send({
         success: true,

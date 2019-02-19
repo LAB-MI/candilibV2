@@ -2,7 +2,7 @@ import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
 import moment from 'moment'
-import { logger } from '../../util'
+import { appLogger } from '../../util'
 
 export const createCandidat = async ({
   adresse,
@@ -77,7 +77,7 @@ export const deleteCandidat = async (candidat, reason) => {
     cleanedCandidat.archiveReason = reason
     await ArchivedCandidat.create(cleanedCandidat)
   } catch (error) {
-    logger.warn(
+    appLogger.warn(
       `Could not archive candidat: ${candidat.nomNaissance} ${candidat.codeNeph}
       ${error.message}`
     )

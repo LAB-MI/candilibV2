@@ -1,4 +1,4 @@
-import { compareToHash, createToken, logger } from '../../util'
+import { compareToHash, createToken, appLogger } from '../../util'
 import { findUserByEmail } from '../../models/user'
 
 const badCredentialsBody = {
@@ -8,8 +8,8 @@ const badCredentialsBody = {
 
 export const getAdminToken = async (req, res) => {
   const { email, password } = req.body
-  logger.info({
-    label: 'admin-login',
+  appLogger.info({
+    section: 'admin-login',
     subject: email,
     action: 'TRIES_TO_LOG_IN',
   })
@@ -17,8 +17,8 @@ export const getAdminToken = async (req, res) => {
   try {
     const user = await findUserByEmail(email)
     if (!user) {
-      logger.info({
-        label: 'admin-login',
+      appLogger.info({
+        section: 'admin-login',
         action: 'FAILED_TO_FIND',
         complement: `${email} in DB`,
       })
@@ -32,17 +32,17 @@ export const getAdminToken = async (req, res) => {
     }
 
     if (!passwordIsValid) {
-      logger.info({
-        label: 'admin-login',
-        email,
+      appLogger.info({
+        section: 'admin-login',
+        subject: email,
         action: 'GAVE_WRONG_PASSWORD',
       })
       return res.status(401).send(badCredentialsBody)
     }
 
     const token = createToken(user.email, user.status)
-    logger.info({
-      label: 'admin-login',
+    appLogger.info({
+      section: 'admin-login',
       subject: email,
       action: 'LOGGED_IN',
       complement: 'ADMIN',
@@ -50,8 +50,8 @@ export const getAdminToken = async (req, res) => {
 
     return res.status(201).send({ success: true, token })
   } catch (error) {
-    logger.info({
-      label: 'admin-login',
+    appLogger.info({
+      section: 'admin-login',
       subject: email,
       action: 'FAILED_TO_LOG_IN',
       complement: error,
