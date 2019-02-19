@@ -41,6 +41,7 @@ export default {
   data () {
     return {
       file: undefined,
+      lastFile: undefined,
     }
   },
 
@@ -63,11 +64,21 @@ export default {
 
     async uploadCandidats () {
       const data = new FormData()
+      this.lastFile = this.file
       data.append('file', this.file)
-      const result = await api.admin.uploadCandidatsJson(data)
-      this.$store.dispatch(SHOW_AURIGE_RESULT, result)
-      this.$store.dispatch(SHOW_SUCCESS, result.message)
-      this.file = null
+      try {
+        this.file = null
+        const result = await api.admin.uploadCandidatsJson(data)
+        if (result.success === false) {
+          throw new Error(result.message || 'Error in uploadCandidats at uploadCandidatsJson')
+        }
+        this.$store.dispatch(SHOW_AURIGE_RESULT, result)
+        this.$store.dispatch(SHOW_SUCCESS, result.message)
+        this.lastFile = null
+      } catch (error) {
+        this.file = this.lastFile
+        throw new Error(error.message || 'Error in uploadCandidats at uploadCandidatsJson')
+      }
     },
 
     async getCandidatsAsCsv () {
