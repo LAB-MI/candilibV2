@@ -1,5 +1,5 @@
 <template>
-  <div :id="id">
+  <div>
     <h2>
       Import Places
     </h2>
