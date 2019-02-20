@@ -2,7 +2,7 @@
   <div class="import-file">
     <div class="import-file-action  import-file-action--file">
       <h4 class="import-file-subtitle">Fichier</h4>
-      <input-file :dark='dark' title="Choisir un fichier..." :selectedCallback="fileSelected" :filename="filename" />
+      <input-file :dark='dark' title="Choisir un fichier..." :selected-callback="fileSelected" :filename="filename" />
     </div>
     <div class="import-file-action">
       <h4 class="import-file-subtitle">{{subtitle}}</h4>

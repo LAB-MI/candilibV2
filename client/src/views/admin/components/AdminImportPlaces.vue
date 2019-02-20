@@ -3,7 +3,7 @@
     <h2>
       Import Places
     </h2>
-    <import-file subtitle="Les places en CSV" uploadLabel="Import" :upload-func="uploadPlaces" />
+    <import-file subtitle="Les places en CSV" upload-label="Import" :upload-func="uploadPlaces" />
   </div>
 </template>
 
