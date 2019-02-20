@@ -65,7 +65,7 @@ RUN npm install --production && \
     npm cache clean --force
 
 # Deliver the dist folder with Nginx
-FROM nginx:latest
+FROM nginx:stable
 ARG CLIENT_BUILD_TARGET
 COPY --from=production /app/dist /usr/share/nginx/html
 COPY nginx/nginx-run-${CLIENT_BUILD_TARGET}.template /etc/nginx/conf.d/default.template
