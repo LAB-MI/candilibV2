@@ -1,7 +1,17 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { configure } from '@storybook/vue'
+import { addDecorator, configure } from '@storybook/vue'
 
-import '../../src/main.css'
+import Vue from 'vue'
+import Vuex from 'vuex'
+
+import 'vuetify/dist/vuetify.css'
+
+import '../../src/plugins/index'
+Vue.use(Vuex)
+
+addDecorator(() => ({
+  template: '<v-app><story/></v-app>',
+}))
 
 const req = require.context('../../src/stories', true, /.stories.js$/)
 
