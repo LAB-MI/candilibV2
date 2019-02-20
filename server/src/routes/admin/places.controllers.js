@@ -1,5 +1,5 @@
 import * as csvParser from 'fast-csv'
-import moment from 'moment'
+import { DateTime } from 'luxon'
 
 import logger from '../../util/logger'
 import {
@@ -24,22 +24,31 @@ export const importPlaces = (req, res, next) => {
     .fromString(csvFile.data.toString(), { headers: false, ignoreEmpty: true })
     .transform(data => {
       if (data[0] === 'Date') return
-
       const [day, time, inspecteur, centre] = data
 
       const myDate = `${day.trim()} ${time.trim()}`
-      const date = moment(
-        moment(myDate, 'DD-MM-YYYY HH:mm:ss').format('YYYY-MM-DD HH:mm:ss')
-      )
 
-      return {
-        date,
-        centre: centre.trim(),
-        inspecteur: inspecteur.trim(),
+      try {
+        const date = DateTime.fromFormat(myDate, 'dd/MM/yy HH:mm', {
+          zone: 'Europe/Paris',
+          locale: 'fr',
+        })
+        if (!date.isValid) throw new Error('Date est invalide')
+        return {
+          date,
+          centre: centre.trim(),
+          inspecteur: inspecteur.trim(),
+        }
+      } catch (error) {
+        logger.error(error)
+        PlacesPromise.push(
+          Promise.resolve(
+            getPlaceStatus(centre, inspecteur, myDate, 'error', error.message)
+          )
+        )
       }
     })
     .on('data', async place => {
-      console.debug({ place })
       const fctPromise = new Promise(async resolve => {
         const { centre, inspecteur, date } = place
         try {
@@ -72,13 +81,7 @@ export const importPlaces = (req, res, next) => {
           }
           logger.error(error)
           resolve(
-            getPlaceStatus(
-              centre,
-              inspecteur,
-              date,
-              'error',
-              'erreur inconnue pour cet enregistrement'
-            )
+            getPlaceStatus(centre, inspecteur, date, 'error', error.message)
           )
         }
       })
