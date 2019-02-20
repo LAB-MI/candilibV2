@@ -65,6 +65,7 @@ import { email as emailRegex } from '@/util'
 import { FETCH_WHITELIST_REQUEST, DELETE_EMAIL_REQUEST, SAVE_EMAIL_REQUEST, SHOW_ERROR } from '@/store'
 
 export default {
+  name: 'white-list',
   data () {
     return {
       adding: false,

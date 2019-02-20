@@ -31,6 +31,7 @@ import { SIGN_OUT_ADMIN } from '@/store'
 import HeaderIcon from '@/components/HeaderIcon'
 
 export default {
+  name: 'admin-header',
   components: {
     HeaderIcon,
   },

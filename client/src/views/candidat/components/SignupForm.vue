@@ -206,6 +206,7 @@ const getAdresses = pDebounce((query) => {
 }, 300)
 
 export default {
+  name: 'signup-form',
   props: {
     toggleForm: Function,
   },

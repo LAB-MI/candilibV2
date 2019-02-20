@@ -10,6 +10,7 @@
 <script>
 import AdminVersion from '../../../components/AppVersion.vue'
 export default {
+  name: 'admin-footer',
   components: {
     AdminVersion,
   },

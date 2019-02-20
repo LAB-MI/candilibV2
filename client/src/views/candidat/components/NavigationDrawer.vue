@@ -26,6 +26,7 @@
 import { DISPLAY_NAV_DRAWER } from '@/store'
 
 export default {
+  name: 'navigation-drawer',
   props: {
     links: Array,
   },

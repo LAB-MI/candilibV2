@@ -40,6 +40,7 @@ import {
 } from '@/constants'
 
 export default {
+  name: 'email-validation',
   computed: {
     candidatData () {
       return this.$store.state.candidat

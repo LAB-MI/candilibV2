@@ -51,6 +51,7 @@ import { DISPLAY_NAV_DRAWER, SIGN_OUT_CANDIDAT } from '@/store'
 import IconWithTooltip from '@/components/IconWithTooltip'
 
 export default {
+  name: 'candidat-header',
   components: {
     IconWithTooltip,
   },
