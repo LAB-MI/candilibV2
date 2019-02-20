@@ -7,7 +7,7 @@ if ! git describe --tags 2>&- ; then
     buildno=b"$count.$commit"
     echo "$buildno"
   else
-    echo "ERROR $(basename $0)" 2>&1
+    echo "ERROR $(basename $0)" >&2
     exit $ret
   fi
 fi

@@ -79,6 +79,31 @@ stop-prod-api: ## Stop api container in production mode
 	${DC} -f ${DC_APP_RUN_PROD} stop api
 stop-prod-db: ## Stop db container in production mode
 	${DC} -f ${DC_APP_RUN_PROD} stop db
+
+up-all-in-one: check-prerequisites network-up ## Run containers in production mode
+	${DC} \
+		-f ${DC_APP_DB_RUN_PROD} \
+		-f ${DC_APP_API_RUN_PROD} \
+		-f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} \
+		-f ${DC_APP_FRONT_ADMIN_RUN_PROD} \
+              up ${DC_RUN_ARGS}
+
+stop-all-in-one: check-prerequisites ## Run containers in production mode
+	${DC} \
+		-f ${DC_APP_DB_RUN_PROD} \
+		-f ${DC_APP_API_RUN_PROD} \
+		-f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} \
+		-f ${DC_APP_FRONT_ADMIN_RUN_PROD} \
+             stop
+
+down-all-in-one: check-prerequisites network-down ## Run containers in production mode
+	${DC} \
+		-f ${DC_APP_DB_RUN_PROD} \
+		-f ${DC_APP_API_RUN_PROD} \
+		-f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} \
+		-f ${DC_APP_FRONT_ADMIN_RUN_PROD} \
+             down
+
 #
 # Build prod (separate container per compose)
 #
@@ -166,25 +191,34 @@ save-images: build-dir save-image-db save-image-api save-image-front-candidat sa
 
 save-image-front-candidat: ## Save front_candidat image
 	front_candidat_image_name=$$(${DC} -f $(DC_APP_FRONT_CANDIDAT_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["front_candidat"]["image"]') ; \
-          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION) $$front_candidat_image_name && \
+          docker image save $$front_candidat_image_name | gzip -9c > $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION) && \
           cp $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION) $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_LATEST_VERSION)
-
 
 save-image-front-admin: ## Save front_admin image
 	front_admin_image_name=$$(${DC} -f $(DC_APP_FRONT_ADMIN_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["front_admin"]["image"]') ; \
-          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) $$front_admin_image_name && \
+          docker image save $$front_admin_image_name | gzip -9c > $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) && \
           cp $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION)
-
 
 save-image-db: ## Save db image
 	db_image_name=$$(${DC} -f $(DC_APP_DB_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["db"]["image"]') ; \
-          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION) $$db_image_name && \
+          docker image save $$db_image_name | gzip -9c > $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION) && \
           cp $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION) $(BUILD_DIR)/$(FILE_IMAGE_DB_LATEST_VERSION)
 
 save-image-api: ## Save api image
 	api_image_name=$$(${DC} -f $(DC_APP_API_BUILD_PROD) config | python -c 'import sys, yaml, json; cfg = json.loads(json.dumps(yaml.load(sys.stdin), sys.stdout, indent=4)); print cfg["services"]["api"]["image"]') ; \
-          docker image save -o  $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION) $$api_image_name && \
+          docker image save $$api_image_name | gzip -9c > $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION) && \
           cp $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION)  $(BUILD_DIR)/$(FILE_IMAGE_API_LATEST_VERSION)
+
+load-images: build-dir load-image-db load-image-api load-image-front-candidat load-image-front-admin ## Load images
+
+load-image-front-candidat: $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION) ## Load front_candidat image
+	docker image load -i $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION)
+load-image-front-admin: $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) ## Load front_admin image
+	docker image load -i $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION)
+load-image-db: $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION) ## Load db image
+	docker image load -i $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION)
+load-image-api: $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION) ## Load api image
+	docker image load -i $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION)
 
 #
 # clean image

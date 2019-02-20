@@ -20,7 +20,7 @@ no_proxy := $(shell echo $$no_proxy)
 
 # detect tty
 DOCKER_USE_TTY := $(shell test -t 1 && echo "-t" )
-DC_USE_TTY     := $(shell test -t 1 && echo "-T" )
+DC_USE_TTY     := $(shell test -t 1 || echo "-T" )
 
 # cli docker-compose
 DC_BUILD_ARGS := --pull --no-cache --force-rm
@@ -57,17 +57,17 @@ FILE_ARCHIVE_APP_VERSION = $(APP)-$(APP_VERSION)-archive.tar.gz
 FILE_ARCHIVE_LATEST_VERSION = $(APP)-$(LATEST_VERSION)-archive.tar.gz
  
 # docker image name save
-FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION = $(APP)-front-candidat-$(APP_VERSION)-image.tar
-FILE_IMAGE_FRONT_CANDIDAT_LATEST_VERSION = $(APP)-front-candidat-$(LATEST_VERSION)-image.tar
+FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION = $(APP)-front-candidat-$(APP_VERSION)-image.tar.gz
+FILE_IMAGE_FRONT_CANDIDAT_LATEST_VERSION = $(APP)-front-candidat-$(LATEST_VERSION)-image.tar.gz
 
-FILE_IMAGE_FRONT_ADMIN_APP_VERSION = $(APP)-front-admin-$(APP_VERSION)-image.tar
-FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION = $(APP)-front-admin-$(LATEST_VERSION)-image.tar
+FILE_IMAGE_FRONT_ADMIN_APP_VERSION = $(APP)-front-admin-$(APP_VERSION)-image.tar.gz
+FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION = $(APP)-front-admin-$(LATEST_VERSION)-image.tar.gz
 
-FILE_IMAGE_API_APP_VERSION = $(APP)-api-$(APP_VERSION)-image.tar
-FILE_IMAGE_API_LATEST_VERSION = $(APP)-api-$(LATEST_VERSION)-image.tar
+FILE_IMAGE_API_APP_VERSION = $(APP)-api-$(APP_VERSION)-image.tar.gz
+FILE_IMAGE_API_LATEST_VERSION = $(APP)-api-$(LATEST_VERSION)-image.tar.gz
 
-FILE_IMAGE_DB_APP_VERSION = $(APP)-db-$(APP_VERSION)-image.tar
-FILE_IMAGE_DB_LATEST_VERSION = $(APP)-db-$(LATEST_VERSION)-image.tar
+FILE_IMAGE_DB_APP_VERSION = $(APP)-db-$(APP_VERSION)-image.tar.gz
+FILE_IMAGE_DB_LATEST_VERSION = $(APP)-db-$(LATEST_VERSION)-image.tar.gz
 
 # Publish URL (docker image and archive)
 PUBLISH_AUTH_TOKEN         :=
@@ -87,8 +87,5 @@ CYPRESS_DOWNLOAD_MIRROR  := $(shell echo $$CYPRESS_DOWNLOAD_MIRROR )
 NPM_AUDIT_DRY_RUN  := $(shell echo $$NPM_AUDIT_DRY_RUN )
 
 # Run env
-#  Mongo DB volume path
-DBDATA := ${APP_PATH}/db-data
-
 # export all variables in subshell
 export
