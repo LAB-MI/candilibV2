@@ -87,8 +87,5 @@ CYPRESS_DOWNLOAD_MIRROR  := $(shell echo $$CYPRESS_DOWNLOAD_MIRROR )
 NPM_AUDIT_DRY_RUN  := $(shell echo $$NPM_AUDIT_DRY_RUN )
 
 # Run env
-#  Mongo DB volume path
-DBDATA := ${APP_PATH}/db-data
-
 # export all variables in subshell
 export

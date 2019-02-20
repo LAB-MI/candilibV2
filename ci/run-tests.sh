@@ -10,9 +10,13 @@ if [ "$ret" -gt 0 ] ; then
 fi
 docker images
 
+# Set run test env
+export FRONT_ADMIN_PORT=81
+export DBDATA=../test-db
+
 ret=1
 echo "# run all separated services (front_candidat,front_admin,api,db) in prod mode"
-time make up-all FRONT_ADMIN_PORT=81
+time make up-all
 ret=$?
 if [ "$ret" -gt 0 ] ; then
   echo "$basename up-all ERROR"
@@ -22,7 +26,7 @@ docker ps
 
 ret=1
 echo "# test all services up&running"
-time make test-all FRONT_ADMIN_PORT=81
+time make test-all
 ret=$?
 if [ "$ret" -gt 0 ] ; then
   echo "$basename test-all ERROR"
