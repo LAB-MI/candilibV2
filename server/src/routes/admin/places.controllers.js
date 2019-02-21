@@ -95,7 +95,6 @@ export const importPlaces = (req, res, next) => {
         message: `Le fichier ${csvFile.name} a été traité.`,
         places: result,
       })
-      // next()
     })
 }
 
