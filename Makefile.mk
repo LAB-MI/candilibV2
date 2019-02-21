@@ -10,6 +10,7 @@ APP_API_PATH   := $(APP_PATH)/server
 APP_DB_PATH    := $(APP_PATH)/server
 
 BUILD_DIR     := ${APP_PATH}/${APP}-${APP_VERSION}-build
+ARCHIVE_DIR   := ${APP_PATH}/${APP}-${APP_VERSION}
 
 # binaries
 DOCKER   := $(shell type -p docker)
@@ -75,6 +76,9 @@ PUBLISH_URL                :=
 PUBLISH_URL_BASE           := ${APP}-docker-images
 PUBLISH_URL_APP_VERSION    := $(PUBLISH_URL_BASE)/$(APP_VERSION)
 PUBLISH_URL_LATEST_VERSION := $(PUBLISH_URL_BASE)/$(LATEST_VERSION)
+
+curl_opt=--retry 10 --retry-delay 5 --retry-max-time 60 --connect-timeout 10 --fail
+curl_progress_bar=--progress-bar --write 'Downloaded %{url_effective} %{size_download} bytes in %{time_connect} seconds (%{speed_download} bytes/s)\n'
 
 # escape dollar
 dollar = $(shell echo \$$)
