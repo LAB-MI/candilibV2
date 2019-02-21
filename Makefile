@@ -209,7 +209,7 @@ save-image-api: ## Save api image
           docker image save $$api_image_name | gzip -9c > $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION) && \
           cp $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION)  $(BUILD_DIR)/$(FILE_IMAGE_API_LATEST_VERSION)
 
-load-images: build-dir load-image-db load-image-api load-image-front-candidat load-image-front-admin ## Load images
+load-image-all: build-dir load-image-db load-image-api load-image-front-candidat load-image-front-admin ## Load images
 
 load-image-front-candidat: $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION) ## Load front_candidat image
 	docker image load -i $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION)
@@ -219,6 +219,34 @@ load-image-db: $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION) ## Load db image
 	docker image load -i $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION)
 load-image-api: $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION) ## Load api image
 	docker image load -i $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION)
+
+download-archive: ## Download archive
+	@curl $(curl_opt) -s -k -X GET -o $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) ${PUBLISH_URL}/${PUBLISH_URL_BASE}/${APP_VERSION}/$(FILE_ARCHIVE_APP_VERSION) \
+            $(curl_progress_bar)
+extract-archive: $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION)  build-archive-dir
+	tar -zxvf $(BUILD_DIR)/$(FILE_ARCHIVE_APP_VERSION) -C $(ARCHIVE_DIR)
+build-archive-dir:
+	if [ ! -d "$(ARCHIVE_DIR)" ] ; then mkdir -p $(ARCHIVE_DIR) ; fi
+clean-archive-dir:
+	if [ -d "$(ARCHIVE_DIR)" ] ; then rm -rf $(ARCHIVE_DIR) ; fi
+
+download-image-all: download-image-front-candidat download-image-front-admin download-image-db download-image-api
+
+download-image-front-candidat: ## Download front_candidat image
+	@curl $(curl_opt) -s -k -X GET -o $(BUILD_DIR)/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION) ${PUBLISH_URL}/${PUBLISH_URL_BASE}/${APP_VERSION}/$(FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION) \
+          $(curl_progress_bar)
+
+download-image-front-admin: ## Download front_admin image
+	@curl $(curl_opt) -s -k -X GET -o $(BUILD_DIR)/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) ${PUBLISH_URL}/${PUBLISH_URL_BASE}/${APP_VERSION}/$(FILE_IMAGE_FRONT_ADMIN_APP_VERSION) \
+          $(curl_progress_bar)
+
+download-image-db: ## Download db image
+	@curl $(curl_opt) -s -k -X GET -o $(BUILD_DIR)/$(FILE_IMAGE_DB_APP_VERSION) ${PUBLISH_URL}/${PUBLISH_URL_BASE}/${APP_VERSION}/$(FILE_IMAGE_DB_APP_VERSION) \
+          $(curl_progress_bar)
+
+download-image-api: ## Download api image
+	@curl $(curl_opt) -s -k -X GET -o $(BUILD_DIR)/$(FILE_IMAGE_API_APP_VERSION) ${PUBLISH_URL}/${PUBLISH_URL_BASE}/${APP_VERSION}/$(FILE_IMAGE_API_APP_VERSION) \
+          $(curl_progress_bar)
 
 #
 # clean image
