@@ -14,7 +14,6 @@ import TimeSlot from '@/views/candidat/components/time-slots-selection/TimeSlot.
 import SelectionSummary from '@/views/candidat/components/selection-summary/SelectionSummary.vue'
 import MyProfile from '@/views/candidat/components/MyProfile.vue'
 import LandingPage from '@/views/candidat/components/LandingPage.vue'
-import CandidatSteps from '@/views/candidat/components/CandidatSteps.vue'
 
 import AdminAurige from '@/views/admin/components/Aurige.vue'
 import Whitelist from '@/views/admin/components/Whitelist.vue'
@@ -87,14 +86,8 @@ const candidatRoutes = [
       },
       {
         path: '/qu-est-ce-que-candilib',
-        name: 'what-is-candilib',
+        name: 'landing-page',
         component: LandingPage,
-        beforeEnter: checkCandidatToken,
-      },
-      {
-        path: '/candidat-steps',
-        name: 'candidat-steps',
-        component: CandidatSteps,
         beforeEnter: checkCandidatToken,
       },
       {
