@@ -35,6 +35,7 @@ const labelDictionary = {
 }
 
 export default {
+  name: 'my-profile',
   components: {
     ProfileInfo,
   },

@@ -29,6 +29,7 @@ import { SHOW_INFO, SHOW_SUCCESS, SHOW_AURIGE_RESULT } from '@/store'
 import AurigeValidation from './AurigeValidation'
 
 export default {
+  name: 'admin-aurige',
   components: {
     InputFile,
     AurigeValidation,

@@ -13,6 +13,7 @@ import { DateTime } from 'luxon'
 import SimpleCalendar from './SimpleCalendar'
 
 export default {
+  name: 'admin-calendar',
   components: {
     SimpleCalendar,
   },

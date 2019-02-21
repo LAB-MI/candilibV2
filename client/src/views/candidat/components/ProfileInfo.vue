@@ -17,6 +17,7 @@
 
 <script>
 export default {
+  name: 'profile-info',
   props: {
     label: String,
     value: String,

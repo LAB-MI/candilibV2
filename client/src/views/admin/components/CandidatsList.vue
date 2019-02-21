@@ -37,6 +37,7 @@ import { FETCH_CANDIDATS_REQUEST } from '@/store'
 import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './ag-grid-utils'
 
 export default {
+  name: 'candidat-list',
   components: {
     AgGridVue,
   },
