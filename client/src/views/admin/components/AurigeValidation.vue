@@ -96,4 +96,8 @@ export default {
 .ag-theme-material >>> .ag-header {
   background-color: unset;
 }
+
+.ag-theme-material >>> .ag-menu {
+  min-width: 100px !important;
+}
 </style>
