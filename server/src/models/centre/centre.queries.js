@@ -41,3 +41,8 @@ export const updateCentreLabel = async (centre, name, label, adresse) => {
   const updatedCentre = await Centre.findById(centre._id)
   return updatedCentre
 }
+
+export const findCentreByDepartment = async departement => {
+  const centres = await Centre.find({ departement })
+  return centres
+}
