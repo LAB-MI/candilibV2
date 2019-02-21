@@ -15,6 +15,7 @@
           filter: true
         }"
         :localeText="localeText"
+        :frameworkComponents="frameworkComponents"
         @grid-ready="onReady"
       >
       </ag-grid-vue>
@@ -29,6 +30,7 @@ import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 import { AgGridLocaleText } from './ag-grid-utils'
+import AgGridAurigeStatusFilter from './AgGridAurigeStatusFilter'
 
 export default {
   components: {
@@ -42,6 +44,7 @@ export default {
       rowCount: null,
       gridOptions: null,
       localeText: null,
+      frameworkComponents: null,
     }
   },
 
@@ -60,12 +63,14 @@ export default {
       }
       return '<i class="material-icons">' + StatusIcon[param.value] + '</i>'
     }
+    this.frameworkComponents = { agGridAurigeStatusFilter: AgGridAurigeStatusFilter }
+
     this.columnDefs = [
       {
         headerName: 'Etat',
         field: 'status',
         cellRenderer: StatusRenderer,
-        filter: false,
+        filter: 'agGridAurigeStatusFilter',
       },
       { headerName: 'NEPH', field: 'neph' },
       { headerName: 'Nom', field: 'nom' },
