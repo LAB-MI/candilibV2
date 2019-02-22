@@ -26,7 +26,7 @@
 <script>
 import api from '@/api'
 import { downloadContent } from '@/util'
-import { SHOW_INFO, SHOW_SUCCESS, SHOW_ERROR, SHOW_AURIGE_RESULT, AURIGE_UPLOAD_CANDIDATS } from '@/store'
+import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS } from '@/store'
 import AurigeValidation from './AurigeValidation'
 import UploadFile from '@/components/UploadFile.vue'
 
@@ -60,7 +60,12 @@ export default {
       this.$store.dispatch(SHOW_INFO, message, 1000)
     },
     async uploadCandidats () {
-        this.$store.dispatch(AURIGE_UPLOAD_CANDIDATS, this.file)
+      await this.$store.dispatch(AURIGE_UPLOAD_CANDIDATS, this.file)
+      if (this.$store.state.aurige.lastFile === undefined) {
+        this.file = null
+      } else {
+        this.file = this.$store.state.aurige.lastFile
+      }
     },
     async getCandidatsAsCsv () {
       const response = await api.admin.exportCsv()
