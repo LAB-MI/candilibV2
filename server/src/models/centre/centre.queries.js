@@ -1,7 +1,7 @@
 import Centre from './centre.model'
 
 export const findAllCentres = async () => {
-  const centres = await Centre.findOne({})
+  const centres = await Centre.find({})
   return centres
 }
 

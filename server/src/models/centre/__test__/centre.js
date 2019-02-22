@@ -26,11 +26,14 @@ export const nbCentres = departement =>
   departement
     ? centres.filter(centre => centre.departement === departement).length
     : centres.length
+
 export const createCentres = async () => {
-  return centres.map(centre => {
-    const { nom, label, adresse, departement } = centre
-    return createCentre(nom, label, adresse, departement)
-  })
+  return Promise.all(
+    centres.map(centre => {
+      const { nom, label, adresse, departement } = centre
+      return createCentre(nom, label, adresse, departement)
+    })
+  )
 }
 
 export const removeCentres = async () => {
