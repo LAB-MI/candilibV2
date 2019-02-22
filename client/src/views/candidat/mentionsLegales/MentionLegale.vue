@@ -5,16 +5,15 @@
       {{ mainTitle }}
     </h2>
     <div v-for="(el, index) in textContent" :key="index">
-      <h5 class="sub-title-style" v-if="el.subTitle">
-        {{ el.subTitle }}
+      <h5 class="sub-title-style" v-if="el.subTitle" v-html="el.subTitle">
+        <!-- {{ el.subTitle }} -->
       </h5>
-      <p class="sub-text-content" v-if="el.subTextContent">
-        {{ el.subTextContent }}
+      <p class="sub-text-content" v-if="el.subTextContent" v-html="el.subTextContent">
       </p>
       <ul v-if="el.listInfo && el.listInfo.length">
-      <li class="li-style" v-for="(text, index) in el.listInfo" :key="index">
+      <li class="li-style" v-for="(text, index) in el.listInfo" :key="index" v-html="text">
         <i class="material-icons icon-style">arrow_right</i>
-        {{ text }}
+        <!-- {{ text }} -->
       </li>
     </ul>
     </div>
