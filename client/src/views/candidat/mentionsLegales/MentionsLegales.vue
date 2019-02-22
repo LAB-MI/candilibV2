@@ -5,7 +5,6 @@
     <p class="date-info">Modifié le 21 décembre 2018</p>
   </div>
     <div v-for="(item, index) in ArrayContent" :key="index">
-     
       <MentionLegale
         :icon="item.icon"
         :mainTitle="item.mainTitle"
@@ -23,7 +22,7 @@ import { mentionsLegalesJson } from './MentionsLegalesJson'
 
 export default {
   name: 'mentions-legales',
-    components: {
+  components: {
     MentionLegale,
   },
   data () {
