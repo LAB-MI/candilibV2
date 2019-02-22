@@ -11,13 +11,13 @@
       <p class="sub-text-content" v-if="el.subTextContent">
         {{ el.subTextContent }}
       </p>
-    </div>
-    <ul v-if="listInfo && listInfo.length">
-      <li class="li-style" v-for="(text, index) in listInfo" :key="index">
+      <ul v-if="el.listInfo && el.listInfo.length">
+      <li class="li-style" v-for="(text, index) in el.listInfo" :key="index">
         <i class="material-icons icon-style">arrow_right</i>
         {{ text }}
       </li>
     </ul>
+    </div>
     <hr class="separate-bar"/>
   </div>
 </template>
@@ -69,6 +69,9 @@ export default {
   border-top-style: none;
   border-top-width: 0px;
   border-top: 1px solid rgba(0, 0, 0, .1);
+}
+ul {
+  color: #112363;
 }
 .li-style {
   padding: 0 0 0 50px;

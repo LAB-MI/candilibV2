@@ -4,7 +4,7 @@
       <candidat-header :links="links" />
       <div class="u-flex  with-top-margin  u-max-width">
         <faq v-if="isFaq" />
-        <legal v-if="isLegal" />
+        <mentions-legales v-if="isMentionsLegales" />
         <div v-if="isCalendar" class="u-flex  u-flex__item--grow  u-flex--column-on-mobile">
           <my-profile class="profile" />
           <div class="u-flex__item--grow">
@@ -32,7 +32,7 @@ import CandidatFooter from './components/CandidatFooter'
 import NavigationDrawer from './components/NavigationDrawer'
 
 import Faq from './Faq'
-import Legal from './Legal'
+import MentionsLegales from './mentionsLegales/MentionsLegales'
 import MyProfile from './components/MyProfile'
 
 export default {
@@ -40,7 +40,7 @@ export default {
     CandidatHeader,
     CandidatFooter,
     Faq,
-    Legal,
+    MentionsLegales,
     MyProfile,
     NavigationDrawer,
   },
@@ -61,7 +61,7 @@ export default {
           label: 'F.A.Q.',
         },
         {
-          routerTo: '/candidat/legal',
+          routerTo: '/candidat/mentions-legales',
           iconName: 'account_balance',
           tooltipText: 'Mentions légales',
           label: 'Mentions légales',
@@ -74,8 +74,8 @@ export default {
     isFaq () {
       return this.$route.params.subpage === 'faq'
     },
-    isLegal () {
-      return this.$route.params.subpage === 'legal'
+    isMentionsLegales () {
+      return this.$route.params.subpage === 'mentions-legales'
     },
     isCalendar () {
       return !this.$route.params.subpage
