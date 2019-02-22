@@ -1,9 +1,7 @@
-import { findCentresByDepartement, findAllCentres } from '../../models/centre'
+import { findCentresWithNbPlaces } from './centre.business'
 
 export async function getCentres (req, res) {
   const departement = req.param('departement')
-  const centres = departement
-    ? await findCentresByDepartement(departement)
-    : await findAllCentres()
+  const centres = await findCentresWithNbPlaces(departement)
   res.status(200).json(centres)
 }

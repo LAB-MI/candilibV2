@@ -1,14 +1,13 @@
 import request from 'supertest'
 import { connect, disconnect } from '../../mongo-connection'
-import app, { apiPrefix } from '../../app'
 import {
   createCentres,
   removeCentres,
   nbCentres,
-} from '../../models/centre/__test__/centre'
-import {} from './centre.controllers'
+} from '../../models/__tests__/centres'
 
-jest.mock('./middlewares/verify-admin-level')
+const { default: app, apiPrefix } = require('../../app')
+
 jest.mock('../middlewares/verify-token')
 
 describe('Test centre controllers', () => {
@@ -29,25 +28,25 @@ describe('Test centre controllers', () => {
       await removeCentres()
     })
     it('Should response 200 to find all centres', async () => {
-      const result = await request(app)
+      const { body } = await request(app)
         .get(`${apiPrefix}/candidat/centres`)
         .send()
         .set('Accept', 'application/json')
         .expect(200)
 
-      expect(result).toBeDefined()
-      expect(result).toHaveLength(nbCentres())
+      expect(body).toBeDefined()
+      expect(body).toHaveLength(nbCentres())
     })
     it('Should response 200 to find centre from departemnt 93', async () => {
       const departement = '93'
-      const result = await request(app)
+      const { body } = await request(app)
         .get(`${apiPrefix}/candidat/centres?departement=${departement}`)
         .send()
         .set('Accept', 'application/json')
         .expect(200)
 
-      expect(result).toBeDefined()
-      expect(result).toHaveLength(nbCentres(departement))
+      expect(body).toBeDefined()
+      expect(body).toHaveLength(nbCentres(departement))
     })
   })
 })

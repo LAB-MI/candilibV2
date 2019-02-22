@@ -26,4 +26,6 @@ const CentreSchema = new Schema({
   },
 })
 
+CentreSchema.index({ nom: 1, departement: 1 }, { unique: true })
+
 export default mongoose.model('Centre', CentreSchema)

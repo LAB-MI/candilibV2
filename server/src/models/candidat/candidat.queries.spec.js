@@ -14,9 +14,12 @@ import {
   createCandidats,
   createPlaces,
   makeResas,
-  deletePlaces,
+  removePlaces,
   deleteCandidats,
-} from '../__tests__/candidats'
+  createCentres,
+  removeCentres,
+  places,
+} from '../__tests__'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
@@ -308,16 +311,18 @@ describe('Candidat', () => {
 
   describe('Booked Candidat', () => {
     beforeAll(async () => {
-      await connect()
+      // await connect()
       await createCandidats()
+      await createCentres()
       await createPlaces()
       await makeResas()
     })
 
     afterAll(async () => {
-      await deletePlaces()
+      await removePlaces()
+      await removeCentres()
       await deleteCandidats()
-      await disconnect()
+      // await disconnect()
     })
 
     it('Get the booked candidats ', async () => {
@@ -339,7 +344,7 @@ describe('Candidat', () => {
       })
     })
     it('Get the booked candidats by centre', async () => {
-      const centre = 'Nom de centre à tester n°2'
+      const centre = places[1].centre
       const bookedCandidats = await findBookedCandidats(
         undefined,
         undefined,
@@ -348,11 +353,11 @@ describe('Candidat', () => {
       expect(bookedCandidats.length).toBe(1)
       bookedCandidats.forEach(candidat => {
         expect(candidat.place).toBeDefined()
-        expect(candidat.place.centre).toBe(centre)
+        expect(candidat.place.centre).toEqual(centre)
       })
     })
     it('Get the booked candidats inspecteur', async () => {
-      const inspecteur = "Nom de l'inspecteur du centre n°1"
+      const inspecteur = places[0].inspecteur
       const bookedCandidats = await findBookedCandidats(undefined, inspecteur)
       expect(bookedCandidats.length).toBe(1)
       bookedCandidats.forEach(candidat => {

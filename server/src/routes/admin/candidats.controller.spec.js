@@ -6,10 +6,12 @@ const {
   makeResas,
   createPlaces,
   deleteCandidats,
-  deletePlaces,
+  removePlaces,
   candidats,
+  createCentres,
+  removeCentres,
   NUMBER_RESA,
-} = require('../../models/__tests__/candidats')
+} = require('../../models/__tests__')
 
 const { default: app, apiPrefix } = require('../../app')
 
@@ -20,12 +22,14 @@ describe('Test get and export candidats', () => {
   beforeAll(async () => {
     await connect()
     await createCandidats()
+    await createCentres()
     await createPlaces()
     await makeResas()
   })
 
   afterAll(async () => {
-    await deletePlaces()
+    await removePlaces()
+    await removeCentres()
     await deleteCandidats()
     await disconnect()
     await app.close()
@@ -71,7 +75,6 @@ describe('Test get and export candidats', () => {
         'attachment; filename="candidatsLibresReserve.csv"'
       )
       .expect(200)
-
     expect(text).not.toBe(expect.anything())
     expect(text.split('\n').length).toBe(NUMBER_RESA + 1)
   })

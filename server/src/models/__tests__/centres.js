@@ -1,10 +1,10 @@
-import { createCentre } from '../centre.queries'
-import Centre from '../centre.model'
+import { createCentre } from '../centre/centre.queries'
+import Centre from '../centre/centre.model'
 
 export const centres = [
   {
     departement: '92',
-    nom: 'centre 1',
+    nom: 'Centre 1',
     label: "Centre d'examen 1",
     adresse: '1 rue Test, ville test, FR, 92001',
   },
@@ -36,6 +36,4 @@ export const createCentres = async () => {
   )
 }
 
-export const removeCentres = async () => {
-  Centre.remove()
-}
+export const removeCentres = async () => Centre.remove()

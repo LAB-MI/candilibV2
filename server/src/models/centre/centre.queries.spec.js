@@ -9,7 +9,7 @@ import {
   removeCentres,
   nbCentres,
   centres,
-} from './__test__/centre'
+} from '../__tests__/centres'
 
 describe('Centre', () => {
   beforeAll(async () => {

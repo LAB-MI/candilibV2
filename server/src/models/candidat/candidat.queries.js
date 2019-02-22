@@ -113,7 +113,8 @@ export const findBookedCandidats = async (date, inspecteur, centre) => {
   if (inspecteur && inspecteur.trim().length > 0) {
     query = query.where('inspecteur', inspecteur)
   }
-  if (centre && centre.trim().length > 0) query = query.where('centre', centre)
+
+  if (centre) query = query.where('centre', centre)
 
   const places = await query.exec()
   if (places) {
