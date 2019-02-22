@@ -4,7 +4,16 @@
       Interaction Aurige
     </h2>
     <div class="aurige">
-      <import-file dark subtitle="Synchronisation JSON" uploadLabel="Synchro" :upload-func="uploadCandidats" />
+      <upload-file
+        class="u-flex__item--grow"
+        dark
+        subtitle="Synchronisation JSON"
+        upload-label="Synchro"
+        :import-disabled="inputDisabled"
+        @select-file="fileSelected"
+        :file="file"
+        @upload-file="uploadCandidats"
+      />
       <div class="aurige-action  aurige-action--export">
         <h4 class="aurige-subtitle">Export CSV</h4>
         <v-btn color="#17a2b8" dark @click="getCandidatsAsCsv">Export</v-btn>
@@ -19,13 +28,13 @@ import api from '@/api'
 import { downloadContent } from '@/util'
 import { SHOW_INFO, SHOW_SUCCESS, SHOW_ERROR, SHOW_AURIGE_RESULT } from '@/store'
 import AurigeValidation from './AurigeValidation'
-import ImportFile from './ImportFile.vue'
+import UploadFile from '@/components/UploadFile.vue'
 
 export default {
   name: 'admin-aurige',
   components: {
     AurigeValidation,
-    ImportFile,
+    UploadFile,
   },
 
   props: {
@@ -40,12 +49,8 @@ export default {
   },
 
   computed: {
-    disabled () {
+    inputDisabled () {
       return !this.file
-    },
-
-    filename () {
-      return this.file && this.file.name
     },
   },
 
@@ -56,10 +61,8 @@ export default {
       this.$store.dispatch(SHOW_INFO, message, 1000)
     },
 
-    async uploadCandidats () {
-      const data = new FormData()
+    async uploadCandidats (data) {
       this.lastFile = this.file
-      data.append('file', this.file)
       try {
         this.file = null
         const result = await api.admin.uploadCandidatsJson(data)
@@ -99,10 +102,6 @@ export default {
 
   @media (max-width: 1170px) {
     flex-direction: column;
-  }
-
-  .import-file {
-    flex-grow: 1;
   }
 
   &-action {

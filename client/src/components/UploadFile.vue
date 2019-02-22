@@ -2,18 +2,30 @@
   <div class="import-file">
     <div class="import-file-action  import-file-action--file">
       <h4 class="import-file-subtitle">Fichier</h4>
-      <input-file :dark='dark' title="Choisir un fichier..." :selected-callback="fileSelected" :filename="filename" />
+      <input-file
+        :dark="dark"
+        title="Choisir un fichier..."
+        :selected-callback="fileSelected"
+        :filename="filename"
+      />
     </div>
     <div class="import-file-action">
       <h4 class="import-file-subtitle">{{subtitle}}</h4>
-      <v-btn :dark='dark' color="#17a2b8" :disabled="disabled" :aria-disabled="disabled" @click="uploadFile">{{uploadLabel}}</v-btn>
+      <v-btn
+        :dark='dark'
+        color="#17a2b8"
+        @click="uploadFile"
+        :disabled="importDisabled"
+        :aria-disabled="importDisabled"
+      >
+        {{uploadLabel}}
+      </v-btn>
     </div>
   </div>
 </template>
 
 <script>
 import { InputFile } from '@/components'
-import { SHOW_INFO, SHOW_SUCCESS } from '@/store'
 
 export default {
   components: {
@@ -22,39 +34,35 @@ export default {
   props: {
     subtitle: String,
     uploadLabel: String,
-    uploadFunc: Function,
-    dark: String,
+    onUpload: Function,
+    selectFile: Function,
+    dark: Boolean,
+    importDisabled: Boolean,
+    file: File,
   },
 
   data () {
     return {
-      file: undefined,
+      disabled: this.importDisabled,
     }
   },
 
   computed: {
-    disabled () {
-      return !this.file
-    },
-
     filename () {
       return this.file && this.file.name
     },
   },
 
   methods: {
-    async fileSelected (file) {
-      this.file = file
-      const message = `Fichier ${file.name} prêt`
-      this.$store.dispatch(SHOW_INFO, message, 1000)
+    fileSelected (file) {
+      this.$emit('select-file', file)
     },
 
     async uploadFile () {
+      this.disabled = true
       const data = new FormData()
       data.append('file', this.file)
-      const result = await this.uploadFunc(data)
-      this.$store.dispatch(SHOW_SUCCESS, result.message)
-      this.file = null
+      this.$emit('upload-file', data)
     },
   },
 }
