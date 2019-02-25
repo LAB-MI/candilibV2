@@ -15,7 +15,7 @@ export const faqJson = [
       },
       {
         subTitleContent: 'Source réglementaire :',
-        textContent: '<a href="https://www.legifrance.gouv.fr/affichTexteArticle.do?idArticle=LEGIARTI000032966489&amp;cidTexte=LEGITEXT000029705598&amp;dateTexte=20181205" target="_blank">Arrêté du 22 octobre 2014 fixant la méthode nationale d\'attribution des places d\'examen du permis de conduire - Article 5</a>',
+        textContent: '<a class="link-in-text-style" href="https://www.legifrance.gouv.fr/affichTexteArticle.do?idArticle=LEGIARTI000032966489&amp;cidTexte=LEGITEXT000029705598&amp;dateTexte=20181205" target="_blank">Arrêté du 22 octobre 2014 fixant la méthode nationale d\'attribution des places d\'examen du permis de conduire - Article 5</a>',
       },
     ],
   },
@@ -94,7 +94,7 @@ export const faqJson = [
         subTitleContent: 'Liste complète :',
       },
       {
-        textContent: '<a href="https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&amp;categorieLien=id" target="_blank">Arrêté du 23 décembre 2016 relatif à la justification de l\'identité, du domicile, de la résidence normale et de la régularité du séjour pour l\'obtention du permis de conduire</a>',
+        textContent: '<a class="link-in-text-style" href="https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&amp;categorieLien=id" target="_blank">Arrêté du 23 décembre 2016 relatif à la justification de l\'identité, du domicile, de la résidence normale et de la régularité du séjour pour l\'obtention du permis de conduire</a>',
       },
       {
         textContent: 'Votre permis de conduire original si vous avez obtenu une autre catégorie depuis moins de 5 ans afin de bénéficier d’une dispense d’examen théorique général.',
@@ -106,7 +106,7 @@ export const faqJson = [
         textContent: 'Une enveloppe affranchie à 20g.',
       },
       {
-        textContent: 'Lorsque vous avez fait l\'objet d\'une annulation du permis, le récépissé de la « fiche retour au permis de conduire » que vous aurez imprimé sur le site de l\'<a href="https://permisdeconduire.ants.gouv.fr/" target="_blank">ANTS</a>.',
+        textContent: 'Lorsque vous avez fait l\'objet d\'une annulation du permis, le récépissé de la « fiche retour au permis de conduire » que vous aurez imprimé sur le site de l\'<a class="link-in-text-style" href="https://permisdeconduire.ants.gouv.fr/" target="_blank">ANTS</a>.',
       },
       {
         textContent: 'Attention :le mauvais état du véhicule (pneus lisses, rétros cassés ou absents, non fonctionnement de tous les feux, etc.), ou l\'absence ou la non-validité d\'un des documents exigés ci-dessus, pour le candidat ou pour l\'accompagnateur, entraîne le report de l\'examen à une date ultérieure.',
