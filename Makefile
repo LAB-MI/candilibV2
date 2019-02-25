@@ -105,6 +105,15 @@ down-all-in-one: check-prerequisites network-down ## Run containers in productio
              down
 
 #
+# up/down front+back (without db)
+#
+download-image-front-back: download-image-front-candidat download-image-front-admin download-image-api
+load-image-front-back: load-image-front-candidat load-image-front-admin load-image-api
+up-front-back: up-front-candidat up-front-admin up-api
+down-front-back: down-front-candidat down-front-admin down-api
+stop-front-back: stop-front-candidat stop-front-admin stop-api
+test-up-front-back: test-up-api test-up-front-admin test-up-front-candidat
+#
 # Build prod (separate container per compose)
 #
 build: check-prerequisites build-dir build-archive build-prod ## Create archive, Build production images
@@ -130,7 +139,7 @@ build-front-candidat:
 	${DC} -f ${DC_APP_FRONT_CANDIDAT_BUILD_PROD} build ${DC_BUILD_ARGS} front_candidat
 check-build-front-candidat:
 	${DC} -f ${DC_APP_FRONT_CANDIDAT_BUILD_PROD} config
-up-front-candidat:
+up-front-candidat: check-up-front-candidat network-up
 	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} up ${DC_RUN_ARGS} front_candidat
 check-up-front-candidat:
 	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} config
@@ -145,7 +154,7 @@ build-front-admin:
 	${DC} -f ${DC_APP_FRONT_ADMIN_BUILD_PROD} build ${DC_BUILD_ARGS} front_admin
 check-build-front-admin:
 	${DC} -f ${DC_APP_FRONT_ADMIN_BUILD_PROD} config
-up-front-admin:
+up-front-admin: check-up-front-admin network-up
 	${DC} -f ${DC_APP_FRONT_ADMIN_RUN_PROD} up ${DC_RUN_ARGS} front_admin
 check-up-front-admin:
 	${DC} -f ${DC_APP_FRONT_ADMIN_RUN_PROD} config
