@@ -7,8 +7,17 @@ import {
   findAllPlaces,
   createPlace,
 } from '../../models/place'
+import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 
-const getPlaceStatus = (centre, inspecteur, date, status, details) => ({
+const getPlaceStatus = (
+  departement,
+  centre,
+  inspecteur,
+  date,
+  status,
+  details
+) => ({
+  departement,
   centre,
   inspecteur,
   date,
@@ -24,7 +33,7 @@ export const importPlaces = (req, res, next) => {
     .fromString(csvFile.data.toString(), { headers: false, ignoreEmpty: true })
     .transform(data => {
       if (data[0] === 'Date') return
-      const [day, time, inspecteur, centre] = data
+      const [day, time, inspecteur, centre, departement] = data
 
       const myDate = `${day.trim()} ${time.trim()}`
 
@@ -34,16 +43,30 @@ export const importPlaces = (req, res, next) => {
           locale: 'fr',
         })
         if (!date.isValid) throw new Error('Date est invalide')
+
+        const foundCentre = findCentreByNameAndDepartement(
+          centre.trim(),
+          departement
+        )
+        if (!foundCentre) throw new Error('CENTRE_NOT_FOUND')
+
         return {
           date,
-          centre: centre.trim(),
+          centre: foundCentre,
           inspecteur: inspecteur.trim(),
         }
       } catch (error) {
         logger.error(error)
         PlacesPromise.push(
           Promise.resolve(
-            getPlaceStatus(centre, inspecteur, myDate, 'error', error.message)
+            getPlaceStatus(
+              departement,
+              centre,
+              inspecteur,
+              myDate,
+              'error',
+              error.message
+            )
           )
         )
       }
@@ -52,13 +75,17 @@ export const importPlaces = (req, res, next) => {
       const fctPromise = new Promise(async resolve => {
         const { centre, inspecteur, date } = place
         try {
-          await createPlace(place)
+          const leanPlace = { inspecteur, date, centre: centre._id }
+          await createPlace(leanPlace)
           logger.info(
-            `Place ${centre} ${inspecteur} ${date} enregistrée en base`
+            `Place {${centre.departement},${
+              centre.nom
+            }, ${inspecteur}, ${date}} enregistrée en base`
           )
           resolve(
             getPlaceStatus(
-              centre,
+              centre.departement,
+              centre.nom,
               inspecteur,
               date,
               'success',
@@ -71,7 +98,8 @@ export const importPlaces = (req, res, next) => {
             logger.warn('Place déjà enregistrée en base')
             resolve(
               getPlaceStatus(
-                centre,
+                centre.departement,
+                centre.nom,
                 inspecteur,
                 date,
                 'error',
@@ -81,7 +109,14 @@ export const importPlaces = (req, res, next) => {
           }
           logger.error(error)
           resolve(
-            getPlaceStatus(centre, inspecteur, date, 'error', error.message)
+            getPlaceStatus(
+              centre.departement,
+              centre.nom,
+              inspecteur,
+              date,
+              'error',
+              error.message
+            )
           )
         }
       })

@@ -3,6 +3,10 @@ import mongoose from 'mongoose'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
+/**
+ * TODO: A vérifier l'utilité
+ * @param {*} leanPlace
+ */
 export const createPlace = async leanPlace => {
   const previousPlace = await Place.findOne(leanPlace)
   if (previousPlace && !(previousPlace instanceof Error)) {

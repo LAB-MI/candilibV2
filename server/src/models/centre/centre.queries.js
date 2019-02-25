@@ -5,6 +5,10 @@ export const findAllCentres = async () => {
   return centres
 }
 
+/**
+ * @deprecated nom n'est pas unique. A remplacer par findCentreByNameAndDepartement
+ * @param {*} nom
+ */
 export const findCentreByName = async nom => {
   const centre = await Centre.findOne({ nom })
   return centre
@@ -45,4 +49,9 @@ export const updateCentreLabel = async (centre, name, label, adresse) => {
 export const findCentresByDepartement = async departement => {
   const centres = await Centre.find({ departement })
   return centres
+}
+
+export const findCentreByNameAndDepartement = async (nom, departement) => {
+  const centre = await Centre.findOne({ nom, departement })
+  return centre
 }

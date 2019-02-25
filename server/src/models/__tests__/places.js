@@ -75,10 +75,14 @@ export const places = [
 export const createPlaces = () =>
   Promise.all(
     places.map(async place => {
+      const leanPlace = {
+        date: place.date,
+        inspecteur: place.inspecteur,
+      }
       const centre = await findCentreByName(place.centre)
       if (!centre) console.warn(`Le centre ${place.centre} non trouvé`)
-      else place.centre = centre._id
-      return createPlace(place)
+      else leanPlace.centre = centre._id
+      return createPlace(leanPlace)
     })
   )
 

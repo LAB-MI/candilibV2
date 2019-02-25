@@ -310,10 +310,11 @@ describe('Candidat', () => {
   })
 
   describe('Booked Candidat', () => {
+    let creactedCentres
     beforeAll(async () => {
       // await connect()
       await createCandidats()
-      await createCentres()
+      creactedCentres = await createCentres()
       await createPlaces()
       await makeResas()
     })
@@ -344,16 +345,16 @@ describe('Candidat', () => {
       })
     })
     it('Get the booked candidats by centre', async () => {
-      const centre = places[1].centre
+      const centre = creactedCentres[1]
       const bookedCandidats = await findBookedCandidats(
         undefined,
         undefined,
-        centre
+        centre._id
       )
       expect(bookedCandidats.length).toBe(1)
       bookedCandidats.forEach(candidat => {
         expect(candidat.place).toBeDefined()
-        expect(candidat.place.centre).toEqual(centre)
+        expect(candidat.place.centre._id).toEqual(centre._id)
       })
     })
     it('Get the booked candidats inspecteur', async () => {
