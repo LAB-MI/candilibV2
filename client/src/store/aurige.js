@@ -3,28 +3,45 @@ import api from '@/api'
 import { SHOW_SUCCESS, SHOW_ERROR } from '@/store'
 
 export const SHOW_AURIGE_RESULT = 'SHOW_AURIGE_RESULT'
-export const AURIGE_UPLOAD_CANDIDATS = 'AURIGE_UPLOAD_CANDIDATS'
-export const SET_LAST_FILE = 'SET_LAST_FILE'
+export const AURIGE_UPLOAD_CANDIDATS_REQUEST = 'AURIGE_UPLOAD_CANDIDATS_REQUEST'
+export const AURIGE_UPLOAD_CANDIDATS_SUCCESS = 'AURIGE_UPLOAD_CANDIDATS_SUCCESS'
+export const AURIGE_UPLOAD_CANDIDATS_FAILURE = 'AURIGE_UPLOAD_CANDIDATS_FAILURE'
+const SET_LAST_FILE = 'SET_LAST_FILE'
 
 export default {
   state: {
+    isCandidatsUpadating: false,
     candidats: [],
     lastFile: undefined,
   },
   mutations: {
-    [SHOW_AURIGE_RESULT] (state, { candidats }) {
+    // la mutation juste en dessous n'est plus util voir avec stan pour la supprimer
+    [SHOW_AURIGE_RESULT] (state, candidats) {
       state.candidats = candidats
     },
     [SET_LAST_FILE] (state, file) {
       state.lastFile = file
     },
+    [AURIGE_UPLOAD_CANDIDATS_REQUEST] (state) {
+      state.isCandidatsUpadating = true
+    },
+    [AURIGE_UPLOAD_CANDIDATS_SUCCESS] (state, candidats) {
+      state.isCandidatsUpadating = false
+      state.candidats = candidats
+    },
+    [AURIGE_UPLOAD_CANDIDATS_FAILURE] (state) {
+      state.isCandidatsUpadating = false
+    },
+
   },
   actions: {
+    // l'action juste en dessous n'est plus util voir avec stan pour la supprimer
     async [SHOW_AURIGE_RESULT] ({ commit }, result) {
       const { candidats } = result
       commit(SHOW_AURIGE_RESULT, candidats)
     },
-    async [AURIGE_UPLOAD_CANDIDATS] ({ commit, dispatch }, file) {
+    async [AURIGE_UPLOAD_CANDIDATS_REQUEST] ({ commit, dispatch }, file) {
+      commit(AURIGE_UPLOAD_CANDIDATS_REQUEST)
       const data = new FormData()
       data.append('file', file)
 
@@ -33,10 +50,11 @@ export default {
         if (result.success === false) {
           throw new Error(result.message)
         }
-        commit(SHOW_AURIGE_RESULT, result)
+        commit(AURIGE_UPLOAD_CANDIDATS_SUCCESS, result.candidats)
         commit(SET_LAST_FILE, undefined)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
+        commit(AURIGE_UPLOAD_CANDIDATS_FAILURE)
         commit(SET_LAST_FILE, file)
         dispatch(SHOW_ERROR, error.message)
       }
