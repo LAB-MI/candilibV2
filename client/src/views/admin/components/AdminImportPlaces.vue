@@ -19,7 +19,7 @@
 import UploadFile from '@/components/UploadFile.vue'
 import api from '@/api'
 
-import { SHOW_INFO, SHOW_SUCCESS, SHOW_ERROR, SHOW_AURIGE_RESULT } from '@/store'
+import { SHOW_INFO, SHOW_SUCCESS, SHOW_ERROR } from '@/store'
 
 export default {
   components: {
@@ -54,7 +54,6 @@ export default {
         if (result.success === false) {
           throw new Error(result.message)
         }
-        this.$store.dispatch(SHOW_AURIGE_RESULT, result)
         this.$store.dispatch(SHOW_SUCCESS, result.message)
         this.lastFile = null
       } catch (error) {

@@ -4,6 +4,7 @@
       Interaction Aurige
     </h2>
     <div class="aurige">
+      <!-- propager le accept for upload-file -->
       <upload-file
         class="u-flex__item--grow"
         dark
@@ -13,6 +14,7 @@
         @select-file="fileSelected"
         :file="file"
         @upload-file="uploadCandidats"
+        accept=".json"
       />
       <div class="aurige-action  aurige-action--export">
         <h4 class="aurige-subtitle">Export CSV</h4>

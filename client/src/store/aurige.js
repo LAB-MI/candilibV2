@@ -15,10 +15,6 @@ export default {
     lastFile: undefined,
   },
   mutations: {
-    // la mutation juste en dessous n'est plus util voir avec stan pour la supprimer
-    [SHOW_AURIGE_RESULT] (state, candidats) {
-      state.candidats = candidats
-    },
     [SET_LAST_FILE] (state, file) {
       state.lastFile = file
     },
@@ -35,11 +31,6 @@ export default {
 
   },
   actions: {
-    // l'action juste en dessous n'est plus util voir avec stan pour la supprimer
-    async [SHOW_AURIGE_RESULT] ({ commit }, result) {
-      const { candidats } = result
-      commit(SHOW_AURIGE_RESULT, candidats)
-    },
     async [AURIGE_UPLOAD_CANDIDATS_REQUEST] ({ commit, dispatch }, file) {
       commit(AURIGE_UPLOAD_CANDIDATS_REQUEST)
       const data = new FormData()
