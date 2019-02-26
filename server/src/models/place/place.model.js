@@ -9,18 +9,6 @@ const PlaceSchema = new Schema({
     required: false,
     trim: true,
   },
-  // /**
-  //  * @deprecated donnée de la v1
-  //  */
-  // centre: {
-  //   type: String, // nom du centre pour la V1
-  //   required: false,
-  //   trim: true,
-  // },
-  /**
-   * @todo A valider
-   * Pour la v2
-   */
   centre: {
     type: ObjectId, // ObjectId du centre pour la V2
     required: false,

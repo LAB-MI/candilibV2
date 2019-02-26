@@ -88,5 +88,5 @@ export const createPlaces = () =>
 
 export const removePlaces = () => Place.remove()
 
-export const nbPlacesCentres = ({ nom }) =>
+export const nbPlacesByCentres = ({ nom }) =>
   nom ? places.filter(place => place.centre === nom).length : places.length

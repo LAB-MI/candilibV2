@@ -7,6 +7,8 @@ import {
   findPlaceById,
   findAllPlaces,
   findPlaceByCandidatId,
+  countAvailablePlacesByCentre,
+  findAvailablePlacesByCentre,
 } from '.'
 
 import { connect, disconnect } from '../../mongo-connection'
@@ -17,14 +19,13 @@ import {
   makeResas,
   removePlaces,
   deleteCandidats,
-  nbPlacesCentres,
   createCentres,
   removeCentres,
   centres,
   candidats,
+  nbPlacesDispoByCentres,
 } from '../__tests__'
 
-import { findPlacesByCentre, countPlacesByCentre } from './place.queries'
 import { deleteCentre, createCentre } from '../centre'
 
 const date = moment()
@@ -176,28 +177,34 @@ describe('Place', () => {
     beforeAll(async () => {
       createdCentres = await createCentres()
       await createPlaces()
+      await createCandidats()
+      await makeResas()
     })
     afterAll(async () => {
       await removePlaces()
+      await deleteCandidats()
       await removeCentres()
     })
 
-    it('Should find 2 places for centre "Centre 2"', async () => {
+    it('Should find 1 places for centre "Centre 2"', async () => {
       const { nom } = centres[1]
       const centreSelected = createdCentres.find(centre => centre.nom === nom)
-      const listPlaces = await findPlacesByCentre(centreSelected)
+      console.log(centreSelected)
+      const listPlaces = await findAvailablePlacesByCentre(centreSelected)
+      console.log(listPlaces)
       expect(listPlaces).toBeDefined()
       expect(listPlaces).not.toBeNull()
-      expect(listPlaces).toHaveLength(nbPlacesCentres({ nom }))
+      expect(listPlaces).toHaveLength(nbPlacesDispoByCentres({ nom }))
     })
 
-    it('Should 2 places for centre "Centre 2"', async () => {
+    it('Should 1 places availables for centre "Centre 2"', async () => {
       const { nom } = centres[1]
       const centreSelected = createdCentres.find(centre => centre.nom === nom)
-      const countPlaces = await countPlacesByCentre(centreSelected)
+      const countPlaces = await countAvailablePlacesByCentre(centreSelected)
+
       expect(countPlaces).toBeDefined()
       expect(countPlaces).not.toBeNull()
-      expect(countPlaces).toBe(nbPlacesCentres({ nom }))
+      expect(countPlaces).toBe(nbPlacesDispoByCentres({ nom }))
     })
   })
 })

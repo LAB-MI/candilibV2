@@ -1,8 +1,5 @@
-import {
-  createCandidat,
-  findAllCandidatsLean,
-  deleteCandidat,
-} from '../candidat'
+import { createCandidat } from '../candidat'
+import candidatModel from '../candidat/candidat.model'
 
 export const candidats = [
   {
@@ -36,6 +33,5 @@ export const createCandidats = async () => {
 }
 
 export const deleteCandidats = async () => {
-  const candidatsDb = await findAllCandidatsLean()
-  await Promise.all(candidatsDb.map(candidat => deleteCandidat(candidat)))
+  await candidatModel.remove()
 }
