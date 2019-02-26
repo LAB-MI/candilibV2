@@ -38,3 +38,8 @@ storiesOf('Candidat Components', module)
     components: { CandidatFooter },
     template: '<candidat-footer />',
   }))
+  .add('CenterChoise', () => ({
+    components: { CandidatFooter },
+    template: '<candidat-footer />',
+    methods: { action: action('clicked') },
+  }))
