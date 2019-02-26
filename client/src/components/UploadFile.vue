@@ -95,7 +95,7 @@ export default {
     &--file {
       flex-grow: 5;
     }
-    }
+  }
 
   &-subtitle {
     text-transform: uppercase;
