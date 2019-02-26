@@ -1,11 +1,11 @@
 <template>
   <div @click="showFaqContent">
-    <a class="link-style">
+    <a class="link-style" :style="{ color: colorTitle }">
       {{ item.title }}
-        <i v-if="!status" class="material-icons i-style">
+        <i v-if="!status" class="material-icons icon-style">
           {{ 'add_circle' }}
         </i>
-        <i v-if="status" class="material-icons i-style" style="color: #f8234a;">
+        <i v-if="status" class="material-icons icon-style" style="color: #f8234a">
           {{ 'remove_circle' }}
         </i>
     </a>
@@ -29,13 +29,13 @@ export default {
   data () {
     return {
       status: false,
+      colorTitle: '',
     }
-  },
-  computed: {
   },
   methods: {
     showFaqContent () {
       this.status = !this.status
+      this.status ? this.colorTitle = '#f8234a' : this.colorTitle = ''
     },
   },
 }
@@ -58,25 +58,25 @@ export default {
     text-decoration: none;
     left: 5%;
   }
-  .i-style {
+  .icon-style {
     position: absolute;
     font-size: 24px;
     right: 0;
     top: 20px;
+    color: #000;
   }
   .content-question-style {
     width: 90%;
     color: #212529;
-    margin-left: 25px;
+    margin-left: 5%;
   }
   .fade-enter-active,
   .fade-leave-active {
     transition: opacity .4s;
   }
-  .fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  .fade-enter, .fade-leave-to {
     opacity: 0;
   }
-  /* link-in-text-style ce trouve dans le fichier Json */
   .link-in-text-style {
     text-decoration-line:none;
   }

@@ -8,7 +8,7 @@ import MessageView from '@/views/Message.vue'
 import EmailValidationComponent from '@/views/candidat/components/EmailValidationComponent.vue'
 import Error404 from '@/views/Error404.vue'
 import MentionsLegales from '@/views/candidat/components/mentions-legales/MentionsLegales.vue'
-import Faq from '@/views/candidat/Faq.vue'
+import Faq from '@/views/candidat/faq/Faq.vue'
 
 import {
   requireAdminAuth,
