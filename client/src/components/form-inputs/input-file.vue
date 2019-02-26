@@ -1,6 +1,12 @@
 <template>
   <div class="input-file-container">
-    <input :id="this.inputId" type="file" class="u-transparent" @change="fileSelected">
+    <input
+      :accept="accept"
+      :id="this.inputId"
+      type="file"
+      class="u-transparent"
+      @change="fileSelected"
+    >
     <label class="input-file-label" :for="this.inputId" ref="label">
       <v-text-field
         :dark="dark"
@@ -24,6 +30,10 @@
 export default {
   name: 'upload-button',
   props: {
+    accept: {
+      type: String,
+      default: '*',
+    },
     dark: Boolean,
     selectedCallback: Function,
     title: String,

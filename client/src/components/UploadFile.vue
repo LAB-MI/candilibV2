@@ -7,6 +7,7 @@
         title="Choisir un fichier..."
         :selected-callback="fileSelected"
         :filename="filename"
+        :accept="accept"
       />
     </div>
     <div class="import-file-action">
@@ -32,6 +33,7 @@ export default {
     InputFile,
   },
   props: {
+    accept: String,
     subtitle: String,
     uploadLabel: String,
     onUpload: Function,

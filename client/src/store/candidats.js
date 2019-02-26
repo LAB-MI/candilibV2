@@ -53,7 +53,7 @@ export default {
       }
     },
 
-    async [FETCH_CANDIDATS_REQUEST] ({ commit, dispatch }, { since, until }) {
+    async [FETCH_CANDIDATS_REQUEST] ({ commit, dispatch }, { since, until } = {}) {
       commit(FETCH_CANDIDATS_REQUEST)
       try {
         const list = await api.admin.getCandidats({ since, until })

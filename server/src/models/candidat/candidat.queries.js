@@ -5,22 +5,24 @@ import moment from 'moment'
 import { logger } from '../../util'
 
 export const createCandidat = async ({
+  adresse,
   codeNeph,
-  nomNaissance,
-  prenom,
-  portable,
   email,
   emailValidationHash,
-  adresse,
+  isValidatedEmail,
+  nomNaissance,
+  portable,
+  prenom,
 }) => {
   const candidat = await new Candidat({
+    adresse,
     codeNeph,
-    nomNaissance,
-    prenom,
-    portable,
     email,
     emailValidationHash,
-    adresse,
+    isValidatedEmail,
+    nomNaissance,
+    portable,
+    prenom,
     presignedUpAt: new Date(),
   })
   await candidat.save()
