@@ -9,6 +9,7 @@ import AdminFooter from '../views/admin/components/AdminFooter.vue'
 import AdminAurige from '../views/admin/components/Aurige.vue'
 import AdminCandidatList from '../views/admin/components/CandidatsList.vue'
 import AdminWhiteList from '../views/admin/components/Whitelist.vue'
+import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStatusFilter.vue'
 
 storiesOf('Admin Components', module)
   .add('AdminLogin', () => ({
@@ -44,5 +45,10 @@ storiesOf('Admin Components', module)
   .add('AdminWhiteList', () => ({
     components: { AdminWhiteList },
     template: '<white-list />',
+    methods: { action: action('clicked') },
+  }))
+  .add('AgGridAurigeStatusFilter', () => ({
+    components: { AgGridAurigeStatusFilter },
+    template: '<ag-grid-aurige-status-filter />',
     methods: { action: action('clicked') },
   }))
