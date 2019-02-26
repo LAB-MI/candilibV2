@@ -3,21 +3,63 @@
     <h2>
       Import Places
     </h2>
-    <import-file subtitle="Les places en CSV" upload-label="Import" :upload-func="uploadPlaces" />
+    <upload-file
+      subtitle="Les places en CSV"
+      upload-label="Import"
+      :import-disabled="inputDisabled"
+      @select-file="fileSelected"
+      :file="file"
+      @upload-file="uploadPlaces"
+    />
+
   </div>
 </template>
 
 <script>
-import importFile from './ImportFile.vue'
+import UploadFile from '@/components/UploadFile.vue'
 import api from '@/api'
+
+import { SHOW_INFO, SHOW_SUCCESS, SHOW_ERROR } from '@/store'
 
 export default {
   components: {
-    importFile,
+    UploadFile,
   },
+
+  data () {
+    return {
+      file: undefined,
+      lastFile: undefined,
+    }
+  },
+
+  computed: {
+    inputDisabled () {
+      return !this.file
+    },
+  },
+
   methods: {
+    async fileSelected (file) {
+      this.file = file
+      const message = `Fichier ${file.name} prêt à être synchronisé`
+      this.$store.dispatch(SHOW_INFO, message, 1000)
+    },
+
     async uploadPlaces (data) {
-      return api.admin.uploadPlacesCSV(data)
+      this.lastFile = this.file
+      try {
+        this.file = null
+        const result = await api.admin.uploadPlacesCSV(data)
+        if (result.success === false) {
+          throw new Error(result.message)
+        }
+        this.$store.dispatch(SHOW_SUCCESS, result.message)
+        this.lastFile = null
+      } catch (error) {
+        this.file = this.lastFile
+        this.$store.dispatch(SHOW_ERROR, error.message)
+      }
     },
   },
 }

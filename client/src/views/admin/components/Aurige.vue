@@ -4,7 +4,18 @@
       Interaction Aurige
     </h2>
     <div class="aurige">
-      <import-file dark subtitle="Synchronisation JSON" uploadLabel="Synchro" :upload-func="uploadCandidats" />
+      <!-- propager le accept for upload-file -->
+      <upload-file
+        class="u-flex__item--grow"
+        dark
+        subtitle="Synchronisation JSON"
+        upload-label="Synchro"
+        :import-disabled="inputDisabled"
+        @select-file="fileSelected"
+        :file="file"
+        @upload-file="uploadCandidats"
+        accept=".json"
+      />
       <div class="aurige-action  aurige-action--export">
         <h4 class="aurige-subtitle">Export CSV</h4>
         <v-btn color="#17a2b8" dark @click="getCandidatsAsCsv">Export</v-btn>
@@ -17,15 +28,15 @@
 <script>
 import api from '@/api'
 import { downloadContent } from '@/util'
-import { SHOW_INFO, SHOW_AURIGE_RESULT } from '@/store'
+import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST } from '@/store'
 import AurigeValidation from './AurigeValidation'
-import ImportFile from './ImportFile.vue'
+import UploadFile from '@/components/UploadFile.vue'
 
 export default {
   name: 'admin-aurige',
   components: {
     AurigeValidation,
-    ImportFile,
+    UploadFile,
   },
 
   props: {
@@ -39,12 +50,8 @@ export default {
   },
 
   computed: {
-    disabled () {
+    inputDisabled () {
       return !this.file
-    },
-
-    filename () {
-      return this.file && this.file.name
     },
   },
 
@@ -54,13 +61,15 @@ export default {
       const message = `Fichier ${file.name} prêt à être synchronisé`
       this.$store.dispatch(SHOW_INFO, message, 1000)
     },
-
-    async uploadCandidats (data) {
-      const result = await api.admin.uploadCandidatsJson(data)
-      this.$store.dispatch(SHOW_AURIGE_RESULT, result)
-      return Promise.resolve(result)
+    async uploadCandidats () {
+      await this.$store.dispatch(AURIGE_UPLOAD_CANDIDATS_REQUEST, this.file)
+      const { aurige } = this.$store.state
+      if (aurige.lastFile === undefined) {
+        this.file = null
+      } else {
+        this.file = aurige.lastFile
+      }
     },
-
     async getCandidatsAsCsv () {
       const response = await api.admin.exportCsv()
       downloadContent(response)
@@ -87,10 +96,6 @@ export default {
     flex-direction: column;
   }
 
-  .import-file {
-    flex-grow: 1;
-  }
-
   &-action {
     display: flex;
     justify-content: center;
@@ -110,6 +115,5 @@ export default {
       }
     }
   }
-
 }
 </style>
