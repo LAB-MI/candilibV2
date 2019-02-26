@@ -4,7 +4,9 @@ import {
   createCentres,
   removeCentres,
   nbCentres,
-} from '../../models/__tests__/centres'
+  createPlaces,
+  removePlaces,
+} from '../../models/__tests__/'
 
 const { default: app, apiPrefix } = require('../../app')
 
@@ -23,9 +25,11 @@ describe('Test centre controllers', () => {
   describe('Find centres', () => {
     beforeAll(async () => {
       await createCentres()
+      await createPlaces()
     })
     afterAll(async () => {
       await removeCentres()
+      await removePlaces()
     })
     it('Should response 200 to find all centres', async () => {
       const { body } = await request(app)
