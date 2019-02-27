@@ -7,7 +7,7 @@ import CandidatHome from '@/views/CandidatHome.vue'
 import MessageView from '@/views/Message.vue'
 import EmailValidationComponent from '@/views/candidat/components/EmailValidationComponent.vue'
 import Error404 from '@/views/Error404.vue'
-import MentionsLegales from '@/views/candidat/mentionsLegales/MentionsLegales.vue'
+import MentionsLegales from '@/views/candidat/components/mentions-legales/MentionsLegales.vue'
 import Faq from '@/views/candidat/Faq.vue'
 
 import {
@@ -92,7 +92,7 @@ const commonRoutes = [
     component: HomeComponent,
   },
   {
-    path: '/candidat/mentions-legales',
+    path: '/mentions-legales',
     name: 'mentions-legales',
     component: MentionsLegales,
   },

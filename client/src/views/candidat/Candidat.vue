@@ -32,7 +32,7 @@ import CandidatFooter from './components/CandidatFooter'
 import NavigationDrawer from './components/NavigationDrawer'
 
 import Faq from './Faq'
-import MentionsLegales from './mentionsLegales/MentionsLegales'
+import MentionsLegales from './components/mentions-legales/MentionsLegales'
 import MyProfile from './components/MyProfile'
 
 export default {
@@ -61,7 +61,7 @@ export default {
           label: 'F.A.Q.',
         },
         {
-          routerTo: '/candidat/mentions-legales',
+          routerTo: '/mentions-legales',
           iconName: 'account_balance',
           tooltipText: 'Mentions légales',
           label: 'Mentions légales',
