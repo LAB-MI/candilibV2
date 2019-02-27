@@ -55,7 +55,7 @@ export default {
           label: 'Ma réservation',
         },
         {
-          routerTo: '/candidat/faq',
+          routerTo: '/faq',
           iconName: 'help_outline',
           tooltipText: 'FAQ',
           label: 'F.A.Q.',
