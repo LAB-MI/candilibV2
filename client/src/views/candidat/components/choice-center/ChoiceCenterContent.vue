@@ -1,5 +1,5 @@
 <template>
-    <a @click="selectCenter(center.centre._id)">
+    <a @click="selectCenter(center)">
       <h2>{{ center.centre.nom }}</h2>
       <h4>{{ center.centre.adresse }}</h4>
       <h4>{{ center.centre.departement }} {{ center.centre.nom }}</h4>
@@ -16,9 +16,8 @@ export default {
     center: Object,
   },
   methods: {
-    selectCenter (centerId) {
-      console.log('centerId', centerId)
-      this.$store.dispatch(SELECT_CENTER, centerId)
+    selectCenter (center) {
+      this.$store.dispatch(SELECT_CENTER, center)
     },
   },
 }

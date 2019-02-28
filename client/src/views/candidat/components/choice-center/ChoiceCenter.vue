@@ -1,7 +1,7 @@
 <template>
     <div>
         <h1>C<span style="color: red;">A</span>NDILIB</h1>
-        <h2>Choix du centre</h2>
+        <h2>CHOIX DU CENTRE</h2>
         <hr>
         <choice-center-content v-for="(center, index) in centers" :key="index" :center="center" />
     </div>

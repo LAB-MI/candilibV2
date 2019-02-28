@@ -40,12 +40,8 @@ export default {
         dispatch(SHOW_ERROR, error.message)
       }
     },
-    [SELECT_CENTER] ({ commit, dispatch }, centerId) {
-      if (!centerId) {
-        dispatch(SHOW_ERROR, 'A center must be chosen to continue')
-      } else {
-        commit(SELECT_CENTER, centerId)
-      }
+    [SELECT_CENTER] ({ commit }, center) {
+      commit(SELECT_CENTER, center)
     },
   },
 }
