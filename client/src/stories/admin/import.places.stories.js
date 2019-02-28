@@ -1,16 +1,31 @@
 import { storiesOf } from '@storybook/vue'
 import { DateTime } from 'luxon'
 
+import message from '../../store/message'
+import importPlaces from '../../store/import-places'
 import ImportPlacesValidation from '../../views/admin/components/ImportPlacesValidation.vue'
 import AdminImportPlaces from '../../views/admin/components/AdminImportPlaces.vue'
 
-import Vuex from 'vuex'
+import Vuex, { mapState } from 'vuex'
 
 storiesOf('Admin Components/Import Places', module)
   .add('Upload Import Places', () => ({
     components: { AdminImportPlaces },
-    store: new Vuex.Store({}),
-    template: '<admin-import-places/>></admin-import-places>',
+    computed: mapState({
+      content: state => {
+        console.log('content:', state.message.content)
+        return state.message.content
+      },
+      show: state => state.message.show,
+      color: state => state.message.color,
+    }),
+    store: new Vuex.Store({
+      modules: {
+        message,
+        importPlaces,
+      },
+    }),
+    template: '<admin-import-places/>',
   }))
   .add('Result Import Places', () => ({
     components: { ImportPlacesValidation },
@@ -35,4 +50,18 @@ storiesOf('Admin Components/Import Places', module)
       },
     }),
     template: '<import-places-validation/>',
+  }))
+  .add('Upload and Result Import Places', () => ({
+    components: {
+      AdminImportPlaces,
+      ImportPlacesValidation,
+    },
+    store: new Vuex.Store({
+      state: {},
+      modules: {
+        message,
+        importPlaces,
+      },
+    }),
+    template: '<div><admin-import-places/> <import-places-validation/> </div>',
   }))
