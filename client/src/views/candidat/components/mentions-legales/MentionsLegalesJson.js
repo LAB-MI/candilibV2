@@ -22,7 +22,7 @@ export const mentionsLegalesJson = [
     icon: 'work_outline',
     textContent: [
       {
-        subTextContent: 'Le ministère de l\'Intérieur est titulaire des droits relatifs à la propriété intellectuelle des contenus (infographies et autres éléments techniques et graphiques), disponibles sur le site <a href="#" target="_blank">beta.interieur.gouv.fr/candilib</a>',
+        subTextContent: 'Le ministère de l\'Intérieur est titulaire des droits relatifs à la propriété intellectuelle des contenus (infographies et autres éléments techniques et graphiques), disponibles sur le site <a href="beta.interieur.gouv.fr/candilib" target="_blank">beta.interieur.gouv.fr/candilib</a>',
       },
       {
         subTextContent: 'Ces éléments sont couverts par des droits de propriété intellectuelle de tiers. En application du code de la propriété intellectuelle, toute reproduction ou représentation partielle ou totale pour quelque usage que ce soit est interdite sans l\'accord préalable des titulaires de droits. Pour toute demande de reproduction, <a href="#" target="_blank">contactez-nous</a>',
@@ -44,7 +44,7 @@ export const mentionsLegalesJson = [
     textContent: [
       {
         subTitle: 'Liens hypertextes entrants',
-        subTextContent: 'Tout site public ou privé est autorisé à établir, sans autorisation préalable, un lien vers les informations diffusées dans ce site. En revanche les pages du site <a href="#" target="_blank">beta.interieur.gouv.fr/candilib</a> ne doivent pas être imbriquées à l’intérieur des pages d’un autre site : rien ne doit méprendre le visiteur sur l’origine d’une page vue.',
+        subTextContent: 'Tout site public ou privé est autorisé à établir, sans autorisation préalable, un lien vers les informations diffusées dans ce site. En revanche les pages du site <a href="beta.interieur.gouv.fr/candilib" target="_blank">beta.interieur.gouv.fr/candilib</a> ne doivent pas être imbriquées à l’intérieur des pages d’un autre site : rien ne doit méprendre le visiteur sur l’origine d’une page vue.',
       },
       {
         subTextContent: 'Le Ministère de l\'Intérieur se réserve le droit de demander la suppression d\'un lien qu\'il estime non-conforme à l\'objet du site, à ses missions ou plus généralement à l\'éthique d\'un portail public. L’autorisation de mise en place d’un lien est valable pour tout support, à l’exception de ceux diffusant des informations à caractère polémique, pornographique, xénophobe ou pouvant, dans une plus large mesure, porter atteinte à la sensibilité du plus grand nombre.',
@@ -155,7 +155,7 @@ export const mentionsLegalesJson = [
         subTextContent: 'Vous bénéficiez d\'un droit d\'accès à vos données, de rectification ou d’effacement de celles-ci, d’un droit à la limitation de leur traitement, de portabilité et de retirer votre consentement à tout moment.',
       },
       {
-        subTextContent: 'Pour ce faire, vous pouvez vous adresser à la Délégation à la sécurité routière, Place Beauvau - 75800 PARIS CEDEX 08 ou par courriel : <a href="#" data-toggle="modal" data-target="#modal_contact_droit_acc">candilib@interieur.gouv.fr</a>, en joignant un titre d’identité afin de pouvoir traiter votre demande.',
+        subTextContent: 'Pour ce faire, vous pouvez vous adresser à la Délégation à la sécurité routière, Place Beauvau - 75800 PARIS CEDEX 08 ou par courriel : <a href="mailto:candilib@interieur.gouv.fr" data-toggle="modal" data-target="#modal_contact_droit_acc">candilib@interieur.gouv.fr</a>, en joignant un titre d’identité afin de pouvoir traiter votre demande.',
       },
       {
         subTextContent: 'Vous avez la possibilité d’introduire une réclamation auprès d’une autorité de contrôle.',
