@@ -9,14 +9,8 @@
         </div> -->
         <h2>CHOIX D'UNE DATE</h2>
         <hr>
-        <!-- <date-choice-centent v-for="(center, index) in centers" :key="index" :center="center" /> -->
-        <p>
-          <!-- {{ dateStart }} -->
-        </p>
-        <p>
-          <!-- {{ dateEnd }} -->
-        </p>
-        <DateChoiceContent />
+        <!-- <date-choice-content v-for="(month, index) in fetchedDates" :key="index" /> -->
+        <DateChoiceContent v-for="(month, index) in fetchedDates" :key="index" :monthBlock="month"/>
     </div>
 </template>
 
@@ -33,12 +27,15 @@ export default {
   data () {
     return {
       centers: [],
+      fetchedDates: [],
     }
   },
   beforeMount () {
-      if (this.$store.state.centers.selectedCenter !== undefined) {
-        this.$store.dispatch(FETCH_DATES_REQUEST, this.$store.state.centers.selectedCenter)
-      }
+    // if (this.$store.state.centers.selectedCenter !== undefined) {
+    // this.$store.dispatch(FETCH_DATES_REQUEST, this.$store.state.centers.selectedCenter)
+    this.$store.dispatch(FETCH_DATES_REQUEST, {})
+    this.fetchedDates = this.$store.state.dateChoice.fetchedDates
+    console.log('TCL: beforeMount -> fetchedDates', this.fetchedDates, this.$store.state.dateChoice.fetchedDates)
   },
 }
 </script>

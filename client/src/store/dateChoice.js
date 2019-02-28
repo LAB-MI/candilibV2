@@ -7,7 +7,6 @@ export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
 export const FETCH_DATES_SUCCESS = 'FETCH_DATES_SUCCESS'
 export const FETCH_DATES_FAILURE = 'FETCH_DATES_FAILURE'
 export const SELECT_DAY = 'SELECT_DAY'
-// export const SET_START_AND_END = 'SET_START_AND_END'
 
 export default {
   state: {
@@ -41,7 +40,8 @@ export default {
         // params => centerId , start , end
         // startDate => dateNow
         // endDate => dateNow + 3 month
-        const result = arrayTestOfDates({ selectedCenter, start, end })
+        console.log({ selectedCenter, start, end })
+        const result = arrayTestOfDates
         commit(FETCH_DATES_SUCCESS, result)
       } catch (error) {
         commit(FETCH_DATES_FAILURE, error.message)

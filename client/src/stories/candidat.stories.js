@@ -18,7 +18,7 @@ import CenterSelection from '../views/candidat/components/center-selection/Cente
 import store from '../store'
 import DateChoice from '../views/candidat/components/date-choice/DateChoice.vue'
 
-// import store from '../store'
+import store from '../store'
 
 storiesOf('Candidat', module)
   .add('Pré-inscription', () => ({
@@ -174,6 +174,6 @@ storiesOf('Candidat', module)
   }))
   .add('DateChoice', () => ({
     components: { DateChoice },
-    // store: store,
+    store: store,
     template: '<date-choice />',
   }))
