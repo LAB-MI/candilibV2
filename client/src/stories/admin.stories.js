@@ -1,7 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue'
 import { action } from '@storybook/addon-actions'
-import { DateTime } from 'luxon'
 
 import Vuex from 'vuex'
 import Router from 'vue-router'
@@ -15,7 +14,6 @@ import AdminCandidatsList from '../views/admin/components/CandidatsList.vue'
 import AdminWhitelist from '../views/admin/components/Whitelist.vue'
 import AurigeValidation from '../views/admin/components/AurigeValidation.vue'
 import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStatusFilter.vue'
-import ImportPlacesValidation from '../views/admin/components/ImportPlacesValidation.vue'
 
 import Vuex from 'vuex'
 import store from '../store'
@@ -126,28 +124,4 @@ storiesOf('Admin Components', module)
     components: { AgGridAurigeStatusFilter },
     template: '<ag-grid-aurige-status-filter />',
     methods: { action: action('clicked') },
-  }))
-  .add('ImportPlacesValidation', () => ({
-    components: { ImportPlacesValidation },
-    store: new Vuex.Store({
-      state: {
-        importPlaces: {
-          places: [
-            {
-              status: 'error',
-              centre: 'Centre test',
-              date: DateTime.local().toISO(),
-              message: 'test 1',
-            },
-            {
-              status: 'success',
-              centre: 'Centre test',
-              date: DateTime.local().plus({ minutes: 30 }).toISO(),
-              message: 'test 1',
-            },
-          ],
-        },
-      },
-    }),
-    template: '<import-places-validation/>',
   }))
