@@ -29,3 +29,11 @@ export const filterDateParams = {
   },
   browserDatePicker: true,
 }
+
+export const StatusRenderer = (param) => {
+  const StatusIcon = {
+    'success': 'done',
+    'error': 'clear',
+  }
+  return '<i class="material-icons">' + StatusIcon[param.value] + '</i>'
+}
