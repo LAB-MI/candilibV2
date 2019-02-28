@@ -1,6 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue'
 import { action } from '@storybook/addon-actions'
+import { DateTime } from 'luxon'
 
 import Vuex from 'vuex'
 import Router from 'vue-router'
@@ -12,7 +13,12 @@ import AdminFooter from '../views/admin/components/AdminFooter.vue'
 import AdminAurige from '../views/admin/components/Aurige.vue'
 import AdminCandidatsList from '../views/admin/components/CandidatsList.vue'
 import AdminWhitelist from '../views/admin/components/Whitelist.vue'
+import AurigeValidation from '../views/admin/components/AurigeValidation.vue'
 import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStatusFilter.vue'
+import ImportPlacesValidation from '../views/admin/components/ImportPlacesValidation.vue'
+
+import Vuex from 'vuex'
+import store from '../store'
 
 const routes = [
   {
@@ -104,8 +110,44 @@ storiesOf('Admin Components', module)
     }),
     template: '<admin-whitelist />',
   }))
+  .add('AurigeValidation', () => ({
+    components: { AurigeValidation },
+    store: new Vuex.Store({
+      state: {
+        aurige: {
+          candidats: [{ status: 'error', neph: '01234567890', nom: 'test' }, { status: 'success', neph: '01234567891', nom: 'test1' }],
+        },
+      },
+    }),
+    template: '<aurige-validation style="background-color: #3d4353;"/>',
+  })
+  )
   .add('AgGridAurigeStatusFilter', () => ({
     components: { AgGridAurigeStatusFilter },
     template: '<ag-grid-aurige-status-filter />',
     methods: { action: action('clicked') },
+  }))
+  .add('ImportPlacesValidation', () => ({
+    components: { ImportPlacesValidation },
+    store: new Vuex.Store({
+      state: {
+        places: {
+          import: [
+            {
+              status: 'error',
+              centre: 'Centre test',
+              date: DateTime.local().toISO(),
+              message: 'test 1',
+            },
+            {
+              status: 'success',
+              centre: 'Centre test',
+              date: DateTime.local().plus({ minutes: 30 }).toISO(),
+              message: 'test 1',
+            },
+          ],
+        },
+      },
+    }),
+    template: '<import-places-validation/>',
   }))
