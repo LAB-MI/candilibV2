@@ -1,72 +1,36 @@
-import moment from 'moment'
+import { DateTime } from 'luxon'
 import { createPlace } from '../place'
 import Place from '../place/place.model'
 import { findCentreByName } from '../centre'
 
 export const places = [
   {
-    date: (() =>
-      moment()
-        .date(28)
-        .hour(9)
-        .minute(0)
-        .second(0)
-        .toDate())(),
+    date: (() => DateTime.fromObject({ day: 28, hour: 9 }).toISO())(),
     centre: 'Centre 1',
     inspecteur: 'Inspecteur 1',
   },
   {
-    date: (() =>
-      moment()
-        .date(29)
-        .hour(10)
-        .minute(0)
-        .second(0)
-        .toDate())(),
+    date: (() => DateTime.fromObject({ day: 29, hour: 10 }).toISO())(),
     centre: 'Centre 2',
     inspecteur: 'Inspecteur 2',
   },
   {
-    date: (() =>
-      moment()
-        .date(28)
-        .hour(11)
-        .minute(0)
-        .second(0)
-        .toDate())(),
+    date: (() => DateTime.fromObject({ day: 28, hour: 11 }).toISO())(),
     centre: 'Centre 2',
     inspecteur: 'Inspecteur 3',
   },
   {
-    date: (() =>
-      moment()
-        .date(28)
-        .hour(9)
-        .minute(0)
-        .second(0)
-        .toDate())(),
+    date: (() => DateTime.fromObject({ day: 28, hour: 9 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 4',
   },
   {
-    date: (() =>
-      moment()
-        .date(30)
-        .hour(10)
-        .minute(0)
-        .second(0)
-        .toDate())(),
+    date: (() => DateTime.fromObject({ day: 30, hour: 10 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 5',
   },
   {
-    date: (() =>
-      moment()
-        .date(30)
-        .hour(11)
-        .minute(0)
-        .second(0)
-        .toDate())(),
+    date: (() => DateTime.fromObject({ day: 30, hour: 11 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 6',
   },

@@ -142,7 +142,6 @@ describe('Place', () => {
     let createdCandidats
     let createdPlaces
     beforeAll(async () => {
-      // await connect()
       createdCandidats = await createCandidats()
       await createCentres()
       createdPlaces = await createPlaces()
@@ -153,7 +152,6 @@ describe('Place', () => {
       await removePlaces()
       await removeCentres()
       await deleteCandidats()
-      // await disconnect()
     })
 
     it('Should find place with candidat Id ', async () => {
@@ -189,9 +187,7 @@ describe('Place', () => {
     it('Should find 1 places for centre "Centre 2"', async () => {
       const { nom } = centres[1]
       const centreSelected = createdCentres.find(centre => centre.nom === nom)
-      console.log(centreSelected)
       const listPlaces = await findAvailablePlacesByCentre(centreSelected)
-      console.log(listPlaces)
       expect(listPlaces).toBeDefined()
       expect(listPlaces).not.toBeNull()
       expect(listPlaces).toHaveLength(nbPlacesDispoByCentres({ nom }))
