@@ -13,6 +13,7 @@ const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
   magicLink: `${apiPrefix}/auth/candidat/magic-link`,
   presignup: `${apiPrefix}/candidat/preinscription`,
   myProfile: `${apiPrefix}/candidat/me`,
+  centres: `${apiPrefix}/candidat/centres`,
 }
 
 const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {

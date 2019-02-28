@@ -1,4 +1,5 @@
 import arrayTestOfCenters from '@/views/candidat/components/choice-center/arrayTestOfCenters'
+// import api from '@/api'
 import { SHOW_ERROR } from './message'
 
 export const FETCH_CENTERS_REQUEST = 'FETCH_CENTERS_REQUEST'
@@ -31,8 +32,7 @@ export default {
     async [FETCH_CENTERS_REQUEST] ({ commit, dispatch }) {
       commit(FETCH_CENTERS_REQUEST)
       try {
-        // function for Fetch Centers with async Api are comming soon
-        // for this moment we use Array variable named arrayTestOfCenters to fill content
+        // const result = await api.candidat.getCentres()
         const result = arrayTestOfCenters
         commit(FETCH_CENTERS_SUCCESS, result)
       } catch (error) {

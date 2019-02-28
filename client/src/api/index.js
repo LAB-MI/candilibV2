@@ -103,6 +103,13 @@ export default {
       return json
     },
 
+    async getCentres () {
+      const json = await apiClient.get(apiPaths.candidat.centres, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
+
     async validateEmail (email, hash) {
       const json = await apiClient.put(apiPaths.candidat.myProfile, {
         headers: getHeadersForJson(),
