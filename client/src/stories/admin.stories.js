@@ -39,6 +39,7 @@ storiesOf('Admin Components', module)
   }))
   .add('AdminCalendar', () => ({
     components: { AdminCalendar },
+    store,
     template: '<admin-calendar />',
   }))
   .add('AdminHeader', () => ({
