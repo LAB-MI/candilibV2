@@ -131,8 +131,8 @@ storiesOf('Admin Components', module)
     components: { ImportPlacesValidation },
     store: new Vuex.Store({
       state: {
-        places: {
-          import: [
+        importPlaces: {
+          places: [
             {
               status: 'error',
               centre: 'Centre test',

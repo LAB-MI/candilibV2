@@ -50,7 +50,7 @@ export default {
 
   computed: {
     rowData () {
-      return this.$store.state.places.import || []
+      return this.$store.state.importPlaces.places || []
     },
   },
 
