@@ -9,8 +9,8 @@ const SET_LAST_FILE = 'SET_LAST_FILE'
 
 export default {
   state: {
-    isCandidatsUpadating: false,
-    candidats: [],
+    isPlacessUpadating: false,
+    places: [],
     lastFile: undefined,
   },
   mutations: {
@@ -18,14 +18,14 @@ export default {
       state.lastFile = file
     },
     [UPLOAD_PLACES_REQUEST] (state) {
-      state.isCandidatsUpadating = true
+      state.isPlacessUpadating = true
     },
-    [UPLOAD_PLACES_SUCCESS] (state, candidats) {
-      state.isCandidatsUpadating = false
-      state.candidats = candidats
+    [UPLOAD_PLACES_SUCCESS] (state, places) {
+      state.isPlacessUpadating = false
+      state.places = places
     },
     [UPLOAD_PLACES_FAILURE] (state) {
-      state.isCandidatsUpadating = false
+      state.isPlacessUpadating = false
     },
 
   },
@@ -36,11 +36,11 @@ export default {
       data.append('file', file)
 
       try {
-        const result = await api.admin.uploadCandidatsJson(data)
+        const result = await api.admin.uploadPlacesCSV(data)
         if (result.success === false) {
           throw new Error(result.message)
         }
-        commit(UPLOAD_PLACES_SUCCESS, result.candidats)
+        commit(UPLOAD_PLACES_SUCCESS, result.places)
         commit(SET_LAST_FILE, undefined)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {

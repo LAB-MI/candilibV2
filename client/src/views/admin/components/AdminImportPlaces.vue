@@ -10,6 +10,7 @@
       @select-file="fileSelected"
       :file="file"
       @upload-file="uploadPlaces"
+      accept=".csv"
     />
 
   </div>
@@ -17,9 +18,7 @@
 
 <script>
 import UploadFile from '@/components/UploadFile.vue'
-import api from '@/api'
-
-import { SHOW_INFO, SHOW_SUCCESS, SHOW_ERROR } from '@/store'
+import { SHOW_INFO, UPLOAD_PLACES_REQUEST } from '@/store'
 
 export default {
   components: {
@@ -46,19 +45,13 @@ export default {
       this.$store.dispatch(SHOW_INFO, message, 1000)
     },
 
-    async uploadPlaces (data) {
-      this.lastFile = this.file
-      try {
+    async uploadPlaces () {
+      await this.$store.dispatch(UPLOAD_PLACES_REQUEST, this.file)
+      const { importPlaces } = this.$store.state
+      if (importPlaces.lastFile === undefined) {
         this.file = null
-        const result = await api.admin.uploadPlacesCSV(data)
-        if (result.success === false) {
-          throw new Error(result.message)
-        }
-        this.$store.dispatch(SHOW_SUCCESS, result.message)
-        this.lastFile = null
-      } catch (error) {
-        this.file = this.lastFile
-        this.$store.dispatch(SHOW_ERROR, error.message)
+      } else {
+        this.file = importPlaces.lastFile
       }
     },
   },
