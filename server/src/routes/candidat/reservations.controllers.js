@@ -1,4 +1,4 @@
-import { logger } from '../../util'
+import { appLogger } from '../../util'
 import { bookPlace, getReservationByCandidat } from './places.business'
 import { sendMailConvocation } from '../business'
 import {
@@ -9,7 +9,7 @@ import {
 export const getReservations = async (req, res) => {
   const idCandidat = req.userId
 
-  logger.debug(
+  appLogger.debug(
     JSON.stringify({
       section: 'candidat-getReservations',
       argument: { idCandidat },
@@ -27,7 +27,7 @@ export const getReservations = async (req, res) => {
     const bookedPlace = await getReservationByCandidat(idCandidat)
     return res.send(bookedPlace)
   } catch (error) {
-    logger.error(error)
+    appLogger.error(error)
     res.status(500).json({
       success: false,
       message: error.message,
@@ -43,11 +43,15 @@ export const setReservations = async (req, res) => {
   const isAccompanied = req.param('isAccompanied')
   const hasDualControlCar = req.param('hasDualControlCar')
 
-  logger.info(
-    JSON.stringify({
-      section: 'candidat-setReservations',
-      argument: { idCandidat, center, date, isAccompanied, hasDualControlCar },
-    })
+  appLogger.info(
+    'candidat-setReservations ' +
+      JSON.stringify({
+        idCandidat,
+        center,
+        date,
+        isAccompanied,
+        hasDualControlCar,
+      })
   )
 
   if (!center || !date || !isAccompanied || !hasDualControlCar) {
@@ -67,7 +71,6 @@ export const setReservations = async (req, res) => {
 
   try {
     // const bookedPlace = await findPlaceBookedByCandidat(idCandidat)
-
     const reservation = await bookPlace(idCandidat, center, date)
     if (!reservation) {
       return res.status(200).json({
@@ -107,7 +110,7 @@ export const setReservations = async (req, res) => {
       message,
     })
   } catch (error) {
-    logger.error(error)
+    appLogger.error(error)
     res.status(500).json({
       success: false,
       message: error.message,

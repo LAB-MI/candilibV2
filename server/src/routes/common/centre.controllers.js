@@ -1,6 +1,6 @@
 import { findCentresWithNbPlaces } from './centre.business'
 import { findCentreByNameAndDepartement } from '../../models/centre'
-import { logger } from '../../util'
+import { appLogger } from '../../util'
 
 export const NOT_CODE_DEP_MSG =
   'Le code de département est manquant, Vieullez choisir un code département'
@@ -11,7 +11,7 @@ export async function getCentres (req, res) {
   const endDate = req.param('end')
   const nom = req.param('nom')
 
-  logger.debug(
+  appLogger.debug(
     JSON.stringify({
       section: 'candidat-getCentres',
       args: { departement, nom, beginDate, endDate },
@@ -25,7 +25,7 @@ export async function getCentres (req, res) {
         message:
           'Le code de département est manquant, Vieullez choisir un code département',
       }
-      logger.error(JSON.stringify(error))
+      appLogger.error(error.message)
       return res.status(400).json({
         success: false,
         message: error.message,
@@ -44,7 +44,7 @@ export async function getCentres (req, res) {
       res.status(200).json(centre)
     }
   } catch (error) {
-    logger.error(error)
+    appLogger.error(error)
     res.status(500).json({
       success: false,
       message: error.message,

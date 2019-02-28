@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 
-import { logger } from '../../util'
+import { appLogger } from '../../util'
 import {
   getDatesFromPlacesByCentre,
   getDatesFromPlacesByCentreId,
@@ -26,7 +26,7 @@ export async function getPlaces (req, res) {
       message:
         '(begin , end) et date ne peuvent avoir des valeurs en même temps',
     }
-    logger.error(error)
+    appLogger.error(error)
     res.status(409).json({
       success: false,
       message: error.message,
@@ -41,7 +41,7 @@ export async function getPlaces (req, res) {
     : undefined
   const endDate = !endDateTime.invalid ? endDateTime.toJSDate() : undefined
 
-  logger.debug(
+  appLogger.debug(
     JSON.stringify({
       section: 'candidat-getPlaces',
       argument: { departement, _id, centre, beginDate, endDate, date },
@@ -73,7 +73,7 @@ export async function getPlaces (req, res) {
     }
     res.status(200).json(dates)
   } catch (error) {
-    logger.error(error)
+    appLogger.error(error)
     res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
       success: false,
       message: error.message,

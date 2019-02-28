@@ -8,19 +8,15 @@ const badCredentialsBody = {
 
 export const getAdminToken = async (req, res) => {
   const { email, password } = req.body
-  appLogger.info({
-    section: 'admin-login',
-    subject: email,
-    action: 'TRIES_TO_LOG_IN',
-  })
 
   try {
     const user = await findUserByEmail(email)
     if (!user) {
       appLogger.info({
         section: 'admin-login',
-        action: 'FAILED_TO_FIND',
-        complement: `${email} in DB`,
+        subject: email,
+        action: 'FAILED_TO_FIND_USER_BY_EMAIL',
+        complement: `${email} not in DB`,
       })
       return res.status(401).send(badCredentialsBody)
     }
@@ -35,7 +31,7 @@ export const getAdminToken = async (req, res) => {
       appLogger.info({
         section: 'admin-login',
         subject: email,
-        action: 'GAVE_WRONG_PASSWORD',
+        action: 'USER_GAVE_WRONG_PASSWORD',
       })
       return res.status(401).send(badCredentialsBody)
     }
@@ -45,7 +41,7 @@ export const getAdminToken = async (req, res) => {
       section: 'admin-login',
       subject: email,
       action: 'LOGGED_IN',
-      complement: 'ADMIN',
+      complement: user.status,
     })
 
     return res.status(201).send({ success: true, token })
@@ -57,7 +53,7 @@ export const getAdminToken = async (req, res) => {
       complement: error,
     })
     return res.status(500).send({
-      message: 'Erreur serveur',
+      message: `Erreur serveur : ${error.message}`,
       success: false,
     })
   }

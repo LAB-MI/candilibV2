@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 
-import logger from '../../util/logger'
+import { appLogger } from '../../util'
 import { getConvocationTemplate } from './mail/convocation-template'
 import { getUrlFAQ, getUrlRESA } from './mail/mail.constants'
 import { getHtmlBody } from './mail/body-mail-template'
@@ -21,7 +21,7 @@ export const getConvocationBody = place => {
     !urlFAQ ||
     !urlRESA
   ) {
-    logger.error(
+    appLogger.error(
       JSON.stringify({
         date,
         nom,
