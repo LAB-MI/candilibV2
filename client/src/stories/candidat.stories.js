@@ -16,6 +16,9 @@ import CandidatFooter from '../views/candidat/components/CandidatFooter.vue'
 import CenterSelection from '../views/candidat/components/center-selection/CenterSelection.vue'
 
 import store from '../store'
+import DateChoice from '../views/candidat/components/date-choice/DateChoice.vue'
+
+// import store from '../store'
 
 storiesOf('Candidat', module)
   .add('Pré-inscription', () => ({
@@ -168,4 +171,9 @@ storiesOf('Candidat', module)
         links: [],
       }
     },
+  }))
+  .add('DateChoice', () => ({
+    components: { DateChoice },
+    // store: store,
+    template: '<date-choice />',
   }))
