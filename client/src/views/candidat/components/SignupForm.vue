@@ -118,7 +118,7 @@
         </v-btn>
       </div>
       <div class="form-input  form-input-group">
-        <v-btn flat color="#fff" tag="a" :to="{ name: 'legal' }" tabindex="9">
+        <v-btn flat color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
           Mentions légales
         </v-btn>
         <v-dialog
