@@ -9,7 +9,6 @@
         </div> -->
         <h2>CHOIX D'UNE DATE</h2>
         <hr>
-        <!-- <date-choice-content v-for="(month, index) in fetchedDates" :key="index" /> -->
         <DateChoiceContent v-for="(month, index) in fetchedDates" :key="index" :monthBlock="month"/>
     </div>
 </template>

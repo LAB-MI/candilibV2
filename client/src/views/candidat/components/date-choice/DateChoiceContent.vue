@@ -1,28 +1,22 @@
 <template>
-    <div>
-      <v-btn @click="activeDayBlock">
+  <div class="text-xs">
+    <v-btn @click="activeDayBlock">
         {{ monthBlock.month }}
-      </v-btn>
-      <div v-if="statusDayBlock">
-        <DateChoiceSubContent v-for="(item, index) in monthBlock.daysAndHoursDispo" :key="index" :item="item">
-          <!-- <a @click="activeHoursBlock">
-          {{ item.day }}
-          </a> -->
-          <!-- <div v-if="statusHoursBlock"> -->
-            <!-- v-for="(hourDispo, idx) in item.hours" :key="idx" {{ hourDispo }} -->
-            <!-- <DateChoiceSubContent v-if="statusDayBlock" ></DateChoiceSubContent> -->
-          <!-- </div> -->
+    </v-btn>
+    <v-bottom-sheet v-model="statusDayBlock">
+      <v-card>
+        <DateChoiceSubContent :items="monthBlock.daysAndHoursDispo">
         </DateChoiceSubContent>
-      </div>
-      <hr>
-    </div> 
+      </v-card>
+    </v-bottom-sheet>
+  </div>
 </template>
 
 <script>
 import DateChoiceSubContent from './DateChoiceSubContent'
 
 export default {
-    components: {
+  components: {
     DateChoiceSubContent,
   },
   props: {
@@ -31,18 +25,13 @@ export default {
   data () {
     return {
       statusDayBlock: false,
-      // statusHoursBlock: false,
     }
   },
   methods: {
-    activeDayBlock() {
+    activeDayBlock () {
       this.statusDayBlock = !this.statusDayBlock
       console.log('statusDayBlock', this.statusDayBlock)
     },
-    // activeHoursBlock() {
-    //   this.statusHoursBlock = !this.statusHoursBlock
-    //   console.log('statusHoursBlock', this.statusHoursBlock)
-    // },
   },
 }
 </script>
