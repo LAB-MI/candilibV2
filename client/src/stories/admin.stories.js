@@ -49,6 +49,17 @@ storiesOf('Admin Components', module)
   .add('AdminAurige', () => ({
     components: { AdminAurige },
     template: '<admin-aurige />',
+    store: new Vuex.Store({
+      state: {
+        aurige: {
+          candidats: [{
+            neph: '0000000000',
+            nom: 'Dupont',
+            status: 'success',
+          }],
+        },
+      },
+    }),
   }))
   .add('AdminCandidatsList', () => ({
     components: { AdminCandidatsList },
@@ -78,7 +89,14 @@ storiesOf('Admin Components', module)
     components: { AdminWhitelist },
     store: new Vuex.Store({
       state: {
-        whitelist: [],
+        whitelist: {
+          list: [
+            {
+              _id: 1,
+              email: 'jean@dupont.fr',
+            },
+          ],
+        },
       },
       actions: {
         FETCH_WHITELIST_REQUEST: () => {},
