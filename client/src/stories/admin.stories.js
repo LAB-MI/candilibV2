@@ -2,50 +2,107 @@
 import { storiesOf } from '@storybook/vue'
 import { action } from '@storybook/addon-actions'
 
+import Vuex from 'vuex'
+import Router from 'vue-router'
+
 import AdminLogin from '../views/admin/components/Login.vue'
 import AdminCalendar from '../views/admin/components/AdminCalendar.vue'
 import AdminHeader from '../views/admin/components/AdminHeader.vue'
 import AdminFooter from '../views/admin/components/AdminFooter.vue'
 import AdminAurige from '../views/admin/components/Aurige.vue'
-import AdminCandidatList from '../views/admin/components/CandidatsList.vue'
-import AdminWhiteList from '../views/admin/components/Whitelist.vue'
+import AdminCandidatsList from '../views/admin/components/CandidatsList.vue'
+import AdminWhitelist from '../views/admin/components/Whitelist.vue'
 import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStatusFilter.vue'
+
+const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: AdminHeader,
+  },
+]
+
+const router = new Router({
+  mode: 'history',
+  base: '/candilib',
+  routes,
+})
 
 storiesOf('Admin Components', module)
   .add('AdminLogin', () => ({
     components: { AdminLogin },
-    template: '<Login />',
-    methods: { action: action('clicked') },
+    template: '<admin-login />',
   }))
   .add('AdminCalendar', () => ({
     components: { AdminCalendar },
     template: '<admin-calendar />',
-    methods: { action: action('clicked') },
   }))
   .add('AdminHeader', () => ({
     components: { AdminHeader },
     template: '<admin-header />',
-    methods: { action: action('clicked') },
+    router,
   }))
   .add('AdminFooter', () => ({
     components: { AdminFooter },
     template: '<admin-footer />',
-    methods: { action: action('clicked') },
   }))
   .add('AdminAurige', () => ({
     components: { AdminAurige },
     template: '<admin-aurige />',
-    methods: { action: action('clicked') },
+    store: new Vuex.Store({
+      state: {
+        aurige: {
+          candidats: [{
+            neph: '0000000000',
+            nom: 'Dupont',
+            status: 'success',
+          }],
+        },
+      },
+    }),
   }))
-  .add('AdminCandidatList', () => ({
-    components: { AdminCandidatList },
-    template: '<candidat-list />',
-    methods: { action: action('clicked') },
+  .add('AdminCandidatsList', () => ({
+    components: { AdminCandidatsList },
+    template: '<admin-candidats-list />',
+    store: new Vuex.Store({
+      state: {
+        candidats: {
+          list: [{
+            place: {
+              inspecteur: 'Columbo',
+              centre: 'Bobigny',
+              date: new Date().toISOString(),
+            },
+            codeNeph: '0000000000',
+            nomNaissance: 'Dupont',
+            prenom: 'Jean',
+            email: 'fifi@loulou.com',
+          }],
+        },
+      },
+      actions: {
+        FETCH_CANDIDATS_REQUEST: () => {},
+      },
+    }),
   }))
-  .add('AdminWhiteList', () => ({
-    components: { AdminWhiteList },
-    template: '<white-list />',
-    methods: { action: action('clicked') },
+  .add('AdminWhitelist', () => ({
+    components: { AdminWhitelist },
+    store: new Vuex.Store({
+      state: {
+        whitelist: {
+          list: [
+            {
+              _id: 1,
+              email: 'jean@dupont.fr',
+            },
+          ],
+        },
+      },
+      actions: {
+        FETCH_WHITELIST_REQUEST: () => {},
+      },
+    }),
+    template: '<admin-whitelist />',
   }))
   .add('AgGridAurigeStatusFilter', () => ({
     components: { AgGridAurigeStatusFilter },

@@ -17,6 +17,7 @@
     "start": "npm run serve",
     "storybook:build": "vue-cli-service storybook:build -c config/storybook",
     "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
+    "sb": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit",
     "test:watch": "npm run -s test:unit -- --watch"
@@ -40,9 +41,11 @@
   "devDependencies": {
     "@ascendancyy/vue-cli-plugin-stylelint": "^1.1.2",
     "@storybook/addon-actions": "^4.1.13",
+    "@storybook/addon-console": "^1.1.0",
     "@storybook/addon-knobs": "^4.1.13",
     "@storybook/addon-links": "^4.1.13",
     "@storybook/addon-notes": "^4.1.13",
+    "@storybook/addon-viewport": "^4.1.13",
     "@vue/cli-plugin-babel": "^3.4.1",
     "@vue/cli-plugin-e2e-cypress": "^3.4.1",
     "@vue/cli-plugin-eslint": "^3.4.1",

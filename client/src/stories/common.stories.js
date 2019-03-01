@@ -1,61 +1,75 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue'
 import { action } from '@storybook/addon-actions'
-// import { linkTo } from '@storybook/addon-links'
+
+import Vuex from 'vuex'
 
 import AppVersion from '../components/AppVersion.vue'
-import PureAppSnackbar from '../components/PureAppSnackbar.vue'
+import AppSnackbar from '../components/AppSnackbar.vue'
+import CandidatPresignup from '../views/candidat/components/SignupForm.vue'
+
+storiesOf('CandidatPresignup', module)
+  .add('Pré-inscription', () => ({
+    components: { CandidatPresignup },
+    template: `<div :style="{display: 'flex', background: '#118098'}"><candidat-presignup /></div>`,
+    store: new Vuex.Store({
+      state: {
+        candidat: {
+          isSendingPresignup: false,
+        },
+      },
+    }),
+  }))
 
 storiesOf('AppVersion', module)
   .add('with text', () => ({
     components: { AppVersion },
     template: `<app-version />`,
-    methods: { action: action('clicked') },
   }))
 
-storiesOf('PureAppSnackbar', module)
+storiesOf('AppSnackbar', module)
   .add('Error', () => ({
-    components: { PureAppSnackbar },
-    template: `<pure-app-snackbar @click="action" :message="message">Hello PureAppSnackbar</pure-app-snackbar>`,
+    components: { AppSnackbar },
+    template: `<app-snackbar @click="action">Hello AppSnackbar</app-snackbar>`,
     methods: { action: action('clicked') },
-    data () {
-      return {
+    store: new Vuex.Store({
+      state: {
         message: {
           content: 'Erreur de la snackbar',
           color: 'error',
           timeout: 0,
           show: true,
         },
-      }
-    },
+      },
+    }),
   }))
   .add('Info', () => ({
-    components: { PureAppSnackbar },
-    template: `<pure-app-snackbar @click="action" :message="message">Hello PureAppSnackbar</pure-app-snackbar>`,
-    methods: { action: action('clicked') },
-    data () {
-      return {
+    components: { AppSnackbar },
+    template: `<app-snackbar @click="action">Hello AppSnackbar</app-snackbar>`,
+    store: new Vuex.Store({
+      state: {
         message: {
           content: 'Info de la snackbar',
           color: 'info',
           timeout: 0,
           show: true,
         },
-      }
-    },
+      },
+    }),
+    methods: { action: action('clicked') },
   }))
   .add('Success', () => ({
-    components: { PureAppSnackbar },
-    template: `<pure-app-snackbar @click="action" :message="message">Hello PureAppSnackbar</pure-app-snackbar>`,
-    methods: { action: action('clicked') },
-    data () {
-      return {
+    components: { AppSnackbar },
+    template: `<app-snackbar @click="action">Hello AppSnackbar</app-snackbar>`,
+    store: new Vuex.Store({
+      state: {
         message: {
           content: 'Message de la snackbar',
           color: 'success',
           timeout: 0,
           show: true,
         },
-      }
-    },
+      },
+    }),
+    methods: { action: action('clicked') },
   }))
