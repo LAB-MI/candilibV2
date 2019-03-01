@@ -5,7 +5,7 @@
     <p class="date-info">Modifié le 21 décembre 2018</p>
   </div>
     <div v-for="(item, index) in ArrayContent" :key="index">
-      <mentionsLegalesContent
+      <mentions-legales-content
         :icon="item.icon"
         :mainTitle="item.mainTitle"
         :textContent="item.textContent"
