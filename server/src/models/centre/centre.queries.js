@@ -1,12 +1,22 @@
 import Centre from './centre.model'
 
+const caseInsensitive = nom => ({
+  $regex: new RegExp('^' + nom.toLowerCase(), 'i'),
+})
+
 export const findAllCentres = async () => {
-  const centres = await Centre.findOne({})
+  const centres = await Centre.find({})
   return centres
 }
 
+/**
+ * @deprecated nom n'est pas unique. A remplacer par findCentreByNameAndDepartement
+ * @param {*} nom
+ */
 export const findCentreByName = async nom => {
-  const centre = await Centre.findOne({ nom })
+  const centre = await Centre.findOne({
+    nom: caseInsensitive(nom),
+  })
   return centre
 }
 
@@ -17,7 +27,7 @@ export const createCentre = async (nom, label, adresse, departement) => {
 }
 
 export const deleteCentreByName = async nom => {
-  const centre = await Centre.findOne({ nom })
+  const centre = await Centre.findOne({ nom: caseInsensitive(nom) })
   if (!centre) {
     throw new Error('No centre found')
   }
@@ -37,7 +47,20 @@ export const updateCentreLabel = async (centre, name, label, adresse) => {
   if (!centre) {
     throw new Error('centre is undefined')
   }
-  await centre.update({ name, label, adresse })
+  await centre.update({ nom: name, label, adresse })
   const updatedCentre = await Centre.findById(centre._id)
   return updatedCentre
+}
+
+export const findCentresByDepartement = async departement => {
+  const centres = await Centre.find({ departement })
+  return centres
+}
+
+export const findCentreByNameAndDepartement = async (nom, departement) => {
+  const centre = await Centre.findOne({
+    nom: caseInsensitive(nom),
+    departement,
+  })
+  return centre
 }

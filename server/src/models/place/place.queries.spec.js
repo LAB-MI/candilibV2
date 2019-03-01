@@ -7,6 +7,8 @@ import {
   findPlaceById,
   findAllPlaces,
   findPlaceByCandidatId,
+  countAvailablePlacesByCentre,
+  findAvailablePlacesByCentre,
 } from '.'
 
 import { connect, disconnect } from '../../mongo-connection'
@@ -15,9 +17,16 @@ import {
   createCandidats,
   createPlaces,
   makeResas,
-  deletePlaces,
+  removePlaces,
   deleteCandidats,
-} from '../__tests__/candidats'
+  createCentres,
+  removeCentres,
+  centres,
+  candidats,
+  nbPlacesDispoByCentres,
+} from '../__tests__'
+
+import { deleteCentre, createCentre } from '../centre'
 
 const date = moment()
   .date(28)
@@ -29,7 +38,12 @@ const date2 = moment()
   .hour(9)
   .minute(30)
   .second(0)
-const centre = 'Unexisting centre'
+const centre = {
+  nom: 'Unexisting centre',
+  departement: '93',
+  adresse: 'Unexisting centre 93000',
+  label: 'Unexisting centre label',
+}
 const inspecteur = 'Bob Léponge'
 
 describe('Place', () => {
@@ -37,16 +51,22 @@ describe('Place', () => {
   const leanPlace = { date, centre, inspecteur }
   let place2
   const leanPlace2 = { date2, centre, inspecteur }
-
+  let createdCentre
   beforeAll(async () => {
     await connect()
+    const { nom, label, adresse, departement } = centre
+    createdCentre = await createCentre(nom, label, adresse, departement)
+    leanPlace.centre = createdCentre._id
+    leanPlace2.centre = createdCentre._id
   })
 
   afterAll(async () => {
+    await deleteCentre(createdCentre)
     await disconnect()
   })
 
   describe('Saving Place', () => {
+    beforeAll(async () => {})
     afterEach(async () => {
       await Promise.all([
         deletePlace(place).catch(() => true),
@@ -119,28 +139,68 @@ describe('Place', () => {
   })
 
   describe('Findind Place by Candidat', () => {
-    let candidats
-    let places
+    let createdCandidats
+    let createdPlaces
     beforeAll(async () => {
-      await connect()
-      candidats = await createCandidats()
-      places = await createPlaces()
+      createdCandidats = await createCandidats()
+      await createCentres()
+      createdPlaces = await createPlaces()
       await makeResas()
     })
 
     afterAll(async () => {
-      await deletePlaces()
+      await removePlaces()
+      await removeCentres()
       await deleteCandidats()
-      await disconnect()
     })
 
     it('Should find place with candidat Id ', async () => {
-      const foundPlaces = await findPlaceByCandidatId(candidats[0]._id)
+      const selectedCandidat = createdCandidats.find(
+        candidat => candidat.codeNeph === candidats[0].codeNeph
+      )
+      const foundPlaces = await findPlaceByCandidatId(selectedCandidat._id)
       expect(foundPlaces).toBeDefined()
       expect(foundPlaces.length).toBeGreaterThan(0)
-      expect(foundPlaces[0]).toHaveProperty('centre', places[0].centre)
-      expect(foundPlaces[0]).toHaveProperty('inspecteur', places[0].inspecteur)
-      expect(foundPlaces[0]).toHaveProperty('date', places[0].date)
+      expect(foundPlaces[0]).toHaveProperty('centre', createdPlaces[0].centre)
+      expect(foundPlaces[0]).toHaveProperty(
+        'inspecteur',
+        createdPlaces[0].inspecteur
+      )
+      expect(foundPlaces[0]).toHaveProperty('date', createdPlaces[0].date)
+    })
+  })
+
+  describe('Find Place by centre', () => {
+    let createdCentres
+    beforeAll(async () => {
+      createdCentres = await createCentres()
+      await createPlaces()
+      await createCandidats()
+      await makeResas()
+    })
+    afterAll(async () => {
+      await removePlaces()
+      await deleteCandidats()
+      await removeCentres()
+    })
+
+    it('Should find 1 places for centre "Centre 2"', async () => {
+      const { nom } = centres[1]
+      const centreSelected = createdCentres.find(centre => centre.nom === nom)
+      const listPlaces = await findAvailablePlacesByCentre(centreSelected)
+      expect(listPlaces).toBeDefined()
+      expect(listPlaces).not.toBeNull()
+      expect(listPlaces).toHaveLength(nbPlacesDispoByCentres({ nom }))
+    })
+
+    it('Should 1 places availables for centre "Centre 2"', async () => {
+      const { nom } = centres[1]
+      const centreSelected = createdCentres.find(centre => centre.nom === nom)
+      const countPlaces = await countAvailablePlacesByCentre(centreSelected)
+
+      expect(countPlaces).toBeDefined()
+      expect(countPlaces).not.toBeNull()
+      expect(countPlaces).toBe(nbPlacesDispoByCentres({ nom }))
     })
   })
 })

@@ -10,9 +10,9 @@ const PlaceSchema = new Schema({
     trim: true,
   },
   centre: {
-    type: String,
+    type: ObjectId, // ObjectId du centre pour la V2
     required: false,
-    trim: true,
+    ref: 'Centre',
   },
   date: {
     type: Date,

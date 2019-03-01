@@ -1,94 +1,13 @@
-import * as csvParser from 'fast-csv'
-import { DateTime } from 'luxon'
+import { findAllPlaces } from '../../models/place'
+import { importPlacesCsv } from './places.business'
+import { logger } from '../../util'
 
-import logger from '../../util/logger'
-import {
-  PLACE_ALREADY_IN_DB_ERROR,
-  findAllPlaces,
-  createPlace,
-} from '../../models/place'
-
-const getPlaceStatus = (centre, inspecteur, date, status, details) => ({
-  centre,
-  inspecteur,
-  date,
-  status,
-  details,
-})
-
-export const importPlaces = (req, res, next) => {
+export const importPlaces = (req, res) => {
   const csvFile = req.files.file
-  let PlacesPromise = []
-
-  csvParser
-    .fromString(csvFile.data.toString(), { headers: false, ignoreEmpty: true })
-    .transform(data => {
-      if (data[0] === 'Date') return
-      const [day, time, inspecteur, centre] = data
-
-      const myDate = `${day.trim()} ${time.trim()}`
-
-      try {
-        const date = DateTime.fromFormat(myDate, 'dd/MM/yy HH:mm', {
-          zone: 'Europe/Paris',
-          locale: 'fr',
-        })
-        if (!date.isValid) throw new Error('Date est invalide')
-        return {
-          date,
-          centre: centre.trim(),
-          inspecteur: inspecteur.trim(),
-        }
-      } catch (error) {
-        logger.error(error)
-        PlacesPromise.push(
-          Promise.resolve(
-            getPlaceStatus(centre, inspecteur, myDate, 'error', error.message)
-          )
-        )
-      }
-    })
-    .on('data', async place => {
-      const fctPromise = new Promise(async resolve => {
-        const { centre, inspecteur, date } = place
-        try {
-          await createPlace(place)
-          logger.info(
-            `Place ${centre} ${inspecteur} ${date} enregistrée en base`
-          )
-          resolve(
-            getPlaceStatus(
-              centre,
-              inspecteur,
-              date,
-              'success',
-              `Place enregistrée en base`
-            )
-          )
-        } catch (error) {
-          if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
-            logger.error(error)
-            logger.warn('Place déjà enregistrée en base')
-            resolve(
-              getPlaceStatus(
-                centre,
-                inspecteur,
-                date,
-                'error',
-                'Place déjà enregistrée en base'
-              )
-            )
-          }
-          logger.error(error)
-          resolve(
-            getPlaceStatus(centre, inspecteur, date, 'error', error.message)
-          )
-        }
-      })
-      PlacesPromise.push(fctPromise)
-    })
-    .on('end', async () => {
-      const result = await Promise.all(PlacesPromise)
+  try {
+    logger.info(`import places provenant dufichier ${csvFile.name}`)
+    importPlacesCsv(csvFile, result => {
+      logger.info(`import places: Le fichier ${csvFile.name} a été traité.`)
       res.status(200).send({
         fileName: csvFile.name,
         success: true,
@@ -96,6 +15,14 @@ export const importPlaces = (req, res, next) => {
         places: result,
       })
     })
+  } catch (error) {
+    logger.error(error)
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+      error,
+    })
+  }
 }
 
 export const getPlaces = async (req, res) => {
