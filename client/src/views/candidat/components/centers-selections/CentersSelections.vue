@@ -7,19 +7,19 @@
     </v-toolbar>
     <v-card>
       <v-list two-line>
-        <choice-center-content v-for="(center, index) in centers" :key="index" :center="center" />
+        <center-selection-content v-for="(center, index) in centers" :key="index" :center="center" />
       </v-list>
     </v-card>
   </div>
 </template>
 
 <script>
-import choiceCenterContent from './ChoiceCenterContent'
+import CenterSelectionContent from './CenterSelectionContent'
 import { FETCH_CENTERS_REQUEST } from '@/store/centers'
 
 export default {
   components: {
-    choiceCenterContent,
+    CenterSelectionContent,
   },
   data () {
     return {

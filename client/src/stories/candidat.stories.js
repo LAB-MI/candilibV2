@@ -8,7 +8,7 @@ import NavigationDrawer from '../views/candidat/components/NavigationDrawer.vue'
 import EmailValidation from '../views/candidat/components/EmailValidationComponent.vue'
 import CandidatHeader from '../views/candidat/components/CandidatHeader.vue'
 import CandidatFooter from '../views/candidat/components/CandidatFooter.vue'
-import ChoiceCenter from '../views/candidat/components/choice-center/ChoiceCenter.vue'
+import CentersSelections from '../views/candidat/components/centers-selections/CentersSelections.vue'
 
 import store from '../store'
 
@@ -41,8 +41,8 @@ storiesOf('Candidat Components', module)
     components: { CandidatFooter },
     template: '<candidat-footer />',
   }))
-  .add('ChoiceCenter', () => ({
-    components: { ChoiceCenter },
+  .add('CentersSelections', () => ({
+    components: { CentersSelections },
     store: store,
-    template: '<choice-center />',
+    template: '<centers-selections />',
   }))
