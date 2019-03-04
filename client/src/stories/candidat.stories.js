@@ -45,5 +45,4 @@ storiesOf('Candidat Components', module)
     components: { ChoiceCenter },
     store: store,
     template: '<choice-center />',
-    methods: { action: action('clicked') },
   }))
