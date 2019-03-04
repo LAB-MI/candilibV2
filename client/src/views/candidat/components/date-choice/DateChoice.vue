@@ -1,17 +1,7 @@
 <template>
-    <div>
-        <h1>C<span style="color: red;">A</span>NDILIB</h1>
-        <!-- <div>
-            INFO SELECTED CENTER
-            {{ selectedCenter.centre.nom }}
-            {{ selectedCenter.centre.adresse }}
-            {{ selectedCenter.centre.departement }} {{ selectedCenter.centre.nom }}
-        </div> -->
-        <h2>CHOIX D'UNE DATE</h2>
-        <hr>
-        <date-choice-content :monthBlock="fetchedDates"/>
-        <!-- <DateChoiceContent v-for="(month, index) in fetchedDates" :key="index" :monthBlock="month"/> -->
-    </div>
+  <div>
+      <date-choice-content :monthBlock="fetchedDates"/>
+  </div>
 </template>
 
 <script>
@@ -39,6 +29,3 @@ export default {
   },
 }
 </script>
-
-<style>
-</style>

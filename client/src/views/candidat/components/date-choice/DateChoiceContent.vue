@@ -1,29 +1,27 @@
 <template>
   <div>
-    <!-- <v-toolbar dark fixed>
-         <v-toolbar-title>Title</v-toolbar-title>
-    </v-toolbar> -->
-      <v-tabs
-          fixed-tabs
-          centered
-          color="red"
-          dark
-          next-icon="mdi-arrow-right-bold-box-outline"
-          prev-icon="mdi-arrow-left-bold-box-outline"
-          show-arrows
-      >
-        <v-tabs-slider color="black"></v-tabs-slider>
-        <v-toolbar dark fixed>
-        <v-tab v-for="(month, index) in monthBlock" :key="index" :href="'#tab-'+ month.month">
-          {{ month.month }}
-        </v-tab>
-        </v-toolbar>
-        <v-tabs-items>
-        <v-tab-item
-          v-for="i in monthBlock"
-          :key="i"
-          :value="'tab-' + i.month"
+    <v-tabs>
+      <v-toolbar
+        dark
+        fixed
+        tabs
         >
+        <h1>CENTER INFO</h1>
+         <template v-slot:extension>
+        <v-tabs
+          v-model="switchTab"
+          centered
+          color="dark"
+          slider-color="yellow"
+        >
+          <v-tab v-for="(month, index) in monthBlock" :key="index" :href="'#tab-'+ month.month">
+          <span class="color-span">{{ month.month }}</span>
+        </v-tab>
+        </v-tabs>
+      </template>
+      </v-toolbar>
+      <v-tabs-items class="tabs-items-block" v-model="switchTab">
+        <v-tab-item v-for="i in monthBlock" :key="i" :value="'tab-' + i.month">
           <v-card flat>
             <v-card-text>
               <date-choice-sub-content :items="i.daysAndHoursDispo">
@@ -31,8 +29,8 @@
             </v-card-text>
           </v-card>
         </v-tab-item>
-        </v-tabs-items>
-      </v-tabs>
+      </v-tabs-items>
+    </v-tabs>
   </div>
 </template>
 
@@ -49,16 +47,23 @@ export default {
   data () {
     return {
       statusDayBlock: false,
+      switchTab: null,
     }
   },
   methods: {
     activeDayBlock () {
       this.statusDayBlock = !this.statusDayBlock
-      console.log('statusDayBlock', this.statusDayBlock)
     },
   },
 }
 </script>
 
 <style>
+  .color-span {
+    color: white;
+  }
+
+  .tabs-items-block {
+    margin-top: 50px;
+  }
 </style>

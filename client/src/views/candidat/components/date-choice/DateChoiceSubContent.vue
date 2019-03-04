@@ -16,7 +16,7 @@
         </template>
 
           <v-container
-            style="max-height: 100px"
+            style="max-height: 100px;"
             class="scroll-y"
           >
           <v-btn
