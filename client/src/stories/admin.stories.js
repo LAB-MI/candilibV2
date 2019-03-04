@@ -15,7 +15,6 @@ import AdminWhitelist from '../views/admin/components/Whitelist.vue'
 import AurigeValidation from '../views/admin/components/AurigeValidation.vue'
 import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStatusFilter.vue'
 
-import Vuex from 'vuex'
 import store from '../store'
 
 const routes = [
