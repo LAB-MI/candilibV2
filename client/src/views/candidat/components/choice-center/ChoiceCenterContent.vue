@@ -1,18 +1,13 @@
 <template>
-  <v-list>
-    <v-card>
-       <v-card-title>
-         <div>
-           <h3>{{ center.centre.nom }}</h3><br>
-           <span>{{ center.centre.adresse }}</span>
-           <span>{{ center.centre.departement }} {{ center.centre.nom }}</span>
-         </div>
-       </v-card-title>
-       <v-card-actions>
-         <v-btn @click="selectCenter(center)" flat color="red">Sélectionner </v-btn>
-       </v-card-actions>
-    </v-card>
-  </v-list>
+  <v-card>
+    <v-list-tile ripple @click="selectCenter(center)">
+      <v-list-tile-content>
+        <v-list-tile-title>{{ center.centre.nom }}</v-list-tile-title>
+        <v-list-tile-sub-title>{{ center.centre.adresse }}</v-list-tile-sub-title>
+        <v-list-tile-sub-title>{{ center.centre.departement }} {{ center.centre.nom }}</v-list-tile-sub-title>
+      </v-list-tile-content>
+    </v-list-tile>
+  </v-card>
 </template>
 
 <script>

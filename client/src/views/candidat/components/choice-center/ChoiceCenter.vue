@@ -3,7 +3,11 @@
         <h1>C<span style="color: red;">A</span>NDILIB</h1>
         <h2>CHOIX DU CENTRE</h2>
         <hr>
-        <choice-center-content v-for="(center, index) in centers" :key="index" :center="center" />
+        <v-card>
+          <v-list two-line>
+          <choice-center-content v-for="(center, index) in centers" :key="index" :center="center" />
+          </v-list>
+        </v-card>
     </div>
 </template>
 
