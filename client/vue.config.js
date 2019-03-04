@@ -1,3 +1,5 @@
+const VUE_APP_URL_API = 'http://' + process.env.API_HOST + (process.env.API_PORT ? ':' + process.env.API_PORT : '')
+
 module.exports = {
   publicPath: '/candilib',
   outputDir: 'dist',
@@ -5,7 +7,7 @@ module.exports = {
   devServer: {
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: VUE_APP_URL_API || 'http://localhost:8000',
       },
     },
   },

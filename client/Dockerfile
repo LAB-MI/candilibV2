@@ -44,6 +44,11 @@ EXPOSE 8080
 
 CMD ["npm","run", "serve"]
 
+FROM development as storybook
+EXPOSE 6006
+CMD ["npm", "run", "storybook:serve" ]
+
+
 ##########################
 # Step 3: "build" target #
 ##########################

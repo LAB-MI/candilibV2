@@ -12,5 +12,3 @@ SASS_REGISTRY := $(shell echo $$SASS_REGISTRY)
 CYPRESS_DOWNLOAD_MIRROR := $(shell echo $$CYPRESS_DOWNLOAD_MIRROR)
 
 DC_APP_BUILD_DEV := docker-compose.dev.yml
-
-export 
