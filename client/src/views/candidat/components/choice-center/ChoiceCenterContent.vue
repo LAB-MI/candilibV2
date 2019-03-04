@@ -1,10 +1,18 @@
 <template>
-    <a @click="selectCenter(center)">
-      <h2>{{ center.centre.nom }}</h2>
-      <h4>{{ center.centre.adresse }}</h4>
-      <h4>{{ center.centre.departement }} {{ center.centre.nom }}</h4>
-      <hr>
-    </a>
+  <v-list>
+    <v-card>
+       <v-card-title>
+         <div>
+           <h3>{{ center.centre.nom }}</h3><br>
+           <span>{{ center.centre.adresse }}</span>
+           <span>{{ center.centre.departement }} {{ center.centre.nom }}</span>
+         </div>
+       </v-card-title>
+       <v-card-actions>
+         <v-btn @click="selectCenter(center)" flat color="red">Sélectionner </v-btn>
+       </v-card-actions>
+    </v-card>
+  </v-list>
 </template>
 
 <script>
