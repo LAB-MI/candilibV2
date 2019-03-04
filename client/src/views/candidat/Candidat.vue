@@ -3,14 +3,12 @@
     <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0, flexGrow: 1}">
       <candidat-header :links="links" />
       <div class="u-flex  with-top-margin  u-max-width">
-        <faq v-if="isFaq" />
-        <mentions-legales v-if="isMentionsLegales" />
-        <div v-if="isCalendar" class="u-flex  u-flex__item--grow  u-flex--column-on-mobile">
+        <div class="u-flex  u-flex__item--grow  u-flex--column-on-mobile">
           <my-profile class="profile" />
           <div class="u-flex__item--grow">
             <section>
               <header class="candidat-section-header">
-                <h2 v-if="isCalendar" class="candidat-section-header__title">
+                <h2 class="candidat-section-header__title">
                   Ma réservation
                 </h2>
               </header>
@@ -31,16 +29,12 @@ import CandidatHeader from './components/CandidatHeader'
 import CandidatFooter from './components/CandidatFooter'
 import NavigationDrawer from './components/NavigationDrawer'
 
-import Faq from './Faq'
-import MentionsLegales from './components/mentions-legales/MentionsLegales'
 import MyProfile from './components/MyProfile'
 
 export default {
   components: {
     CandidatHeader,
     CandidatFooter,
-    Faq,
-    MentionsLegales,
     MyProfile,
     NavigationDrawer,
   },
@@ -55,7 +49,7 @@ export default {
           label: 'Ma réservation',
         },
         {
-          routerTo: '/candidat/faq',
+          routerTo: '/faq',
           iconName: 'help_outline',
           tooltipText: 'FAQ',
           label: 'F.A.Q.',
@@ -68,18 +62,6 @@ export default {
         },
       ],
     }
-  },
-
-  computed: {
-    isFaq () {
-      return this.$route.params.subpage === 'faq'
-    },
-    isMentionsLegales () {
-      return this.$route.params.subpage === 'mentions-legales'
-    },
-    isCalendar () {
-      return !this.$route.params.subpage
-    },
   },
 }
 </script>

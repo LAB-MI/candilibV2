@@ -8,7 +8,7 @@ import MessageView from '@/views/Message.vue'
 import EmailValidationComponent from '@/views/candidat/components/EmailValidationComponent.vue'
 import Error404 from '@/views/Error404.vue'
 import MentionsLegales from '@/views/candidat/components/mentions-legales/MentionsLegales.vue'
-import Faq from '@/views/candidat/Faq.vue'
+import Faq from '@/views/candidat/components/faq/Faq.vue'
 
 import {
   requireAdminAuth,
@@ -97,7 +97,7 @@ const commonRoutes = [
     component: MentionsLegales,
   },
   {
-    path: '/candidat/faq',
+    path: '/faq',
     name: 'faq',
     component: Faq,
   },
