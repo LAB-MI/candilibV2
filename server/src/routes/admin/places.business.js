@@ -11,14 +11,14 @@ const getPlaceStatus = (
   inspecteur,
   date,
   status,
-  details
+  message
 ) => ({
   departement,
   centre,
   inspecteur,
   date,
   status,
-  details,
+  message,
 })
 /**
  * TODO:departement a modifier
@@ -126,7 +126,7 @@ export const importPlacesCsv = (csvFile, callback) => {
       }
     })
     .on('data', place => {
-      createPlaceCsv(place).then(result => PlacesPromise.push(result))
+      PlacesPromise.push(createPlaceCsv(place))
     })
     .on('end', () => {
       Promise.all(PlacesPromise).then(callback)
