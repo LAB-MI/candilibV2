@@ -16,9 +16,8 @@ import CandidatFooter from '../views/candidat/components/CandidatFooter.vue'
 import CenterSelection from '../views/candidat/components/center-selection/CenterSelection.vue'
 
 import store from '../store'
-import DateChoice from '../views/candidat/components/date-choice/DateChoice.vue'
-
-import store from '../store'
+import TimeSlot from '../views/candidat/components/date-choice/TimeSlot.vue'
+import TimesSlotsSelector from '../views/candidat/components/date-choice/TimesSlotsSelector.vue'
 
 storiesOf('Candidat', module)
   .add('Pré-inscription', () => ({
@@ -172,8 +171,21 @@ storiesOf('Candidat', module)
       }
     },
   }))
-  .add('DateChoice', () => ({
-    components: { DateChoice },
+  .add('TimesSlotsSelector', () => ({
+    components: { TimesSlotsSelector },
     store: store,
-    template: '<date-choice />',
+    template: '<times-slots-selector :items="items" />',
+    data () {
+      return {
+        items: [{
+          day: 'lundi 4 mars',
+          hours: ['9H30-10H00'],
+        }],
+      }
+    },
+  }))
+  .add('TimeSlot', () => ({
+    components: { TimeSlot },
+    store: store,
+    template: '<time-slot />',
   }))

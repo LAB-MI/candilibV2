@@ -10,20 +10,20 @@ export const SELECT_DAY = 'SELECT_DAY'
 
 export default {
   state: {
-    isDatesFetching: false,
-    fetchedDates: [],
+    isFetching: false,
+    list: arrayTestOfDates,
     selectedDay: undefined,
   },
   mutations: {
     [FETCH_DATES_REQUEST] (state) {
-      state.isDatesFetching = true
+      state.isFetching = true
     },
     [FETCH_DATES_SUCCESS] (state, dates) {
-      state.isDatesFetching = false
-      state.fetchedDates = dates
+      state.isFetching = false
+      state.list = dates
     },
     [FETCH_DATES_FAILURE] (state) {
-      state.isDatesFetching = false
+      state.isFetching = false
     },
     [SELECT_DAY] (state, selectedDay) {
       state.selectedDay = selectedDay
