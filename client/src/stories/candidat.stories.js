@@ -1,9 +1,13 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue'
 
+import Vuex from 'vuex'
+
+import router from '../router'
+
 import MyProfile from '../views/candidat/components/MyProfile.vue'
-import CandidatProfileInfo from '../views/candidat/components/ProfileInfo.vue'
-import CandidatSignupForm from '../views/candidat/components/SignupForm.vue'
+import ProfileInfo from '../views/candidat/components/ProfileInfo.vue'
+import CandidatPresignup from '../views/candidat/components/SignupForm.vue'
 import NavigationDrawer from '../views/candidat/components/NavigationDrawer.vue'
 import EmailValidation from '../views/candidat/components/EmailValidationComponent.vue'
 import CandidatHeader from '../views/candidat/components/CandidatHeader.vue'
@@ -13,21 +17,96 @@ import CenterSelection from '../views/candidat/components/center-selection/Cente
 import store from '../store'
 
 storiesOf('Candidat Components', module)
+  .add('Pré-inscription', () => ({
+    components: { CandidatPresignup },
+    template: `<div :style="{display: 'flex', background: '#118098'}"><candidat-presignup /></div>`,
+    router,
+    store: new Vuex.Store({
+      state: {
+        candidat: {
+          isSendingPresignup: false,
+        },
+      },
+    }),
+  }))
   .add('CandidatProfile', () => ({
     components: { MyProfile },
     template: '<my-profile />',
+    store: new Vuex.Store({
+      state: {
+        candidat: {
+          isFetchingProfile: false,
+          me: {},
+        },
+      },
+      mutations: {
+        FETCH_MY_PROFILE_REQUEST (state) {
+          state.candidat.me = {
+            email: 'jean@dupont.com',
+            adresse: '10 avenue du Général Leclerc',
+            codeNeph: '012345678912',
+            nomNaissance: 'Dupont',
+            portable: '0645784512',
+            prenom: 'Jean',
+          }
+        },
+      },
+      actions: {
+        FETCH_MY_PROFILE_REQUEST ({ commit }) {
+          commit('FETCH_MY_PROFILE_REQUEST')
+        },
+      },
+    }),
   }))
   .add('CandidatProfileInfo', () => ({
-    components: { CandidatProfileInfo },
-    template: '<profile-info />',
-  }))
-  .add('CandidatSignupForm', () => ({
-    components: { CandidatSignupForm },
-    template: '<candidat-signup-form />',
+    components: { ProfileInfo },
+    template: '<profile-info label="courriel" value="jean@dupont.com" />',
   }))
   .add('NavigationDrawer', () => ({
     components: { NavigationDrawer },
-    template: '<navigation-drawer />',
+    template: '<div><v-btn @click="$store.dispatch(\'DISPLAY_NAV_DRAWER\', true)">Afficher le menu</v-btn><navigation-drawer :links="links" /></div>',
+    router,
+    data () {
+      return {
+        links: [
+          {
+            routerTo: '/candidat',
+            iconName: 'home',
+            tooltipText: 'Ma réservation',
+            label: 'Ma réservation',
+          },
+          {
+            routerTo: '/faq',
+            iconName: 'help_outline',
+            tooltipText: 'FAQ',
+            label: 'F.A.Q.',
+          },
+          {
+            routerTo: '/mentions-legales',
+            iconName: 'account_balance',
+            tooltipText: 'Mentions légales',
+            label: 'Mentions légales',
+          },
+        ],
+      }
+    },
+    store: new Vuex.Store({
+      state: {
+        candidat: {
+          displayNavDrawer: false,
+        },
+      },
+      mutations: {
+        DISPLAY_NAV_DRAWER (state, bool) {
+          state.candidat.displayNavDrawer = bool
+        },
+      },
+      actions: {
+        DISPLAY_NAV_DRAWER ({ commit }, bool) {
+          commit('DISPLAY_NAV_DRAWER', bool)
+        },
+      },
+    }),
   }))
   .add('EmailValidation', () => ({
     components: { EmailValidation },

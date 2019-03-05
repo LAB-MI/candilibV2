@@ -12,7 +12,7 @@
         {{ center.centre.adresse }}
       </v-list-tile-sub-title>
     </v-list-tile-content>
-    <a 
+    <a
       target="_blank"
       class="location-icon  u-flex"
       @click.stop="true"

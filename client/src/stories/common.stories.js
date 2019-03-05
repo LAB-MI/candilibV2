@@ -6,20 +6,6 @@ import Vuex from 'vuex'
 
 import AppVersion from '../components/AppVersion.vue'
 import AppSnackbar from '../components/AppSnackbar.vue'
-import CandidatPresignup from '../views/candidat/components/SignupForm.vue'
-
-storiesOf('CandidatPresignup', module)
-  .add('Pré-inscription', () => ({
-    components: { CandidatPresignup },
-    template: `<div :style="{display: 'flex', background: '#118098'}"><candidat-presignup /></div>`,
-    store: new Vuex.Store({
-      state: {
-        candidat: {
-          isSendingPresignup: false,
-        },
-      },
-    }),
-  }))
 
 storiesOf('AppVersion', module)
   .add('with text', () => ({

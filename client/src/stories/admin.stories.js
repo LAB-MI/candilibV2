@@ -3,7 +3,8 @@ import { storiesOf } from '@storybook/vue'
 import { action } from '@storybook/addon-actions'
 
 import Vuex from 'vuex'
-import Router from 'vue-router'
+
+import router from '../router'
 
 import AdminLogin from '../views/admin/components/Login.vue'
 import AdminCalendar from '../views/admin/components/AdminCalendar.vue'
@@ -16,20 +17,6 @@ import AurigeValidation from '../views/admin/components/AurigeValidation.vue'
 import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStatusFilter.vue'
 
 import store from '../store'
-
-const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: AdminHeader,
-  },
-]
-
-const router = new Router({
-  mode: 'history',
-  base: '/candilib',
-  routes,
-})
 
 storiesOf('Admin Components', module)
   .add('AdminLogin', () => ({
