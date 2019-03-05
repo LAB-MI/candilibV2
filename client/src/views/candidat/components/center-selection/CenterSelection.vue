@@ -27,7 +27,7 @@ export default {
     CenterSelectionContent,
   },
   computed: {
-    ...mapState(['center'])
+    ...mapState(['center']),
   },
   async mounted () {
     await this.$store.dispatch(FETCH_CENTERS_REQUEST)
