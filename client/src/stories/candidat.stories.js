@@ -9,7 +9,7 @@ import MyProfile from '../views/candidat/components/MyProfile.vue'
 import ProfileInfo from '../views/candidat/components/ProfileInfo.vue'
 import CandidatPresignup from '../views/candidat/components/SignupForm.vue'
 import NavigationDrawer from '../views/candidat/components/NavigationDrawer.vue'
-import EmailValidation from '../views/candidat/components/EmailValidationComponent.vue'
+import EmailValidation from '../views/candidat/components/EmailValidation.vue'
 import CandidatHeader from '../views/candidat/components/CandidatHeader.vue'
 import CandidatFooter from '../views/candidat/components/CandidatFooter.vue'
 import CenterSelection from '../views/candidat/components/center-selection/CenterSelection.vue'
@@ -111,6 +111,17 @@ storiesOf('Candidat Components', module)
   .add('EmailValidation', () => ({
     components: { EmailValidation },
     template: '<email-validation />',
+    router,
+    store: new Vuex.Store({
+      state: {
+        candidat: {
+          isCheckingEmail: false,
+          candidatData: {
+            message: '',
+          },
+        },
+      },
+    }),
   }))
   .add('CandidatHeader', () => ({
     components: { CandidatHeader },

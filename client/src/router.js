@@ -5,7 +5,7 @@ import Home from '@/views/Home.vue'
 import AdminHome from '@/views/AdminHome.vue'
 import CandidatHome from '@/views/CandidatHome.vue'
 import MessageView from '@/views/Message.vue'
-import EmailValidationComponent from '@/views/candidat/components/EmailValidationComponent.vue'
+import EmailValidation from '@/views/candidat/components/EmailValidation.vue'
 import Error404 from '@/views/Error404.vue'
 import MentionsLegales from '@/views/candidat/components/mentions-legales/MentionsLegales.vue'
 import Faq from '@/views/candidat/components/faq/Faq.vue'
@@ -62,12 +62,12 @@ const candidatRoutes = [
       {
         path: '/email-en-attente-de-validation',
         name: 'email-validation-pending',
-        component: EmailValidationComponent,
+        component: EmailValidation,
       },
       {
         path: '/email-validation',
         name: 'email-validation',
-        component: EmailValidationComponent,
+        component: EmailValidation,
       },
     ],
   },
