@@ -62,7 +62,7 @@ export default {
       this.statusDayBlock = !this.statusDayBlock
     },
   },
-  beforeMount () {
+  mounted () {
     this.$store.dispatch(FETCH_DATES_REQUEST, {})
     this.timeSlots = this.$store.state.timeSlots.list
     console.log('TCL: beforeMount -> timeSlots', this.timeSlots, this.$store.state.timeSlots.list)
