@@ -3,6 +3,7 @@ import {
   findCentresByDepartement,
   findAllCentres,
   findCentreByName,
+  findCentreByNameAndDepartement,
 } from './centre.queries'
 import {
   createCentres,
@@ -20,13 +21,15 @@ describe('Centre', () => {
     await disconnect()
   })
 
-  describe('find centre', () => {
+  describe('Find centre', () => {
     beforeAll(async () => {
       await createCentres()
     })
+
     afterAll(async () => {
       await removeCentres()
     })
+
     it('Should find one centres by name', async () => {
       const centresResult = await findCentreByName(centres[2].nom)
       expect(centresResult).toBeDefined()
@@ -52,6 +55,21 @@ describe('Centre', () => {
       const centresResult = await findCentresByDepartement(departement)
       expect(centresResult).toBeDefined()
       expect(centresResult).toHaveLength(nbCentres(departement))
+    })
+
+    it('Should find one centre by deparetement and name', async () => {
+      const departement = '93'
+      try {
+        const centresResult = await findCentreByNameAndDepartement(
+          centres[2].nom,
+          departement
+        )
+        expect(centresResult).toBeDefined()
+        expect(centresResult).toHaveProperty('nom', centres[2].nom)
+        expect(centresResult).toHaveProperty('departement', departement)
+      } catch (error) {
+        expect(error).toBeUndefined()
+      }
     })
   })
 })

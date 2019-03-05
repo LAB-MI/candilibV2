@@ -72,8 +72,8 @@ export default {
   }
 
   .section-header {
-    margin-bottom: 60px;
     position: relative;
+    margin-bottom: 60px;
     padding-bottom: 20px;
   }
 </style>

@@ -88,6 +88,10 @@ const candidatRoutes = [
         name: 'selection-centre',
         component: CenterSelection,
       },
+      {
+        path: ':center/selection-place',
+        name: 'time-slot',
+      },
     ],
   },
 ]

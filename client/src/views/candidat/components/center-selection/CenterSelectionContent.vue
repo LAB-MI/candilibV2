@@ -22,15 +22,18 @@ export default {
     center: Object,
   },
   methods: {
-    selectCenter (center) {
+    async selectCenter (center) {
       if (!center.count) {
         return
       }
-      this.$store.dispatch(SELECT_CENTER, center.centre)
+      await this.$store.dispatch(SELECT_CENTER, center.centre)
+      this.$router.push({
+        name: 'time-slot',
+        params: {
+          center: `${center.centre.departement}-${center.centre.nom}`,
+        },
+      })
     },
   },
 }
 </script>
-
-<style>
-</style>

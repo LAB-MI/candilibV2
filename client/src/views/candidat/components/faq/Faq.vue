@@ -38,6 +38,7 @@ export default {
     margin-top: 5%;
     margin-bottom: 0;
   }
+
   .title {
     font-size: 36px;
     text-transform: uppercase;
@@ -48,6 +49,7 @@ export default {
     color: #0e1b4d;
     font-family: "Raleway", sans-serif;
   }
+
   .p-style {
     text-align: center;
     padding: 0;
@@ -56,6 +58,7 @@ export default {
     font-weight: 500;
     color: #9195a2;
   }
+
   .li-style {
     width: 80%;
     list-style: none;
