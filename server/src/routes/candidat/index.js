@@ -2,7 +2,7 @@ import express from 'express'
 
 import { getMe, emailValidation } from './candidat.controllers'
 import { getCentres } from './centre.controllers'
-import { getPlaces } from './places.controlles'
+import { getPlaces } from './places.controllers'
 
 const router = express.Router()
 

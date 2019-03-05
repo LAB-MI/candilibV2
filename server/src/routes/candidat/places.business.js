@@ -4,15 +4,24 @@ import {
   findCentreByName,
   findCentreByNameAndDepartement,
 } from '../../models/centre'
+import { logger } from '../../util'
 
 export const getDatesFromPlacesByCentreId = async (_id, beginDate, endDate) => {
+  logger.debug(
+    JSON.stringify({
+      func: 'getDatesFromPlacesByCentreId',
+      _id,
+      beginDate,
+      endDate,
+    })
+  )
   if (!beginDate) {
     beginDate = DateTime.local().toISODate()
   }
 
   const places = await findAvailablePlacesByCentre(_id, beginDate, endDate)
-
-  return places.map(place => place.date)
+  const dates = places.map(place => DateTime.fromJSDate(place.date).toISO())
+  return [...new Set(dates)]
 }
 
 export const getDatesFromPlacesByCentre = async (
@@ -21,12 +30,26 @@ export const getDatesFromPlacesByCentre = async (
   beginDate,
   endDate
 ) => {
+  logger.debug(
+    JSON.stringify({
+      func: 'getDatesFromPlacesByCentreId',
+      departement,
+      centre,
+      beginDate,
+      endDate,
+    })
+  )
+
   let foundCentre
   if (departement) {
-    foundCentre = findCentreByNameAndDepartement(centre, departement)
+    foundCentre = await findCentreByNameAndDepartement(centre, departement)
   } else {
-    foundCentre = findCentreByName(centre)
+    foundCentre = await findCentreByName(centre)
   }
-
-  return getDatesFromPlacesByCentreId(foundCentre._id, beginDate, endDate)
+  const dates = await getDatesFromPlacesByCentreId(
+    foundCentre._id,
+    beginDate,
+    endDate
+  )
+  return dates
 }
