@@ -44,10 +44,10 @@ export default {
     selectedCenter: Object,
     centre: {
       type: Object,
-      default: {
+      default: () => ({
         nom: '<Centre>',
-      }
-    }
+      }),
+    },
   },
   data () {
     return {
