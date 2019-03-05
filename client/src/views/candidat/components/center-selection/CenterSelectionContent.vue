@@ -1,15 +1,27 @@
 <template>
-  <v-list-tile :ripple="!!center.count" @click="selectCenter(center)">
-    <v-list-tile-content>
-      <v-list-tile-title>{{ center.centre.nom }} ({{ center.centre.departement }})</v-list-tile-title>
-      <v-list-tile-sub-title>
+  <v-list-tile @click="selectCenter(center)">
+    <v-list-tile-content v-ripple="!!center.count">
+      <v-list-tile-title>
+        <v-icon :color="center.count ? 'green lighten-1' : 'red lighten-1'">
+          fiber_manual_record
+        </v-icon>
+        {{ center.centre.nom }}
+        ({{ center.centre.departement }})
+      </v-list-tile-title>
+      <v-list-tile-sub-title class="u-flex__item--grow">
         {{ center.centre.adresse }}
-        <a target="_blank" @click.stop="" :href="`https://www.openstreetmap.org/search?query=${center.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`">OpenStreetMap</a>
       </v-list-tile-sub-title>
     </v-list-tile-content>
-    <v-icon :color="center.count ? 'green lighten-1' : 'red lighten-1'">
-      fiber_manual_record
-    </v-icon>
+    <a 
+      target="_blank"
+      class="location-icon  u-flex"
+      @click.stop="true"
+      v-ripple
+      :href="`https://www.openstreetmap.org/search?query=${center.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`">
+      <v-icon>
+        location_on
+      </v-icon>
+    </a>
   </v-list-tile>
 </template>
 
@@ -37,3 +49,12 @@ export default {
   },
 }
 </script>
+
+<style lang="postcss" scoped>
+.location-icon {
+  border-left: 1px solid rgba(150, 150, 150, 0.5);
+  height: 3em;
+  padding: 0 1.5em;
+  text-decoration: none;
+}
+</style>
