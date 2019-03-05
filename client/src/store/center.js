@@ -10,8 +10,8 @@ export const SELECT_CENTER = 'SELECT_CENTER'
 export default {
   state: {
     isCentersFetching: false,
-    fetchedCenters: [],
-    selectedCenter: undefined,
+    list: [],
+    selected: undefined,
   },
   mutations: {
     [FETCH_CENTERS_REQUEST] (state) {
@@ -19,13 +19,13 @@ export default {
     },
     [FETCH_CENTERS_SUCCESS] (state, centers) {
       state.isCentersFetching = false
-      state.fetchedCenters = centers
+      state.list = centers
     },
     [FETCH_CENTERS_FAILURE] (state) {
       state.isCentersFetching = false
     },
-    [SELECT_CENTER] (state, selectedCenter) {
-      state.selectedCenter = selectedCenter
+    [SELECT_CENTER] (state, selected) {
+      state.selected = selected
     },
   },
   actions: {
@@ -33,7 +33,6 @@ export default {
       commit(FETCH_CENTERS_REQUEST)
       try {
         const result = await api.candidat.getCentres()
-        // const result = arrayTestOfCenters
         commit(FETCH_CENTERS_SUCCESS, result)
       } catch (error) {
         commit(FETCH_CENTERS_FAILURE, error.message)

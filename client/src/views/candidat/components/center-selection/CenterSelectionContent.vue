@@ -1,9 +1,11 @@
 <template>
   <v-list-tile :ripple="!!center.count" @click="selectCenter(center)">
     <v-list-tile-content>
-      <v-list-tile-title>{{ center.centre.nom }}</v-list-tile-title>
-      <v-list-tile-sub-title>{{ center.centre.adresse }}</v-list-tile-sub-title>
-      <v-list-tile-sub-title>{{ center.centre.departement }} {{ center.centre.nom }}</v-list-tile-sub-title>
+      <v-list-tile-title>{{ center.centre.nom }} ({{ center.centre.departement }})</v-list-tile-title>
+      <v-list-tile-sub-title>
+        {{ center.centre.adresse }}
+        <a target="_blank" @click.stop="" :href="`https://www.openstreetmap.org/search?query=${center.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`">OpenStreetMap</a>
+      </v-list-tile-sub-title>
     </v-list-tile-content>
     <v-icon :color="center.count ? 'grey lighten-1' : ''">
       fiber_manual_record
@@ -12,7 +14,7 @@
 </template>
 
 <script>
-import { SELECT_CENTER } from '@/store/centers'
+import { SELECT_CENTER } from '@/store/center'
 export default {
   components: {
   },
@@ -24,7 +26,7 @@ export default {
       if (!center.count) {
         return
       }
-      this.$store.dispatch(SELECT_CENTER, center)
+      this.$store.dispatch(SELECT_CENTER, center.centre)
     },
   },
 }

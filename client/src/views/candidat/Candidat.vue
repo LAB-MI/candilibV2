@@ -6,13 +6,7 @@
         <div class="u-flex  u-flex__item--grow  u-flex--column-on-mobile">
           <my-profile class="profile" />
           <div class="u-flex__item--grow">
-            <section>
-              <header class="candidat-section-header">
-                <h2 class="candidat-section-header__title">
-                  Ma réservation
-                </h2>
-              </header>
-            </section>
+            <router-view />
           </div>
         </div>
       </div>
@@ -37,25 +31,26 @@ export default {
     CandidatFooter,
     MyProfile,
     NavigationDrawer,
+    // CentersSelections,
   },
 
   data () {
     return {
       links: [
         {
-          routerTo: '/candidat',
+          routerTo: { name: 'candidat-home' },
           iconName: 'home',
           tooltipText: 'Ma réservation',
           label: 'Ma réservation',
         },
         {
-          routerTo: '/faq',
+          routerTo: { name: 'faq' },
           iconName: 'help_outline',
           tooltipText: 'FAQ',
           label: 'F.A.Q.',
         },
         {
-          routerTo: '/mentions-legales',
+          routerTo: { name: 'mentions-legales' },
           iconName: 'account_balance',
           tooltipText: 'Mentions légales',
           label: 'Mentions légales',
@@ -76,8 +71,12 @@ export default {
 }
 
 .profile {
-  margin: 0 1em;
+  margin: 1em;
   width: 20rem;
+
+  @media (max-width: 599px) {
+    order: 2;
+  }
 }
 
 .candidat-section-header {
