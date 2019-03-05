@@ -5,7 +5,7 @@
         <i v-if="!status" class="material-icons icon-style">
           {{ 'add_circle' }}
         </i>
-        <i v-if="status" class="material-icons icon-style" style="color: #f8234a">
+        <i v-if="status" class="material-icons icon-style" style="color: #f8234a;">
           {{ 'remove_circle' }}
         </i>
     </a>
@@ -48,7 +48,6 @@ export default {
     width: 100%;
     color: #000;
     padding: 18px 0;
-    padding-right: 0px;
     position: relative;
     font-family: "Raleway", sans-serif;
     font-size: 16px;
@@ -58,6 +57,7 @@ export default {
     text-decoration: none;
     left: 5%;
   }
+
   .icon-style {
     position: absolute;
     font-size: 24px;
@@ -65,19 +65,24 @@ export default {
     top: 20px;
     color: #000;
   }
+
   .content-question-style {
     width: 90%;
     color: #212529;
     margin-left: 5%;
   }
+
   .fade-enter-active,
   .fade-leave-active {
-    transition: opacity .4s;
+    transition: opacity 0.4s;
   }
-  .fade-enter, .fade-leave-to {
+
+  .fade-enter,
+  .fade-leave-to {
     opacity: 0;
   }
+
   .link-in-text-style {
-    text-decoration-line:none;
+    text-decoration-line: none;
   }
 </style>

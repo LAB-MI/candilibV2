@@ -24,7 +24,7 @@
           v-for="link in links"
           :to="link.routerTo"
           :value="link.routerTo"
-          :key="link.routerTo"
+          :key="link.routerTo.name"
         >
           <icon-with-tooltip
             :iconName="link.iconName"

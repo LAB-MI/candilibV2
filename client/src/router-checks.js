@@ -70,6 +70,6 @@ export async function checkCandidatToken (to, from, next) {
   }
   await store.dispatch(CHECK_CANDIDAT_TOKEN, token)
   if (store.state.auth.statusCandidat === SIGNED_IN_AS_CANDIDAT) {
-    next({ name: 'candidat' })
+    next({ name: 'candidat-home' })
   }
 }

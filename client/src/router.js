@@ -9,6 +9,7 @@ import EmailValidationComponent from '@/views/candidat/components/EmailValidatio
 import Error404 from '@/views/Error404.vue'
 import MentionsLegales from '@/views/candidat/components/mentions-legales/MentionsLegales.vue'
 import Faq from '@/views/candidat/components/faq/Faq.vue'
+import CenterSelection from '@/views/candidat/components/center-selection/CenterSelection.vue'
 
 import {
   requireAdminAuth,
@@ -75,9 +76,21 @@ const candidatRoutes = [
     name: 'candidat',
     component: () => import('./views/candidat'),
     beforeEnter: requireCandidatAuth,
+    redirect: '/candidat/home',
     children: [
       {
-        path: ':subpage',
+        path: 'home',
+        name: 'candidat-home',
+        component: CandidatHome,
+      },
+      {
+        path: 'selection-centre',
+        name: 'selection-centre',
+        component: CenterSelection,
+      },
+      {
+        path: ':center/selection-place',
+        name: 'time-slot',
       },
     ],
   },

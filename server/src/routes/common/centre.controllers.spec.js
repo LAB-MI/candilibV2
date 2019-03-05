@@ -52,5 +52,21 @@ describe('Test centre controllers', () => {
       expect(body).toBeDefined()
       expect(body).toHaveLength(nbCentres(departement))
     })
+    it('Should response 200 and a center', async () => {
+      const nom = 'Centre 1'
+      const departement = '92'
+      const { body: centre } = await request(app)
+        .get(
+          `${apiPrefix}/candidat/centres?nom=${nom}&departement=${departement}`
+        )
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(centre).toBeDefined()
+      expect(centre).not.toBeNull()
+      expect(centre).toHaveProperty('nom', nom)
+      expect(centre).toHaveProperty('departement', departement)
+      expect(centre.adresse).toContain(departement)
+    })
   })
 })

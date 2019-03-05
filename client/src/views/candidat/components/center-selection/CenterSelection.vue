@@ -1,0 +1,50 @@
+<template>
+  <div>
+    <v-toolbar>
+      <v-toolbar-title>
+        CHOIX DU CENTRE
+      </v-toolbar-title>
+    </v-toolbar>
+    <v-card>
+      <v-list three-line>
+        <center-selection-content
+          v-for="center in center.list"
+          :key="center._id"
+          :center="center"
+        />
+      </v-list>
+    </v-card>
+  </div>
+</template>
+
+<script>
+import { mapState } from 'vuex'
+import CenterSelectionContent from './CenterSelectionContent'
+import { FETCH_CENTERS_REQUEST } from '@/store/center'
+
+export default {
+  components: {
+    CenterSelectionContent,
+  },
+
+  computed: {
+    ...mapState(['center']),
+  },
+
+  async mounted () {
+    this.getCenters()
+  },
+
+  methods: {
+    async getCenters () {
+      const candidat = this.$store.state.candidat
+      if (!candidat || !candidat.me) {
+        setTimeout(this.getCenters, 100)
+        return
+      }
+      const { adresse } = this.$store.state.candidat.me
+      await this.$store.dispatch(FETCH_CENTERS_REQUEST, adresse)
+    }
+  }
+}
+</script>

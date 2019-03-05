@@ -37,34 +37,38 @@ export default {
   padding: 0;
   margin: 0;
 }
+
 .icon-title-style {
   color: #112363;
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 10px;
 }
+
 .text-content {
   color: #112363;
   font-size: 15px;
   margin-bottom: 10px;
 }
+
 .separate-bar {
   margin-top: 1rem;
   margin-bottom: 1rem;
   border: 0;
-  border-top: 1px solid rgba(0, 0, 0, .1);
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
 }
+
 ul {
   color: #112363;
 }
+
 .li-style {
   padding: 0 0 0 50px;
   line-height: 2em;
   list-style: none;
-  padding: 0 0 0 50px;
-  line-height: 2em;
   box-sizing: border-box;
 }
+
 .icon-style {
   line-height: 1;
   letter-spacing: normal;
@@ -73,7 +77,6 @@ ul {
   font-style: normal;
   font-variant: normal;
   text-rendering: auto;
-  line-height: 1;
   color: #112363;
   font-size: 15px;
   box-sizing: border-box;
@@ -91,6 +94,7 @@ ul {
   font-size: 1.25rem;
   line-height: 1.2;
 }
+
 .sub-text-content {
   text-align: left;
   font-weight: 400;
