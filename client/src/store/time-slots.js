@@ -1,6 +1,6 @@
 
 import { DateTime } from 'luxon'
-import arrayTestOfDates from '@/views/candidat/components/date-choice/arrayTestOfDates'
+import arrayTestOfDates from '@/views/candidat/components/time-slots-selection/arrayTestOfDates'
 import { SHOW_ERROR } from './message'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'

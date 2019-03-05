@@ -14,10 +14,10 @@ import EmailValidation from '../views/candidat/components/EmailValidation.vue'
 import CandidatHeader from '../views/candidat/components/CandidatHeader.vue'
 import CandidatFooter from '../views/candidat/components/CandidatFooter.vue'
 import CenterSelection from '../views/candidat/components/center-selection/CenterSelection.vue'
+import TimeSlot from '../views/candidat/components/time-slots-selection/TimeSlot.vue'
+import TimesSlotsSelector from '../views/candidat/components/time-slots-selection/TimesSlotsSelector.vue'
 
 import store from '../store'
-import TimeSlot from '../views/candidat/components/date-choice/TimeSlot.vue'
-import TimesSlotsSelector from '../views/candidat/components/date-choice/TimesSlotsSelector.vue'
 
 storiesOf('Candidat', module)
   .add('Pré-inscription', () => ({
