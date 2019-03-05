@@ -129,7 +129,31 @@ storiesOf('Candidat Components', module)
   }))
   .add('CandidatFooter', () => ({
     components: { CandidatFooter },
-    template: '<candidat-footer />',
+    template: '<candidat-footer :ids="ids" :links="links" />',
+    router,
+    data () {
+      return {
+        ids: {},
+        links: [],
+      }
+    },
+    store: new Vuex.Store({
+      state: {
+        candidat: {
+          displayNavDrawer: false,
+        },
+      },
+      mutations: {
+        DISPLAY_NAV_DRAWER (state, bool) {
+          state.candidat.displayNavDrawer = bool
+        },
+      },
+      actions: {
+        DISPLAY_NAV_DRAWER ({ commit }, bool) {
+          commit('DISPLAY_NAV_DRAWER', bool)
+        },
+      },
+    }),
   }))
   .add('CenterSelection', () => ({
     components: { CenterSelection },
