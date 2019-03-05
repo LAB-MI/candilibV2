@@ -26,11 +26,25 @@ export default {
   components: {
     CenterSelectionContent,
   },
+
   computed: {
     ...mapState(['center']),
   },
+
   async mounted () {
-    await this.$store.dispatch(FETCH_CENTERS_REQUEST)
+    this.getCenters()
   },
+
+  methods: {
+    async getCenters () {
+      const candidat = this.$store.state.candidat
+      if (!candidat || !candidat.me) {
+        setTimeout(this.getCenters, 100)
+        return
+      }
+      const { adresse } = this.$store.state.candidat.me
+      await this.$store.dispatch(FETCH_CENTERS_REQUEST, adresse)
+    }
+  }
 }
 </script>

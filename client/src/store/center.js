@@ -1,4 +1,3 @@
-// import arrayTestOfCenters from '@/views/candidat/components/centers-selections/arrayTestOfCenters'
 import api from '@/api'
 import { SHOW_ERROR } from './message'
 
@@ -6,6 +5,8 @@ export const FETCH_CENTERS_REQUEST = 'FETCH_CENTERS_REQUEST'
 export const FETCH_CENTERS_SUCCESS = 'FETCH_CENTERS_SUCCESS'
 export const FETCH_CENTERS_FAILURE = 'FETCH_CENTERS_FAILURE'
 export const SELECT_CENTER = 'SELECT_CENTER'
+
+const zipCodeRegexFromAdresse = /.*([0-9]{2})[0-9]{3}.*/
 
 export default {
   state: {
@@ -29,10 +30,11 @@ export default {
     },
   },
   actions: {
-    async [FETCH_CENTERS_REQUEST] ({ commit, dispatch }) {
+    async [FETCH_CENTERS_REQUEST] ({ commit, dispatch }, adresseCandidat) {
       commit(FETCH_CENTERS_REQUEST)
       try {
-        const result = await api.candidat.getCentres()
+        const [, departement] = adresseCandidat.match(zipCodeRegexFromAdresse)
+        const result = await api.candidat.getCentres(departement)
         commit(FETCH_CENTERS_SUCCESS, result)
       } catch (error) {
         commit(FETCH_CENTERS_FAILURE, error.message)
