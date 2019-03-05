@@ -50,7 +50,8 @@ const queryAvailablePlacesByCentre = (_id, beginDate, endDate) => {
     if (beginDate) query.gte(beginDate)
     if (endDate) query.lt(endDate)
   }
-  query.where('isBooked').exists(false)
+
+  query.where('isBooked').ne(true)
 
   return query.where('centre', _id)
 }
