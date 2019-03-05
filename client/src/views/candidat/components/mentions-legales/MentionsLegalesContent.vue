@@ -52,9 +52,6 @@ export default {
   margin-top: 1rem;
   margin-bottom: 1rem;
   border: 0;
-  border-top-color: currentcolor;
-  border-top-style: none;
-  border-top-width: 0px;
   border-top: 1px solid rgba(0, 0, 0, .1);
 }
 ul {
@@ -101,7 +98,6 @@ ul {
   box-sizing: border-box;
   color: #112363;
   font-size: 15px;
-  margin-bottom: 10px;
   padding: 0;
   margin: 0 0 30px 0;
   font-family: "Poppins", sans-serif;

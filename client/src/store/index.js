@@ -8,6 +8,7 @@ import whitelist from './whitelist'
 import candidats from './candidats'
 import candidat from './candidat'
 import aurige from './aurige'
+import importPlaces from './import-places'
 
 export * from './auth'
 export * from './message'
@@ -15,6 +16,7 @@ export * from './whitelist'
 export * from './candidats'
 export * from './candidat'
 export * from './aurige'
+export * from './import-places'
 
 Vue.use(Vuex)
 
@@ -29,5 +31,6 @@ export default new Vuex.Store({
     candidats,
     candidat,
     aurige,
+    importPlaces,
   },
 })

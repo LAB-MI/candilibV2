@@ -44,6 +44,7 @@ export default {
     color: #0e1b4d;
     padding: 0;
   }
+
   .date-info {
     text-align: center;
     padding: 0;
@@ -52,6 +53,7 @@ export default {
     font-weight: 500;
     color: #9195a2;
   }
+
   .conrainer {
     position: relative;
     width: 100%;
@@ -68,11 +70,7 @@ export default {
     color: #212529;
     text-align: left;
   }
-  .section-header {
-    margin-bottom: 60px;
-    position: relative;
-    padding-bottom: 20px;
-  }
+
   .section-header {
     margin-bottom: 60px;
     position: relative;

@@ -12,7 +12,10 @@ import AdminFooter from '../views/admin/components/AdminFooter.vue'
 import AdminAurige from '../views/admin/components/Aurige.vue'
 import AdminCandidatsList from '../views/admin/components/CandidatsList.vue'
 import AdminWhitelist from '../views/admin/components/Whitelist.vue'
+import AurigeValidation from '../views/admin/components/AurigeValidation.vue'
 import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStatusFilter.vue'
+
+import store from '../store'
 
 const routes = [
   {
@@ -35,6 +38,7 @@ storiesOf('Admin Components', module)
   }))
   .add('AdminCalendar', () => ({
     components: { AdminCalendar },
+    store,
     template: '<admin-calendar />',
   }))
   .add('AdminHeader', () => ({
@@ -104,6 +108,18 @@ storiesOf('Admin Components', module)
     }),
     template: '<admin-whitelist />',
   }))
+  .add('AurigeValidation', () => ({
+    components: { AurigeValidation },
+    store: new Vuex.Store({
+      state: {
+        aurige: {
+          candidats: [{ status: 'error', neph: '01234567890', nom: 'test' }, { status: 'success', neph: '01234567891', nom: 'test1' }],
+        },
+      },
+    }),
+    template: '<aurige-validation style="background-color: #3d4353;"/>',
+  })
+  )
   .add('AgGridAurigeStatusFilter', () => ({
     components: { AgGridAurigeStatusFilter },
     template: '<ag-grid-aurige-status-filter />',
