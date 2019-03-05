@@ -7,7 +7,7 @@
         <a target="_blank" @click.stop="" :href="`https://www.openstreetmap.org/search?query=${center.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`">OpenStreetMap</a>
       </v-list-tile-sub-title>
     </v-list-tile-content>
-    <v-icon :color="center.count ? 'grey lighten-1' : ''">
+    <v-icon :color="center.count ? 'green lighten-1' : 'red lighten-1'">
       fiber_manual_record
     </v-icon>
   </v-list-tile>
