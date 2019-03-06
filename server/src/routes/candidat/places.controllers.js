@@ -18,8 +18,13 @@ export async function getPlaces (req, res) {
   const centre = req.query.centre
   const departement = req.query.departement
 
-  const beginDate = DateTime.fromISO(req.query.begin).toJSDate()
-  const endDate = DateTime.fromISO(req.query.end).toJSDate()
+  const beginDateTime = DateTime.fromISO(req.query.begin)
+  const endDateTime = DateTime.fromISO(req.query.end)
+
+  const beginDate = !beginDateTime.invalid
+    ? beginDateTime.toJSDate()
+    : undefined
+  const endDate = !endDateTime.invalid ? endDateTime.toJSDate() : undefined
 
   logger.debug(
     JSON.stringify({
@@ -46,7 +51,7 @@ export async function getPlaces (req, res) {
     res.status(200).json(dates)
   } catch (error) {
     logger.error(error)
-    res.status(500).json({
+    res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
       success: false,
       message: error.message,
       error: JSON.stringify(error),
