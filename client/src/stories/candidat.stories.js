@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { storiesOf } from '@storybook/vue'
+import { action } from '@storybook/addon-actions'
 
 import Vuex from 'vuex'
 
@@ -16,7 +17,7 @@ import CenterSelection from '../views/candidat/components/center-selection/Cente
 
 import store from '../store'
 
-storiesOf('Candidat Components', module)
+storiesOf('Candidat', module)
   .add('Pré-inscription', () => ({
     components: { CandidatPresignup },
     template: `<div :style="{display: 'flex', background: '#118098'}"><candidat-presignup /></div>`,
@@ -126,10 +127,6 @@ storiesOf('Candidat Components', module)
   .add('CandidatHeader', () => ({
     components: { CandidatHeader },
     template: '<candidat-header />',
-  }))
-  .add('CandidatFooter', () => ({
-    components: { CandidatFooter },
-    template: '<candidat-footer :ids="ids" :links="links" />',
     router,
     data () {
       return {
@@ -151,6 +148,7 @@ storiesOf('Candidat Components', module)
       actions: {
         DISPLAY_NAV_DRAWER ({ commit }, bool) {
           commit('DISPLAY_NAV_DRAWER', bool)
+          action('Clicked on Burger, display nav drawer')(bool)
         },
       },
     }),
@@ -159,4 +157,15 @@ storiesOf('Candidat Components', module)
     components: { CenterSelection },
     store: store,
     template: '<center-selection />',
+  }))
+  .add('CandidatFooter', () => ({
+    components: { CandidatFooter },
+    template: '<candidat-footer :ids="ids" :links="links" />',
+    router,
+    data () {
+      return {
+        ids: {},
+        links: [],
+      }
+    },
   }))

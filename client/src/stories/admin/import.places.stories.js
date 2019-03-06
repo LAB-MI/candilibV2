@@ -8,7 +8,7 @@ import AdminImportPlaces from '../../views/admin/components/AdminImportPlaces.vu
 
 import Vuex, { mapState } from 'vuex'
 
-storiesOf('Admin Components/Import Places', module)
+storiesOf('Admin/Import Places', module)
   .add('Upload Import Places', () => ({
     components: { AdminImportPlaces },
     computed: mapState({

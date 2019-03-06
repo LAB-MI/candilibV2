@@ -18,7 +18,7 @@ import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStat
 
 import store from '../store'
 
-storiesOf('Admin Components', module)
+storiesOf('Admin', module)
   .add('AdminLogin', () => ({
     components: { AdminLogin },
     template: '<admin-login />',

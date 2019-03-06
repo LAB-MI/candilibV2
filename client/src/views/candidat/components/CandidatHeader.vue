@@ -73,8 +73,12 @@ export default {
       this.$router.push({ name: 'candidat-presignup' })
     },
     toggleDrawer () {
-      const currentDrawerState = this.$store.state.candidat.displayNavDrawer
-      this.$store.commit(DISPLAY_NAV_DRAWER, !currentDrawerState)
+      try {
+        const currentDrawerState = this.$store.state.candidat.displayNavDrawer
+        this.$store.dispatch(DISPLAY_NAV_DRAWER, !currentDrawerState)
+      } catch (error) {
+        console.log(error.message)
+      }
     },
   },
 }
