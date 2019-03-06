@@ -45,8 +45,12 @@ export default {
     candidatData () {
       return this.$store.state.candidat
     },
-    message () {
-      return this.candidatData.message || EMAIL_VALIDATION_IS_PENDING
+    message: {
+      get () {
+        return this.candidatData.message || EMAIL_VALIDATION_IS_PENDING
+      },
+      set (message) {
+      },
     },
     messageType () {
       return this.candidatData.messageType || 'info'

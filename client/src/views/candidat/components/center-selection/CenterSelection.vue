@@ -44,7 +44,7 @@ export default {
       }
       const { adresse } = this.$store.state.candidat.me
       await this.$store.dispatch(FETCH_CENTERS_REQUEST, adresse)
-    }
-  }
+    },
+  },
 }
 </script>
