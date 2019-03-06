@@ -33,7 +33,11 @@ export async function getCentres (req, res) {
     }
 
     if (!nom) {
-      const centres = await findCentresWithNbPlaces(departement)
+      const centres = await findCentresWithNbPlaces(
+        departement,
+        beginDate,
+        endDate
+      )
       res.status(200).json(centres)
     } else {
       const centre = await findCentreByNameAndDepartement(nom, departement)
