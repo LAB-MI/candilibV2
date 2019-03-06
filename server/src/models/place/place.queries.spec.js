@@ -1,5 +1,5 @@
 import moment from 'moment'
-
+import { DateTime } from 'luxon'
 import {
   PLACE_ALREADY_IN_DB_ERROR,
   createPlace,
@@ -187,7 +187,16 @@ describe('Place', () => {
     it('Should find 1 places for centre "Centre 2"', async () => {
       const { nom } = centres[1]
       const centreSelected = createdCentres.find(centre => centre.nom === nom)
-      const listPlaces = await findAvailablePlacesByCentre(centreSelected)
+      const listPlaces = await findAvailablePlacesByCentre(centreSelected._id)
+      expect(listPlaces).toBeDefined()
+      expect(listPlaces).not.toBeNull()
+      expect(listPlaces).toHaveLength(nbPlacesDispoByCentres({ nom }))
+    })
+
+    it('Should find 1 places for centre "Centre 2"', async () => {
+      const { nom } = centres[1]
+      const centreSelected = createdCentres.find(centre => centre.nom === nom)
+      const listPlaces = await findAvailablePlacesByCentre(centreSelected._id)
       expect(listPlaces).toBeDefined()
       expect(listPlaces).not.toBeNull()
       expect(listPlaces).toHaveLength(nbPlacesDispoByCentres({ nom }))
@@ -196,11 +205,34 @@ describe('Place', () => {
     it('Should 1 places availables for centre "Centre 2"', async () => {
       const { nom } = centres[1]
       const centreSelected = createdCentres.find(centre => centre.nom === nom)
-      const countPlaces = await countAvailablePlacesByCentre(centreSelected)
+      const countPlaces = await countAvailablePlacesByCentre(centreSelected._id)
 
       expect(countPlaces).toBeDefined()
       expect(countPlaces).not.toBeNull()
       expect(countPlaces).toBe(nbPlacesDispoByCentres({ nom }))
+    })
+    it('Should find 0 places for centre "Centre 2" at day 19', async () => {
+      const { nom } = centres[1]
+      const centreSelected = createdCentres.find(centre => centre.nom === nom)
+      const begindate = DateTime.fromObject({ day: 19 }).toISO()
+      const listPlaces = await findAvailablePlacesByCentre(
+        centreSelected._id,
+        begindate
+      )
+      expect(listPlaces).toBeDefined()
+      expect(listPlaces).toHaveLength(1)
+    })
+
+    it('Should find 0 places for centre "Centre 2" at day 20', async () => {
+      const { nom } = centres[1]
+      const centreSelected = createdCentres.find(centre => centre.nom === nom)
+      const begindate = DateTime.fromObject({ day: 20 }).toISO()
+      const listPlaces = await findAvailablePlacesByCentre(
+        centreSelected._id,
+        begindate
+      )
+      expect(listPlaces).toBeDefined()
+      expect(listPlaces).toHaveLength(0)
     })
   })
 })

@@ -5,34 +5,44 @@ import { findCentreByName } from '../centre'
 
 export const places = [
   {
-    date: (() => DateTime.fromObject({ day: 28, hour: 9 }).toISO())(),
+    date: (() => DateTime.fromObject({ day: 18, hour: 9 }).toISO())(),
     centre: 'Centre 1',
     inspecteur: 'Inspecteur 1',
   },
   {
-    date: (() => DateTime.fromObject({ day: 29, hour: 10 }).toISO())(),
+    date: (() => DateTime.fromObject({ day: 19, hour: 10 }).toISO())(),
     centre: 'Centre 2',
     inspecteur: 'Inspecteur 2',
   },
   {
-    date: (() => DateTime.fromObject({ day: 28, hour: 11 }).toISO())(),
+    date: (() => DateTime.fromObject({ day: 19, hour: 11 }).toISO())(),
     centre: 'Centre 2',
     inspecteur: 'Inspecteur 3',
   },
   {
-    date: (() => DateTime.fromObject({ day: 28, hour: 9 }).toISO())(),
+    date: (() => DateTime.fromObject({ day: 20, hour: 9 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 4',
   },
   {
-    date: (() => DateTime.fromObject({ day: 30, hour: 10 }).toISO())(),
+    date: (() => DateTime.fromObject({ day: 21, hour: 10 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 5',
   },
   {
-    date: (() => DateTime.fromObject({ day: 30, hour: 11 }).toISO())(),
+    date: (() => DateTime.fromObject({ day: 21, hour: 11 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 6',
+  },
+  {
+    date: (() => DateTime.fromObject({ day: 19, hour: 11 }).toISO())(),
+    centre: 'Centre 3',
+    inspecteur: 'Inspecteur 6',
+  },
+  {
+    date: (() => DateTime.fromObject({ day: 19, hour: 9 }).toISO())(),
+    centre: 'Centre 1',
+    inspecteur: 'Inspecteur 7',
   },
 ]
 
