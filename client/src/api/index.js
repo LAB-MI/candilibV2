@@ -110,6 +110,13 @@ export default {
       return json
     },
 
+    async getPlaces (centreId, begin, end) {
+      const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
+
     async validateEmail (email, hash) {
       const json = await apiClient.put(apiPaths.candidat.myProfile, {
         headers: getHeadersForJson(),

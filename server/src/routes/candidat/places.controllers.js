@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon'
+
 import { logger } from '../../util'
 import {
   getDatesFromPlacesByCentre,
@@ -13,11 +15,11 @@ export const ErrorMsgArgEmpty = 'Information du centre sont obligatoires'
  */
 export async function getPlaces (req, res) {
   const _id = req.param('id')
-  const centre = req.param('centre')
-  const departement = req.param('departement')
+  const centre = req.query.centre
+  const departement = req.query.departement
 
-  const beginDate = req.param('begin')
-  const endDate = req.param('end')
+  const beginDate = DateTime.fromISO(req.query.begin).toJSDate()
+  const endDate = DateTime.fromISO(req.query.end).toJSDate()
 
   logger.debug(
     JSON.stringify({

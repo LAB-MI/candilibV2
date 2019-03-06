@@ -48,7 +48,7 @@ h3 {
   &--center {
     justify-content: center;
     align-items: center;
-    
+
     &-on-mobile {
       @media (max-width: 599px) {
         justify-content: center;

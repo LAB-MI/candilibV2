@@ -32,7 +32,7 @@ export default {
   },
 
   async mounted () {
-    this.getCenters()
+    await this.getCenters()
   },
 
   methods: {
@@ -42,7 +42,7 @@ export default {
         setTimeout(this.getCenters, 100)
         return
       }
-      const { adresse } = this.$store.state.candidat.me
+      const { adresse } = candidat.me
       await this.$store.dispatch(FETCH_CENTERS_REQUEST, adresse)
     },
   },

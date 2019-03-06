@@ -14,6 +14,7 @@ const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
   presignup: `${apiPrefix}/candidat/preinscription`,
   myProfile: `${apiPrefix}/candidat/me`,
   centres: `${apiPrefix}/candidat/centres`,
+  places: `${apiPrefix}/candidat/places`,
 }
 
 const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {

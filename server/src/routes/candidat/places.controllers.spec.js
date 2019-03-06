@@ -37,9 +37,8 @@ describe('Test places controllers', () => {
     it('should get 400 when there are not information centre', async () => {
       const { body } = await request(app)
         .get(`${apiPrefix}/candidat/places`)
-        .send()
         .set('Accept', 'application/json')
-        .expect(500)
+        .expect(400)
 
       expect(body).toBeDefined()
       expect(body).toHaveProperty('success', false)
@@ -54,7 +53,6 @@ describe('Test places controllers', () => {
             centreSelected.departement
           }&centre=${centreSelected.nom}`
         )
-        .send()
         .set('Accept', 'application/json')
         .expect(200)
 
