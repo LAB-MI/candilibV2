@@ -43,8 +43,8 @@ services:
       - candilib-network
       
   storybook:
-    image: candilib_front_all:${APP_VERSION:-latest}
-    container_name: candilib_front_all
+    image: candilib_storybook:${APP_VERSION:-latest}
+    container_name: candilib_storybook
     build:
       target: storybook
       context: ./
