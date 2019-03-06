@@ -6,3 +6,7 @@ export async function signUpCandidat (candidatData) {
     candidat: candidatData,
   }
 }
+
+export const getInfoCandidatDepartement = async id => {
+  return '93'
+}

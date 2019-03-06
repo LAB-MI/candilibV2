@@ -335,7 +335,7 @@ describe('Candidat', () => {
       })
     })
     it('Get the booked candidats by date ', async () => {
-      const date = moment().date(28)
+      const date = moment().date(19)
 
       const bookedCandidats = await findBookedCandidats(date)
       expect(bookedCandidats.length).toBe(1)
@@ -359,7 +359,9 @@ describe('Candidat', () => {
     })
     it('Get the booked candidats inspecteur', async () => {
       const inspecteur = places[0].inspecteur
+      console.log(inspecteur)
       const bookedCandidats = await findBookedCandidats(undefined, inspecteur)
+
       expect(bookedCandidats.length).toBe(1)
       bookedCandidats.forEach(candidat => {
         expect(candidat.place).toBeDefined()
