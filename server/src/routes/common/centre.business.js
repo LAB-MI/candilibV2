@@ -1,5 +1,6 @@
-import { findCentresByDepartement, findAllCentres } from '../../models/centre'
 import { DateTime } from 'luxon'
+
+import { findCentresByDepartement, findAllCentres } from '../../models/centre'
 import { countAvailablePlacesByCentre } from '../../models/place'
 
 export async function findCentresWithNbPlaces (departement, beginDate, endDate) {
@@ -14,13 +15,12 @@ export async function findCentresWithNbPlaces (departement, beginDate, endDate) 
   const centresWithNbPlaces = await Promise.all(
     centres.map(async centre => {
       const count = await countAvailablePlacesByCentre(
-        centre,
+        centre._id,
         beginDate,
         endDate
       )
       return { centre, count }
     })
   )
-
   return centresWithNbPlaces
 }

@@ -9,3 +9,4 @@ export const strongEnoughPassword = [
   /.*[a-z]+/,
   /.*\W+/,
 ]
+export const codePostal = /([0-9AB]{2})[0-9]{3}/

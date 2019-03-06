@@ -45,8 +45,9 @@ export const findPlaceByCandidatId = async id => {
  */
 const queryAvailablePlacesByCentre = (_id, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
-  if (beginDate && endDate) {
+  if (beginDate || endDate) {
     query.where('date')
+
     if (beginDate) query.gte(beginDate)
     if (endDate) query.lt(endDate)
   }
