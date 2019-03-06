@@ -17,7 +17,6 @@ import { NOT_CODE_DEP_MSG } from './centre.controllers'
 const { default: app, apiPrefix } = require('../../app')
 
 jest.mock('../middlewares/verify-token')
-jest.mock('./candidat.business')
 
 describe('Test centre controllers', () => {
   beforeAll(async () => {
