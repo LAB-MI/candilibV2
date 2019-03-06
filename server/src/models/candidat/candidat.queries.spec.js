@@ -359,7 +359,6 @@ describe('Candidat', () => {
     })
     it('Get the booked candidats inspecteur', async () => {
       const inspecteur = places[0].inspecteur
-      console.log(inspecteur)
       const bookedCandidats = await findBookedCandidats(undefined, inspecteur)
 
       expect(bookedCandidats.length).toBe(1)
