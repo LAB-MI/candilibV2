@@ -3,6 +3,8 @@ import {
   INSCRIPTION_UPDATE,
   INSCRIPTION_OK,
   VALIDATION_EMAIL,
+  logger,
+  codePostal,
 } from '../../util'
 import {
   updateCandidatSignUp,
@@ -10,6 +12,7 @@ import {
   findCandidatByNomNeph,
   createCandidat,
   findCandidatByEmail,
+  findCandidatById,
 } from '../../models/candidat'
 
 const uuidv4 = require('uuid/v4')
@@ -130,4 +133,19 @@ export async function validateEmail (email, hash) {
   } catch (error) {
     throw error
   }
+}
+
+export const getInfoCandidatDepartement = async id => {
+  logger.debug(
+    JSON.stringify({
+      section: 'candidat-getInfoCandidatDepartement',
+      args: { id },
+    })
+  )
+
+  const candidat = await findCandidatById(id, { adresse: 1 })
+  if (!candidat) throw new Error('Candidat est introuvable')
+  const { adresse } = candidat
+  const codePostalResult = adresse.match(codePostal)
+  return codePostalResult[1]
 }
