@@ -2,6 +2,8 @@ import { DateTime } from 'luxon'
 import {
   findAvailablePlacesByCentre,
   findPlacesByCentreAndDate,
+  findPlaceBookedByCandidat,
+  bookPlace,
 } from '../../models/place'
 import {
   findCentreByName,
@@ -60,4 +62,18 @@ export const getDatesFromPlacesByCentre = async (
 export const haveAvailablePlaces = async (id, date) => {
   const places = await findPlacesByCentreAndDate(id, date)
   return places && places.length > 0
+}
+
+export const getReservationLevelCandidat = async idCandidat => {
+  const place = await findPlaceBookedByCandidat(
+    idCandidat,
+    { _id: 1, date: 1, centre: 1 },
+    true
+  )
+  return place
+}
+
+export const saveReservationOnePlace = async (idCandidat, center, date) => {
+  const place = await bookPlace(idCandidat, center, date)
+  return place
 }
