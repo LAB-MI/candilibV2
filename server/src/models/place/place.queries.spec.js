@@ -28,7 +28,7 @@ import {
 } from '../__tests__'
 
 import { deleteCentre, createCentre } from '../centre'
-import { findPlacesByCentreAndDate } from './place.queries'
+import { findPlacesByCentreAndDate, bookPlace } from './place.queries'
 
 const date = moment()
   .date(28)
@@ -239,11 +239,11 @@ describe('Place', () => {
   })
   describe('to book places', () => {
     let createdCentres
-
+    let createdcandidats
     beforeAll(async () => {
       createdCentres = await createCentres()
       await createPlaces()
-      await createCandidats()
+      createdcandidats = await createCandidats()
       await makeResas()
     })
     afterAll(async () => {
@@ -280,6 +280,43 @@ describe('Place', () => {
 
       expect(foundPlaces).toBeDefined()
       expect(foundPlaces).toHaveLength(0)
+    })
+    it('Should to book the place of centre 3 at day 20 9h  with candidat 123456789002 ', async () => {
+      const selectedPlace = places[4]
+      const selectedCandidat = createdcandidats.find(
+        candidat => candidat.codeNeph === candidats[2].codeNeph
+      )._id
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === selectedPlace.centre
+      )._id
+      const place = await bookPlace(
+        selectedCandidat,
+        selectedCentre,
+        selectedPlace.date
+      )
+      expect(place).toBeDefined()
+      expect(place).toHaveProperty('isBooked', true)
+      expect(place).toHaveProperty('bookedBy', selectedCandidat)
+      expect(place).toHaveProperty('centre', selectedCentre)
+      expect(place.date).toEqual(
+        DateTime.fromISO(selectedPlace.date).toJSDate()
+      )
+    })
+    it('Should not to book the booked place of centre 2 at day 18 9h  with candidat 123456789002 ', async () => {
+      const selectedPlace = places[1]
+      const selectedCandidat = createdcandidats.find(
+        candidat => candidat.codeNeph === candidats[2].codeNeph
+      )._id
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === selectedPlace.centre
+      )._id
+      const place = await bookPlace(
+        selectedCandidat,
+        selectedCentre,
+        selectedPlace.date
+      )
+      expect(place).toBeDefined()
+      expect(place).toBeNull()
     })
   })
 })

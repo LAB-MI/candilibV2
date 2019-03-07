@@ -113,3 +113,23 @@ export const findPlacesByCentreAndDate = async (_id, date) => {
     .ne(true)
   return places
 }
+
+export const findPlaceBookedByCandidat = async (
+  bookedBy,
+  options,
+  populate
+) => {
+  const query = Place.find({ isBooked: true, bookedBy, options })
+  if (populate) query.populate('centre')
+  const place = await query.exec()
+  return place
+}
+
+export const bookPlace = async (bookedBy, centre, date) => {
+  const place = await Place.findOneAndUpdate(
+    { centre, date, isBooked: { $ne: true } },
+    { $set: { isBooked: true, bookedBy } },
+    { new: true }
+  )
+  return place
+}
