@@ -24,9 +24,11 @@ import {
   centres,
   candidats,
   nbPlacesDispoByCentres,
+  places,
 } from '../__tests__'
 
 import { deleteCentre, createCentre } from '../centre'
+import { findPlacesByCentreAndDate } from './place.queries'
 
 const date = moment()
   .date(28)
@@ -233,6 +235,55 @@ describe('Place', () => {
       )
       expect(listPlaces).toBeDefined()
       expect(listPlaces).toHaveLength(0)
+    })
+  })
+  describe('to book places', () => {
+    let createdCentres
+    let createdPlaces
+    beforeAll(async () => {
+      createdCentres = await createCentres()
+      await createPlaces()
+      await createCandidats()
+      await makeResas()
+    })
+    afterAll(async () => {
+      await removePlaces()
+      await deleteCandidats()
+      await removeCentres()
+    })
+
+    it('find 1 available place of centre 2 at a day 19 11h  ', async () => {
+      createdPlaces = await findAllPlaces()
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === centres[1].nom
+      )
+      const selectedDate = places[2].date
+
+      console.log({ selectedCentre, selectedDate, createdPlaces })
+      const foundPlaces = await findPlacesByCentreAndDate(
+        selectedCentre._id,
+        selectedDate
+      )
+      console.log(foundPlaces)
+      expect(foundPlaces).toBeDefined()
+      expect(foundPlaces).toHaveLength(1)
+      expect(foundPlaces).not.toHaveProperty('isBooked')
+    })
+    it('find 0 available place of centre 2 at a day 19 10h  ', async () => {
+      createdPlaces = await findAllPlaces()
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === centres[1].nom
+      )
+      const selectedDate = places[1].date
+
+      console.log({ selectedCentre, selectedDate, createdPlaces })
+      const foundPlaces = await findPlacesByCentreAndDate(
+        selectedCentre._id,
+        selectedDate
+      )
+
+      expect(foundPlaces).toBeDefined()
+      expect(foundPlaces).toHaveLength(0)
     })
   })
 })

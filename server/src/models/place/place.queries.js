@@ -97,3 +97,15 @@ export const countAvailablePlacesByCentre = async (
   ).count()
   return nbPlaces
 }
+
+export const findPlacesByCentreAndDate = async (_id, date) => {
+  console.log({ _id, date })
+  const places = await Place.find({
+    centre: _id,
+    date,
+  })
+    .where('isBooked')
+    .ne(true)
+  // const places = await findAvailablePlacesByCentre(_id, date)
+  return places
+}
