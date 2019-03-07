@@ -18,6 +18,8 @@ import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStat
 
 import store from '../store'
 
+const getRandomString = () => Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 5)
+
 storiesOf('Admin', module)
   .add('AdminLogin', () => ({
     components: { AdminLogin },
@@ -81,16 +83,50 @@ storiesOf('Admin', module)
     store: new Vuex.Store({
       state: {
         whitelist: {
-          list: [
+          isFetching: false,
+          list: [],
+        },
+      },
+      mutations: {
+        DELETE_EMAIL_REQUEST (state, idToRemove) {
+          state.whitelist.list = state.whitelist.list.filter(({ _id }) => _id !== idToRemove)
+        },
+
+        FETCH_WHITELIST_REQUEST (state) {
+          state.whitelist.isFetching = true
+        },
+
+        FETCH_WHITELIST_SUCCESS (state) {
+          state.whitelist.isFetching = false
+          state.whitelist.list = [
             {
-              _id: 1,
+              _id: getRandomString(),
               email: 'jean@dupont.fr',
             },
-          ],
+          ]
+        },
+
+        SAVE_EMAIL_REQUEST (state, email) {
+          state.whitelist.list = [
+            ...state.whitelist.list,
+            {
+              _id: getRandomString(),
+              email,
+            },
+          ]
         },
       },
       actions: {
-        FETCH_WHITELIST_REQUEST: () => {},
+        FETCH_WHITELIST_REQUEST ({ commit }) {
+          commit('FETCH_WHITELIST_REQUEST')
+          setTimeout(() => commit('FETCH_WHITELIST_SUCCESS'), 1000)
+        },
+        DELETE_EMAIL_REQUEST ({ commit }, id) {
+          commit('DELETE_EMAIL_REQUEST', id)
+        },
+        SAVE_EMAIL_REQUEST ({ commit }, email) {
+          commit('SAVE_EMAIL_REQUEST', email)
+        },
       },
     }),
     template: '<admin-whitelist />',

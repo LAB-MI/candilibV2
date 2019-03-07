@@ -12,9 +12,7 @@ storiesOf('Admin/Import Places', module)
   .add('Upload Import Places', () => ({
     components: { AdminImportPlaces },
     computed: mapState({
-      content: state => {
-        return state.message.content
-      },
+      content: state => state.message.content,
       show: state => state.message.show,
       color: state => state.message.color,
     }),

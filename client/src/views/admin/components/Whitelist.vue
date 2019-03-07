@@ -5,22 +5,14 @@
     </h2>
     <v-card :style="{ padding: '1em 0' }">
       <v-list>
-        <p ref="testp" v-if="whitelist.isFetching">Chargement...</p>
-        <v-list-tile
+        <p v-if="whitelist.isFetching">Chargement...</p>
+
+        <whitelisted
           v-for="whitelisted in whitelist.list"
           :key="whitelisted._id"
-          @click="true"
-        >
-          <v-list-tile-action v-if="whitelisted !== 'new'" @click="removeFromWhitelist(whitelisted._id)">
-            <v-btn icon>
-              <v-icon color="#17a2b8">delete</v-icon>
-            </v-btn>
-          </v-list-tile-action>
-
-          <v-list-tile-content>
-            <v-list-tile-title v-text="whitelisted.email"></v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+          :whitelisted="whitelisted"
+          :remove-from-whitelist="removeFromWhitelist"
+        />
 
         <v-form v-model="valid" @submit.prevent="addToWhitelist">
           <v-list-tile v-show="adding">
@@ -62,12 +54,17 @@
 import { mapState } from 'vuex'
 import { email as emailRegex } from '@/util'
 
+import Whitelisted from './Whitelisted.vue'
 import { FETCH_WHITELIST_REQUEST, DELETE_EMAIL_REQUEST, SAVE_EMAIL_REQUEST, SHOW_ERROR } from '@/store'
 
 export default {
-  name: 'white-list',
+  name: 'whitelist',
+  components: {
+    Whitelisted,
+  },
   data () {
     return {
+      dialog: false,
       adding: false,
       newEmail: '',
       emailRules: [
@@ -95,6 +92,7 @@ export default {
       }
       await this.$store.dispatch(SAVE_EMAIL_REQUEST, this.newEmail)
       this.hideForm()
+      setTimeout(this.showForm, 10)
     },
 
     async removeFromWhitelist (id) {
