@@ -1,6 +1,6 @@
 <template>
   <div class="admin">
-    <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0 }">
+    <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0, paddingBottom: 0 }">
       <admin-header :ids="ids" :header-icons="headerIcons" />
       <div :style="{margin: '4em 0 0 0'}">
         <admin-calendar :id="ids.adminCalendar" />

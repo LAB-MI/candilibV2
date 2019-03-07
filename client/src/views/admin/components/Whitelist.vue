@@ -40,12 +40,16 @@
             </v-text-field>
           </v-list-tile>
         </v-form>
+        <v-list-tile v-if="!adding" @click="showForm">
+          <v-list-tile-action>
+            <v-btn icon >
+              <v-icon color="#17a2b8">
+                add_circle
+              </v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
       </v-list>
-      <v-btn icon v-if="!adding" @click="showForm">
-        <v-icon color="#17a2b8">
-          add_circle
-        </v-icon>
-      </v-btn>
     </v-card>
   </div>
 </template>
