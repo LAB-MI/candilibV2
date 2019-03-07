@@ -230,6 +230,14 @@ export default {
       return json
     },
 
+    async addToBatchWhitelist (emails) {
+      const json = await apiClient.post(apiPaths.admin.whitelist, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ emails }),
+      })
+      return json
+    },
+
     async addToWhitelist (email) {
       const json = await apiClient.post(apiPaths.admin.whitelist, {
         headers: getHeadersForAdminJson(),

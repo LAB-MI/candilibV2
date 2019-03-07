@@ -2,6 +2,8 @@
 import { storiesOf } from '@storybook/vue'
 import { action } from '@storybook/addon-actions'
 
+import delay from 'delay'
+
 import Vuex from 'vuex'
 
 import router from '../router'
@@ -84,7 +86,12 @@ storiesOf('Admin', module)
       state: {
         whitelist: {
           isFetching: false,
-          list: [],
+          list: [
+            {
+              _id: getRandomString(),
+              email: 'jean@dupont.fr',
+            },
+          ],
         },
       },
       mutations: {
@@ -96,14 +103,8 @@ storiesOf('Admin', module)
           state.whitelist.isFetching = true
         },
 
-        FETCH_WHITELIST_SUCCESS (state) {
+        FETCH_WHITELIST_SUCCESS (state, list) {
           state.whitelist.isFetching = false
-          state.whitelist.list = [
-            {
-              _id: getRandomString(),
-              email: 'jean@dupont.fr',
-            },
-          ]
         },
 
         SAVE_EMAIL_REQUEST (state, email) {
@@ -115,17 +116,40 @@ storiesOf('Admin', module)
             },
           ]
         },
+
+        SAVE_EMAIL_BATCH_REQUEST (state, emails) {
+          state.whitelist.list = [
+            ...state.whitelist.list,
+            ...emails.map(email => ({
+              _id: getRandomString(),
+              email,
+            })),
+          ]
+        },
       },
       actions: {
-        FETCH_WHITELIST_REQUEST ({ commit }) {
+        async FETCH_WHITELIST_REQUEST ({ commit }) {
           commit('FETCH_WHITELIST_REQUEST')
-          setTimeout(() => commit('FETCH_WHITELIST_SUCCESS'), 1000)
+          await delay(1000)
+          commit('FETCH_WHITELIST_SUCCESS')
         },
-        DELETE_EMAIL_REQUEST ({ commit }, id) {
+        async DELETE_EMAIL_REQUEST ({ commit }, id) {
+          commit('FETCH_WHITELIST_REQUEST')
+          await delay(500)
           commit('DELETE_EMAIL_REQUEST', id)
+          commit('FETCH_WHITELIST_SUCCESS')
         },
-        SAVE_EMAIL_REQUEST ({ commit }, email) {
+        async SAVE_EMAIL_REQUEST ({ commit }, email) {
+          commit('FETCH_WHITELIST_REQUEST')
+          await delay(1000)
           commit('SAVE_EMAIL_REQUEST', email)
+          commit('FETCH_WHITELIST_SUCCESS')
+        },
+        async SAVE_EMAIL_BATCH_REQUEST ({ commit }, emails) {
+          commit('FETCH_WHITELIST_REQUEST')
+          await delay(1000)
+          commit('SAVE_EMAIL_BATCH_REQUEST', emails)
+          commit('FETCH_WHITELIST_SUCCESS')
         },
       },
     }),

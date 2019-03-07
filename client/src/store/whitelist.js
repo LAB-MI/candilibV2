@@ -14,6 +14,10 @@ export const SAVE_EMAIL_REQUEST = 'SAVE_EMAIL_REQUEST'
 export const SAVE_EMAIL_FAILURE = 'SAVE_EMAIL_FAILURE'
 export const SAVE_EMAIL_SUCCESS = 'SAVE_EMAIL_SUCCESS'
 
+export const SAVE_EMAIL_BATCH_REQUEST = 'SAVE_EMAIL_BATCH_REQUEST'
+export const SAVE_EMAIL_BATCH_FAILURE = 'SAVE_EMAIL_BATCH_FAILURE'
+export const SAVE_EMAIL_BATCH_SUCCESS = 'SAVE_EMAIL_BATCH_SUCCESS'
+
 export default {
   state: {
     isFetching: false,
@@ -50,6 +54,16 @@ export default {
       state.isUpdating = false
     },
     [SAVE_EMAIL_FAILURE] (state) {
+      state.isUpdating = false
+    },
+
+    [SAVE_EMAIL_BATCH_REQUEST] (state) {
+      state.isUpdating = true
+    },
+    [SAVE_EMAIL_BATCH_SUCCESS] (state) {
+      state.isUpdating = false
+    },
+    [SAVE_EMAIL_BATCH_FAILURE] (state) {
       state.isUpdating = false
     },
   },
@@ -97,7 +111,7 @@ export default {
             throw new Error(`Email invalide : '${emailToAdd}'`)
           }
         }
-        dispatch(FETCH_WHITELIST_REQUEST)
+        await dispatch(FETCH_WHITELIST_REQUEST)
         commit(SAVE_EMAIL_SUCCESS, email)
         return dispatch(SHOW_SUCCESS, `${email} ajouté à la liste blanche`)
       } catch (error) {
@@ -105,5 +119,26 @@ export default {
         return dispatch(SHOW_ERROR, error.message)
       }
     },
+  },
+
+  async [SAVE_EMAIL_BATCH_REQUEST] ({ commit, dispatch }, emailsToAdd) {
+    commit(SAVE_EMAIL_BATCH_REQUEST)
+    try {
+      const { email, message, success } = await api.admin.addBatchToWhitelist(emailsToAdd)
+      if (success === false && message) {
+        if (message.includes('duplicate key error')) {
+          throw new Error(`Email déjà existant : '${emailsToAdd}'`)
+        }
+        if (message.includes('Path `email` is invalid')) {
+          throw new Error(`Email invalide : '${emailsToAdd}'`)
+        }
+      }
+      await dispatch(FETCH_WHITELIST_REQUEST)
+      commit(SAVE_EMAIL_BATCH_SUCCESS, email)
+      return dispatch(SHOW_SUCCESS, `${email} ajouté à la liste blanche`)
+    } catch (error) {
+      commit(SAVE_EMAIL_BATCH_FAILURE)
+      return dispatch(SHOW_ERROR, error.message)
+    }
   },
 }
