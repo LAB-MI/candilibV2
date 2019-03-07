@@ -239,7 +239,7 @@ describe('Place', () => {
   })
   describe('to book places', () => {
     let createdCentres
-    let createdPlaces
+
     beforeAll(async () => {
       createdCentres = await createCentres()
       await createPlaces()
@@ -253,30 +253,26 @@ describe('Place', () => {
     })
 
     it('find 1 available place of centre 2 at a day 19 11h  ', async () => {
-      createdPlaces = await findAllPlaces()
       const selectedCentre = createdCentres.find(
         centre => centre.nom === centres[1].nom
       )
       const selectedDate = places[2].date
 
-      console.log({ selectedCentre, selectedDate, createdPlaces })
       const foundPlaces = await findPlacesByCentreAndDate(
         selectedCentre._id,
         selectedDate
       )
-      console.log(foundPlaces)
+
       expect(foundPlaces).toBeDefined()
       expect(foundPlaces).toHaveLength(1)
       expect(foundPlaces).not.toHaveProperty('isBooked')
     })
     it('find 0 available place of centre 2 at a day 19 10h  ', async () => {
-      createdPlaces = await findAllPlaces()
       const selectedCentre = createdCentres.find(
         centre => centre.nom === centres[1].nom
       )
       const selectedDate = places[1].date
 
-      console.log({ selectedCentre, selectedDate, createdPlaces })
       const foundPlaces = await findPlacesByCentreAndDate(
         selectedCentre._id,
         selectedDate

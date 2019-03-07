@@ -4,6 +4,7 @@ import { logger } from '../../util'
 import {
   getDatesFromPlacesByCentre,
   getDatesFromPlacesByCentreId,
+  haveAvailablePlaces,
 } from './places.business'
 
 export const ErrorMsgArgEmpty = 'Information du centre sont obligatoires'
@@ -49,6 +50,33 @@ export async function getPlaces (req, res) {
       )
     }
     res.status(200).json(dates)
+  } catch (error) {
+    logger.error(error)
+    res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
+      success: false,
+      message: error.message,
+      error: JSON.stringify(error),
+    })
+  }
+}
+
+export const verifyAvailablePlaces = async (req, res) => {
+  const idCentre = req.param('id')
+  const datePlace = req.param('date')
+
+  logger.debug(
+    JSON.stringify({
+      section: 'candidat-verifyAvailablePlaces',
+      argument: { idCentre, datePlace },
+    })
+  )
+  try {
+    if (!idCentre) {
+      throw new Error(ErrorMsgArgEmpty)
+    }
+
+    const havePlaces = await haveAvailablePlaces(idCentre, datePlace)
+    return res.send(havePlaces)
   } catch (error) {
     logger.error(error)
     res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({

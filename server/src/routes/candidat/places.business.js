@@ -1,5 +1,8 @@
 import { DateTime } from 'luxon'
-import { findAvailablePlacesByCentre } from '../../models/place'
+import {
+  findAvailablePlacesByCentre,
+  findPlacesByCentreAndDate,
+} from '../../models/place'
 import {
   findCentreByName,
   findCentreByNameAndDepartement,
@@ -52,4 +55,9 @@ export const getDatesFromPlacesByCentre = async (
     endDate
   )
   return dates
+}
+
+export const haveAvailablePlaces = async (id, date) => {
+  const places = await findPlacesByCentreAndDate(id, date)
+  return places && places.length > 0
 }
