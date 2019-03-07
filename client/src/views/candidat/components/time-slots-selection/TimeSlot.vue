@@ -7,14 +7,15 @@
         <v-icon>
           arrow_back_ios
         </v-icon>
-        {{ selectedCenter.nom }} ({{ selectedCenter.departement }})
+        {{ center.selected ? center.selected.nom : '' }}
+        ({{ center.selected ? center.selected.departement : '' }})
       </v-btn>
       <a
         target="_blank"
         class="location-icon"
         @click.stop="true"
         v-ripple
-        :href="`https://www.openstreetmap.org/search?query=${selectedCenter.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
+        :href="`https://www.openstreetmap.org/search?query=${center.selected && center.selected.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
       >
         <v-icon>
           location_on
@@ -27,7 +28,7 @@
           color="dark"
           slider-color="yellow"
         >
-          <v-tab v-for="(month, i) in timeSlots" :key="i" :href="`#tab-${month.month}`">
+          <v-tab v-for="(month, i) in timeSlots.list" :key="i" :href="`#tab-${month.month}`">
             <span class="color-span">{{ month.month }}</span>
           </v-tab>
         </v-tabs>
@@ -35,7 +36,7 @@
     </v-toolbar>
     <v-tabs>
       <v-tabs-items class="tabs-items-block" v-model="switchTab">
-        <v-tab-item v-for="(timeSlot, i) in timeSlots" :key="i" :value="`tab-${timeSlot.month}`">
+        <v-tab-item v-for="(timeSlot, i) in timeSlots.list" :key="i" :value="`tab-${timeSlot.month}`">
           <v-card flat>
             <v-card-text>
               <times-slots-selector :items="timeSlot.availableTimeSlots"/>
@@ -48,8 +49,12 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import TimesSlotsSelector from './TimesSlotsSelector'
 import { FETCH_DATES_REQUEST } from '@/store/time-slots'
+import { FETCH_CENTER_REQUEST } from '@/store/center'
+
 export default {
   components: {
     TimesSlotsSelector,
@@ -57,11 +62,13 @@ export default {
 
   data () {
     return {
-      selectedCenter: this.$store.state.center.selected,
-      timeSlots: [],
       statusDayBlock: false,
       switchTab: null,
     }
+  },
+
+  computed: {
+    ...mapState(['center', 'timeSlots']),
   },
 
   methods: {
@@ -70,13 +77,16 @@ export default {
     },
 
     async getTimeSlots () {
-      const { selected } = this.$store.state.center
+      const selected = this.center.selected
       if (!selected || !selected._id) {
-        setTimeout(this.getCenters, 100)
+        if (!this.center.isFetchingCenter) {
+          const { center: nom, departement } = this.$route.params
+          await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
+        }
+        setTimeout(this.getTimeSlots, 100)
         return
       }
       await this.$store.dispatch(FETCH_DATES_REQUEST, selected._id)
-      this.timeSlots = this.$store.state.timeSlots.list
     },
 
     goToSelectCenter () {

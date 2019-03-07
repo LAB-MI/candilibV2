@@ -91,7 +91,7 @@ const candidatRoutes = [
         component: CenterSelection,
       },
       {
-        path: ':center/selection-place',
+        path: ':departement/:center/selection-place',
         name: 'time-slot',
         component: TimeSlot,
       },

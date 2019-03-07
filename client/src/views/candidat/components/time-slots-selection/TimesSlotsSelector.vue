@@ -43,6 +43,9 @@ export default {
   },
   methods: {
     selectSlot (slot) {
+      if (!this.$store.state.center.selected) {
+        return
+      }
       const { nom, departement, _id } = this.$store.state.center.selected
       const day = slot.day.split(' ')
       const hour = slot.hour.split('-')[0].split('h')
