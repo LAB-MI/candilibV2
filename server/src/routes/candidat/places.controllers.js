@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon'
+
 import { logger } from '../../util'
 import {
   getDatesFromPlacesByCentre,
@@ -13,11 +15,16 @@ export const ErrorMsgArgEmpty = 'Information du centre sont obligatoires'
  */
 export async function getPlaces (req, res) {
   const _id = req.param('id')
-  const centre = req.param('centre')
-  const departement = req.param('departement')
+  const centre = req.query.centre
+  const departement = req.query.departement
 
-  const beginDate = req.param('begin')
-  const endDate = req.param('end')
+  const beginDateTime = DateTime.fromISO(req.query.begin)
+  const endDateTime = DateTime.fromISO(req.query.end)
+
+  const beginDate = !beginDateTime.invalid
+    ? beginDateTime.toJSDate()
+    : undefined
+  const endDate = !endDateTime.invalid ? endDateTime.toJSDate() : undefined
 
   logger.debug(
     JSON.stringify({
@@ -44,7 +51,7 @@ export async function getPlaces (req, res) {
     res.status(200).json(dates)
   } catch (error) {
     logger.error(error)
-    res.status(500).json({
+    res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
       success: false,
       message: error.message,
       error: JSON.stringify(error),

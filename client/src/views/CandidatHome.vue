@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card>
     <section>
       <header class="candidat-section-header">
         <h2 class="candidat-section-header__title">
@@ -7,10 +7,11 @@
         </h2>
       </header>
     </section>
+
     <router-link :to="{name: 'selection-centre'}">
       <v-btn>Sélectionner un centre</v-btn>
     </router-link>
-  </div>
+  </v-card>
 </template>
 
 <script>

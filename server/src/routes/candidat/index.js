@@ -9,7 +9,7 @@ const router = express.Router()
 router.get('/me', getMe)
 router.put('/me', emailValidation)
 router.get('/centres', getCentres)
-router.get('/places', getPlaces)
+router.get('/places/:id?', getPlaces)
 
 export { preSignup, emailValidation } from './candidat.controllers'
 

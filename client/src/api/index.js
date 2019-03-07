@@ -103,8 +103,22 @@ export default {
       return json
     },
 
+    async getCentre (departement, nom) {
+      const json = await apiClient.get(`${apiPaths.candidat.centres}?departement=${departement}&nom=${nom}`, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
+
     async getCentres (departement) {
       const json = await apiClient.get(`${apiPaths.candidat.centres}?departement=${departement}`, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
+
+    async getPlaces (centreId, begin, end) {
+      const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`, {
         headers: getHeadersForJson(),
       })
       return json

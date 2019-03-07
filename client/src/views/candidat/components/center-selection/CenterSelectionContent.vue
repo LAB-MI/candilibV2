@@ -42,7 +42,8 @@ export default {
       this.$router.push({
         name: 'time-slot',
         params: {
-          center: `${center.centre.departement}-${center.centre.nom}`,
+          center: `${center.centre.nom}`,
+          departement: `${center.centre.departement}`,
         },
       })
     },

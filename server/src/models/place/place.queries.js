@@ -1,5 +1,6 @@
-import Place from './place.model'
 import mongoose from 'mongoose'
+
+import Place from './place.model'
 import { logger } from '../../util'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'

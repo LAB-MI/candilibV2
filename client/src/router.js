@@ -10,6 +10,8 @@ import Error404 from '@/views/Error404.vue'
 import MentionsLegales from '@/views/candidat/components/mentions-legales/MentionsLegales.vue'
 import Faq from '@/views/candidat/components/faq/Faq.vue'
 import CenterSelection from '@/views/candidat/components/center-selection/CenterSelection.vue'
+import TimeSlot from '@/views/candidat/components/time-slots-selection/TimeSlot.vue'
+import ConfirmSelection from '@/views/candidat/components/confirm-selection/ConfirmSelection.vue'
 
 import {
   requireAdminAuth,
@@ -89,8 +91,14 @@ const candidatRoutes = [
         component: CenterSelection,
       },
       {
-        path: ':center/selection-place',
+        path: ':departement/:center/selection-place',
         name: 'time-slot',
+        component: TimeSlot,
+      },
+      {
+        path: ':center/:slot/selection-confirmation',
+        name: 'confirm-selection',
+        component: ConfirmSelection,
       },
     ],
   },
