@@ -1,51 +1,41 @@
 <template>
-  <div>
-    <v-toolbar
-      dark
-    >
-      <v-btn @click="goToSelectCenter()">
-        <v-icon>
-          arrow_back_ios
-        </v-icon>
+  <v-card>
+    <v-container>
+      <v-toolbar-title
+        v-ripple
+        @click="goToSelectCenter()"
+        class="u-flex  u-flex--center  u-flex__item--grow"
+        style="cursor: pointer"
+      >
+        <v-btn icon>
+          <v-icon>
+            arrow_back_ios
+          </v-icon>
+        </v-btn>
         {{ center.selected ? center.selected.nom : '' }}
         ({{ center.selected ? center.selected.departement : '' }})
-      </v-btn>
-      <a
-        target="_blank"
-        class="location-icon"
-        @click.stop="true"
-        v-ripple
-        :href="`https://www.openstreetmap.org/search?query=${center.selected && center.selected.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
+      </v-toolbar-title>
+      <v-tabs
+        v-model="switchTab"
+        centered
+        slider-color="primary"
+        color="#dfdfdf"
       >
-        <v-icon>
-          location_on
-        </v-icon>
-      </a>
-      <template v-slot:extension>
-        <v-tabs
-          v-model="switchTab"
-          centered
-          color="dark"
-          slider-color="yellow"
-        >
-          <v-tab v-for="(month, i) in timeSlots.list" :key="i" :href="`#tab-${month.month}`">
-            <span class="color-span">{{ month.month }}</span>
-          </v-tab>
-        </v-tabs>
-      </template>
-    </v-toolbar>
-    <v-tabs>
-      <v-tabs-items class="tabs-items-block" v-model="switchTab">
-        <v-tab-item v-for="(timeSlot, i) in timeSlots.list" :key="i" :value="`tab-${timeSlot.month}`">
-          <v-card flat>
-            <v-card-text>
-              <times-slots-selector :items="timeSlot.availableTimeSlots"/>
-            </v-card-text>
-          </v-card>
-        </v-tab-item>
-      </v-tabs-items>
-    </v-tabs>
-  </div>
+        <v-tab v-for="(month, i) in timeSlots.list" :key="i" :href="`#tab-${month.month}`">
+          <span class="color-span">{{ month.month }}</span>
+        </v-tab>
+      </v-tabs>
+    </v-container>
+    <v-tabs-items class="tabs-items-block" v-model="switchTab">
+      <v-tab-item v-for="(timeSlot, i) in timeSlots.list" :key="i" :value="`tab-${timeSlot.month}`">
+        <v-card flat>
+          <v-card-text>
+            <times-slots-selector :items="timeSlot.availableTimeSlots"/>
+          </v-card-text>
+        </v-card>
+      </v-tab-item>
+    </v-tabs-items>
+  </v-card>
 </template>
 
 <script>

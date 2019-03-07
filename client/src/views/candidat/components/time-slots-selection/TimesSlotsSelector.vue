@@ -19,6 +19,7 @@
           class="scroll-y"
         >
         <v-btn
+          color="primary"
           v-for="(subItem, i) in item.hours"
           :key="i"
           @click="selectSlot({ hour: subItem, day: item.day })"
