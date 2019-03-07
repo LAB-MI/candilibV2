@@ -57,7 +57,7 @@ export default {
       commit(FETCH_DATES_REQUEST)
       try {
         const begin = DateTime.local().toISO()
-        const end = DateTime.local().plus({ month: 3 }).toISO()
+        const end = DateTime.local().plus({ month: 3 }).endOf('month').toISO()
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
 
         const formatedResult = formatResult(result)
