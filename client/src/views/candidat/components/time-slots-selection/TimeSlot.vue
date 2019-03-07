@@ -1,31 +1,32 @@
 <template>
   <v-card>
-    <v-container>
-      <v-toolbar-title
-        v-ripple
-        @click="goToSelectCenter()"
-        class="u-flex  u-flex--center  u-flex__item--grow"
-        style="cursor: pointer"
-      >
-        <v-btn icon>
-          <v-icon>
-            arrow_back_ios
-          </v-icon>
-        </v-btn>
-        {{ center.selected ? center.selected.nom : '' }}
-        ({{ center.selected ? center.selected.departement : '' }})
-      </v-toolbar-title>
-      <v-tabs
-        v-model="switchTab"
-        centered
-        slider-color="primary"
-        color="#dfdfdf"
-      >
-        <v-tab v-for="(month, i) in timeSlots.list" :key="i" :href="`#tab-${month.month}`">
-          <span class="color-span">{{ month.month }}</span>
-        </v-tab>
-      </v-tabs>
-    </v-container>
+    <section>
+      <header class="candidat-section-header">
+        <h2
+          class="candidat-section-header__title"
+          v-ripple
+          @click="goToSelectCenter()"
+        >
+          <v-btn icon>
+            <v-icon>
+              arrow_back_ios
+            </v-icon>
+          </v-btn>
+          {{ center.selected ? center.selected.nom : '' }}
+          ({{ center.selected ? center.selected.departement : '' }})
+        </h2>
+      </header>
+    </section>
+    <v-tabs
+      v-model="switchTab"
+      centered
+      slider-color="primary"
+      color="#dfdfdf"
+    >
+      <v-tab v-for="(month, i) in timeSlots.list" :key="i" :href="`#tab-${month.month}`">
+        <span class="color-span">{{ month.month }}</span>
+      </v-tab>
+    </v-tabs>
     <v-tabs-items class="tabs-items-block" v-model="switchTab">
       <v-tab-item v-for="(timeSlot, i) in timeSlots.list" :key="i" :value="`tab-${timeSlot.month}`">
         <v-card flat>

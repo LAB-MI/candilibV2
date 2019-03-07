@@ -80,29 +80,4 @@ export default {
     margin: 1em auto 0 auto;
   }
 }
-
-.candidat-section-header {
-  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-
-  &::after {
-    content: '';
-    width: 60px;
-    height: 5px;
-    background: #f82249;
-    bottom: 0;
-  }
-
-  &__title {
-    font-size: 2.5rem;
-    text-transform: uppercase;
-    text-align: center;
-    font-weight: 700;
-    margin-bottom: 10px;
-  }
-}
 </style>

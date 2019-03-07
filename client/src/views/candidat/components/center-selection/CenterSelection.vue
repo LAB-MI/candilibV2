@@ -1,20 +1,20 @@
 <template>
-  <div>
-    <v-toolbar>
-      <v-toolbar-title>
-        CHOIX DU CENTRE
-      </v-toolbar-title>
-    </v-toolbar>
-    <v-card>
-      <v-list three-line>
-        <center-selection-content
-          v-for="center in center.list"
-          :key="center._id"
-          :center="center"
-        />
-      </v-list>
-    </v-card>
-  </div>
+  <v-card>
+    <section>
+      <header class="candidat-section-header">
+        <h2 class="candidat-section-header__title">
+          Choix du centre
+        </h2>
+      </header>
+    </section>
+    <v-list three-line>
+      <center-selection-content
+        v-for="center in center.list"
+        :key="center._id"
+        :center="center"
+      />
+    </v-list>
+  </v-card>
 </template>
 
 <script>
