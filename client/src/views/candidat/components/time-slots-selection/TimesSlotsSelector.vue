@@ -64,7 +64,8 @@ export default {
       this.$router.push({
         name: 'confirm-selection',
         params: {
-          center: `${selectedSlot.centreInfo.departement}-${selectedSlot.centreInfo.nom}`,
+          departement: `${selectedSlot.centreInfo.departement}`,
+          center: `${selectedSlot.centreInfo.nom}`,
           slot: selectedSlot.slot,
         },
       })

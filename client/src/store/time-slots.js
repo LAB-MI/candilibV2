@@ -68,6 +68,7 @@ export default {
       }
     },
     [SELECT_DAY] ({ commit }, selected) {
+      // check if is available day
       commit(SELECT_DAY, selected)
     },
   },
