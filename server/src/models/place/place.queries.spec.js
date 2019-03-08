@@ -294,10 +294,12 @@ describe('Place', () => {
         selectedCentre,
         selectedPlace.date
       )
+      console.log({ place })
       expect(place).toBeDefined()
       expect(place).toHaveProperty('isBooked', true)
       expect(place).toHaveProperty('bookedBy', selectedCandidat)
       expect(place).toHaveProperty('centre', selectedCentre)
+      expect(place).toHaveProperty('inspecteur')
       expect(place.date).toEqual(
         DateTime.fromISO(selectedPlace.date).toJSDate()
       )
@@ -317,6 +319,30 @@ describe('Place', () => {
       )
       expect(place).toBeDefined()
       expect(place).toBeNull()
+    })
+    it('Should to book the place of centre 3 at day 21 11h  with candidat 123456789002 ', async () => {
+      const selectedPlace = places[5]
+      const selectedCandidat = createdcandidats.find(
+        candidat => candidat.codeNeph === candidats[2].codeNeph
+      )._id
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === selectedPlace.centre
+      )._id
+      const place = await bookPlace(
+        selectedCandidat,
+        selectedCentre,
+        selectedPlace.date,
+        { inspecteur: 0 }
+      )
+      console.log({ place })
+      expect(place).toBeDefined()
+      expect(place).toHaveProperty('isBooked', true)
+      expect(place).toHaveProperty('bookedBy', selectedCandidat)
+      expect(place).toHaveProperty('centre', selectedCentre)
+      expect(place.inspecteur).not.toBeDefined()
+      expect(place.date).toEqual(
+        DateTime.fromISO(selectedPlace.date).toJSDate()
+      )
     })
   })
 })

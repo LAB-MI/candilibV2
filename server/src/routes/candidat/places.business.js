@@ -67,13 +67,13 @@ export const haveAvailablePlaces = async (id, date) => {
 export const getReservationLevelCandidat = async idCandidat => {
   const place = await findPlaceBookedByCandidat(
     idCandidat,
-    { _id: 1, date: 1, centre: 1 },
+    { _id: 1, date: 1, centre: 1, inspecteur: 0 },
     true
   )
   return place
 }
 
 export const saveReservationOnePlace = async (idCandidat, center, date) => {
-  const place = await bookPlace(idCandidat, center, date)
+  const place = await bookPlace(idCandidat, center, date, { inspecteur: 0 })
   return place
 }
