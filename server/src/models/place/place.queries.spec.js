@@ -28,7 +28,7 @@ import {
 } from '../__tests__'
 
 import { deleteCentre, createCentre } from '../centre'
-import { findPlacesByCentreAndDate, bookPlace } from './place.queries'
+import { findPlacesByCentreAndDate, findAndbookPlace } from './place.queries'
 
 const date = moment()
   .date(28)
@@ -289,7 +289,7 @@ describe('Place', () => {
       const selectedCentre = createdCentres.find(
         centre => centre.nom === selectedPlace.centre
       )._id
-      const place = await bookPlace(
+      const place = await findAndbookPlace(
         selectedCandidat,
         selectedCentre,
         selectedPlace.date
@@ -312,7 +312,7 @@ describe('Place', () => {
       const selectedCentre = createdCentres.find(
         centre => centre.nom === selectedPlace.centre
       )._id
-      const place = await bookPlace(
+      const place = await findAndbookPlace(
         selectedCandidat,
         selectedCentre,
         selectedPlace.date
@@ -328,7 +328,7 @@ describe('Place', () => {
       const selectedCentre = createdCentres.find(
         centre => centre.nom === selectedPlace.centre
       )._id
-      const place = await bookPlace(
+      const place = await findAndbookPlace(
         selectedCandidat,
         selectedCentre,
         selectedPlace.date,

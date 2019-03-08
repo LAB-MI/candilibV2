@@ -1,6 +1,6 @@
 import { logger } from '../../util'
 import { findPlaceBookedByCandidat } from '../../models/place'
-import { saveReservationOnePlace } from './places.business'
+import { bookPlace } from './places.business'
 
 export const getReservations = async (req, res) => {
   const idCandidat = req.userId
@@ -64,7 +64,7 @@ export const setReservations = async (req, res) => {
   try {
     // const bookedPlace = await findPlaceBookedByCandidat(idCandidat)
 
-    const reservation = saveReservationOnePlace(idCandidat, center, date)
+    const reservation = bookPlace(idCandidat, center, date)
     if (!reservation) {
       return res.status(200).json({
         success: false,

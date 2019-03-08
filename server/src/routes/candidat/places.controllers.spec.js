@@ -81,7 +81,7 @@ describe('Test places controllers', () => {
           .get(
             `${apiPrefix}/candidat/places/${centreSelected}?date=${placeSelected}`
           )
-          .send()
+
           .set('Accept', 'application/json')
           .expect(200)
         expect(body).toBeDefined()
@@ -96,7 +96,6 @@ describe('Test places controllers', () => {
           .get(
             `${apiPrefix}/candidat/places/${centreSelected}?date=${placeSelected}`
           )
-          .send()
           .set('Accept', 'application/json')
           .expect(200)
         expect(body).toBeDefined()

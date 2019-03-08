@@ -3,7 +3,7 @@ import {
   findAvailablePlacesByCentre,
   findPlacesByCentreAndDate,
   findPlaceBookedByCandidat,
-  bookPlace,
+  findAndbookPlace,
 } from '../../models/place'
 import {
   findCentreByName,
@@ -80,7 +80,9 @@ export const getReservationLevelCandidat = async idCandidat => {
   return place
 }
 
-export const saveReservationOnePlace = async (idCandidat, center, date) => {
-  const place = await bookPlace(idCandidat, center, date, { inspecteur: 0 })
+export const bookPlace = async (idCandidat, center, date) => {
+  const place = await findAndbookPlace(idCandidat, center, date, {
+    inspecteur: 0,
+  })
   return place
 }
