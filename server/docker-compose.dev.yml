@@ -19,7 +19,7 @@ services:
       DB_PASS: ${DB_PASS:-changeme78}
 
   api:
-    image: candilib_api:DEV_${APP_VERSION:-latest}
+    image: candilib_api:${APP_VERSION:-latest}
     build:
       target: development
       context: ./
