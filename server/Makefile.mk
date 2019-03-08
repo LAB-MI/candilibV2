@@ -5,7 +5,7 @@ APP_VERSION := v1.bis.dev
 
 DOCKER := $(shell type -p docker)
 DC     := $(shell type -p docker-compose)
-proxy := $(shell echo $$http_proxy)
+http_proxy := $(shell echo $$http_proxy)
 no_proxy := $(shell echo $$no_proxy)
 
 DC_APP_BUILD_DEV := docker-compose.dev.yml

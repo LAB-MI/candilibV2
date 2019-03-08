@@ -1,8 +1,8 @@
 # production mode
-version: '3.4'
+version: '3.5'
 services:
   db:
-    image: mongo:latest
+    image: mongo:4.0.6
     ports:
       - "27017"
 #    networks:

@@ -1,4 +1,4 @@
-include Makefile.inc
+include Makefile.mk
 
 build-dev:
 	${DC} -f ${DC_APP_BUILD_DEV} build --no-cache
@@ -28,3 +28,8 @@ fake-stmp-up:
 	${DC} -f ${DC_APP_BUILD_DEV} up fakesmtp
 fake-stmp-down: 
 	${DC} -f ${DC_APP_BUILD_DEV} down fakesmtp
+
+mongo-express-up: 
+	${DC} -f ${DC_APP_BUILD_DEV} up mongo-express
+mongo-express-down: 
+	${DC} -f ${DC_APP_BUILD_DEV} down mongo-express

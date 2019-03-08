@@ -19,14 +19,18 @@ RUN if [ ! -z "$http_proxy" ] ; then \
         npm config set https-proxy $https_proxy ; \
         npm config set no-proxy $no_proxy; \
    fi ; \
-   [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
-   [ -z "$sass_registry" ] || npm config set sass_binary_site=$sass_registry
+   [ -z "$npm_registry" ] || npm config set registry=$npm_registry; \
+   [ -z "$sass_registry" ] || npm config set sass_binary_site=$sass_registry;
 
 ################################
 # Step 2: "development" target #
 ################################
 FROM base as development
 ARG CYPRESS_DOWNLOAD_MIRROR
+ARG http_proxy
+ARG https_proxy
+ARG no_proxy
+
 ENV CI=1
 COPY public ./public
 COPY src ./src
@@ -34,9 +38,16 @@ COPY tests ./tests
 COPY .env.candidat .env.admin ./
 COPY babel.config.js cypress.json jsconfig.json package-lock.json package.json vue.config.js ./
 # Install app dependencies
-RUN npm install
+
+RUN set -ex; npm install --loglevel verbose
+EXPOSE 8080
 
 CMD ["npm","run", "serve"]
+
+FROM development as storybook
+EXPOSE 6006
+CMD ["npm", "run", "storybook:serve" ]
+
 
 ##########################
 # Step 3: "build" target #
