@@ -90,7 +90,7 @@ export default {
     async [SELECT_DAY] ({ commit, dispatch }, selected) {
       const { slot, centre } = selected
       const result = await api.candidat.checkPlacesAvailability(centre.id, slot)
-      if (result) {
+      if (result.length > 0) {
         commit(SELECT_DAY, selected)
       } else {
         commit(SELECT_DAY, undefined)
