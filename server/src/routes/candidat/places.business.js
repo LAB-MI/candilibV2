@@ -59,9 +59,16 @@ export const getDatesFromPlacesByCentre = async (
   return dates
 }
 
-export const haveAvailablePlaces = async (id, date) => {
+export const hasAvailablePlaces = async (id, date) => {
   const places = await findPlacesByCentreAndDate(id, date)
-  return places && places.length > 0
+  const dates = places.map(place => DateTime.fromJSDate(place.date).toISO())
+  return [...new Set(dates)]
+}
+
+export const hasAvailablePlacesByCentre = async (departement, centre, date) => {
+  const foundCentre = await findCentreByNameAndDepartement(centre, departement)
+  const dates = await hasAvailablePlaces(foundCentre._id, date)
+  return dates
 }
 
 export const getReservationLevelCandidat = async idCandidat => {

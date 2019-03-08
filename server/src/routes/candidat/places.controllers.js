@@ -4,7 +4,8 @@ import { logger } from '../../util'
 import {
   getDatesFromPlacesByCentre,
   getDatesFromPlacesByCentreId,
-  haveAvailablePlaces,
+  hasAvailablePlaces,
+  hasAvailablePlacesByCentre,
 } from './places.business'
 
 export const ErrorMsgArgEmpty = 'Information du centre sont obligatoires'
@@ -16,11 +17,24 @@ export const ErrorMsgArgEmpty = 'Information du centre sont obligatoires'
  */
 export async function getPlaces (req, res) {
   const _id = req.param('id')
-  const centre = req.query.centre
-  const departement = req.query.departement
 
-  const beginDateTime = DateTime.fromISO(req.query.begin)
-  const endDateTime = DateTime.fromISO(req.query.end)
+  const { centre, departement, begin, end, date } = req.query
+
+  if ((begin || end) && date) {
+    const error = {
+      section: 'candidat-getPlaces',
+      message:
+        '(begin , end) et date ne peuvent avoir des valeurs en même temps',
+    }
+    logger.error(error)
+    res.status(409).json({
+      success: false,
+      message: error.message,
+    })
+  }
+
+  const beginDateTime = DateTime.fromISO(begin)
+  const endDateTime = DateTime.fromISO(end)
 
   const beginDate = !beginDateTime.invalid
     ? beginDateTime.toJSDate()
@@ -30,53 +44,34 @@ export async function getPlaces (req, res) {
   logger.debug(
     JSON.stringify({
       section: 'candidat-getPlaces',
-      argument: { departement, _id, centre, beginDate, endDate },
+      argument: { departement, _id, centre, beginDate, endDate, date },
     })
   )
 
   let dates = []
   try {
     if (_id) {
-      dates = await getDatesFromPlacesByCentreId(_id, beginDate, endDate)
+      if (date) {
+        dates = await hasAvailablePlaces(_id, date)
+      } else {
+        dates = await getDatesFromPlacesByCentreId(_id, beginDate, endDate)
+      }
     } else {
       if (!(departement && centre)) {
         throw new Error(ErrorMsgArgEmpty)
       }
-      dates = await getDatesFromPlacesByCentre(
-        departement,
-        centre,
-        beginDate,
-        endDate
-      )
+      if (date) {
+        dates = await hasAvailablePlacesByCentre(departement, centre, date)
+      } else {
+        dates = await getDatesFromPlacesByCentre(
+          departement,
+          centre,
+          beginDate,
+          endDate
+        )
+      }
     }
     res.status(200).json(dates)
-  } catch (error) {
-    logger.error(error)
-    res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
-      success: false,
-      message: error.message,
-      error: JSON.stringify(error),
-    })
-  }
-}
-
-export const verifyAvailablePlaces = async (req, res) => {
-  const idCentre = req.param('id')
-  const datePlace = req.param('date')
-
-  logger.debug(
-    JSON.stringify({
-      section: 'candidat-verifyAvailablePlaces',
-      argument: { idCentre, datePlace },
-    })
-  )
-  try {
-    if (!idCentre) {
-      throw new Error(ErrorMsgArgEmpty)
-    }
-
-    const havePlaces = await haveAvailablePlaces(idCentre, datePlace)
-    return res.send(havePlaces)
   } catch (error) {
     logger.error(error)
     res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
