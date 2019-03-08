@@ -1,7 +1,7 @@
 
 import { DateTime } from 'luxon'
 import api from '@/api'
-import { SHOW_ERROR } from './message'
+import { SHOW_ERROR, SHOW_SUCCESS } from './message'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
 export const FETCH_DATES_SUCCESS = 'FETCH_DATES_SUCCESS'
@@ -98,12 +98,13 @@ export default {
       }
     },
 
-    async [CONFIRM_SELECT_DAY_REQUEST] ({ commit }, selected) {
+    async [CONFIRM_SELECT_DAY_REQUEST] ({ commit, dispatch }, selected) {
       commit(CONFIRM_SELECT_DAY_REQUEST)
-      const { slot, centre } = selected
-      const result = await api.candidat.setReservations(centre.id, slot)
+      const { slot, centre, isAccompanied, hasDualControlCar } = selected
+      const result = await api.candidat.setReservations(centre.id, slot, isAccompanied, hasDualControlCar)
       if (result && result.success) {
         commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
+        dispatch(SHOW_SUCCESS, 'Votre reservation a bien ete prise en compte')
       } else {
         commit(CONFIRM_SELECT_DAY_FAILURE)
         throw new Error("La place n'est plus disponible")

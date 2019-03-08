@@ -114,7 +114,11 @@ export default {
     },
 
     async confirmReservation () {
-      const selected = this.timeSlots.selected
+      const selected = {
+        ...this.timeSlots.selected,
+        isAccompanied: true,
+        hasDualControlCar: true,
+      }
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
       } catch (error) {
