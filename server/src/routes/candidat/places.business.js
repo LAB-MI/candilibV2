@@ -71,7 +71,7 @@ export const hasAvailablePlacesByCentre = async (departement, centre, date) => {
   return dates
 }
 
-export const getReservationLevelCandidat = async idCandidat => {
+export const getReservationByCandidat = async idCandidat => {
   const place = await findPlaceBookedByCandidat(
     idCandidat,
     { _id: 1, date: 1, centre: 1, inspecteur: 0 },

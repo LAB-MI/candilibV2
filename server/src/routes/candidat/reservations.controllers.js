@@ -1,6 +1,5 @@
 import { logger } from '../../util'
-import { findPlaceBookedByCandidat } from '../../models/place'
-import { bookPlace } from './places.business'
+import { bookPlace, getReservationByCandidat } from './places.business'
 
 export const getReservations = async (req, res) => {
   const idCandidat = req.userId
@@ -20,7 +19,7 @@ export const getReservations = async (req, res) => {
   }
 
   try {
-    const bookedPlace = await findPlaceBookedByCandidat(idCandidat)
+    const bookedPlace = await getReservationByCandidat(idCandidat)
     return res.send(bookedPlace)
   } catch (error) {
     logger.error(error)
