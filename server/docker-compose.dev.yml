@@ -69,8 +69,9 @@ services:
     networks:
       - candilib-network
 
-  mongo-express-candilib: 
+  mongo-express: 
     image: mongo-express:latest
+    container_name: candilib_mongo_express
     ports:
       - "8081:8081"
     external_links:
