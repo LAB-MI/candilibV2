@@ -24,9 +24,11 @@ import {
   centres,
   candidats,
   nbPlacesDispoByCentres,
+  places,
 } from '../__tests__'
 
 import { deleteCentre, createCentre } from '../centre'
+import { findPlacesByCentreAndDate, findAndbookPlace } from './place.queries'
 
 const date = moment()
   .date(28)
@@ -233,6 +235,114 @@ describe('Place', () => {
       )
       expect(listPlaces).toBeDefined()
       expect(listPlaces).toHaveLength(0)
+    })
+  })
+  describe('to book places', () => {
+    let createdCentres
+    let createdcandidats
+    beforeAll(async () => {
+      createdCentres = await createCentres()
+      await createPlaces()
+      createdcandidats = await createCandidats()
+      await makeResas()
+    })
+    afterAll(async () => {
+      await removePlaces()
+      await deleteCandidats()
+      await removeCentres()
+    })
+
+    it('find 1 available place of centre 2 at a day 19 11h  ', async () => {
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === centres[1].nom
+      )
+      const selectedDate = places[2].date
+
+      const foundPlaces = await findPlacesByCentreAndDate(
+        selectedCentre._id,
+        selectedDate
+      )
+
+      expect(foundPlaces).toBeDefined()
+      expect(foundPlaces).toHaveLength(1)
+      expect(foundPlaces).not.toHaveProperty('isBooked')
+    })
+    it('find 0 available place of centre 2 at a day 19 10h  ', async () => {
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === centres[1].nom
+      )
+      const selectedDate = places[1].date
+
+      const foundPlaces = await findPlacesByCentreAndDate(
+        selectedCentre._id,
+        selectedDate
+      )
+
+      expect(foundPlaces).toBeDefined()
+      expect(foundPlaces).toHaveLength(0)
+    })
+    it('Should book the place of centre 3 at day 20 9h  with candidat 123456789002 ', async () => {
+      const selectedPlace = places[4]
+      const selectedCandidat = createdcandidats.find(
+        candidat => candidat.codeNeph === candidats[2].codeNeph
+      )._id
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === selectedPlace.centre
+      )._id
+      const place = await findAndbookPlace(
+        selectedCandidat,
+        selectedCentre,
+        selectedPlace.date
+      )
+
+      expect(place).toBeDefined()
+      expect(place).toHaveProperty('isBooked', true)
+      expect(place).toHaveProperty('bookedBy', selectedCandidat)
+      expect(place).toHaveProperty('centre', selectedCentre)
+      expect(place).toHaveProperty('inspecteur')
+      expect(place.date).toEqual(
+        DateTime.fromISO(selectedPlace.date).toJSDate()
+      )
+    })
+    it('Should not book the booked place of centre 2 at day 18 9h  with candidat 123456789002 ', async () => {
+      const selectedPlace = places[1]
+      const selectedCandidat = createdcandidats.find(
+        candidat => candidat.codeNeph === candidats[2].codeNeph
+      )._id
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === selectedPlace.centre
+      )._id
+      const place = await findAndbookPlace(
+        selectedCandidat,
+        selectedCentre,
+        selectedPlace.date
+      )
+      expect(place).toBeDefined()
+      expect(place).toBeNull()
+    })
+    it('Should book the place of centre 3 at day 21 11h  with candidat 123456789002 ', async () => {
+      const selectedPlace = places[5]
+      const selectedCandidat = createdcandidats.find(
+        candidat => candidat.codeNeph === candidats[2].codeNeph
+      )._id
+      const selectedCentre = createdCentres.find(
+        centre => centre.nom === selectedPlace.centre
+      )._id
+      const place = await findAndbookPlace(
+        selectedCandidat,
+        selectedCentre,
+        selectedPlace.date,
+        { inspecteur: 0 }
+      )
+
+      expect(place).toBeDefined()
+      expect(place).toHaveProperty('isBooked', true)
+      expect(place).toHaveProperty('bookedBy', selectedCandidat)
+      expect(place).toHaveProperty('centre', selectedCentre)
+      expect(place.inspecteur).not.toBeDefined()
+      expect(place.date).toEqual(
+        DateTime.fromISO(selectedPlace.date).toJSDate()
+      )
     })
   })
 })

@@ -1,5 +1,10 @@
 import { DateTime } from 'luxon'
-import { findAvailablePlacesByCentre } from '../../models/place'
+import {
+  findAvailablePlacesByCentre,
+  findPlacesByCentreAndDate,
+  findPlaceBookedByCandidat,
+  findAndbookPlace,
+} from '../../models/place'
 import {
   findCentreByName,
   findCentreByNameAndDepartement,
@@ -52,4 +57,32 @@ export const getDatesFromPlacesByCentre = async (
     endDate
   )
   return dates
+}
+
+export const hasAvailablePlaces = async (id, date) => {
+  const places = await findPlacesByCentreAndDate(id, date)
+  const dates = places.map(place => DateTime.fromJSDate(place.date).toISO())
+  return [...new Set(dates)]
+}
+
+export const hasAvailablePlacesByCentre = async (departement, centre, date) => {
+  const foundCentre = await findCentreByNameAndDepartement(centre, departement)
+  const dates = await hasAvailablePlaces(foundCentre._id, date)
+  return dates
+}
+
+export const getReservationByCandidat = async idCandidat => {
+  const place = await findPlaceBookedByCandidat(
+    idCandidat,
+    { _id: 1, date: 1, centre: 1, inspecteur: 0 },
+    true
+  )
+  return place
+}
+
+export const bookPlace = async (idCandidat, center, date) => {
+  const place = await findAndbookPlace(idCandidat, center, date, {
+    inspecteur: 0,
+  })
+  return place
 }

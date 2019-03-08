@@ -97,3 +97,41 @@ export const countAvailablePlacesByCentre = async (
   ).count()
   return nbPlaces
 }
+
+export const findPlacesByCentreAndDate = async (_id, date) => {
+  logger.debug(
+    JSON.stringify({
+      func: 'findPlacesByCentreAndDate',
+      args: { _id, date },
+    })
+  )
+  const places = await Place.find({
+    centre: _id,
+    date,
+  })
+    .where('isBooked')
+    .ne(true)
+  return places
+}
+
+export const findPlaceBookedByCandidat = async (
+  bookedBy,
+  options,
+  populate
+) => {
+  const query = Place.find({ isBooked: true, bookedBy, options })
+  if (populate) query.populate('centre')
+  const place = await query.exec()
+  return place
+}
+
+export const findAndbookPlace = async (bookedBy, centre, date, fields) => {
+  const query = Place.findOneAndUpdate(
+    { centre, date, isBooked: { $ne: true } },
+    { $set: { isBooked: true, bookedBy } },
+    { new: true, fields }
+  )
+
+  const place = await query.exec()
+  return place
+}
