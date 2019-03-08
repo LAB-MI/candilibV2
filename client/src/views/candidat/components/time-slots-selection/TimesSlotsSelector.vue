@@ -1,32 +1,38 @@
 <template>
   <v-list>
     <v-list-group
-      v-for="item in items"
-      :key="item.day"
-      v-model="item.active"
-      :prepend-icon="item.action"
+      v-for="timeSlot in timeSlots"
+      :key="timeSlot.day"
+      v-model="timeSlot.active"
+      :prepend-icon="timeSlot.action"
       no-action
     >
       <template v-slot:activator>
-        <v-list-tile>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ item.day }}</v-list-tile-title>
-          </v-list-tile-content>
-        </v-list-tile>
+        <keep-alive>
+          <v-list-tile>
+            <v-list-tile-content>
+              <v-list-tile-title
+                @click="gotoDay(timeSlot.day)"
+              >
+                {{ timeSlot.day }}
+              </v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </keep-alive>
       </template>
 
-        <v-container
+      <v-container
           class="scroll-y"
-        >
+      >
         <v-btn
           color="primary"
-          v-for="(subItem, i) in item.hours"
+          v-for="(hour, i) in timeSlot.hours"
           :key="i"
-          @click="selectSlot({ hour: subItem, day: item.day })"
+          @click="selectSlot({ hour, day: timeSlot.day })"
         >
-        {{ subItem }}
+          {{ hour }}
         </v-btn>
-      </v-container>
+    </v-container>
     </v-list-group>
   </v-list>
 </template>
@@ -38,12 +44,50 @@ import { SELECT_DAY } from '@/store/time-slots'
 
 export default {
   props: {
-    items: {
-      type: Array,
+    initialTimeSlots: Array,
+  },
+
+  data () {
+    return {
+      timeSlots: this.initialTimeSlots,
+      memoDay: undefined,
+    }
+  },
+
+  watch: {
+    $route (to, from) {
+      const activeDay = to.params.day
+      if (activeDay !== this.memoDay) {
+        this.displayDay(activeDay)
+      }
     },
   },
+
+  mounted () {
+    const activeDay = this.$route.params.day
+    if (activeDay) {
+      this.memoDay = activeDay
+      this.timeSlots = this.initialTimeSlots.map (timeSlot => ({ ...timeSlot, active: timeSlot.day === activeDay }))
+    }
+  },
+
   methods: {
-    selectSlot (slot) {
+    displayDay (day) {
+      this.memoDay = day
+      this.timeSlots = this.initialTimeSlots.map (timeSlot => ({ ...timeSlot, active: timeSlot.day === day }))
+    },
+
+    gotoDay (day) {
+      if (day === this.memoDay) {
+        this.$router.push({name: 'time-slot'})
+        this.memoDay = undefined
+        return
+      }
+      this.memoDay = day
+      this.$router.push({name: 'time-slot-day', params: { day }})
+    },
+
+    async selectSlot (slot) {
       if (!this.$store.state.center.selected) {
         return
       }
@@ -54,21 +98,25 @@ export default {
       const dateIso = DateTime.local(dateFormat.year, dateFormat.month, dateFormat.day, parseInt(hour[0], 10), parseInt(hour[1], 10)).toISO()
       const selectedSlot = {
         slot: dateIso,
-        centreInfo: {
+        centre: {
           id: _id,
           nom,
           departement,
         },
       }
-      this.$store.dispatch(SELECT_DAY, selectedSlot)
-      this.$router.push({
-        name: 'confirm-selection',
-        params: {
-          departement: `${selectedSlot.centreInfo.departement}`,
-          center: `${selectedSlot.centreInfo.nom}`,
-          slot: selectedSlot.slot,
-        },
-      })
+      await this.$store.dispatch(SELECT_DAY, selectedSlot)
+      if (this.$store.state.timeSlots.selected) {
+        this.$router.push({
+          name: 'confirm-selection',
+          params: {
+            departement: `${selectedSlot.centre.departement}`,
+            center: `${selectedSlot.centre.nom}`,
+            slot: selectedSlot.slot,
+          },
+        })
+      } else {
+        this.$router.push({ name: 'time-slot' })
+      }
     },
   },
 }

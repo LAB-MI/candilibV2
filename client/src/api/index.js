@@ -124,6 +124,27 @@ export default {
       return json
     },
 
+    async checkPlacesAvailability (centreId, date) {
+      const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?dateTime=${encodeURIComponent(date)}`, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
+
+    async getReservations () {
+      const json = await apiClient.get(`${apiPaths.candidat.reservations}`, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
+
+    async setReservations (centreId, date) {
+      const json = await apiClient.post(`${apiPaths.candidat.reservations}?id=${centreId}&date=${encodeURIComponent(date)}`, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
+
     async validateEmail (email, hash) {
       const json = await apiClient.put(apiPaths.candidat.myProfile, {
         headers: getHeadersForJson(),

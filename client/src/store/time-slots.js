@@ -6,7 +6,12 @@ import { SHOW_ERROR } from './message'
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
 export const FETCH_DATES_SUCCESS = 'FETCH_DATES_SUCCESS'
 export const FETCH_DATES_FAILURE = 'FETCH_DATES_FAILURE'
+
 export const SELECT_DAY = 'SELECT_DAY'
+
+export const CONFIRM_SELECT_DAY_REQUEST = 'CONFIRM_SELECT_DAY_REQUEST'
+export const CONFIRM_SELECT_DAY_SUCCESS = 'CONFIRM_SELECT_DAY_SUCCESS'
+export const CONFIRM_SELECT_DAY_FAILURE = 'CONFIRM_SELECT_DAY_FAILURE'
 
 const formatResult = (result) => {
   const arrayOfMonth = [...new Set(result.map(el => DateTime.fromISO(el).monthLong))]
@@ -34,6 +39,7 @@ const formatResult = (result) => {
 export default {
   state: {
     isFetching: false,
+    isSelecting: false,
     list: [],
     selected: undefined,
   },
@@ -48,8 +54,21 @@ export default {
     [FETCH_DATES_FAILURE] (state) {
       state.isFetching = false
     },
+
     [SELECT_DAY] (state, selected) {
       state.selected = selected
+    },
+
+    [CONFIRM_SELECT_DAY_REQUEST] (state) {
+      state.isSelecting = true
+    },
+    [CONFIRM_SELECT_DAY_SUCCESS] (state, selected) {
+      state.isSelecting = false
+      state.selected = selected
+    },
+    [CONFIRM_SELECT_DAY_FAILURE] (state) {
+      state.isSelecting = false
+      state.selected = undefined
     },
   },
   actions: {
@@ -67,9 +86,28 @@ export default {
         dispatch(SHOW_ERROR, error.message)
       }
     },
-    [SELECT_DAY] ({ commit }, selected) {
-      // check if is available day
-      commit(SELECT_DAY, selected)
+
+    async [SELECT_DAY] ({ commit, dispatch }, selected) {
+      const { slot, centre } = selected
+      const result = await api.candidat.checkPlacesAvailability(centre.id, slot)
+      if (result) {
+        commit(SELECT_DAY, selected)
+      } else {
+        commit(SELECT_DAY, undefined)
+        throw new Error("La place n'est plus disponible")
+      }
+    },
+
+    async [CONFIRM_SELECT_DAY_REQUEST] ({ commit }, selected) {
+      commit(CONFIRM_SELECT_DAY_REQUEST)
+      const { slot, centre } = selected
+      const result = await api.candidat.setReservations(centre.id, slot)
+      if (result && result.success) {
+        commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
+      } else {
+        commit(CONFIRM_SELECT_DAY_FAILURE)
+        throw new Error("La place n'est plus disponible")
+      }
     },
   },
 }

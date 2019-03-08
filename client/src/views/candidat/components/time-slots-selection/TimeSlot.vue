@@ -23,7 +23,12 @@
       slider-color="primary"
       color="#dfdfdf"
     >
-      <v-tab v-for="(month, i) in timeSlots.list" :key="i" :href="`#tab-${month.month}`">
+      <v-tab
+        v-for="month in timeSlots.list"
+        :key="month.month"
+        :href="`#tab-${month.month}`"
+        @click="$router.push({ name: 'time-slot' })"
+      >
         <span class="color-span">{{ month.month }}</span>
       </v-tab>
     </v-tabs>
@@ -31,7 +36,7 @@
       <v-tab-item v-for="(timeSlot, i) in timeSlots.list" :key="i" :value="`tab-${timeSlot.month}`">
         <v-card flat>
           <v-card-text>
-            <times-slots-selector :items="timeSlot.availableTimeSlots"/>
+            <times-slots-selector :initial-time-slots="timeSlot.availableTimeSlots"/>
           </v-card-text>
         </v-card>
       </v-tab-item>

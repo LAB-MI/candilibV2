@@ -96,6 +96,11 @@ const candidatRoutes = [
         component: TimeSlot,
       },
       {
+        path: ':departement/:center/:day/selection-place',
+        name: 'time-slot-day',
+        component: TimeSlot,
+      },
+      {
         path: ':departement/:center/:slot/selection-confirmation',
         name: 'confirm-selection',
         component: ConfirmSelection,
