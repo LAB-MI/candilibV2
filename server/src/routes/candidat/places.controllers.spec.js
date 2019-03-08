@@ -79,13 +79,13 @@ describe('Test places controllers', () => {
         const placeSelected = encodeURIComponent(places[2].date)
         const { body } = await request(app)
           .get(
-            `${apiPrefix}/candidat/places/check?id=${centreSelected}&date=${placeSelected}`
+            `${apiPrefix}/candidat/places/${centreSelected}?date=${placeSelected}`
           )
           .send()
           .set('Accept', 'application/json')
           .expect(200)
         expect(body).toBeDefined()
-        expect(body).toBe(true)
+        expect(body).toHaveLength(1)
       })
       it('Should get 200 with a available place for centre 2 at a day 19 10h', async () => {
         const centreSelected = createdCentres.find(
@@ -94,13 +94,13 @@ describe('Test places controllers', () => {
         const placeSelected = encodeURIComponent(places[1].date)
         const { body } = await request(app)
           .get(
-            `${apiPrefix}/candidat/places/check?id=${centreSelected}&date=${placeSelected}`
+            `${apiPrefix}/candidat/places/${centreSelected}?date=${placeSelected}`
           )
           .send()
           .set('Accept', 'application/json')
           .expect(200)
         expect(body).toBeDefined()
-        expect(body).toBe(false)
+        expect(body).toHaveLength(0)
       })
     })
   })

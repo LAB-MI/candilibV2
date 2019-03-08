@@ -281,7 +281,7 @@ describe('Place', () => {
       expect(foundPlaces).toBeDefined()
       expect(foundPlaces).toHaveLength(0)
     })
-    it('Should to book the place of centre 3 at day 20 9h  with candidat 123456789002 ', async () => {
+    it('Should book the place of centre 3 at day 20 9h  with candidat 123456789002 ', async () => {
       const selectedPlace = places[4]
       const selectedCandidat = createdcandidats.find(
         candidat => candidat.codeNeph === candidats[2].codeNeph
@@ -294,7 +294,7 @@ describe('Place', () => {
         selectedCentre,
         selectedPlace.date
       )
-      console.log({ place })
+
       expect(place).toBeDefined()
       expect(place).toHaveProperty('isBooked', true)
       expect(place).toHaveProperty('bookedBy', selectedCandidat)
@@ -304,7 +304,7 @@ describe('Place', () => {
         DateTime.fromISO(selectedPlace.date).toJSDate()
       )
     })
-    it('Should not to book the booked place of centre 2 at day 18 9h  with candidat 123456789002 ', async () => {
+    it('Should not book the booked place of centre 2 at day 18 9h  with candidat 123456789002 ', async () => {
       const selectedPlace = places[1]
       const selectedCandidat = createdcandidats.find(
         candidat => candidat.codeNeph === candidats[2].codeNeph
@@ -320,7 +320,7 @@ describe('Place', () => {
       expect(place).toBeDefined()
       expect(place).toBeNull()
     })
-    it('Should to book the place of centre 3 at day 21 11h  with candidat 123456789002 ', async () => {
+    it('Should book the place of centre 3 at day 21 11h  with candidat 123456789002 ', async () => {
       const selectedPlace = places[5]
       const selectedCandidat = createdcandidats.find(
         candidat => candidat.codeNeph === candidats[2].codeNeph
@@ -334,7 +334,7 @@ describe('Place', () => {
         selectedPlace.date,
         { inspecteur: 0 }
       )
-      console.log({ place })
+
       expect(place).toBeDefined()
       expect(place).toHaveProperty('isBooked', true)
       expect(place).toHaveProperty('bookedBy', selectedCandidat)
