@@ -84,28 +84,28 @@
 </template>
 
 <script>
-import { DateTime } from "luxon"
-import { mapState } from "vuex"
+import { DateTime } from 'luxon'
+import { mapState } from 'vuex'
 
 import {
   FETCH_CENTER_REQUEST,
   SHOW_ERROR,
   SELECT_DAY,
   CONFIRM_SELECT_DAY_REQUEST,
-} from "@/store"
+} from '@/store'
 
 export default {
   data () {
     return {
-      selectedCheckBox: []
+      selectedCheckBox: [],
     }
   },
 
   computed: {
-    ...mapState(["center", "timeSlots", "candidat"]),
+    ...mapState(['center', 'timeSlots', 'candidat']),
     disabled () {
       return this.selectedCheckBox.length !== 2
-    }
+    },
   },
 
   methods: {
@@ -124,11 +124,11 @@ export default {
 
     convertIsoDate (dateIso) {
       return `${DateTime.fromISO(dateIso).toLocaleString({
-        weekday: "long",
-        month: "long",
-        day: "2-digit",
-        hour: "2-digit",
-        minute: "2-digit"
+        weekday: 'long',
+        month: 'long',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
       })}`
     },
 
@@ -152,14 +152,14 @@ export default {
           id: selected._id,
           nom,
           departement,
-        }
+        },
       }
       this.$store.dispatch(SELECT_DAY, selectedSlot)
-    }
+    },
   },
 
   mounted () {
     this.getSelectedCenterAndDate()
-  }
+  },
 }
 </script>

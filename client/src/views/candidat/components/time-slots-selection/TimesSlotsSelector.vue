@@ -66,25 +66,28 @@ export default {
   mounted () {
     const activeDay = this.$route.params.day
     if (activeDay) {
-      this.memoDay = activeDay
-      this.timeSlots = this.initialTimeSlots.map (timeSlot => ({ ...timeSlot, active: timeSlot.day === activeDay }))
+      this.displayDay(activeDay)
     }
   },
 
   methods: {
     displayDay (day) {
       this.memoDay = day
-      this.timeSlots = this.initialTimeSlots.map (timeSlot => ({ ...timeSlot, active: timeSlot.day === day }))
+      this.timeSlots = this.initialTimeSlots
+        .map(timeSlot => ({
+          ...timeSlot,
+          active: timeSlot.day === day,
+        }))
     },
 
     gotoDay (day) {
       if (day === this.memoDay) {
-        this.$router.push({name: 'time-slot'})
+        this.$router.push({ name: 'time-slot' })
         this.memoDay = undefined
         return
       }
       this.memoDay = day
-      this.$router.push({name: 'time-slot-day', params: { day }})
+      this.$router.push({ name: 'time-slot-day', params: { day } })
     },
 
     async selectSlot (slot) {
