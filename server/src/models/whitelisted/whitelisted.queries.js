@@ -21,6 +21,28 @@ export const createWhitelisted = async email => {
   return whitelisted
 }
 
+export const createWhitelistedBatch = emails =>
+  Promise.all(
+    emails.map(email =>
+      Whitelisted.create({ email })
+        .then(result => ({
+          code: 201,
+          email,
+          success: true,
+        }))
+        .catch(error => ({
+          code: error.message.includes('duplicate key')
+            ? 409
+            : error.message.includes('Path `email` is invalid')
+              ? 400
+              : 500,
+          email,
+          success: false,
+          message: error.message,
+        }))
+    )
+  )
+
 export const deleteWhitelistedByEmail = async email => {
   const whitelisted = await Whitelisted.findOne({ email })
   if (!whitelisted) {
