@@ -1,4 +1,5 @@
 import api from '@/api'
+import { DateTime } from 'luxon'
 import { SHOW_ERROR } from './message'
 
 export const FETCH_CENTERS_REQUEST = 'FETCH_CENTERS_REQUEST'
@@ -49,8 +50,9 @@ export default {
     async [FETCH_CENTERS_REQUEST] ({ commit, dispatch }, adresseCandidat) {
       commit(FETCH_CENTERS_REQUEST)
       try {
+        const end = DateTime.local().plus({ month: 3 }).endOf('month').toISO()
         const [, departement] = adresseCandidat.match(zipCodeRegexFromAdresse)
-        const result = await api.candidat.getCentres(departement)
+        const result = await api.candidat.getCentres(departement, end)
         commit(FETCH_CENTERS_SUCCESS, result)
       } catch (error) {
         commit(FETCH_CENTERS_FAILURE, error.message)
