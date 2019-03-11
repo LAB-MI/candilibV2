@@ -63,7 +63,7 @@ export const setReservations = async (req, res) => {
   try {
     // const bookedPlace = await findPlaceBookedByCandidat(idCandidat)
 
-    const reservation = bookPlace(idCandidat, center, date)
+    const reservation = await bookPlace(idCandidat, center, date)
     if (!reservation) {
       return res.status(200).json({
         success: false,

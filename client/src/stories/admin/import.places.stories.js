@@ -13,7 +13,6 @@ storiesOf('Admin/Import Places', module)
     components: { AdminImportPlaces },
     computed: mapState({
       content: state => {
-        console.log('content:', state.message.content)
         return state.message.content
       },
       show: state => state.message.show,
