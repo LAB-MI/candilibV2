@@ -110,30 +110,8 @@
             </v-textarea>
           </v-container>
 
-          <v-list-tile v-show="addingBatch">
+          <v-list-tile v-show="addingBatch" style="padding-bottom: 2em;">
             <v-spacer></v-spacer>
-            <input
-              type="file"
-              ref="batchEmailFile"
-              id="batch-email-file"
-              @change="loadHandler"
-              style="width: 1px; height: 1px; opacity: 0;"
-            />
-            <v-list-tile-action>
-              <label for="batch-email-file" @click="() => this.$refs.batchEmailFile.click()">
-                <v-btn
-                  color="primary"
-                  v-ripple
-                  flat
-                  style="padding-right: 1em; padding-left: 1em;"
-                >
-                  <span style="padding-right: 1em;">
-                    Importer des listes
-                  </span>
-                  <v-icon>cloud_upload</v-icon>
-                </v-btn>
-              </label>
-            </v-list-tile-action>
             <v-list-tile-action>
               <v-btn
                 ref="saveBatchEmail"
@@ -151,6 +129,26 @@
                 </span>
                 <v-icon>save</v-icon>
               </v-btn>
+              <input
+                type="file"
+                ref="batchEmailFile"
+                id="batch-email-file"
+                @change="loadHandler"
+                style="width: 1px; height: 1px; opacity: 0;"
+              />
+              <label for="batch-email-file" @click="() => this.$refs.batchEmailFile.click()">
+                <v-btn
+                  color="primary"
+                  v-ripple
+                  flat
+                  style="padding-right: 1em; padding-left: 1em;"
+                >
+                  <span style="padding-right: 1em;">
+                    Importer des listes
+                  </span>
+                  <v-icon>cloud_upload</v-icon>
+                </v-btn>
+              </label>
             </v-list-tile-action>
 
             <v-list-tile-action @click="hideBatchForm">
