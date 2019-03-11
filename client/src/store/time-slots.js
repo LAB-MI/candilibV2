@@ -18,7 +18,7 @@ const formatResult = (result) => {
   const formatDayAndHours = result.map(el => ({
     month: DateTime.fromISO(el).monthLong,
     availableTimeSlots: {
-      day: `${DateTime.fromISO(el).weekdayLong} ${DateTime.fromISO(el).setLocale('fr').toFormat('dd LLL yyyy')}`,
+      day: `${DateTime.fromISO(el).weekdayLong} ${DateTime.fromISO(el).setLocale('fr').toFormat('dd LLLL yyyy')}`,
       hours: `${DateTime.fromISO(el).toFormat("HH'h'mm")}-${DateTime.fromISO(el).plus({ minutes: 30 }).toFormat("HH'h'mm")}`,
     },
   }))
