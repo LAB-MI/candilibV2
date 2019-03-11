@@ -3,7 +3,10 @@
     <h2>
       Liste blanche
     </h2>
-    <v-card :style="{ padding: '1em 0' }">
+    <v-card :style="{ padding: '1em 0' }"
+      @drop="dropHandler"
+      @dragover="dragOverHandler"
+    >
       <v-list>
         <p v-if="whitelist.isFetching">Chargement...</p>
 
@@ -69,7 +72,10 @@
 
         <v-divider></v-divider>
 
-        <v-list-tile v-show="!addingBatch" @click="showBatchForm">
+        <v-list-tile
+          v-show="!addingBatch"
+          @click="showBatchForm"
+        >
           <v-list-tile-action>
             <v-btn icon >
               <v-icon color="#17a2b8">
@@ -99,14 +105,42 @@
               :disabled="whitelist.isUpdating"
               :placeholder="'adresse1@examble.com\nadresse2@example.com\nadresse3@example.com'"
               :aria-placeholder="'adresse1@examble.com\nadresse2@example.com\nadresse3@example.com'"
+              rows="10"
             >
             </v-textarea>
           </v-container>
 
           <v-list-tile v-show="addingBatch">
             <v-spacer></v-spacer>
+            <input
+              type="file"
+              ref="batchEmailFile"
+              id="batch-email-file"
+              @change="loadHandler"
+              style="width: 1px; height: 1px; opacity: 0;"
+            />
             <v-list-tile-action>
-              <v-btn color="primary" v-ripple flat
+              <label for="batch-email-file" @click="() => this.$refs.batchEmailFile.click()">
+                <v-btn
+                  color="primary"
+                  v-ripple
+                  flat
+                  style="padding-right: 1em; padding-left: 1em;"
+                >
+                  <span style="padding-right: 1em;">
+                    Importer des listes
+                  </span>
+                  <v-icon>cloud_upload</v-icon>
+                </v-btn>
+              </label>
+            </v-list-tile-action>
+            <v-list-tile-action>
+              <v-btn
+                ref="saveBatchEmail"
+                id="save-batch-email"
+                color="primary"
+                v-ripple
+                flat
                 :aria-disabled="whitelist.isUpdating"
                 :disabled="whitelist.isUpdating"
                 type="submit"
@@ -158,8 +192,8 @@ export default {
       newEmail: '',
       newEmails: '',
       emailRules: [
-        v => !!v || 'Veuillez renseigner votre email',
-        v => emailRegex.test(v) || 'L\'email doit être valide',
+        v => !!v || 'Veuillez renseigner une adresse courriel',
+        v => emailRegex.test(v) || 'L\'adresse courriel doit être valide',
       ],
       valid: false,
       validBatch: false,
@@ -177,7 +211,7 @@ export default {
   methods: {
     async addToWhitelist () {
       if (!this.valid) {
-        const message = `L'email n'est pas valide (${this.newEmail})`
+        const message = `L'adresse courriel n'est pas valide (${this.newEmail})`
         this.showError(message)
         return
       }
@@ -199,6 +233,41 @@ export default {
         if (error.auth === false) {
           this.$router.push({ name: 'admin-login', nextPath: this.$route.fullPath })
         }
+      }
+    },
+
+    dragOverHandler (event) {
+      event.preventDefault()
+    },
+
+    dropHandler (event) {
+      event.preventDefault()
+      if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
+        return
+      }
+      const files = Array.from(event.dataTransfer.items || event.dataTransfer.files)
+        .map(file => file.getAsFile ? file.getAsFile() : file)
+
+      this.processFiles(files)
+    },
+
+    loadHandler (e) {
+      return this.processFiles(e.target.files)
+    },
+
+    processFiles (files) {
+      try {
+        this.newEmails = ''
+
+        for (const file of files) {
+          const reader = new FileReader()
+          reader.onload = (e) => { this.newEmails += e.target.result }
+          reader.readAsText(file)
+        }
+        this.showBatchForm()
+        setTimeout(() => this.$scrollTo(`#save-batch-email`, 500), 10)
+      } catch (error) {
+        console.error(error)
       }
     },
 

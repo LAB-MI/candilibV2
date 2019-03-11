@@ -1,6 +1,6 @@
 import api from '@/api'
 
-import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
+import { SHOW_ERROR, SHOW_INFO, SHOW_SUCCESS, SHOW_WARNING } from '@/store/message'
 
 export const FETCH_WHITELIST_REQUEST = 'FETCH_WHITELIST_REQUEST'
 export const FETCH_WHITELIST_FAILURE = 'FETCH_WHITELIST_FAILURE'
@@ -18,11 +18,20 @@ export const SAVE_EMAIL_BATCH_REQUEST = 'SAVE_EMAIL_BATCH_REQUEST'
 export const SAVE_EMAIL_BATCH_FAILURE = 'SAVE_EMAIL_BATCH_FAILURE'
 export const SAVE_EMAIL_BATCH_SUCCESS = 'SAVE_EMAIL_BATCH_SUCCESS'
 
+const messageStatuses = {
+  error: SHOW_ERROR,
+  info: SHOW_INFO,
+  success: SHOW_SUCCESS,
+  warning: SHOW_WARNING,
+  warn: SHOW_WARNING,
+}
+
 export default {
   state: {
     isFetching: false,
     isUpdating: false,
     list: undefined,
+    updateResult: undefined,
   },
 
   mutations: {
@@ -60,8 +69,9 @@ export default {
     [SAVE_EMAIL_BATCH_REQUEST] (state) {
       state.isUpdating = true
     },
-    [SAVE_EMAIL_BATCH_SUCCESS] (state) {
+    [SAVE_EMAIL_BATCH_SUCCESS] (state, updateResult) {
       state.isUpdating = false
+      this.updateResult = updateResult
     },
     [SAVE_EMAIL_BATCH_FAILURE] (state) {
       state.isUpdating = false
@@ -119,26 +129,19 @@ export default {
         return dispatch(SHOW_ERROR, error.message)
       }
     },
-  },
 
-  async [SAVE_EMAIL_BATCH_REQUEST] ({ commit, dispatch }, emailsToAdd) {
-    commit(SAVE_EMAIL_BATCH_REQUEST)
-    try {
-      const { email, message, success } = await api.admin.addBatchToWhitelist(emailsToAdd)
-      if (success === false && message) {
-        if (message.includes('duplicate key error')) {
-          throw new Error(`Email déjà existant : '${emailsToAdd}'`)
-        }
-        if (message.includes('Path `email` is invalid')) {
-          throw new Error(`Email invalide : '${emailsToAdd}'`)
-        }
+    async [SAVE_EMAIL_BATCH_REQUEST] ({ commit, dispatch }, emailsToAdd) {
+      commit(SAVE_EMAIL_BATCH_REQUEST)
+      try {
+        const { message, status } = await api.admin.addBatchToWhitelist(emailsToAdd)
+        commit(SAVE_EMAIL_BATCH_SUCCESS)
+        dispatch(FETCH_WHITELIST_REQUEST)
+        return dispatch(messageStatuses[status], message)
+      } catch (error) {
+        commit(SAVE_EMAIL_BATCH_FAILURE)
+        console.error(error)
+        return dispatch(SHOW_ERROR, error.message)
       }
-      await dispatch(FETCH_WHITELIST_REQUEST)
-      commit(SAVE_EMAIL_BATCH_SUCCESS, email)
-      return dispatch(SHOW_SUCCESS, `${email} ajouté à la liste blanche`)
-    } catch (error) {
-      commit(SAVE_EMAIL_BATCH_FAILURE)
-      return dispatch(SHOW_ERROR, error.message)
-    }
+    },
   },
 }

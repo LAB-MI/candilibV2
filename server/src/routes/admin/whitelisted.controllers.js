@@ -46,27 +46,39 @@ const checkAddWhitelistRequest = body => {
   }
 }
 
-export const addWhitelist = async (req, res) => {
+const batchWhitelistMessages = {
+  '201': 'Tous les emails ont été ajoutés à la liste blanche',
+  '207': "Certains emails n'ont pas pu être ajoutés à la liste blanche",
+  '422': "Aucun email n'a pu être ajouté à la liste blanche",
+}
+
+const batchWhitelistStatuses = {
+  '201': 'success',
+  '207': 'warning',
+  '422': 'error',
+}
+
+export const addWhitelisted = async (req, res) => {
   try {
     const { email, emails } = req.body
     checkAddWhitelistRequest(req.body)
 
     if (email) {
-      const newWhitelisted = await createWhitelisted(email)
-      res.status(201).json(newWhitelisted)
+      const result = await createWhitelisted(email)
+      res.status(201).json(result)
       return
     }
     if (emails) {
-      const newWhitelisted = await createWhitelistedBatch(emails)
-      if (newWhitelisted.every(whitelisted => whitelisted.success)) {
-        res.status(201).json(newWhitelisted)
-        return
-      }
-      if (newWhitelisted.every(whitelisted => !whitelisted.success)) {
-        res.status(422).json(newWhitelisted)
-        return
-      }
-      res.status(207).json(newWhitelisted)
+      const result = await createWhitelistedBatch(emails)
+      const allSucceeded = result.every(whitelisted => whitelisted.success)
+      const allFailed = result.every(whitelisted => !whitelisted.success)
+      const code = allSucceeded ? 201 : allFailed ? 422 : 207
+      res.status(code).json({
+        code,
+        result,
+        status: batchWhitelistStatuses[code],
+        message: batchWhitelistMessages[code],
+      })
     }
   } catch (error) {
     return res.status(error.statusCode || 500).send({
@@ -87,8 +99,7 @@ export const getWhitelisted = async (req, res) => {
     })
   }
 }
-
-export const deleteCandidat = async (req, res) => {
+export const removeWhitelisted = async (req, res) => {
   const id = req.params.id
   try {
     const whitelisted = await deleteWhitelisted(id)

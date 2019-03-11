@@ -156,6 +156,7 @@ export default {
       return json
     },
   },
+
   admin: {
     async requestToken (email, password) {
       const json = await apiClient.post(apiPaths.admin.login, {
@@ -230,7 +231,7 @@ export default {
       return json
     },
 
-    async addToBatchWhitelist (emails) {
+    async addBatchToWhitelist (emails) {
       const json = await apiClient.post(apiPaths.admin.whitelist, {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify({ emails }),
