@@ -38,6 +38,7 @@ const formatResult = (result) => {
 
 export default {
   state: {
+    confirmed: false,
     isFetching: false,
     isSelecting: false,
     list: [],
@@ -57,6 +58,7 @@ export default {
 
     [SELECT_DAY] (state, selected) {
       state.selected = selected
+      state.confirmed = false
     },
 
     [CONFIRM_SELECT_DAY_REQUEST] (state) {
@@ -65,6 +67,7 @@ export default {
     [CONFIRM_SELECT_DAY_SUCCESS] (state, selected) {
       state.isSelecting = false
       state.selected = selected
+      state.confirmed = true
     },
     [CONFIRM_SELECT_DAY_FAILURE] (state) {
       state.isSelecting = false
