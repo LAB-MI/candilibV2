@@ -13,7 +13,7 @@
 
     <v-card>
       <div class="text--center">
-        <h3 style="padding: 1em">
+        <h3 style="padding: 1em;">
           Madame, Monsieur
           {{ candidat.me ? candidat.me.nomNaissance : '' }}
           {{ candidat.me ? candidat.me.prenom : '' }}

@@ -318,7 +318,6 @@ describe('Place', () => {
         selectedPlace.date
       )
       expect(place).toBeDefined()
-      console.log(place)
       expect(place).toBeNull()
     })
     it('Should book the place of centre 3 at day 21 11h  with candidat 123456789002 ', async () => {

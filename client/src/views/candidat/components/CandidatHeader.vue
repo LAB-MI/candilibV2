@@ -77,7 +77,6 @@ export default {
         const currentDrawerState = this.$store.state.candidat.displayNavDrawer
         this.$store.dispatch(DISPLAY_NAV_DRAWER, !currentDrawerState)
       } catch (error) {
-        console.log(error.message)
       }
     },
   },

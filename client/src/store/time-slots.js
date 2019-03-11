@@ -68,7 +68,6 @@ export default {
     },
     [CONFIRM_SELECT_DAY_FAILURE] (state) {
       state.isSelecting = false
-      state.selected = undefined
     },
   },
   actions: {
