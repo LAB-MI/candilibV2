@@ -1,7 +1,6 @@
 import api from '@/api'
 
 import { SHOW_ERROR } from '@/store'
-
 import {
   EMAIL_VALIDATION_IS_PENDING_TITLE,
   EMAIL_VALIDATION_IS_PENDING,
@@ -33,13 +32,19 @@ export const FETCH_MY_PROFILE_REQUEST = 'FETCH_MY_PROFILE_REQUEST'
 export const FETCH_MY_PROFILE_FAILURE = 'FETCH_MY_PROFILE_FAILURE'
 export const FETCH_MY_PROFILE_SUCCESS = 'FETCH_MY_PROFILE_SUCCESS'
 
+export const FETCH_CANDIDAT_RESERVATION_REQUEST = 'FETCH_CANDIDAT_RESERVATION_REQUEST'
+export const FETCH_CANDIDAT_RESERVATION_FAILURE = 'FETCH_CANDIDAT_RESERVATION_FAILURE'
+export const FETCH_CANDIDAT_RESERVATION_SUCCESS = 'FETCH_CANDIDAT_RESERVATION_SUCCESS'
+
 export default {
   state: {
     isCheckingEmail: false,
     isSendingPresignup: false,
     isSendingMagicLink: false,
     isFetchingProfile: false,
+    isFetchingReservation: false,
     me: undefined,
+    reservation: undefined,
     displayNavDrawer: false,
     message: '',
     messageType: undefined,
@@ -104,6 +109,17 @@ export default {
     },
     [FETCH_MY_PROFILE_FAILURE] (state) {
       state.isFetchingProfile = false
+    },
+
+    [FETCH_CANDIDAT_RESERVATION_REQUEST] (state) {
+      state.isFetchingReservation = true
+    },
+    [FETCH_CANDIDAT_RESERVATION_SUCCESS] (state, reservation) {
+      state.isFetchingReservation = false
+      state.reservation = reservation
+    },
+    [FETCH_CANDIDAT_RESERVATION_FAILURE] (state) {
+      state.isFetchingReservation = false
     },
   },
 
@@ -170,6 +186,23 @@ export default {
         commit(FETCH_MY_PROFILE_SUCCESS, response.candidat)
       } catch (error) {
         commit(FETCH_MY_PROFILE_FAILURE)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
+      }
+    },
+
+    async [FETCH_CANDIDAT_RESERVATION_REQUEST] ({ commit, dispatch }) {
+      commit(FETCH_CANDIDAT_RESERVATION_REQUEST)
+      try {
+        const response = await api.candidat.getReservations()
+        console.log('TCL: response', response)
+
+        if (response.success === false) {
+          throw new Error(response.message)
+        }
+        commit(FETCH_CANDIDAT_RESERVATION_SUCCESS, response)
+      } catch (error) {
+        commit(FETCH_CANDIDAT_RESERVATION_FAILURE)
         dispatch(SHOW_ERROR, error.message)
         throw error
       }

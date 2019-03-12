@@ -7,18 +7,56 @@
         </h2>
       </header>
     </section>
-
-    <router-link :to="{name: 'selection-centre'}">
-      <v-btn>Sélectionner un centre</v-btn>
-    </router-link>
+    <div v-if="!candidat.reservation.length">
+      <router-link :to="{name: 'selection-centre'}">
+        <v-btn>Sélectionner un centre</v-btn>
+      </router-link>
+    </div>
+    <div v-if="candidat.reservation.length">
+      <recap-selection/>
+    </div>
   </v-card>
 </template>
 
 <script>
+import { DateTime } from 'luxon'
+import { mapState } from 'vuex'
+
+import {
+  FETCH_CANDIDAT_RESERVATION_REQUEST,
+} from '@/store'
+
+import RecapSelection from './candidat/components/confirm-selection/RecapSelection.vue'
+
 export default {
+    components: {
+    RecapSelection,
+  },
+
   name: 'candidat-home',
+
+  computed: {
+      ...mapState(['candidat']),
+  },
+  data () {
+    return {
+      candidatStatus: true,
+    }
+  },
+
+  methods: {
+    async getCandidatReservation () {
+      try {
+        await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
+      } catch (error) {
+        await this.$store.dispatch(SHOW_ERROR, error.message)
+      }
+    },
+  },
+
   mounted () {
     this.$router.replace({ name: 'candidat-presignup' })
+    this.getCandidatReservation()
   },
 }
 </script>
