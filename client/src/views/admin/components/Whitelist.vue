@@ -3,164 +3,171 @@
     <h2>
       Liste blanche
     </h2>
-    <v-card :style="{ padding: '1em 0' }"
-      @drop="dropHandler"
-      @dragover="dragOverHandler"
-    >
-      <v-list>
-        <p v-if="whitelist.isFetching">Chargement...</p>
+    <v-container>
+      <v-card
+        :style="{ padding: '1em 0' }"
+        :class="{'drag-over': isDragginOverWhitelist}"
+        @drop="dropHandler"
+        @dragover="dragOverHandler"
+        @dragexit="isDragginOverWhitelist = false"
+        @dragenter="isDragginOverWhitelist = true"
+      >
+        <v-list>
+          <p v-if="whitelist.isFetching">Chargement...</p>
 
-        <whitelisted
-          v-for="whitelisted in whitelist.list"
-          :key="whitelisted._id"
-          :whitelisted="whitelisted"
-          :remove-from-whitelist="removeFromWhitelist"
-        />
+          <whitelisted
+            v-for="whitelisted in whitelist.list"
+            :key="whitelisted._id"
+            :whitelisted="whitelisted"
+            :remove-from-whitelist="removeFromWhitelist"
+          />
 
-        <v-form v-model="valid" @submit.prevent="addToWhitelist">
-          <v-list-tile v-show="adding">
+          <v-form v-model="valid" @submit.prevent="addToWhitelist">
+            <v-list-tile v-show="adding">
 
-            <v-list-tile-action>
-              <v-btn
-                type="submit"
-                icon
-                :aria-disabled="whitelist.isUpdating"
-                :disabled="whitelist.isUpdating"
-              >
-                <v-icon color="#17a2b8">save</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-
-            <v-list-tile-action @click="hideForm">
-              <v-btn icon>
-                <v-icon color="#17a2b8">close</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-
-            <v-text-field
-              placeholder="jean@dupont.fr"
-              aria-placeholder="jean@dupont.fr"
-              v-if="adding"
-              v-model="newEmail"
-              :autofocus="adding"
-              :rules="emailRules"
-              color="#17a2b8"
-              @keyup.escape="hideForm"
-              :aria-disabled="whitelist.isUpdating"
-              :disabled="whitelist.isUpdating"
-            >
-            </v-text-field>
-          </v-list-tile>
-        </v-form>
-
-        <v-divider></v-divider>
-
-        <v-list-tile v-if="!adding" @click="showForm">
-          <v-list-tile-action>
-            <v-btn icon >
-              <v-icon color="#17a2b8">
-                add_circle
-              </v-icon>
-            </v-btn>
-          </v-list-tile-action>
-          <span
-            class="grey--text  text--darken-1"
-          >
-            Ajouter une adresse courriel
-          </span>
-        </v-list-tile>
-
-        <v-divider></v-divider>
-
-        <v-list-tile
-          v-show="!addingBatch"
-          @click="showBatchForm"
-        >
-          <v-list-tile-action>
-            <v-btn icon >
-              <v-icon color="#17a2b8">
-                playlist_add
-              </v-icon>
-            </v-btn>
-          </v-list-tile-action>
-          <span
-            class="grey--text  text--darken-1"
-          >
-            Ajouter un lot d'adresse courriel
-          </span>
-        </v-list-tile>
-
-        <v-form
-          v-model="validBatch"
-          v-show="addingBatch"
-          @submit.prevent="addBatchToWhitelist"
-        >
-          <v-container>
-            <v-textarea
-              v-if="addingBatch"
-              v-model="newEmails"
-              @keyup.escape="hideBatchForm"
-              :autofocus="addingBatch"
-              :aria-disabled="whitelist.isUpdating"
-              :disabled="whitelist.isUpdating"
-              :placeholder="'adresse1@examble.com\nadresse2@example.com\nadresse3@example.com'"
-              :aria-placeholder="'adresse1@examble.com\nadresse2@example.com\nadresse3@example.com'"
-              rows="10"
-            >
-            </v-textarea>
-          </v-container>
-
-          <v-list-tile v-show="addingBatch" style="padding-bottom: 2em;">
-            <v-spacer></v-spacer>
-            <v-list-tile-action>
-              <v-btn
-                ref="saveBatchEmail"
-                id="save-batch-email"
-                color="primary"
-                v-ripple
-                flat
-                :aria-disabled="whitelist.isUpdating"
-                :disabled="whitelist.isUpdating"
-                type="submit"
-                style="padding-right: 1em; padding-left: 1em;"
-              >
-                <span style="padding-right: 1em;">
-                  Enregistrer ces adresses
-                </span>
-                <v-icon>save</v-icon>
-              </v-btn>
-              <input
-                type="file"
-                ref="batchEmailFile"
-                id="batch-email-file"
-                @change="loadHandler"
-                style="width: 1px; height: 1px; opacity: 0;"
-              />
-              <label for="batch-email-file" @click="() => this.$refs.batchEmailFile.click()">
+              <v-list-tile-action>
                 <v-btn
+                  type="submit"
+                  icon
+                  :aria-disabled="whitelist.isUpdating"
+                  :disabled="whitelist.isUpdating"
+                >
+                  <v-icon color="#17a2b8">save</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+
+              <v-list-tile-action @click="hideForm">
+                <v-btn icon>
+                  <v-icon color="#17a2b8">close</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+
+              <v-text-field
+                placeholder="jean@dupont.fr"
+                aria-placeholder="jean@dupont.fr"
+                v-if="adding"
+                v-model="newEmail"
+                :autofocus="adding"
+                :rules="emailRules"
+                color="#17a2b8"
+                @keyup.escape="hideForm"
+                :aria-disabled="whitelist.isUpdating"
+                :disabled="whitelist.isUpdating"
+              >
+              </v-text-field>
+            </v-list-tile>
+          </v-form>
+
+          <v-divider></v-divider>
+
+          <v-list-tile v-if="!adding" @click="showForm">
+            <v-list-tile-action>
+              <v-btn icon >
+                <v-icon color="#17a2b8">
+                  add_circle
+                </v-icon>
+              </v-btn>
+            </v-list-tile-action>
+            <span
+              class="grey--text  text--darken-1"
+            >
+              Ajouter une adresse courriel
+            </span>
+          </v-list-tile>
+
+          <v-divider></v-divider>
+
+          <v-list-tile
+            v-show="!addingBatch"
+            @click="showBatchForm"
+          >
+            <v-list-tile-action>
+              <v-btn icon >
+                <v-icon color="#17a2b8">
+                  playlist_add
+                </v-icon>
+              </v-btn>
+            </v-list-tile-action>
+            <span
+              class="grey--text  text--darken-1"
+            >
+              Ajouter un lot d'adresse courriel
+            </span>
+          </v-list-tile>
+
+          <v-form
+            v-model="validBatch"
+            v-show="addingBatch"
+            @submit.prevent="addBatchToWhitelist"
+          >
+            <v-container>
+              <v-textarea
+                id="whitelist-batch-textarea"
+                v-if="addingBatch"
+                v-model="newEmails"
+                @keyup.escape="hideBatchForm"
+                :autofocus="addingBatch"
+                :aria-disabled="whitelist.isUpdating"
+                :disabled="whitelist.isUpdating"
+                :placeholder="'adresse1@examble.com\nadresse2@example.com\nadresse3@example.com'"
+                :aria-placeholder="'adresse1@examble.com\nadresse2@example.com\nadresse3@example.com'"
+                rows="10"
+              >
+              </v-textarea>
+            </v-container>
+
+            <v-list-tile v-show="addingBatch" style="padding-bottom: 2em;">
+              <v-spacer></v-spacer>
+              <v-list-tile-action>
+                <v-btn
+                  ref="saveBatchEmail"
+                  id="save-batch-email"
                   color="primary"
                   v-ripple
                   flat
+                  :aria-disabled="whitelist.isUpdating"
+                  :disabled="whitelist.isUpdating"
+                  type="submit"
                   style="padding-right: 1em; padding-left: 1em;"
                 >
                   <span style="padding-right: 1em;">
-                    Importer des listes
+                    Enregistrer ces adresses
                   </span>
-                  <v-icon>cloud_upload</v-icon>
+                  <v-icon>save</v-icon>
                 </v-btn>
-              </label>
-            </v-list-tile-action>
+                <input
+                  type="file"
+                  ref="batchEmailFile"
+                  id="batch-email-file"
+                  @change="loadHandler"
+                  style="width: 1px; height: 1px; opacity: 0;"
+                />
+                <label for="batch-email-file" @click="() => this.$refs.batchEmailFile.click()">
+                  <v-btn
+                    color="primary"
+                    v-ripple
+                    flat
+                    style="padding-right: 1em; padding-left: 1em;"
+                  >
+                    <span style="padding-right: 1em;">
+                      Importer des listes
+                    </span>
+                    <v-icon>cloud_upload</v-icon>
+                  </v-btn>
+                </label>
+              </v-list-tile-action>
 
-            <v-list-tile-action @click="hideBatchForm">
-              <v-btn icon>
-                <v-icon color="#17a2b8">close</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
-        </v-form>
+              <v-list-tile-action @click="hideBatchForm">
+                <v-btn icon>
+                  <v-icon color="#17a2b8">close</v-icon>
+                </v-btn>
+              </v-list-tile-action>
+            </v-list-tile>
+          </v-form>
 
-      </v-list>
-    </v-card>
+        </v-list>
+      </v-card>
+    </v-container>
   </div>
 </template>
 
@@ -184,15 +191,16 @@ export default {
   },
   data () {
     return {
-      dialog: false,
       adding: false,
       addingBatch: false,
-      newEmail: '',
-      newEmails: '',
+      isDragginOverWhitelist: true,
+      dialog: false,
       emailRules: [
         v => !!v || 'Veuillez renseigner une adresse courriel',
         v => emailRegex.test(v) || 'L\'adresse courriel doit être valide',
       ],
+      newEmail: '',
+      newEmails: '',
       valid: false,
       validBatch: false,
     }
@@ -240,6 +248,7 @@ export default {
 
     dropHandler (event) {
       event.preventDefault()
+      this.isDragginOverWhitelist = false
       if (!window.File || !window.FileReader || !window.FileList || !window.Blob) {
         return
       }
@@ -263,7 +272,7 @@ export default {
           reader.readAsText(file)
         }
         this.showBatchForm()
-        setTimeout(() => this.$scrollTo(`#save-batch-email`, 500), 10)
+        setTimeout(() => this.$scrollTo(`#whitelist-batch-textarea`, 500), 5)
       } catch (error) {
         console.error(error)
       }
@@ -280,6 +289,7 @@ export default {
     },
 
     showBatchForm () {
+      setTimeout(() => this.$scrollTo(`#save-batch-email`, 500), 10)
       this.addingBatch = true
     },
 
@@ -293,3 +303,13 @@ export default {
   },
 }
 </script>
+
+<style lang="postcss" scoped>
+.container {
+  max-width: 100vw;
+}
+
+.drag-over {
+  outline: 5px dotted rgba(23, 162, 184, 0.5);
+}
+</style>
