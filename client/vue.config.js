@@ -6,7 +6,10 @@ module.exports = {
 
   devServer: {
     proxy: {
-      '/api': {
+      '/candilib/api': {
+        pathRewrite: {
+          '/candilib': '',
+        },
         target: VUE_APP_URL_API || 'http://localhost:8000',
       },
     },
