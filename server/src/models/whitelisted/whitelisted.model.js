@@ -8,7 +8,7 @@ const { Schema } = mongoose
 const WhitelistedSchema = new Schema({
   email: {
     type: String,
-    required: false,
+    required: true,
     trim: true,
     unique: true,
     match: emailRegex,
@@ -17,7 +17,6 @@ const WhitelistedSchema = new Schema({
 
 WhitelistedSchema.pre('save', async function preSave () {
   const whitelisted = this
-
   whitelisted.email = sanitizeHtml(whitelisted.email)
 })
 

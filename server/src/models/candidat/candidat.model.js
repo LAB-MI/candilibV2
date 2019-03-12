@@ -42,7 +42,6 @@ const candidatFields = {
   },
   email: {
     type: String,
-    default: '',
     required: true,
     trim: true,
     unique: true,
@@ -50,14 +49,12 @@ const candidatFields = {
   },
   portable: {
     type: String,
-    default: '',
     required: true,
     trim: true,
     match: phoneRegex,
   },
   adresse: {
     type: String,
-    default: '',
     trim: true,
   },
   // retourAurige
