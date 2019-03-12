@@ -69,7 +69,9 @@ export const addWhitelisted = async (req, res) => {
       return
     }
     if (emails) {
-      const result = await createWhitelistedBatch(emails)
+      const result = await createWhitelistedBatch(
+        emails.filter(em => em && em.trim())
+      )
       const allSucceeded = result.every(whitelisted => whitelisted.success)
       const allFailed = result.every(whitelisted => !whitelisted.success)
       const code = allSucceeded ? 201 : allFailed ? 422 : 207

@@ -167,6 +167,29 @@
 
         </v-list>
       </v-card>
+
+      <v-card v-show="whitelist.updateResult && whitelist.updateResult.length">
+        <h3>Résultat de l'opération d'ajout par lot</h3>
+        <v-list>
+          <v-list-tile v-for="result in whitelist.updateResult" :key="result.email">
+            <v-icon
+              :color="result.code === 201 ? 'success' : 'error'"
+            >{{result.code === 201 ? 'check' : 'close'}}</v-icon>
+            <span
+              :class="{
+                'result-email': true,
+                'result-email--ok': result.code === 201,
+                'result-email--nok': result.code !== 201
+              }"
+            >
+              {{result.email}}
+            </span>
+            <span class="result-message">
+              {{codeMessageDictionary[result.code]}}
+            </span>
+          </v-list-tile>
+        </v-list>
+      </v-card>
     </v-container>
   </div>
 </template>
@@ -184,6 +207,13 @@ import {
   SHOW_ERROR,
 } from '@/store'
 
+const codeMessageDictionary = {
+  409: 'Adresse courriel existante',
+  400: 'Adresse invalide',
+  500: 'Erreur inconnue',
+  201: 'Adresse enregistrée',
+}
+
 export default {
   name: 'whitelist',
   components: {
@@ -193,7 +223,8 @@ export default {
     return {
       adding: false,
       addingBatch: false,
-      isDragginOverWhitelist: true,
+      codeMessageDictionary,
+      isDragginOverWhitelist: false,
       dialog: false,
       emailRules: [
         v => !!v || 'Veuillez renseigner une adresse courriel',
@@ -271,7 +302,7 @@ export default {
           reader.onload = (e) => { this.newEmails += e.target.result }
           reader.readAsText(file)
         }
-        this.showBatchForm()
+        this.showBatchForm(true)
         setTimeout(() => this.$scrollTo(`#whitelist-batch-textarea`, 500), 5)
       } catch (error) {
         console.error(error)
@@ -288,9 +319,11 @@ export default {
       this.adding = false
     },
 
-    showBatchForm () {
-      setTimeout(() => this.$scrollTo(`#save-batch-email`, 500), 10)
+    showBatchForm (noScroll) {
       this.addingBatch = true
+      if (!noScroll) {
+        setTimeout(() => this.$scrollTo(`#save-batch-email`, 1000), 10)
+      }
     },
 
     showForm () {
@@ -310,6 +343,24 @@ export default {
 }
 
 .drag-over {
-  outline: 5px dotted rgba(23, 162, 184, 0.5);
+  outline: 5px dashed rgba(23, 162, 184, 0.5);
+}
+
+h3 {
+  padding: 1em;
+}
+
+.result-email {
+  display: inline-block;
+  padding: 0 1em;
+  color: grey;
+
+  &--ok {
+    font-weight: bold;
+  }
+
+  &--nok {
+    font-style: italic;
+  }
 }
 </style>

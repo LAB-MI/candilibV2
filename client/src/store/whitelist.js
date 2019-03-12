@@ -71,7 +71,7 @@ export default {
     },
     [SAVE_EMAIL_BATCH_SUCCESS] (state, updateResult) {
       state.isUpdating = false
-      this.updateResult = updateResult
+      state.updateResult = updateResult
     },
     [SAVE_EMAIL_BATCH_FAILURE] (state) {
       state.isUpdating = false
@@ -133,8 +133,8 @@ export default {
     async [SAVE_EMAIL_BATCH_REQUEST] ({ commit, dispatch }, emailsToAdd) {
       commit(SAVE_EMAIL_BATCH_REQUEST)
       try {
-        const { message, status } = await api.admin.addBatchToWhitelist(emailsToAdd)
-        commit(SAVE_EMAIL_BATCH_SUCCESS)
+        const { message, result, status } = await api.admin.addBatchToWhitelist(emailsToAdd)
+        commit(SAVE_EMAIL_BATCH_SUCCESS, result)
         dispatch(FETCH_WHITELIST_REQUEST)
         return dispatch(messageStatuses[status], message)
       } catch (error) {
