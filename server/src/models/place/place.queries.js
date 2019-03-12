@@ -119,7 +119,7 @@ export const findPlaceBookedByCandidat = async (
   options,
   populate
 ) => {
-  const query = Place.find({ isBooked: true, bookedBy, options })
+  const query = Place.findOne({ isBooked: true, bookedBy }, options)
   if (populate) query.populate('centre')
   const place = await query.exec()
   return place

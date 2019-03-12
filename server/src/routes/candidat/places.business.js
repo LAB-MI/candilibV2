@@ -74,9 +74,10 @@ export const hasAvailablePlacesByCentre = async (departement, centre, date) => {
 export const getReservationByCandidat = async idCandidat => {
   const place = await findPlaceBookedByCandidat(
     idCandidat,
-    { _id: 1, date: 1, centre: 1, inspecteur: 0 },
+    { inspecteur: 0 },
     true
   )
+  logger.debug(place)
   return place
 }
 
