@@ -4,7 +4,7 @@ const isBuildWithAll = NODE_ENV !== 'production' || ['ALL', undefined].includes(
 const isBuildWithCandidat = NODE_ENV !== 'production' || ['ALL', 'CANDIDAT'].includes(CLIENT_BUILD_TARGET)
 const isBuildWithAdmin = NODE_ENV !== 'production' || ['ALL', 'ADMIN'].includes(CLIENT_BUILD_TARGET)
 
-const apiPrefix = `${process.env.PUBLIC_URL || ''}/api/v2`
+const apiPrefix = `${process.env.BASE_URL || '/'}api/v2`
 
 // TODO: Use prepack to avoid presence of admin API paths for candidat build
 
