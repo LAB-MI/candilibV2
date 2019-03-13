@@ -13,7 +13,7 @@
       </router-link>
     </div>
     <div v-if="candidat.reservation.length">
-      <recap-selection/>
+      <reservation-view/>
     </div>
   </v-card>
 </template>
@@ -26,11 +26,11 @@ import {
   FETCH_CANDIDAT_RESERVATION_REQUEST,
 } from '@/store'
 
-import RecapSelection from './candidat/components/confirm-selection/RecapSelection.vue'
+import ReservationView from './candidat/components/reservation-view/ReservationView.vue'
 
 export default {
     components: {
-    RecapSelection,
+    ReservationView,
   },
 
   name: 'candidat-home',
