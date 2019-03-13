@@ -195,15 +195,12 @@ export default {
       commit(FETCH_CANDIDAT_RESERVATION_REQUEST)
       try {
         const response = await api.candidat.getReservations()
-        console.log('TCL: response', response)
-
         if (response.success === false) {
           throw new Error(response.message)
         }
         commit(FETCH_CANDIDAT_RESERVATION_SUCCESS, response)
       } catch (error) {
         commit(FETCH_CANDIDAT_RESERVATION_FAILURE)
-        dispatch(SHOW_ERROR, error.message)
         throw error
       }
     },
