@@ -75,9 +75,12 @@
 
 <script>
 import { DateTime } from 'luxon'
-import { mapState } from 'vuex'
 
-import { DELETE_CANDIDAT_RESERVATION_REQUEST, SHOW_ERROR } from '@/store'
+import {
+  DELETE_CANDIDAT_RESERVATION_REQUEST,
+  SHOW_ERROR,
+  SHOW_SUCCESS,
+} from '@/store'
 
 export default {
   props: {
