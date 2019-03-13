@@ -145,6 +145,13 @@ export default {
       return json
     },
 
+    async deleteReservation () {
+      const json = await apiClient.delete(`${apiPaths.candidat.reservations}`, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
+
     async validateEmail (email, hash) {
       const json = await apiClient.put(apiPaths.candidat.myProfile, {
         headers: getHeadersForJson(),
