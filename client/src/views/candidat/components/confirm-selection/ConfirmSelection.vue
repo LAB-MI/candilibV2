@@ -142,14 +142,15 @@ export default {
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
         setTimeout(
-        () => this.$router.push({
-          name: 'candidat-home',
-          // params: {
-          //   center: `${center.centre.nom}`,
-          //   departement: `${center.centre.departement}`,
-          // },
-        }),
-        6000)
+          () => this.$router.push({
+            name: 'candidat-home',
+            // params: {
+            //   center: `${center.centre.nom}`,
+            //   departement: `${center.centre.departement}`,
+            // },
+          }),
+          6000
+        )
       } catch (error) {
         await this.$store.dispatch(SHOW_ERROR, error.message)
       }
