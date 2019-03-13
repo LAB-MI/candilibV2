@@ -30,6 +30,7 @@ COPY src src/
 COPY babel.config.js package.json package-lock.json ./
 # Install app dependencies
 RUN npm install
+ENV NODE_ICU_DATA="/app/node_modules/full-icu"
 
 #CMD ["npm", "start"]
 CMD ["npm","run",  "dev"]

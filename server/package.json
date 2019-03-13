@@ -44,6 +44,7 @@
     "express": "^4.16.4",
     "express-fileupload": "^1.1.1-alpha.2",
     "fast-csv": "^2.4.1",
+    "full-icu": "^1.2.1",
     "json2csv": "^4.3.4",
     "jsonwebtoken": "^8.4.0",
     "latinize": "^0.4.0",
