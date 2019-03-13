@@ -87,6 +87,17 @@
             check
           </v-icon>
         </h4>
+        <h4>
+          Un email de confirmation vous a été envoyé à l'adresse
+          <strong>{{ candidat.me ? candidat.me.email : '' }}</strong>
+          &nbsp;
+          <v-icon color="success">
+            check
+          </v-icon>
+        </h4>
+        <h4 class="redirectTextColor">
+          vous allez maintenant être redirigé vers l'accueil dans quelque second
+        </h4>
       </div>
     </v-card>
   </v-container>
@@ -130,6 +141,15 @@ export default {
       }
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
+        setTimeout(
+        () => this.$router.push({
+          name: 'candidat-home',
+          // params: {
+          //   center: `${center.centre.nom}`,
+          //   departement: `${center.centre.departement}`,
+          // },
+        }),
+        6000)
       } catch (error) {
         await this.$store.dispatch(SHOW_ERROR, error.message)
       }
@@ -181,5 +201,8 @@ export default {
   h4 {
     padding-bottom: 2em;
     text-transform: uppercase;
+  }
+  .redirectTextColor {
+    color: blue;
   }
 </style>
