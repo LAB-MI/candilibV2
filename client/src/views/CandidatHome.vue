@@ -20,7 +20,6 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
 import {
@@ -32,7 +31,7 @@ import ReservationRecap from './candidat/components/reservation-recap/Reservatio
 import CenterSelection from './candidat/components/center-selection/CenterSelection.vue'
 
 export default {
-    components: {
+  components: {
     ReservationRecap,
     CenterSelection,
   },
@@ -40,7 +39,7 @@ export default {
   name: 'candidat-home',
 
   computed: {
-      ...mapState(['candidat', 'reservation']),
+    ...mapState(['candidat', 'reservation']),
   },
   data () {
     return {
