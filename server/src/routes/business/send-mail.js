@@ -41,15 +41,15 @@ export const sendMailConvocation = async reservation => {
   )
 
   if (!reservation) {
-    throw new Error('il y a aucune réservation')
+    throw new Error('Il y a aucune réservation')
   }
   if (!reservation.bookedBy) {
-    throw new Error('il y a aucune candidat pour cette réservation')
+    throw new Error('Il y a aucune candidat pour cette réservation')
   }
 
   const { email } = reservation.bookedBy
   if (!email) {
-    throw new Error("le candidat n'a pas de courriel")
+    throw new Error("Le candidat n'a pas de courriel")
   }
   const message = getConvocationBody(reservation)
   logger.debug(JSON.stringify(message))
