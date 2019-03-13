@@ -33,13 +33,13 @@ export const getConvocationBody = place => {
       })
     )
     throw new Error(
-      'Les information date, nom, adresse, nom de naissance ou code Neph sont manquantes.'
+      'Les informations date, nom, adresse, nom de naissance ou code Neph sont manquantes.'
     )
   }
 
   const dateTimeResa = DateTime.fromJSDate(date).setLocale('fr')
   if (!dateTimeResa || !dateTimeResa.isValid) {
-    throw new Error("la date n'est pas une date.")
+    throw new Error("La date n'est pas une date.")
   }
 
   const dateResaStr = dateTimeResa.toFormat('cccc dd LLLL yyyy')
@@ -58,6 +58,6 @@ export const getConvocationBody = place => {
 
   return {
     content: getHtmlBody(body),
-    subject: "Convocation à l'examen",
+    subject: "Convocation à l'examen pratique du permis de conduire",
   }
 }
