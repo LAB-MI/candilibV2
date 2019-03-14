@@ -86,9 +86,7 @@ export const bookPlace = async (idCandidat, center, date) => {
     idCandidat,
     center,
     date,
-    {
-      inspecteur: 0,
-    },
+    { inspecteur: 0 },
     { centre: true, candidat: true }
   )
 
