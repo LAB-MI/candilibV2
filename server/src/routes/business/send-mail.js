@@ -5,6 +5,7 @@ import { htmlToText } from 'nodemailer-html-to-text'
 import getMailData from './message-templates'
 import config, { smtpOptions } from '../../config'
 import logger from '../../util/logger'
+import { getConvocationBody } from './build-mail-convocation'
 
 export const sendMail = async (to, { subject, content: html }) => {
   const transporter = nodemailer.createTransport(smtpTransport(smtpOptions))
@@ -32,6 +33,27 @@ export const sendMail = async (to, { subject, content: html }) => {
 export const sendMailToAccount = async (candidat, flag) => {
   const message = await getMailData(candidat, flag)
   return sendMail(candidat.email, message)
+}
+
+export const sendMailConvocation = async reservation => {
+  logger.debug(
+    JSON.stringify({ func: sendMailConvocation, arg: { reservation } })
+  )
+
+  if (!reservation) {
+    throw new Error('Il y a aucune réservation')
+  }
+  if (!reservation.bookedBy) {
+    throw new Error('Il y a aucune candidat pour cette réservation')
+  }
+
+  const { email } = reservation.bookedBy
+  if (!email) {
+    throw new Error("Le candidat n'a pas de courriel")
+  }
+  const message = getConvocationBody(reservation)
+  logger.debug(JSON.stringify(message))
+  return sendMail(email, message)
 }
 
 export const sendMagicLink = async (candidat, token) => {
