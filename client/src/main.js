@@ -11,8 +11,22 @@ import './main.css'
 
 Vue.config.productionTip = false
 
-new Vue({
-  router,
-  store,
-  render: h => h(App),
-}).$mount('#app')
+const runMyApp = () => {
+  new Vue({
+    router,
+    store,
+    render: h => h(App),
+  }).$mount('#app')
+}
+
+(async function checkIntlApi () {
+  if (!global.Intl) {
+    await Promise.all([
+      import('intl'),
+      import('intl/locale-data/jsonp/fr.js'),
+    ])
+    runMyApp()
+  } else {
+    runMyApp()
+  }
+})()
