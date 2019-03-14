@@ -3,7 +3,7 @@
     <v-form dark v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
       <div class="form-input">
         <v-text-field
-          label="NEPH (obligatoire) *"
+          :label="`${getMsg('preinscription_neph')} *`"
           prepend-icon="assignment"
           dark
           color="#fff"
@@ -21,6 +21,7 @@
       </div>
       <div class="form-input">
         <v-text-field
+          :label="`${getMsg('preinscription_nom_naissance')} *`"
           prepend-icon="account_box"
           dark
           color="#fff"
@@ -29,7 +30,6 @@
           :placeholder="nomPlaceholder"
           aria-placeholder="Dupont"
           hint="ex. : Dupont"
-          label="Nom de naissance (obligatoire) *"
           required
           tabindex="2"
           v-model="nomNaissance"
@@ -37,6 +37,7 @@
       </div>
       <div class="form-input">
         <v-text-field
+          :label="getMsg('preinscription_prenom')"
           prepend-icon="perm_identity"
           dark
           color="#fff"
@@ -45,7 +46,6 @@
           :placeholder="prenomPlaceholder"
           aria-placeholder="Jean"
           hint="ex. : Jean"
-          label="Prénom"
           required
           tabindex="3"
           v-model="prenom"
@@ -53,6 +53,7 @@
       </div>
       <div class="form-input">
         <v-text-field
+          :label="`${getMsg('preinscription_email')} *`"
           prepend-icon="email"
           dark
           color="#fff"
@@ -61,7 +62,6 @@
           :placeholder="emailPlaceholder"
           aria-placeholder="jean@dupont.fr"
           hint="ex. : jean@dupont.fr"
-          label="Courriel (obligatoire) *"
           required
           :rules="emailRules"
           tabindex="4"
@@ -70,6 +70,7 @@
       </div>
       <div class="form-input">
         <v-text-field
+          :label="`${getMsg('preinscription_mobile')} *`"
           prepend-icon="smartphone"
           dark
           color="#fff"
@@ -78,7 +79,6 @@
           :placeholder="portablePlaceholder"
           aria-placeholder="Jean"
           hint="ex. : 0612345678"
-          label="Portable (obligatoire) *"
           required
           tabindex="5"
           :rules="portableRules"
@@ -87,6 +87,7 @@
       </div>
       <div class="form-input">
         <v-autocomplete
+          :label="`${getMsg('preinscription_adresse')} *`"
           dark
           color="#fff"
           @focus="setAdressePlaceholder"
@@ -97,7 +98,6 @@
           v-model="adresse"
           hint="ex. : 10 avenue du général Leclerc Villepinte 93420"
           :items="adresses"
-          label="Adresse (obligatoire) *"
           prepend-icon="location_city"
           tabindex="6"
           no-filter
@@ -114,12 +114,12 @@
           dark
           tabindex="7"
           color="#28a745">
-          <div class="submit-label">Pré-inscription</div>
+          <div class="submit-label">{{getMsg('preinscription_bouton_submit')}}</div>
         </v-btn>
       </div>
       <div class="form-input  form-input-group">
         <v-btn flat color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
-          Mentions légales
+          {{getMsg('preinscription_bouton_mentions_legales') }}
         </v-btn>
         <v-dialog
           v-model="showDialog"
@@ -132,7 +132,7 @@
             color="#fff"
             tabindex="8"
           >
-            Déjà inscrit ?
+            {{getMsg('preinscription_bouton_deja_inscrit') }}
           </v-btn>
 
           <v-card>
@@ -140,13 +140,14 @@
               class="headline grey lighten-2"
               primary-title
             >
-              Recevez un magic link dans votre boîte email
+              {{getMsg('preinscription_magic_link_title') }}
             </v-card-title>
 
             <v-form v-model="magicLinkValid" @submit.prevent="sendMagicLink">
               <div class="u-flex  u-flex--center">
                 <div class="form-input">
                   <v-text-field
+                    :label="`${getMsg('preinscription_email')}`"
                     prepend-icon="email"
                     @focus="setEmailPlaceholder"
                     @blur="removeEmailPlaceholder"
@@ -154,7 +155,6 @@
                     aria-placeholder="jean@dupont.fr"
                     :autofocus="showDialog"
                     hint="ex. : jean@dupont.fr"
-                    label="Courriel (obligatoire) *"
                     required
                     :rules="emailRules"
                     tabindex="1"
@@ -174,14 +174,16 @@
                 :aria-disabled="isSendingMagicLink"
                 tabindex="2"
                 color="#28a745">
-                  <div class="submit-label">Envoyer le magic link</div>
+                  <div class="submit-label">
+                    {{getMsg('preinscription_bouton_magic_link') }}
+                  </div>
                 </v-btn>
               </v-card-actions>
             </v-form>
           </v-card>
         </v-dialog>
         <v-btn flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
-          Une question ?
+          {{getMsg('preinscription_bouton_faq') }}
         </v-btn>
       </div>
     </v-form>
@@ -216,7 +218,7 @@ export default {
       nephPlaceholder: '',
       codeNeph: '',
       nephRules: [
-        v => nephRegex.test(v) || 'Le code neph n\'est pas valide',
+        v => nephRegex.test(v) || this.getMsg('preinscription_neph_erreur'),
       ],
       nomPlaceholder: '',
       nomNaissance: '',
@@ -225,13 +227,13 @@ export default {
       emailPlaceholder: '',
       email: '',
       emailRules: [
-        v => v !== '' || 'Veuillez renseigner votre adresse courriel',
-        v => emailRegex.test(v) || 'L\'adresse courriel doit être valide',
+        v => v !== '' || this.getMsg('preinscription_email_vide'),
+        v => emailRegex.test(v) || this.getMsg('preinscription_email_erreur'),
       ],
       portablePlaceholder: '',
       portable: '',
       portableRules: [
-        v => phoneRegex.test(v) || 'Le numéro de téléphone doit être valide',
+        v => phoneRegex.test(v) || this.getMsg('preinscription_mobile_erreur'),
       ],
       adressePlaceholder: '',
       adresse: '',
@@ -259,6 +261,9 @@ export default {
   },
 
   methods: {
+    getMsg (id) {
+      return this.$formatMessage({ id })
+    },
     async setEmailPlaceholder () {
       this.emailPlaceholder = 'jean@dupont.fr'
     },
@@ -297,7 +302,7 @@ export default {
     },
     async presignup () {
       if (!this.valid) {
-        return this.$store.dispatch(SHOW_ERROR, 'Veuillez remplir le formulaire')
+        return this.$store.dispatch(SHOW_ERROR, this.getMsg('preinscription_formulaire_invalide'))
       }
       const {
         codeNeph,
@@ -326,12 +331,12 @@ export default {
 
     async sendMagicLink () {
       if (!this.magicLinkValid) {
-        return this.$store.dispatch(SHOW_ERROR, 'Veuillez fournir votre adresse courriel')
+        return this.$store.dispatch(SHOW_ERROR, this.getMsg('preinscription_magic_link_invalide'))
       }
       try {
         await this.$store.dispatch(SEND_MAGIC_LINK_REQUEST, this.email)
         this.$refs.presignupForm.reset()
-        this.$store.dispatch(SHOW_SUCCESS, 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel')
+        this.$store.dispatch(SHOW_SUCCESS, this.getMsg('preinscription_magic_link_envoyé'))
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }

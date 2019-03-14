@@ -2,10 +2,10 @@
   <div class="c-candidat-wrapper">
     <div class="c-candidat-message">
       <h1 class="c-candidat-message__title">
-        CANDILIB
+        {{$formatMessage({ id: 'app_name' })}}
       </h1>
       <h2 class="c-candidat-message__subtitle">
-        Réservez votre place d'examen
+        {{$formatMessage({ id: 'app_subtitle' })}}
       </h2>
       <hr class="u-separator" />
 
