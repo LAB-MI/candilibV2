@@ -1,5 +1,10 @@
 import { logger } from '../../util'
 import { bookPlace, getReservationByCandidat } from './places.business'
+import { sendMailConvocation } from '../business'
+import {
+  SAVE_RESA_WITH_MAIL_SENT,
+  SAVE_RESA_WITH_NO_MAIL_SENT,
+} from './message.constants'
 
 export const getReservations = async (req, res) => {
   const idCandidat = req.userId
@@ -54,7 +59,7 @@ export const setReservations = async (req, res) => {
     const message = msg.reduce(
       (a, b, i, array) => a + (i < array.length - 1 ? ',' : ' ou') + b
     )
-    res.status(400).json({
+    return res.status(400).json({
       success: false,
       message: `Les informations ${message} sont manquant`,
     })
@@ -70,10 +75,36 @@ export const setReservations = async (req, res) => {
         message: "Il n'y a pas de place pour ce créneau",
       })
     }
+
+    let statusmail
+    let message = ''
+    try {
+      await sendMailConvocation(reservation)
+      statusmail = true
+      message = SAVE_RESA_WITH_MAIL_SENT
+    } catch (error) {
+      const { nomNaissance, codeNeph } = reservation.bookedBy
+      const { nom, departement } = reservation.centre
+      const { date } = reservation
+      logger.warn(
+        `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `
+      )
+      logger.error(error)
+      statusmail = false
+      message = SAVE_RESA_WITH_NO_MAIL_SENT
+    }
+
     // if (bookedPlace) cancelReservationPlace(bookedPlace._id)
     return res.status(200).json({
       success: true,
-      reservation,
+      reservation: {
+        date: reservation.date,
+        centre: reservation.centre.nom,
+        departement: reservation.centre.departement,
+        isBooked: reservation.isBooked,
+      },
+      statusmail,
+      message,
     })
   } catch (error) {
     logger.error(error)

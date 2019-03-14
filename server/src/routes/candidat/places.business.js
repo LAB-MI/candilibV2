@@ -82,8 +82,15 @@ export const getReservationByCandidat = async idCandidat => {
 }
 
 export const bookPlace = async (idCandidat, center, date) => {
-  const place = await findAndbookPlace(idCandidat, center, date, {
-    inspecteur: 0,
-  })
+  const place = await findAndbookPlace(
+    idCandidat,
+    center,
+    date,
+    {
+      inspecteur: 0,
+    },
+    { centre: true, candidat: true }
+  )
+
   return place
 }
