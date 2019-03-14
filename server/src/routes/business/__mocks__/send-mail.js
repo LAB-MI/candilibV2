@@ -9,3 +9,7 @@ export const sendMailToAccount = async (candidat, flag) => {
 export const sendMagicLink = async (candidat, token) => {
   return sendMail()
 }
+
+export const sendMailConvocation = async reservation => {
+  return sendMail()
+}

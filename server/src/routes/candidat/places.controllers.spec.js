@@ -1,5 +1,7 @@
 import request from 'supertest'
+
 import { connect, disconnect } from '../../mongo-connection'
+
 import {
   createCentres,
   createPlaces,

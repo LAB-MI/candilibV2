@@ -54,7 +54,7 @@ services:
       SMTP_PORT: 25
       MAIL_FROM: noreply@interieur.gouv.fr
       CANDIDAT_EXPIREDIN: 72h
-      PUBLIC_URL: http://localhost:8080
+      PUBLIC_URL: http://localhost:8080/candilib
 
     networks:
       - candilib-network
