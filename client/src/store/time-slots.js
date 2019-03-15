@@ -14,7 +14,8 @@ export const CONFIRM_SELECT_DAY_SUCCESS = 'CONFIRM_SELECT_DAY_SUCCESS'
 export const CONFIRM_SELECT_DAY_FAILURE = 'CONFIRM_SELECT_DAY_FAILURE'
 
 const formatResult = (result) => {
-  const arrayOfMonth = [...new Set(result.map(el => DateTime.fromISO(el).monthLong))]
+  const arrayOfMonth = [...Array(12).fill(true).map((item, index) => DateTime.local().plus({ month: index }).monthLong)]
+  // const arrayOfMonth = [...new Set(result.map(el => DateTime.fromISO(el).monthLong))]
   const formatDayAndHours = result.map(el => ({
     month: DateTime.fromISO(el).monthLong,
     availableTimeSlots: {
@@ -33,9 +34,11 @@ const formatResult = (result) => {
       availableTimeSlots: arrayHoursByDay,
     }
   })
+  // console.log(result.map(el => DateTime.fromISO(el).monthLong))
+  // console.log(['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'])
+
   return formatedResult
 }
-
 export default {
   state: {
     confirmed: false,
@@ -105,7 +108,6 @@ export default {
       const { slot, centre, isAccompanied, hasDualControlCar } = selected
       const result = await api.candidat.setReservations(centre.id, slot, isAccompanied, hasDualControlCar)
       if (result && result.success) {
-        // localStorage.setItem('isConfirmed', true)
         commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
         dispatch(SHOW_SUCCESS, 'Votre reservation a bien ete prise en compte')
       } else {
