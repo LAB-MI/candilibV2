@@ -1,6 +1,6 @@
 import { createCandidat } from '../src/models/candidat'
 
-import { simpleLogger as logger } from '../src/util/logger'
+import { simpleLogger as logger } from '../src/util'
 
 import candidats from './candidats'
 

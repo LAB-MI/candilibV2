@@ -12,23 +12,28 @@ const options = {
     level: isProd ? 'info' : isTest ? 'warn' : 'debug',
     handleExceptions: true,
     json: false,
-    colorize: true,
+    colorize: !isProd,
   },
 }
 
-const logJsonFormat = printf(({ label, level, message, timestamp }) =>
-  JSON.stringify({
-    level,
-    label,
-    timestamp,
-    message,
+const logJsonFormat = printf(({ label, level, message: msg, timestamp }) => {
+  return JSON.stringify({
+    message: { content: msg, meta: { level, label, timestamp } },
   })
-)
+})
 
 const logFormat = printf(({ level, message }) => `${level} ${message}`)
 
+const simplestFormat = printf(({ message }) => message)
+
 export const simpleLogger = createLogger({
   format: logFormat,
+  transports: [new transports.Console(options.console)],
+  exitOnError: false,
+})
+
+export const simplestLogger = createLogger({
+  format: simplestFormat,
   transports: [new transports.Console(options.console)],
   exitOnError: false,
 })
@@ -55,6 +60,6 @@ export const appLogger = createLogger({
 
 export const loggerStream = {
   write (message, encoding) {
-    appLogger.info(message)
+    simplestLogger.info(message)
   },
 }

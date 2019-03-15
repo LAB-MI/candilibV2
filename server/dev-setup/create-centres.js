@@ -1,6 +1,6 @@
 import { createCentre } from '../src/models/centre'
 
-import { simpleLogger as logger } from '../src/util/logger'
+import { simpleLogger as logger } from '../src/util'
 import centres from './centres'
 
 logger.info('Creating centres')

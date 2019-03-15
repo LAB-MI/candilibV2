@@ -1,5 +1,5 @@
 import { connect, disconnect } from '../src/mongo-connection'
-import { simpleLogger as logger } from '../src/util/logger'
+import { simpleLogger as logger } from '../src/util'
 
 connect()
   .then(async () => {

@@ -14,12 +14,7 @@ import {
 } from '../../models/__tests__'
 import { SAVE_RESA_WITH_MAIL_SENT } from './message.constants'
 
-jest.mock('../../util/logger', () => ({
-  info: value => console.log(value),
-  debug: value => console.log(value),
-  error: value => console.log(value),
-  warn: value => console.log(value),
-}))
+jest.mock('../../util/logger')
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 

@@ -89,10 +89,10 @@ export const setReservations = async (req, res) => {
       const { nomNaissance, codeNeph } = reservation.bookedBy
       const { nom, departement } = reservation.centre
       const { date } = reservation
-      logger.warn(
+      appLogger.warn(
         `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `
       )
-      logger.error(error)
+      appLogger.error(error)
       statusmail = false
       message = SAVE_RESA_WITH_NO_MAIL_SENT
     }
