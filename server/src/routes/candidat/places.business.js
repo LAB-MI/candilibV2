@@ -78,7 +78,6 @@ export const getReservationByCandidat = async (idCandidat, options) => {
     { inspecteur: 0 },
     options || { centre: true }
   )
-  appLogger.debug(place)
   return place
 }
 
