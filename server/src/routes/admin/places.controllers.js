@@ -1,13 +1,13 @@
 import { findAllPlaces } from '../../models/place'
 import { importPlacesCsv } from './places.business'
-import { logger } from '../../util'
+import { appLogger } from '../../util'
 
 export const importPlaces = (req, res) => {
   const csvFile = req.files.file
   try {
-    logger.info(`import places provenant dufichier ${csvFile.name}`)
+    appLogger.info(`import places provenant dufichier ${csvFile.name}`)
     importPlacesCsv(csvFile, result => {
-      logger.info(`import places: Le fichier ${csvFile.name} a été traité.`)
+      appLogger.info(`import places: Le fichier ${csvFile.name} a été traité.`)
       res.status(200).send({
         fileName: csvFile.name,
         success: true,
@@ -16,7 +16,7 @@ export const importPlaces = (req, res) => {
       })
     })
   } catch (error) {
-    logger.error(error)
+    appLogger.error(error)
     return res.status(500).send({
       success: false,
       message: error.message,

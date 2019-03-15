@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+import { appLogger } from '../../util'
 import {
   findAvailablePlacesByCentre,
   findPlacesByCentreAndDate,
@@ -9,10 +10,9 @@ import {
   findCentreByName,
   findCentreByNameAndDepartement,
 } from '../../models/centre'
-import { logger } from '../../util'
 
 export const getDatesFromPlacesByCentreId = async (_id, beginDate, endDate) => {
-  logger.debug(
+  appLogger.debug(
     JSON.stringify({
       func: 'getDatesFromPlacesByCentreId',
       _id,
@@ -35,7 +35,7 @@ export const getDatesFromPlacesByCentre = async (
   beginDate,
   endDate
 ) => {
-  logger.debug(
+  appLogger.debug(
     JSON.stringify({
       func: 'getDatesFromPlacesByCentreId',
       departement,
@@ -77,7 +77,7 @@ export const getReservationByCandidat = async idCandidat => {
     { inspecteur: 0 },
     true
   )
-  logger.debug(place)
+  appLogger.debug(place)
   return place
 }
 

@@ -2,7 +2,7 @@ import delay from 'delay'
 import mongoose from 'mongoose'
 
 import { dbOptions } from './config'
-import logger from './util/logger'
+import { techLogger } from './util'
 
 mongoose.Promise = Promise
 
@@ -37,12 +37,12 @@ export const connect = async () => {
       mongoUri,
       mongooseOpts
     )
-    logger.info('Connected to Mongo!')
+    techLogger.info('Connected to Mongo!')
     return mongoose
   } catch (err) {
     --reconnectTries
     if (reconnectTries > 0) {
-      logger.warn(
+      techLogger.warn(
         `Could not connect to Mongo at ${mongoUri}, ${reconnectTries} tries left`
       )
       return delay(reconnectInterval).then(connect)
@@ -64,6 +64,6 @@ export const disconnect = async () => {
       stopMongoMemoryServer()
     }
   } catch (error) {
-    logger.info('Disconnected from Mongo')
+    techLogger.info('Disconnected from Mongo')
   }
 }

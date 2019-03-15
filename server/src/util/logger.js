@@ -1,32 +1,65 @@
 import { createLogger, format, transports } from 'winston'
-
-const { combine } = format
+const { combine, timestamp, label, printf } = format
 
 const isProd = process.env.NODE_ENV === 'production'
 const isTest = process.env.NODE_ENV === 'test'
 
+const TECH_LABEL = 'tech'
+const APP_LABEL = 'app'
+
 const options = {
   console: {
-    level: isProd || isTest ? 'warn' : 'debug',
+    level: isProd ? 'info' : isTest ? 'warn' : 'debug',
     handleExceptions: true,
     json: false,
-    colorize: true,
+    colorize: !isProd,
   },
 }
 
-const logFormat = format.printf(info => `${info.level}: ${info.message}\n`)
+const logJsonFormat = printf(({ label, level, message: msg, timestamp }) => {
+  return JSON.stringify({
+    message: { content: msg, meta: { level, label, timestamp } },
+  })
+})
 
-const logger = createLogger({
-  format: combine(format.colorize(), logFormat),
+const logFormat = printf(({ level, message }) => `${level} ${message}`)
+
+const simplestFormat = printf(({ message }) => message)
+
+export const simpleLogger = createLogger({
+  format: logFormat,
+  transports: [new transports.Console(options.console)],
+  exitOnError: false,
+})
+
+export const simplestLogger = createLogger({
+  format: simplestFormat,
+  transports: [new transports.Console(options.console)],
+  exitOnError: false,
+})
+
+export const techLogger = createLogger({
+  format: combine(
+    label({ label: TECH_LABEL }),
+    timestamp(),
+    isTest ? logFormat : logJsonFormat
+  ),
+  transports: [new transports.Console(options.console)],
+  exitOnError: false,
+})
+
+export const appLogger = createLogger({
+  format: combine(
+    label({ label: APP_LABEL }),
+    timestamp(),
+    isTest ? logFormat : logJsonFormat
+  ),
   transports: [new transports.Console(options.console)],
   exitOnError: false,
 })
 
 export const loggerStream = {
-  write: function (message, encoding) {
-    // use the 'info' log level so the output will be picked up by both transports (file and console)
-    logger.info(message)
+  write (message, encoding) {
+    simplestLogger.info(message)
   },
 }
-
-export default logger

@@ -1,5 +1,5 @@
 // import { synchroAurige, getCandidatsAsCsv } from './business'
-import { email as emailRegex, logger } from '../../util'
+import { email as emailRegex, techLogger } from '../../util'
 import { findCandidatByEmail, findCandidatById } from '../../models/candidat'
 import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
@@ -112,7 +112,7 @@ export async function preSignup (req, res) {
     const response = await presignUpCandidat(candidatData)
     res.status(200).json(response)
   } catch (error) {
-    logger.error(error)
+    techLogger.error(error)
     res.status(500).json({ success: false, ...error })
   }
 }

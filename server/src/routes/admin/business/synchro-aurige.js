@@ -3,6 +3,7 @@ import { DateTime } from 'luxon'
 
 import config from '../../../config'
 import {
+  appLogger,
   CANDIDAT_EXISTANT,
   EPREUVE_PRATIQUE_OK,
   EPREUVE_ETG_KO,
@@ -20,7 +21,6 @@ import {
 import { sendMailToAccount, sendMagicLink } from '../../business'
 
 import { findCandidatByNomNeph, deleteCandidat } from '../../../models/candidat'
-import logger from '../../../util/logger'
 
 const getCandidatStatus = (nom, neph, status, details) => ({
   nom,
@@ -52,7 +52,7 @@ export const synchroAurige = async buffer => {
 
     let nomNaissance = candidatAurige.nomNaissance
     if (!nomNaissance) {
-      logger.warn(
+      appLogger.warn(
         `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`
       )
       return getCandidatStatus(nomNaissance, codeNeph, 'error', NO_NAME)
@@ -64,13 +64,13 @@ export const synchroAurige = async buffer => {
       const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
 
       if (candidat === undefined || candidat === null) {
-        logger.warn(`Candidat ${codeNeph}/${nomNaissance} non trouvé`)
+        appLogger.warn(`Candidat ${codeNeph}/${nomNaissance} non trouvé`)
         return getCandidatStatus(nomNaissance, codeNeph, 'error', NOT_FOUND)
       }
 
       if (!candidat.isValidatedEmail) {
         if (isMoreThan2HoursAgo(candidat.presignedUpAt)) {
-          logger.warn(
+          appLogger.warn(
             `Candidat ${codeNeph}/${nomNaissance} email non vérifié depuis plus de 2h`
           )
           return getCandidatStatus(
@@ -80,7 +80,7 @@ export const synchroAurige = async buffer => {
             EMAIL_NOT_VERIFIED_EXPIRED
           )
         }
-        logger.warn(
+        appLogger.warn(
           `Candidat ${codeNeph}/${nomNaissance} email non vérifié, inscrit depuis moins de 2h`
         )
         return getCandidatStatus(
@@ -96,27 +96,27 @@ export const synchroAurige = async buffer => {
       let aurigeFeedback
 
       if (candidatExistant === CANDIDAT_NOK) {
-        logger.warn(`Ce candidat ${email} sera archivé : NEPH inconnu`)
+        appLogger.warn(`Ce candidat ${email} sera archivé : NEPH inconnu`)
         aurigeFeedback = CANDIDAT_NOK
       } else if (candidatExistant === CANDIDAT_NOK_NOM) {
-        logger.warn(`Ce candidat ${email} sera archivé : Nom inconnu`)
+        appLogger.warn(`Ce candidat ${email} sera archivé : Nom inconnu`)
         aurigeFeedback = CANDIDAT_NOK_NOM
       } else if (isEpreuveEtgInvalid(dateReussiteETG)) {
-        logger.warn(
+        appLogger.warn(
           `Ce candidat ${email} sera archivé : dateReussiteETG invalide`
         )
         aurigeFeedback = EPREUVE_ETG_KO
       } else if (isETGExpired(dateReussiteETG)) {
-        logger.warn(`Ce candidat ${email} sera archivé : Date ETG KO`)
+        appLogger.warn(`Ce candidat ${email} sera archivé : Date ETG KO`)
         aurigeFeedback = EPREUVE_ETG_KO
       } else if (reussitePratique === EPREUVE_PRATIQUE_OK) {
-        logger.warn(`Ce candidat ${email} sera archivé : PRATIQUE OK`)
+        appLogger.warn(`Ce candidat ${email} sera archivé : PRATIQUE OK`)
         aurigeFeedback = EPREUVE_PRATIQUE_OK
       }
       if (aurigeFeedback) {
         await deleteCandidat(candidat, aurigeFeedback)
         await sendMailToAccount(candidat, aurigeFeedback)
-        logger.info(`Envoi de mail ${aurigeFeedback} à ${email}`)
+        appLogger.info(`Envoi de mail ${aurigeFeedback} à ${email}`)
         return getCandidatStatus(
           nomNaissance,
           codeNeph,
@@ -138,7 +138,7 @@ export const synchroAurige = async buffer => {
           .save()
           .then(async candidat => {
             if (isValidatedByAurige) {
-              logger.info(`Ce candidat ${candidat.email} a été mis à jour`)
+              appLogger.info(`Ce candidat ${candidat.email} a été mis à jour`)
               return getCandidatStatus(
                 nomNaissance,
                 codeNeph,
@@ -146,18 +146,18 @@ export const synchroAurige = async buffer => {
                 OK_UPDATED
               )
             } else {
-              logger.info(`Ce candidat ${candidat.email} a été validé`)
+              appLogger.info(`Ce candidat ${candidat.email} a été validé`)
               const token = createToken(
                 candidat.id,
                 config.USER_STATUS_LEVEL.candidat
               )
 
-              logger.info(`Envoi d'un magic link à ${email}`)
+              appLogger.info(`Envoi d'un magic link à ${email}`)
               try {
                 await sendMagicLink(candidat, token)
                 return getCandidatStatus(nomNaissance, codeNeph, 'success', OK)
               } catch (error) {
-                logger.info(
+                appLogger.info(
                   `Impossible d'envoyer un mail à ce candidat ${
                     candidat.email
                   }, il a été validé, cependant`
@@ -172,18 +172,21 @@ export const synchroAurige = async buffer => {
             }
           })
           .catch(err => {
-            logger.warn(`Erreur de mise à jour pour ce candidat ${email}:`, err)
+            appLogger.warn(
+              `Erreur de mise à jour pour ce candidat ${email}:`,
+              err
+            )
             return getCandidatStatus(nomNaissance, codeNeph, 'error')
           })
       } else {
-        logger.warn(`Ce candidat ${email} n'a pas été traité. Cas inconnu`)
+        appLogger.warn(`Ce candidat ${email} n'a pas été traité. Cas inconnu`)
         return getCandidatStatus(nomNaissance, codeNeph, 'error', 'UNKNOW_CASE')
       }
     } catch (error) {
-      logger.warn(
+      appLogger.warn(
         `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}`
       )
-      logger.warn(error)
+      appLogger.warn(error)
       return getCandidatStatus(nomNaissance, codeNeph, 'error', 'UNKNOW_ERROR')
     }
   })

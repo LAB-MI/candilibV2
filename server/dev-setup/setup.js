@@ -1,16 +1,12 @@
 import { connect, disconnect } from '../src/mongo-connection'
-import logger from '../src/util/logger'
+import { simpleLogger as logger } from '../src/util'
 
 connect()
   .then(async () => {
     const { default: createAdmin } = await import('./create-admin-account')
     const { default: createCandidats } = await import('./create-candidats')
     const { default: createCentres } = await import('./create-centres')
-    return Promise.all([
-      createAdmin(),
-      createCandidats(),
-      createCentres(),
-    ])
+    return Promise.all([createAdmin(), createCandidats(), createCentres()])
   })
   .catch(error => {
     logger.error(`Server could not connect to DB, exiting`)

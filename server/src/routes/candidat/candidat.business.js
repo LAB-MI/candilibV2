@@ -3,7 +3,7 @@ import {
   INSCRIPTION_UPDATE,
   INSCRIPTION_OK,
   VALIDATION_EMAIL,
-  logger,
+  appLogger,
   codePostal,
 } from '../../util'
 import {
@@ -136,12 +136,7 @@ export async function validateEmail (email, hash) {
 }
 
 export const getInfoCandidatDepartement = async id => {
-  logger.debug(
-    JSON.stringify({
-      section: 'candidat-getInfoCandidatDepartement',
-      args: { id },
-    })
-  )
+  appLogger.debug('candidat-getInfoCandidatDepartement ' + id)
 
   const candidat = await findCandidatById(id, { adresse: 1 })
   if (!candidat) throw new Error('Candidat est introuvable')

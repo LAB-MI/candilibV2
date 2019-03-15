@@ -1,12 +1,12 @@
 import mongoose from 'mongoose'
 
 import Place from './place.model'
-import { logger } from '../../util'
+import { appLogger } from '../../util'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
 export const createPlace = async leanPlace => {
-  logger.debug(JSON.stringify({ func: 'createPlace', leanPlace }))
+  appLogger.debug(JSON.stringify({ func: 'createPlace', leanPlace }))
   const previousPlace = await Place.findOne(leanPlace)
   if (previousPlace && !(previousPlace instanceof Error)) {
     throw new Error(PLACE_ALREADY_IN_DB_ERROR)
@@ -63,7 +63,7 @@ export const findAvailablePlacesByCentre = async (
   beginDate,
   endDate
 ) => {
-  logger.debug(
+  appLogger.debug(
     JSON.stringify({
       func: 'findAvailablePlacesByCentre',
       args: { centreId, beginDate, endDate },
@@ -83,7 +83,7 @@ export const countAvailablePlacesByCentre = async (
   beginDate,
   endDate
 ) => {
-  logger.debug(
+  appLogger.debug(
     JSON.stringify({
       func: 'countAvailablePlacesByCentre',
       args: { centreId, beginDate, endDate },
@@ -99,7 +99,7 @@ export const countAvailablePlacesByCentre = async (
 }
 
 export const findPlacesByCentreAndDate = async (_id, date) => {
-  logger.debug(
+  appLogger.debug(
     JSON.stringify({
       func: 'findPlacesByCentreAndDate',
       args: { _id, date },
