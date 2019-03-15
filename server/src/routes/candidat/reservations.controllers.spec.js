@@ -12,9 +12,18 @@ import {
   removeCentres,
   deleteCandidats,
 } from '../../models/__tests__'
-import { SAVE_RESA_WITH_MAIL_SENT } from './message.constants'
+import {
+  SAVE_RESA_WITH_MAIL_SENT,
+  CANCEL_RESA_WITH_MAIL_SENT,
+} from './message.constants'
 
 jest.mock('../../util/logger')
+// jest.mock('../../util/logger', () => ({
+//   info: value => console.info(value),
+//   debug: value => console.debug(value),
+//   error: value => console.error(value),
+//   warn: value => console.warn(value),
+// }))
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 
@@ -81,6 +90,23 @@ describe('Test reservation controllers', () => {
       )
       expect(body.reservation).toHaveProperty('isBooked', true)
       expect(body.reservation).not.toHaveProperty('inspecteur')
+    })
+
+    it('Should get 200 to cancel a reservation', async () => {
+      const selectedCandidat = createdCandiats[0]
+      require('../middlewares/verify-token').__setIdCandidat(
+        selectedCandidat._id
+      )
+
+      const { body } = await request(app)
+        .delete(`${apiPrefix}/candidat/reservations`)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(body).toBeDefined()
+      expect(body).toHaveProperty('success', true)
+      expect(body).toHaveProperty('statusmail', true)
+      expect(body).toHaveProperty('message', CANCEL_RESA_WITH_MAIL_SENT)
     })
   })
 })

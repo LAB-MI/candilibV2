@@ -28,7 +28,11 @@ import {
 } from '../__tests__'
 
 import { deleteCentre, createCentre } from '../centre'
-import { findPlacesByCentreAndDate, findAndbookPlace } from './place.queries'
+import {
+  findPlacesByCentreAndDate,
+  findAndbookPlace,
+  removeBookedPlace,
+} from './place.queries'
 
 const date = moment()
   .date(28)
@@ -343,6 +347,30 @@ describe('Place', () => {
       expect(place.date).toEqual(
         DateTime.fromISO(selectedPlace.date).toJSDate()
       )
+    })
+  })
+
+  describe('Remove the booking places', () => {
+    let createdResas
+    beforeAll(async () => {
+      await createCentres()
+      await createPlaces()
+      await createCandidats()
+      createdResas = await makeResas()
+    })
+    afterAll(async () => {
+      await removePlaces()
+      await deleteCandidats()
+      await removeCentres()
+    })
+    it('should a place without bookedBy and isBooked', async () => {
+      const selectedResa = createdResas[0]
+
+      const place = await removeBookedPlace(selectedResa)
+
+      expect(place).toBeDefined()
+      expect(place.bookedBy).toBeUndefined()
+      expect(place).toHaveProperty('isBooked', false)
     })
   })
 })
