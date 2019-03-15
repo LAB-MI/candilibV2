@@ -16,6 +16,7 @@ import {
   SAVE_RESA_WITH_MAIL_SENT,
   CANCEL_RESA_WITH_MAIL_SENT,
   SAME_RESA_ASKED,
+  SEND_MAIL_ASKED,
 } from './message.constants'
 import { findPlaceById, findPlaceByCandidatId } from '../../models/place'
 
@@ -163,6 +164,21 @@ describe('Test reservation controllers', () => {
       expect(body).toHaveProperty('message', SAME_RESA_ASKED)
       expect(body).not.toHaveProperty('statusmail')
       expect(body).not.toHaveProperty('reservation')
+    })
+    it('Should get mail of the reservation', async () => {
+      const selectedCandidat = createdCandiats[0]
+      require('../middlewares/verify-token').__setIdCandidat(
+        selectedCandidat._id
+      )
+
+      const { body } = await request(app)
+        .get(`${apiPrefix}/candidat/reservations?bymail=true`)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(body).toBeDefined()
+      expect(body).toHaveProperty('success', true)
+      expect(body).toHaveProperty('message', SEND_MAIL_ASKED)
     })
 
     it('Should get 200 to cancel a reservation', async () => {
