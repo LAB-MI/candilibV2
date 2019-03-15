@@ -4,7 +4,9 @@ import { places } from './places'
 import { candidats } from './candidats'
 
 const makeResa = (place, candidat) => {
-  return place.update({ bookedBy: candidat._id, isBooked: true })
+  place.bookedBy = candidat._id
+  place.isBooked = true
+  return place.save()
 }
 
 export const makeResas = async () => {

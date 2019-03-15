@@ -5,6 +5,7 @@ import {
   findPlacesByCentreAndDate,
   findPlaceBookedByCandidat,
   findAndbookPlace,
+  removeBookedPlace,
 } from '../../models/place'
 import {
   findCentreByName,
@@ -71,11 +72,11 @@ export const hasAvailablePlacesByCentre = async (departement, centre, date) => {
   return dates
 }
 
-export const getReservationByCandidat = async idCandidat => {
+export const getReservationByCandidat = async (idCandidat, options) => {
   const place = await findPlaceBookedByCandidat(
     idCandidat,
     { inspecteur: 0 },
-    true
+    options || { centre: true }
   )
   appLogger.debug(place)
   return place
@@ -90,5 +91,10 @@ export const bookPlace = async (idCandidat, center, date) => {
     { centre: true, candidat: true }
   )
 
+  return place
+}
+
+export const removeReservationPlace = async bookedPlace => {
+  const place = await removeBookedPlace(bookedPlace)
   return place
 }

@@ -17,7 +17,7 @@ import config from '../../config'
 import { findAllCentres } from '../../models/centre'
 import {
   getHtmlBody,
-  getCancelConvovationTemplate,
+  getCancelBookingTemplate,
   getConvocationTemplate,
   getInscriptionOkTemplate,
   getValidationMailTemplate,
@@ -57,10 +57,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     siteAdresse = sites.find(item => item.nom.toUpperCase() === place.title)
   }
 
-  const ANNULATION_CONVOCATION_MSG = getCancelConvovationTemplate(
-    nomMaj,
-    codeNeph
-  )
+  const ANNULATION_CONVOCATION_MSG = getCancelBookingTemplate(nomMaj, codeNeph)
 
   const MAIL_CONVOCATION_MSG = getConvocationTemplate(
     nomMaj,
@@ -133,6 +130,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       message.subject = 'Validation de votre inscription à Candilib'
       return message
     case MAIL_CONVOCATION:
+      // TODO : A supprimer les données sont dans le model place
       message.content = getHtmlBody(MAIL_CONVOCATION_MSG)
       message.subject = "Convocation à l'examen"
       return message

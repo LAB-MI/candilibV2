@@ -1,5 +1,5 @@
 export * from './body-mail-template'
-export * from './cancel-convocation-template'
+export * from './cancel-booking-template'
 export * from './convocation-template'
 export * from './epreuve-etg-ko-template'
 export * from './epreuve-pratique-ok-template'

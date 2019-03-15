@@ -120,7 +120,9 @@ export const findPlaceBookedByCandidat = async (
   populate
 ) => {
   const query = Place.findOne({ isBooked: true, bookedBy }, options)
-  if (populate) query.populate('centre')
+  if (populate && populate.centre) query.populate('centre')
+  if (populate && populate.candidat) query.populate('bookedBy')
+
   const place = await query.exec()
   return place
 }
@@ -146,4 +148,11 @@ export const findAndbookPlace = async (
 
   const place = await query.exec()
   return place
+}
+
+export const removeBookedPlace = place => {
+  place.bookedBy = undefined
+  place.isBooked = false
+
+  return place.save()
 }
