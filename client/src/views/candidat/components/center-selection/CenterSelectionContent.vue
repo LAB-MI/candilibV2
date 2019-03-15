@@ -11,6 +11,9 @@
       <v-list-tile-sub-title class="u-flex__item--grow">
         {{ center.centre.adresse }}
       </v-list-tile-sub-title>
+      <span v-if="!center.count" class="u-flex__item--grow col-red dispo_info">
+        Pas de place disponible pour le moment
+      </span>
     </v-list-tile-content>
     <a
       target="_blank"
@@ -57,5 +60,9 @@ export default {
   height: 3em;
   padding: 0 1.5em;
   text-decoration: none;
+}
+.dispo_info {
+  margin: 0;
+  font-size: 12px;
 }
 </style>
