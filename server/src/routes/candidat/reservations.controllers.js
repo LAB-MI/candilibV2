@@ -1,9 +1,15 @@
 import { appLogger } from '../../util'
-import { bookPlace, getReservationByCandidat } from './places.business'
-import { sendMailConvocation } from '../business'
+import {
+  bookPlace,
+  getReservationByCandidat,
+  removeReservationPlace,
+} from './places.business'
+import { sendMailConvocation, sendCancelBooking } from '../business'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
   SAVE_RESA_WITH_NO_MAIL_SENT,
+  CANCEL_RESA_WITH_MAIL_SENT,
+  CANCEL_RESA_WITH_NO_MAIL_SENT,
 } from './message.constants'
 
 export const getReservations = async (req, res) => {
@@ -106,6 +112,65 @@ export const setReservations = async (req, res) => {
         departement: reservation.centre.departement,
         isBooked: reservation.isBooked,
       },
+      statusmail,
+      message,
+    })
+  } catch (error) {
+    appLogger.error(error)
+    res.status(500).json({
+      success: false,
+      message: error.message,
+      error: JSON.stringify(error),
+    })
+  }
+}
+
+export const removeReservations = async (req, res) => {
+  const idCandidat = req.userId
+
+  appLogger.debug(
+    JSON.stringify({
+      section: 'candidat-getReservations',
+      argument: { idCandidat },
+    })
+  )
+
+  if (!idCandidat) {
+    res.status(401).json({
+      success: false,
+      message: 'Information utilisateur inexistant',
+    })
+  }
+
+  try {
+    const bookedPlace = await getReservationByCandidat(idCandidat, {
+      centre: true,
+      candidat: true,
+    })
+
+    if (!bookedPlace) {
+      return res.status(401).json({
+        success: false,
+        message: "Vous n'avez pas de réservation",
+      })
+    }
+
+    const candidat = bookedPlace.bookedBy
+
+    await removeReservationPlace(bookedPlace)
+
+    let statusmail = true
+    let message = CANCEL_RESA_WITH_MAIL_SENT
+    try {
+      await sendCancelBooking(candidat)
+    } catch (error) {
+      appLogger.error(error)
+      statusmail = false
+      message = CANCEL_RESA_WITH_NO_MAIL_SENT
+    }
+
+    return res.status(200).json({
+      success: true,
       statusmail,
       message,
     })
