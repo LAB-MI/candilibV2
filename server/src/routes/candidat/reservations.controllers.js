@@ -138,7 +138,7 @@ export const removeReservations = async (req, res) => {
   if (!idCandidat) {
     res.status(401).json({
       success: false,
-      message: 'Information utilisateur inexistant',
+      message: "Vous n'êtes pas connecté",
     })
   }
 

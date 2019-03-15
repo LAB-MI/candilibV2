@@ -9,7 +9,7 @@ export const sendMailConvocation = async reservation => {
   )
 
   if (!reservation) {
-    throw new Error('Il y a aucune réservation')
+    throw new Error("Il n'y a aucune réservation")
   }
   if (!reservation.bookedBy) {
     throw new Error('Il y a aucune candidat pour cette réservation')
@@ -28,7 +28,7 @@ export const sendCancelBooking = async candidat => {
   logger.debug(JSON.stringify({ func: sendMailConvocation, arg: { candidat } }))
 
   if (!candidat) {
-    throw new Error('Les données du candidat sont vide')
+    throw new Error("Le candidat n'a pas de données")
   }
 
   const { email, codeNeph, nomNaissance } = candidat
