@@ -16,6 +16,7 @@ import {
   SAVE_RESA_WITH_MAIL_SENT,
   CANCEL_RESA_WITH_MAIL_SENT,
 } from './message.constants'
+import { findPlaceById } from '../../models/place'
 
 jest.mock('../../util/logger')
 // jest.mock('../../util/logger', () => ({
@@ -92,12 +93,54 @@ describe('Test reservation controllers', () => {
       expect(body.reservation).not.toHaveProperty('inspecteur')
     })
 
+    it('Should get 200 to book another place', async () => {
+      const selectedCandidat = createdCandiats[0]
+      require('../middlewares/verify-token').__setIdCandidat(
+        selectedCandidat._id
+      )
+      const selectedCentre = createdCentres[1]
+      const selectedPlace = createdPlaces[1]
+
+      const { body } = await request(app)
+        .post(`${apiPrefix}/candidat/reservations`)
+        .send({
+          id: selectedCentre._id,
+          date: selectedPlace.date,
+          isAccompanied: true,
+          hasDualControlCar: true,
+        })
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(body).toBeDefined()
+      expect(body).toHaveProperty('success', true)
+      expect(body).toHaveProperty('statusmail', true)
+      expect(body).toHaveProperty('message', SAVE_RESA_WITH_MAIL_SENT)
+      expect(body).toHaveProperty('reservation')
+      expect(body.reservation).toHaveProperty(
+        'date',
+        DateTime.fromJSDate(selectedPlace.date)
+          .setZone('utc')
+          .toISO()
+      )
+      expect(body.reservation).toHaveProperty('centre', selectedCentre.nom)
+      expect(body.reservation).toHaveProperty(
+        'departement',
+        selectedCentre.departement
+      )
+      expect(body.reservation).toHaveProperty('isBooked', true)
+      expect(body.reservation).not.toHaveProperty('inspecteur')
+
+      const previewPlace = await findPlaceById(createdPlaces[0]._id)
+      expect(previewPlace).toHaveProperty('isBooked', false)
+      expect(previewPlace).not.toHaveProperty('bookedBy')
+    })
+
     it('Should get 200 to cancel a reservation', async () => {
       const selectedCandidat = createdCandiats[0]
       require('../middlewares/verify-token').__setIdCandidat(
         selectedCandidat._id
       )
-
       const { body } = await request(app)
         .delete(`${apiPrefix}/candidat/reservations`)
         .set('Accept', 'application/json')
