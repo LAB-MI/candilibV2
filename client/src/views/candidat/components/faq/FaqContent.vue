@@ -9,14 +9,12 @@
           {{ 'remove_circle' }}
         </i>
     </a>
-    <transition name="fade">
-      <div v-if="status" class="content-question-style">
-        <div v-for="(elem, index) in item.content" :key="index">
-          <h4 v-if="elem.subTitleContent" v-html="elem.subTitleContent">{{ elem.subTitleContent }}</h4> <br v-if="elem.subTitleContent">
-          <p v-if="elem.textContent" v-html="elem.textContent">{{ elem.textContent }}</p>
-        </div>
+    <div v-if="status" class="content-question-style">
+      <div v-for="(elem, index) in item.content" :key="index">
+        <h4 v-if="elem.subTitleContent" v-html="elem.subTitleContent">{{ elem.subTitleContent }}</h4> <br v-if="elem.subTitleContent">
+        <p v-if="elem.textContent" v-html="elem.textContent">{{ elem.textContent }}</p>
       </div>
-    </transition>
+    </div>
   </div>
 </template>
 

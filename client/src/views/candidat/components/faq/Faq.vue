@@ -7,9 +7,9 @@
   <p class="p-style">Foire aux questions</p>
   </div>
   <ul class="ul-style">
-   <li class="li-style" v-for="(item, index) in arrayContent" :key="index">
+    <li class="li-style" v-for="(item, index) in arrayContent" :key="index">
     <FaqContent :item="item"/>
-   </li>
+    </li>
   </ul>
 </div>
 </template>
