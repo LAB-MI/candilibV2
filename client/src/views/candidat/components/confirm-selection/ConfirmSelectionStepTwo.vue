@@ -52,7 +52,7 @@
       Renvoyer l'email de comfirmation
       &nbsp;
       <v-icon>
-        edit
+        mail
       </v-icon>
   </v-btn>
 </div>
