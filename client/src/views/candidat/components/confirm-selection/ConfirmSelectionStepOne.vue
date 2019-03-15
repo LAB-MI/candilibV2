@@ -12,7 +12,7 @@
       >
       <v-checkbox
         v-model="selectedCheckBox"
-        label="qu’une personne peu vous accompagner *"
+        label="qu’une personne peut vous accompagner *"
         value="companion"
       ></v-checkbox>
       <v-checkbox
