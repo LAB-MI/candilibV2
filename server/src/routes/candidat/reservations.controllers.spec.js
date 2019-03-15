@@ -55,7 +55,6 @@ describe('Test reservation controllers', () => {
     })
 
     it('Should get 200 to book one place', async () => {
-      console.log('Should get 200 to book one place')
       const selectedCandidat = createdCandiats[0]
       require('../middlewares/verify-token').__setIdCandidat(
         selectedCandidat._id
@@ -95,7 +94,6 @@ describe('Test reservation controllers', () => {
     })
 
     it('Should get 200 to book another place', async () => {
-      console.log('Should get 200 to book another place')
       const selectedCandidat = createdCandiats[0]
       require('../middlewares/verify-token').__setIdCandidat(
         selectedCandidat._id
@@ -139,7 +137,6 @@ describe('Test reservation controllers', () => {
     })
 
     it('Should get 200 to cancel a reservation', async () => {
-      console.log('Should get 200 to cancel a reservation')
       const selectedCandidat = createdCandiats[0]
       require('../middlewares/verify-token').__setIdCandidat(
         selectedCandidat._id
