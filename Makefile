@@ -135,7 +135,7 @@ network-down:
 #
 # front candidat
 #
-build-front-candidat:
+build-front-candidat: check-build-front-candidat
 	${DC} -f ${DC_APP_FRONT_CANDIDAT_BUILD_PROD} build ${DC_BUILD_ARGS} front_candidat
 check-build-front-candidat:
 	${DC} -f ${DC_APP_FRONT_CANDIDAT_BUILD_PROD} config
@@ -150,7 +150,7 @@ stop-front-candidat:
 #
 # front admin
 #
-build-front-admin:
+build-front-admin: check-build-front-admin
 	${DC} -f ${DC_APP_FRONT_ADMIN_BUILD_PROD} build ${DC_BUILD_ARGS} front_admin
 check-build-front-admin:
 	${DC} -f ${DC_APP_FRONT_ADMIN_BUILD_PROD} config

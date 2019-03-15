@@ -16,6 +16,7 @@ services:
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         CLIENT_BUILD_TARGET: candidat
+        APP_VERSION: ${APP_VERSION}
 #    env_file:
 #      - ${cnf:-.env}
     environment:
@@ -41,6 +42,7 @@ services:
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         CLIENT_BUILD_TARGET: admin
+        APP_VERSION: ${APP_VERSION}
 #    env_file:
 #      - ${cnf:-.env}
     environment:

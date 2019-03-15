@@ -26,10 +26,11 @@ RUN if [ ! -z "$http_proxy" ] ; then \
 # Step 2: "development" target #
 ################################
 FROM base as development
+ARG APP_VERSION
 COPY src src/
 COPY babel.config.js package.json package-lock.json ./
 # Install app dependencies
-RUN npm install
+RUN npm --no-git-tag-version version ${APP_VERSION} ; npm install
 ENV NODE_ICU_DATA="/app/node_modules/full-icu"
 
 #CMD ["npm", "start"]
@@ -50,11 +51,13 @@ RUN npm run build
 FROM build as production
 ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
+ARG APP_VERSION
 # Copy the transpiled code to use in production (in /app)
 COPY --from=build /app/dist ./dist
 COPY package.json package-lock.json ./
 # Install production dependencies and clean cache
-RUN npm install --production && \
+RUN npm --no-git-tag-version version ${APP_VERSION} && \
+    npm install --production && \
     npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force
