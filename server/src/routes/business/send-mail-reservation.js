@@ -1,12 +1,10 @@
-import { logger } from '../../util'
+import { appLogger } from '../../util'
 import { getConvocationBody } from './build-mail-convocation'
 import { getCancelBookingTemplate, getHtmlBody } from './mail'
 import { sendMail } from './send-mail'
 
 export const sendMailConvocation = async reservation => {
-  logger.debug(
-    JSON.stringify({ func: sendMailConvocation, arg: { reservation } })
-  )
+  appLogger.debug({ func: sendMailConvocation, arg: { reservation } })
 
   if (!reservation) {
     throw new Error("Il n'y a aucune réservation")
@@ -20,12 +18,12 @@ export const sendMailConvocation = async reservation => {
     throw new Error("Le candidat n'a pas de courriel")
   }
   const message = getConvocationBody(reservation)
-  logger.debug(JSON.stringify({ func: sendMailConvocation, message }))
+  appLogger.debug({ func: sendMailConvocation, message })
   return sendMail(email, message)
 }
 
 export const sendCancelBooking = async candidat => {
-  logger.debug(JSON.stringify({ func: sendMailConvocation, arg: { candidat } }))
+  appLogger.debug({ func: sendMailConvocation, arg: { candidat } })
 
   if (!candidat) {
     throw new Error("Le candidat n'a pas de données")
@@ -47,6 +45,7 @@ export const sendCancelBooking = async candidat => {
     content: getHtmlBody(contentMsg),
     subject: "Annulation de Convocation à l'examen",
   }
+  appLogger.debug({ func: sendCancelBooking, message })
 
   return sendMail(email, message)
 }
