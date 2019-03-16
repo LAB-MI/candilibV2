@@ -27,6 +27,7 @@ RUN if [ ! -z "$http_proxy" ] ; then \
 ################################
 FROM base as development
 ARG CYPRESS_DOWNLOAD_MIRROR
+ARG APP_VERSION
 ARG http_proxy
 ARG https_proxy
 ARG no_proxy
@@ -39,7 +40,7 @@ COPY .env.candidat .env.admin ./
 COPY babel.config.js cypress.json jsconfig.json package-lock.json package.json vue.config.js ./
 # Install app dependencies
 
-RUN set -ex; npm install --loglevel verbose
+RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm install --loglevel http
 EXPOSE 8080
 
 CMD ["npm","run", "serve"]
@@ -66,11 +67,13 @@ RUN set -x ; npm run format && npm run test && npm run build:${CLIENT_BUILD_TARG
 FROM build as production
 ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
+ARG APP_VERSION
 # Copy the transpiled code to use in production (in /app)
 COPY --from=build /app/dist ./dist
 COPY package.json package-lock.json ./
 # Install production dependencies and clean cache
-RUN npm install --production && \
+RUN npm --no-git-tag-version version ${APP_VERSION} && \
+    npm install --production && \
     npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force

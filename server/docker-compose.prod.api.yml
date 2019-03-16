@@ -13,6 +13,7 @@ services:
         no_proxy: ${no_proxy}
         npm_registry: ${NPM_REGISTRY}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
+        APP_VERSION: ${APP_VERSION}
     ports:
       - "${API_PORT:-8000}:8000"
 #    env_file:
