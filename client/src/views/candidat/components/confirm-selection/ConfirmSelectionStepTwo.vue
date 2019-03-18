@@ -27,15 +27,18 @@
     </template>
     <v-card>
       <v-card-title class="headline">
-        Confirm Suppr
+        Confirmer la suppression
       </v-card-title>
       <v-card-text>
-        Bla bla bla fait attention suppresion
+        <div class="confirm-suppr-text-content">
+          <p>Veniam consectetur consequat sint dolore ad amet velit cupidatat nulla reprehenderit proident exercitation. Labore excepteur laborum officia nostrud cupidatat ullamco. Quis eiusmod do ut fugiat veniam dolore velit elit irure tempor nostrud. Cillum deserunt ut labore amet magna incididunt enim occaecat deserunt anim laboris occaecat.</p>
+          <p>Veniam consectetur consequat sint dolore ad amet velit cupidatat nulla reprehenderit proident exercitation. Labore excepteur laborum officia nostrud cupidatat ullamco. Quis eiusmod do ut fugiat veniam dolore velit elit irure tempor nostrud. Cillum deserunt ut labore amet magna incididunt enim occaecat deserunt anim laboris occaecat.</p>
+        </div>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="red darken-1" flat @click="dialog = false">Retour</v-btn>
-        <v-btn color="success darken-1" flat @click="deleteConfirm()">Comfirm</v-btn>
+        <v-btn color="success darken-1" flat @click="deleteConfirm()">Confirmer</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -98,7 +101,13 @@ export default {
     padding-bottom: 2em;
     text-transform: uppercase;
   }
+
   .redirectTextColor {
     color: blue;
+  }
+
+  .confirm-suppr-text-content {
+    height: 200px;
+    overflow-y: scroll;
   }
 </style>
