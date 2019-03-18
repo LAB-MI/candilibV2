@@ -7,18 +7,24 @@ const isTest = process.env.NODE_ENV === 'test'
 const TECH_LABEL = 'tech'
 const APP_LABEL = 'app'
 
+const level = isProd ? 'info' : isTest ? 'warn' : 'debug'
+
 const options = {
   console: {
-    level: isProd ? 'info' : isTest ? 'warn' : 'debug',
-    handleExceptions: true,
+    level,
     json: false,
     colorize: !isProd,
   },
 }
 
-const logJsonFormat = printf(({ label, level, message: msg, timestamp }) => {
+const logJsonFormat = printf(({ label, level, message, timestamp }) => {
   return JSON.stringify({
-    message: { content: msg, meta: { level, label, timestamp } },
+    content: typeof message === 'string' ? { default: message } : message,
+    meta: {
+      level,
+      label,
+      timestamp,
+    },
   })
 })
 
