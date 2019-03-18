@@ -1,8 +1,9 @@
-import { appLogger } from '../../util'
+import { appLogger, techLogger } from '../../util'
 import {
   bookPlace,
   getReservationByCandidat,
   removeReservationPlace,
+  isSamReservationPlace,
 } from './places.business'
 import { sendMailConvocation, sendCancelBooking } from '../business'
 import {
@@ -10,6 +11,7 @@ import {
   SAVE_RESA_WITH_NO_MAIL_SENT,
   CANCEL_RESA_WITH_MAIL_SENT,
   CANCEL_RESA_WITH_NO_MAIL_SENT,
+  SAME_RESA_ASKED,
 } from './message.constants'
 
 export const getReservations = async (req, res) => {
@@ -54,14 +56,12 @@ export const getReservations = async (req, res) => {
 }
 
 export const setReservations = async (req, res) => {
+  const section = 'candidat-setReservations'
   const idCandidat = req.userId
-  const center = req.param('id')
-  const date = req.param('date')
-  const isAccompanied = req.param('isAccompanied')
-  const hasDualControlCar = req.param('hasDualControlCar')
+  const { id: center, date, isAccompanied, hasDualControlCar } = req.body
 
   appLogger.info({
-    section: 'candidat-setReservations ',
+    section,
     idCandidat,
     center,
     date,
@@ -82,7 +82,7 @@ export const setReservations = async (req, res) => {
     const message = `Les informations ${messageBuild} sont manquant`
 
     appLogger.warn({
-      section: 'candidat-setReservations ',
+      section,
       idCandidat,
       success,
       message,
@@ -94,13 +94,37 @@ export const setReservations = async (req, res) => {
   }
 
   try {
-    // const bookedPlace = await findPlaceBookedByCandidat(idCandidat)
+    const previewBookedPlace = await getReservationByCandidat(idCandidat)
+    appLogger.debug({
+      section,
+      idCandidat,
+      previewBookedPlace,
+    })
+
+    if (previewBookedPlace) {
+      const isSame = isSamReservationPlace(center, date, previewBookedPlace)
+
+      if (isSame) {
+        const success = false
+        const message = SAME_RESA_ASKED
+        appLogger.warn({
+          section,
+          idCandidat,
+          success,
+          message,
+        })
+        return res.status(400).json({
+          success,
+          message,
+        })
+      }
+    }
     const reservation = await bookPlace(idCandidat, center, date)
     if (!reservation) {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"
       appLogger.warn({
-        section: 'candidat-setReservations ',
+        section,
         idCandidat,
         success,
         message,
@@ -109,6 +133,20 @@ export const setReservations = async (req, res) => {
         success,
         message,
       })
+    }
+
+    if (previewBookedPlace) {
+      try {
+        await removeReservationPlace(previewBookedPlace)
+      } catch (error) {
+        techLogger.error({
+          section,
+          idCandidat,
+          message: 'Echec de suppression de la reservation',
+          previewBookedPlace,
+          error,
+        })
+      }
     }
 
     let statusmail
@@ -130,8 +168,6 @@ export const setReservations = async (req, res) => {
       statusmail = false
       message = SAVE_RESA_WITH_NO_MAIL_SENT
     }
-
-    // if (bookedPlace) cancelReservationPlace(bookedPlace._id)
 
     appLogger.info({
       section: 'candidat-setReservations',
