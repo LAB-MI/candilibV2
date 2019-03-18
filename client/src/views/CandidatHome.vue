@@ -21,6 +21,7 @@ import { mapState } from 'vuex'
 
 import {
   FETCH_CANDIDAT_RESERVATION_REQUEST,
+  SHOW_ERROR,
 } from '@/store'
 
 import ConfirmSelection from './candidat/components/confirm-selection/ConfirmSelection.vue'
