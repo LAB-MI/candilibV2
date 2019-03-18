@@ -174,6 +174,7 @@ export default {
 
 .submit-bgbtn {
   position: absolute;
+  z-index: -1;
   width: 300%;
   height: 100%;
   background: linear-gradient(to left, #21d4fd, #b721ff, #21d4fd, #b721ff);
