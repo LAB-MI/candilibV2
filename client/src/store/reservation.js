@@ -10,10 +10,15 @@ export const DELETE_CANDIDAT_RESERVATION_REQUEST = 'DELETE_CANDIDAT_RESERVATION_
 export const DELETE_CANDIDAT_RESERVATION_FAILURE = 'DELETE_CANDIDAT_RESERVATION_FAILURE'
 export const DELETE_CANDIDAT_RESERVATION_SUCCESS = 'DELETE_CANDIDAT_RESERVATION_SUCCESS'
 
+export const RESEND_CANDIDAT_RESERVATION_REQUEST = 'RESEND_CANDIDAT_RESERVATION_REQUEST'
+export const RESEND_CANDIDAT_RESERVATION_FAILURE = 'RESEND_CANDIDAT_RESERVATION_FAILURE'
+export const RESEND_CANDIDAT_RESERVATION_SUCCESS = 'RESEND_CANDIDAT_RESERVATION_SUCCESS'
+
 export default {
   state: {
     isDeleting: false,
     isFetching: false,
+    isResend: false,
     isModifying: false,
     booked: undefined,
   },
@@ -39,6 +44,16 @@ export default {
     },
     [DELETE_CANDIDAT_RESERVATION_FAILURE] (state) {
       state.isDeleting = false
+    },
+
+    [RESEND_CANDIDAT_RESERVATION_REQUEST] (state) {
+      state.isResend = true
+    },
+    [RESEND_CANDIDAT_RESERVATION_SUCCESS] (state) {
+      state.isResend = false
+    },
+    [RESEND_CANDIDAT_RESERVATION_FAILURE] (state) {
+      state.isResend = false
     },
   },
 
@@ -69,6 +84,22 @@ export default {
         }
       } catch (error) {
         commit(DELETE_CANDIDAT_RESERVATION_FAILURE)
+        throw error
+      }
+    },
+
+    async [RESEND_CANDIDAT_RESERVATION_REQUEST] ({ commit, dispatch }) {
+      commit(DELETE_CANDIDAT_RESERVATION_REQUEST)
+      try {
+        const result = await api.candidat.deleteReservation()
+        if (result && result.success) {
+          commit(RESEND_CANDIDAT_RESERVATION_SUCCESS)
+          dispatch(SHOW_SUCCESS, result.message)
+        } else {
+          throw new Error(result.message)
+        }
+      } catch (error) {
+        commit(RESEND_CANDIDAT_RESERVATION_FAILURE)
         throw error
       }
     },
