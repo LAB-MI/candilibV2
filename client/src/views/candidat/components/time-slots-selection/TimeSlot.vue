@@ -107,6 +107,6 @@ export default {
 
 <style>
 .color-span {
-  color:rgb(22, 157, 178);
+  color: rgb(22, 157, 178);
 }
 </style>

@@ -61,6 +61,7 @@ export default {
   padding: 0 1.5em;
   text-decoration: none;
 }
+
 .dispo_info {
   margin: 0;
   font-size: 12px;
