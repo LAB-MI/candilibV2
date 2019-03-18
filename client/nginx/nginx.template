@@ -21,10 +21,27 @@ http {
     add_header Referrer-Policy "same-origin";
     add_header Feature-Policy "geolocation none;midi none;notifications none;push none;sync-xhr none;microphone none;camera none;magnetometer none;gyroscope self;speaker self;vibrate none;fullscreen self;payment none;";
 
-    log_format main '$http_x_forwarded_for - $remote_addr - $remote_user [$time_local] '
+    # log text format
+    log_format main_text '$http_x_forwarded_for - $remote_addr - $remote_user [$time_local] '
       '"$request" $status $body_bytes_sent '
       '"$http_referer" "$http_user_agent" '
       '$request_time $upstream_response_time $pipe';
+
+    # default log in json format (under nginx key)
+    log_format main escape=json '{ "nginx": {'
+      '"http_x_forwarded_for":"$http_x_forwarded_for",'
+      '"remote_addr":"$remote_addr",'
+      '"remote_user":"$remote_user",'
+      '"time_local":"$time_local",'
+      '"request":"$request",'
+      '"status":$status,'
+      '"body_bytes_sent":$body_bytes_sent,'
+      '"http_referer":"$http_referer",'
+      '"http_user_agent":"$http_user_agent",'
+      '"request_time":$request_time,'
+      '"upstream_response_time":$upstream_response_time,'
+      '"pipe":"$pipe"'
+      '}}';
 
     access_log  /var/log/nginx/access.log  main;
 
