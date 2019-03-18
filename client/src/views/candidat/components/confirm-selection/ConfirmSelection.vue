@@ -37,11 +37,11 @@
           <div v-else>
             <p>
               <strong>
-                <h1>{{ reservation.list.centre ? reservation.list.centre.nom : '' }}</h1>
+                <h1>{{ reservation.booked.centre ? reservation.booked.centre.nom : '' }}</h1>
               </strong>
             </p>
             <p>
-              <strong>{{ reservation.list.centre ? reservation.list.centre.adresse : '' }}</strong>
+              <strong>{{ reservation.booked.centre ? reservation.booked.centre.adresse : '' }}</strong>
             </p>
             <div class="location-icon">
             <a
@@ -49,7 +49,7 @@
               class="u-flex"
               @click.stop="true"
               v-ripple
-              :href="`https://www.openstreetmap.org/search?query=${reservation.list.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
+              :href="`https://www.openstreetmap.org/search?query=${reservation.booked.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
             >
               <v-icon>
               location_on
@@ -60,7 +60,7 @@
               <strong>Le</strong>
             </p>
             <p>
-              <strong>{{ reservation.list ? this.convertIsoDate(reservation.list.date) : '' }}</strong>
+              <strong>{{ reservation.booked ? this.convertIsoDate(reservation.booked.date) : '' }}</strong>
             </p>
           </div>
         </div>

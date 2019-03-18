@@ -30,7 +30,7 @@
         @click="$router.push({ name: 'time-slot' })"
       >
         <span v-if="month.availableTimeSlots.length" class="color-span">{{ month.month }}</span>
-        <span v-else class="col-red">{{ month.month }}</span>
+        <span v-else class="blue-grey--text">{{ month.month }}</span>
       </v-tab>
     </v-tabs>
     <v-tabs-items class="tabs-items-block" v-model="switchTab">
@@ -38,7 +38,7 @@
       <v-card flat>
         <v-card-text>
         <times-slots-selector v-if="timeSlot.availableTimeSlots.length" :initial-time-slots="timeSlot.availableTimeSlots"/>
-        <div v-else>pas de crenaux</div>
+        <div v-else class="blue-grey--text  font-italic">Il n'y a plus de crénaux disponible pour ce mois</div>
         </v-card-text>
       </v-card>
       </v-tab-item>

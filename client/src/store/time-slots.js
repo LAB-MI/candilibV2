@@ -109,7 +109,7 @@ export default {
       const result = await api.candidat.setReservations(centre.id, slot, isAccompanied, hasDualControlCar)
       if (result && result.success) {
         commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
-        dispatch(SHOW_SUCCESS, 'Votre reservation a bien ete prise en compte')
+        dispatch(SHOW_SUCCESS, 'Votre réservation a bien été prise en compte')
       } else {
         commit(CONFIRM_SELECT_DAY_FAILURE)
         throw new Error("La place n'est plus disponible")
