@@ -1,10 +1,9 @@
-import { DateTime } from 'luxon'
-
 import { appLogger, techLogger } from '../../util'
 import {
   bookPlace,
   getReservationByCandidat,
   removeReservationPlace,
+  isSamReservationPlace,
 } from './places.business'
 import { sendMailConvocation, sendCancelBooking } from '../business'
 import {
@@ -96,34 +95,30 @@ export const setReservations = async (req, res) => {
 
   try {
     const previewBookedPlace = await getReservationByCandidat(idCandidat)
-
     appLogger.debug({
       section,
       idCandidat,
       previewBookedPlace,
     })
 
-    if (
-      previewBookedPlace &&
-      center === previewBookedPlace.centre._id &&
-      DateTime.fromISO(date).equals(
-        DateTime.fromJSDate(previewBookedPlace.date)
-      )
-    ) {
-      const success = false
-      const message = SAME_RESA_ASKED
-      appLogger.warn({
-        section,
-        idCandidat,
-        success,
-        message,
-      })
-      return res.status(200).json({
-        success,
-        message,
-      })
-    }
+    if (previewBookedPlace) {
+      const isSame = isSamReservationPlace(center, date, previewBookedPlace)
 
+      if (isSame) {
+        const success = false
+        const message = SAME_RESA_ASKED
+        appLogger.warn({
+          section,
+          idCandidat,
+          success,
+          message,
+        })
+        return res.status(400).json({
+          success,
+          message,
+        })
+      }
+    }
     const reservation = await bookPlace(idCandidat, center, date)
     if (!reservation) {
       const success = false

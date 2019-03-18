@@ -97,3 +97,16 @@ export const removeReservationPlace = async bookedPlace => {
   const place = await removeBookedPlace(bookedPlace)
   return place
 }
+
+export const isSamReservationPlace = (centerId, date, previewBookedPlace) => {
+  if (centerId === previewBookedPlace.centre._id.toString()) {
+    const diffDateTime = DateTime.fromISO(date).diff(
+      DateTime.fromJSDate(previewBookedPlace.date),
+      'second'
+    )
+    if (diffDateTime.seconds === 0) {
+      return true
+    }
+  }
+  return false
+}

@@ -15,8 +15,9 @@ import {
 import {
   SAVE_RESA_WITH_MAIL_SENT,
   CANCEL_RESA_WITH_MAIL_SENT,
+  SAME_RESA_ASKED,
 } from './message.constants'
-import { findPlaceById } from '../../models/place'
+import { findPlaceById, findPlaceByCandidatId } from '../../models/place'
 
 jest.mock('../../util/logger')
 // jest.mock('../../util/logger', () => ({
@@ -55,6 +56,7 @@ describe('Test reservation controllers', () => {
     })
 
     it('Should get 200 to book one place', async () => {
+      console.debug('Should get 200 to book one place')
       const selectedCandidat = createdCandiats[0]
       require('../middlewares/verify-token').__setIdCandidat(
         selectedCandidat._id
@@ -94,13 +96,17 @@ describe('Test reservation controllers', () => {
     })
 
     it('Should get 200 to book another place', async () => {
+      console.debug('Should get 200 to book a another place')
       const selectedCandidat = createdCandiats[0]
       require('../middlewares/verify-token').__setIdCandidat(
         selectedCandidat._id
       )
       const selectedCentre = createdCentres[1]
       const selectedPlace = createdPlaces[1]
-
+      const placeCandidat = await findPlaceByCandidatId(selectedCandidat._id)
+      console.debug(placeCandidat)
+      const previewsPlaceId = placeCandidat[0]._id
+      console.debug(previewsPlaceId)
       const { body } = await request(app)
         .post(`${apiPrefix}/candidat/reservations`)
         .send({
@@ -131,12 +137,42 @@ describe('Test reservation controllers', () => {
       expect(body.reservation).toHaveProperty('isBooked', true)
       expect(body.reservation).not.toHaveProperty('inspecteur')
 
-      const previewPlace = await findPlaceById(createdPlaces[0]._id)
+      console.debug(previewsPlaceId)
+      const previewPlace = await findPlaceById(previewsPlaceId)
+      console.debug(previewPlace)
       expect(previewPlace).toHaveProperty('isBooked', false)
       expect(previewPlace.bookedBy).toBeUndefined()
     })
 
+    it('Should get 400 to book a same place', async () => {
+      console.debug('Should get 400 to book a same place')
+      const selectedCandidat = createdCandiats[0]
+      require('../middlewares/verify-token').__setIdCandidat(
+        selectedCandidat._id
+      )
+      const selectedCentre = createdCentres[1]
+      const selectedPlace = createdPlaces[1]
+
+      const { body } = await request(app)
+        .post(`${apiPrefix}/candidat/reservations`)
+        .send({
+          id: selectedCentre._id,
+          date: selectedPlace.date,
+          isAccompanied: true,
+          hasDualControlCar: true,
+        })
+        .set('Accept', 'application/json')
+        .expect(400)
+
+      expect(body).toBeDefined()
+      expect(body).toHaveProperty('success', false)
+      expect(body).toHaveProperty('message', SAME_RESA_ASKED)
+      expect(body).not.toHaveProperty('statusmail')
+      expect(body).not.toHaveProperty('reservation')
+    })
+
     it('Should get 200 to cancel a reservation', async () => {
+      console.debug('Should get 200 to cancel a place')
       const selectedCandidat = createdCandiats[0]
       require('../middlewares/verify-token').__setIdCandidat(
         selectedCandidat._id
