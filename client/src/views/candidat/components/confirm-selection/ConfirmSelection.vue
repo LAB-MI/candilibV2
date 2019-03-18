@@ -119,12 +119,10 @@ export default {
 
   methods: {
     goToSelectTimeSlot () {
-      // this.$router.back()
       this.$router.push({ name: 'time-slot' })
     },
 
     goToSelectCenter () {
-      // this.$router.back()
       this.$router.push({ name: 'selection-centre' })
     },
 
