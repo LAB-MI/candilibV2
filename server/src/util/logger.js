@@ -19,7 +19,7 @@ const options = {
 
 const logJsonFormat = printf(({ label, level, message, timestamp }) => {
   return JSON.stringify({
-    content: message,
+    content: typeof message === 'string' ? { default: message } : message,
     meta: {
       level,
       label,
