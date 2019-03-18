@@ -85,7 +85,7 @@ export const getReservations = async (req, res) => {
         message,
       })
 
-      return res.send({
+      return res.json({
         success,
         message,
       })
@@ -94,10 +94,10 @@ export const getReservations = async (req, res) => {
         section,
         idCandidat,
         bymail,
-        place: bookedPlace._id,
+        place: bookedPlace && bookedPlace._id,
       })
 
-      return res.send(bookedPlace)
+      return res.json(bookedPlace)
     }
   } catch (error) {
     appLogger.error({
