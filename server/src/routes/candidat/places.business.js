@@ -11,6 +11,11 @@ import {
   findCentreByName,
   findCentreByNameAndDepartement,
 } from '../../models/centre'
+import {
+  CANCEL_RESA_WITH_MAIL_SENT,
+  CANCEL_RESA_WITH_NO_MAIL_SENT,
+} from './message.constants'
+import { sendCancelBooking } from '../business'
 
 export const getDatesFromPlacesByCentreId = async (_id, beginDate, endDate) => {
   appLogger.debug(
@@ -94,8 +99,37 @@ export const bookPlace = async (idCandidat, center, date) => {
 }
 
 export const removeReservationPlace = async bookedPlace => {
-  const place = await removeBookedPlace(bookedPlace)
-  return place
+  const candidat = bookedPlace.bookedBy
+  const { _id: idCandidat } = candidat
+
+  await removeBookedPlace(bookedPlace)
+
+  let statusmail = true
+  let message = CANCEL_RESA_WITH_MAIL_SENT
+  try {
+    await sendCancelBooking(candidat)
+  } catch (error) {
+    appLogger.warn({
+      section: 'candidat-removeReservations',
+      error,
+    })
+    statusmail = false
+    message = CANCEL_RESA_WITH_NO_MAIL_SENT
+  }
+
+  appLogger.info({
+    section: 'candidat-removeReservations',
+    idCandidat,
+    success: true,
+    statusmail,
+    message,
+    place: bookedPlace._id,
+  })
+
+  return {
+    statusmail,
+    message,
+  }
 }
 
 export const isSamReservationPlace = (centerId, date, previewBookedPlace) => {
