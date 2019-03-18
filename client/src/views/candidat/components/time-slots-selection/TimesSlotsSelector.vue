@@ -26,8 +26,8 @@
       >
         <v-btn
           color="primary"
-          v-for="(hour, i) in timeSlot.hours"
-          :key="i"
+          v-for="hour in timeSlot.hours"
+          :key="hour"
           @click="selectSlot({ hour, day: timeSlot.day })"
         >
           {{ hour }}
@@ -39,8 +39,14 @@
 
 <script>
 import { DateTime } from 'luxon'
+import { mapState } from 'vuex'
 
-import { SELECT_DAY } from '@/store/time-slots'
+import {
+  FETCH_CENTER_REQUEST,
+  FETCH_DATES_REQUEST,
+  SELECT_DAY,
+  SHOW_ERROR,
+} from '@/store'
 
 export default {
   props: {
@@ -61,16 +67,42 @@ export default {
         this.displayDay(activeDay)
       }
     },
+    initialTimeSlots (newData, oldData) {
+      this.timeSlots = newData
+      this.checkDayToDisplay()
+    },
   },
 
-  mounted () {
-    const activeDay = this.$route.params.day
-    if (activeDay) {
-      this.displayDay(activeDay)
-    }
+  async mounted () {
+    await this.getTimeSlots()
+    this.checkDayToDisplay()
+  },
+
+  computed: {
+    ...mapState(['center']),
   },
 
   methods: {
+    async getTimeSlots () {
+      const selected = this.center.selected
+      if (!selected || !selected._id) {
+        if (!this.center.isFetchingCenter) {
+          const { center: nom, departement } = this.$route.params
+          await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
+        }
+        setTimeout(this.getTimeSlots, 100)
+        return
+      }
+      await this.$store.dispatch(FETCH_DATES_REQUEST, selected._id)
+    },
+
+    checkDayToDisplay () {
+      const activeDay = this.$route.params.day
+      if (activeDay) {
+        this.displayDay(activeDay)
+      }
+    },
+
     displayDay (day) {
       this.memoDay = day
       this.timeSlots = this.initialTimeSlots
@@ -107,18 +139,23 @@ export default {
           departement,
         },
       }
-      await this.$store.dispatch(SELECT_DAY, selectedSlot)
-      if (this.$store.state.timeSlots.selected) {
-        this.$router.push({
-          name: 'confirm-selection',
-          params: {
-            departement: `${selectedSlot.centre.departement}`,
-            center: `${selectedSlot.centre.nom}`,
-            slot: selectedSlot.slot,
-          },
-        })
-      } else {
+      try {
+        await this.$store.dispatch(SELECT_DAY, selectedSlot)
+        if (this.$store.state.timeSlots.selected) {
+          this.$router.push({
+            name: 'confirm-selection',
+            params: {
+              departement: `${selectedSlot.centre.departement}`,
+              center: `${selectedSlot.centre.nom}`,
+              slot: selectedSlot.slot,
+            },
+          })
+        } else {
+          throw new Error('Le crennaux n\'est plus disponible')
+        }
+      } catch (error) {
         this.$router.push({ name: 'time-slot' })
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
   },

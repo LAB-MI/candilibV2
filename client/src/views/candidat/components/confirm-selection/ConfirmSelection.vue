@@ -1,95 +1,77 @@
 <template>
-  <v-container>
-    <section>
-      <header class="candidat-section-header">
-        <h2 class="candidat-section-header__title" v-ripple @click="goToSelectTimeSlot">
-          <v-btn icon>
-            <v-icon>arrow_back_ios</v-icon>
-          </v-btn>
-          Confirmation
-        </h2>
-      </header>
-    </section>
-
-    <v-card>
-      <div class="text--center">
-        <h3 style="padding: 1em;">
-          Madame, Monsieur
-          {{ candidat.me ? candidat.me.nomNaissance : '' }}
-          {{ candidat.me ? candidat.me.prenom : '' }}
-        </h3>
-
-        <p>Vous avez choisi de passer l’épreuve pratique du permis à</p>
-        <p>
-          <strong>
-            <h1>{{ center.selected ? center.selected.nom : '' }}</h1>
-          </strong>
-        </p>
-        <p>
-          <strong>{{ center.selected ? center.selected.adresse : '' }}</strong>
-        </p>
-        <p>
-          <strong>Le</strong>
-        </p>
-        <p>
-          <strong>{{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}</strong>
-        </p>
-      </div>
-
-      <div class="text--center" v-if="!timeSlots.confirmed">
-        <p>
-          <strong>Avez-vous pensez à vérifier :</strong>
-        </p>
-        <v-card-actions>
-          <v-form
-            class="u-full-width"
-            :aria-disabled="disabled"
-            :disabled="disabled"
-            @submit.prevent="confirmReservation"
-          >
-            <v-checkbox
-              v-model="selectedCheckBox"
-              label="qu’une personne peu vous accompagner *"
-              value="companion"
-            ></v-checkbox>
-            <v-checkbox
-              v-model="selectedCheckBox"
-              label="qu’une voiture à double commande est disponible *"
-              value="doubleControlCar"
-            ></v-checkbox>
-
-            <v-flex d-flex>
-              <v-spacer></v-spacer>
-              <v-btn
-                outline
-                color="red"
-                @click="goToSelectTimeSlot()"
-              >
-                Annuler
+    <v-container>
+      <v-card class="text--center" >
+        <section>
+          <header class="candidat-section-header"  v-if="!flagRecap">
+            <h2 class="candidat-section-header__title" v-ripple @click="goToSelectTimeSlot">
+              <v-btn icon>
+                <v-icon>arrow_back_ios</v-icon>
               </v-btn>
-              <v-btn
-                :aria-disabled="disabled"
-                :disabled="disabled"
-                type="submit"
-                color="primary"
-              >
-                Confirmer
-              </v-btn>
-            </v-flex>
-          </v-form>
-        </v-card-actions>
-      </div>
-      <div class="text--center" v-else>
-        <h4>
-          Votre réservation est confirmée
-          &nbsp;
-          <v-icon color="success">
-            check
-          </v-icon>
-        </h4>
-      </div>
-    </v-card>
-  </v-container>
+              Confirmation
+            </h2>
+          </header>
+        </section>
+        <div class="text--center">
+          <h3 style="padding: 1em;">
+            Madame, Monsieur
+            {{ candidat.me ? candidat.me.nomNaissance : '' }}
+            {{ candidat.me ? candidat.me.prenom : '' }}
+          </h3>
+          <p>Vous avez choisi de passer l’épreuve pratique du permis à</p>
+          <div v-if="!flagRecap">
+            <p>
+              <strong>
+                <h1>{{ center.selected ? center.selected.nom : '' }}</h1>
+              </strong>
+            </p>
+            <p>
+              <strong>{{ center.selected ? center.selected.adresse : '' }}</strong>
+            </p>
+            <p>
+              <strong>Le</strong>
+            </p>
+            <p>
+              <strong>{{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}</strong>
+            </p>
+          </div>
+          <div v-else>
+            <p>
+              <strong>
+                <h1>{{ reservation.list.centre ? reservation.list.centre.nom : '' }}</h1>
+              </strong>
+            </p>
+            <p>
+              <strong>{{ reservation.list.centre ? reservation.list.centre.adresse : '' }}</strong>
+            </p>
+            <div class="location-icon">
+            <a
+              target="_blank"
+              class="u-flex"
+              @click.stop="true"
+              v-ripple
+              :href="`https://www.openstreetmap.org/search?query=${reservation.list.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
+            >
+              <v-icon>
+              location_on
+              </v-icon>
+            </a>
+            </div>
+            <p>
+              <strong>Le</strong>
+            </p>
+            <p>
+              <strong>{{ reservation.list ? this.convertIsoDate(reservation.list.date) : '' }}</strong>
+            </p>
+          </div>
+        </div>
+        <div v-if="flagRecap">
+          <confirm-selection-step-two />
+        </div>
+        <div v-else>
+          <confirm-selection-step-one />
+        </div>
+      </v-card>
+    </v-container>
 </template>
 
 <script>
@@ -97,21 +79,39 @@ import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
 import {
-  FETCH_CENTER_REQUEST,
-  SHOW_ERROR,
-  SELECT_DAY,
   CONFIRM_SELECT_DAY_REQUEST,
+  DELETE_CANDIDAT_RESERVATION_REQUEST,
+  FETCH_CANDIDAT_RESERVATION_REQUEST,
+  FETCH_CENTER_REQUEST,
+  SELECT_DAY,
+  SHOW_ERROR,
+  SHOW_SUCCESS,
 } from '@/store'
 
+import ConfirmSelectionStepOne from './ConfirmSelectionStepOne.vue'
+import ConfirmSelectionStepTwo from './ConfirmSelectionStepTwo.vue'
+
 export default {
+  components: {
+    ConfirmSelectionStepOne,
+    ConfirmSelectionStepTwo,
+  },
+
   data () {
     return {
       selectedCheckBox: [],
     }
   },
 
+  props: {
+    flagRecap: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   computed: {
-    ...mapState(['center', 'timeSlots', 'candidat']),
+    ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
     disabled () {
       return this.selectedCheckBox.length !== 2
     },
@@ -119,9 +119,34 @@ export default {
 
   methods: {
     goToSelectTimeSlot () {
-      this.$router.back()
+      this.$router.push({ name: 'time-slot' })
     },
 
+    goToSelectCenter () {
+      this.$router.push({ name: 'selection-centre' })
+    },
+
+    goToHome () {
+      this.$router.push({ name: 'candidat-home' })
+    },
+
+    async deleteConfirm () {
+      try {
+        await this.$store.dispatch(DELETE_CANDIDAT_RESERVATION_REQUEST)
+        this.dialog = false
+        this.$store.dispatch(SHOW_SUCCESS, 'La reservation a bien ete supprimer')
+      } catch (error) {
+        this.$store.dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async getCandidatReservation () {
+      try {
+        await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
+      } catch (error) {
+        this.$store.dispatch(SHOW_ERROR, error.message)
+      }
+    },
     async confirmReservation () {
       const selected = {
         ...this.timeSlots.selected,
@@ -152,27 +177,29 @@ export default {
         slot,
       } = this.$route.params
       const selected = this.center.selected
+      if (!this.flagRecap) {
+        if (!selected || !selected._id) {
+          await this.$store.dispatch(FETCH_CENTER_REQUEST, { departement, nom })
+          setTimeout(this.getSelectedCenterAndDate, 100)
+          return
+        }
 
-      if (!selected || !selected._id) {
-        await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
-        setTimeout(this.getSelectedCenterAndDate, 100)
-        return
+        const selectedSlot = {
+          slot,
+          centre: {
+            id: selected._id,
+            nom,
+            departement,
+          },
+        }
+        this.$store.dispatch(SELECT_DAY, selectedSlot)
       }
-
-      const selectedSlot = {
-        slot,
-        centre: {
-          id: selected._id,
-          nom,
-          departement,
-        },
-      }
-      this.$store.dispatch(SELECT_DAY, selectedSlot)
     },
   },
 
-  mounted () {
-    this.getSelectedCenterAndDate()
+  async mounted () {
+    await this.getCandidatReservation()
+    await this.getSelectedCenterAndDate()
   },
 }
 </script>
@@ -181,5 +208,14 @@ export default {
   h4 {
     padding-bottom: 2em;
     text-transform: uppercase;
+  }
+
+  .location-icon {
+    margin-bottom: 15px;
+    margin-left: calc(95% / 2);
+  }
+
+  .redirectTextColor {
+    color: blue;
   }
 </style>

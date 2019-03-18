@@ -1,7 +1,6 @@
 import api from '@/api'
 
 import { SHOW_ERROR } from '@/store'
-
 import {
   EMAIL_VALIDATION_IS_PENDING_TITLE,
   EMAIL_VALIDATION_IS_PENDING,
@@ -35,15 +34,15 @@ export const FETCH_MY_PROFILE_SUCCESS = 'FETCH_MY_PROFILE_SUCCESS'
 
 export default {
   state: {
-    isCheckingEmail: false,
-    isSendingPresignup: false,
-    isSendingMagicLink: false,
-    isFetchingProfile: false,
-    me: undefined,
     displayNavDrawer: false,
+    isCheckingEmail: false,
+    isFetchingProfile: false,
+    isSendingMagicLink: false,
+    isSendingPresignup: false,
+    me: undefined,
     message: '',
-    messageType: undefined,
     messageTitle: '',
+    messageType: undefined,
   },
 
   mutations: {
