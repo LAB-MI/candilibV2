@@ -18,7 +18,7 @@
   <v-dialog v-model="dialog" persistent max-width="290">
     <template v-slot:activator="{ on }">
       <v-btn color="#f82249" dark v-on="on">
-        Annulation
+        Annuler
         &nbsp;
         <v-icon>
           delete_forever
@@ -60,7 +60,7 @@
   </v-dialog>
   <router-link :to="{ name: 'selection-centre' }">
     <v-btn color="primary">
-      Modification
+      Modifier
       &nbsp;
       <v-icon>
         edit
@@ -68,7 +68,7 @@
     </v-btn>
   </router-link>
   <v-btn color="success">
-      Renvoyer l'email de comfirmation
+      Renvoyer l'email de convocation
       &nbsp;
       <v-icon>
         mail
