@@ -29,14 +29,16 @@
         :href="`#tab-${month.month}`"
         @click="$router.push({ name: 'time-slot' })"
       >
-        <span class="color-span">{{ month.month }}</span>
+        <span v-if="month.availableTimeSlots.length" class="color-span">{{ month.month }}</span>
+        <span v-else class="blue-grey--text">{{ month.month }}</span>
       </v-tab>
     </v-tabs>
     <v-tabs-items class="tabs-items-block" v-model="switchTab">
       <v-tab-item v-for="timeSlot in timeSlots.list" :key="timeSlot.month" :value="`tab-${timeSlot.month}`">
       <v-card flat>
         <v-card-text>
-        <times-slots-selector :initial-time-slots="timeSlot.availableTimeSlots"/>
+        <times-slots-selector v-if="timeSlot.availableTimeSlots.length" :initial-time-slots="timeSlot.availableTimeSlots"/>
+        <div v-else class="blue-grey--text  font-italic">Il n'y a plus de crénaux disponible pour ce mois</div>
         </v-card-text>
       </v-card>
       </v-tab-item>
@@ -102,3 +104,9 @@ export default {
   },
 }
 </script>
+
+<style>
+.color-span {
+  color:rgb(22, 157, 178);
+}
+</style>

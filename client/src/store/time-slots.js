@@ -13,27 +13,30 @@ export const CONFIRM_SELECT_DAY_REQUEST = 'CONFIRM_SELECT_DAY_REQUEST'
 export const CONFIRM_SELECT_DAY_SUCCESS = 'CONFIRM_SELECT_DAY_SUCCESS'
 export const CONFIRM_SELECT_DAY_FAILURE = 'CONFIRM_SELECT_DAY_FAILURE'
 
-const formatResult = (result) => {
-  const arrayOfMonth = [...new Set(result.map(el => DateTime.fromISO(el).monthLong))]
-  const formatDayAndHours = result.map(el => ({
-    month: DateTime.fromISO(el).monthLong,
-    availableTimeSlots: {
-      day: `${DateTime.fromISO(el).weekdayLong} ${DateTime.fromISO(el).setLocale('fr').toFormat('dd LLLL yyyy')}`,
-      hours: `${DateTime.fromISO(el).toFormat("HH'h'mm")}-${DateTime.fromISO(el).plus({ minutes: 30 }).toFormat("HH'h'mm")}`,
-    },
-  }))
-  const formatedResult = arrayOfMonth.map(monthElem => {
-    const arrayOfDayByMonth = [...new Set(formatDayAndHours.map(el => el.month === monthElem ? el.availableTimeSlots.day : '').filter(el => el !== ''))]
-    const arrayHoursByDay = arrayOfDayByMonth.map(item => ({
-      day: item,
-      hours: formatDayAndHours.map(el => el.availableTimeSlots.day === item ? el.availableTimeSlots.hours : '').filter(el => el !== ''),
-    }))
+const getDayString = (elemISO) => {
+  return `${DateTime.fromISO(elemISO).weekdayLong} ${DateTime.fromISO(elemISO).setLocale('fr').toFormat('dd LLLL yyyy')}`
+}
+
+const getHoursString = (elemISO) => {
+  return `${DateTime.fromISO(elemISO).toFormat("HH'h'mm")}-${DateTime.fromISO(elemISO).plus({ minutes: 30 }).toFormat("HH'h'mm")}`
+}
+
+const formatResult = (result, countMonth) => {
+  return Array(countMonth).fill(true).map((item, index) => {
+    const monthNumber = DateTime.local().plus({ month: index }).monthLong
+    let tmpArrayDay = []
+    const tmpArrayHours = []
+    result.filter(el => DateTime.fromISO(el).monthLong === monthNumber &&
+      tmpArrayDay.push(getDayString(el)) &&
+      tmpArrayHours.push({ day: getDayString(el), hour: getHoursString(el) })
+    )
+    tmpArrayDay = [...new Set(tmpArrayDay)]
+      .map(el => ({ day: el, hours: tmpArrayHours.filter(hourSlot => hourSlot.day === el).map(itm => itm.hour) }))
     return {
-      month: monthElem,
-      availableTimeSlots: arrayHoursByDay,
+      month: monthNumber,
+      availableTimeSlots: tmpArrayDay,
     }
   })
-  return formatedResult
 }
 
 export default {
@@ -81,7 +84,7 @@ export default {
         const end = DateTime.local().plus({ month: 3 }).endOf('month').toISO()
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
 
-        const formatedResult = formatResult(result)
+        const formatedResult = await formatResult(result, 4)
         commit(FETCH_DATES_SUCCESS, formatedResult)
       } catch (error) {
         commit(FETCH_DATES_FAILURE, error.message)
@@ -106,7 +109,7 @@ export default {
       const result = await api.candidat.setReservations(centre.id, slot, isAccompanied, hasDualControlCar)
       if (result && result.success) {
         commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
-        dispatch(SHOW_SUCCESS, 'Votre reservation a bien ete prise en compte')
+        dispatch(SHOW_SUCCESS, 'Votre réservation a bien été prise en compte')
       } else {
         commit(CONFIRM_SELECT_DAY_FAILURE)
         throw new Error("La place n'est plus disponible")

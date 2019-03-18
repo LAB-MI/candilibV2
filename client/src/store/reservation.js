@@ -15,16 +15,16 @@ export default {
     isDeleting: false,
     isFetching: false,
     isModifying: false,
-    list: undefined,
+    booked: undefined,
   },
 
   mutations: {
     [FETCH_CANDIDAT_RESERVATION_REQUEST] (state) {
       state.isFetching = true
     },
-    [FETCH_CANDIDAT_RESERVATION_SUCCESS] (state, list) {
+    [FETCH_CANDIDAT_RESERVATION_SUCCESS] (state, booked) {
       state.isFetching = false
-      state.list = list
+      state.booked = booked
     },
     [FETCH_CANDIDAT_RESERVATION_FAILURE] (state) {
       state.isFetching = false
@@ -35,6 +35,7 @@ export default {
     },
     [DELETE_CANDIDAT_RESERVATION_SUCCESS] (state) {
       state.isDeleting = false
+      state.booked = null
     },
     [DELETE_CANDIDAT_RESERVATION_FAILURE] (state) {
       state.isDeleting = false

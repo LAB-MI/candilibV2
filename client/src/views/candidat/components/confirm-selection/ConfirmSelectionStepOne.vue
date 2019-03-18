@@ -83,9 +83,14 @@ export default {
   },
 
   computed: {
-    ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
+    ...mapState([
+      'center',
+      'timeSlots',
+      'candidat',
+      'reservation',
+    ]),
     disabled () {
-      return this.selectedCheckBox.length !== 2
+      return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting
     },
   },
 
