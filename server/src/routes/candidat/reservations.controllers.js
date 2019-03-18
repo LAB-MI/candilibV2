@@ -12,14 +12,20 @@ import {
   CANCEL_RESA_WITH_MAIL_SENT,
   CANCEL_RESA_WITH_NO_MAIL_SENT,
   SAME_RESA_ASKED,
+  SEND_MAIL_ASKED,
+  FAILED_SEND_MAIL_ASKED,
+  SEND_MAIL_ASKED_RESA_EMPTY,
 } from './message.constants'
 
 export const getReservations = async (req, res) => {
+  const section = 'candidat-getReservations'
   const idCandidat = req.userId
+  const { bymail } = req.query
 
   appLogger.debug({
-    section: 'candidat-getReservations',
+    section,
     idCandidat,
+    bymail,
   })
 
   if (!idCandidat) {
@@ -27,8 +33,9 @@ export const getReservations = async (req, res) => {
     const message = 'Information utilisateur inexistant'
 
     appLogger.warn({
-      section: 'candidat-getReservations',
+      section,
       idCandidat,
+      bymail,
       success,
       message,
     })
@@ -39,12 +46,64 @@ export const getReservations = async (req, res) => {
   }
 
   try {
-    const bookedPlace = await getReservationByCandidat(idCandidat)
-    return res.send(bookedPlace)
+    const bookedPlace = await getReservationByCandidat(
+      idCandidat,
+      bymail ? { centre: true, candidat: true } : undefined
+    )
+
+    if (bymail) {
+      let success
+      let message
+
+      if (!bookedPlace) {
+        success = false
+        message = SEND_MAIL_ASKED_RESA_EMPTY
+      }
+      try {
+        await sendMailConvocation(bookedPlace)
+        success = true
+        message = SEND_MAIL_ASKED
+      } catch (error) {
+        success = false
+        message = FAILED_SEND_MAIL_ASKED
+
+        techLogger.error({
+          section,
+          idCandidat,
+          bymail,
+          success,
+          message,
+          error,
+        })
+      }
+
+      appLogger.info({
+        section,
+        idCandidat,
+        bymail,
+        success,
+        message,
+      })
+
+      return res.send({
+        success,
+        message,
+      })
+    } else {
+      appLogger.info({
+        section,
+        idCandidat,
+        bymail,
+        place: bookedPlace._id,
+      })
+
+      return res.send(bookedPlace)
+    }
   } catch (error) {
     appLogger.error({
       section: 'candidat-getReservations',
       idCandidat,
+      bymail,
       error,
     })
     res.status(500).json({
