@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <div v-if="reservation.list">
+    <div v-if="reservation.booked">
       <section>
         <header class="candidat-section-header">
           <h2 class="candidat-section-header__title">

@@ -26,6 +26,12 @@
       </v-btn>
     </template>
     <v-card>
+      <v-form
+      class="u-full-width"
+      :aria-disabled="disabled"
+      :disabled="disabled"
+      @submit.prevent="deleteConfirm"
+      >
       <v-card-title class="headline">
         Confirmer la suppression
       </v-card-title>
@@ -38,8 +44,18 @@
       <v-card-actions>
         <v-spacer></v-spacer>
         <v-btn color="red darken-1" flat @click="dialog = false">Retour</v-btn>
-        <v-btn color="success darken-1" flat @click="deleteConfirm()">Confirmer</v-btn>
+        <!-- <v-btn color="success darken-1" flat @click="deleteConfirm()">Confirmer</v-btn> -->
+        <v-btn
+          color="success darken-1"
+          flat
+          :aria-disabled="disabled"
+          :disabled="disabled"
+          type="submit"
+        >
+          Confirmer
+        </v-btn>
       </v-card-actions>
+      </v-form>
     </v-card>
   </v-dialog>
   <router-link :to="{ name: 'selection-centre' }">
@@ -79,7 +95,7 @@ export default {
   computed: {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
     disabled () {
-      return this.selectedCheckBox.length !== 2
+      return this.$store.state.reservation.isDeleting
     },
   },
 
@@ -88,6 +104,7 @@ export default {
       try {
         await this.$store.dispatch(DELETE_CANDIDAT_RESERVATION_REQUEST)
         this.dialog = false
+        this.$router.push({ name: 'candidat-home' })
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }

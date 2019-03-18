@@ -31,8 +31,18 @@
         Retour
         </v-btn>
         <v-btn
+        v-if="!disabledAtSelectionConfirm"
         :aria-disabled="disabled"
         :disabled="disabled"
+        type="submit"
+        color="primary"
+        >
+        Confirmer
+        </v-btn>
+        <v-btn
+        v-if="disabledAtSelectionConfirm"
+        :aria-disabled="disabledAtSelectionConfirm"
+        :disabled="disabledAtSelectionConfirm"
         type="submit"
         color="primary"
         >
@@ -87,6 +97,9 @@ export default {
     disabled () {
       return this.selectedCheckBox.length !== 2
     },
+    disabledAtSelectionConfirm () {
+      return this.$store.state.timeSlots.isSelecting
+    },
   },
 
   methods: {
@@ -106,16 +119,6 @@ export default {
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
         this.$router.push({ name: 'candidat-home' })
-        // setTimeout(
-        //   () => this.$router.push({
-        //     name: 'candidat-home',
-        //     // params: {
-        //     //   center: `${center.centre.nom}`,
-        //     //   departement: `${center.centre.departement}`,
-        //     // },
-        //   }),
-        //   6000
-        // )
       } catch (error) {
         await this.$store.dispatch(SHOW_ERROR, error.message)
       }
