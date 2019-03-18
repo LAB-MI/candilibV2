@@ -105,7 +105,6 @@ export default {
       const { slot, centre, isAccompanied, hasDualControlCar } = selected
       const result = await api.candidat.setReservations(centre.id, slot, isAccompanied, hasDualControlCar)
       if (result && result.success) {
-        // localStorage.setItem('isConfirmed', true)
         commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
         dispatch(SHOW_SUCCESS, 'Votre reservation a bien ete prise en compte')
       } else {

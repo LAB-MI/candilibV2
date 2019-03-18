@@ -146,7 +146,7 @@ export default {
       try {
         await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
       } catch (error) {
-
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
     async confirmReservation () {

@@ -5,10 +5,10 @@
     </p>
     <v-card-actions>
       <v-form
-      class="u-full-width"
-      :aria-disabled="disabled"
-      :disabled="disabled"
-      @submit.prevent="confirmReservation"
+        class="u-full-width"
+        :aria-disabled="disabled"
+        :disabled="disabled"
+        @submit.prevent="confirmReservation"
       >
       <v-checkbox
         v-model="selectedCheckBox"
@@ -24,17 +24,17 @@
       <v-flex d-flex>
         <v-spacer></v-spacer>
         <v-btn
-        outline
-        color="red"
-        @click="goToSelectTimeSlot()"
+          outline
+          color="red"
+          @click="goToSelectTimeSlot()"
         >
         Retour
         </v-btn>
         <v-btn
-        :aria-disabled="disabled"
-        :disabled="disabled"
-        type="submit"
-        color="primary"
+          :aria-disabled="disabled"
+          :disabled="disabled"
+          type="submit"
+          color="primary"
         >
         Confirmer
         </v-btn>
@@ -106,16 +106,6 @@ export default {
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
         this.$router.push({ name: 'candidat-home' })
-        // setTimeout(
-        //   () => this.$router.push({
-        //     name: 'candidat-home',
-        //     // params: {
-        //     //   center: `${center.centre.nom}`,
-        //     //   departement: `${center.centre.departement}`,
-        //     // },
-        //   }),
-        //   6000
-        // )
       } catch (error) {
         await this.$store.dispatch(SHOW_ERROR, error.message)
       }

@@ -46,7 +46,7 @@ export default {
       commit(FETCH_CANDIDAT_RESERVATION_REQUEST)
       try {
         const response = await api.candidat.getReservations()
-        if (response.success === false) {
+        if (response && response.success === false) {
           throw new Error(response.message)
         }
         commit(FETCH_CANDIDAT_RESERVATION_SUCCESS, response)

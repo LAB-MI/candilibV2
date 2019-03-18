@@ -23,13 +23,11 @@ import {
   FETCH_CANDIDAT_RESERVATION_REQUEST,
 } from '@/store'
 
-// import ReservationRecap from './candidat/components/reservation-recap/ReservationView.vue'
 import ConfirmSelection from './candidat/components/confirm-selection/ConfirmSelection.vue'
 import CenterSelection from './candidat/components/center-selection/CenterSelection.vue'
 
 export default {
   components: {
-    // ReservationRecap,
     ConfirmSelection,
     CenterSelection,
   },
@@ -50,18 +48,14 @@ export default {
       try {
         await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
       } catch (error) {
-        // this.$store.dispatch(SHOW_ERROR, error.message)
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
   },
 
   async mounted () {
     this.$router.replace({ name: 'candidat-presignup' })
-    try {
-      await this.getCandidatReservation()
-    } catch (error) {
-      // this.$store.dispatch(SHOW_ERROR, error.message)
-    }
+    this.getCandidatReservation()
   },
 }
 </script>

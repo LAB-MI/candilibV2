@@ -41,7 +41,12 @@
 import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
-import { FETCH_CENTER_REQUEST, FETCH_DATES_REQUEST, SELECT_DAY, SHOW_ERROR } from '@/store'
+import {
+  FETCH_CENTER_REQUEST,
+  FETCH_DATES_REQUEST,
+  SELECT_DAY,
+  SHOW_ERROR,
+} from '@/store'
 
 export default {
   props: {
