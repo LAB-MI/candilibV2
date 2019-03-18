@@ -20,12 +20,6 @@ import {
 import { findPlaceById, findPlaceByCandidatId } from '../../models/place'
 
 jest.mock('../../util/logger')
-// jest.mock('../../util/logger', () => ({
-//   info: value => console.info(value),
-//   debug: value => console.debug(value),
-//   error: value => console.error(value),
-//   warn: value => console.warn(value),
-// }))
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 
