@@ -31,18 +31,8 @@
         Retour
         </v-btn>
         <v-btn
-          v-if="!disabledAtSelectionConfirm"
           :aria-disabled="disabled"
           :disabled="disabled"
-          type="submit"
-          color="primary"
-        >
-        Confirmer
-        </v-btn>
-        <v-btn
-          v-if="disabledAtSelectionConfirm"
-          :aria-disabled="disabledAtSelectionConfirm"
-          :disabled="disabledAtSelectionConfirm"
           type="submit"
           color="primary"
         >
@@ -93,12 +83,14 @@ export default {
   },
 
   computed: {
-    ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
+    ...mapState([
+      'center',
+      'timeSlots',
+      'candidat',
+      'reservation',
+    ]),
     disabled () {
-      return this.selectedCheckBox.length !== 2
-    },
-    disabledAtSelectionConfirm () {
-      return this.$store.state.timeSlots.isSelecting
+      return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting
     },
   },
 
