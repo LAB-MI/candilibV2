@@ -2,9 +2,6 @@
   <v-list-tile @click="selectCenter(center)">
     <v-list-tile-content v-ripple="!!center.count">
       <v-list-tile-title>
-        <v-icon :color="center.count ? 'green lighten-1' : 'red lighten-1'">
-          fiber_manual_record
-        </v-icon>
         {{ center.centre.nom }}
         ({{ center.centre.departement }})
       </v-list-tile-title>
