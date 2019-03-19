@@ -28,7 +28,6 @@ export default {
     CandidatHeader,
     CandidatFooter,
     NavigationDrawer,
-    // CentersSelections,
   },
 
   data () {
