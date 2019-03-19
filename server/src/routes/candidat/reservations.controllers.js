@@ -5,12 +5,10 @@ import {
   removeReservationPlace,
   isSamReservationPlace,
 } from './places.business'
-import { sendMailConvocation, sendCancelBooking } from '../business'
+import { sendMailConvocation } from '../business'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
   SAVE_RESA_WITH_NO_MAIL_SENT,
-  CANCEL_RESA_WITH_MAIL_SENT,
-  CANCEL_RESA_WITH_NO_MAIL_SENT,
   SAME_RESA_ASKED,
   SEND_MAIL_ASKED,
   FAILED_SEND_MAIL_ASKED,
@@ -153,7 +151,10 @@ export const setReservations = async (req, res) => {
   }
 
   try {
-    const previewBookedPlace = await getReservationByCandidat(idCandidat)
+    const previewBookedPlace = await getReservationByCandidat(idCandidat, {
+      centre: true,
+      candidat: true,
+    })
     appLogger.debug({
       section,
       idCandidat,
@@ -178,6 +179,7 @@ export const setReservations = async (req, res) => {
         })
       }
     }
+
     const reservation = await bookPlace(idCandidat, center, date)
     if (!reservation) {
       const success = false
@@ -301,35 +303,11 @@ export const removeReservations = async (req, res) => {
       })
     }
 
-    const candidat = bookedPlace.bookedBy
+    const status = await removeReservationPlace(bookedPlace)
 
-    await removeReservationPlace(bookedPlace)
-
-    let statusmail = true
-    let message = CANCEL_RESA_WITH_MAIL_SENT
-    try {
-      await sendCancelBooking(candidat)
-    } catch (error) {
-      appLogger.warn({
-        section: 'candidat-removeReservations',
-        error,
-      })
-      statusmail = false
-      message = CANCEL_RESA_WITH_NO_MAIL_SENT
-    }
-
-    appLogger.info({
-      section: 'candidat-removeReservations',
-      idCandidat,
-      success: true,
-      statusmail,
-      message,
-      place: bookedPlace._id,
-    })
     return res.status(200).json({
       success: true,
-      statusmail,
-      message,
+      ...status,
     })
   } catch (error) {
     appLogger.error({
