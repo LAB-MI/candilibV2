@@ -40,6 +40,12 @@ export default {
           label: 'Ma réservation',
         },
         {
+          routerTo: { name: 'candidat-information' },
+          iconName: 'supervised_user_circle',
+          tooltipText: 'Profile candidat',
+          label: 'Mon Profil',
+        },
+        {
           routerTo: { name: 'faq-candidat' },
           iconName: 'help_outline',
           tooltipText: 'FAQ',
@@ -50,12 +56,6 @@ export default {
           iconName: 'account_balance',
           tooltipText: 'Mentions légales',
           label: 'Mentions légales',
-        },
-        {
-          routerTo: { name: 'candidat-information' },
-          iconName: 'supervised_user_circle',
-          tooltipText: 'Profile candidat',
-          label: 'Profile candidat',
         },
       ],
     }
