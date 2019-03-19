@@ -4,7 +4,6 @@
       <candidat-header :links="links" />
       <div class="u-flex  with-top-margin  u-max-width">
         <div class="u-flex  u-flex__item--grow  u-flex--column-on-mobile  u-flex--center-on-mobile">
-          <my-profile class="profile" />
           <div class="u-flex__item--grow">
             <router-view />
           </div>
@@ -55,6 +54,12 @@ export default {
           iconName: 'account_balance',
           tooltipText: 'Mentions légales',
           label: 'Mentions légales',
+        },
+        {
+          routerTo: { name: 'candidat-information' },
+          iconName: 'supervised_user_circle',
+          tooltipText: 'Profile candidat',
+          label: 'Profile candidat',
         },
       ],
     }

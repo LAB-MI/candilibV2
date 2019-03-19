@@ -12,6 +12,7 @@ import Faq from '@/views/candidat/components/faq/Faq.vue'
 import CenterSelection from '@/views/candidat/components/center-selection/CenterSelection.vue'
 import TimeSlot from '@/views/candidat/components/time-slots-selection/TimeSlot.vue'
 import ConfirmSelection from '@/views/candidat/components/confirm-selection/ConfirmSelection.vue'
+import MyProfile from '@/views/candidat/components/MyProfile.vue'
 
 import {
   requireAdminAuth,
@@ -104,6 +105,11 @@ const candidatRoutes = [
         path: ':departement/:center/:slot/selection-confirmation',
         name: 'confirm-selection',
         component: ConfirmSelection,
+      },
+      {
+        path: 'candidat-information',
+        name: 'candidat-information',
+        component: MyProfile,
       },
     ],
   },
