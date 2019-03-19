@@ -23,13 +23,10 @@ import CandidatHeader from './components/CandidatHeader'
 import CandidatFooter from './components/CandidatFooter'
 import NavigationDrawer from './components/NavigationDrawer'
 
-import MyProfile from './components/MyProfile'
-
 export default {
   components: {
     CandidatHeader,
     CandidatFooter,
-    MyProfile,
     NavigationDrawer,
     // CentersSelections,
   },
