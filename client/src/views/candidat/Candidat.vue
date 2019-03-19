@@ -12,6 +12,7 @@
       </div>
     </v-container>
     <navigation-drawer
+      style="top: 0; position: fixed"
       :links="links"
     />
     <candidat-footer style="margin-top: 10px;" />
