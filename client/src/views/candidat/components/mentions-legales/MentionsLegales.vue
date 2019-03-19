@@ -1,9 +1,19 @@
 <template>
   <div class="conrainer">
-  <div class="section-header">
-    <h2 class="page-title">Mentions légales</h2>
-    <p class="date-info">Modifié le 21 décembre 2018</p>
-  </div>
+    <v-btn
+      fixed
+      dark
+      fab
+      left
+      color="home-link"
+      @click="gotToHome"
+    >
+      <v-icon>home</v-icon>
+    </v-btn>
+    <div class="section-header">
+      <h2 class="page-title">Mentions légales</h2>
+      <p class="date-info">Modifié le 21 décembre 2018</p>
+    </div>
     <div v-for="(item, index) in ArrayContent" :key="index">
       <mentions-legales-content
         :icon="item.icon"
@@ -25,6 +35,13 @@ export default {
   components: {
     MentionsLegalesContent,
   },
+
+  methods: {
+    gotToHome () {
+      this.$router.push({ name: 'candidat-home' })
+    },
+  },
+
   data () {
     return {
       ArrayContent: mentionsLegalesJson,
