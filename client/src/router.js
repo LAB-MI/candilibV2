@@ -107,8 +107,8 @@ const candidatRoutes = [
         component: ConfirmSelection,
       },
       {
-        path: 'candidat-information',
-        name: 'candidat-information',
+        path: 'mon-profil',
+        name: 'my-profile',
         component: MyProfile,
       },
       {

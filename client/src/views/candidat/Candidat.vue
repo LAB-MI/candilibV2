@@ -40,7 +40,7 @@ export default {
           label: 'Ma réservation',
         },
         {
-          routerTo: { name: 'candidat-information' },
+          routerTo: { name: 'my-profile' },
           iconName: 'supervised_user_circle',
           tooltipText: 'Profile candidat',
           label: 'Mon Profil',
