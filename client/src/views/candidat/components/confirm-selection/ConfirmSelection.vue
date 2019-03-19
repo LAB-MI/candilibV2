@@ -1,77 +1,69 @@
 <template>
-    <v-container>
-      <v-card class="text--center" >
-        <section>
-          <header class="candidat-section-header"  v-if="!flagRecap">
-            <h2 class="candidat-section-header__title" v-ripple @click="goToSelectTimeSlot">
-              <v-btn icon>
-                <v-icon>arrow_back_ios</v-icon>
-              </v-btn>
-              Confirmation
-            </h2>
-          </header>
-        </section>
-        <div class="text--center">
-          <h3 style="padding: 1em;">
-            Madame, Monsieur
-            {{ candidat.me ? candidat.me.nomNaissance : '' }}
-            {{ candidat.me ? candidat.me.prenom : '' }}
-          </h3>
-          <p>Vous avez choisi de passer l’épreuve pratique du permis à</p>
-          <div v-if="!flagRecap">
-            <p>
-              <strong>
-                <h1>{{ center.selected ? center.selected.nom : '' }}</h1>
-              </strong>
-            </p>
-            <p>
-              <strong>{{ center.selected ? center.selected.adresse : '' }}</strong>
-            </p>
-            <p>
-              <strong>Le</strong>
-            </p>
-            <p>
-              <strong>{{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}</strong>
-            </p>
-          </div>
-          <div v-else>
-            <p>
-              <strong>
-                <h1>{{ reservation.booked.centre ? reservation.booked.centre.nom : '' }}</h1>
-              </strong>
-            </p>
-            <p>
-              <strong>{{ reservation.booked.centre ? reservation.booked.centre.adresse : '' }}</strong>
-            </p>
-            <div class="location-icon">
+  <v-card>
+    <div class="text--center" >
+      <section>
+        <header class="candidat-section-header"  v-if="!flagRecap">
+          <h2 class="candidat-section-header__title" v-ripple @click="goToSelectTimeSlot">
+            <v-btn icon>
+              <v-icon>arrow_back_ios</v-icon>
+            </v-btn>
+            Confirmation
+          </h2>
+        </header>
+      </section>
+      <div class="text--center">
+        <h3 style="padding: 1em;">
+          {{ candidat.me ? candidat.me.nomNaissance : '' }}
+          {{ candidat.me ? candidat.me.prenom : '' }}
+        </h3>
+        <p>Vous avez choisi de passer l’épreuve pratique du permis à</p>
+        <div v-if="!flagRecap">
+          <p>
+            <strong>
+              <h1>{{ center.selected ? center.selected.nom : '' }}</h1>
+            </strong>
+          </p>
+          <p>
+            <strong>{{ center.selected ? center.selected.adresse : '' }}</strong>
+          </p>
+          <p>
+            <strong>
+              Le
+              {{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}
+            </strong>
+          </p>
+        </div>
+        <div v-else>
+          <p>
+            <strong>
+              <h1>{{ reservation.booked.centre ? reservation.booked.centre.nom : '' }}</h1>
+            </strong>
+          </p>
+          <p>
+            <strong>{{ reservation.booked.centre ? reservation.booked.centre.adresse : '' }}</strong>
             <a
               target="_blank"
-              class="u-flex"
               @click.stop="true"
+              class="location-icon"
               v-ripple
               :href="`https://www.openstreetmap.org/search?query=${reservation.booked.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
             >
               <v-icon>
-              location_on
+                location_on
               </v-icon>
-            </a>
-            </div>
-            <p>
-              <strong>Le</strong>
-            </p>
-            <p>
-              <strong>{{ reservation.booked ? this.convertIsoDate(reservation.booked.date) : '' }}</strong>
-            </p>
-          </div>
+              </a>
+          <p>
+            <strong>
+              Le
+              {{ reservation.booked ? this.convertIsoDate(reservation.booked.date) : '' }}
+            </strong>
+          </p>
         </div>
-        <div v-if="flagRecap">
-          <confirm-selection-step-two />
-        </div>
-        <div v-else>
-          <confirm-selection-step-one />
-        </div>
-      </v-card>
-    </v-container>
+      </div>
+      <confirm-selection-step-two v-if="flagRecap" />
+      <confirm-selection-step-one v-else />
+    </div>
+  </v-card>
 </template>
 
 <script>
@@ -211,8 +203,10 @@ export default {
   }
 
   .location-icon {
-    margin-bottom: 15px;
-    margin-left: calc(95% / 2);
+    display: inline-block;
+    margin-left: 0.5em;
+    padding-left: 0.5em;
+    border-left: 1px solid grey;
   }
 
   .redirectTextColor {

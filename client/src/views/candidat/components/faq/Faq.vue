@@ -1,17 +1,29 @@
 <template>
-<div>
-  <div class="section-header">
-  <h2 class="title">
-    F.A.Q
-  </h2>
-  <p class="p-style">Foire aux questions</p>
+  <div>
+    <v-btn
+      fixed
+      dark
+      fab
+      left
+      color="home-link"
+      @click="gotToHome"
+    >
+      <v-icon>home</v-icon>
+    </v-btn>
+    <div class="section-header">
+      <h2 class="title">
+        F.A.Q
+      </h2>
+      <p class="p-style">
+        Foire aux questions
+      </p>
+    </div>
+    <ul class="ul-style">
+      <li class="li-style" v-for="(item, index) in arrayContent" :key="index">
+      <FaqContent :item="item"/>
+      </li>
+    </ul>
   </div>
-  <ul class="ul-style">
-    <li class="li-style" v-for="(item, index) in arrayContent" :key="index">
-    <FaqContent :item="item"/>
-    </li>
-  </ul>
-</div>
 </template>
 
 <script>
@@ -23,8 +35,13 @@ export default {
   components: {
     FaqContent,
   },
+
   methods: {
+    gotToHome () {
+      this.$router.push({ name: 'candidat-home' })
+    },
   },
+
   data () {
     return {
       arrayContent: faqJson,

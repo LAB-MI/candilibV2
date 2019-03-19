@@ -139,7 +139,8 @@ export default {
     },
 
     async setReservations (centreId, date, isAccompanied, hasDualControlCar) {
-      const json = await apiClient.post(`${apiPaths.candidat.reservations}?id=${centreId}&date=${encodeURIComponent(date)}&isAccompanied=${isAccompanied}&hasDualControlCar=${hasDualControlCar}`, {
+      const json = await apiClient.post(`${apiPaths.candidat.reservations}`, {
+        body: JSON.stringify({ id: centreId, date, isAccompanied, hasDualControlCar }),
         headers: getHeadersForJson(),
       })
       return json

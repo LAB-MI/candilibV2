@@ -1,17 +1,19 @@
 <template>
-  <v-list-tile @click="selectCenter(center)">
+  <v-list-tile
+    v-on="{ click: center.count ? () => selectCenter(center) : null}"
+    :class="{
+      'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !center.count
+    }"
+  >
     <v-list-tile-content v-ripple="!!center.count">
       <v-list-tile-title>
-        <v-icon :color="center.count ? 'green lighten-1' : 'red lighten-1'">
-          fiber_manual_record
-        </v-icon>
         {{ center.centre.nom }}
         ({{ center.centre.departement }})
       </v-list-tile-title>
-      <v-list-tile-sub-title class="u-flex__item--grow">
+      <v-list-tile-sub-title class="u-flex__item--grow" :class="{'blue-grey--text  text--lighten-2': !center.count}">
         {{ center.centre.adresse }}
       </v-list-tile-sub-title>
-      <span v-if="!center.count" class="u-flex__item--grow col-red dispo_info">
+      <span v-if="!center.count" class="u-flex__item--grow  blue-grey--text  text--darken-2">
         Pas de place disponible pour le moment
       </span>
     </v-list-tile-content>
@@ -60,9 +62,5 @@ export default {
   height: 3em;
   padding: 0 1.5em;
   text-decoration: none;
-}
-.dispo_info {
-  margin: 0;
-  font-size: 12px;
 }
 </style>
