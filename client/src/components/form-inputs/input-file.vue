@@ -74,7 +74,7 @@ export default {
   cursor: pointer;
 
   &:hover {
-    color: #c00;
+    color: #17a2b8;
   }
 }
 
@@ -90,7 +90,7 @@ export default {
   width: 25em;
 
   &:hover .upload-icon {
-    color: #c00;
+    color: #17a2b8;
   }
 }
 
