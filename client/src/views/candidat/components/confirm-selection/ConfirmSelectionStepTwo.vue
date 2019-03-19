@@ -119,7 +119,7 @@ export default {
       try {
         await this.$store.dispatch(SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST)
       } catch (error) {
-          this.$store.dispatch(SHOW_ERROR, error.message)
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
   },
