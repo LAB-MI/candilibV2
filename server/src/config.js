@@ -6,9 +6,19 @@ const DEFAULT_PUBLIC_URL = isProduction
   ? 'https://beta.interieur.gouv.fr/candilib'
   : 'http://localhost:8080/candilib'
 
+const userStatuses = {
+  CANDIDAT: 'candidat',
+  ADMIN: 'admin',
+}
+
+const userStatusLevels = {
+  [userStatuses.CANDIDAT]: 0,
+  [userStatuses.ADMIN]: 1,
+}
+
 const config = {
   secret: process.env.SECRET || 'secret',
-  candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '1h',
+  candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '3d',
   get adminTokenExpiration () {
     const now = moment()
     const midnight = now
@@ -27,10 +37,9 @@ const config = {
     return duration + 's'
   },
 
-  USER_STATUS_LEVEL: {
-    candidat: 0,
-    admin: 1,
-  },
+  userStatuses,
+
+  userStatusLevels,
 
   dbName: process.env.DB_NAME,
   dbUser: process.env.DB_USER,
