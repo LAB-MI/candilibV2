@@ -62,11 +62,11 @@ export default {
       this.$store.dispatch(SHOW_INFO, message, 1000)
     },
     async uploadCandidats () {
-      await this.$store.dispatch(AURIGE_UPLOAD_CANDIDATS_REQUEST, this.file)
+      const file = this.file
+      this.file = null
+      await this.$store.dispatch(AURIGE_UPLOAD_CANDIDATS_REQUEST, file)
       const { aurige } = this.$store.state
-      if (aurige.lastFile === undefined) {
-        this.file = null
-      } else {
+      if (aurige.lastFile !== undefined) {
         this.file = aurige.lastFile
       }
     },

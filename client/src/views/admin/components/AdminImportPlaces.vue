@@ -28,7 +28,6 @@ export default {
   data () {
     return {
       file: undefined,
-      lastFile: undefined,
     }
   },
 
@@ -46,11 +45,11 @@ export default {
     },
 
     async uploadPlaces () {
-      await this.$store.dispatch(UPLOAD_PLACES_REQUEST, this.file)
+      const file = this.file
+      this.file = null
+      await this.$store.dispatch(UPLOAD_PLACES_REQUEST, file)
       const { importPlaces } = this.$store.state
-      if (importPlaces.lastFile === undefined) {
-        this.file = null
-      } else {
+      if (importPlaces.lastFile !== undefined) {
         this.file = importPlaces.lastFile
       }
     },
