@@ -94,10 +94,12 @@
     }
   },
   "lint-staged": {
-    "*.{js,vue,htm,html,css,sss,less,scss}": [
-      "npm run lint:all",
-      "git add"
-    ]
+    "linters": {
+      "../**/*.{js,vue,htm,html,css,scss}": [
+        "npm run lint:all",
+        "git add"
+      ]
+    }
   },
   "jest": {
     "testMatch": [
