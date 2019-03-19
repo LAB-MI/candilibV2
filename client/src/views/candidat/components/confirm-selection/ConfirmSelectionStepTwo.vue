@@ -27,34 +27,35 @@
     </template>
     <v-card>
       <v-form
-      class="u-full-width"
-      :aria-disabled="disabled"
-      :disabled="disabled"
-      @submit.prevent="deleteConfirm"
+        class="u-full-width"
+        :aria-disabled="disabled"
+        :disabled="disabled"
+        @submit.prevent="deleteConfirm"
       >
-      <v-card-title class="headline">
-        Confirmer la suppression
-      </v-card-title>
-      <v-card-text>
-        <div class="confirm-suppr-text-content">
-          <p>Veniam consectetur consequat sint dolore ad amet velit cupidatat nulla reprehenderit proident exercitation. Labore excepteur laborum officia nostrud cupidatat ullamco. Quis eiusmod do ut fugiat veniam dolore velit elit irure tempor nostrud. Cillum deserunt ut labore amet magna incididunt enim occaecat deserunt anim laboris occaecat.</p>
-          <p>Veniam consectetur consequat sint dolore ad amet velit cupidatat nulla reprehenderit proident exercitation. Labore excepteur laborum officia nostrud cupidatat ullamco. Quis eiusmod do ut fugiat veniam dolore velit elit irure tempor nostrud. Cillum deserunt ut labore amet magna incididunt enim occaecat deserunt anim laboris occaecat.</p>
-        </div>
-      </v-card-text>
-      <v-card-actions>
-        <v-spacer></v-spacer>
-        <v-btn color="red darken-1" flat @click="dialog = false">Retour</v-btn>
-        <!-- <v-btn color="success darken-1" flat @click="deleteConfirm()">Confirmer</v-btn> -->
-        <v-btn
-          color="success darken-1"
-          flat
-          :aria-disabled="disabled"
-          :disabled="disabled"
-          type="submit"
-        >
-          Confirmer
-        </v-btn>
-      </v-card-actions>
+        <v-card-title class="headline">
+          Confirmer la suppression
+        </v-card-title>
+        <v-card-text>
+          <div class="confirm-suppr-text-content">
+            <p>Veniam consectetur consequat sint dolore ad amet velit cupidatat nulla reprehenderit proident exercitation. Labore excepteur laborum officia nostrud cupidatat ullamco. Quis eiusmod do ut fugiat veniam dolore velit elit irure tempor nostrud. Cillum deserunt ut labore amet magna incididunt enim occaecat deserunt anim laboris occaecat.</p>
+            <p>Veniam consectetur consequat sint dolore ad amet velit cupidatat nulla reprehenderit proident exercitation. Labore excepteur laborum officia nostrud cupidatat ullamco. Quis eiusmod do ut fugiat veniam dolore velit elit irure tempor nostrud. Cillum deserunt ut labore amet magna incididunt enim occaecat deserunt anim laboris occaecat.</p>
+          </div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="red darken-1" flat @click="dialog = false">
+            Retour
+          </v-btn>
+          <v-btn
+            color="success darken-1"
+            flat
+            :aria-disabled="disabled"
+            :disabled="disabled"
+            type="submit"
+          >
+            Confirmer
+          </v-btn>
+        </v-card-actions>
       </v-form>
     </v-card>
   </v-dialog>
@@ -68,7 +69,7 @@
     </v-btn>
   </router-link>
   <v-btn color="success">
-      Renvoyer l'email de convocation
+      Renvoyer
       &nbsp;
       <v-icon>
         mail
