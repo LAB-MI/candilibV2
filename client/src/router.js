@@ -111,6 +111,16 @@ const candidatRoutes = [
         name: 'candidat-information',
         component: MyProfile,
       },
+      {
+        path: 'mentions-legales',
+        name: 'mentions-legales-candidat',
+        component: MentionsLegales,
+      },
+      {
+        path: 'faq',
+        name: 'faq-candidat',
+        component: Faq,
+      },
     ],
   },
 ]

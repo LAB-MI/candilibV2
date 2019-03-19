@@ -40,13 +40,13 @@ export default {
           label: 'Ma réservation',
         },
         {
-          routerTo: { name: 'faq' },
+          routerTo: { name: 'faq-candidat' },
           iconName: 'help_outline',
           tooltipText: 'FAQ',
           label: 'F.A.Q.',
         },
         {
-          routerTo: { name: 'mentions-legales' },
+          routerTo: { name: 'mentions-legales-candidat' },
           iconName: 'account_balance',
           tooltipText: 'Mentions légales',
           label: 'Mentions légales',
