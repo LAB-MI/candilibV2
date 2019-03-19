@@ -146,6 +146,13 @@ export default {
       return json
     },
 
+    async sendEmail () {
+      const json = await apiClient.get(`${apiPaths.candidat.reservations}?bymail=${true}`, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
+
     async deleteReservation () {
       const json = await apiClient.delete(`${apiPaths.candidat.reservations}`, {
         headers: getHeadersForJson(),

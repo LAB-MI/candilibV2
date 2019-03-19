@@ -6,19 +6,19 @@ export const FETCH_CANDIDAT_RESERVATION_REQUEST = 'FETCH_CANDIDAT_RESERVATION_RE
 export const FETCH_CANDIDAT_RESERVATION_FAILURE = 'FETCH_CANDIDAT_RESERVATION_FAILURE'
 export const FETCH_CANDIDAT_RESERVATION_SUCCESS = 'FETCH_CANDIDAT_RESERVATION_SUCCESS'
 
+export const SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST = 'SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST'
+export const SEND_EMAIL_CANDIDAT_RESERVATION_FAILURE = 'SEND_EMAIL_CANDIDAT_RESERVATION_FAILURE'
+export const SEND_EMAIL_CANDIDAT_RESERVATION_SUCCESS = 'SEND_EMAIL_CANDIDAT_RESERVATION_SUCCESS'
+
 export const DELETE_CANDIDAT_RESERVATION_REQUEST = 'DELETE_CANDIDAT_RESERVATION_REQUEST'
 export const DELETE_CANDIDAT_RESERVATION_FAILURE = 'DELETE_CANDIDAT_RESERVATION_FAILURE'
 export const DELETE_CANDIDAT_RESERVATION_SUCCESS = 'DELETE_CANDIDAT_RESERVATION_SUCCESS'
-
-export const RESEND_CANDIDAT_RESERVATION_REQUEST = 'RESEND_CANDIDAT_RESERVATION_REQUEST'
-export const RESEND_CANDIDAT_RESERVATION_FAILURE = 'RESEND_CANDIDAT_RESERVATION_FAILURE'
-export const RESEND_CANDIDAT_RESERVATION_SUCCESS = 'RESEND_CANDIDAT_RESERVATION_SUCCESS'
 
 export default {
   state: {
     isDeleting: false,
     isFetching: false,
-    isResend: false,
+    isSending: false,
     isModifying: false,
     booked: undefined,
   },
@@ -35,6 +35,16 @@ export default {
       state.isFetching = false
     },
 
+    [SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST] (state) {
+      state.isSending = true
+    },
+    [SEND_EMAIL_CANDIDAT_RESERVATION_SUCCESS] (state) {
+      state.isSending = false
+    },
+    [SEND_EMAIL_CANDIDAT_RESERVATION_FAILURE] (state) {
+      state.isSending = false
+    },
+
     [DELETE_CANDIDAT_RESERVATION_REQUEST] (state) {
       state.isDeleting = true
     },
@@ -44,16 +54,6 @@ export default {
     },
     [DELETE_CANDIDAT_RESERVATION_FAILURE] (state) {
       state.isDeleting = false
-    },
-
-    [RESEND_CANDIDAT_RESERVATION_REQUEST] (state) {
-      state.isResend = true
-    },
-    [RESEND_CANDIDAT_RESERVATION_SUCCESS] (state) {
-      state.isResend = false
-    },
-    [RESEND_CANDIDAT_RESERVATION_FAILURE] (state) {
-      state.isResend = false
     },
   },
 
@@ -88,18 +88,18 @@ export default {
       }
     },
 
-    async [RESEND_CANDIDAT_RESERVATION_REQUEST] ({ commit, dispatch }) {
-      commit(DELETE_CANDIDAT_RESERVATION_REQUEST)
+    async [SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST] ({ commit, dispatch }) {
+      commit(SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST)
       try {
-        const result = await api.candidat.deleteReservation()
+        const result = await api.candidat.sendEmail()
         if (result && result.success) {
-          commit(RESEND_CANDIDAT_RESERVATION_SUCCESS)
+          commit(SEND_EMAIL_CANDIDAT_RESERVATION_SUCCESS)
           dispatch(SHOW_SUCCESS, result.message)
         } else {
           throw new Error(result.message)
         }
       } catch (error) {
-        commit(RESEND_CANDIDAT_RESERVATION_FAILURE)
+        commit(SEND_EMAIL_CANDIDAT_RESERVATION_FAILURE)
         throw error
       }
     },
