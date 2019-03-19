@@ -6,9 +6,9 @@
       fab
       left
       color="home-link"
-      @click="gotToHome"
+      @click="goBack"
     >
-      <v-icon>home</v-icon>
+      <v-icon>arrow_back</v-icon>
     </v-btn>
     <div class="section-header">
       <h2 class="title">
@@ -37,8 +37,8 @@ export default {
   },
 
   methods: {
-    gotToHome () {
-      this.$router.push({ name: 'candidat-home' })
+    goBack () {
+      this.$router.back()
     },
   },
 
