@@ -17,6 +17,7 @@ import {
 import { ErrorMsgArgEmpty } from './places.controllers'
 const { default: app, apiPrefix } = require('../../app')
 
+jest.mock('../../util/logger')
 jest.mock('../middlewares/verify-token')
 
 describe('Test places controllers', () => {
@@ -56,6 +57,7 @@ describe('Test places controllers', () => {
 
     it('Should get 200 with 2 dates from places Centre 2', async () => {
       const centreSelected = centres[1]
+      console.log(centreSelected)
       const { body } = await request(app)
         .get(
           `${apiPrefix}/candidat/places?departement=${

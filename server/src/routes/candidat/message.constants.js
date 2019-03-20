@@ -14,3 +14,4 @@ export const FAILED_SEND_MAIL_ASKED =
   "Désolé, votre convocation n'a pas pu être envoyée dans votre boîte mail. Veuillez réessayer plus tard."
 export const SEND_MAIL_ASKED_RESA_EMPTY =
   "Vous n'avez pas de réservation. Aucun convocation n'a été envoyé dans votre boîte mail."
+export const CAN_BOOK_AT = 'Vous pouvez réserver une place à '

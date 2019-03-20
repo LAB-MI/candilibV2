@@ -86,6 +86,10 @@ const candidatFields = {
     type: Date,
     default: undefined,
   },
+  canBookAfter: {
+    type: Date,
+    default: undefined,
+  },
 }
 
 const CandidatSchema = new Schema(candidatFields)

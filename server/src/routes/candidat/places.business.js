@@ -1,4 +1,5 @@
 import { DateTime } from 'luxon'
+
 import { appLogger } from '../../util'
 import {
   findAvailablePlacesByCentre,
@@ -15,7 +16,9 @@ import {
   CANCEL_RESA_WITH_MAIL_SENT,
   CANCEL_RESA_WITH_NO_MAIL_SENT,
 } from './message.constants'
-import { sendCancelBooking } from '../business'
+import { sendCancelBooking, getCandBookAfter } from '../business'
+import config from '../../config'
+import { updateCandidatCanAfterBook } from '../../models/candidat'
 
 export const getDatesFromPlacesByCentreId = async (_id, beginDate, endDate) => {
   appLogger.debug(
@@ -41,15 +44,13 @@ export const getDatesFromPlacesByCentre = async (
   beginDate,
   endDate
 ) => {
-  appLogger.debug(
-    JSON.stringify({
-      func: 'getDatesFromPlacesByCentreId',
-      departement,
-      centre,
-      beginDate,
-      endDate,
-    })
-  )
+  appLogger.debug({
+    func: 'getDatesFromPlacesByCentreId',
+    departement,
+    centre,
+    beginDate,
+    endDate,
+  })
 
   let foundCentre
   if (departement) {
@@ -143,4 +144,34 @@ export const isSamReservationPlace = (centerId, date, previewBookedPlace) => {
     }
   }
   return false
+}
+
+/**
+ *
+ * @param {*} previewDateReservation Type DateTime luxon
+ */
+export const canCancelReservation = previewDateReservation => {
+  const dateCancelAutorize = DateTime.local().plus({
+    days: config.daysForbidCancel,
+  })
+  return previewDateReservation.diff(dateCancelAutorize, 'days') > 0
+}
+
+/**
+ *
+ * @param {*} candidat type Candidate Model
+ * @param {*} previewDateReservation Type Date javascript
+ */
+export const applyCancelRules = (candidat, previewDateReservation) => {
+  const previewBookedPlace = DateTime.fromJSDate(previewDateReservation)
+
+  if (canCancelReservation(previewBookedPlace)) {
+    return
+  }
+
+  const canBookAfterDate = getCandBookAfter(candidat, previewBookedPlace)
+
+  updateCandidatCanAfterBook(candidat, canBookAfterDate)
+
+  return canBookAfterDate
 }

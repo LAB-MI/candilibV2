@@ -56,6 +56,10 @@ const config = {
   PUBLIC_URL: process.env.PUBLIC_URL || DEFAULT_PUBLIC_URL,
   CANDIDAT_ROUTE: '/candidat',
   ADMIN_ROUTE: '/admin',
+
+  timeoutToBook: process.env.TIMEOUT_TO_BOOK || 0,
+  timeoutToRetry: process.env.TIMEOUT_TO_RETRY || 45,
+  daysForbidCancel: process.env.DAYS_FORBID_CANCEL || 7,
 }
 
 export const dbOptions = {
