@@ -11,14 +11,20 @@ import {
   removePlaces,
   removeCentres,
   deleteCandidats,
+  createTestPlace,
+  makeResa,
 } from '../../models/__tests__'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
   CANCEL_RESA_WITH_MAIL_SENT,
   SAME_RESA_ASKED,
   SEND_MAIL_ASKED,
+  CAN_BOOK_AT,
 } from './message.constants'
 import { findPlaceById, findPlaceByCandidatId } from '../../models/place'
+import config from '../../config'
+import { findCandidatById } from '../../models/candidat'
+import { dateTimeToDateAndHourFormat } from '../../util/date.util'
 
 jest.mock('../../util/logger')
 jest.mock('../business/send-mail')
@@ -180,9 +186,44 @@ describe('Test reservation controllers', () => {
       expect(body).toHaveProperty('success', true)
       expect(body).toHaveProperty('message', SEND_MAIL_ASKED)
     })
+  })
+
+  describe('Cancel a reservation', () => {
+    let createdCandiats
+    const basePlaceDateTime = DateTime.fromObject({ hour: 9 })
+    const placeCancellable = {
+      date: (() =>
+        basePlaceDateTime
+          .plus({ day: config.daysForbidCancel + 1, hour: 1 })
+          .toISO())(),
+      centre: 'Centre 2',
+      inspecteur: 'Inspecteur 2',
+    }
+    const placeNoCancellable = {
+      date: (() =>
+        basePlaceDateTime
+          .plus({ day: config.daysForbidCancel - 1, hour: 1 })
+          .toISO())(),
+      centre: 'Centre 2',
+      inspecteur: 'Inspecteur 2',
+    }
+
+    beforeAll(async () => {
+      createdCandiats = await createCandidats()
+      await createCentres()
+    })
+
+    afterAll(async () => {
+      await removePlaces()
+      await removeCentres()
+      await deleteCandidats()
+    })
 
     it('Should get 200 to cancel a reservation', async () => {
       console.debug('Should get 200 to cancel a place')
+      const place = await createTestPlace(placeCancellable)
+      await makeResa(place, createdCandiats[0])
+
       const selectedCandidat = createdCandiats[0]
       require('../middlewares/verify-token').__setIdCandidat(
         selectedCandidat._id
@@ -196,6 +237,55 @@ describe('Test reservation controllers', () => {
       expect(body).toHaveProperty('success', true)
       expect(body).toHaveProperty('statusmail', true)
       expect(body).toHaveProperty('message', CANCEL_RESA_WITH_MAIL_SENT)
+
+      const previewPlace = await findPlaceById(place._id)
+      console.debug(previewPlace)
+      expect(previewPlace).toHaveProperty('isBooked', false)
+      expect(previewPlace.bookedBy).toBeUndefined()
+
+      const candidat = await findCandidatById(selectedCandidat._id)
+      expect(candidat).toBeDefined()
+      expect(candidat.canBookAfter).toBeUndefined()
+    })
+
+    it('Should get 200 to cancel a reservation', async () => {
+      console.debug('Should get 200 to cancel a place')
+      const place = await createTestPlace(placeNoCancellable)
+      await makeResa(place, createdCandiats[0])
+
+      const selectedCandidat = createdCandiats[0]
+      require('../middlewares/verify-token').__setIdCandidat(
+        selectedCandidat._id
+      )
+      const { body } = await request(app)
+        .delete(`${apiPrefix}/candidat/reservations`)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(body).toBeDefined()
+      expect(body).toHaveProperty('success', true)
+      expect(body).toHaveProperty('statusmail', true)
+
+      expect(body).toHaveProperty(
+        'message',
+        CANCEL_RESA_WITH_MAIL_SENT +
+          ' ' +
+          CAN_BOOK_AT +
+          dateTimeToDateAndHourFormat(
+            DateTime.fromJSDate(place.date).plus({
+              days: config.timeoutToRetry,
+            })
+          ).date
+      )
+
+      const previewPlace = await findPlaceById(place._id)
+      console.debug(previewPlace)
+      expect(previewPlace).toHaveProperty('isBooked', false)
+      expect(previewPlace.bookedBy).toBeUndefined()
+
+      const candidat = await findCandidatById(selectedCandidat._id)
+      expect(candidat).toBeDefined()
+      expect(candidat).toHaveProperty('canBookAfter')
     })
   })
 })

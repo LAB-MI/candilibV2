@@ -57,7 +57,6 @@ describe('Test places controllers', () => {
 
     it('Should get 200 with 2 dates from places Centre 2', async () => {
       const centreSelected = centres[1]
-      console.log(centreSelected)
       const { body } = await request(app)
         .get(
           `${apiPrefix}/candidat/places?departement=${

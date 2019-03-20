@@ -3,7 +3,7 @@ import { findAllCandidatsLean } from '../candidat'
 import { places } from './places'
 import { candidats } from './candidats'
 
-const makeResa = (place, candidat) => {
+export const makeResa = (place, candidat) => {
   place.bookedBy = candidat._id
   place.isBooked = true
   return place.save()
