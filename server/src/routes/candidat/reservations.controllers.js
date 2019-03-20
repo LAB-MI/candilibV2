@@ -305,7 +305,7 @@ export const removeReservations = async (req, res) => {
         message,
       })
     }
-    console.log(bookedPlace)
+
     const dateAfterBook = applyCancelRules(
       bookedPlace.bookedBy,
       bookedPlace.date
