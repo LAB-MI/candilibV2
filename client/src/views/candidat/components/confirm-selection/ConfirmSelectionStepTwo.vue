@@ -68,7 +68,10 @@
       </v-icon>
     </v-btn>
   </router-link>
-  <v-btn color="success">
+  <v-btn
+    color="success"
+    @click="resendEmailConfrimation"
+  >
       Renvoyer
       &nbsp;
       <v-icon>
@@ -83,6 +86,7 @@ import { mapState } from 'vuex'
 import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
   SHOW_ERROR,
+  SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST,
 } from '@/store'
 
 export default {
@@ -110,7 +114,16 @@ export default {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
+
+    async resendEmailConfrimation () {
+      try {
+        await this.$store.dispatch(SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST)
+      } catch (error) {
+        this.$store.dispatch(SHOW_ERROR, error.message)
+      }
+    },
   },
+
 }
 </script>
 

@@ -1,7 +1,5 @@
 const logger = {
-  debug (msg) {
-    console.debug(msg)
-  },
+  debug (msg) {},
   info (msg) {
     console.info(msg)
   },

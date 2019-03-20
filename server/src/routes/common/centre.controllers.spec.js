@@ -9,6 +9,7 @@ import {
   createCandidats,
   deleteCandidats,
   makeResas,
+  commonBasePlaceDateTime,
 } from '../../models/__tests__/'
 
 import { DateTime } from 'luxon'
@@ -40,7 +41,8 @@ describe('Test centre controllers', () => {
       await removeCentres()
       await deleteCandidats()
     })
-    it('Should response 400 to find  centres without departement', async () => {
+
+    it('Should response 400 to find centres without departement', async () => {
       const { body } = await request(app)
         .get(`${apiPrefix}/candidat/centres`)
         .send()
@@ -51,9 +53,14 @@ describe('Test centre controllers', () => {
       expect(body).toHaveProperty('success', false)
       expect(body).toHaveProperty('message', NOT_CODE_DEP_MSG)
     })
-    it('Should response 200 to find 2 centres from departemnt 93 to date 19', async () => {
+
+    it('Should response 200 to find 2 centres from departement 93 to date 19', async () => {
       const departement = '93'
-      const date = encodeURIComponent(DateTime.fromObject({ day: 19 }).toISO())
+      let dateTime = commonBasePlaceDateTime.set({ day: 18 })
+      if (dateTime < DateTime.local()) {
+        dateTime = dateTime.plus({ month: 1 })
+      }
+      const date = encodeURIComponent(dateTime.toISO())
       const { body } = await request(app)
         .get(
           `${apiPrefix}/candidat/centres?departement=${departement}&begin=${date}`
@@ -77,9 +84,13 @@ describe('Test centre controllers', () => {
       })
     })
 
-    it('Should response 200 to find 2 centres from departemnt 93 to date 20', async () => {
+    it('Should response 200 to find 2 centres from departement 93 to date 20', async () => {
       const departement = '93'
-      const date = encodeURIComponent(DateTime.fromObject({ day: 20 }).toISO())
+      let dateTime = commonBasePlaceDateTime.set({ day: 20 })
+      if (dateTime < DateTime.local()) {
+        dateTime = dateTime.plus({ month: 1 })
+      }
+      const date = encodeURIComponent(dateTime.toISO())
       const { body } = await request(app)
         .get(
           `${apiPrefix}/candidat/centres?departement=${departement}&begin=${date}`

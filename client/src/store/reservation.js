@@ -6,6 +6,10 @@ export const FETCH_CANDIDAT_RESERVATION_REQUEST = 'FETCH_CANDIDAT_RESERVATION_RE
 export const FETCH_CANDIDAT_RESERVATION_FAILURE = 'FETCH_CANDIDAT_RESERVATION_FAILURE'
 export const FETCH_CANDIDAT_RESERVATION_SUCCESS = 'FETCH_CANDIDAT_RESERVATION_SUCCESS'
 
+export const SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST = 'SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST'
+export const SEND_EMAIL_CANDIDAT_RESERVATION_FAILURE = 'SEND_EMAIL_CANDIDAT_RESERVATION_FAILURE'
+export const SEND_EMAIL_CANDIDAT_RESERVATION_SUCCESS = 'SEND_EMAIL_CANDIDAT_RESERVATION_SUCCESS'
+
 export const DELETE_CANDIDAT_RESERVATION_REQUEST = 'DELETE_CANDIDAT_RESERVATION_REQUEST'
 export const DELETE_CANDIDAT_RESERVATION_FAILURE = 'DELETE_CANDIDAT_RESERVATION_FAILURE'
 export const DELETE_CANDIDAT_RESERVATION_SUCCESS = 'DELETE_CANDIDAT_RESERVATION_SUCCESS'
@@ -14,6 +18,7 @@ export default {
   state: {
     isDeleting: false,
     isFetching: false,
+    isSending: false,
     isModifying: false,
     booked: undefined,
   },
@@ -28,6 +33,16 @@ export default {
     },
     [FETCH_CANDIDAT_RESERVATION_FAILURE] (state) {
       state.isFetching = false
+    },
+
+    [SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST] (state) {
+      state.isSending = true
+    },
+    [SEND_EMAIL_CANDIDAT_RESERVATION_SUCCESS] (state) {
+      state.isSending = false
+    },
+    [SEND_EMAIL_CANDIDAT_RESERVATION_FAILURE] (state) {
+      state.isSending = false
     },
 
     [DELETE_CANDIDAT_RESERVATION_REQUEST] (state) {
@@ -69,6 +84,22 @@ export default {
         }
       } catch (error) {
         commit(DELETE_CANDIDAT_RESERVATION_FAILURE)
+        throw error
+      }
+    },
+
+    async [SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST] ({ commit, dispatch }) {
+      commit(SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST)
+      try {
+        const result = await api.candidat.sendEmail()
+        if (result && result.success) {
+          commit(SEND_EMAIL_CANDIDAT_RESERVATION_SUCCESS)
+          dispatch(SHOW_SUCCESS, result.message)
+        } else {
+          throw new Error(result.message)
+        }
+      } catch (error) {
+        commit(SEND_EMAIL_CANDIDAT_RESERVATION_FAILURE)
         throw error
       }
     },

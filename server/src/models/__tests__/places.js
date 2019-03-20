@@ -3,44 +3,52 @@ import { createPlace } from '../place'
 import Place from '../place/place.model'
 import { findCentreByName } from '../centre'
 
+let basePlaceDateTime = DateTime.fromObject({ day: 18, hour: 9 })
+
+if (basePlaceDateTime < DateTime.local()) {
+  basePlaceDateTime = basePlaceDateTime.plus({ month: 1 })
+}
+
+export const commonBasePlaceDateTime = basePlaceDateTime
+
 export const places = [
   {
-    date: (() => DateTime.fromObject({ day: 18, hour: 9 }).toISO())(),
+    date: (() => basePlaceDateTime.toISO())(),
     centre: 'Centre 1',
     inspecteur: 'Inspecteur 1',
   },
   {
-    date: (() => DateTime.fromObject({ day: 19, hour: 10 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ day: 1, hour: 1 }).toISO())(),
     centre: 'Centre 2',
     inspecteur: 'Inspecteur 2',
   },
   {
-    date: (() => DateTime.fromObject({ day: 19, hour: 11 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ day: 1, hour: 2 }).toISO())(),
     centre: 'Centre 2',
     inspecteur: 'Inspecteur 3',
   },
   {
-    date: (() => DateTime.fromObject({ day: 20, hour: 9 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ day: 2 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 4',
   },
   {
-    date: (() => DateTime.fromObject({ day: 21, hour: 10 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ day: 3, hour: 1 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 5',
   },
   {
-    date: (() => DateTime.fromObject({ day: 21, hour: 11 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ day: 3, hour: 2 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 6',
   },
   {
-    date: (() => DateTime.fromObject({ day: 19, hour: 11 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ day: 1, hour: 2 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 6',
   },
   {
-    date: (() => DateTime.fromObject({ day: 19, hour: 9 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ day: 1 }).toISO())(),
     centre: 'Centre 1',
     inspecteur: 'Inspecteur 7',
   },

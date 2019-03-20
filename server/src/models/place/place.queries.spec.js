@@ -25,6 +25,7 @@ import {
   candidats,
   nbPlacesDispoByCentres,
   places,
+  commonBasePlaceDateTime,
 } from '../__tests__'
 
 import { deleteCentre, createCentre } from '../centre'
@@ -232,7 +233,12 @@ describe('Place', () => {
     it('Should find 0 places for centre "Centre 2" at day 20', async () => {
       const { nom } = centres[1]
       const centreSelected = createdCentres.find(centre => centre.nom === nom)
-      const begindate = DateTime.fromObject({ day: 20 }).toISO()
+      let dateTime = commonBasePlaceDateTime.set({ day: 20 })
+      if (dateTime < DateTime.local()) {
+        dateTime = dateTime.plus({ month: 1 })
+      }
+
+      const begindate = dateTime.toISO()
       const listPlaces = await findAvailablePlacesByCentre(
         centreSelected._id,
         begindate
@@ -241,6 +247,7 @@ describe('Place', () => {
       expect(listPlaces).toHaveLength(0)
     })
   })
+
   describe('to book places', () => {
     let createdCentres
     let createdcandidats

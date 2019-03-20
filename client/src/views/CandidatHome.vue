@@ -1,5 +1,5 @@
 <template>
-  <v-card style="max-width: 100vw">
+  <v-card style="max-width: 100vw;">
     <div v-if="reservation.booked">
       <section>
         <header class="candidat-section-header">
@@ -21,6 +21,7 @@ import { mapState } from 'vuex'
 
 import {
   FETCH_CANDIDAT_RESERVATION_REQUEST,
+  FETCH_MY_PROFILE_REQUEST,
   SHOW_ERROR,
 } from '@/store'
 
@@ -52,11 +53,20 @@ export default {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
+
+    async getMyProfile () {
+      try {
+        await this.$store.dispatch(FETCH_MY_PROFILE_REQUEST)
+      } catch (error) {
+        this.$store.dispatch(SHOW_ERROR, error.message)
+      }
+    },
   },
 
   async mounted () {
     this.$router.replace({ name: 'candidat-presignup' })
-    this.getCandidatReservation()
+    await this.getCandidatReservation()
+    await this.getMyProfile()
   },
 }
 </script>
