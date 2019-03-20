@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon'
+
 import {
   createCandidat,
   updateCandidatEmail,
@@ -9,16 +11,17 @@ import {
 } from './'
 
 import { connect, disconnect } from '../../mongo-connection'
-import moment from 'moment'
+
 import {
+  commonBasePlaceDateTime,
   createCandidats,
-  createPlaces,
-  makeResas,
-  removePlaces,
-  deleteCandidats,
   createCentres,
-  removeCentres,
+  createPlaces,
+  deleteCandidats,
+  makeResas,
   places,
+  removeCentres,
+  removePlaces,
 } from '../__tests__'
 
 const validEmail = 'candidat@example.com'
@@ -334,16 +337,21 @@ describe('Candidat', () => {
         expect(candidat.place.centre).toBeDefined()
       })
     })
-    it('Get the booked candidats by date ', async () => {
-      const date = moment().date(19)
 
-      const bookedCandidats = await findBookedCandidats(date)
+    it('Get the booked candidats by date ', async () => {
+      let dateTime = commonBasePlaceDateTime.set({ day: 19 })
+      if (dateTime < DateTime.local()) {
+        dateTime = dateTime.plus({ month: 1 })
+      }
+
+      const bookedCandidats = await findBookedCandidats(dateTime.toJSDate())
       expect(bookedCandidats.length).toBe(1)
       bookedCandidats.forEach(candidat => {
         expect(candidat.place).toBeDefined()
         expect(candidat.place.centre).toBeDefined()
       })
     })
+
     it('Get the booked candidats by centre', async () => {
       const centre = creactedCentres[1]
       const bookedCandidats = await findBookedCandidats(
@@ -357,6 +365,7 @@ describe('Candidat', () => {
         expect(candidat.place.centre._id).toEqual(centre._id)
       })
     })
+
     it('Get the booked candidats inspecteur', async () => {
       const inspecteur = places[0].inspecteur
       const bookedCandidats = await findBookedCandidats(undefined, inspecteur)

@@ -1,5 +1,5 @@
 <template>
-  <v-card style="max-width: 100vw">
+  <v-card style="max-width: 100vw;">
     <div v-if="reservation.booked">
       <section>
         <header class="candidat-section-header">
