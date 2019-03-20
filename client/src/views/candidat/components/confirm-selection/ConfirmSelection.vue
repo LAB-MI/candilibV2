@@ -7,7 +7,7 @@
             <v-btn icon>
               <v-icon>arrow_back_ios</v-icon>
             </v-btn>
-            Confirmation
+            {{ $formatMessage({ id: 'candidat_confirmation_reservation_title'}) }}
           </h2>
         </header>
       </section>
@@ -16,7 +16,7 @@
           {{ candidat.me ? candidat.me.nomNaissance : '' }}
           {{ candidat.me ? candidat.me.prenom : '' }}
         </h3>
-        <p>Vous avez choisi de passer l’épreuve pratique du permis à</p>
+        <p> {{ $formatMessage({ id: 'candidat_confirmation_reservation_subtitle' }) }}</p>
         <div v-if="!flagRecap">
           <p>
             <strong>
@@ -28,7 +28,7 @@
           </p>
           <p>
             <strong>
-              Le
+              {{ $formatMessage({ id: 'candidat_confirmation_reservation_word' }) }}
               {{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}
             </strong>
           </p>
@@ -54,7 +54,7 @@
               </a>
           <p>
             <strong>
-              Le
+              {{ $formatMessage({ id: 'candidat_confirmation_reservation_word' }) }}
               {{ reservation.booked ? this.convertIsoDate(reservation.booked.date) : '' }}
             </strong>
           </p>

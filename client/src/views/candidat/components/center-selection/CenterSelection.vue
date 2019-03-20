@@ -3,7 +3,7 @@
     <section>
       <header class="candidat-section-header">
         <h2 class="candidat-section-header__title">
-          Choix du centre
+          {{ $formatMessage({ id: 'candidat_home_choix_du_centre' }) }}
         </h2>
       </header>
     </section>
