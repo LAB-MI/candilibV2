@@ -36,6 +36,8 @@ const config = {
   dbUser: process.env.DB_USER,
   dbPass: process.env.DB_PASS,
 
+  mailFrom: process.env.MAIL_FROM || 'noreply@localhost.com',
+
   smtpServer: process.env.SMTP_SERVER || 'localhost',
   smtpService: process.env.SMTP_SERVICE || undefined,
   smtpUser: process.env.SMTP_USER,
