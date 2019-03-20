@@ -4,7 +4,6 @@
       <candidat-header :links="links" />
       <div class="u-flex  with-top-margin  u-max-width">
         <div class="u-flex  u-flex__item--grow  u-flex--column-on-mobile  u-flex--center-on-mobile">
-          <my-profile class="profile" />
           <div class="u-flex__item--grow">
             <router-view />
           </div>
@@ -24,15 +23,11 @@ import CandidatHeader from './components/CandidatHeader'
 import CandidatFooter from './components/CandidatFooter'
 import NavigationDrawer from './components/NavigationDrawer'
 
-import MyProfile from './components/MyProfile'
-
 export default {
   components: {
     CandidatHeader,
     CandidatFooter,
-    MyProfile,
     NavigationDrawer,
-    // CentersSelections,
   },
 
   data () {
@@ -45,13 +40,19 @@ export default {
           label: 'Ma réservation',
         },
         {
-          routerTo: { name: 'faq' },
+          routerTo: { name: 'my-profile' },
+          iconName: 'supervised_user_circle',
+          tooltipText: 'Profile candidat',
+          label: 'Mon Profil',
+        },
+        {
+          routerTo: { name: 'faq-candidat' },
           iconName: 'help_outline',
           tooltipText: 'FAQ',
           label: 'F.A.Q.',
         },
         {
-          routerTo: { name: 'mentions-legales' },
+          routerTo: { name: 'mentions-legales-candidat' },
           iconName: 'account_balance',
           tooltipText: 'Mentions légales',
           label: 'Mentions légales',
