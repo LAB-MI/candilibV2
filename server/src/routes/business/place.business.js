@@ -51,3 +51,12 @@ export const getBeginDateAutorize = candidat => {
 
   return beginDateAutoriseDefault
 }
+
+/**
+ *
+ * @param {*} dateReservation Type Date Javascript
+ */
+export const getLastDateToCancel = dateReservation => {
+  const dateTimeResa = DateTime.fromJSDate(dateReservation)
+  return dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
+}

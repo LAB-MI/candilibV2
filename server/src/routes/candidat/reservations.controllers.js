@@ -6,7 +6,7 @@ import {
   isSamReservationPlace,
   applyCancelRules,
 } from './places.business'
-import { sendMailConvocation } from '../business'
+import { sendMailConvocation, getLastDateToCancel } from '../business'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
   SAVE_RESA_WITH_NO_MAIL_SENT,
@@ -21,7 +21,7 @@ import { dateTimeToDateAndHourFormat } from '../../util/date.util'
 export const getReservations = async (req, res) => {
   const section = 'candidat-getReservations'
   const idCandidat = req.userId
-  const { bymail } = req.query
+  const { bymail, lastDateOnly } = req.query
 
   appLogger.debug({
     section,
@@ -91,14 +91,31 @@ export const getReservations = async (req, res) => {
         message,
       })
     } else {
+      let reservation = {}
+      if (bookedPlace) {
+        const { _id, centre, date } = bookedPlace
+        const lastDateToCancel = getLastDateToCancel(bookedPlace.date)
+
+        if (lastDateOnly) {
+          return res.json({ lastDateToCancel })
+        }
+
+        reservation = {
+          _id,
+          centre,
+          date,
+          lastDateToCancel,
+        }
+        console.log('resa with last Date' + JSON.stringify(reservation))
+      }
+
       appLogger.info({
         section,
         idCandidat,
         bymail,
-        place: bookedPlace && bookedPlace._id,
+        place: reservation && reservation._id,
       })
-
-      return res.json(bookedPlace)
+      return res.json(reservation)
     }
   } catch (error) {
     appLogger.error({
