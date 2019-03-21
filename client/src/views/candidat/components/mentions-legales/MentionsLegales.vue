@@ -1,16 +1,6 @@
 <template>
   <v-card class="u-max-width">
-    <v-btn
-      fab
-      left
-      dark
-      color="#169DB2"
-      @click="goBack"
-      class="back-button"
-    >
-      <v-icon>arrow_back</v-icon>
-    </v-btn>
-    <v-card-title style="margin-top: -60px;">
+    <v-card-title>
       <section class="u-max-width">
         <header class="candidat-section-header">
           <h2 class="candidat-section-header__title">
@@ -59,20 +49,6 @@ export default {
 </script>
 
 <style>
-  .back-button {
-    height: 42px;
-    width: 42px;
-    position: fixed;
-    position: sticky;
-    top: 90px;
-    transform: translateX(100%);
-    z-index: 4;
-
-    @media (max-width: 639px) {
-      transform: none;
-    }
-  }
-
   .list {
     padding: 0 2em;
   }
