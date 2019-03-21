@@ -139,6 +139,7 @@ export default {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
+
     async confirmReservation () {
       const selected = {
         ...this.timeSlots.selected,

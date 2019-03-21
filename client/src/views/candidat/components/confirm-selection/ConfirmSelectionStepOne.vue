@@ -84,10 +84,10 @@ export default {
 
   computed: {
     ...mapState([
-      'center',
-      'timeSlots',
       'candidat',
+      'center',
       'reservation',
+      'timeSlots',
     ]),
     disabled () {
       return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting
@@ -112,7 +112,7 @@ export default {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
         this.$router.push({ name: 'candidat-home' })
       } catch (error) {
-        await this.$store.dispatch(SHOW_ERROR, error.message)
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
 

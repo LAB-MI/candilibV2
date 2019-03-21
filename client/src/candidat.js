@@ -36,7 +36,7 @@ export default {
   recap_reservation_confirmee: 'Votre réservation est confirmée',
   recap_reservation_email_confirmee: 'Un email de confirmation vous a été envoyé à l\'adresse',
   recap_reservation_boutton_annuler: 'Annuler',
-  recap_reservation_modal_annuler_body: 'Texte à définir recap_reservation_modal_annuler_text_body',
+  recap_reservation_modal_annuler_body: 'Texte à définir recap_reservation_modal_annuler_body',
   recap_reservation_modal_annuler_boutton_retour: 'Retour',
   recap_reservation_modal_annuler_boutton_confirmer: 'Confirmer',
   recap_reservation_boutton_modifier: 'Modifier',

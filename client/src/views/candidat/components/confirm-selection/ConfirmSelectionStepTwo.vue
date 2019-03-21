@@ -9,10 +9,19 @@
   </h4>
   <h4>
     {{ $formatMessage({ id: 'recap_reservation_email_confirmée' }) }}
-    <span color="primary">{{ candidat ? candidat.email : '' }}</span>
+    <span color="primary">{{ candidat.me ? candidat.me.email : '' }}</span>
     &nbsp;
     <v-icon color="success">
       check
+    </v-icon>
+  </h4>
+  <h4>
+    si vous annulé apres le
+    "{{ lastDateToCancelString }}"
+    vous serez pénalisé de {{ penaltyDaysNumber }}
+    &nbsp;
+    <v-icon color="red">
+      warning
     </v-icon>
   </h4>
   <v-dialog v-model="dialog" persistent max-width="290">
@@ -33,11 +42,22 @@
         @submit.prevent="deleteConfirm"
       >
         <v-card-title class="headline">
-          Confirmer la suppression
+          Confirmer l'annulation
         </v-card-title>
         <v-card-text>
           <div class="confirm-suppr-text-content">
-            <p>{{ $formatMessage({ id: 'recap_reservation_modal_annuler_text_body' }) }}</p>
+            <v-subheader v-if="isPenaltyActive" class="red--text">
+              <p>
+                {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }}
+              </p>
+              {{ isPenaltyTrue }}
+            </v-subheader>
+            <v-subheader v-else class="red--text">
+              <p>
+                {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }}
+              </p>
+              {{ isPenaltyFalse }}
+            </v-subheader>
           </div>
         </v-card-text>
         <v-card-actions>
@@ -46,7 +66,7 @@
             {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_retour' }) }}
           </v-btn>
           <v-btn
-            color="success darken-1"
+            color="red darken-1"
             flat
             :aria-disabled="disabled"
             :disabled="disabled"
@@ -82,10 +102,13 @@
 
 <script>
 import { mapState } from 'vuex'
+import { DateTime } from 'luxon'
+
 import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
-  SHOW_ERROR,
+  PENALTY_DAYS_NUMBER,
   SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST,
+  SHOW_ERROR,
 } from '@/store'
 
 export default {
@@ -98,8 +121,48 @@ export default {
 
   computed: {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
+
     disabled () {
       return this.$store.state.reservation.isDeleting
+    },
+
+    isPenaltyActive () {
+      const { lastDateToCancel } = this.$store.state.reservation.booked
+      if (!lastDateToCancel) {
+        return ''
+      }
+      if (DateTime.local() > DateTime.fromISO(lastDateToCancel)) {
+        return true
+      }
+      return false
+    },
+
+    isPenaltyTrue () {
+      return `avec une pénalité de ${PENALTY_DAYS_NUMBER}`
+    },
+
+    isPenaltyFalse () {
+      const { lastDateToCancel } = this.$store.state.reservation.booked
+      return `sans pénalité, valable jusqu'au ${DateTime.fromISO(lastDateToCancel)
+        .toLocaleString({ weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' })}`
+    },
+
+    lastDateToCancelString () {
+      const { lastDateToCancel } = this.$store.state.reservation.booked
+      if (!lastDateToCancel) {
+        return ''
+      }
+      return DateTime.fromISO(lastDateToCancel)
+        .toLocaleString({
+          weekday: 'long',
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+        })
+    },
+
+    penaltyDaysNumber () {
+      return PENALTY_DAYS_NUMBER
     },
   },
 
