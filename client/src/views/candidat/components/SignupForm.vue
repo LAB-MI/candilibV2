@@ -1,12 +1,11 @@
 <template>
-  <div class="presignup-form">
-    <v-form dark v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
+  <v-card class="presignup-form">
+    <v-form v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
       <div class="form-input">
         <v-text-field
           :label="`${getMsg('preinscription_neph')} *`"
           prepend-icon="assignment"
-          dark
-          color="#fff"
+
           @focus="setNephPlaceholder"
           @blur="removeNephPlaceholder"
           :placeholder="nephPlaceholder"
@@ -23,8 +22,7 @@
         <v-text-field
           :label="`${getMsg('preinscription_nom_naissance')} *`"
           prepend-icon="account_box"
-          dark
-          color="#fff"
+
           @focus="setNomPlaceholder"
           @blur="removeNomPlaceholder"
           :placeholder="nomPlaceholder"
@@ -39,8 +37,7 @@
         <v-text-field
           :label="getMsg('preinscription_prenom')"
           prepend-icon="perm_identity"
-          dark
-          color="#fff"
+
           @focus="setPrenomPlaceholder"
           @blur="removePrenomPlaceholder"
           :placeholder="prenomPlaceholder"
@@ -55,8 +52,7 @@
         <v-text-field
           :label="`${getMsg('preinscription_email')} *`"
           prepend-icon="email"
-          dark
-          color="#fff"
+
           @focus="setEmailPlaceholder"
           @blur="removeEmailPlaceholder"
           :placeholder="emailPlaceholder"
@@ -72,8 +68,7 @@
         <v-text-field
           :label="`${getMsg('preinscription_mobile')} *`"
           prepend-icon="smartphone"
-          dark
-          color="#fff"
+
           @focus="setPortablePlaceholder"
           @blur="removePortablePlaceholder"
           :placeholder="portablePlaceholder"
@@ -88,8 +83,7 @@
       <div class="form-input">
         <v-autocomplete
           :label="`${getMsg('preinscription_adresse')} *`"
-          dark
-          color="#fff"
+
           @focus="setAdressePlaceholder"
           @blur="removeAdressePlaceholder"
           :placeholder="adressePlaceholder"
@@ -111,14 +105,20 @@
           :disabled="isSendingPresignup"
           :aria-disabled="isSendingPresignup"
           class="submit-button"
-          dark
+
           tabindex="7"
-          color="#28a745">
-          <div class="submit-label">{{getMsg('preinscription_bouton_submit')}}</div>
+          color="success"
+        >
+          {{getMsg('preinscription_bouton_submit')}}
         </v-btn>
       </div>
       <div class="form-input  form-input-group">
-        <v-btn flat color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
+        <v-btn
+          flat
+          tag="a"
+          :to="{ name: 'mentions-legales' }"
+          tabindex="9"
+        >
           {{getMsg('preinscription_bouton_mentions_legales') }}
         </v-btn>
         <v-dialog
@@ -129,8 +129,8 @@
           <v-btn
             slot="activator"
             depressed
-            color="#fff"
             tabindex="8"
+            color="info"
           >
             {{getMsg('preinscription_bouton_deja_inscrit') }}
           </v-btn>
@@ -168,26 +168,22 @@
               <v-card-actions>
                 <v-spacer></v-spacer>
                 <v-btn
-                dark
-                type="submit"
-                :disabled="isSendingMagicLink"
-                :aria-disabled="isSendingMagicLink"
-                tabindex="2"
-                color="#28a745">
-                  <div class="submit-label">
-                    {{getMsg('preinscription_bouton_magic_link') }}
-                  </div>
+                  :disabled="isSendingMagicLink"
+                  :aria-disabled="isSendingMagicLink"
+                  tabindex="2"
+                >
+                  {{getMsg('preinscription_bouton_magic_link') }}
                 </v-btn>
               </v-card-actions>
             </v-form>
           </v-card>
         </v-dialog>
-        <v-btn flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
+        <v-btn flat tag="a" :to="{ name: 'faq' }" tabindex="10">
           {{getMsg('preinscription_bouton_faq') }}
         </v-btn>
       </div>
     </v-form>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -364,9 +360,10 @@ export default {
 .presignup-form {
   display: flex;
   flex-direction: column;
+  width: 100%;
+  padding: 0.5em;
   align-items: center;
   justify-content: center;
-  width: 100%;
 }
 
 .form-input {

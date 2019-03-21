@@ -162,22 +162,25 @@ h3 {
   align-items: center;
   justify-content: center;
   width: 40em;
-  padding: 1em;
-  margin: 1em;
+  padding-bottom: 1em;
+  margin-top: 1em;
+  margin-bottom: 1em;
   background: linear-gradient(to bottom, #17a2b8, #063852);
   border-radius: 1em;
-  box-shadow: 0.05em 0.1em 0.1em 0.3em #fff;
+  box-shadow: 0.1em 0.2em 0.2em 0.3em #bbb;
   color: #fff;
 
   @media (max-width: 599px) {
-    width: 24em;
+    margin: 0;
+    width: 100%;
+    border-radius: 0;
   }
 
   &__title {
     margin: 0.2em 0;
     line-height: 1;
     font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
-    font-size: 60px;
+    font-size: 50px;
     letter-spacing: 5px;
     color: #fff;
     text-align: center;
@@ -190,7 +193,7 @@ h3 {
     padding: 5px 0 15px 0;
     line-height: 1;
     font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
-    font-size: 18px;
+    font-size: 14px;
     color: #fff;
     letter-spacing: 3px;
     text-align: center;

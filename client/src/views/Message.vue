@@ -7,12 +7,10 @@
       <h2 class="c-candidat-message__subtitle">
         {{$formatMessage({ id: 'app_subtitle' })}}
       </h2>
-      <hr class="u-separator" />
 
       <router-view />
 
-      <hr class="u-separator" />
-      <div class="u-flex  u-flex--center  u-flex--space-between" style="width: 80%;">
+      <div class="u-flex  u-flex--center  u-flex--space-between  home-footer">
         <a href="https://www.interieur.gouv.fr/">
           <img :src="logoMI">
         </a>
@@ -50,3 +48,10 @@ export default {
   },
 }
 </script>
+
+<style lang="postcss" scoped>
+.home-footer {
+  padding-top: 1em;
+  width: 80%;
+}
+</style>
