@@ -1,7 +1,7 @@
 <template>
   <v-card>
-    <div class="text--center" >
-      <section>
+    <v-card-title>
+      <section class="u-max-width">
         <header class="candidat-section-header"  v-if="!flagRecap">
           <h2 class="candidat-section-header__title" v-ripple @click="goToSelectTimeSlot">
             <v-btn icon>
@@ -11,58 +11,58 @@
           </h2>
         </header>
       </section>
-      <div class="text--center">
-        <h3 style="padding: 1em;">
-          {{ candidat.me ? candidat.me.nomNaissance : '' }}
-          {{ candidat.me ? candidat.me.prenom : '' }}
-        </h3>
-        <p>Vous avez choisi de passer l’épreuve pratique du permis à</p>
-        <div v-if="!flagRecap">
-          <p>
-            <strong>
-              <h1>{{ center.selected ? center.selected.nom : '' }}</h1>
-            </strong>
-          </p>
-          <p>
-            <strong>{{ center.selected ? center.selected.adresse : '' }}</strong>
-          </p>
-          <p>
-            <strong>
-              Le
-              {{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}
-            </strong>
-          </p>
-        </div>
-        <div v-else>
-          <p>
-            <strong>
-              <h1>{{ reservation.booked.centre ? reservation.booked.centre.nom : '' }}</h1>
-            </strong>
-          </p>
-          <p>
-            <strong>{{ reservation.booked.centre ? reservation.booked.centre.adresse : '' }}</strong>
-            <a
-              target="_blank"
-              @click.stop="true"
-              class="location-icon"
-              v-ripple
-              :href="`https://www.openstreetmap.org/search?query=${reservation.booked.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
-            >
-              <v-icon>
-                location_on
-              </v-icon>
-              </a>
-          <p>
-            <strong>
-              Le
-              {{ reservation.booked ? this.convertIsoDate(reservation.booked.date) : '' }}
-            </strong>
-          </p>
-        </div>
+    </v-card-title>
+    <div class="text--center">
+      <h3 style="padding: 1em;">
+        {{ candidat.me ? candidat.me.nomNaissance : '' }}
+        {{ candidat.me ? candidat.me.prenom : '' }}
+      </h3>
+      <p>Vous avez choisi de passer l’épreuve pratique du permis à</p>
+      <div v-if="!flagRecap">
+        <p>
+          <strong>
+            <h1>{{ center.selected ? center.selected.nom : '' }}</h1>
+          </strong>
+        </p>
+        <p>
+          <strong>{{ center.selected ? center.selected.adresse : '' }}</strong>
+        </p>
+        <p>
+          <strong>
+            Le
+            {{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}
+          </strong>
+        </p>
       </div>
-      <confirm-selection-step-two v-if="flagRecap" />
-      <confirm-selection-step-one v-else />
+      <div v-else>
+        <p>
+          <strong>
+            <h1>{{ reservation.booked.centre ? reservation.booked.centre.nom : '' }}</h1>
+          </strong>
+        </p>
+        <p>
+          <strong>{{ reservation.booked.centre ? reservation.booked.centre.adresse : '' }}</strong>
+          <a
+            target="_blank"
+            @click.stop="true"
+            class="location-icon"
+            v-ripple
+            :href="`https://www.openstreetmap.org/search?query=${reservation.booked.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
+          >
+            <v-icon>
+              location_on
+            </v-icon>
+            </a>
+        <p>
+          <strong>
+            Le
+            {{ reservation.booked ? this.convertIsoDate(reservation.booked.date) : '' }}
+          </strong>
+        </p>
+      </div>
     </div>
+    <confirm-selection-step-two v-if="flagRecap" />
+    <confirm-selection-step-one v-else />
   </v-card>
 </template>
 

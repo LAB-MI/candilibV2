@@ -10,14 +10,18 @@
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
-    <div class="section-header">
-      <h2 class="title">
-        F.A.Q
-      </h2>
-      <p class="subtitle">
-        Foire aux questions
-      </p>
-    </div>
+    <v-card-title style="margin-top: -60px;">
+      <section class="u-max-width">
+        <header class="candidat-section-header">
+          <h2 class="candidat-section-header__title">
+            F.A.Q
+          </h2>
+        </header>
+      </section>
+    </v-card-title>
+    <p class="subtitle">
+      Foire aux questions
+    </p>
     <ul class="list-faq">
       <li class="question" v-for="(item, index) in arrayContent" :key="index">
         <faq-content :item="item"/>

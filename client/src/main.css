@@ -45,6 +45,10 @@ h3 {
 .u-flex {
   display: flex;
 
+  &--inline {
+    display: inline-flex;
+  }
+
   &--center {
     justify-content: center;
     align-items: center;

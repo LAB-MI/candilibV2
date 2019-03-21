@@ -5,8 +5,8 @@
       <v-text-field
         :value="value"
         aria-readonly="true"
-        readonly
         aria-disabled="true"
+        readonly
         disabled
         slot="activator"
       />

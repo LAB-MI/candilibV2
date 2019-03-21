@@ -1,22 +1,24 @@
 <template>
   <v-card>
-    <section>
-      <header class="candidat-section-header">
-      <h2
-        class="candidat-section-header__title"
-        v-ripple
-        @click="goToSelectCenter()"
-      >
-        <v-btn icon>
-        <v-icon>
-          arrow_back_ios
-        </v-icon>
-        </v-btn>
-        {{ center.selected ? center.selected.nom : '' }}
-        ({{ center.selected ? center.selected.departement : '' }})
-      </h2>
-      </header>
-    </section>
+    <v-card-title>
+      <section class="u-max-width">
+        <header class="candidat-section-header">
+        <h2
+          class="candidat-section-header__title"
+          v-ripple
+          @click="goToSelectCenter()"
+        >
+          <v-btn icon>
+          <v-icon>
+            arrow_back_ios
+          </v-icon>
+          </v-btn>
+          {{ center.selected ? center.selected.nom : '' }}
+          ({{ center.selected ? center.selected.departement : '' }})
+        </h2>
+        </header>
+      </section>
+    </v-card-title>
     <v-tabs
       v-model="switchTab"
       centered

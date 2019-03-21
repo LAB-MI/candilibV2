@@ -1,12 +1,14 @@
 <template>
   <v-card>
-    <section>
-      <header class="candidat-section-header">
-        <h2 class="candidat-section-header__title">
-          Choix du centre
-        </h2>
-      </header>
-    </section>
+    <v-card-title>
+      <section class="u-max-width">
+        <header class="candidat-section-header">
+          <h2 class="candidat-section-header__title">
+            Choix du centre
+          </h2>
+        </header>
+      </section>
+    </v-card-title>
     <v-list three-line>
       <center-selection-content
         v-for="center in center.list"

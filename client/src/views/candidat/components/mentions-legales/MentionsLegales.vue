@@ -1,28 +1,36 @@
 <template>
-  <div class="conrainer">
+  <v-card class="u-max-width">
     <v-btn
-      fixed
-      dark
       fab
       left
-      color="home-link"
+      dark
+      color="#169DB2"
       @click="goBack"
+      class="back-button"
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
-    <div class="section-header">
-      <h2 class="page-title">Mentions légales</h2>
-      <p class="date-info">Modifié le 21 décembre 2018</p>
+    <v-card-title style="margin-top: -60px;">
+      <section class="u-max-width">
+        <header class="candidat-section-header">
+          <h2 class="candidat-section-header__title">
+            Mentions légales
+          </h2>
+        </header>
+      </section>
+    </v-card-title>
+    <p class="date-info">Modifié le 21 décembre 2018</p>
+    <div class="list">
+      <div v-for="(item, index) in ArrayContent" :key="index">
+        <mentions-legales-content
+          :icon="item.icon"
+          :mainTitle="item.mainTitle"
+          :textContent="item.textContent"
+          :listInfo="item.listInfo"
+        />
+      </div>
     </div>
-    <div v-for="(item, index) in ArrayContent" :key="index">
-      <mentions-legales-content
-        :icon="item.icon"
-        :mainTitle="item.mainTitle"
-        :textContent="item.textContent"
-        :listInfo="item.listInfo"
-      />
-    </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -51,6 +59,24 @@ export default {
 </script>
 
 <style>
+  .back-button {
+    height: 42px;
+    width: 42px;
+    position: fixed;
+    position: sticky;
+    top: 90px;
+    transform: translateX(100%);
+    z-index: 4;
+
+    @media (max-width: 639px) {
+      transform: none;
+    }
+  }
+
+  .list {
+    padding: 0 2em;
+  }
+
   .page-title {
     font-size: 36px;
     text-transform: uppercase;
@@ -69,23 +95,6 @@ export default {
     font-size: 18px;
     font-weight: 500;
     color: #9195a2;
-  }
-
-  .conrainer {
-    position: relative;
-    width: 100%;
-    height: auto;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-    max-width: 740px;
-    font-family: "Poppins", sans-serif;
-    font-size: 1rem;
-    font-weight: 400;
-    line-height: 1.5;
-    color: #212529;
-    text-align: left;
   }
 
   .section-header {

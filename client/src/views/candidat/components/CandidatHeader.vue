@@ -10,7 +10,7 @@
     ></v-toolbar-side-icon>
     <v-toolbar-title>
       <h1 class="logo">
-        <router-link to="/candidat" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
+        <router-link to="/candidat" class="home-link  u-flex--inline  u-flex--center">C<span class="apprenti-letter  u-flex--inline  u-flex--center">A</span>NDILIB</router-link>
       </h1>
     </v-toolbar-title>
     <v-spacer></v-spacer>
@@ -88,6 +88,15 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.apprenti-letter {
+  background-color: white;
+  border-radius: 50%;
+  width: 2.5rem;
+  height: 2.5rem;
+  font-size: 0.8em;
+  color: #f82249;
+}
+
 .candidat-header {
   background-color: #169db2;
 }

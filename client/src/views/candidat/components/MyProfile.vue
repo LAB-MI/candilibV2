@@ -1,7 +1,11 @@
 <template>
-  <v-card color="#169DB2" class="white--text">
-    <v-card-title primary-title class="u-border-bottom">
-      <h3 class="headline white--text">Mes informations</h3>
+  <v-card>
+    <v-card-title>
+      <section class="u-max-width">
+        <header class="candidat-section-header">
+          <h2 class="candidat-section-header__title">Mes informations</h2>
+        </header>
+      </section>
     </v-card-title>
     <div class="u-flex  u-flex--column  info-container">
       <div class="u-flex  u-flex--center">
