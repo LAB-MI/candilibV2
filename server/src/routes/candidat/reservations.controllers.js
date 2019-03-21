@@ -106,7 +106,6 @@ export const getReservations = async (req, res) => {
           date,
           lastDateToCancel,
         }
-        console.log('resa with last Date' + JSON.stringify(reservation))
       }
 
       appLogger.info({
