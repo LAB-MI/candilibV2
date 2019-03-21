@@ -10,7 +10,7 @@ const SET_LAST_FILE = 'SET_LAST_FILE'
 
 export default {
   state: {
-    isCandidatsUpadating: false,
+    isLoading: false,
     candidats: [],
     lastFile: undefined,
   },
@@ -19,14 +19,14 @@ export default {
       state.lastFile = file
     },
     [AURIGE_UPLOAD_CANDIDATS_REQUEST] (state) {
-      state.isCandidatsUpadating = true
+      state.isLoading = true
     },
     [AURIGE_UPLOAD_CANDIDATS_SUCCESS] (state, candidats) {
-      state.isCandidatsUpadating = false
+      state.isLoading = false
       state.candidats = candidats
     },
     [AURIGE_UPLOAD_CANDIDATS_FAILURE] (state) {
-      state.isCandidatsUpadating = false
+      state.isLoading = false
     },
 
   },

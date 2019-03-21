@@ -149,7 +149,7 @@ export const synchroAurige = async buffer => {
               appLogger.info(`Ce candidat ${candidat.email} a été validé`)
               const token = createToken(
                 candidat.id,
-                config.USER_STATUS_LEVEL.candidat
+                config.userStatuses.CANDIDAT
               )
 
               appLogger.info(`Envoi d'un magic link à ${email}`)
