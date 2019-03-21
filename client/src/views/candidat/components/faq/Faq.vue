@@ -1,12 +1,12 @@
 <template>
-  <div>
+  <div class="u-max-width">
     <v-btn
-      fixed
-      dark
       fab
       left
-      color="home-link"
+      dark
+      color="#169DB2"
       @click="goBack"
+      class="back-button"
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
@@ -14,13 +14,13 @@
       <h2 class="title">
         F.A.Q
       </h2>
-      <p class="p-style">
+      <p class="subtitle">
         Foire aux questions
       </p>
     </div>
-    <ul class="ul-style">
-      <li class="li-style" v-for="(item, index) in arrayContent" :key="index">
-      <FaqContent :item="item"/>
+    <ul class="list-faq">
+      <li class="question" v-for="(item, index) in arrayContent" :key="index">
+        <faq-content :item="item"/>
       </li>
     </ul>
   </div>
@@ -51,9 +51,27 @@ export default {
 </script>
 
 <style>
+  .back-button {
+    height: 42px;
+    width: 42px;
+    position: fixed;
+    position: sticky;
+    top: 90px;
+    transform: translateX(100%);
+    z-index: 4;
+
+    @media (max-width: 639px) {
+      transform: none;
+    }
+  }
+
   .section-header {
-    margin-top: 5%;
+    margin-top: -1em;
     margin-bottom: 0;
+  }
+
+  .list-faq {
+    padding: 0 2em;
   }
 
   .title {
@@ -67,7 +85,7 @@ export default {
     font-family: "Raleway", sans-serif;
   }
 
-  .p-style {
+  .subtitle {
     text-align: center;
     padding: 0;
     margin: 0;
@@ -76,8 +94,11 @@ export default {
     color: #9195a2;
   }
 
-  .li-style {
-    width: 80%;
+  .question {
     list-style: none;
+  }
+
+  .no-padding {
+    padding: 0;
   }
 </style>
