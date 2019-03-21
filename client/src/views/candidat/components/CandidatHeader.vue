@@ -1,5 +1,9 @@
 <template>
-  <v-toolbar dark fixed class="u-max-width-parent">
+  <v-toolbar
+    fixed
+    dark
+    class="u-max-width-parent  candidat-header"
+  >
     <v-toolbar-side-icon
       class="u-only-on-mobile"
       @click="toggleDrawer"
@@ -10,9 +14,9 @@
       </h1>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <div class="text-xs-center d-flex align-center">
+    <div class="text-xs-center  u-flex  u-flex--center  u-full-height">
       <v-tabs
-        class="u-only-on-desktop"
+        class="u-only-on-desktop  u-full-height"
         slot="extension"
         v-model="activeTab"
         color="transparent"
@@ -84,11 +88,20 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.admin-header {
-  display: flex;
-  padding: 0 1em;
-  background-color: black;
-  margin-top: 4em;
+.candidat-header {
+  background-color: #169db2;
+}
+
+>>> .v-tabs__bar {
+  height: 100%;
+}
+
+>>> .v-tabs__wrapper {
+  height: 100%;
+}
+
+>>> .v-tabs__container {
+  height: 100%;
 }
 
 .logo {
