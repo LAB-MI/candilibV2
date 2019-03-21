@@ -16,49 +16,8 @@
           {{ candidat.me ? candidat.me.nomNaissance : '' }}
           {{ candidat.me ? candidat.me.prenom : '' }}
         </h3>
-        <p> {{ $formatMessage({ id: 'confirmation_reservation_subtitle' }) }}</p>
-        <div v-if="!flagRecap">
-          <p>
-            <strong>
-              <h1>{{ center.selected ? center.selected.nom : '' }}</h1>
-            </strong>
-          </p>
-          <p>
-            <strong>{{ center.selected ? center.selected.adresse : '' }}</strong>
-          </p>
-          <p>
-            <strong>
-              {{ $formatMessage({ id: 'confirmation_reservation_word' }) }}
-              {{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}
-            </strong>
-          </p>
-        </div>
-        <div v-else>
-          <p>
-            <strong>
-              <h1>{{ reservation.booked.centre ? reservation.booked.centre.nom : '' }}</h1>
-            </strong>
-          </p>
-          <p>
-            <strong>{{ reservation.booked.centre ? reservation.booked.centre.adresse : '' }}</strong>
-            <a
-              target="_blank"
-              @click.stop="true"
-              class="location-icon"
-              v-ripple
-              :href="`https://www.openstreetmap.org/search?query=${reservation.booked.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
-            >
-              <v-icon>
-                location_on
-              </v-icon>
-              </a>
-          <p>
-            <strong>
-              {{ $formatMessage({ id: 'confirmation_reservation_word' }) }}
-              {{ reservation.booked ? this.convertIsoDate(reservation.booked.date) : '' }}
-            </strong>
-          </p>
-        </div>
+        <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
+        <reservation-info :adresse="infoResa.adresse" :date="infoResa.date" :nom="infoResa.nom" />
       </div>
       <confirm-selection-step-two v-if="flagRecap" />
       <confirm-selection-step-one v-else />
@@ -82,11 +41,13 @@ import {
 
 import ConfirmSelectionStepOne from './ConfirmSelectionStepOne.vue'
 import ConfirmSelectionStepTwo from './ConfirmSelectionStepTwo.vue'
+import ReservationInfo from './ReservationInfo.vue'
 
 export default {
   components: {
     ConfirmSelectionStepOne,
     ConfirmSelectionStepTwo,
+    ReservationInfo,
   },
 
   data () {
@@ -104,6 +65,20 @@ export default {
 
   computed: {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
+    infoResa () {
+      if (!this.flagRecap) {
+        return {
+          nom: this.center.selected ? this.center.selected.nom : '',
+          adresse: this.center.selected ? this.center.selected.adresse : '',
+          date: this.timeSlots.selected ? this.convertIsoDate(this.timeSlots.selected.slot) : '',
+        }
+      }
+      return {
+        nom: this.reservation.booked.centre ? this.reservation.booked.centre.nom : '',
+        adresse: this.reservation.booked.centre ? this.reservation.booked.centre.adresse : '',
+        date: this.reservation.booked ? this.reservation.booked.date : '',
+      }
+    },
     disabled () {
       return this.selectedCheckBox.length !== 2
     },
