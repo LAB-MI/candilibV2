@@ -1,5 +1,5 @@
 <template>
-  <div class="u-max-width">
+  <v-card class="u-max-width">
     <v-btn
       fab
       left
@@ -23,7 +23,7 @@
         <faq-content :item="item"/>
       </li>
     </ul>
-  </div>
+  </v-card>
 </template>
 
 <script>
