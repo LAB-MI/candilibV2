@@ -28,6 +28,11 @@ http {
       '$request_time $upstream_response_time $pipe';
 
     # default log in json format (under nginx key)
+    map $upstream_response_time $upstream_response_time_val {
+      default $upstream_response_time;
+      "" null;
+    }
+
     log_format main escape=json '{ "nginx": {'
       '"http_x_forwarded_for":"$http_x_forwarded_for",'
       '"remote_addr":"$remote_addr",'
@@ -39,7 +44,7 @@ http {
       '"http_referer":"$http_referer",'
       '"http_user_agent":"$http_user_agent",'
       '"request_time":$request_time,'
-      '"upstream_response_time":$upstream_response_time,'
+      '"upstream_response_time":$upstream_response_time_val,'
       '"pipe":"$pipe"'
       '}}';
 
