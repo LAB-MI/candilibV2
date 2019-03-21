@@ -144,17 +144,12 @@ h3 {
   position: relative;
   min-height: 100vh;
   width: 100vw;
-  background-image: url(./assets/bg-presignup.jpg);
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
   display: flex;
   justify-content: center;
   align-items: center;
-
-  @media (max-width: 599px) {
-    background: linear-gradient(to bottom, #7579ff, #b224ef);
-  }
 }
 
 .c-candidat-message {
