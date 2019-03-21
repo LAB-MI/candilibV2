@@ -1,18 +1,7 @@
 <template>
-  <v-card style="max-width: 100vw;">
-    <div v-if="reservation.booked">
-      <section>
-        <header class="candidat-section-header">
-          <h2 class="candidat-section-header__title">
-            Ma réservation
-          </h2>
-        </header>
-      </section>
-      <confirm-selection :flagRecap="true"/>
-    </div>
-    <div v-else>
-      <center-selection/>
-    </div>
+  <v-card style="max-width: 100vw; padding-bottom: 1em;">
+    <confirm-selection v-if="reservation.booked" :isRecap="true" />
+    <center-selection v-else />
   </v-card>
 </template>
 

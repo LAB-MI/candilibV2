@@ -1,13 +1,7 @@
 <template>
-  <v-card>
+  <div>
     <v-card-title>
-      <section class="u-max-width">
-        <header class="candidat-section-header">
-          <h2 class="candidat-section-header__title">
-            Choix du centre
-          </h2>
-        </header>
-      </section>
+      <candidat-title title="Choix du centre" />
     </v-card-title>
     <v-list three-line>
       <center-selection-content
@@ -16,17 +10,20 @@
         :center="center"
       />
     </v-list>
-  </v-card>
+  </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+
+import CandidatTitle from '@/views/candidat/components/CandidatTitle.vue'
 import CenterSelectionContent from './CenterSelectionContent'
 import { FETCH_CENTERS_REQUEST } from '@/store/center'
 
 export default {
   components: {
     CenterSelectionContent,
+    CandidatTitle,
   },
 
   computed: {

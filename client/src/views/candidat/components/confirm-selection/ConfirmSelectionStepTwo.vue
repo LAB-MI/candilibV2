@@ -1,84 +1,92 @@
 <template>
-<div>
-  <h4>
-    Votre réservation est confirmée
-    &nbsp;
-    <v-icon color="success">
-      check
-    </v-icon>
-  </h4>
-  <h4>
-    Un email de confirmation vous a été envoyé à l'adresse
-    <span color="primary">{{ candidat ? candidat.email : '' }}</span>
-    &nbsp;
-    <v-icon color="success">
-      check
-    </v-icon>
-  </h4>
-  <v-dialog v-model="dialog" persistent max-width="290">
-    <template v-slot:activator="{ on }">
-      <v-btn color="#f82249" dark v-on="on">
-        Annuler
+  <div class="text--center">
+    <h4>
+      Votre réservation est confirmée
+      &nbsp;
+      <v-icon color="success">
+        check
+      </v-icon>
+    </h4>
+
+    <h4>
+      Un email de confirmation vous a été envoyé à l'adresse
+      <span color="primary">{{ candidat && candidat.me ? candidat.me.email : '' }}</span>
+      &nbsp;
+      <v-icon color="success">
+        check
+      </v-icon>
+    </h4>
+
+    <v-dialog v-model="dialog" persistent max-width="290">
+      <template v-slot:activator="{ on }">
+        <v-btn color="#f82249" dark v-on="on">
+          Annuler
+          &nbsp;
+          <v-icon>
+            delete_forever
+          </v-icon>
+        </v-btn>
+      </template>
+
+      <div>
+        <v-form
+          class="u-full-width"
+          :aria-disabled="disabled"
+          :disabled="disabled"
+          @submit.prevent="deleteConfirm"
+        >
+          <v-card-title class="headline">
+            Confirmer la suppression
+          </v-card-title>
+
+          <v-card-text>
+            <div class="confirm-suppr-text-content">
+              <p>
+                [Texte de confirmation]
+              </p>
+            </div>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="red darken-1" flat @click="dialog = false">
+              Retour
+            </v-btn>
+            <v-btn
+              color="success darken-1"
+              flat
+              :aria-disabled="disabled"
+              :disabled="disabled"
+              type="submit"
+            >
+              Confirmer
+            </v-btn>
+          </v-card-actions>
+        </v-form>
+      </div>
+    </v-dialog>
+
+    <router-link :to="{ name: 'selection-centre' }">
+      <v-btn color="primary">
+        Modifier
         &nbsp;
         <v-icon>
-          delete_forever
+          edit
         </v-icon>
       </v-btn>
-    </template>
-    <v-card>
-      <v-form
-        class="u-full-width"
-        :aria-disabled="disabled"
-        :disabled="disabled"
-        @submit.prevent="deleteConfirm"
-      >
-        <v-card-title class="headline">
-          Confirmer la suppression
-        </v-card-title>
-        <v-card-text>
-          <div class="confirm-suppr-text-content">
-            <p>Veniam consectetur consequat sint dolore ad amet velit cupidatat nulla reprehenderit proident exercitation. Labore excepteur laborum officia nostrud cupidatat ullamco. Quis eiusmod do ut fugiat veniam dolore velit elit irure tempor nostrud. Cillum deserunt ut labore amet magna incididunt enim occaecat deserunt anim laboris occaecat.</p>
-            <p>Veniam consectetur consequat sint dolore ad amet velit cupidatat nulla reprehenderit proident exercitation. Labore excepteur laborum officia nostrud cupidatat ullamco. Quis eiusmod do ut fugiat veniam dolore velit elit irure tempor nostrud. Cillum deserunt ut labore amet magna incididunt enim occaecat deserunt anim laboris occaecat.</p>
-          </div>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="red darken-1" flat @click="dialog = false">
-            Retour
-          </v-btn>
-          <v-btn
-            color="success darken-1"
-            flat
-            :aria-disabled="disabled"
-            :disabled="disabled"
-            type="submit"
-          >
-            Confirmer
-          </v-btn>
-        </v-card-actions>
-      </v-form>
-    </v-card>
-  </v-dialog>
-  <router-link :to="{ name: 'selection-centre' }">
-    <v-btn color="primary">
-      Modifier
-      &nbsp;
-      <v-icon>
-        edit
-      </v-icon>
+    </router-link>
+
+    <v-btn
+      color="success"
+      @click="resendEmailConfrimation"
+    >
+        Renvoyer
+        &nbsp;
+        <v-icon>
+          mail
+        </v-icon>
     </v-btn>
-  </router-link>
-  <v-btn
-    color="success"
-    @click="resendEmailConfrimation"
-  >
-      Renvoyer
-      &nbsp;
-      <v-icon>
-        mail
-      </v-icon>
-  </v-btn>
-</div>
+  </div>
 </template>
 
 <script>

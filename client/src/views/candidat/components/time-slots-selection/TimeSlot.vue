@@ -1,23 +1,18 @@
 <template>
   <v-card>
     <v-card-title>
-      <section class="u-max-width">
-        <header class="candidat-section-header">
-        <h2
-          class="candidat-section-header__title"
-          v-ripple
-          @click="goToSelectCenter()"
-        >
-          <v-btn icon>
+      <candidat-title
+        v-ripple
+        @click="goToSelectCenter"
+      >
+        <v-btn icon>
           <v-icon>
             arrow_back_ios
           </v-icon>
-          </v-btn>
-          {{ center.selected ? center.selected.nom : '' }}
-          ({{ center.selected ? center.selected.departement : '' }})
-        </h2>
-        </header>
-      </section>
+        </v-btn>
+        {{ center.selected ? center.selected.nom : '' }}
+        ({{ center.selected ? center.selected.departement : '' }})
+      </candidat-title>
     </v-card-title>
     <v-tabs
       v-model="switchTab"
@@ -37,12 +32,10 @@
     </v-tabs>
     <v-tabs-items class="tabs-items-block" v-model="switchTab">
       <v-tab-item v-for="timeSlot in timeSlots.list" :key="timeSlot.month" :value="`tab-${timeSlot.month}`">
-      <v-card flat>
         <v-card-text>
         <times-slots-selector v-if="timeSlot.availableTimeSlots.length" :initial-time-slots="timeSlot.availableTimeSlots"/>
         <div v-else class="blue-grey--text  font-italic">Il n'y a plus de crénaux disponible pour ce mois</div>
         </v-card-text>
-      </v-card>
       </v-tab-item>
     </v-tabs-items>
   </v-card>
@@ -51,12 +44,14 @@
 <script>
 import { mapState } from 'vuex'
 
+import CandidatTitle from '@/views/candidat/components/CandidatTitle.vue'
 import TimesSlotsSelector from './TimesSlotsSelector'
 import { FETCH_CENTER_REQUEST, FETCH_DATES_REQUEST } from '@/store'
 
 export default {
   components: {
     TimesSlotsSelector,
+    CandidatTitle,
   },
 
   data () {

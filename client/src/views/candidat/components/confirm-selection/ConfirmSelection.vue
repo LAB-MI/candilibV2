@@ -1,8 +1,11 @@
 <template>
-  <v-card>
-    <v-card-title>
+  <div>
+    <v-card-title v-if="isRecap && reservation.booked">
+      <candidat-title title="Ma réservation" />
+    </v-card-title>
+    <v-card-title v-if="!isRecap">
       <section class="u-max-width">
-        <header class="candidat-section-header"  v-if="!flagRecap">
+        <header class="candidat-section-header">
           <h2 class="candidat-section-header__title" v-ripple @click="goToSelectTimeSlot">
             <v-btn icon>
               <v-icon>arrow_back_ios</v-icon>
@@ -12,36 +15,43 @@
         </header>
       </section>
     </v-card-title>
+
     <div class="text--center">
       <h3 style="padding: 1em;">
         {{ candidat.me ? candidat.me.nomNaissance : '' }}
         {{ candidat.me ? candidat.me.prenom : '' }}
       </h3>
+
       <p>Vous avez choisi de passer l’épreuve pratique du permis à</p>
-      <div v-if="!flagRecap">
+
+      <div v-if="!isRecap">
+        <h1>
+          <strong>
+              {{ center.selected ? center.selected.nom : '' }}
+          </strong>
+        </h1>
         <p>
           <strong>
-            <h1>{{ center.selected ? center.selected.nom : '' }}</h1>
+            {{ center.selected ? center.selected.adresse : '' }}
           </strong>
         </p>
         <p>
-          <strong>{{ center.selected ? center.selected.adresse : '' }}</strong>
-        </p>
-        <p>
-          <strong>
             Le
+          <strong>
             {{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}
           </strong>
         </p>
       </div>
       <div v-else>
+        <h1>
+          <strong>
+            {{ reservation.booked.centre ? reservation.booked.centre.nom : '' }}
+          </strong>
+        </h1>
         <p>
           <strong>
-            <h1>{{ reservation.booked.centre ? reservation.booked.centre.nom : '' }}</h1>
+            {{ reservation.booked.centre ? reservation.booked.centre.adresse : '' }}
           </strong>
-        </p>
-        <p>
-          <strong>{{ reservation.booked.centre ? reservation.booked.centre.adresse : '' }}</strong>
           <a
             target="_blank"
             @click.stop="true"
@@ -52,7 +62,7 @@
             <v-icon>
               location_on
             </v-icon>
-            </a>
+          </a>
         <p>
           <strong>
             Le
@@ -61,9 +71,9 @@
         </p>
       </div>
     </div>
-    <confirm-selection-step-two v-if="flagRecap" />
+    <confirm-selection-step-two v-if="isRecap" />
     <confirm-selection-step-one v-else />
-  </v-card>
+  </div>
 </template>
 
 <script>
@@ -96,7 +106,7 @@ export default {
   },
 
   props: {
-    flagRecap: {
+    isRecap: {
       type: Boolean,
       default: false,
     },
@@ -169,7 +179,7 @@ export default {
         slot,
       } = this.$route.params
       const selected = this.center.selected
-      if (!this.flagRecap) {
+      if (!this.isRecap) {
         if (!selected || !selected._id) {
           await this.$store.dispatch(FETCH_CENTER_REQUEST, { departement, nom })
           setTimeout(this.getSelectedCenterAndDate, 100)

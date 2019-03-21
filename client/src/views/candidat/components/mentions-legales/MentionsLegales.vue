@@ -1,13 +1,7 @@
 <template>
   <v-card class="u-max-width">
     <v-card-title>
-      <section class="u-max-width">
-        <header class="candidat-section-header">
-          <h2 class="candidat-section-header__title">
-            Mentions légales
-          </h2>
-        </header>
-      </section>
+      <candidat-title title="Mentions légales" />
     </v-card-title>
     <p class="date-info">Modifié le 21 décembre 2018</p>
     <div class="list">
@@ -24,13 +18,14 @@
 </template>
 
 <script>
-
+import CandidatTitle from '@/views/candidat/components/CandidatTitle.vue'
 import MentionsLegalesContent from './MentionsLegalesContent.vue'
 import { mentionsLegalesJson } from './MentionsLegalesJson'
 
 export default {
   name: 'mentions-legales',
   components: {
+    CandidatTitle,
     MentionsLegalesContent,
   },
 

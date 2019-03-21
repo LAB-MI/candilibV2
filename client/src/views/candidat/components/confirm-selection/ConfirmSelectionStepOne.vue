@@ -3,27 +3,30 @@
     <p>
       <strong>Avez-vous pensez à vérifier :</strong>
     </p>
-    <v-card-actions>
-      <v-form
-        class="u-full-width"
-        :aria-disabled="disabled"
-        :disabled="disabled"
-        @submit.prevent="confirmReservation"
-      >
-      <v-checkbox
-        v-model="selectedCheckBox"
-        label="qu’une personne peut vous accompagner *"
-        value="companion"
-      ></v-checkbox>
-      <v-checkbox
-        v-model="selectedCheckBox"
-        label="qu’une voiture à double commande est disponible *"
-        value="doubleControlCar"
-      ></v-checkbox>
+    <v-form
+      class="u-flex u-flex--column  u-flex--center"
+      :aria-disabled="disabled"
+      :disabled="disabled"
+      @submit.prevent="confirmReservation"
+    >
+      <div>
+        <v-checkbox
+          v-model="selectedCheckBox"
+          label="qu’une personne peut vous accompagner *"
+          value="companion"
+        ></v-checkbox>
+        <v-checkbox
+          v-model="selectedCheckBox"
+          label="qu’une voiture à double commande est disponible *"
+          value="doubleControlCar"
+        ></v-checkbox>
+      </div>
 
       <v-flex d-flex>
         <v-spacer></v-spacer>
         <v-btn
+          :aria-disabled="disabledReturn"
+          :disabled="disabledReturn"
           outline
           color="red"
           @click="goToSelectTimeSlot()"
@@ -39,10 +42,9 @@
         Confirmer
         </v-btn>
       </v-flex>
-      </v-form>
-    </v-card-actions>
-    </div>
-    <div class="text--center" v-else>
+    </v-form>
+  </div>
+  <div class="u-flex u-flex--center" v-else>
     <h4>
       Votre réservation est confirmée
       &nbsp;
@@ -79,6 +81,7 @@ export default {
   data () {
     return {
       selectedCheckBox: [],
+      disabledReturned: false,
     }
   },
 
@@ -98,11 +101,13 @@ export default {
     goToSelectTimeSlot () {
       this.$router.back()
     },
+
     goToHome () {
       this.$router.push({ name: 'candidat-home' })
     },
 
     async confirmReservation () {
+      this.disabledReturned = true
       const selected = {
         ...this.timeSlots.selected,
         isAccompanied: true,
@@ -114,6 +119,7 @@ export default {
       } catch (error) {
         await this.$store.dispatch(SHOW_ERROR, error.message)
       }
+      this.disabledReturned = false
     },
 
     convertIsoDate (dateIso) {

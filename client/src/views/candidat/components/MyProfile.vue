@@ -1,11 +1,7 @@
 <template>
   <v-card>
     <v-card-title>
-      <section class="u-max-width">
-        <header class="candidat-section-header">
-          <h2 class="candidat-section-header__title">Mes informations</h2>
-        </header>
-      </section>
+      <candidat-title title="Mon profil" />
     </v-card-title>
     <div class="u-flex  u-flex--column  info-container">
       <div class="u-flex  u-flex--center">
@@ -28,6 +24,7 @@
 <script>
 import ProfileInfo from './ProfileInfo'
 import { FETCH_MY_PROFILE_REQUEST } from '@/store'
+import CandidatTitle from '@/views/candidat/components/CandidatTitle.vue'
 
 const labelDictionary = {
   email: 'Courriel',
@@ -42,6 +39,7 @@ export default {
   name: 'my-profile',
   components: {
     ProfileInfo,
+    CandidatTitle,
   },
 
   computed: {

@@ -1,13 +1,7 @@
 <template>
   <v-card class="u-max-width">
     <v-card-title>
-      <section class="u-max-width">
-        <header class="candidat-section-header">
-          <h2 class="candidat-section-header__title">
-            F.A.Q
-          </h2>
-        </header>
-      </section>
+      <candidat-title title="F.A.Q" />
     </v-card-title>
     <p class="subtitle">
       Foire aux questions
@@ -22,11 +16,13 @@
 
 <script>
 import FaqContent from './FaqContent.vue'
+import CandidatTitle from '@/views/candidat/components/CandidatTitle.vue'
 import { faqJson } from './FaqJson'
 
 export default {
   name: 'faq',
   components: {
+    CandidatTitle,
     FaqContent,
   },
 
