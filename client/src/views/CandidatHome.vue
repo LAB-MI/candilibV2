@@ -10,7 +10,6 @@ import { mapState } from 'vuex'
 
 import {
   FETCH_CANDIDAT_RESERVATION_REQUEST,
-  FETCH_MY_PROFILE_REQUEST,
   SHOW_ERROR,
 } from '@/store'
 
@@ -42,20 +41,11 @@ export default {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
-
-    async getMyProfile () {
-      try {
-        await this.$store.dispatch(FETCH_MY_PROFILE_REQUEST)
-      } catch (error) {
-        this.$store.dispatch(SHOW_ERROR, error.message)
-      }
-    },
   },
 
   async mounted () {
     this.$router.replace({ name: 'candidat-presignup' })
     await this.getCandidatReservation()
-    await this.getMyProfile()
   },
 }
 </script>

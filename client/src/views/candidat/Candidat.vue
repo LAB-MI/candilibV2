@@ -23,6 +23,11 @@ import CandidatHeader from './components/CandidatHeader'
 import CandidatFooter from './components/CandidatFooter'
 import NavigationDrawer from './components/NavigationDrawer'
 
+import {
+  FETCH_MY_PROFILE_REQUEST,
+  SHOW_ERROR,
+} from '@/store'
+
 export default {
   components: {
     CandidatHeader,
@@ -59,6 +64,21 @@ export default {
         },
       ],
     }
+  },
+
+  methods: {
+    async getMyProfile () {
+      try {
+        await this.$store.dispatch(FETCH_MY_PROFILE_REQUEST)
+      } catch (error) {
+        this.$store.dispatch(SHOW_ERROR, error.message)
+      }
+    },
+  },
+
+  async mounted () {
+    this.$router.replace({ name: 'candidat-presignup' })
+    await this.getMyProfile()
   },
 }
 </script>
