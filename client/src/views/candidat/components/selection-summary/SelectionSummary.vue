@@ -15,6 +15,32 @@
     </div>
     <summary-confirmation v-if="$route.meta.isConfirmation" />
     <my-reservation v-else />
+    <v-dialog
+      v-model="notAvailable"
+      width="500"
+    >
+      <v-card>
+        <v-card-title>
+          <h2>
+            Place indisponible
+          </h2>
+        </v-card-title>
+        <v-card-text>
+          La place que vous avez sélectionnée n'est plus disponible
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            @click="closeAndGoBack"
+          >
+            <v-icon>
+              close
+            </v-icon>
+            Fermer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -49,6 +75,7 @@ export default {
   data () {
     return {
       selectedCheckBox: [],
+      notAvailable: false,
     }
   },
 
@@ -104,6 +131,11 @@ export default {
       this.$router.push({ name: 'candidat-home' })
     },
 
+    closeAndGoBack () {
+      this.notAvailable = false
+      this.goToSelectTimeSlot()
+    },
+
     async deleteConfirm () {
       try {
         await this.$store.dispatch(DELETE_CANDIDAT_RESERVATION_REQUEST)
@@ -131,7 +163,7 @@ export default {
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
       } catch (error) {
-        await this.$store.dispatch(SHOW_ERROR, error.message)
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
 
@@ -167,7 +199,12 @@ export default {
             departement,
           },
         }
-        this.$store.dispatch(SELECT_DAY, selectedSlot)
+        try {
+          await this.$store.dispatch(SELECT_DAY, selectedSlot)
+        } catch (error) {
+          this.notAvailable = true
+          this.$store.dispatch(SHOW_ERROR, error.message)
+        }
       }
     },
   },

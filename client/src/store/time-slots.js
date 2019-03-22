@@ -48,6 +48,7 @@ export default {
     list: [],
     selected: undefined,
   },
+
   mutations: {
     [FETCH_DATES_REQUEST] (state) {
       state.isFetching = true
@@ -77,6 +78,7 @@ export default {
       state.isSelecting = false
     },
   },
+
   actions: {
     async [FETCH_DATES_REQUEST] ({ commit, dispatch }, selectedCenterId) {
       commit(FETCH_DATES_REQUEST)

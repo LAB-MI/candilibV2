@@ -28,7 +28,7 @@
           <v-spacer></v-spacer>
           <v-btn
             outline
-            color="red"
+            color="info"
             :disabled="isBackButtonDisabled"
             :aria-disabled="isBackButtonDisabled"
             @click="goToSelectTimeSlot"
@@ -78,9 +78,7 @@ import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
 import {
-  FETCH_CENTER_REQUEST,
   SHOW_ERROR,
-  SELECT_DAY,
   CONFIRM_SELECT_DAY_REQUEST,
 } from '@/store'
 
@@ -138,35 +136,6 @@ export default {
         minute: '2-digit',
       })}`
     },
-
-    async getSelectedCenterAndDate () {
-      const {
-        center: nom,
-        departement,
-        slot,
-      } = this.$route.params
-      const selected = this.center.selected
-
-      if (!selected || !selected._id) {
-        await this.$store.dispatch(FETCH_CENTER_REQUEST, { departement, nom })
-        setTimeout(this.getSelectedCenterAndDate, 100)
-        return
-      }
-
-      const selectedSlot = {
-        slot,
-        centre: {
-          id: selected._id,
-          nom,
-          departement,
-        },
-      }
-      this.$store.dispatch(SELECT_DAY, selectedSlot)
-    },
-  },
-
-  mounted () {
-    this.getSelectedCenterAndDate()
   },
 }
 </script>

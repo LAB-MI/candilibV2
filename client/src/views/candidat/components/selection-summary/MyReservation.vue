@@ -63,22 +63,30 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="info darken-1"
+            color="info"
+            class="  u-flex  u-flex--center"
             outline
             :aria-disabled="disabled"
             :disabled="disabled"
             @click="dialog = false"
           >
+            <v-icon>
+              arrow_back_ios
+            </v-icon>
             {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_retour' }) }}
           </v-btn>
           <v-btn
-            color="error darken-1"
-
+            color="error darken-1  u-flex  u-flex--center"
             :aria-disabled="disabled"
             :disabled="disabled"
             type="submit"
           >
-            {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_confirmer' }) }}
+            <span>
+              {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_confirmer' }) }}
+            </span>
+            <v-icon>
+              warning
+            </v-icon>
           </v-btn>
         </v-card-actions>
       </v-form>

@@ -1,12 +1,6 @@
 <template>
   <v-card>
-    <section>
-      <header class="candidat-section-header">
-        <h2 class="candidat-section-header__title">
-          {{ $formatMessage({ id: 'home_choix_du_centre' }) }}
-        </h2>
-      </header>
-    </section>
+    <page-title :title="$formatMessage({ id: 'home_choix_du_centre' })" />
     <v-list three-line>
       <center-selection-content
         v-for="center in center.list"
@@ -19,7 +13,9 @@
 
 <script>
 import { mapState } from 'vuex'
+
 import CenterSelectionContent from './CenterSelectionContent'
+import PageTitle from '@/components/PageTitle'
 import {
   FETCH_CENTERS_REQUEST,
   FETCH_MY_PROFILE_REQUEST,
@@ -28,6 +24,7 @@ import {
 export default {
   components: {
     CenterSelectionContent,
+    PageTitle,
   },
 
   computed: {

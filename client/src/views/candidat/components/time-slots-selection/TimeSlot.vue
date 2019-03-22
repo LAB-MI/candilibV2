@@ -1,22 +1,12 @@
 <template>
   <v-card>
-    <section>
-      <header class="candidat-section-header">
-      <h2
-        class="candidat-section-header__title"
-        v-ripple
-        @click="goToSelectCenter()"
-      >
-        <v-btn icon>
-        <v-icon>
-          arrow_back_ios
-        </v-icon>
-        </v-btn>
-        {{ center.selected ? center.selected.nom : '' }}
+    <page-title>
+      {{ center.selected ? center.selected.nom : '' }}
+      <span class="title__small">
         ({{ center.selected ? center.selected.departement : '' }})
-      </h2>
-      </header>
-    </section>
+      </span>
+    </page-title>
+
     <v-tabs
       v-model="switchTab"
       centered
@@ -29,20 +19,37 @@
         :href="`#tab-${month.month}`"
         @click="$router.push({ name: 'time-slot' })"
       >
-        <span v-if="month.availableTimeSlots.length" class="color-span">{{ month.month }}</span>
+        <span v-if="month.availableTimeSlots.length" class="primary--text">{{ month.month }}</span>
         <span v-else class="blue-grey--text">{{ month.month }}</span>
       </v-tab>
     </v-tabs>
     <v-tabs-items class="tabs-items-block" v-model="switchTab">
-      <v-tab-item v-for="timeSlot in timeSlots.list" :key="timeSlot.month" :value="`tab-${timeSlot.month}`">
-      <v-card flat>
-        <v-card-text>
-        <times-slots-selector v-if="timeSlot.availableTimeSlots.length" :initial-time-slots="timeSlot.availableTimeSlots"/>
-        <div v-else class="blue-grey--text  font-italic">Il n'y a plus de crénaux disponible pour ce mois</div>
-        </v-card-text>
-      </v-card>
+      <v-tab-item
+        v-for="timeSlot in timeSlots.list"
+        :key="timeSlot.month"
+        :value="`tab-${timeSlot.month}`"
+      >
+        <v-card flat>
+          <v-card-text>
+            <times-slots-selector v-if="timeSlot.availableTimeSlots.length" :initial-time-slots="timeSlot.availableTimeSlots"/>
+            <div v-else class="blue-grey--text  font-italic">Il n'y a plus de crénaux disponible pour ce mois</div>
+          </v-card-text>
+        </v-card>
       </v-tab-item>
     </v-tabs-items>
+
+    <v-card-actions class="u-flex--center">
+      <v-btn
+        outline
+        color="info"
+        @click="goToSelectCenter"
+      >
+        <v-icon>
+          arrow_back_ios
+        </v-icon>
+        Retour
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -51,10 +58,12 @@ import { mapState } from 'vuex'
 
 import TimesSlotsSelector from './TimesSlotsSelector'
 import { FETCH_CENTER_REQUEST, FETCH_DATES_REQUEST } from '@/store'
+import PageTitle from '@/components/PageTitle'
 
 export default {
   components: {
     TimesSlotsSelector,
+    PageTitle,
   },
 
   data () {
@@ -106,7 +115,7 @@ export default {
 </script>
 
 <style>
-.color-span {
-  color: rgb(22, 157, 178);
+.title__small {
+  font-size: 0.7em;
 }
 </style>
