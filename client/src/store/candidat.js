@@ -159,7 +159,10 @@ export default {
       }
     },
 
-    async [FETCH_MY_PROFILE_REQUEST] ({ commit, dispatch }) {
+    async [FETCH_MY_PROFILE_REQUEST] ({ commit, dispatch, state }) {
+      if (state.candidat && state.candidat.isFetchingProfile) {
+        return
+      }
       commit(FETCH_MY_PROFILE_REQUEST)
       try {
         const response = await api.candidat.getMyProfile()

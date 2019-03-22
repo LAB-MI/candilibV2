@@ -1,6 +1,10 @@
 import api from '@/api'
 import { DateTime } from 'luxon'
-import { SHOW_ERROR } from './message'
+
+import {
+  SHOW_ERROR,
+  FETCH_MY_PROFILE_REQUEST,
+} from '@/store'
 
 export const FETCH_CENTERS_REQUEST = 'FETCH_CENTERS_REQUEST'
 export const FETCH_CENTERS_SUCCESS = 'FETCH_CENTERS_SUCCESS'
@@ -47,8 +51,11 @@ export default {
     },
   },
   actions: {
-    async [FETCH_CENTERS_REQUEST] ({ commit, dispatch }, adresseCandidat) {
+    async [FETCH_CENTERS_REQUEST] ({ commit, dispatch, state }, adresseCandidat) {
       commit(FETCH_CENTERS_REQUEST)
+      if (!state.candidat || !state.candidat.me) {
+        await dispatch(FETCH_MY_PROFILE_REQUEST)
+      }
       try {
         const end = DateTime.local().plus({ month: 3 }).endOf('month').toISO()
         const [, departement] = adresseCandidat.match(zipCodeRegexFromAdresse)

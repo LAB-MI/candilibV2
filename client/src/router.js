@@ -85,6 +85,9 @@ const candidatRoutes = [
         path: 'home',
         name: 'candidat-home',
         component: CandidatHome,
+        meta: {
+          isConfirmation: false,
+        },
       },
       {
         path: 'selection-centre',

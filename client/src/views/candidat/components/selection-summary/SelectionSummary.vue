@@ -14,7 +14,7 @@
       />
     </div>
     <summary-confirmation v-if="$route.meta.isConfirmation" />
-    <summary-confirmed v-else />
+    <my-reservation v-else />
   </v-card>
 </template>
 
@@ -35,13 +35,13 @@ import {
 } from '@/store'
 
 import SummaryConfirmation from './SummaryConfirmation.vue'
-import SummaryConfirmed from './SummaryConfirmed.vue'
+import MyReservation from './MyReservation.vue'
 import ReservationInfo from './ReservationInfo.vue'
 
 export default {
   components: {
     SummaryConfirmation,
-    SummaryConfirmed,
+    MyReservation,
     ReservationInfo,
     PageTitle,
   },
@@ -63,13 +63,12 @@ export default {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
 
     title () {
-      return this.isConfirmation ? 'Confirmation' : 'Ma réservation'
+      return this.isConfirmation || this.$route.meta.isConfirmation ? 'Confirmation' : 'Ma réservation'
     },
 
     isConfirmation () {
-      return !this.reservation.booked ||
-        this.reservation.isModifying ||
-        this.$route.meta.isConfirmation
+      return this.$route.meta.isConfirmation !== false &&
+        (!this.reservation.booked || this.reservation.isModifying)
     },
 
     infoResa () {
