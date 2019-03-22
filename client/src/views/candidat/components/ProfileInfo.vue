@@ -1,17 +1,12 @@
 <template>
   <div>
     <label>{{label}}</label>
-    <v-tooltip bottom>
-      <v-text-field
-        :value="value"
-        aria-readonly="true"
-        readonly
-        aria-disabled="true"
-        disabled
-        slot="activator"
-      />
-      <span>{{value}}</span>
-    </v-tooltip>
+    <v-text-field
+      :value="value"
+      aria-readonly="true"
+      readonly
+      slot="activator"
+    />
   </div>
 </template>
 
