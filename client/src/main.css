@@ -226,9 +226,15 @@ h3 {
   }
 }
 
-.candidat {
-  .v-card {
-    padding-top: 1em;
-    padding-bottom: 1em;
+.candidat .v-card {
+  padding-top: 1em;
+  padding-bottom: 1em;
+
+  @media (min-width: 599px) {
+    border-radius: 1em;
+  }
+
+  @media (max-width: 599px) {
+    width: 95vw;
   }
 }

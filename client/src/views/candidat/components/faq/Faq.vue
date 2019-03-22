@@ -1,39 +1,34 @@
 <template>
-  <div>
-    <v-btn
-      fixed
-      dark
-      fab
-      left
-      color="home-link"
-      @click="goBack"
-    >
-      <v-icon>arrow_back</v-icon>
-    </v-btn>
-    <div class="section-header">
-      <h2 class="title">
-        F.A.Q
-      </h2>
-      <p class="p-style">
-        Foire aux questions
-      </p>
-    </div>
-    <ul class="ul-style">
-      <li class="li-style" v-for="(item, index) in arrayContent" :key="index">
-      <FaqContent :item="item"/>
+  <v-card>
+    <page-title>
+      F.A.Q
+    </page-title>
+    <h3 class="subtitle">
+      Foire aux questions
+    </h3>
+
+    <ul class="list-faq">
+      <li
+        class="question-wrapper"
+        v-for="question in arrayContent"
+        :key="question.title"
+      >
+        <faq-content :question="question"/>
       </li>
     </ul>
-  </div>
+  </v-card>
 </template>
 
 <script>
 import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
+import PageTitle from '@/components/PageTitle'
 
 export default {
   name: 'faq',
   components: {
     FaqContent,
+    PageTitle,
   },
 
   methods: {
@@ -50,7 +45,7 @@ export default {
 }
 </script>
 
-<style>
+<style lang="scss" scoped>
   .section-header {
     margin-top: 5%;
     margin-bottom: 0;
@@ -67,7 +62,7 @@ export default {
     font-family: "Raleway", sans-serif;
   }
 
-  .p-style {
+  .subtitle {
     text-align: center;
     padding: 0;
     margin: 0;
@@ -76,8 +71,11 @@ export default {
     color: #9195a2;
   }
 
-  .li-style {
-    width: 80%;
+  .list-faq {
+    padding: 0 1em;
+  }
+
+  .question-wrapper {
     list-style: none;
   }
 </style>
