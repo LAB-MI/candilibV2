@@ -225,3 +225,10 @@ h3 {
     margin-bottom: 10px;
   }
 }
+
+.candidat {
+  .v-card {
+    padding-top: 1em;
+    padding-bottom: 1em;
+  }
+}

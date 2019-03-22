@@ -5,45 +5,49 @@
     </p>
     <v-card-actions>
       <v-form
-        class="u-full-width"
+        class="u-full-width  u-flex  u-flex--column  u-flex--center"
         :aria-disabled="disabled"
         :disabled="disabled"
         @submit.prevent="confirmReservation"
       >
-      <v-checkbox
-        v-model="selectedCheckBox"
-        :label="$formatMessage({ id: 'confirmation_reservation_checkbox_accompagner' })"
-        value="companion"
-      ></v-checkbox>
-      <v-checkbox
-        v-model="selectedCheckBox"
-        :label="$formatMessage({ id: 'confirmation_reservation_checkbox_double_commande' })"
-        value="doubleControlCar"
-      ></v-checkbox>
+        <div>
+          <v-checkbox
+            v-model="selectedCheckBox"
+            :label="$formatMessage({ id: 'confirmation_reservation_checkbox_accompagner' })"
+            value="companion"
+          ></v-checkbox>
 
-      <v-flex d-flex>
-        <v-spacer></v-spacer>
-        <v-btn
-          outline
-          color="red"
-          :disabled="isBackButtonDisabled"
-          :aria-disabled="isBackButtonDisabled"
-          @click="goToSelectTimeSlot"
-        >
-          <v-icon>
-            arrow_back_ios
-          </v-icon>
-          {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
-        </v-btn>
-        <v-btn
-          :aria-disabled="disabled"
-          :disabled="disabled"
-          type="submit"
-          color="primary"
-        >
-        {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
-        </v-btn>
-      </v-flex>
+          <v-checkbox
+            v-model="selectedCheckBox"
+            :label="$formatMessage({ id: 'confirmation_reservation_checkbox_double_commande' })"
+            value="doubleControlCar"
+          ></v-checkbox>
+        </div>
+
+        <v-flex d-flex>
+          <v-spacer></v-spacer>
+          <v-btn
+            outline
+            color="red"
+            :disabled="isBackButtonDisabled"
+            :aria-disabled="isBackButtonDisabled"
+            @click="goToSelectTimeSlot"
+          >
+            <v-icon>
+              arrow_back_ios
+            </v-icon>
+            {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
+          </v-btn>
+
+          <v-btn
+            :aria-disabled="disabled"
+            :disabled="disabled"
+            type="submit"
+            color="primary"
+          >
+          {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
+          </v-btn>
+        </v-flex>
       </v-form>
     </v-card-actions>
     </div>
