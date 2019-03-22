@@ -212,7 +212,7 @@ export const getCandBookAfter = (candidat, datePassage) => {
 
 export const getBeginDateAutorize = candidat => {
   const beginDateAutoriseDefault = DateTime.locale().plus({
-    days: config.timeoutToBook,
+    days: config.delayToBook,
   })
   const dateCanBookAfter = DateTime.fromJSDate(candidat.canBookAfter)
 
