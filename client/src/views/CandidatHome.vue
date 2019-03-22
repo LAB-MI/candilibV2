@@ -1,8 +1,5 @@
 <template>
-  <v-card style="max-width: 100vw; padding-bottom: 1em;">
-    <confirm-selection v-if="reservation.booked" :isRecap="true" />
-    <center-selection v-else />
-  </v-card>
+  <center-selection />
 </template>
 
 <script>
@@ -14,12 +11,10 @@ import {
   SHOW_ERROR,
 } from '@/store'
 
-import ConfirmSelection from './candidat/components/confirm-selection/ConfirmSelection.vue'
 import CenterSelection from './candidat/components/center-selection/CenterSelection.vue'
 
 export default {
   components: {
-    ConfirmSelection,
     CenterSelection,
   },
 

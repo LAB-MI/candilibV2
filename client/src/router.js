@@ -19,6 +19,7 @@ import {
   requireCandidatAuth,
   checkAdminToken,
   checkCandidatToken,
+  checkReservation,
 } from './router-checks'
 import { SignupForm } from './views/candidat/components'
 
@@ -85,6 +86,7 @@ const candidatRoutes = [
         path: 'home',
         name: 'candidat-home',
         component: CandidatHome,
+        beforeEnter: checkReservation,
       },
       {
         path: 'selection-centre',

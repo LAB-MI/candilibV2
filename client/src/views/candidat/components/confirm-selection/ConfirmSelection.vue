@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card>
     <v-card-title v-if="isRecap && reservation.booked">
       <candidat-title title="Ma réservation" />
     </v-card-title>
@@ -73,7 +73,7 @@
     </div>
     <confirm-selection-step-two v-if="isRecap" />
     <confirm-selection-step-one v-else />
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -92,11 +92,13 @@ import {
 
 import ConfirmSelectionStepOne from './ConfirmSelectionStepOne.vue'
 import ConfirmSelectionStepTwo from './ConfirmSelectionStepTwo.vue'
+import CandidatTitle from '@/views/candidat/components/CandidatTitle.vue'
 
 export default {
   components: {
     ConfirmSelectionStepOne,
     ConfirmSelectionStepTwo,
+    CandidatTitle,
   },
 
   data () {

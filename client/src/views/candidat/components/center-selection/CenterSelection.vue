@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <v-card>
     <v-card-title>
       <candidat-title title="Choix du centre" />
     </v-card-title>
@@ -10,7 +10,7 @@
         :center="center"
       />
     </v-list>
-  </div>
+  </v-card>
 </template>
 
 <script>

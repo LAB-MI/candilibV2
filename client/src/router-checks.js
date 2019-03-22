@@ -73,3 +73,11 @@ export async function checkCandidatToken (to, from, next) {
     next({ name: 'candidat-home' })
   }
 }
+
+export async function checkReservation (to, from, next) {
+  if (store.state.reservation.booked) {
+    next({ name: 'confirm-selection', props: { isRecap: true } })
+    return
+  }
+  next()
+}

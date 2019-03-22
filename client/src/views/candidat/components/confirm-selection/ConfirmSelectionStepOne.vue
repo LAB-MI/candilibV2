@@ -81,7 +81,7 @@ export default {
   data () {
     return {
       selectedCheckBox: [],
-      disabledReturned: false,
+      disabledReturn: false,
     }
   },
 
@@ -103,11 +103,12 @@ export default {
     },
 
     goToHome () {
+      console.log('going home')
       this.$router.push({ name: 'candidat-home' })
     },
 
     async confirmReservation () {
-      this.disabledReturned = true
+      this.disabledReturn = true
       const selected = {
         ...this.timeSlots.selected,
         isAccompanied: true,
@@ -119,7 +120,7 @@ export default {
       } catch (error) {
         await this.$store.dispatch(SHOW_ERROR, error.message)
       }
-      this.disabledReturned = false
+      this.disabledReturn = false
     },
 
     convertIsoDate (dateIso) {
