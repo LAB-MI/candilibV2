@@ -135,20 +135,20 @@ export const getReservations = async (req, res) => {
 export const setReservations = async (req, res) => {
   const section = 'candidat-setReservations'
   const idCandidat = req.userId
-  const { id: center, date, isAccompanied, hasDualControlCar } = req.body
+  const { id: centre, date, isAccompanied, hasDualControlCar } = req.body
 
   appLogger.info({
     section,
     idCandidat,
-    center,
+    centre,
     date,
     isAccompanied,
     hasDualControlCar,
   })
 
-  if (!center || !date || !isAccompanied || !hasDualControlCar) {
+  if (!centre || !date || !isAccompanied || !hasDualControlCar) {
     const msg = []
-    if (!center) msg.push(' du centre')
+    if (!centre) msg.push(' du centre')
     if (!date) msg.push(' de la date reservation')
     if (!isAccompanied) msg.push(` d'être accompagné`)
     if (!hasDualControlCar) msg.push(` d'avoir un véhicule à double commande`)
@@ -182,7 +182,7 @@ export const setReservations = async (req, res) => {
     })
 
     if (previewBookedPlace) {
-      const isSame = isSamReservationPlace(center, date, previewBookedPlace)
+      const isSame = isSamReservationPlace(centre, date, previewBookedPlace)
 
       if (isSame) {
         const success = false
@@ -200,7 +200,7 @@ export const setReservations = async (req, res) => {
       }
     }
 
-    const reservation = await bookPlace(idCandidat, center, date)
+    const reservation = await bookPlace(idCandidat, centre, date)
     if (!reservation) {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"
