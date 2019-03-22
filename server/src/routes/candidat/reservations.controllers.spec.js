@@ -26,7 +26,7 @@ import config from '../../config'
 import { findCandidatById } from '../../models/candidat'
 import { dateTimeToDateAndHourFormat } from '../../util/date.util'
 
-jest.mock('../../util/logger')
+// jest.mock('../../util/logger')
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 
