@@ -114,7 +114,6 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
 
   let dateAfterBook
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
-
   await removeBookedPlace(bookedPlace)
   await addArchivePlace(candidat, bookedPlace, REASON_CANCEL)
 
@@ -254,6 +253,7 @@ export const getBeginDateAutorize = candidat => {
 
   if (!!candidat.canBookAfter && dateCanBookAfter.isValid) {
     const { days } = dateCanBookAfter.diff(beginDateAutoriseDefault, ['days'])
+
     if (days > 0) {
       return dateCanBookAfter
     }
@@ -365,5 +365,70 @@ export const addInfoDateToRulesResa = async (
     canBookAfter,
     timeOutToRetry,
     dayToForbidCancel,
+  }
+}
+/**
+ *
+* @param {*} idCandidat Type string from ObjectId of mongoose
+* @param {*} centre Type string from ObjectId of mongoose
+* @param {*} date Type Date from Janascript or mongoose Type Date
+* @param {*} previewBookedPlace Type model place which populate centre and candidat
+*/
+export const validCentreDateReservation = async (
+  idCandidat,
+  centre,
+  date,
+  previewBookedPlace
+) => {
+  let candidat
+  const DateTimeResa = DateTime.fromISO(date)
+  if (previewBookedPlace) {
+    const isSame = isSamReservationPlace(
+      centre,
+      DateTimeResa,
+      previewBookedPlace
+    )
+
+    if (isSame) {
+      const success = false
+      const message = SAME_RESA_ASKED
+      appLogger.warn({
+        section: 'candidat-validCentreDateReservation',
+        idCandidat,
+        success,
+        message,
+      })
+      return {
+        success,
+        message,
+      }
+    }
+    candidat = previewBookedPlace.bookedBy
+  }
+
+  if (!candidat) {
+    if (!idCandidat) throw new Error(USER_INFO_MISSING)
+    candidat = await findCandidatById(idCandidat, {})
+    console.log(candidat)
+    if (!candidat) throw new Error(USER_NOT_FOUND)
+  }
+
+  const dateAuthorize = getBeginDateAutorize(candidat)
+  const { days } = dateAuthorize.diff(DateTimeResa, ['days', 'hours'])
+  console.log(days)
+  if (days >= 0) {
+    const success = false
+    const message =
+      CAN_BOOK_AT + dateTimeToDateAndHourFormat(dateAuthorize).date
+    appLogger.warn({
+      section: 'candidat-validCentreDateReservation',
+      idCandidat,
+      success,
+      message,
+    })
+    return {
+      success,
+      message,
+    }
   }
 }
