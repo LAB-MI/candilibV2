@@ -19,19 +19,21 @@ import {
 } from './message.constants'
 import { sendCancelBooking } from '../business'
 import { updateCandidatCanAfterBook } from '../../models/candidat'
+import { getDateAuthorizePlace } from './authorize.business'
 
-export const getDatesFromPlacesByCentreId = async (_id, beginDate, endDate) => {
+export const getDatesFromPlacesByCentreId = async (_id, endDate) => {
   appLogger.debug(
     JSON.stringify({
       func: 'getDatesFromPlacesByCentreId',
       _id,
-      beginDate,
       endDate,
     })
   )
-  if (!beginDate) {
-    beginDate = DateTime.local().toISODate()
-  }
+
+  const beginDate = getDateAuthorizePlace()
+  const endDateTime = DateTime.fromISO(endDate)
+
+  endDate = !endDateTime.invalid ? endDateTime.toJSDate() : undefined
 
   const places = await findAvailablePlacesByCentre(_id, beginDate, endDate)
   const dates = places.map(place => DateTime.fromJSDate(place.date).toISO())
