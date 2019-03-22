@@ -4,6 +4,8 @@ import {
   getReservationByCandidat,
   removeReservationPlace,
   isSamReservationPlace,
+  applyCancelRules,
+  getLastDateToCancel,
 } from './places.business'
 import { sendMailConvocation } from '../business'
 import {
@@ -13,12 +15,14 @@ import {
   SEND_MAIL_ASKED,
   FAILED_SEND_MAIL_ASKED,
   SEND_MAIL_ASKED_RESA_EMPTY,
+  CAN_BOOK_AT,
 } from './message.constants'
+import { dateTimeToDateAndHourFormat } from '../../util/date.util'
 
 export const getReservations = async (req, res) => {
   const section = 'candidat-getReservations'
   const idCandidat = req.userId
-  const { bymail } = req.query
+  const { bymail, lastDateOnly } = req.query
 
   appLogger.debug({
     section,
@@ -88,14 +92,30 @@ export const getReservations = async (req, res) => {
         message,
       })
     } else {
+      let reservation = {}
+      if (bookedPlace) {
+        const { _id, centre, date } = bookedPlace
+        const lastDateToCancel = getLastDateToCancel(bookedPlace.date)
+
+        if (lastDateOnly) {
+          return res.json({ lastDateToCancel })
+        }
+
+        reservation = {
+          _id,
+          centre,
+          date,
+          lastDateToCancel,
+        }
+      }
+
       appLogger.info({
         section,
         idCandidat,
         bymail,
-        place: bookedPlace && bookedPlace._id,
+        place: reservation && reservation._id,
       })
-
-      return res.json(bookedPlace)
+      return res.json(reservation)
     }
   } catch (error) {
     appLogger.error({
@@ -303,11 +323,26 @@ export const removeReservations = async (req, res) => {
       })
     }
 
+    const dateAfterBook = applyCancelRules(
+      bookedPlace.bookedBy,
+      bookedPlace.date
+    )
+
     const status = await removeReservationPlace(bookedPlace)
+
+    if (dateAfterBook) {
+      const message =
+        status.message +
+        ' ' +
+        CAN_BOOK_AT +
+        dateTimeToDateAndHourFormat(dateAfterBook).date
+      status.message = message
+    }
 
     return res.status(200).json({
       success: true,
       ...status,
+      dateAfterBook,
     })
   } catch (error) {
     appLogger.error({

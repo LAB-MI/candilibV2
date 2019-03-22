@@ -41,12 +41,10 @@ export async function getPlaces (req, res) {
     : undefined
   const endDate = !endDateTime.invalid ? endDateTime.toJSDate() : undefined
 
-  appLogger.debug(
-    JSON.stringify({
-      section: 'candidat-getPlaces',
-      argument: { departement, _id, centre, beginDate, endDate, date },
-    })
-  )
+  appLogger.debug({
+    section: 'candidat-getPlaces',
+    argument: { departement, _id, centre, beginDate, endDate, date },
+  })
 
   let dates = []
   try {

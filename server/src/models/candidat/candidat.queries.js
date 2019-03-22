@@ -147,3 +147,8 @@ export const updateCandidatById = async (id, updatedData) => {
   const updateInfo = await Candidat.findByIdAndUpdate(id, updatedData)
   return updateInfo
 }
+
+export const updateCandidatCanAfterBook = async (candidat, canBookAfter) => {
+  candidat.canBookAfter = canBookAfter
+  return candidat.save()
+}

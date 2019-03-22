@@ -17,6 +17,7 @@ import {
 import { ErrorMsgArgEmpty } from './places.controllers'
 const { default: app, apiPrefix } = require('../../app')
 
+jest.mock('../../util/logger')
 jest.mock('../middlewares/verify-token')
 
 describe('Test places controllers', () => {
