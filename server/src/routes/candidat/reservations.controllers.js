@@ -5,8 +5,9 @@ import {
   removeReservationPlace,
   isSamReservationPlace,
   applyCancelRules,
+  getLastDateToCancel,
 } from './places.business'
-import { sendMailConvocation, getLastDateToCancel } from '../business'
+import { sendMailConvocation } from '../business'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
   SAVE_RESA_WITH_NO_MAIL_SENT,
