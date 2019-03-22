@@ -143,7 +143,7 @@ export default {
         await this.$store.dispatch(SELECT_DAY, selectedSlot)
         if (this.$store.state.timeSlots.selected) {
           this.$router.push({
-            name: 'confirm-selection',
+            name: 'selection-summary',
             params: {
               departement: `${selectedSlot.centre.departement}`,
               center: `${selectedSlot.centre.nom}`,

@@ -1,33 +1,28 @@
 <template>
-  <v-card>
-    <div class="text--center" >
-      <section>
-        <header class="candidat-section-header"  v-if="!flagRecap">
-          <h2 class="candidat-section-header__title" v-ripple @click="goToSelectTimeSlot">
-            <v-btn icon>
-              <v-icon>arrow_back_ios</v-icon>
-            </v-btn>
-            {{ $formatMessage({ id: 'confirmation_reservation_title'}) }}
-          </h2>
-        </header>
-      </section>
-      <div class="text--center">
-        <h3 style="padding: 1em;">
-          {{ candidat.me ? candidat.me.nomNaissance : '' }}
-          {{ candidat.me ? candidat.me.prenom : '' }}
-        </h3>
-        <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
-        <reservation-info :adresse="infoResa.adresse" :date="infoResa.date" :nom="infoResa.nom" />
-      </div>
-      <confirm-selection-step-two v-if="flagRecap" />
-      <confirm-selection-step-one v-else />
+  <v-card class="text--center" >
+    <page-title :title="title"/>
+    <div class="text--center">
+      <h3 style="padding: 1em;">
+        {{ candidat.me ? candidat.me.nomNaissance : '' }}
+        {{ candidat.me ? candidat.me.prenom : '' }}
+      </h3>
+      <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
+      <ReservationInfo
+        :adresse="infoResa.adresse"
+        :date="infoResa.date"
+        :nom="infoResa.nom"
+      />
     </div>
+    <summary-confirmation v-if="$route.meta.isConfirmation" />
+    <summary-confirmed v-else />
   </v-card>
 </template>
 
 <script>
 import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
+
+import PageTitle from '@/components/PageTitle.vue'
 
 import {
   CONFIRM_SELECT_DAY_REQUEST,
@@ -39,15 +34,16 @@ import {
   SHOW_SUCCESS,
 } from '@/store'
 
-import ConfirmSelectionStepOne from './ConfirmSelectionStepOne.vue'
-import ConfirmSelectionStepTwo from './ConfirmSelectionStepTwo.vue'
+import SummaryConfirmation from './SummaryConfirmation.vue'
+import SummaryConfirmed from './SummaryConfirmed.vue'
 import ReservationInfo from './ReservationInfo.vue'
 
 export default {
   components: {
-    ConfirmSelectionStepOne,
-    ConfirmSelectionStepTwo,
+    SummaryConfirmation,
+    SummaryConfirmed,
     ReservationInfo,
+    PageTitle,
   },
 
   data () {
@@ -65,8 +61,19 @@ export default {
 
   computed: {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
+
+    title () {
+      return this.isConfirmation ? 'Confirmation' : 'Ma réservation'
+    },
+
+    isConfirmation () {
+      return !this.reservation.booked ||
+        this.reservation.isModifying ||
+        this.$route.meta.isConfirmation
+    },
+
     infoResa () {
-      if (!this.flagRecap) {
+      if (this.isConfirmation) {
         return {
           nom: this.center.selected ? this.center.selected.nom : '',
           adresse: this.center.selected ? this.center.selected.adresse : '',
@@ -76,9 +83,10 @@ export default {
       return {
         nom: this.reservation.booked.centre ? this.reservation.booked.centre.nom : '',
         adresse: this.reservation.booked.centre ? this.reservation.booked.centre.adresse : '',
-        date: this.reservation.booked ? this.reservation.booked.date : '',
+        date: this.reservation.booked ? this.convertIsoDate(this.reservation.booked.date) : '',
       }
     },
+
     disabled () {
       return this.selectedCheckBox.length !== 2
     },
@@ -145,7 +153,7 @@ export default {
         slot,
       } = this.$route.params
       const selected = this.center.selected
-      if (!this.flagRecap) {
+      if (this.$route.meta.isConfirmation) {
         if (!selected || !selected._id) {
           await this.$store.dispatch(FETCH_CENTER_REQUEST, { departement, nom })
           setTimeout(this.getSelectedCenterAndDate, 100)

@@ -16,9 +16,9 @@
     </v-icon>
   </h4>
   <h4>
-    si vous annulé apres le
+    Si vous annulez après le
     "{{ lastDateToCancelString }}"
-    vous serez pénalisé de {{ penaltyDaysNumber }}
+    vous serez pénalisé·e de {{ penaltyDaysNumber }}
     &nbsp;
     <v-icon color="red">
       warning
@@ -78,18 +78,19 @@
       </v-form>
     </v-card>
   </v-dialog>
-  <router-link :to="{ name: 'selection-centre' }">
-    <v-btn color="primary">
-      {{ $formatMessage({ id: 'recap_reservation_boutton_modifier' }) }}
-      &nbsp;
-      <v-icon>
-        edit
-      </v-icon>
-    </v-btn>
-  </router-link>
+  <v-btn
+    @click="modifyReservation"
+    color="primary"
+  >
+    {{ $formatMessage({ id: 'recap_reservation_boutton_modifier' }) }}
+    &nbsp;
+    <v-icon>
+      edit
+    </v-icon>
+  </v-btn>
   <v-btn
     color="success"
-    @click="resendEmailConfrimation"
+    @click="resendEmailConfirmation"
   >
       {{ $formatMessage({ id: 'recap_reservation_boutton_renvoyer_email' }) }}
       &nbsp;
@@ -108,6 +109,7 @@ import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
   PENALTY_DAYS_NUMBER,
   SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST,
+  SET_MODIFYING_RESERVATION,
   SHOW_ERROR,
 } from '@/store'
 
@@ -167,6 +169,11 @@ export default {
   },
 
   methods: {
+    async modifyReservation () {
+      await this.$store.dispatch(SET_MODIFYING_RESERVATION, true)
+      this.$router.push({ name: 'selection-centre' })
+    },
+
     async deleteConfirm () {
       try {
         await this.$store.dispatch(DELETE_CANDIDAT_RESERVATION_REQUEST)
@@ -177,7 +184,7 @@ export default {
       }
     },
 
-    async resendEmailConfrimation () {
+    async resendEmailConfirmation () {
       try {
         await this.$store.dispatch(SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST)
       } catch (error) {

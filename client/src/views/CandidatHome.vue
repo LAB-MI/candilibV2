@@ -1,19 +1,8 @@
 <template>
-  <v-card style="max-width: 100vw;">
-    <div v-if="reservation.booked">
-      <section>
-        <header class="candidat-section-header">
-          <h2 class="candidat-section-header__title">
-            Ma réservation
-          </h2>
-        </header>
-      </section>
-      <confirm-selection :flagRecap="true"/>
-    </div>
-    <div v-else>
-      <center-selection/>
-    </div>
-  </v-card>
+  <div style="max-width: 100vw;">
+    <selection-summary v-if="reservation.booked" />
+    <center-selection v-else/>
+  </div>
 </template>
 
 <script>
@@ -25,12 +14,12 @@ import {
   SHOW_ERROR,
 } from '@/store'
 
-import ConfirmSelection from './candidat/components/confirm-selection/ConfirmSelection.vue'
+import SelectionSummary from './candidat/components/selection-summary/SelectionSummary.vue'
 import CenterSelection from './candidat/components/center-selection/CenterSelection.vue'
 
 export default {
   components: {
-    ConfirmSelection,
+    SelectionSummary,
     CenterSelection,
   },
 
