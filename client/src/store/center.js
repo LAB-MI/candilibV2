@@ -71,7 +71,11 @@ export default {
       commit(SELECT_CENTER, center)
     },
 
-    async [FETCH_CENTER_REQUEST] ({ commit, dispatch }, { departement, nom }) {
+    async [FETCH_CENTER_REQUEST] ({ commit, dispatch, state }, { departement, nom }) {
+      if (state.center.isFetchingCenter) {
+        return
+      }
+
       commit(FETCH_CENTER_REQUEST)
       try {
         const result = await api.candidat.getCentre(departement, nom)

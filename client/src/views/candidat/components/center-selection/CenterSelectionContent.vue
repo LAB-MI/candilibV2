@@ -1,20 +1,20 @@
 <template>
   <v-list-tile
-    v-on="{ click: center.count ? () => selectCenter(center) : null}"
+    v-on="{ [hasPlaces && 'click']: selectCenter }"
     :class="{
-      'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !center.count
+      'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !hasPlaces
     }"
   >
-    <v-list-tile-content v-ripple="!!center.count">
+    <v-list-tile-content v-ripple="hasPlaces">
       <v-list-tile-title>
         {{ center.centre.nom }}
         ({{ center.centre.departement }})
       </v-list-tile-title>
-      <v-list-tile-sub-title class="u-flex__item--grow" :class="{'blue-grey--text  text--lighten-2': !center.count}">
+      <v-list-tile-sub-title class="u-flex__item--grow" :class="{'blue-grey--text  text--lighten-2': !hasPlaces}">
         {{ center.centre.adresse }}
       </v-list-tile-sub-title>
-      <span v-if="!center.count" class="u-flex__item--grow  blue-grey--text  text--darken-2">
-        Pas de place disponible pour le moment
+      <span v-if="!hasPlaces" class="u-flex__item--grow  blue-grey--text  text--darken-2">
+        Plus de place disponible pour le moment
       </span>
     </v-list-tile-content>
     <a
@@ -22,7 +22,8 @@
       class="location-icon  u-flex"
       @click.stop="true"
       v-ripple
-      :href="`https://www.openstreetmap.org/search?query=${center.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`">
+      :href="href"
+    >
       <v-icon>
         location_on
       </v-icon>
@@ -38,8 +39,21 @@ export default {
   props: {
     center: Object,
   },
+
+  computed: {
+    hasPlaces () {
+      return !!this.center.count
+    },
+    href () {
+      const adresseCentre = this.center.centre.adresse
+      const osmQuery = adresseCentre.replace(',', ' ').replace(/FR.*/, '')
+      return `https://www.openstreetmap.org/search?query=${osmQuery}`
+    },
+  },
+
   methods: {
-    async selectCenter (center) {
+    async selectCenter () {
+      const center = this.center
       if (!center.count) {
         return
       }

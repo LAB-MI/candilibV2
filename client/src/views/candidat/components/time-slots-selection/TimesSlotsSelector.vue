@@ -86,11 +86,9 @@ export default {
     async getTimeSlots () {
       const selected = this.center.selected
       if (!selected || !selected._id) {
-        if (!this.center.isFetchingCenter) {
-          const { center: nom, departement } = this.$route.params
-          await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
-        }
-        setTimeout(this.getTimeSlots, 100)
+        const { center: nom, departement } = this.$route.params
+        await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
+        this.getTimeSlots()
         return
       }
       await this.$store.dispatch(FETCH_DATES_REQUEST, selected._id)
@@ -126,6 +124,7 @@ export default {
       if (!this.$store.state.center.selected) {
         return
       }
+
       const { nom, departement, _id } = this.$store.state.center.selected
       const day = slot.day.split(' ')
       const hour = slot.hour.split('-')[0].split('h')
@@ -139,6 +138,7 @@ export default {
           departement,
         },
       }
+
       try {
         await this.$store.dispatch(SELECT_DAY, selectedSlot)
         if (this.$store.state.timeSlots.selected) {
