@@ -251,7 +251,7 @@ describe('Test reservation controllers', () => {
       await deleteCandidats()
     })
 
-    it('Should get 200 to cancel a reservation', async () => {
+    it('Should get 200 to cancel a reservation without penalty', async () => {
       const place = await createTestPlace(placeCancellable)
       await makeResa(place, createdCandiats[0])
 
@@ -278,7 +278,7 @@ describe('Test reservation controllers', () => {
       expect(candidat.canBookAfter).toBeUndefined()
     })
 
-    it('Should get 200 to cancel a reservation', async () => {
+    it('Should get 200 to cancel a reservation with penalty', async () => {
       const place = await createTestPlace(placeNoCancellable)
       await makeResa(place, createdCandiats[0])
 
@@ -301,9 +301,11 @@ describe('Test reservation controllers', () => {
           ' ' +
           CAN_BOOK_AT +
           dateTimeToDateAndHourFormat(
-            DateTime.fromJSDate(place.date).plus({
-              days: config.timeoutToRetry,
-            })
+            DateTime.fromJSDate(place.date)
+              .endOf('days')
+              .plus({
+                days: config.timeoutToRetry,
+              })
           ).date
       )
 
