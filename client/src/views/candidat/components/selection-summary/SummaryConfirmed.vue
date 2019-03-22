@@ -62,12 +62,18 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="red darken-1" flat @click="dialog = false">
+          <v-btn
+            color="info darken-1"
+            outline
+            :aria-disabled="disabled"
+            :disabled="disabled"
+            @click="dialog = false"
+          >
             {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_retour' }) }}
           </v-btn>
           <v-btn
-            color="red darken-1"
-            flat
+            color="error darken-1"
+
             :aria-disabled="disabled"
             :disabled="disabled"
             type="submit"

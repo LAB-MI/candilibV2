@@ -26,9 +26,14 @@
         <v-btn
           outline
           color="red"
-          @click="goToSelectTimeSlot()"
+          :disabled="isBackButtonDisabled"
+          :aria-disabled="isBackButtonDisabled"
+          @click="goToSelectTimeSlot"
         >
-        {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
+          <v-icon>
+            arrow_back_ios
+          </v-icon>
+          {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
         </v-btn>
         <v-btn
           :aria-disabled="disabled"
@@ -79,6 +84,7 @@ export default {
   data () {
     return {
       selectedCheckBox: [],
+      isBackButtonDisabled: false,
     }
   },
 
@@ -98,11 +104,13 @@ export default {
     goToSelectTimeSlot () {
       this.$router.back()
     },
+
     goToHome () {
       this.$router.push({ name: 'candidat-home' })
     },
 
     async confirmReservation () {
+      this.isBackButtonDisabled = true
       const selected = {
         ...this.timeSlots.selected,
         isAccompanied: true,
@@ -114,6 +122,7 @@ export default {
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
+      this.isBackButtonDisabled = false
     },
 
     convertIsoDate (dateIso) {
