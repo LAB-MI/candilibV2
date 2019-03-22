@@ -1,7 +1,7 @@
 import { appLogger } from '../../util'
 import {
-  getDatesFromPlacesByCentre,
-  getDatesFromPlacesByCentreId,
+  getDatesByCentre,
+  getDatesByCentreId,
   hasAvailablePlaces,
   hasAvailablePlacesByCentre,
 } from './places.business'
@@ -42,7 +42,7 @@ export async function getPlaces (req, res) {
       if (date) {
         dates = await hasAvailablePlaces(_id, date)
       } else {
-        dates = await getDatesFromPlacesByCentreId(_id, end)
+        dates = await getDatesByCentreId(_id, end)
       }
     } else {
       if (!(departement && centre)) {
@@ -51,7 +51,7 @@ export async function getPlaces (req, res) {
       if (date) {
         dates = await hasAvailablePlacesByCentre(departement, centre, date)
       } else {
-        dates = await getDatesFromPlacesByCentre(departement, centre, end)
+        dates = await getDatesByCentre(departement, centre, end)
       }
     }
     res.status(200).json(dates)

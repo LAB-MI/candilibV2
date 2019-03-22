@@ -76,9 +76,6 @@ describe('Test places controllers', () => {
       })
 
       it('Should get 200 with a available place for centre 2 at a day 19 11h', async () => {
-        console.log(
-          'Should get 200 with a available place for centre 2 at a day 19 11h'
-        )
         const centreSelected = createdCentres.find(
           centre => centre.nom === centres[1].nom
         )._id

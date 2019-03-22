@@ -8,7 +8,7 @@ import {
   centres,
   nbPlacesByCentres,
 } from '../../models/__tests__/'
-import { getDatesFromPlacesByCentre } from './places.business'
+import { getDatesByCentre } from './places.business'
 
 describe('Test places business', () => {
   beforeAll(async () => {
@@ -32,7 +32,7 @@ describe('Test places business', () => {
 
     it('Should get 2 dates from places Centre 2', async () => {
       const centreSelected = centres[1]
-      const dates = await getDatesFromPlacesByCentre(
+      const dates = await getDatesByCentre(
         centreSelected.departement,
         centreSelected.nom
       )
