@@ -36,6 +36,7 @@ import { SELECT_CENTER } from '@/store/center'
 export default {
   components: {
   },
+
   props: {
     center: Object,
   },
@@ -44,6 +45,7 @@ export default {
     hasPlaces () {
       return !!this.center.count
     },
+
     href () {
       const adresseCentre = this.center.centre.adresse
       const osmQuery = adresseCentre.replace(',', ' ').replace(/FR.*/, '')

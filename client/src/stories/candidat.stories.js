@@ -13,11 +13,6 @@ import NavigationDrawer from '../views/candidat/components/NavigationDrawer.vue'
 import EmailValidation from '../views/candidat/components/EmailValidation.vue'
 import CandidatHeader from '../views/candidat/components/CandidatHeader.vue'
 import CandidatFooter from '../views/candidat/components/CandidatFooter.vue'
-import CenterSelection from '../views/candidat/components/center-selection/CenterSelection.vue'
-import TimeSlot from '../views/candidat/components/time-slots-selection/TimeSlot.vue'
-import TimesSlotsSelector from '../views/candidat/components/time-slots-selection/TimesSlotsSelector.vue'
-
-import store from '../store'
 
 storiesOf('Candidat', module)
   .add('Pré-inscription', () => ({
@@ -155,11 +150,6 @@ storiesOf('Candidat', module)
       },
     }),
   }))
-  .add('CenterSelection', () => ({
-    components: { CenterSelection },
-    store: store,
-    template: '<center-selection />',
-  }))
   .add('CandidatFooter', () => ({
     components: { CandidatFooter },
     template: '<candidat-footer :ids="ids" :links="links" />',
@@ -170,22 +160,4 @@ storiesOf('Candidat', module)
         links: [],
       }
     },
-  }))
-  .add('TimesSlotsSelector', () => ({
-    components: { TimesSlotsSelector },
-    store: store,
-    template: '<times-slots-selector :items="items" />',
-    data () {
-      return {
-        items: [{
-          day: 'lundi 4 mars',
-          hours: ['9H30-10H00'],
-        }],
-      }
-    },
-  }))
-  .add('TimeSlot', () => ({
-    components: { TimeSlot },
-    store: store,
-    template: '<time-slot />',
   }))
