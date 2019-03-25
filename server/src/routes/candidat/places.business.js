@@ -83,10 +83,10 @@ export const getReservationByCandidat = async (idCandidat, options) => {
   return place
 }
 
-export const bookPlace = async (idCandidat, center, date) => {
+export const bookPlace = async (idCandidat, centre, date) => {
   const place = await findAndbookPlace(
     idCandidat,
-    center,
+    centre,
     date,
     { inspecteur: 0 },
     { centre: true, candidat: true }
@@ -129,8 +129,8 @@ export const removeReservationPlace = async bookedPlace => {
   }
 }
 
-export const isSamReservationPlace = (centerId, date, previewBookedPlace) => {
-  if (centerId === previewBookedPlace.centre._id.toString()) {
+export const isSamReservationPlace = (centreId, date, previewBookedPlace) => {
+  if (centreId === previewBookedPlace.centre._id.toString()) {
     const diffDateTime = DateTime.fromISO(date).diff(
       DateTime.fromJSDate(previewBookedPlace.date),
       'second'
