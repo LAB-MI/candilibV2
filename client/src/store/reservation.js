@@ -16,7 +16,7 @@ export const DELETE_CANDIDAT_RESERVATION_SUCCESS = 'DELETE_CANDIDAT_RESERVATION_
 
 export const SET_MODIFYING_RESERVATION = 'SET_MODIFYING_RESERVATION'
 
-export const PENALTY_DAYS_NUMBER = '45 Jours'
+export const PENALTY_DAYS_NUMBER = 45
 
 export default {
   state: {
@@ -33,7 +33,11 @@ export default {
     },
     [FETCH_CANDIDAT_RESERVATION_SUCCESS] (state, booked) {
       state.isFetching = false
-      state.booked = booked
+      if ('date' in booked) {
+        state.booked = booked
+      } else {
+        state.booked = null
+      }
     },
     [FETCH_CANDIDAT_RESERVATION_FAILURE] (state) {
       state.isFetching = false

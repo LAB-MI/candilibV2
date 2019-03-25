@@ -7,23 +7,30 @@
       check
     </v-icon>
   </h4>
-  <h4>
+  <p>
     {{ $formatMessage({ id: 'recap_reservation_email_confirmée' }) }}
-    <span color="primary">{{ candidat.me ? candidat.me.email : '' }}</span>
+    <strong>
+      {{ candidat.me ? candidat.me.email : '' }}
+    </strong>
     &nbsp;
     <v-icon color="success">
       check
     </v-icon>
-  </h4>
-  <h4>
+  </p>
+  <p>
     Si vous annulez après le
-    "{{ lastDateToCancelString }}"
-    vous serez pénalisé·e de {{ penaltyDaysNumber }}
+    <strong>
+    {{ lastDateToCancelString }}
+    </strong>
+    vous serez pénalisé·e de
+    <strong>
+      {{ penaltyDaysNumber }} jours
+    </strong>
     &nbsp;
     <v-icon color="red">
       warning
     </v-icon>
-  </h4>
+  </p>
   <v-dialog v-model="dialog" persistent max-width="290">
     <template v-slot:activator="{ on }">
       <v-btn color="#f82249" dark v-on="on">
@@ -154,7 +161,7 @@ export default {
     },
 
     isPenaltyTrue () {
-      return `avec une pénalité de ${PENALTY_DAYS_NUMBER}`
+      return `avec une pénalité de ${PENALTY_DAYS_NUMBER} jours`
     },
 
     isPenaltyFalse () {
