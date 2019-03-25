@@ -1,22 +1,21 @@
 import { findCentresWithNbPlaces } from './centre.business'
 import { findCentreByNameAndDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
+import config from '../../config'
+import { getAuthorizedDateToBook } from '../candidat/authorize.business'
 
 export const NOT_CODE_DEP_MSG =
   'Le code de département est manquant, Vieullez choisir un code département'
 
 export async function getCentres (req, res) {
-  const departement = req.param('departement')
-  const beginDate = req.param('begin')
-  const endDate = req.param('end')
-  const nom = req.param('nom')
+  const { departement, nom } = req.query
+  let beginDate = req.query.begin
+  const endDate = req.query.end
 
-  appLogger.debug(
-    JSON.stringify({
-      section: 'candidat-getCentres',
-      args: { departement, nom, beginDate, endDate },
-    })
-  )
+  appLogger.debug({
+    section: 'candidat-getCentres',
+    args: { departement, nom, beginDate, endDate },
+  })
 
   try {
     if (!departement) {
@@ -33,6 +32,11 @@ export async function getCentres (req, res) {
     }
 
     if (!nom) {
+      if (req.userLevel !== config.userStatusLevels.admin) {
+        const beginDateTime = getAuthorizedDateToBook()
+        beginDate = beginDateTime.toISODate()
+      }
+
       const centres = await findCentresWithNbPlaces(
         departement,
         beginDate,

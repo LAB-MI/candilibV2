@@ -30,8 +30,9 @@ describe('Test centre controllers', () => {
   })
 
   describe('Find centres', () => {
+    let createdCandiats
     beforeAll(async () => {
-      await createCandidats()
+      createdCandiats = await createCandidats()
       await createCentres()
       await createPlaces()
       await makeResas()
@@ -45,7 +46,6 @@ describe('Test centre controllers', () => {
     it('Should response 400 to find centres without departement', async () => {
       const { body } = await request(app)
         .get(`${apiPrefix}/candidat/centres`)
-        .send()
         .set('Accept', 'application/json')
         .expect(400)
 
@@ -55,6 +55,8 @@ describe('Test centre controllers', () => {
     })
 
     it('Should response 200 to find 2 centres from departement 93 to date 19', async () => {
+      require('../middlewares/verify-token').__setIdAdmin(undefined)
+
       const departement = '93'
       let dateTime = commonBasePlaceDateTime.set({ day: 18 })
       if (dateTime < DateTime.local()) {
@@ -65,7 +67,6 @@ describe('Test centre controllers', () => {
         .get(
           `${apiPrefix}/candidat/centres?departement=${departement}&begin=${date}`
         )
-        .send()
         .set('Accept', 'application/json')
         .expect(200)
 
@@ -85,6 +86,7 @@ describe('Test centre controllers', () => {
     })
 
     it('Should response 200 to find 2 centres from departement 93 to date 20', async () => {
+      require('../middlewares/verify-token').__setIdAdmin(undefined)
       const departement = '93'
       let dateTime = commonBasePlaceDateTime.set({ day: 20 })
       if (dateTime < DateTime.local()) {
@@ -95,7 +97,6 @@ describe('Test centre controllers', () => {
         .get(
           `${apiPrefix}/candidat/centres?departement=${departement}&begin=${date}`
         )
-        .send()
         .set('Accept', 'application/json')
         .expect(200)
 
@@ -113,6 +114,33 @@ describe('Test centre controllers', () => {
         }
       })
     })
+
+    it('Should response 200 to find 2 centres from departement 93', async () => {
+      const selectedCandidat = createdCandiats[0]
+      require('../middlewares/verify-token').__setIdCandidat(
+        selectedCandidat._id
+      )
+      const departement = '93'
+      const { body } = await request(app)
+        .get(`${apiPrefix}/candidat/centres?departement=${departement}`)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      expect(body).toBeDefined()
+      expect(body).toHaveLength(2)
+      body.forEach(element => {
+        if (element.centre.nom === centres[0].nom) {
+          expect(element.count).toBe(0)
+        }
+        if (element.centre.nom === centres[1].nom) {
+          expect(element.count).toBe(1)
+        }
+        if (element.centre.nom === centres[2].nom) {
+          expect(element.count).toBe(4)
+        }
+      })
+    })
+
     it('Should response 200 and a center', async () => {
       const nom = 'Centre 1'
       const departement = '92'
