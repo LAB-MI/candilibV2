@@ -7,7 +7,8 @@ export const createArchivedCandidat = async candidatData => {
   return candidat
 }
 
-export const countArchivedCandidats = async () => ArchivedCandidat.count()
+export const countArchivedCandidats = async () =>
+  ArchivedCandidat.countDocuments()
 
 export const findAllArchivedCandidatsLean = async (limit = 20, skip = 0) => {
   const candidats = await ArchivedCandidat.find({}, null, {
