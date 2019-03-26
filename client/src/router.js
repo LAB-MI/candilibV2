@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Home from '@/views/Home.vue'
-import AdminHome from '@/views/AdminHome.vue'
+import AdminLogin from '@/views/admin/components/Login'
 import CandidatHome from '@/views/CandidatHome.vue'
 import MessageView from '@/views/Message.vue'
 import EmailValidation from '@/views/candidat/components/EmailValidation.vue'
@@ -13,6 +13,11 @@ import CenterSelection from '@/views/candidat/components/center-selection/Center
 import TimeSlot from '@/views/candidat/components/time-slots-selection/TimeSlot.vue'
 import SelectionSummary from '@/views/candidat/components/selection-summary/SelectionSummary.vue'
 import MyProfile from '@/views/candidat/components/MyProfile.vue'
+
+import AdminAurige from '@/views/admin/components/Aurige.vue'
+import Whitelist from '@/views/admin/components/Whitelist.vue'
+import AdminCalendar from '@/views/admin/components/AdminCalendar.vue'
+import HomeAdminPage from '@/views/admin/components/HomeAdminPage.vue'
 
 import {
   requireAdminAuth,
@@ -34,7 +39,7 @@ const adminRoutes = [
   {
     path: '/admin-login',
     name: 'admin-login',
-    component: AdminHome,
+    component: AdminLogin,
     beforeEnter: checkAdminToken,
   },
   {
@@ -44,8 +49,24 @@ const adminRoutes = [
     beforeEnter: requireAdminAuth,
     children: [
       {
-        path: ':tool',
-        name: 'adminTool',
+        path: '',
+        name: 'admin-home',
+        component: HomeAdminPage,
+      },
+      {
+        path: 'admin-aurige',
+        name: 'admin-aurige',
+        component: AdminAurige,
+      },
+      {
+        path: 'white-list',
+        name: 'white-list',
+        component: Whitelist,
+      },
+      {
+        path: 'admin-calendar',
+        name: 'admin-calendar',
+        component: AdminCalendar,
       },
     ],
   },
@@ -131,7 +152,7 @@ const candidatRoutes = [
   },
 ]
 
-const HomeComponent = isBuildWithAll ? Home : (isBuildWithAdmin ? AdminHome : CandidatHome)
+const HomeComponent = isBuildWithAll ? Home : (isBuildWithAdmin ? AdminLogin : CandidatHome)
 
 const commonRoutes = [
   {

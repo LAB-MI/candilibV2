@@ -8,8 +8,8 @@
     <v-spacer></v-spacer>
     <div class="text-xs-center d-flex align-center">
       <header-icon
-        :key="icon.routerTo"
         v-for="icon in headerIcons"
+        :key="icon.iconName"
         :scrollToEl="icon.scrollToEl"
         :routerTo="icon.routerTo"
         :iconName="icon.iconName"
