@@ -6,6 +6,6 @@ export * from './epreuve-pratique-ok-template'
 export * from './inscription-ko-template'
 export * from './inscription-ok-template'
 export * from './inscription-valid-template'
-export * from './validartion-email-template'
+export * from './validation-email-template'
 
 export * from './mail.constants'
