@@ -1,14 +1,14 @@
 <template>
 <div>
   <h4>
-    {{ $formatMessage({ id: 'candidat_recap_reservation_confirmée' }) }}
+    {{ $formatMessage({ id: 'recap_reservation_confirmée' }) }}
     &nbsp;
     <v-icon color="success">
       check
     </v-icon>
   </h4>
   <h4>
-    {{ $formatMessage({ id: 'candidat_recap_reservation_email_confirmée' }) }}
+    {{ $formatMessage({ id: 'recap_reservation_email_confirmée' }) }}
     <span color="primary">{{ candidat ? candidat.email : '' }}</span>
     &nbsp;
     <v-icon color="success">
@@ -18,7 +18,7 @@
   <v-dialog v-model="dialog" persistent max-width="290">
     <template v-slot:activator="{ on }">
       <v-btn color="#f82249" dark v-on="on">
-        {{ $formatMessage({ id: 'candidat_recap_reservation_boutton_annuler' }) }}
+        {{ $formatMessage({ id: 'recap_reservation_boutton_annuler' }) }}
         &nbsp;
         <v-icon>
           delete_forever
@@ -37,13 +37,13 @@
         </v-card-title>
         <v-card-text>
           <div class="confirm-suppr-text-content">
-            <p>{{ $formatMessage({ id: 'candidat_recap_reservation_modal_annuler_text_body' }) }}</p>
+            <p>{{ $formatMessage({ id: 'recap_reservation_modal_annuler_text_body' }) }}</p>
           </div>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="red darken-1" flat @click="dialog = false">
-            {{ $formatMessage({ id: 'candidat_recap_reservation_modal_annuler_boutton_retour' }) }}
+            {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_retour' }) }}
           </v-btn>
           <v-btn
             color="success darken-1"
@@ -52,7 +52,7 @@
             :disabled="disabled"
             type="submit"
           >
-            {{ $formatMessage({ id: 'candidat_recap_reservation_modal_annuler_boutton_confirmer' }) }}
+            {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_confirmer' }) }}
           </v-btn>
         </v-card-actions>
       </v-form>
@@ -60,7 +60,7 @@
   </v-dialog>
   <router-link :to="{ name: 'selection-centre' }">
     <v-btn color="primary">
-      {{ $formatMessage({ id: 'candidat_recap_reservation_boutton_modifier' }) }}
+      {{ $formatMessage({ id: 'recap_reservation_boutton_modifier' }) }}
       &nbsp;
       <v-icon>
         edit
@@ -71,7 +71,7 @@
     color="success"
     @click="resendEmailConfrimation"
   >
-      {{ $formatMessage({ id: 'candidat_recap_reservation_boutton_renvoyer_email' }) }}
+      {{ $formatMessage({ id: 'recap_reservation_boutton_renvoyer_email' }) }}
       &nbsp;
       <v-icon>
         mail

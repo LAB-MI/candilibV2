@@ -3,7 +3,7 @@
     <section>
       <header class="candidat-section-header">
         <h2 class="candidat-section-header__title">
-          {{ $formatMessage({ id: 'candidat_home_choix_du_centre' }) }}
+          {{ $formatMessage({ id: 'home_choix_du_centre' }) }}
         </h2>
       </header>
     </section>
