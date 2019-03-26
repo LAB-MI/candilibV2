@@ -1,7 +1,7 @@
 <template>
   <div class="text--center" v-if="!timeSlots.confirmed">
     <p>
-      <strong>Avez-vous pensez à vérifier :</strong>
+      <strong>{{ $formatMessage({ id: 'confirmation_reservation_checkbox_title' }) }}</strong>
     </p>
     <v-card-actions>
       <v-form
@@ -12,12 +12,12 @@
       >
       <v-checkbox
         v-model="selectedCheckBox"
-        label="qu’une personne peut vous accompagner *"
+        :label="$formatMessage({ id: 'confirmation_reservation_checkbox_accompagner' })"
         value="companion"
       ></v-checkbox>
       <v-checkbox
         v-model="selectedCheckBox"
-        label="qu’une voiture à double commande est disponible *"
+        :label="$formatMessage({ id: 'confirmation_reservation_checkbox_double_commande' })"
         value="doubleControlCar"
       ></v-checkbox>
 
@@ -28,7 +28,7 @@
           color="red"
           @click="goToSelectTimeSlot()"
         >
-        Retour
+        {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
         </v-btn>
         <v-btn
           :aria-disabled="disabled"
@@ -36,7 +36,7 @@
           type="submit"
           color="primary"
         >
-        Confirmer
+        {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
         </v-btn>
       </v-flex>
       </v-form>
@@ -44,14 +44,14 @@
     </div>
     <div class="text--center" v-else>
     <h4>
-      Votre réservation est confirmée
+      {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
       &nbsp;
       <v-icon color="success">
       check
       </v-icon>
     </h4>
     <h4>
-      Un email de confirmation vous a été envoyé à l'adresse
+      {{ $formatMessage({ id: 'recap_reservation_email_confirmee' }) }}
       <strong>{{ candidat.me ? candidat.me.email : '' }}</strong>
       &nbsp;
       <v-icon color="success">
