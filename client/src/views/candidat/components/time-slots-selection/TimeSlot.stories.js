@@ -12,7 +12,6 @@ storiesOf('Candidat', module)
       state: {
         center: {
           selected: {
-            __v: 0,
             _id: '5c87b264b62cc5004cc77894',
             adresse: '99 Avenue du Général de Gaulle, Rosny ss Bois, FR, 93110',
             departement: '93',

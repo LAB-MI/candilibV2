@@ -1,5 +1,7 @@
 import Vuex from 'vuex'
+
 import { storiesOf } from '@storybook/vue'
+import { action } from '@storybook/addon-actions'
 
 import router from '@/router'
 import TimesSlotsSelector from './TimesSlotsSelector.vue'
@@ -78,13 +80,13 @@ storiesOf('Candidat', module)
     template: '<times-slots-selector :initial-time-slots="availableTimeSlots" />',
     methods: {
       selectSlot (slot) {
-        console.log('slotslotslot!!', slot)
+        action('slot')(slot)
       },
       checkDayToDisplay () {
-        console.log('checkDayToDisplay!!')
+        action('checkDayToDisplay')
       },
       gotoDay () {
-        console.log('gotoDay!!')
+        action('gotoDay')
       },
     },
     data () {

@@ -223,10 +223,6 @@ export default {
     text-transform: uppercase;
   }
 
-  .redirectTextColor {
-    color: blue;
-  }
-
   .confirm-suppr-text-content {
     height: 200px;
     overflow-y: scroll;

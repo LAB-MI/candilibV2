@@ -228,8 +228,4 @@ export default {
     padding-left: 0.5em;
     border-left: 1px solid grey;
   }
-
-  .redirectTextColor {
-    color: blue;
-  }
 </style>

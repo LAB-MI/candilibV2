@@ -145,8 +145,4 @@ export default {
     padding-bottom: 2em;
     text-transform: uppercase;
   }
-
-  .redirectTextColor {
-    color: blue;
-  }
 </style>
