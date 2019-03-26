@@ -20,6 +20,8 @@ const reconnectInterval = process.env.NODE_ENV === 'production' ? 2000 : 1000
 
 const mongooseOpts = {
   useNewUrlParser: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
 }
 
 export const connect = async () => {
