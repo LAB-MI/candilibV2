@@ -2,6 +2,7 @@
 import { DateTime } from 'luxon'
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
+import { SET_MODIFYING_RESERVATION } from '@/store'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
 export const FETCH_DATES_SUCCESS = 'FETCH_DATES_SUCCESS'
@@ -47,6 +48,7 @@ export default {
     list: [],
     selected: undefined,
   },
+
   mutations: {
     [FETCH_DATES_REQUEST] (state) {
       state.isFetching = true
@@ -76,6 +78,7 @@ export default {
       state.isSelecting = false
     },
   },
+
   actions: {
     async [FETCH_DATES_REQUEST] ({ commit, dispatch }, selectedCenterId) {
       commit(FETCH_DATES_REQUEST)
@@ -114,6 +117,7 @@ export default {
         commit(CONFIRM_SELECT_DAY_FAILURE)
         throw new Error("La place n'est plus disponible")
       }
+      dispatch(SET_MODIFYING_RESERVATION, false)
     },
   },
 }

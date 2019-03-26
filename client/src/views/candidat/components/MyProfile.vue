@@ -1,8 +1,6 @@
 <template>
-  <v-card color="#169DB2" class="white--text">
-    <v-card-title primary-title class="u-border-bottom">
-      <h3 class="headline white--text">Mes informations</h3>
-    </v-card-title>
+  <v-card>
+    <page-title>Mon profil</page-title>
     <div class="u-flex  u-flex--column  info-container">
       <div class="u-flex  u-flex--center">
         <v-progress-circular
@@ -25,6 +23,8 @@
 import ProfileInfo from './ProfileInfo'
 import { FETCH_MY_PROFILE_REQUEST } from '@/store'
 
+import PageTitle from '@/components/PageTitle'
+
 const labelDictionary = {
   email: 'Courriel',
   adresse: 'Adresse',
@@ -37,6 +37,7 @@ const labelDictionary = {
 export default {
   name: 'my-profile',
   components: {
+    PageTitle,
     ProfileInfo,
   },
 

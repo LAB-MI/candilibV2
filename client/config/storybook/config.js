@@ -8,6 +8,7 @@ import Vuex from 'vuex'
 import Router from 'vue-router'
 
 import 'vuetify/dist/vuetify.css'
+import '../../src/main.css'
 
 import '../../src/plugins/index'
 
@@ -26,7 +27,7 @@ addDecorator(() => ({
   template: '<v-app><story/></v-app>',
 }))
 
-const req = require.context('../../src/stories', true, /.stories.js$/)
+const req = require.context('../../src', true, /.stories.js$/)
 
 function loadStories () {
   req.keys().forEach(filename => req(filename))

@@ -1,18 +1,24 @@
 <template>
-  <div @click="showFaqContent">
-    <a class="link-style" :style="{ color: colorTitle }">
-      {{ item.title }}
-        <i v-if="!status" class="material-icons icon-style">
-          {{ 'add_circle' }}
-        </i>
-        <i v-if="status" class="material-icons icon-style" style="color: #f8234a;">
-          {{ 'remove_circle' }}
-        </i>
-    </a>
-    <div v-if="status" class="content-question-style">
-      <div v-for="(elem, index) in item.content" :key="index">
-        <h4 v-if="elem.subTitleContent" v-html="elem.subTitleContent">{{ elem.subTitleContent }}</h4> <br v-if="elem.subTitleContent">
-        <p v-if="elem.textContent" v-html="elem.textContent">{{ elem.textContent }}</p>
+  <div class="question">
+    <h3
+      class="question-title  u-flex  u-flex--space-between"
+      :class="{ 'primary--text': active }"
+      @click="toggleActive"
+      v-ripple
+    >
+      <span>{{ question.title }}</span>
+      <i class="material-icons  icon" :class="{ 'primary--text': active }">
+        {{ active ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
+      </i>
+    </h3>
+    <div v-show="active" class="question-content">
+      <div v-for="content in question.content" :key="content.textContent">
+        <h4
+          class="question-subtitle"
+          v-if="content.subTitleContent"
+          v-html="content.subTitleContent"
+        />
+        <p v-if="content.textContent" v-html="content.textContent"></p>
       </div>
     </div>
   </div>
@@ -22,65 +28,53 @@
 export default {
   name: 'faq',
   props: {
-    item: Object,
+    question: Object,
   },
   data () {
     return {
-      status: false,
-      colorTitle: '',
+      active: false,
     }
   },
   methods: {
-    showFaqContent () {
-      this.status = !this.status
-      this.status ? this.colorTitle = '#f8234a' : this.colorTitle = ''
+    toggleActive () {
+      this.active = !this.active
     },
   },
 }
 </script>
 
-<style>
-  .link-style {
-    border-bottom: 1px solid #ddd;
-    float: right;
-    width: 100%;
-    color: #000;
-    padding: 18px 0;
-    position: relative;
-    font-family: "Raleway", sans-serif;
+<style lang="scss" scoped>
+.question {
+  border-bottom: 1px solid #ddd;
+
+  &-title {
+    padding: 1em 0;
     font-size: 16px;
-    line-height: 24px;
-    font-weight: 600;
-    padding-right: 20px;
-    text-decoration: none;
-    left: 5%;
-  }
-
-  .icon-style {
-    position: absolute;
-    font-size: 24px;
-    right: 0;
-    top: 20px;
+    font-family: "Raleway", sans-serif;
     color: #000;
+    cursor: pointer;
   }
 
-  .content-question-style {
-    width: 90%;
+  &-content {
     color: #212529;
-    margin-left: 5%;
   }
 
-  .fade-enter-active,
-  .fade-leave-active {
-    transition: opacity 0.4s;
+  &-subtitle {
+    margin-bottom: 0.6em;
   }
+}
 
-  .fade-enter,
-  .fade-leave-to {
-    opacity: 0;
-  }
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.4s;
+}
 
-  .link-in-text-style {
-    text-decoration-line: none;
-  }
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+
+.link-in-text {
+  text-decoration-line: none;
+}
 </style>

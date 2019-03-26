@@ -14,6 +14,10 @@ export const DELETE_CANDIDAT_RESERVATION_REQUEST = 'DELETE_CANDIDAT_RESERVATION_
 export const DELETE_CANDIDAT_RESERVATION_FAILURE = 'DELETE_CANDIDAT_RESERVATION_FAILURE'
 export const DELETE_CANDIDAT_RESERVATION_SUCCESS = 'DELETE_CANDIDAT_RESERVATION_SUCCESS'
 
+export const SET_MODIFYING_RESERVATION = 'SET_MODIFYING_RESERVATION'
+
+export const PENALTY_DAYS_NUMBER = 45
+
 export default {
   state: {
     isDeleting: false,
@@ -29,7 +33,11 @@ export default {
     },
     [FETCH_CANDIDAT_RESERVATION_SUCCESS] (state, booked) {
       state.isFetching = false
-      state.booked = booked
+      if ('date' in booked) {
+        state.booked = booked
+      } else {
+        state.booked = null
+      }
     },
     [FETCH_CANDIDAT_RESERVATION_FAILURE] (state) {
       state.isFetching = false
@@ -55,9 +63,17 @@ export default {
     [DELETE_CANDIDAT_RESERVATION_FAILURE] (state) {
       state.isDeleting = false
     },
+
+    [SET_MODIFYING_RESERVATION] (state, bool) {
+      state.isModifying = bool
+    },
   },
 
   actions: {
+    async [SET_MODIFYING_RESERVATION] ({ commit }, bool) {
+      commit(SET_MODIFYING_RESERVATION, bool)
+    },
+
     async [FETCH_CANDIDAT_RESERVATION_REQUEST] ({ commit, dispatch }) {
       commit(FETCH_CANDIDAT_RESERVATION_REQUEST)
       try {

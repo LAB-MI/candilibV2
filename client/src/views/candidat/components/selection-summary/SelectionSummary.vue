@@ -1,74 +1,54 @@
 <template>
-  <v-card>
-    <div class="text--center" >
-      <section>
-        <header class="candidat-section-header"  v-if="!flagRecap">
-          <h2 class="candidat-section-header__title" v-ripple @click="goToSelectTimeSlot">
-            <v-btn icon>
-              <v-icon>arrow_back_ios</v-icon>
-            </v-btn>
-            {{ $formatMessage({ id: 'confirmation_reservation_title'}) }}
-          </h2>
-        </header>
-      </section>
-      <div class="text--center">
-        <h3 style="padding: 1em;">
-          {{ candidat.me ? candidat.me.nomNaissance : '' }}
-          {{ candidat.me ? candidat.me.prenom : '' }}
-        </h3>
-        <p> {{ $formatMessage({ id: 'confirmation_reservation_subtitle' }) }}</p>
-        <div v-if="!flagRecap">
-          <p>
-            <strong>
-              <h1>{{ center.selected ? center.selected.nom : '' }}</h1>
-            </strong>
-          </p>
-          <p>
-            <strong>{{ center.selected ? center.selected.adresse : '' }}</strong>
-          </p>
-          <p>
-            <strong>
-              {{ $formatMessage({ id: 'confirmation_reservation_word' }) }}
-              {{ timeSlots.selected ? this.convertIsoDate(timeSlots.selected.slot) : '' }}
-            </strong>
-          </p>
-        </div>
-        <div v-else>
-          <p>
-            <strong>
-              <h1>{{ reservation.booked.centre ? reservation.booked.centre.nom : '' }}</h1>
-            </strong>
-          </p>
-          <p>
-            <strong>{{ reservation.booked.centre ? reservation.booked.centre.adresse : '' }}</strong>
-            <a
-              target="_blank"
-              @click.stop="true"
-              class="location-icon"
-              v-ripple
-              :href="`https://www.openstreetmap.org/search?query=${reservation.booked.centre.adresse.replace(',', ' ').replace(/FR.*/, '')}`"
-            >
-              <v-icon>
-                location_on
-              </v-icon>
-              </a>
-          <p>
-            <strong>
-              {{ $formatMessage({ id: 'confirmation_reservation_word' }) }}
-              {{ reservation.booked ? this.convertIsoDate(reservation.booked.date) : '' }}
-            </strong>
-          </p>
-        </div>
-      </div>
-      <confirm-selection-step-two v-if="flagRecap" />
-      <confirm-selection-step-one v-else />
+  <v-card class="text--center" >
+    <page-title :title="title"/>
+    <div class="text--center">
+      <h3 style="padding: 1em;">
+        {{ candidat.me ? candidat.me.nomNaissance : '' }}
+        {{ candidat.me ? candidat.me.prenom : '' }}
+      </h3>
+      <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
+      <ReservationInfo
+        :adresse="infoResa.adresse"
+        :date="infoResa.date"
+        :nom="infoResa.nom"
+      />
     </div>
+    <summary-confirmation v-if="$route.meta.isConfirmation" />
+    <my-reservation v-else />
+    <v-dialog
+      v-model="notAvailable"
+      width="500"
+    >
+      <v-card>
+        <v-card-title>
+          <h2>
+            Place indisponible
+          </h2>
+        </v-card-title>
+        <v-card-text>
+          La place que vous avez sélectionnée n'est plus disponible
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            @click="closeAndGoBack"
+          >
+            <v-icon>
+              close
+            </v-icon>
+            Fermer
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
 <script>
 import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
+
+import PageTitle from '@/components/PageTitle.vue'
 
 import {
   CONFIRM_SELECT_DAY_REQUEST,
@@ -80,18 +60,22 @@ import {
   SHOW_SUCCESS,
 } from '@/store'
 
-import ConfirmSelectionStepOne from './ConfirmSelectionStepOne.vue'
-import ConfirmSelectionStepTwo from './ConfirmSelectionStepTwo.vue'
+import SummaryConfirmation from './SummaryConfirmation.vue'
+import MyReservation from './MyReservation.vue'
+import ReservationInfo from './ReservationInfo.vue'
 
 export default {
   components: {
-    ConfirmSelectionStepOne,
-    ConfirmSelectionStepTwo,
+    SummaryConfirmation,
+    MyReservation,
+    ReservationInfo,
+    PageTitle,
   },
 
   data () {
     return {
       selectedCheckBox: [],
+      notAvailable: false,
     }
   },
 
@@ -104,6 +88,31 @@ export default {
 
   computed: {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
+
+    title () {
+      return this.isConfirmation || this.$route.meta.isConfirmation ? 'Confirmation' : 'Ma réservation'
+    },
+
+    isConfirmation () {
+      return this.$route.meta.isConfirmation !== false &&
+        (!this.reservation.booked || this.reservation.isModifying)
+    },
+
+    infoResa () {
+      if (this.isConfirmation) {
+        return {
+          nom: this.center.selected ? this.center.selected.nom : '',
+          adresse: this.center.selected ? this.center.selected.adresse : '',
+          date: this.timeSlots.selected ? this.convertIsoDate(this.timeSlots.selected.slot) : '',
+        }
+      }
+      return {
+        nom: this.reservation.booked.centre ? this.reservation.booked.centre.nom : '',
+        adresse: this.reservation.booked.centre ? this.reservation.booked.centre.adresse : '',
+        date: this.reservation.booked ? this.convertIsoDate(this.reservation.booked.date) : '',
+      }
+    },
+
     disabled () {
       return this.selectedCheckBox.length !== 2
     },
@@ -120,6 +129,11 @@ export default {
 
     goToHome () {
       this.$router.push({ name: 'candidat-home' })
+    },
+
+    closeAndGoBack () {
+      this.notAvailable = false
+      this.goToSelectTimeSlot()
     },
 
     async deleteConfirm () {
@@ -139,6 +153,7 @@ export default {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
+
     async confirmReservation () {
       const selected = {
         ...this.timeSlots.selected,
@@ -148,7 +163,7 @@ export default {
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
       } catch (error) {
-        await this.$store.dispatch(SHOW_ERROR, error.message)
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
 
@@ -169,7 +184,7 @@ export default {
         slot,
       } = this.$route.params
       const selected = this.center.selected
-      if (!this.flagRecap) {
+      if (this.$route.meta.isConfirmation) {
         if (!selected || !selected._id) {
           await this.$store.dispatch(FETCH_CENTER_REQUEST, { departement, nom })
           setTimeout(this.getSelectedCenterAndDate, 100)
@@ -184,7 +199,12 @@ export default {
             departement,
           },
         }
-        this.$store.dispatch(SELECT_DAY, selectedSlot)
+        try {
+          await this.$store.dispatch(SELECT_DAY, selectedSlot)
+        } catch (error) {
+          this.notAvailable = true
+          this.$store.dispatch(SHOW_ERROR, error.message)
+        }
       }
     },
   },
@@ -207,9 +227,5 @@ export default {
     margin-left: 0.5em;
     padding-left: 0.5em;
     border-left: 1px solid grey;
-  }
-
-  .redirectTextColor {
-    color: blue;
   }
 </style>

@@ -1,6 +1,6 @@
 export const faqJson = [
   {
-    title: 'Qu\'est-ce que CandiLib ?',
+    title: 'Qu\'est-ce que CandiLib ?',
     content: [
       {
         textContent: 'CandilLib est une expérimentation d\'un nouveau service de réservation en ligne des places d\'examen pratique du permis de conduire pour des candidats libres domiciliés en Seine-Saint-Denis.',
@@ -8,10 +8,10 @@ export const faqJson = [
     ],
   },
   {
-    title: 'Qu\'est-ce qu\'un candidat libre ?',
+    title: 'Qu\'est-ce qu\'un candidat libre ?',
     content: [
       {
-        textContent: 'Est défini réglementairement comme « candidat libre » tout candidat qui n\'est pas présenté sur les droits à places d\'une école de conduite et qui fait l\'objet d\'une convocation nominative de la part de l\'administration.',
+        textContent: 'Est défini réglementairement comme « candidat libre » tout candidat qui n\'est pas présenté sur les droits à places d\'une école de conduite et qui fait l\'objet d\'une convocation nominative de la part de l\'administration.',
       },
       {
         subTitleContent: 'Source réglementaire :',
@@ -20,15 +20,15 @@ export const faqJson = [
     ],
   },
   {
-    title: 'Qui peut utiliser le service ?',
+    title: 'Qui peut utiliser le service ?',
     content: [
       {
-        textContent: 'Les « candidats libres » résidant dans le 93 qui ont reçu un mail d\'invitation pour participer à l\'expérimentation.',
+        textContent: 'Les « candidats libres » résidant dans le 93 qui ont reçu un mail d\'invitation pour participer à l\'expérimentation.',
       },
     ],
   },
   {
-    title: 'Comment ça marche ?',
+    title: 'Comment ça marche ?',
     content: [
       {
         textContent: 'Vous avez reçu une invitation nominative par mail par le service des examens de la Seine-Saint-Denis à vous inscrire sur Candilib.',
@@ -42,10 +42,10 @@ export const faqJson = [
       },
       {
         subTitleContent: 'Pour réserver',
-        textContent: 'Connectez vous à Candilib après réception du mail «Validation de votre inscription à Candilib» (lien de connexion dans le mail de validation).',
+        textContent: 'Connectez vous à Candilib après réception du mail « Validation de votre inscription à Candilib » (lien de connexion dans le mail de validation).',
       },
       {
-        textContent: 'Sur le planning, sélectionnez le créneau disponible à la date et au centre d\'examen qui vous conviennent (si besoin, déplacez-vous sur les vues « mois », « semaine » et « jour »).',
+        textContent: 'Sur le planning, sélectionnez le créneau disponible à la date et au centre d\'examen qui vous conviennent (si besoin, déplacez-vous sur les vues « mois », « semaine » et « jour »).',
       },
       {
         textContent: 'Confirmez votre réservation.',
@@ -53,7 +53,7 @@ export const faqJson = [
     ],
   },
   {
-    title: 'Est-ce que je peux modifier ou annuler mon rendez-vous ?',
+    title: 'Est-ce que je peux modifier ou annuler mon rendez-vous ?',
     content: [
       {
         textContent: 'Vous pouvez modifier votre rendez-vous en sélectionnant un nouveau créneau 7 jours avant la date prévue.',
@@ -70,7 +70,7 @@ export const faqJson = [
     ],
   },
   {
-    title: 'Quels sont les pré-requis le jour de l\'examen ?',
+    title: 'Quels sont les pré-requis le jour de l\'examen ?',
     content: [
       {
         textContent: 'Nous vous rappelons les éléments à vérifier le jour de l\'examen',
@@ -79,19 +79,19 @@ export const faqJson = [
         textContent: 'Vous fournirez un véhicule en parfait état, équipé d’une double commande de frein et d’embrayage, de 2 rétroviseurs intérieurs et de 2 rétroviseurs latéraux.',
       },
       {
-        textContent: 'Votre accompagnateur sera :',
+        textContent: 'Votre accompagnateur sera :',
       },
       {
         textContent: 'soit un enseignant de la conduite en possession de son autorisation d\'enseigner pour la présenter à l\'inspecteur, soit une personne dont le permis B est en cours de validité. Cette dernière devra remplir et signer la «charte de l\'accompagnateur» pour la remettre à l\'inspecteur avant le début de l\'examen.',
       },
       {
-        textContent: 'Vous présenterez un titre d’identité en cours de validité :',
+        textContent: 'Vous présenterez un titre d’identité en cours de validité :',
       },
       {
         subTitleContent: 'Carte nationale d’identité, Passeport ou Titre de séjour',
       },
       {
-        subTitleContent: 'Liste complète :',
+        subTitleContent: 'Liste complète :',
       },
       {
         textContent: '<a class="link-in-text-style" href="https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&amp;categorieLien=id" target="_blank">Arrêté du 23 décembre 2016 relatif à la justification de l\'identité, du domicile, de la résidence normale et de la régularité du séjour pour l\'obtention du permis de conduire</a>',
@@ -106,7 +106,7 @@ export const faqJson = [
         textContent: 'Une enveloppe affranchie à 20g.',
       },
       {
-        textContent: 'Lorsque vous avez fait l\'objet d\'une annulation du permis, le récépissé de la « fiche retour au permis de conduire » que vous aurez imprimé sur le site de l\'<a class="link-in-text-style" href="https://permisdeconduire.ants.gouv.fr/" target="_blank">ANTS</a>.',
+        textContent: 'Lorsque vous avez fait l\'objet d\'une annulation du permis, le récépissé de la « fiche retour au permis de conduire » que vous aurez imprimé sur le site de l\'<a class="link-in-text-style" href="https://permisdeconduire.ants.gouv.fr/" target="_blank">ANTS</a>.',
       },
       {
         textContent: 'Attention :le mauvais état du véhicule (pneus lisses, rétros cassés ou absents, non fonctionnement de tous les feux, etc.), ou l\'absence ou la non-validité d\'un des documents exigés ci-dessus, pour le candidat ou pour l\'accompagnateur, entraîne le report de l\'examen à une date ultérieure.',
@@ -114,7 +114,7 @@ export const faqJson = [
     ],
   },
   {
-    title: 'Je ne trouve pas de place disponible ?',
+    title: 'Je ne trouve pas de place disponible ?',
     content: [
       {
         textContent: 'De nouveaux créneaux sont ajoutés chaque mois.',
@@ -122,7 +122,7 @@ export const faqJson = [
     ],
   },
   {
-    title: 'Je n’ai pas été invité à participer à l’expérimentation ?',
+    title: 'Je n’ai pas été invité à participer à l’expérimentation ?',
     content: [
       {
         textContent: 'Ce service est restreint aux candidats domiciliés en Seine-Saint-Denis qui ont reçu un mail d\'invitation à participer à cette expérimentation.',

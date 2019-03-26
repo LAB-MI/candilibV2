@@ -1,5 +1,5 @@
 <template>
-  <div class="conrainer">
+  <v-card class="container">
     <v-btn
       fixed
       dark
@@ -7,38 +7,47 @@
       left
       color="home-link"
       @click="goBack"
+      v-if="!me"
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
-    <div class="section-header">
-      <h2 class="page-title">Mentions légales</h2>
-      <p class="date-info">Modifié le 21 décembre 2018</p>
-    </div>
-    <div v-for="(item, index) in ArrayContent" :key="index">
-      <mentions-legales-content
-        :icon="item.icon"
-        :mainTitle="item.mainTitle"
-        :textContent="item.textContent"
-        :listInfo="item.listInfo"
-      />
-    </div>
-  </div>
+    <page-title>Mentions légales</page-title>
+    <h3 class="date-info">Modifié le 21 décembre 2018</h3>
+    <section class="mentions-legales">
+      <div v-for="content in ArrayContent" :key="content.mainTitle">
+        <mentions-legales-content
+          :icon="content.icon"
+          :mainTitle="content.mainTitle"
+          :textContent="content.textContent"
+          :listInfo="content.listInfo"
+        />
+      </div>
+    </section>
+  </v-card>
 </template>
 
 <script>
 
 import MentionsLegalesContent from './MentionsLegalesContent.vue'
+import PageTitle from '@/components/PageTitle.vue'
 import { mentionsLegalesJson } from './MentionsLegalesJson'
 
 export default {
   name: 'mentions-legales',
   components: {
     MentionsLegalesContent,
+    PageTitle,
   },
 
   methods: {
     goBack () {
       this.$router.back()
+    },
+  },
+
+  computed: {
+    me () {
+      return this.$store.state.candidat.me
     },
   },
 
@@ -71,21 +80,16 @@ export default {
     color: #9195a2;
   }
 
-  .conrainer {
+  .container {
     position: relative;
-    width: 100%;
     height: auto;
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-    max-width: 740px;
     font-family: "Poppins", sans-serif;
-    font-size: 1rem;
-    font-weight: 400;
     line-height: 1.5;
     color: #212529;
-    text-align: left;
+  }
+
+  .mentions-legales {
+    margin-top: 4em;
   }
 
   .section-header {
