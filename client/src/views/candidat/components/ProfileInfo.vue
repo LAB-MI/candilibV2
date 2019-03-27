@@ -1,12 +1,12 @@
 <template>
   <div>
-    <label>{{label}}</label>
-    <v-text-field
-      :value="value"
-      aria-readonly="true"
-      readonly
-      slot="activator"
-    />
+    <v-chip label>
+      {{label}}
+    </v-chip>
+    <p style="padding: 1em;">
+      {{ value }}
+    </p>
+    <v-divider/>
   </div>
 </template>
 
