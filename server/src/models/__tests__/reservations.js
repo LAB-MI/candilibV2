@@ -45,7 +45,6 @@ export const removeAllResas = async () => {
   const promsieSaves = places.map(place => {
     place.bookedBy = undefined
     place.isBooked = false
-    console.log({ func: removeAllResas, place })
     return place.save()
   })
   const removesResas = await Promise.all(promsieSaves)
