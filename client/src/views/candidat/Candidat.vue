@@ -77,7 +77,6 @@ export default {
   },
 
   async mounted () {
-    this.$router.replace({ name: 'candidat-presignup' })
     await this.getMyProfile()
   },
 }
