@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
 import PageTitle from '@/components/PageTitle.vue'

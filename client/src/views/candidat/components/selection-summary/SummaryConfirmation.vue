@@ -74,7 +74,6 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
 import { dateTimeFromIsoSetLocaleFr } from '../../../../util/dateTimeWithSetLocale.js'
