@@ -213,9 +213,15 @@ export const setReservations = async (req, res) => {
       })
     }
 
+    let statusmail
+    let message = ''
+    let statusRemove
+    let dateAfterBook
+
     if (previewBookedPlace) {
       try {
-        await removeReservationPlace(previewBookedPlace)
+        statusRemove = await removeReservationPlace(previewBookedPlace, true)
+        dateAfterBook = statusRemove.dateAfterBook
       } catch (error) {
         techLogger.error({
           section,
@@ -227,8 +233,6 @@ export const setReservations = async (req, res) => {
       }
     }
 
-    let statusmail
-    let message = ''
     try {
       await sendMailConvocation(reservation)
       statusmail = true
@@ -264,6 +268,7 @@ export const setReservations = async (req, res) => {
       },
       statusmail,
       message,
+      dateAfterBook,
     })
   } catch (error) {
     appLogger.error({
