@@ -25,7 +25,7 @@ import {
 import { findPlaceById } from '../../models/place'
 import config from '../../config'
 import { findCandidatById } from '../../models/candidat'
-import { dateTimeToDateAndHourFormat, ZONE_LOCAL } from '../../util/date.util'
+import { dateTimeToDateAndHourFormat } from '../../util/date.util'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -92,7 +92,6 @@ describe('Test reservation controllers', () => {
     await connect()
     createdCandiats = await createCandidats()
     createdCentres = await createCentres()
-    // await createPlaces()
     createdPlaceBeforeNow = await createTestPlace(placeBeforeNow)
     createdPlaceCanBook = await createTestPlace(placeCanBook)
     createdPlaceCanBook2 = await createTestPlace(placeCanBook2)
@@ -128,17 +127,21 @@ describe('Test reservation controllers', () => {
       .set('Accept', 'application/json')
       .expect(400)
 
+    let datetimeAuthorize
+    if (previewDate instanceof Date) {
+      datetimeAuthorize = DateTime.fromJSDate(previewDate).endOf('day')
+    } else {
+      datetimeAuthorize = previewDate
+    }
     expect(body).toBeDefined()
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty(
       'message',
       CAN_BOOK_AT +
         dateTimeToDateAndHourFormat(
-          DateTime.fromJSDate(previewDate)
-            .endOf('days')
-            .plus({
-              days: offsetDate,
-            })
+          datetimeAuthorize.plus({
+            days: offsetDate,
+          })
         ).date
     )
   }
@@ -279,9 +282,7 @@ describe('Test reservation controllers', () => {
         await funcReservationFailedByDate(
           selectedCentre,
           selectedPlace,
-          DateTime.local()
-            .setZone(ZONE_LOCAL)
-            .toJSDate(),
+          DateTime.local(),
           config.delayToBook
         )
       })
