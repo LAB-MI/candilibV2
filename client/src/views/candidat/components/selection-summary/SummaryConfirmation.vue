@@ -77,6 +77,7 @@
 import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
+import { dateTimeFromIsoSetLocaleFr } from '../../../../util/dateTimeWithSetLocale.js'
 import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,
@@ -128,7 +129,7 @@ export default {
     },
 
     convertIsoDate (dateIso) {
-      return `${DateTime.fromISO(dateIso).toLocaleString({
+      return `${dateTimeFromIsoSetLocaleFr(dateIso).toLocaleString({
         weekday: 'long',
         month: 'long',
         day: '2-digit',
