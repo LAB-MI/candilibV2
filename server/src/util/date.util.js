@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 
 export const FORMAT_DATE = 'cccc dd LLLL yyyy'
 
-const ZONE_LOCAL = 'Europe/Paris'
+export const ZONE_LOCAL = 'Europe/Paris'
 
 export const DateTimeFrFromJSDate = date =>
   DateTime.fromJSDate(date, { locale: 'fr', zone: ZONE_LOCAL })

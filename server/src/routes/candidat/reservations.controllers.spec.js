@@ -25,7 +25,7 @@ import {
 import { findPlaceById } from '../../models/place'
 import config from '../../config'
 import { findCandidatById } from '../../models/candidat'
-import { dateTimeToDateAndHourFormat } from '../../util/date.util'
+import { dateTimeToDateAndHourFormat, ZONE_LOCAL } from '../../util/date.util'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -279,7 +279,9 @@ describe('Test reservation controllers', () => {
         await funcReservationFailedByDate(
           selectedCentre,
           selectedPlace,
-          DateTime.local().toJSDate(),
+          DateTime.local()
+            .setZone(ZONE_LOCAL)
+            .toJSDate(),
           config.delayToBook
         )
       })
