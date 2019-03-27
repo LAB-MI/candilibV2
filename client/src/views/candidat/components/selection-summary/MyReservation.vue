@@ -53,18 +53,14 @@
         </v-card-title>
         <v-card-text>
           <div class="confirm-suppr-text-content">
-            <v-subheader v-if="isPenaltyActive" class="red--text">
-              <p>
-                {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }}
-              </p>
+            <p v-if="isPenaltyActive" class="red--text">
+              <!-- {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }} -->
               {{ isPenaltyTrue }}
-            </v-subheader>
-            <v-subheader v-else class="red--text">
-              <p>
-                {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }}
-              </p>
+            </p>
+            <p v-else class="red--text">
+              <!-- {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }} -->
               {{ isPenaltyFalse }}
-            </v-subheader>
+            </p>
           </div>
         </v-card-text>
         <v-card-actions>
@@ -166,12 +162,13 @@ export default {
     },
 
     isPenaltyTrue () {
-      return `avec une pénalité de ${PENALTY_DAYS_NUMBER} jours`
+      // ToDo: add to hard text file
+      return `En poursuivant, votre réservation du ${dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)} et créneau initialement réservés sera annulée.
+      De plus, étant à moins de X jours de la date d'examen, un délai de repassage de 45 jours s'appliquera à partir de la date de votre réservation annulée. Souhaitez-vous confirmer ?`
     },
 
     isPenaltyFalse () {
-      const { lastDateToCancel } = this.$store.state.reservation.booked
-      return `sans pénalité, valable jusqu'au ${dateTimeFromIsoSetLocaleFrToLocalString(lastDateToCancel)}`
+      return `En poursuivant, votre réservation du ${dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)} et créneau initialement réservés sera annulée. Souhaitez-vous confirmer ?`
     },
 
     lastDateToCancelString () {
