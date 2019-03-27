@@ -103,7 +103,7 @@ export const bookPlace = async (idCandidat, centre, date) => {
   return place
 }
 
-export const removeReservationPlace = async bookedPlace => {
+export const removeReservationPlace = async (bookedPlace, isModified) => {
   const candidat = bookedPlace.bookedBy
   const { _id: idCandidat } = candidat
 
@@ -119,11 +119,16 @@ export const removeReservationPlace = async bookedPlace => {
   let message = CANCEL_RESA_WITH_MAIL_SENT
 
   if (datetimeAfterBook) {
-    message =
-      message +
-      ' ' +
-      CAN_BOOK_AT +
-      dateTimeToDateAndHourFormat(datetimeAfterBook).date
+    if (isModified) {
+      message =
+        CAN_BOOK_AT + dateTimeToDateAndHourFormat(datetimeAfterBook).date
+    } else {
+      message =
+        message +
+        ' ' +
+        CAN_BOOK_AT +
+        dateTimeToDateAndHourFormat(datetimeAfterBook).date
+    }
     dateAfterBook = datetimeAfterBook.toISODate()
   }
 
@@ -241,13 +246,11 @@ export const getBeginDateAutorize = candidat => {
   const beginDateAutoriseDefault = DateTime.local().plus({
     days: config.delayToBook,
   })
+
   const dateCanBookAfter = DateTime.fromJSDate(candidat.canBookAfter)
 
   if (!!candidat.canBookAfter && dateCanBookAfter.isValid) {
-    const { days } = dateCanBookAfter.diff(beginDateAutoriseDefault, [
-      'days',
-      'hours',
-    ])
+    const { days } = dateCanBookAfter.diff(beginDateAutoriseDefault, ['days'])
     if (days > 0) {
       return dateCanBookAfter
     }
@@ -279,11 +282,12 @@ export const validCentreDateReservation = async (
   previewBookedPlace
 ) => {
   let candidat
-  const DateTimeResa = DateTime.fromISO(date)
+  const dateTimeResa = DateTime.fromISO(date)
+
   if (previewBookedPlace) {
     const isSame = isSamReservationPlace(
       centre,
-      DateTimeResa,
+      dateTimeResa,
       previewBookedPlace
     )
 
@@ -307,14 +311,22 @@ export const validCentreDateReservation = async (
   if (!candidat) {
     if (!idCandidat) throw new Error(USER_INFO_MISSING)
     candidat = await findCandidatById(idCandidat, {})
-    console.log(candidat)
     if (!candidat) throw new Error(USER_NOT_FOUND)
   }
 
-  const dateAuthorize = getBeginDateAutorize(candidat)
-  const { days } = dateAuthorize.diff(DateTimeResa, ['days', 'hours'])
-  console.log(days)
-  if (days >= 0) {
+  let dateAuthorize = getBeginDateAutorize(candidat)
+  const { days } = dateAuthorize.diff(dateTimeResa, ['days'])
+  let isAuthorize = days < 0
+
+  if (previewBookedPlace && isAuthorize) {
+    const datePreview = DateTime.fromJSDate(previewBookedPlace.date)
+    if (!canCancelReservation(datePreview)) {
+      dateAuthorize = getCandBookAfter(candidat, datePreview)
+      isAuthorize = dateTimeResa > dateAuthorize
+    }
+  }
+
+  if (!isAuthorize) {
     const success = false
     const message =
       CAN_BOOK_AT + dateTimeToDateAndHourFormat(dateAuthorize).date

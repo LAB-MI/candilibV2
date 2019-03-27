@@ -14,7 +14,10 @@ export const FAILED_SEND_MAIL_ASKED =
   "Désolé, votre convocation n'a pas pu être envoyée dans votre boîte mail. Veuillez réessayer plus tard."
 export const SEND_MAIL_ASKED_RESA_EMPTY =
   "Vous n'avez pas de réservation. Aucun convocation n'a été envoyé dans votre boîte mail."
-export const CAN_BOOK_AT = 'Vous pouvez réserver une place à partir du '
+export const CAN_BOOK_AT =
+  "Vous pouvez réserver une place d'examen qu'à partir du "
 export const USER_INFO_MISSING = "Vous n'êtes pas connecté"
 export const USER_NOT_FOUND =
   'Vous ne faites plus parti de nos données. Veuillez contacter le support.'
+export const MODIFY_THEN_CAN_BOOK_AFTER =
+  "Vous aviez modifer votre réservation avant le date autorié,Vous pouvez réserver une place d'examen qu'à partir du "
