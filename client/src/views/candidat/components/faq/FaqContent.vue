@@ -19,6 +19,14 @@
           v-html="content.subTitleContent"
         />
         <p v-if="content.textContent" v-html="content.textContent"></p>
+        <ul class="list" v-if="content.list">
+          <li
+            v-for="(liContent, i) in content.list"
+            :key="i"
+            v-html="liContent"
+            class="item"
+          />
+        </ul>
       </div>
     </div>
   </div>
@@ -26,7 +34,7 @@
 
 <script>
 export default {
-  name: 'faq',
+  name: 'faq-content',
   props: {
     question: Object,
   },
@@ -76,5 +84,15 @@ export default {
 
 .link-in-text {
   text-decoration-line: none;
+}
+
+.list {
+  list-style: disc;
+  color: #000;
+  margin-bottom: 1em;
+
+  .item {
+    line-height: 2em;
+  }
 }
 </style>

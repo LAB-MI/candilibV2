@@ -62,7 +62,10 @@ export const faqJson = [
         textContent: 'Vous pouvez annuler librement 7 jours avant la date prévue.',
       },
       {
-        textContent: 'Si vous devez annuler moins de 7 jours avant la date, vous serez placé en liste d\'attente non prioritaire.',
+        textContent: 'Si vous annulez moins de 7 jours avant la date d\'examen, vous ne pourrez réserver un nouveau créneau que 45 jours après la date de votre réservation annulée.',
+      },
+      {
+        textContent: 'Si vous avez échoué ou n\'avez pas été admissible à l\'examen pratique du permis de conduire, vous ne pourrez réserver un nouveau créneau que 45 jours après la date de votre dernier examen pratique.',
       },
       {
         textContent: 'Merci de nous prévenir en cas d\'empêchement afin de libérer le créneau pour un autre candidat.',
@@ -79,37 +82,33 @@ export const faqJson = [
         textContent: 'Vous fournirez un véhicule en parfait état, équipé d’une double commande de frein et d’embrayage, de 2 rétroviseurs intérieurs et de 2 rétroviseurs latéraux.',
       },
       {
-        textContent: 'Votre accompagnateur sera :',
+        textContent: 'Votre accompagnateur sera soit un enseignant de la conduite en possession de son autorisation d\'enseigner pour la présenter à l\'inspecteur, soit une personne dont le permis B est en cours de validité. Cette dernière devra remplir et signer la «charte de l\'accompagnateur» pour la remettre à l\'inspecteur avant le début de l\'examen.',
       },
       {
-        textContent: 'soit un enseignant de la conduite en possession de son autorisation d\'enseigner pour la présenter à l\'inspecteur, soit une personne dont le permis B est en cours de validité. Cette dernière devra remplir et signer la «charte de l\'accompagnateur» pour la remettre à l\'inspecteur avant le début de l\'examen.',
+        textContent: 'Vous présenterez ',
       },
       {
-        textContent: 'Vous présenterez un titre d’identité en cours de validité :',
+        subTitleContent: '',
       },
       {
-        subTitleContent: 'Carte nationale d’identité, Passeport ou Titre de séjour',
+        subTitleContent: '',
       },
       {
-        subTitleContent: 'Liste complète :',
+        textContent: '',
       },
       {
-        textContent: '<a class="link-in-text-style" href="https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&amp;categorieLien=id" target="_blank">Arrêté du 23 décembre 2016 relatif à la justification de l\'identité, du domicile, de la résidence normale et de la régularité du séjour pour l\'obtention du permis de conduire</a>',
+        list: [
+          // eslint-disable-next-line no-irregular-whitespace
+          `un <b>titre d’identité en cours de validité</b> : Carte nationale d’identité, Passeport ou Titre de séjour
+            (Liste complète : <a class="link-in-text-style" href="https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&amp;categorieLien=id" target="_blank">Arrêté du 23 décembre 2016 relatif à la justification de l'identité, du domicile, de la résidence normale et de la régularité du séjour pour l'obtention du permis de conduire</a>) ;`, // eslint-disable-line no-irregular-whitespace
+          '<b>L\'attestation d\'assurance du véhicule<b>, en cours de validité, à votre nom ;',
+          'une <b>enveloppe affranchie à 20g</b> ;',
+          'votre <b>permis de conduire original si vous avez obtenu une autre catégorie</b> depuis moins de 5 ans afin de bénéficier d’une dispense d’examen théorique général ;',
+          'lorsque vous avez fait l\'objet d\'une annulation du permis, <b>le récépissé de la « fiche retour au permis de conduire »</b> que vous aurez imprimé sur le site de l\'<a class="link-in-text-style" href="https://permisdeconduire.ants.gouv.fr/" target="_blank">ANTS</a> ;',
+        ],
       },
       {
-        textContent: 'Votre permis de conduire original si vous avez obtenu une autre catégorie depuis moins de 5 ans afin de bénéficier d’une dispense d’examen théorique général.',
-      },
-      {
-        textContent: 'L\'attestation d\'assurance du véhicule, en cours de validité, à votre nom.',
-      },
-      {
-        textContent: 'Une enveloppe affranchie à 20g.',
-      },
-      {
-        textContent: 'Lorsque vous avez fait l\'objet d\'une annulation du permis, le récépissé de la « fiche retour au permis de conduire » que vous aurez imprimé sur le site de l\'<a class="link-in-text-style" href="https://permisdeconduire.ants.gouv.fr/" target="_blank">ANTS</a>.',
-      },
-      {
-        textContent: 'Attention :le mauvais état du véhicule (pneus lisses, rétros cassés ou absents, non fonctionnement de tous les feux, etc.), ou l\'absence ou la non-validité d\'un des documents exigés ci-dessus, pour le candidat ou pour l\'accompagnateur, entraîne le report de l\'examen à une date ultérieure.',
+        textContent: 'Attention : le mauvais état du véhicule (pneus lisses, rétros cassés ou absents, non fonctionnement de tous les feux, etc.), ou l\'absence ou la non-validité d\'un des documents exigés ci-dessus, pour le candidat ou pour l\'accompagnateur, entraîne le report de l\'examen à une date ultérieure.',
       },
     ],
   },
