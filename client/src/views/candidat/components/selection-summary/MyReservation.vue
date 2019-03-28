@@ -1,14 +1,14 @@
 <template>
 <div>
   <h4>
-    {{ $formatMessage({ id: 'recap_reservation_confirmée' }) }}
+    {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
     &nbsp;
     <v-icon color="success">
       check
     </v-icon>
   </h4>
   <p>
-    {{ $formatMessage({ id: 'recap_reservation_email_confirmée' }) }}
+    {{ $formatMessage({ id: 'recap_reservation_email_confirmee' }) }}
     <strong>
       {{ candidat.me ? candidat.me.email : '' }}
     </strong>
