@@ -56,7 +56,6 @@ import {
 } from '@/store'
 
 import {
-  dateTimeFromIsoSetLocaleFr,
   dateTimeFromIsoSetLocaleFrToLocalString,
 } from '../../../../util/dateTimeWithSetLocale.js'
 import SummaryConfirmation from './SummaryConfirmation.vue'

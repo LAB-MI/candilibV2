@@ -57,7 +57,7 @@
       {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
       &nbsp;
       <v-icon color="success">
-      check
+        check
       </v-icon>
     </h4>
     <h4>
@@ -77,10 +77,10 @@
 <script>
 import { mapState } from 'vuex'
 
-import { dateTimeFromIsoSetLocaleFrToLocalString } from '../../../../util/dateTimeWithSetLocale.js'
-import ModalConfirmModification from './ModalConfirmModification.vue';
-
-import { dateTimeFromIsoSetLocaleFr } from '../../../../util/dateTimeWithSetLocale.js'
+import ModalConfirmModification from './ModalConfirmModification.vue'
+import {
+  dateTimeFromIsoSetLocaleFrToLocalString,
+} from '../../../../util/dateTimeWithSetLocale.js'
 import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,
