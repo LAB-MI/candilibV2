@@ -54,12 +54,30 @@
         <v-card-text>
           <div class="confirm-suppr-text-content">
             <p v-if="isPenaltyActive" class="red--text">
-              <!-- {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }} -->
-              {{ isPenaltyTrue }}
+              {{
+                $formatMessage(
+                  {
+                    id: 'recap_reservation_modal_annuler_body_with_penalty',
+                  },
+                  {
+                    dateCurrentResa: isPenaltyTrueDate,
+                    nbOfDays: numberOfDays,
+                    penaltyNb: nbDaysOfPenalty,
+                  },
+                )
+              }}
             </p>
             <p v-else class="red--text">
-              <!-- {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }} -->
-              {{ isPenaltyFalse }}
+              {{
+                $formatMessage(
+                  {
+                    id: 'recap_reservation_modal_annuler_body_without_penalty',
+                  },
+                  {
+                    dateCurrentResa: isPenaltyFalseDate,
+                  }
+                )
+              }}
             </p>
           </div>
         </v-card-text>
@@ -129,6 +147,7 @@ import {
 
 import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
+  NUMBER_OF_DAYS,
   PENALTY_DAYS_NUMBER,
   SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST,
   SET_MODIFYING_RESERVATION,
@@ -161,14 +180,20 @@ export default {
       return false
     },
 
-    isPenaltyTrue () {
-      // ToDo: add to hard text file
-      return `En poursuivant, votre réservation du ${dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)} et créneau initialement réservés sera annulée.
-      De plus, étant à moins de X jours de la date d'examen, un délai de repassage de 45 jours s'appliquera à partir de la date de votre réservation annulée. Souhaitez-vous confirmer ?`
+    nbDaysOfPenalty () {
+      return `${PENALTY_DAYS_NUMBER}`
     },
 
-    isPenaltyFalse () {
-      return `En poursuivant, votre réservation du ${dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)} et créneau initialement réservés sera annulée. Souhaitez-vous confirmer ?`
+    numberOfDays () {
+      return `${NUMBER_OF_DAYS}`
+    },
+
+    isPenaltyTrueDate () {
+      return dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)
+    },
+
+    isPenaltyFalseDate () {
+      return dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)
     },
 
     lastDateToCancelString () {
