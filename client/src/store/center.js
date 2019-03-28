@@ -72,7 +72,7 @@ export default {
     },
 
     async [FETCH_CENTER_REQUEST] ({ commit, dispatch, state }, { departement, nom }) {
-      if (state.center.isFetchingCenter) {
+      if (state.isFetchingCenter) {
         return
       }
 
