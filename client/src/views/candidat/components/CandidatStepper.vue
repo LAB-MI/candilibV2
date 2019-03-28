@@ -1,8 +1,14 @@
 <template>
-  <v-stepper v-model="candidatStepper" vertical color="red" v-on:set-stepper="setStepper">
+  <v-stepper
+    dark
+    vertical
+    class="stepper"
+    v-model="candidatStepper"
+    v-on:set-stepper="setStepper"
+  >
     <header>
-      <h3>
-        Les étapes de
+      <h3 class="stepper-title">
+        Les étapes de la pré-inscription à la réservation
       </h3>
     </header>
     <v-stepper-step step="1" @click="candidatStepper = 1" :style="{ cursor: 'pointer' }">
@@ -86,3 +92,14 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+.stepper {
+  background-color: transparent;
+  box-shadow: none;
+}
+
+.stepper-title {
+  color: #fff;
+}
+</style>

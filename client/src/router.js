@@ -107,7 +107,7 @@ const candidatRoutes = [
     name: 'candidat',
     component: () => import('./views/candidat'),
     beforeEnter: requireCandidatAuth,
-    redirect: '/candidat/home',
+    redirect: '/qu-est-ce-que-candilib',
     children: [
       {
         path: 'home',
