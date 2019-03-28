@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
 
-export const dateTimeFromIsoSetLocaleFr = (element) => {
-  return DateTime.fromISO(element).setLocale('fr')
+export const dateTimeFromIsoSetLocaleFr = (isoDate) => {
+  return DateTime.fromISO(isoDate).setLocale('fr')
 }
 
-export const dateTimeFromIsoSetLocaleFrToLocalString = (element) => {
-  return dateTimeFromIsoSetLocaleFr(element)
+export const dateTimeFromIsoSetLocaleFrToLocalString = (isoDate) => {
+  return dateTimeFromIsoSetLocaleFr(isoDate)
     .toLocaleString({
       weekday: 'long',
       month: 'long',
