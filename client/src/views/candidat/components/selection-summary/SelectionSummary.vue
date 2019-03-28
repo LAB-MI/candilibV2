@@ -59,7 +59,7 @@ import {
   SHOW_SUCCESS,
 } from '@/store'
 
-import { dateTimeFromIsoSetLocaleFr } from '../../../../util/dateTimeWithSetLocale.js'
+import { dateTimeFromIsoSetLocaleFrToLocalString } from '../../../../util/dateTimeWithSetLocale.js'
 import SummaryConfirmation from './SummaryConfirmation.vue'
 import MyReservation from './MyReservation.vue'
 import ReservationInfo from './ReservationInfo.vue'
@@ -168,13 +168,7 @@ export default {
     },
 
     convertIsoDate (dateIso) {
-      return `${dateTimeFromIsoSetLocaleFr(dateIso).toLocaleString({
-        weekday: 'long',
-        month: 'long',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      })}`
+      return `${dateTimeFromIsoSetLocaleFrToLocalString(dateIso)}`
     },
 
     async getSelectedCenterAndDate () {

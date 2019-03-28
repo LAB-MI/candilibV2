@@ -126,7 +126,11 @@
 import { mapState } from 'vuex'
 import { DateTime } from 'luxon'
 
-import { dateTimeFromIsoSetLocaleFr } from '../../../../util/dateTimeWithSetLocale.js'
+import {
+  dateTimeFromIsoSetLocaleFr,
+  dateTimeFromIsoSetLocaleFrToLocalString,
+} from '../../../../util/dateTimeWithSetLocale.js'
+
 import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
   PENALTY_DAYS_NUMBER,
@@ -167,8 +171,7 @@ export default {
 
     isPenaltyFalse () {
       const { lastDateToCancel } = this.$store.state.reservation.booked
-      return `sans pénalité, valable jusqu'au ${dateTimeFromIsoSetLocaleFr(lastDateToCancel)
-        .toLocaleString({ weekday: 'long', month: 'long', day: '2-digit', year: 'numeric' })}`
+      return `sans pénalité, valable jusqu'au ${dateTimeFromIsoSetLocaleFrToLocalString(lastDateToCancel)}`
     },
 
     lastDateToCancelString () {
@@ -176,13 +179,7 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      return dateTimeFromIsoSetLocaleFr(lastDateToCancel)
-        .toLocaleString({
-          weekday: 'long',
-          month: 'long',
-          day: '2-digit',
-          year: 'numeric',
-        })
+      return dateTimeFromIsoSetLocaleFrToLocalString(lastDateToCancel)
     },
 
     penaltyDaysNumber () {
