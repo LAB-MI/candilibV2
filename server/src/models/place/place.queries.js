@@ -53,7 +53,7 @@ const queryAvailablePlacesByCentre = (_id, beginDate, endDate) => {
     if (endDate) query.lt(endDate)
   }
 
-  query.where('isBooked').ne(true)
+  query.where('candidat').equals(undefined)
 
   return query.where('centre', _id)
 }
@@ -109,8 +109,8 @@ export const findPlacesByCentreAndDate = async (_id, date) => {
     centre: _id,
     date,
   })
-    .where('isBooked')
-    .ne(true)
+    .where('candidat')
+    .equals(undefined)
   return places
 }
 
@@ -119,7 +119,7 @@ export const findPlaceBookedByCandidat = async (
   options,
   populate
 ) => {
-  const query = Place.findOne({ isBooked: true, candidat }, options)
+  const query = Place.findOne({ candidat }, options)
   if (populate && populate.centre) query.populate('centre')
   if (populate && populate.candidat) query.populate('candidat')
 
@@ -135,8 +135,8 @@ export const findAndbookPlace = async (
   populate
 ) => {
   const query = Place.findOneAndUpdate(
-    { centre, date, isBooked: { $ne: true } },
-    { $set: { isBooked: true, candidat } },
+    { centre, date, candidat: { $eq: undefined } },
+    { $set: { candidat } },
     { new: true, fields }
   )
   if (populate && populate.centre) {
@@ -152,7 +152,6 @@ export const findAndbookPlace = async (
 
 export const removeBookedPlace = place => {
   place.candidat = undefined
-  place.isBooked = false
 
   return place.save()
 }

@@ -6,7 +6,6 @@ import placeModel from '../place/place.model'
 
 export const makeResa = (place, candidat) => {
   place.candidat = candidat._id
-  place.isBooked = true
   return place.save()
 }
 
@@ -41,10 +40,9 @@ export const nbPlacesDispoByCentres = ({ nom }) =>
       : 0
 
 export const removeAllResas = async () => {
-  const places = await placeModel.find({ isBooked: true })
+  const places = await placeModel.find({ candidat: { $ne: undefined } })
   const promsieSaves = places.map(place => {
     place.candidat = undefined
-    place.isBooked = false
     return place.save()
   })
   const removesResas = await Promise.all(promsieSaves)

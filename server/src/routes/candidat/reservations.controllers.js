@@ -264,7 +264,7 @@ export const setReservations = async (req, res) => {
         date: reservation.date,
         centre: reservation.centre.nom,
         departement: reservation.centre.departement,
-        isBooked: reservation.isBooked,
+        isBooked: true,
       },
       statusmail,
       message,

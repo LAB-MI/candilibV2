@@ -178,13 +178,11 @@ describe('Test reservation controllers', () => {
       'departement',
       selectedCentre.departement
     )
-    expect(body.reservation).toHaveProperty('isBooked', true)
     expect(body.reservation).not.toHaveProperty('inspecteur')
 
     if (previewsPlaceId) {
       const previewPlace = await findPlaceById(previewsPlaceId)
       expect(previewPlace).toBeDefined()
-      expect(previewPlace).toHaveProperty('isBooked', false)
       expect(previewPlace.candidat).toBeUndefined()
     }
   }
@@ -207,7 +205,6 @@ describe('Test reservation controllers', () => {
 
     const previewPlace = await findPlaceById(previewPlaceId)
     expect(previewPlace).toBeDefined()
-    expect(previewPlace).toHaveProperty('isBooked', false)
     expect(previewPlace.candidat).toBeUndefined()
 
     const candidat = await findCandidatById(selectedCandidatId)
@@ -262,7 +259,6 @@ describe('Test reservation controllers', () => {
       expect(body.centre).toHaveProperty('adresse', selectedCentre.adresse)
       expect(body.inspecteur).toBeUndefined()
       expect(body.candidat).toBeUndefined()
-      expect(body.isBooked).toBeUndefined()
       expect(body).toHaveProperty(
         'lastDateToCancel',
         dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
