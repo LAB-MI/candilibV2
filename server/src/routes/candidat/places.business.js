@@ -19,7 +19,7 @@ import {
   SAME_RESA_ASKED,
   USER_INFO_MISSING,
   USER_NOT_FOUND,
-  CAN_BOOK_AT,
+  CAN_BOOK_AFTER,
 } from './message.constants'
 import { sendCancelBooking } from '../business'
 import { getAuthorizedDateToBook } from './authorize.business'
@@ -27,7 +27,7 @@ import {
   updateCandidatCanAfterBook,
   findCandidatById,
 } from '../../models/candidat'
-import { dateTimeToDateAndHourFormat } from '../../util/date.util'
+import { dateTimeToFormatFr } from '../../util/date.util'
 
 export const getDatesByCentreId = async (_id, endDate) => {
   appLogger.debug({
@@ -120,14 +120,13 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
 
   if (datetimeAfterBook) {
     if (isModified) {
-      message =
-        CAN_BOOK_AT + dateTimeToDateAndHourFormat(datetimeAfterBook).date
+      message = CAN_BOOK_AFTER + dateTimeToFormatFr(datetimeAfterBook).date
     } else {
       message =
         message +
         ' ' +
-        CAN_BOOK_AT +
-        dateTimeToDateAndHourFormat(datetimeAfterBook).date
+        CAN_BOOK_AFTER +
+        dateTimeToFormatFr(datetimeAfterBook).date
     }
     dateAfterBook = datetimeAfterBook.toISODate()
   }
@@ -165,7 +164,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
  * @param {*} date Type DateTime from luxon
  * @param {*} previewBookedPlace Type model place which populate centre and candidat
  */
-export const isSamReservationPlace = (centerId, date, previewBookedPlace) => {
+export const isSameReservationPlace = (centerId, date, previewBookedPlace) => {
   if (centerId === previewBookedPlace.centre._id.toString()) {
     const diffDateTime = date.diff(
       DateTime.fromJSDate(previewBookedPlace.date),
@@ -285,7 +284,7 @@ export const validCentreDateReservation = async (
   const dateTimeResa = DateTime.fromISO(date)
 
   if (previewBookedPlace) {
-    const isSame = isSamReservationPlace(
+    const isSame = isSameReservationPlace(
       centre,
       dateTimeResa,
       previewBookedPlace
@@ -328,8 +327,7 @@ export const validCentreDateReservation = async (
 
   if (!isAuthorize) {
     const success = false
-    const message =
-      CAN_BOOK_AT + dateTimeToDateAndHourFormat(dateAuthorize).date
+    const message = CAN_BOOK_AFTER + dateTimeToFormatFr(dateAuthorize).date
     appLogger.warn({
       section: 'candidat-validCentreDateReservation',
       idCandidat,

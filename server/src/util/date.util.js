@@ -11,7 +11,7 @@ export const DateTimeFrFromJSDate = date =>
  *
  * @param {*} datetime Type DateTime of luxon
  */
-export const dateTimeToDateAndHourFormat = pDate => {
+export const dateTimeToFormatFr = pDate => {
   let datetime
 
   if (pDate instanceof DateTime) {

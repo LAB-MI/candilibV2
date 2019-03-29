@@ -20,12 +20,12 @@ import {
   CANCEL_RESA_WITH_MAIL_SENT,
   SAME_RESA_ASKED,
   SEND_MAIL_ASKED,
-  CAN_BOOK_AT,
+  CAN_BOOK_AFTER,
 } from './message.constants'
 import { findPlaceById } from '../../models/place'
 import config from '../../config'
 import { findCandidatById } from '../../models/candidat'
-import { dateTimeToDateAndHourFormat } from '../../util/date.util'
+import { dateTimeToFormatFr } from '../../util/date.util'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -137,8 +137,8 @@ describe('Test reservation controllers', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty(
       'message',
-      CAN_BOOK_AT +
-        dateTimeToDateAndHourFormat(
+      CAN_BOOK_AFTER +
+        dateTimeToFormatFr(
           datetimeAuthorize.plus({
             days: offsetDate,
           })
@@ -392,8 +392,8 @@ describe('Test reservation controllers', () => {
       const message =
         CANCEL_RESA_WITH_MAIL_SENT +
         ' ' +
-        CAN_BOOK_AT +
-        dateTimeToDateAndHourFormat(
+        CAN_BOOK_AFTER +
+        dateTimeToFormatFr(
           DateTime.fromJSDate(place.date)
             .endOf('days')
             .plus({
