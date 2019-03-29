@@ -7,9 +7,9 @@ const section = 'candidat-sendMail'
 
 export const getCancellationBody = place => {
   const action = 'get-body-cancellation'
-  const { centre, date, bookedBy } = place
+  const { centre, date, candidat } = place
   const { nom, adresse } = centre
-  const { nomNaissance, codeNeph } = bookedBy
+  const { nomNaissance, codeNeph } = candidat
 
   validateArgsToBuildBodyMailResa(
     date,

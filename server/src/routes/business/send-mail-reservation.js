@@ -29,7 +29,7 @@ export const sendMailConvocation = reservation => {
     throw error
   }
 
-  const { email } = reservation.bookedBy
+  const { email } = reservation.candidat
   const content = getConvocationBody(reservation)
   const subject = "Convocation à l'examen pratique du permis de conduire"
 
@@ -41,7 +41,7 @@ export const sendMailConvocation = reservation => {
 export const sendCancelBooking = (candidat, place) => {
   appLogger.debug({ func: 'sendMailCancellation', arg: { candidat, place } })
 
-  place.bookedBy = candidat
+  place.candidat = candidat
   const reservation = place
 
   try {

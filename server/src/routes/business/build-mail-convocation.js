@@ -9,9 +9,9 @@ const section = 'candidat-sendMail'
 
 export const getConvocationBody = place => {
   const action = 'get-body-convocation'
-  const { centre, date, bookedBy } = place
+  const { centre, date, candidat } = place
   const { nom, adresse } = centre
-  const { nomNaissance, codeNeph } = bookedBy
+  const { nomNaissance, codeNeph } = candidat
 
   validateArgsToBuildBodyMailResa(
     date,
