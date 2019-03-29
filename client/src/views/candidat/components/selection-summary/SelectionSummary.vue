@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
 import PageTitle from '@/components/PageTitle.vue'
@@ -60,6 +59,7 @@ import {
   SHOW_SUCCESS,
 } from '@/store'
 
+import { dateTimeFromIsoSetLocaleFrToLocalString } from '../../../../util/dateTimeWithSetLocale.js'
 import SummaryConfirmation from './SummaryConfirmation.vue'
 import MyReservation from './MyReservation.vue'
 import ReservationInfo from './ReservationInfo.vue'
@@ -168,13 +168,7 @@ export default {
     },
 
     convertIsoDate (dateIso) {
-      return `${DateTime.fromISO(dateIso).toLocaleString({
-        weekday: 'long',
-        month: 'long',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      })}`
+      return `${dateTimeFromIsoSetLocaleFrToLocalString(dateIso)}`
     },
 
     async getSelectedCenterAndDate () {

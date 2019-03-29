@@ -2,6 +2,7 @@
 import { DateTime } from 'luxon'
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
+import { dateTimeFromIsoSetLocaleFr } from '../util/dateTimeWithSetLocale.js'
 import { SET_MODIFYING_RESERVATION } from '@/store'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
@@ -15,19 +16,19 @@ export const CONFIRM_SELECT_DAY_SUCCESS = 'CONFIRM_SELECT_DAY_SUCCESS'
 export const CONFIRM_SELECT_DAY_FAILURE = 'CONFIRM_SELECT_DAY_FAILURE'
 
 const getDayString = (elemISO) => {
-  return `${DateTime.fromISO(elemISO).weekdayLong} ${DateTime.fromISO(elemISO).setLocale('fr').toFormat('dd LLLL yyyy')}`
+  return `${dateTimeFromIsoSetLocaleFr(elemISO).weekdayLong} ${dateTimeFromIsoSetLocaleFr(elemISO).toFormat('dd LLLL yyyy')}`
 }
 
 const getHoursString = (elemISO) => {
-  return `${DateTime.fromISO(elemISO).toFormat("HH'h'mm")}-${DateTime.fromISO(elemISO).plus({ minutes: 30 }).toFormat("HH'h'mm")}`
+  return `${dateTimeFromIsoSetLocaleFr(elemISO).toFormat("HH'h'mm")}-${dateTimeFromIsoSetLocaleFr(elemISO).plus({ minutes: 30 }).toFormat("HH'h'mm")}`
 }
 
 const formatResult = (result, countMonth) => {
   return Array(countMonth).fill(true).map((item, index) => {
-    const monthNumber = DateTime.local().plus({ month: index }).monthLong
+    const monthNumber = DateTime.local().setLocale('fr').plus({ month: index }).monthLong
     let tmpArrayDay = []
     const tmpArrayHours = []
-    result.filter(el => DateTime.fromISO(el).monthLong === monthNumber &&
+    result.filter(el => dateTimeFromIsoSetLocaleFr(el).monthLong === monthNumber &&
       tmpArrayDay.push(getDayString(el)) &&
       tmpArrayHours.push({ day: getDayString(el), hour: getHoursString(el) })
     )
@@ -84,7 +85,7 @@ export default {
       commit(FETCH_DATES_REQUEST)
       try {
         const begin = DateTime.local().toISO()
-        const end = DateTime.local().plus({ month: 3 }).endOf('month').toISO()
+        const end = DateTime.local().setLocale('fr').plus({ month: 3 }).endOf('month').toISO()
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
 
         const formatedResult = await formatResult(result, 4)

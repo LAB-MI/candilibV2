@@ -74,9 +74,9 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
+import { dateTimeFromIsoSetLocaleFrToLocalString } from '../../../../util/dateTimeWithSetLocale.js'
 import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,
@@ -128,13 +128,7 @@ export default {
     },
 
     convertIsoDate (dateIso) {
-      return `${DateTime.fromISO(dateIso).toLocaleString({
-        weekday: 'long',
-        month: 'long',
-        day: '2-digit',
-        hour: '2-digit',
-        minute: '2-digit',
-      })}`
+      return `${dateTimeFromIsoSetLocaleFrToLocalString(dateIso)}`
     },
   },
 }
