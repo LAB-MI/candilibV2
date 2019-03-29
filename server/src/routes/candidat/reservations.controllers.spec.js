@@ -110,7 +110,7 @@ describe('Test reservation controllers', () => {
     await app.close()
   })
 
-  const funcReservationFailedByDate = async (
+  const createReservationWithFailure = async (
     selectedCentre,
     selectedPlace,
     previewDate,
@@ -146,7 +146,7 @@ describe('Test reservation controllers', () => {
     )
   }
 
-  const funcReservaionSuccess = async (
+  const createReservationWithSuccess = async (
     selectedCentre,
     selectedPlace,
     previewsPlaceId
@@ -187,7 +187,7 @@ describe('Test reservation controllers', () => {
     }
   }
 
-  const funcCancelReservationSuccess = async (
+  const cancelReservationWithSuccess = async (
     selectedCandidatId,
     previewPlaceId,
     message,
@@ -275,7 +275,7 @@ describe('Test reservation controllers', () => {
       it('Should get 400 to book one place before now', async () => {
         const selectedCentre = createdCentres[0]
         const selectedPlace = createdPlaceBeforeNow
-        await funcReservationFailedByDate(
+        await createReservationWithFailure(
           selectedCentre,
           selectedPlace,
           DateTime.local(),
@@ -287,7 +287,7 @@ describe('Test reservation controllers', () => {
         const selectedCentre = createdCentres[0]
         const selectedPlace = createdPlaceCanBook
 
-        await funcReservaionSuccess(selectedCentre, selectedPlace)
+        await createReservationWithSuccess(selectedCentre, selectedPlace)
       })
 
       it('Should get 200 to book another place', async () => {
@@ -297,7 +297,7 @@ describe('Test reservation controllers', () => {
         const selectedPlace = createdPlaceCanBook2
         const previewPlaceId = createdPlaceCanBook._id
 
-        await funcReservaionSuccess(
+        await createReservationWithSuccess(
           selectedCentre,
           selectedPlace,
           previewPlaceId
@@ -342,7 +342,7 @@ describe('Test reservation controllers', () => {
       it('should 400 to book another reservation with a date no authorize', async () => {
         const selectedCentre = createdCentres[0]
         const selectedPlace = createdPlaceCanBook
-        await funcReservationFailedByDate(
+        await createReservationWithFailure(
           selectedCentre,
           selectedPlace,
           createdPlaceCanNotBook.date,
@@ -354,7 +354,7 @@ describe('Test reservation controllers', () => {
         const selectedCentre = createdCentres[1]
         const selectedPlace = createdPlaceToRetry
 
-        await funcReservaionSuccess(
+        await createReservationWithSuccess(
           selectedCentre,
           selectedPlace,
           createdPlaceCanNotBook._id
@@ -378,7 +378,7 @@ describe('Test reservation controllers', () => {
       const place = await createTestPlace(placeCancellable)
       await makeResa(place, selectedCandidat1)
 
-      await funcCancelReservationSuccess(
+      await cancelReservationWithSuccess(
         selectedCandidat1._id,
         place._id,
         CANCEL_RESA_WITH_MAIL_SENT
@@ -401,7 +401,7 @@ describe('Test reservation controllers', () => {
             })
         ).date
 
-      await funcCancelReservationSuccess(
+      await cancelReservationWithSuccess(
         selectedCandidat1._id,
         place._id,
         message,
