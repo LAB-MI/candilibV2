@@ -7,174 +7,225 @@ import app, { apiPrefix } from '../../app'
 import {
   createCandidats,
   createCentres,
-  createPlaces,
+  // createPlaces,
   removePlaces,
   removeCentres,
   deleteCandidats,
   createTestPlace,
   makeResa,
+  removeAllResas,
 } from '../../models/__tests__'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
   CANCEL_RESA_WITH_MAIL_SENT,
   SAME_RESA_ASKED,
   SEND_MAIL_ASKED,
-  CAN_BOOK_AT,
+  CAN_BOOK_AFTER,
 } from './message.constants'
-import { findPlaceById, findPlaceByCandidatId } from '../../models/place'
+import { findPlaceById } from '../../models/place'
 import config from '../../config'
 import { findCandidatById } from '../../models/candidat'
-import { dateTimeToDateAndHourFormat } from '../../util/date.util'
+import { dateTimeToFormatFr } from '../../util/date.util'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 
+const basePlaceDateTime = DateTime.fromObject({ hour: 9 })
+const placeCanBook = {
+  date: (() =>
+    basePlaceDateTime.plus({ day: config.delayToBook + 1, hour: 1 }).toISO())(),
+  centre: 'Centre 1',
+  inspecteur: 'Inspecteur 2',
+}
+const placeCanBook2 = {
+  date: (() =>
+    basePlaceDateTime.plus({ day: config.delayToBook + 2, hour: 1 }).toISO())(),
+  centre: 'Centre 2',
+  inspecteur: 'Inspecteur 2',
+}
+const placeBeforeNow = {
+  date: (() => basePlaceDateTime.minus({ day: -1, hour: 1 }).toISO())(),
+  centre: 'Centre 1',
+  inspecteur: 'Inspecteur 2',
+}
+const placeCanNotBook = {
+  date: (() =>
+    basePlaceDateTime.plus({ day: config.delayToBook - 1, hour: 1 }).toISO())(),
+  centre: 'Centre 2',
+  inspecteur: 'Inspecteur 2',
+}
+const placeCancellable = {
+  date: (() =>
+    basePlaceDateTime
+      .plus({ day: config.daysForbidCancel + 1, hour: 1 })
+      .toISO())(),
+  centre: 'Centre 2',
+  inspecteur: 'Inspecteur 2',
+}
+const placeNoCancellable = {
+  date: (() =>
+    basePlaceDateTime
+      .plus({ day: config.daysForbidCancel - 1, hour: 2 })
+      .toISO())(),
+  centre: 'Centre 2',
+  inspecteur: 'Inspecteur 2',
+}
+const placeToRetry = {
+  date: (() =>
+    basePlaceDateTime
+      .plus({ day: config.timeoutToRetry + config.delayToBook, hour: 1 })
+      .toISO())(),
+  centre: 'Centre 2',
+  inspecteur: 'Inspecteur 2',
+}
+
 describe('Test reservation controllers', () => {
+  let createdCentres
+  let createdCandiats
+  let createdPlaceCanBook
+  let createdPlaceCanBook2
+  let selectedCandidat
+  let createdPlaceBeforeNow
+  let createdPlaceCanNotBook
+
   beforeAll(async () => {
     await connect()
+    createdCandiats = await createCandidats()
+    createdCentres = await createCentres()
+    createdPlaceBeforeNow = await createTestPlace(placeBeforeNow)
+    createdPlaceCanBook = await createTestPlace(placeCanBook)
+    createdPlaceCanBook2 = await createTestPlace(placeCanBook2)
+    createdPlaceCanNotBook = await createTestPlace(placeCanNotBook)
+
+    selectedCandidat = createdCandiats[0]
+    require('../middlewares/verify-token').__setIdCandidat(selectedCandidat._id)
   })
 
   afterAll(async () => {
+    await removePlaces()
+    await removeCentres()
+    await deleteCandidats()
+
     await disconnect()
     await app.close()
   })
 
-  describe('Réserver une place', () => {
-    let createdCentres
-    let createdPlaces
-    let createdCandiats
-    beforeAll(async () => {
-      createdCandiats = await createCandidats()
-      createdCentres = await createCentres()
-      createdPlaces = await createPlaces()
-    })
+  const createReservationWithFailure = async (
+    selectedCentre,
+    selectedPlace,
+    previewDate,
+    offsetDate
+  ) => {
+    const { body } = await request(app)
+      .post(`${apiPrefix}/candidat/reservations`)
+      .send({
+        id: selectedCentre._id,
+        date: selectedPlace.date,
+        isAccompanied: true,
+        hasDualControlCar: true,
+      })
+      .set('Accept', 'application/json')
+      .expect(400)
 
-    afterAll(async () => {
-      await removePlaces()
-      await removeCentres()
-      await deleteCandidats()
-    })
+    let datetimeAuthorize
+    if (previewDate instanceof Date) {
+      datetimeAuthorize = DateTime.fromJSDate(previewDate).endOf('day')
+    } else {
+      datetimeAuthorize = previewDate
+    }
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty(
+      'message',
+      CAN_BOOK_AFTER +
+        dateTimeToFormatFr(
+          datetimeAuthorize.plus({
+            days: offsetDate,
+          })
+        ).date
+    )
+  }
 
-    it('Should get 200 to book one place', async () => {
-      console.debug('Should get 200 to book one place')
-      const selectedCandidat = createdCandiats[0]
-      require('../middlewares/verify-token').__setIdCandidat(
-        selectedCandidat._id
-      )
-      const selectedCentre = createdCentres[0]
-      const selectedPlace = createdPlaces[0]
+  const createReservationWithSuccess = async (
+    selectedCentre,
+    selectedPlace,
+    previewsPlaceId
+  ) => {
+    const { body } = await request(app)
+      .post(`${apiPrefix}/candidat/reservations`)
+      .send({
+        id: selectedCentre._id,
+        date: selectedPlace.date,
+        isAccompanied: true,
+        hasDualControlCar: true,
+      })
+      .set('Accept', 'application/json')
+      .expect(201)
 
-      const { body } = await request(app)
-        .post(`${apiPrefix}/candidat/reservations`)
-        .send({
-          id: selectedCentre._id,
-          date: selectedPlace.date,
-          isAccompanied: true,
-          hasDualControlCar: true,
-        })
-        .set('Accept', 'application/json')
-        .expect(200)
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('statusmail', true)
+    expect(body).toHaveProperty('message', SAVE_RESA_WITH_MAIL_SENT)
+    expect(body).toHaveProperty('reservation')
+    expect(body.reservation).toHaveProperty(
+      'date',
+      DateTime.fromJSDate(selectedPlace.date)
+        .setZone('utc')
+        .toISO()
+    )
+    expect(body.reservation).toHaveProperty('centre', selectedCentre.nom)
+    expect(body.reservation).toHaveProperty(
+      'departement',
+      selectedCentre.departement
+    )
+    expect(body.reservation).not.toHaveProperty('inspecteur')
 
-      expect(body).toBeDefined()
-      expect(body).toHaveProperty('success', true)
-      expect(body).toHaveProperty('statusmail', true)
-      expect(body).toHaveProperty('message', SAVE_RESA_WITH_MAIL_SENT)
-      expect(body).toHaveProperty('reservation')
-      expect(body.reservation).toHaveProperty(
-        'date',
-        DateTime.fromJSDate(selectedPlace.date)
-          .setZone('utc')
-          .toISO()
-      )
-      expect(body.reservation).toHaveProperty('centre', selectedCentre.nom)
-      expect(body.reservation).toHaveProperty(
-        'departement',
-        selectedCentre.departement
-      )
-      expect(body.reservation).toHaveProperty('isBooked', true)
-      expect(body.reservation).not.toHaveProperty('inspecteur')
-    })
-
-    it('Should get 200 to book another place', async () => {
-      console.debug('Should get 200 to book a another place')
-      const selectedCandidat = createdCandiats[0]
-      require('../middlewares/verify-token').__setIdCandidat(
-        selectedCandidat._id
-      )
-      const selectedCentre = createdCentres[1]
-      const selectedPlace = createdPlaces[1]
-      const placeCandidat = await findPlaceByCandidatId(selectedCandidat._id)
-      console.debug(placeCandidat)
-      const previewsPlaceId = placeCandidat[0]._id
-      console.debug(previewsPlaceId)
-      const { body } = await request(app)
-        .post(`${apiPrefix}/candidat/reservations`)
-        .send({
-          id: selectedCentre._id,
-          date: selectedPlace.date,
-          isAccompanied: true,
-          hasDualControlCar: true,
-        })
-        .set('Accept', 'application/json')
-        .expect(200)
-
-      expect(body).toBeDefined()
-      expect(body).toHaveProperty('success', true)
-      expect(body).toHaveProperty('statusmail', true)
-      expect(body).toHaveProperty('message', SAVE_RESA_WITH_MAIL_SENT)
-      expect(body).toHaveProperty('reservation')
-      expect(body.reservation).toHaveProperty(
-        'date',
-        DateTime.fromJSDate(selectedPlace.date)
-          .setZone('utc')
-          .toISO()
-      )
-      expect(body.reservation).toHaveProperty('centre', selectedCentre.nom)
-      expect(body.reservation).toHaveProperty(
-        'departement',
-        selectedCentre.departement
-      )
-      expect(body.reservation).toHaveProperty('isBooked', true)
-      expect(body.reservation).not.toHaveProperty('inspecteur')
-
+    if (previewsPlaceId) {
       const previewPlace = await findPlaceById(previewsPlaceId)
-      expect(previewPlace).toHaveProperty('isBooked', false)
-      expect(previewPlace.bookedBy).toBeUndefined()
+      expect(previewPlace).toBeDefined()
+      expect(previewPlace.candidat).toBeUndefined()
+    }
+  }
+
+  const cancelReservationWithSuccess = async (
+    selectedCandidatId,
+    previewPlaceId,
+    message,
+    hasCanBookAfter
+  ) => {
+    const { body } = await request(app)
+      .delete(`${apiPrefix}/candidat/reservations`)
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('statusmail', true)
+    expect(body).toHaveProperty('message', message)
+
+    const previewPlace = await findPlaceById(previewPlaceId)
+    expect(previewPlace).toBeDefined()
+    expect(previewPlace.candidat).toBeUndefined()
+
+    const candidat = await findCandidatById(selectedCandidatId)
+    expect(candidat).toBeDefined()
+
+    if (hasCanBookAfter) {
+      expect(candidat).toHaveProperty('canBookAfter')
+    } else {
+      expect(candidat.canBookAfter).toBeUndefined()
+    }
+  }
+
+  describe('get reservation', () => {
+    beforeAll(async () => {
+      await makeResa(createdPlaceCanBook, selectedCandidat)
     })
-
-    it('Should get 400 to book a same place', async () => {
-      console.debug('Should get 400 to book a same place')
-      const selectedCandidat = createdCandiats[0]
-      require('../middlewares/verify-token').__setIdCandidat(
-        selectedCandidat._id
-      )
-      const selectedCentre = createdCentres[1]
-      const selectedPlace = createdPlaces[1]
-
-      const { body } = await request(app)
-        .post(`${apiPrefix}/candidat/reservations`)
-        .send({
-          id: selectedCentre._id,
-          date: selectedPlace.date,
-          isAccompanied: true,
-          hasDualControlCar: true,
-        })
-        .set('Accept', 'application/json')
-        .expect(400)
-
-      expect(body).toBeDefined()
-      expect(body).toHaveProperty('success', false)
-      expect(body).toHaveProperty('message', SAME_RESA_ASKED)
-      expect(body).not.toHaveProperty('statusmail')
-      expect(body).not.toHaveProperty('reservation')
+    afterAll(async () => {
+      await removeAllResas()
     })
 
     it('Should get 200 to send mail of convocation', async () => {
-      const selectedCandidat = createdCandiats[0]
-      require('../middlewares/verify-token').__setIdCandidat(
-        selectedCandidat._id
-      )
-
       const { body } = await request(app)
         .get(`${apiPrefix}/candidat/reservations?bymail=true`)
         .set('Accept', 'application/json')
@@ -186,13 +237,9 @@ describe('Test reservation controllers', () => {
     })
 
     it('Should get 200 to get the candidat reservation', async () => {
-      const selectedCandidat = createdCandiats[0]
-      require('../middlewares/verify-token').__setIdCandidat(
-        selectedCandidat._id
-      )
-
-      const selectedCentre = createdCentres[1]
-      const selectedPlace = createdPlaces[1]
+      await makeResa(createdPlaceCanBook, selectedCandidat)
+      const selectedCentre = createdCentres[0]
+      const selectedPlace = createdPlaceCanBook
 
       const { body } = await request(app)
         .get(`${apiPrefix}/candidat/reservations`)
@@ -211,8 +258,7 @@ describe('Test reservation controllers', () => {
       )
       expect(body.centre).toHaveProperty('adresse', selectedCentre.adresse)
       expect(body.inspecteur).toBeUndefined()
-      expect(body.bookedBy).toBeUndefined()
-      expect(body.isBooked).toBeUndefined()
+      expect(body.candidat).toBeUndefined()
       expect(body).toHaveProperty(
         'lastDateToCancel',
         dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
@@ -220,100 +266,147 @@ describe('Test reservation controllers', () => {
     })
   })
 
+  describe('Book a place', () => {
+    describe('book with the date authorize', () => {
+      afterEach(async () => {
+        await removeAllResas()
+      })
+
+      it('Should get 400 to book one place before now', async () => {
+        const selectedCentre = createdCentres[0]
+        const selectedPlace = createdPlaceBeforeNow
+        await createReservationWithFailure(
+          selectedCentre,
+          selectedPlace,
+          DateTime.local(),
+          config.delayToBook
+        )
+      })
+
+      it('Should get 200 to book one place', async () => {
+        const selectedCentre = createdCentres[0]
+        const selectedPlace = createdPlaceCanBook
+
+        await createReservationWithSuccess(selectedCentre, selectedPlace)
+      })
+
+      it('Should get 200 to book another place', async () => {
+        await makeResa(createdPlaceCanBook, selectedCandidat)
+
+        const selectedCentre = createdCentres[1]
+        const selectedPlace = createdPlaceCanBook2
+        const previewPlaceId = createdPlaceCanBook._id
+
+        await createReservationWithSuccess(
+          selectedCentre,
+          selectedPlace,
+          previewPlaceId
+        )
+      })
+
+      it('Should get 400 to book a same place', async () => {
+        await makeResa(createdPlaceCanBook2, selectedCandidat)
+
+        const selectedCentre = createdCentres[1]
+        const selectedPlace = createdPlaceCanBook2
+
+        const { body } = await request(app)
+          .post(`${apiPrefix}/candidat/reservations`)
+          .send({
+            id: selectedCentre._id,
+            date: selectedPlace.date,
+            isAccompanied: true,
+            hasDualControlCar: true,
+          })
+          .set('Accept', 'application/json')
+          .expect(400)
+
+        expect(body).toBeDefined()
+        expect(body).toHaveProperty('success', false)
+        expect(body).toHaveProperty('message', SAME_RESA_ASKED)
+        expect(body).not.toHaveProperty('statusmail')
+        expect(body).not.toHaveProperty('reservation')
+      })
+    })
+
+    describe('modify a reservation in 6 days', () => {
+      let createdPlaceToRetry
+      beforeAll(async () => {
+        createdPlaceToRetry = await createTestPlace(placeToRetry)
+        await makeResa(createdPlaceCanNotBook, selectedCandidat)
+      })
+      afterAll(async () => {
+        await removeAllResas()
+      })
+
+      it('should 400 to book another reservation with a date no authorize', async () => {
+        const selectedCentre = createdCentres[0]
+        const selectedPlace = createdPlaceCanBook
+        await createReservationWithFailure(
+          selectedCentre,
+          selectedPlace,
+          createdPlaceCanNotBook.date,
+          config.timeoutToRetry
+        )
+      })
+
+      it('should 200 to book another reservation with a place after time to retry', async () => {
+        const selectedCentre = createdCentres[1]
+        const selectedPlace = createdPlaceToRetry
+
+        await createReservationWithSuccess(
+          selectedCentre,
+          selectedPlace,
+          createdPlaceCanNotBook._id
+        )
+      })
+    })
+  })
+
   describe('Cancel a reservation', () => {
-    let createdCandiats
-    const basePlaceDateTime = DateTime.fromObject({ hour: 9 })
-    const placeCancellable = {
-      date: (() =>
-        basePlaceDateTime
-          .plus({ day: config.daysForbidCancel + 1, hour: 1 })
-          .toISO())(),
-      centre: 'Centre 2',
-      inspecteur: 'Inspecteur 2',
-    }
-    const placeNoCancellable = {
-      date: (() =>
-        basePlaceDateTime
-          .plus({ day: config.daysForbidCancel - 1, hour: 1 })
-          .toISO())(),
-      centre: 'Centre 2',
-      inspecteur: 'Inspecteur 2',
-    }
-
+    let selectedCandidat1
     beforeAll(async () => {
-      createdCandiats = await createCandidats()
-      await createCentres()
+      selectedCandidat1 = createdCandiats[1]
+      require('../middlewares/verify-token').__setIdCandidat(
+        selectedCandidat1._id
+      )
     })
-
-    afterAll(async () => {
-      await removePlaces()
-      await removeCentres()
-      await deleteCandidats()
+    afterEach(async () => {
+      await removeAllResas()
     })
-
-    it('Should get 200 to cancel a reservation', async () => {
+    it('Should get 200 to cancel a reservation without penalty', async () => {
       const place = await createTestPlace(placeCancellable)
-      await makeResa(place, createdCandiats[0])
+      await makeResa(place, selectedCandidat1)
 
-      const selectedCandidat = createdCandiats[0]
-      require('../middlewares/verify-token').__setIdCandidat(
-        selectedCandidat._id
+      await cancelReservationWithSuccess(
+        selectedCandidat1._id,
+        place._id,
+        CANCEL_RESA_WITH_MAIL_SENT
       )
-      const { body } = await request(app)
-        .delete(`${apiPrefix}/candidat/reservations`)
-        .set('Accept', 'application/json')
-        .expect(200)
-
-      expect(body).toBeDefined()
-      expect(body).toHaveProperty('success', true)
-      expect(body).toHaveProperty('statusmail', true)
-      expect(body).toHaveProperty('message', CANCEL_RESA_WITH_MAIL_SENT)
-
-      const previewPlace = await findPlaceById(place._id)
-      expect(previewPlace).toHaveProperty('isBooked', false)
-      expect(previewPlace.bookedBy).toBeUndefined()
-
-      const candidat = await findCandidatById(selectedCandidat._id)
-      expect(candidat).toBeDefined()
-      expect(candidat.canBookAfter).toBeUndefined()
     })
 
-    it('Should get 200 to cancel a reservation', async () => {
+    it('Should get 200 to cancel a reservation with penalty', async () => {
       const place = await createTestPlace(placeNoCancellable)
-      await makeResa(place, createdCandiats[0])
+      await makeResa(place, selectedCandidat1)
 
-      const selectedCandidat = createdCandiats[0]
-      require('../middlewares/verify-token').__setIdCandidat(
-        selectedCandidat._id
-      )
-      const { body } = await request(app)
-        .delete(`${apiPrefix}/candidat/reservations`)
-        .set('Accept', 'application/json')
-        .expect(200)
-
-      expect(body).toBeDefined()
-      expect(body).toHaveProperty('success', true)
-      expect(body).toHaveProperty('statusmail', true)
-
-      expect(body).toHaveProperty(
-        'message',
+      const message =
         CANCEL_RESA_WITH_MAIL_SENT +
-          ' ' +
-          CAN_BOOK_AT +
-          dateTimeToDateAndHourFormat(
-            DateTime.fromJSDate(place.date).plus({
+        ' ' +
+        CAN_BOOK_AFTER +
+        dateTimeToFormatFr(
+          DateTime.fromJSDate(place.date)
+            .endOf('days')
+            .plus({
               days: config.timeoutToRetry,
             })
-          ).date
+        ).date
+
+      await cancelReservationWithSuccess(
+        selectedCandidat1._id,
+        place._id,
+        message,
+        true
       )
-
-      const previewPlace = await findPlaceById(place._id)
-      expect(previewPlace).toHaveProperty('isBooked', false)
-      expect(previewPlace.bookedBy).toBeUndefined()
-
-      const candidat = await findCandidatById(selectedCandidat._id)
-      expect(candidat).toBeDefined()
-      expect(candidat).toHaveProperty('canBookAfter')
     })
   })
 })

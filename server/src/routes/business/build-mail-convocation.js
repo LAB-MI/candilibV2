@@ -4,11 +4,12 @@ import { appLogger } from '../../util'
 import { getConvocationTemplate } from './mail/convocation-template'
 import { getUrlFAQ, getUrlRESA } from './mail/mail.constants'
 import { getHtmlBody } from './mail/body-mail-template'
+import { dateTimeToFormatFr } from '../../util/date.util'
 
 export const getConvocationBody = place => {
-  const { centre, date, bookedBy } = place
+  const { centre, date, candidat } = place
   const { nom, adresse } = centre
-  const { nomNaissance, codeNeph } = bookedBy
+  const { nomNaissance, codeNeph } = candidat
   const urlFAQ = getUrlFAQ()
   const urlRESA = getUrlRESA()
 
@@ -37,19 +38,17 @@ export const getConvocationBody = place => {
     )
   }
 
-  const dateTimeResa = DateTime.fromJSDate(date).setLocale('fr')
+  const dateTimeResa = DateTime.fromJSDate(date)
   if (!dateTimeResa || !dateTimeResa.isValid) {
     throw new Error("La date n'est pas une date.")
   }
 
-  const dateResaStr = dateTimeResa.toFormat('cccc dd LLLL yyyy')
-
-  const houreResaStr = dateTimeResa.toLocaleString(DateTime.TIME_24_SIMPLE)
+  const datetimeStr = dateTimeToFormatFr(dateTimeResa)
   const body = getConvocationTemplate(
     nomNaissance,
     nom,
-    dateResaStr,
-    houreResaStr,
+    datetimeStr.date,
+    datetimeStr.hour,
     codeNeph,
     adresse,
     urlRESA,

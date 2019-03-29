@@ -16,10 +16,18 @@ import {
 import {
   CANCEL_RESA_WITH_MAIL_SENT,
   CANCEL_RESA_WITH_NO_MAIL_SENT,
+  SAME_RESA_ASKED,
+  USER_INFO_MISSING,
+  USER_NOT_FOUND,
+  CAN_BOOK_AFTER,
 } from './message.constants'
 import { sendCancelBooking } from '../business'
-import { updateCandidatCanAfterBook } from '../../models/candidat'
 import { getAuthorizedDateToBook } from './authorize.business'
+import {
+  updateCandidatCanAfterBook,
+  findCandidatById,
+} from '../../models/candidat'
+import { dateTimeToFormatFr } from '../../util/date.util'
 
 export const getDatesByCentreId = async (_id, endDate) => {
   appLogger.debug({
@@ -95,14 +103,34 @@ export const bookPlace = async (idCandidat, centre, date) => {
   return place
 }
 
-export const removeReservationPlace = async bookedPlace => {
-  const candidat = bookedPlace.bookedBy
+export const removeReservationPlace = async (bookedPlace, isModified) => {
+  const candidat = bookedPlace.candidat
   const { _id: idCandidat } = candidat
+
+  let dateAfterBook
+  const datetimeAfterBook = applyCancelRules(
+    bookedPlace.candidat,
+    bookedPlace.date
+  )
 
   await removeBookedPlace(bookedPlace)
 
   let statusmail = true
   let message = CANCEL_RESA_WITH_MAIL_SENT
+
+  if (datetimeAfterBook) {
+    if (isModified) {
+      message = CAN_BOOK_AFTER + dateTimeToFormatFr(datetimeAfterBook).date
+    } else {
+      message =
+        message +
+        ' ' +
+        CAN_BOOK_AFTER +
+        dateTimeToFormatFr(datetimeAfterBook).date
+    }
+    dateAfterBook = datetimeAfterBook.toISODate()
+  }
+
   try {
     await sendCancelBooking(candidat)
   } catch (error) {
@@ -126,12 +154,19 @@ export const removeReservationPlace = async bookedPlace => {
   return {
     statusmail,
     message,
+    dateAfterBook,
   }
 }
 
-export const isSamReservationPlace = (centreId, date, previewBookedPlace) => {
-  if (centreId === previewBookedPlace.centre._id.toString()) {
-    const diffDateTime = DateTime.fromISO(date).diff(
+/**
+ *
+ * @param {*} centerId Type string from ObjectId of mongoose
+ * @param {*} date Type DateTime from luxon
+ * @param {*} previewBookedPlace Type model place which populate centre and candidat
+ */
+export const isSameReservationPlace = (centerId, date, previewBookedPlace) => {
+  if (centerId === previewBookedPlace.centre._id.toString()) {
+    const diffDateTime = date.diff(
       DateTime.fromJSDate(previewBookedPlace.date),
       'second'
     )
@@ -207,17 +242,17 @@ export const getCandBookAfter = (candidat, datePassage) => {
 }
 
 export const getBeginDateAutorize = candidat => {
-  const beginDateAutoriseDefault = DateTime.locale().plus({
+  const beginDateAutoriseDefault = DateTime.local().plus({
     days: config.delayToBook,
   })
+
   const dateCanBookAfter = DateTime.fromJSDate(candidat.canBookAfter)
 
-  if (
-    !!candidat.canBookAfter &&
-    dateCanBookAfter.isValid &&
-    dateCanBookAfter.diff(beginDateAutoriseDefault, 'days') > 0
-  ) {
-    return DateTime.fromJSDate(candidat.canBookAfter)
+  if (!!candidat.canBookAfter && dateCanBookAfter.isValid) {
+    const { days } = dateCanBookAfter.diff(beginDateAutoriseDefault, ['days'])
+    if (days > 0) {
+      return dateCanBookAfter
+    }
   }
 
   return beginDateAutoriseDefault
@@ -230,4 +265,78 @@ export const getBeginDateAutorize = candidat => {
 export const getLastDateToCancel = dateReservation => {
   const dateTimeResa = DateTime.fromJSDate(dateReservation)
   return dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
+}
+
+/**
+ *
+ * @param {*} idCandidat Type string from ObjectId of mongoose
+ * @param {*} centre Type string from ObjectId of mongoose
+ * @param {*} date Type Date from Janascript or mongoose Type Date
+ * @param {*} previewBookedPlace Type model place which populate centre and candidat
+ */
+export const validCentreDateReservation = async (
+  idCandidat,
+  centre,
+  date,
+  previewBookedPlace
+) => {
+  let candidat
+  const dateTimeResa = DateTime.fromISO(date)
+
+  if (previewBookedPlace) {
+    const isSame = isSameReservationPlace(
+      centre,
+      dateTimeResa,
+      previewBookedPlace
+    )
+
+    if (isSame) {
+      const success = false
+      const message = SAME_RESA_ASKED
+      appLogger.warn({
+        section: 'candidat-validCentreDateReservation',
+        idCandidat,
+        success,
+        message,
+      })
+      return {
+        success,
+        message,
+      }
+    }
+    candidat = previewBookedPlace.candidat
+  }
+
+  if (!candidat) {
+    if (!idCandidat) throw new Error(USER_INFO_MISSING)
+    candidat = await findCandidatById(idCandidat, {})
+    if (!candidat) throw new Error(USER_NOT_FOUND)
+  }
+
+  let dateAuthorize = getBeginDateAutorize(candidat)
+  const { days } = dateAuthorize.diff(dateTimeResa, ['days'])
+  let isAuthorize = days < 0
+
+  if (previewBookedPlace && isAuthorize) {
+    const datePreview = DateTime.fromJSDate(previewBookedPlace.date)
+    if (!canCancelReservation(datePreview)) {
+      dateAuthorize = getCandBookAfter(candidat, datePreview)
+      isAuthorize = dateTimeResa > dateAuthorize
+    }
+  }
+
+  if (!isAuthorize) {
+    const success = false
+    const message = CAN_BOOK_AFTER + dateTimeToFormatFr(dateAuthorize).date
+    appLogger.warn({
+      section: 'candidat-validCentreDateReservation',
+      idCandidat,
+      success,
+      message,
+    })
+    return {
+      success,
+      message,
+    }
+  }
 }

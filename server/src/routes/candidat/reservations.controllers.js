@@ -3,21 +3,18 @@ import {
   bookPlace,
   getReservationByCandidat,
   removeReservationPlace,
-  isSamReservationPlace,
-  applyCancelRules,
   getLastDateToCancel,
+  validCentreDateReservation,
 } from './places.business'
 import { sendMailConvocation } from '../business'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
   SAVE_RESA_WITH_NO_MAIL_SENT,
-  SAME_RESA_ASKED,
   SEND_MAIL_ASKED,
   FAILED_SEND_MAIL_ASKED,
   SEND_MAIL_ASKED_RESA_EMPTY,
-  CAN_BOOK_AT,
+  USER_INFO_MISSING,
 } from './message.constants'
-import { dateTimeToDateAndHourFormat } from '../../util/date.util'
 
 export const getReservations = async (req, res) => {
   const section = 'candidat-getReservations'
@@ -32,7 +29,7 @@ export const getReservations = async (req, res) => {
 
   if (!idCandidat) {
     const success = false
-    const message = 'Information utilisateur inexistant'
+    const message = USER_INFO_MISSING
 
     appLogger.warn({
       section,
@@ -132,8 +129,8 @@ export const getReservations = async (req, res) => {
   }
 }
 
-export const setReservations = async (req, res) => {
-  const section = 'candidat-setReservations'
+export const createReservation = async (req, res) => {
+  const section = 'candidat-createReservation'
   const idCandidat = req.userId
   const { id: centre, date, isAccompanied, hasDualControlCar } = req.body
 
@@ -181,23 +178,23 @@ export const setReservations = async (req, res) => {
       previewBookedPlace,
     })
 
-    if (previewBookedPlace) {
-      const isSame = isSamReservationPlace(centre, date, previewBookedPlace)
+    const statusValidResa = await validCentreDateReservation(
+      idCandidat,
+      centre,
+      date,
+      previewBookedPlace
+    )
 
-      if (isSame) {
-        const success = false
-        const message = SAME_RESA_ASKED
-        appLogger.warn({
-          section,
-          idCandidat,
-          success,
-          message,
-        })
-        return res.status(400).json({
-          success,
-          message,
-        })
-      }
+    if (statusValidResa) {
+      appLogger.warn({
+        section,
+        idCandidat,
+        statusValidResa,
+      })
+      return res.status(400).json({
+        success: statusValidResa.success,
+        message: statusValidResa.message,
+      })
     }
 
     const reservation = await bookPlace(idCandidat, centre, date)
@@ -210,15 +207,21 @@ export const setReservations = async (req, res) => {
         success,
         message,
       })
-      return res.status(200).json({
+      return res.status(400).json({
         success,
         message,
       })
     }
 
+    let statusmail
+    let message = ''
+    let statusRemove
+    let dateAfterBook
+
     if (previewBookedPlace) {
       try {
-        await removeReservationPlace(previewBookedPlace)
+        statusRemove = await removeReservationPlace(previewBookedPlace, true)
+        dateAfterBook = statusRemove.dateAfterBook
       } catch (error) {
         techLogger.error({
           section,
@@ -230,18 +233,16 @@ export const setReservations = async (req, res) => {
       }
     }
 
-    let statusmail
-    let message = ''
     try {
       await sendMailConvocation(reservation)
       statusmail = true
       message = SAVE_RESA_WITH_MAIL_SENT
     } catch (error) {
-      const { nomNaissance, codeNeph } = reservation.bookedBy
+      const { nomNaissance, codeNeph } = reservation.candidat
       const { nom, departement } = reservation.centre
       const { date } = reservation
       appLogger.warn({
-        section: 'candidat-setReservations',
+        section: 'candidat-createReservation',
         idCandidat,
         message: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
         error,
@@ -251,26 +252,27 @@ export const setReservations = async (req, res) => {
     }
 
     appLogger.info({
-      section: 'candidat-setReservations',
+      section: 'candidat-createReservation',
       idCandidat,
       statusmail,
       message,
       reservation: reservation._id,
     })
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       reservation: {
         date: reservation.date,
         centre: reservation.centre.nom,
         departement: reservation.centre.departement,
-        isBooked: reservation.isBooked,
+        isBooked: true,
       },
       statusmail,
       message,
+      dateAfterBook,
     })
   } catch (error) {
     appLogger.error({
-      section: 'candidat-setReservations',
+      section: 'candidat-createReservation',
       idCandidat,
       error,
     })
@@ -291,7 +293,7 @@ export const removeReservations = async (req, res) => {
   })
   if (!idCandidat) {
     const success = false
-    const message = "Vous n'êtes pas connecté"
+    const message = USER_INFO_MISSING
     appLogger.warn({
       section: 'candidat-removeReservations',
       idCandidat,
@@ -323,26 +325,11 @@ export const removeReservations = async (req, res) => {
       })
     }
 
-    const dateAfterBook = applyCancelRules(
-      bookedPlace.bookedBy,
-      bookedPlace.date
-    )
-
     const status = await removeReservationPlace(bookedPlace)
-
-    if (dateAfterBook) {
-      const message =
-        status.message +
-        ' ' +
-        CAN_BOOK_AT +
-        dateTimeToDateAndHourFormat(dateAfterBook).date
-      status.message = message
-    }
 
     return res.status(200).json({
       success: true,
       ...status,
-      dateAfterBook,
     })
   } catch (error) {
     appLogger.error({

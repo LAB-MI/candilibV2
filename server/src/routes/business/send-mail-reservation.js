@@ -9,11 +9,11 @@ export const sendMailConvocation = async reservation => {
   if (!reservation) {
     throw new Error("Il n'y a aucune réservation")
   }
-  if (!reservation.bookedBy) {
+  if (!reservation.candidat) {
     throw new Error("Il n'y a aucune candidat pour cette réservation")
   }
 
-  const { email } = reservation.bookedBy
+  const { email } = reservation.candidat
   if (!email) {
     throw new Error("Le candidat n'a pas de courriel")
   }

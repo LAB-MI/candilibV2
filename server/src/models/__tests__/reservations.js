@@ -2,10 +2,10 @@ import { findAllPlaces } from '../place'
 import { findAllCandidatsLean } from '../candidat'
 import { places } from './places'
 import { candidats } from './candidats'
+import placeModel from '../place/place.model'
 
 export const makeResa = (place, candidat) => {
-  place.bookedBy = candidat._id
-  place.isBooked = true
+  place.candidat = candidat._id
   return place.save()
 }
 
@@ -38,3 +38,13 @@ export const nbPlacesDispoByCentres = ({ nom }) =>
     : 0 - (places[1].centre === nom)
       ? 1
       : 0
+
+export const removeAllResas = async () => {
+  const places = await placeModel.find({ candidat: { $ne: undefined } })
+  const promsieSaves = places.map(place => {
+    place.candidat = undefined
+    return place.save()
+  })
+  const removesResas = await Promise.all(promsieSaves)
+  return removesResas
+}

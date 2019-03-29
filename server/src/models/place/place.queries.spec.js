@@ -276,7 +276,7 @@ describe('Place', () => {
 
       expect(foundPlaces).toBeDefined()
       expect(foundPlaces).toHaveLength(1)
-      expect(foundPlaces).not.toHaveProperty('isBooked')
+      expect(foundPlaces).not.toHaveProperty('candidat')
     })
     it('find 0 available place of centre 2 at a day 19 10h  ', async () => {
       const selectedCentre = createdCentres.find(
@@ -307,8 +307,7 @@ describe('Place', () => {
       )
 
       expect(place).toBeDefined()
-      expect(place).toHaveProperty('isBooked', true)
-      expect(place).toHaveProperty('bookedBy', selectedCandidat)
+      expect(place).toHaveProperty('candidat', selectedCandidat)
       expect(place).toHaveProperty('centre', selectedCentre)
       expect(place).toHaveProperty('inspecteur')
       expect(place.date).toEqual(
@@ -347,8 +346,7 @@ describe('Place', () => {
       )
 
       expect(place).toBeDefined()
-      expect(place).toHaveProperty('isBooked', true)
-      expect(place).toHaveProperty('bookedBy', selectedCandidat)
+      expect(place).toHaveProperty('candidat', selectedCandidat)
       expect(place).toHaveProperty('centre', selectedCentre)
       expect(place.inspecteur).not.toBeDefined()
       expect(place.date).toEqual(
@@ -370,14 +368,13 @@ describe('Place', () => {
       await deleteCandidats()
       await removeCentres()
     })
-    it('should a place without bookedBy and isBooked', async () => {
+    it('should return the place without candidat', async () => {
       const selectedResa = createdResas[0]
 
       const place = await removeBookedPlace(selectedResa)
 
       expect(place).toBeDefined()
-      expect(place.bookedBy).toBeUndefined()
-      expect(place).toHaveProperty('isBooked', false)
+      expect(place.candidat).toBeUndefined()
     })
   })
 })
