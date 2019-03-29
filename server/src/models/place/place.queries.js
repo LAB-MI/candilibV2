@@ -34,7 +34,7 @@ export const findPlaceById = async id => {
 }
 
 export const findPlaceByCandidatId = async id => {
-  const places = await Place.find({ bookedBy: new mongoose.Types.ObjectId(id) })
+  const places = await Place.find({ candidat: new mongoose.Types.ObjectId(id) })
   return places
 }
 
@@ -115,20 +115,20 @@ export const findPlacesByCentreAndDate = async (_id, date) => {
 }
 
 export const findPlaceBookedByCandidat = async (
-  bookedBy,
+  candidat,
   options,
   populate
 ) => {
-  const query = Place.findOne({ isBooked: true, bookedBy }, options)
+  const query = Place.findOne({ isBooked: true, candidat }, options)
   if (populate && populate.centre) query.populate('centre')
-  if (populate && populate.candidat) query.populate('bookedBy')
+  if (populate && populate.candidat) query.populate('candidat')
 
   const place = await query.exec()
   return place
 }
 
 export const findAndbookPlace = async (
-  bookedBy,
+  candidat,
   centre,
   date,
   fields,
@@ -136,14 +136,14 @@ export const findAndbookPlace = async (
 ) => {
   const query = Place.findOneAndUpdate(
     { centre, date, isBooked: { $ne: true } },
-    { $set: { isBooked: true, bookedBy } },
+    { $set: { isBooked: true, candidat } },
     { new: true, fields }
   )
   if (populate && populate.centre) {
     query.populate('centre')
   }
   if (populate && populate.candidat) {
-    query.populate('bookedBy')
+    query.populate('candidat')
   }
 
   const place = await query.exec()
@@ -151,7 +151,7 @@ export const findAndbookPlace = async (
 }
 
 export const removeBookedPlace = place => {
-  place.bookedBy = undefined
+  place.candidat = undefined
   place.isBooked = false
 
   return place.save()

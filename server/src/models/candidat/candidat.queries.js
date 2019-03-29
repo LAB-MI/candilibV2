@@ -96,7 +96,7 @@ export const updateCandidatEmail = async (candidat, email) => {
 }
 
 export const findBookedCandidats = async (date, inspecteur, centre) => {
-  let query = Place.where('bookedBy').exists(true)
+  let query = Place.where('candidat').exists(true)
   if (date && moment(date).isValid()) {
     const startDate = moment(date)
       .startOf('day')
@@ -120,7 +120,7 @@ export const findBookedCandidats = async (date, inspecteur, centre) => {
   if (places) {
     const candidats = await Promise.all(
       places.map(async place => {
-        const { bookedBy: id } = place
+        const { candidat: id } = place
         const candidat = await Candidat.findById(id)
         if (!candidat) return {}
         candidat.place = place

@@ -104,12 +104,12 @@ export const bookPlace = async (idCandidat, centre, date) => {
 }
 
 export const removeReservationPlace = async (bookedPlace, isModified) => {
-  const candidat = bookedPlace.bookedBy
+  const candidat = bookedPlace.candidat
   const { _id: idCandidat } = candidat
 
   let dateAfterBook
   const datetimeAfterBook = applyCancelRules(
-    bookedPlace.bookedBy,
+    bookedPlace.candidat,
     bookedPlace.date
   )
 
@@ -305,7 +305,7 @@ export const validCentreDateReservation = async (
         message,
       }
     }
-    candidat = previewBookedPlace.bookedBy
+    candidat = previewBookedPlace.candidat
   }
 
   if (!candidat) {

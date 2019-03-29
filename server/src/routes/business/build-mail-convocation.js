@@ -7,9 +7,9 @@ import { getHtmlBody } from './mail/body-mail-template'
 import { dateTimeToDateAndHourFormat } from '../../util/date.util'
 
 export const getConvocationBody = place => {
-  const { centre, date, bookedBy } = place
+  const { centre, date, candidat } = place
   const { nom, adresse } = centre
-  const { nomNaissance, codeNeph } = bookedBy
+  const { nomNaissance, codeNeph } = candidat
   const urlFAQ = getUrlFAQ()
   const urlRESA = getUrlRESA()
 

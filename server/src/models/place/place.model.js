@@ -22,7 +22,7 @@ const PlaceSchema = new Schema({
     type: Boolean,
     required: false,
   },
-  bookedBy: {
+  candidat: {
     type: ObjectId, // ObjectId du candidat ayant réservé cette place
     required: false,
     ref: 'Candidat',

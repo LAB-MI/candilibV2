@@ -238,7 +238,7 @@ export const setReservations = async (req, res) => {
       statusmail = true
       message = SAVE_RESA_WITH_MAIL_SENT
     } catch (error) {
-      const { nomNaissance, codeNeph } = reservation.bookedBy
+      const { nomNaissance, codeNeph } = reservation.candidat
       const { nom, departement } = reservation.centre
       const { date } = reservation
       appLogger.warn({
