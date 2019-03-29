@@ -22,10 +22,10 @@ export const dateTimeToDateAndHourFormat = pDate => {
 
   const date = datetime.toFormat(FORMAT_DATE)
 
-  const houre = datetime.toLocaleString(DateTime.TIME_24_SIMPLE)
+  const hour = datetime.toLocaleString(DateTime.TIME_24_SIMPLE)
 
   return {
     date,
-    houre,
+    hour,
   }
 }

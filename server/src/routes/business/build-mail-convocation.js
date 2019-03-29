@@ -48,7 +48,7 @@ export const getConvocationBody = place => {
     nomNaissance,
     nom,
     datetimeStr.date,
-    datetimeStr.houre,
+    datetimeStr.hour,
     codeNeph,
     adresse,
     urlRESA,
