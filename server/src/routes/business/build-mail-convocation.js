@@ -1,62 +1,60 @@
-import { DateTime } from 'luxon'
-
 import { appLogger } from '../../util'
 import { getConvocationTemplate } from './mail/convocation-template'
 import { getUrlFAQ, getUrlRESA } from './mail/mail.constants'
 import { getHtmlBody } from './mail/body-mail-template'
 import { dateTimeToFormatFr } from '../../util/date.util'
+import { validateArgsToBuildBodyMailResa } from './send-mail-util'
+
+const section = 'candidat-sendMail'
 
 export const getConvocationBody = place => {
-  const { centre, date, candidat } = place
+  const action = 'get-body-convocation'
+  const { centre, date, bookedBy } = place
   const { nom, adresse } = centre
-  const { nomNaissance, codeNeph } = candidat
+  const { nomNaissance, codeNeph } = bookedBy
+
+  validateArgsToBuildBodyMailResa(
+    date,
+    nom,
+    adresse,
+    nomNaissance,
+    codeNeph,
+    section,
+    action
+  )
+
   const urlFAQ = getUrlFAQ()
   const urlRESA = getUrlRESA()
 
-  if (
-    !date ||
-    !nom ||
-    !adresse ||
-    !nomNaissance ||
-    !codeNeph ||
-    !urlFAQ ||
-    !urlRESA
-  ) {
-    appLogger.error(
-      JSON.stringify({
-        date,
-        nom,
-        adresse,
-        nomNaissance,
-        codeNeph,
+  if (!urlFAQ || !urlRESA) {
+    const message =
+      'Les informations lien du FAQ ou de la reservation sont manquantes.'
+    appLogger.error({
+      section,
+      action,
+      arguments: {
         urlFAQ,
         urlRESA,
-      })
-    )
+      },
+      message,
+    })
     throw new Error(
-      'Les informations date, nom, adresse, nom de naissance ou code Neph sont manquantes.'
+      'Les informations lien du FAQ ou de la reservation sont manquantes.'
     )
   }
 
-  const dateTimeResa = DateTime.fromJSDate(date)
-  if (!dateTimeResa || !dateTimeResa.isValid) {
-    throw new Error("La date n'est pas une date.")
-  }
+  const dateTimeResa = dateTimeToFormatFr(date)
 
-  const datetimeStr = dateTimeToFormatFr(dateTimeResa)
   const body = getConvocationTemplate(
     nomNaissance,
     nom,
-    datetimeStr.date,
-    datetimeStr.hour,
+    dateTimeResa.date,
+    dateTimeResa.hour,
     codeNeph,
     adresse,
     urlRESA,
     urlFAQ
   )
 
-  return {
-    content: getHtmlBody(body),
-    subject: "Convocation à l'examen pratique du permis de conduire",
-  }
+  return getHtmlBody(body)
 }

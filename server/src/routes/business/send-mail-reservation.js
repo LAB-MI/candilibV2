@@ -1,11 +1,11 @@
 import { appLogger } from '../../util'
 import { getConvocationBody } from './build-mail-convocation'
-import { getCancelBookingTemplate, getHtmlBody } from './mail'
 import { sendMail } from './send-mail'
+import { getCancellationBody } from './build-mail-cancellation'
 
-export const sendMailConvocation = async reservation => {
-  appLogger.debug({ func: sendMailConvocation, arg: { reservation } })
+const section = 'candidat-sendMail'
 
+const validateToSendMailResa = reservation => {
   if (!reservation) {
     throw new Error("Il n'y a aucune réservation")
   }
@@ -17,35 +17,44 @@ export const sendMailConvocation = async reservation => {
   if (!email) {
     throw new Error("Le candidat n'a pas de courriel")
   }
-  const message = getConvocationBody(reservation)
-  appLogger.debug({ func: sendMailConvocation, message })
-  return sendMail(email, message)
 }
 
-export const sendCancelBooking = async candidat => {
-  appLogger.debug({ func: sendMailConvocation, arg: { candidat } })
+export const sendMailConvocation = reservation => {
+  appLogger.debug({ func: 'sendMailConvocation', arg: { reservation } })
 
-  if (!candidat) {
-    throw new Error("Le candidat n'a pas de données")
+  try {
+    validateToSendMailResa(reservation)
+  } catch (error) {
+    appLogger.error({ section, error })
+    throw error
   }
 
-  const { email, codeNeph, nomNaissance } = candidat
+  const { email } = reservation.bookedBy
+  const content = getConvocationBody(reservation)
+  const subject = "Convocation à l'examen pratique du permis de conduire"
 
-  if (!email) {
-    throw new Error("Le candidat n'a pas de courriel")
+  appLogger.debug({ func: 'sendMailConvocation', content, subject })
+
+  return sendMail(email, { content, subject })
+}
+
+export const sendCancelBooking = (candidat, place) => {
+  appLogger.debug({ func: 'sendMailCancellation', arg: { candidat, place } })
+
+  place.bookedBy = candidat
+  const reservation = place
+
+  try {
+    validateToSendMailResa(reservation)
+  } catch (error) {
+    appLogger.error({ section, error })
+    throw error
   }
+  const { email } = candidat
+  const content = getCancellationBody(reservation)
+  const subject = "Annulation de votre convocation à l'examen"
 
-  if (!codeNeph || !nomNaissance) {
-    throw new Error('Les informations du candidat sont manquantes')
-  }
+  appLogger.debug({ func: 'sendMailCancellation', content, subject })
 
-  const contentMsg = getCancelBookingTemplate(nomNaissance, codeNeph)
-
-  const message = {
-    content: getHtmlBody(contentMsg),
-    subject: "Annulation de Convocation à l'examen",
-  }
-  appLogger.debug({ func: sendCancelBooking, message })
-
-  return sendMail(email, message)
+  return sendMail(email, { content, subject })
 }

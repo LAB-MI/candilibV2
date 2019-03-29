@@ -132,7 +132,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
   }
 
   try {
-    await sendCancelBooking(candidat)
+    await sendCancelBooking(candidat, bookedPlace)
   } catch (error) {
     appLogger.warn({
       section: 'candidat-removeReservations',
