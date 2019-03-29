@@ -350,7 +350,10 @@ export const addInfoDateToRulesResa = async (
   candidat,
   reservation
 ) => {
-  const { timeOutToRetry, daysForbidCancel: dayToForbidCancel } = config
+  const {
+    timeoutToRetry: timeOutToRetry,
+    daysForbidCancel: dayToForbidCancel,
+  } = config
   let canBookAfter
   if (!candidat) {
     candidat = await findCandidatById(idCandidat, { canBookAfter: 1 })
