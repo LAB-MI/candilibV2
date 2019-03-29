@@ -129,8 +129,8 @@ export const getReservations = async (req, res) => {
   }
 }
 
-export const setReservations = async (req, res) => {
-  const section = 'candidat-setReservations'
+export const createReservation = async (req, res) => {
+  const section = 'candidat-createReservation'
   const idCandidat = req.userId
   const { id: centre, date, isAccompanied, hasDualControlCar } = req.body
 
@@ -207,7 +207,7 @@ export const setReservations = async (req, res) => {
         success,
         message,
       })
-      return res.status(200).json({
+      return res.status(400).json({
         success,
         message,
       })
@@ -242,7 +242,7 @@ export const setReservations = async (req, res) => {
       const { nom, departement } = reservation.centre
       const { date } = reservation
       appLogger.warn({
-        section: 'candidat-setReservations',
+        section: 'candidat-createReservation',
         idCandidat,
         message: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
         error,
@@ -252,13 +252,13 @@ export const setReservations = async (req, res) => {
     }
 
     appLogger.info({
-      section: 'candidat-setReservations',
+      section: 'candidat-createReservation',
       idCandidat,
       statusmail,
       message,
       reservation: reservation._id,
     })
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
       reservation: {
         date: reservation.date,
@@ -272,7 +272,7 @@ export const setReservations = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
-      section: 'candidat-setReservations',
+      section: 'candidat-createReservation',
       idCandidat,
       error,
     })

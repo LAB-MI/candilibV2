@@ -160,7 +160,7 @@ describe('Test reservation controllers', () => {
         hasDualControlCar: true,
       })
       .set('Accept', 'application/json')
-      .expect(200)
+      .expect(201)
 
     expect(body).toBeDefined()
     expect(body).toHaveProperty('success', true)
