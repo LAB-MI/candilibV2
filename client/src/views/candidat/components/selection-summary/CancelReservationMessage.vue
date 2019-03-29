@@ -1,18 +1,16 @@
 <template>
-    <p class="red--text">
-      {{
-        $formatMessage(
-          {
-            id: idFormatMessage,
-          },
-          {
-            dateCurrentResa,
-            nbOfDaysBeforeDate,
-            penaltyNb,
-          },
-        )
-      }}
-    </p>
+    <p
+      v-html="$formatMessage(
+        {
+          id: idFormatMessage,
+        },
+        {
+          dateCurrentResa,
+          nbOfDaysBeforeDate,
+          penaltyNb,
+        },
+      )"
+    />
 </template>
 
 <script>

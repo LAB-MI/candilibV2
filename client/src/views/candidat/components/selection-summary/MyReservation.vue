@@ -24,8 +24,8 @@
             id: 'recap_reservation_last_date_to_cancel',
           },
           {
-            lastDateToCancelString: `<strong>${this.lastDateToCancelString}</strong>`,
-            penaltyDaysNumber: `<strong>${this.penaltyDaysNumber}</strong>`,
+            lastDateToCancelString: `<strong>${lastDateToCancelString}</strong>`,
+            penaltyDaysNumber: `<strong>${penaltyDaysNumber}</strong>`,
           },
         )"
     />
@@ -56,26 +56,18 @@
           Confirmer l'annulation
         </v-card-title>
         <v-card-text>
-          <div class="confirm-suppr-text-content">
-            <cancel-reservation-message
-            v-if="isPenaltyActive"
-            idFormatMessage='recap_reservation_modal_annuler_body_with_penalty'
-            :dateCurrentResa='isPenaltyTrueDate'
-            :nbOfDaysBeforeDate='numberOfDaysBeforeDate'
-            :penaltyNb='nbDaysOfPenalty'
-            />
-            <cancel-reservation-message
-            v-else
-            idFormatMessage='recap_reservation_modal_annuler_body_without_penalty'
-            :dateCurrentResa='isPenaltyFalseDate'
-            />
-          </div>
+          <cancel-reservation-message
+            class="confirm-suppr-text-content"
+            :idFormatMessage="cancelReservationMessage"
+            :dateCurrentResa="dateCurrentResservation"
+            :nbOfDaysBeforeDate="String(NUMBER_OF_DAYS_BEFORE_DATE)"
+            :penaltyNb="String(PENALTY_DAYS_NUMBER)"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="info"
-            class="  u-flex  u-flex--center"
             outline
             :aria-disabled="disabled"
             :disabled="disabled"
@@ -87,7 +79,7 @@
             {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_retour' }) }}
           </v-btn>
           <v-btn
-            color="error darken-1  u-flex  u-flex--center"
+            color="error darken-1  va-b"
             :aria-disabled="disabled"
             :disabled="disabled"
             type="submit"
@@ -95,7 +87,7 @@
             <span>
               {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_confirmer' }) }}
             </span>
-            <v-icon>
+            <v-icon class="pl-2">
               warning
             </v-icon>
           </v-btn>
@@ -154,11 +146,17 @@ export default {
     return {
       selectedCheckBox: [],
       dialog: false,
+      PENALTY_DAYS_NUMBER,
+      NUMBER_OF_DAYS_BEFORE_DATE,
     }
   },
 
   computed: {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
+
+    cancelReservationMessage () {
+      return `recap_reservation_modal_annuler_body_with${this.isPenaltyActive ? '' : 'out'}_penalty`
+    },
 
     disabled () {
       return this.$store.state.reservation.isDeleting
@@ -175,19 +173,7 @@ export default {
       return false
     },
 
-    nbDaysOfPenalty () {
-      return `${PENALTY_DAYS_NUMBER}`
-    },
-
-    numberOfDaysBeforeDate () {
-      return `${NUMBER_OF_DAYS_BEFORE_DATE}`
-    },
-
-    isPenaltyTrueDate () {
-      return dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)
-    },
-
-    isPenaltyFalseDate () {
+    dateCurrentResservation () {
       return dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)
     },
 
@@ -239,7 +225,9 @@ export default {
   }
 
   .confirm-suppr-text-content {
-    height: 200px;
-    overflow-y: scroll;
+  }
+
+  .va-b {
+    vertical-align: baseline;
   }
 </style>

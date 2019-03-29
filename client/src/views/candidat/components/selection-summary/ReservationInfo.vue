@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text--center">{{ nom }}</h1>
+    <h3 class="text--center">{{ nom }}</h3>
     <p class="text--center">
       {{ adresse }}
       <a

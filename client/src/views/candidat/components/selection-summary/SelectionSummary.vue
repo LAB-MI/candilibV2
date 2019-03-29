@@ -2,12 +2,8 @@
   <v-card class="text--center" >
     <page-title :title="title"/>
     <div class="text--center">
-      <h3 style="padding: 1em;">
-        {{ candidat.me ? candidat.me.nomNaissance : '' }}
-        {{ candidat.me ? candidat.me.prenom : '' }}
-      </h3>
       <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
-      <ReservationInfo
+      <reservation-info
         :adresse="infoResa.adresse"
         :date="infoResa.date"
         :nom="infoResa.nom"
