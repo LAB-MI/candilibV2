@@ -1,6 +1,6 @@
 import { getHtmlBody } from './mail/body-mail-template'
 import { validateArgsToBuildBodyMailResa } from './send-mail-util'
-import { dateTimeToDateAndHourFormat } from '../../util/date.util'
+import { DateTimeFrFromJSDate } from '../../util/date.util'
 import { getCancelBookingTemplate } from './mail'
 
 const section = 'candidat-sendMail'
@@ -21,7 +21,7 @@ export const getCancellationBody = place => {
     action
   )
 
-  const dateTimeResa = dateTimeToDateAndHourFormat(date)
+  const dateTimeResa = DateTimeFrFromJSDate(date)
 
   const body = getCancelBookingTemplate(
     nomNaissance,
