@@ -253,7 +253,6 @@ export const getBeginDateAutorize = candidat => {
 
   if (!!candidat.canBookAfter && dateCanBookAfter.isValid) {
     const { days } = dateCanBookAfter.diff(beginDateAutoriseDefault, ['days'])
-
     if (days > 0) {
       return dateCanBookAfter
     }
@@ -383,7 +382,7 @@ export const validCentreDateReservation = async (
   let candidat
   const DateTimeResa = DateTime.fromISO(date)
   if (previewBookedPlace) {
-    const isSame = isSamReservationPlace(
+    const isSame = isSameReservationPlace(
       centre,
       DateTimeResa,
       previewBookedPlace
@@ -418,8 +417,7 @@ export const validCentreDateReservation = async (
   console.log(days)
   if (days >= 0) {
     const success = false
-    const message =
-      CAN_BOOK_AT + dateTimeToDateAndHourFormat(dateAuthorize).date
+    const message = CAN_BOOK_AFTER + dateTimeToFormatFr(dateAuthorize).date
     appLogger.warn({
       section: 'candidat-validCentreDateReservation',
       idCandidat,
