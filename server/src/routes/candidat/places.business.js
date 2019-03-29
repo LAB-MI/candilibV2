@@ -344,3 +344,23 @@ export const validCentreDateReservation = async (
     }
   }
 }
+
+export const addInfoDateToRulesResa = async (
+  idCandidat,
+  candidat,
+  reservation
+) => {
+  const { timeOutToRetry, daysForbidCancel: dayToForbidCancel } = config
+  let canBookAfter
+  if (!candidat) {
+    candidat = await findCandidatById(idCandidat, { canBookAfter: 1 })
+  }
+  canBookAfter = candidat.canBookAfter
+
+  return {
+    ...reservation,
+    canBookAfter,
+    timeOutToRetry,
+    dayToForbidCancel,
+  }
+}

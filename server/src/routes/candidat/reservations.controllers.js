@@ -5,6 +5,7 @@ import {
   removeReservationPlace,
   getLastDateToCancel,
   validCentreDateReservation,
+  addInfoDateToRulesResa,
 } from './places.business'
 import { sendMailConvocation } from '../business'
 import {
@@ -92,7 +93,8 @@ export const getReservations = async (req, res) => {
       let reservation = {}
       if (bookedPlace) {
         const { _id, centre, date } = bookedPlace
-        const lastDateToCancel = getLastDateToCancel(bookedPlace.date)
+
+        const lastDateToCancel = getLastDateToCancel(date)
 
         if (lastDateOnly) {
           return res.json({ lastDateToCancel })
@@ -105,6 +107,12 @@ export const getReservations = async (req, res) => {
           lastDateToCancel,
         }
       }
+
+      reservation = await addInfoDateToRulesResa(
+        idCandidat,
+        bookedPlace ? bookedPlace.bookedBy : undefined,
+        reservation
+      )
 
       appLogger.info({
         section,
