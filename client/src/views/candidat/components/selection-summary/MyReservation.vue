@@ -18,19 +18,23 @@
     </v-icon>
   </p>
   <p>
-    Si vous annulez après le
-    <strong>
-    {{ lastDateToCancelString }}
-    </strong>
-    vous serez pénalisé·e de
-    <strong>
-      {{ penaltyDaysNumber }} jours
-    </strong>
+    <span v-html="
+        $formatMessage(
+          {
+            id: 'recap_reservation_last_date_to_cancel',
+          },
+          {
+            lastDateToCancelString: `<strong>${this.lastDateToCancelString}</strong>`,
+            penaltyDaysNumber: `<strong>${this.penaltyDaysNumber}</strong>`,
+          },
+        )"
+    />
     &nbsp;
     <v-icon color="red">
       warning
     </v-icon>
   </p>
+
   <v-dialog v-model="dialog" persistent max-width="290">
     <template v-slot:activator="{ on }">
       <v-btn color="#f82249" dark v-on="on">
@@ -53,32 +57,18 @@
         </v-card-title>
         <v-card-text>
           <div class="confirm-suppr-text-content">
-            <p v-if="isPenaltyActive" class="red--text">
-              {{
-                $formatMessage(
-                  {
-                    id: 'recap_reservation_modal_annuler_body_with_penalty',
-                  },
-                  {
-                    dateCurrentResa: isPenaltyTrueDate,
-                    nbOfDays: numberOfDays,
-                    penaltyNb: nbDaysOfPenalty,
-                  },
-                )
-              }}
-            </p>
-            <p v-else class="red--text">
-              {{
-                $formatMessage(
-                  {
-                    id: 'recap_reservation_modal_annuler_body_without_penalty',
-                  },
-                  {
-                    dateCurrentResa: isPenaltyFalseDate,
-                  }
-                )
-              }}
-            </p>
+            <cancel-reservation-message
+            v-if="isPenaltyActive"
+            idFormatMessage='recap_reservation_modal_annuler_body_with_penalty'
+            :dateCurrentResa='isPenaltyTrueDate'
+            :nbOfDaysBeforeDate='numberOfDaysBeforeDate'
+            :penaltyNb='nbDaysOfPenalty'
+            />
+            <cancel-reservation-message
+            v-else
+            idFormatMessage='recap_reservation_modal_annuler_body_without_penalty'
+            :dateCurrentResa='isPenaltyFalseDate'
+            />
           </div>
         </v-card-text>
         <v-card-actions>
@@ -145,9 +135,11 @@ import {
   dateTimeFromIsoSetLocaleFrToLocalString,
 } from '../../../../util/dateTimeWithSetLocale.js'
 
+import CancelReservationMessage from './CancelReservationMessage'
+
 import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
-  NUMBER_OF_DAYS,
+  NUMBER_OF_DAYS_BEFORE_DATE,
   PENALTY_DAYS_NUMBER,
   SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST,
   SET_MODIFYING_RESERVATION,
@@ -155,6 +147,9 @@ import {
 } from '@/store'
 
 export default {
+  components: {
+    CancelReservationMessage,
+  },
   data () {
     return {
       selectedCheckBox: [],
@@ -184,8 +179,8 @@ export default {
       return `${PENALTY_DAYS_NUMBER}`
     },
 
-    numberOfDays () {
-      return `${NUMBER_OF_DAYS}`
+    numberOfDaysBeforeDate () {
+      return `${NUMBER_OF_DAYS_BEFORE_DATE}`
     },
 
     isPenaltyTrueDate () {
