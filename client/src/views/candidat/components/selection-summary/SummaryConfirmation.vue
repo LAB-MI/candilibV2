@@ -45,8 +45,9 @@
             type="submit"
             color="primary"
           >
-          {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
+            {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
           </v-btn>
+          <modal-confirm-modification :confirmReservationModif="confirmReservation"/>
         </v-flex>
       </v-form>
     </v-card-actions>
@@ -77,6 +78,8 @@
 import { mapState } from 'vuex'
 
 import { dateTimeFromIsoSetLocaleFrToLocalString } from '../../../../util/dateTimeWithSetLocale.js'
+import ModalConfirmModification from './ModalConfirmModification.vue';
+
 import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,
@@ -88,6 +91,10 @@ export default {
       selectedCheckBox: [],
       isBackButtonDisabled: false,
     }
+  },
+
+  components: {
+    ModalConfirmModification,
   },
 
   computed: {

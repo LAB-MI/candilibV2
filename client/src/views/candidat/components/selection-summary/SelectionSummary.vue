@@ -91,7 +91,7 @@ export default {
 
     isConfirmation () {
       return this.$route.meta.isConfirmation !== false &&
-        (!this.reservation.booked || this.reservation.isModifying)
+        (!this.reservation.booked.isBooked || this.reservation.isModifying)
     },
 
     infoResa () {

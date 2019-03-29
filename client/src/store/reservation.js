@@ -25,7 +25,7 @@ export default {
     isFetching: false,
     isSending: false,
     isModifying: false,
-    booked: undefined,
+    booked: { isBooked: false },
   },
 
   mutations: {
@@ -35,9 +35,9 @@ export default {
     [FETCH_CANDIDAT_RESERVATION_SUCCESS] (state, booked) {
       state.isFetching = false
       if ('date' in booked) {
-        state.booked = booked
+        state.booked = { ...booked, isBooked: true }
       } else {
-        state.booked = null
+        state.booked = { ...booked, isBooked: false }
       }
     },
     [FETCH_CANDIDAT_RESERVATION_FAILURE] (state) {
@@ -59,7 +59,7 @@ export default {
     },
     [DELETE_CANDIDAT_RESERVATION_SUCCESS] (state) {
       state.isDeleting = false
-      state.booked = null
+      state.booked = { isBooked: false }
     },
     [DELETE_CANDIDAT_RESERVATION_FAILURE] (state) {
       state.isDeleting = false
