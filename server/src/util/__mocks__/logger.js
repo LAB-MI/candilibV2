@@ -1,14 +1,8 @@
 const logger = {
   debug (msg) {},
-  info (msg) {
-    console.info(msg)
-  },
-  warn (msg) {
-    console.warn(msg)
-  },
-  error (msg) {
-    console.error(msg)
-  },
+  info (msg) {},
+  warn (msg) {},
+  error (msg) {},
 }
 
 export const simpleLogger = logger
