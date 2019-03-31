@@ -31,7 +31,7 @@ export const getConvocationTemplate = (
           <li>
             <p>
               Vous présenterez un titre d’identité en cours de validité : carte nationale d’identité, passeport ou titre de séjour (liste complète {' '}
-              <a href="https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
+              <a href="https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
                 arrêté du 23 décembre 2016 relatif à la justification de l&apos;identité, du domicile, de la résidence normale et de la régularité du séjour pour l&apos;obtention du permis de conduire
               </a>).
             <p>

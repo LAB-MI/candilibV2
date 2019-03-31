@@ -7,6 +7,10 @@ export const getValidationMailTemplate = (
   <p>Vous avez demandé à être inscrit·e sur le site de réservation de l'examen pratique du permis de conduire.</p>
   <br/>
   <p>
+  <p>
+    Pour poursuivre votre inscription, vous devez valider votre adresse mail en cliquant sur lien ci-après :
+  </p>
+  <p>
     <a href="${urlValidationEmail}">
       Valider mon adresse email
     </a>
