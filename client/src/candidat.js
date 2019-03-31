@@ -35,8 +35,27 @@ export default {
   confirmation_reservation_boutton_confirmation: 'Confirmer',
   recap_reservation_confirmee: 'Votre réservation est confirmée',
   recap_reservation_email_confirmee: 'Un email de confirmation vous a été envoyé à l\'adresse',
+  recap_reservation_last_date_to_cancel: 'Si vous annulez après le {lastDateToCancelString} vous serez pénalisé·e de {penaltyDaysNumber} jours',
   recap_reservation_boutton_annuler: 'Annuler',
-  recap_reservation_modal_annuler_body: 'Texte à définir recap_reservation_modal_annuler_body',
+  recap_reservation_modal_annuler_body_with_penalty:
+    `<p>
+      En poursuivant, votre réservation du {dateCurrentResa} et créneau initialement réservés sera annulée.
+    </p>
+    <p>
+      De plus, étant à moins de {nbOfDaysBeforeDate} jours de la date d'examen,
+      <b>un délai de repassage de {penaltyNb} jours</b>
+      s'appliquera à partir de la date de votre réservation annulée.
+    </p>
+    <p class="red--text">
+      Souhaitez-vous confirmer ?
+    </p>`,
+  recap_reservation_modal_annuler_body_without_penalty:
+    `<p>
+      En poursuivant, votre réservation du {dateCurrentResa} et créneau initialement réservés sera annulée.
+      </p>
+    <p class="red--text">
+      Souhaitez-vous confirmer ?
+    </p>`,
   recap_reservation_modal_annuler_boutton_retour: 'Retour',
   recap_reservation_modal_annuler_boutton_confirmer: 'Confirmer',
   recap_reservation_boutton_modifier: 'Modifier',

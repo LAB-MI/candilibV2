@@ -18,19 +18,23 @@
     </v-icon>
   </p>
   <p>
-    Si vous annulez après le
-    <strong>
-    {{ lastDateToCancelString }}
-    </strong>
-    vous serez pénalisé·e de
-    <strong>
-      {{ penaltyDaysNumber }} jours
-    </strong>
+    <span v-html="
+        $formatMessage(
+          {
+            id: 'recap_reservation_last_date_to_cancel',
+          },
+          {
+            lastDateToCancelString: `<strong>${lastDateToCancelString}</strong>`,
+            penaltyDaysNumber: `<strong>${penaltyDaysNumber}</strong>`,
+          },
+        )"
+    />
     &nbsp;
     <v-icon color="red">
       warning
     </v-icon>
   </p>
+
   <v-dialog v-model="dialog" persistent max-width="290">
     <template v-slot:activator="{ on }">
       <v-btn color="#f82249" dark v-on="on">
@@ -52,26 +56,18 @@
           Confirmer l'annulation
         </v-card-title>
         <v-card-text>
-          <div class="confirm-suppr-text-content">
-            <v-subheader v-if="isPenaltyActive" class="red--text">
-              <p>
-                {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }}
-              </p>
-              {{ isPenaltyTrue }}
-            </v-subheader>
-            <v-subheader v-else class="red--text">
-              <p>
-                {{ $formatMessage({ id: 'recap_reservation_modal_annuler_body' }) }}
-              </p>
-              {{ isPenaltyFalse }}
-            </v-subheader>
-          </div>
+          <cancel-reservation-message
+            class="confirm-suppr-text-content"
+            :idFormatMessage="cancelReservationMessage"
+            :dateCurrentResa="dateCurrentResservation"
+            :nbOfDaysBeforeDate="String(NUMBER_OF_DAYS_BEFORE_DATE)"
+            :penaltyNb="String(PENALTY_DAYS_NUMBER)"
+          />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             color="info"
-            class="  u-flex  u-flex--center"
             outline
             :aria-disabled="disabled"
             :disabled="disabled"
@@ -83,7 +79,7 @@
             {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_retour' }) }}
           </v-btn>
           <v-btn
-            color="error darken-1  u-flex  u-flex--center"
+            color="error darken-1  va-b"
             :aria-disabled="disabled"
             :disabled="disabled"
             type="submit"
@@ -91,7 +87,7 @@
             <span>
               {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_confirmer' }) }}
             </span>
-            <v-icon>
+            <v-icon class="pl-2">
               warning
             </v-icon>
           </v-btn>
@@ -131,8 +127,11 @@ import {
   dateTimeFromIsoSetLocaleFrToLocalString,
 } from '../../../../util/dateTimeWithSetLocale.js'
 
+import CancelReservationMessage from './CancelReservationMessage'
+
 import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
+  NUMBER_OF_DAYS_BEFORE_DATE,
   PENALTY_DAYS_NUMBER,
   SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST,
   SET_MODIFYING_RESERVATION,
@@ -140,15 +139,24 @@ import {
 } from '@/store'
 
 export default {
+  components: {
+    CancelReservationMessage,
+  },
   data () {
     return {
       selectedCheckBox: [],
       dialog: false,
+      PENALTY_DAYS_NUMBER,
+      NUMBER_OF_DAYS_BEFORE_DATE,
     }
   },
 
   computed: {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
+
+    cancelReservationMessage () {
+      return `recap_reservation_modal_annuler_body_with${this.isPenaltyActive ? '' : 'out'}_penalty`
+    },
 
     disabled () {
       return this.$store.state.reservation.isDeleting
@@ -165,13 +173,8 @@ export default {
       return false
     },
 
-    isPenaltyTrue () {
-      return `avec une pénalité de ${PENALTY_DAYS_NUMBER} jours`
-    },
-
-    isPenaltyFalse () {
-      const { lastDateToCancel } = this.$store.state.reservation.booked
-      return `sans pénalité, valable jusqu'au ${dateTimeFromIsoSetLocaleFrToLocalString(lastDateToCancel)}`
+    dateCurrentResservation () {
+      return dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)
     },
 
     lastDateToCancelString () {
@@ -222,7 +225,9 @@ export default {
   }
 
   .confirm-suppr-text-content {
-    height: 200px;
-    overflow-y: scroll;
+  }
+
+  .va-b {
+    vertical-align: baseline;
   }
 </style>
