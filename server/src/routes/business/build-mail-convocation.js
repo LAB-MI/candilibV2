@@ -3,7 +3,7 @@ import { getConvocationTemplate } from './mail/convocation-template'
 import { getUrlFAQ, getUrlRESA } from './mail/mail.constants'
 import { getHtmlBody } from './mail/body-mail-template'
 import { dateTimeToFormatFr } from '../../util/date.util'
-import { validateArgsToBuildBodyMailResa } from './send-mail-util'
+import { mailResaArgsValidation } from './send-mail-util'
 
 const section = 'candidat-sendMail'
 
@@ -13,7 +13,7 @@ export const getConvocationBody = place => {
   const { nom, adresse } = centre
   const { nomNaissance, codeNeph } = candidat
 
-  validateArgsToBuildBodyMailResa(
+  mailResaArgsValidation(
     date,
     nom,
     adresse,
@@ -28,7 +28,7 @@ export const getConvocationBody = place => {
 
   if (!urlFAQ || !urlRESA) {
     const message =
-      'Les informations lien du FAQ ou de la reservation sont manquantes.'
+      'Les informations lien de la FAQ ou de la réservation sont manquantes.'
     appLogger.error({
       section,
       action,
@@ -39,7 +39,7 @@ export const getConvocationBody = place => {
       message,
     })
     throw new Error(
-      'Les informations lien du FAQ ou de la reservation sont manquantes.'
+      'Les informations lien de la FAQ ou de la réservation sont manquantes.'
     )
   }
 

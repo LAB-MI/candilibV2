@@ -1,6 +1,6 @@
 import { appLogger } from '../../util'
 
-export function validateArgsToBuildBodyMailResa (
+export function buildMailResaArgsValidation (
   date,
   nom,
   adresse,

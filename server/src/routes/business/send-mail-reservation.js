@@ -5,7 +5,7 @@ import { getCancellationBody } from './build-mail-cancellation'
 
 const section = 'candidat-sendMail'
 
-const validateToSendMailResa = reservation => {
+const sendMailResaArgsValidation = reservation => {
   if (!reservation) {
     throw new Error("Il n'y a aucune réservation")
   }
@@ -23,7 +23,7 @@ export const sendMailConvocation = reservation => {
   appLogger.debug({ func: 'sendMailConvocation', arg: { reservation } })
 
   try {
-    validateToSendMailResa(reservation)
+    sendMailResaArgsValidation(reservation)
   } catch (error) {
     appLogger.error({ section, error })
     throw error
@@ -45,7 +45,7 @@ export const sendCancelBooking = (candidat, place) => {
   const reservation = place
 
   try {
-    validateToSendMailResa(reservation)
+    sendMailResaArgsValidation(reservation)
   } catch (error) {
     appLogger.error({ section, error })
     throw error
