@@ -35,10 +35,7 @@ export const connect = async () => {
     } else {
       mongoUri = mongoURL
     }
-    await mongoose.connect(
-      mongoUri,
-      mongooseOpts
-    )
+    await mongoose.connect(mongoUri, mongooseOpts)
     techLogger.info('Connected to Mongo!')
     return mongoose
   } catch (err) {
