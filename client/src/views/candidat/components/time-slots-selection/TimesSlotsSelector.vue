@@ -148,6 +148,7 @@ export default {
               departement: `${selectedSlot.centre.departement}`,
               center: `${selectedSlot.centre.nom}`,
               slot: selectedSlot.slot,
+              modifying: this.$store.state.reservation.isModifying,
             },
           })
         } else {

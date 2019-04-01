@@ -118,11 +118,11 @@ export default {
 
   methods: {
     goToSelectTimeSlot () {
-      this.$router.push({ name: 'time-slot' })
+      this.$router.push({ name: 'time-slot', params: { modifying: this.$route.params.modifying } })
     },
 
     goToSelectCenter () {
-      this.$router.push({ name: 'selection-centre' })
+      this.$router.push({ name: 'selection-centre', params: { modifying: this.$route.params.modifying } })
     },
 
     goToHome () {

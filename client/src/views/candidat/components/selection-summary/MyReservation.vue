@@ -57,7 +57,6 @@
         </v-card-title>
         <v-card-text>
           <cancel-reservation-message
-            class="confirm-suppr-text-content"
             :idFormatMessage="cancelReservationMessage"
             :dateCurrentResa="dateCurrentResservation"
             :nbOfDaysBeforeDate="String(NUMBER_OF_DAYS_BEFORE_DATE)"
@@ -193,7 +192,7 @@ export default {
   methods: {
     async modifyReservation () {
       await this.$store.dispatch(SET_MODIFYING_RESERVATION, true)
-      this.$router.push({ name: 'selection-centre' })
+      this.$router.push({ name: 'selection-centre', params: { modifying: true } })
     },
 
     async deleteConfirm () {

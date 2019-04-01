@@ -38,8 +38,8 @@
             </v-icon>
             {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
           </v-btn>
-
           <v-btn
+            v-if="!isModifying"
             :aria-disabled="disabled"
             :disabled="disabled"
             type="submit"
@@ -47,7 +47,11 @@
           >
             {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
           </v-btn>
-          <modal-confirm-modification :confirmReservationModif="confirmReservation"/>
+          <modal-confirm-modification
+            v-else
+            :confirmReservationModif="confirmReservation"
+            :disabled="disabled"
+          />
         </v-flex>
       </v-form>
     </v-card-actions>
@@ -105,14 +109,22 @@ export default {
       'reservation',
       'timeSlots',
     ]),
+
     disabled () {
       return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting
+    },
+
+    isModifying () {
+      if ((this.$route.params.modifying || this.reservation.isModifying) && this.reservation.booked.date) {
+        return true
+      }
+      return false
     },
   },
 
   methods: {
     goToSelectTimeSlot () {
-      this.$router.back()
+      this.$router.push({ name: 'time-slot', params: { modifying: this.$route.params.modifying } })
     },
 
     goToHome () {

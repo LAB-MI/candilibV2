@@ -1,6 +1,8 @@
 import { appLogger, techLogger } from '../../util'
 import {
+  addInfoDateToRulesResa,
   bookPlace,
+  getLastDateToCancel,
   getReservationByCandidat,
   removeReservationPlace,
   getLastDateToCancel,

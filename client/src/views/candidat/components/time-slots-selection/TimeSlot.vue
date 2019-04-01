@@ -6,7 +6,15 @@
         ({{ center.selected ? center.selected.departement : '' }})
       </span>
     </page-title>
-
+    <v-alert
+      v-if="isPenaltyActive"
+      :value="true"
+      type="info"
+    >
+    <!-- ToDo: Add text in candidatMessage.js -->
+      Vous avez annulé ou modifié votre réservation à moins de {{ NUMBER_OF_DAYS_BEFORE_DATE }} jours de la date d'examen.
+      Vous ne pouvez sélectionner une date qu'après le {{ displayDate }}
+    </v-alert>
     <v-tabs
       v-model="switchTab"
       centered
@@ -55,9 +63,22 @@
 
 <script>
 import { mapState } from 'vuex'
+import { DateTime } from 'luxon'
 
 import TimesSlotsSelector from './TimesSlotsSelector'
-import { FETCH_CENTER_REQUEST, FETCH_DATES_REQUEST } from '@/store'
+import {
+  FETCH_CENTER_REQUEST,
+  FETCH_CANDIDAT_RESERVATION_REQUEST,
+  FETCH_DATES_REQUEST,
+  NUMBER_OF_DAYS_BEFORE_DATE,
+  PENALTY_DAYS_NUMBER,
+} from '@/store'
+
+import {
+  dateTimeFromIsoSetLocaleFr,
+  dateTimeFromIsoSetLocaleFrToLocalString,
+} from '../../../../util/dateTimeWithSetLocale.js'
+
 import PageTitle from '@/components/PageTitle'
 
 export default {
@@ -71,11 +92,27 @@ export default {
       timeoutid: undefined,
       statusDayBlock: false,
       switchTab: null,
+      NUMBER_OF_DAYS_BEFORE_DATE,
+      PENALTY_DAYS_NUMBER,
     }
   },
 
   computed: {
-    ...mapState(['center', 'timeSlots']),
+    ...mapState(['center', 'timeSlots', 'reservation']),
+
+    isPenaltyActive () {
+      const { canBookAfter, lastDateToCancel } = this.reservation.booked
+      if (canBookAfter ||
+        DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel)) {
+        return true
+      }
+      return false
+    },
+
+    displayDate () {
+      const { canBookAfter } = this.reservation.booked
+      return dateTimeFromIsoSetLocaleFrToLocalString(canBookAfter)
+    },
   },
 
   methods: {
@@ -105,6 +142,7 @@ export default {
   },
 
   async mounted () {
+    await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
     await this.getTimeSlots()
   },
 

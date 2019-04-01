@@ -33,6 +33,7 @@ export default {
   confirmation_reservation_checkbox_double_commande: 'qu’une voiture à double commande est disponible *',
   confirmation_reservation_boutton_retour: 'Retour',
   confirmation_reservation_boutton_confirmation: 'Confirmer',
+  confirmation_reservation_boutton_modification_confirmation: 'Confirmer',
   recap_reservation_confirmee: 'Votre réservation est confirmée',
   recap_reservation_email_confirmee: 'Un email de confirmation vous a été envoyé à l\'adresse renseignée à l\'inscription',
   recap_reservation_last_date_to_cancel: 'Si vous annulez après le {lastDateToCancelString} vous serez pénalisé·e de {penaltyDaysNumber} jours',

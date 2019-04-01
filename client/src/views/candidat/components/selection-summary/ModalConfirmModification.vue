@@ -1,12 +1,13 @@
 <template>
   <v-dialog v-model="dialog" persistent max-width="290">
     <template v-slot:activator="{ on }">
-      <v-btn color="#f82249" dark v-on="on">
-        {{ $formatMessage({ id: 'recap_reservation_boutton_annuler' }) }}
-        &nbsp;
-        <v-icon>
-          delete_forever
-        </v-icon>
+      <v-btn
+          v-on="on"
+          :aria-disabled="disabled"
+          :disabled="disabled"
+          color="primary"
+        >
+        {{ $formatMessage({ id: 'confirmation_reservation_boutton_modification_confirmation' }) }}
       </v-btn>
     </template>
     <v-card>
@@ -20,7 +21,14 @@
           Confirmer la modification
         </v-card-title>
         <v-card-text>
-          Text Content
+        <cancel-reservation-message
+          v-if="dateCurrentResservation"
+          class="confirm-suppr-text-content"
+          :idFormatMessage="cancelReservationMessage"
+          :dateCurrentResa="dateCurrentResservation"
+          :nbOfDaysBeforeDate="String(NUMBER_OF_DAYS_BEFORE_DATE)"
+          :penaltyNb="String(PENALTY_DAYS_NUMBER)"
+        />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -38,7 +46,7 @@
             {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_retour' }) }}
           </v-btn>
           <v-btn
-            color="error darken-1  u-flex  u-flex--center"
+            color="primary"
             :aria-disabled="disabled"
             :disabled="disabled"
             type="submit"
@@ -46,9 +54,6 @@
             <span>
               {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_confirmer' }) }}
             </span>
-            <v-icon>
-              warning
-            </v-icon>
           </v-btn>
         </v-card-actions>
       </v-form>
@@ -57,14 +62,60 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { DateTime } from 'luxon'
+
+import {
+  NUMBER_OF_DAYS_BEFORE_DATE,
+  PENALTY_DAYS_NUMBER,
+} from '@/store'
+
+import {
+  dateTimeFromIsoSetLocaleFr,
+  dateTimeFromIsoSetLocaleFrToLocalString,
+} from '../../../../util/dateTimeWithSetLocale.js'
+
+import CancelReservationMessage from './CancelReservationMessage'
+
 export default {
+  components: {
+    CancelReservationMessage,
+  },
+
   props: {
     confirmReservationModif: Function,
+    disabled: Boolean,
   },
+
   data () {
     return {
       dialog: false,
+      PENALTY_DAYS_NUMBER,
+      NUMBER_OF_DAYS_BEFORE_DATE,
     }
+  },
+
+  computed: {
+    ...mapState(['reservation']),
+
+    cancelReservationMessage () {
+      return `recap_reservation_modal_annuler_body_with${this.isPenaltyActive ? '' : 'out'}_penalty`
+    },
+
+    dateCurrentResservation () {
+      return dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)
+    },
+
+    isPenaltyActive () {
+      const { lastDateToCancel } = this.$store.state.reservation.booked
+      if (!lastDateToCancel) {
+        return ''
+      }
+      if (DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel)) {
+        return true
+      }
+      return false
+    },
   },
 }
 </script>

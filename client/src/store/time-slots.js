@@ -116,7 +116,7 @@ export default {
         dispatch(SHOW_SUCCESS, 'Votre réservation a bien été prise en compte')
       } else {
         commit(CONFIRM_SELECT_DAY_FAILURE)
-        throw new Error("La place n'est plus disponible")
+        throw new Error(result.message || "La place n'est plus disponible")
       }
       dispatch(SET_MODIFYING_RESERVATION, false)
     },
