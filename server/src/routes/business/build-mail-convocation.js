@@ -3,7 +3,7 @@ import { getConvocationTemplate } from './mail/convocation-template'
 import { getUrlFAQ, getUrlRESA } from './mail/mail.constants'
 import { getHtmlBody } from './mail/body-mail-template'
 import { dateTimeToFormatFr } from '../../util/date.util'
-import { mailResaArgsValidation } from './send-mail-util'
+import { buildMailResaArgsValidation } from './send-mail-util'
 
 const section = 'candidat-sendMail'
 
@@ -13,7 +13,7 @@ export const getConvocationBody = place => {
   const { nom, adresse } = centre
   const { nomNaissance, codeNeph } = candidat
 
-  mailResaArgsValidation(
+  buildMailResaArgsValidation(
     date,
     nom,
     adresse,

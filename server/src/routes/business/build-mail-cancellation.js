@@ -1,5 +1,5 @@
 import { getHtmlBody } from './mail/body-mail-template'
-import { mailResaArgsValidation } from './send-mail-util'
+import { buildMailResaArgsValidation } from './send-mail-util'
 import { DateTimeFrFromJSDate } from '../../util/date.util'
 import { getCancelBookingTemplate } from './mail'
 
@@ -11,7 +11,7 @@ export const getCancellationBody = place => {
   const { nom, adresse } = centre
   const { nomNaissance, codeNeph } = candidat
 
-  mailResaArgsValidation(
+  buildMailResaArgsValidation(
     date,
     nom,
     adresse,
