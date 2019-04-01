@@ -368,11 +368,11 @@ export const addInfoDateToRulesResa = async (
 }
 /**
  *
-* @param {*} idCandidat Type string from ObjectId of mongoose
-* @param {*} centre Type string from ObjectId of mongoose
-* @param {*} date Type Date from Janascript or mongoose Type Date
-* @param {*} previewBookedPlace Type model place which populate centre and candidat
-*/
+ * @param {*} idCandidat Type string from ObjectId of mongoose
+ * @param {*} centre Type string from ObjectId of mongoose
+ * @param {*} date Type Date from Janascript or mongoose Type Date
+ * @param {*} previewBookedPlace Type model place which populate centre and candidat
+ */
 export const validCentreDateReservation = async (
   idCandidat,
   centre,
