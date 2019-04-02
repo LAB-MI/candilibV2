@@ -7,7 +7,9 @@ export function buildMailResaArgsValidation (
   nomNaissance,
   codeNeph,
   section,
-  action
+  action,
+  urlFAQ,
+  urlRESA
 ) {
   if (!date || !nom || !adresse || !nomNaissance || !codeNeph) {
     const message =
@@ -21,6 +23,20 @@ export function buildMailResaArgsValidation (
         adresse,
         nomNaissance,
         codeNeph,
+      },
+      message,
+    })
+    throw new Error(message)
+  }
+  if (!urlFAQ || !urlRESA) {
+    const message =
+      'Les informations lien de la FAQ ou de la réservation sont manquantes.'
+    appLogger.error({
+      section,
+      action,
+      arguments: {
+        urlFAQ,
+        urlRESA,
       },
       message,
     })

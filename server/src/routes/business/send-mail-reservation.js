@@ -7,25 +7,33 @@ const section = 'candidat-sendMail'
 
 const sendMailResaArgsValidation = reservation => {
   if (!reservation) {
+    console.log({ func: 'sendMailResaArgsValidation', reservation })
     throw new Error("Il n'y a aucune réservation")
   }
   if (!reservation.candidat) {
+    console.log({
+      func: 'sendMailResaArgsValidation',
+      candidat: reservation.candidat,
+    })
     throw new Error("Il n'y a aucune candidat pour cette réservation")
   }
 
   const { email } = reservation.candidat
   if (!email) {
+    console.log({ func: 'sendMailResaArgsValidation', email })
     throw new Error("Le candidat n'a pas de courriel")
   }
+  return email
 }
 
 export const sendMailConvocation = reservation => {
+  const action = 'SEND_CONVOVATION'
   appLogger.debug({ func: 'sendMailConvocation', arg: { reservation } })
 
   try {
     sendMailResaArgsValidation(reservation)
   } catch (error) {
-    appLogger.error({ section, error })
+    appLogger.error({ section, action, error })
     throw error
   }
 
@@ -39,18 +47,20 @@ export const sendMailConvocation = reservation => {
 }
 
 export const sendCancelBooking = (candidat, place) => {
-  appLogger.debug({ func: 'sendMailCancellation', arg: { candidat, place } })
-
-  place.candidat = candidat
+  appLogger.debug({ func: 'sendMailCancellation', args: { candidat, place } })
+  const action = 'SEND_CANCELLATION'
+  const { email } = candidat
   const reservation = place
+  reservation.candidat = candidat
 
+  console.log({ func: 'sendMailCancellation', reservation, email })
   try {
     sendMailResaArgsValidation(reservation)
   } catch (error) {
-    appLogger.error({ section, error })
+    appLogger.error({ section, action, error })
     throw error
   }
-  const { email } = candidat
+
   const content = getCancellationBody(reservation)
   const subject = "Annulation de votre convocation à l'examen"
 
