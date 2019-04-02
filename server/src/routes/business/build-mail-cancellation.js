@@ -2,12 +2,13 @@ import { getHtmlBody } from './mail/body-mail-template'
 import { buildMailResaArgsValidation } from './send-mail-util'
 import { dateTimeToFormatFr } from '../../util/date.util'
 import { getCancelBookingTemplate, getUrlFAQ, getUrlRESA } from './mail'
+import { appLogger } from '../../util'
 
 const section = 'candidat-sendMail'
 
 export const getCancellationBody = place => {
   const action = 'get-body-cancellation'
-  console.log({ func: 'sendMailCancellation', action, place })
+  appLogger.debug({ func: 'sendMailCancellation', action, place })
 
   const { centre, date, candidat } = place
   const { nom, adresse } = centre

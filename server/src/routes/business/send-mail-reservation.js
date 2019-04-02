@@ -7,20 +7,20 @@ const section = 'candidat-sendMail'
 
 const sendMailResaArgsValidation = reservation => {
   if (!reservation) {
-    console.log({ func: 'sendMailResaArgsValidation', reservation })
+    appLogger.debug({ func: 'sendMailResaArgsValidation', reservation })
     throw new Error("Il n'y a aucune réservation")
   }
   if (!reservation.candidat) {
-    console.log({
+    appLogger.debug({
       func: 'sendMailResaArgsValidation',
       candidat: reservation.candidat,
     })
-    throw new Error("Il n'y a aucune candidat pour cette réservation")
+    throw new Error("Il n'y a aucun candidat pour cette réservation")
   }
 
   const { email } = reservation.candidat
   if (!email) {
-    console.log({ func: 'sendMailResaArgsValidation', email })
+    appLogger.debug({ func: 'sendMailResaArgsValidation', email })
     throw new Error("Le candidat n'a pas de courriel")
   }
   return email
@@ -53,7 +53,7 @@ export const sendCancelBooking = (candidat, place) => {
   const reservation = place
   reservation.candidat = candidat
 
-  console.log({ func: 'sendMailCancellation', reservation, email })
+  appLogger.debug({ func: 'sendMailCancellation', reservation, email })
   try {
     sendMailResaArgsValidation(reservation)
   } catch (error) {
