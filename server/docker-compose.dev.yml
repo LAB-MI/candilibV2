@@ -72,7 +72,7 @@ services:
     networks:
       - candilib-network
 
-  mongo-express: 
+  mongo-express:
     image: mongo-express:latest
     container_name: candilib_mongo_express
     ports:
@@ -87,7 +87,7 @@ services:
       ME_CONFIG_MONGODB_AUTH_DATABASE : ${DB_NAME:-candilib}
       ME_CONFIG_MONGODB_AUTH_USERNAME : ${DB_USER:-adminCandilib}
       ME_CONFIG_MONGODB_AUTH_PASSWORD : ${DB_PASS:-changeme78}
- 
+
 networks:
   candilib-network:
     name: candilib-network
