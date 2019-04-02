@@ -33,31 +33,37 @@ jest.mock('../middlewares/verify-token')
 const basePlaceDateTime = DateTime.fromObject({ hour: 9 })
 const placeCanBook = {
   date: (() =>
-    basePlaceDateTime.plus({ day: config.delayToBook + 1, hour: 1 }).toISO())(),
+    basePlaceDateTime
+      .plus({ days: config.delayToBook + 1, hour: 1 })
+      .toISO())(),
   centre: 'Centre 1',
   inspecteur: 'Inspecteur 2',
 }
 const placeCanBook2 = {
   date: (() =>
-    basePlaceDateTime.plus({ day: config.delayToBook + 2, hour: 1 }).toISO())(),
+    basePlaceDateTime
+      .plus({ days: config.delayToBook + 2, hour: 1 })
+      .toISO())(),
   centre: 'Centre 2',
   inspecteur: 'Inspecteur 2',
 }
 const placeBeforeNow = {
-  date: (() => basePlaceDateTime.minus({ day: -1, hour: 1 }).toISO())(),
+  date: (() => basePlaceDateTime.minus({ days: 1, hour: 1 }).toISO())(),
   centre: 'Centre 1',
   inspecteur: 'Inspecteur 2',
 }
 const placeCanNotBook = {
   date: (() =>
-    basePlaceDateTime.plus({ day: config.delayToBook - 1, hour: 1 }).toISO())(),
+    basePlaceDateTime
+      .plus({ days: config.delayToBook - 1, hour: 1 })
+      .toISO())(),
   centre: 'Centre 2',
   inspecteur: 'Inspecteur 2',
 }
 const placeCancellable = {
   date: (() =>
     basePlaceDateTime
-      .plus({ day: config.daysForbidCancel + 1, hour: 1 })
+      .plus({ days: config.daysForbidCancel + 1, hour: 1 })
       .toISO())(),
   centre: 'Centre 2',
   inspecteur: 'Inspecteur 2',
@@ -65,7 +71,7 @@ const placeCancellable = {
 const placeNoCancellable = {
   date: (() =>
     basePlaceDateTime
-      .plus({ day: config.daysForbidCancel - 1, hour: 2 })
+      .plus({ days: config.daysForbidCancel - 1, hour: 2 })
       .toISO())(),
   centre: 'Centre 2',
   inspecteur: 'Inspecteur 2',
@@ -73,7 +79,7 @@ const placeNoCancellable = {
 const placeToRetry = {
   date: (() =>
     basePlaceDateTime
-      .plus({ day: config.timeoutToRetry + config.delayToBook, hour: 1 })
+      .plus({ days: config.timeoutToRetry + config.delayToBook, hour: 1 })
       .toISO())(),
   centre: 'Centre 2',
   inspecteur: 'Inspecteur 2',
@@ -395,7 +401,7 @@ describe('Test reservation controllers', () => {
         CAN_BOOK_AFTER +
         dateTimeToFormatFr(
           DateTime.fromJSDate(place.date)
-            .endOf('days')
+            .endOf('day')
             .plus({
               days: config.timeoutToRetry,
             })
