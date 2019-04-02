@@ -28,7 +28,7 @@ const formatResult = (result, countMonth) => {
     const monthNumber = DateTime.local().setLocale('fr').plus({ month: index }).monthLong
     let tmpArrayDay = []
     const tmpArrayHours = []
-    result.filter(el => dateTimeFromIsoSetLocaleFr(el).monthLong === monthNumber &&
+    result.sort().filter(el => dateTimeFromIsoSetLocaleFr(el).monthLong === monthNumber &&
       tmpArrayDay.push(getDayString(el)) &&
       tmpArrayHours.push({ day: getDayString(el), hour: getHoursString(el) })
     )
