@@ -55,7 +55,7 @@ services:
       MAIL_FROM: noreply@interieur.gouv.fr
       CANDIDAT_EXPIREDIN: 72h
       PUBLIC_URL: http://localhost:8080/candilib
-      DELAY_TO_BOOK: 0
+      DELAY_TO_BOOK: 7
       TIMEOUT_TO_RETRY: 45
       DAYS_FORBID_CANCEL: 7
 
