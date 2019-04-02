@@ -136,6 +136,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
   } catch (error) {
     appLogger.warn({
       section: 'candidat-removeReservations',
+      action: 'FAILED_SEND_MAIL',
       error,
     })
     statusmail = false
