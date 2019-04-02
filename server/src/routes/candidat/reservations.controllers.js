@@ -289,6 +289,7 @@ export const removeReservations = async (req, res) => {
 
   appLogger.info({
     section: 'candidat-removeReservations',
+    action: 'REMOVE_RESA_ARGS',
     idCandidat,
   })
   if (!idCandidat) {
@@ -296,6 +297,7 @@ export const removeReservations = async (req, res) => {
     const message = USER_INFO_MISSING
     appLogger.warn({
       section: 'candidat-removeReservations',
+      action: 'NO_CANDIDAT',
       idCandidat,
       success,
       message,
@@ -315,6 +317,7 @@ export const removeReservations = async (req, res) => {
 
       appLogger.warn({
         section: 'candidat-removeReservations',
+        action: 'NO_PLACE',
         idCandidat,
         success,
         message,
@@ -334,6 +337,7 @@ export const removeReservations = async (req, res) => {
   } catch (error) {
     appLogger.error({
       section: 'candidat-removeReservations',
+      action: 'UNKNOWN ERROR',
       error,
     })
     res.status(500).json({

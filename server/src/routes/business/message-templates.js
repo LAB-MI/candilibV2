@@ -57,6 +57,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     siteAdresse = sites.find(item => item.nom.toUpperCase() === place.title)
   }
 
+  // TODO: A supprimer? Est-ce qu'on envoi le mail de annulation quand la reservation est supprimer part Aurige
   const ANNULATION_CONVOCATION_MSG = getCancelBookingTemplate(nomMaj, codeNeph)
 
   const MAIL_CONVOCATION_MSG = getConvocationTemplate(
@@ -135,6 +136,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       message.subject = "Convocation à l'examen"
       return message
     case ANNULATION_CONVOCATION:
+      // TODO: A supprimer? Est-ce qu'on envoi le mail de annulation quand la reservation est supprimer part Aurige
       message.content = getHtmlBody(ANNULATION_CONVOCATION_MSG)
       message.subject = "Annulation de Convocation à l'examen"
       return message

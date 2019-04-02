@@ -1,17 +1,18 @@
-import { getConvocationTemplate } from './mail/convocation-template'
-import { getUrlFAQ, getUrlRESA } from './mail/mail.constants'
 import { getHtmlBody } from './mail/body-mail-template'
-import { dateTimeToFormatFr } from '../../util/date.util'
 import { buildMailResaArgsValidation } from './send-mail-util'
+import { dateTimeToFormatFr } from '../../util/date.util'
+import { getCancelBookingTemplate, getUrlFAQ, getUrlRESA } from './mail'
+import { appLogger } from '../../util'
 
 const section = 'candidat-sendMail'
 
-export const getConvocationBody = place => {
-  const action = 'get-body-convocation'
+export const getCancellationBody = place => {
+  const action = 'get-body-cancellation'
+  appLogger.debug({ func: 'sendMailCancellation', action, place })
+
   const { centre, date, candidat } = place
   const { nom, adresse } = centre
   const { nomNaissance, codeNeph } = candidat
-
   const urlFAQ = getUrlFAQ()
   const urlRESA = getUrlRESA()
 
@@ -29,13 +30,12 @@ export const getConvocationBody = place => {
 
   const dateTimeResa = dateTimeToFormatFr(date)
 
-  const body = getConvocationTemplate(
+  const body = getCancelBookingTemplate(
     nomNaissance,
+    codeNeph,
     nom,
     dateTimeResa.date,
     dateTimeResa.hour,
-    codeNeph,
-    adresse,
     urlRESA,
     urlFAQ
   )
