@@ -5,9 +5,7 @@ import {
   getLastDateToCancel,
   getReservationByCandidat,
   removeReservationPlace,
-  getLastDateToCancel,
   validCentreDateReservation,
-  addInfoDateToRulesResa,
 } from './places.business'
 import { sendMailConvocation } from '../business'
 import {
