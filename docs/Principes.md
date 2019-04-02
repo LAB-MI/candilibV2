@@ -34,3 +34,11 @@ Des contrôles réguliers sont effectués pour réévaluer les critères des can
 Si un candidat réponds à  un de ces trois critères, il n'est plus en mesure de se présenter à l'épreuve pratique et est donc supprimé de la liste des utilisateurs de Candilib, mais archivés, notamment pour des besoins statistiques, mais surtout pratique (pouvoir communiquer à un candidat la raison de la suppression de son compte de l'application).
 
 En cas d'échec à l'épreuve pratique, le candidat ne peut pas se représenter avant un délai de 2 mois. Il ne pourra donc pas réserver une nouvelle date avant ce délai.
+
+## Sélection d'un date de passage de l'examen (réservation)
+
+
+
+## Modification de réservation
+
+Les candidats peuvent annuler ou modifier leur réservation sans contrainte jusqu'à 7 jours avant la date de l'examen. 
