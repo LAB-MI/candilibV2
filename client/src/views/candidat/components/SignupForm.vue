@@ -345,13 +345,15 @@ export default {
 
     async fetchMatchingAdresses (val) {
       this.isFetchingMatchingAdresses = true
+      this.adresses[Math.min(this.adresses.length - 1, 0)] = val
       try {
         const adresses = await getAdresses(val)
         this.adresses = (adresses.features && adresses.features.length)
           ? adresses.features
             .filter(adr => adr.properties.type.includes('housenumber'))
             .map(feature => feature.properties.label)
-          : []
+            .concat([val])
+          : this.adresses
       } catch (error) {
       }
       this.isFetchingMatchingAdresses = false

@@ -224,9 +224,6 @@ export default {
     text-transform: uppercase;
   }
 
-  .confirm-suppr-text-content {
-  }
-
   .va-b {
     vertical-align: baseline;
   }
