@@ -57,9 +57,18 @@ const config = {
   CANDIDAT_ROUTE: '/candidat',
   ADMIN_ROUTE: '/admin',
 
-  delayToBook: process.env.DELAY_TO_BOOK || 7,
-  timeoutToRetry: process.env.TIMEOUT_TO_RETRY || 45,
-  daysForbidCancel: process.env.DAYS_FORBID_CANCEL || 7,
+  delayToBook:
+    process.env.DELAY_TO_BOOK !== undefined
+      ? Number(process.env.DELAY_TO_BOOK)
+      : 7,
+  timeoutToRetry:
+    process.env.TIMEOUT_TO_RETRY !== undefined
+      ? Number(process.env.TIMEOUT_TO_RETRY)
+      : 45,
+  daysForbidCancel:
+    process.env.DAYS_FORBID_CANCEL !== undefined
+      ? Number(process.env.DAYS_FORBID_CANCEL)
+      : 7,
 }
 
 export const dbOptions = {
