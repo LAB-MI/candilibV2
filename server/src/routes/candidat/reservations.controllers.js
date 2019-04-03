@@ -110,7 +110,7 @@ export const getReservations = async (req, res) => {
 
       reservation = await addInfoDateToRulesResa(
         idCandidat,
-        bookedPlace ? bookedPlace.bookedBy : undefined,
+        bookedPlace ? bookedPlace.candidat : undefined,
         reservation
       )
 
