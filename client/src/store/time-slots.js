@@ -23,12 +23,13 @@ const getHoursString = (elemISO) => {
   return `${dateTimeFromIsoSetLocaleFr(elemISO).toFormat("HH'h'mm")}-${dateTimeFromIsoSetLocaleFr(elemISO).plus({ minutes: 30 }).toFormat("HH'h'mm")}`
 }
 
-const formatResult = (result, countMonth, canBookAfter) => {
-  return Array(countMonth).fill(true).map((item, index) => {
+const formatResult = (result, monthToDisplay, canBookAfter, anticipatedCanBookAfter) => {
+  return Array(monthToDisplay).fill(true).map((item, index) => {
     const monthNumber = DateTime.local().setLocale('fr').plus({ month: index }).monthLong
     let tmpArrayDay = []
     const tmpArrayHours = []
-    result.sort().filter(el => (canBookAfter ? (dateTimeFromIsoSetLocaleFr(canBookAfter) < dateTimeFromIsoSetLocaleFr(el)) : true) &&
+    result.sort().filter(el => (anticipatedCanBookAfter ? (dateTimeFromIsoSetLocaleFr(anticipatedCanBookAfter) < dateTimeFromIsoSetLocaleFr(el)) : true) &&
+    (canBookAfter ? (dateTimeFromIsoSetLocaleFr(canBookAfter) < dateTimeFromIsoSetLocaleFr(el)) : true) &&
       dateTimeFromIsoSetLocaleFr(el).monthLong === monthNumber &&
       tmpArrayDay.push(getDayString(el)) &&
       tmpArrayHours.push({ day: getDayString(el), hour: getHoursString(el) })
@@ -88,10 +89,12 @@ export default {
         const begin = DateTime.local().toISO()
         const end = DateTime.local().setLocale('fr').plus({ month: 3 }).endOf('month').toISO()
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
-        const { canBookAfter } = rootState.reservation.booked
-        const mountToDisplay = 4
+        const { canBookAfter, lastDateToCancel, date, timeOutToRetry } = rootState.reservation.booked
+        const anticipatedCanBookAfter = DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel)
+          ? dateTimeFromIsoSetLocaleFr(date).plus({ days: timeOutToRetry }) : false
+        const numberOfMonthToDisplay = 4
 
-        const formatedResult = await formatResult(result, mountToDisplay, canBookAfter)
+        const formatedResult = await formatResult(result, numberOfMonthToDisplay, canBookAfter, anticipatedCanBookAfter)
         commit(FETCH_DATES_SUCCESS, formatedResult)
       } catch (error) {
         commit(FETCH_DATES_FAILURE, error.message)

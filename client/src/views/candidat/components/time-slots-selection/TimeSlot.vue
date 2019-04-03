@@ -1,16 +1,16 @@
 <template>
-  <v-card>
-    <page-title>
+  <v-card style="position: relative">
+    <page-title class="sticky-60">
       {{ center.selected ? center.selected.nom : '' }}
       <span class="title__small">
         ({{ center.selected ? center.selected.departement : '' }})
       </span>
     </page-title>
     <v-alert
-      v-if="isPenaltyActive && displayDate"
+      v-if="isPenaltyActive"
       :value="true"
       type="warning"
-      style="fontSize: 10.5px;"
+      style="fontSize: 1em;"
     >
       {{ $formatMessage(
           {
@@ -28,6 +28,7 @@
       centered
       slider-color="primary"
       color="#dfdfdf"
+      class="sticky-80"
     >
       <v-tab
         v-for="month in timeSlots.list"
@@ -169,5 +170,15 @@ export default {
 <style>
 .title__small {
   font-size: 0.7em;
+}
+.sticky-60 {
+  position: sticky;
+  top: 56px;
+  z-index: 1;
+}
+.sticky-80 {
+  position: sticky;
+  top: 130px;
+  z-index: 1;
 }
 </style>

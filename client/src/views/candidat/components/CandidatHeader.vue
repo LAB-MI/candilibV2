@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar dark fixed class="u-max-width-parent">
+  <v-toolbar dark fixed class="candidat-toolbar  u-max-width-parent">
     <v-toolbar-side-icon
       class="u-only-on-mobile"
       @click="toggleDrawer"
@@ -83,12 +83,10 @@ export default {
 }
 </script>
 
-<style lang="postcss" scoped>
-.admin-header {
-  display: flex;
-  padding: 0 1em;
-  background-color: black;
-  margin-top: 4em;
+<style lang="scss" scoped>
+.candidat-toolbar {
+  justify-content: center;
+  align-items: center;
 }
 
 .logo {

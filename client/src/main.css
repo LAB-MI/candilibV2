@@ -202,11 +202,11 @@ h3 {
 
 .candidat-section-header {
   font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background-color: #fff;
 
   &::after {
     content: '';
