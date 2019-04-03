@@ -26,8 +26,8 @@
           class="confirm-suppr-text-content"
           :idFormatMessage="cancelReservationMessage"
           :dateCurrentResa="dateCurrentResservation"
-          :nbOfDaysBeforeDate="String(NUMBER_OF_DAYS_BEFORE_DATE)"
-          :penaltyNb="String(PENALTY_DAYS_NUMBER)"
+          :nbOfDaysBeforeDate="String(numberOfDaysBeforeDate)"
+          :penaltyNb="String(penaltyDaysNumber)"
         />
         </v-card-text>
         <v-card-actions>
@@ -66,11 +66,6 @@ import { mapState } from 'vuex'
 import { DateTime } from 'luxon'
 
 import {
-  NUMBER_OF_DAYS_BEFORE_DATE,
-  PENALTY_DAYS_NUMBER,
-} from '@/store'
-
-import {
   dateTimeFromIsoSetLocaleFr,
   dateTimeFromIsoSetLocaleFrToLocalString,
 } from '../../../../util/dateTimeWithSetLocale.js'
@@ -90,13 +85,25 @@ export default {
   data () {
     return {
       dialog: false,
-      PENALTY_DAYS_NUMBER,
-      NUMBER_OF_DAYS_BEFORE_DATE,
     }
   },
 
   computed: {
     ...mapState(['reservation']),
+
+    penaltyDaysNumber () {
+      if (this.reservation.booked.timeOutToRetry) {
+        return this.reservation.booked.timeOutToRetry
+      }
+      return false
+    },
+
+    numberOfDaysBeforeDate () {
+      if (this.reservation.booked.dayToForbidCancel) {
+        return this.reservation.booked.dayToForbidCancel
+      }
+      return false
+    },
 
     cancelReservationMessage () {
       return `recap_reservation_modal_annuler_body_with${this.isPenaltyActive ? '' : 'out'}_penalty`

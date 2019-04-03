@@ -23,12 +23,13 @@ const getHoursString = (elemISO) => {
   return `${dateTimeFromIsoSetLocaleFr(elemISO).toFormat("HH'h'mm")}-${dateTimeFromIsoSetLocaleFr(elemISO).plus({ minutes: 30 }).toFormat("HH'h'mm")}`
 }
 
-const formatResult = (result, countMonth) => {
+const formatResult = (result, countMonth, canBookAfter) => {
   return Array(countMonth).fill(true).map((item, index) => {
     const monthNumber = DateTime.local().setLocale('fr').plus({ month: index }).monthLong
     let tmpArrayDay = []
     const tmpArrayHours = []
-    result.sort().filter(el => dateTimeFromIsoSetLocaleFr(el).monthLong === monthNumber &&
+    result.sort().filter(el => (canBookAfter ? (dateTimeFromIsoSetLocaleFr(canBookAfter) < dateTimeFromIsoSetLocaleFr(el)) : true) &&
+      dateTimeFromIsoSetLocaleFr(el).monthLong === monthNumber &&
       tmpArrayDay.push(getDayString(el)) &&
       tmpArrayHours.push({ day: getDayString(el), hour: getHoursString(el) })
     )
@@ -81,14 +82,16 @@ export default {
   },
 
   actions: {
-    async [FETCH_DATES_REQUEST] ({ commit, dispatch }, selectedCenterId) {
+    async [FETCH_DATES_REQUEST] ({ commit, dispatch, rootState }, selectedCenterId) {
       commit(FETCH_DATES_REQUEST)
       try {
         const begin = DateTime.local().toISO()
         const end = DateTime.local().setLocale('fr').plus({ month: 3 }).endOf('month').toISO()
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
+        const { canBookAfter } = rootState.reservation.booked
+        const mountToDisplay = 4
 
-        const formatedResult = await formatResult(result, 4)
+        const formatedResult = await formatResult(result, mountToDisplay, canBookAfter)
         commit(FETCH_DATES_SUCCESS, formatedResult)
       } catch (error) {
         commit(FETCH_DATES_FAILURE, error.message)

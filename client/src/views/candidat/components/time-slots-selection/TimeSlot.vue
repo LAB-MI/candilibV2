@@ -7,13 +7,21 @@
       </span>
     </page-title>
     <v-alert
-      v-if="isPenaltyActive"
+      v-if="isPenaltyActive && displayDate"
       :value="true"
-      type="info"
+      type="warning"
+      style="fontSize: 10.5px;"
     >
-    <!-- ToDo: Add text in candidatMessage.js -->
-      Vous avez annulé ou modifié votre réservation à moins de {{ NUMBER_OF_DAYS_BEFORE_DATE }} jours de la date d'examen.
-      Vous ne pouvez sélectionner une date qu'après le {{ displayDate }}
+      {{ $formatMessage(
+          {
+            id: 'home_choix_date_crenaux_message_de_penalite',
+          },
+          {
+            numberOfDaysBeforeDate,
+            displayDate,
+          },
+        )
+      }}
     </v-alert>
     <v-tabs
       v-model="switchTab"
@@ -70,8 +78,6 @@ import {
   FETCH_CENTER_REQUEST,
   FETCH_CANDIDAT_RESERVATION_REQUEST,
   FETCH_DATES_REQUEST,
-  NUMBER_OF_DAYS_BEFORE_DATE,
-  PENALTY_DAYS_NUMBER,
 } from '@/store'
 
 import {
@@ -92,13 +98,18 @@ export default {
       timeoutid: undefined,
       statusDayBlock: false,
       switchTab: null,
-      NUMBER_OF_DAYS_BEFORE_DATE,
-      PENALTY_DAYS_NUMBER,
     }
   },
 
   computed: {
     ...mapState(['center', 'timeSlots', 'reservation']),
+
+    numberOfDaysBeforeDate () {
+      if (this.reservation.booked.dayToForbidCancel) {
+        return this.reservation.booked.dayToForbidCancel
+      }
+      return false
+    },
 
     isPenaltyActive () {
       const { canBookAfter, lastDateToCancel } = this.reservation.booked
@@ -111,7 +122,10 @@ export default {
 
     displayDate () {
       const { canBookAfter } = this.reservation.booked
-      return dateTimeFromIsoSetLocaleFrToLocalString(canBookAfter)
+      if (canBookAfter) {
+        return dateTimeFromIsoSetLocaleFrToLocalString(canBookAfter)
+      }
+      return false
     },
   },
 

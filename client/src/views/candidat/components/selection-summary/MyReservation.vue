@@ -59,8 +59,8 @@
           <cancel-reservation-message
             :idFormatMessage="cancelReservationMessage"
             :dateCurrentResa="dateCurrentResservation"
-            :nbOfDaysBeforeDate="String(NUMBER_OF_DAYS_BEFORE_DATE)"
-            :penaltyNb="String(PENALTY_DAYS_NUMBER)"
+            :nbOfDaysBeforeDate="String(numberOfDaysBeforeDate)"
+            :penaltyNb="String(penaltyDaysNumber)"
           />
         </v-card-text>
         <v-card-actions>
@@ -130,8 +130,6 @@ import CancelReservationMessage from './CancelReservationMessage'
 
 import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
-  NUMBER_OF_DAYS_BEFORE_DATE,
-  PENALTY_DAYS_NUMBER,
   SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST,
   SET_MODIFYING_RESERVATION,
   SHOW_ERROR,
@@ -145,8 +143,6 @@ export default {
     return {
       selectedCheckBox: [],
       dialog: false,
-      PENALTY_DAYS_NUMBER,
-      NUMBER_OF_DAYS_BEFORE_DATE,
     }
   },
 
@@ -185,7 +181,17 @@ export default {
     },
 
     penaltyDaysNumber () {
-      return PENALTY_DAYS_NUMBER
+      if (this.reservation.booked.timeOutToRetry) {
+        return this.reservation.booked.timeOutToRetry
+      }
+      return false
+    },
+
+    numberOfDaysBeforeDate () {
+      if (this.reservation.booked) {
+        return this.reservation.booked.timeOutToRetry
+      }
+      return false
     },
   },
 
