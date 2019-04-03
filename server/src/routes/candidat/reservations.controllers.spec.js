@@ -314,62 +314,6 @@ describe('Test reservation controllers', () => {
     })
   })
 
-  describe('get reservation with candidat failed', () => {
-    beforeAll(async () => {
-      require('../middlewares/verify-token').__setIdCandidat(
-        createdCandidatFailed._id
-      )
-      createdCandidatFailed = await updateCandidatFailed(
-        createdCandidatFailed,
-        candidatFailed
-      )
-      await makeResa(createdPlaceToRetry, createdCandidatFailed)
-    })
-    afterAll(async () => {
-      await removeAllResas()
-    })
-
-    it('Should get 200 to get reservation from the candidat failed ', async () => {
-      const selectedPlace = createdPlaceToRetry
-      const selectedCentre = createdCentres[1]
-      console.log(createdCandidatFailed)
-      const { body } = await request(app)
-        .get(`${apiPrefix}/candidat/reservations`)
-        .set('Accept', 'application/json')
-        .expect(200)
-
-      const dateTimeResa = DateTime.fromJSDate(selectedPlace.date)
-      console.log(body)
-      expect(body).toBeDefined()
-      expect(body).toHaveProperty('date', dateTimeResa.setZone('utc').toISO())
-      expect(body.centre).toBeDefined()
-      expect(body.centre).toHaveProperty('nom', selectedCentre.nom)
-      expect(body.centre).toHaveProperty(
-        'departement',
-        selectedCentre.departement
-      )
-      expect(body.centre).toHaveProperty('adresse', selectedCentre.adresse)
-      expect(body.inspecteur).toBeUndefined()
-      expect(body.candidat).toBeUndefined()
-      expect(body).toHaveProperty(
-        'lastDateToCancel',
-        dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
-      )
-      expect(body.dateDernierEchecPratique).toBe(
-        dateDernierEchecPratique()
-          .setZone('utc')
-          .toISO()
-      )
-      expect(body.canBookAfter).toBe(
-        dateEchecCanBookAfter()
-          .setZone('utc')
-          .toISO()
-      )
-      expect(body.timeOutToRetry).toBe(config.timeoutToRetry)
-      expect(body.dayToForbidCancel).toBe(config.daysForbidCancel)
-    })
-  })
-
   describe('Book a place', () => {
     describe('book with the date authorize', () => {
       afterEach(async () => {
@@ -512,6 +456,62 @@ describe('Test reservation controllers', () => {
         message,
         true
       )
+    })
+  })
+
+  describe('get reservation with candidat failed', () => {
+    beforeAll(async () => {
+      require('../middlewares/verify-token').__setIdCandidat(
+        createdCandidatFailed._id
+      )
+      createdCandidatFailed = await updateCandidatFailed(
+        createdCandidatFailed,
+        candidatFailed
+      )
+      await makeResa(createdPlaceToRetry, createdCandidatFailed)
+    })
+    afterAll(async () => {
+      await removeAllResas()
+    })
+
+    it('Should get 200 to get reservation from the candidat failed ', async () => {
+      const selectedPlace = createdPlaceToRetry
+      const selectedCentre = createdCentres[1]
+      console.log(createdCandidatFailed)
+      const { body } = await request(app)
+        .get(`${apiPrefix}/candidat/reservations`)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      const dateTimeResa = DateTime.fromJSDate(selectedPlace.date)
+      console.log(body)
+      expect(body).toBeDefined()
+      expect(body).toHaveProperty('date', dateTimeResa.setZone('utc').toISO())
+      expect(body.centre).toBeDefined()
+      expect(body.centre).toHaveProperty('nom', selectedCentre.nom)
+      expect(body.centre).toHaveProperty(
+        'departement',
+        selectedCentre.departement
+      )
+      expect(body.centre).toHaveProperty('adresse', selectedCentre.adresse)
+      expect(body.inspecteur).toBeUndefined()
+      expect(body.candidat).toBeUndefined()
+      expect(body).toHaveProperty(
+        'lastDateToCancel',
+        dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
+      )
+      expect(body.dateDernierEchecPratique).toBe(
+        dateDernierEchecPratique()
+          .setZone('utc')
+          .toISO()
+      )
+      expect(body.canBookAfter).toBe(
+        dateEchecCanBookAfter()
+          .setZone('utc')
+          .toISO()
+      )
+      expect(body.timeOutToRetry).toBe(config.timeoutToRetry)
+      expect(body.dayToForbidCancel).toBe(config.daysForbidCancel)
     })
   })
 })

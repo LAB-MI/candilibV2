@@ -348,16 +348,6 @@ describe('Candidat', () => {
     })
 
     it('should update a candidat failed', async () => {
-      const email = validEmail
-      candidat = await createCandidat({
-        codeNeph,
-        nomNaissance,
-        prenom,
-        email,
-        portable,
-        adresse,
-      })
-
       const dateDernierEchecPratique = DateTime.local()
       const canBookAfter = dateDernierEchecPratique.plus({ days: 45 })
       const candidat1 = await updateCandidatFailed(candidat, {
