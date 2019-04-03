@@ -173,3 +173,12 @@ export const addArchivePlace = async (candidat, place, reason) => {
   })
   return candidat.save()
 }
+
+export const updateCandidatFailed = async (
+  candidat,
+  { dateDernierEchecPratique, canBookAfter }
+) => {
+  candidat.dateDernierEchecPratique = dateDernierEchecPratique
+  candidat.canBookAfter = canBookAfter
+  return candidat.save()
+}

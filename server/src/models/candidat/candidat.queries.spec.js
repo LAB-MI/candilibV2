@@ -28,6 +28,7 @@ import {
   REASON_CANCEL,
   REASON_EXAM_FAILED,
 } from '../../routes/common/reason.constants'
+import { updateCandidatFailed } from './candidat.queries'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
@@ -318,6 +319,58 @@ describe('Candidat', () => {
 
       // Then
       expect(noCandidat).toBe(null)
+    })
+
+    it('should update a candidat', async () => {
+      // Given
+      const email = validEmail
+      candidat = await createCandidat({
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+      })
+
+      const candidat1 = await updateCandidatSignUp(candidat, {
+        prenom: prenom1,
+        email: validEmail1,
+        adresse: adresse1,
+        portable: portable1,
+      })
+
+      expect(candidat1).not.toBe(null)
+      expect(candidat1).toHaveProperty('prenom', prenom1)
+      expect(candidat1).toHaveProperty('portable', portable1)
+      expect(candidat1).toHaveProperty('adresse', adresse1)
+      expect(candidat1).toHaveProperty('email', validEmail1)
+    })
+
+    it('should update a candidat failed', async () => {
+      const email = validEmail
+      candidat = await createCandidat({
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+      })
+
+      const dateDernierEchecPratique = DateTime.local()
+      const canBookAfter = dateDernierEchecPratique.plus({ days: 45 })
+      const candidat1 = await updateCandidatFailed(candidat, {
+        dateDernierEchecPratique,
+        canBookAfter,
+      })
+
+      expect(candidat1).not.toBe(null)
+      expect(candidat1).toHaveProperty(
+        'dateDernierEchecPratique',
+        dateDernierEchecPratique.toJSDate()
+      )
+      expect(candidat1).toHaveProperty('canBookAfter', canBookAfter.toJSDate())
     })
   })
 
