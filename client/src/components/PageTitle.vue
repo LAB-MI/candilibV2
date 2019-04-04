@@ -17,12 +17,13 @@ export default {
 
 <style lang="scss" scoped>
 .candidat-header {
-  position: relative;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
+  background-color: #fff;
+  box-shadow: 0 -10px 10px #fff;
 
   &::after {
     content: '';
