@@ -10,7 +10,7 @@ import { placeCommonFields } from '../place/place.model'
 
 const { Schema } = mongoose
 
-const ArchievedPlaceSchema = new Schema({
+const ArchivedPlaceFileds = {
   ...placeCommonFields,
   archivedAt: {
     type: Date,
@@ -20,7 +20,9 @@ const ArchievedPlaceSchema = new Schema({
     type: String,
     default: undefined,
   },
-})
+}
+
+const ArchivedPlaceSchema = new Schema(ArchivedPlaceFileds)
 
 export const candidatFields = {
   nomNaissance: {
@@ -104,7 +106,7 @@ export const candidatFields = {
     default: undefined,
   },
   places: {
-    type: [ArchievedPlaceSchema],
+    type: [ArchivedPlaceSchema],
     default: undefined,
   },
 }

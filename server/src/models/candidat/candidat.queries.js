@@ -1,7 +1,9 @@
+import { DateTime } from 'luxon'
+import moment from 'moment'
+
 import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
-import moment from 'moment'
 import { appLogger } from '../../util'
 
 export const createCandidat = async ({
@@ -150,5 +152,23 @@ export const updateCandidatById = async (id, updatedData) => {
 
 export const updateCandidatCanAfterBook = async (candidat, canBookAfter) => {
   candidat.canBookAfter = canBookAfter
+  return candidat.save()
+}
+
+export const addArchivePlace = async (candidat, place, reason) => {
+  const { inspecteur, centre, date } = place
+  const archivedAt = DateTime.local()
+  const archiveReason = reason
+
+  if (!candidat.places) {
+    candidat.places = []
+  }
+  candidat.places.push({
+    inspecteur,
+    centre,
+    date,
+    archivedAt,
+    archiveReason,
+  })
   return candidat.save()
 }
