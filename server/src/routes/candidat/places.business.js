@@ -26,8 +26,10 @@ import { getAuthorizedDateToBook } from './authorize.business'
 import {
   updateCandidatCanAfterBook,
   findCandidatById,
+  addArchivePlace,
 } from '../../models/candidat'
 import { dateTimeToFormatFr } from '../../util/date.util'
+import { REASON_CANCEL } from '../common/reason.constants'
 
 export const getDatesByCentreId = async (_id, endDate) => {
   appLogger.debug({
@@ -85,7 +87,7 @@ export const hasAvailablePlacesByCentre = async (departement, centre, date) => {
 export const getReservationByCandidat = async (idCandidat, options) => {
   const place = await findPlaceBookedByCandidat(
     idCandidat,
-    { inspecteur: 0 },
+    {},
     options || { centre: true }
   )
   return place
@@ -105,15 +107,16 @@ export const bookPlace = async (idCandidat, centre, date) => {
 
 export const removeReservationPlace = async (bookedPlace, isModified) => {
   const candidat = bookedPlace.candidat
+  if (!candidat) {
+    throw new Error("Il n'y pas de candidat pour annuler la reservation")
+  }
   const { _id: idCandidat } = candidat
 
   let dateAfterBook
-  const datetimeAfterBook = applyCancelRules(
-    bookedPlace.candidat,
-    bookedPlace.date
-  )
+  const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
 
   await removeBookedPlace(bookedPlace)
+  await addArchivePlace(candidat, bookedPlace, REASON_CANCEL)
 
   let statusmail = true
   let message = CANCEL_RESA_WITH_MAIL_SENT
@@ -194,7 +197,7 @@ export const canCancelReservation = previewDateReservation => {
  * @param {*} candidat type Candidate Model
  * @param {*} previewDateReservation Type Date javascript
  */
-export const applyCancelRules = (candidat, previewDateReservation) => {
+export const applyCancelRules = async (candidat, previewDateReservation) => {
   const previewBookedPlace = DateTime.fromJSDate(previewDateReservation)
 
   if (canCancelReservation(previewBookedPlace)) {
@@ -203,7 +206,7 @@ export const applyCancelRules = (candidat, previewDateReservation) => {
 
   const canBookAfterDate = getCandBookAfter(candidat, previewBookedPlace)
 
-  updateCandidatCanAfterBook(candidat, canBookAfterDate)
+  await updateCandidatCanAfterBook(candidat, canBookAfterDate)
 
   return canBookAfterDate
 }

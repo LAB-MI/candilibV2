@@ -26,6 +26,7 @@ import { findPlaceById } from '../../models/place'
 import config from '../../config'
 import { findCandidatById } from '../../models/candidat'
 import { dateTimeToFormatFr } from '../../util/date.util'
+import { REASON_CANCEL } from '../common/reason.constants'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -221,6 +222,19 @@ describe('Test reservation controllers', () => {
     } else {
       expect(candidat.canBookAfter).toBeUndefined()
     }
+    expect(candidat.places).toBeDefined()
+    expect(candidat.places.length).toBeGreaterThan(0)
+
+    const foundPlace = candidat.places.find(
+      pPlace => pPlace._id.toString() === previewPlace._id.toString()
+    )
+
+    expect(foundPlace).toBeDefined()
+    expect(foundPlace).toHaveProperty('inspecteur', previewPlace.inspecteur)
+    expect(foundPlace).toHaveProperty('centre', previewPlace.centre)
+    expect(foundPlace).toHaveProperty('date', previewPlace.date)
+    expect(foundPlace.archivedAt).toBeDefined()
+    expect(foundPlace).toHaveProperty('archiveReason', REASON_CANCEL)
   }
 
   describe('get reservation', () => {
