@@ -125,6 +125,8 @@ CandidatSchema.pre('save', async function preSave () {
     }
   })
 
+  candidat.email = candidat.email.toLowerCase()
+
   candidat.prenom =
     candidat.prenom &&
     candidat.prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
