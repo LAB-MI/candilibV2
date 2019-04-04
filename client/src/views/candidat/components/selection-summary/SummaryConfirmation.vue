@@ -84,7 +84,7 @@ import { mapState } from 'vuex'
 import ModalConfirmModification from './ModalConfirmModification.vue'
 import {
   dateTimeFromIsoSetLocaleFrToLocalString,
-} from '../../../../util/dateTimeWithSetLocale.js'
+} from '@/util/dateTimeWithSetLocale.js'
 import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,

@@ -18,6 +18,7 @@
           </v-card-text>
         </v-card>
       </v-dialog>
+
       <router-view />
     </v-content>
     <app-snackbar />

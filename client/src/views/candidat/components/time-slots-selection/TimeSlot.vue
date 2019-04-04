@@ -1,8 +1,10 @@
 <template>
-  <v-card style="position: relative">
+  <v-card>
     <page-title class="sticky-60">
-      {{ center.selected ? center.selected.nom : '' }}
-      <span class="title__small">
+      <span class="u-truncated">
+        {{ center.selected ? center.selected.nom : '' }}
+      </span>
+      <span class="title__small  ws-nowrap">
         ({{ center.selected ? center.selected.departement : '' }})
       </span>
     </page-title>
@@ -10,7 +12,7 @@
       v-if="isPenaltyActive"
       :value="true"
       type="warning"
-      style="fontSize: 1em;"
+      style="font-size: 1em;"
     >
       {{ $formatMessage(
           {
@@ -170,12 +172,19 @@ export default {
 <style>
 .title__small {
   font-size: 0.7em;
+  margin-left: 0.2em;
 }
+
+.ws-nowrap {
+  white-space: nowrap;
+}
+
 .sticky-60 {
   position: sticky;
   top: 56px;
   z-index: 1;
 }
+
 .sticky-80 {
   position: sticky;
   top: 130px;

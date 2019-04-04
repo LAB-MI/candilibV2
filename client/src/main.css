@@ -140,6 +140,18 @@ h3 {
   }
 }
 
+.u-truncated {
+  flex: 1 1 0;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.u-mw-100 {
+  max-width: 100%;
+}
+
 .c-candidat-wrapper {
   position: relative;
   min-height: 100vh;
@@ -197,32 +209,6 @@ h3 {
     text-align: center;
     text-transform: uppercase;
     text-shadow: 8px 8px 12px #333;
-  }
-}
-
-.candidat-section-header {
-  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #fff;
-
-  &::after {
-    content: '';
-    width: 60px;
-    height: 5px;
-    background: #f82249;
-    bottom: 0;
-    margin-bottom: 1em;
-  }
-
-  &__title {
-    font-size: 2.5rem;
-    text-transform: uppercase;
-    text-align: center;
-    font-weight: 700;
-    margin-bottom: 10px;
   }
 }
 
