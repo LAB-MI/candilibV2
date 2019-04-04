@@ -62,6 +62,29 @@ export default {
   recap_reservation_modal_annuler_boutton_retour: 'Retour',
   recap_reservation_modal_annuler_boutton_confirmer: 'Confirmer',
   recap_reservation_modal_modification_boutton_continuer: 'Continuer',
+  recap_reservation_modal_modification_body_info_penalty:
+    `<p>
+      Vous allez changer de date pour votre examen à l'épreuve pratique.
+    </p>
+    <p>
+      Conformément aux règles de gestion de candilib vous ne pourrez pas choisir une nouvelle date avant un délai de
+      <strong>
+        {penaltyNb} jours
+      </strong>
+      après le
+      <strong>
+        {dateCurrentResa}
+      </strong>.
+      <p>
+        Vous pourrez donc selectioner une date qu'à partir du
+        <strong>
+          {canBookSinceOf}
+        </strong>.
+      </p>
+    </p>
+    <p>
+      Souhaitez-vous néanmoins poursuivre votre modification ?
+    </p>`,
   recap_reservation_boutton_modifier: 'Modifier',
   recap_reservation_boutton_renvoyer_email: 'Renvoyer',
 }

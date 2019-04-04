@@ -57,9 +57,10 @@
       :formAction="modifyReservation"
       :penaltyDaysNumber="penaltyDaysNumber"
       :numberOfDaysBeforeDate="numberOfDaysBeforeDate"
-      :dateCurrentResservation="dateCurrentResservation"
+      :dateCurrentResservation="dateCurrentResservationWithoutHour"
       :isPenaltyActive="isPenaltyActive"
-      :idReservationMessage="cancelReservationMessage"
+      :canBookSinceOf="canBookSinceOf"
+      :idReservationMessage="modificationReservationMessage"
       idButtonName="recap_reservation_boutton_modifier"
       idMessageButtonRetour="recap_reservation_modal_annuler_boutton_retour"
       idMessageButtonConfirmer="recap_reservation_modal_modification_boutton_continuer"
@@ -100,6 +101,7 @@ import { DateTime } from 'luxon'
 import {
   dateTimeFromIsoSetLocaleFr,
   dateTimeFromIsoSetLocaleFrToLocalString,
+  dateTimeFromIsoSetLocaleFrToLocalStringWithoutHour,
 } from '../../../../util/dateTimeWithSetLocale.js'
 
 import ModalConfirm from './ModalConfirm'
@@ -130,6 +132,10 @@ export default {
       return `recap_reservation_modal_annuler_body_with${this.isPenaltyActive ? '' : 'out'}_penalty`
     },
 
+    modificationReservationMessage () {
+      return 'recap_reservation_modal_modification_body_info_penalty'
+    },
+
     disabled () {
       return this.$store.state.reservation.isDeleting
     },
@@ -145,8 +151,25 @@ export default {
       return false
     },
 
+    canBookSinceOf () {
+      const { date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
+      if ((DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel))) {
+        return DateTime.fromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
+          weekday: 'long',
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+        })
+      }
+      return ''
+    },
+
     dateCurrentResservation () {
       return dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)
+    },
+
+    dateCurrentResservationWithoutHour () {
+      return dateTimeFromIsoSetLocaleFrToLocalStringWithoutHour(this.reservation.booked.date)
     },
 
     lastDateToCancelString () {
@@ -166,7 +189,7 @@ export default {
 
     numberOfDaysBeforeDate () {
       if (this.reservation.booked) {
-        return this.reservation.booked.timeOutToRetry
+        return this.reservation.booked.dayToForbidCancel
       }
       return false
     },

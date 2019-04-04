@@ -124,9 +124,16 @@ export default {
     },
 
     displayDate () {
-      const { canBookAfter } = this.reservation.booked
+      const { canBookAfter, date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
       if (canBookAfter) {
         return dateTimeFromIsoSetLocaleFrToLocalString(canBookAfter)
+      } else if (DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel)) {
+        return DateTime.fromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
+          weekday: 'long',
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+        })
       }
       return false
     },

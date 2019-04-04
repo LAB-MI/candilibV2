@@ -33,13 +33,14 @@
           :dateCurrentResa="dateCurrentResservation"
           :nbOfDaysBeforeDate="String(numberOfDaysBeforeDate)"
           :penaltyNb="String(penaltyDaysNumber)"
+          :canBookSinceOf="canBookSinceOf"
         />
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
             :color="colorButtonRetour"
-            class="  u-flex  u-flex--center"
+            class="u-flex  u-flex--center"
             outline
             :aria-disabled="disabled"
             :disabled="disabled"
@@ -80,6 +81,7 @@ export default {
     numberOfDaysBeforeDate: Number,
     dateCurrentResservation: String,
     isPenaltyActive: Boolean,
+    canBookSinceOf: String,
     idReservationMessage: String,
     idButtonName: String,
     titleModal: String,

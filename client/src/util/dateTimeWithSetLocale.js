@@ -15,3 +15,13 @@ export const dateTimeFromIsoSetLocaleFrToLocalString = (isoDate) => {
       minute: '2-digit',
     })
 }
+
+export const dateTimeFromIsoSetLocaleFrToLocalStringWithoutHour = (isoDate) => {
+  return dateTimeFromIsoSetLocaleFr(isoDate)
+    .toLocaleString({
+      weekday: 'long',
+      month: 'long',
+      day: '2-digit',
+      year: 'numeric',
+    })
+}
