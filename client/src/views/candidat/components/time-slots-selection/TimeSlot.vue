@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card style="position: relative;">
     <page-title class="sticky-60">
       <span class="u-truncated">
         {{ center.selected ? center.selected.nom : '' }}
@@ -12,7 +12,7 @@
       v-if="isPenaltyActive"
       :value="true"
       type="warning"
-      style="font-size: 1em;"
+      style="fontsize: 1em;"
     >
       {{ $formatMessage(
           {
