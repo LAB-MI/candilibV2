@@ -46,11 +46,6 @@
           >
             {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
           </v-btn>
-          <!-- <modal-confirm-modification
-            v-else
-            :confirmReservationModif="confirmReservation"
-            :disabled="disabled"
-          /> -->
         </v-flex>
       </v-form>
     </v-card-actions>
