@@ -15,7 +15,7 @@ const ArchivedCandidatFields = {
     default: undefined,
   },
 }
-
+ArchivedCandidatFields.email.unique = undefined
 const ArchivedCandidatSchema = new Schema(ArchivedCandidatFields)
 
 ArchivedCandidatSchema.index(
