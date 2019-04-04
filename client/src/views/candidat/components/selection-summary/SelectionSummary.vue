@@ -88,7 +88,9 @@ export default {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
 
     title () {
-      return this.isConfirmation || this.$route.meta.isConfirmation ? 'Confirmation' : 'Ma réservation'
+      return this.isConfirmation || this.$route.meta.isConfirmation
+        ? `${this.$route.params.modifying ? 'Confirmer la modificaion' : 'Confirmation'}`
+        : 'Ma réservation'
     },
 
     isConfirmation () {

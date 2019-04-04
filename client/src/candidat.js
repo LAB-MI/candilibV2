@@ -61,6 +61,7 @@ export default {
     </p>`,
   recap_reservation_modal_annuler_boutton_retour: 'Retour',
   recap_reservation_modal_annuler_boutton_confirmer: 'Confirmer',
+  recap_reservation_modal_modification_boutton_continuer: 'Continuer',
   recap_reservation_boutton_modifier: 'Modifier',
   recap_reservation_boutton_renvoyer_email: 'Renvoyer',
 }

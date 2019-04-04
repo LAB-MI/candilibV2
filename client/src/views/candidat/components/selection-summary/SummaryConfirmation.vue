@@ -39,7 +39,6 @@
             {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
           </v-btn>
           <v-btn
-            v-if="!isModifying"
             :aria-disabled="disabled"
             :disabled="disabled"
             type="submit"
@@ -47,11 +46,11 @@
           >
             {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
           </v-btn>
-          <modal-confirm-modification
+          <!-- <modal-confirm-modification
             v-else
             :confirmReservationModif="confirmReservation"
             :disabled="disabled"
-          />
+          /> -->
         </v-flex>
       </v-form>
     </v-card-actions>
@@ -81,7 +80,6 @@
 <script>
 import { mapState } from 'vuex'
 
-import ModalConfirmModification from './ModalConfirmModification.vue'
 import {
   dateTimeFromIsoSetLocaleFrToLocalString,
 } from '@/util/dateTimeWithSetLocale.js'
@@ -96,10 +94,6 @@ export default {
       selectedCheckBox: [],
       isBackButtonDisabled: false,
     }
-  },
-
-  components: {
-    ModalConfirmModification,
   },
 
   computed: {

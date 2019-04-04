@@ -1,24 +1,24 @@
 <template>
-<div>
-  <h4>
-    {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
-    &nbsp;
-    <v-icon color="success">
-      check
-    </v-icon>
-  </h4>
-  <p>
-    {{ $formatMessage({ id: 'recap_reservation_email_confirmee' }) }}
-    <strong>
-      {{ candidat.me ? candidat.me.email : '' }}
-    </strong>
-    &nbsp;
-    <v-icon color="success">
-      check
-    </v-icon>
-  </p>
-  <p>
-    <span v-html="
+  <div>
+    <h4>
+      {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
+      &nbsp;
+      <v-icon color="success">
+        check
+      </v-icon>
+    </h4>
+    <p>
+      {{ $formatMessage({ id: 'recap_reservation_email_confirmee' }) }}
+      <strong>
+        {{ candidat.me ? candidat.me.email : '' }}
+      </strong>
+      &nbsp;
+      <v-icon color="success">
+        check
+      </v-icon>
+    </p>
+    <p>
+      <span v-html="
         $formatMessage(
           {
             id: 'recap_reservation_last_date_to_cancel',
@@ -28,93 +28,69 @@
             penaltyDaysNumber: `<strong>${penaltyDaysNumber}</strong>`,
           },
         )"
+      />
+      &nbsp;
+      <v-icon color="red">
+        warning
+      </v-icon>
+    </p>
+    <modal-confirm
+      titleModal="Confirmer l'annulation"
+      :formAction="deleteConfirm"
+      :penaltyDaysNumber="penaltyDaysNumber"
+      :numberOfDaysBeforeDate="numberOfDaysBeforeDate"
+      :dateCurrentResservation="dateCurrentResservation"
+      :isPenaltyActive="isPenaltyActive"
+      :idReservationMessage="cancelReservationMessage"
+      idButtonName="recap_reservation_boutton_annuler"
+      idMessageButtonRetour="recap_reservation_modal_annuler_boutton_retour"
+      idMessageButtonConfirmer="recap_reservation_modal_annuler_boutton_confirmer"
+      :disabled="disabled"
+      colorButton="#f82249"
+      colorButtonConfirmer="error"
+      colorButtonRetour="info"
+      iconName="delete_forever"
     />
-    &nbsp;
-    <v-icon color="red">
-      warning
-    </v-icon>
-  </p>
-
-  <v-dialog v-model="dialog" persistent max-width="290">
-    <template v-slot:activator="{ on }">
-      <v-btn color="#f82249" dark v-on="on">
-        {{ $formatMessage({ id: 'recap_reservation_boutton_annuler' }) }}
-        &nbsp;
-        <v-icon>
-          delete_forever
-        </v-icon>
-      </v-btn>
-    </template>
-    <v-card>
-      <v-form
-        class="u-full-width"
-        :aria-disabled="disabled"
-        :disabled="disabled"
-        @submit.prevent="deleteConfirm"
-      >
-        <v-card-title class="headline">
-          Confirmer l'annulation
-        </v-card-title>
-        <v-card-text>
-          <cancel-reservation-message
-            :idFormatMessage="cancelReservationMessage"
-            :dateCurrentResa="dateCurrentResservation"
-            :nbOfDaysBeforeDate="String(numberOfDaysBeforeDate)"
-            :penaltyNb="String(penaltyDaysNumber)"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="info"
-            outline
-            :aria-disabled="disabled"
-            :disabled="disabled"
-            @click="dialog = false"
-          >
-            <v-icon>
-              arrow_back_ios
-            </v-icon>
-            {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_retour' }) }}
-          </v-btn>
-          <v-btn
-            color="error darken-1  va-b"
-            :aria-disabled="disabled"
-            :disabled="disabled"
-            type="submit"
-          >
-            <span>
-              {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_confirmer' }) }}
-            </span>
-            <v-icon class="pl-2">
-              warning
-            </v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-form>
-    </v-card>
-  </v-dialog>
-  <v-btn
-    @click="modifyReservation"
-    color="primary"
-  >
-    {{ $formatMessage({ id: 'recap_reservation_boutton_modifier' }) }}
-    &nbsp;
-    <v-icon>
-      edit
-    </v-icon>
-  </v-btn>
-  <v-btn
-    color="success"
-    @click="resendEmailConfirmation"
-  >
-      {{ $formatMessage({ id: 'recap_reservation_boutton_renvoyer_email' }) }}
+    <modal-confirm
+      v-if="isPenaltyActive"
+      titleModal="Confirmer la modification"
+      :formAction="modifyReservation"
+      :penaltyDaysNumber="penaltyDaysNumber"
+      :numberOfDaysBeforeDate="numberOfDaysBeforeDate"
+      :dateCurrentResservation="dateCurrentResservation"
+      :isPenaltyActive="isPenaltyActive"
+      :idReservationMessage="cancelReservationMessage"
+      idButtonName="recap_reservation_boutton_modifier"
+      idMessageButtonRetour="recap_reservation_modal_annuler_boutton_retour"
+      idMessageButtonConfirmer="recap_reservation_modal_modification_boutton_continuer"
+      :disabled="disabled"
+      colorButton="primary"
+      colorButtonConfirmer="primary"
+      colorButtonRetour="info"
+      iconName="edit"
+    />
+    <v-btn
+      v-else
+      color="primary"
+      @click="modifyReservation"
+    >
+      {{ $formatMessage({ id: 'recap_reservation_boutton_modifier' }) }}
       &nbsp;
       <v-icon>
-        mail
+        edit
       </v-icon>
-  </v-btn>
-</div>
+    </v-btn>
+    <v-btn
+      color="success"
+      @click="resendEmailConfirmation"
+    >
+        {{ $formatMessage({ id: 'recap_reservation_boutton_renvoyer_email' }) }}
+        &nbsp;
+        <v-icon>
+          mail
+        </v-icon>
+    </v-btn>
+  </div>
 </template>
 
 <script>
@@ -126,7 +102,7 @@ import {
   dateTimeFromIsoSetLocaleFrToLocalString,
 } from '../../../../util/dateTimeWithSetLocale.js'
 
-import CancelReservationMessage from './CancelReservationMessage'
+import ModalConfirm from './ModalConfirm'
 
 import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
@@ -137,8 +113,9 @@ import {
 
 export default {
   components: {
-    CancelReservationMessage,
+    ModalConfirm,
   },
+
   data () {
     return {
       selectedCheckBox: [],
