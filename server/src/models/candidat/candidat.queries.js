@@ -156,7 +156,7 @@ export const updateCandidatCanAfterBook = async (candidat, canBookAfter) => {
 }
 
 export const addArchivePlace = async (candidat, place, reason) => {
-  const { inspecteur, centre, date } = place
+  const { _id, inspecteur, centre, date } = place
   const archivedAt = DateTime.local()
   const archiveReason = reason
 
@@ -164,6 +164,7 @@ export const addArchivePlace = async (candidat, place, reason) => {
     candidat.places = []
   }
   candidat.places.push({
+    _id,
     inspecteur,
     centre,
     date,

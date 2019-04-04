@@ -24,7 +24,10 @@ import {
   removePlaces,
 } from '../__tests__'
 import { addArchivePlace } from './candidat.queries'
-import { REASON_CANCEL, REASON_EXAM_FAILED } from './reason.constants'
+import {
+  REASON_CANCEL,
+  REASON_EXAM_FAILED,
+} from '../../routes/common/reason.constants'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
@@ -239,6 +242,32 @@ describe('Candidat', () => {
       )
       expect(sameCandidatDifferentEmail.email).not.toBe(candidat.email)
     })
+
+    it('should update a candidat', async () => {
+      // Given
+      const email = validEmail
+      candidat = await createCandidat({
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+      })
+
+      const candidat1 = await updateCandidatSignUp(candidat, {
+        prenom: prenom1,
+        email: validEmail1,
+        adresse: adresse1,
+        portable: portable1,
+      })
+
+      expect(candidat1).not.toBe(null)
+      expect(candidat1).toHaveProperty('prenom', prenom1)
+      expect(candidat1).toHaveProperty('portable', portable1)
+      expect(candidat1).toHaveProperty('adresse', adresse1)
+      expect(candidat1).toHaveProperty('email', validEmail1)
+    })
   })
 
   describe('Deleting Candidat', () => {
@@ -289,32 +318,6 @@ describe('Candidat', () => {
 
       // Then
       expect(noCandidat).toBe(null)
-    })
-
-    it('should update a candidat', async () => {
-      // Given
-      const email = validEmail
-      candidat = await createCandidat({
-        codeNeph,
-        nomNaissance,
-        prenom,
-        email,
-        portable,
-        adresse,
-      })
-
-      const candidat1 = await updateCandidatSignUp(candidat, {
-        prenom: prenom1,
-        email: validEmail1,
-        adresse: adresse1,
-        portable: portable1,
-      })
-
-      expect(candidat1).not.toBe(null)
-      expect(candidat1).toHaveProperty('prenom', prenom1)
-      expect(candidat1).toHaveProperty('portable', portable1)
-      expect(candidat1).toHaveProperty('adresse', adresse1)
-      expect(candidat1).toHaveProperty('email', validEmail1)
     })
   })
 
@@ -415,7 +418,7 @@ describe('Candidat', () => {
       expect(candidat1).toBeDefined()
       expect(candidat1.places).toBeDefined()
       expect(candidat1.places).toHaveLength(2)
-
+      expect(candidat1.places[0]).toHaveProperty('_id', place._id)
       expect(candidat1.places[0]).toHaveProperty('date', place.date)
       expect(candidat1.places[0]).toHaveProperty('centre', place.centre)
       expect(candidat1.places[0]).toHaveProperty('inspecteur', place.inspecteur)
@@ -423,6 +426,7 @@ describe('Candidat', () => {
       expect(candidat1.places[0].archiveReason).toBeDefined()
       expect(candidat1.places[0]).toHaveProperty('archiveReason', REASON_CANCEL)
 
+      expect(candidat1.places[1]).toHaveProperty('_id', place1._id)
       expect(candidat1.places[1]).toHaveProperty('date', place1.date)
       expect(candidat1.places[1]).toHaveProperty('centre', place1.centre)
       expect(candidat1.places[1]).toHaveProperty(
