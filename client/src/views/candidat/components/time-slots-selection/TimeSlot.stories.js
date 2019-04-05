@@ -79,7 +79,63 @@ storiesOf('Candidat', module)
               month: 'juin',
               availableTimeSlots: [
                 {
+                  day: 'mardi 21 juin 2019',
+                  hours: [
+                    '13h30-14h00',
+                    '14h00-14h30',
+                  ],
+                },
+                {
+                  day: 'mardi 22 juin 2019',
+                  hours: [
+                    '13h30-14h00',
+                    '14h00-14h30',
+                  ],
+                },
+                {
+                  day: 'mardi 23 juin 2019',
+                  hours: [
+                    '13h30-14h00',
+                    '14h00-14h30',
+                  ],
+                },
+                {
+                  day: 'mardi 24 juin 2019',
+                  hours: [
+                    '13h30-14h00',
+                    '14h00-14h30',
+                  ],
+                },
+                {
+                  day: 'mardi 25 juin 2019',
+                  hours: [
+                    '13h30-14h00',
+                    '14h00-14h30',
+                  ],
+                },
+                {
                   day: 'mardi 26 juin 2019',
+                  hours: [
+                    '13h30-14h00',
+                    '14h00-14h30',
+                  ],
+                },
+                {
+                  day: 'mardi 27 juin 2019',
+                  hours: [
+                    '13h30-14h00',
+                    '14h00-14h30',
+                  ],
+                },
+                {
+                  day: 'mardi 28 juin 2019',
+                  hours: [
+                    '13h30-14h00',
+                    '14h00-14h30',
+                  ],
+                },
+                {
+                  day: 'mardi 29 juin 2019',
                   hours: [
                     '13h30-14h00',
                     '14h00-14h30',
