@@ -6,11 +6,17 @@ import { setConsoleOptions } from '@storybook/addon-console'
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Router from 'vue-router'
-
+import VueIntl from 'vue-intl'
 import 'vuetify/dist/vuetify.css'
+
+import { candidat, admin } from '../../src/messages'
+import '../../src/plugins/index'
+
 import '../../src/main.css'
 
-import '../../src/plugins/index'
+Vue.use(VueIntl)
+Vue.setLocale('fr')
+Vue.registerMessages('fr', { ...candidat, ...admin })
 
 Vue.use(Vuex)
 Vue.use(Router)
