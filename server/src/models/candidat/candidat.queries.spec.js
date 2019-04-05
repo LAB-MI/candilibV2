@@ -23,6 +23,11 @@ import {
   removeCentres,
   removePlaces,
 } from '../__tests__'
+import { addArchivePlace } from './candidat.queries'
+import {
+  REASON_CANCEL,
+  REASON_EXAM_FAILED,
+} from '../../routes/common/reason.constants'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
@@ -208,6 +213,10 @@ describe('Candidat', () => {
   })
 
   describe('Updating Candidat', () => {
+    afterAll(async () => {
+      await deleteCandidat(candidat).catch(() => true)
+    })
+
     it('should update a candidat′s email', async () => {
       // Given
       const email = validEmail
@@ -232,6 +241,32 @@ describe('Candidat', () => {
         candidat._id.toString()
       )
       expect(sameCandidatDifferentEmail.email).not.toBe(candidat.email)
+    })
+
+    it('should update a candidat', async () => {
+      // Given
+      const email = validEmail
+      candidat = await createCandidat({
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+      })
+
+      const candidat1 = await updateCandidatSignUp(candidat, {
+        prenom: prenom1,
+        email: validEmail1,
+        adresse: adresse1,
+        portable: portable1,
+      })
+
+      expect(candidat1).not.toBe(null)
+      expect(candidat1).toHaveProperty('prenom', prenom1)
+      expect(candidat1).toHaveProperty('portable', portable1)
+      expect(candidat1).toHaveProperty('adresse', adresse1)
+      expect(candidat1).toHaveProperty('email', validEmail1)
     })
   })
 
@@ -283,32 +318,6 @@ describe('Candidat', () => {
 
       // Then
       expect(noCandidat).toBe(null)
-    })
-
-    it('should update a candidat', async () => {
-      // Given
-      const email = validEmail
-      candidat = await createCandidat({
-        codeNeph,
-        nomNaissance,
-        prenom,
-        email,
-        portable,
-        adresse,
-      })
-
-      const candidat1 = await updateCandidatSignUp(candidat, {
-        prenom: prenom1,
-        email: validEmail1,
-        adresse: adresse1,
-        portable: portable1,
-      })
-
-      expect(candidat1).not.toBe(null)
-      expect(candidat1).toHaveProperty('prenom', prenom1)
-      expect(candidat1).toHaveProperty('portable', portable1)
-      expect(candidat1).toHaveProperty('adresse', adresse1)
-      expect(candidat1).toHaveProperty('email', validEmail1)
     })
   })
 
@@ -375,6 +384,61 @@ describe('Candidat', () => {
         expect(candidat.place).toBeDefined()
         expect(candidat.place.inspecteur).toBe(inspecteur)
       })
+    })
+  })
+
+  describe('Archive place', () => {
+    let createdCandidats
+    let createdPlaces
+    beforeAll(async () => {
+      createdCandidats = await createCandidats()
+      await createCentres()
+      createdPlaces = await createPlaces()
+    })
+
+    afterAll(async () => {
+      await deleteCandidats()
+    })
+
+    it('should add a place in archive place from candidat', async () => {
+      const place = createdPlaces[0]
+      const place1 = createdPlaces[1]
+      const selectCandidat = createdCandidats[0]
+      const candidat = await addArchivePlace(
+        selectCandidat,
+        place,
+        REASON_CANCEL
+      )
+      const candidat1 = await addArchivePlace(
+        candidat,
+        place1,
+        REASON_EXAM_FAILED
+      )
+
+      expect(candidat1).toBeDefined()
+      expect(candidat1.places).toBeDefined()
+      expect(candidat1.places).toHaveLength(2)
+      expect(candidat1.places[0]).toHaveProperty('_id', place._id)
+      expect(candidat1.places[0]).toHaveProperty('date', place.date)
+      expect(candidat1.places[0]).toHaveProperty('centre', place.centre)
+      expect(candidat1.places[0]).toHaveProperty('inspecteur', place.inspecteur)
+      expect(candidat1.places[0].archivedAt).toBeDefined()
+      expect(candidat1.places[0].archiveReason).toBeDefined()
+      expect(candidat1.places[0]).toHaveProperty('archiveReason', REASON_CANCEL)
+
+      expect(candidat1.places[1]).toHaveProperty('_id', place1._id)
+      expect(candidat1.places[1]).toHaveProperty('date', place1.date)
+      expect(candidat1.places[1]).toHaveProperty('centre', place1.centre)
+      expect(candidat1.places[1]).toHaveProperty(
+        'inspecteur',
+        place1.inspecteur
+      )
+      expect(candidat1.places[1].archivedAt).toBeDefined()
+      expect(candidat1.places[1].archiveReason).toBeDefined()
+      expect(candidat1.places[1]).toHaveProperty(
+        'archiveReason',
+        REASON_EXAM_FAILED
+      )
     })
   })
 })

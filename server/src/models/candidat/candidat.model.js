@@ -6,10 +6,25 @@ import {
   phone as phoneRegex,
   neph as nephRegex,
 } from '../../util'
+import { placeCommonFields } from '../place/place.model'
 
 const { Schema } = mongoose
 
-const candidatFields = {
+const ArchivedPlaceFileds = {
+  ...placeCommonFields,
+  archivedAt: {
+    type: Date,
+    default: undefined,
+  },
+  archiveReason: {
+    type: String,
+    default: undefined,
+  },
+}
+
+const ArchivedPlaceSchema = new Schema(ArchivedPlaceFileds)
+
+export const candidatFields = {
   nomNaissance: {
     type: String,
     required: true,
@@ -88,6 +103,10 @@ const candidatFields = {
   },
   canBookAfter: {
     type: Date,
+    default: undefined,
+  },
+  places: {
+    type: [ArchivedPlaceSchema],
     default: undefined,
   },
 }

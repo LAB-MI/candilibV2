@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const { Schema } = mongoose
 const ObjectId = Schema.Types.ObjectId
 
-const PlaceSchema = new Schema({
+export const placeCommonFields = {
   inspecteur: {
     type: String,
     required: false,
@@ -18,6 +18,10 @@ const PlaceSchema = new Schema({
     type: Date,
     required: false,
   },
+}
+
+const PlaceSchema = new Schema({
+  ...placeCommonFields,
   candidat: {
     type: ObjectId, // ObjectId du candidat ayant réservé cette place
     required: false,

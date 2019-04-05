@@ -1,88 +1,11 @@
 import mongoose from 'mongoose'
 
-import {
-  email as emailRegex,
-  phone as phoneRegex,
-  neph as nephRegex,
-} from '../../util'
+import { candidatFields } from '../candidat/candidat.model'
 
 const { Schema } = mongoose
 
 const ArchivedCandidatFields = {
-  nomNaissance: {
-    type: String,
-    required: true,
-    uppercase: true,
-    trim: true,
-  },
-  prenom: {
-    type: String,
-    required: false,
-    trim: true,
-  },
-  codeNeph: {
-    type: String,
-    required: true,
-    match: nephRegex,
-    trim: true,
-  },
-  dateReussiteETG: {
-    type: Date,
-    required: false,
-  },
-  dateDernierEchecPratique: {
-    type: Date,
-    required: false,
-  },
-  reussitePratique: {
-    type: String,
-    required: false,
-    trim: true,
-  },
-  email: {
-    type: String,
-    default: '',
-    required: true,
-    trim: true,
-    match: emailRegex,
-  },
-  portable: {
-    type: String,
-    default: '',
-    required: true,
-    trim: true,
-    match: phoneRegex,
-  },
-  adresse: {
-    type: String,
-    default: '',
-    trim: true,
-  },
-  // retourAurige
-  isValidatedByAurige: {
-    type: Boolean,
-    default: null,
-  },
-  presignedUpAt: {
-    type: Date,
-    default: undefined,
-  },
-  place: {
-    type: Object,
-    default: undefined,
-  },
-  isValidatedEmail: {
-    type: Boolean,
-    default: false,
-  },
-  emailValidatedAt: {
-    type: Date,
-    default: undefined,
-  },
-  aurigeValidatedAt: {
-    type: Date,
-    default: undefined,
-  },
+  ...candidatFields,
   archivedAt: {
     type: Date,
     default: undefined,
@@ -92,6 +15,9 @@ const ArchivedCandidatFields = {
     default: undefined,
   },
 }
+
+ArchivedCandidatFields.email = { ...ArchivedCandidatFields.email }
+ArchivedCandidatFields.email.unique = false
 
 const ArchivedCandidatSchema = new Schema(ArchivedCandidatFields)
 
