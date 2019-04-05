@@ -23,12 +23,11 @@ import {
   removeCentres,
   removePlaces,
 } from '../__tests__'
-import { addArchivePlace } from './candidat.queries'
+import { addArchivePlace, updateCandidatFailed } from './candidat.queries'
 import {
   REASON_CANCEL,
   REASON_EXAM_FAILED,
 } from '../../routes/common/reason.constants'
-import { updateCandidatFailed } from './candidat.queries'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
