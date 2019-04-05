@@ -1,11 +1,11 @@
 import { DateTime } from 'luxon'
-
-export const dateTimeFromIsoSetLocaleFr = (isoDate) => {
+// getFrenchDateFromIso
+export const getFrenchDateFromIso = (isoDate) => {
   return DateTime.fromISO(isoDate).setLocale('fr')
 }
 
-export const dateTimeFromIsoSetLocaleFrToLocalString = (isoDate) => {
-  return dateTimeFromIsoSetLocaleFr(isoDate)
+export const getFrenchDateFromIsoToString = (isoDate) => {
+  return getFrenchDateFromIso(isoDate)
     .toLocaleString({
       weekday: 'long',
       month: 'long',
@@ -16,8 +16,8 @@ export const dateTimeFromIsoSetLocaleFrToLocalString = (isoDate) => {
     })
 }
 
-export const dateTimeFromIsoSetLocaleFrToLocalStringWithoutHour = (isoDate) => {
-  return dateTimeFromIsoSetLocaleFr(isoDate)
+export const getFrenchDateFromIsoToStringWithTime = (isoDate) => {
+  return getFrenchDateFromIso(isoDate)
     .toLocaleString({
       weekday: 'long',
       month: 'long',

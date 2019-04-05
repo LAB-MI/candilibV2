@@ -99,9 +99,9 @@ import { mapState } from 'vuex'
 import { DateTime } from 'luxon'
 
 import {
-  dateTimeFromIsoSetLocaleFr,
-  dateTimeFromIsoSetLocaleFrToLocalString,
-  dateTimeFromIsoSetLocaleFrToLocalStringWithoutHour,
+  getFrenchDateFromIso,
+  getFrenchDateFromIsoToString,
+  getFrenchDateFromIsoToStringWithTime,
 } from '../../../../util/dateTimeWithSetLocale.js'
 
 import ModalConfirm from './ModalConfirm'
@@ -145,7 +145,7 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      if (DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel)) {
+      if (DateTime.local().setLocale('fr') > getFrenchDateFromIso(lastDateToCancel)) {
         return true
       }
       return false
@@ -153,7 +153,7 @@ export default {
 
     canBookSinceOf () {
       const { date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
-      if ((DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel))) {
+      if ((DateTime.local().setLocale('fr') > getFrenchDateFromIso(lastDateToCancel))) {
         return DateTime.fromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
           weekday: 'long',
           month: 'long',
@@ -165,11 +165,11 @@ export default {
     },
 
     dateCurrentResservation () {
-      return dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)
+      return getFrenchDateFromIsoToString(this.reservation.booked.date)
     },
 
     dateCurrentResservationWithoutHour () {
-      return dateTimeFromIsoSetLocaleFrToLocalStringWithoutHour(this.reservation.booked.date)
+      return getFrenchDateFromIsoToStringWithTime(this.reservation.booked.date)
     },
 
     lastDateToCancelString () {
@@ -177,7 +177,7 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      return dateTimeFromIsoSetLocaleFrToLocalString(lastDateToCancel)
+      return getFrenchDateFromIsoToString(lastDateToCancel)
     },
 
     penaltyDaysNumber () {

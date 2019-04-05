@@ -84,8 +84,8 @@ import {
 } from '@/store'
 
 import {
-  dateTimeFromIsoSetLocaleFr,
-  dateTimeFromIsoSetLocaleFrToLocalString,
+  getFrenchDateFromIso,
+  getFrenchDateFromIsoToString,
 } from '../../../../util/dateTimeWithSetLocale.js'
 
 import PageTitle from '@/components/PageTitle'
@@ -117,7 +117,7 @@ export default {
     isPenaltyActive () {
       const { canBookAfter, lastDateToCancel } = this.reservation.booked
       if (canBookAfter ||
-        DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel)) {
+        DateTime.local().setLocale('fr') > getFrenchDateFromIso(lastDateToCancel)) {
         return true
       }
       return false
@@ -126,8 +126,8 @@ export default {
     displayDate () {
       const { canBookAfter, date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
       if (canBookAfter) {
-        return dateTimeFromIsoSetLocaleFrToLocalString(canBookAfter)
-      } else if (DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel)) {
+        return getFrenchDateFromIsoToString(canBookAfter)
+      } else if (DateTime.local().setLocale('fr') > getFrenchDateFromIso(lastDateToCancel)) {
         return DateTime.fromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
           weekday: 'long',
           month: 'long',

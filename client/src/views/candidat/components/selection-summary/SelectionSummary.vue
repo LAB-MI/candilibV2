@@ -56,7 +56,7 @@ import {
 } from '@/store'
 
 import {
-  dateTimeFromIsoSetLocaleFrToLocalString,
+  getFrenchDateFromIsoToString,
 } from '../../../../util/dateTimeWithSetLocale.js'
 import SummaryConfirmation from './SummaryConfirmation.vue'
 import MyReservation from './MyReservation.vue'
@@ -168,7 +168,7 @@ export default {
     },
 
     convertIsoDate (dateIso) {
-      return `${dateTimeFromIsoSetLocaleFrToLocalString(dateIso)}`
+      return `${getFrenchDateFromIsoToString(dateIso)}`
     },
 
     async getSelectedCenterAndDate () {
