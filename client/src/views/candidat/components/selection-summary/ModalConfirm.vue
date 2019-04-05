@@ -27,13 +27,13 @@
         </v-card-title>
         <v-card-text>
         <cancel-reservation-message
-          v-if="dateCurrentResservation"
+          v-if="currentReservationDateTime"
           class="confirm-suppr-text-content"
           :idFormatMessage="idReservationMessage"
-          :dateCurrentResa="dateCurrentResservation"
+          :dateCurrentResa="currentReservationDateTime"
           :nbOfDaysBeforeDate="String(numberOfDaysBeforeDate)"
           :penaltyNb="String(penaltyDaysNumber)"
-          :canBookSinceOf="canBookSinceOf"
+          :canBookFrom="canBookFrom"
         />
         </v-card-text>
         <v-card-actions>
@@ -79,9 +79,9 @@ export default {
     formAction: Function,
     penaltyDaysNumber: Number,
     numberOfDaysBeforeDate: Number,
-    dateCurrentResservation: String,
+    currentReservationDateTime: String,
     isPenaltyActive: Boolean,
-    canBookSinceOf: String,
+    canBookFrom: String,
     idReservationMessage: String,
     idButtonName: String,
     titleModal: String,

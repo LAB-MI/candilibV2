@@ -39,7 +39,7 @@
       :formAction="deleteConfirm"
       :penaltyDaysNumber="penaltyDaysNumber"
       :numberOfDaysBeforeDate="numberOfDaysBeforeDate"
-      :dateCurrentResservation="dateCurrentResservation"
+      :currentReservationDateTime="currentReservationDateTime"
       :isPenaltyActive="isPenaltyActive"
       :idReservationMessage="cancelReservationMessage"
       idButtonName="recap_reservation_boutton_annuler"
@@ -57,9 +57,9 @@
       :formAction="modifyReservation"
       :penaltyDaysNumber="penaltyDaysNumber"
       :numberOfDaysBeforeDate="numberOfDaysBeforeDate"
-      :dateCurrentResservation="dateCurrentResservationWithoutHour"
+      :currentReservationDateTime="currentReservationDate"
       :isPenaltyActive="isPenaltyActive"
-      :canBookSinceOf="canBookSinceOf"
+      :canBookFrom="canBookFrom"
       :idReservationMessage="modificationReservationMessage"
       idButtonName="recap_reservation_boutton_modifier"
       idMessageButtonRetour="recap_reservation_modal_annuler_boutton_retour"
@@ -99,9 +99,9 @@ import { mapState } from 'vuex'
 import { DateTime } from 'luxon'
 
 import {
-  getFrenchDateFromIso,
   getFrenchLuxonDateFromIso,
-  getFrenchLuxonDateTimeFromIso,
+  getFrenchDateFromIso,
+  getFrenchDateTimeFromIso,
 } from '../../../../util/dateTimeWithSetLocale.js'
 
 import ModalConfirm from './ModalConfirm'
@@ -145,15 +145,15 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      if (DateTime.local().setLocale('fr') > getFrenchDateFromIso(lastDateToCancel)) {
+      if (DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)) {
         return true
       }
       return false
     },
 
-    canBookSinceOf () {
+    canBookFrom () {
       const { date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
-      if ((DateTime.local().setLocale('fr') > getFrenchDateFromIso(lastDateToCancel))) {
+      if ((DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel))) {
         return DateTime.fromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
           weekday: 'long',
           month: 'long',
@@ -164,12 +164,12 @@ export default {
       return ''
     },
 
-    dateCurrentResservation () {
-      return getFrenchLuxonDateFromIso(this.reservation.booked.date)
+    currentReservationDateTime () {
+      return getFrenchDateTimeFromIso(this.reservation.booked.date)
     },
 
-    dateCurrentResservationWithoutHour () {
-      return getFrenchLuxonDateTimeFromIso(this.reservation.booked.date)
+    currentReservationDate () {
+      return getFrenchDateFromIso(this.reservation.booked.date)
     },
 
     lastDateToCancelString () {
@@ -177,7 +177,7 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      return getFrenchLuxonDateFromIso(lastDateToCancel)
+      return getFrenchDateFromIso(lastDateToCancel)
     },
 
     penaltyDaysNumber () {

@@ -101,7 +101,7 @@ const candidatFailed = {
   portable: '0612345678',
   adresse: '10 Rue Oberkampf 75011 Paris',
   dateDernierEchecPratique: dateDernierEchecPratique().toISO(),
-  canBookAfter: dateEchecCanBookAfter().toISO(),
+  canBookFrom: dateEchecCanBookAfter().toISO(),
 }
 
 describe('Test reservation controllers', () => {
@@ -239,9 +239,9 @@ describe('Test reservation controllers', () => {
     expect(candidat).toBeDefined()
 
     if (hasCanBookAfter) {
-      expect(candidat).toHaveProperty('canBookAfter')
+      expect(candidat).toHaveProperty('canBookFrom')
     } else {
-      expect(candidat.canBookAfter).toBeUndefined()
+      expect(candidat.canBookFrom).toBeUndefined()
     }
     expect(candidat.places).toBeDefined()
     expect(candidat.places.length).toBeGreaterThan(0)
@@ -308,7 +308,7 @@ describe('Test reservation controllers', () => {
         dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
       )
       expect(body.dateDernierEchecPratique).toBeUndefined()
-      expect(body.canBookAfter).toBeUndefined()
+      expect(body.canBookFrom).toBeUndefined()
       expect(body.timeOutToRetry).toBe(config.timeoutToRetry)
       expect(body.dayToForbidCancel).toBe(config.daysForbidCancel)
     })
@@ -505,7 +505,7 @@ describe('Test reservation controllers', () => {
           .setZone('utc')
           .toISO()
       )
-      expect(body.canBookAfter).toBe(
+      expect(body.canBookFrom).toBe(
         dateEchecCanBookAfter()
           .setZone('utc')
           .toISO()

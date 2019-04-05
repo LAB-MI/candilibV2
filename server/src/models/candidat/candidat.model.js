@@ -101,7 +101,7 @@ export const candidatFields = {
     type: Date,
     default: undefined,
   },
-  canBookAfter: {
+  canBookFrom: {
     type: Date,
     default: undefined,
   },

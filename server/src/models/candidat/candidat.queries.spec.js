@@ -348,10 +348,10 @@ describe('Candidat', () => {
 
     it('should update a candidat failed', async () => {
       const dateDernierEchecPratique = DateTime.local()
-      const canBookAfter = dateDernierEchecPratique.plus({ days: 45 })
+      const canBookFrom = dateDernierEchecPratique.plus({ days: 45 })
       const candidat1 = await updateCandidatFailed(candidat, {
         dateDernierEchecPratique,
-        canBookAfter,
+        canBookFrom,
       })
 
       expect(candidat1).not.toBe(null)
@@ -359,7 +359,7 @@ describe('Candidat', () => {
         'dateDernierEchecPratique',
         dateDernierEchecPratique.toJSDate()
       )
-      expect(candidat1).toHaveProperty('canBookAfter', canBookAfter.toJSDate())
+      expect(candidat1).toHaveProperty('canBookFrom', canBookFrom.toJSDate())
     })
   })
 

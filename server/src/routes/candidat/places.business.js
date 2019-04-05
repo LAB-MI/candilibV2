@@ -229,9 +229,9 @@ export const getCandBookAfter = (candidat, datePassage) => {
     days: config.timeoutToRetry,
   })
 
-  const { canBookAfter } = candidat
-  const previewCanBookAfter = canBookAfter
-    ? DateTime.fromJSDate(canBookAfter)
+  const { canBookFrom } = candidat
+  const previewCanBookAfter = canBookFrom
+    ? DateTime.fromJSDate(canBookFrom)
     : undefined
 
   if (
@@ -256,9 +256,9 @@ export const getBeginDateAutorize = candidat => {
     beginDateAutoriseDefault = DateTime.local()
   }
 
-  const dateCanBookAfter = DateTime.fromJSDate(candidat.canBookAfter)
+  const dateCanBookAfter = DateTime.fromJSDate(candidat.canBookFrom)
 
-  if (!!candidat.canBookAfter && dateCanBookAfter.isValid) {
+  if (!!candidat.canBookFrom && dateCanBookAfter.isValid) {
     const { days } = dateCanBookAfter.diff(beginDateAutoriseDefault, ['days'])
     if (days > 0) {
       return dateCanBookAfter
@@ -284,16 +284,16 @@ export const addInfoDateToRulesResa = async (idCandidat, reservation) => {
   } = config
 
   const candidat = await findCandidatById(idCandidat, {
-    canBookAfter: 1,
+    canBookFrom: 1,
     dateDernierEchecPratique: 1,
   })
   console.log(candidat)
-  const { canBookAfter, dateDernierEchecPratique } = candidat
+  const { canBookFrom, dateDernierEchecPratique } = candidat
 
   return {
     ...reservation,
     dateDernierEchecPratique,
-    canBookAfter,
+    canBookFrom,
     timeOutToRetry,
     dayToForbidCancel,
   }
