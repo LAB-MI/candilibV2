@@ -8,10 +8,17 @@ import {
 } from '../../models/whitelisted'
 
 export const isWhitelisted = async (req, res, next) => {
-  const { email } = req.body
+  const email = req.body && req.body.email
+  if (!email) {
+    return res.status(401).send({
+      codemessage: 'ERROR_FIELDS_EMPTY',
+      message: messages.ERROR_FIELDS_EMPTY,
+      success: false,
+    })
+  }
 
   try {
-    const candidat = await findWhitelistedByEmail(email)
+    const candidat = await findWhitelistedByEmail(email.toLowerCase())
     if (candidat === null) {
       return res.status(401).send({
         codemessage: 'NO_AUTH_WHITELIST',

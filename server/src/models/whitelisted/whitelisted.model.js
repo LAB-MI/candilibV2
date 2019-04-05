@@ -17,7 +17,7 @@ const WhitelistedSchema = new Schema({
 
 WhitelistedSchema.pre('save', async function preSave () {
   const whitelisted = this
-  whitelisted.email = sanitizeHtml(whitelisted.email)
+  whitelisted.email = sanitizeHtml(whitelisted.email.toLowerCase())
 })
 
 export default mongoose.model('Whitelisted', WhitelistedSchema, 'whitelisted')
