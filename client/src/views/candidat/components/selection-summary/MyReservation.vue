@@ -100,8 +100,8 @@ import { DateTime } from 'luxon'
 
 import {
   getFrenchDateFromIso,
-  getFrenchDateFromIsoToString,
-  getFrenchDateFromIsoToStringWithTime,
+  getFrenchDateFromIsoWithoutTime,
+  getFrenchDateFromIsoWithTime,
 } from '../../../../util/dateTimeWithSetLocale.js'
 
 import ModalConfirm from './ModalConfirm'
@@ -165,11 +165,11 @@ export default {
     },
 
     dateCurrentResservation () {
-      return getFrenchDateFromIsoToString(this.reservation.booked.date)
+      return getFrenchDateFromIsoWithoutTime(this.reservation.booked.date)
     },
 
     dateCurrentResservationWithoutHour () {
-      return getFrenchDateFromIsoToStringWithTime(this.reservation.booked.date)
+      return getFrenchDateFromIsoWithTime(this.reservation.booked.date)
     },
 
     lastDateToCancelString () {
@@ -177,7 +177,7 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      return getFrenchDateFromIsoToString(lastDateToCancel)
+      return getFrenchDateFromIsoWithoutTime(lastDateToCancel)
     },
 
     penaltyDaysNumber () {

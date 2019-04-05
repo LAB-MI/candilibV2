@@ -1,10 +1,10 @@
 import { DateTime } from 'luxon'
-// getFrenchDateFromIso
+
 export const getFrenchDateFromIso = (isoDate) => {
   return DateTime.fromISO(isoDate).setLocale('fr')
 }
 
-export const getFrenchDateFromIsoToString = (isoDate) => {
+export const getFrenchDateFromIsoWithoutTime = (isoDate) => {
   return getFrenchDateFromIso(isoDate)
     .toLocaleString({
       weekday: 'long',
@@ -16,7 +16,7 @@ export const getFrenchDateFromIsoToString = (isoDate) => {
     })
 }
 
-export const getFrenchDateFromIsoToStringWithTime = (isoDate) => {
+export const getFrenchDateFromIsoWithTime = (isoDate) => {
   return getFrenchDateFromIso(isoDate)
     .toLocaleString({
       weekday: 'long',
