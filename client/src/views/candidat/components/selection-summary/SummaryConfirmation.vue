@@ -76,7 +76,7 @@
 import { mapState } from 'vuex'
 
 import {
-  getFrenchDateFromIsoWithoutTime,
+  getFrenchLuxonDateFromIso,
 } from '@/util/dateTimeWithSetLocale.js'
 import {
   SHOW_ERROR,
@@ -137,7 +137,7 @@ export default {
     },
 
     convertIsoDate (dateIso) {
-      return `${getFrenchDateFromIsoWithoutTime(dateIso)}`
+      return `${getFrenchLuxonDateFromIso(dateIso)}`
     },
   },
 }

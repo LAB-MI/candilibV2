@@ -4,7 +4,7 @@ export const getFrenchDateFromIso = (isoDate) => {
   return DateTime.fromISO(isoDate).setLocale('fr')
 }
 
-export const getFrenchDateFromIsoWithoutTime = (isoDate) => {
+export const getFrenchLuxonDateFromIso = (isoDate) => {
   return getFrenchDateFromIso(isoDate)
     .toLocaleString({
       weekday: 'long',
@@ -16,7 +16,7 @@ export const getFrenchDateFromIsoWithoutTime = (isoDate) => {
     })
 }
 
-export const getFrenchDateFromIsoWithTime = (isoDate) => {
+export const getFrenchLuxonDateTimeFromIso = (isoDate) => {
   return getFrenchDateFromIso(isoDate)
     .toLocaleString({
       weekday: 'long',

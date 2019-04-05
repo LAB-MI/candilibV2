@@ -76,7 +76,7 @@ export default {
         {dateCurrentResa}
       </strong>.
       <p>
-        Vous pourrez donc selectioner une date qu'à partir du
+        Vous pourrez donc sélectionner une date qu'à partir du
         <strong>
           {canBookSinceOf}
         </strong>.
