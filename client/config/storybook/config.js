@@ -1,16 +1,22 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { addDecorator, configure } from '@storybook/vue'
-import { configureViewport } from '@storybook/addon-viewport'
 import { setConsoleOptions } from '@storybook/addon-console'
 
 import Vue from 'vue'
 import Vuex from 'vuex'
 import Router from 'vue-router'
-
+import VueIntl from 'vue-intl'
 import 'vuetify/dist/vuetify.css'
-import '../../src/main.css'
 
+import { candidat, admin } from '../../src/messages'
 import '../../src/plugins/index'
+
+import '../../src/main.css'
+import { addParameters } from '@storybook/vue/dist/client/preview'
+
+Vue.use(VueIntl)
+Vue.setLocale('fr')
+Vue.registerMessages('fr', { ...candidat, ...admin })
 
 Vue.use(Vuex)
 Vue.use(Router)
@@ -19,10 +25,11 @@ setConsoleOptions({
   panelExclude: [],
 })
 
-configureViewport({
+const viewport = {
   defaultViewport: 'galaxys5',
-})
+}
 
+addParameters({ viewport })
 addDecorator(() => ({
   template: '<v-app><story/></v-app>',
 }))

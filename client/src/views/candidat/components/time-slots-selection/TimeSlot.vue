@@ -1,17 +1,36 @@
 <template>
-  <v-card>
-    <page-title>
-      {{ center.selected ? center.selected.nom : '' }}
-      <span class="title__small">
+  <v-card style="position: relative;">
+    <page-title class="sticky-60">
+      <span class="u-truncated">
+        {{ center.selected ? center.selected.nom : '' }}
+      </span>
+      <span class="title__small  ws-nowrap">
         ({{ center.selected ? center.selected.departement : '' }})
       </span>
     </page-title>
-
+    <v-alert
+      v-if="isPenaltyActive"
+      :value="true"
+      type="warning"
+      style="fontsize: 1em;"
+    >
+      {{ $formatMessage(
+          {
+            id: 'home_choix_date_crenaux_message_de_penalite',
+          },
+          {
+            numberOfDaysBeforeDate,
+            displayDate,
+          },
+        )
+      }}
+    </v-alert>
     <v-tabs
       v-model="switchTab"
       centered
       slider-color="primary"
       color="#dfdfdf"
+      class="sticky-80"
     >
       <v-tab
         v-for="month in timeSlots.list"
@@ -55,9 +74,20 @@
 
 <script>
 import { mapState } from 'vuex'
+import { DateTime } from 'luxon'
 
 import TimesSlotsSelector from './TimesSlotsSelector'
-import { FETCH_CENTER_REQUEST, FETCH_DATES_REQUEST } from '@/store'
+import {
+  FETCH_CENTER_REQUEST,
+  FETCH_CANDIDAT_RESERVATION_REQUEST,
+  FETCH_DATES_REQUEST,
+} from '@/store'
+
+import {
+  getFrenchLuxonDateFromIso,
+  getFrenchDateFromIso,
+} from '@/util/dateTimeWithSetLocale.js'
+
 import PageTitle from '@/components/PageTitle'
 
 export default {
@@ -75,7 +105,38 @@ export default {
   },
 
   computed: {
-    ...mapState(['center', 'timeSlots']),
+    ...mapState(['center', 'timeSlots', 'reservation']),
+
+    numberOfDaysBeforeDate () {
+      if (this.reservation.booked.dayToForbidCancel) {
+        return this.reservation.booked.dayToForbidCancel
+      }
+      return false
+    },
+
+    isPenaltyActive () {
+      const { canBookFrom, lastDateToCancel } = this.reservation.booked
+      if (canBookFrom ||
+        DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)) {
+        return true
+      }
+      return false
+    },
+
+    displayDate () {
+      const { canBookFrom, date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
+      if (canBookFrom) {
+        return getFrenchDateFromIso(canBookFrom)
+      } else if (DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)) {
+        return DateTime.fromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
+          weekday: 'long',
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+        })
+      }
+      return false
+    },
   },
 
   methods: {
@@ -105,6 +166,7 @@ export default {
   },
 
   async mounted () {
+    await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
     await this.getTimeSlots()
   },
 
@@ -117,5 +179,22 @@ export default {
 <style>
 .title__small {
   font-size: 0.7em;
+  margin-left: 0.2em;
+}
+
+.ws-nowrap {
+  white-space: nowrap;
+}
+
+.sticky-60 {
+  position: sticky;
+  top: 56px;
+  z-index: 1;
+}
+
+.sticky-80 {
+  position: sticky;
+  top: 130px;
+  z-index: 1;
 }
 </style>

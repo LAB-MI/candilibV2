@@ -8,6 +8,7 @@
           dateCurrentResa,
           nbOfDaysBeforeDate,
           penaltyNb,
+          canBookFrom,
         },
       )"
     />
@@ -19,6 +20,7 @@ export default {
     idFormatMessage: String,
     dateCurrentResa: String,
     nbOfDaysBeforeDate: String,
+    canBookFrom: String,
     penaltyNb: String,
   },
 }

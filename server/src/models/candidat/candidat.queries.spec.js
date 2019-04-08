@@ -23,7 +23,7 @@ import {
   removeCentres,
   removePlaces,
 } from '../__tests__'
-import { addArchivePlace } from './candidat.queries'
+import { addArchivePlace, updateCandidatFailed } from './candidat.queries'
 import {
   REASON_CANCEL,
   REASON_EXAM_FAILED,
@@ -318,6 +318,48 @@ describe('Candidat', () => {
 
       // Then
       expect(noCandidat).toBe(null)
+    })
+
+    it('should update a candidat', async () => {
+      // Given
+      const email = validEmail
+      candidat = await createCandidat({
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+      })
+
+      const candidat1 = await updateCandidatSignUp(candidat, {
+        prenom: prenom1,
+        email: validEmail1,
+        adresse: adresse1,
+        portable: portable1,
+      })
+
+      expect(candidat1).not.toBe(null)
+      expect(candidat1).toHaveProperty('prenom', prenom1)
+      expect(candidat1).toHaveProperty('portable', portable1)
+      expect(candidat1).toHaveProperty('adresse', adresse1)
+      expect(candidat1).toHaveProperty('email', validEmail1)
+    })
+
+    it('should update a candidat failed', async () => {
+      const dateDernierEchecPratique = DateTime.local()
+      const canBookFrom = dateDernierEchecPratique.plus({ days: 45 })
+      const candidat1 = await updateCandidatFailed(candidat, {
+        dateDernierEchecPratique,
+        canBookFrom,
+      })
+
+      expect(candidat1).not.toBe(null)
+      expect(candidat1).toHaveProperty(
+        'dateDernierEchecPratique',
+        dateDernierEchecPratique.toJSDate()
+      )
+      expect(candidat1).toHaveProperty('canBookFrom', canBookFrom.toJSDate())
     })
   })
 

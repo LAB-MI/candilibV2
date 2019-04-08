@@ -65,6 +65,8 @@ export default {
         params: {
           center: `${center.centre.nom}`,
           departement: `${center.centre.departement}`,
+          // params modifying is not always define
+          modifying: this.$route.params.modifying || this.$store.state.reservation.isModifying,
         },
       })
     },

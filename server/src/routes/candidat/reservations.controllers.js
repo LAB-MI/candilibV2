@@ -1,9 +1,10 @@
 import { appLogger, techLogger } from '../../util'
 import {
+  addInfoDateToRulesResa,
   bookPlace,
+  getLastDateToCancel,
   getReservationByCandidat,
   removeReservationPlace,
-  getLastDateToCancel,
   validCentreDateReservation,
 } from './places.business'
 import { sendMailConvocation } from '../business'
@@ -92,7 +93,8 @@ export const getReservations = async (req, res) => {
       let reservation = {}
       if (bookedPlace) {
         const { _id, centre, date } = bookedPlace
-        const lastDateToCancel = getLastDateToCancel(bookedPlace.date)
+
+        const lastDateToCancel = getLastDateToCancel(date)
 
         if (lastDateOnly) {
           return res.json({ lastDateToCancel })
@@ -105,6 +107,8 @@ export const getReservations = async (req, res) => {
           lastDateToCancel,
         }
       }
+
+      reservation = await addInfoDateToRulesResa(idCandidat, reservation)
 
       appLogger.info({
         section,

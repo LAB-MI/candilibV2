@@ -1,24 +1,24 @@
 <template>
-<div>
-  <h4>
-    {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
-    &nbsp;
-    <v-icon color="success">
-      check
-    </v-icon>
-  </h4>
-  <p>
-    {{ $formatMessage({ id: 'recap_reservation_email_confirmee' }) }}
-    <strong>
-      {{ candidat.me ? candidat.me.email : '' }}
-    </strong>
-    &nbsp;
-    <v-icon color="success">
-      check
-    </v-icon>
-  </p>
-  <p>
-    <span v-html="
+  <div>
+    <h4>
+      {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
+      &nbsp;
+      <v-icon color="success">
+        check
+      </v-icon>
+    </h4>
+    <p>
+      {{ $formatMessage({ id: 'recap_reservation_email_confirmee' }) }}
+      <strong>
+        {{ candidat.me ? candidat.me.email : '' }}
+      </strong>
+      &nbsp;
+      <v-icon color="success">
+        check
+      </v-icon>
+    </p>
+    <p>
+      <span v-html="
         $formatMessage(
           {
             id: 'recap_reservation_last_date_to_cancel',
@@ -28,94 +28,70 @@
             penaltyDaysNumber: `<strong>${penaltyDaysNumber}</strong>`,
           },
         )"
+      />
+      &nbsp;
+      <v-icon color="red">
+        warning
+      </v-icon>
+    </p>
+    <modal-confirm
+      titleModal="Confirmer l'annulation"
+      :formAction="deleteConfirm"
+      :penaltyDaysNumber="penaltyDaysNumber"
+      :numberOfDaysBeforeDate="numberOfDaysBeforeDate"
+      :currentReservationDateTime="currentReservationDateTime"
+      :isPenaltyActive="isPenaltyActive"
+      :idReservationMessage="cancelReservationMessage"
+      idButtonName="recap_reservation_boutton_annuler"
+      idMessageButtonRetour="recap_reservation_modal_annuler_boutton_retour"
+      idMessageButtonConfirmer="recap_reservation_modal_annuler_boutton_confirmer"
+      :disabled="disabled"
+      colorButton="#f82249"
+      colorButtonConfirmer="error"
+      colorButtonRetour="info"
+      iconName="delete_forever"
     />
-    &nbsp;
-    <v-icon color="red">
-      warning
-    </v-icon>
-  </p>
-
-  <v-dialog v-model="dialog" persistent max-width="290">
-    <template v-slot:activator="{ on }">
-      <v-btn color="#f82249" dark v-on="on">
-        {{ $formatMessage({ id: 'recap_reservation_boutton_annuler' }) }}
-        &nbsp;
-        <v-icon>
-          delete_forever
-        </v-icon>
-      </v-btn>
-    </template>
-    <v-card>
-      <v-form
-        class="u-full-width"
-        :aria-disabled="disabled"
-        :disabled="disabled"
-        @submit.prevent="deleteConfirm"
-      >
-        <v-card-title class="headline">
-          Confirmer l'annulation
-        </v-card-title>
-        <v-card-text>
-          <cancel-reservation-message
-            class="confirm-suppr-text-content"
-            :idFormatMessage="cancelReservationMessage"
-            :dateCurrentResa="dateCurrentResservation"
-            :nbOfDaysBeforeDate="String(NUMBER_OF_DAYS_BEFORE_DATE)"
-            :penaltyNb="String(PENALTY_DAYS_NUMBER)"
-          />
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn
-            color="info"
-            outline
-            :aria-disabled="disabled"
-            :disabled="disabled"
-            @click="dialog = false"
-          >
-            <v-icon>
-              arrow_back_ios
-            </v-icon>
-            {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_retour' }) }}
-          </v-btn>
-          <v-btn
-            color="error darken-1  va-b"
-            :aria-disabled="disabled"
-            :disabled="disabled"
-            type="submit"
-          >
-            <span>
-              {{ $formatMessage({ id: 'recap_reservation_modal_annuler_boutton_confirmer' }) }}
-            </span>
-            <v-icon class="pl-2">
-              warning
-            </v-icon>
-          </v-btn>
-        </v-card-actions>
-      </v-form>
-    </v-card>
-  </v-dialog>
-  <v-btn
-    @click="modifyReservation"
-    color="primary"
-  >
-    {{ $formatMessage({ id: 'recap_reservation_boutton_modifier' }) }}
-    &nbsp;
-    <v-icon>
-      edit
-    </v-icon>
-  </v-btn>
-  <v-btn
-    color="success"
-    @click="resendEmailConfirmation"
-  >
-      {{ $formatMessage({ id: 'recap_reservation_boutton_renvoyer_email' }) }}
+    <modal-confirm
+      v-if="isPenaltyActive"
+      titleModal="Confirmer la modification"
+      :formAction="modifyReservation"
+      :penaltyDaysNumber="penaltyDaysNumber"
+      :numberOfDaysBeforeDate="numberOfDaysBeforeDate"
+      :currentReservationDateTime="currentReservationDate"
+      :isPenaltyActive="isPenaltyActive"
+      :canBookFrom="canBookFrom"
+      :idReservationMessage="modificationReservationMessage"
+      idButtonName="recap_reservation_boutton_modifier"
+      idMessageButtonRetour="recap_reservation_modal_annuler_boutton_retour"
+      idMessageButtonConfirmer="recap_reservation_modal_modification_boutton_continuer"
+      :disabled="disabled"
+      colorButton="primary"
+      colorButtonConfirmer="primary"
+      colorButtonRetour="info"
+      iconName="edit"
+    />
+    <v-btn
+      v-else
+      color="primary"
+      @click="modifyReservation"
+    >
+      {{ $formatMessage({ id: 'recap_reservation_boutton_modifier' }) }}
       &nbsp;
       <v-icon>
-        mail
+        edit
       </v-icon>
-  </v-btn>
-</div>
+    </v-btn>
+    <v-btn
+      color="success"
+      @click="resendEmailConfirmation"
+    >
+        {{ $formatMessage({ id: 'recap_reservation_boutton_renvoyer_email' }) }}
+        &nbsp;
+        <v-icon>
+          mail
+        </v-icon>
+    </v-btn>
+  </div>
 </template>
 
 <script>
@@ -123,16 +99,15 @@ import { mapState } from 'vuex'
 import { DateTime } from 'luxon'
 
 import {
-  dateTimeFromIsoSetLocaleFr,
-  dateTimeFromIsoSetLocaleFrToLocalString,
+  getFrenchLuxonDateFromIso,
+  getFrenchDateFromIso,
+  getFrenchDateTimeFromIso,
 } from '../../../../util/dateTimeWithSetLocale.js'
 
-import CancelReservationMessage from './CancelReservationMessage'
+import ModalConfirm from './ModalConfirm'
 
 import {
   DELETE_CANDIDAT_RESERVATION_REQUEST,
-  NUMBER_OF_DAYS_BEFORE_DATE,
-  PENALTY_DAYS_NUMBER,
   SEND_EMAIL_CANDIDAT_RESERVATION_REQUEST,
   SET_MODIFYING_RESERVATION,
   SHOW_ERROR,
@@ -140,14 +115,13 @@ import {
 
 export default {
   components: {
-    CancelReservationMessage,
+    ModalConfirm,
   },
+
   data () {
     return {
       selectedCheckBox: [],
       dialog: false,
-      PENALTY_DAYS_NUMBER,
-      NUMBER_OF_DAYS_BEFORE_DATE,
     }
   },
 
@@ -156,6 +130,10 @@ export default {
 
     cancelReservationMessage () {
       return `recap_reservation_modal_annuler_body_with${this.isPenaltyActive ? '' : 'out'}_penalty`
+    },
+
+    modificationReservationMessage () {
+      return 'recap_reservation_modal_modification_body_info_penalty'
     },
 
     disabled () {
@@ -167,14 +145,31 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      if (DateTime.local().setLocale('fr') > dateTimeFromIsoSetLocaleFr(lastDateToCancel)) {
+      if (DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)) {
         return true
       }
       return false
     },
 
-    dateCurrentResservation () {
-      return dateTimeFromIsoSetLocaleFrToLocalString(this.reservation.booked.date)
+    canBookFrom () {
+      const { date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
+      if ((DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel))) {
+        return DateTime.fromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
+          weekday: 'long',
+          month: 'long',
+          day: '2-digit',
+          year: 'numeric',
+        })
+      }
+      return ''
+    },
+
+    currentReservationDateTime () {
+      return getFrenchDateTimeFromIso(this.reservation.booked.date)
+    },
+
+    currentReservationDate () {
+      return getFrenchDateFromIso(this.reservation.booked.date)
     },
 
     lastDateToCancelString () {
@@ -182,18 +177,28 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      return dateTimeFromIsoSetLocaleFrToLocalString(lastDateToCancel)
+      return getFrenchDateFromIso(lastDateToCancel)
     },
 
     penaltyDaysNumber () {
-      return PENALTY_DAYS_NUMBER
+      if (this.reservation.booked.timeOutToRetry) {
+        return this.reservation.booked.timeOutToRetry
+      }
+      return false
+    },
+
+    numberOfDaysBeforeDate () {
+      if (this.reservation.booked) {
+        return this.reservation.booked.dayToForbidCancel
+      }
+      return false
     },
   },
 
   methods: {
     async modifyReservation () {
       await this.$store.dispatch(SET_MODIFYING_RESERVATION, true)
-      this.$router.push({ name: 'selection-centre' })
+      this.$router.push({ name: 'selection-centre', params: { modifying: true } })
     },
 
     async deleteConfirm () {

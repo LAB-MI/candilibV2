@@ -2,7 +2,7 @@
 import { DateTime } from 'luxon'
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
-import { dateTimeFromIsoSetLocaleFr } from '../util/dateTimeWithSetLocale.js'
+import { getFrenchLuxonDateFromIso } from '../util/dateTimeWithSetLocale.js'
 import { SET_MODIFYING_RESERVATION } from '@/store'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
@@ -16,19 +16,23 @@ export const CONFIRM_SELECT_DAY_SUCCESS = 'CONFIRM_SELECT_DAY_SUCCESS'
 export const CONFIRM_SELECT_DAY_FAILURE = 'CONFIRM_SELECT_DAY_FAILURE'
 
 const getDayString = (elemISO) => {
-  return `${dateTimeFromIsoSetLocaleFr(elemISO).weekdayLong} ${dateTimeFromIsoSetLocaleFr(elemISO).toFormat('dd LLLL yyyy')}`
+  return `${getFrenchLuxonDateFromIso(elemISO).weekdayLong} ${getFrenchLuxonDateFromIso(elemISO).toFormat('dd LLLL yyyy')}`
 }
 
 const getHoursString = (elemISO) => {
-  return `${dateTimeFromIsoSetLocaleFr(elemISO).toFormat("HH'h'mm")}-${dateTimeFromIsoSetLocaleFr(elemISO).plus({ minutes: 30 }).toFormat("HH'h'mm")}`
+  return `${getFrenchLuxonDateFromIso(elemISO).toFormat("HH'h'mm")}-${getFrenchLuxonDateFromIso(elemISO).plus({ minutes: 30 }).toFormat("HH'h'mm")}`
 }
 
-const formatResult = (result, countMonth) => {
-  return Array(countMonth).fill(true).map((item, index) => {
+const formatResult = (result, monthToDisplay, canBookFrom, anticipatedCanBookAfter, dayToForbidCancel) => {
+  return Array(monthToDisplay).fill(true).map((item, index) => {
     const monthNumber = DateTime.local().setLocale('fr').plus({ month: index }).monthLong
     let tmpArrayDay = []
     const tmpArrayHours = []
-    result.filter(el => dateTimeFromIsoSetLocaleFr(el).monthLong === monthNumber &&
+    result.sort().filter(
+      el => (dayToForbidCancel ? (getFrenchLuxonDateFromIso(el).startOf('day') > DateTime.local().setLocale('fr').plus({ days: dayToForbidCancel }).startOf('day')) : true) &&
+      (anticipatedCanBookAfter ? (getFrenchLuxonDateFromIso(anticipatedCanBookAfter).endOf('day') < getFrenchLuxonDateFromIso(el)) : true) &&
+      (canBookFrom ? (getFrenchLuxonDateFromIso(canBookFrom) < getFrenchLuxonDateFromIso(el)) : true) &&
+      getFrenchLuxonDateFromIso(el).monthLong === monthNumber &&
       tmpArrayDay.push(getDayString(el)) &&
       tmpArrayHours.push({ day: getDayString(el), hour: getHoursString(el) })
     )
@@ -81,14 +85,18 @@ export default {
   },
 
   actions: {
-    async [FETCH_DATES_REQUEST] ({ commit, dispatch }, selectedCenterId) {
+    async [FETCH_DATES_REQUEST] ({ commit, dispatch, rootState }, selectedCenterId) {
       commit(FETCH_DATES_REQUEST)
       try {
         const begin = DateTime.local().toISO()
         const end = DateTime.local().setLocale('fr').plus({ month: 3 }).endOf('month').toISO()
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
+        const { canBookFrom, lastDateToCancel, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
+        const anticipatedCanBookAfter = DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)
+          ? getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry }) : false
+        const numberOfMonthToDisplay = 4
 
-        const formatedResult = await formatResult(result, 4)
+        const formatedResult = await formatResult(result, numberOfMonthToDisplay, canBookFrom, anticipatedCanBookAfter, dayToForbidCancel)
         commit(FETCH_DATES_SUCCESS, formatedResult)
       } catch (error) {
         commit(FETCH_DATES_FAILURE, error.message)
@@ -116,7 +124,7 @@ export default {
         dispatch(SHOW_SUCCESS, 'Votre réservation a bien été prise en compte')
       } else {
         commit(CONFIRM_SELECT_DAY_FAILURE)
-        throw new Error("La place n'est plus disponible")
+        throw new Error(result.message || "La place n'est plus disponible")
       }
       dispatch(SET_MODIFYING_RESERVATION, false)
     },

@@ -55,7 +55,9 @@ import {
   SHOW_SUCCESS,
 } from '@/store'
 
-import { dateTimeFromIsoSetLocaleFrToLocalString } from '../../../../util/dateTimeWithSetLocale.js'
+import {
+  getFrenchDateTimeFromIso,
+} from '../../../../util/dateTimeWithSetLocale.js'
 import SummaryConfirmation from './SummaryConfirmation.vue'
 import MyReservation from './MyReservation.vue'
 import ReservationInfo from './ReservationInfo.vue'
@@ -86,12 +88,14 @@ export default {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
 
     title () {
-      return this.isConfirmation || this.$route.meta.isConfirmation ? 'Confirmation' : 'Ma réservation'
+      return this.isConfirmation || this.$route.meta.isConfirmation
+        ? `${this.$route.params.modifying ? 'Confirmer la modificaion' : 'Confirmation'}`
+        : 'Ma réservation'
     },
 
     isConfirmation () {
       return this.$route.meta.isConfirmation !== false &&
-        (!this.reservation.booked || this.reservation.isModifying)
+        (!this.reservation.booked.isBooked || this.reservation.isModifying)
     },
 
     infoResa () {
@@ -116,11 +120,11 @@ export default {
 
   methods: {
     goToSelectTimeSlot () {
-      this.$router.push({ name: 'time-slot' })
+      this.$router.push({ name: 'time-slot', params: { modifying: this.$route.params.modifying } })
     },
 
     goToSelectCenter () {
-      this.$router.push({ name: 'selection-centre' })
+      this.$router.push({ name: 'selection-centre', params: { modifying: this.$route.params.modifying } })
     },
 
     goToHome () {
@@ -164,7 +168,7 @@ export default {
     },
 
     convertIsoDate (dateIso) {
-      return `${dateTimeFromIsoSetLocaleFrToLocalString(dateIso)}`
+      return `${getFrenchDateTimeFromIso(dateIso)}`
     },
 
     async getSelectedCenterAndDate () {

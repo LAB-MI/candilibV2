@@ -25,6 +25,8 @@ export default {
   preinscription_magic_link_invalide: 'Veuillez fournir votre adresse courriel',
   preinscription_magic_link_envoyé: 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel',
   home_choix_du_centre: 'Choix du centre',
+  home_choix_date_crenaux_message_de_penalite: `Vous avez annulé ou modifié votre réservation à moins de {numberOfDaysBeforeDate} jours de la date d'examen.
+    Vous ne pouvez sélectionner une date qu'à partir du {displayDate}`,
   confirmation_reservation_title: 'Confirmation',
   confirmation_reservation_subtitle: 'Vous avez choisi de passer l’épreuve pratique du permis à',
   confirmation_reservation_word: 'Le',
@@ -33,13 +35,14 @@ export default {
   confirmation_reservation_checkbox_double_commande: 'qu’une voiture à double commande est disponible *',
   confirmation_reservation_boutton_retour: 'Retour',
   confirmation_reservation_boutton_confirmation: 'Confirmer',
+  confirmation_reservation_boutton_modification_confirmation: 'Confirmer',
   recap_reservation_confirmee: 'Votre réservation est confirmée',
   recap_reservation_email_confirmee: 'Un email de confirmation vous a été envoyé à l\'adresse renseignée à l\'inscription',
   recap_reservation_last_date_to_cancel: 'Si vous annulez après le {lastDateToCancelString} vous serez pénalisé·e de {penaltyDaysNumber} jours',
   recap_reservation_boutton_annuler: 'Annuler',
   recap_reservation_modal_annuler_body_with_penalty:
     `<p>
-      En poursuivant, votre réservation du {dateCurrentResa} et créneau initialement réservés sera annulée.
+      En poursuivant, votre réservation du {dateCurrentResa} sera annulée.
     </p>
     <p>
       De plus, étant à moins de {nbOfDaysBeforeDate} jours de la date d'examen,
@@ -51,13 +54,37 @@ export default {
     </p>`,
   recap_reservation_modal_annuler_body_without_penalty:
     `<p>
-      En poursuivant, votre réservation du {dateCurrentResa} et créneau initialement réservés sera annulée.
+      En poursuivant, votre réservation du {dateCurrentResa} sera annulée.
       </p>
     <p class="red--text">
       Souhaitez-vous confirmer ?
     </p>`,
   recap_reservation_modal_annuler_boutton_retour: 'Retour',
   recap_reservation_modal_annuler_boutton_confirmer: 'Confirmer',
+  recap_reservation_modal_modification_boutton_continuer: 'Continuer',
+  recap_reservation_modal_modification_body_info_penalty:
+    `<p>
+      Vous allez changer de date pour votre examen à l'épreuve pratique.
+    </p>
+    <p>
+      Conformément aux règles de gestion de candilib vous ne pourrez pas choisir une nouvelle date avant un délai de
+      <strong>
+        {penaltyNb} jours
+      </strong>
+      après le
+      <strong>
+        {dateCurrentResa}
+      </strong>.
+      <p>
+        Vous pourrez donc sélectionner une date qu'à partir du
+        <strong>
+          {canBookFrom}
+        </strong>.
+      </p>
+    </p>
+    <p>
+      Souhaitez-vous néanmoins poursuivre votre modification ?
+    </p>`,
   recap_reservation_boutton_modifier: 'Modifier',
   recap_reservation_boutton_renvoyer_email: 'Renvoyer',
 }

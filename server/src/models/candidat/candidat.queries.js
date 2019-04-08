@@ -150,8 +150,8 @@ export const updateCandidatById = async (id, updatedData) => {
   return updateInfo
 }
 
-export const updateCandidatCanAfterBook = async (candidat, canBookAfter) => {
-  candidat.canBookAfter = canBookAfter
+export const updateCandidatCanAfterBook = async (candidat, canBookFrom) => {
+  candidat.canBookFrom = canBookFrom
   return candidat.save()
 }
 
@@ -171,5 +171,14 @@ export const addArchivePlace = async (candidat, place, reason) => {
     archivedAt,
     archiveReason,
   })
+  return candidat.save()
+}
+
+export const updateCandidatFailed = async (
+  candidat,
+  { dateDernierEchecPratique, canBookFrom }
+) => {
+  candidat.dateDernierEchecPratique = dateDernierEchecPratique
+  candidat.canBookFrom = canBookFrom
   return candidat.save()
 }

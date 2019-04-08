@@ -24,7 +24,11 @@ import {
 } from './message.constants'
 import { findPlaceById } from '../../models/place'
 import config from '../../config'
-import { findCandidatById } from '../../models/candidat'
+import {
+  findCandidatById,
+  createCandidat,
+  updateCandidatFailed,
+} from '../../models/candidat'
 import { dateTimeToFormatFr } from '../../util/date.util'
 import { REASON_CANCEL } from '../common/reason.constants'
 
@@ -85,6 +89,20 @@ const placeToRetry = {
   centre: 'Centre 2',
   inspecteur: 'Inspecteur 2',
 }
+const dateDernierEchecPratique = () => basePlaceDateTime.plus({ hour: 2 })
+const dateEchecCanBookAfter = () =>
+  basePlaceDateTime.plus({ days: 45, hour: 2 })
+
+const candidatFailed = {
+  codeNeph: '123456789004',
+  nomNaissance: 'Nom à tester',
+  prenom: 'Prénom à tester n°4',
+  email: 'test4.test@test.com',
+  portable: '0612345678',
+  adresse: '10 Rue Oberkampf 75011 Paris',
+  dateDernierEchecPratique: dateDernierEchecPratique().toISO(),
+  canBookFrom: dateEchecCanBookAfter().toISO(),
+}
 
 describe('Test reservation controllers', () => {
   let createdCentres
@@ -94,15 +112,18 @@ describe('Test reservation controllers', () => {
   let selectedCandidat
   let createdPlaceBeforeNow
   let createdPlaceCanNotBook
-
+  let createdPlaceToRetry
+  let createdCandidatFailed
   beforeAll(async () => {
     await connect()
+    createdCandidatFailed = await createCandidat(candidatFailed)
     createdCandiats = await createCandidats()
     createdCentres = await createCentres()
     createdPlaceBeforeNow = await createTestPlace(placeBeforeNow)
     createdPlaceCanBook = await createTestPlace(placeCanBook)
     createdPlaceCanBook2 = await createTestPlace(placeCanBook2)
     createdPlaceCanNotBook = await createTestPlace(placeCanNotBook)
+    createdPlaceToRetry = await createTestPlace(placeToRetry)
 
     selectedCandidat = createdCandiats[0]
     require('../middlewares/verify-token').__setIdCandidat(selectedCandidat._id)
@@ -138,7 +159,7 @@ describe('Test reservation controllers', () => {
     if (previewDate instanceof Date) {
       datetimeAuthorize = DateTime.fromJSDate(previewDate).endOf('day')
     } else {
-      datetimeAuthorize = previewDate
+      datetimeAuthorize = previewDate.endOf('day')
     }
     expect(body).toBeDefined()
     expect(body).toHaveProperty('success', false)
@@ -218,9 +239,9 @@ describe('Test reservation controllers', () => {
     expect(candidat).toBeDefined()
 
     if (hasCanBookAfter) {
-      expect(candidat).toHaveProperty('canBookAfter')
+      expect(candidat).toHaveProperty('canBookFrom')
     } else {
-      expect(candidat.canBookAfter).toBeUndefined()
+      expect(candidat.canBookFrom).toBeUndefined()
     }
     expect(candidat.places).toBeDefined()
     expect(candidat.places.length).toBeGreaterThan(0)
@@ -239,6 +260,9 @@ describe('Test reservation controllers', () => {
 
   describe('get reservation', () => {
     beforeAll(async () => {
+      require('../middlewares/verify-token').__setIdCandidat(
+        selectedCandidat._id
+      )
       await makeResa(createdPlaceCanBook, selectedCandidat)
     })
     afterAll(async () => {
@@ -283,6 +307,10 @@ describe('Test reservation controllers', () => {
         'lastDateToCancel',
         dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
       )
+      expect(body.dateDernierEchecPratique).toBeUndefined()
+      expect(body.canBookFrom).toBeUndefined()
+      expect(body.timeOutToRetry).toBe(config.timeoutToRetry)
+      expect(body.dayToForbidCancel).toBe(config.daysForbidCancel)
     })
   })
 
@@ -350,9 +378,10 @@ describe('Test reservation controllers', () => {
     })
 
     describe('modify a reservation in 6 days', () => {
-      let createdPlaceToRetry
       beforeAll(async () => {
-        createdPlaceToRetry = await createTestPlace(placeToRetry)
+        require('../middlewares/verify-token').__setIdCandidat(
+          selectedCandidat._id
+        )
         await makeResa(createdPlaceCanNotBook, selectedCandidat)
       })
       afterAll(async () => {
@@ -427,6 +456,62 @@ describe('Test reservation controllers', () => {
         message,
         true
       )
+    })
+  })
+
+  describe('get reservation with candidat failed', () => {
+    beforeAll(async () => {
+      require('../middlewares/verify-token').__setIdCandidat(
+        createdCandidatFailed._id
+      )
+      createdCandidatFailed = await updateCandidatFailed(
+        createdCandidatFailed,
+        candidatFailed
+      )
+      await makeResa(createdPlaceToRetry, createdCandidatFailed)
+    })
+    afterAll(async () => {
+      await removeAllResas()
+    })
+
+    it('Should get 200 to get reservation from the candidat failed ', async () => {
+      const selectedPlace = createdPlaceToRetry
+      const selectedCentre = createdCentres[1]
+      console.log(createdCandidatFailed)
+      const { body } = await request(app)
+        .get(`${apiPrefix}/candidat/reservations`)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      const dateTimeResa = DateTime.fromJSDate(selectedPlace.date)
+      console.log(body)
+      expect(body).toBeDefined()
+      expect(body).toHaveProperty('date', dateTimeResa.setZone('utc').toISO())
+      expect(body.centre).toBeDefined()
+      expect(body.centre).toHaveProperty('nom', selectedCentre.nom)
+      expect(body.centre).toHaveProperty(
+        'departement',
+        selectedCentre.departement
+      )
+      expect(body.centre).toHaveProperty('adresse', selectedCentre.adresse)
+      expect(body.inspecteur).toBeUndefined()
+      expect(body.candidat).toBeUndefined()
+      expect(body).toHaveProperty(
+        'lastDateToCancel',
+        dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
+      )
+      expect(body.dateDernierEchecPratique).toBe(
+        dateDernierEchecPratique()
+          .setZone('utc')
+          .toISO()
+      )
+      expect(body.canBookFrom).toBe(
+        dateEchecCanBookAfter()
+          .setZone('utc')
+          .toISO()
+      )
+      expect(body.timeOutToRetry).toBe(config.timeoutToRetry)
+      expect(body.dayToForbidCancel).toBe(config.daysForbidCancel)
     })
   })
 })

@@ -38,14 +38,13 @@
             </v-icon>
             {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
           </v-btn>
-
           <v-btn
             :aria-disabled="disabled"
             :disabled="disabled"
             type="submit"
             color="primary"
           >
-          {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
+            {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
           </v-btn>
         </v-flex>
       </v-form>
@@ -56,7 +55,7 @@
       {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
       &nbsp;
       <v-icon color="success">
-      check
+        check
       </v-icon>
     </h4>
     <h4>
@@ -76,7 +75,9 @@
 <script>
 import { mapState } from 'vuex'
 
-import { dateTimeFromIsoSetLocaleFrToLocalString } from '../../../../util/dateTimeWithSetLocale.js'
+import {
+  getFrenchDateFromIso,
+} from '@/util/dateTimeWithSetLocale.js'
 import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,
@@ -97,14 +98,22 @@ export default {
       'reservation',
       'timeSlots',
     ]),
+
     disabled () {
       return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting
+    },
+
+    isModifying () {
+      if ((this.$route.params.modifying || this.reservation.isModifying) && this.reservation.booked.date) {
+        return true
+      }
+      return false
     },
   },
 
   methods: {
     goToSelectTimeSlot () {
-      this.$router.back()
+      this.$router.push({ name: 'time-slot', params: { modifying: this.$route.params.modifying } })
     },
 
     goToHome () {
@@ -128,7 +137,7 @@ export default {
     },
 
     convertIsoDate (dateIso) {
-      return `${dateTimeFromIsoSetLocaleFrToLocalString(dateIso)}`
+      return `${getFrenchDateFromIso(dateIso)}`
     },
   },
 }

@@ -114,7 +114,6 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
 
   let dateAfterBook
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
-
   await removeBookedPlace(bookedPlace)
   await addArchivePlace(candidat, bookedPlace, REASON_CANCEL)
 
@@ -230,9 +229,9 @@ export const getCandBookAfter = (candidat, datePassage) => {
     days: config.timeoutToRetry,
   })
 
-  const { canBookAfter } = candidat
-  const previewCanBookAfter = canBookAfter
-    ? DateTime.fromJSDate(canBookAfter)
+  const { canBookFrom } = candidat
+  const previewCanBookAfter = canBookFrom
+    ? DateTime.fromJSDate(canBookFrom)
     : undefined
 
   if (
@@ -246,13 +245,20 @@ export const getCandBookAfter = (candidat, datePassage) => {
 }
 
 export const getBeginDateAutorize = candidat => {
-  const beginDateAutoriseDefault = DateTime.local().plus({
-    days: config.delayToBook,
-  })
+  let beginDateAutoriseDefault
+  if (config.delayToBook) {
+    beginDateAutoriseDefault = DateTime.local()
+      .endOf('day')
+      .plus({
+        days: config.delayToBook,
+      })
+  } else {
+    beginDateAutoriseDefault = DateTime.local()
+  }
 
-  const dateCanBookAfter = DateTime.fromJSDate(candidat.canBookAfter)
+  const dateCanBookAfter = DateTime.fromJSDate(candidat.canBookFrom)
 
-  if (!!candidat.canBookAfter && dateCanBookAfter.isValid) {
+  if (!!candidat.canBookFrom && dateCanBookAfter.isValid) {
     const { days } = dateCanBookAfter.diff(beginDateAutoriseDefault, ['days'])
     if (days > 0) {
       return dateCanBookAfter
@@ -271,6 +277,27 @@ export const getLastDateToCancel = dateReservation => {
   return dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
 }
 
+export const addInfoDateToRulesResa = async (idCandidat, reservation) => {
+  const {
+    timeoutToRetry: timeOutToRetry,
+    daysForbidCancel: dayToForbidCancel,
+  } = config
+
+  const candidat = await findCandidatById(idCandidat, {
+    canBookFrom: 1,
+    dateDernierEchecPratique: 1,
+  })
+  console.log(candidat)
+  const { canBookFrom, dateDernierEchecPratique } = candidat
+
+  return {
+    ...reservation,
+    dateDernierEchecPratique,
+    canBookFrom,
+    timeOutToRetry,
+    dayToForbidCancel,
+  }
+}
 /**
  *
  * @param {*} idCandidat Type string from ObjectId of mongoose
@@ -286,7 +313,6 @@ export const validCentreDateReservation = async (
 ) => {
   let candidat
   const dateTimeResa = DateTime.fromISO(date)
-
   if (previewBookedPlace) {
     const isSame = isSameReservationPlace(
       centre,
