@@ -35,14 +35,6 @@ jest.mock('../../business/send-mail')
 const readFileAsPromise = util.promisify(fs.readFile)
 
 describe('synchro-aurige', () => {
-  beforeAll(async () => {
-    await connect()
-  })
-
-  afterAll(async () => {
-    await disconnect()
-  })
-
   it('Should return expired', () => {
     const fiveYearsAgo = new Date()
     fiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
@@ -131,6 +123,7 @@ describe('synchro-aurige', () => {
     let aurigeFile
 
     beforeAll(async () => {
+      await connect()
       candidatsToCreate = candidats.map(candidat => createCandidat(candidat))
       const candidatsCreated = await Promise.all(candidatsToCreate)
 
@@ -158,10 +151,11 @@ describe('synchro-aurige', () => {
 
     afterAll(async () => {
       await Promise.all(
-        candidatsToCreate.map(candiatCreated =>
-          candidatModel.findByIdAndDelete(candiatCreated._id)
+        candidatsToCreate.map(candidat =>
+          candidatModel.findByIdAndDelete(candidat._id)
         )
       )
+      await disconnect()
     })
 
     it('Should return ', async () => {
@@ -180,6 +174,7 @@ describe('synchro-aurige', () => {
     let placeAfterTimeOutRetryCreated
     let places
     beforeAll(async () => {
+      await connect()
       await createCentres()
 
       placeBeforTimeOutRetryCreated = await createTestPlace(
@@ -204,6 +199,7 @@ describe('synchro-aurige', () => {
     afterAll(async () => {
       await Promise.all(places.map(deletePlace))
       await removeCentres()
+      await disconnect()
     })
 
     async function synchroAurigeSuccess (aurigeFile, candidatCreated) {
