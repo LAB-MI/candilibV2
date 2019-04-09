@@ -26,10 +26,10 @@ const portable = '0676543986'
 
 export const candidatFailureExam = {
   // candidat échec pratique récent
-  codeNeph: '093874320865',
+  codeNeph: '0938743208650',
   nomNaissance: 'ZANETTI',
   prenom: 'BUBBA',
-  email: 'bubbazanetti@candilib.com',
+  email: 'bubbazanetti1@candilib.com',
   dateReussiteETG,
   dateDernierEchecPratique,
   reussitePratique: '',
