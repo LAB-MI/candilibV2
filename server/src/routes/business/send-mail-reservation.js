@@ -71,7 +71,7 @@ export const sendCancelBooking = (candidat, place) => {
   return sendMail(email, { content, subject })
 }
 
-export const sendFailureExam = (place, candidat) => {
+export const sendFailureExam = async (place, candidat) => {
   appLogger.debug({
     func: 'sendFailureExam',
     args: { candidat, place },
@@ -87,7 +87,7 @@ export const sendFailureExam = (place, candidat) => {
     throw error
   }
 
-  const content = getFailureExamBody(place, candidat)
+  const content = await getFailureExamBody(place, candidat)
   const subject =
     "Annulation de votre convocation suite à l'echec de votre examen pratique"
 

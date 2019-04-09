@@ -157,7 +157,7 @@ export const synchroAurige = async buffer => {
             updateCandidat.canBookAfter = canBookAfter
           }
 
-          await removeResaNoAuthorize(candidat, dateTimeEchec, canBookAfter)
+          await removeResaNoAuthorize(candidat, canBookAfter)
         }
 
         // update data candidat
@@ -236,10 +236,9 @@ function checkFialureDate (dateDernierEchecPratique) {
 /**
  *
  * @param {*} param0 { _id } Id du candidat
- * @param {*} dateTimeEchec date de non réussite en DateTime de luxon
  * @param {*} canBookAfter DateTime de luxon
  */
-const removeResaNoAuthorize = async (candidat, dateTimeEchec, canBookAfter) => {
+const removeResaNoAuthorize = async (candidat, canBookAfter) => {
   const { _id } = candidat
   const place = await findPlaceBookedByCandidat(_id)
   if (place) {
@@ -254,13 +253,14 @@ const removeResaNoAuthorize = async (candidat, dateTimeEchec, canBookAfter) => {
 
       if (diffDateResaAndNow.days > 0) {
         try {
-          sendFailureExam(place, candidat)
+          await sendFailureExam(place, candidat)
         } catch (error) {
           appLogger.warn(
             `Impossible d'envoyer un mail à ce candidat ${
               candidat.email
             } pour lui informer que sa réservation est annulée suit à l'echec examen pratique`
           )
+          appLogger.error(error.message)
         }
       }
     }

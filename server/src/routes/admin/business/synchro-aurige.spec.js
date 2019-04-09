@@ -30,6 +30,7 @@ import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import { createCentres, removeCentres } from '../../../models/__tests__/centres'
 import { createTestPlace } from '../../../models/__tests__/places'
 
+jest.mock('../../../util/logger')
 jest.mock('../../business/send-mail')
 
 const readFileAsPromise = util.promisify(fs.readFile)
