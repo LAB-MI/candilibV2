@@ -223,6 +223,7 @@ describe('synchro-aurige', () => {
       )
         .endOf('day')
         .plus({ days: config.timeoutToRetry })
+
       expect(canBookAfter).toBeDefined()
       expect(canBookAfter).toEqual(dateTimeCanBookAfter.toJSDate())
       return candidat
