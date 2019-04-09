@@ -259,7 +259,7 @@ const removeResaNoAuthorize = async (candidat, dateTimeEchec, canBookAfter) => {
           appLogger.warn(
             `Impossible d'envoyer un mail à ce candidat ${
               candidat.email
-            } pour lui informer la supprimer de sa réservation suit à l'echec examen`
+            } pour lui informer que sa réservation est annulée suit à l'echec examen pratique`
           )
         }
       }
