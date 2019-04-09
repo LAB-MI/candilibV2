@@ -14,7 +14,6 @@ export const getFailureExamBody = async (place, candidat) => {
   appLogger.debug({ func: 'getFailureExamBody', action, place, candidat })
 
   const { centre, date } = place
-  console.log({ place })
 
   let centreObject = centre
   if (centre instanceof Types.ObjectId) {
