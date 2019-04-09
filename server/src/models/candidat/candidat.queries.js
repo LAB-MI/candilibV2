@@ -155,7 +155,7 @@ export const updateCandidatCanAfterBook = async (candidat, canBookFrom) => {
   return candidat.save()
 }
 
-export const addArchivePlace = async (candidat, place, reason) => {
+export const buildAddArchivePlace = (candidat, place, reason) => {
   const { _id, inspecteur, centre, date } = place
   const archivedAt = DateTime.local()
   const archiveReason = reason
@@ -171,6 +171,11 @@ export const addArchivePlace = async (candidat, place, reason) => {
     archivedAt,
     archiveReason,
   })
+  return candidat
+}
+
+export const addArchivePlace = async (candidat, place, reason) => {
+  candidat = buildAddArchivePlace(candidat, place, reason)
   return candidat.save()
 }
 

@@ -116,7 +116,7 @@ export const findPlacesByCentreAndDate = async (_id, date) => {
 
 export const findPlaceBookedByCandidat = async (
   candidat,
-  options,
+  options = {},
   populate
 ) => {
   const query = Place.findOne({ candidat }, options)
