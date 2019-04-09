@@ -1,14 +1,15 @@
 import { getHtmlBody } from './mail/body-mail-template'
 import { buildMailResaArgsValidation } from './send-mail-util'
 import { dateTimeToFormatFr } from '../../util/date.util'
-import { getCancelBookingTemplate, getUrlFAQ, getUrlRESA } from './mail'
+import { getUrlFAQ, getUrlRESA } from './mail'
 import { appLogger } from '../../util'
+import { getEpreuvePratiqueKOTemplate } from './mail/epreuve-pratique-ko-template'
 
 const section = 'candidat-sendMail'
 
-export const getCancellationBody = (place, candidat) => {
-  const action = 'get-body-cancellation'
-  appLogger.debug({ func: 'sendMailCancellation', action, place, candidat })
+export const getFailureExamBody = (place, candidat) => {
+  const action = 'get-body-failure-exam'
+  appLogger.debug({ func: 'getFailureExamBody', action, place, candidat })
 
   const { centre, date } = place
   const { nom, adresse } = centre
@@ -30,7 +31,7 @@ export const getCancellationBody = (place, candidat) => {
 
   const dateTimeResa = dateTimeToFormatFr(date)
 
-  const body = getCancelBookingTemplate(
+  const body = getEpreuvePratiqueKOTemplate(
     nomNaissance,
     codeNeph,
     nom,

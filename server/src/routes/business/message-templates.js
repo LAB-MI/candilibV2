@@ -1,5 +1,3 @@
-import moment from 'moment'
-
 import {
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
@@ -9,32 +7,25 @@ import {
   INSCRIPTION_VALID,
   INSCRIPTION_UPDATE,
   AURIGE_OK,
-  MAIL_CONVOCATION,
-  ANNULATION_CONVOCATION,
   VALIDATION_EMAIL,
 } from '../../util'
 import config from '../../config'
-import { findAllCentres } from '../../models/centre'
 import {
   getHtmlBody,
-  getCancelBookingTemplate,
-  getConvocationTemplate,
   getInscriptionOkTemplate,
   getValidationMailTemplate,
   getInscriptionKOTemplate,
   getEpreuvePratiqueOKTemplate,
   getEpreuveEtgKoTemplate,
   getInscripionValidTemplate,
+  getUrlFAQ,
 } from './mail'
 
-const getCentres = async () => findAllCentres()
-
 const getMailData = async (candidat, flag, urlMagicLink) => {
-  const urlFAQ = `${config.PUBLIC_URL}/informations`
-  const urlRESA = `${config.PUBLIC_URL}/auth?redirect=calendar`
+  const urlFAQ = getUrlFAQ()
   const urlConnexion = `${config.PUBLIC_URL}`
 
-  const { codeNeph, nomNaissance, place, email, emailValidationHash } = candidat
+  const { codeNeph, nomNaissance, email, emailValidationHash } = candidat
 
   const urlValidationEmail = `${
     config.PUBLIC_URL
@@ -43,33 +34,6 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
   const message = {}
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : ''
-
-  const site = place && place.title ? place.title : ''
-  const dateCreneau =
-    place && place.start ? moment(place.start).format('DD MMMM YYYY') : ''
-  const heureCreneau =
-    place && place.start ? moment(place.start).format('HH:mm') : ''
-
-  let siteAdresse = []
-
-  if (place && place.title) {
-    const sites = await getCentres()
-    siteAdresse = sites.find(item => item.nom.toUpperCase() === place.title)
-  }
-
-  // TODO: A supprimer? Est-ce qu'on envoi le mail de annulation quand la reservation est supprimer part Aurige
-  const ANNULATION_CONVOCATION_MSG = getCancelBookingTemplate(nomMaj, codeNeph)
-
-  const MAIL_CONVOCATION_MSG = getConvocationTemplate(
-    nomMaj,
-    site,
-    dateCreneau,
-    heureCreneau,
-    codeNeph,
-    siteAdresse.adresse,
-    urlRESA,
-    urlFAQ
-  )
 
   const INSCRIPTION_OK_MSG = getInscriptionOkTemplate(
     nomMaj,
@@ -129,16 +93,6 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     case AURIGE_OK:
       message.content = getHtmlBody(INSCRIPTION_OK_MSG)
       message.subject = 'Validation de votre inscription à Candilib'
-      return message
-    case MAIL_CONVOCATION:
-      // TODO : A supprimer les données sont dans le model place
-      message.content = getHtmlBody(MAIL_CONVOCATION_MSG)
-      message.subject = "Convocation à l'examen"
-      return message
-    case ANNULATION_CONVOCATION:
-      // TODO: A supprimer? Est-ce qu'on envoi le mail de annulation quand la reservation est supprimer part Aurige
-      message.content = getHtmlBody(ANNULATION_CONVOCATION_MSG)
-      message.subject = "Annulation de Convocation à l'examen"
       return message
     case INSCRIPTION_UPDATE:
       message.content = getHtmlBody(INSCRIPTION_VALID_MSG)
