@@ -214,18 +214,19 @@ describe('synchro-aurige', () => {
       expect(result[0]).toHaveProperty('status', 'success')
       expect(result[0]).toHaveProperty('details', OK)
       const candidat = await findCandidatById(candidatCreated._id, {
-        canBookAfter: 1,
+        canBookFrom: 1,
         places: 1,
       })
-      const { canBookAfter } = candidat
-      const dateTimeCanBookAfter = DateTime.fromISO(
+
+      const { canBookFrom } = candidat
+      const dateTimeCanBookFrom = DateTime.fromISO(
         candidatFailureExam.dateDernierEchecPratique
       )
         .endOf('day')
         .plus({ days: config.timeoutToRetry })
 
-      expect(canBookAfter).toBeDefined()
-      expect(canBookAfter).toEqual(dateTimeCanBookAfter.toJSDate())
+      expect(canBookFrom).toBeDefined()
+      expect(canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
       return candidat
     }
 

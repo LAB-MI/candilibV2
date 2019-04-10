@@ -29,7 +29,7 @@ import {
   deleteCandidat,
   buildAddArchivePlace,
 } from '../../../models/candidat'
-import { getCandBookAfter } from '../../candidat/places.business'
+import { getCandBookFrom } from '../../candidat/places.business'
 import {
   findPlaceBookedByCandidat,
   removeBookedPlace,
@@ -152,10 +152,10 @@ export const synchroAurige = async buffer => {
         const dateTimeEchec = checkFialureDate(dateDernierEchecPratique)
         // put a penalty
         if (dateTimeEchec) {
-          const canBookAfter = getCandBookAfter(candidat, dateTimeEchec)
-          if (canBookAfter) {
-            updateCandidat.canBookAfter = canBookAfter.toISO()
-            await removeResaNoAuthorize(candidat, canBookAfter)
+          const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
+          if (canBookFrom) {
+            updateCandidat.canBookFrom = canBookFrom.toISO()
+            await removeResaNoAuthorize(candidat, canBookFrom)
           }
         }
 
@@ -236,16 +236,16 @@ function checkFialureDate (dateDernierEchecPratique) {
 /**
  *
  * @param {*} param0 { _id } Id du candidat
- * @param {*} canBookAfter DateTime de luxon
+ * @param {*} canBookFrom DateTime de luxon
  */
-const removeResaNoAuthorize = async (candidat, canBookAfter) => {
+const removeResaNoAuthorize = async (candidat, canBookFrom) => {
   const { _id } = candidat
   const place = await findPlaceBookedByCandidat(_id)
   if (place) {
     const { date } = place
     // check date
     const dateTimeResa = DateTime.fromJSDate(date)
-    const diffDateResaAndCanBook = dateTimeResa.diff(canBookAfter, 'days')
+    const diffDateResaAndCanBook = dateTimeResa.diff(canBookFrom, 'days')
     const diffDateResaAndNow = dateTimeResa.diffNow('days')
     if (diffDateResaAndCanBook.days < 0) {
       buildAddArchivePlace(candidat, place, REASON_EXAM_FAILED)

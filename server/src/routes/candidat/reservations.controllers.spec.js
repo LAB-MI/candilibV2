@@ -90,8 +90,7 @@ const placeToRetry = {
   inspecteur: 'Inspecteur 2',
 }
 const dateDernierEchecPratique = () => basePlaceDateTime.plus({ hour: 2 })
-const dateEchecCanBookAfter = () =>
-  basePlaceDateTime.plus({ days: 45, hour: 2 })
+const dateEchecCanBookFrom = () => basePlaceDateTime.plus({ days: 45, hour: 2 })
 
 const candidatFailed = {
   codeNeph: '123456789004',
@@ -101,7 +100,7 @@ const candidatFailed = {
   portable: '0612345678',
   adresse: '10 Rue Oberkampf 75011 Paris',
   dateDernierEchecPratique: dateDernierEchecPratique().toISO(),
-  canBookFrom: dateEchecCanBookAfter().toISO(),
+  canBookFrom: dateEchecCanBookFrom().toISO(),
 }
 
 describe('Test reservation controllers', () => {
@@ -219,7 +218,7 @@ describe('Test reservation controllers', () => {
     selectedCandidatId,
     previewPlaceId,
     message,
-    hasCanBookAfter
+    hasCanBookFrom
   ) => {
     const { body } = await request(app)
       .delete(`${apiPrefix}/candidat/reservations`)
@@ -238,7 +237,7 @@ describe('Test reservation controllers', () => {
     const candidat = await findCandidatById(selectedCandidatId)
     expect(candidat).toBeDefined()
 
-    if (hasCanBookAfter) {
+    if (hasCanBookFrom) {
       expect(candidat).toHaveProperty('canBookFrom')
     } else {
       expect(candidat.canBookFrom).toBeUndefined()
@@ -506,7 +505,7 @@ describe('Test reservation controllers', () => {
           .toISO()
       )
       expect(body.canBookFrom).toBe(
-        dateEchecCanBookAfter()
+        dateEchecCanBookFrom()
           .setZone('utc')
           .toISO()
       )

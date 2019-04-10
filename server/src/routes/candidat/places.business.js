@@ -24,7 +24,7 @@ import {
 import { sendCancelBooking } from '../business'
 import { getAuthorizedDateToBook } from './authorize.business'
 import {
-  updateCandidatCanAfterBook,
+  updateCandidatCanBookFrom,
   findCandidatById,
   addArchivePlace,
 } from '../../models/candidat'
@@ -203,11 +203,11 @@ export const applyCancelRules = async (candidat, previewDateReservation) => {
     return
   }
 
-  const canBookAfterDate = getCandBookAfter(candidat, previewBookedPlace)
+  const canBookFromDate = getCandBookFrom(candidat, previewBookedPlace)
 
-  await updateCandidatCanAfterBook(candidat, canBookAfterDate)
+  await updateCandidatCanBookFrom(candidat, canBookFromDate)
 
-  return canBookAfterDate
+  return canBookFromDate
 }
 
 /**
@@ -215,7 +215,7 @@ export const applyCancelRules = async (candidat, previewDateReservation) => {
  * @param {*} candidat
  * @param {*} datePassage type DateTime of luxon
  */
-export const getCandBookAfter = (candidat, datePassage) => {
+export const getCandBookFrom = (candidat, datePassage) => {
   if (!datePassage) {
     throw new Error('Il manque la date de passage')
   }
@@ -225,23 +225,23 @@ export const getCandBookAfter = (candidat, datePassage) => {
   }
 
   const daysOfDatePassage = datePassage.endOf('days')
-  const newCanBookAfter = daysOfDatePassage.plus({
+  const newCanBookFrom = daysOfDatePassage.plus({
     days: config.timeoutToRetry,
   })
 
   const { canBookFrom } = candidat
-  const previewCanBookAfter = canBookFrom
+  const previewCanBookFrom = canBookFrom
     ? DateTime.fromJSDate(canBookFrom)
     : undefined
 
   if (
-    previewCanBookAfter &&
-    previewCanBookAfter.isValid &&
-    previewCanBookAfter.diff(newCanBookAfter, 'days') > 0
+    previewCanBookFrom &&
+    previewCanBookFrom.isValid &&
+    previewCanBookFrom.diff(newCanBookFrom, 'days') > 0
   ) {
-    return previewCanBookAfter
+    return previewCanBookFrom
   }
-  return newCanBookAfter
+  return newCanBookFrom
 }
 
 export const getBeginDateAutorize = candidat => {
@@ -256,12 +256,12 @@ export const getBeginDateAutorize = candidat => {
     beginDateAutoriseDefault = DateTime.local()
   }
 
-  const dateCanBookAfter = DateTime.fromJSDate(candidat.canBookFrom)
+  const dateCanBookFrom = DateTime.fromJSDate(candidat.canBookFrom)
 
-  if (!!candidat.canBookFrom && dateCanBookAfter.isValid) {
-    const { days } = dateCanBookAfter.diff(beginDateAutoriseDefault, ['days'])
+  if (!!candidat.canBookFrom && dateCanBookFrom.isValid) {
+    const { days } = dateCanBookFrom.diff(beginDateAutoriseDefault, ['days'])
     if (days > 0) {
-      return dateCanBookAfter
+      return dateCanBookFrom
     }
   }
 
@@ -350,7 +350,7 @@ export const validCentreDateReservation = async (
   if (previewBookedPlace && isAuthorize) {
     const datePreview = DateTime.fromJSDate(previewBookedPlace.date)
     if (!canCancelReservation(datePreview)) {
-      dateAuthorize = getCandBookAfter(candidat, datePreview)
+      dateAuthorize = getCandBookFrom(candidat, datePreview)
       isAuthorize = dateTimeResa > dateAuthorize
     }
   }
