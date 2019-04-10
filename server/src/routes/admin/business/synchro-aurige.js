@@ -35,6 +35,7 @@ import {
   removeBookedPlace,
 } from '../../../models/place'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
+import { releaseResa } from '../places.business'
 
 const getCandidatStatus = (nom, neph, status, details) => ({
   nom,
@@ -126,7 +127,9 @@ export const synchroAurige = async buffer => {
       } else if (reussitePratique === EPREUVE_PRATIQUE_OK) {
         appLogger.warn(`Ce candidat ${email} sera archivé : PRATIQUE OK`)
         aurigeFeedback = EPREUVE_PRATIQUE_OK
+        await releaseResa(candidat)
       }
+
       if (aurigeFeedback) {
         await deleteCandidat(candidat, aurigeFeedback)
         await sendMailToAccount(candidat, aurigeFeedback)

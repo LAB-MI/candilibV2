@@ -2,7 +2,12 @@ import * as csvParser from 'fast-csv'
 import { DateTime } from 'luxon'
 
 import { appLogger } from '../../util'
-import { PLACE_ALREADY_IN_DB_ERROR, createPlace } from '../../models/place'
+import {
+  PLACE_ALREADY_IN_DB_ERROR,
+  createPlace,
+  findPlaceBookedByCandidat,
+  removeBookedPlace,
+} from '../../models/place'
 import { findCentreByName } from '../../models/centre/centre.queries'
 
 const getPlaceStatus = (
@@ -47,7 +52,11 @@ const transfomCsv = async data => {
       date,
     }
   } catch (error) {
-    appLogger.error(error)
+    appLogger.error({
+      section: 'admimImportPlaces',
+      action: 'transformCsv',
+      error,
+    })
     return getPlaceStatus(
       departement,
       centre,
@@ -64,11 +73,13 @@ const createPlaceCsv = async place => {
   try {
     const leanPlace = { inspecteur, date, centre: centre._id }
     await createPlace(leanPlace)
-    appLogger.info(
-      `Place {${centre.departement},${
+    appLogger.info({
+      section: 'Admim-ImportPlaces',
+      action: 'createPlaceCsv',
+      message: `Place {${centre.departement},${
         centre.nom
-      }, ${inspecteur}, ${date}} enregistrée en base`
-    )
+      }, ${inspecteur}, ${date}} enregistrée en base`,
+    })
     return getPlaceStatus(
       centre.departement,
       centre.nom,
@@ -80,7 +91,11 @@ const createPlaceCsv = async place => {
   } catch (error) {
     appLogger.error(JSON.stringify(error))
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
-      appLogger.warn('Place déjà enregistrée en base')
+      appLogger.warn({
+        section: 'Admim-ImportPlaces',
+        action: 'createPlaceCsv',
+        message: 'Place déjà enregistrée en base',
+      })
       return getPlaceStatus(
         centre.departement,
         centre.nom,
@@ -130,4 +145,17 @@ export const importPlacesCsv = (csvFile, callback) => {
     .on('end', () => {
       Promise.all(PlacesPromise).then(callback)
     })
+}
+
+export const releaseResa = async ({ _id }) => {
+  const place = await findPlaceBookedByCandidat(_id)
+  if (place) {
+    appLogger.info({
+      section: 'admin',
+      action: 'releaseResa',
+      candidat: _id,
+      place,
+    })
+    return removeBookedPlace(place)
+  }
 }
