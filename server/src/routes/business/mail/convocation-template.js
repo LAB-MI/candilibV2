@@ -26,7 +26,7 @@ avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre} à l'adresse ${addr
   </li>
   <li>
       Vous présenterez un titre d’identité en cours de validité : Carte nationale d’identité, Passeport ou Titre de séjour (Liste complète :
-      <a class="link-in-text-style" href="https://legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
+      <a class="link-in-text-style" href="https://www.legifrance.gouv.fr/affichTexte.do?cidTexte=JORFTEXT000033736411&categorieLien=id">
         arrêté du 23 décembre 2016 relatif à la justification de l&apos;identité, du domicile, de la résidence normale et de la régularité du séjour pour l&apos;obtention du permis de conduire
       </a>).
   </li>
@@ -48,7 +48,7 @@ avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre} à l'adresse ${addr
   <li>
       Si vous avez fait l'objet d'une annulation de permis, 
       vous apporterez le récépissé de la "fiche retour au permis de conduire" 
-      que vous aurez imprimé sur le site de l'<a href='https://permisdeconduire.ants.gouv.fr/'>ANTS</a>.
+      que vous aurez imprimé sur le site de l'<a href='https://www.permisdeconduire.ants.gouv.fr/'>ANTS</a>.
   </li>
 </ul>
 <p><b>Attention :</b></p>
@@ -69,8 +69,8 @@ avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre} à l'adresse ${addr
   un délai de repassage de ${
   config.timeoutToRetry
 } jours à partir de la date de réservation annulée ou modifiée, vous sera appliqué. 
-  Nous vous souhaitons une bonne préparation et le succès à l'examen. Pour toute information, 
-  vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
+  Nous vous souhaitons une bonne préparation et le succès à l'examen.
+  Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
 </p>
 <br/>
 <p align="right">L'équipe Candilib</p>`
