@@ -154,12 +154,12 @@ export const synchroAurige = async buffer => {
         if (dateTimeEchec) {
           const canBookAfter = getCandBookAfter(candidat, dateTimeEchec)
           if (canBookAfter) {
-            updateCandidat.canBookAfter = canBookAfter
+            updateCandidat.canBookAfter = canBookAfter.toISO()
+            await removeResaNoAuthorize(candidat, canBookAfter)
           }
-
-          await removeResaNoAuthorize(candidat, canBookAfter)
         }
 
+        console.log({ updateCandidat, candidat })
         // update data candidat
         candidat.set(updateCandidat)
         return candidat
