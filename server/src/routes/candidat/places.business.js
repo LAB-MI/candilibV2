@@ -287,7 +287,6 @@ export const addInfoDateToRulesResa = async (idCandidat, reservation) => {
     canBookFrom: 1,
     dateDernierEchecPratique: 1,
   })
-  console.log(candidat)
   const { canBookFrom, dateDernierEchecPratique } = candidat
 
   return {

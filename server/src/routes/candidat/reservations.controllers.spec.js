@@ -476,14 +476,12 @@ describe('Test reservation controllers', () => {
     it('Should get 200 to get reservation from the candidat failed ', async () => {
       const selectedPlace = createdPlaceToRetry
       const selectedCentre = createdCentres[1]
-      console.log(createdCandidatFailed)
       const { body } = await request(app)
         .get(`${apiPrefix}/candidat/reservations`)
         .set('Accept', 'application/json')
         .expect(200)
 
       const dateTimeResa = DateTime.fromJSDate(selectedPlace.date)
-      console.log(body)
       expect(body).toBeDefined()
       expect(body).toHaveProperty('date', dateTimeResa.setZone('utc').toISO())
       expect(body.centre).toBeDefined()

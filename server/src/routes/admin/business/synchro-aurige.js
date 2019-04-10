@@ -159,7 +159,6 @@ export const synchroAurige = async buffer => {
           }
         }
 
-        console.log({ updateCandidat, candidat })
         // update data candidat
         candidat.set(updateCandidat)
         return candidat
