@@ -63,6 +63,8 @@
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.2",
+    "html-loader": "^0.5.5",
+    "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",
     "postcss-current-selector": "0.0.3",
     "postcss-nested": "^4.1.2",
