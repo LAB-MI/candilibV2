@@ -1,18 +1,17 @@
 <template>
   <v-flex>
-    <v-btn-toggle v-if="isTwoDepartement" mandatory>
-      <v-btn :style="isThisDepartementSelected(firstDepartement) ? 'border: medium solid red;' : ''" @click="selectDepartement(firstDepartement)" flat>
-        {{ firstDepartement }}
+    <v-btn-toggle
+      mandatory
+      v-model="activeDepartement"
+    >
+      <v-btn
+        flat
+        v-for="departement in admin.departements.list"
+        :key="departement"
+      >
+        {{ departement }}
       </v-btn>
-      <v-btn :style="isThisDepartementSelected(secondDepartement) ? 'border: medium solid red;' : ''" @click="selectDepartement(secondDepartement)" flat>
-        {{ secondDepartement }}
-      </v-btn>
-    </v-btn-toggle>
-    <v-btn-toggle v-else mandatory>
-      <v-btn :style="isThisDepartementSelected(firstDepartement) ? 'border: medium solid red;' : ''" flat>
-        {{ firstDepartement }}
-      </v-btn>
-    </v-btn-toggle>
+   </v-btn-toggle>
   </v-flex>
 </template>
 
@@ -22,41 +21,44 @@ import { mapState } from 'vuex'
 import { SELECT_DEPARTEMENT, FETCH_ADMIN_INFO_REQUEST } from '@/store'
 
 export default {
-  data () {
-    return {
-      firstDepartement: '',
-      secondDepartement: '',
+  computed: {
+    ...mapState(['admin']),
+    activeDepartement: {
+      get () {
+        return this.admin.departements.active
+      },
+      set (departement) {
+        this.selectDepartement(departement)
+      }
     }
   },
 
-  computed: {
-    ...mapState(['admin']),
-  },
-
   methods: {
-    isThisDepartementSelected (departement) {
-      if (this.admin.selectedDepartement === departement) {
-        return true
-      }
-      return false
-    },
     selectDepartement (departement) {
       this.$store.dispatch(SELECT_DEPARTEMENT, departement)
-    },
-
-    isTwoDepartement () {
-      if (this.admin.list.departements.length &&
-      this.admin.list.departements.length === 2) {
-        return true
-      }
-      return false
     },
   },
 
   async mounted () {
     await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
-    this.firstDepartement = this.admin.list.departements[0]
-    this.secondDepartement = this.admin.list.departements[1]
   },
 }
 </script>
+
+<style lang="scss" scoped>
+  .v-btn {
+    border: 1px solid transparent;
+  }
+  .v-btn--active {
+    border: 1px solid red;
+  }
+  .v-btn-toggle .v-btn.v-btn--active:not(:last-child) {
+    border-right: 1px solid red;
+  }
+  .v-btn-toggle .v-btn:not(:last-child) {
+    border-right: 1px solid transparent;
+  }
+  .v-btn-toggle .v-btn:first-child {
+    border-right: 1px solid transparent;
+  }
+</style>

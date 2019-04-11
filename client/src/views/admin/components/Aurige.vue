@@ -20,7 +20,7 @@
         <v-btn color="#17a2b8" dark @click="getCandidatsAsCsv">Export</v-btn>
       </div>
     </div>
-    <aurige-validation id="aurigeValidation" />
+    <aurige-validation />
   </div>
 </template>
 

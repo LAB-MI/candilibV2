@@ -10,25 +10,28 @@ export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 
 export default {
   state: {
-    isFetching: false,
-    list: [],
-    selectedDepartement: '',
+    departements: {
+      active: undefined,
+      isFetching: false,
+      list: [],
+    },
+    email: undefined,
   },
 
   mutations: {
     [FETCH_ADMIN_INFO_REQUEST] (state) {
-      state.isFetching = true
+      state.departements.isFetching = true
     },
-    [FETCH_ADMIN_INFO_SUCCESS] (state, list) {
-      state.isFetching = false
-      state.list = list
+    [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
+      state.departements = infos.departements
+      state.me = infos.me
     },
     [FETCH_ADMIN_INFO_FAILURE] (state) {
-      state.isFetching = false
+      state.departements.isFetching = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {
-      state.selectedDepartement = departement
+      state.departements.active = departement
     },
   },
 
@@ -36,13 +39,17 @@ export default {
     async [FETCH_ADMIN_INFO_REQUEST] ({ commit, dispatch }, id) {
       commit(FETCH_ADMIN_INFO_REQUEST)
       try {
-        // const list = await api.admin.getCandidats(id)
-        const list = {
-          departements: [75, 93],
+        // const infos = await api.admin.getMe()
+        const infos = {
+          departements: {
+            list: ['75', '93'],
+          },
           email: 'admin@example.com',
         }
-        commit(FETCH_ADMIN_INFO_SUCCESS, list)
-        commit(SELECT_DEPARTEMENT, list.departements[0])
+
+        infos.departements.active = infos.departements.list[0]
+
+        commit(FETCH_ADMIN_INFO_SUCCESS, infos)
       } catch (error) {
         commit(FETCH_ADMIN_INFO_FAILURE)
         return dispatch(SHOW_ERROR, 'Error while fetching admin infos')
