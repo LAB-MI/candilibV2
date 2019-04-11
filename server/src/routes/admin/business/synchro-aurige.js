@@ -206,7 +206,12 @@ export const synchroAurige = async buffer => {
               `Erreur de mise à jour pour ce candidat ${email}:`,
               err
             )
-            return getCandidatStatus(nomNaissance, codeNeph, 'error')
+            return getCandidatStatus(
+              nomNaissance,
+              codeNeph,
+              'error',
+              'UNKNOW_ERROR'
+            )
           })
       } else {
         appLogger.warn(`Ce candidat ${email} n'a pas été traité. Cas inconnu`)
