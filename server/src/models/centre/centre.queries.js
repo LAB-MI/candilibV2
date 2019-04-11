@@ -64,3 +64,8 @@ export const findCentreByNameAndDepartement = async (nom, departement) => {
   })
   return centre
 }
+
+export const findCentreById = async id => {
+  const centre = await Centre.findById(id)
+  return centre
+}

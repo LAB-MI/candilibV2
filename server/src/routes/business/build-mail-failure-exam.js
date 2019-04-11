@@ -1,17 +1,26 @@
 import { getHtmlBody } from './mail/body-mail-template'
 import { buildMailResaArgsValidation } from './send-mail-util'
 import { dateTimeToFormatFr } from '../../util/date.util'
-import { getCancelBookingTemplate, getUrlFAQ, getUrlRESA } from './mail'
+import { getUrlFAQ, getUrlRESA } from './mail'
 import { appLogger } from '../../util'
+import { getEpreuvePratiqueKOTemplate } from './mail/epreuve-pratique-ko-template'
+import { findCentreById } from '../../models/centre'
+import { Types } from 'mongoose'
 
 const section = 'candidat-sendMail'
 
-export const getCancellationBody = (place, candidat) => {
-  const action = 'get-body-cancellation'
-  appLogger.debug({ func: 'sendMailCancellation', action, place, candidat })
+export const getFailureExamBody = async (place, candidat) => {
+  const action = 'get-body-failure-exam'
+  appLogger.debug({ func: 'getFailureExamBody', action, place, candidat })
 
   const { centre, date } = place
-  const { nom, adresse } = centre
+
+  let centreObject = centre
+  if (centre instanceof Types.ObjectId) {
+    centreObject = await findCentreById(centre)
+  }
+
+  const { nom, adresse } = centreObject
   const { nomNaissance, codeNeph } = candidat
   const urlFAQ = getUrlFAQ()
   const urlRESA = getUrlRESA()
@@ -30,7 +39,7 @@ export const getCancellationBody = (place, candidat) => {
 
   const dateTimeResa = dateTimeToFormatFr(date)
 
-  const body = getCancelBookingTemplate(
+  const body = getEpreuvePratiqueKOTemplate(
     nomNaissance,
     codeNeph,
     nom,

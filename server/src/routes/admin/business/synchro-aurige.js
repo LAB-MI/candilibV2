@@ -18,9 +18,23 @@ import {
   OK_UPDATED,
   createToken,
 } from '../../../util'
-import { sendMailToAccount, sendMagicLink } from '../../business'
+import {
+  sendMailToAccount,
+  sendMagicLink,
+  sendFailureExam,
+} from '../../business'
 
-import { findCandidatByNomNeph, deleteCandidat } from '../../../models/candidat'
+import {
+  findCandidatByNomNeph,
+  deleteCandidat,
+  addPlaceToArchive,
+} from '../../../models/candidat'
+import { getCandBookFrom } from '../../candidat/places.business'
+import {
+  findPlaceBookedByCandidat,
+  removeBookedPlace,
+} from '../../../models/place'
+import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 
 const getCandidatStatus = (nom, neph, status, details) => ({
   nom,
@@ -127,13 +141,26 @@ export const synchroAurige = async buffer => {
 
       if (candidatExistant === CANDIDAT_EXISTANT) {
         const { isValidatedByAurige } = candidat
-
-        candidat.set({
+        const updateCandidat = {
           dateReussiteETG,
           dateDernierEchecPratique,
           reussitePratique,
           isValidatedByAurige: true,
-        })
+        }
+
+        // Check failure date
+        const dateTimeEchec = checkFialureDate(dateDernierEchecPratique)
+        // put a penalty
+        if (dateTimeEchec) {
+          const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
+          if (canBookFrom) {
+            updateCandidat.canBookFrom = canBookFrom.toISO()
+            await removeResaNoAuthorize(candidat, canBookFrom)
+          }
+        }
+
+        // update data candidat
+        candidat.set(updateCandidat)
         return candidat
           .save()
           .then(async candidat => {
@@ -192,4 +219,49 @@ export const synchroAurige = async buffer => {
   })
 
   return Promise.all(result)
+}
+
+function checkFialureDate (dateDernierEchecPratique) {
+  if (dateDernierEchecPratique && dateDernierEchecPratique.length > 0) {
+    const dateTimeEchec = DateTime.fromISO(dateDernierEchecPratique)
+    if (!dateTimeEchec.isValid) {
+      appLogger.warn('La date de denier echec pratique est érroné')
+    } else {
+      return dateTimeEchec
+    }
+  }
+}
+
+/**
+ *
+ * @param {*} param0 { _id } Id du candidat
+ * @param {*} canBookFrom DateTime de luxon
+ */
+const removeResaNoAuthorize = async (candidat, canBookFrom) => {
+  const { _id } = candidat
+  const place = await findPlaceBookedByCandidat(_id)
+  if (place) {
+    const { date } = place
+    // check date
+    const dateTimeResa = DateTime.fromJSDate(date)
+    const diffDateResaAndCanBook = dateTimeResa.diff(canBookFrom, 'days')
+    const diffDateResaAndNow = dateTimeResa.diffNow('days')
+    if (diffDateResaAndCanBook.days < 0) {
+      addPlaceToArchive(candidat, place, REASON_EXAM_FAILED)
+      await removeBookedPlace(place)
+
+      if (diffDateResaAndNow.days > 0) {
+        try {
+          await sendFailureExam(place, candidat)
+        } catch (error) {
+          appLogger.warn(
+            `Impossible d'envoyer un mail à ce candidat ${
+              candidat.email
+            } pour lui informer que sa réservation est annulée suit à l'echec examen pratique`
+          )
+          appLogger.error(error.message)
+        }
+      }
+    }
+  }
 }
