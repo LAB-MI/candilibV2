@@ -9,18 +9,25 @@
         v-for="departement in admin.departements.list"
         :key="departement"
       >
-        {{ departement }}
+        <div class="hexagon">
+          {{ departement }}
+        </div>
       </v-btn>
-   </v-btn-toggle>
+  </v-btn-toggle>
+  <div class="c-two-hexagons"><hexagon value="75" :active="true" /><hexagon value="93" /></div>
   </v-flex>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 
+import Hexagon from '@/components/Hexagon.vue'
 import { SELECT_DEPARTEMENT, FETCH_ADMIN_INFO_REQUEST } from '@/store'
 
 export default {
+  components: {
+    Hexagon,
+  },
   computed: {
     ...mapState(['admin']),
     activeDepartement: {
@@ -29,8 +36,8 @@ export default {
       },
       set (departement) {
         this.selectDepartement(departement)
-      }
-    }
+      },
+    },
   },
 
   methods: {
@@ -46,19 +53,30 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-  .v-btn {
-    border: 1px solid transparent;
-  }
-  .v-btn--active {
-    border: 1px solid red;
-  }
-  .v-btn-toggle .v-btn.v-btn--active:not(:last-child) {
-    border-right: 1px solid red;
-  }
-  .v-btn-toggle .v-btn:not(:last-child) {
-    border-right: 1px solid transparent;
-  }
-  .v-btn-toggle .v-btn:first-child {
-    border-right: 1px solid transparent;
-  }
+.hexagon {
+  background-image: url('../../../assets/images/hexagon.svg');
+  background-position: center center;
+  background-size: 200%;
+  background-clip: content-box
+}
+
+.v-btn {
+  border: 1px solid transparent;
+}
+
+.v-btn--active {
+  border: 1px solid red;
+}
+
+.v-btn-toggle .v-btn.v-btn--active:not(:last-child) {
+  border-right: 1px solid red;
+}
+
+.v-btn-toggle .v-btn:not(:last-child) {
+  border-right: 1px solid transparent;
+}
+
+.v-btn-toggle .v-btn:first-child {
+  border-right: 1px solid transparent;
+}
 </style>

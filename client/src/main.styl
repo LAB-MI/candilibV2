@@ -224,3 +224,30 @@ h3 {
     width: 95vw;
   }
 }
+
+.c-icon-hexagon {
+  fill: rgba(200, 200, 200, 0.5);
+
+  .active & {
+    fill: rgba(100, 100, 100, 0.8);
+    stroke: rgba(200, 0, 0, 1);
+  }
+}
+
+.c-two-hexagons {
+  position: relative;
+  width: 3em;
+  height: 3.5em;
+
+  .hexagon-wrapper:first-child {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+
+  .hexagon-wrapper:last-child {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
+}

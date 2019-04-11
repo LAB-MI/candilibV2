@@ -11,7 +11,7 @@ import 'vuetify/dist/vuetify.css'
 import { candidat, admin } from '../../src/messages'
 import '../../src/plugins/index'
 
-import '../../src/main.css'
+import '../../src/main.styl'
 import { addParameters } from '@storybook/vue/dist/client/preview'
 
 Vue.use(VueIntl)
