@@ -37,7 +37,6 @@ export default {
   },
 
   props: {
-    ids: Object,
     headerIcons: Array,
   },
 

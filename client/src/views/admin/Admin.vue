@@ -2,7 +2,7 @@
   <v-container
     class="admin  admin-wrapper  u-flex  u-flex--column"
   >
-    <admin-header :ids="ids" :header-icons="headerIcons" />
+    <admin-header :header-icons="headerIcons" />
     <main role="main" class="u-flex__item--grow" :style="{margin: '3em 0 0 0'}">
       <router-view />
     </main>
@@ -13,24 +13,10 @@
 <script>
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
-// import AdminAurige from './components/Aurige.vue'
-// import Whitelist from './components/Whitelist.vue'
-// import AdminCalendar from './components/AdminCalendar.vue'
-// import CandidatsList from './components/CandidatsList.vue'
 
 const components = {
   AdminHeader,
-  // AdminAurige,
-  // AdminCalendar,
-  // CandidatsList,
-  // Whitelist,
   AdminFooter,
-}
-
-const ids = {
-  adminCalendar: 'admin-calendar',
-  adminAurige: 'admin-aurige',
-  adminWhitelist: 'admin-whitelist',
 }
 
 const headerIcons = [
