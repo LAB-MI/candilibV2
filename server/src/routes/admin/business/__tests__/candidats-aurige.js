@@ -149,9 +149,13 @@ const candidatsToValidAurige = [
   candidatFailureExam,
 ]
 
-export const createCandidatToTestAurige = async candidat => {
+export const createCandidatToTestAurige = async (
+  candidat,
+  isValidatedByAurige = false
+) => {
   const candidatCreated = await createCandidat(candidat)
   candidatCreated.isValidatedEmail = true
+  candidatCreated.isValidatedByAurige = isValidatedByAurige
   return candidatCreated.save()
 }
 

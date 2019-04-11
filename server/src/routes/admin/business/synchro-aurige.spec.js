@@ -3,30 +3,33 @@ import path from 'path'
 import util from 'util'
 import { DateTime } from 'luxon'
 
-import candidats from './__tests__/candidats'
-import { createCandidat, findCandidatById } from '../../../models/candidat'
 import { connect, disconnect } from '../../../mongo-connection'
+
 import {
   isEpreuveEtgInvalid,
   isETGExpired,
   synchroAurige,
   isMoreThan2HoursAgo,
 } from './synchro-aurige'
+import { OK_UPDATED } from '../../../util'
+import config from '../../../config'
+
+import { createCandidat, findCandidatById } from '../../../models/candidat'
 import candidatModel from '../../../models/candidat/candidat.model'
+import { REASON_EXAM_FAILED } from '../../common/reason.constants'
+import { deletePlace, findPlaceById } from '../../../models/place'
+
+import {
+  placeBeforTimeOutRetry,
+  placeAfterTimeOutRetry,
+} from './__tests__/places-aurige'
 import {
   createCandidatToTestAurige,
   candidatFailureExam,
 } from './__tests__/candidats-aurige'
 import { toAurigeJsonBuffer } from './__tests__/aurige'
-import { OK } from '../../../util'
-import config from '../../../config'
-import {
-  placeBeforTimeOutRetry,
-  placeAfterTimeOutRetry,
-} from './__tests__/places-aurige'
-import { deletePlace, findPlaceById } from '../../../models/place'
+import candidats from './__tests__/candidats'
 import { makeResa } from '../../../models/__tests__/reservations'
-import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import { createCentres, removeCentres } from '../../../models/__tests__/centres'
 import { createTestPlace } from '../../../models/__tests__/places'
 
@@ -193,7 +196,10 @@ describe('synchro-aurige', () => {
     })
 
     beforeEach(async () => {
-      candidatCreated = await createCandidatToTestAurige(candidatFailureExam)
+      candidatCreated = await createCandidatToTestAurige(
+        candidatFailureExam,
+        true
+      )
     })
 
     afterEach(async () => {
@@ -212,7 +218,7 @@ describe('synchro-aurige', () => {
       expect(result[0]).toHaveProperty('nom', candidatFailureExam.nomNaissance)
       expect(result[0]).toHaveProperty('neph', candidatFailureExam.codeNeph)
       expect(result[0]).toHaveProperty('status', 'success')
-      expect(result[0]).toHaveProperty('details', OK)
+      expect(result[0]).toHaveProperty('details', OK_UPDATED)
       const candidat = await findCandidatById(candidatCreated._id, {
         canBookFrom: 1,
         places: 1,
