@@ -1,64 +1,37 @@
 <template>
-  <div class="admin">
-    <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0, paddingBottom: 0 }">
-      <admin-header :ids="ids" :header-icons="headerIcons" />
-      <div :style="{margin: '4em 0 0 0'}">
-        <admin-calendar :id="ids.adminCalendar" />
-        <candidats-list :id="ids.adminCandidats" />
-        <admin-aurige :id="ids.adminAurige" />
-        <whitelist :id="ids.adminWhitelist" />
-      </div>
-      <admin-footer />
-    </v-container>
-  </div>
+  <v-container
+    class="admin  admin-wrapper  u-flex  u-flex--column"
+  >
+    <admin-header :header-icons="headerIcons" />
+    <main role="main" class="u-flex__item--grow" :style="{margin: '3em 0 0 0'}">
+      <router-view />
+    </main>
+    <admin-footer />
+  </v-container>
 </template>
 
 <script>
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
-import AdminAurige from './components/Aurige.vue'
-import Whitelist from './components/Whitelist.vue'
-import AdminCalendar from './components/AdminCalendar.vue'
-import CandidatsList from './components/CandidatsList.vue'
 
 const components = {
   AdminHeader,
-  AdminAurige,
-  AdminCalendar,
-  CandidatsList,
-  Whitelist,
   AdminFooter,
-}
-
-const ids = {
-  adminCalendar: 'admin-calendar',
-  adminCandidats: 'admin-candidats',
-  adminAurige: 'admin-aurige',
-  adminWhitelist: 'admin-whitelist',
 }
 
 const headerIcons = [
   {
-    routerTo: '/admin/calendar',
-    scrollToEl: `#${ids.adminCalendar}`,
+    routerTo: 'admin-calendar',
     iconName: 'calendar_today',
     tooltipText: 'Calendrier',
   },
   {
-    routerTo: '/admin/candidats',
-    scrollToEl: `#${ids.adminCandidats}`,
-    iconName: 'format_list_numbered',
-    tooltipText: 'Liste des candidats',
-  },
-  {
-    routerTo: '/admin/aurige',
-    scrollToEl: `#${ids.adminAurige}`,
+    routerTo: 'aurige',
     iconName: 'import_export',
     tooltipText: 'Import / Export Aurige',
   },
   {
-    routerTo: '/admin/whitelist',
-    scrollToEl: `#${ids.adminWhitelist}`,
+    routerTo: 'whitelist',
     iconName: 'favorite',
     tooltipText: 'Liste blanche',
   },
@@ -70,7 +43,6 @@ export default {
   data () {
     return {
       drawer: false,
-      ids,
       file: undefined,
       headerIcons,
     }
@@ -83,3 +55,17 @@ export default {
   },
 }
 </script>
+
+<style lang="scss" scoped>
+  .admin-container {
+    padding-top: "40px";
+  }
+
+  .admin-wrapper {
+    max-width: 100vw;
+    min-height: 100%;
+    padding-left: 0;
+    padding-right: 0;
+    padding-bottom: 0;
+  }
+</style>

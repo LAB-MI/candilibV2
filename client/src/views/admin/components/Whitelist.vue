@@ -1,8 +1,6 @@
 <template>
   <div>
-    <h2>
-      Liste blanche
-    </h2>
+    <page-title :title="'Liste blanche'"/>
     <v-container>
       <v-card
         :style="{ padding: '1em 0' }"
@@ -199,6 +197,7 @@ import { mapState } from 'vuex'
 import { email as emailRegex } from '@/util'
 
 import Whitelisted from './Whitelisted.vue'
+import PageTitle from '@/components/PageTitle.vue'
 import {
   DELETE_EMAIL_REQUEST,
   FETCH_WHITELIST_REQUEST,
@@ -217,6 +216,7 @@ const codeMessageDictionary = {
 export default {
   name: 'whitelist',
   components: {
+    PageTitle,
     Whitelisted,
   },
   data () {

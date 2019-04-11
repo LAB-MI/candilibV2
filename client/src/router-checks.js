@@ -56,7 +56,7 @@ export async function checkAdminToken (to, from, next) {
 
   await store.dispatch(CHECK_ADMIN_TOKEN, token)
   if (store.state.auth.statusAdmin === SIGNED_IN_AS_ADMIN) {
-    next({ name: 'admin' })
+    next({ name: 'admin-home' })
     return
   }
   next()

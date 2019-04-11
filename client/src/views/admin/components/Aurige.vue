@@ -1,8 +1,7 @@
 <template>
   <div :id="id" class="wrapper">
-    <h2>
-      Interaction Aurige
-    </h2>
+    <candidats-list />
+    <page-title :title="'Interaction Aurige'"/>
     <div class="aurige">
       <!-- propager le accept for upload-file -->
       <upload-file
@@ -30,12 +29,16 @@ import api from '@/api'
 import { downloadContent } from '@/util'
 import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST } from '@/store'
 import AurigeValidation from './AurigeValidation'
+import CandidatsList from './CandidatsList'
+import PageTitle from '@/components/PageTitle.vue'
 import UploadFile from '@/components/UploadFile.vue'
 
 export default {
   name: 'admin-aurige',
   components: {
     AurigeValidation,
+    CandidatsList,
+    PageTitle,
     UploadFile,
   },
 
