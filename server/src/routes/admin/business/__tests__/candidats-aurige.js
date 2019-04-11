@@ -40,22 +40,24 @@ export const candidatFailureExam = {
   portable,
 }
 
+export const candidatPassed = {
+  // Candidat réussi la pratique
+  codeNeph: '093123456789',
+  nomNaissance: 'MAD',
+  prenom: 'MAX',
+  email: 'madmax@candilib.com',
+  dateReussiteETG,
+  dateDernierEchecPratique: '',
+  reussitePratique: 'OK',
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+}
+
 const candidatsToValidAurige = [
-  {
-    // Candidat réussi la pratique
-    codeNeph: '093123456789',
-    nomNaissance: 'MAD',
-    prenom: 'MAX',
-    email: 'madmax@candilib.com',
-    dateReussiteETG,
-    dateDernierEchecPratique: '',
-    reussitePratique: 'OK',
-    candidatExistant: 'OK',
-    isValidatedByAurige: false,
-    isValidatedEmail,
-    adresse,
-    portable,
-  },
+  candidatPassed,
   {
     // Candidat n'existe pas
     codeNeph: '093458736982',

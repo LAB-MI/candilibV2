@@ -27,6 +27,7 @@ import {
 import {
   createCandidatToTestAurige,
   candidatFailureExam,
+  candidatPassed,
 } from './__tests__/candidats-aurige'
 import { toAurigeJsonBuffer } from './__tests__/aurige'
 import candidats from './__tests__/candidats'
@@ -37,7 +38,6 @@ import {
   createPlaces,
   removePlaces,
 } from '../../../models/__tests__/places'
-import { candidatPassed } from './__tests__/candidat-aurige-passed-exam'
 
 jest.mock('../../../util/logger')
 jest.mock('../../business/send-mail')
