@@ -3,6 +3,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import aurige from './aurige'
+import admin from './admin'
 import auth from './auth'
 import candidat from './candidat'
 import candidats from './candidats'
@@ -14,6 +15,7 @@ import timeSlots from './time-slots'
 import whitelist from './whitelist'
 
 export * from './aurige'
+export * from './admin'
 export * from './auth'
 export * from './candidat'
 export * from './candidats'
@@ -32,6 +34,7 @@ export default new Vuex.Store({
 
   modules: {
     aurige,
+    admin,
     auth,
     candidat,
     candidats,

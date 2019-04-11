@@ -6,6 +6,8 @@
       </h1>
     </v-toolbar-title>
     <v-spacer></v-spacer>
+    <h1>{{ email }}</h1>
+    <v-spacer></v-spacer>
     <div class="text-xs-center d-flex align-center">
       <header-icon
         v-for="icon in headerIcons"
@@ -14,6 +16,9 @@
         :routerTo="icon.routerTo"
         :iconName="icon.iconName"
         :tooltipText="icon.tooltipText"
+      />
+      <departement-selector
+        class="departement-selector"
       />
       <v-tooltip bottom>
         <v-btn icon @click.prevent="disconnect" slot="activator">
@@ -27,16 +32,18 @@
 
 <script>
 import { SIGN_OUT_ADMIN } from '@/store'
-
+import DepartementSelector from '@/views/admin/components/DepartementSelector'
 import HeaderIcon from '@/components/HeaderIcon'
 
 export default {
   name: 'admin-header',
   components: {
+    DepartementSelector,
     HeaderIcon,
   },
 
   props: {
+    email: String,
     headerIcons: Array,
   },
 
@@ -67,5 +74,9 @@ export default {
   text-decoration: none;
   letter-spacing: 0.1rem;
   font-size: 1em;
+}
+
+.departement-selector {
+  margin-top: 0.5em;
 }
 </style>

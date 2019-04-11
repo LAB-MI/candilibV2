@@ -2,7 +2,7 @@
   <v-container
     class="admin  admin-wrapper  u-flex  u-flex--column"
   >
-    <admin-header :header-icons="headerIcons" />
+    <admin-header :email="admin.list.email" :header-icons="headerIcons" />
     <main role="main" class="u-flex__item--grow" :style="{margin: '3em 0 0 0'}">
       <router-view />
     </main>
@@ -11,6 +11,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
 
@@ -49,6 +51,9 @@ export default {
   },
 
   computed: {
+    ...mapState([
+      'admin',
+    ]),
     authStatus () {
       return this.$store.state.auth.statusAdmin
     },

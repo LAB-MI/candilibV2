@@ -20,7 +20,7 @@
         <v-btn color="#17a2b8" dark @click="getCandidatsAsCsv">Export</v-btn>
       </div>
     </div>
-    <aurige-validation />
+    <aurige-validation id="aurigeValidation" />
   </div>
 </template>
 
@@ -77,6 +77,12 @@ export default {
       const response = await api.admin.exportCsv()
       downloadContent(response)
     },
+  },
+
+  mounted () {
+    if (this.$route.hash.length) {
+      this.$scrollTo(this.$route.hash)
+    }
   },
 }
 </script>
