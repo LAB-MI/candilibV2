@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-title :Title="'Liste des candidats'"/>
+    <page-title :title="'Liste des candidats'"/>
     <v-card>
       <ag-grid-vue style="width: 100%; height: 500px;" class="ag-theme-material"
         :columnDefs="columnDefs"
@@ -33,7 +33,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 import { FETCH_CANDIDATS_REQUEST } from '@/store'
 import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './ag-grid-utils'
-import PageTitle from './PageTitle'
+import PageTitle from '@/components/PageTitle.vue'
 
 export default {
   name: 'candidat-list',

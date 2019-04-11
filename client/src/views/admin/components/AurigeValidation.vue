@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-title :Title="'Validation Aurige'"/>
+    <page-title :title="'Validation Aurige'"/>
     <v-card style="background-color: unset;">
       <ag-grid-vue style="max-width: 100%; height: 350px;" class="ag-theme-material"
         :gridOptions="gridOptions"
@@ -31,7 +31,7 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 import { AgGridLocaleText } from './ag-grid-utils'
 import AgGridAurigeStatusFilter from './AgGridAurigeStatusFilter'
-import PageTitle from './PageTitle'
+import PageTitle from '@/components/PageTitle.vue'
 
 export default {
   components: {

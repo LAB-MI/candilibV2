@@ -13,17 +13,17 @@
 <script>
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
-import AdminAurige from './components/Aurige.vue'
-import Whitelist from './components/Whitelist.vue'
-import AdminCalendar from './components/AdminCalendar.vue'
-import CandidatsList from './components/CandidatsList.vue'
+// import AdminAurige from './components/Aurige.vue'
+// import Whitelist from './components/Whitelist.vue'
+// import AdminCalendar from './components/AdminCalendar.vue'
+// import CandidatsList from './components/CandidatsList.vue'
 
 const components = {
   AdminHeader,
-  AdminAurige,
-  AdminCalendar,
-  CandidatsList,
-  Whitelist,
+  // AdminAurige,
+  // AdminCalendar,
+  // CandidatsList,
+  // Whitelist,
   AdminFooter,
 }
 
@@ -40,12 +40,12 @@ const headerIcons = [
     tooltipText: 'Calendrier',
   },
   {
-    routerTo: 'admin-aurige',
+    routerTo: 'aurige',
     iconName: 'import_export',
     tooltipText: 'Import / Export Aurige',
   },
   {
-    routerTo: 'white-list',
+    routerTo: 'whitelist',
     iconName: 'favorite',
     tooltipText: 'Liste blanche',
   },

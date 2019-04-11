@@ -54,13 +54,13 @@ const adminRoutes = [
         component: HomeAdminPage,
       },
       {
-        path: 'admin-aurige',
-        name: 'admin-aurige',
+        path: 'aurige',
+        name: 'aurige',
         component: AdminAurige,
       },
       {
-        path: 'white-list',
-        name: 'white-list',
+        path: 'whitelist',
+        name: 'whitelist',
         component: Whitelist,
       },
       {

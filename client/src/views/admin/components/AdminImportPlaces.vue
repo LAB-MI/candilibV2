@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-title :Title="'Import Places'"/>
+    <page-title :title="'Import Places'"/>
     <upload-file
       subtitle="Les places en CSV"
       upload-label="Import"
@@ -16,7 +16,7 @@
 
 <script>
 import UploadFile from '@/components/UploadFile.vue'
-import PageTitle from './PageTitle.vue'
+import PageTitle from '@/components/PageTitle.vue'
 import { SHOW_INFO, UPLOAD_PLACES_REQUEST } from '@/store'
 
 export default {

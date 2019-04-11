@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-title :Title="'Calendrier'"/>
+    <page-title :title="'Calendrier'"/>
     <simple-calendar :places="places" />
     <admin-import-places/>
     <import-places-validation/>
@@ -13,7 +13,7 @@ import { DateTime } from 'luxon'
 import SimpleCalendar from './SimpleCalendar'
 import AdminImportPlaces from './AdminImportPlaces.vue'
 import ImportPlacesValidation from './ImportPlacesValidation.vue'
-import PageTitle from './PageTitle.vue'
+import PageTitle from '@/components/PageTitle.vue'
 
 export default {
   name: 'admin-calendar',
