@@ -27,7 +27,7 @@ import {
 import {
   findCandidatByNomNeph,
   deleteCandidat,
-  buildAddArchivePlace,
+  addPlaceToArchive,
 } from '../../../models/candidat'
 import { getCandBookFrom } from '../../candidat/places.business'
 import {
@@ -247,7 +247,7 @@ const removeResaNoAuthorize = async (candidat, canBookFrom) => {
     const diffDateResaAndCanBook = dateTimeResa.diff(canBookFrom, 'days')
     const diffDateResaAndNow = dateTimeResa.diffNow('days')
     if (diffDateResaAndCanBook.days < 0) {
-      buildAddArchivePlace(candidat, place, REASON_EXAM_FAILED)
+      addPlaceToArchive(candidat, place, REASON_EXAM_FAILED)
       await removeBookedPlace(place)
 
       if (diffDateResaAndNow.days > 0) {

@@ -26,7 +26,7 @@ import { getAuthorizedDateToBook } from './authorize.business'
 import {
   updateCandidatCanBookFrom,
   findCandidatById,
-  addArchivePlace,
+  archivePlace,
 } from '../../models/candidat'
 import { dateTimeToFormatFr } from '../../util/date.util'
 import { REASON_CANCEL } from '../common/reason.constants'
@@ -115,7 +115,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
   let dateAfterBook
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
   await removeBookedPlace(bookedPlace)
-  await addArchivePlace(candidat, bookedPlace, REASON_CANCEL)
+  await archivePlace(candidat, bookedPlace, REASON_CANCEL)
 
   let statusmail = true
   let message = CANCEL_RESA_WITH_MAIL_SENT

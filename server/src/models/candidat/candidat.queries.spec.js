@@ -23,7 +23,7 @@ import {
   removeCentres,
   removePlaces,
 } from '../__tests__'
-import { addArchivePlace, updateCandidatFailed } from './candidat.queries'
+import { archivePlace, updateCandidatFailed } from './candidat.queries'
 import {
   REASON_CANCEL,
   REASON_EXAM_FAILED,
@@ -446,16 +446,8 @@ describe('Candidat', () => {
       const place = createdPlaces[0]
       const place1 = createdPlaces[1]
       const selectCandidat = createdCandidats[0]
-      const candidat = await addArchivePlace(
-        selectCandidat,
-        place,
-        REASON_CANCEL
-      )
-      const candidat1 = await addArchivePlace(
-        candidat,
-        place1,
-        REASON_EXAM_FAILED
-      )
+      const candidat = await archivePlace(selectCandidat, place, REASON_CANCEL)
+      const candidat1 = await archivePlace(candidat, place1, REASON_EXAM_FAILED)
 
       expect(candidat1).toBeDefined()
       expect(candidat1.places).toBeDefined()
