@@ -59,8 +59,8 @@ export default {
 <style lang="scss" scoped>
   .admin-container {
     padding-top: "40px";
-
   }
+
   .admin-wrapper {
     max-width: 100vw;
     min-height: 100%;
