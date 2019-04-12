@@ -117,6 +117,15 @@
     "not ie <= 8"
   ],
   "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,vue}",
+      "!**/node_modules/**"
+    ],
+    "coverageReporters": [
+      "html",
+      "text-summary"
+    ],
     "setupFiles": [
       "<rootDir>/tests/setup.js"
     ],

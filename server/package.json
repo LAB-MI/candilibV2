@@ -103,6 +103,15 @@
     }
   },
   "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "!**/node_modules/**"
+    ],
+    "coverageReporters": [
+      "html",
+      "text-summary"
+    ],
     "testMatch": [
       "<rootDir>/src/**/?(*.)(spec).{js,jsx,mjs}"
     ],
