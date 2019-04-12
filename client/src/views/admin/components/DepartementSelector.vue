@@ -1,20 +1,14 @@
 <template>
   <v-flex>
-    <v-btn-toggle
-      mandatory
-      v-model="activeDepartement"
-    >
-      <v-btn
-        flat
+    <div class="c-two-hexagons">
+      <hexagon
         v-for="departement in admin.departements.list"
         :key="departement"
-      >
-        <div class="hexagon">
-          {{ departement }}
-        </div>
-      </v-btn>
-  </v-btn-toggle>
-  <div class="c-two-hexagons"><hexagon value="75" :active="true" /><hexagon value="93" /></div>
+        :value="departement"
+        :active="activeDepartement === departement"
+        @click="activeDepartement = departement"
+      />
+      </div>
   </v-flex>
 </template>
 
@@ -35,14 +29,8 @@ export default {
         return this.admin.departements.active
       },
       set (departement) {
-        this.selectDepartement(departement)
+        this.$store.dispatch(SELECT_DEPARTEMENT, departement)
       },
-    },
-  },
-
-  methods: {
-    selectDepartement (departement) {
-      this.$store.dispatch(SELECT_DEPARTEMENT, departement)
     },
   },
 
@@ -53,30 +41,22 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.hexagon {
-  background-image: url('../../../assets/images/hexagon.svg');
-  background-position: center center;
-  background-size: 200%;
-  background-clip: content-box
-}
+.c-two-hexagons {
+  position: relative;
+  width: 3em;
+  height: 3.5em;
+  font-size: 0.9em;
 
-.v-btn {
-  border: 1px solid transparent;
-}
+  .hexagon-wrapper:first-child {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
 
-.v-btn--active {
-  border: 1px solid red;
-}
-
-.v-btn-toggle .v-btn.v-btn--active:not(:last-child) {
-  border-right: 1px solid red;
-}
-
-.v-btn-toggle .v-btn:not(:last-child) {
-  border-right: 1px solid transparent;
-}
-
-.v-btn-toggle .v-btn:first-child {
-  border-right: 1px solid transparent;
+  .hexagon-wrapper:last-child {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+  }
 }
 </style>

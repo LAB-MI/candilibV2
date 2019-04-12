@@ -75,8 +75,4 @@ export default {
   letter-spacing: 0.1rem;
   font-size: 1em;
 }
-
-.departement-selector {
-  margin-top: 0.5em;
-}
 </style>
