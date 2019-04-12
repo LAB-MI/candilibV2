@@ -24,11 +24,8 @@ module.exports = {
     svgRule.uses.clear()
 
     svgRule
-      .use('html-loader')
-      .loader('html-loader')
-      .tap(options => ({
-        minimize: true,
-      }))
+      .use('svg-inline-loader')
+      .loader('svg-inline-loader')
   },
 
   pluginOptions: {
