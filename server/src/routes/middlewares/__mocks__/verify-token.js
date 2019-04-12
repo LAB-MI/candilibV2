@@ -2,18 +2,21 @@ import config from '../../../config'
 
 let idCandidat = 'test candidat id'
 let level
+let departements
 export function __setIdCandidat (id) {
   idCandidat = id
   level = config.userStatusLevels.candidat
 }
 
-export function __setIdAdmin (id) {
+export function __setIdAdmin (id, __departements) {
   idCandidat = id
   level = config.userStatusLevels.admin
+  departements = __departements
 }
 
 export function verifyToken (req, res, next) {
   req.userId = idCandidat
   req.userLevel = level
+  req.departements = departements
   next()
 }
