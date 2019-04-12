@@ -2,11 +2,17 @@ import { DateTime } from 'luxon'
 import { createPlace } from '../place'
 import Place from '../place/place.model'
 import { findCentreByName } from '../centre'
+import config from '../../config'
 
 let basePlaceDateTime = DateTime.fromObject({ day: 18, hour: 9 })
 
-if (basePlaceDateTime < DateTime.local()) {
-  basePlaceDateTime = basePlaceDateTime.plus({ month: 1 })
+if (
+  basePlaceDateTime <
+  DateTime.local().plus({
+    days: config.delayToBook + 1,
+  })
+) {
+  basePlaceDateTime = basePlaceDateTime.plus({ months: 1 })
 }
 
 export const commonBasePlaceDateTime = basePlaceDateTime
@@ -18,37 +24,37 @@ export const places = [
     inspecteur: 'Inspecteur 1',
   },
   {
-    date: (() => basePlaceDateTime.plus({ day: 1, hour: 1 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ days: 1, hour: 1 }).toISO())(),
     centre: 'Centre 2',
     inspecteur: 'Inspecteur 2',
   },
   {
-    date: (() => basePlaceDateTime.plus({ day: 1, hour: 2 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ days: 1, hour: 2 }).toISO())(),
     centre: 'Centre 2',
     inspecteur: 'Inspecteur 3',
   },
   {
-    date: (() => basePlaceDateTime.plus({ day: 2 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ days: 2 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 4',
   },
   {
-    date: (() => basePlaceDateTime.plus({ day: 3, hour: 1 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ days: 3, hour: 1 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 5',
   },
   {
-    date: (() => basePlaceDateTime.plus({ day: 3, hour: 2 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ days: 3, hour: 2 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 6',
   },
   {
-    date: (() => basePlaceDateTime.plus({ day: 1, hour: 2 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ days: 1, hour: 2 }).toISO())(),
     centre: 'Centre 3',
     inspecteur: 'Inspecteur 6',
   },
   {
-    date: (() => basePlaceDateTime.plus({ day: 1 }).toISO())(),
+    date: (() => basePlaceDateTime.plus({ days: 1 }).toISO())(),
     centre: 'Centre 1',
     inspecteur: 'Inspecteur 7',
   },
