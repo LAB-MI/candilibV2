@@ -21,8 +21,9 @@ const UserSchema = new Schema({
     required: true,
     select: false,
   },
-  departement: {
+  departements: {
     type: Array,
+    default: [],
   },
   isDeleted: {
     type: Boolean,
