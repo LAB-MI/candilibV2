@@ -67,7 +67,7 @@ const batchWhitelistStatuses = {
 
 export const addWhitelisted = async (req, res) => {
   try {
-    const { email, emails } = req.body
+    const { email, emails, departement } = req.body
     checkAddWhitelistRequest(req.body)
 
     if (email) {
@@ -77,7 +77,8 @@ export const addWhitelisted = async (req, res) => {
     }
     if (emails) {
       const result = await createWhitelistedBatch(
-        emails.filter(em => em && em.trim())
+        emails.filter(em => em && em.trim()),
+        departement
       )
       const allSucceeded = result.every(whitelisted => whitelisted.success)
       const allFailed = result.every(whitelisted => !whitelisted.success)
@@ -98,9 +99,10 @@ export const addWhitelisted = async (req, res) => {
 }
 
 export const getWhitelisted = async (req, res) => {
+  const { departement } = req.query
   try {
-    const whitelist = await findAllWhitelisted()
-    res.status(200).json(whitelist)
+    const whitelist = await findAllWhitelisted(departement)
+    res.status(200).json(whitelist.map(({ email }) => email))
   } catch (error) {
     return res.status(500).send({
       success: false,
