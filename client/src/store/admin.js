@@ -1,4 +1,4 @@
-// import api from '@/api'
+import api from '@/api'
 
 import { SHOW_ERROR } from '@/store'
 
@@ -23,8 +23,9 @@ export default {
       state.departements.isFetching = true
     },
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
-      state.departements = infos.departements
-      state.me = infos.me
+      state.departements.list = infos.departements
+      state.me = infos
+      state.departements.active = infos.departements[0]
     },
     [FETCH_ADMIN_INFO_FAILURE] (state) {
       state.departements.isFetching = false
@@ -39,16 +40,7 @@ export default {
     async [FETCH_ADMIN_INFO_REQUEST] ({ commit, dispatch }, id) {
       commit(FETCH_ADMIN_INFO_REQUEST)
       try {
-        // const infos = await api.admin.getMe()
-        const infos = {
-          departements: {
-            list: ['75', '93'],
-          },
-          email: 'admin@example.com',
-        }
-
-        infos.departements.active = infos.departements.list[0]
-
+        const infos = await api.admin.getMe()
         commit(FETCH_ADMIN_INFO_SUCCESS, infos)
       } catch (error) {
         commit(FETCH_ADMIN_INFO_FAILURE)

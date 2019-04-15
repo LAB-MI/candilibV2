@@ -1,9 +1,9 @@
-import { findUserById } from "../../models/user";
+import { findUserById, findUserByEmail } from "../../models/user";
 
 export const getMe = async (req, res) => {
-  const userInfos = await findUserById(req.userId)
-	console.log("TCL: getMe -> userInfos", userInfos)
+  const { email, departements } = await findUserByEmail(req.user.email)
   res.json({
-    email: userInfos.email,
+    email,
+    departements,
   })
 }

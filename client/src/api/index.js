@@ -195,6 +195,13 @@ export default {
       return json
     },
 
+    async getMe () {
+      const json = await apiClient.get(apiPaths.admin.myProfile, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
     async getCandidats () {
       const json = await apiClient.get(apiPaths.admin.candidats, {
         headers: getHeadersForAdminJson(),
