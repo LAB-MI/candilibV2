@@ -45,7 +45,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
   .section-header {
     margin-top: 5%;
     margin-bottom: 0;
