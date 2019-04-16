@@ -6,11 +6,11 @@
           class="monitor-wrapper"
           xs6
           v-for="info in centerInfos"
-          :key="info.title"
+          :key="info.centre.nom"
         >
           <week-monitor
-            :nameCenter="info.title"
-            :weeks="info.weeks"
+            :nameCenter="info.centre.nom"
+            :weeks="info.places"
           />
         </v-flex>
       </v-layout>
@@ -43,28 +43,6 @@ export default {
   },
   data () {
     return {
-      centerInfos: [
-        {
-          title: 'BOBIGNY',
-          weeks: Array(20).fill(true)
-          .map((item, index) => ({ weekNumber: 'S' + index, stats: '40/100' })),
-        },
-        {
-          title: 'ROSNY',
-          weeks: Array(20).fill(true)
-          .map((item, index) => ({ weekNumber: 'S' + index, stats: '20/100' })),
-        },
-        {
-          title: 'SAINT-BRICE',
-          weeks: Array(20).fill(true)
-          .map((item, index) => ({ weekNumber: 'S' + index, stats: '30/100' })),
-        },
-        {
-          title: 'VILLEPINTE',
-          weeks: Array(20).fill(true)
-          .map((item, index) => ({ weekNumber: 'S' + index, stats: '10/100' })),
-        },
-      ],
       buttonGestion: [
         {
           icon: 'calendar_today',
@@ -75,6 +53,12 @@ export default {
           title: 'Gestion des candidats',
         },
       ],
+    }
+  },
+
+  computed: {
+    centerInfos () {
+      return this.$store.state.admin.placesByCentre.list
     }
   },
 

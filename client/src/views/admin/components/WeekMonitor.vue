@@ -15,12 +15,12 @@
       <slide
         class="slide"
         v-ripple
-        v-for="item in weeks"
-        :key="item.weekNumber"
+        v-for="item in formatArrayByWeek()"
+        :key="item.numWeek"
       >
         <v-card class="main-card" @click="goToGestionPlannings">
           <div class="week-card">
-            <v-card-text>{{ item.weekNumber }}</v-card-text>
+            <v-card-text>S{{ item.numWeek }}</v-card-text>
           </div>
           <v-divider/>
           <div class="stats-card">
@@ -41,14 +41,27 @@ export default {
       default: '',
     },
     weeks: {
-      type: Array,
-      default: [],
+      type: Object,
+      default () {
+        return {}
+      },
     },
   },
 
   methods: {
     goToGestionPlannings () {
       this.$router.push({ name: 'gestion-plannings' })
+    },
+
+    formatArrayByWeek () {
+      const formatedArray = Object.keys(this.weeks).map(item => {
+        return {
+          days: [ ...this.weeks[item], ],
+          numWeek: item,
+        }
+      })
+      console.log(formatedArray)
+      return formatedArray
     },
   },
 }

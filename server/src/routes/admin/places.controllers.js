@@ -1,5 +1,6 @@
 import { findAllPlaces } from '../../models/place'
 import { importPlacesCsv } from './places.business'
+import { findCentresWithPlaces } from '../common/centre.business'
 import { appLogger } from '../../util'
 
 export const importPlaces = (req, res) => {
@@ -26,6 +27,22 @@ export const importPlaces = (req, res) => {
 }
 
 export const getPlaces = async (req, res) => {
-  const places = await findAllPlaces()
-  res.json(places)
+  let places
+  const { departement, beginDate, endDate } = req.query
+
+  if (!departement) {
+    try {
+      places = await findAllPlaces()
+      res.json(places)
+    } catch (error) {
+      throw new Error(error.message)
+    }
+  } else {
+    try {
+      places = await findCentresWithPlaces(departement, beginDate, endDate)
+      res.json(places)
+    } catch (error) {
+      throw new Error(error.message)
+    }
+  }
 }

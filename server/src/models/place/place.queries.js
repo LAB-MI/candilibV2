@@ -40,11 +40,11 @@ export const findPlaceByCandidatId = async id => {
 
 /**
  *
- * @param {*} param0 - _id : recupére l' _id de l'object centre
+ * @param {*} centreId - centreId : recupére l'Id de l'object centre
  * @param {*} beginDate - date de debut de recherche
  * @param {*} endDate - date de fin de recherche
  */
-const queryAvailablePlacesByCentre = (_id, beginDate, endDate) => {
+const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
   if (beginDate || endDate) {
     query.where('date')
@@ -55,7 +55,24 @@ const queryAvailablePlacesByCentre = (_id, beginDate, endDate) => {
 
   query.where('candidat').equals(undefined)
 
-  return query.where('centre', _id)
+  return query.where('centre', centreId)
+}
+
+/**
+ *
+ * @param {*} centreId - centreId : recupére l'Id de l'object centre
+ * @param {*} beginDate - date de debut de recherche
+ * @param {*} endDate - date de fin de recherche
+ */
+export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
+  const query = Place.where('centre').exists(true)
+  if (beginDate || endDate) {
+    query.where('date')
+
+    if (beginDate) query.gte(beginDate)
+    if (endDate) query.lt(endDate)
+  }
+  return query.where('centre', centreId).exec()
 }
 
 export const findAvailablePlacesByCentre = async (

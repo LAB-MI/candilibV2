@@ -9,23 +9,24 @@ const apiPrefix = `${process.env.BASE_URL || '/'}api/v2`
 // TODO: Use prepack to avoid presence of admin API paths for candidat build
 
 const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
-  verifyToken: `${apiPrefix}/auth/candidat/verify-token`,
-  magicLink: `${apiPrefix}/auth/candidat/magic-link`,
-  presignup: `${apiPrefix}/candidat/preinscription`,
-  myProfile: `${apiPrefix}/candidat/me`,
   centres: `${apiPrefix}/candidat/centres`,
+  magicLink: `${apiPrefix}/auth/candidat/magic-link`,
+  myProfile: `${apiPrefix}/candidat/me`,
   places: `${apiPrefix}/candidat/places`,
+  presignup: `${apiPrefix}/candidat/preinscription`,
   reservations: `${apiPrefix}/candidat/reservations`,
+  verifyToken: `${apiPrefix}/auth/candidat/verify-token`,
 }
 
 const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
-  login: `${apiPrefix}/auth/admin/token`,
-  verifyToken: `${apiPrefix}/auth/admin/verify-token`,
   candidats: `${apiPrefix}/admin/candidats`,
-  myProfile: `${apiPrefix}/admin/me`,
-  uploadCandidatsJson: `${apiPrefix}/admin/candidats`,
   exportCsv: `${apiPrefix}/admin/candidats?for=aurige&format=csv`,
+  login: `${apiPrefix}/auth/admin/token`,
+  myProfile: `${apiPrefix}/admin/me`,
+  places: `${apiPrefix}/admin/places`,
+  uploadCandidatsJson: `${apiPrefix}/admin/candidats`,
   uploadPlacesCSV: `${apiPrefix}/admin/places`,
+  verifyToken: `${apiPrefix}/auth/admin/verify-token`,
   whitelist: `${apiPrefix}/admin/whitelisted`,
 }
 
