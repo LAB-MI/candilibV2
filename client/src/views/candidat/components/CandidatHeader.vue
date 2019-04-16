@@ -83,7 +83,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .candidat-toolbar {
   justify-content: center;
   align-items: center;

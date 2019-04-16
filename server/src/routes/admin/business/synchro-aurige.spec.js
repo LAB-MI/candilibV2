@@ -11,13 +11,14 @@ import {
   synchroAurige,
   isMoreThan2HoursAgo,
 } from './synchro-aurige'
-import { OK_UPDATED } from '../../../util'
+import { OK_UPDATED, EPREUVE_PRATIQUE_OK } from '../../../util'
 import config from '../../../config'
 
 import { createCandidat, findCandidatById } from '../../../models/candidat'
 import candidatModel from '../../../models/candidat/candidat.model'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import { deletePlace, findPlaceById } from '../../../models/place'
+import { findArchivedCandidatByNomNeph } from '../../../models/archived-candidat/archived-candidat.queries'
 
 import {
   placeBeforTimeOutRetry,
@@ -26,12 +27,17 @@ import {
 import {
   createCandidatToTestAurige,
   candidatFailureExam,
+  candidatPassed,
 } from './__tests__/candidats-aurige'
 import { toAurigeJsonBuffer } from './__tests__/aurige'
 import candidats from './__tests__/candidats'
 import { makeResa } from '../../../models/__tests__/reservations'
 import { createCentres, removeCentres } from '../../../models/__tests__/centres'
-import { createTestPlace } from '../../../models/__tests__/places'
+import {
+  createTestPlace,
+  createPlaces,
+  removePlaces,
+} from '../../../models/__tests__/places'
 
 jest.mock('../../../util/logger')
 jest.mock('../../business/send-mail')
@@ -269,6 +275,79 @@ describe('synchro-aurige', () => {
       expect(place).toBeDefined()
       expect(place.candidat).toBeDefined()
       expect(place).toHaveProperty('candidat', candidatCreated._id)
+    })
+  })
+
+  describe('candidat passed the exam', () => {
+    let candidatCreated
+    let placesCreated
+    let aurigeFile
+
+    beforeAll(async () => {
+      await createCentres()
+      placesCreated = await createPlaces()
+      aurigeFile = toAurigeJsonBuffer(candidatPassed)
+    })
+
+    beforeEach(async () => {
+      candidatCreated = await createCandidatToTestAurige(candidatPassed, true)
+    })
+    afterEach(async () => {
+      await candidatModel.findByIdAndDelete(candidatCreated._id)
+    })
+    afterAll(async () => {
+      await removePlaces()
+      await removeCentres()
+    })
+
+    const synchroAurigeToPassExam = async (
+      aurigeFile,
+      infoCandidat,
+      idCandidat
+    ) => {
+      const { nomNaissance, codeNeph, email } = infoCandidat
+      const result = await synchroAurige(aurigeFile)
+      expect(result).toBeDefined()
+      expect(result).toHaveLength(1)
+      expect(result[0]).toHaveProperty('nom', nomNaissance)
+      expect(result[0]).toHaveProperty('neph', codeNeph)
+      expect(result[0]).toHaveProperty('status', 'error')
+      expect(result[0]).toHaveProperty('details', EPREUVE_PRATIQUE_OK)
+
+      const candidat = await findCandidatById(idCandidat, {})
+      expect(candidat).toBeNull()
+
+      const candidatArchived = await findArchivedCandidatByNomNeph(
+        nomNaissance,
+        codeNeph
+      )
+
+      expect(candidatArchived).toBeDefined()
+      expect(candidatArchived).toHaveProperty('email', email)
+      expect(candidatArchived.archivedAt).toBeDefined()
+      expect(candidatArchived).toHaveProperty(
+        'archiveReason',
+        EPREUVE_PRATIQUE_OK
+      )
+    }
+    it('should archive candidat', async () => {
+      await synchroAurigeToPassExam(
+        aurigeFile,
+        candidatPassed,
+        candidatCreated._id
+      )
+    })
+
+    it('should archive candidat and release place', async () => {
+      const placeSelected = placesCreated[0]
+      await makeResa(placeSelected, candidatCreated)
+      await synchroAurigeToPassExam(
+        aurigeFile,
+        candidatPassed,
+        candidatCreated._id
+      )
+      const place = await findPlaceById(placeSelected._id)
+      expect(place.candidat).toBeUndefined()
     })
   })
 })

@@ -15,7 +15,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .candidat-header {
   display: flex;
   flex-direction: column;
