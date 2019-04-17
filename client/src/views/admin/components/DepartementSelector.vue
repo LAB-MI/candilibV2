@@ -40,7 +40,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .c-two-hexagons {
   position: relative;
   width: 3em;

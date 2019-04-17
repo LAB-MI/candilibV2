@@ -32,7 +32,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .icon {
   position: absolute;
   top: 0;
