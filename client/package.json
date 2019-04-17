@@ -26,6 +26,7 @@
     "ag-grid-community": "^20.2.0",
     "ag-grid-vue": "^20.2.0",
     "delay": "^4.2.0",
+    "html-loader": "^0.5.5",
     "intl": "^1.2.5",
     "luxon": "^1.12.1",
     "normalize.css": "^8.0.1",
@@ -42,12 +43,12 @@
   },
   "devDependencies": {
     "@ascendancyy/vue-cli-plugin-stylelint": "^1.1.2",
-    "@storybook/addon-actions": "^5.0.8",
+    "@storybook/addon-actions": "^5.0.9",
     "@storybook/addon-console": "^1.1.0",
-    "@storybook/addon-knobs": "^5.0.8",
-    "@storybook/addon-links": "^5.0.8",
-    "@storybook/addon-notes": "^5.0.8",
-    "@storybook/addon-viewport": "^5.0.8",
+    "@storybook/addon-knobs": "^5.0.9",
+    "@storybook/addon-links": "^5.0.9",
+    "@storybook/addon-notes": "^5.0.9",
+    "@storybook/addon-viewport": "^5.0.9",
     "@vue/cli-plugin-babel": "^3.6.0",
     "@vue/cli-plugin-e2e-cypress": "^3.6.0",
     "@vue/cli-plugin-eslint": "^3.6.0",
@@ -72,6 +73,7 @@
     "stylelint-config-standard": "^18.3.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.2",
+    "svg-inline-loader": "^0.8.0",
     "vue-cli-plugin-storybook": "^0.6.1",
     "vue-cli-plugin-vuetify": "^0.5.0",
     "vue-template-compiler": "^2.6.10"
@@ -115,6 +117,15 @@
     "not ie <= 8"
   ],
   "jest": {
+    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.{js,vue}",
+      "!**/node_modules/**"
+    ],
+    "coverageReporters": [
+      "html",
+      "text-summary"
+    ],
     "setupFiles": [
       "<rootDir>/tests/setup.js"
     ],

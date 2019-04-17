@@ -7,7 +7,7 @@ import router from './router'
 import store from './store'
 import './registerServiceWorker'
 
-import './main.css'
+import './main.styl'
 
 Vue.config.productionTip = false
 

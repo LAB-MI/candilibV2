@@ -78,6 +78,12 @@ export default {
       downloadContent(response)
     },
   },
+
+  mounted () {
+    if (this.$route.hash.length) {
+      this.$scrollTo(this.$route.hash)
+    }
+  },
 }
 </script>
 
