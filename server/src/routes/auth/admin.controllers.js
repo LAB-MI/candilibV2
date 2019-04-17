@@ -1,4 +1,4 @@
-import { compareToHash, createToken, appLogger } from '../../util'
+import { createToken, appLogger } from '../../util'
 import { findUserByCredentials } from '../../models/user'
 
 const badCredentialsBody = {

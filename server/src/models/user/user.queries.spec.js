@@ -33,14 +33,12 @@ describe('User', () => {
       const password = 'S3cr3757uff!'
       const departements = ['75', '93']
       const admin = await createUser(expectedEmail, password, departements)
-			console.log("TCL: admin", admin)
 
       // When
       const { email } = await findUserById(admin._id)
 
       //  Then
       expect(email).toBe(expectedEmail)
-
     })
   })
 

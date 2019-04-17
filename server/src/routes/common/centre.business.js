@@ -2,13 +2,10 @@ import { DateTime } from 'luxon'
 
 import {
   countAvailablePlacesByCentre,
-  findAllCentres,
   findAllPlacesByCentre,
 } from '../../models/place'
 
-import {
-  findCentresByDepartement,
-} from '../../models/centre'
+import { findCentresByDepartement, findAllCentres } from '../../models/centre'
 
 export async function findCentresWithNbPlaces (departement, beginDate, endDate) {
   const centres = departement
@@ -33,8 +30,7 @@ export async function findCentresWithNbPlaces (departement, beginDate, endDate) 
 }
 
 export async function findCentresWithPlaces (departement, beginDate, endDate) {
-  if (!departement)
-  throw new Error('departement value is undefined')
+  if (!departement) throw new Error('departement value is undefined')
 
   const centres = await findCentresByDepartement(departement)
 
@@ -44,11 +40,7 @@ export async function findCentresWithPlaces (departement, beginDate, endDate) {
 
   const centresWithPlaces = await Promise.all(
     centres.map(async centre => {
-      const places = await findAllPlacesByCentre(
-        centre._id,
-        beginDate,
-        endDate
-      )
+      const places = await findAllPlacesByCentre(centre._id, beginDate, endDate)
       return { centre, places }
     })
   )
