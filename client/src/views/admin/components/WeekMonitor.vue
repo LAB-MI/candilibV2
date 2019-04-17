@@ -6,26 +6,30 @@
       </strong>
     </h2>
     <carousel
+      id="carousel"
       class="carousel"
+      :perPage="5"
       :navigationEnabled="true"
       :paginationEnabled="false"
       :scrollPerPage="false"
-      :perPage="5"
+      :perPageCustom="[[768, 5], [1024, 5]]"
+      :navigateTo="[currentWeekNumber, false]"
     >
       <slide
         class="slide"
         v-ripple
-        v-for="item in formatArrayByWeek()"
-        :key="item.numWeek"
+        v-for="(week, index) in formatArrayByWeek()"
+        :key="week.numWeek"
       >
-        <v-card class="main-card" @click="goToGestionPlannings">
+        <v-card :id="`week-${nameCenter}-${index}`" class="main-card" @click="goToGestionPlannings">
           <div class="week-card">
-            <v-card-text>S{{ item.numWeek }}</v-card-text>
+            <v-card-text>S{{ index }}</v-card-text>
           </div>
           <v-divider/>
           <div class="stats-card">
-            <v-card-text>{{ item.stats }}</v-card-text>
-            <v-card-text>Places reservés / Places disponibles</v-card-text>
+            <v-card-text class="stats-card-text">
+                {{ week.freePlaces || 0 }} / {{ week.totalPlaces || 0 }}
+            </v-card-text>
           </div>
         </v-card>
       </slide>
@@ -34,6 +38,8 @@
 </template>
 
 <script>
+import { DateTime } from 'luxon'
+
 export default {
   props: {
     nameCenter: {
@@ -48,20 +54,28 @@ export default {
     },
   },
 
+  computed: {
+    currentWeekNumber () {
+      return DateTime.local().setLocale('fr').weekNumber
+    },
+  },
+
   methods: {
     goToGestionPlannings () {
       this.$router.push({ name: 'gestion-plannings' })
     },
 
     formatArrayByWeek () {
-      const formatedArray = Object.keys(this.weeks).map(item => {
-        return {
-          days: [ ...this.weeks[item], ],
+      const allWeeks = Array(53).fill(false)
+      Object.keys(this.weeks).map(item => {
+        allWeeks[item] = {
+          days: [ ...this.weeks[item] ],
           numWeek: item,
+          totalPlaces: this.weeks[item].length,
+          freePlaces: this.weeks[item].length - this.weeks[item].filter(elmt => elmt.candidat).length,
         }
       })
-      console.log(formatedArray)
-      return formatedArray
+      return allWeeks
     },
   },
 }
@@ -86,6 +100,9 @@ export default {
 .stats-card {
   background-color: rgb(114, 114, 114);
   color: black;
+}
+.stats-card-text {
+  height: 4em;
 }
 .title {
   padding: 1em;

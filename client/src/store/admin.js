@@ -75,31 +75,23 @@ export default {
     async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, begin, end) {
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
-        // DateTime.local(2017, 5, 25).weekNumber //=> 21
         const weekDay = DateTime.local().setLocale('fr').weekday
         const beginDate = begin || DateTime.local().plus({ days: -weekDay }).toISO()
         const endDate = end || DateTime.local().setLocale('fr').plus({ days: 7 * 8 }).toISO()
-        let placesByCentre = await api.admin.getAllPlacesByCentre(state.departements.active, beginDate, endDate)
-        // placesByCentre.map(element => {
-        //   return element.places.sort((current, toCompare) => {
-        //     if (getFrenchLuxonDateFromIso(current.date) < getFrenchLuxonDateFromIso(toCompare.date)) { return -1 }
-        //     if (getFrenchLuxonDateFromIso(current.date) > getFrenchLuxonDateFromIso(toCompare.date)) { return 1 }
-        //     return 0
-        //   })
-        // })
-        placesByCentre = placesByCentre.map(element => {
-          return {
-            centre: element.centre,
-            places: element.places.reduce((accumulator, currentValue) => {
-              const key = getFrenchLuxonDateFromIso(currentValue['date']).weekNumber
-              if (!accumulator[key]) {
-                accumulator[key] = []
-              }
-              accumulator[key].push(currentValue)
-              return accumulator
-            }, {}),
-          }
-        })
+        let placesByCentre = await api.admin
+          .getAllPlacesByCentre(state.departements.active, beginDate, endDate)
+
+        placesByCentre = placesByCentre.map(element => ({
+          centre: element.centre,
+          places: element.places.reduce((accumulator, currentValue) => {
+            const key = getFrenchLuxonDateFromIso(currentValue['date']).weekNumber
+            if (!accumulator[key]) {
+              accumulator[key] = []
+            }
+            accumulator[key].push(currentValue)
+            return accumulator
+          }, {}),
+        }))
 
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS, placesByCentre)
       } catch (error) {

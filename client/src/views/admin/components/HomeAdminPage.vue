@@ -59,7 +59,7 @@ export default {
   computed: {
     centerInfos () {
       return this.$store.state.admin.placesByCentre.list
-    }
+    },
   },
 
   methods: {

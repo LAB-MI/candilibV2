@@ -12,7 +12,6 @@
       <header-icon
         v-for="icon in headerIcons"
         :key="icon.iconName"
-        :scrollToEl="icon.scrollToEl"
         :routerTo="icon.routerTo"
         :iconName="icon.iconName"
         :tooltipText="icon.tooltipText"
