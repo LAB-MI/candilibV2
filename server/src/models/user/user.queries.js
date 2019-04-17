@@ -49,13 +49,13 @@ export const updateUserEmail = async (user, email) => {
   if (!user) {
     throw new Error('user is undefined')
   }
-  await user.update({ email })
+  await user.updateOne({ email })
   const updatedUser = await User.findById(user._id)
   return updatedUser
 }
 
 export const updateUserPassword = async (user, password) => {
-  await user.update({ password })
+  await user.updateOne({ password })
   const updatedUser = await User.findById(user._id)
   return updatedUser
 }

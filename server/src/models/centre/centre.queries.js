@@ -47,7 +47,7 @@ export const updateCentreLabel = async (centre, name, label, adresse) => {
   if (!centre) {
     throw new Error('centre is undefined')
   }
-  await centre.update({ nom: name, label, adresse })
+  await centre.updateOne({ nom: name, label, adresse })
   const updatedCentre = await Centre.findById(centre._id)
   return updatedCentre
 }

@@ -33,5 +33,5 @@ export const createCandidats = async () => {
 }
 
 export const deleteCandidats = async () => {
-  await candidatModel.remove()
+  await candidatModel.deleteMany({})
 }

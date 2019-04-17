@@ -36,4 +36,4 @@ export const createCentres = async () => {
   )
 }
 
-export const removeCentres = async () => Centre.remove()
+export const removeCentres = async () => Centre.deleteMany({})
