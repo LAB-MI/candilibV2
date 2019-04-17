@@ -73,7 +73,7 @@ export const updateArchivedCandidatEmail = async (candidat, email) => {
   if (!candidat) {
     throw new Error('candidat is undefined')
   }
-  await candidat.update({ email })
+  await candidat.updateOne({ email })
   const updatedArchivedCandidat = await ArchivedCandidat.findById(candidat._id)
   return updatedArchivedCandidat
 }
@@ -120,7 +120,7 @@ export const updateArchivedCandidatSignUp = async (candidat, data) => {
   if (!candidat) {
     throw new Error('candidat is undefined')
   }
-  await candidat.update({ prenom, email, portable, adresse })
+  await candidat.updateOne({ prenom, email, portable, adresse })
   const updatedArchivedCandidat = await ArchivedCandidat.findById(candidat._id)
   return updatedArchivedCandidat
 }

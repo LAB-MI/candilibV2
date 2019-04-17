@@ -73,7 +73,7 @@ export const createTestPlace = async place => {
 
 export const createPlaces = () => Promise.all(places.map(createTestPlace))
 
-export const removePlaces = () => Place.remove()
+export const removePlaces = () => Place.deleteMany({})
 
 export const nbPlacesByCentres = ({ nom }) =>
   nom ? places.filter(place => place.centre === nom).length : places.length

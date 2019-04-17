@@ -94,7 +94,7 @@ export const countAvailablePlacesByCentre = async (
     centreId,
     beginDate,
     endDate
-  ).count()
+  ).countDocuments()
   return nbPlaces
 }
 

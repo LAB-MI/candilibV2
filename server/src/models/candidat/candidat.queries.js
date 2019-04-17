@@ -92,7 +92,7 @@ export const updateCandidatEmail = async (candidat, email) => {
   if (!candidat) {
     throw new Error('candidat is undefined')
   }
-  await candidat.update({ email })
+  await candidat.updateOne({ email })
   const updatedCandidat = await Candidat.findById(candidat._id)
   return updatedCandidat
 }
@@ -140,7 +140,7 @@ export const updateCandidatSignUp = async (candidat, data) => {
   if (!candidat) {
     throw new Error('candidat is undefined')
   }
-  await candidat.update({ prenom, email, portable, adresse })
+  await candidat.updateOne({ prenom, email, portable, adresse })
   const updatedCandidat = await Candidat.findById(candidat._id)
   return updatedCandidat
 }
