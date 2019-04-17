@@ -1,5 +1,5 @@
 import { compareToHash, createToken, appLogger } from '../../util'
-import { findUserByEmail } from '../../models/user'
+import { findUserByCredentials } from '../../models/user'
 
 const badCredentialsBody = {
   success: false,
@@ -10,7 +10,7 @@ export const getAdminToken = async (req, res) => {
   const { email, password } = req.body
 
   try {
-    const user = await findUserByEmail(email)
+    const user = await findUserByCredentials(email, password)
     if (!user) {
       appLogger.info({
         section: 'admin-login',
@@ -21,11 +21,7 @@ export const getAdminToken = async (req, res) => {
       return res.status(401).send(badCredentialsBody)
     }
 
-    let passwordIsValid = false
-
-    if (password !== undefined) {
-      passwordIsValid = compareToHash(password, user.password)
-    }
+    const passwordIsValid = password && compareToHash(password, user.password)
 
     if (!passwordIsValid) {
       appLogger.info({
