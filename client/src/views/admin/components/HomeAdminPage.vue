@@ -31,16 +31,20 @@
         </v-btn>
       </div>
     </v-layout>
+    <search-candidats></search-candidats>
   </div>
 </template>
 
 <script>
 import WeekMonitor from './WeekMonitor.vue'
+import SearchCandidats from '@/components/SearchCandidats'
 
 export default {
   components: {
+    SearchCandidats,
     WeekMonitor,
   },
+
   data () {
     return {
       buttonGestion: [
