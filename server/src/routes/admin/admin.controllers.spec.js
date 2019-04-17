@@ -11,6 +11,7 @@ import { getMe } from './admin.controllers'
 import { createUser } from '../../models/user'
 
 const { connect, disconnect } = require('../../mongo-connection')
+const { apiPrefix } = require('../../app')
 
 // jest.mock('./middlewares/verify-admin-level')
 // jest.mock('../middlewares/verify-token')
@@ -30,6 +31,7 @@ describe('Admin controller', () => {
     app = express()
     app.use((req, res, next) => {
       req.userId = admin._id
+      req.user = admin
       next()
     })
     app.use(getMe)
@@ -42,7 +44,7 @@ describe('Admin controller', () => {
 
   it('Should response 200 with user infos', async () => {
     const { body } = await request(app)
-      .get('')
+      .get(`${apiPrefix}/admin/me`)
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200)
