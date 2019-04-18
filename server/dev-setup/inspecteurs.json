@@ -1,0 +1,14 @@
+[
+  {
+    "email":"dupond.jacques@email.fr",
+    "nom": "dupond",
+    "prenom":"Jacques",
+    "matricule":"01020301"
+  },
+  {
+    "email":"dupont.jacques@email.fr",
+    "nom": "dupont",
+    "prenom":"Jean",
+    "matricule": "01020304"
+  }
+]

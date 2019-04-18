@@ -59,9 +59,7 @@ export const exportBookedCandidats = async (req, res) => {
 }
 
 export const getCandidats = async (req, res) => {
-  const {
-    query: { matching, format, filter },
-  } = req
+  const { matching, format, filter } = req.query
 
   if (matching) {
     const candidats = await findCandidatsMatching(matching)

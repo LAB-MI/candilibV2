@@ -224,6 +224,13 @@ export default {
       return json
     },
 
+    async searchInspecteurs (search) {
+      const json = await apiClient.get(`${apiPaths.admin.searchInspecteurs}${search || ''}`, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
     async getCreneaux () {
       const json = await apiClient.get(apiPaths.creneaux(), {
         headers: getHeadersForAdminJson(),
