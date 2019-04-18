@@ -21,7 +21,7 @@
         v-for="(week, index) in formatArrayByWeek()"
         :key="week.numWeek"
       >
-        <v-card :id="`week-${nameCenter}-${index}`" class="main-card" @click="goToGestionPlannings">
+        <v-card v-if="index !== 0" :id="`week-${nameCenter}-${index}`" class="main-card" @click="goToGestionPlannings">
           <div class="week-card">
             <v-card-text>S{{ index }}</v-card-text>
           </div>
@@ -46,12 +46,7 @@ export default {
       type: String,
       default: '',
     },
-    weeks: {
-      type: Object,
-      default () {
-        return {}
-      },
-    },
+    weeks: Object,
   },
 
   computed: {
@@ -67,12 +62,12 @@ export default {
 
     formatArrayByWeek () {
       const allWeeks = Array(53).fill(false)
-      Object.keys(this.weeks).map(item => {
-        allWeeks[item] = {
-          days: [ ...this.weeks[item] ],
-          numWeek: item,
-          totalPlaces: this.weeks[item].length,
-          freePlaces: this.weeks[item].length - this.weeks[item].filter(elmt => elmt.candidat).length,
+      Object.keys(this.weeks).map(weekNb => {
+        allWeeks[weekNb] = {
+          days: [ this.weeks[weekNb] ],
+          numWeek: weekNb,
+          totalPlaces: this.weeks[weekNb].length,
+          freePlaces: this.weeks[weekNb].length - this.weeks[weekNb].filter(elmt => elmt.candidat).length,
         }
       })
       return allWeeks

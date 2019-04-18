@@ -3,13 +3,13 @@ import jwt from 'jsonwebtoken'
 import config from '../config'
 import { appLogger } from './logger'
 
-export function createToken (id, userStatus) {
+export function createToken (id, email, userStatus) {
   const level = config.userStatusLevels[userStatus] || 0
   const tokenExpiration = config[`${userStatus}TokenExpiration`]
-  let emailOrIdKey = id.includes('@') ? 'email' : 'id'
 
   const payload = {
-    [emailOrIdKey]: id,
+    id,
+    email,
     level,
   }
 

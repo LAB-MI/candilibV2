@@ -75,21 +75,20 @@ export default {
     async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, begin, end) {
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
-        const weekDay = DateTime.local().setLocale('fr').weekday
-        const beginDate = begin || DateTime.local().plus({ days: -weekDay }).toISO()
-        const endDate = end || DateTime.local().setLocale('fr').plus({ days: 7 * 8 }).toISO()
+        const currentDateTime = DateTime.local().setLocale('fr')
+        const weekDay = currentDateTime.weekday
+        const beginDate = begin || currentDateTime.plus({ days: -weekDay }).toISO()
+        const endDate = end || currentDateTime.plus({ months: 2 }).toISO()
         let placesByCentre = await api.admin
           .getAllPlacesByCentre(state.departements.active, beginDate, endDate)
 
         placesByCentre = placesByCentre.map(element => ({
           centre: element.centre,
-          places: element.places.reduce((accumulator, currentValue) => {
-            const key = getFrenchLuxonDateFromIso(currentValue['date']).weekNumber
-            if (!accumulator[key]) {
-              accumulator[key] = []
-            }
-            accumulator[key].push(currentValue)
-            return accumulator
+          places: element.places.reduce((acc, place) => {
+            const key = getFrenchLuxonDateFromIso(place.date).weekNumber
+            const places = { ...acc }
+            places[key] = [...(places[key] || []), place]
+            return places
           }, {}),
         }))
 

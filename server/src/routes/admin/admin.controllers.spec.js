@@ -20,7 +20,6 @@ describe('Admin controller', () => {
     app = express()
     app.use((req, res, next) => {
       req.userId = admin._id
-      req.user = admin
       next()
     })
     app.use(getMe)

@@ -14,7 +14,10 @@ import EmailValidation from '../views/candidat/components/EmailValidation.vue'
 import CandidatHeader from '../views/candidat/components/CandidatHeader.vue'
 import CandidatFooter from '../views/candidat/components/CandidatFooter.vue'
 
+const viewport = { defaultViewport: 'iphone6' }
+
 storiesOf('Candidat', module)
+  .addParameters({ viewport })
   .add('Pré-inscription', () => ({
     components: { CandidatPresignup },
     template: `<div :style="{display: 'flex', background: '#118098'}"><candidat-presignup /></div>`,

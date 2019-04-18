@@ -12,7 +12,6 @@ import { candidat, admin } from '../../src/messages'
 import '../../src/plugins/index'
 
 import '../../src/main.styl'
-import { addParameters } from '@storybook/vue/dist/client/preview'
 
 Vue.use(VueIntl)
 Vue.setLocale('fr')
@@ -25,11 +24,6 @@ setConsoleOptions({
   panelExclude: [],
 })
 
-const viewport = {
-  defaultViewport: 'galaxys5',
-}
-
-addParameters({ viewport })
 addDecorator(() => ({
   template: '<v-app><story/></v-app>',
 }))

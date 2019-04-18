@@ -1,7 +1,7 @@
-import { findUserByEmail } from '../../models/user'
+import { findUserById } from '../../models/user'
 
 export const getMe = async (req, res) => {
-  const { email, departements } = await findUserByEmail(req.user.email)
+  const { email, departements } = await findUserById(req.userId)
   res.json({
     email,
     departements,
