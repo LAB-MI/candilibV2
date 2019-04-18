@@ -84,26 +84,32 @@ export default {
 <style lang="postcss" scoped>
 .main-card {
   cursor: pointer;
-  border: 1px solid black
+  border: 1px solid black;
 }
+
 .carousel {
   border: 1px hidden;
 }
+
 .slide {
   height: 100%;
   text-align: center;
 }
+
 .week-card {
   background-color: rgb(199, 199, 199);
   color: black;
 }
+
 .stats-card {
   background-color: rgb(114, 114, 114);
   color: black;
 }
+
 .stats-card-text {
   height: 4em;
 }
+
 .title {
   padding: 1em;
   text-align: center;
