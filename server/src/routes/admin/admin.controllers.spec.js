@@ -1,28 +1,17 @@
 import request from 'supertest'
 import express from 'express'
 
-/*
-import { verifyToken } from '../middlewares'
-import { verifyAdminLevel } from './middlewares/verify-admin-level'
-*/
-
-// import { apiPrefix } from '../../app'
 import { getMe } from './admin.controllers'
 import { createUser } from '../../models/user'
 
 const { connect, disconnect } = require('../../mongo-connection')
 const { apiPrefix } = require('../../app')
 
-// jest.mock('./middlewares/verify-admin-level')
-// jest.mock('../middlewares/verify-token')
-
 let app
 let admin
 
 const email = 'test@example.com'
 const password = 'S3cr3757uff!'
-
-// app.use(verifyToken, verifyAdminLevel)
 
 describe('Admin controller', () => {
   beforeAll(async () => {

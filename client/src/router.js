@@ -16,7 +16,7 @@ import MyProfile from '@/views/candidat/components/MyProfile.vue'
 
 import AdminAurige from '@/views/admin/components/Aurige.vue'
 import AdminCalendar from '@/views/admin/components/AdminCalendar.vue'
-import GestionPlannings from '@/views/admin/components/GestionPlannings.vue'
+import ScheduleManager from '@/views/admin/components/ScheduleManager.vue'
 import HomeAdminPage from '@/views/admin/components/HomeAdminPage.vue'
 import Whitelist from '@/views/admin/components/Whitelist.vue'
 
@@ -57,7 +57,7 @@ const adminRoutes = [
       {
         path: 'gestion-plannings',
         name: 'gestion-plannings',
-        component: GestionPlannings,
+        component: ScheduleManager,
       },
       {
         path: 'aurige',

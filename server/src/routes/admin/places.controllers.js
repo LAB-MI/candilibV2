@@ -31,18 +31,10 @@ export const getPlaces = async (req, res) => {
   const { departement, beginDate, endDate } = req.query
 
   if (!departement) {
-    try {
-      places = await findAllPlaces()
-      res.json(places)
-    } catch (error) {
-      throw new Error(error.message)
-    }
+    places = await findAllPlaces()
+    res.json(places)
   } else {
-    try {
-      places = await findCentresWithPlaces(departement, beginDate, endDate)
-      res.json(places)
-    } catch (error) {
-      throw new Error(error.message)
-    }
+    places = await findCentresWithPlaces(departement, beginDate, endDate)
+    res.json(places)
   }
 }
