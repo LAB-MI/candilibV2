@@ -5,7 +5,7 @@ import WeekMonitor from './WeekMonitor.vue'
 
 storiesOf('Admin', module)
   .add('WeekMonitor', () => ({
-    template: '<week-monitor nameCenter="Nom du centre" />',
+    template: '<week-monitor nameCenter="Nom du centre" weeks="" />',
     components: { WeekMonitor },
     store: new Vuex.Store({
       state: {},

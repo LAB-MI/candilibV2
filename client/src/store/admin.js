@@ -46,8 +46,8 @@ export default {
     [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] (state) {
       state.placesByCentre.isFetching = true
     },
-    [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS] (state, data) {
-      state.placesByCentre.list = data
+    [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS] (state, list) {
+      state.placesByCentre.list = list
     },
     [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE] (state, error) {
       state.placesByCentre.error = error
@@ -79,10 +79,10 @@ export default {
         const weekDay = currentDateTime.weekday
         const beginDate = begin || currentDateTime.plus({ days: -weekDay }).toISO()
         const endDate = end || currentDateTime.plus({ months: 2 }).toISO()
-        let placesByCentre = await api.admin
+        const placesByCentre = await api.admin
           .getAllPlacesByCentre(state.departements.active, beginDate, endDate)
 
-        placesByCentre = placesByCentre.map(element => ({
+        const placesByCentreAndWeek = placesByCentre.map(element => ({
           centre: element.centre,
           places: element.places.reduce((acc, place) => {
             const key = getFrenchLuxonDateFromIso(place.date).weekNumber
@@ -92,7 +92,7 @@ export default {
           }, {}),
         }))
 
-        commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS, placesByCentre)
+        commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS, placesByCentreAndWeek)
       } catch (error) {
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE, error)
         return dispatch(SHOW_ERROR, 'Error while fetching departement active infos')
