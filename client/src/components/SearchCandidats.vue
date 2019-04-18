@@ -1,5 +1,4 @@
 <template>
-
   <v-autocomplete
     v-model="selectedCandidat"
     :label="label"
@@ -11,9 +10,7 @@
     return-object
     item-text="nomNaissance"
     item-value="_id"
-  >
-  </v-autocomplete>
-
+  />
 </template>
 
 <script>

@@ -46,6 +46,13 @@ export const findCandidatById = async (id, options) => {
   return candidat
 }
 
+export const findCandidatsMatching = async search => {
+  const candidats = await Candidat.find({
+    nomNaissance: new RegExp(search, 'i'),
+  })
+  return candidats
+}
+
 export const findActiveCandidatByEmail = async email => {
   const candidat = await Candidat.findOne({ email, archived: undefined })
   return candidat

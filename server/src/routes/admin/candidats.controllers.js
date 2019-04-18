@@ -7,6 +7,7 @@ import {
 import {
   findAllCandidatsLean,
   findBookedCandidats,
+  findCandidatsMatching,
 } from '../../models/candidat'
 import { findPlaceByCandidatId } from '../../models/place'
 
@@ -59,8 +60,14 @@ export const exportBookedCandidats = async (req, res) => {
 
 export const getCandidats = async (req, res) => {
   const {
-    query: { format, filter },
+    query: { matching, format, filter },
   } = req
+
+  if (matching) {
+    const candidats = await findCandidatsMatching(matching)
+    res.json(candidats)
+    return
+  }
 
   if (filter === 'resa') {
     getBookedCandidats(req, res)
