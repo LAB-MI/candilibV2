@@ -30,10 +30,11 @@ export default {
 
   },
   actions: {
-    async [UPLOAD_PLACES_REQUEST] ({ commit, dispatch }, file) {
+    async [UPLOAD_PLACES_REQUEST] ({ commit, dispatch }, { file, departement }) {
       commit(UPLOAD_PLACES_REQUEST)
       const data = new FormData()
       data.append('file', file)
+      data.append('departement', departement)
 
       try {
         const result = await api.admin.uploadPlacesCSV(data)
