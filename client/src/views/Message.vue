@@ -61,7 +61,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .c-candidat-wrapper {
   position: relative;
   min-height: 100vh;

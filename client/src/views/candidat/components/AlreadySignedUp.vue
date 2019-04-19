@@ -124,7 +124,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
+<style lang="stylus" scoped>
 .already-signed-up {
   @media (max-width: 599px) {
     order: -1;
