@@ -14,7 +14,6 @@ export default {
   props: {
     routerTo: String,
     iconName: String,
-    scrollToEl: String,
     tooltipText: String,
   },
 }

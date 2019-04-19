@@ -15,9 +15,10 @@ import SelectionSummary from '@/views/candidat/components/selection-summary/Sele
 import MyProfile from '@/views/candidat/components/MyProfile.vue'
 
 import AdminAurige from '@/views/admin/components/Aurige.vue'
-import Whitelist from '@/views/admin/components/Whitelist.vue'
 import AdminCalendar from '@/views/admin/components/AdminCalendar.vue'
+import ScheduleManager from '@/views/admin/components/ScheduleManager.vue'
 import HomeAdminPage from '@/views/admin/components/HomeAdminPage.vue'
+import Whitelist from '@/views/admin/components/Whitelist.vue'
 
 import {
   requireAdminAuth,
@@ -52,6 +53,11 @@ const adminRoutes = [
         path: '',
         name: 'admin-home',
         component: HomeAdminPage,
+      },
+      {
+        path: 'gestion-plannings',
+        name: 'gestion-plannings',
+        component: ScheduleManager,
       },
       {
         path: 'aurige',

@@ -86,7 +86,7 @@ import {
 import {
   getFrenchLuxonDateFromIso,
   getFrenchDateFromIso,
-} from '@/util/dateTimeWithSetLocale.js'
+} from '@/util/frenchDateTime.js'
 
 import PageTitle from '@/components/PageTitle'
 

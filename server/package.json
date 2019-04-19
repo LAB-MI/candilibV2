@@ -103,9 +103,9 @@
     }
   },
   "jest": {
-    "collectCoverage": true,
+    "collectCoverage": false,
     "collectCoverageFrom": [
-      "src/**/*.js",
+      "**/*.{js,vue}",
       "!**/node_modules/**"
     ],
     "coverageReporters": [

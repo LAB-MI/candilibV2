@@ -57,7 +57,7 @@ import {
 
 import {
   getFrenchDateTimeFromIso,
-} from '../../../../util/dateTimeWithSetLocale.js'
+} from '../../../../util/frenchDateTime.js'
 import SummaryConfirmation from './SummaryConfirmation.vue'
 import MyReservation from './MyReservation.vue'
 import ReservationInfo from './ReservationInfo.vue'

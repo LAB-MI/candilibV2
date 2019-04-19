@@ -1,5 +1,10 @@
 import User from './user.model'
 
+export const findUserById = async id => {
+  const user = await User.findById(id)
+  return user
+}
+
 export const findUserByEmail = async (email, populatePassword) => {
   const query = User.findOne({ email })
 
@@ -22,8 +27,8 @@ export const findUserByCredentials = async (email, password) => {
   return user
 }
 
-export const createUser = async (email, password) => {
-  const user = new User({ email, password })
+export const createUser = async (email, password, departements) => {
+  const user = new User({ email, password, departements })
   await user.save()
   return user
 }
@@ -56,6 +61,15 @@ export const updateUserEmail = async (user, email) => {
 
 export const updateUserPassword = async (user, password) => {
   await user.updateOne({ password })
+  const updatedUser = await User.findById(user._id)
+  return updatedUser
+}
+
+export const updateUserDepartements = async (user, departements) => {
+  if (!user) {
+    throw new Error('user is undefined')
+  }
+  await user.update({ departements })
   const updatedUser = await User.findById(user._id)
   return updatedUser
 }

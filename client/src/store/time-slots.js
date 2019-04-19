@@ -2,7 +2,7 @@
 import { DateTime } from 'luxon'
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
-import { getFrenchLuxonDateFromIso } from '../util/dateTimeWithSetLocale.js'
+import { getFrenchLuxonDateFromIso } from '../util/frenchDateTime.js'
 import { SET_MODIFYING_RESERVATION } from '@/store'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'

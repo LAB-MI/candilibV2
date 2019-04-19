@@ -19,10 +19,10 @@ const UserSchema = new Schema({
   password: {
     type: String,
     required: true,
-    select: false,
   },
-  departement: {
+  departements: {
     type: Array,
+    default: [],
   },
   isDeleted: {
     type: Boolean,

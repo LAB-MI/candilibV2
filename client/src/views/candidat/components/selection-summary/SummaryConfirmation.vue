@@ -77,7 +77,7 @@ import { mapState } from 'vuex'
 
 import {
   getFrenchDateFromIso,
-} from '@/util/dateTimeWithSetLocale.js'
+} from '@/util/frenchDateTime.js'
 import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,

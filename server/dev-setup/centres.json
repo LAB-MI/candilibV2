@@ -16,5 +16,23 @@
     "nom": "Bobigny",
     "label": "Centre d'examen du permis de conduire de Bobigny",
     "adresse": "320 Avenue Paul Vaillant-Couturier, Bobigny, FR, 93000"
+  },
+  {
+    "departement": "75",
+    "nom": "Paris3",
+    "label": "Centre d'examen du permis de conduire de Paris3",
+    "adresse": "99 Avenue du Général de Gaulle, Paris, FR, 75012"
+  },
+  {
+    "departement": "75",
+    "nom": "Paris2",
+    "label": "Parking circulaire, situé face à la cuisine centrale et l'école hôtelière Paris2",
+    "adresse": "4 Avenue Jean Fourgeaud, Paris, FR, 75008"
+  },
+  {
+    "departement": "75",
+    "nom": "Paris1",
+    "label": "Centre d'examen du permis de conduire de Paris1",
+    "adresse": "320 Avenue Paul Vaillant-Couturier, Paris, FR, 75018"
   }
 ]

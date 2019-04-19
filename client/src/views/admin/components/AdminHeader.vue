@@ -12,13 +12,9 @@
       <header-icon
         v-for="icon in headerIcons"
         :key="icon.iconName"
-        :scrollToEl="icon.scrollToEl"
         :routerTo="icon.routerTo"
         :iconName="icon.iconName"
         :tooltipText="icon.tooltipText"
-      />
-      <departement-selector
-        class="departement-selector"
       />
       <v-tooltip bottom>
         <v-btn icon @click.prevent="disconnect" slot="activator">
@@ -26,6 +22,9 @@
         </v-btn>
         <span>Déconnexion</span>
       </v-tooltip>
+      <departement-selector
+        class="departement-selector"
+      />
     </div>
   </v-toolbar>
 </template>

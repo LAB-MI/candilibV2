@@ -8,7 +8,7 @@ const adminEmail = 'admin@example.com'
 const adminPassword = 'Admin*78'
 
 export default async () => {
-  return createUser(adminEmail, adminPassword)
+  return createUser(adminEmail, adminPassword, ['75', '93'])
     .then(() => {
       logger.info(`Compte admin ${adminEmail} créé !`)
     })

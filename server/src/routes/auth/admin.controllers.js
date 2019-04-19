@@ -1,4 +1,4 @@
-import { compareToHash, createToken, appLogger } from '../../util'
+import { createToken, appLogger } from '../../util'
 import { findUserByCredentials } from '../../models/user'
 
 const badCredentialsBody = {
@@ -21,9 +21,9 @@ export const getAdminToken = async (req, res) => {
       return res.status(401).send(badCredentialsBody)
     }
 
-    const passwordIsValid = password && compareToHash(password, user.password)
+    const isValidCredentials = user.comparePassword(password)
 
-    if (!passwordIsValid) {
+    if (!isValidCredentials) {
       appLogger.info({
         section: 'admin-login',
         subject: email,
@@ -32,7 +32,7 @@ export const getAdminToken = async (req, res) => {
       return res.status(401).send(badCredentialsBody)
     }
 
-    const token = createToken(user.email, user.status)
+    const token = createToken(user._id, user.email, user.status)
     appLogger.info({
       section: 'admin-login',
       subject: email,
@@ -46,7 +46,7 @@ export const getAdminToken = async (req, res) => {
       section: 'admin-login',
       subject: email,
       action: 'FAILED_TO_LOG_IN',
-      complement: error,
+      complement: error.message,
     })
     return res.status(500).send({
       message: `Erreur serveur : ${error.message}`,

@@ -34,7 +34,7 @@ storiesOf('Admin', module)
   }))
   .add('AdminHeader', () => ({
     components: { AdminHeader },
-    template: '<admin-header />',
+    template: '<admin-header email="admin@example.com" />',
     router,
   }))
   .add('AdminFooter', () => ({
