@@ -13,6 +13,7 @@ import CenterSelection from '@/views/candidat/components/center-selection/Center
 import TimeSlot from '@/views/candidat/components/time-slots-selection/TimeSlot.vue'
 import SelectionSummary from '@/views/candidat/components/selection-summary/SelectionSummary.vue'
 import MyProfile from '@/views/candidat/components/MyProfile.vue'
+import LandingPage from '@/views/candidat/components/LandingPage.vue'
 
 import AdminAurige from '@/views/admin/components/Aurige.vue'
 import AdminCalendar from '@/views/admin/components/AdminCalendar.vue'
@@ -90,6 +91,12 @@ const candidatRoutes = [
         beforeEnter: checkCandidatToken,
       },
       {
+        path: '/qu-est-ce-que-candilib',
+        name: 'landing-page',
+        component: LandingPage,
+        beforeEnter: checkCandidatToken,
+      },
+      {
         path: '/email-en-attente-de-validation',
         name: 'email-validation-pending',
         component: EmailValidation,
@@ -106,7 +113,7 @@ const candidatRoutes = [
     name: 'candidat',
     component: () => import('./views/candidat'),
     beforeEnter: requireCandidatAuth,
-    redirect: '/candidat/home',
+    redirect: '/qu-est-ce-que-candilib',
     children: [
       {
         path: 'home',

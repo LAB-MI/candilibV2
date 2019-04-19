@@ -121,67 +121,7 @@
         <v-btn flat color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
           {{getMsg('preinscription_bouton_mentions_legales') }}
         </v-btn>
-        <v-dialog
-          v-model="showDialog"
-          width="500"
-          class="already-signed-up"
-        >
-          <v-btn
-            slot="activator"
-            depressed
-            color="#fff"
-            tabindex="8"
-          >
-            {{getMsg('preinscription_bouton_deja_inscrit') }}
-          </v-btn>
-
-          <v-card>
-            <v-card-title
-              class="headline grey lighten-2"
-              primary-title
-            >
-              {{getMsg('preinscription_magic_link_title') }}
-            </v-card-title>
-
-            <v-form v-model="magicLinkValid" @submit.prevent="sendMagicLink">
-              <div class="u-flex  u-flex--center">
-                <div class="form-input">
-                  <v-text-field
-                    :label="`${getMsg('preinscription_email')}`"
-                    prepend-icon="email"
-                    @focus="setEmailPlaceholder"
-                    @blur="removeEmailPlaceholder"
-                    :placeholder="emailPlaceholder"
-                    aria-placeholder="jean@dupont.fr"
-                    :autofocus="showDialog"
-                    hint="ex. : jean@dupont.fr"
-                    required
-                    :rules="emailRules"
-                    tabindex="1"
-                    v-model="email"
-                  ></v-text-field>
-                </div>
-              </div>
-
-              <v-divider></v-divider>
-
-              <v-card-actions>
-                <v-spacer></v-spacer>
-                <v-btn
-                dark
-                type="submit"
-                :disabled="isSendingMagicLink"
-                :aria-disabled="isSendingMagicLink"
-                tabindex="2"
-                color="#28a745">
-                  <div class="submit-label">
-                    {{getMsg('preinscription_bouton_magic_link') }}
-                  </div>
-                </v-btn>
-              </v-card-actions>
-            </v-form>
-          </v-card>
-        </v-dialog>
+        <already-signed-up />
         <v-btn flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
           {{getMsg('preinscription_bouton_faq') }}
         </v-btn>
@@ -200,8 +140,9 @@ import {
   SHOW_ERROR,
   SHOW_SUCCESS,
 } from '@/store'
-
 import api from '@/api'
+
+import AlreadySignedUp from './AlreadySignedUp'
 
 const getAdresses = pDebounce((query) => {
   return api.util.searchAdresses(query)
@@ -209,6 +150,9 @@ const getAdresses = pDebounce((query) => {
 
 export default {
   name: 'signup-form',
+  components: {
+    AlreadySignedUp,
+  },
   props: {
     toggleForm: Function,
   },

@@ -46,7 +46,83 @@ export default {
       logoMI,
       logoSR,
       logoLabMI,
+      lastErrorColor: undefined,
     }
+  },
+
+  mounted () {
+    this.lastErrorColor = this.$vuetify.theme.error
+    this.$vuetify.theme.error = '#891329'
+  },
+
+  destroyed () {
+    this.$vuetify.theme.error = this.lastErrorColor
   },
 }
 </script>
+
+<style lang="stylus" scoped>
+.c-candidat-wrapper {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #555;
+
+  @media (min-width: 600px) {
+    background-image: url(../assets/bg-presignup.jpg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
+  }
+}
+
+.c-candidat-message {
+  display: flex;
+  width: 40em;
+  padding: 1em;
+  margin: 1em;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #17a2b8, #063852);
+  border-radius: 1em;
+  box-shadow: 0.05em 0.1em 0.1em 0.3em #fff;
+  color: #fff;
+
+  /*
+  @media (max-width: 599px) {
+    width: 100vw;
+    margin: 0;
+    border-radius: 0;
+  }
+*/
+
+  &__title {
+    margin: 0.2em 0;
+    line-height: 1;
+    font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
+    font-size: 40px;
+    letter-spacing: 5px;
+    color: #fff;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 3px 3px 0 #000;
+    text-shadow: 8px 8px 12px #333;
+  }
+
+  &__subtitle {
+    padding: 5px 0 15px 0;
+    line-height: 1;
+    font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    color: #fff;
+    letter-spacing: 3px;
+    text-align: center;
+    text-transform: uppercase;
+    text-shadow: 8px 8px 12px #333;
+  }
+}
+</style>
