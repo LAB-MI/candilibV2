@@ -102,7 +102,7 @@ import {
   getFrenchLuxonDateFromIso,
   getFrenchDateFromIso,
   getFrenchDateTimeFromIso,
-} from '../../../../util/dateTimeWithSetLocale.js'
+} from '../../../../util/frenchDateTime.js'
 
 import ModalConfirm from './ModalConfirm'
 

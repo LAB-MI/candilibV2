@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { getFrenchLuxonDateFromIso } from '../util/dateTimeWithSetLocale.js'
+import { getFrenchLuxonDateFromIso } from '../util/frenchDateTime.js'
 
 import api from '@/api'
 
