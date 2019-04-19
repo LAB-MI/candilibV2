@@ -1,9 +1,9 @@
 import { appLogger } from '../../../util'
 
-export async function verifyAdminDepartment (req, res, next) {
+export async function verifyAdminDepartement (req, res, next) {
   try {
     const { departements } = req
-    const { departement } = req.params || req.body
+    const { departement } = req.query || req.body
     if (departements) {
       const found = departements.find(dep => dep === departement)
       if (found) {
@@ -16,10 +16,10 @@ export async function verifyAdminDepartment (req, res, next) {
       message: `Departement ${departement} non trouvé`,
     })
     throw new Error('Accès interdit')
-  } catch (err) {
-    return res.status(403).send({
+  } catch (error) {
+    return res.status(401).send({
       isTokenValid: false,
-      message: 'Accès interdit',
+      message: error.message,
       success: false,
     })
   }

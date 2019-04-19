@@ -1,4 +1,4 @@
-const request = require('supertest')
+import request from 'supertest'
 
 const { connect, disconnect } = require('../../mongo-connection')
 const {
@@ -37,7 +37,7 @@ describe('Test get and export candidats', () => {
 
   it('Should response 200 with list candidats', async () => {
     const { body } = await request(app)
-      .get(`${apiPrefix}/admin/candidats`)
+      .get(`${apiPrefix}/admin/candidats?departement=93`)
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200)
@@ -46,7 +46,7 @@ describe('Test get and export candidats', () => {
   })
   it('Should response 200 with list candidats in a file', async () => {
     const { text } = await request(app)
-      .get(`${apiPrefix}/admin/candidats?format=csv`)
+      .get(`${apiPrefix}/admin/candidats?format=csv&departement=93`)
       .expect('Content-Type', 'text/csv; charset=utf-8')
       .expect(
         'Content-Disposition',
@@ -59,7 +59,7 @@ describe('Test get and export candidats', () => {
   })
   it('Should response 200 with list booked candidats', async () => {
     const { body } = await request(app)
-      .get(`${apiPrefix}/admin/candidats?filter=resa`)
+      .get(`${apiPrefix}/admin/candidats?filter=resa&departement=93`)
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(200)
@@ -68,7 +68,7 @@ describe('Test get and export candidats', () => {
   })
   it('Should response 200 with list booked candidats in a file', async () => {
     const { text } = await request(app)
-      .get(`${apiPrefix}/admin/candidats?format=csv&filter=resa`)
+      .get(`${apiPrefix}/admin/candidats?format=csv&filter=resa&departement=93`)
       .expect('Content-Type', 'text/csv; charset=utf-8')
       .expect(
         'Content-Disposition',

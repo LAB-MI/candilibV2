@@ -32,10 +32,10 @@ export const getAdminToken = async (req, res) => {
       return res.status(401).send(badCredentialsBody)
     }
 
-    const token = createToken(user._id, user.email, user.status, user.departement)
+    const token = createToken(user._id, user.status, user.departement)
     appLogger.info({
       section: 'admin-login',
-      subject: email,
+      subject: user._id,
       action: 'LOGGED_IN',
       complement: user.status,
     })

@@ -19,6 +19,7 @@ const basicToken = jwt.sign(basicData, config.secret, {
 const adminData = {
   email: 'admin@example.com',
   level: 1,
+  departement: '93',
 }
 
 const adminToken = jwt.sign(adminData, config.secret, {

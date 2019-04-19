@@ -2,7 +2,7 @@ import config from '../../../config'
 
 let idCandidat = 'test candidat id'
 let level
-let departements
+let departements = ['75', '93']
 export function __setIdCandidat (id) {
   idCandidat = id
   level = config.userStatusLevels.candidat
