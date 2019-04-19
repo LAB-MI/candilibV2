@@ -15,19 +15,16 @@
         </v-flex>
       </v-layout>
     </v-card>
-    <schedule-inspector/>
   </div>
 </template>
 
 <script>
 import AdminImportPlaces from './AdminImportPlaces.vue'
-import ScheduleInspector from './ScheduleInspector.vue'
 import ImportPlacesValidation from './ImportPlacesValidation.vue'
 
 export default {
   components: {
     AdminImportPlaces,
-    ScheduleInspector,
     ImportPlacesValidation,
   },
   data () {

@@ -14,12 +14,7 @@ import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.qu
 import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { REASON_REMOVE_RESA_ADMIN } from '../common/reason.constants'
-import { sendCancelBookingByAdmin } from '../business'
-import {
-  RESA_BOOKED_CANCEL,
-  RESA_BOOKED_CANCEL_NO_MAIL,
-  DELETE_PLACE_ERROR,
-} from './message.constants'
+import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 
 const getPlaceStatus = (
   departement,
@@ -51,20 +46,13 @@ const transfomCsv = async ({ data, departement }) => {
       zone: 'Europe/Paris',
       locale: 'fr',
     })
-    if (dept !== departement) {
-      throw new Error(
-        'Le département du centre ne correspond pas au département dont vous avez la charge'
-      )
-    }
+    if (dept !== departement) throw new Error('Le département du centre ne correspond pas au département dont vous avez la charge')
 
     if (!date.isValid) throw new Error('Date est invalide')
     // TODO: create test unit for search centre by center name and departement
-    const foundCentre = await findCentreByNameAndDepartement(
-      centre.trim(),
-      departement
-    )
+    const foundCentre = await findCentreByNameAndDepartement(centre.trim(), departement)
     if (!foundCentre) throw new Error(`Le centre ${centre.trim()} est inconnu`)
-    
+
     const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
     if (!inspecteurFound)  throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
 
