@@ -32,8 +32,7 @@ const getPlaceStatus = (
  * TODO:departement a modifier
  * @param {*} data
  */
-const transfomCsv = async data => {
-  const departement = '93'
+const transfomCsv = async ({ data, departement }) => {
   const [day, time, inspecteur, centre] = data
 
   const myDate = `${day.trim()} ${time.trim()}`
@@ -119,7 +118,7 @@ const createPlaceCsv = async place => {
   }
 }
 
-export const importPlacesCsv = (csvFile, callback) => {
+export const importPlacesCsv = ({ csvFile, departement }, callback) => {
   let PlacesPromise = []
 
   csvParser
@@ -128,7 +127,7 @@ export const importPlacesCsv = (csvFile, callback) => {
       try {
         if (data[0] === 'Date') next()
         else {
-          transfomCsv(data).then(result => {
+          transfomCsv({ data, departement }).then(result => {
             appLogger.debug('transfomCsv' + result)
             if (result.status && result.status === 'error') {
               PlacesPromise.push(result)
