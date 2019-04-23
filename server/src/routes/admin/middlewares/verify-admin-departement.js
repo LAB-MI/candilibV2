@@ -3,7 +3,7 @@ import { appLogger } from '../../../util'
 export async function verifyAdminDepartement (req, res, next) {
   try {
     const { departements } = req
-    const { departement } = req.query || req.body
+    const departement = req.body.departement || req.query.departement
     if (departements) {
       const found = departements.find(dep => dep === departement)
       if (found) {
