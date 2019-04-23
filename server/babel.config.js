@@ -13,4 +13,5 @@ module.exports = {
     'dynamic-import-node',
     '@babel/plugin-syntax-dynamic-import',
   ],
+  sourceMaps: 'both',
 }
