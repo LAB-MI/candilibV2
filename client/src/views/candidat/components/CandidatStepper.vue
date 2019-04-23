@@ -101,5 +101,7 @@ export default {
 
 .stepper-title {
   color: #fff;
+  font-size: 1.4em;
+  text-align: center;
 }
 </style>
