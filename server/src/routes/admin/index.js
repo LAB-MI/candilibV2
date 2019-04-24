@@ -20,10 +20,14 @@ router.post('/candidats', verifyAdminDepartement, importCandidats)
 router.post('/places', verifyAdminDepartement, importPlaces)
 router.get('/places', verifyAdminDepartement, getPlaces)
 
-router.route('/whitelisted')
+router
+  .route('/whitelisted')
   .all(verifyAdminDepartement)
   .get(getWhitelisted)
   .post(addWhitelisted)
-router.route('/whitelisted/:id').all(verifyAdminDepartement).delete(removeWhitelisted)
+router
+  .route('/whitelisted/:id')
+  .all(verifyAdminDepartement)
+  .delete(removeWhitelisted)
 
 export default router
