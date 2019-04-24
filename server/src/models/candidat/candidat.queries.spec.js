@@ -27,7 +27,9 @@ import { archivePlace, updateCandidatFailed } from './candidat.queries'
 import {
   REASON_CANCEL,
   REASON_EXAM_FAILED,
+  REASON_REMOVE_RESA_ADMIN,
 } from '../../routes/common/reason.constants'
+import { createUser } from '../user'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
@@ -432,6 +434,7 @@ describe('Candidat', () => {
   describe('Archive place', () => {
     let createdCandidats
     let createdPlaces
+
     beforeAll(async () => {
       createdCandidats = await createCandidats()
       await createCentres()
@@ -473,6 +476,31 @@ describe('Candidat', () => {
         'archiveReason',
         REASON_EXAM_FAILED
       )
+    })
+    it('should add a place in archive place from admin', async () => {
+      const place = createdPlaces[0]
+      const selectCandidat = createdCandidats[1]
+      const candidat = await archivePlace(
+        selectCandidat,
+        place,
+        REASON_REMOVE_RESA_ADMIN,
+        'test.admin@test.com'
+      )
+
+      expect(candidat).toBeDefined()
+      expect(candidat.places).toBeDefined()
+      expect(candidat.places).toHaveLength(1)
+      expect(candidat.places[0]).toHaveProperty('_id', place._id)
+      expect(candidat.places[0]).toHaveProperty('date', place.date)
+      expect(candidat.places[0]).toHaveProperty('centre', place.centre)
+      expect(candidat.places[0]).toHaveProperty('inspecteur', place.inspecteur)
+      expect(candidat.places[0].archivedAt).toBeDefined()
+      expect(candidat.places[0].archiveReason).toBeDefined()
+      expect(candidat.places[0]).toHaveProperty(
+        'archiveReason',
+        REASON_REMOVE_RESA_ADMIN
+      )
+      expect(candidat.places[0]).toHaveProperty('byUser', 'test.admin@test.com')
     })
   })
 })
