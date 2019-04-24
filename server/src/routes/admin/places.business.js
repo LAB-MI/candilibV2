@@ -9,13 +9,9 @@ import {
   removeBookedPlace,
 } from '../../models/place'
 import { findCentreByName } from '../../models/centre/centre.queries'
-import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
+import { archivePlace } from '../../models/candidat'
 import { REASON_REMOVE_RESA_ADMIN } from '../common/reason.constants'
-import { sendCancelBookingByAdmin } from '../business'
-import {
-  RESA_BOOKED_CANCEL,
-  RESA_BOOKED_CANCEL_NO_MAIL,
-} from './message.constants'
+import { findUserById } from '../../models/user'
 
 const getPlaceStatus = (
   departement,
@@ -167,31 +163,15 @@ export const releaseResa = async ({ _id }) => {
   }
 }
 
-export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
+export const removeReservationPlaceByAdmin = async (
+  place,
+  candidat,
+  idAdmin
+) => {
+  const admin = await findUserById(idAdmin)
   // Annuler la place
-  const placeUpdated = await removeBookedPlace(place)
+  // TODO Annule place
   // Archive place
-  let candidatUpdated = addPlaceToArchive(
-    candidat,
-    place,
-    REASON_REMOVE_RESA_ADMIN,
-    admin.email
-  )
-  candidatUpdated = await setCandidatToVIP(candidatUpdated, place.date)
-
-  let statusmail = true
-  let message = RESA_BOOKED_CANCEL
-  try {
-    await sendCancelBookingByAdmin(placeUpdated, candidatUpdated)
-  } catch (error) {
-    appLogger.warn({
-      section: 'candidat-removeReservations',
-      action: 'FAILED_SEND_MAIL',
-      error,
-    })
-    statusmail = false
-    message = RESA_BOOKED_CANCEL_NO_MAIL
-  }
-
-  return { statusmail, message, candidat: candidatUpdated, placeUpdated }
+  await archivePlace(candidat, place, REASON_REMOVE_RESA_ADMIN, admin.email)
+  return place
 }
