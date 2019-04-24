@@ -5,6 +5,8 @@
         <page-title title="Centres d'examen"/>
       </v-flex>
       <v-spacer></v-spacer>
+      <page-title :title="`semaine ${currentWeekNumber}`"/>
+      <v-spacer></v-spacer>
       <v-flex class="date-selector" xs2>
         <page-title title="Choix date"/>
         <v-menu
@@ -40,6 +42,7 @@
           <v-tab
             v-for="element in placesByCentreList"
             :key="element.centre.nom"
+            @click="centreSelector(element.centre._id)"
             ripple
           >
             {{ element.centre.nom }}
@@ -54,98 +57,15 @@
               class="elevation-1"
             >
               <template v-slot:items="props">
-                <td>{{ props.item.name }}</td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
+                <td>{{ props.item.nom }}</td>
+                  <schedule-inspector-dialog
+                    v-for="(crenau, indx) in props.item.crenaux"
+                    :key="'crenaux' + indx"
+                    :icon="'face'"
+                  />
+                    <!-- <v-icon>
                       {{ props.item.crenaux8h00 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux8h30 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux9h00 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux9h30 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux10h00 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux10h30 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux11h00 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux11h30 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux13h30 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux14h00 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux14h30 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux15h00 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
-                <td class="text-xs-right">
-                  <v-btn>
-                    <v-icon>
-                      {{ props.item.crenaux15h30 ? 'face' : 'not_interested' }}
-                    </v-icon>
-                  </v-btn>
-                </td>
+                    </v-icon> -->
               </template>
             </v-data-table>
           </v-tab-item>
@@ -156,14 +76,16 @@
 </template>
 
 <script>
+import { DateTime } from 'luxon'
 import PageTitle from '@/components/PageTitle.vue'
+import ScheduleInspectorDialog from './ScheduleInspectorDialog.vue'
 
 const crenaux = [
-  '',
-  '8h00',
-  '8h30',
-  '9h00',
-  '9h30',
+  'Inspecteurs',
+  '08h00',
+  '08h30',
+  '09h00',
+  '09h30',
   '10h00',
   '10h30',
   '11h00',
@@ -204,240 +126,54 @@ const headers = Array(14).fill(true).map((item, index) => {
 //     ]
 //   },
 // ]
-const inspecteurs = [
-  {
-    name: 'Inspecteur1',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 0,
-    crenaux11h00: 0,
-    crenaux11h30: 1,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur2',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 0,
-    crenaux11h00: 1,
-    crenaux11h30: 0,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur3',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 1,
-    crenaux10h00: 0,
-    crenaux10h30: 0,
-    crenaux11h00: 0,
-    crenaux11h30: 0,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur4',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 0,
-    crenaux11h00: 0,
-    crenaux11h30: 0,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur5',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 1,
-    crenaux10h30: 1,
-    crenaux11h00: 0,
-    crenaux11h30: 0,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur6',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 1,
-    crenaux11h00: 1,
-    crenaux11h30: 1,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur7',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 0,
-    crenaux11h00: 1,
-    crenaux11h30: 0,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur8',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 0,
-    crenaux11h00: 0,
-    crenaux11h30: 0,
-    crenaux13h30: 1,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur9',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 0,
-    crenaux11h00: 0,
-    crenaux11h30: 0,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur10',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 1,
-    crenaux11h00: 1,
-    crenaux11h30: 1,
-    crenaux13h30: 1,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur11',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 0,
-    crenaux11h00: 0,
-    crenaux11h30: 0,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur12',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 1,
-    crenaux11h00: 1,
-    crenaux11h30: 0,
-    crenaux13h30: 0,
-    crenaux14h00: 0,
-    crenaux14h30: 0,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-  {
-    name: 'Inspecteur13',
-    crenaux8h00: 1,
-    crenaux8h30: 1,
-    crenaux9h00: 0,
-    crenaux9h30: 0,
-    crenaux10h00: 0,
-    crenaux10h30: 0,
-    crenaux11h00: 1,
-    crenaux11h30: 1,
-    crenaux13h30: 1,
-    crenaux14h00: 1,
-    crenaux14h30: 1,
-    crenaux15h00: 1,
-    crenaux15h30: 0,
-  },
-]
 
 export default {
   components: {
     PageTitle,
+    ScheduleInspectorDialog,
   },
 
   data () {
     return {
       active: null,
       headers,
-      inspecteurs,
       date: new Date().toISOString().substr(0, 10),
+      currentWeekNumber: DateTime.local().setLocale('fr').weekNumber,
       menu2: false,
+      inspecteurs: [],
     }
   },
 
   computed: {
+    computedDateFormatted () {
+      return this.formatDate(this.date)
+    },
+
     placesByCentreList () {
       return this.$store.state.admin.placesByCentre.list
     },
 
-    computedDateFormatted () {
-      return this.formatDate(this.date)
-    },
+    // inspecteurs () {
+    //   const fakeInspecteursArray = [
+    //     {
+    //       _id: '0123456789',
+    //       nom: 'SCUTTLE',
+    //       prenom: 'prenomScuttle',
+    //       email: 'scuttle@example.com',
+    //       matricule: '0123456789',
+    //       crenaux: [],
+    //     },
+    //     {
+    //       _id: '0123456788',
+    //       nom: 'CHARLIE',
+    //       prenom: 'prenomCharlie',
+    //       email: 'scuttle@example.com',
+    //       matricule: '0123456788',
+    //       crenaux: [],
+    //     },
+    //   ]
+    //   return fakeInspecteursArray
+    // },
   },
 
   methods: {
@@ -446,11 +182,61 @@ export default {
       const [year, month, day] = date.split('-')
       return `${month}/${day}/${year}`
     },
+
+    async centreSelector (centreId) {
+      let reservastionsByCentre = {}
+      this.placesByCentreList.find(element => {
+        if (element.centre._id === centreId) {
+          const result = element.places[this.currentWeekNumber].filter(place => {
+            const currentDate = DateTime.fromISO(place.date).setLocale('fr').toISODate()
+            const dateTofind = DateTime.fromSQL(this.date).setLocale('fr').toISODate()
+            if (currentDate === dateTofind) {
+              return place
+            }
+          })
+          console.log({result})
+          reservastionsByCentre = { centre: element.centre , places: result }
+          return result
+        }
+      })
+
+      const fakeInspecteursArray = [
+        {
+          _id: '0123456789',
+          nom: 'SCUTTLE',
+          prenom: 'prenomScuttle',
+          email: 'scuttle@example.com',
+          matricule: '0123456789',
+          crenaux: [],
+        },
+        {
+          _id: '0123456788',
+          nom: 'CHARLIE',
+          prenom: 'prenomCharlie',
+          email: 'scuttle@example.com',
+          matricule: '0123456788',
+          crenaux: [],
+        },
+      ]
+
+      reservastionsByCentre.places.map(element => {
+          fakeInspecteursArray.find(item => item.nom === element.inspecteur)
+          .crenaux.push({
+            [DateTime.fromISO(element.date).setLocale('fr').toFormat("HH'h'mm")]: {
+              status: element.candidat ? 'booked' : 'free',
+            }
+          })
+      })
+      this.inspecteurs = fakeInspecteursArray
+      console.log({reservastionsByCentre})
+      console.log({inspecteurs: this.inspecteurs})
+    },
   },
 
   watch: {
     date (val) {
       this.dateFormatted = this.formatDate(this.date)
+      this.currentWeekNumber = DateTime.fromSQL(this.date).setLocale('fr').weekNumber
     },
   },
 }
