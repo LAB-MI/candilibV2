@@ -96,9 +96,13 @@ import {
   FETCH_ADMIN_INFO_REQUEST,
   FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
 } from '@/store'
-
 import PageTitle from '@/components/PageTitle.vue'
 import ScheduleInspectorDialog from './ScheduleInspectorDialog.vue'
+import {
+  getFrenchLuxonDateFromIso,
+  getFrenchLuxonDateTimeFromSql,
+  getFrenchLuxonCurrentDateTime,
+} from '@/util'
 
 import {
   creneauSetting,
@@ -236,6 +240,81 @@ export default {
       }
       this.isComputing = false
     },
+
+    centreSelector (centreId) {
+      this.activeCentreId = centreId
+
+      // const fakeInspecteursArray = [
+      //   {
+      //     _id: 'ObjectId("5cc2fc5150b58e0977a76bd5")',
+      //     nom: 'SCUTTLE',
+      //     prenom: 'prenomScuttle',
+      //     email: 'scuttle@example.com',
+      //     matricule: '0123456789',
+      //     crenaux: [],
+      //   },
+      //   {
+      //     _id: 'ObjectId("5cc2fc5150b58e0977a76bd4")',
+      //     nom: 'CHARLIE',
+      //     prenom: 'prenomCharlie',
+      //     email: 'dupond.jacques@email.fr',
+      //     matricule: '0123456788',
+      //     crenaux: [],
+      //   },
+      // ]
+    },
+
+    async fetchInspecteursPlanning () {
+      console.log('okokok', this.activeCentreId)
+      const crenauxTemplate = [
+        '08h00',
+        '08h30',
+        '09h00',
+        '09h30',
+        '10h00',
+        '10h30',
+        '11h00',
+        '11h30',
+        '13h30',
+        '14h00',
+        '14h30',
+        '15h00',
+        '15h30',
+      ]
+
+      const fakeInspecteursArray = this.inspecteurs
+      let reservastionsByCentre = {}
+
+      this.placesByCentreList.find(element => {
+        const weekPlaces = element.places[this.currentWeekNumber]
+        if (element.centre._id === this.activeCentreId && weekPlaces && weekPlaces.length) {
+          const result = weekPlaces.filter(place => {
+            const currentDate = getFrenchLuxonDateFromIso(place.date).toISODate()
+            const dateTofind = getFrenchLuxonDateTimeFromSql(this.date).toISODate()
+            if (currentDate === dateTofind) {
+              return place
+            }
+          })
+          reservastionsByCentre = { centre: element.centre, places: result }
+          this.inspecteursData = fakeInspecteursArray.map(inspecteur => {
+            const crenauxData = crenauxTemplate.map((elemt) => {
+              const instpecteurPlaces = reservastionsByCentre.places
+                .filter(element => element.inspecteur === inspecteur._id &&
+                  getFrenchLuxonDateFromIso(element.date).toFormat("HH'h'mm") === elemt)
+              if (instpecteurPlaces.length) {
+                return { place: instpecteurPlaces, hour: elemt }
+              } else {
+                return { place: undefined, hour: elemt }
+              }
+            })
+            return {
+              ...inspecteur,
+              crenaux: crenauxData,
+            }
+          })
+        }
+      })
+    }
   },
 
   watch: {
