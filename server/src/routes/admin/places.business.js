@@ -9,6 +9,9 @@ import {
   removeBookedPlace,
 } from '../../models/place'
 import { findCentreByName } from '../../models/centre/centre.queries'
+import { archivePlace } from '../../models/candidat'
+import { REASON_REMOVE_RESA_ADMIN } from '../common/reason.constants'
+import { findUserById } from '../../models/user'
 
 const getPlaceStatus = (
   departement,
@@ -158,4 +161,17 @@ export const releaseResa = async ({ _id }) => {
     })
     return removeBookedPlace(place)
   }
+}
+
+export const removeReservationPlaceByAdmin = async (
+  place,
+  candidat,
+  idAdmin
+) => {
+  const admin = await findUserById(idAdmin)
+  // Annuler la place
+  // TODO Annule place
+  // Archive place
+  await archivePlace(candidat, place, REASON_REMOVE_RESA_ADMIN, admin.email)
+  return place
 }
