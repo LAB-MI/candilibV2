@@ -8,7 +8,7 @@ export function verifyAdminLevel (req, res, next) {
     }
     throw new Error('Accès interdit')
   } catch (err) {
-    return res.status(403).send({
+    return res.status(401).send({
       isTokenValid: false,
       message: 'Accès interdit',
       success: false,

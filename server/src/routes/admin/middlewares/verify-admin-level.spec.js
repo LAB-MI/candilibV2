@@ -34,7 +34,7 @@ describe('Verify-token', () => {
     await app.close()
   })
 
-  it('Should respond a 403', async () => {
+  it('Should respond a 401', async () => {
     // When
     const { body, status } = await request(app)
       .get(apiPrefix)
@@ -42,7 +42,7 @@ describe('Verify-token', () => {
       .set('Authorization', `Bearer ${basicToken}`)
 
     // Then
-    expect(status).toBe(403)
+    expect(status).toBe(401)
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', 'Accès interdit')
   })
