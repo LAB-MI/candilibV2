@@ -20,6 +20,10 @@ const ArchivedPlaceFileds = {
     type: String,
     default: undefined,
   },
+  byUser: {
+    type: String,
+    default: undefined,
+  },
 }
 
 const ArchivedPlaceSchema = new Schema(ArchivedPlaceFileds)
