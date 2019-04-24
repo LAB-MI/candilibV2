@@ -52,6 +52,7 @@ const transfomCsv = async ({ data, departement }) => {
       zone: 'Europe/Paris',
       locale: 'fr',
     })
+
     if (dept !== departement) {
       throw new Error(
         'Le département du centre ne correspond pas au département dont vous avez la charge'
@@ -64,16 +65,10 @@ const transfomCsv = async ({ data, departement }) => {
       centre.trim(),
       departement
     )
-
     if (!foundCentre) throw new Error(`Le centre ${centre.trim()} est inconnu`)
 
     const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
     if (!inspecteurFound)  throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
-
-    const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
-    if (!inspecteurFound) {
-      throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
-    }
 
     return {
       departement,
