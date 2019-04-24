@@ -12,16 +12,22 @@ import { verifyAdminLevel, verifyAdminDepartement } from './middlewares'
 
 const router = express.Router()
 
-router.use(verifyAdminLevel, verifyAdminDepartement)
+router.use(verifyAdminLevel)
 
 router.get('/me', getMe)
-router.get('/candidats', getCandidats)
-router.post('/candidats', importCandidats)
-router.post('/places', importPlaces)
-router.get('/places', getPlaces)
+router.get('/candidats', verifyAdminDepartement, getCandidats)
+router.post('/candidats', verifyAdminDepartement, importCandidats)
+router.post('/places', verifyAdminDepartement, importPlaces)
+router.get('/places', verifyAdminDepartement, getPlaces)
 
-router.route('/whitelisted').get(getWhitelisted)
-router.route('/whitelisted').post(addWhitelisted)
-router.route('/whitelisted/:id').delete(removeWhitelisted)
+router
+  .route('/whitelisted')
+  .all(verifyAdminDepartement)
+  .get(getWhitelisted)
+  .post(addWhitelisted)
+router
+  .route('/whitelisted/:id')
+  .all(verifyAdminDepartement)
+  .delete(removeWhitelisted)
 
 export default router
