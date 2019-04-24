@@ -29,7 +29,6 @@ import {
   REASON_EXAM_FAILED,
   REASON_REMOVE_RESA_ADMIN,
 } from '../../routes/common/reason.constants'
-import { createUser } from '../user'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
