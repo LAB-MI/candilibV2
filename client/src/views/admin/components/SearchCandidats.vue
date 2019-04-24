@@ -1,8 +1,8 @@
 <template>
   <v-autocomplete
     v-model="selectedCandidat"
-    :label="label"
-    :hint="hint"
+    label="Candidats"
+    hint="Chercher un candidat par son nom"
     append-outer-icon="search"
     placeholder="Dupont"
     :items="candidats"
@@ -17,11 +17,6 @@
 import { FETCH_SEARCH_CANDIDATS_REQUEST } from '@/store'
 
 export default {
-  props: {
-    label: String,
-    hint: String,
-  },
-
   data () {
     return {
       searchCandidats: undefined,
