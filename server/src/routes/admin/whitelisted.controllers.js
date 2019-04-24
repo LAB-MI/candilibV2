@@ -71,7 +71,7 @@ export const addWhitelisted = async (req, res) => {
     checkAddWhitelistRequest(req.body)
 
     if (email) {
-      const result = await createWhitelisted(email)
+      const result = await createWhitelisted(email, departement)
       res.status(201).json(result)
       return
     }
@@ -110,6 +110,7 @@ export const getWhitelisted = async (req, res) => {
     })
   }
 }
+
 export const removeWhitelisted = async (req, res) => {
   const id = req.params.id
   try {
