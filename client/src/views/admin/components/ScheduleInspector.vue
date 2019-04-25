@@ -1,13 +1,16 @@
 <template>
   <v-container class="container" grid-list-md>
     <v-layout row wrap>
-      <v-flex class="center-title" xs3>
+      <v-flex class="center-title" xs4>
         <page-title title="Centres d'examen"/>
       </v-flex>
       <v-spacer></v-spacer>
-      <page-title :title="`semaine ${currentWeekNumber}`"/>
+      <!-- ToDo: Extract style of page-title Important !! -->
+      <v-flex xs4>
+        <page-title style="margin-top: 4em;" :title="`Semaine (${currentWeekNumber})`"/>
+      </v-flex>
       <v-spacer></v-spacer>
-      <v-flex class="date-selector" xs2>
+      <v-flex class="date-selector" xs4>
         <page-title title="Choix date"/>
         <v-menu
           v-model="menu2"
@@ -29,10 +32,10 @@
               v-on="on"
             />
           </template>
-          <v-date-picker v-model="date" no-title @input="menu2 = false"></v-date-picker>
+          <v-date-picker v-model="date" no-title @input="menu2 = false" locale="fr"/>
         </v-menu>
       </v-flex>
-      <v-flex>
+      <v-flex xs12>
         <v-tabs
           class="tabs"
           v-model="active"
@@ -41,31 +44,45 @@
         >
           <v-tab
             v-for="element in placesByCentreList"
-            :key="element.centre.nom"
+            :key="element.centre._id"
             @click="centreSelector(element.centre._id)"
             ripple
           >
             {{ element.centre.nom }}
           </v-tab>
+          <div v-if="isLoading" class="text-xs-center">
+              <v-progress-circular
+                indeterminate
+                color="primary"
+              >
+              </v-progress-circular>
+          </div>
           <v-tab-item
             v-for="(item, idx) in placesByCentreList"
             :key="item.centre.nom + idx"
+            transition="slide-y-transition"
+            reverse-transition="slide-y-transition"
+            :lazy="true"
           >
             <v-data-table
+              :rows-per-page-items='[15, 25, 35,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
               :headers="headers"
-              :items="inspecteurs"
+              :items="{ inspecteursData, activeCentreId } | filterByCentre"
               class="elevation-1"
+              :loading="isLoading"
             >
               <template v-slot:items="props">
-                <td>{{ props.item.nom }}</td>
-                  <schedule-inspector-dialog
-                    v-for="(crenau, indx) in props.item.crenaux"
-                    :key="'crenaux' + indx"
-                    :icon="'face'"
-                  />
-                    <!-- <v-icon>
-                      {{ props.item.crenaux8h00 ? 'face' : 'not_interested' }}
-                    </v-icon> -->
+
+                <td>{{  props.item.nom }}</td>
+                <schedule-inspector-dialog
+                  v-for="(isPlaceInfo, indx) in props.item.creneau"
+                  :key="props.item._id + 'creneau' + indx"
+                  :content="isPlaceInfo"
+                  :selectedDate="date"
+                  :inspecteurId="props.item._id"
+                  :updateContent="parseInspecteursPlanning"
+                  :centreInfo="item.centre"
+                />
               </template>
             </v-data-table>
           </v-tab-item>
@@ -76,56 +93,21 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
+import {
+  FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
+  FETCH_ADMIN_INFO_REQUEST,
+  FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
+} from '@/store'
+
 import PageTitle from '@/components/PageTitle.vue'
 import ScheduleInspectorDialog from './ScheduleInspectorDialog.vue'
 
-const crenaux = [
-  'Inspecteurs',
-  '08h00',
-  '08h30',
-  '09h00',
-  '09h30',
-  '10h00',
-  '10h30',
-  '11h00',
-  '11h30',
-  '13h30',
-  '14h00',
-  '14h30',
-  '15h00',
-  '15h30',
-]
-
-const headers = Array(14).fill(true).map((item, index) => {
-  return {
-    text: `${crenaux[index]}`,
-    align: 'center',
-    sortable: false,
-    value: `${crenaux[index]}`,
-  }
-})
-
-// const inspecteurs_old = [
-//     {
-//     name: 'Inspecteur1',
-//     crenaux: [
-//       crenaux8h00: 1,
-//       crenaux8h30: 1,
-//       crenaux9h00: 0,
-//       crenaux9h30: 0,
-//       crenaux10h00: 0,
-//       crenaux10h30: 0,
-//       crenaux11h00: 0,
-//       crenaux11h30: 1,
-//       crenaux13h30: 0,
-//       crenaux14h00: 0,
-//       crenaux14h30: 0,
-//       crenaux15h00: 1,
-//       crenaux15h30: 0,
-//     ]
-//   },
-// ]
+import {
+  getFrenchLuxonDateFromIso,
+  getFrenchLuxonDateFromObject,
+  getFrenchLuxonDateTimeFromSql,
+  getFrenchLuxonCurrentDateTime,
+} from '@/util'
 
 export default {
   components: {
@@ -136,11 +118,12 @@ export default {
   data () {
     return {
       active: null,
-      headers,
-      date: new Date().toISOString().substr(0, 10),
-      currentWeekNumber: DateTime.local().setLocale('fr').weekNumber,
+      headers: undefined,
+      date: getFrenchLuxonCurrentDateTime().toISODate(),
+      currentWeekNumber: getFrenchLuxonCurrentDateTime().weekNumber,
       menu2: false,
-      inspecteurs: [],
+      inspecteursData: [],
+      activeCentreId: this.firstCentreId,
     }
   },
 
@@ -149,95 +132,164 @@ export default {
       return this.formatDate(this.date)
     },
 
+    centerTarget () {
+      return this.$store.state.admin.centerTarget
+    },
+
     placesByCentreList () {
       return this.$store.state.admin.placesByCentre.list
     },
 
-    // inspecteurs () {
-    //   const fakeInspecteursArray = [
-    //     {
-    //       _id: '0123456789',
-    //       nom: 'SCUTTLE',
-    //       prenom: 'prenomScuttle',
-    //       email: 'scuttle@example.com',
-    //       matricule: '0123456789',
-    //       crenaux: [],
-    //     },
-    //     {
-    //       _id: '0123456788',
-    //       nom: 'CHARLIE',
-    //       prenom: 'prenomCharlie',
-    //       email: 'scuttle@example.com',
-    //       matricule: '0123456788',
-    //       crenaux: [],
-    //     },
-    //   ]
-    //   return fakeInspecteursArray
-    // },
+    firstCentreId () {
+      return this.$store.state.admin.placesByCentre.list[0].centre._id
+    },
+
+    inspecteurs () {
+      return this.$store.state.admin.inspecteursByDepartement.list
+    },
+
+    isLoading () {
+      return this.$store.state.admin.placesByCentre.isFetching
+    },
   },
 
   methods: {
     formatDate (date) {
       if (!date) return null
       const [year, month, day] = date.split('-')
-      return `${month}/${day}/${year}`
+      return `${day}/${month}/${year}`
     },
 
-    async centreSelector (centreId) {
+    centreSelector (centreId) {
+      this.activeCentreId = centreId
+      this.parseInspecteursPlanning()
+    },
+
+    parseInspecteursPlanning () {
+      this.inspecteursData = []
+      const creneauTpl = [
+        '08h00',
+        '08h30',
+        '09h00',
+        '09h30',
+        '10h00',
+        '10h30',
+        '11h00',
+        '11h30',
+        '13h30',
+        '14h00',
+        '14h30',
+        '15h00',
+        '15h30',
+      ]
+
       let reservastionsByCentre = {}
+      const dateTofind = getFrenchLuxonDateTimeFromSql(this.date).toISODate()
+
       this.placesByCentreList.find(element => {
-        if (element.centre._id === centreId) {
-          const result = element.places[this.currentWeekNumber].filter(place => {
-            const currentDate = DateTime.fromISO(place.date).setLocale('fr').toISODate()
-            const dateTofind = DateTime.fromSQL(this.date).setLocale('fr').toISODate()
+        const weekPlaces = element.places[this.currentWeekNumber]
+        if (weekPlaces && weekPlaces.length && element.centre._id === this.activeCentreId) {
+          const result = weekPlaces.filter(place => {
+            const currentDate = getFrenchLuxonDateFromIso(place.date).toISODate()
             if (currentDate === dateTofind) {
               return place
             }
           })
-          console.log({result})
-          reservastionsByCentre = { centre: element.centre , places: result }
-          return result
-        }
-      })
 
-      const fakeInspecteursArray = [
-        {
-          _id: '0123456789',
-          nom: 'SCUTTLE',
-          prenom: 'prenomScuttle',
-          email: 'scuttle@example.com',
-          matricule: '0123456789',
-          crenaux: [],
-        },
-        {
-          _id: '0123456788',
-          nom: 'CHARLIE',
-          prenom: 'prenomCharlie',
-          email: 'scuttle@example.com',
-          matricule: '0123456788',
-          crenaux: [],
-        },
-      ]
-
-      reservastionsByCentre.places.map(element => {
-          fakeInspecteursArray.find(item => item.nom === element.inspecteur)
-          .crenaux.push({
-            [DateTime.fromISO(element.date).setLocale('fr').toFormat("HH'h'mm")]: {
-              status: element.candidat ? 'booked' : 'free',
+          reservastionsByCentre = { centre: element.centre, places: result }
+          this.inspecteursData = this.inspecteurs.map(inspecteur => {
+            const creneauData = creneauTpl.map((elemt) => {
+              const instpecteurPlaces = reservastionsByCentre.places
+                .filter(element => element.inspecteur === inspecteur._id &&
+                getFrenchLuxonDateFromIso(element.date).toFormat("HH'h'mm") === elemt)
+              if (instpecteurPlaces.length) {
+                return { place: instpecteurPlaces[0], hour: elemt }
+              } else {
+                return { place: undefined, hour: elemt }
+              }
+            })
+            return {
+              ...inspecteur,
+              creneau: creneauData,
             }
           })
+        }
       })
-      this.inspecteurs = fakeInspecteursArray
-      console.log({reservastionsByCentre})
-      console.log({inspecteurs: this.inspecteurs})
+      if (!this.inspecteursData.length) {
+        this.inspecteursData = this.inspecteurs
+      }
     },
   },
 
   watch: {
-    date (val) {
-      this.dateFormatted = this.formatDate(this.date)
-      this.currentWeekNumber = DateTime.fromSQL(this.date).setLocale('fr').weekNumber
+    async date (val) {
+      const dateTimeFromSql = getFrenchLuxonDateTimeFromSql(this.date)
+      this.currentWeekNumber = dateTimeFromSql.weekNumber
+      const beginAndEnd = dateTimeFromSql.toISO()
+      await this.$store
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
+      this.parseInspecteursPlanning()
     },
+  },
+
+  filters: {
+    filterByCentre (obj) {
+      const { inspecteursData, activeCentreId } = obj
+      if (inspecteursData.length) {
+        const result = inspecteursData.filter(inspecteurInfo => {
+          if (inspecteurInfo.creneau.find(item => item.place && item.place.centre === activeCentreId)) {
+            return inspecteurInfo
+          }
+        })
+        return result
+      }
+    },
+  },
+
+  async mounted () {
+    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
+    const beginAndEnd = getFrenchLuxonDateTimeFromSql(this.date).toISO()
+    await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
+    this.activeCentreId = this.firstCentreId
+    await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+    this.parseInspecteursPlanning()
+  },
+
+  async beforeMount () {
+    const creneauTemplate = [
+      'Inspecteurs',
+      '08h00',
+      '08h30',
+      '09h00',
+      '09h30',
+      '10h00',
+      '10h30',
+      '11h00',
+      '11h30',
+      '13h30',
+      '14h00',
+      '14h30',
+      '15h00',
+      '15h30',
+    ]
+
+    this.headers = Array(14)
+      .fill(true).map((item, index) => {
+        return {
+          text: `${creneauTemplate[index]}`,
+          align: 'center',
+          sortable: false,
+          value: `${creneauTemplate[index]}`,
+        }
+      })
+
+    const { currWeek } = this.$store.state.admin
+
+    this.date = getFrenchLuxonDateFromObject({
+      weekYear: getFrenchLuxonCurrentDateTime().year,
+      weekNumber: currWeek || getFrenchLuxonCurrentDateTime().weekNumber,
+      weekday: 1,
+    }).toISODate()
   },
 }
 </script>
@@ -256,7 +308,14 @@ export default {
   margin-top: 4em;
 }
 
-.tabs {
-  zoom: 90%;
+table.v-table tbody td:first-child,
+table.v-table tbody td:not(:first-child),
+table.v-table tbody th:first-child,
+table.v-table tbody th:not(:first-child),
+table.v-table thead td:first-child,
+table.v-table thead td:not(:first-child),
+table.v-table thead th:first-child,
+table.v-table thead th:not(:first-child) {
+  padding: 0 !important;
 }
 </style>

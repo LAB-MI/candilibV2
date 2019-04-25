@@ -21,14 +21,31 @@
         v-for="(week, index) in formatArrayByWeek()"
         :key="week.numWeek"
       >
-        <v-card v-if="index !== 0" :id="`week-${nameCenter}-${index}`" class="main-card" @click="goToGestionPlannings">
+        <v-card
+          v-if="index
+          !== 0" :id="`week-${nameCenter}-${index}`"
+          class="main-card"
+          @click="goToGestionPlannings(index, centerId)"
+        >
           <div class="week-card">
-            <v-card-text>S{{ index }}</v-card-text>
+            <v-card-text class="week-card-text">
+              {{ `Semaine N°${index}` }}
+            </v-card-text>
           </div>
           <v-divider/>
           <div class="stats-card">
-            <v-card-text class="stats-card-text">
-                {{ week.freePlaces || 0 }} / {{ week.totalPlaces || 0 }}
+            <v-card-text class="stats-card-text-free-places">
+              {{ week.freePlaces || 0 }}
+            </v-card-text> /
+            <v-card-text class="stats-card-text-total-places">
+              {{ week.totalPlaces || 0 }}
+            </v-card-text>
+
+            <v-card-text class="stats-card-text-free-places">
+              Disponible
+            </v-card-text> /
+            <v-card-text class="stats-card-text-total-places">
+              Total
             </v-card-text>
           </div>
         </v-card>
@@ -38,7 +55,12 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
+import {
+  getFrenchLuxonCurrentDateTime,
+  getFrenchWeeksInWeekYear,
+} from '@/util'
+
+import { SET_WEEK_SECTION } from '@/store'
 
 export default {
   props: {
@@ -46,22 +68,25 @@ export default {
       type: String,
       default: '',
     },
+    centerId: String,
     weeks: Object,
   },
 
   computed: {
     currentWeekNumber () {
-      return DateTime.local().setLocale('fr').weekNumber
+      return getFrenchLuxonCurrentDateTime().weekNumber
     },
   },
 
   methods: {
-    goToGestionPlannings () {
+    goToGestionPlannings (currWeek, centerId) {
+      this.$store.dispatch(SET_WEEK_SECTION, currWeek, centerId)
       this.$router.push({ name: 'gestion-plannings' })
     },
 
     formatArrayByWeek () {
-      const allWeeks = Array(53).fill(false)
+      const weeksInWeekYear = getFrenchWeeksInWeekYear(getFrenchLuxonCurrentDateTime().year)
+      const allWeeks = Array(weeksInWeekYear).fill(false)
       Object.keys(this.weeks).map(weekNb => {
         allWeeks[weekNb] = {
           days: [ this.weeks[weekNb] ],
@@ -78,33 +103,45 @@ export default {
 
 <style lang="postcss" scoped>
 .main-card {
+  height: 100%;
   cursor: pointer;
-  border: 1px solid black;
+  border: 4px solid black;
 }
 
 .carousel {
-  border: 1px hidden;
+  border: 1px hidden black;
 }
 
 .slide {
   height: 100%;
   text-align: center;
+  zoom: 75%;
 }
 
 .week-card {
-  background-color: rgb(199, 199, 199);
+  background-color: rgb(207, 200, 198);
   color: black;
+  height: 100%;
+  font-size: 2em;
 }
 
 .stats-card {
-  background-color: rgb(114, 114, 114);
+  background-color: rgb(240, 239, 239);
   color: black;
+  height: 100%;
 }
 
-.stats-card-text {
-  height: 4em;
+.stats-card-text-total-places {
+  height: 100%;
+  color: blue;
+  font-size: 2em;
 }
 
+.stats-card-text-free-places {
+  height: 100%;
+  color: green;
+  font-size: 2em;
+}
 .title {
   padding: 1em;
   text-align: center;

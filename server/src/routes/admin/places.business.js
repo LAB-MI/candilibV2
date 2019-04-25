@@ -7,8 +7,10 @@ import {
   createPlace,
   findPlaceBookedByCandidat,
   removeBookedPlace,
+  deletePlace,
 } from '../../models/place'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
+import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
 import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { REASON_REMOVE_RESA_ADMIN } from '../common/reason.constants'
@@ -16,6 +18,7 @@ import { sendCancelBookingByAdmin } from '../business'
 import {
   RESA_BOOKED_CANCEL,
   RESA_BOOKED_CANCEL_NO_MAIL,
+  DELETE_PLACE_ERROR,
 } from './message.constants'
 
 const getPlaceStatus = (
@@ -61,11 +64,14 @@ const transfomCsv = async ({ data, departement }) => {
       departement
     )
     if (!foundCentre) throw new Error(`Le centre ${centre.trim()} est inconnu`)
+    
+    const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
+    if (!inspecteurFound)  throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
 
     return {
       departement,
       centre: foundCentre,
-      inspecteur: inspecteur.trim(),
+      inspecteur: inspecteurFound._id,
       date,
     }
   } catch (error) {
@@ -100,7 +106,7 @@ const createPlaceCsv = async place => {
     return getPlaceStatus(
       centre.departement,
       centre.nom,
-      inspecteur,
+      leanPlace.inspecteur,
       date,
       'success',
       `Place enregistrée en base`
@@ -209,5 +215,68 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     message = RESA_BOOKED_CANCEL_NO_MAIL
   }
 
+  try {
+    await deletePlace(placeUpdated)
+  } catch (error) {
+    appLogger.warn({
+      section: 'admin-removePlace',
+      action: 'FAILED_DELETE_PLACE',
+      error,
+    })
+    message = DELETE_PLACE_ERROR
+  }
+
   return { statusmail, message, candidat: candidatUpdated, placeUpdated }
+}
+
+export const createPlaceForInspector = async (centre, inspecteur, date) => {
+  const myDate = date
+  try {
+    const formatedDate = DateTime.fromFormat(myDate, 'dd/MM/yy HH:mm', {
+          zone: 'Europe/Paris',
+          locale: 'fr',
+        })
+    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id }
+    await createPlace(leanPlace)
+    appLogger.info({
+      section: 'Admim-BuisnessPlaces',
+      action: 'createPlaceForInspector',
+      message: `Place {${centre.departement},${
+        centre.nom
+      }, ${inspecteur}, ${myDate}} enregistrée en base`,
+    })
+    return getPlaceStatus(
+      centre.departement,
+      centre.nom,
+      inspecteur,
+      myDate,
+      'success',
+      `Place enregistrée en base`
+    )
+  } catch (error) {
+    appLogger.error(JSON.stringify(error))
+    if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
+      appLogger.warn({
+        section: 'Admim-BuisnessPlaces',
+        action: 'createPlaceForInspector',
+        message: 'Place déjà enregistrée en base',
+      })
+      return getPlaceStatus(
+        centre.departement,
+        centre.nom,
+        inspecteur,
+        myDate,
+        'error',
+        'Place déjà enregistrée en base'
+      )
+    }
+    return getPlaceStatus(
+      centre.departement,
+      centre.nom,
+      inspecteur,
+      date,
+      'error',
+      error.message
+    )
+  }
 }

@@ -29,6 +29,7 @@ export const inspecteurFields = {
   },
   departement: {
     type: String,
+    required: false,
   },
 }
 

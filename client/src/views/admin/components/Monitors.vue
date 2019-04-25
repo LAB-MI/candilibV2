@@ -1,0 +1,50 @@
+<template>
+  <div>
+    <refresh-button
+      title="Refresh"
+      loadingMessage="Chargement"
+    >
+      Refresh
+    </refresh-button>
+
+    <v-container fluid>
+      <v-layout row wrap>
+        <v-flex
+          class="monitor-wrapper"
+          xs6
+          v-for="info in centerInfos"
+          :key="info.centre.nom"
+        >
+          <week-monitor
+            :nameCenter="info.centre.nom"
+            :centerId="info.centre._id"
+            :weeks="info.places"
+          />
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </div>
+</template>
+
+<script>
+import WeekMonitor from './WeekMonitor.vue'
+import RefreshButton from './RefreshButton.vue'
+
+export default {
+  components: {
+    WeekMonitor,
+    RefreshButton,
+  },
+  computed: {
+    centerInfos () {
+      return this.$store.state.admin.placesByCentre.list
+    },
+  },
+}
+</script>
+
+<style lang="postcss">
+.monitor-wrapper {
+  padding: 2em;
+}
+</style>
