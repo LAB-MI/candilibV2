@@ -136,6 +136,7 @@ export default {
     },
     [CREATE_CRENEAU_SUCCESS] (state, success) {
       state.createCreneau.result = success
+      state.createCreneau.isCreating = false
     },
     [CREATE_CRENEAU_FAILURE] (state, error) {
       state.createCreneau.result = error

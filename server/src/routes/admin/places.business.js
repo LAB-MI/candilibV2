@@ -19,7 +19,6 @@ import {
   DELETE_PLACE_ERROR,
   RESA_BOOKED_CANCEL,
   RESA_BOOKED_CANCEL_NO_MAIL,
-  DELETE_PLACE_ERROR,
 } from './message.constants'
 
 const getPlaceStatus = (
@@ -72,6 +71,9 @@ const transfomCsv = async ({ data, departement }) => {
     if (!inspecteurFound) {
       throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
     }
+
+    const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
+    if (!inspecteurFound)  throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
 
     return {
       departement,
