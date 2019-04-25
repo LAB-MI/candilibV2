@@ -155,7 +155,7 @@ export const updateCandidatCanBookFrom = async (candidat, canBookFrom) => {
   return candidat.save()
 }
 
-export const addPlaceToArchive = (candidat, place, reason) => {
+export const addPlaceToArchive = (candidat, place, reason, byUser) => {
   const { _id, inspecteur, centre, date } = place
   const archivedAt = DateTime.local()
   const archiveReason = reason
@@ -170,12 +170,13 @@ export const addPlaceToArchive = (candidat, place, reason) => {
     date,
     archivedAt,
     archiveReason,
+    byUser,
   })
   return candidat
 }
 
-export const archivePlace = async (candidat, place, reason) => {
-  candidat = addPlaceToArchive(candidat, place, reason)
+export const archivePlace = async (candidat, place, reason, byUser) => {
+  candidat = addPlaceToArchive(candidat, place, reason, byUser)
   return candidat.save()
 }
 
