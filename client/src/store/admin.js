@@ -17,6 +17,10 @@ export const FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST = 'FETCH_INSPECTEURS_BY_DE
 export const FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE'
 export const FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS'
 
+export const DELETE_RESERVATION_REQUEST = 'DELETE_RESERVATION_REQUEST'
+export const DELETE_RESERVATION_FAILURE = 'DELETE_RESERVATION_FAILURE'
+export const DELETE_RESERVATION_SUCCESS = 'DELETE_RESERVATION_SUCCESS'
+
 export const DELETE_PLACE_REQUEST = 'DELETE_PLACE_REQUEST'
 export const DELETE_PLACE_SUCCESS = 'DELETE_PLACE_SUCCESS'
 export const DELETE_PLACE_FAILURE = 'DELETE_PLACE_FAILURE'
@@ -147,6 +151,51 @@ export default {
     [DELETE_BOOKED_PLACE_FAILURE] (state, error) {
       state.deleteBookedPlace.result = error
       state.deleteBookedPlace.isDeleting = false
+    },
+
+    [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] (state) {
+      state.inspecteursByDepartement.isFetching = true
+    },
+    [FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS] (state, list) {
+      state.inspecteursByDepartement.list = list
+      state.inspecteursByDepartement.isFetching = false
+    },
+    [FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE] (state, error) {
+      state.inspecteursByDepartement.error = error
+      state.inspecteursByDepartement.isFetching = false
+    },
+
+    [DELETE_RESERVATION_REQUEST] (state) {
+      state.deleteReservationAction.isDeleting = true
+    },
+    [DELETE_RESERVATION_SUCCESS] (state, success) {
+      state.deleteReservationAction.result = success
+    },
+    [DELETE_RESERVATION_FAILURE] (state, error) {
+      state.deleteReservationAction.result = error
+      state.deleteReservationAction.isDeleting = false
+    },
+
+    [DELETE_PLACE_REQUEST] (state) {
+      state.deletePlaceAction.isDeleting = true
+    },
+    [DELETE_PLACE_SUCCESS] (state, success) {
+      state.deletePlaceAction.result = success
+    },
+    [DELETE_PLACE_FAILURE] (state, error) {
+      state.deletePlaceAction.result = error
+      state.deletePlaceAction.isDeleting = false
+    },
+
+    [CREATE_CRENEAU_REQUEST] (state) {
+      state.createCreneau.isCreating = true
+    },
+    [CREATE_CRENEAU_SUCCESS] (state, success) {
+      state.createCreneau.result = success
+    },
+    [CREATE_CRENEAU_FAILURE] (state, error) {
+      state.createCreneau.result = error
+      state.createCreneau.isCreating = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {
