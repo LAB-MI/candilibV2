@@ -125,6 +125,7 @@ export default {
     },
     [DELETE_PLACE_SUCCESS] (state, success) {
       state.deletePlaceAction.result = success
+      state.deletePlaceAction.isDeleting = false
     },
     [DELETE_PLACE_FAILURE] (state, error) {
       state.deletePlaceAction.result = error

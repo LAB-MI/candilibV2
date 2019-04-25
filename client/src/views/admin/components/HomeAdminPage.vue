@@ -68,4 +68,13 @@ export default {
 .search-input {
   margin: 0 1em;
 }
+
+.stats-card {
+  font-size: 2em;
+}
+
+.stats-card-text-free-places {
+  height: 100%;
+  color: green;
+}
 </style>
