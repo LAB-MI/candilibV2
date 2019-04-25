@@ -98,6 +98,7 @@ import {
 
 import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
+  DELETE_PLACE_REQUEST,
 } from '@/store'
 
 export default {
@@ -127,6 +128,7 @@ export default {
     },
 
     async renderCreneauUnavalaible () {
+      await this.$store.dispatch(DELETE_PLACE_REQUEST, this.content.place._id)
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
