@@ -1,7 +1,16 @@
 <template>
   <div>
+    <div class="stats-card">
+      <span class="stats-card-text-free-places">
+        Places disponibles
+      </span>
+      <span class="slash-wrapper">
+        /
+      </span>
+      Total places
+    </div>
     <monitors />
-    <v-layout column wrap>
+    <v-layout wrap  class="u-flex--column-on-tablet">
       <div
         class="div-gestion"
         v-for="item in buttonGestion"
@@ -61,5 +70,14 @@ export default {
 <style lang="postcss" scoped>
 .search-input {
   margin: 0 1em;
+}
+
+.stats-card {
+  font-size: 2em;
+}
+
+.stats-card-text-free-places {
+  height: 100%;
+  color: green;
 }
 </style>

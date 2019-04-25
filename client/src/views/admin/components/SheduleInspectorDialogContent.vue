@@ -3,15 +3,15 @@
     <shedule-inspector-dialog-header
       title="Ce créneau est au statut réservé"
       :closeDialog="closeDialog"
-      colorIcon="white"
-      colorButton="red"
+      colorIcon="black"
+      colorButton="blue"
       icon="highlight_off"
       iconOnLeft="face"
       colorHeader="blue"
     />
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
-      colorAlert="grey"
+      colorAlert="white"
       icon="block"
       colorIcon="white"
       colorSubmitButton="grey"
@@ -22,7 +22,7 @@
       :content="content"
     />
     <shedule-inspector-dialog-sub-content
-      colorAlert="blue"
+      colorAlert="white"
       icon="account_box"
       colorIcon="white"
       colorSubmitButton="blue"
@@ -36,15 +36,15 @@
     <shedule-inspector-dialog-header
       title="Ce créneau est au statut indisponible"
       :closeDialog="closeDialog"
-      colorIcon="white"
-      colorButton="red"
+      colorIcon="black"
+      colorButton="grey"
       icon="highlight_off"
       iconOnLeft="block"
       colorHeader="grey"
     />
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
-      colorAlert="green"
+      colorAlert="white"
       icon="check_circle"
       colorIcon="white"
       colorSubmitButton="green"
@@ -58,15 +58,15 @@
     <shedule-inspector-dialog-header
       title="Ce créneau est au statut disponible"
       :closeDialog="closeDialog"
-      colorIcon="white"
-      colorButton="red"
+      colorIcon="black"
+      colorButton="green"
       icon="highlight_off"
       iconOnLeft="check_circle"
       colorHeader="success"
     />
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
-      colorAlert="blue"
+      colorAlert="white"
       icon="face"
       colorIcon="white"
       colorSubmitButton="blue"
@@ -77,7 +77,7 @@
     />
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
-      colorAlert="grey"
+      colorAlert="white"
       icon="block"
       colorIcon="white"
       colorSubmitButton="grey"

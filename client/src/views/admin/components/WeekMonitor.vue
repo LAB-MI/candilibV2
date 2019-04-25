@@ -5,13 +5,14 @@
         {{ nameCenter }}
       </strong>
     </h2>
+
     <carousel
       id="carousel"
       class="carousel"
-      :perPage="5"
       :navigationEnabled="true"
       :paginationEnabled="false"
       :scrollPerPage="false"
+      :perPage="3"
       :perPageCustom="[[768, 5], [1024, 5]]"
       :navigateTo="[currentWeekNumber, false]"
     >
@@ -22,32 +23,21 @@
         :key="week.numWeek"
       >
         <v-card
-          v-if="index
-          !== 0" :id="`week-${nameCenter}-${index}`"
+          v-if="index !== 0"
+          :id="`week-${nameCenter}-${index}`"
           class="main-card"
           @click="goToGestionPlannings(index, centerId)"
         >
-          <div class="week-card">
-            <v-card-text class="week-card-text">
-              {{ `Semaine N°${index}` }}
-            </v-card-text>
-          </div>
-          <v-divider/>
-          <div class="stats-card">
-            <v-card-text class="stats-card-text-free-places">
+          <v-card-title class="week-card-title">
+            {{ `Semaine N°${index}` }}
+          </v-card-title>
+          <v-card-text class="stats-card">
+            <span class="stats-card-text-free-places">
               {{ week.freePlaces || 0 }}
-            </v-card-text> /
-            <v-card-text class="stats-card-text-total-places">
-              {{ week.totalPlaces || 0 }}
-            </v-card-text>
-
-            <v-card-text class="stats-card-text-free-places">
-              Disponible
-            </v-card-text> /
-            <v-card-text class="stats-card-text-total-places">
-              Total
-            </v-card-text>
-          </div>
+            </span>
+            /
+            {{ week.totalPlaces || 0 }}
+          </v-card-text>
         </v-card>
       </slide>
     </carousel>
@@ -81,7 +71,7 @@ export default {
   methods: {
     goToGestionPlannings (currWeek, centerId) {
       this.$store.dispatch(SET_WEEK_SECTION, currWeek, centerId)
-      this.$router.push({ name: 'gestion-plannings' })
+      this.$router.push({ name: 'gestion-plannings', params: { centerId } })
     },
 
     formatArrayByWeek () {
@@ -105,46 +95,38 @@ export default {
 .main-card {
   height: 100%;
   cursor: pointer;
-  border: 4px solid black;
+  border-width: 2px;
+  border-style: solid;
+  border-color: black;
 }
 
 .carousel {
-  border: 1px hidden black;
+  border: 1px solid black;
 }
 
 .slide {
   height: 100%;
   text-align: center;
-  zoom: 75%;
 }
 
-.week-card {
+.week-card-title {
   background-color: rgb(207, 200, 198);
-  color: black;
   height: 100%;
-  font-size: 2em;
+  font-size: 1.5em;
 }
 
 .stats-card {
+  font-size: 1.5em;
   background-color: rgb(240, 239, 239);
-  color: black;
-  height: 100%;
-}
-
-.stats-card-text-total-places {
-  height: 100%;
-  color: blue;
-  font-size: 2em;
+  padding: 0;
 }
 
 .stats-card-text-free-places {
-  height: 100%;
   color: green;
-  font-size: 2em;
 }
+
 .title {
   padding: 1em;
   text-align: center;
-  color: black;
 }
 </style>

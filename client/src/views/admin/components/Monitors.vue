@@ -10,7 +10,7 @@
     <v-container fluid>
       <v-layout row wrap>
         <v-flex
-          class="monitor-wrapper"
+          class="monitor-wrapper  u-flex--column-on-tablet"
           xs6
           v-for="info in centerInfos"
           :key="info.centre.nom"

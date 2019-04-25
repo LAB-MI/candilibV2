@@ -13,6 +13,7 @@
             large
             ripple
             style="width: 5em; height: 5em;"
+            :loading="isLoading"
           >
             <v-icon :color="colorIcon" x-large>
               {{ icon }}
@@ -21,7 +22,7 @@
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs12>
-          <h1 :class="colorAlert ? 'white--text' : 'black--text'">
+          <h1 class="black--text">
             {{ textContent }}
           </h1>
         </v-flex>
@@ -43,12 +44,15 @@ export default {
     colorSubmitButton: String,
     colorAlert: String,
   },
+  computed: {
+    isLoading () {
+      return this.$store.state.admin.placesByCentre.isFetching
+    },
+  },
+
   methods: {
     submitDial () {
       this.submitDialog()
-    },
-    closeDial () {
-      this.$emit('closeDialog')
     },
   },
 }
