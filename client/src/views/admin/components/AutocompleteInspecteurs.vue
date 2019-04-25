@@ -6,7 +6,7 @@
     append-outer-icon="search"
     placeholder="Dupond"
     :items="inspecteurs"
-    :search-input.sync="searchInspecteurs"
+    :search-input.sync="autocompleteInspecteurs"
     return-object
     item-text="nom"
     item-value="_id"
@@ -14,12 +14,12 @@
 </template>
 
 <script>
-import { FETCH_SEARCH_INSPECTEURS_REQUEST } from '@/store'
+import { FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST } from '@/store'
 
 export default {
   data () {
     return {
-      searchInspecteurs: undefined,
+      autocompleteInspecteurs: undefined,
       selectedInspecteur: undefined,
     }
   },
@@ -32,8 +32,8 @@ export default {
   },
 
   watch: {
-    searchInspecteurs (searchQuery) {
-      this.$store.dispatch(FETCH_SEARCH_INSPECTEURS_REQUEST, searchQuery)
+    autocompleteInspecteurs (searchQuery) {
+      this.$store.dispatch(FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST, searchQuery)
     },
     selectedInspecteur (selectedInspecteur) {
       this.$emit('selection', selectedInspecteur)

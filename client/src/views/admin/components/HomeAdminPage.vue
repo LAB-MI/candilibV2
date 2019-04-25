@@ -33,21 +33,20 @@
     </v-layout>
     <div class="u-flex  u-flex--center">
       <search-candidat class="search-input" />
-      <search-inspecteurs class="search-input" />
+      <search-inspecteur class="search-input" />
     </div>
   </div>
 </template>
 
 <script>
-import WeekMonitor from './WeekMonitor.vue'
-import SearchCandidats from './SearchCandidats'
-import SearchInspecteurs from './SearchInspecteurs'
 import SearchCandidat from './SearchCandidat'
+import SearchInspecteur from './SearchInspecteur'
+import WeekMonitor from './WeekMonitor.vue'
 
 export default {
   components: {
-    SearchInspecteurs,
     SearchCandidat,
+    SearchInspecteur,
     WeekMonitor,
   },
 

@@ -56,15 +56,15 @@ storiesOf('Admin/SearchInspecteur', module)
         },
       },
       mutations: {
-        FETCH_SEARCH_INSPECTEURS_SUCCESS (state, list) {
+        FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS (state, list) {
           state.adminSearch.inspecteurs.list = list
         },
       },
       actions: {
-        async FETCH_SEARCH_INSPECTEURS_REQUEST ({ commit }, search) {
+        async FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST ({ commit }, search) {
           await delay(1000)
           const list = inspecteursList.filter(inspecteur => inspecteur.nom.includes(search))
-          commit('FETCH_SEARCH_INSPECTEURS_SUCCESS', list)
+          commit('FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS', list)
         },
       },
     }),

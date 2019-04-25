@@ -66,7 +66,7 @@ export default {
   font-weight: 600;
 }
 
-.info-style {
+.candidat-info {
   display: flex;
   flex-direction: column;
   margin: 15 px;
@@ -75,7 +75,7 @@ export default {
   box-shadow: 0 0 2px #555;
 }
 
-.container-style {
+.container {
   display: flex;
   width: 100%;
 }

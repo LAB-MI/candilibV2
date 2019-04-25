@@ -4,9 +4,9 @@ export const FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST = 'FETCH_AUTOCOMPLETE_CANDIDAT
 export const FETCH_AUTOCOMPLETE_CANDIDATS_SUCCESS = 'FETCH_AUTOCOMPLETE_CANDIDATS_SUCCESS'
 export const FETCH_AUTOCOMPLETE_CANDIDATS_FAILURE = 'FETCH_AUTOCOMPLETE_CANDIDATS_FAILURE'
 
-export const FETCH_SEARCH_INSPECTEURS_REQUEST = 'FETCH_SEARCH_INSPECTEURS_REQUEST'
-export const FETCH_SEARCH_INSPECTEURS_SUCCESS = 'FETCH_SEARCH_INSPECTEURS_SUCCESS'
-export const FETCH_SEARCH_INSPECTEURS_FAILURE = 'FETCH_SEARCH_INSPECTEURS_FAILURE'
+export const FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST = 'FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST'
+export const FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS = 'FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS'
+export const FETCH_AUTOCOMPLETE_INSPECTEURS_FAILURE = 'FETCH_AUTOCOMPLETE_INSPECTEURS_FAILURE'
 
 export default {
   state: {
@@ -37,15 +37,15 @@ export default {
       state.candidats.error = error
     },
 
-    FETCH_SEARCH_INSPECTEURS_REQUEST (state) {
+    FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST (state) {
       state.inspecteurs.isFetching = true
       state.inspecteurs.error = undefined
     },
-    FETCH_SEARCH_INSPECTEURS_SUCCESS (state, list) {
+    FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS (state, list) {
       state.inspecteurs.isFetching = false
       state.inspecteurs.list = list
     },
-    FETCH_SEARCH_INSPECTEURS_FAILURE (state, error) {
+    FETCH_AUTOCOMPLETE_INSPECTEURS_FAILURE (state, error) {
       state.inspecteurs.isFetching = false
       state.inspecteurs.error = error
     },
@@ -61,12 +61,12 @@ export default {
       }
     },
 
-    async FETCH_SEARCH_INSPECTEURS_REQUEST ({ state, commit }, search) {
+    async FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST ({ state, commit }, search) {
       try {
-        const list = await api.admin.searchInspecteurs(search)
-        commit(FETCH_SEARCH_INSPECTEURS_SUCCESS, list)
+        const list = await api.admin.autocompleteInspecteurs(search)
+        commit(FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS, list)
       } catch (error) {
-        commit(FETCH_SEARCH_INSPECTEURS_FAILURE, error)
+        commit(FETCH_AUTOCOMPLETE_INSPECTEURS_FAILURE, error)
       }
     },
   },

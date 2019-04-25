@@ -1,30 +1,20 @@
 <template>
   <div>
-    <search-inspecteurs
+    <autocomplete-inspecteurs
       class="search-input"
       @selection="displayInspecteurInfo"
     />
-
-    <div v-if="inspecteur" class="info-style">
-      <div class="title-style">
-        <p>{{ title }}</p>
-      </div>
-      <div
-        v-for="([key, value]) in inspecteur"
-        :key="key"
-        class="container-style"
-      >
-         <div class="label"><strong>{{ key }}&nbsp;:</strong></div>
-         <div class="value">{{ value }}</div>
-      </div>
-    </div>
+    <info-inspecteur
+      v-if="inspecteur"
+      :inspecteur="inspecteur"
+    />
   </div>
 </template>
 
 <script>
-import SearchInspecteurs from './SearchInspecteurs'
+import AutocompleteInspecteurs from './AutocompleteInspecteurs'
 
-const dict = {
+export const dict = {
   adresse: 'Adresse',
   matricule: 'Matricule',
   email: 'Email',
@@ -37,7 +27,7 @@ const dict = {
 
 export default {
   components: {
-    SearchInspecteurs,
+    AutocompleteInspecteurs,
   },
 
   data () {

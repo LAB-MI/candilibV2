@@ -224,8 +224,8 @@ export default {
       return json
     },
 
-    async searchInspecteurs (search) {
-      const json = await apiClient.get(`${apiPaths.admin.searchInspecteurs}${search || ''}`, {
+    async autocompleteInspecteurs (search) {
+      const json = await apiClient.get(`${apiPaths.admin.autocompleteInspecteurs}${search || ''}`, {
         headers: getHeadersForAdminJson(),
       })
       return json
