@@ -319,6 +319,13 @@ export default {
       })
       return json
     },
+
+    async deleteReservation (placeId) {
+      const json = await apiClient.delete(`${apiPaths.admin.reservations}/${placeId}`, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
   },
 
   util: {

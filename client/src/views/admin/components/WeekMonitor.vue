@@ -107,6 +107,7 @@ export default {
 .slide {
   height: 100%;
   text-align: center;
+  zoom: 75%;
 }
 
 .week-card-title {
@@ -125,6 +126,11 @@ export default {
   color: green;
 }
 
+.stats-card-text-free-places {
+  height: 100%;
+  color: green;
+  font-size: 2em;
+}
 .title {
   padding: 1em;
   text-align: center;

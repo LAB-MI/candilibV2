@@ -8,6 +8,7 @@ import {
   findPlaceBookedByCandidat,
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
+  deletePlace,
 } from '../../models/place'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
@@ -18,6 +19,7 @@ import {
   DELETE_PLACE_ERROR,
   RESA_BOOKED_CANCEL,
   RESA_BOOKED_CANCEL_NO_MAIL,
+  DELETE_PLACE_ERROR,
 } from './message.constants'
 
 const getPlaceStatus = (
@@ -64,6 +66,9 @@ const transfomCsv = async ({ data, departement }) => {
     )
 
     if (!foundCentre) throw new Error(`Le centre ${centre.trim()} est inconnu`)
+
+    const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
+    if (!inspecteurFound)  throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
 
     const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
     if (!inspecteurFound) {

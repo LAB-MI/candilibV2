@@ -3,12 +3,8 @@ import express from 'express'
 import { getCandidats, importCandidats } from './candidats.controllers'
 import { getMe } from './admin.controllers'
 import { getInspecteurs } from './inspecteurs.controllers'
-import {
-  getPlaces,
-  importPlaces,
-  createPlaceByAdmin,
-  deletePlaceByAdmin,
-} from './places.controllers'
+import { getPlaces, importPlaces, createPlaceByAdmin, deletePlaceByAdmin } from './places.controllers'
+import { removeReservationByAdmin } from './reservations.controller'
 import {
   getWhitelisted,
   addWhitelisted,
@@ -28,6 +24,7 @@ router.post('/place', verifyAdminDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.post('/places', verifyAdminDepartement, importPlaces)
 router.get('/places', verifyAdminDepartement, getPlaces)
+router.delete('/reservations/:id', removeReservationByAdmin)
 
 router
   .route('/whitelisted')
