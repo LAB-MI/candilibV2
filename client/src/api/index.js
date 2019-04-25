@@ -217,8 +217,8 @@ export default {
       return json
     },
 
-    async searchCandidats (search) {
-      const json = await apiClient.get(`${apiPaths.admin.searchCandidats}${search || ''}`, {
+    async autocompleteCandidats (search) {
+      const json = await apiClient.get(`${apiPaths.admin.autocompleteCandidats}${search || ''}`, {
         headers: getHeadersForAdminJson(),
       })
       return json

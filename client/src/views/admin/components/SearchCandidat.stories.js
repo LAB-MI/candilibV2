@@ -80,16 +80,16 @@ storiesOf('Admin/SearchCandidat', module)
       },
 
       mutations: {
-        FETCH_SEARCH_CANDIDATS_SUCCESS (state, list) {
+        FETCH_AUTOCOMPLETE_CANDIDATS_SUCCESS (state, list) {
           state.adminSearch.candidats.list = list
         },
       },
 
       actions: {
-        async FETCH_SEARCH_CANDIDATS_REQUEST ({ commit }, search) {
+        async FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST ({ commit }, search) {
           await delay(1000)
           const list = candidatsList.filter(candidat => candidat.nomNaissance.includes(search))
-          commit('FETCH_SEARCH_CANDIDATS_SUCCESS', list)
+          commit('FETCH_AUTOCOMPLETE_CANDIDATS_SUCCESS', list)
         },
       },
     }),

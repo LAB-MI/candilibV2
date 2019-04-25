@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/vue'
 import Vuex from 'vuex'
 import delay from 'delay'
 
-import SearchCandidats from './SearchCandidats'
+import AutocompleteCandidats from './AutocompleteCandidats'
 const candidatsList = [
   {
     _id: 1,
@@ -32,13 +32,12 @@ const candidatsList = [
   },
 ]
 
-storiesOf('Common/Autocomplete', module)
+storiesOf('Admin/Autocomplete', module)
   .add('Basic', () => ({
-    components: { SearchCandidats },
-    template: `<search-candidats
+    components: { AutocompleteCandidats },
+    template: `<autocomplete-candidats
       @selection="goToCandidat"
       label="Recherche Candidats"
-      hint="NomNaissance ou NEPH d'un candidat"
     />`,
     methods: {
       goToCandidat (candidat) {
@@ -56,16 +55,16 @@ storiesOf('Common/Autocomplete', module)
       },
 
       mutations: {
-        FETCH_SEARCH_CANDIDATS_SUCCESS (state, list) {
+        FETCH_AUTOCOMPLETE_CANDIDATS_SUCCESS (state, list) {
           state.adminSearch.candidats.list = list
         },
       },
 
       actions: {
-        async FETCH_SEARCH_CANDIDATS_REQUEST ({ commit }, search) {
+        async FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST ({ commit }, search) {
           await delay(1000)
           const list = candidatsList.filter(candidat => candidat.nomNaissance.includes(search))
-          commit('FETCH_SEARCH_CANDIDATS_SUCCESS', list)
+          commit('FETCH_AUTOCOMPLETE_CANDIDATS_SUCCESS', list)
         },
       },
     }),

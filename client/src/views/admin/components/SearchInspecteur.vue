@@ -1,45 +1,55 @@
 <template>
   <div>
-    <autocomplete-candidats
+    <search-inspecteurs
       class="search-input"
-      @selection="displayCandidatInfo"
+      @selection="displayInspecteurInfo"
     />
 
-    <info-candidat
-      v-if="candidat"
-      :candidat="candidat"
-    />
+    <div v-if="inspecteur" class="info-style">
+      <div class="title-style">
+        <p>{{ title }}</p>
+      </div>
+      <div
+        v-for="([key, value]) in inspecteur"
+        :key="key"
+        class="container-style"
+      >
+         <div class="label"><strong>{{ key }}&nbsp;:</strong></div>
+         <div class="value">{{ value }}</div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
-import AutocompleteCandidats from './AutocompleteCandidats'
+import SearchInspecteurs from './SearchInspecteurs'
 
-export const dict = {
+const dict = {
   adresse: 'Adresse',
-  codeNeph: 'NEPH',
+  matricule: 'Matricule',
   email: 'Email',
-  nomNaissance: 'Nom',
+  nom: 'Nom',
   prenom: 'Prénom',
   portable: 'Portable',
-  presignedUpAt: 'Inscrit le',
+  departement: 'Département',
+
 }
 
 export default {
   components: {
-    AutocompleteCandidats,
+    SearchInspecteurs,
   },
 
   data () {
     return {
-      title: 'Informations Candidat',
-      candidat: undefined,
+      title: 'Informations Inspecteur',
+      inspecteur: undefined,
     }
   },
 
   methods: {
-    displayCandidatInfo (candidat) {
-      this.candidat = Object.entries(candidat)
+    displayInspecteurInfo (inspecteur) {
+      this.inspecteur = Object.entries(inspecteur)
         .reduce((acc, [key, value]) => {
           if (key === '_id') {
             return acc
