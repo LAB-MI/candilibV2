@@ -177,6 +177,7 @@ export default {
     },
     [DELETE_RESERVATION_SUCCESS] (state, success) {
       state.deleteReservationAction.result = success
+      state.deleteReservationAction.isDeleting = false
     },
     [DELETE_RESERVATION_FAILURE] (state, error) {
       state.deleteReservationAction.result = error
@@ -188,6 +189,7 @@ export default {
     },
     [DELETE_PLACE_SUCCESS] (state, success) {
       state.deletePlaceAction.result = success
+      state.deletePlaceAction.isDeleting = false
     },
     [DELETE_PLACE_FAILURE] (state, error) {
       state.deletePlaceAction.result = error
@@ -199,6 +201,7 @@ export default {
     },
     [CREATE_CRENEAU_SUCCESS] (state, success) {
       state.createCreneau.result = success
+      state.createCreneau.isCreating = false
     },
     [CREATE_CRENEAU_FAILURE] (state, error) {
       state.createCreneau.result = error
