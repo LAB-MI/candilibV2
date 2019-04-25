@@ -152,6 +152,10 @@ export default {
       return this.formatDate(this.date)
     },
 
+    centerTarget () {
+      return this.$store.state.admin.centerTarget
+    },
+
     placesByCentreList () {
       return this.$store.state.admin.places.list
     },

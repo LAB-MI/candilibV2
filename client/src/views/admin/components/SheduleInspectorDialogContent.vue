@@ -98,6 +98,7 @@ import {
 
 import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
+  CREATE_CRENEAU_REQUEST,
   DELETE_PLACE_REQUEST,
 } from '@/store'
 
@@ -146,6 +147,12 @@ export default {
     },
 
     async renderCreneauAvalaible () {
+      const [year, month, day] = this.selectedDate.split('-')
+      const date = `${day}/${month}/${year} ${this.content.hour.replace('h', ':')}`
+      const inspecteur = this.inspecteurId
+      const centre = this.centreInfo
+      await this.$store
+        .dispatch(CREATE_CRENEAU_REQUEST, { date, centre, inspecteur })
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
