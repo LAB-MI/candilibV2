@@ -53,7 +53,7 @@ describe('User', () => {
     })
   })
 
-  describe('Deleting Inspecteur by matricule', () => {
+  describe('Deleting Inspecteur', () => {
     afterEach(async () => {
       await Promise.all([
         deleteInspecteurByMatricule(defaultInspecteur.matricule).catch(
@@ -83,18 +83,8 @@ describe('User', () => {
       expect(removedInspecteur).toBeDefined()
       expect(afterInspecteur).toBeNull()
     })
-  })
 
-  describe('Deleting Inspecteur by id', () => {
-    afterEach(async () => {
-      await Promise.all([
-        deleteInspecteurByMatricule(defaultInspecteur.matricule).catch(
-          () => true
-        ),
-      ])
-    })
-
-    it('should delete an inspecteur by ', async () => {
+    it('should delete an inspecteur by id', async () => {
       // Given
       const inspecteur = defaultInspecteur
       const savedInspecteur = await createInspecteur(inspecteur)
@@ -111,19 +101,23 @@ describe('User', () => {
     })
   })
 
-  describe('Find Inspecteur by Id', () => {
+  describe('Find Inspecteur', () => {
     afterEach(async () => {
       await Promise.all([
         deleteInspecteurByMatricule(defaultInspecteur.matricule).catch(
           () => true
         ),
+        deleteInspecteurByMatricule(defaultInspecteur2.matricule).catch(
+          () => true
+        ),
       ])
     })
 
-    it('Find an inspecteur by ', async () => {
+    it('Find an inspecteur by id', async () => {
       // Given
       const inspecteur = defaultInspecteur
       const searchinspecteur = await createInspecteur(inspecteur)
+
       // When
       const foundInspecteur = await findInspecteurById(searchinspecteur._id)
 
@@ -140,21 +134,8 @@ describe('User', () => {
       )
       expect(foundInspecteur).toHaveProperty('prenom', defaultInspecteur.prenom)
     })
-  })
 
-  describe('Find Inspecteur matching', () => {
-    afterEach(async () => {
-      await Promise.all([
-        deleteInspecteurByMatricule(defaultInspecteur.matricule).catch(
-          () => true
-        ),
-        deleteInspecteurByMatricule(defaultInspecteur2.matricule).catch(
-          () => true
-        ),
-      ])
-    })
-
-    it('Find an inspecteur  ', async () => {
+    it('Find an inspecteur by nom', async () => {
       // Given
       await createInspecteur(defaultInspecteur)
       await createInspecteur(defaultInspecteur2)

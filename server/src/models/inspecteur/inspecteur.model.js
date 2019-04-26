@@ -18,6 +18,7 @@ export const inspecteurFields = {
   email: {
     type: String,
     required: true,
+    unique: true,
     match: emailRegex,
   },
   matricule: {
