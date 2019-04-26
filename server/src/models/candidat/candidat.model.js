@@ -113,6 +113,10 @@ export const candidatFields = {
     type: [ArchivedPlaceSchema],
     default: undefined,
   },
+  resaCanceledByAdmin: {
+    type: Date,
+    default: undefined,
+  },
 }
 
 const CandidatSchema = new Schema(candidatFields)

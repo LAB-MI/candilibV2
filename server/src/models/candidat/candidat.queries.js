@@ -195,3 +195,8 @@ export const updateCandidatFailed = async (
   candidat.canBookFrom = canBookFrom
   return candidat.save()
 }
+
+export const setCandidatToVIP = (candidat, resaCanceledByAdmin) => {
+  candidat.resaCanceledByAdmin = resaCanceledByAdmin
+  return candidat.save()
+}
