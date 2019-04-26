@@ -8,6 +8,7 @@ import {
   findPlaceBookedByCandidat,
   removeBookedPlace,
 } from '../../models/place'
+import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { REASON_REMOVE_RESA_ADMIN } from '../common/reason.constants'
