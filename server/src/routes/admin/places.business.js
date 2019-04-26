@@ -50,7 +50,6 @@ const transfomCsv = async ({ data, departement }) => {
       zone: 'Europe/Paris',
       locale: 'fr',
     })
-
     if (dept !== departement) {
       throw new Error(
         'Le département du centre ne correspond pas au département dont vous avez la charge'
