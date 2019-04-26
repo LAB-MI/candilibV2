@@ -3,6 +3,7 @@ import { getConvocationBody } from './build-mail-convocation'
 import { sendMail } from './send-mail'
 import { getCancellationBody } from './build-mail-cancellation'
 import { getFailureExamBody } from './build-mail-failure-exam'
+import { getCancellationByAdminBody } from './build-mail-cancellation-by-admin'
 
 const section = 'candidat-sendMail'
 
@@ -92,6 +93,31 @@ export const sendFailureExam = async (place, candidat) => {
     "Annulation de votre convocation suite à l'echec de votre examen pratique"
 
   appLogger.debug({ func: 'sendFailureExam', content, subject })
+
+  return sendMail(email, { content, subject })
+}
+
+export const sendCancelBookingByAdmin = async (place, candidat) => {
+  appLogger.debug({
+    func: 'sendCancelBookingByAdmin',
+    args: { candidat, place },
+  })
+  const action = 'SEND_CANCELLATION_BY_ADMIN'
+  const { email } = candidat
+
+  appLogger.debug({ func: 'sendCancelBookingByAdmin', candidat, place, email })
+  try {
+    sendMailResaArgsValidation(place, candidat)
+  } catch (error) {
+    appLogger.error({ section, action, error })
+    throw error
+  }
+
+  const content = await getCancellationByAdminBody(place, candidat)
+  const subject =
+    "Annulation de votre convocation à l'examen par l'administration"
+
+  appLogger.debug({ func: 'sendCancelBookingByAdmin', content, subject })
 
   return sendMail(email, { content, subject })
 }
