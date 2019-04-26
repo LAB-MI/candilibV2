@@ -31,16 +31,25 @@
         </v-btn>
       </div>
     </v-layout>
+    <div class="u-flex  u-flex--center">
+      <search-candidats class="search-input" />
+      <search-inspecteurs class="search-input" />
+    </div>
   </div>
 </template>
 
 <script>
 import WeekMonitor from './WeekMonitor.vue'
+import SearchCandidats from './SearchCandidats'
+import SearchInspecteurs from './SearchInspecteurs'
 
 export default {
   components: {
+    SearchCandidats,
+    SearchInspecteurs,
     WeekMonitor,
   },
+
   data () {
     return {
       buttonGestion: [
@@ -73,5 +82,9 @@ export default {
 <style lang="postcss" scoped>
 .monitor-wrapper {
   padding: 2em;
+}
+
+.search-input {
+  margin: 0 1em;
 }
 </style>

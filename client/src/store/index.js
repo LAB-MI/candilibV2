@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 
 import aurige from './aurige'
 import admin from './admin'
+import adminSearch from './admin-search'
 import auth from './auth'
 import candidat from './candidat'
 import candidats from './candidats'
@@ -16,6 +17,7 @@ import whitelist from './whitelist'
 
 export * from './aurige'
 export * from './admin'
+export * from './admin-search'
 export * from './auth'
 export * from './candidat'
 export * from './candidats'
@@ -33,6 +35,7 @@ export default new Vuex.Store({
   },
 
   modules: {
+    adminSearch,
     aurige,
     admin,
     auth,

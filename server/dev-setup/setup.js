@@ -6,7 +6,13 @@ connect()
     const { default: createAdmin } = await import('./create-admin-account')
     const { default: createCandidats } = await import('./create-candidats')
     const { default: createCentres } = await import('./create-centres')
-    return Promise.all([createAdmin(), createCandidats(), createCentres()])
+    const { default: createInspecteurs } = await import('./create-inspecteurs')
+    return Promise.all([
+      createAdmin(),
+      createCandidats(),
+      createCentres(),
+      createInspecteurs(),
+    ])
   })
   .catch(error => {
     logger.error(`Server could not connect to DB, exiting`)
