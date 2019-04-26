@@ -32,6 +32,12 @@ export const findPlaceById = async id => {
   const place = await Place.findById(id)
   return place
 }
+export const findPlaceByIdAndPopulate = async (id, populate) => {
+  const query = Place.findById(id)
+  queryPopulate(populate, query)
+  const place = await query.exec()
+  return place
+}
 
 export const findPlaceByCandidatId = async id => {
   const places = await Place.find({ candidat: new mongoose.Types.ObjectId(id) })
@@ -137,8 +143,7 @@ export const findPlaceBookedByCandidat = async (
   populate
 ) => {
   const query = Place.findOne({ candidat }, options)
-  if (populate && populate.centre) query.populate('centre')
-  if (populate && populate.candidat) query.populate('candidat')
+  queryPopulate(populate, query)
 
   const place = await query.exec()
   return place
@@ -171,4 +176,9 @@ export const removeBookedPlace = place => {
   place.candidat = undefined
 
   return place.save()
+}
+
+const queryPopulate = (populate, query) => {
+  if (populate && populate.centre) query.populate('centre')
+  if (populate && populate.candidat) query.populate('candidat')
 }
