@@ -4,6 +4,7 @@ import {
   findAllCentres,
   findCentreByName,
   findCentreByNameAndDepartement,
+  createCentre,
 } from './centre.queries'
 import {
   createCentres,
@@ -19,6 +20,70 @@ describe('Centre', () => {
 
   afterAll(async () => {
     await disconnect()
+  })
+
+  describe('create centre', () => {
+    it('should not create 2 centres with same name and same department', async () => {
+      const nom = 'test.1.centre.nom'
+      const label = 'test label'
+      const adresse = 'adresse 93001'
+      const departement = '93'
+
+      const centre1Created = await createCentre(
+        nom,
+        label,
+        adresse,
+        departement
+      )
+      expect(centre1Created).toBeDefined()
+      expect(centre1Created).toHaveProperty('nom', nom)
+      expect(centre1Created).toHaveProperty('departement', departement)
+
+      const label2 = 'test 2 label'
+      const adresse2 = 'adresse 2 93001'
+
+      try {
+        await createCentre(nom, label2, adresse2, departement)
+        throw new Error()
+      } catch (error) {
+        expect(error).toHaveProperty('name', 'MongoError')
+        expect(error.message).toMatch(/duplicate key error dup key/)
+      }
+
+      await centre1Created.remove()
+    })
+
+    it('should add 2 centres with same name', async () => {
+      const nom = 'test.1.centre.nom'
+      const label = 'test label'
+      const adresse = 'adresse 93000'
+      const departement1 = '93'
+      const departement2 = '94'
+
+      const centre1Created = await createCentre(
+        nom,
+        label,
+        adresse,
+        departement1
+      )
+      expect(centre1Created).toBeDefined()
+      expect(centre1Created).toHaveProperty('nom', nom)
+      expect(centre1Created).toHaveProperty('departement', departement1)
+
+      const centre2Created = await createCentre(
+        nom,
+        label,
+        adresse,
+        departement2
+      )
+
+      expect(centre2Created).toBeDefined()
+      expect(centre2Created).toHaveProperty('nom', nom)
+      expect(centre2Created).toHaveProperty('departement', departement2)
+
+      await centre1Created.remove()
+      await centre2Created.remove()
+    })
   })
 
   describe('Find centre', () => {
