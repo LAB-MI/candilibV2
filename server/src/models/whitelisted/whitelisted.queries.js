@@ -1,7 +1,7 @@
 import Whitelisted from './whitelisted.model'
 
-export const findAllWhitelisted = async email => {
-  const whitelisted = await Whitelisted.find({}).sort('-dateAdded')
+export const findAllWhitelisted = async departement => {
+  const whitelisted = await Whitelisted.find({ departement }).sort('-dateAdded')
   return whitelisted
 }
 
@@ -15,16 +15,16 @@ export const findWhitelistedById = async id => {
   return whitelisted
 }
 
-export const createWhitelisted = async email => {
-  const whitelisted = new Whitelisted({ email })
+export const createWhitelisted = async (email, departement) => {
+  const whitelisted = new Whitelisted({ email, departement })
   await whitelisted.save()
   return whitelisted
 }
 
-export const createWhitelistedBatch = emails =>
+export const createWhitelistedBatch = (emails, departement) =>
   Promise.all(
     emails.map(email =>
-      Whitelisted.create({ email })
+      Whitelisted.create({ email, departement })
         .then(result => ({
           code: 201,
           email,

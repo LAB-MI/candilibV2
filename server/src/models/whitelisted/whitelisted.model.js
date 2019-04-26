@@ -13,6 +13,10 @@ const WhitelistedSchema = new Schema({
     unique: true,
     match: emailRegex,
   },
+  departement: {
+    type: String,
+    trim: true,
+  },
 })
 
 WhitelistedSchema.pre('save', async function preSave () {
