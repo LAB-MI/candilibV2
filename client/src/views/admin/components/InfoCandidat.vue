@@ -8,12 +8,12 @@
       :key="key"
       class="container"
     >
-      <div class="label">
+      <div v-if="fillterKey(key)" class="label">
         <strong>
           {{ key }}&nbsp;:
         </strong>
       </div>
-      <div class="value">
+      <div v-if="fillterKey(key)" class="value">
         {{ value }}
       </div>
     </div>
@@ -31,15 +31,23 @@ export default {
   props: {
     candidat: Object,
   },
+
+  mounted () {
+    console.log(this.profileInfo)
+  },
 }
 </script>
 
 <style lang="stylus" scoped>
+p {
+  display: flex;
+  color: black;
+}
 
 .title {
   margin: auto;
   text-align: center;
-  font-family: "Raleway", sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 1 rem;
   text-transform: uppercase;
   font-weight: 600;
@@ -60,7 +68,7 @@ export default {
 }
 
 .label {
-  flex-basis: 7rem;
+  flex-basis: 1rem;
 }
 
 .value {

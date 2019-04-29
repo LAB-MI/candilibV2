@@ -13,6 +13,7 @@
 
 <script>
 import AutocompleteInspecteurs from './AutocompleteInspecteurs'
+import InfoInspecteur from './InfoInspecteur'
 
 export const dict = {
   adresse: 'Adresse',
@@ -28,6 +29,7 @@ export const dict = {
 export default {
   components: {
     AutocompleteInspecteurs,
+    InfoInspecteur,
   },
 
   data () {
@@ -50,6 +52,7 @@ export default {
             [(dict[key] || key), value],
           ]
         }, [])
+      console.log('TCL: displayInspecteurInfo -> this.inspecteur', this.inspecteur)
     },
   },
 }

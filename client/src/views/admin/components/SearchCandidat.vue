@@ -14,8 +14,11 @@
 
 <script>
 import AutocompleteCandidats from './AutocompleteCandidats'
+import InfoCandidat from './InfoCandidat'
 
 export const dict = {
+  isValidatedByAurige: 'Status Aurige',
+  isValidatedEmail: 'Email validé',
   adresse: 'Adresse',
   codeNeph: 'NEPH',
   email: 'Email',
@@ -28,6 +31,7 @@ export const dict = {
 export default {
   components: {
     AutocompleteCandidats,
+    InfoCandidat,
   },
 
   data () {
@@ -51,16 +55,25 @@ export default {
           ]
         }, [])
     },
+    transformBoolean (value) {
+      if (value) {
+        return 'Oui'
+      }
+      return 'Non'
+    },
+  },
+
+  mounted () {
+    console.log(this.profileInfo)
   },
 }
 </script>
 
 <style lang="stylus" scoped>
-
 .title-style {
   margin: auto;
   text-align: center;
-  font-family: "Raleway", sans-serif;
+  font-family: 'Raleway', sans-serif;
   font-size: 1 rem;
   text-transform: uppercase;
   font-weight: 600;
@@ -81,7 +94,7 @@ export default {
 }
 
 .label {
-  flex-basis: 7rem;
+  flex-basis: 7 rem;
 }
 
 .value {
