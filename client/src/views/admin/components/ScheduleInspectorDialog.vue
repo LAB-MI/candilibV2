@@ -73,11 +73,6 @@ export default {
           color: 'green',
           content: this.content,
         }
-      } else {
-          this.icon = 'block'
-          return {
-            color: '#A9A9A9',
-          }
       }
       this.flagModal = 'block'
       this.icon = 'block'
