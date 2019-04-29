@@ -80,11 +80,6 @@ export default {
         return {
           color: '#A9A9A9',
         }
-      } else {
-          this.icon = 'block'
-          return {
-            color: '#A9A9A9',
-          }
       }
     },
 

@@ -96,6 +96,53 @@ export default {
       state.inspecteursByDepartement.isFetching = false
     },
 
+    [DELETE_RESERVATION_REQUEST] (state) {
+      state.deleteReservationAction.isDeleting = true
+    },
+    [DELETE_RESERVATION_SUCCESS] (state, success) {
+      state.deleteReservationAction.result = success
+      state.deleteReservationAction.isDeleting = false
+    },
+    [DELETE_RESERVATION_FAILURE] (state, error) {
+      state.deleteReservationAction.result = error
+      state.deleteReservationAction.isDeleting = false
+    },
+
+    [DELETE_PLACE_REQUEST] (state) {
+      state.deletePlaceAction.isDeleting = true
+    },
+    [DELETE_PLACE_SUCCESS] (state, success) {
+      state.deletePlaceAction.result = success
+      state.deletePlaceAction.isDeleting = false
+    },
+    [DELETE_PLACE_FAILURE] (state, error) {
+      state.deletePlaceAction.result = error
+      state.deletePlaceAction.isDeleting = false
+    },
+
+    [CREATE_CRENEAU_REQUEST] (state) {
+      state.createCreneau.isCreating = true
+    },
+    [CREATE_CRENEAU_SUCCESS] (state, success) {
+      state.createCreneau.result = success
+      state.createCreneau.isCreating = false
+    },
+    [CREATE_CRENEAU_FAILURE] (state, error) {
+      state.createCreneau.result = error
+      state.createCreneau.isCreating = false
+    },
+
+    [CREATE_CRENEAU_REQUEST] (state) {
+      state.createCreneau.isCreating = true
+    },
+    [CREATE_CRENEAU_SUCCESS] (state, success) {
+      state.createCreneau.result = success
+    },
+    [CREATE_CRENEAU_FAILURE] (state, error) {
+      state.createCreneau.result = error
+      state.createCreneau.isCreating = false
+    },
+
     [SELECT_DEPARTEMENT] (state, departement) {
       state.departements.active = departement
     },
@@ -174,6 +221,42 @@ export default {
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, newList)
       } catch (error) {
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [DELETE_RESERVATION_REQUEST] ({ commit, dispatch, state }, placeId) {
+      commit(DELETE_RESERVATION_REQUEST)
+      try {
+        const result = await api.admin.deleteReservation(placeId)
+        commit(DELETE_RESERVATION_SUCCESS, result)
+        dispatch(SHOW_SUCCESS, result.message)
+      } catch (error) {
+        commit(DELETE_RESERVATION_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [DELETE_PLACE_REQUEST] ({ commit, dispatch, state }, placeId) {
+      commit(DELETE_PLACE_REQUEST)
+      try {
+        const result = await api.admin.deletePlace(placeId)
+        commit(DELETE_PLACE_SUCCESS, result)
+        dispatch(SHOW_SUCCESS, result.message)
+      } catch (error) {
+        commit(DELETE_PLACE_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [CREATE_CRENEAU_REQUEST] ({ commit, dispatch, state }, { centre, inspecteur, date }) {
+      commit(CREATE_CRENEAU_REQUEST)
+      try {
+        const result = await api.admin.createPlace(centre, inspecteur, date)
+        commit(CREATE_CRENEAU_SUCCESS, result)
+        dispatch(SHOW_SUCCESS, result.message)
+      } catch (error) {
+        commit(CREATE_CRENEAU_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
