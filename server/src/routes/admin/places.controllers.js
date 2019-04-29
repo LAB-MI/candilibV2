@@ -54,16 +54,23 @@ export const getPlaces = async (req, res) => {
 export const createPlaceByAdmin = async (req, res) => {
   const { centre, inspecteur, date } = req.body
   try {
-    const createdPlaceResult = await createPlaceForInspector(centre, inspecteur, date)
-    appLogger.info(
-      `create by admin place: La place a bien été créée.`
+    const createdPlaceResult = await createPlaceForInspector(
+      centre,
+      inspecteur,
+      date
     )
-    res.json({ success: true, message: `La place du [${createdPlaceResult.date}] a bien été crée.` })
+    appLogger.info(`create by admin place: La place a bien été crée.`)
+    res.json({
+      success: true,
+      message: `La place du [${createdPlaceResult.date}] a bien été crée.`,
+    })
   } catch (error) {
-    appLogger.info(
-      `create by admin place: La place n'a pas été créée.`
-    )
-    res.json({ success: false, message: "La place n'a pas été créée", error: error.nessage })
+    appLogger.info(`create by admin place: La place n'a pas été crée.`)
+    res.json({
+      success: false,
+      message: "La place n'a pas été crée",
+      error: error.nessage,
+    })
   }
 }
 
@@ -73,16 +80,6 @@ export const deletePlaceByAdmin = async (req, res) => {
   if (!place) {
     appLogger.info(`delete place: La place id: [${id}] n'existe pas en base.`)
     res.json({ success: false, message: "La place n'existe pas en base" })
-  } else if (place.candidat) {
-    appLogger.info(
-      `delete place: La place id: [${id}] a été reservé par le candidatId: [${
-        place.candidat
-      }].`
-    )
-    res.json({
-      success: false,
-      message: "La place vient d'etre reservé par un candidat",
-    })
   } else {
     try {
       await deletePlace(place)

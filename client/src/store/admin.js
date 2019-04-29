@@ -25,9 +25,9 @@ export const CREATE_CRENEAU_REQUEST = 'CREATE_CRENEAU_REQUEST'
 export const CREATE_CRENEAU_SUCCESS = 'CREATE_CRENEAU_SUCCESS'
 export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
 
-export const DELETE_RESERVATION_REQUEST = 'DELETE_RESERVATION_REQUEST'
-export const DELETE_RESERVATION_SUCCESS = 'DELETE_RESERVATION_SUCCESS'
-export const DELETE_RESERVATION_FAILURE = 'DELETE_RESERVATION_FAILURE'
+export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
+export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
+export const DELETE_BOOKED_PLACE_FAILURE = 'DELETE_BOOKED_PLACE_FAILURE'
 
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
@@ -59,7 +59,7 @@ export default {
       error: undefined,
       list: [],
     },
-    deleteReservationAction: {
+    deleteBookedPlace: {
       result: undefined,
       isDeleting: false,
     },
@@ -123,6 +123,30 @@ export default {
     [DELETE_PLACE_FAILURE] (state, error) {
       state.deletePlaceAction.result = error
       state.deletePlaceAction.isDeleting = false
+    },
+
+    [CREATE_CRENEAU_REQUEST] (state) {
+      state.createCreneau.isCreating = true
+    },
+    [CREATE_CRENEAU_SUCCESS] (state, success) {
+      state.createCreneau.result = success
+      state.createCreneau.isCreating = false
+    },
+    [CREATE_CRENEAU_FAILURE] (state, error) {
+      state.createCreneau.result = error
+      state.createCreneau.isCreating = false
+    },
+
+    [DELETE_BOOKED_PLACE_REQUEST] (state) {
+      state.deleteBookedPlace.isDeleting = true
+    },
+    [DELETE_BOOKED_PLACE_SUCCESS] (state, success) {
+      state.deleteBookedPlace.result = success
+      state.deleteBookedPlace.isDeleting = false
+    },
+    [DELETE_BOOKED_PLACE_FAILURE] (state, error) {
+      state.deleteBookedPlace.result = error
+      state.deleteBookedPlace.isDeleting = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {
@@ -191,14 +215,14 @@ export default {
       }
     },
 
-    async [DELETE_RESERVATION_REQUEST] ({ commit, dispatch, state }, placeId) {
-      commit(DELETE_RESERVATION_REQUEST)
+    async [DELETE_BOOKED_PLACE_REQUEST] ({ commit, dispatch, state }, placeId) {
+      commit(DELETE_BOOKED_PLACE_REQUEST)
       try {
-        const result = await api.admin.deleteReservation(placeId)
-        commit(DELETE_RESERVATION_SUCCESS, result)
+        const result = await api.admin.deleteBookedPlace(placeId)
+        commit(DELETE_BOOKED_PLACE_SUCCESS, result)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
-        commit(DELETE_RESERVATION_FAILURE, error)
+        commit(DELETE_BOOKED_PLACE_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },

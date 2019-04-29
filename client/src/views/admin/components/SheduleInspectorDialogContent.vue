@@ -99,9 +99,8 @@ import {
 import {
   CREATE_CRENEAU_REQUEST,
   DELETE_PLACE_REQUEST,
-  DELETE_RESERVATION_REQUEST,
+  DELETE_BOOKED_PLACE_REQUEST,
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
-  DELETE_PLACE_REQUEST,
 } from '@/store'
 
 export default {
@@ -139,6 +138,8 @@ export default {
     },
 
     async renderCreneauUnBookAndUnavalaible () {
+      await this.$store
+        .dispatch(DELETE_BOOKED_PLACE_REQUEST, this.content.place._id)
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
@@ -153,7 +154,8 @@ export default {
       const date = `${day}/${month}/${year} ${this.content.hour.replace('h', ':')}`
       const inspecteur = this.inspecteurId
       const centre = this.centreInfo
-      console.log({ centre, inspecteur, date })
+      await this.$store
+        .dispatch(CREATE_CRENEAU_REQUEST, { date, centre, inspecteur })
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
