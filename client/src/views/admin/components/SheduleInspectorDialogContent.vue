@@ -98,6 +98,7 @@ import {
 
 import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
+  CREATE_CRENEAU_REQUEST,
 } from '@/store'
 
 export default {
@@ -149,7 +150,8 @@ export default {
       const date = `${day}/${month}/${year} ${this.content.hour.replace('h', ':')}`
       const inspecteur = this.inspecteurId
       const centre = this.centreInfo
-      console.log({ centre, inspecteur, date })
+      await this.$store
+        .dispatch(CREATE_CRENEAU_REQUEST, { date, centre, inspecteur })
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()

@@ -75,6 +75,10 @@ export default {
     },
     currentWeek: undefined,
     centerTarget: undefined,
+    createCreneau: {
+      isCreating: false,
+      result: undefined,
+    },
   },
 
   mutations: {
@@ -144,6 +148,18 @@ export default {
     },
     [CREATE_CRENEAU_SUCCESS] (state, success) {
       state.createCreneau.result = success
+    },
+    [CREATE_CRENEAU_FAILURE] (state, error) {
+      state.createCreneau.result = error
+      state.createCreneau.isCreating = false
+    },
+
+    [CREATE_CRENEAU_REQUEST] (state) {
+      state.createCreneau.isCreating = true
+    },
+    [CREATE_CRENEAU_SUCCESS] (state, success) {
+      state.createCreneau.result = success
+      state.createCreneau.isCreating = false
     },
     [CREATE_CRENEAU_FAILURE] (state, error) {
       state.createCreneau.result = error
