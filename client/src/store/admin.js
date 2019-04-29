@@ -258,6 +258,48 @@ export default {
       }
     },
 
+    async [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] ({ commit, dispatch, state }) {
+      commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+      try {
+        const list = await api.admin.getInspecteursByDepartement(state.departements.active)
+        const newList = list.map(elem => {
+          return {
+            ...elem,
+            crenaux: [
+              { hour: '08h00', place: undefined },
+              { hour: '08h30', place: undefined },
+              { hour: '09h00', place: undefined },
+              { hour: '09h30', place: undefined },
+              { hour: '10h00', place: undefined },
+              { hour: '10h30', place: undefined },
+              { hour: '11h00', place: undefined },
+              { hour: '11h30', place: undefined },
+              { hour: '13h30', place: undefined },
+              { hour: '14h00', place: undefined },
+              { hour: '14h30', place: undefined },
+              { hour: '15h00', place: undefined },
+              { hour: '15h30', place: undefined },
+            ],
+          }
+        })
+        commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, newList)
+      } catch (error) {
+        commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE, error)
+        return dispatch(SHOW_ERROR, 'Error while fetching departement active infos')
+      }
+    },
+
+    async [DELETE_RESERVATION_REQUEST] ({ commit, dispatch, state }, placeId) {
+      commit(DELETE_RESERVATION_REQUEST)
+      try {
+        const result = await api.admin.deleteReservation(placeId)
+        commit(DELETE_RESERVATION_SUCCESS, result)
+      } catch (error) {
+        commit(DELETE_RESERVATION_FAILURE, error)
+        return dispatch(SHOW_ERROR, 'Error while deleting reservation')
+      }
+    },
+
     async [SELECT_DEPARTEMENT] ({ commit, dispatch }, departement) {
       commit(SELECT_DEPARTEMENT, departement)
       dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
