@@ -18,6 +18,12 @@ export const findInspecteursMatching = async search => {
   return inspecteurs
 }
 
+export const findInspecteurByName = async prenom =>
+  Inspecteur.findOne({ prenom })
+
+export const findInspecteurByEmail = async email =>
+  Inspecteur.findOne({ email })
+
 export const deleteInspecteurByMatricule = async matricule => {
   const inspecteur = await findInspecteurByMatricule(matricule)
   if (!inspecteur) {
