@@ -210,6 +210,14 @@ export default {
       return json
     },
 
+    async deletePlace (placeId) {
+      const json = await apiClient
+        .delete(`${apiPaths.admin.place}/${placeId}`, {
+          headers: getHeadersForAdminJson(),
+        })
+      return json
+    },
+
     async getCandidats () {
       const json = await apiClient.get(apiPaths.admin.candidats, {
         headers: getHeadersForAdminJson(),

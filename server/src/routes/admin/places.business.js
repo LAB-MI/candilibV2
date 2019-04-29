@@ -69,11 +69,6 @@ const transfomCsv = async ({ data, departement }) => {
       throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
     }
 
-    const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
-    if (!inspecteurFound) {
-      throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
-    }
-
     return {
       departement,
       centre: foundCentre,
@@ -193,4 +188,44 @@ export const releaseResa = async ({ _id }) => {
     })
     return removeBookedPlace(place)
   }
+}
+
+export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
+  // Annuler la place
+  const placeUpdated = await removeBookedPlace(place)
+  // Archive place
+  let candidatUpdated = addPlaceToArchive(
+    candidat,
+    place,
+    REASON_REMOVE_RESA_ADMIN,
+    admin.email
+  )
+  candidatUpdated = await setCandidatToVIP(candidatUpdated, place.date)
+
+  let statusmail = true
+  let message = RESA_BOOKED_CANCEL
+  try {
+    await sendCancelBookingByAdmin(placeUpdated, candidatUpdated)
+  } catch (error) {
+    appLogger.warn({
+      section: 'candidat-removeReservations',
+      action: 'FAILED_SEND_MAIL',
+      error,
+    })
+    statusmail = false
+    message = RESA_BOOKED_CANCEL_NO_MAIL
+  }
+
+  try {
+    await deletePlace(placeUpdated)
+  } catch (error) {
+    appLogger.warn({
+      section: 'admin-removePlace',
+      action: 'FAILED_DELETE_PLACE',
+      error,
+    })
+    message = DELETE_PLACE_ERROR
+  }
+
+  return { statusmail, message, candidat: candidatUpdated, placeUpdated }
 }

@@ -23,6 +23,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   exportCsv: `${apiPrefix}/admin/candidats?for=aurige&format=csv`,
   login: `${apiPrefix}/auth/admin/token`,
   myProfile: `${apiPrefix}/admin/me`,
+  place: `${apiPrefix}/admin/place`,
   places: `${apiPrefix}/admin/places`,
   uploadCandidatsJson: `${apiPrefix}/admin/candidats`,
   searchCandidats: `${apiPrefix}/admin/candidats?matching=`,

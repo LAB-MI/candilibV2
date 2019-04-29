@@ -108,18 +108,6 @@ export default {
       state.inspecteurs.isFetching = false
     },
 
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] (state) {
-      state.inspecteursByDepartement.isFetching = true
-    },
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS] (state, list) {
-      state.inspecteursByDepartement.list = list
-      state.inspecteursByDepartement.isFetching = false
-    },
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE] (state, error) {
-      state.inspecteursByDepartement.error = error
-      state.inspecteursByDepartement.isFetching = false
-    },
-
     [DELETE_PLACE_REQUEST] (state) {
       state.deletePlaceAction.isDeleting = true
     },

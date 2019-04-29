@@ -1,4 +1,4 @@
-z<template>
+<template>
   <div>
     <refresh-button
         title="Refresh"
