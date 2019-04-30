@@ -113,6 +113,18 @@ export default {
       state.inspecteurs.isFetching = false
     },
 
+    [DELETE_RESERVATION_REQUEST] (state) {
+      state.deleteReservationAction.isDeleting = true
+    },
+    [DELETE_RESERVATION_SUCCESS] (state, success) {
+      state.deleteReservationAction.result = success
+      state.deleteReservationAction.isDeleting = false
+    },
+    [DELETE_RESERVATION_FAILURE] (state, error) {
+      state.deleteReservationAction.result = error
+      state.deleteReservationAction.isDeleting = false
+    },
+
     [DELETE_PLACE_REQUEST] (state) {
       state.deletePlaceAction.isDeleting = true
     },
@@ -135,18 +147,6 @@ export default {
     [CREATE_CRENEAU_FAILURE] (state, error) {
       state.createCreneau.result = error
       state.createCreneau.isCreating = false
-    },
-
-    [DELETE_RESERVATION_REQUEST] (state) {
-      state.deleteReservationAction.isDeleting = true
-    },
-    [DELETE_RESERVATION_SUCCESS] (state, success) {
-      state.deleteReservationAction.result = success
-      state.deleteReservationAction.isDeleting = false
-    },
-    [DELETE_RESERVATION_FAILURE] (state, error) {
-      state.deleteReservationAction.result = error
-      state.deleteReservationAction.isDeleting = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {

@@ -236,66 +236,6 @@ export default {
       }
       this.isComputing = false
     },
-
-    centreSelector (centreId) {
-      this.activeCentreId = centreId
-      this.fetchInspecteursPlanning()
-    },
-
-    async fetchInspecteursPlanning () {
-      this.inspecteursData = []
-      const crenauxTpl = [
-        '08h00',
-        '08h30',
-        '09h00',
-        '09h30',
-        '10h00',
-        '10h30',
-        '11h00',
-        '11h30',
-        '13h30',
-        '14h00',
-        '14h30',
-        '15h00',
-        '15h30',
-      ]
-
-      let reservastionsByCentre = {}
-
-      this.placesByCentreList.find(element => {
-        const weekPlaces = element.places[this.currentWeekNumber]
-        if (element.centre._id === this.activeCentreId && weekPlaces && weekPlaces.length) {
-          const result = weekPlaces.filter(place => {
-            const currentDate = getFrenchLuxonDateFromIso(place.date).toISODate()
-            const dateTofind = getFrenchLuxonDateTimeFromSql(this.date).toISODate()
-            if (currentDate === dateTofind) {
-              return place
-            }
-          })
-
-          reservastionsByCentre = { centre: element.centre, places: result }
-          this.inspecteursData = this.inspecteurs.map(inspecteur => {
-            const crenauxData = crenauxTpl.map((elemt) => {
-              const instpecteurPlaces = reservastionsByCentre.places
-                .filter(element => element.inspecteur === inspecteur._id &&
-                  getFrenchLuxonDateFromIso(element.date).toFormat("HH'h'mm") === elemt)
-              if (instpecteurPlaces.length) {
-                return { place: instpecteurPlaces[0], hour: elemt }
-              } else {
-                return { place: undefined, hour: elemt }
-              }
-            })
-            return {
-              ...inspecteur,
-              crenaux: crenauxData,
-            }
-          })
-        }
-      })
-      if (!this.inspecteursData.length) {
-        this.inspecteursData = this.inspecteurs
-      }
-    },
   },
 
   watch: {
@@ -349,7 +289,6 @@ export default {
     this.activeCentreId = this.firstCentreId
     this.activeCentreTab = `tab-${this.activeCentreId}`
     await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
-    this.parseInspecteursPlanning()
   },
 
   async beforeMount () {
