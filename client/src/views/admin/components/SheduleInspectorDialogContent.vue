@@ -118,7 +118,6 @@ export default {
     inspecteurId: String,
     centreInfo: Object,
   },
-
   methods: {
     async fetchPlanningByDepartement () {
       const beginAndEnd = getFrenchLuxonDateTimeFromSql(this.selectedDate).toISO()

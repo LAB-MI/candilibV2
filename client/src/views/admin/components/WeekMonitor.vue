@@ -123,7 +123,6 @@ export default {
 
 .stats-card-text-free-places {
   color: green;
-  font-size: 2em;
 }
 
 .title {
