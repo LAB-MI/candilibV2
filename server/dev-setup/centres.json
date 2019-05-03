@@ -8,7 +8,7 @@
   {
     "departement": "93",
     "nom": "Villepinte",
-    "label": "Parking circulaire, situé face à la cuisine centrale et l'école hôtelière",
+    "label": "Centre d'examen du permis de conduire de Villepinte",
     "adresse": "4 Avenue Jean Fourgeaud, Villepinte, FR, 93420"
   },
   {
@@ -18,21 +18,57 @@
     "adresse": "320 Avenue Paul Vaillant-Couturier, Bobigny, FR, 93000"
   },
   {
-    "departement": "75",
-    "nom": "Paris3",
-    "label": "Centre d'examen du permis de conduire de Paris3",
-    "adresse": "99 Avenue du Général de Gaulle, Paris, FR, 75012"
+    "departement": "93",
+    "nom": "Saint-Brice",
+    "label": "Centre d'examen du permis de conduire de Saint-Brice",
+    "adresse": "Rue de la Forêt, Saint-Brice-sous-Forêt, FR, 95350"
   },
   {
     "departement": "75",
-    "nom": "Paris2",
-    "label": "Parking circulaire, situé face à la cuisine centrale et l'école hôtelière Paris2",
-    "adresse": "4 Avenue Jean Fourgeaud, Paris, FR, 75008"
+    "nom": "Rosny/Paris",
+    "label": "Centre d'examen du permis de conduire de Rosny/Paris",
+    "adresse": "99 Avenue du Général de Gaulle, Rosny ss Bois, FR, 93110"
   },
   {
     "departement": "75",
-    "nom": "Paris1",
-    "label": "Centre d'examen du permis de conduire de Paris1",
-    "adresse": "320 Avenue Paul Vaillant-Couturier, Paris, FR, 75018"
+    "nom": "Villacoublay",
+    "label": "Centre d'examen du permis de conduire de Villacoublay",
+    "adresse": "Zone Aéronautique Louis Bréguet, Vélizy-Villacoublay, FR, 78140"
+  },
+  {
+    "departement": "75",
+    "nom": "Bobigny/Paris",
+    "label": "Centre d'examen du permis de conduire de Bobigny/Paris",
+    "adresse": "320 Avenue Paul Vaillant-Couturier, Bobigny, FR, 93000"
+  },
+  {
+    "departement": "77",
+    "nom": "Lagny-sur-Marne",
+    "label": "Centre d'examen du permis de conduire de Lagny-sur-Marne",
+    "adresse": "67 av Raymond Poincarré, Lagny-sur-Marne, FR, 77400"
+  },
+  {
+    "departement": "77",
+    "nom": "Nemours",
+    "label": "Centre d'examen du permis de conduire de Nemours",
+    "adresse": "135 route de Moret, Nemours, FR, 77140"
+  },
+  {
+    "departement": "77",
+    "nom": "Provins",
+    "label": "Centre d'examen du permis de conduire de Provins",
+    "adresse": "10 rue du Général Delort, Provins, FR, 77160"
+  },
+  {
+    "departement": "94",
+    "nom": "Créteil",
+    "label": "Centre d'examen du permis de conduire de Créteil",
+    "adresse": "12 rue des Archives, Créteil, FR, 94000"
+  },
+  {
+    "departement": "94",
+    "nom": "Rungis",
+    "label": "Centre d'examen du permis de conduire de Rungis",
+    "adresse": "Avenue Charles Linbergh , Rungis, FR, 94150"
   }
 ]
