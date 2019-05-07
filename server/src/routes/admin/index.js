@@ -26,12 +26,9 @@ router.get('/me', getMe)
 router.get('/candidats', verifyAdminDepartement, getCandidats)
 router.post('/candidats', verifyAdminDepartement, importCandidats)
 router.get('/inspecteurs', getInspecteurs)
-router.post('/place', verifyAdminDepartement, createPlaceByAdmin)
-router.delete('/place/:id', deletePlaceByAdmin)
 router.post('/places', verifyAdminDepartement, importPlaces)
 router.put('/places', verifyAdminDepartement, updatePlaces)
 router.get('/places', verifyAdminDepartement, getPlaces)
-router.delete('/reservations/:id', removeReservationByAdmin)
 
 router
   .route('/whitelisted')

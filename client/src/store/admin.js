@@ -73,10 +73,6 @@ export default {
     },
     currentWeek: undefined,
     centerTarget: undefined,
-    createCreneau: {
-      isCreating: false,
-      result: undefined,
-    },
   },
 
   mutations: {
@@ -163,53 +159,6 @@ export default {
     [FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE] (state, error) {
       state.inspecteursByDepartement.error = error
       state.inspecteursByDepartement.isFetching = false
-    },
-
-    [DELETE_RESERVATION_REQUEST] (state) {
-      state.deleteReservationAction.isDeleting = true
-    },
-    [DELETE_RESERVATION_SUCCESS] (state, success) {
-      state.deleteReservationAction.result = success
-      state.deleteReservationAction.isDeleting = false
-    },
-    [DELETE_RESERVATION_FAILURE] (state, error) {
-      state.deleteReservationAction.result = error
-      state.deleteReservationAction.isDeleting = false
-    },
-
-    [DELETE_PLACE_REQUEST] (state) {
-      state.deletePlaceAction.isDeleting = true
-    },
-    [DELETE_PLACE_SUCCESS] (state, success) {
-      state.deletePlaceAction.result = success
-      state.deletePlaceAction.isDeleting = false
-    },
-    [DELETE_PLACE_FAILURE] (state, error) {
-      state.deletePlaceAction.result = error
-      state.deletePlaceAction.isDeleting = false
-    },
-
-    [CREATE_CRENEAU_REQUEST] (state) {
-      state.createCreneau.isCreating = true
-    },
-    [CREATE_CRENEAU_SUCCESS] (state, success) {
-      state.createCreneau.result = success
-      state.createCreneau.isCreating = false
-    },
-    [CREATE_CRENEAU_FAILURE] (state, error) {
-      state.createCreneau.result = error
-      state.createCreneau.isCreating = false
-    },
-
-    [CREATE_CRENEAU_REQUEST] (state) {
-      state.createCreneau.isCreating = true
-    },
-    [CREATE_CRENEAU_SUCCESS] (state, success) {
-      state.createCreneau.result = success
-    },
-    [CREATE_CRENEAU_FAILURE] (state, error) {
-      state.createCreneau.result = error
-      state.createCreneau.isCreating = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {
