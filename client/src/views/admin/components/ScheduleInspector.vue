@@ -289,6 +289,7 @@ export default {
     this.activeCentreId = this.firstCentreId
     this.activeCentreTab = `tab-${this.activeCentreId}`
     await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+    this.parseInspecteursPlanning()
   },
 
   async beforeMount () {
