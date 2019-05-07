@@ -149,18 +149,6 @@ export default {
       state.deleteBookedPlace.isDeleting = false
     },
 
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] (state) {
-      state.inspecteursByDepartement.isFetching = true
-    },
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS] (state, list) {
-      state.inspecteursByDepartement.list = list
-      state.inspecteursByDepartement.isFetching = false
-    },
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE] (state, error) {
-      state.inspecteursByDepartement.error = error
-      state.inspecteursByDepartement.isFetching = false
-    },
-
     [SELECT_DEPARTEMENT] (state, departement) {
       state.departements.active = departement
     },
