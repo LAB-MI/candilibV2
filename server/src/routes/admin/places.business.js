@@ -7,18 +7,9 @@ import {
   createPlace,
   findPlaceBookedByCandidat,
   removeBookedPlace,
-  deletePlace,
 } from '../../models/place'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
-import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
-import { REASON_REMOVE_RESA_ADMIN } from '../common/reason.constants'
-import { sendCancelBookingByAdmin } from '../business'
-import {
-  RESA_BOOKED_CANCEL,
-  RESA_BOOKED_CANCEL_NO_MAIL,
-  DELETE_PLACE_ERROR,
-} from './message.constants'
 
 const getPlaceStatus = (
   departement,
@@ -185,97 +176,5 @@ export const releaseResa = async ({ _id }) => {
       place,
     })
     return removeBookedPlace(place)
-  }
-}
-
-export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
-  // Annuler la place
-  const placeUpdated = await removeBookedPlace(place)
-  // Archive place
-  let candidatUpdated = addPlaceToArchive(
-    candidat,
-    place,
-    REASON_REMOVE_RESA_ADMIN,
-    admin.email
-  )
-  candidatUpdated = await setCandidatToVIP(candidatUpdated, place.date)
-
-  let statusmail = true
-  let message = RESA_BOOKED_CANCEL
-  try {
-    await sendCancelBookingByAdmin(placeUpdated, candidatUpdated)
-  } catch (error) {
-    appLogger.warn({
-      section: 'candidat-removeReservations',
-      action: 'FAILED_SEND_MAIL',
-      error,
-    })
-    statusmail = false
-    message = RESA_BOOKED_CANCEL_NO_MAIL
-  }
-
-  try {
-    await deletePlace(placeUpdated)
-  } catch (error) {
-    appLogger.warn({
-      section: 'admin-removePlace',
-      action: 'FAILED_DELETE_PLACE',
-      error,
-    })
-    message = DELETE_PLACE_ERROR
-  }
-
-  return { statusmail, message, candidat: candidatUpdated, placeUpdated }
-}
-
-export const createPlaceForInspector = async (centre, inspecteur, date) => {
-  const myDate = date
-  try {
-    const formatedDate = DateTime.fromFormat(myDate, 'dd/MM/yy HH:mm', {
-          zone: 'Europe/Paris',
-          locale: 'fr',
-        })
-    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id }
-    await createPlace(leanPlace)
-    appLogger.info({
-      section: 'Admim-BuisnessPlaces',
-      action: 'createPlaceForInspector',
-      message: `Place {${centre.departement},${
-        centre.nom
-      }, ${inspecteur}, ${myDate}} enregistrée en base`,
-    })
-    return getPlaceStatus(
-      centre.departement,
-      centre.nom,
-      inspecteur,
-      myDate,
-      'success',
-      `Place enregistrée en base`
-    )
-  } catch (error) {
-    appLogger.error(JSON.stringify(error))
-    if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
-      appLogger.warn({
-        section: 'Admim-BuisnessPlaces',
-        action: 'createPlaceForInspector',
-        message: 'Place déjà enregistrée en base',
-      })
-      return getPlaceStatus(
-        centre.departement,
-        centre.nom,
-        inspecteur,
-        myDate,
-        'error',
-        'Place déjà enregistrée en base'
-      )
-    }
-    return getPlaceStatus(
-      centre.departement,
-      centre.nom,
-      inspecteur,
-      date,
-      'error',
-      error.message
-    )
   }
 }

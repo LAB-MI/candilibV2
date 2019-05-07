@@ -27,6 +27,10 @@
 </template>
 
 <script>
+import {
+  FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
+  FETCH_ADMIN_INFO_REQUEST,
+} from '@/store'
 import WeekMonitor from './WeekMonitor.vue'
 import RefreshButton from './RefreshButton.vue'
 
@@ -39,6 +43,11 @@ export default {
     centerInfos () {
       return this.$store.state.admin.placesByCentre.list
     },
+  },
+
+  async mounted () {
+    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
+    await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
   },
 }
 </script>

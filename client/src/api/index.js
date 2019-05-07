@@ -202,31 +202,9 @@ export default {
       return json
     },
 
-    async getAllPlacesByCentre (departement, beginDate, endDate) {
+    async getAllPlacesByDepartement (departement, beginDate, endDate) {
       const json = await apiClient
         .get(`${apiPaths.admin.places}?departement=${departement}&beginDate=${encodeURIComponent(beginDate)}&endDate=${encodeURIComponent(endDate)}`, {
-          headers: getHeadersForAdminJson(),
-        })
-      return json
-    },
-
-    async createPlace (centre, inspecteur, date) {
-      const json = await apiClient
-        .post(`${apiPaths.admin.place}`, {
-          headers: getHeadersForAdminJson(),
-          body: JSON.stringify({
-            departement: centre.departement,
-            centre,
-            inspecteur,
-            date,
-          }),
-        })
-      return json
-    },
-
-    async deletePlace (placeId) {
-      const json = await apiClient
-        .delete(`${apiPaths.admin.place}/${placeId}`, {
           headers: getHeadersForAdminJson(),
         })
       return json
@@ -316,13 +294,6 @@ export default {
       const json = await apiClient.post(apiPaths.admin.whitelist, {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify({ email }),
-      })
-      return json
-    },
-
-    async deleteReservation (placeId) {
-      const json = await apiClient.delete(`${apiPaths.admin.reservations}/${placeId}`, {
-        headers: getHeadersForAdminJson(),
       })
       return json
     },

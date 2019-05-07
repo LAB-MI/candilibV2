@@ -51,7 +51,6 @@
           >
             {{ element.centre.nom }}
           </v-tab>
-          <!-- <v-tabs-items v-model="active"> -->
             <v-tab-item
               v-for="item in placesByCentreList"
               :key="item.centre._id"
@@ -82,7 +81,6 @@
                 </template>
               </v-data-table>
             </v-tab-item>
-          <!-- </v-tabs-items> -->
         </v-tabs>
       </v-flex>
     </v-layout>
@@ -165,12 +163,22 @@ export default {
       return `${day}/${month}/${year}`
     },
 
-    centreSelector (centreId) {
+    async refreshPlanning () {
+      const beginAndEnd = getFrenchLuxonDateTimeFromSql(this.date).toISO()
+      await this.$store
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
+      this.parseInspecteursPlanning()
+    },
+
+    async centreSelector (centreId) {
       this.activeCentreId = centreId
+      const beginAndEnd = getFrenchLuxonDateTimeFromSql(this.date).toISO()
+      await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
       this.parseInspecteursPlanning()
     },
 
     async parseInspecteursPlanning () {
+      this.isComputing = true
       this.inspecteursData = []
       const creneauTpl = [
         '08h00',
@@ -306,10 +314,12 @@ export default {
     async date (val) {
       const dateTimeFromSql = getFrenchLuxonDateTimeFromSql(this.date)
       this.currentWeekNumber = dateTimeFromSql.weekNumber
-      const beginAndEnd = dateTimeFromSql.toISO()
-      await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
-      this.parseInspecteursPlanning()
+      if (this.$store.state.admin.departements.active) {
+        const beginAndEnd = dateTimeFromSql.toISO()
+        await this.$store
+          .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
+        this.parseInspecteursPlanning()
+      }
     },
   },
 
@@ -333,6 +343,7 @@ export default {
     await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
     this.activeCentreId = this.firstCentreId
     await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+    this.parseInspecteursPlanning()
   },
 
   async beforeMount () {
