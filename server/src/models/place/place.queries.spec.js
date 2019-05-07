@@ -30,7 +30,9 @@ import {
   findAndbookPlace,
   findPlacesByCentreAndDate,
   removeBookedPlace,
+  bookPlaceById,
 } from './place.queries'
+import placeModel from './place.model'
 
 let date1 = DateTime.fromObject({ day: 28, hour: 9 })
 let date2 = DateTime.fromObject({ day: 28, hour: 9, minute: 30 })
@@ -373,6 +375,35 @@ xdescribe('Place', () => {
       expect(place.date).toEqual(
         DateTime.fromISO(selectedPlace.date).toJSDate()
       )
+    })
+
+    it('Should book the place which has not booking with candidat 123456789002 ', async () => {
+      const selectedPlace = await placeModel.findOne({
+        candidat: { $exists: false },
+      })
+      const selectedCandidat = createdcandidats.find(
+        candidat => candidat.codeNeph === candidats[2].codeNeph
+      )._id
+
+      const place = await bookPlaceById(selectedPlace._id, selectedCandidat)
+
+      expect(place).toBeDefined()
+      expect(place).toHaveProperty('candidat', selectedCandidat)
+      expect(place).toHaveProperty('centre', selectedPlace.centre)
+      expect(place).toHaveProperty('inspecteur', selectedPlace.inspecteur)
+      expect(place.date).toEqual(selectedPlace.date)
+    })
+
+    it('Should not book the place booked with candidat 123456789002 ', async () => {
+      const selectedPlace = await placeModel.findOne({
+        candidat: { $exists: true },
+      })
+
+      const selectedCandidat = createdcandidats.find(
+        candidat => candidat.codeNeph === candidats[2].codeNeph
+      )._id
+      const place = await bookPlaceById(selectedPlace._id, selectedCandidat)
+      expect(place).toBeNull()
     })
   })
 
