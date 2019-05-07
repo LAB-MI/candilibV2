@@ -6,9 +6,8 @@
         <v-btn :loading="isLoading" @click="refreshPlanning">Refresh</v-btn>
       </v-flex>
       <v-spacer></v-spacer>
-      <!-- ToDo: Extract style of page-title Important !! -->
       <v-flex xs4>
-        <page-title style="margin-top: 4em;" :title="`Semaine (${currentWeekNumber})`"/>
+        <page-title class="page-title" :title="`Semaine (${currentWeekNumber})`"/>
       </v-flex>
       <v-spacer></v-spacer>
       <v-flex class="date-selector" xs4>
@@ -52,8 +51,8 @@
             {{ element.centre.nom }}
           </v-tab>
             <v-tab-item
-              v-for="item in placesByCentreList"
-              :key="item.centre._id"
+              v-for="place in placesByCentreList"
+              :key="place.centre._id"
               transition="slide-y-transition"
               reverse-transition="slide-y-transition"
               :lazy="true"
@@ -67,8 +66,9 @@
                 :no-data-text="isLoading ? 'Chargement des données en cours...' : 'Aucun creneau pour ce centre'"
               >
                 <template v-slot:items="props">
-
-                  <td>{{  props.item.nom }}</td>
+                  <td>
+                    {{  props.item.nom }}
+                  </td>
                   <schedule-inspector-dialog
                     v-for="(isPlaceInfo, indx) in props.item.creneau"
                     :key="props.item._id + 'creneau' + indx"
@@ -76,7 +76,7 @@
                     :selectedDate="date"
                     :inspecteurId="props.item._id"
                     :updateContent="parseInspecteursPlanning"
-                    :centreInfo="item.centre"
+                    :centreInfo="place.centre"
                   />
                 </template>
               </v-data-table>
@@ -98,11 +98,29 @@ import PageTitle from '@/components/PageTitle.vue'
 import ScheduleInspectorDialog from './ScheduleInspectorDialog.vue'
 
 import {
+  creneauSetting,
+  getFrenchLuxonCurrentDateTime,
   getFrenchLuxonDateFromIso,
   getFrenchLuxonDateFromObject,
   getFrenchLuxonDateTimeFromSql,
-  getFrenchLuxonCurrentDateTime,
 } from '@/util'
+
+const creneauTemplate = [
+  'Inspecteurs',
+  creneauSetting[0],
+  creneauSetting[1],
+  creneauSetting[2],
+  creneauSetting[3],
+  creneauSetting[4],
+  creneauSetting[5],
+  creneauSetting[6],
+  creneauSetting[7],
+  creneauSetting[8],
+  creneauSetting[9],
+  creneauSetting[10],
+  creneauSetting[11],
+  creneauSetting[12],
+]
 
 export default {
   components: {
@@ -174,22 +192,11 @@ export default {
     },
 
     async parseInspecteursPlanning () {
+      this.isComputing = true
       this.inspecteursData = []
-      const creneauTpl = [
-        '08h00',
-        '08h30',
-        '09h00',
-        '09h30',
-        '10h00',
-        '10h30',
-        '11h00',
-        '11h30',
-        '13h30',
-        '14h00',
-        '14h30',
-        '15h00',
-        '15h30',
-      ]
+      if (creneauTemplate.length === 14) {
+        creneauTemplate.shift()
+      }
 
       let reservastionsByCentre = {}
       const dateTofind = getFrenchLuxonDateTimeFromSql(this.date).toISODate()
@@ -206,7 +213,7 @@ export default {
 
           reservastionsByCentre = { centre: element.centre, places: result }
           this.inspecteursData = this.inspecteurs.map(inspecteur => {
-            const creneauData = creneauTpl.map((elemt) => {
+            const creneauData = creneauTemplate.map((elemt) => {
               const instpecteurPlaces = reservastionsByCentre.places
                 .filter(element => element.inspecteur === inspecteur._id &&
                 getFrenchLuxonDateFromIso(element.date).toFormat("HH'h'mm") === elemt)
@@ -263,26 +270,10 @@ export default {
     await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
     this.activeCentreId = this.firstCentreId
     await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+    this.parseInspecteursPlanning()
   },
 
   async beforeMount () {
-    const creneauTemplate = [
-      'Inspecteurs',
-      '08h00',
-      '08h30',
-      '09h00',
-      '09h30',
-      '10h00',
-      '10h30',
-      '11h00',
-      '11h30',
-      '13h30',
-      '14h00',
-      '14h30',
-      '15h00',
-      '15h30',
-    ]
-
     this.headers = Array(14)
       .fill(true).map((item, index) => {
         return {
@@ -327,5 +318,9 @@ table.v-table thead td:not(:first-child),
 table.v-table thead th:first-child,
 table.v-table thead th:not(:first-child) {
   padding: 0 !important;
+}
+
+.page-title {
+  margin-top: 4em;
 }
 </style>

@@ -1,7 +1,19 @@
 import Inspecteur from './inspecteur.model'
 
-export const createInspecteur = async ({ email, matricule, nom, prenom, departement }) => {
-  const inspecteur = new Inspecteur({ email, matricule, nom, prenom, departement })
+export const createInspecteur = async ({
+  email,
+  matricule,
+  nom,
+  prenom,
+  departement,
+}) => {
+  const inspecteur = new Inspecteur({
+    email,
+    matricule,
+    nom,
+    prenom,
+    departement,
+  })
   await inspecteur.save()
   return inspecteur
 }

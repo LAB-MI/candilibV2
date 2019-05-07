@@ -14,21 +14,25 @@ storiesOf('Admin', module)
             list: [
               {
                 centre: {
+                  _id: 1234567891,
                   nom: 'centre1',
                 },
               },
               {
                 centre: {
+                  _id: 1234567892,
                   nom: 'centre2',
                 },
               },
               {
                 centre: {
+                  _id: 1234567893,
                   nom: 'centre3',
                 },
               },
               {
                 centre: {
+                  _id: 1234567894,
                   nom: 'centre4',
                 },
               },

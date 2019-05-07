@@ -123,12 +123,10 @@ export default {
     },
 
     affectCandidatToCreneau () {
-      console.log('affectCandidatToCreneau')
       this.closeDialog()
     },
 
     async renderCreneauUnavalaible () {
-      console.log('renderCreneauUnavalaible', this.content)
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
@@ -141,16 +139,10 @@ export default {
     },
 
     changeInspecteur () {
-      console.log('changeInspecteur', this.content)
       this.closeDialog()
     },
 
     async renderCreneauAvalaible () {
-      const [year, month, day] = this.selectedDate.split('-')
-      const date = `${day}/${month}/${year} ${this.content.hour.replace('h', ':')}`
-      const inspecteur = this.inspecteurId
-      const centre = this.centreInfo
-      console.log({ centre, inspecteur, date })
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()

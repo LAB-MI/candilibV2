@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { getFrenchLuxonDateFromIso } from '../util/frenchDateTime.js'
+import { getFrenchLuxonDateFromIso, creneauSetting } from '../util'
 
 import api from '@/api'
 
@@ -20,20 +20,20 @@ export const FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS = 'FETCH_INSPECTEURS_BY_DE
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
-const creneauSetting = [
-  { hour: '08h00', place: undefined },
-  { hour: '08h30', place: undefined },
-  { hour: '09h00', place: undefined },
-  { hour: '09h30', place: undefined },
-  { hour: '10h00', place: undefined },
-  { hour: '10h30', place: undefined },
-  { hour: '11h00', place: undefined },
-  { hour: '11h30', place: undefined },
-  { hour: '13h30', place: undefined },
-  { hour: '14h00', place: undefined },
-  { hour: '14h30', place: undefined },
-  { hour: '15h00', place: undefined },
-  { hour: '15h30', place: undefined },
+const creneauSetup = [
+  { hour: creneauSetting[0], place: undefined },
+  { hour: creneauSetting[1], place: undefined },
+  { hour: creneauSetting[2], place: undefined },
+  { hour: creneauSetting[3], place: undefined },
+  { hour: creneauSetting[4], place: undefined },
+  { hour: creneauSetting[5], place: undefined },
+  { hour: creneauSetting[6], place: undefined },
+  { hour: creneauSetting[7], place: undefined },
+  { hour: creneauSetting[8], place: undefined },
+  { hour: creneauSetting[9], place: undefined },
+  { hour: creneauSetting[10], place: undefined },
+  { hour: creneauSetting[11], place: undefined },
+  { hour: creneauSetting[12], place: undefined },
 ]
 
 export default {
@@ -96,53 +96,6 @@ export default {
       state.inspecteursByDepartement.isFetching = false
     },
 
-    [DELETE_RESERVATION_REQUEST] (state) {
-      state.deleteReservationAction.isDeleting = true
-    },
-    [DELETE_RESERVATION_SUCCESS] (state, success) {
-      state.deleteReservationAction.result = success
-      state.deleteReservationAction.isDeleting = false
-    },
-    [DELETE_RESERVATION_FAILURE] (state, error) {
-      state.deleteReservationAction.result = error
-      state.deleteReservationAction.isDeleting = false
-    },
-
-    [DELETE_PLACE_REQUEST] (state) {
-      state.deletePlaceAction.isDeleting = true
-    },
-    [DELETE_PLACE_SUCCESS] (state, success) {
-      state.deletePlaceAction.result = success
-      state.deletePlaceAction.isDeleting = false
-    },
-    [DELETE_PLACE_FAILURE] (state, error) {
-      state.deletePlaceAction.result = error
-      state.deletePlaceAction.isDeleting = false
-    },
-
-    [CREATE_CRENEAU_REQUEST] (state) {
-      state.createCreneau.isCreating = true
-    },
-    [CREATE_CRENEAU_SUCCESS] (state, success) {
-      state.createCreneau.result = success
-      state.createCreneau.isCreating = false
-    },
-    [CREATE_CRENEAU_FAILURE] (state, error) {
-      state.createCreneau.result = error
-      state.createCreneau.isCreating = false
-    },
-
-    [CREATE_CRENEAU_REQUEST] (state) {
-      state.createCreneau.isCreating = true
-    },
-    [CREATE_CRENEAU_SUCCESS] (state, success) {
-      state.createCreneau.result = success
-    },
-    [CREATE_CRENEAU_FAILURE] (state, error) {
-      state.createCreneau.result = error
-      state.createCreneau.isCreating = false
-    },
-
     [SELECT_DEPARTEMENT] (state, departement) {
       state.departements.active = departement
     },
@@ -198,7 +151,7 @@ export default {
         const newList = list.map(elem => {
           return {
             ...elem,
-            creneau: creneauSetting,
+            creneau: creneauSetup,
           }
         })
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, newList)
@@ -221,42 +174,6 @@ export default {
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, newList)
       } catch (error) {
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE, error)
-        return dispatch(SHOW_ERROR, error.message)
-      }
-    },
-
-    async [DELETE_RESERVATION_REQUEST] ({ commit, dispatch, state }, placeId) {
-      commit(DELETE_RESERVATION_REQUEST)
-      try {
-        const result = await api.admin.deleteReservation(placeId)
-        commit(DELETE_RESERVATION_SUCCESS, result)
-        dispatch(SHOW_SUCCESS, result.message)
-      } catch (error) {
-        commit(DELETE_RESERVATION_FAILURE, error)
-        return dispatch(SHOW_ERROR, error.message)
-      }
-    },
-
-    async [DELETE_PLACE_REQUEST] ({ commit, dispatch, state }, placeId) {
-      commit(DELETE_PLACE_REQUEST)
-      try {
-        const result = await api.admin.deletePlace(placeId)
-        commit(DELETE_PLACE_SUCCESS, result)
-        dispatch(SHOW_SUCCESS, result.message)
-      } catch (error) {
-        commit(DELETE_PLACE_FAILURE, error)
-        return dispatch(SHOW_ERROR, error.message)
-      }
-    },
-
-    async [CREATE_CRENEAU_REQUEST] ({ commit, dispatch, state }, { centre, inspecteur, date }) {
-      commit(CREATE_CRENEAU_REQUEST)
-      try {
-        const result = await api.admin.createPlace(centre, inspecteur, date)
-        commit(CREATE_CRENEAU_SUCCESS, result)
-        dispatch(SHOW_SUCCESS, result.message)
-      } catch (error) {
-        commit(CREATE_CRENEAU_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
