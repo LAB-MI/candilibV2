@@ -63,6 +63,7 @@ export default {
       }
     },
   },
+
   async mounted () {
     await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
     await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)

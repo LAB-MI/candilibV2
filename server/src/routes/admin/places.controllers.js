@@ -1,9 +1,5 @@
-import { findAllPlaces, findPlaceById, deletePlace } from '../../models/place'
-import { dateTimeToFormatFr } from '../../util/date.util.js'
-import {
-  createPlaceForInspector,
-  importPlacesCsv,
-} from './places.business'
+import { findAllPlaces } from '../../models/place'
+import { importPlacesCsv } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
 import { appLogger } from '../../util'
 

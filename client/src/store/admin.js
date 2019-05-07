@@ -75,10 +75,6 @@ export default {
     },
     currentWeek: undefined,
     centerTarget: undefined,
-    createCreneau: {
-      isCreating: false,
-      result: undefined,
-    },
   },
 
   mutations: {
