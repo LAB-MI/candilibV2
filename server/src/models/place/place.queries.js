@@ -85,7 +85,8 @@ export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
 export const findAvailablePlacesByCentre = async (
   centreId,
   beginDate,
-  endDate
+  endDate,
+  populate
 ) => {
   appLogger.debug(
     JSON.stringify({
@@ -93,12 +94,9 @@ export const findAvailablePlacesByCentre = async (
       args: { centreId, beginDate, endDate },
     })
   )
-
-  const places = await queryAvailablePlacesByCentre(
-    centreId,
-    beginDate,
-    endDate
-  ).exec()
+  const query = queryAvailablePlacesByCentre(centreId, beginDate, endDate)
+  queryPopulate(populate, query)
+  const places = await query.exec()
   return places
 }
 
@@ -182,4 +180,16 @@ export const removeBookedPlace = place => {
 const queryPopulate = (populate, query) => {
   if (populate && populate.centre) query.populate('centre')
   if (populate && populate.candidat) query.populate('candidat')
+  if (populate && populate.inspecteur) query.populate('inspecteur')
+}
+
+export const bookPlaceById = async (placeId, candidat, fields, populate) => {
+  const query = Place.findOneAndUpdate(
+    { _id: placeId, candidat: { $eq: undefined } },
+    { $set: { candidat } },
+    { new: true, fields }
+  )
+  queryPopulate(populate, query)
+  const place = await query.exec()
+  return place
 }
