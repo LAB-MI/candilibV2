@@ -270,6 +270,7 @@ export default {
     await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
     this.activeCentreId = this.firstCentreId
     await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+    this.parseInspecteursPlanning()
   },
 
   async beforeMount () {
