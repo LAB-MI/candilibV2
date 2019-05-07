@@ -138,7 +138,6 @@ export default {
     },
 
     async renderCreneauUnBookAndUnavalaible () {
-      await this.$store.dispatch(DELETE_RESERVATION_REQUEST, this.content.place._id)
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
@@ -153,8 +152,7 @@ export default {
       const date = `${day}/${month}/${year} ${this.content.hour.replace('h', ':')}`
       const inspecteur = this.inspecteurId
       const centre = this.centreInfo
-      await this.$store
-        .dispatch(CREATE_CRENEAU_REQUEST, { date, centre, inspecteur })
+      console.log({ centre, inspecteur, date })
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()

@@ -8,7 +8,6 @@ import {
   findPlaceBookedByCandidat,
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
-  deletePlace,
 } from '../../models/place'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
@@ -67,7 +66,9 @@ const transfomCsv = async ({ data, departement }) => {
     if (!foundCentre) throw new Error(`Le centre ${centre.trim()} est inconnu`)
 
     const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
-    if (!inspecteurFound)  throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
+    if (!inspecteurFound) {
+      throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
+    }
 
     const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
     if (!inspecteurFound)  throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
