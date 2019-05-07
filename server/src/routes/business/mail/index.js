@@ -7,5 +7,6 @@ export * from './inscription-ko-template'
 export * from './inscription-ok-template'
 export * from './inscription-valid-template'
 export * from './validation-email-template'
+export * from './cancel-booking-by-admin-template'
 
 export * from './mail.constants'

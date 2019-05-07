@@ -17,6 +17,11 @@ export async function verifyAdminDepartement (req, res, next) {
     })
     throw new Error('Accès interdit')
   } catch (error) {
+    appLogger.error({
+      section: 'admin-token',
+      action: 'check-departement',
+      message: error.message,
+    })
     return res.status(401).send({
       isTokenValid: false,
       message: error.message,

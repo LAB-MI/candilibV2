@@ -1,14 +1,31 @@
 import { appLogger } from '../../util'
-import { findPlaceById } from '../../models/place'
+import { findPlaceByIdAndPopulate } from '../../models/place'
 import { removeReservationPlaceByAdmin } from './places.business'
+import { RESA_NO_BOOKED } from './message.constants'
+import { findUserById } from '../../models/user'
 
-export const deleteResa = async (req, res) => {
+export const removeReservationByAdmin = async (req, res) => {
   const id = req.params.id
 
   const loggerContent = {
     section: 'admin-delete-resa',
     admin: req.userId,
     place: id,
+  }
+  const admin = await findUserById(req.userId)
+
+  if (!admin) {
+    return res.status(404).send({
+      success: false,
+      message: 'Utilisateur non trouvé',
+    })
+  }
+
+  if (!id) {
+    return res.status(404).send({
+      success: false,
+      message: 'Place non trouvée',
+    })
   }
 
   appLogger.info({
@@ -18,24 +35,33 @@ export const deleteResa = async (req, res) => {
   })
 
   // Have a reservation
-  const place = await findPlaceById(id)
+  const place = await findPlaceByIdAndPopulate(id, { candidat: true })
+  if (!place) {
+    return res.status(404).send({
+      success: false,
+      message: 'Place non trouvée',
+    })
+  }
+
   const { candidat } = place
   if (!candidat) {
-    const message = `Il n'y a pas de reservation cette place`
+    const message = RESA_NO_BOOKED
     appLogger.warn({
       ...loggerContent,
       action: 'NOT_RESA',
-      message: `il n'y a pas de reservation cette place`,
+      message,
     })
 
-    return res.status(204).send({
+    return res.status(400).send({
       success: false,
       message,
     })
   }
   try {
     // Annulation reservation
-    removeReservationPlaceByAdmin(place, candidat, req.userId)
+    const result = await removeReservationPlaceByAdmin(place, candidat, admin)
+
+    return res.status(200).json({ success: true, ...result })
   } catch (error) {
     appLogger.error({
       ...loggerContent,
