@@ -15,16 +15,16 @@ export const removeReservationByAdmin = async (req, res) => {
   const admin = await findUserById(req.userId)
 
   if (!admin) {
-    return res.status(400).send({
+    return res.status(404).send({
       success: false,
       message: 'Utilisateur non trouvé',
     })
   }
 
   if (!id) {
-    return res.status(400).send({
+    return res.status(404).send({
       success: false,
-      message: 'Pas de place',
+      message: 'Place non trouvée',
     })
   }
 
@@ -37,9 +37,9 @@ export const removeReservationByAdmin = async (req, res) => {
   // Have a reservation
   const place = await findPlaceByIdAndPopulate(id, { candidat: true })
   if (!place) {
-    return res.status(400).send({
+    return res.status(404).send({
       success: false,
-      message: 'Place non trouvé',
+      message: 'Place non trouvée',
     })
   }
 
