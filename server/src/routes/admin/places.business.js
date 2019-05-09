@@ -1,23 +1,28 @@
 import * as csvParser from 'fast-csv'
 import { DateTime } from 'luxon'
 
-import { appLogger } from '../../util'
+import { addPlaceToArchive, setCandidatToVIP, addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
+import { findCentreByNameAndDepartement, findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import {
+  bookPlaceById,
   createPlace,
   deletePlace,
   findPlaceBookedByCandidat,
+  findPlaceById,
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
 } from '../../models/place'
-import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
-import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
+
 import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
 import { sendCancelBookingByAdmin } from '../business'
 import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
+import { appLogger } from '../../util'
+import { ErrorWithStatus } from '../../util/error.status'
 import {
   RESA_BOOKED_CANCEL,
   RESA_BOOKED_CANCEL_NO_MAIL,
   DELETE_PLACE_ERROR,
+  RESA_PLACE_HAS_BOOKED,
 } from './message.constants'
 
 const getPlaceStatus = (
@@ -283,4 +288,65 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       error.message
     )
   }
+}
+
+export const moveCandidatInPlaces = async (resaId, placeId) => {
+  const loggerContent = {
+    section: 'admin-move-candidat-in-places',
+    resaId,
+    placeId,
+  }
+
+  const resa = await findPlaceById(resaId)
+  if (!resa) {
+    throw new ErrorWithStatus(404, 'Réservation non trouvée')
+  }
+  const place = await findPlaceById(placeId)
+  if (!place) {
+    throw new ErrorWithStatus(404, 'Réservation non trouvée')
+  }
+  const { candidat } = resa
+
+  if (!candidat) {
+    throw new ErrorWithStatus(400, "Cette réservation n'a pas de candidat")
+  }
+  if (place.candidat) {
+    throw new ErrorWithStatus(400, RESA_PLACE_HAS_BOOKED)
+  }
+
+  if (resa.centre.toString() !== place.centre.toString()) {
+    throw new ErrorWithStatus(
+      400,
+      'le nouveau centre est différent à celle de la réservation'
+    )
+  }
+  if (
+    DateTime.fromJSDate(resa.date).diff(DateTime.fromJSDate(place.date)) > 0
+  ) {
+    throw new ErrorWithStatus(
+      400,
+      'La nouvelle date et heure sont différents à celle de la réservation'
+    )
+  }
+
+  appLogger.info({
+    ...loggerContent,
+    action: 'BOOK_RESA',
+    placeId,
+    candidat,
+  })
+
+  const newResa = await bookPlaceById(placeId, candidat)
+  if (!newResa) {
+    throw new ErrorWithStatus(400, 'Cette place posséde une réservation')
+  }
+
+  appLogger.info({
+    ...loggerContent,
+    action: 'DELETE_RESA',
+    resaId,
+  })
+  await deletePlace(resa)
+
+  return newResa
 }

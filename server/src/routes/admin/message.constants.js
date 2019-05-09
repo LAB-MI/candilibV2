@@ -4,3 +4,4 @@ export const RESA_BOOKED_CANCEL =
 export const RESA_BOOKED_CANCEL_NO_MAIL =
   "La réservation choisi a été annulée. Un courriel n'a pas pu être envoyé au candidat."
 export const DELETE_PLACE_ERROR = "La place choisi n'a pas été supprimé."
+export const RESA_PLACE_HAS_BOOKED = 'Cette place est déjà réservé'
