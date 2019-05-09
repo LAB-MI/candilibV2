@@ -1,4 +1,10 @@
-import { findAllPlaces, findPlaceById, deletePlace } from '../../models/place'
+import {
+  findAllPlaces,
+  findPlaceById,
+  deletePlace,
+  findPlacesByCentreAndDate,
+} from '../../models/place'
+import { dateTimeToFormatFr } from '../../util/date.util.js'
 import { createPlaceForInspector, importPlacesCsv } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
 import { dateTimeToFormatFr } from '../../util/date.util'
@@ -40,13 +46,18 @@ export const importPlaces = async (req, res) => {
 
 export const getPlaces = async (req, res) => {
   let places
-  const { departement, beginDate, endDate } = req.query
+  const { departement, beginDate, endDate, centre, date } = req.query
+  console.log({ departement, beginDate, endDate, centre, date })
 
   if (!departement) {
     places = await findAllPlaces()
     res.json(places)
   } else {
-    places = await findCentresWithPlaces(departement, beginDate, endDate)
+    if (centre && date) {
+      places = await findPlacesByCentreAndDate(centre, date)
+    } else {
+      places = await findCentresWithPlaces(departement, beginDate, endDate)
+    }
     res.json(places)
   }
 }
