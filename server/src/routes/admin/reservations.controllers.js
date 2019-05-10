@@ -3,6 +3,7 @@ import { findPlaceByIdAndPopulate } from '../../models/place'
 import {
   removeReservationPlaceByAdmin,
   moveCandidatInPlaces,
+  validUpdateResaInspector,
 } from './places.business'
 import { RESA_NO_BOOKED } from './message.constants'
 import { findUserById } from '../../models/user'
@@ -80,14 +81,18 @@ export const removeReservationByAdmin = async (req, res) => {
   }
 }
 
-export const updateReservationByAdmin = async (req, res) => {
-  const { resa, place } = req.body
+export const updateReservationByAdmin = async (req, res, next) => {
+  const { resa, inspecteur } = req.body
+
+  if (!resa || !inspecteur) {
+    return next()
+  }
 
   const loggerContent = {
     section: 'admin-update-resa',
     admin: req.userId,
     resa,
-    place,
+    inspecteur,
   }
 
   appLogger.info({
@@ -97,7 +102,8 @@ export const updateReservationByAdmin = async (req, res) => {
   })
 
   try {
-    const newResa = await moveCandidatInPlaces(resa, place)
+    const result = await validUpdateResaInspector(resa, inspecteur)
+    const newResa = await moveCandidatInPlaces(result.resa, result.place)
     return res.send(newResa)
   } catch (error) {
     appLogger.error({

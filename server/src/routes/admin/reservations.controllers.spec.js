@@ -1,25 +1,14 @@
 import request from 'supertest'
-import express from 'express'
-import bodyParser from 'body-parser'
-import { DateTime } from 'luxon'
 
 import { connect, disconnect } from '../../mongo-connection'
 
 import app, { apiPrefix } from '../../app'
 import { createPlaces } from '../../models/__tests__/places'
-import {
-  RESA_NO_BOOKED,
-  RESA_BOOKED_CANCEL,
-  RESA_PLACE_HAS_BOOKED,
-} from './message.constants'
+import { RESA_NO_BOOKED, RESA_BOOKED_CANCEL } from './message.constants'
 import { createCentres } from '../../models/__tests__/centres'
 import { createCandidats } from '../../models/__tests__/candidats'
 import { makeResas } from '../../models/__tests__/reservations'
 import { createUser } from '../../models/user'
-import { updateReservationByAdmin } from './reservations.controller'
-import placeModel from '../../models/place/place.model'
-
-import { createPlace } from '../../models/place'
 
 const deleteData = elt => {
   return elt.remove()
@@ -74,108 +63,6 @@ xdescribe('reservation by admin', () => {
       expect(body).toBeDefined()
       expect(body).toHaveProperty('success', true)
       expect(body).toHaveProperty('message', RESA_BOOKED_CANCEL)
-    })
-  })
-
-  describe('update reservation by admin', () => {
-    let placesCreated
-    let candidatsCreated
-    let centresCreated
-
-    const app = express()
-    app.use(bodyParser.json({ limit: '20mb' }))
-    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
-    app.put('/reservation', updateReservationByAdmin)
-
-    beforeAll(async () => {
-      await connect()
-      centresCreated = await createCentres()
-      candidatsCreated = await createCandidats()
-      placesCreated = await createPlaces()
-
-      await makeResas()
-    })
-    afterAll(async () => {
-      await Promise.all(placesCreated.map(deleteData))
-      await Promise.all(centresCreated.map(deleteData))
-      await Promise.all(candidatsCreated.map(deleteData))
-      await disconnect()
-    })
-
-    it('should 200 when modify inspecteur from a reservation', async () => {
-      const {
-        _id: resa,
-        candidat,
-        date,
-        centre,
-        // inspecteur,
-      } = await placeModel.findOne({
-        candidat: { $exists: true },
-      })
-
-      const inspecteur = 'inspecteurTest'
-      const placeNotBooked = await createPlace({
-        date,
-        centre,
-        inspecteur,
-      })
-
-      const departement = '93'
-      const { body } = await request(app)
-        .put('/reservation')
-        .send({
-          departement,
-          resa,
-          place: placeNotBooked._id,
-        })
-        .set('Accept', 'application/json')
-        .expect(200)
-
-      expect(body).toBeDefined()
-      expect(body).toHaveProperty('inspecteur', inspecteur)
-      expect(body.candidat.toString()).toEqual(candidat.toString())
-      expect(body.centre.toString()).toEqual(centre.toString())
-      expect(body).toHaveProperty(
-        'date',
-        DateTime.fromJSDate(date)
-          .setZone('utc')
-          .toISO()
-      )
-    })
-
-    it('should 400 when modify inspecteur from a reservation with anthor reservation', async () => {
-      const {
-        _id: resa,
-        date,
-        centre,
-        // inspecteur,
-      } = await placeModel.findOne({
-        candidat: { $exists: true },
-      })
-
-      const inspecteur = 'inspecteurTest'
-      const candidat = candidatsCreated[2]._id
-      const placeNotBooked = await createPlace({
-        date,
-        centre,
-        inspecteur,
-        candidat,
-      })
-
-      const departement = '93'
-      const { body } = await request(app)
-        .put('/reservation')
-        .send({
-          departement,
-          resa,
-          place: placeNotBooked._id,
-        })
-        .set('Accept', 'application/json')
-        .expect(400)
-
-      expect(body).toBeDefined()
-      expect(body).toHaveProperty('success', false)
-      expect(body).toHaveProperty('message', RESA_PLACE_HAS_BOOKED)
     })
   })
 })

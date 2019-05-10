@@ -1,8 +1,8 @@
 import * as csvParser from 'fast-csv'
 import { DateTime } from 'luxon'
 
-import { addPlaceToArchive, setCandidatToVIP, addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
-import { findCentreByNameAndDepartement, findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
+import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
+import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import {
   bookPlaceById,
   createPlace,
@@ -11,6 +11,7 @@ import {
   findPlaceById,
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
+  findPlaceWithSameWindow,
 } from '../../models/place'
 
 import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
@@ -290,43 +291,40 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
   }
 }
 
-export const moveCandidatInPlaces = async (resaId, placeId) => {
-  const loggerContent = {
-    section: 'admin-move-candidat-in-places',
-    resaId,
-    placeId,
-  }
-
+export const validUpdateResaInspector = async (resaId, inspecteur) => {
   const resa = await findPlaceById(resaId)
   if (!resa) {
     throw new ErrorWithStatus(404, 'Réservation non trouvée')
   }
-  const place = await findPlaceById(placeId)
-  if (!place) {
-    throw new ErrorWithStatus(404, 'Réservation non trouvée')
-  }
-  const { candidat } = resa
+  const { centre, date, candidat } = resa
 
   if (!candidat) {
     throw new ErrorWithStatus(400, "Cette réservation n'a pas de candidat")
+  }
+
+  const place = await findPlaceWithSameWindow({
+    inspecteur,
+    centre,
+    date,
+  })
+
+  if (!place) {
+    throw new ErrorWithStatus(404, 'Réservation non trouvée')
   }
   if (place.candidat) {
     throw new ErrorWithStatus(400, RESA_PLACE_HAS_BOOKED)
   }
 
-  if (resa.centre.toString() !== place.centre.toString()) {
-    throw new ErrorWithStatus(
-      400,
-      'le nouveau centre est différent à celle de la réservation'
-    )
-  }
-  if (
-    DateTime.fromJSDate(resa.date).diff(DateTime.fromJSDate(place.date)) > 0
-  ) {
-    throw new ErrorWithStatus(
-      400,
-      'La nouvelle date et heure sont différents à celle de la réservation'
-    )
+  return { resa, place }
+}
+
+export const moveCandidatInPlaces = async (resa, place) => {
+  const placeId = place._id
+  const { _id: resaId, candidat } = resa
+  const loggerContent = {
+    section: 'admin-move-candidat-in-places',
+    resaId,
+    placeId,
   }
 
   appLogger.info({

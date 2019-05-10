@@ -5,10 +5,17 @@ import {
   findPlacesByCentreAndDate,
 } from '../../models/place'
 import { dateTimeToFormatFr } from '../../util/date.util.js'
-import { createPlaceForInspector, importPlacesCsv } from './places.business'
+import {
+  createPlaceForInspector,
+  importPlacesCsv,
+  validUpdateResaInspector,
+  moveCandidatInPlaces,
+} from './places.business'
+
 import { findCentresWithPlaces } from '../common/centre.business'
-import { dateTimeToFormatFr } from '../../util/date.util'
+
 import { appLogger } from '../../util'
+import { ErrorWithStatus } from '../../util/error.status'
 
 export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
@@ -47,7 +54,6 @@ export const importPlaces = async (req, res) => {
 export const getPlaces = async (req, res) => {
   let places
   const { departement, beginDate, endDate, centre, date } = req.query
-  console.log({ departement, beginDate, endDate, centre, date })
 
   if (!departement) {
     places = await findAllPlaces()
@@ -113,4 +119,49 @@ export const deletePlaceByAdmin = async (req, res) => {
       })
     }
   }
+}
+
+export const updatePlaces = async (req, res) => {
+  const { resa, inspecteur } = req.body
+
+  const loggerContent = {
+    section: 'admin-update-resa',
+    admin: req.userId,
+    resa,
+    inspecteur,
+  }
+
+  try {
+    if (resa && inspecteur) {
+      appLogger.info({
+        ...loggerContent,
+        action: 'UPDATE_RESA',
+        message: `Changer l'inspecteur de la reservaton candidat`,
+      })
+
+      const result = await validUpdateResaInspector(resa, inspecteur)
+      const newResa = await moveCandidatInPlaces(result.resa, result.place)
+      return res.send(newResa)
+    }
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      action: 'ERROR',
+      message: error.message,
+    })
+    if (error instanceof ErrorWithStatus) {
+      return res.status(error.status).send({
+        success: false,
+        message: error.message,
+        error,
+      })
+    }
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+      error,
+    })
+  }
+
+  res.status(422).send({ success: false })
 }

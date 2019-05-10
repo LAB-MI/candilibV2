@@ -193,3 +193,9 @@ export const bookPlaceById = async (placeId, candidat, fields, populate) => {
   const place = await query.exec()
   return place
 }
+
+export const findPlaceWithSameWindow = async creneau => {
+  const { date, centre, inspecteur } = creneau
+  const place = await Place.findOne({ date, centre, inspecteur })
+  return place
+}
