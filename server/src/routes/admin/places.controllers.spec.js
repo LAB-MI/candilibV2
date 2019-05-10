@@ -47,6 +47,7 @@ describe('Test places controller', () => {
   app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
   app.get('/places', getPlaces)
   app.put('/reservation', updatePlaces)
+
   beforeAll(async () => {
     await connect()
     candidatsCreated = await createCandidats()

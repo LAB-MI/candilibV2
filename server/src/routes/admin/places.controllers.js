@@ -11,7 +11,6 @@ import {
   validUpdateResaInspector,
   moveCandidatInPlaces,
 } from './places.business'
-
 import { findCentresWithPlaces } from '../common/centre.business'
 
 import { appLogger } from '../../util'
