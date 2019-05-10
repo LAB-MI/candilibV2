@@ -1,103 +1,77 @@
 <template>
   <div>
-    <autocomplete-candidats
+    <autocomplete-profile
       class="search-input"
       @selection="displayCandidatInfo"
+      label="Candidats"
+      hint="Chercher un candidat par son nom / NEPH / email"
+      placeholder="Dupont"
+      :itemsProfile="candidats"
+      itemText="nomNaissance"
+      itemValue="_id"
+      :fetchAutocompleteProfile="fetchAutocompleteProfile"
     />
 
-    <info-candidat
-      v-if="candidat"
-      :candidat="candidat"
+    <profile-info
+      title= 'Informations candidats'
+      v-if="profileInfo"
+      :profileInfo="profileInfo"
     />
   </div>
 </template>
 
 <script>
-import AutocompleteCandidats from './AutocompleteCandidats'
-import InfoCandidat from './InfoCandidat'
+import { FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST } from '@/store'
+import AutocompleteProfile from './AutocompleteProfile'
+import ProfileInfo from './ProfileInfo'
+import { getFrenchDateFromIso } from '../../../util/dateTimeWithSetLocale.js'
+import { transformToProfileInfo } from '@/util'
 
-export const dict = {
-  isValidatedByAurige: 'Status Aurige',
-  isValidatedEmail: 'Email validé',
-  adresse: 'Adresse',
-  codeNeph: 'NEPH',
-  email: 'Email',
-  nomNaissance: 'Nom',
-  prenom: 'Prénom',
-  portable: 'Portable',
-  presignedUpAt: 'Inscrit le',
-}
+const transformBoolean = value => value ? 'Oui' : 'Non'
+const isReussitePratiqueExist = value => value || ''
+const convertToLegibleDate = date => date ? getFrenchDateFromIso(date) : 'Non renseignée'
+
+const candidatProfileInfoDictionary = [
+  [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
+  [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
+  [
+    ['presignedUpAt', 'Inscrit le', convertToLegibleDate],
+    ['isValidatedbyAurige', 'Status Aurige', transformBoolean],
+    ['isValidatedbyEmail', 'Email validé', transformBoolean],
+    ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
+    ['dateReussiteETG', 'ETG', convertToLegibleDate],
+    [
+      'dateDernierEchecPratique',
+      'Dernière échec pratique',
+      convertToLegibleDate,
+    ],
+    ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
+  ],
+]
 
 export default {
   components: {
-    AutocompleteCandidats,
-    InfoCandidat,
+    AutocompleteProfile,
+    ProfileInfo,
   },
 
   data () {
     return {
-      title: 'Informations Candidat',
-      candidat: undefined,
+      profileInfo: undefined,
+      fetchAutocompleteProfile: FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
+
     }
+  },
+  computed: {
+    candidats () {
+      return this.$store.state.adminSearch.candidats.list
+    },
   },
 
   methods: {
     displayCandidatInfo (candidat) {
-      this.candidat = Object.entries(candidat)
-        .reduce((acc, [key, value]) => {
-          if (key === '_id') {
-            return acc
-          }
-
-          return [
-            ...acc,
-            [(dict[key] || key), value],
-          ]
-        }, [])
+      this.profileInfo = transformToProfileInfo(candidat, candidatProfileInfoDictionary)
     },
-    transformBoolean (value) {
-      if (value) {
-        return 'Oui'
-      }
-      return 'Non'
-    },
-  },
-
-  mounted () {
-    console.log(this.profileInfo)
   },
 }
 </script>
-
-<style lang="stylus" scoped>
-.title-style {
-  margin: auto;
-  text-align: center;
-  font-family: 'Raleway', sans-serif;
-  font-size: 1 rem;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.candidat-info {
-  display: flex;
-  flex-direction: column;
-  margin: 15 px;
-  padding: 15 px;
-  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
-  box-shadow: 0 0 2px #555;
-}
-
-.container {
-  display: flex;
-  width: 100%;
-}
-
-.label {
-  flex-basis: 7 rem;
-}
-
-.value {
-  flex-grow: 1;
-}
-</style>

@@ -1,93 +1,64 @@
 <template>
   <div>
-    <autocomplete-inspecteurs
+    <autocomplete-profile
       class="search-input"
       @selection="displayInspecteurInfo"
+      label="Inspecteurs"
+      hint="Chercher un inspecteur par son nom / matricule / email"
+      placeholder="Dupond"
+      :itemsProfile="inspecteurs"
+      itemText="nom"
+      itemValue="_id"
+      :fetchAutocompleteProfile="fetchAutocompleteProfile"
     />
-    <info-inspecteur
-      v-if="inspecteur"
-      :inspecteur="inspecteur"
+
+    <profile-info
+      title= 'informations inspecteur'
+      v-if="profileInfo"
+      :profileInfo="profileInfo"
     />
   </div>
 </template>
 
 <script>
-import AutocompleteInspecteurs from './AutocompleteInspecteurs'
-import InfoInspecteur from './InfoInspecteur'
+import { FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST } from '@/store'
+import AutocompleteProfile from './AutocompleteProfile'
+import ProfileInfo from './ProfileInfo'
+import { transformToProfileInfo } from '@/util'
 
-export const dict = {
-  adresse: 'Adresse',
-  matricule: 'Matricule',
-  email: 'Email',
-  nom: 'Nom',
-  prenom: 'Prénom',
-  portable: 'Portable',
-  departement: 'Département',
-
-}
+const inspecteurProfileInfoDictionary = [
+  [
+    ['matricule', 'Matricule'],
+    ['nom', 'Nom'],
+    ['prenom', 'Prénom'],
+    ['email', 'Email'],
+    ['departement', 'Département'],
+  ],
+]
 
 export default {
   components: {
-    AutocompleteInspecteurs,
-    InfoInspecteur,
+    AutocompleteProfile,
+    ProfileInfo,
   },
 
   data () {
     return {
-      title: 'Informations Inspecteur',
-      inspecteur: undefined,
+      profileInfo: undefined,
+      fetchAutocompleteProfile: FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST,
     }
+  },
+
+  computed: {
+    inspecteurs () {
+      return this.$store.state.adminSearch.inspecteurs.list
+    },
   },
 
   methods: {
     displayInspecteurInfo (inspecteur) {
-      this.inspecteur = Object.entries(inspecteur)
-        .reduce((acc, [key, value]) => {
-          if (key === '_id') {
-            return acc
-          }
-
-          return [
-            ...acc,
-            [(dict[key] || key), value],
-          ]
-        }, [])
-      console.log('TCL: displayInspecteurInfo -> this.inspecteur', this.inspecteur)
+      this.profileInfo = transformToProfileInfo(inspecteur, inspecteurProfileInfoDictionary)
     },
   },
 }
 </script>
-
-<style lang="stylus" scoped>
-
-.title-style {
-  margin: auto;
-  text-align: center;
-  font-family: "Raleway", sans-serif;
-  font-size: 1 rem;
-  text-transform: uppercase;
-  font-weight: 600;
-}
-
-.info-style {
-  display: flex;
-  flex-direction: column;
-  margin: 15 px;
-  padding: 15 px;
-  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
-  box-shadow: 0 0 2px #555;
-}
-
-.container-style {
-  display: flex;
-  width: 100%;
-}
-
-.label {
-  flex-basis: 7rem;
-}
-
-.value {
-  flex-grow: 1;
-}
-</style>
