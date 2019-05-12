@@ -29,8 +29,9 @@ router.get('/inspecteurs', getInspecteurs)
 router.post('/places', verifyAdminDepartement, importPlaces)
 router.put('/places', verifyAdminDepartement, updatePlaces)
 router.get('/places', verifyAdminDepartement, getPlaces)
+router.post('/places', verifyAdminDepartement, importPlaces)
+router.patch('/places', verifyAdminDepartement, updatePlaces)
 router.delete('/reservations/:id', removeReservationByAdmin)
-router.put('/places', verifyAdminDepartement, updatePlaces)
 
 router
   .route('/whitelisted')

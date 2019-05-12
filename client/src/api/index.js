@@ -37,6 +37,9 @@ const apiClient = {
   put: (url, options) => (
     jsonClient(url, { ...options, method: 'PUT' })
   ),
+  patch: (url, options) => (
+    jsonClient(url, { ...options, method: 'PATCH' })
+  ),
   delete: (url, options) => (
     jsonClient(url, { ...options, method: 'DELETE' })
   ),
@@ -312,6 +315,7 @@ export default {
         })
       return json
     },
+
     async updateInspeteurForResa (departement, resa, inspecteur) {
       const json = await apiClient
         .put(`${apiPaths.admin.places}`, {
@@ -321,6 +325,13 @@ export default {
       return json
     },
 
+    async affectCandidatToPlace (placeId, candidatId) {
+      const json = await apiClient.patch(apiPaths.admin.places, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ placeId, candidatId }),
+      })
+      return json
+    },
   },
 
   util: {
