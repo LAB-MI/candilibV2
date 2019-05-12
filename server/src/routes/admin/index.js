@@ -22,6 +22,7 @@ router.post('/candidats', verifyAdminDepartement, importCandidats)
 router.get('/inspecteurs', getInspecteurs)
 router.post('/places', verifyAdminDepartement, importPlaces)
 router.get('/places', verifyAdminDepartement, getPlaces)
+router.delete('/reservations/:id', removeReservationByAdmin)
 
 router
   .route('/whitelisted')

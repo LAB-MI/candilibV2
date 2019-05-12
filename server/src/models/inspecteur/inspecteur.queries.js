@@ -26,7 +26,9 @@ export const findInspecteurByMatricule = async matricule =>
 export const findInspecteurByDepartement = async departement =>
   Inspecteur.find({ departement })
 
-export const findInspecteursMatching = async search => {
+export const findInspecteursMatching = async $search => {
+  const search = new RegExp($search, 'i')
+
   const inspecteurs = await Inspecteur.find({
     $or: [
       { nom: search },

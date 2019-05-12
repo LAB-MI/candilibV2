@@ -1,16 +1,6 @@
 <template>
   <div>
-    <div class="stats-card">
-      <span class="stats-card-text-free-places">
-        Places disponibles
-      </span>
-      <span class="slash-wrapper">
-        /
-      </span>
-      Total places
-    </div>
-    <monitors />
-    <v-layout wrap  class="u-flex--column-on-tablet">
+    <v-layout class="u-flex  u-flex--center">
       <div
         class="div-gestion"
         v-for="item in buttonGestion"
@@ -26,18 +16,25 @@
         </v-btn>
       </div>
     </v-layout>
+    <monitors />
     <div class="u-flex  u-flex--center">
+      <search-candidat class="search-input"/>
+      <search-inspecteur class="search-input" />
     </div>
   </div>
 </template>
 
 <script>
+import SearchCandidat from './SearchCandidat'
+import SearchInspecteur from './SearchInspecteur'
 import Monitors from './Monitors.vue'
 import { FETCH_ADMIN_INFO_REQUEST } from '@/store'
 
 export default {
   components: {
     Monitors,
+    SearchCandidat,
+    SearchInspecteur,
   },
 
   data () {
@@ -70,14 +67,5 @@ export default {
 <style lang="postcss" scoped>
 .search-input {
   margin: 0 1em;
-}
-
-.stats-card {
-  font-size: 2em;
-}
-
-.stats-card-text-free-places {
-  height: 100%;
-  color: green;
 }
 </style>

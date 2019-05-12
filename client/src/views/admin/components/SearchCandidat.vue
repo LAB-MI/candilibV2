@@ -12,19 +12,11 @@
       :fetch-autocomplete-action="fetchAutocompleteAction"
     />
 
-    <div v-if="candidat" class="info-style">
-      <div class="title-style">
-        <p>{{ title }}</p>
-      </div>
-      <div
-        v-for="([key, value]) in candidat"
-        :key="key"
-        class="container-style"
-      >
-        <div class="label"><strong>{{ key }}&nbsp;:</strong></div>
-        <div class="value">{{ value }}</div>
-      </div>
-    </div>
+    <profile-info
+      title= 'Informations candidats'
+      v-if="profileInfo"
+      :profileInfo="profileInfo"
+    />
   </div>
 </template>
 

@@ -1,12 +1,20 @@
 <template>
   <div>
     <refresh-button
-      title="Refresh"
-      loadingMessage="Chargement"
-    >
-      Refresh
-    </refresh-button>
-
+        title="Refresh"
+        loadingMessage="Chargement"
+      >
+        Refresh
+      </refresh-button>
+    <div class="stats-card">
+      <span class="stats-card-text-free-places">
+        Places disponibles
+      </span>
+      <span class="slash-wrapper">
+        /
+      </span>
+      Total places
+    </div>
     <v-container fluid>
       <v-layout row wrap>
         <v-flex
@@ -55,5 +63,14 @@ export default {
 <style lang="postcss">
 .monitor-wrapper {
   padding: 2em;
+}
+
+.stats-card {
+  font-size: 2em;
+}
+
+.stats-card-text-free-places {
+  height: 100%;
+  color: green;
 }
 </style>
