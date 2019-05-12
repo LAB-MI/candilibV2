@@ -9,6 +9,7 @@ import {
   importPlacesCsv,
   validUpdateResaInspector,
   moveCandidatInPlaces,
+  affectCandidatInPlace,
 } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
 
@@ -124,17 +125,17 @@ export const deletePlaceByAdmin = async (req, res) => {
 }
 
 export const updatePlaces = async (req, res) => {
-  const { resa, inspecteur } = req.body
-
-  const loggerContent = {
-    section: 'admin-update-resa',
-    admin: req.userId,
-    resa,
-    inspecteur,
-  }
+  const { resa, inspecteur, placeId, candidatId } = req.body
 
   try {
     if (resa && inspecteur) {
+      const loggerContent = {
+        section: 'admin-update-resa',
+        admin: req.userId,
+        resa,
+        inspecteur,
+      }
+
       appLogger.info({
         ...loggerContent,
         action: 'UPDATE_RESA',
@@ -148,6 +149,24 @@ export const updatePlaces = async (req, res) => {
         message: `La modification est confirmée.`,
         place: newResa,
       })
+    }
+
+    if (placeId && candidatId) {
+      const loggerContent = {
+        section: 'admin-update-place',
+        admin: req.userId,
+        placeId,
+        candidatId,
+      }
+
+      appLogger.info({
+        ...loggerContent,
+        action: 'UPDATE_PLACE',
+        message: `Affecter un candidat a une place`,
+      })
+
+      const newResa = await affectCandidatInPlace(candidatId, placeId)
+      return res.send(newResa)
     }
   } catch (error) {
     appLogger.error({

@@ -97,7 +97,9 @@
       :closeDialog="closeDialog"
       textButtonCancel="Retour"
       :submitDialog="affectCandidatToCreneau"
-    />
+    >
+    <input type="text">
+    </shedule-inspector-dialog-sub-content>
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"

@@ -4,10 +4,10 @@ import { getCandidats, importCandidats } from './candidats.controllers'
 import { getMe } from './admin.controllers'
 import { getInspecteurs } from './inspecteurs.controllers'
 import {
-  getPlaces,
-  importPlaces,
   createPlaceByAdmin,
   deletePlaceByAdmin,
+  getPlaces,
+  importPlaces,
   updatePlaces,
 } from './places.controllers'
 import { removeReservationByAdmin } from './reservations.controllers'
@@ -30,6 +30,7 @@ router.post('/places', verifyAdminDepartement, importPlaces)
 router.put('/places', verifyAdminDepartement, updatePlaces)
 router.get('/places', verifyAdminDepartement, getPlaces)
 router.delete('/reservations/:id', removeReservationByAdmin)
+router.put('/places', verifyAdminDepartement, updatePlaces)
 
 router
   .route('/whitelisted')

@@ -348,3 +348,23 @@ export const moveCandidatInPlaces = async (resa, place) => {
 
   return newResa
 }
+
+export const affectCandidatInPlace = async (candidatId, placeId) => {
+  const loggerContent = {
+    section: 'admin-affect-candidat-in-places',
+    candidatId,
+    placeId,
+  }
+
+  appLogger.info({
+    ...loggerContent,
+    action: 'BOOK_PLACE',
+  })
+
+  const newResa = await bookPlaceById(placeId, candidat)
+  if (!newResa) {
+    throw new ErrorWithStatus(400, 'Cette place est déja réservé')
+  }
+
+  return newResa
+}
