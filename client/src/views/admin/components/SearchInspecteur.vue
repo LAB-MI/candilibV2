@@ -1,15 +1,15 @@
 <template>
   <div>
-    <autocomplete-profile
+    <candilib-autocomplete
       class="search-input"
       @selection="displayInspecteurInfo"
       label="Inspecteurs"
       hint="Chercher un inspecteur par son nom / matricule / email"
       placeholder="Dupond"
-      :itemsProfile="inspecteurs"
-      itemText="nom"
-      itemValue="_id"
-      :fetchAutocompleteProfile="fetchAutocompleteProfile"
+      :items="inspecteurs"
+      item-text="nom"
+      item-value="_id"
+      :fetch-autocomplete-action="fetchAutocompleteAction"
     />
 
     <profile-info
@@ -22,7 +22,7 @@
 
 <script>
 import { FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST } from '@/store'
-import AutocompleteProfile from './AutocompleteProfile'
+import CandilibAutocomplete from './CandilibAutocomplete'
 import ProfileInfo from './ProfileInfo'
 import { transformToProfileInfo } from '@/util'
 
@@ -38,14 +38,14 @@ const inspecteurProfileInfoDictionary = [
 
 export default {
   components: {
-    AutocompleteProfile,
+    CandilibAutocomplete,
     ProfileInfo,
   },
 
   data () {
     return {
       profileInfo: undefined,
-      fetchAutocompleteProfile: FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST,
+      fetchAutocompleteAction: FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST,
     }
   },
 

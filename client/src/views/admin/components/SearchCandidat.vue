@@ -1,15 +1,15 @@
 <template>
   <div>
-    <autocomplete-profile
+    <candilib-autocomplete
       class="search-input"
       @selection="displayCandidatInfo"
       label="Candidats"
       hint="Chercher un candidat par son nom / NEPH / email"
       placeholder="Dupont"
-      :itemsProfile="candidats"
-      itemText="nomNaissance"
-      itemValue="_id"
-      :fetchAutocompleteProfile="fetchAutocompleteProfile"
+      :items="candidats"
+      item-text="nomNaissance"
+      item-value="_id"
+      :fetch-autocomplete-action="fetchAutocompleteAction"
     />
 
     <profile-info
@@ -22,7 +22,7 @@
 
 <script>
 import { FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST } from '@/store'
-import AutocompleteProfile from './AutocompleteProfile'
+import CandilibAutocomplete from './CandilibAutocomplete'
 import ProfileInfo from './ProfileInfo'
 import { getFrenchDateFromIso } from '../../../util/dateTimeWithSetLocale.js'
 import { transformToProfileInfo } from '@/util'
@@ -51,14 +51,14 @@ const candidatProfileInfoDictionary = [
 
 export default {
   components: {
-    AutocompleteProfile,
+    CandilibAutocomplete,
     ProfileInfo,
   },
 
   data () {
     return {
       profileInfo: undefined,
-      fetchAutocompleteProfile: FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
+      fetchAutocompleteAction: FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
 
     }
   },

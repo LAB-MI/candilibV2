@@ -5,7 +5,6 @@ import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
 import { appLogger } from '../../util'
-import { inspecteurFields } from '../inspecteur/inspecteur.model'
 
 export const createCandidat = async ({
   adresse,

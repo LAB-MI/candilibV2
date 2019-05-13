@@ -1,13 +1,14 @@
 <template>
 <div>
   <v-autocomplete
-    v-model="selectedProfile"
+    v-model="selected"
     :label="label"
     :hint="hint"
+    no-filter
     append-outer-icon="search"
     :placeholder="placeholder"
-    :items="itemsProfile"
-    :search-input.sync="autocompleteProfile"
+    :items="items"
+    :search-input.sync="searchInput"
     return-object
     :item-text="itemText"
     :item-value="itemValue"
@@ -20,8 +21,8 @@
 export default {
   data () {
     return {
-      autocompleteProfile: undefined,
-      selectedProfile: undefined,
+      searchInput: undefined,
+      selected: undefined,
     }
   },
 
@@ -29,19 +30,19 @@ export default {
     label: String,
     hint: String,
     placeholder: String,
-    itemsProfile: Array,
+    items: Array,
     itemText: String,
     itemValue: String,
-    fetchAutocompleteProfile: String,
+    fetchAutocompleteAction: String,
   },
 
   watch: {
-    autocompleteProfile (searchQuery) {
-      this.$store.dispatch(this.fetchAutocompleteProfile, searchQuery)
+    searchInput (searchQuery) {
+      this.$store.dispatch(this.fetchAutocompleteAction, searchQuery)
     },
 
-    selectedProfile (selectedProfile) {
-      this.$emit('selection', selectedProfile)
+    selected (selected) {
+      this.$emit('selection', selected)
     },
   },
 }
