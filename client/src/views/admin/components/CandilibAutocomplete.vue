@@ -40,7 +40,7 @@ export default {
     searchInput (searchQuery) {
       clearTimeout(this.timeoutId)
       this.timeoutId = setTimeout(() => {
-        if (searchQuery.length > 2) {
+        if (searchQuery && searchQuery.length > 2) {
           this.$store.dispatch(this.fetchAutocompleteAction, searchQuery)
         }
       }, 300)

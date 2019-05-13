@@ -5,7 +5,7 @@
         v-for="departement in admin.departements.list"
         :key="departement"
         :value="departement"
-        :active="activeDepartement === departement"
+        :active="Number(activeDepartement === departement)"
         @click="activeDepartement = departement"
       />
       </div>

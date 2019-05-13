@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/vue'
 import Vuex from 'vuex'
 import delay from 'delay'
 
-import AutocompleteInspecteurs from './AutocompleteInspecteurs'
+import CandilibAutocomplete from './CandilibAutocomplete'
 const inspecteursList = [
   {
     _id: 1,
@@ -20,16 +20,22 @@ const inspecteursList = [
     nom: 'Paula',
   },
 ]
-storiesOf('Admin/AutocompleteInspecteurs', module)
-  .add('Basic', () => ({
-    components: { AutocompleteInspecteurs },
-    template: `<autocomplete-inspecteurs
-      @selection="goToInspecteur"
-      label="Recherche Inspecteurs"
 
+storiesOf('Admin/CandilibAutocomplete', module)
+  .add('Basic', () => ({
+    components: { CandilibAutocomplete },
+    template: `<candilib-autocomplete
+      @selection="goToSearch"
+      label="Autocomplete"
+      hint="tapez au moins 2 caracteres"
+      item-text="nom"
+      item-value="_id"
+      :items="$store.state.adminSearch.inspecteurs.list"
+      fetch-autocomplete-action="FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST"
     />`,
+
     methods: {
-      goToInspecteur (inspecteur) {
+      goToSearch (inspecteur) {
         console.log('inspecteur selectionné', inspecteur)
       },
     },
