@@ -17,12 +17,12 @@
 </template>
 
 <script>
-
 export default {
   data () {
     return {
       searchInput: undefined,
       selected: undefined,
+      timeoutId: undefined,
     }
   },
 
@@ -38,9 +38,13 @@ export default {
 
   watch: {
     searchInput (searchQuery) {
-      this.$store.dispatch(this.fetchAutocompleteAction, searchQuery)
+      clearTimeout(this.timeoutId)
+      this.timeoutId = setTimeout(() => {
+        if (searchQuery.length > 2) {
+          this.$store.dispatch(this.fetchAutocompleteAction, searchQuery)
+        }
+      }, 300)
     },
-
     selected (selected) {
       this.$emit('selection', selected)
     },
