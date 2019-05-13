@@ -14,8 +14,7 @@ import {
 import { findCentresWithPlaces } from '../common/centre.business'
 
 import { appLogger } from '../../util'
-import { ErrorWithStatus } from '../../util/error.status'
-import { dateTimeToFormatFr } from '../../util/date.util'
+import { appLogger, ErrorWithStatus, getDateTimeFrFromJSDate, dateTimeToFormatFr } from '../../util'
 
 export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
@@ -127,6 +126,11 @@ export const deletePlaceByAdmin = async (req, res) => {
 export const updatePlaces = async (req, res) => {
   const { resa, inspecteur, placeId, candidatId } = req.body
 
+  const loggerContent = {
+    section: 'admin-update-place',
+    admin: req.userId,
+  }
+
   try {
     if (resa && inspecteur) {
       const loggerContent = {
@@ -152,19 +156,21 @@ export const updatePlaces = async (req, res) => {
     }
 
     if (placeId && candidatId) {
-      const loggerContent = {
-        section: 'admin-update-place',
-        admin: req.userId,
-        placeId,
-        candidatId,
-      }
-
       appLogger.info({
         ...loggerContent,
+        placeId,
+        candidatId,
         action: 'UPDATE_PLACE',
         message: `Affecter un candidat a une place`,
       })
-
+      const candidat = await findCandidatById(candidatId)
+      const place = await findPlaceById(placeId)
+      if (!candidat || !place) {
+        throw new ErrorWithStatus(422, 'Les paramètre renseigner son incorrect')
+      }
+      if (getDateTimeFrFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) < getDateTimeFrFromJSDate(place.date)) {
+        throw new ErrorWithStatus(400, "Date ETG ne sera plus valide pour cette place")
+      }
       const newResa = await affectCandidatInPlace(candidatId, placeId)
       return res.send(newResa)
     }
@@ -188,5 +194,7 @@ export const updatePlaces = async (req, res) => {
     })
   }
 
-  res.status(422).send({ success: false })
+  res
+    .status(422)
+    .send({ success: false, message: 'Les paramètre renseigner son incorrect' })
 }

@@ -1,5 +1,6 @@
-import { createCandidat } from '../candidat'
+import { createCandidat, updateCandidatById } from '../candidat'
 import candidatModel from '../candidat/candidat.model'
+import { DateTime } from 'luxon'
 
 export const candidats = [
   {
@@ -28,8 +29,43 @@ export const candidats = [
   },
 ]
 
+export const candidats2 = [
+  {
+    codeNeph: '123456789003',
+    nomNaissance: 'nom à tester 4',
+    prenom: 'prénom à tester n°4',
+    email: 'test4.test@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 75011 Paris',
+    dateReussiteETG: DateTime.local().plus({ year: -1 }),
+    isValidatedByAurige: true,
+  },
+  {
+    codeNeph: '123456789004',
+    nomNaissance: 'nom à tester 5',
+    prenom: 'prénom à tester n°5',
+    email: 'test5.test@test.com',
+    portable: '0612355678',
+    adresse: '10 Rue Oberkampf 75011 Paris',
+    dateReussiteETG: DateTime.local().plus({ year: -5, day: -1 }),
+  },
+]
+
 export const createCandidats = async () => {
   return Promise.all(candidats.map(candidat => createCandidat(candidat)))
+}
+
+export const createCandidatsAndUpdate = async () => {
+  const newCandidats = await Promise.all(
+    candidats2.map(candidat => createCandidat(candidat))
+  )
+  return Promise.all(
+    newCandidats.map(candidat =>
+      updateCandidatById(candidat._id, {
+        $set: { dateReussiteETG: DateTime.local().plus({ year: -1 }) },
+      })
+    )
+  )
 }
 
 export const deleteCandidats = async () => {

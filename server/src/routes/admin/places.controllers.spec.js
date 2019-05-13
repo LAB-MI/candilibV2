@@ -5,7 +5,10 @@ import { DateTime } from 'luxon'
 
 import { connect, disconnect } from '../../mongo-connection'
 
+import { apiPrefix } from '../../app'
+
 import {
+  createCandidatsAndUpdate,
   createCandidats,
   createPlaces,
   removePlaces,
@@ -161,5 +164,66 @@ describe('Test places controller', () => {
     expect(body).toBeDefined()
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', RESA_PLACE_HAS_BOOKED)
+  })
+})
+
+
+describe('Test places controller', () => {
+  describe('update place by admin', () => {
+    let placesCreated
+    let centresCreated
+    let candidatsUpdated
+
+    const app = express()
+    app.use(bodyParser.json({ limit: '20mb' }))
+    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+    app.patch(`${apiPrefix}/admin/places`, updatePlaces)
+
+    beforeAll(async () => {
+      await connect()
+      centresCreated = await createCentres()
+      candidatsUpdated = await createCandidatsAndUpdate()
+      placesCreated = await createPlaces()
+    })
+    afterAll(async () => {
+      await Promise.all(
+        placesCreated.map(elt => {
+          return elt.remove()
+        })
+      )
+      await Promise.all(
+        centresCreated.map(elt => {
+          return elt.remove()
+        })
+      )
+      await Promise.all(
+        candidatsUpdated.map(elt => {
+          return elt.remove()
+        })
+      )
+      await disconnect()
+    })
+
+    it('should return a 200 status code when assign candidat in avalaible place', async () => {
+      const place = placesCreated[0]
+      const candidat = candidatsUpdated[0]
+
+      const { body } = await request(app)
+        .patch(`${apiPrefix}/admin/places`)
+        .send({
+          placeId: place._id,
+          candidatId: candidat._id,
+        })
+        .expect(200)
+
+      expect(DateTime.fromISO(body.date).toISO()).toBe(
+        DateTime.fromJSDate(place.date).toISO()
+      )
+      expect(body).toHaveProperty('inspecteur', place.inspecteur.toString())
+      expect(body).toHaveProperty('centre', place.centre.toString())
+      expect(body).toHaveProperty('candidat', candidat._id.toString())
+    })
+    it('should 400 when place already booked', async () => {})
+    it('should 422 when affect candidat in place avalaible', async () => {})
   })
 })

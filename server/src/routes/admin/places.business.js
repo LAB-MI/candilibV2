@@ -361,9 +361,9 @@ export const affectCandidatInPlace = async (candidatId, placeId) => {
     action: 'BOOK_PLACE',
   })
 
-  const newResa = await bookPlaceById(placeId, candidat)
+  const newResa = await bookPlaceById(placeId, candidatId)
   if (!newResa) {
-    throw new ErrorWithStatus(400, 'Cette place est déja réservé')
+    throw new ErrorWithStatus(400, 'Cette place est déja réservée')
   }
 
   return newResa
