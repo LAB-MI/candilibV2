@@ -135,17 +135,79 @@ describe('User', () => {
       expect(foundInspecteur).toHaveProperty('prenom', defaultInspecteur.prenom)
     })
 
-    it('Find an inspecteur by nom', async () => {
+    it('Find 2 inspecteurs', async () => {
       // Given
       await createInspecteur(defaultInspecteur)
       await createInspecteur(defaultInspecteur2)
 
       // When
-      const foundInspecteurs = await findInspecteursMatching('Dup')
+      const foundInspecteurs = await findInspecteursMatching('Dupon')
 
       // Then
       expect(foundInspecteurs).toBeDefined()
       expect(foundInspecteurs).toHaveLength(2)
+      expect(foundInspecteurs[0]).toHaveProperty(
+        'email',
+        defaultInspecteur.email
+      )
+      expect(foundInspecteurs[0]).toHaveProperty(
+        'matricule',
+        defaultInspecteur.matricule
+      )
+      expect(foundInspecteurs[0]).toHaveProperty(
+        'nom',
+        defaultInspecteur.nom.toUpperCase()
+      )
+      expect(foundInspecteurs[0]).toHaveProperty(
+        'prenom',
+        defaultInspecteur.prenom
+      )
+    })
+
+    it('Find 1 inspecteur', async () => {
+      // Given
+      await createInspecteur(defaultInspecteur)
+      await createInspecteur(defaultInspecteur2)
+
+      // When
+      const foundInspecteurs = await findInspecteursMatching(
+        `${defaultInspecteur.nom} 153`
+      )
+
+      // Then
+      expect(foundInspecteurs).toBeDefined()
+      expect(foundInspecteurs).toHaveLength(1)
+      expect(foundInspecteurs[0]).toHaveProperty(
+        'email',
+        defaultInspecteur.email
+      )
+      expect(foundInspecteurs[0]).toHaveProperty(
+        'matricule',
+        defaultInspecteur.matricule
+      )
+      expect(foundInspecteurs[0]).toHaveProperty(
+        'nom',
+        defaultInspecteur.nom.toUpperCase()
+      )
+      expect(foundInspecteurs[0]).toHaveProperty(
+        'prenom',
+        defaultInspecteur.prenom
+      )
+    })
+
+    it('Find 1 inspecteur', async () => {
+      // Given
+      await createInspecteur(defaultInspecteur)
+      await createInspecteur(defaultInspecteur2)
+
+      // When
+      const foundInspecteurs = await findInspecteursMatching(
+        `${defaultInspecteur.nom}`
+      )
+
+      // Then
+      expect(foundInspecteurs).toBeDefined()
+      expect(foundInspecteurs).toHaveLength(1)
       expect(foundInspecteurs[0]).toHaveProperty(
         'email',
         defaultInspecteur.email

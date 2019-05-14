@@ -1,14 +1,18 @@
 [
   {
-    "email":"dupond.jacques@email.fr",
+    "email": "dupond.jacques@email.fr",
     "nom": "dupond",
-    "prenom":"Jacques",
-    "matricule":"01020301"
+    "prenom": "Jacques",
+    "portable": "0603010203",
+    "matricule": "01020301",
+    "departement": "93"
   },
   {
-    "email":"dupont.jacques@email.fr",
+    "email": "dupont.jacques@email.fr",
     "nom": "dupont",
-    "prenom":"Jean",
-    "matricule": "01020304"
+    "prenom": "Jean",
+    "portable": "0603010205",
+    "matricule": "01020304",
+    "departement": "93"
   }
 ]

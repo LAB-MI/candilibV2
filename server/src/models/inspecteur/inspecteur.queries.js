@@ -11,12 +11,39 @@ export const findInspecteurById = async id => Inspecteur.findById(id)
 export const findInspecteurByMatricule = async matricule =>
   Inspecteur.findOne({ matricule })
 
-export const findInspecteursMatching = async search => {
+export const findInspecteursMatching = async $search => {
+  const search = new RegExp($search, 'i')
+
   const inspecteurs = await Inspecteur.find({
-    nom: new RegExp(search, 'i'),
+    $or: [
+      { nom: search },
+      { prenom: search },
+      { matricule: search },
+      { email: search },
+    ],
   })
-  return inspecteurs
+
+  const fullTextInspecteurs = await Inspecteur.find(
+    { $text: { $search } },
+    { score: { $meta: 'textScore' } }
+  ).sort({ score: { $meta: 'textScore' } })
+
+  return [
+    ...inspecteurs,
+    ...fullTextInspecteurs.filter(
+      inspecteur =>
+        !inspecteurs.some(
+          ins => ins._id.toString() === inspecteur._id.toString()
+        )
+    ),
+  ]
 }
+
+export const findInspecteurByName = async prenom =>
+  Inspecteur.findOne({ prenom })
+
+export const findInspecteurByEmail = async email =>
+  Inspecteur.findOne({ email })
 
 export const deleteInspecteurByMatricule = async matricule => {
   const inspecteur = await findInspecteurByMatricule(matricule)

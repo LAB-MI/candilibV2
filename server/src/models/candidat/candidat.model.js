@@ -143,4 +143,11 @@ CandidatSchema.pre('save', async function preSave () {
     candidat.nom.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 })
 
+CandidatSchema.index({
+  nom: 'text',
+  prenom: 'text',
+  mail: 'text',
+  codeNeph: 'text',
+})
+
 export default mongoose.model('Candidat', CandidatSchema)

@@ -4,11 +4,8 @@ export async function verifyAdminDepartement (req, res, next) {
   try {
     const { departements } = req
     const departement = req.body.departement || req.query.departement
-    if (departements) {
-      const found = departements.find(dep => dep === departement)
-      if (found) {
-        return next()
-      }
+    if (departements && departements.includes(departement)) {
+      return next()
     }
     appLogger.error({
       section: 'admin-token',

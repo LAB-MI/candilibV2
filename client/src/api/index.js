@@ -217,15 +217,15 @@ export default {
       return json
     },
 
-    async searchCandidats (search) {
-      const json = await apiClient.get(`${apiPaths.admin.searchCandidats}${search || ''}`, {
+    async searchCandidats (search, departement) {
+      const json = await apiClient.get(`${apiPaths.admin.searchCandidats}${search || ''}&departement=${departement}`, {
         headers: getHeadersForAdminJson(),
       })
       return json
     },
 
-    async searchInspecteurs (search) {
-      const json = await apiClient.get(`${apiPaths.admin.searchInspecteurs}${search || ''}`, {
+    async searchInspecteurs (search, departement) {
+      const json = await apiClient.get(`${apiPaths.admin.searchInspecteurs}${search || ''}&departement=${departement}`, {
         headers: getHeadersForAdminJson(),
       })
       return json

@@ -46,11 +46,29 @@ export const findCandidatById = async (id, options) => {
   return candidat
 }
 
-export const findCandidatsMatching = async search => {
+export const findCandidatsMatching = async $search => {
+  const search = new RegExp($search, 'i')
+
   const candidats = await Candidat.find({
-    nomNaissance: new RegExp(search, 'i'),
+    $or: [
+      { nomNaissance: search },
+      { prenom: search },
+      { codeNeph: search },
+      { email: search },
+    ],
   })
-  return candidats
+  const fullTextCandidats = await Candidat.find(
+    { $text: { $search } },
+    { score: { $meta: 'textScore' } }
+  ).sort({ score: { $meta: 'textScore' } })
+
+  return [
+    ...candidats,
+    ...fullTextCandidats.filter(
+      candidat =>
+        !candidats.some(cand => cand._id.toString() === candidat._id.toString())
+    ),
+  ]
 }
 
 export const findActiveCandidatByEmail = async email => {
