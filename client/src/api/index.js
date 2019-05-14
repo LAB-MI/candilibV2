@@ -326,6 +326,14 @@ export default {
       })
       return json
     },
+
+    async getPlacesAvailableByCentreAndDate (departement, centre, date) {
+      const json = await apiClient
+        .get(`${apiPaths.admin.places}?departement=${departement}&centre=${centre}&date=${encodeURIComponent(date)}`, {
+          headers: getHeadersForAdminJson(),
+        })
+      return json
+    },
   },
 
   util: {
