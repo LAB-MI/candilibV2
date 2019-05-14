@@ -34,10 +34,14 @@ export default {
   },
   computed: {
     inspecteurs () {
-      return this.$store.state.adminModifIpcr.inspecteurs.list
+      return this.$store.state.adminModifIpcsr.inspecteurs.list.map(inspecteur => {
+        const { _id: value, nom, matricule } = inspecteur
+        const text = nom + ' | ' + matricule
+        return { value, text, inspecteur }
+      })
     },
     isLoading () {
-      return this.$store.state.adminModifIpcr.inspecteurs.isFetching
+      return this.$store.state.adminModifIpcsr.inspecteurs.isFetching
     },
   },
   watch: {

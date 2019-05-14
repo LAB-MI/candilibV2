@@ -4,7 +4,7 @@ import Vuex from 'vuex'
 
 import aurige from './aurige'
 import admin from './admin'
-import adminModifIpcr from './admin-modif-ipcr'
+import adminModifIpcsr from './admin-modif-ipcsr'
 import adminSearch from './admin-search'
 import auth from './auth'
 import candidat from './candidat'
@@ -18,7 +18,7 @@ import whitelist from './whitelist'
 
 export * from './aurige'
 export * from './admin'
-export * from './admin-modif-ipcr'
+export * from './admin-modif-ipcsr'
 export * from './admin-search'
 export * from './auth'
 export * from './candidat'
@@ -37,7 +37,7 @@ export default new Vuex.Store({
   },
 
   modules: {
-    adminModifIpcr,
+    adminModifIpcsr,
     adminSearch,
     aurige,
     admin,

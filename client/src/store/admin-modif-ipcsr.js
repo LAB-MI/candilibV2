@@ -19,11 +19,7 @@ export default {
     },
     FETCH_GET_INSPECTEURS_AVAILABLE_SUCCESS (state, list) {
       state.inspecteurs.isFetching = false
-      state.inspecteurs.list = list.map(e => {
-        const { _id: value, nom, matricule } = e
-        const text = nom + ' | ' + matricule
-        return { value, text }
-      })
+      state.inspecteurs.list = list
     },
     FETCH_GET_INSPECTEURS_AVAILABLE_FAILURE (state, error) {
       state.inspecteurs.isFetching = false
