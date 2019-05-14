@@ -33,7 +33,7 @@ import {
 } from './place.queries'
 
 let date1 = DateTime.fromObject({ day: 28, hour: 9 })
-let date2 = DateTime.fromObject({ day: 28, hour: 9, minute: 30 })
+let date2 = DateTime.fromObject({ day: 28, hour: 9, minute: 30 })
 
 const centre = {
   nom: 'Unexisting centre',
@@ -209,7 +209,7 @@ xdescribe('Place', () => {
       const listPlaces = await findAvailablePlacesByCentre(centreSelected._id)
       expect(listPlaces).toBeDefined()
       expect(listPlaces).not.toBeNull()
-      expect(listPlaces).toHaveLength(nbPlacesDispoByCentres({ nom }))
+      expect(listPlaces).toHaveLength(await nbPlacesDispoByCentres({ nom }))
     })
 
     it('Should find 1 places for centre "Centre 2"', async () => {
@@ -218,7 +218,7 @@ xdescribe('Place', () => {
       const listPlaces = await findAvailablePlacesByCentre(centreSelected._id)
       expect(listPlaces).toBeDefined()
       expect(listPlaces).not.toBeNull()
-      expect(listPlaces).toHaveLength(nbPlacesDispoByCentres({ nom }))
+      expect(listPlaces).toHaveLength(await nbPlacesDispoByCentres({ nom }))
     })
 
     it('Should 1 places availables for centre "Centre 2"', async () => {
@@ -228,7 +228,7 @@ xdescribe('Place', () => {
 
       expect(countPlaces).toBeDefined()
       expect(countPlaces).not.toBeNull()
-      expect(countPlaces).toBe(nbPlacesDispoByCentres({ nom }))
+      expect(countPlaces).toBe(await nbPlacesDispoByCentres({ nom }))
     })
     it('Should find 0 places for centre "Centre 2" at day 19', async () => {
       const { nom } = centres[1]
@@ -276,6 +276,7 @@ xdescribe('Place', () => {
     })
 
     it('find 1 available place of centre 2 at a day 19 11h  ', async () => {
+      const places = await findAllPlaces()
       const selectedCentre = createdCentres.find(
         centre => centre.nom === centres[1].nom
       )
@@ -290,7 +291,9 @@ xdescribe('Place', () => {
       expect(foundPlaces).toHaveLength(1)
       expect(foundPlaces).not.toHaveProperty('candidat')
     })
+
     it('find 0 available place of centre 2 at a day 19 10h  ', async () => {
+      const places = await findAllPlaces()
       const selectedCentre = createdCentres.find(
         centre => centre.nom === centres[1].nom
       )
@@ -306,6 +309,7 @@ xdescribe('Place', () => {
     })
 
     it('Should book the place of centre 3 at day 20 9h  with candidat 123456789002 ', async () => {
+      const places = await findAllPlaces()
       const selectedPlace = places[4]
       const selectedCandidat = createdcandidats.find(
         candidat => candidat.codeNeph === candidats[2].codeNeph
@@ -327,7 +331,9 @@ xdescribe('Place', () => {
         DateTime.fromISO(selectedPlace.date).toJSDate()
       )
     })
+
     xit('Should not book the booked place of centre 2 at day 18 9h  with candidat 123456789002 ', async () => {
+      const places = await findAllPlaces()
       const selectedPlace = places[1]
       const selectedCandidat = createdcandidats.find(
         candidat => candidat.codeNeph === candidats[2].codeNeph
@@ -343,7 +349,9 @@ xdescribe('Place', () => {
       expect(place).toBeDefined()
       expect(place).toBeNull()
     })
+
     xit('Should book the place of centre 3 at day 21 11h  with candidat 123456789002 ', async () => {
+      const places = await findAllPlaces()
       const selectedPlace = places[5]
       const selectedCandidat = createdcandidats.find(
         candidat => candidat.codeNeph === candidats[2].codeNeph

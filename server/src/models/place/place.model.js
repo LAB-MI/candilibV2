@@ -39,17 +39,27 @@ PlaceSchema.pre('save', async function preSave () {
   const place = this
   const model = mongoose.model('Place')
   // Rechercher les places de cet inspecteur à cette date
-  const places = await model.find({
-    inspecteur: place.inspecteur,
-    date: {
-      $gte: getDateTimeFrFromJSDate(place.date).startOf('day').toJSDate(),
-      $lt: getDateTimeFrFromJSDate(place.date).endOf('day').toJSDate(),
-    },
-  }).populate('inspecteur')
+  const places = await model
+    .find({
+      inspecteur: place.inspecteur,
+      date: {
+        $gte: getDateTimeFrFromJSDate(place.date)
+          .startOf('day')
+          .toJSDate(),
+        $lt: getDateTimeFrFromJSDate(place.date)
+          .endOf('day')
+          .toJSDate(),
+      },
+    })
+    .populate('inspecteur')
 
   if (places.length) {
     if (places.some(currentPlace => currentPlace.centre !== place.centre)) {
-      throw new Error(`Incohérence dans le planning: l'inspecteur ${place.inspecteur} est déjà dans un autre centre ce jour-là`)
+      throw new Error(
+        `Incohérence dans le planning: l'inspecteur ${
+          place.inspecteur
+        } est déjà dans un autre centre ce jour-là`
+      )
     }
   }
 })

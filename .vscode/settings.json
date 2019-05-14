@@ -1,0 +1,16 @@
+{
+  "eslint.autoFixOnSave": true,
+  "eslint.provideLintTask": true,
+  "html.format.endWithNewline": true,
+  "html.format.indentInnerHtml": true,
+  "html.format.maxPreserveNewLines": 2,
+  "npm.enableScriptExplorer": true,
+  "npm.runSilent": true,
+  "path-autocomplete.extensionOnImport": true,
+  "prettier.eslintIntegration": true,
+  "prettier.printWidth": 120,
+  "prettier.semi": false,
+  "prettier.singleQuote": true,
+  "prettier.trailingComma": "all",
+  "rest-client.fontSize": 14
+}
