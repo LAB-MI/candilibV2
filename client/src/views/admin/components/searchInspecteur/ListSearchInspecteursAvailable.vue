@@ -46,7 +46,10 @@ export default {
   },
   watch: {
     select (newValue, oldValue) {
-      console.log({ newValue, oldValue })
+      if (newValue !== oldValue) {
+        const inspecteur = this.inspecteurs.find(elt => elt.value === newValue)
+        this.$emit('select-inspecteur', inspecteur.inspecteur)
+      }
     },
   },
   methods: {

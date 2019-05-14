@@ -29,11 +29,11 @@ const inspecteursList = {
 
 storiesOf('Admin/searchInspecteur', module)
   .add('ListSearchInspecteursAvailable', () => ({
-    template: '<div><list-search-inspecteurs-available date="date1" centre="centre1" /></div>',
+    template: '<div><list-search-inspecteurs-available date="date1" centre="centre1" @select-inspecteur="selectedInspecteur" /></div>',
     components: { ListSearchInspecteursAvailable },
     store: new Vuex.Store({
       state: {
-        adminModifIpcr: {
+        adminModifIpcsr: {
           inspecteurs: {
             isFetching: false,
             list: [],
@@ -42,15 +42,11 @@ storiesOf('Admin/searchInspecteur', module)
       },
       mutations: {
         FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST (state) {
-          state.adminModifIpcr.inspecteurs.isFetching = true
+          state.adminModifIpcsr.inspecteurs.isFetching = true
         },
         FETCH_GET_INSPECTEURS_AVAILABLE_SUCCESS (state, list) {
-          state.adminModifIpcr.inspecteurs.list = list.map(e => {
-            const { _id: value, nom, matricule } = e
-            const text = nom + ' | ' + matricule
-            return { value, text }
-          })
-          state.adminModifIpcr.inspecteurs.isFetching = false
+          state.adminModifIpcsr.inspecteurs.list = list
+          state.adminModifIpcsr.inspecteurs.isFetching = false
         },
       },
       actions: {
@@ -63,4 +59,9 @@ storiesOf('Admin/searchInspecteur', module)
         },
       },
     }),
+    methods: {
+      selectedInspecteur (inspecteur) {
+        alert(inspecteur.nom)
+      },
+    },
   }))
