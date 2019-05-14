@@ -161,15 +161,24 @@ export const updatePlaces = async (req, res) => {
         placeId,
         candidatId,
         action: 'UPDATE_PLACE',
-        message: `Affecter un candidat a une place`,
+        message: `Affecter un candidat à une place`,
       })
       const candidat = await findCandidatById(candidatId)
       const place = await findPlaceById(placeId)
       if (!candidat || !place) {
-        throw new ErrorWithStatus(422, 'Les paramètre renseigner son incorrect')
+        throw new ErrorWithStatus(
+          422,
+          'Les paramètres renseignés sont incorrects'
+        )
       }
-      if (getDateTimeFrFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) < getDateTimeFrFromJSDate(place.date)) {
-        throw new ErrorWithStatus(400, "Date ETG ne sera plus valide pour cette place")
+      if (
+        getDateTimeFrFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
+        getDateTimeFrFromJSDate(place.date)
+      ) {
+        throw new ErrorWithStatus(
+          400,
+          'Date ETG ne sera plus valide pour cette place'
+        )
       }
       const newResa = await affectCandidatInPlace(candidatId, placeId)
       return res.send(newResa)
@@ -196,5 +205,5 @@ export const updatePlaces = async (req, res) => {
 
   res
     .status(422)
-    .send({ success: false, message: 'Les paramètre renseigner son incorrect' })
+    .send({ success: false, message: 'Les paramètres renseignés sont incorrects' })
 }

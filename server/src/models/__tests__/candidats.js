@@ -49,6 +49,16 @@ export const candidats2 = [
     adresse: '10 Rue Oberkampf 75011 Paris',
     dateReussiteETG: DateTime.local().plus({ year: -5, day: -1 }),
   },
+  {
+    codeNeph: '123456789006',
+    nomNaissance: 'nom à tester 6',
+    prenom: 'prénom à tester n°6',
+    email: 'test6.test@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 75011 Paris',
+    dateReussiteETG: DateTime.local().plus({ year: -1 }),
+    isValidatedByAurige: true,
+  },
 ]
 
 export const createCandidats = async () => {
