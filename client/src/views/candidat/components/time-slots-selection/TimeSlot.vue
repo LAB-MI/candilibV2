@@ -51,7 +51,7 @@
         <v-card flat>
           <v-card-text>
             <times-slots-selector v-if="timeSlot.availableTimeSlots.length" :initial-time-slots="timeSlot.availableTimeSlots"/>
-            <div v-else class="blue-grey--text  font-italic">Il n'y a plus de crénau disponible pour ce mois.</div>
+            <div v-else class="blue-grey--text  font-italic">Il n'y a pas de créneau disponible pour ce mois.</div>
           </v-card-text>
         </v-card>
       </v-tab-item>
