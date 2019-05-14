@@ -334,6 +334,15 @@ export default {
         })
       return json
     },
+    async updateInspeteurForResa (departement, resa, inspecteur) {
+      const json = await apiClient
+        .put(`${apiPaths.admin.places}`, {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({ departement, resa, inspecteur }),
+        })
+      return json
+    },
+
   },
 
   util: {
