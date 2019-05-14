@@ -13,7 +13,6 @@ import {
 } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
 
-import { appLogger } from '../../util'
 import { appLogger, ErrorWithStatus, getDateTimeFrFromJSDate, dateTimeToFormatFr } from '../../util'
 
 export const importPlaces = async (req, res) => {
@@ -165,10 +164,17 @@ export const updatePlaces = async (req, res) => {
       })
       const candidat = await findCandidatById(candidatId)
       const place = await findPlaceById(placeId)
+
       if (!candidat || !place) {
         throw new ErrorWithStatus(
           422,
           'Les paramètres renseignés sont incorrects'
+        )
+      }
+      if ('isValidatedByAurige' in candidat && !candidat.isValidatedByAurige) {
+        throw new ErrorWithStatus(
+          400,
+          "Le candidat n'est pas validé par Aurige"
         )
       }
       if (

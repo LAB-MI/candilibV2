@@ -228,7 +228,7 @@ describe('Test places controller', () => {
       expect(body).toHaveProperty('centre', place.centre.toString())
       expect(body).toHaveProperty('candidat', candidat._id.toString())
     })
-    it('should 400 when place already booked', async () => {
+    it('should return a 400 status code when place already booked', async () => {
       const place = createdBookedPlace
       const candidat = candidatsCreatedAndUpdated[2]
 
@@ -244,7 +244,7 @@ describe('Test places controller', () => {
       expect(body).toHaveProperty('message', 'Cette place est déja réservée')
       expect(body).toHaveProperty('success', false)
     })
-    it('should 422 when affect candidat in place avalaible with unexist candidat', async () => {
+    it('should return a 422 status code when affect candidat in place avalaible with unexist candidat', async () => {
       const place = placesCreated[0]
       const unExistCandidatId = '5cda8d17c522ad6a16e3633b'
 
@@ -260,7 +260,7 @@ describe('Test places controller', () => {
       expect(body).toHaveProperty('message', 'Les paramètres renseignés sont incorrects')
       expect(body).toHaveProperty('success', false)
     })
-    it('should 422 when affect candidat in place avalaible with unexist place', async () => {
+    it('should return a 422 status code when affect candidat in place avalaible with unexist place', async () => {
       const unExistPlaceId = '5cda8d17c522ad6a16e3633b'
       const candidat = candidatsCreatedAndUpdated[2]
 
@@ -274,6 +274,22 @@ describe('Test places controller', () => {
 
       expect(body).toHaveProperty('error', { _status: 422 })
       expect(body).toHaveProperty('message', 'Les paramètres renseignés sont incorrects')
+      expect(body).toHaveProperty('success', false)
+    })
+    it('should return a 400 status code when affect candidat in place avalaible with unvalidate candidat by Aurige', async () => {
+      const place = placesCreated[0]
+      const candidat = candidatsCreatedAndUpdated[3]
+
+      const { body } = await request(app)
+        .patch(`${apiPrefix}/admin/places`)
+        .send({
+          placeId: place._id,
+          candidatId: candidat._id,
+        })
+        .expect(400)
+
+      expect(body).toHaveProperty('error', { _status: 400 })
+      expect(body).toHaveProperty('message', "Le candidat n'est pas validé par Aurige")
       expect(body).toHaveProperty('success', false)
     })
   })

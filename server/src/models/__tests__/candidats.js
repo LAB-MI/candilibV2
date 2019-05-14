@@ -39,6 +39,7 @@ export const candidats2 = [
     adresse: '10 Rue Oberkampf 75011 Paris',
     dateReussiteETG: DateTime.local().plus({ year: -1 }),
     isValidatedByAurige: true,
+    isValidatedEmail: true,
   },
   {
     codeNeph: '123456789004',
@@ -48,6 +49,8 @@ export const candidats2 = [
     portable: '0612355678',
     adresse: '10 Rue Oberkampf 75011 Paris',
     dateReussiteETG: DateTime.local().plus({ year: -5, day: -1 }),
+    isValidatedByAurige: true,
+    isValidatedEmail: true,
   },
   {
     codeNeph: '123456789006',
@@ -58,6 +61,18 @@ export const candidats2 = [
     adresse: '10 Rue Oberkampf 75011 Paris',
     dateReussiteETG: DateTime.local().plus({ year: -1 }),
     isValidatedByAurige: true,
+    isValidatedEmail: true,
+  },
+  {
+    codeNeph: '123456789007',
+    nomNaissance: 'nom à tester 7',
+    prenom: 'prénom à tester n°7',
+    email: 'test7.test@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 75011 Paris',
+    dateReussiteETG: DateTime.local().plus({ year: -1 }),
+    isValidatedByAurige: false,
+    isValidatedEmail: true,
   },
 ]
 
@@ -70,11 +85,15 @@ export const createCandidatsAndUpdate = async () => {
     candidats2.map(candidat => createCandidat(candidat))
   )
   return Promise.all(
-    newCandidats.map(candidat =>
-      updateCandidatById(candidat._id, {
-        $set: { dateReussiteETG: DateTime.local().plus({ year: -1 }) },
+    newCandidats.map((candidat, index) => {
+      return updateCandidatById(candidat._id, {
+        $set: {
+          dateReussiteETG: candidats2[index].dateReussiteETG,
+          isValidatedByAurige: candidats2[index].isValidatedByAurige,
+          isValidatedEmail: candidats2[index].isValidatedEmail,
+        },
       })
-    )
+    })
   )
 }
 
