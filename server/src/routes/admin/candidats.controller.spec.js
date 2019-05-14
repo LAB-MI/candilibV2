@@ -18,7 +18,7 @@ const { default: app, apiPrefix } = require('../../app')
 jest.mock('./middlewares/verify-admin-level')
 jest.mock('../middlewares/verify-token')
 
-describe('Test get and export candidats', () => {
+xdescribe('Test get and export candidats', () => {
   beforeAll(async () => {
     await connect()
     await createCandidats()

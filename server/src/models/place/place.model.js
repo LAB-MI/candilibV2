@@ -38,7 +38,7 @@ PlaceSchema.index({ date: 1, inspecteur: 1 }, { unique: true })
 PlaceSchema.pre('save', async function preSave () {
   const place = this
   const model = mongoose.model('Place')
-  // Rechercher les places de cet inspecteur a cette date
+  // Rechercher les places de cet inspecteur à cette date
   const places = await model.find({
     inspecteur: place.inspecteur,
     date: {
@@ -48,13 +48,10 @@ PlaceSchema.pre('save', async function preSave () {
   }).populate('inspecteur')
 
   if (places.length) {
-    throw new Error(`Incohérence dans le planning: l'inspecteur ${place.inspecteur.nom}`)
+    if (places.some(currentPlace => currentPlace.centre !== place.centre)) {
+      throw new Error(`Incohérence dans le planning: l'inspecteur ${place.inspecteur} est déjà dans un autre centre ce jour-là`)
+    }
   }
-  // Si aucune : sauvegarde de la place
-  // Si plus de 0 :
-  //   Rechercher toutes les places de cet inspecteur dans un autre centre
-  //   Si plus de 0 : erreur 'Incohérence dans le planning'
-  //   Sinon, sauvegarde de la place
 })
 
 const model = mongoose.model('Place', PlaceSchema)

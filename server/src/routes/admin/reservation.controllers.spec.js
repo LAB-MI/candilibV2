@@ -20,7 +20,8 @@ const deps = ['75', '93']
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
-describe('delete reservation by admin', () => {
+
+xdescribe('delete reservation by admin', () => {
   let placesCreated
   let candidatsCreated
   let centresCreated

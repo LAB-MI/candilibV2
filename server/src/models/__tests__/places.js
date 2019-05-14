@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { createPlace } from '../place'
+import { createPlace, findAllPlaces } from '../place'
 import Place from '../place/place.model'
 import { findCentreById } from '../centre'
 import config from '../../config'
@@ -35,9 +35,9 @@ let creatingPlaces = false
 
 export const createPlaces = async () => {
   if (testPlaces || creatingPlaces) {
-    const places = await testPlaces
-    return places
+    return testPlaces
   }
+
   creatingPlaces = true
   const [inspecteur1, inspecteur2] = await createInspecteurs()
   const [centre1, centre2, centre3] = await createCentres()
@@ -84,7 +84,9 @@ export const createPlaces = async () => {
     },
   ]
 
-  testPlaces = await Promise.all(places.map(createTestPlace))
+  testPlaces = Promise.all(places.map(place => {
+    createPlace(place)
+  }))
   creatingPlaces = false
   return testPlaces
 }
