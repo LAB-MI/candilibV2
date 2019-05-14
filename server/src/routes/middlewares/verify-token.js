@@ -19,11 +19,13 @@ export function verifyToken (req, res, next) {
     req.userLevel = level
     req.departements = departements
     next()
-  } catch (err) {
+  } catch (error) {
     return res.status(401).send({
       isTokenValid: false,
       message: 'Token invalide',
       success: false,
+      errorMessage: error.message,
+      error,
     })
   }
 }

@@ -52,18 +52,18 @@ export default {
   },
 
   actions: {
-    async FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST ({ state, commit }, search) {
+    async FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST ({ state, commit, rootState }, search) {
       try {
-        const list = await api.admin.autocompleteCandidats(search)
+        const list = await api.admin.searchCandidats(search, rootState.admin.departements.active || rootState.admin.departements.list[0])
         commit(FETCH_AUTOCOMPLETE_CANDIDATS_SUCCESS, list)
       } catch (error) {
         commit(FETCH_AUTOCOMPLETE_CANDIDATS_FAILURE, error)
       }
     },
 
-    async FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST ({ state, commit }, search) {
+    async FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST ({ state, commit, rootState }, search) {
       try {
-        const list = await api.admin.autocompleteInspecteurs(search)
+        const list = await api.admin.searchInspecteurs(search, rootState.admin.departements.active || rootState.admin.departements.list[0])
         commit(FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS, list)
       } catch (error) {
         commit(FETCH_AUTOCOMPLETE_INSPECTEURS_FAILURE, error)

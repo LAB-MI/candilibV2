@@ -24,7 +24,7 @@
 import { FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST } from '@/store'
 import CandilibAutocomplete from './CandilibAutocomplete'
 import ProfileInfo from './ProfileInfo'
-import { getFrenchDateFromIso } from '../../../util/dateTimeWithSetLocale.js'
+import { getFrenchDateFromIso } from '../../../util/frenchDateTime.js'
 import { transformToProfileInfo } from '@/util'
 
 const transformBoolean = value => value ? 'Oui' : 'Non'
@@ -59,9 +59,9 @@ export default {
     return {
       profileInfo: undefined,
       fetchAutocompleteAction: FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
-
     }
   },
+
   computed: {
     candidats () {
       return this.$store.state.adminSearch.candidats.list

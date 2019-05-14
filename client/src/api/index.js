@@ -217,15 +217,15 @@ export default {
       return json
     },
 
-    async autocompleteCandidats (search) {
-      const json = await apiClient.get(`${apiPaths.admin.autocompleteCandidats}${search || ''}`, {
+    async searchCandidats (search, departement) {
+      const json = await apiClient.get(`${apiPaths.admin.searchCandidats}${search || ''}&departement=${departement}`, {
         headers: getHeadersForAdminJson(),
       })
       return json
     },
 
-    async autocompleteInspecteurs (search) {
-      const json = await apiClient.get(`${apiPaths.admin.autocompleteInspecteurs}${search || ''}`, {
+    async searchInspecteurs (search, departement) {
+      const json = await apiClient.get(`${apiPaths.admin.searchInspecteurs}${search || ''}&departement=${departement}`, {
         headers: getHeadersForAdminJson(),
       })
       return json

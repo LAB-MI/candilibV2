@@ -56,7 +56,7 @@ storiesOf('Admin/CandilibAutocomplete', module)
       },
       actions: {
         async FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST ({ commit }, search) {
-          await delay(1000)
+          await delay(500)
           const list = inspecteursList.filter(inspecteur => inspecteur.nom.includes(search))
           commit('FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS', list)
         },
