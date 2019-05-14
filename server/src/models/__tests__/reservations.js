@@ -11,12 +11,13 @@ export const makeResa = (place, candidat) => {
 
 export const makeResas = async () => {
   const placesDb = await findAllPlaces()
+
   const place1 = placesDb.find(
-    place => place.inspecteur === places[0].inspecteur
+    place => place.inspecteur.toString() === places[0].inspecteur.toString()
   )
 
   const place2 = placesDb.find(
-    place => place.inspecteur === places[1].inspecteur
+    place => place.inspecteur.toString() === places[1].inspecteur.toString()
   )
   const candidatsDb = await findAllCandidatsLean()
   const candidat1 = candidatsDb.find(

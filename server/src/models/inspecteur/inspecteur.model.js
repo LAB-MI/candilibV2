@@ -61,4 +61,4 @@ inspecteurSchema.index({
   matricule: 'text',
 })
 
-export default mongoose.model('inspecteur', inspecteurSchema)
+export default mongoose.model('Inspecteur', inspecteurSchema)
