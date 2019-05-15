@@ -46,7 +46,7 @@ export default {
   },
   computed: {
     isLoading () {
-      return this.$store.state.admin.placesByCentre.isFetching
+      return this.$store.state.admin.places.isFetching
     },
   },
 

@@ -69,8 +69,8 @@ export default {
   },
 
   methods: {
-    goToGestionPlannings (currWeek, centerId) {
-      this.$store.dispatch(SET_WEEK_SECTION, currWeek, centerId)
+    goToGestionPlannings (currentWeek, centerId) {
+      this.$store.dispatch(SET_WEEK_SECTION, currentWeek, centerId)
       this.$router.push({ name: 'gestion-plannings', params: { centerId } })
     },
 

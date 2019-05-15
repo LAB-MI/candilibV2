@@ -66,20 +66,18 @@ export default {
             color: 'blue',
             content: this.content,
           }
-        } else {
-          this.flagModal = 'check'
-          this.icon = 'check_circle'
-          return {
-            color: 'green',
-            content: this.content,
-          }
         }
-      } else {
-        this.flagModal = 'block'
-        this.icon = 'block'
+        this.flagModal = 'check'
+        this.icon = 'check_circle'
         return {
-          color: '#A9A9A9',
+          color: 'green',
+          content: this.content,
         }
+      }
+      this.flagModal = 'block'
+      this.icon = 'block'
+      return {
+        color: '#A9A9A9',
       }
     },
 

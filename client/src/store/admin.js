@@ -20,23 +20,27 @@ export const FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS = 'FETCH_INSPECTEURS_BY_DE
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
-const creneauSetup = [
-  { hour: creneauSetting[0], place: undefined },
-  { hour: creneauSetting[1], place: undefined },
-  { hour: creneauSetting[2], place: undefined },
-  { hour: creneauSetting[3], place: undefined },
-  { hour: creneauSetting[4], place: undefined },
-  { hour: creneauSetting[5], place: undefined },
-  { hour: creneauSetting[6], place: undefined },
-  { hour: creneauSetting[7], place: undefined },
-  { hour: creneauSetting[8], place: undefined },
-  { hour: creneauSetting[9], place: undefined },
-  { hour: creneauSetting[10], place: undefined },
-  { hour: creneauSetting[11], place: undefined },
-  { hour: creneauSetting[12], place: undefined },
-]
-
 export default {
+  getters: {
+    creneauSetup: () => {
+      return [
+        { hour: creneauSetting[0], place: undefined },
+        { hour: creneauSetting[1], place: undefined },
+        { hour: creneauSetting[2], place: undefined },
+        { hour: creneauSetting[3], place: undefined },
+        { hour: creneauSetting[4], place: undefined },
+        { hour: creneauSetting[5], place: undefined },
+        { hour: creneauSetting[6], place: undefined },
+        { hour: creneauSetting[7], place: undefined },
+        { hour: creneauSetting[8], place: undefined },
+        { hour: creneauSetting[9], place: undefined },
+        { hour: creneauSetting[10], place: undefined },
+        { hour: creneauSetting[11], place: undefined },
+        { hour: creneauSetting[12], place: undefined },
+      ]
+    },
+  },
+
   state: {
     departements: {
       active: undefined,
@@ -45,16 +49,16 @@ export default {
       list: [],
     },
     email: undefined,
-    placesByCentre: {
+    places: {
       isFetching: false,
       list: [],
     },
-    inspecteursByDepartement: {
+    inspecteurs: {
       isFetching: false,
       error: undefined,
       list: [],
     },
-    currWeek: undefined,
+    currentWeek: undefined,
     centerTarget: undefined,
   },
 
@@ -73,35 +77,35 @@ export default {
     },
 
     [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] (state) {
-      state.placesByCentre.isFetching = true
+      state.places.isFetching = true
     },
     [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS] (state, list) {
-      state.placesByCentre.list = list
-      state.placesByCentre.isFetching = false
+      state.places.list = list
+      state.places.isFetching = false
     },
     [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE] (state, error) {
-      state.placesByCentre.error = error
-      state.placesByCentre.isFetching = false
+      state.places.error = error
+      state.places.isFetching = false
     },
 
     [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] (state) {
-      state.inspecteursByDepartement.isFetching = true
+      state.inspecteurs.isFetching = true
     },
     [FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS] (state, list) {
-      state.inspecteursByDepartement.list = list
-      state.inspecteursByDepartement.isFetching = false
+      state.inspecteurs.list = list
+      state.inspecteurs.isFetching = false
     },
     [FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE] (state, error) {
-      state.inspecteursByDepartement.error = error
-      state.inspecteursByDepartement.isFetching = false
+      state.inspecteurs.error = error
+      state.inspecteurs.isFetching = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {
       state.departements.active = departement
     },
 
-    [SET_WEEK_SECTION] (state, currWeek, centerId) {
-      state.currWeek = currWeek
+    [SET_WEEK_SECTION] (state, currentWeek, centerId) {
+      state.currentWeek = currentWeek
       state.centerTarget = centerId
     },
   },
@@ -144,14 +148,14 @@ export default {
       }
     },
 
-    async [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] ({ commit, dispatch, state }) {
+    async [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }) {
       commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
       try {
         const list = await api.admin.getInspecteursByDepartement(state.departements.active)
         const newList = list.map(elem => {
           return {
             ...elem,
-            creneau: creneauSetup,
+            creneau: getters.creneauSetup,
           }
         })
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, newList)
@@ -183,8 +187,8 @@ export default {
       dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
     },
 
-    async [SET_WEEK_SECTION] ({ commit, dispatch }, currWeek, centerId) {
-      commit(SET_WEEK_SECTION, currWeek, centerId)
+    async [SET_WEEK_SECTION] ({ commit, dispatch }, currentWeek, centerId) {
+      commit(SET_WEEK_SECTION, currentWeek, centerId)
     },
   },
 }

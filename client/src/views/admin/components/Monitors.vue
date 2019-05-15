@@ -49,7 +49,7 @@ export default {
   },
   computed: {
     centerInfos () {
-      return this.$store.state.admin.placesByCentre.list
+      return this.$store.state.admin.places.list
     },
   },
 

@@ -152,20 +152,20 @@ export default {
     },
 
     placesByCentreList () {
-      return this.$store.state.admin.placesByCentre.list
+      return this.$store.state.admin.places.list
     },
 
     firstCentreId () {
-      return this.$store.state.admin.placesByCentre.list[0].centre._id
+      return this.$store.state.admin.places.list[0].centre._id
     },
 
     inspecteurs () {
-      return this.$store.state.admin.inspecteursByDepartement.list
+      return this.$store.state.admin.inspecteurs.list
     },
 
     isLoading () {
-      return this.$store.state.admin.placesByCentre.isFetching ||
-        this.$store.state.admin.inspecteursByDepartement.isFetching ||
+      return this.$store.state.admin.places.isFetching ||
+        this.$store.state.admin.inspecteurs.isFetching ||
         this.isComputing
     },
   },
@@ -216,7 +216,7 @@ export default {
             const creneauData = creneauTemplate.map((elemt) => {
               const instpecteurPlaces = reservastionsByCentre.places
                 .filter(element => element.inspecteur === inspecteur._id &&
-                getFrenchLuxonDateFromIso(element.date).toFormat("HH'h'mm") === elemt)
+                  getFrenchLuxonDateFromIso(element.date).toFormat("HH'h'mm") === elemt)
               if (instpecteurPlaces.length) {
                 return { place: instpecteurPlaces[0], hour: elemt }
               } else {
@@ -284,11 +284,11 @@ export default {
         }
       })
 
-    const { currWeek } = this.$store.state.admin
+    const { currentWeek } = this.$store.state.admin
 
     this.date = getFrenchLuxonDateFromObject({
       weekYear: getFrenchLuxonCurrentDateTime().year,
-      weekNumber: currWeek || getFrenchLuxonCurrentDateTime().weekNumber,
+      weekNumber: currentWeek || getFrenchLuxonCurrentDateTime().weekNumber,
       weekday: 1,
     }).toISODate()
   },

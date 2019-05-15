@@ -1,7 +1,8 @@
 <template>
   <div>
-    <page-title :title="'Calendrier'"/>
-    <simple-calendar :places="places" />
+    <!-- TODO: en attante de specification de resulta d'import place dans le calendrier by Baudoin -->
+    <page-title  v-show="false" :title="'Calendrier'"/>
+    <simple-calendar v-show="false" :places="places" />
     <admin-import-places/>
     <import-places-validation/>
   </div>

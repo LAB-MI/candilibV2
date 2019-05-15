@@ -13,18 +13,19 @@
     </v-toolbar-title>
     <v-spacer></v-spacer>
     <v-btn
-    style="left: 1em;"
-    @click="closeDialog"
-    ripple
-    fab
-    :color="colorButton || 'red'"
+      style="left: 1em;"
+      @click="closeDialog"
+      ripple
+      fab
+      flat
+      :color="colorButton || 'red'"
     >
-    <v-icon
-      x-large
-      :color="colorIcon || 'white'"
-    >
-      {{ icon || 'highlight_off' }}
-    </v-icon>
+      <v-icon
+        x-large
+        :color="colorIcon || 'white'"
+      >
+        {{ icon || 'highlight_off' }}
+      </v-icon>
     </v-btn>
   </v-toolbar>
 </template>

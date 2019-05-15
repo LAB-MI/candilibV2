@@ -3,13 +3,22 @@ import { DateTime } from 'luxon'
 
 import { appLogger } from '../../util'
 import {
-  PLACE_ALREADY_IN_DB_ERROR,
   createPlace,
+  deletePlace,
   findPlaceBookedByCandidat,
+  PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
 } from '../../models/place'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
+import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
+import { REASON_REMOVE_RESA_ADMIN } from '../common/reason.constants'
+import { sendCancelBookingByAdmin } from '../business'
+import {
+  DELETE_PLACE_ERROR,
+  RESA_BOOKED_CANCEL,
+  RESA_BOOKED_CANCEL_NO_MAIL,
+} from './message.constants'
 
 const getPlaceStatus = (
   departement,

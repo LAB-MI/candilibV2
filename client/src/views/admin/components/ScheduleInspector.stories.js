@@ -10,7 +10,7 @@ storiesOf('Admin', module)
     store: new Vuex.Store({
       state: {
         admin: {
-          placesByCentre: {
+          places: {
             list: [
               {
                 centre: {
