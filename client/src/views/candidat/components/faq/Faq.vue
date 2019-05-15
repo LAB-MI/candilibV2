@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <page-title>
+    <page-title class="title-faq">
       F.A.Q
     </page-title>
     <h3 class="subtitle">
@@ -60,6 +60,10 @@ export default {
     padding: 0;
     color: #0e1b4d;
     font-family: "Raleway", sans-serif;
+  }
+
+  .title-faq {
+    margin-top: 80px;
   }
 
   .subtitle {

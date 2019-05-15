@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 import Home from '@/views/Home.vue'
+import Guest from '@/views/Guest.vue'
 import AdminLogin from '@/views/admin/components/Login'
 import CandidatHome from '@/views/CandidatHome.vue'
 import MessageView from '@/views/Message.vue'
@@ -80,7 +81,7 @@ const adminRoutes = [
 
 const candidatRoutes = [
   {
-    path: '/guest',
+    path: '/candidat-guest',
     component: MessageView,
     children: [
       {
@@ -173,14 +174,20 @@ const commonRoutes = [
     component: HomeComponent,
   },
   {
-    path: '/mentions-legales',
-    name: 'mentions-legales',
-    component: MentionsLegales,
-  },
-  {
-    path: '/faq',
-    name: 'faq',
-    component: Faq,
+    path: '/guest',
+    component: Guest,
+    children: [
+      {
+        path: '/mentions-legales',
+        name: 'mentions-legales',
+        component: MentionsLegales,
+      },
+      {
+        path: '/faq',
+        name: 'faq',
+        component: Faq,
+      },
+    ],
   },
   {
     path: '/*',
