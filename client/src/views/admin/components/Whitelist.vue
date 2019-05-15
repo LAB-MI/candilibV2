@@ -238,11 +238,24 @@ export default {
   },
 
   mounted () {
-    this.$store.dispatch(FETCH_WHITELIST_REQUEST)
+    if (this.departement) {
+      this.$store.dispatch(FETCH_WHITELIST_REQUEST, this.departement)
+    }
   },
 
   computed: {
     ...mapState(['whitelist']),
+    departement () {
+      return this.$store.state.admin.departements.active
+    },
+  },
+
+  watch: {
+    departement (newValue, oldValue) {
+      if (newValue !== oldValue) {
+        this.$store.dispatch(FETCH_WHITELIST_REQUEST, this.departement)
+      }
+    },
   },
 
   methods: {
@@ -252,20 +265,20 @@ export default {
         this.showError(message)
         return
       }
-      await this.$store.dispatch(SAVE_EMAIL_REQUEST, this.newEmail)
+      await this.$store.dispatch(SAVE_EMAIL_REQUEST, { emailToAdd: this.newEmail, departement: this.departement })
       this.hideForm()
       setTimeout(this.showForm, 10)
     },
 
     async addBatchToWhitelist () {
       const emails = this.newEmails.split(/\n/)
-      await this.$store.dispatch(SAVE_EMAIL_BATCH_REQUEST, emails)
+      await this.$store.dispatch(SAVE_EMAIL_BATCH_REQUEST, { emailsToAdd: emails, departement: this.departement })
       this.hideBatchForm()
     },
 
     async removeFromWhitelist (id) {
       try {
-        await this.$store.dispatch(DELETE_EMAIL_REQUEST, id)
+        await this.$store.dispatch(DELETE_EMAIL_REQUEST, { email: id, departement: this.departement })
       } catch (error) {
         if (error.auth === false) {
           this.$router.push({ name: 'admin-login', nextPath: this.$route.fullPath })
