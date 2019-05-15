@@ -1,7 +1,19 @@
 import Inspecteur from './inspecteur.model'
 
-export const createInspecteur = async ({ email, matricule, nom, prenom }) => {
-  const inspecteur = new Inspecteur({ email, matricule, nom, prenom })
+export const createInspecteur = async ({
+  email,
+  matricule,
+  nom,
+  prenom,
+  departement,
+}) => {
+  const inspecteur = new Inspecteur({
+    email,
+    matricule,
+    nom,
+    prenom,
+    departement,
+  })
   await inspecteur.save()
   return inspecteur
 }
@@ -10,6 +22,9 @@ export const findInspecteurById = async id => Inspecteur.findById(id)
 
 export const findInspecteurByMatricule = async matricule =>
   Inspecteur.findOne({ matricule })
+
+export const findInspecteurByDepartement = async departement =>
+  Inspecteur.find({ departement })
 
 export const findInspecteursMatching = async $search => {
   const search = new RegExp($search, 'i')

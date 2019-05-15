@@ -1,21 +1,6 @@
 <template>
   <div>
-    <v-container fluid>
-      <v-layout row wrap>
-        <v-flex
-          class="monitor-wrapper"
-          xs6
-          v-for="info in centerInfos"
-          :key="info.centre.nom"
-        >
-          <week-monitor
-            :nameCenter="info.centre.nom"
-            :weeks="info.places"
-          />
-        </v-flex>
-      </v-layout>
-    </v-container>
-    <v-layout column wrap>
+    <v-layout class="u-flex  u-flex--center">
       <div
         class="div-gestion"
         v-for="item in buttonGestion"
@@ -31,6 +16,7 @@
         </v-btn>
       </div>
     </v-layout>
+    <monitors />
     <div class="u-flex  u-flex--center">
       <search-candidat class="search-input"/>
       <search-inspecteur class="search-input" />
@@ -41,13 +27,14 @@
 <script>
 import SearchCandidat from './SearchCandidat'
 import SearchInspecteur from './SearchInspecteur'
-import WeekMonitor from './WeekMonitor.vue'
+import Monitors from './Monitors.vue'
+import { FETCH_ADMIN_INFO_REQUEST } from '@/store'
 
 export default {
   components: {
+    Monitors,
     SearchCandidat,
     SearchInspecteur,
-    WeekMonitor,
   },
 
   data () {
@@ -65,25 +52,19 @@ export default {
     }
   },
 
-  computed: {
-    centerInfos () {
-      return this.$store.state.admin.placesByCentre.list
-    },
-  },
-
   methods: {
     goToGestionPlannings () {
       this.$router.push({ name: 'gestion-plannings' })
     },
   },
+
+  async mounted () {
+    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
+  },
 }
 </script>
 
 <style lang="postcss" scoped>
-.monitor-wrapper {
-  padding: 2em;
-}
-
 .search-input {
   margin: 0 1em;
 }

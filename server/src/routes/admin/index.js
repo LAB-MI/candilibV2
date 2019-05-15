@@ -4,7 +4,7 @@ import { getCandidats, importCandidats } from './candidats.controllers'
 import { getMe } from './admin.controllers'
 import { getInspecteurs } from './inspecteurs.controllers'
 import { getPlaces, importPlaces } from './places.controllers'
-import { removeReservationByAdmin } from './reservations.controller'
+import { removeReservationByAdmin } from './reservations.controllers'
 import {
   getWhitelisted,
   addWhitelisted,

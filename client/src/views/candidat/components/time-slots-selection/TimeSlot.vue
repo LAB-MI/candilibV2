@@ -16,7 +16,7 @@
     >
       {{ $formatMessage(
           {
-            id: 'home_choix_date_crenaux_message_de_penalite',
+            id: 'home_choix_date_creneau_message_de_penalite',
           },
           {
             numberOfDaysBeforeDate,

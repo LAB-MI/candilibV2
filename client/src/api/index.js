@@ -202,7 +202,7 @@ export default {
       return json
     },
 
-    async getAllPlacesByCentre (departement, beginDate, endDate) {
+    async getAllPlacesByDepartement (departement, beginDate, endDate) {
       const json = await apiClient
         .get(`${apiPaths.admin.places}?departement=${departement}&beginDate=${encodeURIComponent(beginDate)}&endDate=${encodeURIComponent(endDate)}`, {
           headers: getHeadersForAdminJson(),
@@ -219,6 +219,13 @@ export default {
 
     async searchCandidats (search, departement) {
       const json = await apiClient.get(`${apiPaths.admin.searchCandidats}${search || ''}&departement=${departement}`, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
+    async getInspecteursByDepartement (departement) {
+      const json = await apiClient.get(`${apiPaths.admin.inspecteursByDepartement}${departement}`, {
         headers: getHeadersForAdminJson(),
       })
       return json

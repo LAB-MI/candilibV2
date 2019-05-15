@@ -3,16 +3,19 @@ import { DateTime } from 'luxon'
 
 import { appLogger } from '../../util'
 import {
-  PLACE_ALREADY_IN_DB_ERROR,
   createPlace,
+  deletePlace,
   findPlaceBookedByCandidat,
+  PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
 } from '../../models/place'
-import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
+import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
+import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
 import { REASON_REMOVE_RESA_ADMIN } from '../common/reason.constants'
 import { sendCancelBookingByAdmin } from '../business'
 import {
+  DELETE_PLACE_ERROR,
   RESA_BOOKED_CANCEL,
   RESA_BOOKED_CANCEL_NO_MAIL,
 } from './message.constants'
@@ -61,10 +64,15 @@ const transfomCsv = async ({ data, departement }) => {
     )
     if (!foundCentre) throw new Error(`Le centre ${centre.trim()} est inconnu`)
 
+    const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
+    if (!inspecteurFound) {
+      throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
+    }
+
     return {
       departement,
       centre: foundCentre,
-      inspecteur: inspecteur.trim(),
+      inspecteur: inspecteurFound._id,
       date,
     }
   } catch (error) {
@@ -99,7 +107,7 @@ const createPlaceCsv = async place => {
     return getPlaceStatus(
       centre.departement,
       centre.nom,
-      inspecteur,
+      leanPlace.inspecteur,
       date,
       'success',
       `Place enregistrée en base`
@@ -206,6 +214,17 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     })
     statusmail = false
     message = RESA_BOOKED_CANCEL_NO_MAIL
+  }
+
+  try {
+    await deletePlace(placeUpdated)
+  } catch (error) {
+    appLogger.warn({
+      section: 'admin-removePlace',
+      action: 'FAILED_DELETE_PLACE',
+      error,
+    })
+    message = DELETE_PLACE_ERROR
   }
 
   return { statusmail, message, candidat: candidatUpdated, placeUpdated }

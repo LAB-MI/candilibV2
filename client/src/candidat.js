@@ -25,7 +25,7 @@ export default {
   preinscription_magic_link_invalide: 'Veuillez fournir votre adresse courriel',
   preinscription_magic_link_envoyé: 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel',
   home_choix_du_centre: 'Choix du centre',
-  home_choix_date_crenaux_message_de_penalite: `Vous avez annulé ou modifié votre réservation à moins de {numberOfDaysBeforeDate} jours de la date d'examen.
+  home_choix_date_creneau_message_de_penalite: `Vous avez annulé ou modifié votre réservation à moins de {numberOfDaysBeforeDate} jours de la date d'examen.
     Vous ne pouvez sélectionner une date qu'à partir du {displayDate}`,
   confirmation_reservation_title: 'Confirmation',
   confirmation_reservation_subtitle: 'Vous avez choisi de passer l’épreuve pratique du permis à',
