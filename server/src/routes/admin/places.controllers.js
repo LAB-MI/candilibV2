@@ -3,18 +3,29 @@ import { importPlacesCsv } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
 import { appLogger } from '../../util'
 
-export const importPlaces = (req, res) => {
+export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
+  const { departement } = req.body
+
   try {
-    appLogger.info(`import places provenant dufichier ${csvFile.name}`)
-    importPlacesCsv(csvFile, result => {
-      appLogger.info(`import places: Le fichier ${csvFile.name} a été traité.`)
-      res.status(200).send({
-        fileName: csvFile.name,
-        success: true,
-        message: `Le fichier ${csvFile.name} a été traité.`,
-        places: result,
-      })
+    appLogger.info(
+      `import places provenant du fichier ${
+        csvFile.name
+      } et du departement ${departement}`
+    )
+    const result = await importPlacesCsv({ csvFile, departement })
+    appLogger.info(
+      `import places: Le fichier ${
+        csvFile.name
+      } a été traité pour le departement ${departement}.`
+    )
+    res.status(200).send({
+      fileName: csvFile.name,
+      success: true,
+      message: `Le fichier ${
+        csvFile.name
+      } a été traité pour le departement ${departement}.`,
+      places: result,
     })
   } catch (error) {
     appLogger.error(error)

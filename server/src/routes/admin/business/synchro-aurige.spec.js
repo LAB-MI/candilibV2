@@ -253,9 +253,8 @@ describe('synchro-aurige', () => {
         'centre',
         placeBeforTimeOutRetryCreated.centre
       )
-      expect(places[0]).toHaveProperty(
-        'inspecteur',
-        placeBeforTimeOutRetryCreated.inspecteur
+      expect(places[0].inspecteur.toString()).toBe(
+        placeBeforTimeOutRetryCreated.inspecteur._id.toString()
       )
       expect(places[0]).toHaveProperty(
         'date',
@@ -278,7 +277,7 @@ describe('synchro-aurige', () => {
     })
   })
 
-  describe('candidat passed the exam', () => {
+  xdescribe('candidat passed the exam', () => {
     let candidatCreated
     let placesCreated
     let aurigeFile

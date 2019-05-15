@@ -47,7 +47,8 @@ export default {
     async uploadPlaces () {
       const file = this.file
       this.file = null
-      await this.$store.dispatch(UPLOAD_PLACES_REQUEST, file)
+      const departement = this.$store.state.admin.departements.active
+      await this.$store.dispatch(UPLOAD_PLACES_REQUEST, { file, departement })
       const { importPlaces } = this.$store.state
       if (importPlaces.lastFile !== undefined) {
         this.file = importPlaces.lastFile

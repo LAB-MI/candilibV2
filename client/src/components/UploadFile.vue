@@ -1,27 +1,33 @@
 <template>
   <div class="import-file">
-    <div class="import-file-action  import-file-action--file">
-      <h4 class="import-file-subtitle">Fichier</h4>
-      <input-file
-        :dark="dark"
-        title="Choisir un fichier..."
-        :selected-callback="fileSelected"
-        :filename="filename"
-        :accept="accept"
-      />
-    </div>
-    <div class="import-file-action">
-      <h4 class="import-file-subtitle">{{subtitle}}</h4>
-      <v-btn
-        :dark='dark'
-        color="#17a2b8"
-        @click="uploadFile"
-        :disabled="importDisabled"
-        :aria-disabled="importDisabled"
-      >
-        {{uploadLabel}}
-      </v-btn>
-    </div>
+    <v-layout column wrap>
+      <v-flex xs6>
+        <div class="import-file-action  import-file-action--file">
+          <h4 class="import-file-subtitle">Fichier</h4>
+          <input-file
+            :dark="dark"
+            title="Choisir un fichier..."
+            :selected-callback="fileSelected"
+            :filename="filename"
+            :accept="accept"
+          />
+        </div>
+      </v-flex>
+      <v-flex xs6>
+        <div class="import-file-action">
+          <h4 class="import-file-subtitle">{{subtitle}}</h4>
+          <v-btn
+            :dark='dark'
+            color="#17a2b8"
+            @click="uploadFile"
+            :disabled="importDisabled"
+            :aria-disabled="importDisabled"
+          >
+            {{uploadLabel}}
+          </v-btn>
+        </div>
+      </v-flex>
+    </v-layout>
   </div>
 </template>
 

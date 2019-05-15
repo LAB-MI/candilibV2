@@ -19,7 +19,7 @@ const { default: app, apiPrefix } = require('../../app')
 
 jest.mock('../middlewares/verify-token')
 
-describe('Test centre controllers', () => {
+xdescribe('Test centre controllers', () => {
   beforeAll(async () => {
     await connect()
   })
