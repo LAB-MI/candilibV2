@@ -27,6 +27,5 @@ export const getInspecteurs = async (req, res) => {
         error,
       })
     }
-
   }
 }

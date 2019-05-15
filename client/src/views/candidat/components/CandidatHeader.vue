@@ -99,6 +99,12 @@ export default {
   text-decoration: none;
   letter-spacing: 0.1rem;
   font-size: 1em;
+
+  @media (max-width: 359px) {
+    font-size: 0.8em;
+    position relative
+    top: -0.1em;relativetop
+  }
 }
 
 .min-width-1170 {
