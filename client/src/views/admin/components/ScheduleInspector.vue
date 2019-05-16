@@ -47,40 +47,42 @@
             :key="element.centre._id"
             @click="centreSelector(element.centre._id)"
             ripple
+            :href="`#tab-${element.centre._id}`"
           >
             {{ element.centre.nom }}
           </v-tab>
-            <v-tab-item
-              v-for="place in placesByCentreList"
-              :key="place.centre._id"
-              transition="slide-y-transition"
-              reverse-transition="slide-y-transition"
-              :lazy="true"
-            >
-              <v-data-table
-                :rows-per-page-items='[15, 25, 35,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
-                :headers="headers"
-                :items="{ inspecteursData, activeCentreId } | filterByCentre"
-                class="elevation-1"
-                :loading="isLoading"
-                :no-data-text="isLoading ? 'Chargement des données en cours...' : 'Aucun creneau pour ce centre'"
+            <v-tabs-items v-model="active">
+              <v-tab-item
+                v-for="place in placesByCentreList"
+                :key="place.centre._id"
+                :lazy="true"
+                :value="`tab-${place.centre._id}`"
               >
-                <template v-slot:items="props">
-                  <td>
-                    {{  props.item.nom }}
-                  </td>
-                  <schedule-inspector-dialog
-                    v-for="(isPlaceInfo, indx) in props.item.creneau"
-                    :key="props.item._id + 'creneau' + indx"
-                    :content="isPlaceInfo"
-                    :selectedDate="date"
-                    :inspecteurId="props.item._id"
-                    :updateContent="parseInspecteursPlanning"
-                    :centreInfo="place.centre"
-                  />
-                </template>
-              </v-data-table>
-            </v-tab-item>
+                <v-data-table
+                  :rows-per-page-items='[15, 25, 35,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+                  :headers="headers"
+                  :items="{ inspecteursData, activeCentreId } | filterByCentre"
+                  class="elevation-1"
+                  :loading="isLoading"
+                  :no-data-text="isLoading ? 'Chargement des données en cours...' : 'Aucun creneau pour ce centre'"
+                >
+                  <template v-slot:items="props">
+                    <td>
+                      {{  props.item.nom }}
+                    </td>
+                    <schedule-inspector-dialog
+                      v-for="(isPlaceInfo, indx) in props.item.creneau"
+                      :key="props.item._id + 'creneau' + indx"
+                      :content="isPlaceInfo"
+                      :selectedDate="date"
+                      :inspecteurId="props.item._id"
+                      :updateContent="parseInspecteursPlanning"
+                      :centreInfo="place.centre"
+                    />
+                  </template>
+                </v-data-table>
+              </v-tab-item>
+            </v-tabs-items>
         </v-tabs>
       </v-flex>
     </v-layout>
@@ -88,6 +90,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
   FETCH_ADMIN_INFO_REQUEST,
@@ -131,7 +134,7 @@ export default {
   data () {
     return {
       active: null,
-      activeCentreId: this.firstCentreId,
+      activeCentreId: null,
       currentWeekNumber: getFrenchLuxonCurrentDateTime().weekNumber,
       date: getFrenchLuxonCurrentDateTime().toISODate(),
       headers: undefined,
@@ -143,12 +146,10 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['activeDepartement']),
+
     computedDateFormatted () {
       return this.formatDate(this.date)
-    },
-
-    centerTarget () {
-      return this.$store.state.admin.centerTarget
     },
 
     placesByCentreList () {
@@ -178,17 +179,16 @@ export default {
     },
 
     async refreshPlanning () {
-      const beginAndEnd = getFrenchLuxonDateTimeFromSql(this.date).toISO()
+      const begin = getFrenchLuxonDateTimeFromSql(this.date).startOf('day').toISO()
+      const end = getFrenchLuxonDateTimeFromSql(this.date).endOf('day').toISO()
       await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
       this.parseInspecteursPlanning()
     },
 
     async centreSelector (centreId) {
       this.activeCentreId = centreId
-      const beginAndEnd = getFrenchLuxonDateTimeFromSql(this.date).toISO()
-      await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
-      this.parseInspecteursPlanning()
+      this.refreshPlanning()
     },
 
     async parseInspecteursPlanning () {
@@ -242,11 +242,29 @@ export default {
       const dateTimeFromSql = getFrenchLuxonDateTimeFromSql(this.date)
       this.currentWeekNumber = dateTimeFromSql.weekNumber
       if (this.$store.state.admin.departements.active) {
-        const beginAndEnd = dateTimeFromSql.toISO()
+        const begin = dateTimeFromSql.startOf('day').toISO()
+        const end = dateTimeFromSql.endOf('day').toISO()
         await this.$store
-          .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
+          .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
         this.parseInspecteursPlanning()
       }
+    },
+
+    async activeDepartement (newValue, oldValue) {
+      const dateTimeFromSql = getFrenchLuxonDateTimeFromSql(this.date)
+      const begin = dateTimeFromSql.startOf('day').toISO()
+      const end = dateTimeFromSql.endOf('day').toISO()
+      await this.$store
+        .dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+      await this.$store
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
+      this.parseInspecteursPlanning()
+      this.active = `tab-${this.activeCentreId}`
+    },
+
+    async active (newValue, oldValue) {
+      console.log({ newValue, oldValue, activeCentreId: this.activeCentreId, active: this.active.split('tab-') })
+      // this.activeCentreId = this.active.split('tab-')[1]
     },
   },
 
@@ -266,9 +284,11 @@ export default {
 
   async mounted () {
     await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
-    const beginAndEnd = getFrenchLuxonDateTimeFromSql(this.date).toISO()
-    await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
+    const begin = getFrenchLuxonDateTimeFromSql(this.date).startOf('day').toISO()
+    const end = getFrenchLuxonDateTimeFromSql(this.date).endOf('day').toISO()
+    await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
     this.activeCentreId = this.firstCentreId
+    this.active = `tab-${this.activeCentreId}`
     await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
     this.parseInspecteursPlanning()
   },

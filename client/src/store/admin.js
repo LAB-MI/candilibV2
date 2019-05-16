@@ -3,7 +3,7 @@ import { getFrenchLuxonDateFromIso, creneauSetting } from '../util'
 
 import api from '@/api'
 
-import { SHOW_ERROR } from '@/store'
+import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
 
 export const FETCH_ADMIN_INFO_REQUEST = 'FETCH_ADMIN_INFO_REQUEST'
 export const FETCH_ADMIN_INFO_FAILURE = 'FETCH_ADMIN_INFO_FAILURE'
@@ -16,6 +16,10 @@ export const FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS = 'FETCH_ADMIN_DEPARTEM
 export const FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST'
 export const FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE'
 export const FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS'
+
+export const DELETE_PLACE_REQUEST = 'DELETE_PLACE_REQUEST'
+export const DELETE_PLACE_FAILURE = 'DELETE_PLACE_FAILURE'
+export const DELETE_PLACE_SUCCESS = 'DELETE_PLACE_SUCCESS'
 
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
@@ -39,6 +43,9 @@ export default {
         { hour: creneauSetting[12], place: undefined },
       ]
     },
+    activeDepartement: state => {
+      return state.departements.active
+    },
   },
 
   state: {
@@ -57,6 +64,10 @@ export default {
       isFetching: false,
       error: undefined,
       list: [],
+    },
+    deletePlaceAction: {
+      result: undefined,
+      isDeleting: false,
     },
     currentWeek: undefined,
     centerTarget: undefined,
@@ -100,6 +111,18 @@ export default {
       state.inspecteurs.isFetching = false
     },
 
+    [DELETE_PLACE_REQUEST] (state) {
+      state.deletePlaceAction.isDeleting = true
+    },
+    [DELETE_PLACE_SUCCESS] (state, success) {
+      state.deletePlaceAction.result = success
+      state.deletePlaceAction.isDeleting = false
+    },
+    [DELETE_PLACE_FAILURE] (state, error) {
+      state.deletePlaceAction.result = error
+      state.deletePlaceAction.isDeleting = false
+    },
+
     [SELECT_DEPARTEMENT] (state, departement) {
       state.departements.active = departement
     },
@@ -122,7 +145,8 @@ export default {
       }
     },
 
-    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, begin, end) {
+    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, { begin, end }) {
+      console.log({ begin, end })
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
         const currentDateTime = DateTime.local().setLocale('fr')
@@ -165,26 +189,20 @@ export default {
       }
     },
 
-    async [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] ({ commit, dispatch, state }) {
-      commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+    async [DELETE_PLACE_REQUEST] ({ commit, dispatch, state }, placeId) {
+      commit(DELETE_PLACE_REQUEST)
       try {
-        const list = await api.admin.getInspecteursByDepartement(state.departements.active)
-        const newList = list.map(elem => {
-          return {
-            ...elem,
-            creneau: creneauSetting,
-          }
-        })
-        commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, newList)
+        const result = await api.admin.deletePlace(placeId)
+        commit(DELETE_PLACE_SUCCESS, result)
+        dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
-        commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE, error)
+        commit(DELETE_PLACE_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
 
-    async [SELECT_DEPARTEMENT] ({ commit, dispatch }, departement) {
+    async [SELECT_DEPARTEMENT] ({ commit }, departement) {
       commit(SELECT_DEPARTEMENT, departement)
-      dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
     },
 
     async [SET_WEEK_SECTION] ({ commit, dispatch }, currentWeek, centerId) {

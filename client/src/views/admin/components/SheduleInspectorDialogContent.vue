@@ -98,6 +98,7 @@ import {
 
 import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
+  DELETE_PLACE_REQUEST,
 } from '@/store'
 
 export default {
@@ -117,9 +118,10 @@ export default {
   },
   methods: {
     async fetchPlanningByDepartement () {
-      const beginAndEnd = getFrenchLuxonDateTimeFromSql(this.selectedDate).toISO()
+      const begin = getFrenchLuxonDateTimeFromSql(this.selectedDate).toISO()
+      const end = getFrenchLuxonDateTimeFromSql(this.selectedDate).plus({ days: 1 }).toISO()
       await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
     },
 
     affectCandidatToCreneau () {
@@ -127,6 +129,7 @@ export default {
     },
 
     async renderCreneauUnavalaible () {
+      await this.$store.dispatch(DELETE_PLACE_REQUEST, this.content.place._id)
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
