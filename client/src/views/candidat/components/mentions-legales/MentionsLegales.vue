@@ -11,7 +11,7 @@
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
-    <page-title>Mentions légales</page-title>
+    <page-title class="title-mentions-legales">Mentions légales</page-title>
     <h3 class="date-info">Modifié le 21 décembre 2018</h3>
     <section class="mentions-legales">
       <div v-for="content in ArrayContent" :key="content.mainTitle">
@@ -69,6 +69,10 @@ export default {
     font-family: "Raleway", sans-serif;
     color: #0e1b4d;
     padding: 0;
+  }
+
+  .title-mentions-legales {
+    margin-top: 80px;
   }
 
   .date-info {
