@@ -102,7 +102,7 @@ export const getWhitelisted = async (req, res) => {
   const { departement } = req.query
   try {
     const whitelist = await findAllWhitelisted(departement)
-    res.status(200).json(whitelist.map(({ email }) => email))
+    res.status(200).json(whitelist)
   } catch (error) {
     return res.status(500).send({
       success: false,
