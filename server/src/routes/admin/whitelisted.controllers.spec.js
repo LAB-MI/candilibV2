@@ -58,7 +58,7 @@ describe('Test get and export candidats', () => {
       expect(body).toBeDefined()
       expect(body).toHaveLength(2)
       body.forEach(element => {
-        expect(element).toMatch(/test93.{0,2}@test.test/)
+        expect(element.email).toMatch(/test93.{0,2}@test.test/)
       })
     })
     it('Should have 200 to get 0 whitelisted of 95', async () => {

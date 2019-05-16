@@ -268,32 +268,32 @@ export default {
       return json
     },
 
-    async getWhitelist () {
-      const json = await apiClient.get(apiPaths.admin.whitelist, {
+    async getWhitelist (departement) {
+      const json = await apiClient.get(`${apiPaths.admin.whitelist}?departement=${departement}`, {
         headers: getAdminTokenHeader(),
       })
       return json
     },
 
-    async removeFromWhitelist (id) {
-      const json = await apiClient.delete(`${apiPaths.admin.whitelist}/${id}`, {
+    async removeFromWhitelist (id, departement) {
+      const json = await apiClient.delete(`${apiPaths.admin.whitelist}/${id}?departement=${departement}`, {
         headers: getAdminTokenHeader(),
       })
       return json
     },
 
-    async addBatchToWhitelist (emails) {
+    async addBatchToWhitelist (emails, departement) {
       const json = await apiClient.post(apiPaths.admin.whitelist, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ emails }),
+        body: JSON.stringify({ emails, departement }),
       })
       return json
     },
 
-    async addToWhitelist (email) {
+    async addToWhitelist (email, departement) {
       const json = await apiClient.post(apiPaths.admin.whitelist, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, departement }),
       })
       return json
     },

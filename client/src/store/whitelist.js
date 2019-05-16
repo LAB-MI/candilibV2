@@ -79,10 +79,10 @@ export default {
   },
 
   actions: {
-    async [FETCH_WHITELIST_REQUEST] ({ commit, dispatch }, content, timeout) {
+    async [FETCH_WHITELIST_REQUEST] ({ commit, dispatch }, departement) {
       commit(FETCH_WHITELIST_REQUEST)
       try {
-        const list = await api.admin.getWhitelist()
+        const list = await api.admin.getWhitelist(departement)
         if (list.success === false && list.isTokenValid === false) {
           const error = new Error('Vous n\'êtes plus identifié')
           error.auth = false
@@ -96,23 +96,23 @@ export default {
       }
     },
 
-    async [DELETE_EMAIL_REQUEST] ({ commit, dispatch }, email) {
+    async [DELETE_EMAIL_REQUEST] ({ commit, dispatch }, { email, departement }) {
       commit(DELETE_EMAIL_REQUEST)
       try {
-        const result = await api.admin.removeFromWhitelist(email)
+        const result = await api.admin.removeFromWhitelist(email, departement)
         commit(DELETE_EMAIL_SUCCESS, email)
         dispatch(SHOW_SUCCESS, `${result.email} supprimé de la liste blanche`)
-        return dispatch(FETCH_WHITELIST_REQUEST)
+        return dispatch(FETCH_WHITELIST_REQUEST, departement)
       } catch (error) {
         commit(DELETE_EMAIL_FAILURE)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
 
-    async [SAVE_EMAIL_REQUEST] ({ commit, dispatch }, emailToAdd) {
+    async [SAVE_EMAIL_REQUEST] ({ commit, dispatch }, { emailToAdd, departement }) {
       commit(SAVE_EMAIL_REQUEST)
       try {
-        const { email, message, success } = await api.admin.addToWhitelist(emailToAdd)
+        const { email, message, success } = await api.admin.addToWhitelist(emailToAdd, departement)
         if (success === false && message) {
           if (message.includes('duplicate key error')) {
             throw new Error(`Email déjà existant : '${emailToAdd}'`)
@@ -121,7 +121,7 @@ export default {
             throw new Error(`Email invalide : '${emailToAdd}'`)
           }
         }
-        await dispatch(FETCH_WHITELIST_REQUEST)
+        await dispatch(FETCH_WHITELIST_REQUEST, departement)
         commit(SAVE_EMAIL_SUCCESS, email)
         return dispatch(SHOW_SUCCESS, `${email} ajouté à la liste blanche`)
       } catch (error) {
@@ -130,12 +130,12 @@ export default {
       }
     },
 
-    async [SAVE_EMAIL_BATCH_REQUEST] ({ commit, dispatch }, emailsToAdd) {
+    async [SAVE_EMAIL_BATCH_REQUEST] ({ commit, dispatch }, { emailsToAdd, departement }) {
       commit(SAVE_EMAIL_BATCH_REQUEST)
       try {
-        const { message, result, status } = await api.admin.addBatchToWhitelist(emailsToAdd)
+        const { message, result, status } = await api.admin.addBatchToWhitelist(emailsToAdd, departement)
         commit(SAVE_EMAIL_BATCH_SUCCESS, result)
-        dispatch(FETCH_WHITELIST_REQUEST)
+        dispatch(FETCH_WHITELIST_REQUEST, departement)
         return dispatch(messageStatuses[status], message)
       } catch (error) {
         commit(SAVE_EMAIL_BATCH_FAILURE)
