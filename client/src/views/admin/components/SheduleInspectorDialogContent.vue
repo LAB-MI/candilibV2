@@ -118,9 +118,10 @@ export default {
   },
   methods: {
     async fetchPlanningByDepartement () {
-      const beginAndEnd = getFrenchLuxonDateTimeFromSql(this.selectedDate).toISO()
+      const begin = getFrenchLuxonDateTimeFromSql(this.selectedDate).toISO()
+      const end = getFrenchLuxonDateTimeFromSql(this.selectedDate).plus({ days: 1 }).toISO()
       await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, beginAndEnd, beginAndEnd)
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
     },
 
     affectCandidatToCreneau () {

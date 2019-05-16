@@ -43,6 +43,9 @@ export default {
         { hour: creneauSetting[12], place: undefined },
       ]
     },
+    activeDepartement: state => {
+      return state.departements.active
+    },
   },
 
   state: {
@@ -142,7 +145,8 @@ export default {
       }
     },
 
-    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, begin, end) {
+    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, { begin, end }) {
+      console.log({ begin, end })
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
         const currentDateTime = DateTime.local().setLocale('fr')
@@ -197,9 +201,8 @@ export default {
       }
     },
 
-    async [SELECT_DEPARTEMENT] ({ commit, dispatch }, departement) {
+    async [SELECT_DEPARTEMENT] ({ commit }, departement) {
       commit(SELECT_DEPARTEMENT, departement)
-      dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
     },
 
     async [SET_WEEK_SECTION] ({ commit, dispatch }, currentWeek, centerId) {
