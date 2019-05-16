@@ -7,28 +7,28 @@ server {
   }
 
   location @rew {
-    return 302 $scheme://$http_host/candilib/;
+    return 302 $scheme://$http_host<PUBLIC_PATH>/;
   }
 
-  location /candilib {
+  location <PUBLIC_PATH> {
     alias /usr/share/nginx/html;
     try_files $uri $uri/ @rewrites;
   }
 
   location @rewrites {
-    rewrite ^(.+)$ /candilib/index.html last;
+    rewrite ^(.+)$ <PUBLIC_PATH>/index.html last;
   }
 
-  location ~ "^/candilib/api/v2/candidat" {
-    rewrite "^/candilib(.*)$" $1 break;
+  location ~ "^<PUBLIC_PATH>/api/v2/candidat" {
+    rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
     add_header Access-Control-Allow-Origin '$http_origin';
     proxy_pass http://<API_HOST>:<API_PORT>;
     proxy_redirect off;
     proxy_buffering off;
     proxy_http_version 1.1;
   }
-  location ~ "^/candilib/api/v2/auth/candidat" {
-    rewrite "^/candilib(.*)$" $1 break;
+  location ~ "^<PUBLIC_PATH>/api/v2/auth/candidat" {
+    rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
     add_header Access-Control-Allow-Origin '$http_origin';
     proxy_pass http://<API_HOST>:<API_PORT>;
     proxy_redirect off;

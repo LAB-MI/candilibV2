@@ -19,6 +19,7 @@ echo "# $basename ${APP} ${APP_VERSION}"
 
 ret=0
 container_name=front_candidat
+public_path=/candilibV2
 
 echo "# Test ${APP}-$container_name up"
 dirname=$(dirname $0)
@@ -30,7 +31,7 @@ echo "Check $container_name: API magick link $api_candidat_link available"
 test_result=1
 until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do
         set +e
-        ( curl -s -X POST -L http://localhost:${FRONT_CANDIDAT_PORT:-80}/candilib$api_candidat_link  || echo '{}' ) | jq -e 'if .success!=null then true else false end'
+        ( curl -s -X POST -L http://localhost:${FRONT_CANDIDAT_PORT:-80}${public_path}$api_candidat_link  || echo '{}' ) | jq -e 'if .success!=null then true else false end'
 	test_result=$?
 	echo "Wait $timeout seconds: ${APP}-$container_name up $test_result";
 	(( timeout-- ))
@@ -47,7 +48,7 @@ echo "Check $container_name: API preinscription available $api_candidat_preinscr
 test_result=1
 until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do
         set +e
-        ( curl -s -X POST -L http://localhost:${FRONT_CANDIDAT_PORT:-80}/candilib$api_candidat_preinscription  || echo '{}' ) | jq -e 'if .success!=null then true else false end'
+        ( curl -s -X POST -L http://localhost:${FRONT_CANDIDAT_PORT:-80}${public_path}$api_candidat_preinscription  || echo '{}' ) | jq -e 'if .success!=null then true else false end'
 	test_result=$?
 	echo "Wait $timeout seconds: ${APP}-$container_name up $test_result";
 	(( timeout-- ))
@@ -64,7 +65,7 @@ echo "Check $container_name: API admin disable $api_admin code 405"
 test_result=1
 until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do
         set +e
-        ( curl -s -X POST -L localhost:${FRONT_CANDIDAT_PORT:-80}/candilib$api_admin -I |grep "^HTTP/.* 405" )
+        ( curl -s -X POST -L localhost:${FRONT_CANDIDAT_PORT:-80}${public_path}$api_admin -I |grep "^HTTP/.* 405" )
 	test_result=$?
 	echo "Wait $timeout seconds: ${APP}-$container_name up $test_result";
 	(( timeout-- ))

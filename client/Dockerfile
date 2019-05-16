@@ -81,11 +81,12 @@ RUN npm --no-git-tag-version version ${APP_VERSION} && \
 # Deliver the dist folder with Nginx
 FROM nginx:stable
 ARG CLIENT_BUILD_TARGET
+ARG PUBLIC_PATH
 COPY --from=production /app/dist /usr/share/nginx/html
 COPY nginx/nginx-run-${CLIENT_BUILD_TARGET}.template /etc/nginx/conf.d/default.template
 COPY nginx/nginx.template /etc/nginx/nginx.template
 COPY nginx/run.sh /run.sh
-RUN [ -f "/run.sh" ] && chmod +x /run.sh
+RUN [ -f "/run.sh" ] && chmod +x /run.sh ; sed -i -e "s|<PUBLIC_PATH>|${PUBLIC_PATH}|g;" /etc/nginx/conf.d/default.template
 
 CMD ["/run.sh"]
 
