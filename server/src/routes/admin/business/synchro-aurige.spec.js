@@ -244,7 +244,7 @@ describe('synchro-aurige', () => {
     it('should have penalty when candidat failed in exam', async () => {
       await synchroAurigeSuccess(aurigeFile, candidatCreated)
     })
-    it('should have penalty and remove resa which is before time out to retry', async () => {
+    xit('should have penalty and remove resa which is before time out to retry', async () => {
       await makeResa(placeBeforTimeOutRetryCreated, candidatCreated)
       const { places } = await synchroAurigeSuccess(aurigeFile, candidatCreated)
       expect(places).toBeDefined()
@@ -266,7 +266,7 @@ describe('synchro-aurige', () => {
       expect(place).toBeDefined()
       expect(place.candidat).toBeUndefined()
     })
-    it('should have penalty and not remove resa which is after time out to retry', async () => {
+    xit('should have penalty and not remove resa which is after time out to retry', async () => {
       await makeResa(placeAfterTimeOutRetryCreated, candidatCreated)
       const { places } = await synchroAurigeSuccess(aurigeFile, candidatCreated)
       expect(places).toBeUndefined()

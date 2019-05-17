@@ -15,7 +15,7 @@ export const placeCommonFields = {
     ref: 'Inspecteur',
   },
   centre: {
-    type: ObjectId, // ObjectId du centre pour la V2
+    type: ObjectId,
     required: false,
     ref: 'Centre',
   },
@@ -54,7 +54,12 @@ PlaceSchema.pre('save', async function preSave () {
   })
 
   if (places.length) {
-    if (places.some(currentPlace => currentPlace.centre !== place.centre)) {
+    if (
+      places.some(
+        currentPlace =>
+          currentPlace.centre.toString() !== place.centre._id.toString()
+      )
+    ) {
       const error = new Error(INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR)
       error.inspecteur = place.inspecteur
       throw error
