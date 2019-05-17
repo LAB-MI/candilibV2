@@ -28,9 +28,9 @@ export default {
   },
 
   actions: {
-    async FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST ({ state, commit }, centre, date) {
+    async FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST ({ state, commit }, { departement, centre, date }) {
       try {
-        const list = await api.admin.getPlacesAvailableByCentreAndDate(centre, date)
+        const list = await api.admin.getPlacesAvailableByCentreAndDate(departement, centre, date)
         commit(FETCH_GET_INSPECTEURS_AVAILABLE_SUCCESS, list)
       } catch (error) {
         commit(FETCH_GET_INSPECTEURS_AVAILABLE_FAILURE, error)
