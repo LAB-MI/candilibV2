@@ -244,7 +244,6 @@ describe('synchro-aurige', () => {
       const { places } = await synchroAurigeSuccess(aurigeFile, candidatCreated)
       expect(places).toBeDefined()
       expect(places).toHaveLength(1)
-      console.log(places[0])
       expect(places[0]).toHaveProperty(
         'centre',
         placeBeforTimeOutRetryCreated.centre

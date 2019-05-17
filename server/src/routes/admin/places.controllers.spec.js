@@ -13,6 +13,7 @@ import {
   centres,
   makeResas,
   deleteCandidats,
+  makeResa,
 } from '../../models/__tests__'
 import { getPlaces, updatePlaces } from '../admin/places.controllers'
 import centreModel from '../../models/centre/centre.model'
@@ -42,6 +43,7 @@ describe('Test places controller', () => {
   let inspecteurCreated2
   let centreSelected
   let placeSelected
+  let place2Created
   const app = express()
   app.use(bodyParser.json({ limit: '20mb' }))
   app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
@@ -67,7 +69,7 @@ describe('Test places controller', () => {
       centre,
       inspecteur: inspecteurCreated._id,
     })
-    await createPlace({
+    place2Created = await createPlace({
       date,
       centre,
       inspecteur: inspecteurCreated2._id,
@@ -135,23 +137,14 @@ describe('Test places controller', () => {
   })
 
   it('should 400 when modify inspecteur from a reservation with anthor reservation', async () => {
-    const {
-      _id: resa,
-      date,
-      centre,
-      // inspecteur,
-    } = await placeModel.findOne({
+    const { _id: resa } = await placeModel.findOne({
+      centre: placeSelected.centre,
       candidat: { $exists: true },
     })
 
     const inspecteur = inspecteurCreated2._id
     const candidat = candidatsCreated[2]._id
-    await createPlace({
-      date,
-      centre,
-      inspecteur,
-      candidat,
-    })
+    await makeResa(place2Created, candidat)
 
     const departement = '93'
     const { body } = await request(app)
