@@ -38,7 +38,7 @@
       <v-flex xs12>
         <v-tabs
           class="tabs"
-          v-model="active"
+          v-model="activeCentreTab"
           color="white"
           slider-color="red"
         >
@@ -46,43 +46,43 @@
             v-for="element in placesByCentreList"
             :key="element.centre._id"
             @click="centreSelector(element.centre._id)"
+            :href="`#tab-${element.centre._id.toString()}`"
             ripple
-            :href="`#tab-${element.centre._id}`"
           >
             {{ element.centre.nom }}
           </v-tab>
-            <v-tabs-items v-model="active">
-              <v-tab-item
-                v-for="place in placesByCentreList"
-                :key="place.centre._id"
-                :lazy="true"
-                :value="`tab-${place.centre._id}`"
+          <v-tabs-items v-model="activeCentreTab">
+            <v-tab-item
+              v-for="place in placesByCentreList"
+              :key="place.centre._id"
+              :lazy="true"
+              :value="`tab-${place.centre._id}`"
+            >
+              <v-data-table
+                :rows-per-page-items='[15, 25, 35,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
+                :headers="headers"
+                :items="{ inspecteursData, activeCentreId } | filterByCentre"
+                class="elevation-1"
+                :loading="isLoading"
+                :no-data-text="isLoading ? 'Chargement des données en cours...' : 'Aucun creneau pour ce centre'"
               >
-                <v-data-table
-                  :rows-per-page-items='[15, 25, 35,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
-                  :headers="headers"
-                  :items="{ inspecteursData, activeCentreId } | filterByCentre"
-                  class="elevation-1"
-                  :loading="isLoading"
-                  :no-data-text="isLoading ? 'Chargement des données en cours...' : 'Aucun creneau pour ce centre'"
-                >
-                  <template v-slot:items="props">
-                    <td>
-                      {{  props.item.nom }}
-                    </td>
-                    <schedule-inspector-dialog
-                      v-for="(isPlaceInfo, indx) in props.item.creneau"
-                      :key="props.item._id + 'creneau' + indx"
-                      :content="isPlaceInfo"
-                      :selectedDate="date"
-                      :inspecteurId="props.item._id"
-                      :updateContent="parseInspecteursPlanning"
-                      :centreInfo="place.centre"
-                    />
-                  </template>
-                </v-data-table>
-              </v-tab-item>
-            </v-tabs-items>
+                <template v-slot:items="props">
+                  <td>
+                    {{ props.item.nom }}
+                  </td>
+                  <schedule-inspector-dialog
+                    v-for="placeInfo in props.item.creneau"
+                    :key="`creneau-${placeInfo._id}`"
+                    :content="placeInfo"
+                    :selectedDate="date"
+                    :inspecteurId="props.item._id"
+                    :updateContent="parseInspecteursPlanning"
+                    :centreInfo="place.centre"
+                  />
+                </template>
+              </v-data-table>
+            </v-tab-item>
+          </v-tabs-items>
         </v-tabs>
       </v-flex>
     </v-layout>
@@ -133,7 +133,7 @@ export default {
 
   data () {
     return {
-      active: null,
+      activeCentreTab: null,
       activeCentreId: null,
       currentWeekNumber: getFrenchLuxonCurrentDateTime().weekNumber,
       date: getFrenchLuxonCurrentDateTime().toISODate(),
@@ -157,7 +157,7 @@ export default {
     },
 
     firstCentreId () {
-      return this.$store.state.admin.places.list[0].centre._id
+      return this.$store.state.admin.places.list[0] && this.$store.state.admin.places.list[0].centre._id
     },
 
     inspecteurs () {
@@ -191,12 +191,10 @@ export default {
       this.refreshPlanning()
     },
 
-    async parseInspecteursPlanning () {
+    parseInspecteursPlanning () {
       this.isComputing = true
       this.inspecteursData = []
-      if (creneauTemplate.length === 14) {
-        creneauTemplate.shift()
-      }
+      const [, ...creneaux] = creneauTemplate
 
       let reservastionsByCentre = {}
       const dateTofind = getFrenchLuxonDateTimeFromSql(this.date).toISODate()
@@ -213,15 +211,14 @@ export default {
 
           reservastionsByCentre = { centre: element.centre, places: result }
           this.inspecteursData = this.inspecteurs.map(inspecteur => {
-            const creneauData = creneauTemplate.map((elemt) => {
+            const creneauData = creneaux.map((elemt) => {
               const instpecteurPlaces = reservastionsByCentre.places
                 .filter(element => element.inspecteur === inspecteur._id &&
                   getFrenchLuxonDateFromIso(element.date).toFormat("HH'h'mm") === elemt)
               if (instpecteurPlaces.length) {
                 return { place: instpecteurPlaces[0], hour: elemt }
-              } else {
-                return { place: undefined, hour: elemt }
               }
+              return { place: undefined, hour: elemt }
             })
             return {
               ...inspecteur,
@@ -246,6 +243,8 @@ export default {
         const end = dateTimeFromSql.endOf('day').toISO()
         await this.$store
           .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
+        this.activeCentreId = this.firstCentreId
+        this.activeCentreTab = `tab-${this.activeCentreId}`
         this.parseInspecteursPlanning()
       }
     },
@@ -258,13 +257,9 @@ export default {
         .dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
+      this.activeCentreId = this.firstCentreId
+      this.activeCentreTab = `tab-${this.activeCentreId}`
       this.parseInspecteursPlanning()
-      this.active = `tab-${this.activeCentreId}`
-    },
-
-    async active (newValue, oldValue) {
-      console.log({ newValue, oldValue, activeCentreId: this.activeCentreId, active: this.active.split('tab-') })
-      // this.activeCentreId = this.active.split('tab-')[1]
     },
   },
 
@@ -288,21 +283,20 @@ export default {
     const end = getFrenchLuxonDateTimeFromSql(this.date).endOf('day').toISO()
     await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
     this.activeCentreId = this.firstCentreId
-    this.active = `tab-${this.activeCentreId}`
+    this.activeCentreTab = `tab-${this.activeCentreId}`
     await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
     this.parseInspecteursPlanning()
   },
 
   async beforeMount () {
-    this.headers = Array(14)
-      .fill(true).map((item, index) => {
-        return {
-          text: `${creneauTemplate[index]}`,
-          align: 'center',
-          sortable: false,
-          value: `${creneauTemplate[index]}`,
-        }
-      })
+    this.headers = creneauTemplate.map((creneau, index) => {
+      return {
+        text: `${creneau}`,
+        align: 'center',
+        sortable: false,
+        value: `${creneau}`,
+      }
+    })
 
     const { currentWeek } = this.$store.state.admin
 

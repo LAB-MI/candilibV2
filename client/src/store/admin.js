@@ -145,8 +145,8 @@ export default {
       }
     },
 
-    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, { begin, end }) {
-      console.log({ begin, end })
+    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, window = {}) {
+      const { begin, end } = window
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
         const currentDateTime = DateTime.local().setLocale('fr')
@@ -201,11 +201,11 @@ export default {
       }
     },
 
-    async [SELECT_DEPARTEMENT] ({ commit }, departement) {
+    [SELECT_DEPARTEMENT] ({ commit }, departement) {
       commit(SELECT_DEPARTEMENT, departement)
     },
 
-    async [SET_WEEK_SECTION] ({ commit, dispatch }, currentWeek, centerId) {
+    [SET_WEEK_SECTION] ({ commit, dispatch }, currentWeek, centerId) {
       commit(SET_WEEK_SECTION, currentWeek, centerId)
     },
   },
