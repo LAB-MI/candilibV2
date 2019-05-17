@@ -1,13 +1,16 @@
 import { dateTimeDernierEchecPratique } from './candidats-aurige'
 import config from '../../../../config'
-import { createTestPlace } from '../../../../models/__tests__/places'
+import { findCentreByName } from '../../../../models/centre'
+import { findInspecteurByMatricule } from '../../../../models/inspecteur'
+import { createPlace } from '../../../../models/place'
+import { inspecteursTests } from '../../../../models/__tests__/inspecteurs'
 
 export const placeBeforTimeOutRetry = {
   date: dateTimeDernierEchecPratique
     .plus({ days: config.timeoutToRetry - 1 })
     .toISO({ zone: 'utc' }),
   centre: 'Centre 1',
-  inspecteur: 'Inspecteur 1',
+  inspecteur: inspecteursTests[0].matricule,
 }
 
 export const placeAfterTimeOutRetry = {
@@ -15,10 +18,28 @@ export const placeAfterTimeOutRetry = {
     .plus({ days: config.timeoutToRetry + 1 })
     .toISO({ zone: 'utc' }),
   centre: 'Centre 2',
-  inspecteur: 'Inspecteur 2',
+  inspecteur: inspecteursTests[1].matricule,
 }
 const places = [placeBeforTimeOutRetry, placeAfterTimeOutRetry]
 
+export const createTestPlaceAurige = async place => {
+  const leanPlace = {
+    date: place.date,
+  }
+  const inspecteur = await findInspecteurByMatricule(place.inspecteur)
+
+  if (!inspecteur) {
+    console.warn(`L'inspecteur ${place.inspecteur} non trouvé`)
+  } else leanPlace.inspecteur = inspecteur._id
+
+  const centre = await findCentreByName(place.centre)
+  if (!centre) {
+    console.warn(`Le centre ${place.centre} non trouvé`)
+  } else leanPlace.centre = centre._id
+
+  return createPlace(leanPlace)
+}
+
 export const createPlacesToTest = async () => {
-  return Promise.all(places.map(createTestPlace))
+  return Promise.all(places.map(createTestPlaceAurige))
 }
