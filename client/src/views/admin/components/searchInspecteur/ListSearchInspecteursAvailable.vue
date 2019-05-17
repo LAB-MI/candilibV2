@@ -1,8 +1,8 @@
 <template>
     <div>
         <v-btn block v-if="!isEditing"
-         :loading="isLoading"
-         @click="getInspecteurs()"
+        :loading="isLoading"
+        @click="getInspecteurs()"
         >Modifier l'IPRC</v-btn>
         <v-autocomplete
         v-else

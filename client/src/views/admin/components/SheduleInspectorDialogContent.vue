@@ -31,7 +31,10 @@
       :closeDialog="closeDialog"
       :submitDialog="changeInspecteur"
     >
-      <list-search-inspecteurs-available :date="selectedDate" :centre="centreInfo._id" @select-inspecteur="selectedInspecteur"/>
+    <list-search-inspecteurs-available
+      :date="selectedDate"
+      :centre="centreInfo._id"
+        @select-inspecteur="selectInspecteur"/>
     </shedule-inspector-dialog-sub-content>
 
   </v-card>
@@ -123,6 +126,20 @@ export default {
     centreInfo: Object,
   },
   methods: {
+<<<<<<< HEAD
+=======
+    selectInspecteur (inspecteur) {
+      console.log({ inspecteur })
+    },
+
+    async fetchPlanningByDepartement () {
+      const begin = getFrenchLuxonDateTimeFromSql(this.selectedDate).toISO()
+      const end = getFrenchLuxonDateTimeFromSql(this.selectedDate).plus({ days: 1 }).toISO()
+      await this.$store
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
+    },
+
+>>>>>>> add story book to scheleInspeteurDialog
     affectCandidatToCreneau () {
       this.closeDialog()
     },

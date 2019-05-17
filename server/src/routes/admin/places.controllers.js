@@ -4,7 +4,6 @@ import {
   deletePlace,
   findPlacesByCentreAndDate,
 } from '../../models/place'
-import { dateTimeToFormatFr } from '../../util/date.util.js'
 import {
   createPlaceForInspector,
   importPlacesCsv,
