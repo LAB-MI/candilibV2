@@ -97,8 +97,9 @@ import {
 } from '@/util'
 
 import {
-  FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
   CREATE_CRENEAU_REQUEST,
+  DELETE_PLACE_REQUEST,
+  FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
 } from '@/store'
 
 export default {
@@ -145,7 +146,7 @@ export default {
       this.closeDialog()
     },
 
-    async renderCreneauAvalaible () {
+    async makeCreneauAvailable () {
       const [year, month, day] = this.selectedDate.split('-')
       const date = `${day}/${month}/${year} ${this.content.hour.replace('h', ':')}`
       const inspecteur = this.inspecteurId

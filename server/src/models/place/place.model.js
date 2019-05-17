@@ -57,7 +57,8 @@ PlaceSchema.pre('save', async function preSave () {
     if (
       places.some(
         currentPlace =>
-          currentPlace.centre.toString() !== place.centre._id.toString()
+          currentPlace.centre.toString() !==
+          (place.centre._id || place.centre).toString()
       )
     ) {
       const error = new Error(INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR)

@@ -71,8 +71,8 @@
                     {{ props.item.nom }}
                   </td>
                   <schedule-inspector-dialog
-                    v-for="placeInfo in props.item.creneau"
-                    :key="`creneau-${placeInfo._id}`"
+                    v-for="(placeInfo, index) in props.item.creneau"
+                    :key="`creneau-${placeInfo.hour}-${index}`"
                     :content="placeInfo"
                     :selectedDate="date"
                     :inspecteurId="props.item._id"

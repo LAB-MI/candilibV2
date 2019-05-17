@@ -31,21 +31,7 @@ export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 export default {
   getters: {
     creneauSetup: () => {
-      return [
-        { hour: creneauSetting[0], place: undefined },
-        { hour: creneauSetting[1], place: undefined },
-        { hour: creneauSetting[2], place: undefined },
-        { hour: creneauSetting[3], place: undefined },
-        { hour: creneauSetting[4], place: undefined },
-        { hour: creneauSetting[5], place: undefined },
-        { hour: creneauSetting[6], place: undefined },
-        { hour: creneauSetting[7], place: undefined },
-        { hour: creneauSetting[8], place: undefined },
-        { hour: creneauSetting[9], place: undefined },
-        { hour: creneauSetting[10], place: undefined },
-        { hour: creneauSetting[11], place: undefined },
-        { hour: creneauSetting[12], place: undefined },
-      ]
+      return creneauSetting.map(hour => ({ hour }))
     },
     activeDepartement: state => {
       return state.departements.active

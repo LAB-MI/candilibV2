@@ -56,14 +56,14 @@ export const createPlaceByAdmin = async (req, res) => {
   try {
     const createdPlaceResult = await createPlaceForInspector(centre, inspecteur, date)
     appLogger.info(
-      `create by admin place: La place a bien été crée.`
+      `create by admin place: La place a bien été créée.`
     )
     res.json({ success: true, message: `La place du [${createdPlaceResult.date}] a bien été crée.` })
   } catch (error) {
     appLogger.info(
-      `create by admin place: La place n'a pas été crée.`
+      `create by admin place: La place n'a pas été créée.`
     )
-    res.json({ success: false, message: "La place n'a pas été crée", error: error.nessage })
+    res.json({ success: false, message: "La place n'a pas été créée", error: error.nessage })
   }
 }
 

@@ -11,6 +11,14 @@ import {
 } from '../../models/place'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
+import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
+import { REASON_REMOVE_RESA_ADMIN } from '../common/reason.constants'
+import { sendCancelBookingByAdmin } from '../business'
+import {
+  DELETE_PLACE_ERROR,
+  RESA_BOOKED_CANCEL,
+  RESA_BOOKED_CANCEL_NO_MAIL,
+} from './message.constants'
 
 const getPlaceStatus = (
   departement,
@@ -184,6 +192,46 @@ export const releaseResa = async ({ _id }) => {
   }
 }
 
+export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
+  // Annuler la place
+  const placeUpdated = await removeBookedPlace(place)
+  // Archive place
+  let candidatUpdated = addPlaceToArchive(
+    candidat,
+    place,
+    REASON_REMOVE_RESA_ADMIN,
+    admin.email
+  )
+  candidatUpdated = await setCandidatToVIP(candidatUpdated, place.date)
+
+  let statusmail = true
+  let message = RESA_BOOKED_CANCEL
+  try {
+    await sendCancelBookingByAdmin(placeUpdated, candidatUpdated)
+  } catch (error) {
+    appLogger.warn({
+      section: 'candidat-removeReservations',
+      action: 'FAILED_SEND_MAIL',
+      error,
+    })
+    statusmail = false
+    message = RESA_BOOKED_CANCEL_NO_MAIL
+  }
+
+  try {
+    await deletePlace(placeUpdated)
+  } catch (error) {
+    appLogger.warn({
+      section: 'admin-removePlace',
+      action: 'FAILED_DELETE_PLACE',
+      error,
+    })
+    message = DELETE_PLACE_ERROR
+  }
+
+  return { statusmail, message, candidat: candidatUpdated, placeUpdated }
+}
+
 export const createPlaceForInspector = async (centre, inspecteur, date) => {
   const myDate = date
   try {
@@ -196,7 +244,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     appLogger.info({
       section: 'Admim-BuisnessPlaces',
       action: 'createPlaceForInspector',
-      message: `Place {${centre.departement},${
+      message: `Place {${centre.departement}, ${
         centre.nom
       }, ${inspecteur}, ${myDate}} enregistrée en base`,
     })
