@@ -45,51 +45,47 @@ export const createPlaces = async () => {
   const places = [
     {
       date: basePlaceDateTime.toISO(),
-      centre: centre1,
-      inspecteur: inspecteur1,
+      centre: centre1._id,
+      inspecteur: inspecteur1._id,
     },
     {
       date: basePlaceDateTime.plus({ days: 1, hour: 1 }).toISO(),
-      centre: centre2,
-      inspecteur: inspecteur2,
+      centre: centre2._id,
+      inspecteur: inspecteur2._id,
     },
     {
       date: basePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
-      centre: centre2,
-      inspecteur: inspecteur2,
+      centre: centre2._id,
+      inspecteur: inspecteur2._id,
     },
     {
       date: basePlaceDateTime.plus({ days: 1 }).toISO(),
-      centre: centre2,
-      inspecteur: inspecteur2,
+      centre: centre2._id,
+      inspecteur: inspecteur2._id,
     },
     {
       date: basePlaceDateTime.plus({ days: 2 }).toISO(),
-      centre: centre3,
-      inspecteur: inspecteur1,
+      centre: centre3._id,
+      inspecteur: inspecteur1._id,
     },
     {
       date: basePlaceDateTime.plus({ days: 3, hour: 1 }).toISO(),
-      centre: centre3,
-      inspecteur: inspecteur1,
+      centre: centre3._id,
+      inspecteur: inspecteur1._id,
     },
     {
       date: basePlaceDateTime.plus({ days: 3, hour: 2 }).toISO(),
-      centre: centre3,
-      inspecteur: inspecteur2,
+      centre: centre3._id,
+      inspecteur: inspecteur2._id,
     },
-    {
-      date: basePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
-      centre: centre3,
-      inspecteur: inspecteur2,
-    },
+    // {
+    //   date: basePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
+    //   centre: centre3._id,
+    //   inspecteur: inspecteur2._id,
+    // },
   ]
 
-  testPlaces = Promise.all(
-    places.map(place => {
-      createPlace(place)
-    })
-  )
+  testPlaces = await Promise.all(places.map(createPlace))
   creatingPlaces = false
   return testPlaces
 }
