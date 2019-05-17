@@ -24,6 +24,7 @@
         <v-flex xs12>
           <h1 class="black--text">
             {{ textContent }}
+            <slot/>
           </h1>
         </v-flex>
       </v-layout>

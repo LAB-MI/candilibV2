@@ -20,6 +20,7 @@
 
 <script>
 import { FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST } from '@/store'
+import { mapGetters } from 'vuex'
 export default {
   props: {
     centre: String,
@@ -33,6 +34,7 @@ export default {
     }
   },
   computed: {
+    ...mapGetters(['activeDepartement']),
     inspecteurs () {
       return this.$store.state.adminModifIpcsr.inspecteurs.list.map(inspecteur => {
         const { _id: value, nom, matricule } = inspecteur
@@ -43,6 +45,7 @@ export default {
     isLoading () {
       return this.$store.state.adminModifIpcsr.inspecteurs.isFetching
     },
+
   },
   watch: {
     select (newValue, oldValue) {
@@ -54,7 +57,7 @@ export default {
   },
   methods: {
     async getInspecteurs () {
-      await this.$store.dispatch(FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST, { centre: this.centre, date: this.date })
+      await this.$store.dispatch(FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST, { departement: this.activeDepartement, centre: this.centre, date: this.date })
       this.isEditing = true
     },
   },

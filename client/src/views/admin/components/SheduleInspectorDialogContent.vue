@@ -30,7 +30,10 @@
       textButtonCancel="Retour"
       :closeDialog="closeDialog"
       :submitDialog="changeInspecteur"
-    />
+    >
+      <list-search-inspecteurs-available :date="selectedDate" :centre="centreInfo._id" @select-inspecteur="selectedInspecteur"/>
+    </shedule-inspector-dialog-sub-content>
+
   </v-card>
   <v-card v-else-if="flagModal === 'block'">
     <shedule-inspector-dialog-header
@@ -92,6 +95,10 @@
 <script>
 import SheduleInspectorDialogSubContent from './SheduleInspectorDialogSubContent.vue'
 import SheduleInspectorDialogHeader from './SheduleInspectorDialogHeader.vue'
+import ListSearchInspecteursAvailable from './searchInspecteur/ListSearchInspecteursAvailable.vue'
+import {
+  getFrenchLuxonDateTimeFromSql,
+} from '@/util'
 
 import {
   CREATE_CRENEAU_REQUEST,
@@ -103,6 +110,7 @@ export default {
   components: {
     SheduleInspectorDialogSubContent,
     SheduleInspectorDialogHeader,
+    ListSearchInspecteursAvailable,
   },
   props: {
     flagModal: String,
