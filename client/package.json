@@ -5,7 +5,7 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "test": "npm run -s test:unit",
+    "test": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" npm run -s test:unit",
     "lint": "run-p lint:*",
     "build:admin": "vue-cli-service build",
     "build:candidat": "vue-cli-service build",
@@ -20,7 +20,7 @@
     "sb": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
     "test:e2e": "vue-cli-service test:e2e",
     "test:unit": "vue-cli-service test:unit",
-    "test:watch": "npm run -s test:unit -- --watch"
+    "test:watch": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" npm run -s test:unit -- --watch"
   },
   "dependencies": {
     "ag-grid-community": "^20.2.0",
@@ -63,6 +63,7 @@
     "cross-env": "^5.2.0",
     "eslint": "^5.16.0",
     "eslint-plugin-vue": "^5.2.2",
+    "full-icu": "^1.3.0",
     "npm-run-all": "^4.1.5",
     "postcss-current-selector": "0.0.3",
     "postcss-nested": "^4.1.2",

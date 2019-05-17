@@ -4,14 +4,16 @@ export const getFrenchLuxonDateFromIso = (isoDate) => {
   return DateTime.fromISO(isoDate).setLocale('fr')
 }
 
+export const getFrenchDateFromLuxon = dateTime =>
+  dateTime.setLocale('fr').toLocaleString({
+    weekday: 'long',
+    month: 'long',
+    day: '2-digit',
+    year: 'numeric',
+  })
+
 export const getFrenchDateFromIso = (isoDate) => {
-  return getFrenchLuxonDateFromIso(isoDate)
-    .toLocaleString({
-      weekday: 'long',
-      month: 'long',
-      day: '2-digit',
-      year: 'numeric',
-    })
+  return getFrenchDateFromLuxon(getFrenchLuxonDateFromIso(isoDate))
 }
 
 export const getFrenchDateTimeFromIso = (isoDate) => {

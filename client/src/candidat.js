@@ -27,6 +27,7 @@ export default {
   home_choix_du_centre: 'Choix du centre',
   home_choix_date_creneau_message_de_penalite: `Vous avez annulé ou modifié votre réservation à moins de {numberOfDaysBeforeDate} jours de la date d'examen.
     Vous ne pouvez sélectionner une date qu'à partir du {displayDate}`,
+  home_choix_date_creneau_message_echec_date_pratique: `Vous avez échoué le {dateDernierEchecPratique} à l'examen pratique du permis de conduire. Vous ne pouvez sélectionner une date qu'à partir du {dateEchecPratique}.`,
   confirmation_reservation_title: 'Confirmation',
   confirmation_reservation_subtitle: 'Vous avez choisi de passer l’épreuve pratique du permis à',
   confirmation_reservation_word: 'Le',
