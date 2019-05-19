@@ -50,6 +50,7 @@ const transfomCsv = async ({ data, departement }) => {
       zone: 'Europe/Paris',
       locale: 'fr',
     })
+
     if (dept !== departement) {
       throw new Error(
         'Le département du centre ne correspond pas au département dont vous avez la charge'
@@ -62,6 +63,7 @@ const transfomCsv = async ({ data, departement }) => {
       centre.trim(),
       departement
     )
+
     if (!foundCentre) throw new Error(`Le centre ${centre.trim()} est inconnu`)
 
     const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
@@ -228,4 +230,56 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
   }
 
   return { statusmail, message, candidat: candidatUpdated, placeUpdated }
+}
+
+export const createPlaceForInspector = async (centre, inspecteur, date) => {
+  const myDate = date
+  try {
+    const formatedDate = DateTime.fromFormat(myDate, 'dd/MM/yy HH:mm', {
+      zone: 'Europe/Paris',
+      locale: 'fr',
+    })
+    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id }
+    await createPlace(leanPlace)
+    appLogger.info({
+      section: 'Admim-BuisnessPlaces',
+      action: 'createPlaceForInspector',
+      message: `Place {${centre.departement}, ${
+        centre.nom
+      }, ${inspecteur}, ${myDate}} enregistrée en base`,
+    })
+    return getPlaceStatus(
+      centre.departement,
+      centre.nom,
+      inspecteur,
+      myDate,
+      'success',
+      `Place enregistrée en base`
+    )
+  } catch (error) {
+    appLogger.error(JSON.stringify(error))
+    if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
+      appLogger.warn({
+        section: 'Admim-BuisnessPlaces',
+        action: 'createPlaceForInspector',
+        message: 'Place déjà enregistrée en base',
+      })
+      return getPlaceStatus(
+        centre.departement,
+        centre.nom,
+        inspecteur,
+        myDate,
+        'error',
+        'Place déjà enregistrée en base'
+      )
+    }
+    return getPlaceStatus(
+      centre.departement,
+      centre.nom,
+      inspecteur,
+      date,
+      'error',
+      error.message
+    )
+  }
 }

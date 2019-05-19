@@ -1,7 +1,7 @@
 import { findAllPlaces, findPlaceById, deletePlace } from '../../models/place'
-import { dateTimeToFormatFr } from '../../util/date.util.js'
-import { importPlacesCsv } from './places.business'
+import { createPlaceForInspector, importPlacesCsv } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
+import { dateTimeToFormatFr } from '../../util/date.util'
 import { appLogger } from '../../util'
 
 export const importPlaces = async (req, res) => {
@@ -48,6 +48,22 @@ export const getPlaces = async (req, res) => {
   } else {
     places = await findCentresWithPlaces(departement, beginDate, endDate)
     res.json(places)
+  }
+}
+
+export const createPlaceByAdmin = async (req, res) => {
+  const { centre, inspecteur, date } = req.body
+  try {
+    const createdPlaceResult = await createPlaceForInspector(centre, inspecteur, date)
+    appLogger.info(
+      `create by admin place: La place a bien été créée.`
+    )
+    res.json({ success: true, message: `La place du [${createdPlaceResult.date}] a bien été crée.` })
+  } catch (error) {
+    appLogger.info(
+      `create by admin place: La place n'a pas été créée.`
+    )
+    res.json({ success: false, message: "La place n'a pas été créée", error: error.nessage })
   }
 }
 

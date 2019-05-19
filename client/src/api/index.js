@@ -210,6 +210,20 @@ export default {
       return json
     },
 
+    async createPlace (centre, inspecteur, date) {
+      const json = await apiClient
+        .post(`${apiPaths.admin.place}`, {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({
+            departement: centre.departement,
+            centre,
+            inspecteur,
+            date,
+          }),
+        })
+      return json
+    },
+
     async deletePlace (placeId) {
       const json = await apiClient
         .delete(`${apiPaths.admin.place}/${placeId}`, {

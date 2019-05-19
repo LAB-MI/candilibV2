@@ -21,27 +21,17 @@ export const DELETE_PLACE_REQUEST = 'DELETE_PLACE_REQUEST'
 export const DELETE_PLACE_FAILURE = 'DELETE_PLACE_FAILURE'
 export const DELETE_PLACE_SUCCESS = 'DELETE_PLACE_SUCCESS'
 
+export const CREATE_CRENEAU_REQUEST = 'CREATE_CRENEAU_REQUEST'
+export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
+export const CREATE_CRENEAU_SUCCESS = 'CREATE_CRENEAU_SUCCESS'
+
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
 export default {
   getters: {
     creneauSetup: () => {
-      return [
-        { hour: creneauSetting[0], place: undefined },
-        { hour: creneauSetting[1], place: undefined },
-        { hour: creneauSetting[2], place: undefined },
-        { hour: creneauSetting[3], place: undefined },
-        { hour: creneauSetting[4], place: undefined },
-        { hour: creneauSetting[5], place: undefined },
-        { hour: creneauSetting[6], place: undefined },
-        { hour: creneauSetting[7], place: undefined },
-        { hour: creneauSetting[8], place: undefined },
-        { hour: creneauSetting[9], place: undefined },
-        { hour: creneauSetting[10], place: undefined },
-        { hour: creneauSetting[11], place: undefined },
-        { hour: creneauSetting[12], place: undefined },
-      ]
+      return creneauSetting.map(hour => ({ hour }))
     },
     activeDepartement: state => {
       return state.departements.active
@@ -71,6 +61,10 @@ export default {
     },
     currentWeek: undefined,
     centerTarget: undefined,
+    createCreneau: {
+      isCreating: false,
+      result: undefined,
+    },
   },
 
   mutations: {
@@ -121,6 +115,41 @@ export default {
     [DELETE_PLACE_FAILURE] (state, error) {
       state.deletePlaceAction.result = error
       state.deletePlaceAction.isDeleting = false
+    },
+
+    [CREATE_CRENEAU_REQUEST] (state) {
+      state.createCreneau.isCreating = true
+    },
+    [CREATE_CRENEAU_SUCCESS] (state, success) {
+      state.createCreneau.result = success
+      state.createCreneau.isCreating = false
+    },
+    [CREATE_CRENEAU_FAILURE] (state, error) {
+      state.createCreneau.result = error
+      state.createCreneau.isCreating = false
+    },
+
+    [CREATE_CRENEAU_REQUEST] (state) {
+      state.createCreneau.isCreating = true
+    },
+    [CREATE_CRENEAU_SUCCESS] (state, success) {
+      state.createCreneau.result = success
+    },
+    [CREATE_CRENEAU_FAILURE] (state, error) {
+      state.createCreneau.result = error
+      state.createCreneau.isCreating = false
+    },
+
+    [CREATE_CRENEAU_REQUEST] (state) {
+      state.createCreneau.isCreating = true
+    },
+    [CREATE_CRENEAU_SUCCESS] (state, success) {
+      state.createCreneau.result = success
+      state.createCreneau.isCreating = false
+    },
+    [CREATE_CRENEAU_FAILURE] (state, error) {
+      state.createCreneau.result = error
+      state.createCreneau.isCreating = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {
@@ -197,6 +226,18 @@ export default {
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
         commit(DELETE_PLACE_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [CREATE_CRENEAU_REQUEST] ({ commit, dispatch, state }, { centre, inspecteur, date }) {
+      commit(CREATE_CRENEAU_REQUEST)
+      try {
+        const result = await api.admin.createPlace(centre, inspecteur, date)
+        commit(CREATE_CRENEAU_SUCCESS, result)
+        dispatch(SHOW_SUCCESS, result.message)
+      } catch (error) {
+        commit(CREATE_CRENEAU_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
