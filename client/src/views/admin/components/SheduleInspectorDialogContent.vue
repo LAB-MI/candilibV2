@@ -51,7 +51,7 @@
       textContent="Rendre le créneau disponible"
       textButtonCancel="Retour"
       :closeDialog="closeDialog"
-      :submitDialog="renderCreneauAvalaible"
+      :submitDialog="makeCreneauAvailable"
     />
   </v-card>
   <v-card v-else-if="flagModal === 'check'">
