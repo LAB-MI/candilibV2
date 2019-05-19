@@ -37,6 +37,10 @@
 export default {
   props: {
     textContent: String,
+    activeTextContent: {
+      type: Boolean,
+      default: true,
+    },
     textButtonCancel: String,
     closeDialog: Function,
     submitDialog: Function,

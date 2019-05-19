@@ -77,7 +77,7 @@
                 :rows-per-page-items='[15, 25, 35,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
                 :headers="headers"
                 :items="{ inspecteursData, activeCentreId } | filterByCentre"
-                class="elevation-1"
+                class="elevation-1 data-table"
                 :loading="isLoading"
                 :no-data-text="isLoading ? 'Chargement des données en cours...' : 'Aucun creneau pour ce centre'"
               >

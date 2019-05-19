@@ -257,7 +257,10 @@ describe('Test places controller', () => {
         .expect(422)
 
       expect(body).toHaveProperty('error', { _status: 422 })
-      expect(body).toHaveProperty('message', 'Les paramètres renseignés sont incorrects')
+      expect(body).toHaveProperty(
+        'message',
+        'Les paramètres renseignés sont incorrects'
+      )
       expect(body).toHaveProperty('success', false)
     })
     it('should return a 422 status code when affect candidat in place avalaible with unexist place', async () => {
@@ -273,7 +276,10 @@ describe('Test places controller', () => {
         .expect(422)
 
       expect(body).toHaveProperty('error', { _status: 422 })
-      expect(body).toHaveProperty('message', 'Les paramètres renseignés sont incorrects')
+      expect(body).toHaveProperty(
+        'message',
+        'Les paramètres renseignés sont incorrects'
+      )
       expect(body).toHaveProperty('success', false)
     })
     it('should return a 400 status code when affect candidat in place avalaible with unvalidate candidat by Aurige', async () => {
@@ -289,7 +295,10 @@ describe('Test places controller', () => {
         .expect(400)
 
       expect(body).toHaveProperty('error', { _status: 400 })
-      expect(body).toHaveProperty('message', "Le candidat n'est pas validé par Aurige")
+      expect(body).toHaveProperty(
+        'message',
+        "Le candidat n'est pas validé par Aurige"
+      )
       expect(body).toHaveProperty('success', false)
     })
   })

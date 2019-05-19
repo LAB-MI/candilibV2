@@ -9,6 +9,7 @@
       iconOnLeft="face"
       colorHeader="blue"
     />
+    <h4>{{ content.place.date }} {{ content.hour }}</h4>
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
@@ -43,7 +44,7 @@
         @select-inspecteur="selectInspecteur"
     />
     <confirm-box
-     v-if="hasConfirm"
+      v-if="hasConfirm"
       :closeAction='cancelSelection'
       :submitAction='validSelection'>
         <p>
@@ -79,7 +80,7 @@
   <v-card v-else-if="flagModal === 'check'">
     <shedule-inspector-dialog-header
       title="Ce créneau est au statut disponible"
-      :closeDialog="closeDialog"
+      :closeDialog="closeDialogAndResetSelectedCandidat"
       colorIcon="black"
       colorButton="green"
       icon="highlight_off"
@@ -94,11 +95,33 @@
       colorIcon="white"
       colorSubmitButton="blue"
       textContent="Affecter un candidat"
+      :activeTextContent="!selectedCandidat"
       :closeDialog="closeDialog"
       textButtonCancel="Retour"
       :submitDialog="affectCandidatToCreneau"
     >
-    <input type="text">
+      <candilib-autocomplete
+        v-if="!selectedCandidat"
+        class="search-input"
+        @selection="selectCandidat"
+        label="Candidats"
+        hint="Chercher un candidat par son nom / NEPH / email"
+        placeholder="Chercher un candidat par Nom / NEPH / Email"
+        :items="candidats"
+        item-text="nameNeph"
+        item-value="_id"
+        :fetch-autocomplete-action="fetchAutocompleteAction"
+      />
+      <confirm-box
+        v-else
+        :closeAction="() => selectedCandidat = null"
+        :submitAction="affectCandidatToCreneau"
+      >
+        <p>affecter le candidat:</p>
+        <p>{{ selectedCandidat.nomNaissance }} / {{ selectedCandidat.codeNeph }}</p>
+        <p>sur la place du</p>
+        <p>{{ formatedDate }}</p>
+      </confirm-box>
     </shedule-inspector-dialog-sub-content>
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
@@ -120,21 +143,33 @@ import SheduleInspectorDialogSubContent from './SheduleInspectorDialogSubContent
 import SheduleInspectorDialogHeader from './SheduleInspectorDialogHeader.vue'
 import ListSearchInspecteursAvailable from './searchInspecteur/ListSearchInspecteursAvailable.vue'
 import ConfirmBox from '@/components/ConfirmBox.vue'
+import CandilibAutocomplete from './CandilibAutocomplete'
 
 import {
+  getFrenchLuxonDateFromIso,
+  getFrenchLuxonDateTimeFromSql,
+} from '@/util'
+
+import {
+  AFFECT_CANDIDAT_TO_CRENEAU_REQUEST,
   CREATE_CRENEAU_REQUEST,
+  DELETE_BOOKED_PLACE_REQUEST,
   DELETE_PLACE_REQUEST,
   DELETE_BOOKED_PLACE_REQUEST,
   FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST,
+  FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
+  FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
 } from '@/store'
 import { mapGetters } from 'vuex'
 
 export default {
   components: {
-    SheduleInspectorDialogSubContent,
+    CandilibAutocomplete,
+    ConfirmBox,
     SheduleInspectorDialogHeader,
     ListSearchInspecteursAvailable,
     ConfirmBox,
+    SheduleInspectorDialogSubContent,
   },
   props: {
     flagModal: String,
@@ -153,6 +188,8 @@ export default {
       hasConfirm: false,
       displaySearchInspecteurs: false,
       displayModifyInspecteurTitle: true,
+      fetchAutocompleteAction: FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
+      selectedCandidat: null,
     }
   },
   computed: {
@@ -162,6 +199,17 @@ export default {
     },
     isUpdatingInspecteur () {
       return this.$store.state.adminModifInspecteur.isUpdating
+    },
+    candidats () {
+      return this.$store.state.adminSearch.candidats.list.map(candidat => {
+        const { nomNaissance, codeNeph } = candidat
+        const nameNeph = nomNaissance + ' | ' + codeNeph
+        return { nameNeph, ...candidat }
+      })
+    },
+
+    formatedDate () {
+      return getFrenchLuxonDateFromIso(this.content.place.date).toFormat("dd/MM/yyyy à HH'h'mm")
     },
   },
 
@@ -174,8 +222,31 @@ export default {
       this.displayModifyInspecteurTitle = false
     },
 
-    affectCandidatToCreneau () {
+    selectCandidat (candidat) {
+      this.selectedCandidat = candidat
+    },
+
+    closeDialogAndResetSelectedCandidat () {
+      this.selectedCandidat = null
       this.closeDialog()
+    },
+
+    async fetchPlanningByDepartement () {
+      const begin = getFrenchLuxonDateTimeFromSql(this.selectedDate).toISO()
+      const end = getFrenchLuxonDateTimeFromSql(this.selectedDate).plus({ days: 1 }).toISO()
+      await this.$store
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
+    },
+
+    async affectCandidatToCreneau () {
+      await this.$store
+        .dispatch(AFFECT_CANDIDAT_TO_CRENEAU_REQUEST, {
+          placeId: this.content.place._id,
+          candidatId: this.selectedCandidat._id,
+        })
+      await this.fetchPlanningByDepartement()
+      this.updateContent()
+      this.closeDialogAndResetSelectedCandidat()
     },
 
     async renderCreneauUnavalaible () {

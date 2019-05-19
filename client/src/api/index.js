@@ -348,9 +348,9 @@ export default {
     },
 
     async affectCandidatToPlace (placeId, candidatId) {
-      const json = await apiClient.patch(apiPaths.admin.places, {
+      const json = await apiClient.patch(`${apiPaths.admin.places}/${placeId}`, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ placeId, candidatId }),
+        body: JSON.stringify({ candidatId }),
       })
       return json
     },

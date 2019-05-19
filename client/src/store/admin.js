@@ -25,6 +25,10 @@ export const CREATE_CRENEAU_REQUEST = 'CREATE_CRENEAU_REQUEST'
 export const CREATE_CRENEAU_SUCCESS = 'CREATE_CRENEAU_SUCCESS'
 export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
 
+export const AFFECT_CANDIDAT_TO_CRENEAU_REQUEST = 'AFFECT_CANDIDAT_TO_CRENEAU_REQUEST'
+export const AFFECT_CANDIDAT_TO_CRENEAU_SUCCESS = 'AFFECT_CANDIDAT_TO_CRENEAU_SUCCESS'
+export const AFFECT_CANDIDAT_TO_CRENEAU_FAILURE = 'AFFECT_CANDIDAT_TO_CRENEAU_FAILURE'
+
 export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
 export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
 export const DELETE_BOOKED_PLACE_FAILURE = 'DELETE_BOOKED_PLACE_FAILURE'
@@ -71,6 +75,10 @@ export default {
     centerTarget: undefined,
     createCreneau: {
       isCreating: false,
+      result: undefined,
+    },
+    affectCandidat: {
+      isAffecting: false,
       result: undefined,
     },
   },
@@ -135,6 +143,18 @@ export default {
     [CREATE_CRENEAU_FAILURE] (state, error) {
       state.createCreneau.result = error
       state.createCreneau.isCreating = false
+    },
+
+    [AFFECT_CANDIDAT_TO_CRENEAU_REQUEST] (state) {
+      state.affectCandidat.isAffecting = true
+    },
+    [AFFECT_CANDIDAT_TO_CRENEAU_SUCCESS] (state, success) {
+      state.affectCandidat.result = success
+      state.affectCandidat.isAffecting = false
+    },
+    [AFFECT_CANDIDAT_TO_CRENEAU_FAILURE] (state, error) {
+      state.affectCandidat.result = error
+      state.affectCandidat.isAffecting = false
     },
 
     [DELETE_BOOKED_PLACE_REQUEST] (state) {
@@ -239,7 +259,8 @@ export default {
       }
     },
 
-    async [CREATE_CRENEAU_REQUEST] ({ commit, dispatch, state }, { centre, inspecteur, date }) {
+    async [CREATE_CRENEAU_REQUEST] ({ commit, dispatch, state }, placeData = {}) {
+      const { centre, inspecteur, date } = placeData
       commit(CREATE_CRENEAU_REQUEST)
       try {
         const result = await api.admin.createPlace(centre, inspecteur, date)
@@ -247,6 +268,19 @@ export default {
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
         commit(CREATE_CRENEAU_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [AFFECT_CANDIDAT_TO_CRENEAU_REQUEST] ({ commit, dispatch, state }, dataToAffect = {}) {
+      const { placeId, candidatId } = dataToAffect
+      commit(AFFECT_CANDIDAT_TO_CRENEAU_REQUEST)
+      try {
+        const result = await api.admin.affectCandidatToPlace(placeId, candidatId)
+        commit(AFFECT_CANDIDAT_TO_CRENEAU_SUCCESS, result)
+        dispatch(SHOW_SUCCESS, result.message)
+      } catch (error) {
+        commit(AFFECT_CANDIDAT_TO_CRENEAU_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },

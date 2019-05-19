@@ -4,6 +4,7 @@ import {
   deletePlace,
   findPlacesByCentreAndDate,
 } from '../../models/place'
+import { findCandidatById } from '../../models/candidat'
 import {
   createPlaceForInspector,
   importPlacesCsv,
@@ -77,16 +78,16 @@ export const createPlaceByAdmin = async (req, res) => {
       inspecteur,
       date
     )
-    appLogger.info(`create by admin place: La place a bien été crée.`)
+    appLogger.info(`create by admin place: La place a bien été créée.`)
     res.json({
       success: true,
       message: `La place du [${createdPlaceResult.date}] a bien été crée.`,
     })
   } catch (error) {
-    appLogger.info(`create by admin place: La place n'a pas été crée.`)
+    appLogger.info(`create by admin place: La place n'a pas été créée.`)
     res.json({
       success: false,
-      message: "La place n'a pas été crée",
+      message: "La place n'a pas été créée",
       error: error.nessage,
     })
   }
@@ -123,12 +124,8 @@ export const deletePlaceByAdmin = async (req, res) => {
 }
 
 export const updatePlaces = async (req, res) => {
-  const { resa, inspecteur, placeId, candidatId } = req.body
-
-  const loggerContent = {
-    section: 'admin-update-place',
-    admin: req.userId,
-  }
+  const { resa, inspecteur, candidatId } = req.body
+  const { id: placeId } = req.params
 
   try {
     if (resa && inspecteur) {
@@ -155,6 +152,10 @@ export const updatePlaces = async (req, res) => {
     }
 
     if (placeId && candidatId) {
+      const loggerContent = {
+        section: 'admin-update-place',
+        admin: req.userId,
+      }
       appLogger.info({
         ...loggerContent,
         placeId,
@@ -187,7 +188,13 @@ export const updatePlaces = async (req, res) => {
         )
       }
       const newResa = await affectCandidatInPlace(candidatId, placeId)
-      return res.send(newResa)
+      const { date, hour } = dateTimeToFormatFr(newResa.date)
+      return res.send({
+        success: true,
+        message: `Le candidat Nom: [${candidat.nomNaissance}] Neph: [${
+          candidat.codeNeph
+        }] a bien été affecté à la place du ${date} à ${hour}`,
+      })
     }
   } catch (error) {
     appLogger.error({
@@ -211,5 +218,8 @@ export const updatePlaces = async (req, res) => {
 
   res
     .status(422)
-    .send({ success: false, message: 'Les paramètres renseignés sont incorrects' })
+    .send({
+      success: false,
+      message: 'Les paramètres renseignés sont incorrects',
+    })
 }
