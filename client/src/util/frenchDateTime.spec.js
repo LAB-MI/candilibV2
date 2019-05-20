@@ -1,6 +1,7 @@
 import {
   getFrenchLuxonDateFromIso,
   getFrenchDateFromLuxon,
+  getFrenchDateTimeFromLuxon,
   getFrenchLuxonDateTimeFromSql,
   getFrenchLuxonCurrentDateTime,
   getFrenchLuxonDateFromObject,
@@ -43,6 +44,26 @@ describe('frenchDateTime', () => {
 
     // When
     const frenchDate = getFrenchDateFromLuxon(theDate)
+
+    // Then
+    expect(frenchDate).toBe(expectedDate)
+  })
+})
+
+describe('frenchDateTime', () => {
+  it('getFrenchDateTimeFromLuxon', () => {
+    // Given
+    const theDate = DateTime.local().setLocale('fr').set({
+      year: 2020,
+      month: 1,
+      day: 20,
+      hour: 10,
+      minute: 10,
+    })
+    const expectedDate = 'lundi 20 janvier 2020 à 10:10'
+
+    // When
+    const frenchDate = getFrenchDateTimeFromLuxon(theDate)
 
     // Then
     expect(frenchDate).toBe(expectedDate)
