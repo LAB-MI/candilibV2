@@ -9,7 +9,6 @@
       iconOnLeft="face"
       colorHeader="blue"
     />
-    <h4>{{ content.place.date }} {{ content.hour }}</h4>
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
@@ -120,7 +119,7 @@
         <p>affecter le candidat:</p>
         <p>{{ selectedCandidat.nomNaissance }} / {{ selectedCandidat.codeNeph }}</p>
         <p>sur la place du</p>
-        <p>{{ formatedDate }}</p>
+        <p>{{ formattedDate }}</p>
       </confirm-box>
     </shedule-inspector-dialog-sub-content>
     <v-divider></v-divider>
@@ -146,19 +145,18 @@ import ConfirmBox from '@/components/ConfirmBox.vue'
 import CandilibAutocomplete from './CandilibAutocomplete'
 
 import {
-  getFrenchLuxonDateFromIso,
+  getFrenchDateTimeFromIso,
   getFrenchLuxonDateTimeFromSql,
 } from '@/util'
 
 import {
-  AFFECT_CANDIDAT_TO_CRENEAU_REQUEST,
+  ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST,
   CREATE_CRENEAU_REQUEST,
   DELETE_BOOKED_PLACE_REQUEST,
   DELETE_PLACE_REQUEST,
-  DELETE_BOOKED_PLACE_REQUEST,
-  FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST,
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
   FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
+  FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST,
 } from '@/store'
 import { mapGetters } from 'vuex'
 
@@ -208,8 +206,8 @@ export default {
       })
     },
 
-    formatedDate () {
-      return getFrenchLuxonDateFromIso(this.content.place.date).toFormat("dd/MM/yyyy à HH'h'mm")
+    formattedDate () {
+      return getFrenchDateTimeFromIso(this.content.place.date)
     },
   },
 
@@ -240,7 +238,7 @@ export default {
 
     async affectCandidatToCreneau () {
       await this.$store
-        .dispatch(AFFECT_CANDIDAT_TO_CRENEAU_REQUEST, {
+        .dispatch(ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST, {
           placeId: this.content.place._id,
           candidatId: this.selectedCandidat._id,
         })

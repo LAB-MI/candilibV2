@@ -6,7 +6,9 @@ import config from '../../config'
 import { createCentres } from './centres'
 import { createInspecteurs } from './inspecteurs'
 
-let basePlaceDateTime = DateTime.fromObject({ day: 18, hour: 9 })
+let basePlaceDateTime = DateTime.fromObject({ day: 18, hour: 9 }).setLocale(
+  'fr'
+)
 
 if (
   basePlaceDateTime <

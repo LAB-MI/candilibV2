@@ -178,7 +178,7 @@ describe('Test places controller', () => {
     const app = express()
     app.use(bodyParser.json({ limit: '20mb' }))
     app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
-    app.patch(`${apiPrefix}/admin/places`, updatePlaces)
+    app.patch(`${apiPrefix}/admin/places/:id`, updatePlaces)
 
     beforeAll(async () => {
       await connect()
@@ -190,52 +190,49 @@ describe('Test places controller', () => {
         candidatsCreatedAndUpdated[0]
       )
     })
+
     afterAll(async () => {
       await Promise.all(
-        placesCreated.map(elt => {
-          return elt.remove()
-        })
+        placesCreated.map(elt => elt.remove())
       )
       await Promise.all(
-        centresCreated.map(elt => {
-          return elt.remove()
-        })
+        centresCreated.map(elt => elt.remove())
       )
       await Promise.all(
-        candidatsCreatedAndUpdated.map(elt => {
-          return elt.remove()
-        })
+        candidatsCreatedAndUpdated.map(elt => elt.remove())
       )
       await disconnect()
     })
 
-    it('should return a 200 status code when assign candidat in avalaible place', async () => {
+    it('should return a 200 when assign candidat in available place', async () => {
       const place = placesCreated[0]
       const candidat = candidatsCreatedAndUpdated[0]
 
       const { body } = await request(app)
-        .patch(`${apiPrefix}/admin/places`)
+        .patch(`${apiPrefix}/admin/places/${place._id}`)
         .send({
-          placeId: place._id,
           candidatId: candidat._id,
         })
         .expect(200)
 
-      expect(DateTime.fromISO(body.date).toISO()).toBe(
+      expect(DateTime.fromISO(body.place.date).toISO()).toBe(
         DateTime.fromJSDate(place.date).toISO()
       )
-      expect(body).toHaveProperty('inspecteur', place.inspecteur.toString())
-      expect(body).toHaveProperty('centre', place.centre.toString())
-      expect(body).toHaveProperty('candidat', candidat._id.toString())
+      expect(body.place).toHaveProperty(
+        'inspecteur',
+        place.inspecteur._id.toString()
+      )
+      expect(body.place).toHaveProperty('centre', place.centre._id.toString())
+      expect(body.place).toHaveProperty('candidat', candidat._id.toString())
     })
-    it('should return a 400 status code when place already booked', async () => {
+
+    it('should return a 400 when place already booked', async () => {
       const place = createdBookedPlace
       const candidat = candidatsCreatedAndUpdated[2]
 
       const { body } = await request(app)
-        .patch(`${apiPrefix}/admin/places`)
+        .patch(`${apiPrefix}/admin/places/${place._id}`)
         .send({
-          placeId: place._id,
           candidatId: candidat._id,
         })
         .expect(400)
@@ -244,15 +241,15 @@ describe('Test places controller', () => {
       expect(body).toHaveProperty('message', 'Cette place est déja réservée')
       expect(body).toHaveProperty('success', false)
     })
-    it('should return a 422 status code when affect candidat in place avalaible with unexist candidat', async () => {
+
+    it('should return a 422 when trying to assign unexisting candidat to place', async () => {
       const place = placesCreated[0]
-      const unExistCandidatId = '5cda8d17c522ad6a16e3633b'
+      const unexistingCandidatId = '5cda8d17c522ad6a16e3633b'
 
       const { body } = await request(app)
-        .patch(`${apiPrefix}/admin/places`)
+        .patch(`${apiPrefix}/admin/places/${place._id}`)
         .send({
-          placeId: place._id,
-          candidatId: unExistCandidatId,
+          candidatId: unexistingCandidatId,
         })
         .expect(422)
 
@@ -263,14 +260,14 @@ describe('Test places controller', () => {
       )
       expect(body).toHaveProperty('success', false)
     })
-    it('should return a 422 status code when affect candidat in place avalaible with unexist place', async () => {
-      const unExistPlaceId = '5cda8d17c522ad6a16e3633b'
+
+    it('should return a 422 when trying to assign candidat to unexisting place', async () => {
+      const unexistingPlaceId = '5cda8d17c522ad6a16e3633b'
       const candidat = candidatsCreatedAndUpdated[2]
 
       const { body } = await request(app)
-        .patch(`${apiPrefix}/admin/places`)
+        .patch(`${apiPrefix}/admin/places/${unexistingPlaceId}`)
         .send({
-          placeId: unExistPlaceId,
           candidatId: candidat._id,
         })
         .expect(422)
@@ -282,14 +279,14 @@ describe('Test places controller', () => {
       )
       expect(body).toHaveProperty('success', false)
     })
-    it('should return a 400 status code when affect candidat in place avalaible with unvalidate candidat by Aurige', async () => {
+
+    it('should return a 400 when trying to assign not yet validated candidat to place', async () => {
       const place = placesCreated[0]
       const candidat = candidatsCreatedAndUpdated[3]
 
       const { body } = await request(app)
-        .patch(`${apiPrefix}/admin/places`)
+        .patch(`${apiPrefix}/admin/places/${place._id}`)
         .send({
-          placeId: place._id,
           candidatId: candidat._id,
         })
         .expect(400)

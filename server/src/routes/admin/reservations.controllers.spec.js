@@ -4,7 +4,7 @@ import { connect, disconnect } from '../../mongo-connection'
 
 import app, { apiPrefix } from '../../app'
 import { createPlaces } from '../../models/__tests__/places'
-import { RESA_NO_BOOKED, RESA_BOOKED_CANCEL } from './message.constants'
+import { RESA_NO_BOOKED, CANCEL_BOOKED_PLACE } from './message.constants'
 import { createCentres } from '../../models/__tests__/centres'
 import { createCandidats } from '../../models/__tests__/candidats'
 import { makeResas } from '../../models/__tests__/reservations'
@@ -23,26 +23,26 @@ jest.mock('../../util/logger')
 
 xdescribe('reservation by admin', () => {
   describe('delete reservation by admin', () => {
-    let placesCreated
-    let candidatsCreated
-    let centresCreated
-    let admin
-    beforeAll(async () => {
-      await connect()
-      admin = await createUser(email, password, deps)
-      centresCreated = await createCentres()
-      placesCreated = await createPlaces()
-      candidatsCreated = await createCandidats()
-      await makeResas()
-      require('../middlewares/verify-token').__setIdAdmin(admin._id, deps)
-    })
+      let placesCreated
+      let candidatsCreated
+      let centresCreated
+      let admin
+      beforeAll(async () => {
+        await connect()
+        admin = await createUser(email, password, deps)
+        centresCreated = await createCentres()
+        placesCreated = await createPlaces()
+        candidatsCreated = await createCandidats()
+        await makeResas()
+        require('../middlewares/verify-token').__setIdAdmin(admin._id, deps)
+      })
 
-    afterAll(async () => {
-      await Promise.all(placesCreated.map(deleteData))
-      await Promise.all(centresCreated.map(deleteData))
-      await Promise.all(candidatsCreated.map(deleteData))
-      await disconnect()
-    })
+      afterAll(async () => {
+        await Promise.all(placesCreated.map(deleteData))
+        await Promise.all(centresCreated.map(deleteData))
+        await Promise.all(candidatsCreated.map(deleteData))
+        await disconnect()
+      })
 
     it('should 400 when a place has not booked', async () => {
       const placeSelected = placesCreated[4]
@@ -62,7 +62,7 @@ xdescribe('reservation by admin', () => {
         .expect(200)
       expect(body).toBeDefined()
       expect(body).toHaveProperty('success', true)
-      expect(body).toHaveProperty('message', RESA_BOOKED_CANCEL)
+      expect(body).toHaveProperty('message', CANCEL_BOOKED_PLACE)
     })
   })
 })

@@ -10,7 +10,7 @@ import {
   importPlacesCsv,
   validUpdateResaInspector,
   moveCandidatInPlaces,
-  affectCandidatInPlace,
+  assignCandidatInPlace,
 } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
 
@@ -42,7 +42,7 @@ export const importPlaces = async (req, res) => {
     })
   } catch (error) {
     appLogger.error(error)
-    return res.status(500).send({
+    res.status(500).send({
       success: false,
       message: error.message,
       error,
@@ -187,13 +187,14 @@ export const updatePlaces = async (req, res) => {
           'Date ETG ne sera plus valide pour cette place'
         )
       }
-      const newResa = await affectCandidatInPlace(candidatId, placeId)
-      const { date, hour } = dateTimeToFormatFr(newResa.date)
+      const bookedPlace = await assignCandidatInPlace(candidatId, placeId)
+      const { date, hour } = dateTimeToFormatFr(bookedPlace.date)
       return res.send({
         success: true,
         message: `Le candidat Nom: [${candidat.nomNaissance}] Neph: [${
           candidat.codeNeph
         }] a bien été affecté à la place du ${date} à ${hour}`,
+        place: bookedPlace,
       })
     }
   } catch (error) {
@@ -216,10 +217,8 @@ export const updatePlaces = async (req, res) => {
     })
   }
 
-  res
-    .status(422)
-    .send({
-      success: false,
-      message: 'Les paramètres renseignés sont incorrects',
-    })
+  res.status(422).send({
+    success: false,
+    message: 'Les paramètres renseignés sont incorrects',
+  })
 }

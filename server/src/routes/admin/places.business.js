@@ -24,6 +24,8 @@ import {
   RESA_BOOKED_CANCEL_NO_MAIL,
   DELETE_PLACE_ERROR,
   RESA_PLACE_HAS_BOOKED,
+  CANCEL_BOOKED_PLACE_NO_MAIL,
+  CANCEL_BOOKED_PLACE,
 } from './message.constants'
 
 const getPlaceStatus = (
@@ -47,7 +49,7 @@ const getPlaceStatus = (
  * @param {*} data
  */
 const transfomCsv = async ({ data, departement }) => {
-  const [day, time, inspecteur, centre, dept] = data
+  const [day, time, matricule, centre, dept] = data
 
   const myDate = `${day.trim()} ${time.trim()}`
 
@@ -73,9 +75,9 @@ const transfomCsv = async ({ data, departement }) => {
       throw new Error(`Le centre ${centre.trim()} est inconnu`)
     }
 
-    const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
+    const inspecteurFound = await findInspecteurByMatricule(matricule.trim())
     if (!inspecteurFound) {
-      throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
+      throw new Error(`L'inspecteur ${matricule.trim()} est inconnu`)
     }
 
     return {
@@ -93,7 +95,7 @@ const transfomCsv = async ({ data, departement }) => {
     return getPlaceStatus(
       departement,
       centre,
-      inspecteur,
+      matricule,
       myDate,
       'error',
       error.message
@@ -212,7 +214,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
   candidatUpdated = await setCandidatToVIP(candidatUpdated, place.date)
 
   let statusmail = true
-  let message = RESA_BOOKED_CANCEL
+  let message = CANCEL_BOOKED_PLACE
   try {
     await sendCancelBookingByAdmin(placeUpdated, candidatUpdated)
   } catch (error) {
@@ -222,7 +224,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
       error,
     })
     statusmail = false
-    message = RESA_BOOKED_CANCEL_NO_MAIL
+    message = CANCEL_BOOKED_PLACE_NO_MAIL
   }
 
   try {
@@ -349,9 +351,9 @@ export const moveCandidatInPlaces = async (resa, place) => {
   return newResa
 }
 
-export const affectCandidatInPlace = async (candidatId, placeId) => {
+export const assignCandidatInPlace = async (candidatId, placeId) => {
   const loggerContent = {
-    section: 'admin-affect-candidat-in-places',
+    section: 'admin-assign-candidat-in-places',
     candidatId,
     placeId,
   }

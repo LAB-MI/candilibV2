@@ -25,9 +25,9 @@ export const CREATE_CRENEAU_REQUEST = 'CREATE_CRENEAU_REQUEST'
 export const CREATE_CRENEAU_SUCCESS = 'CREATE_CRENEAU_SUCCESS'
 export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
 
-export const AFFECT_CANDIDAT_TO_CRENEAU_REQUEST = 'AFFECT_CANDIDAT_TO_CRENEAU_REQUEST'
-export const AFFECT_CANDIDAT_TO_CRENEAU_SUCCESS = 'AFFECT_CANDIDAT_TO_CRENEAU_SUCCESS'
-export const AFFECT_CANDIDAT_TO_CRENEAU_FAILURE = 'AFFECT_CANDIDAT_TO_CRENEAU_FAILURE'
+export const ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST = 'ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST'
+export const ASSIGN_CANDIDAT_TO_CRENEAU_SUCCESS = 'ASSIGN_CANDIDAT_TO_CRENEAU_SUCCESS'
+export const ASSIGN_CANDIDAT_TO_CRENEAU_FAILURE = 'ASSIGN_CANDIDAT_TO_CRENEAU_FAILURE'
 
 export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
 export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
@@ -77,7 +77,7 @@ export default {
       isCreating: false,
       result: undefined,
     },
-    affectCandidat: {
+    assignCandidat: {
       isAffecting: false,
       result: undefined,
     },
@@ -145,16 +145,16 @@ export default {
       state.createCreneau.isCreating = false
     },
 
-    [AFFECT_CANDIDAT_TO_CRENEAU_REQUEST] (state) {
-      state.affectCandidat.isAffecting = true
+    [ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST] (state) {
+      state.assignCandidat.isAffecting = true
     },
-    [AFFECT_CANDIDAT_TO_CRENEAU_SUCCESS] (state, success) {
-      state.affectCandidat.result = success
-      state.affectCandidat.isAffecting = false
+    [ASSIGN_CANDIDAT_TO_CRENEAU_SUCCESS] (state, success) {
+      state.assignCandidat.result = success
+      state.assignCandidat.isAffecting = false
     },
-    [AFFECT_CANDIDAT_TO_CRENEAU_FAILURE] (state, error) {
-      state.affectCandidat.result = error
-      state.affectCandidat.isAffecting = false
+    [ASSIGN_CANDIDAT_TO_CRENEAU_FAILURE] (state, error) {
+      state.assignCandidat.result = error
+      state.assignCandidat.isAffecting = false
     },
 
     [DELETE_BOOKED_PLACE_REQUEST] (state) {
@@ -272,15 +272,15 @@ export default {
       }
     },
 
-    async [AFFECT_CANDIDAT_TO_CRENEAU_REQUEST] ({ commit, dispatch, state }, dataToAffect = {}) {
-      const { placeId, candidatId } = dataToAffect
-      commit(AFFECT_CANDIDAT_TO_CRENEAU_REQUEST)
+    async [ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST] ({ commit, dispatch, state }, assignData = {}) {
+      const { placeId, candidatId } = assignData
+      commit(ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST)
       try {
-        const result = await api.admin.affectCandidatToPlace(placeId, candidatId)
-        commit(AFFECT_CANDIDAT_TO_CRENEAU_SUCCESS, result)
+        const result = await api.admin.assignCandidatToPlace(placeId, candidatId)
+        commit(ASSIGN_CANDIDAT_TO_CRENEAU_SUCCESS, result)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
-        commit(AFFECT_CANDIDAT_TO_CRENEAU_FAILURE, error)
+        commit(ASSIGN_CANDIDAT_TO_CRENEAU_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },

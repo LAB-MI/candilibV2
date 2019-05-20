@@ -347,10 +347,10 @@ export default {
       return json
     },
 
-    async affectCandidatToPlace (placeId, candidatId) {
+    async assignCandidatToPlace (placeId, candidatId, departement) {
       const json = await apiClient.patch(`${apiPaths.admin.places}/${placeId}`, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ candidatId }),
+        body: JSON.stringify({ candidatId, departement }),
       })
       return json
     },
