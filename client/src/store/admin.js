@@ -18,12 +18,16 @@ export const FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE = 'FETCH_INSPECTEURS_BY_DE
 export const FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS'
 
 export const DELETE_PLACE_REQUEST = 'DELETE_PLACE_REQUEST'
-export const DELETE_PLACE_FAILURE = 'DELETE_PLACE_FAILURE'
 export const DELETE_PLACE_SUCCESS = 'DELETE_PLACE_SUCCESS'
+export const DELETE_PLACE_FAILURE = 'DELETE_PLACE_FAILURE'
 
 export const CREATE_CRENEAU_REQUEST = 'CREATE_CRENEAU_REQUEST'
-export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
 export const CREATE_CRENEAU_SUCCESS = 'CREATE_CRENEAU_SUCCESS'
+export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
+
+export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
+export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
+export const DELETE_BOOKED_PLACE_FAILURE = 'DELETE_BOOKED_PLACE_FAILURE'
 
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
@@ -54,6 +58,10 @@ export default {
       isFetching: false,
       error: undefined,
       list: [],
+    },
+    deleteBookedPlace: {
+      result: undefined,
+      isDeleting: false,
     },
     deletePlaceAction: {
       result: undefined,
@@ -129,27 +137,16 @@ export default {
       state.createCreneau.isCreating = false
     },
 
-    [CREATE_CRENEAU_REQUEST] (state) {
-      state.createCreneau.isCreating = true
+    [DELETE_BOOKED_PLACE_REQUEST] (state) {
+      state.deleteBookedPlace.isDeleting = true
     },
-    [CREATE_CRENEAU_SUCCESS] (state, success) {
-      state.createCreneau.result = success
+    [DELETE_BOOKED_PLACE_SUCCESS] (state, success) {
+      state.deleteBookedPlace.result = success
+      state.deleteBookedPlace.isDeleting = false
     },
-    [CREATE_CRENEAU_FAILURE] (state, error) {
-      state.createCreneau.result = error
-      state.createCreneau.isCreating = false
-    },
-
-    [CREATE_CRENEAU_REQUEST] (state) {
-      state.createCreneau.isCreating = true
-    },
-    [CREATE_CRENEAU_SUCCESS] (state, success) {
-      state.createCreneau.result = success
-      state.createCreneau.isCreating = false
-    },
-    [CREATE_CRENEAU_FAILURE] (state, error) {
-      state.createCreneau.result = error
-      state.createCreneau.isCreating = false
+    [DELETE_BOOKED_PLACE_FAILURE] (state, error) {
+      state.deleteBookedPlace.result = error
+      state.deleteBookedPlace.isDeleting = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {
@@ -214,6 +211,18 @@ export default {
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, newList)
       } catch (error) {
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [DELETE_BOOKED_PLACE_REQUEST] ({ commit, dispatch, state }, placeId) {
+      commit(DELETE_BOOKED_PLACE_REQUEST)
+      try {
+        const result = await api.admin.deleteBookedPlace(placeId)
+        commit(DELETE_BOOKED_PLACE_SUCCESS, result)
+        dispatch(SHOW_SUCCESS, result.message)
+      } catch (error) {
+        commit(DELETE_BOOKED_PLACE_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },

@@ -99,6 +99,7 @@ import {
 import {
   CREATE_CRENEAU_REQUEST,
   DELETE_PLACE_REQUEST,
+  DELETE_BOOKED_PLACE_REQUEST,
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
 } from '@/store'
 
@@ -137,6 +138,8 @@ export default {
     },
 
     async renderCreneauUnBookAndUnavalaible () {
+      await this.$store
+        .dispatch(DELETE_BOOKED_PLACE_REQUEST, this.content.place._id)
       await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()

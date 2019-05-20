@@ -20,7 +20,7 @@
         <v-flex
           class="monitor-wrapper  u-flex--column-on-tablet"
           xs6
-          v-for="info in centerInfos"
+          v-for="info in placeByCentreInfos"
           :key="info.centre.nom"
         >
           <week-monitor
@@ -51,7 +51,7 @@ export default {
   },
   computed: {
     ...mapGetters(['activeDepartement']),
-    centerInfos () {
+    placeByCentreInfos () {
       return this.$store.state.admin.places.list
     },
   },

@@ -9,6 +9,7 @@ import {
   createPlaceByAdmin,
   deletePlaceByAdmin,
 } from './places.controllers'
+import { removeReservationByAdmin } from './reservations.controllers'
 import {
   getWhitelisted,
   addWhitelisted,
@@ -28,6 +29,7 @@ router.post('/place', verifyAdminDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.post('/places', verifyAdminDepartement, importPlaces)
 router.get('/places', verifyAdminDepartement, getPlaces)
+router.delete('/reservations/:id', removeReservationByAdmin)
 
 router
   .route('/whitelisted')
