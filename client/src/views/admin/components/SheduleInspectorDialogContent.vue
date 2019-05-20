@@ -92,15 +92,11 @@
 <script>
 import SheduleInspectorDialogSubContent from './SheduleInspectorDialogSubContent.vue'
 import SheduleInspectorDialogHeader from './SheduleInspectorDialogHeader.vue'
-import {
-  getFrenchLuxonDateTimeFromSql,
-} from '@/util'
 
 import {
   CREATE_CRENEAU_REQUEST,
   DELETE_PLACE_REQUEST,
   DELETE_BOOKED_PLACE_REQUEST,
-  FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
 } from '@/store'
 
 export default {
@@ -119,20 +115,12 @@ export default {
     centreInfo: Object,
   },
   methods: {
-    async fetchPlanningByDepartement () {
-      const begin = getFrenchLuxonDateTimeFromSql(this.selectedDate).toISO()
-      const end = getFrenchLuxonDateTimeFromSql(this.selectedDate).plus({ days: 1 }).toISO()
-      await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
-    },
-
     affectCandidatToCreneau () {
       this.closeDialog()
     },
 
     async renderCreneauUnavalaible () {
       await this.$store.dispatch(DELETE_PLACE_REQUEST, this.content.place._id)
-      await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
     },
@@ -140,7 +128,6 @@ export default {
     async renderCreneauUnBookAndUnavalaible () {
       await this.$store
         .dispatch(DELETE_BOOKED_PLACE_REQUEST, this.content.place._id)
-      await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
     },
@@ -156,7 +143,6 @@ export default {
       const centre = this.centreInfo
       await this.$store
         .dispatch(CREATE_CRENEAU_REQUEST, { date, centre, inspecteur })
-      await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialog()
     },

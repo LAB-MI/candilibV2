@@ -76,7 +76,7 @@
                     :content="placeInfo"
                     :selectedDate="date"
                     :inspecteurId="props.item._id"
-                    :updateContent="parseInspecteursPlanning"
+                    :updateContent="refreshPlanning"
                     :centreInfo="place.centre"
                   />
                 </template>
@@ -105,13 +105,12 @@ import {
   getFrenchLuxonCurrentDateTime,
   getFrenchLuxonDateFromIso,
   getFrenchLuxonDateFromObject,
-  getFrenchLuxonDateTimeFromSQL,
-  getFrenchLuxonDateFromSQL,
+  getFrenchLuxonDateTimeFromSql,
 } from '@/util'
 
 const creneauTemplate = [
   'Inspecteurs',
-  ...creneauSetting
+  ...creneauSetting,
 ]
 
 export default {
@@ -172,14 +171,15 @@ export default {
     },
 
     async refreshPlanning () {
-      const begin = getFrenchLuxonDateTimeFromSQL(this.date).startOf('day').toISO()
-      const end = getFrenchLuxonDateTimeFromSQL(this.date).endOf('day').toISO()
+      const begin = getFrenchLuxonDateTimeFromSql(this.date).startOf('day').toISO()
+      const end = getFrenchLuxonDateTimeFromSql(this.date).endOf('day').toISO()
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
       this.parseInspecteursPlanning()
     },
 
     async centreSelector (centreId) {
+      this.$router.push({ params: { center: centreId, date: this.date } })
       this.activeCentreId = centreId
       this.refreshPlanning()
     },
@@ -190,7 +190,7 @@ export default {
       const [, ...creneaux] = creneauTemplate
 
       let reservastionsByCentre = {}
-      const dateTofind = getFrenchLuxonDateTimeFromSQL(this.date).toISODate()
+      const dateTofind = getFrenchLuxonDateTimeFromSql(this.date).toISODate()
 
       this.placesByCentreList.find(element => {
         const weekPlaces = element.places[this.currentWeekNumber]
@@ -229,21 +229,22 @@ export default {
 
   watch: {
     async date (val) {
-      const dateTimeFromSQL = getFrenchLuxonDateTimeFromSQL(this.date)
+      const dateTimeFromSQL = getFrenchLuxonDateTimeFromSql(this.date)
       this.currentWeekNumber = dateTimeFromSQL.weekNumber
       if (this.$store.state.admin.departements.active) {
         const begin = dateTimeFromSQL.startOf('day').toISO()
         const end = dateTimeFromSQL.endOf('day').toISO()
         await this.$store
           .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
-        this.activeCentreId = this.firstCentreId
+        this.activeCentreId = (this.$route.params.center) || this.firstCentreId
         this.activeCentreTab = `tab-${this.activeCentreId}`
         this.parseInspecteursPlanning()
       }
+      this.$router.push({ params: { center: this.activeCentreId, date: this.date } })
     },
 
     async activeDepartement (newValue, oldValue) {
-      const dateTimeFromSQL = getFrenchLuxonDateTimeFromSQL(this.date)
+      const dateTimeFromSQL = getFrenchLuxonDateTimeFromSql(this.date)
       const begin = dateTimeFromSQL.startOf('day').toISO()
       const end = dateTimeFromSQL.endOf('day').toISO()
       await this.$store
@@ -272,13 +273,13 @@ export default {
 
   async mounted () {
     await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
-    const begin = getFrenchLuxonDateTimeFromSQL(this.date).startOf('day').toISO()
-    const end = getFrenchLuxonDateTimeFromSQL(this.date).endOf('day').toISO()
+    const begin = getFrenchLuxonDateTimeFromSql(this.date).startOf('day').toISO()
+    const end = getFrenchLuxonDateTimeFromSql(this.date).endOf('day').toISO()
     await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
+    await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
     const centerId = this.$route.params.center
     this.activeCentreId = (centerId) || this.firstCentreId
     this.activeCentreTab = `tab-${this.activeCentreId}`
-    await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
     this.parseInspecteursPlanning()
   },
 
@@ -300,10 +301,15 @@ export default {
       weekday: 1,
     }
 
-    const [year, month, day] = this.$route.params.date.split('-')
-    const date = { year, month, day }
+    const routeDate = this.$route.params.date
+    if (routeDate) {
+      const [year, month, day] = this.$route.params.date.split('-')
+      const date = { year, month, day }
+      this.date = getFrenchLuxonDateFromObject(date).toISODate()
+      return
+    }
 
-    this.date = getFrenchLuxonDateFromObject(date || defaultDate).toISODate()
+    this.date = getFrenchLuxonDateFromObject(defaultDate).toISODate()
   },
 }
 </script>
