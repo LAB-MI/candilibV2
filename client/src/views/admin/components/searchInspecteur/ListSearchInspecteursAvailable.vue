@@ -1,11 +1,6 @@
 <template>
     <div>
-        <v-btn block v-if="!isEditing"
-        :loading="isLoading"
-        @click="getInspecteurs()"
-        >Modifier l'IPRC</v-btn>
         <v-autocomplete
-        v-else
         v-model="select"
         :items="inspecteurs"
         :loading="isLoading"
@@ -13,8 +8,7 @@
         :readonly="!isEditing"
         item-text='text'
         item-value='value'
-        >
-        </v-autocomplete>
+        />
     </div>
 </template>
 
@@ -25,10 +19,10 @@ export default {
   props: {
     centre: String,
     date: String,
+    isEditing: Boolean,
   },
   data () {
     return {
-      isEditing: false,
       search: null,
       select: undefined,
     }
@@ -45,7 +39,6 @@ export default {
     isLoading () {
       return this.$store.state.adminModifIpcsr.inspecteurs.isFetching
     },
-
   },
   watch: {
     select (newValue, oldValue) {
@@ -55,10 +48,12 @@ export default {
       }
     },
   },
+  mounted () {
+    this.getInspecteurs()
+  },
   methods: {
     async getInspecteurs () {
       await this.$store.dispatch(FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST, { departement: this.activeDepartement, centre: this.centre, date: this.date })
-      this.isEditing = true
     },
   },
 }
