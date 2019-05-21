@@ -125,10 +125,11 @@ describe('Test places controller', () => {
       .expect(200)
 
     expect(body).toBeDefined()
-    expect(body).toHaveProperty('inspecteur', inspecteur.toString())
-    expect(body.candidat.toString()).toEqual(candidat.toString())
-    expect(body.centre.toString()).toEqual(centre.toString())
-    expect(body).toHaveProperty(
+    expect(body.place).toBeDefined()
+    expect(body.place).toHaveProperty('inspecteur', inspecteur.toString())
+    expect(body.place.candidat.toString()).toEqual(candidat.toString())
+    expect(body.place.centre.toString()).toEqual(centre.toString())
+    expect(body.place).toHaveProperty(
       'date',
       DateTime.fromJSDate(date)
         .setZone('utc')
