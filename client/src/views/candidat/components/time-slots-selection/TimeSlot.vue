@@ -9,8 +9,7 @@
       </span>
     </page-title>
     <v-alert
-      v-if="isPenaltyActive"
-      :value="true"
+      :value="isPenaltyActive"
       type="warning"
       style="fontsize: 1em;"
     >
@@ -21,6 +20,22 @@
           {
             numberOfDaysBeforeDate,
             displayDate,
+          },
+        )
+      }}
+    </v-alert>
+    <v-alert
+      :value="isEchecPratique"
+      type="warning"
+      style="fontsize: 1em;"
+    >
+      {{ $formatMessage(
+          {
+            id: 'home_choix_date_creneau_message_echec_date_pratique',
+          },
+          {
+            dateDernierEchecPratique,
+            dateEchecPratique,
           },
         )
       }}
@@ -84,6 +99,7 @@ import {
 } from '@/store'
 
 import {
+  getFrenchDateFromLuxon,
   getFrenchLuxonDateFromIso,
   getFrenchDateFromIso,
 } from '@/util/frenchDateTime.js'
@@ -106,21 +122,22 @@ export default {
 
   computed: {
     ...mapState(['center', 'timeSlots', 'reservation']),
-
-    numberOfDaysBeforeDate () {
-      if (this.reservation.booked.dayToForbidCancel) {
-        return this.reservation.booked.dayToForbidCancel
-      }
-      return false
-    },
+    ...mapState({
+      dateDernierEchecPratique (state) {
+        const dateDernierEchecPratique = state.reservation.booked.dateDernierEchecPratique
+        return dateDernierEchecPratique && getFrenchDateFromIso(dateDernierEchecPratique)
+      },
+      numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
+      isEchecPratique: state => state.reservation.booked.dateDernierEchecPratique,
+    }),
 
     isPenaltyActive () {
-      const { canBookFrom, lastDateToCancel } = this.reservation.booked
-      if (canBookFrom ||
-        DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)) {
-        return true
+      if (this.isEchecPratique) {
+        return false
       }
-      return false
+      const { canBookFrom, lastDateToCancel } = this.reservation.booked
+      return canBookFrom ||
+        DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)
     },
 
     displayDate () {
@@ -128,14 +145,19 @@ export default {
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
       } else if (DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)) {
-        return DateTime.fromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
-          weekday: 'long',
-          month: 'long',
-          day: '2-digit',
-          year: 'numeric',
-        })
+        return getFrenchDateFromLuxon(DateTime.fromISO(date).plus({ days: timeOutToRetry }))
       }
-      return false
+      return ''
+    },
+
+    dateEchecPratique () {
+      const { canBookFrom, date, timeOutToRetry } = this.reservation.booked
+      if (canBookFrom) {
+        return getFrenchDateFromIso(canBookFrom)
+      } else if (DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(this.dateDernierEchecPratique)) {
+        return getFrenchDateFromLuxon(DateTime.fromISO(date).plus({ days: timeOutToRetry }))
+      }
+      return ''
     },
   },
 
