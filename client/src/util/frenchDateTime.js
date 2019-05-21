@@ -1,11 +1,18 @@
 import { DateTime } from 'luxon'
 
+export const FRENCH_TIME_ZONE = 'Europe/Paris'
+
+export const frenchLocaleZone = { locale: 'fr', zone: FRENCH_TIME_ZONE }
+
 export const getFrenchLuxonDateFromIso = (isoDate) => {
-  return isoDate && DateTime.fromISO(isoDate).setLocale('fr')
+  return isoDate && DateTime.fromISO(isoDate).setLocale('fr').setZone(FRENCH_TIME_ZONE)
 }
 
+export const getDateTimeFrFromJSDate = date =>
+  DateTime.fromJSDate(date, { locale: 'fr', zone: FRENCH_TIME_ZONE })
+
 export const getFrenchDateFromLuxon = dateTime =>
-  dateTime && dateTime.setLocale('fr').toLocaleString({
+  dateTime && dateTime.setLocale('fr').setZone(FRENCH_TIME_ZONE).toLocaleString({
     weekday: 'long',
     month: 'long',
     day: '2-digit',
@@ -13,7 +20,7 @@ export const getFrenchDateFromLuxon = dateTime =>
   })
 
 export const getFrenchDateTimeFromLuxon = dateTime =>
-  dateTime && dateTime.setLocale('fr').toLocaleString({
+  dateTime && dateTime.setLocale('fr').setZone(FRENCH_TIME_ZONE).toLocaleString({
     weekday: 'long',
     month: 'long',
     day: '2-digit',
@@ -38,10 +45,10 @@ export const getFrenchDateTimeFromIso = (isoDate) => {
     })
 }
 
-export const getFrenchLuxonDateTimeFromSql = (sqlDate) => sqlDate && DateTime.fromSQL(sqlDate).setLocale('fr')
+export const getFrenchLuxonDateTimeFromSql = (sqlDate) => sqlDate && DateTime.fromSQL(sqlDate, frenchLocaleZone)
 
-export const getFrenchLuxonCurrentDateTime = () => DateTime.local().setLocale('fr')
+export const getFrenchLuxonCurrentDateTime = () => DateTime.local().setLocale('fr').setZone(FRENCH_TIME_ZONE)
 
-export const getFrenchLuxonDateFromObject = (obj) => obj && DateTime.fromObject(obj).setLocale('fr')
+export const getFrenchLuxonDateFromObject = (obj) => obj && DateTime.fromObject(obj, frenchLocaleZone).setLocale('fr').setZone(FRENCH_TIME_ZONE)
 
-export const getFrenchWeeksInWeekYear = (year) => DateTime.local(year).setLocale('fr').weeksInWeekYear
+export const getFrenchWeeksInWeekYear = (year) => DateTime.local(year).setLocale('fr').setZone(FRENCH_TIME_ZONE).weeksInWeekYear
