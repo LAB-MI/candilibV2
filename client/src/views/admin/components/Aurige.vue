@@ -101,7 +101,7 @@ export default {
   margin: 0 auto;
   max-width: 1160px;
 
-  @media (max-width: 1170px) {
+  @media (max-width: 1169px) {
     flex-direction: column;
   }
 
@@ -115,11 +115,11 @@ export default {
     flex-grow: 1;
 
     &--export {
-      @media (max-width: 1170px) {
+      @media (max-width: 1169px) {
         border-top: 1px solid rgba(200, 200, 200, 0.3);
       }
 
-      @media (min-width: 1171px) {
+      @media (min-width: 1170px) {
         border-left: 1px solid rgba(200, 200, 200, 0.3);
       }
     }

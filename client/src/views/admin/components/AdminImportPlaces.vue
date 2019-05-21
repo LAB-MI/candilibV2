@@ -1,6 +1,6 @@
 <template>
   <div>
-    <page-title :title="'Import Places'"/>
+    <h2 class="text--center">Import places</h2>
     <upload-file
       subtitle="Les places en CSV"
       upload-label="Import"
@@ -10,18 +10,15 @@
       @upload-file="uploadPlaces"
       accept=".csv"
     />
-
   </div>
 </template>
 
 <script>
 import UploadFile from '@/components/UploadFile.vue'
-import PageTitle from '@/components/PageTitle.vue'
 import { SHOW_INFO, UPLOAD_PLACES_REQUEST } from '@/store'
 
 export default {
   components: {
-    PageTitle,
     UploadFile,
   },
 

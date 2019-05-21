@@ -1,33 +1,27 @@
 <template>
   <div class="import-file">
-    <v-layout column wrap>
-      <v-flex xs6>
-        <div class="import-file-action  import-file-action--file">
-          <h4 class="import-file-subtitle">Fichier</h4>
-          <input-file
-            :dark="dark"
-            title="Choisir un fichier..."
-            :selected-callback="fileSelected"
-            :filename="filename"
-            :accept="accept"
-          />
-        </div>
-      </v-flex>
-      <v-flex xs6>
-        <div class="import-file-action">
-          <h4 class="import-file-subtitle">{{subtitle}}</h4>
-          <v-btn
-            :dark='dark'
-            color="#17a2b8"
-            @click="uploadFile"
-            :disabled="importDisabled"
-            :aria-disabled="importDisabled"
-          >
-            {{uploadLabel}}
-          </v-btn>
-        </div>
-      </v-flex>
-    </v-layout>
+    <div class="import-file-action  import-file-action--file">
+      <h4 class="import-file-subtitle">Fichier</h4>
+      <input-file
+        :dark="dark"
+        title="Choisir un fichier..."
+        :selected-callback="fileSelected"
+        :filename="filename"
+        :accept="accept"
+      />
+    </div>
+    <div class="import-file-action">
+      <h4 class="import-file-subtitle">{{subtitle}}</h4>
+      <v-btn
+        :dark='dark'
+        color="#17a2b8"
+        @click="uploadFile"
+        :disabled="importDisabled"
+        :aria-disabled="importDisabled"
+      >
+        {{uploadLabel}}
+      </v-btn>
+    </div>
   </div>
 </template>
 
@@ -83,9 +77,8 @@ export default {
   align-items: center;
   padding: 1em 0;
   margin: 0 auto;
-  max-width: 1160px;
 
-  @media (max-width: 1170px) {
+  @media (max-width: 1169px) {
     flex-direction: column;
   }
 
@@ -96,16 +89,20 @@ export default {
     flex-direction: column;
     padding: 1em;
     margin: 1em;
+    flex-wrap: wrap;
     flex-grow: 1;
+    flex-basis: 250px;
+    flex-shrink: 0;
 
     &--file {
-      flex-grow: 5;
+      flex-grow: 1;
     }
   }
 
   &-subtitle {
     text-transform: uppercase;
     font-size: 1.2em;
+    overflow-wrap: normal;
   }
 }
 

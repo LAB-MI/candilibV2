@@ -1,6 +1,7 @@
 <template>
   <div>
-    <page-title :title="'Validation d\'import'"/>
+    <h2 class="text--center">Validation d'import</h2>
+
     <v-card style="background-color: unset;">
       <ag-grid-vue style="max-width: 100%; height: 350px;" class="ag-theme-material"
         :gridOptions="gridOptions"
@@ -31,12 +32,10 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 import { AgGridLocaleText, StatusRenderer, valueDateFormatter, filterDateParams } from './ag-grid-utils'
 import AgGridAurigeStatusFilter from './AgGridAurigeStatusFilter'
-import PageTitle from '@/components/PageTitle.vue'
 
 export default {
   components: {
     AgGridVue,
-    PageTitle,
   },
   data () {
     return {

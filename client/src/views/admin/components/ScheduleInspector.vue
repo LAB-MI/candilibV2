@@ -1,41 +1,56 @@
 <template>
-  <v-container class="container" grid-list-md>
-    <v-layout row wrap>
-      <v-flex class="center-title" xs4>
-        <page-title title="Centres d'examen"/>
-        <v-btn :loading="isLoading" @click="refreshPlanning">Refresh</v-btn>
-      </v-flex>
-      <v-spacer></v-spacer>
-      <v-flex xs4>
-        <page-title class="page-title" :title="`Semaine (${currentWeekNumber})`"/>
-      </v-flex>
-      <v-spacer></v-spacer>
-      <v-flex class="date-selector" xs4>
-        <page-title title="Choix date"/>
-        <v-menu
-          v-model="datePicker"
-          :close-on-content-click="false"
-          :nudge-right="40"
-          lazy
-          transition="scale-transition"
-          offset-y
-          full-width
-          max-width="290px"
-          min-width="290px"
-        >
-          <template v-slot:activator="{ on }">
-            <v-text-field
-              v-model="computedDateFormatted"
-              persistent-hint
-              prepend-icon="event"
-              readonly
-              v-on="on"
-            />
-          </template>
-          <v-date-picker v-model="date" no-title @input="datePicker = false" locale="fr"/>
-        </v-menu>
-      </v-flex>
+  <v-container grid-list-md>
+    <div>
+      <h2 class="text--center">Semaine {{currentWeekNumber}}</h2>
+      <div class="date-selector">
+        <div class="date-input">
+          <v-menu
+            v-model="datePicker"
+            :close-on-content-click="false"
+            lazy
+            transition="scale-transition"
+            offset-y
+            full-width
+            max-width="290px"
+            min-width="290px"
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="computedDateFormatted"
+                persistent-hint
+                prepend-icon="event"
+                readonly
+                v-on="on"
+              />
+            </template>
+            <v-date-picker v-model="date" no-title @input="datePicker = false" locale="fr"/>
+          </v-menu>
+        </div>
+      </div>
+    </div>
+
+    <v-layout class="padded">
       <v-flex xs12>
+        <div class="u-flex  u-flex--center  u-flex--space-between">
+          <h3>Centres d'examen</h3>
+          <div class="refresh-btn">
+            <v-progress-circular
+              v-show="isLoading"
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+            <v-btn
+              icon
+              raised
+              color="primary"
+              :disabled="isLoading"
+              @click="refreshPlanning"
+            >
+              <v-icon>replay</v-icon>
+            </v-btn>
+          </div>
+        </div>
+
         <v-tabs
           class="tabs"
           v-model="activeCentreTab"
@@ -97,7 +112,6 @@ import {
   FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
 } from '@/store'
 
-import PageTitle from '@/components/PageTitle.vue'
 import ScheduleInspectorDialog from './ScheduleInspectorDialog.vue'
 
 import {
@@ -127,7 +141,6 @@ const creneauTemplate = [
 
 export default {
   components: {
-    PageTitle,
     ScheduleInspectorDialog,
   },
 
@@ -319,12 +332,13 @@ export default {
   padding: 1px;
 }
 
-.center-title {
-  margin-top: 4em;
+.date-input {
+  width: 290px;
+  margin: 0 auto;
 }
 
-.date-selector {
-  margin-top: 4em;
+.padded {
+  padding: 1em;
 }
 
 table.v-table tbody td:first-child,
@@ -340,5 +354,9 @@ table.v-table thead th:not(:first-child) {
 
 .page-title {
   margin-top: 4em;
+}
+
+.refresh-btn {
+  margin: 1em;
 }
 </style>
