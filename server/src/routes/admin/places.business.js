@@ -1,6 +1,10 @@
 import * as csvParser from 'fast-csv'
 import { DateTime } from 'luxon'
-import { addPlaceToArchive, setCandidatToVIP, findCandidatById } from '../../models/candidat'
+import {
+  addPlaceToArchive,
+  setCandidatToVIP,
+  findCandidatById,
+} from '../../models/candidat'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
 import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
 import {
@@ -22,7 +26,6 @@ import {
   DELETE_PLACE_ERROR,
   BOOKED_PLACE_NO_MAIL,
 } from './message.constants'
-
 
 const getPlaceStatus = (
   departement,
@@ -363,16 +366,10 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
   const place = await findPlaceById(placeId)
 
   if (!candidat || !place) {
-    throw new ErrorWithStatus(
-      422,
-      'Les paramètres renseignés sont incorrects'
-    )
+    throw new ErrorWithStatus(422, 'Les paramètres renseignés sont incorrects')
   }
   if ('isValidatedByAurige' in candidat && !candidat.isValidatedByAurige) {
-    throw new ErrorWithStatus(
-      400,
-      "Le candidat n'est pas validé par Aurige"
-    )
+    throw new ErrorWithStatus(400, "Le candidat n'est pas validé par Aurige")
   }
 
   if (
@@ -385,15 +382,17 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
     )
   }
 
-  const placeAlreadyBookedByCandidat = await findPlaceBookedByCandidat(candidatId)
+  const placeAlreadyBookedByCandidat = await findPlaceBookedByCandidat(
+    candidatId
+  )
+  const newBookedPlace = await bookPlaceById(placeId, candidatId)
+
+  if (!newBookedPlace) {
+    throw new ErrorWithStatus(400, 'Cette place est déja réservée')
+  }
 
   if (placeAlreadyBookedByCandidat) {
     await removeBookedPlace(placeAlreadyBookedByCandidat)
-  }
-
-  const newBookedPlace = await bookPlaceById(placeId, candidatId)
-  if (!newBookedPlace) {
-    throw new ErrorWithStatus(400, 'Cette place est déja réservée')
   }
 
   let statusmail

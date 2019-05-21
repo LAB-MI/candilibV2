@@ -30,7 +30,7 @@ router.post('/place', verifyAdminDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.get('/places', verifyAdminDepartement, getPlaces)
 router.post('/places', verifyAdminDepartement, importPlaces)
-router.patch('/places/:id', updatePlaces)
+router.patch('/places/:id', verifyAdminDepartement, updatePlaces)
 router.delete('/reservations/:id', removeReservationByAdmin)
 
 router

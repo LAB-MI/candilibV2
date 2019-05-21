@@ -25,9 +25,7 @@ export const CREATE_CRENEAU_REQUEST = 'CREATE_CRENEAU_REQUEST'
 export const CREATE_CRENEAU_SUCCESS = 'CREATE_CRENEAU_SUCCESS'
 export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
 
-export const ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST = 'ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST'
-export const ASSIGN_CANDIDAT_TO_CRENEAU_SUCCESS = 'ASSIGN_CANDIDAT_TO_CRENEAU_SUCCESS'
-export const ASSIGN_CANDIDAT_TO_CRENEAU_FAILURE = 'ASSIGN_CANDIDAT_TO_CRENEAU_FAILURE'
+export const ASSIGN_CANDIDAT_TO_CRENEAU = 'ASSIGN_CANDIDAT_TO_CRENEAU'
 
 export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
 export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
@@ -75,10 +73,6 @@ export default {
     centerTarget: undefined,
     createCreneau: {
       isCreating: false,
-      result: undefined,
-    },
-    assignCandidat: {
-      isAffecting: false,
       result: undefined,
     },
   },
@@ -143,18 +137,6 @@ export default {
     [CREATE_CRENEAU_FAILURE] (state, error) {
       state.createCreneau.result = error
       state.createCreneau.isCreating = false
-    },
-
-    [ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST] (state) {
-      state.assignCandidat.isAffecting = true
-    },
-    [ASSIGN_CANDIDAT_TO_CRENEAU_SUCCESS] (state, success) {
-      state.assignCandidat.result = success
-      state.assignCandidat.isAffecting = false
-    },
-    [ASSIGN_CANDIDAT_TO_CRENEAU_FAILURE] (state, error) {
-      state.assignCandidat.result = error
-      state.assignCandidat.isAffecting = false
     },
 
     [DELETE_BOOKED_PLACE_REQUEST] (state) {
@@ -272,15 +254,22 @@ export default {
       }
     },
 
-    async [ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST] ({ commit, dispatch, state }, assignData = {}) {
+    async [ASSIGN_CANDIDAT_TO_CRENEAU] ({ dispatch, state }, assignData = {}) {
       const { placeId, candidatId } = assignData
-      commit(ASSIGN_CANDIDAT_TO_CRENEAU_REQUEST)
       try {
-        const result = await api.admin.assignCandidatToPlace(placeId, candidatId)
-        commit(ASSIGN_CANDIDAT_TO_CRENEAU_SUCCESS, result)
-        dispatch(SHOW_SUCCESS, result.message)
+        const {
+          success,
+          message,
+        } = await api.admin.assignCandidatToPlace(
+          placeId,
+          candidatId,
+          state.departements.active
+        )
+        if (!success) {
+          throw new Error(message)
+        }
+        dispatch(SHOW_SUCCESS, message)
       } catch (error) {
-        commit(ASSIGN_CANDIDAT_TO_CRENEAU_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
