@@ -1,8 +1,8 @@
 import * as csvParser from 'fast-csv'
 import { DateTime } from 'luxon'
-
-import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
+import { addPlaceToArchive, setCandidatToVIP, findCandidatById } from '../../models/candidat'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
+import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
 import {
   bookPlaceById,
   createPlace,
@@ -13,20 +13,16 @@ import {
   removeBookedPlace,
   findPlaceWithSameWindow,
 } from '../../models/place'
-
-import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
-import { sendCancelBookingByAdmin } from '../business'
 import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
-import { appLogger } from '../../util'
-import { ErrorWithStatus } from '../../util/error.status'
+import { appLogger, getDateTimeFrFromJSDate, ErrorWithStatus } from '../../util'
+import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
 import {
-  RESA_BOOKED_CANCEL,
-  RESA_BOOKED_CANCEL_NO_MAIL,
-  DELETE_PLACE_ERROR,
-  RESA_PLACE_HAS_BOOKED,
-  CANCEL_BOOKED_PLACE_NO_MAIL,
   CANCEL_BOOKED_PLACE,
+  CANCEL_BOOKED_PLACE_NO_MAIL,
+  DELETE_PLACE_ERROR,
+  BOOKED_PLACE_NO_MAIL,
 } from './message.constants'
+
 
 const getPlaceStatus = (
   departement,
@@ -363,10 +359,63 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
     action: 'BOOK_PLACE',
   })
 
-  const newResa = await bookPlaceById(placeId, candidatId)
-  if (!newResa) {
+  const candidat = await findCandidatById(candidatId)
+  const place = await findPlaceById(placeId)
+
+  if (!candidat || !place) {
+    throw new ErrorWithStatus(
+      422,
+      'Les paramètres renseignés sont incorrects'
+    )
+  }
+  if ('isValidatedByAurige' in candidat && !candidat.isValidatedByAurige) {
+    throw new ErrorWithStatus(
+      400,
+      "Le candidat n'est pas validé par Aurige"
+    )
+  }
+
+  if (
+    getDateTimeFrFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
+    getDateTimeFrFromJSDate(place.date)
+  ) {
+    throw new ErrorWithStatus(
+      400,
+      'Date ETG ne sera plus valide pour cette place'
+    )
+  }
+
+  const placeAlreadyBookedByCandidat = await findPlaceBookedByCandidat(candidatId)
+
+  if (placeAlreadyBookedByCandidat) {
+    await removeBookedPlace(placeAlreadyBookedByCandidat)
+  }
+
+  const newBookedPlace = await bookPlaceById(placeId, candidatId)
+  if (!newBookedPlace) {
     throw new ErrorWithStatus(400, 'Cette place est déja réservée')
   }
 
-  return newResa
+  let statusmail
+  let message
+  try {
+    await sendMailConvocation(newBookedPlace)
+    statusmail = true
+  } catch (error) {
+    appLogger.warn({
+      section: 'admin-assignCandidatInPlace',
+      action: 'FAILED_SEND_MAIL',
+      error,
+    })
+    statusmail = false
+    message = BOOKED_PLACE_NO_MAIL
+  }
+  return {
+    newBookedPlace,
+    candidat,
+    statusmail: {
+      status: statusmail,
+      message,
+    },
+  }
 }

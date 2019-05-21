@@ -6,15 +6,14 @@ import {
 } from '../../models/place'
 import { findCandidatById } from '../../models/candidat'
 import {
+  assignCandidatInPlace,
   createPlaceForInspector,
   importPlacesCsv,
-  validUpdateResaInspector,
   moveCandidatInPlaces,
-  assignCandidatInPlace,
+  validUpdateResaInspector,
 } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
-
-import { appLogger, ErrorWithStatus, getDateTimeFrFromJSDate, dateTimeToFormatFr } from '../../util'
+import { appLogger, ErrorWithStatus, dateTimeToFormatFr } from '../../util'
 
 export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
@@ -163,38 +162,15 @@ export const updatePlaces = async (req, res) => {
         action: 'UPDATE_PLACE',
         message: `Affecter un candidat à une place`,
       })
-      const candidat = await findCandidatById(candidatId)
-      const place = await findPlaceById(placeId)
 
-      if (!candidat || !place) {
-        throw new ErrorWithStatus(
-          422,
-          'Les paramètres renseignés sont incorrects'
-        )
-      }
-      if ('isValidatedByAurige' in candidat && !candidat.isValidatedByAurige) {
-        throw new ErrorWithStatus(
-          400,
-          "Le candidat n'est pas validé par Aurige"
-        )
-      }
-      if (
-        getDateTimeFrFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
-        getDateTimeFrFromJSDate(place.date)
-      ) {
-        throw new ErrorWithStatus(
-          400,
-          'Date ETG ne sera plus valide pour cette place'
-        )
-      }
-      const bookedPlace = await assignCandidatInPlace(candidatId, placeId)
-      const { date, hour } = dateTimeToFormatFr(bookedPlace.date)
+      const result = await assignCandidatInPlace(candidatId, placeId)
+      const { date, hour } = dateTimeToFormatFr(result.newBookedPlace.date)
       return res.send({
         success: true,
-        message: `Le candidat Nom: [${candidat.nomNaissance}] Neph: [${
-          candidat.codeNeph
+        message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${
+          result.candidat.codeNeph
         }] a bien été affecté à la place du ${date} à ${hour}`,
-        place: bookedPlace,
+        place: result.newBookedPlace,
       })
     }
   } catch (error) {
@@ -210,7 +186,7 @@ export const updatePlaces = async (req, res) => {
         error,
       })
     }
-    return res.status(500).send({
+    res.status(500).send({
       success: false,
       message: error.message,
       error,
