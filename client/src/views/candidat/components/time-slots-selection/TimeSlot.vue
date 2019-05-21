@@ -128,6 +128,7 @@ export default {
         return dateDernierEchecPratique && getFrenchDateFromIso(dateDernierEchecPratique)
       },
       numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
+      isEchecPratique: state => state.reservation.booked.dateDernierEchecPratique,
     }),
 
     isPenaltyActive () {
@@ -137,11 +138,6 @@ export default {
       const { canBookFrom, lastDateToCancel } = this.reservation.booked
       return canBookFrom ||
         DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)
-    },
-
-    isEchecPratique () {
-      const { canBookFrom } = this.reservation.booked
-      return canBookFrom || DateTime.local().setLocale('fr') > this.dateDernierEchecPratique
     },
 
     displayDate () {

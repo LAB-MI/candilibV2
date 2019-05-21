@@ -12,8 +12,8 @@ import {
 
 import { DateTime } from 'luxon'
 
-describe('frenchLuxonDateTimeFromIso', () => {
-  it('getFrenchLuxonDateFromIso', () => {
+describe('getFrenchLuxonDateFromIso', () => {
+  it('Should return a luxon DateTime from ISO string', () => {
     // Given
     const theDate = DateTime.fromISO('2020-05-25T09:08:34.123+02:00').setLocale('fr')
     const expectedYear = 2020
@@ -30,10 +30,32 @@ describe('frenchLuxonDateTimeFromIso', () => {
     expect(frenchDate.day).toBe(expectedDay)
     expect(frenchDate.hour).toBe(expectedHour)
   })
+
+  it('should return null', () => {
+    // Given
+    const theDate = null
+
+    // When
+    const frenchDate = getFrenchLuxonDateFromIso(theDate)
+
+    // Then
+    expect(frenchDate).toBeNull()
+  })
+
+  it('should return undefined', () => {
+    // Given
+    const theDate = undefined
+
+    // When
+    const frenchDate = getFrenchLuxonDateFromIso(theDate)
+
+    // Then
+    expect(frenchDate).toBeUndefined()
+  })
 })
 
-describe('frenchDateTime', () => {
-  it('getFrenchDateFromLuxon', () => {
+describe('getFrenchDateFromLuxon', () => {
+  it('Should return a human readable french date from luxon DateTime', () => {
     // Given
     const theDate = DateTime.local().setLocale('fr').set({
       year: 2020,
@@ -48,10 +70,32 @@ describe('frenchDateTime', () => {
     // Then
     expect(frenchDate).toBe(expectedDate)
   })
+
+  it('should return null', () => {
+    // Given
+    const theDate = null
+
+    // When
+    const frenchDate = getFrenchDateFromLuxon(theDate)
+
+    // Then
+    expect(frenchDate).toBeNull()
+  })
+
+  it('should return undefined', () => {
+    // Given
+    const theDate = undefined
+
+    // When
+    const frenchDate = getFrenchDateFromLuxon(theDate)
+
+    // Then
+    expect(frenchDate).toBeUndefined()
+  })
 })
 
-describe('frenchDateTime', () => {
-  it('getFrenchDateTimeFromLuxon', () => {
+describe('getFrenchDateTimeFromLuxon', () => {
+  it('Should return a human readable french date and time from luxon DateTime', () => {
     // Given
     const theDate = DateTime.local().setLocale('fr').set({
       year: 2020,
@@ -68,10 +112,32 @@ describe('frenchDateTime', () => {
     // Then
     expect(frenchDate).toBe(expectedDate)
   })
+
+  it('should return null', () => {
+    // Given
+    const theDate = null
+
+    // When
+    const frenchDate = getFrenchDateTimeFromLuxon(theDate)
+
+    // Then
+    expect(frenchDate).toBeNull()
+  })
+
+  it('should return undefined', () => {
+    // Given
+    const theDate = undefined
+
+    // When
+    const frenchDate = getFrenchDateTimeFromLuxon(theDate)
+
+    // Then
+    expect(frenchDate).toBeUndefined()
+  })
 })
 
-describe('frenchDateFromIso', () => {
-  it('getFrenchDateFromIso', () => {
+describe('getFrenchDateFromIso', () => {
+  it('Should return a human readable french date from ISO string', () => {
     // Given
     const theDate = '2020-05-25T09:08:34.123+02:00'
     const expectedDate = 'lundi 25 mai 2020'
@@ -82,10 +148,31 @@ describe('frenchDateFromIso', () => {
     // Then
     expect(frenchDate).toBe(expectedDate)
   })
+  it('should return null', () => {
+    // Given
+    const theDate = null
+
+    // When
+    const frenchDate = getFrenchDateFromIso(theDate)
+
+    // Then
+    expect(frenchDate).toBeNull()
+  })
+
+  it('should return undefined', () => {
+    // Given
+    const theDate = undefined
+
+    // When
+    const frenchDate = getFrenchDateFromIso(theDate)
+
+    // Then
+    expect(frenchDate).toBeUndefined()
+  })
 })
 
-describe('frenchDateTimeFromIso', () => {
-  it('getFrenchDateTimeFromIso', () => {
+describe('getFrenchDateTimeFromIso', () => {
+  it('Should return a human readable french date and time from ISO string', () => {
     // Given
     const theDate = '2020-05-25T09:08:34.123+02:00'
     const expectedDate = 'lundi 25 mai 2020 à 09:08'
@@ -96,10 +183,31 @@ describe('frenchDateTimeFromIso', () => {
     // Then
     expect(frenchDate).toBe(expectedDate)
   })
+  it('should return null', () => {
+    // Given
+    const theDate = null
+
+    // When
+    const frenchDate = getFrenchDateTimeFromIso(theDate)
+
+    // Then
+    expect(frenchDate).toBeNull()
+  })
+
+  it('should return undefined', () => {
+    // Given
+    const theDate = undefined
+
+    // When
+    const frenchDate = getFrenchDateTimeFromIso(theDate)
+
+    // Then
+    expect(frenchDate).toBeUndefined()
+  })
 })
 
 describe('frenchLuxonDateTimeFromSql', () => {
-  it('getFrenchLuxonDateTimeFromSql', () => {
+  it('Should create a luxon DateTime from SQL format', () => {
     // Given
     const theDate = '2020-05-25'
     const expectedYear = 2020
@@ -114,28 +222,46 @@ describe('frenchLuxonDateTimeFromSql', () => {
     expect(frenchDate.month).toBe(expectedMonth)
     expect(frenchDate.day).toBe(expectedDay)
   })
+  it('should return null', () => {
+    // Given
+    const theDate = null
+
+    // When
+    const frenchDate = getFrenchLuxonDateTimeFromSql(theDate)
+
+    // Then
+    expect(frenchDate).toBeNull()
+  })
+
+  it('should return undefined', () => {
+    // Given
+    const theDate = undefined
+
+    // When
+    const frenchDate = getFrenchLuxonDateTimeFromSql(theDate)
+
+    // Then
+    expect(frenchDate).toBeUndefined()
+  })
 })
 
-describe('frenchLuxonCurrentDateTime', () => {
-  it('getFrenchLuxonCurrentDateTime', () => {
+describe('getFrenchLuxonCurrentDateTime', () => {
+  it('Should create a luxon DateTime with current date', () => {
     // Given
-    const theDate = DateTime.local('2019 mai 25').setLocale('fr')
-    const expectedYear = 2019
-    const expectedMonth = 5
-    const expectedDay = 20
+    const theDate = DateTime.local().setLocale('fr')
 
     // When
     const frenchDate = getFrenchLuxonCurrentDateTime(theDate)
 
     // Then
-    expect(frenchDate.year).toBe(expectedYear)
-    expect(frenchDate.month).toBe(expectedMonth)
-    expect(frenchDate.day).toBe(expectedDay)
+    expect(frenchDate.year).toBe(theDate.year)
+    expect(frenchDate.month).toBe(theDate.month)
+    expect(frenchDate.day).toBe(theDate.day)
   })
 })
 
-describe('frenchLuxonDateFromObject', () => {
-  it('getFrenchLuxonDateFromObject', () => {
+describe('getFrenchLuxonDateFromObject', () => {
+  it('Should create a luxon date with fr locale from object', () => {
     // Given
     const expectedYear = 2019
     const expectedMonth = 5
@@ -150,10 +276,31 @@ describe('frenchLuxonDateFromObject', () => {
     expect(frenchDate.month).toBe(expectedMonth)
     expect(frenchDate.day).toBe(expectedDay)
   })
+  it('should return null', () => {
+    // Given
+    const theDate = null
+
+    // When
+    const frenchDate = getFrenchLuxonDateFromObject(theDate)
+
+    // Then
+    expect(frenchDate).toBeNull()
+  })
+
+  it('should return undefined', () => {
+    // Given
+    const theDate = undefined
+
+    // When
+    const frenchDate = getFrenchLuxonDateFromObject(theDate)
+
+    // Then
+    expect(frenchDate).toBeUndefined()
+  })
 })
 
-describe('frenchWeeksInWeekYear', () => {
-  it('getFrenchWeeksInWeekYear', () => {
+describe('getFrenchWeeksInWeekYear', () => {
+  it('Should get number of weeks of the year', () => {
     // Given
     const theDate = DateTime.local(2020).setLocale('fr').weeksInWeekYear
     const expectedweeks = 52
