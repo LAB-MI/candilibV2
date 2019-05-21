@@ -16,6 +16,7 @@ services:
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         CLIENT_BUILD_TARGET: candidat
+        PUBLIC_PATH: /candilibV2
         APP_VERSION: ${APP_VERSION}
 #    env_file:
 #      - ${cnf:-.env}
@@ -42,6 +43,7 @@ services:
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         CLIENT_BUILD_TARGET: admin
+        PUBLIC_PATH: /candilibV2-repartiteur
         APP_VERSION: ${APP_VERSION}
 #    env_file:
 #      - ${cnf:-.env}
