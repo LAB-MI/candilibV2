@@ -14,6 +14,7 @@ import { findCentresWithPlaces } from '../common/centre.business'
 
 import { appLogger } from '../../util'
 import { ErrorWithStatus } from '../../util/error.status'
+import { dateTimeToFormatFr } from '../../util/date.util'
 
 export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
@@ -58,7 +59,10 @@ export const getPlaces = async (req, res) => {
     res.json(places)
   } else {
     if (centre && date) {
-      places = await findPlacesByCentreAndDate(centre, date)
+      places = await findPlacesByCentreAndDate(centre, date, {
+        inspecteur: true,
+        centre: true,
+      })
     } else {
       places = await findCentresWithPlaces(departement, beginDate, endDate)
     }
@@ -139,7 +143,11 @@ export const updatePlaces = async (req, res) => {
 
       const result = await validUpdateResaInspector(resa, inspecteur)
       const newResa = await moveCandidatInPlaces(result.resa, result.place)
-      return res.send(newResa)
+      return res.json({
+        success: true,
+        message: `La modification est confirmée.`,
+        place: newResa,
+      })
     }
   } catch (error) {
     appLogger.error({

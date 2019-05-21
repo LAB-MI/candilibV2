@@ -120,19 +120,22 @@ export const countAvailablePlacesByCentre = async (
   return nbPlaces
 }
 
-export const findPlacesByCentreAndDate = async (_id, date) => {
+export const findPlacesByCentreAndDate = async (_id, date, populate) => {
   appLogger.debug(
     JSON.stringify({
       func: 'findPlacesByCentreAndDate',
       args: { _id, date },
     })
   )
-  const places = await Place.find({
+  const query = Place.find({
     centre: _id,
     date,
   })
     .where('candidat')
     .equals(undefined)
+  queryPopulate(populate, query)
+  const places = await query.exec()
+
   return places
 }
 

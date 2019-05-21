@@ -1,13 +1,8 @@
-import { appLogger } from '../../util'
 import { findPlaceByIdAndPopulate } from '../../models/place'
-import {
-  removeReservationPlaceByAdmin,
-  moveCandidatInPlaces,
-  validUpdateResaInspector,
-} from './places.business'
-import { RESA_NO_BOOKED } from './message.constants'
 import { findUserById } from '../../models/user'
-import { ErrorWithStatus } from '../../util/error.status'
+import { appLogger } from '../../util'
+import { RESA_NO_BOOKED } from './message.constants'
+import { removeReservationPlaceByAdmin } from './places.business'
 
 export const removeReservationByAdmin = async (req, res) => {
   const id = req.params.id
@@ -73,51 +68,6 @@ export const removeReservationByAdmin = async (req, res) => {
       action: 'ERROR',
       message: error.message,
     })
-    return res.status(500).send({
-      success: false,
-      message: error.message,
-      error,
-    })
-  }
-}
-
-export const updateReservationByAdmin = async (req, res, next) => {
-  const { resa, inspecteur } = req.body
-
-  if (!resa || !inspecteur) {
-    return next()
-  }
-
-  const loggerContent = {
-    section: 'admin-update-resa',
-    admin: req.userId,
-    resa,
-    inspecteur,
-  }
-
-  appLogger.info({
-    ...loggerContent,
-    action: 'UPDATE_RESA',
-    message: `Suppression de la reservaton candidat`,
-  })
-
-  try {
-    const result = await validUpdateResaInspector(resa, inspecteur)
-    const newResa = await moveCandidatInPlaces(result.resa, result.place)
-    return res.send(newResa)
-  } catch (error) {
-    appLogger.error({
-      ...loggerContent,
-      action: 'ERROR',
-      message: error.message,
-    })
-    if (error instanceof ErrorWithStatus) {
-      return res.status(error.status).send({
-        success: false,
-        message: error.message,
-        error,
-      })
-    }
     return res.status(500).send({
       success: false,
       message: error.message,
