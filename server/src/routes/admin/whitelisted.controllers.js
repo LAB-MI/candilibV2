@@ -66,8 +66,8 @@ const batchWhitelistStatuses = {
 }
 
 export const addWhitelisted = async (req, res) => {
+  const { email, emails, departement } = req.body
   try {
-    const { email, emails, departement } = req.body
     checkAddWhitelistRequest(req.body)
 
     if (email) {
@@ -91,6 +91,16 @@ export const addWhitelisted = async (req, res) => {
       })
     }
   } catch (error) {
+    if (email && error.message.includes('duplicate key error')) {
+      const { departement } = await findWhitelistedByEmail(email.toLowerCase())
+      if (departement) {
+        return res.status(400).send({
+          success: false,
+          message: `Email: ${email} déjà existant dans le département: ${departement}`,
+          departement,
+        })
+      }
+    }
     return res.status(error.statusCode || 500).send({
       success: false,
       message: error.message,

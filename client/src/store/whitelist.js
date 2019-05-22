@@ -112,10 +112,10 @@ export default {
     async [SAVE_EMAIL_REQUEST] ({ commit, dispatch }, { emailToAdd, departement }) {
       commit(SAVE_EMAIL_REQUEST)
       try {
-        const { email, message, success } = await api.admin.addToWhitelist(emailToAdd, departement)
+        const { email, message, success, departement: dept } = await api.admin.addToWhitelist(emailToAdd, departement)
         if (success === false && message) {
-          if (message.includes('duplicate key error')) {
-            throw new Error(`Email déjà existant : '${emailToAdd}'`)
+          if (dept) {
+            throw new Error(message)
           }
           if (message.includes('Path `email` is invalid')) {
             throw new Error(`Email invalide : '${emailToAdd}'`)
@@ -139,7 +139,6 @@ export default {
         return dispatch(messageStatuses[status], message)
       } catch (error) {
         commit(SAVE_EMAIL_BATCH_FAILURE)
-        console.error(error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
