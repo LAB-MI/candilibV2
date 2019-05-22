@@ -34,11 +34,6 @@
         <div class="u-flex  u-flex--center  u-flex--space-between">
           <h3>Centres d'examen</h3>
           <div class="refresh-btn">
-            <v-progress-circular
-              v-show="isLoading"
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
             <v-btn
               icon
               raised
@@ -46,7 +41,12 @@
               :disabled="isLoading"
               @click="refreshPlanning"
             >
-              <v-icon>replay</v-icon>
+              <v-progress-circular
+                v-show="isLoading"
+                indeterminate
+                color="white"
+              ></v-progress-circular>
+              <v-icon v-show="!isLoading">replay</v-icon>
             </v-btn>
           </div>
         </div>
