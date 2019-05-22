@@ -12,7 +12,7 @@ module.exports = {
     proxy: {
       '/candilib/api': {
         pathRewrite: {
-          '/candilib': '',
+          [publicPath]: '',
         },
         target: VUE_APP_URL_API || 'http://localhost:8000',
       },
