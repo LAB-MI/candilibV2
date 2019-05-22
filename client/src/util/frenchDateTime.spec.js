@@ -1,4 +1,5 @@
 import {
+  FRENCH_TIME_ZONE,
   getFrenchLuxonDateFromIso,
   getFrenchDateFromLuxon,
   getFrenchDateTimeFromLuxon,
@@ -97,7 +98,7 @@ describe('getFrenchDateFromLuxon', () => {
 describe('getFrenchDateTimeFromLuxon', () => {
   it('Should return a human readable french date and time from luxon DateTime', () => {
     // Given
-    const theDate = DateTime.local().setLocale('fr').set({
+    const theDate = DateTime.local().setLocale('fr').setZone(FRENCH_TIME_ZONE).set({
       year: 2020,
       month: 1,
       day: 20,

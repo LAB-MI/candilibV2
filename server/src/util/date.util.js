@@ -2,10 +2,10 @@ import { DateTime } from 'luxon'
 
 export const FORMAT_DATE = 'cccc dd LLLL yyyy'
 
-export const ZONE_LOCAL = 'Europe/Paris'
+export const FRENCH_TIME_ZONE = 'Europe/Paris'
 
 export const getDateTimeFrFromJSDate = date =>
-  DateTime.fromJSDate(date, { locale: 'fr', zone: ZONE_LOCAL })
+  DateTime.fromJSDate(date, { locale: 'fr', zone: FRENCH_TIME_ZONE })
 
 /**
  *
@@ -15,7 +15,7 @@ export const dateTimeToFormatFr = pDate => {
   let datetime
 
   if (pDate instanceof DateTime) {
-    datetime = pDate.setLocale('fr').setZone(ZONE_LOCAL)
+    datetime = pDate.setLocale('fr').setZone(FRENCH_TIME_ZONE)
   } else if (pDate instanceof Date) {
     datetime = getDateTimeFrFromJSDate(pDate)
   }
