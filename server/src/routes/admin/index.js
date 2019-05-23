@@ -24,7 +24,7 @@ router.use(verifyAdminLevel)
 
 router.get('/me', getMe)
 router.get('/candidats', verifyAdminDepartement, getCandidats)
-router.post('/candidats', verifyAdminDepartement, importCandidats)
+router.post('/candidats', importCandidats)
 router.get('/inspecteurs', getInspecteurs)
 router.post('/place', verifyAdminDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
