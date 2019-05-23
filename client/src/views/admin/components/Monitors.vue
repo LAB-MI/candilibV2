@@ -1,20 +1,25 @@
 <template>
   <div>
-    <refresh-button
-        title="Refresh"
-        loadingMessage="Chargement"
-      >
-        Refresh
-      </refresh-button>
-    <div class="stats-card">
-      <span class="stats-card-text-free-places">
-        Places disponibles
-      </span>
-      <span class="slash-wrapper">
-        /
-      </span>
-      Total places
+    <page-title>Tableau de bord</page-title>
+    <div class="stats-card  u-flex  u-flex--space-between">
+      <div>
+        <span class="stats-card-text-free-places">
+          Places disponibles
+        </span>
+        <span class="slash-wrapper">
+          /
+        </span>
+        Total places
+      </div>
+
+      <div class="text-xs-center">
+        <refresh-button
+          @click="reloadWeekMonitor"
+          :isLoading="!!isLoading"
+        />
+      </div>
     </div>
+
     <v-container fluid>
       <v-layout row wrap>
         <v-flex
@@ -42,17 +47,20 @@ import {
   FETCH_ADMIN_INFO_REQUEST,
 } from '@/store'
 import WeekMonitor from './WeekMonitor.vue'
-import RefreshButton from './RefreshButton.vue'
+import { RefreshButton } from '@/components'
 
 export default {
   components: {
-    WeekMonitor,
     RefreshButton,
+    WeekMonitor,
   },
   computed: {
     ...mapGetters(['activeDepartement']),
     placeByCentreInfos () {
       return this.$store.state.admin.places.list
+    },
+    isLoading () {
+      return this.$store.state.admin.places.isFetching
     },
   },
   watch: {
@@ -61,6 +69,11 @@ export default {
         await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
         await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       }
+    },
+  },
+  methods: {
+    async reloadWeekMonitor () {
+      await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
     },
   },
 

@@ -1,45 +1,19 @@
 <template>
   <div class="text-xs-center">
-    <v-btn
-      :disabled="!!isLoading"
-      :loading="!!isLoading"
-      class="white--text"
-      color="primary darken-2"
+    <refresh-button
       @click="reloadWeekMonitor"
-    >
-      {{ title }}
-    </v-btn>
-    <v-dialog
-      v-model="isLoading"
-      hide-overlay
-      persistent
-      width="300"
-    >
-      <v-card
-      color="primary"
-      dark
-      >
-        <v-card-text>
-          {{ loadingMessage }}
-          <v-progress-linear
-          indeterminate
-          color="white"
-          class="mb-0"
-        >
-            </v-progress-linear>
-        </v-card-text>
-      </v-card>
-    </v-dialog>
+      :isLoading="!!isLoading"
+    />
   </div>
 </template>
 
 <script>
 import { FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST } from '@/store'
+import { RefreshButton } from '@/components'
 
 export default {
-  props: {
-    title: String,
-    loadingMessage: String,
+  components: {
+    RefreshButton,
   },
   computed: {
     isLoading () {
