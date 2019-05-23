@@ -184,17 +184,26 @@ describe('update place by admin', () => {
     centresCreated = await createCentres()
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
     placesCreated = await createPlaces()
-    createdBookedPlace = await makeResa(
-      placesCreated[1],
-      candidatsCreatedAndUpdated[0]
-    )
   })
 
   afterAll(async () => {
-    await Promise.all(placesCreated.map(elt => elt.remove()))
-    await Promise.all(centresCreated.map(elt => elt.remove()))
-    await Promise.all(candidatsCreatedAndUpdated.map(elt => elt.remove()))
+    const places = placesCreated.map(elt => elt.remove())
+    const centres = centresCreated.map(elt => elt.remove())
+    const candidats = candidatsCreatedAndUpdated.map(elt => elt.remove())
+
+    await Promise.all([
+      ...places,
+      ...centres,
+      ...candidats,
+    ])
     await disconnect()
+  })
+
+  afterEach(async () => {
+    if (createdBookedPlace) {
+      createdBookedPlace.remove()
+    }
+    createdBookedPlace = undefined
   })
 
   it('should return a 200 when assign candidat in available place', async () => {
@@ -220,15 +229,22 @@ describe('update place by admin', () => {
   })
 
   it('should return a 400 when place already booked', async () => {
-    const place = createdBookedPlace
+    // Given
+    createdBookedPlace = await makeResa(
+      placesCreated[1],
+      candidatsCreatedAndUpdated[0]
+    )
     const candidat = candidatsCreatedAndUpdated[2]
 
+    // When
     const { body } = await request(app)
-      .patch(`${apiPrefix}/admin/places/${place._id}`)
+      .patch(`${apiPrefix}/admin/places/${createdBookedPlace._id}`)
       .send({
         candidatId: candidat._id,
       })
+    // Then
       .expect(400)
+
 
     expect(body).toHaveProperty('error', { _status: 400 })
     expect(body).toHaveProperty('message', 'Cette place est déja réservée')
