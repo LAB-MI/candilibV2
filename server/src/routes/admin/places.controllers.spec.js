@@ -12,6 +12,7 @@ import {
   createCandidats,
   createCandidatsAndUpdate,
   createCentres,
+  createInspecteurs,
   createPlaces,
   deleteCandidats,
   makeResa,
@@ -52,7 +53,7 @@ describe('Test places controller', () => {
   app.use(bodyParser.json({ limit: '20mb' }))
   app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
   app.get('/places', getPlaces)
-  app.put('/reservation', updatePlaces)
+  app.patch(`/reservation/:id`, updatePlaces)
 
   beforeAll(async () => {
     await connect()
@@ -118,10 +119,9 @@ describe('Test places controller', () => {
 
     const departement = '93'
     const { body } = await request(app)
-      .put('/reservation')
+      .patch(`/reservation/${resa}`)
       .send({
         departement,
-        resa,
         inspecteur,
       })
       .set('Accept', 'application/json')
@@ -152,10 +152,9 @@ describe('Test places controller', () => {
 
     const departement = '93'
     const { body } = await request(app)
-      .put('/reservation')
+      .patch(`/reservation/${resa}`)
       .send({
         departement,
-        resa,
         inspecteur,
       })
       .set('Accept', 'application/json')
@@ -169,9 +168,7 @@ describe('Test places controller', () => {
 
 describe('update place by admin', () => {
   let placesCreated
-  let centresCreated
   let candidatsCreatedAndUpdated
-  let createdBookedPlace
 
   const app = express()
   app.use(bodyParser.json({ limit: '20mb' }))
@@ -180,29 +177,31 @@ describe('update place by admin', () => {
 
   beforeAll(async () => {
     await connect()
-    centresCreated = await createCentres()
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
     placesCreated = await createPlaces()
   })
 
   afterAll(async () => {
     const places = placesCreated.map(elt => elt.remove())
-    const centres = centresCreated.map(elt => elt.remove())
     const candidats = candidatsCreatedAndUpdated.map(elt => elt.remove())
 
-    await Promise.all([...places, ...centres, ...candidats])
+    await Promise.all([...places, ...candidats])
     await disconnect()
   })
-
-  afterEach(async () => {
-    if (createdBookedPlace) {
-      createdBookedPlace.remove()
-    }
-    createdBookedPlace = undefined
-  })
-
   it('should return a 200 when assign candidat in available place', async () => {
-    const place = placesCreated[0]
+    const [inspecteur1] = await createInspecteurs()
+    const [centre1] = await createCentres()
+
+    const placeCanBook = {
+      date: DateTime.fromObject({ day: 18, hour: 9 })
+        .setLocale('fr')
+        .toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+    }
+
+    const place = await createPlace(placeCanBook)
+
     const candidat = candidatsCreatedAndUpdated[0]
 
     const { body } = await request(app)
@@ -225,15 +224,25 @@ describe('update place by admin', () => {
 
   it('should return a 400 when place already booked', async () => {
     // Given
-    createdBookedPlace = await makeResa(
-      placesCreated[1],
-      candidatsCreatedAndUpdated[0]
-    )
+    const [inspecteur1] = await createInspecteurs()
+    const [centre1] = await createCentres()
+
+    const createdBookedPlace = {
+      date: DateTime.fromObject({ day: 19, hour: 9 })
+        .setLocale('fr')
+        .toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+      candidat: candidatsCreatedAndUpdated[0]._id,
+    }
+
+    const place = await createPlace(createdBookedPlace)
+
     const candidat = candidatsCreatedAndUpdated[2]
 
     // When
     const { body } = await request(app)
-      .patch(`${apiPrefix}/admin/places/${createdBookedPlace._id}`)
+      .patch(`${apiPrefix}/admin/places/${place._id}`)
       .send({
         candidatId: candidat._id,
       })
@@ -284,7 +293,19 @@ describe('update place by admin', () => {
   })
 
   it('should return a 400 when trying to assign not yet validated candidat to place', async () => {
-    const place = placesCreated[0]
+    const [inspecteur1] = await createInspecteurs()
+    const [centre1] = await createCentres()
+
+    const createdPlace1 = {
+      date: DateTime.fromObject({ day: 20, hour: 9 })
+        .setLocale('fr')
+        .toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+    }
+
+    const place = await createPlace(createdPlace1)
+
     const candidat = candidatsCreatedAndUpdated[3]
 
     const { body } = await request(app)

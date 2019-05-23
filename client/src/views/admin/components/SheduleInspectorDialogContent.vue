@@ -1,7 +1,7 @@
 <template>
   <v-card class="elevation-0" v-if="flagModal === 'face'">
     <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
+      :infoSelectedDialog="{ place: content.place || { date, hour: content.hour }, inspecteurInfos }"
       title="Ce créneau est au statut réservé"
       :closeDialog="closeDialogFace"
       colorIcon="black"
@@ -56,7 +56,7 @@
 
   <v-card v-else-if="flagModal === 'block'">
     <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
+      :infoSelectedDialog="{ place: content || { date, hour: content.hour }.place, inspecteurInfos }"
       title="Ce créneau est au statut indisponible"
       :closeDialog="closeDialog"
       colorIcon="black"
@@ -80,7 +80,7 @@
   </v-card>
   <v-card v-else-if="flagModal === 'check'">
     <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
+      :infoSelectedDialog="{ place: content || { date, hour: content.hour }.place, inspecteurInfos }"
       title="Ce créneau est au statut disponible"
       :closeDialog="closeDialogAndResetSelectedCandidat"
       colorIcon="black"
@@ -169,7 +169,6 @@ export default {
     ConfirmBox,
     SheduleInspectorDialogHeader,
     ListSearchInspecteursAvailable,
-    ConfirmBox,
     SheduleInspectorDialogSubContent,
   },
   props: {

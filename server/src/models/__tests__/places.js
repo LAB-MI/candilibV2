@@ -80,11 +80,6 @@ export const createPlaces = async () => {
       centre: centre3._id,
       inspecteur: inspecteur2._id,
     },
-    // {
-    //   date: basePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
-    //   centre: centre3._id,
-    //   inspecteur: inspecteur2._id,
-    // },
   ]
 
   testPlaces = await Promise.all(places.map(createPlace))

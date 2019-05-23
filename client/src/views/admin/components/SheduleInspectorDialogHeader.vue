@@ -34,8 +34,14 @@
       <v-toolbar-title
         class="black--text text-uppercase"
       >
-        Inspecteur <strong>{{ infoSelectedDialog.inspecteurInfos.nom }}</strong> Le
-        <strong>{{ formattedDate }}</strong>
+        {{ nomInspecteur ? 'Inspecteur' : '' }}
+        <strong>
+          {{ nomInspecteur }}
+        </strong>
+        {{ formattedDate.length ? 'Le' : '' }}
+        <strong>
+          {{ formattedDate }}
+        </strong>
       </v-toolbar-title>
       <v-spacer></v-spacer>
     </v-toolbar>
@@ -62,6 +68,12 @@ export default {
     formattedDate () {
       if (this.infoSelectedDialog.place && this.infoSelectedDialog.place.date) {
         return getFrenchDateTimeFromIso(this.infoSelectedDialog.place.date)
+      }
+      return ''
+    },
+    nomInspecteur () {
+      if (this.infoSelectedDialog && this.infoSelectedDialog.inspecteurInfos) {
+        return this.infoSelectedDialog.inspecteurInfos.nom
       }
       return ''
     },

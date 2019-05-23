@@ -241,6 +241,7 @@ export default {
 
   watch: {
     async date (val) {
+      this.$router.push({ params: { date: this.date } })
       const dateTimeFromSQL = getFrenchLuxonDateTimeFromSql(this.date)
       this.currentWeekNumber = dateTimeFromSQL.weekNumber
       if (this.$store.state.admin.departements.active) {
@@ -252,7 +253,6 @@ export default {
         this.activeCentreTab = `tab-${this.activeCentreId}`
         this.parseInspecteursPlanning()
       }
-      this.$router.push({ params: { center: this.activeCentreId, date: this.date } })
     },
 
     async activeDepartement (newValue, oldValue) {

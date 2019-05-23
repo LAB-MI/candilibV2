@@ -53,10 +53,6 @@ export default {
       type: Boolean,
       default: false,
     },
-    activeTextContent: {
-      type: Boolean,
-      default: true,
-    },
   },
 
   methods: {
