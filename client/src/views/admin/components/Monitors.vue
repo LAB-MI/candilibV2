@@ -1,26 +1,17 @@
 <template>
   <div>
     <page-title>Tableau de bord</page-title>
-    <div class="stats-card  u-flex  u-flex--space-between">
-      <div>
-        <span class="stats-card-text-free-places">
-          Places disponibles
-        </span>
-        <span class="slash-wrapper">
-          /
-        </span>
-        Total places
+
+    <v-container fluid class="less-padding">
+      <div class="stats-card">
+        <div class="text-xs-right">
+          <refresh-button
+            @click="reloadWeekMonitor"
+            :isLoading="!!isLoading"
+          />
+        </div>
       </div>
 
-      <div class="text-xs-center">
-        <refresh-button
-          @click="reloadWeekMonitor"
-          :isLoading="!!isLoading"
-        />
-      </div>
-    </div>
-
-    <v-container fluid>
       <v-layout row wrap>
         <v-flex
           class="monitor-wrapper  u-flex--column-on-tablet"
@@ -35,7 +26,18 @@
           />
         </v-flex>
       </v-layout>
+
+      <div class="text-xs-right">
+        <span class="stats-card-text-free-places">
+          Places disponibles
+        </span>
+        <span class="slash-wrapper">
+          /
+        </span>
+        Total places
+      </div>
     </v-container>
+
   </div>
 </template>
 
@@ -85,6 +87,10 @@ export default {
 </script>
 
 <style lang="postcss">
+.less-padding {
+  padding-top: 0.1em;
+}
+
 .monitor-wrapper {
   padding: 2em;
 }
@@ -97,4 +103,5 @@ export default {
   height: 100%;
   color: green;
 }
+
 </style>
