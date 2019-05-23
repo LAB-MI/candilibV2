@@ -5,16 +5,14 @@ import {
   findPlacesByCentreAndDate,
 } from '../../models/place'
 import {
+  assignCandidatInPlace,
   createPlaceForInspector,
   importPlacesCsv,
-  validUpdateResaInspector,
   moveCandidatInPlaces,
+  validUpdateResaInspector,
 } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
-
-import { appLogger } from '../../util'
-import { ErrorWithStatus } from '../../util/error.status'
-import { dateTimeToFormatFr } from '../../util/date.util'
+import { appLogger, ErrorWithStatus, dateTimeToFormatFr } from '../../util'
 
 export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
@@ -42,7 +40,7 @@ export const importPlaces = async (req, res) => {
     })
   } catch (error) {
     appLogger.error(error)
-    return res.status(500).send({
+    res.status(500).send({
       success: false,
       message: error.message,
       error,
@@ -78,16 +76,16 @@ export const createPlaceByAdmin = async (req, res) => {
       inspecteur,
       date
     )
-    appLogger.info(`create by admin place: La place a bien été crée.`)
+    appLogger.info(`create by admin place: La place a bien été créée.`)
     res.json({
       success: true,
       message: `La place du [${createdPlaceResult.date}] a bien été crée.`,
     })
   } catch (error) {
-    appLogger.info(`create by admin place: La place n'a pas été crée.`)
+    appLogger.info(`create by admin place: La place n'a pas été créée.`)
     res.json({
       success: false,
-      message: "La place n'a pas été crée",
+      message: "La place n'a pas été créée",
       error: error.nessage,
     })
   }
@@ -124,29 +122,50 @@ export const deletePlaceByAdmin = async (req, res) => {
 }
 
 export const updatePlaces = async (req, res) => {
-  const { resa, inspecteur } = req.body
+  const { inspecteur, candidatId } = req.body
+  const { id: placeId } = req.params
 
   const loggerContent = {
-    section: 'admin-update-resa',
+    section: 'admin-update-place',
     admin: req.userId,
-    resa,
-    inspecteur,
   }
 
   try {
-    if (resa && inspecteur) {
+    if (placeId && inspecteur) {
       appLogger.info({
         ...loggerContent,
+        placeId,
+        inspecteur,
         action: 'UPDATE_RESA',
         message: `Changer l'inspecteur de la reservaton candidat`,
       })
 
-      const result = await validUpdateResaInspector(resa, inspecteur)
+      const result = await validUpdateResaInspector(placeId, inspecteur)
       const newResa = await moveCandidatInPlaces(result.resa, result.place)
       return res.json({
         success: true,
         message: `La modification est confirmée.`,
         place: newResa,
+      })
+    }
+
+    if (placeId && candidatId) {
+      appLogger.info({
+        ...loggerContent,
+        placeId,
+        candidatId,
+        action: 'UPDATE_PLACE',
+        message: `Affecter un candidat à une place`,
+      })
+
+      const result = await assignCandidatInPlace(candidatId, placeId)
+      const { date, hour } = dateTimeToFormatFr(result.newBookedPlace.date)
+      return res.send({
+        success: true,
+        message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${
+          result.candidat.codeNeph
+        }] a bien été affecté à la place du ${date} à ${hour}`,
+        place: result.newBookedPlace,
       })
     }
   } catch (error) {
@@ -162,12 +181,15 @@ export const updatePlaces = async (req, res) => {
         error,
       })
     }
-    return res.status(500).send({
+    res.status(500).send({
       success: false,
       message: error.message,
       error,
     })
   }
 
-  res.status(422).send({ success: false })
+  res.status(422).send({
+    success: false,
+    message: 'Les paramètres renseignés sont incorrects',
+  })
 }

@@ -6,7 +6,9 @@ import config from '../../config'
 import { createCentres } from './centres'
 import { createInspecteurs } from './inspecteurs'
 
-let basePlaceDateTime = DateTime.fromObject({ day: 18, hour: 9 })
+let basePlaceDateTime = DateTime.fromObject({ day: 18, hour: 9 }).setLocale(
+  'fr'
+)
 
 if (
   basePlaceDateTime <
@@ -78,11 +80,6 @@ export const createPlaces = async () => {
       centre: centre3._id,
       inspecteur: inspecteur2._id,
     },
-    // {
-    //   date: basePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
-    //   centre: centre3._id,
-    //   inspecteur: inspecteur2._id,
-    // },
   ]
 
   testPlaces = await Promise.all(places.map(createPlace))

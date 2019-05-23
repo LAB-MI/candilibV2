@@ -25,6 +25,8 @@ export const CREATE_CRENEAU_REQUEST = 'CREATE_CRENEAU_REQUEST'
 export const CREATE_CRENEAU_SUCCESS = 'CREATE_CRENEAU_SUCCESS'
 export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
 
+export const ASSIGN_CANDIDAT_TO_CRENEAU = 'ASSIGN_CANDIDAT_TO_CRENEAU'
+
 export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
 export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
 export const DELETE_BOOKED_PLACE_FAILURE = 'DELETE_BOOKED_PLACE_FAILURE'
@@ -239,7 +241,8 @@ export default {
       }
     },
 
-    async [CREATE_CRENEAU_REQUEST] ({ commit, dispatch, state }, { centre, inspecteur, date }) {
+    async [CREATE_CRENEAU_REQUEST] ({ commit, dispatch, state }, placeData = {}) {
+      const { centre, inspecteur, date } = placeData
       commit(CREATE_CRENEAU_REQUEST)
       try {
         const result = await api.admin.createPlace(centre, inspecteur, date)
@@ -247,6 +250,26 @@ export default {
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
         commit(CREATE_CRENEAU_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [ASSIGN_CANDIDAT_TO_CRENEAU] ({ dispatch, state }, assignData = {}) {
+      const { placeId, candidatId } = assignData
+      try {
+        const {
+          success,
+          message,
+        } = await api.admin.assignCandidatToPlace(
+          placeId,
+          candidatId,
+          state.departements.active
+        )
+        if (!success) {
+          throw new Error(message)
+        }
+        dispatch(SHOW_SUCCESS, message)
+      } catch (error) {
         return dispatch(SHOW_ERROR, error.message)
       }
     },

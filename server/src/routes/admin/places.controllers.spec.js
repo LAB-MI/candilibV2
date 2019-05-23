@@ -5,15 +5,20 @@ import { DateTime } from 'luxon'
 
 import { connect, disconnect } from '../../mongo-connection'
 
+import { apiPrefix } from '../../app'
+
 import {
-  createCandidats,
-  createPlaces,
-  removePlaces,
-  removeCentres,
   centres,
-  makeResas,
+  createCandidats,
+  createCandidatsAndUpdate,
+  createCentres,
+  createInspecteurs,
+  createPlaces,
   deleteCandidats,
   makeResa,
+  makeResas,
+  removeCentres,
+  removePlaces,
 } from '../../models/__tests__'
 import { getPlaces, updatePlaces } from '../admin/places.controllers'
 import centreModel from '../../models/centre/centre.model'
@@ -48,12 +53,11 @@ describe('Test places controller', () => {
   app.use(bodyParser.json({ limit: '20mb' }))
   app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
   app.get('/places', getPlaces)
-  app.put('/reservation', updatePlaces)
+  app.patch(`/reservation/:id`, updatePlaces)
 
   beforeAll(async () => {
     await connect()
     candidatsCreated = await createCandidats()
-    // await createCentres()
     inspecteurCreated = await createInspecteur(inspecteurTest)
     inspecteurCreated2 = await createInspecteur(inspecteurTest2)
     await createPlaces()
@@ -115,10 +119,9 @@ describe('Test places controller', () => {
 
     const departement = '93'
     const { body } = await request(app)
-      .put('/reservation')
+      .patch(`/reservation/${resa}`)
       .send({
         departement,
-        resa,
         inspecteur,
       })
       .set('Accept', 'application/json')
@@ -149,10 +152,9 @@ describe('Test places controller', () => {
 
     const departement = '93'
     const { body } = await request(app)
-      .put('/reservation')
+      .patch(`/reservation/${resa}`)
       .send({
         departement,
-        resa,
         inspecteur,
       })
       .set('Accept', 'application/json')
@@ -161,5 +163,163 @@ describe('Test places controller', () => {
     expect(body).toBeDefined()
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', RESA_PLACE_HAS_BOOKED)
+  })
+})
+
+describe('update place by admin', () => {
+  let placesCreated
+  let candidatsCreatedAndUpdated
+
+  const app = express()
+  app.use(bodyParser.json({ limit: '20mb' }))
+  app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+  app.patch(`${apiPrefix}/admin/places/:id`, updatePlaces)
+
+  beforeAll(async () => {
+    await connect()
+    candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
+    placesCreated = await createPlaces()
+  })
+
+  afterAll(async () => {
+    const places = placesCreated.map(elt => elt.remove())
+    const candidats = candidatsCreatedAndUpdated.map(elt => elt.remove())
+
+    await Promise.all([...places, ...candidats])
+    await disconnect()
+  })
+  it('should return a 200 when assign candidat in available place', async () => {
+    const [inspecteur1] = await createInspecteurs()
+    const [centre1] = await createCentres()
+
+    const placeCanBook = {
+      date: DateTime.fromObject({ day: 18, hour: 9 })
+        .setLocale('fr')
+        .toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+    }
+
+    const place = await createPlace(placeCanBook)
+
+    const candidat = candidatsCreatedAndUpdated[0]
+
+    const { body } = await request(app)
+      .patch(`${apiPrefix}/admin/places/${place._id}`)
+      .send({
+        candidatId: candidat._id,
+      })
+      .expect(200)
+
+    expect(DateTime.fromISO(body.place.date).toISO()).toBe(
+      DateTime.fromJSDate(place.date).toISO()
+    )
+    expect(body.place).toHaveProperty(
+      'inspecteur',
+      place.inspecteur._id.toString()
+    )
+    expect(body.place).toHaveProperty('centre', place.centre._id.toString())
+    expect(body.place).toHaveProperty('candidat', candidat._id.toString())
+  })
+
+  it('should return a 400 when place already booked', async () => {
+    // Given
+    const [inspecteur1] = await createInspecteurs()
+    const [centre1] = await createCentres()
+
+    const createdBookedPlace = {
+      date: DateTime.fromObject({ day: 19, hour: 9 })
+        .setLocale('fr')
+        .toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+      candidat: candidatsCreatedAndUpdated[0]._id,
+    }
+
+    const place = await createPlace(createdBookedPlace)
+
+    const candidat = candidatsCreatedAndUpdated[2]
+
+    // When
+    const { body } = await request(app)
+      .patch(`${apiPrefix}/admin/places/${place._id}`)
+      .send({
+        candidatId: candidat._id,
+      })
+      // Then
+      .expect(400)
+
+    expect(body).toHaveProperty('error', { _status: 400 })
+    expect(body).toHaveProperty('message', 'Cette place est déja réservée')
+    expect(body).toHaveProperty('success', false)
+  })
+
+  it('should return a 422 when trying to assign unexisting candidat to place', async () => {
+    const place = placesCreated[0]
+    const unexistingCandidatId = '5cda8d17c522ad6a16e3633b'
+
+    const { body } = await request(app)
+      .patch(`${apiPrefix}/admin/places/${place._id}`)
+      .send({
+        candidatId: unexistingCandidatId,
+      })
+      .expect(422)
+
+    expect(body).toHaveProperty('error', { _status: 422 })
+    expect(body).toHaveProperty(
+      'message',
+      'Les paramètres renseignés sont incorrects'
+    )
+    expect(body).toHaveProperty('success', false)
+  })
+
+  it('should return a 422 when trying to assign candidat to unexisting place', async () => {
+    const unexistingPlaceId = '5cda8d17c522ad6a16e3633b'
+    const candidat = candidatsCreatedAndUpdated[2]
+
+    const { body } = await request(app)
+      .patch(`${apiPrefix}/admin/places/${unexistingPlaceId}`)
+      .send({
+        candidatId: candidat._id,
+      })
+      .expect(422)
+
+    expect(body).toHaveProperty('error', { _status: 422 })
+    expect(body).toHaveProperty(
+      'message',
+      'Les paramètres renseignés sont incorrects'
+    )
+    expect(body).toHaveProperty('success', false)
+  })
+
+  it('should return a 400 when trying to assign not yet validated candidat to place', async () => {
+    const [inspecteur1] = await createInspecteurs()
+    const [centre1] = await createCentres()
+
+    const createdPlace1 = {
+      date: DateTime.fromObject({ day: 20, hour: 9 })
+        .setLocale('fr')
+        .toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+    }
+
+    const place = await createPlace(createdPlace1)
+
+    const candidat = candidatsCreatedAndUpdated[3]
+
+    const { body } = await request(app)
+      .patch(`${apiPrefix}/admin/places/${place._id}`)
+      .send({
+        candidatId: candidat._id,
+      })
+      .expect(400)
+
+    expect(body).toHaveProperty('error', { _status: 400 })
+    expect(body).toHaveProperty(
+      'message',
+      "Le candidat n'est pas validé par Aurige"
+    )
+    expect(body).toHaveProperty('success', false)
   })
 })

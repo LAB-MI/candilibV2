@@ -1,5 +1,5 @@
-import { findAllPlaces } from '../place'
-import { findAllCandidatsLean } from '../candidat'
+import { commonBasePlaceDateTime } from './places'
+import { findCandidatByEmail } from '../candidat'
 import { candidats } from './candidats'
 import placeModel from '../place/place.model'
 
@@ -11,24 +11,14 @@ export const makeResa = (place, candidat) => {
 let placesDb
 
 export const makeResas = async () => {
-  placesDb = findAllPlaces()
-
-  const places = await placesDb
-
-  const place1 = places.find(
-    place => place.inspecteur.toString() === places[0].inspecteur.toString()
-  )
-
-  const place2 = places.find(
-    place => place.inspecteur.toString() === places[1].inspecteur.toString()
-  )
-  const candidatsDb = await findAllCandidatsLean()
-  const candidat1 = candidatsDb.find(
-    candidat => candidat.codeNeph === candidats[0].codeNeph
-  )
-  const candidat2 = candidatsDb.find(
-    candidat => candidat.codeNeph === candidats[1].codeNeph
-  )
+  const place1 = await placeModel.findOne({
+    date: commonBasePlaceDateTime.toISO(),
+  })
+  const place2 = await placeModel.findOne({
+    date: commonBasePlaceDateTime.plus({ days: 1, hour: 1 }).toISO(),
+  })
+  const candidat1 = await findCandidatByEmail(candidats[0].email)
+  const candidat2 = await findCandidatByEmail(candidats[1].email)
 
   const result = await Promise.all([
     makeResa(place1, candidat1),

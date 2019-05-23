@@ -4,7 +4,7 @@ import { connect, disconnect } from '../../mongo-connection'
 
 import app, { apiPrefix } from '../../app'
 import { createPlaces } from '../../models/__tests__/places'
-import { RESA_NO_BOOKED, RESA_BOOKED_CANCEL } from './message.constants'
+import { RESA_NO_BOOKED, CANCEL_BOOKED_PLACE } from './message.constants'
 import { createCentres } from '../../models/__tests__/centres'
 import { createCandidats } from '../../models/__tests__/candidats'
 import { makeResas } from '../../models/__tests__/reservations'
@@ -62,7 +62,7 @@ xdescribe('reservation by admin', () => {
         .expect(200)
       expect(body).toBeDefined()
       expect(body).toHaveProperty('success', true)
-      expect(body).toHaveProperty('message', RESA_BOOKED_CANCEL)
+      expect(body).toHaveProperty('message', CANCEL_BOOKED_PLACE)
     })
   })
 })

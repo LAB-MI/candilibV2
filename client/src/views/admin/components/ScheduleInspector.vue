@@ -77,7 +77,7 @@
                 :rows-per-page-items='[15, 25, 35,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
                 :headers="headers"
                 :items="{ inspecteursData, activeCentreId } | filterByCentre"
-                class="elevation-1"
+                class="elevation-1 data-table"
                 :loading="isLoading"
                 :no-data-text="isLoading ? 'Chargement des données en cours...' : 'Aucun creneau pour ce centre'"
               >
@@ -111,7 +111,6 @@ import {
   FETCH_ADMIN_INFO_REQUEST,
   FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
 } from '@/store'
-
 import ScheduleInspectorDialog from './ScheduleInspectorDialog.vue'
 
 import {
@@ -242,6 +241,7 @@ export default {
 
   watch: {
     async date (val) {
+      this.$router.push({ params: { date: this.date } })
       const dateTimeFromSQL = getFrenchLuxonDateTimeFromSql(this.date)
       this.currentWeekNumber = dateTimeFromSQL.weekNumber
       if (this.$store.state.admin.departements.active) {
@@ -253,7 +253,6 @@ export default {
         this.activeCentreTab = `tab-${this.activeCentreId}`
         this.parseInspecteursPlanning()
       }
-      this.$router.push({ params: { center: this.activeCentreId, date: this.date } })
     },
 
     async activeDepartement (newValue, oldValue) {

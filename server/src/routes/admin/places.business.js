@@ -1,8 +1,12 @@
 import * as csvParser from 'fast-csv'
 import { DateTime } from 'luxon'
-
-import { addPlaceToArchive, setCandidatToVIP } from '../../models/candidat'
+import {
+  addPlaceToArchive,
+  setCandidatToVIP,
+  findCandidatById,
+} from '../../models/candidat'
 import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
+import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
 import {
   bookPlaceById,
   createPlace,
@@ -13,15 +17,13 @@ import {
   removeBookedPlace,
   findPlaceWithSameWindow,
 } from '../../models/place'
-
-import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
-import { sendCancelBookingByAdmin } from '../business'
 import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
-import { appLogger } from '../../util'
-import { ErrorWithStatus } from '../../util/error.status'
+import { appLogger, getDateTimeFrFromJSDate, ErrorWithStatus } from '../../util'
+import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
 import {
-  RESA_BOOKED_CANCEL,
-  RESA_BOOKED_CANCEL_NO_MAIL,
+  BOOKED_PLACE_NO_MAIL,
+  CANCEL_BOOKED_PLACE_NO_MAIL,
+  CANCEL_BOOKED_PLACE,
   DELETE_PLACE_ERROR,
   RESA_PLACE_HAS_BOOKED,
 } from './message.constants'
@@ -47,7 +49,7 @@ const getPlaceStatus = (
  * @param {*} data
  */
 const transfomCsv = async ({ data, departement }) => {
-  const [day, time, inspecteur, centre, dept] = data
+  const [day, time, matricule, centre, dept] = data
 
   const myDate = `${day.trim()} ${time.trim()}`
 
@@ -73,9 +75,9 @@ const transfomCsv = async ({ data, departement }) => {
       throw new Error(`Le centre ${centre.trim()} est inconnu`)
     }
 
-    const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
+    const inspecteurFound = await findInspecteurByMatricule(matricule.trim())
     if (!inspecteurFound) {
-      throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
+      throw new Error(`L'inspecteur ${matricule.trim()} est inconnu`)
     }
 
     return {
@@ -93,7 +95,7 @@ const transfomCsv = async ({ data, departement }) => {
     return getPlaceStatus(
       departement,
       centre,
-      inspecteur,
+      matricule,
       myDate,
       'error',
       error.message
@@ -212,7 +214,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
   candidatUpdated = await setCandidatToVIP(candidatUpdated, place.date)
 
   let statusmail = true
-  let message = RESA_BOOKED_CANCEL
+  let message = CANCEL_BOOKED_PLACE
   try {
     await sendCancelBookingByAdmin(placeUpdated, candidatUpdated)
   } catch (error) {
@@ -222,7 +224,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
       error,
     })
     statusmail = false
-    message = RESA_BOOKED_CANCEL_NO_MAIL
+    message = CANCEL_BOOKED_PLACE_NO_MAIL
   }
 
   try {
@@ -347,4 +349,73 @@ export const moveCandidatInPlaces = async (resa, place) => {
   await deletePlace(resa)
 
   return newResa
+}
+
+export const assignCandidatInPlace = async (candidatId, placeId) => {
+  const loggerContent = {
+    section: 'admin-assign-candidat-in-places',
+    candidatId,
+    placeId,
+  }
+
+  appLogger.info({
+    ...loggerContent,
+    action: 'BOOK_PLACE',
+  })
+
+  const candidat = await findCandidatById(candidatId)
+  const place = await findPlaceById(placeId)
+
+  if (!candidat || !place) {
+    throw new ErrorWithStatus(422, 'Les paramètres renseignés sont incorrects')
+  }
+  if ('isValidatedByAurige' in candidat && !candidat.isValidatedByAurige) {
+    throw new ErrorWithStatus(400, "Le candidat n'est pas validé par Aurige")
+  }
+
+  if (
+    getDateTimeFrFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
+    getDateTimeFrFromJSDate(place.date)
+  ) {
+    throw new ErrorWithStatus(
+      400,
+      'Date ETG ne sera plus valide pour cette place'
+    )
+  }
+
+  const placeAlreadyBookedByCandidat = await findPlaceBookedByCandidat(
+    candidatId
+  )
+  const newBookedPlace = await bookPlaceById(placeId, candidatId)
+
+  if (!newBookedPlace) {
+    throw new ErrorWithStatus(400, 'Cette place est déja réservée')
+  }
+
+  if (placeAlreadyBookedByCandidat) {
+    await removeBookedPlace(placeAlreadyBookedByCandidat)
+  }
+
+  let statusmail
+  let message
+  try {
+    await sendMailConvocation(newBookedPlace)
+    statusmail = true
+  } catch (error) {
+    appLogger.warn({
+      section: 'admin-assignCandidatInPlace',
+      action: 'FAILED_SEND_MAIL',
+      error,
+    })
+    statusmail = false
+    message = BOOKED_PLACE_NO_MAIL
+  }
+  return {
+    newBookedPlace,
+    candidat,
+    statusmail: {
+      status: statusmail,
+      message,
+    },
+  }
 }
