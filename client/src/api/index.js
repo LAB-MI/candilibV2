@@ -338,11 +338,11 @@ export default {
       return json
     },
 
-    async updateInspeteurForResa (departement, resa, inspecteur) {
+    async updateInspeteurForResa (departement, placeId, inspecteur) {
       const json = await apiClient
-        .put(`${apiPaths.admin.places}`, {
+        .patch(`${apiPaths.admin.places}/${placeId}`, {
           headers: getHeadersForAdminJson(),
-          body: JSON.stringify({ departement, resa, inspecteur }),
+          body: JSON.stringify({ departement, inspecteur }),
         })
       return json
     },

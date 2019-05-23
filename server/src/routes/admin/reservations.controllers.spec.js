@@ -23,26 +23,26 @@ jest.mock('../../util/logger')
 
 xdescribe('reservation by admin', () => {
   describe('delete reservation by admin', () => {
-      let placesCreated
-      let candidatsCreated
-      let centresCreated
-      let admin
-      beforeAll(async () => {
-        await connect()
-        admin = await createUser(email, password, deps)
-        centresCreated = await createCentres()
-        placesCreated = await createPlaces()
-        candidatsCreated = await createCandidats()
-        await makeResas()
-        require('../middlewares/verify-token').__setIdAdmin(admin._id, deps)
-      })
+    let placesCreated
+    let candidatsCreated
+    let centresCreated
+    let admin
+    beforeAll(async () => {
+      await connect()
+      admin = await createUser(email, password, deps)
+      centresCreated = await createCentres()
+      placesCreated = await createPlaces()
+      candidatsCreated = await createCandidats()
+      await makeResas()
+      require('../middlewares/verify-token').__setIdAdmin(admin._id, deps)
+    })
 
-      afterAll(async () => {
-        await Promise.all(placesCreated.map(deleteData))
-        await Promise.all(centresCreated.map(deleteData))
-        await Promise.all(candidatsCreated.map(deleteData))
-        await disconnect()
-      })
+    afterAll(async () => {
+      await Promise.all(placesCreated.map(deleteData))
+      await Promise.all(centresCreated.map(deleteData))
+      await Promise.all(candidatsCreated.map(deleteData))
+      await disconnect()
+    })
 
     it('should 400 when a place has not booked', async () => {
       const placeSelected = placesCreated[4]

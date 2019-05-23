@@ -4,7 +4,6 @@ import {
   deletePlace,
   findPlacesByCentreAndDate,
 } from '../../models/place'
-import { findCandidatById } from '../../models/candidat'
 import {
   assignCandidatInPlace,
   createPlaceForInspector,
@@ -123,25 +122,25 @@ export const deletePlaceByAdmin = async (req, res) => {
 }
 
 export const updatePlaces = async (req, res) => {
-  const { resa, inspecteur, candidatId } = req.body
+  const { inspecteur, candidatId } = req.body
   const { id: placeId } = req.params
 
-  try {
-    if (resa && inspecteur) {
-      const loggerContent = {
-        section: 'admin-update-resa',
-        admin: req.userId,
-        resa,
-        inspecteur,
-      }
+  const loggerContent = {
+    section: 'admin-update-place',
+    admin: req.userId,
+  }
 
+  try {
+    if (placeId && inspecteur) {
       appLogger.info({
         ...loggerContent,
+        placeId,
+        inspecteur,
         action: 'UPDATE_RESA',
         message: `Changer l'inspecteur de la reservaton candidat`,
       })
 
-      const result = await validUpdateResaInspector(resa, inspecteur)
+      const result = await validUpdateResaInspector(placeId, inspecteur)
       const newResa = await moveCandidatInPlaces(result.resa, result.place)
       return res.json({
         success: true,
@@ -151,10 +150,6 @@ export const updatePlaces = async (req, res) => {
     }
 
     if (placeId && candidatId) {
-      const loggerContent = {
-        section: 'admin-update-place',
-        admin: req.userId,
-      }
       appLogger.info({
         ...loggerContent,
         placeId,

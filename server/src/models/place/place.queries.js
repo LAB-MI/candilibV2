@@ -202,14 +202,3 @@ export const findPlaceWithSameWindow = async creneau => {
   const place = await Place.findOne({ date, centre, inspecteur })
   return place
 }
-
-export const bookPlaceById = async (placeId, candidat, fields, populate) => {
-  const query = Place.findOneAndUpdate(
-    { _id: placeId, candidat: { $eq: undefined } },
-    { $set: { candidat } },
-    { new: true, fields }
-  )
-  queryPopulate(populate, query)
-  const place = await query.exec()
-  return place
-}

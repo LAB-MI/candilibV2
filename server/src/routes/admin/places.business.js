@@ -21,10 +21,11 @@ import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
 import { appLogger, getDateTimeFrFromJSDate, ErrorWithStatus } from '../../util'
 import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
 import {
-  CANCEL_BOOKED_PLACE,
-  CANCEL_BOOKED_PLACE_NO_MAIL,
-  DELETE_PLACE_ERROR,
   BOOKED_PLACE_NO_MAIL,
+  CANCEL_BOOKED_PLACE_NO_MAIL,
+  CANCEL_BOOKED_PLACE,
+  DELETE_PLACE_ERROR,
+  RESA_PLACE_HAS_BOOKED,
 } from './message.constants'
 
 const getPlaceStatus = (

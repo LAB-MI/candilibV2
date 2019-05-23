@@ -8,15 +8,16 @@ import { connect, disconnect } from '../../mongo-connection'
 import { apiPrefix } from '../../app'
 
 import {
-  createCandidatsAndUpdate,
-  createCandidats,
-  createPlaces,
-  removePlaces,
-  removeCentres,
   centres,
-  makeResas,
+  createCandidats,
+  createCandidatsAndUpdate,
+  createCentres,
+  createPlaces,
   deleteCandidats,
   makeResa,
+  makeResas,
+  removeCentres,
+  removePlaces,
 } from '../../models/__tests__'
 import { getPlaces, updatePlaces } from '../admin/places.controllers'
 import centreModel from '../../models/centre/centre.model'
@@ -56,7 +57,6 @@ describe('Test places controller', () => {
   beforeAll(async () => {
     await connect()
     candidatsCreated = await createCandidats()
-    // await createCentres()
     inspecteurCreated = await createInspecteur(inspecteurTest)
     inspecteurCreated2 = await createInspecteur(inspecteurTest2)
     await createPlaces()
@@ -167,7 +167,6 @@ describe('Test places controller', () => {
   })
 })
 
-
 describe('update place by admin', () => {
   let placesCreated
   let centresCreated
@@ -191,11 +190,7 @@ describe('update place by admin', () => {
     const centres = centresCreated.map(elt => elt.remove())
     const candidats = candidatsCreatedAndUpdated.map(elt => elt.remove())
 
-    await Promise.all([
-      ...places,
-      ...centres,
-      ...candidats,
-    ])
+    await Promise.all([...places, ...centres, ...candidats])
     await disconnect()
   })
 
@@ -242,9 +237,8 @@ describe('update place by admin', () => {
       .send({
         candidatId: candidat._id,
       })
-    // Then
+      // Then
       .expect(400)
-
 
     expect(body).toHaveProperty('error', { _status: 400 })
     expect(body).toHaveProperty('message', 'Cette place est déja réservée')
