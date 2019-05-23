@@ -2,23 +2,23 @@ import { storiesOf } from '@storybook/vue'
 import Vuex from 'vuex'
 
 import SheduleInspectorDialogContent from './SheduleInspectorDialogContent.vue'
-import adminModifIpcsr from './searchInspecteur/ListSearchInspecteursAvailable.stories.store'
+import adminModifInspecteur from './searchInspecteur/ListSearchInspecteursAvailable.stories.store'
 import admin from './SheduleInspectorDialogContent.stories.store'
 
 storiesOf('Admin/ScheduleInspectorDialogContent', module)
   .add('booking', () => ({
     components: { SheduleInspectorDialogContent },
     template: `
-        <shedule-inspector-dialog-content
-            :closeDialog="closeDialog"
-            :updateContent="updateContent"
-            :flag-modal="flagModal"
-            :icon="icon"
-            :content="content"
-            :selectedDate="selectedDate"
-            :inspecteurId="inspecteurId" 
-            :centreInfo="centreInfo" 
-        />`,
+      <shedule-inspector-dialog-content
+        :closeDialog="closeDialog"
+        :updateContent="updateContent"
+        :flag-modal="flagModal"
+        :icon="icon"
+        :content="content"
+        :selectedDate="selectedDate"
+        :inspecteurId="inspecteurId" 
+        :centreInfo="centreInfo" 
+      />`,
 
     data () {
       return {
@@ -45,7 +45,7 @@ storiesOf('Admin/ScheduleInspectorDialogContent', module)
 
       },
       modules: {
-        adminModifIpcsr,
+        adminModifInspecteur,
         admin,
       },
     }),

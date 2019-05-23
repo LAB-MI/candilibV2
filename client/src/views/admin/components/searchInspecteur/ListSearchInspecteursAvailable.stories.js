@@ -1,7 +1,7 @@
 import { storiesOf } from '@storybook/vue'
 import Vuex from 'vuex'
 
-import adminModifIpcsr from './ListSearchInspecteursAvailable.stories.store'
+import adminModifInspecteur from './ListSearchInspecteursAvailable.stories.store'
 import ListSearchInspecteursAvailable from './ListSearchInspecteursAvailable.vue'
 
 storiesOf('Admin/searchInspecteur', module)
@@ -11,7 +11,7 @@ storiesOf('Admin/searchInspecteur', module)
     store: new Vuex.Store({
       state: { },
       modules: {
-        adminModifIpcsr,
+        adminModifInspecteur,
       },
     }),
     methods: {

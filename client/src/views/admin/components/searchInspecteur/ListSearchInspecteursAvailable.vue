@@ -1,13 +1,13 @@
 <template>
     <div>
         <v-autocomplete
-        v-model="select"
-        :items="inspecteurs"
-        :loading="isLoading"
-        label="Inspecteur..."
-        :readonly="!isEditing"
-        item-text='text'
-        item-value='value'
+          v-model="select"
+          :items="inspecteurs"
+          :loading="isLoading"
+          label="Inspecteur..."
+          :readonly="!isEditing"
+          item-text='text'
+          item-value='value'
         />
     </div>
 </template>
@@ -30,14 +30,14 @@ export default {
   computed: {
     ...mapGetters(['activeDepartement']),
     inspecteurs () {
-      return this.$store.state.adminModifIpcsr.inspecteurs.list.map(inspecteur => {
+      return this.$store.state.adminModifInspecteur.inspecteurs.list.map(inspecteur => {
         const { _id: value, nom, matricule } = inspecteur
         const text = nom + ' | ' + matricule
         return { value, text, inspecteur }
       })
     },
     isLoading () {
-      return this.$store.state.adminModifIpcsr.inspecteurs.isFetching
+      return this.$store.state.adminModifInspecteur.inspecteurs.isFetching
     },
   },
   watch: {

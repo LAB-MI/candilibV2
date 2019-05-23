@@ -30,7 +30,7 @@
       colorSubmitButton="blue"
       textButtonCancel="Retour"
       textContent="Modifier l'inspecteur"
-      :activeTextContent="displayModifyIPCSRTitle"
+      :activeTextContent="displayModifyInspecteurTitle"
       :closeDialog="closeDialogFace"
       :submitDialog="changeInspecteur"
     >
@@ -154,7 +154,7 @@ export default {
       textInspecteurSeleted: undefined,
       hasConfirm: false,
       displaySearchInspecteurs: false,
-      displayModifyIPCSRTitle: true,
+      displayModifyInspecteurTitle: true,
     }
   },
   computed: {
@@ -163,7 +163,7 @@ export default {
       return this.$store.state.admin.places.isFetching
     },
     isUpdatingInspecteur () {
-      return this.$store.state.adminModifIpcsr.isUpdating
+      return this.$store.state.adminModifInspecteur.isUpdating
     },
   },
 
@@ -173,7 +173,7 @@ export default {
       this.textInspecteurSeleted = `Vous avez choisi l'inspecteur ${inspecteur.nom}, ${inspecteur.matricule}`
       this.hasConfirm = true
       this.displaySearchInspecteurs = false
-      this.displayModifyIPCSRTitle = false
+      this.displayModifyInspecteurTitle = false
     },
 
     async fetchPlanningByDepartement () {
@@ -205,7 +205,7 @@ export default {
     },
 
     closeDialogInspecteur () {
-      this.displayModifyIPCSRTitle = true
+      this.displayModifyInspecteurTitle = true
       this.displaySearchInspecteurs = false
       this.textInspecteurSeleted = undefined
       this.inspecteurSelected = undefined
@@ -218,7 +218,7 @@ export default {
 
     cancelSelection () {
       this.displaySearchInspecteurs = true
-      this.displayModifyIPCSRTitle = true
+      this.displayModifyInspecteurTitle = true
       this.textInspecteurSeleted = undefined
       this.inspecteurSelected = undefined
       this.hasConfirm = false
