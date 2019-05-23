@@ -56,8 +56,8 @@ const adminRoutes = [
         component: HomeAdminPage,
       },
       {
-        path: 'gestion-plannings/:center?/:date?',
-        name: 'gestion-plannings',
+        path: 'gestion-planning/:center?/:date?',
+        name: 'gestion-planning',
         component: ScheduleManager,
       },
       {

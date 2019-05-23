@@ -26,7 +26,7 @@ export default {
     goToGestionPlannings () {
       const { centre } = this.$store.state.admin.places.list[0]
       this.$router.push({
-        name: 'gestion-plannings',
+        name: 'gestion-planning',
         params: {
           center: centre._id,
           date: getFrenchLuxonCurrentDateTime().toSQLDate(),
