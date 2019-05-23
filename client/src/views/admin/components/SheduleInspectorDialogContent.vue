@@ -23,7 +23,7 @@
       :content="content"
     />
     <shedule-inspector-dialog-sub-content
-      :isLoading="isUpdatingInspecteur"
+      :isLoading="isLoading"
       colorAlert="white"
       icon="account_box"
       colorIcon="white"
@@ -118,15 +118,11 @@ import SheduleInspectorDialogSubContent from './SheduleInspectorDialogSubContent
 import SheduleInspectorDialogHeader from './SheduleInspectorDialogHeader.vue'
 import ListSearchInspecteursAvailable from './searchInspecteur/ListSearchInspecteursAvailable.vue'
 import ConfirmBox from '@/components/ConfirmBox.vue'
-import {
-  getFrenchLuxonDateTimeFromSql,
-} from '@/util'
 
 import {
   CREATE_CRENEAU_REQUEST,
   DELETE_PLACE_REQUEST,
   DELETE_BOOKED_PLACE_REQUEST,
-  FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
   FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST,
 } from '@/store'
 import { mapGetters } from 'vuex'
@@ -176,13 +172,6 @@ export default {
       this.displayModifyInspecteurTitle = false
     },
 
-    async fetchPlanningByDepartement () {
-      const begin = getFrenchLuxonDateTimeFromSql(this.selectedDate).toISO()
-      const end = getFrenchLuxonDateTimeFromSql(this.selectedDate).plus({ days: 1 }).toISO()
-      await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
-    },
-
     affectCandidatToCreneau () {
       this.closeDialog()
     },
@@ -228,7 +217,6 @@ export default {
       const inspecteur = this.inspecteurSelected._id
       const departement = this.activeDepartement
       await this.$store.dispatch(FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST, { departement, resa, inspecteur })
-      await this.fetchPlanningByDepartement()
       this.updateContent()
       this.closeDialogFace()
     },

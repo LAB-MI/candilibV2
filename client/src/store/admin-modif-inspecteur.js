@@ -36,8 +36,8 @@ export default {
     FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST (state) {
       state.isUpdating = true
     },
-    FETCH_UPDATE_INSPECTEUR_IN_RESA_SUCESS (state) {
-      state.isUpdating = true
+    FETCH_UPDATE_INSPECTEUR_IN_RESA_SUCCESS (state) {
+      state.isUpdating = false
     },
     FETCH_UPDATE_INSPECTEUR_IN_RESA_FAILURE (state, error) {
       state.isUpdating = false
@@ -64,7 +64,7 @@ export default {
         commit(FETCH_UPDATE_INSPECTEUR_IN_RESA_FAILURE)
         const result = await api.admin.updateInspeteurForResa(departement, resa, inspecteur)
         commit(FETCH_UPDATE_INSPECTEUR_IN_RESA_SUCCESS)
-        dispatch(result.sucess ? SHOW_SUCCESS : SHOW_ERROR, result.message)
+        dispatch(result.success ? SHOW_SUCCESS : SHOW_ERROR, result.message)
       } catch (error) {
         commit(FETCH_GET_INSPECTEURS_AVAILABLE_FAILURE, error)
         dispatch(SHOW_ERROR, error.message)
