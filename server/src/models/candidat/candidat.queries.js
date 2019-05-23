@@ -184,7 +184,6 @@ export const addPlaceToArchive = (candidat, place, reason, byUser) => {
   const { _id, inspecteur, centre, date } = place
   const archivedAt = DateTime.local()
   const archiveReason = reason
-
   if (!candidat.places) {
     candidat.places = []
   }

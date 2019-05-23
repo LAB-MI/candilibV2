@@ -22,9 +22,11 @@
         </v-flex>
         <v-spacer></v-spacer>
         <v-flex xs12>
-          <h1 class="black--text">
+          <h1 v-if="activeTextContent" class="black--text">
             {{ textContent }}
+            <slot name='title'/>
           </h1>
+          <slot/>
         </v-flex>
       </v-layout>
     </v-alert>
@@ -43,10 +45,13 @@ export default {
     colorIcon: String,
     colorSubmitButton: String,
     colorAlert: String,
-  },
-  computed: {
-    isLoading () {
-      return this.$store.state.admin.places.isFetching
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
+    activeTextContent: {
+      type: Boolean,
+      default: true,
     },
   },
 

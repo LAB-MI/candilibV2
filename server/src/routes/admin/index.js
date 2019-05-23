@@ -8,6 +8,7 @@ import {
   importPlaces,
   createPlaceByAdmin,
   deletePlaceByAdmin,
+  updatePlaces,
 } from './places.controllers'
 import { removeReservationByAdmin } from './reservations.controllers'
 import {
@@ -28,6 +29,7 @@ router.get('/inspecteurs', getInspecteurs)
 router.post('/place', verifyAdminDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.post('/places', verifyAdminDepartement, importPlaces)
+router.put('/places', verifyAdminDepartement, updatePlaces)
 router.get('/places', verifyAdminDepartement, getPlaces)
 router.delete('/reservations/:id', removeReservationByAdmin)
 

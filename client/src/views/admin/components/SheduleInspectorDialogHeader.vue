@@ -14,7 +14,7 @@
     <v-spacer></v-spacer>
     <v-btn
       style="left: 1em;"
-      @click="closeDialog"
+      @click="closeDialogHeader"
       ripple
       fab
       flat
@@ -40,6 +40,11 @@ export default {
     icon: String,
     colorHeader: String,
     iconOnLeft: String,
+  },
+  methods: {
+    closeDialogHeader () {
+      this.closeDialog()
+    },
   },
 }
 </script>

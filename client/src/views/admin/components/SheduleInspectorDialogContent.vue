@@ -2,7 +2,7 @@
   <v-card class="elevation-0" v-if="flagModal === 'face'">
     <shedule-inspector-dialog-header
       title="Ce créneau est au statut réservé"
-      :closeDialog="closeDialog"
+      :closeDialog="closeDialogFace"
       colorIcon="black"
       colorButton="blue"
       icon="highlight_off"
@@ -11,6 +11,7 @@
     />
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
+      :isLoading="isLoading"
       colorAlert="white"
       icon="block"
       colorIcon="white"
@@ -22,16 +23,36 @@
       :content="content"
     />
     <shedule-inspector-dialog-sub-content
+      :isLoading="isLoading"
       colorAlert="white"
       icon="account_box"
       colorIcon="white"
       colorSubmitButton="blue"
-      textContent="Modifier l'IPCSR"
       textButtonCancel="Retour"
-      :closeDialog="closeDialog"
+      textContent="Modifier l'inspecteur"
+      :activeTextContent="displayModifyInspecteurTitle"
+      :closeDialog="closeDialogFace"
       :submitDialog="changeInspecteur"
+    >
+    <list-search-inspecteurs-available
+      slot="title"
+      v-if="displaySearchInspecteurs"
+      :isEditing="displaySearchInspecteurs"
+      :date="content.place.date"
+      :centre="centreInfo._id"
+        @select-inspecteur="selectInspecteur"
     />
+    <confirm-box
+     v-if="hasConfirm"
+      :closeAction='cancelSelection'
+      :submitAction='validSelection'>
+        <p>
+          {{textInspecteurSeleted}}
+        </p>
+    </confirm-box>
+    </shedule-inspector-dialog-sub-content>
   </v-card>
+
   <v-card v-else-if="flagModal === 'block'">
     <shedule-inspector-dialog-header
       title="Ce créneau est au statut indisponible"
@@ -44,6 +65,7 @@
     />
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
+      :isLoading="isLoading"
       colorAlert="white"
       icon="check_circle"
       colorIcon="white"
@@ -66,6 +88,7 @@
     />
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
+      :isLoading="isLoading"
       colorAlert="white"
       icon="face"
       colorIcon="white"
@@ -77,6 +100,7 @@
     />
     <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
+      :isLoading="isLoading"
       colorAlert="white"
       icon="block"
       colorIcon="white"
@@ -92,17 +116,23 @@
 <script>
 import SheduleInspectorDialogSubContent from './SheduleInspectorDialogSubContent.vue'
 import SheduleInspectorDialogHeader from './SheduleInspectorDialogHeader.vue'
+import ListSearchInspecteursAvailable from './searchInspecteur/ListSearchInspecteursAvailable.vue'
+import ConfirmBox from '@/components/ConfirmBox.vue'
 
 import {
   CREATE_CRENEAU_REQUEST,
   DELETE_PLACE_REQUEST,
   DELETE_BOOKED_PLACE_REQUEST,
+  FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST,
 } from '@/store'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
     SheduleInspectorDialogSubContent,
     SheduleInspectorDialogHeader,
+    ListSearchInspecteursAvailable,
+    ConfirmBox,
   },
   props: {
     flagModal: String,
@@ -114,7 +144,34 @@ export default {
     inspecteurId: String,
     centreInfo: Object,
   },
+  data () {
+    return {
+      inspecteurSelected: undefined,
+      textInspecteurSeleted: undefined,
+      hasConfirm: false,
+      displaySearchInspecteurs: false,
+      displayModifyInspecteurTitle: true,
+    }
+  },
+  computed: {
+    ...mapGetters(['activeDepartement']),
+    isLoading () {
+      return this.$store.state.admin.places.isFetching
+    },
+    isUpdatingInspecteur () {
+      return this.$store.state.adminModifInspecteur.isUpdating
+    },
+  },
+
   methods: {
+    selectInspecteur (inspecteur) {
+      this.inspecteurSelected = inspecteur
+      this.textInspecteurSeleted = `Vous avez choisi l'inspecteur ${inspecteur.nom}, ${inspecteur.matricule}`
+      this.hasConfirm = true
+      this.displaySearchInspecteurs = false
+      this.displayModifyInspecteurTitle = false
+    },
+
     affectCandidatToCreneau () {
       this.closeDialog()
     },
@@ -133,7 +190,35 @@ export default {
     },
 
     changeInspecteur () {
+      this.displaySearchInspecteurs = true
+    },
+
+    closeDialogInspecteur () {
+      this.displayModifyInspecteurTitle = true
+      this.displaySearchInspecteurs = false
+      this.textInspecteurSeleted = undefined
+      this.inspecteurSelected = undefined
+      this.hasConfirm = false
+    },
+    async closeDialogFace () {
+      this.closeDialogInspecteur()
       this.closeDialog()
+    },
+
+    cancelSelection () {
+      this.displaySearchInspecteurs = true
+      this.displayModifyInspecteurTitle = true
+      this.textInspecteurSeleted = undefined
+      this.inspecteurSelected = undefined
+      this.hasConfirm = false
+    },
+    async validSelection () {
+      const resa = this.content.place._id
+      const inspecteur = this.inspecteurSelected._id
+      const departement = this.activeDepartement
+      await this.$store.dispatch(FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST, { departement, resa, inspecteur })
+      this.updateContent()
+      this.closeDialogFace()
     },
 
     async makeCreneauAvailable () {

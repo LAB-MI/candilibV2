@@ -1,8 +1,20 @@
-import { findAllPlaces, findPlaceById, deletePlace } from '../../models/place'
-import { createPlaceForInspector, importPlacesCsv } from './places.business'
+import {
+  findAllPlaces,
+  findPlaceById,
+  deletePlace,
+  findPlacesByCentreAndDate,
+} from '../../models/place'
+import {
+  createPlaceForInspector,
+  importPlacesCsv,
+  validUpdateResaInspector,
+  moveCandidatInPlaces,
+} from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
-import { dateTimeToFormatFr } from '../../util/date.util'
+
 import { appLogger } from '../../util'
+import { ErrorWithStatus } from '../../util/error.status'
+import { dateTimeToFormatFr } from '../../util/date.util'
 
 export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
@@ -40,13 +52,20 @@ export const importPlaces = async (req, res) => {
 
 export const getPlaces = async (req, res) => {
   let places
-  const { departement, beginDate, endDate } = req.query
+  const { departement, beginDate, endDate, centre, date } = req.query
 
   if (!departement) {
     places = await findAllPlaces()
     res.json(places)
   } else {
-    places = await findCentresWithPlaces(departement, beginDate, endDate)
+    if (centre && date) {
+      places = await findPlacesByCentreAndDate(centre, date, {
+        inspecteur: true,
+        centre: true,
+      })
+    } else {
+      places = await findCentresWithPlaces(departement, beginDate, endDate)
+    }
     res.json(places)
   }
 }
@@ -102,4 +121,53 @@ export const deletePlaceByAdmin = async (req, res) => {
       })
     }
   }
+}
+
+export const updatePlaces = async (req, res) => {
+  const { resa, inspecteur } = req.body
+
+  const loggerContent = {
+    section: 'admin-update-resa',
+    admin: req.userId,
+    resa,
+    inspecteur,
+  }
+
+  try {
+    if (resa && inspecteur) {
+      appLogger.info({
+        ...loggerContent,
+        action: 'UPDATE_RESA',
+        message: `Changer l'inspecteur de la reservaton candidat`,
+      })
+
+      const result = await validUpdateResaInspector(resa, inspecteur)
+      const newResa = await moveCandidatInPlaces(result.resa, result.place)
+      return res.json({
+        success: true,
+        message: `La modification est confirmée.`,
+        place: newResa,
+      })
+    }
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      action: 'ERROR',
+      message: error.message,
+    })
+    if (error instanceof ErrorWithStatus) {
+      return res.status(error.status).send({
+        success: false,
+        message: error.message,
+        error,
+      })
+    }
+    return res.status(500).send({
+      success: false,
+      message: error.message,
+      error,
+    })
+  }
+
+  res.status(422).send({ success: false })
 }

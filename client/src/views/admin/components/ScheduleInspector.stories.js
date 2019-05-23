@@ -3,7 +3,7 @@ import { storiesOf } from '@storybook/vue'
 
 import ScheduleInspector from './ScheduleInspector.vue'
 
-storiesOf('Admin', module)
+storiesOf('Admin/ScheduleInspector', module)
   .add('ScheduleInspector', () => ({
     template: '<schedule-inspector />',
     components: { ScheduleInspector },

@@ -1,43 +1,37 @@
 import fs from 'fs'
+import { DateTime } from 'luxon'
 import path from 'path'
 import util from 'util'
-import { DateTime } from 'luxon'
-
+import config from '../../../config'
+import { findArchivedCandidatByNomNeph } from '../../../models/archived-candidat/archived-candidat.queries'
+import { createCandidat, findCandidatById } from '../../../models/candidat'
+import candidatModel from '../../../models/candidat/candidat.model'
+import { deletePlace, findPlaceById } from '../../../models/place'
+import { createCentres, removeCentres } from '../../../models/__tests__/centres'
+import { createInspecteurs } from '../../../models/__tests__/inspecteurs'
+import { createPlaces, removePlaces } from '../../../models/__tests__/places'
+import { makeResa } from '../../../models/__tests__/reservations'
 import { connect, disconnect } from '../../../mongo-connection'
-
+import { EPREUVE_PRATIQUE_OK, OK_UPDATED } from '../../../util'
+import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
   isEpreuveEtgInvalid,
   isETGExpired,
-  synchroAurige,
   isMoreThan2HoursAgo,
+  synchroAurige,
 } from './synchro-aurige'
-import { OK_UPDATED, EPREUVE_PRATIQUE_OK } from '../../../util'
-import config from '../../../config'
-
-import { createCandidat, findCandidatById } from '../../../models/candidat'
-import candidatModel from '../../../models/candidat/candidat.model'
-import { REASON_EXAM_FAILED } from '../../common/reason.constants'
-import { deletePlace, findPlaceById } from '../../../models/place'
-import { findArchivedCandidatByNomNeph } from '../../../models/archived-candidat/archived-candidat.queries'
-
-import {
-  placeBeforTimeOutRetry,
-  placeAfterTimeOutRetry,
-} from './__tests__/places-aurige'
-import {
-  createCandidatToTestAurige,
-  candidatFailureExam,
-  candidatPassed,
-} from './__tests__/candidats-aurige'
 import { toAurigeJsonBuffer } from './__tests__/aurige'
 import candidats from './__tests__/candidats'
-import { makeResa } from '../../../models/__tests__/reservations'
-import { createCentres, removeCentres } from '../../../models/__tests__/centres'
 import {
-  createTestPlace,
-  createPlaces,
-  removePlaces,
-} from '../../../models/__tests__/places'
+  candidatFailureExam,
+  candidatPassed,
+  createCandidatToTestAurige,
+} from './__tests__/candidats-aurige'
+import {
+  createTestPlaceAurige,
+  placeAfterTimeOutRetry,
+  placeBeforTimeOutRetry,
+} from './__tests__/places-aurige'
 
 jest.mock('../../../util/logger')
 jest.mock('../../business/send-mail')
@@ -188,12 +182,13 @@ describe('synchro-aurige', () => {
     let placeAfterTimeOutRetryCreated
     let places
     beforeAll(async () => {
+      await createInspecteurs()
       await createCentres()
 
-      placeBeforTimeOutRetryCreated = await createTestPlace(
+      placeBeforTimeOutRetryCreated = await createTestPlaceAurige(
         placeBeforTimeOutRetry
       )
-      placeAfterTimeOutRetryCreated = await createTestPlace(
+      placeAfterTimeOutRetryCreated = await createTestPlaceAurige(
         placeAfterTimeOutRetry
       )
       places = [placeBeforTimeOutRetryCreated, placeAfterTimeOutRetryCreated]

@@ -30,7 +30,11 @@ export const makeResas = async () => {
     candidat => candidat.codeNeph === candidats[1].codeNeph
   )
 
-  return Promise.all([makeResa(place1, candidat1), makeResa(place2, candidat2)])
+  const result = await Promise.all([
+    makeResa(place1, candidat1),
+    makeResa(place2, candidat2),
+  ])
+  return result
 }
 
 export const NUMBER_RESA = 2
