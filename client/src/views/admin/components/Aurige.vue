@@ -30,7 +30,6 @@ import { downloadContent } from '@/util'
 import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST } from '@/store'
 import AurigeValidation from './AurigeValidation'
 import CandidatsList from './CandidatsList'
-import PageTitle from '@/components/PageTitle.vue'
 import UploadFile from '@/components/UploadFile.vue'
 
 export default {
@@ -38,7 +37,6 @@ export default {
   components: {
     AurigeValidation,
     CandidatsList,
-    PageTitle,
     UploadFile,
   },
 

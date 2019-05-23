@@ -27,12 +27,10 @@
 </template>
 
 <script>
-import PageTitle from '@/components/PageTitle.vue'
 import UploadFile from '@/components/UploadFile.vue'
 
 export default {
   components: {
-    PageTitle,
     UploadFile,
   },
 }

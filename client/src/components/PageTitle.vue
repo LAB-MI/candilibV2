@@ -9,6 +9,7 @@
 
 <script>
 export default {
+  name: 'page-title',
   props: {
     title: String,
   },

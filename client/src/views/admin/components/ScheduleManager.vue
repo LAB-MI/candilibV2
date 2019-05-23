@@ -19,13 +19,11 @@
 import AdminImportPlaces from './AdminImportPlaces'
 import ImportPlacesValidation from './ImportPlacesValidation'
 import ScheduleInspector from './ScheduleInspector'
-import PageTitle from '@/components/PageTitle'
 
 export default {
   components: {
     AdminImportPlaces,
     ImportPlacesValidation,
-    PageTitle,
     ScheduleInspector,
   },
 

@@ -33,13 +33,11 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 import { FETCH_CANDIDATS_REQUEST } from '@/store'
 import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './ag-grid-utils'
-import PageTitle from '@/components/PageTitle.vue'
 
 export default {
   name: 'candidat-list',
   components: {
     AgGridVue,
-    PageTitle,
   },
 
   mounted () {

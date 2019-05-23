@@ -29,14 +29,12 @@
 <script>
 
 import MentionsLegalesContent from './MentionsLegalesContent.vue'
-import PageTitle from '@/components/PageTitle.vue'
 import { mentionsLegalesJson } from './MentionsLegalesJson'
 
 export default {
   name: 'mentions-legales',
   components: {
     MentionsLegalesContent,
-    PageTitle,
   },
 
   methods: {

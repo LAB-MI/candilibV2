@@ -104,12 +104,9 @@ import {
   getFrenchDateFromIso,
 } from '@/util/frenchDateTime.js'
 
-import PageTitle from '@/components/PageTitle'
-
 export default {
   components: {
     TimesSlotsSelector,
-    PageTitle,
   },
 
   data () {

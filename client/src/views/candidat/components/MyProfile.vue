@@ -23,8 +23,6 @@
 import ProfileInfo from './ProfileInfo'
 import { FETCH_MY_PROFILE_REQUEST } from '@/store'
 
-import PageTitle from '@/components/PageTitle'
-
 const labelDictionary = {
   email: 'Courriel',
   adresse: 'Adresse',
@@ -37,7 +35,6 @@ const labelDictionary = {
 export default {
   name: 'my-profile',
   components: {
-    PageTitle,
     ProfileInfo,
   },
 

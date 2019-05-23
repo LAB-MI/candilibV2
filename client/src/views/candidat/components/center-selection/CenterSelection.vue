@@ -15,7 +15,6 @@
 import { mapState } from 'vuex'
 
 import CenterSelectionContent from './CenterSelectionContent'
-import PageTitle from '@/components/PageTitle'
 import {
   FETCH_CENTERS_REQUEST,
   FETCH_MY_PROFILE_REQUEST,
@@ -24,7 +23,6 @@ import {
 export default {
   components: {
     CenterSelectionContent,
-    PageTitle,
   },
 
   computed: {

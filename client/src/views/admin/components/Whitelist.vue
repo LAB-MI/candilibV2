@@ -197,7 +197,6 @@ import { mapState } from 'vuex'
 import { email as emailRegex } from '@/util'
 
 import Whitelisted from './Whitelisted.vue'
-import PageTitle from '@/components/PageTitle.vue'
 import {
   DELETE_EMAIL_REQUEST,
   FETCH_WHITELIST_REQUEST,
@@ -216,7 +215,6 @@ const codeMessageDictionary = {
 export default {
   name: 'whitelist',
   components: {
-    PageTitle,
     Whitelisted,
   },
   data () {
