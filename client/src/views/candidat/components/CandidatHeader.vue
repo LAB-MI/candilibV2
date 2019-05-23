@@ -102,8 +102,8 @@ export default {
 
   @media (max-width: 359px) {
     font-size: 0.8em;
-    position relative
-    top: -0.1em;relativetoprelativetoprelativetop
+    position: relative;
+    top: -0.1em;
   }
 }
 
