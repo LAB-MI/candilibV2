@@ -63,10 +63,14 @@ const transfomCsv = async ({ data, departement }) => {
       centre.trim(),
       departement
     )
-    if (!foundCentre) throw new Error(`Le centre ${centre.trim()} est inconnu`)
+    if (!foundCentre) {
+      throw new Error(`Le centre ${centre.trim()} est inconnu`)
+    }
 
     const inspecteurFound = await findInspecteurByMatricule(inspecteur.trim())
-    if (!inspecteurFound) { throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`) }
+    if (!inspecteurFound) {
+      throw new Error(`L'inspecteur ${inspecteur.trim()} est inconnu`)
+    }
 
     return {
       departement,

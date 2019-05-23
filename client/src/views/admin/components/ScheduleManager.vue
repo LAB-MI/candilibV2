@@ -1,18 +1,14 @@
 <template>
   <div>
+    <page-title title="Gestion planning"/>
     <v-card>
       <v-switch
         v-model="isImportPlacesActive"
         :label="`Import places`"
       ></v-switch>
-      <v-layout row wrap v-if="isImportPlacesActive">
-        <v-flex xs3>
-            <admin-import-places/>
-        </v-flex>
-        <v-spacer/>
-        <v-flex xs6>
-          <import-places-validation/>
-        </v-flex>
+      <v-layout wrap v-show="isImportPlacesActive" class="u-flex--space-between">
+        <admin-import-places class="import-places"/>
+        <import-places-validation class="u-flex__item"/>
       </v-layout>
     </v-card>
     <schedule-inspector/>
@@ -20,16 +16,19 @@
 </template>
 
 <script>
-import AdminImportPlaces from './AdminImportPlaces.vue'
-import ScheduleInspector from './ScheduleInspector.vue'
-import ImportPlacesValidation from './ImportPlacesValidation.vue'
+import AdminImportPlaces from './AdminImportPlaces'
+import ImportPlacesValidation from './ImportPlacesValidation'
+import ScheduleInspector from './ScheduleInspector'
+import PageTitle from '@/components/PageTitle'
 
 export default {
   components: {
     AdminImportPlaces,
-    ScheduleInspector,
     ImportPlacesValidation,
+    PageTitle,
+    ScheduleInspector,
   },
+
   data () {
     return {
       isImportPlacesActive: false,
@@ -37,3 +36,13 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+
+.import-places {
+  flex-grow: 0;
+  flex-shrink: 1;
+  flex-basis: 40%;
+}
+
+</style>
