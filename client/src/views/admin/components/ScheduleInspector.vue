@@ -33,22 +33,15 @@
       <v-flex xs12>
         <div class="u-flex  u-flex--center  u-flex--space-between">
           <h3>Centres d'examen</h3>
-          <div class="refresh-btn">
-            <v-btn
-              icon
-              raised
-              color="primary"
-              :disabled="isLoading"
-              @click="refreshPlanning"
-            >
-              <v-progress-circular
-                v-show="isLoading"
-                indeterminate
-                color="white"
-              ></v-progress-circular>
-              <v-icon v-show="!isLoading">replay</v-icon>
-            </v-btn>
-          </div>
+            <div class="stats-card">
+        <div class="text-xs-right">
+          <refresh-button
+            @click="reloadWeekMonitor"
+            :isLoading="!!isLoading"
+          />
+        </div>
+      </div>
+
         </div>
 
         <v-tabs
@@ -111,7 +104,9 @@ import {
   FETCH_ADMIN_INFO_REQUEST,
   FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
 } from '@/store'
-import ScheduleInspectorDialog from './ScheduleInspectorDialog.vue'
+
+import ScheduleInspectorDialog from './ScheduleInspectorDialog'
+import { RefreshButton } from '@/components'
 
 import {
   creneauSetting,
@@ -129,6 +124,7 @@ const creneauTemplate = [
 export default {
   components: {
     ScheduleInspectorDialog,
+    RefreshButton,
   },
 
   data () {
