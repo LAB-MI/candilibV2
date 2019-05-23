@@ -29,6 +29,7 @@ import SearchCandidat from './SearchCandidat'
 import SearchInspecteur from './SearchInspecteur'
 import Monitors from './Monitors.vue'
 import { FETCH_ADMIN_INFO_REQUEST } from '@/store'
+import { getFrenchLuxonCurrentDateTime } from '@/util'
 
 export default {
   components: {
@@ -54,7 +55,14 @@ export default {
 
   methods: {
     goToGestionPlannings () {
-      this.$router.push({ name: 'gestion-plannings' })
+      const { centre } = this.$store.state.admin.places.list[0]
+      this.$router.push({
+        name: 'gestion-plannings',
+        params: {
+          center: centre._id,
+          date: getFrenchLuxonCurrentDateTime().toSQLDate(),
+        },
+      })
     },
   },
 

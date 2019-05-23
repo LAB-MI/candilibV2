@@ -91,7 +91,7 @@
                     :content="placeInfo"
                     :selectedDate="date"
                     :inspecteurId="props.item._id"
-                    :updateContent="parseInspecteursPlanning"
+                    :updateContent="refreshPlanning"
                     :centreInfo="place.centre"
                   />
                 </template>
@@ -124,19 +124,7 @@ import {
 
 const creneauTemplate = [
   'Inspecteurs',
-  creneauSetting[0],
-  creneauSetting[1],
-  creneauSetting[2],
-  creneauSetting[3],
-  creneauSetting[4],
-  creneauSetting[5],
-  creneauSetting[6],
-  creneauSetting[7],
-  creneauSetting[8],
-  creneauSetting[9],
-  creneauSetting[10],
-  creneauSetting[11],
-  creneauSetting[12],
+  ...creneauSetting,
 ]
 
 export default {
@@ -204,6 +192,7 @@ export default {
     },
 
     async centreSelector (centreId) {
+      this.$router.push({ params: { center: centreId, date: this.date } })
       this.activeCentreId = centreId
       this.refreshPlanning()
     },
@@ -253,23 +242,24 @@ export default {
 
   watch: {
     async date (val) {
-      const dateTimeFromSql = getFrenchLuxonDateTimeFromSql(this.date)
-      this.currentWeekNumber = dateTimeFromSql.weekNumber
+      const dateTimeFromSQL = getFrenchLuxonDateTimeFromSql(this.date)
+      this.currentWeekNumber = dateTimeFromSQL.weekNumber
       if (this.$store.state.admin.departements.active) {
-        const begin = dateTimeFromSql.startOf('day').toISO()
-        const end = dateTimeFromSql.endOf('day').toISO()
+        const begin = dateTimeFromSQL.startOf('day').toISO()
+        const end = dateTimeFromSQL.endOf('day').toISO()
         await this.$store
           .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
-        this.activeCentreId = this.firstCentreId
+        this.activeCentreId = (this.$route.params.center) || this.firstCentreId
         this.activeCentreTab = `tab-${this.activeCentreId}`
         this.parseInspecteursPlanning()
       }
+      this.$router.push({ params: { center: this.activeCentreId, date: this.date } })
     },
 
     async activeDepartement (newValue, oldValue) {
-      const dateTimeFromSql = getFrenchLuxonDateTimeFromSql(this.date)
-      const begin = dateTimeFromSql.startOf('day').toISO()
-      const end = dateTimeFromSql.endOf('day').toISO()
+      const dateTimeFromSQL = getFrenchLuxonDateTimeFromSql(this.date)
+      const begin = dateTimeFromSQL.startOf('day').toISO()
+      const end = dateTimeFromSQL.endOf('day').toISO()
       await this.$store
         .dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
       await this.$store
@@ -299,9 +289,10 @@ export default {
     const begin = getFrenchLuxonDateTimeFromSql(this.date).startOf('day').toISO()
     const end = getFrenchLuxonDateTimeFromSql(this.date).endOf('day').toISO()
     await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
-    this.activeCentreId = this.firstCentreId
-    this.activeCentreTab = `tab-${this.activeCentreId}`
     await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+    const centerId = this.$route.params.center
+    this.activeCentreId = (centerId) || this.firstCentreId
+    this.activeCentreTab = `tab-${this.activeCentreId}`
     this.parseInspecteursPlanning()
   },
 
@@ -317,11 +308,21 @@ export default {
 
     const { currentWeek } = this.$store.state.admin
 
-    this.date = getFrenchLuxonDateFromObject({
+    const defaultDate = {
       weekYear: getFrenchLuxonCurrentDateTime().year,
       weekNumber: currentWeek || getFrenchLuxonCurrentDateTime().weekNumber,
       weekday: 1,
-    }).toISODate()
+    }
+
+    const routeDate = this.$route.params.date
+    if (routeDate) {
+      const [year, month, day] = this.$route.params.date.split('-')
+      const date = { year, month, day }
+      this.date = getFrenchLuxonDateFromObject(date).toISODate()
+      return
+    }
+
+    this.date = getFrenchLuxonDateFromObject(defaultDate).toISODate()
   },
 }
 </script>
