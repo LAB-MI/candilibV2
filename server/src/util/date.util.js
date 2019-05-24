@@ -18,6 +18,8 @@ export const dateTimeToFormatFr = pDate => {
     datetime = pDate.setLocale('fr').setZone(FRENCH_TIME_ZONE)
   } else if (pDate instanceof Date) {
     datetime = getDateTimeFrFromJSDate(pDate)
+  } else if (pDate instanceof String) {
+    datetime = DateTime.fromISO(pDate, { locale: 'fr', zone: FRENCH_TIME_ZONE })
   }
 
   const date = datetime.toFormat(FORMAT_DATE)

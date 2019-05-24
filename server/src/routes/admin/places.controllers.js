@@ -10,9 +10,11 @@ import {
   importPlacesCsv,
   moveCandidatInPlaces,
   validUpdateResaInspector,
+  sendMailSchedulesInspecteurs,
 } from './places.business'
 import { findCentresWithPlaces } from '../common/centre.business'
 import { appLogger, ErrorWithStatus, dateTimeToFormatFr } from '../../util'
+import { findUserById } from '../../models/user'
 
 export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
@@ -192,4 +194,53 @@ export const updatePlaces = async (req, res) => {
     success: false,
     message: 'Les paramètres renseignés sont incorrects',
   })
+}
+
+export const sendScheduleInspecteurs = async (req, res) => {
+  const { departement, date } = req.body
+  const loggerContent = {
+    section: 'admin-send-mail-schedule-inspecteurs',
+    admin: req.userId,
+    departement,
+    date,
+  }
+
+  appLogger.info({
+    ...loggerContent,
+    action: 'SEND_MAIL_SCHEDULE',
+    message: `Envoyer le planning`,
+  })
+
+  try {
+    const { email } = await findUserById(req.userId)
+
+    if (!email || !departement || !date) {
+      return res.status(400).send({
+        success: false,
+        message: 'Les paramètres renseignés sont incorrects',
+      })
+    }
+
+    const results = await sendMailSchedulesInspecteurs(email, departement, date)
+
+    res.status(results.success ? 200 : 400).send(results)
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      action: 'ERROR',
+      message: error.message,
+    })
+    if (error instanceof ErrorWithStatus) {
+      return res.status(error.status).send({
+        success: false,
+        message: error.message,
+        error,
+      })
+    }
+    res.status(500).send({
+      success: false,
+      message: error.message,
+      error,
+    })
+  }
 }

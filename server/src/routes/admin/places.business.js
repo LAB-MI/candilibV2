@@ -5,8 +5,14 @@ import {
   setCandidatToVIP,
   findCandidatById,
 } from '../../models/candidat'
-import { findCentreByNameAndDepartement } from '../../models/centre/centre.queries'
-import { findInspecteurByMatricule } from '../../models/inspecteur/inspecteur.queries'
+import {
+  findCentreByNameAndDepartement,
+  findCentresByDepartement,
+} from '../../models/centre/centre.queries'
+import {
+  findInspecteurByMatricule,
+  findInspecteurById,
+} from '../../models/inspecteur/inspecteur.queries'
 import {
   bookPlaceById,
   createPlace,
@@ -16,6 +22,7 @@ import {
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
   findPlaceWithSameWindow,
+  findAllPlacesByCentre,
 } from '../../models/place'
 import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
 import { appLogger, getDateTimeFrFromJSDate, ErrorWithStatus } from '../../util'
@@ -27,6 +34,10 @@ import {
   DELETE_PLACE_ERROR,
   RESA_PLACE_HAS_BOOKED,
 } from './message.constants'
+import {
+  sendScheduleInspecteur,
+  sendMailForScheduleInspecteurFailed,
+} from '../business/send-mail-schedule-inspecteur'
 
 const getPlaceStatus = (
   departement,
@@ -418,4 +429,74 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
       message,
     },
   }
+}
+
+export const sendMailSchedulesInspecteurs = async (
+  email,
+  departement,
+  date
+) => {
+  const loggerContent = {
+    section: 'admin-send-mail-schedule-inspecteurs',
+    departement,
+    date,
+    email,
+  }
+
+  appLogger.debug({
+    ...loggerContent,
+    func: 'sendMailSchedulesInspecteurs',
+  })
+
+  const centres = await findCentresByDepartement(departement)
+  const beginDate = DateTime.fromISO(date).startOf('day')
+  const endDate = DateTime.fromISO(date).endOf('day')
+
+  const placesByInspecteurs = {}
+
+  await Promise.all(
+    centres.map(async centre => {
+      const places = await findAllPlacesByCentre(centre._id, beginDate, endDate)
+      places.forEach(place => {
+        if (!placesByInspecteurs[place.inspecteur]) {
+          placesByInspecteurs[place.inspecteur] = []
+        }
+        placesByInspecteurs[place.inspecteur].push(place)
+      })
+    })
+  )
+
+  let results = []
+  await Promise.all(
+    Object.entries(placesByInspecteurs).map(async entry => {
+      try {
+        const places = entry[1]
+        await sendScheduleInspecteur(
+          email,
+          places.sort((place1, place2) => place1.date > place2.date)
+        )
+        return { success: true }
+      } catch (error) {
+        appLogger.error({ ...loggerContent, message: error.message })
+        const inspecteur = await findInspecteurById(entry[0])
+        results.push(inspecteur)
+        return { success: false, inspecteur }
+      }
+    })
+  )
+
+  if (!results.length) {
+    try {
+      await sendMailForScheduleInspecteurFailed(
+        email,
+        date,
+        departement,
+        results
+      )
+    } catch (error) {
+      appLogger.error({ ...loggerContent, message: error.message })
+    }
+    return { success: false, inspecteurs: results }
+  }
+  return { success: true }
 }
