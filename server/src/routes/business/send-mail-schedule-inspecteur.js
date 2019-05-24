@@ -3,8 +3,10 @@ import { getSheduleInspecteurTemplate } from './mail/body-schedule-inspecteur-te
 import { getHtmlBody } from './mail'
 import { dateTimeToFormatFr } from '../../util/date.util'
 import { sendMail } from './send-mail'
+import { findInspecteurById } from '../../models/inspecteur'
+import { findCandidatById } from '../../models/candidat'
 
-const getScheduleInspecteurBody = (
+const getScheduleInspecteurBody = async (
   inspecteur,
   date,
   centre,
@@ -32,19 +34,30 @@ const getScheduleInspecteurBody = (
     '15:00': {},
     '15:30': {},
   }
-  places.array.forEach(place => {
-    const { candidat, date } = place
-    const heure = dateTimeToFormatFr(date).hour
-    const neph = (candidat && candidat.codeNeph) || ''
-    const nom = (candidat && candidat.nom) || ''
-    const prenom = (candidat && candidat.prenom) || ''
+  await Promise.all(
+    places.array.map(async place => {
+      const { candidat, date } = place
+      const heure = dateTimeToFormatFr(date).hour
+      let candidatObject
+      if (candidat) {
+        if (candidat._id) {
+          candidatObject = candidat
+        } else {
+          candidatObject = await findCandidatById(candidat)
+        }
+      }
+      const neph = (candidatObject && candidatObject.codeNeph) || ''
+      const nom = (candidatObject && candidatObject.nom) || ''
+      const prenom = (candidatObject && candidatObject.prenom) || ''
 
-    planning[heure] = {
-      neph,
-      nom,
-      prenom,
-    }
-  })
+      planning[heure] = {
+        neph,
+        nom,
+        prenom,
+      }
+      return planning[heure]
+    })
+  )
 
   const body = getSheduleInspecteurTemplate(
     inspecteur,
@@ -70,21 +83,53 @@ export const sendScheduleInspecteur = async (email, places) => {
     appLogger.error({ action, messageError })
     throw new Error(messageError)
   }
-  const inspecteur = places[0].inspecteur.nom
-  const date = dateTimeToFormatFr(places[0].date).date
-  const centre = places[0].centre.nom
-  const departement = places[0].centre.departement
+  const { inspecteur, date, centre } = places[0]
+
+  let inspectObject
+  if (inspecteur._id) {
+    inspectObject = inspecteur
+  } else {
+    inspectObject = await findInspecteurById(inspecteur)
+  }
+  const inspecteurNom = inspectObject.nom
+
+  const dateToString = dateTimeToFormatFr(date).date
+
+  let centreObject
+  if (centre._id) {
+    centreObject = centre
+  } else {
+    centreObject = await findInspecteurById(centre)
+  }
+  const centreNom = centreObject.nom
+  const departement = centreObject.departement
 
   const content = await getScheduleInspecteurBody(
-    inspecteur,
-    date,
-    centre,
+    inspecteurNom,
+    dateToString,
+    centreNom,
     departement,
     places
   )
-  const subject = `Bordereau de l'inspecteur ${inspecteur} pour le ${date} au centre de ${centre} du département ${departement}`
+  const subject = `Bordereau de l'inspecteur ${inspecteurNom} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
 
   appLogger.debug({ func: 'sendFailureExam', content, subject })
 
+  return sendMail(email, { content, subject })
+}
+
+export const sendMailForScheduleInspecteurFailed = async (
+  email,
+  date,
+  departement,
+  inspecteurs
+) => {
+  const dateToString = dateTimeToFormatFr(date).date
+
+  const content = getSheduleInspecteurTemplate(
+    dateToString,
+    inspecteurs.map(inspecteur => inspecteur.nom + '/' + inspecteur.matricule)
+  )
+  const subject = `Echec d'envoi de mail pour le planning du ${date} du département ${departement}`
   return sendMail(email, { content, subject })
 }
