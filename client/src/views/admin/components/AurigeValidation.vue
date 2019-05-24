@@ -31,12 +31,10 @@ import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 import { AgGridLocaleText } from './ag-grid-utils'
 import AgGridAurigeStatusFilter from './AgGridAurigeStatusFilter'
-import PageTitle from '@/components/PageTitle.vue'
 
 export default {
   components: {
     AgGridVue,
-    PageTitle,
   },
   data () {
     return {

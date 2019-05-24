@@ -5,11 +5,13 @@ import './plugins'
 import App from './App.vue'
 import router from './router'
 import store from './store'
+import { PageTitle } from '@/components'
 import './registerServiceWorker'
 
 import './main.styl'
 
 Vue.config.productionTip = false
+Vue.component('page-title', PageTitle)
 
 const runMyApp = () => {
   new Vue({

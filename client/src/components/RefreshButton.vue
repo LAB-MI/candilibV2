@@ -1,0 +1,40 @@
+<template>
+  <div class="refresh-btn">
+    <v-btn
+      icon
+      :raised="raised"
+      :color="bgColor"
+      :disabled="isLoading"
+      @click="onClick"
+    >
+      <v-progress-circular
+        v-show="isLoading"
+        indeterminate
+        color="white"
+      ></v-progress-circular>
+      <v-icon v-show="!isLoading">replay</v-icon>
+    </v-btn>
+  </div>
+</template>
+
+<script>
+export default {
+  props: {
+    isLoading: Boolean,
+    bgColor: {
+      type: String,
+      default: 'primary',
+    },
+    raised: {
+      type: Boolean,
+      default: true,
+    },
+  },
+
+  methods: {
+    onClick () {
+      this.$emit('click')
+    },
+  },
+}
+</script>

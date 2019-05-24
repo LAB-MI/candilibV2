@@ -1,26 +1,10 @@
 <template>
   <div>
-    <v-layout class="u-flex  u-flex--center">
-      <div
-        class="div-gestion"
-        v-for="item in buttonGestion"
-        :key="item.title"
-      >
-        <v-btn @click="goToGestionPlannings">
-          <v-icon class="button-icon">
-            {{ item.icon }}
-          </v-icon>
-          <span>
-            {{ item.title }}
-          </span>
-        </v-btn>
-      </div>
-    </v-layout>
-    <monitors />
     <div class="u-flex  u-flex--center">
       <search-candidat class="search-input"/>
       <search-inspecteur class="search-input" />
     </div>
+    <monitors />
   </div>
 </template>
 
@@ -38,26 +22,11 @@ export default {
     SearchInspecteur,
   },
 
-  data () {
-    return {
-      buttonGestion: [
-        {
-          icon: 'calendar_today',
-          title: 'Gestion des plannings IPCSR',
-        },
-        {
-          icon: 'list',
-          title: 'Gestion des candidats',
-        },
-      ],
-    }
-  },
-
   methods: {
     goToGestionPlannings () {
       const { centre } = this.$store.state.admin.places.list[0]
       this.$router.push({
-        name: 'gestion-plannings',
+        name: 'gestion-planning',
         params: {
           center: centre._id,
           date: getFrenchLuxonCurrentDateTime().toSQLDate(),

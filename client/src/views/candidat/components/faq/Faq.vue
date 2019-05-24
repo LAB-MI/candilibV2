@@ -22,13 +22,11 @@
 <script>
 import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
-import PageTitle from '@/components/PageTitle'
 
 export default {
   name: 'faq',
   components: {
     FaqContent,
-    PageTitle,
   },
 
   methods: {

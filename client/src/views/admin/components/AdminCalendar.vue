@@ -14,14 +14,12 @@ import { DateTime } from 'luxon'
 import SimpleCalendar from './SimpleCalendar'
 import AdminImportPlaces from './AdminImportPlaces.vue'
 import ImportPlacesValidation from './ImportPlacesValidation.vue'
-import PageTitle from '@/components/PageTitle.vue'
 
 export default {
   name: 'admin-calendar',
   components: {
     AdminImportPlaces,
     ImportPlacesValidation,
-    PageTitle,
     SimpleCalendar,
   },
 

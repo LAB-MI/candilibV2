@@ -23,9 +23,9 @@ const components = {
 
 const headerIcons = [
   {
-    routerTo: 'admin-calendar',
+    routerTo: 'gestion-planning',
     iconName: 'calendar_today',
-    tooltipText: 'Calendrier',
+    tooltipText: 'Gestion planning',
   },
   {
     routerTo: 'aurige',

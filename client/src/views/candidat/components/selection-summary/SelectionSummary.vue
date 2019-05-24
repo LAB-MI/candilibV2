@@ -43,8 +43,6 @@
 <script>
 import { mapState } from 'vuex'
 
-import PageTitle from '@/components/PageTitle.vue'
-
 import {
   CONFIRM_SELECT_DAY_REQUEST,
   DELETE_CANDIDAT_RESERVATION_REQUEST,
@@ -67,7 +65,6 @@ export default {
     SummaryConfirmation,
     MyReservation,
     ReservationInfo,
-    PageTitle,
   },
 
   data () {
