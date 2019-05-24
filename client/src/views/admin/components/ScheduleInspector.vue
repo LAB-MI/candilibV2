@@ -84,7 +84,7 @@
                     :content="placeInfo"
                     :selectedDate="date"
                     :inspecteurId="props.item._id"
-                    :updateContent="refreshPlanning"
+                    :updateContent="reloadWeekMonitor"
                     :centreInfo="place.centre"
                   />
                 </template>
@@ -178,7 +178,7 @@ export default {
       return `${day}/${month}/${year}`
     },
 
-    async refreshPlanning () {
+    async reloadWeekMonitor () {
       const begin = getFrenchLuxonDateTimeFromSql(this.date).startOf('day').toISO()
       const end = getFrenchLuxonDateTimeFromSql(this.date).endOf('day').toISO()
       await this.$store
@@ -189,7 +189,7 @@ export default {
     async centreSelector (centreId) {
       this.$router.push({ params: { center: centreId, date: this.date } })
       this.activeCentreId = centreId
-      this.refreshPlanning()
+      this.reloadWeekMonitor()
     },
 
     parseInspecteursPlanning () {
