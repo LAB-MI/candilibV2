@@ -6,6 +6,7 @@ import aurige from './aurige'
 import admin from './admin'
 import adminModifInspecteur from './admin-modif-inspecteur'
 import adminSearch from './admin-search'
+import adminBordereaux from './admin-bordereaux'
 import auth from './auth'
 import candidat from './candidat'
 import candidats from './candidats'
@@ -20,6 +21,7 @@ export * from './aurige'
 export * from './admin'
 export * from './admin-modif-inspecteur'
 export * from './admin-search'
+export * from './admin-bordereaux'
 export * from './auth'
 export * from './candidat'
 export * from './candidats'
@@ -39,6 +41,7 @@ export default new Vuex.Store({
   modules: {
     adminModifInspecteur,
     adminSearch,
+    adminBordereaux,
     aurige,
     admin,
     auth,

@@ -4,6 +4,7 @@ import { getHtmlBody } from './mail'
 import { dateTimeToFormatFr } from '../../util/date.util'
 import { sendMail } from './send-mail'
 import { findInspecteurById } from '../../models/inspecteur'
+import { findCentreById } from '../../models/centre'
 import { findCandidatById } from '../../models/candidat'
 
 const getScheduleInspecteurBody = async (
@@ -35,19 +36,15 @@ const getScheduleInspecteurBody = async (
     '15:30': {},
   }
   await Promise.all(
-    places.array.map(async place => {
+    places.map(async place => {
       const { candidat, date } = place
       const heure = dateTimeToFormatFr(date).hour
       let candidatObject
       if (candidat) {
-        if (candidat._id) {
-          candidatObject = candidat
-        } else {
-          candidatObject = await findCandidatById(candidat)
-        }
+        candidatObject = await findCandidatById(candidat)
       }
       const neph = (candidatObject && candidatObject.codeNeph) || ''
-      const nom = (candidatObject && candidatObject.nom) || ''
+      const nom = (candidatObject && candidatObject.nomNaissance) || ''
       const prenom = (candidatObject && candidatObject.prenom) || ''
 
       planning[heure] = {
@@ -85,22 +82,12 @@ export const sendScheduleInspecteur = async (email, places) => {
   }
   const { inspecteur, date, centre } = places[0]
 
-  let inspectObject
-  if (inspecteur._id) {
-    inspectObject = inspecteur
-  } else {
-    inspectObject = await findInspecteurById(inspecteur)
-  }
+  const inspectObject = await findInspecteurById(inspecteur)
   const inspecteurNom = inspectObject.nom
 
   const dateToString = dateTimeToFormatFr(date).date
 
-  let centreObject
-  if (centre._id) {
-    centreObject = centre
-  } else {
-    centreObject = await findInspecteurById(centre)
-  }
+  const centreObject = await findCentreById(centre)
   const centreNom = centreObject.nom
   const departement = centreObject.departement
 

@@ -449,8 +449,8 @@ export const sendMailSchedulesInspecteurs = async (
   })
 
   const centres = await findCentresByDepartement(departement)
-  const beginDate = DateTime.fromISO(date).startOf('day')
-  const endDate = DateTime.fromISO(date).endOf('day')
+  const beginDate = DateTime.fromISO(date, { locale: 'fr', zone: 'Europe/Paris' }).startOf('day')
+  const endDate = DateTime.fromISO(date, { locale: 'fr', zone: 'Europe/Paris' }).endOf('day')
 
   const placesByInspecteurs = {}
 
