@@ -33,6 +33,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   uploadPlacesCSV: `${apiPrefix}/admin/places`,
   verifyToken: `${apiPrefix}/auth/admin/verify-token`,
   whitelist: `${apiPrefix}/admin/whitelisted`,
+  generateBordereaux: `${apiPrefix}/admin/bordereaux`,
 }
 
 const utilPaths = {
