@@ -476,7 +476,7 @@ export const sendMailSchedulesInspecteurs = async (
     })
   )
 
-  let results = []
+  let resultsError = []
   await Promise.all(
     Object.entries(placesByInspecteurs).map(async entry => {
       try {
@@ -486,23 +486,22 @@ export const sendMailSchedulesInspecteurs = async (
       } catch (error) {
         appLogger.error({ ...loggerContent, message: error.message })
         const inspecteur = await findInspecteurById(entry[0])
-        results.push(inspecteur)
-        //   return { success: false, inspecteur }
+        resultsError.push(inspecteur)
       }
     })
   )
-  if (results.length) {
+  if (resultsError.length) {
     try {
       await sendMailForScheduleInspecteurFailed(
         email,
         date,
         departement,
-        results
+        resultsError
       )
     } catch (error) {
       appLogger.error({ ...loggerContent, message: error.message })
     }
-    return { success: false, inspecteurs: results }
+    return { success: false, inspecteurs: resultsError }
   }
   return { success: true }
 }
