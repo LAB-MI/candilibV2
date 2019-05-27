@@ -18,11 +18,45 @@
       colorIcon="white"
       colorSubmitButton="grey"
       textContent="Annuler reservation"
+      :activeTextContent="!deleteBookedPlaceConfirm"
       textButtonCancel="Retour"
       :closeDialog="closeDialog"
-      :submitDialog="renderCreneauUnBookAndUnavalaible"
+      :submitDialog="displayConfirmDeleteBookedPlace"
       :content="content"
-    />
+    >
+      <confirm-box
+        v-if="deleteBookedPlaceConfirm"
+        :closeAction='cancelConfirmDeleteBookedPlace'
+        :submitAction='renderCreneauUnBookAndUnavalaible'
+      >
+      <!-- TODO: Refactor Create composant for each subcontent dialogs -->
+        <div v-if="isFetchingCandidat">
+          Chargement en cours...
+        </div>
+        <div v-else>
+          <p>
+            Nom:
+            <strong>
+              {{ fetchedCandidat.nomNaissance }}
+            </strong>
+            /
+            Neph:
+            <strong>
+              {{ fetchedCandidat.codeNeph }}
+            </strong>
+          </p>
+          <p>
+            {{ fetchedCandidat.email }}
+          </p>
+          <p>
+            Portable:
+            <strong>
+              {{ fetchedCandidat.portable }}
+            </strong>
+          </p>
+        </div>
+      </confirm-box>
+    </shedule-inspector-dialog-sub-content>
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -41,7 +75,7 @@
       :isEditing="displaySearchInspecteurs"
       :date="content.place.date"
       :centre="centreInfo._id"
-        @select-inspecteur="selectInspecteur"
+      @select-inspecteur="selectInspecteur"
     />
     <confirm-box
       v-if="hasConfirm"
@@ -143,6 +177,8 @@
 </template>
 
 <script>
+import { mapGetters, mapState } from 'vuex'
+
 import SheduleInspectorDialogSubContent from './SheduleInspectorDialogSubContent.vue'
 import SheduleInspectorDialogHeader from './SheduleInspectorDialogHeader.vue'
 import ListSearchInspecteursAvailable from './searchInspecteur/ListSearchInspecteursAvailable.vue'
@@ -159,9 +195,9 @@ import {
   DELETE_BOOKED_PLACE_REQUEST,
   DELETE_PLACE_REQUEST,
   FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
+  FETCH_CANDIDAT,
   FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST,
 } from '@/store'
-import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -191,16 +227,30 @@ export default {
       fetchAutocompleteAction: FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
       isCandidatEditing: false,
       selectedCandidat: null,
+      deleteBookedPlaceConfirm: false,
     }
   },
   computed: {
     ...mapGetters(['activeDepartement']),
-    isLoading () {
-      return this.$store.state.admin.places.isFetching
-    },
-    isUpdatingInspecteur () {
-      return this.$store.state.adminModifInspecteur.isUpdating
-    },
+
+    ...mapState({
+      isLoading (state) {
+        return state.admin.places.isFetching
+      },
+
+      isUpdatingInspecteur (state) {
+        return state.adminModifInspecteur.isUpdating
+      },
+
+      fetchedCandidat (state) {
+        return state.admin.fetchedCandidat
+      },
+
+      isFetchingCandidat (state) {
+        return state.admin.isFetchingCandidat
+      },
+    }),
+
     candidats () {
       return this.$store.state.adminSearch.candidats.list.map(candidat => {
         const { nomNaissance, codeNeph } = candidat
@@ -242,6 +292,14 @@ export default {
       this.isCandidatEditing = !this.isCandidatEditing
     },
 
+    async displayConfirmDeleteBookedPlace () {
+      const { candidat } = this.content.place
+      if (candidat) {
+        await this.$store.dispatch(FETCH_CANDIDAT, this.content.place.candidat)
+      }
+      this.deleteBookedPlaceConfirm = !this.deleteBookedPlaceConfirm
+    },
+
     async affectCandidatToCreneau () {
       await this.$store
         .dispatch(ASSIGN_CANDIDAT_TO_CRENEAU, {
@@ -275,6 +333,7 @@ export default {
       this.textInspecteurSeleted = undefined
       this.inspecteurSelected = undefined
       this.hasConfirm = false
+      this.deleteBookedPlaceConfirm = false
     },
     async closeDialogFace () {
       this.closeDialogInspecteur()
@@ -288,6 +347,11 @@ export default {
       this.inspecteurSelected = undefined
       this.hasConfirm = false
     },
+
+    cancelConfirmDeleteBookedPlace () {
+      this.deleteBookedPlaceConfirm = false
+    },
+
     async validSelection () {
       const resa = this.content.place._id
       const inspecteur = this.inspecteurSelected._id

@@ -31,6 +31,8 @@ export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
 export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
 export const DELETE_BOOKED_PLACE_FAILURE = 'DELETE_BOOKED_PLACE_FAILURE'
 
+export const FETCH_CANDIDAT = 'FETCH_CANDIDAT'
+
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
@@ -75,6 +77,8 @@ export default {
       isCreating: false,
       result: undefined,
     },
+    fetchedCandidat: undefined,
+    isFetchingCandidat: false,
   },
 
   mutations: {
@@ -270,6 +274,21 @@ export default {
         }
         dispatch(SHOW_SUCCESS, message)
       } catch (error) {
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [FETCH_CANDIDAT] ({ dispatch, state, commit }, candidatId) {
+      state.isFetchingCandidat = true
+      try {
+        const { success, candidat, message } = await api.admin.getCandidats(candidatId, state.departements.active)
+        if (!success) {
+          throw new Error(message)
+        }
+        state.fetchedCandidat = candidat
+        state.isFetchingCandidat = false
+      } catch (error) {
+        state.isFetchingCandidat = false
         return dispatch(SHOW_ERROR, error.message)
       }
     },
