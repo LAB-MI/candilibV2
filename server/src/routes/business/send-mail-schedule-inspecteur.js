@@ -6,9 +6,11 @@ import { sendMail } from './send-mail'
 import { findInspecteurById } from '../../models/inspecteur'
 import { findCentreById } from '../../models/centre'
 import { findCandidatById } from '../../models/candidat'
+import { getFailedSheduleInspecteurTemplate } from './mail/failed-mail-schelude-inspecteurs-template'
 
 const getScheduleInspecteurBody = async (
-  inspecteur,
+  inspecteurName,
+  inspecteurMatricule,
   date,
   centre,
   departement,
@@ -61,7 +63,8 @@ const getScheduleInspecteurBody = async (
   )
 
   const body = getSheduleInspecteurTemplate(
-    inspecteur,
+    inspecteurName,
+    inspecteurMatricule,
     date,
     centre,
     departement,
@@ -90,8 +93,8 @@ export const sendScheduleInspecteur = async (email, places) => {
   if (!inspectObject) {
     throw new Error('INSPECTEUR_NOT_FOUND')
   }
-  const inspecteurNom = inspectObject.nom
-
+  const inspecteurName = inspectObject.nom
+  const inspecteurMatricule = inspectObject.matricule
   const dateToString = dateTimeToFormatFr(date).date
 
   const centreObject = await findCentreById(centre)
@@ -102,13 +105,14 @@ export const sendScheduleInspecteur = async (email, places) => {
   const departement = centreObject.departement
 
   const content = await getScheduleInspecteurBody(
-    inspecteurNom,
+    inspecteurName,
+    inspecteurMatricule,
     dateToString,
     centreNom,
     departement,
     places
   )
-  const subject = `Bordereau de l'inspecteur ${inspecteurNom} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
+  const subject = `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
 
   // appLogger.debug({ func: 'sendFailureExam', content, subject })
 
@@ -121,9 +125,14 @@ export const sendMailForScheduleInspecteurFailed = async (
   departement,
   inspecteurs
 ) => {
+  appLogger.debug({
+    func: 'sendMailForScheduleInspecteurFailed',
+    args: { email, date, departement, inspecteurs },
+  })
+
   const dateToString = dateTimeToFormatFr(date).date
 
-  const content = getSheduleInspecteurTemplate(
+  const content = getFailedSheduleInspecteurTemplate(
     dateToString,
     inspecteurs.map(inspecteur => inspecteur.nom + '/' + inspecteur.matricule)
   )

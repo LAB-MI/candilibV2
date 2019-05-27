@@ -1,5 +1,6 @@
 export const getSheduleInspecteurTemplate = (
-  nomInspecteur,
+  inspecteurName,
+  inspecteurMatricule,
   dateExam,
   nomCentre,
   departement,
@@ -28,7 +29,8 @@ export const getSheduleInspecteurTemplate = (
     .reduce((lines, line) => lines + line)
   return `
   <h2 style="width: 100%; text-align: center">Bordereau Inspecteur</h2>
-<p><span style="width: 50px"><strong>Inspecteur: </strong></span> ${nomInspecteur}</p>
+<p><span style="width: 50px"><strong>Inspecteur: </strong></span> ${inspecteurName}</p>
+<p><span style="width: 50px"><strong>Matricule: </strong></span>${inspecteurMatricule}</p>
 <p><span style="width: 50px"><strong> date : </strong></span>  ${dateExam}</p>  
 <p><span style="width: 50px"><strong>Centre: </strong></span> ${nomCentre}</p>  
 <p><span style="width: 50px"><strong>Departement: </strong></span> ${departement}</p>
