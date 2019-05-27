@@ -202,3 +202,16 @@ export const findPlaceWithSameWindow = async creneau => {
   const place = await Place.findOne({ date, centre, inspecteur })
   return place
 }
+
+export const findAllPlacesBookedByCentre = (centreId, beginDate, endDate) => {
+  const query = Place.where('centre').exists(true)
+  if (beginDate || endDate) {
+    query.where('date')
+
+    if (beginDate) query.gte(beginDate)
+    if (endDate) query.lt(endDate)
+  }
+  query.where('centre', centreId)
+  query.where('candidat').exists(true)
+  return query.exec()
+}

@@ -222,7 +222,6 @@ export const sendScheduleInspecteurs = async (req, res) => {
     }
 
     const results = await sendMailSchedulesInspecteurs(email, departement, date)
-
     res.status(results.success ? 200 : 400).send(results)
   } catch (error) {
     appLogger.error({

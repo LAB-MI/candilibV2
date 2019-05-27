@@ -22,7 +22,7 @@ import {
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
   findPlaceWithSameWindow,
-  findAllPlacesByCentre,
+  findAllPlacesBookedByCentre,
 } from '../../models/place'
 import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
 import { appLogger, getDateTimeFrFromJSDate, ErrorWithStatus } from '../../util'
@@ -449,14 +449,24 @@ export const sendMailSchedulesInspecteurs = async (
   })
 
   const centres = await findCentresByDepartement(departement)
-  const beginDate = DateTime.fromISO(date, { locale: 'fr', zone: 'Europe/Paris' }).startOf('day')
-  const endDate = DateTime.fromISO(date, { locale: 'fr', zone: 'Europe/Paris' }).endOf('day')
+  const beginDate = DateTime.fromISO(date, {
+    locale: 'fr',
+    zone: 'Europe/Paris',
+  }).startOf('day')
+  const endDate = DateTime.fromISO(date, {
+    locale: 'fr',
+    zone: 'Europe/Paris',
+  }).endOf('day')
 
   const placesByInspecteurs = {}
 
   await Promise.all(
     centres.map(async centre => {
-      const places = await findAllPlacesByCentre(centre._id, beginDate, endDate)
+      const places = await findAllPlacesBookedByCentre(
+        centre._id,
+        beginDate,
+        endDate
+      )
       places.forEach(place => {
         if (!placesByInspecteurs[place.inspecteur]) {
           placesByInspecteurs[place.inspecteur] = []
@@ -471,21 +481,17 @@ export const sendMailSchedulesInspecteurs = async (
     Object.entries(placesByInspecteurs).map(async entry => {
       try {
         const places = entry[1]
-        await sendScheduleInspecteur(
-          email,
-          places.sort((place1, place2) => place1.date > place2.date)
-        )
+        await sendScheduleInspecteur(email, places)
         return { success: true }
       } catch (error) {
         appLogger.error({ ...loggerContent, message: error.message })
         const inspecteur = await findInspecteurById(entry[0])
         results.push(inspecteur)
-        return { success: false, inspecteur }
+        //   return { success: false, inspecteur }
       }
     })
   )
-
-  if (!results.length) {
+  if (results.length) {
     try {
       await sendMailForScheduleInspecteurFailed(
         email,
