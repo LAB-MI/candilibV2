@@ -20,6 +20,7 @@ const getScheduleInspecteurBody = async (
   if (!places || places.length === 0) {
     throw new Error('NO_PLACES')
   }
+
   const planning = {
     '08:00': {},
     '08:30': {},
@@ -42,6 +43,9 @@ const getScheduleInspecteurBody = async (
       let candidatObject
       if (candidat) {
         candidatObject = await findCandidatById(candidat)
+        if (!candidatObject) {
+          throw new Error('CANDIDAT_NOT_FOUND')
+        }
       }
       const neph = (candidatObject && candidatObject.codeNeph) || ''
       const nom = (candidatObject && candidatObject.nomNaissance) || ''
@@ -83,11 +87,17 @@ export const sendScheduleInspecteur = async (email, places) => {
   const { inspecteur, date, centre } = places[0]
 
   const inspectObject = await findInspecteurById(inspecteur)
+  if (!inspectObject) {
+    throw new Error('INSPECTEUR_NOT_FOUND')
+  }
   const inspecteurNom = inspectObject.nom
 
   const dateToString = dateTimeToFormatFr(date).date
 
   const centreObject = await findCentreById(centre)
+  if (!centreObject) {
+    throw new Error('CENTRE_NOT_FOUND')
+  }
   const centreNom = centreObject.nom
   const departement = centreObject.departement
 
@@ -100,7 +110,7 @@ export const sendScheduleInspecteur = async (email, places) => {
   )
   const subject = `Bordereau de l'inspecteur ${inspecteurNom} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
 
-  appLogger.debug({ func: 'sendFailureExam', content, subject })
+  // appLogger.debug({ func: 'sendFailureExam', content, subject })
 
   return sendMail(email, { content, subject })
 }
