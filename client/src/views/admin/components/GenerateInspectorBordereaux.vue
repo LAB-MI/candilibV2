@@ -19,19 +19,16 @@
     </v-btn>
     <v-dialog
       v-model="dialog"
-      max-width="290"
+      max-width="580"
     >
       <v-card>
         <v-card-title
           class="headline"
         >
-          Lorem ipsum dolor sit amet
+          Les bordereaux inspecteurs &nbsp; <strong>{{ ` du ${activeDepartement}` }} </strong>
         </v-card-title>
         <v-card-text>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          Accusamus ullam repellat eius reiciendis deserunt molestias
-          impedit mollitia nemo explicabo, aliquam ipsam soluta, excepturi
-          et necessitatibus, eaque dolores illo non? Delectus?
+          Les bodereaux inspecteurs seront envoyés à l'adresse {{emailUser}}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -51,7 +48,7 @@
             color="primary"
             @click="generateBordereaux"
           >
-            Générer
+            Envoyer
             &nbsp;
             <v-icon>
               email
@@ -78,6 +75,9 @@ export default {
   },
 
   computed: {
+    emailUser () {
+      return this.$store.state.admin.email
+    },
     activeDepartement () {
       return this.$store.state.admin.departements.active
     },
