@@ -114,7 +114,7 @@ export const sendScheduleInspecteur = async (email, places) => {
   )
   const subject = `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
 
-  // appLogger.debug({ func: 'sendFailureExam', content, subject })
+  appLogger.debug({ func: 'sendScheduleInspecteur', content, subject })
 
   return sendMail(email, { content, subject })
 }
