@@ -8,7 +8,7 @@ export const SHOW_WARNING = 'SHOW_WARNING'
 
 export const HIDE_MESSAGE = 'HIDE_MESSAGE'
 
-const defaultTimeout = 6000
+const defaultTimeout = 9000
 
 export default {
   state: {
