@@ -72,7 +72,6 @@ export default {
       isDeleting: false,
     },
     currentWeek: undefined,
-    centerTarget: undefined,
     createCreneau: {
       isCreating: false,
       result: undefined,
@@ -159,9 +158,8 @@ export default {
       state.departements.active = departement
     },
 
-    [SET_WEEK_SECTION] (state, currentWeek, centerId) {
+    [SET_WEEK_SECTION] (state, currentWeek) {
       state.currentWeek = currentWeek
-      state.centerTarget = centerId
     },
   },
 
@@ -297,8 +295,8 @@ export default {
       commit(SELECT_DEPARTEMENT, departement)
     },
 
-    [SET_WEEK_SECTION] ({ commit, dispatch }, currentWeek, centerId) {
-      commit(SET_WEEK_SECTION, currentWeek, centerId)
+    [SET_WEEK_SECTION] ({ commit }, currentWeek) {
+      commit(SET_WEEK_SECTION, currentWeek)
     },
   },
 }
