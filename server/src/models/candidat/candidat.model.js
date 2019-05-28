@@ -10,7 +10,7 @@ import { placeCommonFields } from '../place/place.model'
 
 const { Schema } = mongoose
 
-const ArchivedPlaceFileds = {
+const ArchivedPlaceFields = {
   ...placeCommonFields,
   archivedAt: {
     type: Date,
@@ -26,7 +26,7 @@ const ArchivedPlaceFileds = {
   },
 }
 
-const ArchivedPlaceSchema = new Schema(ArchivedPlaceFileds)
+const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields)
 
 export const candidatFields = {
   nomNaissance: {
@@ -44,6 +44,10 @@ export const candidatFields = {
     type: String,
     required: true,
     match: nephRegex,
+    trim: true,
+  },
+  departement: {
+    type: String,
     trim: true,
   },
   dateReussiteETG: {

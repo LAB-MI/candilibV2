@@ -15,6 +15,7 @@ export const createCandidat = async ({
   nomNaissance,
   portable,
   prenom,
+  departement,
 }) => {
   const candidat = await new Candidat({
     adresse,
@@ -26,6 +27,7 @@ export const createCandidat = async ({
     portable,
     prenom,
     presignedUpAt: new Date(),
+    departement,
   })
   await candidat.save()
   return candidat

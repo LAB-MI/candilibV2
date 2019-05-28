@@ -90,6 +90,7 @@
           :label="`${getMsg('preinscription_adresse')} *`"
           dark
           color="#fff"
+          item-text="label"
           @focus="setAdressePlaceholder"
           @blur="removeAdressePlaceholder"
           :placeholder="adressePlaceholder"
@@ -101,6 +102,7 @@
           prepend-icon="location_city"
           tabindex="6"
           no-filter
+          return-object
           :search-input.sync="searchAdresses"
         >
         </v-autocomplete>
@@ -158,6 +160,7 @@ export default {
   },
   data: function () {
     return {
+      departement: undefined,
       magicLinkValid: false,
       nephPlaceholder: '',
       codeNeph: '',
@@ -199,6 +202,14 @@ export default {
   },
 
   watch: {
+    adresse (val) {
+      if (val.context) {
+        const contextParts = val.context.split(',')
+        this.departement = contextParts[0]
+        return
+      }
+      this.departement = ''
+    },
     searchAdresses (val) {
       val && val !== this.select && this.fetchMatchingAdresses(val)
     },
@@ -255,6 +266,7 @@ export default {
         email,
         portable,
         adresse,
+        departement,
       } = this
 
       try {
@@ -265,6 +277,7 @@ export default {
           email,
           portable,
           adresse,
+          departement,
         })
         this.$refs.presignupForm.reset()
         this.$router.push({ name: 'email-validation', params: { response } })
@@ -295,8 +308,11 @@ export default {
         this.adresses = (adresses.features && adresses.features.length)
           ? adresses.features
             .filter(adr => adr.properties.type.includes('housenumber'))
-            .map(feature => feature.properties.label)
-            .concat([val])
+            .map(feature => ({
+              label: feature.properties.label,
+              context: feature.properties.context,
+            }))
+            .concat([{ label: val }])
           : this.adresses
       } catch (error) {
       }
