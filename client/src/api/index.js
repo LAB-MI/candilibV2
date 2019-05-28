@@ -235,8 +235,8 @@ export default {
       return json
     },
 
-    async getCandidats () {
-      const json = await apiClient.get(apiPaths.admin.candidats, {
+    async getCandidats (candidatId, departement) {
+      const json = await apiClient.get(`${apiPaths.admin.candidats}${candidatId ? '/' + candidatId : ''}${departement ? '?departement=' + departement : ''}`, {
         headers: getHeadersForAdminJson(),
       })
       return json

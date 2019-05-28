@@ -8,6 +8,7 @@ import {
   findAllCandidatsLean,
   findBookedCandidats,
   findCandidatsMatching,
+  findCandidatById,
 } from '../../models/candidat'
 import { findPlaceByCandidatId } from '../../models/place'
 
@@ -59,6 +60,17 @@ export const exportBookedCandidats = async (req, res) => {
 }
 
 export const getCandidats = async (req, res) => {
+  const { id: candidatId } = req.params
+  if (candidatId) {
+    const candidatFound = await findCandidatById(candidatId, 'codeNeph nomNaissance prenom email portable')
+    if (candidatFound) {
+      res.json({ success: true, candidat: candidatFound })
+      return
+    }
+    res.json({ success: false, message: "le candidat n'existe pas" })
+    return
+  }
+
   const { matching, format, filter } = req.query
 
   if (matching) {
