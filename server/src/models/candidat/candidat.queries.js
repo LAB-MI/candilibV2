@@ -138,7 +138,7 @@ export const findBookedCandidats = async (date, inspecteur, centre) => {
       .lt(endDate)
   }
 
-  if (inspecteur && inspecteur.trim().length > 0) {
+  if (inspecteur) {
     query = query.where('inspecteur', inspecteur)
   }
 
@@ -210,6 +210,15 @@ export const updateCandidatFailed = async (
   { dateDernierEchecPratique, canBookFrom }
 ) => {
   candidat.dateDernierEchecPratique = dateDernierEchecPratique
+  candidat.canBookFrom = canBookFrom
+  return candidat.save()
+}
+
+export const updateCandidatNoReussite = async (
+  candidat,
+  { lastNoReussite, canBookFrom }
+) => {
+  candidat.lastNoReussite = lastNoReussite
   candidat.canBookFrom = canBookFrom
   return candidat.save()
 }

@@ -20,13 +20,19 @@ import {
   removeCentres,
   removePlaces,
 } from '../__tests__'
-import { archivePlace, updateCandidatFailed } from './candidat.queries'
+import {
+  archivePlace,
+  updateCandidatFailed,
+  updateCandidatNoReussite,
+} from './candidat.queries'
 import {
   REASON_CANCEL,
   REASON_EXAM_FAILED,
   REASON_REMOVE_RESA_ADMIN,
 } from '../../routes/common/reason.constants'
+
 import { getFrenchLuxonDateTime } from '../../util'
+import { ABSENT, ECHEC } from './objetDernierNonReussite.values'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
@@ -55,7 +61,7 @@ describe('Candidat', () => {
     await disconnect()
   })
 
-  xdescribe('Saving Candidat', () => {
+  describe('Saving Candidat', () => {
     afterEach(async () => {
       await Promise.all([
         deleteCandidat(candidat).catch(() => true),
@@ -211,7 +217,7 @@ describe('Candidat', () => {
     })
   })
 
-  xdescribe('Updating Candidat', () => {
+  describe('Updating Candidat', () => {
     afterAll(async () => {
       await deleteCandidat(candidat).catch(() => true)
     })
@@ -269,7 +275,7 @@ describe('Candidat', () => {
     })
   })
 
-  xdescribe('Deleting Candidat', () => {
+  describe('Deleting Candidat', () => {
     it('should delete a candidat', async () => {
       // Given
       const email = validEmail
@@ -348,6 +354,16 @@ describe('Candidat', () => {
     it('should update a candidat failed', async () => {
       const dateDernierEchecPratique = getFrenchLuxonDateTime()
       const canBookFrom = dateDernierEchecPratique.plus({ days: 45 })
+      if (!candidat) {
+        candidat = await createCandidat({
+          codeNeph,
+          nomNaissance,
+          prenom,
+          email: validEmail,
+          portable,
+          adresse,
+        })
+      }
       const candidat1 = await updateCandidatFailed(candidat, {
         dateDernierEchecPratique,
         canBookFrom,
@@ -358,11 +374,40 @@ describe('Candidat', () => {
         'dateDernierEchecPratique',
         dateDernierEchecPratique.toJSDate()
       )
+      expect(candidat1).toHaveProperty('objetDernierNonReussite', ECHEC)
+      expect(candidat1).toHaveProperty('canBookFrom', canBookFrom.toJSDate())
+    })
+
+    it('should update a candidat no reussite', async () => {
+      const date = DateTime.local()
+      const canBookFrom = date.plus({ days: 45 })
+      if (!candidat) {
+        candidat = await createCandidat({
+          codeNeph,
+          nomNaissance,
+          prenom,
+          email: validEmail,
+          portable,
+          adresse,
+        })
+      }
+      const lastNoReussite = {
+        date,
+        reason: ABSENT,
+      }
+      const candidat1 = await updateCandidatNoReussite(candidat, {
+        lastNoReussite,
+        canBookFrom,
+      })
+
+      expect(candidat1).not.toBe(null)
+      expect(candidat1.lastNoReussite).toHaveProperty('date', date.toJSDate())
+      expect(candidat1.lastNoReussite).toHaveProperty('reason', ABSENT)
       expect(candidat1).toHaveProperty('canBookFrom', canBookFrom.toJSDate())
     })
   })
 
-  xdescribe('Booked Candidat', () => {
+  describe('Booked Candidat', () => {
     let creactedCentres
     beforeAll(async () => {
       // await connect()
@@ -379,7 +424,7 @@ describe('Candidat', () => {
       // await disconnect()
     })
 
-    xit('Get the booked candidats ', async () => {
+    it('Get the booked candidats ', async () => {
       const bookedCandidats = await findBookedCandidats()
       expect(bookedCandidats.length).toBe(2)
       bookedCandidats.forEach(candidat => {
@@ -402,7 +447,7 @@ describe('Candidat', () => {
       })
     })
 
-    xit('Get the booked candidats by centre', async () => {
+    it('Get the booked candidats by centre', async () => {
       const centre = creactedCentres[1]
       const bookedCandidats = await findBookedCandidats(
         undefined,
@@ -416,19 +461,19 @@ describe('Candidat', () => {
       })
     })
 
-    xit('Get the booked candidats inspecteur', async () => {
+    it('Get the booked candidats inspecteur', async () => {
       const inspecteur = (await createPlaces())[0].inspecteur
       const bookedCandidats = await findBookedCandidats(undefined, inspecteur)
 
       expect(bookedCandidats.length).toBe(1)
       bookedCandidats.forEach(candidat => {
         expect(candidat.place).toBeDefined()
-        expect(candidat.place.inspecteur).toBe(inspecteur)
+        expect(candidat.place.inspecteur).toEqual(inspecteur)
       })
     })
   })
 
-  xdescribe('Archive place', () => {
+  describe('Archive place', () => {
     let createdCandidats
     let createdPlaces
 
