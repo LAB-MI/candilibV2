@@ -87,7 +87,7 @@ export default {
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
       state.departements.list = infos.departements
       state.email = infos.email
-      state.departements.active = infos.departements[1]
+      state.departements.active = state.departements.active || infos.departements[1]
       state.departements.isFetching = false
     },
     [FETCH_ADMIN_INFO_FAILURE] (state) {
