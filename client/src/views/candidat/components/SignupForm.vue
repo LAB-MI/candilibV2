@@ -59,6 +59,7 @@
           color="#fff"
           @focus="setEmailPlaceholder"
           @blur="removeEmailPlaceholder"
+          @input="setEmailToLowerCase"
           :placeholder="emailPlaceholder"
           aria-placeholder="jean@dupont.fr"
           hint="ex. : jean@dupont.fr"
@@ -219,42 +220,46 @@ export default {
     getMsg (id) {
       return this.$formatMessage({ id })
     },
-    async setEmailPlaceholder () {
+    setEmailPlaceholder () {
       this.emailPlaceholder = 'jean@dupont.fr'
     },
-    async removeEmailPlaceholder () {
+    removeEmailPlaceholder () {
       this.emailPlaceholder = ''
     },
-    async setNephPlaceholder () {
+    setNephPlaceholder () {
       this.nephPlaceholder = '012345678912'
     },
-    async removeNephPlaceholder () {
+    removeNephPlaceholder () {
       this.nephPlaceholder = ''
     },
-    async setNomPlaceholder () {
+    setNomPlaceholder () {
       this.nomPlaceholder = 'Dupont'
     },
-    async removeNomPlaceholder () {
+    removeNomPlaceholder () {
       this.nomPlaceholder = ''
     },
-    async setPrenomPlaceholder () {
+    setPrenomPlaceholder () {
       this.prenomPlaceholder = 'Jean'
     },
-    async removePrenomPlaceholder () {
+    removePrenomPlaceholder () {
       this.prenomPlaceholder = ''
     },
-    async setPortablePlaceholder () {
+    setPortablePlaceholder () {
       this.portablePlaceholder = '0612345678'
     },
-    async removePortablePlaceholder () {
+    removePortablePlaceholder () {
       this.portablePlaceholder = ''
     },
-    async setAdressePlaceholder () {
+    setAdressePlaceholder () {
       this.adressePlaceholder = '10 avenue du général Leclerc Villepinte 93420'
     },
-    async removeAdressePlaceholder () {
+    removeAdressePlaceholder () {
       this.adressePlaceholder = ''
     },
+    setEmailToLowerCase () {
+      this.email = this.email.toLowerCase()
+    },
+
     async presignup () {
       if (!this.valid) {
         return this.$store.dispatch(SHOW_ERROR, this.getMsg('preinscription_formulaire_invalide'))
