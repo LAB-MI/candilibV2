@@ -8,38 +8,15 @@
         ({{ center.selected ? center.selected.departement : '' }})
       </span>
     </page-title>
+
     <v-alert
-      :value="isPenaltyActive"
+      :value="warningMessage"
       type="warning"
       style="fontsize: 1em;"
     >
-      {{ $formatMessage(
-          {
-            id: 'home_choix_date_creneau_message_de_penalite',
-          },
-          {
-            numberOfDaysBeforeDate,
-            displayDate,
-          },
-        )
-      }}
+      {{ warningMessage }}
     </v-alert>
-    <v-alert
-      :value="isEchecPratique"
-      type="warning"
-      style="fontsize: 1em;"
-    >
-      {{ $formatMessage(
-          {
-            id: 'home_choix_date_creneau_message_echec_date_pratique',
-          },
-          {
-            dateDernierEchecPratique,
-            dateEchecPratique,
-          },
-        )
-      }}
-    </v-alert>
+
     <v-tabs
       v-model="switchTab"
       centered
@@ -128,13 +105,41 @@ export default {
       isEchecPratique: state => state.reservation.booked.dateDernierEchecPratique,
     }),
 
+    warningMessage () {
+      if (this.isPenaltyActive) {
+        return this.$formatMessage(
+          {
+            id: 'home_choix_date_creneau_message_de_penalite',
+          },
+          {
+            numberOfDaysBeforeDate: this.numberOfDaysBeforeDate,
+            displayDate: this.displayDate,
+          },
+        )
+      }
+      if (this.isEchecPratique) {
+        return this.$formatMessage(
+          {
+            id: 'home_choix_date_creneau_message_echec_date_pratique',
+          },
+          {
+            dateDernierEchecPratique: this.dateDernierEchecPratique,
+            dateEchecPratique: this.dateEchecPratique,
+          },
+        )
+      }
+      return ''
+    },
+
     isPenaltyActive () {
       if (this.isEchecPratique) {
         return false
       }
       const { canBookFrom, lastDateToCancel } = this.reservation.booked
-      return canBookFrom ||
+      const isPenaltyActive = canBookFrom ||
         DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)
+
+      return isPenaltyActive
     },
 
     displayDate () {
