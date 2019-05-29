@@ -1,7 +1,9 @@
 <template>
   <v-container grid-list-md>
     <div>
-      <h2 class="text--center">Semaine {{currentWeekNumber}}</h2>
+      <h2 class="text--center">
+        Semaine {{ currentWeekNumber }}
+      </h2>
       <div class="date-selector">
         <div class="date-input">
           <v-menu
@@ -33,17 +35,18 @@
       <v-flex xs12>
         <div class="u-flex  u-flex--center  u-flex--space-between">
           <h3>Centres d'examen</h3>
-            <div class="stats-card">
-        <div class="text-xs-right">
-          <refresh-button
-            @click="reloadWeekMonitor"
-            :isLoading="isLoading"
+          <generate-inspecteur-bordereaux
+            :date="date"
           />
+          <div class="stats-card">
+            <div class="text-xs-right">
+              <refresh-button
+                @click="reloadWeekMonitor"
+                :isLoading="isLoading"
+              />
+            </div>
+          </div>
         </div>
-      </div>
-
-        </div>
-
         <v-tabs
           class="tabs"
           v-model="activeCentreTab"
@@ -59,7 +62,9 @@
           >
             {{ element.centre.nom }}
           </v-tab>
-          <v-tabs-items v-model="activeCentreTab">
+          <v-tabs-items
+            v-model="activeCentreTab"
+          >
             <v-tab-item
               v-for="place in placesByCentreList"
               :key="place.centre._id"
@@ -106,6 +111,7 @@ import {
 } from '@/store'
 
 import ScheduleInspectorDialog from './ScheduleInspectorDialog'
+import GenerateInspecteurBordereaux from './GenerateInspecteurBordereaux'
 import { RefreshButton } from '@/components'
 
 import {
@@ -123,8 +129,9 @@ const creneauTemplate = [
 
 export default {
   components: {
-    ScheduleInspectorDialog,
+    GenerateInspecteurBordereaux,
     RefreshButton,
+    ScheduleInspectorDialog,
   },
 
   data () {

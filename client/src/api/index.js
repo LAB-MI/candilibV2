@@ -354,6 +354,14 @@ export default {
       })
       return json
     },
+
+    async generateBordereaux (departement, date) {
+      const json = await apiClient.post(`${apiPaths.admin.generateBordereaux}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ departement, date }),
+      })
+      return json
+    },
   },
 
   util: {
