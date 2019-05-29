@@ -2,6 +2,9 @@ import { DateTime } from 'luxon'
 import { getFrenchLuxonDateFromIso, creneauSetting } from '../util'
 
 import api from '@/api'
+import {
+  DEPARTEMENT_STORAGE_KEY,
+} from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
 
@@ -87,7 +90,8 @@ export default {
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
       state.departements.list = infos.departements
       state.email = infos.email
-      state.departements.active = state.departements.active || infos.departements[1]
+      const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
+      state.departements.active = activeDepartement || infos.departements[0]
       state.departements.isFetching = false
     },
     [FETCH_ADMIN_INFO_FAILURE] (state) {
@@ -156,6 +160,7 @@ export default {
 
     [SELECT_DEPARTEMENT] (state, departement) {
       state.departements.active = departement
+      localStorage.setItem(DEPARTEMENT_STORAGE_KEY, departement)
     },
 
     [SET_WEEK_SECTION] (state, currentWeek) {

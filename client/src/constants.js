@@ -1,5 +1,6 @@
 export const CANDIDAT_TOKEN_STORAGE_KEY = 'token'
 export const ADMIN_TOKEN_STORAGE_KEY = 'admin-token'
+export const DEPARTEMENT_STORAGE_KEY = 'departement'
 
 export const EMAIL_VALIDATION_IS_PENDING = `Vous allez bientôt recevoir un courriel à l'adresse que vous nous avez indiqué.
         Veuillez consulter votre boîte, et valider votre adresse courriel en cliquant sur le lien indiqué dans le message.`
