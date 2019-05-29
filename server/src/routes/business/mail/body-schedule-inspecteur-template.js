@@ -1,4 +1,4 @@
-export const getSheduleInspecteurTemplate = (
+export const getScheduleInspecteurTemplate = (
   inspecteurName,
   inspecteurMatricule,
   dateExam,

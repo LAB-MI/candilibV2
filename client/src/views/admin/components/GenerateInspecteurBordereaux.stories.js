@@ -1,7 +1,7 @@
 import Vuex from 'vuex'
 import { storiesOf } from '@storybook/vue'
 
-import GenerateInspecteurBordereaux from './GenerateInspectorBordereaux.vue'
+import GenerateInspecteurBordereaux from './GenerateInspecteurBordereaux.vue'
 
 storiesOf('Admin', module)
   .add('GenerateInspecteurBordereaux', () => ({

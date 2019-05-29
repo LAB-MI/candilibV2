@@ -1,12 +1,12 @@
 import { appLogger } from '../../util'
-import { getSheduleInspecteurTemplate } from './mail/body-schedule-inspecteur-template'
+import { getScheduleInspecteurTemplate } from './mail/body-schedule-inspecteur-template'
 import { getHtmlBody } from './mail'
 import { dateTimeToFormatFr } from '../../util/date.util'
 import { sendMail } from './send-mail'
 import { findInspecteurById } from '../../models/inspecteur'
 import { findCentreById } from '../../models/centre'
 import { findCandidatById } from '../../models/candidat'
-import { getFailedSheduleInspecteurTemplate } from './mail/failed-mail-schelude-inspecteurs-template'
+import { getFailedScheduleInspecteurTemplate } from './mail/failed-mail-schelude-inspecteurs-template'
 
 const getScheduleInspecteurBody = async (
   inspecteurName,
@@ -62,7 +62,7 @@ const getScheduleInspecteurBody = async (
     })
   )
 
-  const body = getSheduleInspecteurTemplate(
+  const body = getScheduleInspecteurTemplate(
     inspecteurName,
     inspecteurMatricule,
     date,
@@ -79,11 +79,11 @@ export const sendScheduleInspecteur = async (email, places) => {
     func: 'sendScheduleInspecteur',
     args: { email, places },
   })
-  const action = 'SEND_SHEDULE_INSPECTEUR'
+  const action = 'SEND_SCHEDULE_INSPECTEUR'
 
   if (!email || !places || places.length <= 0) {
     const messageError =
-      "L'adresse email ou la liste des créneaux sont manquantes "
+      "L'adresse email ou la liste des créneaux sont manquantes."
     appLogger.error({ action, messageError })
     throw new Error(messageError)
   }
@@ -132,7 +132,7 @@ export const sendMailForScheduleInspecteurFailed = async (
 
   const dateToString = dateTimeToFormatFr(date).date
 
-  const content = getFailedSheduleInspecteurTemplate(
+  const content = getFailedScheduleInspecteurTemplate(
     dateToString,
     inspecteurs.map(inspecteur => inspecteur.nom + '/' + inspecteur.matricule)
   )
