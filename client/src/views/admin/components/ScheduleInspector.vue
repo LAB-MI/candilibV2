@@ -35,7 +35,7 @@
       <v-flex xs12>
         <div class="u-flex  u-flex--center  u-flex--space-between">
           <h3>Centres d'examen</h3>
-          <generate-inspector-bordereaux
+          <generate-inspecteur-bordereaux
             :date="date"
           />
           <div class="stats-card">
@@ -111,7 +111,7 @@ import {
 } from '@/store'
 
 import ScheduleInspectorDialog from './ScheduleInspectorDialog'
-import GenerateInspectorBordereaux from './GenerateInspectorBordereaux'
+import GenerateInspecteurBordereaux from './GenerateInspecteurBordereaux'
 import { RefreshButton } from '@/components'
 
 import {
@@ -129,7 +129,7 @@ const creneauTemplate = [
 
 export default {
   components: {
-    GenerateInspectorBordereaux,
+    GenerateInspecteurBordereaux,
     RefreshButton,
     ScheduleInspectorDialog,
   },
