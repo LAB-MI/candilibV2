@@ -54,6 +54,13 @@ export const isETGExpired = dateReussiteETG =>
 export const isMoreThan2HoursAgo = date =>
   getFrenchLuxonDateTimeFromJSDate(date).diffNow('hours').hours < -2
 
+const isReussitePratique = reussitePratique => {
+  return (
+    reussitePratique === EPREUVE_PRATIQUE_OK ||
+    DateTime.fromISO(reussitePratique).isValid
+  )
+}
+
 export const synchroAurige = async buffer => {
   const retourAurige = JSON.parse(buffer.toString())
 
@@ -64,6 +71,9 @@ export const synchroAurige = async buffer => {
       dateReussiteETG,
       reussitePratique,
       dateDernierEchecPratique,
+      nbEchecsPratiques,
+      dateDernierNonReussite,
+      objetDernierNonReussite,
     } = candidatAurige
 
     let nomNaissance = candidatAurige.nomNaissance
@@ -125,7 +135,7 @@ export const synchroAurige = async buffer => {
       } else if (isETGExpired(dateReussiteETG)) {
         appLogger.warn(`Ce candidat ${email} sera archivé : Date ETG KO`)
         aurigeFeedback = EPREUVE_ETG_KO
-      } else if (reussitePratique === EPREUVE_PRATIQUE_OK) {
+      } else if (isReussitePratique(reussitePratique)) {
         appLogger.warn(`Ce candidat ${email} sera archivé : PRATIQUE OK`)
         aurigeFeedback = EPREUVE_PRATIQUE_OK
         await releaseResa(candidat)
@@ -145,15 +155,25 @@ export const synchroAurige = async buffer => {
 
       if (candidatExistant === CANDIDAT_EXISTANT) {
         const { isValidatedByAurige } = candidat
+        const lastNoReussite = {
+          date: dateDernierNonReussite,
+          reason: objetDernierNonReussite,
+        }
         const updateCandidat = {
           dateReussiteETG,
           dateDernierEchecPratique,
           reussitePratique,
           isValidatedByAurige: true,
+          lastNoReussite,
         }
-
+        const nbFailed = Number(nbEchecsPratiques)
+        if (nbFailed) {
+          updateCandidat.nbEchecsPratiques = nbFailed
+        }
+        const dateNoReussite =
+          dateDernierEchecPratique || dateDernierNonReussite
         // Check failure date
-        const dateTimeEchec = checkFialureDate(dateDernierEchecPratique)
+        const dateTimeEchec = checkFialureDate(dateNoReussite)
         // put a penalty
         if (dateTimeEchec) {
           const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
