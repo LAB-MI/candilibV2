@@ -83,7 +83,7 @@ export const sendScheduleInspecteur = async (email, places) => {
 
   if (!email || !places || places.length <= 0) {
     const messageError =
-      "l'adresse email ou la liste des créneaux sont manquantes "
+      "L'adresse email ou la liste des créneaux sont manquantes "
     appLogger.error({ action, messageError })
     throw new Error(messageError)
   }

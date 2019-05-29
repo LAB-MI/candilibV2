@@ -25,7 +25,7 @@
         <v-card-title
           class="headline"
         >
-          Les bordereaux inspecteurs &nbsp; <strong>{{ ` du ${activeDepartement}` }} </strong>
+          Les bordereaux inspecteurs&nbsp;<strong>{{`du ${activeDepartement}`}} </strong>
         </v-card-title>
         <v-card-text>
           Les bodereaux inspecteurs seront envoyés à l'adresse {{emailUser}}
@@ -61,6 +61,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import {
   GENERATE_INSPECTOR_BORDEREAUX_REQUEST,
 } from '@/store'
@@ -74,18 +75,12 @@ export default {
     date: String,
   },
 
-  computed: {
-    emailUser () {
-      return this.$store.state.admin.email
-    },
-    activeDepartement () {
-      return this.$store.state.admin.departements.active
-    },
-
-    isGenerating () {
-      return this.$store.state.adminBordereaux.isGenerating
-    },
-  },
+  computed:
+    mapState({
+      emailUser: state => state.admin.email,
+      activeDepartement: state => state.admin.departements.active,
+      isGenerating: state => state.adminBordereaux.isGenerating,
+    }),
 
   data () {
     return {

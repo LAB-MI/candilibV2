@@ -478,14 +478,13 @@ export const sendMailSchedulesInspecteurs = async (
 
   let resultsError = []
   await Promise.all(
-    Object.entries(placesByInspecteurs).map(async entry => {
+    Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
       try {
-        const places = entry[1]
         await sendScheduleInspecteur(email, places)
         return { success: true }
       } catch (error) {
         appLogger.error({ ...loggerContent, message: error.message })
-        const inspecteur = await findInspecteurById(entry[0])
+        const inspecteur = await findInspecteurById(inspecteurId)
         resultsError.push(inspecteur)
       }
     })
