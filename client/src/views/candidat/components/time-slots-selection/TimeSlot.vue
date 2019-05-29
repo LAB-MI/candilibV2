@@ -1,6 +1,6 @@
 <template>
   <v-card style="position: relative;">
-    <page-title class="sticky-60">
+    <page-title class="sticky-title">
       <span class="u-truncated">
         {{ center.selected ? center.selected.nom : '' }}
       </span>
@@ -45,7 +45,7 @@
       centered
       slider-color="primary"
       color="#dfdfdf"
-      class="sticky-80"
+      class="sticky-months"
     >
       <v-tab
         v-for="month in timeSlots.list"
@@ -205,15 +205,19 @@ export default {
   white-space: nowrap;
 }
 
-.sticky-60 {
+.tabs-items-block > .v-window__container {
+  height: auto !important; /* TODO: Find a better way */
+}
+
+.sticky-title {
   position: sticky;
-  top: 56px;
+  top: 36px;
   z-index: 1;
 }
 
-.sticky-80 {
+.sticky-months {
   position: sticky;
-  top: 130px;
+  top: 150px;
   z-index: 1;
 }
 </style>
