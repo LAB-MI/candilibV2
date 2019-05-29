@@ -71,7 +71,7 @@ export default {
 
   methods: {
     goToGestionPlannings (currentWeek, centerId) {
-      this.$store.dispatch(SET_WEEK_SECTION, currentWeek, centerId)
+      this.$store.dispatch(SET_WEEK_SECTION, currentWeek)
       const date = DateTime.local().setLocale('fr').set({ weekNumber: currentWeek }).toSQLDate()
       this.$router.push({ name: 'gestion-planning', params: { center: centerId, date } })
     },

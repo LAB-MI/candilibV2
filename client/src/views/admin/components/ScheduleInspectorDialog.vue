@@ -2,7 +2,6 @@
   <td class="text-xs-right">
     <div class="text-xs-center">
       <v-dialog
-        transition="fade"
         v-model="dialog"
         width="650"
       >

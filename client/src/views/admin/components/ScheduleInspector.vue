@@ -37,7 +37,7 @@
         <div class="text-xs-right">
           <refresh-button
             @click="reloadWeekMonitor"
-            :isLoading="!!isLoading"
+            :isLoading="isLoading"
           />
         </div>
       </div>
@@ -98,7 +98,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
   FETCH_ADMIN_INFO_REQUEST,
@@ -143,30 +143,35 @@ export default {
 
   computed: {
     ...mapGetters(['activeDepartement']),
+    ...mapState({
+      isFetching (state) {
+        return state.admin.places.isFetching ||
+          state.admin.inspecteurs.isFetching ||
+          state.admin.inspecteurs.isFetching ||
+          state.admin.deleteBookedPlace.isDeleting ||
+          state.admin.deletePlaceAction.isDeleting ||
+          state.admin.createCreneau.isCreating
+      },
+
+      placesByCentreList (state) {
+        return state.admin.places.list
+      },
+
+      firstCentreId (state) {
+        return state.admin.places.list[0] && state.admin.places.list[0].centre._id
+      },
+
+      inspecteurs (state) {
+        return state.admin.inspecteurs.list
+      },
+    }),
 
     computedDateFormatted () {
       return this.formatDate(this.date)
     },
 
-    centerTarget () {
-      return this.$store.state.admin.centerTarget
-    },
-
-    placesByCentreList () {
-      return this.$store.state.admin.places.list
-    },
-
-    firstCentreId () {
-      return this.$store.state.admin.places.list[0] && this.$store.state.admin.places.list[0].centre._id
-    },
-
-    inspecteurs () {
-      return this.$store.state.admin.inspecteurs.list
-    },
-
     isLoading () {
-      return this.$store.state.admin.places.isFetching ||
-        this.$store.state.admin.inspecteurs.isFetching ||
+      return this.isFetching ||
         this.isComputing
     },
   },
@@ -197,37 +202,54 @@ export default {
       this.inspecteursData = []
       const [, ...creneaux] = creneauTemplate
 
-      let reservastionsByCentre = {}
       const dateTofind = getFrenchLuxonDateTimeFromSql(this.date).toISODate()
 
-      this.placesByCentreList.find(element => {
-        const weekPlaces = element.places[this.currentWeekNumber]
-        if (weekPlaces && weekPlaces.length && element.centre._id === this.activeCentreId) {
-          const result = weekPlaces.filter(place => {
-            const currentDate = getFrenchLuxonDateFromIso(place.date).toISODate()
-            if (currentDate === dateTofind) {
-              return place
-            }
-          })
+      const activeCenterAndPlaces = this.placesByCentreList.find(placesByCentre => placesByCentre.centre._id === this.activeCentreId)
+      const weekPlaces = activeCenterAndPlaces &&
+        activeCenterAndPlaces.places &&
+        activeCenterAndPlaces.places[this.currentWeekNumber]
+      if (!weekPlaces) {
+        this.isComputing = false
+        return
+      }
 
-          reservastionsByCentre = { centre: element.centre, places: result }
-          this.inspecteursData = this.inspecteurs.map(inspecteur => {
-            const creneauData = creneaux.map((elemt) => {
-              const instpecteurPlaces = reservastionsByCentre.places
-                .filter(element => element.inspecteur === inspecteur._id &&
-                  getFrenchLuxonDateFromIso(element.date).toFormat("HH'h'mm") === elemt)
-              if (instpecteurPlaces.length) {
-                return { place: instpecteurPlaces[0], hour: elemt }
+      const dayPlaces = weekPlaces.filter(plc => getFrenchLuxonDateFromIso(plc.date).toISODate() === dateTofind)
+
+      if (dayPlaces && dayPlaces.length) {
+        this.inspecteursData = this.inspecteurs.map(inspecteur => {
+          const filteredCreneaux = dayPlaces.filter(plce => inspecteur._id === plce.inspecteur).map(place => {
+            const currentHourString = getFrenchLuxonDateFromIso(place.date).toFormat("HH'h'mm")
+            if (creneaux.some(crn => crn === currentHourString)) {
+              return {
+                place,
+                hour: currentHourString,
               }
-              return { place: undefined, hour: elemt }
-            })
-            return {
-              ...inspecteur,
-              creneau: creneauData,
             }
-          })
-        }
-      })
+          }).filter(plce => !!plce)
+          if (filteredCreneaux.length < 13) {
+            creneaux.forEach(cren => {
+              if (!filteredCreneaux.some(crn => crn.hour === cren)) {
+                filteredCreneaux.push({
+                  place: undefined,
+                  hour: cren,
+                })
+              }
+            })
+          }
+          return {
+            ...inspecteur,
+            creneau: filteredCreneaux.sort((currentCreneau, creneauToCompare) => {
+              if (currentCreneau.hour < creneauToCompare.hour) {
+                return -1
+              }
+              if (currentCreneau.hour > creneauToCompare.hour) {
+                return 1
+              }
+              return 0
+            }),
+          }
+        })
+      }
       if (!this.inspecteursData.length) {
         this.inspecteursData = this.inspecteurs
       }
@@ -259,8 +281,13 @@ export default {
         .dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
-      this.activeCentreId = this.firstCentreId
-      this.activeCentreTab = `tab-${this.activeCentreId}`
+      const { center } = this.$route.params
+      if (!this.placesByCentreList.some(el => el.centre._id === center)) {
+        this.activeCentreId = this.firstCentreId
+        this.activeCentreTab = `tab-${this.activeCentreId}`
+      } else {
+        this.activeCentreTab = `tab-${center}`
+      }
       this.parseInspecteursPlanning()
     },
   },
@@ -270,7 +297,7 @@ export default {
       const { inspecteursData, activeCentreId } = obj
       if (inspecteursData.length) {
         const result = inspecteursData.filter(inspecteurInfo => {
-          if (inspecteurInfo.creneau.find(item => item.place && item.place.centre === activeCentreId)) {
+          if (inspecteurInfo.creneau.some(item => item.place && item.place.centre === activeCentreId)) {
             return inspecteurInfo
           }
         })
@@ -281,10 +308,6 @@ export default {
 
   async mounted () {
     await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
-    const begin = getFrenchLuxonDateTimeFromSql(this.date).startOf('day').toISO()
-    const end = getFrenchLuxonDateTimeFromSql(this.date).endOf('day').toISO()
-    await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
-    await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
     const centerId = this.$route.params.center
     this.activeCentreId = (centerId) || this.firstCentreId
     this.activeCentreTab = `tab-${this.activeCentreId}`

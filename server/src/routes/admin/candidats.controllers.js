@@ -62,7 +62,10 @@ export const exportBookedCandidats = async (req, res) => {
 export const getCandidats = async (req, res) => {
   const { id: candidatId } = req.params
   if (candidatId) {
-    const candidatFound = await findCandidatById(candidatId, 'codeNeph nomNaissance prenom email portable')
+    const candidatFound = await findCandidatById(
+      candidatId,
+      'codeNeph nomNaissance prenom email portable'
+    )
     if (candidatFound) {
       res.json({ success: true, candidat: candidatFound })
       return
