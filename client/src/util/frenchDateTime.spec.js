@@ -249,15 +249,16 @@ describe('frenchLuxonDateTimeFromSql', () => {
 describe('getFrenchLuxonCurrentDateTime', () => {
   it('Should create a luxon DateTime with current date', () => {
     // Given
-    const theDate = DateTime.local().setLocale('fr')
+    const theDate = DateTime.local().setLocale('fr').setZone('Europe/Paris')
 
     // When
-    const frenchDate = getFrenchLuxonCurrentDateTime(theDate)
+    const frenchDate = getFrenchLuxonCurrentDateTime()
 
     // Then
     expect(frenchDate.year).toBe(theDate.year)
     expect(frenchDate.month).toBe(theDate.month)
     expect(frenchDate.day).toBe(theDate.day)
+    expect(frenchDate.hour).toBe(theDate.hour)
   })
 })
 
