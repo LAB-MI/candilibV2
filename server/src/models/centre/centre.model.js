@@ -23,6 +23,16 @@ const CentreSchema = new Schema({
     required: true,
     trim: true,
   },
+  lon: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  lat: {
+    type: String,
+    required: true,
+    trim: true,
+  }
 })
 
 CentreSchema.index({ nom: 1, departement: 1 }, { unique: true })
