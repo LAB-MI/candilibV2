@@ -5,6 +5,7 @@
       'u-flex blue-grey  lighten-5  blue-grey--text  text--lighten-2 font-italic': !hasPlaces
     }"
   >
+    <div class="u-flex">
     <v-list-tile-content v-ripple="hasPlaces">
       <v-list-tile-title >
         {{ center.centre.nom }}
@@ -28,6 +29,7 @@
         location_on
       </v-icon>
     </a>
+    </div>
   </v-card-text>
 </template>
 
