@@ -1,6 +1,7 @@
 import { createCandidat, updateCandidatById } from '../candidat'
 import candidatModel from '../candidat/candidat.model'
 import { DateTime } from 'luxon'
+import { FRENCH_TIME_ZONE } from '../../util/date.util'
 
 export const candidats = [
   {
@@ -37,7 +38,10 @@ export const candidats2 = [
     email: 'test4.test@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
-    dateReussiteETG: DateTime.local().plus({ year: -1 }),
+    dateReussiteETG: DateTime.local()
+      .setLocale('fr')
+      .setZone(FRENCH_TIME_ZONE)
+      .plus({ year: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
   },
@@ -48,7 +52,10 @@ export const candidats2 = [
     email: 'test5.test@test.com',
     portable: '0612355678',
     adresse: '10 Rue Oberkampf 75011 Paris',
-    dateReussiteETG: DateTime.local().plus({ year: -5, day: -1 }),
+    dateReussiteETG: DateTime.local()
+      .setLocale('fr')
+      .setZone(FRENCH_TIME_ZONE)
+      .plus({ year: -5, day: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
   },
@@ -59,7 +66,10 @@ export const candidats2 = [
     email: 'test6.test@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
-    dateReussiteETG: DateTime.local().plus({ year: -1 }),
+    dateReussiteETG: DateTime.local()
+      .setLocale('fr')
+      .setZone(FRENCH_TIME_ZONE)
+      .plus({ year: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
   },
@@ -70,7 +80,10 @@ export const candidats2 = [
     email: 'test7.test@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
-    dateReussiteETG: DateTime.local().plus({ year: -1 }),
+    dateReussiteETG: DateTime.local()
+      .setLocale('fr')
+      .setZone(FRENCH_TIME_ZONE)
+      .plus({ year: -1 }),
     isValidatedByAurige: false,
     isValidatedEmail: true,
   },

@@ -29,13 +29,13 @@ import {
   createCandidat,
   updateCandidatFailed,
 } from '../../models/candidat'
-import { dateTimeToFormatFr } from '../../util/date.util'
+import { dateTimeToFormatFr, frenchLocaleZone } from '../../util/date.util'
 import { REASON_CANCEL } from '../common/reason.constants'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 
-const basePlaceDateTime = DateTime.fromObject({ hour: 9 })
+const basePlaceDateTime = DateTime.fromObject({ hour: 9 }, frenchLocaleZone)
 const placeCanBook = {
   date: (() =>
     basePlaceDateTime
@@ -156,7 +156,10 @@ xdescribe('Test reservation controllers', () => {
 
     let datetimeAuthorize
     if (previewDate instanceof Date) {
-      datetimeAuthorize = DateTime.fromJSDate(previewDate).endOf('day')
+      datetimeAuthorize = DateTime.fromJSDate(
+        previewDate,
+        frenchLocaleZone
+      ).endOf('day')
     } else {
       datetimeAuthorize = previewDate.endOf('day')
     }

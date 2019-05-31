@@ -4,8 +4,10 @@ export const FORMAT_DATE = 'cccc dd LLLL yyyy'
 
 export const FRENCH_TIME_ZONE = 'Europe/Paris'
 
+export const frenchLocaleZone = { locale: 'fr', zone: FRENCH_TIME_ZONE }
+
 export const getDateTimeFrFromJSDate = date =>
-  DateTime.fromJSDate(date, { locale: 'fr', zone: FRENCH_TIME_ZONE })
+  DateTime.fromJSDate(date, frenchLocaleZone)
 
 /**
  *
@@ -19,7 +21,7 @@ export const dateTimeToFormatFr = pDate => {
   } else if (pDate instanceof Date) {
     datetime = getDateTimeFrFromJSDate(pDate)
   } else if (pDate instanceof String || typeof pDate === 'string') {
-    datetime = DateTime.fromISO(pDate, { locale: 'fr', zone: FRENCH_TIME_ZONE })
+    datetime = DateTime.fromISO(pDate, frenchLocaleZone)
   }
   const date = datetime.toFormat(FORMAT_DATE)
 

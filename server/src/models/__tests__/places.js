@@ -5,16 +5,21 @@ import { findCentreById } from '../centre'
 import config from '../../config'
 import { createCentres } from './centres'
 import { createInspecteurs } from './inspecteurs'
+import { FRENCH_TIME_ZONE, frenchLocaleZone } from '../../util/date.util'
 
-let basePlaceDateTime = DateTime.fromObject({ day: 18, hour: 9 }).setLocale(
-  'fr'
+let basePlaceDateTime = DateTime.fromObject(
+  { day: 18, hour: 9 },
+  frenchLocaleZone
 )
 
 if (
   basePlaceDateTime <
-  DateTime.local().plus({
-    days: config.delayToBook + 1,
-  })
+  DateTime.local()
+    .setLocale('fr')
+    .setZone(FRENCH_TIME_ZONE)
+    .plus({
+      days: config.delayToBook + 1,
+    })
 ) {
   basePlaceDateTime = basePlaceDateTime.plus({ months: 1 })
 }
