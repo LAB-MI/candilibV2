@@ -40,7 +40,7 @@ export default {
   recap_reservation_confirmee: 'Votre réservation est confirmée',
   recap_reservation_email_confirmee: 'Un email de confirmation vous a été envoyé à l\'adresse renseignée à l\'inscription',
   recap_reservation_last_date_to_cancel: 'Si vous annulez après le {lastDateToCancelString} vous serez pénalisé·e de {penaltyDaysNumber} jours',
-  recap_reservation_boutton_annuler: 'Annuler',
+  recap_reservation_boutton_annuler: 'Annuler ma réservation',
   recap_reservation_modal_annuler_body_with_penalty:
     `<p>
       En poursuivant, votre réservation du {dateCurrentResa} sera annulée.
@@ -86,8 +86,8 @@ export default {
     <p>
       Souhaitez-vous néanmoins poursuivre votre modification ?
     </p>`,
-  recap_reservation_boutton_modifier: 'Modifier',
-  recap_reservation_boutton_renvoyer_email: 'Renvoyer',
+  recap_reservation_boutton_modifier: 'Modifier ma réservation',
+  recap_reservation_boutton_renvoyer_email: 'Renvoyer ma convocation',
   stepper_step_1_title: 'Pré-inscription',
   stepper_step_1_subtitle: 'Vous remplirez un formulaire en ligne',
   stepper_step_1_p: 'Vous devrez fournir votre nom et prénom, votre NEPH, et une adresse courriel valide, entre autres informations.',
