@@ -179,7 +179,7 @@ export default {
         return
       }
       await this.$store.dispatch(FETCH_DATES_REQUEST, selected._id)
-      this.timeoutid = setTimeout(this.getTimeSlots, 5000)
+      this.timeoutid = setTimeout(this.getTimeSlots, 30000)
     },
 
     goToSelectCenter () {
