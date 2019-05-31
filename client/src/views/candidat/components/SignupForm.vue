@@ -281,7 +281,7 @@ export default {
           prenom,
           email,
           portable,
-          adresse,
+          adresse: adresse.label,
           departement,
         })
         this.$refs.presignupForm.reset()
