@@ -28,6 +28,8 @@ import {
   REASON_EXAM_FAILED,
   REASON_REMOVE_RESA_ADMIN,
 } from '../../routes/common/reason.constants'
+import { FRENCH_TIME_ZONE } from '../../util/date.util'
+
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
@@ -348,6 +350,8 @@ describe('Candidat', () => {
 
     it('should update a candidat failed', async () => {
       const dateDernierEchecPratique = DateTime.local()
+        .setLocale('fr')
+        .setZone(FRENCH_TIME_ZONE)
       const canBookFrom = dateDernierEchecPratique.plus({ days: 45 })
       const candidat1 = await updateCandidatFailed(candidat, {
         dateDernierEchecPratique,
@@ -391,7 +395,7 @@ describe('Candidat', () => {
 
     it('Get the booked candidats by date ', async () => {
       let dateTime = commonBasePlaceDateTime.set({ day: 19 })
-      if (dateTime < DateTime.local()) {
+      if (dateTime < DateTime.local().setLocale('fr').setZone(FRENCH_TIME_ZONE)) {
         dateTime = dateTime.plus({ month: 1 })
       }
 

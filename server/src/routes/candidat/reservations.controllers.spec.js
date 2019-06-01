@@ -29,7 +29,11 @@ import {
   createCandidat,
   updateCandidatFailed,
 } from '../../models/candidat'
-import { dateTimeToFormatFr, frenchLocaleZone } from '../../util/date.util'
+import {
+  dateTimeToFormatFr,
+  FRENCH_TIME_ZONE,
+  frenchLocaleZone,
+} from '../../util/date.util'
 import { REASON_CANCEL } from '../common/reason.constants'
 
 jest.mock('../business/send-mail')
@@ -199,9 +203,7 @@ xdescribe('Test reservation controllers', () => {
     expect(body).toHaveProperty('reservation')
     expect(body.reservation).toHaveProperty(
       'date',
-      DateTime.fromJSDate(selectedPlace.date)
-        .setZone('utc')
-        .toISO()
+      DateTime.fromJSDate(selectedPlace.date, frenchLocaleZone).toISO()
     )
     expect(body.reservation).toHaveProperty('centre', selectedCentre.nom)
     expect(body.reservation).toHaveProperty(
@@ -292,10 +294,16 @@ xdescribe('Test reservation controllers', () => {
         .set('Accept', 'application/json')
         .expect(200)
 
-      const dateTimeResa = DateTime.fromJSDate(selectedPlace.date)
+      const dateTimeResa = DateTime.fromJSDate(
+        selectedPlace.date,
+        frenchLocaleZone
+      )
 
       expect(body).toBeDefined()
-      expect(body).toHaveProperty('date', dateTimeResa.setZone('utc').toISO())
+      expect(body).toHaveProperty(
+        'date',
+        dateTimeResa.setLocale('fr').setZone(FRENCH_TIME_ZONE).toISO()
+      )
       expect(body.centre).toBeDefined()
       expect(body.centre).toHaveProperty('nom', selectedCentre.nom)
       expect(body.centre).toHaveProperty(
@@ -328,7 +336,9 @@ xdescribe('Test reservation controllers', () => {
         await createReservationWithFailure(
           selectedCentre,
           selectedPlace,
-          DateTime.local(),
+          DateTime.local()
+            .setLocale('fr')
+            .setZone(FRENCH_TIME_ZONE),
           config.delayToBook
         )
       })
@@ -445,7 +455,7 @@ xdescribe('Test reservation controllers', () => {
         ' ' +
         CAN_BOOK_AFTER +
         dateTimeToFormatFr(
-          DateTime.fromJSDate(place.date)
+          DateTime.fromJSDate(place.date, frenchLocaleZone)
             .endOf('day')
             .plus({
               days: config.timeoutToRetry,
@@ -484,9 +494,15 @@ xdescribe('Test reservation controllers', () => {
         .set('Accept', 'application/json')
         .expect(200)
 
-      const dateTimeResa = DateTime.fromJSDate(selectedPlace.date)
+      const dateTimeResa = DateTime.fromJSDate(
+        selectedPlace.date,
+        frenchLocaleZone
+      )
       expect(body).toBeDefined()
-      expect(body).toHaveProperty('date', dateTimeResa.setZone('utc').toISO())
+      expect(body).toHaveProperty(
+        'date',
+        dateTimeResa.setLocale('fr').setZone(FRENCH_TIME_ZONE).toISO()
+      )
       expect(body.centre).toBeDefined()
       expect(body.centre).toHaveProperty('nom', selectedCentre.nom)
       expect(body.centre).toHaveProperty(
@@ -502,12 +518,14 @@ xdescribe('Test reservation controllers', () => {
       )
       expect(body.dateDernierEchecPratique).toBe(
         dateDernierEchecPratique()
-          .setZone('utc')
+          .setLocale('fr')
+          .setZone(FRENCH_TIME_ZONE)
           .toISO()
       )
       expect(body.canBookFrom).toBe(
         dateEchecCanBookFrom()
-          .setZone('utc')
+          .setLocale('fr')
+          .setZone(FRENCH_TIME_ZONE)
           .toISO()
       )
       expect(body.timeOutToRetry).toBe(config.timeoutToRetry)
