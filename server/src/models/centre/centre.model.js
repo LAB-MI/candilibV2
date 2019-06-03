@@ -4,36 +4,30 @@ const { Schema } = mongoose
 
 const CentreSchema = new Schema({
   nom: {
-    type: String,
+    $type: String,
     required: true,
     trim: true,
   },
   label: {
-    type: String,
+    $type: String,
     required: true,
     trim: true,
   },
   adresse: {
-    type: String,
+    $type: String,
     required: true,
     trim: true,
   },
   departement: {
-    type: String,
+    $type: String,
     required: true,
     trim: true,
   },
-  lon: {
+  geoloc: {
     type: String,
-    required: true,
-    trim: true,
+    coordinates: [Number]
   },
-  lat: {
-    type: String,
-    required: true,
-    trim: true,
-  }
-})
+}, { typeKey: '$type' })
 
 CentreSchema.index({ nom: 1, departement: 1 }, { unique: true })
 

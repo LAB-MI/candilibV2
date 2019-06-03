@@ -21,7 +21,11 @@ export const findCentreByName = async nom => {
 }
 
 export const createCentre = async (nom, label, adresse, lon, lat,  departement) => {
-  const centre = new Centre({ nom, label, adresse, lon, lat, departement })
+  const geoloc = {
+    type: 'Point',
+    coordinates: [ lon, lat ]
+  }
+  const centre = new Centre({ nom, label, adresse, geoloc, departement })
   await centre.save()
   return centre
 }
