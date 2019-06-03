@@ -65,11 +65,25 @@ const getPlaceStatus = (
  * @param {*} data
  */
 const transfomCsv = async ({ data, departement }) => {
-  const [day, time, matricule, centre, dept] = data
+  const [day, time, matricule, nom, centre, dept] = data
 
   const myDate = `${day.trim()} ${time.trim()}`
 
   try {
+    if (!day || !time || !matricule || !nom || !centre || !dept) {
+      throw new Error(
+        `Une ou plusieurs information(s) manquante(s) dans le fichier CSV.
+        [
+          date: ${day},
+          heur: ${time},
+          matricule: ${matricule},
+          nom: ${nom},
+          centre: ${centre},
+          departement: ${dept}
+        ]`
+      )
+    }
+
     const date = DateTime.fromFormat(myDate, 'dd/MM/yy HH:mm', {
       zone: 'Europe/Paris',
       locale: 'fr',
@@ -94,6 +108,10 @@ const transfomCsv = async ({ data, departement }) => {
     const inspecteurFound = await findInspecteurByMatricule(matricule.trim())
     if (!inspecteurFound) {
       throw new Error(`L'inspecteur ${matricule.trim()} est inconnu`)
+    }
+
+    if(inspecteurFound.nom.toUpperCase() !== nom.trim().toUpperCase()) {
+      throw new Error(`Le nom "${nom.trim()}" de l'inspecteur ne correspond pas au matricule "${matricule.trim()}"`)
     }
 
     return {
