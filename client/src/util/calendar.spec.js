@@ -24,7 +24,7 @@ describe('calendar', () => {
   })
 
   it('Should return 29', () => {
-    const { daysInLastMonth } = getDataOfTheMonth(3, 2016)
+    const { daysInLastMonth } = getDataOfTheMonth(2, 2016)
     expect(daysInLastMonth).toBe(29)
   })
 })
