@@ -12,8 +12,8 @@ import {
   commonBasePlaceDateTime,
 } from '../../models/__tests__/'
 
-import { DateTime } from 'luxon'
 import { NOT_CODE_DEP_MSG } from './centre.controllers'
+import { getFrenchLuxonDateTime } from '../../util'
 
 const { default: app, apiPrefix } = require('../../app')
 
@@ -59,7 +59,7 @@ xdescribe('Test centre controllers', () => {
 
       const departement = '93'
       let dateTime = commonBasePlaceDateTime.set({ day: 18 })
-      if (dateTime < DateTime.local()) {
+      if (dateTime < getFrenchLuxonDateTime()) {
         dateTime = dateTime.plus({ month: 1 })
       }
       const date = encodeURIComponent(dateTime.toISO())
@@ -89,7 +89,7 @@ xdescribe('Test centre controllers', () => {
       require('../middlewares/verify-token').__setIdAdmin(undefined)
       const departement = '93'
       let dateTime = commonBasePlaceDateTime.set({ day: 20 })
-      if (dateTime < DateTime.local()) {
+      if (dateTime < getFrenchLuxonDateTime()) {
         dateTime = dateTime.plus({ month: 1 })
       }
       const date = encodeURIComponent(dateTime.toISO())

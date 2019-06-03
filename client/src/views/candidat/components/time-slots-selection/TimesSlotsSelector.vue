@@ -47,6 +47,7 @@ import {
   SELECT_DAY,
   SHOW_ERROR,
 } from '@/store'
+import { getFrenchLuxonDateTime } from '@/util/frenchDateTime'
 
 export default {
   props: {
@@ -128,8 +129,9 @@ export default {
       const { nom, departement, _id } = this.$store.state.center.selected
       const day = slot.day.split(' ')
       const hour = slot.hour.split('-')[0].split('h')
+      // TODO: Optimize this
       const dateFormat = DateTime.fromFormatExplain(`${day[2]} ${day[1]} ${day[3]}`, 'MMMM d yyyy', { locale: 'fr' }).result
-      const dateIso = DateTime.local(dateFormat.year, dateFormat.month, dateFormat.day, parseInt(hour[0], 10), parseInt(hour[1], 10)).toISO()
+      const dateIso = getFrenchLuxonDateTime(dateFormat.year, dateFormat.month, dateFormat.day, +hour[0], +hour[1]).toISO()
       const selectedSlot = {
         slot: dateIso,
         centre: {

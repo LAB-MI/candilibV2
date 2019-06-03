@@ -1,18 +1,22 @@
-import { DateTime } from 'luxon'
 import { createPlace } from '../place'
 import Place from '../place/place.model'
 import { findCentreById } from '../centre'
 import config from '../../config'
 import { createCentres } from './centres'
 import { createInspecteurs } from './inspecteurs'
+import {
+  getFrenchLuxonDateTime,
+  getFrenchLuxonDateTimeFromObject,
+} from '../../util'
 
-let basePlaceDateTime = DateTime.fromObject({ day: 18, hour: 9 }).setLocale(
-  'fr'
-)
+let basePlaceDateTime = getFrenchLuxonDateTimeFromObject({
+  day: 18,
+  hour: 9,
+}).setLocale('fr')
 
 if (
   basePlaceDateTime <
-  DateTime.local().plus({
+  getFrenchLuxonDateTime().plus({
     days: config.delayToBook + 1,
   })
 ) {

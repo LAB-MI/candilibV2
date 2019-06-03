@@ -1,7 +1,7 @@
-import { DateTime } from 'luxon'
+import { getFrenchLuxonCurrentDateTime } from './frenchDateTime'
 
-export const getDataOfTheMonth = (month = DateTime.local().month, year = DateTime.local().year) => {
-  const selectedMonth = DateTime.local(year, month).set({ day: 1 })
+export const getDataOfTheMonth = (month = getFrenchLuxonCurrentDateTime().month, year = getFrenchLuxonCurrentDateTime().year) => {
+  const selectedMonth = getFrenchLuxonCurrentDateTime().set({ year, month, day: 1 })
   const daysInMonth = selectedMonth.daysInMonth
   const daysInLastMonth = selectedMonth.minus(1, 'month').daysInMonth
 

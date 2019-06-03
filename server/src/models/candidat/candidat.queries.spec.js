@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon'
-
 import {
   createCandidat,
   updateCandidatEmail,
@@ -28,6 +26,7 @@ import {
   REASON_EXAM_FAILED,
   REASON_REMOVE_RESA_ADMIN,
 } from '../../routes/common/reason.constants'
+import { getFrenchLuxonDateTime } from '../../util'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
@@ -347,7 +346,7 @@ describe('Candidat', () => {
     })
 
     it('should update a candidat failed', async () => {
-      const dateDernierEchecPratique = DateTime.local()
+      const dateDernierEchecPratique = getFrenchLuxonDateTime()
       const canBookFrom = dateDernierEchecPratique.plus({ days: 45 })
       const candidat1 = await updateCandidatFailed(candidat, {
         dateDernierEchecPratique,
@@ -391,7 +390,7 @@ describe('Candidat', () => {
 
     it('Get the booked candidats by date ', async () => {
       let dateTime = commonBasePlaceDateTime.set({ day: 19 })
-      if (dateTime < DateTime.local()) {
+      if (dateTime < getFrenchLuxonDateTime()) {
         dateTime = dateTime.plus({ month: 1 })
       }
 

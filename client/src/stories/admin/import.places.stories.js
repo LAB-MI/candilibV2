@@ -1,5 +1,4 @@
 import { storiesOf } from '@storybook/vue'
-import { DateTime } from 'luxon'
 
 import message from '../../store/message'
 import importPlaces from '../../store/import-places'
@@ -7,6 +6,7 @@ import ImportPlacesValidation from '../../views/admin/components/ImportPlacesVal
 import AdminImportPlaces from '../../views/admin/components/AdminImportPlaces.vue'
 
 import Vuex, { mapState } from 'vuex'
+import { getFrenchLuxonCurrentDateTime } from '@/util'
 
 storiesOf('Admin/Import Places', module)
   .add('Upload Import Places', () => ({
@@ -33,13 +33,13 @@ storiesOf('Admin/Import Places', module)
             {
               status: 'error',
               centre: 'Centre test',
-              date: DateTime.local().toISO(),
+              date: getFrenchLuxonCurrentDateTime().toISO(),
               message: 'test 1',
             },
             {
               status: 'success',
               centre: 'Centre test',
-              date: DateTime.local().plus({ minutes: 30 }).toISO(),
+              date: getFrenchLuxonCurrentDateTime().plus({ minutes: 30 }).toISO(),
               message: 'test 1',
             },
           ],

@@ -1,5 +1,4 @@
 import fs from 'fs'
-import { DateTime } from 'luxon'
 import path from 'path'
 import util from 'util'
 import config from '../../../config'
@@ -12,7 +11,12 @@ import { createInspecteurs } from '../../../models/__tests__/inspecteurs'
 import { createPlaces, removePlaces } from '../../../models/__tests__/places'
 import { makeResa } from '../../../models/__tests__/reservations'
 import { connect, disconnect } from '../../../mongo-connection'
-import { EPREUVE_PRATIQUE_OK, OK_UPDATED } from '../../../util'
+import {
+  EPREUVE_PRATIQUE_OK,
+  OK_UPDATED,
+  getFrenchLuxonDateTime,
+  getFrenchLuxonDateTimeFromISO,
+} from '../../../util'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
   isEpreuveEtgInvalid,
@@ -97,7 +101,7 @@ describe('synchro-aurige', () => {
   })
 
   it('Should return true for date more than 2 hours ago', () => {
-    const moreThan2HoursAgo = DateTime.local()
+    const moreThan2HoursAgo = getFrenchLuxonDateTime()
       .minus(
         2 * 60 * 60 * 1000 + 10000 //  A little more than 2h
       )
@@ -109,7 +113,7 @@ describe('synchro-aurige', () => {
   })
 
   it('Should return true for date way back in the passed', () => {
-    const lessThan2HoursAgo = DateTime.local(2018).toJSDate()
+    const lessThan2HoursAgo = getFrenchLuxonDateTime(2018).toJSDate()
 
     const isExpired = isMoreThan2HoursAgo(lessThan2HoursAgo)
 
@@ -117,7 +121,7 @@ describe('synchro-aurige', () => {
   })
 
   it('Should return false for date less than 2 hours ago', () => {
-    const lessThan2HoursAgo = DateTime.local()
+    const lessThan2HoursAgo = getFrenchLuxonDateTime()
       .minus(
         2 * 60 * 60 * 1000 - 10000 //  A little less than 2h
       )
@@ -139,14 +143,14 @@ describe('synchro-aurige', () => {
       candidatsCreated[0].isValidatedEmail = true
       await candidatsCreated[0].save()
 
-      candidatsCreated[1].presignedUpAt = DateTime.local()
+      candidatsCreated[1].presignedUpAt = getFrenchLuxonDateTime()
         .minus(
           2 * 60 * 60 * 1000 + 10000 // A little more than 2h
         )
         .toJSDate()
       await candidatsCreated[1].save()
 
-      candidatsCreated[2].presignedUpAt = DateTime.local()
+      candidatsCreated[2].presignedUpAt = getFrenchLuxonDateTime()
         .minus(
           2 * 60 * 60 * 1000 - 10000 // A little less than 2h
         )
@@ -225,7 +229,7 @@ describe('synchro-aurige', () => {
         places: 1,
       })
       const { canBookFrom } = candidat
-      const dateTimeCanBookFrom = DateTime.fromISO(
+      const dateTimeCanBookFrom = getFrenchLuxonDateTimeFromISO(
         candidatFailureExam.dateDernierEchecPratique
       )
         .endOf('day')

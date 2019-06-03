@@ -96,12 +96,13 @@
 
 <script>
 import { mapState } from 'vuex'
-import { DateTime } from 'luxon'
 
 import {
   getFrenchLuxonDateFromIso,
   getFrenchDateFromIso,
   getFrenchDateTimeFromIso,
+  getFrenchLuxonDateTimeFromISO,
+  getFrenchLuxonCurrentDateTime,
 } from '../../../../util/frenchDateTime.js'
 
 import ModalConfirm from './ModalConfirm'
@@ -145,7 +146,7 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      if (DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel)) {
+      if (getFrenchLuxonCurrentDateTime() > getFrenchLuxonDateFromIso(lastDateToCancel)) {
         return true
       }
       return false
@@ -153,8 +154,8 @@ export default {
 
     canBookFrom () {
       const { date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
-      if ((DateTime.local().setLocale('fr') > getFrenchLuxonDateFromIso(lastDateToCancel))) {
-        return DateTime.fromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
+      if ((getFrenchLuxonCurrentDateTime() > getFrenchLuxonDateFromIso(lastDateToCancel))) {
+        return getFrenchLuxonDateTimeFromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
           weekday: 'long',
           month: 'long',
           day: '2-digit',
