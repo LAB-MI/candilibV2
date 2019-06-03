@@ -1,5 +1,3 @@
-import { DateTime } from 'luxon'
-
 import { connect, disconnect } from '../../mongo-connection'
 import {
   candidats,
@@ -33,9 +31,14 @@ import {
   bookPlaceById,
 } from './place.queries'
 import placeModel from './place.model'
+import {
+  getFrenchLuxonDateTimeFromISO,
+  getFrenchLuxonDateTimeFromObject,
+  getFrenchLuxonDateTime,
+} from '../../util'
 
-let date1 = DateTime.fromObject({ day: 28, hour: 9 })
-let date2 = DateTime.fromObject({ day: 28, hour: 9, minute: 30 })
+let date1 = getFrenchLuxonDateTimeFromObject({ day: 28, hour: 9 })
+let date2 = getFrenchLuxonDateTimeFromObject({ day: 28, hour: 9, minute: 30 })
 
 const centre = {
   nom: 'Unexisting centre',
@@ -235,7 +238,7 @@ xdescribe('Place', () => {
     it('Should find 0 places for centre "Centre 2" at day 19', async () => {
       const { nom } = centres[1]
       const centreSelected = createdCentres.find(centre => centre.nom === nom)
-      const begindate = DateTime.fromObject({ day: 19 }).toISO()
+      const begindate = getFrenchLuxonDateTimeFromObject({ day: 19 }).toISO()
       const listPlaces = await findAvailablePlacesByCentre(
         centreSelected._id,
         begindate
@@ -248,7 +251,7 @@ xdescribe('Place', () => {
       const { nom } = centres[1]
       const centreSelected = createdCentres.find(centre => centre.nom === nom)
       let dateTime = commonBasePlaceDateTime.set({ day: 20 })
-      if (dateTime < DateTime.local()) {
+      if (dateTime < getFrenchLuxonDateTime()) {
         dateTime = dateTime.plus({ month: 1 })
       }
 
@@ -330,7 +333,7 @@ xdescribe('Place', () => {
       expect(place).toHaveProperty('centre', selectedCentre)
       expect(place).toHaveProperty('inspecteur')
       expect(place.date).toEqual(
-        DateTime.fromISO(selectedPlace.date).toJSDate()
+        getFrenchLuxonDateTimeFromISO(selectedPlace.date).toJSDate()
       )
     })
 
@@ -373,7 +376,7 @@ xdescribe('Place', () => {
       expect(place).toHaveProperty('centre', selectedCentre)
       expect(place.inspecteur).not.toBeDefined()
       expect(place.date).toEqual(
-        DateTime.fromISO(selectedPlace.date).toJSDate()
+        getFrenchLuxonDateTimeFromISO(selectedPlace.date).toJSDate()
       )
     })
 

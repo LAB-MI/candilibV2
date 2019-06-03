@@ -1,3 +1,4 @@
+import { getDateTimeFrFromIso, getDateTimeFrFromJSDate } from '@/util/frenchDateTime'
 import { DateTime } from 'luxon'
 
 export const AgGridLocaleText = {
@@ -18,12 +19,12 @@ export const AgGridLocaleText = {
 }
 
 export const valueDateFormatter = param => {
-  return param.value ? DateTime.fromISO(param.value).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS) : ''
+  return param.value ? getDateTimeFrFromIso(param.value).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS) : ''
 }
 export const filterDateParams = {
   comparator: function (filterLocalDateAtMidnight, cellValue) {
-    const cellDate = DateTime.fromISO(cellValue)
-    const selectedDate = DateTime.fromJSDate(filterLocalDateAtMidnight)
+    const cellDate = getDateTimeFrFromIso(cellValue)
+    const selectedDate = getDateTimeFrFromJSDate(filterLocalDateAtMidnight)
     const diffDate = cellDate.diff(selectedDate, [ 'days', 'hours' ])
     return Object.is(diffDate.values.days, -0) ? -1 : diffDate.days
   },

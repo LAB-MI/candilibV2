@@ -25,7 +25,12 @@ import {
   findAllPlacesBookedByCentre,
 } from '../../models/place'
 import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
-import { appLogger, getDateTimeFrFromJSDate, ErrorWithStatus } from '../../util'
+import {
+  appLogger,
+  getDateTimeFrFromJSDate,
+  ErrorWithStatus,
+  getFrenchLuxonDateTimeFromISO,
+} from '../../util'
 import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
 import {
   BOOKED_PLACE_NO_MAIL,
@@ -449,11 +454,11 @@ export const sendMailSchedulesInspecteurs = async (
   })
 
   const centres = await findCentresByDepartement(departement)
-  const beginDate = DateTime.fromISO(date, {
+  const beginDate = getFrenchLuxonDateTimeFromISO(date, {
     locale: 'fr',
     zone: 'Europe/Paris',
   }).startOf('day')
-  const endDate = DateTime.fromISO(date, {
+  const endDate = getFrenchLuxonDateTimeFromISO(date, {
     locale: 'fr',
     zone: 'Europe/Paris',
   }).endOf('day')

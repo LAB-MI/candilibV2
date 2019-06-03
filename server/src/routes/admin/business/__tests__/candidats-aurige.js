@@ -1,22 +1,24 @@
-import { DateTime } from 'luxon'
 import { createCandidat } from '../../../../models/candidat'
 import config from '../../../../config'
+import { getFrenchLuxonDateTime } from '../../../../util'
 
-const dateReussiteETG = DateTime.local()
+const nowLuxon = getFrenchLuxonDateTime()
+
+const dateReussiteETG = nowLuxon
   .minus({ days: 5 })
   .startOf('day')
   .toISO({ zone: 'utc' })
-const dateReussiteETGKO = DateTime.local()
+const dateReussiteETGKO = nowLuxon
   .minus({ years: 5 })
   .startOf('day')
   .toISO({ zone: 'utc' })
-export const dateTimeDernierEchecPratique = DateTime.local()
+export const dateTimeDernierEchecPratique = nowLuxon
   .minus({ days: 5 })
   .startOf('day')
 const dateDernierEchecPratique = dateTimeDernierEchecPratique.toISO({
   zone: 'utc',
 })
-const dateDernierEchecPratiqueAncien = DateTime.local()
+const dateDernierEchecPratiqueAncien = nowLuxon
   .minus({ days: config.timeoutToRetry })
   .startOf('day')
   .toISO({ zone: 'utc' })

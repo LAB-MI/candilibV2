@@ -1,5 +1,4 @@
-import { DateTime } from 'luxon'
-import { getFrenchLuxonDateFromIso, creneauSetting } from '../util'
+import { getFrenchLuxonDateFromIso, creneauSetting, getFrenchLuxonCurrentDateTime } from '../util'
 
 import api from '@/api'
 import {
@@ -184,7 +183,7 @@ export default {
       const { begin, end } = window
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
-        const currentDateTime = DateTime.local().setLocale('fr')
+        const currentDateTime = getFrenchLuxonCurrentDateTime()
         const weekDay = currentDateTime.weekday
         const beginDate = begin || currentDateTime.plus({ days: -weekDay }).toISO()
         const endDate = end || currentDateTime.plus({ months: 2 }).toISO()

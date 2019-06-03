@@ -9,11 +9,10 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
-
 import SimpleCalendar from './SimpleCalendar'
 import AdminImportPlaces from './AdminImportPlaces.vue'
 import ImportPlacesValidation from './ImportPlacesValidation.vue'
+import { getFrenchLuxonCurrentDate } from '@/util/frenchDateTime.js'
 
 export default {
   name: 'admin-calendar',
@@ -28,7 +27,7 @@ export default {
       places: [
         {
           _id: 1,
-          start: DateTime.local().set({ hour: 9, minute: 0 }),
+          start: getFrenchLuxonCurrentDate().set({ hour: 9, minute: 0 }),
           duration: [30, 'minutes'],
         },
       ],

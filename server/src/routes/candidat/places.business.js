@@ -1,7 +1,9 @@
-import { DateTime } from 'luxon'
-
 import config from '../../config'
-import { appLogger } from '../../util'
+import {
+  appLogger,
+  getFrenchLuxonDateTimeFromISO,
+  getFrenchLuxonDateTimeFromJSDate,
+} from '../../util'
 import {
   findAvailablePlacesByCentre,
   findPlacesByCentreAndDate,
@@ -28,7 +30,10 @@ import {
   findCandidatById,
   archivePlace,
 } from '../../models/candidat'
-import { dateTimeToFormatFr } from '../../util/date.util'
+import {
+  dateTimeToFormatFr,
+  getFrenchLuxonDateTime,
+} from '../../util/date.util'
 import { REASON_CANCEL } from '../common/reason.constants'
 
 export const getDatesByCentreId = async (_id, endDate) => {
@@ -39,12 +44,14 @@ export const getDatesByCentreId = async (_id, endDate) => {
   })
 
   const beginDate = getAuthorizedDateToBook()
-  const endDateTime = DateTime.fromISO(endDate)
+  const endDateTime = getFrenchLuxonDateTimeFromISO(endDate)
 
   endDate = !endDateTime.invalid ? endDateTime.toJSDate() : undefined
 
   const places = await findAvailablePlacesByCentre(_id, beginDate, endDate)
-  const dates = places.map(place => DateTime.fromJSDate(place.date).toISO())
+  const dates = places.map(place =>
+    getFrenchLuxonDateTimeFromJSDate(place.date).toISO()
+  )
   return [...new Set(dates)]
 }
 
@@ -74,7 +81,9 @@ export const getDatesByCentre = async (
 
 export const hasAvailablePlaces = async (id, date) => {
   const places = await findPlacesByCentreAndDate(id, date)
-  const dates = places.map(place => DateTime.fromJSDate(place.date).toISO())
+  const dates = places.map(place =>
+    getFrenchLuxonDateTimeFromJSDate(place.date).toISO()
+  )
   return [...new Set(dates)]
 }
 
@@ -170,7 +179,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
 export const isSameReservationPlace = (centerId, date, previewBookedPlace) => {
   if (centerId === previewBookedPlace.centre._id.toString()) {
     const diffDateTime = date.diff(
-      DateTime.fromJSDate(previewBookedPlace.date),
+      getFrenchLuxonDateTimeFromJSDate(previewBookedPlace.date),
       'second'
     )
     if (diffDateTime.seconds === 0) {
@@ -185,7 +194,7 @@ export const isSameReservationPlace = (centerId, date, previewBookedPlace) => {
  * @param {*} previewDateReservation Type DateTime luxon
  */
 export const canCancelReservation = previewDateReservation => {
-  const dateCancelAutorize = DateTime.local().plus({
+  const dateCancelAutorize = getFrenchLuxonDateTime().plus({
     days: config.daysForbidCancel,
   })
   return previewDateReservation.diff(dateCancelAutorize, 'days') > 0
@@ -197,7 +206,9 @@ export const canCancelReservation = previewDateReservation => {
  * @param {*} previewDateReservation Type Date javascript
  */
 export const applyCancelRules = async (candidat, previewDateReservation) => {
-  const previewBookedPlace = DateTime.fromJSDate(previewDateReservation)
+  const previewBookedPlace = getFrenchLuxonDateTimeFromJSDate(
+    previewDateReservation
+  )
 
   if (canCancelReservation(previewBookedPlace)) {
     return
@@ -231,7 +242,7 @@ export const getCandBookFrom = (candidat, datePassage) => {
 
   const { canBookFrom } = candidat
   const previewCanBookFrom = canBookFrom
-    ? DateTime.fromJSDate(canBookFrom)
+    ? getFrenchLuxonDateTimeFromJSDate(canBookFrom)
     : undefined
 
   if (
@@ -247,16 +258,16 @@ export const getCandBookFrom = (candidat, datePassage) => {
 export const getBeginDateAutorize = candidat => {
   let beginDateAutoriseDefault
   if (config.delayToBook) {
-    beginDateAutoriseDefault = DateTime.local()
+    beginDateAutoriseDefault = getFrenchLuxonDateTime()
       .endOf('day')
       .plus({
         days: config.delayToBook,
       })
   } else {
-    beginDateAutoriseDefault = DateTime.local()
+    beginDateAutoriseDefault = getFrenchLuxonDateTime()
   }
 
-  const dateCanBookFrom = DateTime.fromJSDate(candidat.canBookFrom)
+  const dateCanBookFrom = getFrenchLuxonDateTimeFromJSDate(candidat.canBookFrom)
 
   if (!!candidat.canBookFrom && dateCanBookFrom.isValid) {
     const { days } = dateCanBookFrom.diff(beginDateAutoriseDefault, ['days'])
@@ -273,7 +284,7 @@ export const getBeginDateAutorize = candidat => {
  * @param {*} dateReservation Type Date Javascript
  */
 export const getLastDateToCancel = dateReservation => {
-  const dateTimeResa = DateTime.fromJSDate(dateReservation)
+  const dateTimeResa = getFrenchLuxonDateTimeFromJSDate(dateReservation)
   return dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
 }
 
@@ -311,7 +322,7 @@ export const validCentreDateReservation = async (
   previewBookedPlace
 ) => {
   let candidat
-  const dateTimeResa = DateTime.fromISO(date)
+  const dateTimeResa = getFrenchLuxonDateTimeFromISO(date)
   if (previewBookedPlace) {
     const isSame = isSameReservationPlace(
       centre,
@@ -347,7 +358,9 @@ export const validCentreDateReservation = async (
   let isAuthorize = days < 0
 
   if (previewBookedPlace && isAuthorize) {
-    const datePreview = DateTime.fromJSDate(previewBookedPlace.date)
+    const datePreview = getFrenchLuxonDateTimeFromJSDate(
+      previewBookedPlace.date
+    )
     if (!canCancelReservation(datePreview)) {
       dateAuthorize = getCandBookFrom(candidat, datePreview)
       isAuthorize = dateTimeResa > dateAuthorize

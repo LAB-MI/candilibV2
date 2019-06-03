@@ -1,10 +1,10 @@
 import api from '@/api'
-import { DateTime } from 'luxon'
 
 import {
   SHOW_ERROR,
   FETCH_MY_PROFILE_REQUEST,
 } from '@/store'
+import { getFrenchLuxonCurrentDateTime } from '@/util'
 
 export const FETCH_CENTERS_REQUEST = 'FETCH_CENTERS_REQUEST'
 export const FETCH_CENTERS_SUCCESS = 'FETCH_CENTERS_SUCCESS'
@@ -57,7 +57,7 @@ export default {
         await dispatch(FETCH_MY_PROFILE_REQUEST)
       }
       try {
-        const end = DateTime.local().plus({ month: 3 }).endOf('month').toISO()
+        const end = getFrenchLuxonCurrentDateTime().plus({ month: 3 }).endOf('month').toISO()
         const [, departement] = adresseCandidat.match(zipCodeRegexFromAdresse)
         const result = await api.candidat.getCentres(departement, end)
         commit(FETCH_CENTERS_SUCCESS, result)

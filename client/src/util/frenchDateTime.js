@@ -49,6 +49,8 @@ export const getFrenchLuxonDateTimeFromSql = (sqlDate) => sqlDate && DateTime.fr
 
 export const getFrenchLuxonCurrentDateTime = () => DateTime.local().setLocale('fr').setZone(FRENCH_TIME_ZONE)
 
+export const getFrenchLuxonDateTime = (...args) => DateTime.local(...args).setLocale('fr').setZone(FRENCH_TIME_ZONE)
+
 export const getFrenchLuxonDateFromObject = (obj) => obj && DateTime.fromObject(obj, frenchLocaleZone)
 
 export const getFrenchWeeksInWeekYear = (year) => DateTime.local(year).setLocale('fr').setZone(FRENCH_TIME_ZONE).weeksInWeekYear

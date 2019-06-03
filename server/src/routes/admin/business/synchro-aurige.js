@@ -1,5 +1,4 @@
 import latinize from 'latinize'
-import { DateTime } from 'luxon'
 
 import config from '../../../config'
 import {
@@ -17,6 +16,8 @@ import {
   OK_MAIL_PB,
   OK_UPDATED,
   createToken,
+  getFrenchLuxonDateTimeFromISO,
+  getFrenchLuxonDateTimeFromJSDate,
 } from '../../../util'
 import {
   sendMailToAccount,
@@ -45,13 +46,13 @@ const getCandidatStatus = (nom, neph, status, details) => ({
 })
 
 export const isEpreuveEtgInvalid = dateReussiteETG =>
-  !dateReussiteETG || !!DateTime.fromISO(dateReussiteETG).invalid
+  !dateReussiteETG || !!getFrenchLuxonDateTimeFromISO(dateReussiteETG).invalid
 
 export const isETGExpired = dateReussiteETG =>
-  DateTime.fromJSDate(dateReussiteETG).diffNow('years').years < -5
+  getFrenchLuxonDateTimeFromJSDate(dateReussiteETG).diffNow('years').years < -5
 
 export const isMoreThan2HoursAgo = date =>
-  DateTime.fromJSDate(date).diffNow('hours').hours < -2
+  getFrenchLuxonDateTimeFromJSDate(date).diffNow('hours').hours < -2
 
 export const synchroAurige = async buffer => {
   const retourAurige = JSON.parse(buffer.toString())
@@ -231,7 +232,9 @@ export const synchroAurige = async buffer => {
 
 function checkFialureDate (dateDernierEchecPratique) {
   if (dateDernierEchecPratique && dateDernierEchecPratique.length > 0) {
-    const dateTimeEchec = DateTime.fromISO(dateDernierEchecPratique)
+    const dateTimeEchec = getFrenchLuxonDateTimeFromISO(
+      dateDernierEchecPratique
+    )
     if (!dateTimeEchec.isValid) {
       appLogger.warn('La date de denier echec pratique est érroné')
     } else {
@@ -251,7 +254,7 @@ const removeResaNoAuthorize = async (candidat, canBookFrom) => {
   if (place) {
     const { date } = place
     // check date
-    const dateTimeResa = DateTime.fromJSDate(date)
+    const dateTimeResa = getFrenchLuxonDateTimeFromJSDate(date)
     const diffDateResaAndCanBook = dateTimeResa.diff(canBookFrom, 'days')
     const diffDateResaAndNow = dateTimeResa.diffNow('days')
     if (diffDateResaAndCanBook.days < 0) {

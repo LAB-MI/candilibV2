@@ -1,11 +1,10 @@
-import { DateTime } from 'luxon'
-
 import {
   countAvailablePlacesByCentre,
   findAllPlacesByCentre,
 } from '../../models/place'
 
 import { findCentresByDepartement, findAllCentres } from '../../models/centre'
+import { getFrenchLuxonDateTime } from '../../util'
 
 export async function findCentresWithNbPlaces (departement, beginDate, endDate) {
   const centres = departement
@@ -13,7 +12,7 @@ export async function findCentresWithNbPlaces (departement, beginDate, endDate) 
     : await findAllCentres()
 
   if (!beginDate) {
-    beginDate = DateTime.local().toISODate()
+    beginDate = getFrenchLuxonDateTime().toISODate()
   }
 
   const centresWithNbPlaces = await Promise.all(
@@ -35,7 +34,7 @@ export async function findCentresWithPlaces (departement, beginDate, endDate) {
   const centres = await findCentresByDepartement(departement)
 
   if (!beginDate) {
-    beginDate = DateTime.local().toISODate()
+    beginDate = getFrenchLuxonDateTime().toISODate()
   }
 
   const centresWithPlaces = await Promise.all(

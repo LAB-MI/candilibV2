@@ -26,13 +26,13 @@
 
 <script>
 import { AgGridVue } from 'ag-grid-vue'
-import { DateTime } from 'luxon'
 
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
 import { FETCH_CANDIDATS_REQUEST } from '@/store'
 import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './ag-grid-utils'
+import { getFrenchLuxonCurrentDateTime } from '@/util/frenchDateTime.js'
 
 export default {
   name: 'candidat-list',
@@ -41,7 +41,7 @@ export default {
   },
 
   mounted () {
-    const now = DateTime.local()
+    const now = getFrenchLuxonCurrentDateTime()
     this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }) })
   },
 

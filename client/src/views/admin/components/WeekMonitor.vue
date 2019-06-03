@@ -45,7 +45,6 @@
 </template>
 
 <script>
-import { DateTime } from 'luxon'
 import {
   getFrenchLuxonCurrentDateTime,
   getFrenchWeeksInWeekYear,
@@ -72,7 +71,7 @@ export default {
   methods: {
     goToGestionPlannings (currentWeek, centerId) {
       this.$store.dispatch(SET_WEEK_SECTION, currentWeek)
-      const date = DateTime.local().setLocale('fr').set({ weekNumber: currentWeek }).toSQLDate()
+      const date = getFrenchLuxonCurrentDateTime().set({ weekNumber: currentWeek }).toSQLDate()
       this.$router.push({ name: 'gestion-planning', params: { center: centerId, date } })
     },
 

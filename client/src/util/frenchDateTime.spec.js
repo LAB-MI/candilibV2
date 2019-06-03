@@ -58,7 +58,7 @@ describe('getFrenchLuxonDateFromIso', () => {
 describe('getFrenchDateFromLuxon', () => {
   it('Should return a human readable french date from luxon DateTime', () => {
     // Given
-    const theDate = DateTime.local().setLocale('fr').set({
+    const theDate = getFrenchLuxonCurrentDateTime().set({
       year: 2020,
       month: 1,
       day: 20,
@@ -98,7 +98,7 @@ describe('getFrenchDateFromLuxon', () => {
 describe('getFrenchDateTimeFromLuxon', () => {
   it('Should return a human readable french date and time from luxon DateTime', () => {
     // Given
-    const theDate = DateTime.local().setLocale('fr').setZone(FRENCH_TIME_ZONE).set({
+    const theDate = getFrenchLuxonCurrentDateTime().setZone(FRENCH_TIME_ZONE).set({
       year: 2020,
       month: 1,
       day: 20,
@@ -249,7 +249,7 @@ describe('frenchLuxonDateTimeFromSql', () => {
 describe('getFrenchLuxonCurrentDateTime', () => {
   it('Should create a luxon DateTime with current date', () => {
     // Given
-    const theDate = DateTime.local().setLocale('fr').setZone('Europe/Paris')
+    const theDate = getFrenchLuxonCurrentDateTime().setZone('Europe/Paris')
 
     // When
     const frenchDate = getFrenchLuxonCurrentDateTime()
@@ -304,7 +304,7 @@ describe('getFrenchLuxonDateFromObject', () => {
 describe('getFrenchWeeksInWeekYear', () => {
   it('Should get number of weeks of the year', () => {
     // Given
-    const theDate = DateTime.local(2020).setLocale('fr').weeksInWeekYear
+    const theDate = getFrenchLuxonCurrentDateTime().set({ year: 2020 }).weeksInWeekYear
     const expectedweeks = 52
 
     // When
