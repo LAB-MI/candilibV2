@@ -68,11 +68,6 @@ export const candidatFields = {
     type: Date,
     required: false,
   },
-  // dateDernierNonReussite
-  // dateDernierEchecPratique: {
-  //   type: Date,
-  //   required: false,
-  // },
   reussitePratique: {
     type: Date,
     required: false,

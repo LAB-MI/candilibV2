@@ -16,7 +16,6 @@ import {
   OK_UPDATED,
   getFrenchLuxonDateTime,
   getFrenchLuxonDateTimeFromISO,
-  getFrenchLuxonDateTimeFromJSDate,
 } from '../../../util'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
@@ -253,7 +252,6 @@ describe('synchro-aurige', () => {
         'reason',
         candidatFailureExam.objetDernierNonReussite
       )
-      console.log(getFrenchLuxonDateTimeFromJSDate(noReussites[0].date).toISO())
       expect(noReussites[0].date).toEqual(
         getFrenchLuxonDateTimeFromISO(
           candidatFailureExam.dateDernierNonReussite
