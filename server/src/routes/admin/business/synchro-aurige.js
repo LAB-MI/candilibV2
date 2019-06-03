@@ -138,6 +138,13 @@ export const synchroAurige = async buffer => {
       } else if (isReussitePratique(reussitePratique)) {
         appLogger.warn(`Ce candidat ${email} sera archivé : PRATIQUE OK`)
         aurigeFeedback = EPREUVE_PRATIQUE_OK
+        if (DateTime.fromISO(reussitePratique).isValid) {
+          candidat.reussitePratique = reussitePratique
+        } else {
+          appLogger.warn(
+            `Ce candidat ${email} sera archivé : reussitePratique n'est pas une date`
+          )
+        }
         await releaseResa(candidat)
       }
 
