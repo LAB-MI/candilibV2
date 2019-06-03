@@ -152,12 +152,18 @@ export default {
     ...mapGetters(['activeDepartement']),
     ...mapState({
       isFetching (state) {
-        return state.admin.places.isFetching ||
-          state.admin.inspecteurs.isFetching ||
-          state.admin.inspecteurs.isFetching ||
-          state.admin.deleteBookedPlace.isDeleting ||
-          state.admin.deletePlaceAction.isDeleting ||
-          state.admin.createCreneau.isCreating
+        const {
+          places,
+          inspecteurs,
+          deleteBookedPlace,
+          deletePlaceAction,
+          createCreneau,
+        } = state.admin
+        return places.isFetching ||
+          inspecteurs.isFetching ||
+          deleteBookedPlace.isDeleting ||
+          deletePlaceAction.isDeleting ||
+          createCreneau.isCreating
       },
 
       placesByCentreList (state) {
@@ -165,7 +171,8 @@ export default {
       },
 
       firstCentreId (state) {
-        return state.admin.places.list[0] && state.admin.places.list[0].centre._id
+        const firstEntry = state.admin.places.list[0]
+        return firstEntry && firstEntry.centre._id
       },
 
       inspecteurs (state) {
