@@ -7,21 +7,31 @@ const nowLuxon = getFrenchLuxonDateTime()
 const dateReussiteETG = nowLuxon
   .minus({ days: 5 })
   .startOf('day')
-  .toISO({ zone: 'utc' })
+  .toISO()
+
 const dateReussiteETGKO = nowLuxon
   .minus({ years: 5 })
   .startOf('day')
-  .toISO({ zone: 'utc' })
+  .toISO()
+
 export const dateTimeDernierEchecPratique = nowLuxon
   .minus({ days: 5 })
   .startOf('day')
-const dateDernierEchecPratique = dateTimeDernierEchecPratique.toISO({
-  zone: 'utc',
-})
+
+const dateDernierEchecPratique = dateTimeDernierEchecPratique
+  .toISO()
+  .split('T')[0]
+
 const dateDernierEchecPratiqueAncien = nowLuxon
   .minus({ days: config.timeoutToRetry })
   .startOf('day')
-  .toISO({ zone: 'utc' })
+  .toISO()
+
+const dateReussitePratique = nowLuxon
+  .minus({ days: 5 })
+  .startOf('day')
+  .toISO()
+
 const isValidatedEmail = true
 const adresse = '40 Avenuedes terroirs de France 75012 Paris'
 const portable = '0676543986'
@@ -33,7 +43,9 @@ export const candidatFailureExam = {
   prenom: 'BUBBA',
   email: 'bubbazanetti1@candilib.com',
   dateReussiteETG,
-  dateDernierEchecPratique,
+  nbEchecsPratiques: '2',
+  dateDernierNonReussite: dateDernierEchecPratique,
+  objetDernierNonReussite: 'echec',
   reussitePratique: '',
   candidatExistant: 'OK',
   isValidatedByAurige: false,
@@ -49,8 +61,10 @@ export const candidatPassed = {
   prenom: 'MAX',
   email: 'madmax@candilib.com',
   dateReussiteETG,
-  dateDernierEchecPratique: '',
-  reussitePratique: 'OK',
+  nbEchecsPratiques: '',
+  dateDernierNonReussite: '',
+  objetDernierNonReussite: '',
+  reussitePratique: dateReussitePratique,
   candidatExistant: 'OK',
   isValidatedByAurige: false,
   isValidatedEmail,
@@ -67,7 +81,9 @@ const candidatsToValidAurige = [
     prenom: 'JESSIE',
     email: 'jessierockatansky@candilib.com',
     dateReussiteETG: '',
-    dateDernierEchecPratique: '',
+    nbEchecsPratiques: '',
+    dateDernierNonReussite: '',
+    objetDernierNonReussite: '',
     reussitePratique: '',
     candidatExistant: 'NOK',
     isValidatedByAurige: false,
@@ -82,7 +98,9 @@ const candidatsToValidAurige = [
     prenom: 'TOE',
     email: 'toecutter@candilib.com',
     dateReussiteETG: '',
-    dateDernierEchecPratique: '',
+    nbEchecsPratiques: '',
+    dateDernierNonReussite: '',
+    objetDernierNonReussite: '',
     reussitePratique: '',
     candidatExistant: 'NOK Nom',
     isValidatedByAurige: false,
@@ -97,7 +115,9 @@ const candidatsToValidAurige = [
     prenom: 'JIM',
     email: 'jimgoose@candilib.com',
     dateReussiteETG,
-    dateDernierEchecPratique: dateDernierEchecPratiqueAncien,
+    nbEchecsPratiques: '3',
+    dateDernierNonReussite: dateDernierEchecPratiqueAncien,
+    objetDernierNonReussite: 'absent',
     reussitePratique: '',
     candidatExistant: 'OK',
     isValidatedByAurige: false,
@@ -112,7 +132,9 @@ const candidatsToValidAurige = [
     prenom: 'JOHNNY',
     email: 'johnnyboy@candilib.com',
     dateReussiteETG: '',
-    dateDernierEchecPratique: '',
+    nbEchecsPratiques: '',
+    dateDernierNonReussite: '',
+    objetDernierNonReussite: '',
     reussitePratique: '',
     candidatExistant: 'OK',
     isValidatedByAurige: false,
@@ -127,7 +149,9 @@ const candidatsToValidAurige = [
     prenom: 'FIFI',
     email: 'fifimcaffee@candilib.com',
     dateReussiteETG: dateReussiteETGKO,
-    dateDernierEchecPratique: '',
+    nbEchecsPratiques: '',
+    dateDernierNonReussite: '',
+    objetDernierNonReussite: '',
     reussitePratique: '',
     candidatExistant: 'OK',
     isValidatedByAurige: false,
@@ -142,7 +166,9 @@ const candidatsToValidAurige = [
     prenom: 'MAY',
     email: 'mayswaisey@candilib.com',
     dateReussiteETG,
-    dateDernierEchecPratique: '',
+    nbEchecsPratiques: '',
+    dateDernierNonReussite: '',
+    objetDernierNonReussite: '',
     reussitePratique: '',
     candidatExistant: 'OK',
     isValidatedByAurige: false,

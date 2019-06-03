@@ -227,25 +227,57 @@ describe('synchro-aurige', () => {
       const candidat = await findCandidatById(candidatCreated._id, {
         canBookFrom: 1,
         places: 1,
+        noReussites: 1,
+        nbEchecsPratiques: 1,
       })
       const { canBookFrom } = candidat
       const dateTimeCanBookFrom = getFrenchLuxonDateTimeFromISO(
-        candidatFailureExam.dateDernierEchecPratique
+        candidatFailureExam.dateDernierNonReussite
       )
         .endOf('day')
         .plus({ days: config.timeoutToRetry })
 
       expect(canBookFrom).toBeDefined()
       expect(canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
+
       return candidat
     }
 
+    function expectNoReussites (nbEchecsPratiques, noReussites) {
+      expect(nbEchecsPratiques).toBe(
+        Number(candidatFailureExam.nbEchecsPratiques)
+      )
+      expect(noReussites).toHaveLength(1)
+      expect(noReussites[0]).toHaveProperty(
+        'reason',
+        candidatFailureExam.objetDernierNonReussite
+      )
+
+      expect(noReussites[0].date).toEqual(
+        getFrenchLuxonDateTimeFromISO(
+          candidatFailureExam.dateDernierNonReussite
+        ).toJSDate()
+      )
+    }
+
     it('should have penalty when candidat failed in exam', async () => {
-      await synchroAurigeSuccess(aurigeFile, candidatCreated)
+      const { noReussites, nbEchecsPratiques } = await synchroAurigeSuccess(
+        aurigeFile,
+        candidatCreated
+      )
+      expectNoReussites(nbEchecsPratiques, noReussites)
     })
-    xit('should have penalty and remove resa which is before time out to retry', async () => {
+
+    it('should have penalty and remove resa which is before time out to retry', async () => {
       await makeResa(placeBeforTimeOutRetryCreated, candidatCreated)
-      const { places } = await synchroAurigeSuccess(aurigeFile, candidatCreated)
+      const {
+        places,
+        noReussites,
+        nbEchecsPratiques,
+      } = await synchroAurigeSuccess(aurigeFile, candidatCreated)
+
+      expectNoReussites(nbEchecsPratiques, noReussites)
+
       expect(places).toBeDefined()
       expect(places).toHaveLength(1)
       expect(places[0]).toHaveProperty(
@@ -265,18 +297,24 @@ describe('synchro-aurige', () => {
       expect(place).toBeDefined()
       expect(place.candidat).toBeUndefined()
     })
-    xit('should have penalty and not remove resa which is after time out to retry', async () => {
+    it('should have penalty and not remove resa which is after time out to retry', async () => {
       await makeResa(placeAfterTimeOutRetryCreated, candidatCreated)
-      const { places } = await synchroAurigeSuccess(aurigeFile, candidatCreated)
+      const {
+        places,
+        nbEchecsPratiques,
+        noReussites,
+      } = await synchroAurigeSuccess(aurigeFile, candidatCreated)
       expect(places).toBeUndefined()
       const place = await findPlaceById(placeAfterTimeOutRetryCreated._id)
       expect(place).toBeDefined()
       expect(place.candidat).toBeDefined()
       expect(place).toHaveProperty('candidat', candidatCreated._id)
+
+      expectNoReussites(nbEchecsPratiques, noReussites)
     })
   })
 
-  xdescribe('candidat passed the exam', () => {
+  describe('candidat passed the exam', () => {
     let candidatCreated
     let placesCreated
     let aurigeFile
@@ -326,6 +364,9 @@ describe('synchro-aurige', () => {
       expect(candidatArchived).toHaveProperty(
         'archiveReason',
         EPREUVE_PRATIQUE_OK
+      )
+      expect(candidatArchived.reussitePratique).toEqual(
+        getFrenchLuxonDateTimeFromISO(infoCandidat.reussitePratique).toJSDate()
       )
     }
     it('should archive candidat', async () => {
