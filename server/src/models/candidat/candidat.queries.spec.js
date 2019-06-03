@@ -379,7 +379,7 @@ describe('Candidat', () => {
     })
 
     it('should update a candidat no reussite', async () => {
-      const date = DateTime.local()
+      const date = getFrenchLuxonDateTime()
       const canBookFrom = date.plus({ days: 45 })
       if (!candidat) {
         candidat = await createCandidat({

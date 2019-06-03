@@ -57,7 +57,7 @@ export const isMoreThan2HoursAgo = date =>
 const isReussitePratique = reussitePratique => {
   return (
     reussitePratique === EPREUVE_PRATIQUE_OK ||
-    DateTime.fromISO(reussitePratique).isValid
+    getFrenchLuxonDateTimeFromISO(reussitePratique).isValid
   )
 }
 
@@ -138,8 +138,11 @@ export const synchroAurige = async buffer => {
       } else if (isReussitePratique(reussitePratique)) {
         appLogger.warn(`Ce candidat ${email} sera archivé : PRATIQUE OK`)
         aurigeFeedback = EPREUVE_PRATIQUE_OK
-        if (DateTime.fromISO(reussitePratique).isValid) {
-          candidat.reussitePratique = reussitePratique
+        const dateTimeReussitePratique = getFrenchLuxonDateTimeFromISO(
+          reussitePratique
+        )
+        if (dateTimeReussitePratique.isValid) {
+          candidat.reussitePratique = dateTimeReussitePratique
         } else {
           appLogger.warn(
             `Ce candidat ${email} sera archivé : reussitePratique n'est pas une date`
@@ -162,17 +165,43 @@ export const synchroAurige = async buffer => {
 
       if (candidatExistant === CANDIDAT_EXISTANT) {
         const { isValidatedByAurige } = candidat
-        const lastNoReussite = {
-          date: dateDernierNonReussite,
-          reason: objetDernierNonReussite,
-        }
         const updateCandidat = {
-          dateReussiteETG,
-          dateDernierEchecPratique,
-          reussitePratique,
           isValidatedByAurige: true,
-          lastNoReussite,
         }
+
+        const dateTimeDateReussiteETG = getFrenchLuxonDateTimeFromISO(
+          dateReussiteETG
+        )
+        if (dateTimeDateReussiteETG.isValid) {
+          updateCandidat.dateReussiteETG = dateTimeDateReussiteETG
+        }
+        const dateTimeDateDernierEchecPratique = getFrenchLuxonDateTimeFromISO(
+          dateDernierEchecPratique
+        )
+        if (dateTimeDateDernierEchecPratique.isValid) {
+          updateCandidat.dateDernierEchecPratique = dateTimeDateDernierEchecPratique
+        }
+
+        const dateTimeReussitePratique = getFrenchLuxonDateTimeFromISO(
+          reussitePratique
+        )
+        if (dateTimeReussitePratique.isValid) {
+          updateCandidat.reussitePratique = dateTimeReussitePratique
+        }
+
+        if (dateDernierNonReussite || objetDernierNonReussite) {
+          const dateTimeDateDernierNonReussite = getFrenchLuxonDateTimeFromISO(
+            dateDernierNonReussite
+          )
+          const lastNoReussite = {
+            reason: objetDernierNonReussite,
+          }
+          if (dateTimeDateDernierNonReussite.isValid) {
+            lastNoReussite.date = dateTimeDateDernierNonReussite
+          }
+          updateCandidat.lastNoReussite = lastNoReussite
+        }
+
         const nbFailed = Number(nbEchecsPratiques)
         if (nbFailed) {
           updateCandidat.nbEchecsPratiques = nbFailed
