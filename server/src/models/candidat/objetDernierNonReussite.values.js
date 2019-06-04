@@ -1,8 +1,8 @@
-export const ECHEC = 'echec'
-export const ABSENT = 'absent'
-export const CANCELED = 'annulé'
-export const NO_ADMISSIBLE = 'non recevable'
-export const NO_EXAMINABLE = 'non examinable'
+export const ECHEC = 'Echec'
+export const ABSENT = 'Absent'
+export const CANCELED = 'Annulé'
+export const NO_ADMISSIBLE = 'Non recevable'
+export const NO_EXAMINABLE = 'Non examinable'
 
 export const ObjectLastNoReussitValues = {
   ECHEC,

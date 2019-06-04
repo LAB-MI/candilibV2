@@ -346,7 +346,7 @@ describe('synchro-aurige', () => {
       expect(result).toHaveLength(1)
       expect(result[0]).toHaveProperty('nom', nomNaissance)
       expect(result[0]).toHaveProperty('neph', codeNeph)
-      expect(result[0]).toHaveProperty('status', 'error')
+      expect(result[0]).toHaveProperty('status', 'warning')
       expect(result[0]).toHaveProperty('details', EPREUVE_PRATIQUE_OK)
 
       const candidat = await findCandidatById(idCandidat, {})

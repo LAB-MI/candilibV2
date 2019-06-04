@@ -38,18 +38,26 @@ import {
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import { releaseResa } from '../places.business'
 
-const getCandidatStatus = (nom, neph, status, details) => ({
+const getCandidatStatus = (nom, neph, status, details, message) => ({
   nom,
   neph,
   status,
   details,
+  message,
 })
 
 export const isEpreuveEtgInvalid = dateReussiteETG =>
   !dateReussiteETG || !!getFrenchLuxonDateTimeFromISO(dateReussiteETG).invalid
 
-export const isETGExpired = dateReussiteETG =>
-  getFrenchLuxonDateTimeFromJSDate(dateReussiteETG).diffNow('years').years < -5
+export const isETGExpired = dateReussiteETG => {
+  let datetime
+  if (dateReussiteETG instanceof Date) {
+    datetime = getFrenchLuxonDateTimeFromJSDate(dateReussiteETG)
+  } else {
+    datetime = getFrenchLuxonDateTimeFromISO(dateReussiteETG)
+  }
+  return datetime.diffNow('years').years < -5
+}
 
 export const isMoreThan2HoursAgo = date =>
   getFrenchLuxonDateTimeFromJSDate(date).diffNow('hours').hours < -2
@@ -78,10 +86,15 @@ export const synchroAurige = async buffer => {
 
     let nomNaissance = candidatAurige.nomNaissance
     if (!nomNaissance) {
-      appLogger.warn(
-        `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`
+      const message = `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`
+      appLogger.warn(message)
+      return getCandidatStatus(
+        nomNaissance,
+        codeNeph,
+        'error',
+        NO_NAME,
+        message
       )
-      return getCandidatStatus(nomNaissance, codeNeph, 'error', NO_NAME)
     }
 
     nomNaissance = latinize(nomNaissance).toUpperCase()
@@ -90,53 +103,64 @@ export const synchroAurige = async buffer => {
       const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
 
       if (candidat === undefined || candidat === null) {
-        appLogger.warn(`Candidat ${codeNeph}/${nomNaissance} non trouvé`)
-        return getCandidatStatus(nomNaissance, codeNeph, 'error', NOT_FOUND)
+        const message = `Candidat ${codeNeph}/${nomNaissance} non trouvé`
+        appLogger.warn(message)
+        return getCandidatStatus(
+          nomNaissance,
+          codeNeph,
+          'error',
+          NOT_FOUND,
+          message
+        )
       }
 
       if (!candidat.isValidatedEmail) {
         if (isMoreThan2HoursAgo(candidat.presignedUpAt)) {
-          appLogger.warn(
-            `Candidat ${codeNeph}/${nomNaissance} email non vérifié depuis plus de 2h`
-          )
+          const message = `Candidat ${codeNeph}/${nomNaissance} email non vérifié depuis plus de 2h`
+          appLogger.warn(message)
           return getCandidatStatus(
             nomNaissance,
             codeNeph,
             'error',
-            EMAIL_NOT_VERIFIED_EXPIRED
+            EMAIL_NOT_VERIFIED_EXPIRED,
+            message
           )
         }
-        appLogger.warn(
-          `Candidat ${codeNeph}/${nomNaissance} email non vérifié, inscrit depuis moins de 2h`
-        )
+        const message = `Candidat ${codeNeph}/${nomNaissance} email non vérifié, inscrit depuis moins de 2h`
+
+        appLogger.warn(message)
         return getCandidatStatus(
           nomNaissance,
           codeNeph,
           'warning',
-          EMAIL_NOT_VERIFIED_YET
+          EMAIL_NOT_VERIFIED_YET,
+          message
         )
       }
 
       const { email } = candidat
 
       let aurigeFeedback
-
+      let message
       if (candidatExistant === CANDIDAT_NOK) {
-        appLogger.warn(`Ce candidat ${email} sera archivé : NEPH inconnu`)
+        message = `Ce candidat ${email} sera archivé : NEPH inconnu`
+        appLogger.warn(message)
         aurigeFeedback = CANDIDAT_NOK
       } else if (candidatExistant === CANDIDAT_NOK_NOM) {
-        appLogger.warn(`Ce candidat ${email} sera archivé : Nom inconnu`)
+        message = `Ce candidat ${email} sera archivé : Nom inconnu`
+        appLogger.warn(message)
         aurigeFeedback = CANDIDAT_NOK_NOM
       } else if (isEpreuveEtgInvalid(dateReussiteETG)) {
-        appLogger.warn(
-          `Ce candidat ${email} sera archivé : dateReussiteETG invalide`
-        )
+        message = `Ce candidat ${email} sera archivé : dateReussiteETG invalide`
+        appLogger.warn(message)
         aurigeFeedback = EPREUVE_ETG_KO
       } else if (isETGExpired(dateReussiteETG)) {
-        appLogger.warn(`Ce candidat ${email} sera archivé : Date ETG KO`)
+        message = `Ce candidat ${email} sera archivé : Date ETG KO`
+        appLogger.warn(message)
         aurigeFeedback = EPREUVE_ETG_KO
       } else if (isReussitePratique(reussitePratique)) {
-        appLogger.warn(`Ce candidat ${email} sera archivé : PRATIQUE OK`)
+        message = `Ce candidat ${email} sera archivé : PRATIQUE OK`
+        appLogger.warn(message)
         aurigeFeedback = EPREUVE_PRATIQUE_OK
         const dateTimeReussitePratique = getFrenchLuxonDateTimeFromISO(
           reussitePratique
@@ -158,8 +182,9 @@ export const synchroAurige = async buffer => {
         return getCandidatStatus(
           nomNaissance,
           codeNeph,
-          'error',
-          aurigeFeedback
+          'warning',
+          aurigeFeedback,
+          message
         )
       }
 
@@ -225,61 +250,83 @@ export const synchroAurige = async buffer => {
           .save()
           .then(async candidat => {
             if (isValidatedByAurige) {
-              appLogger.info(`Ce candidat ${candidat.email} a été mis à jour`)
+              const message = `Ce candidat ${candidat.email} a été mis à jour`
+              appLogger.info(message)
               return getCandidatStatus(
                 nomNaissance,
                 codeNeph,
                 'success',
-                OK_UPDATED
+                OK_UPDATED,
+                message
               )
             } else {
-              appLogger.info(`Ce candidat ${candidat.email} a été validé`)
+              let message = `Ce candidat ${candidat.email} a été validé`
+              appLogger.info(message)
               const token = createToken(
                 candidat.id,
                 config.userStatuses.CANDIDAT
               )
 
-              appLogger.info(`Envoi d'un magic link à ${email}`)
+              message = `Envoi d'un magic link à ${email}`
+              appLogger.info(message)
               try {
                 await sendMagicLink(candidat, token)
-                return getCandidatStatus(nomNaissance, codeNeph, 'success', OK)
-              } catch (error) {
-                appLogger.info(
-                  `Impossible d'envoyer un mail à ce candidat ${
-                    candidat.email
-                  }, il a été validé, cependant`
+                return getCandidatStatus(
+                  nomNaissance,
+                  codeNeph,
+                  'success',
+                  OK,
+                  message
                 )
+              } catch (error) {
+                message = `Impossible d'envoyer un magic link par un mail à ce candidat ${
+                  candidat.email
+                }, il a été validé, cependant`
+
+                appLogger.info(message)
                 return getCandidatStatus(
                   nomNaissance,
                   codeNeph,
                   'warning',
-                  OK_MAIL_PB
+                  OK_MAIL_PB,
+                  message
                 )
               }
             }
           })
           .catch(err => {
-            appLogger.warn(
-              `Erreur de mise à jour pour ce candidat ${email}:`,
-              err
-            )
+            const message = `Erreur de mise à jour pour ce candidat ${email}`
+            appLogger.warn(message + ':', err)
             return getCandidatStatus(
               nomNaissance,
               codeNeph,
               'error',
-              'UNKNOW_ERROR'
+              'UNKNOW_ERROR',
+              message
             )
           })
       } else {
-        appLogger.warn(`Ce candidat ${email} n'a pas été traité. Cas inconnu`)
-        return getCandidatStatus(nomNaissance, codeNeph, 'error', 'UNKNOW_CASE')
+        const message = `Ce candidat ${email} n'a pas été traité. Cas inconnu`
+        appLogger.warn(message)
+        return getCandidatStatus(
+          nomNaissance,
+          codeNeph,
+          'error',
+          'UNKNOW_CASE',
+          message
+        )
       }
     } catch (error) {
-      appLogger.warn(
-        `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}`
-      )
+      const message = `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}`
+      appLogger.warn(message)
       appLogger.warn(error)
-      return getCandidatStatus(nomNaissance, codeNeph, 'error', 'UNKNOW_ERROR')
+      return getCandidatStatus(
+        nomNaissance,
+        codeNeph,
+        'error',
+        'UNKNOW_ERROR',
+        message
+      )
     }
   })
 
