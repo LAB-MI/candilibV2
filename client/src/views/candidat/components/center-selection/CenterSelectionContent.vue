@@ -5,29 +5,31 @@
       'u-flex blue-grey  lighten-5  blue-grey--text  text--lighten-2 font-italic': !hasPlaces
     }"
   >
-    <v-list-tile-content v-ripple="hasPlaces">
-      <v-list-tile-title >
-        {{ center.centre.nom }}
-        ({{ center.centre.departement }})
-      </v-list-tile-title>
-      <v-list-tile-sub-title  class="u-flex__item--grow " :class="{'blue-grey--text  text--lighten-2': !hasPlaces}">
-        {{ center.centre.adresse }}
-      </v-list-tile-sub-title>
-      <span v-if="!hasPlaces" class="u-flex__item--grow blue-grey--text  text--darken-2">
-        Plus de place disponible pour le moment
-      </span>
-    </v-list-tile-content>
-    <a
-      target="_blank"
-      class="location-icon  u-flex"
-      @click.stop="true"
-      v-ripple
-      :href="href"
-    >
-      <v-icon>
-        location_on
-      </v-icon>
-    </a>
+    <div class="u-flex">
+      <v-list-tile-content v-ripple="hasPlaces">
+        <v-list-tile-title >
+          {{ center.centre.nom }}
+          ({{ center.centre.departement }})
+        </v-list-tile-title>
+        <v-list-tile-sub-title  class="u-flex__item--grow " :class="{'blue-grey--text  text--lighten-2': !hasPlaces}">
+          {{ center.centre.adresse }}
+        </v-list-tile-sub-title>
+        <span v-if="!hasPlaces" class="u-flex__item--grow blue-grey--text  text--darken-2">
+          Plus de place disponible pour le moment
+        </span>
+      </v-list-tile-content>
+      <a
+        target="_blank"
+        class="location-icon  u-flex"
+        @click.stop="true"
+        v-ripple
+        :href="href"
+      >
+        <v-icon>
+          location_on
+        </v-icon>
+      </a>
+    </div>
   </v-card-text>
 </template>
 
