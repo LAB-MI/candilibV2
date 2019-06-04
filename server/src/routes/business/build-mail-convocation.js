@@ -10,10 +10,10 @@ export const getConvocationBody = place => {
   const action = 'get-body-convocation'
   const { centre, date, candidat } = place
   const { nom, adresse } = centre
-  const { nomNaissance, codeNeph } = candidat
+  const { _id, nomNaissance, codeNeph } = candidat
 
   const urlFAQ = getUrlFAQ()
-  const urlRESA = getUrlRESA()
+  const urlRESA = getUrlRESA(_id)
 
   buildMailResaArgsValidation(
     date,
