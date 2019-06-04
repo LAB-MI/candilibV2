@@ -49,9 +49,8 @@ export default {
     },
 
     href () {
-      const adresseCentre = this.center.centre.adresse
-      const osmQuery = adresseCentre.replace(',', ' ').replace(/FR.*/, '')
-      return `https://www.openstreetmap.org/search?query=${osmQuery}`
+      const [lon, lat] = this.center.centre.geoloc.coordinates
+      return `http://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=24`
     },
   },
 
