@@ -20,8 +20,19 @@ export const findCentreByName = async nom => {
   return centre
 }
 
-export const createCentre = async (nom, label, adresse, departement) => {
-  const centre = new Centre({ nom, label, adresse, departement })
+export const createCentre = async (
+  nom,
+  label,
+  adresse,
+  lon,
+  lat,
+  departement
+) => {
+  const geoloc = {
+    type: 'Point',
+    coordinates: [lon, lat],
+  }
+  const centre = new Centre({ nom, label, adresse, geoloc, departement })
   await centre.save()
   return centre
 }
@@ -43,11 +54,18 @@ export const deleteCentre = async centre => {
   return centre
 }
 
-export const updateCentreLabel = async (centre, name, label, adresse) => {
+export const updateCentreLabel = async (
+  centre,
+  name,
+  label,
+  adresse,
+  lon,
+  lat
+) => {
   if (!centre) {
     throw new Error('centre is undefined')
   }
-  await centre.updateOne({ nom: name, label, adresse })
+  await centre.updateOne({ nom: name, label, adresse, lon, lat })
   const updatedCentre = await Centre.findById(centre._id)
   return updatedCentre
 }

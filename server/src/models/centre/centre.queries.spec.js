@@ -28,11 +28,15 @@ describe('Centre', () => {
       const label = 'test label'
       const adresse = 'adresse 93001'
       const departement = '93'
+      const lon = 48
+      const lat = 3
 
       const centre1Created = await createCentre(
         nom,
         label,
         adresse,
+        lon,
+        lat,
         departement
       )
       expect(centre1Created).toBeDefined()
@@ -43,7 +47,7 @@ describe('Centre', () => {
       const adresse2 = 'adresse 2 93001'
 
       try {
-        await createCentre(nom, label2, adresse2, departement)
+        await createCentre(nom, label2, adresse2, lon, lat, departement)
         throw new Error()
       } catch (error) {
         expect(error).toHaveProperty('name', 'MongoError')
@@ -59,11 +63,17 @@ describe('Centre', () => {
       const adresse = 'adresse 93000'
       const departement1 = '93'
       const departement2 = '94'
+      const lon = 45
+      const lon2 = 47
+      const lat = 4
+      const lat2 = 2
 
       const centre1Created = await createCentre(
         nom,
         label,
         adresse,
+        lon,
+        lat,
         departement1
       )
       expect(centre1Created).toBeDefined()
@@ -74,6 +84,8 @@ describe('Centre', () => {
         nom,
         label,
         adresse,
+        lon2,
+        lat2,
         departement2
       )
 

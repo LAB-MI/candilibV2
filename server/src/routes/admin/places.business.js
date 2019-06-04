@@ -110,8 +110,10 @@ const transfomCsv = async ({ data, departement }) => {
       throw new Error(`L'inspecteur ${matricule.trim()} est inconnu`)
     }
 
-    if(inspecteurFound.nom.toUpperCase() !== nom.trim().toUpperCase()) {
-      throw new Error(`Le nom "${nom.trim()}" de l'inspecteur ne correspond pas au matricule "${matricule.trim()}"`)
+    if (inspecteurFound.nom.toUpperCase() !== nom.trim().toUpperCase()) {
+      throw new Error(
+        `Le nom "${nom.trim()}" de l'inspecteur ne correspond pas au matricule "${matricule.trim()}"`
+      )
     }
 
     return {

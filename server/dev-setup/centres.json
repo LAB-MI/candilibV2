@@ -1,74 +1,50 @@
 [
   {
     "departement": "93",
-    "nom": "Rosny",
-    "label": "Centre d'examen du permis de conduire de Rosny-sous-Bois",
-    "adresse": "99 Avenue du Général de Gaulle, Rosny ss Bois, FR, 93110"
+    "nom": "Bobigny",
+    "adresse": "320 avenue Paul Vaillant Couturier 93000 Bobigny",
+    "lat": "48.905818",
+    "label": "Centre d'examen du permis de conduire de Bobigny",
+    "lon": "2.458441"
   },
   {
     "departement": "93",
     "nom": "Villepinte",
+    "adresse": "avenue Jean Fourgeaud (dernier parking circulaire) 93420 Villepinte",
+    "lat": "48.962099",
     "label": "Centre d'examen du permis de conduire de Villepinte",
-    "adresse": "4 Avenue Jean Fourgeaud, Villepinte, FR, 93420"
+    "lon": "2.552847"
   },
   {
     "departement": "93",
+    "nom": "Saint Brice",
+    "adresse": "rue de la forêt 95350 Saint Brice sous forêt",
+    "lat": "49.004632",
+    "label": "Centre d'examen du permis de conduire de Saint Brice",
+    "lon": "2.350680"
+  },
+  {
+    "departement": "93",
+    "nom": "Rosny sous bois",
+    "adresse": "99 avenue du général de Gaulle 93110 Rosny sous bois",
+    "lat": "48.883956",
+    "label": "Centre d'examen du permis de conduire de Rosny sous bois",
+    "lon": "2.473647"
+  },
+  {
+    "departement": "75",
     "nom": "Bobigny",
+    "adresse": "320 avenue Paul Vaillant Couturier 93000 Bobigny",
+    "lat": "48.905818",
     "label": "Centre d'examen du permis de conduire de Bobigny",
-    "adresse": "320 Avenue Paul Vaillant-Couturier, Bobigny, FR, 93000"
-  },
-  {
-    "departement": "93",
-    "nom": "Saint-Brice",
-    "label": "Centre d'examen du permis de conduire de Saint-Brice",
-    "adresse": "Rue de la Forêt, Saint-Brice-sous-Forêt, FR, 95350"
+    "lon": "2.458441"
   },
   {
     "departement": "75",
-    "nom": "Rosny/Paris",
-    "label": "Centre d'examen du permis de conduire de Rosny/Paris",
-    "adresse": "99 Avenue du Général de Gaulle, Rosny ss Bois, FR, 93110"
-  },
-  {
-    "departement": "75",
-    "nom": "Villacoublay",
-    "label": "Centre d'examen du permis de conduire de Villacoublay",
-    "adresse": "Zone Aéronautique Louis Bréguet, Vélizy-Villacoublay, FR, 78140"
-  },
-  {
-    "departement": "75",
-    "nom": "Bobigny/Paris",
-    "label": "Centre d'examen du permis de conduire de Bobigny/Paris",
-    "adresse": "320 Avenue Paul Vaillant-Couturier, Bobigny, FR, 93000"
-  },
-  {
-    "departement": "77",
-    "nom": "Lagny-sur-Marne",
-    "label": "Centre d'examen du permis de conduire de Lagny-sur-Marne",
-    "adresse": "67 av Raymond Poincarré, Lagny-sur-Marne, FR, 77400"
-  },
-  {
-    "departement": "77",
-    "nom": "Nemours",
-    "label": "Centre d'examen du permis de conduire de Nemours",
-    "adresse": "135 route de Moret, Nemours, FR, 77140"
-  },
-  {
-    "departement": "77",
-    "nom": "Provins",
-    "label": "Centre d'examen du permis de conduire de Provins",
-    "adresse": "10 rue du Général Delort, Provins, FR, 77160"
-  },
-  {
-    "departement": "94",
-    "nom": "Créteil",
-    "label": "Centre d'examen du permis de conduire de Créteil",
-    "adresse": "12 rue des Archives, Créteil, FR, 94000"
-  },
-  {
-    "departement": "94",
-    "nom": "Rungis",
-    "label": "Centre d'examen du permis de conduire de Rungis",
-    "adresse": "Avenue Charles Linbergh , Rungis, FR, 94150"
+    "nom": "Rosny sous bois",
+    "adresse": "99 avenue du général de Gaulle 93110 Rosny sous bois",
+    "lat": "48.883956",
+    "label": "Centre d'examen du permis de conduire de Rosny sous bois",
+    "lon": "2.473647"
   }
 ]
