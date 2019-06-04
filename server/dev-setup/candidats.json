@@ -1,8 +1,5 @@
 [
     {
-        "reussitePratique": "",
-        "dateDernierEchecPratique": "",
-        "dateReussiteETG": "",
         "codeNeph": "093123456789",
         "prenom": "MAX",
         "nomNaissance": "MAD",
@@ -10,13 +7,9 @@
         "isValidatedEmail": true,
         "adresse": "40 Avenuedes terroirs de France 75012 Paris",
         "portable": "0612345678",
-        "email": "madmax@candilib.com",
-        "__v": 0
+        "email": "madmax@candilib.com"
     },
     {
-        "reussitePratique": "",
-        "dateDernierEchecPratique": "",
-        "dateReussiteETG": "",
         "codeNeph": "093458736982",
         "prenom": "JESSIE",
         "nomNaissance": "ROCKATANSKY",
@@ -24,13 +17,9 @@
         "isValidatedEmail": true,
         "adresse": "40 Avenuedes terroirs de France 75012 Paris",
         "portable": "0645873218",
-        "email": "jessierockatansky@candilib.com",
-        "__v": 0
+        "email": "jessierockatansky@candilib.com"
     },
     {
-        "reussitePratique": "",
-        "dateDernierEchecPratique": "",
-        "dateReussiteETG": "",
         "codeNeph": "093571369217",
         "prenom": "TOE",
         "nomNaissance": "CUTTER",
@@ -38,13 +27,9 @@
         "isValidatedEmail": true,
         "adresse": "40 Avenuedes terroirs de France 75012 Paris",
         "portable": "0636845721",
-        "email": "toecutter@candilib.com",
-        "__v": 0
+        "email": "toecutter@candilib.com"
     },
     {
-        "reussitePratique": "",
-        "dateDernierEchecPratique": "",
-        "dateReussiteETG": "",
         "codeNeph": "093621795384",
         "prenom": "JIM",
         "nomNaissance": "GOOSE",
@@ -52,13 +37,9 @@
         "isValidatedEmail": true,
         "adresse": "40 Avenuedes terroirs de France 75012 Paris",
         "portable": "0696547812",
-        "email": "jimgoose@candilib.com",
-        "__v": 0
+        "email": "jimgoose@candilib.com"
     },
     {
-        "reussitePratique": "",
-        "dateDernierEchecPratique": "",
-        "dateReussiteETG": "",
         "codeNeph": "093365721896",
         "prenom": "JOHNNY",
         "nomNaissance": "BOY",
@@ -66,13 +47,9 @@
         "isValidatedEmail": true,
         "adresse": "40 Avenuedes terroirs de France 75012 Paris",
         "portable": "0654762186",
-        "email": "johnnyboy@candilib.com",
-        "__v": 0
+        "email": "johnnyboy@candilib.com"
     },
     {
-        "reussitePratique": "",
-        "dateDernierEchecPratique": "",
-        "dateReussiteETG": "",
         "codeNeph": "093631754283",
         "prenom": "FIFI",
         "nomNaissance": "MCAFFEE",
@@ -80,13 +57,9 @@
         "isValidatedEmail": true,
         "adresse": "40 Avenuedes terroirs de France 75012 Paris",
         "portable": "0621478954",
-        "email": "fifimcaffee@candilib.com",
-        "__v": 0
+        "email": "fifimcaffee@candilib.com"
     },
     {
-        "reussitePratique": "",
-        "dateDernierEchecPratique": "",
-        "dateReussiteETG": "",
         "codeNeph": "093496239512",
         "prenom": "MAY",
         "nomNaissance": "SWAISEY",
@@ -94,13 +67,29 @@
         "isValidatedEmail": true,
         "adresse": "40 Avenuedes terroirs de France 75012 Paris",
         "portable": "0603765291",
-        "email": "mayswaisey@candilib.com",
-        "__v": 0
+        "email": "mayswaisey@candilib.com"
     },
     {
-        "reussitePratique": "",
-        "dateDernierEchecPratique": "",
-        "dateReussiteETG": "",
+        "codeNeph": "093874320867",
+        "prenom": "TIM",
+        "nomNaissance": "BURNS",
+        "isValidatedByAurige": false,
+        "isValidatedEmail": true,
+        "adresse": "40 Avenuedes terroirs de France 75012 Paris",
+        "portable": "0676543986",
+        "email": "timburns@candilib.com"
+    },
+    {
+        "codeNeph": "093874320868",
+        "prenom": "DAVID",
+        "nomNaissance": "CAMERON",
+        "isValidatedByAurige": false,
+        "isValidatedEmail": true,
+        "adresse": "40 Avenuedes terroirs de France 75012 Paris",
+        "portable": "0676543986",
+        "email": "davidcameron@candilib.com"
+    },
+    {
         "codeNeph": "093874320865",
         "prenom": "BUBBA",
         "nomNaissance": "ZANETTI",
@@ -108,7 +97,6 @@
         "isValidatedEmail": true,
         "adresse": "40 Avenuedes terroirs de France 75012 Paris",
         "portable": "0676543986",
-        "email": "bubbazanetti@candilib.com",
-        "__v": 0
+        "email": "bubbazanetti@candilib.com"
     }
 ]
