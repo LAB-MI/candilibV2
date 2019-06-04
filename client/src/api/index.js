@@ -236,7 +236,7 @@ export default {
     },
 
     async getCandidats (candidatId, departement) {
-      const json = await apiClient.get(`${apiPaths.admin.candidats}${candidatId ? '/' + candidatId : ''}${departement ? '?departement=' + departement : ''}`, {
+      const json = await apiClient.get(`${apiPaths.admin.candidats}${candidatId && (typeof candidatId === 'string') ? '/' + candidatId : ''}${departement ? '?departement=' + departement : ''}`, {
         headers: getHeadersForAdminJson(),
       })
       return json
@@ -278,8 +278,8 @@ export default {
       return json
     },
 
-    async exportCsv () {
-      const json = await apiClient.getRaw(apiPaths.admin.exportCsv, {
+    async exportCsv (departement) {
+      const json = await apiClient.getRaw(`${apiPaths.admin.exportCsv}${departement ? '&departement=' + departement : ''}`, {
         headers: getAdminTokenHeader(),
       })
       return json
