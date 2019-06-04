@@ -33,11 +33,11 @@
   },
   {
     "departement": "75",
-    "nom": "Bobigny",
-    "adresse": "320 avenue Paul Vaillant Couturier 93000 Bobigny",
-    "lat": "48.905818",
-    "label": "Centre d'examen du permis de conduire de Bobigny",
-    "lon": "2.458441"
+    "nom": "Saint Leu en Foret",
+    "adresse": "1 rue Charles Cros (en face) 95320 Saint Leu la Forêt",
+    "lat": "49.003131",
+    "label": "Centre d'examen du permis de conduire de Saint Leu en Foret",
+    "lon": "2.250416"
   },
   {
     "departement": "75",
@@ -46,5 +46,13 @@
     "lat": "48.883956",
     "label": "Centre d'examen du permis de conduire de Rosny sous bois",
     "lon": "2.473647"
+  },
+  {
+    "departement": "75",
+    "nom": "Noisy le Grand",
+    "adresse": "5 boulevard de Champs Richardets (parking du gymnase de la butte verte) 93160 Noisy le Grand",
+    "lat": "48.837378",
+    "label": "Centre d'examen du permis de conduire de Noisy le Grand",
+    "lon": "2.579699"
   }
 ]
