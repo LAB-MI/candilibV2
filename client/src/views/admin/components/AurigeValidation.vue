@@ -2,13 +2,13 @@
   <div>
     <page-title :title="'Validation Aurige'"/>
     <v-card style="background-color: unset;">
-      <ag-grid-vue style="max-width: 100%; height: 350px;" class="ag-theme-material"
+      <ag-grid-vue style="max-width: 100%; height: 450px;" class="ag-theme-material"
         :gridOptions="gridOptions"
         :columnDefs="columnDefs"
         :rowData="rowData"
         :sideBar="sideBar"
         :pagination="true"
-        :paginationPageSize="5"
+        :paginationPageSize="7"
         :defaultColDef="{
           sortable: true,
           resizable: true,
@@ -60,6 +60,7 @@ export default {
       const StatusIcon = {
         'success': 'done',
         'error': 'clear',
+        'warning': 'warning',
       }
       return '<i class="material-icons">' + StatusIcon[param.value] + '</i>'
     }
@@ -71,9 +72,11 @@ export default {
         field: 'status',
         cellRenderer: StatusRenderer,
         filter: 'agGridAurigeStatusFilter',
+        width: 40,
       },
-      { headerName: 'NEPH', field: 'neph' },
-      { headerName: 'Nom', field: 'nom' },
+      { headerName: 'NEPH', field: 'neph', width: 100 },
+      { headerName: 'Nom', field: 'nom', width: 120 },
+      { headerName: 'Description', field: 'message' },
     ]
     this.gridOptions = {
     }

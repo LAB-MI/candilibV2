@@ -36,6 +36,7 @@ export const StatusRenderer = (param) => {
   const StatusIcon = {
     'success': 'done',
     'error': 'clear',
+    'warning': 'warning',
   }
   return '<i class="material-icons">' + StatusIcon[param.value] + '</i>'
 }
