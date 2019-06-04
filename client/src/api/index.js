@@ -107,28 +107,32 @@ export default {
     },
 
     async getCentre (departement, nom) {
-      const json = await apiClient.get(`${apiPaths.candidat.centres}?departement=${departement}&nom=${nom}`, {
+      const queryString = `departement=${departement}&nom=${nom}`
+      const json = await apiClient.get(`${apiPaths.candidat.centres}?${queryString}`, {
         headers: getHeadersForJson(),
       })
       return json
     },
 
     async getCentres (departement, end) {
-      const json = await apiClient.get(`${apiPaths.candidat.centres}?departement=${departement}&end=${encodeURIComponent(end)}`, {
+      const queryString = `departement=${departement}&end=${encodeURIComponent(end)}`
+      const json = await apiClient.get(`${apiPaths.candidat.centres}?${queryString}`, {
         headers: getHeadersForJson(),
       })
       return json
     },
 
     async getPlaces (centreId, begin, end) {
-      const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`, {
+      const queryString = `begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`
+      const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?${queryString}`, {
         headers: getHeadersForJson(),
       })
       return json
     },
 
     async checkPlacesAvailability (centreId, date) {
-      const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?dateTime=${encodeURIComponent(date)}`, {
+      const queryString = `dateTime=${encodeURIComponent(date)}`
+      const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?${queryString}`, {
         headers: getHeadersForJson(),
       })
       return json
@@ -206,8 +210,12 @@ export default {
     },
 
     async getAllPlacesByDepartement (departement, beginDate, endDate) {
+      const departementInfo = `departement=${departement}`
+      const beginDateInfo = `beginDate=${encodeURIComponent(beginDate)}`
+      const endDateInfo = `endDate=${encodeURIComponent(endDate)}`
+      const queryString = `${departementInfo}&${beginDateInfo}&${endDateInfo}`
       const json = await apiClient
-        .get(`${apiPaths.admin.places}?departement=${departement}&beginDate=${encodeURIComponent(beginDate)}&endDate=${encodeURIComponent(endDate)}`, {
+        .get(`${apiPaths.admin.places}?${queryString}`, {
           headers: getHeadersForAdminJson(),
         })
       return json
@@ -236,7 +244,9 @@ export default {
     },
 
     async getCandidats (candidatId, departement) {
-      const json = await apiClient.get(`${apiPaths.admin.candidats}${candidatId && (typeof candidatId === 'string') ? '/' + candidatId : ''}${departement ? '?departement=' + departement : ''}`, {
+      const candidatInfo = candidatId && (typeof candidatId === 'string') ? '/' + candidatId : ''
+      const queryString = departement ? `departement=${departement}` : ''
+      const json = await apiClient.get(`${apiPaths.admin.candidats}${candidatInfo}?${queryString}`, {
         headers: getHeadersForAdminJson(),
       })
       return json
@@ -279,7 +289,8 @@ export default {
     },
 
     async exportCsv (departement) {
-      const json = await apiClient.getRaw(`${apiPaths.admin.exportCsv}${departement ? '&departement=' + departement : ''}`, {
+      const departementInfo = departement ? `departement=${departement}` : ''
+      const json = await apiClient.getRaw(`${apiPaths.admin.exportCsv}&${departementInfo}`, {
         headers: getAdminTokenHeader(),
       })
       return json
@@ -331,8 +342,9 @@ export default {
     },
 
     async getPlacesAvailableByCentreAndDate (departement, centre, date) {
+      const queryString = `departement=${departement}&centre=${centre}&date=${encodeURIComponent(date)}`
       const json = await apiClient
-        .get(`${apiPaths.admin.places}?departement=${departement}&centre=${centre}&date=${encodeURIComponent(date)}`, {
+        .get(`${apiPaths.admin.places}?${queryString}`, {
           headers: getHeadersForAdminJson(),
         })
       return json
