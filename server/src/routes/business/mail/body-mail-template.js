@@ -7,7 +7,7 @@ export const getHtmlBody = content =>
   <meta content="width=device-width">
   <style type="text/css">
   /* Fonts and Content */
-  body, td { font-family: 'Helvetica Neue', Arial, Helvetica, Geneva, sans-serif; font-size:14px; color:rgba(0,0,0, 0.54); }
+  body, td { font-family: 'Poppins', Arial, Helvetica, Geneva, sans-serif; font-size:14px; color:rgba(0,0,0, 0.54); }
   body { background-color: #ffffff; margin: 0; padding: 0; -webkit-text-size-adjust:none; -ms-text-size-adjust:none; }
   h2{ padding-top:12px; /* ne fonctionnera pas sous Outlook 2007+ */color:rgba(0,0,0, 0.54); font-size:22px; }
 
@@ -73,9 +73,9 @@ export const getHtmlBody = content =>
                                                                   <td>
                                                                     <img width="80px" src="https://www.cartaplac.com/images/logo-securite-routiere.jpg" />
                                                                   </td>
-                                                                  <td class="w580"  width="580" align="center" bgcolor="#64b5f6">
+                                                                  <td class="w580"  width="580" align="center">
                                                                       <h2>
-                                                                          CANDILIB
+                                                                          C<span style="color:red">A</span>NDILIB
                                                                       </h2>
                                                                   </td>
                                                               </tr>
