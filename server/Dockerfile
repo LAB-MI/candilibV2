@@ -66,4 +66,4 @@ RUN npm install pm2 -g
 # Copy the pm2 config
 COPY ecosystem.config.js .
 
-CMD [ "pm2-runtime", "start", "ecosystem.config.js" ]
+CMD [ "pm2-runtime", "start", "ecosystem.config.js", "--env", "production" ]
