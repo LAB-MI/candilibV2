@@ -1,6 +1,11 @@
 // import { synchroAurige, getCandidatsAsCsv } from './business'
-import { email as emailRegex, techLogger } from '../../util'
-import { findCandidatByEmail, findCandidatById } from '../../models/candidat'
+import { email as emailRegex, techLogger, appLogger } from '../../util'
+import {
+  deleteCandidatByNomNeph,
+  findCandidatByEmail,
+  findCandidatById,
+  findCandidatByNomNeph,
+} from '../../models/candidat'
 import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
   checkCandidatIsSignedBefore,
@@ -8,6 +13,7 @@ import {
   presignUpCandidat,
   validateEmail,
 } from './candidat.business'
+import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
 
 const mandatoryFields = [
   'codeNeph',
@@ -68,6 +74,25 @@ export async function preSignup (req, res) {
       message: 'Ce site sera ouvert prochainement.',
     })
     return
+  }
+
+  const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
+
+  const {
+    codeNeph: neph,
+    isValidatedEmail,
+    nomNaissance: nom,
+    presignedUpAt,
+  } = candidat
+
+  if (
+    candidat &&
+    !isValidatedEmail &&
+    isMoreThan2HoursAgo(presignedUpAt)
+  ) {
+    const reason = `Candidat ${neph}/${nom} email non vérifié, inscrit depuis plus de 2h`
+    appLogger.warn(reason)
+    await deleteCandidatByNomNeph(nom, neph, reason)
   }
 
   const isSigned = await checkCandidatIsSignedBefore(candidatData)

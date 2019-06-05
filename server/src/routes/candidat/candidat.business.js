@@ -5,6 +5,8 @@ import {
   VALIDATION_EMAIL,
   appLogger,
   codePostal,
+  getFrenchLuxonDateTimeFromJSDate,
+  DATETIME_FULL,
 } from '../../util'
 import {
   updateCandidatSignUp,
@@ -39,6 +41,7 @@ export async function checkCandidatIsSignedBefore (candidatData) {
       }
     }
     if (
+      candidat.isValidatedEmail &&
       candidat.email === email &&
       candidat.prenom === prenom &&
       candidat.portable === portable &&
@@ -48,9 +51,20 @@ export async function checkCandidatIsSignedBefore (candidatData) {
         result: {
           success: false,
           message:
-            'Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification.',
+            `Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification par l'administration.`,
         },
       }
+    }
+    return {
+      result: {
+        success: false,
+        message:
+          `Vous n'avez pas validé votre adresse email depuis votre pré-inscription.
+          Vous pourrez refaire une pré-inscription après le
+          ${
+            getFrenchLuxonDateTimeFromJSDate(candidat.presignedUpAt).plus({ hours: 2 }).toLocaleString(DATETIME_FULL)
+          }.`,
+      },
     }
   }
 

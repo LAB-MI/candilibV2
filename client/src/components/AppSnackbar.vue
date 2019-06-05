@@ -3,6 +3,7 @@
     :value="message.show"
     :color="message.color"
     bottom
+    multi-line
     :timeout="message.timeout"
     @input="onClose"
   >
