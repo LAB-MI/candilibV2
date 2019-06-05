@@ -30,6 +30,7 @@ export default Vue.extend({
         { text: 'TOUS', value: '' },
         { text: 'done', value: 'success' },
         { text: 'clear', value: 'error' },
+        { text: 'warning', value: 'warning' },
       ],
     }
   },

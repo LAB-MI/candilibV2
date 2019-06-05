@@ -7,6 +7,7 @@ import {
   neph as nephRegex,
 } from '../../util'
 import { placeCommonFields } from '../place/place.model'
+import { ECHEC } from './objetDernierNonReussite.values'
 
 const { Schema } = mongoose
 
@@ -27,6 +28,19 @@ const ArchivedPlaceFields = {
 }
 
 const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields)
+
+const noReussiteFields = {
+  date: {
+    type: Date,
+    default: undefined,
+    required: false,
+  },
+  reason: {
+    type: String,
+    trim: true,
+    required: false,
+  },
+}
 
 export const candidatFields = {
   nomNaissance: {
@@ -54,12 +68,8 @@ export const candidatFields = {
     type: Date,
     required: false,
   },
-  dateDernierEchecPratique: {
-    type: Date,
-    required: false,
-  },
   reussitePratique: {
-    type: String,
+    type: Date,
     required: false,
     trim: true,
   },
@@ -121,6 +131,12 @@ export const candidatFields = {
     type: Date,
     default: undefined,
   },
+  nbEchecsPratiques: {
+    type: Number,
+    default: 0,
+    required: false,
+  },
+  noReussites: [noReussiteFields],
 }
 
 const CandidatSchema = new Schema(candidatFields)
@@ -153,5 +169,51 @@ CandidatSchema.index({
   mail: 'text',
   codeNeph: 'text',
 })
+
+const theLast = noReussite => {
+  if (!noReussite || noReussite.length === 0) {
+    return undefined
+  }
+  return noReussite[noReussite.length - 1]
+}
+
+CandidatSchema.virtual('dateDernierNonReussite').get(function () {
+  const lastNoReussite = theLast(this.noReussites)
+  return lastNoReussite && lastNoReussite.date
+})
+
+CandidatSchema.virtual('objetDernierNonReussite').get(function () {
+  const lastNoReussite = theLast(this.noReussites)
+  return lastNoReussite && lastNoReussite.reason
+})
+
+CandidatSchema.virtual('dateDernierEchecPratique')
+  .get(function () {
+    const lastNoReussite = theLast(this.noReussites)
+    return lastNoReussite && lastNoReussite.date
+  })
+  .set(function (value) {
+    if (value) {
+      this.noReussites.push({
+        date: value,
+        reason: ECHEC,
+      })
+      this.nbEchecsPratiques++
+    }
+  })
+
+CandidatSchema.virtual('lastNoReussite')
+  .get(function () {
+    return theLast(this.noReussites)
+  })
+  .set(function (value) {
+    const { date, reason } = value
+    if (date && reason) {
+      this.noReussites.push({
+        date,
+        reason,
+      })
+    }
+  })
 
 export default mongoose.model('Candidat', CandidatSchema)
