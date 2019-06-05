@@ -64,13 +64,14 @@ export const getCandidats = async (req, res) => {
   const { id: candidatId } = req.params
   if (candidatId) {
     appLogger.info({ section, action: 'INFO-CANDIDAT', candidatId })
+    const candidatFound = await findCandidatById(candidatId)
 
-    const candidatFound = await findCandidatById(
-      candidatId,
-      'codeNeph nomNaissance prenom email portable'
-    )
     if (candidatFound) {
-      res.json({ success: true, candidat: candidatFound })
+      const placeFound = await findPlaceByCandidatId(candidatId, true)
+      res.json({
+        success: true,
+        candidat: { ...candidatFound.toObject(), place: placeFound },
+      })
       return
     }
     res.json({ success: false, message: "le candidat n'existe pas" })

@@ -99,10 +99,6 @@ export const candidatFields = {
     type: Date,
     default: undefined,
   },
-  place: {
-    type: Object,
-    default: undefined,
-  },
   isValidatedEmail: {
     type: Boolean,
     default: false,

@@ -21,7 +21,10 @@
 </template>
 
 <script>
-import { FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST } from '@/store'
+import {
+  FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
+  FETCH_CANDIDAT_INFO_REQUEST,
+} from '@/store'
 import CandilibAutocomplete from './CandilibAutocomplete'
 import ProfileInfo from './ProfileInfo'
 import { getFrenchDateFromIso } from '../../../util/frenchDateTime.js'
@@ -30,6 +33,12 @@ import { transformToProfileInfo } from '@/util'
 const transformBoolean = value => value ? 'Oui' : 'Non'
 const isReussitePratiqueExist = value => value || ''
 const convertToLegibleDate = date => date ? getFrenchDateFromIso(date) : 'Non renseignée'
+const placeReserve = ({ inspecteur, centre, date }) => {
+  const nameInspecteur = inspecteur.nom
+  const examCentre = centre.nom
+  const frenchDate = convertToLegibleDate(date)
+  return `${nameInspecteur}, ${examCentre}, ${frenchDate}`
+}
 
 const candidatProfileInfoDictionary = [
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
@@ -39,6 +48,7 @@ const candidatProfileInfoDictionary = [
     ['isValidatedbyAurige', 'Status Aurige', transformBoolean],
     ['isValidatedbyEmail', 'Email validé', transformBoolean],
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
+    ['place', 'Réservation', placeReserve],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
     [
       'dateDernierEchecPratique',
@@ -69,7 +79,9 @@ export default {
   },
 
   methods: {
-    displayCandidatInfo (candidat) {
+    async displayCandidatInfo ({ _id: id }) {
+      await this.$store.dispatch(FETCH_CANDIDAT_INFO_REQUEST, id)
+      const candidat = this.$store.state.adminSearch.candidats.selected
       this.profileInfo = transformToProfileInfo(candidat, candidatProfileInfoDictionary)
     },
   },
