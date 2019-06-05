@@ -101,7 +101,6 @@ import {
   getFrenchLuxonDateFromIso,
   getFrenchDateFromIso,
   getFrenchDateTimeFromIso,
-  getFrenchLuxonDateTimeFromISO,
   getFrenchLuxonCurrentDateTime,
 } from '../../../../util/frenchDateTime.js'
 
@@ -155,7 +154,7 @@ export default {
     canBookFrom () {
       const { date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
       if ((getFrenchLuxonCurrentDateTime() > getFrenchLuxonDateFromIso(lastDateToCancel))) {
-        return getFrenchLuxonDateTimeFromISO(date).plus({ days: timeOutToRetry }).toLocaleString({
+        return getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry }).toLocaleString({
           weekday: 'long',
           month: 'long',
           day: '2-digit',
