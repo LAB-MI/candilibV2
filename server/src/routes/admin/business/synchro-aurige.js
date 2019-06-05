@@ -234,7 +234,7 @@ export const synchroAurige = async buffer => {
         const dateNoReussite =
           dateDernierEchecPratique || dateDernierNonReussite
         // Check failure date
-        const dateTimeEchec = checkFialureDate(dateNoReussite)
+        const dateTimeEchec = checkFailureDate(dateNoReussite)
         // put a penalty
         if (dateTimeEchec) {
           const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
@@ -333,7 +333,7 @@ export const synchroAurige = async buffer => {
   return Promise.all(result)
 }
 
-function checkFialureDate (dateDernierEchecPratique) {
+function checkFailureDate (dateDernierEchecPratique) {
   if (dateDernierEchecPratique && dateDernierEchecPratique.length > 0) {
     const dateTimeEchec = getFrenchLuxonDateTimeFromISO(
       dateDernierEchecPratique
