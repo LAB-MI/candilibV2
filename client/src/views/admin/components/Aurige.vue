@@ -1,6 +1,5 @@
 <template>
   <div :id="id" class="wrapper">
-    <candidats-list />
     <page-title :title="'Interaction Aurige'"/>
     <div class="aurige">
       <!-- propager le accept for upload-file -->
@@ -29,14 +28,12 @@ import api from '@/api'
 import { downloadContent } from '@/util'
 import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST } from '@/store'
 import AurigeValidation from './AurigeValidation'
-import CandidatsList from './CandidatsList'
 import UploadFile from '@/components/UploadFile.vue'
 
 export default {
   name: 'admin-aurige',
   components: {
     AurigeValidation,
-    CandidatsList,
     UploadFile,
   },
 
@@ -53,6 +50,9 @@ export default {
   computed: {
     inputDisabled () {
       return !this.file
+    },
+    departement () {
+      return this.$store.state.admin.departements.active
     },
   },
 
@@ -72,7 +72,7 @@ export default {
       }
     },
     async getCandidatsAsCsv () {
-      const response = await api.admin.exportCsv()
+      const response = await api.admin.exportCsv(this.departement)
       downloadContent(response)
     },
   },

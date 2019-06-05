@@ -42,10 +42,10 @@ export default {
   },
 
   actions: {
-    async [FETCH_CANDIDAT_REQUEST] ({ commit, dispatch }, id) {
+    async [FETCH_CANDIDAT_REQUEST] ({ commit, dispatch }, id, departement) {
       commit(FETCH_CANDIDAT_REQUEST)
       try {
-        const list = await api.admin.getCandidats(id)
+        const list = await api.admin.getCandidats(id, departement)
         commit(FETCH_CANDIDAT_SUCCESS, list)
       } catch (error) {
         commit(FETCH_CANDIDAT_FAILURE)
@@ -53,10 +53,10 @@ export default {
       }
     },
 
-    async [FETCH_CANDIDATS_REQUEST] ({ commit, dispatch }, { since, until } = {}) {
+    async [FETCH_CANDIDATS_REQUEST] ({ commit, dispatch }, { since, until, departement } = {}) {
       commit(FETCH_CANDIDATS_REQUEST)
       try {
-        const list = await api.admin.getCandidats({ since, until })
+        const list = await api.admin.getCandidats({ since, until }, departement)
         if (list.success === false) {
           let error = new Error(list.message || 'Error while fetching candidats')
           if (list.isTokenInvalid) {

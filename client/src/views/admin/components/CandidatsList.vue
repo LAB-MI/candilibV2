@@ -41,8 +41,10 @@ export default {
   },
 
   mounted () {
-    const now = getFrenchLuxonCurrentDateTime()
-    this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }) })
+    if (this.departement) {
+      const now = getFrenchLuxonCurrentDateTime()
+      this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }), departement: this.departement })
+    }
   },
 
   data () {
@@ -58,6 +60,16 @@ export default {
   computed: {
     rowData () {
       return this.$store.state.candidats.list || []
+    },
+    departement () {
+      return this.$store.state.admin.departements.active
+    },
+  },
+
+  watch: {
+    departement (newValue, oldValue) {
+      const now = getFrenchLuxonCurrentDateTime()
+      this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }), departement: newValue })
     },
   },
 

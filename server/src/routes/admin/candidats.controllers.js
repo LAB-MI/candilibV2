@@ -60,8 +60,11 @@ export const exportBookedCandidats = async (req, res) => {
 }
 
 export const getCandidats = async (req, res) => {
+  const section = 'admin-get-candidats'
   const { id: candidatId } = req.params
   if (candidatId) {
+    appLogger.info({ section, action: 'INFO-CANDIDAT', candidatId })
+
     const candidatFound = await findCandidatById(
       candidatId,
       'codeNeph nomNaissance prenom email portable'
@@ -74,35 +77,47 @@ export const getCandidats = async (req, res) => {
     return
   }
 
-  const { matching, format, filter } = req.query
+  const { matching, format, filter, for: actionAsk } = req.query
 
   if (matching) {
+    appLogger.info({ section, action: 'SEARCH-CANDIDAT', matching })
+
     const candidats = await findCandidatsMatching(matching)
     res.json(candidats)
     return
   }
 
   if (filter === 'resa') {
+    appLogger.info({ section, action: 'INFO-RESA', filter, format })
+
     getBookedCandidats(req, res)
     return
   }
 
+  appLogger.info({ section, action: 'INFO-CANDIDATS', filter, format })
+
   const candidatsLean = await findAllCandidatsLean()
-  const candidats = await Promise.all(
-    candidatsLean.map(async candidat => {
-      const { _id } = candidat
-      const places = await findPlaceByCandidatId(_id)
-      if (places.length > 1) {
-        appLogger.warn(
-          `le candidat ${candidat.codeNeph} / '${
-            candidat.nomNaissance
-          } a plusieurs places d'examens`
-        )
-      }
-      candidat.place = places[0] || {}
-      return candidat
-    })
-  )
+  appLogger.debug({ section, action: 'INFO-CANDIDATS', candidatsLean })
+  let candidats
+  if (actionAsk === 'aurige') {
+    candidats = candidatsLean
+  } else {
+    candidats = await Promise.all(
+      candidatsLean.map(async candidat => {
+        const { _id } = candidat
+        const places = await findPlaceByCandidatId(_id)
+        if (places.length > 1) {
+          appLogger.warn(
+            `le candidat ${candidat.codeNeph} / '${
+              candidat.nomNaissance
+            } a plusieurs places d'examens`
+          )
+        }
+        candidat.place = places[0] || {}
+        return candidat
+      })
+    )
+  }
   if (format && format === 'csv') {
     req.candidats = candidats
     exportCandidats(req, res)
