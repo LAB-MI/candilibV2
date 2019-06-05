@@ -19,7 +19,7 @@ echo "# $basename ${APP} ${APP_VERSION}"
 
 ret=0
 container_name=front_admin
-public_path=/candilibV2-repartiteur
+public_path=/candilib-repartiteur
 
 echo "# Test ${APP}-$container_name up"
 dirname=$(dirname $0)
