@@ -99,13 +99,13 @@
         "candidatExistant" : "OK"
     },
     {
-        "codeNeph": "093874320865",
-        "nomNaissance": "ZANETTI",
-        "prenom": "BUBBA",
+        "codeNeph": "093874320868",
+        "nomNaissance": "CAMERON",
+        "prenom": "DAVID",
         "dateReussiteETG" : "2016-10-28",
-        "nbEchecsPratiques" : "0",
-        "dateDernierNonReussite" : "",
-        "objetDernierNonReussite" : "",
+        "nbEchecsPratiques" : "5",
+        "dateDernierNonReussite" : "2019-06-04",
+        "objetDernierNonReussite" : "Echec",
         "reussitePratique" : "",
         "candidatExistant" : "OK"
     }
