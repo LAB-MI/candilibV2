@@ -38,7 +38,7 @@ export const sendMagicLink = async (candidat, token) => {
   const flag = 'CHECK_OK'
   const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
 
-  const url = `${authUrl}?token=${encodeURIComponent(token)}&redirect=calendar`
+  const url = `${authUrl}?token=${encodeURIComponent(token)}`
 
   const message = await getMailData(candidat, flag, url)
   return sendMail(candidat.email, message)
