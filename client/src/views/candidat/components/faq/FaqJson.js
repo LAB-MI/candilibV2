@@ -1,9 +1,9 @@
 export const faqJson = [
   {
-    title: 'Qu\'est-ce que CandiLib ?',
+    title: 'Qu\'est-ce que Candilib ?',
     content: [
       {
-        textContent: 'CandilLib est une expérimentation d\'un nouveau service de réservation en ligne des places d\'examen pratique du permis de conduire pour des candidats libres domiciliés en Seine-Saint-Denis.',
+        textContent: 'Candilib est une expérimentation d\'un nouveau service de réservation en ligne des places d\'examen pratique du permis de conduire à destination des candidats libres.',
       },
     ],
   },
@@ -23,7 +23,7 @@ export const faqJson = [
     title: 'Qui peut utiliser le service ?',
     content: [
       {
-        textContent: 'Les « candidats libres » résidant dans le 93 qui ont reçu un mail d\'invitation pour participer à l\'expérimentation.',
+        textContent: 'Les « candidats libres » qui ont reçu un mail d\'invitation pour participer à l\'expérimentation.',
       },
     ],
   },
@@ -31,21 +31,21 @@ export const faqJson = [
     title: 'Comment ça marche ?',
     content: [
       {
-        textContent: 'Vous avez reçu une invitation nominative par mail par le service des examens de la Seine-Saint-Denis à vous inscrire sur Candilib.',
+        textContent: 'Vous avez reçu une invitation nominative par mail à vous inscrire sur Candilib.',
       },
       {
         subTitleContent: 'Pour s\'inscrire',
-        textContent: 'Rendez vous sur la page d\'accueil du service.',
+        textContent: 'Rendez-vous sur la page d\'accueil du service pour se pré-inscrire.',
       },
       {
-        textContent: 'Déposez une demande d\'inscription à Candilib en saisissant vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), Nom, prénom, mail, téléphone et adresse postale.',
+        textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et adresse postale.',
       },
       {
         subTitleContent: 'Pour réserver',
         textContent: 'Connectez vous à Candilib après réception du mail « Validation de votre inscription à Candilib » (lien de connexion dans le mail de validation).',
       },
       {
-        textContent: 'Sur le planning, sélectionnez le créneau disponible à la date et au centre d\'examen qui vous conviennent (si besoin, déplacez-vous sur les vues « mois », « semaine » et « jour »).',
+        textContent: 'Sélectionnez votre centre d\'examen, puis un créneau disponible à la date qui vous convient (si besoin, déplacez-vous sur les vues « mois », « semaine » et « jour »).',
       },
       {
         textContent: 'Confirmez votre réservation.',
@@ -56,16 +56,14 @@ export const faqJson = [
     title: 'Est-ce que je peux modifier ou annuler mon rendez-vous ?',
     content: [
       {
-        textContent: 'Vous pouvez modifier votre rendez-vous en sélectionnant un nouveau créneau 7 jours avant la date prévue.',
+        textContent: 'Vous pouvez modifier ou annuler votre réservation jusqu’à 7 jours avant la date d’examen.',
+      },
+
+      {
+        textContent: 'Si vous modifiez ou annulez à moins de 7 jours de la date d\'examen, ou si vous ne vous présentez pas à l’examen, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
       },
       {
-        textContent: 'Vous pouvez annuler librement 7 jours avant la date prévue.',
-      },
-      {
-        textContent: 'Si vous annulez moins de 7 jours avant la date d\'examen, vous ne pourrez réserver un nouveau créneau que 45 jours après la date de votre réservation annulée.',
-      },
-      {
-        textContent: 'Si vous avez échoué ou n\'avez pas été admissible à l\'examen pratique du permis de conduire, vous ne pourrez réserver un nouveau créneau que 45 jours après la date de votre dernier examen pratique.',
+        textContent: 'Si vous avez échoué, avez été refusé par l’inspecteur ou avez été absent à l\'examen pratique du permis de conduire, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
       },
       {
         textContent: 'Merci de nous prévenir en cas d\'empêchement afin de libérer le créneau pour un autre candidat.',
@@ -76,25 +74,17 @@ export const faqJson = [
     title: 'Quels sont les pré-requis le jour de l\'examen ?',
     content: [
       {
-        textContent: 'Nous vous rappelons les éléments à vérifier le jour de l\'examen',
+        textContent: 'Nous vous rappelons les éléments à vérifier le jour de l\'examen:',
       },
       {
-        textContent: 'Vous fournirez un véhicule en parfait état, équipé d’une double commande de frein et d’embrayage, de 2 rétroviseurs intérieurs et de 2 rétroviseurs latéraux.',
+        list: [ 'Vous fournirez un véhicule en parfait état, équipé d ’une double commande de frein et d’embrayage, de 2 rétroviseurs intérieurs et de 2 rétroviseurs latéraux.',
+          'Votre accompagnateur sera :',
+          'soit un enseignant de la conduite en possession de son autorisation d\'enseigner pour la présenter à l\'inspecteur,',
+          'soit une personne dont le permis B est en cours de validité. Cette dernière devra présenter l’original de son permis de conduire ainsi que la «charte de l’accompagnateur» remplie et signée pour la remettre à l’inspecteur avant le début de l’examen.',
+        ],
       },
       {
-        textContent: 'Votre accompagnateur sera soit un enseignant de la conduite en possession de son autorisation d\'enseigner pour la présenter à l\'inspecteur, soit une personne dont le permis B est en cours de validité. Cette dernière devra remplir et signer la «charte de l\'accompagnateur» pour la remettre à l\'inspecteur avant le début de l\'examen.',
-      },
-      {
-        textContent: 'Vous présenterez ',
-      },
-      {
-        subTitleContent: '',
-      },
-      {
-        subTitleContent: '',
-      },
-      {
-        textContent: '',
+        textContent: 'Vous présenterez: ',
       },
       {
         list: [
@@ -108,7 +98,7 @@ export const faqJson = [
         ],
       },
       {
-        textContent: 'Attention : le mauvais état du véhicule (pneus lisses, rétros cassés ou absents, non fonctionnement de tous les feux, etc.), ou l\'absence ou la non-validité d\'un des documents exigés ci-dessus, pour le candidat ou pour l\'accompagnateur, entraîne le report de l\'examen à une date ultérieure.',
+        textContent: '<b>Attention</b> : le mauvais état du véhicule (pneus lisses, rétroviseurs cassés ou absents, dysfonctionnement d’un feu, etc.), ou l\'absence ou la non-validité d\'un des documents exigés ci-dessus, pour le candidat ou son accompagnateur,l’inspecteur sera dans l’obligation réglementaire de vous refuser le passage de l’examen.',
       },
     ],
   },
@@ -116,7 +106,7 @@ export const faqJson = [
     title: 'Je ne trouve pas de place disponible ?',
     content: [
       {
-        textContent: 'De nouveaux créneaux sont ajoutés chaque mois.',
+        textContent: 'De nouveaux créneaux sont ajoutés régulièrement.',
       },
     ],
   },
@@ -124,7 +114,7 @@ export const faqJson = [
     title: 'Je n’ai pas été invité à participer à l’expérimentation ?',
     content: [
       {
-        textContent: 'Ce service est restreint aux candidats domiciliés en Seine-Saint-Denis qui ont reçu un mail d\'invitation à participer à cette expérimentation.',
+        textContent: 'Ce service est restreint aux candidats qui ont reçu un mail d\'invitation à participer à cette expérimentation.',
       },
     ],
   },
