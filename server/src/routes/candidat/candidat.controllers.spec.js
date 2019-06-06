@@ -145,7 +145,7 @@ describe('Test the candidat signup', () => {
       .set('Accept', 'application/json')
       .expect(200)
 
-    expect(body).not.toHaveProperty('success', false)
+    expect(body).toHaveProperty('success')
     expect(body).not.toHaveProperty('fieldsWithErrors')
     expect(body).toHaveProperty('candidat')
     await deleteWhitelistedByEmail(validEmail)

@@ -1,5 +1,6 @@
 import { DateTime } from 'luxon'
 
+export const DATETIME_FULL = DateTime.DATETIME_SHORT
 export const FORMAT_DATE = 'cccc dd LLLL yyyy'
 
 export const FRENCH_TIME_ZONE = 'Europe/Paris'
