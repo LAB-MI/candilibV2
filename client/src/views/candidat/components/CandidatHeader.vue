@@ -4,7 +4,7 @@
       class="u-only-on-mobile"
       @click="toggleDrawer"
     ></v-toolbar-side-icon>
-    <v-toolbar-title>
+    <v-toolbar-title style="margin-left:0;">
       <h1 class="logo">
         <router-link to="/candidat" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
       </h1>
@@ -41,6 +41,7 @@
         </v-btn>
         <span>Déconnexion</span>
       </v-tooltip>
+      <bandeau-beta class="beta-relative" />
     </div>
   </v-toolbar>
 </template>
@@ -87,6 +88,10 @@ export default {
 .candidat-toolbar {
   justify-content: center;
   align-items: center;
+
+  & >>> .v-toolbar__content {
+    padding-right: 0;
+  }
 }
 
 .logo {
@@ -101,7 +106,7 @@ export default {
   font-size: 1em;
 
   @media (max-width: 359px) {
-    font-size: 0.8em;
+    font-size: 0.725em;
     position: relative;
     top: -0.1em;
   }

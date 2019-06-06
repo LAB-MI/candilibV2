@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar dark fixed>
+  <v-toolbar class="header-admin" dark fixed>
     <v-toolbar-title>
       <h1 class="logo">
         <router-link to="/admin" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
@@ -25,6 +25,7 @@
       <departement-selector
         class="departement-selector"
       />
+      <bandeau-beta class="beta-relative"/>
     </div>
   </v-toolbar>
 </template>
@@ -55,12 +56,18 @@ export default {
 }
 </script>
 
-<style lang="postcss" scoped>
+<style lang="stylus" scoped>
 .admin-header {
   display: flex;
   padding: 0 1em;
   background-color: black;
   margin-top: 4em;
+}
+
+.header-admin {
+  & >>> .v-toolbar__content {
+    padding-right: 0;
+  }
 }
 
 .logo {

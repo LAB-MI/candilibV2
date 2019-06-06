@@ -1,5 +1,6 @@
 <template>
   <div class="c-candidat-wrapper">
+    <bandeau-beta fixed />
     <div class="c-candidat-message">
       <h1 class="c-candidat-message__title">
         {{$formatMessage({ id: 'app_name' })}}
