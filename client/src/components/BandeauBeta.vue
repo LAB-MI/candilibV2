@@ -1,5 +1,7 @@
 <template>
-  <img :src="beta" alt="Version bêta" :class="{beta: true, absolute}" />
+  <span :class="{fixed}">
+    <img :src="beta" alt="Version bêta" class="beta" />
+  </span>
 </template>
 
 <script>
@@ -7,7 +9,7 @@ import beta from '@/assets/images/beta.png'
 
 export default {
   props: {
-    absolute: Boolean,
+    fixed: Boolean,
   },
   data () {
     return {
@@ -18,15 +20,14 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.fixed {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
 
 .beta {
   height: 4.2em;
-
-  &.absolute {
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
 
   @media (max-width: 767px) {
     height: 4em;

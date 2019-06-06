@@ -1,5 +1,6 @@
 <template>
   <div class="login" v-bind:style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }">
+    <bandeau-beta fixed />
     <div class="login-bg-filter"></div>
     <v-form v-model="valid" class="login-form" @submit.prevent="getToken">
       <h2 class="text--center">ADMINISTRATEUR</h2>
