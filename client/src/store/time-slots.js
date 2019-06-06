@@ -1,7 +1,8 @@
 
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
-import { getFrenchLuxonDateFromIso, getFrenchLuxonCurrentDateTime } from '../util/frenchDateTime.js'
+import { getFrenchLuxonDateFromIso, valideCreneaux, getFrenchLuxonCurrentDateTime } from '../util'
+
 import { SET_MODIFYING_RESERVATION } from '@/store'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
@@ -22,7 +23,7 @@ const getHoursString = (elemISO) => {
   return `${getFrenchLuxonDateFromIso(elemISO).toFormat("HH'h'mm")}-${getFrenchLuxonDateFromIso(elemISO).plus({ minutes: 30 }).toFormat("HH'h'mm")}`
 }
 
-const formatResult = (result, monthToDisplay, canBookFrom, anticipatedCanBookAfter, dayToForbidCancel) => {
+const formatResult = (result, monthToDisplay, canBookFrom, anticipatedCanBookAfter, dayToForbidCancel, validCreneaux) => {
   return Array(monthToDisplay).fill(true).map((item, index) => {
     const monthNumber = getFrenchLuxonCurrentDateTime().plus({ month: index }).monthLong
     let tmpArrayDay = []
@@ -36,7 +37,16 @@ const formatResult = (result, monthToDisplay, canBookFrom, anticipatedCanBookAft
       tmpArrayHours.push({ day: getDayString(el), hour: getHoursString(el) })
     )
     tmpArrayDay = [...new Set(tmpArrayDay)]
-      .map(el => ({ day: el, hours: tmpArrayHours.filter(hourSlot => hourSlot.day === el).map(itm => itm.hour) }))
+      .map(el => ({
+        day: el,
+        hours: tmpArrayHours.reduce(
+          (prev, curr) => {
+            if (curr.day === el && validCreneaux.includes(curr.hour)) {
+              return [ ...prev, curr.hour ]
+            }
+            return [ ...prev ]
+          }, ''),
+      }))
     return {
       month: monthNumber,
       availableTimeSlots: tmpArrayDay,
@@ -45,6 +55,11 @@ const formatResult = (result, monthToDisplay, canBookFrom, anticipatedCanBookAft
 }
 
 export default {
+  getters: {
+    valideCreneaux: () => {
+      return valideCreneaux
+    },
+  },
   state: {
     confirmed: false,
     isFetching: false,
@@ -84,7 +99,7 @@ export default {
   },
 
   actions: {
-    async [FETCH_DATES_REQUEST] ({ commit, dispatch, rootState }, selectedCenterId) {
+    async [FETCH_DATES_REQUEST] ({ commit, dispatch, rootState, getters }, selectedCenterId) {
       commit(FETCH_DATES_REQUEST)
       try {
         const begin = getFrenchLuxonCurrentDateTime().toISO()
@@ -95,7 +110,14 @@ export default {
           ? getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry }) : false
         const numberOfMonthToDisplay = 4
 
-        const formatedResult = await formatResult(result, numberOfMonthToDisplay, canBookFrom, anticipatedCanBookAfter, dayToForbidCancel)
+        const formatedResult = await formatResult(
+          result,
+          numberOfMonthToDisplay,
+          canBookFrom,
+          anticipatedCanBookAfter,
+          dayToForbidCancel,
+          getters.valideCreneaux
+        )
         commit(FETCH_DATES_SUCCESS, formatedResult)
       } catch (error) {
         commit(FETCH_DATES_FAILURE, error.message)
