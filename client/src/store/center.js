@@ -16,8 +16,6 @@ export const FETCH_CENTER_FAILURE = 'FETCH_CENTER_FAILURE'
 
 export const SELECT_CENTER = 'SELECT_CENTER'
 
-const zipCodeRegexFromAdresse = /.*([0-9]{2})[0-9]{3}.*/
-
 export default {
   state: {
     isFetchingCenters: false,
@@ -51,14 +49,13 @@ export default {
     },
   },
   actions: {
-    async [FETCH_CENTERS_REQUEST] ({ commit, dispatch, state }, adresseCandidat) {
+    async [FETCH_CENTERS_REQUEST] ({ commit, dispatch, rootState }, departement) {
       commit(FETCH_CENTERS_REQUEST)
-      if (!state.candidat || !state.candidat.me) {
+      if (!rootState.candidat || !rootState.candidat.me) {
         await dispatch(FETCH_MY_PROFILE_REQUEST)
       }
       try {
         const end = getFrenchLuxonCurrentDateTime().plus({ month: 3 }).endOf('month').toISO()
-        const [, departement] = adresseCandidat.match(zipCodeRegexFromAdresse)
         const result = await api.candidat.getCentres(departement, end)
         commit(FETCH_CENTERS_SUCCESS, result)
       } catch (error) {

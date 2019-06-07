@@ -127,6 +127,7 @@ export async function getMe (req, res) {
       email: 1,
       portable: 1,
       adresse: 1,
+      departement: 1,
     }
 
     const candidat = await findCandidatById(req.userId, options)

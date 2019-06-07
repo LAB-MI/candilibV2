@@ -41,8 +41,8 @@ export default {
         setTimeout(this.getCenters, 100)
         return
       }
-      const { adresse } = candidat.me
-      await this.$store.dispatch(FETCH_CENTERS_REQUEST, adresse)
+      const { departement } = candidat.me
+      await this.$store.dispatch(FETCH_CENTERS_REQUEST, departement)
     },
   },
 }
