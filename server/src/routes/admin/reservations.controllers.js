@@ -66,7 +66,7 @@ export const removeReservationByAdmin = async (req, res) => {
     appLogger.error({
       ...loggerContent,
       action: 'ERROR',
-      message: error.message,
+      error,
     })
     return res.status(500).send({
       success: false,

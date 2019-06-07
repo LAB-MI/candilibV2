@@ -24,7 +24,7 @@ export async function getCentres (req, res) {
         message:
           'Le code de département est manquant, Vieullez choisir un code département',
       }
-      appLogger.error(error.message)
+      appLogger.error(error)
       return res.status(400).json({
         success: false,
         message: error.message,

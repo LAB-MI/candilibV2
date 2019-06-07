@@ -160,7 +160,7 @@ const createPlaceCsv = async place => {
       `Place enregistrée en base`
     )
   } catch (error) {
-    appLogger.error(JSON.stringify(error))
+    appLogger.error(error)
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
       appLogger.warn({
         section: 'Admim-ImportPlaces',
@@ -212,7 +212,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
             })
           }
         } catch (error) {
-          appLogger.error(JSON.stringify(error))
+          appLogger.error(error)
         }
       })
       .on('data', place => {
@@ -302,7 +302,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       `Place enregistrée en base`
     )
   } catch (error) {
-    appLogger.error(JSON.stringify(error))
+    appLogger.error(error)
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
       appLogger.warn({
         section: 'Admim-BuisnessPlaces',
@@ -508,7 +508,7 @@ export const sendMailSchedulesInspecteurs = async (
         await sendScheduleInspecteur(email, places)
         return { success: true }
       } catch (error) {
-        appLogger.error({ ...loggerContent, message: error.message })
+        appLogger.error({ ...loggerContent, error })
         const inspecteur = await findInspecteurById(inspecteurId)
         resultsError.push(inspecteur)
       }
@@ -523,7 +523,7 @@ export const sendMailSchedulesInspecteurs = async (
         resultsError
       )
     } catch (error) {
-      appLogger.error({ ...loggerContent, message: error.message })
+      appLogger.error({ ...loggerContent, error })
     }
     return { success: false, inspecteurs: resultsError }
   }

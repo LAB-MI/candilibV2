@@ -227,7 +227,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
     appLogger.error({
       ...loggerContent,
       action: 'ERROR',
-      message: error.message,
+      error,
     })
     if (error instanceof ErrorWithStatus) {
       return res.status(error.status).send({
