@@ -33,7 +33,11 @@ import { transformToProfileInfo } from '@/util'
 const transformBoolean = value => value ? 'Oui' : 'Non'
 const isReussitePratiqueExist = value => value || ''
 const convertToLegibleDate = date => date ? getFrenchDateFromIso(date) : 'Non renseignée'
-const placeReserve = ({ inspecteur, centre, date }) => {
+const placeReserve = (place) => {
+  if (place == null) {
+    return '-'
+  }
+  const { inspecteur, centre, date } = place
   const nameInspecteur = inspecteur.nom
   const examCentre = centre.nom
   const frenchDate = convertToLegibleDate(date)
@@ -45,8 +49,8 @@ const candidatProfileInfoDictionary = [
   [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDate],
-    ['isValidatedbyAurige', 'Status Aurige', transformBoolean],
     ['isValidatedbyEmail', 'Email validé', transformBoolean],
+    ['isValidatedbyAurige', 'Statut Aurige', transformBoolean],
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
     ['place', 'Réservation', placeReserve],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
