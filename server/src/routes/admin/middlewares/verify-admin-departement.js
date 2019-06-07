@@ -17,12 +17,12 @@ export async function verifyAdminDepartement (req, res, next) {
     appLogger.error({
       section: 'admin-token',
       action: 'check-departement',
-      message: error.message,
+      error,
     })
     return res.status(401).send({
       isTokenValid: false,
-      message: error.message,
       success: false,
+      message: error.message,
     })
   }
 }

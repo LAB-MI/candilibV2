@@ -17,9 +17,39 @@ const options = {
   },
 }
 
+export const getProperObjectFromError = error => {
+  if (error == null) {
+    return '<empty error>'
+  }
+  return Object.getOwnPropertyNames(error).reduce(
+    (acc, key) => ({
+      ...acc,
+      [key]: error[key],
+    }),
+    Object.create(null)
+  )
+}
+
+export const getProperObject = message => {
+  if (message == null) {
+    return { default: '<empty message>' }
+  }
+  if (typeof message === 'string') {
+    return { default: message }
+  }
+  if (message instanceof Error) {
+    return getProperObjectFromError(message)
+  }
+  if ('error' in message) {
+    message.error = getProperObjectFromError(message.error)
+  }
+  return message
+}
+
 const logJsonFormat = printf(({ label, level, message, timestamp }) => {
+  const content = getProperObject(message)
   return JSON.stringify({
-    content: typeof message === 'string' ? { default: message } : message,
+    content,
     meta: {
       level,
       label,
