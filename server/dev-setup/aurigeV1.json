@@ -5,7 +5,7 @@
         "nomUsage": "",
         "prenom": "MAX",
         "email": "madmax@candilib.com",
-        "dateReussiteETG": "2018-10-12T00:00:00.000Z",
+        "dateReussiteETG": "2015-07-07",
         "dateDernierEchecPratique": "",
         "reussitePratique": "OK",
         "candidatExistant": "OK"
@@ -38,8 +38,8 @@
         "nomUsage": "",
         "prenom": "JIM",
         "email": "jimgoose@candilib.com",
-        "dateReussiteETG": "2012-11-11T00:00:00.000Z",
-        "dateDernierEchecPratique": "2017-06-18T00:00:00.000Z",
+        "dateReussiteETG": "2013-04-09",
+        "dateDernierEchecPratique": "2018-03-04",
         "reussitePratique": "",
         "candidatExistant": "OK"
     },
@@ -60,8 +60,8 @@
         "nomUsage": "",
         "prenom": "FIFI",
         "email": "fifimcaffee@candilib.com",
-        "dateReussiteETG": "2018-05-10T00:00:00.000Z",
-        "dateDernierEchecPratique": "",
+        "dateReussiteETG": "2018-05-10",
+        "dateDernierEchecPratique": "2019-06-04",
         "reussitePratique": "",
         "candidatExistant": "OK"
     },
@@ -71,8 +71,8 @@
         "nomUsage": "",
         "prenom": "MAY",
         "email": "mayswaisey@candilib.com",
-        "dateReussiteETG": "2018-08-15T00:00:00.000Z",
-        "dateDernierEchecPratique": "",
+        "dateReussiteETG": "2018-08-15",
+        "dateDernierEchecPratique": "2019-06-04",
         "reussitePratique": "",
         "candidatExistant": "OK"
     },
@@ -82,8 +82,30 @@
         "nomUsage": "",
         "prenom": "BUBBA",
         "email": "bubbazanetti@candilib.com",
-        "dateReussiteETG": "2018-10-25T00:00:00.000Z",
-        "dateDernierEchecPratique": "2019-01-10T00:00:00.000Z",
+        "dateReussiteETG": "2016-10-28",
+        "dateDernierEchecPratique": "2019-01-10",
+        "reussitePratique": "",
+        "candidatExistant": "OK"
+    },
+    {
+        "codeNeph": "093874320867",
+        "nomNaissance": "BURNS",
+        "nomUsage": "",
+        "prenom": "TIM",
+        "email": "timburns@candilib.com",
+        "dateReussiteETG": "2018-10-25",
+        "dateDernierEchecPratique": "2019-01-10",
+        "reussitePratique": "",
+        "candidatExistant": "OK"
+    },
+    {
+        "codeNeph": "093874320868",
+        "nomNaissance": "CAMERON",
+        "nomUsage": "",
+        "prenom": "DAVID",
+        "email": "davidcameron@candilib.com",
+        "dateReussiteETG": "2017-10-28",
+        "dateDernierEchecPratique": "",
         "reussitePratique": "",
         "candidatExistant": "OK"
     }
