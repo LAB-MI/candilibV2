@@ -1,6 +1,16 @@
-import { synchroAurige, getCandidatsAsCsv } from './business'
-import { findAllCandidatsLean } from '../../models/candidat'
-import { findPlaceById } from '../../models/place'
+import { appLogger } from '../../util/logger'
+import {
+  synchroAurige,
+  getCandidatsAsCsv,
+  getBookedCandidatsAsCsv,
+} from './business'
+import {
+  findAllCandidatsLean,
+  findBookedCandidats,
+  findCandidatsMatching,
+  findCandidatById,
+} from '../../models/candidat'
+import { findPlaceByCandidatId } from '../../models/place'
 
 export const importCandidats = async (req, res) => {
   const files = req.files
@@ -32,8 +42,17 @@ export const importCandidats = async (req, res) => {
 }
 
 export const exportCandidats = async (req, res) => {
-  const candidatsAsCsv = await getCandidatsAsCsv()
-  const filename = 'candidatsLibresPrintel.csv'
+  const candidatsAsCsv = await getCandidatsAsCsv(req.candidats)
+  let filename = 'candidatsLibresPrintel.csv'
+  res
+    .status(200)
+    .attachment(filename)
+    .send(candidatsAsCsv)
+}
+
+export const exportBookedCandidats = async (req, res) => {
+  const candidatsAsCsv = await getBookedCandidatsAsCsv(req.candidats)
+  const filename = 'candidatsLibresReserve.csv'
   res
     .status(200)
     .attachment(filename)
@@ -41,25 +60,84 @@ export const exportCandidats = async (req, res) => {
 }
 
 export const getCandidats = async (req, res) => {
-  const {
-    query: { format },
-  } = req
-  if (format && format === 'csv') {
-    exportCandidats(req, res)
+  const section = 'admin-get-candidats'
+  const { id: candidatId } = req.params
+  if (candidatId) {
+    appLogger.info({ section, action: 'INFO-CANDIDAT', candidatId })
+    const candidatFound = await findCandidatById(candidatId)
+
+    if (candidatFound) {
+      const placeFound = await findPlaceByCandidatId(candidatId, true)
+      res.json({
+        success: true,
+        candidat: { ...candidatFound.toObject(), place: placeFound },
+      })
+      return
+    }
+    res.json({ success: false, message: "le candidat n'existe pas" })
     return
   }
 
-  const candidatsLean = await findAllCandidatsLean()
-  const candidats = await Promise.all(
-    candidatsLean.map(async candidat => {
-      const { place: placeId } = candidat
-      if (placeId) {
-        const place = await findPlaceById(placeId)
-        candidat.place = place
-      }
-      return candidat
-    })
-  )
+  const { matching, format, filter, for: actionAsk } = req.query
 
+  if (matching) {
+    appLogger.info({ section, action: 'SEARCH-CANDIDAT', matching })
+
+    const candidats = await findCandidatsMatching(matching)
+    res.json(candidats)
+    return
+  }
+
+  if (filter === 'resa') {
+    appLogger.info({ section, action: 'INFO-RESA', filter, format })
+
+    getBookedCandidats(req, res)
+    return
+  }
+
+  appLogger.info({ section, action: 'INFO-CANDIDATS', filter, format })
+
+  const candidatsLean = await findAllCandidatsLean()
+  appLogger.debug({ section, action: 'INFO-CANDIDATS', candidatsLean })
+  let candidats
+  if (actionAsk === 'aurige') {
+    candidats = candidatsLean
+  } else {
+    candidats = await Promise.all(
+      candidatsLean.map(async candidat => {
+        const { _id } = candidat
+        const places = await findPlaceByCandidatId(_id)
+        if (places.length > 1) {
+          appLogger.warn(
+            `le candidat ${candidat.codeNeph} / '${
+              candidat.nomNaissance
+            } a plusieurs places d'examens`
+          )
+        }
+        candidat.place = places[0] || {}
+        return candidat
+      })
+    )
+  }
+  if (format && format === 'csv') {
+    req.candidats = candidats
+    exportCandidats(req, res)
+    return
+  }
+  res.json(candidats)
+}
+
+export const getBookedCandidats = async (req, res) => {
+  const {
+    query: { format, date, inspecteur, centre },
+  } = req
+
+  const candidats = await findBookedCandidats(date, inspecteur, centre)
+
+  if (format && format === 'csv') {
+    req.candidats = candidats
+    exportBookedCandidats(req, res)
+    return
+  }
   res.json(candidats)
 }

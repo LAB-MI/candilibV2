@@ -1,14 +1,23 @@
 # development mode
-version: '3.4'
+version: '3.5'
 services:
   db:
-    image: mongo:latest
+    image: mongo:4.0.6
+    container_name: candilib_mongo
     ports:
-      - "27017"
+      - "27017:27017"
     networks:
       - candilib-network
     volumes:
       - mongodata:/data/db
+      - ./db/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_PASS:-changeme}
+      MONGO_INITDB_DATABASE: ${DB_NAME:-candilib}
+      DB_USER: ${DB_USER:-adminCandilib}
+      DB_PASS: ${DB_PASS:-changeme78}
+
   api:
     image: candilib_api:${APP_VERSION:-latest}
     build:
@@ -16,13 +25,14 @@ services:
       context: ./
       dockerfile: Dockerfile
       args:
-        proxy: ${http_proxy}
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
         no_proxy: ${no_proxy}
         npm_registry: ${NPM_REGISTRY}
     volumes:
       - .:/app:delegated
-      - ./package.json:/package.json
-      - ./package-lock.json:/package-lock.json
+      - ./package.json:/app/package.json
+      - ./package-lock.json:/app/package-lock.json
       # this is a workaround to prevent host node_modules from accidently getting mounted in container
       # in case you want to use node/npm both outside container for test/lint etc. and also inside container
       # this will overwrite the default node_modules dir in container so it won't conflict with our
@@ -31,20 +41,60 @@ services:
     container_name: candilib_api
     depends_on:
       - db
+      - fakesmtp
     ports:
-      - "${WEB_PORT:-8000}:8000"
+      - "${API_PORT:-8000}:8000"
+      - "9229:9229"
 #    env_file:
 #      - ${cnf:-.env}
     environment:
-      NODE_ENV: production
-      MONGO_URL: ${MONGO_URL:-mongodb://db:27017/candilib}
+      NODE_ENV: development
+      MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
+      SMTP_SERVER: candilib_smtp
+      SMTP_PORT: 25
+      MAIL_FROM: noreply@interieur.gouv.fr
+      CANDIDAT_EXPIREDIN: 72h
+      PUBLIC_URL: http://localhost:8080/candilib
+      DELAY_TO_BOOK: 7
+      TIMEOUT_TO_RETRY: 45
+      DAYS_FORBID_CANCEL: 7
+
     networks:
       - candilib-network
+
+  fakesmtp:
+    image: digiplant/fake-smtp
+    container_name: candilib_smtp
+    volumes:
+      - ../../output:/var/mail
+    ports:
+    - "25:2525"
+    networks:
+      - candilib-network
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: candilib_mongo_express
+    ports:
+      - "8081:8081"
+    external_links:
+      - candilib_mongo:mongo
+    networks:
+      - candilib-network
+    environment:
+      ME_CONFIG_MONGODB_SERVER : db
+      ME_CONFIG_MONGODB_ENABLE_ADMIN : 'false'
+      ME_CONFIG_MONGODB_AUTH_DATABASE : ${DB_NAME:-candilib}
+      ME_CONFIG_MONGODB_AUTH_USERNAME : ${DB_USER:-adminCandilib}
+      ME_CONFIG_MONGODB_AUTH_PASSWORD : ${DB_PASS:-changeme78}
+
 networks:
   candilib-network:
+    name: candilib-network
     driver: bridge
     driver_opts:
       com.docker.network.driver.mtu: 1450
+
 volumes:
   notused:
   mongodata:

@@ -1,0 +1,112 @@
+[
+    {
+        "codeNeph": "093123456789",
+        "nomNaissance": "MAD",
+        "prenom": "MAX",
+        "dateReussiteETG" : "2015-07-07",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "2018-11-21",
+        "objetDernierNonReussite" : "Echec",
+        "reussitePratique" : "2019-02-04",
+        "candidatExistant" : "OK"
+    },
+    {
+        "codeNeph": "093458736982",
+        "nomNaissance": "ROCKATANSKY",
+        "prenom": "JESSIE",
+        "dateReussiteETG" : "",
+        "nbEchecsPratiques" : "0",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "NOK"
+    },
+    {
+        "codeNeph": "093571369217",
+        "nomNaissance": "CUTTER",
+        "prenom": "TOE",
+        "dateReussiteETG" : "",
+        "nbEchecsPratiques" : "0",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant": "NOK Nom"
+    },
+    {
+        "codeNeph": "093621795384",
+        "nomNaissance": "GOOSE",
+        "prenom": "JIM",
+        "dateReussiteETG" : "2013-04-09",
+        "nbEchecsPratiques" : "2",
+        "dateDernierNonReussite" : "2018-03-04",
+        "objetDernierNonReussite" : "Echec",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {
+        "codeNeph": "093365721896",
+        "nomNaissance": "BOY",
+        "prenom": "JOHNNY",
+        "dateReussiteETG" : "",
+        "nbEchecsPratiques" : "0",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {
+        "codeNeph": "093631754283",
+        "nomNaissance": "MCAFFEE",
+        "prenom": "FIFI",
+        "dateReussiteETG" : "2018-05-10",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "2019-06-04",
+        "objetDernierNonReussite" : "Non recevable",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {
+        "codeNeph": "093496239512",
+        "nomNaissance": "SWAISEY",
+        "prenom": "MAY",
+        "dateReussiteETG" : "2018-08-15",
+        "nbEchecsPratiques" : "3",
+        "dateDernierNonReussite" : "2019-06-04",
+        "objetDernierNonReussite" : "Non examinable",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {
+        "codeNeph": "093874320865",
+        "nomNaissance": "ZANETTI",
+        "prenom": "BUBBA",
+        "dateReussiteETG" : "2016-10-28",
+        "nbEchecsPratiques" : "4",
+        "dateDernierNonReussite" : "2019-01-10",
+        "objetDernierNonReussite" : "Absent",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {
+        "codeNeph": "093874320867",
+        "nomNaissance": "BURNS",
+        "prenom": "TIM",
+        "dateReussiteETG" : "2018-10-25",
+        "nbEchecsPratiques" : "5",
+        "dateDernierNonReussite" : "2019-01-10",
+        "objetDernierNonReussite" : "Echec",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {
+        "codeNeph": "093874320868",
+        "nomNaissance": "CAMERON",
+        "prenom": "DAVID",
+        "dateReussiteETG" : "2017-10-28",
+        "nbEchecsPratiques" : "0",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    }
+]

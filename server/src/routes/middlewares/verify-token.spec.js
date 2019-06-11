@@ -5,9 +5,9 @@ import { createToken } from '../../util'
 
 import { verifyToken } from './verify-token'
 
-const email = 'admin@example.com'
+const id = 'fakeId'
 
-const validToken = createToken(email, 'candidat')
+const validToken = createToken(id, 'candidat')
 
 const invalidToken = validToken + '0'
 

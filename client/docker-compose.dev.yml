@@ -1,0 +1,94 @@
+# development mode
+version: '3.5'
+services:
+  front_all:
+    image: candilib_front_all:${APP_VERSION:-latest}
+    container_name: candilib_front_all
+    build:
+      target: development
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        npm_registry: ${NPM_REGISTRY}
+        sass_registry: ${SASS_REGISTRY}
+        CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
+    volumes:
+      - ./tests:/app/tests
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./config:/app/config
+      - ./vue.config.js:/app/vue.config.js
+      - ./jsconfig.json:/app/jsconfig.json
+      - ./babel.config.js:/app/babel.config.js
+      - ./cypress.json:/app/cypress.json
+      # - .:/app:delegated
+      - ./package.json:/app/package.json
+      # - ./package-lock.json:/app/package-lock.json
+      # this is a workaround to prevent host node_modules from accidently getting mounted in container
+      # in case you want to use node/npm both outside container for test/lint etc. and also inside container
+      # this will overwrite the default node_modules dir in container so it won't conflict with our
+      # /opt/node_modules location. Thanks to PR from @brnluiz
+      # - notused:/app/node_modules
+#    env_file:
+#      - ${cnf:-.env}
+    environment:
+      API_HOST: ${API_HOST:-candilib_api}
+      API_PORT: ${API_PORT:-8000}
+    ports:
+      - "${WEB_PORT:-8080}:8080"
+    networks:
+      - candilib-network
+      
+  storybook:
+    image: candilib_storybook:${APP_VERSION:-latest}
+    container_name: candilib_storybook
+    build:
+      target: storybook
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        npm_registry: ${NPM_REGISTRY}
+        sass_registry: ${SASS_REGISTRY}
+        CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
+    volumes:
+      - ./tests:/app/tests
+      - ./src:/app/src
+      - ./public:/app/public
+      - ./config:/app/config
+      - ./vue.config.js:/app/vue.config.js
+      - ./jsconfig.json:/app/jsconfig.json
+      - ./babel.config.js:/app/babel.config.js
+      - ./cypress.json:/app/cypress.json
+      # - .:/app:delegated
+      - ./package.json:/app/package.json
+      # - ./package-lock.json:/app/package-lock.json
+      # this is a workaround to prevent host node_modules from accidently getting mounted in container
+      # in case you want to use node/npm both outside container for test/lint etc. and also inside container
+      # this will overwrite the default node_modules dir in container so it won't conflict with our
+      # /opt/node_modules location. Thanks to PR from @brnluiz
+      # - notused:/app/node_modules
+#    env_file:
+#      - ${cnf:-.env}
+    environment:
+      API_HOST: ${API_HOST:-candilib_api}
+      API_PORT: ${API_PORT:-8000}
+    ports:
+      - "${STORY_PORT:-6006}:6006"
+    networks:
+      - candilib-network
+
+
+networks:
+  candilib-network:
+    name: candilib-network
+    driver: bridge
+    driver_opts:
+      com.docker.network.driver.mtu: 1450
+volumes:
+  notused:

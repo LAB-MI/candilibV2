@@ -1,13 +1,17 @@
 import { connect, disconnect } from '../src/mongo-connection'
-import logger from '../src/util/logger'
+import { simpleLogger as logger } from '../src/util'
 
 connect()
   .then(async () => {
     const { default: createAdmin } = await import('./create-admin-account')
-    const { default: createSites } = await import('./create-sites')
+    const { default: createCandidats } = await import('./create-candidats')
+    const { default: createCentres } = await import('./create-centres')
+    const { default: createInspecteurs } = await import('./create-inspecteurs')
     return Promise.all([
       createAdmin(),
-      createSites(),
+      createCandidats(),
+      createCentres(),
+      createInspecteurs(),
     ])
   })
   .catch(error => {

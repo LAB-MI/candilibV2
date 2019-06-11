@@ -2,9 +2,9 @@ import nodemailer from 'nodemailer'
 import smtpTransport from 'nodemailer-smtp-transport'
 import { htmlToText } from 'nodemailer-html-to-text'
 
-import mailMessage from './message-templates'
+import getMailData from './message-templates'
 import config, { smtpOptions } from '../../config'
-import logger from '../../util/logger'
+import { appLogger, techLogger } from '../../util'
 
 export const sendMail = async (to, { subject, content: html }) => {
   const transporter = nodemailer.createTransport(smtpTransport(smtpOptions))
@@ -20,9 +20,9 @@ export const sendMail = async (to, { subject, content: html }) => {
 
   try {
     const info = await transporter.sendMail(mailOptions)
-    logger.info('Mail sent: ' + info.response)
+    appLogger.info('Mail sent: ' + info.response)
   } catch (error) {
-    logger.error(error)
+    techLogger.error(error)
     throw error
   } finally {
     transporter.close()
@@ -30,16 +30,16 @@ export const sendMail = async (to, { subject, content: html }) => {
 }
 
 export const sendMailToAccount = async (candidat, flag) => {
-  const message = await mailMessage(candidat, flag)
-  sendMail(candidat.email, message)
+  const message = await getMailData(candidat, flag)
+  return sendMail(candidat.email, message)
 }
 
 export const sendMagicLink = async (candidat, token) => {
   const flag = 'CHECK_OK'
-  const authUrl = `${config.PUBLIC_URL}${config.authentificationRoute}`
+  const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
 
-  const url = `${authUrl}?token=${encodeURIComponent(token)}&redirect=calendar`
+  const url = `${authUrl}?token=${encodeURIComponent(token)}`
 
-  const message = await mailMessage(candidat, flag, url)
-  sendMail(candidat.email, message)
+  const message = await getMailData(candidat, flag, url)
+  return sendMail(candidat.email, message)
 }

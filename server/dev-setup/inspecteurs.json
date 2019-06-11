@@ -1,0 +1,184 @@
+[
+  {
+    "email": "dupond.jacques@email.fr",
+    "nom": "dupond",
+    "prenom":"Jacques",
+    "matricule":"01020301",
+    "departement": "93"
+  },
+  {
+    "email": "dupont.jacques@email.fr",
+    "nom": "dupont",
+    "prenom":"Jean",
+    "matricule": "01020304",
+    "departement": "93"
+  },
+  {
+    "email":"dupont01.jacques@email.fr",
+    "nom": "dupont01",
+    "prenom":"Jean",
+    "matricule": "01020305",
+    "departement": "93"
+  },
+  {
+    "email":"dupont02.jacques@email.fr",
+    "nom": "dupont02",
+    "prenom":"Jean",
+    "matricule": "01020306",
+    "departement": "93"
+  },
+  {
+    "email":"dupont03.jacques@email.fr",
+    "nom": "dupont03",
+    "prenom":"Jean",
+    "matricule": "01020307",
+    "departement": "93"
+  },
+  {
+    "email":"dupont04.jacques@email.fr",
+    "nom": "dupont04",
+    "prenom":"Jean",
+    "matricule": "01020308",
+    "departement": "93"
+  },
+  {
+    "email":"dupont05.jacques@email.fr",
+    "nom": "dupont05",
+    "prenom":"Jean",
+    "matricule": "01020309",
+    "departement": "93"
+  },
+  {
+    "email":"dupont06.jacques@email.fr",
+    "nom": "dupont06",
+    "prenom":"Jean",
+    "matricule": "01020310",
+    "departement": "93"
+  },
+  {
+    "email":"dupont07.jacques@email.fr",
+    "nom": "dupont07",
+    "prenom":"Jean",
+    "matricule": "01020311",
+    "departement": "93"
+  },
+  {
+    "email":"dupont08.jacques@email.fr",
+    "nom": "dupont08",
+    "prenom":"Jean",
+    "matricule": "01020312",
+    "departement": "93"
+  },
+  {
+    "email":"dupont09.jacques@email.fr",
+    "nom": "dupont09",
+    "prenom":"Jean",
+    "matricule": "01020313",
+    "departement": "93"
+  },
+  {
+    "email":"dupont10.jacques@email.fr",
+    "nom": "dupont10",
+    "prenom":"Jean",
+    "matricule": "01020314",
+    "departement": "93"
+  },
+  {
+    "email":"dupont11.jacques@email.fr",
+    "nom": "dupont11",
+    "prenom":"Jean",
+    "matricule": "01020315",
+    "departement": "93"
+  },
+  {
+    "email": "dupondDu75.jacques@email.fr",
+    "nom": "dupondDu75",
+    "prenom":"Jacques",
+    "matricule":"7501020301",
+    "departement": "75"
+  },
+  {
+    "email": "dupontDu75.jacques@email.fr",
+    "nom": "dupontDu75",
+    "prenom":"Jean",
+    "matricule": "7501020304",
+    "departement": "75"
+  },
+  {
+    "email":"dupont01Du75.jacques@email.fr",
+    "nom": "dupont01Du75",
+    "prenom":"Jean",
+    "matricule": "7501020305",
+    "departement": "75"
+  },
+  {
+    "email":"dupont02Du75.jacques@email.fr",
+    "nom": "dupont02Du75",
+    "prenom":"Jean",
+    "matricule": "7501020306",
+    "departement": "75"
+  },
+  {
+    "email":"dupont03Du75.jacques@email.fr",
+    "nom": "dupont03Du75",
+    "prenom":"Jean",
+    "matricule": "7501020307",
+    "departement": "75"
+  },
+  {
+    "email":"dupont04Du75.jacques@email.fr",
+    "nom": "dupont04Du75",
+    "prenom":"Jean",
+    "matricule": "7501020308",
+    "departement": "75"
+  },
+  {
+    "email":"dupont05Du75.jacques@email.fr",
+    "nom": "dupont05Du75",
+    "prenom":"Jean",
+    "matricule": "7501020309",
+    "departement": "75"
+  },
+  {
+    "email":"dupont06Du75.jacques@email.fr",
+    "nom": "dupont06Du75",
+    "prenom":"Jean",
+    "matricule": "7501020310",
+    "departement": "75"
+  },
+  {
+    "email":"dupont07Du75.jacques@email.fr",
+    "nom": "dupont07Du75",
+    "prenom":"Jean",
+    "matricule": "7501020311",
+    "departement": "75"
+  },
+  {
+    "email":"dupont08Du75.jacques@email.fr",
+    "nom": "dupont08Du75",
+    "prenom":"Jean",
+    "matricule": "7501020312",
+    "departement": "75"
+  },
+  {
+    "email":"dupont09Du75.jacques@email.fr",
+    "nom": "dupont09Du75",
+    "prenom":"Jean",
+    "matricule": "7501020313",
+    "departement": "75"
+  },
+  {
+    "email":"dupont10Du75.jacques@email.fr",
+    "nom": "dupont10Du75",
+    "prenom":"Jean",
+    "matricule": "7501020314",
+    "departement": "75"
+  },
+  {
+    "email":"dupont11Du75.jacques@email.fr",
+    "nom": "dupont11Du75",
+    "prenom":"Jean",
+    "matricule": "7501020315",
+    "departement": "75"
+  }
+]

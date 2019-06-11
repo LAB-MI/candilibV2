@@ -29,13 +29,7 @@ before_script:
 
 script:
   - ( git fetch --unshallow || true ) && git tag -l
-  - echo "# build & run api in dev mode"
-  - ( cd server && docker-compose -f docker-compose.prod.api.yml build )
-  - docker images
-  - ( cd server && docker-compose -f docker-compose.prod.api.yml up -d --no-build )
-  - docker ps
-  - echo "# test-up"
-  - echo "# TODO test curl"
-  - ( cd server && docker-compose -f docker-compose.prod.api.yml down )
+  - ci/run-tests.sh
 after_script:
+  - make clean-images clean-dir
   - echo "END"

@@ -185,3 +185,7 @@ $RECYCLE.BIN/
 server/dist/
 server/mongo-dev/
 mongo-dev
+
+VERSION
+candilib-*-build/
+

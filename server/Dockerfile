@@ -1,8 +1,9 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:10-slim as base
-ARG proxy
+FROM node:12.3.1-slim as base
+ARG http_proxy
+ARG https_proxy
 ARG npm_registry
 ARG no_proxy
 
@@ -13,10 +14,10 @@ EXPOSE 8000
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone
 # use proxy & private npm registry
-RUN if [ ! -z "$proxy" ] ; then \
+RUN if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \
-        npm config set proxy $proxy; \
-        npm config set https-proxy $proxy ; \
+        npm config set proxy $http_proxy; \
+        npm config set https-proxy $https_proxy; \
         npm config set no-proxy $no_proxy; \
    fi ; \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry
@@ -25,12 +26,15 @@ RUN if [ ! -z "$proxy" ] ; then \
 # Step 2: "development" target #
 ################################
 FROM base as development
+ARG APP_VERSION
 COPY src src/
 COPY babel.config.js package.json package-lock.json ./
 # Install app dependencies
-RUN npm install
+RUN npm --no-git-tag-version version ${APP_VERSION} ; npm install
+ENV NODE_ICU_DATA="/app/node_modules/full-icu"
 
-CMD ["npm", "start"]
+#CMD ["npm", "start"]
+CMD ["npm","run",  "dev"]
 
 ##########################
 # Step 3: "build" target #
@@ -45,16 +49,21 @@ RUN npm run build
 ###############################
 
 FROM build as production
+ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
+ARG APP_VERSION
 # Copy the transpiled code to use in production (in /app)
 COPY --from=build /app/dist ./dist
 COPY package.json package-lock.json ./
 # Install production dependencies and clean cache
-RUN npm install --production && \
+RUN npm --no-git-tag-version version ${APP_VERSION} && \
+    npm install --production && \
+    npm config set audit-level moderate && \
+    npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force
 # Install pm2
 RUN npm install pm2 -g
 # Copy the pm2 config
 COPY ecosystem.config.js .
 
-CMD [ "pm2-runtime", "start", "ecosystem.config.js" ]
+CMD [ "pm2-runtime", "start", "ecosystem.config.js", "--env", "production" ]

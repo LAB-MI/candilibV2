@@ -8,10 +8,12 @@
     "build": "babel src -d dist",
     "db": "docker-compose -f docker-compose.dev.db.yml up -d",
     "db:down": "docker-compose -f docker-compose.dev.db.yml down",
-    "build:all": "docker-compose -f docker-compose.prod.api.yml build",
+    "build:all": "docker-compose -f docker-compose.prod.all.yml build",
     "dev-setup": "node dev-setup/index.js",
     "dev": "nodemon --inspect --watch src boot-dev.js",
     "format": "prettier-eslint --write 'src/**/*.js'",
+    "lint:all": "run-p lint:client lint --",
+    "lint:client": "cd .. ; cd client ; npm run lint",
     "lint:only": "eslint src",
     "prelint": "npm run format",
     "lint": "eslint src",
@@ -19,7 +21,10 @@
     "start": "node dist/index.js",
     "start:prod": "node dist/index.js",
     "test:watch": "cross-env NODE_ENV=test jest --watch",
+    "test:only": "cross-env NODE_ENV=test jest",
     "pretest": "npm run lint",
+    "test:all": "run-s test test:client",
+    "test:client": "cd .. ; cd client ; npm test",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit"
   },
   "keywords": [
@@ -35,62 +40,78 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "cross-env": "^5.2.0",
-    "delay": "^4.1.0",
-    "express": "^4.16.4",
-    "express-fileupload": "^1.1.1-alpha.1",
-    "fast-csv": "^2.4.1",
-    "json2csv": "^4.3.2",
-    "jsonwebtoken": "^8.4.0",
+    "delay": "^4.2.0",
+    "express": "^4.17.1",
+    "express-fileupload": "^1.1.4",
+    "fast-csv": "^2.5.0",
+    "full-icu": "^1.3.0",
+    "json2csv": "^4.5.1",
+    "jsonwebtoken": "^8.5.1",
     "latinize": "^0.4.0",
-    "moment": "^2.23.0",
-    "mongodb-memory-server": "^2.9.1",
-    "mongoose": "^5.4.0",
+    "luxon": "^1.16.0",
+    "moment": "^2.24.0",
+    "mongoose": "^5.5.12",
     "morgan": "^1.9.1",
-    "nodemailer": "^5.0.0",
+    "nodemailer": "^6.2.1",
     "nodemailer-html-to-text": "^3.0.0",
     "nodemailer-smtp-transport": "^2.7.4",
-    "sanitize-html": "^1.20.0",
-    "winston": "^3.1.0"
+    "sanitize-html": "^1.20.1",
+    "uuid": "^3.3.2",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.3",
-    "@babel/core": "^7.2.2",
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/polyfill": "^7.2.3",
-    "@babel/preset-env": "^7.2.3",
-    "@babel/register": "^7.0.0",
+    "@babel/polyfill": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/register": "^7.4.4",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^24.8.0",
     "babel-plugin-dynamic-import-node": "^2.2.0",
-    "dotenv": "^6.2.0",
-    "eslint": "^5.10.0",
+    "dotenv": "^8.0.0",
+    "eslint": "^5.16.0",
     "eslint-config-standard": "^12.0.0",
-    "eslint-plugin-import": "^2.14.0",
-    "eslint-plugin-node": "^8.0.0",
-    "eslint-plugin-promise": "^4.0.1",
+    "eslint-plugin-import": "^2.17.3",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.1.1",
     "eslint-plugin-standard": "^4.0.0",
-    "husky": "^1.2.1",
-    "jest": "^23.6.0",
-    "lint-staged": "^8.1.0",
-    "nodemon": "^1.18.9",
+    "html-loader": "^0.5.5",
+    "husky": "^2.3.0",
+    "jest": "^24.8.0",
+    "lint-staged": "^8.1.7",
+    "mongodb-memory-server": "^5.1.2",
+    "nodemon": "^1.19.1",
+    "npm-run-all": "^4.1.5",
     "prettier-eslint-cli": "^4.7.1",
-    "regenerator-runtime": "^0.13.1",
-    "supertest": "^3.3.0"
+    "regenerator-runtime": "^0.13.2",
+    "supertest": "^4.0.2"
   },
   "husky": {
     "hooks": {
       "pre-commit": "lint-staged",
-      "pre-push": "npm test"
+      "pre-push": "npm run test:all"
     }
   },
   "lint-staged": {
-    "*.js": [
-      "npm run lint -s",
-      "git add"
-    ]
+    "linters": {
+      "../**/*.{js,vue,htm,html,css,scss}": [
+        "npm run lint:all",
+        "git add"
+      ]
+    }
   },
   "jest": {
+    "collectCoverage": false,
+    "collectCoverageFrom": [
+      "**/*.{js,vue}",
+      "!**/node_modules/**"
+    ],
+    "coverageReporters": [
+      "html",
+      "text-summary"
+    ],
     "testMatch": [
       "<rootDir>/src/**/?(*.)(spec).{js,jsx,mjs}"
     ],

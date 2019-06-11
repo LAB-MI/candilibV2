@@ -1,16 +1,18 @@
 import { createUser } from '../src/models/user'
 
-import logger from '../src/util/logger'
+import { simpleLogger as logger } from '../src/util'
 
-logger.info('Creating admin')
+import admins from './admins'
 
-const adminEmail = 'admin@example.com'
-const adminPassword = 'Admin*78'
+logger.info('Creating admins')
 
 export default async () => {
-  return createUser(adminEmail, adminPassword)
-    .then(() => {
-      logger.info(`Compte admin ${adminEmail} créé !`)
-    })
-    .catch(error => logger.error(error))
+  const adminsCreated = admins.map(({ password, email, departements}) =>
+    createUser(email, password, departements)
+      .then(() => {
+        logger.info(`Compte admin ${email} créé !`)
+      })
+      .catch(error => logger.error(error))
+  )
+  return Promise.all(adminsCreated)
 }

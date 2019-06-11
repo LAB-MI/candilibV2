@@ -1,30 +1,37 @@
 import delay from 'delay'
 import mongoose from 'mongoose'
-import MongoMemoryServer from 'mongodb-memory-server'
 
-import logger from './util/logger'
+import { dbOptions } from './config'
+import { techLogger } from './util'
 
 mongoose.Promise = Promise
 
 const isTest = process.env.NODE_ENV === 'test'
-const dbName = 'candilib'
+const dbName = dbOptions.db
+const dbAdmin = dbOptions.user
+const dbPassword = dbOptions.pass
 
-const mongoServer = new MongoMemoryServer()
-
-const mongoURL = process.env.MONGO_URL || `mongodb://localhost:27017/${dbName}`
+const mongoURL =
+  process.env.MONGO_URL ||
+  `mongodb://${dbAdmin}:${dbPassword}@localhost:27017/${dbName}`
 
 let reconnectTries = 30
 const reconnectInterval = process.env.NODE_ENV === 'production' ? 2000 : 1000
 
 const mongooseOpts = {
   useNewUrlParser: true,
+  useFindAndModify: false,
+  useCreateIndex: true,
 }
 
 export const connect = async () => {
   let mongoUri
   try {
     if (isTest) {
-      mongoUri = await mongoServer.getConnectionString()
+      const {
+        getMongoServerConnectionString,
+      } = await import('./mongo-memory-server-setup')
+      mongoUri = await getMongoServerConnectionString()
     } else {
       mongoUri = mongoURL
     }
@@ -32,12 +39,12 @@ export const connect = async () => {
       mongoUri,
       mongooseOpts
     )
-    logger.info('Connected to Mongo!')
+    techLogger.info('Connected to Mongo!')
     return mongoose
   } catch (err) {
     --reconnectTries
     if (reconnectTries > 0) {
-      logger.warn(
+      techLogger.warn(
         `Could not connect to Mongo at ${mongoUri}, ${reconnectTries} tries left`
       )
       return delay(reconnectInterval).then(connect)
@@ -52,7 +59,13 @@ export const connect = async () => {
 export const disconnect = async () => {
   try {
     await mongoose.disconnect()
+    if (isTest) {
+      const {
+        stopMongoMemoryServer,
+      } = await import('./mongo-memory-server-setup')
+      stopMongoMemoryServer()
+    }
   } catch (error) {
-    logger.info('Disconnected from Mongo')
+    techLogger.info('Disconnected from Mongo')
   }
 }

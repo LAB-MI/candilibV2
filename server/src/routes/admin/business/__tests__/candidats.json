@@ -1,0 +1,41 @@
+[
+  {
+    "reussitePratique": "",
+    "dateDernierEchecPratique": "",
+    "dateReussiteETG": "",
+    "codeNeph": "093631754283",
+    "prenom": "FIFI",
+    "nomNaissance": "MCAFFEE",
+    "isValidatedByAurige": false,
+    "adresse": "40 Avenuedes terroirs de France 75012 Paris",
+    "portable": "0621478954",
+    "email": "fifimcaffee@candilib.com",
+    "__v": 0
+  },
+  {
+      "reussitePratique": "",
+      "dateDernierEchecPratique": "",
+      "dateReussiteETG": "",
+      "codeNeph": "093496239512",
+      "prenom": "MAY",
+      "nomNaissance": "SWAISEY",
+      "isValidatedByAurige": false,
+      "adresse": "40 Avenuedes terroirs de France 75012 Paris",
+      "portable": "0603765291",
+      "email": "mayswaisey@candilib.com",
+      "__v": 0
+  },
+  {
+      "reussitePratique": "",
+      "dateDernierEchecPratique": "",
+      "dateReussiteETG": "",
+      "codeNeph": "093874320865",
+      "prenom": "BUBBA",
+      "nomNaissance": "ZANETTI",
+      "isValidatedByAurige": false,
+      "adresse": "40 Avenuedes terroirs de France 75012 Paris",
+      "portable": "0676543986",
+      "email": "bubbazanetti@candilib.com",
+      "__v": 0
+  }
+]

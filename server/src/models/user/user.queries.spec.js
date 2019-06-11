@@ -1,9 +1,11 @@
 import {
   createUser,
-  updateUserEmail,
-  deleteUserByEmail,
   deleteUser,
+  deleteUserByEmail,
   findUserByEmail,
+  findUserById,
+  updateUserDepartements,
+  updateUserEmail,
 } from './'
 import { connect, disconnect } from '../../mongo-connection'
 
@@ -22,6 +24,22 @@ describe('User', () => {
 
   afterAll(async () => {
     await disconnect()
+  })
+
+  describe('Getting User', () => {
+    it('should return a user by id', async () => {
+      // Given
+      const expectedEmail = 'test@example.com'
+      const password = 'S3cr3757uff!'
+      const departements = ['75', '93']
+      const admin = await createUser(expectedEmail, password, departements)
+
+      // When
+      const { email } = await findUserById(admin._id)
+
+      //  Then
+      expect(email).toBe(expectedEmail)
+    })
   })
 
   describe('Saving User', () => {
@@ -113,6 +131,7 @@ describe('User', () => {
     afterEach(async () => {
       await Promise.all([
         deleteUserByEmail(anotherValidEmail).catch(() => true),
+        deleteUserByEmail(validEmail).catch(() => true),
       ])
     })
 
@@ -132,6 +151,27 @@ describe('User', () => {
       expect(sameUserDifferentEmail).toBeDefined()
       expect(sameUserDifferentEmail._id.toString()).toBe(user._id.toString())
       expect(sameUserDifferentEmail.email).not.toBe(user.email)
+    })
+
+    it('should update a user′s departement list', async () => {
+      // Given
+      const email = validEmail
+      const password = validPassword
+      user = await createUser(email, password)
+      const departements = ['75', '93']
+
+      // When
+      const sameUserWithDepartements = await updateUserDepartements(
+        user,
+        departements
+      )
+
+      // Then
+      expect(sameUserWithDepartements).toBeDefined()
+      expect(sameUserWithDepartements).toHaveProperty('departements')
+      departements.forEach((departement, idx) => {
+        expect(sameUserWithDepartements.departements[idx]).toEqual(departement)
+      })
     })
   })
 

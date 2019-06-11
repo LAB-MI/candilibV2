@@ -1,0 +1,15 @@
+[
+    {
+        "email": "admin@example.com",
+        "password": "Admin*78",
+        "departements": ["75", "93"]
+    },{
+        "email": "admin75@example.com",
+        "password": "Admin*78",
+        "departements": ["75"]
+    },{
+        "email": "admin93@example.com",
+        "password": "Admin*78",
+        "departements": ["93"]
+    }
+]

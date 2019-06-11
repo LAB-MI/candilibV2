@@ -1,0 +1,56 @@
+# production mode
+version: '3.5'
+services:
+  db:
+    image: mongo:4.0.6
+    ports:
+      - "27017"
+#    networks:
+#      - candilib-network
+    volumes:
+      - ${DBDATA:-../mongo}:/data/db
+      - ./db/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT_USER:-admin}
+      MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_PASS:-changeme}
+      MONGO_INITDB_DATABASE: ${DB_NAME:-candilib}
+      DB_USER: ${DB_USER:-adminCandilib}
+      DB_PASS: ${DB_PASS:-changeme78}
+
+  api:
+    image: candilib_api:${APP_VERSION:-latest}
+    build:
+      context: ./
+      dockerfile: Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        npm_registry: ${NPM_REGISTRY}
+    container_name: candilib_api
+    depends_on:
+      - db
+    ports:
+      - "${API_PORT:-8000}:8000"
+#    env_file:
+#      - ${cnf:-.env}
+    environment:
+      NODE_ENV: production
+      MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
+      SMTP_SERVER: ${SMTP_SERVER:-smtp}
+      SMTP_PORT: ${SMTP_PORT:-25}
+      MAIL_FROM: ${MAIL_FROM:-noreply@interieur.gouv.fr}
+      CANDIDAT_EXPIREDIN: ${CANDIDAT_EXPIREDIN:-72h}
+      PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
+
+#    networks:
+#      - candilib-network
+#networks:
+#  candilib-network:
+#    driver: bridge
+#    driver_opts:
+#      com.docker.network.driver.mtu: 1450
+networks:
+  default:
+    external:
+      name: ${APP}-network

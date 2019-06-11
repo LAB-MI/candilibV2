@@ -14,14 +14,18 @@ export function verifyToken (req, res, next) {
 
   try {
     const decoded = checkToken(token)
-    const { level } = decoded
+    const { id, level, departements } = decoded
+    req.userId = id
     req.userLevel = level
+    req.departements = departements
     next()
-  } catch (err) {
+  } catch (error) {
     return res.status(401).send({
       isTokenValid: false,
       message: 'Token invalide',
       success: false,
+      errorMessage: error.message,
+      error,
     })
   }
 }

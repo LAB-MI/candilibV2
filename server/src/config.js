@@ -1,8 +1,24 @@
 import moment from 'moment'
 
+const isProduction = process.env.NODE_ENV === 'production'
+
+const DEFAULT_PUBLIC_URL = isProduction
+  ? 'https://beta.interieur.gouv.fr/candilib'
+  : 'http://localhost:8080/candilib'
+
+const userStatuses = {
+  CANDIDAT: 'candidat',
+  ADMIN: 'admin',
+}
+
+const userStatusLevels = {
+  [userStatuses.CANDIDAT]: 0,
+  [userStatuses.ADMIN]: 1,
+}
+
 const config = {
   secret: process.env.SECRET || 'secret',
-  candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '1h',
+  candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '3d',
   get adminTokenExpiration () {
     const now = moment()
     const midnight = now
@@ -21,14 +37,44 @@ const config = {
     return duration + 's'
   },
 
-  USER_STATUS_LEVEL: {
-    candidat: 0,
-    admin: 1,
-  },
+  userStatuses,
 
-  smtpServer: process.env.SMTP_SERVER || '<server>',
+  userStatusLevels,
+
+  dbName: process.env.DB_NAME,
+  dbUser: process.env.DB_USER,
+  dbPass: process.env.DB_PASS,
+
+  mailFrom: process.env.MAIL_FROM || 'noreply@localhost.com',
+
+  smtpServer: process.env.SMTP_SERVER || 'localhost',
   smtpService: process.env.SMTP_SERVICE || undefined,
+  smtpUser: process.env.SMTP_USER,
+  smtpPass: process.env.SMTP_PASS,
   smtpPort: process.env.SMTP_PORT || 25,
+
+  PUBLIC_URL: process.env.PUBLIC_URL || DEFAULT_PUBLIC_URL,
+  CANDIDAT_ROUTE: '/candidat',
+  ADMIN_ROUTE: '/admin',
+
+  delayToBook:
+    process.env.DELAY_TO_BOOK !== undefined
+      ? Number(process.env.DELAY_TO_BOOK)
+      : 7,
+  timeoutToRetry:
+    process.env.TIMEOUT_TO_RETRY !== undefined
+      ? Number(process.env.TIMEOUT_TO_RETRY)
+      : 45,
+  daysForbidCancel:
+    process.env.DAYS_FORBID_CANCEL !== undefined
+      ? Number(process.env.DAYS_FORBID_CANCEL)
+      : 7,
+}
+
+export const dbOptions = {
+  db: config.dbName,
+  user: config.dbUser,
+  pass: config.dbPass,
 }
 
 export const smtpOptions = {
@@ -39,6 +85,13 @@ export const smtpOptions = {
     // do not failed with selfsign certificates
     rejectUnauthorized: false,
   },
+}
+
+if (config.smtpUser) {
+  smtpOptions.auth = {
+    user: config.smtpUser,
+    pass: config.smtpPass,
+  }
 }
 
 export default config

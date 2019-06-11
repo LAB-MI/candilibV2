@@ -1,0 +1,112 @@
+[
+    {
+        "codeNeph": "093123456789",
+        "nomNaissance": "MAD",
+        "nomUsage": "",
+        "prenom": "MAX",
+        "email": "madmax@candilib.com",
+        "dateReussiteETG": "2015-07-07",
+        "dateDernierEchecPratique": "",
+        "reussitePratique": "OK",
+        "candidatExistant": "OK"
+    },
+    {
+        "codeNeph": "093458736982",
+        "nomNaissance": "ROCKATANSKY",
+        "nomUsage": "",
+        "prenom": "JESSIE",
+        "email": "jessierockatansky@candilib.com",
+        "dateReussiteETG": "",
+        "dateDernierEchecPratique": "",
+        "reussitePratique": "",
+        "candidatExistant": "NOK"
+    },
+    {
+        "codeNeph": "093571369217",
+        "nomNaissance": "CUTTER",
+        "nomUsage": "",
+        "prenom": "TOE",
+        "email": "toecutter@candilib.com",
+        "dateReussiteETG": "",
+        "dateDernierEchecPratique": "",
+        "reussitePratique": "",
+        "candidatExistant": "NOK Nom"
+    },
+    {
+        "codeNeph": "093621795384",
+        "nomNaissance": "GOOSE",
+        "nomUsage": "",
+        "prenom": "JIM",
+        "email": "jimgoose@candilib.com",
+        "dateReussiteETG": "2013-04-09",
+        "dateDernierEchecPratique": "2018-03-04",
+        "reussitePratique": "",
+        "candidatExistant": "OK"
+    },
+    {
+        "codeNeph": "093365721896",
+        "nomNaissance": "BOY",
+        "nomUsage": "",
+        "prenom": "JOHNNY",
+        "email": "johnnyboy@candilib.com",
+        "dateReussiteETG": "",
+        "dateDernierEchecPratique": "",
+        "reussitePratique": "",
+        "candidatExistant": "OK"
+    },
+    {
+        "codeNeph": "093631754283",
+        "nomNaissance": "MCAFFEE",
+        "nomUsage": "",
+        "prenom": "FIFI",
+        "email": "fifimcaffee@candilib.com",
+        "dateReussiteETG": "2018-05-10",
+        "dateDernierEchecPratique": "2019-06-04",
+        "reussitePratique": "",
+        "candidatExistant": "OK"
+    },
+    {
+        "codeNeph": "093496239512",
+        "nomNaissance": "SWAISEY",
+        "nomUsage": "",
+        "prenom": "MAY",
+        "email": "mayswaisey@candilib.com",
+        "dateReussiteETG": "2018-08-15",
+        "dateDernierEchecPratique": "2019-06-04",
+        "reussitePratique": "",
+        "candidatExistant": "OK"
+    },
+    {
+        "codeNeph": "093874320865",
+        "nomNaissance": "ZANETTI",
+        "nomUsage": "",
+        "prenom": "BUBBA",
+        "email": "bubbazanetti@candilib.com",
+        "dateReussiteETG": "2016-10-28",
+        "dateDernierEchecPratique": "2019-01-10",
+        "reussitePratique": "",
+        "candidatExistant": "OK"
+    },
+    {
+        "codeNeph": "093874320867",
+        "nomNaissance": "BURNS",
+        "nomUsage": "",
+        "prenom": "TIM",
+        "email": "timburns@candilib.com",
+        "dateReussiteETG": "2018-10-25",
+        "dateDernierEchecPratique": "2019-01-10",
+        "reussitePratique": "",
+        "candidatExistant": "OK"
+    },
+    {
+        "codeNeph": "093874320868",
+        "nomNaissance": "CAMERON",
+        "nomUsage": "",
+        "prenom": "DAVID",
+        "email": "davidcameron@candilib.com",
+        "dateReussiteETG": "2017-10-28",
+        "dateDernierEchecPratique": "",
+        "reussitePratique": "",
+        "candidatExistant": "OK"
+    }
+]
