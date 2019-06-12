@@ -1,36 +1,27 @@
 <template>
-  <v-flex xs12>
-    <v-alert
-      :value="true"
-      :color="colorAlert || 'white'"
+  <v-alert
+    :value="true"
+    :color="colorAlert || 'white'"
+  >
+    <div
+      class="u-flex  u-flex--center  u-flex--column  u-full-width"
     >
-      <v-layout>
-        <v-flex xs5>
-          <v-btn
-            fab
-            :color="colorSubmitButton"
-            @click="submitDial"
-            large
-            ripple
-            style="width: 5em; height: 5em;"
-            :loading="isLoading"
-          >
-            <v-icon :color="colorIcon" x-large>
-              {{ icon }}
-            </v-icon>
-          </v-btn>
-        </v-flex>
-        <v-spacer></v-spacer>
-        <v-flex xs12>
-          <h1 v-if="activeTextContent" class="black--text">
-            {{ textContent }}
-            <slot name='title'/>
-          </h1>
-          <slot/>
-        </v-flex>
-      </v-layout>
-    </v-alert>
-  </v-flex>
+      <v-btn
+        v-if="activeTextContent" class="white--text"
+        :color="colorSubmitButton"
+        :loading="isLoading"
+        @click="submitDial"
+      >
+        <v-icon :color="colorIcon" large>
+          {{ icon }}
+        </v-icon>
+        &nbsp;
+        {{ textContent }}
+      </v-btn>
+      <slot name="title"/>
+      <slot/>
+    </div>
+  </v-alert>
 </template>
 
 <script>
@@ -43,7 +34,6 @@ export default {
     },
     textButtonCancel: String,
     closeDialog: Function,
-    submitDialog: Function,
     content: Object,
     icon: String,
     colorIcon: String,
@@ -57,7 +47,7 @@ export default {
 
   methods: {
     submitDial () {
-      this.submitDialog()
+      this.$emit('click')
     },
   },
 }

@@ -15,17 +15,19 @@ export default {
     isFetching: false,
     isFetchingList: false,
     list: [],
+    candidat: undefined,
   },
 
   mutations: {
     [FETCH_CANDIDAT_REQUEST] (state) {
       state.isFetching = true
     },
-    [FETCH_CANDIDAT_SUCCESS] (state, list) {
+    [FETCH_CANDIDAT_SUCCESS] (state, candidat) {
       state.isFetching = false
-      state.list = list
+      state.candidat = candidat
     },
     [FETCH_CANDIDAT_FAILURE] (state) {
+      state.candidat = undefined
       state.isFetching = false
     },
 
@@ -42,11 +44,11 @@ export default {
   },
 
   actions: {
-    async [FETCH_CANDIDAT_REQUEST] ({ commit, dispatch }, id, departement) {
+    async [FETCH_CANDIDAT_REQUEST] ({ commit, dispatch }, { candidatId, departement }) {
       commit(FETCH_CANDIDAT_REQUEST)
       try {
-        const list = await api.admin.getCandidats(id, departement)
-        commit(FETCH_CANDIDAT_SUCCESS, list)
+        const { candidat } = await api.admin.getCandidats(candidatId, departement)
+        commit(FETCH_CANDIDAT_SUCCESS, candidat)
       } catch (error) {
         commit(FETCH_CANDIDAT_FAILURE)
         return dispatch(SHOW_ERROR, 'Error while fetching candidat')

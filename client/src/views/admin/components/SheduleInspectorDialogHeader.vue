@@ -15,7 +15,7 @@
       <v-spacer></v-spacer>
       <v-btn
         style="left: 1em;"
-        @click="closeDialog"
+        @click="$emit('close')"
         ripple
         fab
         flat
@@ -29,12 +29,8 @@
         </v-icon>
       </v-btn>
     </v-toolbar>
-    <v-toolbar>
-      <v-spacer></v-spacer>
-      <v-toolbar-title
-        class="black--text text-uppercase"
-      >
-        {{ nomInspecteur ? 'Inspecteur' : '' }}
+    <div class=" name-creneau u-flex u-flex--space-between">
+      <h4 v-if="nomInspecteur">
         <strong>
           {{ nomInspecteur }}
         </strong>
@@ -42,13 +38,23 @@
         <strong>
           {{ formattedDate }}
         </strong>
-      </v-toolbar-title>
-      <v-spacer></v-spacer>
-    </v-toolbar>
+      </h4>
+      <h4 v-if="infoSelectedDialog.place && infoSelectedDialog.place.candidat">
+        <strong>
+          {{ candidat.prenom }}
+          {{ candidat.nomNaissance }}
+        </strong>
+        <strong>
+          {{ candidat.codeNeph }}
+        </strong>
+      </h4>
+    </div>
+
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import {
   getFrenchDateTimeFromIso,
 } from '@/util'
@@ -56,7 +62,6 @@ import {
 export default {
   props: {
     title: String,
-    closeDialog: Function,
     colorIcon: String,
     colorButton: String,
     icon: String,
@@ -64,7 +69,11 @@ export default {
     iconOnLeft: String,
     infoSelectedDialog: Object,
   },
+
   computed: {
+    ...mapState({
+      candidat: (state) => state.candidats.candidat || {},
+    }),
     formattedDate () {
       if (this.infoSelectedDialog.place && this.infoSelectedDialog.place.date) {
         return getFrenchDateTimeFromIso(this.infoSelectedDialog.place.date)
@@ -78,10 +87,13 @@ export default {
       return ''
     },
   },
-  methods: {
-    closeDialogHeader () {
-      this.closeDialog()
-    },
-  },
 }
 </script>
+
+<style lang="stylus">
+
+.name-creneau {
+  margin: 1em;
+}
+
+</style>

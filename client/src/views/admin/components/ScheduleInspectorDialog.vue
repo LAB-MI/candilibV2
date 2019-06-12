@@ -1,6 +1,7 @@
 <template>
   <td class="text-xs-right">
-    <div class="text-xs-center">
+    <div class="text-xs-center"
+    >
       <v-dialog
         v-model="dialog"
         width="650"
@@ -10,8 +11,9 @@
             color="white"
             dark
             v-on="on"
+            @click="getCandidat"
           >
-            <v-icon :color="setContext().color">
+            <v-icon :color="color">
               {{ icon }}
             </v-icon>
           </v-btn>
@@ -33,6 +35,7 @@
 
 <script>
 import SheduleInspectorDialogContent from './SheduleInspectorDialogContent.vue'
+import { FETCH_CANDIDAT_REQUEST } from '@/store'
 
 export default {
   components: {
@@ -41,6 +44,7 @@ export default {
 
   data () {
     return {
+      color: '#A9A9A9',
       dialog: false,
       icon: '',
       flagModal: undefined,
@@ -55,28 +59,36 @@ export default {
     centreInfo: Object,
   },
 
+  computed: {
+    place () {
+      return this.content.place
+    },
+  },
+
   methods: {
-    setContext () {
-      if (this.content.place !== undefined) {
-        if ('candidat' in this.content.place) {
-          this.icon = 'face'
-          this.flagModal = 'face'
-          return {
-            color: 'blue',
-            content: this.content,
-          }
-        }
-        this.flagModal = 'check'
-        this.icon = 'check_circle'
-        return {
-          color: 'green',
-          content: this.content,
-        }
+    setContext (place) {
+      if (place === undefined) {
+        this.color = '#A9A9A9'
+        this.flagModal = 'block'
+        this.icon = 'block'
+        return
       }
-      this.flagModal = 'block'
-      this.icon = 'block'
-      return {
-        color: '#A9A9A9',
+      if ('candidat' in place) {
+        this.color = 'blue'
+        this.flagModal = 'face'
+        this.icon = 'face'
+        return
+      }
+      this.color = 'green'
+      this.flagModal = 'check'
+      this.icon = 'check_circle'
+    },
+
+    getCandidat () {
+      const candidatId = this.place && this.place.candidat
+      const departement = this.$store.state.admin.departements.active
+      if (candidatId) {
+        this.$store.dispatch(FETCH_CANDIDAT_REQUEST, { candidatId, departement })
       }
     },
 
@@ -84,8 +96,16 @@ export default {
       this.dialog = false
     },
   },
+
+  watch: {
+    place (newVal) {
+      this.setContext(newVal)
+    },
+  },
+
   mounted () {
-    this.setContext()
+    const place = this.place
+    this.setContext(place)
   },
 }
 </script>
