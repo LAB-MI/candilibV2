@@ -37,6 +37,7 @@ import {
 } from '../../../models/place'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import { releaseResa } from '../places.business'
+import { ECHEC } from '../../../models/candidat/objetDernierNonReussite.values'
 
 const getCandidatStatus = (nom, neph, status, details, message) => ({
   nom,
@@ -216,20 +217,14 @@ export const synchroAurige = async buffer => {
         const updateCandidat = {
           isValidatedByAurige: true,
         }
-
+        // Date ETG
         const dateTimeDateReussiteETG = getFrenchLuxonDateTimeFromISO(
           dateReussiteETG
         )
         if (dateTimeDateReussiteETG.isValid) {
           updateCandidat.dateReussiteETG = dateTimeDateReussiteETG
         }
-        const dateTimeDateDernierEchecPratique = getFrenchLuxonDateTimeFromISO(
-          dateDernierEchecPratique
-        )
-        if (dateTimeDateDernierEchecPratique.isValid) {
-          updateCandidat.dateDernierEchecPratique = dateTimeDateDernierEchecPratique
-        }
-
+        // Date reussite Pratique
         const dateTimeReussitePratique = getFrenchLuxonDateTimeFromISO(
           reussitePratique
         )
@@ -237,42 +232,28 @@ export const synchroAurige = async buffer => {
           updateCandidat.reussitePratique = dateTimeReussitePratique
         }
 
-        if (dateDernierNonReussite || objetDernierNonReussite) {
-          const dateTimeDateDernierNonReussite = getFrenchLuxonDateTimeFromISO(
-            dateDernierNonReussite
-          )
-          const lastNoReussite = {
-            reason: objetDernierNonReussite,
-          }
-          if (dateTimeDateDernierNonReussite.isValid) {
-            lastNoReussite.date = dateTimeDateDernierNonReussite
-          }
-          updateCandidat.lastNoReussite = lastNoReussite
-        }
-
+        // Nb echec
         const nbFailed = Number(nbEchecsPratiques)
         if (nbFailed) {
           updateCandidat.nbEchecsPratiques = nbFailed
         }
+
+        // Date non réussite
         const dateNoReussite =
           dateDernierEchecPratique || dateDernierNonReussite
-        try {
-          // Check failure date
-          const dateTimeEchec = checkFailureDate(dateNoReussite)
-          // put a penalty
-          if (dateTimeEchec) {
-            const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
-            if (canBookFrom) {
-              updateCandidat.canBookFrom = canBookFrom.toISO()
-              await removeResaNoAuthorize(candidat, canBookFrom)
-            }
+        // Check failure date
+        const dateTimeEchec = checkFailureDate(candidat, dateNoReussite)
+        // put a penalty And last no reussite
+        if (dateTimeEchec) {
+          updateCandidat.lastNoReussite = {
+            date: dateTimeEchec,
+            reason: dateDernierEchecPratique ? ECHEC : objetDernierNonReussite,
           }
-        } catch (error) {
-          appLogger.error({
-            ...loggerInfoCandidat,
-            error,
-            dateNoReussite,
-          })
+          const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
+          if (canBookFrom) {
+            updateCandidat.canBookFrom = canBookFrom.toISO()
+            await removeResaNoAuthorize(candidat, canBookFrom)
+          }
         }
 
         appLogger.debug({ ...loggerInfoCandidat, updateCandidat })
@@ -372,17 +353,24 @@ export const synchroAurige = async buffer => {
   return Promise.all(result)
 }
 
-function checkFailureDate (dateDernierEchecPratique) {
-  if (dateDernierEchecPratique && dateDernierEchecPratique.length > 0) {
-    const dateTimeEchec = getFrenchLuxonDateTimeFromISO(
-      dateDernierEchecPratique
+function checkFailureDate (candidat, dateDernierEchecPratique) {
+  if (!dateDernierEchecPratique || dateDernierEchecPratique.length === 0) {
+    return
+  }
+  const dateTimeEchec = getFrenchLuxonDateTimeFromISO(dateDernierEchecPratique)
+  if (!dateTimeEchec.isValid) {
+    throw new Error('La date de denier echec pratique est érronée')
+  }
+
+  if (candidat && candidat.lastNoReussite && candidat.lastNoReussite.date) {
+    const dateLastNoReussite = getFrenchLuxonDateTimeFromJSDate(
+      candidat.lastNoReussite.date
     )
-    if (!dateTimeEchec.isValid) {
-      throw new Error('La date de denier echec pratique est érronée')
-    } else {
-      return dateTimeEchec
+    if (dateTimeEchec.equals(dateLastNoReussite)) {
+      return
     }
   }
+  return dateTimeEchec
 }
 
 /**
