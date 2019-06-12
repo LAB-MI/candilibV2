@@ -31,7 +31,7 @@ export const removeReservationByAdmin = async (req, res) => {
   appLogger.info({
     ...loggerContent,
     action: 'DELETE_RESA',
-    message: `Suppression de la reservaton candidat`,
+    description: `Suppression de la réservaton candidat`,
   })
 
   // Have a reservation
@@ -49,7 +49,7 @@ export const removeReservationByAdmin = async (req, res) => {
     appLogger.warn({
       ...loggerContent,
       action: 'NOT_RESA',
-      message,
+      description: message,
     })
 
     return res.status(400).send({

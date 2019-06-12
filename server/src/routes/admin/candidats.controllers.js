@@ -13,6 +13,10 @@ import {
 import { findPlaceByCandidatId } from '../../models/place'
 
 export const importCandidats = async (req, res) => {
+  const loggerInfo = {
+    section: 'admin-import-candidats',
+    user: req.userId,
+  }
   const files = req.files
 
   if (!files || !files.file) {
@@ -24,7 +28,11 @@ export const importCandidats = async (req, res) => {
   }
 
   const jsonFile = files.file
+
   try {
+    loggerInfo.filename = jsonFile.name
+    appLogger.info({ ...loggerInfo })
+
     const result = await synchroAurige(jsonFile.data)
     res.status(200).send({
       fileName: jsonFile.name,
@@ -33,6 +41,7 @@ export const importCandidats = async (req, res) => {
       candidats: result,
     })
   } catch (error) {
+    appLogger.error({ ...loggerInfo, error })
     return res.status(500).send({
       success: false,
       message: error.message,
@@ -42,6 +51,12 @@ export const importCandidats = async (req, res) => {
 }
 
 export const exportCandidats = async (req, res) => {
+  appLogger.info({
+    section: 'admin-export-cvs',
+    action: 'candidats',
+    user: req.userId,
+  })
+
   const candidatsAsCsv = await getCandidatsAsCsv(req.candidats)
   let filename = 'candidatsLibresPrintel.csv'
   res
@@ -51,6 +66,12 @@ export const exportCandidats = async (req, res) => {
 }
 
 export const exportBookedCandidats = async (req, res) => {
+  appLogger.info({
+    section: 'admin-export-cvs',
+    action: 'booked-candidats',
+    user: req.userId,
+  })
+
   const candidatsAsCsv = await getBookedCandidatsAsCsv(req.candidats)
   const filename = 'candidatsLibresReserve.csv'
   res
@@ -131,6 +152,15 @@ export const getBookedCandidats = async (req, res) => {
   const {
     query: { format, date, inspecteur, centre },
   } = req
+
+  appLogger.info({
+    section: 'admin-get-booked-candidats',
+    user: req.userId,
+    format,
+    date,
+    inspecteur,
+    centre,
+  })
 
   const candidats = await findBookedCandidats(date, inspecteur, centre)
 

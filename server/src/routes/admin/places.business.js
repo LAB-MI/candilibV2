@@ -140,14 +140,16 @@ const transfomCsv = async ({ data, departement }) => {
 }
 
 const createPlaceCsv = async place => {
+  const loggerInfo = {
+    func: 'createPlaceCsv',
+  }
   const { centre, inspecteur, date } = place
   try {
     const leanPlace = { inspecteur, date, centre: centre._id }
     await createPlace(leanPlace)
     appLogger.info({
-      section: 'Admim-ImportPlaces',
-      action: 'createPlaceCsv',
-      message: `Place {${centre.departement},${
+      ...loggerInfo,
+      description: `Place {${centre.departement},${
         centre.nom
       }, ${inspecteur}, ${date}} enregistrée en base`,
     })
@@ -160,12 +162,13 @@ const createPlaceCsv = async place => {
       `Place enregistrée en base`
     )
   } catch (error) {
-    appLogger.error(error)
+    loggerInfo.place = { centre, inspecteur, date }
+    appLogger.error({ ...loggerInfo, error })
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
       appLogger.warn({
-        section: 'Admim-ImportPlaces',
-        action: 'createPlaceCsv',
-        message: 'Place déjà enregistrée en base',
+        ...loggerInfo,
+        description: 'Place déjà enregistrée en base',
+        error,
       })
       return getPlaceStatus(
         centre.departement,
@@ -188,6 +191,9 @@ const createPlaceCsv = async place => {
 }
 
 export const importPlacesCsv = async ({ csvFile, departement }) => {
+  const loggerInfo = {
+    func: 'importPlacesCsv',
+  }
   let PlacesPromise = []
 
   if (!departement) {
@@ -202,7 +208,11 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
           if (data[0] === 'Date') next()
           else {
             transfomCsv({ data, departement }).then(result => {
-              appLogger.debug('transfomCsv' + result)
+              appLogger.debug({
+                ...loggerInfo,
+                action: 'resolve-transformCsv',
+                result,
+              })
               if (result.status && result.status === 'error') {
                 PlacesPromise.push(result)
                 next()
@@ -212,7 +222,11 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
             })
           }
         } catch (error) {
-          appLogger.error(error)
+          appLogger.error({
+            ...loggerInfo,
+            action: 'csv-parser-transform',
+            error,
+          })
         }
       })
       .on('data', place => {
@@ -225,11 +239,16 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
 }
 
 export const releaseResa = async ({ _id }) => {
+  const loggerInfo = {
+    func: 'releaseResa',
+    candidat: _id,
+  }
+  appLogger.debug(loggerInfo)
   const place = await findPlaceBookedByCandidat(_id)
   if (place) {
-    appLogger.info({
-      section: 'admin',
-      action: 'releaseResa',
+    appLogger.debug({
+      func: 'releaseResa',
+      acion: 'remove-place',
       candidat: _id,
       place,
     })
@@ -238,6 +257,14 @@ export const releaseResa = async ({ _id }) => {
 }
 
 export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
+  const loggerInfo = {
+    func: 'removeReservationPlaceByAdmin',
+    place,
+    candidat,
+    admin,
+  }
+  appLogger.debug(loggerInfo)
+
   // Annuler la place
   const placeUpdated = await removeBookedPlace(place)
   // Archive place
@@ -255,7 +282,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     await sendCancelBookingByAdmin(placeUpdated, candidatUpdated)
   } catch (error) {
     appLogger.warn({
-      section: 'candidat-removeReservations',
+      ...loggerInfo,
       action: 'FAILED_SEND_MAIL',
       error,
     })
@@ -267,7 +294,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     await deletePlace(placeUpdated)
   } catch (error) {
     appLogger.warn({
-      section: 'admin-removePlace',
+      ...loggerInfo,
       action: 'FAILED_DELETE_PLACE',
       error,
     })
@@ -278,8 +305,18 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
 }
 
 export const createPlaceForInspector = async (centre, inspecteur, date) => {
+  const loggerInfo = {
+    func: 'createPlaceForInspector',
+    centre,
+    inspecteur,
+    date,
+  }
+  appLogger.debug(loggerInfo)
+
   const myDate = date
   try {
+    loggerInfo.action = 'createPlaceForInspector'
+
     const formatedDate = DateTime.fromFormat(myDate, 'dd/MM/yy HH:mm', {
       zone: 'Europe/Paris',
       locale: 'fr',
@@ -287,9 +324,8 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     const leanPlace = { inspecteur, date: formatedDate, centre: centre._id }
     await createPlace(leanPlace)
     appLogger.info({
-      section: 'Admim-BuisnessPlaces',
-      action: 'createPlaceForInspector',
-      message: `Place {${centre.departement}, ${
+      ...loggerInfo,
+      description: `Place {${centre.departement}, ${
         centre.nom
       }, ${inspecteur}, ${myDate}} enregistrée en base`,
     })
@@ -302,12 +338,11 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       `Place enregistrée en base`
     )
   } catch (error) {
-    appLogger.error(error)
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
       appLogger.warn({
-        section: 'Admim-BuisnessPlaces',
-        action: 'createPlaceForInspector',
-        message: 'Place déjà enregistrée en base',
+        ...loggerInfo,
+        description: 'Place déjà enregistrée en base',
+        error,
       })
       return getPlaceStatus(
         centre.departement,
@@ -318,6 +353,10 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
         'Place déjà enregistrée en base'
       )
     }
+    appLogger.error({
+      ...loggerInfo,
+      error,
+    })
     return getPlaceStatus(
       centre.departement,
       centre.nom,
@@ -360,12 +399,12 @@ export const moveCandidatInPlaces = async (resa, place) => {
   const placeId = place._id
   const { _id: resaId, candidat } = resa
   const loggerContent = {
-    section: 'admin-move-candidat-in-places',
+    func: 'moveCandidatInPlaces',
     resaId,
     placeId,
   }
 
-  appLogger.info({
+  appLogger.debug({
     ...loggerContent,
     action: 'BOOK_RESA',
     placeId,
@@ -377,7 +416,7 @@ export const moveCandidatInPlaces = async (resa, place) => {
     throw new ErrorWithStatus(400, 'Cette place posséde une réservation')
   }
 
-  appLogger.info({
+  appLogger.debug({
     ...loggerContent,
     action: 'DELETE_RESA',
     resaId,
@@ -439,7 +478,7 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
     statusmail = true
   } catch (error) {
     appLogger.warn({
-      section: 'admin-assignCandidatInPlace',
+      ...loggerContent,
       action: 'FAILED_SEND_MAIL',
       error,
     })
@@ -508,7 +547,7 @@ export const sendMailSchedulesInspecteurs = async (
         await sendScheduleInspecteur(email, places)
         return { success: true }
       } catch (error) {
-        appLogger.error({ ...loggerContent, error })
+        appLogger.error({ ...loggerContent, error, inspecteur: inspecteurId })
         const inspecteur = await findInspecteurById(inspecteurId)
         resultsError.push(inspecteur)
       }
