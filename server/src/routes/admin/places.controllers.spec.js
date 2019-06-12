@@ -23,7 +23,7 @@ import { getPlaces, updatePlaces } from '../admin/places.controllers'
 import centreModel from '../../models/centre/centre.model'
 import placeModel from '../../models/place/place.model'
 import { createPlace } from '../../models/place'
-import { RESA_PLACE_HAS_BOOKED } from './message.constants'
+import { PLACE_IS_ALREADY_BOOKED } from './message.constants'
 import { createInspecteur } from '../../models/inspecteur'
 
 import {
@@ -167,7 +167,7 @@ describe('Test places controller', () => {
 
     expect(body).toBeDefined()
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', RESA_PLACE_HAS_BOOKED)
+    expect(body).toHaveProperty('message', PLACE_IS_ALREADY_BOOKED)
   })
 })
 
@@ -255,7 +255,7 @@ describe('update place by admin', () => {
       .expect(400)
 
     expect(body).toHaveProperty('error', { _status: 400 })
-    expect(body).toHaveProperty('message', 'Cette place est déja réservée')
+    expect(body).toHaveProperty('message', PLACE_IS_ALREADY_BOOKED)
     expect(body).toHaveProperty('success', false)
   })
 

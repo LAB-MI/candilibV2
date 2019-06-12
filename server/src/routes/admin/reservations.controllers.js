@@ -1,7 +1,7 @@
 import { findPlaceByIdAndPopulate } from '../../models/place'
 import { findUserById } from '../../models/user'
 import { appLogger } from '../../util'
-import { RESA_NO_BOOKED } from './message.constants'
+import { PLACE_IS_NOT_BOOKED } from './message.constants'
 import { removeReservationPlaceByAdmin } from './places.business'
 
 export const removeReservationByAdmin = async (req, res) => {
@@ -45,7 +45,7 @@ export const removeReservationByAdmin = async (req, res) => {
 
   const { candidat } = place
   if (!candidat) {
-    const message = RESA_NO_BOOKED
+    const message = PLACE_IS_NOT_BOOKED
     appLogger.warn({
       ...loggerContent,
       action: 'NOT_RESA',
