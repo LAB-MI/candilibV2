@@ -28,18 +28,14 @@ const candidats = [
 describe('export-candidats', () => {
   it('Should return a CSV string with ";" as delimiter', async () => {
     const { codeNeph, nomNaissance, prenom, email } = candidats[0]
-    const expectedFirstLine = `${JSON.stringify(codeNeph)};${JSON.stringify(
-      nomNaissance
-    )};${JSON.stringify(nomNaissance)};${JSON.stringify(
-      prenom
-    )};${JSON.stringify(email)}`
+    const expectedFirstLine = `${codeNeph};${nomNaissance};${nomNaissance};${prenom};${email}`
 
     const csv = await getCandidatsAsCsv(candidats)
 
-    expect(csv.substr(0, 61)).toContain(
-      `"Code NEPH";"Nom de naissance";"Nom d'usage";"Prénom";"email"`
+    expect(csv.substr(0, 51)).toContain(
+      `Code NEPH;Nom de naissance;Nom d'usage;Prénom;email`
     )
-    expect(csv.substr(61, 100)).toContain(expectedFirstLine)
+    expect(csv.substr(51, 100)).toContain(expectedFirstLine)
   })
 })
 
