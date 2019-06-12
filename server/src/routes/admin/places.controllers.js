@@ -75,22 +75,37 @@ export const getPlaces = async (req, res) => {
     date,
   }
 
-  if (!departement) {
-    places = await findAllPlaces()
-    appLogger.info({ ...loggerInfo, action: 'find-all-departement', description: `${places ? places.length : 0} trouvées` })
-    res.json(places)
-  } else {
-    if (centre && date) {
-      places = await findPlacesByCentreAndDate(centre, date, {
-        inspecteur: true,
-        centre: true,
-      })
-      appLogger.info({ ...loggerInfo, action: 'find-by-centre-date', description: `${places ? places.length : 0} trouvées` })
+  try {
+    if (!departement) {
+      loggerInfo.action = 'find-all-departement'
+      places = await findAllPlaces()
     } else {
-      places = await findCentresWithPlaces(departement, beginDate, endDate)
-      appLogger.info({ ...loggerInfo, action: 'find-by-departement-date', description: `${places ? places.length : 0} trouvées` })
+      if (centre && date) {
+        loggerInfo.action = 'find-by-centre-date'
+        places = await findPlacesByCentreAndDate(centre, date, {
+          inspecteur: true,
+          centre: true,
+        })
+      } else {
+        loggerInfo.action = 'find-by-departement-date'
+        places = await findCentresWithPlaces(departement, beginDate, endDate)
+      }
     }
+    appLogger.info({
+      ...loggerInfo,
+      description: `${places ? places.length : 0} trouvées`,
+    })
     res.json(places)
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      error,
+    })
+    return res.status(400).json({
+      success: false,
+      message: "Les places n'ont pas pu être récupérées",
+      error: error.nessage,
+    })
   }
 }
 
@@ -141,37 +156,36 @@ export const deletePlaceByAdmin = async (req, res) => {
     id,
   }
 
-  const place = await findPlaceById(id)
-  if (!place) {
+  try {
+    const place = await findPlaceById(id)
+
+    if (!place) {
+      const error = new Error(`La place id: [${id}] n'existe pas en base.`)
+      error.messageToUser = "La place n'existe pas en base"
+      throw error
+    }
+    await deletePlace(place)
     appLogger.info({
       ...loggerInfo,
-      description: `delete place: La place id: [${id}] n'existe pas en base.`,
+      description: `delete place: La place id: [${id}] a bien été supprimée de la base.`,
     })
-    res.json({ success: false, message: "La place n'existe pas en base" })
-  } else {
-    try {
-      await deletePlace(place)
-      appLogger.info({
-        ...loggerInfo,
-        description: `delete place: La place id: [${id}] a bien été supprimé de la base.`,
-      })
-      const { date, hour } = dateTimeToFormatFr(place.date)
-      res.json({
-        success: true,
-        message: `La place du [${date} ${hour}] a bien été supprimé de la base`,
-      })
-    } catch (error) {
-      appLogger.error({
-        ...loggerInfo,
-        description: `delete place: La place id: [${id}] a bien été supprimé de la base.`,
-        error,
-      })
-      res.json({
-        success: false,
-        message: `La place id: [${id}] n'a pas été supprimé`,
-        error: error.message,
-      })
-    }
+    const { date, hour } = dateTimeToFormatFr(place.date)
+    res.json({
+      success: true,
+      message: `La place du [${date} ${hour}] a bien été supprimée de la base`,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      error,
+    })
+    res.status(400).json({
+      success: false,
+      message: error.messageToUser
+        ? error.messageToUser
+        : `La place id: [${id}] n'a pas été supprimée`,
+      error: error.message,
+    })
   }
 }
 
@@ -191,7 +205,7 @@ export const updatePlaces = async (req, res) => {
         placeId,
         inspecteur,
         action: 'UPDATE_RESA',
-        description: `Changer l'inspecteur de la reservaton candidat`,
+        description: `Changer l'inspecteur de la réservaton candidat`,
       })
 
       const result = await validUpdateResaInspector(placeId, inspecteur)

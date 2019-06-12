@@ -126,8 +126,7 @@ const transfomCsv = async ({ data, departement }) => {
     appLogger.error({
       section: 'admimImportPlaces',
       action: 'transformCsv',
-      description: error.message,
-      error: error,
+      error,
     })
     return getPlaceStatus(
       departement,
@@ -168,7 +167,8 @@ const createPlaceCsv = async place => {
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
       appLogger.warn({
         ...loggerInfo,
-        decrisption: 'Place déjà enregistrée en base',
+        description: 'Place déjà enregistrée en base',
+        error,
       })
       return getPlaceStatus(
         centre.departement,
@@ -208,7 +208,11 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
           if (data[0] === 'Date') next()
           else {
             transfomCsv({ data, departement }).then(result => {
-              appLogger.debug({ ...loggerInfo, action: 'resolve-transformCsv', result })
+              appLogger.debug({
+                ...loggerInfo,
+                action: 'resolve-transformCsv',
+                result,
+              })
               if (result.status && result.status === 'error') {
                 PlacesPromise.push(result)
                 next()
@@ -218,7 +222,11 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
             })
           }
         } catch (error) {
-          appLogger.error({ ...loggerInfo, action: 'csv-parser-transform', error })
+          appLogger.error({
+            ...loggerInfo,
+            action: 'csv-parser-transform',
+            error,
+          })
         }
       })
       .on('data', place => {

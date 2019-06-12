@@ -77,6 +77,10 @@ export const synchroAurige = async buffer => {
   const retourAurige = JSON.parse(buffer.toString())
 
   const result = retourAurige.map(async candidatAurige => {
+    const loggerInfoCandidat = {
+      ...loggerInfo,
+      candidatAurige,
+    }
     const {
       codeNeph,
       candidatExistant,
@@ -87,7 +91,8 @@ export const synchroAurige = async buffer => {
       dateDernierNonReussite,
       objetDernierNonReussite,
     } = candidatAurige
-    appLogger.debug({ func: 'synchroAurige',
+    appLogger.debug({
+      func: 'synchroAurige',
       codeNeph,
       candidatExistant,
       dateReussiteETG,
@@ -100,7 +105,7 @@ export const synchroAurige = async buffer => {
     let nomNaissance = candidatAurige.nomNaissance
     if (!nomNaissance) {
       const message = `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`
-      appLogger.warn({ ...loggerInfo, description: message })
+      appLogger.warn({ ...loggerInfoCandidat, description: message })
       return getCandidatStatus(
         nomNaissance,
         codeNeph,
@@ -117,7 +122,7 @@ export const synchroAurige = async buffer => {
 
       if (candidat === undefined || candidat === null) {
         const message = `Candidat ${codeNeph}/${nomNaissance} non trouvé`
-        appLogger.warn({ ...loggerInfo, description: message })
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
         return getCandidatStatus(
           nomNaissance,
           codeNeph,
@@ -130,7 +135,7 @@ export const synchroAurige = async buffer => {
       if (!candidat.isValidatedEmail) {
         if (isMoreThan2HoursAgo(candidat.presignedUpAt)) {
           const message = `Candidat ${codeNeph}/${nomNaissance} email non vérifié depuis plus de 2h`
-          appLogger.warn({ ...loggerInfo, description: message })
+          appLogger.warn({ ...loggerInfoCandidat, description: message })
           return getCandidatStatus(
             nomNaissance,
             codeNeph,
@@ -141,7 +146,7 @@ export const synchroAurige = async buffer => {
         }
         const message = `Candidat ${codeNeph}/${nomNaissance} email non vérifié, inscrit depuis moins de 2h`
 
-        appLogger.warn({ ...loggerInfo, description: message })
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
         return getCandidatStatus(
           nomNaissance,
           codeNeph,
@@ -157,23 +162,23 @@ export const synchroAurige = async buffer => {
       let message
       if (candidatExistant === CANDIDAT_NOK) {
         message = `Ce candidat ${email} sera archivé : NEPH inconnu`
-        appLogger.warn({ ...loggerInfo, description: message })
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = CANDIDAT_NOK
       } else if (candidatExistant === CANDIDAT_NOK_NOM) {
         message = `Ce candidat ${email} sera archivé : Nom inconnu`
-        appLogger.warn({ ...loggerInfo, description: message })
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = CANDIDAT_NOK_NOM
       } else if (isEpreuveEtgInvalid(dateReussiteETG)) {
         message = `Ce candidat ${email} sera archivé : dateReussiteETG invalide`
-        appLogger.warn({ ...loggerInfo, description: message })
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_ETG_KO
       } else if (isETGExpired(dateReussiteETG)) {
         message = `Ce candidat ${email} sera archivé : Date ETG KO`
-        appLogger.warn({ ...loggerInfo, description: message })
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_ETG_KO
       } else if (isReussitePratique(reussitePratique)) {
         message = `Ce candidat ${email} sera archivé : PRATIQUE OK`
-        appLogger.warn({ ...loggerInfo, description: message })
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_PRATIQUE_OK
         const dateTimeReussitePratique = getFrenchLuxonDateTimeFromISO(
           reussitePratique
@@ -181,7 +186,10 @@ export const synchroAurige = async buffer => {
         if (dateTimeReussitePratique.isValid) {
           candidat.reussitePratique = dateTimeReussitePratique
         } else {
-          appLogger.warn({ ...loggerInfo, description: `Ce candidat ${email} sera archivé : reussitePratique n'est pas une date` })
+          appLogger.warn({
+            ...loggerInfoCandidat,
+            description: `Ce candidat ${email} sera archivé : reussitePratique n'est pas une date`,
+          })
         }
         await releaseResa(candidat)
       }
@@ -189,7 +197,10 @@ export const synchroAurige = async buffer => {
       if (aurigeFeedback) {
         await deleteCandidat(candidat, aurigeFeedback)
         await sendMailToAccount(candidat, aurigeFeedback)
-        appLogger.info({ ...loggerInfo, description: `Envoi de mail ${aurigeFeedback} à ${email}` })
+        appLogger.info({
+          ...loggerInfoCandidat,
+          description: `Envoi de mail ${aurigeFeedback} à ${email}`,
+        })
 
         return getCandidatStatus(
           nomNaissance,
@@ -245,18 +256,26 @@ export const synchroAurige = async buffer => {
         }
         const dateNoReussite =
           dateDernierEchecPratique || dateDernierNonReussite
-        // Check failure date
-        const dateTimeEchec = checkFailureDate(dateNoReussite)
-        // put a penalty
-        if (dateTimeEchec) {
-          const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
-          if (canBookFrom) {
-            updateCandidat.canBookFrom = canBookFrom.toISO()
-            await removeResaNoAuthorize(candidat, canBookFrom)
+        try {
+          // Check failure date
+          const dateTimeEchec = checkFailureDate(dateNoReussite)
+          // put a penalty
+          if (dateTimeEchec) {
+            const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
+            if (canBookFrom) {
+              updateCandidat.canBookFrom = canBookFrom.toISO()
+              await removeResaNoAuthorize(candidat, canBookFrom)
+            }
           }
+        } catch (error) {
+          appLogger.error({
+            ...loggerInfoCandidat,
+            error,
+            dateNoReussite,
+          })
         }
 
-        appLogger.debug({ ...loggerInfo, updateCandidat })
+        appLogger.debug({ ...loggerInfoCandidat, updateCandidat })
         // update data candidat
         candidat.set(updateCandidat)
         return candidat
@@ -264,7 +283,7 @@ export const synchroAurige = async buffer => {
           .then(async candidat => {
             if (isValidatedByAurige) {
               const message = `Ce candidat ${candidat.email} a été mis à jour`
-              appLogger.info({ ...loggerInfo, description: message })
+              appLogger.info({ ...loggerInfoCandidat, description: message })
               return getCandidatStatus(
                 nomNaissance,
                 codeNeph,
@@ -274,14 +293,14 @@ export const synchroAurige = async buffer => {
               )
             } else {
               let message = `Ce candidat ${candidat.email} a été validé`
-              appLogger.info({ ...loggerInfo, description: message })
+              appLogger.info({ ...loggerInfoCandidat, description: message })
               const token = createToken(
                 candidat.id,
                 config.userStatuses.CANDIDAT
               )
 
               message = `Envoi d'un magic link à ${email}`
-              appLogger.info({ ...loggerInfo, description: message })
+              appLogger.info({ ...loggerInfoCandidat, description: message })
               try {
                 await sendMagicLink(candidat, token)
                 return getCandidatStatus(
@@ -296,7 +315,11 @@ export const synchroAurige = async buffer => {
                   candidat.email
                 }, il a été validé, cependant`
 
-                appLogger.error({ ...loggerInfo, description: message, error })
+                appLogger.error({
+                  ...loggerInfoCandidat,
+                  description: message,
+                  error,
+                })
                 return getCandidatStatus(
                   nomNaissance,
                   codeNeph,
@@ -309,7 +332,11 @@ export const synchroAurige = async buffer => {
           })
           .catch(err => {
             const message = `Erreur de mise à jour pour ce candidat ${email}`
-            appLogger.error({ ...loggerInfo, description: message, error: err })
+            appLogger.error({
+              ...loggerInfoCandidat,
+              description: message,
+              error: err,
+            })
             return getCandidatStatus(
               nomNaissance,
               codeNeph,
@@ -320,7 +347,7 @@ export const synchroAurige = async buffer => {
           })
       } else {
         const message = `Ce candidat ${email} n'a pas été traité. Cas inconnu`
-        appLogger.warn({ ...loggerInfo, description: message })
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
         return getCandidatStatus(
           nomNaissance,
           codeNeph,
@@ -331,7 +358,7 @@ export const synchroAurige = async buffer => {
       }
     } catch (error) {
       const message = `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}`
-      appLogger.error({ ...loggerInfo, description: message, error })
+      appLogger.error({ ...loggerInfoCandidat, description: message, error })
       return getCandidatStatus(
         nomNaissance,
         codeNeph,
@@ -351,7 +378,7 @@ function checkFailureDate (dateDernierEchecPratique) {
       dateDernierEchecPratique
     )
     if (!dateTimeEchec.isValid) {
-      appLogger.warn({ func: 'checkFailureDate', description: 'La date de denier echec pratique est érroné' })
+      throw new Error('La date de denier echec pratique est érronée')
     } else {
       return dateTimeEchec
     }

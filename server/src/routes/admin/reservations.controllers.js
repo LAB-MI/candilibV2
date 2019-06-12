@@ -31,7 +31,7 @@ export const removeReservationByAdmin = async (req, res) => {
   appLogger.info({
     ...loggerContent,
     action: 'DELETE_RESA',
-    description: `Suppression de la reservaton candidat`,
+    description: `Suppression de la réservaton candidat`,
   })
 
   // Have a reservation
