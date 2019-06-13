@@ -69,7 +69,7 @@ export const updateUserDepartements = async (user, departements) => {
   if (!user) {
     throw new Error('user is undefined')
   }
-  await user.update({ departements })
+  await user.updateOne({ departements })
   const updatedUser = await User.findById(user._id)
   return updatedUser
 }
