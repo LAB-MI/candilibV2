@@ -20,6 +20,7 @@
         <v-btn icon @click.prevent="disconnect" slot="activator">
           <v-icon>exit_to_app</v-icon>
         </v-btn>
+        <!-- FIXME: Mettre dans common.js -->
         <span>Déconnexion</span>
       </v-tooltip>
       <departement-selector

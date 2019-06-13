@@ -47,16 +47,17 @@ export default Vue.extend({
       return !selected || !(selected[0].length > 0) || !selected.indexOf(this.valueGetter(params.node))
     },
   },
+
   watch: {
-    'selected': function (val, oldVal) {
-      if (val !== oldVal) {
+    selected: function (val, oldVal) {
+      if (val !== oldVal) { // FIXME: Est-ce que cette vérification est vraiment utile ?
         this.params.filterChangedCallback()
       }
     },
   },
+
   created () {
     this.valueGetter = this.params.valueGetter
   },
-
 })
 </script>

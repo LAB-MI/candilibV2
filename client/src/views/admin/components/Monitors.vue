@@ -86,6 +86,7 @@ export default {
 </script>
 
 <style lang="postcss">
+/* FIXME: Pourquoi ces CSS n'est-il pas scopé ? */
 .less-padding {
   padding-top: 0.1em;
 }

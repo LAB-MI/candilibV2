@@ -12,6 +12,8 @@ export const FETCH_CANDIDAT_INFO_REQUEST = 'FETCH_CANDIDAT_INFO_REQUEST'
 export const FETCH_CANDIDAT_INFO_SUCCESS = 'FETCH_CANDIDAT_INFO_SUCCESS'
 export const FETCH_CANDIDAT_INFO_FAILURE = 'FETCH_CANDIDAT_INFO_FAILURE'
 
+const getActiveDepartement = departements => departements.active || departements.list[0]
+
 export default {
   state: {
     candidats: {
@@ -68,8 +70,9 @@ export default {
 
   actions: {
     async FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST ({ state, commit, rootState }, search) {
+      const activeDepartement = getActiveDepartement(rootState.admin.departements)
       try {
-        const list = await api.admin.searchCandidats(search, rootState.admin.departements.active || rootState.admin.departements.list[0])
+        const list = await api.admin.searchCandidats(search, activeDepartement)
         commit(FETCH_AUTOCOMPLETE_CANDIDATS_SUCCESS, list)
       } catch (error) {
         commit(FETCH_AUTOCOMPLETE_CANDIDATS_FAILURE, error)
@@ -77,8 +80,9 @@ export default {
     },
 
     async FETCH_CANDIDAT_INFO_REQUEST ({ state, commit, rootState }, id) {
+      const activeDepartement = getActiveDepartement(rootState.admin.departements)
       try {
-        const { candidat } = await api.admin.getCandidats(id, rootState.admin.departements.active || rootState.admin.departements.list[0])
+        const { candidat } = await api.admin.getCandidats(id, activeDepartement)
         commit(FETCH_CANDIDAT_INFO_SUCCESS, candidat)
       } catch (error) {
         commit(FETCH_CANDIDAT_INFO_FAILURE, error)
@@ -86,8 +90,9 @@ export default {
     },
 
     async FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST ({ state, commit, rootState }, search) {
+      const activeDepartement = getActiveDepartement(rootState.admin.departements)
       try {
-        const list = await api.admin.searchInspecteurs(search, rootState.admin.departements.active || rootState.admin.departements.list[0])
+        const list = await api.admin.searchInspecteurs(search, activeDepartement)
         commit(FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS, list)
       } catch (error) {
         commit(FETCH_AUTOCOMPLETE_INSPECTEURS_FAILURE, error)

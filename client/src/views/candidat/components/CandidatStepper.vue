@@ -8,9 +8,11 @@
   >
     <header>
       <h3 class="stepper-title">
+        <!--  FIXME: Mettre ce message dans candidat.js -->
         Les étapes de la pré-inscription à la réservation
       </h3>
     </header>
+
     <v-stepper-step step="1" @click="candidatStepper = 1" :style="{ cursor: 'pointer' }">
       <span>
         {{$formatMessage({ id: 'stepper_step_1_title' })}}

@@ -1,3 +1,4 @@
+// FIXME: Qu'est-ce que c'est que ce fichier ???
 export default [
   {
     centre: {

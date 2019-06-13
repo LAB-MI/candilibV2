@@ -37,6 +37,7 @@ export default {
   methods: {
     async fileSelected (file) {
       this.file = file
+      // FIXME: Mettre dans common.js
       const message = `Fichier ${file.name} prêt à être synchronisé`
       this.$store.dispatch(SHOW_INFO, message, 1000)
     },

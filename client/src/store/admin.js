@@ -65,10 +65,12 @@ export default {
       error: undefined,
       list: [],
     },
+    // FIXME: Refactorer : est-ce vraiment utile ? En tout cas à renommer
     deleteBookedPlace: {
       result: undefined,
       isDeleting: false,
     },
+    // FIXME: Refactorer : est-ce vraiment utile ? En tout cas à renommer
     deletePlaceAction: {
       result: undefined,
       isDeleting: false,

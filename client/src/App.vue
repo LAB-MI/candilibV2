@@ -10,6 +10,7 @@
             class="headline grey lighten-2"
             primary-title
           >
+          <!-- FIXME: mettre tous ces messages dans ./common.js qui sera importé par ./messages.js -->
             Chargement en cours
           </v-card-title>
 
@@ -34,6 +35,7 @@ export default {
     AppSnackbar,
   },
   computed: {
+    // FIXME: Refactor this compute with mapState
     authStatus: {
       get () {
         const isChecking = this.$store.state.auth.statusAdmin === CHECKING_AUTH_ADMIN ||

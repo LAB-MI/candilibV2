@@ -236,6 +236,7 @@ export default {
       const dayPlaces = weekPlaces.filter(plc => getFrenchLuxonFromIso(plc.date).toISODate() === dateTofind)
 
       if (dayPlaces && dayPlaces.length) {
+        // FIXME: Refactor this
         this.inspecteursData = this.inspecteurs.map(inspecteur => {
           const filteredCreneaux = dayPlaces.filter(plce => inspecteur._id === plce.inspecteur).map(place => {
             const currentHourString = getFrenchLuxonFromIso(place.date).toFormat("HH'h'mm")
@@ -333,14 +334,13 @@ export default {
   },
 
   async beforeMount () {
-    this.headers = creneauTemplate.map((creneau, index) => {
-      return {
-        text: `${creneau}`,
-        align: 'center',
-        sortable: false,
-        value: `${creneau}`,
-      }
-    })
+    // FIXME: Really needed on beforeMount?
+    this.headers = creneauTemplate.map(creneau => ({
+      text: `${creneau}`,
+      align: 'center',
+      sortable: false,
+      value: `${creneau}`,
+    }))
 
     const { currentWeek } = this.$store.state.admin
 

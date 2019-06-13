@@ -13,8 +13,10 @@
 </template>
 
 <script>
+// FIXME: Refactorer les composants qui utilisent celui-ci pour qu'ils utilisent candilib-autocomplete
 import { FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST } from '@/store'
 import { mapGetters } from 'vuex'
+
 export default {
   props: {
     centre: String,

@@ -76,6 +76,7 @@ export default {
       email: '',
       password: '',
       emailRules: [
+        // FIXME: Mettre ces messages dans candidat.js
         v => !!v || 'Veuillez renseigner votre email',
         v => emailRegex.test(v) || 'L\'email doit être valide',
       ],
@@ -105,6 +106,7 @@ export default {
     },
 
     async getToken () {
+      // FIXME: Mettre les messages dans candidat.js
       if (!this.valid) {
         const message = 'Veuillez remplir le formulaire'
         this.showError(message)

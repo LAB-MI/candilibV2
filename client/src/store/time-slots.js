@@ -23,6 +23,7 @@ const getHoursString = (elemISO) => {
 }
 
 const formatResult = (result, monthToDisplay, canBookFrom, anticipatedCanBookAfter, dayToForbidCancel) => {
+  // FIXME: Refactor this
   return Array(monthToDisplay).fill(true).map((item, index) => {
     const monthNumber = getFrenchLuxonCurrentDateTime().plus({ month: index }).monthLong
     let tmpArrayDay = []
