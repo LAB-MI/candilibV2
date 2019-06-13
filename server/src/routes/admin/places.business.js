@@ -27,7 +27,7 @@ import {
 import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
 import {
   appLogger,
-  getFrenchLuxonFromJSDate,
+  getFrenchLuxonDateTimeFromJSDate,
   ErrorWithStatus,
   getFrenchLuxonDateTimeFromISO,
 } from '../../util'
@@ -449,8 +449,8 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
   }
 
   if (
-    getFrenchLuxonFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
-    getFrenchLuxonFromJSDate(place.date)
+    getFrenchLuxonDateTimeFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
+    getFrenchLuxonDateTimeFromJSDate(place.date)
   ) {
     throw new ErrorWithStatus(
       400,

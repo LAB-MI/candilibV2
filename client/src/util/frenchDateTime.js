@@ -8,7 +8,7 @@ export const getFrenchLuxonFromIso = (isoDate) => {
   return isoDate && DateTime.fromISO(isoDate).setLocale('fr').setZone(FRENCH_TIME_ZONE)
 }
 
-export const getFrenchLuxonFromJSDate = date =>
+export const getFrenchLuxonDateTimeFromJSDate = date =>
   DateTime.fromJSDate(date, { locale: 'fr', zone: FRENCH_TIME_ZONE })
 
 export const getFrenchDateFromLuxon = dateTime =>
