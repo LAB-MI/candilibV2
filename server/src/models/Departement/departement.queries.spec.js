@@ -1,8 +1,6 @@
 import { connect, disconnect } from '../../mongo-connection'
-import {
-  createDepartement,
-  findDepartementbyId,
-} from '.'
+import { createDepartement, findDepartementbyId } from '.'
+import { deleteDepartementById } from './departement.queries'
 
 const validEmail = 'candidat@example.com'
 const _id = '95'
@@ -25,22 +23,33 @@ describe('Saving Departement', () => {
 
     // Then
     expect(departement.isNew).toBe(false)
+    await deleteDepartementById(departement._id)
   })
 })
 
 describe('Find Departement', () => {
+  let departementId
+
   beforeAll(async () => {
-    await createDepartement()
+    await connect()
+    const departement = await createDepartement({ _id, email: validEmail })
+    departementId = departement._id
+  })
+
+  afterAll(async () => {
+    await disconnect()
+    await deleteDepartementById(departementId)
   })
 
   it('Find departement by Id', async () => {
     // Given
-    const departementResult = '93'
+    const id = _id
 
     // When
-    const departement = await findDepartementbyId(departementResult)
+    const departement = await findDepartementbyId(id)
 
     // Then
     expect(departement).toBeDefined()
+    expect(departement).not.toBeNull()
   })
 })

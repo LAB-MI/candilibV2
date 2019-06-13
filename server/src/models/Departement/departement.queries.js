@@ -9,8 +9,7 @@ export const createDepartement = async ({ _id, email }) => {
   return departement
 }
 
-export const findDepartementbyId = async _id =>
-  Departement.findById(_id)
+export const findDepartementbyId = async _id => Departement.findById(_id)
 
 export const findDepartementByEmail = async email =>
   Departement.findOne({ email })
@@ -31,13 +30,4 @@ export const deleteDepartementByEmail = async email => {
   }
   await departement.delete()
   return departement
-}
-
-export const updatedEmailDepartements = async (email, departements) => {
-  if (!email) {
-    throw new Error('email is undefined')
-  }
-  await email.update({ departements })
-  const updatedEmail = await email.findbyId(email._id)
-  return updatedEmail
 }
