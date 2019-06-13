@@ -28,7 +28,7 @@
           Les bordereaux inspecteurs&nbsp;<strong>{{`du ${activeDepartement}`}} </strong>
         </v-card-title>
         <v-card-text>
-          Les bodereaux inspecteurs seront envoyés à l'adresse {{emailUser}}
+          Les bordereaux inspecteurs seront envoyés à l'adresse {{emailUser}}
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
