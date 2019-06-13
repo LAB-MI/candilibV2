@@ -16,6 +16,7 @@
             </v-icon>
           </v-btn>
         </template>
+
         <shedule-inspector-dialog-content
           :closeDialog="closeDialog"
           :flagModal="flagModal"

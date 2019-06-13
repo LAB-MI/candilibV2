@@ -6,7 +6,7 @@ export const FRENCH_TIME_ZONE = 'Europe/Paris'
 
 export const FRENCH_LOCALE_INFO = { locale: 'fr', zone: FRENCH_TIME_ZONE }
 
-export const getDateTimeFrFromJSDate = date =>
+export const getFrenchLuxonFromJSDate = date =>
   DateTime.fromJSDate(date, FRENCH_LOCALE_INFO)
 
 export const getFrenchLuxonDateTime = (...args) =>
@@ -34,7 +34,7 @@ export const dateTimeToFormatFr = pDate => {
   if (pDate instanceof DateTime) {
     datetime = pDate.setLocale('fr').setZone(FRENCH_TIME_ZONE)
   } else if (pDate instanceof Date) {
-    datetime = getDateTimeFrFromJSDate(pDate)
+    datetime = getFrenchLuxonFromJSDate(pDate)
   } else if (pDate instanceof String || typeof pDate === 'string') {
     datetime = DateTime.fromISO(pDate, FRENCH_LOCALE_INFO)
   }

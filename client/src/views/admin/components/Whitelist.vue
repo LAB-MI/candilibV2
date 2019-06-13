@@ -1,6 +1,7 @@
 <template>
   <div>
     <page-title :title="'Liste blanche'"/>
+
     <v-container>
       <v-card
         :style="{ padding: '1em 0' }"

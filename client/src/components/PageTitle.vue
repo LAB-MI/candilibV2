@@ -2,7 +2,7 @@
   <header class="candidat-header">
     <h2 class="candidat-title">
       {{title}}
-      <slot></slot>
+      <slot />
     </h2>
   </header>
 </template>

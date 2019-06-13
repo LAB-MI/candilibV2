@@ -1,6 +1,6 @@
 import {
   FRENCH_TIME_ZONE,
-  getFrenchLuxonDateFromIso,
+  getFrenchLuxonFromIso,
   getFrenchDateFromLuxon,
   getFrenchDateTimeFromLuxon,
   getFrenchLuxonDateTimeFromSql,
@@ -13,7 +13,7 @@ import {
 
 import { DateTime } from 'luxon'
 
-describe('getFrenchLuxonDateFromIso', () => {
+describe('getFrenchLuxonFromIso', () => {
   it('Should return a luxon DateTime from ISO string', () => {
     // Given
     const theDate = DateTime.fromISO('2020-05-25T09:08:34.123+02:00').setLocale('fr')
@@ -23,7 +23,7 @@ describe('getFrenchLuxonDateFromIso', () => {
     const expectedHour = 9
 
     // When
-    const frenchDate = getFrenchLuxonDateFromIso(theDate)
+    const frenchDate = getFrenchLuxonFromIso(theDate)
 
     // Then
     expect(frenchDate.year).toBe(expectedYear)
@@ -37,7 +37,7 @@ describe('getFrenchLuxonDateFromIso', () => {
     const theDate = null
 
     // When
-    const frenchDate = getFrenchLuxonDateFromIso(theDate)
+    const frenchDate = getFrenchLuxonFromIso(theDate)
 
     // Then
     expect(frenchDate).toBeNull()
@@ -48,7 +48,7 @@ describe('getFrenchLuxonDateFromIso', () => {
     const theDate = undefined
 
     // When
-    const frenchDate = getFrenchLuxonDateFromIso(theDate)
+    const frenchDate = getFrenchLuxonFromIso(theDate)
 
     // Then
     expect(frenchDate).toBeUndefined()

@@ -3,6 +3,7 @@
     <div>
       <h2>{{calendarTitle}}</h2>
     </div>
+
     <div class="calendar-day" v-for="(day, i) in days" :key="i">
       <span>{{day}}</span>
     </div>

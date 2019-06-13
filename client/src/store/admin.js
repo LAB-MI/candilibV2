@@ -1,4 +1,4 @@
-import { getFrenchLuxonDateFromIso, creneauSetting, getFrenchLuxonCurrentDateTime } from '../util'
+import { getFrenchLuxonFromIso, creneauSetting, getFrenchLuxonCurrentDateTime } from '../util'
 
 import api from '@/api'
 import {
@@ -192,7 +192,7 @@ export default {
         const placesByCentreAndWeek = placesByCentre.map(element => ({
           centre: element.centre,
           places: element.places.reduce((acc, place) => {
-            const key = getFrenchLuxonDateFromIso(place.date).weekNumber
+            const key = getFrenchLuxonFromIso(place.date).weekNumber
             const places = { ...acc }
             places[key] = [...(places[key] || []), place]
             return places

@@ -4,11 +4,11 @@ export const FRENCH_TIME_ZONE = 'Europe/Paris'
 
 export const frenchLocaleZone = { locale: 'fr', zone: FRENCH_TIME_ZONE }
 
-export const getFrenchLuxonDateFromIso = (isoDate) => {
+export const getFrenchLuxonFromIso = (isoDate) => {
   return isoDate && DateTime.fromISO(isoDate).setLocale('fr').setZone(FRENCH_TIME_ZONE)
 }
 
-export const getDateTimeFrFromJSDate = date =>
+export const getFrenchLuxonFromJSDate = date =>
   DateTime.fromJSDate(date, { locale: 'fr', zone: FRENCH_TIME_ZONE })
 
 export const getFrenchDateFromLuxon = dateTime =>
@@ -30,11 +30,11 @@ export const getFrenchDateTimeFromLuxon = dateTime =>
   })
 
 export const getFrenchDateFromIso = (isoDate) => {
-  return isoDate && getFrenchDateFromLuxon(getFrenchLuxonDateFromIso(isoDate))
+  return isoDate && getFrenchDateFromLuxon(getFrenchLuxonFromIso(isoDate))
 }
 
 export const getFrenchDateTimeFromIso = (isoDate) => {
-  return isoDate && getFrenchLuxonDateFromIso(isoDate)
+  return isoDate && getFrenchLuxonFromIso(isoDate)
     .toLocaleString({
       weekday: 'long',
       month: 'long',

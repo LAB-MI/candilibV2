@@ -4,6 +4,7 @@
       <h2 class="text--center">
         Semaine {{ currentWeekNumber }}
       </h2>
+
       <div class="date-selector">
         <div class="date-input">
           <v-menu
@@ -47,6 +48,7 @@
             </div>
           </div>
         </div>
+
         <v-tabs
           class="tabs"
           v-model="activeCentreTab"
@@ -62,6 +64,7 @@
           >
             {{ element.centre.nom }}
           </v-tab>
+
           <v-tabs-items
             v-model="activeCentreTab"
           >
@@ -117,7 +120,7 @@ import { RefreshButton } from '@/components'
 import {
   creneauSetting,
   getFrenchLuxonCurrentDateTime,
-  getFrenchLuxonDateFromIso,
+  getFrenchLuxonFromIso,
   getFrenchLuxonDateFromObject,
   getFrenchLuxonDateTimeFromSql,
 } from '@/util'
@@ -218,7 +221,7 @@ export default {
 
       const dateTofind = getFrenchLuxonDateTimeFromSql(this.date).toISODate()
 
-      const activeCenterAndPlaces = this.placesByCentreList.find(placesByCentre => placesByCentre.centre._id === this.activeCentreId)
+      const activeCenterAndPlaces = this.placesByCentreList.find(({ centre }) => centre._id === this.activeCentreId)
       const weekPlaces = activeCenterAndPlaces &&
         activeCenterAndPlaces.places &&
         activeCenterAndPlaces.places[this.currentWeekNumber]
@@ -227,12 +230,12 @@ export default {
         return
       }
 
-      const dayPlaces = weekPlaces.filter(plc => getFrenchLuxonDateFromIso(plc.date).toISODate() === dateTofind)
+      const dayPlaces = weekPlaces.filter(plc => getFrenchLuxonFromIso(plc.date).toISODate() === dateTofind)
 
       if (dayPlaces && dayPlaces.length) {
         this.inspecteursData = this.inspecteurs.map(inspecteur => {
           const filteredCreneaux = dayPlaces.filter(plce => inspecteur._id === plce.inspecteur).map(place => {
-            const currentHourString = getFrenchLuxonDateFromIso(place.date).toFormat("HH'h'mm")
+            const currentHourString = getFrenchLuxonFromIso(place.date).toFormat("HH'h'mm")
             if (creneaux.some(crn => crn === currentHourString)) {
               return {
                 place,
@@ -296,7 +299,7 @@ export default {
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
       const { center } = this.$route.params
-      if (!this.placesByCentreList.some(el => el.centre._id === center)) {
+      if (!this.placesByCentreList.some(({ centre }) => centre._id === center)) {
         this.activeCentreId = this.firstCentreId
         this.activeCentreTab = `tab-${this.activeCentreId}`
       } else {

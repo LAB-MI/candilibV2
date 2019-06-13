@@ -7,7 +7,7 @@
         <div class="text-xs-right">
           <refresh-button
             @click="reloadWeekMonitor"
-            :isLoading="!!isLoading"
+            :isLoading="isLoading"
           />
         </div>
       </div>
@@ -37,7 +37,6 @@
         Total places
       </div>
     </v-container>
-
   </div>
 </template>
 

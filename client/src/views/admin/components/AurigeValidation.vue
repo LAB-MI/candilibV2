@@ -36,6 +36,7 @@ export default {
   components: {
     AgGridVue,
   },
+
   data () {
     return {
       columnDefs: null,
@@ -57,13 +58,14 @@ export default {
   beforeMount () {
     this.localeText = AgGridLocaleText
     const StatusRenderer = (param) => {
-      const StatusIcon = {
+      const statusIcon = {
         'success': 'done',
         'error': 'clear',
         'warning': 'warning',
       }
-      return '<i class="material-icons">' + StatusIcon[param.value] + '</i>'
+      return '<i class="material-icons">' + statusIcon[param.value] + '</i>'
     }
+
     this.frameworkComponents = { agGridAurigeStatusFilter: AgGridAurigeStatusFilter }
 
     this.columnDefs = [
@@ -78,8 +80,7 @@ export default {
       { headerName: 'Nom', field: 'nom', width: 120 },
       { headerName: 'Description', field: 'message' },
     ]
-    this.gridOptions = {
-    }
+    this.gridOptions = {}
   },
 
   methods: {
@@ -90,6 +91,7 @@ export default {
 }
 
 </script>
+
 <style scoped>
 .ag-theme-material {
   background-color: unset;

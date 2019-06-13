@@ -20,7 +20,9 @@
             </v-icon>
           </v-btn>
         </v-flex>
+
         <v-spacer></v-spacer>
+
         <v-flex xs12>
           <h1 v-if="activeTextContent" class="black--text">
             {{ textContent }}

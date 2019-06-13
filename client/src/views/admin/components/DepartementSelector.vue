@@ -24,6 +24,7 @@ export default {
   },
   computed: {
     ...mapState(['admin']),
+
     activeDepartement: {
       get () {
         return this.admin.departements.active

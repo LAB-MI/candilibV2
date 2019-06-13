@@ -76,7 +76,7 @@ import {
 
 import {
   getFrenchDateFromLuxon,
-  getFrenchLuxonDateFromIso,
+  getFrenchLuxonFromIso,
   getFrenchDateFromIso,
 } from '@/util/frenchDateTime.js'
 import { getFrenchLuxonCurrentDateTime } from '../../../../util/frenchDateTime'
@@ -137,7 +137,7 @@ export default {
       }
       const { canBookFrom, lastDateToCancel } = this.reservation.booked
       const isPenaltyActive = canBookFrom ||
-        getFrenchLuxonCurrentDateTime() > getFrenchLuxonDateFromIso(lastDateToCancel)
+        getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel)
 
       return isPenaltyActive
     },
@@ -146,8 +146,8 @@ export default {
       const { canBookFrom, date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      } else if (getFrenchLuxonCurrentDateTime() > getFrenchLuxonDateFromIso(lastDateToCancel)) {
-        return getFrenchDateFromLuxon(getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry }))
+      } else if (getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel)) {
+        return getFrenchDateFromLuxon(getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry }))
       }
       return ''
     },
@@ -156,8 +156,8 @@ export default {
       const { canBookFrom, date, timeOutToRetry } = this.reservation.booked
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      } else if (getFrenchLuxonCurrentDateTime() > getFrenchLuxonDateFromIso(this.dateDernierEchecPratique)) {
-        return getFrenchDateFromLuxon(getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry }))
+      } else if (getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(this.dateDernierEchecPratique)) {
+        return getFrenchDateFromLuxon(getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry }))
       }
       return ''
     },

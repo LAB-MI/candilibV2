@@ -10,7 +10,9 @@
       iconOnLeft="face"
       colorHeader="blue"
     />
+
     <v-divider></v-divider>
+
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -33,6 +35,7 @@
         <div v-if="isFetchingCandidat">
           Chargement en cours...
         </div>
+
         <div v-else>
           <p>
             Nom:
@@ -57,6 +60,7 @@
         </div>
       </confirm-box>
     </shedule-inspector-dialog-sub-content>
+
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -69,22 +73,22 @@
       :closeDialog="closeDialogFace"
       :submitDialog="changeInspecteur"
     >
-    <list-search-inspecteurs-available
-      slot="title"
-      v-if="displaySearchInspecteurs"
-      :isEditing="displaySearchInspecteurs"
-      :date="content.place.date"
-      :centre="centreInfo._id"
-      @select-inspecteur="selectInspecteur"
-    />
-    <confirm-box
-      v-if="hasConfirm"
-      :closeAction='cancelSelection'
-      :submitAction='validSelection'>
-        <p>
-          {{textInspecteurSeleted}}
-        </p>
-    </confirm-box>
+      <list-search-inspecteurs-available
+        slot="title"
+        v-if="displaySearchInspecteurs"
+        :isEditing="displaySearchInspecteurs"
+        :date="content.place.date"
+        :centre="centreInfo._id"
+        @select-inspecteur="selectInspecteur"
+      />
+      <confirm-box
+        v-if="hasConfirm"
+        :closeAction='cancelSelection'
+        :submitAction='validSelection'>
+          <p>
+            {{textInspecteurSeleted}}
+          </p>
+      </confirm-box>
     </shedule-inspector-dialog-sub-content>
   </v-card>
 
@@ -112,6 +116,7 @@
       :submitDialog="makeCreneauAvailable"
     />
   </v-card>
+
   <v-card v-else-if="flagModal === 'check'">
     <shedule-inspector-dialog-header
       :infoSelectedDialog="{ place: content || { date, hour: content.hour }.place, inspecteurInfos }"

@@ -31,6 +31,7 @@
           <v-card-title class="week-card-title">
             {{ `Semaine N°${index}` }}
           </v-card-title>
+
           <v-card-text class="stats-card">
             <span class="stats-card-text-free-places">
               {{ week.freePlaces || 0 }}

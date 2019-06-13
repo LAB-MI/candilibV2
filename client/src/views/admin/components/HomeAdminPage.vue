@@ -35,8 +35,8 @@ export default {
     },
   },
 
-  async mounted () {
-    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
+  mounted () {
+    this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
   },
 }
 </script>
