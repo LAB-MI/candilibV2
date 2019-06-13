@@ -2,42 +2,41 @@ import latinize from 'latinize'
 
 import config from '../../../config'
 import {
-  appLogger,
-  CANDIDAT_EXISTANT,
-  EPREUVE_PRATIQUE_OK,
-  EPREUVE_ETG_KO,
-  CANDIDAT_NOK,
-  CANDIDAT_NOK_NOM,
-  EMAIL_NOT_VERIFIED_EXPIRED,
-  EMAIL_NOT_VERIFIED_YET,
-  NO_NAME,
-  NOT_FOUND,
-  OK,
-  OK_MAIL_PB,
-  OK_UPDATED,
-  createToken,
-  getFrenchLuxonDateTimeFromISO,
-  getFrenchLuxonDateTimeFromJSDate,
-} from '../../../util'
-import {
-  sendMailToAccount,
-  sendMagicLink,
-  sendFailureExam,
-} from '../../business'
-
-import {
-  findCandidatByNomNeph,
-  deleteCandidat,
   addPlaceToArchive,
+  deleteCandidat,
+  findCandidatByNomNeph,
 } from '../../../models/candidat'
-import { getCandBookFrom } from '../../candidat/places.business'
+import { ECHEC } from '../../../models/candidat/objetDernierNonReussite.values'
 import {
   findPlaceBookedByCandidat,
   removeBookedPlace,
 } from '../../../models/place'
+import {
+  appLogger,
+  CANDIDAT_EXISTANT,
+  CANDIDAT_NOK,
+  CANDIDAT_NOK_NOM,
+  createToken,
+  EMAIL_NOT_VERIFIED_EXPIRED,
+  EMAIL_NOT_VERIFIED_YET,
+  EPREUVE_ETG_KO,
+  EPREUVE_PRATIQUE_OK,
+  getFrenchLuxonDateTimeFromISO,
+  getFrenchLuxonDateTimeFromJSDate,
+  NOT_FOUND,
+  NO_NAME,
+  OK,
+  OK_MAIL_PB,
+  OK_UPDATED,
+} from '../../../util'
+import {
+  sendFailureExam,
+  sendMagicLink,
+  sendMailToAccount,
+} from '../../business'
+import { getCandBookFrom } from '../../candidat/places.business'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import { releaseResa } from '../places.business'
-import { ECHEC } from '../../../models/candidat/objetDernierNonReussite.values'
 
 const getCandidatStatus = (nom, neph, status, details, message) => ({
   nom,
@@ -359,7 +358,7 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
   }
   const dateTimeEchec = getFrenchLuxonDateTimeFromISO(dateDernierEchecPratique)
   if (!dateTimeEchec.isValid) {
-    throw new Error('La date de denier echec pratique est érronée')
+    throw new Error('La date de denier échec pratique est erronée')
   }
 
   if (candidat && candidat.lastNoReussite && candidat.lastNoReussite.date) {
