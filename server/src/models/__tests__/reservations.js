@@ -43,10 +43,10 @@ export const nbPlacesDispoByCentres = async ({ nom }) => {
 
 export const removeAllResas = async () => {
   const places = await placeModel.find({ candidat: { $ne: undefined } })
-  const promsieSaves = places.map(place => {
+  const placesAsPromises = places.map(place => {
     place.candidat = undefined
     return place.save()
   })
-  const removesResas = await Promise.all(promsieSaves)
+  const removesResas = await Promise.all(placesAsPromises)
   return removesResas
 }

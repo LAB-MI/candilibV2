@@ -7,7 +7,7 @@ import admins from './admins'
 logger.info('Creating admins')
 
 export default async () => {
-  const adminsCreated = admins.map(({ password, email, departements}) =>
+  const adminsCreated = admins.map(({ password, email, departements }) =>
     createUser(email, password, departements)
       .then(() => {
         logger.info(`Compte admin ${email} créé !`)

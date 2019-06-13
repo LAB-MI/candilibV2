@@ -38,7 +38,7 @@ const inspecteurSchema = new Schema(inspecteurFields)
 inspecteurSchema.pre('save', async function preSave () {
   const inspecteur = this
 
-  Object.keys(inspecteurFields).map(key => {
+  Object.keys(inspecteurFields).forEach(key => {
     const value = inspecteur[key]
     if (value && typeof value === 'string') {
       inspecteur[key] = sanitizeHtml(value)
