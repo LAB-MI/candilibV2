@@ -14,6 +14,11 @@ http {
     include       /etc/nginx/mime.types;
     default_type  application/octet-stream;
 
+#    map $http_x_request_id $rid {
+#      default   "${request_id}";
+#      ~*        "${http_x_request_id}";
+#    }
+
     server_tokens off;
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     add_header X-Frame-Options SAMEORIGIN;
@@ -42,6 +47,8 @@ http {
       '"remote_addr":"$remote_addr",'
       '"remote_user":"$remote_user",'
       '"time_local":"$time_local",'
+      '"rid":"$rid",'
+      '"request_id":"$request_id",'
       '"request":"$request",'
       '"request_time":$request_time,'
       '"request_method":"$request_method",'

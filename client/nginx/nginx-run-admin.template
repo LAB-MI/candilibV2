@@ -2,6 +2,13 @@
 server {
   listen 80 default_server;
 
+  set $rid $request_id;
+  if ($http_x_request_id != '') {
+     set $rid $http_x_request_id;
+  }
+
+  add_header X-Request-ID $rid; # Return to client
+
   location / {
     try_files $uri @rew;
   }
@@ -23,6 +30,7 @@ server {
     rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
     add_header Access-Control-Allow-Origin '$http_origin';
     proxy_pass http://<API_HOST>:<API_PORT>;
+    proxy_set_header X-Request-ID $rid; # Pass to app server
     proxy_redirect off;
     proxy_buffering off;
     proxy_http_version 1.1;
