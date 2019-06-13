@@ -43,6 +43,9 @@ export const findCandidatByEmail = async email => {
 }
 
 export const findCandidatById = async (id, options) => {
+  if (options && options.dateDernierEchecPratique) {
+    options.noReussites = 1
+  }
   const candidat = await Candidat.findById(id, options)
   return candidat
 }
