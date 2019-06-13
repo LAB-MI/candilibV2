@@ -10,12 +10,12 @@ const inspecteursList = [
     nom: 'Marie',
   },
   {
-    _id: 1,
+    _id: 2,
     matricule: '012345678911',
     nom: 'Sophie',
   },
   {
-    _id: 1,
+    _id: 3,
     matricule: '012345678912',
     nom: 'Paula',
   },

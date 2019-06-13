@@ -449,8 +449,9 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
   }
 
   if (
-    getFrenchLuxonDateTimeFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
-    getFrenchLuxonDateTimeFromJSDate(place.date)
+    getFrenchLuxonDateTimeFromJSDate(candidat.dateReussiteETG).plus({
+      year: 5,
+    }) < getFrenchLuxonDateTimeFromJSDate(place.date)
   ) {
     throw new ErrorWithStatus(
       400,
