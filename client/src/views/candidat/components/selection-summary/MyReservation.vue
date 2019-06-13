@@ -7,6 +7,7 @@
         check
       </v-icon>
     </h4>
+
     <p>
       {{ $formatMessage({ id: 'recap_reservation_email_confirmee' }) }}
       <strong>
@@ -17,6 +18,7 @@
         check
       </v-icon>
     </p>
+
     <p>
       <span v-html="
         $formatMessage(
@@ -34,6 +36,7 @@
         warning
       </v-icon>
     </p>
+
     <modal-confirm
       titleModal="Confirmer l'annulation"
       :formAction="deleteConfirm"
@@ -70,6 +73,7 @@
       colorButtonRetour="info"
       iconName="edit"
     />
+
     <v-btn
       v-else
       color="primary"
@@ -81,6 +85,7 @@
         edit
       </v-icon>
     </v-btn>
+
     <v-btn
       color="success"
       @click="resendEmailConfirmation"
@@ -219,7 +224,6 @@ export default {
       }
     },
   },
-
 }
 </script>
 

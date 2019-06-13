@@ -26,6 +26,7 @@
                 v-on="on"
               />
             </template>
+
             <v-date-picker v-model="date" no-title @input="datePicker = false" locale="fr"/>
           </v-menu>
         </div>
@@ -36,9 +37,11 @@
       <v-flex xs12>
         <div class="u-flex  u-flex--center  u-flex--space-between">
           <h3>Centres d'examen</h3>
+
           <generate-inspecteur-bordereaux
             :date="date"
           />
+
           <div class="stats-card">
             <div class="text-xs-right">
               <refresh-button
@@ -284,7 +287,7 @@ export default {
         const end = dateTimeFromSQL.endOf('day').toISO()
         await this.$store
           .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
-        this.activeCentreId = (this.$route.params.center) || this.firstCentreId
+        this.activeCentreId = this.$route.params.center || this.firstCentreId
         this.activeCentreTab = `tab-${this.activeCentreId}`
         this.parseInspecteursPlanning()
       }
@@ -313,11 +316,9 @@ export default {
     filterByCentre (obj) {
       const { inspecteursData, activeCentreId } = obj
       if (inspecteursData.length) {
-        const result = inspecteursData.filter(inspecteurInfo => {
-          if (inspecteurInfo.creneau.some(item => item.place && item.place.centre === activeCentreId)) {
-            return inspecteurInfo
-          }
-        })
+        const result = inspecteursData.filter(inspecteurInfo =>
+          inspecteurInfo.creneau.some(({ place }) => place && place.centre === activeCentreId)
+        )
         return result
       }
     },

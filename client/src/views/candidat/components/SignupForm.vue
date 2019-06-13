@@ -19,6 +19,7 @@
           v-model="codeNeph"
         ></v-text-field>
       </div>
+
       <div class="form-input">
         <v-text-field
           :label="`${getMsg('preinscription_nom_naissance')} *`"
@@ -35,6 +36,7 @@
           v-model="nomNaissance"
         ></v-text-field>
       </div>
+
       <div class="form-input">
         <v-text-field
           :label="getMsg('preinscription_prenom')"
@@ -51,6 +53,7 @@
           v-model="prenom"
         ></v-text-field>
       </div>
+
       <div class="form-input">
         <v-text-field
           :label="`${getMsg('preinscription_email')} *`"
@@ -69,6 +72,7 @@
           v-model="email"
         ></v-text-field>
       </div>
+
       <div class="form-input">
         <v-text-field
           :label="`${getMsg('preinscription_mobile')} *`"
@@ -86,6 +90,7 @@
           v-model="portable"
         ></v-text-field>
       </div>
+
       <div class="form-input">
         <v-autocomplete
           :label="`${getMsg('preinscription_adresse')} *`"
@@ -108,6 +113,7 @@
         >
         </v-autocomplete>
       </div>
+
       <div class="form-input">
         <v-btn
           type="submit"
@@ -120,11 +126,14 @@
           <div class="submit-label">{{getMsg('preinscription_bouton_submit')}}</div>
         </v-btn>
       </div>
+
       <div class="form-input  form-input-group">
         <v-btn flat color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
           {{getMsg('preinscription_bouton_mentions_legales') }}
         </v-btn>
+
         <already-signed-up />
+
         <v-btn flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
           {{getMsg('preinscription_bouton_faq') }}
         </v-btn>

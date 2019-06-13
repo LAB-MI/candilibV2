@@ -15,6 +15,7 @@
         </v-icon>
       </v-btn>
     </template>
+
     <v-card>
       <v-form
         class="u-full-width"
@@ -25,19 +26,22 @@
         <v-card-title class="headline">
           {{ titleModal }}
         </v-card-title>
+
         <v-card-text>
-        <cancel-reservation-message
-          v-if="currentReservationDateTime"
-          class="confirm-suppr-text-content"
-          :idFormatMessage="idReservationMessage"
-          :dateCurrentResa="currentReservationDateTime"
-          :nbOfDaysBeforeDate="String(numberOfDaysBeforeDate)"
-          :penaltyNb="String(penaltyDaysNumber)"
-          :canBookFrom="canBookFrom"
-        />
+          <cancel-reservation-message
+            v-if="currentReservationDateTime"
+            class="confirm-suppr-text-content"
+            :idFormatMessage="idReservationMessage"
+            :dateCurrentResa="currentReservationDateTime"
+            :nbOfDaysBeforeDate="String(numberOfDaysBeforeDate)"
+            :penaltyNb="String(penaltyDaysNumber)"
+            :canBookFrom="canBookFrom"
+          />
         </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
+
           <v-btn
             :color="colorButtonRetour"
             class="u-flex  u-flex--center"
@@ -51,6 +55,7 @@
             </v-icon>
             {{ $formatMessage({ id: idMessageButtonRetour }) }}
           </v-btn>
+
           <v-btn
             :color="colorButtonConfirmer"
             :aria-disabled="disabled"

@@ -1,6 +1,7 @@
 <template>
   <v-card class="text--center" >
     <page-title :title="title"/>
+
     <div class="text--center">
       <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
       <reservation-info
@@ -9,8 +10,11 @@
         :nom="infoResa.nom"
       />
     </div>
+
     <summary-confirmation v-if="$route.meta.isConfirmation" />
+
     <my-reservation v-else />
+
     <v-dialog
       v-model="notAvailable"
       width="500"
@@ -21,11 +25,14 @@
             Place indisponible
           </h2>
         </v-card-title>
+
         <v-card-text>
           La place que vous avez sélectionnée n'est plus disponible
         </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
+
           <v-btn
             @click="closeAndGoBack"
           >

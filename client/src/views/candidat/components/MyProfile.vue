@@ -1,6 +1,7 @@
 <template>
   <v-card>
     <page-title>Mon profil</page-title>
+
     <div class="u-flex  u-flex--column  info-container">
       <div class="u-flex  u-flex--center">
         <v-progress-circular
@@ -9,6 +10,7 @@
           color="primary"
         ></v-progress-circular>
       </div>
+
       <profile-info
         v-for="info in profileInfo"
         :label="info.label"

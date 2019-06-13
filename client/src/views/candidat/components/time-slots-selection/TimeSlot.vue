@@ -4,6 +4,7 @@
       <span class="u-truncated">
         {{ center.selected ? center.selected.nom : '' }}
       </span>
+
       <span class="title__small  ws-nowrap">
         ({{ center.selected ? center.selected.departement : '' }})
       </span>
@@ -12,7 +13,7 @@
     <v-alert
       :value="warningMessage"
       type="warning"
-      style="fontsize: 1em;"
+      style="font-size: 1em;"
     >
       {{ warningMessage }}
     </v-alert>
@@ -31,9 +32,11 @@
         @click="$router.push({ name: 'time-slot' })"
       >
         <span v-if="month.availableTimeSlots.length" class="primary--text">{{ month.month }}</span>
+
         <span v-else class="blue-grey--text">{{ month.month }}</span>
       </v-tab>
     </v-tabs>
+
     <v-tabs-items class="tabs-items-block" v-model="switchTab">
       <v-tab-item
         v-for="timeSlot in timeSlots.list"
@@ -43,6 +46,7 @@
         <v-card flat>
           <v-card-text>
             <times-slots-selector v-if="timeSlot.availableTimeSlots.length" :initial-time-slots="timeSlot.availableTimeSlots"/>
+
             <div v-else class="blue-grey--text  font-italic">Il n'y a pas de créneau disponible pour ce mois.</div>
           </v-card-text>
         </v-card>

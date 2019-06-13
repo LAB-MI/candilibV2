@@ -87,8 +87,8 @@ export default {
     },
   },
 }
-
 </script>
+
 <style scoped>
 .ag-theme-material {
   background-color: unset;

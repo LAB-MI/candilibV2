@@ -37,6 +37,7 @@
             >
               Annuler
             </v-btn>
+
             <v-btn
               color="primary"
               @click="remove"
@@ -57,15 +58,18 @@
 <script>
 export default {
   name: 'whitelisted',
+
   props: {
     removeFromWhitelist: Function,
     whitelisted: Object,
   },
+
   data () {
     return {
       show: false,
     }
   },
+
   methods: {
     async remove () {
       await this.removeFromWhitelist(this.whitelisted._id)

@@ -4,12 +4,15 @@
       class="u-only-on-mobile"
       @click="toggleDrawer"
     ></v-toolbar-side-icon>
-    <v-toolbar-title style="margin-left:0;">
+
+    <v-toolbar-title style="margin-left: 0;">
       <h1 class="logo">
         <router-link to="/candidat" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
       </h1>
     </v-toolbar-title>
+
     <v-spacer></v-spacer>
+
     <div class="text-xs-center d-flex align-center">
       <v-tabs
         class="u-only-on-desktop"
@@ -35,12 +38,14 @@
           </span>
         </v-tab>
       </v-tabs>
+
       <v-tooltip bottom>
         <v-btn icon @click.prevent="disconnect" slot="activator">
           <v-icon>exit_to_app</v-icon>
         </v-btn>
         <span>Déconnexion</span>
       </v-tooltip>
+
       <bandeau-beta class="beta-relative" />
     </div>
   </v-toolbar>

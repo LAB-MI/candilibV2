@@ -2,6 +2,7 @@
   <div class="candidat  u-flex  u-flex--column">
     <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0, flexGrow: 1}">
       <candidat-header :links="links" />
+
       <div class="u-flex  with-top-margin  u-max-width">
         <div class="u-flex  u-flex__item--grow  u-flex--column-on-mobile  u-flex--center-on-mobile">
           <div class="u-flex__item--grow">
@@ -10,10 +11,12 @@
         </div>
       </div>
     </v-container>
+
     <navigation-drawer
       style="top: 0; position: fixed;"
       :links="links"
     />
+
     <candidat-footer style="margin-top: 10px;" />
   </div>
 </template>

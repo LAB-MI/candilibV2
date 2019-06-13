@@ -14,6 +14,7 @@
           <v-list-tile-action>
             <v-icon>{{ link.iconName }}</v-icon>
           </v-list-tile-action>
+
           <v-list-tile-content>
             {{link.label}}
           </v-list-tile-content>

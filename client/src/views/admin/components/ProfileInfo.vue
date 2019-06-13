@@ -1,8 +1,9 @@
 <template>
   <v-card>
     <v-card-title class="title">
-    <h3>{{ title }}</h3>
+      <h3>{{ title }}</h3>
     </v-card-title>
+
     <v-card-text>
       <v-card
         class="spaced"

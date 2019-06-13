@@ -3,6 +3,7 @@
     <page-title class="title-faq">
       F.A.Q
     </page-title>
+
     <h3 class="subtitle">
       Foire aux questions
     </h3>

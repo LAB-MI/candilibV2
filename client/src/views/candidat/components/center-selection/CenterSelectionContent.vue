@@ -18,6 +18,7 @@
           Plus de place disponible pour le moment
         </span>
       </v-list-tile-content>
+
       <a
         target="_blank"
         class="location-icon  u-flex"

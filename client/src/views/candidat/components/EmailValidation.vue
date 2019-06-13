@@ -14,6 +14,7 @@
         message
       }}
     </v-alert>
+
     <div class="text--center">
       <router-link :to="{name: 'candidat-presignup'}">
         <v-btn

@@ -7,10 +7,12 @@
       v-ripple
     >
       <span>{{ question.title }}</span>
+
       <i class="material-icons  icon" :class="{ 'primary--text': active }">
         {{ active ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
       </i>
     </h3>
+
     <div v-show="active" class="question-content">
       <div v-for="content in question.content" :key="content.textContent">
         <h4
@@ -18,7 +20,9 @@
           v-if="content.subTitleContent"
           v-html="content.subTitleContent"
         />
+
         <p v-if="content.textContent" v-html="content.textContent"></p>
+
         <ul class="list" v-if="content.list">
           <li
             v-for="(liContent, i) in content.list"

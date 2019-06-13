@@ -11,8 +11,11 @@
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
+
     <page-title class="title-mentions-legales">Mentions légales</page-title>
+
     <h3 class="date-info">Modifié le 21 décembre 2018</h3>
+
     <section class="mentions-legales">
       <div v-for="content in ArrayContent" :key="content.mainTitle">
         <mentions-legales-content

@@ -1,6 +1,7 @@
 <template>
   <v-card>
     <page-title :title="$formatMessage({ id: 'home_choix_du_centre' })" />
+
     <v-list three-line>
       <center-selection-content
         v-for="center in center.list"

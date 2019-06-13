@@ -134,6 +134,7 @@
                   </span>
                   <v-icon>save</v-icon>
                 </v-btn>
+
                 <input
                   type="file"
                   ref="batchEmailFile"
@@ -141,6 +142,7 @@
                   @change="loadHandler"
                   style="width: 1px; height: 1px; opacity: 0;"
                 />
+
                 <label for="batch-email-file" @click="() => this.$refs.batchEmailFile.click()">
                   <v-btn
                     color="primary"
@@ -151,6 +153,7 @@
                     <span style="padding-right: 1em;">
                       Importer des listes
                     </span>
+
                     <v-icon>cloud_upload</v-icon>
                   </v-btn>
                 </label>
@@ -169,6 +172,7 @@
 
       <v-card v-show="whitelist.updateResult && whitelist.updateResult.length">
         <h3>Résultat de l'opération d'ajout par lot</h3>
+
         <v-list>
           <v-list-tile v-for="result in whitelist.updateResult" :key="result.email">
             <v-icon
@@ -183,6 +187,7 @@
             >
               {{result.email}}
             </span>
+
             <span class="result-message">
               {{codeMessageDictionary[result.code]}}
             </span>

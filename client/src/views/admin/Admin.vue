@@ -3,9 +3,11 @@
     class="admin  admin-wrapper  u-flex  u-flex--column"
   >
     <admin-header :email="admin.email" :header-icons="headerIcons" />
+
     <main role="main" class="u-flex__item--grow" :style="{margin: '3em 0 0 0'}">
       <router-view />
     </main>
+
     <admin-footer />
   </v-container>
 </template>

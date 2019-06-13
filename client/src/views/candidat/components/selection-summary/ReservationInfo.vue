@@ -1,6 +1,7 @@
 <template>
   <div>
     <h3 class="text--center">{{ nom }}</h3>
+
     <p class="text--center">
       {{ adresse }}
       <a
@@ -14,9 +15,11 @@
           location_on
         </v-icon>
       </a>
+    </p>
+
     <p class="text--center">
-        Le
-        {{ date }}
+      Le
+      {{ date }}
     </p>
   </div>
 </template>

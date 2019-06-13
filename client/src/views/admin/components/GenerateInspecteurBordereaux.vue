@@ -24,13 +24,16 @@
         <v-card-title
           class="headline"
         >
-          Les bordereaux inspecteurs&nbsp;<strong>{{`du ${activeDepartement}`}} </strong>
+          Les bordereaux inspecteurs du&nbsp;<strong>{{activeDepartement}} </strong>
         </v-card-title>
+
         <v-card-text>
           Les bordereaux inspecteurs seront envoyés à l'adresse {{emailUser}}
         </v-card-text>
+
         <v-card-actions>
           <v-spacer></v-spacer>
+
           <v-btn
             outline
             color="info"
@@ -40,6 +43,7 @@
           >
             Annuler
           </v-btn>
+
           <v-btn
             :aria-disabled="isGenerating"
             :disabled="isGenerating"

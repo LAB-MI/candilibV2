@@ -31,7 +31,7 @@
         :closeAction='cancelConfirmDeleteBookedPlace'
         :submitAction='renderCreneauUnBookAndUnavalaible'
       >
-      <!-- TODO: Refactor Create composant for each subcontent dialogs -->
+        <!-- TODO: Refactor Create composant for each subcontent dialogs -->
         <div v-if="isFetchingCandidat">
           Chargement en cours...
         </div>
@@ -48,9 +48,11 @@
               {{ fetchedCandidat.codeNeph }}
             </strong>
           </p>
+
           <p>
             {{ fetchedCandidat.email }}
           </p>
+
           <p>
             Portable:
             <strong>
@@ -84,10 +86,11 @@
       <confirm-box
         v-if="hasConfirm"
         :closeAction='cancelSelection'
-        :submitAction='validSelection'>
-          <p>
-            {{textInspecteurSeleted}}
-          </p>
+        :submitAction='validSelection'
+      >
+        <p>
+          {{textInspecteurSeleted}}
+        </p>
       </confirm-box>
     </shedule-inspector-dialog-sub-content>
   </v-card>
@@ -103,7 +106,9 @@
       iconOnLeft="block"
       colorHeader="grey"
     />
+
     <v-divider></v-divider>
+
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -128,7 +133,9 @@
       iconOnLeft="check_circle"
       colorHeader="success"
     />
+
     <v-divider></v-divider>
+
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -154,6 +161,7 @@
           item-value="_id"
           :fetch-autocomplete-action="fetchAutocompleteAction"
         />
+
         <confirm-box
           v-else
           :closeAction="() => selectedCandidat = null"
@@ -166,7 +174,9 @@
         </confirm-box>
       </div>
     </shedule-inspector-dialog-sub-content>
+
     <v-divider></v-divider>
+
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -212,6 +222,7 @@ export default {
     ListSearchInspecteursAvailable,
     SheduleInspectorDialogSubContent,
   },
+
   props: {
     flagModal: String,
     content: Object,
@@ -222,6 +233,7 @@ export default {
     inspecteurId: String,
     centreInfo: Object,
   },
+
   data () {
     return {
       inspecteurSelected: undefined,
@@ -235,6 +247,7 @@ export default {
       deleteBookedPlaceConfirm: false,
     }
   },
+
   computed: {
     ...mapGetters(['activeDepartement']),
 
@@ -340,6 +353,7 @@ export default {
       this.hasConfirm = false
       this.deleteBookedPlaceConfirm = false
     },
+
     async closeDialogFace () {
       this.closeDialogInspecteur()
       this.closeDialog()

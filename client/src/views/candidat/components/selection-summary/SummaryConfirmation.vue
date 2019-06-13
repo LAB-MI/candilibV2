@@ -3,6 +3,7 @@
     <p>
       <strong>{{ $formatMessage({ id: 'confirmation_reservation_checkbox_title' }) }}</strong>
     </p>
+
     <v-card-actions>
       <v-form
         class="u-full-width  u-flex  u-flex--column  u-flex--center"
@@ -26,6 +27,7 @@
 
         <v-flex d-flex>
           <v-spacer></v-spacer>
+
           <v-btn
             outline
             color="info"
@@ -38,6 +40,7 @@
             </v-icon>
             {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
           </v-btn>
+
           <v-btn
             :aria-disabled="disabled"
             :disabled="disabled"
@@ -49,8 +52,8 @@
         </v-flex>
       </v-form>
     </v-card-actions>
-    </div>
-    <div class="text--center" v-else>
+  </div>
+  <div class="text--center" v-else>
     <h4>
       {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
       &nbsp;
@@ -58,6 +61,7 @@
         check
       </v-icon>
     </h4>
+
     <h4>
       {{ $formatMessage({ id: 'recap_reservation_email_confirmee' }) }}
       <strong>{{ candidat.me ? candidat.me.email : '' }}</strong>
@@ -66,6 +70,7 @@
       check
       </v-icon>
     </h4>
+
     <v-btn @click="goToHome()" >
       Retour à l'accueil
     </v-btn>
