@@ -77,3 +77,8 @@ export const deleteInspecteurById = async id => {
   await inspecteur.delete()
   return inspecteur
 }
+
+export const findAllInspecteurs = async () => {
+  const inspecteurs = await Inspecteur.find()
+  return inspecteurs
+}
