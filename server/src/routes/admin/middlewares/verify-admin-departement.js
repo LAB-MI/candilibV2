@@ -1,7 +1,8 @@
 import { appLogger } from '../../../util'
+import config from '../../../config'
 
 export async function verifyAdminDepartement (req, res, next) {
-  const { departements } = req
+  const { departements, userLevel } = req
   const departement = req.body.departement || req.query.departement
   const loggerInfo = {
     section: 'admin-token',
@@ -12,6 +13,9 @@ export async function verifyAdminDepartement (req, res, next) {
   }
   try {
     if (departements && departements.includes(departement)) {
+      return next()
+    }
+    if (userLevel >= config.userStatusLevels.tech) {
       return next()
     }
     appLogger.error({

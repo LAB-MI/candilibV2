@@ -6,14 +6,16 @@ const DEFAULT_PUBLIC_URL = isProduction
   ? 'https://beta.interieur.gouv.fr/candilib'
   : 'http://localhost:8080/candilib'
 
-const userStatuses = {
+export const userStatuses = {
   CANDIDAT: 'candidat',
   ADMIN: 'admin',
+  TECH: 'tech',
 }
 
 const userStatusLevels = {
   [userStatuses.CANDIDAT]: 0,
   [userStatuses.ADMIN]: 1,
+  [userStatuses.TECH]: 2,
 }
 
 const config = {
