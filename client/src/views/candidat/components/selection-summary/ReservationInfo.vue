@@ -1,14 +1,13 @@
 <template>
   <div>
-    <h3 class="text--center">{{ nom }}</h3>
+    <h3 class="text--center">{{ infoResa.nom }}</h3>
     <p class="text--center">
-      {{ adresse }}
+      {{ infoResa.adresse }}
       <a
         target="_blank"
-        @click.stop="true"
         class="location-icon"
         v-ripple
-        :href="`https://www.openstreetmap.org/search?query=${adresse.replace(',', ' ').replace(/FR.*/, '')}`"
+        :href="href"
       >
         <v-icon>
           location_on
@@ -16,7 +15,7 @@
       </a>
     <p class="text--center">
         Le
-        {{ date }}
+        {{ infoResa.date }}
     </p>
   </div>
 </template>
@@ -24,9 +23,16 @@
 <script>
 export default {
   props: {
-    nom: String,
-    adresse: String,
-    date: String,
+    infoResa: Object,
+  },
+  computed: {
+    href () {
+      if (!this.infoResa.centre) {
+        return
+      }
+      const [lon, lat] = this.infoResa.centre.geoloc.coordinates
+      return `http://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=24`
+    },
   },
 }
 </script>

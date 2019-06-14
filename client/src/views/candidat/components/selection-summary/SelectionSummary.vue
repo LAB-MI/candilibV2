@@ -4,9 +4,7 @@
     <div class="text--center">
       <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
       <reservation-info
-        :adresse="infoResa.adresse"
-        :date="infoResa.date"
-        :nom="infoResa.nom"
+        :info-resa="infoResa"
       />
     </div>
     <summary-confirmation v-if="$route.meta.isConfirmation" />
@@ -98,12 +96,14 @@ export default {
     infoResa () {
       if (this.isConfirmation) {
         return {
+          centre: this.center.selected,
           nom: this.center.selected ? this.center.selected.nom : '',
           adresse: this.center.selected ? this.center.selected.adresse : '',
           date: this.timeSlots.selected ? this.convertIsoDate(this.timeSlots.selected.slot) : '',
         }
       }
       return {
+        centre: this.reservation.booked.centre,
         nom: this.reservation.booked.centre ? this.reservation.booked.centre.nom : '',
         adresse: this.reservation.booked.centre ? this.reservation.booked.centre.adresse : '',
         date: this.reservation.booked ? this.convertIsoDate(this.reservation.booked.date) : '',
