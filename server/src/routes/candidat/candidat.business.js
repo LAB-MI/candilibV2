@@ -63,7 +63,7 @@ export async function isAlreadyPresignedUp (candidatData) {
 
   if (
     isValidatedEmail ||
-      (existCandidatEmail === email &&
+    (existCandidatEmail === email &&
       existCandidatPrenom === prenom &&
       existCandidatPortable === portable &&
       existCandidatAdresse === adresse)
@@ -71,13 +71,15 @@ export async function isAlreadyPresignedUp (candidatData) {
     return {
       success: false,
       conflict: true,
-      message:
-        `Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification par l'administration.`,
+      message: `Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification par l'administration.`,
     }
   }
 
   if (existCandidatEmail !== email) {
-    await deleteCandidat(candidat, 'EMAIL_NOT_VERIFIED_AND_CANDIDAT_CHANGE_HIS_EMAIL')
+    await deleteCandidat(
+      candidat,
+      'EMAIL_NOT_VERIFIED_AND_CANDIDAT_CHANGE_HIS_EMAIL'
+    )
     return { success: true }
   }
 
