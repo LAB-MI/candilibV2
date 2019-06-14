@@ -11,22 +11,13 @@ export const createDepartement = async ({ _id, email }) => {
 
 export const findDepartementbyId = async _id => Departement.findById(_id)
 
-export const findDepartementByEmail = async email =>
-  Departement.findOne({ email })
+export const findDepartementsByEmail = async email =>
+  Departement.find({ email })
 
 export const deleteDepartementById = async _id => {
   const departement = await findDepartementbyId(_id)
   if (!departement) {
     throw new Error('No departement found with id')
-  }
-  await departement.delete()
-  return departement
-}
-
-export const deleteDepartementByEmail = async email => {
-  const departement = await findDepartementByEmail(email)
-  if (!departement) {
-    throw new Error('No Departement found with email')
   }
   await departement.delete()
   return departement

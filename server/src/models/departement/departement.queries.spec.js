@@ -1,6 +1,9 @@
 import { connect, disconnect } from '../../mongo-connection'
 import { createDepartement, findDepartementbyId } from '.'
-import { deleteDepartementById } from './departement.queries'
+import {
+  deleteDepartementById,
+  findDepartementsByEmail,
+} from './departement.queries'
 
 const validEmail = 'candidat@example.com'
 const _id = '95'
@@ -51,5 +54,20 @@ describe('Find Departement', () => {
     // Then
     expect(departement).toBeDefined()
     expect(departement).not.toBeNull()
+    expect(departement).toHaveProperty('email', validEmail)
+  })
+
+  it('Find departement by email', async () => {
+    // Given
+    const email = validEmail
+
+    // When
+    const departements = await findDepartementsByEmail(email)
+
+    // Then
+    expect(departements).toBeDefined()
+    expect(departements).not.toBeNull()
+    expect(departements).toHaveLength(1)
+    expect(departements[0]).toHaveProperty('email', email)
   })
 })

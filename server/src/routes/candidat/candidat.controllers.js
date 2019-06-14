@@ -101,28 +101,26 @@ export async function preSignup (req, res) {
     if (isValidatedEmail) {
       res.status(409).json({
         success: false,
-        message:
-          `Vous êtes déjà pré-inscrit sur Candilib avec cette adresse courriel, votre compte est en cours de vérification par l'administration.`,
+        message: `Vous êtes déjà pré-inscrit sur Candilib avec cette adresse courriel, votre compte est en cours de vérification par l'administration.`,
       })
       return
     }
 
     if (!isValidatedEmail && !isMoreThan2HoursAgo(presignedUpAt)) {
-      const deadLineBeforeValidateEmail = getFrenchLuxonDateTimeFromJSDate(presignedUpAt)
-        .plus({ hours: 2 }).toLocaleString(DATETIME_FULL)
+      const deadLineBeforeValidateEmail = getFrenchLuxonDateTimeFromJSDate(
+        presignedUpAt
+      )
+        .plus({ hours: 2 })
+        .toLocaleString(DATETIME_FULL)
       res.status(409).json({
         success: false,
-        message:
-          `Cette adresse courriel est déjà enregistré, mais elle est en attente d'une validation de votre part.
+        message: `Cette adresse courriel est déjà enregistré, mais elle est en attente d'une validation de votre part.
           Vous pourrez refaire une pré-inscription après le ${deadLineBeforeValidateEmail}.`,
       })
       return
     }
 
-    await deleteCandidat(
-      candidatWithSameEmail,
-      'EMAIL_NOT_VERIFIED_EXPIRED'
-    )
+    await deleteCandidat(candidatWithSameEmail, 'EMAIL_NOT_VERIFIED_EXPIRED')
   }
 
   const result = await isAlreadyPresignedUp(candidatData)
