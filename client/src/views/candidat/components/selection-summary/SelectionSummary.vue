@@ -84,7 +84,7 @@ export default {
 
     title () {
       return this.isConfirmation || this.$route.meta.isConfirmation
-        ? `${this.$route.params.modifying ? 'Confirmer la modificaion' : 'Confirmation'}`
+        ? `${this.$route.params.modifying === 'modification' ? 'Confirmer la modificaion' : 'Confirmation'}`
         : 'Ma réservation'
     },
 
@@ -117,7 +117,14 @@ export default {
 
   methods: {
     goToSelectTimeSlot () {
-      this.$router.push({ name: 'time-slot', params: { modifying: this.$route.params.modifying } })
+      this.$router.push({
+        name: 'time-slot',
+        params: {
+          month: this.$route.params.month,
+          day: this.$route.params.day,
+          modifying: this.$route.params.modifying,
+        },
+      })
     },
 
     goToSelectCenter () {

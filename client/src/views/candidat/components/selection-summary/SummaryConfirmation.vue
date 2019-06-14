@@ -104,7 +104,7 @@ export default {
     },
 
     isModifying () {
-      if ((this.$route.params.modifying || this.reservation.isModifying) && this.reservation.booked.date) {
+      if ((this.$route.params.modifying === 'modification' || this.reservation.isModifying) && this.reservation.booked.date) {
         return true
       }
       return false
@@ -113,7 +113,14 @@ export default {
 
   methods: {
     goToSelectTimeSlot () {
-      this.$router.push({ name: 'time-slot', params: { modifying: this.$route.params.modifying } })
+      this.$router.push({
+        name: 'time-slot',
+        params: {
+          month: this.$route.params.month,
+          day: this.$route.params.day,
+          modifying: this.$route.params.modifying,
+        },
+      })
     },
 
     goToHome () {

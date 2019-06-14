@@ -129,17 +129,17 @@ const candidatRoutes = [
         component: CenterSelection,
       },
       {
-        path: ':departement/:center/:modifying/selection-place',
+        path: ':departement/:center/:month/:day/:modifying/selection-place',
         name: 'time-slot',
         component: TimeSlot,
       },
       {
-        path: ':departement/:center/:day/:modifying/selection-place',
+        path: ':departement/:center/:month/:day/:modifying/selection-place',
         name: 'time-slot-day',
         component: TimeSlot,
       },
       {
-        path: ':departement/:center/:slot/:modifying/selection-confirmation',
+        path: ':departement/:center/:month/:day/:slot/:modifying/selection-confirmation',
         name: 'selection-summary',
         component: SelectionSummary,
         meta: {

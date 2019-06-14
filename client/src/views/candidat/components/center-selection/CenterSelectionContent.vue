@@ -52,6 +52,11 @@ export default {
       const [lon, lat] = this.center.centre.geoloc.coordinates
       return `http://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=24`
     },
+
+    firstMonthOfTimeSlotsList () {
+      const { list } = this.$store.state.timeSlots
+      return list.length ? list[0].month : 'undefinedMonth'
+    },
   },
 
   methods: {
@@ -66,8 +71,11 @@ export default {
         params: {
           center: `${center.centre.nom}`,
           departement: `${center.centre.departement}`,
+          month: this.firstMonthOfTimeSlotsList,
+          day: this.$route.params.day || 'undefinedDay',
           // params modifying is not always define
-          modifying: this.$route.params.modifying || this.$store.state.reservation.isModifying,
+          modifying: (this.$route.params.modifying === 'modification' || this.$store.state.reservation.isModifying)
+            ? 'modification' : 'selection',
         },
       })
     },

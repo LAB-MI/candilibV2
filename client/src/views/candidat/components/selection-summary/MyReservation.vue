@@ -198,7 +198,7 @@ export default {
   methods: {
     async modifyReservation () {
       await this.$store.dispatch(SET_MODIFYING_RESERVATION, true)
-      this.$router.push({ name: 'selection-centre', params: { modifying: true } })
+      this.$router.push({ name: 'selection-centre', params: { modifying: 'modification' } })
     },
 
     async deleteConfirm () {

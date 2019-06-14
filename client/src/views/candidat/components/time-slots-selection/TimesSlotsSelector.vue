@@ -6,14 +6,13 @@
       v-model="timeSlot.active"
       :prepend-icon="timeSlot.action"
       no-action
+      @click="gotoDay(timeSlot.day)"
     >
       <template v-slot:activator>
         <keep-alive>
           <v-list-tile>
             <v-list-tile-content>
-              <v-list-tile-title
-                @click="gotoDay(timeSlot.day)"
-              >
+              <v-list-tile-title>
                 {{ timeSlot.day }}
               </v-list-tile-title>
             </v-list-tile-content>
@@ -64,12 +63,17 @@ export default {
   watch: {
     $route (to, from) {
       const activeDay = to.params.day
-      if (activeDay !== this.memoDay) {
+      if (this.memoDay && activeDay !== this.memoDay) {
         this.displayDay(activeDay)
       }
     },
+
     initialTimeSlots (newData, oldData) {
-      this.timeSlots = newData
+      const activeTimeSlot = oldData.find(timeSlot => timeSlot.active)
+      this.timeSlots = newData.map(timeSlot => ({
+        ...timeSlot,
+        active: timeSlot && activeTimeSlot ? timeSlot.day === activeTimeSlot.day : false,
+      }))
       this.checkDayToDisplay()
     },
   },
@@ -113,7 +117,7 @@ export default {
 
     gotoDay (day) {
       if (day === this.memoDay) {
-        this.$router.push({ name: 'time-slot' })
+        this.$router.push({ name: 'time-slot', params: { month: this.$route.params.month, day: 'undefinedDay' } })
         this.memoDay = undefined
         return
       }
@@ -149,8 +153,9 @@ export default {
             params: {
               departement: `${selectedSlot.centre.departement}`,
               center: `${selectedSlot.centre.nom}`,
+              day: this.$route.params.day,
               slot: selectedSlot.slot,
-              modifying: this.$store.state.reservation.isModifying,
+              modifying: this.$store.state.reservation.isModifying ? 'modification' : 'selection',
             },
           })
         } else {
