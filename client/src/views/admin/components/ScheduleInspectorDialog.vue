@@ -3,24 +3,7 @@
     <div class="text-xs-center"
     >
       <v-tooltip bottom>
-        <span v-show="isLoadingCandidat">
-          Chargement...
-        </span>
-        <span v-show="!isLoadingCandidat">
-          <span v-show="place && place.candidat">
-            {{ candidat.prenom }}
-            {{ candidat.nomNaissance }} |
-            {{ candidat.codeNeph }}
-          </span>
-
-          <span v-show="place && !place.candidat && place.inspecteur">
-            place disponible
-          </span>
-          <span v-show="!place">
-            place indisponible
-          </span>
-        </span>
-
+        {{ tooltipContent }}
           <template v-slot:activator="{ on }">
             <v-btn
               color="white"
@@ -72,7 +55,6 @@ export default {
       dialog: false,
       icon: '',
       flagModal: undefined,
-      tooltip: false,
       isLoadingCandidat: false,
     }
   },
@@ -89,8 +71,31 @@ export default {
     ...mapState({
       candidat: (state) => state.candidats.candidat || {},
     }),
+
     place () {
       return this.content.place
+    },
+
+    tooltipContent () {
+      if (this.isLoadingCandidat) {
+        return 'chargement...'
+      }
+
+      const place = this.place
+
+      if (!place) {
+        return 'place indisponible'
+      }
+
+      if (place.candidat) {
+        return `${this.candidat.prenom} ${this.candidat.nomNaissance} - ${this.candidat.codeNeph}`
+      }
+
+      if (place.inspecteur) {
+        return 'place disponible'
+      }
+
+      return ''
     },
   },
 
