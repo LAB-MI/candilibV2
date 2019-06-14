@@ -168,6 +168,28 @@ describe('Candidat', () => {
       expect(candidat2.isNew).toBe(false)
     })
 
+    it('should remove diacritics from nomNaissance and prenom', async () => {
+      // Given
+      const email = validEmail
+      const nomNaissance = 'Dìàçrítïcs'
+      const prenom = 'Prénôm'
+
+      // When
+      candidat = await createCandidat({
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+      })
+
+      // Then
+      expect(candidat.isNew).toBe(false)
+      expect(candidat.nomNaissance).toBe('DIACRITICS')
+      expect(candidat.prenom).toBe('Prenom')
+    })
+
     it('should not save a candidat with an existing NEPH/nom', async () => {
       // Given
       const email = validEmail

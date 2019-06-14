@@ -12,7 +12,6 @@
 import SimpleCalendar from './SimpleCalendar'
 import AdminImportPlaces from './AdminImportPlaces.vue'
 import ImportPlacesValidation from './ImportPlacesValidation.vue'
-import { getFrenchLuxonCurrentDate } from '@/util/frenchDateTime.js'
 
 export default {
   name: 'admin-calendar',
@@ -25,11 +24,6 @@ export default {
   data () {
     return {
       places: [
-        {
-          _id: 1,
-          start: getFrenchLuxonCurrentDate().set({ hour: 9, minute: 0 }),
-          duration: [30, 'minutes'],
-        },
       ],
     }
   },
