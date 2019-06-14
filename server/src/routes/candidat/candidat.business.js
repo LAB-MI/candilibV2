@@ -1,60 +1,87 @@
 import { sendMailToAccount } from '../business/send-mail'
 import {
-  INSCRIPTION_UPDATE,
-  INSCRIPTION_OK,
-  VALIDATION_EMAIL,
   appLogger,
   codePostal,
+  INSCRIPTION_OK,
+  INSCRIPTION_UPDATE,
+  VALIDATION_EMAIL,
 } from '../../util'
 import {
-  updateCandidatSignUp,
-  updateCandidatById,
-  findCandidatByNomNeph,
   createCandidat,
+  deleteCandidat,
   findCandidatByEmail,
   findCandidatById,
+  findCandidatByNomNeph,
+  updateCandidatById,
+  updateCandidatSignUp,
 } from '../../models/candidat'
+import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
 
 const uuidv4 = require('uuid/v4')
 
-export async function checkCandidatIsSignedBefore (candidatData) {
+export async function isAlreadyPresignedUp (candidatData) {
   const {
-    nomNaissance,
+    adresse,
     codeNeph,
     email,
-    prenom,
+    nomNaissance,
     portable,
-    adresse,
+    prenom,
   } = candidatData
+
   const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
 
-  if (candidat) {
-    if (candidat.isValidatedByAurige === true) {
-      return {
-        result: {
-          success: false,
-          message:
-            'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit"',
-        },
-      }
-    }
-    if (
-      candidat.email === email &&
-      candidat.prenom === prenom &&
-      candidat.portable === portable &&
-      candidat.adresse === adresse
-    ) {
-      return {
-        result: {
-          success: false,
-          message:
-            'Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification.',
-        },
-      }
+  if (!candidat) {
+    return {
+      success: true,
     }
   }
 
-  return { candidat }
+  const {
+    adresse: existCandidatAdresse,
+    email: existCandidatEmail,
+    isValidatedByAurige,
+    isValidatedEmail,
+    portable: existCandidatPortable,
+    prenom: existCandidatPrenom,
+    presignedUpAt,
+  } = candidat
+
+  if (isValidatedByAurige) {
+    return {
+      success: false,
+      conflict: true,
+      message:
+        'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit"',
+    }
+  }
+
+  if (!isValidatedEmail && isMoreThan2HoursAgo(presignedUpAt)) {
+    await deleteCandidat(candidat, 'EMAIL_NOT_VERIFIED_EXPIRED')
+    return { success: true }
+  }
+
+  if (
+    isValidatedEmail ||
+      (existCandidatEmail === email &&
+      existCandidatPrenom === prenom &&
+      existCandidatPortable === portable &&
+      existCandidatAdresse === adresse)
+  ) {
+    return {
+      success: false,
+      conflict: true,
+      message:
+        `Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification par l'administration.`,
+    }
+  }
+
+  if (existCandidatEmail !== email) {
+    await deleteCandidat(candidat, 'EMAIL_NOT_VERIFIED_AND_CANDIDAT_CHANGE_HIS_EMAIL')
+    return { success: true }
+  }
+
+  return { success: true, candidat }
 }
 
 export async function updateInfoCandidat (candidat, candidatData) {

@@ -136,6 +136,7 @@ export const synchroAurige = async buffer => {
         if (isMoreThan2HoursAgo(candidat.presignedUpAt)) {
           const message = `Candidat ${codeNeph}/${nomNaissance} email non vérifié depuis plus de 2h`
           appLogger.warn({ ...loggerInfoCandidat, description: message })
+          await deleteCandidat(candidat, 'EMAIL_NOT_VERIFIED_EXPIRED')
           return getCandidatStatus(
             nomNaissance,
             codeNeph,
