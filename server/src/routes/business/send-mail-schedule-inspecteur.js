@@ -97,7 +97,8 @@ export const sendScheduleInspecteur = async (
   const action = 'SEND_SCHEDULE_INSPECTEUR'
 
   if (!email || !places || places.length <= 0) {
-    const message = "L'adresse email ou la liste des créneaux sont manquantes."
+    const message =
+      "L'adresse courriel ou la liste des créneaux sont manquantes."
     appLogger.error({ action, message })
     throw new Error(message)
   }
@@ -126,16 +127,16 @@ export const sendScheduleInspecteur = async (
   const inspecteurName = inspecteurObject.nom
   const inspecteurMatricule = inspecteurObject.matricule
 
-  let centreObject = centre || centreFromPlace
-  if (!centreObject.nom || !centreObject.departement) {
-    centreObject = await findCentreById(centreObject._id)
-    if (!centreObject) {
+  let placeCentre = centre || centreFromPlace
+  if (!placeCentre.nom || !placeCentre.departement) {
+    placeCentre = await findCentreById(placeCentre._id)
+    if (!placeCentre) {
       throw new Error('CENTRE_NOT_FOUND')
     }
   }
 
-  const centreNom = centreObject.nom
-  const departement = centreObject.departement
+  const centreNom = placeCentre.nom
+  const departement = placeCentre.departement
 
   const dateToString = dateTimeToFormatFr(date).date
   const content = await getScheduleInspecteurBody(

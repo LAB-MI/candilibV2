@@ -589,8 +589,10 @@ export const sendMailSchedulesAllInspecteurs = async date => {
 
   const resultsAsync = inspecteurs.map(async inspecteur => {
     const { _id, email } = inspecteur
+    let nbPlaces = 0
     const places = await findPlaceBookedByInspecteur(_id, begin, end)
     if (places && places.length > 0) {
+      nbPlaces = places.length
       try {
         await sendScheduleInspecteur(email, places, inspecteur)
         appLogger.info({
@@ -600,7 +602,6 @@ export const sendMailSchedulesAllInspecteurs = async date => {
           email,
           description: 'Bordereau envoyé',
         })
-        return { success: true }
       } catch (error) {
         appLogger.error({ ...loggerContent, inspecteur: _id, error })
         return { success: false, inspecteur }
@@ -613,6 +614,7 @@ export const sendMailSchedulesAllInspecteurs = async date => {
       email,
       description: 'Pas de réservarion',
     })
+    return { success: true, nbPlaces, inspecteur }
   })
   const results = await Promise.all(resultsAsync)
   appLogger.debug({
