@@ -2,47 +2,49 @@ import * as csvParser from 'fast-csv'
 import { DateTime } from 'luxon'
 import {
   addPlaceToArchive,
-  setCandidatToVIP,
   findCandidatById,
+  setCandidatToVIP,
 } from '../../models/candidat'
 import {
   findCentreByNameAndDepartement,
   findCentresByDepartement,
 } from '../../models/centre/centre.queries'
 import {
-  findInspecteurByMatricule,
+  findAllInspecteurs,
   findInspecteurById,
+  findInspecteurByMatricule,
 } from '../../models/inspecteur/inspecteur.queries'
 import {
   bookPlaceById,
   createPlace,
   deletePlace,
+  findAllPlacesBookedByCentre,
   findPlaceBookedByCandidat,
+  findPlaceBookedByInspecteur,
   findPlaceById,
+  findPlaceWithSameWindow,
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
-  findPlaceWithSameWindow,
-  findAllPlacesBookedByCentre,
 } from '../../models/place'
 import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
 import {
   appLogger,
-  getDateTimeFrFromJSDate,
   ErrorWithStatus,
-  getFrenchLuxonDateTimeFromISO,
+  getDateTimeFrFromJSDate,
+  getFrenchLuxonDateTimeRangeFromDate,
 } from '../../util'
 import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
 import {
+  sendMailForScheduleInspecteurFailed,
+  sendScheduleInspecteur,
+} from '../business/send-mail-schedule-inspecteur'
+import {
   BOOKED_PLACE_NO_MAIL,
-  CANCEL_BOOKED_PLACE_NO_MAIL,
   CANCEL_BOOKED_PLACE,
+  CANCEL_BOOKED_PLACE_NO_MAIL,
   DELETE_PLACE_ERROR,
   RESA_PLACE_HAS_BOOKED,
 } from './message.constants'
-import {
-  sendScheduleInspecteur,
-  sendMailForScheduleInspecteurFailed,
-} from '../business/send-mail-schedule-inspecteur'
 
 const getPlaceStatus = (
   departement,
@@ -512,17 +514,13 @@ export const sendMailSchedulesInspecteurs = async (
     func: 'sendMailSchedulesInspecteurs',
   })
 
-  const centres = await findCentresByDepartement(departement)
-  const beginDate = getFrenchLuxonDateTimeFromISO(date, {
-    locale: 'fr',
-    zone: 'Europe/Paris',
-  }).startOf('day')
-  const endDate = getFrenchLuxonDateTimeFromISO(date, {
-    locale: 'fr',
-    zone: 'Europe/Paris',
-  }).endOf('day')
+  const {
+    begin: beginDate,
+    end: endDate,
+  } = getFrenchLuxonDateTimeRangeFromDate(date)
 
   const placesByInspecteurs = {}
+  const centres = await findCentresByDepartement(departement)
 
   await Promise.all(
     centres.map(async centre => {
@@ -545,6 +543,13 @@ export const sendMailSchedulesInspecteurs = async (
     Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
       try {
         await sendScheduleInspecteur(email, places)
+        appLogger.info({
+          ...loggerContent,
+          inspecteur: inspecteurId,
+          nbPlaces: places.length,
+          email,
+          description: 'Bordereau envoyé',
+        })
         return { success: true }
       } catch (error) {
         appLogger.error({ ...loggerContent, error, inspecteur: inspecteurId })
@@ -567,4 +572,53 @@ export const sendMailSchedulesInspecteurs = async (
     return { success: false, inspecteurs: resultsError }
   }
   return { success: true }
+}
+
+export const sendMailSchedulesAllInspecteurs = async date => {
+  const loggerContent = {
+    func: 'sendMailSchedulesAllInspecteurs',
+    date,
+  }
+  appLogger.debug({
+    ...loggerContent,
+  })
+
+  const { begin, end } = getFrenchLuxonDateTimeRangeFromDate(date)
+
+  const inspecteurs = await findAllInspecteurs()
+
+  const resultsAsync = inspecteurs.map(async inspecteur => {
+    const { _id, email } = inspecteur
+    const places = await findPlaceBookedByInspecteur(_id, begin, end)
+    if (places && places.length > 0) {
+      try {
+        await sendScheduleInspecteur(email, places, inspecteur)
+        appLogger.info({
+          ...loggerContent,
+          inspecteur: _id,
+          nbPlaces: places.length,
+          email,
+          description: 'Bordereau envoyé',
+        })
+        return { success: true }
+      } catch (error) {
+        appLogger.error({ ...loggerContent, inspecteur: _id, error })
+        return { success: false, inspecteur }
+      }
+    }
+    appLogger.info({
+      ...loggerContent,
+      inspecteur: _id,
+      nbPlaces: 0,
+      email,
+      description: 'Pas de réservarion',
+    })
+  })
+  const results = await Promise.all(resultsAsync)
+  appLogger.debug({
+    ...loggerContent,
+    results,
+  })
+
+  return results
 }

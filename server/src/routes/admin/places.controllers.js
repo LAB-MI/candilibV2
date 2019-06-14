@@ -1,20 +1,22 @@
+import config from '../../config'
 import {
+  deletePlace,
   findAllPlaces,
   findPlaceById,
-  deletePlace,
   findPlacesByCentreAndDate,
 } from '../../models/place'
+import { findUserById } from '../../models/user'
+import { appLogger, dateTimeToFormatFr, ErrorWithStatus } from '../../util'
+import { findCentresWithPlaces } from '../common/centre.business'
 import {
   assignCandidatInPlace,
   createPlaceForInspector,
   importPlacesCsv,
   moveCandidatInPlaces,
-  validUpdateResaInspector,
+  sendMailSchedulesAllInspecteurs,
   sendMailSchedulesInspecteurs,
+  validUpdateResaInspector,
 } from './places.business'
-import { findCentresWithPlaces } from '../common/centre.business'
-import { appLogger, ErrorWithStatus, dateTimeToFormatFr } from '../../util'
-import { findUserById } from '../../models/user'
 
 export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
@@ -272,23 +274,39 @@ export const sendScheduleInspecteurs = async (req, res) => {
     date,
   }
 
-  appLogger.info({
-    ...loggerContent,
-    action: 'SEND_MAIL_SCHEDULE',
-    message: `Envoyer le planning`,
-  })
-
   try {
-    const { email } = await findUserById(req.userId)
-
-    if (!email || !departement || !date) {
-      return res.status(400).send({
-        success: false,
-        message: 'Les paramètres renseignés sont incorrects',
-      })
+    let results
+    if (req.userLevel >= config.userStatusLevels.tech) {
+      loggerContent.action = 'SEND_MAIL_SCHEDULE_BY_TECH'
+      if (!date) {
+        const error = new Error('Le paramètre date renseignés est manquant')
+        error.status = 422
+        throw error
+      }
+    } else {
+      loggerContent.action = 'SEND_MAIL_SCHEDULE'
+      if (!departement || !date) {
+        const error = new Error('Les paramètres renseignés sont manquante')
+        error.status = 422
+        throw error
+      }
     }
 
-    const results = await sendMailSchedulesInspecteurs(email, departement, date)
+    if (departement) {
+      appLogger.info({
+        ...loggerContent,
+        message: `Envoi du planning`,
+      })
+      const { email } = await findUserById(req.userId)
+      results = await sendMailSchedulesInspecteurs(email, departement, date)
+    } else {
+      appLogger.info({
+        ...loggerContent,
+        message: `Envoi des plannings à les inspecteurs`,
+      })
+      results = await sendMailSchedulesAllInspecteurs(date)
+    }
+
     res.status(results.success ? 200 : 400).send(results)
   } catch (error) {
     appLogger.error({
@@ -296,14 +314,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
       action: 'ERROR',
       error,
     })
-    if (error instanceof ErrorWithStatus) {
-      return res.status(error.status).send({
-        success: false,
-        message: error.message,
-        error,
-      })
-    }
-    res.status(500).send({
+    res.status(error.status || 500).send({
       success: false,
       message: error.message,
       error,

@@ -25,6 +25,17 @@ export const getFrenchLuxonDateTimeFromISO = isoDate =>
 export const getFrenchLuxonDateTimeFromJSDate = jsDate =>
   DateTime.fromJSDate(jsDate, FRENCH_LOCALE_INFO)
 
+export const getFrenchLuxonDateTimeRangeFromDate = date => {
+  let dateTime
+  if (date instanceof Date) {
+    dateTime = getFrenchLuxonDateTimeFromJSDate(date)
+  } else {
+    dateTime = getFrenchLuxonDateTimeFromISO(date)
+  }
+  const begin = dateTime.startOf('day')
+  const end = dateTime.endOf('day')
+  return { begin, end }
+}
 /**
  *
  * @param {*} datetime Type DateTime of luxon
