@@ -1,33 +1,34 @@
-import { Parser as Json2csvParser } from 'json2csv'
-import moment from 'moment'
+import { parseAsync } from 'json2csv'
+import { DateTime } from 'luxon'
+
+const fields = [
+  {
+    label: 'Code NEPH',
+    value: 'codeNeph',
+  },
+  {
+    label: 'Nom de naissance',
+    value: 'nomNaissance',
+  },
+  {
+    label: "Nom d'usage",
+    value: 'nomNaissance',
+  },
+  {
+    label: 'Prénom',
+    value: 'prenom',
+  },
+  {
+    label: 'email',
+    value: 'email',
+  },
+]
+
+const options = { fields, delimiter: ';', quote: '' }
+const parseCandidats = candidatsData => parseAsync(candidatsData, options)
 
 export const getCandidatsAsCsv = async candidats => {
-  const fields = [
-    {
-      label: 'Code NEPH',
-      value: 'codeNeph',
-    },
-    {
-      label: 'Nom de naissance',
-      value: 'nomNaissance',
-    },
-    {
-      label: "Nom d'usage",
-      value: 'nomNaissance',
-    },
-    {
-      label: 'Prénom',
-      value: 'prenom',
-    },
-    {
-      label: 'email',
-      value: 'email',
-    },
-  ]
-
-  const json2csvParser = new Json2csvParser({ fields })
-  const csv = json2csvParser.parse(candidats)
-
+  const csv = parseCandidats(candidats)
   return csv
 }
 
@@ -46,7 +47,7 @@ export const getBookedCandidatsAsCsv = async candidats => {
       value: (row, field) =>
         row.place &&
         row.place.date &&
-        moment(row.place.date).format('YYYY-MM-DD HH:mm'),
+        DateTime.fromJSDate(row.place.date).toFormat('yyyy-MM-dd HH:mm'),
       stringify: true,
     },
     {
@@ -63,8 +64,7 @@ export const getBookedCandidatsAsCsv = async candidats => {
     },
   ]
 
-  const json2csvParser = new Json2csvParser({ fields })
-  const csv = json2csvParser.parse(candidats)
+  const csv = parseAsync(candidats, { fields })
 
   return csv
 }
