@@ -11,12 +11,14 @@
       item-value="_id"
       :fetch-autocomplete-action="fetchAutocompleteAction"
     />
-      <v-btn
-        fab dark small color="primary"
-        class="toggle"
+    <v-btn
+        fab
+        dark
+        small
+        color="primary"
         @click="toggleProfileInfo"
-      >
-      </v-btn>
+    >
+    </v-btn>
     <profile-info
       title= 'Informations candidats'
       v-if="profileInfo"
@@ -96,7 +98,6 @@ export default {
     toggleProfileInfo () {
       this.profileInfo = !this.profileInfo
     },
-
   },
 }
 </script>
