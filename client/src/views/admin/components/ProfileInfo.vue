@@ -26,7 +26,6 @@ export default {
     return {
     }
   },
-
   props: {
     profileInfo: Array,
     title: String,

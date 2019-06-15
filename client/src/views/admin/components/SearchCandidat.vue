@@ -11,7 +11,12 @@
       item-value="_id"
       :fetch-autocomplete-action="fetchAutocompleteAction"
     />
-
+      <v-btn
+        fab dark small color="primary"
+        class="toggle"
+        @click="toggleProfileInfo"
+      >
+      </v-btn>
     <profile-info
       title= 'Informations candidats'
       v-if="profileInfo"
@@ -88,6 +93,10 @@ export default {
       const candidat = this.$store.state.adminSearch.candidats.selected
       this.profileInfo = transformToProfileInfo(candidat, candidatProfileInfoDictionary)
     },
+    toggleProfileInfo () {
+      this.profileInfo = !this.profileInfo
+    },
+
   },
 }
 </script>
