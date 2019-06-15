@@ -11,6 +11,14 @@
       item-value="_id"
       :fetch-autocomplete-action="fetchAutocompleteAction"
     />
+    <v-btn
+        fab
+        dark
+        small
+        color="primary"
+        @click="toggleProfileInfo"
+    >
+    </v-btn>
 
     <profile-info
       title= 'informations inspecteur'
@@ -58,6 +66,9 @@ export default {
   methods: {
     displayInspecteurInfo (inspecteur) {
       this.profileInfo = transformToProfileInfo(inspecteur, inspecteurProfileInfoDictionary)
+    },
+    toggleProfileInfo () {
+      this.profileInfo = !this.profileInfo
     },
   },
 }
