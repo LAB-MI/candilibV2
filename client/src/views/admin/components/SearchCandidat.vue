@@ -97,6 +97,10 @@ export default {
     },
     toggleProfileInfo () {
       this.profileInfo = !this.profileInfo
+      const candidat = this.$store.state.adminSearch.candidats.selected
+      if (this.profileInfo === true) {
+        this.profileInfo = transformToProfileInfo(candidat, candidatProfileInfoDictionary)
+      }
     },
   },
 }
