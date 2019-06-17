@@ -12,12 +12,10 @@
       :fetch-autocomplete-action="fetchAutocompleteAction"
     />
     <v-btn
-        fab
-        dark
-        small
-        color="primary"
+        :disabled="!profileInfo"
+        color="white"
         @click="toggleProfileInfo"
-    >
+    > <v-icon color="grey">directions_car</v-icon>
     </v-btn>
 
     <profile-info
@@ -67,7 +65,7 @@ export default {
     displayInspecteurInfo (inspecteur) {
       this.profileInfo = transformToProfileInfo(inspecteur, inspecteurProfileInfoDictionary)
     },
-    toggleProfileInfo () {
+    toggleProfileInfo (inspecteur) {
       this.profileInfo = !this.profileInfo
     },
   },

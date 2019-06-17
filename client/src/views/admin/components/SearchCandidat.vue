@@ -12,12 +12,9 @@
       :fetch-autocomplete-action="fetchAutocompleteAction"
     />
     <v-btn
-        fab
-        dark
-        small
-        color="primary"
+        color="white"
         @click="toggleProfileInfo"
-    >
+    > <v-icon color = blue>face</v-icon>
     </v-btn>
     <profile-info
       title= 'Informations candidats'
