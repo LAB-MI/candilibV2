@@ -75,7 +75,7 @@ export async function preSignup (req, res) {
   if (!isCandidatWhitelisted) {
     res.status(401).json({
       success: false,
-      message: 'Ce site sera ouvert prochainement.',
+      message: 'L\'adresse courriel renseignée n\'est pas dans la liste des invités.',
     })
     return
   }
