@@ -9,7 +9,7 @@ export function verifyAdminLevel (req, res, next) {
     user: req.userId,
   }
   try {
-    if (userLevel >= config.userStatusLevels.admin) {
+    if (userLevel >= config.userStatusLevels.tech) {
       return next()
     }
     throw new Error('Accès interdit')

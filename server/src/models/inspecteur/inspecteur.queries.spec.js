@@ -6,7 +6,10 @@ import {
   findInspecteurById,
 } from '.'
 import { connect, disconnect } from '../../mongo-connection'
-import { findInspecteurByMatricule } from './inspecteur.queries'
+import {
+  findInspecteurByMatricule,
+  findAllInspecteurs,
+} from './inspecteur.queries'
 
 const validEmail = 'dontusethis@example.fr'
 const anotherValidEmail = 'dontusethis@example.com'
@@ -224,6 +227,16 @@ describe('User', () => {
         'prenom',
         defaultInspecteur.prenom
       )
+    })
+
+    it('find all inspecteurs', async () => {
+      // Given
+      await createInspecteur(defaultInspecteur)
+      await createInspecteur(defaultInspecteur2)
+
+      const foundInspecteurs = await findAllInspecteurs()
+      expect(foundInspecteurs).toBeDefined()
+      expect(foundInspecteurs).toHaveLength(2)
     })
   })
 })

@@ -6,35 +6,44 @@ const DEFAULT_PUBLIC_URL = isProduction
   ? 'https://beta.interieur.gouv.fr/candilib'
   : 'http://localhost:8080/candilib'
 
-const userStatuses = {
+export const userStatuses = {
   CANDIDAT: 'candidat',
   ADMIN: 'admin',
+  TECH: 'tech',
 }
 
 const userStatusLevels = {
   [userStatuses.CANDIDAT]: 0,
   [userStatuses.ADMIN]: 1,
+  [userStatuses.TECH]: 2,
+}
+
+const getTokenExpiration = () => {
+  const now = moment()
+  const midnight = now
+    .clone()
+    .hour(23)
+    .minute(59)
+    .second(59)
+    .millisecond(0)
+
+  if (midnight.isBefore(now)) {
+    midnight.add(1, 'days')
+  }
+
+  const duration = midnight.diff(now) / 1000
+
+  return duration + 's'
 }
 
 const config = {
   secret: process.env.SECRET || 'secret',
   candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '3d',
   get adminTokenExpiration () {
-    const now = moment()
-    const midnight = now
-      .clone()
-      .hour(23)
-      .minute(59)
-      .second(59)
-      .millisecond(0)
-
-    if (midnight.isBefore(now)) {
-      midnight.add(1, 'days')
-    }
-
-    const duration = midnight.diff(now) / 1000
-
-    return duration + 's'
+    return getTokenExpiration()
+  },
+  get techTokenExpiration () {
+    return getTokenExpiration()
   },
 
   userStatuses,
