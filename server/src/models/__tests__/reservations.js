@@ -17,6 +17,7 @@ export const makeResas = async () => {
   const place2 = await placeModel.findOne({
     date: commonBasePlaceDateTime.plus({ days: 1, hour: 1 }).toISO(),
   })
+
   const candidat1 = await findCandidatByEmail(candidats[0].email)
   const candidat2 = await findCandidatByEmail(candidats[1].email)
 
