@@ -28,7 +28,7 @@
         v-for="month in timeSlots.list"
         :key="month.month"
         :href="`#tab-${month.month}`"
-        @click="$router.push({ name: 'time-slot' })"
+        @click="$router.push({ name: 'time-slot', params: { month: month.month, day: $route.params.day } })"
       >
         <span v-if="month.availableTimeSlots.length" class="primary--text">{{ month.month }}</span>
         <span v-else class="blue-grey--text">{{ month.month }}</span>
@@ -95,15 +95,16 @@ export default {
   },
 
   computed: {
-    ...mapState(['center', 'timeSlots', 'reservation']),
-    ...mapState({
-      dateDernierEchecPratique (state) {
-        const dateDernierEchecPratique = state.reservation.booked.dateDernierEchecPratique
-        return dateDernierEchecPratique && getFrenchDateFromIso(dateDernierEchecPratique)
-      },
-      numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
-      isEchecPratique: state => state.reservation.booked.dateDernierEchecPratique,
-    }),
+    ...mapState(['center', 'timeSlots', 'reservation',
+      {
+        dateDernierEchecPratique (state) {
+          const dateDernierEchecPratique = state.reservation.booked.dateDernierEchecPratique
+          return dateDernierEchecPratique && getFrenchDateFromIso(dateDernierEchecPratique)
+        },
+        numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
+        isEchecPratique: state => state.reservation.booked.dateDernierEchecPratique,
+      }]
+    ),
 
     warningMessage () {
       if (this.isPenaltyActive) {
@@ -192,6 +193,10 @@ export default {
   async mounted () {
     await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
     await this.getTimeSlots()
+    this.switchTab = this.$route.params.month ? `tab-${this.$route.params.month}` : `tab-${this.timeSlots.list[0].month}`
+    if (this.timeSlots.list.length && !this.$route.params.month) {
+      this.$router.push({ name: 'time-slot', params: { month: this.timeSlots.list[0].month, day: this.$route.params.day } })
+    }
   },
 
   async destroyed () {
