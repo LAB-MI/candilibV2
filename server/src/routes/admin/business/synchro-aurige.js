@@ -121,7 +121,7 @@ export const synchroAurige = async buffer => {
       const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
 
       if (candidat === undefined || candidat === null) {
-        const message = `Candidat ${codeNeph}/${nomNaissance} non trouvé`
+        const message = `Ce candidat ${codeNeph}/${nomNaissance} est inconnu de Candilib`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         return getCandidatStatus(
           nomNaissance,
