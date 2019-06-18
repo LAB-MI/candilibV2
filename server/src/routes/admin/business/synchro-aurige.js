@@ -6,7 +6,6 @@ import {
   deleteCandidat,
   findCandidatByNomNeph,
 } from '../../../models/candidat'
-import { ECHEC } from '../../../models/candidat/objetDernierNonReussite.values'
 import {
   findPlaceBookedByCandidat,
   removeBookedPlace,
@@ -241,13 +240,21 @@ export const synchroAurige = async buffer => {
         // Date non réussite
         const dateNoReussite =
           dateDernierEchecPratique || dateDernierNonReussite
+
+        // TODO: A retirer, Correction pour le passage V1 à V2
+        updateCandidatLastNoReussite(
+          candidat,
+          dateNoReussite,
+          objetDernierNonReussite
+        )
+
         // Check failure date
         const dateTimeEchec = checkFailureDate(candidat, dateNoReussite)
         // put a penalty And last no reussite
         if (dateTimeEchec) {
           updateCandidat.lastNoReussite = {
             date: dateTimeEchec,
-            reason: dateDernierEchecPratique ? ECHEC : objetDernierNonReussite,
+            reason: dateDernierEchecPratique ? '' : objetDernierNonReussite,
           }
           const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
           if (canBookFrom) {
@@ -366,7 +373,7 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
     const dateLastNoReussite = getFrenchLuxonDateTimeFromJSDate(
       candidat.lastNoReussite.date
     )
-    if (dateTimeEchec.equals(dateLastNoReussite)) {
+    if (dateTimeEchec.diff(dateLastNoReussite).toObject().milliseconds <= 0) {
       return
     }
   }
@@ -406,4 +413,48 @@ const removeResaNoAuthorize = async (candidat, canBookFrom) => {
       }
     }
   }
+}
+
+export const updateCandidatLastNoReussite = (
+  candidat,
+  lastDateNoReussiteIso,
+  lastReasonNoReussite
+) => {
+  const { noReussites } = candidat
+
+  if (!noReussites || noReussites.length === 0) {
+    return
+  }
+  const lastDateTimeNoReussite = getFrenchLuxonDateTimeFromISO(
+    lastDateNoReussiteIso
+  )
+
+  const newNoReussites = noReussites.reduce(
+    (cumul, current, index, initArray) => {
+      if (index === 1) {
+        cumul = [cumul]
+      }
+      const { date: prevDate, reason: prevReason } = cumul[cumul.length - 1]
+
+      let { date, reason } = current
+
+      if (lastReasonNoReussite && index === initArray.length - 1) {
+        const dateTime = getFrenchLuxonDateTimeFromJSDate(date)
+        if (dateTime.equals(lastDateTimeNoReussite)) {
+          reason = lastReasonNoReussite
+          current.reason = lastReasonNoReussite
+        }
+      }
+
+      if (prevDate.getTime() === date.getTime() && prevReason !== reason) {
+        cumul[cumul.length - 1].reason = reason
+      }
+      if (prevDate.getTime() !== date.getTime()) {
+        cumul.push(current)
+      }
+      return cumul
+    }
+  )
+
+  candidat.noReussites = newNoReussites
 }
