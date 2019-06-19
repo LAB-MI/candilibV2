@@ -114,7 +114,7 @@ export async function preSignup (req, res) {
         .toLocaleString(DATETIME_FULL)
       res.status(409).json({
         success: false,
-        message: `Vous pourrez renouveler votre pré-inscription après le ${deadLineBeforeValidateEmail}.`,
+        message: `Cette adresse courriel est déjà enregistrée, vous pourrez renouveler votre pré-inscription après le ${deadLineBeforeValidateEmail}.`,
       })
       return
     }
