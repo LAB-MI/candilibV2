@@ -68,19 +68,20 @@
           <v-dialog
             v-model="deleting"
             width="500"
-            v-if="whitelisted"
           >
-            <v-card>
+            <v-card
+              v-if="toDelete"
+            >
               <v-card-title
                 class="headline grey lighten-2"
                 primary-title
               >
                 Suppression de
-                <strong> {{ whitelisted.email }}</strong>
+                <strong> {{ toDelete.email }}</strong>
               </v-card-title>
 
               <v-card-text>
-                Voulez-vous vraiment supprimer l'adresse <strong>{{ whitelisted.email }}</strong> de la whitelist ?
+                Voulez-vous vraiment supprimer l'adresse <strong>{{ toDelete.email }}</strong> de la whitelist ?
               </v-card-text>
 
               <v-divider></v-divider>
@@ -237,7 +238,6 @@
         </v-list>
       </v-card>
     </v-container>
-    <textarea ref="clipboard" v-model="textToCopyToClipboard" />
   </div>
 </template>
 
@@ -284,7 +284,7 @@ export default {
       textToCopyToClipboard: '',
       valid: false,
       validBatch: false,
-      whitelisted: undefined,
+      toDelete: undefined,
     }
   },
 
@@ -381,13 +381,14 @@ export default {
     },
 
     onDelete (whitelisted) {
-      this.whitelisted = whitelisted
+      this.toDelete = whitelisted
       this.deleting = true
     },
 
     async remove () {
-      await this.removeFromWhitelist(this.whitelisted._id)
+      await this.removeFromWhitelist(this.toDelete._id)
       this.deleting = false
+      this.toDelete = undefined
     },
 
     async removeFromWhitelist (id) {
