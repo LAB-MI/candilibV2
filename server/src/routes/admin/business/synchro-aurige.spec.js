@@ -16,6 +16,7 @@ import {
   OK_UPDATED,
   getFrenchLuxonDateTime,
   getFrenchLuxonDateTimeFromISO,
+  getFrenchLuxonDateTimeFromObject,
 } from '../../../util'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
@@ -23,6 +24,7 @@ import {
   isETGExpired,
   isMoreThan2HoursAgo,
   synchroAurige,
+  updateCandidatLastNoReussite,
 } from './synchro-aurige'
 import { toAurigeJsonBuffer } from './__tests__/aurige'
 import candidats from './__tests__/candidats'
@@ -130,6 +132,77 @@ describe('synchro-aurige', () => {
     const isExpired = isMoreThan2HoursAgo(lessThan2HoursAgo)
 
     expect(isExpired).toBe(false)
+  })
+
+  it('Should remove double in array candidats with last date is not in noReussites', () => {
+    const dateTime = getFrenchLuxonDateTimeFromObject({
+      day: 18,
+      hour: 9,
+    })
+    const lastDateTime = dateTime.plus({ days: 2 }).toISO()
+    const noReussite = {
+      date: dateTime.toJSDate(),
+      reason: 'Echec',
+    }
+    const candidat = {
+      noReussites: [
+        {
+          date: dateTime.minus({ days: 1 }).toJSDate(),
+          reason: 'Echec',
+        },
+        noReussite,
+        noReussite,
+        noReussite,
+        {
+          date: dateTime.plus({ days: 1 }).toJSDate(),
+          reason: 'Echec',
+        },
+      ],
+    }
+
+    updateCandidatLastNoReussite(candidat, lastDateTime, 'Absent')
+
+    expect(candidat.noReussites).toBeDefined()
+    expect(candidat.noReussites).toHaveLength(3)
+  })
+
+  it('Should remove double in array candidats with last date in noReussites', () => {
+    const dateTime = getFrenchLuxonDateTimeFromObject({
+      day: 18,
+      hour: 9,
+    })
+    const lastDateTime = dateTime.plus({ days: 2 }).toISO()
+    const noReussite = {
+      date: dateTime.toJSDate(),
+      reason: 'Echec',
+    }
+    const candidat = {
+      noReussites: [
+        {
+          date: dateTime.minus({ days: 1 }).toJSDate(),
+          reason: 'Echec',
+        },
+        noReussite,
+        noReussite,
+        noReussite,
+        {
+          date: dateTime.plus({ days: 1 }).toJSDate(),
+          reason: 'Echec',
+        },
+        {
+          date: dateTime.plus({ days: 2 }).toJSDate(),
+          reason: 'Echec',
+        },
+      ],
+    }
+
+    updateCandidatLastNoReussite(candidat, lastDateTime, 'Absent')
+
+    expect(candidat.noReussites).toBeDefined()
+    expect(candidat.noReussites).toHaveLength(4)
+    expect(
+      candidat.noReussites[candidat.noReussites.length - 1]
+    ).toHaveProperty('reason', 'Absent')
   })
 
   describe('check candidats have valided their email', () => {
