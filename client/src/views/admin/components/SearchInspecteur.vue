@@ -18,7 +18,9 @@
       color="white"
       @click="toggleProfileInfo"
     >
-      <v-icon color="green">directions_car</v-icon>
+      <v-icon
+      :color="color"
+      >{{icon}}</v-icon>
     </v-btn>
     </div>
     <profile-info
@@ -55,6 +57,8 @@ export default {
 
   data () {
     return {
+      color: '#A9A9A9',
+      icon: '',
       profileInfo: undefined,
       displayInspecteur: false,
       fetchAutocompleteAction: FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST,
@@ -65,6 +69,20 @@ export default {
     inspecteurs: state => state.adminSearch.inspecteurs.list,
   }),
 
+  watch: {
+    inspecteur (newVal) {
+      this.switchToggle(newVal)
+    },
+    displayInspecteur (newVal) {
+      this.switchToggle(newVal)
+    },
+  },
+  mounted () {
+    const inspecteur = this.inspecteur
+    const displayInspecteur = this.displayInspecteur
+    this.switchToggle(inspecteur, displayInspecteur)
+  },
+
   methods: {
     displayInspecteurInfo (inspecteur) {
       this.profileInfo = transformToProfileInfo(inspecteur, inspecteurProfileInfoDictionary)
@@ -72,6 +90,17 @@ export default {
     },
     toggleProfileInfo (inspecteur) {
       this.displayInspecteur = !this.displayInspecteur
+    },
+    switchToggle (inspecteur) {
+      if (!inspecteur) {
+        this.color = 'grey'
+        this.icon = 'toggle_off'
+        return
+      }
+      if (inspecteur) {
+        this.color = 'green'
+        this.icon = 'toggle_on'
+      }
     },
   },
 }

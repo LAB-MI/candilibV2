@@ -18,7 +18,9 @@
         color="white"
         @click="toggleProfileInfo"
       >
-        <v-icon color = blue>face</v-icon>
+        <v-icon
+        :color="color"
+         >{{icon}}</v-icon>
       </v-btn>
     </div>
     <profile-info
@@ -82,6 +84,8 @@ export default {
 
   data () {
     return {
+      color: '#A9A9A9',
+      icon: '',
       profileInfo: undefined,
       fetchAutocompleteAction: FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
     }
@@ -92,6 +96,20 @@ export default {
     candidat: state => state.adminSearch.candidats.selected,
   }),
 
+  watch: {
+    candidat (newVal) {
+      this.SwitchToggle(newVal)
+    },
+    profileInfo (newVal) {
+      this.SwitchToggle(newVal)
+    },
+  },
+  mounted () {
+    const candidat = this.candidat
+    const profileInfo = this.profileInfo
+    this.SwitchToggle(candidat, profileInfo)
+  },
+
   methods: {
     async displayCandidatInfo ({ _id: id }) {
       await this.$store.dispatch(FETCH_CANDIDAT_INFO_REQUEST, id)
@@ -101,6 +119,22 @@ export default {
       this.profileInfo = !this.profileInfo
       if (this.profileInfo === true) {
         this.profileInfo = transformToProfileInfo(this.candidat, candidatProfileInfoDictionary)
+      }
+    },
+    SwitchToggle (candidat, profileInfo) {
+      if (!candidat) {
+        this.color = 'grey'
+        this.icon = 'toggle_off'
+        return
+      }
+      if (candidat) {
+        this.color = 'green'
+        this.icon = 'toggle_on'
+        return
+      }
+      if (!profileInfo) {
+        this.color = 'grey'
+        this.icon = 'toggle_off'
       }
     },
   },
