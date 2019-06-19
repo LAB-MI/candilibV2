@@ -26,6 +26,7 @@
             :whitelisted="whitelisted"
             :remove-from-whitelist="removeFromWhitelist"
             @delete="onDelete"
+            @dblclick="copyEmailInPaperclip"
           />
 
           <v-form v-model="valid" @submit.prevent="addToWhitelist">
@@ -236,6 +237,7 @@
         </v-list>
       </v-card>
     </v-container>
+    <textarea ref="clipboard" v-model="textToCopyToClipboard" />
   </div>
 </template>
 
@@ -250,6 +252,7 @@ import {
   SAVE_EMAIL_BATCH_REQUEST,
   SAVE_EMAIL_REQUEST,
   SHOW_ERROR,
+  SHOW_SUCCESS,
 } from '@/store'
 
 const codeMessageDictionary = {
@@ -278,6 +281,7 @@ export default {
       ],
       newEmail: '',
       newEmails: '',
+      textToCopyToClipboard: '',
       valid: false,
       validBatch: false,
       whitelisted: undefined,
@@ -321,6 +325,13 @@ export default {
       const emails = this.newEmails.split(/\n/)
       await this.$store.dispatch(SAVE_EMAIL_BATCH_REQUEST, { emailsToAdd: emails, departement: this.departement })
       this.hideBatchForm()
+    },
+
+    copyEmailInPaperclip (email) {
+      const success = this.$clipboard(email)
+      if (success) {
+        this.$store.dispatch(SHOW_SUCCESS, `L'email ${email} a été copié dans le presse-papier`)
+      }
     },
 
     dragOverHandler (event) {

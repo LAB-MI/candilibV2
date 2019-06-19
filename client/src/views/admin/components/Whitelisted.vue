@@ -9,7 +9,7 @@
     </v-list-tile-action>
 
     <v-list-tile-content>
-      <v-list-tile-title>{{ whitelisted.email }}</v-list-tile-title>
+      <v-list-tile-title @dblclick="$emit('dblclick', whitelisted.email)">{{ whitelisted.email }}</v-list-tile-title>
     </v-list-tile-content>
   </v-list-tile>
 </template>
@@ -23,7 +23,7 @@ export default {
 
   data () {
     return {
-      show: false,
+      textToCopyToClipboard: '',
     }
   },
 }
