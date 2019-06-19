@@ -2,18 +2,18 @@
   <v-list>
     <v-list-group
       v-for="timeSlot in timeSlots"
-      :key="timeSlot.day"
+      :key="timeSlot.label"
       v-model="timeSlot.active"
       :prepend-icon="timeSlot.action"
       no-action
-      @click="gotoDay(timeSlot.day)"
+      @click="gotoDay(timeSlot.label)"
     >
       <template v-slot:activator>
         <keep-alive>
           <v-list-tile>
             <v-list-tile-content>
               <v-list-tile-title>
-                {{ timeSlot.day }}
+                {{ timeSlot.label }}
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -25,9 +25,9 @@
       >
         <v-btn
           color="primary"
-          v-for="hour in timeSlot.hours"
+          v-for="hour in timeSlot.slots"
           :key="hour"
-          @click="selectSlot({ hour, day: timeSlot.day })"
+          @click="selectSlot({ hour, day: timeSlot.label })"
         >
           {{ hour }}
         </v-btn>
@@ -72,7 +72,7 @@ export default {
       const activeTimeSlot = oldData.find(timeSlot => timeSlot.active)
       this.timeSlots = newData.map(timeSlot => ({
         ...timeSlot,
-        active: timeSlot && activeTimeSlot ? timeSlot.day === activeTimeSlot.day : false,
+        active: timeSlot && activeTimeSlot ? timeSlot.label === activeTimeSlot.label : false,
       }))
       this.checkDayToDisplay()
     },
@@ -111,7 +111,7 @@ export default {
       this.timeSlots = this.initialTimeSlots
         .map(timeSlot => ({
           ...timeSlot,
-          active: timeSlot.day === day,
+          active: timeSlot.label === day,
         }))
     },
 
