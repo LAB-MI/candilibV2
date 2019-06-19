@@ -19,8 +19,8 @@
         @click="toggleProfileInfo"
       >
         <v-icon
-        :color="color"
-         >{{icon}}</v-icon>
+          :color="color"
+        >{{icon}}</v-icon>
       </v-btn>
     </div>
     <profile-info
@@ -57,6 +57,26 @@ const placeReserve = (place) => {
   return `${nameInspecteur}, ${examCentre}, ${frenchDate}`
 }
 
+const lastNoReussites = (noReussites) => {
+  if (noReussites == null) {
+    return '-'
+  }
+  return noReussites.map(({ reason, date }) => {
+    const frenchDate = convertToLegibleDate(date)
+    return `${frenchDate} : ${reason}`
+  }).join(' - ')
+}
+
+const historiqueAction = (places) => {
+  if (places == null || !places.length) {
+    return ' - '
+  }
+  return '<ol>' + places.map(({ date, archiveReason, byUser }, i) => {
+    const frenchDate = convertToLegibleDate(date)
+    return `<li>${frenchDate} : ${archiveReason} par ${byUser}</li>`
+  }).join('') + '</ol>'
+}
+
 const candidatProfileInfoDictionary = [
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
   [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
@@ -67,12 +87,13 @@ const candidatProfileInfoDictionary = [
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
     ['place', 'Réservation', placeReserve],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
-    [
-      'dateDernierEchecPratique',
-      'Dernière échec pratique',
-      convertToLegibleDate,
-    ],
     ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
+    ['noReussites', 'Echec(s)', lastNoReussites],
+    ['nbEchecsPratiques', 'nombres d\'échec(s)'],
+
+  ],
+  [ ['resaCanceledByAdmin', 'Annulation Administrative', convertToLegibleDate],
+    ['places', 'Historique des actions', historiqueAction],
   ],
 ]
 
