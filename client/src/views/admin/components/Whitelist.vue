@@ -11,13 +11,21 @@
         @dragenter="isDragginOverWhitelist = true"
       >
         <v-list>
-          <p v-if="whitelist.isFetching">Chargement...</p>
+          <p class="text--center" v-if="whitelist.isFetching">
+            Chargement...
+            <v-progress-circular
+              v-if="whitelist.isFetching"
+              indeterminate
+              color="primary"
+            ></v-progress-circular>
+          </p>
 
           <whitelisted
             v-for="whitelisted in whitelist.list"
             :key="whitelisted._id"
             :whitelisted="whitelisted"
             :remove-from-whitelist="removeFromWhitelist"
+            @delete="onDelete"
           />
 
           <v-form v-model="valid" @submit.prevent="addToWhitelist">
@@ -55,6 +63,45 @@
               </v-text-field>
             </v-list-tile>
           </v-form>
+
+          <v-dialog
+            v-model="deleting"
+            width="500"
+            v-if="whitelisted"
+          >
+            <v-card>
+              <v-card-title
+                class="headline grey lighten-2"
+                primary-title
+              >
+                Suppression de
+                <strong> {{ whitelisted.email }}</strong>
+              </v-card-title>
+
+              <v-card-text>
+                Voulez-vous vraiment supprimer l'adresse <strong>{{ whitelisted.email }}</strong> de la whitelist ?
+              </v-card-text>
+
+              <v-divider></v-divider>
+
+              <v-card-actions right>
+                <v-spacer></v-spacer>
+                <v-btn
+                  color="primary"
+                  outline
+                  @click="deleting = false"
+                >
+                  Annuler
+                </v-btn>
+                <v-btn
+                  color="primary"
+                  @click="remove"
+                >
+                  Oui, supprimer
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
 
           <v-divider></v-divider>
 
@@ -222,6 +269,7 @@ export default {
       adding: false,
       addingBatch: false,
       codeMessageDictionary,
+      deleting: false,
       isDragginOverWhitelist: false,
       dialog: false,
       emailRules: [
@@ -232,6 +280,7 @@ export default {
       newEmails: '',
       valid: false,
       validBatch: false,
+      whitelisted: undefined,
     }
   },
 
@@ -272,16 +321,6 @@ export default {
       const emails = this.newEmails.split(/\n/)
       await this.$store.dispatch(SAVE_EMAIL_BATCH_REQUEST, { emailsToAdd: emails, departement: this.departement })
       this.hideBatchForm()
-    },
-
-    async removeFromWhitelist (id) {
-      try {
-        await this.$store.dispatch(DELETE_EMAIL_REQUEST, { email: id, departement: this.departement })
-      } catch (error) {
-        if (error.auth === false) {
-          this.$router.push({ name: 'admin-login', nextPath: this.$route.fullPath })
-        }
-      }
     },
 
     dragOverHandler (event) {
@@ -328,6 +367,26 @@ export default {
     hideForm () {
       this.newEmail = ''
       this.adding = false
+    },
+
+    onDelete (whitelisted) {
+      this.whitelisted = whitelisted
+      this.deleting = true
+    },
+
+    async remove () {
+      await this.removeFromWhitelist(this.whitelisted._id)
+      this.deleting = false
+    },
+
+    async removeFromWhitelist (id) {
+      try {
+        await this.$store.dispatch(DELETE_EMAIL_REQUEST, { email: id, departement: this.departement })
+      } catch (error) {
+        if (error.auth === false) {
+          this.$router.push({ name: 'admin-login', nextPath: this.$route.fullPath })
+        }
+      }
     },
 
     showBatchForm (noScroll) {
