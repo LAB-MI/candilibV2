@@ -23,8 +23,8 @@
     "test:watch": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" npm run -s test:unit -- --watch"
   },
   "dependencies": {
-    "ag-grid-community": "^20.2.0",
-    "ag-grid-vue": "^20.2.0",
+    "ag-grid-community": "^21.0.1",
+    "ag-grid-vue": "^21.0.1",
     "delay": "^4.3.0",
     "html-loader": "^0.5.5",
     "intl": "^1.2.5",
