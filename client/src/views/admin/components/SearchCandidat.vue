@@ -71,19 +71,18 @@ const historiqueAction = (places) => {
   if (places == null || !places.length) {
     return ' - '
   }
-  return '<ol>' + places.map(({ date, archiveReason, byUser }, i) => {
+  return '<ol>' + places.map(({ date, archiveReason, byUser }) => {
     const frenchDate = convertToLegibleDate(date)
     return `<li>${frenchDate} : ${archiveReason} par ${byUser}</li>`
   }).join('') + '</ol>'
 }
-
 const candidatProfileInfoDictionary = [
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
   [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDate],
-    ['isValidatedbyEmail', 'Email validé', transformBoolean],
-    ['isValidatedbyAurige', 'Statut Aurige', transformBoolean],
+    ['isValidatedByEmail', 'Email validé', transformBoolean],
+    ['isValidatedByAurige', 'Statut Aurige', transformBoolean],
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
     ['place', 'Réservation', placeReserve],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
