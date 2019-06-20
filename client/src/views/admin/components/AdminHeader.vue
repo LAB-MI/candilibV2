@@ -6,7 +6,7 @@
       </h1>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <h1>{{ email }}</h1>
+    <h3>{{ email && email.split('@')[0] }}</h3>
     <v-spacer></v-spacer>
     <div class="text-xs-center d-flex align-center">
       <header-icon
