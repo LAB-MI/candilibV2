@@ -1,6 +1,6 @@
 import api from '@/api'
 
-import { SHOW_SUCCESS, SHOW_ERROR, FETCH_CANDIDATS_REQUEST } from '@/store'
+import { SHOW_SUCCESS, SHOW_ERROR } from '@/store'
 
 export const SHOW_AURIGE_RESULT = 'SHOW_AURIGE_RESULT'
 export const AURIGE_UPLOAD_CANDIDATS_REQUEST = 'AURIGE_UPLOAD_CANDIDATS_REQUEST'
@@ -44,7 +44,6 @@ export default {
         commit(AURIGE_UPLOAD_CANDIDATS_SUCCESS, result.candidats)
         commit(SET_LAST_FILE, undefined)
         dispatch(SHOW_SUCCESS, result.message)
-        dispatch(FETCH_CANDIDATS_REQUEST)
       } catch (error) {
         commit(AURIGE_UPLOAD_CANDIDATS_FAILURE)
         commit(SET_LAST_FILE, file)
