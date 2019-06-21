@@ -1,5 +1,6 @@
 import { findUserById } from '../../models/user'
 import { appLogger } from '../../util'
+import config from '../../config'
 
 export const getMe = async (req, res) => {
   const loggerInfo = {
@@ -9,18 +10,20 @@ export const getMe = async (req, res) => {
   }
   appLogger.info(loggerInfo)
   try {
-    const { email, departements } = await findUserById(req.userId)
+    const { email, departements, status } = await findUserById(req.userId)
     appLogger.debug({
       ...loggerInfo,
-      results: { email, departements },
+      results: { email, departements, status },
     })
-    if (!email || !departements) {
+    if (!email || !departements || !status) {
       const error = new Error('Utilisateur non trouvé')
       throw error
     }
+    const level = config.userStatusLevels[status]
     return res.json({
       email,
       departements,
+      level,
     })
   } catch (error) {
     appLogger.error({
