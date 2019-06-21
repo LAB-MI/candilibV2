@@ -12,7 +12,7 @@
 
 <script>
 import { mapState } from 'vuex'
-
+import { ROUTE_AUTHORIZE_AURIGE } from '../../constants'
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
 
@@ -28,7 +28,7 @@ const headerIcons = [
     tooltipText: 'Gestion planning',
   },
   {
-    routerTo: 'aurige',
+    routerTo: ROUTE_AUTHORIZE_AURIGE,
     iconName: 'import_export',
     tooltipText: 'Import / Export Aurige',
   },
@@ -46,16 +46,15 @@ export default {
     return {
       drawer: false,
       file: undefined,
-      headerIcons,
     }
   },
 
   computed: {
-    ...mapState([
-      'admin',
-    ]),
-    authStatus () {
-      return this.$store.state.auth.statusAdmin
+    ...mapState(['admin']),
+    headerIcons () {
+      return headerIcons.filter(headerIcon => {
+        return headerIcon.routerTo !== this.$store.getters.noAuthorize
+      })
     },
   },
 }

@@ -27,8 +27,10 @@ import {
   requireCandidatAuth,
   checkAdminToken,
   checkCandidatToken,
+  checkAccess,
 } from './router-checks'
 import { SignupForm } from './views/candidat/components'
+import { ROUTE_AUTHORIZE_AURIGE } from './constants'
 
 Vue.use(Router)
 
@@ -62,8 +64,9 @@ const adminRoutes = [
       },
       {
         path: 'aurige',
-        name: 'aurige',
+        name: ROUTE_AUTHORIZE_AURIGE,
         component: AdminAurige,
+        beforeEnter: checkAccess,
       },
       {
         path: 'whitelist',

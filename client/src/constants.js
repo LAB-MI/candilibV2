@@ -14,3 +14,5 @@ export const INFO_MESSAGE_TYPE = 'info'
 export const DEFAULT_MESSAGE_TYPE = INFO_MESSAGE_TYPE
 export const ERROR_MESSAGE_TYPE = 'error'
 export const SUCCESS_MESSAGE_TYPE = 'success'
+
+export const ROUTE_AUTHORIZE_AURIGE = 'aurige'

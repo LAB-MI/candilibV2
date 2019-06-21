@@ -3,6 +3,7 @@ import { getFrenchLuxonDateFromIso, creneauSetting, getFrenchLuxonCurrentDateTim
 import api from '@/api'
 import {
   DEPARTEMENT_STORAGE_KEY,
+  ROUTE_AUTHORIZE_AURIGE,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -46,6 +47,9 @@ export default {
     activeDepartement: state => {
       return state.departements.active
     },
+    noAuthorize: state => {
+      if (!state.level || state.level < 2) return ROUTE_AUTHORIZE_AURIGE
+    },
   },
 
   state: {
@@ -56,6 +60,7 @@ export default {
       list: [],
     },
     email: undefined,
+    level: undefined,
     places: {
       isFetching: false,
       list: [],
@@ -89,6 +94,7 @@ export default {
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
       state.departements.list = infos.departements
       state.email = infos.email
+      state.level = infos.level
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
       state.departements.active = activeDepartement || infos.departements[0]
       state.departements.isFetching = false
