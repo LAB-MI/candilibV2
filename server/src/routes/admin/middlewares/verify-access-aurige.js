@@ -16,7 +16,7 @@ export function verifyAccessAurige (req, res, next) {
   try {
     if (
       requestedAction === 'aurige' &&
-      userLevel < config.userStatusLevels.admin
+      userLevel < config.userStatusLevels.tech
     ) {
       throw new Error('Accès interdit')
     }
