@@ -87,7 +87,6 @@ export default {
       state.departements.list = infos.departements
       state.email = infos.email
       state.features = infos.features && infos.features.map(feature => ROUTE_AUTHORIZES[feature])
-      console.log({ infos, features: state.features })
 
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
       state.departements.active = activeDepartement || infos.departements[0]
