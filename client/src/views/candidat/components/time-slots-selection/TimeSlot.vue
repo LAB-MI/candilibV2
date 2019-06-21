@@ -124,10 +124,11 @@ export default {
       if (this.isEchecPratique) {
         return false
       }
+      const now = getFrenchLuxonCurrentDateTime()
       const { canBookFrom, lastDateToCancel } = this.reservation.booked
       const isPenaltyActive =
-        canBookFrom ||
-        getFrenchLuxonCurrentDateTime() >
+        (canBookFrom && getFrenchLuxonDateFromIso(canBookFrom) > now) ||
+        now >
           getFrenchLuxonDateFromIso(lastDateToCancel)
 
       return isPenaltyActive
