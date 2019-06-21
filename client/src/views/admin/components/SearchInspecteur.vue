@@ -79,8 +79,7 @@ export default {
   },
   mounted () {
     const inspecteur = this.inspecteur
-    const displayInspecteur = this.displayInspecteur
-    this.switchToggle(inspecteur, displayInspecteur)
+    this.switchToggle(inspecteur)
   },
 
   methods: {

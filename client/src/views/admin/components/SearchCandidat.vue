@@ -57,18 +57,18 @@ const placeReserve = (place) => {
   return `${nameInspecteur}, ${examCentre}, ${frenchDate}`
 }
 
-const lastNoReussites = (noReussites) => {
-  if (!noReussites) {
+const legibleNoReussites = (noReussites) => {
+  if (!noReussites || !(noReussites.length)) {
     return '-'
   }
-  return noReussites.map(({ reason, date }) => {
+  return '<ol>' + noReussites.map(({ reason, date }) => {
     const frenchDate = convertToLegibleDate(date)
-    return `${frenchDate} : ${reason}`
-  }).join(' - ')
+    return `<li>${frenchDate} : ${reason}</li>`
+  }).join(' - ') + '</ol>'
 }
 
 const historiqueAction = (places) => {
-  if (places == null || !(places.length)) {
+  if (!places || !(places.length)) {
     return ' - '
   }
   return '<ol>' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
@@ -87,12 +87,12 @@ const candidatProfileInfoDictionary = [
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
     ['place', 'Réservation', placeReserve],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
-    ['noReussites', 'Dernier échec pratique', lastNoReussites],
+    ['noReussites', 'Non réussites', legibleNoReussites],
     ['nbEchecsPratiques', 'nombres d\'échec(s)'],
     ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
 
   ],
-  [ ['resaCanceledByAdmin', 'Annulation Administrative', convertToLegibleDate],
+  [ ['resaCanceledByAdmin', 'Dernier annulation par l\'administration', convertToLegibleDate],
     ['places', 'Historique des actions', historiqueAction],
   ],
 ]
@@ -151,11 +151,6 @@ export default {
       if (candidat) {
         this.color = 'green'
         this.icon = 'toggle_on'
-        return
-      }
-      if (!profileInfo) {
-        this.color = 'grey'
-        this.icon = 'toggle_off'
       }
     },
   },
