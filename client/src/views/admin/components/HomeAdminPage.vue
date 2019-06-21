@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="u-flex  u-flex--center fixe-input">
+    <div class="u-flex  u-flex--center  u-flex--v-start">
       <search-candidat class="search-input"/>
       <search-inspecteur class="search-input" />
     </div>
@@ -42,12 +42,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.fixe-input {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-}
-
 .search-input {
   margin: 1em 1em;
 }
