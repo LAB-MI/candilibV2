@@ -1,6 +1,7 @@
 <template>
   <div class="presignup-form">
     <v-form dark v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
+      * Champs obligatoires
       <div class="form-input">
         <v-text-field
           :label="`${getMsg('preinscription_neph')} *`"
@@ -27,6 +28,7 @@
           color="#fff"
           @focus="setNomPlaceholder"
           @blur="removeNomPlaceholder"
+          @input="setNomNaissance"
           :placeholder="nomPlaceholder"
           aria-placeholder="Dupont"
           hint="ex. : Dupont"
@@ -258,6 +260,9 @@ export default {
     },
     setEmailToLowerCase () {
       this.email = this.email.toLowerCase()
+    },
+    setNomNaissance () {
+      this.nomNaissance = this.nomNaissance.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     },
 
     async presignup () {

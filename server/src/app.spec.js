@@ -11,4 +11,10 @@ describe('Test the root path', () => {
       .get(`${apiPrefix}`)
       .expect(404)
   })
+
+  it('Should response the GET method', async () => {
+    await request(app)
+      .get(`${apiPrefix}/version`)
+      .expect(200)
+  })
 })

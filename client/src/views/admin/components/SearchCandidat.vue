@@ -1,17 +1,26 @@
 <template>
   <div>
-    <candilib-autocomplete
-      class="search-input"
-      @selection="displayCandidatInfo"
-      label="Candidats"
-      hint="Chercher un candidat par son nom / NEPH / email"
-      placeholder="Dupont"
-      :items="candidats"
-      item-text="nomNaissance"
-      item-value="_id"
-      :fetch-autocomplete-action="fetchAutocompleteAction"
-    />
-
+    <div class="u-flex u-flex--center">
+      <candilib-autocomplete
+        class="search-input"
+        @selection="displayCandidatInfo"
+        label="Candidats"
+        hint="Chercher un candidat par son nom / NEPH / email"
+        placeholder="Dupont"
+        :items="candidats"
+        item-text="nomNaissance"
+        item-value="_id"
+        :fetch-autocomplete-action="fetchAutocompleteAction"
+      />
+      <v-btn
+        icon
+        :disabled="!candidat"
+        color="white"
+        @click="toggleProfileInfo"
+      >
+        <v-icon color = blue>face</v-icon>
+      </v-btn>
+    </div>
     <profile-info
       title= 'Informations candidats'
       v-if="profileInfo"
@@ -21,6 +30,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import {
   FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
   FETCH_CANDIDAT_INFO_REQUEST,
@@ -76,17 +87,21 @@ export default {
     }
   },
 
-  computed: {
-    candidats () {
-      return this.$store.state.adminSearch.candidats.list
-    },
-  },
+  computed: mapState({
+    candidats: state => state.adminSearch.candidats.list,
+    candidat: state => state.adminSearch.candidats.selected,
+  }),
 
   methods: {
     async displayCandidatInfo ({ _id: id }) {
       await this.$store.dispatch(FETCH_CANDIDAT_INFO_REQUEST, id)
-      const candidat = this.$store.state.adminSearch.candidats.selected
-      this.profileInfo = transformToProfileInfo(candidat, candidatProfileInfoDictionary)
+      this.profileInfo = transformToProfileInfo(this.candidat, candidatProfileInfoDictionary)
+    },
+    toggleProfileInfo () {
+      this.profileInfo = !this.profileInfo
+      if (this.profileInfo === true) {
+        this.profileInfo = transformToProfileInfo(this.candidat, candidatProfileInfoDictionary)
+      }
     },
   },
 }

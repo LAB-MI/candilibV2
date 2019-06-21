@@ -19,7 +19,6 @@ export const AgGridLocaleText = {
 }
 
 export const valueDateFormatter = param => {
-  console.log(param)
   return param.value ? getFrenchLuxonDateFromIso(param.value).toLocaleString(DateTime.DATETIME_SHORT_WITH_SECONDS) : ''
 }
 export const filterDateParams = {

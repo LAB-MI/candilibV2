@@ -2,19 +2,18 @@
   <v-list>
     <v-list-group
       v-for="timeSlot in timeSlots"
-      :key="timeSlot.day"
+      :key="timeSlot.label"
       v-model="timeSlot.active"
       :prepend-icon="timeSlot.action"
       no-action
+      @click="gotoDay(timeSlot.label)"
     >
       <template v-slot:activator>
         <keep-alive>
           <v-list-tile>
             <v-list-tile-content>
-              <v-list-tile-title
-                @click="gotoDay(timeSlot.day)"
-              >
-                {{ timeSlot.day }}
+              <v-list-tile-title>
+                {{ timeSlot.label }}
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
@@ -26,9 +25,9 @@
       >
         <v-btn
           color="primary"
-          v-for="hour in timeSlot.hours"
+          v-for="hour in timeSlot.slots"
           :key="hour"
-          @click="selectSlot({ hour, day: timeSlot.day })"
+          @click="selectSlot({ hour, day: timeSlot.label })"
         >
           {{ hour }}
         </v-btn>
@@ -64,12 +63,17 @@ export default {
   watch: {
     $route (to, from) {
       const activeDay = to.params.day
-      if (activeDay !== this.memoDay) {
+      if (this.memoDay && activeDay !== this.memoDay) {
         this.displayDay(activeDay)
       }
     },
+
     initialTimeSlots (newData, oldData) {
-      this.timeSlots = newData
+      const activeTimeSlot = oldData.find(timeSlot => timeSlot.active)
+      this.timeSlots = newData.map(timeSlot => ({
+        ...timeSlot,
+        active: timeSlot && activeTimeSlot ? timeSlot.label === activeTimeSlot.label : false,
+      }))
       this.checkDayToDisplay()
     },
   },
@@ -107,13 +111,13 @@ export default {
       this.timeSlots = this.initialTimeSlots
         .map(timeSlot => ({
           ...timeSlot,
-          active: timeSlot.day === day,
+          active: timeSlot.label === day,
         }))
     },
 
     gotoDay (day) {
       if (day === this.memoDay) {
-        this.$router.push({ name: 'time-slot' })
+        this.$router.push({ name: 'time-slot', params: { month: this.$route.params.month, day: 'undefinedDay' } })
         this.memoDay = undefined
         return
       }
@@ -149,8 +153,9 @@ export default {
             params: {
               departement: `${selectedSlot.centre.departement}`,
               center: `${selectedSlot.centre.nom}`,
+              day: this.$route.params.day,
               slot: selectedSlot.slot,
-              modifying: this.$store.state.reservation.isModifying,
+              modifying: this.$store.state.reservation.isModifying ? 'modification' : 'selection',
             },
           })
         } else {

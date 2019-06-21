@@ -24,7 +24,7 @@ export function buildMailResaArgsValidation (
         nomNaissance,
         codeNeph,
       },
-      message,
+      description: message,
     })
     throw new Error(message)
   }
@@ -38,7 +38,7 @@ export function buildMailResaArgsValidation (
         urlFAQ,
         urlRESA,
       },
-      message,
+      description: message,
     })
     throw new Error(message)
   }

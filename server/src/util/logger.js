@@ -72,14 +72,14 @@ export function jsonFormat (tokens, req, res) {
       method: tokens.method(req, res),
       request_uri: tokens.url(req, res),
       uri: tokens.url(req, res),
-      status: tokens.status(req, res),
-      content_length: tokens.res(req, res, 'content-length'),
+      status: +tokens.status(req, res),
+      content_length: +tokens.res(req, res, 'content-length'),
       http_referrer: tokens.referrer(req, res),
       http_version: tokens['http-version'](req, res),
       remote_addr: tokens['remote-addr'](req, res),
       remote_user: tokens['remote-user'](req, res),
       http_user_agent: tokens['user-agent'](req, res),
-      response_time: tokens['response-time'](req, res),
+      response_time: +tokens['response-time'](req, res),
     },
   })
 }

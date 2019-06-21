@@ -1,9 +1,9 @@
 <template>
   <v-card class="elevation-0" v-if="flagModal === 'face'">
     <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place || { date, hour: content.hour }, inspecteurInfos }"
+      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
       title="Ce créneau est au statut réservé"
-      :closeDialog="closeDialogFace"
+      @close="closeDialogFace"
       colorIcon="black"
       colorButton="blue"
       icon="highlight_off"
@@ -20,8 +20,7 @@
       textContent="Annuler reservation"
       :activeTextContent="!deleteBookedPlaceConfirm"
       textButtonCancel="Retour"
-      :closeDialog="closeDialog"
-      :submitDialog="displayConfirmDeleteBookedPlace"
+      @click="displayConfirmDeleteBookedPlace"
       :content="content"
     >
       <confirm-box
@@ -65,34 +64,34 @@
       colorSubmitButton="blue"
       textButtonCancel="Retour"
       textContent="Modifier l'inspecteur"
+      @click="toggleInspecteurSearch"
       :activeTextContent="displayModifyInspecteurTitle"
-      :closeDialog="closeDialogFace"
-      :submitDialog="changeInspecteur"
     >
-    <list-search-inspecteurs-available
-      slot="title"
-      v-if="displaySearchInspecteurs"
-      :isEditing="displaySearchInspecteurs"
-      :date="content.place.date"
-      :centre="centreInfo._id"
-      @select-inspecteur="selectInspecteur"
-    />
-    <confirm-box
-      v-if="hasConfirm"
-      :closeAction='cancelSelection'
-      :submitAction='validSelection'>
+      <list-search-inspecteurs-available
+        slot="title"
+        v-if="displaySearchInspecteurs"
+        :isEditing="displaySearchInspecteurs"
+        :date="content.place.date"
+        :centre="centreInfo._id"
+        @select-inspecteur="selectInspecteur"
+      />
+      <confirm-box
+        v-if="hasConfirm"
+        :closeAction='cancelSelection'
+        :submitAction='validSelection'
+      >
         <p>
-          {{textInspecteurSeleted}}
+          {{textInspecteurSelected}}
         </p>
-    </confirm-box>
+      </confirm-box>
     </shedule-inspector-dialog-sub-content>
   </v-card>
 
   <v-card v-else-if="flagModal === 'block'">
     <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content || { date, hour: content.hour }.place, inspecteurInfos }"
+      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
       title="Ce créneau est au statut indisponible"
-      :closeDialog="closeDialog"
+      @close="closeDialog"
       colorIcon="black"
       colorButton="grey"
       icon="highlight_off"
@@ -108,15 +107,14 @@
       colorSubmitButton="green"
       textContent="Rendre le créneau disponible"
       textButtonCancel="Retour"
-      :closeDialog="closeDialog"
-      :submitDialog="makeCreneauAvailable"
+      @click="makeCreneauAvailable"
     />
   </v-card>
   <v-card v-else-if="flagModal === 'check'">
     <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content || { date, hour: content.hour }.place, inspecteurInfos }"
+      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
       title="Ce créneau est au statut disponible"
-      :closeDialog="closeDialogAndResetSelectedCandidat"
+      @close="closeDialogAndResetSelectedCandidat"
       colorIcon="black"
       colorButton="green"
       icon="highlight_off"
@@ -132,9 +130,8 @@
       colorSubmitButton="blue"
       textContent="Affecter un candidat"
       :activeTextContent="!selectedCandidat"
-      :closeDialog="closeDialog"
       textButtonCancel="Retour"
-      :submitDialog="displaySearchCandidatInput"
+      @click="displaySearchCandidatInput"
     >
       <div v-if="isCandidatEditing">
         <candilib-autocomplete
@@ -170,8 +167,7 @@
       colorSubmitButton="grey"
       textContent="Rendre indisponible"
       textButtonCancel="Retour"
-      :closeDialog="closeDialog"
-      :submitDialog="renderCreneauUnavalaible"
+      @click="renderCreneauUnavalaible"
     />
   </v-card>
 </template>
@@ -220,7 +216,7 @@ export default {
   data () {
     return {
       inspecteurSelected: undefined,
-      textInspecteurSeleted: undefined,
+      textInspecteurSelected: undefined,
       hasConfirm: false,
       displaySearchInspecteurs: false,
       displayModifyInspecteurTitle: true,
@@ -252,27 +248,32 @@ export default {
     }),
 
     candidats () {
-      return this.$store.state.adminSearch.candidats.list.map(candidat => {
-        const { nomNaissance, codeNeph } = candidat
-        const nameNeph = nomNaissance + ' | ' + codeNeph
-        return { nameNeph, ...candidat }
-      })
+      return this.$store.state.adminSearch.candidats.list
+        .filter(candidat => candidat.isValidatedByAurige)
+        .map(candidat => {
+          const { nomNaissance, codeNeph } = candidat
+          const nameNeph = nomNaissance + ' | ' + codeNeph
+          return { nameNeph, ...candidat }
+        })
     },
 
     inspecteurInfos () {
       return this.$store.state.admin.inspecteurs.list
         .find(inspecteur => inspecteur._id === this.inspecteurId)
     },
-
     formattedDate () {
       return getFrenchDateTimeFromIso(this.content.place.date)
     },
   },
 
   methods: {
+    toggleInspecteurSearch () {
+      this.displaySearchInspecteurs = !this.displaySearchInspecteurs
+    },
+
     selectInspecteur (inspecteur) {
       this.inspecteurSelected = inspecteur
-      this.textInspecteurSeleted = `Vous avez choisi l'inspecteur ${inspecteur.nom}, ${inspecteur.matricule}`
+      this.textInspecteurSelected = `Vous avez choisi l'inspecteur ${inspecteur.nom}, ${inspecteur.matricule}`
       this.hasConfirm = true
       this.displaySearchInspecteurs = false
       this.displayModifyInspecteurTitle = false
@@ -323,10 +324,6 @@ export default {
       this.closeDialog()
     },
 
-    changeInspecteur () {
-      this.displaySearchInspecteurs = true
-    },
-
     closeDialogInspecteur () {
       this.displayModifyInspecteurTitle = true
       this.displaySearchInspecteurs = false
@@ -343,7 +340,7 @@ export default {
     cancelSelection () {
       this.displaySearchInspecteurs = true
       this.displayModifyInspecteurTitle = true
-      this.textInspecteurSeleted = undefined
+      this.textInspecteurSelected = undefined
       this.inspecteurSelected = undefined
       this.hasConfirm = false
     },

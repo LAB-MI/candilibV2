@@ -5,7 +5,7 @@ import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
 
 export const NOT_CODE_DEP_MSG =
-  'Le code de département est manquant, Vieullez choisir un code département'
+  'Le code de département est manquant, Veuillez choisir un code département'
 
 export async function getCentres (req, res) {
   const { departement, nom } = req.query
@@ -22,7 +22,7 @@ export async function getCentres (req, res) {
       const error = {
         section: 'candidat-getCentres',
         message:
-          'Le code de département est manquant, Vieullez choisir un code département',
+          'Le code de département est manquant, Veuillez choisir un code département',
       }
       appLogger.error(error)
       return res.status(400).json({

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <div class="u-flex u-flex--center">
     <candilib-autocomplete
       class="search-input"
       @selection="displayInspecteurInfo"
@@ -11,16 +12,26 @@
       item-value="_id"
       :fetch-autocomplete-action="fetchAutocompleteAction"
     />
-
+    <v-btn
+      icon
+      :disabled="!profileInfo"
+      color="white"
+      @click="toggleProfileInfo"
+    >
+      <v-icon color="green">directions_car</v-icon>
+    </v-btn>
+    </div>
     <profile-info
-      title= 'informations inspecteur'
-      v-if="profileInfo"
+      title='informations inspecteur'
+      v-if="displayInspecteur"
       :profileInfo="profileInfo"
     />
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import { FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST } from '@/store'
 import CandilibAutocomplete from './CandilibAutocomplete'
 import ProfileInfo from './ProfileInfo'
@@ -45,19 +56,22 @@ export default {
   data () {
     return {
       profileInfo: undefined,
+      displayInspecteur: false,
       fetchAutocompleteAction: FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST,
     }
   },
 
-  computed: {
-    inspecteurs () {
-      return this.$store.state.adminSearch.inspecteurs.list
-    },
-  },
+  computed: mapState({
+    inspecteurs: state => state.adminSearch.inspecteurs.list,
+  }),
 
   methods: {
     displayInspecteurInfo (inspecteur) {
       this.profileInfo = transformToProfileInfo(inspecteur, inspecteurProfileInfoDictionary)
+      this.displayInspecteur = true
+    },
+    toggleProfileInfo (inspecteur) {
+      this.displayInspecteur = !this.displayInspecteur
     },
   },
 }

@@ -1,13 +1,23 @@
 // import { synchroAurige, getCandidatsAsCsv } from './business'
-import { email as emailRegex, techLogger } from '../../util'
-import { findCandidatByEmail, findCandidatById } from '../../models/candidat'
+import {
+  DATETIME_FULL,
+  email as emailRegex,
+  getFrenchLuxonDateTimeFromJSDate,
+  techLogger,
+} from '../../util'
+import {
+  findCandidatByEmail,
+  findCandidatById,
+  deleteCandidat,
+} from '../../models/candidat'
 import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
-  checkCandidatIsSignedBefore,
+  isAlreadyPresignedUp,
   updateInfoCandidat,
   presignUpCandidat,
   validateEmail,
 } from './candidat.business'
+import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
 
 const mandatoryFields = [
   'codeNeph',
@@ -65,56 +75,80 @@ export async function preSignup (req, res) {
   if (!isCandidatWhitelisted) {
     res.status(401).json({
       success: false,
-      message: 'Ce site sera ouvert prochainement.',
+      message:
+        "L'adresse courriel renseignée n'est pas dans la liste des invités.",
     })
-    return
-  }
-
-  const isSigned = await checkCandidatIsSignedBefore(candidatData)
-  if (isSigned && isSigned.result) {
-    res.status(409).json(isSigned.result)
     return
   }
 
   const candidatWithSameEmail = await findCandidatByEmail(email)
 
-  if (
-    candidatWithSameEmail &&
-    !(
-      isSigned &&
-      isSigned.candidat &&
-      isSigned.candidat.email === candidatWithSameEmail.email
-    )
-  ) {
-    res.status(409).json({
-      success: false,
-      message:
-        'Vous avez déjà un compte sur Candilib, veuillez cliquer sur le lien "Déjà inscrit"',
-    })
+  if (candidatWithSameEmail) {
+    const {
+      isValidatedByAurige,
+      isValidatedEmail,
+      presignedUpAt,
+    } = candidatWithSameEmail
+
+    if (isValidatedByAurige) {
+      res.status(409).json({
+        success: false,
+        message:
+          'Vous avez déjà un compte sur Candilib avec cette adresse courriel, veuillez cliquer sur le lien "Déjà inscrit"',
+      })
+      return
+    }
+
+    if (isValidatedEmail) {
+      res.status(409).json({
+        success: false,
+        message: `Vous êtes déjà pré-inscrit sur Candilib avec cette adresse courriel, votre compte est en cours de vérification par l'administration.`,
+      })
+      return
+    }
+
+    if (!isValidatedEmail && !isMoreThan2HoursAgo(presignedUpAt)) {
+      const deadLineBeforeValidateEmail = getFrenchLuxonDateTimeFromJSDate(
+        presignedUpAt
+      )
+        .plus({ hours: 2 })
+        .toLocaleString(DATETIME_FULL)
+      res.status(409).json({
+        success: false,
+        message: `Cette adresse courriel est déjà enregistrée, vous pourrez renouveler votre pré-inscription après le ${deadLineBeforeValidateEmail}.`,
+      })
+      return
+    }
+
+    await deleteCandidat(candidatWithSameEmail, 'EMAIL_NOT_VERIFIED_EXPIRED')
+  }
+
+  const result = await isAlreadyPresignedUp(candidatData)
+
+  if (!result.success) {
+    res.status(409).json(result)
     return
   }
 
-  if (isSigned && isSigned.candidat) {
-    const updateresult = await updateInfoCandidat(
-      isSigned.candidat,
-      candidatData
-    )
-
-    if (updateresult.success) {
-      res.status(200).json(updateresult)
-    } else {
-      res.status(409).json(updateresult)
+  if (!result.candidat) {
+    try {
+      const response = await presignUpCandidat(candidatData)
+      res.status(200).json(response)
+    } catch (error) {
+      techLogger.error(error)
+      res.status(500).json({ success: false, ...error })
     }
     return
   }
 
-  try {
-    const response = await presignUpCandidat(candidatData)
-    res.status(200).json(response)
-  } catch (error) {
-    techLogger.error(error)
-    res.status(500).json({ success: false, ...error })
+  const updateResult = await updateInfoCandidat(result.candidat, candidatData)
+
+  if (updateResult.success) {
+    res.status(200).json(updateResult)
+    return
   }
+
+  res.status(409).json(updateResult)
 }
 
 export async function getMe (req, res) {

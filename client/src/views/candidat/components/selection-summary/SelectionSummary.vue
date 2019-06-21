@@ -4,9 +4,7 @@
     <div class="text--center">
       <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
       <reservation-info
-        :adresse="infoResa.adresse"
-        :date="infoResa.date"
-        :nom="infoResa.nom"
+        :info-resa="infoResa"
       />
     </div>
     <summary-confirmation v-if="$route.meta.isConfirmation" />
@@ -86,7 +84,7 @@ export default {
 
     title () {
       return this.isConfirmation || this.$route.meta.isConfirmation
-        ? `${this.$route.params.modifying ? 'Confirmer la modificaion' : 'Confirmation'}`
+        ? `${this.$route.params.modifying === 'modification' ? 'Confirmer la modificaion' : 'Confirmation'}`
         : 'Ma réservation'
     },
 
@@ -98,12 +96,14 @@ export default {
     infoResa () {
       if (this.isConfirmation) {
         return {
+          centre: this.center.selected,
           nom: this.center.selected ? this.center.selected.nom : '',
           adresse: this.center.selected ? this.center.selected.adresse : '',
           date: this.timeSlots.selected ? this.convertIsoDate(this.timeSlots.selected.slot) : '',
         }
       }
       return {
+        centre: this.reservation.booked.centre,
         nom: this.reservation.booked.centre ? this.reservation.booked.centre.nom : '',
         adresse: this.reservation.booked.centre ? this.reservation.booked.centre.adresse : '',
         date: this.reservation.booked ? this.convertIsoDate(this.reservation.booked.date) : '',
@@ -117,7 +117,14 @@ export default {
 
   methods: {
     goToSelectTimeSlot () {
-      this.$router.push({ name: 'time-slot', params: { modifying: this.$route.params.modifying } })
+      this.$router.push({
+        name: 'time-slot',
+        params: {
+          month: this.$route.params.month,
+          day: this.$route.params.day,
+          modifying: this.$route.params.modifying,
+        },
+      })
     },
 
     goToSelectCenter () {

@@ -44,7 +44,11 @@ const getScheduleInspecteurBody = async (
       const heure = dateTimeToFormatFr(date).hour
       let candidatObject
       if (candidat) {
-        candidatObject = await findCandidatById(candidat)
+        candidatObject = await findCandidatById(candidat, {
+          codeNeph: 1,
+          nomNaissance: 1,
+          prenom: 1,
+        })
         if (!candidatObject) {
           throw new Error('CANDIDAT_NOT_FOUND')
         }
@@ -74,35 +78,67 @@ const getScheduleInspecteurBody = async (
   return getHtmlBody(body)
 }
 
-export const sendScheduleInspecteur = async (email, places) => {
-  appLogger.debug({
+export const sendScheduleInspecteur = async (
+  email,
+  places,
+  inspecteur,
+  centre
+) => {
+  const loggerInfo = {
     func: 'sendScheduleInspecteur',
-    args: { email, places },
-  })
+    email,
+    places,
+    inspecteur,
+    centre,
+    action: 'SEND_SCHEDULE_INSPECTEUR',
+  }
+
+  appLogger.debug(loggerInfo)
   const action = 'SEND_SCHEDULE_INSPECTEUR'
 
   if (!email || !places || places.length <= 0) {
-    const message = "L'adresse email ou la liste des créneaux sont manquantes."
+    const message =
+      "L'adresse courriel ou la liste des créneaux sont manquantes."
     appLogger.error({ action, message })
     throw new Error(message)
   }
-  const { inspecteur, date, centre } = places[0]
 
-  const inspectObject = await findInspecteurById(inspecteur)
-  if (!inspectObject) {
-    throw new Error('INSPECTEUR_NOT_FOUND')
+  const {
+    inspecteur: inspecteurFromPlace,
+    date,
+    centre: centreFromPlace,
+  } = places[0]
+
+  let inspecteurObject = inspecteur || inspecteurFromPlace
+  appLogger.debug({
+    ...loggerInfo,
+    description: "rechercher l'inspecteur",
+    inspecteur_id: inspecteurObject.matricule,
+    inspecteurObject,
+  })
+
+  if (!inspecteurObject.matricule || !inspecteurObject.nom) {
+    inspecteurObject = await findInspecteurById(inspecteurObject._id)
+    if (!inspecteurObject) {
+      throw new Error('INSPECTEUR_NOT_FOUND')
+    }
   }
-  const inspecteurName = inspectObject.nom
-  const inspecteurMatricule = inspectObject.matricule
+
+  const inspecteurName = inspecteurObject.nom
+  const inspecteurMatricule = inspecteurObject.matricule
+
+  let placeCentre = centre || centreFromPlace
+  if (!placeCentre.nom || !placeCentre.departement) {
+    placeCentre = await findCentreById(placeCentre._id)
+    if (!placeCentre) {
+      throw new Error('CENTRE_NOT_FOUND')
+    }
+  }
+
+  const centreNom = placeCentre.nom
+  const departement = placeCentre.departement
+
   const dateToString = dateTimeToFormatFr(date).date
-
-  const centreObject = await findCentreById(centre)
-  if (!centreObject) {
-    throw new Error('CENTRE_NOT_FOUND')
-  }
-  const centreNom = centreObject.nom
-  const departement = centreObject.departement
-
   const content = await getScheduleInspecteurBody(
     inspecteurName,
     inspecteurMatricule,

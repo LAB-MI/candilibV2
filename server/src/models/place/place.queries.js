@@ -7,7 +7,7 @@ import { appLogger } from '../../util'
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
 export const createPlace = async leanPlace => {
-  appLogger.debug(JSON.stringify({ func: 'createPlace', leanPlace }))
+  appLogger.debug({ func: 'createPlace', leanPlace })
   const previousPlace = await Place.findOne(leanPlace)
   if (previousPlace && !(previousPlace instanceof Error)) {
     throw new Error(PLACE_ALREADY_IN_DB_ERROR)
@@ -92,12 +92,10 @@ export const findAvailablePlacesByCentre = async (
   endDate,
   populate
 ) => {
-  appLogger.debug(
-    JSON.stringify({
-      func: 'findAvailablePlacesByCentre',
-      args: { centreId, beginDate, endDate },
-    })
-  )
+  appLogger.debug({
+    func: 'findAvailablePlacesByCentre',
+    args: { centreId, beginDate, endDate },
+  })
   const query = queryAvailablePlacesByCentre(centreId, beginDate, endDate)
   queryPopulate(populate, query)
   const places = await query.exec()
@@ -109,12 +107,10 @@ export const countAvailablePlacesByCentre = async (
   beginDate,
   endDate
 ) => {
-  appLogger.debug(
-    JSON.stringify({
-      func: 'countAvailablePlacesByCentre',
-      args: { centreId, beginDate, endDate },
-    })
-  )
+  appLogger.debug({
+    func: 'countAvailablePlacesByCentre',
+    args: { centreId, beginDate, endDate },
+  })
 
   const nbPlaces = await queryAvailablePlacesByCentre(
     centreId,
@@ -125,12 +121,10 @@ export const countAvailablePlacesByCentre = async (
 }
 
 export const findPlacesByCentreAndDate = async (_id, date, populate) => {
-  appLogger.debug(
-    JSON.stringify({
-      func: 'findPlacesByCentreAndDate',
-      args: { _id, date },
-    })
-  )
+  appLogger.debug({
+    func: 'findPlacesByCentreAndDate',
+    args: { _id, date, populate },
+  })
   const query = Place.find({
     centre: _id,
     date,
@@ -217,5 +211,27 @@ export const findAllPlacesBookedByCentre = (centreId, beginDate, endDate) => {
   }
   query.where('centre', centreId)
   query.where('candidat').exists(true)
+  return query.exec()
+}
+
+export const findPlaceBookedByInspecteur = (
+  inspecteurId,
+  beginDate,
+  endDate
+) => {
+  const query = Place.where('candidat').exists(true)
+  if (beginDate || endDate) {
+    query.where('date')
+    if (beginDate) query.gte(beginDate)
+    if (endDate) query.lt(endDate)
+  }
+  query.where('inspecteur', inspecteurId)
+  queryPopulate(
+    {
+      inspecteur: true,
+      centre: true,
+    },
+    query
+  )
   return query.exec()
 }

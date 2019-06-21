@@ -1,37 +1,47 @@
+import config from '../../config'
 import {
+  deletePlace,
   findAllPlaces,
   findPlaceById,
-  deletePlace,
   findPlacesByCentreAndDate,
 } from '../../models/place'
+import { findUserById } from '../../models/user'
+import { appLogger, dateTimeToFormatFr, ErrorWithStatus } from '../../util'
+import { findCentresWithPlaces } from '../common/centre.business'
 import {
   assignCandidatInPlace,
   createPlaceForInspector,
   importPlacesCsv,
   moveCandidatInPlaces,
-  validUpdateResaInspector,
+  sendMailSchedulesAllInspecteurs,
   sendMailSchedulesInspecteurs,
+  validUpdateResaInspector,
 } from './places.business'
-import { findCentresWithPlaces } from '../common/centre.business'
-import { appLogger, ErrorWithStatus, dateTimeToFormatFr } from '../../util'
-import { findUserById } from '../../models/user'
 
 export const importPlaces = async (req, res) => {
   const csvFile = req.files.file
   const { departement } = req.body
 
+  const loggerInfo = {
+    section: 'admin-import-places',
+    user: req.userId,
+    departement,
+    filename: csvFile.name,
+  }
   try {
-    appLogger.info(
-      `import places provenant du fichier ${
+    appLogger.info({
+      ...loggerInfo,
+      description: `import places provenant du fichier ${
         csvFile.name
-      } et du departement ${departement}`
-    )
+      } et du departement ${departement}`,
+    })
     const result = await importPlacesCsv({ csvFile, departement })
-    appLogger.info(
-      `import places: Le fichier ${
+    appLogger.info({
+      ...loggerInfo,
+      description: `import places: Le fichier ${
         csvFile.name
-      } a été traité pour le departement ${departement}.`
-    )
+      } a été traité pour le departement ${departement}.`,
+    })
     res.status(200).send({
       fileName: csvFile.name,
       success: true,
@@ -41,7 +51,10 @@ export const importPlaces = async (req, res) => {
       places: result,
     })
   } catch (error) {
-    appLogger.error(error)
+    appLogger.error({
+      ...loggerInfo,
+      error,
+    })
     res.status(500).send({
       success: false,
       message: error.message,
@@ -54,37 +67,81 @@ export const getPlaces = async (req, res) => {
   let places
   const { departement, beginDate, endDate, centre, date } = req.query
 
-  if (!departement) {
-    places = await findAllPlaces()
-    res.json(places)
-  } else {
-    if (centre && date) {
-      places = await findPlacesByCentreAndDate(centre, date, {
-        inspecteur: true,
-        centre: true,
-      })
+  const loggerInfo = {
+    section: 'admin-get-places',
+    user: req.userId,
+    departement,
+    beginDate,
+    endDate,
+    centre,
+    date,
+  }
+
+  try {
+    if (!departement) {
+      loggerInfo.action = 'find-all-departement'
+      places = await findAllPlaces()
     } else {
-      places = await findCentresWithPlaces(departement, beginDate, endDate)
+      if (centre && date) {
+        loggerInfo.action = 'find-by-centre-date'
+        places = await findPlacesByCentreAndDate(centre, date, {
+          inspecteur: true,
+          centre: true,
+        })
+      } else {
+        loggerInfo.action = 'find-by-departement-date'
+        places = await findCentresWithPlaces(departement, beginDate, endDate)
+      }
     }
+    appLogger.info({
+      ...loggerInfo,
+      description: `${places ? places.length : 0} trouvées`,
+    })
     res.json(places)
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      error,
+    })
+    return res.status(400).json({
+      success: false,
+      message: "Les places n'ont pas pu être récupérées",
+      error: error.nessage,
+    })
   }
 }
 
 export const createPlaceByAdmin = async (req, res) => {
   const { centre, inspecteur, date } = req.body
+  const loggerInfo = {
+    section: 'admin-create-place',
+    user: req.userId,
+    centre,
+    inspecteur,
+    date,
+  }
   try {
     const createdPlaceResult = await createPlaceForInspector(
       centre,
       inspecteur,
       date
     )
-    appLogger.info(`create by admin place: La place a bien été créée.`)
+    appLogger.info({
+      ...loggerInfo,
+      action: 'created-place',
+      description: `create by admin place: La place a bien été créée.`,
+    })
     res.json({
       success: true,
       message: `La place du [${createdPlaceResult.date}] a bien été crée.`,
     })
   } catch (error) {
-    appLogger.info(`create by admin place: La place n'a pas été créée.`)
+    appLogger.error({
+      ...loggerInfo,
+      action: 'error',
+      description: `create by admin place: La place n'a pas été créée.`,
+      error,
+    })
     res.json({
       success: false,
       message: "La place n'a pas été créée",
@@ -95,31 +152,42 @@ export const createPlaceByAdmin = async (req, res) => {
 
 export const deletePlaceByAdmin = async (req, res) => {
   const { id } = req.params
-  const place = await findPlaceById(id)
-  if (!place) {
-    appLogger.info(`delete place: La place id: [${id}] n'existe pas en base.`)
-    res.json({ success: false, message: "La place n'existe pas en base" })
-  } else {
-    try {
-      await deletePlace(place)
-      appLogger.info(
-        `delete place: La place id: [${id}] a bien été supprimé de la base.`
-      )
-      const { date, hour } = dateTimeToFormatFr(place.date)
-      res.json({
-        success: true,
-        message: `La place du [${date} ${hour}] a bien été supprimé de la base`,
-      })
-    } catch (error) {
-      appLogger.info(
-        `delete place: La place id: [${id}] a bien été supprimé de la base.`
-      )
-      res.json({
-        success: false,
-        message: `La place id: [${id}] n'a pas été supprimé`,
-        error: error.message,
-      })
+  const loggerInfo = {
+    section: 'admin-delete-place',
+    user: req.userId,
+    id,
+  }
+
+  try {
+    const place = await findPlaceById(id)
+
+    if (!place) {
+      const error = new Error(`La place id: [${id}] n'existe pas en base.`)
+      error.messageToUser = "La place n'existe pas en base"
+      throw error
     }
+    await deletePlace(place)
+    appLogger.info({
+      ...loggerInfo,
+      description: `delete place: La place id: [${id}] a bien été supprimée de la base.`,
+    })
+    const { date, hour } = dateTimeToFormatFr(place.date)
+    res.json({
+      success: true,
+      message: `La place du [${date} ${hour}] a bien été supprimée de la base`,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      error,
+    })
+    res.status(400).json({
+      success: false,
+      message: error.messageToUser
+        ? error.messageToUser
+        : `La place id: [${id}] n'a pas été supprimée`,
+      error: error.message,
+    })
   }
 }
 
@@ -129,7 +197,7 @@ export const updatePlaces = async (req, res) => {
 
   const loggerContent = {
     section: 'admin-update-place',
-    admin: req.userId,
+    user: req.userId,
   }
 
   try {
@@ -139,7 +207,7 @@ export const updatePlaces = async (req, res) => {
         placeId,
         inspecteur,
         action: 'UPDATE_RESA',
-        message: `Changer l'inspecteur de la reservaton candidat`,
+        description: `Changer l'inspecteur de la réservaton candidat`,
       })
 
       const result = await validUpdateResaInspector(placeId, inspecteur)
@@ -157,7 +225,7 @@ export const updatePlaces = async (req, res) => {
         placeId,
         candidatId,
         action: 'UPDATE_PLACE',
-        message: `Affecter un candidat à une place`,
+        description: `Affecter un candidat à une place`,
       })
 
       const result = await assignCandidatInPlace(candidatId, placeId)
@@ -174,7 +242,8 @@ export const updatePlaces = async (req, res) => {
     appLogger.error({
       ...loggerContent,
       action: 'ERROR',
-      message: error.message,
+      description: error.message,
+      error: error.stack,
     })
     if (error instanceof ErrorWithStatus) {
       return res.status(error.status).send({
@@ -205,23 +274,39 @@ export const sendScheduleInspecteurs = async (req, res) => {
     date,
   }
 
-  appLogger.info({
-    ...loggerContent,
-    action: 'SEND_MAIL_SCHEDULE',
-    message: `Envoyer le planning`,
-  })
-
   try {
-    const { email } = await findUserById(req.userId)
-
-    if (!email || !departement || !date) {
-      return res.status(400).send({
-        success: false,
-        message: 'Les paramètres renseignés sont incorrects',
-      })
+    let results
+    if (req.userLevel >= config.userStatusLevels.tech) {
+      loggerContent.action = 'SEND_MAIL_SCHEDULE_BY_TECH'
+      if (!date) {
+        const error = new Error('Le paramètre date renseignés est manquant')
+        error.status = 422
+        throw error
+      }
+    } else {
+      loggerContent.action = 'SEND_MAIL_SCHEDULE'
+      if (!departement || !date) {
+        const error = new Error('Les paramètres renseignés sont manquante')
+        error.status = 422
+        throw error
+      }
     }
 
-    const results = await sendMailSchedulesInspecteurs(email, departement, date)
+    if (departement) {
+      appLogger.info({
+        ...loggerContent,
+        message: `Envoi du planning`,
+      })
+      const { email } = await findUserById(req.userId)
+      results = await sendMailSchedulesInspecteurs(email, departement, date)
+    } else {
+      appLogger.info({
+        ...loggerContent,
+        message: `Envoi des plannings à les inspecteurs`,
+      })
+      results = await sendMailSchedulesAllInspecteurs(date)
+    }
+
     res.status(results.success ? 200 : 400).send(results)
   } catch (error) {
     appLogger.error({
@@ -229,14 +314,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
       action: 'ERROR',
       error,
     })
-    if (error instanceof ErrorWithStatus) {
-      return res.status(error.status).send({
-        success: false,
-        message: error.message,
-        error,
-      })
-    }
-    res.status(500).send({
+    res.status(error.status || 500).send({
       success: false,
       message: error.message,
       error,

@@ -154,9 +154,9 @@ CandidatSchema.pre('save', async function preSave () {
   candidat.prenom =
     candidat.prenom &&
     candidat.prenom.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-  candidat.nom =
-    candidat.nom &&
-    candidat.nom.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+  candidat.nomNaissance =
+    candidat.nomNaissance &&
+    candidat.nomNaissance.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 })
 
 CandidatSchema.index({
