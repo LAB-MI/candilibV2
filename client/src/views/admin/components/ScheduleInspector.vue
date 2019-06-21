@@ -108,6 +108,7 @@ import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
   FETCH_ADMIN_INFO_REQUEST,
   FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
+  SELECT_CENTER,
 } from '@/store'
 
 import ScheduleInspectorDialog from './ScheduleInspectorDialog'
@@ -208,6 +209,8 @@ export default {
     async centreSelector (centreId) {
       this.$router.push({ params: { center: centreId, date: this.date } })
       this.activeCentreId = centreId
+      const { centre } = this.placesByCentreList.find(placesByCentre => placesByCentre.centre._id === centreId)
+      this.$store.commit(SELECT_CENTER, centre)
       this.reloadWeekMonitor()
     },
 

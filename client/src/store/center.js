@@ -75,8 +75,8 @@ export default {
 
       commit(FETCH_CENTER_REQUEST)
       try {
-        const result = await api.candidat.getCentre(departement, nom)
-        commit(FETCH_CENTER_SUCCESS, result)
+        const centre = await api.candidat.getCentre(departement, nom)
+        commit(FETCH_CENTER_SUCCESS, centre)
       } catch (error) {
         commit(FETCH_CENTER_FAILURE, error.message)
         dispatch(SHOW_ERROR, error.message)
