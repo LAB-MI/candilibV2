@@ -91,13 +91,16 @@ export const getCandidats = async (req, res) => {
     if (candidatFound) {
       const placeFound = await findPlaceByCandidatId(candidatId, true)
       const candidat = candidatFound.toObject()
-      candidat.places = candidat.places && candidat.places.map((place) => {
-        const humanReadableReason = statutReasonDictionnary[place.archiveReason]
-        return {
-          ...place,
-          archiveReason: humanReadableReason,
-        }
-      })
+      candidat.places =
+        candidat.places &&
+        candidat.places.map(place => {
+          const humanReadableReason =
+            statutReasonDictionnary[place.archiveReason]
+          return {
+            ...place,
+            archiveReason: humanReadableReason,
+          }
+        })
       res.json({
         success: true,
         candidat: { ...candidat, place: placeFound },

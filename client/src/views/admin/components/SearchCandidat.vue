@@ -68,12 +68,12 @@ const lastNoReussites = (noReussites) => {
 }
 
 const historiqueAction = (places) => {
-  if (places == null || !places.length) {
+  if (places == null || !(places.length)) {
     return ' - '
   }
   return '<ol>' + places.map(({ date, archiveReason, byUser }) => {
     const frenchDate = convertToLegibleDate(date)
-    return `<li>${frenchDate} : ${archiveReason} par ${byUser}</li>`
+    return `<li>${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'}</li>`
   }).join('') + '</ol>'
 }
 const candidatProfileInfoDictionary = [
