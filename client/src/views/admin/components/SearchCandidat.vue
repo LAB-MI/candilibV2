@@ -58,7 +58,7 @@ const placeReserve = (place) => {
 }
 
 const lastNoReussites = (noReussites) => {
-  if (noReussites == null) {
+  if (!noReussites) {
     return '-'
   }
   return noReussites.map(({ reason, date }) => {
@@ -71,9 +71,10 @@ const historiqueAction = (places) => {
   if (places == null || !(places.length)) {
     return ' - '
   }
-  return '<ol>' + places.map(({ date, archiveReason, byUser }) => {
+  return '<ol>' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
     const frenchDate = convertToLegibleDate(date)
-    return `<li>${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'}</li>`
+    const actionDate = convertToLegibleDate(archivedAt)
+    return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
   }).join('') + '</ol>'
 }
 const candidatProfileInfoDictionary = [
@@ -86,9 +87,9 @@ const candidatProfileInfoDictionary = [
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
     ['place', 'Réservation', placeReserve],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
-    ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
-    ['noReussites', 'Echec(s)', lastNoReussites],
+    ['noReussites', 'Dernier échec pratique', lastNoReussites],
     ['nbEchecsPratiques', 'nombres d\'échec(s)'],
+    ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
 
   ],
   [ ['resaCanceledByAdmin', 'Annulation Administrative', convertToLegibleDate],
