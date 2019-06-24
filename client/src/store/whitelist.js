@@ -6,6 +6,10 @@ export const FETCH_WHITELIST_REQUEST = 'FETCH_WHITELIST_REQUEST'
 export const FETCH_WHITELIST_FAILURE = 'FETCH_WHITELIST_FAILURE'
 export const FETCH_WHITELIST_SUCCESS = 'FETCH_WHITELIST_SUCCESS'
 
+export const FETCH_AUTOCOMPLETE_WHITELIST_REQUEST = 'FETCH_AUTOCOMPLETE_WHITELIST_REQUEST'
+export const FETCH_AUTOCOMPLETE_WHITELIST_FAILURE = 'FETCH_AUTOCOMPLETE_WHITELIST_FAILURE'
+export const FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS = 'FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS'
+
 export const DELETE_EMAIL_REQUEST = 'DELETE_EMAIL_REQUEST'
 export const DELETE_EMAIL_FAILURE = 'DELETE_EMAIL_FAILURE'
 export const DELETE_EMAIL_SUCCESS = 'DELETE_EMAIL_SUCCESS'
@@ -43,6 +47,17 @@ export default {
       state.list = list
     },
     [FETCH_WHITELIST_FAILURE] (state) {
+      state.isFetching = false
+    },
+
+    [FETCH_AUTOCOMPLETE_WHITELIST_REQUEST] (state) {
+      state.isFetching = true
+    },
+    [FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS] (state, list) {
+      state.isFetching = false
+      state.list = list
+    },
+    [FETCH_AUTOCOMPLETE_WHITELIST_FAILURE] (state) {
       state.isFetching = false
     },
 
@@ -93,6 +108,15 @@ export default {
         commit(FETCH_WHITELIST_FAILURE)
         dispatch(SHOW_ERROR, error.message)
         throw error
+      }
+    },
+
+    async FETCH_AUTOCOMPLETE_WHITELIST_REQUEST ({ state, commit, rootState }, search) {
+      try {
+        const list = await api.admin.searchEmails(search, rootState.admin.departements.active || rootState.admin.departements.list[0])
+        commit(FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS, list)
+      } catch (error) {
+        commit(FETCH_AUTOCOMPLETE_WHITELIST_FAILURE, error)
       }
     },
 
