@@ -36,6 +36,7 @@ export default {
     isUpdating: false,
     list: undefined,
     updateResult: undefined,
+    matchingList: [],
   },
 
   mutations: {
@@ -55,7 +56,7 @@ export default {
     },
     [FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS] (state, list) {
       state.isFetching = false
-      state.list = list
+      state.matchingList = list
     },
     [FETCH_AUTOCOMPLETE_WHITELIST_FAILURE] (state) {
       state.isFetching = false
@@ -113,7 +114,7 @@ export default {
 
     async FETCH_AUTOCOMPLETE_WHITELIST_REQUEST ({ state, commit, rootState }, search) {
       try {
-        const list = await api.admin.searchEmails(search, rootState.admin.departements.active || rootState.admin.departements.list[0])
+        const list = await api.admin.searchWhitelisted(search, rootState.admin.departements.active || rootState.admin.departements.list[0])
         commit(FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS, list)
       } catch (error) {
         commit(FETCH_AUTOCOMPLETE_WHITELIST_FAILURE, error)

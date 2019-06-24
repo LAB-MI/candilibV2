@@ -304,8 +304,8 @@ export default {
       return json
     },
 
-    async searchEmails (email, departement) {
-      const json = await apiClient.get(`${apiPaths.admin.searchEmails}${email || ''}&departement=${departement}`, {
+    async searchWhitelisted (email, departement) {
+      const json = await apiClient.get(`${apiPaths.admin.searchWhitelisted}${email || ''}&departement=${departement}`, {
         headers: getHeadersForAdminJson(),
       })
       return json

@@ -2,12 +2,13 @@
   <div>
     <div class="u-flex u-flex--center">
       <candilib-autocomplete
+        v-model="selectedEmail"
         class="search-input"
         @selection="displayEmailSearch"
         label="Emails"
         hint="Chercher un email dans la whitelist"
         placeholder="marguerite@example.fr"
-        :items="whitelist"
+        :items="matchingList"
         item-text="email"
         item-value="_id"
         :fetch-autocomplete-action="fetchAutocompleteAction"
@@ -20,7 +21,6 @@ import { mapState } from 'vuex'
 
 import {
   FETCH_AUTOCOMPLETE_WHITELIST_REQUEST,
-
 } from '@/store'
 
 import CandilibAutocomplete from './CandilibAutocomplete'
@@ -36,14 +36,15 @@ export default {
     }
   },
   computed: mapState({
-    whitelist: state => state.whitelist.list,
-
+    matchingList: state => state.whitelist.matchingList,
   }),
 
   methods: {
-
+    async displayEmailSearch (email) {
+      await this.$store.dispatch(FETCH_AUTOCOMPLETE_WHITELIST_REQUEST, email)
+      this.selectedEmail = email
+    },
   },
-
 }
 
 </script>

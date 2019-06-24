@@ -29,7 +29,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   uploadCandidatsJson: `${apiPrefix}/admin/candidats`,
   searchCandidats: `${apiPrefix}/admin/candidats?matching=`,
   searchInspecteurs: `${apiPrefix}/admin/inspecteurs?matching=`,
-  searchEmails: `${apiPrefix}/admin/whitelisted?matching=`,
+  searchWhitelisted: `${apiPrefix}/admin/whitelisted?matching=`,
   inspecteursByDepartement: `${apiPrefix}/admin/inspecteurs?departement=`,
   uploadPlacesCSV: `${apiPrefix}/admin/places`,
   verifyToken: `${apiPrefix}/auth/admin/verify-token`,
