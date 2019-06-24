@@ -37,22 +37,22 @@ storiesOf('Admin/SearchEmail', module)
     store: new Vuex.Store({
       state: {
         admin: {
-          inspecteurs: {
+          emails: {
             isFetching: false,
             list: [],
           },
         },
       },
       mutations: {
-        FETCH_AUTOCOMPLETE_EMAILS_SUCCESS (state, list) {
+        FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS (state, list) {
           state.admin.list = list
         },
       },
       actions: {
-        async FETCH_AUTOCOMPLETE_EMAIL_REQUEST ({ commit }, search) {
+        async FETCH_AUTOCOMPLETE_WHITELIST_REQUEST ({ commit }, search) {
           await delay(1000)
           const list = emailsList.filter(email => email.includes(search))
-          commit('FETCH_AUTOCOMPLETE_EMAIL_SUCCESS', list)
+          commit('FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS', list)
         },
       },
     }),

@@ -2,7 +2,6 @@
   <div>
     <div class="u-flex u-flex--center">
       <candilib-autocomplete
-        v-model="selectedEmail"
         class="search-input"
         @selection="displayEmailSearch"
         label="Emails"
@@ -37,16 +36,12 @@ export default {
     }
   },
   computed: mapState({
-    whitelist: state => state.admin.list,
-    email: state => state.admin.isFetching,
+    whitelist: state => state.whitelist.list,
 
   }),
 
   methods: {
-    async displayEmailSearch (email) {
-      await this.$store.dispatch(FETCH_AUTOCOMPLETE_WHITELIST_REQUEST, email)
-      this.selectedEmail = email
-    },
+
   },
 
 }
