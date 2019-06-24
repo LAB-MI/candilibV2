@@ -31,7 +31,6 @@ export default {
   },
   data () {
     return {
-      selectedEmail: undefined,
       fetchAutocompleteAction: FETCH_AUTOCOMPLETE_WHITELIST_REQUEST,
     }
   },
@@ -40,9 +39,8 @@ export default {
   }),
 
   methods: {
-    async displayEmailSearch (email) {
-      await this.$store.dispatch(FETCH_AUTOCOMPLETE_WHITELIST_REQUEST, email)
-      this.selectedEmail = email
+    async displayEmailSearch (matchingList) {
+      await this.$store.dispatch(FETCH_AUTOCOMPLETE_WHITELIST_REQUEST, matchingList)
     },
   },
 }

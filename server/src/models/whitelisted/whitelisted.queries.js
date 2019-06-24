@@ -7,7 +7,9 @@ export const findAllWhitelisted = async departement => {
 
 export const findWhitelistedMatching = async (searchQuery, departement) => {
   const email = new RegExp(searchQuery, 'i')
-  const whitelisted = await Whitelisted.find({ email, departement }).sort('-dateAdded')
+  const whitelisted = await Whitelisted.find({ email, departement }).sort(
+    '-dateAdded'
+  )
   return whitelisted
 }
 

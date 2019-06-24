@@ -30,22 +30,19 @@ storiesOf('Admin/SearchEmail', module)
     />`,
     methods: {
       goToEmail (email) {
-        console.log('inspecteur selectionné', email)
+        console.log('email selectionné', email)
       },
     },
 
     store: new Vuex.Store({
       state: {
-        admin: {
-          emails: {
-            isFetching: false,
-            list: [],
-          },
+        whitelist: {
+          matchingList: [],
         },
       },
       mutations: {
         FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS (state, list) {
-          state.admin.list = list
+          state.whitelist.matchingList = list
         },
       },
       actions: {
