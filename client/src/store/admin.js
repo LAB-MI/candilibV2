@@ -189,7 +189,12 @@ export default {
         const endDate = end || currentDateTime.plus({ months: 2 }).toISO()
         const placesByCentre = await api.admin
           .getAllPlacesByDepartement(state.departements.active, beginDate, endDate)
-        const placesByCentreAndWeek = placesByCentre.map(element => ({
+
+        if (placesByCentre.success === false) {
+          throw new Error(placesByCentre.message)
+        }
+
+        const placesByCentreAndWeek = Array.isArray(placesByCentre) ? placesByCentre.map(element => ({
           centre: element.centre,
           places: element.places.reduce((acc, place) => {
             const key = getFrenchLuxonDateFromIso(place.date).weekNumber
@@ -197,8 +202,7 @@ export default {
             places[key] = [...(places[key] || []), place]
             return places
           }, {}),
-        }))
-
+        })) : []
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS, placesByCentreAndWeek)
       } catch (error) {
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE, error)
