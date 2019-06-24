@@ -88,7 +88,7 @@ const candidatProfileInfoDictionary = [
     ['place', 'Réservation', placeReserve],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
     ['noReussites', 'Non réussites', legibleNoReussites],
-    ['nbEchecsPratiques', 'nombres d\'échec(s)'],
+    ['nbEchecsPratiques', 'Nombre d\'échec(s)'],
     ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
 
   ],
@@ -119,16 +119,16 @@ export default {
 
   watch: {
     candidat (newVal) {
-      this.SwitchToggle(newVal)
+      this.toggleProfileInfo(newVal)
     },
     profileInfo (newVal) {
-      this.SwitchToggle(newVal)
+      this.toggleProfileInfo(newVal)
     },
   },
   mounted () {
     const candidat = this.candidat
     const profileInfo = this.profileInfo
-    this.SwitchToggle(candidat, profileInfo)
+    this.toggleProfileInfo(candidat, profileInfo)
   },
 
   methods: {
@@ -142,15 +142,20 @@ export default {
         this.profileInfo = transformToProfileInfo(this.candidat, candidatProfileInfoDictionary)
       }
     },
-    SwitchToggle (candidat, profileInfo) {
+    toggleProfileInfo (candidat, profileInfo) {
       if (!candidat) {
         this.color = 'grey'
-        this.icon = 'toggle_off'
+        this.icon = 'keyboard_arrow_down'
         return
       }
       if (candidat) {
         this.color = 'green'
-        this.icon = 'toggle_on'
+        this.icon = 'keyboard_arrow_up'
+        return
+      }
+      if (!profileInfo) {
+        this.color = 'grey'
+        this.icon = 'keyboard_arrow_down'
       }
     },
   },

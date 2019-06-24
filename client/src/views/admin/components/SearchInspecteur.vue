@@ -93,12 +93,12 @@ export default {
     switchToggle (inspecteur) {
       if (!inspecteur) {
         this.color = 'grey'
-        this.icon = 'toggle_off'
+        this.icon = 'keyboard_arrow_down'
         return
       }
       if (inspecteur) {
         this.color = 'green'
-        this.icon = 'toggle_on'
+        this.icon = 'keyboard_arrow_up'
       }
     },
   },
