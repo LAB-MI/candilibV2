@@ -119,16 +119,16 @@ export default {
 
   watch: {
     candidat (newVal) {
-      this.toggleProfileInfo(newVal)
+      this.toggelInfo(newVal)
     },
     profileInfo (newVal) {
-      this.toggleProfileInfo(newVal)
+      this.toggelInfo(newVal)
     },
   },
   mounted () {
     const candidat = this.candidat
     const profileInfo = this.profileInfo
-    this.toggleProfileInfo(candidat, profileInfo)
+    this.toggelInfo(candidat, profileInfo)
   },
 
   methods: {
@@ -142,7 +142,7 @@ export default {
         this.profileInfo = transformToProfileInfo(this.candidat, candidatProfileInfoDictionary)
       }
     },
-    toggleProfileInfo (candidat, profileInfo) {
+    toggelInfo (candidat, profileInfo) {
       if (!candidat) {
         this.color = 'grey'
         this.icon = 'keyboard_arrow_down'

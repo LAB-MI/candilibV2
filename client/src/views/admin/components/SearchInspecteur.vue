@@ -71,15 +71,15 @@ export default {
 
   watch: {
     inspecteur (newVal) {
-      this.switchToggle(newVal)
+      this.toggelInfo(newVal)
     },
     displayInspecteur (newVal) {
-      this.switchToggle(newVal)
+      this.toggelInfo(newVal)
     },
   },
   mounted () {
     const inspecteur = this.inspecteur
-    this.switchToggle(inspecteur)
+    this.toggelInfo(inspecteur)
   },
 
   methods: {
@@ -90,7 +90,7 @@ export default {
     toggleProfileInfo (inspecteur) {
       this.displayInspecteur = !this.displayInspecteur
     },
-    switchToggle (inspecteur) {
+    toggelInfo (inspecteur) {
       if (!inspecteur) {
         this.color = 'grey'
         this.icon = 'keyboard_arrow_down'
