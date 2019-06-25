@@ -155,6 +155,7 @@
           <p>{{ selectedCandidat.nomNaissance }} / {{ selectedCandidat.codeNeph }}</p>
           <p>sur la place du</p>
           <p>{{ formattedDate }}</p>
+          <p>au centre {{ centerName }}</p>
         </confirm-box>
       </div>
     </shedule-inspector-dialog-sub-content>
@@ -263,6 +264,10 @@ export default {
     },
     formattedDate () {
       return getFrenchDateTimeFromIso(this.content.place.date)
+    },
+    centerName () {
+      const centre = this.$store.state.center.selected
+      return centre && centre.nom
     },
   },
 
