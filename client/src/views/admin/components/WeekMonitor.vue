@@ -5,52 +5,66 @@
         {{ nameCenter }}
       </strong>
     </h2>
-
-    <carousel
-      id="carousel"
-      class="carousel"
-      :navigationEnabled="true"
-      :paginationEnabled="false"
-      :scrollPerPage="false"
-      :perPage="3"
-      :perPageCustom="[[768, 5], [1024, 5]]"
-      :navigateTo="[currentWeekNumber, false]"
+    <v-data-table
+      :headers="headers"
+      :items="formattedArrayByWeek"
+      class="elevation-1"
+      :pagination.sync="pagination"
     >
-      <slide
-        class="slide"
-        v-ripple
-        v-for="(week, index) in formatArrayByWeek()"
-        :key="week.numWeek"
-      >
-        <v-card
-          v-if="index !== 0"
-          :id="`week-${nameCenter}-${index}`"
-          class="main-card"
-          @click="goToGestionPlannings(index, centerId)"
+      <template v-slot:items="props">
+        <td>
+          <span>
+            Semaine du {{ getStartOfWeek(props.item.numWeek) }}
+          </span>
+        </td>
+        <td
+          v-for="(days, idx) in props.item.days"
+          :key="`week-${props.item.numWeek}-day-${idx}`"
         >
-          <v-card-title class="week-card-title">
-            {{ `Semaine N°${index}` }}
-          </v-card-title>
-          <v-card-text class="stats-card">
-            <span class="stats-card-text-free-places">
-              {{ week.freePlaces || 0 }}
+          <v-btn
+            @click="goToGestionPlannings(props.item.numWeek, idx + 1)"
+          >
+            <span
+              class="text-free-places"
+            >
+              {{ getCountBookedPlaces(days) }}
             </span>
             /
-            {{ week.totalPlaces || 0 }}
-          </v-card-text>
-        </v-card>
-      </slide>
-    </carousel>
+            <span>
+              {{ days.length }}
+            </span>
+          </v-btn>
+        </td>
+      </template>
+    </v-data-table>
   </div>
 </template>
 
 <script>
 import {
+  getFrenchLuxonDateFromIso,
+  getFrenchDateFromObject,
   getFrenchLuxonCurrentDateTime,
   getFrenchWeeksInWeekYear,
+  validDays,
 } from '@/util'
 
 import { SET_WEEK_SECTION } from '@/store'
+
+export const splitWeek = (prev, day, centerId) => {
+  const weekDayNumber = getFrenchLuxonDateFromIso(day.date).weekday - 1
+  if (centerId === day.centre && weekDayNumber < 5) {
+    if (!prev[weekDayNumber]) {
+      prev[weekDayNumber] = []
+    }
+    prev[weekDayNumber] = [
+      ...prev[weekDayNumber],
+      day,
+    ]
+  }
+
+  return prev
+}
 
 export default {
   props: {
@@ -62,32 +76,81 @@ export default {
     weeks: Object,
   },
 
+  data () {
+    return {
+      pagination: {},
+      headers: [
+        {
+          text: 'Semaine',
+          align: 'center',
+          sortable: false,
+          width: '50',
+        },
+        ...validDays.map(el => ({ text: el, align: 'center', sortable: false })),
+      ],
+    }
+  },
+
   computed: {
     currentWeekNumber () {
       return getFrenchLuxonCurrentDateTime().weekNumber
     },
+    formattedArrayByWeek () {
+      return this.formatArrayByWeek()
+    },
   },
 
   methods: {
-    goToGestionPlannings (currentWeek, centerId) {
+    getCountBookedPlaces (places) {
+      const bookedPlacesCount = places.filter(elmt => elmt.candidat).length
+      return places.length - bookedPlacesCount
+    },
+
+    getStartOfWeek (weekNumber) {
+      const currentYear = getFrenchLuxonCurrentDateTime().weekYear
+      const shape = {
+        month: 'long',
+        day: '2-digit',
+        year: 'numeric',
+      }
+      return getFrenchDateFromObject({ weekYear: currentYear, weekNumber, weekday: 1 }, shape)
+    },
+
+    goToGestionPlannings (currentWeek, weekDay) {
       this.$store.dispatch(SET_WEEK_SECTION, currentWeek)
-      const date = getFrenchLuxonCurrentDateTime().set({ weekNumber: currentWeek }).toSQLDate()
-      this.$router.push({ name: 'gestion-planning', params: { center: centerId, date } })
+      const date = getFrenchLuxonCurrentDateTime().set({ weekNumber: currentWeek, weekday: weekDay || 1 }).toSQLDate()
+      this.$router.push({ name: 'gestion-planning', params: { center: this.centerId, date } })
     },
 
     formatArrayByWeek () {
+      // TODO: Find solution to last month of year for transition
       const weeksInWeekYear = getFrenchWeeksInWeekYear(getFrenchLuxonCurrentDateTime().year)
-      const allWeeks = Array(weeksInWeekYear).fill(false)
-      Object.keys(this.weeks).map(weekNb => {
-        allWeeks[weekNb] = {
-          days: [ this.weeks[weekNb] ],
+      const allWeeksOfYear = Array(weeksInWeekYear).fill(false)
+      const formattedArray = allWeeksOfYear.map((useless, weekNb) => {
+        const defaultDays = Array(validDays.length).fill([])
+
+        const weeksWithPlaces = this.weeks && this.weeks[weekNb]
+        if (weeksWithPlaces && weeksWithPlaces.length) {
+          return {
+            days: weeksWithPlaces.reduce((prev, day) => splitWeek(prev, day, this.centerId), defaultDays),
+            numWeek: weekNb,
+            totalPlaces: weeksWithPlaces.length,
+            freePlaces: weeksWithPlaces.length - weeksWithPlaces.filter(elmt => elmt.candidat).length,
+          }
+        }
+        return {
+          days: defaultDays,
           numWeek: weekNb,
-          totalPlaces: this.weeks[weekNb].length,
-          freePlaces: this.weeks[weekNb].length - this.weeks[weekNb].filter(elmt => elmt.candidat).length,
+          totalPlaces: 0,
+          freePlaces: 0,
         }
       })
-      return allWeeks
+      return formattedArray.filter(e => e.numWeek !== 0)
     },
+  },
+
+  mounted () {
+    this.pagination.page = Math.ceil(this.currentWeekNumber / 5)
   },
 }
 </script>
@@ -101,8 +164,9 @@ export default {
   border-color: black;
 }
 
-.carousel {
-  border: 1px solid black;
+.text-free-places {
+  height: 100%;
+  color: green;
 }
 
 .slide {

@@ -23,6 +23,7 @@
             :nameCenter="info.centre.nom"
             :centerId="info.centre._id"
             :weeks="info.places"
+            :isLoading="!!isLoading"
           />
         </v-flex>
       </v-layout>
