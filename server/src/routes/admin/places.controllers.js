@@ -18,6 +18,7 @@ import {
   sendMailSchedulesInspecteurs,
   validUpdateResaInspector,
 } from './places.business'
+import { sendMailConvocation } from '../business'
 
 export const importPlaces = async (req, res) => {
   const planningFile = req.files.file
@@ -243,6 +244,9 @@ export const updatePlaces = async (req, res) => {
       })
 
       const result = await assignCandidatInPlace(candidatId, placeId, admin)
+      const place = findPlaceById(placeId)
+      sendMailConvocation(place)
+
       const { date, hour } = dateTimeToFormatFr(result.newBookedPlace.date)
       return res.send({
         success: true,
