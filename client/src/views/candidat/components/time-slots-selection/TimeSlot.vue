@@ -83,16 +83,21 @@ export default {
   },
 
   computed: {
-    ...mapState(['center', 'timeSlots', 'reservation',
-      {
-        dateDernierEchecPratique (state) {
-          const dateDernierEchecPratique = state.reservation.booked.dateDernierEchecPratique
-          return dateDernierEchecPratique && getFrenchDateFromIso(dateDernierEchecPratique)
-        },
-        numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
-        isEchecPratique: state => state.reservation.booked.dateDernierEchecPratique,
-      }]
-    ),
+    ...mapState({
+      center: state => state.center,
+      timeSlots: state => state.timeSlots,
+      reservation: state => state.reservation,
+      dateDernierEchecPratique (state) {
+        const dateDernierEchecPratique = state.reservation.booked.dateDernierEchecPratique
+        return dateDernierEchecPratique
+      },
+      numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
+    }),
+
+    isEchecPratique () {
+      const now = getFrenchLuxonCurrentDateTime()
+      return this.dateDernierEchecPratique && getFrenchLuxonDateFromIso(this.dateDernierEchecPratique).plus({ days: 45 }) > now
+    },
 
     warningMessage () {
       if (this.isPenaltyActive) {
@@ -112,7 +117,7 @@ export default {
             id: 'home_choix_date_creneau_message_echec_date_pratique',
           },
           {
-            dateDernierEchecPratique: this.dateDernierEchecPratique,
+            dateDernierEchecPratique: getFrenchDateFromIso(this.dateDernierEchecPratique),
             dateEchecPratique: this.dateEchecPratique,
           }
         )
@@ -124,10 +129,11 @@ export default {
       if (this.isEchecPratique) {
         return false
       }
+      const now = getFrenchLuxonCurrentDateTime()
       const { canBookFrom, lastDateToCancel } = this.reservation.booked
       const isPenaltyActive =
-        canBookFrom ||
-        getFrenchLuxonCurrentDateTime() >
+        (canBookFrom && getFrenchLuxonDateFromIso(canBookFrom) > now) ||
+        now >
           getFrenchLuxonDateFromIso(lastDateToCancel)
 
       return isPenaltyActive
@@ -157,7 +163,8 @@ export default {
       const { canBookFrom, date, timeOutToRetry } = this.reservation.booked
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      } else if (
+      }
+      if (
         getFrenchLuxonCurrentDateTime() >
         getFrenchLuxonDateFromIso(this.dateDernierEchecPratique)
       ) {
