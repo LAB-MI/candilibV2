@@ -40,7 +40,7 @@ export const getFrenchLuxonDateTimeRangeFromDate = date => {
  *
  * @param {*} datetime Type DateTime of luxon
  */
-export const dateTimeToFormatFr = pDate => {
+export const dateTimeToFormatFr = (pDate, dateFormat, hourFormat) => {
   let datetime
 
   if (pDate instanceof DateTime) {
@@ -50,9 +50,15 @@ export const dateTimeToFormatFr = pDate => {
   } else if (pDate instanceof String || typeof pDate === 'string') {
     datetime = DateTime.fromISO(pDate, FRENCH_LOCALE_INFO)
   }
-  const date = datetime.toFormat(FORMAT_DATE)
 
-  const hour = datetime.toLocaleString(DateTime.TIME_24_SIMPLE)
+  let date
+  if (dateFormat instanceof Object) {
+    date = datetime.toLocaleString(dateFormat)
+  } else {
+    date = datetime.toFormat(dateFormat || FORMAT_DATE)
+  }
+
+  const hour = datetime.toLocaleString(hourFormat || DateTime.TIME_24_SIMPLE)
 
   return {
     date,
