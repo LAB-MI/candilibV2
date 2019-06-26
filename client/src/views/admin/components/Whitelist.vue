@@ -2,6 +2,7 @@
   <div>
     <page-title :title="'Liste blanche'"/>
     <v-container>
+      <search-email/>
       <v-card
         :style="{ padding: '1em 0' }"
         :class="{'drag-over': isDragginOverWhitelist}"
@@ -246,6 +247,7 @@ import { mapState } from 'vuex'
 import { email as emailRegex } from '@/util'
 
 import Whitelisted from './Whitelisted.vue'
+import SearchEmail from './SearchEmail'
 import {
   DELETE_EMAIL_REQUEST,
   FETCH_WHITELIST_REQUEST,
@@ -266,6 +268,7 @@ export default {
   name: 'whitelist',
   components: {
     Whitelisted,
+    SearchEmail,
   },
   data () {
     return {

@@ -304,6 +304,13 @@ export default {
       return json
     },
 
+    async searchWhitelisted (email, departement) {
+      const json = await apiClient.get(`${apiPaths.admin.searchWhitelisted}${email || ''}&departement=${departement}`, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
     async getWhitelist (departement) {
       const json = await apiClient.get(`${apiPaths.admin.whitelist}?departement=${departement}`, {
         headers: getAdminTokenHeader(),

@@ -5,6 +5,7 @@ import {
   createWhitelisted,
   createWhitelistedBatch,
   deleteWhitelisted,
+  findWhitelistedMatching,
 } from '../../models/whitelisted'
 
 export const isWhitelisted = async (req, res, next) => {
@@ -109,8 +110,13 @@ export const addWhitelisted = async (req, res) => {
 }
 
 export const getWhitelisted = async (req, res) => {
-  const { departement } = req.query
+  const { departement, matching } = req.query
   try {
+    if (matching) {
+      const whitelist = await findWhitelistedMatching(matching, departement)
+      res.status(200).json(whitelist)
+      return ''
+    }
     const whitelist = await findAllWhitelisted(departement)
     res.status(200).json(whitelist)
   } catch (error) {
