@@ -57,9 +57,7 @@ xdescribe('Test places controllers', () => {
       const centreSelected = centres[1]
       const { body } = await request(app)
         .get(
-          `${apiPrefix}/candidat/places?departement=${
-            centreSelected.departement
-          }&centre=${centreSelected.nom}`
+          `${apiPrefix}/candidat/places?departement=${centreSelected.departement}&centre=${centreSelected.nom}`
         )
         .set('Accept', 'application/json')
         .expect(200)

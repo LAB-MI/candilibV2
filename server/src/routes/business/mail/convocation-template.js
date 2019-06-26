@@ -59,16 +59,10 @@ avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre} à l'adresse ${addr
 </p>
 <p>
   Si besoin, vous avez la possibilité d'annuler ou modifier <a href=${urlRESA}>votre réservation</a>. 
-  Si vous annulez ou modifiez ${
-  config.daysForbidCancel
-} jours avant la date prévue, 
+  Si vous annulez ou modifiez ${config.daysForbidCancel} jours avant la date prévue, 
   vous pourrez librement choisir un autre créneau disponible. 
-  Si vous annulez ou modifiez à moins de ${
-  config.daysForbidCancel
-} jours de la date prévue, 
-  un délai de repassage de ${
-  config.timeoutToRetry
-} jours à partir de la date de réservation annulée ou modifiée, vous sera appliqué. 
+  Si vous annulez ou modifiez à moins de ${config.daysForbidCancel} jours de la date prévue, 
+  un délai de repassage de ${config.timeoutToRetry} jours à partir de la date de réservation annulée ou modifiée, vous sera appliqué. 
   Nous vous souhaitons une bonne préparation et le succès à l'examen.
   Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
 </p>

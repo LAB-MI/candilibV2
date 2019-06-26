@@ -28,17 +28,14 @@ export const connect = async () => {
   let mongoUri
   try {
     if (isTest) {
-      const {
-        getMongoServerConnectionString,
-      } = await import('./mongo-memory-server-setup')
+      const { getMongoServerConnectionString } = await import(
+        './mongo-memory-server-setup'
+      )
       mongoUri = await getMongoServerConnectionString()
     } else {
       mongoUri = mongoURL
     }
-    await mongoose.connect(
-      mongoUri,
-      mongooseOpts
-    )
+    await mongoose.connect(mongoUri, mongooseOpts)
     techLogger.info('Connected to Mongo!')
     return mongoose
   } catch (err) {
@@ -60,9 +57,9 @@ export const disconnect = async () => {
   try {
     await mongoose.disconnect()
     if (isTest) {
-      const {
-        stopMongoMemoryServer,
-      } = await import('./mongo-memory-server-setup')
+      const { stopMongoMemoryServer } = await import(
+        './mongo-memory-server-setup'
+      )
       stopMongoMemoryServer()
     }
   } catch (error) {

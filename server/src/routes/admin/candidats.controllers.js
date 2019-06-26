@@ -142,9 +142,7 @@ export const getCandidats = async (req, res) => {
         const places = await findPlaceByCandidatId(_id)
         if (places.length > 1) {
           appLogger.warn(
-            `le candidat ${candidat.codeNeph} / '${
-              candidat.nomNaissance
-            } a plusieurs places d'examens`
+            `le candidat ${candidat.codeNeph} / '${candidat.nomNaissance} a plusieurs places d'examens`
           )
         }
         candidat.place = places[0] || {}

@@ -151,9 +151,7 @@ const createPlaceCsv = async place => {
     await createPlace(leanPlace)
     appLogger.info({
       ...loggerInfo,
-      description: `Place {${centre.departement},${
-        centre.nom
-      }, ${inspecteur}, ${date}} enregistrée en base`,
+      description: `Place {${centre.departement},${centre.nom}, ${inspecteur}, ${date}} enregistrée en base`,
     })
     return getPlaceStatus(
       centre.departement,
@@ -327,9 +325,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     await createPlace(leanPlace)
     appLogger.info({
       ...loggerInfo,
-      description: `Place {${centre.departement}, ${
-        centre.nom
-      }, ${inspecteur}, ${myDate}} enregistrée en base`,
+      description: `Place {${centre.departement}, ${centre.nom}, ${inspecteur}, ${myDate}} enregistrée en base`,
     })
     return getPlaceStatus(
       centre.departement,

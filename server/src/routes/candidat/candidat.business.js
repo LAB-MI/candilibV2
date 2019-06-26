@@ -131,9 +131,7 @@ export async function presignUpCandidat (candidatData) {
   return {
     success: true,
     response,
-    message: `Un email a été envoyé à ${
-      candidatData.email
-    }, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).`,
+    message: `Un email a été envoyé à ${candidatData.email}, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).`,
     candidat,
   }
 }
