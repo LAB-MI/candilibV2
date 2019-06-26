@@ -299,9 +299,7 @@ export const synchroAurige = async buffer => {
                   message
                 )
               } catch (error) {
-                message = `Impossible d'envoyer un magic link par un mail à ce candidat ${
-                  candidat.email
-                }, il a été validé, cependant`
+                message = `Impossible d'envoyer un magic link par un mail à ce candidat ${candidat.email}, il a été validé, cependant`
 
                 appLogger.error({
                   ...loggerInfoCandidat,
@@ -404,9 +402,7 @@ const removeResaNoAuthorize = async (candidat, canBookFrom) => {
         } catch (error) {
           appLogger.error({
             func: 'removeResaNoAuthorize',
-            description: `Impossible d'envoyer un mail à ce candidat ${
-              candidat.email
-            } pour lui informer que sa réservation est annulée suit à l'echec examen pratique`,
+            description: `Impossible d'envoyer un mail à ce candidat ${candidat.email} pour lui informer que sa réservation est annulée suit à l'echec examen pratique`,
             error,
           })
         }

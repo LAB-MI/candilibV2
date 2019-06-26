@@ -31,23 +31,17 @@ export const importPlaces = async (req, res) => {
   try {
     appLogger.info({
       ...loggerInfo,
-      description: `import places provenant du fichier ${
-        csvFile.name
-      } et du departement ${departement}`,
+      description: `import places provenant du fichier ${csvFile.name} et du departement ${departement}`,
     })
     const result = await importPlacesCsv({ csvFile, departement })
     appLogger.info({
       ...loggerInfo,
-      description: `import places: Le fichier ${
-        csvFile.name
-      } a été traité pour le departement ${departement}.`,
+      description: `import places: Le fichier ${csvFile.name} a été traité pour le departement ${departement}.`,
     })
     res.status(200).send({
       fileName: csvFile.name,
       success: true,
-      message: `Le fichier ${
-        csvFile.name
-      } a été traité pour le departement ${departement}.`,
+      message: `Le fichier ${csvFile.name} a été traité pour le departement ${departement}.`,
       places: result,
     })
   } catch (error) {
@@ -232,9 +226,7 @@ export const updatePlaces = async (req, res) => {
       const { date, hour } = dateTimeToFormatFr(result.newBookedPlace.date)
       return res.send({
         success: true,
-        message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${
-          result.candidat.codeNeph
-        }] a bien été affecté à la place du ${date} à ${hour}`,
+        message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${result.candidat.codeNeph}] a bien été affecté à la place du ${date} à ${hour}`,
         place: result.newBookedPlace,
       })
     }

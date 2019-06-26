@@ -98,9 +98,7 @@ describe('Test places controller', () => {
     )
     const { body } = await request(app)
       .get(
-        `/places?departement=93&centre=${
-          centreSelected._id
-        }&date=${dateSelected}`
+        `/places?departement=93&centre=${centreSelected._id}&date=${dateSelected}`
       )
       .set('Accept', 'application/json')
       .expect(200)
