@@ -11,6 +11,8 @@
               v-on="on"
               @mouseover="fetchCandidat"
               @click="getCandidat"
+              @click.stop="dialog = true"
+
             >
               <v-icon :color="color">
                 {{ icon }}
@@ -19,21 +21,21 @@
           </template>
       </v-tooltip>
 
-      <v-dialog
-        v-model="dialog"
-        width="650"
-      >
-        <shedule-inspector-dialog-content
-          :closeDialog="closeDialog"
-          :flagModal="flagModal"
-          :icon="icon"
-          :content="content"
-          :selectedDate="selectedDate"
-          :updateContent="updateContent"
-          :inspecteurId="inspecteurId"
-          :centreInfo="centreInfo"
-        />
-      </v-dialog>
+      <div
+      v-if ="dialog" >
+          <shedule-inspector-dialog-content
+            :closeDialog="closeDialog"
+            :flagModal="flagModal"
+            :icon="icon"
+            :content="content"
+            :selectedDate="selectedDate"
+            :updateContent="updateContent"
+            :inspecteurId="inspecteurId"
+            :centreInfo="centreInfo"
+          />
+
+      </div>
+
     </div>
   </td>
 </template>
