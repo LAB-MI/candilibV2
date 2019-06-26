@@ -36,4 +36,5 @@ export const validDays = [
   'mercredi',
   'jeudi',
   'vendredi',
+  'samedi',
 ]
