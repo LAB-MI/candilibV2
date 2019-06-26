@@ -397,7 +397,7 @@ describe('synchro-aurige', () => {
       const place = await findPlaceById(placeAfterTimeOutRetryCreated._id)
       expect(place).toBeDefined()
       expect(place.candidat).toBeDefined()
-      expect(place).toHaveProperty('candidat', candidatCreated._id)
+      expect(place.candidat).toHaveProperty('_id', candidatCreated._id)
 
       expectNoReussites(nbEchecsPratiques, noReussites)
     })

@@ -12,6 +12,7 @@ const sendMailResaArgsValidation = (reservation, candidat) => {
     appLogger.debug({ func: 'sendMailResaArgsValidation', reservation })
     throw new Error("Il n'y a aucune réservation")
   }
+
   if (!candidat) {
     appLogger.debug({
       func: 'sendMailResaArgsValidation',
