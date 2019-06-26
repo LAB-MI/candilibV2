@@ -1,12 +1,12 @@
 import 'whatwg-fetch'
 
-import store, { SHOW_ERROR } from '../store'
+import store, { UNAUTHORIZED } from '../store'
 import apiPaths from './api-paths'
 import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '../constants'
 
 const checkStatus = async (response) => {
   if (response.status === 401) {
-    await store.dispatch(SHOW_ERROR, 'Vous n\'êtes plus connecté')
+    await store.dispatch(UNAUTHORIZED)
   }
   return response
 }
@@ -17,7 +17,7 @@ const checkValidJson = async (response) => {
     data = await response.json()
     return data
   } catch (e) {
-    throw new Error('invalid_json')
+    throw new Error('Oups, une petite erreur est survenue.')
   }
 }
 
