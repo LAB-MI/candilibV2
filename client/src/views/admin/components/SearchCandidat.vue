@@ -148,15 +148,8 @@ export default {
         this.icon = 'keyboard_arrow_down'
         return
       }
-      if (candidat) {
-        this.color = 'green'
-        this.icon = 'keyboard_arrow_up'
-        return
-      }
-      if (!profileInfo) {
-        this.color = 'grey'
-        this.icon = 'keyboard_arrow_down'
-      }
+      this.color = 'green'
+      this.icon = 'keyboard_arrow_up'
     },
   },
 }
