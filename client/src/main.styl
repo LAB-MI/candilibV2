@@ -50,6 +50,18 @@ h3 {
 .u-flex {
   display: flex;
 
+  &--center {
+    justify-content: center;
+    align-items: center;
+
+    &-on-mobile {
+      @media (max-width: 599px) {
+        justify-content: center;
+        align-items: center;
+      }
+    }
+  }
+
   &--v-center {
     align-items: center;
   }
@@ -62,17 +74,10 @@ h3 {
     align-items: flex-end;
   }
 
-  &--center {
-    justify-content: center;
-    align-items: center;
-
-    &-on-mobile {
-      @media (max-width: 599px) {
-        justify-content: center;
-        align-items: center;
-      }
-    }
+  &--v-start {
+    align-items: flex-start;
   }
+
 
   &--h-end {
     justify-content: flex-end;
