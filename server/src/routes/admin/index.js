@@ -18,41 +18,45 @@ import {
   removeWhitelisted,
 } from './whitelisted.controllers'
 import {
+  verifyRepartiteurLevel,
+  verifyRepartiteurDepartement,
   verifyAdminLevel,
-  verifyAdminDepartement,
-  verifyTechLevel,
   verifyAccessAurige,
 } from './middlewares'
 
 const router = express.Router()
 
-router.use(verifyAdminLevel)
+router.use(verifyRepartiteurLevel)
 
 router.get('/me', getMe)
 router.get(
   '/candidats/:id?',
-  verifyAdminDepartement,
+  verifyRepartiteurDepartement,
   verifyAccessAurige,
   getCandidats
 )
-router.post('/candidats', verifyTechLevel, importCandidats)
+router.post('/candidats', verifyAdminLevel, importCandidats)
 router.get('/inspecteurs', getInspecteurs)
-router.post('/place', verifyAdminDepartement, createPlaceByAdmin)
+router.post('/place', verifyRepartiteurDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
-router.get('/places', verifyAdminDepartement, getPlaces)
-router.post('/places', verifyAdminDepartement, importPlaces)
-router.patch('/places/:id', verifyAdminDepartement, updatePlaces)
-router.post('/bordereaux', verifyAdminDepartement, sendScheduleInspecteurs)
+router.get('/places', verifyRepartiteurDepartement, getPlaces)
+router.post('/places', verifyRepartiteurDepartement, importPlaces)
+router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
+router.post(
+  '/bordereaux',
+  verifyRepartiteurDepartement,
+  sendScheduleInspecteurs
+)
 router.delete('/reservations/:id', removeReservationByAdmin)
 
 router
   .route('/whitelisted')
-  .all(verifyAdminDepartement)
+  .all(verifyRepartiteurDepartement)
   .get(getWhitelisted)
   .post(addWhitelisted)
 router
   .route('/whitelisted/:id')
-  .all(verifyAdminDepartement)
+  .all(verifyRepartiteurDepartement)
   .delete(removeWhitelisted)
 
 export default router

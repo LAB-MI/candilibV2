@@ -278,8 +278,8 @@ export const sendScheduleInspecteurs = async (req, res) => {
 
   try {
     let results
-    if (req.userLevel >= config.userStatusLevels.tech) {
-      loggerContent.action = 'SEND_MAIL_SCHEDULE_BY_TECH'
+    if (req.userLevel >= config.userStatusLevels.admin) {
+      loggerContent.action = 'SEND_MAIL_SCHEDULE_ALL_INSPECTEURS'
       if (!date) {
         const error = new Error('Le paramètre date renseignés est manquant')
         error.status = 422
