@@ -1,3 +1,5 @@
+import { DateTime } from 'luxon'
+
 import { appLogger } from '../../util'
 import { getScheduleInspecteurTemplate } from './mail/body-schedule-inspecteur-template'
 import { getHtmlBody } from './mail'
@@ -165,12 +167,12 @@ export const sendMailForScheduleInspecteurFailed = async (
     args: { email, date, departement, inspecteurs },
   })
 
-  const dateToString = dateTimeToFormatFr(date).date
+  const dateToString = dateTimeToFormatFr(date, DateTime.DATE_SHORT).date
 
   const content = getFailedScheduleInspecteurTemplate(
     dateToString,
     inspecteurs.map(inspecteur => inspecteur.nom + '/' + inspecteur.matricule)
   )
-  const subject = `Echec d'envoi de mail pour le planning du ${date} du département ${departement}`
+  const subject = `Echec d'envoi de mail pour le bordereau du ${dateToString} du département ${departement}`
   return sendMail(email, { content, subject })
 }
