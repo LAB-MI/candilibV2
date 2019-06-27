@@ -8,13 +8,17 @@ const DEFAULT_PUBLIC_URL = isProduction
 
 const userStatuses = {
   CANDIDAT: 'candidat',
+  REPARTITEUR: 'repartiteur',
+  DELEGUE: 'delegue',
   ADMIN: 'admin',
   TECH: 'tech',
 }
 
 const userStatusLevels = {
   [userStatuses.CANDIDAT]: 0,
-  [userStatuses.ADMIN]: 1,
+  [userStatuses.REPARTITEUR]: 1,
+  [userStatuses.DELEGUE]: 1,
+  [userStatuses.ADMIN]: 2,
   [userStatuses.TECH]: 2,
 }
 
@@ -39,11 +43,17 @@ const getTokenExpiration = () => {
 const config = {
   secret: process.env.SECRET || 'secret',
   candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '3d',
+  get repartiteurTokenExpiration () {
+    return getTokenExpiration()
+  },
+  get delegueTokenExpiration () {
+    return getTokenExpiration()
+  },
   get adminTokenExpiration () {
     return getTokenExpiration()
   },
   get techTokenExpiration () {
-    return getTokenExpiration()
+    return process.env.TECH_EXPIREDIN || '1h'
   },
 
   userStatuses,
