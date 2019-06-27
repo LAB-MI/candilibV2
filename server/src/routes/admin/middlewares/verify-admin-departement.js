@@ -20,7 +20,7 @@ export async function verifyAdminDepartement (req, res, next) {
     }
     appLogger.error({
       ...loggerInfo,
-      message: `Departement ${departement} non trouvé`,
+      description: `Département ${departement} non trouvé`,
     })
     throw new Error('Accès interdit')
   } catch (error) {

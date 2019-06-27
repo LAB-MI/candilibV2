@@ -27,8 +27,8 @@ export const findUserByCredentials = async (email, password) => {
   return user
 }
 
-export const createUser = async (email, password, departements) => {
-  const user = new User({ email, password, departements })
+export const createUser = async (email, password, departements, status) => {
+  const user = new User({ email, password, departements, status })
   await user.save()
   return user
 }
@@ -70,6 +70,15 @@ export const updateUserDepartements = async (user, departements) => {
     throw new Error('user is undefined')
   }
   await user.update({ departements })
+  const updatedUser = await User.findById(user._id)
+  return updatedUser
+}
+
+export const updateUserStatus = async (user, status) => {
+  if (!user) {
+    throw new Error('user is undefined')
+  }
+  await user.update({ status })
   const updatedUser = await User.findById(user._id)
   return updatedUser
 }

@@ -17,15 +17,25 @@ import {
   addWhitelisted,
   removeWhitelisted,
 } from './whitelisted.controllers'
-import { verifyAdminLevel, verifyAdminDepartement } from './middlewares'
+import {
+  verifyAdminLevel,
+  verifyAdminDepartement,
+  verifyTechLevel,
+  verifyAccessAurige,
+} from './middlewares'
 
 const router = express.Router()
 
 router.use(verifyAdminLevel)
 
 router.get('/me', getMe)
-router.get('/candidats/:id?', verifyAdminDepartement, getCandidats)
-router.post('/candidats', importCandidats)
+router.get(
+  '/candidats/:id?',
+  verifyAdminDepartement,
+  verifyAccessAurige,
+  getCandidats
+)
+router.post('/candidats', verifyTechLevel, importCandidats)
 router.get('/inspecteurs', getInspecteurs)
 router.post('/place', verifyAdminDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
