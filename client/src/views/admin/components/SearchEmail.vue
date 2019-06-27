@@ -2,7 +2,6 @@
   <div>
     <div class="u-flex u-flex--center">
       <candilib-autocomplete
-        v-model="selectedEmail"
         class="search-input"
         @selection="displayEmailSearch"
         label="Emails"
