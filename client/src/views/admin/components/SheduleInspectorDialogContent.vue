@@ -1,5 +1,5 @@
 <template>
-  <v-card class="elevation-0" v-if="flagModal === 'face'">
+  <div class="elevation-0" v-if="flagModal === 'face'">
     <shedule-inspector-dialog-header
       :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
       title="Ce créneau est au statut réservé"
@@ -85,9 +85,9 @@
         </p>
       </confirm-box>
     </shedule-inspector-dialog-sub-content>
-  </v-card>
+  </div>
 
-  <v-card v-else-if="flagModal === 'block'">
+  <div v-else-if="flagModal === 'block'">
     <shedule-inspector-dialog-header
       :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
       title="Ce créneau est au statut indisponible"
@@ -109,19 +109,18 @@
       textButtonCancel="Retour"
       @click="makeCreneauAvailable"
     />
-  </v-card>
-  <v-card v-else-if="flagModal === 'check'">
+  </div>
+  <div v-else-if="flagModal === 'check'">
     <shedule-inspector-dialog-header
       :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
       title="Ce créneau est au statut disponible"
       @close="closeDialogAndResetSelectedCandidat"
-      colorIcon="black"
+      colorIcon="white"
       colorButton="green"
       icon="highlight_off"
       iconOnLeft="check_circle"
       colorHeader="success"
     />
-    <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -159,7 +158,6 @@
         </confirm-box>
       </div>
     </shedule-inspector-dialog-sub-content>
-    <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -170,7 +168,7 @@
       textButtonCancel="Retour"
       @click="renderCreneauUnavalaible"
     />
-  </v-card>
+  </div>
 </template>
 
 <script>

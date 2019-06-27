@@ -1,5 +1,5 @@
 <template>
-  <td class="text-xs-right">
+  <td class="text-xs-center  u-v-align-top">
     <div class="text-xs-center"
     >
       <v-tooltip bottom>
@@ -10,9 +10,7 @@
               dark
               v-on="on"
               @mouseover="fetchCandidat"
-              @click="getCandidat"
-              @click.stop="dialog = true"
-
+              @click="toggleDetails"
             >
               <v-icon :color="color">
                 {{ icon }}
@@ -20,22 +18,20 @@
             </v-btn>
           </template>
       </v-tooltip>
-
-      <div
-      v-if ="dialog" >
-          <shedule-inspector-dialog-content
-            :closeDialog="closeDialog"
-            :flagModal="flagModal"
-            :icon="icon"
-            :content="content"
-            :selectedDate="selectedDate"
-            :updateContent="updateContent"
-            :inspecteurId="inspecteurId"
-            :centreInfo="centreInfo"
-          />
-
-      </div>
-
+    </div>
+    <div
+      v-if="showDetails"
+    >
+      <shedule-inspector-dialog-content
+        :closeDialog="closeDetails"
+        :flagModal="flagModal"
+        :icon="icon"
+        :content="content"
+        :selectedDate="selectedDate"
+        :updateContent="updateContent"
+        :inspecteurId="inspecteurId"
+        :centreInfo="centreInfo"
+      />
     </div>
   </td>
 </template>
@@ -54,7 +50,7 @@ export default {
   data () {
     return {
       color: '#A9A9A9',
-      dialog: false,
+      showDetails: false,
       icon: '',
       flagModal: undefined,
       isLoadingCandidat: false,
@@ -121,7 +117,6 @@ export default {
     },
 
     getCandidat () {
-      this.dialog = true
       this.fetchCandidat()
     },
 
@@ -135,8 +130,15 @@ export default {
       this.isLoadingCandidat = false
     },
 
-    closeDialog () {
-      this.dialog = false
+    toggleDetails () {
+      this.showDetails = !this.showDetails
+      if (this.showDetails) {
+        this.getCandidat()
+      }
+    },
+
+    closeDetails () {
+      this.showDetails = false
     },
   },
 
