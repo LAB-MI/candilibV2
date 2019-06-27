@@ -1,19 +1,10 @@
 <template>
   <div class="elevation-0" v-if="flagModal === 'face'">
     <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
-      title="Ce créneau est au statut réservé"
-      @close="closeDialogFace"
-      colorIcon="black"
-      colorButton="blue"
-      icon="highlight_off"
-      iconOnLeft="face"
-      colorHeader="blue"
+      :infoSelectedDialog="{ place: content.place }"
     />
-    <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
-      colorAlert="white"
       icon="block"
       colorIcon="white"
       colorSubmitButton="grey"
@@ -88,17 +79,6 @@
   </div>
 
   <div v-else-if="flagModal === 'block'">
-    <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
-      title="Ce créneau est au statut indisponible"
-      @close="closeDialog"
-      colorIcon="black"
-      colorButton="grey"
-      icon="highlight_off"
-      iconOnLeft="block"
-      colorHeader="grey"
-    />
-    <v-divider></v-divider>
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -111,16 +91,6 @@
     />
   </div>
   <div v-else-if="flagModal === 'check'">
-    <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
-      title="Ce créneau est au statut disponible"
-      @close="closeDialogAndResetSelectedCandidat"
-      colorIcon="white"
-      colorButton="green"
-      icon="highlight_off"
-      iconOnLeft="check_circle"
-      colorHeader="success"
-    />
     <shedule-inspector-dialog-sub-content
       :isLoading="isLoading"
       colorAlert="white"
@@ -150,7 +120,7 @@
           :closeAction="() => selectedCandidat = null"
           :submitAction="affectCandidatToCreneau"
         >
-          <p>affecter le candidat:</p>
+          <p>affecter le candidat: </p>
           <p>{{ selectedCandidat.nomNaissance }} / {{ selectedCandidat.codeNeph }}</p>
           <p>sur la place du</p>
           <p>{{ formattedDate }}</p>

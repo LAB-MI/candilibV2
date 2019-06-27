@@ -1,7 +1,5 @@
 <template>
-  <v-alert
-    :value="true"
-    :color="colorAlert || 'white'"
+  <div
   >
     <div
       class="u-flex  u-flex--center  u-flex--column  u-full-width"
@@ -21,7 +19,7 @@
       <slot name="title"/>
       <slot/>
     </div>
-  </v-alert>
+  </div>
 </template>
 
 <script>

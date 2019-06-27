@@ -31,7 +31,7 @@
       </div>
     </div>
 
-    <v-layout class="padded">
+    <div >
       <v-flex xs12>
         <div class="u-flex  u-flex--center  u-flex--space-between">
           <h3>Centres d'examen</h3>
@@ -80,7 +80,7 @@
                 :no-data-text="isLoading ? 'Chargement des données en cours...' : 'Aucun creneau pour ce centre'"
               >
                 <template v-slot:items="props">
-                  <td>
+                  <td class="u-flex u-v-align-top u-flex--center u-flex--v-center">
                     {{ props.item.nom }}
                   </td>
                   <schedule-inspector-dialog
@@ -98,7 +98,7 @@
           </v-tabs-items>
         </v-tabs>
       </v-flex>
-    </v-layout>
+    </div>
   </v-container>
 </template>
 

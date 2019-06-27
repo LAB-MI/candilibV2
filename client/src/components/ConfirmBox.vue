@@ -1,12 +1,10 @@
 <template>
-  <v-card>
-    <page-title title="Confirmation"></page-title>
+  <div class= "test">
     <div
       class="u-full-width  u-flex  u-flex--column  u-flex--center"
     >
-      <slot />
-      <v-flex d-flex>
-        <v-spacer></v-spacer>
+      <slot/>
+      <div d-flex>
         <v-btn
           outline
           color="info"
@@ -23,22 +21,25 @@
         >
           Valider
         </v-btn>
-      </v-flex>
+      </div>
     </div>
-  </v-card>
+  </div>
 </template>
 
 <script>
-import PageTitle from './PageTitle.vue'
 
 export default {
-  components: {
-    PageTitle,
-  },
-
   props: {
     closeAction: Function,
     submitAction: Function,
   },
 }
 </script>
+
+<style lang="stylus">
+
+.test {
+  margin: 1em;
+}
+
+</style>
