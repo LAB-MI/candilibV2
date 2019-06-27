@@ -30,7 +30,13 @@ export default {
   height: 4.2em;
 
   @media (max-width: 767px) {
-    height: 4em;
+    position: relative;
+    top: 0.225em;
+    height: 3.5em;
+  }
+
+  @media (max-width: 359px) {
+    height: 3.5em;
   }
 }
 
