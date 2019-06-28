@@ -249,6 +249,9 @@ export default {
       commit(DELETE_PLACE_REQUEST)
       try {
         const result = await api.admin.deletePlace(placeId)
+        if (!result.success) {
+          throw new Error(result.message)
+        }
         commit(DELETE_PLACE_SUCCESS, result)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
