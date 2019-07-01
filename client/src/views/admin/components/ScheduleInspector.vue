@@ -32,72 +32,98 @@
     </div>
 
     <div >
-      <v-flex xs12>
-        <div class="u-flex  u-flex--center  u-flex--space-between">
-          <h3>Centres d'examen</h3>
-          <generate-inspecteur-bordereaux
-            :date="date"
-          />
-          <div class="stats-card">
-            <div class="text-xs-right">
-              <refresh-button
-                @click="reloadWeekMonitor"
-                :isLoading="isLoading"
-              />
-            </div>
+      <div class="u-flex  u-flex--center  u-flex--space-between">
+        <h3>Centres d'examen</h3>
+        <generate-inspecteur-bordereaux
+          :date="date"
+        />
+        <div class="stats-card">
+          <div class="text-xs-right">
+            <refresh-button
+              @click="reloadWeekMonitor"
+              :isLoading="isLoading"
+            />
           </div>
         </div>
-        <v-tabs
-          class="tabs"
-          v-model="activeCentreTab"
-          color="white"
-          slider-color="red"
+      </div>
+      <v-tabs
+        class="tabs"
+        v-model="activeCentreTab"
+        color="white"
+        slider-color="red"
+      >
+        <v-tab
+          v-for="element in placesByCentreList"
+          :key="element.centre._id"
+          @click="centreSelector(element.centre._id)"
+          :href="`#tab-${element.centre._id.toString()}`"
+          ripple
         >
-          <v-tab
-            v-for="element in placesByCentreList"
-            :key="element.centre._id"
-            @click="centreSelector(element.centre._id)"
-            :href="`#tab-${element.centre._id.toString()}`"
-            ripple
+          {{ element.centre.nom }}
+        </v-tab>
+        <v-tabs-items
+          v-model="activeCentreTab"
+        >
+          <v-tab-item
+            v-for="placesByCentre in placesByCentreList"
+            :key="placesByCentre.centre._id"
+            :lazy="true"
+            :value="`tab-${placesByCentre.centre._id}`"
           >
-            {{ element.centre.nom }}
-          </v-tab>
-          <v-tabs-items
-            v-model="activeCentreTab"
-          >
-            <v-tab-item
-              v-for="place in placesByCentreList"
-              :key="place.centre._id"
-              :lazy="true"
-              :value="`tab-${place.centre._id}`"
-            >
-              <v-data-table
-                :rows-per-page-items='[15, 25, 35,{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}]'
-                :headers="headers"
-                :items="{ inspecteursData, activeCentreId } | filterByCentre"
-                class="elevation-1 data-table"
-                :loading="isLoading"
-                :no-data-text="isLoading ? 'Chargement des données en cours...' : 'Aucun creneau pour ce centre'"
-              >
-                <template v-slot:items="props">
-                  <td class="u-flex u-v-align-top u-flex--center u-flex--v-center">
-                    {{ props.item.nom }}
+            <table class="table u-full-width">
+              <thead>
+                <tr>
+                  <th v-for="creneau in headers" :key="creneau">
+                    {{ creneau }}
+                  </th>
+                </tr>
+              </thead>
+
+              <tbody v-for="data in inspecteursData" :key="data.matricule">
+                <tr>
+                  <th>
+                    {{data.prenom}} {{data.nom}}
+                  </th>
+                  <td
+                    v-for="placeInfo in data.creneau"
+                    :key="placeInfo._id"
+                    class="place-button"
+                    :class="{ active: activeInspecteurRow === data._id && activeHour === placeInfo.hour }"
+                  >
+                    <schedule-inspector-button
+                      :key="`creneau-${placeInfo.hour}-${data._id}`"
+                      :content="placeInfo"
+                      :selectedDate="date"
+                      :inspecteurId="data._id"
+                      :updateContent="reloadWeekMonitor"
+                      :centreInfo="placeInfo.centre"
+                      @click="setActiveInspecteurRow"
+                    />
                   </td>
-                  <schedule-inspector-dialog
-                    v-for="(placeInfo, index) in props.item.creneau"
-                    :key="`creneau-${placeInfo.hour}-${index}`"
-                    :content="placeInfo"
-                    :selectedDate="date"
-                    :inspecteurId="props.item._id"
-                    :updateContent="reloadWeekMonitor"
-                    :centreInfo="place.centre"
-                  />
-                </template>
-              </v-data-table>
-            </v-tab-item>
-          </v-tabs-items>
-        </v-tabs>
-      </v-flex>
+                </tr>
+
+                <tr>
+                  <td></td>
+                  <td colspan="20">
+                    <div class="place-details  u-flex  u-flex--center" :class="{ active: activeInspecteurRow === data._id }">
+                      <schedule-inspector-details
+                        :place="activePlace"
+                        :content="selectedPlaceInfo"
+                        :close-dialog="closeDetails"
+                        :selectedDate="date"
+                        :updateContent="reloadWeekMonitor"
+                        :inspecteurId="data._id"
+                        :centreInfo="placesByCentre.centre"
+                      />
+                    </div>
+
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </v-tab-item>
+        </v-tabs-items>
+      </v-tabs>
     </div>
   </v-container>
 </template>
@@ -109,9 +135,12 @@ import {
   FETCH_ADMIN_INFO_REQUEST,
   FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
   SELECT_CENTER,
+  FETCH_CANDIDAT_REQUEST,
+  RESET_CANDIDAT,
 } from '@/store'
 
-import ScheduleInspectorDialog from './ScheduleInspectorDialog'
+import ScheduleInspectorButton from './ScheduleInspectorButton'
+import ScheduleInspectorDetails from './ScheduleInspectorDetails'
 import GenerateInspecteurBordereaux from './GenerateInspecteurBordereaux'
 import { RefreshButton } from '@/components'
 
@@ -132,20 +161,28 @@ export default {
   components: {
     GenerateInspecteurBordereaux,
     RefreshButton,
-    ScheduleInspectorDialog,
+    ScheduleInspectorButton,
+    ScheduleInspectorDetails,
   },
 
   data () {
     return {
-      activeCentreTab: null,
-      activeCentreId: null,
+      activeCentreTab: undefined,
+      activeCentreId: undefined,
+      activeHour: undefined,
+      activePlace: undefined,
       currentWeekNumber: getFrenchLuxonCurrentDateTime().weekNumber,
       date: getFrenchLuxonCurrentDateTime().toISODate(),
       headers: undefined,
+      isAvailable: true,
+      isBooked: false,
       inspecteursData: [],
       isComputing: false,
       isParseInspecteursPlanningLoading: false,
       datePicker: false,
+      selectedPlaceInfo: undefined,
+      activeInspecteurRow: undefined,
+      flagModal: 'check',
     }
   },
 
@@ -198,6 +235,11 @@ export default {
       return `${day}/${month}/${year}`
     },
 
+    closeDetails () {
+      this.activeInspecteurRow = undefined
+      this.activeHour = undefined
+    },
+
     async reloadWeekMonitor () {
       const begin = getFrenchLuxonFromSql(this.date).startOf('day').toISO()
       const end = getFrenchLuxonFromSql(this.date).endOf('day').toISO()
@@ -242,7 +284,7 @@ export default {
                 hour: currentHourString,
               }
             }
-          }).filter(plce => !!plce)
+          }).filter(plce => plce)
           if (filteredCreneaux.length < 13) {
             creneaux.forEach(cren => {
               if (!filteredCreneaux.some(crn => crn.hour === cren)) {
@@ -269,8 +311,39 @@ export default {
       }
       if (!this.inspecteursData.length) {
         this.inspecteursData = this.inspecteurs
+      } else {
+        this.inspecteursData = this.inspecteursData.filter(inspecteurInfo => {
+          if (inspecteurInfo.creneau.some(item => item.place && item.place.centre === this.activeCentreId)) {
+            return inspecteurInfo
+          }
+        })
       }
+
       this.isComputing = false
+    },
+
+    async setActiveInspecteurRow (inspecteurId, placeInfo) {
+      const hour = placeInfo && placeInfo.hour
+      const place = placeInfo && placeInfo.place
+      if (this.activeInspecteurRow === inspecteurId && hour === this.activeHour) {
+        this.activeInspecteurRow = undefined
+        this.activeHour = undefined
+        return
+      }
+
+      this.activeHour = hour
+      const candidatId = place && place.candidat
+      this.activeInspecteurRow = inspecteurId
+      this.activeCandidatId = candidatId
+      this.selectedPlaceInfo = placeInfo
+
+      this.activePlace = place
+
+      const departement = this.$store.state.admin.departements.active
+      if (candidatId) {
+        return this.$store.dispatch(FETCH_CANDIDAT_REQUEST, { candidatId, departement })
+      }
+      return this.$store.commit(RESET_CANDIDAT)
     },
   },
 
@@ -309,20 +382,6 @@ export default {
     },
   },
 
-  filters: {
-    filterByCentre (obj) {
-      const { inspecteursData, activeCentreId } = obj
-      if (inspecteursData.length) {
-        const result = inspecteursData.filter(inspecteurInfo => {
-          if (inspecteurInfo.creneau.some(item => item.place && item.place.centre === activeCentreId)) {
-            return inspecteurInfo
-          }
-        })
-        return result
-      }
-    },
-  },
-
   async mounted () {
     await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
     const centerId = this.$route.params.center
@@ -332,14 +391,7 @@ export default {
   },
 
   async beforeMount () {
-    this.headers = creneauTemplate.map((creneau, index) => {
-      return {
-        text: `${creneau}`,
-        align: 'center',
-        sortable: false,
-        value: `${creneau}`,
-      }
-    })
+    this.headers = creneauTemplate
 
     const { currentWeek } = this.$store.state.admin
 
@@ -377,19 +429,32 @@ export default {
   padding: 1em;
 }
 
-table.v-table tbody td:first-child,
-table.v-table tbody td:not(:first-child),
-table.v-table tbody th:first-child,
-table.v-table tbody th:not(:first-child),
-table.v-table thead td:first-child,
-table.v-table thead td:not(:first-child),
-table.v-table thead th:first-child,
-table.v-table thead th:not(:first-child) {
-  padding: 0 !important;
+.table {
+  border-collapse: collapse;
+  background-color: white;
 }
 
 .page-title {
   margin-top: 4em;
+}
+
+.place-button {
+  transition: all 0.6s ease-in-out;
+
+  &.active {
+    background-color: #bde;
+  }
+}
+
+.place-details {
+  overflow: hidden;
+  max-height: 0;
+  transition: all 0.6s ease-in-out;
+
+  &.active {
+    background-color: #bde;
+    max-height: 300px;
+  }
 }
 
 .refresh-btn {

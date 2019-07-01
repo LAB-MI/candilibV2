@@ -1,15 +1,15 @@
 import { storiesOf } from '@storybook/vue'
 import Vuex from 'vuex'
 
-import SheduleInspectorDialogContent from './SheduleInspectorDialogContent.vue'
+import ScheduleInspectorDetails from './ScheduleInspectorDetails.vue'
 import adminModifInspecteur from './searchInspecteur/ListSearchInspecteursAvailable.stories.store'
-import admin from './SheduleInspectorDialogContent.stories.store'
+import admin from './ScheduleInspectorDetails.stories.store'
 
-storiesOf('Admin/ScheduleInspectorDialogContent', module)
+storiesOf('Admin/ScheduleInspectorDetails', module)
   .add('booking', () => ({
-    components: { SheduleInspectorDialogContent },
+    components: { ScheduleInspectorDetails },
     template: `
-      <shedule-inspector-dialog-content
+      <schedule-inspector-dialog-content
         :closeDialog="closeDialog"
         :updateContent="updateContent"
         :flag-modal="flagModal"

@@ -24,17 +24,15 @@ export const DELETE_PLACE_REQUEST = 'DELETE_PLACE_REQUEST'
 export const DELETE_PLACE_SUCCESS = 'DELETE_PLACE_SUCCESS'
 export const DELETE_PLACE_FAILURE = 'DELETE_PLACE_FAILURE'
 
-export const CREATE_CRENEAU_REQUEST = 'CREATE_CRENEAU_REQUEST'
-export const CREATE_CRENEAU_SUCCESS = 'CREATE_CRENEAU_SUCCESS'
-export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
+export const CREATE_PLACE_REQUEST = 'CREATE_PLACE_REQUEST'
+export const CREATE_PLACE_SUCCESS = 'CREATE_PLACE_SUCCESS'
+export const CREATE_PLACE_FAILURE = 'CREATE_PLACE_FAILURE'
 
 export const ASSIGN_CANDIDAT_TO_CRENEAU = 'ASSIGN_CANDIDAT_TO_CRENEAU'
 
 export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
 export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
 export const DELETE_BOOKED_PLACE_FAILURE = 'DELETE_BOOKED_PLACE_FAILURE'
-
-export const FETCH_CANDIDAT = 'FETCH_CANDIDAT'
 
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
@@ -83,7 +81,6 @@ export default {
       isCreating: false,
       result: undefined,
     },
-    fetchedCandidat: undefined,
     isFetchingCandidat: false,
   },
 
@@ -139,14 +136,14 @@ export default {
       state.deletePlaceAction.isDeleting = false
     },
 
-    [CREATE_CRENEAU_REQUEST] (state) {
+    [CREATE_PLACE_REQUEST] (state) {
       state.createCreneau.isCreating = true
     },
-    [CREATE_CRENEAU_SUCCESS] (state, success) {
+    [CREATE_PLACE_SUCCESS] (state, success) {
       state.createCreneau.result = success
       state.createCreneau.isCreating = false
     },
-    [CREATE_CRENEAU_FAILURE] (state, error) {
+    [CREATE_PLACE_FAILURE] (state, error) {
       state.createCreneau.result = error
       state.createCreneau.isCreating = false
     },
@@ -257,15 +254,15 @@ export default {
       }
     },
 
-    async [CREATE_CRENEAU_REQUEST] ({ commit, dispatch, state }, placeData = {}) {
+    async [CREATE_PLACE_REQUEST] ({ commit, dispatch, state }, placeData = {}) {
       const { centre, inspecteur, date } = placeData
-      commit(CREATE_CRENEAU_REQUEST)
+      commit(CREATE_PLACE_REQUEST)
       try {
         const result = await api.admin.createPlace(centre, inspecteur, date)
-        commit(CREATE_CRENEAU_SUCCESS, result)
+        commit(CREATE_PLACE_SUCCESS, result)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
-        commit(CREATE_CRENEAU_FAILURE, error)
+        commit(CREATE_PLACE_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
@@ -286,21 +283,6 @@ export default {
         }
         dispatch(SHOW_SUCCESS, message)
       } catch (error) {
-        return dispatch(SHOW_ERROR, error.message)
-      }
-    },
-
-    async [FETCH_CANDIDAT] ({ dispatch, state, commit }, candidatId) {
-      state.isFetchingCandidat = true
-      try {
-        const { success, candidat, message } = await api.admin.getCandidats(candidatId, state.departements.active)
-        if (!success) {
-          throw new Error(message)
-        }
-        state.fetchedCandidat = candidat
-        state.isFetchingCandidat = false
-      } catch (error) {
-        state.isFetchingCandidat = false
         return dispatch(SHOW_ERROR, error.message)
       }
     },
