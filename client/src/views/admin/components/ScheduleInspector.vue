@@ -193,15 +193,12 @@ export default {
         const {
           places,
           inspecteurs,
-          deleteBookedPlace,
-          deletePlaceAction,
-          createCreneau,
         } = state.admin
         return places.isFetching ||
           inspecteurs.isFetching ||
-          deleteBookedPlace.isDeleting ||
-          deletePlaceAction.isDeleting ||
-          createCreneau.isCreating
+          places.isDeletingBookedPlace ||
+          places.isDeletingAvailablePlace ||
+          places.isCreating
       },
 
       placesByCentreList (state) {

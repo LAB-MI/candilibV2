@@ -13,7 +13,10 @@
 <script>
 export default {
   props: {
-    candidat: Object,
+    candidat: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 }
 </script>

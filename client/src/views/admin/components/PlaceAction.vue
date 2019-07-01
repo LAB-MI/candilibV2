@@ -8,6 +8,8 @@
         v-if="activeTextContent" class="white--text"
         :color="colorSubmitButton"
         :loading="isLoading"
+        :aria-disabled="isLoading"
+        :disabled="isLoading"
         @click="submitDial"
       >
         <v-icon :color="colorIcon" large>
@@ -25,22 +27,22 @@
 <script>
 export default {
   props: {
-    textContent: String,
     activeTextContent: {
       type: Boolean,
       default: true,
     },
-    textButtonCancel: String,
     closeDialog: Function,
-    content: Object,
-    icon: String,
     colorIcon: String,
     colorSubmitButton: String,
     colorAlert: String,
+    content: Object,
+    icon: String,
     isLoading: {
       type: Boolean,
       default: false,
     },
+    textButtonCancel: String,
+    textContent: String,
   },
 
   methods: {

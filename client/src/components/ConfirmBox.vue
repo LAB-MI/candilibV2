@@ -9,6 +9,8 @@
           outline
           color="info"
           @click="closeAction"
+          :aria-disabled="disabled"
+          :disabled="disabled"
         >
           <v-icon>
             arrow_back_ios
@@ -18,6 +20,8 @@
         <v-btn
           color="success"
           @click="submitAction"
+          :aria-disabled="disabled"
+          :disabled="disabled"
         >
           Valider
         </v-btn>
@@ -32,6 +36,7 @@ export default {
   props: {
     closeAction: Function,
     submitAction: Function,
+    disabled: Boolean,
   },
 }
 </script>

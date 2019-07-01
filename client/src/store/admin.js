@@ -60,27 +60,20 @@ export default {
     email: undefined,
     level: undefined,
     places: {
+      created: undefined,
+      deleted: undefined,
+      isCreating: false,
+      isDeletingBookedPlace: false,
+      isDeletingAvailablePlace: false,
       isFetching: false,
       list: [],
     },
     inspecteurs: {
-      isFetching: false,
       error: undefined,
+      isFetching: false,
       list: [],
     },
-    deleteBookedPlace: {
-      result: undefined,
-      isDeleting: false,
-    },
-    deletePlaceAction: {
-      result: undefined,
-      isDeleting: false,
-    },
     currentWeek: undefined,
-    createCreneau: {
-      isCreating: false,
-      result: undefined,
-    },
     isFetchingCandidat: false,
   },
 
@@ -125,39 +118,39 @@ export default {
     },
 
     [DELETE_PLACE_REQUEST] (state) {
-      state.deletePlaceAction.isDeleting = true
+      state.isDeletingAvailablePlace = true
     },
     [DELETE_PLACE_SUCCESS] (state, success) {
-      state.deletePlaceAction.result = success
-      state.deletePlaceAction.isDeleting = false
+      state.deleted = success
+      state.isDeletingAvailablePlace = false
     },
     [DELETE_PLACE_FAILURE] (state, error) {
-      state.deletePlaceAction.result = error
-      state.deletePlaceAction.isDeleting = false
+      state.deleted = error
+      state.isDeletingAvailablePlace = false
     },
 
     [CREATE_PLACE_REQUEST] (state) {
-      state.createCreneau.isCreating = true
+      state.places.isCreating = true
     },
     [CREATE_PLACE_SUCCESS] (state, success) {
-      state.createCreneau.result = success
-      state.createCreneau.isCreating = false
+      state.places.created = success
+      state.places.isCreating = false
     },
     [CREATE_PLACE_FAILURE] (state, error) {
-      state.createCreneau.result = error
-      state.createCreneau.isCreating = false
+      state.places.created = error
+      state.places.isCreating = false
     },
 
     [DELETE_BOOKED_PLACE_REQUEST] (state) {
-      state.deleteBookedPlace.isDeleting = true
+      state.isDeletingBookedPlace = true
     },
     [DELETE_BOOKED_PLACE_SUCCESS] (state, success) {
-      state.deleteBookedPlace.result = success
-      state.deleteBookedPlace.isDeleting = false
+      state.deleted = success
+      state.isDeletingBookedPlace = false
     },
     [DELETE_BOOKED_PLACE_FAILURE] (state, error) {
-      state.deleteBookedPlace.result = error
-      state.deleteBookedPlace.isDeleting = false
+      state.deleted = error
+      state.isDeletingBookedPlace = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {

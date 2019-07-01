@@ -5,20 +5,20 @@
       :candidat="candidat"
     />
     <place-action
-      :isLoading="isLoading"
+      :is-loading="isLoading"
       icon="block"
-      colorIcon="white"
-      colorSubmitButton="grey"
+      color-icon="white"
+      color-submit-button="grey"
       textContent="Annuler réservation"
-      :activeTextContent="!deleteBookedPlaceConfirm"
-      textButtonCancel="Retour"
+      :active-text-content="!deleteBookedPlaceConfirm"
+      text-button-cancel="Retour"
       @click="displayConfirmDeleteBookedPlace"
       :content="content"
     >
       <confirm-box
         v-if="deleteBookedPlaceConfirm"
-        :closeAction='cancelDeleteBookedPlace'
-        :submitAction='deleteBookedPlace'
+        :close-action='cancelDeleteBookedPlace'
+        :submit-action='deleteBookedPlace'
       >
       <!-- TODO: Refactor Create composant for each subcontent dialogs -->
         <div v-if="isFetchingCandidat">
@@ -49,15 +49,15 @@
       </confirm-box>
     </place-action>
     <place-action
-      :isLoading="isLoading"
+      :is-loading="isLoading"
       colorAlert="white"
       icon="account_box"
-      colorIcon="white"
-      colorSubmitButton="blue"
-      textButtonCancel="Retour"
-      textContent="Modifier l'inspecteur"
+      color-icon="white"
+      color-submit-button="blue"
+      text-button-cancel="Retour"
+      text-content="Modifier l'inspecteur"
       @click="toggleInspecteurSearch"
-      :activeTextContent="displayModifyInspecteurTitle"
+      :active-text-content="displayModifyInspecteurTitle"
     >
       <list-search-inspecteurs-available
         slot="title"
@@ -81,27 +81,27 @@
 
   <v-card class="details" v-else-if="!isAvailable">
     <place-action
-      :isLoading="isLoading"
-      colorAlert="white"
+      :is-loading="isLoading"
+      color-alert="white"
       icon="check_circle"
-      colorIcon="white"
-      colorSubmitButton="green"
-      textContent="Rendre le créneau disponible"
-      textButtonCancel="Retour"
+      color-icon="white"
+      color-submit-button="green"
+      text-content="Rendre le créneau disponible"
+      text-button-cancel="Retour"
       @click="setCreneauAvailable"
     />
   </v-card>
 
   <v-card class="details" v-else-if="isAvailable">
     <place-action
-      :isLoading="isLoading"
-      colorAlert="white"
+      :is-loading="isLoading"
+      color-alert="white"
       icon="face"
-      colorIcon="white"
-      colorSubmitButton="blue"
-      textContent="Affecter un candidat"
-      :activeTextContent="!selectedCandidat"
-      textButtonCancel="Retour"
+      color-icon="white"
+      color-submit-button="blue"
+      text-content="Affecter un candidat"
+      :active-text-content="!selectedCandidat"
+      text-button-cancel="Retour"
       @click="displaySearchCandidatInput"
     >
       <div v-if="isCandidatEditing">
@@ -119,8 +119,10 @@
         />
         <confirm-box
           v-else
-          :closeAction="() => selectedCandidat = null"
-          :submitAction="affectCandidatToCreneau"
+          :close-action="() => selectedCandidat = null"
+          :submit-action="affectCandidatToCreneau"
+          :aria-disabled="isLoading"
+          :disabled="isLoading"
         >
           <p>
             Affecter le candidat:
@@ -144,13 +146,13 @@
       </div>
     </place-action>
     <place-action
-      :isLoading="isLoading"
+      :is-loading="isLoading"
       colorAlert="white"
       icon="block"
-      colorIcon="white"
-      colorSubmitButton="grey"
-      textContent="Rendre indisponible"
-      textButtonCancel="Retour"
+      color-icon="white"
+      color-submit-button="grey"
+      text-content="Rendre indisponible"
+      text-button-cancel="Retour"
       @click="setCreneauUnavalaible"
     />
   </v-card>
@@ -217,7 +219,10 @@ export default {
 
     ...mapState({
       isLoading (state) {
-        return state.admin.places.isFetching
+        return state.admin.places.isFetching ||
+          state.admin.places.isDeletingBookedPlace ||
+          state.admin.places.isDeletingAvailablePlace ||
+          state.admin.places.isCreating
       },
 
       isUpdatingInspecteur (state) {
