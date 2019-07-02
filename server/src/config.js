@@ -17,9 +17,21 @@ const userStatuses = {
 const userStatusLevels = {
   [userStatuses.CANDIDAT]: 0,
   [userStatuses.REPARTITEUR]: 1,
-  [userStatuses.DELEGUE]: 1,
-  [userStatuses.ADMIN]: 2,
-  [userStatuses.TECH]: 2,
+  [userStatuses.DELEGUE]: 2,
+  [userStatuses.ADMIN]: 3,
+  [userStatuses.TECH]: 4,
+}
+
+const features = {
+  AURIGE: 'aurige',
+}
+
+const userStatusAccess = {
+  [userStatuses.CANDIDAT]: [],
+  [userStatuses.REPARTITEUR]: [],
+  [userStatuses.DELEGUE]: [],
+  [userStatuses.ADMIN]: [features.AURIGE],
+  [userStatuses.TECH]: [features.AURIGE],
 }
 
 const getTokenExpiration = () => {
@@ -57,8 +69,10 @@ const config = {
   },
 
   userStatuses,
+  features,
 
   userStatusLevels,
+  userStatusFeatures: userStatusAccess,
 
   dbName: process.env.DB_NAME,
   dbUser: process.env.DB_USER,

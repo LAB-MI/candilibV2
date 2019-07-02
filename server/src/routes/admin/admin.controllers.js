@@ -19,11 +19,11 @@ export const getMe = async (req, res) => {
       const error = new Error('Utilisateur non trouvé')
       throw error
     }
-    const level = config.userStatusLevels[status]
+    const features = config.userStatusFeatures[status]
     return res.json({
       email,
       departements,
-      level,
+      features,
     })
   } catch (error) {
     appLogger.error({
