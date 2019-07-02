@@ -10,11 +10,11 @@ import {
 } from '.'
 import { connect, disconnect } from '../../mongo-connection'
 import {
-  getFrenchLuxonDateTime,
-  getFrenchLuxonDateTimeFromISO,
-  getFrenchLuxonDateTimeFromObject,
-  getFrenchLuxonDateTimeRangeFromDate,
-  getFrenchLuxonDateTimeFromJSDate,
+  getFrenchLuxon,
+  getFrenchLuxonFromISO,
+  getFrenchLuxonFromObject,
+  getFrenchLuxonRangeFromDate,
+  getFrenchLuxonFromJSDate,
 } from '../../util'
 import { createCentre, deleteCentre, findCentreByName } from '../centre'
 import {
@@ -41,8 +41,8 @@ import {
 import { createInspecteur, deleteInspecteurByMatricule } from '../inspecteur'
 import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
 
-let date1 = getFrenchLuxonDateTimeFromObject({ day: 28, hour: 9 })
-let date2 = getFrenchLuxonDateTimeFromObject({ day: 28, hour: 9, minute: 30 })
+let date1 = getFrenchLuxonFromObject({ day: 28, hour: 9 })
+let date2 = getFrenchLuxonFromObject({ day: 28, hour: 9, minute: 30 })
 
 const centre = {
   nom: 'Unexisting centre',
@@ -276,7 +276,7 @@ describe('Place', () => {
     it('Should find 0 places for centre "Centre 2" at day 19', async () => {
       const { nom } = centres[1]
       const centreSelected = await findCentreByName(nom)
-      const begindate = getFrenchLuxonDateTimeFromObject({ day: 19 }).toISO()
+      const begindate = getFrenchLuxonFromObject({ day: 19 }).toISO()
       const listPlaces = await findAvailablePlacesByCentre(
         centreSelected._id,
         begindate
@@ -296,7 +296,7 @@ describe('Place', () => {
       const { nom } = centres[1]
       const centreSelected = await findCentreByName(nom)
       let dateTime = commonBasePlaceDateTime.set({ day: 20 })
-      if (dateTime < getFrenchLuxonDateTime()) {
+      if (dateTime < getFrenchLuxon()) {
         dateTime = dateTime.plus({ month: 1 })
       }
 
@@ -319,7 +319,7 @@ describe('Place', () => {
     it('Should 1 place booked with a inpecteur for one day ', async () => {
       const inspecteur = createdPlacesBooked[0].inspecteur
       const date = createdPlacesBooked[0].date
-      const { begin, end } = getFrenchLuxonDateTimeRangeFromDate(date)
+      const { begin, end } = getFrenchLuxonRangeFromDate(date)
 
       const placeBooked = await findPlaceBookedByInspecteur(
         inspecteur,
@@ -393,7 +393,7 @@ describe('Place', () => {
       expect(place).toHaveProperty('centre', selectedCentre)
       expect(place).toHaveProperty('inspecteur')
       expect(place.date).toEqual(
-        getFrenchLuxonDateTimeFromISO(selectedPlace.date).toJSDate()
+        getFrenchLuxonFromISO(selectedPlace.date).toJSDate()
       )
     })
 
@@ -432,7 +432,7 @@ describe('Place', () => {
       expect(place).toHaveProperty('centre', selectedCentre)
       expect(place.inspecteur).not.toBeDefined()
       expect(place.date).toEqual(
-        getFrenchLuxonDateTimeFromISO(selectedPlace.date).toJSDate()
+        getFrenchLuxonFromISO(selectedPlace.date).toJSDate()
       )
     })
 
@@ -505,8 +505,7 @@ function nbPlacesAvailables (
     if (begindate) {
       bresult =
         bresult &&
-        getFrenchLuxonDateTimeFromJSDate(date) >
-          getFrenchLuxonDateTimeFromISO(begindate)
+        getFrenchLuxonFromJSDate(date) > getFrenchLuxonFromISO(begindate)
     }
     return bresult
   })

@@ -1,6 +1,6 @@
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
-import { getFrenchLuxonDateFromIso, valideCreneaux, getFrenchLuxonCurrentDateTime } from '../util'
+import { getFrenchLuxonFromIso, valideCreneaux, getFrenchLuxonCurrentDateTime } from '../util'
 
 import { SET_MODIFYING_RESERVATION } from '@/store'
 
@@ -72,8 +72,8 @@ export default {
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
         const { canBookFrom, lastDateToCancel, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
         const anticipatedCanBookAfter =
-          getFrenchLuxonCurrentDateTime() > getFrenchLuxonDateFromIso(lastDateToCancel)
-            ? getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry })
+          getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel)
+            ? getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
             : false
         const numberOfMonthToDisplay = 4
 

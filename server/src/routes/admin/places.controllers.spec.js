@@ -27,9 +27,9 @@ import { RESA_PLACE_HAS_BOOKED } from './message.constants'
 import { createInspecteur } from '../../models/inspecteur'
 
 import {
-  getFrenchLuxonDateTimeFromISO,
-  getFrenchLuxonDateTimeFromObject,
-  getFrenchLuxonDateTimeFromJSDate,
+  getFrenchLuxonFromISO,
+  getFrenchLuxonFromObject,
+  getFrenchLuxonFromJSDate,
 } from '../../util'
 
 const inspecteurTest = {
@@ -94,7 +94,7 @@ describe('Test places controller', () => {
 
   it('Should get 200 with 2 avialables places with inspecteurs for Centre 2', async () => {
     const dateSelected = encodeURIComponent(
-      getFrenchLuxonDateTimeFromJSDate(placeSelected.date).toISO()
+      getFrenchLuxonFromJSDate(placeSelected.date).toISO()
     )
     const { body } = await request(app)
       .get(
@@ -137,7 +137,7 @@ describe('Test places controller', () => {
     expect(body.place.centre.toString()).toEqual(centre.toString())
     expect(body.place).toHaveProperty(
       'date',
-      getFrenchLuxonDateTimeFromJSDate(date)
+      getFrenchLuxonFromJSDate(date)
         .setZone('utc')
         .toISO()
     )
@@ -196,7 +196,7 @@ describe('update place by admin', () => {
     const [centre1] = await createCentres()
 
     const placeCanBook = {
-      date: getFrenchLuxonDateTimeFromObject({ day: 18, hour: 9 })
+      date: getFrenchLuxonFromObject({ day: 18, hour: 9 })
         .setLocale('fr')
         .toISO(),
       inspecteur: inspecteur1,
@@ -214,8 +214,8 @@ describe('update place by admin', () => {
       })
       .expect(200)
 
-    expect(getFrenchLuxonDateTimeFromISO(body.place.date).toISO()).toBe(
-      getFrenchLuxonDateTimeFromJSDate(place.date).toISO()
+    expect(getFrenchLuxonFromISO(body.place.date).toISO()).toBe(
+      getFrenchLuxonFromJSDate(place.date).toISO()
     )
     expect(body.place).toHaveProperty(
       'inspecteur',
@@ -231,7 +231,7 @@ describe('update place by admin', () => {
     const [centre1] = await createCentres()
 
     const createdBookedPlace = {
-      date: getFrenchLuxonDateTimeFromObject({ day: 19, hour: 9 })
+      date: getFrenchLuxonFromObject({ day: 19, hour: 9 })
         .setLocale('fr')
         .toISO(),
       inspecteur: inspecteur1,
@@ -300,7 +300,7 @@ describe('update place by admin', () => {
     const [centre1] = await createCentres()
 
     const createdPlace1 = {
-      date: getFrenchLuxonDateTimeFromObject({ day: 20, hour: 9 })
+      date: getFrenchLuxonFromObject({ day: 20, hour: 9 })
         .setLocale('fr')
         .toISO(),
       inspecteur: inspecteur1,

@@ -14,9 +14,9 @@ import { connect, disconnect } from '../../../mongo-connection'
 import {
   EPREUVE_PRATIQUE_OK,
   OK_UPDATED,
-  getFrenchLuxonDateTime,
-  getFrenchLuxonDateTimeFromISO,
-  getFrenchLuxonDateTimeFromObject,
+  getFrenchLuxon,
+  getFrenchLuxonFromISO,
+  getFrenchLuxonFromObject,
 } from '../../../util'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
@@ -103,7 +103,7 @@ describe('synchro-aurige', () => {
   })
 
   it('Should return true for date more than 2 hours ago', () => {
-    const moreThan2HoursAgo = getFrenchLuxonDateTime()
+    const moreThan2HoursAgo = getFrenchLuxon()
       .minus(
         2 * 60 * 60 * 1000 + 10000 //  A little more than 2h
       )
@@ -115,7 +115,7 @@ describe('synchro-aurige', () => {
   })
 
   it('Should return true for date way back in the passed', () => {
-    const lessThan2HoursAgo = getFrenchLuxonDateTime(2018).toJSDate()
+    const lessThan2HoursAgo = getFrenchLuxon(2018).toJSDate()
 
     const isExpired = isMoreThan2HoursAgo(lessThan2HoursAgo)
 
@@ -123,7 +123,7 @@ describe('synchro-aurige', () => {
   })
 
   it('Should return false for date less than 2 hours ago', () => {
-    const lessThan2HoursAgo = getFrenchLuxonDateTime()
+    const lessThan2HoursAgo = getFrenchLuxon()
       .minus(
         2 * 60 * 60 * 1000 - 10000 //  A little less than 2h
       )
@@ -135,7 +135,7 @@ describe('synchro-aurige', () => {
   })
 
   it('Should remove double in array candidats with last date is not in noReussites', () => {
-    const dateTime = getFrenchLuxonDateTimeFromObject({
+    const dateTime = getFrenchLuxonFromObject({
       day: 18,
       hour: 9,
     })
@@ -167,7 +167,7 @@ describe('synchro-aurige', () => {
   })
 
   it('Should remove double in array candidats with last date in noReussites', () => {
-    const dateTime = getFrenchLuxonDateTimeFromObject({
+    const dateTime = getFrenchLuxonFromObject({
       day: 18,
       hour: 9,
     })
@@ -216,14 +216,14 @@ describe('synchro-aurige', () => {
       candidatsCreated[0].isValidatedEmail = true
       await candidatsCreated[0].save()
 
-      candidatsCreated[1].presignedUpAt = getFrenchLuxonDateTime()
+      candidatsCreated[1].presignedUpAt = getFrenchLuxon()
         .minus(
           2 * 60 * 60 * 1000 + 10000 // A little more than 2h
         )
         .toJSDate()
       await candidatsCreated[1].save()
 
-      candidatsCreated[2].presignedUpAt = getFrenchLuxonDateTime()
+      candidatsCreated[2].presignedUpAt = getFrenchLuxon()
         .minus(
           2 * 60 * 60 * 1000 - 10000 // A little less than 2h
         )
@@ -304,7 +304,7 @@ describe('synchro-aurige', () => {
         nbEchecsPratiques: 1,
       })
       const { canBookFrom } = candidat
-      const dateTimeCanBookFrom = getFrenchLuxonDateTimeFromISO(
+      const dateTimeCanBookFrom = getFrenchLuxonFromISO(
         candidatFailureExam.dateDernierNonReussite
       )
         .endOf('day')
@@ -326,7 +326,7 @@ describe('synchro-aurige', () => {
         candidatFailureExam.objetDernierNonReussite
       )
       expect(noReussites[0].date).toEqual(
-        getFrenchLuxonDateTimeFromISO(
+        getFrenchLuxonFromISO(
           candidatFailureExam.dateDernierNonReussite
         ).toJSDate()
       )
@@ -438,7 +438,7 @@ describe('synchro-aurige', () => {
         EPREUVE_PRATIQUE_OK
       )
       expect(candidatArchived.reussitePratique).toEqual(
-        getFrenchLuxonDateTimeFromISO(infoCandidat.reussitePratique).toJSDate()
+        getFrenchLuxonFromISO(infoCandidat.reussitePratique).toJSDate()
       )
     }
     it('should archive candidat', async () => {

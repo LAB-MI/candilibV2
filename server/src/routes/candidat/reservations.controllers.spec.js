@@ -28,21 +28,15 @@ import {
   createCandidat,
   updateCandidatFailed,
 } from '../../models/candidat'
-import {
-  dateTimeToFormatFr,
-  getFrenchLuxonDateTime,
-} from '../../util/date.util'
+import { dateTimeToFormatFr, getFrenchLuxon } from '../../util/date.util'
 import { REASON_CANCEL } from '../common/reason.constants'
 
-import {
-  getFrenchLuxonDateTimeFromObject,
-  getFrenchLuxonDateTimeFromJSDate,
-} from '../../util'
+import { getFrenchLuxonFromObject, getFrenchLuxonFromJSDate } from '../../util'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 
-const basePlaceDateTime = getFrenchLuxonDateTimeFromObject({ hour: 9 })
+const basePlaceDateTime = getFrenchLuxonFromObject({ hour: 9 })
 const placeCanBook = {
   date: (() =>
     basePlaceDateTime
@@ -163,9 +157,7 @@ xdescribe('Test reservation controllers', () => {
 
     let datetimeAuthorize
     if (previewDate instanceof Date) {
-      datetimeAuthorize = getFrenchLuxonDateTimeFromJSDate(previewDate).endOf(
-        'day'
-      )
+      datetimeAuthorize = getFrenchLuxonFromJSDate(previewDate).endOf('day')
     } else {
       datetimeAuthorize = previewDate.endOf('day')
     }
@@ -205,7 +197,7 @@ xdescribe('Test reservation controllers', () => {
     expect(body).toHaveProperty('reservation')
     expect(body.reservation).toHaveProperty(
       'date',
-      getFrenchLuxonDateTimeFromJSDate(selectedPlace.date)
+      getFrenchLuxonFromJSDate(selectedPlace.date)
         .setZone('utc')
         .toISO()
     )
@@ -298,7 +290,7 @@ xdescribe('Test reservation controllers', () => {
         .set('Accept', 'application/json')
         .expect(200)
 
-      const dateTimeResa = getFrenchLuxonDateTimeFromJSDate(selectedPlace.date)
+      const dateTimeResa = getFrenchLuxonFromJSDate(selectedPlace.date)
 
       expect(body).toBeDefined()
       expect(body).toHaveProperty('date', dateTimeResa.setZone('utc').toISO())
@@ -334,7 +326,7 @@ xdescribe('Test reservation controllers', () => {
         await createReservationWithFailure(
           selectedCentre,
           selectedPlace,
-          getFrenchLuxonDateTime(),
+          getFrenchLuxon(),
           config.delayToBook
         )
       })
@@ -451,7 +443,7 @@ xdescribe('Test reservation controllers', () => {
         ' ' +
         CAN_BOOK_AFTER +
         dateTimeToFormatFr(
-          getFrenchLuxonDateTimeFromJSDate(place.date)
+          getFrenchLuxonFromJSDate(place.date)
             .endOf('day')
             .plus({
               days: config.timeoutToRetry,
@@ -490,7 +482,7 @@ xdescribe('Test reservation controllers', () => {
         .set('Accept', 'application/json')
         .expect(200)
 
-      const dateTimeResa = getFrenchLuxonDateTimeFromJSDate(selectedPlace.date)
+      const dateTimeResa = getFrenchLuxonFromJSDate(selectedPlace.date)
       expect(body).toBeDefined()
       expect(body).toHaveProperty('date', dateTimeResa.setZone('utc').toISO())
       expect(body.centre).toBeDefined()

@@ -98,7 +98,7 @@
 import { mapState } from 'vuex'
 
 import {
-  getFrenchLuxonDateFromIso,
+  getFrenchLuxonFromIso,
   getFrenchDateFromIso,
   getFrenchDateTimeFromIso,
   getFrenchLuxonCurrentDateTime,
@@ -145,7 +145,7 @@ export default {
       if (!lastDateToCancel) {
         return ''
       }
-      if (getFrenchLuxonCurrentDateTime() > getFrenchLuxonDateFromIso(lastDateToCancel)) {
+      if (getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel)) {
         return true
       }
       return false
@@ -153,8 +153,8 @@ export default {
 
     canBookFrom () {
       const { date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
-      if ((getFrenchLuxonCurrentDateTime() > getFrenchLuxonDateFromIso(lastDateToCancel))) {
-        return getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry }).toLocaleString({
+      if ((getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel))) {
+        return getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry }).toLocaleString({
           weekday: 'long',
           month: 'long',
           day: '2-digit',

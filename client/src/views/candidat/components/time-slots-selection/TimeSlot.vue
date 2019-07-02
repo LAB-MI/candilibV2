@@ -64,7 +64,7 @@ import {
 
 import {
   getFrenchDateFromLuxon,
-  getFrenchLuxonDateFromIso,
+  getFrenchLuxonFromIso,
   getFrenchDateFromIso,
 } from '@/util/frenchDateTime.js'
 import { getFrenchLuxonCurrentDateTime } from '../../../../util/frenchDateTime'
@@ -96,7 +96,7 @@ export default {
 
     isEchecPratique () {
       const now = getFrenchLuxonCurrentDateTime()
-      return this.dateDernierEchecPratique && getFrenchLuxonDateFromIso(this.dateDernierEchecPratique).plus({ days: 45 }) > now
+      return this.dateDernierEchecPratique && getFrenchLuxonFromIso(this.dateDernierEchecPratique).plus({ days: 45 }) > now
     },
 
     warningMessage () {
@@ -132,9 +132,9 @@ export default {
       const now = getFrenchLuxonCurrentDateTime()
       const { canBookFrom, lastDateToCancel } = this.reservation.booked
       const isPenaltyActive =
-        (canBookFrom && getFrenchLuxonDateFromIso(canBookFrom) > now) ||
+        (canBookFrom && getFrenchLuxonFromIso(canBookFrom) > now) ||
         now >
-          getFrenchLuxonDateFromIso(lastDateToCancel)
+          getFrenchLuxonFromIso(lastDateToCancel)
 
       return isPenaltyActive
     },
@@ -150,10 +150,10 @@ export default {
         return getFrenchDateFromIso(canBookFrom)
       } else if (
         getFrenchLuxonCurrentDateTime() >
-        getFrenchLuxonDateFromIso(lastDateToCancel)
+        getFrenchLuxonFromIso(lastDateToCancel)
       ) {
         return getFrenchDateFromLuxon(
-          getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry })
+          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
         )
       }
       return ''
@@ -166,10 +166,10 @@ export default {
       }
       if (
         getFrenchLuxonCurrentDateTime() >
-        getFrenchLuxonDateFromIso(this.dateDernierEchecPratique)
+        getFrenchLuxonFromIso(this.dateDernierEchecPratique)
       ) {
         return getFrenchDateFromLuxon(
-          getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry })
+          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
         )
       }
       return ''

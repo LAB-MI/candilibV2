@@ -2,18 +2,16 @@ import { DateTime } from 'luxon'
 
 export const FRENCH_TIME_ZONE = 'Europe/Paris'
 
-export const frenchLocaleZone = { locale: 'fr', zone: FRENCH_TIME_ZONE }
+export const frenchOptions = { locale: 'fr', zone: FRENCH_TIME_ZONE, setZone: true }
 
-export const getFrenchLuxonDateFromIso = isoDate => {
-  return (
-    isoDate &&
-    DateTime.fromISO(isoDate)
-      .setLocale('fr')
-      .setZone(FRENCH_TIME_ZONE)
-  )
-}
+export const getFrenchLuxonFromIso = isoDate => isoDate && DateTime.fromISO(isoDate, frenchOptions)
 
-export const getDateTimeFrFromJSDate = date => DateTime.fromJSDate(date, { locale: 'fr', zone: FRENCH_TIME_ZONE })
+export const getFrenchLuxonFromJSDate = jsDate => DateTime.fromJSDate(jsDate, frenchOptions)
+
+export const getFrenchLuxonFromSql = sqlDate =>
+  sqlDate && DateTime.fromSQL(sqlDate, frenchOptions)
+
+export const getFrenchLuxonFromObject = obj => obj && DateTime.fromObject(obj, frenchOptions)
 
 export const getFrenchDateFromLuxon = dateTime =>
   dateTime &&
@@ -42,38 +40,27 @@ export const getFrenchDateTimeFromLuxon = dateTime =>
     })
 
 export const getFrenchDateFromIso = isoDate => {
-  return isoDate && getFrenchDateFromLuxon(getFrenchLuxonDateFromIso(isoDate))
+  return isoDate && getFrenchDateFromLuxon(getFrenchLuxonFromIso(isoDate))
 }
 
-export const getFrenchDateTimeFromIso = isoDate => {
-  return (
-    isoDate &&
-    getFrenchLuxonDateFromIso(isoDate).toLocaleString({
-      weekday: 'long',
-      month: 'long',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-    })
-  )
-}
-
-export const getFrenchLuxonDateTimeFromSql = sqlDate => sqlDate && DateTime.fromSQL(sqlDate, frenchLocaleZone)
+export const getFrenchDateTimeFromIso = isoDate =>
+  isoDate &&
+  getFrenchLuxonFromIso(isoDate).toLocaleString({
+    weekday: 'long',
+    month: 'long',
+    day: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 
 export const getFrenchLuxonCurrentDateTime = () =>
   DateTime.local()
     .setLocale('fr')
     .setZone(FRENCH_TIME_ZONE)
 
-export const getFrenchLuxonDateTime = (...args) =>
+export const getFrenchLuxon = (...args) =>
   DateTime.local(...args)
-    .setLocale('fr')
-    .setZone(FRENCH_TIME_ZONE)
-
-export const getFrenchLuxonDateFromObject = obj =>
-  obj &&
-  DateTime.fromObject(obj)
     .setLocale('fr')
     .setZone(FRENCH_TIME_ZONE)
 

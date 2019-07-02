@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 
 import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
 
-import { getDateTimeFrFromJSDate } from '../../util/date.util'
+import { getFrenchLuxonFromJSDate } from '../../util/date.util'
 
 const { Schema } = mongoose
 const ObjectId = Schema.Types.ObjectId
@@ -44,10 +44,10 @@ PlaceSchema.pre('save', async function preSave () {
   const places = await model.find({
     inspecteur: place.inspecteur,
     date: {
-      $gte: getDateTimeFrFromJSDate(place.date)
+      $gte: getFrenchLuxonFromJSDate(place.date)
         .startOf('day')
         .toJSDate(),
-      $lt: getDateTimeFrFromJSDate(place.date)
+      $lt: getFrenchLuxonFromJSDate(place.date)
         .endOf('day')
         .toJSDate(),
     },

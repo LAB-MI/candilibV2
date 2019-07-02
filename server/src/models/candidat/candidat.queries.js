@@ -3,7 +3,7 @@ import moment from 'moment'
 import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
-import { appLogger, getFrenchLuxonDateTime } from '../../util'
+import { appLogger, getFrenchLuxon } from '../../util'
 
 export const createCandidat = async ({
   adresse,
@@ -186,7 +186,7 @@ export const updateCandidatCanBookFrom = async (candidat, canBookFrom) => {
 
 export const addPlaceToArchive = (candidat, place, reason, byUser) => {
   const { _id, inspecteur, centre, date } = place
-  const archivedAt = getFrenchLuxonDateTime()
+  const archivedAt = getFrenchLuxon()
   const archiveReason = reason
   if (!candidat.places) {
     candidat.places = []

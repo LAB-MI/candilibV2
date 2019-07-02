@@ -1,7 +1,7 @@
 import { formatResult } from './utils'
-import { getFrenchLuxonDateFromObject, getFrenchDateFromLuxon } from '@/util'
+import { getFrenchLuxonFromObject, getFrenchDateFromLuxon } from '@/util'
 
-const baseDate = getFrenchLuxonDateFromObject({ days: 28, hours: 8, minutes: 0, seconds: 0 }).plus({ months: 1 })
+const baseDate = getFrenchLuxonFromObject({ days: 28, hours: 8, minutes: 0, seconds: 0 }).plus({ months: 1 })
 
 const input = [
   baseDate.toISO(),
@@ -20,7 +20,7 @@ describe('time-slots', () => {
     const expectedOutput = [
       // Current month has no slot
       {
-        label: baseDate.plus({ months: -1 }).monthLong,
+        label: baseDate.plus({ months: -1 }).setLocale('fr').monthLong,
         month: baseDate
           .plus({ months: -1 })
           .toISODate()
@@ -28,7 +28,7 @@ describe('time-slots', () => {
       },
       // Next month has 3 slots the same day, on 28th
       {
-        label: baseDate.monthLong,
+        label: baseDate.setLocale('fr').monthLong,
         month: baseDate.toISODate().substr(0, 7),
         days: new Map([
           [
@@ -42,7 +42,7 @@ describe('time-slots', () => {
       },
       // Month after next has 3 slots the same day, on 28th
       {
-        label: baseDate.plus({ months: 1 }).monthLong,
+        label: baseDate.plus({ months: 1 }).setLocale('fr').monthLong,
         month: baseDate
           .plus({ months: 1 })
           .toISODate()
@@ -59,7 +59,7 @@ describe('time-slots', () => {
       },
       // Month afteh that has 3 slots the same day, on 28th
       {
-        label: baseDate.plus({ months: 2 }).monthLong,
+        label: baseDate.plus({ months: 2 }).setLocale('fr').monthLong,
         month: baseDate
           .plus({ months: 2 })
           .toISODate()
