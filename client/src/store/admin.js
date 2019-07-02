@@ -175,7 +175,7 @@ export default {
       }
     },
 
-    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, window = {}) {
+    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, rootState, state }, window = {}) {
       const { begin, end } = window
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
@@ -189,6 +189,8 @@ export default {
         if (placesByCentre.success === false) {
           throw new Error(placesByCentre.message)
         }
+
+        rootState.center.selected = rootState.center.selected || (placesByCentre[0] && placesByCentre[0].centre)
 
         const placesByCentreAndWeek = Array.isArray(placesByCentre) ? placesByCentre.map(element => ({
           centre: element.centre,
