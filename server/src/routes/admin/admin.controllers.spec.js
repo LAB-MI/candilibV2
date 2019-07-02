@@ -53,8 +53,8 @@ describe('Admin controller', () => {
     expect(body).toHaveProperty('email', email)
     expect(body.departements).toHaveLength(departements.length)
     expect(body).toHaveProperty(
-      'level',
-      config.userStatusLevels[config.userStatuses.ADMIN]
+      'features',
+      config.userStatusFeatures[config.userStatuses.ADMIN]
     )
   })
   it('Should response 200 with user tech infos', async () => {
@@ -74,8 +74,8 @@ describe('Admin controller', () => {
     expect(body).toHaveProperty('email', emailTech)
     expect(body.departements).toHaveLength(departements.length)
     expect(body).toHaveProperty(
-      'level',
-      config.userStatusLevels[config.userStatuses.TECH]
+      'features',
+      config.userStatusFeatures[config.userStatuses.TECH]
     )
   })
 })

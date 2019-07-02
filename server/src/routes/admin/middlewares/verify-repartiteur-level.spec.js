@@ -9,7 +9,7 @@ import config from '../../../config'
 
 const basicData = {
   email: 'user@example.com',
-  level: 0,
+  level: config.userStatusLevels[config.userStatuses.CANDIDAT],
 }
 
 const basicToken = jwt.sign(basicData, config.secret, {
@@ -18,7 +18,7 @@ const basicToken = jwt.sign(basicData, config.secret, {
 
 const adminData = {
   email: 'admin@example.com',
-  level: 1,
+  level: config.userStatusLevels[config.userStatuses.REPARTITEUR],
 }
 
 const adminToken = jwt.sign(adminData, config.secret, {

@@ -11,7 +11,7 @@ import { verifyRepartiteurDepartement } from './verify-repartiteur-departement'
 
 const basicData = {
   email: 'user@example.com',
-  level: 0,
+  level: config.userStatusLevels[config.userStatuses.CANDIDAT],
 }
 
 const basicToken = jwt.sign(basicData, config.secret, {
@@ -20,7 +20,7 @@ const basicToken = jwt.sign(basicData, config.secret, {
 
 const adminData = {
   email: 'admin@example.com',
-  level: 1,
+  level: config.userStatusLevels[config.userStatuses.REPARTITEUR],
   departements: ['93', '64'],
 }
 

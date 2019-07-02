@@ -9,7 +9,7 @@ import { verifyAdminLevel } from './verify-admin-level'
 
 const basicData = {
   email: 'user@example.com',
-  level: 0,
+  level: config.userStatusLevels[config.userStatuses.CANDIDAT],
 }
 
 const basicToken = jwt.sign(basicData, config.secret, {
@@ -18,7 +18,7 @@ const basicToken = jwt.sign(basicData, config.secret, {
 
 const adminData = {
   email: 'admin@example.com',
-  level: 1,
+  level: config.userStatusLevels[config.userStatuses.DELEGUE],
 }
 
 const adminToken = jwt.sign(adminData, config.secret, {
@@ -27,7 +27,7 @@ const adminToken = jwt.sign(adminData, config.secret, {
 
 const techData = {
   email: 'tech@example.com',
-  level: 2,
+  level: config.userStatusLevels[config.userStatuses.ADMIN],
 }
 const techToken = jwt.sign(techData, config.secret, {
   expiresIn: '30s',
