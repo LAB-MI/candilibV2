@@ -1,14 +1,14 @@
-import { getFrenchLuxonCurrentDateTime, getFrenchLuxonDateFromIso } from '@/util'
+import { getFrenchLuxonCurrentDateTime, getFrenchLuxonFromIso } from '@/util'
 import { valideCreneaux as validCrenx } from '../../util/creneauSetting'
 
-export const getDayString = elemISO => {
-  return `${getFrenchLuxonDateFromIso(elemISO).weekdayLong} ${getFrenchLuxonDateFromIso(elemISO).toFormat(
+export const getDayString = isoDate => {
+  return `${getFrenchLuxonFromIso(isoDate).weekdayLong} ${getFrenchLuxonFromIso(isoDate).toFormat(
     'dd LLLL yyyy'
   )}`
 }
 
-export const getHoursString = elemISO => {
-  return `${getFrenchLuxonDateFromIso(elemISO).toFormat("HH'h'mm")}-${getFrenchLuxonDateFromIso(elemISO)
+export const getHoursString = isoDate => {
+  return `${getFrenchLuxonFromIso(isoDate).toFormat("HH'h'mm")}-${getFrenchLuxonFromIso(isoDate)
     .plus({ minutes: 30 })
     .toFormat("HH'h'mm")}`
 }
@@ -22,7 +22,7 @@ export const formatResult = (
   validCreneaux = validCrenx
 ) => {
   const slots = timeslots.reduce((timeslotsByMonth, timeslot) => {
-    const timeslotLuxon = getFrenchLuxonDateFromIso(timeslot)
+    const timeslotLuxon = getFrenchLuxonFromIso(timeslot)
 
     // Gestion du délai de réservation (Un candidat ne peut pas réserver avant x jours)
     if (dayToForbidCancel) {
@@ -38,7 +38,7 @@ export const formatResult = (
 
     // Gestion de la pénalité en cas de modification de la réservation actuelle du candidat
     if (anticipatedCanBookAfter) {
-      const goToNext = getFrenchLuxonDateFromIso(anticipatedCanBookAfter).endOf('day') > timeslotLuxon
+      const goToNext = getFrenchLuxonFromIso(anticipatedCanBookAfter).endOf('day') > timeslotLuxon
       if (goToNext) {
         return timeslotsByMonth
       }
@@ -46,7 +46,7 @@ export const formatResult = (
 
     // Gestion de la pénalité du candidat (pour annulation ou échec, par exemple)
     if (canBookFrom) {
-      const goToNext = getFrenchLuxonDateFromIso(canBookFrom) > timeslotLuxon
+      const goToNext = getFrenchLuxonFromIso(canBookFrom) > timeslotLuxon
       if (goToNext) {
         return timeslotsByMonth
       }

@@ -2,7 +2,7 @@
 import {
   DATETIME_FULL,
   email as emailRegex,
-  getFrenchLuxonDateTimeFromJSDate,
+  getFrenchLuxonFromJSDate,
   techLogger,
 } from '../../util'
 import {
@@ -108,7 +108,7 @@ export async function preSignup (req, res) {
     }
 
     if (!isValidatedEmail && !isMoreThan2HoursAgo(presignedUpAt)) {
-      const deadLineBeforeValidateEmail = getFrenchLuxonDateTimeFromJSDate(
+      const deadLineBeforeValidateEmail = getFrenchLuxonFromJSDate(
         presignedUpAt
       )
         .plus({ hours: 2 })

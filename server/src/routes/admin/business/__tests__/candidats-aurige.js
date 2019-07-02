@@ -1,8 +1,8 @@
 import { createCandidat } from '../../../../models/candidat'
 import config from '../../../../config'
-import { getFrenchLuxonDateTime } from '../../../../util'
+import { getFrenchLuxon } from '../../../../util'
 
-const nowLuxon = getFrenchLuxonDateTime()
+const nowLuxon = getFrenchLuxon()
 
 const dateReussiteETG = nowLuxon
   .minus({ days: 5 })

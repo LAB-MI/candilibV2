@@ -30,8 +30,8 @@ import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
 import {
   appLogger,
   ErrorWithStatus,
-  getDateTimeFrFromJSDate,
-  getFrenchLuxonDateTimeRangeFromDate,
+  getFrenchLuxonFromJSDate,
+  getFrenchLuxonRangeFromDate,
 } from '../../util'
 import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
 import {
@@ -447,8 +447,8 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
   }
 
   if (
-    getDateTimeFrFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
-    getDateTimeFrFromJSDate(place.date)
+    getFrenchLuxonFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
+    getFrenchLuxonFromJSDate(place.date)
   ) {
     throw new ErrorWithStatus(
       400,
@@ -510,10 +510,7 @@ export const sendMailSchedulesInspecteurs = async (
     func: 'sendMailSchedulesInspecteurs',
   })
 
-  const {
-    begin: beginDate,
-    end: endDate,
-  } = getFrenchLuxonDateTimeRangeFromDate(date)
+  const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
 
   const placesByInspecteurs = {}
   const centres = await findCentresByDepartement(departement)
@@ -579,7 +576,7 @@ export const sendMailSchedulesAllInspecteurs = async date => {
     ...loggerContent,
   })
 
-  const { begin, end } = getFrenchLuxonDateTimeRangeFromDate(date)
+  const { begin, end } = getFrenchLuxonRangeFromDate(date)
 
   const inspecteurs = await findAllInspecteurs()
 

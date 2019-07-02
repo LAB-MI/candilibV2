@@ -31,7 +31,7 @@ import {
   REASON_REMOVE_RESA_ADMIN,
 } from '../../routes/common/reason.constants'
 
-import { getFrenchLuxonDateTime } from '../../util'
+import { getFrenchLuxon } from '../../util'
 import { ABSENT, ECHEC } from './objetDernierNonReussite.values'
 
 const validEmail = 'candidat@example.com'
@@ -374,7 +374,7 @@ describe('Candidat', () => {
     })
 
     it('should update a candidat failed', async () => {
-      const dateDernierEchecPratique = getFrenchLuxonDateTime()
+      const dateDernierEchecPratique = getFrenchLuxon()
       const canBookFrom = dateDernierEchecPratique.plus({ days: 45 })
       if (!candidat) {
         candidat = await createCandidat({
@@ -401,7 +401,7 @@ describe('Candidat', () => {
     })
 
     it('should update a candidat no reussite', async () => {
-      const date = getFrenchLuxonDateTime()
+      const date = getFrenchLuxon()
       const canBookFrom = date.plus({ days: 45 })
       if (!candidat) {
         candidat = await createCandidat({
@@ -457,7 +457,7 @@ describe('Candidat', () => {
 
     it('Get the booked candidats by date ', async () => {
       let dateTime = commonBasePlaceDateTime.set({ day: 19 })
-      if (dateTime < getFrenchLuxonDateTime()) {
+      if (dateTime < getFrenchLuxon()) {
         dateTime = dateTime.plus({ month: 1 })
       }
 
