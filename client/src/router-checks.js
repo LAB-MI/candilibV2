@@ -64,10 +64,10 @@ export async function checkAdminToken (to, from, next) {
 
 export async function checkAccess (to, from, next) {
   const { name } = to
-  if (store.getters.noAuthorize === name) {
-    return next({ name: from.name || 'admin-home' })
+  if (store.state.admin.features.includes(name)) {
+    return next()
   }
-  next()
+  next({ name: from.name || 'admin-home' })
 }
 
 export async function checkCandidatToken (to, from, next) {
