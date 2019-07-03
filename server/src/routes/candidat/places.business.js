@@ -31,7 +31,7 @@ import {
   archivePlace,
 } from '../../models/candidat'
 import { dateTimeToFormatFr, getFrenchLuxon } from '../../util/date.util'
-import { REASON_CANCEL } from '../common/reason.constants'
+import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 
 export const getDatesByCentreId = async (_id, endDate) => {
   appLogger.debug({
@@ -121,7 +121,11 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
   let dateAfterBook
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
   await removeBookedPlace(bookedPlace)
-  await archivePlace(candidat, bookedPlace, REASON_CANCEL)
+  await archivePlace(
+    candidat,
+    bookedPlace,
+    isModified ? REASON_MODIFY : REASON_CANCEL
+  )
 
   let statusmail = true
   let message = CANCEL_RESA_WITH_MAIL_SENT
