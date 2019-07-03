@@ -6,6 +6,7 @@ import {
   findPlacesByCentreAndDate,
 } from '../../models/place'
 import { findUserById } from '../../models/user'
+import { findDepartementbyId } from '../../models/departement'
 import { appLogger, dateTimeToFormatFr, ErrorWithStatus } from '../../util'
 import { findCentresWithPlaces } from '../common/centre.business'
 import {
@@ -290,7 +291,12 @@ export const sendScheduleInspecteurs = async (req, res) => {
         message: `Envoi du planning`,
       })
       const { email } = await findUserById(req.userId)
-      results = await sendMailSchedulesInspecteurs(email, departement, date)
+      const { email: emailDepartement } = await findDepartementbyId(departement)
+      results = await sendMailSchedulesInspecteurs(
+        emailDepartement || email,
+        departement,
+        date
+      )
     } else {
       appLogger.info({
         ...loggerContent,
