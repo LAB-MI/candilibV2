@@ -15,7 +15,7 @@ const input = [
   baseDate.plus({ months: 2, minutes: 60 }).toISO(),
 ]
 
-describe('time-slots', () => {
+xdescribe('time-slots', () => {
   it('transform time-slots', () => {
     const expectedOutput = [
       // Current month has no slot
