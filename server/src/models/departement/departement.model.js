@@ -3,14 +3,17 @@ import { email as emailRegex } from '../../util'
 
 const { Schema } = mongoose
 
-const DepartementSchema = new Schema({
-  _id: {
-    type: String,
+const DepartementSchema = new Schema(
+  {
+    _id: {
+      type: String,
+    },
+    email: {
+      type: String,
+      trim: true,
+      match: emailRegex,
+    },
   },
-  email: {
-    type: String,
-    trim: true,
-    match: emailRegex,
-  },
-})
-export default mongoose.model('Departement', DepartementSchema)
+  { timestamps: true }
+)
+export default mongoose.model('departement', DepartementSchema)

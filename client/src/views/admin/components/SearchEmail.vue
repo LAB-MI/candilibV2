@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="u-flex u-flex--center">
+    <div class="u-flex u-flex--column u-flex--center">
       <candilib-autocomplete
         class="search-input"
         @selection="displayEmailSearch"
@@ -33,8 +33,9 @@ export default {
       fetchAutocompleteAction: FETCH_AUTOCOMPLETE_WHITELIST_REQUEST,
     }
   },
+
   computed: mapState({
-    matchingList: state => state.whitelist.matchingList,
+    matchingList: state => state.whitelist.matchingList.slice(0, 6),
   }),
 
   methods: {

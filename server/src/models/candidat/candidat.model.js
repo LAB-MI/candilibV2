@@ -135,7 +135,7 @@ export const candidatFields = {
   noReussites: [noReussiteFields],
 }
 
-const CandidatSchema = new Schema(candidatFields)
+const CandidatSchema = new Schema(candidatFields, { timestamps: true })
 
 CandidatSchema.index({ codeNeph: 1, nomNaissance: 1 }, { unique: true })
 

@@ -1,7 +1,41 @@
 import Whitelisted from './whitelisted.model'
 
 export const findAllWhitelisted = async departement => {
-  const whitelisted = await Whitelisted.find({ departement }).sort('-dateAdded')
+  const whitelisted = await Whitelisted.find({ departement })
+  return whitelisted
+}
+
+export const findLastCreatedActiveWhitelisted = async (
+  departement,
+  limit = 20
+) => {
+  const whitelisted = await Whitelisted.find({
+    departement,
+    disabled: { $eq: undefined },
+  })
+    .sort('-createdAt')
+    .limit(limit)
+  return whitelisted
+}
+
+export const findLastUpdatedActiveWhitelisted = async (
+  departement,
+  limit = 20
+) => {
+  const whitelisted = await Whitelisted.find({
+    departement,
+    disabled: { $eq: undefined },
+  })
+    .sort('-updatedAt')
+    .limit(limit)
+  return whitelisted
+}
+
+export const findAllActiveWhitelisted = async departement => {
+  const whitelisted = await Whitelisted.find({
+    departement,
+    disabled: { $eq: undefined },
+  })
   return whitelisted
 }
 
@@ -56,7 +90,8 @@ export const deleteWhitelistedByEmail = async email => {
   if (!whitelisted) {
     throw new Error(`No whitelisted found with email: ${email}`)
   }
-  await whitelisted.delete()
+  whitelisted.deleted = true
+  await whitelisted.update()
   return whitelisted
 }
 

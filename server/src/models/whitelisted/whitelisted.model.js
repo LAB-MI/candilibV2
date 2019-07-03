@@ -5,19 +5,30 @@ import { email as emailRegex } from '../../util/regex'
 
 const { Schema } = mongoose
 
-const WhitelistedSchema = new Schema({
-  email: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true,
-    match: emailRegex,
+const WhitelistedSchema = new Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      trim: true,
+      unique: true,
+      match: emailRegex,
+    },
+
+    departement: {
+      type: String,
+      trim: true,
+    },
+
+    disabled: {
+      type: Date,
+      required: false,
+    },
   },
-  departement: {
-    type: String,
-    trim: true,
-  },
-})
+  {
+    timestamps: true,
+  }
+)
 
 WhitelistedSchema.pre('save', async function preSave () {
   const whitelisted = this

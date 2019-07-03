@@ -2,7 +2,6 @@
   <div>
     <page-title :title="'Liste blanche'"/>
     <v-container>
-      <search-email/>
       <v-card
         :style="{ padding: '1em 0' }"
         :class="{'drag-over': isDragginOverWhitelist}"
@@ -11,6 +10,29 @@
         @dragexit="isDragginOverWhitelist = false"
         @dragenter="isDragginOverWhitelist = true"
       >
+        <search-email />
+        <v-list v-show="matchingList && matchingList.length">
+          <h4 class="text-xs-center">Adresses correspondantes (max 5)</h4>
+          <whitelisted
+            v-for="whitelisted in matchingList"
+            :key="whitelisted._id"
+            :whitelisted="whitelisted"
+            :remove-from-whitelist="removeFromWhitelist"
+            @delete="onDelete"
+            @dblclick="copyEmailInPaperclip"
+          />
+        </v-list>
+      </v-card>
+
+      <v-card
+        :style="{ padding: '1em 0' }"
+        :class="{'drag-over': isDragginOverWhitelist}"
+        @drop="dropHandler"
+        @dragover="dragOverHandler"
+        @dragexit="isDragginOverWhitelist = false"
+        @dragenter="isDragginOverWhitelist = true"
+      >
+        <h3 class="text-xs-center">Dernières adresses enregistrées</h3>
         <v-list>
           <p class="text--center" v-if="whitelist.isFetching">
             Chargement...
@@ -299,6 +321,11 @@ export default {
 
   computed: {
     ...mapState(['whitelist']),
+
+    matchingList () {
+      return this.whitelist.matchingList.slice(0, 6)
+    },
+
     departement () {
       return this.$store.state.admin.departements.active
     },

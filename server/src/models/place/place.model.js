@@ -26,14 +26,19 @@ export const placeCommonFields = {
   },
 }
 
-const PlaceSchema = new Schema({
-  ...placeCommonFields,
-  candidat: {
-    type: ObjectId, // ObjectId du candidat ayant réservé cette place
-    required: false,
-    ref: 'Candidat',
+const PlaceSchema = new Schema(
+  {
+    ...placeCommonFields,
+    candidat: {
+      type: ObjectId, // ObjectId du candidat ayant réservé cette place
+      required: false,
+      ref: 'Candidat',
+    },
   },
-})
+  {
+    timestamps: true,
+  }
+)
 
 PlaceSchema.index({ date: 1, inspecteur: 1 }, { unique: true })
 
