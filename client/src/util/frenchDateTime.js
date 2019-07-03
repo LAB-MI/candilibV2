@@ -2,7 +2,7 @@ import { DateTime } from 'luxon'
 
 export const FRENCH_TIME_ZONE = 'Europe/Paris'
 
-export const frenchOptions = { locale: 'fr', zone: FRENCH_TIME_ZONE, setZone: true }
+export const frenchOptions = { locale: 'fr', zone: FRENCH_TIME_ZONE }
 
 export const getFrenchLuxonFromIso = isoDate => isoDate && DateTime.fromISO(isoDate, frenchOptions)
 
