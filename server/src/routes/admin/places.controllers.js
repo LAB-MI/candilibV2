@@ -161,6 +161,13 @@ export const deletePlaceByAdmin = async (req, res) => {
       error.messageToUser = "La place n'existe pas en base"
       throw error
     }
+
+    if (place.candidat) {
+      const error = new Error(`La place id: [${id}] vient d'être réservée par un candidat.`)
+      error.messageToUser = 'La place est réservée par un candidat'
+      throw error
+    }
+
     await deletePlace(place)
     appLogger.info({
       ...loggerInfo,
