@@ -32,6 +32,8 @@ export const FETCH_MY_PROFILE_REQUEST = 'FETCH_MY_PROFILE_REQUEST'
 export const FETCH_MY_PROFILE_FAILURE = 'FETCH_MY_PROFILE_FAILURE'
 export const FETCH_MY_PROFILE_SUCCESS = 'FETCH_MY_PROFILE_SUCCESS'
 
+export const SET_SHOW_EVALUATION = 'SET_SHOW_EVALUATION'
+
 export default {
   state: {
     displayNavDrawer: false,
@@ -43,6 +45,7 @@ export default {
     message: '',
     messageTitle: '',
     messageType: undefined,
+    showEvaluation: false,
   },
 
   mutations: {
@@ -103,6 +106,10 @@ export default {
     },
     [FETCH_MY_PROFILE_FAILURE] (state) {
       state.isFetchingProfile = false
+    },
+
+    [SET_SHOW_EVALUATION] (state, showEvaluation) {
+      state.showEvaluation = showEvaluation
     },
   },
 
@@ -176,5 +183,10 @@ export default {
         throw error
       }
     },
+
+    async [SET_SHOW_EVALUATION] ({ commit }, showEvaluation) {
+      commit(SET_SHOW_EVALUATION, showEvaluation)
+    },
+
   },
 }

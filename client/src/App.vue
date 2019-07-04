@@ -21,17 +21,19 @@
 
       <router-view />
     </v-content>
+    <app-evaluation />
     <app-snackbar />
   </v-app>
 </template>
 
 <script>
-import { AppSnackbar } from '@/components'
+import { AppSnackbar, AppEvaluation } from '@/components'
 import { CHECKING_AUTH_ADMIN, CHECKING_AUTH_CANDIDAT } from '@/store'
 
 export default {
   components: {
     AppSnackbar,
+    AppEvaluation,
   },
   computed: {
     authStatus: {
