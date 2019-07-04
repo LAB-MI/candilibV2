@@ -205,6 +205,14 @@ export const updatePlaces = async (req, res) => {
   }
 
   try {
+    const admin = await findUserById(req.userId)
+    if (!admin) {
+      return res.status(403).send({
+        success: false,
+        message: 'Utilisateur non trouvé',
+      })
+    }
+
     if (placeId && inspecteur) {
       appLogger.info({
         ...loggerContent,
@@ -232,7 +240,7 @@ export const updatePlaces = async (req, res) => {
         description: `Affecter un candidat à une place`,
       })
 
-      const result = await assignCandidatInPlace(candidatId, placeId)
+      const result = await assignCandidatInPlace(candidatId, placeId, admin)
       const { date, hour } = dateTimeToFormatFr(result.newBookedPlace.date)
       return res.send({
         success: true,
