@@ -19,6 +19,9 @@
         v-if="deleteBookedPlaceConfirm"
         :close-action='cancelDeleteBookedPlace'
         :submit-action='deleteBookedPlace'
+        ok-button-text="Supprimer réservation"
+        ok-button-color="warning"
+
       >
       <!-- TODO: Refactor Create composant for each subcontent dialogs -->
         <div v-if="isFetchingCandidat">
@@ -219,10 +222,15 @@ export default {
 
     ...mapState({
       isLoading (state) {
-        return state.admin.places.isFetching ||
-          state.admin.places.isDeletingBookedPlace ||
-          state.admin.places.isDeletingAvailablePlace ||
-          state.admin.places.isCreating
+        const {
+          places,
+          inspecteurs,
+        } = state.admin
+        return places.isFetching ||
+          inspecteurs.isFetching ||
+          places.isDeletingBookedPlace ||
+          places.isDeletingAvailablePlace ||
+          places.isCreating
       },
 
       isUpdatingInspecteur (state) {

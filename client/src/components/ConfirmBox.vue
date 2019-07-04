@@ -1,10 +1,10 @@
 <template>
-  <div class= "test">
+  <div class="with-margin">
     <div
       class="u-full-width  u-flex  u-flex--column  u-flex--center"
     >
       <slot/>
-      <div d-flex>
+      <div>
         <v-btn
           outline
           color="info"
@@ -15,15 +15,15 @@
           <v-icon>
             arrow_back_ios
           </v-icon>
-          Retour
+          {{cancelButtonText}}
         </v-btn>
         <v-btn
-          color="success"
+          :color="okButtonColor"
           @click="submitAction"
           :aria-disabled="disabled"
           :disabled="disabled"
         >
-          Valider
+          {{ okButtonText }}
         </v-btn>
       </div>
     </div>
@@ -31,19 +31,30 @@
 </template>
 
 <script>
-
 export default {
   props: {
     closeAction: Function,
     submitAction: Function,
     disabled: Boolean,
+    cancelButtonText: {
+      type: String,
+      default: 'Retour',
+    },
+    okButtonText: {
+      type: String,
+      default: 'Valider',
+    },
+    okButtonColor: {
+      type: String,
+      default: 'success',
+    },
   },
 }
 </script>
 
 <style lang="stylus">
 
-.test {
+.with-margin {
   margin: 1em;
 }
 

@@ -118,15 +118,15 @@ export default {
     },
 
     [DELETE_PLACE_REQUEST] (state) {
-      state.isDeletingAvailablePlace = true
+      state.places.isDeletingAvailablePlace = true
     },
     [DELETE_PLACE_SUCCESS] (state, success) {
       state.deleted = success
-      state.isDeletingAvailablePlace = false
+      state.places.isDeletingAvailablePlace = false
     },
     [DELETE_PLACE_FAILURE] (state, error) {
       state.deleted = error
-      state.isDeletingAvailablePlace = false
+      state.places.isDeletingAvailablePlace = false
     },
 
     [CREATE_PLACE_REQUEST] (state) {

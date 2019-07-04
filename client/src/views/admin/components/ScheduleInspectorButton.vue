@@ -89,7 +89,7 @@ export default {
     async getCandidat () {
       this.isLoadingCandidat = true
       const candidatId = this.place && this.place.candidat
-      const departement = this.$store.state.admin.departements.active
+      const departement = this.$store.getters.activeDepartement
       if (candidatId) {
         await this.$store.dispatch(FETCH_TOOLTIP_CANDIDAT_REQUEST, { candidatId, departement })
       }

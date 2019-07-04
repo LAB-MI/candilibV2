@@ -79,22 +79,22 @@
                 </tr>
               </thead>
 
-              <tbody v-for="data in inspecteursData" :key="data.matricule">
+              <tbody v-for="inspecteurData in inspecteursData" :key="inspecteurData.matricule">
                 <tr>
                   <th>
-                    {{data.prenom}} {{data.nom}}
+                    {{inspecteurData.prenom}} {{inspecteurData.nom}}
                   </th>
                   <td
-                    v-for="placeInfo in data.creneau"
+                    v-for="placeInfo in inspecteurData.creneau"
                     :key="placeInfo._id"
                     class="place-button"
-                    :class="{ active: activeInspecteurRow === data._id && activeHour === placeInfo.hour }"
+                    :class="{ active: activeInspecteurRow === inspecteurData._id && activeHour === placeInfo.hour }"
                   >
                     <schedule-inspector-button
-                      :key="`creneau-${placeInfo.hour}-${data._id}`"
+                      :key="`creneau-${placeInfo.hour}-${inspecteurData._id}`"
                       :content="placeInfo"
                       :selectedDate="date"
-                      :inspecteurId="data._id"
+                      :inspecteurId="inspecteurData._id"
                       :updateContent="reloadWeekMonitor"
                       :centreInfo="placeInfo.centre"
                       @click="setActiveInspecteurRow"
@@ -105,14 +105,14 @@
                 <tr>
                   <td></td>
                   <td colspan="20">
-                    <div class="place-details  u-flex  u-flex--center" :class="{ active: activeInspecteurRow === data._id }">
+                    <div class="place-details  u-flex  u-flex--center" :class="{ active: activeInspecteurRow === inspecteurData._id }">
                       <schedule-inspector-details
                         :place="activePlace"
                         :content="selectedPlaceInfo"
                         :close-dialog="closeDetails"
                         :selectedDate="date"
                         :updateContent="reloadWeekMonitor"
-                        :inspecteurId="data._id"
+                        :inspecteurId="inspecteurData._id"
                         :centreInfo="placesByCentre.centre"
                       />
                     </div>
@@ -309,11 +309,8 @@ export default {
       if (!this.inspecteursData.length) {
         this.inspecteursData = this.inspecteurs
       } else {
-        this.inspecteursData = this.inspecteursData.filter(inspecteurInfo => {
-          if (inspecteurInfo.creneau.some(item => item.place && item.place.centre === this.activeCentreId)) {
-            return inspecteurInfo
-          }
-        })
+        this.inspecteursData = this.inspecteursData.filter(inspecteurInfo =>
+          inspecteurInfo.creneau.some(item => item.place && item.place.centre === this.activeCentreId))
       }
 
       this.isComputing = false
