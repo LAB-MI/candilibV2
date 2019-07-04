@@ -31,6 +31,10 @@ import {
   getFrenchLuxonFromObject,
   getFrenchLuxonFromJSDate,
 } from '../../util'
+import config from '../../config'
+import { createUser } from '../../models/user'
+import { findCandidatById } from '../../models/candidat'
+import { REASON_MODIFY_RESA_ADMIN } from '../common/reason.constants'
 
 const inspecteurTest = {
   nom: 'Doggett',
@@ -46,6 +50,12 @@ const inspecteurTest2 = {
   email: 'Walter.Skinner@x-files.com',
   departement: '93',
 }
+const admin = {
+  email: 'test1@example.com',
+  password: 'S3cr3757uff!',
+  departements: ['94', '95'],
+  status: config.userStatuses.TECH,
+}
 
 describe('Test places controller', () => {
   let candidatsCreated
@@ -57,11 +67,23 @@ describe('Test places controller', () => {
   const app = express()
   app.use(bodyParser.json({ limit: '20mb' }))
   app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
-  app.get('/places', getPlaces)
-  app.patch(`/reservation/:id`, updatePlaces)
 
   beforeAll(async () => {
     await connect()
+    const user = await createUser(
+      admin.email,
+      admin.password,
+      admin.departements,
+      admin.status
+    )
+
+    app.use((req, res, next) => {
+      req.userId = user._id
+      next()
+    })
+    app.get('/places', getPlaces)
+    app.patch(`/reservation/:id`, updatePlaces)
+
     candidatsCreated = await createCandidats()
     inspecteurCreated = await createInspecteur(inspecteurTest)
     inspecteurCreated2 = await createInspecteur(inspecteurTest2)
@@ -170,27 +192,40 @@ describe('Test places controller', () => {
 })
 
 describe('update place by admin', () => {
-  let placesCreated
+  // let placesCreated
   let candidatsCreatedAndUpdated
 
   const app = express()
   app.use(bodyParser.json({ limit: '20mb' }))
   app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
-  app.patch(`${apiPrefix}/admin/places/:id`, updatePlaces)
 
   beforeAll(async () => {
     await connect()
+    const user = await createUser(
+      admin.email,
+      admin.password,
+      admin.departements,
+      admin.status
+    )
+
+    app.use((req, res, next) => {
+      req.userId = user._id
+      next()
+    })
+    app.patch(`${apiPrefix}/admin/places/:id`, updatePlaces)
+
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
-    placesCreated = await createPlaces()
+    // placesCreated = await createPlaces()
   })
 
   afterAll(async () => {
-    const places = placesCreated.map(elt => elt.remove())
+    // const places = placesCreated.map(elt => elt.remove())
     const candidats = candidatsCreatedAndUpdated.map(elt => elt.remove())
 
-    await Promise.all([...places, ...candidats])
+    await Promise.all([...candidats])
     await disconnect()
   })
+
   it('should return a 200 when assign candidat in available place', async () => {
     const [inspecteur1] = await createInspecteurs()
     const [centre1] = await createCentres()
@@ -223,6 +258,75 @@ describe('update place by admin', () => {
     )
     expect(body.place).toHaveProperty('centre', place.centre._id.toString())
     expect(body.place).toHaveProperty('candidat', candidat._id.toString())
+
+    const newCandidat = await findCandidatById(candidat._id)
+    expect(newCandidat.places).toBeUndefined()
+
+    await place.remove()
+  })
+
+  it('should return a 200 when assign candidat with booked in available place', async () => {
+    const [inspecteur1] = await createInspecteurs()
+    const [centre1] = await createCentres()
+
+    const placeCanBook = {
+      date: getFrenchLuxonFromObject({ day: 18, hour: 9 })
+        .setLocale('fr')
+        .toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+    }
+
+    const place = await createPlace(placeCanBook)
+
+    const candidat = candidatsCreatedAndUpdated[0]
+    const placeBooked = {
+      date: getFrenchLuxonFromObject({ day: 17, hour: 9 }).toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+      candidat: candidat._id,
+    }
+    const oldResa = await createPlace(placeBooked)
+
+    const { body } = await request(app)
+      .patch(`${apiPrefix}/admin/places/${place._id}`)
+      .send({
+        candidatId: candidat._id,
+      })
+      .expect(200)
+
+    expect(getFrenchLuxonFromISO(body.place.date).toISO()).toBe(
+      getFrenchLuxonFromJSDate(place.date).toISO()
+    )
+    expect(body.place).toHaveProperty(
+      'inspecteur',
+      place.inspecteur._id.toString()
+    )
+    expect(body.place).toHaveProperty('centre', place.centre._id.toString())
+    expect(body.place).toHaveProperty('candidat', candidat._id.toString())
+
+    const newCandidat = await findCandidatById(candidat._id)
+    expect(newCandidat.places).toBeDefined()
+    expect(newCandidat.places).toHaveLength(1)
+    expect(getFrenchLuxonFromJSDate(newCandidat.places[0].date)).toEqual(
+      getFrenchLuxonFromISO(placeBooked.date)
+    )
+    expect(newCandidat.places[0]).toHaveProperty(
+      'inspecteur',
+      placeBooked.inspecteur._id
+    )
+    expect(newCandidat.places[0]).toHaveProperty(
+      'centre',
+      placeBooked.centre._id
+    )
+    expect(newCandidat.places[0]).toHaveProperty('archivedAt')
+    expect(newCandidat.places[0]).toHaveProperty(
+      'archiveReason',
+      REASON_MODIFY_RESA_ADMIN
+    )
+    expect(newCandidat.places[0]).toHaveProperty('byUser', admin.email)
+
+    await Promise.all([oldResa, place].map(place => place.remove()))
   })
 
   it('should return a 400 when place already booked', async () => {
@@ -255,10 +359,20 @@ describe('update place by admin', () => {
     expect(body).toHaveProperty('error', { _status: 400 })
     expect(body).toHaveProperty('message', 'Cette place est déja réservée')
     expect(body).toHaveProperty('success', false)
+    await place.remove()
   })
 
   it('should return a 422 when trying to assign unexisting candidat to place', async () => {
-    const place = placesCreated[0]
+    const [inspecteur1] = await createInspecteurs()
+    const [centre1] = await createCentres()
+
+    const createdBookedPlace = {
+      date: getFrenchLuxonFromObject({ day: 20, hour: 8 }).toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+    }
+
+    const place = await createPlace(createdBookedPlace)
     const unexistingCandidatId = '5cda8d17c522ad6a16e3633b'
 
     const { body } = await request(app)
@@ -274,6 +388,7 @@ describe('update place by admin', () => {
       'Les paramètres renseignés sont incorrects'
     )
     expect(body).toHaveProperty('success', false)
+    await place.remove()
   })
 
   it('should return a 422 when trying to assign candidat to unexisting place', async () => {
@@ -324,5 +439,6 @@ describe('update place by admin', () => {
       "Le candidat n'est pas validé par Aurige"
     )
     expect(body).toHaveProperty('success', false)
+    await place.remove()
   })
 })
