@@ -9,6 +9,7 @@ import {
   findCandidatByEmail,
   findCandidatById,
   deleteCandidat,
+  updateCandidatById,
 } from '../../models/candidat'
 import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
@@ -18,6 +19,7 @@ import {
   validateEmail,
 } from './candidat.business'
 import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
+import { createEvaluation } from '../../models/evaluation/evaluation.queries'
 
 const mandatoryFields = [
   'codeNeph',
@@ -207,6 +209,28 @@ export async function emailValidation (req, res) {
       success: false,
       message:
         'Impossible de valider votre adresse courriel : ' + error.message,
+    })
+  }
+}
+
+export async function saveEvaluation (req, res) {
+  const { note, comment } = req.body
+  const candidatId = req.userId
+  try {
+    const candidat = findCandidatById(candidatId)
+    if (candidat === null) {
+      const error = new Error(`Le candidat n'existe pas`)
+      error.status = 400
+      throw error
+    }
+    const evaluation = await createEvaluation({ note, comment })
+    candidat.isEvaluationDone = true
+    updateCandidatById(candidatId, candidat)
+    res.status(201).json({ success: true, evaluation })
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
     })
   }
 }
