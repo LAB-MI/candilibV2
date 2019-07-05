@@ -8,6 +8,7 @@ import {
   updateUserEmail,
 } from './'
 import { connect, disconnect } from '../../mongo-connection'
+import config from '../../config'
 
 const validEmail = 'dontusethis@example.com'
 const anotherValidEmail = 'dontusethis@example.fr'
@@ -27,18 +28,46 @@ describe('User', () => {
   })
 
   describe('Getting User', () => {
-    it('should return a user by id', async () => {
+    it('should return a user by id without status', async () => {
       // Given
       const expectedEmail = 'test@example.com'
       const password = 'S3cr3757uff!'
-      const departements = ['75', '93']
-      const admin = await createUser(expectedEmail, password, departements)
+      const expectedDepartements = ['75', '93']
+      const expectedStatus = config.userStatuses.ADMIN
+      const admin = await createUser(
+        expectedEmail,
+        password,
+        expectedDepartements
+      )
 
       // When
-      const { email } = await findUserById(admin._id)
+      const { email, departements, status } = await findUserById(admin._id)
 
       //  Then
       expect(email).toBe(expectedEmail)
+      expect(departements).toHaveLength(expectedDepartements.length)
+      expect(status).toBe(expectedStatus)
+    })
+    it('should return a user by id with status tech', async () => {
+      // Given
+      const expectedEmail = 'test1@example.com'
+      const password = 'S3cr3757uff!'
+      const expectedDepartements = ['94', '95']
+      const expectedStatus = config.userStatuses.TECH
+      const admin = await createUser(
+        expectedEmail,
+        password,
+        expectedDepartements,
+        expectedStatus
+      )
+
+      // When
+      const { email, departements, status } = await findUserById(admin._id)
+
+      //  Then
+      expect(email).toBe(expectedEmail)
+      expect(departements).toHaveLength(expectedDepartements.length)
+      expect(status).toBe(expectedStatus)
     })
   })
 

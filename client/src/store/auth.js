@@ -1,5 +1,6 @@
 import api from '@/api'
 import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '@/constants'
+import { SHOW_ERROR, SHOW_INFO } from './'
 
 // Action names
 export const CHECK_ADMIN_TOKEN = 'CHECK_ADMIN_TOKEN'
@@ -23,6 +24,7 @@ export const SIGNED_IN_AS_ADMIN = 'SIGNED_IN_AS_ADMIN'
 export const SIGNED_IN_AS_CANDIDAT = 'SIGNED_IN_AS_CANDIDAT'
 export const SIGNED_OUT_ADMIN = 'SIGNED_OUT_ADMIN'
 export const SIGNED_OUT_CANDIDAT = 'SIGNED_OUT_CANDIDAT'
+export const UNAUTHORIZED = 'UNAUTHORIZED'
 
 export default {
   state: {
@@ -107,8 +109,22 @@ export default {
       commit(SIGN_OUT_CANDIDAT)
     },
 
-    async [SIGN_OUT_ADMIN] ({ commit }) {
+    async [SIGN_OUT_ADMIN] ({ commit, dispatch }) {
       localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
+      commit(SIGN_OUT_ADMIN)
+      await dispatch(SHOW_INFO, `Vous êtes déconnecté·e`)
+    },
+    async [UNAUTHORIZED] ({ commit, dispatch, rootState }) {
+      const isCandidat = rootState.candidat && rootState.candidat.me
+      if (isCandidat) {
+        localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
+        await dispatch(SHOW_ERROR, `Votre connexion n'est plus valide, veuillez réutiliser le bouton "Déjà inscrit"`)
+      }
+      const isAdmin = rootState.admin && rootState.admin.email
+      if (isAdmin) {
+        localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
+        await dispatch(SHOW_ERROR, `Action non autorisée`)
+      }
       commit(SIGN_OUT_ADMIN)
     },
   },

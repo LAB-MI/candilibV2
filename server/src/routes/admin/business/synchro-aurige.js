@@ -20,8 +20,8 @@ import {
   EMAIL_NOT_VERIFIED_YET,
   EPREUVE_ETG_KO,
   EPREUVE_PRATIQUE_OK,
-  getFrenchLuxonDateTimeFromISO,
-  getFrenchLuxonDateTimeFromJSDate,
+  getFrenchLuxonFromISO,
+  getFrenchLuxonFromJSDate,
   NOT_FOUND,
   NO_NAME,
   OK,
@@ -46,25 +46,25 @@ const getCandidatStatus = (nom, neph, status, details, message) => ({
 })
 
 export const isEpreuveEtgInvalid = dateReussiteETG =>
-  !dateReussiteETG || !!getFrenchLuxonDateTimeFromISO(dateReussiteETG).invalid
+  !dateReussiteETG || !!getFrenchLuxonFromISO(dateReussiteETG).invalid
 
 export const isETGExpired = dateReussiteETG => {
   let datetime
   if (dateReussiteETG instanceof Date) {
-    datetime = getFrenchLuxonDateTimeFromJSDate(dateReussiteETG)
+    datetime = getFrenchLuxonFromJSDate(dateReussiteETG)
   } else {
-    datetime = getFrenchLuxonDateTimeFromISO(dateReussiteETG)
+    datetime = getFrenchLuxonFromISO(dateReussiteETG)
   }
   return datetime.diffNow('years').years < -5
 }
 
 export const isMoreThan2HoursAgo = date =>
-  getFrenchLuxonDateTimeFromJSDate(date).diffNow('hours').hours < -2
+  getFrenchLuxonFromJSDate(date).diffNow('hours').hours < -2
 
 const isReussitePratique = reussitePratique => {
   return (
     reussitePratique === EPREUVE_PRATIQUE_OK ||
-    getFrenchLuxonDateTimeFromISO(reussitePratique).isValid
+    getFrenchLuxonFromISO(reussitePratique).isValid
   )
 }
 
@@ -180,9 +180,7 @@ export const synchroAurige = async buffer => {
         message = `Ce candidat ${email} sera archivé : PRATIQUE OK`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_PRATIQUE_OK
-        const dateTimeReussitePratique = getFrenchLuxonDateTimeFromISO(
-          reussitePratique
-        )
+        const dateTimeReussitePratique = getFrenchLuxonFromISO(reussitePratique)
         if (dateTimeReussitePratique.isValid) {
           candidat.reussitePratique = dateTimeReussitePratique
         } else {
@@ -217,16 +215,12 @@ export const synchroAurige = async buffer => {
           isValidatedByAurige: true,
         }
         // Date ETG
-        const dateTimeDateReussiteETG = getFrenchLuxonDateTimeFromISO(
-          dateReussiteETG
-        )
+        const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
         if (dateTimeDateReussiteETG.isValid) {
           updateCandidat.dateReussiteETG = dateTimeDateReussiteETG
         }
         // Date reussite Pratique
-        const dateTimeReussitePratique = getFrenchLuxonDateTimeFromISO(
-          reussitePratique
-        )
+        const dateTimeReussitePratique = getFrenchLuxonFromISO(reussitePratique)
         if (dateTimeReussitePratique.isValid) {
           updateCandidat.reussitePratique = dateTimeReussitePratique
         }
@@ -299,9 +293,7 @@ export const synchroAurige = async buffer => {
                   message
                 )
               } catch (error) {
-                message = `Impossible d'envoyer un magic link par un mail à ce candidat ${
-                  candidat.email
-                }, il a été validé, cependant`
+                message = `Impossible d'envoyer un magic link par un mail à ce candidat ${candidat.email}, il a été validé, cependant`
 
                 appLogger.error({
                   ...loggerInfoCandidat,
@@ -364,13 +356,13 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
   if (!dateDernierEchecPratique || dateDernierEchecPratique.length === 0) {
     return
   }
-  const dateTimeEchec = getFrenchLuxonDateTimeFromISO(dateDernierEchecPratique)
+  const dateTimeEchec = getFrenchLuxonFromISO(dateDernierEchecPratique)
   if (!dateTimeEchec.isValid) {
     throw new Error('La date de denier échec pratique est erronée')
   }
 
   if (candidat && candidat.lastNoReussite && candidat.lastNoReussite.date) {
-    const dateLastNoReussite = getFrenchLuxonDateTimeFromJSDate(
+    const dateLastNoReussite = getFrenchLuxonFromJSDate(
       candidat.lastNoReussite.date
     )
     if (dateTimeEchec.diff(dateLastNoReussite).toObject().milliseconds <= 0) {
@@ -391,7 +383,7 @@ const removeResaNoAuthorize = async (candidat, canBookFrom) => {
   if (place) {
     const { date } = place
     // check date
-    const dateTimeResa = getFrenchLuxonDateTimeFromJSDate(date)
+    const dateTimeResa = getFrenchLuxonFromJSDate(date)
     const diffDateResaAndCanBook = dateTimeResa.diff(canBookFrom, 'days')
     const diffDateResaAndNow = dateTimeResa.diffNow('days')
     if (diffDateResaAndCanBook.days < 0) {
@@ -404,9 +396,7 @@ const removeResaNoAuthorize = async (candidat, canBookFrom) => {
         } catch (error) {
           appLogger.error({
             func: 'removeResaNoAuthorize',
-            description: `Impossible d'envoyer un mail à ce candidat ${
-              candidat.email
-            } pour lui informer que sa réservation est annulée suit à l'echec examen pratique`,
+            description: `Impossible d'envoyer un mail à ce candidat ${candidat.email} pour lui informer que sa réservation est annulée suit à l'echec examen pratique`,
             error,
           })
         }
@@ -425,9 +415,7 @@ export const updateCandidatLastNoReussite = (
   if (!noReussites || noReussites.length === 0) {
     return
   }
-  const lastDateTimeNoReussite = getFrenchLuxonDateTimeFromISO(
-    lastDateNoReussiteIso
-  )
+  const lastDateTimeNoReussite = getFrenchLuxonFromISO(lastDateNoReussiteIso)
 
   const newNoReussites = noReussites.reduce(
     (cumul, current, index, initArray) => {
@@ -439,7 +427,7 @@ export const updateCandidatLastNoReussite = (
       let { date, reason } = current
 
       if (lastReasonNoReussite && index === initArray.length - 1) {
-        const dateTime = getFrenchLuxonDateTimeFromJSDate(date)
+        const dateTime = getFrenchLuxonFromJSDate(date)
         if (dateTime.equals(lastDateTimeNoReussite)) {
           reason = lastReasonNoReussite
           current.reason = lastReasonNoReussite

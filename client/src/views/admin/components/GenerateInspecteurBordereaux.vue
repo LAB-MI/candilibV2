@@ -67,7 +67,7 @@ import {
 } from '@/store'
 
 import {
-  getFrenchLuxonDateTimeFromSql,
+  getFrenchLuxonFromSql,
 } from '@/util'
 
 export default {
@@ -92,7 +92,7 @@ export default {
     async generateBordereaux () {
       await this.$store.dispatch(GENERATE_INSPECTOR_BORDEREAUX_REQUEST, {
         departement: this.activeDepartement,
-        date: getFrenchLuxonDateTimeFromSql(this.date).toISO(),
+        date: getFrenchLuxonFromSql(this.date).toISO(),
       })
       this.dialog = false
     },

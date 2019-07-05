@@ -1,8 +1,9 @@
-import { getFrenchLuxonDateFromIso, creneauSetting, getFrenchLuxonCurrentDateTime } from '../util'
+import { getFrenchLuxonFromIso, creneauSetting, getFrenchLuxonCurrentDateTime } from '../util'
 
 import api from '@/api'
 import {
   DEPARTEMENT_STORAGE_KEY,
+  ROUTE_AUTHORIZE_AURIGE,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -46,6 +47,9 @@ export default {
     activeDepartement: state => {
       return state.departements.active
     },
+    noAuthorize: state => {
+      if (!state.level || state.level < 2) return ROUTE_AUTHORIZE_AURIGE
+    },
   },
 
   state: {
@@ -56,6 +60,7 @@ export default {
       list: [],
     },
     email: undefined,
+    level: undefined,
     places: {
       isFetching: false,
       list: [],
@@ -89,6 +94,7 @@ export default {
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
       state.departements.list = infos.departements
       state.email = infos.email
+      state.level = infos.level
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
       state.departements.active = activeDepartement || infos.departements[0]
       state.departements.isFetching = false
@@ -189,16 +195,20 @@ export default {
         const endDate = end || currentDateTime.plus({ months: 2 }).toISO()
         const placesByCentre = await api.admin
           .getAllPlacesByDepartement(state.departements.active, beginDate, endDate)
-        const placesByCentreAndWeek = placesByCentre.map(element => ({
+
+        if (placesByCentre.success === false) {
+          throw new Error(placesByCentre.message)
+        }
+
+        const placesByCentreAndWeek = Array.isArray(placesByCentre) ? placesByCentre.map(element => ({
           centre: element.centre,
           places: element.places.reduce((acc, place) => {
-            const key = getFrenchLuxonDateFromIso(place.date).weekNumber
+            const key = getFrenchLuxonFromIso(place.date).weekNumber
             const places = { ...acc }
             places[key] = [...(places[key] || []), place]
             return places
           }, {}),
-        }))
-
+        })) : []
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS, placesByCentreAndWeek)
       } catch (error) {
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE, error)
@@ -239,6 +249,9 @@ export default {
       commit(DELETE_PLACE_REQUEST)
       try {
         const result = await api.admin.deletePlace(placeId)
+        if (!result.success) {
+          throw new Error(result.message)
+        }
         commit(DELETE_PLACE_SUCCESS, result)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {

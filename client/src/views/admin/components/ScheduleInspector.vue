@@ -108,6 +108,7 @@ import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
   FETCH_ADMIN_INFO_REQUEST,
   FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
+  SELECT_CENTER,
 } from '@/store'
 
 import ScheduleInspectorDialog from './ScheduleInspectorDialog'
@@ -117,9 +118,9 @@ import { RefreshButton } from '@/components'
 import {
   creneauSetting,
   getFrenchLuxonCurrentDateTime,
-  getFrenchLuxonDateFromIso,
-  getFrenchLuxonDateFromObject,
-  getFrenchLuxonDateTimeFromSql,
+  getFrenchLuxonFromIso,
+  getFrenchLuxonFromObject,
+  getFrenchLuxonFromSql,
 } from '@/util'
 
 const creneauTemplate = [
@@ -198,8 +199,8 @@ export default {
     },
 
     async reloadWeekMonitor () {
-      const begin = getFrenchLuxonDateTimeFromSql(this.date).startOf('day').toISO()
-      const end = getFrenchLuxonDateTimeFromSql(this.date).endOf('day').toISO()
+      const begin = getFrenchLuxonFromSql(this.date).startOf('day').toISO()
+      const end = getFrenchLuxonFromSql(this.date).endOf('day').toISO()
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
       this.parseInspecteursPlanning()
@@ -208,6 +209,8 @@ export default {
     async centreSelector (centreId) {
       this.$router.push({ params: { center: centreId, date: this.date } })
       this.activeCentreId = centreId
+      const { centre } = this.placesByCentreList.find(placesByCentre => placesByCentre.centre._id === centreId)
+      this.$store.commit(SELECT_CENTER, centre)
       this.reloadWeekMonitor()
     },
 
@@ -216,7 +219,7 @@ export default {
       this.inspecteursData = []
       const [, ...creneaux] = creneauTemplate
 
-      const dateTofind = getFrenchLuxonDateTimeFromSql(this.date).toISODate()
+      const dateTofind = getFrenchLuxonFromSql(this.date).toISODate()
 
       const activeCenterAndPlaces = this.placesByCentreList.find(placesByCentre => placesByCentre.centre._id === this.activeCentreId)
       const weekPlaces = activeCenterAndPlaces &&
@@ -227,12 +230,12 @@ export default {
         return
       }
 
-      const dayPlaces = weekPlaces.filter(plc => getFrenchLuxonDateFromIso(plc.date).toISODate() === dateTofind)
+      const dayPlaces = weekPlaces.filter(plc => getFrenchLuxonFromIso(plc.date).toISODate() === dateTofind)
 
       if (dayPlaces && dayPlaces.length) {
         this.inspecteursData = this.inspecteurs.map(inspecteur => {
           const filteredCreneaux = dayPlaces.filter(plce => inspecteur._id === plce.inspecteur).map(place => {
-            const currentHourString = getFrenchLuxonDateFromIso(place.date).toFormat("HH'h'mm")
+            const currentHourString = getFrenchLuxonFromIso(place.date).toFormat("HH'h'mm")
             if (creneaux.some(crn => crn === currentHourString)) {
               return {
                 place,
@@ -274,7 +277,7 @@ export default {
   watch: {
     async date (val) {
       this.$router.push({ params: { date: this.date } })
-      const dateTimeFromSQL = getFrenchLuxonDateTimeFromSql(this.date)
+      const dateTimeFromSQL = getFrenchLuxonFromSql(this.date)
       this.currentWeekNumber = dateTimeFromSQL.weekNumber
       if (this.$store.state.admin.departements.active) {
         const begin = dateTimeFromSQL.startOf('day').toISO()
@@ -288,7 +291,7 @@ export default {
     },
 
     async activeDepartement (newValue, oldValue) {
-      const dateTimeFromSQL = getFrenchLuxonDateTimeFromSql(this.date)
+      const dateTimeFromSQL = getFrenchLuxonFromSql(this.date)
       const begin = dateTimeFromSQL.startOf('day').toISO()
       const end = dateTimeFromSQL.endOf('day').toISO()
       await this.$store
@@ -350,11 +353,11 @@ export default {
     if (routeDate) {
       const [year, month, day] = this.$route.params.date.split('-')
       const date = { year, month, day }
-      this.date = getFrenchLuxonDateFromObject(date).toISODate()
+      this.date = getFrenchLuxonFromObject(date).toISODate()
       return
     }
 
-    this.date = getFrenchLuxonDateFromObject(defaultDate).toISODate()
+    this.date = getFrenchLuxonFromObject(defaultDate).toISODate()
   },
 }
 </script>

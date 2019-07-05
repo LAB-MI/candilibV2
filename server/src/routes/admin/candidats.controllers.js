@@ -11,6 +11,7 @@ import {
   findCandidatById,
 } from '../../models/candidat'
 import { findPlaceByCandidatId } from '../../models/place'
+import { statutReasonDictionnary } from '../common/reason.constants'
 
 export const importCandidats = async (req, res) => {
   const loggerInfo = {
@@ -89,13 +90,24 @@ export const getCandidats = async (req, res) => {
 
     if (candidatFound) {
       const placeFound = await findPlaceByCandidatId(candidatId, true)
+      const candidat = candidatFound.toObject()
+      candidat.places =
+        candidat.places &&
+        candidat.places.map(place => {
+          const humanReadableReason =
+            statutReasonDictionnary[place.archiveReason]
+          return {
+            ...place,
+            archiveReason: humanReadableReason,
+          }
+        })
       res.json({
         success: true,
-        candidat: { ...candidatFound.toObject(), place: placeFound },
+        candidat: { ...candidat, place: placeFound },
       })
       return
     }
-    res.json({ success: false, message: "le candidat n'existe pas" })
+    res.json({ success: false, message: "Le candidat n'existe pas" })
     return
   }
 
@@ -130,9 +142,7 @@ export const getCandidats = async (req, res) => {
         const places = await findPlaceByCandidatId(_id)
         if (places.length > 1) {
           appLogger.warn(
-            `le candidat ${candidat.codeNeph} / '${
-              candidat.nomNaissance
-            } a plusieurs places d'examens`
+            `le candidat ${candidat.codeNeph} / '${candidat.nomNaissance} a plusieurs places d'examens`
           )
         }
         candidat.place = places[0] || {}

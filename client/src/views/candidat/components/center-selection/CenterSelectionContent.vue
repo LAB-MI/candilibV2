@@ -21,7 +21,7 @@
       <a
         target="_blank"
         class="location-icon  u-flex"
-        @click.stop="true"
+        @click.stop="() => true"
         v-ripple
         :href="href"
       >

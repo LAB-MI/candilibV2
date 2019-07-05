@@ -30,8 +30,9 @@ import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
 import {
   appLogger,
   ErrorWithStatus,
-  getDateTimeFrFromJSDate,
-  getFrenchLuxonDateTimeRangeFromDate,
+  getFrenchLuxonFromJSDate,
+  getFrenchLuxonRangeFromDate,
+  FRENCH_LOCALE_INFO,
 } from '../../util'
 import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
 import {
@@ -67,31 +68,52 @@ const getPlaceStatus = (
  * @param {*} data
  */
 const transfomCsv = async ({ data, departement }) => {
-  const [day, time, matricule, nom, centre, dept] = data
-
-  const myDate = `${day.trim()} ${time.trim()}`
+  const loggerInfo = {
+    section: 'admimImportPlaces',
+    action: 'transformCsv',
+    data,
+    departement,
+  }
+  let myCentre
+  let myMatricule
+  let myDate
 
   try {
-    if (!day || !time || !matricule || !nom || !centre || !dept) {
+    const [day, time, matricule, nom, centre, dept] = data
+
+    myCentre = centre.trim()
+    myMatricule = matricule.trim()
+
+    myDate = `${day.trim()} ${time.trim()}`
+
+    if (
+      !day.trim() ||
+      !time.trim() ||
+      !matricule.trim() ||
+      !nom.trim() ||
+      !centre.trim() ||
+      !dept.trim()
+    ) {
       throw new Error(
         `Une ou plusieurs information(s) manquante(s) dans le fichier CSV.
         [
-          date: ${day},
-          heur: ${time},
-          matricule: ${matricule},
-          nom: ${nom},
-          centre: ${centre},
-          departement: ${dept}
+          date: ${day.trim()},
+          heur: ${time.trim()},
+          matricule: ${matricule.trim()},
+          nom: ${nom.trim()},
+          centre: ${centre.trim()},
+          departement: ${dept.trim()}
         ]`
       )
     }
 
-    const date = DateTime.fromFormat(myDate, 'dd/MM/yy HH:mm', {
-      zone: 'Europe/Paris',
-      locale: 'fr',
-    })
+    const date = DateTime.fromFormat(
+      myDate,
+      'dd/MM/yy HH:mm',
+      FRENCH_LOCALE_INFO
+    )
 
-    if (dept !== departement) {
+    if (dept.trim() !== departement) {
       throw new Error(
         'Le département du centre ne correspond pas au département dont vous avez la charge'
       )
@@ -126,14 +148,13 @@ const transfomCsv = async ({ data, departement }) => {
     }
   } catch (error) {
     appLogger.error({
-      section: 'admimImportPlaces',
-      action: 'transformCsv',
+      ...loggerInfo,
       error,
     })
     return getPlaceStatus(
       departement,
-      centre,
-      matricule,
+      myCentre,
+      myMatricule,
       myDate,
       'error',
       error.message
@@ -151,9 +172,7 @@ const createPlaceCsv = async place => {
     await createPlace(leanPlace)
     appLogger.info({
       ...loggerInfo,
-      description: `Place {${centre.departement},${
-        centre.nom
-      }, ${inspecteur}, ${date}} enregistrée en base`,
+      description: `Place {${centre.departement},${centre.nom}, ${inspecteur}, ${date}} enregistrée en base`,
     })
     return getPlaceStatus(
       centre.departement,
@@ -204,7 +223,10 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
 
   return new Promise((resolve, reject) =>
     csvParser
-      .fromString(csvFile.data.toString(), { headers: true, ignoreEmpty: true })
+      .fromString(csvFile.data.toString(), {
+        headers: false,
+        ignoreEmpty: true,
+      })
       .transform((data, next) => {
         try {
           if (data[0] === 'Date') next()
@@ -327,9 +349,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     await createPlace(leanPlace)
     appLogger.info({
       ...loggerInfo,
-      description: `Place {${centre.departement}, ${
-        centre.nom
-      }, ${inspecteur}, ${myDate}} enregistrée en base`,
+      description: `Place {${centre.departement}, ${centre.nom}, ${inspecteur}, ${myDate}} enregistrée en base`,
     })
     return getPlaceStatus(
       centre.departement,
@@ -451,8 +471,8 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
   }
 
   if (
-    getDateTimeFrFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
-    getDateTimeFrFromJSDate(place.date)
+    getFrenchLuxonFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
+    getFrenchLuxonFromJSDate(place.date)
   ) {
     throw new ErrorWithStatus(
       400,
@@ -514,10 +534,7 @@ export const sendMailSchedulesInspecteurs = async (
     func: 'sendMailSchedulesInspecteurs',
   })
 
-  const {
-    begin: beginDate,
-    end: endDate,
-  } = getFrenchLuxonDateTimeRangeFromDate(date)
+  const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
 
   const placesByInspecteurs = {}
   const centres = await findCentresByDepartement(departement)
@@ -583,7 +600,7 @@ export const sendMailSchedulesAllInspecteurs = async date => {
     ...loggerContent,
   })
 
-  const { begin, end } = getFrenchLuxonDateTimeRangeFromDate(date)
+  const { begin, end } = getFrenchLuxonRangeFromDate(date)
 
   const inspecteurs = await findAllInspecteurs()
 

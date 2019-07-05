@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="u-flex  u-flex--center">
+    <div class="u-flex  u-flex--center  u-flex--v-start">
       <search-candidat class="search-input"/>
       <search-inspecteur class="search-input" />
     </div>

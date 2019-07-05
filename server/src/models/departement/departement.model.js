@@ -13,4 +13,4 @@ const DepartementSchema = new Schema({
     match: emailRegex,
   },
 })
-export default mongoose.model('departement', DepartementSchema)
+export default mongoose.model('Departement', DepartementSchema)

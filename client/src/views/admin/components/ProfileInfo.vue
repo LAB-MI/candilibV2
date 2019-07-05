@@ -12,7 +12,7 @@
         <v-card-text v-for="([title, value]) of groupInfo" :key="title">
           <div class="u-flex  u-flex--v-center">
             <strong class="label">{{ title }}&nbsp;:</strong>
-            <span class="value">{{ value }}</span>
+            <span class="value" v-html="value"></span>
           </div>
         </v-card-text>
       </v-card>

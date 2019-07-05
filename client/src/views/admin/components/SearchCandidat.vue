@@ -18,7 +18,9 @@
         color="white"
         @click="toggleProfileInfo"
       >
-        <v-icon color = blue>face</v-icon>
+        <v-icon
+          :color="color"
+        >{{icon}}</v-icon>
       </v-btn>
     </div>
     <profile-info
@@ -55,22 +57,43 @@ const placeReserve = (place) => {
   return `${nameInspecteur}, ${examCentre}, ${frenchDate}`
 }
 
+const legibleNoReussites = (noReussites) => {
+  if (!noReussites || !(noReussites.length)) {
+    return '-'
+  }
+  return '<ol>' + noReussites.map(({ reason, date }) => {
+    const frenchDate = convertToLegibleDate(date)
+    return `<li>${frenchDate} : ${reason}</li>`
+  }).join(' - ') + '</ol>'
+}
+
+const historiqueAction = (places) => {
+  if (!places || !(places.length)) {
+    return ' - '
+  }
+  return '<ol>' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
+    const frenchDate = convertToLegibleDate(date)
+    const actionDate = convertToLegibleDate(archivedAt)
+    return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
+  }).join('') + '</ol>'
+}
 const candidatProfileInfoDictionary = [
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
   [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDate],
-    ['isValidatedbyEmail', 'Email validé', transformBoolean],
-    ['isValidatedbyAurige', 'Statut Aurige', transformBoolean],
+    ['isValidatedByEmail', 'Email validé', transformBoolean],
+    ['isValidatedByAurige', 'Statut Aurige', transformBoolean],
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
     ['place', 'Réservation', placeReserve],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
-    [
-      'dateDernierEchecPratique',
-      'Dernière échec pratique',
-      convertToLegibleDate,
-    ],
+    ['noReussites', 'Non réussites', legibleNoReussites],
+    ['nbEchecsPratiques', 'Nombre d\'échec(s)'],
     ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
+
+  ],
+  [ ['resaCanceledByAdmin', 'Dernier annulation par l\'administration', convertToLegibleDate],
+    ['places', 'Historique des actions', historiqueAction],
   ],
 ]
 
@@ -82,6 +105,8 @@ export default {
 
   data () {
     return {
+      color: '#A9A9A9',
+      icon: '',
       profileInfo: undefined,
       fetchAutocompleteAction: FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
     }
@@ -91,6 +116,20 @@ export default {
     candidats: state => state.adminSearch.candidats.list,
     candidat: state => state.adminSearch.candidats.selected,
   }),
+
+  watch: {
+    candidat (newVal) {
+      this.toggelInfo(newVal)
+    },
+    profileInfo (newVal) {
+      this.toggelInfo(newVal)
+    },
+  },
+  mounted () {
+    const candidat = this.candidat
+    const profileInfo = this.profileInfo
+    this.toggelInfo(candidat, profileInfo)
+  },
 
   methods: {
     async displayCandidatInfo ({ _id: id }) {
@@ -102,6 +141,15 @@ export default {
       if (this.profileInfo === true) {
         this.profileInfo = transformToProfileInfo(this.candidat, candidatProfileInfoDictionary)
       }
+    },
+    toggelInfo (candidat, profileInfo) {
+      if (!candidat) {
+        this.color = 'grey'
+        this.icon = 'keyboard_arrow_down'
+        return
+      }
+      this.color = 'green'
+      this.icon = 'keyboard_arrow_up'
     },
   },
 }

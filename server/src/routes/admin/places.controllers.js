@@ -6,6 +6,7 @@ import {
   findPlacesByCentreAndDate,
 } from '../../models/place'
 import { findUserById } from '../../models/user'
+import { findDepartementbyId } from '../../models/departement'
 import { appLogger, dateTimeToFormatFr, ErrorWithStatus } from '../../util'
 import { findCentresWithPlaces } from '../common/centre.business'
 import {
@@ -31,23 +32,17 @@ export const importPlaces = async (req, res) => {
   try {
     appLogger.info({
       ...loggerInfo,
-      description: `import places provenant du fichier ${
-        csvFile.name
-      } et du departement ${departement}`,
+      description: `import places provenant du fichier ${csvFile.name} et du departement ${departement}`,
     })
     const result = await importPlacesCsv({ csvFile, departement })
     appLogger.info({
       ...loggerInfo,
-      description: `import places: Le fichier ${
-        csvFile.name
-      } a été traité pour le departement ${departement}.`,
+      description: `import places: Le fichier ${csvFile.name} a été traité pour le departement ${departement}.`,
     })
     res.status(200).send({
       fileName: csvFile.name,
       success: true,
-      message: `Le fichier ${
-        csvFile.name
-      } a été traité pour le departement ${departement}.`,
+      message: `Le fichier ${csvFile.name} a été traité pour le departement ${departement}.`,
       places: result,
     })
   } catch (error) {
@@ -166,6 +161,13 @@ export const deletePlaceByAdmin = async (req, res) => {
       error.messageToUser = "La place n'existe pas en base"
       throw error
     }
+
+    if (place.candidat) {
+      const error = new Error(`La place id: [${id}] vient d'être réservée par un candidat.`)
+      error.messageToUser = 'La place est réservée par un candidat'
+      throw error
+    }
+
     await deletePlace(place)
     appLogger.info({
       ...loggerInfo,
@@ -232,9 +234,7 @@ export const updatePlaces = async (req, res) => {
       const { date, hour } = dateTimeToFormatFr(result.newBookedPlace.date)
       return res.send({
         success: true,
-        message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${
-          result.candidat.codeNeph
-        }] a bien été affecté à la place du ${date} à ${hour}`,
+        message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${result.candidat.codeNeph}] a bien été affecté à la place du ${date} à ${hour}`,
         place: result.newBookedPlace,
       })
     }
@@ -298,7 +298,12 @@ export const sendScheduleInspecteurs = async (req, res) => {
         message: `Envoi du planning`,
       })
       const { email } = await findUserById(req.userId)
-      results = await sendMailSchedulesInspecteurs(email, departement, date)
+      const { email: emailDepartement } = await findDepartementbyId(departement)
+      results = await sendMailSchedulesInspecteurs(
+        emailDepartement || email,
+        departement,
+        date
+      )
     } else {
       appLogger.info({
         ...loggerContent,

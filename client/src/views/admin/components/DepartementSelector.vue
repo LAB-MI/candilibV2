@@ -47,16 +47,21 @@ export default {
   height: 3.5em;
   font-size: 0.9em;
 
+  @media (max-width: 767px) {
+    width: 2em;
+    height: 2.5em;
+  }
+
   .hexagon-wrapper:first-child {
     position: absolute;
-    top: 0;
+    top: -0.5em;
     left: 0;
   }
 
   .hexagon-wrapper:last-child {
     position: absolute;
-    bottom: 0;
-    right: 0;
+    bottom: -0.5em;
+    right: -0.75em;
   }
 }
 </style>

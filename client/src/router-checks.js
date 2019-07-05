@@ -62,6 +62,14 @@ export async function checkAdminToken (to, from, next) {
   next()
 }
 
+export async function checkAccess (to, from, next) {
+  const { name } = to
+  if (store.getters.noAuthorize === name) {
+    return next({ name: from.name || 'admin-home' })
+  }
+  next()
+}
+
 export async function checkCandidatToken (to, from, next) {
   const token = to.query.token || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
   if (!token) {

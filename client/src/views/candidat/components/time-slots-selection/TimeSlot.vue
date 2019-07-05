@@ -64,7 +64,7 @@ import {
 
 import {
   getFrenchDateFromLuxon,
-  getFrenchLuxonDateFromIso,
+  getFrenchLuxonFromIso,
   getFrenchDateFromIso,
 } from '@/util/frenchDateTime.js'
 import { getFrenchLuxonCurrentDateTime } from '../../../../util/frenchDateTime'
@@ -83,16 +83,21 @@ export default {
   },
 
   computed: {
-    ...mapState(['center', 'timeSlots', 'reservation',
-      {
-        dateDernierEchecPratique (state) {
-          const dateDernierEchecPratique = state.reservation.booked.dateDernierEchecPratique
-          return dateDernierEchecPratique && getFrenchDateFromIso(dateDernierEchecPratique)
-        },
-        numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
-        isEchecPratique: state => state.reservation.booked.dateDernierEchecPratique,
-      }]
-    ),
+    ...mapState({
+      center: state => state.center,
+      timeSlots: state => state.timeSlots,
+      reservation: state => state.reservation,
+      dateDernierEchecPratique (state) {
+        const dateDernierEchecPratique = state.reservation.booked.dateDernierEchecPratique
+        return dateDernierEchecPratique
+      },
+      numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
+    }),
+
+    isEchecPratique () {
+      const now = getFrenchLuxonCurrentDateTime()
+      return this.dateDernierEchecPratique && getFrenchLuxonFromIso(this.dateDernierEchecPratique).plus({ days: 45 }) > now
+    },
 
     warningMessage () {
       if (this.isPenaltyActive) {
@@ -112,7 +117,7 @@ export default {
             id: 'home_choix_date_creneau_message_echec_date_pratique',
           },
           {
-            dateDernierEchecPratique: this.dateDernierEchecPratique,
+            dateDernierEchecPratique: getFrenchDateFromIso(this.dateDernierEchecPratique),
             dateEchecPratique: this.dateEchecPratique,
           }
         )
@@ -124,11 +129,12 @@ export default {
       if (this.isEchecPratique) {
         return false
       }
+      const now = getFrenchLuxonCurrentDateTime()
       const { canBookFrom, lastDateToCancel } = this.reservation.booked
       const isPenaltyActive =
-        canBookFrom ||
-        getFrenchLuxonCurrentDateTime() >
-          getFrenchLuxonDateFromIso(lastDateToCancel)
+        (canBookFrom && getFrenchLuxonFromIso(canBookFrom) > now) ||
+        now >
+          getFrenchLuxonFromIso(lastDateToCancel)
 
       return isPenaltyActive
     },
@@ -144,10 +150,10 @@ export default {
         return getFrenchDateFromIso(canBookFrom)
       } else if (
         getFrenchLuxonCurrentDateTime() >
-        getFrenchLuxonDateFromIso(lastDateToCancel)
+        getFrenchLuxonFromIso(lastDateToCancel)
       ) {
         return getFrenchDateFromLuxon(
-          getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry })
+          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
         )
       }
       return ''
@@ -157,12 +163,13 @@ export default {
       const { canBookFrom, date, timeOutToRetry } = this.reservation.booked
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      } else if (
+      }
+      if (
         getFrenchLuxonCurrentDateTime() >
-        getFrenchLuxonDateFromIso(this.dateDernierEchecPratique)
+        getFrenchLuxonFromIso(this.dateDernierEchecPratique)
       ) {
         return getFrenchDateFromLuxon(
-          getFrenchLuxonDateFromIso(date).plus({ days: timeOutToRetry })
+          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
         )
       }
       return ''

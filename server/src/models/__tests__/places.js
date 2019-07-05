@@ -4,19 +4,16 @@ import { findCentreById } from '../centre'
 import config from '../../config'
 import { createCentres } from './centres'
 import { createInspecteurs } from './inspecteurs'
-import {
-  getFrenchLuxonDateTime,
-  getFrenchLuxonDateTimeFromObject,
-} from '../../util'
+import { getFrenchLuxon, getFrenchLuxonFromObject } from '../../util'
 
-let basePlaceDateTime = getFrenchLuxonDateTimeFromObject({
+let basePlaceDateTime = getFrenchLuxonFromObject({
   day: 18,
   hour: 9,
 }).setLocale('fr')
 
 if (
   basePlaceDateTime <
-  getFrenchLuxonDateTime().plus({
+  getFrenchLuxon().plus({
     days: config.delayToBook + 1,
   })
 ) {

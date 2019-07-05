@@ -7,13 +7,14 @@ connect()
     const { default: createCandidats } = await import('./create-candidats')
     const { default: createCentres } = await import('./create-centres')
     const { default: createInspecteurs } = await import('./create-inspecteurs')
-    const { default: createWhitelisted } = await import('./create-long-whitelist')
+    const { default: createDepartements } = await import('./create-departements')
+
     return Promise.all([
       createAdmin(),
       createCandidats(),
       createCentres(),
       createInspecteurs(),
-      createWhitelisted(),
+      createDepartements(),
     ])
   })
   .catch(error => {

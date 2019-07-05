@@ -27,9 +27,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
 
   const { codeNeph, nomNaissance, email, emailValidationHash } = candidat
 
-  const urlValidationEmail = `${
-    config.PUBLIC_URL
-  }/email-validation?e=${email}&h=${emailValidationHash}`
+  const urlValidationEmail = `${config.PUBLIC_URL}/email-validation?e=${email}&h=${emailValidationHash}`
 
   const message = {}
 

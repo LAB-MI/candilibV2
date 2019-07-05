@@ -7,7 +7,7 @@
     no-filter
     append-outer-icon="search"
     :placeholder="placeholder"
-    :items="items"
+    :items="emptyList || items"
     :search-input.sync="searchInput"
     return-object
     :item-text="itemText"
@@ -20,6 +20,7 @@
 export default {
   data () {
     return {
+      emptyList: undefined,
       searchInput: undefined,
       selected: undefined,
       timeoutId: undefined,
@@ -38,6 +39,11 @@ export default {
 
   watch: {
     searchInput (searchQuery) {
+      if (!searchQuery || searchQuery.length < 3) {
+        this.emptyList = []
+        return
+      }
+      this.emptyList = undefined
       clearTimeout(this.timeoutId)
       this.timeoutId = setTimeout(() => {
         if (searchQuery && searchQuery.length > 2) {

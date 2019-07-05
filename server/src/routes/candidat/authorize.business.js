@@ -1,6 +1,6 @@
 import config from '../../config'
-import { getFrenchLuxonDateTime } from '../../util'
+import { getFrenchLuxon } from '../../util'
 
 export const getAuthorizedDateToBook = () => {
-  return getFrenchLuxonDateTime().plus({ days: config.delayToBook })
+  return getFrenchLuxon().plus({ days: config.delayToBook })
 }

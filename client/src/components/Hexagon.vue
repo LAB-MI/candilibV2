@@ -1,5 +1,5 @@
 <template>
-  <div class="hexagon-wrapper" @click="$emit('click', value)">
+  <div :class="{'hexagon-wrapper': true, active}" @click="$emit('click', value)">
     <div
       class="icon"
       :class="{active}"
@@ -46,12 +46,27 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 2em;
-  height: 2em;
+  width: 2.5em;
+  height: 2.5em;
   cursor: pointer;
+  color: #999;
+  transition: color 0.5s ease-out;
+
+  @media (max-width: 767px) {
+    width: 2em;
+    height: 2em;
+  }
+
+  &.active,
+  &:hover {
+    color: white;
+  }
 }
 
 .inner-text {
   z-index: 1;
+  font-size: 1.2em;
+  font-weight: bold;
+  padding-top: 0.25em;
 }
 </style>
