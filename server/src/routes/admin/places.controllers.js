@@ -300,7 +300,8 @@ export const sendScheduleInspecteurs = async (req, res) => {
         message: `Envoi du planning`,
       })
       const { email } = await findUserById(req.userId)
-      const { email: emailDepartement } = await findDepartementbyId(departement)
+      const confDepartement = await findDepartementbyId(departement)
+      const emailDepartement = confDepartement && confDepartement.email
       results = await sendMailSchedulesInspecteurs(
         emailDepartement || email,
         departement,
