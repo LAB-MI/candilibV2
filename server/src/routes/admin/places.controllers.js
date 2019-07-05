@@ -163,7 +163,9 @@ export const deletePlaceByAdmin = async (req, res) => {
     }
 
     if (place.candidat) {
-      const error = new Error(`La place id: [${id}] vient d'être réservée par un candidat.`)
+      const error = new Error(
+        `La place id: [${id}] vient d'être réservée par un candidat.`
+      )
       error.messageToUser = 'La place est réservée par un candidat'
       throw error
     }

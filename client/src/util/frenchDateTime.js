@@ -11,7 +11,7 @@ export const getFrenchLuxonFromJSDate = jsDate => DateTime.fromJSDate(jsDate, fr
 export const getFrenchLuxonFromSql = sqlDate =>
   sqlDate && DateTime.fromSQL(sqlDate, frenchOptions)
 
-export const getFrenchLuxonFromObject = obj => obj && DateTime.fromObject(obj, frenchOptions)
+export const getFrenchLuxonFromObject = obj => obj && DateTime.fromObject({ ...obj, ...frenchOptions })
 
 export const getFrenchDateFromLuxon = dateTime =>
   dateTime &&
@@ -68,3 +68,6 @@ export const getFrenchWeeksInWeekYear = year =>
   DateTime.local(year)
     .setLocale('fr')
     .setZone(FRENCH_TIME_ZONE).weeksInWeekYear
+
+export const getFrenchFormattedDateFromObject = (obj, shape) =>
+  obj ? getFrenchLuxonFromObject(obj, frenchOptions).toLocaleString(shape) : 'Invalid DateTime'

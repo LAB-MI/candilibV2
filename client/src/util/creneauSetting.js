@@ -29,3 +29,12 @@ export const valideCreneaux = [
   '15h00-15h30',
   '15h30-16h00',
 ]
+
+export const validDays = [
+  'lundi',
+  'mardi',
+  'mercredi',
+  'jeudi',
+  'vendredi',
+  'samedi',
+]

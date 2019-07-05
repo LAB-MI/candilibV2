@@ -1,58 +1,71 @@
 <template>
-  <div>
+  <div style="margin-top: -6em;">
     <h2 class="title">
       <strong>
         {{ nameCenter }}
       </strong>
+      (
+        <strong class="text-free-places">
+        {{ allBookedPlacesByCenter }}
+        </strong>
+        <strong>
+          /
+        </strong>
+        <strong>
+          {{ allCenterPlaces }}
+        </strong>
+      )
     </h2>
-
-    <carousel
-      id="carousel"
-      class="carousel"
-      :navigationEnabled="true"
-      :paginationEnabled="false"
-      :scrollPerPage="false"
-      :perPage="3"
-      :perPageCustom="[[768, 5], [1024, 5]]"
-      :navigateTo="[currentWeekNumber, false]"
-    >
-      <slide
-        class="slide"
-        v-ripple
-        v-for="(week, index) in formatArrayByWeek()"
-        :key="week.numWeek"
-      >
-        <v-card
-          v-if="index !== 0"
-          :id="`week-${nameCenter}-${index}`"
-          class="main-card"
-          @click="goToGestionPlannings(index, centerId)"
-        >
-          <v-card-title class="week-card-title">
-            {{ `Semaine N°${index}` }}
-          </v-card-title>
-          <v-card-text class="stats-card">
-            <span class="stats-card-text-free-places">
-              {{ week.freePlaces || 0 }}
-            </span>
-            /
-            {{ week.totalPlaces || 0 }}
-          </v-card-text>
-        </v-card>
-      </slide>
-    </carousel>
+    <div class="text-xs-left">
+      <span class="stats-card-text-free-places">
+        Places reservées
+      </span>
+      <span class="slash-wrapper">
+        /
+      </span>
+      Total places
+    </div>
+    <data-table-week-monitor
+      :items="formattedArrayByWeek"
+      @goToGestionPlannings="goToGestionPlannings"
+      :centerId="centerId"
+    />
   </div>
 </template>
 
 <script>
 import {
+  getFrenchLuxonFromIso,
+  getFrenchFormattedDateFromObject,
   getFrenchLuxonCurrentDateTime,
   getFrenchWeeksInWeekYear,
+  validDays,
 } from '@/util'
+
+import DataTableWeekMonitor from './DataTableWeekMonitor'
 
 import { SET_WEEK_SECTION } from '@/store'
 
+export const splitWeek = (prev, day, centerId) => {
+  const weekDayNumber = getFrenchLuxonFromIso(day.date).weekday - 1
+  if (centerId === day.centre && weekDayNumber < validDays.length) {
+    if (!prev[weekDayNumber]) {
+      prev[weekDayNumber] = []
+    }
+    prev[weekDayNumber] = [
+      ...prev[weekDayNumber],
+      day,
+    ]
+  }
+
+  return prev
+}
+
 export default {
+  components: {
+    DataTableWeekMonitor,
+  },
+
   props: {
     nameCenter: {
       type: String,
@@ -62,72 +75,87 @@ export default {
     weeks: Object,
   },
 
+  data () {
+    return {
+      allCenterPlaces: 0,
+      allBookedPlacesByCenter: 0,
+    }
+  },
+
   computed: {
     currentWeekNumber () {
       return getFrenchLuxonCurrentDateTime().weekNumber
     },
+    formattedArrayByWeek () {
+      return this.formatArrayByWeek()
+    },
   },
 
   methods: {
-    goToGestionPlannings (currentWeek, centerId) {
+    getCountBookedPlaces (places) {
+      const bookedPlacesCount = places.filter(elmt => elmt.candidat).length
+      return places.length - bookedPlacesCount
+    },
+
+    getStartOfWeek (weekNumber) {
+      const currentYear = getFrenchLuxonCurrentDateTime().weekYear
+      const shape = {
+        month: 'long',
+        day: '2-digit',
+        year: 'numeric',
+      }
+      return getFrenchFormattedDateFromObject({ weekYear: currentYear, weekNumber, weekday: 1 }, shape)
+    },
+
+    goToGestionPlannings (currentWeek, weekDay) {
       this.$store.dispatch(SET_WEEK_SECTION, currentWeek)
-      const date = getFrenchLuxonCurrentDateTime().set({ weekNumber: currentWeek }).toSQLDate()
-      this.$router.push({ name: 'gestion-planning', params: { center: centerId, date } })
+      const date = getFrenchLuxonCurrentDateTime().set({ weekNumber: currentWeek, weekday: weekDay || 1 }).toSQLDate()
+      this.$router.push({ name: 'gestion-planning', params: { center: this.centerId, date } })
     },
 
     formatArrayByWeek () {
+      this.allBookedPlacesByCenter = 0
+      this.allCenterPlaces = 0
+
+      // TODO: Find solution to last month of year for transition
       const weeksInWeekYear = getFrenchWeeksInWeekYear(getFrenchLuxonCurrentDateTime().year)
-      const allWeeks = Array(weeksInWeekYear).fill(false)
-      Object.keys(this.weeks).map(weekNb => {
-        allWeeks[weekNb] = {
-          days: [ this.weeks[weekNb] ],
+      const allWeeksOfYear = Array(weeksInWeekYear).fill(false)
+      const formattedArray = allWeeksOfYear.map((useless, weekNb) => {
+        const defaultDays = Array(validDays.length).fill([])
+
+        const weeksWithPlaces = this.weeks && this.weeks[weekNb]
+        if (weeksWithPlaces && weeksWithPlaces.length) {
+          const totalPlaces = weeksWithPlaces.length
+          const bookedsPlaces = weeksWithPlaces.filter(elmt => elmt.candidat).length
+          this.allBookedPlacesByCenter = bookedsPlaces + this.allBookedPlacesByCenter
+          this.allCenterPlaces = totalPlaces + this.allCenterPlaces
+          return {
+            days: weeksWithPlaces.reduce((prev, day) => splitWeek(prev, day, this.centerId), defaultDays),
+            numWeek: weekNb,
+            totalPlaces,
+            bookedsPlaces,
+          }
+        }
+        return {
+          days: defaultDays,
           numWeek: weekNb,
-          totalPlaces: this.weeks[weekNb].length,
-          freePlaces: this.weeks[weekNb].length - this.weeks[weekNb].filter(elmt => elmt.candidat).length,
+          totalPlaces: 0,
+          bookedsPlaces: 0,
         }
       })
-      return allWeeks
+      return formattedArray.filter(e => e.numWeek !== 0)
     },
   },
 }
 </script>
 
 <style lang="postcss" scoped>
-.main-card {
-  height: 100%;
-  cursor: pointer;
-  border-width: 2px;
-  border-style: solid;
-  border-color: black;
-}
-
-.carousel {
-  border: 1px solid black;
-}
-
-.slide {
-  height: 100%;
-  text-align: center;
-}
-
-.week-card-title {
-  background-color: rgb(207, 200, 198);
-  height: 100%;
-  font-size: 1.5em;
-}
-
-.stats-card {
-  font-size: 1.5em;
-  background-color: rgb(240, 239, 239);
-  padding: 0;
-}
-
-.stats-card-text-free-places {
-  color: green;
-}
-
 .title {
   padding: 1em;
   text-align: center;
+}
+
+.text-free-places {
+  color: green;
 }
 </style>

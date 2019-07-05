@@ -39,6 +39,8 @@ export const FETCH_CANDIDAT = 'FETCH_CANDIDAT'
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
+export const numberOfMonthsToFetch = 2
+
 export default {
   getters: {
     creneauSetup: () => {
@@ -190,9 +192,8 @@ export default {
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
         const currentDateTime = getFrenchLuxonCurrentDateTime()
-        const weekDay = currentDateTime.weekday
-        const beginDate = begin || currentDateTime.plus({ days: -weekDay }).toISO()
-        const endDate = end || currentDateTime.plus({ months: 2 }).toISO()
+        const beginDate = begin || currentDateTime.toISO()
+        const endDate = end || currentDateTime.plus({ months: numberOfMonthsToFetch }).toISO()
         const placesByCentre = await api.admin
           .getAllPlacesByDepartement(state.departements.active, beginDate, endDate)
 
