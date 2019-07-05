@@ -15,7 +15,7 @@ const {
 
 const { default: app, apiPrefix } = require('../../app')
 
-jest.mock('./middlewares/verify-admin-level')
+jest.mock('./middlewares/verify-repartiteur-level')
 jest.mock('../middlewares/verify-token')
 
 xdescribe('Test get and export candidats', () => {

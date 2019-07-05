@@ -4,14 +4,14 @@ import jwt from 'jsonwebtoken'
 import bodyParser from 'body-parser'
 
 import { verifyToken } from '../../middlewares'
-import { verifyAdminLevel } from './verify-admin-level'
+import { verifyRepartiteurLevel } from './verify-repartiteur-level'
 import { apiPrefix } from '../../../app'
 import config from '../../../config'
-import { verifyAdminDepartement } from './verify-admin-departement'
+import { verifyRepartiteurDepartement } from './verify-repartiteur-departement'
 
 const basicData = {
   email: 'user@example.com',
-  level: 0,
+  level: config.userStatusLevels[config.userStatuses.CANDIDAT],
 }
 
 const basicToken = jwt.sign(basicData, config.secret, {
@@ -20,7 +20,7 @@ const basicToken = jwt.sign(basicData, config.secret, {
 
 const adminData = {
   email: 'admin@example.com',
-  level: 1,
+  level: config.userStatusLevels[config.userStatuses.REPARTITEUR],
   departements: ['93', '64'],
 }
 
@@ -31,11 +31,11 @@ const adminToken = jwt.sign(adminData, config.secret, {
 const app = express()
 app.use(bodyParser.json({ limit: '20mb' }))
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
-app.use(verifyToken, verifyAdminLevel, verifyAdminDepartement)
+app.use(verifyToken, verifyRepartiteurLevel, verifyRepartiteurDepartement)
 app.get(apiPrefix, (req, res) => res.json({ ok: true }))
 app.post(apiPrefix, (req, res) => res.json({ ok: true }))
 
-describe('Verify-admin-departement', () => {
+describe('Verify-repartiteur-departement', () => {
   afterAll(async () => {
     await app.close()
   })

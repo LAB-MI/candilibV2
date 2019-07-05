@@ -8,14 +8,30 @@ const DEFAULT_PUBLIC_URL = isProduction
 
 const userStatuses = {
   CANDIDAT: 'candidat',
+  REPARTITEUR: 'repartiteur',
+  DELEGUE: 'delegue',
   ADMIN: 'admin',
   TECH: 'tech',
 }
 
 const userStatusLevels = {
   [userStatuses.CANDIDAT]: 0,
-  [userStatuses.ADMIN]: 1,
-  [userStatuses.TECH]: 2,
+  [userStatuses.REPARTITEUR]: 1,
+  [userStatuses.DELEGUE]: 2,
+  [userStatuses.ADMIN]: 3,
+  [userStatuses.TECH]: 4,
+}
+
+const features = {
+  AURIGE: 'aurige',
+}
+
+const userStatusAccess = {
+  [userStatuses.CANDIDAT]: [],
+  [userStatuses.REPARTITEUR]: [],
+  [userStatuses.DELEGUE]: [],
+  [userStatuses.ADMIN]: [features.AURIGE],
+  [userStatuses.TECH]: [features.AURIGE],
 }
 
 const getTokenExpiration = () => {
@@ -39,16 +55,24 @@ const getTokenExpiration = () => {
 const config = {
   secret: process.env.SECRET || 'secret',
   candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '3d',
+  get repartiteurTokenExpiration () {
+    return getTokenExpiration()
+  },
+  get delegueTokenExpiration () {
+    return getTokenExpiration()
+  },
   get adminTokenExpiration () {
     return getTokenExpiration()
   },
   get techTokenExpiration () {
-    return getTokenExpiration()
+    return process.env.TECH_EXPIREDIN || '1h'
   },
 
   userStatuses,
+  features,
 
   userStatusLevels,
+  userStatusFeatures: userStatusAccess,
 
   dbName: process.env.DB_NAME,
   dbUser: process.env.DB_USER,

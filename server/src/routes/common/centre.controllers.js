@@ -32,7 +32,7 @@ export async function getCentres (req, res) {
     }
 
     if (!nom) {
-      if (req.userLevel !== config.userStatusLevels.admin) {
+      if (req.userLevel === config.userStatusLevels.candidat) {
         const beginDateTime = getAuthorizedDateToBook()
         beginDate = beginDateTime.toISODate()
       }

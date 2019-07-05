@@ -31,6 +31,7 @@ const headerIcons = [
     routerTo: ROUTE_AUTHORIZE_AURIGE,
     iconName: 'import_export',
     tooltipText: 'Import / Export Aurige',
+    isProtected: true,
   },
   {
     routerTo: 'whitelist',
@@ -46,16 +47,17 @@ export default {
     return {
       drawer: false,
       file: undefined,
+      // headerIcons: undefined,
     }
   },
 
   computed: {
-    ...mapState(['admin']),
-    headerIcons () {
-      return headerIcons.filter(headerIcon => {
-        return headerIcon.routerTo !== this.$store.getters.noAuthorize
-      })
-    },
+    ...mapState({
+      admin: state => state.admin,
+      headerIcons: state => headerIcons.filter(headerIcon => {
+        return (state.admin.features && state.admin.features.includes(headerIcon.routerTo)) || !headerIcon.isProtected
+      }),
+    }),
   },
 }
 </script>

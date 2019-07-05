@@ -1,7 +1,7 @@
 import { appLogger } from '../../../util'
 import config from '../../../config'
 
-export async function verifyAdminDepartement (req, res, next) {
+export async function verifyRepartiteurDepartement (req, res, next) {
   const { departements, userLevel } = req
   const departement = req.body.departement || req.query.departement
   const loggerInfo = {
@@ -15,7 +15,7 @@ export async function verifyAdminDepartement (req, res, next) {
     if (departements && departements.includes(departement)) {
       return next()
     }
-    if (userLevel >= config.userStatusLevels.tech) {
+    if (userLevel >= config.userStatusLevels.admin) {
       return next()
     }
     appLogger.error({

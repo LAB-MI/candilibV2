@@ -40,6 +40,9 @@ export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
 export const numberOfMonthsToFetch = 2
+const ROUTE_AUTHORIZES = {
+  'aurige': ROUTE_AUTHORIZE_AURIGE,
+}
 
 export default {
   getters: {
@@ -48,9 +51,6 @@ export default {
     },
     activeDepartement: state => {
       return state.departements.active
-    },
-    noAuthorize: state => {
-      if (!state.level || state.level < 2) return ROUTE_AUTHORIZE_AURIGE
     },
   },
 
@@ -62,7 +62,7 @@ export default {
       list: [],
     },
     email: undefined,
-    level: undefined,
+    features: undefined,
     places: {
       isFetching: false,
       list: [],
@@ -96,7 +96,9 @@ export default {
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
       state.departements.list = infos.departements
       state.email = infos.email
-      state.level = infos.level
+      state.features = infos.features && infos.features.map(feature => ROUTE_AUTHORIZES[feature])
+      console.log({ infos, features: state.features })
+
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
       state.departements.active = activeDepartement || infos.departements[0]
       state.departements.isFetching = false
