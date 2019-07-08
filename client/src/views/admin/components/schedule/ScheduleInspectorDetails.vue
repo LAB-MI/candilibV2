@@ -166,9 +166,9 @@ import { mapGetters, mapState } from 'vuex'
 
 import PlaceAction from './PlaceAction.vue'
 import PlaceActionHeader from './PlaceActionHeader.vue'
-import ListSearchInspecteursAvailable from './searchInspecteur/ListSearchInspecteursAvailable.vue'
+import ListSearchInspecteursAvailable from '../searchInspecteur/ListSearchInspecteursAvailable.vue'
 import ConfirmBox from '@/components/ConfirmBox.vue'
-import CandilibAutocomplete from './CandilibAutocomplete'
+import CandilibAutocomplete from '../CandilibAutocomplete'
 
 import {
   getFrenchDateTimeFromIso,

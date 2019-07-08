@@ -16,8 +16,8 @@
 </template>
 
 <script>
-import AdminImportPlaces from './AdminImportPlaces'
-import ImportPlacesValidation from './ImportPlacesValidation'
+import AdminImportPlaces from '../AdminImportPlaces'
+import ImportPlacesValidation from '../ImportPlacesValidation'
 import ScheduleInspector from './ScheduleInspector'
 
 export default {

@@ -2,7 +2,7 @@ import { storiesOf } from '@storybook/vue'
 import Vuex from 'vuex'
 
 import ScheduleInspectorDetails from './ScheduleInspectorDetails.vue'
-import adminModifInspecteur from './searchInspecteur/ListSearchInspecteursAvailable.stories.store'
+import adminModifInspecteur from '../searchInspecteur/ListSearchInspecteursAvailable.stories.store'
 import admin from './ScheduleInspectorDetails.stories.store'
 
 storiesOf('Admin/ScheduleInspectorDetails', module)
@@ -16,8 +16,8 @@ storiesOf('Admin/ScheduleInspectorDetails', module)
         :icon="icon"
         :content="content"
         :selectedDate="selectedDate"
-        :inspecteurId="inspecteurId" 
-        :centreInfo="centreInfo" 
+        :inspecteurId="inspecteurId"
+        :centreInfo="centreInfo"
       />`,
 
     data () {
