@@ -1,44 +1,61 @@
 <template>
-  <v-card>
-    <page-title title="Confirmation"></page-title>
+  <div class="with-margin">
     <div
       class="u-full-width  u-flex  u-flex--column  u-flex--center"
     >
-      <slot />
-      <v-flex d-flex>
-        <v-spacer></v-spacer>
+      <slot/>
+      <div>
         <v-btn
           outline
           color="info"
           @click="closeAction"
+          :aria-disabled="disabled"
+          :disabled="disabled"
         >
           <v-icon>
             arrow_back_ios
           </v-icon>
-          Retour
+          {{cancelButtonText}}
         </v-btn>
         <v-btn
-          color="success"
+          :color="okButtonColor"
           @click="submitAction"
+          :aria-disabled="disabled"
+          :disabled="disabled"
         >
-          Valider
+          {{ okButtonText }}
         </v-btn>
-      </v-flex>
+      </div>
     </div>
-  </v-card>
+  </div>
 </template>
 
 <script>
-import PageTitle from './PageTitle.vue'
-
 export default {
-  components: {
-    PageTitle,
-  },
-
   props: {
     closeAction: Function,
     submitAction: Function,
+    disabled: Boolean,
+    cancelButtonText: {
+      type: String,
+      default: 'Retour',
+    },
+    okButtonText: {
+      type: String,
+      default: 'Valider',
+    },
+    okButtonColor: {
+      type: String,
+      default: 'success',
+    },
   },
 }
 </script>
+
+<style lang="stylus">
+
+.with-margin {
+  margin: 1em;
+}
+
+</style>

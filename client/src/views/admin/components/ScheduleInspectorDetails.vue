@@ -1,32 +1,27 @@
 <template>
-  <v-card class="elevation-0" v-if="flagModal === 'face'">
-    <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
-      title="Ce créneau est au statut réservé"
-      @close="closeDialogFace"
-      colorIcon="black"
-      colorButton="blue"
-      icon="highlight_off"
-      iconOnLeft="face"
-      colorHeader="blue"
+  <v-card class="details" v-if="isBooked">
+    <place-action-header
+      v-if="content.place && content.place.candidat"
+      :candidat="candidat"
     />
-    <v-divider></v-divider>
-    <shedule-inspector-dialog-sub-content
-      :isLoading="isLoading"
-      colorAlert="white"
+    <place-action
+      :is-loading="isLoading"
       icon="block"
-      colorIcon="white"
-      colorSubmitButton="grey"
-      textContent="Annuler reservation"
-      :activeTextContent="!deleteBookedPlaceConfirm"
-      textButtonCancel="Retour"
+      color-icon="white"
+      color-submit-button="grey"
+      textContent="Annuler réservation"
+      :active-text-content="!deleteBookedPlaceConfirm"
+      text-button-cancel="Retour"
       @click="displayConfirmDeleteBookedPlace"
       :content="content"
     >
       <confirm-box
         v-if="deleteBookedPlaceConfirm"
-        :closeAction='cancelConfirmDeleteBookedPlace'
-        :submitAction='renderCreneauUnBookAndUnavalaible'
+        :close-action='cancelDeleteBookedPlace'
+        :submit-action='deleteBookedPlace'
+        ok-button-text="Supprimer réservation"
+        ok-button-color="warning"
+
       >
       <!-- TODO: Refactor Create composant for each subcontent dialogs -->
         <div v-if="isFetchingCandidat">
@@ -36,36 +31,36 @@
           <p>
             Nom:
             <strong>
-              {{ fetchedCandidat.nomNaissance }}
+              {{ candidat.nomNaissance }}
             </strong>
             /
             Neph:
             <strong>
-              {{ fetchedCandidat.codeNeph }}
+              {{ candidat.codeNeph }}
             </strong>
           </p>
           <p>
-            {{ fetchedCandidat.email }}
+            {{ candidat.email }}
           </p>
           <p>
             Portable:
             <strong>
-              {{ fetchedCandidat.portable }}
+              {{ candidat.portable }}
             </strong>
           </p>
         </div>
       </confirm-box>
-    </shedule-inspector-dialog-sub-content>
-    <shedule-inspector-dialog-sub-content
-      :isLoading="isLoading"
+    </place-action>
+    <place-action
+      :is-loading="isLoading"
       colorAlert="white"
       icon="account_box"
-      colorIcon="white"
-      colorSubmitButton="blue"
-      textButtonCancel="Retour"
-      textContent="Modifier l'inspecteur"
+      color-icon="white"
+      color-submit-button="blue"
+      text-button-cancel="Retour"
+      text-content="Modifier l'inspecteur"
       @click="toggleInspecteurSearch"
-      :activeTextContent="displayModifyInspecteurTitle"
+      :active-text-content="displayModifyInspecteurTitle"
     >
       <list-search-inspecteurs-available
         slot="title"
@@ -84,53 +79,32 @@
           {{textInspecteurSelected}}
         </p>
       </confirm-box>
-    </shedule-inspector-dialog-sub-content>
+    </place-action>
   </v-card>
 
-  <v-card v-else-if="flagModal === 'block'">
-    <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
-      title="Ce créneau est au statut indisponible"
-      @close="closeDialog"
-      colorIcon="black"
-      colorButton="grey"
-      icon="highlight_off"
-      iconOnLeft="block"
-      colorHeader="grey"
-    />
-    <v-divider></v-divider>
-    <shedule-inspector-dialog-sub-content
-      :isLoading="isLoading"
-      colorAlert="white"
+  <v-card class="details" v-else-if="!isAvailable">
+    <place-action
+      :is-loading="isLoading"
+      color-alert="white"
       icon="check_circle"
-      colorIcon="white"
-      colorSubmitButton="green"
-      textContent="Rendre le créneau disponible"
-      textButtonCancel="Retour"
-      @click="makeCreneauAvailable"
+      color-icon="white"
+      color-submit-button="green"
+      text-content="Rendre le créneau disponible"
+      text-button-cancel="Retour"
+      @click="setCreneauAvailable"
     />
   </v-card>
-  <v-card v-else-if="flagModal === 'check'">
-    <shedule-inspector-dialog-header
-      :infoSelectedDialog="{ place: content.place, inspecteurInfos }"
-      title="Ce créneau est au statut disponible"
-      @close="closeDialogAndResetSelectedCandidat"
-      colorIcon="black"
-      colorButton="green"
-      icon="highlight_off"
-      iconOnLeft="check_circle"
-      colorHeader="success"
-    />
-    <v-divider></v-divider>
-    <shedule-inspector-dialog-sub-content
-      :isLoading="isLoading"
-      colorAlert="white"
+
+  <v-card class="details" v-else-if="isAvailable">
+    <place-action
+      :is-loading="isLoading"
+      color-alert="white"
       icon="face"
-      colorIcon="white"
-      colorSubmitButton="blue"
-      textContent="Affecter un candidat"
-      :activeTextContent="!selectedCandidat"
-      textButtonCancel="Retour"
+      color-icon="white"
+      color-submit-button="blue"
+      text-content="Affecter un candidat"
+      :active-text-content="!selectedCandidat"
+      text-button-cancel="Retour"
       @click="displaySearchCandidatInput"
     >
       <div v-if="isCandidatEditing">
@@ -148,27 +122,41 @@
         />
         <confirm-box
           v-else
-          :closeAction="() => selectedCandidat = null"
-          :submitAction="affectCandidatToCreneau"
+          :close-action="() => selectedCandidat = null"
+          :submit-action="affectCandidatToCreneau"
+          :aria-disabled="isLoading"
+          :disabled="isLoading"
         >
-          <p>affecter le candidat:</p>
-          <p>{{ selectedCandidat.nomNaissance }} / {{ selectedCandidat.codeNeph }}</p>
-          <p>sur la place du</p>
-          <p>{{ formattedDate }}</p>
-          <p>au centre {{ centerName }}</p>
+          <p>
+            Affecter le candidat:
+            <strong>
+              {{ selectedCandidat.nomNaissance }} / {{ selectedCandidat.codeNeph }}
+            </strong>
+          </p>
+          <p>
+            sur la place du
+            <strong>
+              {{ formattedDate }}
+            </strong>
+          </p>
+          <p>
+            au centre
+            <strong>
+              {{ centerName }}
+            </strong>
+          </p>
         </confirm-box>
       </div>
-    </shedule-inspector-dialog-sub-content>
-    <v-divider></v-divider>
-    <shedule-inspector-dialog-sub-content
-      :isLoading="isLoading"
+    </place-action>
+    <place-action
+      :is-loading="isLoading"
       colorAlert="white"
       icon="block"
-      colorIcon="white"
-      colorSubmitButton="grey"
-      textContent="Rendre indisponible"
-      textButtonCancel="Retour"
-      @click="renderCreneauUnavalaible"
+      color-icon="white"
+      color-submit-button="grey"
+      text-content="Rendre indisponible"
+      text-button-cancel="Retour"
+      @click="setCreneauUnavalaible"
     />
   </v-card>
 </template>
@@ -176,8 +164,8 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 
-import SheduleInspectorDialogSubContent from './SheduleInspectorDialogSubContent.vue'
-import SheduleInspectorDialogHeader from './SheduleInspectorDialogHeader.vue'
+import PlaceAction from './PlaceAction.vue'
+import PlaceActionHeader from './PlaceActionHeader.vue'
 import ListSearchInspecteursAvailable from './searchInspecteur/ListSearchInspecteursAvailable.vue'
 import ConfirmBox from '@/components/ConfirmBox.vue'
 import CandilibAutocomplete from './CandilibAutocomplete'
@@ -188,11 +176,10 @@ import {
 
 import {
   ASSIGN_CANDIDAT_TO_CRENEAU,
-  CREATE_CRENEAU_REQUEST,
+  CREATE_PLACE_REQUEST,
   DELETE_BOOKED_PLACE_REQUEST,
   DELETE_PLACE_REQUEST,
   FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
-  FETCH_CANDIDAT,
   FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST,
 } from '@/store'
 
@@ -200,20 +187,22 @@ export default {
   components: {
     CandilibAutocomplete,
     ConfirmBox,
-    SheduleInspectorDialogHeader,
+    PlaceActionHeader,
     ListSearchInspecteursAvailable,
-    SheduleInspectorDialogSubContent,
+    PlaceAction,
   },
+
   props: {
-    flagModal: String,
-    content: Object,
+    place: Object,
+    centreInfo: Object,
     closeDialog: Function,
-    icon: String,
+    content: Object,
+    flagModal: String,
+    inspecteurId: String,
     selectedDate: String,
     updateContent: Function,
-    inspecteurId: String,
-    centreInfo: Object,
   },
+
   data () {
     return {
       inspecteurSelected: undefined,
@@ -227,24 +216,33 @@ export default {
       deleteBookedPlaceConfirm: false,
     }
   },
+
   computed: {
     ...mapGetters(['activeDepartement']),
 
     ...mapState({
       isLoading (state) {
-        return state.admin.places.isFetching
+        const {
+          places,
+          inspecteurs,
+        } = state.admin
+        return places.isFetching ||
+          inspecteurs.isFetching ||
+          places.isDeletingBookedPlace ||
+          places.isDeletingAvailablePlace ||
+          places.isCreating
       },
 
       isUpdatingInspecteur (state) {
         return state.adminModifInspecteur.isUpdating
       },
 
-      fetchedCandidat (state) {
-        return state.admin.fetchedCandidat
+      candidat (state) {
+        return state.candidats.candidat
       },
 
       isFetchingCandidat (state) {
-        return state.admin.isFetchingCandidat
+        return state.candidats.isFetching
       },
     }),
 
@@ -262,9 +260,19 @@ export default {
       return this.$store.state.admin.inspecteurs.list
         .find(inspecteur => inspecteur._id === this.inspecteurId)
     },
+
+    isAvailable () {
+      return !!this.place && !('candidat' in this.place)
+    },
+
+    isBooked () {
+      return !!this.place && 'candidat' in this.place
+    },
+
     formattedDate () {
       return getFrenchDateTimeFromIso(this.content.place.date)
     },
+
     centerName () {
       const centre = this.$store.state.center.selected
       return centre && centre.nom
@@ -299,10 +307,6 @@ export default {
     },
 
     async displayConfirmDeleteBookedPlace () {
-      const { candidat } = this.content.place
-      if (candidat) {
-        await this.$store.dispatch(FETCH_CANDIDAT, this.content.place.candidat)
-      }
       this.deleteBookedPlaceConfirm = !this.deleteBookedPlaceConfirm
     },
 
@@ -316,13 +320,13 @@ export default {
       this.closeDialogAndResetSelectedCandidat()
     },
 
-    async renderCreneauUnavalaible () {
+    async setCreneauUnavalaible () {
       await this.$store.dispatch(DELETE_PLACE_REQUEST, this.content.place._id)
       this.updateContent()
       this.closeDialog()
     },
 
-    async renderCreneauUnBookAndUnavalaible () {
+    async deleteBookedPlace () {
       await this.$store
         .dispatch(DELETE_BOOKED_PLACE_REQUEST, this.content.place._id)
       this.updateContent()
@@ -337,6 +341,7 @@ export default {
       this.hasConfirm = false
       this.deleteBookedPlaceConfirm = false
     },
+
     async closeDialogFace () {
       this.closeDialogInspecteur()
       this.closeDialog()
@@ -350,7 +355,7 @@ export default {
       this.hasConfirm = false
     },
 
-    cancelConfirmDeleteBookedPlace () {
+    cancelDeleteBookedPlace () {
       this.deleteBookedPlaceConfirm = false
     },
 
@@ -363,16 +368,23 @@ export default {
       this.closeDialogFace()
     },
 
-    async makeCreneauAvailable () {
+    async setCreneauAvailable () {
       const [year, month, day] = this.selectedDate.split('-')
       const date = `${day}/${month}/${year} ${this.content.hour.replace('h', ':')}`
       const inspecteur = this.inspecteurId
       const centre = this.centreInfo
       await this.$store
-        .dispatch(CREATE_CRENEAU_REQUEST, { date, centre, inspecteur })
+        .dispatch(CREATE_PLACE_REQUEST, { date, centre, inspecteur })
       this.updateContent()
       this.closeDialog()
     },
   },
 }
 </script>
+
+<style lang="stylus" scoped>
+.details {
+  padding: 1em;
+  margin: 1em;
+}
+</style>

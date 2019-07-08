@@ -1,12 +1,12 @@
 import Vuex from 'vuex'
 import { storiesOf } from '@storybook/vue'
 
-import FillShedulesPlaces from './FillShedulesPlaces.vue'
+import FillSchedulesPlaces from './FillSchedulesPlaces.vue'
 
 storiesOf('Admin', module)
-  .add('FillShedulesPlaces', () => ({
-    template: '<fill-shedules-places />',
-    components: { FillShedulesPlaces },
+  .add('FillSchedulesPlaces', () => ({
+    template: '<fill-schedules-places />',
+    components: { FillSchedulesPlaces },
     store: new Vuex.Store({
       state: {},
       actions: {},
