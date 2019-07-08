@@ -5,37 +5,12 @@ export const findAllWhitelisted = async departement => {
   return whitelisted
 }
 
-export const findLastCreatedActiveWhitelisted = async (
-  departement,
-  limit = 20
-) => {
+export const findLastCreatedWhitelisted = async (departement, limit = 50) => {
   const whitelisted = await Whitelisted.find({
     departement,
-    disabled: { $eq: undefined },
   })
-    .sort('-createdAt')
+    .sort({ createdAt: -1 })
     .limit(limit)
-  return whitelisted
-}
-
-export const findLastUpdatedActiveWhitelisted = async (
-  departement,
-  limit = 20
-) => {
-  const whitelisted = await Whitelisted.find({
-    departement,
-    disabled: { $eq: undefined },
-  })
-    .sort('-updatedAt')
-    .limit(limit)
-  return whitelisted
-}
-
-export const findAllActiveWhitelisted = async departement => {
-  const whitelisted = await Whitelisted.find({
-    departement,
-    disabled: { $eq: undefined },
-  })
   return whitelisted
 }
 
@@ -90,8 +65,7 @@ export const deleteWhitelistedByEmail = async email => {
   if (!whitelisted) {
     throw new Error(`No whitelisted found with email: ${email}`)
   }
-  whitelisted.deleted = true
-  await whitelisted.update()
+  await whitelisted.delete()
   return whitelisted
 }
 

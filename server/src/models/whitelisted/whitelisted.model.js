@@ -19,11 +19,6 @@ const WhitelistedSchema = new Schema(
       type: String,
       trim: true,
     },
-
-    disabled: {
-      type: Date,
-      required: false,
-    },
   },
   {
     timestamps: true,

@@ -52,6 +52,7 @@ describe('Verify-repartiteur-departement', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', 'Accès interdit')
   })
+
   it('Should respond a 401 if department is missing', async () => {
     // When
     const { body, status } = await request(app)
@@ -64,6 +65,7 @@ describe('Verify-repartiteur-departement', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', 'Accès interdit')
   })
+
   it('Should respond a 401 if department is unknown', async () => {
     // When
     const { body, status } = await request(app)
@@ -90,6 +92,7 @@ describe('Verify-repartiteur-departement', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', 'Accès interdit')
   })
+
   it('POST: Should respond a 401 if department is unknown ', async () => {
     // When
     const { body, status } = await request(app)

@@ -3,24 +3,40 @@
     <page-title :title="'Liste blanche'"/>
     <v-container>
       <v-card
-        :style="{ padding: '1em 0' }"
+        :style="{ padding: '1em 0', position: 'relative' }"
         :class="{'drag-over': isDragginOverWhitelist}"
         @drop="dropHandler"
         @dragover="dragOverHandler"
         @dragexit="isDragginOverWhitelist = false"
         @dragenter="isDragginOverWhitelist = true"
       >
+        <span
+          class="loading-indicator"
+          v-if="whitelist.isFetching"
+        >
+          <v-progress-circular
+            v-show="whitelist.isFetching"
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+        </span>
+
         <search-email />
-        <v-list v-show="matchingList && matchingList.length">
-          <h4 class="text-xs-center">Adresses correspondantes (max 5)</h4>
-          <whitelisted
-            v-for="whitelisted in matchingList"
-            :key="whitelisted._id"
-            :whitelisted="whitelisted"
-            :remove-from-whitelist="removeFromWhitelist"
-            @delete="onDelete"
-            @dblclick="copyEmailInPaperclip"
-          />
+        <v-list
+          class="u-flex  u-flex--column  u-flex--center"
+          v-show="matchingList && matchingList.length"
+        >
+          <h4 class="text-xs-center">Adresses correspondant à la recherche (max 5)</h4>
+          <div>
+            <whitelisted
+              v-for="whitelisted in matchingList"
+              :key="whitelisted._id"
+              :whitelisted="whitelisted"
+              :remove-from-whitelist="removeFromWhitelist"
+              @delete="onDelete"
+              @dblclick="copyEmailInPaperclip"
+            />
+          </div>
         </v-list>
       </v-card>
 
@@ -32,29 +48,56 @@
         @dragexit="isDragginOverWhitelist = false"
         @dragenter="isDragginOverWhitelist = true"
       >
-        <h3 class="text-xs-center">Dernières adresses enregistrées</h3>
+        <v-list
+          class="u-flex  u-flex--column  u-flex--center  u-max-width"
+        >
+          <h3 class="text-xs-center">Dernières adresses enregistrées</h3>
+          <div
+            class="u-flex"
+          >
+            <v-btn
+              @click="oneColumn = true"
+              class="u-flex"
+              :color="oneColumn ? 'primary' : ''"
+            >
+              <span>
+                Vue 1 seule colonne
+              </span>
+              &nbsp;
+              <v-icon
+              >
+                view_headline
+              </v-icon>
+            </v-btn>
+            <v-btn
+              @click="oneColumn = false"
+              :color="oneColumn ? '' : 'primary'"
+            >
+              <span>
+                Vue plusieurs colonnes
+              </span>
+              &nbsp;
+              <v-icon
+              >
+                view_module
+              </v-icon>
+            </v-btn>
+          </div>
+          <div class="whitelist-grid" :class="{'one-column': oneColumn}">
+            <whitelisted
+              v-for="whitelisted in whitelist.lastCreatedList"
+              :key="whitelisted._id"
+              :whitelisted="whitelisted"
+              :remove-from-whitelist="removeFromWhitelist"
+              @delete="onDelete"
+              @dblclick="copyEmailInPaperclip"
+            />
+          </div>
+        </v-list>
+
         <v-list>
-          <p class="text--center" v-if="whitelist.isFetching">
-            Chargement...
-            <v-progress-circular
-              v-if="whitelist.isFetching"
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
-          </p>
-
-          <whitelisted
-            v-for="whitelisted in whitelist.list"
-            :key="whitelisted._id"
-            :whitelisted="whitelisted"
-            :remove-from-whitelist="removeFromWhitelist"
-            @delete="onDelete"
-            @dblclick="copyEmailInPaperclip"
-          />
-
           <v-form v-model="valid" @submit.prevent="addToWhitelist">
             <v-list-tile v-show="adding">
-
               <v-list-tile-action>
                 <v-btn
                   type="submit"
@@ -127,9 +170,11 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+        </v-list>
 
-          <v-divider></v-divider>
+        <v-divider></v-divider>
 
+        <v-list>
           <v-list-tile v-if="!adding" @click="showForm">
             <v-list-tile-action>
               <v-btn icon >
@@ -292,6 +337,7 @@ export default {
     Whitelisted,
     SearchEmail,
   },
+
   data () {
     return {
       adding: false,
@@ -306,6 +352,7 @@ export default {
       ],
       newEmail: '',
       newEmails: '',
+      oneColumn: false,
       textToCopyToClipboard: '',
       valid: false,
       validBatch: false,
@@ -454,8 +501,25 @@ export default {
   max-width: 100vw;
 }
 
+.loading-indicator {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
 .drag-over {
   outline: 5px dashed rgba(23, 162, 184, 0.5);
+}
+
+.whitelist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  width: 100%;
+
+  &.one-column {
+    width: auto;
+    grid-template-columns: 1fr;
+  }
 }
 
 h3 {

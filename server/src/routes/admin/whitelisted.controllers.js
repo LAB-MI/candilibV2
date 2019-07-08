@@ -1,17 +1,17 @@
 import messages from './whitelist.messages'
 import {
-  findAllWhitelisted,
   findWhitelistedByEmail,
   createWhitelisted,
   createWhitelistedBatch,
   deleteWhitelisted,
   findWhitelistedMatching,
+  findLastCreatedWhitelisted,
 } from '../../models/whitelisted'
 
 export const isWhitelisted = async (req, res, next) => {
   const email = req.body && req.body.email
   if (!email) {
-    return res.status(401).send({
+    return res.status(401).json({
       codemessage: 'ERROR_FIELDS_EMPTY',
       message: messages.ERROR_FIELDS_EMPTY,
       success: false,
@@ -21,7 +21,7 @@ export const isWhitelisted = async (req, res, next) => {
   try {
     const candidat = await findWhitelistedByEmail(email.toLowerCase())
     if (candidat === null) {
-      return res.status(401).send({
+      return res.status(401).json({
         codemessage: 'NO_AUTH_WHITELIST',
         message: messages.NO_AUTH_WHITELIST,
         success: false,
@@ -29,7 +29,7 @@ export const isWhitelisted = async (req, res, next) => {
     }
     return next()
   } catch (error) {
-    return res.status(500).send({
+    return res.status(500).json({
       success: false,
       message: error.message,
     })
@@ -95,14 +95,14 @@ export const addWhitelisted = async (req, res) => {
     if (email && error.message.includes('duplicate key error')) {
       const { departement } = await findWhitelistedByEmail(email.toLowerCase())
       if (departement) {
-        return res.status(400).send({
+        return res.status(400).json({
           success: false,
           message: `Email: ${email} déjà existant dans le département: ${departement}`,
           departement,
         })
       }
     }
-    return res.status(error.statusCode || 500).send({
+    return res.status(error.statusCode || 500).json({
       success: false,
       message: error.message,
     })
@@ -115,12 +115,12 @@ export const getWhitelisted = async (req, res) => {
     if (matching) {
       const whitelist = await findWhitelistedMatching(matching, departement)
       res.status(200).json(whitelist)
-      return ''
+      return
     }
-    const whitelist = await findAllWhitelisted(departement)
-    res.status(200).json(whitelist)
+    const lastCreated = await findLastCreatedWhitelisted(departement)
+    res.status(200).json({ success: true, lastCreated })
   } catch (error) {
-    return res.status(500).send({
+    return res.status(500).json({
       success: false,
       message: error.message,
     })
@@ -133,7 +133,7 @@ export const removeWhitelisted = async (req, res) => {
     const whitelisted = await deleteWhitelisted(id)
     res.status(200).json(whitelisted)
   } catch (error) {
-    return res.status(500).send({
+    return res.status(500).json({
       success: false,
       message: error.message,
     })

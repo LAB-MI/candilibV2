@@ -50,13 +50,14 @@ router.post(
 router.delete('/reservations/:id', removeReservationByAdmin)
 
 router
+  .route('/whitelisted/:id')
+  .all(verifyRepartiteurDepartement)
+  .delete(removeWhitelisted)
+
+router
   .route('/whitelisted')
   .all(verifyRepartiteurDepartement)
   .get(getWhitelisted)
   .post(addWhitelisted)
-router
-  .route('/whitelisted/:id')
-  .all(verifyRepartiteurDepartement)
-  .delete(removeWhitelisted)
 
 export default router

@@ -34,7 +34,7 @@ export default {
   state: {
     isFetching: false,
     isUpdating: false,
-    list: undefined,
+    lastCreatedList: undefined,
     updateResult: undefined,
     matchingList: [],
   },
@@ -43,9 +43,9 @@ export default {
     [FETCH_WHITELIST_REQUEST] (state) {
       state.isFetching = true
     },
-    [FETCH_WHITELIST_SUCCESS] (state, list) {
+    [FETCH_WHITELIST_SUCCESS] (state, { lastCreated }) {
       state.isFetching = false
-      state.list = list
+      state.lastCreatedList = lastCreated
     },
     [FETCH_WHITELIST_FAILURE] (state) {
       state.isFetching = false
@@ -65,7 +65,8 @@ export default {
     [DELETE_EMAIL_REQUEST] (state) {
       state.isUpdating = true
     },
-    [DELETE_EMAIL_SUCCESS] (state) {
+    [DELETE_EMAIL_SUCCESS] (state, _id) {
+      state.matchingList = state.matchingList.filter(wl => wl._id !== _id)
       state.isUpdating = false
     },
     [DELETE_EMAIL_FAILURE] (state) {
@@ -98,13 +99,13 @@ export default {
     async [FETCH_WHITELIST_REQUEST] ({ commit, dispatch }, departement) {
       commit(FETCH_WHITELIST_REQUEST)
       try {
-        const list = await api.admin.getWhitelist(departement)
-        if (list.success === false && list.isTokenValid === false) {
-          const error = new Error('Vous n\'êtes plus identifié')
+        const response = await api.admin.getWhitelist(departement)
+        if (response.success === false && response.isTokenValid === false) {
+          const error = new Error("Vous n'êtes plus identifié")
           error.auth = false
           throw error
         }
-        commit(FETCH_WHITELIST_SUCCESS, list)
+        commit(FETCH_WHITELIST_SUCCESS, response)
       } catch (error) {
         commit(FETCH_WHITELIST_FAILURE)
         dispatch(SHOW_ERROR, error.message)
@@ -114,7 +115,10 @@ export default {
 
     async FETCH_AUTOCOMPLETE_WHITELIST_REQUEST ({ state, commit, rootState }, search) {
       try {
-        const list = await api.admin.searchWhitelisted(search, rootState.admin.departements.active || rootState.admin.departements.list[0])
+        const list = await api.admin.searchWhitelisted(
+          search,
+          rootState.admin.departements.active || rootState.admin.departements.list[0]
+        )
         commit(FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS, list)
       } catch (error) {
         commit(FETCH_AUTOCOMPLETE_WHITELIST_FAILURE, error)

@@ -56,19 +56,21 @@ describe('Test get and export candidats', () => {
         .set('Accept', 'application/json')
         .expect(200)
       expect(body).toBeDefined()
-      expect(body).toHaveLength(2)
-      body.forEach(element => {
+      expect(body.lastCreated).toBeDefined()
+      expect(body.lastCreated).toHaveLength(2)
+      body.lastCreated.forEach(element => {
         expect(element.email).toMatch(/test93.{0,2}@test.test/)
       })
     })
+
     it('Should have 200 to get 0 whitelisted of 95', async () => {
       const departement = '95'
       const { body } = await request(app)
         .get(`?departement=${departement}`)
         .set('Accept', 'application/json')
         .expect(200)
-      expect(body).toBeDefined()
-      expect(body).toHaveLength(0)
+      expect(body.lastCreated).toBeDefined()
+      expect(body.lastCreated).toHaveLength(0)
     })
   })
 
