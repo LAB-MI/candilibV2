@@ -33,16 +33,15 @@
             :id="`week-position-${week.numWeek}-${centerId}`"
             :style="`background-color: ${currentWeek === week.numWeek ? '#bde;' : '#eee;'}`"
           >
-            <td>
-              <v-chip
-                class="chip-ui-week-column"
-                :color="setColorChip(week)"
-              >
+            <th class="th-ui-week-column" :style="`background-color: ${setColorTh(week)};`">
+              <v-layout row>
                 <v-tooltip bottom lazy>
                   <template v-slot:activator="{ on }">
-                    <strong v-on="on">
-                      {{ getStartOfWeek(week.numWeek) }}
-                    </strong>
+                    <div>
+                      <strong v-on="on">
+                        {{ getStartOfWeek(week.numWeek) }}
+                      </strong>
+                    </div>
                   </template>
                   <span>Date du premiers jour de la semaine N°{{ week.numWeek }}</span>
                 </v-tooltip>
@@ -52,23 +51,23 @@
                 <v-tooltip bottom lazy>
                   <template v-slot:activator="{ on }">
                     <div v-on="on">
-                    <strong>
-                      {{ week.bookedsPlaces }}
-                    </strong>
-                    &nbsp;
-                    <strong>
-                      /
-                    </strong>
-                    &nbsp;
-                    <strong>
-                      {{ week.totalPlaces }}
-                    </strong>
-                  </div>
+                      <strong>
+                        {{ week.bookedsPlaces }}
+                      </strong>
+                      &nbsp;
+                      <strong>
+                        /
+                      </strong>
+                      &nbsp;
+                      <strong>
+                        {{ week.totalPlaces }}
+                      </strong>
+                    </div>
                   </template>
                   <span>Total de la Semaine</span>
                 </v-tooltip>
-              </v-chip>
-            </td>
+              </v-layout>
+            </th>
             <td
               v-for="(day, idx) in week.days"
               :key="`week-${day.numWeek}-day-${idx}`"
@@ -207,16 +206,16 @@ export default {
       this.currentSelectedWeek = Math.floor(event.target.scrollTop / (tableRowHeigth || 48))
     },
 
-    setColorChip (week) {
+    setColorTh (week) {
       const { totalPlaces, bookedsPlaces } = week
       if (totalPlaces && bookedsPlaces >= (totalPlaces / 2)) {
-        return 'orange'
+        return '#FF4500'
       }
       if (totalPlaces && totalPlaces === bookedsPlaces) {
-        return 'red'
+        return '#90EE90'
       }
       if (totalPlaces) {
-        return 'success'
+        return '#DC143C'
       }
       return ''
     },
@@ -244,17 +243,12 @@ export default {
   color: #008000;
 }
 
-.chip-ui-week-column {
+.th-ui-week-column {
+  cursor: help;
   justify-content: center;
-  margin-top: 9px;
+  padding-left: 1.5vw;
   font-size: 11px;
-  width: 9vw;
-}
-
-.chip-ui-total-column {
-  justify-content: center;
-  margin-top: 9px;
-  overflow: scroll;
+  min-width: 10vw;
 }
 
 .sticky-container {
@@ -270,7 +264,7 @@ thead th {
   position: sticky;
   top: 0;
   padding: 0.5em;
-  z-index: 10;
+  z-index: 1;
   background: white;
 }
 </style>
