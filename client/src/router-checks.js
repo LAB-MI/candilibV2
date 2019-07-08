@@ -8,6 +8,7 @@ import store, {
   CHECK_CANDIDAT_TOKEN,
   SIGNED_IN_AS_ADMIN,
   SIGNED_IN_AS_CANDIDAT,
+  FETCH_ADMIN_INFO_REQUEST,
 } from '@/store'
 
 export async function requireCandidatAuth (to, from, next) {
@@ -40,6 +41,7 @@ export async function requireAdminAuth (to, from, next) {
     return
   }
   await store.dispatch(CHECK_ADMIN_TOKEN, token)
+
   if (store.state.auth.statusAdmin !== SIGNED_IN_AS_ADMIN) {
     next(signinRoute)
     return
@@ -64,7 +66,10 @@ export async function checkAdminToken (to, from, next) {
 
 export async function checkAccess (to, from, next) {
   const { name } = to
-  if (store.state.admin.features.includes(name)) {
+  if (!store.state.admin.features) {
+    await store.dispatch(FETCH_ADMIN_INFO_REQUEST)
+  }
+  if (store.state.admin.features && store.state.admin.features.includes(name)) {
     return next()
   }
   next({ name: from.name || 'admin-home' })
