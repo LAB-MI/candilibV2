@@ -16,6 +16,10 @@ import { ROUTE_AUTHORIZE_AURIGE } from '../../constants'
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
 
+import {
+  FETCH_ADMIN_INFO_REQUEST,
+} from '@/store'
+
 const components = {
   AdminHeader,
   AdminFooter,
@@ -47,7 +51,6 @@ export default {
     return {
       drawer: false,
       file: undefined,
-      // headerIcons: undefined,
     }
   },
 
@@ -58,6 +61,9 @@ export default {
         return (state.admin.features && state.admin.features.includes(headerIcon.routerTo)) || !headerIcon.isProtected
       }),
     }),
+  },
+  async mounted () {
+    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
   },
 }
 </script>
