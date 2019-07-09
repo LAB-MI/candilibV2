@@ -7,7 +7,7 @@
       >({{ center.selected.departement }})</span>
     </page-title>
 
-    <v-alert :value="warningMessage" type="warning" style="fontsize: 1em;">{{ warningMessage }}</v-alert>
+    <v-alert :value="warningMessage" type="warning" style="font-size: 1em;">{{ warningMessage }}</v-alert>
 
     <v-tabs
       v-model="switchTab"

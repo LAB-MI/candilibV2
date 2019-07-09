@@ -4,6 +4,7 @@
       <strong>
         {{ nameCenter }}
       </strong>
+
       (
         <strong class="text-free-places">
         {{ allBookedPlacesByCenter }}
@@ -16,6 +17,7 @@
         </strong>
       )
     </h2>
+
     <div class="text-xs-left">
       <span class="stats-card-text-free-places">
         Places reservées
@@ -25,6 +27,7 @@
       </span>
       Total places
     </div>
+
     <data-table-week-monitor
       :items="formattedArrayByWeek"
       @goToGestionPlannings="goToGestionPlannings"

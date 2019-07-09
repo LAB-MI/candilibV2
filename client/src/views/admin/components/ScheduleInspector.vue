@@ -24,6 +24,7 @@
           </v-icon>
         </v-btn>
       </h2>
+
       <div class="date-selector">
         <div class="date-input  u-flex  u-flex--center">
           <v-btn
@@ -89,6 +90,7 @@
           </div>
         </div>
       </div>
+
       <v-tabs
         class="tabs"
         v-model="activeCentreTab"
@@ -104,6 +106,7 @@
         >
           {{ element.centre.nom }}
         </v-tab>
+
         <v-tabs-items
           v-model="activeCentreTab"
         >
@@ -159,7 +162,6 @@
                         :centreInfo="placesByCentre.centre"
                       />
                     </div>
-
                   </td>
                 </tr>
               </tbody>

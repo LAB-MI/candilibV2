@@ -56,13 +56,13 @@ export default {
 
   beforeMount () {
     this.localeText = AgGridLocaleText
-    const StatusRenderer = (param) => {
-      const StatusIcon = {
+    const statusCellRenderer = (param) => {
+      const statusIcon = {
         'success': 'done',
         'error': 'clear',
         'warning': 'warning',
       }
-      return '<i class="material-icons">' + StatusIcon[param.value] + '</i>'
+      return '<i class="material-icons">' + statusIcon[param.value] + '</i>'
     }
     this.frameworkComponents = { agGridAurigeStatusFilter: AgGridAurigeStatusFilter }
 
@@ -70,7 +70,7 @@ export default {
       {
         headerName: 'Etat',
         field: 'status',
-        cellRenderer: StatusRenderer,
+        cellRenderer: statusCellRenderer,
         filter: 'agGridAurigeStatusFilter',
         width: 40,
       },
@@ -78,8 +78,7 @@ export default {
       { headerName: 'Nom', field: 'nom', width: 120 },
       { headerName: 'Description', field: 'message' },
     ]
-    this.gridOptions = {
-    }
+    this.gridOptions = {}
   },
 
   methods: {

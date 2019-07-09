@@ -7,9 +7,9 @@
 
     >
       <span>
-        Générer les bordereaux inspecteurs
+        Générer les bordereaux inspecteurs du
         <strong>
-          {{ `du ${activeDepartement}` }}
+          {{ activeDepartement }}
         </strong>
         &nbsp;
       </span>
@@ -25,7 +25,7 @@
         <v-card-title
           class="headline"
         >
-          Les bordereaux inspecteurs&nbsp;<strong>{{`du ${activeDepartement}`}} </strong>
+          Les bordereaux inspecteurs du&nbsp;<strong>{{`${activeDepartement}`}} </strong>
         </v-card-title>
         <v-card-text>
           Les bordereaux inspecteurs seront envoyés à l'adresse {{emailUser}}

@@ -48,7 +48,7 @@ import {
   CANCEL_BOOKED_PLACE,
   CANCEL_BOOKED_PLACE_NO_MAIL,
   DELETE_PLACE_ERROR,
-  RESA_PLACE_HAS_BOOKED,
+  PLACE_IS_ALREADY_BOOKED,
 } from './message.constants'
 
 const getPlaceStatus = (
@@ -415,7 +415,7 @@ export const validUpdateResaInspector = async (resaId, inspecteur) => {
     throw new ErrorWithStatus(404, 'Réservation non trouvée')
   }
   if (place.candidat) {
-    throw new ErrorWithStatus(400, RESA_PLACE_HAS_BOOKED)
+    throw new ErrorWithStatus(400, PLACE_IS_ALREADY_BOOKED)
   }
 
   return { resa, place }
@@ -491,7 +491,7 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   const newBookedPlace = await bookPlaceById(placeId, candidatId)
 
   if (!newBookedPlace) {
-    throw new ErrorWithStatus(400, 'Cette place est déja réservée')
+    throw new ErrorWithStatus(400, PLACE_IS_ALREADY_BOOKED)
   }
 
   if (placeAlreadyBookedByCandidat) {

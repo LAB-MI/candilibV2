@@ -1,26 +1,27 @@
 <template>
-    <v-select v-model="selected" :items="options">
-      <template slot="selection" slot-scope="{ item  }">
+  <v-select v-model="selected" :items="options">
+    <template slot="selection" slot-scope="{ item  }">
+    <v-chip v-if="!item.value">
+      <span >{{ item.text }}</span>
+    </v-chip>
+    <v-chip v-if="item.value">
+      <v-icon>{{item.text}}</v-icon>
+    </v-chip>
+    </template>
+    <template slot="item" slot-scope="{ item  }">
       <v-chip v-if="!item.value">
-        <span >{{ item.text }}</span>
-      </v-chip>
-      <v-chip v-if="item.value">
-        <v-icon>{{item.text}}</v-icon>
-      </v-chip>
-      </template>
-      <template slot="item" slot-scope="{ item  }">
-        <v-chip v-if="!item.value">
-        <span >{{ item.text }}</span>
-      </v-chip>
-      <v-chip v-if="item.value">
-        <v-icon>{{item.text}}</v-icon>
-      </v-chip>
-      </template>
-    </v-select>
+      <span >{{ item.text }}</span>
+    </v-chip>
+    <v-chip v-if="item.value">
+      <v-icon>{{item.text}}</v-icon>
+    </v-chip>
+    </template>
+  </v-select>
 </template>
 
 <script>
 import Vue from 'vue'
+
 export default Vue.extend({
   data () {
     return {
@@ -34,6 +35,7 @@ export default Vue.extend({
       ],
     }
   },
+
   methods: {
     isFilterActive () {
       const { selected } = this
@@ -45,6 +47,7 @@ export default Vue.extend({
       return !selected || !(selected[0].length > 0) || !selected.indexOf(this.valueGetter(params.node))
     },
   },
+
   watch: {
     'selected': function (val, oldVal) {
       if (val !== oldVal) {
@@ -52,6 +55,7 @@ export default Vue.extend({
       }
     },
   },
+
   created () {
     this.valueGetter = this.params.valueGetter
   },
