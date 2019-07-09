@@ -10,8 +10,8 @@ import {
   findCandidatById,
   deleteCandidat,
 } from '../../models/candidat'
-import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
+  getDepartementFromWhitelist,
   isAlreadyPresignedUp,
   updateInfoCandidat,
   presignUpCandidat,
@@ -39,7 +39,7 @@ export async function preSignup (req, res) {
   const { codeNeph, nomNaissance, portable, adresse, email } = candidatData
 
   const isFormFilled = [codeNeph, nomNaissance, email, portable, adresse].every(
-    e => !!e
+    value => value
   )
 
   const isValidEmail = emailRegex.test(email)
@@ -70,13 +70,14 @@ export async function preSignup (req, res) {
     return
   }
 
-  const isCandidatWhitelisted = await findWhitelistedByEmail(email)
-
-  if (!isCandidatWhitelisted) {
+  try {
+    const departement = await getDepartementFromWhitelist(candidatData)
+    // Forcer le département du candidat par le département de la whitelist correspondant à son email
+    candidatData.departement = departement
+  } catch (error) {
     res.status(401).json({
       success: false,
-      message:
-        "L'adresse courriel renseignée n'est pas dans la liste des invités.",
+      message: error.message,
     })
     return
   }
@@ -135,8 +136,15 @@ export async function preSignup (req, res) {
       const response = await presignUpCandidat(candidatData)
       res.status(200).json(response)
     } catch (error) {
-      techLogger.error(error)
-      res.status(500).json({ success: false, ...error })
+      techLogger.error({
+        section: 'candidat-presignup',
+        error,
+      })
+      res.status(500).json({
+        success: false,
+        message:
+          'Oups ! Une erreur est survenue lors de votre pré-inscription.',
+      })
     }
     return
   }
