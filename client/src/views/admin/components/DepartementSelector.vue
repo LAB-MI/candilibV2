@@ -16,7 +16,7 @@
 import { mapState } from 'vuex'
 
 import Hexagon from '@/components/Hexagon.vue'
-import { SELECT_DEPARTEMENT, FETCH_ADMIN_INFO_REQUEST } from '@/store'
+import { SELECT_DEPARTEMENT } from '@/store'
 
 export default {
   components: {
@@ -32,10 +32,6 @@ export default {
         this.$store.dispatch(SELECT_DEPARTEMENT, departement)
       },
     },
-  },
-
-  async mounted () {
-    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
   },
 }
 </script>

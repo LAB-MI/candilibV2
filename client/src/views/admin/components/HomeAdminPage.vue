@@ -12,7 +12,6 @@
 import SearchCandidat from './SearchCandidat'
 import SearchInspecteur from './SearchInspecteur'
 import Monitors from './Monitors.vue'
-import { FETCH_ADMIN_INFO_REQUEST } from '@/store'
 import { getFrenchLuxonCurrentDateTime } from '@/util'
 
 export default {
@@ -33,10 +32,6 @@ export default {
         },
       })
     },
-  },
-
-  async mounted () {
-    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
   },
 }
 </script>

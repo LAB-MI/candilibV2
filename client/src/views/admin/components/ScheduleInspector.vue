@@ -175,7 +175,6 @@
 import { mapGetters, mapState } from 'vuex'
 import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
-  FETCH_ADMIN_INFO_REQUEST,
   FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
   SELECT_CENTER,
   FETCH_CANDIDAT_REQUEST,
@@ -410,8 +409,7 @@ export default {
       const dateTimeFromSQL = getFrenchLuxonFromSql(this.date)
       const begin = dateTimeFromSQL.startOf('day').toISO()
       const end = dateTimeFromSQL.endOf('day').toISO()
-      await this.$store
-        .dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
       const { center } = this.$route.params
@@ -426,7 +424,7 @@ export default {
   },
 
   async mounted () {
-    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
+    await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
     const centerId = this.$route.params.center
     this.activeCentreId = (centerId) || this.firstCentreId
     this.activeCentreTab = `tab-${this.activeCentreId}`

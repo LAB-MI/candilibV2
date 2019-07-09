@@ -39,8 +39,6 @@
 import { mapGetters } from 'vuex'
 import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
-  FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
-  FETCH_ADMIN_INFO_REQUEST,
 } from '@/store'
 import WeekMonitor from './WeekMonitor.vue'
 import { RefreshButton } from '@/components'
@@ -66,7 +64,6 @@ export default {
   watch: {
     async activeDepartement (newValue, oldValue) {
       if (newValue !== oldValue) {
-        await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
         await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       }
     },
@@ -79,7 +76,6 @@ export default {
   },
 
   async mounted () {
-    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
     await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
   },
 }
