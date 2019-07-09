@@ -34,10 +34,15 @@ export const FETCH_MY_PROFILE_SUCCESS = 'FETCH_MY_PROFILE_SUCCESS'
 
 export const SET_SHOW_EVALUATION = 'SET_SHOW_EVALUATION'
 
+export const SEND_EVALUATION_REQUEST = 'SEND_EVALUATION_REQUEST'
+export const SEND_EVALUATION_FAILURE = 'SEND_EVALUATION_FAILURE'
+export const SEND_EVALUATION_SUCCESS = 'SEND_EVALUATION_SUCCESS'
+
 export default {
   state: {
     displayNavDrawer: false,
     isCheckingEmail: false,
+    isSendingEvaluation: false,
     isFetchingProfile: false,
     isSendingMagicLink: false,
     isSendingPresignup: false,
@@ -110,6 +115,18 @@ export default {
 
     [SET_SHOW_EVALUATION] (state, showEvaluation) {
       state.showEvaluation = showEvaluation
+    },
+
+    [SEND_EVALUATION_REQUEST] (state) {
+      state.isSendingEvaluation = true
+    },
+    [SEND_EVALUATION_FAILURE] (state) {
+      state.isSendingEvaluation = false
+    },
+    [SEND_EVALUATION_SUCCESS] (state) {
+      state.isSendingEvaluation = false
+      state.me.isEvaluationDone = true
+      state.showEvaluation = false
     },
   },
 
@@ -186,6 +203,19 @@ export default {
 
     async [SET_SHOW_EVALUATION] ({ commit }, showEvaluation) {
       commit(SET_SHOW_EVALUATION, showEvaluation)
+    },
+
+    async [SEND_EVALUATION_REQUEST] ({ commit, dispatch }, evaluation) {
+      try {
+        const response = await api.candidat.sendEvaluation(evaluation)
+        if (response.success === false) {
+          throw new Error(`Impossible d'enregistrer votre évaluation`)
+        }
+        commit(SEND_EVALUATION_SUCCESS)
+      } catch (error) {
+        dispatch(SHOW_ERROR, error.message)
+        throw error
+      }
     },
 
   },

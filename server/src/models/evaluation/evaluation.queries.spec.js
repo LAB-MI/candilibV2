@@ -6,7 +6,7 @@ import {
   updateEvaluationById,
 } from './evaluation.queries'
 
-const note = 5
+const rating = 5
 const comment = 'chouette'
 
 describe('Saving Evaluation', () => {
@@ -18,15 +18,17 @@ describe('Saving Evaluation', () => {
     await disconnect()
   })
 
-  it('Create Evaluation', async () => {
+  it.only('Create Evaluation', async () => {
     // Given
-    const evaluationLean = { note, comment }
+    const evaluationLean = { rating, comment }
 
     // When
     const evaluation = await createEvaluation(evaluationLean)
 
     // Then
     expect(evaluation.isNew).toBe(false)
+    expect(evaluation.rating).toBe(rating)
+    expect(evaluation.comment).toBe(comment)
     await deleteEvaluationById(evaluation.id)
   })
 })
@@ -36,7 +38,7 @@ describe('Find Evaluation', () => {
 
   beforeAll(async () => {
     await connect()
-    const evaluation = await createEvaluation({ note, comment })
+    const evaluation = await createEvaluation({ rating, comment })
     evaluationId = evaluation.id
   })
 
@@ -55,7 +57,7 @@ describe('Find Evaluation', () => {
     // Then
     expect(evaluation).toBeDefined()
     expect(evaluation).not.toBeNull()
-    expect(evaluation).toHaveProperty('note', 5)
+    expect(evaluation).toHaveProperty('rating', 5)
   })
 })
 
@@ -64,7 +66,7 @@ describe('Update Evaluation', () => {
 
   beforeAll(async () => {
     await connect()
-    const evaluation = await createEvaluation({ note, comment })
+    const evaluation = await createEvaluation({ rating, comment })
     evaluationId = evaluation.id
   })
 
@@ -75,15 +77,15 @@ describe('Update Evaluation', () => {
 
   it('Update evaluation by Id', async () => {
     // Given
-    const note = 4
+    const rating = 4
     const comment = 'cool'
 
     // When
-    const evaluation = await updateEvaluationById(evaluationId, { note, comment })
+    const evaluation = await updateEvaluationById(evaluationId, { rating, comment })
 
     // Then
     expect(evaluation).toBeDefined()
-    expect(evaluation).toHaveProperty('note', note)
+    expect(evaluation).toHaveProperty('rating', rating)
   })
 })
 
@@ -92,7 +94,7 @@ describe('Delete Evaluation', () => {
 
   beforeAll(async () => {
     await connect()
-    const evaluation = await createEvaluation({ note, comment })
+    const evaluation = await createEvaluation({ rating, comment })
     evaluationId = evaluation.id
   })
 

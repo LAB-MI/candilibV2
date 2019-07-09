@@ -150,7 +150,9 @@ export default {
     },
 
     displayEvaluation () {
-      window.setTimeout(() => this.$store.dispatch(SET_SHOW_EVALUATION, true), 2000)
+      if (!this.$store.state.candidat.me.isEvaluationDone) {
+        window.setTimeout(() => this.$store.dispatch(SET_SHOW_EVALUATION, true), 5000)
+      }
     },
   },
 }

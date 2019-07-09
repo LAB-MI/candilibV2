@@ -3,7 +3,7 @@ import mongoose from 'mongoose'
 const { Schema } = mongoose
 
 const EvaluationSchema = new Schema({
-  note: {
+  rating: {
     type: Number,
   },
   comment: {
@@ -11,4 +11,4 @@ const EvaluationSchema = new Schema({
   },
 })
 
-export default mongoose.model('evaluation', EvaluationSchema)
+export default mongoose.model('Evaluation', EvaluationSchema)

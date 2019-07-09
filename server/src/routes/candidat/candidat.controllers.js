@@ -164,6 +164,7 @@ export async function getMe (req, res) {
       portable: 1,
       adresse: 1,
       departement: 1,
+      isEvaluationDone: 1,
     }
 
     const candidat = await findCandidatById(req.userId, options)
@@ -181,7 +182,7 @@ export async function getMe (req, res) {
 }
 
 export async function emailValidation (req, res) {
-  const { email, hash } = req.body
+  const { email, hash } = req.body || {}
   try {
     const candidat = await findCandidatByEmail(email)
 
@@ -214,7 +215,7 @@ export async function emailValidation (req, res) {
 }
 
 export async function saveEvaluation (req, res) {
-  const { note, comment } = req.body
+  const { rating, comment } = req.body.evaluation || {}
   const candidatId = req.userId
   try {
     const candidat = findCandidatById(candidatId)
@@ -223,7 +224,7 @@ export async function saveEvaluation (req, res) {
       error.status = 400
       throw error
     }
-    const evaluation = await createEvaluation({ note, comment })
+    const evaluation = await createEvaluation({ rating, comment })
     candidat.isEvaluationDone = true
     updateCandidatById(candidatId, candidat)
     res.status(201).json({ success: true, evaluation })

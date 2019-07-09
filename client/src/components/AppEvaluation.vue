@@ -19,7 +19,12 @@
           half-increments
           hover
         />
-        <textarea name="" id="" cols="30" rows="10"></textarea>
+        <v-textarea
+          class="no-resize"
+          v-model="comment"
+          cols="30"
+          rows="10"
+        />
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions class="justify-space-between">
@@ -32,7 +37,7 @@
         <v-btn
           color="primary"
           flat
-          @click="showEvaluation = false"
+          @click="sendEvaluation"
         >
           Noter maintenant
         </v-btn>
@@ -42,12 +47,13 @@
 </template>
 
 <script>
-import { SET_SHOW_EVALUATION } from '@/store'
+import { SET_SHOW_EVALUATION, SEND_EVALUATION_REQUEST } from '@/store'
 
 export default {
   data () {
     return {
-      rating: 4.5,
+      rating: 4,
+      comment: '',
     }
   },
 
@@ -61,5 +67,18 @@ export default {
       },
     },
   },
+
+  methods: {
+    sendEvaluation () {
+      const evaluation = { rating: this.rating, comment: this.comment }
+      this.$store.dispatch(SEND_EVALUATION_REQUEST, evaluation)
+    },
+  },
 }
 </script>
+
+<style lang="stylus" scoped>
+.no-resize {
+  resize: none;
+}
+</style>

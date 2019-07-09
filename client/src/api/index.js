@@ -177,6 +177,16 @@ export default {
       })
       return json
     },
+
+    async sendEvaluation (evaluation) {
+      const json = await apiClient.post(apiPaths.candidat.evaluations, {
+        headers: getHeadersForJson(),
+        body: JSON.stringify({
+          evaluation,
+        }),
+      })
+      return json
+    },
   },
 
   admin: {

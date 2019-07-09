@@ -1,9 +1,9 @@
 import Evaluation from './evaluation.model'
 
-export const createEvaluation = async ({ note, comment }) => {
+export const createEvaluation = async ({ rating, comment }) => {
   try {
     const evaluation = new Evaluation({
-      note,
+      rating,
       comment,
     })
     await evaluation.save()
@@ -24,9 +24,9 @@ export const deleteEvaluationById = async id => {
   return evaluation
 }
 
-export const updateEvaluationById = async (id, { note, comment }) => {
+export const updateEvaluationById = async (id, { rating, comment }) => {
   const evaluation = await findEvaluationById(id)
-  evaluation.note = note
+  evaluation.rating = rating
   evaluation.comment = comment
   await evaluation.update()
   return evaluation
