@@ -4,14 +4,14 @@ import store, { UNAUTHORIZED } from '../store'
 import apiPaths from './api-paths'
 import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '../constants'
 
-const checkStatus = async (response) => {
+const checkStatus = async response => {
   if (response.status === 401) {
     await store.dispatch(UNAUTHORIZED)
   }
   return response
 }
 
-const checkValidJson = async (response) => {
+const checkValidJson = async response => {
   let data
   try {
     data = await response.json()
@@ -25,31 +25,19 @@ export const fetchClient = (url, options) => fetch(url, options).then(checkStatu
 export const jsonClient = (url, options) => fetchClient(url, options).then(checkValidJson)
 
 const apiClient = {
-  post: (url, options) => (
-    jsonClient(url, { ...options, method: 'post' })
-  ),
-  get: (url, options) => (
-    jsonClient(url, { ...options, method: 'GET' })
-  ),
-  getRaw: (url, options) => (
-    fetchClient(url, { ...options, method: 'GET' })
-  ),
-  put: (url, options) => (
-    jsonClient(url, { ...options, method: 'PUT' })
-  ),
-  patch: (url, options) => (
-    jsonClient(url, { ...options, method: 'PATCH' })
-  ),
-  delete: (url, options) => (
-    jsonClient(url, { ...options, method: 'DELETE' })
-  ),
+  post: (url, options) => jsonClient(url, { ...options, method: 'post' }),
+  get: (url, options) => jsonClient(url, { ...options, method: 'GET' }),
+  getRaw: (url, options) => fetchClient(url, { ...options, method: 'GET' }),
+  put: (url, options) => jsonClient(url, { ...options, method: 'PUT' }),
+  patch: (url, options) => jsonClient(url, { ...options, method: 'PATCH' }),
+  delete: (url, options) => jsonClient(url, { ...options, method: 'DELETE' }),
 }
 
 const getHeadersForJson = () => {
   const token = localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   }
 }
 
@@ -57,14 +45,14 @@ const getHeadersForAdminJson = () => {
   const token = localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY)
   return {
     'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   }
 }
 
 const getAdminTokenHeader = () => {
   const token = localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY)
   return {
-    'Authorization': `Bearer ${token}`,
+    Authorization: `Bearer ${token}`,
   }
 }
 
@@ -214,37 +202,34 @@ export default {
       const beginDateInfo = `beginDate=${encodeURIComponent(beginDate)}`
       const endDateInfo = `endDate=${encodeURIComponent(endDate)}`
       const queryString = `${departementInfo}&${beginDateInfo}&${endDateInfo}`
-      const json = await apiClient
-        .get(`${apiPaths.admin.places}?${queryString}`, {
-          headers: getHeadersForAdminJson(),
-        })
+      const json = await apiClient.get(`${apiPaths.admin.places}?${queryString}`, {
+        headers: getHeadersForAdminJson(),
+      })
       return json
     },
 
     async createPlace (centre, inspecteur, date) {
-      const json = await apiClient
-        .post(`${apiPaths.admin.place}`, {
-          headers: getHeadersForAdminJson(),
-          body: JSON.stringify({
-            departement: centre.departement,
-            centre,
-            inspecteur,
-            date,
-          }),
-        })
+      const json = await apiClient.post(`${apiPaths.admin.place}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({
+          departement: centre.departement,
+          centre,
+          inspecteur,
+          date,
+        }),
+      })
       return json
     },
 
     async deletePlace (placeId) {
-      const json = await apiClient
-        .delete(`${apiPaths.admin.place}/${placeId}`, {
-          headers: getHeadersForAdminJson(),
-        })
+      const json = await apiClient.delete(`${apiPaths.admin.place}/${placeId}`, {
+        headers: getHeadersForAdminJson(),
+      })
       return json
     },
 
     async getCandidats (candidatId, departement) {
-      const candidatInfo = candidatId && (typeof candidatId === 'string') ? '/' + candidatId : ''
+      const candidatInfo = candidatId && typeof candidatId === 'string' ? '/' + candidatId : ''
       const queryString = departement ? `departement=${departement}` : ''
       const json = await apiClient.get(`${apiPaths.admin.candidats}${candidatInfo}?${queryString}`, {
         headers: getHeadersForAdminJson(),
@@ -267,9 +252,12 @@ export default {
     },
 
     async searchInspecteurs (search, departement) {
-      const json = await apiClient.get(`${apiPaths.admin.searchInspecteurs}${search || ''}&departement=${departement}`, {
-        headers: getHeadersForAdminJson(),
-      })
+      const json = await apiClient.get(
+        `${apiPaths.admin.searchInspecteurs}${search || ''}&departement=${departement}`,
+        {
+          headers: getHeadersForAdminJson(),
+        }
+      )
       return json
     },
 
@@ -325,6 +313,17 @@ export default {
       return json
     },
 
+    async updateWhitelisted (whitelisted) {
+      const json = await apiClient.put(
+        `${apiPaths.admin.whitelist}/${whitelisted._id}?departement=${whitelisted.departement}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify(whitelisted),
+        }
+      )
+      return json
+    },
+
     async addBatchToWhitelist (emails, departement) {
       const json = await apiClient.post(apiPaths.admin.whitelist, {
         headers: getHeadersForAdminJson(),
@@ -350,19 +349,17 @@ export default {
 
     async getPlacesAvailableByCentreAndDate (departement, centre, date) {
       const queryString = `departement=${departement}&centre=${centre}&date=${encodeURIComponent(date)}`
-      const json = await apiClient
-        .get(`${apiPaths.admin.places}?${queryString}`, {
-          headers: getHeadersForAdminJson(),
-        })
+      const json = await apiClient.get(`${apiPaths.admin.places}?${queryString}`, {
+        headers: getHeadersForAdminJson(),
+      })
       return json
     },
 
     async updateInspeteurForResa (departement, placeId, inspecteur) {
-      const json = await apiClient
-        .patch(`${apiPaths.admin.places}/${placeId}`, {
-          headers: getHeadersForAdminJson(),
-          body: JSON.stringify({ departement, inspecteur }),
-        })
+      const json = await apiClient.patch(`${apiPaths.admin.places}/${placeId}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ departement, inspecteur }),
+      })
       return json
     },
 
@@ -386,8 +383,7 @@ export default {
   util: {
     async searchAdresses (query) {
       const json = await apiClient.get(apiPaths.util.adressesQuery(query), {
-        headers: {
-        },
+        headers: {},
       })
       return json
     },

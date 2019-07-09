@@ -1,7 +1,16 @@
 import Whitelisted from './whitelisted.model'
 
 export const findAllWhitelisted = async departement => {
-  const whitelisted = await Whitelisted.find({ departement }).sort('-dateAdded')
+  const whitelisted = await Whitelisted.find({ departement })
+  return whitelisted
+}
+
+export const findLastCreatedWhitelisted = async (departement, limit = 50) => {
+  const whitelisted = await Whitelisted.find({
+    departement,
+  })
+    .sort({ createdAt: -1 })
+    .limit(limit)
   return whitelisted
 }
 

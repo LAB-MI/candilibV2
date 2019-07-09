@@ -6,10 +6,12 @@ const { Schema } = mongoose
 
 const ArchivedCandidatFields = {
   ...candidatFields,
+
   archivedAt: {
     type: Date,
     default: undefined,
   },
+
   archiveReason: {
     type: String,
     default: undefined,
@@ -19,7 +21,9 @@ const ArchivedCandidatFields = {
 ArchivedCandidatFields.email = { ...ArchivedCandidatFields.email }
 ArchivedCandidatFields.email.unique = false
 
-const ArchivedCandidatSchema = new Schema(ArchivedCandidatFields)
+const ArchivedCandidatSchema = new Schema(ArchivedCandidatFields, {
+  timestamps: true,
+})
 
 ArchivedCandidatSchema.index(
   {

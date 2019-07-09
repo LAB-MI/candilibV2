@@ -8,35 +8,40 @@ import {
 
 const { Schema } = mongoose
 
-const UserSchema = new Schema({
-  email: {
-    type: String,
-    trim: true,
-    unique: true,
-    match: regexEmail,
-    required: true,
+const UserSchema = new Schema(
+  {
+    email: {
+      type: String,
+      trim: true,
+      unique: true,
+      match: regexEmail,
+      required: true,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+    departements: {
+      type: Array,
+      default: [],
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
+    signUpDate: {
+      type: Date,
+      default: Date.now(),
+    },
+    status: {
+      type: String,
+      default: 'admin',
+    },
   },
-  password: {
-    type: String,
-    required: true,
-  },
-  departements: {
-    type: Array,
-    default: [],
-  },
-  isDeleted: {
-    type: Boolean,
-    default: false,
-  },
-  signUpDate: {
-    type: Date,
-    default: Date.now(),
-  },
-  status: {
-    type: String,
-    default: 'admin',
-  },
-})
+  {
+    timestamps: true,
+  }
+)
 
 UserSchema.pre('save', async function preSave () {
   const user = this

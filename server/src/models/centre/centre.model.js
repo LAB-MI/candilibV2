@@ -29,7 +29,7 @@ const CentreSchema = new Schema(
       coordinates: [Number],
     },
   },
-  { typeKey: '$type' }
+  { typeKey: '$type', timestamps: true }
 )
 
 CentreSchema.index({ nom: 1, departement: 1 }, { unique: true })
