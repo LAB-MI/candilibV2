@@ -184,8 +184,8 @@ export default {
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
         const currentDateTime = getFrenchLuxonCurrentDateTime()
-        const beginDate = begin || currentDateTime.toISO()
-        const endDate = end || currentDateTime.plus({ months: numberOfMonthsToFetch }).toISO()
+        const beginDate = begin || currentDateTime.startOf('day').toISO()
+        const endDate = end || currentDateTime.plus({ months: numberOfMonthsToFetch }).endOf('day').toISO()
         const placesByCentre = await api.admin
           .getAllPlacesByDepartement(state.departements.active, beginDate, endDate)
 
