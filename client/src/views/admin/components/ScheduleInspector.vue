@@ -2,10 +2,42 @@
   <v-container grid-list-md>
     <div>
       <h2 class="text--center">
+        <v-btn
+          icon
+          @click="goto('-1 weeks')"
+        >
+          <v-icon
+            color="grey darken"
+          >
+            fast_rewind
+          </v-icon>
+        </v-btn>
         Semaine {{ currentWeekNumber }}
+        <v-btn
+          icon
+          @click="goto('+1 weeks')"
+        >
+          <v-icon
+            color="grey darken"
+          >
+            fast_forward
+          </v-icon>
+        </v-btn>
       </h2>
       <div class="date-selector">
-        <div class="date-input">
+        <div class="date-input  u-flex  u-flex--center">
+          <v-btn
+            icon
+            @click="goto('-1 days')"
+          >
+            <v-icon
+              color="grey darken"
+              style="transform: rotate(0.5turn);"
+            >
+              play_arrow
+            </v-icon>
+          </v-btn>
+
           <v-menu
             v-model="datePicker"
             :close-on-content-click="false"
@@ -27,6 +59,17 @@
             </template>
             <v-date-picker v-model="date" no-title @input="datePicker = false" locale="fr"/>
           </v-menu>
+          <v-btn
+            icon
+            @click="goto('+1 days')"
+          >
+            <v-icon
+              color="grey darken"
+            >
+              play_arrow
+            </v-icon>
+          </v-btn>
+
         </div>
       </div>
     </div>
@@ -182,7 +225,7 @@ export default {
       datePicker: false,
       selectedPlaceInfo: undefined,
       activeInspecteurRow: undefined,
-      flagModal: 'check',
+      luxonDate: undefined,
     }
   },
 
@@ -235,6 +278,12 @@ export default {
     closeDetails () {
       this.activeInspecteurRow = undefined
       this.activeHour = undefined
+    },
+
+    goto (selectedDate) {
+      const [nb, scale] = selectedDate.split(' ')
+      this.luxonDate = this.luxonDate.plus({ [scale]: +nb })
+      this.date = this.luxonDate.toISODate()
     },
 
     async reloadWeekMonitor () {
@@ -342,9 +391,9 @@ export default {
   },
 
   watch: {
-    async date (val) {
-      this.$router.push({ params: { date: this.date } })
-      const dateTimeFromSQL = getFrenchLuxonFromSql(this.date)
+    async date (newDay) {
+      this.$router.push({ params: { date: newDay } })
+      const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
       this.currentWeekNumber = dateTimeFromSQL.weekNumber
       if (this.$store.state.admin.departements.active) {
         const begin = dateTimeFromSQL.startOf('day').toISO()
@@ -399,10 +448,12 @@ export default {
     if (routeDate) {
       const [year, month, day] = this.$route.params.date.split('-')
       const date = { year, month, day }
+      this.luxonDate = getFrenchLuxonFromObject(date)
       this.date = getFrenchLuxonFromObject(date).toISODate()
       return
     }
 
+    this.luxonDate = getFrenchLuxonFromObject(defaultDate)
     this.date = getFrenchLuxonFromObject(defaultDate).toISODate()
   },
 }
