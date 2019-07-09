@@ -4,6 +4,7 @@ import {
   addPlaceToArchive,
   findCandidatById,
   setCandidatToVIP,
+  archivePlace,
 } from '../../models/candidat'
 import {
   findCentreByNameAndDepartement,
@@ -26,7 +27,10 @@ import {
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
 } from '../../models/place'
-import { REASON_REMOVE_RESA_ADMIN } from '../../routes/common/reason.constants'
+import {
+  REASON_REMOVE_RESA_ADMIN,
+  REASON_MODIFY_RESA_ADMIN,
+} from '../../routes/common/reason.constants'
 import {
   appLogger,
   ErrorWithStatus,
@@ -448,11 +452,12 @@ export const moveCandidatInPlaces = async (resa, place) => {
   return newResa
 }
 
-export const assignCandidatInPlace = async (candidatId, placeId) => {
+export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   const loggerContent = {
     section: 'admin-assign-candidat-in-places',
     candidatId,
     placeId,
+    user: admin._id,
   }
 
   appLogger.info({
@@ -491,6 +496,12 @@ export const assignCandidatInPlace = async (candidatId, placeId) => {
 
   if (placeAlreadyBookedByCandidat) {
     await removeBookedPlace(placeAlreadyBookedByCandidat)
+    await archivePlace(
+      candidat,
+      placeAlreadyBookedByCandidat,
+      REASON_MODIFY_RESA_ADMIN,
+      admin.email
+    )
   }
 
   let statusmail
