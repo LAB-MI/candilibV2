@@ -84,7 +84,7 @@ const candidatProfileInfoDictionary = [
   [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDate],
-    ['isValidatedByEmail', 'Email validé', transformBoolean],
+    ['isValidatedEmail', 'Email validé', transformBoolean],
     ['isValidatedByAurige', 'Statut Aurige', transformBoolean],
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
     ['place', 'Réservation', placeReserve],
