@@ -77,7 +77,7 @@ const historiqueAction = (places) => {
     const frenchDate = convertToLegibleDate(date)
     const actionDate = convertToLegibleDate(archivedAt)
     return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
-  }).join('') + '</ol>'
+  }).reverse().join('') + '</ol>'
 }
 const candidatProfileInfoDictionary = [
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
