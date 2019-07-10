@@ -4,19 +4,19 @@
       :disabled="flag === 1"
       @click="selectTypeOfDelete(1)"
     >
-      Supprimer la journnée
+      {{ $formatMessage({ id: 'supprimer_la_journnee'}) }}
     </v-btn>
     <v-btn
       :disabled="flag === 2"
       @click="selectTypeOfDelete(2)"
     >
-      Supprimer la matinée
+      {{ $formatMessage({ id: 'supprimer_la_matinee'}) }}
     </v-btn>
     <v-btn
       :disabled="flag === 3"
       @click="selectTypeOfDelete(3)"
     >
-      Supprimer l'apès-midi
+      {{ $formatMessage({ id: 'supprimer_l_apres_midi'}) }}
     </v-btn>
     <confirm-box
       v-if="!isCancel"
@@ -28,11 +28,14 @@
 </template>
 
 <script>
-import ConfirmBox from '@/components/ConfirmBox.vue'
 import {
   getFrenchLuxonFromIso,
   getFrenchLuxonFromObject,
 } from '@/util'
+
+import { DELETE_INSPECTEUR_PLACES_REQUEST } from '@/store'
+
+import ConfirmBox from '@/components/ConfirmBox.vue'
 
 export default {
   components: {
@@ -40,8 +43,9 @@ export default {
   },
 
   props: {
-    placeInfo: Object,
+    closeDetails: Function,
     inspecteurId: String,
+    placeInfo: Object,
   },
 
   data () {
@@ -108,34 +112,27 @@ export default {
       }
     },
 
-    deleteInspecteurPlaces () {
+    async deleteInspecteurPlaces () {
       if (this.flag === 1) {
-        const toDispatch = {
-          inspecteur: this.inspecteurId,
-          placesToDelete: this.placeInfo.creneau.filter(el => el.place).map(el => el.place._id),
-        }
-        console.log('qwertyuiop1', toDispatch)
-
-      // return this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
+        const toDispatch = this.placeInfo.creneau.filter(el => el.place).map(el => el.place._id)
+        this.flag = undefined
+        this.isCancel = true
+        await this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
       }
       if (this.flag === 2) {
-        const toDispatch = {
-          inspecteur: this.inspecteurId,
-          placesToDelete: this.placeInfo.creneau.filter(el => this.getMorningOrAfternoonTimeSlots(el, 1)).map(el => el.place._id),
-        }
-        console.log('qwertyuiop2', toDispatch)
+        const toDispatch = this.placeInfo.creneau.filter(el => this.getMorningOrAfternoonTimeSlots(el, 1)).map(el => el.place._id)
+        this.flag = undefined
+        this.isCancel = true
+        await this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
       }
       if (this.flag === 3) {
-        const toDispatch = {
-          inspecteur: this.inspecteurId,
-          placesToDelete: this.placeInfo.creneau.filter(el => this.getMorningOrAfternoonTimeSlots(el, 2)).map(el => el.place._id),
-        }
-        console.log('qwertyuiop3', toDispatch)
+        const toDispatch = this.placeInfo.creneau.filter(el => this.getMorningOrAfternoonTimeSlots(el, 2)).map(el => el.place._id)
+        this.flag = undefined
+        this.isCancel = true
+        await this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
       }
-
-      // return this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
-      this.flag = undefined
-      this.isCancel = true
+      this.closeDetails()
+      this.$emit('reloadWeekMonitor')
     },
   },
 }

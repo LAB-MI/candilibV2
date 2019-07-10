@@ -25,16 +25,16 @@
       >
       <!-- TODO: Refactor Create composant for each subcontent dialogs -->
         <div v-if="isFetchingCandidat">
-          Chargement en cours...
+            {{ $formatMessage({ id: 'chargement_en_cours'}) }}...
         </div>
         <div v-else>
           <p>
-            Nom:
+            {{ $formatMessage({ id: 'nom'}) }}:
             <strong>
               {{ candidat.nomNaissance }}
             </strong>
             /
-            Neph:
+            {{ $formatMessage({ id: 'neph'}) }}:
             <strong>
               {{ candidat.codeNeph }}
             </strong>
@@ -43,7 +43,7 @@
             {{ candidat.email }}
           </p>
           <p>
-            Portable:
+            {{ $formatMessage({ id: 'portable'}) }}:
             <strong>
               {{ candidat.portable }}
             </strong>

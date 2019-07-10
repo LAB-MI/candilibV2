@@ -27,10 +27,14 @@ export default {
   },
 
   actions: {
-    async DELETE_INSPECTEUR_PLACES_REQUEST ({ state, commit, dispatch }, idPlacesList) {
+    async DELETE_INSPECTEUR_PLACES_REQUEST ({ state, commit, dispatch }, placesToDelete) {
       try {
         commit(DELETE_INSPECTEUR_PLACES_REQUEST)
-        const result = await api.admin.deletePlacesInspecteur(idPlacesList)
+        if (!placesToDelete.length) {
+          throw new Error(`Il n'y a pas de place à supprimer pour cette cette inspecteur sur la tranche horraire selectionée`)
+        }
+        const result = await api.admin.deletePlacesInspecteur(placesToDelete)
+        console.log({ result })
         commit(DELETE_INSPECTEUR_PLACES_SUCCESS, result)
         dispatch(SHOW_SUCCESS, result)
       } catch (error) {

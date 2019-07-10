@@ -25,7 +25,7 @@
       <span class="slash-wrapper">
         /
       </span>
-      Total places
+      {{ $formatMessage({ id: 'total_places'}) }}
     </div>
 
     <data-table-week-monitor

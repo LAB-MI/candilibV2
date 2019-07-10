@@ -5,6 +5,9 @@ import {
   findPlaceById,
   findPlacesByCentreAndDate,
 } from '../../models/place'
+
+import { findCandidatById } from '../../models/candidat'
+
 import { findUserById } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
 import {
@@ -18,6 +21,7 @@ import {
   createPlaceForInspector,
   importPlacesFromFile,
   moveCandidatInPlaces,
+  removeReservationPlaceByAdmin,
   sendMailSchedulesAllInspecteurs,
   sendMailSchedulesInspecteurs,
   validUpdateResaInspector,
@@ -199,6 +203,60 @@ export const deletePlaceByAdmin = async (req, res) => {
       error: error.message,
     })
   }
+}
+
+export const deletePlacesByAdmin = async (req, res) => {
+  const adminId = req.userId
+  const { placesToDelete } = req.body
+
+  if (!placesToDelete.length) {
+    res.status(400).json({
+      succes: false,
+      message: 'les places à supprimer ne sont pas definie',
+    })
+  }
+
+  const loggerInfo = {
+    section: 'admin-delete-places',
+    user: adminId,
+    placesToDelete,
+    description: `delete places with array of ids.`,
+  }
+
+  try {
+    const result = await Promise.all(
+      placesToDelete.map(async placeId => {
+        const placeFound = await findPlaceById(placeId)
+        if (!placeFound) {
+          throw new Error(
+            `Une ou plusieurs des places que vous tentez de supprimer l'ont déjà été`
+          )
+        }
+        if (placeFound.candidat) {
+          const candidat = await findCandidatById(placeFound.candidat)
+          return removeReservationPlaceByAdmin(placeFound, candidat, adminId)
+        }
+        if (placeFound) {
+          return deletePlace(placeFound)
+        }
+      })
+    )
+
+    appLogger.info({
+      ...loggerInfo,
+      result,
+    })
+    console.log({ result })
+    res.status(200).json({ succes: true, message: 'MyMessageTest', result })
+  } catch (error) {
+    appLogger.info({
+      ...loggerInfo,
+      error,
+    })
+    res.status(200).json({ succes: false, message: error.message, error })
+  }
+  // place booked => annuler la resa du candidat le rendre VIP, rendre indsipo la place
+  // place dispo => rendre indispo si personne ne la book entre temps
 }
 
 export const updatePlaces = async (req, res) => {

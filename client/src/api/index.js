@@ -373,11 +373,11 @@ export default {
       return json
     },
 
-    async deletePlacesInspecteur (departement, placeId, inspecteur) {
+    async deletePlacesInspecteur (placesToDelete) {
       const json = await apiClient
-        .patch(`${apiPaths.admin.places}/${placeId}`, {
+        .delete(`${apiPaths.admin.places}`, {
           headers: getHeadersForAdminJson(),
-          body: JSON.stringify({ departement, inspecteur }),
+          body: JSON.stringify({ placesToDelete }),
         })
       return json
     },

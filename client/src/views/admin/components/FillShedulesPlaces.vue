@@ -12,7 +12,7 @@
           @upload-file="uploadPlaces"
           accept=".csv"
         />
-        <page-title>Gestion des plannings</page-title>
+        <page-title>{{ $formatMessage({ id: 'gestion_des_plannings'}) }}</page-title>
       </v-flex>
     </v-layout>
     <v-layout row wrap>

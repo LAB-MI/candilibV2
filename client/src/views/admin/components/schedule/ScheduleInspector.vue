@@ -136,11 +136,18 @@
                     class="inspecteur-button"
                     :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
                   >
-                    <v-btn
-                      @click="activeDeleteMode(inspecteurData._id, inspecteurData)"
-                    >
-                      {{inspecteurData.prenom}} {{inspecteurData.nom}}
-                    </v-btn>
+                    <v-layout row>
+                      <span class="name-ipcsr-wrap">
+                        {{inspecteurData.prenom}}
+                        {{inspecteurData.nom}}
+                      </span>
+                      <v-btn
+                        icon
+                        @click="activeDeleteMode(inspecteurData._id, inspecteurData)"
+                      >
+                        <v-icon size="20" color="#A9A9A9">delete</v-icon>
+                      </v-btn>
+                    </v-layout>
                   </th>
                   <td
                     v-for="placeInfo in inspecteurData.creneau"
@@ -183,6 +190,8 @@
                         v-if="deleteMode"
                         :placeInfo="inspecteurData"
                         :inspecteurId="inspecteurData._id"
+                        :closeDetails="closeDetails"
+                        @reloadWeekMonitor="reloadWeekMonitor"
                       />
                     </div>
                   </td>
@@ -552,5 +561,11 @@ export default {
 
 .refresh-btn {
   margin: 1em;
+}
+
+.name-ipcsr-wrap {
+  margin-left: 10%;
+  margin-top: 7%;
+  min-width: 60%;
 }
 </style>
