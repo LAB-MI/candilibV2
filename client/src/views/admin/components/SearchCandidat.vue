@@ -23,11 +23,13 @@
         >{{icon}}</v-icon>
       </v-btn>
     </div>
+    <v-expand-transition>
     <profile-info
       title= 'Informations candidats'
       v-if="profileInfo"
       :profileInfo="profileInfo"
     />
+    </v-expand-transition>
   </div>
 </template>
 
