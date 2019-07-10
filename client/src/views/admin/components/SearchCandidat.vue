@@ -8,7 +8,7 @@
         hint="Chercher un candidat par son nom / NEPH / email"
         placeholder="Dupont"
         :items="candidats"
-        item-text="nomNaissance"
+        item-text="nameNeph"
         item-value="_id"
         :fetch-autocomplete-action="fetchAutocompleteAction"
       />
@@ -112,10 +112,19 @@ export default {
     }
   },
 
-  computed: mapState({
-    candidats: state => state.adminSearch.candidats.list,
-    candidat: state => state.adminSearch.candidats.selected,
-  }),
+  computed: {
+    ...mapState({
+      candidat: state => state.adminSearch.candidats.selected,
+    }),
+    candidats () {
+      return this.$store.state.adminSearch.candidats.list
+        .map(candidat => {
+          const { nomNaissance, prenom, codeNeph } = candidat
+          const nameNeph = nomNaissance + '  ' + prenom + ' | ' + codeNeph
+          return { nameNeph, ...candidat }
+        })
+    },
+  },
 
   watch: {
     candidat (newVal) {
