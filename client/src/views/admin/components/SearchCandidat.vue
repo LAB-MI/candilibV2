@@ -114,19 +114,15 @@ export default {
     }
   },
 
-  computed: {
-    ...mapState({
-      candidat: state => state.adminSearch.candidats.selected,
-    }),
-    candidats () {
-      return this.$store.state.adminSearch.candidats.list
-        .map(candidat => {
-          const { nomNaissance, prenom, codeNeph } = candidat
-          const nameNeph = nomNaissance + '  ' + prenom + ' | ' + codeNeph
-          return { nameNeph, ...candidat }
-        })
-    },
-  },
+  computed: mapState({
+    candidat: state => state.adminSearch.candidats.selected,
+    candidats: state => state.adminSearch.candidats.list
+      .map(candidat => {
+        const { nomNaissance, prenom, codeNeph } = candidat
+        const nameNeph = nomNaissance + '  ' + prenom + ' | ' + codeNeph
+        return { nameNeph, ...candidat }
+      }),
+  }),
 
   watch: {
     candidat (newVal) {
