@@ -68,7 +68,7 @@ export const faqJson = [
     ],
   },
   {
-    title: 'je n\'ai pas réussi mon examen, puis-je reprendre une place ?',
+    title: 'Je n\'ai pas réussi mon examen, puis-je reprendre une place ?',
     content: [
       {
         textContent: 'Si vous avez échoué, avez été refusé par l’inspecteur ou avez été absent à l\'examen pratique du permis de conduire, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
@@ -90,7 +90,7 @@ export const faqJson = [
         ],
       },
       {
-        textContent: 'Vous présenterez: ',
+        textContent: 'Vous présenterez :',
       },
       {
         list: [
