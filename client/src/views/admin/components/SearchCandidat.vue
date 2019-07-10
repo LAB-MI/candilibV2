@@ -92,7 +92,7 @@ const candidatProfileInfoDictionary = [
     ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
 
   ],
-  [ ['resaCanceledByAdmin', 'Dernier annulation par l\'administration', convertToLegibleDate],
+  [ ['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDate],
     ['places', 'Historique des actions', historiqueAction],
   ],
 ]
