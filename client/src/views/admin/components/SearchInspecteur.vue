@@ -24,11 +24,11 @@
     </v-btn>
     </div>
     <v-expand-transition>
-    <profile-info
+      <profile-info
       title='informations inspecteur'
       v-if="displayInspecteur"
       :profileInfo="profileInfo"
-    />
+      />
     </v-expand-transition>
   </div>
 </template>
