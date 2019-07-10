@@ -16,6 +16,11 @@
           Se pré-inscrire
         </v-btn>
       </router-link>
+       <router-link :to="{ name: 'candidat-presignup' }">
+        <v-btn flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
+          Une Question ?
+        </v-btn>
+      </router-link>
     </footer>
   </section>
 </template>
