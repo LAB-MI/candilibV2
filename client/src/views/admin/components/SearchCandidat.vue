@@ -54,7 +54,7 @@ const placeReserve = (place) => {
   const nameInspecteur = inspecteur.nom
   const examCentre = centre.nom
   const frenchDate = convertToLegibleDate(date)
-  return `${nameInspecteur}, ${examCentre}, ${frenchDate}`
+  return `${frenchDate}  -  ${examCentre}  -  ${nameInspecteur}`
 }
 
 const legibleNoReussites = (noReussites) => {
