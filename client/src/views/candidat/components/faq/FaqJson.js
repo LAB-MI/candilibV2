@@ -63,11 +63,17 @@ export const faqJson = [
         textContent: 'Si vous modifiez ou annulez à moins de 7 jours de la date d\'examen, ou si vous ne vous présentez pas à l’examen, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
       },
       {
-        textContent: 'Si vous avez échoué, avez été refusé par l’inspecteur ou avez été absent à l\'examen pratique du permis de conduire, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
-      },
-      {
         textContent: 'Merci de nous prévenir en cas d\'empêchement afin de libérer le créneau pour un autre candidat.',
       },
+    ],
+  },
+  {
+    title: 'je n\'ai pas réussi mon examen, puis-je reprendre une place ?',
+    content: [
+      {
+        textContent: 'Si vous avez échoué, avez été refusé par l’inspecteur ou avez été absent à l\'examen pratique du permis de conduire, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
+      },
+
     ],
   },
   {
