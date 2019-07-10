@@ -6,7 +6,7 @@
       </h1>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-    <h3>{{ email && email.split('@')[0] }}</h3>
+    <h3 class="color-header" >{{ email && email.split('@')[0] }}</h3>
     <v-spacer></v-spacer>
     <div class="text-xs-center d-flex align-center">
       <header-icon
@@ -62,6 +62,10 @@ export default {
   padding: 0 1em;
   background-color: black;
   margin-top: 4em;
+}
+
+.color-header {
+  color: #fff;
 }
 
 .header-admin {
