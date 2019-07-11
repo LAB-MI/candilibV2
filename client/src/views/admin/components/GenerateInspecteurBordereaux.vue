@@ -7,7 +7,7 @@
 
     >
       <span>
-        Générer les bordereaux inspecteurs du
+        Recevoir les bordereaux des inspecteurs du
         <strong>
           {{ activeDepartement }}
         </strong>
