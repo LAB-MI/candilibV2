@@ -8,6 +8,7 @@ import {
   INSCRIPTION_UPDATE,
   AURIGE_OK,
   VALIDATION_EMAIL,
+  NB_FAILURES_KO,
 } from '../../util'
 import config from '../../config'
 import {
@@ -85,6 +86,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       message.subject = 'Inscription Candilib en attente de vérification'
       return message
     case EPREUVE_ETG_KO:
+    case NB_FAILURES_KO:
       message.content = getHtmlBody(EPREUVE_ETG_KO_MSG)
       message.subject = 'Problème inscription Candilib'
       return message
