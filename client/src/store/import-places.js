@@ -27,8 +27,8 @@ export default {
     [UPLOAD_PLACES_FAILURE] (state) {
       state.isPlacessUpadating = false
     },
-
   },
+
   actions: {
     async [UPLOAD_PLACES_REQUEST] ({ commit, dispatch }, { file, departement }) {
       commit(UPLOAD_PLACES_REQUEST)

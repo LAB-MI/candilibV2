@@ -93,14 +93,6 @@ export default {
   box-shadow: 0.05em 0.1em 0.1em 0.3em #fff;
   color: #fff;
 
-  /*
-  @media (max-width: 599px) {
-    width: 100vw;
-    margin: 0;
-    border-radius: 0;
-  }
-*/
-
   &__title {
     margin: 0.2em 0;
     line-height: 1;

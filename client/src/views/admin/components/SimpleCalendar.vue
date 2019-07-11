@@ -3,6 +3,7 @@
     <div>
       <h2>{{calendarTitle}}</h2>
     </div>
+
     <div class="calendar-day" v-for="(day, i) in days" :key="i">
       <span>{{day}}</span>
     </div>
@@ -33,10 +34,9 @@ export default {
     updateCalendar () {
       const { daysAfter, daysBefore, daysInMonth, daysInLastMonth } = getDataOfTheMonth()
       this.days = [
-        ...Array(daysBefore).fill(true).map((el, i) => daysInLastMonth - i),
-        ...Array(daysInMonth).fill(true).map((el, i) => i + 1),
-        ...Array(daysAfter).fill(true).map((el, i) => i + 1),
-
+        ...Array.from({ length: daysBefore }, (el, i) => daysInLastMonth - i),
+        ...Array.from({ length: daysInMonth }, (el, i) => i + 1),
+        ...Array.from({ length: daysAfter }, (el, i) => i + 1),
       ]
     },
   },

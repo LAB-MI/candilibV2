@@ -1,12 +1,16 @@
 <template>
   <div class="login" v-bind:style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }">
     <bandeau-beta fixed />
+
     <div class="login-bg-filter"></div>
+
     <v-form v-model="valid" class="login-form" @submit.prevent="getToken">
       <h2 class="text--center">ADMINISTRATEUR</h2>
+
       <h3 class="text--center">
         C<span class="col-red">A</span>NDILIB
       </h3>
+
       <div class="form-input">
         <v-text-field
           aria-placeholder="jean@dupont.fr"
@@ -19,6 +23,7 @@
           v-model="email"
         ></v-text-field>
       </div>
+
       <div class="form-input">
         <v-text-field
           aria-placeholder="mot de passe"
@@ -33,12 +38,14 @@
           v-model="password"
         ></v-text-field>
       </div>
+
       <div class="form-input">
         <button tabindex="3" class="submit-btn">
           <div class="submit-bgbtn"></div>
           <div class="submit-label">Connexion</div>
         </button>
       </div>
+
       <admin-version/>
     </v-form>
   </div>
@@ -59,10 +66,12 @@ import {
 import AdminVersion from '../../../components/AppVersion.vue'
 
 export default {
+  name: 'Login',
+
   components: {
     AdminVersion,
   },
-  name: 'Login',
+
   data () {
     return {
       backgroundImgUrl,
@@ -204,5 +213,4 @@ export default {
 .v-messages {
   min-height: 1.2em;
 }
-
 </style>

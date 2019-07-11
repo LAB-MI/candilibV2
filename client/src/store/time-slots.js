@@ -22,6 +22,7 @@ export default {
       return valideCreneaux
     },
   },
+
   state: {
     confirmed: false,
     isFetching: false,

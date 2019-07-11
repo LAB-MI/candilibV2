@@ -9,7 +9,7 @@
         <div class="text-xs-right">
           <refresh-button
             @click="reloadWeekMonitor"
-            :isLoading="!!isLoading"
+            :isLoading="isLoading"
           />
         </div>
       </div>
@@ -26,12 +26,11 @@
             :nameCenter="info.centre.nom"
             :centerId="info.centre._id"
             :weeks="info.places"
-            :isLoading="!!isLoading"
+            :isLoading="isLoading"
           />
         </v-flex>
       </v-layout>
     </v-container>
-
   </div>
 </template>
 

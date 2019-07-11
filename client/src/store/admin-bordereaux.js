@@ -30,10 +30,10 @@ export default {
       try {
         const { success } = await api.admin.generateBordereaux(departement, date)
         if (!success) {
-          throw new Error("Un problème c'est produit lors de l'envoi des emails")
+          throw new Error("Un problème s'est produit lors de l'envoi des emails")
         }
         commit(GENERATE_INSPECTOR_BORDEREAUX_SUCCESS)
-        dispatch(SHOW_SUCCESS, 'les email ont bien été envoyé')
+        dispatch(SHOW_SUCCESS, 'Les emails ont bien été envoyés')
       } catch (error) {
         commit(GENERATE_INSPECTOR_BORDEREAUX_FAILURE)
         return dispatch(SHOW_ERROR, error.message)

@@ -22,6 +22,7 @@ export default {
   components: {
     Hexagon,
   },
+
   computed: {
     ...mapState(['admin']),
     activeDepartement: {

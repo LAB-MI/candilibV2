@@ -1,6 +1,7 @@
 <template>
   <div>
     <page-title :title="'Liste blanche'"/>
+
     <v-container>
       <v-card
         :style="{ padding: '1em 0', position: 'relative' }"
@@ -22,11 +23,13 @@
         </span>
 
         <search-email />
+
         <v-list
           class="u-flex  u-flex--column  u-flex--center"
           v-show="matchingList && matchingList.length"
         >
           <h4 class="text-xs-center">Adresses correspondant à la recherche (max 5)</h4>
+
           <div>
             <whitelisted
               v-for="whitelisted in matchingList"
@@ -52,6 +55,7 @@
           class="u-flex  u-flex--column  u-flex--center  u-max-width"
         >
           <h3 class="text-xs-center">Dernières adresses enregistrées</h3>
+
           <div
             class="u-flex"
           >
@@ -69,6 +73,7 @@
                 view_headline
               </v-icon>
             </v-btn>
+
             <v-btn
               @click="oneColumn = false"
               :color="oneColumn ? '' : 'primary'"
@@ -83,6 +88,7 @@
               </v-icon>
             </v-btn>
           </div>
+
           <div class="whitelist-grid" :class="{'one-column': oneColumn}">
             <whitelisted
               v-for="whitelisted in whitelist.lastCreatedList"
@@ -233,6 +239,7 @@
 
             <v-list-tile v-show="addingBatch" style="padding-bottom: 2em;">
               <v-spacer></v-spacer>
+
               <v-list-tile-action>
                 <v-btn
                   ref="saveBatchEmail"
@@ -299,6 +306,7 @@
             >
               {{result.email}}
             </span>
+
             <span class="result-message">
               {{codeMessageDictionary[result.code]}}
             </span>

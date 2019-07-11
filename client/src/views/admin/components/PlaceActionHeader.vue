@@ -3,8 +3,6 @@
     <strong>
       {{ candidat.prenom }}
       {{ candidat.nomNaissance }}
-    </strong>
-    <strong>
       {{ candidat.codeNeph }}
     </strong>
   </h4>

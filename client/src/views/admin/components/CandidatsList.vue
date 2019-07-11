@@ -61,6 +61,7 @@ export default {
     rowData () {
       return this.$store.state.candidats.list || []
     },
+
     departement () {
       return this.$store.state.admin.departements.active
     },
