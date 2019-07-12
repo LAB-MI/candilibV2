@@ -20,6 +20,7 @@ import {
 } from './candidat.business'
 import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
 import { createEvaluation } from '../../models/evaluation/evaluation.queries'
+import { CANDIDAT_NOT_FOUND } from './message.constants'
 
 const mandatoryFields = [
   'codeNeph',
@@ -220,7 +221,7 @@ export async function saveEvaluation (req, res) {
   try {
     const candidat = findCandidatById(candidatId)
     if (candidat === null) {
-      const error = new Error(`Le candidat n'existe pas`)
+      const error = new Error(CANDIDAT_NOT_FOUND)
       error.status = 400
       throw error
     }

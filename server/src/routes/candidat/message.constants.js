@@ -17,7 +17,7 @@ export const SEND_MAIL_ASKED_RESA_EMPTY =
 export const CAN_BOOK_AFTER =
   "Vous ne pouvez réserver une place d'examen qu'à partir du "
 export const USER_INFO_MISSING = "Vous n'êtes pas connecté"
-export const USER_NOT_FOUND =
+export const CANDIDAT_NOT_FOUND =
   'Vous ne faites plus partie de nos données. Veuillez contacter le support.'
 export const MODIFY_THEN_CAN_BOOK_AFTER =
   "Vous aviez modifé votre réservation avant la date autoriée, vous ne pouvez réserver une place d'examen qu'à partir du "

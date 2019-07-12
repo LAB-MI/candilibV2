@@ -20,7 +20,7 @@ import {
   CANCEL_RESA_WITH_NO_MAIL_SENT,
   SAME_RESA_ASKED,
   USER_INFO_MISSING,
-  USER_NOT_FOUND,
+  CANDIDAT_NOT_FOUND,
   CAN_BOOK_AFTER,
 } from './message.constants'
 import { sendCancelBooking } from '../business'
@@ -347,9 +347,14 @@ export const validCentreDateReservation = async (
   }
 
   if (!candidat) {
-    if (!idCandidat) throw new Error(USER_INFO_MISSING)
+    if (!idCandidat) {
+      throw new Error(USER_INFO_MISSING)
+    }
+
     candidat = await findCandidatById(idCandidat, {})
-    if (!candidat) throw new Error(USER_NOT_FOUND)
+    if (!candidat) {
+      throw new Error(CANDIDAT_NOT_FOUND)
+    }
   }
 
   let dateAuthorize = getBeginDateAutorize(candidat)

@@ -12,6 +12,7 @@ import {
   SUCCESS_MESSAGE_TYPE,
   ERROR_MESSAGE_TYPE,
 } from '@/constants'
+import { SHOW_SUCCESS } from './message'
 
 export const DISPLAY_NAV_DRAWER = 'DISPLAY_NAV_DRAWER'
 export const SET_MESSAGE = 'SET_MESSAGE'
@@ -212,6 +213,7 @@ export default {
           throw new Error(`Impossible d'enregistrer votre évaluation`)
         }
         commit(SEND_EVALUATION_SUCCESS)
+        dispatch(SHOW_SUCCESS, `Merci d'avoir évalué l'application !`)
       } catch (error) {
         dispatch(SHOW_ERROR, error.message)
         throw error
