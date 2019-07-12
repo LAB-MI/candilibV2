@@ -123,6 +123,9 @@ export const candidatFields = {
     type: Date,
     default: undefined,
   },
+  isEvaluationDone: {
+    type: Boolean,
+  },
   places: {
     type: [ArchivedPlaceSchema],
     default: undefined,

@@ -43,6 +43,7 @@
             :disabled="disabled"
             type="submit"
             color="primary"
+            @click="displayEvaluation"
           >
             {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
           </v-btn>
@@ -81,6 +82,7 @@ import {
 import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,
+  SET_SHOW_EVALUATION,
 } from '@/store'
 
 export default {
@@ -145,6 +147,12 @@ export default {
 
     convertIsoDate (dateIso) {
       return `${getFrenchDateFromIso(dateIso)}`
+    },
+
+    displayEvaluation () {
+      if (!this.$store.state.candidat.me.isEvaluationDone) {
+        window.setTimeout(() => this.$store.dispatch(SET_SHOW_EVALUATION, true), 5000)
+      }
     },
   },
 }

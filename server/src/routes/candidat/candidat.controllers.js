@@ -9,6 +9,7 @@ import {
   findCandidatByEmail,
   findCandidatById,
   deleteCandidat,
+  updateCandidatById,
 } from '../../models/candidat'
 import {
   getDepartementFromWhitelist,
@@ -18,6 +19,8 @@ import {
   validateEmail,
 } from './candidat.business'
 import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
+import { createEvaluation } from '../../models/evaluation/evaluation.queries'
+import { CANDIDAT_NOT_FOUND } from './message.constants'
 
 const mandatoryFields = [
   'codeNeph',
@@ -170,6 +173,7 @@ export async function getMe (req, res) {
       portable: 1,
       adresse: 1,
       departement: 1,
+      isEvaluationDone: 1,
     }
 
     const candidat = await findCandidatById(req.userId, options)
@@ -187,7 +191,7 @@ export async function getMe (req, res) {
 }
 
 export async function emailValidation (req, res) {
-  const { email, hash } = req.body
+  const { email, hash } = req.body || {}
   try {
     const candidat = await findCandidatByEmail(email)
 
@@ -215,6 +219,28 @@ export async function emailValidation (req, res) {
       success: false,
       message:
         'Impossible de valider votre adresse courriel : ' + error.message,
+    })
+  }
+}
+
+export async function saveEvaluation (req, res) {
+  const { rating, comment } = req.body.evaluation || {}
+  const candidatId = req.userId
+  try {
+    const candidat = findCandidatById(candidatId)
+    if (candidat === null) {
+      const error = new Error(CANDIDAT_NOT_FOUND)
+      error.status = 400
+      throw error
+    }
+    const evaluation = await createEvaluation({ rating, comment })
+    candidat.isEvaluationDone = true
+    updateCandidatById(candidatId, candidat)
+    res.status(201).json({ success: true, evaluation })
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
     })
   }
 }
