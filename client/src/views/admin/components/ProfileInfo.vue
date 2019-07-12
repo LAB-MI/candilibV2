@@ -49,6 +49,7 @@ p {
 }
 
 .spaced {
+  padding: 1em;
   margin: 0.5em 0;
 }
 

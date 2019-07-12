@@ -73,11 +73,11 @@ const historiqueAction = (places) => {
   if (!places || !(places.length)) {
     return ' - '
   }
-  return '<ol>' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
+  return '<ul style="margin: 0; padding: 0;">' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
     const frenchDate = convertToLegibleDate(date)
     const actionDate = convertToLegibleDate(archivedAt)
     return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
-  }).reverse().join('') + '</ol>'
+  }).reverse().join('') + '</ul>'
 }
 const candidatProfileInfoDictionary = [
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
