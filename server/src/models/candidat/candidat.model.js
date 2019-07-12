@@ -21,6 +21,10 @@ const ArchivedPlaceFields = {
     type: String,
     default: undefined,
   },
+  isCandilib: {
+    type: Boolean,
+    default: undefined,
+  },
   byUser: {
     type: String,
     default: undefined,

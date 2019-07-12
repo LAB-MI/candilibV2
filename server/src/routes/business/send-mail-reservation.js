@@ -90,7 +90,7 @@ export const sendFailureExam = async (place, candidat) => {
 
   const content = await getFailureExamBody(place, candidat)
   const subject =
-    "Annulation de votre convocation suite à l'echec de votre examen pratique"
+    "Annulation de votre convocation suite à l'échec de votre examen pratique"
 
   appLogger.debug({ func: 'sendFailureExam', content, subject })
 

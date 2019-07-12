@@ -2,9 +2,9 @@ import latinize from 'latinize'
 
 import config from '../../../config'
 import {
-  addPlaceToArchive,
   deleteCandidat,
   findCandidatByNomNeph,
+  addPlaceToArchive,
 } from '../../../models/candidat'
 import {
   findPlaceBookedByCandidat,
@@ -27,6 +27,8 @@ import {
   OK,
   OK_MAIL_PB,
   OK_UPDATED,
+  NB_FAILURES_KO,
+  NO_CANDILIB,
 } from '../../../util'
 import {
   sendFailureExam,
@@ -35,7 +37,6 @@ import {
 } from '../../business'
 import { getCandBookFrom } from '../../candidat/places.business'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
-import { releaseResa } from '../places.business'
 
 const getCandidatStatus = (nom, neph, status, details, message) => ({
   nom,
@@ -66,6 +67,10 @@ const isReussitePratique = reussitePratique => {
     reussitePratique === EPREUVE_PRATIQUE_OK ||
     getFrenchLuxonFromISO(reussitePratique).isValid
   )
+}
+
+const isTooManyFailure = nbFailed => {
+  return nbFailed === 5
 }
 
 export const synchroAurige = async buffer => {
@@ -117,7 +122,7 @@ export const synchroAurige = async buffer => {
     nomNaissance = latinize(nomNaissance).toUpperCase()
 
     try {
-      const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
+      let candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
 
       if (candidat === undefined || candidat === null) {
         const message = `Ce candidat ${codeNeph}/${nomNaissance} est inconnu de Candilib`
@@ -160,6 +165,7 @@ export const synchroAurige = async buffer => {
 
       let aurigeFeedback
       let message
+      let dateFeedBack
       if (candidatExistant === CANDIDAT_NOK) {
         message = `Ce candidat ${email} sera archivé : NEPH inconnu`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
@@ -176,23 +182,54 @@ export const synchroAurige = async buffer => {
         message = `Ce candidat ${email} sera archivé : Date ETG KO`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_ETG_KO
+      } else if (isTooManyFailure(Number(nbEchecsPratiques))) {
+        message = `Ce candidat ${email} sera archivé : A 5 échecs pratiques`
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
+        aurigeFeedback = NB_FAILURES_KO
+        try {
+          dateFeedBack = checkFailureDate(candidat, dateDernierNonReussite)
+          if (dateFeedBack && dateFeedBack.isValid) {
+            candidat.lastNoReussite = {
+              date: dateFeedBack,
+              reason: objetDernierNonReussite,
+            }
+          }
+        } catch (error) {
+          appLogger.warn({
+            ...loggerInfoCandidat,
+            description: error.message,
+            error,
+          })
+        }
       } else if (isReussitePratique(reussitePratique)) {
         message = `Ce candidat ${email} sera archivé : PRATIQUE OK`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_PRATIQUE_OK
-        const dateTimeReussitePratique = getFrenchLuxonFromISO(reussitePratique)
-        if (dateTimeReussitePratique.isValid) {
-          candidat.reussitePratique = dateTimeReussitePratique
+        dateFeedBack = getFrenchLuxonFromISO(reussitePratique)
+        if (dateFeedBack.isValid) {
+          candidat.reussitePratique = dateFeedBack
         } else {
           appLogger.warn({
             ...loggerInfoCandidat,
             description: `Ce candidat ${email} sera archivé : reussitePratique n'est pas une date`,
           })
         }
-        await releaseResa(candidat)
       }
 
       if (aurigeFeedback) {
+        if (dateFeedBack) {
+          const place = await findPlaceBookedByCandidat(candidat._id)
+          if (place) {
+            const datePlace = getFrenchLuxonFromJSDate(place.date)
+            candidat = await releaseAndArchivePlace(
+              dateFeedBack,
+              datePlace,
+              aurigeFeedback,
+              candidat,
+              place
+            )
+          }
+        }
         await deleteCandidat(candidat, aurigeFeedback)
         await sendMailToAccount(candidat, aurigeFeedback)
         appLogger.info({
@@ -250,16 +287,18 @@ export const synchroAurige = async buffer => {
             date: dateTimeEchec,
             reason: dateDernierEchecPratique ? '' : objetDernierNonReussite,
           }
+
           const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
           if (canBookFrom) {
             updateCandidat.canBookFrom = canBookFrom.toISO()
-            await removeResaNoAuthorize(candidat, canBookFrom)
+            await removeResaNoAuthorize(candidat, canBookFrom, dateTimeEchec)
           }
         }
 
         appLogger.debug({ ...loggerInfoCandidat, updateCandidat })
         // update data candidat
         candidat.set(updateCandidat)
+
         return candidat
           .save()
           .then(async candidat => {
@@ -352,6 +391,26 @@ export const synchroAurige = async buffer => {
   return Promise.all(result)
 }
 
+const releaseAndArchivePlace = async (
+  dateAurige,
+  datePlace,
+  reason,
+  candidat,
+  place
+) => {
+  const isCandilib = dateAurige.hasSame(datePlace, 'day')
+  const newReason = reason + (isCandilib ? '' : NO_CANDILIB)
+  const updatedCandiat = addPlaceToArchive(
+    candidat,
+    place,
+    newReason,
+    undefined,
+    isCandilib
+  )
+  await removeBookedPlace(place)
+  return updatedCandiat
+}
+
 function checkFailureDate (candidat, dateDernierEchecPratique) {
   if (!dateDernierEchecPratique || dateDernierEchecPratique.length === 0) {
     return
@@ -377,32 +436,39 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
  * @param {*} param0 { _id } Id du candidat
  * @param {*} canBookFrom DateTime de luxon
  */
-const removeResaNoAuthorize = async (candidat, canBookFrom) => {
+const removeResaNoAuthorize = async (candidat, canBookFrom, dateEchec) => {
   const { _id } = candidat
   const place = await findPlaceBookedByCandidat(_id)
-  if (place) {
-    const { date } = place
-    // check date
-    const dateTimeResa = getFrenchLuxonFromJSDate(date)
-    const diffDateResaAndCanBook = dateTimeResa.diff(canBookFrom, 'days')
-    const diffDateResaAndNow = dateTimeResa.diffNow('days')
-    if (diffDateResaAndCanBook.days < 0) {
-      addPlaceToArchive(candidat, place, REASON_EXAM_FAILED)
-      await removeBookedPlace(place)
+  if (!place) return candidat
 
-      if (diffDateResaAndNow.days > 0) {
-        try {
-          await sendFailureExam(place, candidat)
-        } catch (error) {
-          appLogger.error({
-            func: 'removeResaNoAuthorize',
-            description: `Impossible d'envoyer un mail à ce candidat ${candidat.email} pour lui informer que sa réservation est annulée suit à l'echec examen pratique`,
-            error,
-          })
-        }
-      }
+  const { date } = place
+  // check date
+  const dateTimeResa = getFrenchLuxonFromJSDate(date)
+  const diffDateResaAndCanBook = dateTimeResa.diff(canBookFrom, 'days')
+  const diffDateResaAndNow = dateTimeResa.diffNow('days')
+
+  if (diffDateResaAndCanBook.days > 0) return candidat
+
+  const updatedCandidat = await releaseAndArchivePlace(
+    dateEchec,
+    dateTimeResa,
+    REASON_EXAM_FAILED,
+    candidat,
+    place
+  )
+
+  if (diffDateResaAndNow.days > 0) {
+    try {
+      await sendFailureExam(place, updatedCandidat)
+    } catch (error) {
+      appLogger.error({
+        func: 'removeResaNoAuthorize',
+        description: `Impossible d'envoyer un mail à ce candidat ${updatedCandidat.email} pour lui informer que sa réservation est annulée suite à l'échec de l'examen pratique`,
+        error,
+      })
     }
   }
+  return updatedCandidat
 }
 
 export const updateCandidatLastNoReussite = (

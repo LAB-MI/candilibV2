@@ -54,6 +54,24 @@ export const candidatFailureExam = {
   portable,
 }
 
+export const candidatFailureExamWith5Failures = {
+  // candidat avec 5 échec pratique récent
+  codeNeph: '0938743208651',
+  nomNaissance: 'TEST',
+  prenom: 'Fivefailures',
+  email: 'fivefailures.test@candilib.com',
+  dateReussiteETG,
+  nbEchecsPratiques: '5',
+  dateDernierNonReussite: dateDernierEchecPratique,
+  objetDernierNonReussite: 'echec',
+  reussitePratique: '',
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+}
+
 export const candidatPassed = {
   // Candidat réussi la pratique
   codeNeph: '093123456789',

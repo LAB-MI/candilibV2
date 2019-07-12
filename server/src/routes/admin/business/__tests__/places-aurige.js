@@ -22,6 +22,31 @@ export const placeAfterTimeOutRetry = {
 }
 const places = [placeBeforTimeOutRetry, placeAfterTimeOutRetry]
 
+export const placeSameDateDernierEchecPratiqueForSuccess = {
+  date: dateTimeDernierEchecPratique
+    .startOf('day')
+    .plus({ hours: 8 })
+    .toISO({ zone: 'utc' }),
+  centre: 'Centre 1',
+  inspecteur: inspecteursTests[0].matricule,
+}
+
+export const placeSameDateDernierEchecPratique = {
+  date: dateTimeDernierEchecPratique
+    .startOf('day')
+    .plus({ hours: 8 })
+    .toISO({ zone: 'utc' }),
+  centre: 'Centre 2',
+  inspecteur: inspecteursTests[1].matricule,
+}
+export const placeNoSameDateDernierEchecPratique = {
+  date: dateTimeDernierEchecPratique
+    .plus({ days: 2, hours: 5 })
+    .toISO({ zone: 'utc' }),
+  centre: 'Centre 2',
+  inspecteur: inspecteursTests[1].matricule,
+}
+
 export const createTestPlaceAurige = async place => {
   const leanPlace = {
     date: place.date,

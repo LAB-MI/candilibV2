@@ -184,7 +184,13 @@ export const updateCandidatCanBookFrom = async (candidat, canBookFrom) => {
   return candidat.save()
 }
 
-export const addPlaceToArchive = (candidat, place, reason, byUser) => {
+export const addPlaceToArchive = (
+  candidat,
+  place,
+  reason,
+  byUser,
+  isCandilib
+) => {
   const { _id, inspecteur, centre, date } = place
   const archivedAt = getFrenchLuxon()
   const archiveReason = reason
@@ -199,12 +205,19 @@ export const addPlaceToArchive = (candidat, place, reason, byUser) => {
     archivedAt,
     archiveReason,
     byUser,
+    isCandilib,
   })
   return candidat
 }
 
-export const archivePlace = async (candidat, place, reason, byUser) => {
-  candidat = addPlaceToArchive(candidat, place, reason, byUser)
+export const archivePlace = async (
+  candidat,
+  place,
+  reason,
+  byUser,
+  isCandilib
+) => {
+  candidat = addPlaceToArchive(candidat, place, reason, byUser, isCandilib)
   return candidat.save()
 }
 
