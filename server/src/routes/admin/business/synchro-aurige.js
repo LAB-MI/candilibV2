@@ -392,13 +392,13 @@ export const synchroAurige = async buffer => {
 }
 
 const releaseAndArchivePlace = async (
-  dateAurgie,
+  dateAurige,
   datePlace,
   reason,
   candidat,
   place
 ) => {
-  const isCandilib = dateAurgie.hasSame(datePlace, 'day')
+  const isCandilib = dateAurige.hasSame(datePlace, 'day')
   const newReason = reason + (isCandilib ? '' : NO_CANDILIB)
   const updatedCandiat = addPlaceToArchive(
     candidat,
@@ -463,7 +463,7 @@ const removeResaNoAuthorize = async (candidat, canBookFrom, dateEchec) => {
     } catch (error) {
       appLogger.error({
         func: 'removeResaNoAuthorize',
-        description: `Impossible d'envoyer un mail à ce candidat ${updatedCandidat.email} pour lui informer que sa réservation est annulée suit à l'echec examen pratique`,
+        description: `Impossible d'envoyer un mail à ce candidat ${updatedCandidat.email} pour lui informer que sa réservation est annulée suite à l'échec de l'examen pratique`,
         error,
       })
     }
