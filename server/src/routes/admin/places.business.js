@@ -273,7 +273,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
 }
 
 export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
-  let placesPromise = []
+  const placesPromise = []
   return new Promise((resolve, reject) => {
     const workBookReader = new XlsxStreamReader()
     workBookReader.on('error', function (error) {
@@ -288,23 +288,16 @@ export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
 
       workSheetReader.on('row', function (row) {
         if (row.attributes.r !== '1' && !row.values.includes('Date')) {
-          // second param to forEach colNum is very important as
-          // null columns are not defined in the array, ie sparse array
-          const data = []
-          row.values.forEach(function (rowVal, colNum) {
-            data.push(rowVal)
-          })
+          const data = row.values.filter(() => true) // Remove empty slots from array
           const placePromise = parseRow({ data, departement })
           placesPromise.push(placePromise)
         }
       })
 
-      // call process after registering handlers
       workSheetReader.process()
     })
 
     workBookReader.on('end', async function () {
-      // end of workbook reached
       const places = await Promise.all(placesPromise)
       const placesInDb = await Promise.all(
         places.map(place => {
@@ -317,8 +310,7 @@ export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
       resolve(placesInDb)
     })
 
-    var myReadableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
-      frequency: 10,
+    const myReadableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
       chunkSize: 2048,
     })
 
