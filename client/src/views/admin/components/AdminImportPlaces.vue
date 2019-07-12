@@ -8,7 +8,7 @@
       @select-file="fileSelected"
       :file="file"
       @upload-file="uploadPlaces"
-      accept=".csv"
+      accept=".csv, .xlsx"
     />
   </div>
 </template>
