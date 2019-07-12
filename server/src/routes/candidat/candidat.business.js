@@ -6,6 +6,7 @@ import {
   INSCRIPTION_UPDATE,
   VALIDATION_EMAIL,
 } from '../../util'
+import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
   createCandidat,
   deleteCandidat,
@@ -127,13 +128,51 @@ export async function presignUpCandidat (candidatData) {
   candidatData.emailValidationHash = uuidv4()
 
   const candidat = await createCandidat(candidatData)
-  const response = await sendMailToAccount(candidat, VALIDATION_EMAIL)
-  return {
-    success: true,
-    response,
-    message: `Un email a été envoyé à ${candidatData.email}, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).`,
-    candidat,
+  try {
+    const response = await sendMailToAccount(candidat, VALIDATION_EMAIL)
+    return {
+      success: true,
+      response,
+      message: `Un email a été envoyé à ${candidatData.email}, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).`,
+      candidat,
+    }
+  } catch (error) {
+    return {
+      success: false,
+      error,
+      message: `Votre pré-inscription est bien prise en compte, mais l'email n'a pas pu vous être envoyé. Revenez plus tard et cliquez sur "Déjà inscrit"`,
+      candidat,
+    }
   }
+}
+
+export async function getDepartementFromWhitelist ({ email, departement }) {
+  const whitelisted = await findWhitelistedByEmail(email)
+
+  if (!whitelisted) {
+    appLogger.warn({
+      section: 'candidat-presignup',
+      action: 'EMAIL_NOT_IN_WHITELIST',
+      description: `L'email ${email} n'est pas dans la whitelist`,
+      candidatDepartement: departement,
+      whitelistDepartement: whitelisted.departement,
+    })
+    throw new Error(
+      `L'adresse courriel renseignée (${email}) n'est pas dans la liste des invités.`
+    )
+  }
+
+  if (departement !== whitelisted.departement) {
+    appLogger.warn({
+      section: 'candidat-presignup',
+      action: 'INCONSISTENT_DEPARTEMENT',
+      description: `Le département de l'adresse du candidat ${departement} est différent de sa whitelist (${whitelisted.departement})`,
+      candidatDepartement: departement,
+      whitelistDepartement: whitelisted.departement,
+    })
+  }
+
+  return whitelisted.departement
 }
 
 export async function validateEmail (email, hash) {

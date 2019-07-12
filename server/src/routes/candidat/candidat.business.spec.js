@@ -21,7 +21,7 @@ describe('Test the candidat business', () => {
       await deleteCandidats()
     })
 
-    it('get infomartion candidat with departement 75', async () => {
+    it('get information candidat with departement 75', async () => {
       const { _id } = createdCandidats[0]
       const codeDep = await getInfoCandidatDepartement(_id)
 
