@@ -122,7 +122,7 @@ const parseRow = async ({ data, departement }) => {
 
     if (dept.trim() !== departement) {
       throw new Error(
-        `Le département du centre (${dept}) ne correspond pas au département dont vous avez la charge (${departement})`
+        `Le département du centre (${dept.trim()}) ne correspond pas au département dont vous avez la charge (${departement})`
       )
     }
 
@@ -306,12 +306,14 @@ export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
     workBookReader.on('end', async function () {
       // end of workbook reached
       const places = await Promise.all(placesPromise)
-      const placesInDb = await Promise.all(places.map(place => {
-        if (place.status === 'error') {
-          return place
-        }
-        return createPlaceFromFile(place)
-      }))
+      const placesInDb = await Promise.all(
+        places.map(place => {
+          if (place.status === 'error') {
+            return place
+          }
+          return createPlaceFromFile(place)
+        })
+      )
       resolve(placesInDb)
     })
 
