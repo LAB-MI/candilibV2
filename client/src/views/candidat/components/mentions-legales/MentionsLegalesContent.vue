@@ -31,7 +31,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .detail-style {
   box-sizing: border-box;
   padding: 0;

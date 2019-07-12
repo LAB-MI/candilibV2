@@ -8,7 +8,7 @@
         hint="Chercher un candidat par son nom / NEPH / email"
         placeholder="Dupont"
         :items="candidats"
-        item-text="nomNaissance"
+        item-text="nameNeph"
         item-value="_id"
         :fetch-autocomplete-action="fetchAutocompleteAction"
       />
@@ -23,11 +23,13 @@
         >{{icon}}</v-icon>
       </v-btn>
     </div>
+    <v-expand-transition>
     <profile-info
       title= 'Informations candidats'
       v-if="profileInfo"
       :profileInfo="profileInfo"
     />
+    </v-expand-transition>
   </div>
 </template>
 
@@ -54,7 +56,7 @@ const placeReserve = (place) => {
   const nameInspecteur = inspecteur.nom
   const examCentre = centre.nom
   const frenchDate = convertToLegibleDate(date)
-  return `${nameInspecteur}, ${examCentre}, ${frenchDate}`
+  return `${frenchDate}  -  ${examCentre}  -  ${nameInspecteur}`
 }
 
 const legibleNoReussites = (noReussites) => {
@@ -71,18 +73,18 @@ const historiqueAction = (places) => {
   if (!places || !(places.length)) {
     return ' - '
   }
-  return '<ol>' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
+  return '<ul style="margin: 0; padding: 0;">' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
     const frenchDate = convertToLegibleDate(date)
     const actionDate = convertToLegibleDate(archivedAt)
     return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
-  }).join('') + '</ol>'
+  }).reverse().join('') + '</ul>'
 }
 const candidatProfileInfoDictionary = [
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
   [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDate],
-    ['isValidatedByEmail', 'Email validé', transformBoolean],
+    ['isValidatedEmail', 'Email validé', transformBoolean],
     ['isValidatedByAurige', 'Statut Aurige', transformBoolean],
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
     ['place', 'Réservation', placeReserve],
@@ -92,7 +94,7 @@ const candidatProfileInfoDictionary = [
     ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
 
   ],
-  [ ['resaCanceledByAdmin', 'Dernier annulation par l\'administration', convertToLegibleDate],
+  [ ['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDate],
     ['places', 'Historique des actions', historiqueAction],
   ],
 ]
@@ -113,8 +115,13 @@ export default {
   },
 
   computed: mapState({
-    candidats: state => state.adminSearch.candidats.list,
     candidat: state => state.adminSearch.candidats.selected,
+    candidats: state => state.adminSearch.candidats.list
+      .map(candidat => {
+        const { nomNaissance, prenom, codeNeph } = candidat
+        const nameNeph = nomNaissance + '  ' + prenom + ' | ' + codeNeph
+        return { nameNeph, ...candidat }
+      }),
   }),
 
   watch: {
