@@ -42,7 +42,7 @@ router.post('/place', verifyRepartiteurDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
 router.post('/places', verifyRepartiteurDepartement, importPlaces)
-router.delete('/places', verifyRepartiteurDepartement, deletePlacesByAdmin)
+router.delete('/places', deletePlacesByAdmin)
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
 router.post(
   '/bordereaux',

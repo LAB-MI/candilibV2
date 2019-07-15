@@ -1,22 +1,25 @@
 <template>
   <v-card class="details">
     <v-btn
-      :disabled="flag === 1"
-      @click="selectTypeOfDelete(1)"
+      v-for="info in buttonsInfos"
+      :key="info.buttonDeleteType"
+      :color="deleteType === info.buttonDeleteType ? '#DC143C' : info.colorButton"
+      @click="selectTypeOfDelete(info.buttonDeleteType)"
     >
-      {{ $formatMessage({ id: 'supprimer_la_journnee'}) }}
-    </v-btn>
-    <v-btn
-      :disabled="flag === 2"
-      @click="selectTypeOfDelete(2)"
-    >
-      {{ $formatMessage({ id: 'supprimer_la_matinee'}) }}
-    </v-btn>
-    <v-btn
-      :disabled="flag === 3"
-      @click="selectTypeOfDelete(3)"
-    >
-      {{ $formatMessage({ id: 'supprimer_l_apres_midi'}) }}
+      <span
+        class="btn-text"
+      >
+        {{ $formatMessage({ id: info.buttonMessage }) }}
+      </span>
+      &nbsp;
+      &nbsp;
+      <v-icon
+        v-for="icon in info.buttonIcons"
+        :key="icon"
+        color="white"
+      >
+        {{ icon }}
+      </v-icon>
     </v-btn>
     <confirm-box
       v-if="!isCancel"
@@ -31,11 +34,16 @@
 import {
   getFrenchLuxonFromIso,
   getFrenchLuxonFromObject,
+  hoursRangeOfDay,
 } from '@/util'
 
 import { DELETE_INSPECTEUR_PLACES_REQUEST } from '@/store'
 
 import ConfirmBox from '@/components/ConfirmBox.vue'
+
+const DELETE_ALL_PLACES = 'DELETE_ALL_PLACES'
+const DELETE_MORNING_PLACES = 'DELETE_MORNING_PLACES'
+const DELETE_AFTERNOON_PLACES = 'DELETE_AFTERNOON_PLACES'
 
 export default {
   components: {
@@ -51,89 +59,102 @@ export default {
   data () {
     return {
       isCancel: true,
-      flag: undefined,
+      deleteType: undefined,
+      buttonsInfos: [],
     }
   },
 
   methods: {
     cancelAction () {
       this.isCancel = true
-      this.flag = undefined
+      this.deleteType = undefined
     },
 
-    selectTypeOfDelete (flag) {
-      this.flag = flag
+    selectTypeOfDelete (deleteType) {
+      this.deleteType = deleteType
       this.isCancel = false
     },
 
-    getMorningOrAfternoonTimeSlots (placeInfos, status) {
-      if (!status || !placeInfos || !placeInfos.place) {
+    selectDeleteType () {
+
+    },
+
+    getMorningOrAfternoonTimeSlots (placeInfos, deleteType) {
+      if (!deleteType || !placeInfos || !placeInfos.place) {
         return false
       }
       const dateToCompare = getFrenchLuxonFromIso(placeInfos.place.date)
-      if (status === 1) {
-        const startComparatorDate = getFrenchLuxonFromObject({
-          year: dateToCompare.year,
-          month: dateToCompare.month,
-          day: dateToCompare.day,
-          hour: 8,
-          minute: 0,
-        })
-        const endComparatorDate = getFrenchLuxonFromObject({
-          year: dateToCompare.year,
-          month: dateToCompare.month,
-          day: dateToCompare.day,
-          hour: 11,
-          minute: 30,
-        })
-
-        if (dateToCompare >= startComparatorDate && dateToCompare <= endComparatorDate) {
-          return true
-        }
+      let hoursRangeBegin
+      let hoursRangeEnd
+      if (deleteType === DELETE_MORNING_PLACES) {
+        hoursRangeBegin = hoursRangeOfDay.morning.begin
+        hoursRangeEnd = hoursRangeOfDay.morning.end
       }
-      if (status === 2) {
-        const startComparatorDate = getFrenchLuxonFromObject({
-          year: dateToCompare.year,
-          month: dateToCompare.month,
-          day: dateToCompare.day,
-          hour: 13,
-          minute: 30,
-        })
-        const endComparatorDate = getFrenchLuxonFromObject({
-          year: dateToCompare.year,
-          month: dateToCompare.month,
-          day: dateToCompare.day,
-          hour: 15,
-          minute: 30,
-        })
-        if (dateToCompare >= startComparatorDate && dateToCompare <= endComparatorDate) {
-          return true
-        }
+      if (deleteType === DELETE_AFTERNOON_PLACES) {
+        hoursRangeBegin = hoursRangeOfDay.afternoon.begin
+        hoursRangeEnd = hoursRangeOfDay.afternoon.end
+      }
+
+      const startComparatorDate = getFrenchLuxonFromObject({
+        year: dateToCompare.year,
+        month: dateToCompare.month,
+        day: dateToCompare.day,
+        ...hoursRangeBegin,
+      })
+      const endComparatorDate = getFrenchLuxonFromObject({
+        year: dateToCompare.year,
+        month: dateToCompare.month,
+        day: dateToCompare.day,
+        ...hoursRangeEnd,
+      })
+
+      if (dateToCompare >= startComparatorDate && dateToCompare <= endComparatorDate) {
+        return true
       }
     },
 
     async deleteInspecteurPlaces () {
-      if (this.flag === 1) {
-        const toDispatch = this.placeInfo.creneau.filter(el => el.place).map(el => el.place._id)
-        this.flag = undefined
-        this.isCancel = true
-        await this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
+      let typeFilter
+      if (this.deleteType === DELETE_ALL_PLACES) {
+        typeFilter = el => el.place
       }
-      if (this.flag === 2) {
-        const toDispatch = this.placeInfo.creneau.filter(el => this.getMorningOrAfternoonTimeSlots(el, 1)).map(el => el.place._id)
-        this.flag = undefined
-        this.isCancel = true
-        await this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
+      if (this.deleteType === DELETE_MORNING_PLACES) {
+        typeFilter = el => this.getMorningOrAfternoonTimeSlots(el, DELETE_MORNING_PLACES)
       }
-      if (this.flag === 3) {
-        const toDispatch = this.placeInfo.creneau.filter(el => this.getMorningOrAfternoonTimeSlots(el, 2)).map(el => el.place._id)
-        this.flag = undefined
-        this.isCancel = true
-        await this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
+      if (this.deleteType === DELETE_AFTERNOON_PLACES) {
+        typeFilter = el => this.getMorningOrAfternoonTimeSlots(el, DELETE_AFTERNOON_PLACES)
       }
+      const toDispatch = this.placeInfo.creneau
+        .filter(typeFilter).map(el => el.place._id)
+      await this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
+      this.deleteType = undefined
+      this.isCancel = true
       this.closeDetails()
       this.$emit('reloadWeekMonitor')
     },
+  },
+
+  mounted () {
+    this.buttonsInfos = [
+      {
+        colorButton: 'grey',
+        buttonDeleteType: DELETE_ALL_PLACES,
+        buttonMessage: 'delete_whole_day_s_places',
+        buttonIcons: ['wb_sunny', 'brightness_3'],
+      },
+      {
+        colorButton: 'grey',
+        buttonDeleteType: DELETE_MORNING_PLACES,
+        buttonMessage: 'delete_morning_places',
+        buttonIcons: ['wb_sunny'],
+      },
+      {
+        colorButton: 'grey',
+        buttonDeleteType: DELETE_AFTERNOON_PLACES,
+        buttonMessage: 'delete_afternoon_places',
+        buttonIcons: ['brightness_3'],
+      },
+    ]
   },
 }
 </script>
@@ -144,11 +165,7 @@ export default {
   margin: 1em;
 }
 
-.btn-details {
-  transition: all 0.6s ease-in-out;
-
-  &.active {
-    background-color: red;
-  }
+.btn-text {
+  color: white;
 }
 </style>

@@ -261,9 +261,8 @@ export default {
       isBooked: false,
       isComputing: false,
       isParseInspecteursPlanningLoading: false,
-      selectedPlaceInfo: undefined,
-      activeInspecteurRow: undefined,
       luxonDate: undefined,
+      selectedPlaceInfo: undefined,
     }
   },
 

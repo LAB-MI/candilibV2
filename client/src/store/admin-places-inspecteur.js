@@ -8,21 +8,17 @@ export const DELETE_INSPECTEUR_PLACES_FAILURE = 'DELETE_INSPECTEUR_PLACES_FAILUR
 export default {
   state: {
     isDeleting: false,
-    error: undefined,
-    result: undefined,
   },
 
   mutations: {
     DELETE_INSPECTEUR_PLACES_REQUEST (state) {
       state.isDeleting = true
     },
-    DELETE_INSPECTEUR_PLACES_SUCCESS (state, result) {
+    DELETE_INSPECTEUR_PLACES_SUCCESS (state) {
       state.isDeleting = false
-      state.result = result
     },
     DELETE_INSPECTEUR_PLACES_FAILURE (state, error) {
       state.isDeleting = false
-      state.error = error
     },
   },
 
@@ -31,14 +27,16 @@ export default {
       try {
         commit(DELETE_INSPECTEUR_PLACES_REQUEST)
         if (!placesToDelete.length) {
-          throw new Error(`Il n'y a pas de place à supprimer pour cette cette inspecteur sur la tranche horraire selectionée`)
+          throw new Error(`Il n'y a pas de place à supprimer pour cet inspecteur sur la tranche horaire sélectionnée`)
         }
-        const result = await api.admin.deletePlacesInspecteur(placesToDelete)
-        console.log({ result })
-        commit(DELETE_INSPECTEUR_PLACES_SUCCESS, result)
-        dispatch(SHOW_SUCCESS, result)
+        const { success, message } = await api.admin.deletePlacesInspecteur(placesToDelete)
+        if (!success) {
+          throw new Error(message)
+        }
+        commit(DELETE_INSPECTEUR_PLACES_SUCCESS)
+        dispatch(SHOW_SUCCESS, message)
       } catch (error) {
-        commit(DELETE_INSPECTEUR_PLACES_FAILURE, error)
+        commit(DELETE_INSPECTEUR_PLACES_FAILURE)
         dispatch(SHOW_ERROR, error.message)
       }
     },

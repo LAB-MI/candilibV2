@@ -1,6 +1,6 @@
 import { commonBasePlaceDateTime } from './places'
 import { findCandidatByEmail } from '../candidat'
-import { candidats } from './candidats'
+import { candidats, createCandidats } from './candidats'
 import placeModel from '../place/place.model'
 
 export const makeResa = (place, candidat) => {
@@ -26,6 +26,27 @@ export const makeResas = async () => {
     makeResa(place2, candidat2),
   ])
   return result
+}
+
+export const makeCandidatsResas = async () => {
+  const candidats = await createCandidats()
+
+  const place1 = await placeModel.findOne({
+    date: commonBasePlaceDateTime.plus({ days: 1, hour: 1 }).toISO(),
+  })
+  const place2 = await placeModel.findOne({
+    date: commonBasePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
+  })
+
+  const candidat1 = await findCandidatByEmail(candidats[0].email)
+  const candidat2 = await findCandidatByEmail(candidats[1].email)
+
+  place1.candidat = candidat1._id
+  const result1 = await place1.save()
+  place2.candidat = candidat2._id
+  const result2 = await place2.save()
+
+  return { result1, result2 }
 }
 
 export const NUMBER_RESA = 2

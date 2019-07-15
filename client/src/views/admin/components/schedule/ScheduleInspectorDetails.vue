@@ -25,7 +25,7 @@
       >
       <!-- TODO: Refactor Create composant for each subcontent dialogs -->
         <div v-if="isFetchingCandidat">
-            {{ $formatMessage({ id: 'chargement_en_cours'}) }}...
+            {{ $formatMessage({ id: 'loading'}) }}...
         </div>
         <div v-else>
           <p>
@@ -43,7 +43,7 @@
             {{ candidat.email }}
           </p>
           <p>
-            {{ $formatMessage({ id: 'portable'}) }}:
+            {{ $formatMessage({ id: 'mobile'}) }}:
             <strong>
               {{ candidat.portable }}
             </strong>
@@ -128,19 +128,19 @@
           :disabled="isLoading"
         >
           <p>
-            Affecter le candidat:
+            {{ $formatMessage({ id: 'affecter_le_candidat'}) }}:
             <strong>
               {{ selectedCandidat.nomNaissance }} / {{ selectedCandidat.codeNeph }}
             </strong>
           </p>
           <p>
-            sur la place du
+            {{ $formatMessage({ id: 'sur_la_place_du'}) }}
             <strong>
               {{ formattedDate }}
             </strong>
           </p>
           <p>
-            au centre
+            {{ $formatMessage({ id: 'au_centre'}) }}
             <strong>
               {{ centerName }}
             </strong>
