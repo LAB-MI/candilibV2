@@ -129,21 +129,21 @@ export default {
         const weeksWithPlaces = this.weeks && this.weeks[weekNb]
         if (weeksWithPlaces && weeksWithPlaces.length) {
           const totalPlaces = weeksWithPlaces.length
-          const bookedsPlaces = weeksWithPlaces.filter(elmt => elmt.candidat).length
-          this.allBookedPlacesByCenter = bookedsPlaces + this.allBookedPlacesByCenter
+          const bookedPlaces = weeksWithPlaces.filter(elmt => elmt.candidat).length
+          this.allBookedPlacesByCenter = bookedPlaces + this.allBookedPlacesByCenter
           this.allCenterPlaces = totalPlaces + this.allCenterPlaces
           return {
             days: weeksWithPlaces.reduce((prev, day) => splitWeek(prev, day, this.centerId), defaultDays),
             numWeek: weekNb,
             totalPlaces,
-            bookedsPlaces,
+            bookedPlaces,
           }
         }
         return {
           days: defaultDays,
           numWeek: weekNb,
           totalPlaces: 0,
-          bookedsPlaces: 0,
+          bookedPlaces: 0,
         }
       })
       return formattedArray.filter(e => e.numWeek !== 0)

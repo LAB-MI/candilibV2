@@ -31,9 +31,9 @@
             v-for="week in items"
             :key="week.numWeek"
             :id="`week-position-${week.numWeek}-${centerId}`"
-            :style="`background-color: ${currentWeek === week.numWeek ? '#bde;' : '#eee;'}`"
+            :class="`${currentWeek === week.numWeek ? 'blue lighten-4' : 'blue-grey lighten-5'}`"
           >
-            <th class="th-ui-week-column" :style="`background-color: ${setColorTh(week)};`">
+            <th :class="`th-ui-week-column ${setColorTh(week)}`">
               <v-layout row>
                 <v-tooltip bottom lazy>
                   <template v-slot:activator="{ on }">
@@ -52,7 +52,7 @@
                   <template v-slot:activator="{ on }">
                     <div v-on="on">
                       <strong>
-                        {{ week.bookedsPlaces }}
+                        {{ week.bookedPlaces }}
                       </strong>
                       &nbsp;
                       <strong>
@@ -207,15 +207,15 @@ export default {
     },
 
     setColorTh (week) {
-      const { totalPlaces, bookedsPlaces } = week
-      if (totalPlaces && bookedsPlaces >= (totalPlaces / 2)) {
-        return '#FF4500'
+      const { totalPlaces, bookedPlaces } = week
+      if (totalPlaces && totalPlaces !== bookedPlaces && bookedPlaces >= (totalPlaces / 2)) {
+        return 'orange darken-1'
       }
-      if (totalPlaces && totalPlaces === bookedsPlaces) {
-        return '#90EE90'
+      if (totalPlaces && totalPlaces === bookedPlaces) {
+        return 'green lighten-2'
       }
       if (totalPlaces) {
-        return '#DC143C'
+        return 'red lighten-1'
       }
       return ''
     },
