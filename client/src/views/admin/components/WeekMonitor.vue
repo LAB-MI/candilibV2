@@ -38,11 +38,12 @@
 
 <script>
 import {
-  getFrenchLuxonFromIso,
   getFrenchFormattedDateFromObject,
   getFrenchLuxonCurrentDateTime,
+  getFrenchLuxonFromIso,
   getFrenchWeeksInWeekYear,
   validDays,
+  creneauAvailable,
 } from '@/util'
 
 import DataTableWeekMonitor from './DataTableWeekMonitor'
@@ -116,6 +117,19 @@ export default {
       this.$router.push({ name: 'gestion-planning', params: { center: this.centerId, date } })
     },
 
+    getCreneauTimeAvailable (date) {
+      const hour = getFrenchLuxonFromIso(date).toLocaleString({
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+      return creneauAvailable.includes(hour)
+    },
+
+    getWeeksWithPlaces (weekNb) {
+      return (this.weeks && this.weeks[weekNb] && this.weeks[weekNb].length) &&
+        this.weeks[weekNb].filter(elmt => this.getCreneauTimeAvailable(elmt.date))
+    },
+
     formatArrayByWeek () {
       this.allBookedPlacesByCenter = 0
       this.allCenterPlaces = 0
@@ -126,7 +140,7 @@ export default {
       const formattedArray = allWeeksOfYear.map((useless, weekNb) => {
         const defaultDays = Array(validDays.length).fill([])
 
-        const weeksWithPlaces = this.weeks && this.weeks[weekNb]
+        const weeksWithPlaces = this.getWeeksWithPlaces(weekNb)
         if (weeksWithPlaces && weeksWithPlaces.length) {
           const totalPlaces = weeksWithPlaces.length
           const bookedPlaces = weeksWithPlaces.filter(elmt => elmt.candidat).length
