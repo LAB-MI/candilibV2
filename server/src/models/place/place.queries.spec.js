@@ -41,8 +41,8 @@ import {
 import { createInspecteur, deleteInspecteurByMatricule } from '../inspecteur'
 import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
 
-let date1 = getFrenchLuxonFromObject({ day: 28, hour: 9 })
-let date2 = getFrenchLuxonFromObject({ day: 28, hour: 9, minute: 30 })
+const date1 = getFrenchLuxonFromObject({ day: 28, hour: 9 })
+const date2 = getFrenchLuxonFromObject({ day: 28, hour: 9, minute: 30 })
 
 const centre = {
   nom: 'Unexisting centre',
