@@ -5,12 +5,15 @@ import './plugins'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { PageTitle, BandeauBeta } from '@/components'
 import './registerServiceWorker'
 
 import './main.styl'
 
 Vue.config.productionTip = false
+
+const PageTitle = () => import('@/components/PageTitle')
+const BandeauBeta = () => import('@/components/BandeauBeta')
+
 Vue.component('page-title', PageTitle)
 Vue.component('bandeau-beta', BandeauBeta)
 
