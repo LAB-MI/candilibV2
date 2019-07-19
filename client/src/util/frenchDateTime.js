@@ -6,6 +6,8 @@ export const frenchOptions = { locale: 'fr', zone: FRENCH_TIME_ZONE }
 
 export const getFrenchLuxonFromIso = isoDate => isoDate && DateTime.fromISO(isoDate, frenchOptions)
 
+export const getFrenchDateFromXslx = xslxDate => DateTime.fromFormat(xslxDate, 'dd/MM/yy HH:mm', frenchOptions)
+
 export const getFrenchLuxonFromJSDate = jsDate => DateTime.fromJSDate(jsDate, frenchOptions)
 
 export const getFrenchLuxonFromSql = sqlDate =>

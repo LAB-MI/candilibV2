@@ -12,7 +12,7 @@ import { findCentresWithPlaces } from '../common/centre.business'
 import {
   assignCandidatInPlace,
   createPlaceForInspector,
-  importPlacesCsv,
+  importPlacesFromFile,
   moveCandidatInPlaces,
   sendMailSchedulesAllInspecteurs,
   sendMailSchedulesInspecteurs,
@@ -20,29 +20,31 @@ import {
 } from './places.business'
 
 export const importPlaces = async (req, res) => {
-  const csvFile = req.files.file
+  const planningFile = req.files.file
   const { departement } = req.body
 
   const loggerInfo = {
     section: 'admin-import-places',
     user: req.userId,
     departement,
-    filename: csvFile.name,
+    filename: planningFile.name,
   }
+
   try {
     appLogger.info({
       ...loggerInfo,
-      description: `import places provenant du fichier ${csvFile.name} et du departement ${departement}`,
+      description: `import places provenant du fichier ${planningFile.name} et du departement ${departement}`,
     })
-    const result = await importPlacesCsv({ csvFile, departement })
+    const result = await importPlacesFromFile({ planningFile, departement })
     appLogger.info({
       ...loggerInfo,
-      description: `import places: Le fichier ${csvFile.name} a été traité pour le departement ${departement}.`,
+      description: `import places: Le fichier ${planningFile.name} a été traité pour le departement ${departement}.`,
     })
+
     res.status(200).send({
-      fileName: csvFile.name,
+      fileName: planningFile.name,
       success: true,
-      message: `Le fichier ${csvFile.name} a été traité pour le departement ${departement}.`,
+      message: `Le fichier ${planningFile.name} a été traité pour le departement ${departement}.`,
       places: result,
     })
   } catch (error) {

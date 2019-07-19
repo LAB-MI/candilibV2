@@ -1,4 +1,7 @@
 import * as csvParser from 'fast-csv'
+import XlsxStreamReader from 'xlsx-stream-reader'
+import streamBuffers from 'stream-buffers'
+
 import { DateTime } from 'luxon'
 import {
   addPlaceToArchive,
@@ -71,10 +74,10 @@ const getPlaceStatus = (
  * TODO:departement a modifier
  * @param {*} data
  */
-const transfomCsv = async ({ data, departement }) => {
+const parseRow = async ({ data, departement }) => {
   const loggerInfo = {
     section: 'admimImportPlaces',
-    action: 'transformCsv',
+    action: 'parseRow',
     data,
     departement,
   }
@@ -119,11 +122,14 @@ const transfomCsv = async ({ data, departement }) => {
 
     if (dept.trim() !== departement) {
       throw new Error(
-        'Le département du centre ne correspond pas au département dont vous avez la charge'
+        `Le département du centre (${dept.trim()}) ne correspond pas au département dont vous avez la charge (${departement})`
       )
     }
 
-    if (!date.isValid) throw new Error('Date est invalide')
+    if (!date.isValid) {
+      throw new Error('Date est invalide')
+    }
+
     // TODO: create test unit for search centre by center name and departement
     const foundCentre = await findCentreByNameAndDepartement(
       centre.trim(),
@@ -166,9 +172,9 @@ const transfomCsv = async ({ data, departement }) => {
   }
 }
 
-const createPlaceCsv = async place => {
+const createPlaceFromFile = async place => {
   const loggerInfo = {
-    func: 'createPlaceCsv',
+    func: 'createPlaceFromFile',
   }
   const { centre, inspecteur, date } = place
   try {
@@ -235,7 +241,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
         try {
           if (data[0] === 'Date') next()
           else {
-            transfomCsv({ data, departement }).then(result => {
+            parseRow({ data, departement }).then(result => {
               appLogger.debug({
                 ...loggerInfo,
                 action: 'resolve-transformCsv',
@@ -258,12 +264,69 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
         }
       })
       .on('data', place => {
-        PlacesPromise.push(createPlaceCsv(place))
+        PlacesPromise.push(createPlaceFromFile(place))
       })
       .on('end', () => {
         resolve(Promise.all(PlacesPromise))
       })
   )
+}
+
+export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
+  const placesPromise = []
+  return new Promise((resolve, reject) => {
+    const workBookReader = new XlsxStreamReader()
+    workBookReader.on('error', function (error) {
+      reject(error)
+    })
+    workBookReader.on('worksheet', function (workSheetReader) {
+      if (workSheetReader.id > 1) {
+        // we only want first sheet
+        workSheetReader.skip()
+        return
+      }
+
+      workSheetReader.on('row', function (row) {
+        if (row.attributes.r !== '1' && !row.values.includes('Date')) {
+          const data = row.values.filter(() => true) // Remove empty slots from array
+          const placePromise = parseRow({ data, departement })
+          placesPromise.push(placePromise)
+        }
+      })
+
+      workSheetReader.process()
+    })
+
+    workBookReader.on('end', async function () {
+      const places = await Promise.all(placesPromise)
+      const placesInDb = await Promise.all(
+        places.map(place => {
+          if (place.status === 'error') {
+            return place
+          }
+          return createPlaceFromFile(place)
+        })
+      )
+      resolve(placesInDb)
+    })
+
+    const myReadableStreamBuffer = new streamBuffers.ReadableStreamBuffer({
+      chunkSize: 2048,
+    })
+
+    myReadableStreamBuffer.put(xlsxFile.data)
+    myReadableStreamBuffer.pipe(workBookReader)
+  })
+}
+
+export const importPlacesFromFile = async ({ planningFile, departement }) => {
+  if (planningFile.name.endsWith('.csv')) {
+    return importPlacesCsv({ csvFile: planningFile, departement })
+  }
+  if (planningFile.name.endsWith('.xlsx')) {
+    return importPlacesXlsx({ xlsxFile: planningFile, departement })
+  }
+  throw new Error(`Format du fichier inattendu (${planningFile.name})`)
 }
 
 export const releaseResa = async ({ _id }) => {

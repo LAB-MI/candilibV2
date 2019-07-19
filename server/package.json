@@ -56,8 +56,10 @@
     "nodemailer-html-to-text": "^3.0.0",
     "nodemailer-smtp-transport": "^2.7.4",
     "sanitize-html": "^1.20.1",
+    "stream-buffers": "^3.0.2",
     "uuid": "^3.3.2",
-    "winston": "^3.2.1"
+    "winston": "^3.2.1",
+    "xlsx-stream-reader": "^1.1.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.5.5",
