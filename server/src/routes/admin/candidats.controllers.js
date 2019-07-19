@@ -59,7 +59,7 @@ export const exportCandidats = async (req, res) => {
   })
 
   const candidatsAsCsv = await getCandidatsAsCsv(req.candidats)
-  let filename = 'candidatsLibresPrintel.csv'
+  const filename = 'candidatsLibresPrintel.csv'
   res
     .status(200)
     .attachment(filename)

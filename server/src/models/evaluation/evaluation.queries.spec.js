@@ -81,7 +81,10 @@ describe('Update Evaluation', () => {
     const comment = 'cool'
 
     // When
-    const evaluation = await updateEvaluationById(evaluationId, { rating, comment })
+    const evaluation = await updateEvaluationById(evaluationId, {
+      rating,
+      comment,
+    })
 
     // Then
     expect(evaluation).toBeDefined()

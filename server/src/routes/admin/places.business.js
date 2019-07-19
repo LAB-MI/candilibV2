@@ -219,7 +219,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
   const loggerInfo = {
     func: 'importPlacesCsv',
   }
-  let PlacesPromise = []
+  const PlacesPromise = []
 
   if (!departement) {
     throw new Error('DEPARTEMENT_IS_MANDATORY')
@@ -566,7 +566,7 @@ export const sendMailSchedulesInspecteurs = async (
     })
   )
 
-  let resultsError = []
+  const resultsError = []
   await Promise.all(
     Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
       try {

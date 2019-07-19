@@ -176,28 +176,24 @@ export async function getDepartementFromWhitelist ({ email, departement }) {
 }
 
 export async function validateEmail (email, hash) {
-  try {
-    const candidat = await findCandidatByEmail(email)
+  const candidat = await findCandidatByEmail(email)
 
-    const updatedCandidat = await updateCandidatById(candidat._id, {
-      isValidatedEmail: true,
-      emailValidationHash: undefined,
-      emailValidatedAt: new Date(),
-    })
+  const updatedCandidat = await updateCandidatById(candidat._id, {
+    isValidatedEmail: true,
+    emailValidationHash: undefined,
+    emailValidatedAt: new Date(),
+  })
 
-    if (candidat.emailValidationHash !== hash) {
-      throw new Error('La validation de votre email a échouée.')
-    }
-    const response = await sendMailToAccount(candidat, INSCRIPTION_OK)
-    return {
-      success: true,
-      response,
-      message:
-        'Votre email a été validé, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
-      updatedCandidat,
-    }
-  } catch (error) {
-    throw error
+  if (candidat.emailValidationHash !== hash) {
+    throw new Error('La validation de votre email a échouée.')
+  }
+  const response = await sendMailToAccount(candidat, INSCRIPTION_OK)
+  return {
+    success: true,
+    response,
+    message:
+      'Votre email a été validé, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
+    updatedCandidat,
   }
 }
 

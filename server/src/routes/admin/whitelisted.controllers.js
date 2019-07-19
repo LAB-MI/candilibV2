@@ -55,15 +55,15 @@ const checkAddWhitelistRequest = body => {
 }
 
 const batchWhitelistMessages = {
-  '201': 'Tous les emails ont été ajoutés à la liste blanche',
-  '207': "Certains emails n'ont pas pu être ajoutés à la liste blanche",
-  '422': "Aucun email n'a pu être ajouté à la liste blanche",
+  201: 'Tous les emails ont été ajoutés à la liste blanche',
+  207: "Certains emails n'ont pas pu être ajoutés à la liste blanche",
+  422: "Aucun email n'a pu être ajouté à la liste blanche",
 }
 
 const batchWhitelistStatuses = {
-  '201': 'success',
-  '207': 'warning',
-  '422': 'error',
+  201: 'success',
+  207: 'warning',
+  422: 'error',
 }
 
 export const addWhitelisted = async (req, res) => {
