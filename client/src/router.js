@@ -1,27 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '@/views/Home.vue'
-import Guest from '@/views/Guest.vue'
-import AdminLogin from '@/views/admin/components/Login'
-import CandidatHome from '@/views/CandidatHome.vue'
-import MessageView from '@/views/Message.vue'
-import EmailValidation from '@/views/candidat/components/EmailValidation.vue'
-import Error404 from '@/views/Error404.vue'
-import MentionsLegales from '@/views/candidat/components/mentions-legales/MentionsLegales.vue'
-import Faq from '@/views/candidat/components/faq/Faq.vue'
-import CenterSelection from '@/views/candidat/components/center-selection/CenterSelection.vue'
-import TimeSlot from '@/views/candidat/components/time-slots-selection/TimeSlot.vue'
-import SelectionSummary from '@/views/candidat/components/selection-summary/SelectionSummary.vue'
-import MyProfile from '@/views/candidat/components/MyProfile.vue'
-import LandingPage from '@/views/candidat/components/LandingPage.vue'
-
-import AdminAurige from '@/views/admin/components/Aurige.vue'
-import AdminCalendar from '@/views/admin/components/AdminCalendar.vue'
-import ScheduleManager from '@/views/admin/components/ScheduleManager.vue'
-import HomeAdminPage from '@/views/admin/components/HomeAdminPage.vue'
-import Whitelist from '@/views/admin/components/Whitelist.vue'
-
 import {
   requireAdminAuth,
   requireCandidatAuth,
@@ -29,7 +8,6 @@ import {
   checkCandidatToken,
   checkAccess,
 } from './router-checks'
-import { SignupForm } from './views/candidat/components'
 import { ROUTE_AUTHORIZE_AURIGE } from './constants'
 
 Vue.use(Router)
@@ -39,6 +17,28 @@ const { VUE_APP_CLIENT_BUILD_TARGET } = process.env
 const isBuildWithAll = ['ALL', undefined].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithCandidat = isBuildWithAll || ['CANDIDAT'].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithAdmin = isBuildWithAll || ['ADMIN'].includes(VUE_APP_CLIENT_BUILD_TARGET)
+
+const Error404 = () => import('@/views/Error404.vue')
+const Home = () => import('@/views/Home.vue')
+const Guest = () => import('@/views/Guest.vue')
+const MessageView = () => import('@/views/Message.vue')
+
+const CandidatHome = () => import('@/views/CandidatHome.vue')
+const SignupForm = () => import('./views/candidat/components/SignupForm.vue')
+const EmailValidation = () => import('@/views/candidat/components/EmailValidation.vue')
+const MentionsLegales = () => import('@/views/candidat/components/mentions-legales/MentionsLegales.vue')
+const Faq = () => import('@/views/candidat/components/faq/Faq.vue')
+const CenterSelection = () => import('@/views/candidat/components/center-selection/CenterSelection.vue')
+const TimeSlot = () => import('@/views/candidat/components/time-slots-selection/TimeSlot.vue')
+const SelectionSummary = () => import('@/views/candidat/components/selection-summary/SelectionSummary.vue')
+const MyProfile = () => import('@/views/candidat/components/MyProfile.vue')
+const LandingPage = () => import('@/views/candidat/components/LandingPage.vue')
+
+const AdminLogin = () => import('@/views/admin/components/Login')
+const AdminAurige = () => import('@/views/admin/components/Aurige.vue')
+const HomeAdminPage = () => import('@/views/admin/components/HomeAdminPage.vue')
+const ScheduleManager = () => import('@/views/admin/components/ScheduleManager.vue')
+const Whitelist = () => import('@/views/admin/components/Whitelist.vue')
 
 const adminRoutes = [
   {
@@ -72,11 +72,6 @@ const adminRoutes = [
         path: 'whitelist',
         name: 'whitelist',
         component: Whitelist,
-      },
-      {
-        path: 'admin-calendar',
-        name: 'admin-calendar',
-        component: AdminCalendar,
       },
     ],
   },
