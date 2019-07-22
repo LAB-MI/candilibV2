@@ -20,6 +20,7 @@ import {
   moveCandidatInPlaces,
   sendMailSchedulesAllInspecteurs,
   sendMailSchedulesInspecteurs,
+  sendOwnMailsSchedulesInspecteurs,
   validUpdateResaInspector,
 } from './places.business'
 
@@ -300,7 +301,7 @@ export const updatePlaces = async (req, res) => {
 }
 
 export const sendScheduleInspecteurs = async (req, res) => {
-  const { departement, date } = req.body
+  const { departement, date, isForInspecteurs } = req.body
   const loggerContent = {
     section: 'admin-send-mail-schedule-inspecteurs',
     admin: req.userId,
@@ -334,7 +335,14 @@ export const sendScheduleInspecteurs = async (req, res) => {
       const { email } = await findUserById(req.userId)
       const confDepartement = await findDepartementbyId(departement)
       const emailDepartement = confDepartement && confDepartement.email
-      results = await sendMailSchedulesInspecteurs(
+      results = isForInspecteurs ?
+        await sendOwnMailsSchedulesInspecteurs(
+          emailDepartement || email,
+          departement,
+          date
+        )
+        :
+        await sendMailSchedulesInspecteurs(
         emailDepartement || email,
         departement,
         date

@@ -599,6 +599,90 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   }
 }
 
+
+export const sendOwnMailsSchedulesInspecteurs = async (
+  email,
+  departement,
+  date
+) => {
+  const loggerContent = {
+    section: 'admin-send-mail-schedule-inspecteurs',
+    departement,
+    date,
+    email,
+  }
+
+  appLogger.debug({
+    ...loggerContent,
+    func: 'sendMailSchedulesInspecteurs',
+  })
+
+  const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
+
+  const placesByInspecteurs = {}
+  const inspecteursEmails = {}
+  const centres = await findCentresByDepartement(departement)
+
+  await Promise.all(
+    centres.map(async centre => {
+      const places = await findAllPlacesBookedByCentre(
+        centre._id,
+        beginDate,
+        endDate
+      )
+      places.forEach(async place => {
+        const { inspecteur: inspecteurId } = place
+        if (!placesByInspecteurs[inspecteurId]) {
+          const { email: emailIspecteur } = await findInspecteurById(
+            inspecteurId
+          )
+          inspecteursEmails[inspecteurId] = emailIspecteur
+          placesByInspecteurs[inspecteurId] = []
+        }
+        placesByInspecteurs[inspecteurId].push(place)
+      })
+    })
+  )
+
+  const resultsError = []
+  await Promise.all(
+    Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
+      try {
+        await sendScheduleInspecteur(
+          inspecteursEmails[inspecteurId] || email,
+          places
+        )
+        appLogger.info({
+          ...loggerContent,
+          inspecteur: inspecteurId,
+          nbPlaces: places.length,
+          email: inspecteursEmails[inspecteurId] || email,
+          description: 'Bordereau envoyé',
+        })
+        return { success: true }
+      } catch (error) {
+        appLogger.error({ ...loggerContent, error, inspecteur: inspecteurId })
+        const inspecteur = await findInspecteurById(inspecteurId)
+        resultsError.push(inspecteur)
+      }
+    })
+  )
+  if (resultsError.length) {
+    try {
+      await sendMailForScheduleInspecteurFailed(
+        email,
+        date,
+        departement,
+        resultsError
+      )
+    } catch (error) {
+      appLogger.error({ ...loggerContent, error })
+    }
+    return { success: false, inspecteurs: resultsError }
+  }
+  return { success: true }
+}
+
 export const sendMailSchedulesInspecteurs = async (
   email,
   departement,
