@@ -25,10 +25,10 @@ export default {
 
   actions: {
     async [GENERATE_INSPECTOR_BORDEREAUX_REQUEST] ({ commit, dispatch }, infos) {
-      const { departement, date } = infos
+      const { departement, date, isForInspecteurs } = infos
       commit(GENERATE_INSPECTOR_BORDEREAUX_REQUEST)
       try {
-        const { success } = await api.admin.generateBordereaux(departement, date)
+        const { success } = await api.admin.generateBordereaux(departement, date, isForInspecteurs)
         if (!success) {
           throw new Error("Un problème s'est produit lors de l'envoi des emails")
         }

@@ -1,19 +1,29 @@
 <template>
   <v-layout row justify-center>
     <v-btn
-      color="info"
+      :color="isForInspecteurs ? 'info' : 'info'"
       dark
       @click.stop="dialog = true"
 
     >
-      <span>
+      <span v-if="isForInspecteurs">
+        Envoyer les bordereaux aux inspecteurs du
+        <strong>
+          {{ activeDepartement }}
+        </strong>
+        &nbsp;
+      </span>
+      <span v-else>
         Recevoir les bordereaux des inspecteurs du
         <strong>
           {{ activeDepartement }}
         </strong>
         &nbsp;
       </span>
-      <v-icon>
+      <v-icon v-if="isForInspecteurs">
+        contact_mail
+      </v-icon>
+      <v-icon v-else>
         email
       </v-icon>
     </v-btn>
@@ -27,8 +37,11 @@
         >
           Les bordereaux inspecteurs du&nbsp;<strong>{{`${activeDepartement}`}} </strong>
         </v-card-title>
-        <v-card-text>
-          Les bordereaux inspecteurs seront envoyés à l'adresse {{emailUser}}
+        <v-card-text v-if="isForInspecteurs">
+          Les bordereaux seront envoyés aux adresses emails de chaque inspecteurs
+        </v-card-text>
+        <v-card-text v-else>
+          Les bordereaux inspecteurs seront envoyés à l'adresse email: <strong>{{ emailDepartement }}</strong>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -73,12 +86,14 @@ import {
 export default {
   props: {
     date: String,
+    isForInspecteurs: Boolean,
   },
 
   computed:
     mapState({
       emailUser: state => state.admin.email,
       activeDepartement: state => state.admin.departements.active,
+      emailDepartement: state => state.admin.departements.emailActive,
       isGenerating: state => state.adminBordereaux.isGenerating,
     }),
 
@@ -89,10 +104,11 @@ export default {
   },
 
   methods: {
-    async generateBordereaux () {
+    async generateBordereaux (flag) {
       await this.$store.dispatch(GENERATE_INSPECTOR_BORDEREAUX_REQUEST, {
         departement: this.activeDepartement,
         date: getFrenchLuxonFromSql(this.date).toISO(),
+        isForInspecteurs: this.isForInspecteurs,
       })
       this.dialog = false
     },

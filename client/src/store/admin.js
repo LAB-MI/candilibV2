@@ -55,6 +55,8 @@ export default {
   state: {
     departements: {
       active: undefined,
+      emails: [],
+      emailActive: undefined,
       error: undefined,
       isFetching: false,
       list: [],
@@ -90,6 +92,9 @@ export default {
 
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
       state.departements.active = activeDepartement || infos.departements[0]
+      state.departements.emails = infos.emailsDepartements
+      const { email } = state.departements.emails.find(el => el._id === state.departements.active)
+      state.departements.emailActive = email
       state.departements.isFetching = false
     },
     [FETCH_ADMIN_INFO_FAILURE] (state) {
@@ -158,6 +163,8 @@ export default {
 
     [SELECT_DEPARTEMENT] (state, departement) {
       state.departements.active = departement
+      const { email } = state.departements.emails.find(el => el._id === state.departements.active)
+      state.departements.emailActive = email
       localStorage.setItem(DEPARTEMENT_STORAGE_KEY, departement)
     },
 

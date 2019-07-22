@@ -5,6 +5,9 @@ import {
   findPlaceById,
   findPlacesByCentreAndDate,
 } from '../../models/place'
+
+import { findCandidatById } from '../../models/candidat'
+
 import { findUserById } from '../../models/user'
 import { findDepartementbyId } from '../../models/departement'
 import {
@@ -16,8 +19,9 @@ import { findCentresWithPlaces } from '../common/centre.business'
 import {
   assignCandidatInPlace,
   createPlaceForInspector,
-  importPlacesFromFile,
+  importPlacesCsv,
   moveCandidatInPlaces,
+  removeReservationPlaceByAdmin,
   sendMailSchedulesAllInspecteurs,
   sendMailSchedulesInspecteurs,
   sendOwnMailsSchedulesInspecteurs,
@@ -25,31 +29,29 @@ import {
 } from './places.business'
 
 export const importPlaces = async (req, res) => {
-  const planningFile = req.files.file
+  const csvFile = req.files.file
   const { departement } = req.body
 
   const loggerInfo = {
     section: 'admin-import-places',
     user: req.userId,
     departement,
-    filename: planningFile.name,
+    filename: csvFile.name,
   }
-
   try {
     appLogger.info({
       ...loggerInfo,
-      description: `import places provenant du fichier ${planningFile.name} et du departement ${departement}`,
+      description: `import places provenant du fichier ${csvFile.name} et du departement ${departement}`,
     })
-    const result = await importPlacesFromFile({ planningFile, departement })
+    const result = await importPlacesCsv({ csvFile, departement })
     appLogger.info({
       ...loggerInfo,
-      description: `import places: Le fichier ${planningFile.name} a été traité pour le departement ${departement}.`,
+      description: `import places: Le fichier ${csvFile.name} a été traité pour le departement ${departement}.`,
     })
-
     res.status(200).send({
-      fileName: planningFile.name,
+      fileName: csvFile.name,
       success: true,
-      message: `Le fichier ${planningFile.name} a été traité pour le departement ${departement}.`,
+      message: `Le fichier ${csvFile.name} a été traité pour le departement ${departement}.`,
       places: result,
     })
   } catch (error) {
@@ -202,6 +204,75 @@ export const deletePlaceByAdmin = async (req, res) => {
   }
 }
 
+export const deletePlacesByAdmin = async (req, res) => {
+  const adminId = req.userId
+  const { placesToDelete } = req.body
+
+  if (!placesToDelete.length) {
+    res.status(400).json({
+      succes: false,
+      message: 'les places à supprimer ne sont pas definie',
+    })
+  }
+
+  const loggerInfo = {
+    section: 'admin-delete-places',
+    user: adminId,
+    placesToDelete,
+    description: `delete places with array of ids.`,
+  }
+
+  try {
+    await Promise.all(
+      placesToDelete.map(async placeId => {
+        const placeFound = await findPlaceById(placeId)
+        if (!placeFound) {
+          appLogger.warn({
+            ...loggerInfo,
+            description: `La place selectioné avec l'id: [${placeId} à déjà été supprimer ou n'est pas dans la `,
+            result: placeFound,
+          })
+          return
+        }
+        const { candidat } = placeFound
+        if (candidat) {
+          const candidatFound = await findCandidatById(candidat)
+          if (candidatFound) {
+            const removedPlace = await removeReservationPlaceByAdmin(
+              placeFound,
+              candidatFound,
+              adminId
+            )
+            appLogger.info({
+              ...loggerInfo,
+              description: `remove booked Place By Admin and send email to candidat`,
+              result: removedPlace,
+            })
+            return
+          }
+        }
+        const removedPlace = await deletePlace(placeFound)
+        appLogger.info({
+          ...loggerInfo,
+          description: `remove Place By Admin`,
+          result: removedPlace,
+        })
+      })
+    )
+
+    res.status(200).json({
+      success: true,
+      message: 'La suppression des places sélectionnées à bien été traité',
+    })
+  } catch (error) {
+    appLogger.warn({
+      ...loggerInfo,
+      error,
+    })
+    res.status(400).json({ success: false, message: error.message })
+  }
+}
+
 export const updatePlaces = async (req, res) => {
   const { inspecteur, candidatId } = req.body
   const { id: placeId } = req.params
@@ -335,18 +406,17 @@ export const sendScheduleInspecteurs = async (req, res) => {
       const { email } = await findUserById(req.userId)
       const confDepartement = await findDepartementbyId(departement)
       const emailDepartement = confDepartement && confDepartement.email
-      results = isForInspecteurs ?
-        await sendOwnMailsSchedulesInspecteurs(
+      results = isForInspecteurs
+        ? await sendOwnMailsSchedulesInspecteurs(
           emailDepartement || email,
           departement,
           date
         )
-        :
-        await sendMailSchedulesInspecteurs(
-        emailDepartement || email,
-        departement,
-        date
-      )
+        : await sendMailSchedulesInspecteurs(
+          emailDepartement || email,
+          departement,
+          date
+        )
     } else {
       appLogger.info({
         ...loggerContent,

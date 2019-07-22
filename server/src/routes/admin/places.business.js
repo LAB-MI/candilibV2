@@ -599,22 +599,21 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   }
 }
 
-
 export const sendOwnMailsSchedulesInspecteurs = async (
-  email,
+  departementEmail,
   departement,
   date
 ) => {
   const loggerContent = {
-    section: 'admin-send-mail-schedule-inspecteurs',
+    section: 'admin-send-own-mails-schedule-inspecteurs',
     departement,
     date,
-    email,
+    departementEmail,
   }
 
   appLogger.debug({
     ...loggerContent,
-    func: 'sendMailSchedulesInspecteurs',
+    func: 'sendOwnMailsSchedulesInspecteurs',
   })
 
   const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
@@ -630,17 +629,20 @@ export const sendOwnMailsSchedulesInspecteurs = async (
         beginDate,
         endDate
       )
-      places.forEach(async place => {
-        const { inspecteur: inspecteurId } = place
-        if (!placesByInspecteurs[inspecteurId]) {
-          const { email: emailIspecteur } = await findInspecteurById(
-            inspecteurId
-          )
-          inspecteursEmails[inspecteurId] = emailIspecteur
-          placesByInspecteurs[inspecteurId] = []
-        }
-        placesByInspecteurs[inspecteurId].push(place)
-      })
+      await Promise.all(
+        places.map(async place => {
+          const { inspecteur: inspecteurId } = place
+          if (!placesByInspecteurs[inspecteurId]) {
+            const { email: emailInspecteur } = await findInspecteurById(
+              inspecteurId
+            )
+            inspecteursEmails[inspecteurId] = emailInspecteur
+            placesByInspecteurs[inspecteurId] = []
+          }
+
+          placesByInspecteurs[inspecteurId].push(place)
+        })
+      )
     })
   )
 
@@ -649,14 +651,15 @@ export const sendOwnMailsSchedulesInspecteurs = async (
     Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
       try {
         await sendScheduleInspecteur(
-          inspecteursEmails[inspecteurId] || email,
+          inspecteursEmails[inspecteurId] || departementEmail,
           places
         )
         appLogger.info({
           ...loggerContent,
           inspecteur: inspecteurId,
           nbPlaces: places.length,
-          email: inspecteursEmails[inspecteurId] || email,
+          emailTo: inspecteursEmails[inspecteurId] || departementEmail,
+          emailInspecteur: inspecteursEmails[inspecteurId],
           description: 'Bordereau envoyé',
         })
         return { success: true }
@@ -667,10 +670,11 @@ export const sendOwnMailsSchedulesInspecteurs = async (
       }
     })
   )
+
   if (resultsError.length) {
     try {
       await sendMailForScheduleInspecteurFailed(
-        email,
+        departementEmail,
         date,
         departement,
         resultsError
@@ -684,7 +688,7 @@ export const sendOwnMailsSchedulesInspecteurs = async (
 }
 
 export const sendMailSchedulesInspecteurs = async (
-  email,
+  departementEmail,
   departement,
   date
 ) => {
@@ -692,7 +696,7 @@ export const sendMailSchedulesInspecteurs = async (
     section: 'admin-send-mail-schedule-inspecteurs',
     departement,
     date,
-    email,
+    departementEmail,
   }
 
   appLogger.debug({
@@ -725,12 +729,12 @@ export const sendMailSchedulesInspecteurs = async (
   await Promise.all(
     Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
       try {
-        await sendScheduleInspecteur(email, places)
+        await sendScheduleInspecteur(departementEmail, places)
         appLogger.info({
           ...loggerContent,
           inspecteur: inspecteurId,
           nbPlaces: places.length,
-          email,
+          departementEmail,
           description: 'Bordereau envoyé',
         })
         return { success: true }
@@ -744,7 +748,7 @@ export const sendMailSchedulesInspecteurs = async (
   if (resultsError.length) {
     try {
       await sendMailForScheduleInspecteurFailed(
-        email,
+        departementEmail,
         date,
         departement,
         resultsError

@@ -13,9 +13,7 @@ export const getMe = async (req, res) => {
   try {
     const { email, departements, status } = await findUserById(req.userId)
     const emailsDepartements = await Promise.all(
-      departements.map(
-        async departement => await findDepartementbyId(departement)
-      )
+      departements.map(async departement => findDepartementbyId(departement))
     )
     appLogger.debug({
       ...loggerInfo,
