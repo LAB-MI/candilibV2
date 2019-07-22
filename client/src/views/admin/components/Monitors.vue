@@ -62,9 +62,7 @@ export default {
 
   watch: {
     async activeDepartement (newValue, oldValue) {
-      if (newValue !== oldValue) {
-        await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
-      }
+      await this.reloadWeekMonitor()
     },
   },
 
@@ -75,7 +73,9 @@ export default {
   },
 
   async mounted () {
-    await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
+    if (this.activeDepartement) {
+      await this.reloadWeekMonitor()
+    }
   },
 }
 </script>
