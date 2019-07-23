@@ -11,7 +11,6 @@ export const placeCommonFields = {
   inspecteur: {
     type: ObjectId,
     required: false,
-    trim: true,
     ref: 'Inspecteur',
   },
   centre: {

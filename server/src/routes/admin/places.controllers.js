@@ -18,7 +18,6 @@ import {
   sendMailSchedulesInspecteurs,
   validUpdateResaInspector,
 } from './places.business'
-import { sendMailConvocation } from '../business'
 
 export const importPlaces = async (req, res) => {
   const planningFile = req.files.file
@@ -244,14 +243,25 @@ export const updatePlaces = async (req, res) => {
       })
 
       const result = await assignCandidatInPlace(candidatId, placeId, admin)
-      const place = await findPlaceById(placeId)
-      sendMailConvocation(place)
-
       const { date, hour } = dateTimeToFormatFr(result.newBookedPlace.date)
+
+      const {
+        _id,
+        centre,
+        candidat,
+        date: bookedDate,
+        inspecteur,
+      } = result.newBookedPlace
       return res.json({
         success: true,
         message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${result.candidat.codeNeph}] a bien été affecté à la place du ${date} à ${hour}`,
-        place: result.newBookedPlace,
+        place: {
+          _id,
+          centre: centre._id,
+          inspecteur,
+          candidat: candidat._id,
+          date: bookedDate,
+        },
       })
     }
   } catch (error) {

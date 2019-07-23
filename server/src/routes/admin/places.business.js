@@ -551,7 +551,15 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   const placeAlreadyBookedByCandidat = await findPlaceBookedByCandidat(
     candidatId
   )
-  const newBookedPlace = await bookPlaceById(placeId, candidatId)
+  const newBookedPlace = await bookPlaceById(
+    placeId,
+    candidatId,
+    'centre candidat date inspecteur',
+    {
+      candidat: true,
+      centre: true,
+    }
+  )
 
   if (!newBookedPlace) {
     throw new ErrorWithStatus(400, PLACE_IS_ALREADY_BOOKED)
