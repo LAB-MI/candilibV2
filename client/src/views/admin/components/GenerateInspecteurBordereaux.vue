@@ -1,30 +1,20 @@
 <template>
   <v-layout row justify-center>
     <v-btn
-      :color="isForInspecteurs ? 'info' : 'info'"
+      color="info"
       dark
       @click.stop="dialog = true"
 
     >
-      <span v-if="isForInspecteurs">
-        Envoyer les bordereaux aux inspecteurs du
+      <span>
+        {{ messageButton }}
         <strong>
           {{ activeDepartement }}
         </strong>
         &nbsp;
       </span>
-      <span v-else>
-        Recevoir les bordereaux des inspecteurs du
-        <strong>
-          {{ activeDepartement }}
-        </strong>
-        &nbsp;
-      </span>
-      <v-icon v-if="isForInspecteurs">
-        contact_mail
-      </v-icon>
-      <v-icon v-else>
-        email
+      <v-icon>
+        {{ iconButton }}
       </v-icon>
     </v-btn>
     <v-dialog
@@ -35,13 +25,17 @@
         <v-card-title
           class="headline"
         >
-          Les bordereaux inspecteurs du&nbsp;<strong>{{`${activeDepartement}`}} </strong>
+          {{ titleModal }}
+          &nbsp;
+          <strong>
+            {{`${activeDepartement}`}}
+          </strong>
         </v-card-title>
-        <v-card-text v-if="isForInspecteurs">
-          Les bordereaux seront envoyés aux adresses emails de chaque inspecteurs
-        </v-card-text>
-        <v-card-text v-else>
-          Les bordereaux inspecteurs seront envoyés à l'adresse email: <strong>{{ emailDepartement }}</strong>
+        <v-card-text>
+          {{ modalText }}
+          <strong v-if="!isForInspecteurs">
+            {{ emailDepartementActive }}
+          </strong>
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -52,7 +46,7 @@
             :aria-disabled="isGenerating"
             @click="dialog = false"
           >
-            Annuler
+            {{ cancelDialMsg }}
           </v-btn>
           <v-btn
             :aria-disabled="isGenerating"
@@ -61,10 +55,10 @@
             color="primary"
             @click="generateBordereaux"
           >
-            Envoyer
+            {{ submitDialMsg }}
             &nbsp;
             <v-icon>
-              email
+              {{ iconButton }}
             </v-icon>
           </v-btn>
         </v-card-actions>
@@ -74,7 +68,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapGetters } from 'vuex'
 import {
   GENERATE_INSPECTOR_BORDEREAUX_REQUEST,
 } from '@/store'
@@ -83,28 +77,37 @@ import {
   getFrenchLuxonFromSql,
 } from '@/util'
 
+import messageAdmin from '@/admin'
+
 export default {
   props: {
     date: String,
     isForInspecteurs: Boolean,
   },
 
-  computed:
-    mapState({
+  computed: {
+    ...mapState({
       emailUser: state => state.admin.email,
       activeDepartement: state => state.admin.departements.active,
-      emailDepartement: state => state.admin.departements.emailActive,
       isGenerating: state => state.adminBordereaux.isGenerating,
     }),
+    ...mapGetters(['emailDepartementActive']),
+  },
 
   data () {
     return {
       dialog: false,
+      messageButton: '',
+      iconButton: '',
+      titleModal: '',
+      modalText: '',
+      submitDialMsg: messageAdmin.envoyer,
+      cancelDialMsg: messageAdmin.annuler,
     }
   },
 
   methods: {
-    async generateBordereaux (flag) {
+    async generateBordereaux () {
       await this.$store.dispatch(GENERATE_INSPECTOR_BORDEREAUX_REQUEST, {
         departement: this.activeDepartement,
         date: getFrenchLuxonFromSql(this.date).toISO(),
@@ -112,6 +115,20 @@ export default {
       })
       this.dialog = false
     },
+  },
+
+  mounted () {
+    if (this.isForInspecteurs) {
+      this.messageButton = messageAdmin.send_bordereaux
+      this.iconButton = 'contact_mail'
+      this.titleModal = messageAdmin.send_bordereaux
+      this.modalText = messageAdmin.send_bordereaux_for_ipcsr_email
+    } else {
+      this.messageButton = messageAdmin.recevoir_les_bordereaux_inspecteurs
+      this.iconButton = 'email'
+      this.titleModal = messageAdmin.recevoir_les_bordereaux_inspecteurs
+      this.modalText = messageAdmin.send_bordereaux_to_email
+    }
   },
 }
 </script>

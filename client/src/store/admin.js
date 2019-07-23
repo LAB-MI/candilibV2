@@ -50,13 +50,19 @@ export default {
     activeDepartement: state => {
       return state.departements.active
     },
+    emailDepartementActive: state => {
+      if (!state.departements.emails.length) {
+        return state.email
+      }
+      const selectedEmail = state.departements.emails.find(el => el && el._id === state.departements.active)
+      return (selectedEmail && selectedEmail.email) || state.email
+    },
   },
 
   state: {
     departements: {
       active: undefined,
       emails: [],
-      emailActive: undefined,
       error: undefined,
       isFetching: false,
       list: [],
@@ -91,10 +97,9 @@ export default {
       state.features = infos.features && infos.features.map(feature => ROUTE_AUTHORIZES[feature])
 
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
+
       state.departements.active = activeDepartement || infos.departements[0]
-      state.departements.emails = infos.emailsDepartements
-      const { email } = state.departements.emails.find(el => el._id === state.departements.active)
-      state.departements.emailActive = email
+      state.departements.emails = infos.emailsDepartements || []
       state.departements.isFetching = false
     },
     [FETCH_ADMIN_INFO_FAILURE] (state) {
@@ -163,8 +168,6 @@ export default {
 
     [SELECT_DEPARTEMENT] (state, departement) {
       state.departements.active = departement
-      const { email } = state.departements.emails.find(el => el._id === state.departements.active)
-      state.departements.emailActive = email
       localStorage.setItem(DEPARTEMENT_STORAGE_KEY, departement)
     },
 

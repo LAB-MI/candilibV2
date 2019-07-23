@@ -1,5 +1,5 @@
 import { findUserById } from '../../models/user'
-import { findDepartementbyId } from '../../models/departement'
+import { findDepartementById } from '../../models/departement'
 import { appLogger } from '../../util'
 import config from '../../config'
 
@@ -13,7 +13,7 @@ export const getMe = async (req, res) => {
   try {
     const { email, departements, status } = await findUserById(req.userId)
     const emailsDepartements = await Promise.all(
-      departements.map(async departement => findDepartementbyId(departement))
+      departements.map(findDepartementById)
     )
     appLogger.debug({
       ...loggerInfo,

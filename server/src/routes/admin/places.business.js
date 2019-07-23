@@ -599,13 +599,14 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   }
 }
 
-export const sendOwnMailsSchedulesInspecteurs = async (
+export const sendMailSchedulesInspecteurs = async (
   departementEmail,
   departement,
-  date
+  date,
+  isForInspecteurs
 ) => {
   const loggerContent = {
-    section: 'admin-send-own-mails-schedule-inspecteurs',
+    section: 'admin-send-mail-schedule-inspecteurs',
     departement,
     date,
     departementEmail,
@@ -613,7 +614,7 @@ export const sendOwnMailsSchedulesInspecteurs = async (
 
   appLogger.debug({
     ...loggerContent,
-    func: 'sendOwnMailsSchedulesInspecteurs',
+    func: 'sendMailSchedulesInspecteurs',
   })
 
   const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
@@ -633,10 +634,12 @@ export const sendOwnMailsSchedulesInspecteurs = async (
         places.map(async place => {
           const { inspecteur: inspecteurId } = place
           if (!placesByInspecteurs[inspecteurId]) {
-            const { email: emailInspecteur } = await findInspecteurById(
-              inspecteurId
-            )
-            inspecteursEmails[inspecteurId] = emailInspecteur
+            if (isForInspecteurs) {
+              const { email: emailInspecteur } = await findInspecteurById(
+                inspecteurId
+              )
+              inspecteursEmails[inspecteurId] = emailInspecteur
+            }
             placesByInspecteurs[inspecteurId] = []
           }
 
@@ -651,15 +654,19 @@ export const sendOwnMailsSchedulesInspecteurs = async (
     Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
       try {
         await sendScheduleInspecteur(
-          inspecteursEmails[inspecteurId] || departementEmail,
+          isForInspecteurs ? inspecteursEmails[inspecteurId] : departementEmail,
           places
         )
         appLogger.info({
           ...loggerContent,
           inspecteur: inspecteurId,
           nbPlaces: places.length,
-          emailTo: inspecteursEmails[inspecteurId] || departementEmail,
-          emailInspecteur: inspecteursEmails[inspecteurId],
+          emailTo: isForInspecteurs
+            ? inspecteursEmails[inspecteurId]
+            : departementEmail,
+          emailInspecteur: isForInspecteurs
+            ? inspecteursEmails[inspecteurId]
+            : null,
           description: 'Bordereau envoyé',
         })
         return { success: true }
@@ -671,80 +678,6 @@ export const sendOwnMailsSchedulesInspecteurs = async (
     })
   )
 
-  if (resultsError.length) {
-    try {
-      await sendMailForScheduleInspecteurFailed(
-        departementEmail,
-        date,
-        departement,
-        resultsError
-      )
-    } catch (error) {
-      appLogger.error({ ...loggerContent, error })
-    }
-    return { success: false, inspecteurs: resultsError }
-  }
-  return { success: true }
-}
-
-export const sendMailSchedulesInspecteurs = async (
-  departementEmail,
-  departement,
-  date
-) => {
-  const loggerContent = {
-    section: 'admin-send-mail-schedule-inspecteurs',
-    departement,
-    date,
-    departementEmail,
-  }
-
-  appLogger.debug({
-    ...loggerContent,
-    func: 'sendMailSchedulesInspecteurs',
-  })
-
-  const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
-
-  const placesByInspecteurs = {}
-  const centres = await findCentresByDepartement(departement)
-
-  await Promise.all(
-    centres.map(async centre => {
-      const places = await findAllPlacesBookedByCentre(
-        centre._id,
-        beginDate,
-        endDate
-      )
-      places.forEach(place => {
-        if (!placesByInspecteurs[place.inspecteur]) {
-          placesByInspecteurs[place.inspecteur] = []
-        }
-        placesByInspecteurs[place.inspecteur].push(place)
-      })
-    })
-  )
-
-  const resultsError = []
-  await Promise.all(
-    Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
-      try {
-        await sendScheduleInspecteur(departementEmail, places)
-        appLogger.info({
-          ...loggerContent,
-          inspecteur: inspecteurId,
-          nbPlaces: places.length,
-          departementEmail,
-          description: 'Bordereau envoyé',
-        })
-        return { success: true }
-      } catch (error) {
-        appLogger.error({ ...loggerContent, error, inspecteur: inspecteurId })
-        const inspecteur = await findInspecteurById(inspecteurId)
-        resultsError.push(inspecteur)
-      }
-    })
-  )
   if (resultsError.length) {
     try {
       await sendMailForScheduleInspecteurFailed(
