@@ -1,7 +1,7 @@
+import { dateTimeToFormatFr } from '../../util/date.util'
+import { getHtmlBody } from './mail/body-mail-template'
 import { getConvocationTemplate } from './mail/convocation-template'
 import { getUrlFAQ, getUrlRESA } from './mail/mail.constants'
-import { getHtmlBody } from './mail/body-mail-template'
-import { dateTimeToFormatFr } from '../../util/date.util'
 import { buildMailResaArgsValidation } from './send-mail-util'
 
 const section = 'candidat-sendMail'

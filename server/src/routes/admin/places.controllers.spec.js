@@ -1,11 +1,14 @@
-import request from 'supertest'
-import express from 'express'
 import bodyParser from 'body-parser'
-
-import { connect, disconnect } from '../../mongo-connection'
-
+import express from 'express'
+import request from 'supertest'
 import { apiPrefix } from '../../app'
-
+import config from '../../config'
+import { findCandidatById } from '../../models/candidat'
+import centreModel from '../../models/centre/centre.model'
+import { createInspecteur } from '../../models/inspecteur'
+import { createPlace } from '../../models/place'
+import placeModel from '../../models/place/place.model'
+import { createUser } from '../../models/user'
 import {
   centres,
   createCandidats,
@@ -18,23 +21,19 @@ import {
   makeResas,
   removeCentres,
   removePlaces,
+  setInitCreatedCentre,
 } from '../../models/__tests__'
-import { getPlaces, updatePlaces } from '../admin/places.controllers'
-import centreModel from '../../models/centre/centre.model'
-import placeModel from '../../models/place/place.model'
-import { createPlace } from '../../models/place'
-import { PLACE_IS_ALREADY_BOOKED } from './message.constants'
-import { createInspecteur } from '../../models/inspecteur'
-
+import { connect, disconnect } from '../../mongo-connection'
 import {
   getFrenchLuxonFromISO,
-  getFrenchLuxonFromObject,
   getFrenchLuxonFromJSDate,
+  getFrenchLuxonFromObject,
 } from '../../util'
-import config from '../../config'
-import { createUser } from '../../models/user'
-import { findCandidatById } from '../../models/candidat'
+import { getPlaces, updatePlaces } from '../admin/places.controllers'
+import { SUBJECT_CONVOCATION } from '../business'
+import { getConvocationBody } from '../business/build-mail-convocation'
 import { REASON_MODIFY_RESA_ADMIN } from '../common/reason.constants'
+import { PLACE_IS_ALREADY_BOOKED } from './message.constants'
 
 const inspecteurTest = {
   nom: 'Doggett',
@@ -56,6 +55,9 @@ const admin = {
   departements: ['94', '95'],
   status: config.userStatuses.TECH,
 }
+
+jest.mock('../business/send-mail')
+jest.mock('../../util/logger')
 
 describe('Test places controller', () => {
   let candidatsCreated
@@ -192,7 +194,6 @@ describe('Test places controller', () => {
 })
 
 describe('update place by admin', () => {
-  // let placesCreated
   let candidatsCreatedAndUpdated
 
   const app = express()
@@ -201,6 +202,7 @@ describe('update place by admin', () => {
 
   beforeAll(async () => {
     await connect()
+    setInitCreatedCentre()
     const user = await createUser(
       admin.email,
       admin.password,
@@ -215,11 +217,9 @@ describe('update place by admin', () => {
     app.patch(`${apiPrefix}/admin/places/:id`, updatePlaces)
 
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
-    // placesCreated = await createPlaces()
   })
 
   afterAll(async () => {
-    // const places = placesCreated.map(elt => elt.remove())
     const candidats = candidatsCreatedAndUpdated.map(elt => elt.remove())
 
     await Promise.all([...candidats])
@@ -234,13 +234,15 @@ describe('update place by admin', () => {
       date: getFrenchLuxonFromObject({ day: 18, hour: 9 })
         .setLocale('fr')
         .toISO(),
-      inspecteur: inspecteur1,
-      centre: centre1,
+      inspecteur: inspecteur1._id,
+      centre: centre1._id,
     }
 
     const place = await createPlace(placeCanBook)
 
     const candidat = candidatsCreatedAndUpdated[0]
+
+    place.centre = centre1
 
     const { body } = await request(app)
       .patch(`${apiPrefix}/admin/places/${place._id}`)
@@ -262,6 +264,8 @@ describe('update place by admin', () => {
     const newCandidat = await findCandidatById(candidat._id)
     expect(newCandidat.places).toBeUndefined()
 
+    expectMailConvocation(candidat, place)
+
     await place.remove()
   })
 
@@ -278,6 +282,7 @@ describe('update place by admin', () => {
     }
 
     const place = await createPlace(placeCanBook)
+    place.centre = centre1
 
     const candidat = candidatsCreatedAndUpdated[0]
     const placeBooked = {
@@ -325,6 +330,8 @@ describe('update place by admin', () => {
       REASON_MODIFY_RESA_ADMIN
     )
     expect(newCandidat.places[0]).toHaveProperty('byUser', admin.email)
+
+    expectMailConvocation(candidat, place)
 
     await Promise.all([oldResa, place].map(place => place.remove()))
   })
@@ -442,3 +449,11 @@ describe('update place by admin', () => {
     await place.remove()
   })
 })
+function expectMailConvocation (candidat, place) {
+  const bodyMail = require('../business/send-mail').getMail()
+  expect(bodyMail).toBeDefined()
+  expect(bodyMail).toHaveProperty('to', candidat.email)
+  expect(bodyMail).toHaveProperty('subject', SUBJECT_CONVOCATION)
+  place.candidat = candidat
+  expect(bodyMail).toHaveProperty('html', getConvocationBody(place))
+}
