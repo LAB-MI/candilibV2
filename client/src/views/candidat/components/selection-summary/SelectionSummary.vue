@@ -84,7 +84,7 @@ export default {
 
     title () {
       return this.isConfirmation || this.$route.meta.isConfirmation
-        ? `${this.$route.params.modifying === 'modification' ? 'Confirmer la modificaion' : 'Confirmation'}`
+        ? `${this.$route.params.modifying === 'modification' ? 'Confirmer la modification' : 'Confirmation'}`
         : 'Ma réservation'
     },
 
