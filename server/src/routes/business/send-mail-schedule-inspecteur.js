@@ -3,7 +3,7 @@ import { DateTime } from 'luxon'
 import { appLogger } from '../../util'
 import { getScheduleInspecteurTemplate } from './mail/body-schedule-inspecteur-template'
 import { getHtmlBody } from './mail'
-import { dateTimeToFormatFr } from '../../util/date.util'
+import { getFrenchFormattedDateTime } from '../../util/date.util'
 import { sendMail } from './send-mail'
 import { findInspecteurById } from '../../models/inspecteur'
 import { findCentreById } from '../../models/centre'
@@ -43,7 +43,7 @@ const getScheduleInspecteurBody = async (
   await Promise.all(
     places.map(async place => {
       const { candidat, date } = place
-      const heure = dateTimeToFormatFr(date).hour
+      const heure = getFrenchFormattedDateTime(date).hour
       let candidatObject
       if (candidat) {
         candidatObject = await findCandidatById(candidat, {
@@ -140,7 +140,7 @@ export const sendScheduleInspecteur = async (
   const centreNom = placeCentre.nom
   const departement = placeCentre.departement
 
-  const dateToString = dateTimeToFormatFr(date).date
+  const dateToString = getFrenchFormattedDateTime(date).date
   const content = await getScheduleInspecteurBody(
     inspecteurName,
     inspecteurMatricule,
@@ -167,7 +167,8 @@ export const sendMailForScheduleInspecteurFailed = async (
     args: { email, date, departement, inspecteurs },
   })
 
-  const dateToString = dateTimeToFormatFr(date, DateTime.DATE_SHORT).date
+  const dateToString = getFrenchFormattedDateTime(date, DateTime.DATE_SHORT)
+    .date
 
   const content = getFailedScheduleInspecteurTemplate(
     dateToString,

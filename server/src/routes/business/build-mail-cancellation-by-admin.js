@@ -1,7 +1,7 @@
 import { Types } from 'mongoose'
 import { getHtmlBody } from './mail/body-mail-template'
 import { buildMailResaArgsValidation } from './send-mail-util'
-import { dateTimeToFormatFr } from '../../util/date.util'
+import { getFrenchFormattedDateTime } from '../../util/date.util'
 import { getCancelBookingByAdminTemplate, getUrlFAQ, getUrlRESA } from './mail'
 import { appLogger } from '../../util'
 import { findCentreById } from '../../models/centre'
@@ -34,7 +34,7 @@ export const getCancellationByAdminBody = async (place, candidat) => {
     urlRESA
   )
 
-  const dateTimeResa = dateTimeToFormatFr(date)
+  const dateTimeResa = getFrenchFormattedDateTime(date)
 
   const body = getCancelBookingByAdminTemplate(
     nomNaissance,
