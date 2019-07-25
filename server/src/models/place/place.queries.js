@@ -30,7 +30,10 @@ export const findAllPlaces = async () => {
 }
 
 export const findPlaceById = async id => {
-  const place = await Place.findById(id)
+  const placeQuery = Place.findById(id)
+    .populate('candidat')
+    .populate('centre')
+  const place = await placeQuery
   return place
 }
 export const findPlaceByIdAndPopulate = async (id, populate) => {

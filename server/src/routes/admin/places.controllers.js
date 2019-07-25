@@ -7,7 +7,11 @@ import {
 } from '../../models/place'
 import { findUserById } from '../../models/user'
 import { findDepartementbyId } from '../../models/departement'
-import { appLogger, dateTimeToFormatFr, ErrorWithStatus } from '../../util'
+import {
+  appLogger,
+  getFrenchFormattedDateTime,
+  ErrorWithStatus,
+} from '../../util'
 import { findCentresWithPlaces } from '../common/centre.business'
 import {
   assignCandidatInPlace,
@@ -177,7 +181,7 @@ export const deletePlaceByAdmin = async (req, res) => {
       ...loggerInfo,
       description: `delete place: La place id: [${id}] a bien été supprimée de la base.`,
     })
-    const { date, hour } = dateTimeToFormatFr(place.date)
+    const { date, hour } = getFrenchFormattedDateTime(place.date)
     res.json({
       success: true,
       message: `La place du [${date} ${hour}] a bien été supprimée de la base`,
@@ -243,11 +247,27 @@ export const updatePlaces = async (req, res) => {
       })
 
       const result = await assignCandidatInPlace(candidatId, placeId, admin)
-      const { date, hour } = dateTimeToFormatFr(result.newBookedPlace.date)
-      return res.send({
+      const { date, hour } = getFrenchFormattedDateTime(
+        result.newBookedPlace.date
+      )
+
+      const {
+        _id,
+        centre,
+        candidat,
+        date: bookedDate,
+        inspecteur,
+      } = result.newBookedPlace
+      return res.json({
         success: true,
         message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${result.candidat.codeNeph}] a bien été affecté à la place du ${date} à ${hour}`,
-        place: result.newBookedPlace,
+        place: {
+          _id,
+          centre: centre._id,
+          inspecteur,
+          candidat: candidat._id,
+          date: bookedDate,
+        },
       })
     }
   } catch (error) {
@@ -257,21 +277,23 @@ export const updatePlaces = async (req, res) => {
       description: error.message,
       error: error.stack,
     })
+
     if (error instanceof ErrorWithStatus) {
-      return res.status(error.status).send({
+      return res.status(error.status).json({
         success: false,
         message: error.message,
         error,
       })
     }
-    res.status(500).send({
+
+    return res.status(500).json({
       success: false,
       message: error.message,
       error,
     })
   }
 
-  res.status(422).send({
+  res.status(422).json({
     success: false,
     message: 'Les paramètres renseignés sont incorrects',
   })

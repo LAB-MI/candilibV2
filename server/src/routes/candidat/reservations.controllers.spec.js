@@ -28,7 +28,10 @@ import {
   createCandidat,
   updateCandidatFailed,
 } from '../../models/candidat'
-import { dateTimeToFormatFr, getFrenchLuxon } from '../../util/date.util'
+import {
+  getFrenchFormattedDateTime,
+  getFrenchLuxon,
+} from '../../util/date.util'
 import { REASON_CANCEL } from '../common/reason.constants'
 
 import { getFrenchLuxonFromObject, getFrenchLuxonFromJSDate } from '../../util'
@@ -166,7 +169,7 @@ xdescribe('Test reservation controllers', () => {
     expect(body).toHaveProperty(
       'message',
       CAN_BOOK_AFTER +
-        dateTimeToFormatFr(
+        getFrenchFormattedDateTime(
           datetimeAuthorize.plus({
             days: offsetDate,
           })
@@ -442,7 +445,7 @@ xdescribe('Test reservation controllers', () => {
         CANCEL_RESA_WITH_MAIL_SENT +
         ' ' +
         CAN_BOOK_AFTER +
-        dateTimeToFormatFr(
+        getFrenchFormattedDateTime(
           getFrenchLuxonFromJSDate(place.date)
             .endOf('day')
             .plus({

@@ -37,7 +37,7 @@ export const getFrenchLuxonRangeFromDate = date => {
  *
  * @param {*} datetime Type DateTime of luxon
  */
-export const dateTimeToFormatFr = (pDate, dateFormat, hourFormat) => {
+export const getFrenchFormattedDateTime = (pDate, dateFormat, hourFormat) => {
   let datetime
 
   if (pDate instanceof DateTime) {

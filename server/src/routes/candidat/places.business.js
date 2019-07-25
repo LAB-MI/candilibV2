@@ -30,7 +30,10 @@ import {
   findCandidatById,
   archivePlace,
 } from '../../models/candidat'
-import { dateTimeToFormatFr, getFrenchLuxon } from '../../util/date.util'
+import {
+  getFrenchFormattedDateTime,
+  getFrenchLuxon,
+} from '../../util/date.util'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 
 export const getDatesByCentreId = async (_id, endDate) => {
@@ -132,13 +135,14 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
 
   if (datetimeAfterBook) {
     if (isModified) {
-      message = CAN_BOOK_AFTER + dateTimeToFormatFr(datetimeAfterBook).date
+      message =
+        CAN_BOOK_AFTER + getFrenchFormattedDateTime(datetimeAfterBook).date
     } else {
       message =
         message +
         ' ' +
         CAN_BOOK_AFTER +
-        dateTimeToFormatFr(datetimeAfterBook).date
+        getFrenchFormattedDateTime(datetimeAfterBook).date
     }
     dateAfterBook = datetimeAfterBook.toISODate()
   }
@@ -371,7 +375,8 @@ export const validCentreDateReservation = async (
 
   if (!isAuthorize) {
     const success = false
-    const message = CAN_BOOK_AFTER + dateTimeToFormatFr(dateAuthorize).date
+    const message =
+      CAN_BOOK_AFTER + getFrenchFormattedDateTime(dateAuthorize).date
     appLogger.warn({
       section: 'candidat-validCentreDateReservation',
       idCandidat,

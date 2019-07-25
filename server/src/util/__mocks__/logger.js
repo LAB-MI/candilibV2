@@ -1,8 +1,29 @@
+let withConsole
+export const setWithConsole = value => {
+  withConsole = value
+}
+
 const logger = {
-  debug (msg) {},
-  info (msg) {},
-  warn (msg) {},
-  error (msg) {},
+  debug (msg) {
+    if (withConsole) {
+      console.debug(msg)
+    }
+  },
+  info (msg) {
+    if (withConsole) {
+      console.info(msg)
+    }
+  },
+  warn (msg) {
+    if (withConsole) {
+      console.warn(msg)
+    }
+  },
+  error (msg) {
+    if (withConsole) {
+      console.error(msg)
+    }
+  },
 }
 
 export const simpleLogger = logger
