@@ -100,7 +100,7 @@
           aria-placeholder="Jean"
           :loading="isFetchingMatchingAdresses"
           v-model="adresse"
-          hint="ex. : 10 avenue du général Leclerc Villepinte 93420"
+          hint="ex. : 10 avenue du général Leclerc 93420 Villepinte"
           :items="adresses"
           prepend-icon="location_city"
           tabindex="6"
@@ -253,7 +253,7 @@ export default {
       this.portablePlaceholder = ''
     },
     setAdressePlaceholder () {
-      this.adressePlaceholder = '10 avenue du général Leclerc Villepinte 93420'
+      this.adressePlaceholder = '10 avenue du général Leclerc 93420 Villepinte'
     },
     removeAdressePlaceholder () {
       this.adressePlaceholder = ''
