@@ -92,11 +92,20 @@ export default {
         return dateDernierEchecPratique
       },
       numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
+      timeOutToRetry: state => state.reservation.booked.timeOutToRetry,
     }),
 
     isEchecPratique () {
+      const { canBookFrom, dateDernierEchecPratique } = this.reservation.booked
+      const dateLastEchecPlus45Days = dateDernierEchecPratique &&
+        getFrenchLuxonFromIso(dateDernierEchecPratique).plus({ days: this.timeOutToRetry || 45 }).endOf('day')
+
+      if (canBookFrom && dateLastEchecPlus45Days && (getFrenchLuxonFromIso(canBookFrom) > dateLastEchecPlus45Days)) {
+        return false
+      }
+
       const now = getFrenchLuxonCurrentDateTime()
-      return this.dateDernierEchecPratique && getFrenchLuxonFromIso(this.dateDernierEchecPratique).plus({ days: 45 }) > now
+      return this.dateDernierEchecPratique && dateLastEchecPlus45Days > now
     },
 
     warningMessage () {
