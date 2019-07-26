@@ -21,3 +21,9 @@ export const CANDIDAT_NOT_FOUND =
   'Vous ne faites plus partie de nos données. Veuillez contacter le support.'
 export const MODIFY_THEN_CAN_BOOK_AFTER =
   "Vous aviez modifé votre réservation avant la date autoriée, vous ne pouvez réserver une place d'examen qu'à partir du "
+export const CANDIDAT_ALREADY_EXIST =
+  'Vous avez déjà un compte sur Candilib avec cette adresse courriel, veuillez cliquer sur le lien "Déjà inscrit"'
+export const CANDIDAT_FIELD_EMPTY =
+  'Veuillez renseigner tous les champs obligatoires'
+export const CANDIDAT_EMAIL_NOT_VALID = "L'email renseigné n'est pas valide"
+export const CANDIDAT_ALREADY_PRESIGNUP = `Vous êtes déjà pré-inscrit sur Candilib avec cette adresse courriel, votre compte est en cours de vérification par l'administration.`

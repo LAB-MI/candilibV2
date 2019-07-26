@@ -5,6 +5,7 @@ import {
   getFrenchLuxonFromJSDate,
   techLogger,
 } from '../../util'
+import { appLogger } from '../../util/logger'
 import {
   findCandidatByEmail,
   findCandidatById,
@@ -20,7 +21,13 @@ import {
 } from './candidat.business'
 import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
 import { createEvaluation } from '../../models/evaluation/evaluation.queries'
-import { CANDIDAT_NOT_FOUND } from './message.constants'
+import {
+  CANDIDAT_NOT_FOUND,
+  CANDIDAT_ALREADY_EXIST,
+  CANDIDAT_FIELD_EMPTY,
+  CANDIDAT_EMAIL_NOT_VALID,
+  CANDIDAT_ALREADY_PRESIGNUP,
+} from './message.constants'
 
 const mandatoryFields = [
   'codeNeph',
@@ -39,6 +46,12 @@ const trimEveryValue = obj =>
 export async function preSignup (req, res) {
   const candidatData = trimEveryValue(req.body)
 
+  const loggerInfo = {
+    section: 'candidat',
+    action: 'preSignup',
+  }
+  appLogger.info({ ...loggerInfo, candidatData })
+
   const { codeNeph, nomNaissance, portable, adresse, email } = candidatData
 
   const isFormFilled = [codeNeph, nomNaissance, email, portable, adresse].every(
@@ -56,18 +69,21 @@ export async function preSignup (req, res) {
       fieldsWithErrors.push('email')
     }
 
+    appLogger.error({ ...loggerInfo, fieldsWithErrors })
+
     res.status(400).json({
       success: false,
-      message: 'Veuillez renseigner tous les champs obligatoires',
+      message: CANDIDAT_FIELD_EMPTY,
       fieldsWithErrors,
     })
     return
   }
 
   if (!isValidEmail) {
+    appLogger.error({ ...loggerInfo, fieldsWithErrors: ['email'] })
     res.status(400).json({
       success: false,
-      message: "L'email renseigné n'est pas valide",
+      message: CANDIDAT_EMAIL_NOT_VALID,
       fieldsWithErrors: ['email'],
     })
     return
@@ -75,9 +91,16 @@ export async function preSignup (req, res) {
 
   try {
     const departement = await getDepartementFromWhitelist(candidatData)
+    appLogger.info({ ...loggerInfo, departementFromWhitelist: departement })
     // Forcer le département du candidat par le département de la whitelist correspondant à son email
     candidatData.departement = departement
   } catch (error) {
+    techLogger.error({
+      ...loggerInfo,
+      error,
+      function: 'getDepartementFromWhitelist',
+      message: error.message,
+    })
     res.status(401).json({
       success: false,
       message: error.message,
@@ -95,18 +118,27 @@ export async function preSignup (req, res) {
     } = candidatWithSameEmail
 
     if (isValidatedByAurige) {
+      appLogger.error({
+        ...loggerInfo,
+        check: 'isValidatedByAurige',
+        message: CANDIDAT_ALREADY_EXIST,
+      })
       res.status(409).json({
         success: false,
-        message:
-          'Vous avez déjà un compte sur Candilib avec cette adresse courriel, veuillez cliquer sur le lien "Déjà inscrit"',
+        message: CANDIDAT_ALREADY_EXIST,
       })
       return
     }
 
     if (isValidatedEmail) {
+      appLogger.error({
+        ...loggerInfo,
+        check: 'isValidatedEmail',
+        message: CANDIDAT_ALREADY_PRESIGNUP,
+      })
       res.status(409).json({
         success: false,
-        message: `Vous êtes déjà pré-inscrit sur Candilib avec cette adresse courriel, votre compte est en cours de vérification par l'administration.`,
+        message: CANDIDAT_ALREADY_PRESIGNUP,
       })
       return
     }
@@ -117,19 +149,29 @@ export async function preSignup (req, res) {
       )
         .plus({ hours: 2 })
         .toLocaleString(DATETIME_FULL)
+      const message = `Cette adresse courriel est déjà enregistrée, vous pourrez renouveler votre pré-inscription après le ${deadLineBeforeValidateEmail}.`
+      appLogger.error({
+        ...loggerInfo,
+        check: 'deadLineBeforeValidateEmail',
+        message,
+      })
       res.status(409).json({
         success: false,
-        message: `Cette adresse courriel est déjà enregistrée, vous pourrez renouveler votre pré-inscription après le ${deadLineBeforeValidateEmail}.`,
+        message,
       })
       return
     }
-
-    await deleteCandidat(candidatWithSameEmail, 'EMAIL_NOT_VERIFIED_EXPIRED')
+    const result = await deleteCandidat(
+      candidatWithSameEmail,
+      'EMAIL_NOT_VERIFIED_EXPIRED'
+    )
+    appLogger.info({ ...loggerInfo, function: 'deleteCandidat', result })
   }
 
   const result = await isAlreadyPresignedUp(candidatData)
 
   if (!result.success) {
+    appLogger.error({ ...loggerInfo, function: 'isAlreadyPresignedUp', result })
     res.status(409).json(result)
     return
   }
@@ -137,6 +179,7 @@ export async function preSignup (req, res) {
   if (!result.candidat) {
     try {
       const response = await presignUpCandidat(candidatData)
+      appLogger.info({ ...loggerInfo, function: 'presignUpCandidat', result })
       res.status(200).json(response)
     } catch (error) {
       techLogger.error({
@@ -155,10 +198,19 @@ export async function preSignup (req, res) {
   const updateResult = await updateInfoCandidat(result.candidat, candidatData)
 
   if (updateResult.success) {
+    appLogger.info({
+      ...loggerInfo,
+      function: 'updateInfoCandidat',
+      updateResult,
+    })
     res.status(200).json(updateResult)
     return
   }
-
+  appLogger.error({
+    ...loggerInfo,
+    function: 'updateInfoCandidat',
+    updateResult,
+  })
   res.status(409).json(updateResult)
 }
 
