@@ -419,6 +419,7 @@ export default {
         this.activeCentreId = this.firstCentreId
         this.activeCentreTab = `tab-${this.activeCentreId}`
       } else {
+        this.activeCentreId = center
         this.activeCentreTab = `tab-${center}`
       }
       this.parseInspecteursPlanning()
