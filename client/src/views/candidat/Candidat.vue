@@ -47,7 +47,7 @@ export default {
         {
           routerTo: { name: 'my-profile' },
           iconName: 'supervised_user_circle',
-          tooltipText: 'Profile candidat',
+          tooltipText: 'Profil candidat',
           label: 'Mon Profil',
         },
         {
