@@ -255,15 +255,25 @@ export default {
     },
 
     async getInspecteursByDepartement (departement) {
-      const json = await apiClient.get(`${apiPaths.admin.inspecteursByDepartement}${departement}`, {
+      const json = await apiClient.get(`${apiPaths.admin.inspecteurs}?departement=${departement}`, {
         headers: getHeadersForAdminJson(),
       })
       return json
     },
 
+    async getInspecteursByCentreAndDate (centreId, begin, end) {
+      const json = await apiClient.get(
+        `${apiPaths.admin.inspecteurs}?centreId=${centreId}&begin=${begin}&end=${end}`,
+        {
+          headers: getHeadersForAdminJson(),
+        }
+      )
+      return json
+    },
+
     async searchInspecteurs (search, departement) {
       const json = await apiClient.get(
-        `${apiPaths.admin.searchInspecteurs}${search || ''}&departement=${departement}`,
+        `${apiPaths.admin.inspecteurs}?matching=${search || ''}&departement=${departement}`,
         {
           headers: getHeadersForAdminJson(),
         }

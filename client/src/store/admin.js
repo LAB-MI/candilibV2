@@ -16,9 +16,9 @@ export const FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST = 'FETCH_ADMIN_DEPARTEM
 export const FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE = 'FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE'
 export const FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS = 'FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS'
 
-export const FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST'
-export const FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE'
-export const FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS'
+export const FETCH_INSPECTEURS_BY_CENTRE_REQUEST = 'FETCH_INSPECTEURS_BY_CENTRE_REQUEST'
+export const FETCH_INSPECTEURS_BY_CENTRE_FAILURE = 'FETCH_INSPECTEURS_BY_CENTRE_FAILURE'
+export const FETCH_INSPECTEURS_BY_CENTRE_SUCCESS = 'FETCH_INSPECTEURS_BY_CENTRE_SUCCESS'
 
 export const DELETE_PLACE_REQUEST = 'DELETE_PLACE_REQUEST'
 export const DELETE_PLACE_SUCCESS = 'DELETE_PLACE_SUCCESS'
@@ -118,14 +118,14 @@ export default {
       state.places.isFetching = false
     },
 
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] (state) {
+    [FETCH_INSPECTEURS_BY_CENTRE_REQUEST] (state) {
       state.inspecteurs.isFetching = true
     },
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS] (state, list) {
+    [FETCH_INSPECTEURS_BY_CENTRE_SUCCESS] (state, list) {
       state.inspecteurs.list = list
       state.inspecteurs.isFetching = false
     },
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE] (state, error) {
+    [FETCH_INSPECTEURS_BY_CENTRE_FAILURE] (state, error) {
       state.inspecteurs.error = error
       state.inspecteurs.isFetching = false
     },
@@ -220,19 +220,20 @@ export default {
       }
     },
 
-    async [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }) {
-      commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+    async [FETCH_INSPECTEURS_BY_CENTRE_REQUEST] ({ commit, dispatch, state, getters }, centreIdAndDate) {
+      const { centreId, begin, end } = centreIdAndDate
+      commit(FETCH_INSPECTEURS_BY_CENTRE_REQUEST)
       try {
-        const list = await api.admin.getInspecteursByDepartement(state.departements.active)
+        const list = await api.admin.getInspecteursByCentreAndDate(centreId, begin, end)
         const newList = list.map(elem => {
           return {
             ...elem,
             creneau: getters.creneauSetup,
           }
         })
-        commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, newList)
+        commit(FETCH_INSPECTEURS_BY_CENTRE_SUCCESS, newList)
       } catch (error) {
-        commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE, error)
+        commit(FETCH_INSPECTEURS_BY_CENTRE_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },

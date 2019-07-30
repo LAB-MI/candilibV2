@@ -209,7 +209,7 @@
 import { mapGetters, mapState } from 'vuex'
 import {
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
-  FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
+  FETCH_INSPECTEURS_BY_CENTRE_REQUEST,
   SELECT_CENTER,
   FETCH_CANDIDAT_REQUEST,
   RESET_CANDIDAT,
@@ -323,13 +323,18 @@ export default {
     },
 
     async updateStoreCenterSelected (centreId) {
-      const { centre } = this.placesByCentreList.find(placesByCentre => placesByCentre.centre._id === centreId)
-      await this.$store.dispatch(SELECT_CENTER, centre)
+      if (this.placesByCentreList && this.placesByCentreList.length) {
+        const { centre } = this.placesByCentreList.find(placesByCentre => placesByCentre.centre._id === centreId)
+        await this.$store.dispatch(SELECT_CENTER, centre)
+      }
     },
 
     async reloadWeekMonitor () {
       const begin = getFrenchLuxonFromSql(this.date).startOf('day').toISO()
       const end = getFrenchLuxonFromSql(this.date).endOf('day').toISO()
+      const centerId = this.$route.params.center
+      this.activeCentreId = (centerId) || this.firstCentreId
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin, end })
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
       this.parseInspecteursPlanning()
@@ -338,7 +343,6 @@ export default {
     async centreSelector (centreId) {
       this.$router.push({ params: { center: centreId, date: this.date } })
       this.activeCentreId = centreId
-      await this.updateStoreCenterSelected(centreId)
       this.reloadWeekMonitor()
     },
 
@@ -452,8 +456,6 @@ export default {
         await this.$store
           .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
         this.activeCentreId = (this.$route.params.center) || this.firstCentreId
-        this.activeCentreTab = `tab-${this.activeCentreId}`
-        await this.updateStoreCenterSelected(this.activeCentreId)
         this.parseInspecteursPlanning()
       }
     },
@@ -462,28 +464,30 @@ export default {
       const dateTimeFromSQL = getFrenchLuxonFromSql(this.date)
       const begin = dateTimeFromSQL.startOf('day').toISO()
       const end = dateTimeFromSQL.endOf('day').toISO()
-      await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+      const { center } = this.$route.params
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
-      const { center } = this.$route.params
       if (!this.placesByCentreList.some(el => el.centre._id === center)) {
         this.activeCentreId = this.firstCentreId
-        this.activeCentreTab = `tab-${this.activeCentreId}`
       } else {
         this.activeCentreId = center
-        this.activeCentreTab = `tab-${center}`
       }
-      await this.updateStoreCenterSelected(this.activeCentreId)
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin, end })
       this.parseInspecteursPlanning()
+    },
+
+    async activeCentreId (newValue, oldValue) {
+      await this.updateStoreCenterSelected(newValue)
+      this.activeCentreTab = `tab-${newValue}`
     },
   },
 
   async mounted () {
-    await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
-    const centerId = this.$route.params.center
-    this.activeCentreId = (centerId) || this.firstCentreId
-    this.activeCentreTab = `tab-${this.activeCentreId}`
-    this.parseInspecteursPlanning()
+    if (this.placesByCentreList && this.placesByCentreList.length) {
+      const centerId = this.$route.params.center
+      this.activeCentreId = centerId || this.firstCentreId
+      this.reloadWeekMonitor()
+    }
   },
 
   async beforeMount () {
