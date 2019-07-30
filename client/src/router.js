@@ -165,11 +165,14 @@ const candidatRoutes = [
 
 const HomeComponent = isBuildWithAll ? Home : (isBuildWithAdmin ? AdminLogin : CandidatHome)
 
+const redirectCandidatFromHome = isBuildWithAdmin ? undefined : '/qu-est-ce-que-candilib'
+
 const commonRoutes = [
   {
     path: '/',
     name: 'home',
     component: HomeComponent,
+    redirect: redirectCandidatFromHome,
   },
   {
     path: '/guest',
