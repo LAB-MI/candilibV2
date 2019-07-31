@@ -80,6 +80,11 @@
         <h3>Centres d'examen</h3>
         <generate-inspecteur-bordereaux
           :date="date"
+          :isForInspecteurs="true"
+        />
+        <generate-inspecteur-bordereaux
+          :date="date"
+          :isForInspecteurs="false"
         />
         <div class="stats-card">
           <div class="text-xs-right">

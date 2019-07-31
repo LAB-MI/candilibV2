@@ -381,10 +381,10 @@ export default {
       return json
     },
 
-    async generateBordereaux (departement, date) {
+    async generateBordereaux (departement, date, isForInspecteurs) {
       const json = await apiClient.post(`${apiPaths.admin.generateBordereaux}`, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ departement, date }),
+        body: JSON.stringify({ departement, date, isForInspecteurs }),
       })
       return json
     },

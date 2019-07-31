@@ -6,7 +6,7 @@ import {
   findPlacesByCentreAndDate,
 } from '../../models/place'
 import { findUserById } from '../../models/user'
-import { findDepartementbyId } from '../../models/departement'
+import { findDepartementById } from '../../models/departement'
 import {
   appLogger,
   getFrenchFormattedDateTime,
@@ -300,7 +300,7 @@ export const updatePlaces = async (req, res) => {
 }
 
 export const sendScheduleInspecteurs = async (req, res) => {
-  const { departement, date } = req.body
+  const { departement, date, isForInspecteurs } = req.body
   const loggerContent = {
     section: 'admin-send-mail-schedule-inspecteurs',
     admin: req.userId,
@@ -332,12 +332,13 @@ export const sendScheduleInspecteurs = async (req, res) => {
         message: `Envoi du planning`,
       })
       const { email } = await findUserById(req.userId)
-      const confDepartement = await findDepartementbyId(departement)
+      const confDepartement = await findDepartementById(departement)
       const emailDepartement = confDepartement && confDepartement.email
       results = await sendMailSchedulesInspecteurs(
         emailDepartement || email,
         departement,
-        date
+        date,
+        isForInspecteurs
       )
     } else {
       appLogger.info({
