@@ -442,6 +442,7 @@ export default {
     async date (newDay) {
       this.$router.push({ params: { date: newDay } })
       const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
+      this.luxonDate = getFrenchLuxonFromSql(newDay)
       this.currentWeekNumber = dateTimeFromSQL.weekNumber
       if (this.$store.state.admin.departements.active) {
         const begin = dateTimeFromSQL.startOf('day').toISO()
