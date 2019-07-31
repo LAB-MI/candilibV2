@@ -129,7 +129,7 @@ export const mentionsLegalesJson = [
           'Nom',
           'Prénom',
           'Courriel',
-          'Adresse postal',
+          'Adresse postale',
           'Numéro de téléphone',
         ],
       },
