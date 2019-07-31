@@ -261,7 +261,6 @@ export default {
       isBooked: false,
       isComputing: false,
       isParseInspecteursPlanningLoading: false,
-      luxonDate: undefined,
       selectedPlaceInfo: undefined,
     }
   },
@@ -319,8 +318,8 @@ export default {
 
     goto (selectedDate) {
       const [nb, scale] = selectedDate.split(' ')
-      this.luxonDate = this.luxonDate.plus({ [scale]: +nb })
-      this.date = this.luxonDate.toISODate()
+      const luxonDate = getFrenchLuxonFromIso(this.date).plus({ [scale]: +nb })
+      this.date = luxonDate.toISODate()
     },
 
     async reloadWeekMonitor () {
@@ -442,7 +441,6 @@ export default {
     async date (newDay) {
       this.$router.push({ params: { date: newDay } })
       const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
-      this.luxonDate = getFrenchLuxonFromSql(newDay)
       this.currentWeekNumber = dateTimeFromSQL.weekNumber
       if (this.$store.state.admin.departements.active) {
         const begin = dateTimeFromSQL.startOf('day').toISO()
@@ -497,12 +495,10 @@ export default {
     if (routeDate) {
       const [year, month, day] = this.$route.params.date.split('-')
       const date = { year, month, day }
-      this.luxonDate = getFrenchLuxonFromObject(date)
       this.date = getFrenchLuxonFromObject(date).toISODate()
       return
     }
 
-    this.luxonDate = getFrenchLuxonFromObject(defaultDate)
     this.date = getFrenchLuxonFromObject(defaultDate).toISODate()
   },
 }
