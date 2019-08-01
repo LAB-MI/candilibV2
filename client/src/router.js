@@ -37,7 +37,7 @@ const LandingPage = () => import('@/views/candidat/components/LandingPage.vue')
 const AdminLogin = () => import('@/views/admin/components/Login')
 const AdminAurige = () => import('@/views/admin/components/Aurige.vue')
 const HomeAdminPage = () => import('@/views/admin/components/HomeAdminPage.vue')
-const ScheduleManager = () => import('@/views/admin/components/ScheduleManager.vue')
+const ScheduleManager = () => import('@/views/admin/components/schedule/ScheduleManager.vue')
 const Whitelist = () => import('@/views/admin/components/Whitelist.vue')
 
 const adminRoutes = [

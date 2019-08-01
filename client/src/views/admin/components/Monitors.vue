@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-title>
-      Tableau de bord
+      {{ $formatMessage({ id: 'tableau_de_bord'}) }}
     </page-title>
 
     <v-container fluid class="less-padding">

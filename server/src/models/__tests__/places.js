@@ -37,6 +37,11 @@ export const createTestPlace = async place => {
 let testPlaces
 let creatingPlaces = false
 
+export const setInitCreatedPlaces = () => {
+  testPlaces = undefined
+  creatingPlaces = false
+}
+
 export const createPlaces = async () => {
   if (testPlaces || creatingPlaces) {
     return testPlaces

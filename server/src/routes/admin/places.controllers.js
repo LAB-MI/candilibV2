@@ -5,6 +5,9 @@ import {
   findPlaceById,
   findPlacesByCentreAndDate,
 } from '../../models/place'
+
+import { findCandidatById } from '../../models/candidat'
+
 import { findUserById } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
 import {
@@ -18,10 +21,16 @@ import {
   createPlaceForInspector,
   importPlacesFromFile,
   moveCandidatInPlaces,
+  removeReservationPlaceByAdmin,
   sendMailSchedulesAllInspecteurs,
   sendMailSchedulesInspecteurs,
   validUpdateResaInspector,
 } from './places.business'
+
+import {
+  DELETE_PLACES_BY_ADMIN_SUCCESS,
+  DELETE_PLACES_BY_ADMIN_ERROR,
+} from './message.constants'
 
 export const importPlaces = async (req, res) => {
   const planningFile = req.files.file
@@ -198,6 +207,76 @@ export const deletePlaceByAdmin = async (req, res) => {
         : `La place id: [${id}] n'a pas été supprimée`,
       error: error.message,
     })
+  }
+}
+
+export const deletePlacesByAdmin = async (req, res) => {
+  const adminId = req.userId
+  const { placesToDelete } = req.body
+
+  if (!placesToDelete || !placesToDelete.length) {
+    res.status(422).json({
+      success: false,
+      message: DELETE_PLACES_BY_ADMIN_ERROR,
+    })
+    return
+  }
+
+  const loggerInfo = {
+    section: 'admin-delete-places',
+    user: adminId,
+    placesToDelete,
+    description: `Delete places with array of ids.`,
+  }
+
+  try {
+    await Promise.all(
+      placesToDelete.map(async placeId => {
+        const placeFound = await findPlaceById(placeId)
+        if (!placeFound) {
+          appLogger.warn({
+            ...loggerInfo,
+            description: `La place selectionnée avec l'id: [${placeId} a déjà été supprimée`,
+            result: placeFound,
+          })
+          return
+        }
+        const { candidat } = placeFound
+        if (candidat) {
+          const candidatFound = await findCandidatById(candidat)
+          if (candidatFound) {
+            const removedPlace = await removeReservationPlaceByAdmin(
+              placeFound,
+              candidatFound,
+              adminId
+            )
+            appLogger.info({
+              ...loggerInfo,
+              description: `Remove booked Place By Admin and send email to candidat`,
+              result: removedPlace,
+            })
+            return
+          }
+        }
+        const removedPlace = await deletePlace(placeFound)
+        appLogger.info({
+          ...loggerInfo,
+          description: `Remove Place By Admin`,
+          result: removedPlace,
+        })
+      })
+    )
+
+    res.status(200).json({
+      success: true,
+      message: DELETE_PLACES_BY_ADMIN_SUCCESS,
+    })
+  } catch (error) {
+    appLogger.warn({
+      ...loggerInfo,
+      error,
+    })
+    res.status(400).json({ success: false, message: error.message })
   }
 }
 

@@ -54,3 +54,26 @@ export const validDays = [
   'vendredi',
   'samedi',
 ]
+
+export const hoursRangeOfDay = {
+  morning: {
+    begin: {
+      hour: 8,
+      minute: 0,
+    },
+    end: {
+      hour: 11,
+      minute: 30,
+    },
+  },
+  afternoon: {
+    begin: {
+      hour: 13,
+      minute: 30,
+    },
+    end: {
+      hour: 15,
+      minute: 30,
+    },
+  },
+}

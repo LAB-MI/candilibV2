@@ -7,6 +7,7 @@ import admin from './admin'
 import adminModifInspecteur from './admin-modif-inspecteur'
 import adminSearch from './admin-search'
 import adminBordereaux from './admin-bordereaux'
+import adminPlacesInspecteur from './admin-places-inspecteur'
 import auth from './auth'
 import candidat from './candidat'
 import candidats from './candidats'
@@ -22,6 +23,7 @@ export * from './admin'
 export * from './admin-modif-inspecteur'
 export * from './admin-search'
 export * from './admin-bordereaux'
+export * from './admin-places-inspecteur'
 export * from './auth'
 export * from './candidat'
 export * from './candidats'
@@ -42,6 +44,7 @@ export default new Vuex.Store({
     adminModifInspecteur,
     adminSearch,
     adminBordereaux,
+    adminPlacesInspecteur,
     aurige,
     admin,
     auth,

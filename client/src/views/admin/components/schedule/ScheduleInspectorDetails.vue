@@ -25,16 +25,16 @@
       >
       <!-- TODO: Refactor Create composant for each subcontent dialogs -->
         <div v-if="isFetchingCandidat">
-          Chargement en cours...
+            {{ $formatMessage({ id: 'loading'}) }}...
         </div>
         <div v-else>
           <p>
-            Nom:
+            {{ $formatMessage({ id: 'nom'}) }}:
             <strong>
               {{ candidat.nomNaissance }}
             </strong>
             /
-            Neph:
+            {{ $formatMessage({ id: 'neph'}) }}:
             <strong>
               {{ candidat.codeNeph }}
             </strong>
@@ -43,7 +43,7 @@
             {{ candidat.email }}
           </p>
           <p>
-            Portable:
+            {{ $formatMessage({ id: 'mobile'}) }}:
             <strong>
               {{ candidat.portable }}
             </strong>
@@ -128,19 +128,19 @@
           :disabled="isLoading"
         >
           <p>
-            Affecter le candidat:
+            {{ $formatMessage({ id: 'affecter_le_candidat'}) }}:
             <strong>
               {{ selectedCandidat.nomNaissance }} / {{ selectedCandidat.codeNeph }}
             </strong>
           </p>
           <p>
-            sur la place du
+            {{ $formatMessage({ id: 'sur_la_place_du'}) }}
             <strong>
               {{ formattedDate }}
             </strong>
           </p>
           <p>
-            au centre
+            {{ $formatMessage({ id: 'au_centre'}) }}
             <strong>
               {{ centerName }}
             </strong>
@@ -166,9 +166,9 @@ import { mapGetters, mapState } from 'vuex'
 
 import PlaceAction from './PlaceAction.vue'
 import PlaceActionHeader from './PlaceActionHeader.vue'
-import ListSearchInspecteursAvailable from './searchInspecteur/ListSearchInspecteursAvailable.vue'
+import ListSearchInspecteursAvailable from '../searchInspecteur/ListSearchInspecteursAvailable.vue'
 import ConfirmBox from '@/components/ConfirmBox.vue'
-import CandilibAutocomplete from './CandilibAutocomplete'
+import CandilibAutocomplete from '../CandilibAutocomplete'
 
 import {
   getFrenchDateTimeFromIso,

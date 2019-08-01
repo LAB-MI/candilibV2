@@ -17,11 +17,13 @@ import {
   createInspecteurs,
   createPlaces,
   deleteCandidats,
+  makeCandidatsResas,
   makeResa,
   makeResas,
   removeCentres,
   removePlaces,
   setInitCreatedCentre,
+  setInitCreatedPlaces,
 } from '../../models/__tests__'
 import { connect, disconnect } from '../../mongo-connection'
 import {
@@ -29,11 +31,19 @@ import {
   getFrenchLuxonFromJSDate,
   getFrenchLuxonFromObject,
 } from '../../util'
-import { getPlaces, updatePlaces } from '../admin/places.controllers'
+import {
+  deletePlacesByAdmin,
+  getPlaces,
+  updatePlaces,
+} from '../admin/places.controllers'
 import { SUBJECT_CONVOCATION } from '../business'
 import { getConvocationBody } from '../business/build-mail-convocation'
 import { REASON_MODIFY_RESA_ADMIN } from '../common/reason.constants'
-import { PLACE_IS_ALREADY_BOOKED } from './message.constants'
+import {
+  PLACE_IS_ALREADY_BOOKED,
+  DELETE_PLACES_BY_ADMIN_SUCCESS,
+  DELETE_PLACES_BY_ADMIN_ERROR,
+} from './message.constants'
 
 const inspecteurTest = {
   nom: 'Doggett',
@@ -203,6 +213,7 @@ describe('update place by admin', () => {
   beforeAll(async () => {
     await connect()
     setInitCreatedCentre()
+    setInitCreatedPlaces()
     const user = await createUser(
       admin.email,
       admin.password,
@@ -457,3 +468,52 @@ function expectMailConvocation (candidat, place) {
   place.candidat = candidat
   expect(bodyMail).toHaveProperty('html', getConvocationBody(place))
 }
+
+describe('delete place by admin', () => {
+  const app = express()
+  app.use(bodyParser.json({ limit: '20mb' }))
+  app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+  beforeAll(async () => {
+    await connect()
+    setInitCreatedCentre()
+    setInitCreatedPlaces()
+    const user = await createUser(
+      admin.email,
+      admin.password,
+      admin.departements,
+      admin.status
+    )
+    app.use((req, res, next) => {
+      req.userId = user._id
+      next()
+    })
+    app.delete(`${apiPrefix}/admin/places/`, deletePlacesByAdmin)
+  })
+
+  afterAll(async () => {
+    await disconnect()
+  })
+  it('should return a 200 when delete availables places', async () => {
+    await createPlaces()
+    const result = await makeCandidatsResas()
+    const { body } = await request(app)
+      .delete(`${apiPrefix}/admin/places/`)
+      .send({
+        placesToDelete: [result.result1._id, result.result2._id],
+      })
+      .expect(200)
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message', DELETE_PLACES_BY_ADMIN_SUCCESS)
+  })
+  it('should return a 400 when array of places to delete is empty', async () => {
+    const { body } = await request(app)
+      .delete(`${apiPrefix}/admin/places/`)
+      .send({
+        placesToDelete: [],
+      })
+      .expect(422)
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', DELETE_PLACES_BY_ADMIN_ERROR)
+  })
+})

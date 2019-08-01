@@ -132,8 +132,22 @@
 
               <tbody v-for="inspecteurData in inspecteursData" :key="inspecteurData.matricule">
                 <tr>
-                  <th>
-                    {{inspecteurData.prenom}} {{inspecteurData.nom}}
+                  <th
+                    class="inspecteur-button"
+                    :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
+                  >
+                    <v-layout row>
+                      <span class="name-ipcsr-wrap">
+                        {{inspecteurData.prenom}}
+                        {{inspecteurData.nom}}
+                      </span>
+                      <v-btn
+                        icon
+                        @click="activeDeleteMode(inspecteurData._id, inspecteurData)"
+                      >
+                        <v-icon size="20" color="#A9A9A9">delete</v-icon>
+                      </v-btn>
+                    </v-layout>
                   </th>
                   <td
                     v-for="placeInfo in inspecteurData.creneau"
@@ -154,10 +168,16 @@
                 </tr>
 
                 <tr>
-                  <td></td>
+                  <td
+                    v-if="deleteMode"
+                    class="inspecteur-button"
+                    :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
+                  ></td>
+
                   <td colspan="20">
                     <div class="place-details  u-flex  u-flex--center" :class="{ active: activeInspecteurRow === inspecteurData._id }">
                       <schedule-inspector-details
+                        v-if="!deleteMode"
                         :place="activePlace"
                         :content="selectedPlaceInfo"
                         :close-dialog="closeDetails"
@@ -165,6 +185,13 @@
                         :updateContent="reloadWeekMonitor"
                         :inspecteurId="inspecteurData._id"
                         :centreInfo="placesByCentre.centre"
+                      />
+                      <delete-schedule-inspector
+                        v-if="deleteMode"
+                        :placeInfo="inspecteurData"
+                        :inspecteurId="inspecteurData._id"
+                        :closeDetails="closeDetails"
+                        @reloadWeekMonitor="reloadWeekMonitor"
                       />
                     </div>
                   </td>
@@ -188,9 +215,10 @@ import {
   RESET_CANDIDAT,
 } from '@/store'
 
+import DeleteScheduleInspector from './DeleteScheduleInspector'
+import GenerateInspecteurBordereaux from './GenerateInspecteurBordereaux'
 import ScheduleInspectorButton from './ScheduleInspectorButton'
 import ScheduleInspectorDetails from './ScheduleInspectorDetails'
-import GenerateInspecteurBordereaux from './GenerateInspecteurBordereaux'
 import { RefreshButton } from '@/components'
 
 import {
@@ -208,6 +236,7 @@ const creneauTemplate = [
 
 export default {
   components: {
+    DeleteScheduleInspector,
     GenerateInspecteurBordereaux,
     RefreshButton,
     ScheduleInspectorButton,
@@ -216,22 +245,24 @@ export default {
 
   data () {
     return {
-      activeCentreTab: undefined,
       activeCentreId: undefined,
+      activeCentreTab: undefined,
       activeHour: undefined,
+      activeInspecteurRow: undefined,
       activePlace: undefined,
       currentWeekNumber: getFrenchLuxonCurrentDateTime().weekNumber,
       date: getFrenchLuxonCurrentDateTime().toISODate(),
+      datePicker: false,
+      deleteMode: false,
+      flagModal: 'check',
       headers: undefined,
+      inspecteursData: [],
       isAvailable: true,
       isBooked: false,
-      inspecteursData: [],
       isComputing: false,
       isParseInspecteursPlanningLoading: false,
-      datePicker: false,
-      selectedPlaceInfo: undefined,
-      activeInspecteurRow: undefined,
       luxonDate: undefined,
+      selectedPlaceInfo: undefined,
     }
   },
 
@@ -372,6 +403,7 @@ export default {
     },
 
     async setActiveInspecteurRow (inspecteurId, placeInfo) {
+      this.deleteMode = false
       const hour = placeInfo && placeInfo.hour
       const place = placeInfo && placeInfo.place
       if (this.activeInspecteurRow === inspecteurId && hour === this.activeHour) {
@@ -393,6 +425,16 @@ export default {
         return this.$store.dispatch(FETCH_CANDIDAT_REQUEST, { candidatId, departement })
       }
       return this.$store.commit(RESET_CANDIDAT)
+    },
+
+    activeDeleteMode (inspecteurId, placeInfo) {
+      this.activeHour = undefined
+      if (this.deleteMode && this.activeInspecteurRow === inspecteurId) {
+        this.activeInspecteurRow = undefined
+        return
+      }
+      this.deleteMode = true
+      this.activeInspecteurRow = inspecteurId
     },
   },
 
@@ -497,6 +539,14 @@ export default {
   }
 }
 
+.inspecteur-button {
+  transition: all 0.6s ease-in-out;
+
+  &.active {
+    background-color: #bde;
+  }
+}
+
 .place-details {
   overflow: hidden;
   max-height: 0;
@@ -510,5 +560,11 @@ export default {
 
 .refresh-btn {
   margin: 1em;
+}
+
+.name-ipcsr-wrap {
+  margin-left: 10%;
+  margin-top: 7%;
+  min-width: 60%;
 }
 </style>
