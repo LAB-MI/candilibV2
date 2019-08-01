@@ -2,39 +2,41 @@
 import {
   DATETIME_FULL,
   email as emailRegex,
+  EMAIL_NOT_VERIFIED_EXPIRED,
   getFrenchLuxonFromJSDate,
   techLogger,
 } from '../../util'
 import { appLogger } from '../../util/logger'
 import {
+  deleteCandidat,
   findCandidatByEmail,
   findCandidatById,
-  deleteCandidat,
   updateCandidatById,
 } from '../../models/candidat'
 import {
   getDepartementFromWhitelist,
   isAlreadyPresignedUp,
-  updateInfoCandidat,
   presignUpCandidat,
+  updateInfoCandidat,
   validateEmail,
 } from './candidat.business'
 import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
 import { createEvaluation } from '../../models/evaluation/evaluation.queries'
 import {
-  CANDIDAT_NOT_FOUND,
   CANDIDAT_ALREADY_EXIST,
-  CANDIDAT_FIELD_EMPTY,
-  CANDIDAT_EMAIL_NOT_VALID,
   CANDIDAT_ALREADY_PRESIGNUP,
+  CANDIDAT_EMAIL_NOT_CONFIRM_IN_2H,
+  CANDIDAT_EMAIL_NOT_VALID,
+  CANDIDAT_FIELD_EMPTY,
+  CANDIDAT_NOT_FOUND,
 } from './message.constants'
 
 const mandatoryFields = [
-  'codeNeph',
-  'nomNaissance',
-  'email',
-  'portable',
   'adresse',
+  'codeNeph',
+  'email',
+  'nomNaissance',
+  'portable',
 ]
 
 const trimEveryValue = obj =>
@@ -218,14 +220,14 @@ export async function getMe (req, res) {
   try {
     const options = {
       _id: 0,
-      nomNaissance: 1,
-      prenom: 1,
-      codeNeph: 1,
-      email: 1,
-      portable: 1,
       adresse: 1,
+      codeNeph: 1,
       departement: 1,
+      email: 1,
       isEvaluationDone: 1,
+      nomNaissance: 1,
+      portable: 1,
+      prenom: 1,
     }
 
     const candidat = await findCandidatById(req.userId, options)
@@ -244,6 +246,14 @@ export async function getMe (req, res) {
 
 export async function emailValidation (req, res) {
   const { email, hash } = req.body || {}
+
+  const loggerInfo = {
+    section: 'candidat',
+    func: 'emailValidation',
+    email,
+    hash,
+  }
+
   try {
     const candidat = await findCandidatByEmail(email)
 
@@ -251,7 +261,15 @@ export async function emailValidation (req, res) {
       throw new Error('Votre adresse courriel est inconnue.')
     }
 
-    if (candidat.isValidatedEmail) {
+    const {
+      codeNeph,
+      emailValidationHash,
+      isValidatedEmail,
+      nomNaissance,
+      presignedUpAt,
+    } = candidat
+
+    if (isValidatedEmail) {
       res.status(200).json({
         success: true,
         message: 'Votre adresse courriel est déjà validée.',
@@ -259,7 +277,14 @@ export async function emailValidation (req, res) {
       return
     }
 
-    if (candidat.emailValidationHash !== hash) {
+    if (isMoreThan2HoursAgo(presignedUpAt)) {
+      const message = `Candidat ${codeNeph}/${nomNaissance} courriel non vérifié depuis plus de 2h, vous devez refaire la pré-inscription`
+      appLogger.warn({ ...loggerInfo, description: message })
+      await deleteCandidat(candidat, EMAIL_NOT_VERIFIED_EXPIRED)
+      throw new Error(CANDIDAT_EMAIL_NOT_CONFIRM_IN_2H)
+    }
+
+    if (emailValidationHash !== hash) {
       throw new Error('Le hash ne correspond pas.')
     }
 
