@@ -42,12 +42,12 @@ import {
 } from '@/store'
 import CandilibAutocomplete from './CandilibAutocomplete'
 import ProfileInfo from './ProfileInfo'
-import { getFrenchDateFromIso } from '../../../util/frenchDateTime.js'
+import { getFrenchDateTimeFromIso } from '../../../util/frenchDateTime.js'
 import { transformToProfileInfo } from '@/util'
 
 const transformBoolean = value => value ? 'Oui' : 'Non'
 const isReussitePratiqueExist = value => value || ''
-const convertToLegibleDate = date => date ? getFrenchDateFromIso(date) : 'Non renseignée'
+const convertToLegibleDate = date => date ? getFrenchDateTimeFromIso(date) : 'Non renseignée'
 const placeReserve = (place) => {
   if (place == null) {
     return '-'
