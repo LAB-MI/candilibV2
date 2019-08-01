@@ -2,12 +2,20 @@ import jwt from 'jsonwebtoken'
 
 import { appLogger } from '../../util'
 import config from '../../config'
-import { findActiveCandidatByEmail } from '../../models/candidat'
+import {
+  findActiveCandidatByEmail,
+  isCandidatExist,
+} from '../../models/candidat'
 import { sendMagicLink } from '../business'
 
 export const postMagicLink = async (req, res) => {
   const { email } = req.body
-  appLogger.info(email)
+  const LoggerInfo = {
+    section: 'candidat-auth',
+    action: 'post-magic-link',
+    email,
+  }
+  appLogger.info(LoggerInfo)
 
   try {
     const candidat = await findActiveCandidatByEmail(email)
@@ -35,7 +43,7 @@ export const postMagicLink = async (req, res) => {
     )
 
     try {
-      appLogger.info('token: ' + token)
+      appLogger.info({ ...LoggerInfo, token })
       const response = await sendMagicLink(candidat, token)
       res.status(200).send({
         success: true,
@@ -49,9 +57,43 @@ export const postMagicLink = async (req, res) => {
       )
     }
   } catch (error) {
+    appLogger.error({
+      ...LoggerInfo,
+      error,
+    })
     return res.status(error.status || 500).send({
       message: error.message,
       success: false,
+    })
+  }
+}
+
+export const checkCandidat = async (req, res) => {
+  const { userId } = req
+  const LoggerInfo = {
+    section: 'candidat-auth',
+    action: 'CHECK-EXIST',
+    userId,
+  }
+  appLogger.info(LoggerInfo)
+  try {
+    const isExist = await isCandidatExist(userId)
+    if (!isExist) {
+      const error = new Error('Candidat non trouvé')
+      error.status = 401
+      throw error
+    }
+    return res.json({ auth: true })
+  } catch (error) {
+    appLogger.error({
+      ...LoggerInfo,
+      error,
+    })
+    return res.status(error.status || 500).send({
+      isTokenValid: false,
+      message: 'Token invalide',
+      success: false,
+      auth: false,
     })
   }
 }
