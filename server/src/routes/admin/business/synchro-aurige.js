@@ -182,11 +182,22 @@ export const synchroAurige = async buffer => {
         message = `Ce candidat ${email} sera archivé : Date ETG KO`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_ETG_KO
+        // Date ETG
+        if (!candidat.dateReussiteETG) {
+          const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
+          if (dateTimeDateReussiteETG.isValid) {
+            candidat.dateReussiteETG = dateTimeDateReussiteETG
+          }
+        }
       } else if (isTooManyFailure(Number(nbEchecsPratiques))) {
         message = `Ce candidat ${email} sera archivé : A 5 échecs pratiques`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = NB_FAILURES_KO
         try {
+          const nbFailed = Number(nbEchecsPratiques)
+          if (nbFailed) {
+            candidat.nbEchecsPratiques = nbFailed
+          }
           dateFeedBack = checkFailureDate(candidat, dateDernierNonReussite)
           if (dateFeedBack && dateFeedBack.isValid) {
             candidat.lastNoReussite = {
@@ -230,6 +241,7 @@ export const synchroAurige = async buffer => {
             )
           }
         }
+
         await deleteCandidat(candidat, aurigeFeedback)
         await sendMailToAccount(candidat, aurigeFeedback)
         appLogger.info({
@@ -271,13 +283,6 @@ export const synchroAurige = async buffer => {
         // Date non réussite
         const dateNoReussite =
           dateDernierEchecPratique || dateDernierNonReussite
-
-        // TODO: A retirer, Correction pour le passage V1 à V2
-        updateCandidatLastNoReussite(
-          candidat,
-          dateNoReussite,
-          objetDernierNonReussite
-        )
 
         // Check failure date
         const dateTimeEchec = checkFailureDate(candidat, dateNoReussite)

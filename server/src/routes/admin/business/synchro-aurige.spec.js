@@ -597,7 +597,7 @@ describe('synchro-aurige', () => {
       expect(candidatArchived).toHaveProperty('email', email)
       expect(candidatArchived.archivedAt).toBeDefined()
       expect(candidatArchived).toHaveProperty('archiveReason', NB_FAILURES_KO)
-
+      expect(candidatArchived).toHaveProperty('nbEchecsPratiques', 5)
       const lengthNoReussite = candidatArchived.noReussites.length
 
       expect(candidatArchived.noReussites[lengthNoReussite - 1].date).toEqual(
