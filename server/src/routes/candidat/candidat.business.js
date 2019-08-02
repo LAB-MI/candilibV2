@@ -155,7 +155,6 @@ export async function getDepartementFromWhitelist ({ email, departement }) {
       action: 'EMAIL_NOT_IN_WHITELIST',
       description: `L'email ${email} n'est pas dans la whitelist`,
       candidatDepartement: departement,
-      whitelistDepartement: whitelisted.departement,
     })
     throw new Error(
       `L'adresse courriel renseignée (${email}) n'est pas dans la liste des invités.`
