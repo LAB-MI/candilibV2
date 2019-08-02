@@ -13,6 +13,7 @@ import store, {
 
 export async function requireCandidatAuth (to, from, next) {
   const token = to.query.token || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
+
   const signupRoute = {
     name: 'candidat-presignup',
     query: { nextPath: to.fullPath },
@@ -84,5 +85,7 @@ export async function checkCandidatToken (to, from, next) {
   await store.dispatch(CHECK_CANDIDAT_TOKEN, token)
   if (store.state.auth.statusCandidat === SIGNED_IN_AS_CANDIDAT) {
     next({ name: 'candidat-home' })
+    return
   }
+  next({ name: 'candidat-presignup' })
 }

@@ -243,3 +243,8 @@ export const setCandidatToVIP = (candidat, resaCanceledByAdmin) => {
   candidat.resaCanceledByAdmin = resaCanceledByAdmin
   return candidat.save()
 }
+
+export const isCandidatExist = async _id => {
+  const isExist = await Candidat.exists({ _id })
+  return isExist
+}
