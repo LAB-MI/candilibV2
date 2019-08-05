@@ -322,6 +322,11 @@ export default {
       this.date = luxonDate.toISODate()
     },
 
+    async updateStoreCenterSelected (centreId) {
+      const { centre } = this.placesByCentreList.find(placesByCentre => placesByCentre.centre._id === centreId)
+      await this.$store.dispatch(SELECT_CENTER, centre)
+    },
+
     async reloadWeekMonitor () {
       const begin = getFrenchLuxonFromSql(this.date).startOf('day').toISO()
       const end = getFrenchLuxonFromSql(this.date).endOf('day').toISO()
@@ -333,8 +338,7 @@ export default {
     async centreSelector (centreId) {
       this.$router.push({ params: { center: centreId, date: this.date } })
       this.activeCentreId = centreId
-      const { centre } = this.placesByCentreList.find(placesByCentre => placesByCentre.centre._id === centreId)
-      this.$store.commit(SELECT_CENTER, centre)
+      await this.updateStoreCenterSelected(centreId)
       this.reloadWeekMonitor()
     },
 
@@ -449,6 +453,7 @@ export default {
           .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
         this.activeCentreId = (this.$route.params.center) || this.firstCentreId
         this.activeCentreTab = `tab-${this.activeCentreId}`
+        await this.updateStoreCenterSelected(this.activeCentreId)
         this.parseInspecteursPlanning()
       }
     },
@@ -468,6 +473,7 @@ export default {
         this.activeCentreId = center
         this.activeCentreTab = `tab-${center}`
       }
+      await this.updateStoreCenterSelected(this.activeCentreId)
       this.parseInspecteursPlanning()
     },
   },
