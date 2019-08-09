@@ -100,7 +100,6 @@ export const faqJson = [
           '<b>L\'attestation d\'assurance du véhicule<b>, en cours de validité, à votre nom ;',
           'une <b>enveloppe affranchie à 20g</b> ;',
           'votre <b>permis de conduire original si vous avez obtenu une autre catégorie</b> depuis moins de 5 ans afin de bénéficier d’une dispense d’examen théorique général ;',
-          'lorsque vous avez fait l\'objet d\'une annulation du permis, <b>le récépissé de la « fiche retour au permis de conduire »</b> que vous aurez imprimé sur le site de l\'<a class="link-in-text-style" href="https://permisdeconduire.ants.gouv.fr/" target="_blank">ANTS</a> ;',
         ],
       },
       {
@@ -121,6 +120,44 @@ export const faqJson = [
     content: [
       {
         textContent: 'Ce service est restreint aux candidats qui ont reçu un mail d\'invitation à participer à cette expérimentation.',
+      },
+    ],
+  },
+  {
+    title: 'Aide / Contact',
+    content: [
+      {
+        subTitleContent: 'Ce service est restreint aux candidats qui ont reçu un mail d\'invitation à participer à cette expérimentation.',
+      },
+      {
+        subTitleContent: 'Poser une question par mail :',
+      },
+      {
+        textContent: 'Pour une demande dans le 69 : <strong>ddt-candilib69@rhone.gouv.fr</strong>',
+      },
+      {
+        textContent: 'Pour une demande dans le 75 : <strong>candilib75@developpement-durable.gouv.fr</strong>',
+      },
+      {
+        textContent: 'Pour une demande dans le 77 : <strong>ddt-candilib77@seine-et-marne.gouv.fr</strong>',
+      },
+      {
+        textContent: 'Pour une demande dans le 78 : <strong>ddt-candilib78@yvelines.gouv.fr</strong>',
+      },
+      {
+        textContent: 'Pour une demande dans le 91 : <strong>pref-candilib91@essonne.gouv.fr</strong>',
+      },
+      {
+        textContent: 'Pour une demande dans le 92 : <strong>candilib92@developpement-durable.gouv.fr</strong>',
+      },
+      {
+        textContent: 'Pour une demande dans le 93 : <strong>candilib93@developpement-durable.gouv.fr</strong>',
+      },
+      {
+        textContent: 'Pour une demande dans le 94 : <strong>candilib94@developpement-durable.gouv.fr</strong>',
+      },
+      {
+        textContent: 'Pour une demande dans le 95 : <strong>candilib95@val-doise.gouv.fr</strong>',
       },
     ],
   },
