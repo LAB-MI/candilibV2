@@ -12,6 +12,7 @@ import {
   sendScheduleInspecteurs,
   updatePlaces,
 } from './places.controllers'
+import { getStats } from './statistics.controllers'
 import { removeReservationByAdmin } from './reservations.controllers'
 import {
   getWhitelisted,
@@ -41,6 +42,7 @@ router.get('/inspecteurs', getInspecteurs)
 router.post('/place', verifyRepartiteurDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
+router.get('/stats', verifyAdminLevel, getStats)
 router.post('/places', verifyRepartiteurDepartement, importPlaces)
 router.delete('/places', deletePlacesByAdmin)
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
