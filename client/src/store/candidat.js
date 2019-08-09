@@ -55,7 +55,8 @@ export default {
   },
 
   mutations: {
-    [SET_MESSAGE] (state, { message, messageType }) {
+    [SET_MESSAGE] (state, { messageTitle, message, messageType }) {
+      state.messageTitle = messageTitle
       state.message = message
       state.messageType = messageType || DEFAULT_MESSAGE_TYPE
     },
