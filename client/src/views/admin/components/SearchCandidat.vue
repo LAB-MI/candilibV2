@@ -42,12 +42,14 @@ import {
 } from '@/store'
 import CandilibAutocomplete from './CandilibAutocomplete'
 import ProfileInfo from './ProfileInfo'
-import { getFrenchDateTimeFromIso } from '../../../util/frenchDateTime.js'
+import { getFrenchDateTimeFromIso, getFrenchDateFromIso } from '../../../util/frenchDateTime.js'
 import { transformToProfileInfo } from '@/util'
+import adminMessage from '../../../admin.js'
 
 const transformBoolean = value => value ? 'Oui' : 'Non'
 const isReussitePratiqueExist = value => value || ''
-const convertToLegibleDate = date => date ? getFrenchDateTimeFromIso(date) : 'Non renseignée'
+const convertToLegibleDate = date => date ? getFrenchDateFromIso(date) : adminMessage.non_renseignee
+const convertToLegibleDateTime = date => date ? getFrenchDateTimeFromIso(date) : adminMessage.non_renseignee
 const placeReserve = (place) => {
   if (place == null) {
     return '-'
@@ -55,7 +57,7 @@ const placeReserve = (place) => {
   const { inspecteur, centre, date } = place
   const nameInspecteur = inspecteur.nom
   const examCentre = centre.nom
-  const frenchDate = convertToLegibleDate(date)
+  const frenchDate = convertToLegibleDateTime(date)
   return `${frenchDate}  -  ${examCentre}  -  ${nameInspecteur}`
 }
 
@@ -74,8 +76,8 @@ const historiqueAction = (places) => {
     return ' - '
   }
   return '<ul style="margin: 0; padding: 0;">' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
-    const frenchDate = convertToLegibleDate(date)
-    const actionDate = convertToLegibleDate(archivedAt)
+    const frenchDate = convertToLegibleDateTime(date)
+    const actionDate = convertToLegibleDateTime(archivedAt)
     return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
   }).reverse().join('') + '</ul>'
 }
@@ -83,7 +85,7 @@ const candidatProfileInfoDictionary = [
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
   [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
   [
-    ['presignedUpAt', 'Inscrit le', convertToLegibleDate],
+    ['presignedUpAt', 'Inscrit le', convertToLegibleDateTime],
     ['isValidatedEmail', 'Email validé', transformBoolean],
     ['isValidatedByAurige', 'Statut Aurige', transformBoolean],
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
@@ -94,7 +96,7 @@ const candidatProfileInfoDictionary = [
     ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
 
   ],
-  [ ['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDate],
+  [ ['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDateTime],
     ['places', 'Historique des actions', historiqueAction],
   ],
 ]

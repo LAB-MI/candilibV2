@@ -25,4 +25,5 @@ export default {
     si l'un des courriels n'arrive pas à déstination, un courriel vous sera envoyé afin de vous prevenir.`,
   receive_bordereaux_for_ipcsr_email: 'Recevoir les bordereaux des inspecteurs du',
   send_bordereaux_to_email: `Les bordereaux inspecteurs seront envoyés à l'adresse courriel:`,
+  non_renseignee: `Non renseignée`,
 }
