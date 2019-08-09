@@ -43,7 +43,7 @@
                       </strong>
                     </div>
                   </template>
-                  <span>Date du premiers jour de la semaine N°{{ week.numWeek }}</span>
+                  <span>{{ $formatMessage({ id: 'date_first_day_of_week' }) }} {{ week.numWeek }}</span>
                 </v-tooltip>
 
                 <v-divider vertical style="margin: 0 1em;"></v-divider>
@@ -64,7 +64,7 @@
                       </strong>
                     </div>
                   </template>
-                  <span>Total de la Semaine</span>
+                  <span>{{ $formatMessage({ id: 'total_of_week' }) }}</span>
                 </v-tooltip>
               </v-layout>
             </th>
