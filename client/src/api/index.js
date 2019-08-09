@@ -294,6 +294,13 @@ export default {
       return json
     },
 
+    async exportStatsKpiCsv () {
+      const json = await apiClient.getRaw(`${apiPaths.admin.exportStatsKpiCsv}`, {
+        headers: getAdminTokenHeader(),
+      })
+      return json
+    },
+
     async uploadPlacesCSV (body) {
       const json = await apiClient.post(apiPaths.admin.uploadPlacesCSV, {
         headers: getAdminTokenHeader(),
