@@ -51,15 +51,15 @@ describe('test statistics', () => {
     expect(results).toBeDefined()
     expect(results).toBe(countNotExamined('92'))
   })
-  it('should to have nb not examined, absent, recieved, failed', async () => {
+  it('should to have nb not examined, absent, received, failed', async () => {
     const result = await getResultsExamByDpt('92')
     expect(result).toBeDefined()
     expect(result).toHaveProperty('notExamined', countNotExamined('92'))
     expect(result).toHaveProperty('absent', countAbsent('92'))
-    expect(result).toHaveProperty('recieved', countSuccess('92'))
+    expect(result).toHaveProperty('received', countSuccess('92'))
     expect(result).toHaveProperty('failed', countFailure('92'))
   })
-  it('Should to have, for all departement, nb not examined, absent, recieved, failed', async () => {
+  it('Should to have, for all departement, nb not examined, absent, received, failed', async () => {
     const results = await getResultsExamAllDpt()
     expect(results).toBeDefined()
     expect(results).toHaveLength(2)
@@ -72,7 +72,7 @@ describe('test statistics', () => {
       )
       expect(result).toHaveProperty('absent', countAbsent(result.departement))
       expect(result).toHaveProperty(
-        'recieved',
+        'received',
         countSuccess(result.departement)
       )
       expect(result).toHaveProperty('failed', countFailure(result.departement))

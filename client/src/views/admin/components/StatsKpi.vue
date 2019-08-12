@@ -22,7 +22,6 @@ import { downloadContent } from '@/util'
 export default {
   methods: {
     async getStatsKpiAsCsv () {
-      console.log('getStatsKpiAsCsv ca Rox')
       const response = await api.admin.exportStatsKpiCsv()
       downloadContent(response)
     },

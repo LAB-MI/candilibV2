@@ -22,7 +22,7 @@ const fields = [
   },
   {
     label: 'Reçus',
-    value: 'recieved',
+    value: 'received',
   },
   {
     label: 'Echecs',
@@ -58,8 +58,6 @@ export const getStats = async (req, res) => {
       action: 'ERROR GET STATS KPI',
       error,
     })
-    res
-      .status(400)
-      .send({ success: false, message: error.message })
+    res.status(400).send({ success: false, message: error.message })
   }
 }

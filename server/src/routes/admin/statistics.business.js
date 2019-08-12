@@ -24,7 +24,7 @@ export const getResultsExamByDpt = async departement => {
   const date = getFrenchLuxon().toLocaleString(DATETIME_FULL)
   const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
   const centres = centresFromDB.map(({ _id }) => _id)
-  const [recieved, absent, failed, notExamined] = await Promise.all([
+  const [received, absent, failed, notExamined] = await Promise.all([
     countSuccessByCentres(centres),
     countAbsentByCentres(centres),
     countFailureByCentres(centres),
@@ -36,7 +36,7 @@ export const getResultsExamByDpt = async departement => {
     departement,
     notExamined,
     absent,
-    recieved,
+    received,
     failed,
   }
 }
