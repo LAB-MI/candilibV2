@@ -11,6 +11,6 @@ export const PLACE_IS_ALREADY_BOOKED = 'Cette place est déjà réservée.'
 export const DELETE_PLACES_BY_ADMIN_SUCCESS =
   'La suppression des places sélectionnées a bien été effectuée'
 export const DELETE_PLACES_BY_ADMIN_ERROR =
-  'Les places à supprimer ne sont pas definies'
+  'Les places à supprimer ne sont pas définies'
 export const SOME_PARAMS_IS_NOT_DEFINE =
   'Certains paramètres ne sont pas définis'
