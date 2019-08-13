@@ -1,5 +1,6 @@
 <template>
   <div :id="id" class="wrapper">
+    <stats-kpi></stats-kpi>
     <page-title :title="'Interaction Aurige'"/>
     <div class="aurige">
       <!-- propager le accept for upload-file -->
@@ -28,6 +29,7 @@ import api from '@/api'
 import { downloadContent } from '@/util'
 import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST } from '@/store'
 import AurigeValidation from './AurigeValidation'
+import StatsKpi from './StatsKpi'
 import UploadFile from '@/components/UploadFile.vue'
 
 export default {
@@ -35,6 +37,7 @@ export default {
   components: {
     AurigeValidation,
     UploadFile,
+    StatsKpi,
   },
 
   props: {

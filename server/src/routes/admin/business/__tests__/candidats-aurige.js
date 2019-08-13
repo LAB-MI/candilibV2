@@ -90,7 +90,7 @@ export const candidatPassed = {
   portable,
 }
 
-const candidatsToValidAurige = [
+export const candidatsToValidAurige = [
   candidatPassed,
   {
     // Candidat n'existe pas
@@ -208,5 +208,9 @@ export const createCandidatToTestAurige = async (
 }
 
 export const createCandidatsToTestAurige = async () => {
-  return Promise.all(candidatsToValidAurige.map(createCandidatToTestAurige))
+  return Promise.all(
+    candidatsToValidAurige.map(candidat =>
+      createCandidatToTestAurige(candidat, false)
+    )
+  )
 }
