@@ -35,7 +35,7 @@
             <v-icon>
               arrow_back_ios
             </v-icon>
-            {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
+            {{ $formatMessage({ id: 'confirmation_reservation_bouton_retour' } )}}
           </v-btn>
           <v-btn
             :aria-disabled="disabled"
@@ -44,7 +44,7 @@
             color="primary"
             @click="displayEvaluation"
           >
-            {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
+            {{ $formatMessage({ id: 'confirmation_reservation_bouton_confirmation' } )}}
           </v-btn>
         </v-flex>
       </v-form>
