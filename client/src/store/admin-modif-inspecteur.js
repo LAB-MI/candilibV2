@@ -62,7 +62,7 @@ export default {
     async FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST ({ state, commit, dispatch }, { departement, resa, inspecteur }) {
       try {
         commit(FETCH_UPDATE_INSPECTEUR_IN_RESA_FAILURE)
-        const result = await api.admin.updateInspeteurForResa(departement, resa, inspecteur)
+        const result = await api.admin.updateInspecteurForResa(departement, resa, inspecteur)
         commit(FETCH_UPDATE_INSPECTEUR_IN_RESA_SUCCESS)
         dispatch(result.success ? SHOW_SUCCESS : SHOW_ERROR, result.message)
       } catch (error) {
