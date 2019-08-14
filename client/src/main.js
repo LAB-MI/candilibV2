@@ -11,8 +11,8 @@ import './main.styl'
 
 Vue.config.productionTip = false
 
-const PageTitle = () => import('@/components/PageTitle')
-const BandeauBeta = () => import('@/components/BandeauBeta')
+const PageTitle = () => import(/* webpackChunkName: "header", webpackPreload: true */ '@/components/PageTitle')
+const BandeauBeta = () => import(/* webpackChunkName: "header", webpackPreload: true */ '@/components/BandeauBeta')
 
 Vue.component('page-title', PageTitle)
 Vue.component('bandeau-beta', BandeauBeta)
@@ -28,8 +28,8 @@ const runMyApp = () => {
 (async function checkIntlApi () {
   if (!global.Intl) {
     await Promise.all([
-      import('intl'),
-      import('intl/locale-data/jsonp/fr.js'),
+      import(/* webpackChunkName: "header", webpackPreload: true */ 'intl'),
+      import(/* webpackChunkName: "header", webpackPreload: true */ 'intl/locale-data/jsonp/fr.js'),
     ])
     runMyApp()
   } else {
