@@ -244,8 +244,6 @@ export default {
   },
 
   data () {
-    const todayDate = getFrenchLuxonCurrentDateTime().toISODate()
-
     return {
       activeCentreId: undefined,
       activeCentreTab: undefined,
@@ -253,7 +251,7 @@ export default {
       activeInspecteurRow: undefined,
       activePlace: undefined,
       currentWeekNumber: getFrenchLuxonCurrentDateTime().weekNumber,
-      date: this.$route.params.date || todayDate,
+      date: getFrenchLuxonCurrentDateTime().toISODate(),
       datePicker: false,
       deleteMode: false,
       flagModal: 'check',
