@@ -51,7 +51,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                v-model="computedDateFormatted"
+                v-model="pickerDate"
                 persistent-hint
                 prepend-icon="event"
                 readonly
@@ -294,8 +294,8 @@ export default {
       },
     }),
 
-    computedDateFormatted () {
-      return this.formatDate(this.date)
+    pickerDate () {
+      return this.date.split('-').reverse().join('/')
     },
 
     isLoading () {
@@ -305,12 +305,6 @@ export default {
   },
 
   methods: {
-    formatDate (date) {
-      if (!date) return null
-      const [year, month, day] = date.split('-')
-      return `${day}/${month}/${year}`
-    },
-
     closeDetails () {
       this.activeInspecteurRow = undefined
       this.activeHour = undefined
