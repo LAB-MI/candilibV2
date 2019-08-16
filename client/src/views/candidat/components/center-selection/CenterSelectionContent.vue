@@ -2,7 +2,7 @@
   <v-card-text
     v-on="{ [hasPlaces && 'click']: selectCenter }"
     :class="{
-      'u-flex blue-grey  lighten-5  blue-grey--text  text--lighten-2 font-italic': !hasPlaces
+      'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !hasPlaces
     }"
   >
     <div class="u-flex">
@@ -11,10 +11,10 @@
           {{ center.centre.nom }}
           ({{ center.centre.departement }})
         </v-list-tile-title>
-        <v-list-tile-sub-title  class="u-flex__item--grow " :class="{'blue-grey--text  text--lighten-2': !hasPlaces}">
+        <v-list-tile-sub-title  class="u-flex__item--grow" :class="{'blue-grey--text  text--lighten-2': !hasPlaces}">
           {{ center.centre.adresse }}
         </v-list-tile-sub-title>
-        <span v-if="!hasPlaces" class="u-flex__item--grow blue-grey--text  text--darken-2">
+        <span v-if="!hasPlaces" class="u-flex__item--grow  blue-grey--text  text--darken-2">
           Plus de place disponible pour le moment
         </span>
       </v-list-tile-content>
