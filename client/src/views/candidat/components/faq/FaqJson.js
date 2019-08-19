@@ -139,10 +139,10 @@ export const faqJson = [
         textContent: 'Pour une demande dans le 75 : <strong>candilib75@developpement-durable.gouv.fr</strong>',
       },
       {
-        textContent: 'Pour une demande dans le 77 : <strong>ddt-candilib77@seine-et-marne.gouv.fr</strong>',
+        textContent: 'Pour une demande dans le 77 : <strong>candilib77@seine-et-marne.gouv.fr</strong>',
       },
       {
-        textContent: 'Pour une demande dans le 78 : <strong>ddt-candilib78@yvelines.gouv.fr</strong>',
+        textContent: 'Pour une demande dans le 78 : <strong>candilib78@yvelines.gouv.fr</strong>',
       },
       {
         textContent: 'Pour une demande dans le 91 : <strong>pref-candilib91@essonne.gouv.fr</strong>',
