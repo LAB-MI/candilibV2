@@ -14,3 +14,5 @@ export const DELETE_PLACES_BY_ADMIN_ERROR =
   'Les places à supprimer ne sont pas définies'
 export const SOME_PARAMS_IS_NOT_DEFINE =
   'Certains paramètres ne sont pas définis'
+export const EROOR_UNKNOW_GET_CANDIDAT =
+  'Un problème est survenu lors de la recherche du candidat'
