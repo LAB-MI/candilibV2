@@ -250,11 +250,10 @@ export default {
       activeHour: undefined,
       activeInspecteurRow: undefined,
       activePlace: undefined,
-      currentWeekNumber: getFrenchLuxonCurrentDateTime().weekNumber,
-      date: getFrenchLuxonCurrentDateTime().toISODate(),
+      currentWeekNumber: (this.$route.params.date ? getFrenchLuxonFromSql(this.$route.params.date) : getFrenchLuxonCurrentDateTime()).weekNumber,
+      date: this.$route.params.date || getFrenchLuxonCurrentDateTime().toISODate(),
       datePicker: false,
       deleteMode: false,
-      flagModal: 'check',
       headers: undefined,
       inspecteursData: [],
       isAvailable: true,
@@ -294,6 +293,14 @@ export default {
       },
     }),
 
+    beginDate () {
+      return getFrenchLuxonFromSql(this.date).startOf('day').toISO()
+    },
+
+    endDate () {
+      return getFrenchLuxonFromSql(this.date).endOf('day').toISO()
+    },
+
     pickerDate () {
       return this.date.split('-').reverse().join('/')
     },
@@ -324,13 +331,11 @@ export default {
     },
 
     async reloadWeekMonitor () {
-      const begin = getFrenchLuxonFromSql(this.date).startOf('day').toISO()
-      const end = getFrenchLuxonFromSql(this.date).endOf('day').toISO()
       const centerId = this.$route.params.center
       this.activeCentreId = (centerId) || this.firstCentreId
-      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin, end })
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin: this.beginDate, end: this.endDate })
       await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
       this.parseInspecteursPlanning()
     },
 
@@ -445,28 +450,23 @@ export default {
       const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
       this.currentWeekNumber = dateTimeFromSQL.weekNumber
       if (this.$store.state.admin.departements.active) {
-        const begin = dateTimeFromSQL.startOf('day').toISO()
-        const end = dateTimeFromSQL.endOf('day').toISO()
         await this.$store
-          .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
+          .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
         this.activeCentreId = (this.$route.params.center) || this.firstCentreId
         this.parseInspecteursPlanning()
       }
     },
 
     async activeDepartement (newValue, oldValue) {
-      const dateTimeFromSQL = getFrenchLuxonFromSql(this.date)
-      const begin = dateTimeFromSQL.startOf('day').toISO()
-      const end = dateTimeFromSQL.endOf('day').toISO()
       const { center } = this.$route.params
       await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin, end })
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
       if (!this.placesByCentreList.some(el => el.centre._id === center)) {
         this.activeCentreId = this.firstCentreId
       } else {
         this.activeCentreId = center
       }
-      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin, end })
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin: this.beginDate, end: this.endDate })
       this.parseInspecteursPlanning()
     },
 
