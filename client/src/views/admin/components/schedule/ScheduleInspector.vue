@@ -261,6 +261,7 @@ export default {
       isComputing: false,
       isParseInspecteursPlanningLoading: false,
       selectedPlaceInfo: undefined,
+      lastActiveCenters: [],
     }
   },
 
@@ -461,23 +462,24 @@ export default {
       }
     },
 
-    async activeDepartement (newValue, oldValue) {
-      const { center } = this.$route.params
+    async activeDepartement (newDepartement) {
+      const center = this.lastActiveCenters[newDepartement] || this.firstCentreId
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
-      if (!this.placesByCentreList.some(el => el.centre._id === center)) {
-        this.activeCentreId = this.firstCentreId
-      } else {
+      if (this.placesByCentreList.some(el => el.centre._id === center)) {
         this.activeCentreId = center
+      } else {
+        this.activeCentreId = this.firstCentreId
       }
       this.updateCenterInRoute()
       await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin: this.beginDate, end: this.endDate })
       this.parseInspecteursPlanning()
     },
 
-    async activeCentreId (newValue, oldValue) {
-      await this.updateStoreCenterSelected(newValue)
-      this.activeCentreTab = `tab-${newValue}`
+    async activeCentreId (newCentreId) {
+      this.lastActiveCenters[this.activeDepartement] = newCentreId
+      await this.updateStoreCenterSelected(newCentreId)
+      this.activeCentreTab = `tab-${newCentreId}`
     },
   },
 
@@ -485,6 +487,7 @@ export default {
     if (this.placesByCentreList && this.placesByCentreList.length) {
       const centerId = this.$route.params.center
       this.activeCentreId = centerId || this.firstCentreId
+      this.lastActiveCenters[this.activeDepartement] = this.activeCentreId
       this.reloadWeekMonitor()
     }
   },
