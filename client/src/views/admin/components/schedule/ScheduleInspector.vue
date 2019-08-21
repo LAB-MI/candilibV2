@@ -442,17 +442,21 @@ export default {
       this.deleteMode = true
       this.activeInspecteurRow = inspecteurId
     },
+
+    updateCenterInRoute () {
+      this.$router.push({ params: { center: this.activeCentreId, date: this.date } })
+    },
   },
 
   watch: {
     async date (newDay) {
-      this.$router.push({ params: { date: newDay } })
       const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
       this.currentWeekNumber = dateTimeFromSQL.weekNumber
+      this.activeCentreId = this.$route.params.center || this.firstCentreId
+      this.updateCenterInRoute()
       if (this.$store.state.admin.departements.active) {
         await this.$store
           .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
-        this.activeCentreId = (this.$route.params.center) || this.firstCentreId
         this.parseInspecteursPlanning()
       }
     },
@@ -466,6 +470,7 @@ export default {
       } else {
         this.activeCentreId = center
       }
+      this.updateCenterInRoute()
       await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin: this.beginDate, end: this.endDate })
       this.parseInspecteursPlanning()
     },
