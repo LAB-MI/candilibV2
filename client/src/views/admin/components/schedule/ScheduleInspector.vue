@@ -96,6 +96,15 @@
         </div>
       </div>
 
+      <div v-show="isLoading" class="schedule-loading-indicator">
+        <div class="schedule-loading-indicator-progress">
+          <v-progress-circular
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+        </div>
+      </div>
+
       <v-tabs
         class="tabs"
         v-model="activeCentreTab"
@@ -108,6 +117,8 @@
           @click="centreSelector(element.centre._id)"
           :href="`#tab-${element.centre._id.toString()}`"
           ripple
+          :disabled="isLoading"
+          :aria-disabled="isLoading"
         >
           {{ element.centre.nom }}
         </v-tab>
@@ -121,7 +132,7 @@
             :lazy="true"
             :value="`tab-${placesByCentre.centre._id}`"
           >
-            <table class="table u-full-width">
+            <table class="table u-full-width" :style="{ opacity: isLoading ? '0.5' : '1' }">
               <thead>
                 <tr>
                   <th v-for="creneau in headers" :key="creneau">
@@ -564,6 +575,27 @@ export default {
   &.active {
     background-color: #bde;
     max-height: 300px;
+  }
+}
+
+.schedule-loading-indicator {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+
+  &-progress {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    top: 100px;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: #32a9bb55;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 }
 
