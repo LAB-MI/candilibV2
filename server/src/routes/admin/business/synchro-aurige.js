@@ -414,7 +414,7 @@ const releaseAndArchivePlace = async (
     candidat,
     place,
     newReason,
-    undefined,
+    'AURIGE',
     isCandilib
   )
   await removeBookedPlace(place)
