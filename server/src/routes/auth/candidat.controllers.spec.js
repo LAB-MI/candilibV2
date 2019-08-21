@@ -5,6 +5,7 @@ import { connect, disconnect } from '../../mongo-connection'
 import { checkCandidat } from './candidat.controllers'
 import { verifyToken } from '../middlewares'
 import { createCandidat } from '../../models/candidat'
+import { INVALID_TOKEN_PLEASE_RECONNECT } from '../message.constants.js'
 
 jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
@@ -41,7 +42,7 @@ describe('authentification of candidat', () => {
     // Then
     expect(status).toBe(401)
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', 'Token invalide')
+    expect(body).toHaveProperty('message', INVALID_TOKEN_PLEASE_RECONNECT)
     expect(body).toHaveProperty('auth', false)
   })
   it('should 200 if candidat found ', async () => {

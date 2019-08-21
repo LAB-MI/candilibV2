@@ -1,4 +1,5 @@
 import { checkToken, appLogger } from '../../util'
+import { INVALID_TOKEN_PLEASE_RECONNECT } from '../message.constants.js'
 
 export function verifyToken (req, res, next) {
   const authHeader = req.headers.authorization
@@ -38,7 +39,7 @@ export function verifyToken (req, res, next) {
     })
     return res.status(401).send({
       isTokenValid: false,
-      message: 'Token invalide',
+      message: INVALID_TOKEN_PLEASE_RECONNECT,
       success: false,
       errorMessage: error.message,
       error,

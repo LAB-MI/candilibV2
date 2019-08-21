@@ -7,6 +7,7 @@ import {
   isCandidatExist,
 } from '../../models/candidat'
 import { sendMagicLink } from '../business'
+import { INVALID_TOKEN_PLEASE_RECONNECT } from '../message.constants.js'
 
 export const postMagicLink = async (req, res) => {
   const { email } = req.body
@@ -91,7 +92,7 @@ export const checkCandidat = async (req, res) => {
     })
     return res.status(error.status || 500).send({
       isTokenValid: false,
-      message: 'Token invalide',
+      message: INVALID_TOKEN_PLEASE_RECONNECT,
       success: false,
       auth: false,
     })

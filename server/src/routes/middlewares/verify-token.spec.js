@@ -5,6 +5,8 @@ import { createToken } from '../../util'
 
 import { verifyToken } from './verify-token'
 
+import { INVALID_TOKEN_PLEASE_RECONNECT } from '../message.constants.js'
+
 const id = 'fakeId'
 
 const validToken = createToken(id, 'candidat')
@@ -38,7 +40,7 @@ describe('Verify-token', () => {
     // Then
     expect(status).toBe(401)
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', 'Token invalide')
+    expect(body).toHaveProperty('message', INVALID_TOKEN_PLEASE_RECONNECT)
   })
 
   it('Should respond a 404', async () => {
