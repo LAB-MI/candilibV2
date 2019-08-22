@@ -17,7 +17,7 @@ export const getValidationMailTemplate = (
   </p>
   <br/>
   <p>
-      Ce lien est valable 2 heures à compter de la réception de cet email.
+      <b><u>Ce lien est valable 2 heures à compter de la réception de cet email.</u></b>
   </p>
   <p>
     Passé ce délai, vous devrez de nouveau faire une demande de pré-inscription sur <a href="${urlConnexion}">Candilib</a>.
