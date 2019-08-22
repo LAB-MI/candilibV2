@@ -1,8 +1,7 @@
 <template>
   <div class="text--center" v-if="!timeSlots.confirmed">
-    <p>
-      <strong>{{ $formatMessage({ id: 'confirmation_reservation_checkbox_title' }) }}</strong>
-    </p>
+    <h5 class="confirmation-reservation-checkbox-title" v-html="$formatMessage({ id: 'confirmation_reservation_checkbox_title' })">
+    </h5>
     <v-card-actions>
       <v-form
         class="u-full-width  u-flex  u-flex--column  u-flex--center"
@@ -162,5 +161,10 @@ export default {
   h4 {
     padding-bottom: 2em;
     text-transform: uppercase;
+  }
+
+  .confirmation-reservation-checkbox-title {
+    font-size: 1.1em;
+    color: #333;
   }
 </style>
