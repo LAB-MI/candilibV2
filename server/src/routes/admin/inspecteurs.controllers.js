@@ -5,7 +5,7 @@ import {
 } from '../../models/inspecteur'
 import { findAllPlacesByCentre } from '../../models/place'
 import { appLogger, getFrenchLuxonFromISO } from '../../util'
-import { SOME_PARAMS_IS_NOT_DEFINE } from './message.constants'
+import { SOME_PARAMS_ARE_NOT_DEFINED } from './message.constants'
 
 export const getInspecteurs = async (req, res) => {
   const { matching, departement, centreId, begin, end } = req.query
@@ -78,7 +78,7 @@ export const getInspecteurs = async (req, res) => {
       })
     }
   } else {
-    appLogger.info({ ...loggerInfo, message: SOME_PARAMS_IS_NOT_DEFINE })
+    appLogger.info({ ...loggerInfo, message: SOME_PARAMS_ARE_NOT_DEFINED })
     return res.status(400).send({
       success: false,
     })
