@@ -12,6 +12,7 @@ import {
 } from '../../models/candidat'
 import { findPlaceByCandidatId } from '../../models/place'
 import { statutReasonDictionnary } from '../common/reason.constants'
+import { UNKNOW_EROOR_GET_CANDIDAT } from './message.constants'
 
 export const importCandidats = async (req, res) => {
   const loggerInfo = {
@@ -83,79 +84,109 @@ export const exportBookedCandidats = async (req, res) => {
 
 export const getCandidats = async (req, res) => {
   const section = 'admin-get-candidats'
+  const loggerInfo = {
+    section,
+    user: req.userId,
+  }
   const { id: candidatId } = req.params
-  if (candidatId) {
-    appLogger.info({ section, action: 'INFO-CANDIDAT', candidatId })
-    const candidatFound = await findCandidatById(candidatId)
+  try {
+    if (candidatId) {
+      loggerInfo.action = 'INFO-CANDIDAT'
+      loggerInfo.candidatId = candidatId
+      appLogger.info(loggerInfo)
 
-    if (candidatFound) {
-      const placeFound = await findPlaceByCandidatId(candidatId, true)
-      const candidat = candidatFound.toObject()
-      candidat.places =
-        candidat.places &&
-        candidat.places.map(place => {
-          const humanReadableReason =
-            statutReasonDictionnary[place.archiveReason]
-          return {
-            ...place,
-            archiveReason: humanReadableReason,
-          }
+      const candidatFound = await findCandidatById(candidatId)
+
+      if (candidatFound) {
+        const placeFound = await findPlaceByCandidatId(candidatId, true)
+        const candidat = candidatFound.toObject()
+        candidat.places =
+          candidat.places &&
+          candidat.places.map(place => {
+            const humanReadableReason =
+              statutReasonDictionnary[place.archiveReason]
+            return {
+              ...place,
+              archiveReason: humanReadableReason,
+            }
+          })
+        res.json({
+          success: true,
+          candidat: { ...candidat, place: placeFound },
         })
-      res.json({
-        success: true,
-        candidat: { ...candidat, place: placeFound },
-      })
+        return
+      }
+      res.json({ success: false, message: "Le candidat n'existe pas" })
       return
     }
-    res.json({ success: false, message: "Le candidat n'existe pas" })
-    return
-  }
 
-  const { matching, format, filter, for: actionAsk } = req.query
+    const { matching, format, filter, for: actionAsk } = req.query
 
-  if (matching) {
-    appLogger.info({ section, action: 'SEARCH-CANDIDAT', matching })
+    if (matching) {
+      loggerInfo.action = 'SEARCH-CANDIDAT'
+      loggerInfo.matching = matching
+      appLogger.info(loggerInfo)
 
-    const candidats = await findCandidatsMatching(matching)
+      const candidats = await findCandidatsMatching(matching)
+      res.json(candidats)
+      return
+    }
+
+    if (filter === 'resa') {
+      loggerInfo.action = 'INFO-RESA'
+      loggerInfo.filter = filter
+      loggerInfo.format = format
+      appLogger.info(loggerInfo)
+
+      getBookedCandidats(req, res)
+      return
+    }
+
+    loggerInfo.action = 'INFO-CANDIDATS'
+    loggerInfo.filter = filter
+    loggerInfo.format = format
+    appLogger.info(loggerInfo)
+
+    const candidatsLean = await findAllCandidatsLean()
+    appLogger.debug({ ...loggerInfo, candidatsLean })
+    let candidats
+    if (actionAsk === 'aurige') {
+      candidats = candidatsLean
+    } else {
+      candidats = await Promise.all(
+        candidatsLean.map(async candidat => {
+          const { _id } = candidat
+          const places = await findPlaceByCandidatId(_id)
+          if (places.length > 1) {
+            appLogger.warn({
+              ...loggerInfo,
+              candidatId: _id,
+              description: `Le candidat ${candidat.codeNeph} / '${candidat.nomNaissance} a plusieurs places d'examens`,
+            })
+          }
+          candidat.place = places[0] || {}
+          return candidat
+        })
+      )
+    }
+    if (format && format === 'csv') {
+      req.candidats = candidats
+      exportCandidats(req, res)
+      return
+    }
     res.json(candidats)
-    return
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: UNKNOW_EROOR_GET_CANDIDAT,
+      error,
+    })
+    return res.status(500).send({
+      success: false,
+      message: UNKNOW_EROOR_GET_CANDIDAT,
+      error,
+    })
   }
-
-  if (filter === 'resa') {
-    appLogger.info({ section, action: 'INFO-RESA', filter, format })
-
-    getBookedCandidats(req, res)
-    return
-  }
-
-  appLogger.info({ section, action: 'INFO-CANDIDATS', filter, format })
-
-  const candidatsLean = await findAllCandidatsLean()
-  appLogger.debug({ section, action: 'INFO-CANDIDATS', candidatsLean })
-  let candidats
-  if (actionAsk === 'aurige') {
-    candidats = candidatsLean
-  } else {
-    candidats = await Promise.all(
-      candidatsLean.map(async candidat => {
-        const { _id } = candidat
-        const places = await findPlaceByCandidatId(_id)
-        if (places.length > 1) {
-          appLogger.warn(
-            `le candidat ${candidat.codeNeph} / '${candidat.nomNaissance} a plusieurs places d'examens`
-          )
-        }
-        candidat.place = places[0] || {}
-        return candidat
-      })
-    )
-  }
-  if (format && format === 'csv') {
-    req.candidats = candidats
-    exportCandidats(req, res)
-    return
-  }
-  res.json(candidats)
 }
 
 export const getBookedCandidats = async (req, res) => {
