@@ -56,8 +56,9 @@ export const getStats = async (req, res) => {
     appLogger.error({
       ...loggerContent,
       action: 'ERROR GET STATS KPI',
+      description: error.message,
       error,
     })
-    res.status(400).send({ success: false, message: error.message })
+    res.status(500).send({ success: false, message: error.message })
   }
 }

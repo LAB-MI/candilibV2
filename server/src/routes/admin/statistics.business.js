@@ -14,7 +14,7 @@ import { REASON_EXAM_FAILED } from '../common/reason.constants'
 export const getResultsExamAllDpt = async () => {
   const departements = await getDepartementsFromCentres()
   if (!departements) {
-    throw new Error('Aucun département demandé')
+    throw new Error('Aucun département trouvé')
   }
   const results = await Promise.all(departements.map(getResultsExamByDpt))
   return results
