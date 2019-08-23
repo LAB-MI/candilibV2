@@ -22,9 +22,11 @@ export const importCandidats = async (req, res) => {
   const files = req.files
 
   if (!files || !files.file) {
+    const message = 'Fichier manquant'
+    appLogger.warn({ ...loggerInfo, description: message })
     res.status(400).json({
       success: false,
-      message: 'Fichier manquant',
+      message,
     })
     return
   }
@@ -36,10 +38,16 @@ export const importCandidats = async (req, res) => {
     appLogger.info({ ...loggerInfo })
 
     const result = await synchroAurige(jsonFile.data)
+    const message = `Le fichier ${jsonFile.name} a été synchronisé.`
+    appLogger.info({
+      ...loggerInfo,
+      description: message,
+      nbCandidats: result ? result.length : 0,
+    })
     res.status(200).send({
       fileName: jsonFile.name,
       success: true,
-      message: `Le fichier ${jsonFile.name} a été synchronisé.`,
+      message,
       candidats: result,
     })
   } catch (error) {
@@ -47,7 +55,6 @@ export const importCandidats = async (req, res) => {
     return res.status(500).send({
       success: false,
       message: error.message,
-      error,
     })
   }
 }
