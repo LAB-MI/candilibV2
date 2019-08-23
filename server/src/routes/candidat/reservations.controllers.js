@@ -151,8 +151,8 @@ export const createReservation = async (req, res) => {
     const msg = []
     if (!centre) msg.push(' du centre')
     if (!date) msg.push(' de la date reservation')
-    if (!isAccompanied) msg.push(` d'être accompagné`)
-    if (!hasDualControlCar) msg.push(` d'avoir un véhicule à double commande`)
+    if (!isAccompanied) msg.push(" d'être accompagné")
+    if (!hasDualControlCar) msg.push(" d'avoir un véhicule à double commande")
     const messageBuild = msg.reduce(
       (a, b, i, array) => a + (i < array.length - 1 ? ',' : ' ou') + b
     )

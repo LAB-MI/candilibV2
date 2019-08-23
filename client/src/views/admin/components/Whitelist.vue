@@ -443,11 +443,11 @@ export default {
       try {
         this.newEmails = ''
 
-        for (const file of files) {
+        files.forEach(file => {
           const reader = new FileReader()
           reader.onload = (e) => { this.newEmails += e.target.result }
           reader.readAsText(file)
-        }
+        })
         this.showBatchForm(true)
         setTimeout(() => this.$scrollTo(`#whitelist-batch-textarea`, 500), 5)
       } catch (error) {

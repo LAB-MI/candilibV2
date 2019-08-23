@@ -92,7 +92,7 @@ describe('Test get and export candidats', () => {
 
     it('Should call next middleware', async () => {
       await request(app)
-        .post(``)
+        .post('')
         .send({
           email: 'test@gmail.com',
           department,
@@ -103,7 +103,7 @@ describe('Test get and export candidats', () => {
 
     it('Should call next middleware', async () => {
       await request(app)
-        .post(``)
+        .post('')
         .send({
           email: 'test@gMail.com',
           department,
@@ -114,7 +114,7 @@ describe('Test get and export candidats', () => {
 
     it('Should call next middleware', async () => {
       await request(app)
-        .post(``)
+        .post('')
         .send({
           email: 'TEST@GMAIL.COM',
           department,
@@ -128,7 +128,7 @@ describe('Test get and export candidats', () => {
     const departement = '93'
     const email = 'test.add.93@test.com'
     const emails = new Array(4)
-      .fill(`test.add.93@test.com`, 0, 4)
+      .fill('test.add.93@test.com', 0, 4)
       .map((email, index) => `test.${index}.add.93@test.com`)
     const app = express()
     app.use(bodyParser.json({ limit: '20mb' }))

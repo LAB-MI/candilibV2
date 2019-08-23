@@ -213,14 +213,14 @@ describe('Test import places from CSV', () => {
       csvFileDataInJson,
       0,
       (dataInJson, i) =>
-        `Le département du centre (75) ne correspond pas au département dont vous avez la charge (93)`
+        'Le département du centre (75) ne correspond pas au département dont vous avez la charge (93)'
     )
     expectOneResultWithError(
       results[1],
       csvFileDataInJson,
       1,
       (dataInJson, i) =>
-        `Le département du centre (94) ne correspond pas au département dont vous avez la charge (93)`
+        'Le département du centre (94) ne correspond pas au département dont vous avez la charge (93)'
     )
   })
 
