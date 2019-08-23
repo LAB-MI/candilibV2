@@ -3,7 +3,7 @@ import moment from 'moment'
 import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
-import { appLogger, getFrenchLuxon } from '../../util'
+import { getFrenchLuxon, techLogger } from '../../util'
 
 export const createCandidat = async ({
   adresse,
@@ -108,10 +108,12 @@ export const deleteCandidat = async (candidat, reason) => {
     cleanedCandidat.archiveReason = reason
     await ArchivedCandidat.create(cleanedCandidat)
   } catch (error) {
-    appLogger.warn(
-      `Could not archive candidat: ${candidat.nomNaissance} ${candidat.codeNeph}
-      ${error.message}`
-    )
+    techLogger.error({
+      func: 'query-candidat-delete',
+      action: 'archive-candidat',
+      description: `Could not archive candidat: ${candidat.nomNaissance} ${candidat.codeNeph} ${error.message}`,
+      error,
+    })
   }
   await Candidat.findByIdAndDelete(candidat._id)
   return candidat
