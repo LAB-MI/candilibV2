@@ -159,6 +159,7 @@ const parseRow = async ({ data, departement }) => {
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
+      description: error.message,
       error,
     })
     return getPlaceStatus(
@@ -444,6 +445,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     }
     appLogger.error({
       ...loggerInfo,
+      description: error.message,
       error,
     })
     return getPlaceStatus(
@@ -520,7 +522,7 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
     section: 'admin-assign-candidat-in-places',
     candidatId,
     placeId,
-    user: admin._id,
+    admin: admin._id,
   }
 
   appLogger.info({
