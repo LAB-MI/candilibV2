@@ -190,7 +190,7 @@ const createPlaceFromFile = async place => {
       leanPlace.inspecteur,
       date,
       'success',
-      `Place enregistrée en base`
+      'Place enregistrée en base'
     )
   } catch (error) {
     loggerInfo.place = { centre, inspecteur, date }
@@ -424,7 +424,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       inspecteur,
       myDate,
       'success',
-      `Place enregistrée en base`
+      'Place enregistrée en base'
     )
   } catch (error) {
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {

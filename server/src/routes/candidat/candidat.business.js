@@ -72,7 +72,8 @@ export async function isAlreadyPresignedUp (candidatData) {
     return {
       success: false,
       conflict: true,
-      message: `Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification par l'administration.`,
+      message:
+        "Vous êtes déjà pré-inscrit sur Candilib, votre compte est en cours de vérification par l'administration.",
     }
   }
 
@@ -140,7 +141,8 @@ export async function presignUpCandidat (candidatData) {
     return {
       success: false,
       error,
-      message: `Votre pré-inscription est bien prise en compte, mais l'email n'a pas pu vous être envoyé. Revenez plus tard et cliquez sur "Déjà inscrit"`,
+      message:
+        'Votre pré-inscription est bien prise en compte, mais l\'email n\'a pas pu vous être envoyé. Revenez plus tard et cliquez sur "Déjà inscrit"',
       candidat,
     }
   }

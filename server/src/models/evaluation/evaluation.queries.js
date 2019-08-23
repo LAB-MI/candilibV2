@@ -9,7 +9,7 @@ export const createEvaluation = async ({ rating, comment }) => {
     await evaluation.save()
     return evaluation
   } catch (error) {
-    throw new Error(`Impossible d'enregistrer l'évaluation`)
+    throw new Error("Impossible d'enregistrer l'évaluation")
   }
 }
 

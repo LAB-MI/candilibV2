@@ -94,7 +94,7 @@ describe('Test places controller', () => {
       next()
     })
     app.get('/places', getPlaces)
-    app.patch(`/reservation/:id`, updatePlaces)
+    app.patch('/reservation/:id', updatePlaces)
 
     candidatsCreated = await createCandidats()
     inspecteurCreated = await createInspecteur(inspecteurTest)

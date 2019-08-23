@@ -26,5 +26,7 @@ export const CANDIDAT_ALREADY_EXIST =
 export const CANDIDAT_FIELD_EMPTY =
   'Veuillez renseigner tous les champs obligatoires'
 export const CANDIDAT_EMAIL_NOT_VALID = "L'email renseigné n'est pas valide"
-export const CANDIDAT_ALREADY_PRESIGNUP = `Vous êtes déjà pré-inscrit sur Candilib avec cette adresse courriel, votre compte est en cours de vérification par l'administration.`
-export const CANDIDAT_EMAIL_NOT_CONFIRM_IN_2H = `Votre lien de validation courriel a expiré, car sa durée de validitée est de 2h, vous devez refaire la pré-inscription`
+export const CANDIDAT_ALREADY_PRESIGNUP =
+  "Vous êtes déjà pré-inscrit sur Candilib avec cette adresse courriel, votre compte est en cours de vérification par l'administration."
+export const CANDIDAT_EMAIL_NOT_CONFIRM_IN_2H =
+  'Votre lien de validation courriel a expiré, car sa durée de validitée est de 2h, vous devez refaire la pré-inscription'

@@ -139,7 +139,7 @@ export const createPlaceByAdmin = async (req, res) => {
     appLogger.info({
       ...loggerInfo,
       action: 'created-place',
-      description: `create by admin place: La place a bien été créée.`,
+      description: 'create by admin place: La place a bien été créée.',
     })
     res.json({
       success: true,
@@ -149,7 +149,7 @@ export const createPlaceByAdmin = async (req, res) => {
     appLogger.error({
       ...loggerInfo,
       action: 'error',
-      description: `create by admin place: La place n'a pas été créée.`,
+      description: "create by admin place: La place n'a pas été créée.",
       error,
     })
     res.json({
@@ -226,7 +226,7 @@ export const deletePlacesByAdmin = async (req, res) => {
     section: 'admin-delete-places',
     user: adminId,
     placesToDelete,
-    description: `Delete places with array of ids.`,
+    description: 'Delete places with array of ids.',
   }
 
   try {
@@ -252,7 +252,8 @@ export const deletePlacesByAdmin = async (req, res) => {
             )
             appLogger.info({
               ...loggerInfo,
-              description: `Remove booked Place By Admin and send email to candidat`,
+              description:
+                'Remove booked Place By Admin and send email to candidat',
               result: removedPlace,
             })
             return
@@ -261,7 +262,7 @@ export const deletePlacesByAdmin = async (req, res) => {
         const removedPlace = await deletePlace(placeFound)
         appLogger.info({
           ...loggerInfo,
-          description: `Remove Place By Admin`,
+          description: 'Remove Place By Admin',
           result: removedPlace,
         })
       })
@@ -304,14 +305,14 @@ export const updatePlaces = async (req, res) => {
         placeId,
         inspecteur,
         action: 'UPDATE_RESA',
-        description: `Changer l'inspecteur de la réservaton candidat`,
+        description: "Changer l'inspecteur de la réservaton candidat",
       })
 
       const result = await validUpdateResaInspector(placeId, inspecteur)
       const newResa = await moveCandidatInPlaces(result.resa, result.place)
       return res.json({
         success: true,
-        message: `La modification est confirmée.`,
+        message: 'La modification est confirmée.',
         place: newResa,
       })
     }
@@ -322,7 +323,7 @@ export const updatePlaces = async (req, res) => {
         placeId,
         candidatId,
         action: 'UPDATE_PLACE',
-        description: `Affecter un candidat à une place`,
+        description: 'Affecter un candidat à une place',
       })
 
       const result = await assignCandidatInPlace(candidatId, placeId, admin)
@@ -408,7 +409,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
     if (departement) {
       appLogger.info({
         ...loggerContent,
-        message: `Envoi du planning`,
+        message: 'Envoi du planning',
       })
       const { email } = await findUserById(req.userId)
       const confDepartement = await findDepartementById(departement)
@@ -422,7 +423,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
     } else {
       appLogger.info({
         ...loggerContent,
-        message: `Envoi des plannings à les inspecteurs`,
+        message: 'Envoi des plannings à les inspecteurs',
       })
       results = await sendMailSchedulesAllInspecteurs(date)
     }
