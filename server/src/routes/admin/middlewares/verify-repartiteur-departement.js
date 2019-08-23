@@ -1,5 +1,6 @@
 import { appLogger } from '../../../util'
 import config from '../../../config'
+import { ACCESS_FORBIDDEN } from '../message.constants'
 
 export async function verifyRepartiteurDepartement (req, res, next) {
   const { departements, userLevel } = req
@@ -7,7 +8,7 @@ export async function verifyRepartiteurDepartement (req, res, next) {
   const loggerInfo = {
     section: 'admin-token',
     action: 'check-departement',
-    user: req.userId,
+    admin: req.userId,
     departement,
     departements,
   }
@@ -18,21 +19,21 @@ export async function verifyRepartiteurDepartement (req, res, next) {
     if (userLevel >= config.userStatusLevels.admin) {
       return next()
     }
-    appLogger.error({
+    appLogger.warn({
       ...loggerInfo,
-      description: `Département ${departement} non trouvé`,
+      description:
+        ACCESS_FORBIDDEN + `, Département (${departement}) non trouvé`,
     })
-    throw new Error('Accès interdit')
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
       descritpion: error.message,
       error,
     })
-    return res.status(401).send({
-      isTokenValid: false,
-      success: false,
-      message: error.message,
-    })
   }
+  return res.status(401).send({
+    isTokenValid: false,
+    message: ACCESS_FORBIDDEN,
+    success: false,
+  })
 }
