@@ -9,14 +9,17 @@ const badCredentialsBody = {
 export const getAdminToken = async (req, res) => {
   const { email, password } = req.body
 
+  const loggerInfo = {
+    section: 'admin-login',
+    subject: email,
+  }
   try {
     const user = await findUserByCredentials(email, password)
     if (!user) {
-      appLogger.info({
-        section: 'admin-login',
-        subject: email,
+      appLogger.warn({
+        ...loggerInfo,
         action: 'FAILED_TO_FIND_USER_BY_EMAIL',
-        complement: `${email} not in DB`,
+        description: `${email} not in DB`,
       })
       return res.status(401).send(badCredentialsBody)
     }
@@ -24,9 +27,8 @@ export const getAdminToken = async (req, res) => {
     const isValidCredentials = user.comparePassword(password)
 
     if (!isValidCredentials) {
-      appLogger.info({
-        section: 'admin-login',
-        subject: email,
+      appLogger.warn({
+        ...loggerInfo,
         action: 'USER_GAVE_WRONG_PASSWORD',
       })
       return res.status(401).send(badCredentialsBody)
@@ -42,11 +44,11 @@ export const getAdminToken = async (req, res) => {
 
     return res.status(201).send({ success: true, token })
   } catch (error) {
-    appLogger.info({
-      section: 'admin-login',
-      subject: email,
+    appLogger.error({
+      ...loggerInfo,
       action: 'FAILED_TO_LOG_IN',
-      complement: error.message,
+      description: error.message,
+      error,
     })
     return res.status(500).send({
       message: `Erreur serveur : ${error.message}`,
