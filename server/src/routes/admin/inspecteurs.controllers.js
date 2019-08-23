@@ -12,7 +12,7 @@ export const getInspecteurs = async (req, res) => {
 
   const loggerInfo = {
     section: 'admin-get-inspecteur',
-    user: req.userId,
+    admin: req.userId,
     matching,
     departement,
     centreId,
@@ -20,6 +20,7 @@ export const getInspecteurs = async (req, res) => {
     end,
   }
   if (departement && !matching && !centreId && !begin && !end) {
+    // obtenir la list des inspecteurs par département
     try {
       loggerInfo.action = 'get-by-departement'
       appLogger.info(loggerInfo)
@@ -36,6 +37,7 @@ export const getInspecteurs = async (req, res) => {
       })
     }
   } else if (matching && !centreId && !begin && !end) {
+    // Recherche un inspecteur
     try {
       loggerInfo.action = 'get-by-matching'
       appLogger.info(loggerInfo)

@@ -33,17 +33,18 @@ import {
 } from './message.constants'
 
 export const importPlaces = async (req, res) => {
-  const planningFile = req.files.file
   const { departement } = req.body
 
   const loggerInfo = {
     section: 'admin-import-places',
-    user: req.userId,
+    admin: req.userId,
     departement,
-    filename: planningFile.name,
   }
 
   try {
+    const planningFile = req.files.file
+    loggerInfo.filename = planningFile.name
+
     appLogger.info({
       ...loggerInfo,
       description: `import places provenant du fichier ${planningFile.name} et du departement ${departement}`,
@@ -79,7 +80,7 @@ export const getPlaces = async (req, res) => {
 
   const loggerInfo = {
     section: 'admin-get-places',
-    user: req.userId,
+    admin: req.userId,
     departement,
     beginDate,
     endDate,
@@ -125,7 +126,7 @@ export const createPlaceByAdmin = async (req, res) => {
   const { centre, inspecteur, date } = req.body
   const loggerInfo = {
     section: 'admin-create-place',
-    user: req.userId,
+    admin: req.userId,
     centre,
     inspecteur,
     date,
@@ -164,7 +165,7 @@ export const deletePlaceByAdmin = async (req, res) => {
   const { id } = req.params
   const loggerInfo = {
     section: 'admin-delete-place',
-    user: req.userId,
+    admin: req.userId,
     id,
   }
 
@@ -224,7 +225,7 @@ export const deletePlacesByAdmin = async (req, res) => {
 
   const loggerInfo = {
     section: 'admin-delete-places',
-    user: adminId,
+    admin: adminId,
     placesToDelete,
     description: 'Delete places with array of ids.',
   }
@@ -287,7 +288,7 @@ export const updatePlaces = async (req, res) => {
 
   const loggerContent = {
     section: 'admin-update-place',
-    user: req.userId,
+    admin: req.userId,
   }
 
   try {

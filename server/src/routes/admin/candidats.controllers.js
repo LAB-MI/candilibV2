@@ -17,7 +17,7 @@ import { UNKNOW_EROOR_GET_CANDIDAT } from './message.constants'
 export const importCandidats = async (req, res) => {
   const loggerInfo = {
     section: 'admin-import-candidats',
-    user: req.userId,
+    admin: req.userId,
   }
   const files = req.files
 
@@ -56,7 +56,7 @@ export const exportCandidats = async (req, res) => {
   appLogger.info({
     section: 'admin-export-cvs',
     action: 'candidats',
-    user: req.userId,
+    admin: req.userId,
   })
 
   const candidatsAsCsv = await getCandidatsAsCsv(req.candidats)
@@ -71,7 +71,7 @@ export const exportBookedCandidats = async (req, res) => {
   appLogger.info({
     section: 'admin-export-cvs',
     action: 'booked-candidats',
-    user: req.userId,
+    admin: req.userId,
   })
 
   const candidatsAsCsv = await getBookedCandidatsAsCsv(req.candidats)
@@ -86,10 +86,11 @@ export const getCandidats = async (req, res) => {
   const section = 'admin-get-candidats'
   const loggerInfo = {
     section,
-    user: req.userId,
+    admin: req.userId,
   }
   const { id: candidatId } = req.params
   try {
+    // Obtenir les informations d'un candidat
     if (candidatId) {
       loggerInfo.action = 'INFO-CANDIDAT'
       loggerInfo.candidatId = candidatId
@@ -122,6 +123,7 @@ export const getCandidats = async (req, res) => {
 
     const { matching, format, filter, for: actionAsk } = req.query
 
+    // Rechercher des candiats
     if (matching) {
       loggerInfo.action = 'SEARCH-CANDIDAT'
       loggerInfo.matching = matching
@@ -131,7 +133,7 @@ export const getCandidats = async (req, res) => {
       res.json(candidats)
       return
     }
-
+    // Obtenir la list des candidats qui ont réservé
     if (filter === 'resa') {
       loggerInfo.action = 'INFO-RESA'
       loggerInfo.filter = filter
@@ -142,6 +144,8 @@ export const getCandidats = async (req, res) => {
       return
     }
 
+    // Obtenir la list des candidats
+    // TODO: A revoir : Performance et utilité
     loggerInfo.action = 'INFO-CANDIDATS'
     loggerInfo.filter = filter
     loggerInfo.format = format
@@ -196,7 +200,7 @@ export const getBookedCandidats = async (req, res) => {
 
   appLogger.info({
     section: 'admin-get-booked-candidats',
-    user: req.userId,
+    admin: req.userId,
     format,
     date,
     inspecteur,
