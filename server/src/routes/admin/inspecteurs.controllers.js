@@ -26,14 +26,20 @@ export const getInspecteurs = async (req, res) => {
       appLogger.info(loggerInfo)
 
       const inspecteurs = await findInspecteurByDepartement(departement)
+      appLogger.info({
+        ...loggerInfo,
+        description:
+          "nombre d'inspecteurs trouvé est " + inspecteurs
+            ? inspecteurs.length
+            : 0,
+      })
       res.json(inspecteurs)
     } catch (error) {
-      appLogger.error({ ...loggerInfo, error })
+      appLogger.error({ ...loggerInfo, description: error.message, error })
 
       return res.status(500).send({
         success: false,
         message: error.message,
-        error,
       })
     }
   } else if (matching && !centreId && !begin && !end) {
@@ -43,13 +49,19 @@ export const getInspecteurs = async (req, res) => {
       appLogger.info(loggerInfo)
 
       const inspecteurs = await findInspecteursMatching(matching)
+      appLogger.info({
+        ...loggerInfo,
+        description:
+          "nombre d'inspecteurs trouvé est " + inspecteurs
+            ? inspecteurs.length
+            : 0,
+      })
       res.json(inspecteurs)
     } catch (error) {
-      appLogger.error({ ...loggerInfo, error })
+      appLogger.error({ ...loggerInfo, description: error.message, error })
       return res.status(500).send({
         success: false,
         message: error.message,
-        error,
       })
     }
   } else if (centreId && begin && end) {
@@ -70,9 +82,16 @@ export const getInspecteurs = async (req, res) => {
       const inspecteurs = await Promise.all(
         inspecteursIdList.map(findInspecteurById)
       )
+      appLogger.info({
+        ...loggerInfo,
+        description:
+          "nombre d'inspecteurs trouvé est " + inspecteurs
+            ? inspecteurs.length
+            : 0,
+      })
       res.json(inspecteurs)
     } catch (error) {
-      appLogger.error({ ...loggerInfo, error })
+      appLogger.error({ ...loggerInfo, description: error.message, error })
       return res.status(500).send({
         success: false,
         message: error.message,
@@ -80,7 +99,7 @@ export const getInspecteurs = async (req, res) => {
       })
     }
   } else {
-    appLogger.info({ ...loggerInfo, message: SOME_PARAMS_ARE_NOT_DEFINED })
+    appLogger.warn({ ...loggerInfo, message: SOME_PARAMS_ARE_NOT_DEFINED })
     return res.status(400).send({
       success: false,
     })
