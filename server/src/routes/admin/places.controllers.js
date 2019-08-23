@@ -106,15 +106,16 @@ export const getPlaces = async (req, res) => {
     }
     appLogger.info({
       ...loggerInfo,
-      description: `${places ? places.length : 0} trouvées`,
+      description: `${places ? places.length : 0} places trouvées`,
     })
     res.json(places)
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
+      description: error.message,
       error,
     })
-    return res.status(400).json({
+    return res.status(500).json({
       success: false,
       message: "Les places n'ont pas pu être récupérées",
       error: error.nessage,
