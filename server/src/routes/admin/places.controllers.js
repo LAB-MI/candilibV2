@@ -40,16 +40,28 @@ export const importPlaces = async (req, res) => {
     admin: req.userId,
     departement,
   }
+  const files = req.files
+  if (!files || !files.file) {
+    const message = 'Fichier manquant'
+    appLogger.warn({ ...loggerInfo, description: message })
+    res.status(400).json({
+      success: false,
+      message,
+    })
+    return
+  }
 
   try {
-    const planningFile = req.files.file
+    const planningFile = files.file
     loggerInfo.filename = planningFile.name
 
     appLogger.info({
       ...loggerInfo,
       description: `import places provenant du fichier ${planningFile.name} et du departement ${departement}`,
     })
+
     const result = await importPlacesFromFile({ planningFile, departement })
+
     appLogger.info({
       ...loggerInfo,
       description: `import places: Le fichier ${planningFile.name} a été traité pour le departement ${departement}.`,
@@ -62,15 +74,27 @@ export const importPlaces = async (req, res) => {
       places: result,
     })
   } catch (error) {
-    appLogger.error({
-      ...loggerInfo,
-      error,
-    })
-    res.status(500).send({
-      success: false,
-      message: error.message,
-      error,
-    })
+    if (error.from) {
+      appLogger.warn({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+      res.status(400).send({
+        success: false,
+        message: error.message,
+      })
+    } else {
+      appLogger.error({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+      res.status(500).send({
+        success: false,
+        message: error.message,
+      })
+    }
   }
 }
 
