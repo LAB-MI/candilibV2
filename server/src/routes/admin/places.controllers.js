@@ -197,17 +197,29 @@ export const deletePlaceByAdmin = async (req, res) => {
       message: `La place du [${date} ${hour}] a bien été supprimée de la base`,
     })
   } catch (error) {
-    appLogger.error({
-      ...loggerInfo,
-      error,
-    })
-    res.status(400).json({
-      success: false,
-      message: error.messageToUser
-        ? error.messageToUser
-        : `La place id: [${id}] n'a pas été supprimée`,
-      error: error.message,
-    })
+    if (error.messageToUser) {
+      appLogger.warn({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+      res.status(400).json({
+        success: false,
+        message: error.messageToUser,
+        error: error.message,
+      })
+    } else {
+      appLogger.error({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+      res.status(500).json({
+        success: false,
+        message: `La place id: [${id}] n'a pas été supprimée`,
+        error: error.message,
+      })
+    }
   }
 }
 
