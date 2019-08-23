@@ -117,7 +117,10 @@ export const getCandidats = async (req, res) => {
         })
         return
       }
-      res.json({ success: false, message: "Le candidat n'existe pas" })
+
+      const message = "Le candidat n'existe pas"
+      appLogger.warn({ ...loggerInfo, description: message })
+      res.json({ success: false, message })
       return
     }
 
