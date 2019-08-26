@@ -692,7 +692,12 @@ export const sendMailSchedulesInspecteurs = async (
         })
         return { success: true }
       } catch (error) {
-        appLogger.error({ ...loggerContent, error, inspecteur: inspecteurId })
+        appLogger.error({
+          ...loggerContent,
+          description: error.message,
+          error,
+          inspecteur: inspecteurId,
+        })
         const inspecteur = await findInspecteurById(inspecteurId)
         resultsError.push(inspecteur)
       }
@@ -748,7 +753,7 @@ export const sendMailSchedulesAllInspecteurs = async date => {
         return { success: false, inspecteur }
       }
     }
-    appLogger.info({
+    appLogger.warn({
       ...loggerContent,
       inspecteur: _id,
       nbPlaces: 0,

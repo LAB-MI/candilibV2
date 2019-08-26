@@ -31,6 +31,7 @@ import {
   DELETE_PLACES_BY_ADMIN_SUCCESS,
   DELETE_PLACES_BY_ADMIN_ERROR,
   USER_NOT_FOUND,
+  UNKNOW_EROOR_SEND_SCHEDULE_INSPECTEUR,
 } from './message.constants'
 
 export const importPlaces = async (req, res) => {
@@ -490,7 +491,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
     if (departement) {
       appLogger.info({
         ...loggerContent,
-        message: 'Envoi du planning',
+        message: 'Envoyer des bordereaux des inspecteurs pour un departement',
       })
       const { email } = await findUserById(req.userId)
       const confDepartement = await findDepartementById(departement)
@@ -504,22 +505,32 @@ export const sendScheduleInspecteurs = async (req, res) => {
     } else {
       appLogger.info({
         ...loggerContent,
-        message: 'Envoi des plannings à les inspecteurs',
+        message: 'Envoyer des bordereaux à les inspecteurs',
       })
       results = await sendMailSchedulesAllInspecteurs(date)
     }
 
+    appLogger.info({
+      ...loggerContent,
+      message: 'Les envoies de bordereaux effectués ',
+    })
     res.status(results.success ? 200 : 400).send(results)
   } catch (error) {
-    appLogger.error({
+    const loggerFct = error.status ? appLogger.error : appLogger.warn
+    const action = loggerContent.action || 'ERROR'
+
+    loggerFct({
       ...loggerContent,
-      action: 'ERROR',
+      action,
+      description: error.message,
       error,
     })
+
     res.status(error.status || 500).send({
       success: false,
-      message: error.message,
-      error,
+      message: error.status
+        ? error.message
+        : UNKNOW_EROOR_SEND_SCHEDULE_INSPECTEUR,
     })
   }
 }
