@@ -93,18 +93,18 @@ export const hasAvailablePlacesByCentre = async (departement, centre, date) => {
   return dates
 }
 
-export const getReservationByCandidat = async (idCandidat, options) => {
+export const getReservationByCandidat = async (candidatId, options) => {
   const place = await findPlaceBookedByCandidat(
-    idCandidat,
+    candidatId,
     {},
     options || { centre: true }
   )
   return place
 }
 
-export const bookPlace = async (idCandidat, centre, date) => {
+export const bookPlace = async (candidatId, centre, date) => {
   const place = await findAndbookPlace(
-    idCandidat,
+    candidatId,
     centre,
     date,
     { inspecteur: 0 },
@@ -119,7 +119,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
   if (!candidat) {
     throw new Error("Il n'y pas de candidat pour annuler la reservation")
   }
-  const { _id: idCandidat } = candidat
+  const { _id: candidatId } = candidat
 
   let dateAfterBook
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
@@ -161,7 +161,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
 
   appLogger.info({
     section: 'candidat-removeReservations',
-    idCandidat,
+    candidatId,
     success: true,
     statusmail,
     message,
@@ -291,13 +291,13 @@ export const getLastDateToCancel = dateReservation => {
   return dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
 }
 
-export const addInfoDateToRulesResa = async (idCandidat, reservation) => {
+export const addInfoDateToRulesResa = async (candidatId, reservation) => {
   const {
     timeoutToRetry: timeOutToRetry,
     daysForbidCancel: dayToForbidCancel,
   } = config
 
-  const candidat = await findCandidatById(idCandidat, {
+  const candidat = await findCandidatById(candidatId, {
     canBookFrom: 1,
     dateDernierEchecPratique: 1,
   })
@@ -313,13 +313,13 @@ export const addInfoDateToRulesResa = async (idCandidat, reservation) => {
 }
 /**
  *
- * @param {*} idCandidat Type string from ObjectId of mongoose
+ * @param {*} candidatId Type string from ObjectId of mongoose
  * @param {*} centre Type string from ObjectId of mongoose
  * @param {*} date Type Date from Janascript or mongoose Type Date
  * @param {*} previewBookedPlace Type model place which populate centre and candidat
  */
 export const validCentreDateReservation = async (
-  idCandidat,
+  candidatId,
   centre,
   date,
   previewBookedPlace
@@ -338,7 +338,7 @@ export const validCentreDateReservation = async (
       const message = SAME_RESA_ASKED
       appLogger.warn({
         section: 'candidat-validCentreDateReservation',
-        idCandidat,
+        candidatId,
         success,
         message,
       })
@@ -351,11 +351,11 @@ export const validCentreDateReservation = async (
   }
 
   if (!candidat) {
-    if (!idCandidat) {
+    if (!candidatId) {
       throw new Error(USER_INFO_MISSING)
     }
 
-    candidat = await findCandidatById(idCandidat, {})
+    candidat = await findCandidatById(candidatId, {})
     if (!candidat) {
       throw new Error(CANDIDAT_NOT_FOUND)
     }
@@ -379,7 +379,7 @@ export const validCentreDateReservation = async (
       CAN_BOOK_AFTER + getFrenchFormattedDateTime(dateAuthorize).date
     appLogger.warn({
       section: 'candidat-validCentreDateReservation',
-      idCandidat,
+      candidatId,
       success,
       message,
     })

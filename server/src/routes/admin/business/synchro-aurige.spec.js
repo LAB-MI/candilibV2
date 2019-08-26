@@ -426,7 +426,7 @@ describe('synchro-aurige', () => {
     const synchroAurigeToPassExam = async (
       aurigeFile,
       infoCandidat,
-      idCandidat
+      candidatId
     ) => {
       const { nomNaissance, codeNeph, email } = infoCandidat
       const result = await synchroAurige(aurigeFile)
@@ -437,7 +437,7 @@ describe('synchro-aurige', () => {
       expect(result[0]).toHaveProperty('status', 'warning')
       expect(result[0]).toHaveProperty('details', EPREUVE_PRATIQUE_OK)
 
-      const candidat = await findCandidatById(idCandidat, {})
+      const candidat = await findCandidatById(candidatId, {})
       expect(candidat).toBeNull()
 
       const candidatArchived = await findArchivedCandidatByNomNeph(
@@ -573,7 +573,7 @@ describe('synchro-aurige', () => {
     const synchroAurigeTo5FailureExam = async (
       aurigeFile,
       infoCandidat,
-      idCandidat
+      candidatId
     ) => {
       const { nomNaissance, codeNeph, email } = infoCandidat
       const result = await synchroAurige(aurigeFile)
@@ -585,7 +585,7 @@ describe('synchro-aurige', () => {
       expect(result[0]).toHaveProperty('status', 'warning')
       expect(result[0]).toHaveProperty('details', NB_FAILURES_KO)
 
-      const candidat = await findCandidatById(idCandidat, {})
+      const candidat = await findCandidatById(candidatId, {})
       expect(candidat).toBeNull()
 
       const candidatArchived = await findArchivedCandidatByNomNeph(
