@@ -7,6 +7,8 @@ import {
   findWhitelistedMatching,
   findLastCreatedWhitelisted,
 } from '../../models/whitelisted'
+import { appLogger } from '../../util'
+import { UNKNOW_ERROR_REMOVE_WHITELISTED } from './message.constants'
 
 export const isWhitelisted = async (req, res, next) => {
   const email = req.body && req.body.email
@@ -129,13 +131,29 @@ export const getWhitelisted = async (req, res) => {
 
 export const removeWhitelisted = async (req, res) => {
   const id = req.params.id
+  const loggerInfo = {
+    section: 'admin-remove-whitelisted',
+    whitelsitedId: id,
+    admin: req.userId,
+    action: 'REMOVE_EMAIL',
+  }
   try {
     const whitelisted = await deleteWhitelisted(id)
+    appLogger.info({
+      ...loggerInfo,
+      description: "l'e-mail est supprimé de la whitelist",
+      whitelisted,
+    })
     res.status(200).json(whitelisted)
   } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: error.message,
+      error,
+    })
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: UNKNOW_ERROR_REMOVE_WHITELISTED,
     })
   }
 }
