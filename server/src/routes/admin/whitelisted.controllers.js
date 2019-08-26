@@ -8,7 +8,10 @@ import {
   findLastCreatedWhitelisted,
 } from '../../models/whitelisted'
 import { appLogger } from '../../util'
-import { UNKNOW_ERROR_REMOVE_WHITELISTED } from './message.constants'
+import {
+  UNKNOW_ERROR_REMOVE_WHITELISTED,
+  UNKNOW_ERROR_GET_WHITELISTED,
+} from './message.constants'
 
 export const isWhitelisted = async (req, res, next) => {
   const email = req.body && req.body.email
@@ -113,18 +116,44 @@ export const addWhitelisted = async (req, res) => {
 
 export const getWhitelisted = async (req, res) => {
   const { departement, matching } = req.query
+  const loggerInfo = {
+    section: 'admin-get-whitelisted',
+    departement,
+    matching,
+    admin: req.userId,
+  }
+
   try {
     if (matching) {
+      loggerInfo.action = 'SEARCH_WHITELISTED'
       const whitelist = await findWhitelistedMatching(matching, departement)
+      appLogger.info({
+        ...loggerInfo,
+        description:
+          "Le nombre d'emails trouvés: " + whitelist ? 0 : whitelist.length,
+        whitelist,
+      })
       res.status(200).json(whitelist)
       return
     }
+    loggerInfo.action = 'GET_WHITELISTED'
     const lastCreated = await findLastCreatedWhitelisted(departement)
+    appLogger.info({
+      ...loggerInfo,
+      description:
+        "Le nombre d'emails trouvés: " + lastCreated ? 0 : lastCreated.length,
+      lastCreated,
+    })
     res.status(200).json({ success: true, lastCreated })
   } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: error.message,
+      error,
+    })
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: UNKNOW_ERROR_GET_WHITELISTED,
     })
   }
 }

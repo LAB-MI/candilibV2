@@ -22,6 +22,7 @@ export const UNKNOW_EROOR_SEND_SCHEDULE_INSPECTEUR =
   "Un problème est survenu lors de l'envoi de bordereaux des inspecteurs"
 export const UNKNOW_ERROR_REMOVE_RESA =
   'Un probléme est survenue lors de la suppression de la reservasion'
-
 export const UNKNOW_ERROR_REMOVE_WHITELISTED =
   'Un probléme est survenue lors de la suppression de la whiteliste'
+export const UNKNOW_ERROR_GET_WHITELISTED =
+  'Un probléme est survenue lors de la recuperation de la whiteliste'
