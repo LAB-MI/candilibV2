@@ -26,3 +26,5 @@ export const UNKNOW_ERROR_REMOVE_WHITELISTED =
   'Un probléme est survenue lors de la suppression de la whiteliste'
 export const UNKNOW_ERROR_GET_WHITELISTED =
   'Un probléme est survenue lors de la recuperation de la whiteliste'
+export const UNKNOW_ERROR_ADD_WHITELISTED =
+  "Un probléme est survenue lors d'ajout dans la whiteliste"

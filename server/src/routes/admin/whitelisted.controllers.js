@@ -11,6 +11,7 @@ import { appLogger } from '../../util'
 import {
   UNKNOW_ERROR_REMOVE_WHITELISTED,
   UNKNOW_ERROR_GET_WHITELISTED,
+  UNKNOW_ERROR_ADD_WHITELISTED,
 } from './message.constants'
 
 export const isWhitelisted = async (req, res, next) => {
@@ -73,15 +74,29 @@ const batchWhitelistStatuses = {
 
 export const addWhitelisted = async (req, res) => {
   const { email, emails, departement } = req.body
+  const loggerInfo = {
+    section: 'admin-add-whitelisted',
+    email,
+    emails,
+    departement,
+    admin: req.userId,
+  }
   try {
+    loggerInfo.action = 'CHECK_REQUEST'
     checkAddWhitelistRequest(req.body)
 
     if (email) {
+      loggerInfo.action = 'ADD_ONE'
       const result = await createWhitelisted(email, departement)
+      appLogger.info({
+        ...loggerInfo,
+        description: 'ajouté dans la whitelist',
+      })
       res.status(201).json(result)
       return
     }
     if (emails) {
+      loggerInfo.action = 'ADD_MANY'
       const result = await createWhitelistedBatch(
         emails.filter(em => em && em.trim()),
         departement
@@ -89,6 +104,15 @@ export const addWhitelisted = async (req, res) => {
       const allSucceeded = result.every(whitelisted => whitelisted.success)
       const allFailed = result.every(whitelisted => !whitelisted.success)
       const code = allSucceeded ? 201 : allFailed ? 422 : 207
+      appLogger.info({
+        ...loggerInfo,
+        description:
+          'il y a ' +
+          result.filter(whitelisted => whitelisted.success).length +
+          ' ajoutés et ' +
+          result.filter(whitelisted => !whitelisted.success).length +
+          ' non ajoutés',
+      })
       res.status(code).json({
         code,
         result,
@@ -100,16 +124,30 @@ export const addWhitelisted = async (req, res) => {
     if (email && error.message.includes('duplicate key error')) {
       const { departement } = await findWhitelistedByEmail(email.toLowerCase())
       if (departement) {
+        const message = `Email: ${email} déjà existant dans le département: ${departement}`
+        appLogger.warn({
+          ...loggerInfo,
+          description: message,
+        })
         return res.status(400).json({
           success: false,
-          message: `Email: ${email} déjà existant dans le département: ${departement}`,
+          message,
           departement,
         })
       }
     }
+    const loggerFct = error.statusCode ? appLogger.warn : appLogger.error
+    const action = loggerInfo.action || 'ERROR'
+    loggerFct({
+      ...loggerInfo,
+      action,
+      description: error.message,
+      error,
+    })
+
     return res.status(error.statusCode || 500).json({
       success: false,
-      message: error.message,
+      message: error.statusCode ? error.message : UNKNOW_ERROR_ADD_WHITELISTED,
     })
   }
 }
