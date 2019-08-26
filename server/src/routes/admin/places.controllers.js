@@ -30,6 +30,7 @@ import {
 import {
   DELETE_PLACES_BY_ADMIN_SUCCESS,
   DELETE_PLACES_BY_ADMIN_ERROR,
+  USER_NOT_FOUND,
 } from './message.constants'
 
 export const importPlaces = async (req, res) => {
@@ -351,9 +352,11 @@ export const updatePlaces = async (req, res) => {
   try {
     const admin = await findUserById(req.userId)
     if (!admin) {
+      const message = USER_NOT_FOUND
+      appLogger.error({ ...loggerContent, description: message })
       return res.status(403).send({
         success: false,
-        message: 'Utilisateur non trouvé',
+        message,
       })
     }
 
@@ -362,12 +365,23 @@ export const updatePlaces = async (req, res) => {
         ...loggerContent,
         placeId,
         inspecteur,
-        action: 'UPDATE_RESA',
+        action: 'UPDATE_INSPECTEUR_RESA',
         description: "Changer l'inspecteur de la réservaton candidat",
       })
 
+      loggerContent.action = 'VALIDATE_PARAM_TO_UPDATE_RESA'
       const result = await validUpdateResaInspector(placeId, inspecteur)
+      loggerContent.action = 'MOVE_CANDIDAT_TO_UPDATE_RESA'
       const newResa = await moveCandidatInPlaces(result.resa, result.place)
+
+      appLogger.info({
+        ...loggerContent,
+        placeId,
+        inspecteur,
+        newResa,
+        action: 'INSPECTEUR_RESA_UPDATED',
+        description: "Changer l'inspecteur de la réservaton candidat",
+      })
       return res.json({
         success: true,
         message: 'La modification est confirmée.',
@@ -396,6 +410,15 @@ export const updatePlaces = async (req, res) => {
         date: bookedDate,
         inspecteur,
       } = result.newBookedPlace
+
+      appLogger.info({
+        ...loggerContent,
+        placeId,
+        candidatId,
+        action: 'PLACE_UPDATED',
+        description: 'Place réservé pour le candidat',
+      })
+
       return res.json({
         success: true,
         message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${result.candidat.codeNeph}] a bien été affecté à la place du ${date} à ${hour}`,
@@ -409,25 +432,25 @@ export const updatePlaces = async (req, res) => {
       })
     }
   } catch (error) {
-    appLogger.error({
+    let loggerFct = appLogger.error
+    let status = 500
+
+    if (error instanceof ErrorWithStatus) {
+      loggerFct = appLogger.warn
+      status = error.status
+    }
+
+    loggerFct({
       ...loggerContent,
-      action: 'ERROR',
+      action: loggerContent.action || 'ERROR',
       description: error.message,
       error: error.stack,
     })
 
-    if (error instanceof ErrorWithStatus) {
-      return res.status(error.status).json({
-        success: false,
-        message: error.message,
-        error,
-      })
-    }
-
-    return res.status(500).json({
+    return res.status(status).json({
       success: false,
       message: error.message,
-      error,
+      // error,
     })
   }
 

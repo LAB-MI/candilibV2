@@ -17,3 +17,4 @@ export const SOME_PARAMS_ARE_NOT_DEFINED =
 export const UNKNOW_EROOR_GET_CANDIDAT =
   'Un problème est survenu lors de la recherche du candidat'
 export const ACCESS_FORBIDDEN = 'Accès interdit'
+export const USER_NOT_FOUND = 'Utilisateur non trouvé'
