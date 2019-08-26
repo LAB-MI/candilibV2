@@ -44,6 +44,7 @@ describe('authentification of candidat', () => {
     expect(body).toHaveProperty('message', 'Token invalide')
     expect(body).toHaveProperty('auth', false)
   })
+
   it('should 200 if candidat found ', async () => {
     const candidatCreated = await createCandidat(candidat)
     require('../middlewares/verify-token').__setIdCandidat(candidatCreated._id)

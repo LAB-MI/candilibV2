@@ -19,22 +19,22 @@ import {
 
 export const getReservations = async (req, res) => {
   const section = 'candidat-getReservations'
-  const idCandidat = req.userId
+  const candidatId = req.userId
   const { bymail, lastDateOnly } = req.query
 
   appLogger.debug({
     section,
-    idCandidat,
+    candidatId,
     bymail,
   })
 
-  if (!idCandidat) {
+  if (!candidatId) {
     const success = false
     const message = USER_INFO_MISSING
 
     appLogger.warn({
       section,
-      idCandidat,
+      candidatId,
       bymail,
       success,
       message,
@@ -47,7 +47,7 @@ export const getReservations = async (req, res) => {
 
   try {
     const bookedPlace = await getReservationByCandidat(
-      idCandidat,
+      candidatId,
       bymail ? { centre: true, candidat: true } : undefined
     )
 
@@ -69,7 +69,7 @@ export const getReservations = async (req, res) => {
 
         techLogger.error({
           section,
-          idCandidat,
+          candidatId,
           bymail,
           success,
           message,
@@ -79,7 +79,7 @@ export const getReservations = async (req, res) => {
 
       appLogger.info({
         section,
-        idCandidat,
+        candidatId,
         bymail,
         success,
         message,
@@ -108,11 +108,11 @@ export const getReservations = async (req, res) => {
         }
       }
 
-      reservation = await addInfoDateToRulesResa(idCandidat, reservation)
+      reservation = await addInfoDateToRulesResa(candidatId, reservation)
 
       appLogger.info({
         section,
-        idCandidat,
+        candidatId,
         bymail,
         place: reservation && reservation._id,
       })
@@ -121,7 +121,7 @@ export const getReservations = async (req, res) => {
   } catch (error) {
     appLogger.error({
       section: 'candidat-getReservations',
-      idCandidat,
+      candidatId,
       bymail,
       error,
     })
@@ -135,12 +135,12 @@ export const getReservations = async (req, res) => {
 
 export const createReservation = async (req, res) => {
   const section = 'candidat-createReservation'
-  const idCandidat = req.userId
+  const candidatId = req.userId
   const { id: centre, date, isAccompanied, hasDualControlCar } = req.body
 
   appLogger.info({
     section,
-    idCandidat,
+    candidatId,
     centre,
     date,
     isAccompanied,
@@ -161,7 +161,7 @@ export const createReservation = async (req, res) => {
 
     appLogger.warn({
       section,
-      idCandidat,
+      candidatId,
       success,
       message,
     })
@@ -172,18 +172,18 @@ export const createReservation = async (req, res) => {
   }
 
   try {
-    const previewBookedPlace = await getReservationByCandidat(idCandidat, {
+    const previewBookedPlace = await getReservationByCandidat(candidatId, {
       centre: true,
       candidat: true,
     })
     appLogger.debug({
       section,
-      idCandidat,
+      candidatId,
       previewBookedPlace,
     })
 
     const statusValidResa = await validCentreDateReservation(
-      idCandidat,
+      candidatId,
       centre,
       date,
       previewBookedPlace
@@ -192,7 +192,7 @@ export const createReservation = async (req, res) => {
     if (statusValidResa) {
       appLogger.warn({
         section,
-        idCandidat,
+        candidatId,
         statusValidResa,
       })
       return res.status(400).json({
@@ -201,13 +201,13 @@ export const createReservation = async (req, res) => {
       })
     }
 
-    const reservation = await bookPlace(idCandidat, centre, date)
+    const reservation = await bookPlace(candidatId, centre, date)
     if (!reservation) {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"
       appLogger.warn({
         section,
-        idCandidat,
+        candidatId,
         success,
         message,
       })
@@ -229,7 +229,7 @@ export const createReservation = async (req, res) => {
       } catch (error) {
         techLogger.error({
           section,
-          idCandidat,
+          candidatId,
           message: 'Echec de suppression de la reservation',
           previewBookedPlace,
           error,
@@ -247,7 +247,7 @@ export const createReservation = async (req, res) => {
       const { date } = reservation
       appLogger.warn({
         section: 'candidat-createReservation',
-        idCandidat,
+        candidatId,
         message: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
         error,
       })
@@ -257,7 +257,7 @@ export const createReservation = async (req, res) => {
 
     appLogger.info({
       section: 'candidat-createReservation',
-      idCandidat,
+      candidatId,
       statusmail,
       message,
       reservation: reservation._id,
@@ -277,7 +277,7 @@ export const createReservation = async (req, res) => {
   } catch (error) {
     appLogger.error({
       section: 'candidat-createReservation',
-      idCandidat,
+      candidatId,
       error,
     })
     res.status(500).json({
@@ -289,20 +289,20 @@ export const createReservation = async (req, res) => {
 }
 
 export const removeReservations = async (req, res) => {
-  const idCandidat = req.userId
+  const candidatId = req.userId
 
   appLogger.info({
     section: 'candidat-removeReservations',
     action: 'REMOVE_RESA_ARGS',
-    idCandidat,
+    candidatId,
   })
-  if (!idCandidat) {
+  if (!candidatId) {
     const success = false
     const message = USER_INFO_MISSING
     appLogger.warn({
       section: 'candidat-removeReservations',
       action: 'NO_CANDIDAT',
-      idCandidat,
+      candidatId,
       success,
       message,
     })
@@ -310,7 +310,7 @@ export const removeReservations = async (req, res) => {
   }
 
   try {
-    const bookedPlace = await getReservationByCandidat(idCandidat, {
+    const bookedPlace = await getReservationByCandidat(candidatId, {
       centre: true,
       candidat: true,
     })
@@ -322,7 +322,7 @@ export const removeReservations = async (req, res) => {
       appLogger.warn({
         section: 'candidat-removeReservations',
         action: 'NO_PLACE',
-        idCandidat,
+        candidatId,
         success,
         message,
       })
