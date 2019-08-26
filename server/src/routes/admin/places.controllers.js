@@ -252,20 +252,27 @@ export const deletePlacesByAdmin = async (req, res) => {
   const adminId = req.userId
   const { placesToDelete } = req.body
 
+  const loggerInfo = {
+    section: 'admin-delete-places',
+    admin: adminId,
+    placesToDelete,
+  }
+
   if (!placesToDelete || !placesToDelete.length) {
+    appLogger.warn({
+      ...loggerInfo,
+      description: DELETE_PLACES_BY_ADMIN_ERROR,
+    })
     res.status(422).json({
       success: false,
       message: DELETE_PLACES_BY_ADMIN_ERROR,
     })
     return
   }
-
-  const loggerInfo = {
-    section: 'admin-delete-places',
-    admin: adminId,
-    placesToDelete,
-    description: 'Delete places with array of ids.',
-  }
+  appLogger.info({
+    ...loggerInfo,
+    description: 'Places à supprimer',
+  })
 
   try {
     await Promise.all(
@@ -274,7 +281,9 @@ export const deletePlacesByAdmin = async (req, res) => {
         if (!placeFound) {
           appLogger.warn({
             ...loggerInfo,
-            description: `La place selectionnée avec l'id: [${placeId} a déjà été supprimée`,
+            placeId,
+            action: 'DELETE_RESA_NOT_FOUND',
+            description: `La place selectionnée avec l'id: [${placeId}] a déjà été supprimée`,
             result: placeFound,
           })
           return
@@ -290,6 +299,9 @@ export const deletePlacesByAdmin = async (req, res) => {
             )
             appLogger.info({
               ...loggerInfo,
+              placeId,
+              candidat,
+              action: 'DELETE_RESA',
               description:
                 'Remove booked Place By Admin and send email to candidat',
               result: removedPlace,
@@ -300,19 +312,27 @@ export const deletePlacesByAdmin = async (req, res) => {
         const removedPlace = await deletePlace(placeFound)
         appLogger.info({
           ...loggerInfo,
+          action: 'DELETE_PLACE',
           description: 'Remove Place By Admin',
           result: removedPlace,
         })
       })
     )
 
+    appLogger.info({
+      ...loggerInfo,
+      description: DELETE_PLACES_BY_ADMIN_SUCCESS,
+    })
+
     res.status(200).json({
       success: true,
       message: DELETE_PLACES_BY_ADMIN_SUCCESS,
     })
   } catch (error) {
-    appLogger.warn({
+    appLogger.error({
       ...loggerInfo,
+      action: 'ERROR_DELETE_PLACES',
+      description: error.message,
       error,
     })
     res.status(400).json({ success: false, message: error.message })
