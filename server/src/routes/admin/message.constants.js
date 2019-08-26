@@ -20,3 +20,5 @@ export const ACCESS_FORBIDDEN = 'Accès interdit'
 export const USER_NOT_FOUND = 'Utilisateur non trouvé'
 export const UNKNOW_EROOR_SEND_SCHEDULE_INSPECTEUR =
   "Un problème est survenu lors de l'envoi de bordereaux des inspecteurs"
+export const UNKNOW_ERROR_REMOVE_RESA =
+  'Un probléme est survenue lors de la suppression de la reservasion'
