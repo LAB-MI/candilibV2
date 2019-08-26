@@ -7,7 +7,7 @@ import {
   isCandidatExisting,
 } from '../../models/candidat'
 import { sendMagicLink } from '../business'
-import { sendErrorResponse } from '../../util/send-error-response';
+import { sendErrorResponse } from '../../util/send-error-response'
 
 export const postMagicLink = async (req, res) => {
   const { email } = req.body
@@ -16,7 +16,10 @@ export const postMagicLink = async (req, res) => {
     action: 'post-magic-link',
     email,
   }
-  appLogger.info({ ...loggerInfo, message: `Trying to find candidat with email: ${email}` })
+  appLogger.info({
+    ...loggerInfo,
+    message: `Trying to find candidat with email: ${email}`,
+  })
 
   try {
     const candidat = await findActiveCandidatByEmail(email)
@@ -44,7 +47,10 @@ export const postMagicLink = async (req, res) => {
     )
 
     try {
-      appLogger.info({ ...loggerInfo, message: `Trying to send magic-link to ${email}` })
+      appLogger.info({
+        ...loggerInfo,
+        message: `Trying to send magic-link to ${email}`,
+      })
       const response = await sendMagicLink(candidat, token)
       res.status(200).json({
         message:
@@ -59,7 +65,8 @@ export const postMagicLink = async (req, res) => {
         message: `Impossible d'envoyer le mail à ${email}`,
       })
 
-      const message = "Un problème est survenu lors de l'envoi du lien de connexion. Nous vous prions de réessayer plus tard."
+      const message =
+        "Un problème est survenu lors de l'envoi du lien de connexion. Nous vous prions de réessayer plus tard."
       return res.status(500).json({
         message,
         success: false,
@@ -85,29 +92,26 @@ export const checkCandidat = async (req, res) => {
     candidatId,
   }
 
-  appLogger.info({ ...loggerInfo, message: ''})
+  appLogger.debug({ ...loggerInfo, message: "Vérification de l'existence du candidat" })
 
   try {
-    console.log('b4 isCandidatExisting')
     const isExisting = await isCandidatExisting(candidatId)
     if (!isExisting) {
       const message = 'Candidat non trouvé'
       const status = 401
       sendErrorResponse(res, { loggerInfo, message, status })
-      console.log(message)
       const error = new Error(message)
       error.status = status
       throw error
     }
+    appLogger.info({ ...loggerInfo, message: 'Le candidat existe bien' })
     return res.json({ auth: true })
   } catch (error) {
-    if (!error.status) {
-      appLogger.error({
-        ...loggerInfo,
-        description: error.message,
-        error,
-      })
-    }
+    appLogger.error({
+      ...loggerInfo,
+      description: error.message,
+      error,
+    })
     return res.status(error.status || 500).json({
       auth: false,
       isTokenValid: false,

@@ -94,6 +94,16 @@ export async function preSignup (req, res) {
   try {
     const departement = await getDepartementFromWhitelist(candidatData)
     appLogger.info({ ...loggerInfo, departementFromWhitelist: departement })
+    if (departement === null) {
+      const message = `L'adresse courriel renseignée (${email}) n'est pas dans la liste des invités.`
+      appLogger.warn({
+        section: 'candidat-presignup',
+        action: 'check-email-is-in-whitelist',
+        description: message,
+        candidatDepartement: departement,
+      })
+      throw new Error(message)
+    }
     // Forcer le département du candidat par le département de la whitelist correspondant à son email
     candidatData.departement = departement
   } catch (error) {
@@ -285,13 +295,22 @@ export async function emailValidation (req, res) {
     }
 
     if (emailValidationHash !== hash) {
-      throw new Error('Le hash ne correspond pas.')
+      appLogger.warn({
+        ...loggerInfo,
+        description: 'Le hash ne correspond pas',
+      })
+      throw new Error("Votre lien n'est plus valide")
     }
 
     const emailValidationResult = await validateEmail(email, hash)
 
-    res.status(200).json(emailValidationResult)
+    res.status(emailValidationResult.success ? 200 : 401).json(emailValidationResult)
   } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: error.message,
+      error,
+    })
     res.status(422).json({
       success: false,
       message:
