@@ -9,8 +9,6 @@ export const sendErrorResponse = () => (
     description,
   })
 
-  console.log(message, status)
-
   return res.status(status || 500).json({
     message: description,
     success: false,
