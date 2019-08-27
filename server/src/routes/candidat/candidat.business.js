@@ -199,16 +199,14 @@ export async function validateEmail (email, hash) {
     appLogger.warn({
       section: 'candidat-validate-email',
       action: 'hash-check',
-      description: 'Le hash envoyé lors de la validation ne correspond pas au hash stocké en base',
+      description:
+        'Le hash envoyé lors de la validation ne correspond pas au hash stocké en base',
     })
     return {
       success: false,
-      response,
-      message:
-        "Votre lien n'est plus valide",
+      message: "Votre lien n'est plus valide",
       updatedCandidat,
     }
-
   }
   const response = await sendMailToAccount(candidat, INSCRIPTION_OK)
   appLogger.info({

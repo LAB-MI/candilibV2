@@ -6,11 +6,12 @@ import {
   hasAvailablePlacesByCentre,
 } from './places.business'
 
-export const ErrorMsgArgEmpty = 'Information du centre sont obligatoires'
+export const ErrorMsgArgEmpty =
+  'Les paramètres du centre et du département sont obligatoires'
 /**
  *
  * Si la date de debut (begin) n'est pas définit on recherche à partir de la date courante
- * @param {id, centre, departement, begin, end} req { id: identifiant du centre, centre: nom du centre, departement: département reherché, begin: date du début de recherche, end : date de fin de recherche}
+ * @param {id, centre, departement, end} req { id: identifiant du centre, centre: nom du centre, departement: département reherché, begin: date du début de recherche, end : date de fin de recherche}
  * @param {*} res
  */
 export async function getPlaces (req, res) {
@@ -20,9 +21,8 @@ export async function getPlaces (req, res) {
 
   if (end && date) {
     const error = {
-      section: 'candidat-get-places',
-      message:
-        '(begin , end) et date ne peuvent avoir des valeurs en même temps',
+      section: 'candidat-getPlaces',
+      message: 'end et date ne peuvent avoir des valeurs en même temps',
     }
     appLogger.error(error)
     res.status(409).json({
@@ -31,10 +31,12 @@ export async function getPlaces (req, res) {
     })
   }
 
-  appLogger.debug({
-    section: 'candidat-get-places',
+  const loggerInfo = {
+    section: 'candidat-getPlaces',
     argument: { departement, _id, centre, end, date },
-  })
+  }
+
+  appLogger.debug(loggerInfo)
 
   let dates = []
   try {
@@ -56,7 +58,7 @@ export async function getPlaces (req, res) {
     }
     res.status(200).json(dates)
   } catch (error) {
-    appLogger.error(error)
+    appLogger.error({ ...loggerInfo, error })
     res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
       success: false,
       message: error.message,
