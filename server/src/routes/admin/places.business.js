@@ -620,9 +620,9 @@ export const sendMailSchedulesInspecteurs = async (
   const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
 
   const placesByInspecteurs = {}
-  const inspecteursEmails = {}
   const centres = await findCentresByDepartement(departement)
 
+  // TODO: A refactoriser
   await Promise.all(
     centres.map(async centre => {
       const places = await findAllPlacesBookedByCentre(
@@ -630,22 +630,14 @@ export const sendMailSchedulesInspecteurs = async (
         beginDate,
         endDate
       )
-      await Promise.all(
-        places.map(async place => {
-          const { inspecteur: inspecteurId } = place
-          if (!placesByInspecteurs[inspecteurId]) {
-            if (isForInspecteurs) {
-              const { email: emailInspecteur } = await findInspecteurById(
-                inspecteurId
-              )
-              inspecteursEmails[inspecteurId] = emailInspecteur
-            }
-            placesByInspecteurs[inspecteurId] = []
-          }
+      places.map(place => {
+        const { inspecteur: inspecteurId } = place
+        if (!placesByInspecteurs[inspecteurId]) {
+          placesByInspecteurs[inspecteurId] = []
+        }
 
-          placesByInspecteurs[inspecteurId].push(place)
-        })
-      )
+        placesByInspecteurs[inspecteurId].push(place)
+      })
     })
   )
 
@@ -653,20 +645,20 @@ export const sendMailSchedulesInspecteurs = async (
   await Promise.all(
     Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
       try {
+        let inspecteurMail
+        if (isForInspecteurs) {
+          inspecteurMail = await findInspecteurById(inspecteurId)
+        }
         await sendScheduleInspecteur(
-          isForInspecteurs ? inspecteursEmails[inspecteurId] : departementEmail,
+          isForInspecteurs ? inspecteurMail : departementEmail,
           places
         )
         appLogger.info({
           ...loggerContent,
           inspecteur: inspecteurId,
           nbPlaces: places.length,
-          emailTo: isForInspecteurs
-            ? inspecteursEmails[inspecteurId]
-            : departementEmail,
-          emailInspecteur: isForInspecteurs
-            ? inspecteursEmails[inspecteurId]
-            : null,
+          emailTo: isForInspecteurs ? inspecteurMail : departementEmail,
+          emailInspecteur: isForInspecteurs ? inspecteurMail : null,
           description: 'Bordereau envoyé',
         })
         return { success: true }
