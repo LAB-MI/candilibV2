@@ -8,7 +8,7 @@
     <div class="u-flex">
       <v-list-tile-content v-ripple="hasPlaces">
         <v-list-tile-title >
-          <span class="name-center-case">
+          <span class="u-upper-case">
             {{ center.centre.nom }}
           </span>
           ({{ center.centre.departement }})
