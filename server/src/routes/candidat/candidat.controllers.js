@@ -49,7 +49,7 @@ export async function preSignup (req, res) {
   const candidatData = trimEveryValue(req.body)
 
   const loggerInfo = {
-    section: 'candidat',
+    section: 'candidat-pre-signup',
     action: 'preSignup',
   }
   appLogger.info({ ...loggerInfo, candidatData })
@@ -97,7 +97,7 @@ export async function preSignup (req, res) {
     if (departement === null) {
       const message = `L'adresse courriel renseignée (${email}) n'est pas dans la liste des invités.`
       appLogger.warn({
-        section: 'candidat-presignup',
+        section: 'candidat-pre-signup',
         action: 'check-email-is-in-whitelist',
         description: message,
         candidatDepartement: departement,
@@ -195,7 +195,7 @@ export async function preSignup (req, res) {
       res.status(200).json(response)
     } catch (error) {
       techLogger.error({
-        section: 'candidat-presignup',
+        section: 'candidat-pre-signup',
         error,
       })
       res.status(500).json({
@@ -258,7 +258,7 @@ export async function emailValidation (req, res) {
   const { email, hash } = req.body || {}
 
   const loggerInfo = {
-    section: 'candidat',
+    section: 'candidat-validate-email',
     func: 'emailValidation',
     email,
     hash,
