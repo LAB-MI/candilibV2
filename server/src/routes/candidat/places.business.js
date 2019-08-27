@@ -1,6 +1,7 @@
 import config from '../../config'
 import {
   appLogger,
+  techLogger,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
 } from '../../util'
@@ -149,24 +150,25 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
 
   try {
     await sendCancelBooking(candidat, bookedPlace)
+
+    appLogger.info({
+      section: 'candidat-removeReservation',
+      candidatId,
+      success: true,
+      statusmail,
+      message,
+      place: bookedPlace._id,
+    })
   } catch (error) {
-    appLogger.warn({
-      section: 'candidat-remove-reservations',
+    techLogger.error({
+      section: 'candidat-removeReservation',
       action: 'FAILED_SEND_MAIL',
+      description: error.message,
       error,
     })
     statusmail = false
     message = CANCEL_RESA_WITH_NO_MAIL_SENT
   }
-
-  appLogger.info({
-    section: 'candidat-remove-reservations',
-    candidatId,
-    success: true,
-    statusmail,
-    message,
-    place: bookedPlace._id,
-  })
 
   return {
     statusmail,
@@ -235,7 +237,7 @@ export const getCandBookFrom = (candidat, datePassage) => {
   }
 
   if (!candidat) {
-    throw new Error('Il manque les information candidat')
+    throw new Error('Il manque le candidat')
   }
 
   const daysOfDatePassage = datePassage.endOf('days')

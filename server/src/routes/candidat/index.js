@@ -7,7 +7,7 @@ import { getPlaces } from './places.controllers'
 import {
   getReservations,
   createReservation,
-  removeReservations,
+  removeReservation,
 } from './reservations.controllers'
 
 const router = express.Router()
@@ -18,7 +18,7 @@ router.get('/centres', getCentres)
 router.get('/places/:id?', getPlaces)
 router.get('/reservations', getReservations)
 router.post('/reservations', createReservation)
-router.delete('/reservations', removeReservations)
+router.delete('/reservations', removeReservation)
 router.post('/evaluations', saveEvaluation)
 
 export { preSignup, emailValidation } from './candidat.controllers'
