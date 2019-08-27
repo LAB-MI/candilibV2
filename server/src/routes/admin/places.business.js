@@ -76,7 +76,7 @@ const getPlaceStatus = (
  */
 const parseRow = async ({ data, departement }) => {
   const loggerInfo = {
-    section: 'admimImportPlaces',
+    section: 'admin-import-places',
     action: 'parseRow',
     data,
     departement,

@@ -151,7 +151,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
     await sendCancelBooking(candidat, bookedPlace)
   } catch (error) {
     appLogger.warn({
-      section: 'candidat-removeReservations',
+      section: 'candidat-remove-reservations',
       action: 'FAILED_SEND_MAIL',
       error,
     })
@@ -160,7 +160,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
   }
 
   appLogger.info({
-    section: 'candidat-removeReservations',
+    section: 'candidat-remove-reservations',
     candidatId,
     success: true,
     statusmail,
@@ -337,7 +337,7 @@ export const validCentreDateReservation = async (
       const success = false
       const message = SAME_RESA_ASKED
       appLogger.warn({
-        section: 'candidat-validCentreDateReservation',
+        section: 'candidat-valid-centre-date-reservation',
         candidatId,
         success,
         message,
@@ -378,7 +378,7 @@ export const validCentreDateReservation = async (
     const message =
       CAN_BOOK_AFTER + getFrenchFormattedDateTime(dateAuthorize).date
     appLogger.warn({
-      section: 'candidat-validCentreDateReservation',
+      section: 'candidat-valid-centre-date-reservation',
       candidatId,
       success,
       message,

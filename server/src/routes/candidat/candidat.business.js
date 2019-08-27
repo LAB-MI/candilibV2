@@ -128,7 +128,7 @@ export async function presignUpCandidat (candidatData) {
   candidatData.emailValidationHash = uuidv4()
 
   const loggerInfo = {
-    section: 'candidat-presignup',
+    section: 'candidat-pre-signup',
     action: 'preSignup',
     candidatId: candidatData._id && candidatData._id.toString(),
   }
@@ -175,7 +175,7 @@ export async function getDepartementFromWhitelist ({ email, departement }) {
 
   if (departement !== whitelisted.departement) {
     appLogger.warn({
-      section: 'candidat-presignup',
+      section: 'candidat-pre-signup',
       action: 'INCONSISTENT_DEPARTEMENT',
       description: `Le département de l'adresse du candidat ${departement} est différent de celui de sa whitelist (${whitelisted.departement})`,
       candidatDepartement: departement,
@@ -197,7 +197,7 @@ export async function validateEmail (email, hash) {
 
   if (candidat.emailValidationHash !== hash) {
     appLogger.warn({
-      section: 'validate-email',
+      section: 'candidat-validate-email',
       action: 'hash-check',
       description: 'Le hash envoyé lors de la validation ne correspond pas au hash stocké en base',
     })
@@ -212,7 +212,7 @@ export async function validateEmail (email, hash) {
   }
   const response = await sendMailToAccount(candidat, INSCRIPTION_OK)
   appLogger.info({
-    section: 'validate-email',
+    section: 'candidat-validate-email',
     action: 'send-mail',
     description: 'Mail de validation de la préinscription envoyé',
   })

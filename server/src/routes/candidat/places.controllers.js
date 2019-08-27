@@ -20,7 +20,7 @@ export async function getPlaces (req, res) {
 
   if (end && date) {
     const error = {
-      section: 'candidat-getPlaces',
+      section: 'candidat-get-places',
       message:
         '(begin , end) et date ne peuvent avoir des valeurs en même temps',
     }
@@ -32,7 +32,7 @@ export async function getPlaces (req, res) {
   }
 
   appLogger.debug({
-    section: 'candidat-getPlaces',
+    section: 'candidat-get-places',
     argument: { departement, _id, centre, end, date },
   })
 

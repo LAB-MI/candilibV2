@@ -120,7 +120,7 @@ export const getReservations = async (req, res) => {
     }
   } catch (error) {
     appLogger.error({
-      section: 'candidat-getReservations',
+      section: 'candidat-get-reservations',
       candidatId,
       bymail,
       error,
@@ -134,7 +134,7 @@ export const getReservations = async (req, res) => {
 }
 
 export const createReservation = async (req, res) => {
-  const section = 'candidat-createReservation'
+  const section = 'candidat-create-reservation'
   const candidatId = req.userId
   const { id: centre, date, isAccompanied, hasDualControlCar } = req.body
 
@@ -246,7 +246,7 @@ export const createReservation = async (req, res) => {
       const { nom, departement } = reservation.centre
       const { date } = reservation
       appLogger.warn({
-        section: 'candidat-createReservation',
+        section: 'candidat-create-reservation',
         candidatId,
         message: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
         error,
@@ -256,7 +256,7 @@ export const createReservation = async (req, res) => {
     }
 
     appLogger.info({
-      section: 'candidat-createReservation',
+      section: 'candidat-create-reservation',
       candidatId,
       statusmail,
       message,
@@ -276,7 +276,7 @@ export const createReservation = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
-      section: 'candidat-createReservation',
+      section: 'candidat-create-reservation',
       candidatId,
       error,
     })
@@ -292,7 +292,7 @@ export const removeReservations = async (req, res) => {
   const candidatId = req.userId
 
   appLogger.info({
-    section: 'candidat-removeReservations',
+    section: 'candidat-remove-reservations',
     action: 'REMOVE_RESA_ARGS',
     candidatId,
   })
@@ -300,7 +300,7 @@ export const removeReservations = async (req, res) => {
     const success = false
     const message = USER_INFO_MISSING
     appLogger.warn({
-      section: 'candidat-removeReservations',
+      section: 'candidat-remove-reservations',
       action: 'NO_CANDIDAT',
       candidatId,
       success,
@@ -320,7 +320,7 @@ export const removeReservations = async (req, res) => {
       const message = "Vous n'avez pas de réservation"
 
       appLogger.warn({
-        section: 'candidat-removeReservations',
+        section: 'candidat-remove-reservations',
         action: 'NO_PLACE',
         candidatId,
         success,
@@ -340,7 +340,7 @@ export const removeReservations = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
-      section: 'candidat-removeReservations',
+      section: 'candidat-remove-reservations',
       action: 'UNKNOWN ERROR',
       error,
     })
