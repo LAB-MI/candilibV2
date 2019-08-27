@@ -12,8 +12,8 @@ export const getConvocationTemplate = (
 ) => `<p>Le présent mail vaut convocation.</p>
 <p>Madame, Monsieur ${nameCandidat},</p>
 <br>
-<p>Nous avons bien pris en compte votre réservation à l'examen pratique du permis de conduire le ${dateResa} à ${houreResa} 
-avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre} à l'adresse ${addressCentre}</p>
+<p>Nous avons bien pris en compte votre réservation à l'examen pratique du permis de conduire le ${dateResa} à ${houreResa}
+avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre.toUpperCase()} à l'adresse ${addressCentre}</p>
 <p>Nous vous rappelons les éléments à vérifier le jour de l'examen :</p>
 <ul>
   <li>
@@ -46,23 +46,29 @@ avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre} à l'adresse ${addr
     Vous serez muni d'une enveloppe affranchie à 20 g.
   </li>
   <li>
-      Si vous avez fait l'objet d'une annulation de permis, 
-      vous apporterez le récépissé de la "fiche retour au permis de conduire" 
+      Si vous avez fait l'objet d'une annulation de permis,
+      vous apporterez le récépissé de la "fiche retour au permis de conduire"
       que vous aurez imprimé sur le site de l'<a href='https://www.permisdeconduire.ants.gouv.fr/'>ANTS</a>.
   </li>
 </ul>
 <p><b>Attention :</b></p>
 <p>
-  Le mauvais état du véhicule (pneus lisses, rétroviseurs cassés ou absents, dysfonctionnement d'un feu, etc.), 
-  l'absence ou la non-validité d'un des documents exigés ci-dessus, 
+  Le mauvais état du véhicule (pneus lisses, rétroviseurs cassés ou absents, dysfonctionnement d'un feu, etc.),
+  l'absence ou la non-validité d'un des documents exigés ci-dessus,
   pour le candidat ou l'accompagnateur, entraîne le report de l'examen à une date ultérieure.
 </p>
 <p>
-  Si besoin, vous avez la possibilité d'annuler ou modifier <a href=${urlRESA}>votre réservation</a>. 
-  Si vous annulez ou modifiez ${config.daysForbidCancel} jours avant la date prévue, 
-  vous pourrez librement choisir un autre créneau disponible. 
-  Si vous annulez ou modifiez à moins de ${config.daysForbidCancel} jours de la date prévue, 
-  un délai de repassage de ${config.timeoutToRetry} jours à partir de la date de réservation annulée ou modifiée, vous sera appliqué. 
+  Si besoin, vous avez la possibilité d'annuler ou modifier <a href=${urlRESA}>votre réservation</a>.
+  Si vous annulez ou modifiez ${
+  config.daysForbidCancel
+} jours avant la date prévue,
+  vous pourrez librement choisir un autre créneau disponible.
+  Si vous annulez ou modifiez à moins de ${
+  config.daysForbidCancel
+} jours de la date prévue,
+  un délai de repassage de ${
+  config.timeoutToRetry
+} jours à partir de la date de réservation annulée ou modifiée, vous sera appliqué.
   Nous vous souhaitons une bonne préparation et le succès à l'examen.
   Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
 </p>

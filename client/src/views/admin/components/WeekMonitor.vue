@@ -2,7 +2,9 @@
   <div style="margin-top: -6em;">
     <h2 class="title">
       <strong>
-        {{ nameCenter }}
+        <span class="u-uppercase">
+          {{ nameCenter }}
+        </span>
       </strong>
 
       (

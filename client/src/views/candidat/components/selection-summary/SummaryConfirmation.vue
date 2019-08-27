@@ -50,8 +50,8 @@
         </v-flex>
       </v-form>
     </v-card-actions>
-    </div>
-    <div class="text--center" v-else>
+  </div>
+  <div class="text--center" v-else>
     <h4>
       {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
       &nbsp;

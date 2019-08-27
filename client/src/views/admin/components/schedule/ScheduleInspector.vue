@@ -12,7 +12,7 @@
             fast_rewind
           </v-icon>
         </v-btn>
-        Semaine {{ currentWeekNumber }}
+          Semaine {{ currentWeekNumber }}
         <v-btn
           icon
           @click="goto('+1 weeks')"
