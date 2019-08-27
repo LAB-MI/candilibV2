@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text--center u-upper-case">{{ infoResa.nom }}</h3>
+    <h3 class="text--center u-uppercase">{{ infoResa.nom }}</h3>
     <p class="text--center">
       {{ infoResa.adresse }}
       <a
