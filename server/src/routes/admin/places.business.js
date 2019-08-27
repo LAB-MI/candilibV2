@@ -622,7 +622,6 @@ export const sendMailSchedulesInspecteurs = async (
   const placesByInspecteurs = {}
   const centres = await findCentresByDepartement(departement)
 
-  // TODO: A refactoriser
   await Promise.all(
     centres.map(async centre => {
       const places = await findAllPlacesBookedByCentre(
@@ -647,7 +646,8 @@ export const sendMailSchedulesInspecteurs = async (
       try {
         let inspecteurMail
         if (isForInspecteurs) {
-          inspecteurMail = await findInspecteurById(inspecteurId)
+          const inspecteurToMail = await findInspecteurById(inspecteurId)
+          inspecteurMail = inspecteurToMail.email
         }
         await sendScheduleInspecteur(
           isForInspecteurs ? inspecteurMail : departementEmail,
