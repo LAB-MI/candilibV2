@@ -228,6 +228,7 @@ describe('update place by admin', () => {
     app.patch(`${apiPrefix}/admin/places/:id`, updatePlaces)
 
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
+    require('../../util/logger').setWithConsole(false)
   })
 
   afterAll(async () => {
@@ -374,7 +375,6 @@ describe('update place by admin', () => {
       // Then
       .expect(400)
 
-    expect(body).toHaveProperty('error', { _status: 400 })
     expect(body).toHaveProperty('message', PLACE_IS_ALREADY_BOOKED)
     expect(body).toHaveProperty('success', false)
     await place.remove()
@@ -400,7 +400,6 @@ describe('update place by admin', () => {
       })
       .expect(422)
 
-    expect(body).toHaveProperty('error', { _status: 422 })
     expect(body).toHaveProperty(
       'message',
       'Les paramètres renseignés sont incorrects'
@@ -420,7 +419,6 @@ describe('update place by admin', () => {
       })
       .expect(422)
 
-    expect(body).toHaveProperty('error', { _status: 422 })
     expect(body).toHaveProperty(
       'message',
       'Les paramètres renseignés sont incorrects'
@@ -451,7 +449,6 @@ describe('update place by admin', () => {
       })
       .expect(400)
 
-    expect(body).toHaveProperty('error', { _status: 400 })
     expect(body).toHaveProperty(
       'message',
       "Le candidat n'est pas validé par Aurige"

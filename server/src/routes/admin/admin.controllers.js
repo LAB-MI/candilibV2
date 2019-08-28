@@ -7,38 +7,46 @@ export const getMe = async (req, res) => {
   const loggerInfo = {
     section: 'admin-me',
     action: 'get-me',
-    user: req.userId,
+    admin: req.userId,
   }
   appLogger.info(loggerInfo)
   try {
-    const { email, departements, status } = await findUserById(req.userId)
-    const emailsDepartements = await Promise.all(
-      departements.map(findDepartementById)
-    )
-    appLogger.debug({
-      ...loggerInfo,
-      results: { email, departements, status },
-    })
-    if (!email || !departements || !status) {
-      const error = new Error('Utilisateur non trouvé')
-      throw error
+    const infoAdmin = await findInfoAdminById(req.userId)
+    if (infoAdmin) {
+      return res.json(infoAdmin)
     }
-    const features = config.userStatusFeatures[status]
-    return res.json({
-      email,
-      departements,
-      features,
-      emailsDepartements,
+    appLogger.warn({
+      ...loggerInfo,
+      description: 'Utilisateur non trouvé',
     })
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      message: error.message,
+      description: error.message,
       error,
     })
-    res.status(401).send({
-      message: 'Accès interdit',
-      success: false,
-    })
+  }
+  res.status(401).send({
+    message: 'Accès interdit',
+    success: false,
+  })
+}
+
+const findInfoAdminById = async userId => {
+  const { email, departements, status } = await findUserById(userId)
+  if (!email || !departements || !status) {
+    return
+  }
+  const emailsDepartements = await Promise.all(
+    departements.map(findDepartementById)
+  )
+
+  const features = config.userStatusFeatures[status]
+
+  return {
+    email,
+    departements,
+    features,
+    emailsDepartements,
   }
 }

@@ -30,25 +30,40 @@ import {
 import {
   DELETE_PLACES_BY_ADMIN_SUCCESS,
   DELETE_PLACES_BY_ADMIN_ERROR,
+  USER_NOT_FOUND,
+  UNKNOWN_ERROR_SEND_SCHEDULE_INSPECTEUR,
 } from './message.constants'
 
 export const importPlaces = async (req, res) => {
-  const planningFile = req.files.file
   const { departement } = req.body
 
   const loggerInfo = {
     section: 'admin-import-places',
-    user: req.userId,
+    admin: req.userId,
     departement,
-    filename: planningFile.name,
+  }
+  const files = req.files
+  if (!files || !files.file) {
+    const message = 'Fichier manquant'
+    appLogger.warn({ ...loggerInfo, description: message })
+    res.status(400).json({
+      success: false,
+      message,
+    })
+    return
   }
 
   try {
+    const planningFile = files.file
+    loggerInfo.filename = planningFile.name
+
     appLogger.info({
       ...loggerInfo,
       description: `import places provenant du fichier ${planningFile.name} et du departement ${departement}`,
     })
+
     const result = await importPlacesFromFile({ planningFile, departement })
+
     appLogger.info({
       ...loggerInfo,
       description: `import places: Le fichier ${planningFile.name} a été traité pour le departement ${departement}.`,
@@ -61,15 +76,27 @@ export const importPlaces = async (req, res) => {
       places: result,
     })
   } catch (error) {
-    appLogger.error({
-      ...loggerInfo,
-      error,
-    })
-    res.status(500).send({
-      success: false,
-      message: error.message,
-      error,
-    })
+    if (error.from) {
+      appLogger.warn({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+      res.status(400).send({
+        success: false,
+        message: error.message,
+      })
+    } else {
+      appLogger.error({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+      res.status(500).send({
+        success: false,
+        message: error.message,
+      })
+    }
   }
 }
 
@@ -79,7 +106,7 @@ export const getPlaces = async (req, res) => {
 
   const loggerInfo = {
     section: 'admin-get-places',
-    user: req.userId,
+    admin: req.userId,
     departement,
     beginDate,
     endDate,
@@ -105,15 +132,16 @@ export const getPlaces = async (req, res) => {
     }
     appLogger.info({
       ...loggerInfo,
-      description: `${places ? places.length : 0} trouvées`,
+      description: `${places ? places.length : 0} places trouvées`,
     })
     res.json(places)
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
+      description: error.message,
       error,
     })
-    return res.status(400).json({
+    return res.status(500).json({
       success: false,
       message: "Les places n'ont pas pu être récupérées",
       error: error.nessage,
@@ -125,7 +153,7 @@ export const createPlaceByAdmin = async (req, res) => {
   const { centre, inspecteur, date } = req.body
   const loggerInfo = {
     section: 'admin-create-place',
-    user: req.userId,
+    admin: req.userId,
     centre,
     inspecteur,
     date,
@@ -164,7 +192,7 @@ export const deletePlaceByAdmin = async (req, res) => {
   const { id } = req.params
   const loggerInfo = {
     section: 'admin-delete-place',
-    user: req.userId,
+    admin: req.userId,
     id,
   }
 
@@ -196,17 +224,29 @@ export const deletePlaceByAdmin = async (req, res) => {
       message: `La place du [${date} ${hour}] a bien été supprimée de la base`,
     })
   } catch (error) {
-    appLogger.error({
-      ...loggerInfo,
-      error,
-    })
-    res.status(400).json({
-      success: false,
-      message: error.messageToUser
-        ? error.messageToUser
-        : `La place id: [${id}] n'a pas été supprimée`,
-      error: error.message,
-    })
+    if (error.messageToUser) {
+      appLogger.warn({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+      res.status(400).json({
+        success: false,
+        message: error.messageToUser,
+        error: error.message,
+      })
+    } else {
+      appLogger.error({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+      res.status(500).json({
+        success: false,
+        message: `La place id: [${id}] n'a pas été supprimée`,
+        error: error.message,
+      })
+    }
   }
 }
 
@@ -214,20 +254,27 @@ export const deletePlacesByAdmin = async (req, res) => {
   const adminId = req.userId
   const { placesToDelete } = req.body
 
+  const loggerInfo = {
+    section: 'admin-delete-places',
+    admin: adminId,
+    placesToDelete,
+  }
+
   if (!placesToDelete || !placesToDelete.length) {
+    appLogger.warn({
+      ...loggerInfo,
+      description: DELETE_PLACES_BY_ADMIN_ERROR,
+    })
     res.status(422).json({
       success: false,
       message: DELETE_PLACES_BY_ADMIN_ERROR,
     })
     return
   }
-
-  const loggerInfo = {
-    section: 'admin-delete-places',
-    user: adminId,
-    placesToDelete,
-    description: 'Delete places with array of ids.',
-  }
+  appLogger.info({
+    ...loggerInfo,
+    description: 'Places à supprimer',
+  })
 
   try {
     await Promise.all(
@@ -236,7 +283,9 @@ export const deletePlacesByAdmin = async (req, res) => {
         if (!placeFound) {
           appLogger.warn({
             ...loggerInfo,
-            description: `La place selectionnée avec l'id: [${placeId} a déjà été supprimée`,
+            placeId,
+            action: 'DELETE_RESA_NOT_FOUND',
+            description: `La place selectionnée avec l'id: [${placeId}] a déjà été supprimée`,
             result: placeFound,
           })
           return
@@ -252,6 +301,9 @@ export const deletePlacesByAdmin = async (req, res) => {
             )
             appLogger.info({
               ...loggerInfo,
+              placeId,
+              candidat,
+              action: 'DELETE_RESA',
               description:
                 'Remove booked Place By Admin and send email to candidat',
               result: removedPlace,
@@ -262,19 +314,27 @@ export const deletePlacesByAdmin = async (req, res) => {
         const removedPlace = await deletePlace(placeFound)
         appLogger.info({
           ...loggerInfo,
+          action: 'DELETE_PLACE',
           description: 'Remove Place By Admin',
           result: removedPlace,
         })
       })
     )
 
+    appLogger.info({
+      ...loggerInfo,
+      description: DELETE_PLACES_BY_ADMIN_SUCCESS,
+    })
+
     res.status(200).json({
       success: true,
       message: DELETE_PLACES_BY_ADMIN_SUCCESS,
     })
   } catch (error) {
-    appLogger.warn({
+    appLogger.error({
       ...loggerInfo,
+      action: 'ERROR_DELETE_PLACES',
+      description: error.message,
       error,
     })
     res.status(400).json({ success: false, message: error.message })
@@ -287,15 +347,17 @@ export const updatePlaces = async (req, res) => {
 
   const loggerContent = {
     section: 'admin-update-place',
-    user: req.userId,
+    admin: req.userId,
   }
 
   try {
     const admin = await findUserById(req.userId)
     if (!admin) {
+      const message = USER_NOT_FOUND
+      appLogger.error({ ...loggerContent, description: message })
       return res.status(403).send({
         success: false,
-        message: 'Utilisateur non trouvé',
+        message,
       })
     }
 
@@ -304,12 +366,23 @@ export const updatePlaces = async (req, res) => {
         ...loggerContent,
         placeId,
         inspecteur,
-        action: 'UPDATE_RESA',
+        action: 'UPDATE_INSPECTEUR_RESA',
         description: "Changer l'inspecteur de la réservaton candidat",
       })
 
+      loggerContent.action = 'VALIDATE_PARAM_TO_UPDATE_RESA'
       const result = await validUpdateResaInspector(placeId, inspecteur)
+      loggerContent.action = 'MOVE_CANDIDAT_TO_UPDATE_RESA'
       const newResa = await moveCandidatInPlaces(result.resa, result.place)
+
+      appLogger.info({
+        ...loggerContent,
+        placeId,
+        inspecteur,
+        newResa,
+        action: 'INSPECTEUR_RESA_UPDATED',
+        description: "Changer l'inspecteur de la réservaton candidat",
+      })
       return res.json({
         success: true,
         message: 'La modification est confirmée.',
@@ -338,6 +411,15 @@ export const updatePlaces = async (req, res) => {
         date: bookedDate,
         inspecteur,
       } = result.newBookedPlace
+
+      appLogger.info({
+        ...loggerContent,
+        placeId,
+        candidatId,
+        action: 'PLACE_UPDATED',
+        description: 'Place réservée pour le candidat',
+      })
+
       return res.json({
         success: true,
         message: `Le candidat Nom: [${result.candidat.nomNaissance}] Neph: [${result.candidat.codeNeph}] a bien été affecté à la place du ${date} à ${hour}`,
@@ -351,25 +433,24 @@ export const updatePlaces = async (req, res) => {
       })
     }
   } catch (error) {
-    appLogger.error({
+    let loggerFct = appLogger.error
+    let status = 500
+
+    if (error instanceof ErrorWithStatus) {
+      loggerFct = appLogger.warn
+      status = error.status
+    }
+
+    loggerFct({
       ...loggerContent,
-      action: 'ERROR',
+      action: loggerContent.action || 'ERROR',
       description: error.message,
       error: error.stack,
     })
 
-    if (error instanceof ErrorWithStatus) {
-      return res.status(error.status).json({
-        success: false,
-        message: error.message,
-        error,
-      })
-    }
-
-    return res.status(500).json({
+    return res.status(status).json({
       success: false,
       message: error.message,
-      error,
     })
   }
 
@@ -409,7 +490,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
     if (departement) {
       appLogger.info({
         ...loggerContent,
-        message: 'Envoi du planning',
+        message: 'Envoyer des bordereaux des inspecteurs pour un departement',
       })
       const { email } = await findUserById(req.userId)
       const confDepartement = await findDepartementById(departement)
@@ -423,22 +504,32 @@ export const sendScheduleInspecteurs = async (req, res) => {
     } else {
       appLogger.info({
         ...loggerContent,
-        message: 'Envoi des plannings à les inspecteurs',
+        message: 'Envoyer des bordereaux à les inspecteurs',
       })
       results = await sendMailSchedulesAllInspecteurs(date)
     }
 
+    appLogger.info({
+      ...loggerContent,
+      message: 'Les bordereaux ont été envoyés',
+    })
     res.status(results.success ? 200 : 400).send(results)
   } catch (error) {
-    appLogger.error({
+    const loggerFct = error.status ? appLogger.error : appLogger.warn
+    const action = loggerContent.action || 'ERROR'
+
+    loggerFct({
       ...loggerContent,
-      action: 'ERROR',
+      action,
+      description: error.message,
       error,
     })
+
     res.status(error.status || 500).send({
       success: false,
-      message: error.message,
-      error,
+      message: error.status
+        ? error.message
+        : UNKNOWN_ERROR_SEND_SCHEDULE_INSPECTEUR,
     })
   }
 }

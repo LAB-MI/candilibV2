@@ -101,7 +101,7 @@ const parseRow = async ({ data, departement }) => {
       !centre.trim() ||
       !dept.trim()
     ) {
-      throw new Error(
+      const error = new Error(
         `Une ou plusieurs information(s) manquante(s) dans le fichier CSV.
         [
           date: ${day.trim()},
@@ -112,6 +112,8 @@ const parseRow = async ({ data, departement }) => {
           departement: ${dept.trim()}
         ]`
       )
+      error.from = 'parseRow'
+      throw error
     }
 
     const date = DateTime.fromFormat(
@@ -121,13 +123,17 @@ const parseRow = async ({ data, departement }) => {
     )
 
     if (dept.trim() !== departement) {
-      throw new Error(
+      const error = new Error(
         `Le département du centre (${dept.trim()}) ne correspond pas au département dont vous avez la charge (${departement})`
       )
+      error.from = 'parseRow'
+      throw error
     }
 
     if (!date.isValid) {
-      throw new Error('Date est invalide')
+      const error = new Error('Date est invalide')
+      error.from = 'parseRow'
+      throw error
     }
 
     // TODO: create test unit for search centre by center name and departement
@@ -136,18 +142,24 @@ const parseRow = async ({ data, departement }) => {
       departement
     )
     if (!foundCentre) {
-      throw new Error(`Le centre ${centre.trim()} est inconnu`)
+      const error = new Error(`Le centre ${centre.trim()} est inconnu`)
+      error.from = 'parseRow'
+      throw error
     }
 
     const inspecteurFound = await findInspecteurByMatricule(matricule.trim())
     if (!inspecteurFound) {
-      throw new Error(`L'inspecteur ${matricule.trim()} est inconnu`)
+      const error = new Error(`L'inspecteur ${matricule.trim()} est inconnu`)
+      error.from = 'parseRow'
+      throw error
     }
 
     if (inspecteurFound.nom.toUpperCase() !== nom.trim().toUpperCase()) {
-      throw new Error(
+      const error = new Error(
         `Le nom "${nom.trim()}" de l'inspecteur ne correspond pas au matricule "${matricule.trim()}"`
       )
+      error.from = 'parseRow'
+      throw error
     }
 
     return {
@@ -157,10 +169,20 @@ const parseRow = async ({ data, departement }) => {
       date,
     }
   } catch (error) {
-    appLogger.error({
-      ...loggerInfo,
-      error,
-    })
+    if (error.from) {
+      appLogger.warn({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+    } else {
+      appLogger.error({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
+    }
+
     return getPlaceStatus(
       departement,
       myCentre,
@@ -194,7 +216,7 @@ const createPlaceFromFile = async place => {
     )
   } catch (error) {
     loggerInfo.place = { centre, inspecteur, date }
-    appLogger.error({ ...loggerInfo, error })
+    appLogger.warn({ ...loggerInfo, error })
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
       appLogger.warn({
         ...loggerInfo,
@@ -228,7 +250,9 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
   const PlacesPromise = []
 
   if (!departement) {
-    throw new Error('DEPARTEMENT_IS_MANDATORY')
+    const error = new Error('DEPARTEMENT_IS_MANDATORY')
+    error.from = 'importPlacesCsv'
+    throw error
   }
 
   return new Promise((resolve, reject) =>
@@ -259,6 +283,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
           appLogger.error({
             ...loggerInfo,
             action: 'csv-parser-transform',
+            description: error.message,
             error,
           })
         }
@@ -326,7 +351,10 @@ export const importPlacesFromFile = async ({ planningFile, departement }) => {
   if (planningFile.name.endsWith('.xlsx')) {
     return importPlacesXlsx({ xlsxFile: planningFile, departement })
   }
-  throw new Error(`Format du fichier inattendu (${planningFile.name})`)
+
+  const error = new Error(`Format du fichier inattendu (${planningFile.name})`)
+  error.from = 'importPlacesFromFile'
+  throw error
 }
 
 export const releaseResa = async ({ _id }) => {
@@ -444,6 +472,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     }
     appLogger.error({
       ...loggerInfo,
+      description: error.message,
       error,
     })
     return getPlaceStatus(
@@ -520,7 +549,7 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
     section: 'admin-assign-candidat-in-places',
     candidatId,
     placeId,
-    user: admin._id,
+    admin: admin._id,
   }
 
   appLogger.info({
@@ -663,7 +692,12 @@ export const sendMailSchedulesInspecteurs = async (
         })
         return { success: true }
       } catch (error) {
-        appLogger.error({ ...loggerContent, error, inspecteur: inspecteurId })
+        appLogger.error({
+          ...loggerContent,
+          description: error.message,
+          error,
+          inspecteur: inspecteurId,
+        })
         const inspecteur = await findInspecteurById(inspecteurId)
         resultsError.push(inspecteur)
       }
@@ -719,7 +753,7 @@ export const sendMailSchedulesAllInspecteurs = async date => {
         return { success: false, inspecteur }
       }
     }
-    appLogger.info({
+    appLogger.warn({
       ...loggerContent,
       inspecteur: _id,
       nbPlaces: 0,
