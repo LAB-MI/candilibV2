@@ -8,34 +8,41 @@ import {
 
 const { Schema } = mongoose
 
+export const UserFields = {
+  email: {
+    type: String,
+    trim: true,
+    match: regexEmail,
+    required: true,
+  },
+  departements: {
+    type: Array,
+    default: [],
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false,
+  },
+  signUpDate: {
+    type: Date,
+    default: Date.now(),
+  },
+  status: {
+    type: String,
+    default: 'admin',
+  },
+}
+
 const UserSchema = new Schema(
   {
+    ...UserFields,
     email: {
-      type: String,
-      trim: true,
+      ...UserFields.email,
       unique: true,
-      match: regexEmail,
-      required: true,
     },
     password: {
       type: String,
       required: true,
-    },
-    departements: {
-      type: Array,
-      default: [],
-    },
-    isDeleted: {
-      type: Boolean,
-      default: false,
-    },
-    signUpDate: {
-      type: Date,
-      default: Date.now(),
-    },
-    status: {
-      type: String,
-      default: 'admin',
     },
   },
   {
