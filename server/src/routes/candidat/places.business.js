@@ -2,6 +2,8 @@ import config from '../../config'
 import {
   appLogger,
   techLogger,
+  getFrenchFormattedDateTime,
+  getFrenchLuxon,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
 } from '../../util'
@@ -31,10 +33,6 @@ import {
   findCandidatById,
   archivePlace,
 } from '../../models/candidat'
-import {
-  getFrenchFormattedDateTime,
-  getFrenchLuxon,
-} from '../../util/date.util'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 
 export const getDatesByCentreId = async (_id, endDate) => {
@@ -104,10 +102,12 @@ export const getReservationByCandidat = async (candidatId, options) => {
 }
 
 export const bookPlace = async (candidatId, centre, date) => {
+  const bookedAt = getFrenchLuxon().toJSDate()
   const place = await findAndbookPlace(
     candidatId,
     centre,
     date,
+    bookedAt,
     { inspecteur: 0 },
     { centre: true, candidat: true }
   )
