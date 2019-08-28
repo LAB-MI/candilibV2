@@ -3,6 +3,7 @@ import mongoose from 'mongoose'
 import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
 
 import { getFrenchLuxonFromJSDate } from '../../util/date.util'
+import { UserFields } from '../user/user.model'
 
 const { Schema } = mongoose
 const ObjectId = Schema.Types.ObjectId
@@ -22,6 +23,20 @@ export const placeCommonFields = {
   // dateTime
   date: {
     type: Date,
+    required: false,
+  },
+  bookedAt: {
+    type: Date,
+    required: false,
+  },
+  bookedByAdmin: {
+    type: {
+      ...UserFields,
+      _id: {
+        type: ObjectId,
+        required: true,
+      },
+    },
     required: false,
   },
 }
