@@ -19,6 +19,8 @@ const { default: app, apiPrefix } = require('../../app')
 
 jest.mock('../middlewares/verify-token')
 
+const bookedAt = getFrenchLuxon().toJSDate()
+
 xdescribe('Test centre controllers', () => {
   beforeAll(async () => {
     await connect()
@@ -35,7 +37,7 @@ xdescribe('Test centre controllers', () => {
       createdCandiats = await createCandidats()
       await createCentres()
       await createPlaces()
-      await makeResas()
+      await makeResas(bookedAt)
     })
     afterAll(async () => {
       await removePlaces()

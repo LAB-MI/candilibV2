@@ -13,10 +13,14 @@ import {
   deleteCandidats,
 } from '../../models/__tests__'
 import { ErrorMsgArgEmpty } from './places.controllers'
+
+import { getFrenchLuxon } from '../../util'
 const { default: app, apiPrefix } = require('../../app')
 
 jest.mock('../../util/logger')
 jest.mock('../middlewares/verify-token')
+
+const bookedAt = getFrenchLuxon().toJSDate()
 
 xdescribe('Test places controllers', () => {
   beforeAll(async () => {
@@ -67,7 +71,7 @@ xdescribe('Test places controllers', () => {
 
     describe('Test get dates from places available when there are booked', () => {
       beforeAll(async () => {
-        await makeResas()
+        await makeResas(bookedAt)
       })
 
       afterAll(async () => {
