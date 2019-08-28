@@ -31,7 +31,7 @@ import {
   DELETE_PLACES_BY_ADMIN_SUCCESS,
   DELETE_PLACES_BY_ADMIN_ERROR,
   USER_NOT_FOUND,
-  UNKNOW_EROOR_SEND_SCHEDULE_INSPECTEUR,
+  UNKNOWN_ERROR_SEND_SCHEDULE_INSPECTEUR,
 } from './message.constants'
 
 export const importPlaces = async (req, res) => {
@@ -417,7 +417,7 @@ export const updatePlaces = async (req, res) => {
         placeId,
         candidatId,
         action: 'PLACE_UPDATED',
-        description: 'Place réservé pour le candidat',
+        description: 'Place réservée pour le candidat',
       })
 
       return res.json({
@@ -451,7 +451,6 @@ export const updatePlaces = async (req, res) => {
     return res.status(status).json({
       success: false,
       message: error.message,
-      // error,
     })
   }
 
@@ -512,7 +511,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
 
     appLogger.info({
       ...loggerContent,
-      message: 'Les envoies de bordereaux effectués ',
+      message: 'Les bordereaux ont été envoyés',
     })
     res.status(results.success ? 200 : 400).send(results)
   } catch (error) {
@@ -530,7 +529,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
       success: false,
       message: error.status
         ? error.message
-        : UNKNOW_EROOR_SEND_SCHEDULE_INSPECTEUR,
+        : UNKNOWN_ERROR_SEND_SCHEDULE_INSPECTEUR,
     })
   }
 }

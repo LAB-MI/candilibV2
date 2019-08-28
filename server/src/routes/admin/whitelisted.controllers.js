@@ -9,9 +9,9 @@ import {
 } from '../../models/whitelisted'
 import { appLogger } from '../../util'
 import {
-  UNKNOW_ERROR_REMOVE_WHITELISTED,
-  UNKNOW_ERROR_GET_WHITELISTED,
-  UNKNOW_ERROR_ADD_WHITELISTED,
+  UNKNOWN_ERROR_REMOVE_WHITELISTED,
+  UNKNOWN_ERROR_GET_WHITELISTED,
+  UNKNOWN_ERROR_ADD_WHITELISTED,
 } from './message.constants'
 
 export const isWhitelisted = async (req, res, next) => {
@@ -90,7 +90,7 @@ export const addWhitelisted = async (req, res) => {
       const result = await createWhitelisted(email, departement)
       appLogger.info({
         ...loggerInfo,
-        description: 'ajouté dans la whitelist',
+        description: `${email} ajouté dans la whitelist du ${departement}`,
       })
       res.status(201).json(result)
       return
@@ -107,7 +107,7 @@ export const addWhitelisted = async (req, res) => {
       appLogger.info({
         ...loggerInfo,
         description:
-          'il y a ' +
+          'Il y a ' +
           result.filter(whitelisted => whitelisted.success).length +
           ' ajoutés et ' +
           result.filter(whitelisted => !whitelisted.success).length +
@@ -124,7 +124,7 @@ export const addWhitelisted = async (req, res) => {
     if (email && error.message.includes('duplicate key error')) {
       const { departement } = await findWhitelistedByEmail(email.toLowerCase())
       if (departement) {
-        const message = `Email: ${email} déjà existant dans le département: ${departement}`
+        const message = `Email ${email} déjà existant dans le département ${departement}`
         appLogger.warn({
           ...loggerInfo,
           description: message,
@@ -147,7 +147,7 @@ export const addWhitelisted = async (req, res) => {
 
     return res.status(error.statusCode || 500).json({
       success: false,
-      message: error.statusCode ? error.message : UNKNOW_ERROR_ADD_WHITELISTED,
+      message: error.statusCode ? error.message : UNKNOWN_ERROR_ADD_WHITELISTED,
     })
   }
 }
@@ -168,7 +168,7 @@ export const getWhitelisted = async (req, res) => {
       appLogger.info({
         ...loggerInfo,
         description:
-          "Le nombre d'emails trouvés: " + whitelist ? 0 : whitelist.length,
+          "Le nombre d'emails trouvés : " + whitelist ? 0 : whitelist.length,
         whitelist,
       })
       res.status(200).json(whitelist)
@@ -179,7 +179,7 @@ export const getWhitelisted = async (req, res) => {
     appLogger.info({
       ...loggerInfo,
       description:
-        "Le nombre d'emails trouvés: " + lastCreated ? 0 : lastCreated.length,
+        "Le nombre d'emails trouvés : " + lastCreated ? 0 : lastCreated.length,
       lastCreated,
     })
     res.status(200).json({ success: true, lastCreated })
@@ -191,7 +191,7 @@ export const getWhitelisted = async (req, res) => {
     })
     return res.status(500).json({
       success: false,
-      message: UNKNOW_ERROR_GET_WHITELISTED,
+      message: UNKNOWN_ERROR_GET_WHITELISTED,
     })
   }
 }
@@ -208,7 +208,7 @@ export const removeWhitelisted = async (req, res) => {
     const whitelisted = await deleteWhitelisted(id)
     appLogger.info({
       ...loggerInfo,
-      description: "l'e-mail est supprimé de la whitelist",
+      description: "L'e-mail est supprimé de la whitelist",
       whitelisted,
     })
     res.status(200).json(whitelisted)
@@ -220,7 +220,7 @@ export const removeWhitelisted = async (req, res) => {
     })
     return res.status(500).json({
       success: false,
-      message: UNKNOW_ERROR_REMOVE_WHITELISTED,
+      message: UNKNOWN_ERROR_REMOVE_WHITELISTED,
     })
   }
 }

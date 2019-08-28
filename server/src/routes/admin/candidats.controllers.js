@@ -12,7 +12,7 @@ import {
 } from '../../models/candidat'
 import { findPlaceByCandidatId } from '../../models/place'
 import { statutReasonDictionnary } from '../common/reason.constants'
-import { UNKNOW_EROOR_GET_CANDIDAT } from './message.constants'
+import { UNKNOW_ERROR_GET_CANDIDAT } from './message.constants'
 
 export const importCandidats = async (req, res) => {
   const loggerInfo = {
@@ -192,12 +192,12 @@ export const getCandidats = async (req, res) => {
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      description: UNKNOW_EROOR_GET_CANDIDAT,
+      description: UNKNOW_ERROR_GET_CANDIDAT,
       error,
     })
     return res.status(500).send({
       success: false,
-      message: UNKNOW_EROOR_GET_CANDIDAT,
+      message: UNKNOW_ERROR_GET_CANDIDAT,
       error,
     })
   }

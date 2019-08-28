@@ -14,17 +14,17 @@ export const DELETE_PLACES_BY_ADMIN_ERROR =
   'Les places à supprimer ne sont pas définies'
 export const SOME_PARAMS_ARE_NOT_DEFINED =
   'Certains paramètres ne sont pas définis'
-export const UNKNOW_EROOR_GET_CANDIDAT =
+export const UNKNOW_ERROR_GET_CANDIDAT =
   'Un problème est survenu lors de la recherche du candidat'
 export const ACCESS_FORBIDDEN = 'Accès interdit'
 export const USER_NOT_FOUND = 'Utilisateur non trouvé'
-export const UNKNOW_EROOR_SEND_SCHEDULE_INSPECTEUR =
+export const UNKNOWN_ERROR_SEND_SCHEDULE_INSPECTEUR =
   "Un problème est survenu lors de l'envoi de bordereaux des inspecteurs"
-export const UNKNOW_ERROR_REMOVE_RESA =
-  'Un probléme est survenue lors de la suppression de la reservasion'
-export const UNKNOW_ERROR_REMOVE_WHITELISTED =
-  'Un probléme est survenue lors de la suppression de la whiteliste'
-export const UNKNOW_ERROR_GET_WHITELISTED =
-  'Un probléme est survenue lors de la recuperation de la whiteliste'
-export const UNKNOW_ERROR_ADD_WHITELISTED =
-  "Un probléme est survenue lors d'ajout dans la whiteliste"
+export const UNKNOWN_ERROR_REMOVE_RESA =
+  'Un problème est survenu lors de la suppression de la réservasion'
+export const UNKNOWN_ERROR_REMOVE_WHITELISTED =
+  'Un problème est survenu lors de la suppression de la whiteliste'
+export const UNKNOWN_ERROR_GET_WHITELISTED =
+  'Un problème est survenu lors de la récupération de la whiteliste'
+export const UNKNOWN_ERROR_ADD_WHITELISTED =
+  "Un problème est survenu lors de l'ajout dans la whiteliste"

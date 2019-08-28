@@ -3,7 +3,7 @@ import { findUserById } from '../../models/user'
 import { appLogger } from '../../util'
 import {
   PLACE_IS_NOT_BOOKED,
-  UNKNOW_ERROR_REMOVE_RESA,
+  UNKNOWN_ERROR_REMOVE_RESA,
 } from './message.constants'
 import { removeReservationPlaceByAdmin } from './places.business'
 
@@ -39,7 +39,7 @@ export const removeReservationByAdmin = async (req, res) => {
 
   appLogger.info({
     ...loggerContent,
-    description: 'Supprimer la réservaton candidat',
+    description: 'Supprimer la réservation candidat',
   })
 
   // Have a reservation
@@ -83,7 +83,7 @@ export const removeReservationByAdmin = async (req, res) => {
     })
     return res.status(500).send({
       success: false,
-      message: UNKNOW_ERROR_REMOVE_RESA,
+      message: UNKNOWN_ERROR_REMOVE_RESA,
     })
   }
 }
