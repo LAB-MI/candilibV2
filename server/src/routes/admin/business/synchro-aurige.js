@@ -29,6 +29,7 @@ import {
   OK_UPDATED,
   NB_FAILURES_KO,
   NO_CANDILIB,
+  getFrenchLuxon,
 } from '../../../util'
 import {
   sendFailureExam,
@@ -165,7 +166,6 @@ export const synchroAurige = async buffer => {
 
       let aurigeFeedback
       let message
-      let dateFeedBack
       if (candidatExistant === CANDIDAT_NOK) {
         message = `Ce candidat ${email} sera archivé : NEPH inconnu`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
@@ -182,26 +182,30 @@ export const synchroAurige = async buffer => {
         message = `Ce candidat ${email} sera archivé : Date ETG KO`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_ETG_KO
-        // Date ETG
-        if (!candidat.dateReussiteETG) {
-          const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
-          if (dateTimeDateReussiteETG.isValid) {
-            candidat.dateReussiteETG = dateTimeDateReussiteETG
-          }
-        }
       } else if (isTooManyFailure(Number(nbEchecsPratiques))) {
         message = `Ce candidat ${email} sera archivé : A 5 échecs pratiques`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = NB_FAILURES_KO
+      } else if (isReussitePratique(reussitePratique)) {
+        message = `Ce candidat ${email} sera archivé : PRATIQUE OK`
+        appLogger.warn({ ...loggerInfoCandidat, description: message })
+        aurigeFeedback = EPREUVE_PRATIQUE_OK
+      }
+
+      const infoCandidatToUpdate = {}
+      infoCandidatToUpdate.isValidatedByAurige =
+        candidatExistant === CANDIDAT_EXISTANT
+
+      if (infoCandidatToUpdate.isValidatedByAurige) {
+        // Date non réussite
         try {
-          const nbFailed = Number(nbEchecsPratiques)
-          if (nbFailed) {
-            candidat.nbEchecsPratiques = nbFailed
-          }
-          dateFeedBack = checkFailureDate(candidat, dateDernierNonReussite)
-          if (dateFeedBack && dateFeedBack.isValid) {
-            candidat.lastNoReussite = {
-              date: dateFeedBack,
+          const dateLastNonReussite = checkFailureDate(
+            candidat,
+            dateDernierNonReussite
+          )
+          if (dateLastNonReussite && dateLastNonReussite.isValid) {
+            infoCandidatToUpdate.lastNoReussite = {
+              date: dateLastNonReussite,
               reason: objetDernierNonReussite,
             }
           }
@@ -212,22 +216,51 @@ export const synchroAurige = async buffer => {
             error,
           })
         }
-      } else if (isReussitePratique(reussitePratique)) {
-        message = `Ce candidat ${email} sera archivé : PRATIQUE OK`
-        appLogger.warn({ ...loggerInfoCandidat, description: message })
-        aurigeFeedback = EPREUVE_PRATIQUE_OK
-        dateFeedBack = getFrenchLuxonFromISO(reussitePratique)
-        if (dateFeedBack.isValid) {
-          candidat.reussitePratique = dateFeedBack
+
+        // Date Reussite Pratique
+        const dateReussitePratique = getFrenchLuxonFromISO(reussitePratique)
+        if (dateReussitePratique && dateReussitePratique.isValid) {
+          infoCandidatToUpdate.reussitePratique = dateReussitePratique
         } else {
           appLogger.warn({
             ...loggerInfoCandidat,
             description: `Ce candidat ${email} sera archivé : reussitePratique n'est pas une date`,
           })
         }
+
+        // Nb echec
+        const nbFailed = Number(nbEchecsPratiques)
+        if (nbFailed) {
+          infoCandidatToUpdate.nbEchecsPratiques = nbFailed
+        }
+
+        // Date ETG
+        if (!candidat.dateReussiteETG) {
+          const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
+          if (dateTimeDateReussiteETG.isValid) {
+            infoCandidatToUpdate.dateReussiteETG = dateTimeDateReussiteETG
+          }
+        }
       }
 
       if (aurigeFeedback) {
+        let dateFeedBack
+        switch (aurigeFeedback) {
+          case EPREUVE_ETG_KO:
+            dateFeedBack = getFrenchLuxon()
+            break
+          case NB_FAILURES_KO:
+            dateFeedBack =
+              infoCandidatToUpdate.lastNoReussite &&
+              infoCandidatToUpdate.lastNoReussite.date
+            break
+          case EPREUVE_PRATIQUE_OK:
+            dateFeedBack = infoCandidatToUpdate.reussitePratique
+            break
+          default:
+            break
+        }
+
         if (dateFeedBack) {
           const place = await findPlaceBookedByCandidat(candidat._id)
           if (place) {
@@ -242,6 +275,7 @@ export const synchroAurige = async buffer => {
           }
         }
 
+        candidat.set(infoCandidatToUpdate)
         await deleteCandidat(candidat, aurigeFeedback)
         await sendMailToAccount(candidat, aurigeFeedback)
         appLogger.info({
@@ -260,49 +294,20 @@ export const synchroAurige = async buffer => {
 
       if (candidatExistant === CANDIDAT_EXISTANT) {
         const { isValidatedByAurige } = candidat
-        const updateCandidat = {
-          isValidatedByAurige: true,
-        }
-        // Date ETG
-        const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
-        if (dateTimeDateReussiteETG.isValid) {
-          updateCandidat.dateReussiteETG = dateTimeDateReussiteETG
-        }
-        // Date reussite Pratique
-        const dateTimeReussitePratique = getFrenchLuxonFromISO(reussitePratique)
-        if (dateTimeReussitePratique.isValid) {
-          updateCandidat.reussitePratique = dateTimeReussitePratique
-        }
-
-        // Nb echec
-        const nbFailed = Number(nbEchecsPratiques)
-        if (nbFailed) {
-          updateCandidat.nbEchecsPratiques = nbFailed
-        }
-
-        // Date non réussite
-        const dateNoReussite =
-          dateDernierEchecPratique || dateDernierNonReussite
-
-        // Check failure date
-        const dateTimeEchec = checkFailureDate(candidat, dateNoReussite)
-        // put a penalty And last no reussite
+        const dateTimeEchec =
+          infoCandidatToUpdate.lastNoReussite &&
+          infoCandidatToUpdate.lastNoReussite.date
         if (dateTimeEchec) {
-          updateCandidat.lastNoReussite = {
-            date: dateTimeEchec,
-            reason: dateDernierEchecPratique ? '' : objetDernierNonReussite,
-          }
-
           const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
           if (canBookFrom) {
-            updateCandidat.canBookFrom = canBookFrom.toISO()
+            infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
             await removeResaNoAuthorize(candidat, canBookFrom, dateTimeEchec)
           }
         }
 
-        appLogger.debug({ ...loggerInfoCandidat, updateCandidat })
+        appLogger.debug({ ...loggerInfoCandidat, infoCandidatToUpdate })
         // update data candidat
-        candidat.set(updateCandidat)
+        candidat.set(infoCandidatToUpdate)
 
         return candidat
           .save()
@@ -409,7 +414,7 @@ const releaseAndArchivePlace = async (
     candidat,
     place,
     newReason,
-    undefined,
+    'AURIGE',
     isCandilib
   )
   await removeBookedPlace(place)

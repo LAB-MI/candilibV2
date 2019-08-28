@@ -459,6 +459,17 @@ describe('synchro-aurige', () => {
       expect(candidatArchived.reussitePratique).toEqual(
         getFrenchLuxonFromISO(infoCandidat.reussitePratique).toJSDate()
       )
+
+      expect(candidatArchived).toHaveProperty('isValidatedByAurige', true)
+
+      if (infoCandidat.dateReussiteETG) {
+        expect(
+          getFrenchLuxonFromJSDate(candidatArchived.dateReussiteETG)
+        ).toEqual(getFrenchLuxonFromISO(infoCandidat.dateReussiteETG))
+      } else {
+        expect(candidatArchived).toHaveProperty('dateReussiteETG')
+      }
+
       return candidatArchived
     }
 
