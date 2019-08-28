@@ -50,6 +50,8 @@ const portable1 = '0612345679'
 const adresse1 = '110 Rue Hoche 93420 Villepinte'
 const prenom1 = 'Test prenom'
 
+const bookedAt = getFrenchLuxon().toJSDate()
+
 describe('Candidat', () => {
   let candidat
   let candidat2
@@ -436,7 +438,7 @@ describe('Candidat', () => {
       await createCandidats()
       creactedCentres = await createCentres()
       await createPlaces()
-      await makeResas()
+      await makeResas(bookedAt)
     })
 
     afterAll(async () => {

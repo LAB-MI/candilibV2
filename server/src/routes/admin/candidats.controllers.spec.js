@@ -1,4 +1,5 @@
 import request from 'supertest'
+import { getFrenchLuxon } from '../../util'
 
 const { connect, disconnect } = require('../../mongo-connection')
 const {
@@ -18,13 +19,15 @@ const { default: app, apiPrefix } = require('../../app')
 jest.mock('./middlewares/verify-repartiteur-level')
 jest.mock('../middlewares/verify-token')
 
+const bookedAt = getFrenchLuxon().toJSDate()
+
 xdescribe('Test get and export candidats', () => {
   beforeAll(async () => {
     await connect()
     await createCandidats()
     await createCentres()
     await createPlaces()
-    await makeResas()
+    await makeResas(bookedAt)
   })
 
   afterAll(async () => {

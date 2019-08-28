@@ -27,6 +27,7 @@ import {
 } from '../../models/__tests__'
 import { connect, disconnect } from '../../mongo-connection'
 import {
+  getFrenchLuxon,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
   getFrenchLuxonFromObject,
@@ -66,6 +67,8 @@ const admin = {
   status: config.userStatuses.TECH,
 }
 
+const bookedAt = getFrenchLuxon().toJSDate()
+
 jest.mock('../business/send-mail')
 jest.mock('../../util/logger')
 
@@ -100,7 +103,7 @@ describe('Test places controller', () => {
     inspecteurCreated = await createInspecteur(inspecteurTest)
     inspecteurCreated2 = await createInspecteur(inspecteurTest2)
     await createPlaces()
-    await makeResas()
+    await makeResas(bookedAt)
     centreSelected = await centreModel.findOne({ nom: centres[1].nom })
     placeSelected = await placeModel.findOne({
       centre: centreSelected._id,
@@ -185,7 +188,7 @@ describe('Test places controller', () => {
 
     const inspecteur = inspecteurCreated2._id
     const candidat = candidatsCreated[2]._id
-    await makeResa(place2Created, candidat)
+    await makeResa(place2Created, candidat, bookedAt)
 
     const departement = '93'
     const { body } = await request(app)
@@ -493,7 +496,7 @@ describe('delete place by admin', () => {
   })
   it('should return a 200 when delete availables places', async () => {
     await createPlaces()
-    const result = await makeCandidatsResas()
+    const result = await makeCandidatsResas(bookedAt)
     const { body } = await request(app)
       .delete(`${apiPrefix}/admin/places/`)
       .send({
