@@ -53,6 +53,7 @@ import archivedCandidatModel from '../../../models/archived-candidat/archived-ca
 jest.mock('../../../util/logger')
 jest.mock('../../business/send-mail')
 
+const bookedAt = getFrenchLuxon().toJSDate()
 const readFileAsPromise = util.promisify(fs.readFile)
 
 describe('synchro-aurige', () => {
@@ -382,7 +383,7 @@ describe('synchro-aurige', () => {
     })
 
     it('should have penalty and remove resa which is before time out to retry', async () => {
-      await makeResa(placeBeforTimeOutRetryCreated, candidatCreated)
+      await makeResa(placeBeforTimeOutRetryCreated, candidatCreated, bookedAt)
       const candidat = await synchroAurigeSuccess(aurigeFile, candidatCreated)
       const { places, noReussites, nbEchecsPratiques } = candidat
       expectDataCandidat(candidat, candidatFailureExam)
@@ -414,7 +415,7 @@ describe('synchro-aurige', () => {
     })
 
     it('should have penalty and not remove resa which is after time out to retry', async () => {
-      await makeResa(placeAfterTimeOutRetryCreated, candidatCreated)
+      await makeResa(placeAfterTimeOutRetryCreated, candidatCreated, bookedAt)
       const candidat = await synchroAurigeSuccess(aurigeFile, candidatCreated)
       const { places, noReussites, nbEchecsPratiques } = candidat
 
@@ -515,7 +516,7 @@ describe('synchro-aurige', () => {
       const placeSelected = await createTestPlaceAurige(
         placeSameDateDernierEchecPratiqueForSuccess
       )
-      await makeResa(placeSelected, candidatCreated)
+      await makeResa(placeSelected, candidatCreated, bookedAt)
       const candidatArchived = await synchroAurigeToPassExam(
         aurigeFile,
         candidatPassed,
@@ -554,7 +555,7 @@ describe('synchro-aurige', () => {
 
     it('should archive candidat and release place with success is out candilib', async () => {
       const placeSelected = placesCreated[0]
-      await makeResa(placeSelected, candidatCreated)
+      await makeResa(placeSelected, candidatCreated, bookedAt)
       const candidatArchived = await synchroAurigeToPassExam(
         aurigeFile,
         candidatPassed,
@@ -664,7 +665,7 @@ describe('synchro-aurige', () => {
         placeSameDateDernierEchecPratique
       )
 
-      await makeResa(placeSelected, candidatCreated)
+      await makeResa(placeSelected, candidatCreated, bookedAt)
       const candidatArchived = await synchroAurigeTo5FailureExam(
         aurigeFile,
         candidat5FailureExam,
@@ -705,7 +706,7 @@ describe('synchro-aurige', () => {
       const placeSelected = await createTestPlaceAurige(
         placeNoSameDateDernierEchecPratique
       )
-      await makeResa(placeSelected, candidatCreated)
+      await makeResa(placeSelected, candidatCreated, bookedAt)
       const candidatArchived = await synchroAurigeTo5FailureExam(
         aurigeFile,
         candidat5FailureExam,

@@ -68,6 +68,8 @@ const inspecteur = {
   departement: '93',
 }
 
+const bookedAt = getFrenchLuxon().toJSDate()
+
 describe('Place', () => {
   let place
   const leanPlace = { date: date1.toJSDate(), centre, inspecteur }
@@ -204,7 +206,7 @@ describe('Place', () => {
       await createCandidats()
       //      await createCentres()
       createdPlaces = await createPlaces()
-      createdPlacesBooked = await makeResas()
+      createdPlacesBooked = await makeResas(bookedAt)
     })
 
     afterAll(async () => {
@@ -336,7 +338,7 @@ describe('Place', () => {
     beforeAll(async () => {
       await createPlaces()
       createdcandidats = await createCandidats()
-      await makeResas()
+      await makeResas(bookedAt)
     })
     afterAll(async () => {
       await removePlaces()
@@ -472,7 +474,7 @@ describe('Place', () => {
       await createCentres()
       await createPlaces()
       await createCandidats()
-      createdResas = await makeResas()
+      createdResas = await makeResas(bookedAt)
     })
     afterAll(async () => {
       await removePlaces()

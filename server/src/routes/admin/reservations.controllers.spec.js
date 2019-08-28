@@ -9,6 +9,7 @@ import { createCentres } from '../../models/__tests__/centres'
 import { createCandidats } from '../../models/__tests__/candidats'
 import { makeResas } from '../../models/__tests__/reservations'
 import { createUser } from '../../models/user'
+import { getFrenchLuxon } from '../../util'
 
 const deleteData = elt => {
   return elt.remove()
@@ -20,6 +21,8 @@ const deps = ['75', '93']
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
+
+const bookedAt = getFrenchLuxon().toJSDate()
 
 xdescribe('reservation by admin', () => {
   describe('delete reservation by admin', () => {
@@ -33,7 +36,7 @@ xdescribe('reservation by admin', () => {
       centresCreated = await createCentres()
       placesCreated = await createPlaces()
       candidatsCreated = await createCandidats()
-      await makeResas()
+      await makeResas(bookedAt)
       require('../middlewares/verify-token').__setIdAdmin(admin._id, deps)
     })
 

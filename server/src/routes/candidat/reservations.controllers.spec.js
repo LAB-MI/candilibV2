@@ -39,6 +39,7 @@ import { getFrenchLuxonFromObject, getFrenchLuxonFromJSDate } from '../../util'
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 
+const bookedAt = getFrenchLuxon().toJSDate()
 const basePlaceDateTime = getFrenchLuxonFromObject({ hour: 9 })
 const placeCanBook = {
   date: (() =>
@@ -266,7 +267,7 @@ xdescribe('Test reservation controllers', () => {
       require('../middlewares/verify-token').__setIdCandidat(
         selectedCandidat._id
       )
-      await makeResa(createdPlaceCanBook, selectedCandidat)
+      await makeResa(createdPlaceCanBook, selectedCandidat, bookedAt)
     })
     afterAll(async () => {
       await removeAllResas()
@@ -284,7 +285,7 @@ xdescribe('Test reservation controllers', () => {
     })
 
     it('Should get 200 to get the candidat reservation', async () => {
-      await makeResa(createdPlaceCanBook, selectedCandidat)
+      await makeResa(createdPlaceCanBook, selectedCandidat, bookedAt)
       const selectedCentre = createdCentres[0]
       const selectedPlace = createdPlaceCanBook
 
@@ -342,7 +343,7 @@ xdescribe('Test reservation controllers', () => {
       })
 
       it('Should get 200 to book another place', async () => {
-        await makeResa(createdPlaceCanBook, selectedCandidat)
+        await makeResa(createdPlaceCanBook, selectedCandidat, bookedAt)
 
         const selectedCentre = createdCentres[1]
         const selectedPlace = createdPlaceCanBook2
@@ -356,7 +357,7 @@ xdescribe('Test reservation controllers', () => {
       })
 
       it('Should get 400 to book a same place', async () => {
-        await makeResa(createdPlaceCanBook2, selectedCandidat)
+        await makeResa(createdPlaceCanBook2, selectedCandidat, bookedAt)
 
         const selectedCentre = createdCentres[1]
         const selectedPlace = createdPlaceCanBook2
@@ -385,7 +386,7 @@ xdescribe('Test reservation controllers', () => {
         require('../middlewares/verify-token').__setIdCandidat(
           selectedCandidat._id
         )
-        await makeResa(createdPlaceCanNotBook, selectedCandidat)
+        await makeResa(createdPlaceCanNotBook, selectedCandidat, bookedAt)
       })
       afterAll(async () => {
         await removeAllResas()
@@ -428,7 +429,7 @@ xdescribe('Test reservation controllers', () => {
     })
     it('Should get 200 to cancel a reservation without penalty', async () => {
       const place = await createTestPlace(placeCancellable)
-      await makeResa(place, selectedCandidat1)
+      await makeResa(place, selectedCandidat1, bookedAt)
 
       await cancelReservationWithSuccess(
         selectedCandidat1._id,
@@ -439,7 +440,7 @@ xdescribe('Test reservation controllers', () => {
 
     it('Should get 200 to cancel a reservation with penalty', async () => {
       const place = await createTestPlace(placeNoCancellable)
-      await makeResa(place, selectedCandidat1)
+      await makeResa(place, selectedCandidat1, bookedAt)
 
       const message =
         CANCEL_RESA_WITH_MAIL_SENT +
@@ -471,7 +472,7 @@ xdescribe('Test reservation controllers', () => {
         createdCandidatFailed,
         candidatFailed
       )
-      await makeResa(createdPlaceToRetry, createdCandidatFailed)
+      await makeResa(createdPlaceToRetry, createdCandidatFailed, bookedAt)
     })
     afterAll(async () => {
       await removeAllResas()
