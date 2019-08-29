@@ -5,6 +5,8 @@ import { createCentre } from '../../models/centre'
 import { createInspecteur } from '../../models/inspecteur'
 import { FRENCH_LOCALE_INFO } from '../../util'
 
+jest.mock('../../util/logger')
+
 const centre = {
   departement: '93',
   nom: 'Villepinte',
@@ -64,15 +66,21 @@ const expectOneResultWithError = (
   messageFct
 ) => {
   expect(result).toHaveProperty('departement', '93')
-  expect(result).toHaveProperty('centre', csvFileDataInJson[index].centre)
+  expect(result).toHaveProperty(
+    'centre',
+    csvFileDataInJson[index].centre.trim()
+  )
+  const matricule =
+    csvFileDataInJson[index].matricule &&
+    csvFileDataInJson[index].matricule.trim()
+
   expect(result).toHaveProperty(
     'inspecteur',
-    csvFileDataInJson[index].matricule
+    matricule === undefined ? 'undefined' : matricule || ''
   )
-  expect(result).toHaveProperty(
-    'date',
-    csvFileDataInJson[index].date + ' ' + csvFileDataInJson[index].hour
-  )
+  const date = csvFileDataInJson[index].date.trim()
+  const hour = csvFileDataInJson[index].hour.trim()
+  expect(result).toHaveProperty('date', `${date} ${hour}`)
   expect(result).toHaveProperty('status', 'error')
   expect(result).toHaveProperty('message', messageFct(csvFileDataInJson, index))
 }
@@ -92,6 +100,7 @@ describe('Test import places from CSV', () => {
     inspecteursCreated = await Promise.all(
       inspecteurs.map(inspecteur => createInspecteur(inspecteur))
     )
+    require('../../util/logger').setWithConsole(false)
   })
 
   afterAll(async () => {
@@ -101,7 +110,7 @@ describe('Test import places from CSV', () => {
   it('should messages errors with fields are missing ', async () => {
     const csvFileDataInJson = [
       {
-        date: '',
+        date: ' ',
         hour: '08:00',
         matricule: '01020301',
         nom: 'dupond',
@@ -110,7 +119,7 @@ describe('Test import places from CSV', () => {
       },
       {
         date: '06/07/19',
-        hour: '',
+        hour: ' ',
         matricule: '01020301',
         nom: 'dupond',
         centre: 'BOBIGNY',
@@ -119,7 +128,7 @@ describe('Test import places from CSV', () => {
       {
         date: '06/07/19',
         hour: '08:30',
-        matricule: '',
+        matricule: ' ',
         nom: 'dupond',
         centre: 'BOBIGNY',
         departement: '93',
@@ -128,7 +137,7 @@ describe('Test import places from CSV', () => {
         date: '06/07/19',
         hour: '08:30',
         matricule: '01020301',
-        nom: '',
+        nom: ' ',
         centre: 'BOBIGNY',
         departement: '93',
       },
@@ -137,13 +146,20 @@ describe('Test import places from CSV', () => {
         hour: '08:30',
         matricule: '01020301',
         nom: 'dupond',
-        centre: '',
+        centre: ' ',
         departement: '93',
       },
       {
         date: '06/07/19',
         hour: '08:30',
         matricule: '01020301',
+        nom: 'dupond',
+        centre: 'BOBIGNY',
+        departement: '',
+      },
+      {
+        date: '06/07/19',
+        hour: '08:30',
         nom: 'dupond',
         centre: 'BOBIGNY',
         departement: '',
@@ -163,18 +179,25 @@ describe('Test import places from CSV', () => {
         result,
         csvFileDataInJson,
         index,
-        (
-          dataInJson,
-          i
-        ) => `Une ou plusieurs information(s) manquante(s) dans le fichier CSV.
+        (dataInJson, i) => {
+          const {
+            date,
+            hour,
+            matricule,
+            nom,
+            centre,
+            departement,
+          } = dataInJson[i]
+          return `Une ou plusieurs information(s) manquante(s) dans le fichier CSV ou XLSX.
         [
-          date: ${dataInJson[i].date},
-          heur: ${dataInJson[i].hour},
-          matricule: ${dataInJson[i].matricule},
-          nom: ${dataInJson[i].nom},
-          centre: ${dataInJson[i].centre},
-          departement: ${dataInJson[i].departement}
+          date: ${date && date.trim()},
+          heur: ${hour && hour.trim()},
+          matricule: ${matricule && matricule.trim()},
+          nom: ${nom && nom.trim()},
+          centre: ${centre && centre.trim()},
+          departement: ${departement && departement.trim()}
         ]`
+        }
       )
     })
   })
