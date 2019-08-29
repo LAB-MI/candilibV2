@@ -66,16 +66,23 @@ export default {
         field: 'status',
         cellRenderer: StatusRenderer,
         filter: 'agGridAurigeStatusFilter',
-
+        width: 90,
       },
-      { headerName: 'Centre', field: 'centre' },
+      { headerName: 'Centre',
+        field: 'centre',
+      },
       { headerName: 'Date et heures',
         field: 'date',
         valueFormatter: valueDateFormatter,
         filter: 'agDateColumnFilter',
         filterParams: filterDateParams,
       },
-      { headerName: 'Message', field: 'message' },
+      { headerName: 'Message',
+        field: 'message',
+        cellStyle: { 'white-space': 'normal', 'line-height': 'normal' },
+        autoHeight: true,
+        width: '50%',
+      },
     ]
     this.gridOptions = {
     }
