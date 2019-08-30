@@ -20,14 +20,14 @@ export async function getPlaces (req, res) {
   const { centre, departement, end, date } = req.query
 
   if (end && date) {
-    const error = {
+    const message = 'end et date ne peuvent avoir des valeurs en même temps'
+    appLogger.warn({
       section: 'candidat-getPlaces',
-      message: 'end et date ne peuvent avoir des valeurs en même temps',
-    }
-    appLogger.error(error)
+      description: message,
+    })
     res.status(409).json({
       success: false,
-      message: error.message,
+      message: message,
     })
   }
 
@@ -58,7 +58,7 @@ export async function getPlaces (req, res) {
     }
     res.status(200).json(dates)
   } catch (error) {
-    appLogger.error({ ...loggerInfo, error })
+    appLogger.error({ ...loggerInfo, error, description: error.message })
     res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
       success: false,
       message: error.message,

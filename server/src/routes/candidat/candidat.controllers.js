@@ -370,7 +370,8 @@ export async function saveEvaluation (req, res) {
 
     res.status(error.status || 500).json({
       success: false,
-      message: error.message,
+      message:
+        "Impossible d'enregistrer l'évaluation. L'administrateur a été prévenu.",
     })
   }
 }

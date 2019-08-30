@@ -156,7 +156,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
       candidatId,
       success: true,
       statusmail,
-      message,
+      description: message,
       place: bookedPlace._id,
     })
   } catch (error) {
@@ -342,7 +342,7 @@ export const validCentreDateReservation = async (
         section: 'candidat-valid-centre-date-reservation',
         candidatId,
         success,
-        message,
+        description: message,
       })
       return {
         success,
@@ -383,7 +383,7 @@ export const validCentreDateReservation = async (
       section: 'candidat-valid-centre-date-reservation',
       candidatId,
       success,
-      message,
+      description: message,
     })
     return {
       success,

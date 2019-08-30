@@ -41,7 +41,7 @@ describe('authentification of candidat', () => {
     // Then
     expect(status).toBe(401)
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', 'Token invalide')
+    expect(body).toHaveProperty('message', 'Candidat non trouvé')
     expect(body).toHaveProperty('auth', false)
   })
 
