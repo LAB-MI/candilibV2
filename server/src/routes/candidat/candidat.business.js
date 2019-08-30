@@ -1,17 +1,16 @@
 import { sendMailToAccount } from '../business/send-mail'
 import {
   appLogger,
-  codePostal,
   INSCRIPTION_OK,
   INSCRIPTION_UPDATE,
   VALIDATION_EMAIL,
+  techLogger,
 } from '../../util'
 import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
   createCandidat,
   deleteCandidat,
   findCandidatByEmail,
-  findCandidatById,
   findCandidatByNomNeph,
   updateCandidatById,
   updateCandidatSignUp,
@@ -128,9 +127,23 @@ export async function updateInfoCandidat (candidat, candidatData) {
 export async function presignUpCandidat (candidatData) {
   candidatData.emailValidationHash = uuidv4()
 
+  const loggerInfo = {
+    section: 'candidat-pre-signup',
+    action: 'preSignup',
+    candidatId: candidatData._id && candidatData._id.toString(),
+  }
+
   const candidat = await createCandidat(candidatData)
+  appLogger.info({
+    ...loggerInfo,
+    description: 'Candidat créé et email envoyé',
+  })
   try {
     const response = await sendMailToAccount(candidat, VALIDATION_EMAIL)
+    appLogger.info({
+      ...loggerInfo,
+      description: `Mail de validation de la pré-inscription envoyé à ${candidatData.email}`,
+    })
     return {
       success: true,
       response,
@@ -138,6 +151,11 @@ export async function presignUpCandidat (candidatData) {
       candidat,
     }
   } catch (error) {
+    techLogger.error({
+      ...loggerInfo,
+      description: `Impossible d'envoyer le mail de pré-inscription à ${candidatData.email} : ${error.message}`,
+      error,
+    })
     return {
       success: false,
       error,
@@ -152,22 +170,14 @@ export async function getDepartementFromWhitelist ({ email, departement }) {
   const whitelisted = await findWhitelistedByEmail(email)
 
   if (!whitelisted) {
-    appLogger.warn({
-      section: 'candidat-presignup',
-      action: 'EMAIL_NOT_IN_WHITELIST',
-      description: `L'email ${email} n'est pas dans la whitelist`,
-      candidatDepartement: departement,
-    })
-    throw new Error(
-      `L'adresse courriel renseignée (${email}) n'est pas dans la liste des invités.`
-    )
+    return null
   }
 
   if (departement !== whitelisted.departement) {
     appLogger.warn({
-      section: 'candidat-presignup',
+      section: 'candidat-pre-signup',
       action: 'INCONSISTENT_DEPARTEMENT',
-      description: `Le département de l'adresse du candidat ${departement} est différent de sa whitelist (${whitelisted.departement})`,
+      description: `Le département de l'adresse du candidat ${departement} est différent de celui de sa whitelist (${whitelisted.departement})`,
       candidatDepartement: departement,
       whitelistDepartement: whitelisted.departement,
     })
@@ -186,9 +196,24 @@ export async function validateEmail (email, hash) {
   })
 
   if (candidat.emailValidationHash !== hash) {
-    throw new Error('La validation de votre email a échouée.')
+    appLogger.warn({
+      section: 'candidat-validate-email',
+      action: 'hash-check',
+      description:
+        'Le hash envoyé lors de la validation ne correspond pas au hash stocké en base',
+    })
+    return {
+      success: false,
+      message: "Votre lien n'est plus valide",
+      updatedCandidat,
+    }
   }
   const response = await sendMailToAccount(candidat, INSCRIPTION_OK)
+  appLogger.info({
+    section: 'candidat-validate-email',
+    action: 'send-mail',
+    description: 'Mail de validation de la préinscription envoyé',
+  })
   return {
     success: true,
     response,
@@ -196,14 +221,4 @@ export async function validateEmail (email, hash) {
       'Votre email a été validé, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
     updatedCandidat,
   }
-}
-
-export const getInfoCandidatDepartement = async id => {
-  appLogger.debug('candidat-getInfoCandidatDepartement ' + id)
-
-  const candidat = await findCandidatById(id, { adresse: 1 })
-  if (!candidat) throw new Error('Candidat est introuvable')
-  const { adresse } = candidat
-  const codePostalResult = adresse.match(codePostal)
-  return codePostalResult[1]
 }

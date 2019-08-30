@@ -19,25 +19,25 @@ import {
 
 export const getReservations = async (req, res) => {
   const section = 'candidat-getReservations'
-  const idCandidat = req.userId
+  const candidatId = req.userId
   const { bymail, lastDateOnly } = req.query
 
   appLogger.debug({
     section,
-    idCandidat,
+    candidatId,
     bymail,
   })
 
-  if (!idCandidat) {
+  if (!candidatId) {
     const success = false
     const message = USER_INFO_MISSING
 
     appLogger.warn({
       section,
-      idCandidat,
+      candidatId,
       bymail,
       success,
-      message,
+      description: message,
     })
     res.status(401).json({
       success,
@@ -47,7 +47,7 @@ export const getReservations = async (req, res) => {
 
   try {
     const bookedPlace = await getReservationByCandidat(
-      idCandidat,
+      candidatId,
       bymail ? { centre: true, candidat: true } : undefined
     )
 
@@ -69,20 +69,20 @@ export const getReservations = async (req, res) => {
 
         techLogger.error({
           section,
-          idCandidat,
+          candidatId,
           bymail,
           success,
-          message,
+          description: message,
           error,
         })
       }
 
       appLogger.info({
         section,
-        idCandidat,
+        candidatId,
         bymail,
         success,
-        message,
+        description: message,
       })
 
       return res.json({
@@ -108,11 +108,12 @@ export const getReservations = async (req, res) => {
         }
       }
 
-      reservation = await addInfoDateToRulesResa(idCandidat, reservation)
+      reservation = await addInfoDateToRulesResa(candidatId, reservation)
 
       appLogger.info({
         section,
-        idCandidat,
+        action: 'get-reservations',
+        candidatId,
         bymail,
         place: reservation && reservation._id,
       })
@@ -120,27 +121,26 @@ export const getReservations = async (req, res) => {
     }
   } catch (error) {
     appLogger.error({
-      section: 'candidat-getReservations',
-      idCandidat,
+      section: 'candidat-get-reservations',
+      candidatId,
       bymail,
       error,
     })
     res.status(500).json({
       success: false,
-      message: error.message,
-      error: JSON.stringify(error),
+      message: 'Impossible de récupérer les réservations',
     })
   }
 }
 
 export const createReservation = async (req, res) => {
-  const section = 'candidat-createReservation'
-  const idCandidat = req.userId
+  const section = 'candidat-create-reservation'
+  const candidatId = req.userId
   const { id: centre, date, isAccompanied, hasDualControlCar } = req.body
 
   appLogger.info({
     section,
-    idCandidat,
+    candidatId,
     centre,
     date,
     isAccompanied,
@@ -153,17 +153,15 @@ export const createReservation = async (req, res) => {
     if (!date) msg.push(' de la date reservation')
     if (!isAccompanied) msg.push(" d'être accompagné")
     if (!hasDualControlCar) msg.push(" d'avoir un véhicule à double commande")
-    const messageBuild = msg.reduce(
-      (a, b, i, array) => a + (i < array.length - 1 ? ',' : ' ou') + b
-    )
+    const messageList = msg.join(',')
     const success = false
-    const message = `Les informations ${messageBuild} sont manquant`
+    const message = `Une ou plusieurs informations sont manquantes : ${messageList}`
 
     appLogger.warn({
       section,
-      idCandidat,
+      candidatId,
       success,
-      message,
+      description: message,
     })
     return res.status(400).json({
       success,
@@ -172,18 +170,19 @@ export const createReservation = async (req, res) => {
   }
 
   try {
-    const previewBookedPlace = await getReservationByCandidat(idCandidat, {
+    const previewBookedPlace = await getReservationByCandidat(candidatId, {
       centre: true,
       candidat: true,
     })
-    appLogger.debug({
+    appLogger.info({
       section,
-      idCandidat,
+      action: 'get-reservation',
+      candidatId,
       previewBookedPlace,
     })
 
     const statusValidResa = await validCentreDateReservation(
-      idCandidat,
+      candidatId,
       centre,
       date,
       previewBookedPlace
@@ -192,7 +191,8 @@ export const createReservation = async (req, res) => {
     if (statusValidResa) {
       appLogger.warn({
         section,
-        idCandidat,
+        action: 'valid-reservation',
+        candidatId,
         statusValidResa,
       })
       return res.status(400).json({
@@ -201,15 +201,15 @@ export const createReservation = async (req, res) => {
       })
     }
 
-    const reservation = await bookPlace(idCandidat, centre, date)
+    const reservation = await bookPlace(candidatId, centre, date)
     if (!reservation) {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"
       appLogger.warn({
         section,
-        idCandidat,
+        candidatId,
         success,
-        message,
+        description: message,
       })
       return res.status(400).json({
         success,
@@ -229,8 +229,8 @@ export const createReservation = async (req, res) => {
       } catch (error) {
         techLogger.error({
           section,
-          idCandidat,
-          message: 'Echec de suppression de la reservation',
+          candidatId,
+          description: 'Échec de suppression de la réservation',
           previewBookedPlace,
           error,
         })
@@ -246,9 +246,9 @@ export const createReservation = async (req, res) => {
       const { nom, departement } = reservation.centre
       const { date } = reservation
       appLogger.warn({
-        section: 'candidat-createReservation',
-        idCandidat,
-        message: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
+        section: 'candidat-create-reservation',
+        candidatId,
+        description: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
         error,
       })
       statusmail = false
@@ -256,10 +256,11 @@ export const createReservation = async (req, res) => {
     }
 
     appLogger.info({
-      section: 'candidat-createReservation',
-      idCandidat,
+      section: 'candidat-create-reservation',
+      action: 'create-reservation',
+      candidatId,
       statusmail,
-      message,
+      description: message,
       reservation: reservation._id,
     })
     return res.status(201).json({
@@ -276,41 +277,42 @@ export const createReservation = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
-      section: 'candidat-createReservation',
-      idCandidat,
+      section: 'candidat-create-reservation',
+      candidatId,
+      description: error.message,
       error,
     })
     res.status(500).json({
       success: false,
-      message: error.message,
-      error: JSON.stringify(error),
+      message:
+        "Une erreur est survenue : Impossible de réserver la place. L'administrateur du site a été prévenu",
     })
   }
 }
 
-export const removeReservations = async (req, res) => {
-  const idCandidat = req.userId
+export const removeReservation = async (req, res) => {
+  const candidatId = req.userId
 
   appLogger.info({
-    section: 'candidat-removeReservations',
+    section: 'candidat-remove-reservations',
     action: 'REMOVE_RESA_ARGS',
-    idCandidat,
+    candidatId,
   })
-  if (!idCandidat) {
+  if (!candidatId) {
     const success = false
     const message = USER_INFO_MISSING
     appLogger.warn({
-      section: 'candidat-removeReservations',
+      section: 'candidat-remove-reservations',
       action: 'NO_CANDIDAT',
-      idCandidat,
+      candidatId,
       success,
-      message,
+      description: message,
     })
     return res.status(401).json({ success, message })
   }
 
   try {
-    const bookedPlace = await getReservationByCandidat(idCandidat, {
+    const bookedPlace = await getReservationByCandidat(candidatId, {
       centre: true,
       candidat: true,
     })
@@ -320,11 +322,11 @@ export const removeReservations = async (req, res) => {
       const message = "Vous n'avez pas de réservation"
 
       appLogger.warn({
-        section: 'candidat-removeReservations',
-        action: 'NO_PLACE',
-        idCandidat,
+        section: 'candidat-removeReservation',
+        action: 'remove-reservation',
+        candidatId,
         success,
-        message,
+        description: 'NO_PLACE',
       })
       return res.status(401).json({
         success,
@@ -340,14 +342,15 @@ export const removeReservations = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
-      section: 'candidat-removeReservations',
+      section: 'candidat-remove-reservations',
       action: 'UNKNOWN ERROR',
+      description: error.message,
       error,
     })
     res.status(500).json({
       success: false,
-      message: error.message,
-      error: JSON.stringify(error),
+      message:
+        "Une erreur est survenue : impossible de supprimer votre réservation. L'administrateur du site a été prévenu",
     })
   }
 }

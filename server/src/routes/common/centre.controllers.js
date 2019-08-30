@@ -13,14 +13,14 @@ export async function getCentres (req, res) {
   const endDate = req.query.end
 
   appLogger.debug({
-    section: 'candidat-getCentres',
+    section: 'candidat-get-centres',
     args: { departement, nom, beginDate, endDate },
   })
 
   try {
     if (!departement) {
       const error = {
-        section: 'candidat-getCentres',
+        section: 'candidat-get-centres',
         message:
           'Le code de département est manquant, Veuillez choisir un code département',
       }
