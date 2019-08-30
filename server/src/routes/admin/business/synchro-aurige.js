@@ -137,9 +137,11 @@ export const synchroAurige = async buffer => {
         )
       }
 
+      const { email, departement } = candidat
+
       if (!candidat.isValidatedEmail) {
         if (isMoreThan2HoursAgo(candidat.presignedUpAt)) {
-          const message = `Candidat ${codeNeph}/${nomNaissance} email non vérifié depuis plus de 2h`
+          const message = `Pour le ${departement}, Ce candidat ${email} sera archivé : email non vérifié depuis plus de 2h`
           appLogger.warn({ ...loggerInfoCandidat, description: message })
           await deleteCandidat(candidat, 'EMAIL_NOT_VERIFIED_EXPIRED')
           return getCandidatStatus(
@@ -150,7 +152,7 @@ export const synchroAurige = async buffer => {
             message
           )
         }
-        const message = `Candidat ${codeNeph}/${nomNaissance} email non vérifié, inscrit depuis moins de 2h`
+        const message = `Pour le ${departement}, ce candidat ${email} n'a pas validé son email, il est inscrit depuis moins de 2h`
 
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         return getCandidatStatus(
@@ -162,32 +164,30 @@ export const synchroAurige = async buffer => {
         )
       }
 
-      const { email } = candidat
-
       let aurigeFeedback
       let message
       if (candidatExistant === CANDIDAT_NOK) {
-        message = `Ce candidat ${email} sera archivé : NEPH inconnu`
+        message = `Pour le ${departement}, ce candidat ${codeNeph}/${nomNaissance} sera archivé : NEPH inconnu`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = CANDIDAT_NOK
       } else if (candidatExistant === CANDIDAT_NOK_NOM) {
-        message = `Ce candidat ${email} sera archivé : Nom inconnu`
+        message = `Pour le ${departement}, ce candidat ${codeNeph}/${nomNaissance} sera archivé : Nom inconnu`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = CANDIDAT_NOK_NOM
       } else if (isEpreuveEtgInvalid(dateReussiteETG)) {
-        message = `Ce candidat ${email} sera archivé : dateReussiteETG invalide`
+        message = `Pour le ${departement}, ce candidat ${email} sera archivé : dateReussiteETG invalide`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_ETG_KO
       } else if (isETGExpired(dateReussiteETG)) {
-        message = `Ce candidat ${email} sera archivé : Date ETG KO`
+        message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG KO`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_ETG_KO
       } else if (isTooManyFailure(Number(nbEchecsPratiques))) {
-        message = `Ce candidat ${email} sera archivé : A 5 échecs pratiques`
+        message = `Pour le ${departement}, ce candidat ${email} sera archivé : A 5 échecs pratiques`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = NB_FAILURES_KO
       } else if (isReussitePratique(reussitePratique)) {
-        message = `Ce candidat ${email} sera archivé : PRATIQUE OK`
+        message = `Pour le ${departement}, ce candidat ${email} sera archivé : PRATIQUE OK`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         aurigeFeedback = EPREUVE_PRATIQUE_OK
       }
@@ -224,7 +224,7 @@ export const synchroAurige = async buffer => {
         } else {
           appLogger.warn({
             ...loggerInfoCandidat,
-            description: `Ce candidat ${email} sera archivé : reussitePratique n'est pas une date`,
+            description: `Pour le ${departement}, Ce candidat ${email} a une date reussitePratique qui n'est pas une date`,
           })
         }
 
@@ -313,7 +313,7 @@ export const synchroAurige = async buffer => {
           .save()
           .then(async candidat => {
             if (isValidatedByAurige) {
-              const message = `Ce candidat ${candidat.email} a été mis à jour`
+              const message = `Pour le ${departement}, ce candidat ${email} a été mis à jour`
               appLogger.info({ ...loggerInfoCandidat, description: message })
               return getCandidatStatus(
                 nomNaissance,
@@ -323,14 +323,14 @@ export const synchroAurige = async buffer => {
                 message
               )
             } else {
-              let message = `Ce candidat ${candidat.email} a été validé`
+              let message = `Pour le ${departement}, ce candidat ${email} a été validé`
               appLogger.info({ ...loggerInfoCandidat, description: message })
               const token = createToken(
                 candidat.id,
                 config.userStatuses.CANDIDAT
               )
 
-              message = `Envoi d'un magic link à ${email}`
+              message = `Pour le ${departement}, envoi d'un magic link à ${email} `
               appLogger.info({ ...loggerInfoCandidat, description: message })
               try {
                 await sendMagicLink(candidat, token)
@@ -342,7 +342,7 @@ export const synchroAurige = async buffer => {
                   message
                 )
               } catch (error) {
-                message = `Impossible d'envoyer un magic link par un mail à ce candidat ${candidat.email}, il a été validé, cependant`
+                message = `Pour le ${departement}, Impossible d'envoyer un magic link par un mail à ce candidat ${email}, il a été validé, cependant`
 
                 appLogger.error({
                   ...loggerInfoCandidat,
@@ -360,7 +360,7 @@ export const synchroAurige = async buffer => {
             }
           })
           .catch(err => {
-            const message = `Erreur de mise à jour pour ce candidat ${email}`
+            const message = `Pour le ${departement}, Erreur de mise à jour pour ce candidat ${email}`
             appLogger.error({
               ...loggerInfoCandidat,
               description: message,
@@ -375,7 +375,7 @@ export const synchroAurige = async buffer => {
             )
           })
       } else {
-        const message = `Ce candidat ${email} n'a pas été traité. Cas inconnu`
+        const message = `Pour le ${departement}, ce candidat ${email} n'a pas été traité. Cas inconnu`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         return getCandidatStatus(
           nomNaissance,
