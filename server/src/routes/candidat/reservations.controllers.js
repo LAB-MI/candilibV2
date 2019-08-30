@@ -209,7 +209,7 @@ export const createReservation = async (req, res) => {
         section,
         candidatId,
         success,
-        message,
+        description: message,
       })
       return res.status(400).json({
         success,
@@ -260,7 +260,7 @@ export const createReservation = async (req, res) => {
       action: 'create-reservation',
       candidatId,
       statusmail,
-      message,
+      description: message,
       reservation: reservation._id,
     })
     return res.status(201).json({
