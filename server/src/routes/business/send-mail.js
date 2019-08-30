@@ -4,7 +4,7 @@ import { htmlToText } from 'nodemailer-html-to-text'
 
 import getMailData from './message-templates'
 import config, { smtpOptions } from '../../config'
-import { appLogger, techLogger } from '../../util'
+import { techLogger, appLogger } from '../../util'
 
 export const sendMail = async (to, { subject, content: html }) => {
   const transporter = nodemailer.createTransport(smtpTransport(smtpOptions))
@@ -20,9 +20,21 @@ export const sendMail = async (to, { subject, content: html }) => {
 
   try {
     const info = await transporter.sendMail(mailOptions)
-    appLogger.info('Mail sent: ' + info.response)
+    appLogger.info({
+      section: 'send-mail',
+      to,
+      subject,
+      description: 'Mail sent: ' + info.response,
+      info,
+    })
   } catch (error) {
-    techLogger.error(error)
+    techLogger.error({
+      section: 'send-mail',
+      to,
+      subject,
+      description: error.message,
+      error,
+    })
     throw error
   } finally {
     transporter.close()
