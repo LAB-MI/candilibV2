@@ -3,15 +3,24 @@ import { findCandidatByEmail } from '../candidat'
 import { candidats, createCandidats } from './candidats'
 import placeModel from '../place/place.model'
 
-export const makeResa = (place, candidat, bookedAt) => {
+export const makeResa = (
+  place,
+  candidat,
+  bookedAt = undefined,
+  bookedByAdmin = undefined
+) => {
   place.candidat = candidat._id
-  place.bookedAt = bookedAt
+  place.bookedAt = bookedAt || undefined
+  place.bookedByAdmin = bookedByAdmin || undefined
   return place.save()
 }
 
 let placesDb
 
-export const makeResas = async bookedAt => {
+export const makeResas = async (
+  bookedAt = undefined,
+  bookedByAdmin = undefined
+) => {
   const place1 = await placeModel.findOne({
     date: commonBasePlaceDateTime.toISO(),
   })
@@ -23,13 +32,16 @@ export const makeResas = async bookedAt => {
   const candidat2 = await findCandidatByEmail(candidats[1].email)
 
   const result = await Promise.all([
-    makeResa(place1, candidat1, bookedAt),
-    makeResa(place2, candidat2, bookedAt),
+    makeResa(place1, candidat1, bookedAt, bookedByAdmin),
+    makeResa(place2, candidat2, bookedAt, bookedByAdmin),
   ])
   return result
 }
 
-export const makeCandidatsResas = async bookedAt => {
+export const makeCandidatsResas = async (
+  bookedAt,
+  bookedByAdmin = undefined
+) => {
   const candidats = await createCandidats()
 
   const place1 = await placeModel.findOne({
@@ -43,10 +55,13 @@ export const makeCandidatsResas = async bookedAt => {
   const candidat2 = await findCandidatByEmail(candidats[1].email)
 
   place1.candidat = candidat1._id
-  place1.bookedAt = bookedAt
+  place1.bookedAt = bookedAt || undefined
+  place1.bookedByAdmin = bookedByAdmin || undefined
   const result1 = await place1.save()
+
   place2.candidat = candidat2._id
-  place2.bookedAt = bookedAt
+  place2.bookedAt = bookedAt || undefined
+  place2.bookedByAdmin = bookedByAdmin || undefined
   const result2 = await place2.save()
 
   return { result1, result2 }
