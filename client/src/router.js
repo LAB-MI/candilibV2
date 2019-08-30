@@ -18,27 +18,28 @@ const isBuildWithAll = ['ALL', undefined].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithCandidat = isBuildWithAll || ['CANDIDAT'].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithAdmin = isBuildWithAll || ['ADMIN'].includes(VUE_APP_CLIENT_BUILD_TARGET)
 
-const Error404 = () => import('@/views/Error404.vue')
-const Home = () => import('@/views/Home.vue')
-const Guest = () => import('@/views/Guest.vue')
-const MessageView = () => import('@/views/Message.vue')
+const Error404 = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Error404.vue')
+const Home = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Home.vue')
+const Guest = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Guest.vue')
+const MessageView = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Message.vue')
+const CandidatHome = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/CandidatHome.vue')
+const SignupForm = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ './views/candidat/components/SignupForm.vue')
+const Faq = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/candidat/components/faq/Faq.vue')
+const MentionsLegales = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/candidat/components/mentions-legales/MentionsLegales.vue')
+const LandingPage = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/candidat/components/LandingPage.vue')
+const EmailValidation = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/candidat/components/EmailValidation.vue')
 
-const CandidatHome = () => import('@/views/CandidatHome.vue')
-const SignupForm = () => import('./views/candidat/components/SignupForm.vue')
-const EmailValidation = () => import('@/views/candidat/components/EmailValidation.vue')
-const MentionsLegales = () => import('@/views/candidat/components/mentions-legales/MentionsLegales.vue')
-const Faq = () => import('@/views/candidat/components/faq/Faq.vue')
-const CenterSelection = () => import('@/views/candidat/components/center-selection/CenterSelection.vue')
-const TimeSlot = () => import('@/views/candidat/components/time-slots-selection/TimeSlot.vue')
-const SelectionSummary = () => import('@/views/candidat/components/selection-summary/SelectionSummary.vue')
-const MyProfile = () => import('@/views/candidat/components/MyProfile.vue')
-const LandingPage = () => import('@/views/candidat/components/LandingPage.vue')
+const Candidat = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */'./views/candidat')
+const CenterSelection = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/center-selection/CenterSelection.vue')
+const TimeSlot = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/time-slots-selection/TimeSlot.vue')
+const SelectionSummary = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/selection-summary/SelectionSummary.vue')
+const MyProfile = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/MyProfile.vue')
 
 const AdminLogin = () => import('@/views/admin/components/Login')
-const AdminAurige = () => import('@/views/admin/components/Aurige.vue')
-const HomeAdminPage = () => import('@/views/admin/components/HomeAdminPage.vue')
-const ScheduleManager = () => import('@/views/admin/components/schedule/ScheduleManager.vue')
-const Whitelist = () => import('@/views/admin/components/Whitelist.vue')
+const AdminAurige = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Aurige.vue')
+const HomeAdminPage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/HomeAdminPage.vue')
+const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/schedule/ScheduleManager.vue')
+const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
 
 const adminRoutes = [
   {
@@ -109,7 +110,7 @@ const candidatRoutes = [
   {
     path: '/candidat',
     name: 'candidat',
-    component: () => import('./views/candidat'),
+    component: Candidat,
     beforeEnter: requireCandidatAuth,
     redirect: '/qu-est-ce-que-candilib',
     children: [

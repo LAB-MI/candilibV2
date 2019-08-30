@@ -24,6 +24,8 @@
           v-model="comment"
           cols="30"
           rows="10"
+          :label="leaveAComment"
+          :aria-label="leaveAComment"
         />
       </v-card-text>
       <v-divider></v-divider>
@@ -32,14 +34,14 @@
           flat
           @click="showEvaluation = false"
         >
-          Plus tard
+          {{ $formatMessage({ id: 'later' }) }}
         </v-btn>
         <v-btn
           color="primary"
           flat
           @click="sendEvaluation"
         >
-          Noter maintenant
+          {{ $formatMessage({ id: 'evaluate_now' }) }}
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -54,6 +56,7 @@ export default {
     return {
       rating: 4,
       comment: '',
+      leaveAComment: this.$formatMessage({ id: 'leave_a_comment' }),
     }
   },
 
