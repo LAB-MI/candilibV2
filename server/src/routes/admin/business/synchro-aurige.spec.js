@@ -56,6 +56,13 @@ jest.mock('../../business/send-mail')
 const bookedAt = getFrenchLuxon().toJSDate()
 const readFileAsPromise = util.promisify(fs.readFile)
 
+const placeExpect = (place, expectPlace) => {
+  expect(place).toHaveProperty('date', expectPlace.date)
+  expect(place).toHaveProperty('inspecteur', expectPlace.inspecteur)
+  expect(place).toHaveProperty('centre', expectPlace.centre)
+  expect(place).toHaveProperty('bookedAt', bookedAt)
+}
+
 describe('synchro-aurige', () => {
   beforeAll(async () => {
     await connect()
@@ -495,18 +502,7 @@ describe('synchro-aurige', () => {
         candidatCreated._id
       )
       expect(candidatArchived.places).toHaveLength(1)
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'date',
-        placeSelected.date
-      )
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'inspecteur',
-        placeSelected.inspecteur
-      )
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'centre',
-        placeSelected.centre
-      )
+      placeExpect(candidatArchived.places[0], placeSelected)
       const archivedAt = getFrenchLuxonFromJSDate(
         candidatArchived.places[0].archivedAt
       )
@@ -533,18 +529,7 @@ describe('synchro-aurige', () => {
         candidatCreated._id
       )
       expect(candidatArchived.places).toHaveLength(1)
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'date',
-        placeSelected.date
-      )
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'inspecteur',
-        placeSelected.inspecteur
-      )
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'centre',
-        placeSelected.centre
-      )
+      placeExpect(candidatArchived.places[0], placeSelected)
       const archivedAt = getFrenchLuxonFromJSDate(
         candidatArchived.places[0].archivedAt
       )
@@ -640,18 +625,7 @@ describe('synchro-aurige', () => {
       )
 
       expect(candidatArchived.places).toHaveLength(1)
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'date',
-        placeSelected.date
-      )
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'inspecteur',
-        placeSelected.inspecteur
-      )
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'centre',
-        placeSelected.centre
-      )
+      placeExpect(candidatArchived.places[0], placeSelected)
       const archivedAt = getFrenchLuxonFromJSDate(
         candidatArchived.places[0].archivedAt
       )
@@ -679,18 +653,7 @@ describe('synchro-aurige', () => {
         candidatCreated._id
       )
       expect(candidatArchived.places).toHaveLength(1)
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'date',
-        placeSelected.date
-      )
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'inspecteur',
-        placeSelected.inspecteur
-      )
-      expect(candidatArchived.places[0]).toHaveProperty(
-        'centre',
-        placeSelected.centre
-      )
+      placeExpect(candidatArchived.places[0], placeSelected)
       const archivedAt = getFrenchLuxonFromJSDate(
         candidatArchived.places[0].archivedAt
       )
