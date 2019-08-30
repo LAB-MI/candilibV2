@@ -230,7 +230,7 @@ export const createReservation = async (req, res) => {
         techLogger.error({
           section,
           candidatId,
-          message: 'Échec de suppression de la réservation',
+          description: 'Échec de suppression de la réservation',
           previewBookedPlace,
           error,
         })
@@ -248,7 +248,7 @@ export const createReservation = async (req, res) => {
       appLogger.warn({
         section: 'candidat-create-reservation',
         candidatId,
-        message: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
+        description: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
         error,
       })
       statusmail = false
