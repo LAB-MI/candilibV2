@@ -28,3 +28,5 @@ export const UNKNOWN_ERROR_GET_WHITELISTED =
   'Un problème est survenu lors de la récupération de la whiteliste'
 export const UNKNOWN_ERROR_ADD_WHITELISTED =
   "Un problème est survenu lors de l'ajout dans la whiteliste"
+export const UNKNOWN_ERROR_UPLOAD_PLACES =
+  "Un problème est survenu lors de l'import de places"

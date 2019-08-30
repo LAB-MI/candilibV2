@@ -52,6 +52,7 @@ import {
   CANCEL_BOOKED_PLACE_NO_MAIL,
   DELETE_PLACE_ERROR,
   PLACE_IS_ALREADY_BOOKED,
+  UNKNOWN_ERROR_UPLOAD_PLACES,
 } from './message.constants'
 
 const getPlaceStatus = (
@@ -88,28 +89,26 @@ const parseRow = async ({ data, departement }) => {
   try {
     const [day, time, matricule, nom, centre, dept] = data
 
-    myCentre = centre.trim()
-    myMatricule = matricule.trim()
+    myCentre = centre && centre.trim()
+    myMatricule = matricule && matricule.trim()
+    const myDay = day && day.trim()
 
-    myDate = `${day.trim()} ${time.trim()}`
+    const myTime = time && time.trim()
+    const myNom = nom && nom.trim()
+    myDate = `${myDay} ${myTime}`
 
-    if (
-      !day.trim() ||
-      !time.trim() ||
-      !matricule.trim() ||
-      !nom.trim() ||
-      !centre.trim() ||
-      !dept.trim()
-    ) {
+    const myDept = dept && dept.trim()
+
+    if (!myDay || !myTime || !myMatricule || !myNom || !myCentre || !myDept) {
       const error = new Error(
-        `Une ou plusieurs information(s) manquante(s) dans le fichier CSV.
+        `Une ou plusieurs information(s) manquante(s) dans le fichier CSV ou XLSX.
         [
-          date: ${day.trim()},
-          heur: ${time.trim()},
-          matricule: ${matricule.trim()},
-          nom: ${nom.trim()},
-          centre: ${centre.trim()},
-          departement: ${dept.trim()}
+          date: ${myDay || ''},
+          heur: ${myTime || ''},
+          matricule: ${myMatricule || ''},
+          nom: ${myNom || ''},
+          centre: ${myCentre || ''},
+          departement: ${myDept || ''}
         ]`
       )
       error.from = 'parseRow'
@@ -169,12 +168,14 @@ const parseRow = async ({ data, departement }) => {
       date,
     }
   } catch (error) {
+    let message = UNKNOWN_ERROR_UPLOAD_PLACES
     if (error.from) {
       appLogger.warn({
         ...loggerInfo,
         description: error.message,
         error,
       })
+      message = error.message
     } else {
       appLogger.error({
         ...loggerInfo,
@@ -189,7 +190,7 @@ const parseRow = async ({ data, departement }) => {
       myMatricule,
       myDate,
       'error',
-      error.message
+      message
     )
   }
 }
