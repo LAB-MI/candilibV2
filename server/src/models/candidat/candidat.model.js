@@ -140,6 +140,10 @@ export const candidatFields = {
     required: false,
   },
   noReussites: [noReussiteFields],
+  firstConnection: {
+    type: Date,
+    required: false,
+  },
 }
 
 const CandidatSchema = new Schema(candidatFields, { timestamps: true })

@@ -58,10 +58,16 @@ const getAdminTokenHeader = () => {
 
 export default {
   candidat: {
-    async verifyToken (token) {
+    async verifyToken (token, isTokenFromMagicLink) {
+      const options = {
+        headers: {
+          'x-magic-link': isTokenFromMagicLink,
+        },
+      }
       const json = await apiClient.get(`${apiPaths.candidat.verifyToken}?token=${token}`, {
         headers: {
           'Content-Type': 'application/json',
+          ...options.headers,
         },
       })
       return json

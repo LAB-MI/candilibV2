@@ -186,6 +186,15 @@ export const updateCandidatCanBookFrom = async (candidat, canBookFrom) => {
   return candidat.save()
 }
 
+export const setCandidatFirstConnection = async id => {
+  const candidat = await findCandidatById(id)
+  if (!candidat.firstConnection) {
+    candidat.firstConnection = new Date()
+    return candidat.save()
+  }
+  return candidat
+}
+
 export const addPlaceToArchive = (
   candidat,
   place,
