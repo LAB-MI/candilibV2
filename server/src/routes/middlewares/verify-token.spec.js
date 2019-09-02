@@ -38,7 +38,7 @@ describe('Verify-token', () => {
     // Then
     expect(status).toBe(401)
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', 'Token invalide')
+    expect(body).toHaveProperty('message', 'Accès interdit. Êtes-vous bien connecté·e ?')
   })
 
   it('Should respond a 404', async () => {

@@ -38,7 +38,7 @@ export function verifyToken (req, res, next) {
     })
     return res.status(401).send({
       isTokenValid: false,
-      message: 'Token invalide',
+      message: 'Accès interdit. Êtes-vous bien connecté·e ?',
       success: false,
       errorMessage: error.message,
       error,
