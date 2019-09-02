@@ -1,19 +1,16 @@
 import { checkToken, appLogger } from '../../util'
+import config from '../../config'
+import { setCandidatFirstConnection } from '../../models/candidat'
 
-export function verifyToken (req, res, next) {
+export async function verifyToken (req, res, next) {
   const authHeader = req.headers.authorization
   const tokenInAuthHeader = authHeader && authHeader.replace('Bearer ', '')
   const token = tokenInAuthHeader || req.query.token
-
-  appLogger.debug({
-    section: 'admin-verify-token',
-    action: 'INFO',
-    token,
-  })
+  const isMagicLink = req.get('x-magic-link')
 
   if (!token) {
     appLogger.error({
-      section: 'admin-verify-token',
+      section: 'verify-token',
       action: 'ABSENT',
       description: 'Token absent',
     })
@@ -29,16 +26,36 @@ export function verifyToken (req, res, next) {
     req.userId = id
     req.userLevel = level
     req.departements = departements
+
+    const isCandidat =
+      !level || level === config.userStatusLevels[config.userStatuses.CANDIDAT]
+
+    if (isMagicLink && isCandidat) {
+      await setCandidatFirstConnection(id)
+    }
+
     next()
   } catch (error) {
+    const isTokenExpired = error.name === 'TokenExpiredError'
+    let message =
+      'Impossible de vérifier votre authentification. Veuillez vous reconnecter.'
+    if (isTokenExpired && isMagicLink) {
+      message =
+        'Votre lien de connexion n\'est plus valide, veuillez en demander un autre via le bouton "Déjà inscrit"'
+    } else if (isTokenExpired) {
+      message =
+        "Vous n'êtes plus connecté, veuillez vous reconnecter, s'il vous plaît."
+    }
+
     appLogger.error({
-      section: 'admin-verify-token',
+      section: 'verify-token',
       action: 'CHECK',
+      description: `Could not checkToken or find candidat: ${error.message}`,
       error,
     })
     return res.status(401).send({
       isTokenValid: false,
-      message: 'Token invalide',
+      message: message,
       success: false,
       errorMessage: error.message,
       error,

@@ -12,7 +12,8 @@ import store, {
 } from '@/store'
 
 export async function requireCandidatAuth (to, from, next) {
-  const token = to.query.token || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
+  const queryToken = to.query.token
+  const token = queryToken || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
 
   const signupRoute = {
     name: 'candidat-presignup',
@@ -22,7 +23,7 @@ export async function requireCandidatAuth (to, from, next) {
     next(signupRoute)
     return
   }
-  await store.dispatch(CHECK_CANDIDAT_TOKEN, token)
+  await store.dispatch(CHECK_CANDIDAT_TOKEN, queryToken)
   if (store.state.auth.statusCandidat !== SIGNED_IN_AS_CANDIDAT) {
     next(signupRoute)
     return
@@ -77,12 +78,13 @@ export async function checkAccess (to, from, next) {
 }
 
 export async function checkCandidatToken (to, from, next) {
-  const token = to.query.token || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
+  const queryToken = to.query.token
+  const token = queryToken || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
   if (!token) {
     next()
     return
   }
-  await store.dispatch(CHECK_CANDIDAT_TOKEN, token)
+  await store.dispatch(CHECK_CANDIDAT_TOKEN, queryToken)
   if (store.state.auth.statusCandidat === SIGNED_IN_AS_CANDIDAT) {
     next({ name: 'candidat-home' })
     return

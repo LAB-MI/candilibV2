@@ -70,17 +70,20 @@ export default {
       }
     },
 
-    async [CHECK_CANDIDAT_TOKEN] ({ commit }, queryToken) {
+    async [CHECK_CANDIDAT_TOKEN] ({ commit, dispatch }, queryToken) {
       commit(CHECKING_AUTH_CANDIDAT)
+      const isTokenFromMagicLink = Boolean(queryToken)
       const token = queryToken || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
       if (!token) {
         commit(SIGN_OUT_CANDIDAT)
+        return
       }
-      const { auth } = await api.candidat.verifyToken(token)
+      const { auth, message } = await api.candidat.verifyToken(token, isTokenFromMagicLink)
       if (auth) {
         localStorage.setItem(CANDIDAT_TOKEN_STORAGE_KEY, token)
         commit(SET_CANDIDAT_TOKEN)
       } else {
+        dispatch(SHOW_ERROR, message)
         localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
         commit(SIGN_OUT_CANDIDAT)
       }

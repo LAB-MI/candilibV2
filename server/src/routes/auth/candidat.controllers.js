@@ -122,7 +122,7 @@ export const checkCandidat = async (req, res) => {
     return res.status(error.status || 500).json({
       auth: false,
       isTokenValid: false,
-      message: 'Token invalide',
+      message: 'Accès interdit. Êtes-vous bien connecté·e ?',
       success: false,
     })
   }
