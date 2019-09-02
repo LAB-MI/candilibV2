@@ -280,11 +280,19 @@ export const synchroAurige = async buffer => {
 
         candidat.set(infoCandidatToUpdate)
         await deleteCandidat(candidat, aurigeFeedback)
-        await sendMailToAccount(candidat, aurigeFeedback)
-        appLogger.info({
-          ...loggerInfoCandidat,
-          description: `Envoi de mail ${aurigeFeedback} à ${email}`,
-        })
+        try {
+          await sendMailToAccount(candidat, aurigeFeedback)
+          appLogger.info({
+            ...loggerInfoCandidat,
+            description: `Envoi de mail ${aurigeFeedback} à ${email}`,
+          })
+        } catch (error) {
+          message += `. Mais l'envoi de mail à l'échoué à ${email}`
+          appLogger.error({
+            ...loggerInfoCandidat,
+            description: `Echec de l'envoi de mail ${aurigeFeedback} à ${email}`,
+          })
+        }
 
         return getCandidatStatus(
           nomNaissance,
