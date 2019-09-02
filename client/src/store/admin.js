@@ -188,8 +188,8 @@ export default {
       }
     },
 
-    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, rootState, state }, window = {}) {
-      const { begin, end } = window
+    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, rootState, state }, timeWindow = {}) {
+      const { begin, end } = timeWindow
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
         const currentDateTime = getFrenchLuxonCurrentDateTime()
