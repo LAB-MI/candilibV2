@@ -10,9 +10,24 @@ export const makeResa = (
   bookedByAdmin = undefined
 ) => {
   place.candidat = candidat._id
-  place.bookedAt = bookedAt || undefined
-  place.bookedByAdmin = bookedByAdmin || undefined
+  place.bookedAt = bookedAt
+  place.bookedByAdmin = bookedByAdmin
   return place.save()
+}
+
+export const bookCandidatOnSelectedPlace = async (
+  place,
+  candidat,
+  bookedAt = undefined,
+  bookedByAdmin = undefined
+) => {
+  const placeFounded = await placeModel.findOne({
+    _id: place._id || place,
+  })
+  placeFounded.candidat = candidat._id
+  placeFounded.bookedAt = bookedAt
+  placeFounded.bookedByAdmin = bookedByAdmin
+  return placeFounded.save()
 }
 
 let placesDb
@@ -39,7 +54,7 @@ export const makeResas = async (
 }
 
 export const makeCandidatsResas = async (
-  bookedAt,
+  bookedAt = undefined,
   bookedByAdmin = undefined
 ) => {
   const candidats = await createCandidats()
@@ -55,13 +70,13 @@ export const makeCandidatsResas = async (
   const candidat2 = await findCandidatByEmail(candidats[1].email)
 
   place1.candidat = candidat1._id
-  place1.bookedAt = bookedAt || undefined
-  place1.bookedByAdmin = bookedByAdmin || undefined
+  place1.bookedAt = bookedAt
+  place1.bookedByAdmin = bookedByAdmin
   const result1 = await place1.save()
 
   place2.candidat = candidat2._id
-  place2.bookedAt = bookedAt || undefined
-  place2.bookedByAdmin = bookedByAdmin || undefined
+  place2.bookedAt = bookedAt
+  place2.bookedByAdmin = bookedByAdmin
   const result2 = await place2.save()
 
   return { result1, result2 }
