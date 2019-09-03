@@ -1,18 +1,23 @@
+import request from 'supertest'
 import bodyParser from 'body-parser'
 import express from 'express'
-import request from 'supertest'
-import { apiPrefix } from '../../app'
+import app, { apiPrefix } from '../../app'
 import config from '../../config'
 import { findCandidatById } from '../../models/candidat'
 import centreModel from '../../models/centre/centre.model'
 import { createInspecteur } from '../../models/inspecteur'
-import { createPlace } from '../../models/place'
+import { createPlace, findPlaceById } from '../../models/place'
 import placeModel from '../../models/place/place.model'
 import { createUser } from '../../models/user'
+import { createCentre } from '../../models/centre/centre.queries'
+
 import {
+  bookCandidatOnSelectedPlace,
   centres,
+  commonBasePlaceDateTime,
   createCandidats,
   createCandidatsAndUpdate,
+  createCandidatAndUpdate,
   createCentres,
   createInspecteurs,
   createPlaces,
@@ -27,6 +32,7 @@ import {
 } from '../../models/__tests__'
 import { connect, disconnect } from '../../mongo-connection'
 import {
+  getFrenchFormattedDateTime,
   getFrenchLuxon,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
@@ -41,9 +47,9 @@ import { SUBJECT_CONVOCATION } from '../business'
 import { getConvocationBody } from '../business/build-mail-convocation'
 import { REASON_MODIFY_RESA_ADMIN } from '../common/reason.constants'
 import {
-  PLACE_IS_ALREADY_BOOKED,
-  DELETE_PLACES_BY_ADMIN_SUCCESS,
   DELETE_PLACES_BY_ADMIN_ERROR,
+  DELETE_PLACES_BY_ADMIN_SUCCESS,
+  PLACE_IS_ALREADY_BOOKED,
 } from './message.constants'
 
 const inspecteurTest = {
@@ -70,6 +76,7 @@ const admin = {
 const bookedAt = getFrenchLuxon().toJSDate()
 
 jest.mock('../business/send-mail')
+jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
 
 describe('Test places controller', () => {
@@ -515,5 +522,227 @@ describe('delete place by admin', () => {
       .expect(422)
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', DELETE_PLACES_BY_ADMIN_ERROR)
+  })
+})
+
+describe('Archive bookedAt and bookedByAdmin', () => {
+  const centreTest = {
+    departement: '93',
+    nom: 'Centre 99',
+    label: "Centre d'examen 2",
+    adresse: '2 Avenue test, Ville test 2, FR, 93420',
+    lon: 47,
+    lat: 3.5,
+  }
+
+  const candidat = {
+    codeNeph: '123456789003',
+    nomNaissance: 'nom à tester 1',
+    prenom: 'prénom à tester n°4',
+    email: 'test01.test@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 75011 Paris',
+    dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+    isValidatedByAurige: true,
+    isValidatedEmail: true,
+  }
+
+  const candidat2 = {
+    codeNeph: '123456789004',
+    nomNaissance: 'nom à tester 2',
+    prenom: 'prénom à tester n°4',
+    email: 'test02.test@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 75011 Paris',
+    dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+    isValidatedByAurige: true,
+    isValidatedEmail: true,
+  }
+
+  const inspecteurTest = {
+    nom: 'Mulder-test',
+    prenom: 'Fox',
+    matricule: '04710111199',
+    email: 'fox.muldertest1@x-files.com',
+    departement: '93',
+  }
+
+  const inspecteurTest2 = {
+    nom: 'Mulder-test2',
+    prenom: 'Fox',
+    matricule: '04710111198',
+    email: 'fox.muldertest2@x-files.com',
+    departement: '93',
+  }
+
+  const adminTest = {
+    email: 'test-bookedAt@example.com',
+    password: 'S3cr3757uff!',
+    departements: ['94', '95'],
+    status: config.userStatuses.TECH,
+  }
+
+  let createdAdmin
+  let createdCentre
+  let createdInspecteur
+  let createdInspecteur2
+  let placeCreated
+  let placeCreated2
+  let updatedCandidat
+  let updatedCandidat2
+  let placeToDelete
+
+  beforeAll(async () => {
+    await connect()
+
+    try {
+      const { email, password, departements } = adminTest
+
+      createdAdmin = await createUser(email, password, departements)
+
+      const { nom, label, adresse, lon, lat, departement } = centreTest
+
+      createdCentre = await createCentre(
+        nom,
+        label,
+        adresse,
+        lon,
+        lat,
+        departement
+      )
+
+      createdInspecteur = await createInspecteur(inspecteurTest)
+      createdInspecteur2 = await createInspecteur(inspecteurTest2)
+
+      placeCreated = await createPlace({
+        date: commonBasePlaceDateTime.toISO(),
+        centre: createdCentre._id,
+        inspecteur: createdInspecteur._id,
+      })
+
+      placeCreated2 = await createPlace({
+        date: commonBasePlaceDateTime.toISO(),
+        centre: createdCentre._id,
+        inspecteur: createdInspecteur2._id,
+      })
+
+      updatedCandidat = await createCandidatAndUpdate(candidat)
+      updatedCandidat2 = await createCandidatAndUpdate(candidat2)
+      // makeresa
+      const {
+        _id,
+        departements: departementsAdmin,
+        email: emailAdmin,
+        signUpDate,
+        status,
+      } = createdAdmin
+
+      const bookedByAdmin = {
+        _id,
+        departements: departementsAdmin,
+        email: emailAdmin,
+        signUpDate,
+        status,
+      }
+
+      placeToDelete = await bookCandidatOnSelectedPlace(
+        placeCreated2,
+        updatedCandidat2,
+        bookedAt,
+        bookedByAdmin
+      )
+    } catch (e) {
+      console.warn(e)
+    }
+    require('../middlewares/verify-token').__setIdAdmin(
+      createdAdmin._id,
+      createdAdmin.departements
+    )
+  })
+
+  afterAll(async () => {
+    try {
+      await createdCentre.remove()
+      await createdInspecteur.remove()
+      await placeCreated.remove()
+      await updatedCandidat.remove()
+    } catch (e) {
+      console.warn(e)
+    }
+    await disconnect()
+  })
+
+  it('should book place with bookedAt and bookedByAdmin', async () => {
+    const placeSelected = placeCreated
+    const { date, hour } = getFrenchFormattedDateTime(placeSelected.date)
+    const messageToReceive = `Le candidat Nom: [${updatedCandidat.nomNaissance}] Neph: [${updatedCandidat.codeNeph}] a bien été affecté à la place du ${date} à ${hour}`
+
+    const { body } = await request(app)
+      .patch(`${apiPrefix}/admin/places/${placeSelected._id}`)
+      .set('Accept', 'application/json')
+      .send({
+        candidatId: updatedCandidat._id,
+      })
+      .expect(200)
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message', messageToReceive)
+    expect(body).toHaveProperty('place')
+
+    const { place } = body
+
+    expect(place).toBeDefined()
+
+    const placeFounded = await findPlaceById(place._id)
+
+    expect(placeFounded).toHaveProperty('bookedAt')
+    expect(placeFounded).toHaveProperty('bookedByAdmin')
+
+    const { _id, email, signUpDate, status } = createdAdmin
+    const { bookedByAdmin } = placeFounded
+
+    expect(bookedByAdmin).toHaveProperty('_id', _id)
+    expect(bookedByAdmin).toHaveProperty('departements')
+    expect(bookedByAdmin).toHaveProperty('email', email)
+    expect(bookedByAdmin).toHaveProperty('signUpDate', signUpDate)
+    expect(bookedByAdmin).toHaveProperty('status', status)
+  })
+
+  it('should archive booked place with bookedAt and bookedByAdmin', async () => {
+    const placeFounded = placeToDelete
+
+    const { body } = await request(app)
+      .delete(`${apiPrefix}/admin/places`)
+      .set('Accept', 'application/json')
+      .send({
+        placesToDelete: [placeFounded._id],
+      })
+      .expect(200)
+
+    const candidatId = placeFounded.candidat
+
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message', DELETE_PLACES_BY_ADMIN_SUCCESS)
+
+    const candidatFound = await findCandidatById(candidatId)
+
+    expect(candidatFound).toHaveProperty('resaCanceledByAdmin')
+    expect(candidatFound).toHaveProperty('places')
+    expect(candidatFound.places[0]).toHaveProperty('bookedAt')
+    expect(candidatFound.places[0]).toHaveProperty('bookedByAdmin')
+    expect(candidatFound.places[0]).toHaveProperty(
+      'archiveReason',
+      'REMOVE_RESA_ADMIN'
+    )
+
+    const { bookedByAdmin: bkdByAdmin } = candidatFound.places[0]
+    const { _id, email, signUpDate, status } = createdAdmin
+
+    expect(bkdByAdmin).toHaveProperty('_id', _id)
+    expect(bkdByAdmin).toHaveProperty('departements')
+    expect(bkdByAdmin).toHaveProperty('email', email)
+    expect(bkdByAdmin).toHaveProperty('signUpDate', signUpDate)
+    expect(bkdByAdmin).toHaveProperty('status', status)
   })
 })

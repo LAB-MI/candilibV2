@@ -96,6 +96,15 @@ export const createCandidatsAndUpdate = async () => {
   return newCandidats
 }
 
+export const createCandidatAndUpdate = async candidat => {
+  const createdCandidat = await createCandidat(candidat)
+  createdCandidat.dateReussiteETG = getFrenchLuxon().plus({ year: -1 })
+  createdCandidat.isValidatedByAurige = true
+  createdCandidat.isValidatedEmail = true
+  const updatedCandidat = await createdCandidat.save()
+  return updatedCandidat
+}
+
 export const deleteCandidats = async () => {
   await candidatModel.deleteMany({})
 }

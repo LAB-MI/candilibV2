@@ -5,14 +5,19 @@ import { connect, disconnect } from '../../mongo-connection'
 import app, { apiPrefix } from '../../app'
 import {
   createCandidats,
+  // createCandidatsAndUpdate,
   createCentres,
   // createPlaces,
-  removePlaces,
-  removeCentres,
-  deleteCandidats,
   createTestPlace,
+  deleteCandidats,
   makeResa,
+  // makeResas,
   removeAllResas,
+  removeCentres,
+  removePlaces,
+  bookCandidatOnSelectedPlace,
+  createCandidatAndUpdate,
+  commonBasePlaceDateTime,
 } from '../../models/__tests__'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
@@ -21,25 +26,218 @@ import {
   SEND_MAIL_ASKED,
   CAN_BOOK_AFTER,
 } from './message.constants'
-import { findPlaceById } from '../../models/place'
+import {
+  findPlaceById,
+  createPlace,
+  findPlaceByCandidatId,
+} from '../../models/place'
 import config from '../../config'
+import { createInspecteur } from '../../models/inspecteur'
+import { createCentre } from '../../models/centre'
+
 import {
   findCandidatById,
   createCandidat,
   updateCandidatFailed,
 } from '../../models/candidat'
+
+import { REASON_CANCEL } from '../common/reason.constants'
+
 import {
   getFrenchFormattedDateTime,
   getFrenchLuxon,
-} from '../../util/date.util'
-import { REASON_CANCEL } from '../common/reason.constants'
-
-import { getFrenchLuxonFromObject, getFrenchLuxonFromJSDate } from '../../util'
+  getFrenchLuxonFromJSDate,
+  getFrenchLuxonFromObject,
+} from '../../util'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
+jest.mock('../../util/logger')
 
 const bookedAt = getFrenchLuxon().toJSDate()
+
+describe('book and delete reservation by candidat', () => {
+  const centreTest = {
+    departement: '93',
+    nom: 'Centre 99',
+    label: "Centre d'examen 2",
+    adresse: '2 Avenue test, Ville test 2, FR, 93420',
+    lon: 47,
+    lat: 3.5,
+  }
+
+  const candidat = {
+    codeNeph: '123456789003',
+    nomNaissance: 'nom à tester 4',
+    prenom: 'prénom à tester n°4',
+    email: 'test4.testbookedAt1@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 75011 Paris',
+    dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+    isValidatedByAurige: true,
+    isValidatedEmail: true,
+  }
+
+  const candidat2 = {
+    codeNeph: '123456789003',
+    nomNaissance: 'nom à tester 99',
+    prenom: 'prénom à tester n°4',
+    email: 'test4.testbookedAt2@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 75011 Paris',
+    dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+    isValidatedByAurige: true,
+    isValidatedEmail: true,
+  }
+
+  const inspecteurTest = {
+    nom: 'Mulder-test',
+    prenom: 'Fox',
+    matricule: '04710111166',
+    email: 'fox.mulder.bookedAt1@x-files.com',
+    departement: '93',
+  }
+
+  const inspecteurTest2 = {
+    nom: 'Mulder-test',
+    prenom: 'Fox',
+    matricule: '04710111177',
+    email: 'fox.mulder.bookedAt2@x-files.com',
+    departement: '93',
+  }
+
+  let createdCentre
+  let createdInspecteur
+  let createdInspecteur2
+  let placeCreated
+  let placeCreated2
+  let updatedCandidat
+  let updatedCandidat2
+  let placeToDelete
+
+  beforeAll(async () => {
+    await connect()
+
+    try {
+      const { nom, label, adresse, lon, lat, departement } = centreTest
+
+      createdCentre = await createCentre(
+        nom,
+        label,
+        adresse,
+        lon,
+        lat,
+        departement
+      )
+
+      createdInspecteur = await createInspecteur(inspecteurTest)
+      createdInspecteur2 = await createInspecteur(inspecteurTest2)
+
+      placeCreated = await createPlace({
+        date: commonBasePlaceDateTime.toISO(),
+        centre: createdCentre._id,
+        inspecteur: createdInspecteur._id,
+      })
+
+      placeCreated2 = await createPlace({
+        date: commonBasePlaceDateTime.toISO(),
+        centre: createdCentre._id,
+        inspecteur: createdInspecteur2._id,
+      })
+
+      updatedCandidat = await createCandidatAndUpdate(candidat)
+      updatedCandidat2 = await createCandidatAndUpdate(candidat2)
+
+      placeToDelete = await bookCandidatOnSelectedPlace(
+        placeCreated2,
+        updatedCandidat2,
+        bookedAt
+      )
+    } catch (e) {
+      console.warn(e)
+    }
+  })
+
+  afterAll(async () => {
+    try {
+      await createdCentre.remove()
+      await createdInspecteur.remove()
+      await placeCreated.remove()
+      await updatedCandidat.remove()
+    } catch (e) {
+      console.warn(e)
+    }
+    await disconnect()
+  })
+
+  it('should booked place by candidat with info bookedAt', async () => {
+    require('../middlewares/verify-token').__setIdCandidat(updatedCandidat._id)
+
+    const placeSelected = placeCreated
+    const messageToReceive =
+      "Votre réservation à l'examen a été prise en compte. Veuillez consulter votre boîte mail."
+
+    const { body } = await request(app)
+      .post(`${apiPrefix}/candidat/reservations`)
+      .set('Accept', 'application/json')
+      .send({
+        id: placeSelected.centre,
+        date: placeSelected.date,
+        isAccompanied: true,
+        hasDualControlCar: true,
+      })
+      .expect(201)
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('statusmail', true)
+    expect(body).toHaveProperty('message', messageToReceive)
+
+    const placefounded = await findPlaceByCandidatId(updatedCandidat._id)
+
+    expect(placefounded).toBeDefined()
+    expect(placefounded).toHaveProperty('bookedAt')
+    expect(placefounded).toHaveProperty('date', placeSelected.date)
+    expect(placefounded).toHaveProperty('centre', placeSelected.centre)
+  })
+
+  it('should delete booked place and archive place with info bookedAt', async () => {
+    require('../middlewares/verify-token').__setIdCandidat(updatedCandidat2._id)
+
+    const placeSelected = placeToDelete
+    const { centre, date } = placeSelected
+
+    const { body } = await request(app)
+      .delete(`${apiPrefix}/candidat/reservations`)
+      .set('Accept', 'application/json')
+      .send({
+        id: centre,
+        date: date,
+        isAccompanied: true,
+        hasDualControlCar: true,
+      })
+      .expect(200)
+    const messageToReceive = 'Votre annulation a bien été prise en compte.'
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('statusmail', true)
+    expect(body).toHaveProperty('message', messageToReceive)
+
+    const candidatFounded = await findCandidatById(updatedCandidat2._id)
+    const place = candidatFounded.places.find(
+      place => place.archiveReason === 'CANCEL'
+    )
+
+    expect(place).toBeDefined()
+    expect(place).toHaveProperty('bookedAt', bookedAt)
+    expect(place).toHaveProperty('archiveReason', 'CANCEL')
+    expect(place).toHaveProperty('date', date)
+    expect(place).toHaveProperty('centre', centre)
+  })
+})
+
+// TODO: fix this unit test
 const basePlaceDateTime = getFrenchLuxonFromObject({ hour: 9 })
 const placeCanBook = {
   date: (() =>
@@ -108,7 +306,7 @@ const candidatFailed = {
   canBookFrom: dateEchecCanBookFrom().toISO(),
 }
 
-xdescribe('Test reservation controllers', () => {
+xdescribe('Test reservation controllers WIP', () => {
   let createdCentres
   let createdCandiats
   let createdPlaceCanBook
