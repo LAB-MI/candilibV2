@@ -235,11 +235,14 @@ export const synchroAurige = async buffer => {
         }
 
         // Date ETG
-        if (!candidat.dateReussiteETG) {
-          const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
-          if (dateTimeDateReussiteETG.isValid) {
-            infoCandidatToUpdate.dateReussiteETG = dateTimeDateReussiteETG
-          }
+        const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
+        if (dateTimeDateReussiteETG.isValid) {
+          infoCandidatToUpdate.dateReussiteETG = dateTimeDateReussiteETG
+        } else {
+          appLogger.warn({
+            ...loggerInfoCandidat,
+            description: `Pour le ${departement}, Ce candidat ${email} a une date reussite ETG qui n'est pas une date`,
+          })
         }
       }
 
