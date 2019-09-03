@@ -35,7 +35,7 @@ const dateReussitePratique = nowLuxon
 const isValidatedEmail = true
 const adresse = '40 Avenuedes terroirs de France 75012 Paris'
 const portable = '0676543986'
-
+const departement = '93'
 export const candidatFailureExam = {
   // candidat échec pratique récent
   codeNeph: '0938743208650',
@@ -52,6 +52,7 @@ export const candidatFailureExam = {
   isValidatedEmail,
   adresse,
   portable,
+  departement,
 }
 
 export const candidatFailureExamWith5Failures = {
@@ -70,6 +71,7 @@ export const candidatFailureExamWith5Failures = {
   isValidatedEmail,
   adresse,
   portable,
+  departement,
 }
 
 export const candidatPassed = {
@@ -88,6 +90,7 @@ export const candidatPassed = {
   isValidatedEmail,
   adresse,
   portable,
+  departement,
 }
 
 export const candidatsToValidAurige = [
@@ -108,6 +111,7 @@ export const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // Candidat nom n'existe pas
@@ -125,6 +129,7 @@ export const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // candidat échec pratique il y a plus 45 jours
@@ -142,6 +147,7 @@ export const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // candidat pas d'info réssuit théorique
@@ -159,6 +165,7 @@ export const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // candidat réussit la théorie y a plus de 5 ans
@@ -176,6 +183,7 @@ export const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // candidat réussit la théorie y a moins 5 ans
@@ -193,6 +201,7 @@ export const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   candidatFailureExam,
 ]
@@ -204,6 +213,9 @@ export const createCandidatToTestAurige = async (
   const candidatCreated = await createCandidat(candidat)
   candidatCreated.isValidatedEmail = true
   candidatCreated.isValidatedByAurige = isValidatedByAurige
+  if (isValidatedByAurige) {
+    candidatCreated.dateReussiteETG = candidat.dateReussiteETG
+  }
   return candidatCreated.save()
 }
 
