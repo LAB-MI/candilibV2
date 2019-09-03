@@ -130,34 +130,7 @@ export const faqJson = [
         subTitleContent: 'Ce service est restreint aux candidats qui ont reçu un mail d\'invitation à participer à cette expérimentation.',
       },
       {
-        subTitleContent: 'Poser une question par mail :',
-      },
-      {
-        textContent: 'Pour une demande dans le 69 : <strong>ddt-candilib69@rhone.gouv.fr</strong>',
-      },
-      {
-        textContent: 'Pour une demande dans le 75 : <strong>candilib75@developpement-durable.gouv.fr</strong>',
-      },
-      {
-        textContent: 'Pour une demande dans le 77 : <strong>candilib77@seine-et-marne.gouv.fr</strong>',
-      },
-      {
-        textContent: 'Pour une demande dans le 78 : <strong>candilib78@yvelines.gouv.fr</strong>',
-      },
-      {
-        textContent: 'Pour une demande dans le 91 : <strong>candilib91@essonne.gouv.fr</strong>',
-      },
-      {
-        textContent: 'Pour une demande dans le 92 : <strong>candilib92@developpement-durable.gouv.fr</strong>',
-      },
-      {
-        textContent: 'Pour une demande dans le 93 : <strong>candilib93@developpement-durable.gouv.fr</strong>',
-      },
-      {
-        textContent: 'Pour une demande dans le 94 : <strong>candilib94@developpement-durable.gouv.fr</strong>',
-      },
-      {
-        textContent: 'Pour une demande dans le 95 : <strong>candilib95@val-doise.gouv.fr</strong>',
+        subTitleContent: 'Posez vos questions à l\'adresse courriel présente dans votre mail d\'invitation',
       },
     ],
   },
