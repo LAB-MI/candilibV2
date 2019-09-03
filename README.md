@@ -17,6 +17,10 @@ Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 Ubuntu : https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
+Ne pas oublier d'effectuer les étapes post-installation sur Ubuntu:
+
+https://docs.docker.com/install/linux/linux-postinstall/
+
 #### Robo 3T
 
 https://robomongo.org/download
@@ -24,6 +28,12 @@ https://robomongo.org/download
 Attention, **ne pas télécharger** Studio 3T, mais **télécharger Robo 3T**
 
 ### Installation
+
+#### Cloner le projet
+
+```
+git clone https://github.com/LAB-MI/candilibV2.git
+```
 
 #### Peupler la base de données Mongodb
 
@@ -34,13 +44,33 @@ cd server
 npm run db
 ```
 
-2. Lancer le script npm pour peupler la bdd
+2. Installer les dépendances
+
+```bash
+npm install
+```
+
+3. Créer les variables d'environnements
+Lire le fichier `server/README.md` et créer un fichier `.env` avec les variables correspondantes. 
+(Se créer éventuellement un compte mailtrap.io)
+
+1. Lancer le script npm pour peupler la bdd
 
 ```bash
 npm run dev-setup
 ```
 
-3. Lancer le serveur node avec le code de l'API
+5. Se connecter à la bdd
+   
+Ouvrir Robo3t, créer une nouvelle connection. Dans l'onglet d'authentification, remplir:
+
+```
+Database: candilib
+User: adminCandilib
+Password: changeme78
+```
+
+6. Lancer le serveur node avec le code de l'API
 
 Toujours dans le répertoire `server`
 
@@ -48,16 +78,23 @@ Toujours dans le répertoire `server`
 npm run dev
 ```
 
-4. Lancer le front
+7. Installer les dépendances du front
+
+Dans un nouveau terminal
 
 ```bash
-cd ../client
+cd client
+npm install
+```
+8. Lancer le front
+
+```bash
 npm start
 ```
 
 Ceci lance webpack-dev-server avec la configuration  de vue-cli.
 
-5. Se connecter en tant qu'admin
+9. Se connecter en tant qu'admin
 
 Aller à http://localhost:8080/candilib
 
@@ -65,7 +102,7 @@ Et utiliser le compte suivant:
 - login : `admin@example.com`
 - mot de passe : `Admin*78`
 
-6. Aller à calendrier et uploader le fichier `dev-setup/planning-93.csv`
+10. Aller à calendrier et uploader le fichier `dev-setup/planning-93.csv`
 
 
 ## Utilisation

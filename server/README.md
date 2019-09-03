@@ -33,8 +33,8 @@ export DB_NAME=candilib
 Le compte administrateur de la base de données de l'application Candilib est définit en utilisant les variables d'environnement suivantes :
 
 ```bash
-export DB_USER=candilibAdmin
-export DB_PASS=Admin*78
+export DB_USER=adminCandilib
+export DB_PASS=changeme78
 ```
 
 Ces variables doivent etre définies avant le lancement du conteneur mongoDB via le fichier docker-compose.
@@ -48,7 +48,7 @@ La connexion à la base de données depuis le composant api se fait en utilisant
 ```bash
 export DB_NAME=candilib
 export DB_USER=candilibAdmin
-export DB_PASS=Admin*78
+export DB_USER=changeme78
 ```
 
 ### remarques
