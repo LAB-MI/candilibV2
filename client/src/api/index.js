@@ -133,14 +133,14 @@ export default {
     },
 
     async getReservations () {
-      const json = await apiClient.get(`${apiPaths.candidat.reservations}`, {
+      const json = await apiClient.get(`${apiPaths.candidat.places}`, {
         headers: getHeadersForJson(),
       })
       return json
     },
 
     async setReservations (centreId, date, isAccompanied, hasDualControlCar) {
-      const json = await apiClient.post(`${apiPaths.candidat.reservations}`, {
+      const json = await apiClient.post(`${apiPaths.candidat.places}`, {
         body: JSON.stringify({ id: centreId, date, isAccompanied, hasDualControlCar }),
         headers: getHeadersForJson(),
       })
@@ -148,14 +148,14 @@ export default {
     },
 
     async sendEmail () {
-      const json = await apiClient.get(`${apiPaths.candidat.reservations}?bymail=${true}`, {
+      const json = await apiClient.get(`${apiPaths.candidat.places}?bymail=${true}`, {
         headers: getHeadersForJson(),
       })
       return json
     },
 
     async deleteReservation () {
-      const json = await apiClient.delete(`${apiPaths.candidat.reservations}`, {
+      const json = await apiClient.delete(`${apiPaths.candidat.places}`, {
         headers: getHeadersForJson(),
       })
       return json

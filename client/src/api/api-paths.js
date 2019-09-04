@@ -15,7 +15,6 @@ const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
   myProfile: `${apiPrefix}/candidat/me`,
   places: `${apiPrefix}/candidat/places`,
   presignup: `${apiPrefix}/candidat/preinscription`,
-  reservations: `${apiPrefix}/candidat/reservations`,
   verifyToken: `${apiPrefix}/auth/candidat/verify-token`,
 }
 
