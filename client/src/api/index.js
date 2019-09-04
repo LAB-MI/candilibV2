@@ -247,7 +247,7 @@ export default {
     },
 
     async createPlace (centre, inspecteur, date) {
-      const json = await apiClient.post(`${apiPaths.admin.place}`, {
+      const json = await apiClient.post(`${apiPaths.admin.places}`, {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify({
           departement: centre.departement,
@@ -260,7 +260,7 @@ export default {
     },
 
     async deletePlace (placeId) {
-      const json = await apiClient.delete(`${apiPaths.admin.place}/${placeId}`, {
+      const json = await apiClient.delete(`${apiPaths.admin.places}/${placeId}`, {
         headers: getHeadersForAdminJson(),
       })
       return json
@@ -359,7 +359,7 @@ export default {
     },
 
     async uploadPlacesCSV (body) {
-      const json = await apiClient.post(apiPaths.admin.uploadPlacesCSV, {
+      const json = await apiClient.post(apiPaths.admin.places, {
         headers: getAdminTokenHeader(),
         body,
       })
@@ -413,10 +413,10 @@ export default {
       })
       return json
     },
-
     async deleteBookedPlace (placeId) {
-      const json = await apiClient.delete(`${apiPaths.admin.reservations}/${placeId}`, {
+      const json = await apiClient.delete(`${apiPaths.admin.places}/${placeId}`, {
         headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ isBookedPlace: true }),
       })
       return json
     },

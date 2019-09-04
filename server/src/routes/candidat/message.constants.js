@@ -7,7 +7,7 @@ export const CANCEL_RESA_WITH_MAIL_SENT =
 export const CANCEL_RESA_WITH_NO_MAIL_SENT =
   "Votre annulation a bien été prise en compte. Votre annulation n'a pas pu être envoyée dans votre boîte mail."
 export const SAME_RESA_ASKED =
-  "Votre demande ne peut être prise en compte : Il s'agit de la même réservation que celle que vous avez déjà."
+  "Votre demande ne peut être prise en compte : Il s'agit d'une réservation identique à celle que vous avez déjà."
 export const SEND_MAIL_ASKED =
   'Votre convocation a été envoyée dans votre boîte mail.'
 export const FAILED_SEND_MAIL_ASKED =

@@ -7,6 +7,7 @@ import {
   deletePlace,
   findAllPlaces,
   findPlaceById,
+  findPlaceByIdAndPopulate,
   findPlacesByCentreAndDate,
 } from '../../models/place'
 
@@ -32,10 +33,12 @@ import {
 } from './places-business'
 
 import {
-  DELETE_PLACES_BY_ADMIN_SUCCESS,
   DELETE_PLACES_BY_ADMIN_ERROR,
-  USER_NOT_FOUND,
+  DELETE_PLACES_BY_ADMIN_SUCCESS,
+  PLACE_IS_NOT_BOOKED,
+  UNKNOWN_ERROR_REMOVE_RESA,
   UNKNOWN_ERROR_SEND_SCHEDULE_INSPECTEUR,
+  USER_NOT_FOUND,
 } from './message.constants'
 
 /**
@@ -204,6 +207,28 @@ export const createPlaceByAdmin = async (req, res) => {
       message: "La place n'a pas été créée",
       error: error.nessage,
     })
+  }
+}
+
+export const createOrImportPlaceByAdmin = async (req, res) => {
+  if (req.files) {
+    await importPlaces(req, res)
+  } else {
+    await createPlaceByAdmin(req, res)
+  }
+}
+
+export const deleteByAdmin = async (req, res) => {
+  const { id } = req.params
+  if (id) {
+    const { isBookedPlace } = req.body
+    if (isBookedPlace) {
+      await removeReservationByAdmin(req, res)
+    } else {
+      await deletePlaceByAdmin(req, res)
+    }
+  } else {
+    await deletePlacesByAdmin(req, res)
   }
 }
 
@@ -560,6 +585,87 @@ export const sendScheduleInspecteurs = async (req, res) => {
       message: error.status
         ? error.message
         : UNKNOWN_ERROR_SEND_SCHEDULE_INSPECTEUR,
+    })
+  }
+}
+
+export const removeReservationByAdmin = async (req, res) => {
+  const id = req.params.id
+
+  const loggerContent = {
+    section: 'admin-delete-resa',
+    admin: req.userId,
+    place: id,
+  }
+  const admin = await findUserById(req.userId)
+
+  if (!admin) {
+    const message = 'Utilisateur non trouvé'
+    appLogger.warn({ ...loggerContent, description: message })
+    return res.status(404).send({
+      success: false,
+      message,
+    })
+  }
+
+  if (!id) {
+    const message = 'Place non trouvée'
+    appLogger.warn({ ...loggerContent, description: message })
+    return res.status(404).send({
+      success: false,
+      message,
+    })
+  }
+
+  loggerContent.action = 'DELETE_RESA_BY_ADMIN'
+
+  appLogger.info({
+    ...loggerContent,
+    description: 'Supprimer la réservation candidat',
+  })
+
+  // Have a reservation
+  const place = await findPlaceByIdAndPopulate(id, { candidat: true })
+  if (!place) {
+    loggerContent.action = 'FIND_PLACE'
+    const message = 'Place non trouvée'
+    appLogger.warn({ ...loggerContent, description: message })
+    return res.status(404).send({
+      success: false,
+      message,
+    })
+  }
+
+  const { candidat } = place
+  if (!candidat) {
+    loggerContent.action = 'NOT_RESA'
+    const message = PLACE_IS_NOT_BOOKED
+    appLogger.warn({
+      ...loggerContent,
+      description: message,
+    })
+
+    return res.status(400).send({
+      success: false,
+      message,
+    })
+  }
+  try {
+    // Annulation reservation
+    const result = await removeReservationPlaceByAdmin(place, candidat, admin)
+
+    appLogger.info({ ...loggerContent, result })
+    return res.status(200).json({ success: true, ...result })
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      action: loggerContent.action || 'ERROR',
+      description: error.message,
+      error,
+    })
+    return res.status(500).send({
+      success: false,
+      message: UNKNOWN_ERROR_REMOVE_RESA,
     })
   }
 }
