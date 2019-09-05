@@ -140,7 +140,7 @@ export default {
     },
 
     async setReservations (centreId, date, isAccompanied, hasDualControlCar) {
-      const json = await apiClient.post(`${apiPaths.candidat.places}`, {
+      const json = await apiClient.patch(`${apiPaths.candidat.places}`, {
         body: JSON.stringify({ id: centreId, date, isAccompanied, hasDualControlCar }),
         headers: getHeadersForJson(),
       })

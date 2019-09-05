@@ -7,12 +7,13 @@
 import config from '../../config'
 import {
   appLogger,
-  techLogger,
   getFrenchFormattedDateTime,
   getFrenchLuxon,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
+  techLogger,
 } from '../../util'
+
 import {
   findAvailablePlacesByCentre,
   findPlacesByCentreAndDate,
@@ -51,19 +52,31 @@ import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
  *
  * @returns {string[]} Tableau de dates au format ISO
  */
-export const getDatesByCentreId = async (_id, endDate) => {
+export const getDatesByCentreId = async (_id, beginDate, endDate) => {
   appLogger.debug({
     func: 'getDatesByCentreId',
     _id,
+    beginDate,
     endDate,
   })
 
-  const beginDate = getAuthorizedDateToBook()
-  const endDateTime = getFrenchLuxonFromISO(endDate)
+  const luxonBeginDate = getFrenchLuxonFromISO(beginDate)
+  const luxonEndDate = getFrenchLuxonFromISO(endDate)
 
-  endDate = !endDateTime.invalid ? endDateTime.toJSDate() : undefined
+  const begin =
+    luxonBeginDate.invalid || luxonBeginDate < getAuthorizedDateToBook()
+      ? getAuthorizedDateToBook()
+      : luxonBeginDate
 
-  const places = await findAvailablePlacesByCentre(_id, beginDate, endDate)
+  endDate =
+    !luxonEndDate.invalid &&
+    luxonEndDate <= luxonEndDate.plus({ month: config.numberOfVisibleMonths })
+      ? luxonEndDate.toJSDate()
+      : getFrenchLuxon()
+        .plus({ month: config.numberOfVisibleMonths })
+        .toJSDate()
+
+  const places = await findAvailablePlacesByCentre(_id, begin, endDate)
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO()
   )

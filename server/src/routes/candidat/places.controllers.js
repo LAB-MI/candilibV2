@@ -16,6 +16,7 @@ import {
   removeReservationPlace,
   validCentreDateReservation,
 } from './places.business'
+
 import { sendMailConvocation } from '../business'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
@@ -69,75 +70,80 @@ export const ErrorMsgArgEmpty =
  * ```
  * @param {object} res
  */
-export async function getPlaces (req, res) {
-  const _id = req.params.id
+export async function getPlacesByCentre (req, res) {
+  const centreId = req.params.id
 
-  const { centre: nomCentre, departement, end, date } = req.query
+  const { centre: nomCentre, departement, begin, end, dateTime } = req.query
 
-  if (end && date) {
-    const message = 'end et date ne peuvent avoir des valeurs en même temps'
+  const loggerInfo = {
+    section: 'candidat-getPlacesByCentre',
+    argument: { departement, centreId, nomCentre, begin, end, dateTime },
+  }
+
+  if (end && dateTime) {
+    const message =
+      'Conflit dans les paramètres de la requête au serveur: end et date ne peuvent avoir des valeurs en même temps'
     appLogger.warn({
-      section: 'candidat-getPlaces',
+      ...loggerInfo,
       description: message,
     })
-    res.status(409).json({
+    res.status(400).json({
       success: false,
       message: message,
     })
   }
 
-  const loggerInfo = {
-    section: 'candidat-getPlaces',
-    argument: { departement, _id, nomCentre, end, date },
-  }
-
-  appLogger.debug(loggerInfo)
-
   let dates = []
   try {
-    if (_id) {
-      if (date) {
-        dates = await hasAvailablePlaces(_id, date)
+    if (centreId) {
+      if (dateTime) {
+        dates = await hasAvailablePlaces(centreId, dateTime)
       } else {
-        dates = await getDatesByCentreId(_id, end)
+        dates = await getDatesByCentreId(centreId, begin, end)
       }
     } else {
       if (!(departement && nomCentre)) {
         throw new Error(ErrorMsgArgEmpty)
       }
-      if (date) {
-        dates = await hasAvailablePlacesByCentre(departement, nomCentre, date)
+      if (dateTime) {
+        dates = await hasAvailablePlacesByCentre(
+          departement,
+          nomCentre,
+          dateTime
+        )
       } else {
-        dates = await getDatesByCentre(departement, nomCentre, end)
+        dates = await getDatesByCentre(departement, nomCentre, begin, end)
       }
     }
+
+    appLogger.info({
+      ...loggerInfo,
+      description: `[${dates.length}] place(s) ont été trouvée(s)`,
+    })
+
     res.status(200).json(dates)
   } catch (error) {
     appLogger.error({ ...loggerInfo, error, description: error.message })
     res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
       success: false,
       message: error.message,
-      error: JSON.stringify(error),
     })
   }
 }
 
-export const getPlaceOrReservations = async (req, res) => {
+export const getPlaces = async (req, res) => {
   const { id } = req.params
 
-  const { centre, departement, end, date, lastDateOnly, bymail } = req.query
-  if (
-    !(bymail || lastDateOnly) &&
-    (id || date || departement || centre || end)
-  ) {
-    await getPlaces(req, res)
+  const { centre, departement, begin, end, dateTime } = req.query
+  if (id || dateTime || departement || centre || begin || end) {
+    await getPlacesByCentre(req, res)
   } else {
-    await getReservations(req, res)
+    await getBookedPlaces(req, res)
   }
 }
 
-export const getReservations = async (req, res) => {
-  const section = 'candidat-getReservations'
+export const getBookedPlaces = async (req, res) => {
+  const section = 'candidat-getBookedPlaces'
   const candidatId = req.userId
   const { bymail, lastDateOnly } = req.query
 
@@ -252,7 +258,7 @@ export const getReservations = async (req, res) => {
   }
 }
 
-export const createReservation = async (req, res) => {
+export const bookPlaceByCandidat = async (req, res) => {
   const section = 'candidat-create-reservation'
   const candidatId = req.userId
   const { id: centre, date, isAccompanied, hasDualControlCar } = req.body
@@ -382,7 +388,7 @@ export const createReservation = async (req, res) => {
       description: message,
       reservation: reservation._id,
     })
-    return res.status(201).json({
+    return res.status(200).json({
       success: true,
       reservation: {
         date: reservation.date,
@@ -409,7 +415,7 @@ export const createReservation = async (req, res) => {
   }
 }
 
-export const removeReservation = async (req, res) => {
+export const unbookPlace = async (req, res) => {
   const candidatId = req.userId
 
   appLogger.info({
@@ -441,7 +447,7 @@ export const removeReservation = async (req, res) => {
       const message = "Vous n'avez pas de réservation"
 
       appLogger.warn({
-        section: 'candidat-removeReservation',
+        section: 'candidat-unbookPlace',
         action: 'remove-reservation',
         candidatId,
         success,

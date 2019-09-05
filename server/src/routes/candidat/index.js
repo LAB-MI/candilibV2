@@ -7,9 +7,9 @@ import express from 'express'
 import { getMe, saveEvaluation } from './candidat.controllers'
 import { getCentres } from '../common/centre.controllers'
 import {
-  getPlaceOrReservations,
-  createReservation,
-  removeReservation,
+  getPlaces,
+  bookPlaceByCandidat,
+  unbookPlace,
 } from './places.controllers'
 
 const router = express.Router()
@@ -209,13 +209,13 @@ router.get('/centres', getCentres)
 /**
  * Après connexion, renvoie les infos des centres du département du candidat
  *
- * @callback getPlaceOrReservations
+ * @callback getPlaces
  * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_places}
  */
 
-router.get('/places/:id?', getPlaceOrReservations)
-router.post('/places', createReservation)
-router.delete('/places', removeReservation)
+router.get('/places/:id?', getPlaces)
+router.patch('/places', bookPlaceByCandidat)
+router.delete('/places', unbookPlace)
 router.post('/evaluations', saveEvaluation)
 
 export { preSignup, emailValidation } from './candidat.controllers'
