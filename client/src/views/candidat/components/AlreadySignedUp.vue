@@ -27,9 +27,9 @@
         @submit.prevent="sendMagicLink"
       >
         <div class="u-flex  u-flex--center">
-          <div class="form-input">
+          <div class="form-input  t-magic-link">
             <v-text-field
-              :label="`${getMsg('preinscription_email')}`"
+              :label="getMsg('preinscription_email')"
               prepend-icon="email"
               @focus="setEmailPlaceholder"
               @blur="removeEmailPlaceholder"
@@ -58,7 +58,7 @@
             color="#28a745"
           >
             <div class="submit-label">
-              {{getMsg('preinscription_bouton_magic_link') }}
+              {{getMsg('preinscription_bouton_magic_link')}}
             </div>
           </v-btn>
         </v-card-actions>
