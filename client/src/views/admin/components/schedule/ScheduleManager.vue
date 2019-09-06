@@ -3,6 +3,7 @@
     <page-title title="Gestion planning"/>
     <v-card>
       <v-switch
+        class="t-import-places"
         v-model="isImportPlacesActive"
         :label="`Import places`"
       ></v-switch>

@@ -13,7 +13,7 @@
       <div class="actions">
         <already-signed-up class="t-already-signed-up-button-bottom" test-class-suffix="bottom" />
         <router-link :to="{ name: 'candidat-presignup' }">
-          <v-btn color="success" class="t-presignup-button" >
+          <v-btn color="success">
             Se pré-inscrire
           </v-btn>
         </router-link>

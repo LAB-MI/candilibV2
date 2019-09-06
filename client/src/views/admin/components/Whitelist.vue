@@ -122,6 +122,7 @@
               </v-list-tile-action>
 
               <v-text-field
+                class="t-add-one-whitelist"
                 placeholder="jean@dupont.fr"
                 aria-placeholder="jean@dupont.fr"
                 v-if="adding"

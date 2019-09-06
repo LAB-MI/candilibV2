@@ -2,7 +2,7 @@
   <div>
     <div class="u-flex u-flex--center">
       <candilib-autocomplete
-        class="search-input"
+        class="search-input t-search-candidat"
         @selection="displayCandidatInfo"
         label="Candidats"
         hint="Chercher un candidat par son nom / NEPH / email"
