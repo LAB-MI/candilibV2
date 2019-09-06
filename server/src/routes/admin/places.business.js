@@ -72,7 +72,7 @@ const getPlaceStatus = (
 })
 
 /**
- * TODO:departement a modifier
+ * TODO: département à modifier
  * @param {*} data
  */
 const parseRow = async ({ data, departement }) => {

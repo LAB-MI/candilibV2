@@ -25,7 +25,11 @@
     "pretest": "npm run lint",
     "test:all": "run-s test test:client",
     "test:client": "cd .. ; cd client ; npm test",
-    "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit"
+    "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit",
+    "jsdoc:watch": "nodemon --watch src --watch README.md --exec 'npm run jsdoc'",
+    "jsdoc:serve": "browser-sync start --server --open --files out/**/* --ss out",
+    "jsdoc-dev": "run-p jsdoc:*",
+    "jsdoc": "jsdoc src README.md"
   },
   "keywords": [
     "Candidat",
@@ -72,6 +76,7 @@
     "babel-eslint": "^10.0.2",
     "babel-jest": "^24.9.0",
     "babel-plugin-dynamic-import-node": "^2.3.0",
+    "browser-sync": "^2.26.7",
     "dotenv": "^8.1.0",
     "eslint": "^6.2.1",
     "eslint-config-standard": "^14.0.1",
@@ -82,13 +87,16 @@
     "html-loader": "^0.5.5",
     "husky": "^3.0.4",
     "jest": "^24.9.0",
+    "jsdoc": "^3.6.3",
     "lint-staged": "^9.2.3",
     "mongodb-memory-server": "^5.2.0",
     "nodemon": "^1.19.1",
     "npm-run-all": "^4.1.5",
     "prettier-eslint-cli": "^5.0.0",
     "regenerator-runtime": "^0.13.3",
-    "supertest": "^4.0.2"
+    "supertest": "^4.0.2",
+    "swagger-jsdoc": "^3.4.0",
+    "swagger-ui-express": "^4.0.7"
   },
   "husky": {
     "hooks": {

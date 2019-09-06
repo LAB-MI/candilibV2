@@ -8,10 +8,12 @@ import {
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
+
 /**
- *
- * Si la date de debut (begin) n'est pas définit on recherche à partir de la date courante
- * @param {id, centre, departement, end} req { id: identifiant du centre, centre: nom du centre, departement: département reherché, begin: date du début de recherche, end : date de fin de recherche}
+ * @async
+ * @function getPlaces
+ * Si la date de debut (begin) n'est pas définie on recherche à partir de la date courante
+ * @param {{id, centre, departement, end}} req { id: identifiant du centre, centre: nom du centre, departement: département reherché, begin: date du début de recherche, end : date de fin de recherche}
  * @param {*} res
  */
 export async function getPlaces (req, res) {

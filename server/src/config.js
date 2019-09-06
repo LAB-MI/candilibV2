@@ -1,3 +1,7 @@
+/**
+ * Module de configuration de l'application
+ * @module
+ */
 import moment from 'moment'
 
 const isProduction = process.env.NODE_ENV === 'production'
@@ -34,6 +38,9 @@ const userStatusAccess = {
   [userStatuses.TECH]: [features.AURIGE],
 }
 
+/**
+ * Calcule la date d'expiration du token en ajoutant un jour à la date courante
+ */
 const getTokenExpiration = () => {
   const now = moment()
   const midnight = now

@@ -94,7 +94,7 @@ export async function preSignup (req, res) {
     const departement = await getDepartementFromWhitelist(candidatData)
 
     if (departement === null) {
-      const message = `L'adresse courriel renseignée (${email}) n'est pas dans la liste des invités.`
+      const message = `L'adresse courriel renseignée (${email}) n'est pas dans la liste des invités`
       appLogger.warn({
         section: 'candidat-pre-signup',
         action: 'check-email-is-in-whitelist',
@@ -260,8 +260,7 @@ export async function getMe (req, res) {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message,
-      error: JSON.stringify(error),
+      message: "Oups, un problème est survenu, impossible de valider votre adresse courriel. L'administrateur a été prévenu.",
     })
   }
 }
@@ -282,7 +281,7 @@ export async function emailValidation (req, res) {
     if (!candidat) {
       return sendErrorResponse(res, {
         loggerInfo,
-        message: 'Votre adresse courriel est inconnue.',
+        message: 'Votre adresse courriel est inconnue',
         status: 404,
       })
     }
@@ -292,11 +291,11 @@ export async function emailValidation (req, res) {
     if (isValidatedEmail) {
       appLogger.warn({
         ...loggerInfo,
-        description: `L'adresse courriel ${email} est déjà validée.`,
+        description: `L'adresse courriel ${email} est déjà validée`,
       })
       res.status(200).json({
         success: true,
-        message: 'Votre adresse courriel est déjà validée.',
+        message: 'Votre adresse courriel est déjà validée',
       })
       return
     }
@@ -323,10 +322,10 @@ export async function emailValidation (req, res) {
       description: error.message,
       error,
     })
-    res.status(422).json({
+    res.status(500).json({
       success: false,
       message:
-        'Impossible de valider votre adresse courriel : ' + error.message,
+        "Oups, un problème est survenu, impossible de valider votre adresse courriel. L'administrateur a été prévenu.",
     })
   }
 }

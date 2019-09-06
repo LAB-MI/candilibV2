@@ -15,7 +15,7 @@ export async function verifyToken (req, res, next) {
       description: 'Token absent',
     })
     return res.status(401).send({
-      message: 'Token absent',
+      message: "Vous n'êtes pas connecté, veuillez vous reconnecter",
       success: false,
     })
   }
