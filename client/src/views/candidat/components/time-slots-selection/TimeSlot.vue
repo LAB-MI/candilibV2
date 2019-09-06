@@ -116,7 +116,7 @@ export default {
           },
           {
             numberOfDaysBeforeDate: this.numberOfDaysBeforeDate,
-            displayDate: this.displayDate,
+            canBookFromAfterCancel: this.canBookFromAfterCancel,
           }
         )
       }
@@ -148,7 +148,7 @@ export default {
       return isPenaltyActive
     },
 
-    displayDate () {
+    canBookFromAfterCancel () {
       const {
         canBookFrom,
         date,

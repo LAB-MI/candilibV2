@@ -39,7 +39,7 @@ export default {
   preinscription_magic_link_envoyé: 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel',
   home_choix_du_centre: 'Choix du centre',
   home_choix_date_creneau_message_de_penalite: `Vous avez annulé ou modifié votre réservation à moins de {numberOfDaysBeforeDate} jours de la date d'examen.
-  Vous ne pouvez sélectionner une date qu'à partir du {displayDate}`,
+  Vous ne pouvez sélectionner une date qu'à partir du {canBookFromAfterCancel}`,
   recap_reservation_confirmee: 'Votre réservation est confirmée',
   recap_reservation_email_confirmee: 'Un email de confirmation vous a été envoyé à l\'adresse renseignée à l\'inscription',
   recap_reservation_last_date_to_cancel: 'Si vous annulez après le {lastDateToCancelString} vous serez pénalisé·e de {penaltyDaysNumber} jours',
