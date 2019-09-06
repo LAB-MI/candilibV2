@@ -1,4 +1,5 @@
 import api from '@/api'
+import { EXPIRED_TOKEN_MESSAGE } from '@/store/utils'
 import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '@/constants'
 import { SHOW_ERROR, SHOW_INFO } from './'
 
@@ -27,10 +28,17 @@ export const SIGNED_OUT_CANDIDAT = 'SIGNED_OUT_CANDIDAT'
 export const UNAUTHORIZED = 'UNAUTHORIZED'
 
 export default {
+  getters: {
+    statusCandidat: state => {
+      return state.statusCandidat
+    },
+  },
+
   state: {
     statusAdmin: null,
     statusCandidat: null,
     lastTokenValid: null,
+    isValidToken: false,
   },
 
   mutations: {
@@ -121,7 +129,7 @@ export default {
       const isCandidat = rootState.candidat && rootState.candidat.me
       if (isCandidat) {
         localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
-        await dispatch(SHOW_ERROR, `Votre connexion n'est plus valide, veuillez réutiliser le bouton "Déjà inscrit"`)
+        await dispatch(SHOW_ERROR, EXPIRED_TOKEN_MESSAGE)
       }
       const isAdmin = rootState.admin && rootState.admin.email
       if (isAdmin) {
