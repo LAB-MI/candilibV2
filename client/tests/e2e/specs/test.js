@@ -47,7 +47,7 @@ describe('Admin tests', () => {
       .should('contain', 'Veuillez remplir le formulaire')
   })
 
-  xit('Logins and search for candidate', () => {
+  it('Logins, search for candidate and disconnects', () => {
     cy.visit('http://localhost:8080/candilib/admin-login')
     cy.get('[type=text]')
       .type('admin@example.com')
@@ -69,9 +69,23 @@ describe('Admin tests', () => {
       .click()
     cy.get('h3')
       .should('contain', 'informations inspecteur')
+    cy.get('.layout.row.wrap').children()
+      .its('length')
+      .should('eq', 3)
+    cy.get('.hexagon-wrapper').contains('93')
+      .click()
+    cy.get('.layout.row.wrap').children()
+      .its('length')
+      .should('eq', 4)
+    cy.contains('exit_to_app')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes déconnecté·e')
+    cy.url()
+      .should('eq', 'http://localhost:8080/candilib/admin-login')
   })
 
-  xit('Logins and add or remove places', () => {
+  it('Logins and add or remove places', () => {
     cy.visit('http://localhost:8080/candilib/admin-login')
     cy.get('[type=text]')
       .type('admin@example.com')
@@ -129,7 +143,7 @@ describe('Admin tests', () => {
       .should('contain', '2019 08:00] a bien été crée.')
   })
 
-  xit('Logins and add to the whitelist', () => {
+  it('Logins and add to the whitelist', () => {
     cy.visit('http://localhost:8080/candilib/admin-login')
     cy.get('[type=text]')
       .type('admin@example.com')
@@ -162,7 +176,7 @@ describe('Admin tests', () => {
       .should('contain', 'jean@dupont.fr supprimé de la liste blanche')
   })
 
-  xit('Tests the import of csv files in the planning', () => {
+  it('Tests the import of csv files in the planning', () => {
     cy.visit('http://localhost:8080/candilib/admin-login')
     cy.get('[type=text]')
       .type('admin@example.com')
@@ -196,5 +210,31 @@ describe('Admin tests', () => {
     cy.visit('http://localhost:8080/candilib/admin/gestion-planning/5d6fc64524fc972a96223421/2019-10-07')
     cy.get('.name-ipcsr-wrap')
       .should('contain', 'DUPONTDU75')
+  })
+
+  xit('Tests Aurige import/export (not working)', () => {
+    cy.visit('http://localhost:8080/candilib/admin-login')
+    cy.get('[type=text]')
+      .type('admin@example.com')
+    cy.get('[type=password]')
+      .type('Admin*78')
+    cy.get('.submit-btn')
+      .click()
+    cy.contains('import_export')
+      .click()
+    // can't verify file download
+    // cy.get('.aurige-action--export [type=button]').click()
+    const filePath = '../../../../server/dev-setup/aurige.new.json'
+    const fileName = 'aurige.new.json'
+    cy.fixture(filePath).then(fileContent => {
+      console.log(fileContent)
+      cy.get('[type=file]').upload({ fileContent, fileName, mimeType: 'application/json' })
+    })
+    cy.get('.v-snack')
+      .should('contain', 'aurige.new.json prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Le fichier aurige.new.json a été synchronisé.')
   })
 })
