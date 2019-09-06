@@ -127,7 +127,7 @@ export default {
           },
           {
             dateDernierEchecPratique: getFrenchDateFromIso(this.dateDernierEchecPratique),
-            dateEchecPratique: this.dateEchecPratique,
+            canBookFromAfterFailure: this.canBookFromAfterFailure,
           }
         )
       }
@@ -168,7 +168,7 @@ export default {
       return ''
     },
 
-    dateEchecPratique () {
+    canBookFromAfterFailure () {
       const { canBookFrom, date, timeOutToRetry } = this.reservation.booked
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)

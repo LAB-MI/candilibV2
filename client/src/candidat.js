@@ -12,8 +12,7 @@ export default {
   confirmation_reservation_bouton_confirmation: 'Confirmer',
   confirmation_reservation_bouton_modification_confirmation: 'Confirmer',
   evaluate_now: 'Noter maintenant',
-  home_choix_date_creneau_message_echec_date_pratique: `Vous avez échoué le {dateDernierEchecPratique} à l'examen pratique du permis de conduire. Vous ne pouvez sélectionner une date qu'à partir du {dateEchecPratique}.
-    Vous ne pouvez sélectionner une date qu'à partir du {displayDate}`,
+  home_choix_date_creneau_message_echec_date_pratique: `Vous avez échoué le {dateDernierEchecPratique} à l'examen pratique du permis de conduire. Vous ne pouvez sélectionner une date qu'à partir du {canBookFromAfterFailure}.`,
   later: 'Plus tard',
   leave_a_comment: 'Laissez-nous un commentaire',
   preinscription_title: 'Candilib',
