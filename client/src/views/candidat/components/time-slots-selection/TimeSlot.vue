@@ -169,17 +169,9 @@ export default {
     },
 
     canBookFromAfterFailure () {
-      const { canBookFrom, date, timeOutToRetry } = this.reservation.booked
+      const { canBookFrom } = this.reservation.booked
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      }
-      if (
-        getFrenchLuxonCurrentDateTime() >
-        getFrenchLuxonFromIso(this.dateDernierEchecPratique)
-      ) {
-        return getFrenchDateFromLuxon(
-          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
-        )
       }
       return ''
     },
