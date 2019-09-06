@@ -132,9 +132,14 @@ export const synchroAurige = async buffer => {
         )
       }
 
-      const { email, departement, isValidatedByAurige } = candidat
+      const {
+        email,
+        departement,
+        isValidatedByAurige,
+        isValidatedEmail,
+      } = candidat
 
-      if (!candidat.isValidatedEmail) {
+      if (!isValidatedEmail) {
         if (isMoreThan2HoursAgo(candidat.presignedUpAt)) {
           const message = `Pour le ${departement}, Ce candidat ${email} sera archivé : email non vérifié depuis plus de 2h`
           appLogger.warn({ ...loggerInfoCandidat, description: message })
@@ -205,11 +210,19 @@ export const synchroAurige = async buffer => {
             }
           }
         } catch (error) {
+          message = `Pour le ${departement}, la date derniere non-réussite (${dateDernierNonReussite}) est erronée dans le fichier Aurige pour ce candidat ${email} `
           appLogger.warn({
             ...loggerInfoCandidat,
-            description: error.message,
+            description: message,
             error,
           })
+          return getCandidatStatus(
+            nomNaissance,
+            codeNeph,
+            'error',
+            'DATE_INVALID',
+            message
+          )
         }
 
         // Date Reussite Pratique
@@ -218,10 +231,18 @@ export const synchroAurige = async buffer => {
           if (dateReussitePratique && dateReussitePratique.isValid) {
             infoCandidatToUpdate.reussitePratique = dateReussitePratique
           } else {
+            message = `Pour le ${departement}, la date de réussite pratique ${reussitePratique} est erronée dans le fichier Aurige pour ce candidat ${email}`
             appLogger.warn({
               ...loggerInfoCandidat,
-              description: `Pour le ${departement}, Ce candidat ${email} a une date reussitePratique qui n'est pas une date`,
+              description: message,
             })
+            return getCandidatStatus(
+              nomNaissance,
+              codeNeph,
+              'error',
+              'DATE_INVALID',
+              message
+            )
           }
         }
 
@@ -232,14 +253,16 @@ export const synchroAurige = async buffer => {
         }
 
         // Date ETG
-        const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
-        if (dateTimeDateReussiteETG.isValid) {
-          infoCandidatToUpdate.dateReussiteETG = dateTimeDateReussiteETG
-        } else {
-          appLogger.warn({
-            ...loggerInfoCandidat,
-            description: `Pour le ${departement}, Ce candidat ${email} a une date reussite ETG qui n'est pas une date`,
-          })
+        if (dateReussiteETG) {
+          const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
+          if (dateTimeDateReussiteETG.isValid) {
+            infoCandidatToUpdate.dateReussiteETG = dateTimeDateReussiteETG
+          } else {
+            appLogger.warn({
+              ...loggerInfoCandidat,
+              description: `Pour le ${departement}, Ce candidat ${email} a une date reussite ETG qui n'est pas une date`,
+            })
+          }
         }
       }
 
