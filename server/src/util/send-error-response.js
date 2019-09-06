@@ -2,15 +2,15 @@ import { appLogger } from './'
 
 export const sendErrorResponse = (
   res,
-  { loggerInfo, description, status, otherData }
+  { loggerInfo, message, status, otherData }
 ) => {
   appLogger.info({
     ...loggerInfo,
-    description,
+    description: message,
   })
 
   return res.status(status || 500).json({
-    message: description,
+    message,
     success: false,
     ...otherData,
   })

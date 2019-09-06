@@ -282,7 +282,7 @@ export async function emailValidation (req, res) {
     if (!candidat) {
       return sendErrorResponse(res, {
         loggerInfo,
-        description: 'Votre adresse courriel est inconnue.',
+        message: 'Votre adresse courriel est inconnue.',
         status: 404,
       })
     }

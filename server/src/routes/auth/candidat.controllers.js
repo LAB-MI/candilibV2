@@ -106,7 +106,7 @@ export const checkCandidat = async (req, res) => {
       const status = 401
       return sendErrorResponse(res, {
         loggerInfo,
-        description: 'Candidat non trouvé',
+        message: 'Candidat non trouvé',
         status,
         otherData: { auth: false, isTokenValid: false },
       })
