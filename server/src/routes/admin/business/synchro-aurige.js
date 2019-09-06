@@ -84,29 +84,24 @@ export const synchroAurige = async buffer => {
   const result = retourAurige.map(async candidatAurige => {
     const loggerInfoCandidat = {
       ...loggerInfo,
-      candidatAurige,
+      candidatAurige: {
+        ...candidatAurige,
+        dateDernierNonReussite: candidatAurige.dateDernierNonReussite || null,
+        reussitePratique: candidatAurige.reussitePratique || null,
+        dateReussiteETG: candidatAurige.dateReussiteETG || null,
+      },
     }
     const {
       codeNeph,
       candidatExistant,
       dateReussiteETG,
       reussitePratique,
-      dateDernierEchecPratique,
       nbEchecsPratiques,
       dateDernierNonReussite,
       objetDernierNonReussite,
     } = candidatAurige
-    appLogger.debug({
-      func: 'synchroAurige',
-      codeNeph,
-      candidatExistant,
-      dateReussiteETG,
-      reussitePratique,
-      dateDernierEchecPratique,
-      nbEchecsPratiques,
-      dateDernierNonReussite,
-      objetDernierNonReussite,
-    })
+    appLogger.debug(loggerInfoCandidat)
+
     let nomNaissance = candidatAurige.nomNaissance
     if (!nomNaissance) {
       const message = `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}: Pas de nom de naissance dans le fichier Aurige`
@@ -125,7 +120,7 @@ export const synchroAurige = async buffer => {
     try {
       let candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
 
-      if (candidat === undefined || candidat === null) {
+      if (!candidat) {
         const message = `Ce candidat ${codeNeph}/${nomNaissance} est inconnu de Candilib`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         return getCandidatStatus(
@@ -137,7 +132,7 @@ export const synchroAurige = async buffer => {
         )
       }
 
-      const { email, departement } = candidat
+      const { email, departement, isValidatedByAurige } = candidat
 
       if (!candidat.isValidatedEmail) {
         if (isMoreThan2HoursAgo(candidat.presignedUpAt)) {
@@ -152,8 +147,8 @@ export const synchroAurige = async buffer => {
             message
           )
         }
-        const message = `Pour le ${departement}, ce candidat ${email} n'a pas validé son email, il est inscrit depuis moins de 2h`
 
+        const message = `Pour le ${departement}, ce candidat ${email} n'a pas validé son email, il est inscrit depuis moins de 2h`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         return getCandidatStatus(
           nomNaissance,
@@ -218,14 +213,16 @@ export const synchroAurige = async buffer => {
         }
 
         // Date Reussite Pratique
-        const dateReussitePratique = getFrenchLuxonFromISO(reussitePratique)
-        if (dateReussitePratique && dateReussitePratique.isValid) {
-          infoCandidatToUpdate.reussitePratique = dateReussitePratique
-        } else {
-          appLogger.warn({
-            ...loggerInfoCandidat,
-            description: `Pour le ${departement}, Ce candidat ${email} a une date reussitePratique qui n'est pas une date`,
-          })
+        if (reussitePratique) {
+          const dateReussitePratique = getFrenchLuxonFromISO(reussitePratique)
+          if (dateReussitePratique && dateReussitePratique.isValid) {
+            infoCandidatToUpdate.reussitePratique = dateReussitePratique
+          } else {
+            appLogger.warn({
+              ...loggerInfoCandidat,
+              description: `Pour le ${departement}, Ce candidat ${email} a une date reussitePratique qui n'est pas une date`,
+            })
+          }
         }
 
         // Nb echec
@@ -303,89 +300,7 @@ export const synchroAurige = async buffer => {
         )
       }
 
-      if (candidatExistant === CANDIDAT_EXISTANT) {
-        const { isValidatedByAurige } = candidat
-        const dateTimeEchec =
-          infoCandidatToUpdate.lastNoReussite &&
-          infoCandidatToUpdate.lastNoReussite.date
-        if (dateTimeEchec) {
-          const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
-          if (canBookFrom) {
-            infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
-            await removeResaNoAuthorize(candidat, canBookFrom, dateTimeEchec)
-          }
-        }
-
-        appLogger.debug({ ...loggerInfoCandidat, infoCandidatToUpdate })
-        // update data candidat
-        candidat.set(infoCandidatToUpdate)
-
-        return candidat
-          .save()
-          .then(async candidat => {
-            if (isValidatedByAurige) {
-              const message = `Pour le ${departement}, ce candidat ${email} a été mis à jour`
-              appLogger.info({ ...loggerInfoCandidat, description: message })
-              return getCandidatStatus(
-                nomNaissance,
-                codeNeph,
-                'success',
-                OK_UPDATED,
-                message
-              )
-            } else {
-              let message = `Pour le ${departement}, ce candidat ${email} a été validé`
-              appLogger.info({ ...loggerInfoCandidat, description: message })
-              const token = createToken(
-                candidat.id,
-                config.userStatuses.CANDIDAT
-              )
-
-              message = `Pour le ${departement}, envoi d'un magic link à ${email} `
-              appLogger.info({ ...loggerInfoCandidat, description: message })
-              try {
-                await sendMagicLink(candidat, token)
-                return getCandidatStatus(
-                  nomNaissance,
-                  codeNeph,
-                  'success',
-                  OK,
-                  message
-                )
-              } catch (error) {
-                message = `Pour le ${departement}, Impossible d'envoyer un magic link par un mail à ce candidat ${email}, il a été validé, cependant`
-
-                appLogger.error({
-                  ...loggerInfoCandidat,
-                  description: message,
-                  error,
-                })
-                return getCandidatStatus(
-                  nomNaissance,
-                  codeNeph,
-                  'warning',
-                  OK_MAIL_PB,
-                  message
-                )
-              }
-            }
-          })
-          .catch(err => {
-            const message = `Pour le ${departement}, Erreur de mise à jour pour ce candidat ${email}`
-            appLogger.error({
-              ...loggerInfoCandidat,
-              description: message,
-              error: err,
-            })
-            return getCandidatStatus(
-              nomNaissance,
-              codeNeph,
-              'error',
-              'UNKNOW_ERROR',
-              message
-            )
-          })
-      } else {
+      if (!infoCandidatToUpdate.isValidatedByAurige) {
         const message = `Pour le ${departement}, ce candidat ${email} n'a pas été traité. Cas inconnu`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
         return getCandidatStatus(
@@ -393,6 +308,81 @@ export const synchroAurige = async buffer => {
           codeNeph,
           'error',
           'UNKNOW_CASE',
+          message
+        )
+      }
+
+      const dateTimeEchec =
+        infoCandidatToUpdate.lastNoReussite &&
+        infoCandidatToUpdate.lastNoReussite.date
+      if (dateTimeEchec) {
+        const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
+        if (canBookFrom) {
+          infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
+          await removeResaNoAuthorize(candidat, canBookFrom, dateTimeEchec)
+        }
+      }
+
+      appLogger.debug({ ...loggerInfoCandidat, infoCandidatToUpdate })
+      // update data candidat
+      candidat.set(infoCandidatToUpdate)
+      try {
+        await candidat.save()
+        if (isValidatedByAurige) {
+          const message = `Pour le ${departement}, ce candidat ${email} a été mis à jour`
+          appLogger.info({ ...loggerInfoCandidat, description: message })
+          return getCandidatStatus(
+            nomNaissance,
+            codeNeph,
+            'success',
+            OK_UPDATED,
+            message
+          )
+        }
+
+        let message = `Pour le ${departement}, ce candidat ${email} a été validé`
+        appLogger.info({ ...loggerInfoCandidat, description: message })
+        const token = createToken(candidat.id, config.userStatuses.CANDIDAT)
+
+        try {
+          await sendMagicLink(candidat, token)
+          message = `Pour le ${departement}, un magic link est envoyé à ${email}`
+          appLogger.info({ ...loggerInfoCandidat, description: message })
+          return getCandidatStatus(
+            nomNaissance,
+            codeNeph,
+            'success',
+            OK,
+            message
+          )
+        } catch (error) {
+          message = `Pour le ${departement}, Impossible d'envoyer un magic link par un mail à ce candidat ${email}, il a été validé, cependant`
+
+          appLogger.error({
+            ...loggerInfoCandidat,
+            description: message,
+            error,
+          })
+          return getCandidatStatus(
+            nomNaissance,
+            codeNeph,
+            'warning',
+            OK_MAIL_PB,
+            message
+          )
+        }
+      } catch (err) {
+        const message = `Pour le ${departement}, Erreur de mise à jour pour ce candidat ${email}`
+        appLogger.error({
+          ...loggerInfoCandidat,
+          description: message,
+          error: err,
+        })
+        return getCandidatStatus(
+          nomNaissance,
+          codeNeph,
+          'error',
+          'UNKNOW_ERROR',
           message
         )
       }
