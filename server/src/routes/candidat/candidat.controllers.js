@@ -260,7 +260,8 @@ export async function getMe (req, res) {
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: "Oups, un problème est survenu, impossible de valider votre adresse courriel. L'administrateur a été prévenu.",
+      message:
+        "Oups, un problème est survenu, impossible de valider votre adresse courriel. L'administrateur a été prévenu.",
     })
   }
 }

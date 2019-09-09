@@ -1,6 +1,6 @@
 import express from 'express'
 
-import { getMe, emailValidation, saveEvaluation } from './candidat.controllers'
+import { getMe, saveEvaluation } from './candidat.controllers'
 import { getCentres } from '../common/centre.controllers'
 import { getPlaces } from './places.controllers'
 
@@ -33,32 +33,67 @@ const router = express.Router()
  *               $ref: '#/components/schemas/CandidatInfo'
  *
  *       401:
- *         description: Réponse du serveur en cas de JWT absent ou invalide
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/InfoObject'
- *                 - example:
- *                     success: false
- *                     message: Vous n'êtes pas connecté, veuillez vous reconnecter
+ *         $ref: '#/components/responses/InvalidTokenResponse'
  *
  *       500:
- *         description: Erreur inattendue
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/InfoObject'
- *                 - example:
- *                     success: false
- *                     message: Oups, un problème est survenu, impossible de valider votre adresse courriel. L'administrateur a été prévenu.
+ *         $ref: '#/components/responses/UnknownErrorResponse'
  *
  */
 
 router.get('/me', getMe)
 
-router.put('/me', emailValidation)
+/**
+ * @swagger
+ *
+ * /candidat/centres:
+ *   get:
+ *     summary: Récupération de mes infos des centres du département du candidat
+ *     description: Après connexion, récupération des infos des centres du département du candidat
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: departement
+ *         schema:
+ *           type: string
+ *           example: '93'
+ *         required: true
+ *         description: Département du candidat
+ *       - in: query
+ *         name: nom
+ *         schema:
+ *           type: string
+ *           example: 'Rosny-sous-Bois'
+ *         required: false
+ *         description: Nom d'un centre
+ *     responses:
+ *       200:
+ *         description:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/CentresInfo'
+ *
+ *       400:
+ *         description: Paramètre(s) manquant(s)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: 'Le code de département est manquant, Veuillez choisir un code département'
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
 router.get('/centres', getCentres)
 router.get('/places/:id?', getPlaces)
 router.get('/reservations', getReservations)

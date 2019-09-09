@@ -38,6 +38,45 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *         message:
  *           type: string
  *           description: Un message compréhensible par l'usager
+ *
+ *     GeolocObject:
+ *       type: object
+ *       required:
+ *         - coordinates
+ *         - type
+ *       properties:
+ *         coordinates:
+ *           type: Array
+ *           example: [ 2.552847, 48.962099 ]
+ *         type:
+ *           type: string
+ *           example: "Point"
+ *
+ *     CenterObject:
+ *       type: object
+ *       required:
+ *         - geoloc
+ *         - _id
+ *         - nom
+ *         - label
+ *         - adresse
+ *         - departement
+ *       properties:
+ *         geoloc:
+ *           $ref: '#/components/schemas/GeolocObject'
+ *         _id:
+ *           type: string
+ *           description: identifiant du centre
+ *         nom:
+ *           type: string
+ *           description: Nom du centre (de la ville du centre)
+ *         label:
+ *           type: string
+ *           description: Information complémentaire pour retrouver le point de rencontre du centre
+ *         departement:
+ *           type: string
+ *           description: Département du centre
+ *
  *     CandidatInfo:
  *       type: object
  *       properties:
@@ -65,7 +104,7 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *               description: Prénom du candidat
  *             "departement":
  *               type: string
- *               description: Départementr du candidat
+ *               description: Département du candidat
  *       example:
  *         "candidat":
  *           "adresse": "40 Avenue des terroirs de France 93000 Villepinte"
@@ -75,6 +114,36 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           "portable": "0603765291"
  *           "prenom": "MAY"
  *           "departement": "93"
+
+ *     CentresInfo:
+ *       type: object
+ *       properties:
+ *         candidat:
+ *           type: string
+ *
+ *   responses:
+ *     InvalidTokenResponse:
+ *       description: Réponse du serveur en cas de JWT absent ou invalide
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Vous n'êtes pas connecté, veuillez vous reconnecter
+
+ *     UnknownErrorResponse:
+ *       description: Erreur inattendue
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Oups, un problème est survenu. L'administrateur a été prévenu.
+
  *
  */
 
@@ -150,11 +219,21 @@ app.get(`${apiPrefix}/version`, function getVersion (req, res) {
   res.send(npmVersion.version)
 })
 
+/**
+ * Utiliser morgan pour journaliser toutes les requêtes en format JSON
+ */
 app.use(morgan(jsonFormat, { stream: loggerStream }))
+
+/**
+ * Analyser le corps des requêtes, des formulaires multipart et les fichiers téléversés
+ */
 app.use(bodyParser.json({ limit: '20mb' }))
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 app.use(fileupload({ limits: { fileSize: 50 * 1024 * 1024 } }))
 
+/**
+ * Traiter toutes les requêtes dont le chemin commençe par le préfix défini correspondant à la version majeure de l'API
+ */
 app.use(apiPrefix, routes)
 
 export default app

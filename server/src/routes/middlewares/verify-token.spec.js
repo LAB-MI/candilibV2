@@ -25,7 +25,7 @@ describe('Verify-token', () => {
     // Then
     expect(status).toBe(401)
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', 'Token absent')
+    expect(body).toHaveProperty('message', "Vous n'êtes pas connecté, veuillez vous reconnecter")
   })
 
   it('Should respond a json with a message for invalid token', async () => {
