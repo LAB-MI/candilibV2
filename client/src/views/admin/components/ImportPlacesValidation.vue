@@ -81,7 +81,7 @@ export default {
         field: 'message',
         cellStyle: { 'white-space': 'normal', 'line-height': 'normal' },
         autoHeight: true,
-        width: '50%',
+        width: 500,
       },
     ]
     this.gridOptions = {
