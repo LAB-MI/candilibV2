@@ -116,7 +116,7 @@ export default {
           },
           {
             numberOfDaysBeforeDate: this.numberOfDaysBeforeDate,
-            displayDate: this.displayDate,
+            canBookFromAfterCancel: this.canBookFromAfterCancel,
           }
         )
       }
@@ -127,7 +127,7 @@ export default {
           },
           {
             dateDernierEchecPratique: getFrenchDateFromIso(this.dateDernierEchecPratique),
-            dateEchecPratique: this.dateEchecPratique,
+            canBookFromAfterFailure: this.canBookFromAfterFailure,
           }
         )
       }
@@ -148,7 +148,7 @@ export default {
       return isPenaltyActive
     },
 
-    displayDate () {
+    canBookFromAfterCancel () {
       const {
         canBookFrom,
         date,
@@ -168,18 +168,10 @@ export default {
       return ''
     },
 
-    dateEchecPratique () {
-      const { canBookFrom, date, timeOutToRetry } = this.reservation.booked
+    canBookFromAfterFailure () {
+      const { canBookFrom } = this.reservation.booked
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      }
-      if (
-        getFrenchLuxonCurrentDateTime() >
-        getFrenchLuxonFromIso(this.dateDernierEchecPratique)
-      ) {
-        return getFrenchDateFromLuxon(
-          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
-        )
       }
       return ''
     },

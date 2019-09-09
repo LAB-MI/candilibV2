@@ -12,8 +12,7 @@ export default {
   confirmation_reservation_bouton_confirmation: 'Confirmer',
   confirmation_reservation_bouton_modification_confirmation: 'Confirmer',
   evaluate_now: 'Noter maintenant',
-  home_choix_date_creneau_message_echec_date_pratique: `Vous avez échoué le {dateDernierEchecPratique} à l'examen pratique du permis de conduire. Vous ne pouvez sélectionner une date qu'à partir du {dateEchecPratique}.
-    Vous ne pouvez sélectionner une date qu'à partir du {displayDate}`,
+  home_choix_date_creneau_message_echec_date_pratique: `Vous avez échoué le {dateDernierEchecPratique} à l'examen pratique du permis de conduire. Vous ne pouvez sélectionner une date qu'à partir du {canBookFromAfterFailure}.`,
   later: 'Plus tard',
   leave_a_comment: 'Laissez-nous un commentaire',
   preinscription_title: 'Candilib',
@@ -40,7 +39,7 @@ export default {
   preinscription_magic_link_envoyé: 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel',
   home_choix_du_centre: 'Choix du centre',
   home_choix_date_creneau_message_de_penalite: `Vous avez annulé ou modifié votre réservation à moins de {numberOfDaysBeforeDate} jours de la date d'examen.
-  Vous ne pouvez sélectionner une date qu'à partir du {displayDate}`,
+  Vous ne pouvez sélectionner une date qu'à partir du {canBookFromAfterCancel}`,
   recap_reservation_confirmee: 'Votre réservation est confirmée',
   recap_reservation_email_confirmee: 'Un email de confirmation vous a été envoyé à l\'adresse renseignée à l\'inscription',
   recap_reservation_last_date_to_cancel: 'Si vous annulez après le {lastDateToCancelString} vous serez pénalisé·e de {penaltyDaysNumber} jours',
