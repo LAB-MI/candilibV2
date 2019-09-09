@@ -32,6 +32,7 @@
 
           <div>
             <whitelisted
+              class="t-whitelist-search"
               v-for="whitelisted in matchingList"
               :key="whitelisted._id"
               :whitelisted="whitelisted"
@@ -293,7 +294,7 @@
 
       <v-card v-show="whitelist.updateResult && whitelist.updateResult.length">
         <h3>Résultat de l'opération d'ajout par lot</h3>
-        <v-list>
+        <v-list class="t-whitelist-batch-result">
           <v-list-tile v-for="result in whitelist.updateResult" :key="result.email">
             <v-icon
               :color="result.code === 201 ? 'success' : 'error'"

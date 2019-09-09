@@ -25,6 +25,7 @@
     </div>
     <v-expand-transition>
     <profile-info
+      class="t-result-candidat"
       title= 'Informations candidats'
       v-if="profileInfo"
       :profileInfo="profileInfo"

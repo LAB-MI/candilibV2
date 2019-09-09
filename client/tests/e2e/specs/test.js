@@ -1,7 +1,7 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-describe('Candidat tests', () => {
-  it('Visits the candidat already signed up form', () => {
+describe('Candidate tests', () => {
+  it('Visits the candidate already signed up form', () => {
     cy.visit('http://localhost:8080/candilib/qu-est-ce-que-candilib')
     cy.get('.t-already-signed-up-button-top')
       .should('contain', 'Déjà Inscrit ?')
@@ -14,7 +14,7 @@ describe('Candidat tests', () => {
       .should('contain', 'Utilisateur non reconnu')
   })
 
-  it('Visits the candidat subscribe form', () => {
+  it('Visits the candidate subscribe form', () => {
     cy.visit('http://localhost:8080/candilib/qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
@@ -128,18 +128,29 @@ describe('Admin tests', () => {
       .click()
     cy.get('h2')
       .should('contain', 'Tableau de bord')
+    // Searches for candidate MCAFFEE
     cy.get('.t-search-candidat [type=text]')
       .type('Mcaf')
     cy.contains('MCAFFEE')
       .click()
     cy.get('h3')
       .should('contain', 'Informations candidats')
+    cy.get('.t-result-candidat')
+      .contains('Nom')
+      .parent()
+      .should('contain', 'MCAFFEE')
+    // Searches for inspector DUPONDDU75
     cy.get('.t-search-inspecteur [type=text]')
       .type('duponddu75')
     cy.contains('DUPONDDU75')
       .click()
     cy.get('h3')
       .should('contain', 'informations inspecteur')
+    cy.get('.t-result-inspecteur')
+      .contains('Nom')
+      .parent()
+      .should('contain', 'DUPONDDU75')
+    // Verifies the number of centers in 75 and 93
     cy.get('.layout.row.wrap').children()
       .its('length')
       .should('eq', 3)
@@ -148,6 +159,7 @@ describe('Admin tests', () => {
     cy.get('.layout.row.wrap').children()
       .its('length')
       .should('eq', 4)
+    // Disconnects from the app
     cy.contains('exit_to_app')
       .click()
     cy.get('.v-snack')
@@ -243,28 +255,77 @@ describe('Admin tests', () => {
       .type('Admin*78')
     cy.get('.submit-btn')
       .click()
+    // Visits the whitelist
     cy.visit('http://localhost:8080/candilib/admin/whitelist')
     cy.get('h2')
       .should('contain', 'Liste blanche')
+    // Adds jean@dupont.fr
     cy.contains('Ajouter une adresse courriel')
       .click()
     cy.get('.t-add-one-whitelist [type=text]')
       .type('jean@dupont.fr{enter}')
     cy.get('.v-snack')
       .should('contain', 'jean@dupont.fr ajouté à la liste blanche')
-    cy.get('.t-add-one-whitelist [type=text]')
-      .blur()
+    // Tries to add bad addresses
+    cy.contains('Ajouter un lot d\'adresse courriel')
+      .click()
+    cy.get('#whitelist-batch-textarea')
+      .type('test.com\ntest@.com\n@test.com\ntest@test\ntest@test.t\n')
+    cy.contains('Enregistrer ces adresses')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Aucun email n\'a pu être ajouté à la liste blanche')
+    cy.get('.t-whitelist-batch-result')
+      .should('contain', 'Adresse invalide')
+      .and('not.contain', 'Adresse courriel existante')
+      .and('not.contain', 'Adresse enregistrée')
+    // Add some addresses
+    cy.contains('Ajouter un lot d\'adresse courriel')
+      .click()
+    cy.get('#whitelist-batch-textarea')
+      .type('test@example.com\njean@dupont.FR')
+    cy.contains('Enregistrer ces adresses')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Certains emails n\'ont pas pu être ajoutés à la liste blanche')
+    cy.get('.t-whitelist-batch-result')
+      .should('contain', 'Adresse enregistrée')
+      .and('contain', 'Adresse courriel existante')
+      .and('not.contain', 'Adresse invalide')
+    // Searches for jean@dupont.fr
     cy.get('.search-input [type=text]')
-      .type('jean@')
+      .type('jEAn@')
     cy.get('.v-select-list').contains('jean@dupont.fr')
       .click()
     cy.get('h4')
       .should('contain', 'Adresses correspondant à la recherche (max 5)')
+    // Test for dblclick is not functionning
+    /* cy.get('.t-whitelist-search')
+      .contains('jean@dupont.fr')
+      .dblclick()
+    cy.get('.v-snack')
+      .should('contain', 'L\'email jean@dupont.fr a été copié dans le presse-papier') */
+    // Deletes jean@dupont.fr
+    cy.wait(1000)
     cy.contains('delete')
       .click()
+    cy.get('.v-dialog')
+      .should('contain', 'Voulez-vous vraiment supprimer l\'adresse jean@dupont.fr de la whitelist ?')
     cy.contains('Oui, supprimer')
       .click()
     cy.get('.v-snack')
       .should('contain', 'jean@dupont.fr supprimé de la liste blanche')
+    // Deletes test@example.com
+    cy.get('.whitelist-grid')
+      .contains('test@example.com')
+      .parents('[role="listitem"]')
+      .contains('delete')
+      .click()
+    cy.get('.v-dialog')
+      .should('contain', 'Voulez-vous vraiment supprimer l\'adresse test@example.com de la whitelist ?')
+    cy.contains('Oui, supprimer')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'test@example.com supprimé de la liste blanche')
   })
 })

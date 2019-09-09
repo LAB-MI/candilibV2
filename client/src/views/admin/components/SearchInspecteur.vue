@@ -25,6 +25,7 @@
     </div>
     <v-expand-transition>
       <profile-info
+      class="t-result-inspecteur"
       title='informations inspecteur'
       v-if="displayInspecteur"
       :profileInfo="profileInfo"
