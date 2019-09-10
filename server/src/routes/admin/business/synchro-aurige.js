@@ -412,7 +412,7 @@ export const synchroAurige = async buffer => {
         )
       }
     } catch (error) {
-      const message = `Erreur dans la recherche du candidat pour ce candidat ${codeNeph}/${nomNaissance}`
+      const message = `Erreur inconnue dans traitement de ce candidat ${codeNeph}/${nomNaissance}`
       appLogger.error({ ...loggerInfoCandidat, description: message, error })
       return getCandidatStatus(
         nomNaissance,
