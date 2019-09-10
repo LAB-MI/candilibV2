@@ -18,11 +18,11 @@ export const getCancelBookingTemplate = (
 Si vous avez annulé ${config.daysForbidCancel} jours avant la date prévue,
   vous pourrez librement choisir <a href=${urlRESA}>un autre créneau disponible</a>.
   Si vous avez annulé à moins de ${
-    config.daysForbidCancel
-  } jours de la date prévue,
+  config.daysForbidCancel
+} jours de la date prévue,
   un délai de repassage de ${
-    config.timeoutToRetry
-  } jours à partir de la date de réservation annulée, vous sera appliqué.
+  config.timeoutToRetry
+} jours à partir de la date de réservation annulée, vous sera appliqué.
   Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>
 </p>
 <br>
