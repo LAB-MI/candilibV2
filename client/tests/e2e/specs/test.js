@@ -1,14 +1,20 @@
 // https://docs.cypress.io/api/introduction/api.html
+
+// Used constants
 const inspecteur = 'DUPONT03DU75'
 const candidat = 'ZANETTI'
+const centre = 'Noisy le Grand'
 const email = 'jean@dupont.fr'
 const adminLogin = 'admin@example.com'
 const adminPass = 'Admin*78'
-const placeDate = '2019-10-07'
+const placeDate = '2019-10-08'
+const candilibAddress = 'http://localhost:8080/candilib/'
+const aurigeFilePath = '../../../../server/dev-setup/aurige.new.json'
+const planningFilePath = '../../../../server/dev-setup/planning-75.csv'
 
 describe('Candidate tests', () => {
   it('Visits the candidate already signed up form', () => {
-    cy.visit('http://localhost:8080/candilib/qu-est-ce-que-candilib')
+    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.get('.t-already-signed-up-button-top')
       .should('contain', 'Déjà Inscrit ?')
       .click()
@@ -21,7 +27,7 @@ describe('Candidate tests', () => {
   })
 
   it('Tries to pre-signup with a not whitelisted address', () => {
-    cy.visit('http://localhost:8080/candilib/qu-est-ce-que-candilib')
+    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -66,6 +72,8 @@ describe('Candidate tests', () => {
       .should('contain', 'Mentions légales')
     cy.contains('exit_to_app')
       .click()
+    cy.get('h2')
+      .should('contain', 'Réservez votre place d\'examen')
     // Tests the display of the F.A.Q.
     cy.contains('Une question')
       .click()
@@ -84,7 +92,7 @@ describe('Candidate tests', () => {
 
 describe('Admin tests', () => {
   it('Fails to login with invalid password', () => {
-    cy.visit('http://localhost:8080/candilib/admin-login')
+    cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type(adminLogin)
     cy.get('[type=password]')
@@ -96,7 +104,7 @@ describe('Admin tests', () => {
   })
 
   it('Fails to login with invalid email', () => {
-    cy.visit('http://localhost:8080/candilib/admin-login')
+    cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type('admin@example')
     cy.get('[type=password]')
@@ -108,7 +116,7 @@ describe('Admin tests', () => {
   })
 
   it('Tests Aurige import/export', () => {
-    cy.visit('http://localhost:8080/candilib/admin-login')
+    cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type(adminLogin)
     cy.get('[type=password]')
@@ -122,9 +130,8 @@ describe('Admin tests', () => {
     cy.get('.ag-overlay')
       .should('contain', 'No Rows To Show')
     // Uploads the JSON file
-    const filePath = '../../../../server/dev-setup/aurige.new.json'
-    const fileName = 'aurige.new.json'
-    cy.fixture(filePath).then(fileContent => {
+    const fileName = 'aurige.json'
+    cy.fixture(aurigeFilePath).then(fileContent => {
       cy.get('.input-file-container [type=file]')
         .upload({
           fileContent: JSON.stringify(fileContent),
@@ -133,18 +140,18 @@ describe('Admin tests', () => {
         })
     })
     cy.get('.v-snack')
-      .should('contain', 'aurige.new.json prêt à être synchronisé')
+      .should('contain', 'aurige.json prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click()
     cy.get('.v-snack')
-      .should('contain', 'Le fichier aurige.new.json a été synchronisé.')
+      .should('contain', 'Le fichier aurige.json a été synchronisé.')
     // Verifies that the candidate is present
     cy.get('.ag-cell')
       .should('contain', 'candidat')
   })
 
   it('Tests the import of csv files in the planning', () => {
-    cy.visit('http://localhost:8080/candilib/admin-login')
+    cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type(adminLogin)
     cy.get('[type=password]')
@@ -152,9 +159,16 @@ describe('Admin tests', () => {
     cy.get('.submit-btn')
       .click()
     // Goes to where the places are
-    cy.visit('http://localhost:8080/candilib/admin/gestion-planning/0/' + placeDate)
+    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
+    cy.get('.v-tabs')
+      .contains(centre)
+      .click({ force: true })
+    cy.get('.hexagon-wrapper').contains('93')
+      .click()
+    cy.get('.hexagon-wrapper').contains('75')
+      .click()
     // Removes the inspector's places
-    cy.get('.name-ipcsr-wrap')
+    cy.get('.v-window-item[style=""]')
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.contains('delete')
@@ -170,24 +184,26 @@ describe('Admin tests', () => {
     // Imports the places
     cy.get('.t-import-places [type=checkbox]')
       .check({ force: true })
-    const fileName = '../../../../server/dev-setup/planning-75.csv'
-    cy.fixture(fileName).then(fileContent => {
+    const fileName = 'planning.csv'
+    cy.fixture(planningFilePath).then(fileContent => {
       cy.get('[type=file]').upload({ fileContent, fileName, mimeType: 'text/csv' })
     })
     cy.get('.v-snack')
-      .should('contain', 'planning-75.csv prêt à être synchronisé')
+      .should('contain', 'planning.csv prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click({ force: true })
     cy.get('.v-snack', { timeout: 10000 })
-      .should('contain', 'Le fichier planning-75.csv a été traité pour le departement 75.')
-    cy.visit('http://localhost:8080/candilib/admin/gestion-planning/0/' + placeDate)
+      .should('contain', 'Le fichier planning.csv a été traité pour le departement 75.')
     // The inspector should be back
+    cy.get('.v-tabs')
+      .contains(centre)
+      .click({ force: true })
     cy.get('.name-ipcsr-wrap')
       .should('contain', inspecteur)
   })
 
-  it('Searchs for candidate and disconnects', () => {
-    cy.visit('http://localhost:8080/candilib/admin-login')
+  it('Searches for candidate and disconnects', () => {
+    cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type(adminLogin)
     cy.get('[type=password]')
@@ -196,6 +212,8 @@ describe('Admin tests', () => {
       .click()
     cy.get('h2')
       .should('contain', 'Tableau de bord')
+    cy.get('h3')
+      .should('contain', adminLogin.split('@')[0])
     // Searches for candidate
     cy.get('.t-search-candidat [type=text]')
       .type(candidat)
@@ -233,11 +251,11 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
     cy.url()
-      .should('eq', 'http://localhost:8080/candilib/admin-login')
+      .should('eq', candilibAddress + 'admin-login')
   })
 
   it('Adds and removes places', () => {
-    cy.visit('http://localhost:8080/candilib/admin-login')
+    cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type(adminLogin)
     cy.get('[type=password]')
@@ -263,7 +281,7 @@ describe('Admin tests', () => {
           .should('contain', ymd[2] + '/' + ymd[1] + '/' + ymd[0])
       })
     // Goes to another date and checks the url
-    cy.visit('http://localhost:8080/candilib/admin/gestion-planning/0/' + placeDate)
+    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
     cy.get('.hexagon-wrapper').contains('75')
       .click()
     cy.url()
@@ -275,7 +293,12 @@ describe('Admin tests', () => {
           .should('contain', ymd[2] + '/' + ymd[1] + '/' + ymd[0])
       })
     // Deletes the first place
-    cy.contains(inspecteur)
+    cy.get('.v-tabs')
+      .contains(centre)
+      .click({ force: true })
+    cy.wait(1000)
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.t-select-place')
           .contains('check_circle')
@@ -286,7 +309,8 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'a bien été supprimée de la base')
     // Add the first place
-    cy.contains(inspecteur)
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.t-select-place')
           .contains('block')
@@ -297,7 +321,8 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'a bien été crée')
     // Add candidate to the first place
-    cy.contains(inspecteur)
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.t-select-place')
           .contains('check_circle')
@@ -308,6 +333,8 @@ describe('Admin tests', () => {
           .type(candidat)
         cy.root().parents().contains(candidat)
           .click()
+        cy.get('.place-details')
+          .should('contain', centre)
         cy.contains('Valider')
           .click()
       })
@@ -315,7 +342,8 @@ describe('Admin tests', () => {
       .should('contain', candidat)
       .and('contain', 'a bien été affecté à la place')
     // Removes the candidate from the place
-    cy.contains(inspecteur)
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.t-select-place')
           .contains('face')
@@ -328,7 +356,8 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'La réservation choisie a été annulée. Un courriel n\'a pas pu être envoyé au candidat.')
     // Add the place back for retry-ability
-    cy.contains(inspecteur)
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.t-select-place')
           .contains('block')
@@ -341,7 +370,7 @@ describe('Admin tests', () => {
   })
 
   it('Adds and removes from the whitelist', () => {
-    cy.visit('http://localhost:8080/candilib/admin-login')
+    cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type(adminLogin)
     cy.get('[type=password]')
@@ -349,7 +378,7 @@ describe('Admin tests', () => {
     cy.get('.submit-btn')
       .click()
     // Visits the whitelist
-    cy.visit('http://localhost:8080/candilib/admin/whitelist')
+    cy.visit(candilibAddress + 'admin/whitelist')
     cy.get('h2')
       .should('contain', 'Liste blanche')
     // Adds the email
@@ -392,7 +421,7 @@ describe('Admin tests', () => {
       .click()
     cy.get('h4')
       .should('contain', 'Adresses correspondant à la recherche (max 5)')
-    // Test for dblclick is not functionning
+    // Test for dblclick (not functionning)
     /* cy.get('.t-whitelist-search')
       .contains(email)
       .dblclick()
