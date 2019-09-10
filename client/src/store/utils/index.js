@@ -1,8 +1,6 @@
 import { getFrenchLuxonCurrentDateTime, getFrenchLuxonFromIso } from '@/util'
 import { valideCreneaux as validCrenx } from '../../util/creneauSetting'
 
-export const EXPIRED_TOKEN_MESSAGE = `Votre connexion n'est plus valide, veuillez réutiliser le bouton "Déjà inscrit"`
-
 export const getDayString = isoDate => {
   return `${getFrenchLuxonFromIso(isoDate).weekdayLong} ${getFrenchLuxonFromIso(isoDate).toFormat(
     'dd LLLL yyyy'
