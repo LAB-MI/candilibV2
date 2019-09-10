@@ -1,4 +1,3 @@
-
 /**
  * Module de démarrage du serveur
  * @module index
@@ -21,6 +20,8 @@ const PORT = process.env.PORT || 8000
 /**
  * Démarre le serveur (API),
  * mais uniquement si la connexion à la base de données MongoDB s'est effectuée
+ * @async
+ * @function startServer
  */
 async function startServer () {
   try {

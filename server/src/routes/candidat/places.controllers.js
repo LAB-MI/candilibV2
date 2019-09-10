@@ -1,3 +1,8 @@
+/**
+ * Modules concernant les actions possibles du candidat sur les places
+ * @module routes/candidat/places-controllers
+ */
+
 import { appLogger } from '../../util'
 import {
   getDatesByCentre,
@@ -10,11 +15,44 @@ export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
 
 /**
+ * Retourne soit la place dont l'Id est
+ * Si la date de debut (begin) n'est pas définie on recherche à partir de la date courante
+ *
  * @async
  * @function getPlaces
- * Si la date de debut (begin) n'est pas définie on recherche à partir de la date courante
- * @param {{id, centre, departement, end}} req { id: identifiant du centre, centre: nom du centre, departement: département reherché, begin: date du début de recherche, end : date de fin de recherche}
- * @param {*} res
+ * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_places__placeId_}
+
+ * @param {object} req Est attendu dans la requête :
+ * ```javascript
+ * {
+ *   params: { id : "identifiant du centre" },
+ *   query: {
+ *     begin: "date du début de recherche",
+ *     end : "date de fin de recherche",
+ *   }
+ * }
+ * ```
+ * Ou bien
+ * ```javascript
+ * {
+ *   query: {
+ *     centre: "nom du centre",
+ *     departement: "département reherché",
+ *     begin: "date du début de recherche",
+ *     end : "date de fin de recherche",
+ *   }
+ * }
+ * ```
+ * Ou bien
+ * ```javascript
+ * {
+ *   params: { id : "identifiant du centre" },
+ *   query: {
+ *     date : "date du jour de recherche",
+ *   }
+ * }
+ * ```
+ * @param {object} res
  */
 export async function getPlaces (req, res) {
   const _id = req.params.id
