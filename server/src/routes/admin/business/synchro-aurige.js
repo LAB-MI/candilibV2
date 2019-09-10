@@ -139,6 +139,7 @@ export const synchroAurige = async buffer => {
         isValidatedEmail,
       } = candidat
 
+      // Vérifier la validité de l'e-mail
       if (!isValidatedEmail) {
         if (isMoreThan2HoursAgo(candidat.presignedUpAt)) {
           const message = `Pour le ${departement}, Ce candidat ${email} sera archivé : email non vérifié depuis plus de 2h`
@@ -164,6 +165,7 @@ export const synchroAurige = async buffer => {
         )
       }
 
+      // Vérifier l'état du candidat et la validité des valeurs provenant d'aurige
       let aurigeFeedback
       let message
       if (candidatExistant === CANDIDAT_NOK) {
@@ -192,6 +194,7 @@ export const synchroAurige = async buffer => {
         aurigeFeedback = EPREUVE_PRATIQUE_OK
       }
 
+      // Preparer les valeurs pour la mise à jours du candidat
       const infoCandidatToUpdate = {}
       infoCandidatToUpdate.isValidatedByAurige =
         candidatExistant === CANDIDAT_EXISTANT
@@ -227,6 +230,7 @@ export const synchroAurige = async buffer => {
 
         // Date Reussite Pratique
         if (reussitePratique) {
+          // TODO: A optimiser, getFrenchLuxonFromISO de cette date est appelée 2 fois
           const dateReussitePratique = getFrenchLuxonFromISO(reussitePratique)
           if (dateReussitePratique && dateReussitePratique.isValid) {
             infoCandidatToUpdate.reussitePratique = dateReussitePratique
@@ -254,6 +258,7 @@ export const synchroAurige = async buffer => {
 
         // Date ETG
         if (dateReussiteETG) {
+          // TODO: A optimiser, getFrenchLuxonFromISO de cette date est appelée 3 fois
           const dateTimeDateReussiteETG = getFrenchLuxonFromISO(dateReussiteETG)
           if (dateTimeDateReussiteETG.isValid) {
             infoCandidatToUpdate.dateReussiteETG = dateTimeDateReussiteETG
@@ -266,6 +271,7 @@ export const synchroAurige = async buffer => {
         }
       }
 
+      // Archiver le candidat et envoi de mail
       if (aurigeFeedback) {
         let dateFeedBack
         switch (aurigeFeedback) {
@@ -323,6 +329,7 @@ export const synchroAurige = async buffer => {
         )
       }
 
+      // Valeur inconnue provenant d'aurige
       if (!infoCandidatToUpdate.isValidatedByAurige) {
         const message = `Pour le ${departement}, ce candidat ${email} n'a pas été traité. Cas inconnu`
         appLogger.warn({ ...loggerInfoCandidat, description: message })
@@ -335,6 +342,7 @@ export const synchroAurige = async buffer => {
         )
       }
 
+      // Vérifier et affecter la pénalité de non-réussite
       const dateTimeEchec =
         infoCandidatToUpdate.lastNoReussite &&
         infoCandidatToUpdate.lastNoReussite.date
@@ -347,10 +355,11 @@ export const synchroAurige = async buffer => {
       }
 
       appLogger.debug({ ...loggerInfoCandidat, infoCandidatToUpdate })
-      // update data candidat
-      candidat.set(infoCandidatToUpdate)
       try {
+        // mise à jours du candidat
+        candidat.set(infoCandidatToUpdate)
         await candidat.save()
+        // Candidat déjà validé
         if (isValidatedByAurige) {
           const message = `Pour le ${departement}, ce candidat ${email} a été mis à jour`
           appLogger.info({ ...loggerInfoCandidat, description: message })
@@ -363,6 +372,7 @@ export const synchroAurige = async buffer => {
           )
         }
 
+        // candidat validé
         let message = `Pour le ${departement}, ce candidat ${email} a été validé`
         appLogger.info({ ...loggerInfoCandidat, description: message })
         const token = createToken(candidat.id, config.userStatuses.CANDIDAT)
