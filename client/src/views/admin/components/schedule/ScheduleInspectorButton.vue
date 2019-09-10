@@ -4,7 +4,6 @@
       {{ tooltipContent }}
         <template v-slot:activator="{ on }">
           <v-btn
-            class="t-select-place"
             color="white"
             dark
             v-on="on"

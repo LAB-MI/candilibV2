@@ -195,9 +195,8 @@ describe('Admin tests', () => {
     cy.get('.v-snack', { timeout: 10000 })
       .should('contain', 'Le fichier planning.csv a été traité pour le departement 75.')
     // The inspector should be back
-    cy.get('.v-tabs')
-      .contains(centre)
-      .click({ force: true })
+    cy.contains('replay')
+      .click()
     cy.get('.name-ipcsr-wrap')
       .should('contain', inspecteur)
   })
@@ -300,7 +299,7 @@ describe('Admin tests', () => {
     cy.get('.v-window-item[style=""]')
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
-        cy.get('.t-select-place')
+        cy.get('.place-button')
           .contains('check_circle')
           .click()
         cy.contains('Rendre indisponible')
@@ -312,7 +311,7 @@ describe('Admin tests', () => {
     cy.get('.v-window-item[style=""]')
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
-        cy.get('.t-select-place')
+        cy.get('.place-button')
           .contains('block')
           .click()
         cy.contains('Rendre le créneau disponible')
@@ -324,7 +323,7 @@ describe('Admin tests', () => {
     cy.get('.v-window-item[style=""]')
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
-        cy.get('.t-select-place')
+        cy.get('.place-button')
           .contains('check_circle')
           .click()
         cy.contains('Affecter un candidat')
@@ -345,7 +344,7 @@ describe('Admin tests', () => {
     cy.get('.v-window-item[style=""]')
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
-        cy.get('.t-select-place')
+        cy.get('.place-button')
           .contains('face')
           .click()
         cy.contains('Annuler réservation')
@@ -359,7 +358,7 @@ describe('Admin tests', () => {
     cy.get('.v-window-item[style=""]')
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
-        cy.get('.t-select-place')
+        cy.get('.place-button')
           .contains('block')
           .click()
         cy.contains('Rendre le créneau disponible')
