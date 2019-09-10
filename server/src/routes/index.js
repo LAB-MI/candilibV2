@@ -112,8 +112,7 @@ const router = express.Router()
  * Ajoute un·e nouv·eau·elle candidat dans la base de données si les données envoyées sont correctes.
  *
  * @callback preSignup
- * @param {Request} req - La requête.
- * @param {Response} res - La réponse.
+ * @see {@link http://localhost:8000/api-docs/#/default/post_candidat_preinscription}
  */
 
 router.post('/candidat/preinscription', preSignup)
@@ -187,6 +186,13 @@ router.post('/candidat/preinscription', preSignup)
  *                 - example:
  *                     success: false
  *                     message: Oups, un problème est survenu, impossible de valider votre adresse courriel. L'administrateur a été prévenu.
+ */
+
+/**
+ * Vérification du hash unique correspondant à celui associé à cette adresse courriel dans la base de données Candilib.
+ *
+ * @callback emailValidation
+ * @see {@link http://localhost:8000/api-docs/#/default/put_candidat_me}
  */
 
 router.put('/candidat/me', emailValidation)

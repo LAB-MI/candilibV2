@@ -1,3 +1,8 @@
+
+/**
+ * Routeur concernant les requêtes que peut faire un candidat
+ * @module routes/candidat
+ */
 import express from 'express'
 
 import { getMe, saveEvaluation } from './candidat.controllers'
@@ -18,7 +23,7 @@ const router = express.Router()
  * /candidat/me:
  *   get:
  *     summary: Récupération de mes infos candidat
- *     description: Après connexion, récupération des infos du candidat connecté (id dans le JWT envoyé en header)
+ *     description: Après connexion, renvoie les infos du candidat connecté (id dans le JWT envoyé en header)
  *     produces:
  *      - application/json
  *     security:
@@ -40,6 +45,13 @@ const router = express.Router()
  *
  */
 
+/**
+ * Après connexion, renvoie les infos du candidat connecté (id dans le JWT envoyé en header)
+ *
+ * @callback getMe
+ * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_me}
+ */
+
 router.get('/me', getMe)
 
 /**
@@ -48,7 +60,7 @@ router.get('/me', getMe)
  * /candidat/centres:
  *   get:
  *     summary: Récupération de mes infos des centres du département du candidat
- *     description: Après connexion, récupération des infos des centres du département du candidat
+ *     description: Après connexion, renvoie les infos des centres du département du candidat
  *     produces:
  *      - application/json
  *     security:
@@ -94,6 +106,14 @@ router.get('/me', getMe)
  *         $ref: '#/components/responses/UnknownErrorResponse'
  *
  */
+
+/**
+ * Après connexion, renvoie les infos des centres du département du candidat
+ *
+ * @callback getCentres
+ * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_centres}
+ */
+
 router.get('/centres', getCentres)
 router.get('/places/:id?', getPlaces)
 router.get('/reservations', getReservations)
