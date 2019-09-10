@@ -72,7 +72,7 @@ export default {
   },
 
   watch: {
-    statusCandidat (newValue, oldValue) {
+    statusCandidat (newValue) {
       if (newValue === SIGNED_OUT_CANDIDAT) {
         this.$router.push({ name: 'candidat-presignup' })
       }

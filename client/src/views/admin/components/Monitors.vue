@@ -61,7 +61,7 @@ export default {
   },
 
   watch: {
-    async activeDepartement (newValue, oldValue) {
+    async activeDepartement (newValue) {
       await this.reloadWeekMonitor()
     },
   },

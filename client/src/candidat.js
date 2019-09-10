@@ -104,4 +104,7 @@ export default {
   stepper_step_4_title: 'Réservation de votre place d\'examen',
   stepper_step_4_subtitle: 'Connexion à l\'application par le magic link envoyé par mail pour réserver votre place',
   stepper_step_4_p: 'Si votre inscription est validée, vous pouvez réserver votre place d\'examen sur l\'application.',
+  expired_token_message: `Votre connexion n'est plus valide, veuillez réutiliser le bouton "Déjà inscrit"`,
+  deconexion_message: `Vous êtes déconnecté·e`,
+  unauthorize_action: `Action non autorisée`,
 }

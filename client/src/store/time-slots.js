@@ -73,7 +73,6 @@ export default {
         if (
           result.isTokenValid === false
         ) {
-          rootState.auth.isValidToken = false
           dispatch(SIGN_OUT_CANDIDAT)
           throw new Error(EXPIRED_TOKEN_MESSAGE)
         }
