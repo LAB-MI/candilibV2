@@ -1,16 +1,22 @@
 // https://docs.cypress.io/api/introduction/api.html
+// todo:
+// Change inspector in planning
 
 // Used constants
 const inspecteur = 'DUPONT03DU75'
+const inspecteur2 = 'DUPONT02DU75'
 const candidat = 'ZANETTI'
 const centre = 'Noisy le Grand'
+const placeDate = '2019-10-08'
 const email = 'jean@dupont.fr'
+
 const adminLogin = 'admin@example.com'
 const adminPass = 'Admin*78'
-const placeDate = '2019-10-08'
 const candilibAddress = 'http://localhost:8080/candilib/'
 const aurigeFilePath = '../../../../server/dev-setup/aurige.new.json'
 const planningFilePath = '../../../../server/dev-setup/planning-75.csv'
+
+const magicLink = 'http://localhost:8080/candilib/candidat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkNzEwOThjMTQwZjg2M2ZhYzE3Nzc3NCIsImlhdCI6MTU2ODEwNjUzMywiZXhwIjoxNTY4MzY1NzMzfQ.I3oS2iEyzM2RwXp-NYvswo_eN22aPwLsWud-g80LLAA'
 
 describe('Candidate tests', () => {
   it('Visits the candidate already signed up form', () => {
@@ -87,6 +93,123 @@ describe('Candidate tests', () => {
       .click()
     cy.get('.question-content')
       .should('be.visible')
+  })
+
+  it('tests the candidate front', () => {
+    cy.visit(magicLink)
+    // Tests the FAQ
+    cy.contains('help_outline')
+      .click()
+    cy.url()
+      .should('contain', 'faq')
+    cy.get('h2')
+      .should('contain', 'F.A.Q')
+    cy.get('.question-content')
+      .should('not.be.visible')
+    cy.get('.question').contains('?')
+      .click()
+    cy.get('.question-content')
+      .should('be.visible')
+    // Tests the 'Mentions Légales' page
+    cy.contains('account_balance')
+      .click()
+    cy.url()
+      .should('contain', 'mentions-legales')
+    cy.get('h2')
+      .should('contain', 'Mentions légales')
+    // Tests the profile page
+    cy.contains('supervised_user_circle')
+      .click()
+    cy.url()
+      .should('contain', 'mon-profil')
+    cy.get('h2')
+      .should('contain', 'Mon profil')
+    cy.contains('Nom de naissance')
+      .parent().parent()
+      .should('contain', candidat)
+    // Adds the reservation
+    cy.contains('home')
+      .click()
+    cy.get('h2')
+      .should('contain', 'Choix du centre')
+    cy.contains(centre)
+      .click()
+    cy.get('.v-tabs .primary--text')
+      .click()
+    cy.contains(' ' + placeDate.split('-')[2] + ' ')
+      .parents('.v-list__group')
+      .within(($date) => {
+        cy.root().click()
+        cy.contains('08h00-08h30')
+          .click()
+      })
+    cy.get('h2')
+      .should('contain', 'Confirmation')
+    cy.get('h3')
+      .should('contain', centre)
+    cy.get('[type=checkbox]')
+      .first().check({ force: true })
+    cy.get('[type=checkbox]')
+      .last().check({ force: true })
+    cy.get('button')
+      .contains('Confirmer')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Votre réservation a bien été prise en compte')
+    cy.get('h2')
+      .should('contain', 'Ma réservation')
+    cy.get('h3')
+      .should('contain', centre)
+    cy.get('p')
+      .should('contain', 'à 08:00')
+    // Changes the reservation
+    cy.contains('Modifier ma réservation')
+      .click()
+    cy.contains(centre)
+      .click()
+    cy.get('.v-tabs .primary--text')
+      .click()
+    cy.contains(' ' + placeDate.split('-')[2] + ' ')
+      .parents('.v-list__group')
+      .within(($date) => {
+        cy.root().click()
+        cy.contains('08h30-09h00')
+          .click()
+      })
+    cy.get('h2')
+      .should('contain', 'Confirmer la modification')
+    cy.get('h3')
+      .should('contain', centre)
+    cy.get('[type=checkbox]')
+      .first().check({ force: true })
+    cy.get('[type=checkbox]')
+      .last().check({ force: true })
+    cy.get('button')
+      .contains('Confirmer')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Votre réservation a bien été prise en compte')
+    cy.get('h2')
+      .should('contain', 'Ma réservation')
+    cy.get('h3')
+      .should('contain', centre)
+    cy.get('p')
+      .should('contain', 'à 08:30')
+    // Cancels the reservation
+    cy.contains('Annuler ma réservation')
+      .click()
+    cy.get('button')
+      .contains('Confirmer')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Votre annulation a bien été prise en compte.')
+    cy.get('h2')
+      .should('contain', 'Choix du centre')
+    // Disconnects
+    cy.contains('exit_to_app')
+      .click()
+    cy.url()
+      .should('contain', 'candidat-presignup')
   })
 })
 
@@ -171,6 +294,25 @@ describe('Admin tests', () => {
     cy.get('.v-window-item[style=""]')
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
+        // Removes the morning
+        cy.root()
+          .should('not.contain', 'block')
+        cy.contains('delete')
+          .click()
+        cy.contains('Supprimer la matinée')
+          .click()
+        cy.contains('Valider')
+          .click()
+      })
+    cy.get('.v-snack')
+      .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
+    cy.wait(1)
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur)
+      .parents('tbody').within(($row) => {
+        cy.root()
+          .should('contain', 'block')
+        // Removes the entire day
         cy.contains('delete')
           .click()
         cy.contains('Supprimer la journée')
@@ -201,7 +343,7 @@ describe('Admin tests', () => {
       .should('contain', inspecteur)
   })
 
-  it('Searches for candidate and disconnects', () => {
+  it('Searches for candidate, goes to the planning and disconnects', () => {
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type(adminLogin)
@@ -244,6 +386,23 @@ describe('Admin tests', () => {
     cy.get('.layout.row.wrap').children()
       .its('length')
       .should('eq', 4)
+    cy.get('.hexagon-wrapper').contains('75')
+      .click()
+    // Goes to 07/10/2019 in the planning
+    cy.contains(centre)
+      .parents('.monitor-wrapper').within(($centre) => {
+        cy.contains('07 oct. 2019')
+          .parents('tr').within(($row) => {
+            cy.get('button').first()
+              .click()
+          })
+      })
+    cy.url()
+      .should('contain', '2019-10-07')
+    cy.get('.t-date-picker [type=text]').invoke('val')
+      .should('contain', '07/10/2019')
+    cy.get('.v-tabs__item--active')
+      .should('contain', centre)
     // Disconnects from the app
     cy.contains('exit_to_app')
       .click()
@@ -340,6 +499,68 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', candidat)
       .and('contain', 'a bien été affecté à la place')
+    // Change the inspector
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur)
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button')
+          .contains('face')
+          .click()
+        cy.contains('Modifier l\'inspecteur')
+          .click()
+        cy.get('[type=text]')
+          .type(inspecteur2 + '{enter}')
+        cy.root()
+          .should('contain', 'Vous avez choisi l\'inspecteur ' + inspecteur2)
+        cy.get('button')
+          .contains('Valider')
+          .click()
+      })
+    cy.get('.v-snack')
+      .should('contain', 'La modification est confirmée.')
+    // Add the place back
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur)
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button')
+          .contains('block')
+          .click()
+        cy.contains('Rendre le créneau disponible')
+          .click()
+      })
+    cy.get('.v-snack')
+      .should('contain', 'a bien été crée')
+    // Change the inspector back
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur2)
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button')
+          .contains('face')
+          .click()
+        cy.contains('Modifier l\'inspecteur')
+          .click()
+        cy.get('[type=text]')
+          .type(inspecteur + '{enter}')
+        cy.root()
+          .should('contain', 'Vous avez choisi l\'inspecteur ' + inspecteur)
+        cy.get('button')
+          .contains('Valider')
+          .click()
+      })
+    cy.get('.v-snack')
+      .should('contain', 'La modification est confirmée.')
+    // Add the other place back
+    cy.get('.v-window-item[style=""]')
+      .contains(inspecteur2)
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button')
+          .contains('block')
+          .click()
+        cy.contains('Rendre le créneau disponible')
+          .click()
+      })
+    cy.get('.v-snack')
+      .should('contain', 'a bien été crée')
     // Removes the candidate from the place
     cy.get('.v-window-item[style=""]')
       .contains(inspecteur)
@@ -353,8 +574,8 @@ describe('Admin tests', () => {
           .click()
       })
     cy.get('.v-snack')
-      .should('contain', 'La réservation choisie a été annulée. Un courriel n\'a pas pu être envoyé au candidat.')
-    // Add the place back for retry-ability
+      .should('contain', 'La réservation choisie a été annulée.')
+    // Add the place back
     cy.get('.v-window-item[style=""]')
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
