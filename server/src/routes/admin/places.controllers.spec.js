@@ -525,7 +525,7 @@ describe('delete place by admin', () => {
   })
 })
 
-describe('Archive bookedAt and bookedByAdmin', () => {
+describe('Book place and archive with bookedAt and bookedByAdmin attribut', () => {
   const centreTest = {
     departement: '93',
     nom: 'Centre 99',
