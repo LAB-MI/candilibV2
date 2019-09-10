@@ -1,5 +1,5 @@
 import api from '@/api'
-import { EXPIRED_TOKEN_MESSAGE } from '@/store/utils'
+import candidatMessages from '../candidat'
 import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '@/constants'
 import { SHOW_ERROR, SHOW_INFO } from './'
 
@@ -38,7 +38,6 @@ export default {
     statusAdmin: null,
     statusCandidat: null,
     lastTokenValid: null,
-    isValidToken: false,
   },
 
   mutations: {
@@ -123,18 +122,18 @@ export default {
     async [SIGN_OUT_ADMIN] ({ commit, dispatch }) {
       localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
       commit(SIGN_OUT_ADMIN)
-      await dispatch(SHOW_INFO, `Vous êtes déconnecté·e`)
+      await dispatch(SHOW_INFO, candidatMessages.deconexion_message)
     },
     async [UNAUTHORIZED] ({ commit, dispatch, rootState }) {
       const isCandidat = rootState.candidat && rootState.candidat.me
       if (isCandidat) {
         localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
-        await dispatch(SHOW_ERROR, EXPIRED_TOKEN_MESSAGE)
+        await dispatch(SHOW_ERROR, candidatMessages.expired_token_message)
       }
       const isAdmin = rootState.admin && rootState.admin.email
       if (isAdmin) {
         localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
-        await dispatch(SHOW_ERROR, `Action non autorisée`)
+        await dispatch(SHOW_ERROR, candidatMessages.unauthorize_action)
       }
       commit(SIGN_OUT_ADMIN)
     },
