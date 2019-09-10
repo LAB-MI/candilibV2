@@ -1,3 +1,15 @@
+
+/**
+ * Module de démarrage du serveur
+ * @module index
+ */
+
+/**
+ * @typedef {Object} DateTime
+ *
+ * DateTime object from luxon {@link https://moment.github.io/luxon/docs/}
+ */
+
 import http from 'http'
 
 import app from './app'
