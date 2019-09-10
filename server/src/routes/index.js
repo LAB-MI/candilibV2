@@ -1,3 +1,7 @@
+/**
+ * Router principal
+ * @module routes
+ */
 import express from 'express'
 
 import auth from './auth'
@@ -104,6 +108,14 @@ const router = express.Router()
  *                     message: "Oups ! Une erreur est survenue lors de votre pré-inscription. L'administrateur a été prévenu."
  */
 
+/**
+ * Ajoute un·e nouv·eau·elle candidat dans la base de données si les données envoyées sont correctes.
+ *
+ * @callback preSignup
+ * @param {Request} req - La requête.
+ * @param {Response} res - La réponse.
+ */
+
 router.post('/candidat/preinscription', preSignup)
 
 /**
@@ -183,4 +195,5 @@ router.use('/candidat', verifyToken, candidat)
 router.use('/auth', auth)
 router.use('/admin', verifyToken, admin)
 
+/** Routeur principal */
 export default router
