@@ -95,7 +95,7 @@ describe('Candidate tests', () => {
       .should('be.visible')
   })
 
-  it('tests the candidate front', () => {
+  it('Tests the candidate front', () => {
     cy.visit(magicLink)
     // Tests the FAQ
     cy.contains('help_outline')
@@ -246,6 +246,8 @@ describe('Admin tests', () => {
       .type(adminPass)
     cy.get('.submit-btn')
       .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
     // Goes to the page
     cy.contains('import_export')
       .click()
@@ -281,22 +283,22 @@ describe('Admin tests', () => {
       .type(adminPass)
     cy.get('.submit-btn')
       .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
     // Goes to where the places are
     cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
     cy.get('.v-tabs')
       .contains(centre)
       .click({ force: true })
-    cy.get('.hexagon-wrapper').contains('93')
-      .click()
-    cy.get('.hexagon-wrapper').contains('75')
-      .click()
     // Removes the inspector's places
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
-      .parents('tbody').within(($row) => {
+      .parents('tbody')
+      .should('not.contain', 'block')
+      .within(($row) => {
         // Removes the morning
-        cy.root()
-          .should('not.contain', 'block')
         cy.contains('delete')
           .click()
         cy.contains('Supprimer la matinée')
@@ -306,13 +308,14 @@ describe('Admin tests', () => {
       })
     cy.get('.v-snack')
       .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
-    cy.wait(1000)
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
-      .parents('tbody').within(($row) => {
-        cy.root()
-          .should('contain', 'block')
-          .and('contain', 'check_circle')
+      .parents('tbody')
+      .should('contain', 'block')
+      .and('contain', 'check_circle')
+      .within(($row) => {
         // Removes the entire day
         cy.contains('delete')
           .click()
@@ -352,6 +355,8 @@ describe('Admin tests', () => {
       .type(adminPass)
     cy.get('.submit-btn')
       .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
     cy.get('h2')
       .should('contain', 'Tableau de bord')
     cy.get('h3')
@@ -380,17 +385,17 @@ describe('Admin tests', () => {
       .should('contain', inspecteur)
     // Verifies the number of centers in 75 and 93
     cy.get('.layout.row.wrap').children()
-      .its('length')
-      .should('eq', 3)
+      .should('have.length', 3)
     cy.get('.hexagon-wrapper').contains('93')
       .click()
     cy.get('.layout.row.wrap').children()
-      .its('length')
-      .should('eq', 4)
+      .should('have.length', 4)
     cy.get('.hexagon-wrapper').contains('75')
       .click()
     // Goes to 07/10/2019 in the planning
-    cy.contains(centre)
+    cy.get('h2.title')
+      .should('contain', centre)
+      .contains(centre)
       .parents('.monitor-wrapper').within(($centre) => {
         cy.contains('07 oct. 2019')
           .parents('tr').within(($row) => {
@@ -421,13 +426,15 @@ describe('Admin tests', () => {
       .type(adminPass)
     cy.get('.submit-btn')
       .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
     // Goes to planning
     cy.contains('calendar_today').click()
     // Checks the center in the 93
     cy.get('.hexagon-wrapper').contains('93')
       .click()
     cy.get('.v-tabs__div')
-      .contains('Bobigny')
+      .should('contain', 'Bobigny')
     // Checks if the url matches the date displayed
     cy.get('.t-btn-next-week')
       .click()
@@ -455,8 +462,9 @@ describe('Admin tests', () => {
     cy.get('.v-tabs')
       .contains(centre)
       .click({ force: true })
-    cy.wait(1000)
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -468,7 +476,9 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'a bien été supprimée de la base')
     // Add the first place
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -480,7 +490,9 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'a bien été crée')
     // Add candidate to the first place
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -501,7 +513,9 @@ describe('Admin tests', () => {
       .should('contain', candidat)
       .and('contain', 'a bien été affecté à la place')
     // Change the inspector
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -520,7 +534,9 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'La modification est confirmée.')
     // Add the place back
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -532,7 +548,9 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'a bien été crée')
     // Removes the candidate from the place
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur2)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -546,7 +564,9 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'La réservation choisie a été annulée.')
     // Add the place back
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur2)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -567,6 +587,8 @@ describe('Admin tests', () => {
       .type(adminPass)
     cy.get('.submit-btn')
       .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
     // Visits the whitelist
     cy.visit(candilibAddress + 'admin/whitelist')
     cy.get('h2')
@@ -696,16 +718,16 @@ describe('Admin & Candidate tests', () => {
       .type(adminPass)
     cy.get('.submit-btn')
       .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
     // The admin find the reservation and cancels it
     cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
     cy.get('.v-tabs')
       .contains(centre)
       .click({ force: true })
-    cy.get('.hexagon-wrapper').contains('93')
-      .click()
-    cy.get('.hexagon-wrapper').contains('75')
-      .click()
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .within(($centre) => {
         cy.get('.place-button')
           .contains('face')
@@ -720,7 +742,7 @@ describe('Admin & Candidate tests', () => {
     cy.get('.v-snack')
       .should('contain', 'La réservation choisie a été annulée.')
     // Add the place back
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
       .within(($centre) => {
         cy.get('.place-button')
           .contains('block')
@@ -760,17 +782,17 @@ describe('Admin & Candidate tests', () => {
       .type(adminPass)
     cy.get('.submit-btn')
       .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
     // Goes to planning
     cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
     cy.get('.v-tabs')
       .contains(centre)
       .click({ force: true })
-    cy.get('.hexagon-wrapper').contains('93')
-      .click()
-    cy.get('.hexagon-wrapper').contains('75')
-      .click()
     // Add candidate to the first place
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -812,11 +834,9 @@ describe('Admin & Candidate tests', () => {
     cy.get('.v-tabs')
       .contains(centre)
       .click({ force: true })
-    cy.get('.hexagon-wrapper').contains('93')
-      .click()
-    cy.get('.hexagon-wrapper').contains('75')
-      .click()
-    cy.get('.v-window-item[style=""]')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
