@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import { DISPLAY_NAV_DRAWER, SIGN_OUT_CANDIDAT } from '@/store'
+import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/store'
 
 import IconWithTooltip from '@/components/IconWithTooltip'
 
@@ -62,16 +62,39 @@ export default {
     links: Array,
   },
 
+  computed: {
+    showEvaluation () {
+      return this.$store.state.candidat.showEvaluation
+    },
+  },
+
+  watch: {
+    async showEvaluation (newValue) {
+      if (newValue === false && this.wantsToDisconnect === true) {
+        await this.$store.dispatch(SIGN_OUT_CANDIDAT)
+        this.$router.push({ name: 'candidat-presignup' })
+      }
+    },
+    async wantsToDisconnect (newValue, oldValue) {
+      if (newValue === true && !this.$store.state.candidat.me.isEvaluationDone) {
+        await this.$store.dispatch(SET_SHOW_EVALUATION, true)
+      } else {
+        await this.$store.dispatch(SIGN_OUT_CANDIDAT)
+        this.$router.push({ name: 'candidat-presignup' })
+      }
+    },
+  },
+
   data () {
     return {
       activeTab: null,
+      wantsToDisconnect: false,
     }
   },
 
   methods: {
     async disconnect () {
-      await this.$store.dispatch(SIGN_OUT_CANDIDAT)
-      this.$router.push({ name: 'candidat-presignup' })
+      this.wantsToDisconnect = true
     },
     toggleDrawer () {
       try {
