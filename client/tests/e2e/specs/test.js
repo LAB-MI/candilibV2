@@ -1,22 +1,27 @@
 // https://docs.cypress.io/api/introduction/api.html
 // todo:
-// Change inspector in planning
+// Service SMTP (envoi des bordereaux)
 
 // Used constants
+const candilibAddress = 'http://localhost:8080/candilib/'
+const aurigeFilePath = '../../../../server/dev-setup/aurige.new.json'
+const planningFilePath = '../../../../server/dev-setup/planning-75.csv'
+// The candidate should be validated in the aurige file
+// The center should provide places on every time slots
+// on the selected day and for the 2 inspectors
 const inspecteur = 'DUPONT03DU75'
 const inspecteur2 = 'DUPONT02DU75'
 const candidat = 'ZANETTI'
 const centre = 'Noisy le Grand'
 const placeDate = '2019-10-08'
-const email = 'jean@dupont.fr'
+const email = 'jean@dupont.fr' // Any correct (not already whitelisted) email
 
+// The admin should have access to 93 and 75
 const adminLogin = 'admin@example.com'
 const adminPass = 'Admin*78'
-const candilibAddress = 'http://localhost:8080/candilib/'
-const aurigeFilePath = '../../../../server/dev-setup/aurige.new.json'
-const planningFilePath = '../../../../server/dev-setup/planning-75.csv'
 
-const magicLink = 'http://localhost:8080/candilib/candidat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkNzEwOThjMTQwZjg2M2ZhYzE3Nzc3NCIsImlhdCI6MTU2ODEwNjUzMywiZXhwIjoxNTY4MzY1NzMzfQ.I3oS2iEyzM2RwXp-NYvswo_eN22aPwLsWud-g80LLAA'
+// The magic link should be the one of the selected candidate
+const magicLink = 'http://localhost:8080/candilib/candidat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkNmU3M2MwODk1ZDY4MzgwMjZkNjBjYSIsImlhdCI6MTU2ODIwODk5OCwiZXhwIjoxNTY4NDY4MTk4fQ.A4G2lF26cNvFMusx8510UcbEAkaqvfvYcFs3gPP12Cs'
 
 describe('Candidate tests', () => {
   it('Visits the candidate already signed up form', () => {
@@ -214,7 +219,7 @@ describe('Candidate tests', () => {
 })
 
 describe('Admin tests', () => {
-  it('Fails to login with invalid password', () => {
+  it('Tries to login with invalid password', () => {
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type(adminLogin)
@@ -226,7 +231,7 @@ describe('Admin tests', () => {
       .should('contain', 'Identifiants invalides')
   })
 
-  it('Fails to login with invalid email', () => {
+  it('Tries to login with invalid email', () => {
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type('admin@example')
@@ -236,6 +241,30 @@ describe('Admin tests', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', 'Veuillez remplir le formulaire')
+  })
+
+  it('Logins with a restricted admin account', () => {
+    cy.visit(candilibAddress + 'admin-login')
+    cy.get('[type=text]')
+      .type('admin93@example.com')
+    cy.get('[type=password]')
+      .type(adminPass)
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
+    cy.get('.hexagon-wrapper')
+      .should('not.contain', '75')
+      .and('contain', '93')
+    cy.get('h3')
+      .should('contain', 'admin93')
+    cy.get('.title')
+      .should('contain', 'Bobigny')
+    cy.get('.v-toolbar')
+      .should('not.contain', 'import_export')
+    cy.contains('calendar_today').click()
+    cy.get('.v-tabs__div')
+      .should('contain', 'Bobigny')
   })
 
   it('Tests Aurige import/export', () => {
@@ -309,19 +338,44 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
-      .contains(inspecteur)
+      .contains(inspecteur2)
       .parents('tbody')
-      .should('contain', 'block')
-      .and('contain', 'check_circle')
+      .should('not.contain', 'block')
       .within(($row) => {
+        // Removes the afternoon
+        cy.contains('delete')
+          .click()
+        cy.contains('Supprimer l\'après-midi')
+          .click()
+        cy.contains('Valider')
+          .click()
+      })
+    cy.get('.v-snack')
+      .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(inspecteur2)
+      .parents('tr').within(($row) => {
+        cy.get(':nth-child(9)')
+          .should('contain', 'check_circle')
+        cy.get(':nth-child(10)')
+          .should('contain', 'block')
+      })
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(inspecteur)
+      .parents('tr')
+      .within(($row) => {
+        cy.get(':nth-child(9)')
+          .should('contain', 'block')
+        cy.get(':nth-child(10)')
+          .should('contain', 'check_circle')
         // Removes the entire day
         cy.contains('delete')
           .click()
-        cy.contains('Supprimer la journée')
+        cy.root().parent()
+          .contains('Supprimer la journée')
           .click()
-        cy.contains('Valider')
+        cy.root().parent()
+          .contains('Valider')
           .click()
       })
     // The inspector should not be present anymore
@@ -400,7 +454,11 @@ describe('Admin tests', () => {
         cy.contains('07 oct. 2019')
           .parents('tr').within(($row) => {
             cy.get('button').first()
-              .click()
+              .within(($button) => {
+                cy.get('.v-btn__content > :nth-child(3) > strong')
+                  .invoke('text').as('placesDispo')
+                cy.root().click()
+              })
           })
       })
     cy.url()
@@ -409,6 +467,14 @@ describe('Admin tests', () => {
       .should('contain', '07/10/2019')
     cy.get('.v-tabs__item--active')
       .should('contain', centre)
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .within(($window) => {
+        cy.get('@placesDispo').then((placesDispo) => {
+          cy.get('.place-button .v-icon:contains("check_circle")')
+            .should('have.length', placesDispo)
+        })
+      })
     // Disconnects from the app
     cy.contains('exit_to_app')
       .click()
@@ -463,7 +529,7 @@ describe('Admin tests', () => {
       .contains(centre)
       .click({ force: true })
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
+      .should('have.length', 1, { timeout: 10000 })
       .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
@@ -477,8 +543,6 @@ describe('Admin tests', () => {
       .should('contain', 'a bien été supprimée de la base')
     // Add the first place
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -491,8 +555,6 @@ describe('Admin tests', () => {
       .should('contain', 'a bien été crée')
     // Add candidate to the first place
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -514,8 +576,6 @@ describe('Admin tests', () => {
       .and('contain', 'a bien été affecté à la place')
     // Change the inspector
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -535,8 +595,6 @@ describe('Admin tests', () => {
       .should('contain', 'La modification est confirmée.')
     // Add the place back
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -549,8 +607,6 @@ describe('Admin tests', () => {
       .should('contain', 'a bien été crée')
     // Removes the candidate from the place
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur2)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -565,8 +621,6 @@ describe('Admin tests', () => {
       .should('contain', 'La réservation choisie a été annulée.')
     // Add the place back
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur2)
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
@@ -653,10 +707,13 @@ describe('Admin tests', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', email + ' supprimé de la liste blanche')
+      .contains('close')
+      .click()
     // Deletes test@example.com
     cy.get('.whitelist-grid')
       .contains('test@example.com')
       .parents('[role="listitem"]')
+      .should('contain', 'test@example.com')
       .contains('delete')
       .click()
     cy.get('.v-dialog')
