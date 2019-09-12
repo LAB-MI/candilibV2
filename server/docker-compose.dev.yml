@@ -68,10 +68,18 @@ services:
     volumes:
       - ../../output:/var/mail
     ports:
-    - "25:2525"
+    - "2525:25"
     networks:
       - candilib-network
-
+  
+  mailhog:
+        container_name: mailhog
+        image: mailhog/mailhog
+        restart: always
+        ports:
+            - 1025:1025
+            - 8025:8025
+  
   mongo-express:
     image: mongo-express:latest
     container_name: candilib_mongo_express

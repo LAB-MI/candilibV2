@@ -29,6 +29,9 @@ fake-stmp-up:
 fake-stmp-down: 
 	${DC} -f ${DC_APP_BUILD_DEV} down fakesmtp
 
+mailhog-up:
+	${DC} -f ${DC_APP_BUILD_DEV} up mailhog
+	
 mongo-express-up: 
 	${DC} -f ${DC_APP_BUILD_DEV} up mongo-express
 mongo-express-down: 

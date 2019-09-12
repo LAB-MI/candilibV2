@@ -1,27 +1,216 @@
 // https://docs.cypress.io/api/introduction/api.html
-// todo:
-// Service SMTP (envoi des bordereaux)
 
 // Used constants
 const candilibAddress = 'http://localhost:8080/candilib/'
-const aurigeFilePath = '../../../../server/dev-setup/aurige.new.json'
+const aurigeFilePath = '../../../../server/dev-setup/aurige.test.json'
 const planningFilePath = '../../../../server/dev-setup/planning-75.csv'
 // The candidate should be validated in the aurige file
 // The center should provide places on every time slots
 // on the selected day and for the 2 inspectors
 const inspecteur = 'DUPONT03DU75'
 const inspecteur2 = 'DUPONT02DU75'
-const candidat = 'ZANETTI'
+const candidat = 'CANDIDAT'
 const centre = 'Noisy le Grand'
 const placeDate = '2019-10-08'
 const email = 'jean@dupont.fr' // Any correct (not already whitelisted) email
+const emailCandidat = 'candidat@candilib.fr' // Any correct email
 
 // The admin should have access to 93 and 75
 const adminLogin = 'admin@example.com'
 const adminPass = 'Admin*78'
 
 // The magic link should be the one of the selected candidate
-const magicLink = 'http://localhost:8080/candilib/candidat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkNmU3M2MwODk1ZDY4MzgwMjZkNjBjYSIsImlhdCI6MTU2ODIwODk5OCwiZXhwIjoxNTY4NDY4MTk4fQ.A4G2lF26cNvFMusx8510UcbEAkaqvfvYcFs3gPP12Cs'
+// const magicLink = 'http://localhost:8080/candilib/candidat?token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkNmU3M2MwODk1ZDY4MzgwMjZkNjBjYSIsImlhdCI6MTU2ODIwODk5OCwiZXhwIjoxNTY4NDY4MTk4fQ.A4G2lF26cNvFMusx8510UcbEAkaqvfvYcFs3gPP12Cs'
+var magicLink
+
+describe('Tests the subscription', () => {
+  xit('Adds the email to the whitelist', () => {
+    cy.visit(candilibAddress + 'admin-login')
+    cy.get('[type=text]')
+      .type(adminLogin)
+    cy.get('[type=password]')
+      .type(adminPass)
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
+    // Visits the whitelist
+    cy.visit(candilibAddress + 'admin/whitelist')
+    cy.get('h2')
+      .should('contain', 'Liste blanche')
+    // Adds the email
+    cy.contains('Ajouter une adresse courriel')
+      .click()
+    cy.get('.t-add-one-whitelist [type=text]')
+      .type(emailCandidat + '{enter}')
+  })
+  it('Fills the pre-sign-up form', () => {
+    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
+    cy.contains('Se pré-inscrire')
+      .click()
+    cy.get('h2')
+      .should('contain', 'Réservez votre place d\'examen')
+    cy.contains('NEPH')
+      .parent()
+      .children('input')
+      .type('0123456789')
+    cy.contains('Nom de naissance')
+      .parent()
+      .children('input')
+      .type(candidat)
+    cy.contains('Prénom')
+      .parent()
+      .children('input')
+      .type('Jean')
+    cy.contains('Courriel *')
+      .parent()
+      .children('input')
+      .type(emailCandidat)
+    cy.contains('Portable')
+      .parent()
+      .children('input')
+      .type('0716253443')
+    cy.contains('Adresse')
+      .parent()
+      .children('input')
+      .type('avenue')
+    cy.get('.v-select-list')
+      .contains('avenue')
+      .click()
+    cy.contains('Pré-inscription')
+      .click()
+    // Verifies the access
+    cy.url()
+      .should('contain', 'email-validation')
+    cy.get('h3')
+      .should('contain', 'Validation en attente')
+    cy.get('div')
+      .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
+    cy.contains('Retour au formulaire de pré-inscription')
+      .click()
+    // Try again, it shouldn't work
+    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
+    cy.contains('Se pré-inscrire')
+      .click()
+    cy.get('h2')
+      .should('contain', 'Réservez votre place d\'examen')
+    cy.contains('NEPH')
+      .parent()
+      .children('input')
+      .type('0123456789')
+    cy.contains('Nom de naissance')
+      .parent()
+      .children('input')
+      .type(candidat)
+    cy.contains('Prénom')
+      .parent()
+      .children('input')
+      .type('Jean')
+    cy.contains('Courriel *')
+      .parent()
+      .children('input')
+      .type(emailCandidat)
+    cy.contains('Portable')
+      .parent()
+      .children('input')
+      .type('0716253443')
+    cy.contains('Adresse')
+      .parent()
+      .children('input')
+      .type('avenue')
+    cy.get('.v-select-list')
+      .contains('avenue')
+      .click()
+    cy.contains('Pré-inscription')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Cette adresse courriel est déjà enregistrée')
+  })
+
+  it('Gets the confirmation email from mailHog', () => {
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody().then((mailBody) => {
+        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
+        const withoutEq = codedLink.replace(/=\r\n/g, '')
+        const validationLink = withoutEq.replace(/=3D/g, '=')
+        cy.visit(validationLink)
+      })
+    cy.get('h3')
+      .should('contain', 'Adresse courriel validée')
+  })
+
+  xit('Visits the candidate already sign-up form when awaiting validation', () => {
+    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
+    cy.get('.t-already-signed-up-button-top')
+      .should('contain', 'Déjà Inscrit ?')
+      .click()
+    cy.get('.t-magic-link-input-top [type=text]')
+      .type(emailCandidat)
+    cy.get('.t-magic-link-button-top')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Utilisateur en attente de validation.')
+  })
+
+  it('Validates the candidate via Aurige', () => {
+    cy.visit(candilibAddress + 'admin-login')
+    cy.get('[type=text]')
+      .type(adminLogin)
+    cy.get('[type=password]')
+      .type(adminPass)
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
+    // Goes to the page
+    cy.contains('import_export')
+      .click()
+    // Verifies that there is nothing
+    cy.get('.ag-overlay')
+      .should('contain', 'No Rows To Show')
+    // Uploads the JSON file
+    const fileName = 'aurige.json'
+    cy.fixture(aurigeFilePath).then(fileContent => {
+      cy.get('.input-file-container [type=file]')
+        .upload({
+          fileContent: JSON.stringify(fileContent),
+          fileName,
+          mimeType: 'application/json',
+        })
+    })
+    cy.get('.v-snack')
+      .should('contain', 'aurige.json prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Le fichier aurige.json a été synchronisé.')
+    // Verifies that the candidate is present
+    cy.get('.ag-cell')
+      .should('contain', candidat)
+  })
+  it('Sends the magic link', () => {
+    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
+    cy.get('.t-already-signed-up-button-top')
+      .should('contain', 'Déjà Inscrit ?')
+      .click()
+    cy.get('.t-magic-link-input-top [type=text]')
+      .type(emailCandidat)
+    cy.get('.t-magic-link-button-top')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Un lien de connexion vous a été envoyé.')
+  })
+  it('Gets the candidate magic link', () => {
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody().then((mailBody) => {
+        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
+        const withoutEq = codedLink.replace(/=\r\n/g, '')
+        magicLink = withoutEq.replace(/=3D/g, '=')
+      })
+  })
+})
 
 describe('Candidate tests', () => {
   it('Visits the candidate already signed up form', () => {
@@ -467,6 +656,7 @@ describe('Admin tests', () => {
       .should('contain', '07/10/2019')
     cy.get('.v-tabs__item--active')
       .should('contain', centre)
+    // Verifies the number of places available
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1)
       .within(($window) => {
@@ -895,9 +1085,8 @@ describe('Admin & Candidate tests', () => {
       .should('have.length', 1)
       .and('contain', inspecteur) // To ensure retry-ability
       .contains(inspecteur)
-      .parents('tbody').within(($row) => {
-        cy.get('.place-button')
-          .should('not.contain', 'face')
-      })
+      .parents('tbody')
+      .find('.place-button')
+      .should('not.contain', 'face')
   })
 })
