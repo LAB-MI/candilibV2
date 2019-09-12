@@ -44,6 +44,14 @@ npm run dev-setup
 
 Toujours dans le répertoire `server`
 
+Ajouter la variable d'environnement pour avoir la date en français
+
+```bash
+export NODE_ICU_DATA=`pwd`/node_modules/full-icu
+```
+
+Puis lancer le serveur
+
 ```bash
 npm run dev
 ```
