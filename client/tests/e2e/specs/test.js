@@ -9,9 +9,11 @@ const planningFilePath = '../../../../server/dev-setup/planning-75.csv'
 // on the selected day and for the 2 inspectors
 const inspecteur = 'DUPONT03DU75'
 const inspecteur2 = 'DUPONT02DU75'
+const emailInspecteur = 'dupont02du75.jacques@email.fr' // inspecteur2's email
+const emailRepartiteur = 'email75@departement.com'
 const candidat = 'CANDIDAT'
-const centre = 'Noisy le Grand'
-const placeDate = '2019-10-08'
+const centre = 'Saint Leu la Foret'
+const placeDate = '2019-10-07'
 const email = 'jean@dupont.fr' // Any correct (not already whitelisted) email
 const emailCandidat = 'candidat@candilib.fr' // Any correct email
 
@@ -24,7 +26,11 @@ const adminPass = 'Admin*78'
 var magicLink
 
 describe('Tests the subscription', () => {
-  xit('Adds the email to the whitelist', () => {
+  before(() => {
+    cy.mhDeleteAll()
+  })
+
+  it('Adds the email to the whitelist', () => {
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
       .type(adminLogin)
@@ -44,6 +50,7 @@ describe('Tests the subscription', () => {
     cy.get('.t-add-one-whitelist [type=text]')
       .type(emailCandidat + '{enter}')
   })
+
   it('Fills the pre-sign-up form', () => {
     cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
@@ -88,7 +95,9 @@ describe('Tests the subscription', () => {
       .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
     cy.contains('Retour au formulaire de pré-inscription')
       .click()
-    // Try again, it shouldn't work
+  })
+
+  it('Tries to pre-sign-up again', () => {
     cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
@@ -130,6 +139,14 @@ describe('Tests the subscription', () => {
   it('Gets the confirmation email from mailHog', () => {
     cy.mhGetAllMails()
       .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', 'Validation d\'adresse email pour Candilib')
+    cy.mhGetAllMails()
+      .mhFirst()
       .mhGetBody().then((mailBody) => {
         const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
         const withoutEq = codedLink.replace(/=\r\n/g, '')
@@ -138,9 +155,17 @@ describe('Tests the subscription', () => {
       })
     cy.get('h3')
       .should('contain', 'Adresse courriel validée')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
   })
 
-  xit('Visits the candidate already sign-up form when awaiting validation', () => {
+  it('Visits the candidate already sign-up form when awaiting validation', () => {
     cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.get('.t-already-signed-up-button-top')
       .should('contain', 'Déjà Inscrit ?')
@@ -188,7 +213,18 @@ describe('Tests the subscription', () => {
     // Verifies that the candidate is present
     cy.get('.ag-cell')
       .should('contain', candidat)
+    cy.get('.ag-cell')
+      .should('contain', 'Pour le 75, envoi d\'un magic link à ' + emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
   })
+
   it('Sends the magic link', () => {
     cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.get('.t-already-signed-up-button-top')
@@ -201,7 +237,16 @@ describe('Tests the subscription', () => {
     cy.get('.v-snack')
       .should('contain', 'Un lien de connexion vous a été envoyé.')
   })
+
   it('Gets the candidate magic link', () => {
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody().then((mailBody) => {
@@ -356,6 +401,19 @@ describe('Candidate tests', () => {
       .should('contain', centre)
     cy.get('p')
       .should('contain', 'à 08:00')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody()
+      .should('contain', centre.toUpperCase())
+      .and('contain', '8:00')
     // Changes the reservation
     cy.contains('Modifier ma réservation')
       .click()
@@ -389,6 +447,39 @@ describe('Candidate tests', () => {
       .should('contain', centre)
     cy.get('p')
       .should('contain', 'à 08:30')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody()
+      .should('contain', centre.toUpperCase())
+      .and('contain', '8:30')
+    cy.mhHasMailWithSubject('=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=')
+    cy.mhDeleteAll()
+    // Resend the confirmation
+    cy.contains('Renvoyer ma convocation')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Votre convocation a été envoyée dans votre boîte mail.')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody()
+      .should('contain', centre.toUpperCase())
+      .and('contain', '8:30')
     // Cancels the reservation
     cy.contains('Annuler ma réservation')
       .click()
@@ -399,6 +490,19 @@ describe('Candidate tests', () => {
       .should('contain', 'Votre annulation a bien été prise en compte.')
     cy.get('h2')
       .should('contain', 'Choix du centre')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody()
+      .should('contain', centre.toUpperCase())
+      .and('contain', '8:30')
     // Disconnects
     cy.contains('exit_to_app')
       .click()
@@ -454,43 +558,6 @@ describe('Admin tests', () => {
     cy.contains('calendar_today').click()
     cy.get('.v-tabs__div')
       .should('contain', 'Bobigny')
-  })
-
-  it('Tests Aurige import/export', () => {
-    cy.visit(candilibAddress + 'admin-login')
-    cy.get('[type=text]')
-      .type(adminLogin)
-    cy.get('[type=password]')
-      .type(adminPass)
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    // Goes to the page
-    cy.contains('import_export')
-      .click()
-    // Verifies that there is nothing
-    cy.get('.ag-overlay')
-      .should('contain', 'No Rows To Show')
-    // Uploads the JSON file
-    const fileName = 'aurige.json'
-    cy.fixture(aurigeFilePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
-    cy.get('.v-snack')
-      .should('contain', 'aurige.json prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Le fichier aurige.json a été synchronisé.')
-    // Verifies that the candidate is present
-    cy.get('.ag-cell')
-      .should('contain', 'candidat')
   })
 
   it('Tests the import of csv files in the planning', () => {
@@ -764,6 +831,18 @@ describe('Admin tests', () => {
     cy.get('.v-snack')
       .should('contain', candidat)
       .and('contain', 'a bien été affecté à la place')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody()
+      .should('contain', centre.toUpperCase())
     // Change the inspector
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(inspecteur)
@@ -795,6 +874,60 @@ describe('Admin tests', () => {
       })
     cy.get('.v-snack')
       .should('contain', 'a bien été crée')
+    // Sends the mail for the inspectors
+    cy.mhDeleteAll()
+    cy.get('button')
+      .contains('Envoyer les bordereaux aux inspecteurs du')
+      .click()
+    cy.get('.v-dialog')
+      .contains('Envoyer les bordereaux aux inspecteurs du')
+      .parents('.v-dialog')
+      .find('[type=submit]')
+      .contains('Envoyer')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Les emails ont bien été envoyés')
+    cy.mhGetAllMails()
+      .should('have.length', 1)
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailInspecteur)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Bordereau_de_l=27inspecteur_')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody()
+      .should('contain', centre)
+      .and('contain', candidat)
+    // Receive the mail for the inspectors
+    cy.get('button')
+      .contains('Recevoir les bordereaux des inspecteurs du')
+      .click()
+    cy.get('.v-dialog')
+      .contains('Recevoir les bordereaux des inspecteurs du')
+      .parents('.v-dialog')
+      .should('contain', emailRepartiteur)
+      .find('[type=submit]')
+      .contains('Envoyer')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Les emails ont bien été envoyés')
+    cy.mhGetAllMails()
+      .should('have.length', 2)
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailRepartiteur)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Bordereau_de_l=27inspecteur_')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody()
+      .should('contain', centre)
+      .and('contain', candidat)
     // Removes the candidate from the place
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(inspecteur2)
@@ -809,6 +942,14 @@ describe('Admin tests', () => {
       })
     cy.get('.v-snack')
       .should('contain', 'La réservation choisie a été annulée.')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', emailCandidat)
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen_par_l=27administration?=')
     // Add the place back
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(inspecteur2)
