@@ -23,10 +23,10 @@ import {
   NB_FAILURES_KO,
   getFrenchLuxonFromJSDate,
   NO_CANDILIB,
+  OK,
 } from '../../../util'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
-  isEpreuveEtgInvalid,
   isETGExpired,
   isMoreThan2HoursAgo,
   synchroAurige,
@@ -52,6 +52,7 @@ import archivedCandidatModel from '../../../models/archived-candidat/archived-ca
 
 jest.mock('../../../util/logger')
 jest.mock('../../business/send-mail')
+require('../../../util/logger').setWithConsole(false)
 
 const readFileAsPromise = util.promisify(fs.readFile)
 
@@ -83,30 +84,6 @@ describe('synchro-aurige', () => {
     const isExpired = isETGExpired(almostFiveYearsAgo)
 
     expect(isExpired).toBe(false)
-  })
-
-  it('Should return valid for ISO date String', () => {
-    const validDate = new Date().toISOString()
-
-    const isInvalid = isEpreuveEtgInvalid(validDate)
-
-    expect(isInvalid).toBe(false)
-  })
-
-  it('Should return invalid', () => {
-    const validDate = new Date()
-
-    const isInvalid = isEpreuveEtgInvalid(validDate)
-
-    expect(isInvalid).toBe(true)
-  })
-
-  it('Should return invalid', () => {
-    const invalidDate = 'OK'
-
-    const isInvalid = isEpreuveEtgInvalid(invalidDate)
-
-    expect(isInvalid).toBe(true)
   })
 
   it('Should return false for date now', () => {
@@ -261,7 +238,7 @@ describe('synchro-aurige', () => {
     it('Should return ', async () => {
       const result = await synchroAurige(aurigeFile)
 
-      expect(result[0]).toHaveProperty('details', 'OK')
+      expect(result[0]).toHaveProperty('details', OK)
       expect(result[1]).toHaveProperty('details', 'EMAIL_NOT_VERIFIED_EXPIRED')
       expect(result[2]).toHaveProperty('details', 'EMAIL_NOT_VERIFIED_YET')
     })
@@ -593,8 +570,8 @@ describe('synchro-aurige', () => {
       expect(result).toHaveLength(1)
       expect(result[0]).toHaveProperty('nom', nomNaissance)
       expect(result[0]).toHaveProperty('neph', codeNeph)
-      expect(result[0]).toHaveProperty('status', 'warning')
       expect(result[0]).toHaveProperty('details', NB_FAILURES_KO)
+      expect(result[0]).toHaveProperty('status', 'warning')
 
       const candidat = await findCandidatById(candidatId, {})
       expect(candidat).toBeNull()
