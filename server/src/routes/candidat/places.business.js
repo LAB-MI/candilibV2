@@ -244,7 +244,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
       success: true,
       statusmail,
       description: message,
-      place: bookedPlace._id,
+      placeId: bookedPlace._id,
     })
   } catch (error) {
     techLogger.error({
