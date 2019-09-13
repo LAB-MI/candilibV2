@@ -9,9 +9,14 @@ const matricule = '7501020305'
 const matricule2 = '7501020306'
 const emailInspecteur = 'dupont02du75.jacques@email.fr' // inspecteur2's email
 const emailRepartiteur = 'email75@departement.com'
+// The admin should have access to 93 and 75
+const adminLogin = 'admin@example.com'
+const adminPass = 'Admin*78'
+const admin93Login = 'admin93@example.com'
+const admin93Pass = 'Admin*78'
 
 const candidat = 'CANDIDAT' // All uppercase
-const emailCandidat = 'c@c.li'
+const emailCandidat = 'candidat@candi.lib'
 
 const centre = 'Noisy le Grand'
 const placeDate = '2019-10-08'
@@ -19,15 +24,11 @@ const datePlace = '08/10/19'
 
 const email = 'jean@dupont.fr' // Any correct (not already whitelisted) email
 
-// The admin should have access to 93 and 75
-const adminLogin = 'admin@example.com'
-const adminPass = 'Admin*78'
-
 // Initialise magicLink
 var magicLink
 
 describe('Setup', () => {
-  it('Creates the aurige files with the right content', () => {
+  it('Creates the aurige files', () => {
     cy.writeFile('tests/e2e/files/aurige.json',
       [
         {
@@ -126,7 +127,7 @@ describe('Setup', () => {
     cy.contains('Ajouter un lot d\'adresse courriel')
       .click()
     cy.get('#whitelist-batch-textarea')
-      .type(emailCandidat + '\ntoecutter@candilib.com\njimgoose@candilib.com')
+      .type(emailCandidat + '\njimgoose@candilib.com')
     cy.contains('Enregistrer ces adresses')
       .click()
   })
@@ -534,6 +535,11 @@ describe('Candidate front', () => {
       .should('contain', centre.toUpperCase())
       .and('contain', '8:30')
     // Disconnects
+    cy.get('.v-dialog')
+      .should('contain', 'Merci de noter Candilib')
+      .find('button')
+      .contains('Plus tard')
+      .click()
     cy.contains('exit_to_app')
       .click()
     cy.url()
@@ -644,6 +650,8 @@ describe('Admin front', () => {
     cy.get('.v-tabs__div')
       .should('contain', 'Bobigny')
     // Checks if the url matches the date displayed
+    cy.get('.hexagon-wrapper').contains('75')
+      .click()
     cy.get('.t-btn-next-week')
       .click()
     cy.url()
@@ -656,8 +664,6 @@ describe('Admin front', () => {
       })
     // Goes to another date and checks the url
     cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
-    cy.get('.hexagon-wrapper').contains('75')
-      .click()
     cy.url()
       .then(($url) => {
         let url = $url.split('/')
@@ -774,7 +780,7 @@ describe('Admin front', () => {
     cy.get('.v-snack')
       .should('contain', 'Les emails ont bien été envoyés')
       .contains('close')
-      .click()
+      .click({ force: true })
     cy.mhGetAllMails()
       .should('have.length', 1)
       .mhFirst()
@@ -804,7 +810,7 @@ describe('Admin front', () => {
     cy.get('.v-snack')
       .should('contain', 'Les emails ont bien été envoyés')
       .contains('close')
-      .click()
+      .click({ force: true })
     cy.mhGetAllMails()
       .should('have.length', 1)
       .mhFirst()
@@ -1215,9 +1221,9 @@ describe('Additional tests', () => {
   it('Logins with a restricted admin account', () => {
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type('admin93@example.com')
+      .type(admin93Login)
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(admin93Pass)
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
