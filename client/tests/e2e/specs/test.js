@@ -676,6 +676,8 @@ describe('Admin front', () => {
     cy.get('.v-tabs')
       .contains(centre)
       .click({ force: true })
+    cy.contains('replay')
+      .click()
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1, { timeout: 10000 })
       .and('contain', inspecteur) // To ensure retry-ability
@@ -1342,7 +1344,7 @@ describe('Additional tests', () => {
       .should('be.visible')
   })
 
-  it('Validation refused for outdated ETG', () => {
+  it('Refuses the validation for outdated ETG', () => {
     cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
@@ -1499,5 +1501,9 @@ describe('Teardown', () => {
       .mhFirst()
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Inscription_Candilib_non_valid=C3=A9e?=')
+  })
+
+  after(() => {
+    cy.mhDeleteAll()
   })
 })
