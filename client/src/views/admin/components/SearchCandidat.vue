@@ -75,7 +75,7 @@ const historiqueAction = (places) => {
   if (!places || !(places.length)) {
     return ' - '
   }
-  return '<ul style="margin: 0; padding: 0;">' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
+  return '<ul style="margin: 0; padding: 0; list-style: square;">' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
     const frenchDate = convertToLegibleDateTime(date)
     const actionDate = convertToLegibleDateTime(archivedAt)
     return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
@@ -96,7 +96,8 @@ const candidatProfileInfoDictionary = [
     ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
 
   ],
-  [ ['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDateTime],
+  [['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDateTime]],
+  [
     ['places', 'Historique des actions', historiqueAction],
   ],
 ]
