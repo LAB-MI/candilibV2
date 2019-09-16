@@ -8,9 +8,9 @@
     <div class="u-flex">
       <v-list-tile-content v-ripple="hasPlaces">
         <v-list-tile-title >
-          <span class="u-uppercase">
+          <a class="u-uppercase color">
             {{ center.centre.nom }}
-          </span>
+          </a>
           ({{ center.centre.departement }})
         </v-list-tile-title>
         <v-list-tile-sub-title  class="u-flex__item--grow" :class="{'blue-grey--text  text--lighten-2': !hasPlaces}">
@@ -91,6 +91,10 @@ export default {
   height: 3em;
   padding: 0 1.5em;
   text-decoration: none;
+}
+
+.color {
+  color: grey;
 }
 
 </style>
