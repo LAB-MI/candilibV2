@@ -1,40 +1,46 @@
 // https://docs.cypress.io/api/introduction/api.html
 
-// Used constants
 const candilibAddress = 'http://localhost:8080/candilib/'
 
-const inspecteur = 'DUPONT01DU75'
-const inspecteur2 = 'DUPONT02DU75'
-const matricule = '7501020305'
-const matricule2 = '7501020306'
-const emailInspecteur = 'dupont02du75.jacques@email.fr' // inspecteur2's email
-const emailRepartiteur = 'email75@departement.com'
-// The admin should have access to 93 and 75
-const adminLogin = 'admin@example.com'
-const adminPass = 'Admin*78'
-const admin93Login = 'admin93@example.com'
-const admin93Pass = 'Admin*78'
+const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
+const horaires = [
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '12:00',
+  '12:30',
+  '13:00',
+  '13:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+]
 
-const candidat = 'CANDIDAT' // All uppercase
-const emailCandidat = 'candidat@candi.lib'
+const csvRowBuilder = (inspecteur, matricule) => horaire => `${Cypress.env('datePlace')},${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
 
-const centre = 'Noisy le Grand'
-const placeDate = '2019-10-08'
-const datePlace = '08/10/19'
+const placesInspecteur1 = horaires.map(csvRowBuilder(Cypress.env('inspecteur'), Cypress.env('matricule')))
+const placesInspecteur2 = horaires.map(csvRowBuilder(Cypress.env('inspecteur2'), Cypress.env('matricule2')))
 
-const email = 'jean@dupont.fr' // Any correct (not already whitelisted) email
+const placesArray = [csvHeaders].concat(placesInspecteur1).concat(placesInspecteur2).join('\n')
 
 // Initialise magicLink
 var magicLink
 
-describe('Setup', () => {
-  it('Creates the aurige files', () => {
+describe('Tests', () => {
+  before(() => {
+    cy.mhDeleteAll()
     cy.writeFile('tests/e2e/files/aurige.json',
       [
         {
           'codeNeph': '0123456789',
-          'nomNaissance': candidat,
-          'email': emailCandidat,
+          'nomNaissance': Cypress.env('candidat'),
+          'email': Cypress.env('emailCandidat'),
           'dateReussiteETG': '2018-10-12',
           'nbEchecsPratiques': '0',
           'dateDernierNonReussite': '',
@@ -59,8 +65,8 @@ describe('Setup', () => {
       [
         {
           'codeNeph': '0123456789',
-          'nomNaissance': candidat,
-          'email': emailCandidat,
+          'nomNaissance': Cypress.env('candidat'),
+          'email': Cypress.env('emailCandidat'),
           'dateReussiteETG': '',
           'nbEchecsPratiques': '',
           'dateDernierNonReussite': '',
@@ -69,56 +75,36 @@ describe('Setup', () => {
           'candidatExistant': 'NOK',
         },
       ])
-  })
-
-  it('Creates the planning file', () => {
-    cy.writeFile('tests/e2e/files/planning.csv',
-      'Date,Heure,Inspecteur,Non,Centre,Departement\n' +
-    datePlace + ',08:00,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',08:30,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',09:00,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',09:30,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',10:00,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',10:30,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',11:00,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',11:30,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',12:00,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',12:30,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',13:00,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',13:30,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',14:00,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',14:30,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',15:00,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',15:30,' + matricule + ',' + inspecteur + ',' + centre + ',75\n' +
-    datePlace + ',08:00,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',08:30,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',09:00,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',09:30,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',10:00,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',10:30,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',11:00,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',11:30,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',12:00,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',12:30,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',13:00,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',13:30,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',14:00,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',14:30,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',15:00,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75\n' +
-    datePlace + ',15:30,' + matricule2 + ',' + inspecteur2 + ',' + centre + ',75'
-    )
-  })
-
-  it('Adds the emails to the whitelist', () => {
+    cy.writeFile('tests/e2e/files/planning.csv', placesArray)
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type(adminLogin)
+      .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(Cypress.env('adminPass'))
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
+    // Goes to the page
+    cy.contains('import_export')
+      .click()
+    // Uploads the JSON file
+    const filePath = '../files/aurige.end.json'
+    const fileName = 'aurige.json'
+    cy.fixture(filePath).then(fileContent => {
+      cy.get('.input-file-container [type=file]')
+        .upload({
+          fileContent: JSON.stringify(fileContent),
+          fileName,
+          mimeType: 'application/json',
+        })
+    })
+    cy.get('.v-snack')
+      .should('contain', fileName + ' prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     // Visits the whitelist
     cy.visit(candilibAddress + 'admin/whitelist')
     cy.get('h2')
@@ -127,41 +113,29 @@ describe('Setup', () => {
     cy.contains('Ajouter un lot d\'adresse courriel')
       .click()
     cy.get('#whitelist-batch-textarea')
-      .type(emailCandidat + '\njimgoose@candilib.com')
+      .type(Cypress.env('emailCandidat') + '\njimgoose@candilib.com')
     cy.contains('Enregistrer ces adresses')
       .click()
-  })
-
-  it('Loads the places from the csv', () => {
-    cy.visit(candilibAddress + 'admin-login')
-    cy.get('[type=text]')
-      .type(adminLogin)
-    cy.get('[type=password]')
-      .type(adminPass)
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
+    // Adds the places
     cy.contains('calendar_today')
       .click()
     cy.get('.t-import-places [type=checkbox]')
       .check({ force: true })
-    const filePath = '../files/planning.csv'
-    const fileName = 'planning.csv'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('[type=file]').upload({ fileContent, fileName, mimeType: 'text/csv' })
+    const filePath1 = '../files/planning.csv'
+    const fileName1 = 'planning.csv'
+    cy.fixture(filePath1).then(fileContent => {
+      cy.get('[type=file]').upload({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
     })
     cy.get('.v-snack')
-      .should('contain', 'planning.csv prêt à être synchronisé')
+      .should('contain', fileName1 + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click({ force: true })
     cy.get('.v-snack', { timeout: 10000 })
-      .should('contain', 'Le fichier planning.csv a été traité pour le departement 75.')
-  })
-})
-
-describe('Subscription', () => {
-  it('Fills the pre-sign-up form', () => {
+      .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
+    cy.contains('exit_to_app')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes déconnecté·e')
     cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
@@ -174,7 +148,7 @@ describe('Subscription', () => {
     cy.contains('Nom de naissance')
       .parent()
       .children('input')
-      .type(candidat)
+      .type(Cypress.env('candidat'))
     cy.contains('Prénom')
       .parent()
       .children('input')
@@ -182,7 +156,7 @@ describe('Subscription', () => {
     cy.contains('Courriel *')
       .parent()
       .children('input')
-      .type(emailCandidat)
+      .type(Cypress.env('emailCandidat'))
     cy.contains('Portable')
       .parent()
       .children('input')
@@ -205,9 +179,6 @@ describe('Subscription', () => {
       .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
     cy.contains('Retour au formulaire de pré-inscription')
       .click()
-  })
-
-  it('Tries to pre-sign-up again', () => {
     cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
@@ -220,7 +191,7 @@ describe('Subscription', () => {
     cy.contains('Nom de naissance')
       .parent()
       .children('input')
-      .type(candidat)
+      .type(Cypress.env('candidat'))
     cy.contains('Prénom')
       .parent()
       .children('input')
@@ -228,7 +199,7 @@ describe('Subscription', () => {
     cy.contains('Courriel *')
       .parent()
       .children('input')
-      .type(emailCandidat)
+      .type(Cypress.env('emailCandidat'))
     cy.contains('Portable')
       .parent()
       .children('input')
@@ -244,13 +215,10 @@ describe('Subscription', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', 'Cette adresse courriel est déjà enregistrée')
-  })
-
-  it('Gets the confirmation email from mailHog', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
@@ -268,32 +236,26 @@ describe('Subscription', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
-  })
-
-  it('Visits the candidate already sign-up form when awaiting validation', () => {
     cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.get('.t-already-signed-up-button-top')
       .should('contain', 'Déjà Inscrit ?')
       .click()
     cy.get('.t-magic-link-input-top [type=text]')
-      .type(emailCandidat)
+      .type(Cypress.env('emailCandidat'))
     cy.get('.t-magic-link-button-top')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Utilisateur en attente de validation.')
-  })
-
-  it('Validates the candidate via Aurige', () => {
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type(adminLogin)
+      .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(Cypress.env('adminPass'))
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
@@ -305,51 +267,52 @@ describe('Subscription', () => {
     cy.get('.ag-overlay')
       .should('contain', 'No Rows To Show')
     // Uploads the JSON file
-    const filePath = '../files/aurige.json'
-    const fileName = 'aurige.json'
-    cy.fixture(filePath).then(fileContent => {
+    const filePath2 = '../files/aurige.json'
+    const fileName2 = 'aurige.json'
+    cy.fixture(filePath2).then(fileContent => {
       cy.get('.input-file-container [type=file]')
         .upload({
           fileContent: JSON.stringify(fileContent),
-          fileName,
+          fileName: fileName2,
           mimeType: 'application/json',
         })
     })
     cy.get('.v-snack')
-      .should('contain', 'aurige.json prêt à être synchronisé')
+      .should('contain', fileName2 + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click()
     cy.get('.v-snack')
-      .should('contain', 'Le fichier aurige.json a été synchronisé.')
+      .should('contain', 'Le fichier ' + fileName2 + ' a été synchronisé.')
     // Verifies that the candidate is present
     cy.get('.ag-cell')
-      .should('contain', candidat)
+      .should('contain', Cypress.env('candidat'))
     cy.get('.ag-cell')
-      .should('contain', 'Pour le 75, envoi d\'un magic link à ' + emailCandidat)
-    cy.mhGetMailsByRecipient(emailCandidat)
+      .should('contain', 'Pour le 75, envoi d\'un magic link à ' + Cypress.env('emailCandidat'))
+    cy.mhGetMailsByRecipient(Cypress.env('emailCandidat'))
       .mhFirst()
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
-  })
-
-  it('Sends the magic link', () => {
+    // Disconnects from the app
+    cy.contains('exit_to_app')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes déconnecté·e')
+    cy.url()
+      .should('eq', candilibAddress + 'admin-login')
     cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
     cy.get('.t-already-signed-up-button-top')
       .should('contain', 'Déjà Inscrit ?')
       .click()
     cy.get('.t-magic-link-input-top [type=text]')
-      .type(emailCandidat)
+      .type(Cypress.env('emailCandidat'))
     cy.get('.t-magic-link-button-top')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Un lien de connexion vous a été envoyé.')
-  })
-
-  it('Gets the candidate magic link', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
@@ -362,9 +325,7 @@ describe('Subscription', () => {
         magicLink = withoutEq.replace(/=3D/g, '=')
       })
   })
-})
 
-describe('Candidate front', () => {
   it('Tests the candidate front', () => {
     cy.visit(magicLink)
     // Tests the FAQ
@@ -396,17 +357,17 @@ describe('Candidate front', () => {
       .should('contain', 'Mon profil')
     cy.contains('Nom de naissance')
       .parent().parent()
-      .should('contain', candidat)
+      .should('contain', Cypress.env('candidat'))
     // Adds the reservation
     cy.contains('home')
       .click()
     cy.get('h2')
       .should('contain', 'Choix du centre')
-    cy.contains(centre)
+    cy.contains(Cypress.env('centre'))
       .click()
     cy.get('.v-tabs .primary--text')
       .click()
-    cy.contains(' ' + placeDate.split('-')[2] + ' ')
+    cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list__group')
       .within(($date) => {
         cy.root().click()
@@ -416,7 +377,7 @@ describe('Candidate front', () => {
     cy.get('h2')
       .should('contain', 'Confirmation')
     cy.get('h3')
-      .should('contain', centre)
+      .should('contain', Cypress.env('centre'))
     cy.get('[type=checkbox]')
       .first().check({ force: true })
     cy.get('[type=checkbox]')
@@ -429,13 +390,13 @@ describe('Candidate front', () => {
     cy.get('h2')
       .should('contain', 'Ma réservation')
     cy.get('h3')
-      .should('contain', centre)
+      .should('contain', Cypress.env('centre'))
     cy.get('p')
       .should('contain', 'à 08:00')
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
@@ -443,16 +404,16 @@ describe('Candidate front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody()
-      .should('contain', centre.toUpperCase())
+      .should('contain', Cypress.env('centre').toUpperCase())
       .and('contain', '8:00')
     // Changes the reservation
     cy.contains('Modifier ma réservation')
       .click()
-    cy.contains(centre)
+    cy.contains(Cypress.env('centre'))
       .click()
     cy.get('.v-tabs .primary--text')
       .click()
-    cy.contains(' ' + placeDate.split('-')[2] + ' ')
+    cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list__group')
       .within(($date) => {
         cy.root().click()
@@ -462,7 +423,7 @@ describe('Candidate front', () => {
     cy.get('h2')
       .should('contain', 'Confirmer la modification')
     cy.get('h3')
-      .should('contain', centre)
+      .should('contain', Cypress.env('centre'))
     cy.get('[type=checkbox]')
       .first().check({ force: true })
     cy.get('[type=checkbox]')
@@ -475,13 +436,13 @@ describe('Candidate front', () => {
     cy.get('h2')
       .should('contain', 'Ma réservation')
     cy.get('h3')
-      .should('contain', centre)
+      .should('contain', Cypress.env('centre'))
     cy.get('p')
       .should('contain', 'à 08:30')
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
@@ -489,7 +450,7 @@ describe('Candidate front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody()
-      .should('contain', centre.toUpperCase())
+      .should('contain', Cypress.env('centre').toUpperCase())
       .and('contain', '8:30')
     cy.mhHasMailWithSubject('=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=')
     cy.mhDeleteAll()
@@ -501,7 +462,7 @@ describe('Candidate front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
@@ -509,8 +470,13 @@ describe('Candidate front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody()
-      .should('contain', centre.toUpperCase())
+      .should('contain', Cypress.env('centre').toUpperCase())
       .and('contain', '8:30')
+    cy.get('.v-dialog')
+      .should('contain', 'Merci de noter Candilib')
+      .find('button')
+      .contains('Plus tard')
+      .click()
     // Cancels the reservation
     cy.contains('Annuler ma réservation')
       .click()
@@ -524,7 +490,7 @@ describe('Candidate front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
@@ -532,28 +498,21 @@ describe('Candidate front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody()
-      .should('contain', centre.toUpperCase())
+      .should('contain', Cypress.env('centre').toUpperCase())
       .and('contain', '8:30')
     // Disconnects
-    cy.get('.v-dialog')
-      .should('contain', 'Merci de noter Candilib')
-      .find('button')
-      .contains('Plus tard')
-      .click()
     cy.contains('exit_to_app')
       .click()
     cy.url()
       .should('contain', 'candidat-presignup')
   })
-})
 
-describe('Admin front', () => {
-  it('Searches for candidate, goes to the planning and disconnects', () => {
+  it('Searches for candidate and goes to the planning', () => {
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type(adminLogin)
+      .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(Cypress.env('adminPass'))
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
@@ -561,29 +520,29 @@ describe('Admin front', () => {
     cy.get('h2')
       .should('contain', 'Tableau de bord')
     cy.get('h3')
-      .should('contain', adminLogin.split('@')[0])
+      .should('contain', Cypress.env('adminLogin').split('@')[0])
     // Searches for candidate
     cy.get('.t-search-candidat [type=text]')
-      .type(candidat)
-    cy.contains(candidat)
+      .type(Cypress.env('candidat'))
+    cy.contains(Cypress.env('candidat'))
       .click()
     cy.get('h3')
       .should('contain', 'Informations candidats')
     cy.get('.t-result-candidat')
       .contains('Nom')
       .parent()
-      .should('contain', candidat)
+      .should('contain', Cypress.env('candidat'))
     // Searches for inspector
     cy.get('.t-search-inspecteur [type=text]')
-      .type(inspecteur)
-    cy.contains(inspecteur)
+      .type(Cypress.env('inspecteur'))
+    cy.contains(Cypress.env('inspecteur'))
       .click()
     cy.get('h3')
       .should('contain', 'informations inspecteur')
     cy.get('.t-result-inspecteur')
       .contains('Nom')
       .parent()
-      .should('contain', inspecteur)
+      .should('contain', Cypress.env('inspecteur'))
     // Verifies the number of centers in 75 and 93
     cy.get('.layout.row.wrap').children()
       .should('have.length', 3)
@@ -595,8 +554,8 @@ describe('Admin front', () => {
       .click()
     // Goes to 07/10/2019 in the planning
     cy.get('h2.title')
-      .should('contain', centre)
-      .contains(centre)
+      .should('contain', Cypress.env('centre'))
+      .contains(Cypress.env('centre'))
       .parents('.monitor-wrapper').within(($centre) => {
         cy.contains('07 oct. 2019')
           .parents('tr').within(($row) => {
@@ -613,7 +572,7 @@ describe('Admin front', () => {
     cy.get('.t-date-picker [type=text]').invoke('val')
       .should('contain', '07/10/2019')
     cy.get('.v-tabs__item--active')
-      .should('contain', centre)
+      .should('contain', Cypress.env('centre'))
     // Verifies the number of places available
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1)
@@ -623,21 +582,14 @@ describe('Admin front', () => {
             .should('have.length', placesDispo)
         })
       })
-    // Disconnects from the app
-    cy.contains('exit_to_app')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes déconnecté·e')
-    cy.url()
-      .should('eq', candilibAddress + 'admin-login')
   })
 
   it('Adds and removes places', () => {
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type(adminLogin)
+      .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(Cypress.env('adminPass'))
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
@@ -663,7 +615,7 @@ describe('Admin front', () => {
           .should('contain', ymd[2] + '/' + ymd[1] + '/' + ymd[0])
       })
     // Goes to another date and checks the url
-    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
+    cy.visit(candilibAddress + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.url()
       .then(($url) => {
         let url = $url.split('/')
@@ -674,14 +626,14 @@ describe('Admin front', () => {
       })
     // Deletes the first place
     cy.get('.v-tabs')
-      .contains(centre)
+      .contains(Cypress.env('centre'))
       .click({ force: true })
     cy.contains('replay')
       .click()
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1, { timeout: 10000 })
-      .and('contain', inspecteur) // To ensure retry-ability
-      .contains(inspecteur)
+      .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
+      .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .contains('check_circle')
@@ -693,7 +645,7 @@ describe('Admin front', () => {
       .should('contain', 'a bien été supprimée de la base')
     // Add the first place
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(inspecteur)
+      .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .contains('block')
@@ -705,7 +657,7 @@ describe('Admin front', () => {
       .should('contain', 'a bien été crée')
     // Add candidate to the first place
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(inspecteur)
+      .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .should('not.contain', 'block')
@@ -714,21 +666,21 @@ describe('Admin front', () => {
         cy.contains('Affecter un candidat')
           .click()
         cy.get('.search-input [type=text]')
-          .type(candidat)
-        cy.root().parents().contains(candidat)
+          .type(Cypress.env('candidat'))
+        cy.root().parents().contains(Cypress.env('candidat'))
           .click()
         cy.get('.place-details')
-          .should('contain', centre)
+          .should('contain', Cypress.env('centre'))
         cy.contains('Valider')
           .click()
       })
     cy.get('.v-snack')
-      .should('contain', candidat)
+      .should('contain', Cypress.env('candidat'))
       .and('contain', 'a bien été affecté à la place')
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
@@ -736,10 +688,10 @@ describe('Admin front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody()
-      .should('contain', centre.toUpperCase())
+      .should('contain', Cypress.env('centre').toUpperCase())
     // Change the inspector
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(inspecteur)
+      .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .contains('face')
@@ -747,9 +699,9 @@ describe('Admin front', () => {
         cy.contains('Modifier l\'inspecteur')
           .click()
         cy.get('[type=text]')
-          .type(inspecteur2 + '{enter}')
+          .type(Cypress.env('inspecteur2') + '{enter}')
         cy.root()
-          .should('contain', 'Vous avez choisi l\'inspecteur ' + inspecteur2)
+          .should('contain', 'Vous avez choisi l\'inspecteur ' + Cypress.env('inspecteur2'))
         cy.get('button')
           .contains('Valider')
           .click()
@@ -758,7 +710,7 @@ describe('Admin front', () => {
       .should('contain', 'La modification est confirmée.')
     // Add the place back
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(inspecteur)
+      .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .contains('block')
@@ -787,7 +739,7 @@ describe('Admin front', () => {
       .should('have.length', 1)
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailInspecteur)
+      .should('contain', Cypress.env('emailInspecteur'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
@@ -795,8 +747,8 @@ describe('Admin front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody()
-      .should('contain', centre)
-      .and('contain', candidat)
+      .should('contain', Cypress.env('centre'))
+      .and('contain', Cypress.env('candidat'))
     // Receive the mail for the inspectors
     cy.mhDeleteAll()
     cy.get('button')
@@ -805,7 +757,7 @@ describe('Admin front', () => {
     cy.get('.v-dialog')
       .contains('Recevoir les bordereaux des inspecteurs du')
       .parents('.v-dialog')
-      .should('contain', emailRepartiteur)
+      .should('contain', Cypress.env('emailRepartiteur'))
       .find('[type=submit]')
       .contains('Envoyer')
       .click()
@@ -817,7 +769,7 @@ describe('Admin front', () => {
       .should('have.length', 1)
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailRepartiteur)
+      .should('contain', Cypress.env('emailRepartiteur'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
@@ -825,11 +777,11 @@ describe('Admin front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody()
-      .should('contain', centre)
-      .and('contain', candidat)
+      .should('contain', Cypress.env('centre'))
+      .and('contain', Cypress.env('candidat'))
     // Removes the candidate from the place
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(inspecteur2)
+      .contains(Cypress.env('inspecteur2'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .contains('face')
@@ -844,14 +796,14 @@ describe('Admin front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen_par_l=27administration?=')
     // Add the place back
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(inspecteur2)
+      .contains(Cypress.env('inspecteur2'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .contains('block')
@@ -862,19 +814,115 @@ describe('Admin front', () => {
     cy.get('.v-snack')
       .should('contain', 'a bien été crée.')
   })
-})
 
-describe('Admin & Candidate interactions', () => {
+  it('Tests the import of csv files in the planning', () => {
+    cy.visit(candilibAddress + 'admin-login')
+    cy.get('[type=text]')
+      .type(Cypress.env('adminLogin'))
+    cy.get('[type=password]')
+      .type(Cypress.env('adminPass'))
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
+    // Goes to where the places are
+    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + Cypress.env('placeDate'))
+    cy.get('.v-tabs')
+      .contains(Cypress.env('centre'))
+      .click({ force: true })
+    // Removes the inspector's places
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
+      .contains(Cypress.env('inspecteur'))
+      .parents('tbody')
+      .should('not.contain', 'block')
+      .within(($row) => {
+        // Removes the morning
+        cy.contains('delete')
+          .click()
+        cy.contains('Supprimer la matinée')
+          .click()
+        cy.contains('Valider')
+          .click()
+      })
+    cy.get('.v-snack')
+      .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(Cypress.env('inspecteur2'))
+      .parents('tbody')
+      .should('not.contain', 'block')
+      .within(($row) => {
+        // Removes the afternoon
+        cy.contains('delete')
+          .click()
+        cy.contains('Supprimer l\'après-midi')
+          .click()
+        cy.contains('Valider')
+          .click()
+      })
+    cy.get('.v-snack')
+      .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(Cypress.env('inspecteur2'))
+      .parents('tr').within(($row) => {
+        cy.get(':nth-child(9)')
+          .should('contain', 'check_circle')
+        cy.get(':nth-child(10)')
+          .should('contain', 'block')
+      })
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(Cypress.env('inspecteur'))
+      .parents('tr')
+      .within(($row) => {
+        cy.get(':nth-child(9)')
+          .should('contain', 'block')
+        cy.get(':nth-child(10)')
+          .should('contain', 'check_circle')
+        // Removes the entire day
+        cy.contains('delete')
+          .click()
+        cy.root().parent()
+          .contains('Supprimer la journée')
+          .click()
+        cy.root().parent()
+          .contains('Valider')
+          .click()
+      })
+    // The inspector should not be present anymore
+    cy.get('.name-ipcsr-wrap')
+      .should('not.contain', Cypress.env('inspecteur'))
+    // Imports the places
+    cy.get('.t-import-places [type=checkbox]')
+      .check({ force: true })
+    const filePath = '../files/planning.csv'
+    const fileName = 'planning.csv'
+    cy.fixture(filePath).then(fileContent => {
+      cy.get('[type=file]').upload({ fileContent, fileName, mimeType: 'text/csv' })
+    })
+    cy.get('.v-snack')
+      .should('contain', 'planning.csv prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click({ force: true })
+    cy.get('.v-snack', { timeout: 10000 })
+      .should('contain', 'Le fichier planning.csv a été traité pour le departement 75.')
+    // The inspector should be back
+    cy.contains('replay')
+      .click()
+    cy.get('.name-ipcsr-wrap')
+      .should('contain', Cypress.env('inspecteur'))
+  })
+
   it('The candidate chooses a place and the admin cancels it', () => {
     cy.visit(magicLink)
     // Adds the reservation
     cy.get('h2')
       .should('contain', 'Choix du centre')
-    cy.contains(centre)
+    cy.contains(Cypress.env('centre'))
       .click()
     cy.get('.v-tabs .primary--text')
       .click()
-    cy.contains(' ' + placeDate.split('-')[2] + ' ')
+    cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list__group')
       .within(($date) => {
         cy.root().click()
@@ -884,7 +932,7 @@ describe('Admin & Candidate interactions', () => {
     cy.get('h2')
       .should('contain', 'Confirmation')
     cy.get('h3')
-      .should('contain', centre)
+      .should('contain', Cypress.env('centre'))
     cy.get('[type=checkbox]')
       .first().check({ force: true })
     cy.get('[type=checkbox]')
@@ -897,7 +945,7 @@ describe('Admin & Candidate interactions', () => {
     cy.get('h2')
       .should('contain', 'Ma réservation')
     cy.get('h3')
-      .should('contain', centre)
+      .should('contain', Cypress.env('centre'))
     cy.get('p')
       .should('contain', 'à 08:00')
     // Check candidate profile
@@ -905,31 +953,31 @@ describe('Admin & Candidate interactions', () => {
       .click()
     cy.contains('Nom de naissance')
       .parent().parent()
-      .should('contain', candidat)
+      .should('contain', Cypress.env('candidat'))
     // The admin connects
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type(adminLogin)
+      .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(Cypress.env('adminPass'))
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
     // The admin find the reservation and cancels it
-    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
+    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
-      .contains(centre)
+      .contains(Cypress.env('centre'))
       .click({ force: true })
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
+      .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
       .within(($centre) => {
         cy.get('.place-button')
           .contains('face')
           .click()
         cy.get('.place-details')
-          .should('contain', candidat)
+          .should('contain', Cypress.env('candidat'))
         cy.contains('Annuler réservation')
           .click()
         cy.contains('Supprimer réservation')
@@ -957,7 +1005,7 @@ describe('Admin & Candidate interactions', () => {
       .click()
     cy.contains('Nom de naissance')
       .parent().parent()
-      .should('contain', candidat)
+      .should('contain', Cypress.env('candidat'))
   })
 
   it('The admin assigns a candidate and the candidate cancels it', () => {
@@ -969,27 +1017,27 @@ describe('Admin & Candidate interactions', () => {
       .click()
     cy.contains('Nom de naissance')
       .parent().parent()
-      .should('contain', candidat)
+      .should('contain', Cypress.env('candidat'))
     // The admin assigns the candidate to a place
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type(adminLogin)
+      .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(Cypress.env('adminPass'))
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
     // Goes to planning
-    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
+    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
-      .contains(centre)
+      .contains(Cypress.env('centre'))
       .click({ force: true })
     // Add candidate to the first place
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
-      .contains(inspecteur)
+      .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
+      .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .contains('check_circle')
@@ -997,23 +1045,23 @@ describe('Admin & Candidate interactions', () => {
         cy.contains('Affecter un candidat')
           .click()
         cy.get('.search-input [type=text]')
-          .type(candidat)
-        cy.root().parents().contains(candidat)
+          .type(Cypress.env('candidat'))
+        cy.root().parents().contains(Cypress.env('candidat'))
           .click()
         cy.get('.place-details')
-          .should('contain', centre)
+          .should('contain', Cypress.env('centre'))
         cy.contains('Valider')
           .click()
       })
     cy.get('.v-snack')
-      .should('contain', candidat)
+      .should('contain', Cypress.env('candidat'))
       .and('contain', 'a bien été affecté à la place')
     // The candidate cancels the place
     cy.visit(magicLink)
     cy.get('h2')
       .should('contain', 'Ma réservation')
     cy.get('h3')
-      .should('contain', centre)
+      .should('contain', Cypress.env('centre'))
     cy.get('p')
       .should('contain', 'à 08:00')
     cy.contains('Annuler ma réservation')
@@ -1026,322 +1074,127 @@ describe('Admin & Candidate interactions', () => {
     cy.get('h2')
       .should('contain', 'Choix du centre')
     // The admin verifies that the reservation has been cancelled
-    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
+    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
-      .contains(centre)
+      .contains(Cypress.env('centre'))
       .click({ force: true })
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
-      .contains(inspecteur)
+      .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
+      .contains(Cypress.env('inspecteur'))
       .parents('tbody')
       .find('.place-button')
       .should('not.contain', 'face')
   })
-})
 
-describe('Additional tests', () => {
-  it('Adds and removes from the whitelist', () => {
-    cy.visit(candilibAddress + 'admin-login')
-    cy.get('[type=text]')
-      .type(adminLogin)
-    cy.get('[type=password]')
-      .type(adminPass)
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    // Visits the whitelist
-    cy.visit(candilibAddress + 'admin/whitelist')
+  it('The admin disables a time slot', () => {
+    // Will only work if the places in db were cleared first.
+    cy.visit(magicLink)
+    // The 8:00 slot should be there
     cy.get('h2')
-      .should('contain', 'Liste blanche')
-    // Adds the email
-    cy.contains('Ajouter une adresse courriel')
+      .should('contain', 'Choix du centre')
+    cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.t-add-one-whitelist [type=text]')
-      .type(email + '{enter}')
-    cy.get('.v-snack')
-      .should('contain', email + ' ajouté à la liste blanche')
-    // Tries to add bad addresses
-    cy.contains('Ajouter un lot d\'adresse courriel')
+    cy.get('.v-tabs .primary--text')
       .click()
-    cy.get('#whitelist-batch-textarea')
-      .type('test.com\ntest@.com\n@test.com\ntest@test\ntest@test.t\n')
-    cy.contains('Enregistrer ces adresses')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Aucun email n\'a pu être ajouté à la liste blanche')
-    cy.get('.t-whitelist-batch-result')
-      .should('contain', 'Adresse invalide')
-      .and('not.contain', 'Adresse courriel existante')
-      .and('not.contain', 'Adresse enregistrée')
-    // Add some addresses
-    cy.contains('Ajouter un lot d\'adresse courriel')
-      .click()
-    cy.get('#whitelist-batch-textarea')
-      .type('test@example.com\n' + email)
-    cy.contains('Enregistrer ces adresses')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Certains emails n\'ont pas pu être ajoutés à la liste blanche')
-    cy.get('.t-whitelist-batch-result')
-      .should('contain', 'Adresse enregistrée')
-      .and('contain', 'Adresse courriel existante')
-      .and('not.contain', 'Adresse invalide')
-    // Searches for the email
-    cy.get('.search-input [type=text]')
-      .type(email)
-    cy.get('h4')
-      .should('contain', 'Adresses correspondant à la recherche (max 5)')
-    // Deletes the email
-    cy.get('.t-whitelist-search')
-      .contains(email)
-      .parents('.t-whitelist-search')
-      .contains('delete')
-      .click()
-    cy.get('.v-dialog')
-      .should('contain', 'Voulez-vous vraiment supprimer l\'adresse ' + email + ' de la whitelist ?')
-    cy.contains('Oui, supprimer')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', email + ' supprimé de la liste blanche')
-      .contains('close')
-      .click()
-    // Deletes test@example.com
-    cy.get('.whitelist-grid')
-      .contains('test@example.com')
-      .parents('[role="listitem"]')
-      .should('contain', 'test@example.com')
-      .contains('delete')
-      .click()
-    cy.get('.v-dialog')
-      .should('contain', 'Voulez-vous vraiment supprimer l\'adresse test@example.com de la whitelist ?')
-    cy.contains('Oui, supprimer')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'test@example.com supprimé de la liste blanche')
-  })
-
-  it('Tests the import of csv files in the planning', () => {
+    cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
+      .parents('.v-list__group')
+      .within(($date) => {
+        cy.root().click()
+        cy.should('contain', '08h00-08h30')
+      })
+    // The admin deletes the places
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type(adminLogin)
+      .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(Cypress.env('adminPass'))
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
-    // Goes to where the places are
-    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + placeDate)
+    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
-      .contains(centre)
+      .contains(Cypress.env('centre'))
       .click({ force: true })
-    // Removes the inspector's places
+    // Deletes for the first inspector
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', inspecteur) // To ensure retry-ability
-      .contains(inspecteur)
-      .parents('tbody')
-      .should('not.contain', 'block')
-      .within(($row) => {
-        // Removes the morning
-        cy.contains('delete')
+      .should('have.length', 1, { timeout: 10000 })
+      .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
+      .contains(Cypress.env('inspecteur'))
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button')
+          .contains('check_circle')
           .click()
-        cy.contains('Supprimer la matinée')
-          .click()
-        cy.contains('Valider')
+        cy.contains('Rendre indisponible')
           .click()
       })
     cy.get('.v-snack')
-      .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
+      .should('contain', 'a bien été supprimée de la base')
+    // Deletes for the second inspector
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(inspecteur2)
-      .parents('tbody')
-      .should('not.contain', 'block')
-      .within(($row) => {
-        // Removes the afternoon
-        cy.contains('delete')
+      .should('contain', Cypress.env('inspecteur2')) // To ensure retry-ability
+      .contains(Cypress.env('inspecteur2'))
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button')
+          .contains('check_circle')
           .click()
-        cy.contains('Supprimer l\'après-midi')
-          .click()
-        cy.contains('Valider')
+        cy.contains('Rendre indisponible')
           .click()
       })
     cy.get('.v-snack')
-      .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
-    cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(inspecteur2)
-      .parents('tr').within(($row) => {
-        cy.get(':nth-child(9)')
-          .should('contain', 'check_circle')
-        cy.get(':nth-child(10)')
-          .should('contain', 'block')
-      })
-    cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(inspecteur)
-      .parents('tr')
-      .within(($row) => {
-        cy.get(':nth-child(9)')
-          .should('contain', 'block')
-        cy.get(':nth-child(10)')
-          .should('contain', 'check_circle')
-        // Removes the entire day
-        cy.contains('delete')
-          .click()
-        cy.root().parent()
-          .contains('Supprimer la journée')
-          .click()
-        cy.root().parent()
-          .contains('Valider')
-          .click()
-      })
-    // The inspector should not be present anymore
-    cy.get('.name-ipcsr-wrap')
-      .should('not.contain', inspecteur)
-    // Imports the places
-    cy.get('.t-import-places [type=checkbox]')
-      .check({ force: true })
-    const filePath = '../files/planning.csv'
-    const fileName = 'planning.csv'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('[type=file]').upload({ fileContent, fileName, mimeType: 'text/csv' })
-    })
-    cy.get('.v-snack')
-      .should('contain', 'planning.csv prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click({ force: true })
-    cy.get('.v-snack', { timeout: 10000 })
-      .should('contain', 'Le fichier planning.csv a été traité pour le departement 75.')
-    // The inspector should be back
-    cy.contains('replay')
-      .click()
-    cy.get('.name-ipcsr-wrap')
-      .should('contain', inspecteur)
-  })
-
-  it('Logins with a restricted admin account', () => {
-    cy.visit(candilibAddress + 'admin-login')
-    cy.get('[type=text]')
-      .type(admin93Login)
-    cy.get('[type=password]')
-      .type(admin93Pass)
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    cy.get('.hexagon-wrapper')
-      .should('not.contain', '75')
-      .and('contain', '93')
-    cy.get('h3')
-      .should('contain', 'admin93')
-    cy.get('.title')
-      .should('contain', 'Bobigny')
-    cy.get('.v-toolbar')
-      .should('not.contain', 'import_export')
-    cy.contains('calendar_today').click()
-    cy.get('.v-tabs__div')
-      .should('contain', 'Bobigny')
-  })
-
-  it('Tries the admin login with an invalid password', () => {
-    cy.visit(candilibAddress + 'admin-login')
-    cy.get('[type=text]')
-      .type(adminLogin)
-    cy.get('[type=password]')
-      .type(adminPass + 'bad')
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Identifiants invalides')
-  })
-
-  it('Tries the admin login with an invalid email', () => {
-    cy.visit(candilibAddress + 'admin-login')
-    cy.get('[type=text]')
-      .type('admin@example')
-    cy.get('[type=password]')
-      .type('password')
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Veuillez remplir le formulaire')
-  })
-
-  it('Tries the already signed up form without account', () => {
-    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
-    cy.get('.t-already-signed-up-button-top')
-      .should('contain', 'Déjà Inscrit ?')
-      .click()
-    cy.get('.t-magic-link-input-top [type=text]')
-      .type(email)
-    cy.get('.t-magic-link-button-top')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Utilisateur non reconnu')
-  })
-
-  it('Tries to pre-signup with a not whitelisted address', () => {
-    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
-    cy.contains('Se pré-inscrire')
-      .click()
-    cy.get('h2')
-      .should('contain', 'Réservez votre place d\'examen')
-    cy.contains('NEPH')
-      .parent()
-      .children('input')
-      .type('0123456789')
-    cy.contains('Nom de naissance')
-      .parent()
-      .children('input')
-      .type(candidat)
-    cy.contains('Prénom')
-      .parent()
-      .children('input')
-      .type('Jean')
-    cy.contains('Courriel *')
-      .parent()
-      .children('input')
-      .type('badtest@example.com')
-    cy.contains('Portable')
-      .parent()
-      .children('input')
-      .type('0716253443')
-    cy.contains('Adresse')
-      .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
-      .click()
-    cy.contains('Pré-inscription')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'L\'adresse courriel renseignée (badtest@example.com) n\'est pas dans la liste des invités.')
-    // Goes to the 'Mentions Légales' page
-    cy.contains('Mentions légales')
-      .click()
-    cy.url()
-      .should('contain', 'mentions-legales')
-    cy.get('h2')
-      .should('contain', 'Mentions légales')
+      .should('contain', 'a bien été supprimée de la base')
     cy.contains('exit_to_app')
       .click()
+    cy.visit(magicLink)
+    // The 8:00 slot should not be there anymore
     cy.get('h2')
-      .should('contain', 'Réservez votre place d\'examen')
-    // Tests the display of the F.A.Q.
-    cy.contains('Une question')
+      .should('contain', 'Choix du centre')
+    cy.contains(Cypress.env('centre'))
       .click()
-    cy.url()
-      .should('contain', 'faq')
-    cy.get('h2')
-      .should('contain', 'F.A.Q')
-    cy.get('.question-content')
-      .should('not.be.visible')
-    cy.get('.question').contains('?')
+    cy.get('.v-tabs .primary--text')
       .click()
-    cy.get('.question-content')
-      .should('be.visible')
+    cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
+      .parents('.v-list__group')
+      .within(($date) => {
+        cy.root().click()
+        cy.should('not.contain', '08h00-08h30')
+      })
+    // Add the places back
+    cy.visit(candilibAddress + 'admin-login')
+    cy.get('[type=text]')
+      .type(Cypress.env('adminLogin'))
+    cy.get('[type=password]')
+      .type(Cypress.env('adminPass'))
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
+    cy.visit(candilibAddress + 'admin/gestion-planning/0/' + Cypress.env('placeDate'))
+    cy.get('.v-tabs')
+      .contains(Cypress.env('centre'))
+      .click({ force: true })
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1, { timeout: 10000 })
+      .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
+      .within(($centre) => {
+        cy.get('.place-button')
+          .contains('block')
+          .click()
+        cy.contains('Rendre le créneau disponible')
+          .click()
+      })
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(Cypress.env('inspecteur2'))
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button')
+          .contains('block')
+          .click()
+        cy.contains('Rendre le créneau disponible')
+          .click()
+      })
+    cy.get('.v-snack')
+      .should('contain', 'a bien été crée.')
   })
 
   it('Refuses the validation for outdated ETG', () => {
@@ -1418,9 +1271,9 @@ describe('Additional tests', () => {
     // Aurige invalidate the user
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type(adminLogin)
+      .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(Cypress.env('adminPass'))
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
@@ -1457,15 +1310,13 @@ describe('Additional tests', () => {
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Probl=C3=A8me_inscription_Candilib?=')
   })
-})
 
-describe('Teardown', () => {
-  it('Archives the candidate from the db', () => {
+  it('Refuses the validation for incorrect informations', () => {
     cy.visit(candilibAddress + 'admin-login')
     cy.get('[type=text]')
-      .type(adminLogin)
+      .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
-      .type(adminPass)
+      .type(Cypress.env('adminPass'))
     cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
@@ -1492,18 +1343,222 @@ describe('Teardown', () => {
       .should('contain', 'Le fichier aurige.json a été synchronisé.')
     // Verifies the error message
     cy.get('.ag-cell')
-      .should('contain', candidat + ' sera archivé : NEPH inconnu')
+      .should('contain', Cypress.env('candidat') + ' sera archivé : NEPH inconnu')
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', emailCandidat)
+      .should('contain', Cypress.env('emailCandidat'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Inscription_Candilib_non_valid=C3=A9e?=')
   })
+})
 
-  after(() => {
-    cy.mhDeleteAll()
+// These tests don't need the subscription
+describe('Additional tests', () => {
+  it('Adds and removes from the whitelist', () => {
+    cy.visit(candilibAddress + 'admin-login')
+    cy.get('[type=text]')
+      .type(Cypress.env('adminLogin'))
+    cy.get('[type=password]')
+      .type(Cypress.env('adminPass'))
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
+    // Visits the whitelist
+    cy.visit(candilibAddress + 'admin/whitelist')
+    cy.get('h2')
+      .should('contain', 'Liste blanche')
+    // Adds the email
+    cy.contains('Ajouter une adresse courriel')
+      .click()
+    cy.get('.t-add-one-whitelist [type=text]')
+      .type(Cypress.env('email') + '{enter}')
+    cy.get('.v-snack')
+      .should('contain', Cypress.env('email') + ' ajouté à la liste blanche')
+    // Tries to add bad addresses
+    cy.contains('Ajouter un lot d\'adresse courriel')
+      .click()
+    cy.get('#whitelist-batch-textarea')
+      .type('test.com\ntest@.com\n@test.com\ntest@test\ntest@test.t\n')
+    cy.contains('Enregistrer ces adresses')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Aucun email n\'a pu être ajouté à la liste blanche')
+    cy.get('.t-whitelist-batch-result')
+      .should('contain', 'Adresse invalide')
+      .and('not.contain', 'Adresse courriel existante')
+      .and('not.contain', 'Adresse enregistrée')
+    // Add some addresses
+    cy.contains('Ajouter un lot d\'adresse courriel')
+      .click()
+    cy.get('#whitelist-batch-textarea')
+      .type('test@example.com\n' + Cypress.env('email'))
+    cy.contains('Enregistrer ces adresses')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Certains emails n\'ont pas pu être ajoutés à la liste blanche')
+    cy.get('.t-whitelist-batch-result')
+      .should('contain', 'Adresse enregistrée')
+      .and('contain', 'Adresse courriel existante')
+      .and('not.contain', 'Adresse invalide')
+    // Searches for the email
+    cy.get('.search-input [type=text]')
+      .type(Cypress.env('email'))
+    cy.get('h4')
+      .should('contain', 'Adresses correspondant à la recherche (max 5)')
+    // Deletes the email
+    cy.get('.t-whitelist-search')
+      .contains(Cypress.env('email'))
+      .parents('.t-whitelist-search')
+      .contains('delete')
+      .click()
+    cy.get('.v-dialog')
+      .should('contain', 'Voulez-vous vraiment supprimer l\'adresse ' + Cypress.env('email') + ' de la whitelist ?')
+    cy.contains('Oui, supprimer')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', Cypress.env('email') + ' supprimé de la liste blanche')
+      .contains('close')
+      .click()
+    // Deletes test@example.com
+    cy.get('.whitelist-grid')
+      .contains('test@example.com')
+      .parents('[role="listitem"]')
+      .should('contain', 'test@example.com')
+      .contains('delete')
+      .click()
+    cy.get('.v-dialog')
+      .should('contain', 'Voulez-vous vraiment supprimer l\'adresse test@example.com de la whitelist ?')
+    cy.contains('Oui, supprimer')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'test@example.com supprimé de la liste blanche')
+  })
+
+  it('Logins with a restricted admin account', () => {
+    cy.visit(candilibAddress + 'admin-login')
+    cy.get('[type=text]')
+      .type(Cypress.env('admin93Login'))
+    cy.get('[type=password]')
+      .type(Cypress.env('admin93Pass'))
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
+    cy.get('.hexagon-wrapper')
+      .should('not.contain', '75')
+      .and('contain', '93')
+    cy.get('h3')
+      .should('contain', 'admin93')
+    cy.get('.title')
+      .should('contain', 'Bobigny')
+    cy.get('.v-toolbar')
+      .should('not.contain', 'import_export')
+    cy.contains('calendar_today').click()
+    cy.get('.v-tabs__div')
+      .should('contain', 'Bobigny')
+  })
+
+  it('Tries the admin login with an invalid password', () => {
+    cy.visit(candilibAddress + 'admin-login')
+    cy.get('[type=text]')
+      .type(Cypress.env('adminLogin'))
+    cy.get('[type=password]')
+      .type(Cypress.env('adminPass') + 'bad')
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Identifiants invalides')
+  })
+
+  it('Tries the admin login with an invalid email', () => {
+    cy.visit(candilibAddress + 'admin-login')
+    cy.get('[type=text]')
+      .type('admin@example')
+    cy.get('[type=password]')
+      .type('password')
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Veuillez remplir le formulaire')
+  })
+
+  it('Tries the already signed up form without account', () => {
+    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
+    cy.get('.t-already-signed-up-button-top')
+      .should('contain', 'Déjà Inscrit ?')
+      .click()
+    cy.get('.t-magic-link-input-top [type=text]')
+      .type(Cypress.env('email'))
+    cy.get('.t-magic-link-button-top')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Utilisateur non reconnu')
+  })
+
+  it('Tries to pre-signup with a not whitelisted address', () => {
+    cy.visit(candilibAddress + 'qu-est-ce-que-candilib')
+    cy.contains('Se pré-inscrire')
+      .click()
+    cy.get('h2')
+      .should('contain', 'Réservez votre place d\'examen')
+    cy.contains('NEPH')
+      .parent()
+      .children('input')
+      .type('0123456789')
+    cy.contains('Nom de naissance')
+      .parent()
+      .children('input')
+      .type(Cypress.env('candidat'))
+    cy.contains('Prénom')
+      .parent()
+      .children('input')
+      .type('Jean')
+    cy.contains('Courriel *')
+      .parent()
+      .children('input')
+      .type('badtest@example.com')
+    cy.contains('Portable')
+      .parent()
+      .children('input')
+      .type('0716253443')
+    cy.contains('Adresse')
+      .parent()
+      .children('input')
+      .type('avenue')
+    cy.get('.v-select-list')
+      .contains('avenue')
+      .click()
+    cy.contains('Pré-inscription')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'L\'adresse courriel renseignée (badtest@example.com) n\'est pas dans la liste des invités.')
+    // Goes to the 'Mentions Légales' page
+    cy.contains('Mentions légales')
+      .click()
+    cy.url()
+      .should('contain', 'mentions-legales')
+    cy.get('h2')
+      .should('contain', 'Mentions légales')
+    cy.contains('exit_to_app')
+      .click()
+    cy.get('h2')
+      .should('contain', 'Réservez votre place d\'examen')
+    // Tests the display of the F.A.Q.
+    cy.contains('Une question')
+      .click()
+    cy.url()
+      .should('contain', 'faq')
+    cy.get('h2')
+      .should('contain', 'F.A.Q')
+    cy.get('.question-content')
+      .should('not.be.visible')
+    cy.get('.question').contains('?')
+      .click()
+    cy.get('.question-content')
+      .should('be.visible')
   })
 })
