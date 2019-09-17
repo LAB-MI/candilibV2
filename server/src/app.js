@@ -152,7 +152,7 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  */
 export const apiPrefix = '/api/v2'
 
-const isDevelopment = process.env.NODE_ENV === 'development'
+const isDevelopment = [undefined, 'development'].includes(process.env.NODE_ENV)
 
 const app = express()
 

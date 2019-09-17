@@ -68,7 +68,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       return message
     case VALIDATION_EMAIL:
       message.content = getHtmlBody(VALIDATION_EMAIL_MSG)
-      message.subject = "Validation d'adresse email pour Candilib"
+      message.subject = "Validation d'adresse courriel pour Candilib"
       return message
     case INSCRIPTION_VALID:
       message.content = getHtmlBody(INSCRIPTION_VALID_MSG)
