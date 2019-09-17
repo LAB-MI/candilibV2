@@ -344,6 +344,8 @@ describe('Planning tests', () => {
     cy.contains('replay')
       .click()
     cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1)
+      .and('contain', Cypress.env('inspecteur'))
       .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
