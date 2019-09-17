@@ -25,12 +25,15 @@ import {
   verifyAdminLevel,
   verifyAccessAurige,
 } from './middlewares'
+import { verifyToken } from '../middlewares';
+import { resetMyPassword } from '../auth/admin.controllers';
 
 const router = express.Router()
 
 router.use(verifyRepartiteurLevel)
 
 router.get('/me', getMe)
+router.patch('/me', resetMyPassword)
 router.get(
   '/candidats/:id?',
   verifyRepartiteurDepartement,
