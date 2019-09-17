@@ -2,6 +2,8 @@ import { checkToken, appLogger } from '../../util'
 import config from '../../config'
 import { setCandidatFirstConnection } from '../../models/candidat'
 
+import { PLEASE_LOG_IN } from '../../messages.constants'
+
 export async function verifyToken (req, res, next) {
   const authHeader = req.headers.authorization
   const tokenInAuthHeader = authHeader && authHeader.replace('Bearer ', '')
@@ -15,7 +17,7 @@ export async function verifyToken (req, res, next) {
       description: 'Token absent',
     })
     return res.status(401).send({
-      message: "Vous n'êtes pas connecté, veuillez vous reconnecter",
+      message: PLEASE_LOG_IN,
       success: false,
     })
   }

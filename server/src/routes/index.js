@@ -17,7 +17,7 @@ const router = express.Router()
  * /candidat/preinscription:
  *   post:
  *     summary: Pré-inscription du candidat sur l'application Candilib
- *     description: Ajoute un·e nouv·eau·elle candidat dans la base de données si les données envoyées sont correctes.
+ *     description: Ajoute un·e nouv·eau·elle candidat·e dans la base de données si les données envoyées sont correctes.
  *     produces:
  *      - application/json
  *
@@ -109,7 +109,7 @@ const router = express.Router()
  */
 
 /**
- * Ajoute un·e nouv·eau·elle candidat dans la base de données si les données envoyées sont correctes.
+ * Ajoute un·e nouv·eau·elle candidat·e dans la base de données si les données envoyées sont correctes.
  *
  * @callback preSignup
  * @see {@link http://localhost:8000/api-docs/#/default/post_candidat_preinscription}
