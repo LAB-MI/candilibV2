@@ -200,7 +200,7 @@ if (isDevelopment) {
  *
  * /version:
  *   get:
- *     summary: Version exacte de l'API déployée
+ *     summary: Version exacte de l'API déployée (Disponible uniquement depuis l'URL répartiteur)
  *     description: Retourne la version exacte de l'API déployée
  *     produces:
  *       - application/json
