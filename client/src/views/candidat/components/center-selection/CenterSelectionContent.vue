@@ -5,12 +5,12 @@
       'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !hasPlaces
     }"
   >
-    <div class="u-flex">
+    <div class="u-flex u-pointer">
       <v-list-tile-content v-ripple="hasPlaces">
         <v-list-tile-title >
-          <a class="u-uppercase color">
+          <span class="u-uppercase color">
             {{ center.centre.nom }}
-          </a>
+          </span>
           ({{ center.centre.departement }})
         </v-list-tile-title>
         <v-list-tile-sub-title  class="u-flex__item--grow" :class="{'blue-grey--text  text--lighten-2': !hasPlaces}">
