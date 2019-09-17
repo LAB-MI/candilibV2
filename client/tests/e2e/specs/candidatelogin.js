@@ -1,5 +1,4 @@
 /* Tests :
-CANDIDATE LOGIN
 - Pre-sign-up
 - Pre-sign-up without a whitelisted address
 - Pre-sign-up with an already used email
@@ -8,19 +7,10 @@ CANDIDATE LOGIN
 - Pre-sign-up with an invalid mobile number
 - Email validation
 - Aurige validation
-- Aurige refusal because of invalid informations & mail
-- Aurige refusal because of expired ETG & mail
 - Already signed up & magic link mail
 - Already signed up while awaiting validation
 - Already signed up with an unknown mail
 - Candidate deconnection
-
-ADMIN LOGIN
-- Admin login
-- Restricted admin login
-- Admin login with incorrect password/email combination
-- Admin login with invalid email
-- Admin deconnection
 */
 
 // Initialise magicLink
@@ -41,18 +31,6 @@ describe('Candidate login', () => {
           'nbEchecsPratiques': '0',
           'dateDernierNonReussite': '',
           'objetDernierNonReussite': '',
-          'reussitePratique': '',
-          'candidatExistant': 'OK',
-        },
-        {
-          'codeNeph': '093621795384',
-          'nomNaissance': 'GOOSE',
-          'prenom': 'JIM',
-          'email': 'jimgoose@candilib.com',
-          'dateReussiteETG': '2012-11-11',
-          'nbEchecsPratiques': '3',
-          'dateDernierNonReussite': '2017-06-18',
-          'objetDernierNonReussite': 'echec',
           'reussitePratique': '',
           'candidatExistant': 'OK',
         },
@@ -99,7 +77,7 @@ describe('Candidate login', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
-    // Adds the addresses to the whitelist
+    // Adds the address to the whitelist
     cy.contains('favorite')
       .click()
     cy.get('h2')
@@ -107,13 +85,14 @@ describe('Candidate login', () => {
     cy.contains('Ajouter un lot d\'adresse courriel')
       .click()
     cy.get('#whitelist-batch-textarea')
-      .type(Cypress.env('emailCandidat') + '\njimgoose@candilib.com')
+      .type(Cypress.env('emailCandidat'))
     cy.contains('Enregistrer ces adresses')
       .click()
     cy.contains('exit_to_app')
       .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes déconnecté·e')
+  })
+
+  it('Create an account and logins', () => {
     // The candidate fills the pre-sign-up form
     cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
@@ -478,236 +457,6 @@ describe('Candidate login', () => {
       .contains('avenue')
       .click()
     cy.contains('Pré-inscription')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Veuillez remplir le formulaire')
-  })
-
-  it('Refuses the validation for outdated ETG', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
-    cy.contains('Se pré-inscrire')
-      .click()
-    cy.get('h2')
-      .should('contain', 'Réservez votre place d\'examen')
-    cy.contains('NEPH')
-      .parent()
-      .children('input')
-      .type('093621795384')
-    cy.contains('Nom de naissance')
-      .parent()
-      .children('input')
-      .type('GOOSE')
-    cy.contains('Prénom')
-      .parent()
-      .children('input')
-      .type('JIM')
-    cy.contains('Courriel *')
-      .parent()
-      .children('input')
-      .type('jimgoose@candilib.com')
-    cy.contains('Portable')
-      .parent()
-      .children('input')
-      .type('0716253443')
-    cy.contains('Adresse')
-      .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
-      .click()
-    cy.contains('Pré-inscription')
-      .click()
-    // Verifies the access
-    cy.url()
-      .should('contain', 'email-validation')
-    cy.get('h3')
-      .should('contain', 'Validation en attente')
-    cy.get('div')
-      .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
-    cy.contains('Retour au formulaire de pré-inscription')
-      .click()
-    // Gets the confirmation email from mailHog
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetRecipients()
-      .should('contain', 'jimgoose@candilib.com')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
-      .should('contain', 'Validation d\'adresse email pour Candilib')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetBody().then((mailBody) => {
-        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        const validationLink = withoutEq.replace(/=3D/g, '=')
-        cy.visit(validationLink)
-      })
-    cy.get('h3')
-      .should('contain', 'Adresse courriel validée')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetRecipients()
-      .should('contain', 'jimgoose@candilib.com')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
-      .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
-    // Aurige invalidate the user
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    // Goes to the page
-    cy.contains('import_export')
-      .click()
-    // Uploads the JSON file
-    const filePath = '../files/aurige.json'
-    const fileName = 'aurige.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
-    cy.get('.v-snack')
-      .should('contain', 'aurige.json prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Le fichier aurige.json a été synchronisé.')
-    // Verifies the error message
-    cy.get('.ag-cell')
-      .should('contain', 'Pour le 75, ce candidat jimgoose@candilib.com sera archivé : Date ETG KO')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetRecipients()
-      .should('contain', 'jimgoose@candilib.com')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
-      .should('contain', '=?UTF-8?Q?Probl=C3=A8me_inscription_Candilib?=')
-  })
-
-  it('Refuses the validation for incorrect informations', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    // Goes to the page
-    cy.contains('import_export')
-      .click()
-    // Uploads the JSON file
-    const filePath = '../files/aurige.end.json'
-    const fileName = 'aurige.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
-    cy.get('.v-snack')
-      .should('contain', 'aurige.json prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Le fichier aurige.json a été synchronisé.')
-    // Verifies the error message
-    cy.get('.ag-cell')
-      .should('contain', Cypress.env('candidat') + ' sera archivé : NEPH inconnu')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
-      .should('contain', '=?UTF-8?Q?Inscription_Candilib_non_valid=C3=A9e?=')
-  })
-})
-
-describe('Admin login', () => {
-  it('Tests the admin login and disconnection', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    cy.get('h2')
-      .should('contain', 'Tableau de bord')
-    cy.get('h3')
-      .should('contain', Cypress.env('adminLogin').split('@')[0])
-    // Disconnects from the app
-    cy.contains('exit_to_app')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes déconnecté·e')
-    cy.url()
-      .should('eq', Cypress.env('candilibAddress') + 'admin-login')
-  })
-
-  it('Logins with a restricted admin account', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('admin93Login'))
-    cy.get('[type=password]')
-      .type(Cypress.env('admin93Pass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    cy.get('.hexagon-wrapper')
-      .should('not.contain', '75')
-      .and('contain', '93')
-    cy.get('h3')
-      .should('contain', 'admin93')
-    cy.get('.title')
-      .should('contain', 'Bobigny')
-    cy.get('.v-toolbar')
-      .should('not.contain', 'import_export')
-    cy.contains('calendar_today').click()
-    cy.get('.v-tabs__div')
-      .should('contain', 'Bobigny')
-  })
-
-  it('Tries the admin login with an invalid password', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass') + 'bad')
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Identifiants invalides')
-  })
-
-  it('Tries the admin login with an invalid email', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
-    cy.get('[type=text]')
-      .type('admin@example')
-    cy.get('[type=password]')
-      .type('password')
-    cy.get('.submit-btn')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Veuillez remplir le formulaire')

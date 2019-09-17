@@ -32,7 +32,7 @@ npm run test:e2e
 
 ### Run end-to-end tests headless
 ```
-npx cypress run
+npm run cypress
 ```
 
 ### Run your unit tests
