@@ -72,5 +72,11 @@ avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre.toUpperCase()} à l'
   Nous vous souhaitons une bonne préparation et le succès à l'examen.
   Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
 </p>
+<div  style="border: 1px solid #2196f3; padding: 10px">
+<p><strong> Résultat de votre examen: </strong></b></p>
+<p>48h après le passage de votre examen (week-end et jours fériés non inclus) vous avez la possibilité de consulter <a href='https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire'>votre résultat</a>. En cas de réussite, vous devrez solliciter par vous même la fabrication de votre permis de conduire sur le site de l'<a href='https://www.permisdeconduire.ants.gouv.fr/'>ANTS</a>.
+</p>
+</div>
+
 <br/>
 <p align="right">L'équipe Candilib</p>`
