@@ -3,7 +3,10 @@
  * @module
  */
 import { createToken, appLogger } from '../../util'
-import { findUserByCredentials, findUserById } from '../../models/user'
+import {
+  findUserByCredentials,
+  findUserById,
+} from '../../models/user'
 
 /**
  * @typedef {Object} BadCredentialsBody
@@ -85,25 +88,27 @@ export const getAdminToken = async (req, res) => {
     })
   }
 }
-
-
-export const resetMyPassword = async (req, res)=> {
-  //récuperer le nouveau mot de passe
+export const changeMyPassword = async (req, res) => {
+  const loggerInfo = {
+    section: 'admin-login',
+    subject: newPassword,
+  }
+  // récuperer le nouveau mot de passe
   const newPassword = req.body.newPassword
-  //récuperer la confirmation du nouveau mot de passe
+  // récuperer la confirmation du nouveau mot de passe
   const confirmNewPassword = req.body.confirmNewPassword
-  //vérifier que le nouveau mot de passe et la confiramtion son identique
+  // vérifier que le nouveau mot de passe et la confiramtion son identique
   if (newPassword !== confirmNewPassword) {
     return res.json({
       success: false,
-      message: 'Oups! Les mots de passe ne correspondent pas.'
+      message: 'Oups! Les mots de passe ne correspondent pas.',
     })
   }
-  //récuperer l'utilisateur
+  // récuperer l'utilisateur
   const user = await findUserById(req.userId)
-  //récupérer l'ancien mot de passe
+  // récupérer l'ancien mot de passe
   const oldPassword = req.body.oldPassword
-  //vérifier ancien mot de passe = au mot de passe BDD
+  // vérifier ancien mot de passe = au mot de passe BDD
   const isValidCredentials = user.comparePassword(password)
 
   if (!isValidCredentials) {
@@ -113,9 +118,58 @@ export const resetMyPassword = async (req, res)=> {
     })
     return res.status(401).json(badCredentialsBody)
   }
-  //si tout est bon mettre à jour avec le nouveau mot de passe
+  // si tout est bon mettre à jour avec le nouveau mot de passe
   if (oldPassword) {
-    return 'le nouveau mot de passe à été pris en compte'
+    return res.status(200).json({
+      success: true,
+      message: 'Votre mot de passe à été modifier.',
+    })
   }
+}
 
+export const resetMyPassword = async (req, res) => {
+  // récuperer le nouveau mot de passe
+  const newPassword = req.body.newPassword
+  // récuperer la confirmation du nouveau mot de passe
+  const confirmNewPassword = req.body.confirmNewPassword
+  // vérifier que le nouveau mot de passe et la confirmation son identique
+  if (newPassword !== confirmNewPassword) {
+    return res.json({
+      success: false,
+      message: 'Oups! Les mots de passe ne correspondent pas.',
+    })
+  }
+  // Si les mots de passe sont identiques
+  return res.status(200).json({
+    success: true,
+    message: 'Votre mot de passe à été modifié.',
+  })
+}
+
+export const requestPasswdReset = async (req, res) => {
+
+  const loggerInfo = {
+    section: 'admin-login',
+    subject: email,
+  }
+  // récuperer l'adresse email
+  const email = req.body.email
+  // vérifier que l'adresse email récuperé est identique a celle qui se trouve dans la base de donnée
+  const user = await findUserByCredentials(email)
+  // Si elle est différente envoyer message erreur
+  if (email !== user) {
+    appLogger.warn({
+      ...loggerInfo,
+      action: 'FAILED_TO_FIND_USER_BY_EMAIL',
+      description: `${email} not in DB`,
+    })
+    return res.status(401).json(badCredentialsBody)
+  }
+  // Si elle est OK envoyer lien par mail
+  if (email) {
+    return res.status(200).json({
+      success: true,
+      message: `Un courriel vient de vous être envoyer sur ${email}`,
+    })
+  }
 }
