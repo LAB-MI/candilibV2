@@ -37,7 +37,7 @@ const placesArray = [csvHeaders].concat(placesInspecteur1).concat(placesInspecte
 // Initialise magicLink
 var magicLink
 
-describe('Standard scenario', () => {
+describe('Standard scenarios', () => {
   before(() => {
     // Delete all mails before start
     cy.mhDeleteAll()

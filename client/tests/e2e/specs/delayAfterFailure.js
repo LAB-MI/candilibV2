@@ -31,7 +31,7 @@ const placesArray = [csvHeaders].concat(placesInspecteur1).concat(placesInspecte
 // Initialise magicLink
 var magicLink
 
-describe('Connected candidate front', () => {
+describe('Test delay after failed attempt', () => {
   before(() => {
     // Delete all mails before start
     cy.mhDeleteAll()
