@@ -139,7 +139,7 @@ export default {
       const end = getFrenchLuxonCurrentDateTime().plus({ month: numberOfMonthsToFetch })
       const allWeeks = Math.round(end.diff(start, ['weeks']).weeks) + 1
 
-      const formattedArray =
+      const normalizedArray =
         Array.from({ length: allWeeks }).reduce((acc, item, index) => {
           const defaultDays = Array(validDays.length).fill([])
           const [year, week] = start.plus({ weeks: index }).toISOWeekDate().split('-')
@@ -174,7 +174,7 @@ export default {
             },
           ]
         }, [])
-      return formattedArray
+      return normalizedArray
     },
   },
 }
