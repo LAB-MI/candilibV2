@@ -50,7 +50,7 @@ import {
 
 import DataTableWeekMonitor from './DataTableWeekMonitor'
 
-import { SET_WEEK_SECTION } from '@/store'
+import { SET_WEEK_SECTION, numberOfMonthsToFetch } from '@/store'
 
 export const splitWeek = (prev, day, centerId) => {
   const weekDayNumber = getFrenchLuxonFromIso(day.date).weekday - 1
@@ -66,6 +66,9 @@ export const splitWeek = (prev, day, centerId) => {
 
   return prev
 }
+
+const weekNumberPlusNumberOfMonthsToFetch =
+  getFrenchLuxonCurrentDateTime().plus({ months: numberOfMonthsToFetch }).weekNumber
 
 export default {
   components: {
@@ -132,6 +135,16 @@ export default {
         this.weeks[weekNb].filter(elmt => this.getCreneauTimeAvailable(elmt.date))
     },
 
+    onlyFetchedWeeks (weekToVerif) {
+      if (
+        weekToVerif <= weekNumberPlusNumberOfMonthsToFetch &&
+        weekToVerif >= this.currentWeekNumber
+      ) {
+        return true
+      }
+      return false
+    },
+
     formatArrayByWeek () {
       this.allBookedPlacesByCenter = 0
       this.allCenterPlaces = 0
@@ -162,7 +175,8 @@ export default {
           bookedPlaces: 0,
         }
       })
-      return formattedArray.filter(e => e.numWeek !== 0)
+
+      return formattedArray.filter(e => this.onlyFetchedWeeks(e.numWeek))
     },
   },
 }

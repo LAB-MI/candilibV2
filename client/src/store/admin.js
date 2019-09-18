@@ -37,7 +37,7 @@ export const DELETE_BOOKED_PLACE_FAILURE = 'DELETE_BOOKED_PLACE_FAILURE'
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
-export const numberOfMonthsToFetch = 2
+export const numberOfMonthsToFetch = 3
 const ROUTE_AUTHORIZES = {
   'aurige': ROUTE_AUTHORIZE_AURIGE,
 }
