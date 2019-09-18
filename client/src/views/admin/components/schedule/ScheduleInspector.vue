@@ -12,7 +12,7 @@
             fast_rewind
           </v-icon>
         </v-btn>
-          Semaine {{ currentWeekNumber }}
+          Semaine {{ displayOnlyNumberOfWeek() }}
         <v-btn
           class="t-btn-next-week"
           icon
@@ -263,7 +263,7 @@ export default {
       activeHour: undefined,
       activeInspecteurRow: undefined,
       activePlace: undefined,
-      currentWeekNumber: (this.$route.params.date ? getFrenchLuxonFromSql(this.$route.params.date) : getFrenchLuxonCurrentDateTime()).weekNumber,
+      currentWeekNb: (this.$route.params.date ? getFrenchLuxonFromSql(this.$route.params.date) : getFrenchLuxonCurrentDateTime()).toISOWeekDate().split('-'),
       date: this.$route.params.date || getFrenchLuxonCurrentDateTime().toISODate(),
       datePicker: false,
       deleteMode: false,
@@ -291,6 +291,10 @@ export default {
           places.isDeletingBookedPlace ||
           places.isDeletingAvailablePlace ||
           places.isCreating
+      },
+
+      currentWeekNumber () {
+        return `${this.currentWeekNb[0]}-${this.currentWeekNb[1]}`
       },
 
       placesByCentreList (state) {
@@ -326,6 +330,10 @@ export default {
   },
 
   methods: {
+    displayOnlyNumberOfWeek () {
+      return `${this.currentWeekNb[1].replace('W', '')}`
+    },
+
     closeDetails () {
       this.activeInspecteurRow = undefined
       this.activeHour = undefined
@@ -465,7 +473,7 @@ export default {
   watch: {
     async date (newDay) {
       const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
-      this.currentWeekNumber = dateTimeFromSQL.weekNumber
+      this.currentWeekNb = dateTimeFromSQL.toISOWeekDate().split('-')
       this.activeCentreId = this.$route.params.center || this.firstCentreId
       this.updateCenterInRoute()
       if (this.$store.state.admin.departements.active) {

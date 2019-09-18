@@ -40,11 +40,11 @@
 
 <script>
 import {
+  creneauAvailable,
   getFrenchFormattedDateFromObject,
   getFrenchLuxonCurrentDateTime,
   getFrenchLuxonFromIso,
   validDays,
-  creneauAvailable,
 } from '@/util'
 
 import DataTableWeekMonitor from './DataTableWeekMonitor'
@@ -112,9 +112,9 @@ export default {
       return getFrenchFormattedDateFromObject({ weekYear: currentYear, weekNumber, weekday: 1 }, shape)
     },
 
-    goToGestionPlannings (currentWeek, weekDay) {
+    goToGestionPlannings (currentWeek, weekDay, year) {
       this.$store.dispatch(SET_WEEK_SECTION, currentWeek)
-      const date = getFrenchLuxonCurrentDateTime().set({ weekNumber: currentWeek, weekday: weekDay || 1 }).toSQLDate()
+      const date = getFrenchLuxonCurrentDateTime().set({ weekYear: year, weekNumber: currentWeek, weekday: weekDay || 1 }).toSQLDate()
       this.$router.push({ name: 'gestion-planning', params: { center: this.centerId, date } })
     },
 
@@ -127,8 +127,9 @@ export default {
     },
 
     getWeeksWithPlaces (weekNb) {
-      return (this.weeks && this.weeks[weekNb] && this.weeks[weekNb].length) &&
-        this.weeks[weekNb].filter(elmt => this.getCreneauTimeAvailable(elmt.date))
+      const filteredWeeks = (this.weeks && this.weeks[weekNb] && this.weeks[weekNb].length)
+        ? this.weeks[weekNb].filter(elmt => this.getCreneauTimeAvailable(elmt.date)) : []
+      return filteredWeeks
     },
 
     formatArrayByWeek () {
