@@ -25,14 +25,18 @@ import {
   verifyAdminLevel,
   verifyAccessAurige,
 } from './middlewares'
-import { verifyToken } from '../middlewares';
-import { resetMyPassword } from '../auth/admin.controllers';
+import {
+  changeMyPassword,
+  resetMyPassword,
+  requestPasswdReset,
+} from '../auth/admin.controllers'
 
 const router = express.Router()
 
 router.use(verifyRepartiteurLevel)
 
 router.get('/me', getMe)
+router.patch('/me', changeMyPassword)
 router.patch('/me', resetMyPassword)
 router.get(
   '/candidats/:id?',
@@ -66,5 +70,7 @@ router
   .all(verifyRepartiteurDepartement)
   .get(getWhitelisted)
   .post(addWhitelisted)
+
+router.post('/reset-link', requestPasswdReset)
 
 export default router
