@@ -214,7 +214,7 @@ export const getBookedCandidats = async (req, res) => {
     format,
     date,
     inspecteur,
-    centre,
+    centreId: centre,
   })
 
   const candidats = await findBookedCandidats(date, inspecteur, centre)

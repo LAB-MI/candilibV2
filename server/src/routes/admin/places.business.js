@@ -427,7 +427,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
 export const createPlaceForInspector = async (centre, inspecteur, date) => {
   const loggerInfo = {
     func: 'createPlaceForInspector',
-    centre,
+    centreId: centre._id,
     inspecteur,
     date,
   }
