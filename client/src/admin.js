@@ -28,4 +28,7 @@ export default {
   date_first_day_of_week: `Date du premier jour de la semaine N°`,
   total_of_week: `Total de la Semaine`,
   non_renseignee: `Non renseignée`,
+  booked_places_100_pourcent: '100% des places sont réservées',
+  booked_places_more_than_50_pourcent: '50% ou plus des places sont reservées',
+  booked_places_lower_than_50_pourcent: 'Moins de 50% des places sont reservées',
 }

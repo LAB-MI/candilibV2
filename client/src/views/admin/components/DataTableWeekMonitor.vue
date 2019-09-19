@@ -1,6 +1,10 @@
 <template>
   <v-card class="u-flex u-flex--column u-flex--center">
-    <v-btn icon color="primary" @click="scrollUp">
+    <v-btn
+      icon
+      color="primary"
+      @click="scrollUp"
+    >
       <v-icon>keyboard_arrow_up</v-icon>
     </v-btn>
 
@@ -25,7 +29,10 @@
           >
             <th :class="`th-ui-week-column ${setColorTh(week)}`">
               <v-layout row>
-                <v-tooltip bottom lazy>
+                <v-tooltip
+                  bottom
+                  lazy
+                >
                   <template v-slot:activator="{ on }">
                     <div>
                       <strong v-on="on">{{ getStartOfWeek(week.numWeek) }}</strong>
@@ -34,9 +41,15 @@
                   <span>{{ $formatMessage({ id: 'date_first_day_of_week' }) }} {{ week.numWeek }}</span>
                 </v-tooltip>
 
-                <v-divider vertical style="margin: 0 1em;"></v-divider>
+                <v-divider
+                  vertical
+                  style="margin: 0 1em;"
+                ></v-divider>
 
-                <v-tooltip bottom lazy>
+                <v-tooltip
+                  bottom
+                  lazy
+                >
                   <template v-slot:activator="{ on }">
                     <div v-on="on">
                       <strong>{{ week.bookedPlaces }}</strong>
@@ -50,7 +63,10 @@
                 </v-tooltip>
               </v-layout>
             </th>
-            <td v-for="(day, idx) in week.days" :key="`week-${day.numWeek}-day-${idx}`">
+            <td
+              v-for="(day, idx) in week.days"
+              :key="`week-${day.numWeek}-day-${idx}`"
+            >
               <v-btn @click="goToGestionPlannings(week.numWeek, idx + 1)">
                 <span class="text-free-places">
                   <strong>{{ getCountBookedPlaces(day) }}</strong>
@@ -67,10 +83,64 @@
         </tbody>
       </table>
     </div>
-    <div>
-      <v-btn icon color="primary" @click="scrollDown">
-        <v-icon>keyboard_arrow_down</v-icon>
-      </v-btn>
+
+    <div class="u-flex  u-flex--space-between  u-full-width">
+      <div style="flex-basis: 4em;">&nbsp;</div>
+      <div style="flex-grow: 1;">&nbsp;</div>
+
+      <div>
+        <v-btn
+          icon
+          color="primary"
+          @click="scrollDown"
+        >
+          <v-icon>keyboard_arrow_down</v-icon>
+        </v-btn>
+      </div>
+
+      <div style="flex-grow: 1;">&nbsp;</div>
+
+      <div>
+        <v-tooltip
+          left
+          lazy
+          max-width="300"
+        >
+          <template v-slot:activator="{ on }">
+            <div>
+              <v-btn
+                v-on="on"
+                icon
+                color="info"
+              >
+                <v-icon>info</v-icon>
+              </v-btn>
+            </div>
+          </template>
+          <v-chip
+            class="tooltip"
+            color="green lighten-2"
+            text-color="black"
+          >
+            <strong>{{ $formatMessage({ id: 'booked_places_100_pourcent' }) }}</strong>
+          </v-chip>
+          <v-chip
+            class="tooltip"
+            color="orange darken-1"
+            text-color="black"
+          >
+            <strong>{{ $formatMessage({ id: 'booked_places_more_than_50_pourcent' }) }}</strong>
+          </v-chip>
+          <v-chip
+            class="tooltip"
+            color="red lighten-1"
+            text-color="black"
+          >
+            <strong>{{ $formatMessage({ id: 'booked_places_lower_than_50_pourcent' }) }}</strong>
+          </v-chip>
+        </v-tooltip>
+      </div>
+
     </div>
   </v-card>
 </template>
@@ -84,6 +154,10 @@ import {
   getFrenchWeeksInWeekYear,
   validDays,
 } from '@/util'
+
+const orangeColor = 'orange darken-1'
+const greenColor = 'green lighten-2'
+const redColor = 'red lighten-1'
 
 export default {
   props: {
@@ -196,13 +270,13 @@ export default {
         totalPlaces !== bookedPlaces &&
         bookedPlaces >= totalPlaces / 2
       ) {
-        return 'orange darken-1'
+        return orangeColor
       }
       if (totalPlaces && totalPlaces === bookedPlaces) {
-        return 'green lighten-2'
+        return greenColor
       }
       if (totalPlaces) {
-        return 'red lighten-1'
+        return redColor
       }
       return ''
     },
@@ -216,10 +290,13 @@ export default {
     },
 
     scrollDown () {
-      this.currentSelectedWeek =
-        this.currentSelectedWeek < this.standardDeviation
-          ? this.currentSelectedWeek + 1
-          : this.currentSelectedWeek
+      const weeksInWeekYear = getFrenchWeeksInWeekYear(
+        getFrenchLuxonCurrentDateTime().year - 1
+      )
+      this.currentSelectedWeek = Math.min(
+        this.currentSelectedWeek + 1,
+        weeksInWeekYear - 1
+      )
       this.scrollToSelectedWeek()
     },
 
@@ -262,5 +339,11 @@ thead th {
   padding: 0.5em;
   z-index: 1;
   background: white;
+}
+
+.tooltip {
+  width: 100%;
+  height: 2vh;
+  margin-bottom: 0;
 }
 </style>
