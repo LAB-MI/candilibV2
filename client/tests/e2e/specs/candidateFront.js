@@ -18,6 +18,7 @@ PUBLIC CANDIDATE FRONT
 
 const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
 const horaires = [
+  '07:30',
   '08:00',
   '08:30',
   '09:00',
@@ -34,6 +35,7 @@ const horaires = [
   '14:30',
   '15:00',
   '15:30',
+  '16:00',
 ]
 
 const csvRowBuilder = (inspecteur, matricule) => horaire => `${Cypress.env('datePlace')},${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
@@ -318,6 +320,9 @@ describe('Connected candidate front', () => {
       .parents('.v-list__group')
       .within(($date) => {
         cy.root().click()
+        cy.get('container')
+          .should('not.contain', '07h30-08h00')
+          .and('not.contain', '16h00-16h30')
         cy.contains('08h00-08h30')
           .click()
       })

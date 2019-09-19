@@ -252,12 +252,12 @@ describe('Dashboard tests', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
-    // Goes to 07/10/2019 in the planning
+    // Goes to 14/10/2019 in the planning
     cy.get('h2.title')
       .should('contain', Cypress.env('centre'))
       .contains(Cypress.env('centre'))
       .parents('.monitor-wrapper').within(($centre) => {
-        cy.contains('07 oct. 2019')
+        cy.contains('14 oct. 2019')
           .parents('tr').within(($row) => {
             cy.get('button').first()
               .within(($button) => {
@@ -268,9 +268,9 @@ describe('Dashboard tests', () => {
           })
       })
     cy.url()
-      .should('contain', '2019-10-07')
+      .should('contain', '2019-10-14')
     cy.get('.t-date-picker [type=text]').invoke('val')
-      .should('contain', '07/10/2019')
+      .should('contain', '14/10/2019')
     cy.get('.v-tabs__item--active')
       .should('contain', Cypress.env('centre'))
     // Verifies the number of places available
