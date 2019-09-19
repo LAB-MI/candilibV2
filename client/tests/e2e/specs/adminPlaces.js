@@ -230,7 +230,7 @@ describe('Places tests', () => {
       .should('eq', Cypress.env('candilibAddress') + 'admin-login')
   })
 
-  it('Checks', () => {
+  it('Checks the colours on the dashboard', () => {
     cy.visit(Cypress.env('candilibAddress') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))

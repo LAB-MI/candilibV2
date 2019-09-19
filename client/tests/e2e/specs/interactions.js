@@ -526,6 +526,8 @@ describe('Standard scenarios', () => {
     cy.get('.v-tabs')
       .contains(Cypress.env('centre'))
       .click({ force: true })
+    cy.contains('replay')
+      .click()
     // Deletes for the first inspector
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1, { timeout: 10000 })

@@ -435,6 +435,42 @@ describe('Planning tests', () => {
 })
 
 describe('Planning tests without candidate', () => {
+  before(() => {
+    // Creates the csv file
+    cy.writeFile('tests/e2e/files/planning.csv', placesArray)
+    // Adds the places from the created planning file
+    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.get('[type=text]')
+      .type(Cypress.env('adminLogin'))
+    cy.get('[type=password]')
+      .type(Cypress.env('adminPass'))
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
+    cy.contains('calendar_today')
+      .click()
+    cy.get('.t-import-places [type=checkbox]')
+      .check({ force: true })
+    const filePath1 = '../files/planning.csv'
+    const fileName1 = 'planning.csv'
+    cy.fixture(filePath1).then(fileContent => {
+      cy.get('[type=file]').upload({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
+    })
+    cy.get('.v-snack')
+      .should('contain', fileName1 + ' prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click({ force: true })
+    cy.get('.v-snack', { timeout: 10000 })
+      .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
+    cy.contains('exit_to_app')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes déconnecté·e')
+    cy.url()
+      .should('eq', Cypress.env('candilibAddress') + 'admin-login')
+  })
+
   it('Adds and removes places', () => {
     cy.visit(Cypress.env('candilibAddress') + 'admin-login')
     cy.get('[type=text]')
