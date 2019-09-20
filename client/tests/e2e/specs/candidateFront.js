@@ -323,6 +323,7 @@ describe('Connected candidate front', () => {
         cy.get('container')
           .should('not.contain', '07h30-08h00')
           .and('not.contain', '16h00-16h30')
+          .and('not.contain', '12h30-13h00')
         cy.contains('08h00-08h30')
           .click()
       })

@@ -17,9 +17,6 @@ const horaires = [
   '10:30',
   '11:00',
   '11:30',
-  '12:00',
-  '12:30',
-  '13:00',
   '13:30',
   '14:00',
   '14:30',
@@ -172,42 +169,6 @@ describe('Standard scenarios', () => {
       .should('contain', 'Validation en attente')
     cy.get('div')
       .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
-    // Tries to pre-sign-up again
-    cy.contains('Retour au formulaire de pré-inscription')
-      .click()
-    cy.get('h2')
-      .should('contain', 'Réservez votre place d\'examen')
-    cy.contains('NEPH')
-      .parent()
-      .children('input')
-      .type(Cypress.env('NEPH'))
-    cy.contains('Nom de naissance')
-      .parent()
-      .children('input')
-      .type(Cypress.env('candidat'))
-    cy.contains('Prénom')
-      .parent()
-      .children('input')
-      .type(Cypress.env('firstName'))
-    cy.contains('Courriel *')
-      .parent()
-      .children('input')
-      .type(Cypress.env('emailCandidat'))
-    cy.contains('Portable')
-      .parent()
-      .children('input')
-      .type('0716253443')
-    cy.contains('Adresse')
-      .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
-      .click()
-    cy.contains('Pré-inscription')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Cette adresse courriel est déjà enregistrée')
     // Validates the email address
     cy.mhGetAllMails()
       .mhFirst()
@@ -236,17 +197,6 @@ describe('Standard scenarios', () => {
       .mhFirst()
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
-    // Tries to connect while awaiting Aurige validation
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
-    cy.get('.t-already-signed-up-button-top')
-      .should('contain', 'Déjà Inscrit ?')
-      .click()
-    cy.get('.t-magic-link-input-top [type=text]')
-      .type(Cypress.env('emailCandidat'))
-    cy.get('.t-magic-link-button-top')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Utilisateur en attente de validation.')
     // The admin validates the candidate via Aurige
     cy.visit(Cypress.env('candilibAddress') + 'admin-login')
     cy.get('[type=text]')
@@ -293,17 +243,6 @@ describe('Standard scenarios', () => {
       .should('contain', 'Vous êtes déconnecté·e')
     cy.url()
       .should('eq', Cypress.env('candilibAddress') + 'admin-login')
-    // The candidate requests a link
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
-    cy.get('.t-already-signed-up-button-top')
-      .should('contain', 'Déjà Inscrit ?')
-      .click()
-    cy.get('.t-magic-link-input-top [type=text]')
-      .type(Cypress.env('emailCandidat'))
-    cy.get('.t-magic-link-button-top')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Un lien de connexion vous a été envoyé.')
     // The candidate gets the link
     cy.mhGetAllMails()
       .mhFirst()
@@ -378,6 +317,8 @@ describe('Standard scenarios', () => {
     cy.get('.v-tabs')
       .contains(Cypress.env('centre'))
       .click({ force: true })
+    cy.contains('replay')
+      .click()
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1)
       .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
