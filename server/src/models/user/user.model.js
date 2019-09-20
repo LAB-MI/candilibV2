@@ -17,6 +17,10 @@ const UserSchema = new Schema(
       match: regexEmail,
       required: true,
     },
+    emailValidationHash: {
+      type: String,
+      required: false,
+    },
     password: {
       type: String,
       required: true,
