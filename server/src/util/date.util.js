@@ -62,3 +62,62 @@ export const getFrenchFormattedDateTime = (pDate, dateFormat, hourFormat) => {
     hour,
   }
 }
+
+const monthAndDayOfEasterDay = year => {
+  const n = year % 19
+  const c = Math.floor(year / 100)
+  const u = year % 100
+  const s = c / 4
+  const t = c % 4
+  const p = Math.floor((c + 8) / 25)
+  const q = Math.floor((c - p + 1) / 3)
+  const e = (19 * n + c - s - q + 15) % 30
+  const b = Math.floor(u / 4)
+  const d = u % 4
+  const l = (2 * t + 2 * b - e - d + 32) % 7
+  const h = Math.floor((n + 11 * e + 22 * l) / 451)
+  const day = ((e + l - 7 * h + 114) % 31) + 1
+  const month = Math.floor((e + l - 7 * h + 114) / 31)
+
+  return {
+    day,
+    month,
+  }
+}
+
+/**
+ * datetime doit être une date avec 00h00mn00s
+ */
+export const isHolidays = date => {
+  const datetime = date.startOf('day')
+  const {
+    day: dayOfEasterDay,
+    month: monthOfEasterDay,
+  } = monthAndDayOfEasterDay(datetime.year)
+  const seconds = DateTime.local(
+    datetime.year,
+    monthOfEasterDay,
+    dayOfEasterDay
+  ).toSeconds()
+  const secondsNow = datetime.toSeconds()
+  const isH =
+    (datetime.month === 1 && datetime.day === 1) ||
+    (datetime.month === 5 && datetime.day === 1) ||
+    (datetime.month === 5 && datetime.day === 8) ||
+    (datetime.month === 7 && datetime.day === 14) ||
+    (datetime.month === 8 && datetime.day === 15) ||
+    (datetime.month === 11 && datetime.day === 1) ||
+    (datetime.month === 11 && datetime.day === 11) ||
+    (datetime.month === 12 && datetime.day === 25) ||
+    (datetime.month === monthOfEasterDay && datetime.day === dayOfEasterDay) ||
+    (datetime.month === monthOfEasterDay &&
+      datetime.day === dayOfEasterDay + 1) ||
+    secondsNow === seconds + 39 * 24 * 60 * 60 ||
+    secondsNow === seconds + 49 * 24 * 60 * 60 ||
+    secondsNow === seconds + 50 * 24 * 60 * 60
+  return isH
+}
+
+export const isWorkingDay = date => {
+  return !isHolidays(date) && !(date.weekday === 7)
+}
