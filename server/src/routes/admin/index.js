@@ -32,7 +32,6 @@ import {
   verifyAccessAurige,
 } from './middlewares'
 import {
-  changeMyPassword,
   resetMyPassword,
   requestPasswdReset,
 } from '../auth/admin.controllers'
