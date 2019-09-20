@@ -1,4 +1,5 @@
 import User from './user.model'
+import uuidv4 from 'uuid/v4'
 
 export const findUserById = async id => {
   const user = await User.findById(id)
@@ -81,4 +82,12 @@ export const updateUserStatus = async (user, status) => {
   await user.update({ status })
   const updatedUser = await User.findById(user._id)
   return updatedUser
+}
+
+export const addEmailValidationHash = async (email) => {
+  const emailValidationHash = uuidv4()
+  const user = await findUserByEmail(email)
+  user.emailValidationHash = emailValidationHash
+  await user.save()
+  return emailValidationHash
 }

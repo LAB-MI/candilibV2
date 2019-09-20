@@ -26,7 +26,6 @@ import {
   verifyAccessAurige,
 } from './middlewares'
 import {
-  changeMyPassword,
   resetMyPassword,
   requestPasswdReset,
 } from '../auth/admin.controllers'
@@ -36,7 +35,6 @@ const router = express.Router()
 router.use(verifyRepartiteurLevel)
 
 router.get('/me', getMe)
-router.patch('/me', changeMyPassword)
 router.patch('/me', resetMyPassword)
 router.get(
   '/candidats/:id?',

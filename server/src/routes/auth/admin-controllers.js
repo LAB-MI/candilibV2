@@ -6,7 +6,11 @@ import { createToken, appLogger } from '../../util'
 import {
   findUserByCredentials,
   findUserById,
+  findUserByEmail,
+  updateUserPassword,
+
 } from '../../models/user'
+import { sendMailResetLink } from '../business/send-mail-admin'
 
 /**
  * @typedef {Object} BadCredentialsBody
@@ -20,7 +24,7 @@ import {
  */
 const badCredentialsBody = {
   success: false,
-  message: 'Mauvaise combinaison email/mot de passe.',
+  message: 'Mauvaise combinaison email/mot de passe',
 }
 
 /**
@@ -89,26 +93,22 @@ export const getAdminToken = async (req, res) => {
   }
 }
 export const changeMyPassword = async (req, res) => {
+  const { email, password } = req.body
+
   const loggerInfo = {
-    section: 'admin-login',
-    subject: newPassword,
+    section: 'change-password',
+    subject: email,
   }
-  // récuperer le nouveau mot de passe
   const newPassword = req.body.newPassword
-  // récuperer la confirmation du nouveau mot de passe
   const confirmNewPassword = req.body.confirmNewPassword
-  // vérifier que le nouveau mot de passe et la confiramtion son identique
   if (newPassword !== confirmNewPassword) {
     return res.json({
       success: false,
       message: 'Oups! Les mots de passe ne correspondent pas.',
     })
   }
-  // récuperer l'utilisateur
   const user = await findUserById(req.userId)
-  // récupérer l'ancien mot de passe
   const oldPassword = req.body.oldPassword
-  // vérifier ancien mot de passe = au mot de passe BDD
   const isValidCredentials = user.comparePassword(password)
 
   if (!isValidCredentials) {
@@ -118,58 +118,79 @@ export const changeMyPassword = async (req, res) => {
     })
     return res.status(401).json(badCredentialsBody)
   }
-  // si tout est bon mettre à jour avec le nouveau mot de passe
   if (oldPassword) {
     return res.status(200).json({
       success: true,
-      message: 'Votre mot de passe à été modifier.',
+      message: 'Votre mot de passe a été modifié.',
     })
   }
 }
 
 export const resetMyPassword = async (req, res) => {
-  // récuperer le nouveau mot de passe
-  const newPassword = req.body.newPassword
-  // récuperer la confirmation du nouveau mot de passe
-  const confirmNewPassword = req.body.confirmNewPassword
-  // vérifier que le nouveau mot de passe et la confirmation son identique
+  const {
+    newPassword,
+    confirmNewPassword,
+    email,
+    emailValidationHash,
+  } = req.body
+
   if (newPassword !== confirmNewPassword) {
-    return res.json({
+    return res.status(400).json({
       success: false,
-      message: 'Oups! Les mots de passe ne correspondent pas.',
+      message: 'Oups! Les mots de passe ne correspondent pas',
     })
   }
-  // Si les mots de passe sont identiques
+
+  const user = await findUserByEmail(email)
+
+  if (user.emailValidationHash !== emailValidationHash) {
+    return res.status(400).json({
+      success: false,
+      message: 'Votre lien est invalide',
+    })
+  }
+
+  await updateUserPassword(user, newPassword)
+
   return res.status(200).json({
     success: true,
-    message: 'Votre mot de passe à été modifié.',
+    message: 'Votre mot de passe à été modifié',
   })
 }
 
 export const requestPasswdReset = async (req, res) => {
-
   const loggerInfo = {
-    section: 'admin-login',
-    subject: email,
+    section: 'reset-password',
   }
-  // récuperer l'adresse email
   const email = req.body.email
-  // vérifier que l'adresse email récuperé est identique a celle qui se trouve dans la base de donnée
-  const user = await findUserByCredentials(email)
-  // Si elle est différente envoyer message erreur
-  if (email !== user) {
+  const user = await findUserByEmail(email)
+  if (!user) {
     appLogger.warn({
       ...loggerInfo,
       action: 'FAILED_TO_FIND_USER_BY_EMAIL',
       description: `${email} not in DB`,
     })
-    return res.status(401).json(badCredentialsBody)
+    return res.status(401).json({
+      success: false,
+      message: 'Votre email n\'est pas reconnu.',
+    })
   }
-  // Si elle est OK envoyer lien par mail
-  if (email) {
+
+  try {
+    await sendMailResetLink(email)
     return res.status(200).json({
       success: true,
-      message: `Un courriel vient de vous être envoyer sur ${email}`,
+      message: `Un courriel vient de vous être envoyé sur ${email}`,
+    })
+  } catch (error) {
+    appLogger.error({
+      section: 'send-mail-reset-link',
+      action: 'send-mail',
+      description: `Impossible d'envoyer l'email de réinitialisation à ${email}`,
+    })
+    return res.status(500).json({
+      success: false,
+      message: "Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu.",
     })
   }
 }
