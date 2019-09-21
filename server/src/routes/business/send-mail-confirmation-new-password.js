@@ -50,7 +50,7 @@ export const getMailConfirmationBody = email => {
 
 /**
  * Retourne le sujet et le contenu du mail
- *@function
+ * @function
  *
  * @param {string} email Adresse email du candidat
  *

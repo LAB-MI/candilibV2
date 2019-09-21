@@ -34,6 +34,7 @@ import {
 import {
   resetMyPassword,
   requestPasswdReset,
+  confirmNewPassword,
 } from '../auth/admin.controllers'
 
 const router = express.Router()
