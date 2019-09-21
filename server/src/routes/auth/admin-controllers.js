@@ -11,6 +11,7 @@ import {
 
 } from '../../models/user'
 import { sendMailResetLink } from '../business/send-mail-admin'
+import { sendMailConfirmation } from '../business/send-mail-confirmation-new-password'
 
 /**
  * @typedef {Object} BadCredentialsBody
@@ -126,38 +127,6 @@ export const changeMyPassword = async (req, res) => {
   }
 }
 
-export const resetMyPassword = async (req, res) => {
-  const {
-    newPassword,
-    confirmNewPassword,
-    email,
-    emailValidationHash,
-  } = req.body
-
-  if (newPassword !== confirmNewPassword) {
-    return res.status(400).json({
-      success: false,
-      message: 'Oups! Les mots de passe ne correspondent pas',
-    })
-  }
-
-  const user = await findUserByEmail(email)
-
-  if (user.emailValidationHash !== emailValidationHash) {
-    return res.status(400).json({
-      success: false,
-      message: 'Votre lien est invalide',
-    })
-  }
-
-  await updateUserPassword(user, newPassword)
-
-  return res.status(200).json({
-    success: true,
-    message: 'Votre mot de passe à été modifié',
-  })
-}
-
 export const requestPasswdReset = async (req, res) => {
   const loggerInfo = {
     section: 'reset-password',
@@ -193,4 +162,52 @@ export const requestPasswdReset = async (req, res) => {
       message: "Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu.",
     })
   }
+}
+
+export const resetMyPassword = async (req, res) => {
+  const {
+    newPassword,
+    confirmNewPassword,
+    email,
+    emailValidationHash,
+  } = req.body
+
+  if (newPassword !== confirmNewPassword) {
+    return res.status(400).json({
+      success: false,
+      message: 'Oups! Les mots de passe ne correspondent pas',
+    })
+  }
+
+  const user = await findUserByEmail(email)
+
+  if (user.emailValidationHash !== emailValidationHash) {
+    return res.status(400).json({
+      success: false,
+      message: 'Votre lien est invalide',
+    })
+  }
+
+  await updateUserPassword(user, newPassword)
+
+  return res.status(200).json({
+    success: true,
+    message: 'Votre mot de passe à été modifié',
+  })
+}
+
+export const confirmNewPassword = async (req, res) => {
+  const email = req.body.email
+  const newPassword = await resetMyPassword(email)
+
+  if (newPassword) {
+    return sendMailConfirmation(email).res.status(200).json({
+      success: true,
+      message: `Un courriel de confirmation vient de vous être envoyé sur ${email}`,
+    })
+  }
+  return res.status(500).json({
+    success: false,
+    message: "Oups ! Une erreur est survenue lors de l'envoi du courriel de confirmation. L'administrateur a été prévenu.",
+  })
 }
