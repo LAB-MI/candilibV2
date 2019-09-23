@@ -1,6 +1,6 @@
 import { getHtmlBody } from './mail/body-mail-template'
 import { buildMailResaArgsValidation } from './send-mail-util'
-import { getFrenchFormattedDateTime } from '../../util/date.util'
+import { getFrenchFormattedDateTime } from '../../util/date-util'
 import { getCancelBookingTemplate, getUrlFAQ, getUrlRESA } from './mail'
 import { appLogger } from '../../util'
 
