@@ -8,7 +8,7 @@
 
 describe('Admin login', () => {
   it('Tests the admin login and disconnection', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -27,11 +27,11 @@ describe('Admin login', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
     cy.url()
-      .should('eq', Cypress.env('candilibAddress') + 'admin-login')
+      .should('eq', Cypress.env('frontAdmin') + 'admin-login')
   })
 
   it('Logins with a restricted admin account', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('admin93Login'))
     cy.get('[type=password]')
@@ -55,7 +55,7 @@ describe('Admin login', () => {
   })
 
   it('Tries the admin login with an invalid password', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -67,7 +67,7 @@ describe('Admin login', () => {
   })
 
   it('Tries the admin login with an invalid email', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type('admin@example')
     cy.get('[type=password]')

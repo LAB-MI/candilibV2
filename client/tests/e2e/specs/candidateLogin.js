@@ -50,7 +50,7 @@ describe('Candidate login', () => {
         },
       ])
     // Archives the candidate if it's not already done
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -94,7 +94,7 @@ describe('Candidate login', () => {
 
   it('Create an account and logins', () => {
     // The candidate fills the pre-sign-up form
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -200,7 +200,7 @@ describe('Candidate login', () => {
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
     // Tries to connect while awaiting Aurige validation
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.get('.t-already-signed-up-button-top')
       .should('contain', 'Déjà Inscrit ?')
       .click()
@@ -211,7 +211,7 @@ describe('Candidate login', () => {
     cy.get('.v-snack')
       .should('contain', 'Utilisateur en attente de validation.')
     // The admin validates the candidate via Aurige
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -255,9 +255,9 @@ describe('Candidate login', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
     cy.url()
-      .should('eq', Cypress.env('candilibAddress') + 'admin-login')
+      .should('eq', Cypress.env('frontAdmin') + 'admin-login')
     // The candidate requests a link
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.get('.t-already-signed-up-button-top')
       .should('contain', 'Déjà Inscrit ?')
       .click()
@@ -294,7 +294,7 @@ describe('Candidate login', () => {
   })
 
   it('Tries the already signed up form without account', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.get('.t-already-signed-up-button-top')
       .should('contain', 'Déjà Inscrit ?')
       .click()
@@ -307,7 +307,7 @@ describe('Candidate login', () => {
   })
 
   it('Tries to pre-signup with a not whitelisted address', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -346,7 +346,7 @@ describe('Candidate login', () => {
   })
 
   it('Tries to pre-signup with a bad NEPH', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -385,7 +385,7 @@ describe('Candidate login', () => {
   })
 
   it('Tries to pre-signup with a bad email', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -424,7 +424,7 @@ describe('Candidate login', () => {
   })
 
   it('Tries to pre-signup with a bad mobile number', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')

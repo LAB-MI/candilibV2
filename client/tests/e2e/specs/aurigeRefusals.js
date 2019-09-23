@@ -45,7 +45,7 @@ describe('Aurige Refusals', () => {
   })
 
   it('Refuses the validation', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')

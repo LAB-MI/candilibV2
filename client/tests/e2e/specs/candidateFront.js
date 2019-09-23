@@ -84,7 +84,7 @@ describe('Connected candidate front', () => {
     // Creates the csv file
     cy.writeFile('tests/e2e/files/planning.csv', placesArray)
     // Archives the candidate if it's not already done
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -112,7 +112,7 @@ describe('Connected candidate front', () => {
     cy.get('.v-snack')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     // Adds the address to the whitelist
-    cy.visit(Cypress.env('candilibAddress') + 'admin/whitelist')
+    cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
     cy.get('h2')
       .should('contain', 'Liste blanche')
     cy.contains('Ajouter un lot d\'adresse courriel')
@@ -142,7 +142,7 @@ describe('Connected candidate front', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
     // The candidate fills the pre-sign-up form
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -212,7 +212,7 @@ describe('Connected candidate front', () => {
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
     // The admin validates the candidate via Aurige
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -256,7 +256,7 @@ describe('Connected candidate front', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
     cy.url()
-      .should('eq', Cypress.env('candilibAddress') + 'admin-login')
+      .should('eq', Cypress.env('frontAdmin') + 'admin-login')
     // The candidate gets the link
     cy.mhGetAllMails()
       .mhFirst()
@@ -463,7 +463,7 @@ describe('Connected candidate front', () => {
 
 describe('Public candidate front', () => {
   it('Tests the FAQ and Mentions Légales', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     // Goes to the 'Mentions Légales' page
     cy.contains('Mentions Légales')
       .click()

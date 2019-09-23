@@ -29,7 +29,7 @@ describe('Whitelist tests', () => {
         },
       ])
     // Archives the candidate if it's not already done
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -61,7 +61,7 @@ describe('Whitelist tests', () => {
   })
 
   it('Whitelist tests', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -98,7 +98,7 @@ describe('Whitelist tests', () => {
     cy.get('.v-snack')
       .should('contain', 'L\'adresse courriel renseignée (' + Cypress.env('email') + ') n\'est pas dans la liste des invités.')
 
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -108,7 +108,7 @@ describe('Whitelist tests', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
     // Visits the whitelist
-    cy.visit(Cypress.env('candilibAddress') + 'admin/whitelist')
+    cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
     cy.get('h2')
       .should('contain', 'Liste blanche')
     // Adds the email
@@ -147,7 +147,7 @@ describe('Whitelist tests', () => {
     cy.contains('exit_to_app')
       .click()
     // The candidate fills the pre-sign-up form
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -207,7 +207,7 @@ describe('Whitelist tests', () => {
       })
     cy.get('h3')
       .should('contain', 'Adresse courriel validée')
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -217,7 +217,7 @@ describe('Whitelist tests', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
     // Visits the whitelist
-    cy.visit(Cypress.env('candilibAddress') + 'admin/whitelist')
+    cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
     cy.get('h2')
       .should('contain', 'Liste blanche')
     // Searches for the email

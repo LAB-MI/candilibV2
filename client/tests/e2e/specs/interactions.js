@@ -70,7 +70,7 @@ describe('Standard scenarios', () => {
     // Creates the csv file
     cy.writeFile('tests/e2e/files/planning.csv', placesArray)
     // Archives the candidate if it's not already done
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -98,7 +98,7 @@ describe('Standard scenarios', () => {
     cy.get('.v-snack')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     // Adds the address to the whitelist
-    cy.visit(Cypress.env('candilibAddress') + 'admin/whitelist')
+    cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
     cy.get('h2')
       .should('contain', 'Liste blanche')
     cy.contains('Ajouter un lot d\'adresse courriel')
@@ -128,7 +128,7 @@ describe('Standard scenarios', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
     // The candidate fills the pre-sign-up form
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -198,7 +198,7 @@ describe('Standard scenarios', () => {
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
     // The admin validates the candidate via Aurige
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -242,7 +242,7 @@ describe('Standard scenarios', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
     cy.url()
-      .should('eq', Cypress.env('candilibAddress') + 'admin-login')
+      .should('eq', Cypress.env('frontAdmin') + 'admin-login')
     // The candidate gets the link
     cy.mhGetAllMails()
       .mhFirst()
@@ -303,7 +303,7 @@ describe('Standard scenarios', () => {
       .parent().parent()
       .should('contain', Cypress.env('candidat'))
     // The admin connects
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -313,7 +313,7 @@ describe('Standard scenarios', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
     // The admin find the reservation and cancels it
-    cy.visit(Cypress.env('candilibAddress') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
       .contains(Cypress.env('centre'))
       .click({ force: true })
@@ -369,7 +369,7 @@ describe('Standard scenarios', () => {
       .parent().parent()
       .should('contain', Cypress.env('candidat'))
     // The admin assigns the candidate to a place
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -379,7 +379,7 @@ describe('Standard scenarios', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
     // Goes to planning
-    cy.visit(Cypress.env('candilibAddress') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
       .contains(Cypress.env('centre'))
       .click({ force: true })
@@ -424,7 +424,7 @@ describe('Standard scenarios', () => {
     cy.get('h2')
       .should('contain', 'Choix du centre')
     // The admin verifies that the reservation has been cancelled
-    cy.visit(Cypress.env('candilibAddress') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
       .contains(Cypress.env('centre'))
       .click({ force: true })
@@ -454,7 +454,7 @@ describe('Standard scenarios', () => {
         cy.should('contain', '08h00-08h30')
       })
     // The admin deletes the places
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -463,7 +463,7 @@ describe('Standard scenarios', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
-    cy.visit(Cypress.env('candilibAddress') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
       .contains(Cypress.env('centre'))
       .click({ force: true })
@@ -513,7 +513,7 @@ describe('Standard scenarios', () => {
         cy.should('not.contain', '08h00-08h30')
       })
     // Add the places back
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -522,7 +522,7 @@ describe('Standard scenarios', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes identifié')
-    cy.visit(Cypress.env('candilibAddress') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
       .contains(Cypress.env('centre'))
       .click({ force: true })

@@ -52,7 +52,7 @@ describe('Dashboard tests', () => {
     // Creates the csv file
     cy.writeFile('tests/e2e/files/planning.csv', placesArray)
     // Archives the candidate if it's not already done
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -80,7 +80,7 @@ describe('Dashboard tests', () => {
     cy.get('.v-snack')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     // Adds the addresses to the whitelist
-    cy.visit(Cypress.env('candilibAddress') + 'admin/whitelist')
+    cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
     cy.get('h2')
       .should('contain', 'Liste blanche')
     cy.contains('Ajouter un lot d\'adresse courriel')
@@ -110,7 +110,7 @@ describe('Dashboard tests', () => {
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
     // The candidate fills the pre-sign-up form
-    cy.visit(Cypress.env('candilibAddress') + 'qu-est-ce-que-candilib')
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
     cy.contains('Se pré-inscrire')
       .click()
     cy.get('h2')
@@ -173,7 +173,7 @@ describe('Dashboard tests', () => {
   })
 
   it('Searches for candidate', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -196,7 +196,7 @@ describe('Dashboard tests', () => {
   })
 
   it('Searches for inspector', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -219,7 +219,7 @@ describe('Dashboard tests', () => {
   })
 
   it('Verifies the number of centers in the 75 and 93', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
@@ -240,7 +240,7 @@ describe('Dashboard tests', () => {
   })
 
   it('Goes to the planning by clicking on a date', () => {
-    cy.visit(Cypress.env('candilibAddress') + 'admin-login')
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
