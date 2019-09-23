@@ -80,9 +80,9 @@ export const findPlaceByCandidatId = async (id, populate) => {
 
 /**
  *
- * @param {*} centreId - Id du centre
- * @param {*} beginDate - date de debut de recherche
- * @param {*} endDate - date de fin de recherche
+ * @param {string} centreId - Id du centre
+ * @param {string} beginDate - date de debut de recherche au format ISO
+ * @param {string} endDate - date de fin de recherche au format ISO
  */
 const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
@@ -100,9 +100,9 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
 
 /**
  * @function findAllPlacesByCentre
- * @param {*} centreId - Id du centre
- * @param {*} beginDate - date de debut de recherche
- * @param {*} endDate - date de fin de recherche
+ * @param {string} centreId - Id du centre
+ * @param {string} beginDate - date de debut de recherche au format ISO
+ * @param {string} endDate - date de fin de recherche au format ISO
  */
 export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)

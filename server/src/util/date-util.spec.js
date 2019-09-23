@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { isHolidays, isWorkingDay } from './date.util'
+import { isHolidays, isWorkingDay } from './date-util'
 
 DateTime.prototype.isHolidays = function () {
   return isHolidays(this)
