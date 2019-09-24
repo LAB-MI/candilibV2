@@ -5,10 +5,8 @@
 import { createToken, appLogger } from '../../util'
 import {
   findUserByCredentials,
-  findUserById,
   findUserByEmail,
   updateUserPassword,
-
 } from '../../models/user'
 import { sendMailResetLink } from '../business/send-mail-admin'
 import { sendMailConfirmation } from '../business/send-mail-confirmation-new-password'
@@ -93,39 +91,6 @@ export const getAdminToken = async (req, res) => {
     })
   }
 }
-export const changeMyPassword = async (req, res) => {
-  const { email, password } = req.body
-
-  const loggerInfo = {
-    section: 'change-password',
-    subject: email,
-  }
-  const newPassword = req.body.newPassword
-  const confirmNewPassword = req.body.confirmNewPassword
-  if (newPassword !== confirmNewPassword) {
-    return res.json({
-      success: false,
-      message: 'Oups! Les mots de passe ne correspondent pas.',
-    })
-  }
-  const user = await findUserById(req.userId)
-  const oldPassword = req.body.oldPassword
-  const isValidCredentials = user.comparePassword(password)
-
-  if (!isValidCredentials) {
-    appLogger.warn({
-      ...loggerInfo,
-      action: 'USER_GAVE_WRONG_PASSWORD',
-    })
-    return res.status(401).json(badCredentialsBody)
-  }
-  if (oldPassword) {
-    return res.status(200).json({
-      success: true,
-      message: 'Votre mot de passe a été modifié.',
-    })
-  }
-}
 
 export const requestPasswdReset = async (req, res) => {
   const loggerInfo = {
@@ -141,7 +106,7 @@ export const requestPasswdReset = async (req, res) => {
     })
     return res.status(401).json({
       success: false,
-      message: 'Votre email n\'est pas reconnu.',
+      message: "Votre email n'est pas reconnu.",
     })
   }
 
@@ -159,12 +124,17 @@ export const requestPasswdReset = async (req, res) => {
     })
     return res.status(500).json({
       success: false,
-      message: "Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu.",
+      message:
+        "Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu.",
     })
   }
 }
 
 export const resetMyPassword = async (req, res) => {
+  const loggerInfo = {
+    section: 'reset-password',
+  }
+
   const {
     newPassword,
     confirmNewPassword,
@@ -181,33 +151,57 @@ export const resetMyPassword = async (req, res) => {
 
   const user = await findUserByEmail(email)
 
+  if (!user) {
+    appLogger.warn({
+      ...loggerInfo,
+      action: 'FAILED_TO_FIND_USER_BY_EMAIL',
+      description: `${email} not in DB`,
+    })
+
+    return res.status(404).json({
+      success: false,
+      message: "Votre email n'est pas reconnu.",
+    })
+  }
+
   if (user.emailValidationHash !== emailValidationHash) {
-    return res.status(400).json({
+    return res.status(401).json({
       success: false,
       message: 'Votre lien est invalide',
     })
   }
 
-  await updateUserPassword(user, newPassword)
-
-  return res.status(200).json({
-    success: true,
-    message: 'Votre mot de passe à été modifié',
-  })
-}
-
-export const confirmNewPassword = async (req, res) => {
-  const email = req.body.email
-  const newPassword = await resetMyPassword(email)
-
-  if (newPassword) {
-    return sendMailConfirmation(email).res.status(200).json({
-      success: true,
-      message: `Un courriel de confirmation vient de vous être envoyé sur ${email}`,
+  try {
+    await updateUserPassword(user, newPassword)
+  } catch (error) {
+    appLogger.error({
+      section: 'update-password',
+      action: 'update',
+      description: 'Impossible de modifier le mot de passe',
+    })
+    return res.status(500).json({
+      success: false,
+      message:
+        'Une erreur est survenue lors de la modification de votre mot de passe',
     })
   }
-  return res.status(500).json({
-    success: false,
-    message: "Oups ! Une erreur est survenue lors de l'envoi du courriel de confirmation. L'administrateur a été prévenu.",
-  })
+
+  try {
+    await sendMailConfirmation(email)
+    res.status(200).json({
+      success: true,
+      message: ` Un courriel de confirmation vient de vous être envoyé sur ${email}`,
+    })
+  } catch (error) {
+    appLogger.error({
+      section: 'send-mail-reset-confirmation',
+      action: 'send-mail',
+      description: `Impossible d'envoyer l'email de confirmation de changement de mot de passe à ${email}`,
+    })
+    res.status(500).json({
+      success: false,
+      message:
+        "Votre mot de passe à bien été changé, mais une erreur est survenue lors de l'envoi du courriel de confirmation. L'administrateur a été prévenu.",
+    })
+  }
 }
