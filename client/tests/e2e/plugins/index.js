@@ -20,6 +20,6 @@ module.exports = (on, config) => {
     screenshotsFolder: 'tests/e2e/screenshots',
     videosFolder: 'tests/e2e/videos',
     supportFile: 'tests/e2e/support/index.js',
-    'mailHogUrl': 'http://mailhog:8025',
+    mailHogUrl: 'http://mailhog:8025',
   })
 }

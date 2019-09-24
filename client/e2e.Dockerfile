@@ -9,11 +9,8 @@ ARG no_proxy
 
 # Base dir /app
 WORKDIR /app
-# Expose the listening port of your app
-EXPOSE 8000
-EXPOSE 8025
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime && echo "Europe/Paris" > /etc/timezone
 # use proxy & private npm registry
 RUN if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \
