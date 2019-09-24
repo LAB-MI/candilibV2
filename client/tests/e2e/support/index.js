@@ -20,5 +20,5 @@ import './commands'
 // require('./commands')
 
 before(() => {
-  cy.exec('cd ../server && npm run dev-setup')
+  // cy.exec('cd ../server && npm run dev-setup')
 })

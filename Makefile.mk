@@ -52,6 +52,9 @@ DC_APP_API_BUILD_PROD            := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_API_RUN_PROD              := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_DB_BUILD_PROD             := $(APP_DB_PATH)/docker-compose.prod.db.yml
 DC_APP_DB_RUN_PROD               := $(APP_DB_PATH)/docker-compose.prod.db.yml
+# tests e2e
+DC_APP_E2E_BUILD_PROD            := $(APP_FRONT_PATH)/docker-compose.e2e.yml
+DC_APP_E2E_RUN_PROD              := $(APP_FRONT_PATH)/docker-compose.e2e.yml
 
 # source archive
 FILE_ARCHIVE_APP_VERSION = $(APP)-$(APP_VERSION)-archive.tar.gz

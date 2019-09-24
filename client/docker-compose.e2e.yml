@@ -1,0 +1,33 @@
+# development mode
+version: '3.5'
+services:
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    restart: always
+    ports:
+        - 1025:1025
+        - 8025:8025
+  e2e:
+    image: candilib_e2e
+    container_name: e2e
+    build:
+      context: ./
+      dockerfile: e2e.Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        npm_registry: ${NPM_REGISTRY}
+        sass_registry: ${SASS_REGISTRY}
+        NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
+    ipc: host
+    environment:
+      CYPRESS_BASE_URL: http://candilib_front_admin
+    volumes:
+      - ./tests/e2e/:/app/tests/e2e/
+
+networks:
+  default:
+    external:
+      name: candilibV2-network
