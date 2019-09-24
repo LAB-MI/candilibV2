@@ -12,7 +12,7 @@ export const getValidationMailTemplate = (
   </p>
   <p>
     <a href="${urlValidationEmail}">
-      Valider mon adresse email
+      Valider mon adresse courriel
     </a>
   </p>
   <br/>

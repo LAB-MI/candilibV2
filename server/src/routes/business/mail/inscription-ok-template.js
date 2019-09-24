@@ -22,7 +22,7 @@ export const getInscriptionOkTemplate = (
       Ce lien est valable 3 jours à compter de la réception de cet email.
   </p>
   <p>
-    Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse email ${email} dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
+    Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse courriel ${email} dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
   </p>
   <p>
     Lorsque vous recevrez l’email, cliquez sur "Se connecter".

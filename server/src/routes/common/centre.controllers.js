@@ -21,8 +21,7 @@ export async function getCentres (req, res) {
     if (!departement) {
       const error = {
         section: 'candidat-get-centres',
-        message:
-          'Le code de département est manquant, Veuillez choisir un code département',
+        message: NOT_CODE_DEP_MSG,
       }
       appLogger.error(error)
       return res.status(400).json({

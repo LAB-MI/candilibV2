@@ -218,7 +218,7 @@ export async function validateEmail (email, hash) {
     success: true,
     response,
     message:
-      'Votre email a été validé, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).',
+      'Votre adresse courriel a été validée, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables)',
     updatedCandidat,
   }
 }

@@ -53,7 +53,7 @@ export const findPlaceByCandidatId = async (id, populate) => {
 
 /**
  *
- * @param {*} centreId - centreId : recupére l'Id de l'object centre
+ * @param {*} centreId - Id du centre
  * @param {*} beginDate - date de debut de recherche
  * @param {*} endDate - date de fin de recherche
  */
@@ -72,8 +72,8 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
 }
 
 /**
- *
- * @param {*} centreId - centreId : recupére l'Id de l'object centre
+ * @function findAllPlacesByCentre
+ * @param {*} centreId - Id du centre
  * @param {*} beginDate - date de debut de recherche
  * @param {*} endDate - date de fin de recherche
  */
