@@ -31,11 +31,7 @@ import {
   verifyDelegueLevel,
   verifyAccessAurige,
 } from './middlewares'
-import {
-  resetMyPassword,
-  requestPasswdReset,
-  confirmNewPassword,
-} from '../auth/admin.controllers'
+import { resetMyPassword, requestPasswdReset } from '../auth/admin.controllers'
 
 const router = express.Router()
 
