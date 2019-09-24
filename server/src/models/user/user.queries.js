@@ -84,7 +84,7 @@ export const updateUserStatus = async (user, status) => {
   return updatedUser
 }
 
-export const addEmailValidationHash = async (email) => {
+export const addEmailValidationHash = async email => {
   const emailValidationHash = uuidv4()
   const user = await findUserByEmail(email)
   user.emailValidationHash = emailValidationHash
