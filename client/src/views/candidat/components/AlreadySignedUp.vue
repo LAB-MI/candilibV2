@@ -34,6 +34,7 @@
               prepend-icon="email"
               @focus="setEmailPlaceholder"
               @blur="removeEmailPlaceholder"
+              @input="setEmailToLowerCase"
               :placeholder="emailPlaceholder"
               aria-placeholder="jean@dupont.fr"
               :autofocus="showDialog"
@@ -111,6 +112,10 @@ export default {
     },
     async setEmailPlaceholder () {
       this.emailPlaceholder = 'jean@dupont.fr'
+    },
+
+    setEmailToLowerCase () {
+      this.email = this.email.toLowerCase().trim()
     },
 
     async sendMagicLink () {
