@@ -201,7 +201,7 @@ build-e2e: check-build-e2e ## Build e2e container
 check-build-e2e: ## Check e2e docker-compose syntax
 	${DC} -f $(DC_APP_E2E_BUILD_PROD) config
 up-e2e: check-up-e2e network-up ## Build e2e container
-	${DC} -f ${DC_APP_E2E_RUN_PROD} up --no-build --exit-code-from e2e 2>&1 | tee e2e.log
+	${DC} -f ${DC_APP_E2E_RUN_PROD} up --no-build --exit-code-from e2e 2>&1 | tee e2e.log; exit $${PIPESTATUS[0]}
 check-up-e2e: ## Check e2e docker-compose syntax
 	${DC} -f $(DC_APP_E2E_RUN_PROD) config
 down-e2e: ## Down e2e container
