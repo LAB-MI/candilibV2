@@ -1,6 +1,7 @@
 # conf front admin
 server {
   listen 80 default_server;
+  client_max_body_size 10m;
 
   location / {
     try_files $uri @rew;
