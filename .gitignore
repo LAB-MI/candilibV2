@@ -190,4 +190,5 @@ mongo-dev
 VERSION
 candilib-*-build/
 
-
+test-db
+client/tests/e2e/files/

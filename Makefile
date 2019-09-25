@@ -216,6 +216,11 @@ stop-mailhog: ## Stop e2e container
 init-db-e2e:
 	bash ci/init-db-e2e.sh
 #
+# clean e2e.log
+#
+clean-log-e2e:
+	rm e2e.log
+#
 # save images
 #
 save-images: build-dir save-image-db save-image-api save-image-front-candidat save-image-front-admin ## Save images
