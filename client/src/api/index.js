@@ -332,10 +332,18 @@ export default {
       return json
     },
 
-    async exportStatsKpiCsv () {
-      const json = await apiClient.getRaw(`${apiPaths.admin.exportStatsKpiCsv}`, {
+    async exportStatsKpi (beginPeriode = '', endPeriode = '', isCsv = false) {
+      const queryString = `isCsv=${isCsv}&beginPeriode=${encodeURIComponent(beginPeriode)}&endPeriode=${encodeURIComponent(endPeriode)}`
+      const path = `${apiPaths.admin.exportStatsKpi}?${queryString}`
+      const headers = {
         headers: getAdminTokenHeader(),
-      })
+      }
+
+      if (isCsv) {
+        const json = await apiClient.getRaw(path, headers)
+        return json
+      }
+      const json = await apiClient.get(path, headers)
       return json
     },
 
