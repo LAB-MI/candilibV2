@@ -17,3 +17,4 @@ export const EMAIL_VALIDATION_IN_PROGRESS_TITLE = 'Validation en cours...'
 export const EMAIL_VALIDATION_IS_PENDING_TITLE = 'Validation en attente'
 
 export const ROUTE_AUTHORIZE_AURIGE = 'aurige'
+export const ROUTE_AUTHORIZE_STATS_KPI = 'stats-kpi'
