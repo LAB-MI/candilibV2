@@ -1,5 +1,41 @@
 <template>
-  <v-flex>
+  <v-layout v-if="admin.departements.list.length > 2">
+    <v-menu
+      bottom
+    >
+
+      <template v-slot:activator="{ on: menu }">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on: tooltip }">
+          <v-btn
+            fab
+            v-on="{ ...menu, ...tooltip}"
+            outline
+            ripple
+            small
+          >
+            <h1>{{ `${activeDepartement}` }}</h1>
+          </v-btn>
+          </template>
+          <span>Changer de departement</span>
+        </v-tooltip>
+      </template>
+      <v-list>
+        <v-list-tile
+          v-for="(departement, i) in admin.departements.list"
+          :key="i"
+          @click="activeDepartement = departement"
+        >
+          <v-chip
+            outlined
+          >
+            {{ departement }}
+          </v-chip>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
+  </v-layout>
+  <v-flex v-else>
     <div class="c-two-hexagons">
       <hexagon
         v-for="departement in admin.departements.list"

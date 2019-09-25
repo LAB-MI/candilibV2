@@ -4,6 +4,7 @@ import api from '@/api'
 import {
   DEPARTEMENT_STORAGE_KEY,
   ROUTE_AUTHORIZE_AURIGE,
+  ROUTE_AUTHORIZE_STATS_KPI,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -48,6 +49,7 @@ export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 export const numberOfMonthsToFetch = 3
 const ROUTE_AUTHORIZES = {
   'aurige': ROUTE_AUTHORIZE_AURIGE,
+  'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
 }
 
 export default {

@@ -8,7 +8,7 @@ import {
   checkCandidatToken,
   checkAccess,
 } from './router-checks'
-import { ROUTE_AUTHORIZE_AURIGE } from './constants'
+import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI } from './constants'
 
 Vue.use(Router)
 
@@ -37,6 +37,7 @@ const MyProfile = () => import(/* webpackChunkName: "candidat", webpackPrefetch:
 
 const AdminLogin = () => import('@/views/admin/components/Login')
 const AdminAurige = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Aurige.vue')
+const StatsKpi = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/StatsKpi.vue')
 const HomeAdminPage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/HomeAdminPage.vue')
 const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/schedule/ScheduleManager.vue')
 const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
@@ -74,6 +75,11 @@ const adminRoutes = [
         name: ROUTE_AUTHORIZE_AURIGE,
         component: AdminAurige,
         beforeEnter: checkAccess,
+      },
+      {
+        path: 'stats-kpi',
+        name: ROUTE_AUTHORIZE_STATS_KPI,
+        component: StatsKpi,
       },
       {
         path: 'whitelist',

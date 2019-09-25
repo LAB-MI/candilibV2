@@ -1,6 +1,6 @@
 import { parseAsync } from 'json2csv'
 
-import { appLogger } from '../../util'
+import { appLogger, getFrenchLuxonFromISO } from '../../util'
 import { getResultsExamAllDpt } from './statistics.business'
 
 const fields = [
@@ -50,24 +50,50 @@ const options = { fields, delimiter: ';', quote: '' }
 const parseStats = statsData => parseAsync(statsData, options)
 
 export const getStats = async (req, res) => {
+  const { beginPeriode, endPeriode, isCsv } = req.query
+  // TODO: Use beginPeriode and endPeriode because it is actualy unused
+
   const loggerContent = {
     section: 'admin-getStats',
     admin: req.userId,
+    beginPeriode,
+    endPeriode,
+    isCsv,
   }
 
   try {
-    const statsKpi = await getResultsExamAllDpt()
-    const statsKpiCsv = await parseStats(statsKpi)
-    const filename = 'statsCandidats.csv'
+    // TODO: Use begin and end because it is actualy unused
+    const begin = getFrenchLuxonFromISO(beginPeriode)
+      .startOf('day')
+      .toJSDate()
+    const end = getFrenchLuxonFromISO(endPeriode)
+      .endOf('day')
+      .toJSDate()
+
+    const statsKpi = await getResultsExamAllDpt(begin, end)
+    if (isCsv === 'true') {
+      const statsKpiCsv = await parseStats(statsKpi)
+      const filename = 'statsCandidats.csv'
+      appLogger.info({
+        ...loggerContent,
+        action: 'GET STATS KPI CSV',
+        statsKpi,
+      })
+      return res
+        .status(200)
+        .attachment(filename)
+        .send(statsKpiCsv)
+    }
+
     appLogger.info({
       ...loggerContent,
       action: 'GET STATS KPI',
       statsKpi,
     })
-    res
+
+    return res
       .status(200)
-      .attachment(filename)
-      .send(statsKpiCsv)
+      .json({ success: true, message: 'stats OK', statsKpi })
   } catch (error) {
     appLogger.error({
       ...loggerContent,
