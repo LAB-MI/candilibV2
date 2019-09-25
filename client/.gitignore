@@ -4,6 +4,11 @@ node_modules
 
 /tests/e2e/videos/
 /tests/e2e/screenshots/
+/tests/e2e/videosLocal/
+/tests/e2e/screenshotsLocal/
+/tests/e2e/files/
+/tests/e2e/filesLocal/
+
 
 # local env files
 .env.local

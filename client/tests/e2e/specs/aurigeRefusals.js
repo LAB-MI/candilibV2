@@ -41,7 +41,7 @@ describe('Aurige Refusals', () => {
     // Delete all mails before start
     cy.mhDeleteAll()
     // Creates the aurige file
-    cy.writeFile('tests/e2e/files/aurige.json', fileCandidates)
+    cy.writeFile(Cypress.env('filePath') + '/aurige.json', fileCandidates)
   })
 
   it('Refuses the validation', () => {
@@ -58,7 +58,7 @@ describe('Aurige Refusals', () => {
     cy.contains('import_export')
       .click()
     // Uploads the JSON file
-    const filePath = '../files/aurige.json'
+    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.json'
     const fileName = 'aurige.json'
     cy.fixture(filePath).then(fileContent => {
       cy.get('.input-file-container [type=file]')

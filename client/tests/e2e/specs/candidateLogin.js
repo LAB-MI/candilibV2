@@ -21,7 +21,7 @@ describe('Candidate login', () => {
     // Delete all mails before start
     cy.mhDeleteAll()
     // Creates the aurige files
-    cy.writeFile('tests/e2e/files/aurige.json',
+    cy.writeFile(Cypress.env('filePath') + '/aurige.json',
       [
         {
           'codeNeph': Cypress.env('NEPH'),
@@ -35,7 +35,7 @@ describe('Candidate login', () => {
           'candidatExistant': 'OK',
         },
       ])
-    cy.writeFile('tests/e2e/files/aurige.end.json',
+    cy.writeFile(Cypress.env('filePath') + '/aurige.end.json',
       [
         {
           'codeNeph': Cypress.env('NEPH'),
@@ -61,7 +61,7 @@ describe('Candidate login', () => {
       .should('contain', 'Vous êtes identifié')
     cy.contains('import_export')
       .click()
-    const filePath = '../files/aurige.end.json'
+    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.end.json'
     const fileName = 'aurige.json'
     cy.fixture(filePath).then(fileContent => {
       cy.get('.input-file-container [type=file]')
@@ -179,7 +179,7 @@ describe('Candidate login', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
-      .should('contain', 'Validation d\'adresse email pour Candilib')
+      .should('contain', 'Validation d\'adresse courriel pour Candilib')
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody().then((mailBody) => {
@@ -224,7 +224,7 @@ describe('Candidate login', () => {
       .click()
     cy.get('.ag-overlay')
       .should('contain', 'No Rows To Show')
-    const filePath2 = '../files/aurige.json'
+    const filePath2 = '../../../' + Cypress.env('filePath') + '/aurige.json'
     const fileName2 = 'aurige.json'
     cy.fixture(filePath2).then(fileContent => {
       cy.get('.input-file-container [type=file]')
@@ -342,7 +342,7 @@ describe('Candidate login', () => {
     cy.contains('Pré-inscription')
       .click()
     cy.get('.v-snack')
-      .should('contain', 'L\'adresse courriel renseignée (badtest@example.com) n\'est pas dans la liste des invités.')
+      .should('contain', 'L\'adresse courriel renseignée (badtest@example.com) n\'est pas dans la liste des invités')
   })
 
   it('Tries to pre-signup with a bad NEPH', () => {

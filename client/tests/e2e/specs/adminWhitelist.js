@@ -14,7 +14,7 @@ describe('Whitelist tests', () => {
     // Delete all mails before start
     cy.mhDeleteAll()
     // Creates the aurige file
-    cy.writeFile('tests/e2e/files/aurige.end.json',
+    cy.writeFile(Cypress.env('filePath') + '/aurige.end.json',
       [
         {
           'codeNeph': Cypress.env('NEPH'),
@@ -40,7 +40,7 @@ describe('Whitelist tests', () => {
       .should('contain', 'Vous êtes identifié')
     cy.contains('import_export')
       .click()
-    const filePath = '../files/aurige.end.json'
+    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.end.json'
     const fileName = 'aurige.json'
     cy.fixture(filePath).then(fileContent => {
       cy.get('.input-file-container [type=file]')
@@ -96,7 +96,7 @@ describe('Whitelist tests', () => {
     cy.contains('Pré-inscription')
       .click()
     cy.get('.v-snack')
-      .should('contain', 'L\'adresse courriel renseignée (' + Cypress.env('email') + ') n\'est pas dans la liste des invités.')
+      .should('contain', 'L\'adresse courriel renseignée (' + Cypress.env('email') + ') n\'est pas dans la liste des invités')
 
     cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
@@ -196,7 +196,7 @@ describe('Whitelist tests', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
-      .should('contain', 'Validation d\'adresse email pour Candilib')
+      .should('contain', 'Validation d\'adresse courriel pour Candilib')
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody().then((mailBody) => {

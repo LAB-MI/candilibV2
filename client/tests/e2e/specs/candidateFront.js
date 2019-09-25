@@ -53,7 +53,7 @@ describe('Connected candidate front', () => {
     // Delete all mails before start
     cy.mhDeleteAll()
     // Creates the aurige files
-    cy.writeFile('tests/e2e/files/aurige.json',
+    cy.writeFile(Cypress.env('filePath') + '/aurige.json',
       [
         {
           'codeNeph': Cypress.env('NEPH'),
@@ -67,7 +67,7 @@ describe('Connected candidate front', () => {
           'candidatExistant': 'OK',
         },
       ])
-    cy.writeFile('tests/e2e/files/aurige.end.json',
+    cy.writeFile(Cypress.env('filePath') + '/aurige.end.json',
       [
         {
           'codeNeph': Cypress.env('NEPH'),
@@ -82,7 +82,7 @@ describe('Connected candidate front', () => {
         },
       ])
     // Creates the csv file
-    cy.writeFile('tests/e2e/files/planning.csv', placesArray)
+    cy.writeFile(Cypress.env('filePath') + '/planning.csv', placesArray)
     // Archives the candidate if it's not already done
     cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('[type=text]')
@@ -95,7 +95,7 @@ describe('Connected candidate front', () => {
       .should('contain', 'Vous êtes identifié')
     cy.contains('import_export')
       .click()
-    const filePath = '../files/aurige.end.json'
+    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.end.json'
     const fileName = 'aurige.json'
     cy.fixture(filePath).then(fileContent => {
       cy.get('.input-file-container [type=file]')
@@ -126,7 +126,7 @@ describe('Connected candidate front', () => {
       .click()
     cy.get('.t-import-places [type=checkbox]')
       .check({ force: true })
-    const filePath1 = '../files/planning.csv'
+    const filePath1 = '../../../' + Cypress.env('filePath') + '/planning.csv'
     const fileName1 = 'planning.csv'
     cy.fixture(filePath1).then(fileContent => {
       cy.get('[type=file]').upload({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
@@ -191,7 +191,7 @@ describe('Connected candidate front', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
-      .should('contain', 'Validation d\'adresse email pour Candilib')
+      .should('contain', 'Validation d\'adresse courriel pour Candilib')
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody().then((mailBody) => {
@@ -225,7 +225,7 @@ describe('Connected candidate front', () => {
       .click()
     cy.get('.ag-overlay')
       .should('contain', 'No Rows To Show')
-    const filePath2 = '../files/aurige.json'
+    const filePath2 = '../../../' + Cypress.env('filePath') + '/aurige.json'
     const fileName2 = 'aurige.json'
     cy.fixture(filePath2).then(fileContent => {
       cy.get('.input-file-container [type=file]')
