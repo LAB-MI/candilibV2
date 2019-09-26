@@ -22,7 +22,7 @@ export const mentionsLegalesJson = [
     icon: 'work_outline',
     textContent: [
       {
-        subTextContent: 'Le ministère de l\'Intérieur est titulaire des droits relatifs à la propriété intellectuelle des contenus (infographies et autres éléments techniques et graphiques), disponibles sur le site <a href="beta.interieur.gouv.fr/candilib" target="_blank">beta.interieur.gouv.fr/candilib</a>',
+        subTextContent: 'Le ministère de l\'Intérieur est titulaire des droits relatifs à la propriété intellectuelle des contenus (infographies et autres éléments techniques et graphiques), disponibles sur le site <a href="beta.interieur.gouv.fr/candilib/" target="_blank">beta.interieur.gouv.fr/candilib/ </a>',
       },
       {
         subTextContent: 'Ces éléments sont couverts par des droits de propriété intellectuelle de tiers. En application du code de la propriété intellectuelle, toute reproduction ou représentation partielle ou totale pour quelque usage que ce soit est interdite sans l\'accord préalable des titulaires de droits. Pour toute demande de reproduction, <a href="#" target="_blank">contactez-nous</a>',
@@ -34,7 +34,7 @@ export const mentionsLegalesJson = [
     icon: 'brush',
     textContent: [
       {
-        subTextContent: 'Conception et réalisation Lab DSIC du Ministère de l\'Intérieur avec le Bureau du permis de conduire et de l’organisation des examens (BRPCE) de la Délégation à la sécurité routière (<a href="#" target="_blank">DSR</a>)',
+        subTextContent: 'Conception et réalisation Lab DSIC du Ministère de l\'Intérieur avec le Bureau du permis de conduire et de l’organisation des examens (BRPCE) de la Délégation à la sécurité routière (<a href="http://www.securite-routiere.gouv.fr/" target="_blank">DSR</a>)',
       },
     ],
   },
@@ -44,14 +44,14 @@ export const mentionsLegalesJson = [
     textContent: [
       {
         subTitle: 'Liens hypertextes entrants',
-        subTextContent: 'Tout site public ou privé est autorisé à établir, sans autorisation préalable, un lien vers les informations diffusées dans ce site. En revanche les pages du site <a href="beta.interieur.gouv.fr/candilib" target="_blank">beta.interieur.gouv.fr/candilib</a> ne doivent pas être imbriquées à l’intérieur des pages d’un autre site : rien ne doit méprendre le visiteur sur l’origine d’une page vue.',
+        subTextContent: 'Tout site public ou privé est autorisé à établir, sans autorisation préalable, un lien vers les informations diffusées dans ce site. En revanche les pages du site <a href="beta.interieur.gouv.fr/candilib/ " target="_blank">beta.interieur.gouv.fr/candilib/</a> ne doivent pas être imbriquées à l’intérieur des pages d’un autre site : rien ne doit méprendre le visiteur sur l’origine d’une page vue.',
       },
       {
         subTextContent: 'Le Ministère de l\'Intérieur se réserve le droit de demander la suppression d\'un lien qu\'il estime non-conforme à l\'objet du site, à ses missions ou plus généralement à l\'éthique d\'un portail public. L’autorisation de mise en place d’un lien est valable pour tout support, à l’exception de ceux diffusant des informations à caractère polémique, pornographique, xénophobe ou pouvant, dans une plus large mesure, porter atteinte à la sensibilité du plus grand nombre.',
       },
       {
         subTitle: 'Liens hypertextes sortants',
-        subTextContent: 'Le site précise en permanence l\'identité des sites externes indiqués en lien, et ce sur toutes les pages. Néanmoins, ces pages web dont les adresses URL sont régulièrement vérifiées ne font pas partie du site et par conséquent n\'engagent en rien la responsabilité du site <a href="beta.interieur.gouv.fr/candilib">beta.interieur.gouv.fr/candilib</a>',
+        subTextContent: 'Le site précise en permanence l\'identité des sites externes indiqués en lien, et ce sur toutes les pages. Néanmoins, ces pages web dont les adresses URL sont régulièrement vérifiées ne font pas partie du site et par conséquent n\'engagent en rien la responsabilité du site <a href="beta.interieur.gouv.fr/candilib/">beta.interieur.gouv.fr/candilib/</a>',
       },
     ],
   },
@@ -78,7 +78,7 @@ export const mentionsLegalesJson = [
     icon: 'lock_open',
     textContent: [
       {
-        subTextContent: 'Conformément à la <a href="https://www.legifrance.gouv.fr/affichLoiPubliee.do?idDocument=JORFDOLE000031589829&amp;type=general&amp;legislature=14." target="_blank">loi pour une République numérique</a>, le code de l\'application Candilib est libre et opensource, publié sous <a href="https://www.gnu.org/licenses/lgpl-3.0.fr.html." target="_blank">licence LGPL</a> sur <a href="https://github.com/LAB-MI/candilib." target="_blank">Github</a>.',
+        subTextContent: 'Conformément à la <a href="https://www.legifrance.gouv.fr/affichLoiPubliee.do?idDocument=JORFDOLE000031589829&amp;type=general&amp;legislature=14." target="_blank">loi pour une République numérique</a>, le code de l\'application Candilib est libre et opensource, publié sous <a href="https://www.gnu.org/licenses/lgpl-3.0.fr.html" target="_blank">licence LGPL</a> sur <a href="https://github.com/LAB-MI/candilibV2" target="_blank">Github</a>.',
       },
     ],
   },
