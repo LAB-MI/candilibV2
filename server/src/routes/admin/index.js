@@ -1,3 +1,8 @@
+/**
+ * Routeur concernant les requêtes que peut faire un utilisateur
+ * @module routes/admin
+ */
+
 import express from 'express'
 
 import { getCandidats, importCandidats } from './candidats.controllers'
@@ -32,6 +37,48 @@ const router = express.Router()
 router.use(verifyRepartiteurLevel)
 
 router.get('/me', getMe)
+
+/**
+   * @swagger
+   *
+   * /admin/me:
+   *   patch:
+   *     summary: Mise à jour du mot de passe
+   *     description: Actualise le mot de passe de l'utilisateur
+   *     produces:
+   *      - application/json
+   *     security:
+   *       - bearerAuth: []
+
+   *     responses:
+   *       200:
+   *         description:
+   *         content:
+   *           application/json:
+   *             schema:
+   *               $ref: '#/components/schemas/User'
+   *
+   *       400:
+   *         $ref: '#/components/responses/InvalidPasswordResponse'
+   *
+   *       401:
+   *         $ref: '#/components/responses/InvalidEmailResponse'
+   *
+   *       404:
+   *         $ref: '#/components/responses/InvalidLinkResponse'
+   *
+   *       500:
+   *         $ref: '#/components/responses/UnknownEmailResponse'
+   *
+   */
+
+/**
+ *
+ *
+ * @callback resetMyPassword
+ * @see {@link http://localhost:8000/api-docs/#/default/patch_admin_me}
+ */
+
 router.patch('/me', resetMyPassword)
 router.get(
   '/candidats/:id?',
@@ -332,6 +379,39 @@ router
  *
  */
 
+/*
+ * @swagger
+ *
+ * /admin/reset-link:
+ *   post:
+ *     summary: Envoyer un mail de demande réinitialisation
+ *     description: Envoi d'un lien de réinitialisation de mot de passe
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidEmailResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ *
+ *
+ * @callback requestPasswdReset
+ * @see {@link http://localhost:8000/api-docs/#/default/post_admin_reset-link}
+ */
 router.post('/reset-link', requestPasswdReset)
 
 export default router
