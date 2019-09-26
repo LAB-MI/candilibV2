@@ -165,6 +165,44 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           signUpDate: 15-09-2019
  *           status: admin
 
+ *     User:
+ *       type: object
+ *       properties:
+ *         user:
+ *           type: object
+ *           description: Informations sur l'utilisateur
+ *           properties:
+ *             "email":
+ *               type: string
+ *               description: adresse email de l'utilisateur
+ *             "emailValidationHash":
+ *               type: string
+ *               description: Hash de sécurité
+ *             "password":
+ *               type: string
+ *               description: Adresse courriel du candidat
+ *             "departements":
+ *               type: Array
+ *               description: Département de l'utilisateur
+ *             "isDeleted":
+ *               type: Boolean
+ *               description:
+ *             "signUpDate":
+ *               type: string
+ *               description: Date d'enregistement
+ *             "status":
+ *               type: string
+ *               description:
+ *       example:
+ *         "user":
+ *           "email": "admin@email.fr"
+ *           "emailValidationHash": ""
+ *           "password": "759DS56SD2"
+ *           "département": "93"
+ *           "isDeleted": "true"
+ *           "signUpDate": "15-09-2019"
+ *           "status": "admin"
+
  *     CentresInfo:
  *       type: object
  *       properties:
