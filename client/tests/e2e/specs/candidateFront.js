@@ -454,8 +454,8 @@ describe('Connected candidate front', () => {
       .should('contain', Cypress.env('centre').toUpperCase())
       .and('contain', '8:30')
     // Disconnects
-    cy.contains('exit_to_app')
-      .click()
+    cy.clearLocalStorage()
+    cy.reload(true)
     cy.url()
       .should('contain', 'candidat-presignup')
   })
@@ -471,8 +471,7 @@ describe('Public candidate front', () => {
       .should('contain', 'mentions-legales')
     cy.get('h2')
       .should('contain', 'Mentions légales')
-    cy.contains('exit_to_app')
-      .click()
+    cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup')
     cy.url()
       .should('contain', 'candidat-presignup')
     // Tests the display of the F.A.Q.
