@@ -1,21 +1,79 @@
 {
   "name": "manon",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
     "dev": "nodemon --watch src --watch .env --experimental-modules src/index.js",
+    "lint": "eslint src",
+    "jsdoc:watch": "nodemon --watch src --watch README.md --exec 'npm run jsdoc'",
+    "jsdoc:serve": "browser-sync start --port 3010 --no-ui --server --open --files out/**/* --ss out",
+    "jsdoc-dev": "run-p jsdoc:*",
+    "jsdoc": "jsdoc -c jsdoc-config.js -r src README.md",
     "start": "node --experimental-modules src/index.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/agenda": "^2.0.6",
+    "@types/js-base64": "^2.3.1",
     "agenda": "^2.1.0",
-    "dotenv": "^8.1.0"
+    "dotenv": "^8.1.0",
+    "js-base64": "^2.5.1",
+    "luxon": "^1.19.2",
+    "superagent": "^5.1.0",
+    "winston": "^3.2.1"
   },
   "devDependencies": {
-    "nodemon": "^1.19.2"
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
+    "@babel/preset-env": "^7.6.2",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.3",
+    "eslint": "^6.5.1",
+    "eslint-config-standard": "^14.1.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-node": "^10.0.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jsdoc": "^3.6.3",
+    "jsdoc-plugin-typescript": "^2.0.3",
+    "nodemon": "^1.19.2",
+    "npm-run-all": "^4.1.5",
+    "prettier-eslint-cli": "^5.0.0"
+  },
+  "eslintConfig": {
+    "parser": "babel-eslint",
+    "env": {
+      "jest": true,
+      "node": true
+    },
+    "extends": [
+      "plugin:import/errors",
+      "plugin:import/warnings",
+      "standard"
+    ],
+    "plugins": [
+      "import"
+    ],
+    "rules": {
+      "import/no-unresolved": [
+        2,
+        {
+          "commonjs": true,
+          "amd": true
+        }
+      ],
+      "import/named": 2,
+      "import/namespace": 2,
+      "import/default": 2,
+      "import/export": 2,
+      "comma-dangle": [
+        2,
+        "always-multiline"
+      ]
+    }
   }
 }

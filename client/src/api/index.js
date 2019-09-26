@@ -25,7 +25,7 @@ export const fetchClient = (url, options) => fetch(url, options).then(checkStatu
 export const jsonClient = (url, options) => fetchClient(url, options).then(checkValidJson)
 
 const apiClient = {
-  post: (url, options) => jsonClient(url, { ...options, method: 'post' }),
+  post: (url, options) => jsonClient(url, { ...options, method: 'POST' }),
   get: (url, options) => jsonClient(url, { ...options, method: 'GET' }),
   getRaw: (url, options) => fetchClient(url, { ...options, method: 'GET' }),
   put: (url, options) => jsonClient(url, { ...options, method: 'PUT' }),

@@ -275,5 +275,12 @@ router.use('/candidat', verifyToken, candidat)
 router.use('/auth', auth)
 router.use('/admin', verifyToken, admin)
 
+router.get('/manon/newPlacesAvailable', (req, res) => {
+  res.json({
+    success: true,
+    message: 'Allright!',
+  })
+})
+
 /** Routeur principal */
 export default router

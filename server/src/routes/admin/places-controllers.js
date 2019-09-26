@@ -530,14 +530,14 @@ export const sendScheduleInspecteurs = async (req, res) => {
     if (req.userLevel >= config.userStatusLevels.admin) {
       loggerContent.action = 'SEND_MAIL_SCHEDULE_ALL_INSPECTEURS'
       if (!date) {
-        const error = new Error('Le paramètre date renseignés est manquant')
+        const error = new Error('Le paramètre date renseigné est manquant')
         error.status = 422
         throw error
       }
     } else {
       loggerContent.action = 'SEND_MAIL_SCHEDULE'
       if (!departement || !date) {
-        const error = new Error('Les paramètres renseignés sont manquante')
+        const error = new Error('Les paramètres renseignés sont manquants')
         error.status = 422
         throw error
       }
@@ -546,7 +546,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
     if (departement) {
       appLogger.info({
         ...loggerContent,
-        message: 'Envoyer des bordereaux des inspecteurs pour un departement',
+        message: 'Envoyer des bordereaux des inspecteurs pour un département',
       })
       const { email } = await findUserById(req.userId)
       const confDepartement = await findDepartementById(departement)
@@ -561,7 +561,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
     } else {
       appLogger.info({
         ...loggerContent,
-        message: 'Envoyer les bordereaux aux inspecteurs',
+        message: 'Envoyer des bordereaux aux inspecteurs',
       })
       results = await sendMailSchedulesAllInspecteurs(date)
     }
