@@ -18,6 +18,7 @@ module.exports = (on, config) => {
     fixturesFolder: 'tests/e2e/fixtures',
     integrationFolder: 'tests/e2e/specs',
     screenshotsFolder: 'tests/e2e/screenshots',
+    video: false,
     videosFolder: 'tests/e2e/videos',
     supportFile: 'tests/e2e/support/index.js',
     mailHogUrl: 'http://mailhog:8025',
