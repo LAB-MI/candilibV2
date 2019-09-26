@@ -6,6 +6,12 @@ export const findUserById = async id => {
   return user
 }
 
+/**
+ *
+ * @param {*} email
+ * @param {*} populatePassword
+ */
+
 export const findUserByEmail = async (email, populatePassword) => {
   const query = User.findOne({ email })
 
@@ -59,7 +65,11 @@ export const updateUserEmail = async (user, email) => {
   const updatedUser = await User.findById(user._id)
   return updatedUser
 }
-
+/**
+ *
+ * @param {*} user
+ * @param {*} password
+ */
 export const updateUserPassword = async (user, password) => {
   await user.updateOne({ password })
   const updatedUser = await User.findById(user._id)
