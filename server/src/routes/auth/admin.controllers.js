@@ -1,3 +1,8 @@
+/**
+ * Modules concernant les actions possibles de l'admin
+ * @module routes/auth/admin-controllers
+ */
+
 import { createToken, appLogger } from '../../util'
 import {
   findUserByCredentials,
@@ -63,6 +68,25 @@ export const getAdminToken = async (req, res) => {
   }
 }
 
+/**
+ * Retourne un email de réinitialisation de mot de passe
+ *
+ * @async
+ * @function requestPasswdReset
+ * @see {@link http://localhost:8000/api-docs/#/default/reset-link}
+
+ * @param {object} req Est attendu dans la requete
+ *```javascript
+  {
+ * body: {email: "email de l'utilisateur"},
+ * }
+ * ```
+ * @param {string} user vérifier si l'utilisateur est dans la base
+ *
+ * @param {object} res
+ *
+*/
+
 export const requestPasswdReset = async (req, res) => {
   const loggerInfo = {
     section: 'reset-password',
@@ -77,7 +101,7 @@ export const requestPasswdReset = async (req, res) => {
     })
     return res.status(401).json({
       success: false,
-      message: "Votre email n'est pas reconnu.",
+      message: "Votre email n'est pas reconnu",
     })
   }
 
@@ -96,11 +120,31 @@ export const requestPasswdReset = async (req, res) => {
     return res.status(500).json({
       success: false,
       message:
-        "Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu.",
+        "Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu",
     })
   }
 }
 
+/**
+ * Mise à jour du mot de passe
+ *
+ * @async
+ * @function resetMyPassword
+ * @see {@link http://localhost:8000/api-docs/#/default/reset_password}
+
+ * @param {object} req Est attendu dans la requete:
+ * ``` javascript
+ * {
+ * body: { newPassword,
+ *         confirmNewPassword,
+ *         email,
+ *         emailValidationHash
+ *  }
+ * }
+ *
+ * ```
+ * @param {string} user vérifier si l'utilisateur est dans la base
+*/
 export const resetMyPassword = async (req, res) => {
   const loggerInfo = {
     section: 'reset-password',
