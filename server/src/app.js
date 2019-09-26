@@ -825,6 +825,13 @@ app.use(fileupload({ limits: { fileSize: 50 * 1024 * 1024 } }))
  */
 app.use(apiPrefix, routes)
 
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Ressource introuvable',
+  })
+})
+
 export default app
 
 /**
