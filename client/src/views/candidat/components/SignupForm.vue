@@ -259,7 +259,7 @@ export default {
       this.adressePlaceholder = ''
     },
     setEmailToLowerCase () {
-      this.email = this.email.toLowerCase()
+      this.email = this.email.toLowerCase().trim()
     },
     setNomNaissance () {
       this.nomNaissance = this.nomNaissance.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
