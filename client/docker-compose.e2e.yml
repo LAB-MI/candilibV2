@@ -23,12 +23,12 @@ services:
         npm_registry: ${NPM_REGISTRY}
         sass_registry: ${SASS_REGISTRY}
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
-    # TODO: chrome --disable-dev-shm-usage
-    ipc: host
     environment:
       CYPRESS_frontCandidat: http://candidat.candilib.local/candilib/
       CYPRESS_frontAdmin: http://admin.candilib.local/candilib-repartiteur/
       CYPRESS_build: 1
+      CYPRESS_screenshotsFolder: 'tests/e2e/screenshots'
+      CYPRESS_video: 'false'
     volumes:
       - ./tests/e2e/:/app/tests/e2e/
 

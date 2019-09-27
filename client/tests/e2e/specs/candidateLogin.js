@@ -94,9 +94,7 @@ describe('Candidate login', () => {
 
   it('Create an account and logins', () => {
     // The candidate fills the pre-sign-up form
-    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
-    cy.contains('Se pré-inscrire')
-      .click()
+    cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup')
     cy.get('h2')
       .should('contain', 'Réservez votre place d\'examen')
     cy.contains('NEPH')
@@ -287,8 +285,8 @@ describe('Candidate login', () => {
       })
     cy.get('h2')
       .should('contain', 'Choix du centre')
-    cy.clearLocalStorage()
-    cy.reload(true)
+    cy.contains('exit_to_app')
+      .click()
     cy.url()
       .should('contain', 'candidat-presignup')
   })

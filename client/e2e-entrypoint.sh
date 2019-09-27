@@ -8,4 +8,4 @@ npm config delete proxy
 npm config delete https-proxy
 npm config delete no-proxy
 
-npm run cypress
+npm run cypress -- --browser chrome

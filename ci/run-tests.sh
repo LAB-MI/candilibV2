@@ -13,6 +13,7 @@ docker images
 # Set run test env
 export FRONT_ADMIN_PORT=81
 export DBDATA=../test-db
+export NODE_ICU_DATA=${pwd}/node_modules/full-icu
 # Variables stack e2e
 export PUBLIC_URL=http://candidat.candilib.local/candilib
 export SMTP_SERVER=mailhog
@@ -47,6 +48,8 @@ if [ "$ret" -gt 0 ] ; then
   echo "$basename init-db-e2e ERROR"
   exit $ret
 fi
+
+env
 
 ret=1
 echo "# build e2e images"

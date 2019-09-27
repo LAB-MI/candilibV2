@@ -245,6 +245,10 @@ describe('Places tests', () => {
       .should('contain', Cypress.env('centre'))
       .contains(Cypress.env('centre'))
       .parents('.monitor-wrapper').within(($centre) => {
+        cy.get('th').invoke('text')
+          .then(($text) => {
+            cy.task('log', $text)
+          })
         cy.contains('21 oct. 2019')
           .parents('.th-ui-week-column')
           .should('have.class', 'red')

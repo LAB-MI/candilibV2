@@ -13,7 +13,7 @@ CONNECTED CANDIDATE FRONT
 PUBLIC CANDIDATE FRONT
 - Display of the FAQ when not connected
 - Display of the 'Mentions Légales' when not connected
-- Ability to go back to the sign-up or introduction pages
+- Ability to go back to the introduction page
 */
 
 const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
@@ -412,6 +412,11 @@ describe('Connected candidate front', () => {
       .and('contain', '8:30')
     cy.mhHasMailWithSubject('=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=')
     cy.mhDeleteAll()
+    cy.get('.v-dialog')
+      .should('contain', 'Merci de noter Candilib')
+      .find('button')
+      .contains('Plus tard')
+      .click({ timeout: 10000 })
     // Resend the confirmation
     cy.contains('Renvoyer ma convocation')
       .click()
@@ -454,8 +459,8 @@ describe('Connected candidate front', () => {
       .should('contain', Cypress.env('centre').toUpperCase())
       .and('contain', '8:30')
     // Disconnects
-    cy.clearLocalStorage()
-    cy.reload(true)
+    cy.contains('exit_to_app')
+      .click()
     cy.url()
       .should('contain', 'candidat-presignup')
   })
@@ -472,8 +477,6 @@ describe('Public candidate front', () => {
     cy.get('h2')
       .should('contain', 'Mentions légales')
     cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup')
-    cy.url()
-      .should('contain', 'candidat-presignup')
     // Tests the display of the F.A.Q.
     cy.contains('Une question')
       .click()
