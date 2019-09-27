@@ -19,9 +19,10 @@ SMTP_PASS=<mot_de_passe>
 Par exemple à l'aide des commandes suivantes sur les systèmes *nix :
 
 ```bash
-export SMTP_SERVER=<adresse_serveur_SMPT>
-export SMTP_USER=<compte_SMPT>
+export SMTP_SERVER=<adresse_serveur_SMTP>
+export SMTP_USER=<compte_SMTP>
 export SMTP_PASS=<mot_de_passe>
+export SMTP_PORT=<port_server_SMTP>
 ```
 
 ### Base de données
