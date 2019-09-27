@@ -57,7 +57,7 @@ export const ErrorMsgArgEmpty =
 export async function getPlaces (req, res) {
   const _id = req.params.id
 
-  const { centre, departement, end, date } = req.query
+  const { centre: nomCentre, departement, end, date } = req.query
 
   if (end && date) {
     const message = 'end et date ne peuvent avoir des valeurs en même temps'
@@ -73,7 +73,7 @@ export async function getPlaces (req, res) {
 
   const loggerInfo = {
     section: 'candidat-getPlaces',
-    argument: { departement, _id, centre, end, date },
+    argument: { departement, _id, nomCentre, end, date },
   }
 
   appLogger.debug(loggerInfo)
@@ -87,13 +87,13 @@ export async function getPlaces (req, res) {
         dates = await getDatesByCentreId(_id, end)
       }
     } else {
-      if (!(departement && centre)) {
+      if (!(departement && nomCentre)) {
         throw new Error(ErrorMsgArgEmpty)
       }
       if (date) {
-        dates = await hasAvailablePlacesByCentre(departement, centre, date)
+        dates = await hasAvailablePlacesByCentre(departement, nomCentre, date)
       } else {
-        dates = await getDatesByCentre(departement, centre, end)
+        dates = await getDatesByCentre(departement, nomCentre, end)
       }
     }
     res.status(200).json(dates)
