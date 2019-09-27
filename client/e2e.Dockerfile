@@ -18,19 +18,25 @@ RUN if [ ! -z "$http_proxy" ] ; then \
         npm config set https-proxy $https_proxy; \
         npm config set no-proxy $no_proxy; \
    fi ; \
-   [ -z "$npm_registry" ] || npm config set registry=$npm_registry
+   [ -z "$npm_registry" ] || npm config set registry=$npm_registry; \
+   [ -z "$sass_registry" ] || npm config set sass_binary_site=$sass_registry;
 
 ################################
 # Step 2: "development" target #
 ################################
 FROM base as development
+ARG CYPRESS_DOWNLOAD_MIRROR
 ARG APP_VERSION
+ENV CI=1
 COPY src src/
 COPY tests tests/
 COPY package.json package-lock.json ./
 COPY cypress.json cypress.env.json ./
+COPY e2e-entrypoint.sh /e2e-entrypoint.sh
 # Install app dependencies
 RUN npm --no-git-tag-version version ${APP_VERSION} ; npm install cypress-file-upload cypress-mailhog
+RUN [ -f /e2e-entrypoint.sh ]&& chmod +x /e2e-entrypoint.sh
 
-#CMD ["npm", "start"]
-CMD ["npm","run", "cypress"]
+#CMD ["npm","run", "cypress"]
+ENTRYPOINT ["/e2e-entrypoint.sh"]
+

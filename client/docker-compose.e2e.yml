@@ -21,6 +21,9 @@ services:
         https_proxy: ${http_proxy}
         no_proxy: ${no_proxy}
         npm_registry: ${NPM_REGISTRY}
+        sass_registry: ${SASS_REGISTRY}
+        CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
+    # TODO: chrome --disable-dev-shm-usage
     ipc: host
     environment:
       CYPRESS_frontCandidat: http://candidat.candilib.local/candilib/
