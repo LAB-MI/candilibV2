@@ -96,7 +96,7 @@ describe('Email on call to /reset-link', () => {
       .post('/reset-link')
       .send(email)
       .set('Accept', 'application/json')
-      .expect(401)
+      .expect(404)
     expect(body).toHaveProperty('success', false)
   })
 
