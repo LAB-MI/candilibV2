@@ -116,14 +116,19 @@ export const requestPasswdReset = async (req, res) => {
     section: 'reset-password',
   }
   const email = req.body.email
-  const user = await findUserByEmail(email)
-  if (!user) {
+  try {
+    const user = await findUserByEmail(email)
+    if (!user) {
+      throw new Error(`${email} not in DB`)
+    }
+  } catch (error) {
     appLogger.warn({
       ...loggerInfo,
       action: 'FAILED_TO_FIND_USER_BY_EMAIL',
-      description: `${email} not in DB`,
+      description: error.message,
+      error,
     })
-    return res.status(401).json({
+    return res.status(404).json({
       success: false,
       message: "Votre email n'est pas reconnu",
     })
@@ -131,7 +136,7 @@ export const requestPasswdReset = async (req, res) => {
 
   try {
     await sendMailResetLink(email)
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: `Un courriel vient de vous être envoyé sur ${email}`,
     })
@@ -141,7 +146,7 @@ export const requestPasswdReset = async (req, res) => {
       action: 'send-mail',
       description: `Impossible d'envoyer l'email de réinitialisation à ${email}`,
     })
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message:
         "Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu",
@@ -229,7 +234,7 @@ export const resetMyPassword = async (req, res) => {
     await sendMailConfirmation(email)
     res.status(200).json({
       success: true,
-      message: ` Un courriel de confirmation vient de vous être envoyé sur ${email}`,
+      message: `Un courriel de confirmation vient de vous être envoyé sur ${email}`,
     })
   } catch (error) {
     appLogger.error({

@@ -30,7 +30,7 @@ import {
   verifyAdminLevel,
   verifyAccessAurige,
 } from './middlewares'
-import { resetMyPassword, requestPasswdReset } from '../auth/admin.controllers'
+import { resetMyPassword } from '../auth/admin-controllers'
 
 const router = express.Router()
 
@@ -39,38 +39,75 @@ router.use(verifyRepartiteurLevel)
 router.get('/me', getMe)
 
 /**
-   * @swagger
-   *
-   * /admin/me:
-   *   patch:
-   *     summary: Mise à jour du mot de passe
-   *     description: Actualise le mot de passe de l'utilisateur
-   *     produces:
-   *      - application/json
-   *     security:
-   *       - bearerAuth: []
-
-   *     responses:
-   *       200:
-   *         description:
-   *         content:
-   *           application/json:
-   *             schema:
-   *               $ref: '#/components/schemas/User'
-   *
-   *       400:
-   *         $ref: '#/components/responses/InvalidPasswordResponse'
-   *
-   *       401:
-   *         $ref: '#/components/responses/InvalidEmailResponse'
-   *
-   *       404:
-   *         $ref: '#/components/responses/InvalidLinkResponse'
-   *
-   *       500:
-   *         $ref: '#/components/responses/UnknownEmailResponse'
-   *
-   */
+ * @swagger
+ *
+ * /admin/me:
+ *   patch:
+ *     summary: Mise à jour du mot de passe
+ *     description: Actualise le mot de passe de l'utilisateur
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     requestBody:
+ *       description: Données nécessaires à la réinitialisation du mot de passe
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newPassword:
+ *                 description: Nouveau mot de passe
+ *                 required: true
+ *                 type: string
+ *                 example: M9se5p@7
+ *               confirmNewPassword:
+ *                 description: Confirmation du nouveau de mot passe
+ *                 required: true
+ *                 type: string
+ *                 example: M9se5p@7
+ *               email:
+ *                 description: Email de l'utilisateur
+ *                 required: true
+ *                 type: string
+ *                 example: example@example.fr
+ *               hash:
+ *                 description: hash d'identification de l'utilisateur
+ *                 required: true
+ *                 type: string
+ *                 example: 9d0a2b5e-e143-11e9-81b4-2a2ae2dbcce4
+ *
+ *
+ *
+ *
+ *
+ *     responses:
+ *       200:
+ *         description:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: true
+ *                     message: 'Un courriel de confirmation vient de vous être envoyé sur email@example.com'
+ *
+ *       400:
+ *         $ref: '#/components/responses/InvalidPasswordResponse'
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidLinkResponse'
+ *
+ *       404:
+ *         $ref: '#/components/responses/InvalidEmailResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownEmailResponse'
+ *
+ */
 
 /**
  *
@@ -405,13 +442,5 @@ router
  *         $ref: '#/components/responses/UnknownErrorResponse'
  *
  */
-
-/**
- *
- *
- * @callback requestPasswdReset
- * @see {@link http://localhost:8000/api-docs/#/default/post_admin_reset-link}
- */
-router.post('/reset-link', requestPasswdReset)
 
 export default router

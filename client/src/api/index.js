@@ -213,6 +213,16 @@ export default {
       return json
     },
 
+    async sendMailResetLink (email) {
+      const json = await apiClient.post(apiPaths.admin.resetLink, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email }),
+      })
+      return json
+    },
+
     async getAllPlacesByDepartement (departement, beginDate, endDate) {
       const departementInfo = `departement=${departement}`
       const beginDateInfo = `beginDate=${encodeURIComponent(beginDate)}`

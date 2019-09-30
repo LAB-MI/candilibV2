@@ -34,6 +34,10 @@ export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
 export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
 export const DELETE_BOOKED_PLACE_FAILURE = 'DELETE_BOOKED_PLACE_FAILURE'
 
+export const SEND_RESET_LINK_REQUEST = 'SEND_RESET_LINK_REQUEST'
+export const SEND_RESET_LINK_SUCCESS = 'SEND_RESET_LINK_SUCCESS'
+export const SEND_RESET_LINK_FAILURE = 'SEND_RESET_LINK_FAILURE'
+
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
@@ -85,6 +89,7 @@ export default {
     },
     currentWeek: undefined,
     isFetchingCandidat: false,
+    isSendingResetLink: false,
   },
 
   mutations: {
@@ -173,6 +178,16 @@ export default {
 
     [SET_WEEK_SECTION] (state, currentWeek) {
       state.currentWeek = currentWeek
+    },
+
+    [SEND_RESET_LINK_REQUEST] (state) {
+      state.isSendingResetLink = true
+    },
+    [SEND_RESET_LINK_SUCCESS] (state) {
+      state.isSendingResetLink = false
+    },
+    [SEND_RESET_LINK_FAILURE] (state) {
+      state.isSendingResetLink = false
     },
   },
 
@@ -300,6 +315,21 @@ export default {
       }
     },
 
+    async [SEND_RESET_LINK_REQUEST] ({ commit, dispatch }, email) {
+      commit(SEND_RESET_LINK_REQUEST, email)
+      try {
+        const response = await api.admin.sendMailResetLink(email)
+        if (response.success === false) {
+          throw new Error(response.message)
+        }
+        commit(SEND_RESET_LINK_SUCCESS, email)
+      } catch (error) {
+        commit(SEND_RESET_LINK_FAILURE)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
+      }
+    },
+
     [SELECT_DEPARTEMENT] ({ commit }, departement) {
       commit(SELECT_DEPARTEMENT, departement)
     },
@@ -308,4 +338,5 @@ export default {
       commit(SET_WEEK_SECTION, currentWeek)
     },
   },
+
 }

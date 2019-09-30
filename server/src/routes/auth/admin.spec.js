@@ -1,7 +1,7 @@
 import request from 'supertest'
 import express from 'express'
 import bodyParser from 'body-parser'
-import { resetMyPassword } from './admin.controllers'
+import { resetMyPassword } from './admin-controllers'
 import { updateUserPassword } from '../../models/user'
 
 const { connect, disconnect } = require('../../mongo-connection')
@@ -11,7 +11,7 @@ const {
   deleteUserByEmail,
   addEmailValidationHash,
 } = require('../../models/user')
-const { requestPasswdReset } = require('./admin.controllers')
+const { requestPasswdReset } = require('./admin-controllers')
 
 jest.mock('../business/send-mail')
 
@@ -96,7 +96,7 @@ describe('Email on call to /reset-link', () => {
       .post('/reset-link')
       .send(email)
       .set('Accept', 'application/json')
-      .expect(401)
+      .expect(404)
     expect(body).toHaveProperty('success', false)
   })
 

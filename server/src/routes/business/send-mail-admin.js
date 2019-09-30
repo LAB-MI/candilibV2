@@ -5,20 +5,20 @@ import { addEmailValidationHash } from '../../models/user'
 
 export const getUrlResetLink = async email => {
   const emailValidationHash = await addEmailValidationHash(email)
-  return `${config.PUBLIC_URL}/reset-link?email=${encodeURIComponent(
+  return `${config.PUBLIC_URL}/admin/reset-link?email=${encodeURIComponent(
     email
   )}&hash=${encodeURIComponent(emailValidationHash)}`
 }
 
-export const sendMailResetLink = email => {
-  const urlResetLink = getUrlResetLink(email)
-  const mail = getResetLinkMail(urlResetLink)
+export const sendMailResetLink = async email => {
+  const urlResetLink = await getUrlResetLink(email)
+  const mail = await getResetLinkMail(urlResetLink)
   return sendMail(email, mail)
 }
 
 export const getResetLinkTemplate = urlResetLink => `
   <p>Vous avez demandé à réinitialiser votre mot de passe. Vous pouvez dès à present 
-  réinitialiser votre mot de passe en cliquant sur le lien suivant ${urlResetLink}
+  réinitialiser votre mot de passe en cliquant sur le lien suivant : <a href='${urlResetLink}'>réinitialiser le mot de passe</a>
   </p>
   <br>
   <p align="right">L'équipe Candilib</p>

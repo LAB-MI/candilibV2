@@ -176,7 +176,7 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *
  *   responses:
  *     InvalidPasswordResponse:
- *       description: Réponse du serveur en cas de mot de passe erronés
+ *       description: Réponse du serveur en cas de mots de passe erronés
  *       content:
  *         application/json:
  *           schema:
