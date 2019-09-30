@@ -65,15 +65,21 @@ export const updateUserEmail = async (user, email) => {
   const updatedUser = await User.findById(user._id)
   return updatedUser
 }
+
 /**
+ * Remplace le mot de passe existant de l'utilisateur
  *
- * @param {*} user
- * @param {*} password
+ * @function
+ *
+ * @param {User} user
+ * @param {string} password
+ *
+ * @returns {User}
  */
 export const updateUserPassword = async (user, password) => {
-  await user.updateOne({ password })
-  const updatedUser = await User.findById(user._id)
-  return updatedUser
+  user.password = password
+  await user.save()
+  return user
 }
 
 export const updateUserDepartements = async (user, departements) => {
