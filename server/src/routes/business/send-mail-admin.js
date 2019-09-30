@@ -11,7 +11,7 @@ import { addEmailValidationHash } from '../../models/user'
 
 export const getUrlResetLink = async email => {
   const emailValidationHash = await addEmailValidationHash(email)
-  return `${config.PUBLIC_URL}/reset-link?email=${encodeURIComponent(
+  return `${config.PUBLIC_URL}/admin/reset-link?email=${encodeURIComponent(
     email
   )}&hash=${encodeURIComponent(emailValidationHash)}`
 }
@@ -24,7 +24,7 @@ export const getUrlResetLink = async email => {
 export const sendMailResetLink = async email => {
   const urlResetLink = await getUrlResetLink(email)
   const mail = await getResetLinkMail(urlResetLink)
-  await sendMail(email, mail)
+  return sendMail(email, mail)
 }
 
 /**

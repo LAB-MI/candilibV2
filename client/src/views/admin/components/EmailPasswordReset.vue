@@ -8,7 +8,6 @@
       slot="activator"
       depressed
       tabindex="8"
-
     >
     Réinitialiser mot de passe
     </v-btn>
@@ -104,6 +103,7 @@ export default {
   },
 }
 </script>
+<<<<<<< HEAD
 
 <style lang="stylus">
 
@@ -124,3 +124,5 @@ export default {
 }
 
 </style>
+=======
+>>>>>>> Ajouter bouton réinitialiser le mot de passe
