@@ -114,7 +114,7 @@ describe('Reset my password', () => {
   const validEmail = 'email@example.com'
   const password = '@E3fd8po'
   const newPassword = 'Psr@85df'
-  let emailValidationHash
+  let hash
 
   let user
   let app
@@ -126,7 +126,7 @@ describe('Reset my password', () => {
     try {
       await connect()
       user = await createUser(validEmail, password)
-      emailValidationHash = await addEmailValidationHash(validEmail)
+      hash = await addEmailValidationHash(validEmail)
       await updateUserPassword(user, newPassword)
     } catch (error) {
       console.error(error)
@@ -148,14 +148,14 @@ describe('Reset my password', () => {
         newPassword,
         confirmNewPassword,
         email: validEmail,
-        emailValidationHash,
+        hash,
       })
       .set('Accept', 'application/json')
       .expect(400)
     expect(body).toHaveProperty('success', false)
   })
 
-  it('Should not validate password change when emailValidationHash is absent', async () => {
+  it('Should not validate password change when hash is absent', async () => {
     const newPassword = 'Psr@85df'
     const confirmNewPassword = 'Psr@85df'
     const { body } = await request(app)
@@ -179,7 +179,7 @@ describe('Reset my password', () => {
         newPassword,
         confirmNewPassword,
         email: validEmail,
-        emailValidationHash,
+        hash,
       })
       .set('Accept', 'application/json')
       .expect(200)

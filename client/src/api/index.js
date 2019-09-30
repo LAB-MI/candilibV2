@@ -223,6 +223,19 @@ export default {
       return json
     },
 
+    async resetPassword (email, hash, newPassword, confirmNewPassword) {
+      console.log(123)
+      const json = await apiClient.patch(apiPaths.admin.resetPassword, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          email, hash, newPassword, confirmNewPassword,
+        }),
+      })
+      return json
+    },
+
     async getAllPlacesByDepartement (departement, beginDate, endDate) {
       const departementInfo = `departement=${departement}`
       const beginDateInfo = `beginDate=${encodeURIComponent(beginDate)}`

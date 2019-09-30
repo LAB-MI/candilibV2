@@ -179,12 +179,7 @@ export const resetMyPassword = async (req, res) => {
     section: 'reset-password',
   }
 
-  const {
-    newPassword,
-    confirmNewPassword,
-    email,
-    emailValidationHash,
-  } = req.body
+  const { newPassword, confirmNewPassword, email, hash } = req.body
 
   if (newPassword !== confirmNewPassword) {
     return res.status(400).json({
@@ -208,7 +203,7 @@ export const resetMyPassword = async (req, res) => {
     })
   }
 
-  if (user.emailValidationHash !== emailValidationHash) {
+  if (user.emailValidationHash !== hash) {
     return res.status(401).json({
       success: false,
       message: 'Votre lien est invalide',
