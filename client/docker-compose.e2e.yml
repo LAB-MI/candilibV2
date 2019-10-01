@@ -29,6 +29,9 @@ services:
       CYPRESS_build: 1
       CYPRESS_screenshotsFolder: 'tests/e2e/screenshots'
       CYPRESS_video: 'false'
+      HTTP_PROXY: ${http_proxy}
+      HTTPS_PROXY: ${http_proxy}
+      NO_PROXY: ${no_proxy},candidat.candilib.local,admin.candilib.local,mailhog
     volumes:
       - ./tests/e2e/:/app/tests/e2e/
 
