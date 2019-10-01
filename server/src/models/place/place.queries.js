@@ -81,10 +81,13 @@ export const findPlaceByCandidatId = async (id, populate) => {
 }
 
 /**
+ * @function
  *
  * @param {string} centreId - Id du centre
- * @param {string} beginDate - date de debut de recherche au format ISO
- * @param {string} endDate - date de fin de recherche au format ISO
+ * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {import('mongoose').Query}
  */
 const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
@@ -101,10 +104,13 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
 }
 
 /**
- * @function findAllPlacesByCentre
+ * @function
+ *
  * @param {string} centreId - Id du centre
- * @param {string} beginDate - date de debut de recherche au format ISO
- * @param {string} endDate - date de fin de recherche au format ISO
+ * @param {string} beginDate - Date  au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {Place[]}
  */
 export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)

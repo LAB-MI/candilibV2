@@ -101,8 +101,10 @@ export const getAdminToken = async (req, res) => {
 
  * @param {object} req Est attendu dans la requete
  *```javascript
-  {
- * body: {email: "email de l'utilisateur"},
+ * {
+ *   body: {
+ *     email: "email de l'utilisateur"
+ *   },
  * }
  * ```
  * @param {string} user vérifier si l'utilisateur est dans la base
@@ -161,14 +163,15 @@ export const requestPasswdReset = async (req, res) => {
  * @function resetMyPassword
  * @see {@link http://localhost:8000/api-docs/#/default/reset_password}
 
- * @param {object} req Est attendu dans la requete:
+ * @param {object} req Est attendu dans la requête :
  * ``` javascript
  * {
- * body: { newPassword,
- *         confirmNewPassword,
- *         email,
- *         emailValidationHash
- *  }
+ *   body: {
+ *     newPassword: "Nouveau mot de passe",
+ *     confirmNewPassword: "Nouveau mot de passe",
+ *     email: "adresse courriel",
+ *     emailValidationHash: "Hash (uuid) présent dans le lien envoyé par mail",
+ *   }
  * }
  *
  * ```
