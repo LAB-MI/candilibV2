@@ -220,7 +220,7 @@ const checkAndArchiveCandidat = async (
       message
     )
   } else if (!infoCandidatToUpdate.dateReussiteETG.isValid) {
-    const message = `Pour le ${departement}, ce candidat ${email} sera archivé : dateReussiteETG invalide`
+    message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG est invalide`
     appLogger.warn({ ...loggerInfoCandidat, description: message })
     infoCandidatToUpdate.dateReussiteETG = undefined
     dateFeedBack = getFrenchLuxon()
@@ -231,7 +231,7 @@ const checkAndArchiveCandidat = async (
     dateFeedBack = getFrenchLuxon()
     aurigeFeedback = EPREUVE_ETG_KO
   } else if (isTooManyFailure(infoCandidatToUpdate.nbEchecsPratiques)) {
-    const message = `Pour le ${departement}, ce candidat ${email} sera archivé : A 5 échecs pratiques`
+    message = `Pour le ${departement}, ce candidat ${email} sera archivé : A 5 échecs pratiques`
     appLogger.warn({ ...loggerInfoCandidat, description: message })
 
     dateFeedBack =
