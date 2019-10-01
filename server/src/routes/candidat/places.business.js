@@ -456,6 +456,9 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
  * @param {string} centre Id of mongoose
  * @param {Date|DateTime} date Date de l'examen de la place réservée
  * @param {object} previewBookedPlace Type model place which populate centre and candidat
+ *
+ * @returns {Promise<InfoObject>}
+
  */
 export const validCentreDateReservation = async (
   candidatId,
@@ -528,3 +531,49 @@ export const validCentreDateReservation = async (
     }
   }
 }
+
+/**
+ * @typedef {Object} DateTime
+ *
+ * DateTime object from luxon {@link https://moment.github.io/luxon/docs/}
+ */
+
+/**
+ * @typedef {Object} Candidat
+ *
+ * @property {string} nomNaissance         - Nom de naissance du candidat
+ */
+
+/**
+ * @typedef {Object} Candidat
+ *
+ * @property {string} nomNaissance         - Nom de naissance du candidat
+ * @property {string} prenom               - Prénom du candidat
+ * @property {string} codeNeph             - NEPH du candidat
+ * @property {string} departement          - Département des centres à afficher au candidat
+ * @property {Date} [dateReussiteETG]      - Date de la dernière réussite à l'ETG
+ * @property {Date} [reussitePratique]     - Date de la réussite pratique
+ * @property {string} email                - Adresse courriel du candidat
+ * @property {string} portable             - Numéro de télephone mobile du candidat
+ * @property {string} adresse              - Adresse postale du candidat
+ * @property {boolean} isValidatedByAurige - Informe sur le résultat de la synchro Aurige (`null` : pas encore synchro, `false` : non validé, `true` : validé)
+ * @property {Date} presignedUpAt          - Date à laquelle le candidat a rempli et envoyé le formulaire de pré-inscription
+ * @property {boolean} isValidatedEmail    - Numéro de télephone mobile du candidat
+ * @property {string} emailValidationHash  - UUID de validation de l'adresse courriel du candidat
+ * @property {Date} [emailValidatedAt]     - Date à laquelle le candidat a validé son adresse courriel
+ * @property {Date} [aurigeValidatedAt]    - Date à laquelle le candidat a été validé par Aurige
+ * @property {Date} [canBookFrom]          - Date minimale des places visibles par le candidat
+ * @property {boolean} [isEvaluationDone]  - Informe sur le fait que le candidat a envoyé un questionnaire de satisfaction ou non
+ * @property {ArchivedPlace[]} [places]    - Liste des places que le candidat a réservé
+ * @property {number} [nbEchecsPratiques]  - Nombre d'échecs du candidat à l'examen pratique
+ * @property {NoReussite} [noReussites]    - Liste des non-réussites du candidat à l'examen pratique
+ * @property {Date} [firstConnection]      - Date à laquelle le candidat s'est connecté la première fois
+ */
+
+/**
+ * @typedef {Object} InfoObject
+ *
+ * @property {boolean} success - Indique si l'action a été effectuée avec succès
+ * @property {string} message  - Message destiné à être affiché à l'utilisateur : message de réussite de l'action
+ *                              ou message d'erreur compréhensible par un non technicien
+ */

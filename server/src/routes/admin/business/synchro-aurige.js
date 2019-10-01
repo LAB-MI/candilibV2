@@ -489,14 +489,13 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
 }
 
 /**
- * Libère et archive la place réservée par un candidat si celui-ci n'a pas réussi son examen
- *
  * @function
  *
- * @param {Candidat} candidat Représentation du candidat dans la base de données
- * @param {DateTime} canBookFrom Date d'examen à partir de laquelle le candidat peut prendre une place, au format DateTime de luxon
+ * @param {Candidat} candidat { _id } Candidat à l'examen
+ * @param {DateTime} canBookFrom DateTime de luxon
+ * @param {DateTime} dateEchec DateTime de luxon
  *
- * @returns {Candidat} Candidat éventuellement mis à jour avec la place dans ses places archivées (`places`)
+ * @returns {Promise<Candidat>}
  */
 const cancelBookingAfterExamFailure = async (
   candidat,
