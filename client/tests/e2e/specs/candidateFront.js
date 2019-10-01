@@ -137,7 +137,7 @@ describe('Connected candidate front', () => {
       .click({ force: true })
     cy.get('.v-snack', { timeout: 10000 })
       .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
@@ -251,7 +251,7 @@ describe('Connected candidate front', () => {
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
     // Disconnects from the app
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
@@ -459,7 +459,7 @@ describe('Connected candidate front', () => {
       .should('contain', Cypress.env('centre').toUpperCase())
       .and('contain', '8:30')
     // Disconnects
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     cy.url()
       .should('contain', 'candidat-presignup')

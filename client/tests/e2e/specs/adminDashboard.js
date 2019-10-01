@@ -105,7 +105,7 @@ describe('Dashboard tests', () => {
       .click({ force: true })
     cy.get('.v-snack', { timeout: 10000 })
       .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')

@@ -17,7 +17,12 @@
         :tooltipText="icon.tooltipText"
       />
       <v-tooltip bottom>
-        <v-btn icon @click.prevent="disconnect" slot="activator">
+        <v-btn
+          class="t-disconnect"
+          icon
+          @click.prevent="disconnect"
+          slot="activator"
+        >
           <v-icon>exit_to_app</v-icon>
         </v-btn>
         <span>Déconnexion</span>

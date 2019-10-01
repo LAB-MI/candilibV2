@@ -22,7 +22,7 @@ describe('Admin login', () => {
     cy.get('h3')
       .should('contain', Cypress.env('adminLogin').split('@')[0])
     // Disconnects from the app
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')

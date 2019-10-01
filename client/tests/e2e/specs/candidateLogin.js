@@ -88,7 +88,7 @@ describe('Candidate login', () => {
       .type(Cypress.env('emailCandidat'))
     cy.contains('Enregistrer ces adresses')
       .click()
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
   })
 
@@ -248,7 +248,7 @@ describe('Candidate login', () => {
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
     // Disconnects from the app
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
@@ -285,7 +285,7 @@ describe('Candidate login', () => {
       })
     cy.get('h2')
       .should('contain', 'Choix du centre')
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     cy.url()
       .should('contain', 'candidat-presignup')

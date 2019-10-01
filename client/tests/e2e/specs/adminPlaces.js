@@ -108,7 +108,7 @@ describe('Places tests', () => {
       .click({ force: true })
     cy.get('.v-snack', { timeout: 10000 })
       .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')
@@ -222,7 +222,7 @@ describe('Places tests', () => {
       .mhGetSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
     // Disconnects from the app
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Vous êtes déconnecté·e')

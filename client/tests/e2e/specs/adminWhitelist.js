@@ -56,7 +56,7 @@ describe('Whitelist tests', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
   })
 
@@ -144,7 +144,7 @@ describe('Whitelist tests', () => {
       .should('contain', 'Adresse enregistrée')
       .and('contain', 'Adresse courriel existante')
       .and('not.contain', 'Adresse invalide')
-    cy.contains('exit_to_app')
+    cy.get('.t-disconnect')
       .click()
     // The candidate fills the pre-sign-up form
     cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
