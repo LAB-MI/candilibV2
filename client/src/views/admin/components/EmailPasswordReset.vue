@@ -4,10 +4,11 @@
     width="500"
   >
     <v-btn
+      class="u-flex u-flex--center submit-btn"
       slot="activator"
       depressed
-      color="#fff"
       tabindex="8"
+
     >
     Réinitialiser mot de passe
     </v-btn>
@@ -103,3 +104,23 @@ export default {
   },
 }
 </script>
+
+<style lang="stylus">
+
+.submit-btn {
+  position: relative;
+  font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  color: #fff;
+  line-height: 1.2;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 20px;
+  width: 100%;
+  height: auto;
+  overflow: hidden;
+}
+
+</style>

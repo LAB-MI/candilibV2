@@ -38,7 +38,7 @@ export const getResetLinkTemplate = urlResetLink => `
   <p>
     Vous avez demandé à réinitialiser votre mot de passe. Vous pouvez dès à present
     réinitialiser votre mot de passe en cliquant sur le lien suivant :
-    a href='${urlResetLink}'>réinitialiser le mot de passe</a>
+    <a href='${urlResetLink}'>réinitialiser le mot de passe</a>
   </p>
   <br>
   <p align="right">L'équipe Candilib</p>

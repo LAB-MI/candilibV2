@@ -44,7 +44,8 @@
           <div class="submit-bgbtn"></div>
           <div class="submit-label">Connexion</div>
         </button>
-        <email-password-reset/>
+        <email-password-reset
+        class="u-flex u-flex--center"/>
       </div>
 
       <admin-version/>

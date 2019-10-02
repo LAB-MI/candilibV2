@@ -41,14 +41,16 @@
         </v-text-field>
         </div>
           <div class="form-input">
-        <button
-          tabindex="3"
-          class="submit-btn"
-          :disabled="isSendingPassword"
-          :aria-disabled="isSendingPassword">
-          <div class="submit-bgbtn"></div>
-          <div class="submit-label">Réinitialiser le mot de passe</div>
-        </button>
+          <button
+            tabindex="3"
+            class="submit-btn"
+            :disabled="isSendingPassword"
+            :aria-disabled="isSendingPassword"
+            @click.prevent="redirect"
+            >
+            <div class="submit-bgbtn"></div>
+            <div class="submit-label">Réinitialiser le mot de passe</div>
+          </button>
       </div>
     </v-form>
   </div>
@@ -72,12 +74,12 @@ export default {
 
   computed: {
     isSendingPassword () {
-      console.log('123')
       return this.$store.state.admin.isSendingPassword
     },
   },
 
   methods: {
+
     async updatePassword () {
       const { email, hash } = this.$route.query
       if (!this.newPassword) {
@@ -94,6 +96,14 @@ export default {
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, 'Oups ! Une erreur est survenue')
       }
+    },
+
+    async redirect () {
+      if (!SHOW_SUCCESS) {
+        return this.$store.dispatch(SHOW_ERROR, 'Oups ! Une erreur est survenue')
+      }
+      await this.$store.dispatch(SHOW_SUCCESS, `Votre mot de passe a bien été modifié`)
+      return window.setTimeout(() => this.$router.push({ name: 'admin-login' }), 4000)
     },
   },
 }

@@ -7,7 +7,7 @@ export const sendMailConfirmation = email => {
 }
 
 export const getMailConfirmationTemplate = email => `
-  <p>Votre mot de passe correspondant à l'adresse email ${email} a bien été 
+  <p>Votre mot de passe a bien été 
   réinitialisé. 
   </p>
   <br>

@@ -77,6 +77,17 @@ export const updateUserEmail = async (user, email) => {
  * @returns {User}
  */
 export const updateUserPassword = async (user, password) => {
+  const now = Date.now()
+  const passwordResetRequestedAt = user.passwordResetRequestedAt
+  const difference = now - passwordResetRequestedAt
+  const fifteenMinutes = 15 * 60 * 1000
+  if (difference > fifteenMinutes) {
+    const error = new Error(
+      'Votre lien a expiré, veuillez refaire votre demande de réinitialisation de mot de passe'
+    )
+    error.status = 401
+    throw error
+  }
   user.password = password
   await user.save()
   return user
