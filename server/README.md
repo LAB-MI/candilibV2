@@ -19,9 +19,10 @@ SMTP_PASS=<mot_de_passe>
 Par exemple à l'aide des commandes suivantes sur les systèmes *nix :
 
 ```bash
-export SMTP_SERVER=<adresse_serveur_SMPT>
-export SMTP_USER=<compte_SMPT>
+export SMTP_SERVER=<adresse_serveur_SMTP>
+export SMTP_USER=<compte_SMTP>
 export SMTP_PASS=<mot_de_passe>
+export SMTP_PORT=<port_server_SMTP>
 ```
 
 ### Base de données
@@ -74,3 +75,21 @@ export DB_PASS=Admin*78
 1. En mode développement, ces variables d'environnement peuvent être présentes dans un fichier unique nommé `.env` dans le répertoire `server`
    sous la forme `VARIABLE=Valeur`, à raison d'une variable par ligne : voir le fichier `.env-example` ;
 2. Ces éléments de configuration peuvent être adaptés en fonction de l'environnement dans lequel l'application sera exécutée.
+
+# Serveur de messagerie de test
+
+Un service de messagerie (mailHog) est disponible sous forme de conteneur pour effectuer des tests en local. La documentation est disponible sur GitHub : https://github.com/mailhog/MailHog
+
+## Démarrage en mode dev
+
+Pour démarer le conteneur mailhog:
+
+```bash
+make mailhog-up
+```
+
+Pour arrêter et supprimer le conteneur:
+
+```bash
+make mailhog-stop mailhog-rm
+```
