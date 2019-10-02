@@ -19,12 +19,15 @@
     "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
     "sb": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
     "test:e2e": "vue-cli-service test:e2e",
+    "cypress": "cypress run",
     "test:unit": "vue-cli-service test:unit",
     "test:watch": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" npm run -s test:unit -- --watch"
   },
   "dependencies": {
     "ag-grid-community": "^21.1.1",
     "ag-grid-vue": "^21.1.0",
+    "cypress-file-upload": "^3.3.3",
+    "cypress-mailhog": "^1.1.0",
     "delay": "^4.3.0",
     "html-loader": "^0.5.5",
     "intl": "^1.2.5",
