@@ -1,5 +1,3 @@
-import mesAdmin from '../../../src/admin'
-import mesCandi from '../../../src/candidat'
 /* Tests :
 - Checks the display of the date
 - Tests the next week button
@@ -16,251 +14,25 @@ import mesCandi from '../../../src/candidat'
 - Removes the whole day of an inspector
 */
 
-const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
-const horaires = [
-  '08:00',
-  '08:30',
-  '09:00',
-  '09:30',
-  '10:00',
-  '10:30',
-  '11:00',
-  '11:30',
-  '13:30',
-  '14:00',
-  '14:30',
-  '15:00',
-  '15:30',
-]
-
-const csvRowBuilder = (inspecteur, matricule) => horaire => `${Cypress.env('datePlace')},${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
-
-const placesInspecteur1 = horaires.map(csvRowBuilder(Cypress.env('inspecteur'), Cypress.env('matricule')))
-const placesInspecteur2 = horaires.map(csvRowBuilder(Cypress.env('inspecteur2'), Cypress.env('matricule2')))
-
-const placesArray = [csvHeaders].concat(placesInspecteur1).concat(placesInspecteur2).join('\n')
-
 describe('Planning tests', () => {
   before(() => {
     // Delete all mails before start
     cy.mhDeleteAll()
-    // Creates the aurige files
-    cy.writeFile(Cypress.env('filePath') + '/aurige.json',
-      [
-        {
-          'codeNeph': Cypress.env('NEPH'),
-          'nomNaissance': Cypress.env('candidat'),
-          'email': Cypress.env('emailCandidat'),
-          'dateReussiteETG': '2018-10-12',
-          'nbEchecsPratiques': '0',
-          'dateDernierNonReussite': '',
-          'objetDernierNonReussite': '',
-          'reussitePratique': '',
-          'candidatExistant': 'OK',
-        },
-      ])
-    cy.writeFile(Cypress.env('filePath') + '/aurige.end.json',
-      [
-        {
-          'codeNeph': Cypress.env('NEPH'),
-          'nomNaissance': Cypress.env('candidat'),
-          'email': Cypress.env('emailCandidat'),
-          'dateReussiteETG': '',
-          'nbEchecsPratiques': '',
-          'dateDernierNonReussite': '',
-          'objetDernierNonReussite': '',
-          'reussitePratique': '',
-          'candidatExistant': 'NOK',
-        },
-      ])
-    // Creates the csv file
-    cy.writeFile(Cypress.env('filePath') + '/planning.csv', placesArray)
-    // Archives the candidate if it's not already done
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    cy.contains('import_export')
-      .click()
-    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.end.json'
-    const fileName = 'aurige.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
-    cy.get('.v-snack')
-      .should('contain', fileName + ' prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
-    // Adds the address to the whitelist
-    cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
-    cy.get('h2')
-      .should('contain', 'Liste blanche')
-    cy.contains('Ajouter un lot d\'adresse courriel')
-      .click()
-    cy.get('#whitelist-batch-textarea')
-      .type(Cypress.env('emailCandidat'))
-    cy.contains('Enregistrer ces adresses')
-      .click()
-    // Adds the places from the created planning file
-    cy.contains('calendar_today')
-      .click()
-    cy.get('.t-import-places [type=checkbox]')
-      .check({ force: true })
-    const filePath1 = '../../../' + Cypress.env('filePath') + '/planning.csv'
-    const fileName1 = 'planning.csv'
-    cy.fixture(filePath1).then(fileContent => {
-      cy.get('[type=file]').upload({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
-    })
-    cy.get('.v-snack')
-      .should('contain', fileName1 + ' prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click({ force: true })
-    cy.get('.v-snack', { timeout: 10000 })
-      .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
-    cy.get('.t-disconnect')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes déconnecté·e')
-    // The candidate fills the pre-sign-up form
-    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
-    cy.contains('Se pré-inscrire')
-      .click()
-    cy.get('h2')
-      .should('contain', mesCandi.app_subtitle)
-    cy.contains(mesCandi.preinscription_neph)
-      .parent()
-      .children('input')
-      .type(Cypress.env('NEPH'))
-    cy.contains(mesCandi.preinscription_nom_naissance)
-      .parent()
-      .children('input')
-      .type(Cypress.env('candidat'))
-    cy.contains(mesCandi.preinscription_prenom)
-      .parent()
-      .children('input')
-      .type(Cypress.env('firstName'))
-    cy.contains('Courriel *')
-      .parent()
-      .children('input')
-      .type(Cypress.env('emailCandidat'))
-    cy.contains(mesCandi.preinscription_mobile)
-      .parent()
-      .children('input')
-      .type('0716253443')
-    cy.contains(mesCandi.preinscription_adresse)
-      .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
-      .click()
-    cy.contains(mesCandi.preinscription_bouton_submit)
-      .click()
-    // Checks the access
-    cy.url()
-      .should('contain', 'email-validation')
-    cy.get('h3')
-      .should('contain', 'Validation en attente')
-    cy.get('div')
-      .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
-    // Validates the email address
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
-      .should('contain', 'Validation d\'adresse courriel pour Candilib')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetBody().then((mailBody) => {
-        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        const validationLink = withoutEq.replace(/=3D/g, '=')
-        cy.visit(validationLink)
-      })
-    cy.get('h3')
-      .should('contain', 'Adresse courriel validée')
-    // Gets the confirmation email
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
-      .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
+    cy.adminLogin()
+    cy.archiveCandidate()
+    cy.addPlanning()
+    cy.addToWhitelist()
+    cy.adminDisconnection()
+    cy.candidatePreSignUp()
     // The admin validates the candidate via Aurige
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    cy.contains('import_export')
-      .click()
-    cy.get('.ag-overlay')
-      .should('contain', 'No Rows To Show')
-    const filePath2 = '../../../' + Cypress.env('filePath') + '/aurige.json'
-    const fileName2 = 'aurige.json'
-    cy.fixture(filePath2).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName: fileName2,
-          mimeType: 'application/json',
-        })
-    })
-    cy.get('.v-snack')
-      .should('contain', fileName2 + ' prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Le fichier ' + fileName2 + ' a été synchronisé.')
-    // Checks that the candidate is validated
-    cy.get('.ag-cell')
-      .should('contain', Cypress.env('candidat'))
-    cy.get('.ag-cell')
-      .should('contain', 'Pour le 75, envoi d\'un magic link à ' + Cypress.env('emailCandidat'))
-    cy.mhGetMailsByRecipient(Cypress.env('emailCandidat'))
-      .mhFirst()
-      .mhGetSubject()
-      .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+    cy.adminLogin()
+    cy.candidateValidation()
     // Disconnects from the app
-    cy.get('.t-disconnect')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes déconnecté·e')
-    cy.url()
-      .should('eq', Cypress.env('frontAdmin') + 'admin-login')
+    cy.adminDisconnection()
   })
 
   it('Assigns a candidate and changes the inspector', () => {
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
+    cy.adminLogin()
     // Goes to planning
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     // Add candidate to the first place
@@ -292,17 +64,11 @@ describe('Planning tests', () => {
     cy.get('.v-snack')
       .should('contain', Cypress.env('candidat'))
       .and('contain', 'a bien été affecté à la place')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetRecipients()
+    cy.mhGetFirstRecipients()
       .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
+    cy.mhGetFirstSubject()
       .should('contain', '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetBody()
+    cy.mhGetFirstBody()
       .should('contain', Cypress.env('centre').toUpperCase())
     // Change the inspector
     cy.get('.v-window-item').not('[style="display: none;"]')
@@ -338,13 +104,13 @@ describe('Planning tests', () => {
     // Sends the mail for the inspectors
     cy.mhDeleteAll()
     cy.get('button')
-      .contains(mesAdmin.send_bordereaux)
+      .contains('Envoyer les bordereaux aux inspecteurs du')
       .click()
     cy.get('.v-dialog')
-      .contains(mesAdmin.send_bordereaux)
+      .contains('Envoyer les bordereaux aux inspecteurs du')
       .parents('.v-dialog')
       .find('[type=submit]')
-      .contains(mesAdmin.envoyer)
+      .contains('Envoyer')
       .click()
     cy.get('.v-snack')
       .should('contain', 'Les emails ont bien été envoyés')
@@ -352,25 +118,20 @@ describe('Planning tests', () => {
       .click({ force: true })
     cy.mhGetAllMails()
       .should('have.length', 1)
-      .mhFirst()
-      .mhGetRecipients()
+    cy.mhGetFirstRecipients()
       .should('contain', Cypress.env('emailInspecteur'))
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
+    cy.mhGetFirstSubject()
       .should('contain', '=?UTF-8?Q?Bordereau_de_l=27inspecteur_')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetBody()
+    cy.mhGetFirstBody()
       .should('contain', Cypress.env('centre'))
       .and('contain', Cypress.env('candidat'))
     // Receive the mail for the inspectors
     cy.mhDeleteAll()
     cy.get('button')
-      .contains(mesAdmin.receive_bordereaux_for_ipcsr_email)
+      .contains('Recevoir les bordereaux des inspecteurs du')
       .click()
     cy.get('.v-dialog')
-      .contains(mesAdmin.receive_bordereaux_for_ipcsr_email)
+      .contains('Recevoir les bordereaux des inspecteurs du')
       .parents('.v-dialog')
       .should('contain', Cypress.env('emailRepartiteur'))
       .find('[type=submit]')
@@ -382,16 +143,11 @@ describe('Planning tests', () => {
       .click({ force: true })
     cy.mhGetAllMails()
       .should('have.length', 1)
-      .mhFirst()
-      .mhGetRecipients()
+    cy.mhGetFirstRecipients()
       .should('contain', Cypress.env('emailRepartiteur'))
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
+    cy.mhGetFirstSubject()
       .should('contain', '=?UTF-8?Q?Bordereau_de_l=27inspecteur_')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetBody()
+    cy.mhGetFirstBody()
       .should('contain', Cypress.env('centre'))
       .and('contain', Cypress.env('candidat'))
     // Removes the candidate from the place
@@ -408,13 +164,9 @@ describe('Planning tests', () => {
       })
     cy.get('.v-snack')
       .should('contain', 'La réservation choisie a été annulée.')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetRecipients()
+    cy.mhGetFirstRecipients()
       .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
+    cy.mhGetFirstSubject()
       .should('contain', '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen_par_l=27administration?=')
     // Add the place back
     cy.get('.v-window-item').not('[style="display: none;"]')
@@ -433,51 +185,13 @@ describe('Planning tests', () => {
 
 describe('Planning tests without candidate', () => {
   before(() => {
-    // Creates the csv file
-    cy.writeFile(Cypress.env('filePath') + '/planning.csv', placesArray)
-    // Adds the places from the created planning file
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    cy.contains('calendar_today')
-      .click()
-    cy.get('.t-import-places [type=checkbox]')
-      .check({ force: true })
-    const filePath1 = '../../../' + Cypress.env('filePath') + '/planning.csv'
-    const fileName1 = 'planning.csv'
-    cy.fixture(filePath1).then(fileContent => {
-      cy.get('[type=file]').upload({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
-    })
-    cy.get('.v-snack')
-      .should('contain', fileName1 + ' prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click({ force: true })
-    cy.get('.v-snack', { timeout: 10000 })
-      .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
-    cy.get('.t-disconnect')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes déconnecté·e')
-    cy.url()
-      .should('eq', Cypress.env('frontAdmin') + 'admin-login')
+    cy.adminLogin()
+    cy.addPlanning()
+    cy.adminDisconnection()
   })
 
   it('Adds and removes places', () => {
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
+    cy.adminLogin()
     // Goes to planning
     cy.contains('calendar_today').click()
     // Checks the center in the 93
@@ -567,7 +281,7 @@ describe('Planning tests without candidate', () => {
         // Removes the morning
         cy.contains('delete')
           .click()
-        cy.contains(mesAdmin.delete_morning_places)
+        cy.contains('Supprimer la matinée')
           .click()
         cy.contains('Valider')
           .click()
@@ -582,7 +296,7 @@ describe('Planning tests without candidate', () => {
         // Removes the afternoon
         cy.contains('delete')
           .click()
-        cy.contains(mesAdmin.delete_afternoon_places)
+        cy.contains('Supprimer l\'après-midi')
           .click()
         cy.contains('Valider')
           .click()
@@ -609,7 +323,7 @@ describe('Planning tests without candidate', () => {
         cy.contains('delete')
           .click()
         cy.root().parent()
-          .contains(mesAdmin.delete_whole_day_s_places)
+          .contains('Supprimer la journée')
           .click()
         cy.root().parent()
           .contains('Valider')
@@ -619,22 +333,13 @@ describe('Planning tests without candidate', () => {
     cy.get('.name-ipcsr-wrap')
       .should('not.contain', Cypress.env('inspecteur'))
     // Imports the places
-    cy.get('.t-import-places [type=checkbox]')
-      .check({ force: true })
-    const filePath = '../../../' + Cypress.env('filePath') + '/planning.csv'
-    const fileName = 'planning.csv'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('[type=file]').upload({ fileContent, fileName, mimeType: 'text/csv' })
-    })
-    cy.get('.v-snack')
-      .should('contain', 'planning.csv prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click({ force: true })
-    cy.get('.v-snack', { timeout: 10000 })
-      .should('contain', 'Le fichier planning.csv a été traité pour le departement 75.')
+    cy.addPlanning()
     // The inspector should be back
     cy.contains('replay')
       .click()
+    cy.get('.v-tabs')
+      .contains(Cypress.env('centre'))
+      .click({ force: true })
     cy.get('.name-ipcsr-wrap')
       .should('contain', Cypress.env('inspecteur'))
   })
