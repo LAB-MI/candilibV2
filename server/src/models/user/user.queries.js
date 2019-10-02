@@ -69,12 +69,13 @@ export const updateUserEmail = async (user, email) => {
 /**
  * Remplace le mot de passe existant de l'utilisateur
  *
+ * @async
  * @function
  *
  * @param {User} user
  * @param {string} password
  *
- * @returns {User}
+ * @returns {Promise<User>}
  */
 export const updateUserPassword = async (user, password) => {
   const now = Date.now()
@@ -115,6 +116,7 @@ export const addEmailValidationHash = async email => {
   const emailValidationHash = uuidv4()
   const user = await findUserByEmail(email)
   user.emailValidationHash = emailValidationHash
+  user.passwordResetRequestedAt = new Date()
   await user.save()
   return emailValidationHash
 }

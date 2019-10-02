@@ -17,6 +17,7 @@ export const getUrlResetLink = async email => {
 }
 
 /**
+ *
  * @function
  *
  * @param {string} email Adresse courriel de l'utilisateur

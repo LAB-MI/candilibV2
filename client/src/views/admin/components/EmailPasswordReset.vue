@@ -8,6 +8,7 @@
       slot="activator"
       depressed
       tabindex="8"
+
     >
     Réinitialiser mot de passe
     </v-btn>
@@ -25,6 +26,7 @@
         <div class="u-flex  u-flex--center">
           <div class="form-input">
             <v-text-field
+              class="t-input"
               prepend-icon="email"
               @focus="setEmailPlaceholder"
               @blur="removeEmailPlaceholder"
@@ -44,6 +46,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
+          class="t-reset"
             dark
             type="submit"
             :disabled="isSendingResetLink"
@@ -104,6 +107,9 @@ export default {
 }
 </script>
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> ajouter delai de validité du lien
 
 <style lang="stylus">
 
@@ -124,5 +130,8 @@ export default {
 }
 
 </style>
+<<<<<<< HEAD
 =======
 >>>>>>> Ajouter bouton réinitialiser le mot de passe
+=======
+>>>>>>> ajouter delai de validité du lien

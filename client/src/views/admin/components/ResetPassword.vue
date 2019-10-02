@@ -13,6 +13,7 @@
 
       <div class="form-input">
         <v-text-field
+          class="t-new-password"
           aria-placeholder="mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
           @click:append="showPassword = !showPassword"
@@ -27,6 +28,7 @@
         </div>
         <div class="form-input">
         <v-text-field
+          class="t-confirm-new-password"
           aria-placeholder="confirmation du mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
           @click:append="showPassword = !showPassword"
@@ -46,7 +48,6 @@
             class="submit-btn"
             :disabled="isSendingPassword"
             :aria-disabled="isSendingPassword"
-            @click.prevent="redirect"
             >
             <div class="submit-bgbtn"></div>
             <div class="submit-label">Réinitialiser le mot de passe</div>
@@ -85,6 +86,9 @@ export default {
       if (!this.newPassword) {
         return this.$store.dispatch(SHOW_ERROR, `Veuillez saisir un mot de passe`)
       }
+      if (this.newPassword !== this.confirmNewPassword) {
+        return this.$store.dispatch(SHOW_ERROR, `Vos mots de passe ne correspondent pas`)
+      }
       try {
         await this.$store.dispatch(RESET_PASSWORD_REQUEST, {
           email,
@@ -93,17 +97,9 @@ export default {
           confirmNewPassword: this.confirmNewPassword,
         })
         this.$store.dispatch(SHOW_SUCCESS, `Votre mot de passe a bien été modifié`)
+        this.$router.push({ name: 'admin-login' })
       } catch (error) {
-        this.$store.dispatch(SHOW_ERROR, 'Oups ! Une erreur est survenue')
       }
-    },
-
-    async redirect () {
-      if (!SHOW_SUCCESS) {
-        return this.$store.dispatch(SHOW_ERROR, 'Oups ! Une erreur est survenue')
-      }
-      await this.$store.dispatch(SHOW_SUCCESS, `Votre mot de passe a bien été modifié`)
-      return window.setTimeout(() => this.$router.push({ name: 'admin-login' }), 4000)
     },
   },
 }
