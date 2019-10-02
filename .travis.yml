@@ -12,6 +12,7 @@ env:
 addons:
   apt:
     packages:
+      - language-pack-fr
       - docker-ce
 
 before_install:

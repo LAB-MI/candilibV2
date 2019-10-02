@@ -14,6 +14,7 @@
         </v-btn>
           Semaine {{ currentWeekNumber }}
         <v-btn
+          class="t-btn-next-week"
           icon
           @click="goto('+1 weeks')"
         >
@@ -51,6 +52,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
+                class="t-date-picker"
                 v-model="pickerDate"
                 persistent-hint
                 prepend-icon="event"

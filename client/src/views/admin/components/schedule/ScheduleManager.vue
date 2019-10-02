@@ -1,7 +1,7 @@
 <template>
   <div>
     <page-title title="Gestion planning"/>
-    <v-card>
+    <v-card class="t-import-places">
       <v-switch
         v-model="isImportPlacesActive"
         :label="`Import places`"

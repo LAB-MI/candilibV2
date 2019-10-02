@@ -3,7 +3,7 @@ version: '3.5'
 services:
   front_candidat:
     image: candilib_front_candidat:${APP_VERSION:-latest}
-    container_name: candilib_front_candidat
+    container_name: ${CONTAINER_NAME_CANDIDAT:-candilib_front_candidat}
     build:
       context: ./
       dockerfile: Dockerfile
@@ -30,7 +30,7 @@ services:
 #      - candilib-network
   front_admin:
     image: candilib_front_admin:${APP_VERSION:-latest}
-    container_name: candilib_front_admin
+    container_name: ${CONTAINER_NAME_ADMIN:-candilib_front_admin}
     build:
       context: ./
       dockerfile: Dockerfile

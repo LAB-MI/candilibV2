@@ -18,3 +18,10 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+before(() => {
+  if (!Cypress.env('build')) {
+    Cypress.env('filePath', 'tests/e2e/filesLocal')
+    cy.exec('cd ../server && npm run dev-setup')
+  }
+})

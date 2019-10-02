@@ -29,7 +29,8 @@
         <div class="u-flex  u-flex--center">
           <div class="form-input">
             <v-text-field
-              :label="`${getMsg('preinscription_email')}`"
+              :class="`t-magic-link-input-${testClassSuffix}`"
+              :label="getMsg('preinscription_email')"
               prepend-icon="email"
               @focus="setEmailPlaceholder"
               @blur="removeEmailPlaceholder"
@@ -51,6 +52,7 @@
           <v-spacer></v-spacer>
           <v-btn
             dark
+            :class="`t-magic-link-button-${testClassSuffix}`"
             type="submit"
             :disabled="isSendingMagicLink"
             :aria-disabled="isSendingMagicLink"
@@ -58,7 +60,7 @@
             color="#28a745"
           >
             <div class="submit-label">
-              {{getMsg('preinscription_bouton_magic_link') }}
+              {{getMsg('preinscription_bouton_magic_link')}}
             </div>
           </v-btn>
         </v-card-actions>
@@ -76,6 +78,10 @@ import {
 import { email as emailRegex } from '@/util'
 
 export default {
+  props: {
+    testClassSuffix: String,
+  },
+
   data () {
     return {
       emailPlaceholder: '',

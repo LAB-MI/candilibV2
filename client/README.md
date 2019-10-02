@@ -25,9 +25,14 @@ npm run test
 npm run lint
 ```
 
-### Run your end-to-end tests
+### Run your end-to-end tests with visual interface
 ```
 npm run test:e2e
+```
+
+### Run end-to-end tests headless
+```
+npm run cypress
 ```
 
 ### Run your unit tests
