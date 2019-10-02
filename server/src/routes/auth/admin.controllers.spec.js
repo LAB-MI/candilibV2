@@ -173,16 +173,22 @@ describe('Reset my password', () => {
   it('Should validate password change', async () => {
     const newPassword = 'Psr@85df'
     const confirmNewPassword = 'Psr@85df'
-    const { body } = await request(app)
-      .patch('/admin/me')
-      .send({
-        newPassword,
-        confirmNewPassword,
-        email: validEmail,
-        hash,
-      })
-      .set('Accept', 'application/json')
-      .expect(200)
-    expect(body).toHaveProperty('success', true)
+    const passwordResetRequestedAt = new Date()
+    try {
+      const { body } = await request(app)
+        .patch('/admin/me')
+        .send({
+          passwordResetRequestedAt,
+          newPassword,
+          confirmNewPassword,
+          email: validEmail,
+          hash,
+        })
+        .set('Accept', 'application/json')
+        .expect(200)
+      expect(body).property('success', true)
+    } catch (error) {
+      console.error(error)
+    }
   })
 })

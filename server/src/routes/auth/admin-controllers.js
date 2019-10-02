@@ -214,17 +214,19 @@ export const resetMyPassword = async (req, res) => {
   }
 
   try {
-    await updateUserPassword(user, newPassword)
+    updateUserPassword(user, newPassword)
   } catch (error) {
     appLogger.error({
       section: 'update-password',
       action: 'update',
       description: 'Impossible de modifier le mot de passe',
+      error,
     })
     return res.status(500).json({
       success: false,
-      message:
-        'Une erreur est survenue lors de la modification de votre mot de passe',
+      message: error.status
+        ? error.message
+        : 'Une erreur est survenue lors de la modification de votre mot de passe',
     })
   }
 

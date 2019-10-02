@@ -44,6 +44,10 @@ const UserSchema = new Schema(
       type: String,
       required: false,
     },
+    passwordResetRequestedAt: {
+      type: Date,
+      default: undefined,
+    },
     password: {
       type: String,
       required: true,
