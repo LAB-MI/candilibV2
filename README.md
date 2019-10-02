@@ -44,6 +44,14 @@ npm run dev-setup
 
 Toujours dans le répertoire `server`
 
+Ajouter la variable d'environnement pour avoir la date en français
+
+```bash
+export NODE_ICU_DATA=`pwd`/node_modules/full-icu
+```
+
+Puis lancer le serveur
+
 ```bash
 npm run dev
 ```
@@ -103,6 +111,22 @@ cd server
 npm install
 npm run dev
 ```
+
+### Lancer en local les tests de CI
+
+Travis utilise le fichier .travis.yml décrivant les étapes de build et des tests, il est possible de lancer les tests en local en lançant :
+
+* Les commandes de la section before_install du fichier .travis.yml
+* Puis le script ci/run-tests.sh
+
+Cette étape construit :
+
+* les images docker candilib
+* démarre la stack candilib
+* initialise la base de données avec les données de tests
+* construit les images Cypress et MailHog
+* démarre la stack de tests
+* exécute les scénarios et détruits les stacks à la fin
 
 ### Lancer le serveur en mode production
 
