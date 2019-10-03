@@ -8,24 +8,13 @@
 
 describe('Admin login', () => {
   it('Tests the admin login and disconnection', () => {
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
+    cy.adminLogin()
     cy.get('h2')
       .should('contain', 'Tableau de bord')
     cy.get('h3')
       .should('contain', Cypress.env('adminLogin').split('@')[0])
     // Disconnects from the app
-    cy.get('.t-disconnect')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes déconnecté·e')
+    cy.adminDisconnection()
     cy.url()
       .should('eq', Cypress.env('frontAdmin') + 'admin-login')
   })

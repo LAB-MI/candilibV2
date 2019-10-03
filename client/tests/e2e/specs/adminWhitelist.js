@@ -6,6 +6,7 @@
 - Whitelist search
 - Removes address from the whitelist grid
 - Removes address from the whitelist search
+- Inability to create account without a whitelisted address
 - Ability to create account when the address is in the whitelist
 */
 
@@ -13,51 +14,9 @@ describe('Whitelist tests', () => {
   before(() => {
     // Delete all mails before start
     cy.mhDeleteAll()
-    // Creates the aurige file
-    cy.writeFile(Cypress.env('filePath') + '/aurige.end.json',
-      [
-        {
-          'codeNeph': Cypress.env('NEPH'),
-          'nomNaissance': Cypress.env('candidat'),
-          'email': Cypress.env('email'),
-          'dateReussiteETG': '',
-          'nbEchecsPratiques': '',
-          'dateDernierNonReussite': '',
-          'objetDernierNonReussite': '',
-          'reussitePratique': '',
-          'candidatExistant': 'NOK',
-        },
-      ])
-    // Archives the candidate if it's not already done
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
-    cy.contains('import_export')
-      .click()
-    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.end.json'
-    const fileName = 'aurige.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
-    cy.get('.v-snack')
-      .should('contain', fileName + ' prêt à être synchronisé')
-    cy.get('.import-file-action [type=button]')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
-    cy.get('.t-disconnect')
-      .click()
+    cy.adminLogin()
+    cy.archiveCandidate()
+    cy.adminDisconnection()
   })
 
   it('Whitelist tests', () => {
@@ -97,16 +56,7 @@ describe('Whitelist tests', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', 'L\'adresse courriel renseignée (' + Cypress.env('email') + ') n\'est pas dans la liste des invités')
-
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
+    cy.adminLogin()
     // Visits the whitelist
     cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
     cy.get('h2')
@@ -144,78 +94,10 @@ describe('Whitelist tests', () => {
       .should('contain', 'Adresse enregistrée')
       .and('contain', 'Adresse courriel existante')
       .and('not.contain', 'Adresse invalide')
-    cy.get('.t-disconnect')
-      .click()
-    // The candidate fills the pre-sign-up form
-    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
-    cy.contains('Se pré-inscrire')
-      .click()
-    cy.get('h2')
-      .should('contain', 'Réservez votre place d\'examen')
-    cy.contains('NEPH')
-      .parent()
-      .children('input')
-      .type(Cypress.env('NEPH'))
-    cy.contains('Nom de naissance')
-      .parent()
-      .children('input')
-      .type(Cypress.env('candidat'))
-    cy.contains('Prénom')
-      .parent()
-      .children('input')
-      .type(Cypress.env('firstName'))
-    cy.contains('Courriel *')
-      .parent()
-      .children('input')
-      .type(Cypress.env('email'))
-    cy.contains('Portable')
-      .parent()
-      .children('input')
-      .type('0716253443')
-    cy.contains('Adresse')
-      .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
-      .click()
-    cy.contains('Pré-inscription')
-      .click()
-    // Checks the access
-    cy.url()
-      .should('contain', 'email-validation')
-    cy.get('h3')
-      .should('contain', 'Validation en attente')
-    cy.get('div')
-      .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
-    // Validates the email address
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetRecipients()
-      .should('contain', Cypress.env('email'))
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetSubject()
-      .should('contain', 'Validation d\'adresse courriel pour Candilib')
-    cy.mhGetAllMails()
-      .mhFirst()
-      .mhGetBody().then((mailBody) => {
-        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        const validationLink = withoutEq.replace(/=3D/g, '=')
-        cy.visit(validationLink)
-      })
-    cy.get('h3')
-      .should('contain', 'Adresse courriel validée')
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
+    cy.adminDisconnection()
+    // Candidate is in the whitelist, the pre sign-up should work now
+    cy.candidatePreSignUp()
+    cy.adminLogin()
     // Visits the whitelist
     cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
     cy.get('h2')

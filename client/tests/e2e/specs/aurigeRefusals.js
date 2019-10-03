@@ -45,15 +45,7 @@ describe('Aurige Refusals', () => {
   })
 
   it('Refuses the validation', () => {
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
+    cy.adminLogin()
     // Goes to the page
     cy.contains('import_export')
       .click()

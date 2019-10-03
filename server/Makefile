@@ -24,10 +24,8 @@ api-up-dev:
 api-down-dev: 
 	${DC} -f ${DC_APP_BUILD_DEV} down api
 
-fake-stmp-up: 
-	${DC} -f ${DC_APP_BUILD_DEV} up fakesmtp
-fake-stmp-down: 
-	${DC} -f ${DC_APP_BUILD_DEV} down fakesmtp
+init-db-e2e:
+	( cd .. && bash ci/init-db-e2e.sh )
 
 mailhog-up:
 	${DC} -f ${DC_APP_BUILD_DEV} up mailhog
