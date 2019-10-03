@@ -41,7 +41,7 @@ services:
     container_name: candilib_api
     depends_on:
       - db
-      - fakesmtp
+      - mailhog
     ports:
       - "${API_PORT:-8000}:8000"
       - "9229:9229"
@@ -50,8 +50,8 @@ services:
     environment:
       NODE_ENV: development
       MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
-      SMTP_SERVER: candilib_smtp
-      SMTP_PORT: 25
+      SMTP_SERVER: mailhog
+      SMTP_PORT: 1025
       MAIL_FROM: noreply@interieur.gouv.fr
       CANDIDAT_EXPIREDIN: 72h
       PUBLIC_URL: http://localhost:8080/candilib
@@ -62,23 +62,15 @@ services:
     networks:
       - candilib-network
 
-  fakesmtp:
-    image: digiplant/fake-smtp
-    container_name: candilib_smtp
-    volumes:
-      - ../../output:/var/mail
-    ports:
-    - "2525:25"
-    networks:
-      - candilib-network
-
   mailhog:
-        container_name: mailhog
-        image: mailhog/mailhog
-        restart: always
-        ports:
-            - 1025:1025
-            - 8025:8025
+    container_name: mailhog
+    image: mailhog/mailhog
+    restart: always
+    ports:
+        - 1025:1025
+        - 8025:8025
+    networks:
+        - candilib-network
 
   mongo-express:
     image: mongo-express:latest

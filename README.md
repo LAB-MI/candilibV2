@@ -112,6 +112,27 @@ npm install
 npm run dev
 ```
 
+### Lancer cypress en mode developpeur
+
+Pour lancer les tests Cypress sur la stack candilib développeur:
+
+* démarrer les composants serveurs (API, DB, Mailhog et Mongo-express) et initialiser la base avec les données de dev-setup
+* démarrer le front
+* lancer Cypress avec l'option build pour ne pas initialiser la base
+
+```bash
+make -C server up-dev init-db-e2e
+cd client
+npm start
+npm run test:e2e -- --env build=1
+```
+
+Pour arrêter:
+
+```bash
+make -C server down-dev
+```
+
 ### Lancer en local les tests de CI
 
 Travis utilise le fichier .travis.yml décrivant les étapes de build et des tests, il est possible de lancer les tests en local en lançant :
