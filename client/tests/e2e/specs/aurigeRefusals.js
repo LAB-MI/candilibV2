@@ -72,7 +72,7 @@ describe('Aurige Refusals', () => {
       .and('contain', 'Pour le 75, ce candidat 093458736982/ROCKATANSKY sera archivé : NEPH inconnu')
       .and('contain', 'Pour le 75, ce candidat 093571369217/CUTTER sera archivé : Nom inconnu')
       .and('contain', 'Pour le 75, ce candidat jimgoose@candilib.com sera archivé : Date ETG KO')
-      .and('contain', 'Pour le 75, ce candidat johnnyboy@candilib.com sera archivé : dateReussiteETG invalide')
+      .and('contain', 'Pour le 75, ce candidat johnnyboy@candilib.com sera archivé : Date ETG est invalide')
       .and('contain', 'Pour le 75, ce candidat timburns@candilib.com sera archivé : A 5 échecs pratiques')
     cy.mhGetMailsByRecipient('madmax@candilib.com')
       .mhFirst()

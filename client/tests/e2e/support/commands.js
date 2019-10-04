@@ -65,9 +65,8 @@ Cypress.Commands.add('archiveCandidate', () => {
 })
 
 Cypress.Commands.add('addToWhitelist', () => {
-  cy.adminDisconnection()
-  cy.adminLogin()
-  cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
+  cy.contains('favorite')
+    .click()
   cy.get('h2')
     .should('contain', 'Liste blanche')
   cy.contains('Ajouter un lot d\'adresse courriel')
@@ -75,6 +74,8 @@ Cypress.Commands.add('addToWhitelist', () => {
   cy.get('#whitelist-batch-textarea')
     .type(Cypress.env('emailCandidat'))
   cy.contains('Enregistrer ces adresses')
+    .click()
+  cy.get('.home-link')
     .click()
 })
 
@@ -230,7 +231,7 @@ Cypress.Commands.add('candidateValidation', () => {
   cy.get('.ag-cell')
     .should('contain', Cypress.env('candidat'))
   cy.get('.ag-cell')
-    .should('contain', 'Pour le 75, envoi d\'un magic link à ' + Cypress.env('emailCandidat'))
+    .should('contain', 'Pour le 75, un magic link est envoyé à ' + Cypress.env('emailCandidat'))
   cy.mhGetMailsByRecipient(Cypress.env('emailCandidat'))
     .mhFirst()
     .mhGetSubject()
