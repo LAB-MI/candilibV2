@@ -18,11 +18,11 @@
       <div class="form-input">
         <v-text-field
           class="t-new-password"
-          aria-placeholder="mot de passe"
+          aria-placeholder="nouveau mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
           @click:append="showPassword = !showPassword"
           hint="Au moins 8 caractères"
-          label="mot de passe"
+          label="nouveau mot de passe"
           name="password"
           :rules="passwordRules"
           tabindex="2"
@@ -33,11 +33,11 @@
         <div class="form-input">
         <v-text-field
           class="t-confirm-new-password"
-          aria-placeholder="confirmation du mot de passe"
+          aria-placeholder="confirmation du nouveau mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
           @click:append="showPassword = !showPassword"
           hint="Au moins 8 caractères"
-          label="mot de passe"
+          label="confirmation du nouveau mot de passe"
           name="confirmNewPassword"
           :rules="confirmNewPasswordRules"
           tabindex="2"
