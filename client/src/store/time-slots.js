@@ -1,7 +1,8 @@
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
 import { getFrenchLuxonFromIso, valideCreneaux, getFrenchLuxonCurrentDateTime } from '../util'
-import { EXPIRED_TOKEN_MESSAGE, formatResult } from './utils'
+import { formatResult } from './utils'
+import messages from '@/candidat'
 
 import { SET_MODIFYING_RESERVATION, SIGN_OUT_CANDIDAT } from '@/store'
 
@@ -74,7 +75,7 @@ export default {
           result.isTokenValid === false
         ) {
           dispatch(SIGN_OUT_CANDIDAT)
-          throw new Error(EXPIRED_TOKEN_MESSAGE)
+          throw new Error(messages.expired_token_message)
         }
         const { canBookFrom, lastDateToCancel, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
         const anticipatedCanBookAfter =
