@@ -4,7 +4,11 @@
 
     <div></div>
 
-    <v-form @submit.prevent="updatePassword" class="reset-form">
+    <v-form
+      @submit.prevent="updatePassword"
+      v-model="isPasswordCoupleValid"
+      class="reset-form"
+    >
       <h2 class="text--center">ADMINISTRATEUR</h2>
 
       <h3 class="text--center">
@@ -35,7 +39,7 @@
           hint="Au moins 8 caractères"
           label="mot de passe"
           name="confirmNewPassword"
-          :rules="passwordRules"
+          :rules="confirmNewPasswordRules"
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
           v-model="confirmNewPassword"
@@ -61,6 +65,7 @@
 
 import backgroundImgUrl from '@/assets/bg-login.jpg'
 import { SHOW_ERROR, SHOW_SUCCESS, RESET_PASSWORD_REQUEST } from '../../../store'
+import { strongEnoughPassword } from '@/util'
 
 export default {
   data () {
@@ -69,7 +74,16 @@ export default {
       newPassword: '',
       confirmNewPassword: '',
       showPassword: false,
-      passwordRules: [v => !!v || 'Veuillez renseigner votre mot de passe'],
+      isPasswordCoupleValid: false,
+      passwordRules: [
+        value => !!value || ('Veuillez renseigner votre mot de passe'),
+        value => strongEnoughPassword.every(regex => regex.test(value)) ||
+          'Veuillez entrez un mot de passe fort',
+      ],
+      confirmNewPasswordRules: [
+        value => !!value || ('Veuillez confirmer votre mot de passe'),
+      ],
+
     }
   },
 
@@ -82,6 +96,9 @@ export default {
   methods: {
 
     async updatePassword () {
+      if (!this.isPasswordCoupleValid) {
+        return
+      }
       const { email, hash } = this.$route.query
       if (!this.newPassword) {
         return this.$store.dispatch(SHOW_ERROR, `Veuillez saisir un mot de passe`)

@@ -28,7 +28,7 @@ init-db-e2e:
 	( cd .. && bash ci/init-db-e2e.sh )
 
 mailhog-up:
-	${DC} -f ${DC_APP_BUILD_DEV} up mailhog
+	${DC} -f ${DC_APP_BUILD_DEV} up -d mailhog
 mailhog-stop:
 	${DC} -f ${DC_APP_BUILD_DEV} stop mailhog
 mailhog-rm:

@@ -13,6 +13,7 @@
 
       <div class="form-input">
         <v-text-field
+          class="t-login-email"
           aria-placeholder="jean@dupont.fr"
           autofocus
           hint="ex. : jean@dupont.fr"
