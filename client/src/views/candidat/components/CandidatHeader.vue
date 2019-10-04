@@ -35,7 +35,7 @@
           </span>
         </v-tab>
       </v-tabs>
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="isCandidatSignedIn">
         <v-btn
           class="t-disconnect"
           icon
@@ -55,6 +55,7 @@
 import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/store'
 
 import IconWithTooltip from '@/components/IconWithTooltip'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'candidat-header',
@@ -68,6 +69,9 @@ export default {
   },
 
   computed: {
+    ...mapGetters([
+      'isCandidatSignedIn',
+    ]),
     showEvaluation () {
       return this.$store.state.candidat.showEvaluation
     },

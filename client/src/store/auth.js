@@ -32,6 +32,9 @@ export default {
     statusCandidat: state => {
       return state.statusCandidat
     },
+    isCandidatSignedIn: state => {
+      return state.statusCandidat === SIGNED_IN_AS_CANDIDAT
+    },
   },
 
   state: {
