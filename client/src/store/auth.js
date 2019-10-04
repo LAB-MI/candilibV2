@@ -32,6 +32,9 @@ export default {
     statusCandidat: state => {
       return state.statusCandidat
     },
+    isCandidatSignedIn: state => {
+      return state.statusCandidat === SIGNED_IN_AS_CANDIDAT
+    },
   },
 
   state: {
@@ -128,6 +131,7 @@ export default {
       const isCandidat = rootState.candidat && rootState.candidat.me
       if (isCandidat) {
         localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
+        await dispatch(SIGN_OUT_CANDIDAT)
         await dispatch(SHOW_ERROR, candidatMessages.expired_token_message)
       }
       const isAdmin = rootState.admin && rootState.admin.email

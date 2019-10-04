@@ -76,7 +76,7 @@ export default {
 
   data () {
     return {
-      timeoutid: undefined,
+      timeoutId: undefined,
       statusDayBlock: false,
       switchTab: null,
     }
@@ -192,11 +192,13 @@ export default {
             departement,
           })
         }
-        this.timeoutid = setTimeout(this.getTimeSlots, 100)
+        this.timeoutId = setTimeout(this.getTimeSlots, 100)
         return
       }
       await this.$store.dispatch(FETCH_DATES_REQUEST, selected._id)
-      this.timeoutid = setTimeout(this.getTimeSlots, 5000)
+      if (this.timeoutId !== null) {
+        this.timeoutId = setTimeout(this.getTimeSlots, 5000)
+      }
     },
 
     goToSelectCenter () {
@@ -215,8 +217,9 @@ export default {
     }
   },
 
-  async destroyed () {
-    clearTimeout(this.timeoutid)
+  beforeDestroy () {
+    clearTimeout(this.timeoutId)
+    this.timeoutId = null
   },
 }
 </script>

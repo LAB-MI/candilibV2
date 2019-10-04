@@ -38,9 +38,6 @@
 <script>
 import { SELECT_CENTER } from '@/store/center'
 export default {
-  components: {
-  },
-
   props: {
     center: Object,
   },
