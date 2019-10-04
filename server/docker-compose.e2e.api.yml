@@ -7,7 +7,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-      target: production
+      target: e2e
       args:
         http_proxy: ${http_proxy}
         https_proxy: ${http_proxy}
@@ -30,6 +30,7 @@ services:
       CANDIDAT_EXPIREDIN: ${CANDIDAT_EXPIREDIN:-72h}
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
       SECRET: ${SECRET}
+      FAKETIME: ${FAKETIME}
 
 networks:
   default:

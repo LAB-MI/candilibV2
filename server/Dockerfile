@@ -67,3 +67,19 @@ RUN npm install pm2 -g
 COPY ecosystem.config.js .
 
 CMD [ "pm2-runtime", "start", "ecosystem.config.js", "--env", "production" ]
+
+###############################
+# Step 5: "e2e" target        #
+###############################
+FROM production as e2e
+ENV NODE_ENV=production
+ARG MIRROR_DEBIAN
+COPY api-entrypoint.sh /api-entrypoint.sh
+RUN [ -f /api-entrypoint.sh ]&& chmod +x /api-entrypoint.sh
+# Install production dependencies and clean cache
+RUN runDeps="libfaketime" ; \
+     echo "$http_proxy $no_proxy" && set -x && [ -z "$MIRROR_DEBIAN" ] || \
+     sed -i.orig -e "s|http://deb.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9|g ; s|http://security.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9-security|g" /etc/apt/sources.list ; \
+  apt-get update -qq && \
+  apt-get install -qy --no-install-recommends $buildDeps $runDeps
+ENTRYPOINT ["/api-entrypoint.sh"]
