@@ -9,36 +9,34 @@ const wrongConfirmation = '1234'
 let validationLink
 
 describe('Admin login', () => {
-  before(() => {
-    it('Tests a request new password', () => {
-      cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-      cy.get('.t-reset')
-        .click()
-      cy.get('.t-input')
-        .type(Cypress.env('admin93Login'))
-      cy.get('.submit-btn')
-        .click()
-      cy.get('.v-snack')
-        .should('contain', `Un email vient de vous être envoyé à l'adresse` + (Cypress.env('admin93Login')))
-    })
+  it('Tests a request new password', () => {
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
+    cy.get('.reset-password-btn')
+      .click()
+    cy.get('.t-reset-password-email [type=text]')
+      .type(Cypress.env('admin75Login'))
+    cy.get('.t-reset-link-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', `Un email vient de vous être envoyé à l'adresse ` + (Cypress.env('admin75Login')))
+  })
 
-    it('Test validates the email address', () => {
-      cy.mhGetAllMails()
-        .mhFirst()
-        .mhGetRecipients()
-        .should('contain', Cypress.env('admin93Login'))
-      cy.mhGetAllMails()
-        .mhFirst()
-        .mhGetSubject()
-        .should('contain', '=?UTF-8?Q?R=C3=A9initialisation_de_votre_mot_de_pa?==?UTF-8?Q?sse?=')
-      cy.mhGetAllMails()
-        .mhFirst()
-        .mhGetBody().then((mailBody) => {
-          const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-          const withoutEq = codedLink.replace(/=\r\n/g, '')
-          validationLink = withoutEq.replace(/=3D/g, '=')
-        })
-    })
+  it('Test validates the email address', () => {
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetRecipients()
+      .should('contain', Cypress.env('admin75Login'))
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetSubject()
+      .should('contain', '=?UTF-8?Q?R=C3=A9initialisation_de_votre_mot_de_pa?=')
+    cy.mhGetAllMails()
+      .mhFirst()
+      .mhGetBody().then((mailBody) => {
+        const codedLink = mailBody.split('href=3D\'')[1].split('\'>')[0]
+        const withoutEq = codedLink.replace(/=\r\n/g, '')
+        validationLink = withoutEq.replace(/=3D/g, '=')
+      })
   })
 
   it('Tests unmatched passwords', () => {
@@ -61,11 +59,11 @@ describe('Admin login', () => {
       .type(weakPassword)
     cy.get('.submit-btn')
       .click()
-    cy.get('.v-snack')
-      .should('contain', 'Votre mot de passe a bien été modifié')
+    cy.get('.v-messages__message')
+      .should('contain', 'Veuillez entrez un mot de passe fort')
   })
 
-  it('Tests a weak password', () => {
+  it('Successful password reset', () => {
     cy.visit(validationLink)
     cy.get('.t-new-password [type=password]')
       .type(password)
@@ -81,20 +79,21 @@ describe('Admin login', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetRecipients()
-      .should('contain', Cypress.env('admin93Login'))
+      .should('contain', Cypress.env('admin75Login'))
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetSubject()
-      .should('contain', '=?UTF-8?Q?Votre_mot_de_passe_a_=C3=A9t=C3=A9_r?==?UTF-8?Q?=C3=A9initialis=C3=A9?=')
+      .should('contain', '=?UTF-8?Q?Votre_mot_de_passe_a_=C3=A9t=C3=A9_r?=')
   })
-  it('Test connexion with new password')
-  cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-  cy.get('[type=text]')
-    .type(Cypress.env('admin93Login'))
-  cy.get('[type=password]')
-    .type(password)
-  cy.get('.submit-btn')
-    .click()
-  cy.get('.v-snack')
-    .should('contain', 'Vous êtes identifié')
+  it('Test connexion with new password', () => {
+    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
+    cy.get('.t-login-email [type=text]')
+      .type(Cypress.env('admin75Login'))
+    cy.get('[type=password]')
+      .type(password)
+    cy.get('.submit-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Vous êtes identifié')
+  })
 })

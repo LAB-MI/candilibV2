@@ -4,7 +4,7 @@
     width="500"
   >
     <v-btn
-      class="u-flex u-flex--center submit-btn"
+      class="u-flex u-flex--center reset-password-btn"
       slot="activator"
       depressed
       tabindex="8"
@@ -26,7 +26,7 @@
         <div class="u-flex  u-flex--center">
           <div class="form-input">
             <v-text-field
-              class="t-input"
+              class="t-reset-password-email"
               prepend-icon="email"
               @focus="setEmailPlaceholder"
               @blur="removeEmailPlaceholder"
@@ -46,7 +46,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-          class="t-reset"
+          class="t-reset-link-btn"
             dark
             type="submit"
             :disabled="isSendingResetLink"
@@ -106,14 +106,10 @@ export default {
   },
 }
 </script>
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> ajouter delai de validité du lien
 
 <style lang="stylus">
 
-.submit-btn {
+.reset-password-btn {
   position: relative;
   font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
   font-size: 15px;
@@ -130,8 +126,3 @@ export default {
 }
 
 </style>
-<<<<<<< HEAD
-=======
->>>>>>> Ajouter bouton réinitialiser le mot de passe
-=======
->>>>>>> ajouter delai de validité du lien

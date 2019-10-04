@@ -10,7 +10,7 @@ import './mailHogCommands'
 
 Cypress.Commands.add('adminLogin', () => {
   cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-  cy.get('[type=text]')
+  cy.get('.t-login-email [type=text]')
     .type(Cypress.env('adminLogin'))
   cy.get('[type=password]')
     .type(Cypress.env('adminPass'))
