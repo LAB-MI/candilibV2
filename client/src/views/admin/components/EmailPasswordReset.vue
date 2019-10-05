@@ -30,6 +30,7 @@
               prepend-icon="email"
               @focus="setEmailPlaceholder"
               @blur="removeEmailPlaceholder"
+              @input="setEmailToLowerCase"
               :placeholder="emailPlaceholder"
               aria-placeholder="admin@example.fr"
               :autofocus="showDialog"
@@ -89,6 +90,10 @@ export default {
     },
     async setEmailPlaceholder () {
       this.emailPlaceholder = 'admin@example.fr'
+    },
+
+    async setEmailToLowerCase () {
+      this.email = this.email.toLowerCase()
     },
 
     async sendMailResetLink () {
