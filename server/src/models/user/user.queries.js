@@ -8,8 +8,10 @@ export const findUserById = async id => {
 
 /**
  *
- * @param {*} email
- * @param {*} populatePassword
+ * @param {string} email
+ * @param {boolean} populatePassword
+ *
+ * @returns {Promise<User>}
  */
 
 export const findUserByEmail = async (email, populatePassword) => {
@@ -111,6 +113,15 @@ export const updateUserStatus = async (user, status) => {
   const updatedUser = await User.findById(user._id)
   return updatedUser
 }
+
+/**
+ * @async
+ * @function
+ *
+ * @param {string} email
+ *
+ * @returns {Promise<User>}
+ */
 
 export const addEmailValidationHash = async email => {
   const emailValidationHash = uuidv4()

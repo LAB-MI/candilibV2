@@ -118,8 +118,8 @@ const router = express.Router()
  *
  * /admin/reset-link:
  *   post:
- *     summary: Envoyer un mail de demande réinitialisation
- *     description: Envoi d'un lien de réinitialisation de mot de passe
+ *     summary: Envoi d'un mail pour réinitialiser son mot de passe
+ *     description: Envoi d'un mail avec un lien vers un formulaire pour réinitialiser son mot de passe
  *     produces:
  *       - application/json
  *     security:

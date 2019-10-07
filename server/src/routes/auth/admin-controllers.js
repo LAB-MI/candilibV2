@@ -157,7 +157,8 @@ export const requestPasswdReset = async (req, res) => {
 }
 
 /**
- * Mise à jour du mot de passe
+ * Met à jour le mot de passe de l'utilisateur correspondant à l'email envoyé en paramètre,
+ *  si le hash correspond et si la réinitialisation a été demandé il y a moins de 15 minutes
  *
  * @async
  * @function resetMyPassword
