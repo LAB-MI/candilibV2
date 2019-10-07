@@ -17,6 +17,7 @@ export const getUrlResetLink = async email => {
 }
 
 /**
+ * Envoi un email contenant le lien de réinitialisation
  * @function
  *
  * @param {string} email Adresse courriel de l'utilisateur
@@ -28,6 +29,7 @@ export const sendMailResetLink = async email => {
 }
 
 /**
+ *Retourne le corps du mail
  * @function
  *
  * @param {string} urlResetLink Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
@@ -45,6 +47,7 @@ export const getResetLinkTemplate = urlResetLink => `
 `
 
 /**
+ * Retourne le corps du mail
  * @function
  *
  * @param {string} urlResetLink Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
@@ -57,7 +60,7 @@ export const getResetLinkMailBody = urlResetLink => {
 }
 
 /**
- *
+ * Retourne le sujet et le contenu du mail
  * @function
  *
  * @param {string} urlResetLink Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
