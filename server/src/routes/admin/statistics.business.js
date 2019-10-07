@@ -77,7 +77,7 @@ export const countSuccessByCentres = async (
         $match: {
           archiveReason: EPREUVE_PRATIQUE_OK,
           'places.archiveReason': EPREUVE_PRATIQUE_OK,
-          'places.centre': { $in: centres },
+          'places.centre': { ...expression['places.centre'] },
         },
       },
       {
@@ -85,11 +85,9 @@ export const countSuccessByCentres = async (
       },
       {
         $match: {
-          'places.centre': { $in: centres },
-          'places.date': {
-            $gte: beginPeriode,
-            $lte: endPeriode,
-          },
+          'places.archiveReason': EPREUVE_PRATIQUE_OK,
+          'places.centre': { ...expression['places.centre'] },
+          'places.date': { ...expression['places.date'] },
         },
       },
     ])
