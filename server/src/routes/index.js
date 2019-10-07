@@ -203,8 +203,8 @@ router.put('/candidat/me', emailValidation)
  *
  * /admin/me:
  *   patch:
- *     summary: Mise à jour du mot de passe
- *     description: Actualise le mot de passe de l'utilisateur
+ *     summary: Met à jour le mot de passe
+ *     description: Met à jour le mot de passe de l'utilisateur si l'email et le hash correspondent, et que la réinitialisation a été demandé il y a moins de 15 minutes
  *     produces:
  *      - application/json
  *     security:
