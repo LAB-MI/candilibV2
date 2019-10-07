@@ -1,10 +1,28 @@
+/**
+ * Ensemble des actions sur les places archivés dans la base de données
+ * @module models/archived-place-queries
+ */
 import ArchivedPlace from './archived-place.model'
 
-export const createArchivedPlace = async placeData => {
-  const archivedPlace = await ArchivedPlace.create(placeData)
+/**
+ * Création d'un document archived-place
+ * @function createArchivedPlace
+ * @param {ArchivedPlaceModel} archiedPlaceData
+ */
+export const createArchivedPlace = async archiedPlaceData => {
+  const archivedPlace = await ArchivedPlace.create(archiedPlaceData)
   return archivedPlace
 }
 
+/**
+ * Création d'un document archived-place à partir de donnée de place
+ * @function createArchivedPlaceFromPlace
+ *
+ * @param {PlaceModel} placeData La place à archiver qui ne contient le propriété candidat
+ * @param {String} archiveReason La raison de l'archivage
+ * @param {String} byUser L'auteur de l'action (Admin (userId) ou Aurige )
+ * @param {Boolean} isCandilib S'il y eu une réussite ou un échec par le biais de candilib
+ */
 export const createArchivedPlaceFromPlace = async (
   placeData,
   archiveReason,
@@ -26,9 +44,8 @@ export const createArchivedPlaceFromPlace = async (
 }
 
 /**
- * @memberof module:models/archived-place
+ * Retrouver une place supprimé par son id
  * @function findArchivedPlaceByPlaceId
- * @description Retrouver une place supprimé par son id
  * @param {ObjectId} placeId id de la place supprimé
  */
 export const findArchivedPlaceByPlaceId = async placeId => {
