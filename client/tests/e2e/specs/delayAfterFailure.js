@@ -18,7 +18,7 @@ describe('Test delay after failed attempt', () => {
           'email': Cypress.env('emailCandidat'),
           'dateReussiteETG': '2018-10-12',
           'nbEchecsPratiques': '1',
-          'dateDernierNonReussite': '2019-09-16',
+          'dateDernierNonReussite': Cypress.env('dateFail'),
           'objetDernierNonReussite': 'echec',
           'reussitePratique': '',
           'candidatExistant': 'OK',
@@ -84,7 +84,7 @@ describe('Test delay after failed attempt', () => {
     cy.contains(Cypress.env('centre'))
       .click()
     cy.get('.v-alert.warning')
-      .should('contain', 'Vous avez échoué le lundi 16 septembre 2019 à l\'examen pratique du permis de conduire. Vous ne pouvez sélectionner une date qu\'à partir du jeudi 31 octobre 2019.')
+      .should('contain', 'Vous avez échoué le ' + Cypress.env('dateFailLong') + ' à l\'examen pratique du permis de conduire. Vous ne pouvez sélectionner une date qu\'à partir du ' + Cypress.env('timeoutToRetry') + '.')
     cy.get('.v-tabs')
       .should('not.have.class', 'primary--text')
     cy.get('.t-disconnect')
