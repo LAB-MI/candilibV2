@@ -1,5 +1,4 @@
 <template>
-<!-- TODO: Factoriser => cree message constant admin utiliser que un seul button menu -->
   <v-container>
     <page-title :title="'Stats Kpi'"/>
     <v-container
@@ -20,7 +19,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="pickerDateStart"
-                label="Date de debut de periode"
+                label="Date de debut de période"
                 prepend-icon="event"
                 v-on="on"
               ></v-text-field>
@@ -42,7 +41,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="pickerDateEnd"
-                label="Date de fin de periode"
+                label="Date de fin de période"
                 prepend-icon="event"
                 v-on="on"
               ></v-text-field>
@@ -52,7 +51,7 @@
         </v-flex>
       </v-layout>
       <v-btn color="primary" @click="getStatsKpi(true)">
-        Export Stats CSV
+        {{ $formatMessage({ id: 'export_stats_csv' }) }}
         <v-icon>
           get_app
         </v-icon>
@@ -60,13 +59,13 @@
           assessment
         </v-icon>
       </v-btn>
-      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les departement`"></v-switch>
+      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les département`"></v-switch>
     </v-container>
     <v-flex
       v-if="currentStats && currentStats.departement && !isDisplayAllDepartement"
       class="pa-5"
     >
-      <chart-stats-kpi :statsValues="currentStats"></chart-stats-kpi>
+      <charts-stats-kpi :statsValues="currentStats"></charts-stats-kpi>
     </v-flex>
 
     <v-flex
@@ -75,7 +74,7 @@
       :key="'elem'+index"
       class="pa-5"
     >
-      <chart-stats-kpi :statsValues="elem"></chart-stats-kpi>
+      <charts-stats-kpi :statsValues="elem"></charts-stats-kpi>
     </v-flex>
   </v-container>
 </template>
@@ -84,11 +83,11 @@
 import { mapGetters } from 'vuex'
 import api from '@/api'
 import { downloadContent, getFrenchLuxonCurrentDateTime } from '@/util'
-import ChartStatsKpi from './ChartStatsKpi.vue'
+import ChartsStatsKpi from './ChartsStatsKpi.vue'
 
 export default {
   components: {
-    ChartStatsKpi,
+    ChartsStatsKpi,
   },
 
   async mounted () {
@@ -117,7 +116,6 @@ export default {
 
   methods: {
     async getStatsKpi (isCsv) {
-      // TODO: Use begin and end periode
       const beginPeriode = this.dateStart
       const endPeriode = this.dateEnd
 

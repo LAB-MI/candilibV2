@@ -336,31 +336,4 @@ router
  *
  */
 
-/*
- * @swagger
- *
- * /admin/reset-link:
- *   post:
- *     summary: Envoyer un mail de demande réinitialisation
- *     description: Envoi d'un lien de réinitialisation de mot de passe
- *     produces:
- *      - application/json
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description:
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *
- *       401:
- *         $ref: '#/components/responses/InvalidEmailResponse'
- *
- *       500:
- *         $ref: '#/components/responses/UnknownErrorResponse'
- *
- */
-
 export default router
