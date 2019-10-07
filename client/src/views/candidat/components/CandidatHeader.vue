@@ -35,7 +35,7 @@
           </span>
         </v-tab>
       </v-tabs>
-      <v-tooltip bottom>
+      <v-tooltip bottom v-if="isCandidatSignedIn">
         <v-btn
           class="t-disconnect"
           icon
@@ -52,9 +52,10 @@
 </template>
 
 <script>
-import { DISPLAY_NAV_DRAWER, SIGN_OUT_CANDIDAT } from '@/store'
+import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/store'
 
 import IconWithTooltip from '@/components/IconWithTooltip'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'candidat-header',
@@ -67,16 +68,42 @@ export default {
     links: Array,
   },
 
+  computed: {
+    ...mapGetters([
+      'isCandidatSignedIn',
+    ]),
+    showEvaluation () {
+      return this.$store.state.candidat.showEvaluation
+    },
+  },
+
+  watch: {
+    async showEvaluation (newValue) {
+      if (newValue === false && this.wantsToDisconnect === true) {
+        await this.$store.dispatch(SIGN_OUT_CANDIDAT)
+        this.$router.push({ name: 'candidat-presignup' })
+      }
+    },
+    async wantsToDisconnect (newValue, oldValue) {
+      if (newValue === true && !this.$store.state.candidat.me.isEvaluationDone) {
+        await this.$store.dispatch(SET_SHOW_EVALUATION, true)
+      } else {
+        await this.$store.dispatch(SIGN_OUT_CANDIDAT)
+        this.$router.push({ name: 'candidat-presignup' })
+      }
+    },
+  },
+
   data () {
     return {
       activeTab: null,
+      wantsToDisconnect: false,
     }
   },
 
   methods: {
     async disconnect () {
-      await this.$store.dispatch(SIGN_OUT_CANDIDAT)
-      this.$router.push({ name: 'candidat-presignup' })
+      this.wantsToDisconnect = true
     },
     toggleDrawer () {
       try {

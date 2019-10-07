@@ -5,7 +5,7 @@
       'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !hasPlaces
     }"
   >
-    <div class="u-flex">
+    <div class="u-flex" :class="{'u-flex u-pointer': hasPlaces}">
       <v-list-tile-content v-ripple="hasPlaces">
         <v-list-tile-title >
           <span class="u-uppercase">
@@ -38,9 +38,6 @@
 <script>
 import { SELECT_CENTER } from '@/store/center'
 export default {
-  components: {
-  },
-
   props: {
     center: Object,
   },
@@ -91,6 +88,10 @@ export default {
   height: 3em;
   padding: 0 1.5em;
   text-decoration: none;
+}
+
+.color {
+  color: grey;
 }
 
 </style>

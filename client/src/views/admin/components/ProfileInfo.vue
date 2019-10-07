@@ -54,8 +54,8 @@ p {
 }
 
 .label {
-  line-height: 2.5em;
-  flex-basis: 20rem;
+  line-height: 1.5em;
+  flex-basis: 15rem;
 }
 
 .value {

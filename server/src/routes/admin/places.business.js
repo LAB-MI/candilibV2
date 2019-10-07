@@ -39,6 +39,7 @@ import {
   ErrorWithStatus,
   getFrenchLuxonFromJSDate,
   getFrenchLuxonRangeFromDate,
+  getFrenchLuxon,
   FRENCH_LOCALE_INFO,
 } from '../../util'
 import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
@@ -427,7 +428,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
 export const createPlaceForInspector = async (centre, inspecteur, date) => {
   const loggerInfo = {
     func: 'createPlaceForInspector',
-    centre,
+    centreId: centre._id,
     inspecteur,
     date,
   }
@@ -516,7 +517,7 @@ export const validUpdateResaInspector = async (resaId, inspecteur) => {
 
 export const moveCandidatInPlaces = async (resa, place) => {
   const placeId = place._id
-  const { _id: resaId, candidat } = resa
+  const { _id: resaId, candidat, bookedAt, bookedByAdmin } = resa
   const loggerContent = {
     func: 'moveCandidatInPlaces',
     resaId,
@@ -530,7 +531,10 @@ export const moveCandidatInPlaces = async (resa, place) => {
     candidat,
   })
 
-  const newResa = await bookPlaceById(placeId, candidat)
+  const newResa = await bookPlaceById(placeId, candidat, {
+    bookedAt,
+    bookedByAdmin,
+  })
   if (!newResa) {
     throw new ErrorWithStatus(400, 'Cette place posséde une réservation')
   }
@@ -581,9 +585,20 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   const placeAlreadyBookedByCandidat = await findPlaceBookedByCandidat(
     candidatId
   )
+  const { _id, departements, signUpDate, status, email } = admin
   const newBookedPlace = await bookPlaceById(
     placeId,
     candidatId,
+    {
+      bookedAt: getFrenchLuxon().toJSDate(),
+      bookedByAdmin: {
+        _id,
+        departements,
+        signUpDate,
+        status,
+        email,
+      },
+    },
     'centre candidat date inspecteur',
     {
       candidat: true,

@@ -13,7 +13,7 @@ export const removeReservationByAdmin = async (req, res) => {
   const loggerContent = {
     section: 'admin-delete-resa',
     admin: req.userId,
-    place: id,
+    placeId: id,
   }
   const admin = await findUserById(req.userId)
 

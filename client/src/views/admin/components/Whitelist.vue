@@ -438,7 +438,8 @@ export default {
     },
 
     loadHandler (e) {
-      return this.processFiles(e.target.files)
+      const files = Array.from(e.target.files)
+      return this.processFiles(files)
     },
 
     processFiles (files) {

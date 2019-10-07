@@ -155,12 +155,13 @@ export const findAndbookPlace = async (
   candidat,
   centre,
   date,
+  bookedAt,
   fields,
   populate
 ) => {
   const query = Place.findOneAndUpdate(
     { centre, date, candidat: { $eq: undefined } },
-    { $set: { candidat } },
+    { $set: { candidat, bookedAt } },
     { new: true, fields }
   )
   if (populate && populate.centre) {
@@ -186,10 +187,16 @@ const queryPopulate = (populate = {}, query) => {
   })
 }
 
-export const bookPlaceById = async (placeId, candidat, fields, populate) => {
+export const bookPlaceById = async (
+  placeId,
+  candidat,
+  bookedInfo = {},
+  fields,
+  populate
+) => {
   const query = Place.findOneAndUpdate(
     { _id: placeId, candidat: { $eq: undefined } },
-    { $set: { candidat } },
+    { $set: { candidat, ...bookedInfo } },
     { new: true, fields }
   )
   queryPopulate(populate, query)

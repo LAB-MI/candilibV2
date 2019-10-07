@@ -21,7 +21,6 @@
         :submit-action='deleteBookedPlace'
         ok-button-text="Supprimer réservation"
         ok-button-color="warning"
-
       >
       <!-- TODO: Refactor Create composant for each subcontent dialogs -->
         <div v-if="isFetchingCandidat">
@@ -281,6 +280,7 @@ export default {
 
   methods: {
     toggleInspecteurSearch () {
+      this.deleteBookedPlaceConfirm = false
       this.displaySearchInspecteurs = !this.displaySearchInspecteurs
     },
 
@@ -307,6 +307,7 @@ export default {
     },
 
     async displayConfirmDeleteBookedPlace () {
+      this.displaySearchInspecteurs = false
       this.deleteBookedPlaceConfirm = !this.deleteBookedPlaceConfirm
     },
 

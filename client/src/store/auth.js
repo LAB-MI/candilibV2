@@ -1,4 +1,5 @@
 import api from '@/api'
+import candidatMessages from '../candidat'
 import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '@/constants'
 import { SHOW_ERROR, SHOW_INFO } from './'
 
@@ -27,6 +28,15 @@ export const SIGNED_OUT_CANDIDAT = 'SIGNED_OUT_CANDIDAT'
 export const UNAUTHORIZED = 'UNAUTHORIZED'
 
 export default {
+  getters: {
+    statusCandidat: state => {
+      return state.statusCandidat
+    },
+    isCandidatSignedIn: state => {
+      return state.statusCandidat === SIGNED_IN_AS_CANDIDAT
+    },
+  },
+
   state: {
     statusAdmin: null,
     statusCandidat: null,
@@ -115,18 +125,19 @@ export default {
     async [SIGN_OUT_ADMIN] ({ commit, dispatch }) {
       localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
       commit(SIGN_OUT_ADMIN)
-      await dispatch(SHOW_INFO, `Vous êtes déconnecté·e`)
+      await dispatch(SHOW_INFO, candidatMessages.deconexion_message)
     },
     async [UNAUTHORIZED] ({ commit, dispatch, rootState }) {
       const isCandidat = rootState.candidat && rootState.candidat.me
       if (isCandidat) {
         localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
-        await dispatch(SHOW_ERROR, `Votre connexion n'est plus valide, veuillez réutiliser le bouton "Déjà inscrit"`)
+        await dispatch(SIGN_OUT_CANDIDAT)
+        await dispatch(SHOW_ERROR, candidatMessages.expired_token_message)
       }
       const isAdmin = rootState.admin && rootState.admin.email
       if (isAdmin) {
         localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
-        await dispatch(SHOW_ERROR, `Action non autorisée`)
+        await dispatch(SHOW_ERROR, candidatMessages.unauthorize_action)
       }
       commit(SIGN_OUT_ADMIN)
     },

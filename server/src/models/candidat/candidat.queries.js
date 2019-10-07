@@ -202,7 +202,7 @@ export const addPlaceToArchive = (
   byUser,
   isCandilib
 ) => {
-  const { _id, inspecteur, centre, date } = place
+  const { _id, inspecteur, centre, date, bookedAt, bookedByAdmin } = place
   const archivedAt = getFrenchLuxon()
   const archiveReason = reason
   if (!candidat.places) {
@@ -217,6 +217,8 @@ export const addPlaceToArchive = (
     archiveReason,
     byUser,
     isCandilib,
+    bookedAt,
+    bookedByAdmin,
   })
   return candidat
 }

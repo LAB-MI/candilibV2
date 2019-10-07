@@ -110,7 +110,7 @@ export const getPlaces = async (req, res) => {
     departement,
     beginDate,
     endDate,
-    centre,
+    cnetreId: centre,
     date,
   }
 
@@ -154,7 +154,7 @@ export const createPlaceByAdmin = async (req, res) => {
   const loggerInfo = {
     section: 'admin-create-place',
     admin: req.userId,
-    centre,
+    centreId: centre._id,
     inspecteur,
     date,
   }

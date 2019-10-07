@@ -12,22 +12,21 @@ import { connect, disconnect } from '../../mongo-connection'
 import {
   getFrenchLuxon,
   getFrenchLuxonFromISO,
+  getFrenchLuxonFromJSDate,
   getFrenchLuxonFromObject,
   getFrenchLuxonRangeFromDate,
-  getFrenchLuxonFromJSDate,
 } from '../../util'
 import { createCentre, deleteCentre, findCentreByName } from '../centre'
 import {
-  candidats,
+  bookCandidatOnSelectedPlace,
   centres,
   commonBasePlaceDateTime,
+  createCandidatAndUpdate,
   createCandidats,
-  createCentres,
   createPlaces,
   deleteCandidats,
   makeResas,
   removeCentres,
-  removeInspecteur,
   removePlaces,
 } from '../__tests__'
 import placeModel from './place.model'
@@ -67,6 +66,8 @@ const inspecteur = {
   email: 'Bob.Léponge@x-files.com',
   departement: '93',
 }
+
+const bookedAt = getFrenchLuxon().toJSDate()
 
 describe('Place', () => {
   let place
@@ -204,7 +205,7 @@ describe('Place', () => {
       await createCandidats()
       //      await createCentres()
       createdPlaces = await createPlaces()
-      createdPlacesBooked = await makeResas()
+      createdPlacesBooked = await makeResas(bookedAt)
     })
 
     afterAll(async () => {
@@ -331,24 +332,159 @@ describe('Place', () => {
     })
   })
 
-  xdescribe('to book places', () => {
+  describe('to book places', () => {
+    const centreTest = {
+      departement: '93',
+      nom: 'centre 2',
+      label: "Centre d'examen 2",
+      adresse: '2 Avenue test, Ville test 2, FR, 93420',
+      lon: 47,
+      lat: 3.5,
+    }
+
+    const candidat = {
+      codeNeph: '123456789003',
+      nomNaissance: 'Monkey D',
+      prenom: 'Luffy',
+      email: 'test01.test@test.com',
+      portable: '0612345678',
+      adresse: '10 Rue Oberkampf 75011 Paris',
+      dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+      isValidatedByAurige: true,
+      isValidatedEmail: true,
+    }
+
+    const candidat2 = {
+      codeNeph: '123456789002',
+      nomNaissance: 'Roronoa',
+      prenom: 'Zoro',
+      email: 'test02.test@test.com',
+      portable: '0612345678',
+      adresse: '10 Rue Oberkampf 75011 Paris',
+      dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+      isValidatedByAurige: true,
+      isValidatedEmail: true,
+    }
+
+    const candidat3 = {
+      codeNeph: '123456789099',
+      nomNaissance: 'Trafalgar D water',
+      prenom: 'Law',
+      email: 'test03.test@test.com',
+      portable: '0612345678',
+      adresse: '10 Rue Oberkampf 75011 Paris',
+      dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+      isValidatedByAurige: true,
+      isValidatedEmail: true,
+    }
+
+    const inspecteurTest = {
+      nom: 'Mulder-test',
+      prenom: 'Fox',
+      matricule: '04710111199',
+      email: 'fox.muldertest1@x-files.com',
+      departement: '93',
+    }
+
+    const inspecteurTest2 = {
+      nom: 'Mulder-test2',
+      prenom: 'Fox',
+      matricule: '04710111198',
+      email: 'fox.muldertest2@x-files.com',
+      departement: '93',
+    }
+
+    let createdCentre
+    let createdInspecteur
+    let createdInspecteur2
     let createdcandidats
+    let placeCreated
+    let placeCreated2
+    let placeCreated3
+    let placeCreated4
+    let placeCreated5
+    let updatedCandidat
+    let updatedCandidat2
+    let updatedCandidat3
+
     beforeAll(async () => {
-      await createPlaces()
-      createdcandidats = await createCandidats()
-      await makeResas()
-    })
-    afterAll(async () => {
-      await removePlaces()
-      await deleteCandidats()
-      await removeCentres()
-      await removeInspecteur()
+      await connect()
+
+      try {
+        const { nom, label, adresse, lon, lat, departement } = centreTest
+
+        createdCentre = await createCentre(
+          nom,
+          label,
+          adresse,
+          lon,
+          lat,
+          departement
+        )
+
+        createdInspecteur = await createInspecteur(inspecteurTest)
+        createdInspecteur2 = await createInspecteur(inspecteurTest2)
+        placeCreated = await createPlace({
+          date: commonBasePlaceDateTime.plus({ days: 1 }),
+          centre: createdCentre._id,
+          inspecteur: createdInspecteur._id,
+        })
+
+        placeCreated2 = await createPlace({
+          date: commonBasePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
+          centre: createdCentre._id,
+          inspecteur: createdInspecteur2._id,
+        })
+
+        placeCreated3 = await createPlace({
+          date: commonBasePlaceDateTime.plus({ days: 1 }).toISO(),
+          centre: createdCentre._id,
+          inspecteur: createdInspecteur2._id,
+        })
+
+        placeCreated4 = await createPlace({
+          date: commonBasePlaceDateTime.plus({ days: -1 }).toISO(),
+          centre: createdCentre._id,
+          inspecteur: createdInspecteur2._id,
+        })
+
+        placeCreated5 = await createPlace({
+          date: commonBasePlaceDateTime.plus({ days: 3, hour: 2 }).toISO(),
+          centre: createdCentre._id,
+          inspecteur: createdInspecteur2._id,
+        })
+
+        updatedCandidat = await createCandidatAndUpdate(candidat)
+        updatedCandidat2 = await createCandidatAndUpdate(candidat2)
+        updatedCandidat3 = await createCandidatAndUpdate(candidat3)
+        createdcandidats = [updatedCandidat, updatedCandidat2, updatedCandidat3]
+      } catch (e) {
+        console.warn(e)
+      }
     })
 
-    xit('find 1 available place of centre 2 at a day 19 11h  ', async () => {
-      const places = await findAllPlaces()
-      const selectedCentre = findCentreByName(centres[1].nom)
-      const selectedDate = places[2].date
+    afterAll(async () => {
+      try {
+        await createdCentre.remove()
+        await createdInspecteur.remove()
+        await createdInspecteur2.remove()
+        await placeCreated.remove()
+        await placeCreated2.remove()
+        await placeCreated3.remove()
+        await placeCreated4.remove()
+        await placeCreated5.remove()
+        await updatedCandidat.remove()
+        await updatedCandidat2.remove()
+        await updatedCandidat3.remove()
+      } catch (e) {
+        console.warn(e)
+      }
+      await disconnect()
+    })
+    it('find 1 available place of centre 2 at a day 19 11h  ', async () => {
+      const selectedCentre = createdCentre
+
+      const selectedDate = placeCreated2.date
 
       const foundPlaces = await findPlacesByCentreAndDate(
         selectedCentre._id,
@@ -360,10 +496,9 @@ describe('Place', () => {
       expect(foundPlaces).not.toHaveProperty('candidat')
     })
 
-    xit('find 0 available place of centre 2 at a day 19 10h  ', async () => {
-      const places = await findAllPlaces()
-      const selectedCentre = findCentreByName(centres[1].nom)
-      const selectedDate = places[1].date
+    it('find 0 available place of centre 2 at a day 19 10h  ', async () => {
+      const selectedCentre = createdCentre
+      const selectedDate = commonBasePlaceDateTime.plus({ days: 1, hour: 1 })
 
       const foundPlaces = await findPlacesByCentreAndDate(
         selectedCentre._id,
@@ -374,74 +509,92 @@ describe('Place', () => {
       expect(foundPlaces).toHaveLength(0)
     })
 
-    xit('Should book the place of centre 3 at day 20 9h  with candidat 123456789002 ', async () => {
-      const places = await findAllPlaces()
-      const selectedPlace = places[4]
-      const selectedCandidat = createdcandidats.find(
-        candidat => candidat.codeNeph === candidats[2].codeNeph
-      )._id
-      const selectedCentre = findCentreByName(selectedPlace.centre)._id
+    it('Should book the place of centre 2 at day 20 9h  with candidat 123456789003', async () => {
+      const selectedPlace = placeCreated3
+      const selectedCandidat = updatedCandidat
+      const selectedCentre = createdCentre
 
       const place = await findAndbookPlace(
-        selectedCandidat,
-        selectedCentre,
-        selectedPlace.date
-      )
-
-      expect(place).toBeDefined()
-      expect(place).toHaveProperty('candidat', selectedCandidat)
-      expect(place).toHaveProperty('centre', selectedCentre)
-      expect(place).toHaveProperty('inspecteur')
-      expect(place.date).toEqual(
-        getFrenchLuxonFromISO(selectedPlace.date).toJSDate()
-      )
-    })
-
-    xit('Should not book the booked place of centre 2 at day 18 9h  with candidat 123456789002 ', async () => {
-      const places = await findAllPlaces()
-      const selectedPlace = places[1]
-      const selectedCandidat = createdcandidats.find(
-        candidat => candidat.codeNeph === candidats[2].codeNeph
-      )._id
-      const selectedCentre = findCentreByName(selectedPlace.centre)._id
-      const place = await findAndbookPlace(
-        selectedCandidat,
-        selectedCentre,
-        selectedPlace.date
-      )
-      expect(place).toBeDefined()
-      expect(place).toBeNull()
-    })
-
-    xit('Should book the place of centre 3 at day 21 11h  with candidat 123456789002 ', async () => {
-      const places = await findAllPlaces()
-      const selectedPlace = places[5]
-      const selectedCandidat = createdcandidats.find(
-        candidat => candidat.codeNeph === candidats[2].codeNeph
-      )._id
-      const selectedCentre = findCentreByName(selectedPlace.centre)._id
-      const place = await findAndbookPlace(
-        selectedCandidat,
-        selectedCentre,
+        selectedCandidat._id,
+        selectedCentre._id,
         selectedPlace.date,
-        { inspecteur: 0 }
+        bookedAt
       )
 
       expect(place).toBeDefined()
-      expect(place).toHaveProperty('candidat', selectedCandidat)
-      expect(place).toHaveProperty('centre', selectedCentre)
-      expect(place.inspecteur).not.toBeDefined()
-      expect(place.date).toEqual(
-        getFrenchLuxonFromISO(selectedPlace.date).toJSDate()
+      expect(place).toHaveProperty('candidat')
+      expect(place.candidat.toString()).toEqual(selectedCandidat._id.toString())
+      expect(place).toHaveProperty('centre')
+      expect(place.centre.toString()).toEqual(selectedCentre._id.toString())
+      expect(place).toHaveProperty('inspecteur')
+      expect(place.inspecteur.toString()).toEqual(
+        createdInspecteur._id.toString()
       )
+      expect(place.date.toString()).toEqual(selectedPlace.date.toString())
     })
 
-    xit('Should book the place which has not booking with candidat 123456789002 ', async () => {
+    it('Should not book the booked place of centre 2 at day 18 9h  with selectedCandidat 123456789002 ', async () => {
+      const selectedPlace = placeCreated4
+      const candidatToBook = updatedCandidat2
+      const selectedCandidat = updatedCandidat3
+      const selectedCentre = createdCentre
+      const placeAlreadyBooked = await findAndbookPlace(
+        candidatToBook._id,
+        selectedCentre._id,
+        selectedPlace.date,
+        bookedAt
+      )
+
+      expect(placeAlreadyBooked).toBeDefined()
+      expect(placeAlreadyBooked).toHaveProperty('candidat')
+      expect(placeAlreadyBooked.candidat.toString()).toEqual(
+        candidatToBook._id.toString()
+      )
+      expect(placeAlreadyBooked).toHaveProperty('inspecteur')
+      expect(placeAlreadyBooked.inspecteur.toString()).toEqual(
+        createdInspecteur2._id.toString()
+      )
+      expect(placeAlreadyBooked).toHaveProperty('centre')
+      expect(placeAlreadyBooked.centre.toString()).toEqual(
+        createdCentre._id.toString()
+      )
+
+      const placeUnbookable = await findAndbookPlace(
+        selectedCandidat._id,
+        selectedCentre._id,
+        selectedPlace.date,
+        bookedAt
+      )
+
+      expect(placeUnbookable).toBeDefined()
+      expect(placeUnbookable).toBeNull()
+    })
+
+    it('Should book the place of centre 2 at day 21 11h  with candidat 123456789002 ', async () => {
+      const selectedPlace = placeCreated5
+      const selectedCandidat = updatedCandidat3
+      const selectedCentre = createdCentre
+      const place = await findAndbookPlace(
+        selectedCandidat._id,
+        selectedCentre._id,
+        selectedPlace.date,
+        bookedAt
+      )
+
+      expect(place).toBeDefined()
+      expect(place).toHaveProperty('candidat')
+      expect(place.candidat.toString()).toEqual(selectedCandidat._id.toString())
+      expect(place).toHaveProperty('centre')
+      expect(place.centre.toString()).toEqual(selectedCentre._id.toString())
+      expect(place.date.toString()).toEqual(selectedPlace.date.toString())
+    })
+
+    it('Should book the place which has not booking with candidat 123456789002 ', async () => {
       const selectedPlace = await placeModel.findOne({
         candidat: { $exists: false },
       })
       const selectedCandidat = createdcandidats.find(
-        candidat => candidat.codeNeph === candidats[2].codeNeph
+        candidat => candidat.codeNeph === '123456789002'
       )._id
 
       const place = await bookPlaceById(selectedPlace._id, selectedCandidat)
@@ -453,34 +606,87 @@ describe('Place', () => {
       expect(place.date).toEqual(selectedPlace.date)
     })
 
-    xit('Should not book the place booked with candidat 123456789002 ', async () => {
+    it('Should not book the place booked with candidat 123456789002 ', async () => {
       const selectedPlace = await placeModel.findOne({
         candidat: { $exists: true },
       })
 
-      const selectedCandidat = createdcandidats.find(
-        candidat => candidat.codeNeph === candidats[2].codeNeph
-      )._id
-      const place = await bookPlaceById(selectedPlace._id, selectedCandidat)
+      const selectedCandidat = updatedCandidat3
+      const place = await bookPlaceById(selectedPlace._id, selectedCandidat._id)
       expect(place).toBeNull()
     })
   })
 
-  xdescribe('Remove the booking places', () => {
-    let createdResas
+  describe('Remove the booking places', () => {
+    const centreTest = {
+      departement: '93',
+      nom: 'centre 2',
+      label: "Centre d'examen 2",
+      adresse: '2 Avenue test, Ville test 2, FR, 93420',
+      lon: 47,
+      lat: 3.5,
+    }
+
+    const candidat = {
+      codeNeph: '123456789003',
+      nomNaissance: 'nom à tester 1',
+      prenom: 'prénom à tester n°4',
+      email: 'test01.test@test.com',
+      portable: '0612345678',
+      adresse: '10 Rue Oberkampf 75011 Paris',
+      dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+      isValidatedByAurige: true,
+      isValidatedEmail: true,
+    }
+    const inspecteurTest = {
+      nom: 'Mulder-test',
+      prenom: 'Fox',
+      matricule: '04710111199',
+      email: 'fox.muldertest1@x-files.com',
+      departement: '93',
+    }
+
+    let createdCentre
+    let createdInspecteur
+    let placeCreated
+    let updatedCandidat
+    let placeToDelete
+
     beforeAll(async () => {
-      await createCentres()
-      await createPlaces()
-      await createCandidats()
-      createdResas = await makeResas()
+      await connect()
+      const { nom, label, adresse, lon, lat, departement } = centreTest
+
+      createdCentre = await createCentre(
+        nom,
+        label,
+        adresse,
+        lon,
+        lat,
+        departement
+      )
+      createdInspecteur = await createInspecteur(inspecteurTest)
+      placeCreated = await createPlace({
+        date: commonBasePlaceDateTime.plus({ days: 1 }),
+        centre: createdCentre._id,
+        inspecteur: createdInspecteur._id,
+      })
+      updatedCandidat = await createCandidatAndUpdate(candidat)
+
+      placeToDelete = await bookCandidatOnSelectedPlace(
+        placeCreated,
+        updatedCandidat,
+        bookedAt
+      )
     })
     afterAll(async () => {
-      await removePlaces()
-      await deleteCandidats()
-      await removeCentres()
+      await createdCentre.remove()
+      await createdInspecteur.remove()
+      await placeCreated.remove()
+      await updatedCandidat.remove()
+      await disconnect()
     })
-    xit('should return the place without candidat', async () => {
-      const selectedResa = createdResas[0]
+    it('should return the place without candidat', async () => {
+      const selectedResa = placeToDelete
 
       const place = await removeBookedPlace(selectedResa)
 

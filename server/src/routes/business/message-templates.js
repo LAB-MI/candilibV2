@@ -48,12 +48,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     urlConnexion
   )
 
-  const INSCRIPTION_KO_MSG = getInscriptionKOTemplate(
-    nomMaj,
-    codeNeph,
-    nomMaj,
-    urlFAQ
-  )
+  const INSCRIPTION_KO_MSG = getInscriptionKOTemplate(nomMaj, codeNeph, urlFAQ)
 
   const EPREUVE_PRATIQUE_OK_MSG = getEpreuvePratiqueOKTemplate(nomMaj, urlFAQ)
 

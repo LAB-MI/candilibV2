@@ -1,10 +1,10 @@
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
 import { getFrenchLuxonFromIso, valideCreneaux, getFrenchLuxonCurrentDateTime } from '../util'
-
-import { SET_MODIFYING_RESERVATION } from '@/store'
-
 import { formatResult } from './utils'
+import messages from '@/candidat'
+
+import { SET_MODIFYING_RESERVATION, SIGN_OUT_CANDIDAT } from '@/store'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
 export const FETCH_DATES_SUCCESS = 'FETCH_DATES_SUCCESS'
@@ -71,6 +71,12 @@ export default {
           .endOf('month')
           .toISO()
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
+        if (
+          result.isTokenValid === false
+        ) {
+          dispatch(SIGN_OUT_CANDIDAT)
+          throw new Error(messages.expired_token_message)
+        }
         const { canBookFrom, lastDateToCancel, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
         const anticipatedCanBookAfter =
           getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel)
@@ -78,13 +84,13 @@ export default {
             : false
         const numberOfMonthToDisplay = 4
 
-        const formatedResult = await formatResult(
+        const formatedResult = formatResult(
           result,
           numberOfMonthToDisplay,
           canBookFrom,
           anticipatedCanBookAfter,
           dayToForbidCancel,
-          getters.valideCreneaux
+          getters.valideCreneaux,
         )
         commit(FETCH_DATES_SUCCESS, formatedResult)
       } catch (error) {

@@ -8,6 +8,8 @@ import config from '../../config'
 import {
   appLogger,
   techLogger,
+  getFrenchFormattedDateTime,
+  getFrenchLuxon,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
 } from '../../util'
@@ -37,10 +39,6 @@ import {
   findCandidatById,
   archivePlace,
 } from '../../models/candidat'
-import {
-  getFrenchFormattedDateTime,
-  getFrenchLuxon,
-} from '../../util/date.util'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 
 /**
@@ -86,23 +84,23 @@ export const getDatesByCentreId = async (_id, endDate) => {
  */
 export const getDatesByCentre = async (
   departement,
-  centre,
+  nomCentre,
   beginDate,
   endDate
 ) => {
   appLogger.debug({
     func: 'getDatesByCentre',
     departement,
-    centre,
+    nomCentre,
     beginDate,
     endDate,
   })
 
   let foundCentre
   if (departement) {
-    foundCentre = await findCentreByNameAndDepartement(centre, departement)
+    foundCentre = await findCentreByNameAndDepartement(nomCentre, departement)
   } else {
-    foundCentre = await findCentreByName(centre)
+    foundCentre = await findCentreByName(nomCentre)
   }
   const dates = await getDatesByCentreId(foundCentre._id, beginDate, endDate)
   return dates
@@ -132,13 +130,13 @@ export const hasAvailablePlaces = async (id, date) => {
  * @function
  *
  * @param {string} departement Code du département du centre
- * @param {string} centre Nom du centre
+ * @param {string} nomCentre Nom du centre
  * @param {object} date Date en Objet natif JS Date
  *
  * @returns {string[]} Tableau de dates au format ISO
  */
-export const hasAvailablePlacesByCentre = async (departement, centre, date) => {
-  const foundCentre = await findCentreByNameAndDepartement(centre, departement)
+export const hasAvailablePlacesByCentre = async (departement, nomCentre, date) => {
+  const foundCentre = await findCentreByNameAndDepartement(nomCentre, departement)
   const dates = await hasAvailablePlaces(foundCentre._id, date)
   return dates
 }
@@ -174,10 +172,12 @@ export const getReservationByCandidat = async (candidatId, options) => {
  * @returns {object} Place réservée par le candidat
  */
 export const bookPlace = async (candidatId, centre, date) => {
+  const bookedAt = getFrenchLuxon().toJSDate()
   const place = await findAndbookPlace(
     candidatId,
     centre,
     date,
+    bookedAt,
     { inspecteur: 0 },
     { centre: true, candidat: true }
   )
@@ -244,7 +244,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
       success: true,
       statusmail,
       description: message,
-      place: bookedPlace._id,
+      placeId: bookedPlace._id,
     })
   } catch (error) {
     techLogger.error({
@@ -445,14 +445,21 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
  * @async
  * @function validCentreDateReservation
  *
+<<<<<<< HEAD
  * @param {string} candidatId Id de mongoose
  * @param {string} centre Id of mongoose
  * @param {Date|DateTime} date Date de l'examen de la place réservée
  * @param {object} previewBookedPlace Type model place which populate centre and candidat
+=======
+ * @param {*} candidatId Type string from ObjectId of mongoose
+ * @param {*} centreId Type string from ObjectId of mongoose
+ * @param {*} date Type Date from Janascript or mongoose Type Date
+ * @param {*} previewBookedPlace Type model place which populate centre and candidat
+>>>>>>> change centre to centreId in logger
  */
 export const validCentreDateReservation = async (
   candidatId,
-  centre,
+  centreId,
   date,
   previewBookedPlace
 ) => {
@@ -460,7 +467,7 @@ export const validCentreDateReservation = async (
   const dateTimeResa = getFrenchLuxonFromISO(date)
   if (previewBookedPlace) {
     const isSame = isSameReservationPlace(
-      centre,
+      centreId,
       dateTimeResa,
       previewBookedPlace
     )

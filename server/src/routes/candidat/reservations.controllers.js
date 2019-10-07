@@ -1,4 +1,5 @@
 import { appLogger, techLogger } from '../../util'
+
 import {
   addInfoDateToRulesResa,
   bookPlace,
@@ -115,7 +116,7 @@ export const getReservations = async (req, res) => {
         action: 'get-reservations',
         candidatId,
         bymail,
-        place: reservation && reservation._id,
+        placeId: reservation && reservation._id,
       })
       return res.json(reservation)
     }
@@ -136,20 +137,20 @@ export const getReservations = async (req, res) => {
 export const createReservation = async (req, res) => {
   const section = 'candidat-create-reservation'
   const candidatId = req.userId
-  const { id: centre, date, isAccompanied, hasDualControlCar } = req.body
+  const { id: centreId, date, isAccompanied, hasDualControlCar } = req.body
 
   appLogger.info({
     section,
     candidatId,
-    centre,
+    centreId,
     date,
     isAccompanied,
     hasDualControlCar,
   })
 
-  if (!centre || !date || !isAccompanied || !hasDualControlCar) {
+  if (!centreId || !date || !isAccompanied || !hasDualControlCar) {
     const msg = []
-    if (!centre) msg.push(' du centre')
+    if (!centreId) msg.push(' du centre')
     if (!date) msg.push(' de la date reservation')
     if (!isAccompanied) msg.push(" d'être accompagné")
     if (!hasDualControlCar) msg.push(" d'avoir un véhicule à double commande")
@@ -183,7 +184,7 @@ export const createReservation = async (req, res) => {
 
     const statusValidResa = await validCentreDateReservation(
       candidatId,
-      centre,
+      centreId,
       date,
       previewBookedPlace
     )
@@ -201,7 +202,7 @@ export const createReservation = async (req, res) => {
       })
     }
 
-    const reservation = await bookPlace(candidatId, centre, date)
+    const reservation = await bookPlace(candidatId, centreId, date)
     if (!reservation) {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"

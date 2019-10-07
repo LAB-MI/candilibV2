@@ -68,7 +68,7 @@ export default {
   },
 
   watch: {
-    departement (newValue, oldValue) {
+    departement (newValue) {
       const now = getFrenchLuxonCurrentDateTime()
       this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }), departement: newValue })
     },

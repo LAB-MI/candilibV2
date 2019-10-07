@@ -19,14 +19,15 @@
 </template>
 
 <script>
-import CandidatHeader from './components/CandidatHeader'
-import CandidatFooter from './components/CandidatFooter'
-import NavigationDrawer from './components/NavigationDrawer'
+import { mapGetters } from 'vuex'
 
-import {
+import { SIGNED_OUT_CANDIDAT,
   FETCH_MY_PROFILE_REQUEST,
   SHOW_ERROR,
 } from '@/store'
+import CandidatHeader from './components/CandidatHeader'
+import CandidatFooter from './components/CandidatFooter'
+import NavigationDrawer from './components/NavigationDrawer'
 
 export default {
   components: {
@@ -64,6 +65,18 @@ export default {
         },
       ],
     }
+  },
+
+  computed: {
+    ...mapGetters(['statusCandidat']),
+  },
+
+  watch: {
+    statusCandidat (newValue) {
+      if (newValue === SIGNED_OUT_CANDIDAT) {
+        this.$router.push({ name: 'candidat-presignup' })
+      }
+    },
   },
 
   methods: {

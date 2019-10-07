@@ -127,7 +127,7 @@ describe('Connected candidate front', () => {
     cy.get('.v-dialog')
       .should('contain', 'Merci de noter Candilib')
       .find('button')
-      .contains('Plus tard')
+      .contains('Noter maintenant')
       .click({ timeout: 10000 })
     // Changes the reservation
     cy.contains('Modifier ma réservation')
@@ -171,11 +171,6 @@ describe('Connected candidate front', () => {
       .and('contain', '8:30')
     cy.mhHasMailWithSubject('=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=')
     cy.mhDeleteAll()
-    cy.get('.v-dialog')
-      .should('contain', 'Merci de noter Candilib')
-      .find('button')
-      .contains('Plus tard')
-      .click({ timeout: 10000 })
     // Resend the confirmation
     cy.contains('Renvoyer ma convocation')
       .click()
