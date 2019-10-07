@@ -1,3 +1,7 @@
+/**
+ * Model archived-place
+ * @module models/archived-place
+ */
 import mongoose from 'mongoose'
 import { placeCommonFields } from '../place/place.model'
 
@@ -27,12 +31,8 @@ const ArchivedPlaceFields = {
   },
 }
 
-<<<<<<< HEAD
-const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields)
-=======
 /**
  * @typedef {Object} ArchivedPlaceModel
- * @memberof module:models/archived-place
  * @property {ObjectId} placeId
  * @property {Date} archivedAt
  * @property {Boolean} isCandilib
@@ -43,7 +43,6 @@ const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields)
 const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields, {
   timestamps: true,
 })
->>>>>>> c1f46b5b... fix model and queries archived places
 
 ArchivedPlaceSchema.pre('save', async function preSave () {
   const archivedPlace = this
