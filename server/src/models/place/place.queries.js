@@ -1,3 +1,7 @@
+/**
+ * Ensemble des actions sur les places dans la base de données
+ * @module models/place-queries
+ */
 import mongoose from 'mongoose'
 
 import Place from './place.model'
@@ -18,6 +22,15 @@ export const createPlace = async leanPlace => {
   return place.save()
 }
 
+/**
+ * Archiver et supprimer la place
+ * @function deletePlace
+ * @see {@link module:models/archived-place}
+ * @param {PlaceModel} place La place à supprimer
+ * @param {String} reason La raison de la suppresion
+ * @param {String} byUser L'auteur de l'action
+ * @param {Boolean} isCandilib Suppresion lié à une réussite ou echec d'un examen de candilib
+ */
 export const deletePlace = async (place, reason, byUser, isCandilib) => {
   if (!place) {
     throw new Error('No place given')
