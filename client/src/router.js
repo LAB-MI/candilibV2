@@ -37,7 +37,7 @@ const MyProfile = () => import(/* webpackChunkName: "candidat", webpackPrefetch:
 
 const AdminLogin = () => import('@/views/admin/components/Login')
 const AdminAurige = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Aurige.vue')
-const StatsKpi = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/StatsKpi.vue')
+const StatsKpi = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/statsKpi/StatsKpi.vue')
 const HomeAdminPage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/HomeAdminPage.vue')
 const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/schedule/ScheduleManager.vue')
 const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
