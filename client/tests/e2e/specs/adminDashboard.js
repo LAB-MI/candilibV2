@@ -49,12 +49,11 @@ describe('Dashboard tests', () => {
 
   it('Goes to the planning by clicking on a date', () => {
     cy.adminLogin()
-    // Goes to 14/10/2019 in the planning
     cy.get('h2.title')
       .should('contain', Cypress.env('centre'))
       .contains(Cypress.env('centre'))
       .parents('.monitor-wrapper').within(($centre) => {
-        cy.contains('14 oct. 2019')
+        cy.contains(Cypress.env('dateDashboard'))
           .parents('tr').within(($row) => {
             cy.get('button').first()
               .within(($button) => {
@@ -65,9 +64,9 @@ describe('Dashboard tests', () => {
           })
       })
     cy.url()
-      .should('contain', '2019-10-14')
+      .should('contain', Cypress.env('placeDate'))
     cy.get('.t-date-picker [type=text]').invoke('val')
-      .should('contain', '14/10/2019')
+      .should('contain', Cypress.env('dateLong'))
     cy.get('.v-tabs__item--active')
       .should('contain', Cypress.env('centre'))
     // Checks the number of places available

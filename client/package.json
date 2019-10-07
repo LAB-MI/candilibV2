@@ -18,7 +18,7 @@
     "storybook:build": "vue-cli-service storybook:build -c config/storybook",
     "storybook:serve": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
     "sb": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
-    "test:e2e": "vue-cli-service test:e2e",
+    "test:e2e": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" vue-cli-service test:e2e",
     "cypress": "cypress run",
     "test:unit": "vue-cli-service test:unit",
     "test:watch": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" npm run -s test:unit -- --watch"
@@ -26,8 +26,6 @@
   "dependencies": {
     "ag-grid-community": "^21.1.1",
     "ag-grid-vue": "^21.1.0",
-    "cypress-file-upload": "^3.3.3",
-    "cypress-mailhog": "^1.1.0",
     "delay": "^4.3.0",
     "html-loader": "^0.5.5",
     "intl": "^1.2.5",
@@ -64,6 +62,8 @@
     "@vue/test-utils": "^1.0.0-beta.29",
     "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.0.2",
+    "cypress-file-upload": "^3.3.3",
+    "cypress-mailhog": "^1.1.0",
     "cross-env": "^5.2.0",
     "eslint": "^6.2.1",
     "eslint-plugin-import": "^2.18.2",

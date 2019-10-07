@@ -6,20 +6,16 @@
   (Tests with only two places available during the week)
 */
 
-const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
-const horaires = [
-  '08:00',
-  '08:30',
-]
-
-const csvRowBuilder = (inspecteur, matricule) => horaire => `21/10/19,${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
-
-const placesInspecteur1 = horaires.map(csvRowBuilder(Cypress.env('inspecteur'), Cypress.env('matricule')))
-
-const placesArray = [csvHeaders].concat(placesInspecteur1).join('\n')
-
 describe('Places tests', () => {
   before(() => {
+    const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
+    const horaires = [
+      '08:00',
+      '08:30',
+    ]
+    const csvRowBuilder = (inspecteur, matricule) => horaire => `${Cypress.env('datePlace2')},${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
+    const placesInspecteur1 = horaires.map(csvRowBuilder(Cypress.env('inspecteur'), Cypress.env('matricule')))
+    const placesArray = [csvHeaders].concat(placesInspecteur1).join('\n')
     // Delete all mails before start
     cy.mhDeleteAll()
     cy.adminLogin()
@@ -59,7 +55,7 @@ describe('Places tests', () => {
       .should('contain', Cypress.env('centre'))
       .contains(Cypress.env('centre'))
       .parents('.monitor-wrapper').within(($centre) => {
-        cy.contains('21 oct. 2019')
+        cy.contains(Cypress.env('nextDate'))
           .parents('.th-ui-week-column')
           .should('have.class', 'red')
           .parents('tr')
@@ -68,9 +64,9 @@ describe('Places tests', () => {
       })
     // Checks the planning
     cy.url()
-      .should('contain', '2019-10-21')
+      .should('contain', Cypress.env('placeDate2'))
     cy.get('.t-date-picker [type=text]').invoke('val')
-      .should('contain', '21/10/2019')
+      .should('contain', Cypress.env('dateLong2'))
     cy.get('.v-tabs__item--active')
       .should('contain', Cypress.env('centre'))
     // Add candidate to the first place
@@ -104,7 +100,7 @@ describe('Places tests', () => {
       .should('contain', Cypress.env('centre'))
       .contains(Cypress.env('centre'))
       .parents('.monitor-wrapper').within(($centre) => {
-        cy.contains('21 oct. 2019')
+        cy.contains(Cypress.env('nextDate'))
           .parents('.th-ui-week-column')
           .should('have.class', 'orange')
           .parents('tr')
@@ -112,9 +108,9 @@ describe('Places tests', () => {
           .click()
       })
     cy.url()
-      .should('contain', '2019-10-21')
+      .should('contain', Cypress.env('placeDate2'))
     cy.get('.t-date-picker [type=text]').invoke('val')
-      .should('contain', '21/10/2019')
+      .should('contain', Cypress.env('dateLong2'))
     cy.get('.v-tabs__item--active')
       .should('contain', Cypress.env('centre'))
     // Deletes the second place
@@ -144,7 +140,7 @@ describe('Places tests', () => {
       .should('contain', Cypress.env('centre'))
       .contains(Cypress.env('centre'))
       .parents('.monitor-wrapper').within(($centre) => {
-        cy.contains('21 oct. 2019')
+        cy.contains(Cypress.env('nextDate'))
           .parents('.th-ui-week-column')
           .should('have.class', 'green')
           .parents('tr')
@@ -152,9 +148,9 @@ describe('Places tests', () => {
           .click()
       })
     cy.url()
-      .should('contain', '2019-10-21')
+      .should('contain', Cypress.env('placeDate2'))
     cy.get('.t-date-picker [type=text]').invoke('val')
-      .should('contain', '21/10/2019')
+      .should('contain', Cypress.env('dateLong2'))
     cy.get('.v-tabs__item--active')
       .should('contain', Cypress.env('centre'))
     // Removes the candidate from the place

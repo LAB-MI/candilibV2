@@ -15,11 +15,28 @@
 
 // Import commands.js using ES2015 syntax:
 import './commands'
+import { DateTime } from 'luxon'
+
+const FRENCH_TIME_ZONE = 'Europe/Paris'
+
+const now = DateTime.local().setLocale('fr').setZone(FRENCH_TIME_ZONE)
+const date1 = now.plus({ months: 1 }).startOf('week')
+const date2 = date1.plus({ weeks: 1 })
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
 
 before(() => {
+  Cypress.env('dateDashboard', date1.toLocaleString({ month: 'short', day: '2-digit', year: 'numeric' }))
+  Cypress.env('dateLong', date1.toLocaleString(DateTime.DATE_SHORT))
+  Cypress.env('datePlace', date1.toFormat('dd/MM/yy'))
+  Cypress.env('placeDate', date1.toFormat('yyyy-MM-dd'))
+
+  Cypress.env('nextDate', date2.toLocaleString({ month: 'short', day: '2-digit', year: 'numeric' }))
+  Cypress.env('dateLong2', date2.toLocaleString(DateTime.DATE_SHORT))
+  Cypress.env('datePlace2', date2.toFormat('dd/MM/yy'))
+  Cypress.env('placeDate2', date2.toFormat('yyyy-MM-dd'))
+
   if (!Cypress.env('build')) {
     Cypress.env('filePath', 'tests/e2e/filesLocal')
     cy.exec('cd ../server && npm run dev-setup')
