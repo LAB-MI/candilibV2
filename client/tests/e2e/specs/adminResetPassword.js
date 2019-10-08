@@ -3,6 +3,8 @@
 - Admin login with new Password
 */
 
+const quotedPrintable = require('quoted-printable')
+
 describe('Admin reset password', () => {
   const weakPassword = '123456788'
   const password = 'Am9@5medf2'
@@ -20,9 +22,14 @@ describe('Admin reset password', () => {
     cy.mhGetAllMails()
       .mhFirst()
       .mhGetBody().then((mailBody) => {
-        const codedLink = mailBody.split('href=3D\'')[1].split('\'>')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        validationLink = withoutEq.replace(/=3D/g, '=')
+        const boundary = mailBody.substr(0, mailBody.indexOf('\n'))
+        const parts = mailBody.split(boundary)
+        const htmlPart = parts[2]
+        const encodedResetLink = htmlPart.substring(htmlPart.indexOf('<a href='), htmlPart.indexOf('</a>') + 4)
+
+        const utf8 = require('utf8')
+        const resetLink = utf8.decode(quotedPrintable.decode(encodedResetLink))
+        validationLink = resetLink.replace(/<a href='([^']+)'>.*/, '$1')
       })
   })
 
