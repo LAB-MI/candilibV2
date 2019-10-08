@@ -40,7 +40,7 @@ COPY .env.candidat .env.admin ./
 COPY babel.config.js cypress.json jsconfig.json package-lock.json package.json vue.config.js ./
 # Install app dependencies
 
-RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm install --loglevel http
+RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; CYPRESS_INSTALL_BINARY=0 npm install --loglevel http
 EXPOSE 8080
 
 CMD ["npm","run", "serve"]

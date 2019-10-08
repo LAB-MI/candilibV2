@@ -10,9 +10,10 @@ ARG no_proxy
 # Base dir /app
 WORKDIR /app
 
-RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime && echo "Europe/Paris" > /etc/timezone
+# configure TZ
 # use proxy & private npm registry
-RUN if [ ! -z "$http_proxy" ] ; then \
+RUN ln -snf /usr/share/zoneinfo/Europe/Paris /etc/localtime && echo "Europe/Paris" > /etc/timezone ; \
+    if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \
         npm config set proxy $http_proxy; \
         npm config set https-proxy $https_proxy; \
