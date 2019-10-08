@@ -78,6 +78,7 @@ const bookedAt = getFrenchLuxon().toJSDate()
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
+jest.mock('../../util/token')
 
 describe('Test places controller', () => {
   let candidatsCreated
