@@ -1,6 +1,8 @@
 import archivedCandidatModel from '../../models/archived-candidat/archived-candidat.model'
 import candidatModel from '../../models/candidat/candidat.model'
 import whitelistedModel from '../../models/whitelisted/whitelisted.model'
+import { countPlacesBookedOrNot } from '../../models/place/place.queries'
+
 import {
   ABSENT,
   ECHEC,
@@ -23,6 +25,30 @@ export const getResultsExamAllDpt = async (beginPeriode, endPeriode) => {
     )
   )
   return results
+}
+
+export const getAllPlacesProposeInFutureByDpt = async beginDate => {
+  const departements = await getDepartementsFromCentres()
+
+  if (!departements) {
+    throw new Error('Aucun département trouvé')
+  }
+  const results = await Promise.all(
+    departements.map(departement => getPlacesByDpt(departement, beginDate))
+  )
+  return results
+}
+
+export const getPlacesByDpt = async (departement, beginDate) => {
+  const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
+  const centres = centresFromDB.map(({ _id }) => _id)
+
+  return {
+    beginDate,
+    departement,
+    totalBookedPlaces: await countPlacesBookedOrNot(centres, beginDate, true),
+    totalPlaces: await countPlacesBookedOrNot(centres, beginDate, false),
+  }
 }
 
 export const getResultsExamByDpt = async (
@@ -115,13 +141,17 @@ export const countSuccessByCentres = async (
     }
   }
 
+  const commonQuery = {
+    'places.archiveReason': EPREUVE_PRATIQUE_OK,
+    'places.centre': { ...expression['places.centre'] },
+  }
+
   const result = await archivedCandidatModel
     .aggregate([
       {
         $match: {
           archiveReason: EPREUVE_PRATIQUE_OK,
-          'places.archiveReason': EPREUVE_PRATIQUE_OK,
-          'places.centre': { ...expression['places.centre'] },
+          ...commonQuery,
         },
       },
       {
@@ -129,8 +159,7 @@ export const countSuccessByCentres = async (
       },
       {
         $match: {
-          'places.archiveReason': EPREUVE_PRATIQUE_OK,
-          'places.centre': { ...expression['places.centre'] },
+          ...commonQuery,
           'places.date': { ...expression['places.date'] },
         },
       },
@@ -220,7 +249,6 @@ const countNoReussitesAndPlacesByReasonAndCentres = (
     expression['places.centre'] = { $in: centres }
   }
 
-  // TODO: Use begin and end value
   if (beginPeriode || endPeriode) {
     expression['noReussites.date'] = {}
     if (beginPeriode) {

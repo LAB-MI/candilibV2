@@ -248,6 +248,14 @@ export const findPlaceWithSameWindow = async creneau => {
   return place
 }
 
+export const countPlacesBookedOrNot = async (centres, beginDate, isBooked) => {
+  return Place.countDocuments({
+    centre: { $in: centres },
+    date: { $gte: beginDate },
+    candidat: { $exists: isBooked },
+  })
+}
+
 export const findAllPlacesBookedByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
   if (beginDate || endDate) {

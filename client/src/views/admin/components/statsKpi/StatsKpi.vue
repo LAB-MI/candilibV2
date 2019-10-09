@@ -59,22 +59,35 @@
           assessment
         </v-icon>
       </v-btn>
+      <v-btn color="primary" @click="getStatsKpi(true, true)">
+        {{ $formatMessage({ id: 'export_places_stats_csv' }) }}
+        <v-icon>
+          get_app
+        </v-icon>
+        <v-icon>
+          assessment
+        </v-icon>
+      </v-btn>
       <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les département`"></v-switch>
     </v-container>
+
     <v-flex
-      v-if="currentStats && currentStats.departement && !isDisplayAllDepartement"
+      v-if="isShowOneDepartement"
       class="pa-5"
     >
-      <charts-stats-kpi :statsValues="currentStats"></charts-stats-kpi>
+      <charts-stats-kpi
+        :statsResultsExamValues="currentStatsResultExam"
+        :statsPlacesExamValues="currentStatsPlacesExam"
+      />
     </v-flex>
 
     <v-flex
       v-else
-      v-for="(elem, index) in statsArray"
+      v-for="(elem, index) in statsResultsExamCandidats"
       :key="'elem'+index"
       class="pa-5"
     >
-      <charts-stats-kpi :statsValues="elem"></charts-stats-kpi>
+      <charts-stats-kpi :statsResultsExamValues="elem"/>
     </v-flex>
   </v-container>
 </template>
@@ -92,6 +105,7 @@ export default {
 
   async mounted () {
     await this.getStatsKpi(false)
+    await this.getStatsKpi(false, true)
   },
 
   computed: {
@@ -102,6 +116,14 @@ export default {
     pickerDateEnd () {
       return this.dateEnd.split('-').reverse().join('/')
     },
+
+    isShowOneDepartement () {
+      return this.currentStatsResultExam &&
+        this.currentStatsResultExam.departement &&
+        this.currentStatsPlacesExam &&
+        this.currentStatsPlacesExam.departement &&
+        !this.isDisplayAllDepartement
+    },
   },
 
   data: () => ({
@@ -109,40 +131,60 @@ export default {
     dateEnd: getFrenchLuxonCurrentDateTime().toISODate(),
     menuStart: false,
     menuEnd: false,
-    statsArray: [],
-    currentStats: {},
+    statsResultsExamCandidats: [],
+    statsPlacesExamCandidats: [],
+    currentStatsResultExam: {},
+    currentStatsPlacesExam: {},
     isDisplayAllDepartement: false,
   }),
 
   methods: {
-    async getStatsKpi (isCsv) {
+    async getStatsKpi (isCsv, isPlacesExam = false) {
       const beginPeriode = this.dateStart
       const endPeriode = this.dateEnd
 
-      const response = await api.admin.exportStatsKpi(beginPeriode, endPeriode, isCsv)
+      const response = await api.admin.exportStatsKpi(beginPeriode, endPeriode, isCsv, isPlacesExam)
 
       if (isCsv) {
         downloadContent(response)
         return
       }
 
-      this.statsArray = response.statsKpi
-      this.currentStats = this.statsArray.find(el => el.departement === this.activeDepartement)
+      if (isPlacesExam) {
+        this.statsPlacesExamCandidats = response.statsKpi
+        this.currentStatsPlacesExam = this.statsPlacesExamCandidats.find(el => el.departement === this.activeDepartement)
+        return
+      }
+
+      this.statsResultsExamCandidats = response.statsKpi
+      this.currentStatsResultExam = this.statsResultsExamCandidats.find(el => el.departement === this.activeDepartement)
     },
   },
 
   watch: {
-    statsArray (newValue, oldValue) {
-      this.currentStats = newValue && newValue.find(el => el.departement === this.activeDepartement)
+    statsResultsExamCandidats (newValue) {
+      this.currentStatsResultExam = newValue &&
+      newValue.find(el => el.departement === this.activeDepartement)
     },
+
+    statsPlacesExamCandidats (newValue) {
+      this.currentStatsPlacesExam = newValue &&
+      newValue.find(el => el.departement === this.activeDepartement)
+    },
+
     activeDepartement () {
-      this.currentStats = this.statsArray && this.statsArray.find(el => el.departement === this.activeDepartement)
+      this.currentStatsResultExam = this.statsResultsExamCandidats &&
+      this.statsResultsExamCandidats.find(el => el.departement === this.activeDepartement)
     },
+
     async dateStart () {
       await this.getStatsKpi(false)
+      await this.getStatsKpi(false, true)
     },
+
     async dateEnd () {
       await this.getStatsKpi(false)
+      await this.getStatsKpi(false, true)
     },
   },
 }

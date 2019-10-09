@@ -1,7 +1,10 @@
 import { parseAsync } from 'json2csv'
 
-import { appLogger, getFrenchLuxonFromISO } from '../../util'
-import { getResultsExamAllDpt } from './statistics.business'
+import { appLogger, getFrenchLuxon, getFrenchLuxonFromISO } from '../../util'
+import {
+  getResultsExamAllDpt,
+  getAllPlacesProposeInFutureByDpt,
+} from './statistics.business'
 
 const fields = [
   {
@@ -50,8 +53,7 @@ const options = { fields, delimiter: ';', quote: '' }
 const parseStats = statsData => parseAsync(statsData, options)
 
 export const getStats = async (req, res) => {
-  const { beginPeriode, endPeriode, isCsv } = req.query
-  // TODO: Use beginPeriode and endPeriode because it is actualy unused
+  const { beginPeriode, endPeriode, isCsv, isPlacesExam } = req.query
 
   const loggerContent = {
     section: 'admin-getStats',
@@ -62,7 +64,39 @@ export const getStats = async (req, res) => {
   }
 
   try {
-    // TODO: Use begin and end because it is actualy unused
+    if (isPlacesExam === 'true') {
+      const beginDate = getFrenchLuxon()
+        .startOf('day')
+        .toJSDate()
+      const statsKpi = await getAllPlacesProposeInFutureByDpt(beginDate)
+
+      if (isCsv === 'true') {
+        appLogger.info({
+          ...loggerContent,
+          action: 'GET STATS KPI CSV PROPOSE IN FUTURE',
+          statsKpi,
+        })
+
+        const statsKpiCsv = await parseStats(statsKpi)
+        const filename = 'statsPlacesExam.csv'
+
+        return res
+          .status(200)
+          .attachment(filename)
+          .send(statsKpiCsv)
+      }
+
+      appLogger.info({
+        ...loggerContent,
+        action: 'GET STATS KPI PROPOSE IN FUTURE',
+        statsKpi,
+      })
+
+      return res
+        .status(200)
+        .json({ success: true, message: 'stats OK', statsKpi })
+    }
+
     const begin = getFrenchLuxonFromISO(beginPeriode)
       .startOf('day')
       .toJSDate()
@@ -71,7 +105,8 @@ export const getStats = async (req, res) => {
       .toJSDate()
 
     const statsKpi = await getResultsExamAllDpt(begin, end)
-    if (isCsv === 'true') {
+
+    if (isCsv === 'true' && isPlacesExam !== 'true') {
       const statsKpiCsv = await parseStats(statsKpi)
       const filename = 'statsCandidats.csv'
 

@@ -332,8 +332,8 @@ export default {
       return json
     },
 
-    async exportStatsKpi (beginPeriode = '', endPeriode = '', isCsv = false) {
-      const queryString = `isCsv=${isCsv}&beginPeriode=${encodeURIComponent(beginPeriode)}&endPeriode=${encodeURIComponent(endPeriode)}`
+    async exportStatsKpi (beginPeriode = '', endPeriode = '', isCsv = false, isPlacesExam = false) {
+      const queryString = `isPlacesExam=${isPlacesExam}&isCsv=${isCsv}&beginPeriode=${encodeURIComponent(beginPeriode)}&endPeriode=${encodeURIComponent(endPeriode)}`
       const path = `${apiPaths.admin.exportStatsKpi}?${queryString}`
       const headers = {
         headers: getAdminTokenHeader(),
