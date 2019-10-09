@@ -17,7 +17,7 @@
             <h1>{{ `${activeDepartement}` }}</h1>
           </v-btn>
           </template>
-          <span>Changer de departement</span>
+          <span>Changer de département</span>
         </v-tooltip>
       </template>
       <v-list>
