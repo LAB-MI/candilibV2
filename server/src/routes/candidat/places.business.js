@@ -135,8 +135,15 @@ export const hasAvailablePlaces = async (id, date) => {
  *
  * @returns {string[]} Tableau de dates au format ISO
  */
-export const hasAvailablePlacesByCentre = async (departement, nomCentre, date) => {
-  const foundCentre = await findCentreByNameAndDepartement(nomCentre, departement)
+export const hasAvailablePlacesByCentre = async (
+  departement,
+  nomCentre,
+  date
+) => {
+  const foundCentre = await findCentreByNameAndDepartement(
+    nomCentre,
+    departement
+  )
   const dates = await hasAvailablePlaces(foundCentre._id, date)
   return dates
 }
