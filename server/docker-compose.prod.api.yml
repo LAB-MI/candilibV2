@@ -26,6 +26,7 @@ services:
       MAIL_FROM: ${MAIL_FROM:-noreply@interieur.gouv.fr}
       CANDIDAT_EXPIREDIN: ${CANDIDAT_EXPIREDIN:-72h}
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
+      ADMIN_URL: ${ADMIN_URL:-http://localhost:8080}
       SECRET: ${SECRET}
 
 networks:
