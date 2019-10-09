@@ -19,7 +19,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="pickerDateStart"
-                label="Date de debut de periode"
+                label="Date de debut de période"
                 prepend-icon="event"
                 v-on="on"
               ></v-text-field>
@@ -41,7 +41,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="pickerDateEnd"
-                label="Date de fin de periode"
+                label="Date de fin de période"
                 prepend-icon="event"
                 v-on="on"
               ></v-text-field>
@@ -59,7 +59,7 @@
           assessment
         </v-icon>
       </v-btn>
-      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les departement`"></v-switch>
+      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les département`"></v-switch>
     </v-container>
     <v-flex
       v-if="currentStats && currentStats.departement && !isDisplayAllDepartement"

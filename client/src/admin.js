@@ -24,7 +24,7 @@ export default {
   send_bordereaux_for_ipcsr_email: `Les bordereaux seront envoyés aux adresses courriels de chaque inspecteurs,
     si l'un des courriels n'arrive pas à déstination, un courriel vous sera envoyé afin de vous prevenir.`,
   receive_bordereaux_for_ipcsr_email: 'Recevoir les bordereaux des inspecteurs du',
-  send_bordereaux_to_email: `Les bordereaux inspecteurs seront envoyés à l'adresse courriel : `, // eslint-disable-line
+  send_bordereaux_to_email: `Les bordereaux inspecteurs seront envoyés à l'adresse courriel : `, // eslint-disable-line no-irregular-whitespace
   date_first_day_of_week: `Date du premier jour de la semaine N°`,
   total_of_week: `Total de la Semaine`,
   non_renseignee: `Non renseignée`,
@@ -32,8 +32,8 @@ export default {
   booked_places_more_than_50_pourcent: '50% ou plus des places sont reservées',
   booked_places_lower_than_50_pourcent: 'Moins de 50% des places sont reservées',
   export_stats_csv: `Export Stats CSV`,
-  departement: `Département : `, // eslint-disable-line
-  resultats_a_lexamen: `Resultats à l'examen`,
+  departement: `Département : `, // eslint-disable-line no-irregular-whitespace
+  resultats_a_lexamen: `Résultats à l'examen`,
   de_reussite: `de réussite`,
   egale_recus_divise_reçus_plus_echecs: `= reçus / (reçus + échecs)`,
   d_absenteisme: `d'absentéisme`,
