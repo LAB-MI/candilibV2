@@ -300,7 +300,7 @@ const updateValidCandidat = async (
     const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
     if (canBookFrom) {
       infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
-      await removeResaNoAuthorize(candidat, canBookFrom, dateTimeEchec)
+      await cancelBookingAfterExamFailure(candidat, canBookFrom, dateTimeEchec)
     }
   }
 
