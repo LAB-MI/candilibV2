@@ -9,6 +9,15 @@ import { getHtmlBody } from './mail'
 import config from '../../config'
 import { addEmailValidationHash } from '../../models/user'
 
+
+/**
+ * @async
+ * Renvoi le lien de réinitialisation contenant le hash
+ * @function
+ *
+ * @param {string} email Adresse courriel de l'utilisateur
+ */
+
 export const getUrlResetLink = async email => {
   const emailValidationHash = await addEmailValidationHash(email)
   return `${config.PUBLIC_URL}/reset-link?email=${encodeURIComponent(
@@ -17,6 +26,7 @@ export const getUrlResetLink = async email => {
 }
 
 /**
+ * @async
  * Envoi un email contenant le lien de réinitialisation
  * @function
  *
