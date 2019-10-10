@@ -25,7 +25,16 @@ export const getResultsExamByDpt = async departement => {
   const date = getFrenchLuxon().toLocaleString(DATETIME_FULL)
   const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
   const centres = centresFromDB.map(({ _id }) => _id)
-  const [invited, registered, checked, waiting, received, absent, failed, notExamined] = await Promise.all([
+  const [
+    invited,
+    registered,
+    checked,
+    waiting,
+    received,
+    absent,
+    failed,
+    notExamined,
+  ] = await Promise.all([
     countInvitedCandidatsByDepartement(departement),
     countCandidatsByDepartement(departement),
     countCheckedCandidatsByDepartement(departement),
@@ -51,32 +60,28 @@ export const getResultsExamByDpt = async departement => {
 }
 
 export const countInvitedCandidatsByDepartement = departement => {
-  
-  return whitelistedModel.count({
-    'departement': departement,
+  return whitelistedModel.countDocuments({
+    departement,
   })
 }
 
 export const countCandidatsByDepartement = departement => {
-  
-  return candidatModel.count({
-    'departement': departement,
+  return candidatModel.countDocuments({
+    departement,
   })
 }
 
 export const countCheckedCandidatsByDepartement = departement => {
-  
-  return candidatModel.count({
-    'isValidatedByAurige': true,
-    'departement': departement,
+  return candidatModel.countDocuments({
+    isValidatedByAurige: true,
+    departement,
   })
 }
 
 export const countWaitingCandidatsByDepartement = departement => {
-  
-  return candidatModel.count({
-    'isValidatedByAurige': null,
-    'departement': departement,
+  return candidatModel.countDocuments({
+    isValidatedByAurige: null,
+    departement,
   })
 }
 
@@ -86,7 +91,7 @@ export const countSuccessByCentres = centres => {
     expression['places.centre'] = { $in: centres }
   }
 
-  return archivedCandidatModel.count({
+  return archivedCandidatModel.countDocuments({
     archiveReason: EPREUVE_PRATIQUE_OK,
     'places.archiveReason': EPREUVE_PRATIQUE_OK,
     ...expression,
