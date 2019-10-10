@@ -9,7 +9,6 @@ import { getHtmlBody } from './mail'
 import config from '../../config'
 import { addEmailValidationHash } from '../../models/user'
 
-
 /**
  * @async
  * Renvoi le lien de réinitialisation contenant le hash
