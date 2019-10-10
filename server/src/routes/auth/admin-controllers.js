@@ -188,7 +188,7 @@ export const resetMyPassword = async (req, res) => {
   if (newPassword !== confirmNewPassword) {
     return res.status(400).json({
       success: false,
-      message: 'Oups! Les mots de passe ne correspondent pas',
+      message: 'Oups ! Les mots de passe ne correspondent pas',
     })
   }
 

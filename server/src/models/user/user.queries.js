@@ -115,12 +115,13 @@ export const updateUserStatus = async (user, status) => {
 }
 
 /**
+ * Retourne un email contenant lien avec un hash
  * @async
  * @function
  *
  * @param {string} email
  *
- * @returns {Promise<User>}
+ * @returns {Promise<string>}
  */
 
 export const addEmailValidationHash = async email => {
