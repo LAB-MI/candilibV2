@@ -489,7 +489,7 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
 }
 
 /**
- * Retourne annulation des reservation non autorisée
+ * Met à jour les données du candidat en cas d'échec et envoie un mail d'annulation de réservation si il y a lieu.
  * @function
  *
  * @param {Candidat} candidat { _id } Candidat à l'examen
