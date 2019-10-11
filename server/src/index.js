@@ -4,7 +4,7 @@
  */
 
 /**
- * @typedef {Object} DateTime
+ * @constant {import('luxon').DateTime}
  *
  * DateTime object from luxon {@link https://moment.github.io/luxon/docs/}
  */

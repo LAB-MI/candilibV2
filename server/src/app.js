@@ -114,12 +114,33 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           "portable": "0603765291"
  *           "prenom": "MAY"
  *           "departement": "93"
-
- *     CentresInfo:
+ *
+ *     StatsKpi:
  *       type: object
+ *       required:
+ *         - success
+ *         - message
  *       properties:
- *         candidat:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
  *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: string
+ *           description: Liste des stats par département
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *         statsKpi: [{
+ *             beginDate: 2019-10-10T22:00:00.000Z,
+ *             departement: 93,
+ *             totalBookedPlaces: 2,
+ *             totalPlaces: 622,
+ *             totalCandidatsInscrits: 0,
+ *          }]
+ *
  *
  *   responses:
  *     InvalidTokenResponse:
@@ -186,7 +207,7 @@ if (isDevelopment) {
         },
       ],
     },
-    apis: ['./src/app.js', './src/routes/**/*.js'], // <-- We add this property:
+    apis: ['./src/app.js', './src/routes/**/*.js'],
   }
 
   const specs = swaggerJsdoc(options)

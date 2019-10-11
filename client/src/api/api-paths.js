@@ -22,7 +22,8 @@ const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
 const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   candidats: `${apiPrefix}/admin/candidats`,
   exportCsv: `${apiPrefix}/admin/candidats?for=aurige&format=csv`,
-  exportStatsKpi: `${apiPrefix}/admin/stats`,
+  exportResultsExamsStatsKpi: `${apiPrefix}/admin/stats-results-exams`,
+  exportPlacesExamsStatsKpi: `${apiPrefix}/admin/stats-places-exams`,
   login: `${apiPrefix}/auth/admin/token`,
   myProfile: `${apiPrefix}/admin/me`,
   place: `${apiPrefix}/admin/place`,
