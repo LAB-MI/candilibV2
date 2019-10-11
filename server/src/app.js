@@ -329,3 +329,11 @@ app.use(fileupload({ limits: { fileSize: 50 * 1024 * 1024 } }))
 app.use(apiPrefix, routes)
 
 export default app
+
+/**
+ * @typedef {Object} InfoObject
+ *
+ * @property {boolean} success - Indique si l'action a été effectuée avec succès
+ * @property {string} message  - Message destiné à être affiché à l'utilisateur : message de réussite de l'action
+ *                              ou message d'erreur compréhensible par un non technicien
+ */

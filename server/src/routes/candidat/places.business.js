@@ -583,11 +583,3 @@ export const validCentreDateReservation = async (
  * @property {NoReussite} [noReussites]    - Liste des non-réussites du candidat à l'examen pratique
  * @property {Date} [firstConnection]      - Date à laquelle le candidat s'est connecté la première fois
  */
-
-/**
- * @typedef {Object} InfoObject
- *
- * @property {boolean} success - Indique si l'action a été effectuée avec succès
- * @property {string} message  - Message destiné à être affiché à l'utilisateur : message de réussite de l'action
- *                              ou message d'erreur compréhensible par un non technicien
- */

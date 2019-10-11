@@ -36,8 +36,8 @@ const badCredentialsBody = {
  * @see {@link https://expressjs.com/fr/4x/api.html#res}
  * @param {import('express').Request} req
  * @param {Object} req.body
- * @param {string} req.body.email adresse mail de l'administrateur
- * @param {string} req.body.password mot de passe de l'administrateur
+ * @param {string} req.body.email Adresse courriel de l'administrateur
+ * @param {string} req.body.password Mot de passe de l'administrateur
  * @param {import('express').Response} res en status 401: [badCredentialsBody]{@link module:routes/auth/admin-controllers~badCredentialsBody}
  *
  */
@@ -98,20 +98,14 @@ export const getAdminToken = async (req, res) => {
  * @async
  * @function requestPasswdReset
  * @see {@link http://localhost:8000/api-docs/#/default/reset-link}
-
- * @param {object} req Est attendu dans la requete
- *```javascript
- * {
- *   body: {
- *     email: "email de l'utilisateur"
- *   },
- * }
- * ```
- * @param {string} user vérifier si l'utilisateur est dans la base
  *
- * @param {object} res
+ * @param {import('express').Request } req
+ * @param {Object} req.body
+ * @param {string} req.body.email Email de l'utilisateur
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
  *
-*/
+ */
 
 export const requestPasswdReset = async (req, res) => {
   const loggerInfo = {
@@ -164,20 +158,22 @@ export const requestPasswdReset = async (req, res) => {
  * @function resetMyPassword
  * @see {@link http://localhost:8000/api-docs/#/default/reset_password}
 
- * @param {object} req Est attendu dans la requête :
- * ``` javascript
- * {
- *   body: {
- *     newPassword: "Nouveau mot de passe",
- *     confirmNewPassword: "Nouveau mot de passe",
- *     email: "adresse courriel",
- *     emailValidationHash: "Hash (uuid) présent dans le lien envoyé par mail",
- *   }
- * }
+ * * @async
+ * @function requestPasswdReset
+ * @see {@link http://localhost:8000/api-docs/#/default/reset-link}
  *
- * ```
- * @param {string} user vérifier si l'utilisateur est dans la base
+ * @param {import('express').Request } req
+ * @param {Object} req.body Corps de la requête
+ * @param {string} req.body.email Email de l'utilisateur
+ * @param {string} req.body.newPassword Mot de passe de l'utilisateur
+ * @param {string} req.body.confirmNewPassword Confirmation du mot de passe de l'utilisateur
+ * @param {string} req.body.emailValidationHash Email contenant un lien avec un hash
+ *
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ *
 */
+
 export const resetMyPassword = async (req, res) => {
   const loggerInfo = {
     section: 'reset-password',
@@ -250,3 +246,11 @@ export const resetMyPassword = async (req, res) => {
     })
   }
 }
+
+/**
+ *
+ * @typedef{Object} LabelValue Objet contenant une paire de clé-valeur
+ * @property{string}label Label
+ * @property{string | }
+ *
+ */
