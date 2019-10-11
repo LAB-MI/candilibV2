@@ -70,7 +70,7 @@ describe('Admin reset password', () => {
     cy.get('.submit-btn')
       .click()
     cy.get('.v-messages__message')
-      .should('contain', 'Veuillez entrez un mot de passe fort')
+      .should('contain', 'Veuillez entrer un mot de passe fort')
   })
 
   it('Successful password reset', () => {

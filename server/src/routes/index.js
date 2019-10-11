@@ -224,7 +224,7 @@ router.put('/candidat/me', emailValidation)
  *                 type: string
  *                 example: M9se5p@7
  *               confirmNewPassword:
- *                 description: Confirmation du nouveau de mot passe
+ *                 description: Confirmation du nouveau mot de passe
  *                 required: true
  *                 type: string
  *                 example: M9se5p@7

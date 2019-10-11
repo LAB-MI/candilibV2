@@ -142,7 +142,7 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           description: Hash de sécurité
  *         password:
  *           type: string
- *           description: Adresse courriel du candidat
+ *           description: Mot de passe du candidat
  *         departements:
  *           type: Array
  *           description: Département de l'utilisateur
