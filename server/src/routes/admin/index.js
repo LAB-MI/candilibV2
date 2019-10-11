@@ -44,12 +44,305 @@ router.post(
   verifyRepartiteurDepartement,
   sendScheduleInspecteurs
 )
+
+/**
+ * @swagger
+ *
+ * /admin/me:
+ *   get:
+ *     tags: [Admin]
+ *     summary: Récupération de mes infos administrateur
+ *     description: Après connexion, renvoie les infos de l'administrateur connecté (id dans le JWT envoyé en header)
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AdminInfo'
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * Après connexion, renvoie les infos de l'administrateur connecté (id dans le JWT envoyé en header)
+ *
+ * @callback getMe
+ * @see {@link http://localhost:8000/api-docs/#/default/get_admin_me}
+ */
+
+router.get('/me', getMe)
+
+/**
+ * @swagger
+ *
+ * /admin/candidats:
+ *   get:
+ *     tags: [Admin]
+ *     summary: Récupération des infos candidat
+ *     description: L'administrateur récupère les informations d'un ou plusieurs candidats
+ *     produces:
+ *      - application/json
+ *      - text/csv
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: departement
+ *         schema:
+ *           type: number
+ *           example: 93
+ *         required: false
+ *         description: Un département accessible par l'admin
+ *       - in: query
+ *         name: matching
+ *         schema:
+ *           type: string
+ *           example: 'Dupont'
+ *         required: false
+ *         description: Une chaîne de caractères pour chercher un candidat
+ *       - in: query
+ *         name: format
+ *         schema:
+ *           type: string
+ *           example: 'csv'
+ *         required: false
+ *         description:
+ *           Si `csv`, exporte les candidats au format csv.
+ *           Fonctionne correctement seulement si le champ `for` est rempli
+ *       - in: query
+ *         name: for
+ *         schema:
+ *           type: string
+ *           example: 'aurige'
+ *         required: false
+ *         description: Si `aurige`, considère que l'action aura pour but la synchronisation avec aurige
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               description: Liste des candidats correspondants aux critères
+ *               items:
+ *                 $ref: '#/components/schemas/CandidatObject'
+ *             example: [ {
+ *               isValidatedByAurige: true,
+ *               isValidatedEmail: true,
+ *               nbEchecsPratiques: 0,
+ *               _id: 5cf63145b2a7cffde20e98b7,
+ *               adresse: 40 Avenue des terroirs de France 75012 Paris,
+ *               codeNeph: 093496239512,
+ *               email: mayswaisey@candilib.com,
+ *               nomNaissance: SWAISEY,
+ *               portable: 0603765291,
+ *               prenom: MAY,
+ *               departement: 75
+ *               }]
+ *           text/csv:
+ *             schema:
+ *               type: text/csv
+ *             example: |-
+ *               Code NEPH;Nom de naissance;Nom d'usage;Prénom;email
+ *               093496239512;SWAISEY;SWAISEY;MAY;mayswaisey@candilib.com
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ * /admin/candidats/{candidatId}:
+ *   get:
+ *     tags: [Admin]
+ *     summary: Récupération des infos candidat
+ *     description: L'administrateur récupère les informations d'un candidat via son id
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: candidatId
+ *         schema:
+ *           type: string
+ *           example: '5cf63145b2a7cffde20e98b7'
+ *         required: true
+ *         description: Identifiant du candidat
+ *       - in: query
+ *         name: departement
+ *         schema:
+ *           type: number
+ *           example: 93
+ *         required: false
+ *         description: Un département accessible par l'admin
+ *     responses:
+ *       200:
+ *         description: Succès de la requête, retourne le candidat suivi des informations sur sa place en cours
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: string
+ *                   description: Status de la requête, dans ce cas `true`
+ *                 candidat:
+ *                   $ref: '#/components/schemas/CandidatObject'
+ *             example:
+ *               success: true
+ *               candidat:
+ *                 isValidatedByAurige: true
+ *                 isValidatedEmail: true
+ *                 nbEchecsPratiques: 0
+ *                 _id: 5cf63145b2a7cffde20e98b7
+ *                 adresse: 40 Avenue des terroirs de France 75012 Paris
+ *                 codeNeph: 093496239512
+ *                 email: mayswaisey@candilib.com
+ *                 nomNaissance: SWAISEY
+ *                 portable: 0603765291
+ *                 prenom: MAY
+ *                 departement: 75
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ */
+
+/**
+ * L'administrateur récupère les informations d'un ou plusieurs candidats
+ *
+ * @callback getCandidats
+ * @see {@link http://localhost:8000/api-docs/#/default/get_admin_candidats}
+ */
 router.get(
   '/candidats/:id?',
   verifyRepartiteurDepartement,
   verifyAccessAurige,
   getCandidats
 )
+
+/**
+ * @swagger
+ *
+ * /admin/candidats:
+ *   post:
+ *     tags: [Admin]
+ *     summary: Ajout des candidats
+ *     description: Import des candidats via le fichier délivré par aurige. Nécessite les droits administrateur
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               file:
+ *                 type: string
+ *                 format: binary
+ *                 description: Fichier au format JSON contenant les candidats
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               required:
+ *                 - fileName
+ *                 - success
+ *                 - message
+ *                 - candidats
+ *               properties:
+ *                 fileName:
+ *                   type: string
+ *                   description: Le nom du fichier qui a été synchronisé
+ *                 success:
+ *                   type: boolean
+ *                   description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *                 message:
+ *                   type: string
+ *                   description: Un message compréhensible par l'usager
+ *                 candidats:
+ *                   type: array
+ *                   description: La liste des candidats traités et le status du traitement
+ *                   items:
+ *                     type: object
+ *                     required:
+ *                       - nom
+ *                       - neph
+ *                       - status
+ *                       - details
+ *                       - message
+ *                     properties:
+ *                       nom:
+ *                         type: string
+ *                         description: Nom du candidat
+ *                       neph:
+ *                         type: string
+ *                         description: NEPH du candidat
+ *                       status:
+ *                         type: string
+ *                         description: status du traitement
+ *                       details:
+ *                         type: string
+ *                         description: details sur le traitement
+ *                       message:
+ *                         type: string
+ *                         description: message de retour du traitement
+ *               example:
+ *                   fileName: aurige.json
+ *                   success: true
+ *                   message: Le fichier aurige.json a été synchronisé.
+ *                   candidats: [ {
+ *                     nom: CANDIDAT,
+ *                     neph: 0123456789,
+ *                     status: error,
+ *                     details: NOT_FOUND,
+ *                     message: Ce candidat 0123456789/CANDIDAT est inconnu de Candilib
+ *                     }]
+ *
+ *       400:
+ *         description: Fichier manquant
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Fichier manquant
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * Import des candidats via le fichier délivré par aurige
+ *
+ * @callback importCandidats
+ * @see {@link http://localhost:8000/api-docs/#/default/post_admin_candidats}
+ */
 router.post(
   '/candidats',
   verifyUserLevel(config.userStatusLevels.admin),

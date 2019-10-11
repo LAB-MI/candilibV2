@@ -146,6 +146,210 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           "prenom": "MAY"
  *           "departement": "93"
  *
+ *     CandidatObject:
+ *       type: object
+ *       description: Objet candidat dans la base de données
+ *       required:
+ *         - isValidatedByAurige
+ *         - isValidatedEmail
+ *         - nbEchecsPratiques
+ *         - _id
+ *         - adresse
+ *         - codeNeph
+ *         - email
+ *         - nomNaissance
+ *         - portable
+ *         - prenom
+ *         - presignedUpAt
+ *         - departement
+ *         - noReussites
+ *       properties:
+ *         isValidatedByAurige:
+ *           type: boolean
+ *           description: Vaut `true` si le candidat a été validé par aurige
+ *         isValidatedEmail:
+ *           type: boolean
+ *           description: Vaut `true` si le candidat a validé son adresse courriel
+ *         nbEchecsPratiques:
+ *           type: number
+ *           description: Nombre d'échecs du candidat à l'épreuve pratique
+ *         _id:
+ *           type: string
+ *           description: Identifiant du candidat
+ *         adresse:
+ *           type: string
+ *           description: Adresse postale du candidat où lui seront envoyés les correspondances de l'adminstation
+ *         codeNeph:
+ *           type: string
+ *           description: NEPH du candidat
+ *         email:
+ *           type: string
+ *           description: Adresse courriel du candidat
+ *         emailValidationHash:
+ *           type: string
+ *           description: Hash de validation du courriel
+ *         nomNaissance:
+ *           type: string
+ *           description: Nom de naissance du candidat
+ *         portable:
+ *           type: string
+ *           description: Numéro de mobile du candidat
+ *         prenom:
+ *           type: string
+ *           description: Prénom du candidat
+ *         presignedUpAt:
+ *           type: string
+ *           description: Date et heure de la préinscription du candidat
+ *         departement:
+ *           type: string
+ *           description: Département du candidat
+ *         noReussites:
+ *           type: array
+ *           description: Liste des précédents échecs à l'épreuve pratique et causes
+ *           items:
+ *             type: object
+ *             description: Informations sur l'échec à l'épreuve pratique
+ *             required:
+ *               - _id
+ *               - date
+ *               - reason
+ *             properties:
+ *               _id:
+ *                 type: string
+ *                 description: Identifiant de l'échec
+ *               date:
+ *                 type: string
+ *                 description: Date et heure de l'échec
+ *               reason:
+ *                 type: string
+ *                 description: Raison de l'échec
+ *         canBookFrom:
+ *           type: string
+ *           description: Date et heure à partir de laquelle le candidat peut réserver une place
+ *         dateReussiteETG:
+ *           type: string
+ *           description: Date et heure de la réussite de l'épreuve théorique
+ *         firstConnection:
+ *           type: string
+ *           description: Date et heure de la première connexion à Candilib
+ *         places:
+ *           type: array
+ *           description: Liste des places réservées par le candidat
+ *           items:
+ *             type: object
+ *             description: Informations sur la place
+ *             required:
+ *               - _id
+ *               - inspecteur
+ *               - centre
+ *               - date
+ *               - bookedAt
+ *             properties:
+ *               _id:
+ *                 type: string
+ *                 description: Identifiant de la place
+ *               inspecteur:
+ *                 type: string
+ *                 description: Identifiant de l'inspecteur affecté à la place
+ *               centre:
+ *                 type: string
+ *                 description: Identifiant du centre d'examen
+ *               date:
+ *                 type: string
+ *                 description: Date et heure de l'examen
+ *               archivedAt:
+ *                 type: string
+ *                 description: Date et heure à laquelle la place a été archivée
+ *               archiveReason:
+ *                 type: string
+ *                 description: Raison pour l'archivage de la place
+ *               byUser:
+ *                 type: string
+ *                 description: Adresse courriel de l'utilisateur responsable de l'archivage
+ *               bookedAt:
+ *                 type: string
+ *                 description: Date et heure à laquelle la réservation a été prise
+ *               bookedByAdmin:
+ *                 type: object
+ *                 description: Information sur l'administrateur ayant fait la réservation, si applicable
+ *                 required:
+ *                   - _id
+ *                   - departements
+ *                   - signUpDate
+ *                   - status
+ *                   - email
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     description: Identifiant de l'administrateur
+ *                   departements:
+ *                     type: array
+ *                     description: Liste des Départements accessibles par l'administrateur
+ *                     items:
+ *                       type: number
+ *                   signUpDate:
+ *                     type: string
+ *                     description: Date et heure à laquelle l'administrateur à été créé
+ *                   status:
+ *                     type: string
+ *                     description: Role de l'administrateur, par exemple répartiteur
+ *                   email:
+ *                     type: string
+ *                     description: Adresse courriel de l'administrateur
+ *         resaCanceledByAdmin:
+ *           type: string
+ *           description: Date et heure de la dernière annulation de place faite par un administrateur
+ *
+ *     AdminInfo:
+ *       type: object
+ *       required:
+ *         - email
+ *         - departements
+ *         - features
+ *         - emailsDepartements
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: Adresse courriel de l'administrateur
+ *         departements:
+ *           type: array
+ *           description: Liste des Départements accessibles par l'administrateur
+ *           items:
+ *             type: number
+ *         features:
+ *           type: array
+ *           description: Liste de fonctionnalités accessibles par l'administrateur
+ *           items:
+ *             type: string
+ *         emailsDepartements:
+ *           type: array
+ *           description: Liste contenant les objet départements de la base de données accessibles par l'administrateur
+ *           items:
+ *             type: object
+ *             required:
+ *               - _id
+ *               - email
+ *             properties:
+ *               _id:
+ *                 type: number
+ *                 description: le code du département
+ *               email:
+ *                 type: string
+ *                 description: l'adresse courriel liée au département
+ *
+ *       example:
+ *         email: admin@exemple.com
+ *         departements: [
+ *           75
+ *         ]
+ *         features: [
+ *           aurige
+ *         ]
+ *         emailsDepartements: [ {
+ *           _id: 75,
+ *           email: email75@departement.com
+ *         } ]
+ *
  *     StatsKpiPlacesExams:
  *       type: object
  *       required:
