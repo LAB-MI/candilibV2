@@ -246,3 +246,11 @@ export const resetMyPassword = async (req, res) => {
     })
   }
 }
+
+/**
+ *
+ * @typedef{Object} LabelValue Objet contenant une paire de clé-valeur
+ * @property{string}label Label
+ * @property{string | }
+ *
+ */
