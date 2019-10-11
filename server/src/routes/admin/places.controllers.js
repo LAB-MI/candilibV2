@@ -286,7 +286,6 @@ export const deletePlacesByAdmin = async (req, res) => {
             placeId,
             action: 'DELETE_RESA_NOT_FOUND',
             description: `La place selectionnée avec l'id: [${placeId}] a déjà été supprimée`,
-            result: placeFound,
           })
           return
         }
@@ -294,7 +293,10 @@ export const deletePlacesByAdmin = async (req, res) => {
         if (candidat) {
           const candidatFound = await findCandidatById(candidat)
           if (candidatFound) {
-            const removedPlace = await removeReservationPlaceByAdmin(
+            const {
+              statusmail,
+              messsage,
+            } = await removeReservationPlaceByAdmin(
               placeFound,
               candidatFound,
               adminId
@@ -302,11 +304,14 @@ export const deletePlacesByAdmin = async (req, res) => {
             appLogger.info({
               ...loggerInfo,
               placeId,
-              candidat,
+              candidatId: candidat._id,
               action: 'DELETE_RESA',
               description:
                 'Remove booked Place By Admin and send email to candidat',
-              result: removedPlace,
+              result: {
+                statusmail,
+                messsage,
+              },
             })
             return
           }
@@ -316,7 +321,13 @@ export const deletePlacesByAdmin = async (req, res) => {
           ...loggerInfo,
           action: 'DELETE_PLACE',
           description: 'Remove Place By Admin',
-          result: removedPlace,
+          place: {
+            _id: removedPlace._id,
+            centreId: removedPlace.centre._id,
+            inspecteurId: removedPlace.inspecteur._id,
+            date: removedPlace.date,
+            candidatId: removedPlace.candidat && removedPlace.candidat._id,
+          },
         })
       })
     )
