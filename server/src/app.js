@@ -121,93 +121,41 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *               type: string
  *               description: Département du candidat
  *       example:
- *         candidat:
- *           adresse: 40 Avenue des terroirs de France 93000 Villepinte
- *           codeNeph: 093496239512
- *           email: mayswaisey@candilib.com
- *           nomNaissance: SWAISEY
- *           portable: 0603765291
- *           prenom: MAY
- *           departement: 93
-
- *     User:
+ *         "candidat":
+ *           "adresse": "40 Avenue des terroirs de France 93000 Villepinte"
+ *           "codeNeph": "093496239512"
+ *           "email": "mayswaisey@candilib.com"
+ *           "nomNaissance": "SWAISEY"
+ *           "portable": "0603765291"
+ *           "prenom": "MAY"
+ *           "departement": "93"
+ *
+ *     StatsKpi:
  *       type: object
- *       description: Informations sur l'utilisateur
+ *       required:
+ *         - success
+ *         - message
  *       properties:
- *         email:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
  *           type: string
- *           description: adresse email de l'utilisateur
- *         emailValidationHash:
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
  *           type: string
- *           description: Hash de sécurité
- *         password:
- *           type: string
- *           description: Mot de passe du candidat
- *         departements:
- *           type: Array
- *           description: Département de l'utilisateur
- *         isDeleted:
- *           type: Boolean
- *           description:
- *         signUpDate:
- *           type: string
- *           description: Date d'enregistement
- *         status:
- *           type: string
- *           description:
+ *           description: Liste des stats par département
  *       example:
- *         user:
- *           email: admin@email.fr
- *           emailValidationHash:
- *           password: 759DS56SD2
- *           departements: 93
- *           isDeleted: true
- *           signUpDate: 15-09-2019
- *           status: admin
-
- *     User:
- *       type: object
- *       properties:
- *         user:
- *           type: object
- *           description: Informations sur l'utilisateur
- *           properties:
- *             "email":
- *               type: string
- *               description: adresse email de l'utilisateur
- *             "emailValidationHash":
- *               type: string
- *               description: Hash de sécurité
- *             "password":
- *               type: string
- *               description: Adresse courriel du candidat
- *             "departements":
- *               type: Array
- *               description: Département de l'utilisateur
- *             "isDeleted":
- *               type: Boolean
- *               description:
- *             "signUpDate":
- *               type: string
- *               description: Date d'enregistement
- *             "status":
- *               type: string
- *               description:
- *       example:
- *         "user":
- *           "email": "admin@email.fr"
- *           "emailValidationHash": ""
- *           "password": "759DS56SD2"
- *           "département": "93"
- *           "isDeleted": "true"
- *           "signUpDate": "15-09-2019"
- *           "status": "admin"
-
- *     CentresInfo:
- *       type: object
- *       properties:
- *         candidat:
- *           type: string
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *         statsKpi: [{
+ *             beginDate: 2019-10-10T22:00:00.000Z,
+ *             departement: 93,
+ *             totalBookedPlaces: 2,
+ *             totalPlaces: 622,
+ *             totalCandidatsInscrits: 0,
+ *          }]
+ *
  *
  *   responses:
  *     InvalidPasswordResponse:
@@ -316,7 +264,7 @@ if (isDevelopment) {
         },
       ],
     },
-    apis: ['./src/app.js', './src/routes/**/*.js'], // <-- We add this property:
+    apis: ['./src/app.js', './src/routes/**/*.js'],
   }
 
   const specs = swaggerJsdoc(options)

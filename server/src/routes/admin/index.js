@@ -17,7 +17,10 @@ import {
   sendScheduleInspecteurs,
   updatePlaces,
 } from './places.controllers'
-import { getStats } from './statistics.controllers'
+import {
+  getStatsPlacesExam,
+  getStatsResultsExam,
+} from './statistics.controllers'
 import { removeReservationByAdmin } from './reservations.controllers'
 import {
   getWhitelisted,
@@ -36,7 +39,11 @@ const router = express.Router()
 
 router.use(verifyRepartiteurLevel)
 
-router.get('/me', getMe)
+router.post(
+  '/bordereaux',
+  verifyRepartiteurDepartement,
+  sendScheduleInspecteurs
+)
 router.get(
   '/candidats/:id?',
   verifyRepartiteurDepartement,
@@ -45,19 +52,64 @@ router.get(
 )
 router.post('/candidats', verifyAdminLevel, importCandidats)
 router.get('/inspecteurs', getInspecteurs)
+router.get('/me', getMe)
 router.post('/place', verifyRepartiteurDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
-router.get('/stats', verifyDelegueLevel, getStats)
 router.post('/places', verifyRepartiteurDepartement, importPlaces)
 router.delete('/places', deletePlacesByAdmin)
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
-router.post(
-  '/bordereaux',
-  verifyRepartiteurDepartement,
-  sendScheduleInspecteurs
-)
 router.delete('/reservations/:id', removeReservationByAdmin)
+
+/**
+ * @swagger
+ *
+ * /admin/stats:
+ *   get:
+ *     summary: Récupération des statsKpi
+ *     description: Permet de récupérer les statistiques de chaque département 14.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: beginPeriod
+ *         shema:
+ *           type: string
+ *           example: 2019-10-10T22:00:00.000Z
+ *         description: Date de début de période
+ *
+ *     responses:
+ *       500:
+ *         description: Erreur lors de la récupération des départements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Oups, un problème est survenu. L'administrateur a été prévenu.
+ *       200:
+ *         description: Stats par départements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/StatsKpi'
+ *                 - example:
+ *                     success: true
+ *                     message: Les stats ont bien été mises à jour
+ *                     statsKpi: [{
+ *                         beginDate: 2019-10-10T22:00:00.000Z,
+ *                         departement: 93,
+ *                         totalBookedPlaces: 2,
+ *                         totalPlaces: 622,
+ *                         totalCandidatsInscrits: 0
+ *                      }]
+ */
+
+router.get('/stats-places-exams', getStatsPlacesExam)
+router.get('/stats-results-exams', getStatsResultsExam)
 
 router
   .route('/whitelisted/:id')

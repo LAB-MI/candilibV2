@@ -1,6 +1,7 @@
 import archivedCandidatModel from '../../models/archived-candidat/archived-candidat.model'
 import candidatModel from '../../models/candidat/candidat.model'
 import whitelistedModel from '../../models/whitelisted/whitelisted.model'
+import { countCandidatsInscritsByDepartement } from '../../models/candidat/candidat.queries'
 import { countPlacesBookedOrNot } from '../../models/place/place.queries'
 
 import {
@@ -48,6 +49,9 @@ export const getPlacesByDpt = async (departement, beginDate) => {
     departement,
     totalBookedPlaces: await countPlacesBookedOrNot(centres, beginDate, true),
     totalPlaces: await countPlacesBookedOrNot(centres, beginDate, false),
+    totalCandidatsInscrits: await countCandidatsInscritsByDepartement(
+      departement
+    ),
   }
 }
 
@@ -130,7 +134,7 @@ export const countSuccessByCentres = async (
   if (centres) {
     expression['places.centre'] = { $in: centres }
   }
-  // TODO: Use begin and end value
+
   if (beginPeriode || endPeriode) {
     expression['places.date'] = {}
     if (beginPeriode) {

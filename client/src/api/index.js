@@ -332,19 +332,30 @@ export default {
       return json
     },
 
-    async exportStatsKpi (beginPeriode = '', endPeriode = '', isCsv = false, isPlacesExam = false) {
-      const queryString = `isPlacesExam=${isPlacesExam}&isCsv=${isCsv}&beginPeriode=${encodeURIComponent(beginPeriode)}&endPeriode=${encodeURIComponent(endPeriode)}`
-      const path = `${apiPaths.admin.exportStatsKpi}?${queryString}`
+    exportResultsExamsStatsKpi (beginPeriod = '', endPeriod = '', isCsv = false) {
+      const queryString = `isCsv=${isCsv}&beginPeriod=${encodeURIComponent(beginPeriod)}&endPeriod=${encodeURIComponent(endPeriod)}`
+      const path = `${apiPaths.admin.exportResultsExamsStatsKpi}?${queryString}`
       const headers = {
         headers: getAdminTokenHeader(),
       }
 
       if (isCsv) {
-        const json = await apiClient.getRaw(path, headers)
-        return json
+        return apiClient.getRaw(path, headers)
       }
-      const json = await apiClient.get(path, headers)
-      return json
+      return apiClient.get(path, headers)
+    },
+
+    exportPlacesExamsStatsKpi (isCsv = false) {
+      const queryString = `isCsv=${isCsv}`
+      const path = `${apiPaths.admin.exportPlacesExamsStatsKpi}?${queryString}`
+      const headers = {
+        headers: getAdminTokenHeader(),
+      }
+
+      if (isCsv) {
+        return apiClient.getRaw(path, headers)
+      }
+      return apiClient.get(path, headers)
     },
 
     async uploadPlacesCSV (body) {

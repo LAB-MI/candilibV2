@@ -1,66 +1,79 @@
 <template>
   <v-card>
     <v-card-title class="justify-center">
-      <h3 class="d-block">{{  $formatMessage({ id: 'departement' }) }}<strong> {{ `${statsResultsExamValues.departement}` }}</strong></h3>
+      <h3 class="d-block">
+        {{ $formatMessage({ id: 'departement' }) }}
+        <strong>
+          {{ `${statsResultsExamValues.departement}` }}
+        </strong>
+      </h3>
     </v-card-title>
 
     <v-divider/>
 
-    <v-layout>
+    <div class="stats  u-flex  u-flex--center">
 
-      <v-container>
+      <div>
         <h3 style="color: #00b0ff;">
-          {{  $formatMessage({ id: 'resultats_a_lexamen' }) }}
+          {{ $formatMessage({ id: 'resultats_a_lexamen' }) }}
         </h3>
-          <v-layout>
-            <chart-content
-              v-for="(chartInfo, idx) in getChartsResultsExams()"
-              :key="`${chartInfo.classContent}-${idx}`"
-              :chartInfo="chartInfo"
-            />
-          </v-layout>
-      </v-container>
-
-      <v-container>
-        <h1 class="d-block pl-5 mb-3">
-          <strong>
-            {{ `${getTotalPlace()}` }}
-          </strong>
-        </h1>
-        <span class="d-block">
-          <strong>
-            {{  $formatMessage({ id: 'examens_passes' }) }}
-          </strong>
-        </span>
-      </v-container>
-
-    </v-layout>
-
-    <v-divider/>
-
-    <v-layout>
-      <v-container>
-        <h3 style="color: #388e3c;">
-          {{  $formatMessage({ id: 'places_examens' }) }}
-        </h3>
-        <v-layout>
-          <chart-content
-            v-for="(chartInfo, idx) in getChartsPlacesExams()"
+        <div class="u-flex  u-flex--wrap  u-flex--center">
+          <donuts-chart-content
+            class="u-flex__item pa-3"
+            v-for="(chartInfo, idx) in getChartsResultsExams()"
             :key="`${chartInfo.classContent}-${idx}`"
             :chartInfo="chartInfo"
           />
-        </v-layout>
+          <div class="u-flex__item">
+            <strong class="total-places">
+              {{ `${getTotalPlaces()}` }}
+            </strong>
+            <strong class="d-block">
+              {{ $formatMessage({ id: 'examens_passes' }) }}
+            </strong>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <v-divider/>
+
+    <div style="margin-left: 6.5vw;">
+      <v-container>
+        <h3 style="color: #388e3c;">
+          {{ $formatMessage({ id: 'places_examens' }) }}
+        </h3>
+
+        <div class="u-flex  u-flex--wrap  u-flex--center">
+          <donuts-chart-content
+            class="u-flex__item pa-3"
+            v-for="(chartInfo, idx) in chartsPlacesExams"
+            :key="`${chartInfo.classContent}-${idx}`"
+            :chartInfo="chartInfo"
+          />
+          <div class="u-flex__item pa-3">
+            <chart-bar
+              class="chart-wrapper"
+              :labels="labels"
+              :datasets="datasets"
+            />
+          </div>
+        </div>
+
       </v-container>
-    </v-layout>
+    </div>
   </v-card>
 </template>
 
 <script>
-import ChartContent from './ChartContent.vue'
+import DonutsChartContent from './DonutsChartContent.vue'
+import ChartBar from './ChartBar.vue'
 
 export default {
   components: {
-    ChartContent,
+    DonutsChartContent,
+    ChartBar,
   },
 
   props: {
@@ -73,78 +86,113 @@ export default {
     },
   },
 
+  data () {
+    return {
+      labels: [[`Stats:`]],
+    }
+  },
+
   computed: {
-    getPourcentPlacesExamBookedOrNot () {
-      return Math.round(((this.statsPlacesExamValues && this.statsPlacesExamValues.totalBookedPlaces) / (this.statsPlacesExamValues && this.statsPlacesExamValues.totalPlaces)) * 100)
+    percentPlacesExamBookedOrNot () {
+      const totalBookedPlaces = (this.statsPlacesExamValues && this.statsPlacesExamValues.totalBookedPlaces) || 0
+      const totalPlaces = (this.statsPlacesExamValues && this.statsPlacesExamValues.totalPlaces) || 1
+      return Math.round((totalBookedPlaces / totalPlaces) * 100)
     },
 
-    getTotalPlace () {
+    chartsPlacesExams () {
+      return [
+        {
+          title: this.$formatMessage({ id: 'de_remplissage_de_places_a_venir' }),
+          description: this.$formatMessage({ id: 'egale_reservation_a_venir_divise_places_proposees_dans_le_futur' }),
+          value: this.percentPlacesExamBookedOrNot,
+          colorProgress: '#388E3C',
+        },
+      ]
+    },
+
+    datasets () {
+      const { totalBookedPlaces, totalPlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
+      return [
+        {
+          label: 'Places réservées',
+          backgroundColor: 'rgba(75, 192, 192, 0.2)',
+          borderColor: 'rgba(75, 192, 192, 1)',
+          borderWidth: 3,
+          data: [
+            totalBookedPlaces || 0,
+          ],
+        },
+        {
+          label: 'Places à venir',
+          backgroundColor: 'rgba(153, 102, 255, 0.2)',
+          borderColor: 'rgba(153, 102, 255, 1)',
+          borderWidth: 3,
+          data: [
+            totalPlaces || 0,
+          ],
+        },
+        {
+          label: 'Candidats inscrits',
+          backgroundColor: 'rgba(255, 159, 64, 0.2)',
+          borderColor: 'rgba(255, 159, 64, 1)',
+          borderWidth: 3,
+          data: [
+            totalCandidatsInscrits || 0,
+          ],
+        },
+      ]
+    },
+
+  methods: {
+    getTotalPlaces () {
       return (this.statsResultsExamValues.absent + this.statsResultsExamValues.failed + this.statsResultsExamValues.notExamined + this.statsResultsExamValues.received) || 0
     },
   },
 
   methods: {
     getChartsResultsExams () {
-      return [
-        {
-          formatMessagesIds: {
-            id1: 'de_reussite',
-            id2: 'egale_recus_divise_reçus_plus_echecs',
-          },
-          classContent: 'd-block',
-          rotate: 90,
-          size: 150,
-          width: 15,
-          value: ((this.statsResultsExamValues.received / this.getTotalPlace()) * 100) || 0,
-          colorProgress: '#00B0FF',
-          colorLabel: 'black',
-        },
-        {
-          formatMessagesIds: {
-            id1: 'd_absenteisme',
-            id2: 'egale_absents_divise_examens_passes',
-          },
-          classContent: 'd-block',
-          rotate: 90,
-          size: 150,
-          width: 15,
-          value: ((this.statsResultsExamValues.absent / this.getTotalPlace()) * 100) || 0,
-          colorProgress: '#00B0FF',
-          colorLabel: 'black',
-        },
-        {
-          formatMessagesIds: {
-            id1: 'de_non_examines',
-            id2: 'egale_non_examinés_divise_examens_passes',
-          },
-          classContent: 'd-block',
-          rotate: 90,
-          size: 150,
-          width: 15,
-          value: ((this.statsResultsExamValues.notExamined / this.getTotalPlace()) * 100) || 0,
-          colorProgress: '#00B0FF',
-          colorLabel: 'black',
-        },
-      ]
-    },
+      const totalPlacesCount = this.getTotalPlaces()
+      const { received, absent, notExamined } = this.statsResultsExamValues
 
-    getChartsPlacesExams () {
       return [
         {
-          formatMessagesIds: {
-            id1: 'de_remplissage_de_places_a_venir',
-            id2: 'egale_reservation_a_venir_divise_places_proposees_dans_le_futur',
-          },
-          classContent: 'd-block',
-          rotate: 90,
-          size: 150,
-          width: 15,
-          value: this.getPourcentPlacesExamBookedOrNot,
-          colorProgress: '#388E3C',
-          colorLabel: 'black',
+          title: this.$formatMessage({ id: 'de_reussite' }),
+          description: this.$formatMessage({ id: 'egale_recus_divise_reçus_plus_echecs' }),
+          value: ((received / totalPlacesCount) * 100) || 0,
+          colorProgress: '#00B0FF',
+        },
+        {
+          title: this.$formatMessage({ id: 'd_absenteisme' }),
+          description: this.$formatMessage({ id: 'egale_absents_divise_examens_passes' }),
+          value: ((absent / totalPlacesCount) * 100) || 0,
+          colorProgress: '#00B0FF',
+        },
+        {
+          title: this.$formatMessage({ id: 'de_non_examines' }),
+          description: this.$formatMessage({ id: 'egale_non_examinés_divise_examens_passes' }),
+          value: ((notExamined / totalPlacesCount) * 100) || 0,
+          colorProgress: '#00B0FF',
         },
       ]
     },
   },
 }
 </script>
+
+<style lang="stylus" scoped>
+.stats {
+  padding: 1em;
+}
+
+.total-places {
+  display: block;
+  margin: 0 0.4em;
+  font-size: 2em;
+  margin-left: 3vw;
+}
+
+.chart-wrapper {
+  width: 30vw;
+  height: 20vh;
+}
+</style>
