@@ -204,21 +204,35 @@ export const bookPlace = async (candidatId, centre, date) => {
  * @async
  * @function
  *
- * @param {string} bookedPlace Id du candidat
+ * @param {PlaceModel} bookedPlace place réservée par le candidat
  * @param {boolean} isModified Booléen à `true` s'il s'agit d'une modification, à `false` ou `undefined` s'il s'agit d'une annulation
- *
+ * @param {object} loggerContent information pour les traces de l'application
  * @returns {RemoveReservationReturn} Informations à afficher au client
  */
-export const removeReservationPlace = async (bookedPlace, isModified) => {
+export const removeReservationPlace = async (
+  bookedPlace,
+  isModified,
+  loggerContent
+) => {
+  let loggerInfo = loggerContent
+  if (!loggerInfo) {
+    loggerInfo = {}
+  }
+  loggerInfo.isModified = isModified
+  loggerInfo.bookedPlaceId = bookedPlace._id
+  loggerInfo.func = 'removeReservationPlace'
+  loggerInfo.action = 'CALL_REMOVE_BOOKING'
   const candidat = bookedPlace.candidat
   if (!candidat) {
-    throw new Error("Il n'y pas de candidat pour annuler la reservation")
+    throw new Error("Il n'y pas de candidat pour annuler la réservation")
   }
-  const { _id: candidatId } = candidat
 
   let dateAfterBook
+  loggerInfo.action = 'CANCEL_BOOKING_RULES'
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
+  loggerInfo.action = 'REMOVE_BOOKING'
   await removeBookedPlace(bookedPlace)
+  loggerInfo.action = 'ARCHIVE_PLACE'
   await archivePlace(
     candidat,
     bookedPlace,
@@ -243,11 +257,11 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
   }
 
   try {
+    loggerInfo.action = 'SEND_MAIL'
     await sendCancelBooking(candidat, bookedPlace)
 
     appLogger.info({
-      section: 'candidat-removeReservation',
-      candidatId,
+      ...loggerInfo,
       success: true,
       statusmail,
       description: message,
@@ -255,7 +269,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
     })
   } catch (error) {
     techLogger.error({
-      section: 'candidat-removeReservation',
+      ...loggerInfo,
       action: 'FAILED_SEND_MAIL',
       description: error.message,
       error,
