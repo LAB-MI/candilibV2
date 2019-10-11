@@ -78,7 +78,7 @@ export default {
       passwordRules: [
         value => !!value || ('Veuillez renseigner votre mot de passe'),
         value => strongEnoughPassword.every(regex => regex.test(value)) ||
-          'Veuillez entrez un mot de passe fort',
+          'Veuillez entrer un mot de passe fort',
       ],
       confirmNewPasswordRules: [
         value => !!value || ('Veuillez confirmer votre mot de passe'),
