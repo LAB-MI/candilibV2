@@ -5,12 +5,10 @@
  */
 
 import getConfig from '../config.js'
-import luxon from 'luxon'
+import { DateTime } from 'luxon'
 import { postJson, appLogger } from '../utils/index.js'
 
 import { getToken } from './get-token.js'
-
-const DateTime = luxon.DateTime
 
 /**
  * @function
