@@ -5,13 +5,14 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --watch src --watch .env --experimental-modules src/index.js",
+    "dev": "nodemon --watch src --watch .env -r esm --experimental-modules src/index.js",
     "lint": "eslint src",
     "jsdoc:watch": "nodemon --watch src --watch README.md --exec 'npm run jsdoc'",
     "jsdoc:serve": "browser-sync start --port 3010 --no-ui --server --open --files out/**/* --ss out",
     "jsdoc-dev": "run-p jsdoc:*",
     "jsdoc": "jsdoc -c jsdoc-config.js -r src README.md",
-    "start": "node --experimental-modules src/index.js"
+    "start": "node -r esm --experimental-modules src/index.js",
+    "start:pm2": "pm2 start ecosystem.config.js --env production"
   },
   "keywords": [],
   "author": "",
@@ -21,6 +22,8 @@
     "@types/js-base64": "^2.3.1",
     "agenda": "^2.1.0",
     "dotenv": "^8.1.0",
+    "esm": "^3.2.25",
+    "full-icu": "^1.3.0",
     "js-base64": "^2.5.1",
     "luxon": "^1.19.2",
     "superagent": "^5.1.0",

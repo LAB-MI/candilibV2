@@ -81,7 +81,7 @@ const logJsonFormat = printf(({ label, level, message, timestamp }) => {
   })
 })
 
-const logFormat = printf(({ level, message }) => `${level} ${message}`)
+const logFormat = printf(({ level, message }) => `${level} ${typeof message === 'string' ? message : message.description}`)
 
 export const techLogger = createLogger({
   format: combine(
