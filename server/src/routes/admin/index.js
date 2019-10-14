@@ -119,14 +119,16 @@ router.get('/me', getMe)
  *         required: false
  *         description:
  *           Si `csv`, exporte les candidats au format csv.
- *           Fonctionne correctement seulement si le champ `for` est rempli
+ *           Fonctionne correctement seulement si le champ `for` est rempli avec `aurige`
  *       - in: query
  *         name: for
  *         schema:
  *           type: string
  *           example: 'aurige'
  *         required: false
- *         description: Si `aurige`, considère que l'action aura pour but la synchronisation avec aurige
+ *         description:
+ *           Si `aurige`, considère que l'action aura pour but la synchronisation avec aurige.
+ *           Généralement utilisé dans le cas d'un export csv.
  *     responses:
  *       200:
  *         description: Succès de la requête
@@ -348,8 +350,135 @@ router.post(
   verifyUserLevel(config.userStatusLevels.admin),
   importCandidats
 )
+
+/**
+ * @swagger
+ *
+ * /admin/inspecteurs:
+ *   get:
+ *     tags: [Admin]
+ *     summary: Récupération des infos inspecteur
+ *     description: L'administrateur récupère les informations d'un ou plusieurs inspecteurs
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: matching
+ *         schema:
+ *           type: string
+ *           example: Dupont
+ *         required: false
+ *         description: Une chaîne de caractères pour chercher un inspecteur
+ *       - in: query
+ *         name: departement
+ *         schema:
+ *           type: number
+ *           example: 93
+ *         required: false
+ *         description: S'il est entré comme seul paramètre, renvoie tous les inspecteurs d'un département
+ *       - in: query
+ *         name: centreId
+ *         schema:
+ *           type: string
+ *           example: 5d8b7c6429cd5b2468d3f161
+ *         required: false
+ *         description:
+ *           Remplir pour chercher les inspecteurs affectés à un centre pendant une période donnée.
+ *           Ne fonctionne que si `begin` et `end` sont aussi paramétrés
+ *       - in: query
+ *         name: begin
+ *         schema:
+ *           type: string
+ *           example: 2019-09-25 14:40:36.724Z
+ *         required: false
+ *         description:
+ *           Début de la période de recherche d'inspecteurs.
+ *           Ne fonctionne que si `centreId` et `end` sont aussi paramétrés
+ *       - in: query
+ *         name: end
+ *         schema:
+ *           type: string
+ *           example: 2019-09-25 14:40:36.724Z
+ *         required: false
+ *         description:
+ *           Fin de la période de recherche d'inspecteurs.
+ *           Ne fonctionne que si `centreId` et `begin` sont aussi paramétrés
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               description: Liste des inspecteurs correspondants aux critères
+ *               items:
+ *                 type: object
+ *                 description: Informations de l'inspecteur
+ *                 required:
+ *                   - _id
+ *                   - email
+ *                   - matricule
+ *                   - nom
+ *                   - prenom
+ *                   - departement
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     description: Identifiant de l'inspecteur
+ *                   email:
+ *                     type: string
+ *                     description: Adresse courriel de l'inspecteur
+ *                   matricule:
+ *                     type: string
+ *                     description: Matricule de l'inspecteur
+ *                   nom:
+ *                     type: string
+ *                     description: Nom de l'inspecteur
+ *                   prenom:
+ *                     type: string
+ *                     description: Prénom de l'inspecteur
+ *                   departement:
+ *                     type: string
+ *                     description: Code du département de l'inspecteur
+ *             example: [ {
+ *               _id: 5d970a006a503f67d254124d,
+ *               email: dupond.jacques@email.fr,
+ *               matricule: 01020301,
+ *               nom: DUPOND,
+ *               prenom: Jacques,
+ *               departement: 93
+ *               }]
+ *
+ *       400:
+ *         description: Les paramètres de la requête ne conviennent pas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Certains paramètres ne sont pas définis
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * L'administrateur récupère les informations d'un ou plusieurs inspecteurs
+ *
+ * @callback getInspecteurs
+ * @see {@link http://localhost:8000/api-docs/#/default/get_admin_inspecteurs}
+ */
 router.get('/inspecteurs', getInspecteurs)
-router.get('/me', getMe)
+
 router.post('/place', verifyRepartiteurDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
