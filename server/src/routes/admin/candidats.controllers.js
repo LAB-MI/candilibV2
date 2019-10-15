@@ -195,16 +195,6 @@ export const getCandidats = async (req, res) => {
       res.json(candidats)
       return
     }
-    // Obtenir la list des candidats qui ont réservé
-    if (filter === 'resa') {
-      loggerInfo.action = 'INFO-RESA'
-      loggerInfo.filter = filter
-      loggerInfo.format = format
-      appLogger.info(loggerInfo)
-
-      getBookedCandidats(req, res)
-      return
-    }
 
     // Obtenir la list des candidats
     // TODO: A revoir : Performance et utilité
@@ -223,14 +213,14 @@ export const getCandidats = async (req, res) => {
         candidatsLean.map(async candidat => {
           const { _id } = candidat
           const places = await findPlaceByCandidatId(_id)
-          if (places.length > 1) {
+          if (places && places.length > 1) {
             appLogger.warn({
               ...loggerInfo,
               candidatId: _id,
               description: `Le candidat ${candidat.codeNeph} / '${candidat.nomNaissance} a plusieurs places d'examens`,
             })
           }
-          candidat.place = places[0] || {}
+          candidat.place = (places && places[0]) || {}
           return candidat
         })
       )

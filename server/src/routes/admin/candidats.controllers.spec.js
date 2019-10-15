@@ -11,7 +11,6 @@ const {
   candidats,
   createCentres,
   removeCentres,
-  NUMBER_RESA,
 } = require('../../models/__tests__')
 
 const { default: app, apiPrefix } = require('../../app')
@@ -59,26 +58,5 @@ xdescribe('Test get and export candidats', () => {
 
     expect(text).not.toBe(expect.anything())
     expect(text.split('\n').length).toBe(candidats.length + 1)
-  })
-  it('Should response 200 with list booked candidats', async () => {
-    const { body } = await request(app)
-      .get(`${apiPrefix}/admin/candidats?filter=resa&departement=93`)
-      .set('Accept', 'application/json')
-      .expect('Content-Type', 'application/json; charset=utf-8')
-      .expect(200)
-
-    expect(body.length).toBe(NUMBER_RESA)
-  })
-  it('Should response 200 with list booked candidats in a file', async () => {
-    const { text } = await request(app)
-      .get(`${apiPrefix}/admin/candidats?format=csv&filter=resa&departement=93`)
-      .expect('Content-Type', 'text/csv; charset=utf-8')
-      .expect(
-        'Content-Disposition',
-        'attachment; filename="candidatsLibresReserve.csv"'
-      )
-      .expect(200)
-    expect(text).not.toBe(expect.anything())
-    expect(text.split('\n').length).toBe(NUMBER_RESA + 1)
   })
 })

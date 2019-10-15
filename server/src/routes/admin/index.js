@@ -676,7 +676,7 @@ router
  *   get:
  *     tags: [Admin]
  *     summary: Récupération d'éléments de la liste blanche
- *     description: 
+ *     description:
  *       L'administrateur récupère une ou plusieures adresses de la liste blanche.
  *       Si le paramètre `matching` n'est pas entré, cela renvoie les dernières adresses rentrées dans la base
  *     produces:
@@ -699,7 +699,7 @@ router
  *           application/json:
  *             schema:
  *               type: array
- *               description: 
+ *               description:
  *                 Liste des adresses trouvées.
  *                 Si le paramètre `matching` n'est pas entré, cette liste se trouve dans une propriétée `lastCreated`
  *               items:
