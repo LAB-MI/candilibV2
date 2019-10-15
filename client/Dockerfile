@@ -79,7 +79,7 @@ RUN npm --no-git-tag-version version ${APP_VERSION} && \
     npm cache clean --force
 
 # Deliver the dist folder with Nginx
-FROM nginx:stable
+FROM nginx:stable as nginx-production
 ARG CLIENT_BUILD_TARGET
 ARG PUBLIC_PATH
 COPY --from=production /app/dist /usr/share/nginx/html
@@ -90,3 +90,21 @@ RUN [ -f "/run.sh" ] && chmod +x /run.sh ; sed -i -e "s|<PUBLIC_PATH>|${PUBLIC_P
 
 CMD ["/run.sh"]
 
+###############################
+# Step 5: "e2e" target        #
+###############################
+FROM nginx:stable as e2e
+ARG CLIENT_BUILD_TARGET
+ARG PUBLIC_PATH
+ARG MIRROR_DEBIAN
+COPY --from=production /app/dist /usr/share/nginx/html
+COPY nginx/nginx-run-${CLIENT_BUILD_TARGET}.template /etc/nginx/conf.d/default.template
+COPY nginx/nginx.template /etc/nginx/nginx.template
+COPY nginx/e2e-run.sh /e2e-run.sh
+RUN [ -f "/e2e-run.sh" ] && chmod +x /e2e-run.sh ; sed -i -e "s|<PUBLIC_PATH>|${PUBLIC_PATH}|g;" /etc/nginx/conf.d/default.template ; \
+    runDeps="faketime libfaketime" ; \
+     echo "$http_proxy $no_proxy" && set -x && [ -z "$MIRROR_DEBIAN" ] || \
+     sed -i.orig -e "s|http://deb.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian10|g ; s|http://security.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian10-security|g" /etc/apt/sources.list ; \
+  apt-get update -qq && \
+  apt-get install -qy --no-install-recommends $buildDeps $runDeps
+CMD ["/e2e-run.sh"]

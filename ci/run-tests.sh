@@ -5,12 +5,21 @@ basename=$(basename $0)
 # use dedicated compose file for api in test mode
 export DC_APP_API_BUILD_PROD='$(APP_API_PATH)/docker-compose.e2e.api.yml'
 export DC_APP_API_RUN_PROD='$(APP_API_PATH)/docker-compose.e2e.api.yml'
+export DC_APP_FRONT_CANDIDAT_BUILD_PROD='$(APP_FRONT_PATH)/docker-compose.e2e.front.yml'
+export DC_APP_FRONT_CANDIDAT_RUN_PROD='$(APP_FRONT_PATH)/docker-compose.e2e.front.yml'
+export DC_APP_FRONT_ADMIN_BUILD_PROD='$(APP_FRONT_PATH)/docker-compose.e2e.front.yml'
+export DC_APP_FRONT_ADMIN_RUN_PROD='$(APP_FRONT_PATH)/docker-compose.e2e.front.yml'
 
 ret=1
 echo "# build all services (front_candidat,front_admin,api,db) in prod mode"
 time make build-all NPM_AUDIT_DRY_RUN=false \
      DC_APP_API_RUN_PROD=$DC_APP_API_RUN_PROD \
-     DC_APP_API_BUILD_PROD=$DC_APP_API_BUILD_PROD
+     DC_APP_API_BUILD_PROD=$DC_APP_API_BUILD_PROD \
+     DC_APP_FRONT_CANDIDAT_BUILD_PROD=$DC_APP_FRONT_CANDIDAT_BUILD_PROD \
+     DC_APP_FRONT_CANDIDAT_RUN_PROD=$DC_APP_FRONT_CANDIDAT_RUN_PROD \
+     DC_APP_FRONT_ADMIN_BUILD_PROD=$DC_APP_FRONT_ADMIN_BUILD_PROD \
+     DC_APP_FRONT_ADMIN_RUN_PROD=$DC_APP_FRONT_ADMIN_RUN_PROD
+
 ret=$?
 if [ "$ret" -gt 0 ] ; then
   echo "$basename build-all ERROR"
@@ -36,7 +45,12 @@ ret=1
 echo "# run all separated services (front_candidat,front_admin,api,db) in prod mode"
 time make up-all \
      DC_APP_API_RUN_PROD=$DC_APP_API_RUN_PROD \
-     DC_APP_API_BUILD_PROD=$DC_APP_API_BUILD_PROD
+     DC_APP_API_BUILD_PROD=$DC_APP_API_BUILD_PROD \
+     DC_APP_FRONT_CANDIDAT_BUILD_PROD=$DC_APP_FRONT_CANDIDAT_BUILD_PROD \
+     DC_APP_FRONT_CANDIDAT_RUN_PROD=$DC_APP_FRONT_CANDIDAT_RUN_PROD \
+     DC_APP_FRONT_ADMIN_BUILD_PROD=$DC_APP_FRONT_ADMIN_BUILD_PROD \
+     DC_APP_FRONT_ADMIN_RUN_PROD=$DC_APP_FRONT_ADMIN_RUN_PROD
+
 ret=$?
 if [ "$ret" -gt 0 ] ; then
   echo "$basename up-all ERROR"
@@ -48,7 +62,12 @@ ret=1
 echo "# test all services up&running"
 time make test-all \
      DC_APP_API_RUN_PROD=$DC_APP_API_RUN_PROD \
-     DC_APP_API_BUILD_PROD=$DC_APP_API_BUILD_PROD
+     DC_APP_API_BUILD_PROD=$DC_APP_API_BUILD_PROD \
+     DC_APP_FRONT_CANDIDAT_BUILD_PROD=$DC_APP_FRONT_CANDIDAT_BUILD_PROD \
+     DC_APP_FRONT_CANDIDAT_RUN_PROD=$DC_APP_FRONT_CANDIDAT_RUN_PROD \
+     DC_APP_FRONT_ADMIN_BUILD_PROD=$DC_APP_FRONT_ADMIN_BUILD_PROD \
+     DC_APP_FRONT_ADMIN_RUN_PROD=$DC_APP_FRONT_ADMIN_RUN_PROD
+
 
 ret=$?
 if [ "$ret" -gt 0 ] ; then
@@ -101,7 +120,12 @@ ret=1
 echo "# remove all services"
 time make down-all \
      DC_APP_API_RUN_PROD=$DC_APP_API_RUN_PROD \
-     DC_APP_API_BUILD_PROD=$DC_APP_API_BUILD_PROD
+     DC_APP_API_BUILD_PROD=$DC_APP_API_BUILD_PROD \
+     DC_APP_FRONT_CANDIDAT_BUILD_PROD=$DC_APP_FRONT_CANDIDAT_BUILD_PROD \
+     DC_APP_FRONT_CANDIDAT_RUN_PROD=$DC_APP_FRONT_CANDIDAT_RUN_PROD \
+     DC_APP_FRONT_ADMIN_BUILD_PROD=$DC_APP_FRONT_ADMIN_BUILD_PROD \
+     DC_APP_FRONT_ADMIN_RUN_PROD=$DC_APP_FRONT_ADMIN_RUN_PROD
+
 
 ret=$?
 if [ "$ret" -gt 0 ] ; then

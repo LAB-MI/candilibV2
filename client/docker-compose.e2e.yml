@@ -30,6 +30,7 @@ services:
       CYPRESS_build: 1
       CYPRESS_screenshotsFolder: 'tests/e2e/screenshots'
       CYPRESS_video: 'false'
+      FAKETIME: ${FAKETIME}
       HTTP_PROXY: ${http_proxy}
       HTTPS_PROXY: ${http_proxy}
       NO_PROXY: ${no_proxy},candidat.candilib.local,admin.candilib.local,mailhog
