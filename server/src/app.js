@@ -422,6 +422,65 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           received: 15
  *         }]
  *
+ *     WhitelistedInfo:
+ *       type: object
+ *       description: Informations sur l'ajout d'adresses dans la liste blanche
+ *       required:
+ *         - code
+ *         - result
+ *         - status
+ *         - message
+ *       properties:
+ *         code:
+ *           type: number
+ *           description: Code du status http du résultat, habituellement `201`, `207` ou `422`
+ *         result:
+ *           type: array
+ *           description: Liste des adresses et le résultat de la requête
+ *           items:
+ *             type: object
+ *             description: Informations sur l'état de l'ajout d'une adresse
+ *             required:
+ *               - code
+ *               - email
+ *               - success
+ *             properties:
+ *               code:
+ *                 type: number
+ *                 description: Code du status http du résultat, habituellement `201`, `400` ou `409`
+ *               email:
+ *                 type: string
+ *                 description: Adresse entrée dans la requête
+ *               success:
+ *                 type: boolean
+ *                 description: Vaut `true` si l'adresse est bien entrée dans la base de données, `false` sinon
+ *               message:
+ *                 type: string
+ *                 description: En cas d'erreur, ce message donne plus de précision
+ *         status:
+ *           type: string
+ *           description: Réussite ou échec de la requête
+ *         message:
+ *           type: string
+ *           description: Message décrivant le résultat
+ *
+ *     WhitelistedObject:
+ *       type: object
+ *       description: Informations de l'adresse dans la liste blanche
+ *       required:
+ *         - _id
+ *         - email
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: Identifiant de l'adresse
+ *         email:
+ *           type: string
+ *           description: Adresse courriel dans la liste
+ *         departement:
+ *           type: string
+ *           description: Code du département où a été rentré l'adresse
+ *
  *   responses:
  *     InvalidPasswordResponse:
  *       description: Réponse du serveur en cas de mots de passe erronés

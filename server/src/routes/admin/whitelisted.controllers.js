@@ -198,7 +198,7 @@ export const removeWhitelisted = async (req, res) => {
   const id = req.params.id
   const loggerInfo = {
     section: 'admin-remove-whitelisted',
-    whitelsitedId: id,
+    whitelistedId: id,
     admin: req.userId,
     action: 'REMOVE_EMAIL',
   }

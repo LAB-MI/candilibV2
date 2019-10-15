@@ -610,11 +610,263 @@ router.get(
   getStatsResultsExam
 )
 
+/**
+ * @swagger
+ *
+ * /admin/whitelisted/{whitelistedId}:
+ *   delete:
+ *     tags: [Admin]
+ *     summary: Suppression d'un élément de la liste blanche
+ *     description: L'administrateur supprime une adresse de la liste blanche à partir de son id
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: whitelistedId
+ *         schema:
+ *           type: string
+ *           example: 5d970a082a7710570f0fd7b8
+ *         required: true
+ *         description: Identifiant de l'adresse à supprimer
+ *       - in: query
+ *         name: departement
+ *         schema:
+ *           type: number
+ *           example: 93
+ *         required: false
+ *         description: Un département accessible par l'admin
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WhitelistedObject'
+ *             example:
+ *               _id: 5d970a082a7710570f0fd7b8
+ *               email: candidat@candi.lib
+ *               departement: 75
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * L'administrateur supprime une adresse de la whitelist
+ *
+ * @callback removeWhitelisted
+ * @see {@link http://localhost:8000/api-docs/#/default/delete_admin_whitelisted}
+ */
 router
   .route('/whitelisted/:id')
   .all(verifyRepartiteurDepartement)
   .delete(removeWhitelisted)
 
+/**
+ * @swagger
+ *
+ * /admin/whitelisted:
+ *   get:
+ *     tags: [Admin]
+ *     summary: Récupération d'éléments de la liste blanche
+ *     description: 
+ *       L'administrateur récupère une ou plusieures adresses de la liste blanche.
+ *       Si le paramètre `matching` n'est pas entré, cela renvoie les dernières adresses rentrées dans la base
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: matching
+ *         schema:
+ *           type: string
+ *           example: dupont
+ *         required: false
+ *         description: Une chaîne de caractères pour chercher une adresse dans la liste blanche
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               description: 
+ *                 Liste des adresses trouvées.
+ *                 Si le paramètre `matching` n'est pas entré, cette liste se trouve dans une propriétée `lastCreated`
+ *               items:
+ *                 $ref: '#/components/schemas/WhitelistedObject'
+ *             example: [ {
+ *               _id: 5d970a082a7710570f0fd7b8,
+ *               email: candidat@candi.lib,
+ *               departement: 75
+ *               }]
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ *   post:
+ *     tags: [Admin]
+ *     summary: Ajout d'éléments dans la liste blanche
+ *     description: L'administrateur ajoute une ou plusieures adresses dans la liste blanche.
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Adresses à ajouter dans la base
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 description: Une adresse courriel à ajouter dans la base
+ *               emails:
+ *                 type: array
+ *                 description: Une liste d'adresses courriel à ajouter dans la base
+ *                 items:
+ *                   type: string
+ *               departement:
+ *                 type: string
+ *                 description: Le département dans lequel l'adresse sera ajoutée
+ *           example:
+ *             email: dupont@jean.fr
+ *             emails: [
+ *               dupont1@jean.fr,
+ *               dupont2@jean.fr
+ *               ]
+ *             departement: "93"
+ *
+ *     responses:
+ *       201:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               oneOf:
+ *                 - $ref: '#/components/schemas/WhitelistedObject'
+ *                 - $ref: '#/components/schemas/WhitelistedInfo'
+ *             examples:
+ *               une seule adresse:
+ *                 schema:
+ *                   $ref: '#/components/schemas/WhitelistedObject'
+ *                 value:
+ *                   _id: 5d970a082a7710570f0fd7b8
+ *                   email: candidat@candi.lib
+ *                   departement: 75
+ *               plusieures adresses:
+ *                 value:
+ *                   code: 201
+ *                   result: [{
+ *                     code: 201,
+ *                     email: dupont1@jean.fr,
+ *                     success: true
+ *                     },
+ *                     {
+ *                     code: 201,
+ *                     email: dupont2@jean.fr,
+ *                     success: true
+ *                     }]
+ *                   status: success
+ *                   message: Tous les emails ont été ajoutés à la liste blanche
+ *
+ *       207:
+ *         description: Succès de la requête, mais certaines adresses n'ont pu être enregistrées
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WhitelistedInfo'
+ *             example:
+ *               code: 207
+ *               result: [{
+ *                 code: 201,
+ *                 email: dupont1@jean.fr,
+ *                 success: true
+ *                 },
+ *                 {
+ *                 code: 400,
+ *                 email: dupont,
+ *                 success: false,
+ *                 message: "Whitelisted validation failed: email: Path `email` is invalid (dupont)."
+ *                 }]
+ *               status: warning
+ *               message: Certains emails n'ont pas pu être ajoutés à la liste blanche
+ *
+ *       400:
+ *         description: Paramètres manquants
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Either "email" or "emails" parameter must be sent in body
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       409:
+ *         description: Conflit dans les paramètres
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Parameters "email" and "emails" cannot be sent in the same request
+
+ *       422:
+ *         description: Aucune adresse n'a pu être ajoutée à la liste
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/WhitelistedInfo'
+ *             example:
+ *               code: 422
+ *               result: [{
+ *                 code: 409,
+ *                 email: dupont2@jean.fr,
+ *                 success: false,
+ *                 message: 'E11000 duplicate key error collection: candilib.whitelisted index: email_1 dup key: { : "dupont2@jean.fr" }'
+ *                 },
+ *                 {
+ *                 code: 400,
+ *                 email: dupont,
+ *                 success: false,
+ *                 message: "Whitelisted validation failed: email: Path `email` is invalid (dupont)."
+ *                 }]
+ *               status: error
+ *               message: Aucun email n'a pu être ajouté à la liste blanche
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * L'administrateur récupère ou ajoute une ou plusieures adresses de la liste blanche
+ *
+ * @callback getWhitelisted
+ * @see {@link http://localhost:8000/api-docs/#/default/get_admin_whitelisted}
+ * @callback addWhitelisted
+ * @see {@link http://localhost:8000/api-docs/#/default/post_admin_whitelisted}
+ */
 router
   .route('/whitelisted')
   .all(verifyRepartiteurDepartement)
