@@ -185,8 +185,6 @@ router.post('/admin/reset-link', requestPasswdReset)
 
 /**
  *
- *
- * @callback requestPasswdReset
  * @see {@link http://localhost:8000/api-docs/#/default/post_admin_reset-link}
  */
 router.post('/admin/reset-link', requestPasswdReset)

@@ -11,8 +11,8 @@ import { addEmailValidationHash } from '../../models/user'
 
 
 /**
- * @async
  * Renvoi le lien de réinitialisation contenant le hash
+ * @async
  * @function
  *
  * @param {string} email Adresse courriel de l'utilisateur
@@ -26,8 +26,8 @@ export const getUrlResetLink = async email => {
 }
 
 /**
- * @async
  * Envoi un email contenant le lien de réinitialisation
+ * @async
  * @function
  *
  * @param {string} email Adresse courriel de l'utilisateur
@@ -39,7 +39,7 @@ export const sendMailResetLink = async email => {
 }
 
 /**
- *Retourne le corps du mail
+ * Retourne le corps du mail
  * @function
  *
  * @param {string} urlResetLink Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
@@ -48,7 +48,7 @@ export const sendMailResetLink = async email => {
  */
 export const getResetLinkTemplate = urlResetLink => `
   <p>
-    Vous avez demandé à réinitialiser votre mot de passe. Vous pouvez dès à present
+    Vous avez demandé à réinitialiser votre mot de passe. Vous pouvez dès à présent
     réinitialiser votre mot de passe en cliquant sur le lien suivant :
     <a href='${urlResetLink}'>réinitialiser le mot de passe</a>
   </p>

@@ -25,7 +25,6 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   exportStatsKpi: `${apiPrefix}/admin/stats`,
   login: `${apiPrefix}/auth/admin/token`,
   myProfile: `${apiPrefix}/admin/me`,
-  resetPassword: `${apiPrefix}/admin/me`,
   place: `${apiPrefix}/admin/place`,
   places: `${apiPrefix}/admin/places`,
   reservations: `${apiPrefix}/admin/reservations`,
