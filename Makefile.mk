@@ -4,10 +4,14 @@ APP   := candilibV2
 APP_VERSION := $(shell bash ./ci/version.sh 2>&- || cat VERSION)
 LATEST_VERSION := latest
 
+ENABLE_FEATURE := without-scheduler
+#ENABLE_FEATURE := with-scheduler
+
 APP_PATH       := $(shell pwd)
 APP_FRONT_PATH := $(APP_PATH)/client
 APP_API_PATH   := $(APP_PATH)/server
 APP_DB_PATH    := $(APP_PATH)/server
+APP_SCHEDULER_PATH   := $(APP_PATH)/manon
 
 BUILD_DIR     := ${APP_PATH}/${APP}-${APP_VERSION}-build
 ARCHIVE_DIR   := ${APP_PATH}/${APP}-${APP_VERSION}
@@ -39,6 +43,8 @@ DC_APP_API_BUILD_DEV   := $(APP_API_PATH)/docker-compose.dev.yml
 DC_APP_API_RUN_DEV     := $(APP_API_PATH)/docker-compose.dev.yml
 DC_APP_DB_BUILD_DEV    := $(APP_DB_PATH)/docker-compose.dev.db.yml
 DC_APP_DB_RUN_DEV      := $(APP_DB_PATH)/docker-compose.dev.db.yml
+DC_APP_SCHEDULER_BUILD_DEV   := $(APP_SCHEDULER_PATH)/docker-compose.dev.scheduler.yml
+DC_APP_SCHEDULER_RUN_DEV     := $(APP_SCHEDULER_PATH)/docker-compose.dev.scheduler.yml
 
 # docker-compose file: production (build or run time)
 # (all containers in one compose)
@@ -53,6 +59,8 @@ DC_APP_API_BUILD_PROD            := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_API_RUN_PROD              := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_DB_BUILD_PROD             := $(APP_DB_PATH)/docker-compose.prod.db.yml
 DC_APP_DB_RUN_PROD               := $(APP_DB_PATH)/docker-compose.prod.db.yml
+DC_APP_SCHEDULER_BUILD_PROD            := $(APP_SCHEDULER_PATH)/docker-compose.prod.scheduler.yml
+DC_APP_SCHEDULER_RUN_PROD              := $(APP_SCHEDULER_PATH)/docker-compose.prod.scheduler.yml
 # tests e2e
 DC_APP_E2E_BUILD_PROD            := $(APP_FRONT_PATH)/docker-compose.e2e.yml
 DC_APP_E2E_RUN_PROD              := $(APP_FRONT_PATH)/docker-compose.e2e.yml
@@ -73,6 +81,9 @@ FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION = $(APP)-front-admin-$(LATEST_VERSION)-ima
 
 FILE_IMAGE_API_APP_VERSION = $(APP)-api-$(APP_VERSION)-image.tar.gz
 FILE_IMAGE_API_LATEST_VERSION = $(APP)-api-$(LATEST_VERSION)-image.tar.gz
+
+FILE_IMAGE_SCHEDULER_APP_VERSION = $(APP)-scheduler-$(APP_VERSION)-image.tar.gz
+FILE_IMAGE_SCHEDULER_LATEST_VERSION = $(APP)-scheduler-$(LATEST_VERSION)-image.tar.gz
 
 FILE_IMAGE_DB_APP_VERSION = $(APP)-db-$(APP_VERSION)-image.tar.gz
 FILE_IMAGE_DB_LATEST_VERSION = $(APP)-db-$(LATEST_VERSION)-image.tar.gz
