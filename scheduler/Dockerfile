@@ -44,16 +44,19 @@ FROM development as production
 ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
 ARG APP_VERSION
+# Copy the pm2 config
+COPY ecosystem.config.js .
+COPY scheduler-entrypoint.sh /scheduler-entrypoint.sh
 # Install production dependencies and clean cache
-RUN npm --no-git-tag-version version ${APP_VERSION} && \
+RUN npm --no-git-tag-version --allow-same-version version ${APP_VERSION} && \
     npm install --production && \
     npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
-    npm cache clean --force
+    npm cache clean --force && \
+    npm install pm2 -g && \
+    npm config delete proxy; \
+    npm config delete no-proxy; \
+    npm config delete https-proxy ; \
+    [ -f /scheduler-entrypoint.sh ]&& chmod +x /scheduler-entrypoint.sh
 
-# Install pm2
-RUN npm install pm2 -g
-# Copy the pm2 config
-COPY ecosystem.config.js .
-
-CMD [ "pm2-runtime", "start", "ecosystem.config.js", "--env", "production" ]
+ENTRYPOINT ["/scheduler-entrypoint.sh"]
