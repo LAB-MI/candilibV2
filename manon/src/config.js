@@ -36,7 +36,7 @@ export default () => {
       dbUser: DB_USER,
       dbPass: DB_PASS,
       mongoUrl: MONGO_URL,
-      agendaCollectionName: AGENDA_COLLECTION_NAME,
+      agendaCollectionName: AGENDA_COLLECTION_NAME || 'SchedulerJobs',
     },
 
     api: {
