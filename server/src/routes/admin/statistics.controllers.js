@@ -1,6 +1,6 @@
 /**
  * Module de gestion des statistiques d'examen
- * @module admin/statistics-controllers
+ * @module routes/admin/statistics-controllers
  */
 import { parseAsync } from 'json2csv'
 
@@ -13,6 +13,7 @@ import {
 /**
  * @constant {LabelValue[]}
  */
+
 const fieldsResultExams = [
   {
     label: 'Date',
@@ -40,6 +41,10 @@ const fieldsResultExams = [
   },
 ]
 
+/**
+ * @constant {LabelValue[]}
+ */
+
 const fieldsPlacesExams = [
   {
     label: 'Date de début pé riode',
@@ -66,11 +71,17 @@ const fieldsPlacesExams = [
 /**
  * @constant {CSVOptions}
  */
+
 const optionsPlacesExam = {
   fields: fieldsPlacesExams,
   delimiter: ';',
   quote: '',
 }
+
+/**
+ * @constant {CSVOptions}
+ */
+
 const optionsResultsExams = {
   fields: fieldsResultExams,
   delimiter: ';',
@@ -86,6 +97,14 @@ const optionsResultsExams = {
 
 const parseStatsResultsExams = statsData =>
   parseAsync(statsData, optionsResultsExams)
+
+/**
+ * Crée le CSV à partir du contenu `statsData`
+ * @function
+ *
+ * @param {Object[]} statsData Données statistiques
+ */
+
 const parseStatsPlacesExams = statsData =>
   parseAsync(statsData, optionsPlacesExam)
 
@@ -96,7 +115,6 @@ const parseStatsPlacesExams = statsData =>
  * @param {string} req.query.beginPeriod Date de début de période
  * @param {string} req.query.endPeriod Date de fin de période
  * @param {string} req.query.isCsv Indique si l'on souhaite un CSV en résponse
- * @param {string} req.query.isPlacesExam Indique si l'on souhaite des stats sur les places d'examen en résponse
  * @param {import('express').Response} res Réponse express
  */
 
@@ -146,6 +164,14 @@ export const getStatsResultsExam = async (req, res) => {
     statsKpi,
   })
 }
+
+/**
+ *
+ * @param {import('express').Request} req Requête express
+ * @param {Object} req.query Query string de la requête
+ * @param {string} req.query.isCsv Indique si l'on souhaite un CSV en résponse
+ * @param {import('express').Response} res Réponse express
+ */
 
 export const getStatsPlacesExam = async (req, res) => {
   const { isCsv } = req.query
