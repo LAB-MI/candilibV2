@@ -41,7 +41,7 @@ export default {
   de_non_examines: `de non-examinés`,
   egale_non_examinés_divise_examens_passes: `= non examinés / examens passés`,
   examens_passes: `Examens Passés`,
-  places_examens: `Places d'éxamens`,
+  places_examens: `Places d'examens`,
   de_remplissage_de_places_passees: `de remplissage de places passées`,
   egale_examens_passes_divise_places_proposees_dans_le_passe: `= examens passés / places proposées dans le passé`,
   de_remplissage_de_places_a_venir: `de remplissage de places à venir`,

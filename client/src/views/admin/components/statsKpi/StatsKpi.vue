@@ -6,7 +6,7 @@
       extended
       fixed
     >
-      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les departement`"></v-switch>
+      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les département`"></v-switch>
       <template v-slot:extension>
 
         <v-toolbar-title>
@@ -23,7 +23,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="pickerDateStart"
-                label="Date de debut de période"
+                label="Date de début de période"
                 prepend-icon="event"
                 v-on="on"
               ></v-text-field>

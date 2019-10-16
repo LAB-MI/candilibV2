@@ -64,19 +64,19 @@ router.delete('/reservations/:id', removeReservationByAdmin)
 /**
  * @swagger
  *
- * /admin/stats:
+ * /admin/stats-places-exams:
  *   get:
- *     summary: Récupération des statsKpi
- *     description: Permet de récupérer les statistiques de chaque département 14.
+ *     summary: Récupération des statsKpi places
+ *     description: Permet de récupérer les statistiques sur les places d'examens de chaque département.
  *     produces:
  *       - application/json
  *     parameters:
  *       - in: query
- *         name: beginPeriod
- *         shema:
+ *         name: isCsv
+ *         schema:
  *           type: string
- *           example: 2019-10-10T22:00:00.000Z
- *         description: Date de début de période
+ *           example: true
+ *         description: Demande d'un fichier CSV des stats places d'examens
  *
  *     responses:
  *       500:
@@ -95,7 +95,7 @@ router.delete('/reservations/:id', removeReservationByAdmin)
  *           application/json:
  *             schema:
  *               allOf:
- *                 - $ref: '#/components/schemas/StatsKpi'
+ *                 - $ref: '#/components/schemas/StatsKpiObject'
  *                 - example:
  *                     success: true
  *                     message: Les stats ont bien été mises à jour
@@ -104,11 +104,76 @@ router.delete('/reservations/:id', removeReservationByAdmin)
  *                         departement: 93,
  *                         totalBookedPlaces: 2,
  *                         totalPlaces: 622,
- *                         totalCandidatsInscrits: 0
+ *                         totalCandidatsInscrits: 2
  *                      }]
  */
 
 router.get('/stats-places-exams', getStatsPlacesExam)
+
+/**
+ * @swagger
+ *
+ * /admin/stats-results-exams:
+ *   get:
+ *     summary: Récupération des statsKpi passées de résultas d'examens sur une péride
+ *     description: Permet de récupérer les statistiques sur les places d'examens de chaque département.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: query
+ *         name: beginPeriod
+ *         schema:
+ *           type: string
+ *           example: 2019-10-10T22:00:00.000Z
+ *         description: Date de début de période
+ *         required: true
+ *       - in: query
+ *         name: endPeriod
+ *         schema:
+ *           type: string
+ *           example: 2019-09-10T22:00:00.000Z
+ *         description: Date de fin de période
+ *         required: true
+ *       - in: query
+ *         name: isCsv
+ *         schema:
+ *           type: string
+ *           example: true
+ *         description: Demande d'un fichier CSV des stats resultas de place
+ *
+ *     responses:
+ *       500:
+ *         description: Erreur lors de la récupération des départements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Oups, un problème est survenu. L'administrateur a été prévenu.
+ *       200:
+ *         description: Stats par départements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/StatsKpiObject'
+ *                 - example:
+ *                     success: true
+ *                     message: Les stats ont bien été mises à jour
+ *                     statsKpi: [{
+ *                         departement: "93",
+ *                         date: "15/10/2019 à 11:00",
+ *                         beginPeriode: "2019-09-14T22:00:00.000Z",
+ *                         endPeriode: "2019-10-15T21:59:59.999Z",
+ *                         absent: 3,
+ *                         failed: 5,
+ *                         notExamined: 2,
+ *                         received: 15,
+ *                      }]
+ */
+
 router.get('/stats-results-exams', getStatsResultsExam)
 
 router
