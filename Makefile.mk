@@ -11,7 +11,7 @@ APP_PATH       := $(shell pwd)
 APP_FRONT_PATH := $(APP_PATH)/client
 APP_API_PATH   := $(APP_PATH)/server
 APP_DB_PATH    := $(APP_PATH)/server
-APP_SCHEDULER_PATH   := $(APP_PATH)/manon
+APP_SCHEDULER_PATH   := $(APP_PATH)/scheduler
 
 BUILD_DIR     := ${APP_PATH}/${APP}-${APP_VERSION}-build
 ARCHIVE_DIR   := ${APP_PATH}/${APP}-${APP_VERSION}

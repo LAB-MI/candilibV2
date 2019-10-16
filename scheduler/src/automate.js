@@ -1,5 +1,5 @@
 /**
- * Gestion de l'ordonnanceur des tâches de l'automate Manon
+ * Gestion de l'ordonnanceur des tâches de l'automate (Manon)
  * @module
  */
 import getAgenda from './get-agenda.js'
@@ -22,7 +22,7 @@ const jobNames = {
  * @param {import('agenda').Agenda} agenda
  */
 const graceful = async (agenda) => {
-  appLogger.info({ description: 'Stopping Manon' })
+  appLogger.info({ description: 'Stopping Scheduler' })
   await agenda.stop()
   process.exit(0)
 }
@@ -62,11 +62,11 @@ export default async () => {
 
   agenda.define(jobNames.SEND_BORDEREAUX, adminJobs.sendBordereaux)
 
-  appLogger.debug({ description: 'Starting Manon' })
+  appLogger.debug({ description: 'Starting Scheduler' })
 
   await agenda.start()
 
-  appLogger.info({ description: 'Manon started' })
+  appLogger.info({ description: 'Scheduler started' })
 
   await scheduleJobs(agenda)
 
