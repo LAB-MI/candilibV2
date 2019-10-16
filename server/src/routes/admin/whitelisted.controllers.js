@@ -1,3 +1,7 @@
+/**
+ * Contrôleur regroupant les fonctions traitant de la liste blanche à l'attention des répartiteurs
+ * @module routes/admin/whitelisted-controllers
+ */
 import messages from './whitelist.messages'
 import {
   findWhitelistedByEmail,
@@ -14,6 +18,18 @@ import {
   UNKNOWN_ERROR_ADD_WHITELISTED,
 } from './message.constants'
 
+/**
+ * Vérifie si une adresse est dans la liste blanche
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {Object} req.body
+ * @param {string} req.body.email L'adresse à vérifier
+ *
+ * @param {import('express').Response} res
+ * @param {import('express').NextFunction} next
+ */
 export const isWhitelisted = async (req, res, next) => {
   const email = req.body && req.body.email
   if (!email) {
@@ -42,6 +58,14 @@ export const isWhitelisted = async (req, res, next) => {
   }
 }
 
+/**
+ * Vérifie si les paramètres pour la requête d'aujout dans la liste blanche sont acceptables
+ * @function
+ *
+ * @param {Object} body
+ * @param {string} body.email Une adresse
+ * @param {string[]} body.emails Un lot d'adresses
+ */
 const checkAddWhitelistRequest = body => {
   const { email, emails } = body
   if (email && emails) {
@@ -60,18 +84,40 @@ const checkAddWhitelistRequest = body => {
   }
 }
 
+/**
+ * Messages à retourner à l'utilisateur en fonction du code du status de la requête, lors d'un ajout dans la liste blanche
+ * @constant
+ */
 const batchWhitelistMessages = {
   201: 'Tous les emails ont été ajoutés à la liste blanche',
   207: "Certains emails n'ont pas pu être ajoutés à la liste blanche",
   422: "Aucun email n'a pu être ajouté à la liste blanche",
 }
 
+/**
+ * Status à retourner à l'utilisateur en fonction du code du status de la requête, lors d'un ajout dans la liste blanche
+ * @constant
+ */
 const batchWhitelistStatuses = {
   201: 'success',
   207: 'warning',
   422: 'error',
 }
 
+/**
+ * Ajoute une ou plusieures adresses dans la liste blanche
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId Id de l'utilisateur
+ * @param {Object} req.body
+ * @param {string} req.body.email Une adresse à ajouter
+ * @param {string[]} req.body.emails Un lot d'adresses à ajouter
+ * @param {string} req.body.departement Le département pour lequel la ou les adresses seront ajoutées
+ *
+ * @param {import('express').Response} res
+ */
 export const addWhitelisted = async (req, res) => {
   const { email, emails, departement } = req.body
   const loggerInfo = {
@@ -152,6 +198,20 @@ export const addWhitelisted = async (req, res) => {
   }
 }
 
+/**
+ * Cherche des adresses de la liste blanche.
+ * Si le paramètre matching n'est pas renseigné, renvoie les 50 dernières adresses entrées
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId Id de l'utilisateur
+ * @param {Object} req.query
+ * @param {string} req.query.departement Le département dans lequel les adresses seront cherchées
+ * @param {string} req.query.matching Une chaîne de caractères pour chercher une adresse
+ *
+ * @param {import('express').Response} res
+ */
 export const getWhitelisted = async (req, res) => {
   const { departement, matching } = req.query
   const loggerInfo = {
