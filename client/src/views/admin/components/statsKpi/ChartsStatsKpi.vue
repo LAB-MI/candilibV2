@@ -52,12 +52,19 @@
             :key="`${chartInfo.classContent}-${idx}`"
             :chartInfo="chartInfo"
           />
-          <div class="u-flex__item pa-3">
+          <div
+            :class="`u-flex__item pa-3
+              t-number-inscrit-${datasets[2].data[0]}
+              t-number-future-places-${datasets[1].data[0]}
+              t-number-reserved-places-${datasets[0].data[0]}
+              `"
+          >
             <chart-bar
               class="chart-wrapper"
               :labels="labels"
               :datasets="datasets"
             />
+            <div style="display: block;"></div>
           </div>
         </div>
 

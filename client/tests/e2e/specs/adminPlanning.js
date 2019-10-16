@@ -33,34 +33,8 @@ describe('Planning tests', () => {
 
   it('Assigns a candidate and changes the inspector', () => {
     cy.adminLogin()
-    // Goes to planning
-    cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    // Add candidate to the first place
-    cy.get('.v-tabs')
-      .contains(Cypress.env('centre'))
-      .click({ force: true })
-    cy.contains('replay')
-      .click()
-    cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', Cypress.env('inspecteur'))
-      .contains(Cypress.env('inspecteur'))
-      .parents('tbody').within(($row) => {
-        cy.get('.place-button')
-          .should('not.contain', 'block')
-          .contains('check_circle')
-          .click()
-        cy.contains('Affecter un candidat')
-          .click()
-        cy.get('.search-input [type=text]')
-          .type(Cypress.env('candidat'))
-        cy.root().parents().contains(Cypress.env('candidat'))
-          .click()
-        cy.get('.place-details')
-          .should('contain', Cypress.env('centre'))
-        cy.contains('Valider')
-          .click()
-      })
+    // Goes to planning and add candidate to the first place
+    cy.addCandidatToPlace()
     cy.get('.v-snack')
       .should('contain', Cypress.env('candidat'))
       .and('contain', 'a bien été affecté à la place')
