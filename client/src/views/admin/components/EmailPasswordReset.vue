@@ -98,11 +98,11 @@ export default {
 
     async sendMailResetLink () {
       if (!this.email) {
-        return this.$store.dispatch(SHOW_ERROR, `l'email n'existe pas`)
+        return this.$store.dispatch(SHOW_ERROR, `L'adresse courriel n'existe pas`)
       }
       try {
         await this.$store.dispatch(SEND_RESET_LINK_REQUEST, this.email)
-        this.$store.dispatch(SHOW_SUCCESS, `Un email vient de vous être envoyé à l'adresse ${this.email}`)
+        this.$store.dispatch(SHOW_SUCCESS, `Un courriel vient de vous être envoyé à l'adresse ${this.email}`)
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, 'Oups ! Une erreur est survenue')
       }

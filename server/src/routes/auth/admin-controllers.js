@@ -126,7 +126,7 @@ export const requestPasswdReset = async (req, res) => {
     })
     return res.status(404).json({
       success: false,
-      message: "Votre email n'est pas reconnu",
+      message: "Votre adresse courriel n'est pas reconnu",
     })
   }
 
@@ -140,7 +140,7 @@ export const requestPasswdReset = async (req, res) => {
     appLogger.error({
       section: 'send-mail-reset-link',
       action: 'send-mail',
-      description: `Impossible d'envoyer l'email de réinitialisation à ${email}`,
+      description: `Impossible d'envoyer le courriel de réinitialisation à ${email}`,
     })
     res.status(500).json({
       success: false,
@@ -199,7 +199,7 @@ export const resetMyPassword = async (req, res) => {
 
     return res.status(404).json({
       success: false,
-      message: "Votre email n'est pas reconnu.",
+      message: "Votre adresse courriel n'est pas reconnu.",
     })
   }
 
@@ -242,15 +242,7 @@ export const resetMyPassword = async (req, res) => {
     res.status(500).json({
       success: false,
       message:
-        "Votre mot de passe à bien été changé, mais une erreur est survenue lors de l'envoi du courriel de confirmation. L'administrateur a été prévenu.",
+        "Votre mot de passe a bien été changé, mais une erreur est survenue lors de l'envoi du courriel de confirmation. L'administrateur a été prévenu.",
     })
   }
 }
-
-/**
- *
- * @typedef{Object} LabelValue Objet contenant une paire de clé-valeur
- * @property{string}label Label
- * @property{string | }
- *
- */

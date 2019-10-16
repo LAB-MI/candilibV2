@@ -224,7 +224,7 @@ export default {
     },
 
     async resetPassword (email, hash, newPassword, confirmNewPassword) {
-      const json = await apiClient.patch(apiPaths.admin.resetPassword, {
+      const json = await apiClient.patch(apiPaths.admin.myProfile, {
         headers: {
           'Content-Type': 'application/json',
         },

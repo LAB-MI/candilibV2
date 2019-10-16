@@ -115,7 +115,7 @@ export const updateUserStatus = async (user, status) => {
 }
 
 /**
- * Retourne un email contenant lien avec un hash
+ * Retourne un email contenant un lien avec un hash
  * @async
  * @function
  *
