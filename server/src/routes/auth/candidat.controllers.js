@@ -1,3 +1,7 @@
+/**
+ * Module concernant les actions pour authentifier un candidat
+ * @module routes/auth/candidat-controllers
+ */
 import jwt from 'jsonwebtoken'
 
 import { appLogger } from '../../util'
@@ -9,6 +13,19 @@ import {
 import { sendMagicLink } from '../business'
 import { sendErrorResponse } from '../../util/send-error-response'
 
+/**
+ * Envoi un e-mail avec le lien de connexion à candilib au candidat
+ * @async
+ * @function
+ *
+ * @see {@link https://expressjs.com/fr/4x/api.html#req}
+ * @see {@link https://expressjs.com/fr/4x/api.html#res}
+ *
+ * @param {import('express').Request} req
+ * @param {Object} req.body
+ * @param {String} req.body.email adresse mail du candidat
+ * @param {import('express').Response} res
+ */
 export const postMagicLink = async (req, res) => {
   const { email } = req.body
   const loggerInfo = {
@@ -87,6 +104,19 @@ export const postMagicLink = async (req, res) => {
   }
 }
 
+/**
+ * Vérifie le jeton d'authentification d'un candidat
+ * @async
+ * @function
+ *
+ * @see {@link https://expressjs.com/fr/4x/api.html#req}
+ * @see {@link https://expressjs.com/fr/4x/api.html#res}
+ *
+ * @param {import('express').Request} req
+ * @param {Object} req.body
+ * @param {String} req.body.email adresse mail du candidat
+ * @param {import('express').Response} res
+ */
 export const checkCandidat = async (req, res) => {
   const { userId: candidatId } = req
   const loggerInfo = {
