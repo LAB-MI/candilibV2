@@ -20,7 +20,7 @@ export const sendMailConfirmation = email => {
 }
 
 /**
- *retourne le contenu du corps du mail
+ * Retourne le contenu du corps du mail
  * @function
  *
  * @param {string} email Adresse email du candidat
@@ -28,15 +28,15 @@ export const sendMailConfirmation = email => {
  * @returns {string} Contenu HTML de la partie informative du contenu du mail de confirmation du mot de passe
  */
 export const getMailConfirmationTemplate = email => `
-  <p>Votre mot de passe a bien été 
-  réinitialisé. 
+  <p>Votre mot de passe a bien été
+  réinitialisé.
   </p>
   <br>
   <p align="right">L'équipe Candilib</p>
 `
 
 /**
- *Retourne le contenu HTML mail
+ * Retourne le contenu HTML mail
  * @function
  *
  * @param {string} email Adresse email de l'utilisateur
@@ -54,7 +54,7 @@ export const getMailConfirmationBody = email => {
  *
  * @param {string} email Adresse email du candidat
  *
- * @returns {MailData} Titre et corps du mail à envoyer pour la confirmation de réiniatisation du mot de passe
+ * @returns {MailData} Titre et corps du mail à envoyer pour la confirmation de réinitialisation du mot de passe
  */
 export const getMailConfirmation = email => {
   const subject = 'Votre mot de passe a été réinitialisé'
