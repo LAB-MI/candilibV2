@@ -8,11 +8,7 @@
       <v-icon>keyboard_arrow_up</v-icon>
     </v-btn>
 
-    <div
-      class="sticky-container"
-      :id="`table-container-${centerId}`"
-      @scroll="onScroll"
-    >
+    <div class="sticky-container" :id="`table-container-${centerId}`" @scroll="onScroll">
       <table>
         <thead>
           <tr>
@@ -26,10 +22,10 @@
 
         <tbody ref="tableBody">
           <tr
-            v-for="week in items"
+            v-for="(week, index) in items"
             :key="week.numWeek"
-            :id="`week-position-${week.numWeek}-${centerId}`"
-            :class="`${currentWeek === week.numWeek ? 'blue lighten-4' : 'blue-grey lighten-5'}`"
+            :id="`week-position-${index}-${centerId}`"
+            :class="`${currentWeekNumber === week.numWeek ? 'blue lighten-4' : 'blue-grey lighten-5'}`"
           >
             <th :class="`th-ui-week-column ${setColorTh(week)}`">
               <v-layout row>
@@ -39,10 +35,10 @@
                 >
                   <template v-slot:activator="{ on }">
                     <div>
-                      <strong v-on="on">{{ getStartOfWeek(week.numWeek) }}</strong>
+                      <strong v-on="on">{{ getStartOfWeek(week.numWeek, week.numYear) }}</strong>
                     </div>
                   </template>
-                  <span>{{ $formatMessage({ id: 'date_first_day_of_week' }) }} {{ week.numWeek }}</span>
+                  <span>{{ $formatMessage({ id: 'date_first_day_of_week' }) }} {{ week.numWeek }} ({{ week.numYear }})</span>
                 </v-tooltip>
 
                 <v-divider
@@ -71,7 +67,7 @@
               v-for="(day, idx) in week.days"
               :key="`week-${day.numWeek}-day-${idx}`"
             >
-              <v-btn @click="goToGestionPlannings(week.numWeek, idx + 1)">
+              <v-btn @click="goToGestionPlannings(week.numWeek, idx + 1, week.numYear)">
                 <span class="text-free-places">
                   <strong>{{ getCountBookedPlaces(day) }}</strong>
                 </span>
@@ -151,7 +147,7 @@
 
 <script>
 import { scroller } from 'vue-scrollto/src/scrollTo'
-
+import { numberOfMonthsToFetch } from '@/store'
 import {
   getFrenchFormattedDateFromObject,
   getFrenchLuxonCurrentDateTime,
@@ -172,7 +168,7 @@ export default {
 
   data () {
     return {
-      currentSelectedWeek: getFrenchLuxonCurrentDateTime().weekNumber,
+      currentSelectedWeek: 0,
       scrollTo: scroller(),
       headers: [
         {
@@ -191,8 +187,27 @@ export default {
       return this.$store.state.admin.departements.active
     },
 
-    currentWeek () {
-      return getFrenchLuxonCurrentDateTime().weekNumber
+    currentWeekNumber () {
+      const tmp = getFrenchLuxonCurrentDateTime().toISOWeekDate().split('-')
+      const currWeekNb = `${tmp[1].replace('W', '')}`
+      return currWeekNb
+    },
+
+    currentWeekPlusNumberOfMonthsToFetch () {
+      return getFrenchLuxonCurrentDateTime().plus({
+        month: numberOfMonthsToFetch,
+      }).weekNumber
+    },
+
+    standardDeviation () {
+      const start = getFrenchLuxonCurrentDateTime()
+      const end = getFrenchLuxonCurrentDateTime().plus({ month: numberOfMonthsToFetch })
+      const allWeeks = Math.round(end.diff(start, ['weeks']).weeks)
+      return allWeeks - 3
+    },
+
+    getWeeksInWeekYear () {
+      return getFrenchWeeksInWeekYear(getFrenchLuxonCurrentDateTime().year - 1)
     },
 
     scrollOptions () {
@@ -217,28 +232,27 @@ export default {
       immediate: true,
       deep: true,
       handler (newValue) {
-        this.currentSelectedWeek = this.currentWeek
+        this.currentSelectedWeek = 0
         setTimeout(this.scrollToSelectedWeek.bind(this), 0)
       },
     },
   },
 
   methods: {
-    getStartOfWeek (weekNumber) {
-      const currentYear = getFrenchLuxonCurrentDateTime().weekYear
+    getStartOfWeek (weekNumber, weekYear) {
       const shape = {
         month: 'short',
         day: '2-digit',
         year: 'numeric',
       }
       return getFrenchFormattedDateFromObject(
-        { weekYear: currentYear, weekNumber, weekday: 1 },
+        { weekYear: weekYear, weekNumber, weekday: 1 },
         shape
       )
     },
 
-    goToGestionPlannings (weekNumber, idx) {
-      this.$emit('goToGestionPlannings', weekNumber, idx)
+    goToGestionPlannings (weekNumber, idx, year) {
+      this.$emit('goToGestionPlannings', weekNumber, idx, year)
     },
 
     getCountBookedPlaces (places) {
@@ -249,7 +263,7 @@ export default {
     onScroll (event) {
       const tableRowHeigth = this.$refs.tableBody.firstChild.clientHeight
       this.currentSelectedWeek = Math.floor(
-        event.target.scrollTop / (tableRowHeigth || 48)
+        event.target.scrollTop / tableRowHeigth
       )
     },
 
@@ -272,18 +286,18 @@ export default {
     },
 
     scrollUp () {
-      this.currentSelectedWeek = Math.max(this.currentSelectedWeek - 1, 1)
+      this.currentSelectedWeek =
+        this.currentSelectedWeek > 0
+          ? this.currentSelectedWeek - 1
+          : this.currentSelectedWeek
       this.scrollToSelectedWeek()
     },
 
     scrollDown () {
-      const weeksInWeekYear = getFrenchWeeksInWeekYear(
-        getFrenchLuxonCurrentDateTime().year - 1
-      )
-      this.currentSelectedWeek = Math.min(
-        this.currentSelectedWeek + 1,
-        weeksInWeekYear - 1
-      )
+      this.currentSelectedWeek =
+        this.currentSelectedWeek < this.standardDeviation
+          ? this.currentSelectedWeek + 1
+          : this.standardDeviation
       this.scrollToSelectedWeek()
     },
 
