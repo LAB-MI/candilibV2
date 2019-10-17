@@ -1,6 +1,6 @@
 module.exports = {
   apps: [{
-    name: 'API',
+    name: 'SCHEDULER',
     script: 'src/index.js',
     node_args: '-r esm --experimental-modules',
 
