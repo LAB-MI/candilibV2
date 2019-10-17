@@ -12,7 +12,14 @@ export const expectedArchivedPlace = (
   expect(archivedPlace).toHaveProperty('date', place.date)
   expect(archivedPlace).toHaveProperty('centre', place.centre)
   expect(archivedPlace).toHaveProperty('inspecteur', place.inspecteur)
-  expect(archivedPlace).toHaveProperty('archiveReason', reason)
+  if (reason) {
+    const expectedReason = Array.isArray(reason) ? reason : [reason]
+    expect(archivedPlace.archiveReasons).toEqual(
+      expect.arrayContaining(expectedReason)
+    )
+  } else {
+    expect(archivedPlace.archiveReasons).toBeUndefined()
+  }
   expect(archivedPlace).toHaveProperty('byUser', byUser)
   expect(archivedPlace).toHaveProperty('isCandilib', isCandilib)
   const now = getFrenchLuxon()

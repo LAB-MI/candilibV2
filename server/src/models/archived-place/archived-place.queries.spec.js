@@ -16,14 +16,33 @@ describe('Archive place', () => {
     await disconnect()
   })
 
-  it('should create archive place', async () => {
+  it('should create archive place with one reason', async () => {
     const place = places[0]
     await createArchivedPlaceFromPlace(place, ECHEC, 'AURIGE', true)
 
     const archivedPlace = await ArchiviedPlaceModel.findOne({
       placeId: place._id,
     })
-
     expectedArchivedPlace(archivedPlace, place, ECHEC, 'AURIGE', true)
+  })
+  it('should create archive place with 2 reasons', async () => {
+    const place = places[1]
+    await createArchivedPlaceFromPlace(
+      place,
+      [ECHEC, 'SALVATION'],
+      'admin75@example.com',
+      true
+    )
+
+    const archivedPlace = await ArchiviedPlaceModel.findOne({
+      placeId: place._id,
+    })
+    expectedArchivedPlace(
+      archivedPlace,
+      place,
+      [ECHEC, 'SALVATION'],
+      'admin75@example.com',
+      true
+    )
   })
 })
