@@ -1,7 +1,10 @@
 /**
  * @typedef {Object} SchedulerConfig
+ * @property {Object} scheduler Info du scheduler
  * @property {Object} db Info de la base de données
  * @property {Object} api Info de l'API
+ * @property {string} scheduler.schedulerName nom du scheduler
+ * @property {string} scheduler.defaultConcurrency nombre d'occurence d'un job en cours d'execution
  * @property {string} db.dbName Nom de la base de données
  * @property {string} db.dbUser Login de l'utilisateur de la base de données
  * @property {string} db.dbPass Mot de passe de l'utilisateur de la base de données
@@ -17,6 +20,8 @@
  */
 export default () => {
   const {
+    SCHEDULER_NAME,
+
     AGENDA_COLLECTION_NAME,
     DB_NAME,
     DB_USER,
@@ -31,6 +36,11 @@ export default () => {
   } = process.env
 
   return {
+    scheduler: {
+      schedulerName: SCHEDULER_NAME || process.env.HOSTNAME + '-' + process.pid,
+      defaultConcurrency: 1,
+    },
+
     db: {
       dbName: DB_NAME,
       dbUser: DB_USER,
