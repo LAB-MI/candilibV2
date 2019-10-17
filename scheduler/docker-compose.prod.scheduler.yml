@@ -20,7 +20,10 @@ services:
 #      - ${cnf:-.env}
     environment:
       NODE_ENV: production
+      SCHEDULER_NAME: ${SCHEDULER_NAME}
       MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
+      API_BASE_URL: ${API_BASE_URL:-http://api:8000}
+      API_PREFIX: ${API_PREFIX:-/api/v2}
 
 networks:
   default:
