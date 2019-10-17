@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 
-import { appLogger } from '../../util'
+import { appLogger, AUTHORIZED_HOURS } from '../../util'
 import { getScheduleInspecteurTemplate } from './mail/body-schedule-inspecteur-template'
 import { getHtmlBody } from './mail'
 import { getFrenchFormattedDateTime } from '../../util/date-util'
@@ -25,21 +25,10 @@ const getScheduleInspecteurBody = async (
     throw new Error('NO_PLACES')
   }
 
-  const planning = {
-    '08:00': {},
-    '08:30': {},
-    '09:00': {},
-    '09:30': {},
-    '10:00': {},
-    '10:30': {},
-    '11:00': {},
-    '11:30': {},
-    '13:30': {},
-    '14:00': {},
-    '14:30': {},
-    '15:00': {},
-    '15:30': {},
-  }
+  const planning = AUTHORIZED_HOURS.reduce((accum, value) => {
+    accum[value] = {}
+    return accum
+  }, {})
   await Promise.all(
     places.map(async place => {
       const { candidat, date } = place
