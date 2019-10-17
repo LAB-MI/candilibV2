@@ -460,4 +460,57 @@ describe('Test import places from CSV', () => {
       expect(result).toHaveProperty('message', 'Place déjà enregistrée en base')
     })
   })
+
+  it('should messages errors when the places have unauthorized hours', async () => {
+    const csvFileDataInJson = [
+      {
+        date: '06/07/19',
+        hour: '06:00',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+      {
+        date: '06/07/19',
+        hour: '08:15',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+      {
+        date: '06/07/19',
+        hour: '12:00',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+      {
+        date: '06/07/19',
+        hour: '22:00',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+    ]
+    const data = getCsvFileData(csvFileDataInJson)
+    const results = await importPlacesCsv({
+      csvFile: { data },
+      departement: '93',
+    })
+    expect(results).toBeDefined()
+    expect(results).toHaveLength(csvFileDataInJson.length)
+    results.forEach((result, index) => {
+      expectOneResultWithError(
+        result,
+        csvFileDataInJson,
+        index,
+        (dataInJson, i) =>
+          "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée."
+      )
+    })
+  })
 })
