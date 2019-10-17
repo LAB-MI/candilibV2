@@ -165,19 +165,19 @@ export default {
         {
           title: this.$formatMessage({ id: 'de_reussite' }),
           description: this.$formatMessage({ id: 'egale_recus_divise_reçus_plus_echecs' }),
-          value: ((received / totalPlacesCount) * 100) || 0,
+          value: Math.round(((received / totalPlacesCount) * 100) || 0),
           colorProgress: '#00B0FF',
         },
         {
           title: this.$formatMessage({ id: 'd_absenteisme' }),
           description: this.$formatMessage({ id: 'egale_absents_divise_examens_passes' }),
-          value: ((absent / totalPlacesCount) * 100) || 0,
+          value: Math.round(((absent / totalPlacesCount) * 100) || 0),
           colorProgress: '#00B0FF',
         },
         {
           title: this.$formatMessage({ id: 'de_non_examines' }),
           description: this.$formatMessage({ id: 'egale_non_examinés_divise_examens_passes' }),
-          value: ((notExamined / totalPlacesCount) * 100) || 0,
+          value: Math.round(((notExamined / totalPlacesCount) * 100) || 0),
           colorProgress: '#00B0FF',
         },
       ]
