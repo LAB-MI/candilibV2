@@ -17,8 +17,8 @@ const ArchivedPlaceFields = {
     type: Date,
     default: undefined,
   },
-  archiveReason: {
-    type: String,
+  archiveReasons: {
+    type: [String],
     default: undefined,
   },
   isCandilib: {
@@ -32,9 +32,10 @@ const ArchivedPlaceFields = {
 }
 
 /**
- * @typedef {Object} ArchivedPlaceModel
+ * @type {Object} ArchivedPlaceModel
  * @property {ObjectId} placeId
  * @property {Date} archivedAt
+ * @property {String[]} archiveReasons
  * @property {Boolean} isCandilib
  * @property {String} byUser
  * @property {PlaceModel} placeCommonFields {@link module:models/place}
