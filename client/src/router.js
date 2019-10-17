@@ -77,7 +77,7 @@ const adminRoutes = [
         beforeEnter: checkAccess,
       },
       {
-        path: 'stats-kpi',
+        path: 'stats-kpi/:begin?/:end?',
         name: ROUTE_AUTHORIZE_STATS_KPI,
         component: StatsKpi,
         beforeEnter: checkAccess,

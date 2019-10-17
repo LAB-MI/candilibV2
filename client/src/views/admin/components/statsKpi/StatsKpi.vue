@@ -26,9 +26,14 @@
                 label="Date de début de période"
                 prepend-icon="event"
                 v-on="on"
+                readonly
               ></v-text-field>
             </template>
-            <v-date-picker v-model="dateStart" @input="menuStart = false" locale="fr"></v-date-picker>
+            <v-date-picker
+              v-model="dateStart"
+              @input="menuStart = false"
+              locale="fr"
+            ></v-date-picker>
           </v-menu>
 
         </v-toolbar-title>
@@ -50,9 +55,15 @@
                 label="Date de fin de période"
                 prepend-icon="event"
                 v-on="on"
+                readonly
               ></v-text-field>
             </template>
-            <v-date-picker color="red" v-model="dateEnd" @input="menuEnd = false" locale="fr"></v-date-picker>
+            <v-date-picker
+              color="red"
+              v-model="dateEnd"
+              @input="menuEnd = false"
+              locale="fr"
+            ></v-date-picker>
           </v-menu>
         </v-toolbar-title>
 
@@ -119,6 +130,14 @@ export default {
   },
 
   async mounted () {
+    // this.$route.params.date.split('-')
+    const { begin, end } = this.$route.params
+    if (begin && end) {
+      this.dateStart = begin
+      this.dateEnd = end
+    } else {
+      this.setRouteParams()
+    }
     await this.getStatsKpiPlacesExams()
     await this.getStatsKpiResultsExams()
   },
@@ -170,6 +189,16 @@ export default {
   }),
 
   methods: {
+    setRouteParams () {
+      this.$router.push({
+        name: 'stats-kpi',
+        params: {
+          begin: `${this.dateStart}`,
+          end: `${this.dateEnd}`,
+        },
+      })
+    },
+
     async getStatsKpiPlacesExams (isCsv = false) {
       await this.$store.dispatch(FETCH_STATS_KPI_PLACES_EXAMS_REQUEST, { isCsv })
 
@@ -204,11 +233,13 @@ export default {
     },
 
     async dateStart () {
+      this.setRouteParams()
       await this.getStatsKpiPlacesExams()
       await this.getStatsKpiResultsExams()
     },
 
     async dateEnd () {
+      this.setRouteParams()
       await this.getStatsKpiPlacesExams()
       await this.getStatsKpiResultsExams()
     },
