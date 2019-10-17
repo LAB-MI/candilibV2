@@ -27,16 +27,16 @@ export const createPlace = async leanPlace => {
  * @function deletePlace
  * @see {@link module:models/archived-place}
  * @param {PlaceModel} place La place à supprimer
- * @param {String} reason La raison de la suppresion
+ * @param {String[]} reasons Les raisons de la suppression
  * @param {String} byUser L'auteur de l'action
- * @param {Boolean} isCandilib Suppresion lié à une réussite ou echec d'un examen de candilib
+ * @param {Boolean} isCandilib Suppresion lié à une réussite ou un echec d'un examen de candilib
  */
-export const deletePlace = async (place, reason, byUser, isCandilib) => {
+export const deletePlace = async (place, reasons, byUser, isCandilib) => {
   if (!place) {
     throw new Error('No place given')
   }
   try {
-    await createArchivedPlaceFromPlace(place, reason, byUser, isCandilib)
+    await createArchivedPlaceFromPlace(place, reasons, byUser, isCandilib)
   } catch (error) {
     techLogger.error({
       func: 'query-place-delete',
