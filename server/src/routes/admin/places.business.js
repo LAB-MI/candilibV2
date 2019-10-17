@@ -41,6 +41,7 @@ import {
   getFrenchLuxonRangeFromDate,
   getFrenchLuxon,
   FRENCH_LOCALE_INFO,
+  AUTHORIZED_HOURS,
 } from '../../util'
 import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
 import {
@@ -164,6 +165,14 @@ const parseRow = async ({ data, departement }) => {
     if (inspecteurFound.nom.toUpperCase() !== nom.trim().toUpperCase()) {
       const error = new Error(
         `Le nom "${nom.trim()}" de l'inspecteur ne correspond pas au matricule "${matricule.trim()}"`
+      )
+      error.from = 'parseRow'
+      throw error
+    }
+
+    if (!AUTHORIZED_HOURS.includes(myTime)) {
+      const error = new Error(
+        "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée."
       )
       error.from = 'parseRow'
       throw error
