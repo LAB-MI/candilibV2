@@ -8,6 +8,9 @@ export const asyncCompose = (fn1, fn2) => async x => fn1(await fn2(x))
 export const asyncComposeArray = fns => fns.reduce(asyncCompose, x => x)
 export const asyncComposeArgs = (...args) => args.reduce(asyncCompose, x => x)
 
+export const getText = async url =>
+  (await superagent.get(url).set('accept', 'application/json')).text
+
 export const getJson = async url =>
   (await superagent.get(url).set('accept', 'application/json')).body
 

@@ -12,6 +12,8 @@ import { appLogger } from './utils/index.js'
  * @type JobNames
  */
 const jobNames = {
+  HELLO: 'HELLO',
+  GET_API_VERSION: 'GET_API_VERSION',
   SEND_BORDEREAUX: 'SEND_BORDEREAUX',
 }
 
@@ -38,11 +40,24 @@ const scheduleJobs = async (agenda) => {
 
   const jobs = await Promise.all([
     agenda.every(
+      '*/3 * * * *',
+      jobNames.HELLO,
+      null,
+      { timezone: 'Europe/Paris' },
+    ),
+    agenda.every(
+      '*/3 * * * *',
+      jobNames.GET_API_VERSION,
+      null,
+      { timezone: 'Europe/Paris' },
+    ),
+/*    agenda.every(
       '12 18 * * *',
       jobNames.SEND_BORDEREAUX,
       null,
       { timezone: 'Europe/Paris' },
     ),
+*/
   ])
 
   appLogger.info({ description: 'Jobs scheduled!' })
@@ -60,7 +75,9 @@ export default async () => {
 
   appLogger.debug({ description: 'Defining jobs' })
 
-  agenda.define(jobNames.SEND_BORDEREAUX, adminJobs.sendBordereaux)
+//  agenda.define(jobNames.SEND_BORDEREAUX, adminJobs.sendBordereaux)
+  agenda.define(jobNames.GET_API_VERSION, adminJobs.getApiVersion)
+  agenda.define(jobNames.HELLO, adminJobs.hello)
 
   appLogger.debug({ description: 'Starting Scheduler' })
 
