@@ -6,7 +6,7 @@
 
 import getConfig from '../config.js'
 import { DateTime } from 'luxon'
-import { postJson, appLogger } from '../utils/index.js'
+import { getText, getJson, postJson, appLogger } from '../utils/index.js'
 
 import { getToken } from './get-token.js'
 
@@ -19,6 +19,25 @@ import { getToken } from './get-token.js'
  *   si l'API retourne un objet avec `success` à `false`
  * @returns {string} Message retourné par l'API
  */
+export const hello = async job => {
+  appLogger.info({ description: 'Hello' })
+}
+
+
+export const getApiVersion = async job => {
+  const { apiUrl } = getConfig().api
+//  const token = await getToken()
+
+  appLogger.info({ description: 'getApiVersion ' + apiUrl })
+  const body = await getText(apiUrl + '/version')
+
+  appLogger.info({
+    func: 'getApiVersion',
+    description: 'getApiVersion success '+ body,
+  })
+  return body
+}
+
 export const sendBordereaux = async job => {
   const { apiUrl } = getConfig().api
   const token = await getToken()
