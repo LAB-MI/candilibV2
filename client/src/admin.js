@@ -32,6 +32,7 @@ export default {
   booked_places_more_than_50_pourcent: '50% ou plus des places sont reservées',
   booked_places_lower_than_50_pourcent: 'Moins de 50% des places sont reservées',
   export_stats_csv: `Export Stats CSV`,
+  export_places_stats_csv: `Export places Stats CSV`,
   departement: `Département : `, // eslint-disable-line no-irregular-whitespace
   resultats_a_lexamen: `Résultats à l'examen`,
   de_reussite: `de réussite`,

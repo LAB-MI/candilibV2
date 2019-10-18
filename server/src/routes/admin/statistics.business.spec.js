@@ -7,6 +7,7 @@ import {
   countSuccessByCentres,
   getResultsExamByDpt,
   getResultsExamAllDpt,
+  getAllPlacesProposeInFutureByDpt,
 } from './statistics.business'
 
 import {
@@ -15,9 +16,11 @@ import {
   countNotExamined,
   countSuccess,
   createCandidatsForStat,
+  createStatsForPlacesExam,
   dateReussitePratique,
   dateTimeDernierEchecPratique,
   dateTimeDernierEchecPratiqueWithPenalty,
+  nowLuxon,
 } from './__tests__/candidats-stat'
 
 import {
@@ -32,6 +35,7 @@ describe('test statistics', () => {
   beforeAll(async () => {
     await connect()
     await createCandidatsForStat()
+    await createStatsForPlacesExam()
   })
   afterAll(async () => {
     await removePlaces()
@@ -106,6 +110,7 @@ describe('test statistics', () => {
     const end = dateReussitePratique
 
     const results = await getResultsExamAllDpt(begin, end)
+
     expect(results).toBeDefined()
     expect(results).toHaveLength(2)
     results.forEach(result => {
@@ -128,5 +133,13 @@ describe('test statistics', () => {
         countFailure(result.departement, begin, end)
       )
     })
+  })
+  it('Should to have, stats in future with total subscript', async () => {
+    const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
+    const result = await getAllPlacesProposeInFutureByDpt(dateBeginPeriode)
+    expect(result[0]).toHaveProperty('departement', '92')
+    expect(result[0]).toHaveProperty('totalBookedPlaces', 1)
+    expect(result[0]).toHaveProperty('totalPlaces', 1)
+    expect(result[0]).toHaveProperty('totalCandidatsInscrits', 1)
   })
 })

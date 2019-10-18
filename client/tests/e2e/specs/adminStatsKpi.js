@@ -26,8 +26,7 @@ describe('Stats Kpi tests', () => {
 
   it('Checks candidate nonReussite stats', () => {
     cy.adminLogin()
-    cy.contains('bar_chart')
-      .click()
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
 
     cy.get('.t-remplissage-futur')
       .should('contain', '0%')
@@ -150,7 +149,6 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-number-future-places-36')
       .should('have.length', 1)
-
     cy.adminDisconnection()
   })
 
@@ -268,7 +266,6 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-absenteisme')
       .should('contain', '25%')
-
     cy.adminDisconnection()
   })
 
