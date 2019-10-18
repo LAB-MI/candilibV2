@@ -1040,6 +1040,8 @@ router
  *
  */
 
+// router.post('/users', verifyRepartiteurDepartement, createUserByAdmin)
+
 /**
  * @swagger
  *
@@ -1109,6 +1111,8 @@ router
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
  */
+
+// router.get('/users', verifyRepartiteurDepartement, retrieveUser)
 
 /**
  * @swagger
@@ -1181,6 +1185,8 @@ router
  *
  */
 
+// router.put('/users', verifyRepartiteurDepartement, updatedUser)
+
 /**
  * @swagger
  *
@@ -1251,5 +1257,7 @@ router
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
  */
+
+// router.delete('/users', verifyRepartiteurDepartement, deleteUser)
 
 export default router
