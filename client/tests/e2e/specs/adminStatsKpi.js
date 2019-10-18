@@ -3,7 +3,7 @@
 */
 
 describe('Stats Kpi tests', () => {
-  before(() => {
+  beforeEach(() => {
     cy.mhDeleteAll()
     // login admin
     cy.adminLogin()
@@ -23,10 +23,14 @@ describe('Stats Kpi tests', () => {
     // deconnecter l'admin
     cy.adminDisconnection()
   })
-  it('Checks if candidate subscribed', () => {
+
+  it('Checks candidate nonReussite stats', () => {
     cy.adminLogin()
     cy.contains('bar_chart')
       .click()
+
+    cy.get('.t-remplissage-futur')
+      .should('contain', '0%')
 
     cy.get('.t-number-inscrit-1')
       .should('have.length', 1)
@@ -36,12 +40,294 @@ describe('Stats Kpi tests', () => {
 
     cy.get('.t-number-future-places-36')
       .should('have.length', 1)
+
+    cy.addCandidatToPlace()
+
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-1')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-1')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-35')
+      .should('have.length', 1)
+    cy.get('.t-remplissage-futur')
+      .should('contain', '3%')
+
+    cy.writeFile(Cypress.env('filePath') + '/aurige.nonReussite.json',
+      [
+        {
+          'codeNeph': Cypress.env('NEPH'),
+          'nomNaissance': Cypress.env('candidat'),
+          'email': Cypress.env('emailCandidat'),
+          'dateReussiteETG': '2018-10-12',
+          'nbEchecsPratiques': '0',
+          'dateDernierNonReussite': Cypress.env('placeDate'),
+          'objetDernierNonReussite': 'Echec',
+          'reussitePratique': '',
+          'candidatExistant': 'OK',
+        },
+      ])
+    cy.contains('import_export')
+      .click()
+
+    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.nonReussite.json'
+    const fileName = 'aurige.nonReussite.json'
+    cy.fixture(filePath).then(fileContent => {
+      cy.get('.input-file-container [type=file]')
+        .upload({
+          fileContent: JSON.stringify(fileContent),
+          fileName,
+          mimeType: 'application/json',
+        })
+    })
+    cy.get('.v-snack')
+      .should('contain', fileName + ' prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
+
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-0')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-1')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-36')
+      .should('have.length', 1)
     cy.adminDisconnection()
   })
-  it('Checks candidate booked place', () => {
+
+  it('Checks candidate no receivable', () => {
     cy.adminLogin()
     cy.addCandidatToPlace()
-    // verifier que le candidat a bien une place reserver dans les stats
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-1')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-1')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-35')
+      .should('have.length', 1)
+
+    cy.writeFile(Cypress.env('filePath') + '/aurige.nonRecevable.json',
+      [
+        {
+          'codeNeph': Cypress.env('NEPH'),
+          'nomNaissance': Cypress.env('candidat'),
+          'email': Cypress.env('emailCandidat'),
+          'dateReussiteETG': '2018-10-12',
+          'nbEchecsPratiques': '0',
+          'dateDernierNonReussite': Cypress.env('placeDate'),
+          'objetDernierNonReussite': 'Non recevable',
+          'reussitePratique': '',
+          'candidatExistant': 'OK',
+        },
+      ])
+
+    cy.contains('import_export')
+      .click()
+
+    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.nonRecevable.json'
+    const fileName = 'aurige.nonRecevable.json'
+    cy.fixture(filePath).then(fileContent => {
+      cy.get('.input-file-container [type=file]')
+        .upload({
+          fileContent: JSON.stringify(fileContent),
+          fileName,
+          mimeType: 'application/json',
+        })
+    })
+    cy.get('.v-snack')
+      .should('contain', fileName + ' prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
+
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-0')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-1')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-36')
+      .should('have.length', 1)
+
+    cy.adminDisconnection()
+  })
+
+  it('Checks candidate no examinable', () => {
+    cy.adminLogin()
+    cy.addCandidatToPlace()
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-1')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-1')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-35')
+      .should('have.length', 1)
+
+    cy.writeFile(Cypress.env('filePath') + '/aurige.nonExaminable.json',
+      [
+        {
+          'codeNeph': Cypress.env('NEPH'),
+          'nomNaissance': Cypress.env('candidat'),
+          'email': Cypress.env('emailCandidat'),
+          'dateReussiteETG': '2018-10-12',
+          'nbEchecsPratiques': '0',
+          'dateDernierNonReussite': Cypress.env('placeDate'),
+          'objetDernierNonReussite': 'Non examinable',
+          'reussitePratique': '',
+          'candidatExistant': 'OK',
+        },
+      ])
+
+    cy.contains('import_export')
+      .click()
+
+    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.nonExaminable.json'
+    const fileName = 'aurige.nonExaminable.json'
+    cy.fixture(filePath).then(fileContent => {
+      cy.get('.input-file-container [type=file]')
+        .upload({
+          fileContent: JSON.stringify(fileContent),
+          fileName,
+          mimeType: 'application/json',
+        })
+    })
+    cy.get('.v-snack')
+      .should('contain', fileName + ' prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
+
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-0')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-1')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-36')
+      .should('have.length', 1)
+    cy.get('.t-non-examines')
+      .should('contain', '67%')
+
+    cy.adminDisconnection()
+  })
+
+  it('Checks candidate absent', () => {
+    cy.adminLogin()
+    cy.addCandidatToPlace()
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-1')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-1')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-35')
+      .should('have.length', 1)
+
+    cy.writeFile(Cypress.env('filePath') + '/aurige.absent.json',
+      [
+        {
+          'codeNeph': Cypress.env('NEPH'),
+          'nomNaissance': Cypress.env('candidat'),
+          'email': Cypress.env('emailCandidat'),
+          'dateReussiteETG': '2018-10-12',
+          'nbEchecsPratiques': '0',
+          'dateDernierNonReussite': Cypress.env('placeDate'),
+          'objetDernierNonReussite': 'Absent',
+          'reussitePratique': '',
+          'candidatExistant': 'OK',
+        },
+      ])
+
+    cy.contains('import_export')
+      .click()
+
+    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.absent.json'
+    const fileName = 'aurige.absent.json'
+    cy.fixture(filePath).then(fileContent => {
+      cy.get('.input-file-container [type=file]')
+        .upload({
+          fileContent: JSON.stringify(fileContent),
+          fileName,
+          mimeType: 'application/json',
+        })
+    })
+    cy.get('.v-snack')
+      .should('contain', fileName + ' prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
+
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-0')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-1')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-36')
+      .should('have.length', 1)
+    cy.get('.t-absenteisme')
+      .should('contain', '25%')
+
+    cy.adminDisconnection()
+  })
+
+  it('Checks candidate success', () => {
+    cy.adminLogin()
+    cy.addCandidatToPlace()
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-1')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-1')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-35')
+      .should('have.length', 1)
+
+    cy.writeFile(Cypress.env('filePath') + '/aurige.reussite.json',
+      [
+        {
+          'codeNeph': Cypress.env('NEPH'),
+          'nomNaissance': Cypress.env('candidat'),
+          'email': Cypress.env('emailCandidat'),
+          'dateReussiteETG': '2018-10-12',
+          'nbEchecsPratiques': '0',
+          'dateDernierNonReussite': '',
+          'objetDernierNonReussite': '',
+          'reussitePratique': Cypress.env('placeDate'),
+          'candidatExistant': 'OK',
+        },
+      ])
+
+    cy.contains('import_export')
+      .click()
+
+    const filePath = '../../../' + Cypress.env('filePath') + '/aurige.reussite.json'
+    const fileName = 'aurige.reussite.json'
+    cy.fixture(filePath).then(fileContent => {
+      cy.get('.input-file-container [type=file]')
+        .upload({
+          fileContent: JSON.stringify(fileContent),
+          fileName,
+          mimeType: 'application/json',
+        })
+    })
+    cy.get('.v-snack')
+      .should('contain', fileName + ' prêt à être synchronisé')
+    cy.get('.import-file-action [type=button]')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
+
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.get('.t-number-reserved-places-0')
+      .should('have.length', 1)
+    cy.get('.t-number-inscrit-0')
+      .should('have.length', 1)
+    cy.get('.t-number-future-places-36')
+      .should('have.length', 1)
+    cy.get('t-reussite')
+      .should('contain', '20%')
+
     cy.adminDisconnection()
   })
 })

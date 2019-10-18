@@ -1,5 +1,5 @@
 <template>
-  <div class="u-flex  u-flex--center">
+  <div :class="`u-flex  u-flex--center ${myChartInfo.idCypress}`">
     <v-progress-circular
       :class="myChartInfo.classContent"
       :rotate="myChartInfo.rotate"
