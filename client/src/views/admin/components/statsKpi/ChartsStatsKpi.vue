@@ -113,6 +113,7 @@ export default {
           description: this.$formatMessage({ id: 'egale_reservation_a_venir_divise_places_proposees_dans_le_futur' }),
           value: this.percentPlacesExamBookedOrNot,
           colorProgress: '#388E3C',
+          idCypress: 't-remplissage-futur',
         },
       ]
     },
@@ -167,18 +168,21 @@ export default {
           description: this.$formatMessage({ id: 'egale_recus_divise_reçus_plus_echecs' }),
           value: Math.round(((received / totalPlacesCount) * 100) || 0),
           colorProgress: '#00B0FF',
+          idCypress: 't-reussite',
         },
         {
           title: this.$formatMessage({ id: 'd_absenteisme' }),
           description: this.$formatMessage({ id: 'egale_absents_divise_examens_passes' }),
           value: Math.round(((absent / totalPlacesCount) * 100) || 0),
           colorProgress: '#00B0FF',
+          idCypress: 't-absenteisme',
         },
         {
           title: this.$formatMessage({ id: 'de_non_examines' }),
           description: this.$formatMessage({ id: 'egale_non_examinés_divise_examens_passes' }),
           value: Math.round(((notExamined / totalPlacesCount) * 100) || 0),
           colorProgress: '#00B0FF',
+          idCypress: 't-non-examines',
         },
       ]
     },

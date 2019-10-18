@@ -21,6 +21,8 @@ Cypress.Commands.add('adminLogin', () => {
 })
 
 Cypress.Commands.add('adminDisconnection', () => {
+  cy.get('.home-link')
+    .click()
   cy.get('.t-disconnect')
     .click()
   cy.get('.v-snack')
@@ -265,6 +267,21 @@ Cypress.Commands.add('addCandidatToPlace', () => {
       cy.get('.place-details')
         .should('contain', Cypress.env('centre'))
       cy.contains('Valider')
+        .click()
+    })
+})
+
+Cypress.Commands.add('removeCandidatOnPlace', () => {
+  cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+  cy.get('.v-window-item').not('[style="display: none;"]')
+    .contains(Cypress.env('inspecteur2'))
+    .parents('tbody').within(($row) => {
+      cy.get('.place-button')
+        .contains('face')
+        .click()
+      cy.contains('Annuler réservation')
+        .click()
+      cy.contains('Supprimer réservation')
         .click()
     })
 })
