@@ -1038,6 +1038,12 @@ router
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
+ */
+
+/**
+ * @swagger
+ *
+ * /admin/users:
  *   get:
  *     tags: ["Administrateur"]
  *     summary: Récupération des informations de l'utilisateur
@@ -1102,6 +1108,12 @@ router
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
+ */
+
+/**
+ * @swagger
+ *
+ * /admin/users:
  *   put:
  *     tags: ["Administrateur"]
  *     summary: Modification d'un utilisateur
@@ -1167,6 +1179,12 @@ router
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
+ */
+
+/**
+ * @swagger
+ *
+ * /admin/users:
  *   delete:
  *     tags: ["Administrateur"]
  *     summary: Suppression d'un utilisateur
