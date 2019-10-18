@@ -50,14 +50,14 @@ export default Vue.extend({
 
   watch: {
     'selected': function (val, oldVal) {
-      if (val !== oldVal) {
+      if (val !== oldVal && this.params) {
         this.params.filterChangedCallback()
       }
     },
   },
 
   created () {
-    this.valueGetter = this.params.valueGetter
+    this.valueGetter = this.params && this.params.valueGetter
   },
 
 })

@@ -11,6 +11,11 @@ storiesOf('Candidat', module)
         center: {
           list: [],
           selected: undefined,
+          centre: {
+            geoloc: {
+              coordinates: [],
+            },
+          },
         },
         candidat: {
           me: undefined,
@@ -36,6 +41,9 @@ storiesOf('Candidat', module)
                 departement: '93',
                 label: 'Centre d\'examen du permis de conduire de Rosny-sous-Bois',
                 nom: 'Rosny',
+                geoloc: {
+                  coordinates: [],
+                },
               },
               count: 10,
             },
@@ -46,6 +54,9 @@ storiesOf('Candidat', module)
                 departement: '93',
                 label: 'Centre d\'examen du permis de conduire de Rosny-sous-Bois',
                 nom: 'Villepinte',
+                geoloc: {
+                  coordinates: [],
+                },
               },
               count: 0,
             },

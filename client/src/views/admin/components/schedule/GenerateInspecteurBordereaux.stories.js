@@ -19,5 +19,10 @@ storiesOf('Admin', module)
           isGenerating: true,
         },
       },
+      getters: {
+        emailDepartementActive: state => {
+          return state.admin.email
+        },
+      },
     }),
   }))

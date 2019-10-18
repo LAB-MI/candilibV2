@@ -3,6 +3,7 @@ import delay from 'delay'
 
 export default {
   state: {
+    inspecteurs: [],
     places: {
       isFetching: false,
     },

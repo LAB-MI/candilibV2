@@ -140,6 +140,9 @@ storiesOf('Candidat', module)
           displayNavDrawer: false,
         },
       },
+      getters: {
+        isCandidatSignedIn () {},
+      },
       mutations: {
         DISPLAY_NAV_DRAWER (state, bool) {
           state.candidat.displayNavDrawer = bool
