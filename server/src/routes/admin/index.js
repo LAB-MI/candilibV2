@@ -50,7 +50,7 @@ router.post(
  *
  * /admin/me:
  *   get:
- *     tags: [Admin]
+ *     tags: ["Administrateur"]
  *     summary: Récupération de mes infos administrateur
  *     description: Après connexion, renvoie les infos de l'administrateur connecté (id dans le JWT envoyé en header)
  *     produces:
@@ -78,7 +78,7 @@ router.post(
  * Après connexion, renvoie les infos de l'administrateur connecté (id dans le JWT envoyé en header)
  *
  * @callback getMe
- * @see {@link http://localhost:8000/api-docs/#/default/get_admin_me}
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_me}
  */
 
 router.get('/me', getMe)
@@ -88,7 +88,7 @@ router.get('/me', getMe)
  *
  * /admin/candidats:
  *   get:
- *     tags: [Admin]
+ *     tags: ["Administrateur"]
  *     summary: Récupération des infos candidat
  *     description: L'administrateur récupère les informations d'un ou plusieurs candidats
  *     produces:
@@ -166,7 +166,7 @@ router.get('/me', getMe)
  *
  * /admin/candidats/{candidatId}:
  *   get:
- *     tags: [Admin]
+ *     tags: ["Administrateur"]
  *     summary: Récupération des infos candidat
  *     description: L'administrateur récupère les informations d'un candidat via son id
  *     produces:
@@ -227,7 +227,7 @@ router.get('/me', getMe)
  * L'administrateur récupère les informations d'un ou plusieurs candidats
  *
  * @callback getCandidats
- * @see {@link http://localhost:8000/api-docs/#/default/get_admin_candidats}
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_candidats}
  */
 router.get(
   '/candidats/:id?',
@@ -241,7 +241,7 @@ router.get(
  *
  * /admin/candidats:
  *   post:
- *     tags: [Admin]
+ *     tags: ["Administrateur"]
  *     summary: Ajout des candidats
  *     description: Import des candidats via le fichier délivré par aurige. Nécessite les droits administrateur
  *     produces:
@@ -343,7 +343,7 @@ router.get(
  * Import des candidats via le fichier délivré par aurige
  *
  * @callback importCandidats
- * @see {@link http://localhost:8000/api-docs/#/default/post_admin_candidats}
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_candidats}
  */
 router.post(
   '/candidats',
@@ -356,7 +356,7 @@ router.post(
  *
  * /admin/inspecteurs:
  *   get:
- *     tags: [Admin]
+ *     tags: ["Administrateur"]
  *     summary: Récupération des infos inspecteur
  *     description: L'administrateur récupère les informations d'un ou plusieurs inspecteurs
  *     produces:
@@ -475,7 +475,7 @@ router.post(
  * L'administrateur récupère les informations d'un ou plusieurs inspecteurs
  *
  * @callback getInspecteurs
- * @see {@link http://localhost:8000/api-docs/#/default/get_admin_inspecteurs}
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_inspecteurs}
  */
 router.get('/inspecteurs', getInspecteurs)
 
@@ -615,7 +615,7 @@ router.get(
  *
  * /admin/whitelisted/{whitelistedId}:
  *   delete:
- *     tags: [Admin]
+ *     tags: ["Administrateur"]
  *     summary: Suppression d'un élément de la liste blanche
  *     description: L'administrateur supprime une adresse de la liste blanche à partir de son id
  *     produces:
@@ -662,7 +662,7 @@ router.get(
  * L'administrateur supprime une adresse de la whitelist
  *
  * @callback removeWhitelisted
- * @see {@link http://localhost:8000/api-docs/#/default/delete_admin_whitelisted}
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_whitelisted}
  */
 router
   .route('/whitelisted/:id')
@@ -674,7 +674,7 @@ router
  *
  * /admin/whitelisted:
  *   get:
- *     tags: [Admin]
+ *     tags: ["Administrateur"]
  *     summary: Récupération d'éléments de la liste blanche
  *     description:
  *       L'administrateur récupère une ou plusieures adresses de la liste blanche.
@@ -717,7 +717,7 @@ router
  *         $ref: '#/components/responses/UnknownErrorResponse'
  *
  *   post:
- *     tags: [Admin]
+ *     tags: ["Administrateur"]
  *     summary: Ajout d'éléments dans la liste blanche
  *     description: L'administrateur ajoute une ou plusieures adresses dans la liste blanche.
  *     produces:
@@ -863,9 +863,9 @@ router
  * L'administrateur récupère ou ajoute une ou plusieures adresses de la liste blanche
  *
  * @callback getWhitelisted
- * @see {@link http://localhost:8000/api-docs/#/default/get_admin_whitelisted}
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_whitelisted}
  * @callback addWhitelisted
- * @see {@link http://localhost:8000/api-docs/#/default/post_admin_whitelisted}
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_whitelisted}
  */
 router
   .route('/whitelisted')
