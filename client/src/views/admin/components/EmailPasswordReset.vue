@@ -10,7 +10,7 @@
       tabindex="8"
 
     >
-    Réinitialiser mot de passe
+    Réinitialiser le mot de passe
     </v-btn>
 
     <v-card>
@@ -18,7 +18,7 @@
         class="headline grey lighten-2"
         primary-title
       >
-      Réinitialiser mot de passe
+      Réinitialiser le mot de passe
       </v-card-title>
       <v-form
         @submit.prevent="sendMailResetLink"
@@ -54,7 +54,7 @@
             :aria-disabled="isSendingResetLink"
             tabindex="2"
             color="#28a745"
-          > Réinitialiser mot de passe
+          > Réinitialiser le mot de passe
           </v-btn>
         </v-card-actions>
       </v-form>

@@ -78,7 +78,7 @@ export default {
       passwordRules: [
         value => !!value || ('Veuillez renseigner votre mot de passe'),
         value => strongEnoughPassword.every(regex => regex.test(value)) ||
-          'Veuillez entrer un mot de passe fort',
+          'Veuillez entrer un mot de passe fort (exemple: A@5db98)',
       ],
       confirmNewPasswordRules: [
         value => !!value || ('Veuillez confirmer votre mot de passe'),
@@ -116,6 +116,7 @@ export default {
         this.$store.dispatch(SHOW_SUCCESS, `Votre mot de passe a bien été modifié`)
         this.$router.push({ name: 'admin-login' })
       } catch (error) {
+        return this.$store.dispatch(SHOW_ERROR, `Oups! Une erreur est survenue. L'administrateur a été prévenu`)
       }
     },
   },

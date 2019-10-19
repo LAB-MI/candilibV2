@@ -331,13 +331,13 @@ export default {
     },
 
     async [SEND_RESET_LINK_REQUEST] ({ commit, dispatch }, email) {
-      commit(SEND_RESET_LINK_REQUEST, email)
+      commit(SEND_RESET_LINK_REQUEST)
       try {
         const response = await api.admin.sendMailResetLink(email)
         if (response.success === false) {
           throw new Error(response.message)
         }
-        commit(SEND_RESET_LINK_SUCCESS, email)
+        commit(SEND_RESET_LINK_SUCCESS)
       } catch (error) {
         commit(SEND_RESET_LINK_FAILURE)
         dispatch(SHOW_ERROR, error.message)
@@ -352,7 +352,7 @@ export default {
         if (response.success === false) {
           throw new Error(response.message)
         }
-        commit(RESET_PASSWORD_SUCCESS, newPassword)
+        commit(RESET_PASSWORD_SUCCESS)
       } catch (error) {
         commit(RESET_PASSWORD_FAILURE)
         dispatch(SHOW_ERROR, error.message)
