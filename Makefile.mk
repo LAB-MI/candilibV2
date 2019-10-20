@@ -4,6 +4,10 @@ APP   := candilibV2
 APP_VERSION := $(shell bash ./ci/version.sh 2>&- || cat VERSION)
 LATEST_VERSION := latest
 
+#
+# Enable/disable feature (default: without scheduler)
+#  Override at run time with: make ENABLE_FEATURE=with-scheduler ...
+#
 ENABLE_FEATURE := without-scheduler
 #ENABLE_FEATURE := with-scheduler
 
@@ -20,9 +24,10 @@ DIST_DIR      := ${APP_PATH}/${APP}-${APP_VERSION}-dist
 # binaries
 DOCKER   := $(shell type -p docker)
 DC       := $(shell type -p docker-compose)
-http_proxy    := $(shell echo $$http_proxy)
-https_proxy    := $(shell echo $$https_proxy)
-no_proxy := $(shell echo $$no_proxy)
+# proxy conf
+http_proxy  := $(shell echo $$http_proxy)
+https_proxy := $(shell echo $$https_proxy)
+no_proxy    := $(shell echo $$no_proxy)
 
 # detect tty
 DOCKER_USE_TTY := $(shell test -t 1 && echo "-t" )
@@ -32,61 +37,78 @@ DC_USE_TTY     := $(shell test -t 1 || echo "-T" )
 DC_BUILD_ARGS := --pull --no-cache --force-rm
 DC_RUN_ARGS   := -d --no-build
 
-# docker-compose file: development (build or run time)
+# source archive
+FILE_ARCHIVE_APP_VERSION = $(APP)-$(APP_VERSION)-archive.tar.gz
+FILE_ARCHIVE_LATEST_VERSION = $(APP)-$(LATEST_VERSION)-archive.tar.gz
+
+# docker-compose file
+#    development (build or run time)
 # (all containers in one compose)
+#
 DC_APP_BUILD_DEV := $(APP_API_PATH)/docker-compose.dev.yml
 DC_APP_RUN_DEV   := $(APP_API_PATH)/docker-compose.dev.yml
-# (one container in one compose)
-DC_APP_FRONT_CANDIDAT_BUILD_DEV  := $(APP_FRONT_PATH)/docker-compose.dev.yml
-DC_APP_FRONT_ADMIN_BUILD_DEV  := $(APP_FRONT_PATH)/docker-compose.dev.yml
-DC_APP_API_BUILD_DEV   := $(APP_API_PATH)/docker-compose.dev.yml
-DC_APP_API_RUN_DEV     := $(APP_API_PATH)/docker-compose.dev.yml
-DC_APP_DB_BUILD_DEV    := $(APP_DB_PATH)/docker-compose.dev.db.yml
-DC_APP_DB_RUN_DEV      := $(APP_DB_PATH)/docker-compose.dev.db.yml
-DC_APP_SCHEDULER_BUILD_DEV   := $(APP_SCHEDULER_PATH)/docker-compose.dev.scheduler.yml
-DC_APP_SCHEDULER_RUN_DEV     := $(APP_SCHEDULER_PATH)/docker-compose.dev.scheduler.yml
+#
+# (one service per compose file)
+#
+DC_APP_FRONT_CANDIDAT_BUILD_DEV := $(APP_FRONT_PATH)/docker-compose.dev.yml
+DC_APP_FRONT_ADMIN_BUILD_DEV    := $(APP_FRONT_PATH)/docker-compose.dev.yml
+DC_APP_API_BUILD_DEV            := $(APP_API_PATH)/docker-compose.dev.yml
+DC_APP_API_RUN_DEV              := $(APP_API_PATH)/docker-compose.dev.yml
+DC_APP_DB_BUILD_DEV             := $(APP_DB_PATH)/docker-compose.dev.db.yml
+DC_APP_DB_RUN_DEV               := $(APP_DB_PATH)/docker-compose.dev.db.yml
+DC_APP_SCHEDULER_BUILD_DEV      := $(APP_SCHEDULER_PATH)/docker-compose.dev.scheduler.yml
+DC_APP_SCHEDULER_RUN_DEV        := $(APP_SCHEDULER_PATH)/docker-compose.dev.scheduler.yml
 
-# docker-compose file: production (build or run time)
-# (all containers in one compose)
-DC_APP_BUILD_PROD := $(APP_API_PATH)/docker-compose.prod.all.yml
-DC_APP_RUN_PROD   := $(APP_API_PATH)/docker-compose.prod.all.yml
-# (one container in one compose)
+#    production (build or run time)
+# (one service per compose file)
+#
 DC_APP_FRONT_CANDIDAT_BUILD_PROD := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
-DC_APP_FRONT_CANDIDAT_RUN_PROD := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
+DC_APP_FRONT_CANDIDAT_RUN_PROD   := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
 DC_APP_FRONT_ADMIN_BUILD_PROD    := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
-DC_APP_FRONT_ADMIN_RUN_PROD    := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
+DC_APP_FRONT_ADMIN_RUN_PROD      := $(APP_FRONT_PATH)/docker-compose.prod.front.yml
 DC_APP_API_BUILD_PROD            := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_API_RUN_PROD              := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_DB_BUILD_PROD             := $(APP_DB_PATH)/docker-compose.prod.db.yml
 DC_APP_DB_RUN_PROD               := $(APP_DB_PATH)/docker-compose.prod.db.yml
-DC_APP_SCHEDULER_BUILD_PROD            := $(APP_SCHEDULER_PATH)/docker-compose.prod.scheduler.yml
-DC_APP_SCHEDULER_RUN_PROD              := $(APP_SCHEDULER_PATH)/docker-compose.prod.scheduler.yml
+DC_APP_SCHEDULER_BUILD_PROD      := $(APP_SCHEDULER_PATH)/docker-compose.prod.scheduler.yml
+DC_APP_SCHEDULER_RUN_PROD        := $(APP_SCHEDULER_PATH)/docker-compose.prod.scheduler.yml
 # tests e2e
 DC_APP_E2E_BUILD_PROD            := $(APP_FRONT_PATH)/docker-compose.e2e.yml
 DC_APP_E2E_RUN_PROD              := $(APP_FRONT_PATH)/docker-compose.e2e.yml
 
+#
+# service name referenced in compose file
+#
+DC_APP_FRONT_CANDIDAT_SERVICE_NAME := front_candidat
+DC_APP_FRONT_ADMIN_SERVICE_NAME    := front_admin
+DC_APP_API_SERVICE_NAME            := api
+DC_APP_DB_SERVICE_NAME             := db
+DC_APP_SCHEDULER_SERVICE_NAME      := scheduler
+
 # source archive
 FILE_ARCHIVE_APP_VERSION = $(APP)-$(APP_VERSION)-archive.tar.gz
 FILE_ARCHIVE_LATEST_VERSION = $(APP)-$(LATEST_VERSION)-archive.tar.gz
- 
+
 FILE_FRONT_CANDIDAT_APP_VERSION = $(APP)-front-candidat-$(APP_VERSION)-archive.tar.gz
 FILE_FRONT_ADMIN_APP_VERSION = $(APP)-front-admin-$(APP_VERSION)-archive.tar.gz
 
-# docker image name save
-FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION = $(APP)-front-candidat-$(APP_VERSION)-image.tar.gz
+#
+# docker image name to save/publish/download/load
+#
+FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION    = $(APP)-front-candidat-$(APP_VERSION)-image.tar.gz
 FILE_IMAGE_FRONT_CANDIDAT_LATEST_VERSION = $(APP)-front-candidat-$(LATEST_VERSION)-image.tar.gz
 
-FILE_IMAGE_FRONT_ADMIN_APP_VERSION = $(APP)-front-admin-$(APP_VERSION)-image.tar.gz
-FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION = $(APP)-front-admin-$(LATEST_VERSION)-image.tar.gz
+FILE_IMAGE_FRONT_ADMIN_APP_VERSION       = $(APP)-front-admin-$(APP_VERSION)-image.tar.gz
+FILE_IMAGE_FRONT_ADMIN_LATEST_VERSION    = $(APP)-front-admin-$(LATEST_VERSION)-image.tar.gz
 
-FILE_IMAGE_API_APP_VERSION = $(APP)-api-$(APP_VERSION)-image.tar.gz
-FILE_IMAGE_API_LATEST_VERSION = $(APP)-api-$(LATEST_VERSION)-image.tar.gz
+FILE_IMAGE_API_APP_VERSION               = $(APP)-api-$(APP_VERSION)-image.tar.gz
+FILE_IMAGE_API_LATEST_VERSION            = $(APP)-api-$(LATEST_VERSION)-image.tar.gz
 
-FILE_IMAGE_SCHEDULER_APP_VERSION = $(APP)-scheduler-$(APP_VERSION)-image.tar.gz
-FILE_IMAGE_SCHEDULER_LATEST_VERSION = $(APP)-scheduler-$(LATEST_VERSION)-image.tar.gz
+FILE_IMAGE_SCHEDULER_APP_VERSION         = $(APP)-scheduler-$(APP_VERSION)-image.tar.gz
+FILE_IMAGE_SCHEDULER_LATEST_VERSION      = $(APP)-scheduler-$(LATEST_VERSION)-image.tar.gz
 
-FILE_IMAGE_DB_APP_VERSION = $(APP)-db-$(APP_VERSION)-image.tar.gz
-FILE_IMAGE_DB_LATEST_VERSION = $(APP)-db-$(LATEST_VERSION)-image.tar.gz
+FILE_IMAGE_DB_APP_VERSION                = $(APP)-db-$(APP_VERSION)-image.tar.gz
+FILE_IMAGE_DB_LATEST_VERSION             = $(APP)-db-$(LATEST_VERSION)-image.tar.gz
 
 # Publish URL (docker image and archive)
 PUBLISH_AUTH_TOKEN         :=
