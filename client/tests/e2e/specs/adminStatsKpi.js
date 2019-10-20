@@ -1,5 +1,9 @@
 /* Tests :
-
+  candidate nonReussite stats
+  candidate no receivable
+  candidate no examinable
+  candidate absent
+  candidate success
 */
 
 describe('Stats Kpi tests', () => {
@@ -322,9 +326,7 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-number-future-places-36')
       .should('have.length', 1)
-    cy.get('t-reussite')
+    cy.get('.t-reussite')
       .should('contain', '20%')
-
-    cy.adminDisconnection()
   })
 })

@@ -6,7 +6,7 @@
       extended
       fixed
     >
-      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les département`"></v-switch>
+      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les départements`"></v-switch>
       <template v-slot:extension>
 
         <v-toolbar-title>
@@ -152,7 +152,7 @@ export default {
     ]),
 
     currentStatsResultExam () {
-      return this.statsResultsExams
+      return (this.statsResultsExams && this.statsResultsExams.statsKpi)
         ? this.statsResultsExams.statsKpi.find(el => el.departement === this.activeDepartement)
         : {}
     },
