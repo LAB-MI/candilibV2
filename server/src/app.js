@@ -68,7 +68,7 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           description: Un message compréhensible par l'usager
  *         statsKpi:
  *           type: Array
- *           description: List des stats demandés par département
+ *           description: Liste des statistiques demandés par département
  *
  *     GeolocObject:
  *       type: object
