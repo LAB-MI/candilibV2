@@ -22,6 +22,7 @@ const mongooseOpts = {
   useNewUrlParser: true,
   useFindAndModify: false,
   useCreateIndex: true,
+  useUnifiedTopology: true,
 }
 
 export const connect = async () => {
