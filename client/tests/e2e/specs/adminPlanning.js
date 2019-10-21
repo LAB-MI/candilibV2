@@ -300,6 +300,16 @@ describe('Planning tests without candidate', () => {
       .should('not.contain', Cypress.env('inspecteur'))
     // Imports the places
     cy.addPlanning()
+    // Check message, when place is put in not available hours
+    const getEtatValidPlanning = cy.get('.t-import-places-validation-header-status')
+    getEtatValidPlanning.should('contain', 'Etat')
+    getEtatValidPlanning.trigger('mouseover')
+    cy.get('.t-import-places-validation-header-status .ag-cell-label-container .ag-header-cell-menu-button').click()
+    cy.get('.t-ag-grid-filter-status-icon').click()
+    cy.get('.t-ag-grid-filter-error').click()
+    cy.get('[col-id=message]').should('contain', "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée.")
+    cy.get('[col-id=status]').should('contain', 'clear')
+    cy.get('[col-id=status]').should('not.contain', 'done')
     // The inspector should be back
     cy.contains('replay')
       .click()
