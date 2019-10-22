@@ -25,7 +25,7 @@
             :chartInfo="chartInfo"
           />
           <div class="u-flex__item">
-            <strong class="total-places">
+            <strong :class="`total-places t-total-places-${Math.round(getTotalPlaces())}`">
               {{ `${getTotalPlaces()}` }}
             </strong>
             <strong class="d-block">
@@ -54,9 +54,9 @@
           />
           <div
             :class="`u-flex__item pa-3
-              t-number-inscrit-${datasets[2].data[0]}
-              t-number-future-places-${datasets[1].data[0]}
-              t-number-reserved-places-${datasets[0].data[0]}
+              t-number-inscrit-${Math.round(datasets[2].data[0])}
+              t-number-future-places-${Math.round(datasets[1].data[0])}
+              t-number-reserved-places-${Math.round(datasets[0].data[0])}
               `"
           >
             <chart-bar
@@ -103,7 +103,7 @@ export default {
     percentPlacesExamBookedOrNot () {
       const totalBookedPlaces = (this.statsPlacesExamValues && this.statsPlacesExamValues.totalBookedPlaces) || 0
       const totalPlaces = (this.statsPlacesExamValues && this.statsPlacesExamValues.totalPlaces) || 1
-      return Math.round((totalBookedPlaces / totalPlaces) * 100)
+      return ((totalBookedPlaces / totalPlaces) * 100).toFixed(2)
     },
 
     chartsPlacesExams () {
@@ -166,21 +166,21 @@ export default {
         {
           title: this.$formatMessage({ id: 'de_reussite' }),
           description: this.$formatMessage({ id: 'egale_recus_divise_reçus_plus_echecs' }),
-          value: Math.round(((received / totalPlacesCount) * 100) || 0),
+          value: (((received / totalPlacesCount) * 100) || 0).toFixed(2),
           colorProgress: '#00B0FF',
           idCypress: 't-reussite',
         },
         {
           title: this.$formatMessage({ id: 'd_absenteisme' }),
           description: this.$formatMessage({ id: 'egale_absents_divise_examens_passes' }),
-          value: Math.round(((absent / totalPlacesCount) * 100) || 0),
+          value: (((absent / totalPlacesCount) * 100) || 0).toFixed(2),
           colorProgress: '#00B0FF',
           idCypress: 't-absenteisme',
         },
         {
           title: this.$formatMessage({ id: 'de_non_examines' }),
           description: this.$formatMessage({ id: 'egale_non_examinés_divise_examens_passes' }),
-          value: Math.round(((notExamined / totalPlacesCount) * 100) || 0),
+          value: (((notExamined / totalPlacesCount) * 100) || 0).toFixed(2),
           colorProgress: '#00B0FF',
           idCypress: 't-non-examines',
         },
