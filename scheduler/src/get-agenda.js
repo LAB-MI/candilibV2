@@ -10,7 +10,7 @@ function getAgenda () {
   const config = getConfig()
 
   const { dbUser, dbPass, dbName, mongoUrl, agendaCollectionName } = config.db
-  const { schedulerName , defaultConcurrency } = config.scheduler
+  const { schedulerName, defaultConcurrency } = config.scheduler
 
   const mongoConnectionString = mongoUrl || `mongodb://${dbUser}:${dbPass}@localhost:27017/${dbName}`
 

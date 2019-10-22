@@ -1,1 +1,1 @@
-export * from './admin-jobs.js'
+export * from './jobs'
