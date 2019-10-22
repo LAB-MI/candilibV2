@@ -40,11 +40,9 @@ check-build-config-dev: check-prerequisites ## Check development docker-compose 
 up-dev: check-up-config-dev ## Run container in development mode
 	${DC} -f ${DC_APP_RUN_DEV} up ${DC_BUILD_ARGS}
 up-dev-api: check-up-config-dev ## Run container in development mode
-	${DC} -f ${DC_APP_RUN_DEV} up ${DC_BUILD_ARGS} ${DC_APP_API_SERVICE_NAME}
+	${DC} -f ${DC_APP_RUN_DEV} up ${DC_RUN_ARGS} ${DC_APP_API_SERVICE_NAME}
 up-dev-db: check-up-config-dev ## Run container in development mode
-	${DC} -f ${DC_APP_RUN_DEV} up ${DC_BUILD_ARGS} ${DC_APP_DB_SERVICE_NAME}
-up-dev-scheduler: check-up-config-dev ## Run container in development mode
-	${DC} -f ${DC_APP_RUN_DEV} up ${DC_BUILD_ARGS} ${DC_APP_SCHEDULER_SERVICE_NAME}
+	${DC} -f ${DC_APP_RUN_DEV} up ${DC_RUN_ARGS} ${DC_APP_DB_SERVICE_NAME}
 check-up-config-dev: check-prerequisites ## Check development compose syntax
 	${DC} -f $(DC_APP_RUN_DEV) config -q
 down-dev: ## Down container in development mode
@@ -55,8 +53,22 @@ stop-dev-api: ## Stop container in development mode
 	${DC} -f ${DC_APP_RUN_DEV} stop ${DC_APP_API_SERVICE_NAME}
 stop-dev-db: ## Stop container in development mode
 	${DC} -f ${DC_APP_RUN_DEV} stop ${DC_APP_DB_SERVICE_NAME}
+
+#
+# scheduler dev
+#
+build-dev-scheduler: check-build-config-scheduler-dev ## Run container in development mode
+	${DC} -f ${DC_APP_SCHEDULER_BUILD_DEV} build ${DC_BUILD_ARGS}
+check-build-config-scheduler-dev: check-prerequisites
+	${DC} -f ${DC_APP_SCHEDULER_BUILD_DEV} config -q
+check-up-config-scheduler-dev: check-prerequisites
+	${DC} -f ${DC_APP_SCHEDULER_RUN_DEV} config -q
+up-dev-scheduler: check-build-config-scheduler-dev ## Run container in development mode
+	${DC} -f ${DC_APP_SCHEDULER_RUN_DEV} up ${DC_RUN_ARGS} ${DC_APP_SCHEDULER_SERVICE_NAME}
+down-dev-scheduler: ## down container in development mode
+	${DC} -f ${DC_APP_SCHEDULER_RUN_DEV} down
 stop-dev-scheduler: ## Stop container in development mode
-	${DC} -f ${DC_APP_RUN_DEV} stop ${DC_APP_SCHEDULER_SERVICE_NAME}
+	${DC} -f ${DC_APP_SCHEDULER_RUN_DEV} stop ${DC_APP_SCHEDULER_SERVICE_NAME}
 #
 # Build prod (separate container per compose) TODO: to remove
 #
