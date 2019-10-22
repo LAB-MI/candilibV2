@@ -15,7 +15,11 @@ import {
 import { EPREUVE_PRATIQUE_OK, getFrenchLuxon, DATETIME_FULL } from '../../util'
 import { REASON_EXAM_FAILED } from '../common/reason.constants'
 
-export const getResultsExamAllDpt = async (departements, beginPeriode, endPeriode) => {
+export const getResultsExamAllDpt = async (
+  departements,
+  beginPeriode,
+  endPeriode
+) => {
   let dpts = departements
   if (!(departements && departements.length)) {
     dpts = await getDepartementsFromCentres()
