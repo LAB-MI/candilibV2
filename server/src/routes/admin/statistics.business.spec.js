@@ -109,7 +109,7 @@ describe('test statistics', () => {
     const begin = dateTimeDernierEchecPratiqueWithPenalty(45 * 3)
     const end = dateReussitePratique
 
-    const results = await getResultsExamAllDpt(begin, end)
+    const results = await getResultsExamAllDpt(['91', '92'], begin, end)
 
     expect(results).toBeDefined()
     expect(results).toHaveLength(2)

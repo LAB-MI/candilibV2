@@ -95,7 +95,7 @@
 
     <v-flex
       style="margin-top: 8vh; display: block;"
-      v-if="isShowOneDepartement"
+      v-if="!isDisplayAllDepartement"
       class="pa-5"
     >
       <charts-stats-kpi
@@ -130,7 +130,6 @@ export default {
   },
 
   async mounted () {
-    // this.$route.params.date.split('-')
     const { begin, end } = this.$route.params
     if (begin && end) {
       this.dateStart = begin
@@ -171,13 +170,9 @@ export default {
       return this.dateEnd.split('-').reverse().join('/')
     },
 
-    isShowOneDepartement () {
-      return this.currentStatsResultExam &&
-        this.currentStatsResultExam.departement &&
-        this.currentStatsPlacesExam &&
-        this.currentStatsPlacesExam.departement &&
-        !this.isDisplayAllDepartement
-    },
+    // isShowOneDepartement () {
+    //   return !this.isDisplayAllDepartement
+    // },
   },
 
   data: () => ({
