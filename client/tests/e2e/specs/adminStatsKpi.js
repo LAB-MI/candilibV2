@@ -33,7 +33,7 @@ describe('Stats Kpi tests', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
 
     cy.get('.t-remplissage-futur')
-      .should('contain', '0%')
+      .should('contain', '0.00%')
 
     cy.get('.t-number-inscrit-1')
       .should('have.length', 1)
@@ -54,7 +54,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-places-35')
       .should('have.length', 1)
     cy.get('.t-remplissage-futur')
-      .should('contain', '3%')
+      .should('contain', '2.86%')
 
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonReussite.json',
       [
@@ -269,7 +269,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-places-36')
       .should('have.length', 1)
     cy.get('.t-absenteisme')
-      .should('contain', '25%')
+      .should('contain', '25.00%')
     cy.adminDisconnection()
   })
 
@@ -327,6 +327,9 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-places-36')
       .should('have.length', 1)
     cy.get('.t-reussite')
-      .should('contain', '20%')
+      .should('contain', '20.00%')
+    cy.get('.t-total-places-5')
+      .should('have.length', 1)
+    cy.adminDisconnection()
   })
 })
