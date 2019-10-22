@@ -1,23 +1,8 @@
 # production mode
 version: '3.5'
 services:
-  db:
-    image: mongo:4.0.6
-    container_name: candilib_mongo
-    ports:
-      - "27017:27017"
-    networks:
-      - candilib-network
-    volumes:
-      - mongodata:/data/db
-      - ../db/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT_USER:-admin}
-      MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_PASS:-changeme}
-      MONGO_INITDB_DATABASE: ${DB_NAME:-candilib}
-      DB_USER: ${DB_USER:-adminCandilib}
-      DB_PASS: ${DB_PASS:-changeme78}
-
+#  start db before
+#  start api before
   scheduler:
     image: candilib_scheduler:${APP_VERSION:-latest}
     container_name: candilib_scheduler
@@ -41,8 +26,6 @@ services:
       # this will overwrite the default node_modules dir in container so it won't conflict with our
       # /opt/node_modules location. Thanks to PR from @brnluiz
       - notused:/app/node_modules
-    depends_on:
-      - db
     networks:
       - candilib-network
 #    ports:
@@ -51,7 +34,10 @@ services:
 #      - ${cnf:-.env}
     environment:
       NODE_ENV: development
+      SCHEDULER_NAME: ${SCHEDULER_NAME}
       MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
+      API_BASE_URL: ${API_BASE_URL:-http://api:8000}
+      API_PREFIX: ${API_PREFIX:-/api/v2}
 
 networks:
   candilib-network:

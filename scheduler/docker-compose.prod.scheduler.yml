@@ -7,6 +7,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
+      target: production
       args:
         http_proxy: ${http_proxy}
         https_proxy: ${http_proxy}
@@ -15,7 +16,7 @@ services:
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         APP_VERSION: ${APP_VERSION}
 #    ports:
-#      - "${SCHEDULER_PORT:-8000}:8000"
+#      - "${SCHEDULER_PORT:-8040}:8040"
 #    env_file:
 #      - ${cnf:-.env}
     environment:
