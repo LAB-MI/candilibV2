@@ -15,13 +15,17 @@ import {
 import { EPREUVE_PRATIQUE_OK, getFrenchLuxon, DATETIME_FULL } from '../../util'
 import { REASON_EXAM_FAILED } from '../common/reason.constants'
 
-export const getResultsExamAllDpt = async (beginPeriode, endPeriode) => {
-  const departements = await getDepartementsFromCentres()
-  if (!departements) {
+export const getResultsExamAllDpt = async (departements, beginPeriode, endPeriode) => {
+  let dpts = departements
+  if (!(departements && departements.length)) {
+    dpts = await getDepartementsFromCentres()
+  }
+
+  if (!dpts) {
     throw new Error('Aucun département trouvé')
   }
   const results = await Promise.all(
-    departements.map(departement =>
+    dpts.map(departement =>
       getResultsExamByDpt(departement, beginPeriode, endPeriode)
     )
   )

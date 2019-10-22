@@ -136,10 +136,11 @@ const parseStatsPlacesExams = statsData =>
 
 export const getStatsResultsExam = async (req, res) => {
   const { beginPeriod, endPeriod, isCsv } = req.query
+  const { departements, userId } = req
 
   const loggerContent = {
     section: 'admin-getStatsResultsExam',
-    admin: req.userId,
+    admin: userId,
     beginPeriod,
     endPeriod,
     isCsv,
@@ -152,7 +153,7 @@ export const getStatsResultsExam = async (req, res) => {
     .endOf('day')
     .toJSDate()
 
-  const statsKpi = await getResultsExamAllDpt(begin, end)
+  const statsKpi = await getResultsExamAllDpt(departements, begin, end)
 
   if (isCsv === 'true') {
     const statsKpiCsv = await parseStatsResultsExams(statsKpi)
