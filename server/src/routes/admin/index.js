@@ -482,6 +482,89 @@ router.get('/inspecteurs', getInspecteurs)
 router.post('/place', verifyRepartiteurDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
+/**
+ * @swagger
+ * /admin/places:
+ *   post:
+ *     tags: ["Administrateur"]
+ *     summary: Chargement le planning des inspecteurs
+ *     description: Permet de charger le planning des inspecteurs pour le département actif de l'utilisateur
+ *     produces:
+ *       - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       content:
+ *        multipart/form-data:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              file:
+ *                type: string
+ *                format: binary
+ *                description: Fichier au format CSV ou XLSX avec la liste des places
+ *              departement:
+ *                type: string
+ *                description: le département actif selectionné par l'utilisateur
+ *          example:
+ *            file: planning-93.csv
+ *            departement: 93
+ *     responses:
+ *      200:
+ *        description: Retour d'une réussite de traitment de fichier
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                fileName:
+ *                  type: string
+ *                  description: Le nom de fichier en .csv ou .xlsx conternant les places
+ *                success:
+ *                  type: boolean,
+ *                  description: vaut true,
+ *                message:
+ *                  type: string
+ *                  description: Un message compréhensible par l'usager
+ *                places:
+ *                  type: array
+ *                  description: Les messages sur l'état de traitement des places
+ *            example:
+ *              fileName: planning-93.csv
+ *              success: true
+ *              message: Le fichier planning-93.csv a été traité pour le departement 93.
+ *              places: [
+ *                        {
+ *                           "departement": "93",
+ *                           "centre": "Bobigny",
+ *                           "inspecteur": "5d9b04db0b279f003c677120",
+ *                           "date": "2019-07-06T08:00:00.000+02:00",
+ *                           "status": "error",
+ *                           "message": "Place déjà enregistrée en base"
+ *                         }, {
+ *                           "departement": "93",
+ *                           "centre": "Rosny sous bois",
+ *                           "inspecteur": "5d9b04db0b279f003c677120",
+ *                           "date": "2019-12-08T08:30:00.000+01:00",
+ *                           "status": "success",
+ *                           "message": "Place enregistrée en base"
+ *                         },
+ *                       ]
+ *      400:
+ *         description: Fichier manquant
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Fichier manquant
+ *      401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *      500:
+ *        $ref: '#/components/responses/UnknownErrorResponse'
+ */
 router.post('/places', verifyRepartiteurDepartement, importPlaces)
 router.delete('/places', deletePlacesByAdmin)
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
