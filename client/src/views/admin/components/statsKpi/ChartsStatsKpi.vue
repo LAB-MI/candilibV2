@@ -18,7 +18,7 @@
           </v-layout>
       </v-container>
       <v-container>
-        <h1 class="d-block pl-5 mb-3"><strong>{{ `${getTotalPlace()}` }}</strong></h1>
+        <h1 class="d-block pl-5 mb-3"><strong>{{ `${getTotalPlace}` }}</strong></h1>
         <span class="d-block"><strong>{{  $formatMessage({ id: 'examens_passes' }) }}</strong></span>
       </v-container>
     </v-layout>
@@ -39,11 +39,13 @@ export default {
     },
   },
 
-  methods: {
+  computed: {
     getTotalPlace () {
       return (this.statsValues.absent + this.statsValues.failed + this.statsValues.notExamined + this.statsValues.received) || 0
     },
+  },
 
+  methods: {
     getChartsResultsExams () {
       return [
         {
@@ -55,7 +57,7 @@ export default {
           rotate: 90,
           size: 150,
           width: 15,
-          value: ((this.statsValues.received / this.getTotalPlace()) * 100) || 0,
+          value: ((this.statsValues.received / this.getTotalPlace) * 100) || 0,
           colorProgress: 'primary',
           colorLabel: 'black',
         },
@@ -68,7 +70,7 @@ export default {
           rotate: 90,
           size: 150,
           width: 15,
-          value: ((this.statsValues.absent / this.getTotalPlace()) * 100) || 0,
+          value: ((this.statsValues.absent / this.getTotalPlace) * 100) || 0,
           colorProgress: 'primary',
           colorLabel: 'black',
         },
@@ -81,7 +83,7 @@ export default {
           rotate: 90,
           size: 150,
           width: 15,
-          value: ((this.statsValues.notExamined / this.getTotalPlace()) * 100) || 0,
+          value: ((this.statsValues.notExamined / this.getTotalPlace) * 100) || 0,
           colorProgress: 'primary',
           colorLabel: 'black',
         },
