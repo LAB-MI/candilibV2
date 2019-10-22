@@ -33,9 +33,19 @@ export default () => {
 
     API_LOGIN,
     API_PASS,
+
+    DISABLE_SCHEDULE,
+    DISABLE_DEFINE,
+    JOBS_LIST,
   } = process.env
 
   return {
+    jobs: {
+      schedule: !DISABLE_SCHEDULE,
+      define: !DISABLE_DEFINE,
+      list: JOBS_LIST ? process.env.JOBS_LIST.split(',') : [],
+    },
+
     scheduler: {
       schedulerName: SCHEDULER_NAME || process.env.HOSTNAME + '-' + process.pid,
       defaultConcurrency: 1,

@@ -3,18 +3,24 @@
  * @module
  */
 import getAgenda from './get-agenda.js'
+import getConfig from './config.js'
 import agenda from 'agenda' // eslint-disable-line no-unused-vars
-
 import * as adminJobs from './admin/index.js'
+
 import { appLogger } from './utils/index.js'
 
 /**
- * @type JobNames
+ * @type jobs
  */
-const jobNames = {
-  HELLO: 'HELLO',
-  GET_API_VERSION: 'GET_API_VERSION',
-  SEND_BORDEREAUX: 'SEND_BORDEREAUX',
+const jobs = {
+  hello: {
+    name: 'HELLO',
+    fn: adminJobs.hello,
+  },
+  getApiVersion: {
+    name: 'GET_API_VERSION',
+    fn: adminJobs.getApiVersion,
+  },
 }
 
 /**
@@ -38,22 +44,22 @@ const graceful = async (agenda) => {
 const scheduleJobs = async (agenda) => {
   appLogger.debug({ description: 'Scheduling jobs' })
 
-  const jobs = await Promise.all([
+  const jobsScheduled = await Promise.all([
     agenda.every(
       '*/3 * * * *',
-      jobNames.HELLO,
+      jobs.hello.name,
       null,
       { timezone: 'Europe/Paris' },
     ),
     agenda.every(
       '*/3 * * * *',
-      jobNames.GET_API_VERSION,
+      jobs.getApiVersion.name,
       null,
       { timezone: 'Europe/Paris' },
     ),
     /* agenda.every(
       '12 18 * * *',
-      jobNames.SEND_BORDEREAUX,
+      jobs.sendBordereaux.name,
       null,
       { timezone: 'Europe/Paris' },
     ),
@@ -62,7 +68,7 @@ const scheduleJobs = async (agenda) => {
 
   appLogger.info({ description: 'Jobs scheduled!' })
 
-  return jobs
+  return jobsScheduled
 }
 
 /**
@@ -74,8 +80,8 @@ const scheduleJobs = async (agenda) => {
  */
 const defineJobs = async (agenda) => {
   // agenda.define(jobNames.SEND_BORDEREAUX, adminJobs.sendBordereaux)
-  agenda.define(jobNames.GET_API_VERSION, adminJobs.getApiVersion)
-  agenda.define(jobNames.HELLO, adminJobs.hello)
+  agenda.define(jobs.getApiVersion.name, jobs.getApiVersion.fn)
+  agenda.define(jobs.hello.name, jobs.hello.fn)
 }
 
 /**
@@ -86,9 +92,11 @@ const defineJobs = async (agenda) => {
 export default async () => {
   const agenda = getAgenda()
 
-  appLogger.debug({ description: 'Defining jobs' })
+  if (getConfig().jobs.define) {
+    appLogger.debug({ description: 'Defining jobs' })
 
-  await defineJobs(agenda)
+    await defineJobs(agenda)
+  }
 
   appLogger.debug({ description: 'Starting Scheduler' })
 
@@ -96,7 +104,9 @@ export default async () => {
 
   appLogger.info({ description: 'Scheduler started' })
 
-  await scheduleJobs(agenda)
+  if (getConfig().jobs.schedule) {
+    await scheduleJobs(agenda)
+  }
 
   process.on('SIGTERM', () => graceful(agenda))
   process.on('SIGINT', () => graceful(agenda))

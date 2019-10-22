@@ -24,6 +24,9 @@ services:
       MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
       API_BASE_URL: ${API_BASE_URL:-http://api:8000}
       API_PREFIX: ${API_PREFIX:-/api/v2}
+      DISABLE_SCHEDULE: ${DISABLE_SCHEDULE}
+      DISABLE_DEFINE: ${DISABLE_DEFINE}
+      JOBS_LIST: ${JOBS_LIST}
 
 networks:
   default:
