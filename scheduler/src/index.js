@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
-import app from './automate.js'
+import jobs from './job-list'
+import startScheduler from './automate.js'
 
 dotenv.config()
-app()
+startScheduler(jobs)

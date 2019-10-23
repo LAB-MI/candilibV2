@@ -1,6 +1,6 @@
 /**
  * Configuration de l'ordonnanceur
- * @module
+ * @module get-agenda
  */
 
 import Agenda from 'agenda'
