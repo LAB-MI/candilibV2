@@ -9,8 +9,13 @@ import {
   findUserByEmail,
 } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
-import { appLogger } from '../../util'
+
+import {
+  appLogger,
+  email as regexEmail,
+} from '../../util'
 import config from '../../config'
+import { createPassword } from '../../util/password'
 
 /**
  * Récupère les infos de l'admin
@@ -79,7 +84,7 @@ const findInfoAdminById = async userId => {
 }
 
 export const createUserByAdmin = async (req, res) => {
-  const { email, password, departements, status } = req.body
+  const { email, departements, status } = req.body
   const loggerInfo = {
     section: 'admin',
     action: 'post-user',
@@ -87,13 +92,27 @@ export const createUserByAdmin = async (req, res) => {
   }
 
   appLogger.info(loggerInfo)
-
+  const isValidEmail = regexEmail.test(email)
+  if (!isValidEmail) {
+    return res.status(400).json({
+      success: false,
+      message: 'l\'adresse courriel n\'est pas valide',
+    })
+  }
+  const userExist = await findUserByEmail(email)
+  if (userExist) {
+    return res.status(400).json({
+      success: false,
+      message: 'cette adresse courriel est déja utilisé',
+    })
+  }
   try {
     const userInfo = await findUserById(req.userId)
     if (
       userInfo.status === config.userStatuses.DELEGUE &&
       status === config.userStatuses.REPARTITEUR
     ) {
+      const password = createPassword()
       const user = await createUser(email, password, departements, status)
       if (user) {
         appLogger.info({
@@ -101,6 +120,7 @@ export const createUserByAdmin = async (req, res) => {
           action: 'created-user',
           description: `L'utilisateur ${user.email} a bien été créé et un courriel lui a été envoyé`,
         })
+
         return res.status(201).json({
           success: true,
           message: 'Utilisateur a bien été créé',
@@ -116,6 +136,7 @@ export const createUserByAdmin = async (req, res) => {
       (status === config.userStatuses.DELEGUE ||
         status === config.userStatuses.REPARTITEUR)
     ) {
+      const password = createPassword()
       const user = await createUser(email, password, departements, status)
       if (user) {
         appLogger.info({
@@ -144,7 +165,6 @@ export const createUserByAdmin = async (req, res) => {
 }
 
 export const deleteUserByAdmin = async (req, res) => {
-  // idem
   const { email, status } = req.body
   const loggerInfo = {
     section: 'admin',
