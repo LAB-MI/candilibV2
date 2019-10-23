@@ -565,6 +565,14 @@ router.get('/places', verifyRepartiteurDepartement, getPlaces)
  *      500:
  *        $ref: '#/components/responses/UnknownErrorResponse'
  */
+/**
+ * Route pour charger le planning des inspecteurs par département
+ * Cette route utilise le middleware [verifyRepartiteurDepartement]{@link module:routes/admin/middleware/verify-repartiteur-departement} et le controleur [importPlaces]{@link module:routes/admin/places-controllers}
+ * @name Router POST '/admin/places'
+ *
+ * @see [importPlaces]{@link module:routes/admin/places-controllers}
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_places}
+ */
 router.post('/places', verifyRepartiteurDepartement, importPlaces)
 router.delete('/places', deletePlacesByAdmin)
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
