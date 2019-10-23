@@ -10,10 +10,7 @@ import {
 } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
 
-import {
-  appLogger,
-  email as regexEmail,
-} from '../../util'
+import { appLogger, email as regexEmail } from '../../util'
 import config from '../../config'
 import { createPassword } from '../../util/password'
 
@@ -96,7 +93,7 @@ export const createUserByAdmin = async (req, res) => {
   if (!isValidEmail) {
     return res.status(400).json({
       success: false,
-      message: 'l\'adresse courriel n\'est pas valide',
+      message: "l'adresse courriel n'est pas valide",
     })
   }
   const userExist = await findUserByEmail(email)

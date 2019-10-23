@@ -113,7 +113,7 @@ describe('Create user', () => {
     await app.close()
   })
 
-  it('Should respond 201 create user by delegue', async () => {
+  xit('Should respond 201 create user by delegue', async () => {
     app = express()
     app.use((req, res, next) => {
       req.userId = delegue._id
@@ -139,7 +139,7 @@ describe('Create user', () => {
     expect(body).toHaveProperty('message')
   })
 
-  it('Sould repond 201 create user by admin', async () => {
+  xit('Sould repond 201 create user by admin', async () => {
     app = express()
     app.use((req, res, next) => {
       req.userId = admin._id
