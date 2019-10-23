@@ -9,7 +9,7 @@ storiesOf('Admin/ScheduleInspectorDetails', module)
   .add('booking', () => ({
     components: { ScheduleInspectorDetails },
     template: `
-      <schedule-inspector-dialog-content
+      <schedule-inspector-details
         :closeDialog="closeDialog"
         :updateContent="updateContent"
         :flag-modal="flagModal"

@@ -31,11 +31,11 @@ export default {
       list: [],
     },
   },
-  //   getters: {
-  //     activeDepartement: state => {
-  //       return '93'
-  //     },
-  //   },
+  getters: {
+    activeDepartement: state => {
+      return '93'
+    },
+  },
   mutations: {
     FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST (state) {
       state.inspecteurs.isFetching = true
