@@ -1,4 +1,4 @@
-import { getFrenchFormattedDateTime } from '../../util/date.util'
+import { getFrenchFormattedDateTime } from '../../util/date-util'
 import { getHtmlBody } from './mail/body-mail-template'
 import { getConvocationTemplate } from './mail/convocation-template'
 import { getUrlFAQ, getUrlRESA } from './mail/mail.constants'

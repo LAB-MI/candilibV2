@@ -452,17 +452,10 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
  * @async
  * @function validCentreDateReservation
  *
-<<<<<<< HEAD
  * @param {string} candidatId Id de mongoose
  * @param {string} centre Id of mongoose
  * @param {Date|DateTime} date Date de l'examen de la place réservée
  * @param {object} previewBookedPlace Type model place which populate centre and candidat
-=======
- * @param {*} candidatId Type string from ObjectId of mongoose
- * @param {*} centreId Type string from ObjectId of mongoose
- * @param {*} date Type Date from Janascript or mongoose Type Date
- * @param {*} previewBookedPlace Type model place which populate centre and candidat
->>>>>>> change centre to centreId in logger
  */
 export const validCentreDateReservation = async (
   candidatId,
