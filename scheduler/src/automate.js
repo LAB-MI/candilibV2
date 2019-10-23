@@ -16,10 +16,17 @@ const jobs = {
   hello: {
     name: 'HELLO',
     fn: adminJobs.hello,
+    repeatInterval: '*/3 * * * *',
   },
   getApiVersion: {
     name: 'GET_API_VERSION',
     fn: adminJobs.getApiVersion,
+    repeatInterval: '*/3 * * * *',
+  },
+  sendBordereaux: {
+    name: 'SEND_BORDEREAUX',
+    fn: adminJobs.sendBordereaux,
+    repeatInterval: '12 18 * * *',
   },
 }
 
@@ -44,27 +51,21 @@ const graceful = async (agenda) => {
 const scheduleJobs = async (agenda) => {
   appLogger.debug({ description: 'Scheduling jobs' })
 
-  const jobsScheduled = await Promise.all([
-    agenda.every(
-      '*/3 * * * *',
-      jobs.hello.name,
-      null,
-      { timezone: 'Europe/Paris' },
-    ),
-    agenda.every(
-      '*/3 * * * *',
-      jobs.getApiVersion.name,
-      null,
-      { timezone: 'Europe/Paris' },
-    ),
-    /* agenda.every(
-      '12 18 * * *',
-      jobs.sendBordereaux.name,
-      null,
-      { timezone: 'Europe/Paris' },
-    ),
-    */
-  ])
+  var jobPromises = []
+
+  for (const jobProp of getConfig().jobs.list) {
+    var job = jobs[jobProp]
+    jobPromises.push(
+      agenda.every(
+        job.repeatInterval,
+        job.name,
+        null,
+        { timezone: 'Europe/Paris' },
+      )
+    )
+  }
+
+  const jobsScheduled = await Promise.all(jobPromises)
 
   appLogger.info({ description: 'Jobs scheduled!' })
 
@@ -79,9 +80,10 @@ const scheduleJobs = async (agenda) => {
  * @param {import('agenda').Agenda} agenda
  */
 const defineJobs = async (agenda) => {
-  // agenda.define(jobNames.SEND_BORDEREAUX, adminJobs.sendBordereaux)
-  agenda.define(jobs.getApiVersion.name, jobs.getApiVersion.fn)
-  agenda.define(jobs.hello.name, jobs.hello.fn)
+  for (const jobProp of getConfig().jobs.list) {
+    var job = jobs[jobProp]
+    agenda.define(job.name, job.fn)
+  }
 }
 
 /**
