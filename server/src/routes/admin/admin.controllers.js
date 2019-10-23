@@ -2,7 +2,12 @@
  * Contrôleur regroupant les fonctions de récupération des infos admin
  * @module routes/admin/admin-controllers
  */
-import { findUserById } from '../../models/user'
+import {
+  findUserById,
+  createUser,
+  deleteUserByEmail,
+  findUserByEmail,
+} from '../../models/user'
 import { findDepartementById } from '../../models/departement'
 import { appLogger } from '../../util'
 import config from '../../config'
@@ -70,6 +75,139 @@ const findInfoAdminById = async userId => {
     departements,
     features,
     emailsDepartements,
+  }
+}
+
+export const createUserByAdmin = async (req, res) => {
+  const { email, password, departements, status } = req.body
+  const loggerInfo = {
+    section: 'admin',
+    action: 'post-user',
+    admin: req.userId,
+  }
+
+  appLogger.info(loggerInfo)
+
+  try {
+    const userInfo = await findUserById(req.userId)
+    if (
+      userInfo.status === config.userStatuses.DELEGUE &&
+      status === config.userStatuses.REPARTITEUR
+    ) {
+      const user = await createUser(email, password, departements, status)
+      if (user) {
+        appLogger.info({
+          ...loggerInfo,
+          action: 'created-user',
+          description: `L'utilisateur ${user.email} a bien été créé et un courriel lui a été envoyé`,
+        })
+        return res.status(201).json({
+          success: true,
+          message: 'Utilisateur a bien été créé',
+        })
+      }
+      return res.status(400)({
+        success: false,
+        message: `l'utilisateur ${user.email} est déja enregistré en base`,
+      })
+    }
+    if (
+      userInfo.status === config.userStatuses.ADMIN &&
+      (status === config.userStatuses.DELEGUE ||
+        status === config.userStatuses.REPARTITEUR)
+    ) {
+      const user = await createUser(email, password, departements, status)
+      if (user) {
+        appLogger.info({
+          ...loggerInfo,
+          action: 'created-user',
+          description:
+            ' Utilisateur a bien été créé et un email lui a été envoyé',
+        })
+        return res.status(201).json({
+          success: true,
+          message: 'Utilisateur a bien été créé',
+        })
+      }
+    }
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: 'Utilisateur pas créé',
+      error,
+    })
+    return res.status(500).json({
+      success: false,
+      message: "l'utilisateur n'a pas été créé",
+    })
+  }
+}
+
+export const deleteUserByAdmin = async (req, res) => {
+  // idem
+  const { email, status } = req.body
+  const loggerInfo = {
+    section: 'admin',
+    action: 'delete-user',
+    admin: req.userId,
+  }
+  appLogger.info(loggerInfo)
+  try {
+    const userInfo = await findUserById(req.userId)
+    const user = await findUserByEmail(email)
+    if (
+      userInfo.status === config.userStatuses.DELEGUE &&
+      status === config.userStatuses.REPARTITEUR
+    ) {
+      if (user) {
+        await deleteUserByEmail(email)
+        appLogger.info({
+          ...loggerInfo,
+          action: 'delete-user',
+          description: ' Utilisateur a bien été supprimé ',
+        })
+        return res.status(200).json({
+          success: true,
+          message: 'Utilisateur a bien été supprimé',
+        })
+      }
+      return res.status(400).json({
+        success: false,
+        message: "Utilisateur n'existe pas",
+      })
+    }
+    if (
+      userInfo.status === config.userStatuses.ADMIN &&
+      (status === config.userStatuses.DELEGUE ||
+        status === config.userStatuses.REPARTITEUR)
+    ) {
+      if (user) {
+        await deleteUserByEmail(email)
+        appLogger.info({
+          ...loggerInfo,
+          action: 'delete-user',
+          description: ' Utilisateur a bien été supprimé ',
+        })
+        return res.status(200).json({
+          success: true,
+          message: 'Utilisateur a bien été supprimé',
+        })
+      }
+      return res.status(400).json({
+        success: false,
+        message: "Utilisateur n'existe pas",
+      })
+    }
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: "Utilisateur n'a pas été supprimé",
+      error,
+    })
+    return res.status(500).json({
+      success: false,
+      message: "l'utilisateur n'a pas été supprimé",
+    })
   }
 }
 

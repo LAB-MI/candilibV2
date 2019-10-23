@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "ac2661c2-cc6a-4da4-a237-1b189beae627",
+		"_postman_id": "df747b97-76ad-4b1a-977c-41127a553965",
 		"name": "CandilibV2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -64,8 +64,8 @@
 							"formdata": [
 								{
 									"key": "file",
-									"value": "",
-									"type": "file"
+									"type": "file",
+									"src": ""
 								}
 							]
 						},
@@ -321,6 +321,133 @@
 								"v2",
 								"admin",
 								"whitelisted"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMDRkNjgxNzViMzQ4MTdhYjU2M2ZiMiIsImxldmVsIjozLCJkZXBhcnRlbWVudHMiOlsiNzUiLCI5MyJdLCJpYXQiOjE1NzE2NDAzMTYsImV4cCI6MTU3MTY5NTE5OH0.WqrWVTr3IEDhB_-M06Hru692n6SvWdH4XmxLX2znK98",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"email\":\"test2@admin.fr\",\n\t\"departement\":[93],\n\t\"status\":\"repartiteur\",\n\t\"password\":\"78@Ade32\"\n}"
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/users",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMDRkNjgxNzViMzQ4MTdhYjU2M2ZiMiIsImxldmVsIjozLCJkZXBhcnRlbWVudHMiOlsiNzUiLCI5MyJdLCJpYXQiOjE1NzE2NDAzMTYsImV4cCI6MTU3MTY5NTE5OH0.WqrWVTr3IEDhB_-M06Hru692n6SvWdH4XmxLX2znK98",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \n\t\"email\":\"test3@admin.fr\"\n}"
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/users",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMDRkNjgxNzViMzQ4MTdhYjU2M2ZiMiIsImxldmVsIjozLCJkZXBhcnRlbWVudHMiOlsiNzUiLCI5MyJdLCJpYXQiOjE1NzE2NDI4MDIsImV4cCI6MTU3MTY5NTE5OH0.dscP5M7-TEmCLHKj0KithBZ5Gxh80TV9lcmaOhHOXFU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/me",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"me"
 							]
 						}
 					},

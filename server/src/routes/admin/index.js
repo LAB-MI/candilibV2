@@ -6,7 +6,11 @@
 import express from 'express'
 
 import { getCandidats, importCandidats } from './candidats.controllers'
-import { getMe } from './admin.controllers'
+import {
+  getMe,
+  createUserByAdmin,
+  deleteUserByAdmin,
+} from './admin.controllers'
 import { getInspecteurs } from './inspecteurs-controllers'
 import {
   createOrImportPlaceByAdmin,
@@ -31,6 +35,7 @@ import {
   verifyUserLevel,
 } from './middlewares'
 import config from '../../config'
+import { verifyDelegueLevel } from './middlewares/verify-delegue-level'
 
 const router = express.Router()
 
@@ -1039,8 +1044,7 @@ router
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
  */
-
-// router.post('/users', verifyRepartiteurDepartement, createUserByAdmin)
+router.post('/users', verifyDelegueLevel, createUserByAdmin)
 
 /**
  * @swagger
@@ -1112,7 +1116,7 @@ router
  *
  */
 
-// router.get('/users', verifyRepartiteurDepartement, retrieveUser)
+// router.get('/users', verifyAdminLevel, retrieveUser)
 
 /**
  * @swagger
@@ -1185,7 +1189,7 @@ router
  *
  */
 
-// router.put('/users', verifyRepartiteurDepartement, updatedUser)
+// router.put('/users', verifyAdminLevel, updatedUser)
 
 /**
  * @swagger
@@ -1258,6 +1262,6 @@ router
  *
  */
 
-// router.delete('/users', verifyRepartiteurDepartement, deleteUser)
+router.delete('/users', verifyDelegueLevel, deleteUserByAdmin)
 
 export default router
