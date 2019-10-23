@@ -1,4 +1,8 @@
 /**
+ * Configuration de l'automate
+ * @module config
+ */
+/**
  * @typedef {Object} SchedulerConfig
  * @property {Object} scheduler Info du scheduler
  * @property {Object} db Info de la base de données
@@ -36,14 +40,14 @@ export default () => {
 
     DISABLE_SCHEDULE,
     DISABLE_DEFINE,
-    JOBS_LIST,
+    JOB_LIST,
   } = process.env
 
   return {
     jobs: {
       schedule: !DISABLE_SCHEDULE,
       define: !DISABLE_DEFINE,
-      list: JOBS_LIST ? process.env.JOBS_LIST.split(',') : [],
+      list: JOB_LIST ? process.env.JOB_LIST.split(',') : [],
     },
 
     scheduler: {

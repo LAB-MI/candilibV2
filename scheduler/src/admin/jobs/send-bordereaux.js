@@ -32,5 +32,6 @@ export const sendBordereaux = async job => {
     func: 'sendBordereaux',
     description: 'Bordereaux sent',
   })
+
   return body.message
 }
