@@ -4,7 +4,7 @@ import jwt from 'jsonwebtoken'
 import bodyParser from 'body-parser'
 
 import { verifyToken } from '../../middlewares'
-import { verifyRepartiteurLevel } from './verify-repartiteur-level'
+import { verifyRepartiteurLevel } from './verify-user-level'
 import { apiPrefix } from '../../../app'
 import config from '../../../config'
 import { verifyRepartiteurDepartement } from './verify-repartiteur-departement'
@@ -31,7 +31,7 @@ const adminToken = jwt.sign(adminData, config.secret, {
 const app = express()
 app.use(bodyParser.json({ limit: '20mb' }))
 app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
-app.use(verifyToken, verifyRepartiteurLevel, verifyRepartiteurDepartement)
+app.use(verifyToken, verifyRepartiteurLevel(), verifyRepartiteurDepartement)
 app.get(apiPrefix, (req, res) => res.json({ ok: true }))
 app.post(apiPrefix, (req, res) => res.json({ ok: true }))
 

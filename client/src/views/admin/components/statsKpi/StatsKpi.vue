@@ -169,10 +169,6 @@ export default {
     pickerDateEnd () {
       return this.dateEnd.split('-').reverse().join('/')
     },
-
-    // isShowOneDepartement () {
-    //   return !this.isDisplayAllDepartement
-    // },
   },
 
   data: () => ({
