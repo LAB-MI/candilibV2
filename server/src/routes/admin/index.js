@@ -28,16 +28,16 @@ import {
   removeWhitelisted,
 } from './whitelisted.controllers'
 import {
-  verifyRepartiteurLevel,
-  verifyRepartiteurDepartement,
-  verifyAdminLevel,
-  verifyDelegueLevel,
   verifyAccessAurige,
+  verifyRepartiteurDepartement,
+  verifyRepartiteurLevel,
+  verifyUserLevel,
 } from './middlewares'
+import config from '../../config'
 
 const router = express.Router()
 
-router.use(verifyRepartiteurLevel)
+router.use(verifyRepartiteurLevel())
 
 router.post(
   '/bordereaux',
@@ -50,7 +50,11 @@ router.get(
   verifyAccessAurige,
   getCandidats
 )
-router.post('/candidats', verifyAdminLevel, importCandidats)
+router.post(
+  '/candidats',
+  verifyUserLevel(config.userStatusLevels.admin),
+  importCandidats
+)
 router.get('/inspecteurs', getInspecteurs)
 router.get('/me', getMe)
 router.post('/place', verifyRepartiteurDepartement, createPlaceByAdmin)
@@ -108,7 +112,11 @@ router.delete('/reservations/:id', removeReservationByAdmin)
  *                      }]
  */
 
-router.get('/stats-places-exams', getStatsPlacesExam)
+router.get(
+  '/stats-places-exams',
+  verifyUserLevel(config.userStatusLevels.delegue),
+  getStatsPlacesExam
+)
 
 /**
  * @swagger
@@ -174,7 +182,11 @@ router.get('/stats-places-exams', getStatsPlacesExam)
  *                      }]
  */
 
-router.get('/stats-results-exams', getStatsResultsExam)
+router.get(
+  '/stats-results-exams',
+  verifyUserLevel(config.userStatusLevels.delegue),
+  getStatsResultsExam
+)
 
 router
   .route('/whitelisted/:id')

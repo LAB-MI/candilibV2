@@ -63,7 +63,7 @@ const fieldsResultExams = [
 
 const fieldsPlacesExams = [
   {
-    label: 'Date de début pé riode',
+    label: 'Date de début période',
     value: 'beginDate',
   },
   {
@@ -75,8 +75,8 @@ const fieldsPlacesExams = [
     value: 'totalBookedPlaces',
   },
   {
-    label: 'Total Places',
-    value: 'totalPlaces',
+    label: 'Total Places Disponibles',
+    value: 'totalAvailablePlaces',
   },
   {
     label: 'Total Candidats Inscrits',

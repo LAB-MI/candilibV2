@@ -7,8 +7,8 @@ import express from 'express'
 
 import { getAdminToken, requestPasswdReset } from './admin-controllers'
 import { verifyToken } from '../middlewares'
-import { verifyRepartiteurLevel } from '../admin/middlewares'
-import { postMagicLink, checkCandidat } from './candidat-controllers'
+import { verifyRepartiteurLevel } from '../admin/middlewares/verify-user-level'
+import { postMagicLink, checkCandidat } from './candidat.controllers'
 
 const router = express.Router()
 /**
@@ -220,7 +220,7 @@ router.post('/admin/token', getAdminToken)
 router.get(
   '/admin/verify-token',
   verifyToken,
-  verifyRepartiteurLevel,
+  verifyRepartiteurLevel(),
   (req, res) => res.json({ auth: true })
 )
 /**

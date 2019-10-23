@@ -16,7 +16,7 @@ const {
 
 const { default: app, apiPrefix } = require('../../app')
 
-jest.mock('./middlewares/verify-repartiteur-level')
+jest.mock('./middlewares/verify-user-level')
 jest.mock('../middlewares/verify-token')
 
 const bookedAt = getFrenchLuxon().toJSDate()

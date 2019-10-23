@@ -38,23 +38,19 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-inscrit-1')
       .should('have.length', 1)
 
-    cy.get('.t-number-reserved-places-0')
-      .should('have.length', 1)
-
-    cy.get('.t-number-future-places-36')
+    cy.get('.t-number-future-free-places-36')
       .should('have.length', 1)
 
     cy.addCandidatToPlace()
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-1')
+
+    cy.get('.t-number-inscrit-0')
       .should('have.length', 1)
-    cy.get('.t-number-inscrit-1')
-      .should('have.length', 1)
-    cy.get('.t-number-future-places-35')
+    cy.get('.t-number-future-free-places-35')
       .should('have.length', 1)
     cy.get('.t-remplissage-futur')
-      .should('contain', '2.86%')
+      .should('contain', '2.78%')
 
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonReussite.json',
       [
@@ -91,11 +87,10 @@ describe('Stats Kpi tests', () => {
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-0')
+
+    cy.get('.t-number-inscrit-0')
       .should('have.length', 1)
-    cy.get('.t-number-inscrit-1')
-      .should('have.length', 1)
-    cy.get('.t-number-future-places-36')
+    cy.get('.t-number-future-free-places-36')
       .should('have.length', 1)
     cy.adminDisconnection()
   })
@@ -104,11 +99,10 @@ describe('Stats Kpi tests', () => {
     cy.adminLogin()
     cy.addCandidatToPlace()
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-1')
+
+    cy.get('.t-number-inscrit-0')
       .should('have.length', 1)
-    cy.get('.t-number-inscrit-1')
-      .should('have.length', 1)
-    cy.get('.t-number-future-places-35')
+    cy.get('.t-number-future-free-places-35')
       .should('have.length', 1)
 
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonRecevable.json',
@@ -147,11 +141,10 @@ describe('Stats Kpi tests', () => {
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-0')
-      .should('have.length', 1)
+
     cy.get('.t-number-inscrit-1')
       .should('have.length', 1)
-    cy.get('.t-number-future-places-36')
+    cy.get('.t-number-future-free-places-36')
       .should('have.length', 1)
     cy.adminDisconnection()
   })
@@ -160,11 +153,10 @@ describe('Stats Kpi tests', () => {
     cy.adminLogin()
     cy.addCandidatToPlace()
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-1')
+
+    cy.get('.t-number-inscrit-0')
       .should('have.length', 1)
-    cy.get('.t-number-inscrit-1')
-      .should('have.length', 1)
-    cy.get('.t-number-future-places-35')
+    cy.get('.t-number-future-free-places-35')
       .should('have.length', 1)
 
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonExaminable.json',
@@ -203,11 +195,10 @@ describe('Stats Kpi tests', () => {
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-0')
-      .should('have.length', 1)
+
     cy.get('.t-number-inscrit-1')
       .should('have.length', 1)
-    cy.get('.t-number-future-places-36')
+    cy.get('.t-number-future-free-places-36')
       .should('have.length', 1)
     cy.get('.t-non-examines')
       .should('contain', '67%')
@@ -219,11 +210,10 @@ describe('Stats Kpi tests', () => {
     cy.adminLogin()
     cy.addCandidatToPlace()
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-1')
+
+    cy.get('.t-number-inscrit-0')
       .should('have.length', 1)
-    cy.get('.t-number-inscrit-1')
-      .should('have.length', 1)
-    cy.get('.t-number-future-places-35')
+    cy.get('.t-number-future-free-places-35')
       .should('have.length', 1)
 
     cy.writeFile(Cypress.env('filePath') + '/aurige.absent.json',
@@ -262,11 +252,10 @@ describe('Stats Kpi tests', () => {
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-0')
-      .should('have.length', 1)
+
     cy.get('.t-number-inscrit-1')
       .should('have.length', 1)
-    cy.get('.t-number-future-places-36')
+    cy.get('.t-number-future-free-places-36')
       .should('have.length', 1)
     cy.get('.t-absenteisme')
       .should('contain', '25.00%')
@@ -277,11 +266,10 @@ describe('Stats Kpi tests', () => {
     cy.adminLogin()
     cy.addCandidatToPlace()
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-1')
+
+    cy.get('.t-number-inscrit-0')
       .should('have.length', 1)
-    cy.get('.t-number-inscrit-1')
-      .should('have.length', 1)
-    cy.get('.t-number-future-places-35')
+    cy.get('.t-number-future-free-places-35')
       .should('have.length', 1)
 
     cy.writeFile(Cypress.env('filePath') + '/aurige.reussite.json',
@@ -320,14 +308,13 @@ describe('Stats Kpi tests', () => {
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
-    cy.get('.t-number-reserved-places-0')
-      .should('have.length', 1)
+
     cy.get('.t-number-inscrit-0')
       .should('have.length', 1)
-    cy.get('.t-number-future-places-36')
+    cy.get('.t-number-future-free-places-36')
       .should('have.length', 1)
     cy.get('.t-reussite')
-      .should('contain', '20.00%')
+      .should('contain', '50.00%')
     cy.get('.t-total-places-5')
       .should('have.length', 1)
     cy.adminDisconnection()

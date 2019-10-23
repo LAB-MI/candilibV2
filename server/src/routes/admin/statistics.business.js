@@ -56,7 +56,11 @@ export const getPlacesByDpt = async (departement, beginDate) => {
     beginDate,
     departement,
     totalBookedPlaces: await countPlacesBookedOrNot(centres, beginDate, true),
-    totalPlaces: await countPlacesBookedOrNot(centres, beginDate, false),
+    totalAvailablePlaces: await countPlacesBookedOrNot(
+      centres,
+      beginDate,
+      false
+    ),
     totalCandidatsInscrits: await countCandidatsInscritsByDepartement(
       departement
     ),

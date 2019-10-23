@@ -139,7 +139,7 @@ describe('test statistics', () => {
     const result = await getAllPlacesProposeInFutureByDpt(dateBeginPeriode)
     expect(result[0]).toHaveProperty('departement', '92')
     expect(result[0]).toHaveProperty('totalBookedPlaces', 1)
-    expect(result[0]).toHaveProperty('totalPlaces', 1)
+    expect(result[0]).toHaveProperty('totalAvailablePlaces', 1)
     expect(result[0]).toHaveProperty('totalCandidatsInscrits', 1)
   })
 })

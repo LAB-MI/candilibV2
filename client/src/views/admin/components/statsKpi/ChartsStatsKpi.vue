@@ -25,8 +25,8 @@
             :chartInfo="chartInfo"
           />
           <div class="u-flex__item">
-            <strong :class="`total-places t-total-places-${Math.round(getTotalPlaces())}`">
-              {{ `${getTotalPlaces()}` }}
+            <strong :class="`total-places t-total-places-${Math.round(getTotalExamPlaces())}`">
+              {{ `${getTotalExamPlaces()}` }}
             </strong>
             <strong class="d-block">
               {{ $formatMessage({ id: 'examens_passes' }) }}
@@ -54,9 +54,8 @@
           />
           <div
             :class="`u-flex__item pa-3
-              t-number-inscrit-${Math.round(datasets[2].data[0])}
-              t-number-future-places-${Math.round(datasets[1].data[0])}
-              t-number-reserved-places-${Math.round(datasets[0].data[0])}
+              t-number-inscrit-${Math.round(datasets[1].data[0])}
+              t-number-future-free-places-${Math.round(datasets[0].data[0])}
               `"
           >
             <chart-bar
@@ -100,10 +99,14 @@ export default {
   },
 
   computed: {
+    receiveAndFaildPlaces () {
+      return (this.statsResultsExamValues.failed + this.statsResultsExamValues.received) || 0
+    },
+
     percentPlacesExamBookedOrNot () {
       const totalBookedPlaces = (this.statsPlacesExamValues && this.statsPlacesExamValues.totalBookedPlaces) || 0
-      const totalPlaces = (this.statsPlacesExamValues && this.statsPlacesExamValues.totalPlaces) || 1
-      return ((totalBookedPlaces / totalPlaces) * 100).toFixed(2)
+      const totalAvailablePlaces = (this.statsPlacesExamValues && this.statsPlacesExamValues.totalAvailablePlaces) || 0
+      return ((totalBookedPlaces / (totalAvailablePlaces + totalBookedPlaces)) * 100).toFixed(2)
     },
 
     chartsPlacesExams () {
@@ -119,24 +122,15 @@ export default {
     },
 
     datasets () {
-      const { totalBookedPlaces, totalPlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
+      const { totalBookedPlaces, totalAvailablePlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
       return [
         {
-          label: 'Places réservées',
-          backgroundColor: 'rgba(75, 192, 192, 0.2)',
-          borderColor: 'rgba(75, 192, 192, 1)',
-          borderWidth: 3,
-          data: [
-            totalBookedPlaces || 0,
-          ],
-        },
-        {
-          label: 'Places à venir',
+          label: 'Places disponible à venir',
           backgroundColor: 'rgba(153, 102, 255, 0.2)',
           borderColor: 'rgba(153, 102, 255, 1)',
           borderWidth: 3,
           data: [
-            totalPlaces || 0,
+            totalAvailablePlaces || 0,
           ],
         },
         {
@@ -145,28 +139,28 @@ export default {
           borderColor: 'rgba(255, 159, 64, 1)',
           borderWidth: 3,
           data: [
-            totalCandidatsInscrits || 0,
+            totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 0,
           ],
         },
       ]
     },
 
   methods: {
-    getTotalPlaces () {
+    getTotalExamPlaces () {
       return (this.statsResultsExamValues.absent + this.statsResultsExamValues.failed + this.statsResultsExamValues.notExamined + this.statsResultsExamValues.received) || 0
     },
   },
 
   methods: {
     getChartsResultsExams () {
-      const totalPlacesCount = this.getTotalPlaces()
+      const totalPlacesCount = this.getTotalExamPlaces()
       const { received, absent, notExamined } = this.statsResultsExamValues
 
       return [
         {
           title: this.$formatMessage({ id: 'de_reussite' }),
           description: this.$formatMessage({ id: 'egale_recus_divise_reçus_plus_echecs' }),
-          value: (((received / totalPlacesCount) * 100) || 0).toFixed(2),
+          value: (((received / this.receiveAndFaildPlaces) * 100) || 0).toFixed(2),
           colorProgress: '#00B0FF',
           idCypress: 't-reussite',
         },
