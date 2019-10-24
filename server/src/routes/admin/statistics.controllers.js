@@ -74,10 +74,13 @@ export const getStats = async (req, res) => {
     if (isCsv === 'true') {
       const statsKpiCsv = await parseStats(statsKpi)
       const filename = 'statsCandidats.csv'
+
       appLogger.info({
         ...loggerContent,
         action: 'GET STATS KPI CSV',
-        statsKpi,
+        description: `Calcul de stats des départements: ${statsKpi.map(
+          el => el.departement
+        )}`,
       })
       return res
         .status(200)
@@ -88,7 +91,9 @@ export const getStats = async (req, res) => {
     appLogger.info({
       ...loggerContent,
       action: 'GET STATS KPI',
-      statsKpi,
+      description: `Calcule de stats des departements: ${statsKpi.map(
+        el => el.departement
+      )}`,
     })
 
     return res
