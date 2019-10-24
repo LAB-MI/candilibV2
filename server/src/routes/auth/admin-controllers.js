@@ -8,8 +8,8 @@ import {
   findUserByEmail,
   updateUserPassword,
 } from '../../models/user'
-import { sendMailResetLink } from '../business/send-mail-admin'
-import { sendMailConfirmation } from '../business/send-mail-confirmation-new-password'
+import { sendMailResetLink } from '../business/send-mail-reset-password'
+import { sendMailConfirmationPassword } from '../business/send-mail-confirmation-new-password'
 
 /**
  * @typedef {Object} BadCredentialsBody
@@ -228,7 +228,7 @@ export const resetMyPassword = async (req, res) => {
   }
 
   try {
-    await sendMailConfirmation(email)
+    await sendMailConfirmationPassword(email)
     res.status(200).json({
       success: true,
       message: `Un courriel de confirmation vient de vous être envoyé sur ${email}`,

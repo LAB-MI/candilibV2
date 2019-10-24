@@ -1,7 +1,7 @@
 /**
  * Ensemble des fonctions pour envoyer les mails aux répartiteurs
  *
- * @module business/send-mail-admin
+ * @module business/send-mail-reset-password
  */
 
 import { sendMail } from './send-mail'

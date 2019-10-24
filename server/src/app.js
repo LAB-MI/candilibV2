@@ -160,7 +160,7 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           email: admin@email.fr
  *           emailValidationHash:
  *           password: 759DS56SD2
- *           département: 93
+ *           departements: 93
  *           isDeleted: true
  *           signUpDate: 15-09-2019
  *           status: admin

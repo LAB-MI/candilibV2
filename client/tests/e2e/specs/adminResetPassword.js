@@ -35,7 +35,7 @@ describe('Admin reset password', () => {
 
   it('Tests a new password request', () => {
     cy.get('.v-snack')
-      .should('contain', `Un email vient de vous être envoyé à l'adresse ` + (Cypress.env('admin75Login')))
+      .should('contain', `Un courriel vient de vous être envoyé à l'adresse ` + (Cypress.env('admin75Login')))
   })
 
   it('Test validates the email address', () => {
