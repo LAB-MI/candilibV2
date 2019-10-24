@@ -67,7 +67,7 @@ La connexion à la base de données depuis le composant api se fait en utilisant
 ```bash
 export DB_NAME=candilib
 export DB_USER=candilibAdmin
-export DB_PASS=Admin*78
+export DB_USER=changeme78
 ```
 
 ## Remarques
