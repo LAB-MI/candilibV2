@@ -62,7 +62,7 @@ export const getStats = async (req, res) => {
       appLogger.info({
         ...loggerContent,
         action: 'GET STATS KPI CSV',
-        description: `Calcule de stats des departements: ${statsKpi.map(
+        description: `Calcul de stats des departements: ${statsKpi.map(
           el => el.departement
         )}`,
       })
@@ -75,7 +75,7 @@ export const getStats = async (req, res) => {
     appLogger.info({
       ...loggerContent,
       action: 'GET STATS KPI',
-      description: `Calcule de stats des departements: ${statsKpi.map(
+      description: `Calcul de stats des departements: ${statsKpi.map(
         el => el.departement
       )}`,
     })
