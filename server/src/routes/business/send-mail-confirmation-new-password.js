@@ -14,7 +14,7 @@ import { getHtmlBody } from './mail'
  * @param {string} email Adresse courriel de l'utilisateur
  */
 
-export const sendMailConfirmation = email => {
+export const sendMailConfirmationPassword = email => {
   const mail = getMailConfirmation()
   return sendMail(email, mail)
 }
