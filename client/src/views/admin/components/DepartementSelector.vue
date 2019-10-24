@@ -1,5 +1,5 @@
 <template>
-  <v-layout v-if="admin.departements.list.length > 2">
+  <div v-if="admin.departements.list.length > 2">
     <v-menu
       bottom
     >
@@ -14,7 +14,7 @@
             ripple
             small
           >
-            <h1>{{ `${activeDepartement}` }}</h1>
+            <div class="departement-wrapper">{{ `${activeDepartement}` }}</div>
           </v-btn>
           </template>
           <span>Changer de département</span>
@@ -34,7 +34,7 @@
         </v-list-tile>
       </v-list>
     </v-menu>
-  </v-layout>
+  </div>
   <v-flex v-else>
     <div class="c-two-hexagons">
       <hexagon
@@ -96,5 +96,9 @@ export default {
     bottom: -0.5em;
     right: -0.75em;
   }
+}
+
+.departement-wrapper {
+  font-size: 25px;
 }
 </style>
