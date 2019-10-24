@@ -74,6 +74,7 @@ const adminRoutes = [
         path: 'stats-kpi',
         name: ROUTE_AUTHORIZE_STATS_KPI,
         component: StatsKpi,
+        beforeEnter: checkAccess,
       },
       {
         path: 'whitelist',
