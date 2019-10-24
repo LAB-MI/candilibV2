@@ -25,8 +25,8 @@
             :chartInfo="chartInfo"
           />
           <div class="u-flex__item">
-            <strong :class="`total-places t-total-places-${Math.round(getTotalExamPlaces())}`">
-              {{ `${getTotalExamPlaces()}` }}
+            <strong :class="`total-places t-total-places-${Math.round(getTotalExamPlaces)}`">
+              {{ `${getTotalExamPlaces}` }}
             </strong>
             <strong class="d-block">
               {{ $formatMessage({ id: 'examens_passes' }) }}
@@ -99,6 +99,10 @@ export default {
   },
 
   computed: {
+    getTotalExamPlaces () {
+      return (this.statsResultsExamValues.absent + this.statsResultsExamValues.failed + this.statsResultsExamValues.notExamined + this.statsResultsExamValues.received) || 0
+    },
+
     receiveAndFaildPlaces () {
       return (this.statsResultsExamValues.failed + this.statsResultsExamValues.received) || 0
     },
@@ -144,16 +148,11 @@ export default {
         },
       ]
     },
-
-  methods: {
-    getTotalExamPlaces () {
-      return (this.statsResultsExamValues.absent + this.statsResultsExamValues.failed + this.statsResultsExamValues.notExamined + this.statsResultsExamValues.received) || 0
-    },
   },
 
   methods: {
     getChartsResultsExams () {
-      const totalPlacesCount = this.getTotalExamPlaces()
+      const totalPlacesCount = this.getTotalExamPlaces
       const { received, absent, notExamined } = this.statsResultsExamValues
 
       return [
