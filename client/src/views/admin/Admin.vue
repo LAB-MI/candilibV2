@@ -41,6 +41,7 @@ const headerIcons = [
     routerTo: ROUTE_AUTHORIZE_STATS_KPI,
     iconName: 'bar_chart',
     tooltipText: 'Stats KPI',
+    isProtected: true,
   },
   {
     routerTo: 'whitelist',
