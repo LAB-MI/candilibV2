@@ -169,7 +169,6 @@ export const getWhitelisted = async (req, res) => {
         ...loggerInfo,
         description:
           "Le nombre d'emails trouvés : " + whitelist ? 0 : whitelist.length,
-        whitelist,
       })
       res.status(200).json(whitelist)
       return
@@ -180,7 +179,6 @@ export const getWhitelisted = async (req, res) => {
       ...loggerInfo,
       description:
         "Le nombre d'emails trouvés : " + lastCreated ? 0 : lastCreated.length,
-      lastCreated,
     })
     res.status(200).json({ success: true, lastCreated })
   } catch (error) {

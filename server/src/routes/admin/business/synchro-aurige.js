@@ -300,7 +300,7 @@ const updateValidCandidat = async (
     const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
     if (canBookFrom) {
       infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
-      await removeResaNoAuthorize(candidat, canBookFrom, dateTimeEchec)
+      await cancelBookingAfterExamFailure(candidat, canBookFrom, dateTimeEchec)
     }
   }
 
@@ -474,7 +474,7 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
   }
   const dateTimeEchec = getFrenchLuxonFromISO(dateDernierEchecPratique)
   if (!dateTimeEchec.isValid) {
-    throw new Error('La date de denier échec pratique est erronée')
+    throw new Error('La date de dernier échec pratique est erronée')
   }
 
   if (candidat && candidat.lastNoReussite && candidat.lastNoReussite.date) {
@@ -489,11 +489,20 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
 }
 
 /**
+ * Libère et archive la place réservée par un candidat si celui-ci n'a pas réussi son examen
  *
- * @param {*} param0 { _id } Id du candidat
- * @param {*} canBookFrom DateTime de luxon
+ * @function
+ *
+ * @param {Candidat} candidat Représentation du candidat dans la base de données
+ * @param {DateTime} canBookFrom Date d'examen à partir de laquelle le candidat peut prendre une place, au format DateTime de luxon
+ *
+ * @returns {Candidat} Candidat éventuellement mis à jour avec la place dans ses places archivées (`places`)
  */
-const removeResaNoAuthorize = async (candidat, canBookFrom, dateEchec) => {
+const cancelBookingAfterExamFailure = async (
+  candidat,
+  canBookFrom,
+  dateEchec
+) => {
   const { _id } = candidat
   const place = await findPlaceBookedByCandidat(_id)
   if (!place) return candidat
@@ -519,7 +528,7 @@ const removeResaNoAuthorize = async (candidat, canBookFrom, dateEchec) => {
       await sendFailureExam(place, updatedCandidat)
     } catch (error) {
       appLogger.error({
-        func: 'removeResaNoAuthorize',
+        func: 'cancelBookingAfterExamFailure',
         description: `Impossible d'envoyer un mail à ce candidat ${updatedCandidat.email} pour lui informer que sa réservation est annulée suite à l'échec de l'examen pratique`,
         error,
       })

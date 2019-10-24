@@ -40,17 +40,16 @@
 
 <script>
 import {
+  creneauAvailable,
   getFrenchFormattedDateFromObject,
   getFrenchLuxonCurrentDateTime,
   getFrenchLuxonFromIso,
-  getFrenchWeeksInWeekYear,
   validDays,
-  creneauAvailable,
 } from '@/util'
 
 import DataTableWeekMonitor from './DataTableWeekMonitor'
 
-import { SET_WEEK_SECTION } from '@/store'
+import { SET_WEEK_SECTION, numberOfMonthsToFetch } from '@/store'
 
 export const splitWeek = (prev, day, centerId) => {
   const weekDayNumber = getFrenchLuxonFromIso(day.date).weekday - 1
@@ -113,9 +112,9 @@ export default {
       return getFrenchFormattedDateFromObject({ weekYear: currentYear, weekNumber, weekday: 1 }, shape)
     },
 
-    goToGestionPlannings (currentWeek, weekDay) {
+    goToGestionPlannings (currentWeek, weekDay, year) {
       this.$store.dispatch(SET_WEEK_SECTION, currentWeek)
-      const date = getFrenchLuxonCurrentDateTime().set({ weekNumber: currentWeek, weekday: weekDay || 1 }).toSQLDate()
+      const date = getFrenchLuxonCurrentDateTime().set({ weekYear: year, weekNumber: currentWeek, weekday: weekDay || 1 }).toSQLDate()
       this.$router.push({ name: 'gestion-planning', params: { center: this.centerId, date } })
     },
 
@@ -128,41 +127,54 @@ export default {
     },
 
     getWeeksWithPlaces (weekNb) {
-      return (this.weeks && this.weeks[weekNb] && this.weeks[weekNb].length) &&
-        this.weeks[weekNb].filter(elmt => this.getCreneauTimeAvailable(elmt.date))
+      const filteredWeeks = (this.weeks && this.weeks[weekNb] && this.weeks[weekNb].length)
+        ? this.weeks[weekNb].filter(elmt => this.getCreneauTimeAvailable(elmt.date)) : []
+      return filteredWeeks
     },
 
     formatArrayByWeek () {
       this.allBookedPlacesByCenter = 0
       this.allCenterPlaces = 0
+      const start = getFrenchLuxonCurrentDateTime()
+      const end = getFrenchLuxonCurrentDateTime().plus({ month: numberOfMonthsToFetch })
+      const allWeeks = Math.round(end.diff(start, ['weeks']).weeks) + 1
 
-      // TODO: Find solution to last month of year for transition
-      const weeksInWeekYear = getFrenchWeeksInWeekYear(getFrenchLuxonCurrentDateTime().year)
-      const allWeeksOfYear = Array(weeksInWeekYear).fill(false)
-      const formattedArray = allWeeksOfYear.map((useless, weekNb) => {
-        const defaultDays = Array(validDays.length).fill([])
-
-        const weeksWithPlaces = this.getWeeksWithPlaces(weekNb)
-        if (weeksWithPlaces && weeksWithPlaces.length) {
-          const totalPlaces = weeksWithPlaces.length
-          const bookedPlaces = weeksWithPlaces.filter(elmt => elmt.candidat).length
-          this.allBookedPlacesByCenter = bookedPlaces + this.allBookedPlacesByCenter
-          this.allCenterPlaces = totalPlaces + this.allCenterPlaces
-          return {
-            days: weeksWithPlaces.reduce((prev, day) => splitWeek(prev, day, this.centerId), defaultDays),
-            numWeek: weekNb,
-            totalPlaces,
-            bookedPlaces,
+      const normalizedArray =
+        Array.from({ length: allWeeks }).reduce((acc, item, index) => {
+          const defaultDays = Array(validDays.length).fill([])
+          const [year, week] = start.plus({ weeks: index }).toISOWeekDate().split('-')
+          const key = `${year}-${week}`
+          const placesOfWeek = this.getWeeksWithPlaces(key)
+          if (placesOfWeek && placesOfWeek.length) {
+            const totalPlaces = placesOfWeek.length
+            const bookedPlaces = placesOfWeek.filter(elmt => elmt.candidat).length
+            this.allBookedPlacesByCenter = bookedPlaces + this.allBookedPlacesByCenter
+            this.allCenterPlaces = totalPlaces + this.allCenterPlaces
+            return [
+              ...acc,
+              {
+                weekKey: key,
+                days: placesOfWeek.reduce((prev, day) => splitWeek(prev, day, this.centerId), defaultDays),
+                numWeek: week.split('W')[1],
+                numYear: year,
+                totalPlaces,
+                bookedPlaces,
+              },
+            ]
           }
-        }
-        return {
-          days: defaultDays,
-          numWeek: weekNb,
-          totalPlaces: 0,
-          bookedPlaces: 0,
-        }
-      })
-      return formattedArray.filter(e => e.numWeek !== 0)
+          return [
+            ...acc,
+            {
+              weekKey: key,
+              days: defaultDays,
+              numWeek: week.split('W')[1],
+              numYear: year,
+              totalPlaces: 0,
+              bookedPlaces: 0,
+            },
+          ]
+        }, [])
+      return normalizedArray
     },
   },
 }

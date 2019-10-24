@@ -74,7 +74,14 @@ const getPlaceStatus = (
 
 /**
  * TODO: département à modifier
- * @param {*} data
+ * Analyse les données d'une ligne du fichier CSV d'import de places
+ *
+ * @function
+ *
+ * @param {string[]} data Données d'une ligne du fichier CSV
+ * @param {string} departement Département concerné par cet import de places
+ *
+ * @returns {PlaceStatus}
  */
 const parseRow = async ({ data, departement }) => {
   const loggerInfo = {

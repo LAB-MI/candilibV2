@@ -2,9 +2,7 @@
   <div class="c-candidat-wrapper">
     <bandeau-beta fixed />
     <div class="c-candidat-message">
-      <h1 class="c-candidat-message__title">
-        {{$formatMessage({ id: 'app_name' })}}
-      </h1>
+      <h1 class="c-candidat-message__title" v-html="$formatMessage({ id: 'app_html_title'})" />
       <h2 class="c-candidat-message__subtitle">
         {{$formatMessage({ id: 'app_subtitle' })}}
       </h2>
