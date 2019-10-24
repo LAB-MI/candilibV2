@@ -1,3 +1,8 @@
+/**
+ * Routeur concernant les requêtes que peut faire un utilisateur
+ * @module routes/admin
+ */
+
 import express from 'express'
 
 import { getCandidats, importCandidats } from './candidats.controllers'
@@ -31,6 +36,7 @@ const router = express.Router()
 router.use(verifyRepartiteurLevel)
 
 router.get('/me', getMe)
+
 router.get(
   '/candidats/:id?',
   verifyRepartiteurDepartement,

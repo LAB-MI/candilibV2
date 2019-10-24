@@ -36,6 +36,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   verifyToken: `${apiPrefix}/auth/admin/verify-token`,
   whitelist: `${apiPrefix}/admin/whitelisted`,
   generateBordereaux: `${apiPrefix}/admin/bordereaux`,
+  resetLink: `${apiPrefix}/auth/admin/reset-link`,
 }
 
 const utilPaths = {

@@ -40,6 +40,14 @@ const UserSchema = new Schema(
       ...UserFields.email,
       unique: true,
     },
+    emailValidationHash: {
+      type: String,
+      required: false,
+    },
+    passwordResetRequestedAt: {
+      type: Date,
+      default: undefined,
+    },
     password: {
       type: String,
       required: true,

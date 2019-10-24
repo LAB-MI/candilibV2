@@ -19,6 +19,8 @@ const DEFAULT_PUBLIC_URL = isProduction
   ? 'https://beta.interieur.gouv.fr/candilib'
   : 'http://localhost:8080/candilib'
 
+const DEFAULT_ADMIN_URL = 'http://localhost:8080/candilib'
+
 /**
  * Dictionnaire des différents types de statuts des utilisateurs de l'application
  * @constant {object}
@@ -123,6 +125,7 @@ const config = {
   smtpPort: process.env.SMTP_PORT || 25,
 
   PUBLIC_URL: process.env.PUBLIC_URL || DEFAULT_PUBLIC_URL,
+  ADMIN_URL: process.env.ADMIN_URL || DEFAULT_ADMIN_URL,
   CANDIDAT_ROUTE: '/candidat',
   ADMIN_ROUTE: '/admin',
 

@@ -21,7 +21,7 @@ describe('Admin login', () => {
 
   it('Logins with a restricted admin account', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
+    cy.get('.t-login-email [type=text]')
       .type(Cypress.env('admin93Login'))
     cy.get('[type=password]')
       .type(Cypress.env('admin93Pass'))
@@ -45,7 +45,7 @@ describe('Admin login', () => {
 
   it('Tries the admin login with an invalid password', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
+    cy.get('.t-login-email [type=text]')
       .type(Cypress.env('adminLogin'))
     cy.get('[type=password]')
       .type(Cypress.env('adminPass') + 'bad')
@@ -57,7 +57,7 @@ describe('Admin login', () => {
 
   it('Tries the admin login with an invalid email', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
+    cy.get('.t-login-email [type=text]')
       .type('admin@example')
     cy.get('[type=password]')
       .type('password')
