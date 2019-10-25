@@ -20,7 +20,7 @@ const fieldsResultExams = [
     value: 'date',
   },
   {
-    label: 'Departement',
+    label: 'Département',
     value: 'departement',
   },
   {
@@ -67,11 +67,11 @@ const fieldsPlacesExams = [
     value: 'beginDate',
   },
   {
-    label: 'Departement',
+    label: 'Département',
     value: 'departement',
   },
   {
-    label: 'Total Places Reservé',
+    label: 'Total Places Reservées',
     value: 'totalBookedPlaces',
   },
   {
@@ -130,7 +130,7 @@ const parseStatsPlacesExams = statsData =>
  * @param {Object} req.query Query string de la requête
  * @param {string} req.query.beginPeriod Date de début de période
  * @param {string} req.query.endPeriod Date de fin de période
- * @param {string} req.query.isCsv Indique si l'on souhaite un CSV en résponse
+ * @param {string} req.query.isCsv Indique si l'on souhaite un CSV en réponse
  * @param {import('express').Response} res Réponse express
  */
 
@@ -186,7 +186,7 @@ export const getStatsResultsExam = async (req, res) => {
  *
  * @param {import('express').Request} req Requête express
  * @param {Object} req.query Query string de la requête
- * @param {string} req.query.isCsv Indique si l'on souhaite un CSV en résponse
+ * @param {string} req.query.isCsv Indique si l'on souhaite un CSV en réponse
  * @param {import('express').Response} res Réponse express
  */
 
