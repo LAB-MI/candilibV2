@@ -1,5 +1,8 @@
 import archivedCandidatModel from '../../models/archived-candidat/archived-candidat.model'
 import candidatModel from '../../models/candidat/candidat.model'
+import { countCandidatsInscritsByDepartement } from '../../models/candidat/candidat.queries'
+import { countPlacesBookedOrNot } from '../../models/place/place.queries'
+
 import {
   ABSENT,
   ECHEC,
@@ -11,17 +14,57 @@ import {
 import { EPREUVE_PRATIQUE_OK, getFrenchLuxon, DATETIME_FULL } from '../../util'
 import { REASON_EXAM_FAILED } from '../common/reason.constants'
 
-export const getResultsExamAllDpt = async (beginPeriode, endPeriode) => {
-  const departements = await getDepartementsFromCentres()
-  if (!departements) {
+export const getResultsExamAllDpt = async (
+  departements,
+  beginPeriode,
+  endPeriode
+) => {
+  let dpts = departements
+
+  if (!(departements && departements.length)) {
+    dpts = await getDepartementsFromCentres()
+  }
+
+  if (!dpts) {
     throw new Error('Aucun département trouvé')
   }
   const results = await Promise.all(
-    departements.map(departement =>
+    dpts.map(departement =>
       getResultsExamByDpt(departement, beginPeriode, endPeriode)
     )
   )
   return results
+}
+
+export const getAllPlacesProposeInFutureByDpt = async beginDate => {
+  const departements = await getDepartementsFromCentres()
+
+  if (!departements) {
+    throw new Error('Aucun département trouvé')
+  }
+  const results = await Promise.all(
+    departements.map(departement => getPlacesByDpt(departement, beginDate))
+  )
+  return results
+}
+
+export const getPlacesByDpt = async (departement, beginDate) => {
+  const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
+  const centres = centresFromDB.map(({ _id }) => _id)
+
+  return {
+    beginDate,
+    departement,
+    totalBookedPlaces: await countPlacesBookedOrNot(centres, beginDate, true),
+    totalAvailablePlaces: await countPlacesBookedOrNot(
+      centres,
+      beginDate,
+      false
+    ),
+    totalCandidatsInscrits: await countCandidatsInscritsByDepartement(
+      departement
+    ),
+  }
 }
 
 export const getResultsExamByDpt = async (
@@ -60,7 +103,7 @@ export const countSuccessByCentres = async (
   if (centres) {
     expression['places.centre'] = { $in: centres }
   }
-  // TODO: Use begin and end value
+
   if (beginPeriode || endPeriode) {
     expression['places.date'] = {}
     if (beginPeriode) {
@@ -71,13 +114,17 @@ export const countSuccessByCentres = async (
     }
   }
 
+  const commonQuery = {
+    'places.archiveReason': EPREUVE_PRATIQUE_OK,
+    'places.centre': { ...expression['places.centre'] },
+  }
+
   const result = await archivedCandidatModel
     .aggregate([
       {
         $match: {
           archiveReason: EPREUVE_PRATIQUE_OK,
-          'places.archiveReason': EPREUVE_PRATIQUE_OK,
-          'places.centre': { ...expression['places.centre'] },
+          ...commonQuery,
         },
       },
       {
@@ -85,8 +132,7 @@ export const countSuccessByCentres = async (
       },
       {
         $match: {
-          'places.archiveReason': EPREUVE_PRATIQUE_OK,
-          'places.centre': { ...expression['places.centre'] },
+          ...commonQuery,
           'places.date': { ...expression['places.date'] },
         },
       },
@@ -176,7 +222,6 @@ const countNoReussitesAndPlacesByReasonAndCentres = (
     expression['places.centre'] = { $in: centres }
   }
 
-  // TODO: Use begin and end value
   if (beginPeriode || endPeriode) {
     expression['noReussites.date'] = {}
     if (beginPeriode) {

@@ -27,7 +27,7 @@
     "test:client": "cd .. ; cd client ; npm test",
     "test": "cross-env NODE_ENV=test jest --detectOpenHandles --forceExit",
     "jsdoc:watch": "nodemon --watch src --watch README.md --exec 'npm run jsdoc'",
-    "jsdoc:serve": "browser-sync start --server --open --files out/**/* --ss out",
+    "jsdoc:serve": "browser-sync start --no-ui --server --open --files out/**/* --ss out",
     "jsdoc-dev": "run-p jsdoc:*",
     "jsdoc": "jsdoc -c jsdoc-config.js -r src README.md"
   },

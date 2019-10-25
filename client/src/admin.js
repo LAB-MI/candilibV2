@@ -32,8 +32,9 @@ export default {
   booked_places_more_than_50_pourcent: '50% ou plus des places sont reservées',
   booked_places_lower_than_50_pourcent: 'Moins de 50% des places sont reservées',
   export_stats_csv: `Export Stats CSV`,
+  export_places_stats_csv: `Export places Stats CSV`,
   departement: `Département : `, // eslint-disable-line no-irregular-whitespace
-  resultats_a_lexamen: `Résultats à l'examen`,
+  resultats_des_examens: `Résultats des examens`,
   de_reussite: `de réussite`,
   egale_recus_divise_reçus_plus_echecs: `= reçus / (reçus + échecs)`,
   d_absenteisme: `d'absentéisme`,
@@ -41,4 +42,9 @@ export default {
   de_non_examines: `de non-examinés`,
   egale_non_examinés_divise_examens_passes: `= non examinés / examens passés`,
   examens_passes: `Examens Passés`,
+  places_examens: `Places d'examens`,
+  de_remplissage_de_places_passees: `de remplissage de places passées`,
+  egale_examens_passes_divise_places_proposees_dans_le_passe: `= examens passés / places proposées dans le passé`,
+  de_remplissage_de_places_a_venir: `de remplissage de places à venir`,
+  egale_reservation_a_venir_divise_places_proposees_dans_le_futur: `= réservations à venir / places proposées dans le futur`,
 }

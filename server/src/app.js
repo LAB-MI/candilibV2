@@ -39,6 +39,22 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           type: string
  *           description: Un message compréhensible par l'usager
  *
+ *     StatsKpiObject:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: Array
+ *           description: Liste des statistiques demandés par département
+ *
  *     GeolocObject:
  *       type: object
  *       required:
@@ -152,9 +168,75 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
 
  *     CentresInfo:
  *       type: object
+ *       required:
+ *         - success
+ *         - message
  *       properties:
- *         candidat:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
  *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: Array
+ *           description: Liste des stats par département
+ *           example: [{
+ *             beginDate: 2019-10-10T22:00:00.000Z,
+ *             departement: 93,
+ *             totalBookedPlaces: 2,
+ *             totalPlaces: 622,
+ *             totalCandidatsInscrits: 2
+ *           }]
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *         statsKpi: [{
+ *           beginDate: 2019-10-10T22:00:00.000Z,
+ *           departement: 93,
+ *           totalBookedPlaces: 2,
+ *           totalPlaces: 622,
+ *           totalCandidatsInscrits: 2
+ *         }]
+ *
+ *     StatsKpiPlacesResults:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: Array
+ *           description: Liste des stats resultats d'examens par département
+ *           example: [{
+ *             departement: "93",
+ *             date: "15/10/2019 à 11:00",
+ *             beginPeriode: "2019-09-14T22:00:00.000Z",
+ *             endPeriode: "2019-10-15T21:59:59.999Z",
+ *             absent: 3,
+ *             failed: 5,
+ *             notExamined: 2,
+ *             received: 15
+ *           }]
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *         statsKpi: [{
+ *           departement: "93",
+ *           date: "15/10/2019 à 11:00",
+ *           beginPeriode: "2019-09-14T22:00:00.000Z",
+ *           endPeriode: "2019-10-15T21:59:59.999Z",
+ *           absent: 3,
+ *           failed: 5,
+ *           notExamined: 2,
+ *           received: 15
+ *         }]
  *
  *   responses:
  *     InvalidPasswordResponse:
@@ -265,7 +347,7 @@ if (isDevelopment) {
         },
       ],
     },
-    apis: ['./src/app.js', './src/routes/**/*.js'], // <-- We add this property:
+    apis: ['./src/app.js', './src/routes/**/*.js'],
   }
 
   const specs = swaggerJsdoc(options)

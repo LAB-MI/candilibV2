@@ -1,11 +1,15 @@
 <template>
   <v-container>
-    <page-title :title="'Stats Kpi'"/>
-    <v-container
-      style="display: block;"
+    <v-toolbar
+      style="margin-top: 65px;"
+      color="white"
+      extended
+      fixed
     >
-      <v-layout>
-        <v-flex>
+      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les départements`"></v-switch>
+      <template v-slot:extension>
+
+        <v-toolbar-title>
           <v-menu
             v-model="menuStart"
             :close-on-content-click="false"
@@ -19,15 +23,22 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="pickerDateStart"
-                label="Date de debut de période"
+                label="Date de début de période"
                 prepend-icon="event"
                 v-on="on"
+                readonly
               ></v-text-field>
             </template>
-            <v-date-picker v-model="dateStart" @input="menuStart = false" locale="fr"></v-date-picker>
+            <v-date-picker
+              v-model="dateStart"
+              @input="menuStart = false"
+              locale="fr"
+            ></v-date-picker>
           </v-menu>
-        </v-flex>
-        <v-flex>
+
+        </v-toolbar-title>
+
+        <v-toolbar-title>
           <v-menu
             v-model="menuEnd"
             :close-on-content-click="false"
@@ -44,46 +55,74 @@
                 label="Date de fin de période"
                 prepend-icon="event"
                 v-on="on"
+                readonly
               ></v-text-field>
             </template>
-            <v-date-picker v-model="dateEnd" @input="menuEnd = false" locale="fr"></v-date-picker>
+            <v-date-picker
+              color="red"
+              v-model="dateEnd"
+              @input="menuEnd = false"
+              locale="fr"
+            ></v-date-picker>
           </v-menu>
-        </v-flex>
-      </v-layout>
-      <v-btn color="primary" @click="getStatsKpi(true)">
-        {{ $formatMessage({ id: 'export_stats_csv' }) }}
-        <v-icon>
-          get_app
-        </v-icon>
-        <v-icon>
-          assessment
-        </v-icon>
-      </v-btn>
-      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les département`"></v-switch>
-    </v-container>
+        </v-toolbar-title>
+
+        <v-spacer></v-spacer>
+        <page-title class="title-position" :title="'Stats Kpi'" />
+        <v-spacer></v-spacer>
+
+        <v-btn color="primary" @click="getStatsKpiResultsExams(true)">
+          {{ $formatMessage({ id: 'export_stats_csv' }) }}
+          <v-icon>
+            get_app
+          </v-icon>
+          <v-icon>
+            assessment
+          </v-icon>
+        </v-btn>
+        <v-btn color="primary" @click="getStatsKpiPlacesExams(true)">
+          {{ $formatMessage({ id: 'export_places_stats_csv' }) }}
+          <v-icon>
+            get_app
+          </v-icon>
+          <v-icon>
+            assessment
+          </v-icon>
+        </v-btn>
+
+      </template>
+    </v-toolbar>
+
     <v-flex
-      v-if="currentStats && currentStats.departement && !isDisplayAllDepartement"
+      style="margin-top: 8vh; display: block;"
+      v-if="!isDisplayAllDepartement"
       class="pa-5"
     >
-      <charts-stats-kpi :statsValues="currentStats"></charts-stats-kpi>
+      <charts-stats-kpi
+        :statsResultsExamValues="currentStatsResultExam"
+        :statsPlacesExamValues="currentStatsPlacesExam"
+      />
     </v-flex>
 
     <v-flex
+      style="margin-top: 13vh; display: block;"
       v-else
-      v-for="(elem, index) in statsArray"
+      v-for="(elem, index) in (statsResultsExams ? statsResultsExams.statsKpi : [])"
       :key="'elem'+index"
-      class="pa-5"
     >
-      <charts-stats-kpi :statsValues="elem"></charts-stats-kpi>
+      <charts-stats-kpi
+        :statsResultsExamValues="elem"
+        :statsPlacesExamValues="selectStatsKpiPlacesExamsByDpt(elem.departement)"
+      />
     </v-flex>
   </v-container>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-import api from '@/api'
 import { downloadContent, getFrenchLuxonCurrentDateTime } from '@/util'
 import ChartsStatsKpi from './ChartsStatsKpi.vue'
+import { FETCH_STATS_KPI_PLACES_EXAMS_REQUEST, FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST } from '@/store'
 
 export default {
   components: {
@@ -91,16 +130,48 @@ export default {
   },
 
   async mounted () {
-    await this.getStatsKpi(false)
+    const { begin, end } = this.$route.params
+    if (begin && end) {
+      this.dateStart = begin
+      this.dateEnd = end
+    } else {
+      this.setRouteParams()
+    }
+    await this.getStatsKpiPlacesExams()
+    await this.getStatsKpiResultsExams()
   },
 
   computed: {
-    ...mapGetters(['activeDepartement']),
+    ...mapGetters([
+      'activeDepartement',
+      'isFetchingResultsExams',
+      'isFetchingPlacesExams',
+      'statsResultsExams',
+      'statsPlacesExams',
+    ]),
+
+    currentStatsResultExam () {
+      return (this.statsResultsExams && this.statsResultsExams.statsKpi)
+        ? this.statsResultsExams.statsKpi.find(el => el.departement === this.activeDepartement)
+        : {}
+    },
+
+    currentStatsPlacesExam () {
+      return (this.statsPlacesExams && this.statsPlacesExams.statsKpi)
+        ? this.statsPlacesExams.statsKpi.find(el => el.departement === this.activeDepartement)
+        : {}
+    },
+
     pickerDateStart () {
       return this.dateStart.split('-').reverse().join('/')
     },
+
     pickerDateEnd () {
       return this.dateEnd.split('-').reverse().join('/')
+    },
+
+    departementSelected () {
+      return this.isDisplayAllDepartement ? undefined : this.activeDepartement
     },
   },
 
@@ -109,40 +180,72 @@ export default {
     dateEnd: getFrenchLuxonCurrentDateTime().toISODate(),
     menuStart: false,
     menuEnd: false,
-    statsArray: [],
-    currentStats: {},
     isDisplayAllDepartement: false,
   }),
 
   methods: {
-    async getStatsKpi (isCsv) {
-      const beginPeriode = this.dateStart
-      const endPeriode = this.dateEnd
+    setRouteParams () {
+      this.$router.push({
+        name: 'stats-kpi',
+        params: {
+          begin: `${this.dateStart}`,
+          end: `${this.dateEnd}`,
+        },
+      })
+    },
 
-      const response = await api.admin.exportStatsKpi(beginPeriode, endPeriode, isCsv)
+    async getStatsKpiPlacesExams (isCsv = false) {
+      await this.$store.dispatch(FETCH_STATS_KPI_PLACES_EXAMS_REQUEST, {
+        isCsv,
+        departement: this.departementSelected,
+      })
 
       if (isCsv) {
-        downloadContent(response)
-        return
+        downloadContent(this.statsPlacesExams)
       }
+    },
 
-      this.statsArray = response.statsKpi
-      this.currentStats = this.statsArray.find(el => el.departement === this.activeDepartement)
+    async getStatsKpiResultsExams (isCsv = false) {
+      await this.$store.dispatch(FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST, {
+        beginPeriode: this.dateStart,
+        endPeriode: this.dateEnd,
+        isCsv,
+        departement: this.departementSelected,
+      })
+
+      if (isCsv) {
+        downloadContent(this.statsResultsExams)
+      }
+    },
+
+    selectStatsKpiPlacesExamsByDpt (departement) {
+      return this.statsPlacesExams
+        ? this.statsPlacesExams.statsKpi.find(el => el.departement === departement)
+        : {}
     },
   },
 
   watch: {
-    statsArray (newValue, oldValue) {
-      this.currentStats = newValue && newValue.find(el => el.departement === this.activeDepartement)
+    async activeDepartement () {
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
     },
-    activeDepartement () {
-      this.currentStats = this.statsArray && this.statsArray.find(el => el.departement === this.activeDepartement)
-    },
+
     async dateStart () {
-      await this.getStatsKpi(false)
+      this.setRouteParams()
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
     },
+
     async dateEnd () {
-      await this.getStatsKpi(false)
+      this.setRouteParams()
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+
+    async isDisplayAllDepartement () {
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
     },
   },
 }
@@ -187,5 +290,9 @@ export default {
 .label-stats {
   margin-left: 4%;
   margin-top: 4%;
+}
+
+.title-position {
+  margin-top: -6vh;
 }
 </style>
