@@ -118,7 +118,7 @@ router.get(
  *
  * /admin/stats-results-exams:
  *   get:
- *     summary: Récupération des statsKpi passées de résultas d'examens sur une péride
+ *     summary: Récupération des statsKpi de résultats d'examens sur une période passée
  *     description: Permet de récupérer les statistiques sur les places d'examens de chaque département.
  *     produces:
  *       - application/json
@@ -142,7 +142,7 @@ router.get(
  *         schema:
  *           type: string
  *           example: true
- *         description: Demande d'un fichier CSV des stats resultas de place
+ *         description: Demande d'un fichier CSV des stats résultats de place
  *
  *     responses:
  *       500:

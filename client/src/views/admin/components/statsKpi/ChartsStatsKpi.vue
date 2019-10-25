@@ -15,7 +15,7 @@
 
       <div>
         <h3 style="color: #00b0ff;">
-          {{ $formatMessage({ id: 'resultats_a_lexamen' }) }}
+          {{ $formatMessage({ id: 'resultats_des_examens' }) }}
         </h3>
         <div class="u-flex  u-flex--wrap  u-flex--center">
           <donuts-chart-content
@@ -129,7 +129,7 @@ export default {
       const { totalBookedPlaces, totalAvailablePlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
       return [
         {
-          label: 'Places disponible à venir',
+          label: 'Places disponibles à venir',
           backgroundColor: 'rgba(153, 102, 255, 0.2)',
           borderColor: 'rgba(153, 102, 255, 1)',
           borderWidth: 3,

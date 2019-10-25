@@ -34,7 +34,7 @@ export default {
   export_stats_csv: `Export Stats CSV`,
   export_places_stats_csv: `Export places Stats CSV`,
   departement: `Département : `, // eslint-disable-line no-irregular-whitespace
-  resultats_a_lexamen: `Résultats à l'examen`,
+  resultats_des_examens: `Résultats des examens`,
   de_reussite: `de réussite`,
   egale_recus_divise_reçus_plus_echecs: `= reçus / (reçus + échecs)`,
   d_absenteisme: `d'absentéisme`,
