@@ -128,6 +128,7 @@ const parseStatsPlacesExams = statsData =>
  *
  * @param {import('express').Request} req Requête express
  * @param {Object} req.query Query string de la requête
+ * @param {Object} req.query.departement Département selectionné
  * @param {string} req.query.beginPeriod Date de début de période
  * @param {string} req.query.endPeriod Date de fin de période
  * @param {string} req.query.isCsv Indique si l'on souhaite un CSV en réponse
@@ -135,7 +136,13 @@ const parseStatsPlacesExams = statsData =>
  */
 
 export const getStatsResultsExam = async (req, res) => {
-  const { beginPeriod, endPeriod, isCsv } = req.query
+  const {
+    beginPeriod,
+    endPeriod,
+    isCsv,
+    departement,
+    isAllDepartement,
+  } = req.query
   const { departements, userId } = req
 
   const loggerContent = {
@@ -144,6 +151,8 @@ export const getStatsResultsExam = async (req, res) => {
     beginPeriod,
     endPeriod,
     isCsv,
+    selectedDepartement: departement,
+    isAllDepartement,
   }
 
   const begin = getFrenchLuxonFromISO(beginPeriod)
@@ -153,7 +162,12 @@ export const getStatsResultsExam = async (req, res) => {
     .endOf('day')
     .toJSDate()
 
-  const statsKpi = await getResultsExamAllDpt(departements, begin, end)
+  let dpts = departements
+  if (departement && departements.includes(departement)) {
+    dpts = [departement]
+  }
+
+  const statsKpi = await getResultsExamAllDpt(dpts, begin, end)
 
   if (isCsv === 'true') {
     const statsKpiCsv = await parseStatsResultsExams(statsKpi)

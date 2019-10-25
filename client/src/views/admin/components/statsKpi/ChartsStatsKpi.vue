@@ -4,7 +4,7 @@
       <h3 class="d-block">
         {{ $formatMessage({ id: 'departement' }) }}
         <strong>
-          {{ `${statsResultsExamValues.departement}` }}
+          {{ `${statsResultsExamValues && statsResultsExamValues.departement}` }}
         </strong>
       </h3>
     </v-card-title>
@@ -100,11 +100,25 @@ export default {
 
   computed: {
     getTotalExamPlaces () {
-      return (this.statsResultsExamValues.absent + this.statsResultsExamValues.failed + this.statsResultsExamValues.notExamined + this.statsResultsExamValues.received) || 0
+      return (
+        this.statsResultsExamValues &&
+        (
+          this.statsResultsExamValues.absent +
+          this.statsResultsExamValues.failed +
+          this.statsResultsExamValues.notExamined +
+          this.statsResultsExamValues.received
+        )
+      ) || 0
     },
 
     receiveAndFaildPlaces () {
-      return (this.statsResultsExamValues.failed + this.statsResultsExamValues.received) || 0
+      return (
+        this.statsResultsExamValues &&
+        (
+          this.statsResultsExamValues.failed +
+          this.statsResultsExamValues.received
+        )
+      ) || 0
     },
 
     percentPlacesExamBookedOrNot () {
@@ -153,7 +167,7 @@ export default {
   methods: {
     getChartsResultsExams () {
       const totalPlacesCount = this.getTotalExamPlaces
-      const { received, absent, notExamined } = this.statsResultsExamValues
+      const { received, absent, notExamined } = this.statsResultsExamValues || {}
 
       return [
         {

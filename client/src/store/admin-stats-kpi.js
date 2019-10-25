@@ -56,10 +56,10 @@ export default {
 
   actions: {
     async FETCH_STATS_KPI_PLACES_EXAMS_REQUEST ({ state, commit, dispatch }, params) {
-      const { isCsv } = params
+      const { departement, isCsv } = params
       commit(FETCH_STATS_KPI_PLACES_EXAMS_REQUEST)
       try {
-        const response = await api.admin.exportPlacesExamsStatsKpi(isCsv)
+        const response = await api.admin.exportPlacesExamsStatsKpi(isCsv, departement)
         commit(FETCH_STATS_KPI_PLACES_EXAMS_SUCCESS, response)
         dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {
@@ -69,10 +69,10 @@ export default {
     },
 
     async FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST ({ state, commit, dispatch }, params) {
-      const { beginPeriode, endPeriode, isCsv } = params
+      const { beginPeriode, endPeriode, isCsv, departement } = params
       commit(FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST)
       try {
-        const response = await api.admin.exportResultsExamsStatsKpi(beginPeriode, endPeriode, isCsv)
+        const response = await api.admin.exportResultsExamsStatsKpi(beginPeriode, endPeriode, isCsv, departement)
         commit(FETCH_STATS_KPI_RESULTS_EXAMS_SUCCESS, response)
         dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {

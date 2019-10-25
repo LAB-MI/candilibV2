@@ -332,8 +332,8 @@ export default {
       return json
     },
 
-    exportResultsExamsStatsKpi (beginPeriod = '', endPeriod = '', isCsv = false) {
-      const queryString = `isCsv=${isCsv}&beginPeriod=${encodeURIComponent(beginPeriod)}&endPeriod=${encodeURIComponent(endPeriod)}`
+    exportResultsExamsStatsKpi (beginPeriod = '', endPeriod = '', isCsv = false, departement) {
+      const queryString = (departement ? `departement=${departement}&` : '') + `isCsv=${isCsv}&beginPeriod=${encodeURIComponent(beginPeriod)}&endPeriod=${encodeURIComponent(endPeriod)}`
       const path = `${apiPaths.admin.exportResultsExamsStatsKpi}?${queryString}`
       const headers = {
         headers: getAdminTokenHeader(),
@@ -345,8 +345,8 @@ export default {
       return apiClient.get(path, headers)
     },
 
-    exportPlacesExamsStatsKpi (isCsv = false) {
-      const queryString = `isCsv=${isCsv}`
+    exportPlacesExamsStatsKpi (isCsv = false, departement) {
+      const queryString = (departement ? `departement=${departement}&` : '') + `isCsv=${isCsv}`
       const path = `${apiPaths.admin.exportPlacesExamsStatsKpi}?${queryString}`
       const headers = {
         headers: getAdminTokenHeader(),

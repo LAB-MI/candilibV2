@@ -21,6 +21,7 @@ export const getResultsExamAllDpt = async (
   endPeriode
 ) => {
   let dpts = departements
+
   if (!(departements && departements.length)) {
     dpts = await getDepartementsFromCentres()
   }
