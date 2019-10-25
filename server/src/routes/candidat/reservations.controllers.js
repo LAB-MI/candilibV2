@@ -135,19 +135,17 @@ export const getReservations = async (req, res) => {
 }
 
 export const createReservation = async (req, res) => {
-  const section = 'candidat-create-reservation'
   const candidatId = req.userId
   const { id: centreId, date, isAccompanied, hasDualControlCar } = req.body
 
-  appLogger.info({
-    section,
+  const loggerInfo = {
+    section: 'candidat-create-reservation',
     candidatId,
     centreId,
     date,
     isAccompanied,
     hasDualControlCar,
-  })
-
+  }
   if (!centreId || !date || !isAccompanied || !hasDualControlCar) {
     const msg = []
     if (!centreId) msg.push(' du centre')
@@ -159,8 +157,7 @@ export const createReservation = async (req, res) => {
     const message = `Une ou plusieurs informations sont manquantes : ${messageList}`
 
     appLogger.warn({
-      section,
-      candidatId,
+      ...loggerInfo,
       success,
       description: message,
     })
@@ -176,9 +173,8 @@ export const createReservation = async (req, res) => {
       candidat: true,
     })
     appLogger.info({
-      section,
+      ...loggerInfo,
       action: 'get-reservation',
-      candidatId,
       previewBookedPlace,
     })
 
@@ -191,9 +187,8 @@ export const createReservation = async (req, res) => {
 
     if (statusValidResa) {
       appLogger.warn({
-        section,
+        ...loggerInfo,
         action: 'valid-reservation',
-        candidatId,
         statusValidResa,
       })
       return res.status(400).json({
@@ -207,8 +202,8 @@ export const createReservation = async (req, res) => {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"
       appLogger.warn({
-        section,
-        candidatId,
+        ...loggerInfo,
+        action: 'NO_PLACES',
         success,
         description: message,
       })
@@ -225,12 +220,16 @@ export const createReservation = async (req, res) => {
 
     if (previewBookedPlace) {
       try {
-        statusRemove = await removeReservationPlace(previewBookedPlace, true)
+        statusRemove = await removeReservationPlace(
+          previewBookedPlace,
+          true,
+          loggerInfo
+        )
         dateAfterBook = statusRemove.dateAfterBook
       } catch (error) {
         techLogger.error({
-          section,
-          candidatId,
+          ...loggerInfo,
+          action: 'FAILED_REMOVE_BOOKING',
           description: 'Échec de suppression de la réservation',
           previewBookedPlace,
           error,
@@ -247,8 +246,8 @@ export const createReservation = async (req, res) => {
       const { nom, departement } = reservation.centre
       const { date } = reservation
       appLogger.warn({
-        section: 'candidat-create-reservation',
-        candidatId,
+        ...loggerInfo,
+        action: 'FAILED_SEND_MAIL',
         description: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
         error,
       })
@@ -257,9 +256,8 @@ export const createReservation = async (req, res) => {
     }
 
     appLogger.info({
-      section: 'candidat-create-reservation',
-      action: 'create-reservation',
-      candidatId,
+      ...loggerInfo,
+      action: 'CREATED_BOOKING',
       statusmail,
       description: message,
       reservation: reservation._id,
@@ -278,8 +276,8 @@ export const createReservation = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
-      section: 'candidat-create-reservation',
-      candidatId,
+      ...loggerInfo,
+      action: 'FAILD_CREATED_BOOKING',
       description: error.message,
       error,
     })
@@ -294,18 +292,16 @@ export const createReservation = async (req, res) => {
 export const removeReservation = async (req, res) => {
   const candidatId = req.userId
 
-  appLogger.info({
+  const loggerInfo = {
     section: 'candidat-remove-reservations',
-    action: 'REMOVE_RESA_ARGS',
     candidatId,
-  })
+  }
   if (!candidatId) {
     const success = false
     const message = USER_INFO_MISSING
     appLogger.warn({
-      section: 'candidat-remove-reservations',
+      ...loggerInfo,
       action: 'NO_CANDIDAT',
-      candidatId,
       success,
       description: message,
     })
@@ -323,11 +319,11 @@ export const removeReservation = async (req, res) => {
       const message = "Vous n'avez pas de réservation"
 
       appLogger.warn({
-        section: 'candidat-removeReservation',
-        action: 'remove-reservation',
+        ...loggerInfo,
+        action: 'NO_FIND_RESA',
         candidatId,
         success,
-        description: 'NO_PLACE',
+        description: message,
       })
       return res.status(401).json({
         success,
@@ -335,15 +331,23 @@ export const removeReservation = async (req, res) => {
       })
     }
 
-    const status = await removeReservationPlace(bookedPlace)
+    const status = await removeReservationPlace(bookedPlace, false, loggerInfo)
 
+    appLogger.info({
+      ...loggerInfo,
+      action: 'REMOVED_BOOKING',
+      result: {
+        ...status,
+        success: true,
+      },
+    })
     return res.status(200).json({
       success: true,
       ...status,
     })
   } catch (error) {
     appLogger.error({
-      section: 'candidat-remove-reservations',
+      ...loggerInfo,
       action: 'UNKNOWN ERROR',
       description: error.message,
       error,
