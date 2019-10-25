@@ -17,8 +17,9 @@ export default {
       type: Array,
     },
   },
-  watch: {
-    datasets (newValue, oldValue) {
+
+  methods: {
+    renderChartBar () {
       this.renderChart({
         labels: this.labels,
         datasets: this.datasets,
@@ -26,12 +27,15 @@ export default {
       { responsive: true, maintainAspectRatio: false })
     },
   },
-  mounted () {
-    this.renderChart({
-      labels: this.labels,
-      datasets: this.datasets,
+
+  watch: {
+    datasets (newValue, oldValue) {
+      this.renderChartBar()
     },
-    { responsive: true, maintainAspectRatio: false })
+  },
+
+  mounted () {
+    this.renderChartBar()
   },
 }
 </script>

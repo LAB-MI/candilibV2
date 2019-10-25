@@ -169,6 +169,10 @@ export default {
     pickerDateEnd () {
       return this.dateEnd.split('-').reverse().join('/')
     },
+
+    departementSelected () {
+      return this.isDisplayAllDepartement ? undefined : this.activeDepartement
+    },
   },
 
   data: () => ({
@@ -191,7 +195,10 @@ export default {
     },
 
     async getStatsKpiPlacesExams (isCsv = false) {
-      await this.$store.dispatch(FETCH_STATS_KPI_PLACES_EXAMS_REQUEST, { isCsv })
+      await this.$store.dispatch(FETCH_STATS_KPI_PLACES_EXAMS_REQUEST, {
+        isCsv,
+        departement: this.departementSelected,
+      })
 
       if (isCsv) {
         downloadContent(this.statsPlacesExams)
@@ -203,6 +210,7 @@ export default {
         beginPeriode: this.dateStart,
         endPeriode: this.dateEnd,
         isCsv,
+        departement: this.departementSelected,
       })
 
       if (isCsv) {
@@ -231,6 +239,11 @@ export default {
 
     async dateEnd () {
       this.setRouteParams()
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+
+    async isDisplayAllDepartement () {
       await this.getStatsKpiPlacesExams()
       await this.getStatsKpiResultsExams()
     },
