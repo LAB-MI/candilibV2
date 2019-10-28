@@ -1,6 +1,6 @@
 /**
  * Model archived-place
- * @module models/archived-place
+ * @module
  */
 import mongoose from 'mongoose'
 import { placeCommonFields } from '../place/place.model'
@@ -32,14 +32,8 @@ const ArchivedPlaceFields = {
 }
 
 /**
- * @type {Object} ArchivedPlaceModel
- * @property {ObjectId} placeId
- * @property {Date} archivedAt
- * @property {String[]} archiveReasons
- * @property {Boolean} isCandilib
- * @property {String} byUser
- * @property {PlaceModel} placeCommonFields {@link module:models/place}
- *
+ * Schéma du modèle de données des places archivées
+ * @type {ArchivedPlaceModel}
  */
 const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields, {
   timestamps: true,
@@ -51,5 +45,16 @@ ArchivedPlaceSchema.pre('save', async function preSave () {
     archivedPlace.archivedAt = new Date()
   }
 })
+
+/**
+ * Modèle de données des places archivées
+ * @typedef {Object} ArchivedPlaceModel
+ * @property {ObjectId} placeId identifiant de la place à archiver
+ * @property {Date} archivedAt la date de création de l'archive
+ * @property {string[]} archiveReasons Les raisons de l'archivage
+ * @property {string} byUser L'identifiant de l'utilistateur qui a demandé l'archive
+ * @property {PlaceFields} placeCommonFields Les champs de [PlaceFields]{@link module:models/place/place-model~PlaceFields} sont réutilisés dans ce modèle
+ *
+ */
 
 export default mongoose.model('ArchivedPlace', ArchivedPlaceSchema)

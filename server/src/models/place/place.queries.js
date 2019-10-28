@@ -1,13 +1,13 @@
 /**
  * Ensemble des actions sur les places dans la base de données
- * @module models/place-queries
+ * @module module:models/place/place-queries
  */
 import mongoose from 'mongoose'
 
 import Place from './place.model'
 import '../inspecteur/inspecteur.model'
 import { appLogger, techLogger } from '../../util'
-import { createArchivedPlaceFromPlace } from '../archived-place/archived-place.queries'
+import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
@@ -24,12 +24,14 @@ export const createPlace = async leanPlace => {
 
 /**
  * Archiver et supprimer la place
+ * @async
  * @function deletePlace
- * @see {@link module:models/archived-place}
- * @param {PlaceModel} place La place à supprimer
+ * @see [createArchivedPlaceFromPlace]{@link module:models/archived-place/archived-place-queries.createArchivedPlaceFromPlace}
+ * @param {Place~PlaceModel} place La place à supprimer
  * @param {String[]} reasons Les raisons de la suppression
  * @param {String} byUser L'auteur de l'action
- * @param {Boolean} isCandilib Suppresion lié à une réussite ou un echec d'un examen de candilib
+ * @param {Boolean} isCandilib Suppression lié à une réussite ou un echec d'un examen de candilib
+ * @return {Place~PlaceModel}
  */
 export const deletePlace = async (place, reasons, byUser, isCandilib) => {
   if (!place) {

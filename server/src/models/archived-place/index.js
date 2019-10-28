@@ -1,1 +1,1 @@
-export * from './archived-place.queries'
+export * from './archived-place-queries'

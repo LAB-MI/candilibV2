@@ -1,27 +1,31 @@
 /**
  * Ensemble des actions sur les places archivées dans la base de données
- * @module models/archived-place-queries
+ * @module
  */
-import ArchivedPlace from './archived-place.model'
+import ArchivedPlace from './archived-place-model'
 
 /**
  * Création d'un document archived-place
- * @function createArchivedPlace
- * @param {ArchivedPlaceModel} archiedPlaceData
+ * @async
+ * @function
+ *
+ * @param {ArchivedPlace~ArchivedPlaceSchema} archivedPlaceData Place à archiver
+ * @returns {ArchivedPlace~ArchivedPlaceSchema}
  */
-export const createArchivedPlace = async archiedPlaceData => {
-  const archivedPlace = await ArchivedPlace.create(archiedPlaceData)
+export const createArchivedPlace = async archivedPlaceData => {
+  const archivedPlace = await ArchivedPlace.create(archivedPlaceData)
   return archivedPlace
 }
 
 /**
  * Création d'un document archived-place à partir de données de place
- * @function createArchivedPlaceFromPlace
+ * @async
+ * @function
  *
- * @param {PlaceModel} placeData La place à archiver qui ne contient pas le propriété candidat
- * @param {String[]} archiveReasons Les raisons de l'archivage
- * @param {String} byUser L'auteur de l'action (Admin (userId) ou Aurige )
- * @param {Boolean} isCandilib S'il y a eu une réussite ou un échec par le biais de candilib
+ * @param {module:models/place/place-model~PlaceModel} placeData La place à archiver qui ne contient pas le propriété candidat
+ * @param {string[]} archiveReasons Les raisons de l'archivage
+ * @param {string} byUser L'auteur de l'action (Admin (userId) ou Aurige )
+ * @param {boolean} isCandilib S'il y a eu une réussite ou un échec par le biais de candilib
  */
 export const createArchivedPlaceFromPlace = async (
   placeData,
@@ -45,8 +49,9 @@ export const createArchivedPlaceFromPlace = async (
 
 /**
  * Retrouver une place supprimée par son id
- * @function findArchivedPlaceByPlaceId
- * @param {ObjectId} placeId id de la place supprimée
+ * @async
+ * @function
+ * @param {ObjectId|string} placeId id de la place supprimée
  */
 export const findArchivedPlaceByPlaceId = async placeId => {
   const archivedPlace = await ArchivedPlace.findOne({ placeId })

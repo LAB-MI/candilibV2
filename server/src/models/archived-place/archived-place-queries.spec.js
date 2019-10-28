@@ -1,8 +1,8 @@
 import { connect, disconnect } from '../../mongo-connection'
-import { createArchivedPlaceFromPlace } from './archived-place.queries'
+import { createArchivedPlaceFromPlace } from './archived-place-queries'
 import { createPlaces } from '../__tests__/places'
 import { ECHEC } from '../candidat/objetDernierNonReussite.values'
-import ArchiviedPlaceModel from '../archived-place/archived-place.model'
+import ArchiviedPlaceModel from './archived-place-model'
 import { expectedArchivedPlace } from './__tests__/expect-archive-place'
 
 describe('Archive place', () => {

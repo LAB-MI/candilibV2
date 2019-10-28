@@ -1,6 +1,6 @@
 /**
  * Model Place
- * @module models/place
+ * @module models/place/place-model
  */
 import mongoose from 'mongoose'
 
@@ -54,13 +54,7 @@ export const placeCommonFields = {
 }
 
 /**
- * @typedef {Object} PlaceModel
- * @property {ObjectId} inspecteur
- * @property {centre} centre
- * @property {date} date
- * @property {date} bookedAt
- * @property {UserFields} bookedByAdmin
- * @property {ObjectId} candidat
+ * @type {PlaceModel}
  */
 const PlaceSchema = new Schema(
   {
@@ -110,5 +104,15 @@ PlaceSchema.pre('save', async function preSave () {
 })
 
 const model = mongoose.model('Place', PlaceSchema)
+
+/**
+ * @typedef {Object} PlaceModel
+ * @property {ObjectId} inspecteur
+ * @property {centre} centre
+ * @property {date} date
+ * @property {date} bookedAt
+ * @property {UserFields} bookedByAdmin
+ * @property {ObjectId} candidat
+ */
 
 export default model
