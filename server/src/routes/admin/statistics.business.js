@@ -1,5 +1,6 @@
 import archivedCandidatModel from '../../models/archived-candidat/archived-candidat.model'
 import candidatModel from '../../models/candidat/candidat.model'
+import whitelistedModel from '../../models/whitelisted/whitelisted.model'
 import {
   ABSENT,
   ECHEC,
@@ -24,7 +25,20 @@ export const getResultsExamByDpt = async departement => {
   const date = getFrenchLuxon().toLocaleString(DATETIME_FULL)
   const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
   const centres = centresFromDB.map(({ _id }) => _id)
-  const [received, absent, failed, notExamined] = await Promise.all([
+  const [
+    invited,
+    registered,
+    checked,
+    waiting,
+    received,
+    absent,
+    failed,
+    notExamined,
+  ] = await Promise.all([
+    countInvitedCandidatsByDepartement(departement),
+    countCandidatsByDepartement(departement),
+    countCheckedCandidatsByDepartement(departement),
+    countWaitingCandidatsByDepartement(departement),
     countSuccessByCentres(centres),
     countAbsentByCentres(centres),
     countFailureByCentres(centres),
@@ -34,11 +48,41 @@ export const getResultsExamByDpt = async departement => {
   return {
     date,
     departement,
+    invited,
+    registered,
+    checked,
+    waiting,
     notExamined,
     absent,
     received,
     failed,
   }
+}
+
+export const countInvitedCandidatsByDepartement = departement => {
+  return whitelistedModel.countDocuments({
+    departement,
+  })
+}
+
+export const countCandidatsByDepartement = departement => {
+  return candidatModel.countDocuments({
+    departement,
+  })
+}
+
+export const countCheckedCandidatsByDepartement = departement => {
+  return candidatModel.countDocuments({
+    isValidatedByAurige: true,
+    departement,
+  })
+}
+
+export const countWaitingCandidatsByDepartement = departement => {
+  return candidatModel.countDocuments({
+    isValidatedByAurige: null,
+    departement,
+  })
 }
 
 export const countSuccessByCentres = centres => {
@@ -47,7 +91,7 @@ export const countSuccessByCentres = centres => {
     expression['places.centre'] = { $in: centres }
   }
 
-  return archivedCandidatModel.count({
+  return archivedCandidatModel.countDocuments({
     archiveReason: EPREUVE_PRATIQUE_OK,
     'places.archiveReason': EPREUVE_PRATIQUE_OK,
     ...expression,

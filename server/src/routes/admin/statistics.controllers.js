@@ -13,6 +13,22 @@ const fields = [
     value: 'departement',
   },
   {
+    label: 'Invités',
+    value: 'invited',
+  },
+  {
+    label: 'Inscrits',
+    value: 'registered',
+  },
+  {
+    label: 'Validés',
+    value: 'checked',
+  },
+  {
+    label: 'En attente',
+    value: 'waiting',
+  },
+  {
     label: 'Non examinés',
     value: 'notExamined',
   },
