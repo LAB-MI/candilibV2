@@ -5,10 +5,10 @@
  */
 import express from 'express'
 
-import { getAdminToken } from './admin.controllers'
+import { getAdminToken } from './admin-controllers'
 import { verifyToken } from '../middlewares'
 import { verifyRepartiteurLevel } from '../admin/middlewares'
-import { postMagicLink, checkCandidat } from './candidat.controllers'
+import { postMagicLink, checkCandidat } from './candidat-controllers'
 
 const router = express.Router()
 /**

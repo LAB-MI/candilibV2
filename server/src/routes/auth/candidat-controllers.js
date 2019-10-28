@@ -1,6 +1,6 @@
 /**
  * Module concernant les actions pour authentifier un candidat
- * @module routes/auth/candidat-controllers
+ * @module
  */
 import jwt from 'jsonwebtoken'
 

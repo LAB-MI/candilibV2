@@ -1,16 +1,19 @@
 /**
  * Module concernant les actions pour authentifier un administrateur
- * @module routes/auth/admin-controllers
+ * @module
  */
 import { createToken, appLogger } from '../../util'
 import { findUserByCredentials } from '../../models/user'
 
 /**
+ * @typedef {Object} BadCredentialsBody
+ * @property {boolean} success Vaut false
+ * @property {string} message Vaut 'Mauvaise combinaison email/mot de passe.'
+ */
+/**
  * retour de réponse de la requête de connexion
  * @const
- * @type {Object} badCredentialsBody
- * @property {Boolean} success Vaut false
- * @property {String} message Vaut 'Mauvaise combinaison email/mot de passe.'
+ * @type {badCredentialsBody}
  */
 const badCredentialsBody = {
   success: false,
@@ -27,8 +30,8 @@ const badCredentialsBody = {
  * @see {@link https://expressjs.com/fr/4x/api.html#res}
  * @param {import('express').Request} req
  * @param {Object} req.body
- * @param {String} req.body.email adresse mail de l'administrateur
- * @param {String} req.body.password mot de passe de l'administrateur
+ * @param {string} req.body.email adresse mail de l'administrateur
+ * @param {string} req.body.password mot de passe de l'administrateur
  * @param {import('express').Response} res en status 401: [badCredentialsBody]{@link module:routes/auth/admin-controllers~badCredentialsBody}
  *
  */
