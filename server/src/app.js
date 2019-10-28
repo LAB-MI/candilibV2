@@ -18,6 +18,21 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
 /**
  * @swagger
  *
+ * tags: [
+ *  {
+ *    "name": "Authentification",
+ *    "description": "Pour s'authentifier à l'application"
+ *  },
+ *  {
+ *    "name": "Administrateur",
+ *    "description": "Pour toutes les actions liées aux administrateurs"
+ *  },
+ *  {
+ *    "name": "Candidat",
+ *    "description": "Pour toutes les actions liées aux candidats"
+ *  }
+ * ]
+ *
  * components:
  *   securitySchemes:
  *     bearerAuth:
@@ -143,8 +158,6 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *               - example:
  *                   success: false
  *                   message: Oups, un problème est survenu. L'administrateur a été prévenu.
-
- *
  */
 
 /**

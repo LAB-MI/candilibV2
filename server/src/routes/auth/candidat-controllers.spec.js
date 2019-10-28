@@ -2,7 +2,7 @@ import request from 'supertest'
 import express from 'express'
 
 import { connect, disconnect } from '../../mongo-connection'
-import { checkCandidat } from './candidat.controllers'
+import { checkCandidat } from './candidat-controllers'
 import { verifyToken } from '../middlewares'
 import { createCandidat } from '../../models/candidat'
 
