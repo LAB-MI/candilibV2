@@ -24,13 +24,16 @@ export const createPlace = async leanPlace => {
 
 /**
  * Archiver et supprimer la place
+ *
  * @async
- * @function deletePlace
+ * @function
  * @see [createArchivedPlaceFromPlace]{@link module:models/archived-place/archived-place-queries.createArchivedPlaceFromPlace}
+ *
  * @param {Place~PlaceModel} place La place à supprimer
  * @param {String[]} reasons Les raisons de la suppression
  * @param {String} byUser L'auteur de l'action
  * @param {Boolean} isCandilib Suppression lié à une réussite ou un echec d'un examen de candilib
+ *
  * @return {Place~PlaceModel}
  */
 export const deletePlace = async (place, reasons, byUser, isCandilib) => {

@@ -17,16 +17,16 @@ const router = express.Router()
  *      responses:
  *        ValidTokenResponse:
  *          description: Retour de la validation du jeton
- *            content:
- *              application/json:
- *                schema:
- *                  type: object
- *                  properties:
- *                    auth:
- *                      type: boolean
- *                      description: Vaut true, le jeton est valide
- *                example:
- *                  auth: true
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  auth:
+ *                    type: boolean
+ *                    description: Vaut true, le jeton est valide
+ *              example:
+ *                auth: true
  *
  * /auth/admin/token:
  *  post:

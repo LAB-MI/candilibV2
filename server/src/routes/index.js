@@ -8,7 +8,7 @@ import auth from './auth'
 import admin from './admin'
 import candidat, { preSignup, emailValidation } from './candidat'
 import { verifyToken } from './middlewares'
-import { resetMyPassword } from './auth/admin.controllers'
+import { resetMyPassword } from './auth/admin-controllers'
 
 const router = express.Router()
 
