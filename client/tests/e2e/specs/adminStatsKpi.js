@@ -92,6 +92,7 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-number-future-free-places-36')
       .should('have.length', 1)
+    cy.get('.v-snack button').should('be.visible').click()
     cy.adminDisconnection()
   })
 
@@ -146,6 +147,7 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-number-future-free-places-36')
       .should('have.length', 1)
+    cy.get('.v-snack button').should('be.visible').click()
     cy.adminDisconnection()
   })
 
@@ -202,7 +204,7 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-non-examines')
       .should('contain', '67%')
-
+    cy.get('.v-snack button').should('be.visible').click()
     cy.adminDisconnection()
   })
 
@@ -259,6 +261,7 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-absenteisme')
       .should('contain', '25.00%')
+    cy.get('.v-snack button').should('be.visible').click()
     cy.adminDisconnection()
   })
 
@@ -317,6 +320,7 @@ describe('Stats Kpi tests', () => {
       .should('contain', '50.00%')
     cy.get('.t-total-places-5')
       .should('have.length', 1)
+    cy.get('.v-snack button').should('be.visible').click()
     cy.adminDisconnection()
   })
 })
