@@ -24,13 +24,16 @@ export const createPlace = async leanPlace => {
 
 /**
  * Archiver et supprimer la place
+ *
  * @async
- * @function deletePlace
+ * @function
  * @see [createArchivedPlaceFromPlace]{@link module:models/archived-place/archived-place-queries.createArchivedPlaceFromPlace}
+ *
  * @param {Place~PlaceModel} place La place à supprimer
  * @param {String[]} reasons Les raisons de la suppression
  * @param {String} byUser L'auteur de l'action
  * @param {Boolean} isCandilib Suppression lié à une réussite ou un echec d'un examen de candilib
+ *
  * @return {Place~PlaceModel}
  */
 export const deletePlace = async (place, reasons, byUser, isCandilib) => {
@@ -81,10 +84,13 @@ export const findPlaceByCandidatId = async (id, populate) => {
 }
 
 /**
+ * @function
  *
  * @param {string} centreId - Id du centre
- * @param {string} beginDate - date de debut de recherche au format ISO
- * @param {string} endDate - date de fin de recherche au format ISO
+ * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {import('mongoose').Query}
  */
 const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
@@ -101,10 +107,13 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
 }
 
 /**
- * @function findAllPlacesByCentre
+ * @function
+ *
  * @param {string} centreId - Id du centre
- * @param {string} beginDate - date de debut de recherche au format ISO
- * @param {string} endDate - date de fin de recherche au format ISO
+ * @param {string} beginDate - Date  au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {Place[]}
  */
 export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)

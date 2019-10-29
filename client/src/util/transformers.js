@@ -4,6 +4,7 @@ export const transformToProfileInfo = (object, dict) => dict.map(profileInfoGrou
   profileInfoGroup.map(([key, title, fn]) => (
     [
       title,
-      (fn || id)(object[key])]
+      (fn || id)(object[key]),
+    ]
   ))
 )

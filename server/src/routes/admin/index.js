@@ -1,3 +1,8 @@
+/**
+ * Routeur concernant les requêtes que peut faire un utilisateur
+ * @module routes/admin
+ */
+
 import express from 'express'
 
 import { getCandidats, importCandidats } from './candidats.controllers'
@@ -31,6 +36,7 @@ const router = express.Router()
 router.use(verifyRepartiteurLevel)
 
 router.get('/me', getMe)
+
 router.get(
   '/candidats/:id?',
   verifyRepartiteurDepartement,
@@ -133,13 +139,6 @@ router
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
- */
-
-
-/**
- * @swagger
- *
- * /admin/users:
  *   get:
  *     tags: ["Administrateur"]
  *     summary: Récupération des informations de l'utilisateur
@@ -205,13 +204,6 @@ router
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
- */
-
-
-/**
- * @swagger
- *
- * /admin/users:
  *   put:
  *     tags: ["Administrateur"]
  *     summary: Modification d'un utilisateur
@@ -277,13 +269,6 @@ router
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
- */
-
-
-/**
- * @swagger
- *
- * /admin/users:
  *   delete:
  *     tags: ["Administrateur"]
  *     summary: Suppression d'un utilisateur
@@ -351,5 +336,31 @@ router
  *
  */
 
+/*
+ * @swagger
+ *
+ * /admin/reset-link:
+ *   post:
+ *     summary: Envoyer un mail de demande réinitialisation
+ *     description: Envoi d'un lien de réinitialisation de mot de passe
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     responses:
+ *       200:
+ *         description:
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/User'
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidEmailResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
 
 export default router

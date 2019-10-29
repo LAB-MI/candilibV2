@@ -99,36 +99,71 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           type: object
  *           description: Informations sur le candidat
  *           properties:
- *             "adresse":
+ *             adresse:
  *               type: string
  *               description: Adresse postale du candidat où lui seront envoyés les correspondances de l'adiminstation
- *             "codeNeph":
+ *             codeNeph:
  *               type: string
  *               description: NEPH du candidat
- *             "email":
+ *             email:
  *               type: string
  *               description: Adresse courriel du candidat
- *             "nomNaissance":
+ *             nomNaissance:
  *               type: string
  *               description: Nom de naissance du candidat
- *             "portable":
+ *             portable:
  *               type: string
  *               description: Numéro de mobile du candidat
- *             "prenom":
+ *             prenom:
  *               type: string
  *               description: Prénom du candidat
- *             "departement":
+ *             departement:
  *               type: string
  *               description: Département du candidat
  *       example:
- *         "candidat":
- *           "adresse": "40 Avenue des terroirs de France 93000 Villepinte"
- *           "codeNeph": "093496239512"
- *           "email": "mayswaisey@candilib.com"
- *           "nomNaissance": "SWAISEY"
- *           "portable": "0603765291"
- *           "prenom": "MAY"
- *           "departement": "93"
+ *         candidat:
+ *           adresse: 40 Avenue des terroirs de France 93000 Villepinte
+ *           codeNeph: 093496239512
+ *           email: mayswaisey@candilib.com
+ *           nomNaissance: SWAISEY
+ *           portable: 0603765291
+ *           prenom: MAY
+ *           departement: 93
+
+ *     User:
+ *       type: object
+ *       description: Informations sur l'utilisateur
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: adresse email de l'utilisateur
+ *         emailValidationHash:
+ *           type: string
+ *           description: Hash de sécurité
+ *         password:
+ *           type: string
+ *           description: Mot de passe du candidat
+ *         departements:
+ *           type: Array
+ *           description: Département de l'utilisateur
+ *         isDeleted:
+ *           type: Boolean
+ *           description:
+ *         signUpDate:
+ *           type: string
+ *           description: Date d'enregistement
+ *         status:
+ *           type: string
+ *           description:
+ *       example:
+ *         user:
+ *           email: admin@email.fr
+ *           emailValidationHash:
+ *           password: 759DS56SD2
+ *           departements: 93
+ *           isDeleted: true
+ *           signUpDate: 15-09-2019
+ *           status: admin
 
  *     CentresInfo:
  *       type: object
@@ -137,6 +172,50 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           type: string
  *
  *   responses:
+ *     InvalidPasswordResponse:
+ *       description: Réponse du serveur en cas de mots de passe erronés
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Oups! Les mots de passe ne correspondent pas
+ *
+ *     InvalidEmailResponse:
+ *       description: Réponse du serveur en cas d'email invalide
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Votre email n'est pas reconnu
+
+ *     InvalidLinkResponse:
+ *       description: Réponse du serveur en cas de lien invalide
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Votre lien est invalide
+
+ *     UnknownEmailResponse:
+ *       description: Erreur inattendue
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu
+
  *     InvalidTokenResponse:
  *       description: Réponse du serveur en cas de JWT absent ou invalide
  *       content:
@@ -250,3 +329,11 @@ app.use(fileupload({ limits: { fileSize: 50 * 1024 * 1024 } }))
 app.use(apiPrefix, routes)
 
 export default app
+
+/**
+ * @typedef {Object} InfoObject
+ *
+ * @property {boolean} success - Indique si l'action a été effectuée avec succès
+ * @property {string} message  - Message destiné à être affiché à l'utilisateur : message de réussite de l'action
+ *                              ou message d'erreur compréhensible par un non technicien
+ */

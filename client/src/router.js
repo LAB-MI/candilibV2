@@ -40,6 +40,7 @@ const AdminAurige = () => import(/* webpackChunkName: "admin", webpackPrefetch: 
 const HomeAdminPage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/HomeAdminPage.vue')
 const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/schedule/ScheduleManager.vue')
 const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
+const ResetPassword = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/ResetPassword.vue')
 
 const adminRoutes = [
   {
@@ -47,6 +48,11 @@ const adminRoutes = [
     name: 'admin-login',
     component: AdminLogin,
     beforeEnter: checkAdminToken,
+  },
+  {
+    path: '/reset-link',
+    name: 'reset-password',
+    component: ResetPassword,
   },
   {
     path: '/admin',

@@ -13,6 +13,7 @@
 
       <div class="form-input">
         <v-text-field
+          class="t-login-email"
           aria-placeholder="jean@dupont.fr"
           autofocus
           hint="ex. : jean@dupont.fr"
@@ -44,6 +45,7 @@
           <div class="submit-bgbtn"></div>
           <div class="submit-label">Connexion</div>
         </button>
+        <email-password-reset class="u-flex u-flex--center"/>
       </div>
 
       <admin-version/>
@@ -64,12 +66,14 @@ import {
 } from '@/store'
 
 import AdminVersion from '../../../components/AppVersion.vue'
+import EmailPasswordReset from './EmailPasswordReset'
 
 export default {
   name: 'Login',
 
   components: {
     AdminVersion,
+    EmailPasswordReset,
   },
 
   data () {
@@ -84,6 +88,7 @@ export default {
       passwordRules: [v => !!v || 'Veuillez renseigner votre mot de passe'],
       showPassword: false,
       valid: false,
+      showDialog: false,
     }
   },
 
