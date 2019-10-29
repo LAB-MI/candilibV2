@@ -1,6 +1,6 @@
 /**
  * Module concernant les logiques métiers des actions sur les places par un utilisateur
- * @module routes/admin/places-business
+ * @module
  */
 import * as csvParser from 'fast-csv'
 import XlsxStreamReader from 'xlsx-stream-reader'
@@ -72,7 +72,7 @@ import {
  * @property {string} message
  */
 /**
- * Formatage de la résponse d'une place suite à un import de planning d'inspecteur
+ * Formatage de la réponse d'une place suite à un import de planning d'inspecteur
  * @function
  *
  * @param {string} departement Département de la place
@@ -105,7 +105,7 @@ const getPlaceStatus = (
  * @typedef {string[]} RowImportPlace
  * @property {string} 1 La date  en format dd/mm/aa
  * @property {string} 2 L'heure  en format hh:mm
- * @property {string} 3 La matricule de l'inspecteur
+ * @property {string} 3 Le matricule de l'inspecteur
  * @property {string} 4 Le nom de l'inspecteur
  * @property {string} 5 Le nom du centre
  * @property {string} 6 Le département sélectionné
@@ -118,15 +118,15 @@ const getPlaceStatus = (
  * @property {import('luxon').DateTime} date La date et heure de la place
  */
 /**
- * Convertie une ligne d'un fichier d'import de place
- * - en Object [RowObjectPlace]{@link module:routes/admin/places-business~RowObjectPlace} compréhensie pour la fonction createPlaceFromFile
- * - en Object [PlaceStatus]{@link module:routes/admin/places-business~PlaceStatus} avec la valeur 'error' dans la propriété 'status', en cas d'erreur
+ * Analyse et Convertit les données d'une ligne du fichier d'import de places
+ * - en object [RowObjectPlace]{@link import('./places-business').RowObjectPlace} compréhensiblee pour la fonction createPlaceFromFile
+ * - ou en object [PlaceStatus]{@link import('./places-business').PlaceStatus} avec la valeur 'error' dans la propriété 'status', en cas d'erreur
  * @async
  * @function
  * @param {Object} param
  * @param {RowImportPlace} param.data une ligne du fichier d'import de places
  * @param {string} param.departement Département sélectionné
- * @return {Promise<RowObjectPlace>|Promise<PlaceStatus>}
+ * @return {Promise<RowObjectPlace|PlaceStatus>}
  */
 const parseRow = async ({ data, departement }) => {
   const loggerInfo = {
@@ -256,7 +256,7 @@ const parseRow = async ({ data, departement }) => {
   }
 }
 /**
- * Crée un place importé dans la base de données
+ * Crée une place importée dans la base de données
  * @async
  * @function
  * @param {RowObjectPlace} place
@@ -312,7 +312,7 @@ const createPlaceFromFile = async place => {
 }
 
 /**
- * Importer les places d'un département dans un fichier CSV.
+ * Importe les places d'un département dans un fichier CSV.
  * @async
  * @function
  * @param {Object} param
@@ -374,7 +374,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
   )
 }
 /**
- * Importer les places d'un département dans un fichier XLSX.
+ * Importe les places d'un département dans un fichier XLSX.
  * @async
  * @function
  * @param {Object} param
@@ -432,18 +432,18 @@ export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
 /**
  * Exception pour les erreurs d'import des places
  * @typedef {Error} ErrorImportPlace
- * @property {String} from vaut importPlacesFromFile, pour indiquer le provenance d'exception dans les traces
+ * @property {string} from vaut importPlacesFromFile, pour indiquer la provenance d'exception dans les traces
  */
 
 /**
- * Rédiriger vers les fonctions import des places suivant l'extension du fichier à importer
- * - La fonction pour l'import des fichiers CSV est {@link module:routes/admin/places-business.importPlacesCsv|importPlacesCsv}
- * - La fonction pour l'import des fichiers XLSX est {@link module:routes/admin/places-business.importPlacesXlsx|importPlacesXlsx}
+ * Redirige vers les fonctions d'import des places suivant l'extension du fichier à importer
+ * - La fonction pour l'import des fichiers CSV est [importPlacesCsv]{@link import('./places-business')..importPlacesCsv}
+ * - La fonction pour l'import des fichiers XLSX est [importPlacesXlsx]{@link import('./places-business')..importPlacesXlsx}
  * @async
  * @function
- * @param {Object} param Paramêtre anonyme
- * @param {String} param.planningFile Nom du fichier à traiter avec l'extension .csv ou xlsx
- * @param {String} param.departement Département actif de l'utilisateur
+ * @param {Object} param Paramètre anonyme
+ * @param {string} param.planningFile Nom du fichier à traiter avec l'extension .csv ou xlsx
+ * @param {string} param.departement Département actif de l'utilisateur
  * @return {Promise<PlaceStatus[]>}
  * @throws {ErrorImportPlace} error Envoie une exception si l'extension n'est ni .csv, ni .xlsx
  *

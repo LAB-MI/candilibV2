@@ -1,6 +1,6 @@
 /**
  * Module concernant les actions sur les places par un utilisateur
- * @module routes/admin/places-controllers
+ * @module
  */
 import config from '../../config'
 import {
@@ -29,7 +29,7 @@ import {
   sendMailSchedulesAllInspecteurs,
   sendMailSchedulesInspecteurs,
   validUpdateResaInspector,
-} from './places.business'
+} from './places-business'
 
 import {
   DELETE_PLACES_BY_ADMIN_SUCCESS,
@@ -39,20 +39,19 @@ import {
 } from './message.constants'
 
 /**
- * Importer le planning des insporteurs pour un département avec un fichier CSV ou XLSX.
- * Le planning est une list de places contenant les informations dans l'ordre suivant: date, heure, matricule de l'inspecteur, le nom de l'inspecteur, le nom centre et le département.
- * La fonction metier appelée est [importPlacesFromFile]{@link module:routes/admin/places-business.importPlacesFromFile}
+ * Importe le planning des inspecteurs pour un département avec un fichier CSV ou XLSX.
+ * Le planning est une liste de places contenant les informations dans l'ordre suivant: date, heure, matricule de l'inspecteur, le nom de l'inspecteur, le nom du centre et le département.
+ * La fonction métier appelée est [importPlacesFromFile]{@link import('./places-business')..importPlacesFromFile}
  * @async
  * @function
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_places|Swagger: POST /admin/places}
  * @see {@link https://expressjs.com/fr/4x/api.html#req|Documentation: express Request}
  * @see {@link https://expressjs.com/fr/4x/api.html#res|Documentation: express Response}
  * @param {import('express').Request} req
- * @param {File} req.files fichiers en format CSV ou XLSX
+ * @param {File} req.files Fichiers en format CSV ou XLSX
  * @param {Object} req.body
- * @param {String} req.body.departement departement selectionné par l'utilisateur
+ * @param {String} req.body.departement Département selectionné par l'utilisateur
  * @param {import('express').Response} res
-
  */
 export const importPlaces = async (req, res) => {
   const { departement } = req.body
