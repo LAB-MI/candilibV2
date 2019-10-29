@@ -1,5 +1,5 @@
 <template>
-  <div v-if="admin.departements.list.length > 2">
+  <div v-if="isNumberDepartementMoreThanTwo">
     <v-menu
       bottom
     >
@@ -68,6 +68,13 @@ export default {
       set (departement) {
         this.$store.dispatch(SELECT_DEPARTEMENT, departement)
       },
+    },
+    isNumberDepartementMoreThanTwo () {
+      const { departements } = this.admin
+      if (departements && departements.list && departements.list.length > 2) {
+        return true
+      }
+      return false
     },
   },
 }

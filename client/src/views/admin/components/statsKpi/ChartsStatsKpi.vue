@@ -4,7 +4,7 @@
       <h3 class="d-block">
         {{ $formatMessage({ id: 'departement' }) }}
         <strong>
-          {{ `${statsResultsExamValues && statsResultsExamValues.departement}` }}
+          {{ `${(statsResultsExamValues && statsResultsExamValues.departement) || this.activeDepartement}` }}
         </strong>
       </h3>
     </v-card-title>
@@ -73,6 +73,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex'
 import DonutsChartContent from './DonutsChartContent.vue'
 import ChartBar from './ChartBar.vue'
 
@@ -99,6 +100,7 @@ export default {
   },
 
   computed: {
+    ...mapGetters(['activeDepartement']),
     getTotalExamPlaces () {
       return (
         this.statsResultsExamValues &&
@@ -124,7 +126,7 @@ export default {
     percentPlacesExamBookedOrNot () {
       const totalBookedPlaces = (this.statsPlacesExamValues && this.statsPlacesExamValues.totalBookedPlaces) || 0
       const totalAvailablePlaces = (this.statsPlacesExamValues && this.statsPlacesExamValues.totalAvailablePlaces) || 0
-      return ((totalBookedPlaces / (totalAvailablePlaces + totalBookedPlaces)) * 100).toFixed(2)
+      return (((totalBookedPlaces / (totalAvailablePlaces + totalBookedPlaces)) * 100) || 0).toFixed(2)
     },
 
     chartsPlacesExams () {
