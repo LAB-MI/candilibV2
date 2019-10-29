@@ -222,7 +222,9 @@
             v-model="validBatch"
             v-show="addingBatch"
             @submit.prevent="addBatchToWhitelist"
+            class="u-pr"
           >
+            <big-loading-indicator :is-loading="whitelist.isUpdating" />
             <v-container>
               <v-textarea
                 id="whitelist-batch-textarea"
@@ -325,6 +327,7 @@ import { email as emailRegex } from '@/util'
 
 import Whitelisted from './Whitelisted.vue'
 import SearchEmail from './SearchEmail'
+import { BigLoadingIndicator } from '@/components'
 import {
   DELETE_EMAIL_REQUEST,
   FETCH_WHITELIST_REQUEST,
@@ -346,6 +349,7 @@ export default {
   components: {
     Whitelisted,
     SearchEmail,
+    BigLoadingIndicator,
   },
 
   data () {
