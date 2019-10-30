@@ -92,20 +92,13 @@
           <div class="text-xs-right">
             <refresh-button
               @click="reloadWeekMonitor"
-              :isLoading="isLoading"
+              :is-loading="isLoading"
             />
           </div>
         </div>
       </div>
 
-      <div v-show="isLoading" class="schedule-loading-indicator">
-        <div class="schedule-loading-indicator-progress">
-          <v-progress-circular
-            indeterminate
-            color="primary"
-          ></v-progress-circular>
-        </div>
-      </div>
+      <big-loading-indicator :is-loading="isLoading" />
 
       <v-tabs
         class="tabs"
@@ -232,7 +225,7 @@ import DeleteScheduleInspector from './DeleteScheduleInspector'
 import GenerateInspecteurBordereaux from './GenerateInspecteurBordereaux'
 import ScheduleInspectorButton from './ScheduleInspectorButton'
 import ScheduleInspectorDetails from './ScheduleInspectorDetails'
-import { RefreshButton } from '@/components'
+import { RefreshButton, BigLoadingIndicator } from '@/components'
 
 import {
   creneauSetting,
@@ -254,6 +247,7 @@ export default {
     RefreshButton,
     ScheduleInspectorButton,
     ScheduleInspectorDetails,
+    BigLoadingIndicator,
   },
 
   data () {
@@ -585,27 +579,6 @@ export default {
   &.active {
     background-color: #bde;
     max-height: 300px;
-  }
-}
-
-.schedule-loading-indicator {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-
-  &-progress {
-    position: absolute;
-    width: 150px;
-    height: 150px;
-    top: 100px;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    border-radius: 50%;
-    background: #32a9bb55;
-    display: flex;
-    justify-content: center;
-    align-items: center;
   }
 }
 
