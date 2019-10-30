@@ -28,6 +28,7 @@ import {
   verifyRepartiteurLevel,
   verifyRepartiteurDepartement,
   verifyAdminLevel,
+  verifyDelegueLevel,
   verifyAccessAurige,
 } from './middlewares'
 
@@ -48,7 +49,7 @@ router.get('/inspecteurs', getInspecteurs)
 router.post('/place', verifyRepartiteurDepartement, createPlaceByAdmin)
 router.delete('/place/:id', deletePlaceByAdmin)
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
-router.get('/stats', verifyAdminLevel, getStats)
+router.get('/stats', verifyDelegueLevel, getStats)
 router.post('/places', verifyRepartiteurDepartement, importPlaces)
 router.delete('/places', deletePlacesByAdmin)
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
@@ -333,33 +334,6 @@ router
  *
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
- *
- */
-
-/*
- * @swagger
- *
- * /admin/reset-link:
- *   post:
- *     summary: Envoyer un mail de demande réinitialisation
- *     description: Envoi d'un lien de réinitialisation de mot de passe
- *     produces:
- *      - application/json
- *     security:
- *       - bearerAuth: []
- *     responses:
- *       200:
- *         description:
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/User'
- *
- *       401:
- *         $ref: '#/components/responses/InvalidEmailResponse'
- *
- *       500:
- *         $ref: '#/components/responses/UnknownErrorResponse'
  *
  */
 

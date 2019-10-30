@@ -51,6 +51,7 @@ const userStatusLevels = {
  */
 const features = {
   AURIGE: 'aurige',
+  STATS_KPI: 'stats-kpi',
 }
 
 /**
@@ -60,9 +61,9 @@ const features = {
 const userStatusAccess = {
   [userStatuses.CANDIDAT]: [],
   [userStatuses.REPARTITEUR]: [],
-  [userStatuses.DELEGUE]: [],
-  [userStatuses.ADMIN]: [features.AURIGE],
-  [userStatuses.TECH]: [features.AURIGE],
+  [userStatuses.DELEGUE]: [features.STATS_KPI],
+  [userStatuses.ADMIN]: [features.AURIGE, features.STATS_KPI],
+  [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI],
 }
 
 /**
