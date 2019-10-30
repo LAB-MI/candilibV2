@@ -340,9 +340,12 @@ export const isSameReservationPlace = (centerId, date, previewBookedPlace) => {
  * @returns {boolean} Est à `true` si le candidat peut supprimer cette réservation `false` sinon
  */
 export const canCancelReservation = previewDateReservation => {
-  const dateCancelAutorize = getFrenchLuxon().plus({
-    days: config.daysForbidCancel,
-  })
+  const dateCancelAutorize = getFrenchLuxon()
+    .plus({
+      days: config.daysForbidCancel,
+    })
+    .startOf('day')
+
   return previewDateReservation.diff(dateCancelAutorize, 'days') > 0
 }
 
