@@ -1,4 +1,5 @@
 # Candilib
+
 Code source de l'application de réservation en ligne de places à l'examen pratique du permis de conduire. Ce service public est à destination des usagers [inscrits sur le système de l'ANTS](https://permisdeconduire.ants.gouv.fr/Services-associes/Effectuer-une-demande-de-permis-de-conduire-en-ligne) et ayant réussi l'épreuve pratique du code de la route.
 
 ## Installation
@@ -17,6 +18,10 @@ Windows : https://hub.docker.com/editions/community/docker-ce-desktop-windows
 
 Ubuntu : https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
+Ne pas oublier d'effectuer les étapes post-installation sur Ubuntu:
+
+https://docs.docker.com/install/linux/linux-postinstall/
+
 #### Robo 3T
 
 https://robomongo.org/download
@@ -25,7 +30,13 @@ Attention, **ne pas télécharger** Studio 3T, mais **télécharger Robo 3T**
 
 ### Installation
 
-#### Peupler la base de données Mongodb
+#### Cloner le projet
+
+```bash
+git clone https://github.com/LAB-MI/candilibV2.git
+```
+
+#### Installation avec npm
 
 1. Lancer la base de données :
 
@@ -34,13 +45,34 @@ cd server
 npm run db
 ```
 
-2. Lancer le script npm pour peupler la bdd
+2. Installer les dépendances
+
+```bash
+npm install
+```
+
+3. Créer les variables d'environnements
+
+Lire le fichier `server/README.md` et créer un fichier `.env` avec les variables correspondantes. 
+(Se créer éventuellement un compte mailtrap.io)
+
+4. Lancer le script npm pour peupler la bdd
 
 ```bash
 npm run dev-setup
 ```
 
-3. Lancer le serveur node avec le code de l'API
+5. Se connecter à la bdd
+
+Ouvrir Robo3t, créer une nouvelle connection. Dans l'onglet d'authentification, remplir:
+
+```
+Database: candilib
+User: adminCandilib
+Password: changeme78
+```
+
+6. Lancer le serveur node avec le code de l'API
 
 Toujours dans le répertoire `server`
 
@@ -56,24 +88,81 @@ Puis lancer le serveur
 npm run dev
 ```
 
-4. Lancer le front
+7. Installer les dépendances du front
+
+Dans un nouveau terminal
 
 ```bash
 cd ../client
+npm install
+```
+
+8. Lancer le front
+
+```bash
 npm start
 ```
 
 Ceci lance webpack-dev-server avec la configuration  de vue-cli.
 
-5. Se connecter en tant qu'admin
+9. Se connecter en tant qu'admin
 
 Aller à http://localhost:8080/candilib
 
 Et utiliser le compte suivant:
+
 - login : `admin@example.com`
 - mot de passe : `Admin*78`
 
-6. Aller à calendrier et uploader le fichier `dev-setup/planning-93.csv`
+10. Aller à calendrier et uploader le fichier `dev-setup/planning-93.csv`
+
+#### Installation avec Docker
+
+(nécessite la version 19 de Docker-Compose)
+
+1. Créer les images Docker
+
+à la racine du projet:
+
+```bash
+make build-all NPM_AUDIT_DRY_RUN=false
+```
+Vérifier les images crées avec
+
+```bash
+docker images
+```
+
+2. Lancer les conteneurs
+
+```bash
+export FRONT_ADMIN_PORT=81
+export DBDATA=../test-db
+make up-all
+```
+
+Vérifier les conteneurs avec
+
+```bash
+docker ps
+```
+
+Pour effectuer les tests:
+
+```bash
+make test-all
+```
+
+3. Accéder au site
+
+http://localhost:80 pour le site candidat
+http://localhost:81 pour le site admin
+
+4. Pour éteindre les conteneurs
+
+```bash
+make down-all
+```
 
 
 ## Utilisation
@@ -161,4 +250,3 @@ npm start
 
 C'est le répertoire `dist` qui contient l'application.
 C'est le fichier `index.js` dans ce répertoire qui est lancé.
-
