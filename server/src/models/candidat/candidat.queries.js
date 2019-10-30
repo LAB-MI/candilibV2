@@ -261,3 +261,10 @@ export const isCandidatExisting = async _id => {
   const isExist = await Candidat.exists({ _id })
   return isExist
 }
+
+export const countCandidatsInscritsByDepartement = async departement => {
+  return Candidat.countDocuments({
+    departement,
+    isValidatedByAurige: true,
+  })
+}

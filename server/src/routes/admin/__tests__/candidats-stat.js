@@ -18,13 +18,20 @@ import {
   findCentreByNameAndDepartement,
   createCentre,
 } from '../../../models/centre'
+import { createPlace } from '../../../models/place'
 import {
   findInspecteurByMatricule,
   createInspecteur,
 } from '../../../models/inspecteur'
 import { createArchivedCandidat } from '../../../models/archived-candidat/archived-candidat.queries'
 
-const nowLuxon = getFrenchLuxon()
+import {
+  bookCandidatOnSelectedPlace,
+  commonBasePlaceDateTime,
+  createCandidatAndUpdate,
+} from '../../../models/__tests__'
+
+export const nowLuxon = getFrenchLuxon()
 
 const dateReussiteETG = nowLuxon
   .minus({ days: 5 })
@@ -642,4 +649,63 @@ export const createCandidatsForStat = async () => {
     ...candidatsStat.map(createOneCandidatForStat),
     ...archivedCandidatsStat.map(createArchivedCandidatForStat),
   ])
+}
+
+const bookedAt = nowLuxon.toJSDate()
+
+const centreTest = {
+  departement: '92',
+  nom: 'Centre 99',
+  label: "Centre d'examen 2",
+  adresse: '2 Avenue test, Ville test 2, FR, 93420',
+  lon: 47,
+  lat: 3.5,
+}
+
+const candidatForStatsPlace = {
+  codeNeph: '123456789993',
+  nomNaissance: 'nom à tester 92',
+  prenom: 'prénom à tester',
+  email: 'test99.testbookedAt1@test.com',
+  portable: '0612345678',
+  adresse: '10 Rue Oberkampf 92100 Paris',
+  dateReussiteETG: nowLuxon.plus({ year: -1 }),
+  departement: '92',
+}
+
+const inspecteurTestForStatsPlace = {
+  nom: 'Mulder-test',
+  prenom: 'Fox',
+  matricule: '04710111166',
+  email: 'fox.mulder.bookedAt1@x-files.com',
+  departement: '92',
+}
+
+export const createStatsForPlacesExam = async () => {
+  const { nom, label, adresse, lon, lat, departement } = centreTest
+  const createdCentre = await createCentre(
+    nom,
+    label,
+    adresse,
+    lon,
+    lat,
+    departement
+  )
+
+  const createdInspecteur = await createInspecteur(inspecteurTestForStatsPlace)
+
+  const placeCreated = await createPlace({
+    date: commonBasePlaceDateTime.toISO(),
+    centre: createdCentre._id,
+    inspecteur: createdInspecteur._id,
+  })
+
+  await createPlace({
+    date: commonBasePlaceDateTime.plus({ hours: 1 }).toISO(),
+    centre: createdCentre._id,
+    inspecteur: createdInspecteur._id,
+  })
+
+  const updatedCandidat = await createCandidatAndUpdate(candidatForStatsPlace)
+  await bookCandidatOnSelectedPlace(placeCreated, updatedCandidat, bookedAt)
 }

@@ -119,6 +119,14 @@ export default {
         return this.$store.dispatch(SHOW_ERROR, `Oups! Une erreur est survenue. L'administrateur a été prévenu`)
       }
     },
+
+    async redirect () {
+      if (!SHOW_SUCCESS) {
+        return this.$store.dispatch(SHOW_ERROR, 'Oups ! Une erreur est survenue')
+      }
+      await this.$store.dispatch(SHOW_SUCCESS, `Votre mot de passe a bien été modifié`)
+      return window.setTimeout(() => this.$router.push({ name: 'admin-login' }), 4000)
+    },
   },
 }
 </script>
