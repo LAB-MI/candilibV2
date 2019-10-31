@@ -15,7 +15,6 @@ import { getFrenchLuxon, techLogger } from '../../util'
  *
  * @returns {Promise.<Candidat>}
  */
-
 export const createCandidat = async ({
   adresse,
   codeNeph,
@@ -83,7 +82,6 @@ export const findCandidatByEmail = async email => {
  *
  * @returns {Promise.<Candidat>}
  */
-
 export const findCandidatById = async (id, options) => {
   if (options && options.dateDernierEchecPratique) {
     options.noReussites = 1
@@ -101,9 +99,7 @@ export const findCandidatById = async (id, options) => {
  * @param {string} $search - Expression rationnelle pour la recherche par le nom, prénom, code NEPH et adresse courriel
  *
  * @returns {Promise.<Candidat[]>}
- *
  */
-
 export const findCandidatsMatching = async $search => {
   const search = new RegExp($search, 'i')
 
@@ -139,7 +135,6 @@ export const findCandidatsMatching = async $search => {
  * @param {string} codeNeph - NEPH du candidat
  *
  * @returns {Promise.<Candidat>}
- *
  */
 export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
   const candidat = await Candidat.findOne({ nomNaissance, codeNeph })
@@ -158,7 +153,6 @@ export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
  * @param {string} reason - Raison de l'archivage du candidat
  *
  * @returns {Promise.<Candidat>}
- *
  */
 export const deleteCandidatByNomNeph = async (
   nomNaissance,
@@ -183,7 +177,6 @@ export const deleteCandidatByNomNeph = async (
  * @param {string} reason - Raison de l'archivage du candidat
  *
  * @returns {Promise.<Candidat>}
- *
  */
 export const deleteCandidat = async (candidat, reason) => {
   if (!candidat) {
@@ -237,7 +230,6 @@ export const updateCandidatEmail = async (candidat, email) => {
  * @param {string} centre - Identifiant du centre d'examen
  *
  * @returns {Promise.<Candidat[]>} Liste des candidats ayant réservé ce jour avec cet inspecteur dans ce centre
- *
  */
 export const findBookedCandidats = async (date, inspecteur, centre) => {
   let query = Place.where('candidat').exists(true)
@@ -275,6 +267,7 @@ export const findBookedCandidats = async (date, inspecteur, centre) => {
   }
   return null
 }
+
 /**
  * Met à jour les informations (prénom, adresse courriel, portable, adresse) du candidat et le renvoie
  *
@@ -289,7 +282,6 @@ export const findBookedCandidats = async (date, inspecteur, centre) => {
  * @param {string} adresse - Adresse postale du candidat
  *
  * @returns {Promise.<Candidat>}
- *
  */
 export const updateCandidatSignUp = async (candidat, data) => {
   const { prenom, email, portable, adresse } = data
@@ -301,6 +293,7 @@ export const updateCandidatSignUp = async (candidat, data) => {
   const updatedCandidat = await Candidat.findById(candidat._id)
   return updatedCandidat
 }
+
 /**
  * Met à jour le candidat avec les données passées en paramètre et le renvoie
  *
@@ -311,12 +304,12 @@ export const updateCandidatSignUp = async (candidat, data) => {
  * @param {CandidatUpdateData} updatedData - Données à modifier du candidat
  *
  * @returns {Promise.<Candidat>}
- *
  */
 export const updateCandidatById = async (id, updatedData) => {
   const updateInfo = await Candidat.findByIdAndUpdate(id, updatedData)
   return updateInfo
 }
+
 /**
  * Met à jour la date à laquelle le candidat peut réserver une place
  *
@@ -327,7 +320,6 @@ export const updateCandidatById = async (id, updatedData) => {
  * @param {Date} canBookFrom - Date possible de réservation d'une place
  *
  * @returns {Promise.<Candidat>}
- *
  */
 export const updateCandidatCanBookFrom = async (candidat, canBookFrom) => {
   candidat.canBookFrom = canBookFrom
@@ -343,7 +335,6 @@ export const updateCandidatCanBookFrom = async (candidat, canBookFrom) => {
  * @param {string} id - Identifiant du candidat
  *
  * @returns {Promise.<Candidat>}
- *
  */
 export const setCandidatFirstConnection = async id => {
   const candidat = await findCandidatById(id)
@@ -453,7 +444,6 @@ export const updateCandidatFailed = async (
  * @param {Candidat} candidat
  *
  * @returns {Promise.<Candidat>}
- *
  */
 export const updateCandidatNoReussite = async (
   candidat,
@@ -474,7 +464,6 @@ export const updateCandidatNoReussite = async (
  * @param {Date} resaCanceledByAdmin - Date de l'annulation de la place par un délégué ou un répartiteur
  *
  * @returns {Promise.<Candidat>} - Candidat mis à jour
- *
  */
 export const setCandidatToVIP = (candidat, resaCanceledByAdmin) => {
   candidat.resaCanceledByAdmin = resaCanceledByAdmin
@@ -490,7 +479,6 @@ export const setCandidatToVIP = (candidat, resaCanceledByAdmin) => {
  * @param {string} _id - Identifiant du candidat à trouver dans la base de données
  *
  * @returns {Promise.<boolean>} - `true` si un candidat existe avec cet identifiant
- *
  */
 export const isCandidatExisting = async _id => {
   const isExist = await Candidat.exists({ _id })

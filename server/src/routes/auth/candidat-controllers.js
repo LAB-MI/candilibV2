@@ -6,10 +6,7 @@ import jwt from 'jsonwebtoken'
 
 import { appLogger } from '../../util'
 import config from '../../config'
-import {
-  findActiveCandidatByEmail,
-  isCandidatExisting,
-} from '../../models/candidat'
+import { findCandidatByEmail, isCandidatExisting } from '../../models/candidat'
 import { sendMagicLink } from '../business'
 import { sendErrorResponse } from '../../util/send-error-response'
 
@@ -39,7 +36,7 @@ export const postMagicLink = async (req, res) => {
   })
 
   try {
-    const candidat = await findActiveCandidatByEmail(email)
+    const candidat = await findCandidatByEmail(email)
 
     if (!candidat) {
       const message = 'Utilisateur non reconnu'
