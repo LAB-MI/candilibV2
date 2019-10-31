@@ -27,8 +27,6 @@
     "ag-grid-community": "^21.2.2",
     "ag-grid-vue": "^21.2.2",
     "core-js": "^3.1.2",
-    "cypress-file-upload": "^3.3.4",
-    "cypress-mailhog": "^1.1.0",
     "chart.js": "^2.8.0",
     "delay": "^4.3.0",
     "html-loader": "^0.5.5",

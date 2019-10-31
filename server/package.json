@@ -73,6 +73,7 @@
     "@babel/preset-env": "^7.6.3",
     "@babel/register": "^7.6.2",
     "agent-base": "^4.3.0",
+    "@types/express": "^4.17.1",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",

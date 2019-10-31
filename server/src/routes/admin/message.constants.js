@@ -21,12 +21,12 @@ export const USER_NOT_FOUND = 'Utilisateur non trouvé'
 export const UNKNOWN_ERROR_SEND_SCHEDULE_INSPECTEUR =
   "Un problème est survenu lors de l'envoi de bordereaux des inspecteurs"
 export const UNKNOWN_ERROR_REMOVE_RESA =
-  'Un problème est survenu lors de la suppression de la réservasion'
+  'Un problème est survenu lors de la suppression de la réservation'
 export const UNKNOWN_ERROR_REMOVE_WHITELISTED =
-  'Un problème est survenu lors de la suppression de la whiteliste'
+  'Un problème est survenu lors de la suppression dans la whitelist'
 export const UNKNOWN_ERROR_GET_WHITELISTED =
-  'Un problème est survenu lors de la récupération de la whiteliste'
+  'Un problème est survenu lors de la récupération de la whitelist'
 export const UNKNOWN_ERROR_ADD_WHITELISTED =
-  "Un problème est survenu lors de l'ajout dans la whiteliste"
+  "Un problème est survenu lors de l'ajout dans la whitelist"
 export const UNKNOWN_ERROR_UPLOAD_PLACES =
   "Un problème est survenu lors de l'import de places"
