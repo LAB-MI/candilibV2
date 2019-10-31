@@ -72,7 +72,7 @@ import {
 export default {
   data () {
     return {
-      emailPlaceholder: '',
+      emailPlaceholder: 'admin@example.com',
       email: '',
       showDialog: false,
     }
