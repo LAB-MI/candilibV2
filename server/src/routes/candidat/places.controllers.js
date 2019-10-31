@@ -38,7 +38,16 @@ export const ErrorMsgArgEmpty =
  * @function getPlaces
  * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_places__placeId_}
 
- * @param {object} req Est attendu dans la requête :
+ * @param {import('express').Request} req - Est attendu dans la requête :
+ * @param {Object} req.params - Paramètres de la route
+ * @param {string=} req.params.id - Identifiant du centre
+ * @param {Object=} req.query - Paramètres de la requête
+ * @param {string=} req.query.departement - Numéro du département
+ * @param {string=} req.query.centre - Nom du centre
+ * @param {string=} req.query.date - Date du jour de recherche au format ISO
+ * @param {string=} req.query.begin - Date du début de recherche au format ISO
+ * @param {string=} req.query.end - Date de fin de recherche au format ISO
+ *
  * ```javascript
  * {
  *   params: { id : "identifiant du centre" },
@@ -68,7 +77,7 @@ export const ErrorMsgArgEmpty =
  *   }
  * }
  * ```
- * @param {object} res
+ * @param {import('express').Response} res
  */
 export async function getPlacesByCentre (req, res) {
   const centreId = req.params.id
