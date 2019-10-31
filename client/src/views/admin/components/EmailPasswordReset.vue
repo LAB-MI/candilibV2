@@ -104,7 +104,7 @@ export default {
         await this.$store.dispatch(SEND_RESET_LINK_REQUEST, this.email)
         this.$store.dispatch(SHOW_SUCCESS, `Un courriel vient de vous être envoyé à l'adresse ${this.email}`)
       } catch (error) {
-        this.$store.dispatch(SHOW_ERROR, 'Oups ! Une erreur est survenue')
+        this.$store.dispatch(SHOW_ERROR, `cette adresse courriel n'est pas reconnue`)
       }
       this.showDialog = false
     },
