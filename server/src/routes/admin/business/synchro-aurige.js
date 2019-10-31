@@ -496,7 +496,7 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
  * @param {DateTime} canBookFrom DateTime de luxon
  * @param {DateTime} dateEchec DateTime de luxon
  *
- * @returns {Promise<Candidat>}
+ * @returns {Promise.<Candidat>}
  */
 const cancelBookingAfterExamFailure = async (
   candidat,

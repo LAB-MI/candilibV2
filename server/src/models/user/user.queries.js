@@ -11,7 +11,7 @@ export const findUserById = async id => {
  * @param {string} email
  * @param {boolean} populatePassword
  *
- * @returns {Promise<User>}
+ * @returns {Promise.<User>}
  */
 
 export const findUserByEmail = async (email, populatePassword) => {
@@ -77,7 +77,7 @@ export const updateUserEmail = async (user, email) => {
  * @param {User} user
  * @param {string} password
  *
- * @returns {Promise<User>}
+ * @returns {Promise.<User>}
  */
 export const updateUserPassword = async (user, password) => {
   const now = Date.now()
@@ -121,7 +121,7 @@ export const updateUserStatus = async (user, status) => {
  *
  * @param {string} email
  *
- * @returns {Promise<string>}
+ * @returns {Promise.<string>}
  */
 
 export const addEmailValidationHash = async email => {
