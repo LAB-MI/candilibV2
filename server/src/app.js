@@ -54,22 +54,6 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           type: string
  *           description: Un message compréhensible par l'usager
  *
- *     StatsKpiObject:
- *       type: object
- *       required:
- *         - success
- *         - message
- *       properties:
- *         success:
- *           type: boolean
- *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
- *         message:
- *           type: string
- *           description: Un message compréhensible par l'usager
- *         statsKpi:
- *           type: Array
- *           description: Liste des statistiques demandés par département
- *
  *     GeolocObject:
  *       type: object
  *       required:
@@ -363,15 +347,26 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           type: string
  *           description: Un message compréhensible par l'usager
  *         statsKpi:
- *           type: Array
+ *           type: array
  *           description: Liste des stats par département
- *           example: [{
- *             beginDate: 2019-10-10T22:00:00.000Z,
- *             departement: 93,
- *             totalBookedPlaces: 2,
- *             totalPlaces: 622,
- *             totalCandidatsInscrits: 2
- *           }]
+ *           items:
+ *             type: object
+ *             properties:
+ *               beginDate:
+ *                 type: string
+ *                 description: Date de début de période
+ *               departement:
+ *                 type: string
+ *                 description: Département concerné
+ *               totalBookedPlaces:
+ *                 type: number
+ *                 description: Total de places reservées
+ *               totalPlaces:
+ *                 type: number
+ *                 description: Total des places disponibles
+ *               totalCandidatsInscrits:
+ *                 type: number
+ *                 description: Nombre de candidats inscrits
  *       example:
  *         success: true
  *         message: Les stats ont bien été mises à jour
@@ -396,18 +391,35 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           type: string
  *           description: Un message compréhensible par l'usager
  *         statsKpi:
- *           type: Array
- *           description: Liste des stats resultats d'examens par département
- *           example: [{
- *             departement: "93",
- *             date: "15/10/2019 à 11:00",
- *             beginPeriode: "2019-09-14T22:00:00.000Z",
- *             endPeriode: "2019-10-15T21:59:59.999Z",
- *             absent: 3,
- *             failed: 5,
- *             notExamined: 2,
- *             received: 15
- *           }]
+ *           type: array
+ *           description: Liste des stats par département
+ *           items:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 description: Date de la demande de stats
+ *               departement:
+ *                 type: string
+ *                 description: Département concerné
+ *               beginPeriode:
+ *                 type: string
+ *                 description: Date de début de période
+ *               endPeriode:
+ *                 type: string
+ *                 description: Date de fin de période
+ *               absent:
+ *                 type: number
+ *                 description: Nombre de candidats absents lors d'examens
+ *               failed:
+ *                 type: number
+ *                 description: Nombre de candidats qui ont échoués à l'examen
+ *               notExamined:
+ *                 type: number
+ *                 description: Nombre de candidats ne remplissant pas les conditions pour être examinés
+ *               received:
+ *                 type: number
+ *                 description: Nombre de candidats reçus à l'examen
  *       example:
  *         success: true
  *         message: Les stats ont bien été mises à jour

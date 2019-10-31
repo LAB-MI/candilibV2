@@ -581,6 +581,7 @@ router.post(
  *
  * /admin/stats-places-exams:
  *   get:
+ *     tags: ["Administrateur"]
  *     summary: Récupération des statsKpi places
  *     description: Permet de récupérer les statistiques sur les places d'examens de chaque département.
  *     produces:
@@ -610,17 +611,7 @@ router.post(
  *           application/json:
  *             schema:
  *               allOf:
- *                 - $ref: '#/components/schemas/StatsKpiObject'
- *                 - example:
- *                     success: true
- *                     message: Les stats ont bien été mises à jour
- *                     statsKpi: [{
- *                         beginDate: 2019-10-10T22:00:00.000Z,
- *                         departement: 93,
- *                         totalBookedPlaces: 2,
- *                         totalPlaces: 622,
- *                         totalCandidatsInscrits: 2
- *                      }]
+ *                 - $ref: '#/components/schemas/StatsKpiPlacesExams'
  */
 
 router.get(
@@ -634,6 +625,7 @@ router.get(
  *
  * /admin/stats-results-exams:
  *   get:
+ *     tags: ["Administrateur"]
  *     summary: Récupération des statsKpi de résultats d'examens sur une période passée
  *     description: Permet de récupérer les statistiques sur les places d'examens de chaque département.
  *     produces:
@@ -644,7 +636,9 @@ router.get(
  *         schema:
  *           type: string
  *           example: 2019-10-10T22:00:00.000Z
+ *     tags: ["Administrateur"]
  *         description: Date de début de période
+ *     tags: ["Administrateur"]
  *         required: true
  *       - in: query
  *         name: endPeriod
@@ -677,20 +671,7 @@ router.get(
  *           application/json:
  *             schema:
  *               allOf:
- *                 - $ref: '#/components/schemas/StatsKpiObject'
- *                 - example:
- *                     success: true
- *                     message: Les stats ont bien été mises à jour
- *                     statsKpi: [{
- *                         departement: "93",
- *                         date: "15/10/2019 à 11:00",
- *                         beginPeriode: "2019-09-14T22:00:00.000Z",
- *                         endPeriode: "2019-10-15T21:59:59.999Z",
- *                         absent: 3,
- *                         failed: 5,
- *                         notExamined: 2,
- *                         received: 15,
- *                      }]
+ *                 - $ref: '#/components/schemas/StatsKpiPlacesResults'
  */
 
 router.get(
