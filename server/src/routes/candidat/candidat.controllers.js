@@ -318,7 +318,7 @@ export async function getMe (req, res) {
  *
  * @param {import('express').Request} req - Requête
  * @param {Object} req.body - Corps de la requête
- * @param {Object} req.body.email - Adresse courriel du candidat du candidat
+ * @param {Object} req.body.email - Adresse courriel du candidat
  * @param {Object} req.body.hash - Hash contenu dans le lien de validation de l'email
  * @param {Object} res - Réponse
  *

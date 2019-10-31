@@ -1,8 +1,26 @@
+/**
+ * Middleware pour vérifier la validité du JWT
+ * @module
+ */
+
 import { checkToken, appLogger } from '../../util'
 import config from '../../config'
 import { setCandidatFirstConnection } from '../../models/candidat'
 
 import { PLEASE_LOG_IN } from '../../messages.constants'
+
+/**
+ * Middleware de vérification du JWT
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request } req - Requête
+ * @param {Object} req.headers - En-têtes de la requête
+ * @param {string} req.headers.authorization - En-tête contenant `Bearer <JWT>`
+ * @param {import('express').Response} res - Réponse
+ * @param {import('express').NextFunction} next - Callback pour exécuter le prochain middleware
+ */
 
 export async function verifyToken (req, res, next) {
   const authHeader = req.headers.authorization
