@@ -110,7 +110,7 @@ export const createUserByAdmin = async (req, res) => {
       userInfo.status === config.userStatuses.DELEGUE &&
       status === config.userStatuses.REPARTITEUR
     ) {
-      const password = createPassword() // mot de passe n'est pas toujours fort et empêche la création de l'utilisateur
+      const password = createPassword()
       const user = await createUser(email, password, departements, status)
       if (user) {
         await sendMailResetLink(email)
@@ -135,7 +135,7 @@ export const createUserByAdmin = async (req, res) => {
       (status === config.userStatuses.DELEGUE ||
         status === config.userStatuses.REPARTITEUR)
     ) {
-      const password = createPassword() // mot de passe n'est pas toujours fort et empêche la création de l'utilisateur
+      const password = createPassword()
       const user = await createUser(email, password, departements, status)
       if (user) {
         await sendMailResetLink(email)
@@ -150,11 +150,15 @@ export const createUserByAdmin = async (req, res) => {
           message: 'Utilisateur a bien été créé et un courriel lui a été envoyé ',
         })
       }
+      return res.status(400)({
+        success: false,
+        message: `l'utilisateur ${user.email} est déja enregistré en base`,
+      })
     }
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      description: 'Utilisateur pas créé',
+      description: 'Utilisateur n\'a pas créé',
       error,
     })
     return res.status(500).json({
