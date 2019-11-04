@@ -13,6 +13,7 @@ import { findDepartementById } from '../../models/departement'
 import { appLogger, email as regexEmail } from '../../util'
 import config from '../../config'
 import { createPassword } from '../../util/password'
+import { sendMailResetLink } from '../business/send-mail-reset-password'
 
 /**
  * Récupère les infos de l'admin
@@ -109,15 +110,16 @@ export const createUserByAdmin = async (req, res) => {
       userInfo.status === config.userStatuses.DELEGUE &&
       status === config.userStatuses.REPARTITEUR
     ) {
-      const password = createPassword()
+      const password = createPassword() // mot de passe n'est pas toujours fort et empêche la création de l'utilisateur
       const user = await createUser(email, password, departements, status)
       if (user) {
+        await sendMailResetLink(email)
         appLogger.info({
           ...loggerInfo,
           action: 'created-user',
-          description: `L'utilisateur ${user.email} a bien été créé et un courriel lui a été envoyé`,
+          description:
+            ' Utilisateur a bien été créé et un courriel lui a été envoyé',
         })
-
         return res.status(201).json({
           success: true,
           message: 'Utilisateur a bien été créé',
@@ -133,18 +135,19 @@ export const createUserByAdmin = async (req, res) => {
       (status === config.userStatuses.DELEGUE ||
         status === config.userStatuses.REPARTITEUR)
     ) {
-      const password = createPassword()
+      const password = createPassword() // mot de passe n'est pas toujours fort et empêche la création de l'utilisateur
       const user = await createUser(email, password, departements, status)
       if (user) {
+        await sendMailResetLink(email)
         appLogger.info({
           ...loggerInfo,
           action: 'created-user',
           description:
-            ' Utilisateur a bien été créé et un email lui a été envoyé',
+            ' Utilisateur a bien été créé et un courriel lui a été envoyé',
         })
         return res.status(201).json({
           success: true,
-          message: 'Utilisateur a bien été créé',
+          message: 'Utilisateur a bien été créé et un courriel lui a été envoyé ',
         })
       }
     }
