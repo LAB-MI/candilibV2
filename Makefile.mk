@@ -10,7 +10,16 @@ LATEST_VERSION := latest
 #
 ENABLE_FEATURE := without-scheduler
 #ENABLE_FEATURE := with-scheduler
+#
+# default scheduler features
+#
+DISABLE_DEFINE=true
+DISABLE_SCHEDULE=true
+JOB_LIST=
 
+#
+# default path
+#
 APP_PATH       := $(shell pwd)
 APP_FRONT_PATH := $(APP_PATH)/client
 APP_API_PATH   := $(APP_PATH)/server
