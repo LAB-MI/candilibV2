@@ -1,8 +1,20 @@
 <template>
   <v-card>
-    <page-title class="title-faq">
+    <v-btn
+      fixed
+      dark
+      fab
+      left
+      @click="goBack"
+      v-if="!me"
+    >
+      <v-icon>arrow_back</v-icon>
+    </v-btn>
+
+    <page-title>
       F.A.Q
     </page-title>
+
     <h3 class="subtitle">
       Foire aux questions
     </h3>
@@ -32,6 +44,12 @@ export default {
   methods: {
     goBack () {
       this.$router.back()
+    },
+  },
+
+  computed: {
+    me () {
+      return this.$store.state.candidat.me
     },
   },
 
