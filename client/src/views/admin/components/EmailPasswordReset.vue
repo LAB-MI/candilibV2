@@ -5,8 +5,9 @@
   >
     <template v-slot:activator="{ on }">
       <v-btn
-        class="u-flex u-flex--center reset-password-btn"
-        outline
+        class="reset-password-btn"
+        slot="activator"
+        outlined
         color="info"
         tabindex="8"
         v-on="on"
@@ -22,30 +23,29 @@
       >
         Réinitialiser mon mot de passe
       </v-card-title>
+
       <v-form
         v-model="isValidEmail"
         @submit.prevent="sendMailResetLink"
       >
-        <div class="u-flex  u-flex--center">
-          <div class="form-input">
-            <v-text-field
-              class="t-reset-password-email"
-              prepend-icon="email"
-              @focus="setEmailPlaceholder"
-              @blur="removeEmailPlaceholder"
-              @input="setEmailToLowerCase"
-              :placeholder="emailPlaceholder"
-              :aria-placeholder="emailPlaceholder"
-              :autofocus="showDialog"
-              :hint="`ex. : ${emailPlaceholder}`"
-              label="Adresse courriel"
-              ref="emailInput"
-              required
-              :rules="emailRules"
-              tabindex="1"
-              v-model="email"
-            ></v-text-field>
-          </div>
+        <div class="reset-password  u-flex  u-flex--center">
+          <v-text-field
+            class="t-reset-password-email"
+            prepend-icon="email"
+            @focus="setEmailPlaceholder"
+            @blur="removeEmailPlaceholder"
+            @input="setEmailToLowerCase"
+            :placeholder="emailPlaceholder"
+            :aria-placeholder="emailPlaceholder"
+            :autofocus="showDialog"
+            :hint="`ex. : ${emailPlaceholder}`"
+            label="Adresse courriel"
+            ref="emailInput"
+            required
+            :rules="emailRules"
+            tabindex="1"
+            v-model="email"
+          ></v-text-field>
         </div>
 
         <v-divider></v-divider>
@@ -134,6 +134,9 @@ export default {
 </script>
 
 <style lang="stylus">
+.reset-password {
+  padding: 1em 4em;
+}
 
 .reset-password-btn {
   font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
@@ -141,7 +144,6 @@ export default {
   color: #fff;
   line-height: 1.2;
   text-transform: uppercase;
-  padding: 0 20px;
   width: 100%;
   margin: 0.5em 0;
 }

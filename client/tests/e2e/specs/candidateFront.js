@@ -85,7 +85,7 @@ describe('Connected candidate front', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tabs .primary--text')
+    cy.get('.v-tab--active')
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list__group')

@@ -1,17 +1,17 @@
 Cypress.Commands.add('mhGetFirstRecipients', () => {
-  cy.mhGetAllMails()
+  cy.mhGetAllMailsFixed()
     .mhFirst()
     .mhGetRecipients()
 })
 
 Cypress.Commands.add('mhGetFirstSubject', () => {
-  cy.mhGetAllMails()
+  cy.mhGetAllMailsFixed()
     .mhFirst()
     .mhGetSubject()
 })
 
 Cypress.Commands.add('mhGetFirstBody', () => {
-  cy.mhGetAllMails()
+  cy.mhGetAllMailsFixed()
     .mhFirst()
     .mhGetBody()
 })

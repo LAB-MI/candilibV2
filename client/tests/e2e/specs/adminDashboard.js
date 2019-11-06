@@ -18,7 +18,7 @@ describe('Dashboard tests', () => {
     cy.candidatePreSignUp()
   })
 
-  for (var role of ['candidat', 'inspecteur']) {
+  for (const role of ['candidat', 'inspecteur']) {
     it('Searches for ' + role, () => {
       cy.adminLogin()
       cy.get('.t-search-' + role + ' [type=text]')
@@ -38,7 +38,7 @@ describe('Dashboard tests', () => {
     cy.adminLogin()
     // Checks the number of centers in the 75 and 93
     cy.get('.layout.row.wrap').children()
-      .should('have.length', 3)
+      .should('have.length', 2)
     cy.get('.hexagon-wrapper').contains('93')
       .click()
     cy.get('.layout.row.wrap').children()
@@ -67,7 +67,7 @@ describe('Dashboard tests', () => {
       .should('contain', Cypress.env('placeDate'))
     cy.get('.t-date-picker [type=text]').invoke('val')
       .should('contain', Cypress.env('dateLong'))
-    cy.get('.v-tabs__item--active')
+    cy.get('.v-tab--active')
       .should('contain', Cypress.env('centre'))
     // Checks the number of places available
     cy.get('.v-window-item').not('[style="display: none;"]')

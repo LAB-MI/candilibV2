@@ -285,3 +285,40 @@ Cypress.Commands.add('removeCandidatOnPlace', () => {
         .click()
     })
 })
+
+const mhApiUrl = path => {
+  const basePath = Cypress.config('mailHogUrl')
+  return `${basePath}/api${path}`
+}
+
+Cypress.Commands.add('mhGetAllMailsFixed', () => {
+  return cy
+    .request({
+      method: 'GET',
+      url: mhApiUrl('/v2/messages?limit=100'),
+    })
+    .then(response => JSON.parse(JSON.stringify(response.body)))
+    .then(parsed => parsed.items)
+})
+
+Cypress.Commands.add('mhGetMailsBySubject', subject => {
+  cy.mhGetAllMailsFixed().then(mails => {
+    return mails.filter(mail => mail.Content.Headers.Subject[0] === subject)
+  })
+})
+
+Cypress.Commands.add('mhGetMailsByRecipient', recipient => {
+  cy.mhGetAllMailsFixed().then(mails => {
+    return mails.filter(mail =>
+      mail.To.map(
+        recipientObj => `${recipientObj.Mailbox}@${recipientObj.Domain}`,
+      ).includes(recipient),
+    )
+  })
+})
+
+Cypress.Commands.add('mhGetMailsBySender', from => {
+  cy.mhGetAllMailsFixed().then(mails => {
+    return mails.filter(mail => mail.Raw.From === from)
+  })
+})

@@ -10,6 +10,7 @@
         depressed
         color="#fff"
         tabindex="8"
+        :class="btnClassName"
       >
         {{getMsg('preinscription_bouton_deja_inscrit') }}
       </v-btn>
@@ -83,6 +84,7 @@ import { email as emailRegex } from '@/util'
 export default {
   props: {
     testClassSuffix: String,
+    btnClassName: String,
   },
 
   data () {

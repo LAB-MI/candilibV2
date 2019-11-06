@@ -67,7 +67,7 @@ describe('Places tests', () => {
       .should('contain', Cypress.env('placeDate2'))
     cy.get('.t-date-picker [type=text]').invoke('val')
       .should('contain', Cypress.env('dateLong2'))
-    cy.get('.v-tabs__item--active')
+    cy.get('.v-tab--active')
       .should('contain', Cypress.env('centre'))
     // Add candidate to the first place
     cy.get('.v-window-item').not('[style="display: none;"]')
@@ -111,7 +111,7 @@ describe('Places tests', () => {
       .should('contain', Cypress.env('placeDate2'))
     cy.get('.t-date-picker [type=text]').invoke('val')
       .should('contain', Cypress.env('dateLong2'))
-    cy.get('.v-tabs__item--active')
+    cy.get('.v-tab--active')
       .should('contain', Cypress.env('centre'))
     // Deletes the second place
     cy.get('.v-tabs')
@@ -151,7 +151,7 @@ describe('Places tests', () => {
       .should('contain', Cypress.env('placeDate2'))
     cy.get('.t-date-picker [type=text]').invoke('val')
       .should('contain', Cypress.env('dateLong2'))
-    cy.get('.v-tabs__item--active')
+    cy.get('.v-tab--active')
       .should('contain', Cypress.env('centre'))
     // Removes the candidate from the place
     cy.get('.v-window-item').not('[style="display: none;"]')

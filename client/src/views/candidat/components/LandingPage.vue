@@ -1,7 +1,7 @@
 <template>
   <section>
     <div class="text--center">
-      <already-signed-up class="t-already-signed-up-button-top" test-class-suffix="top" />
+      <already-signed-up btn-class-name="t-already-signed-up-button-top" test-class-suffix="top" />
       <router-link :to="{ name: 'candidat-presignup' }">
         <v-btn color="success" >
           Se pré-inscrire
@@ -11,7 +11,7 @@
     <candidat-stepper />
     <footer>
       <div class="actions">
-        <already-signed-up class="t-already-signed-up-button-bottom" test-class-suffix="bottom" />
+        <already-signed-up btn-class-name="t-already-signed-up-button-bottom" test-class-suffix="bottom" />
         <router-link :to="{ name: 'candidat-presignup' }">
           <v-btn color="success">
             Se pré-inscrire
