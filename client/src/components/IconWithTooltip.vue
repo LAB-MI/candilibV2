@@ -1,8 +1,10 @@
 <template>
   <v-tooltip bottom fixed>
-    <v-btn icon slot="activator">
-      <v-icon>{{iconName}}</v-icon>
-    </v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn icon v-on="on">
+        <v-icon>{{iconName}}</v-icon>
+      </v-btn>
+    </template>
     <span>{{tooltipText}}</span>
   </v-tooltip>
 </template>

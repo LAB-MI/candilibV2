@@ -45,7 +45,7 @@
     </v-tabs-items>
 
     <v-card-actions class="u-flex--center">
-      <v-btn outline color="info" @click="goToSelectCenter">
+      <v-btn outlined color="info" @click="goToSelectCenter">
         <v-icon>arrow_back_ios</v-icon>Retour
       </v-btn>
     </v-card-actions>
@@ -117,7 +117,7 @@ export default {
           {
             numberOfDaysBeforeDate: this.numberOfDaysBeforeDate,
             canBookFromAfterCancel: this.canBookFromAfterCancel,
-          }
+          },
         )
       }
       if (this.isEchecPratique) {
@@ -128,7 +128,7 @@ export default {
           {
             dateDernierEchecPratique: getFrenchDateFromIso(this.dateDernierEchecPratique),
             canBookFromAfterFailure: this.canBookFromAfterFailure,
-          }
+          },
         )
       }
       return ''
@@ -162,7 +162,7 @@ export default {
         getFrenchLuxonFromIso(lastDateToCancel)
       ) {
         return getFrenchDateFromLuxon(
-          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
+          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry }),
         )
       }
       return ''

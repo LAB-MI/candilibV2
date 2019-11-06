@@ -4,14 +4,16 @@
     width="500"
     class="already-signed-up"
   >
-    <v-btn
-      slot="activator"
-      depressed
-      color="#fff"
-      tabindex="8"
-    >
-      {{getMsg('preinscription_bouton_deja_inscrit') }}
-    </v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn
+        v-on="on"
+        depressed
+        color="#fff"
+        tabindex="8"
+      >
+        {{getMsg('preinscription_bouton_deja_inscrit') }}
+      </v-btn>
+    </template>
 
     <v-card>
       <v-card-title
@@ -146,7 +148,7 @@ export default {
   width: 90%;
   text-align: center;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 
   @media (max-width: 599px) {
     width: 100%;

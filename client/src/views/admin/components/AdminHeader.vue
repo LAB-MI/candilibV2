@@ -17,14 +17,16 @@
         :tooltipText="icon.tooltipText"
       />
       <v-tooltip bottom>
-        <v-btn
-          class="t-disconnect"
-          icon
-          @click.prevent="disconnect"
-          slot="activator"
-        >
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            class="t-disconnect"
+            icon
+            @click.prevent="disconnect"
+            v-on="on"
+          >
+            <v-icon>exit_to_app</v-icon>
+          </v-btn>
+        </template>
         <span>Déconnexion</span>
       </v-tooltip>
       <departement-selector

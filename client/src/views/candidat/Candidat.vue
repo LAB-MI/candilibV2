@@ -96,6 +96,10 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.container {
+  padding: 0;
+}
+
 .candidat {
   min-height: 100%;
 }

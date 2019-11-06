@@ -31,7 +31,6 @@
               <v-layout row>
                 <v-tooltip
                   bottom
-                  lazy
                 >
                   <template v-slot:activator="{ on }">
                     <div>
@@ -48,7 +47,6 @@
 
                 <v-tooltip
                   bottom
-                  lazy
                 >
                   <template v-slot:activator="{ on }">
                     <div v-on="on">
@@ -103,7 +101,6 @@
       <div>
         <v-tooltip
           left
-          lazy
           max-width="300"
         >
           <template v-slot:activator="{ on }">
@@ -247,7 +244,7 @@ export default {
       }
       return getFrenchFormattedDateFromObject(
         { weekYear: weekYear, weekNumber, weekday: 1 },
-        shape
+        shape,
       )
     },
 
@@ -263,7 +260,7 @@ export default {
     onScroll (event) {
       const tableRowHeigth = this.$refs.tableBody.firstChild.clientHeight
       this.currentSelectedWeek = Math.floor(
-        event.target.scrollTop / tableRowHeigth
+        event.target.scrollTop / tableRowHeigth,
       )
     },
 
@@ -305,7 +302,7 @@ export default {
       this.scrollTo(
         `#week-position-${this.currentSelectedWeek}-${this.centerId}`,
         1,
-        this.scrollOptions
+        this.scrollOptions,
       )
     },
   },

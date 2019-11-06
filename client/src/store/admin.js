@@ -321,7 +321,7 @@ export default {
         } = await api.admin.assignCandidatToPlace(
           placeId,
           candidatId,
-          state.departements.active
+          state.departements.active,
         )
         if (!success) {
           throw new Error(message)

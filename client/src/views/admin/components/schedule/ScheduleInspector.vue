@@ -43,7 +43,6 @@
           <v-menu
             v-model="datePicker"
             :close-on-content-click="false"
-            lazy
             transition="scale-transition"
             offset-y
             full-width
@@ -103,8 +102,8 @@
       <v-tabs
         class="tabs"
         v-model="activeCentreTab"
-        color="white"
-        slider-color="red"
+        color="dark"
+        slider-color="#f82249"
       >
         <v-tab
           v-for="element in placesByCentreList"
@@ -124,7 +123,6 @@
           <v-tab-item
             v-for="placesByCentre in placesByCentreList"
             :key="placesByCentre.centre._id"
-            :lazy="true"
             :value="`tab-${placesByCentre.centre._id}`"
           >
             <table class="table u-full-width" :style="{ opacity: isLoading ? '0.5' : '1' }">

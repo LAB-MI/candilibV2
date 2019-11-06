@@ -1,10 +1,10 @@
 <template>
   <v-toolbar dark fixed class="candidat-toolbar  u-max-width-parent">
-    <v-toolbar-side-icon
+    <v-app-bar-nav-icon
       class="u-only-on-mobile"
       @click="toggleDrawer"
-    ></v-toolbar-side-icon>
-    <v-toolbar-title style="margin-left:0;">
+    ></v-app-bar-nav-icon>
+    <v-toolbar-title style="margin-left: 0; padding-left: 0;">
       <h1 class="logo">
         <router-link to="/candidat" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
       </h1>
@@ -30,32 +30,34 @@
             :iconName="link.iconName"
             :tooltipText="link.tooltipText"
           />
-          <span class="min-width-1170">
+          <span class="min-width-1170  tab-label">
             {{link.label}}
           </span>
         </v-tab>
       </v-tabs>
       <v-tooltip bottom v-if="isCandidatSignedIn">
-        <v-btn
-          class="t-disconnect"
-          icon
-          @click.prevent="disconnect"
-          slot="activator"
-       >
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
+        <template v-slot:activator="{ on }">
+          <v-btn
+            class="disconnect-btn  t-disconnect"
+            icon
+            @click.prevent="disconnect"
+            v-on="on"
+          >
+            <v-icon>exit_to_app</v-icon>
+          </v-btn>
+        </template>
         <span>Déconnexion</span>
       </v-tooltip>
-      <bandeau-beta class="beta-relative" />
+      <bandeau-beta fixed />
     </div>
   </v-toolbar>
 </template>
 
 <script>
-import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/store'
-
-import IconWithTooltip from '@/components/IconWithTooltip'
 import { mapGetters } from 'vuex'
+
+import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/store'
+import IconWithTooltip from '@/components/IconWithTooltip'
 
 export default {
   name: 'candidat-header',
@@ -126,6 +128,11 @@ export default {
   }
 }
 
+.disconnect-btn {
+  margin-left: 0;
+  margin-right: 0;
+}
+
 .logo {
   flex-grow: 1;
 }
@@ -142,6 +149,10 @@ export default {
     position: relative;
     top: -0.1em;
   }
+}
+
+.tab-label {
+  color: white;
 }
 
 .min-width-1170 {

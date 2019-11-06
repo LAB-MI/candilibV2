@@ -17,11 +17,11 @@
     <div class="text--center">
       <router-link :to="{name: 'candidat-presignup'}">
         <v-btn
-        flat
-        dark
-        :disabled="isCheckingEmail"
-        :aria-disabled="isCheckingEmail"
-      >
+          text
+          dark
+          :disabled="isCheckingEmail"
+          :aria-disabled="isCheckingEmail"
+        >
           Retour au formulaire de pré-inscription
         </v-btn>
       </router-link>

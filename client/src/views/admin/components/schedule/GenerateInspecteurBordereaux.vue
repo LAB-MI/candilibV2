@@ -40,7 +40,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            outline
+            outlined
             color="info"
             :disabled="isGenerating"
             :aria-disabled="isGenerating"

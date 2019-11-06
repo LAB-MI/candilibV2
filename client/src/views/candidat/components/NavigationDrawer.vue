@@ -6,18 +6,18 @@
       temporary
     >
       <v-list>
-        <v-list-tile
+        <v-list-item
           v-for="link in links"
           :key="link.routerTo.name"
           @click="to(link.routerTo)"
         >
-          <v-list-tile-action>
+          <v-list-item-action>
             <v-icon>{{ link.iconName }}</v-icon>
-          </v-list-tile-action>
-          <v-list-tile-content>
+          </v-list-item-action>
+          <v-list-item-content>
             {{link.label}}
-          </v-list-tile-content>
-        </v-list-tile>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 </template>

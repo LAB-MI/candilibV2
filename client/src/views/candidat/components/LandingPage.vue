@@ -19,13 +19,13 @@
         </router-link>
 
         <router-link :to="{ name: 'faq' }">
-          <v-btn  flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
+          <v-btn text color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
             Une Question ?
           </v-btn>
         </router-link>
 
         <router-link :to="{ name: 'mentions-legales' }">
-          <v-btn flat color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
+          <v-btn text color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
             Mentions Légales
           </v-btn>
         </router-link>

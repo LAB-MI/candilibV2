@@ -60,10 +60,6 @@ export default {
     font-family: "Raleway", sans-serif;
   }
 
-  .title-faq {
-    margin-top: 80px;
-  }
-
   .subtitle {
     text-align: center;
     padding: 0;

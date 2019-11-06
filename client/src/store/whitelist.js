@@ -117,7 +117,7 @@ export default {
       try {
         const list = await api.admin.searchWhitelisted(
           search,
-          rootState.admin.departements.active || rootState.admin.departements.list[0]
+          rootState.admin.departements.active || rootState.admin.departements.list[0],
         )
         commit(FETCH_AUTOCOMPLETE_WHITELIST_SUCCESS, list)
       } catch (error) {

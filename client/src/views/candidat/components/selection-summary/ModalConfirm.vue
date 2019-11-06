@@ -41,7 +41,7 @@
           <v-btn
             :color="colorButtonRetour"
             class="u-flex  u-flex--center"
-            outline
+            outlined
             :aria-disabled="disabled"
             :disabled="disabled"
             @click="dialog = false"

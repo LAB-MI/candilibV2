@@ -39,7 +39,7 @@ describe('Admin login', () => {
     cy.get('.v-toolbar')
       .should('not.contain', 'import_export')
     cy.contains('calendar_today').click()
-    cy.get('.v-tabs__div')
+    cy.get('.v-tab')
       .should('contain', 'Bobigny')
   })
 

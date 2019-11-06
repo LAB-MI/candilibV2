@@ -10,7 +10,7 @@
           <v-btn
             fab
             v-on="{ ...menu, ...tooltip}"
-            outline
+            outlined
             ripple
             small
           >

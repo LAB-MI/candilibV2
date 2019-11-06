@@ -294,7 +294,7 @@ export default {
         `${apiPaths.admin.inspecteurs}?centreId=${centreId}&begin=${begin}&end=${end}`,
         {
           headers: getHeadersForAdminJson(),
-        }
+        },
       )
       return json
     },
@@ -304,7 +304,7 @@ export default {
         `${apiPaths.admin.inspecteurs}?matching=${search || ''}&departement=${departement}`,
         {
           headers: getHeadersForAdminJson(),
-        }
+        },
       )
       return json
     },
@@ -393,7 +393,7 @@ export default {
         {
           headers: getHeadersForAdminJson(),
           body: JSON.stringify(whitelisted),
-        }
+        },
       )
       return json
     },

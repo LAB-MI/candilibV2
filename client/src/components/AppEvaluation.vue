@@ -31,14 +31,14 @@
       <v-divider></v-divider>
       <v-card-actions class="justify-space-between">
         <v-btn
-          flat
+          text
           @click="showEvaluation = false"
         >
           {{ $formatMessage({ id: 'later' }) }}
         </v-btn>
         <v-btn
           color="primary"
-          flat
+          text
           @click="sendEvaluation"
         >
           {{ $formatMessage({ id: 'evaluate_now' }) }}
