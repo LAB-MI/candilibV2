@@ -58,7 +58,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .page-title {
     font-size: 36px;
     text-transform: uppercase;

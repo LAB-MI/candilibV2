@@ -23,6 +23,7 @@ export default {
   justify-content: center;
   align-items: center;
   font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
+  background-color: #fff;
 
   &::after {
     content: '';

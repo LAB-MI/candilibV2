@@ -25,6 +25,7 @@
           :to="link.routerTo"
           :value="link.routerTo"
           :key="link.routerTo.name"
+          class="no-margin-left"
         >
           <icon-with-tooltip
             :iconName="link.iconName"
@@ -148,6 +149,16 @@ export default {
     font-size: 0.725em;
     position: relative;
     top: -0.1em;
+  }
+}
+
+>>> .no-margin-left {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+
+  & .v-btn {
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
