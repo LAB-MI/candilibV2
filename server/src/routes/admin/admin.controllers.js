@@ -82,7 +82,18 @@ const findInfoAdminById = async userId => {
     emailsDepartements,
   }
 }
-
+/**
+ * Créé un utilisateur
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId Id de l'utilisateur souhaitant créér un délégué ou un répartiteur
+ * @param {string} req.body.email Adresse courriel de l'utilisateur créér
+ * @param {string} req.body.departements Départements de l'utilisateur créér
+ * @param {string} req.body.status Status de l'utilisateur créér
+ * @param {import('express').Response} res
+ */
 export const createUserByAdmin = async (req, res) => {
   const { email, departements, status } = req.body
   const loggerInfo = {
@@ -170,7 +181,18 @@ export const createUserByAdmin = async (req, res) => {
     })
   }
 }
-
+/**
+ * Met à jour les informations de l'utilisateur
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId Id de l'utilisateur souhaitant modifier un délégué ou un répartiteur
+ * @param {string} req.body.email Adresse courriel de l'utilisateur mis à jour
+ * @param {string} req.body.departements Départements de l'utilisateur  mis à jour
+ * @param {string} req.body.status Status de l'utilisateur modifier mis à jour
+ * @param {import('express').Response} res
+ */
 export const updatedInfoUser = async (req, res) => {
   const { email, departements, status } = req.body
   const loggerInfo = {
@@ -236,7 +258,18 @@ export const updatedInfoUser = async (req, res) => {
     }
   }
 }
-
+/**
+ * Supprimer l'utilisateur
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId Id de l'utilisateur souhaitant supprimer un délégué ou un répartiteur
+ * @param {string} req.body.email Adresse courriel de l'utilisateur supprimer
+ * @param {string} req.body.departements Départements de l'utilisateur supprimer
+ * @param {string} req.body.status Status de l'utilisateur supprimer
+ * @param {import('express').Response} res
+ */
 export const deleteUserByAdmin = async (req, res) => {
   const { email, status } = req.body
   const loggerInfo = {
