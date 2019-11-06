@@ -7,6 +7,7 @@ import {
   createUser,
   deleteUserByEmail,
   findUserByEmail,
+  updateUser,
 } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
 
@@ -14,6 +15,7 @@ import { appLogger, email as regexEmail } from '../../util'
 import config from '../../config'
 import { createPassword } from '../../util/password'
 import { sendMailResetLink } from '../business/send-mail-reset-password'
+import { sendMailConfirmationUpdateUserInfo } from '../business/send-mail-update-user-info'
 
 /**
  * Récupère les infos de l'admin
@@ -147,7 +149,8 @@ export const createUserByAdmin = async (req, res) => {
         })
         return res.status(201).json({
           success: true,
-          message: 'Utilisateur a bien été créé et un courriel lui a été envoyé ',
+          message:
+            'Utilisateur a bien été créé et un courriel lui a été envoyé ',
         })
       }
       return res.status(400)({
@@ -158,13 +161,79 @@ export const createUserByAdmin = async (req, res) => {
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      description: 'Utilisateur n\'a pas créé',
+      description: "L'utilisateur n'a pas été créé",
       error,
     })
     return res.status(500).json({
       success: false,
       message: "l'utilisateur n'a pas été créé",
     })
+  }
+}
+
+export const updatedInfoUser = async (req, res) => {
+  const { email, departements, status } = req.body
+  const loggerInfo = {
+    section: 'admin',
+    action: 'put-user',
+    admin: req.userId,
+  }
+
+  appLogger.info(loggerInfo)
+  const updatedUser = await updateUser(email, departements, status)
+  const userInfo = await findUserById(req.userId)
+  if (
+    userInfo.status === config.userStatuses.DELEGUE &&
+    status === config.userStatuses.REPARTITEUR
+  ) {
+    if (updatedUser) {
+      if (
+        updatedUser.email === req.body.email &&
+        updateUser.departements === req.body.departements &&
+        updatedUser === req.body.status
+      ) {
+        try {
+          await sendMailConfirmationUpdateUserInfo(updateUser)
+          return res.status(200).json({
+            success: true,
+            message: "les informations de l'utilisateur ont été modifié",
+            user: updateUser,
+          })
+        } catch (error) {
+          res.status(500).json({
+            success: false,
+            message: "les informations de l'utilisateur n'ont pas été modifié",
+          })
+        }
+      }
+    }
+  }
+  if (
+    userInfo.status === config.userStatuses.ADMIN &&
+    (status === config.userStatuses.DELEGUE ||
+      status === config.userStatuses.REPARTITEUR)
+  ) {
+    if (updatedUser) {
+      if (
+        updatedUser.email === req.body.email &&
+        updateUser.departements === req.body.departements &&
+        updatedUser === req.body.status
+      ) {
+        try {
+          await sendMailConfirmationUpdateUserInfo(updateUser)
+          return res.status(200).json({
+            success: true,
+            message: "les informations de l'utilisateur ont été modifié",
+            user: updateUser,
+          })
+        } catch (error) {
+          res.status(500).json({
+            success: false,
+            message: "les informations de l'utilisateur n'ont pas été modifié",
+          })
+        }
+      }
+    }
   }
 }
 

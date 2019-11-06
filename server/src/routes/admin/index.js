@@ -10,6 +10,7 @@ import {
   getMe,
   createUserByAdmin,
   deleteUserByAdmin,
+  updatedInfoUser,
 } from './admin.controllers'
 import { getInspecteurs } from './inspecteurs-controllers'
 import {
@@ -1189,7 +1190,7 @@ router.post('/users', verifyDelegueLevel, createUserByAdmin)
  *
  */
 
-// router.put('/users', verifyAdminLevel, updatedUser)
+router.put('/users', verifyDelegueLevel, updatedInfoUser)
 
 /**
  * @swagger

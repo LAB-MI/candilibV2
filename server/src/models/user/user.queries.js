@@ -114,6 +114,17 @@ export const updateUserStatus = async (user, status) => {
   return updatedUser
 }
 
+export const updateUser = async (user, data) => {
+  const { email, departements, status } = data
+
+  if (!user) {
+    throw new Error('user is undefined')
+  }
+  await user.updateOne({ email, departements, status })
+  const updatedUser = await User.findById(user._id)
+  return updatedUser
+}
+
 /**
  * Retourne un email contenant un lien avec un hash
  * @async
