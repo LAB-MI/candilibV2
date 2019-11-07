@@ -352,7 +352,7 @@ export const canCancelReservation = previewDateReservation => {
  * @async
  * @function
  *
- * @param {Object} candidat type Candidate Model
+ * @param {Object} candidat Type Candidate Model
  * @param {Date} previewDateReservation Type Date javascript
  *
  * @returns {DateTime}

@@ -267,6 +267,17 @@ export const getBookedPlaces = async (req, res) => {
   }
 }
 
+/**
+ * Marque une place comme réservée par le candidat
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req - Requête
+ * @param {Object} req.body - Corps de la requête
+ * @param {string} req.body.id - Identifiant
+ * @param {import('express').Response} res - Réponse
+ */
 export const bookPlaceByCandidat = async (req, res) => {
   const section = 'candidat-create-reservation'
   const candidatId = req.userId
@@ -424,6 +435,16 @@ export const bookPlaceByCandidat = async (req, res) => {
   }
 }
 
+/**
+ * Supprime la réservation
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req - Requête
+ * @param {string} req.userId - Identifiant du candidat
+ * @param {import('express').Response} res - Réponse
+ */
 export const unbookPlace = async (req, res) => {
   const candidatId = req.userId
 

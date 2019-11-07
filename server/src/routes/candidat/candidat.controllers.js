@@ -35,7 +35,7 @@ import {
 import { sendErrorResponse } from '../../util/send-error-response'
 
 /**
- * @constant {module:app.InfoObject}
+ * @constant {string[]} - Liste des noms des champs requis
  */
 const mandatoryFields = [
   'adresse',
