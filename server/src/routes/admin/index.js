@@ -636,9 +636,7 @@ router.get(
  *         schema:
  *           type: string
  *           example: 2019-10-10T22:00:00.000Z
- *     tags: ["Administrateur"]
  *         description: Date de début de période
- *     tags: ["Administrateur"]
  *         required: true
  *       - in: query
  *         name: endPeriod
@@ -671,7 +669,7 @@ router.get(
  *           application/json:
  *             schema:
  *               allOf:
- *                 - $ref: '#/components/schemas/StatsKpiPlacesResults'
+ *                 - $ref: '#/components/schemas/StatsKpiResultsExams'
  */
 
 router.get(

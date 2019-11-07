@@ -378,7 +378,7 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           totalCandidatsInscrits: 2
  *         }]
  *
- *     StatsKpiPlacesResults:
+ *     StatsKpiResultsExams:
  *       type: object
  *       required:
  *         - success
