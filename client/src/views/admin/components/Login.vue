@@ -65,7 +65,7 @@ import {
   SIGNED_IN_AS_ADMIN,
 } from '@/store'
 
-import AdminVersion from '../../../components/AppVersion.vue'
+import AdminVersion from '@/components/AppVersion.vue'
 import EmailPasswordReset from './EmailPasswordReset'
 
 export default {

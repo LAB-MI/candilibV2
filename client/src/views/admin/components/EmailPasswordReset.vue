@@ -1,26 +1,29 @@
 <template>
-<v-dialog
+  <v-dialog
     v-model="showDialog"
     width="500"
   >
-    <v-btn
-      class="u-flex u-flex--center reset-password-btn"
-      slot="activator"
-      depressed
-      tabindex="8"
-
-    >
-    Réinitialiser le mot de passe
-    </v-btn>
+    <template v-slot:activator="{ on }">
+      <v-btn
+        class="u-flex u-flex--center reset-password-btn"
+        outline
+        color="info"
+        tabindex="8"
+        v-on="on"
+      >
+        Réinitialiser mon mot de passe
+      </v-btn>
+    </template>
 
     <v-card>
       <v-card-title
         class="headline grey lighten-2"
         primary-title
       >
-      Réinitialiser le mot de passe
+      Réinitialiser mon mot de passe
       </v-card-title>
       <v-form
+        v-model="isValidEmail"
         @submit.prevent="sendMailResetLink"
       >
         <div class="u-flex  u-flex--center">
@@ -32,10 +35,13 @@
               @blur="removeEmailPlaceholder"
               @input="setEmailToLowerCase"
               :placeholder="emailPlaceholder"
-              aria-placeholder="admin@example.fr"
+              aria-placeholder="admin@example.com"
               :autofocus="showDialog"
-              hint="ex. : admin@example.fr"
+              hint="ex. : admin@example.com"
+              label="Adresse courriel"
+              ref="emailInput"
               required
+              :rules="emailRules"
               tabindex="1"
               v-model="email"
             ></v-text-field>
@@ -47,7 +53,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-          class="t-reset-link-btn"
+            class="t-reset-link-btn"
             dark
             type="submit"
             :disabled="isSendingResetLink"
@@ -68,12 +74,18 @@ import {
   SHOW_SUCCESS,
   SHOW_ERROR,
 } from '@/store'
+import { email as emailRegex } from '@/util'
 
 export default {
   data () {
     return {
       emailPlaceholder: 'admin@example.com',
       email: '',
+      emailRules: [
+        v => !!v || 'Veuillez renseigner votre adresse courriel',
+        v => emailRegex.test(v) || "L'adresse courriel doit être valide",
+      ],
+      isValidEmail: false,
       showDialog: false,
     }
   },
@@ -84,27 +96,35 @@ export default {
     },
   },
 
+  watch: {
+    showDialog (isShowing) {
+      if (isShowing) {
+        setTimeout(() => this.$refs.emailInput.focus())
+      }
+    },
+  },
+
   methods: {
     async removeEmailPlaceholder () {
       this.emailPlaceholder = ''
     },
     async setEmailPlaceholder () {
-      this.emailPlaceholder = 'admin@example.fr'
+      this.emailPlaceholder = 'admin@example.com'
     },
 
     async setEmailToLowerCase () {
-      this.email = this.email.toLowerCase()
+      this.email = this.email && this.email.toLowerCase()
     },
 
     async sendMailResetLink () {
-      if (!this.email) {
-        return this.$store.dispatch(SHOW_ERROR, `L'adresse courriel n'existe pas`)
+      if (!this.email || emailRegex.test(this.email)) {
+        return this.$store.dispatch(SHOW_ERROR, `Veuillez fournir une adresse courriel valide`)
       }
       try {
         await this.$store.dispatch(SEND_RESET_LINK_REQUEST, this.email)
         this.$store.dispatch(SHOW_SUCCESS, `Un courriel vient de vous être envoyé à l'adresse ${this.email}`)
       } catch (error) {
-        this.$store.dispatch(SHOW_ERROR, `cette adresse courriel n'est pas reconnue`)
+        this.$store.dispatch(SHOW_ERROR, `Cette adresse courriel n'est pas reconnue`)
       }
       this.showDialog = false
     },
@@ -115,19 +135,14 @@ export default {
 <style lang="stylus">
 
 .reset-password-btn {
-  position: relative;
   font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
   font-size: 15px;
   color: #fff;
   line-height: 1.2;
   text-transform: uppercase;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   padding: 0 20px;
   width: 100%;
-  height: auto;
-  overflow: hidden;
+  margin: 0.5em 0;
 }
 
 </style>
