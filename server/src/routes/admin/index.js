@@ -9,11 +9,9 @@ import { getCandidats, importCandidats } from './candidats.controllers'
 import { getMe } from './admin.controllers'
 import { getInspecteurs } from './inspecteurs.controllers'
 import {
-  createPlaceByAdmin,
-  deletePlaceByAdmin,
-  deletePlacesByAdmin,
+  createOrImportPlaceByAdmin,
+  deleteByAdmin,
   getPlaces,
-  importPlaces,
   sendScheduleInspecteurs,
   updatePlaces,
 } from './places-controllers'
@@ -21,7 +19,6 @@ import {
   getStatsPlacesExam,
   getStatsResultsExam,
 } from './statistics.controllers'
-import { removeReservationByAdmin } from './reservations.controllers'
 import {
   getWhitelisted,
   addWhitelisted,
@@ -478,9 +475,6 @@ router.post(
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_inspecteurs}
  */
 router.get('/inspecteurs', getInspecteurs)
-
-router.post('/place', verifyRepartiteurDepartement, createPlaceByAdmin)
-router.delete('/place/:id', deletePlaceByAdmin)
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
 /**
  * @swagger
@@ -573,10 +567,14 @@ router.get('/places', verifyRepartiteurDepartement, getPlaces)
  * @see {@link import('./places-controllers')..importPlaces|Fonction importPlaces}
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_places|Swagger: POST /admin/places}
  */
-router.post('/places', verifyRepartiteurDepartement, importPlaces)
-router.delete('/places', deletePlacesByAdmin)
+router.post('/places', verifyRepartiteurDepartement, createOrImportPlaceByAdmin)
+router.delete('/places/:id?', deleteByAdmin)
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
-router.delete('/reservations/:id', removeReservationByAdmin)
+router.post(
+  '/bordereaux',
+  verifyRepartiteurDepartement,
+  sendScheduleInspecteurs
+)
 
 /**
  * @swagger

@@ -6,13 +6,11 @@ import express from 'express'
 
 import { getMe, saveEvaluation } from './candidat.controllers'
 import { getCentres } from '../common/centre.controllers'
-import { getPlaces } from './places.controllers'
-
 import {
-  getReservations,
-  createReservation,
-  removeReservation,
-} from './reservations.controllers'
+  getPlaces,
+  bookPlaceByCandidat,
+  unbookPlace,
+} from './places.controllers'
 
 const router = express.Router()
 
@@ -216,9 +214,8 @@ router.get('/centres', getCentres)
  */
 
 router.get('/places/:id?', getPlaces)
-router.get('/reservations', getReservations)
-router.post('/reservations', createReservation)
-router.delete('/reservations', removeReservation)
+router.patch('/places', bookPlaceByCandidat)
+router.delete('/places', unbookPlace)
 router.post('/evaluations', saveEvaluation)
 
 export { preSignup, emailValidation } from './candidat.controllers'

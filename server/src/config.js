@@ -142,6 +142,10 @@ const config = {
     process.env.DAYS_FORBID_CANCEL !== undefined
       ? Number(process.env.DAYS_FORBID_CANCEL)
       : 7,
+  numberOfVisibleMonths:
+    process.env.NUMBER_VISIBLE_MONTHS !== undefined
+      ? Number(process.env.NUMBER_VISIBLE_MONTHS)
+      : 3,
 }
 
 /**
