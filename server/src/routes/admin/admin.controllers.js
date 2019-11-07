@@ -94,6 +94,7 @@ const findInfoAdminById = async userId => {
  * @param {string} req.body.status Status de l'utilisateur créér
  * @param {import('express').Response} res
  */
+
 export const createUserByAdmin = async (req, res) => {
   const { email, departements, status } = req.body
   const loggerInfo = {
@@ -103,84 +104,87 @@ export const createUserByAdmin = async (req, res) => {
   }
 
   appLogger.info(loggerInfo)
+
   const isValidEmail = regexEmail.test(email)
   if (!isValidEmail) {
     return res.status(400).json({
       success: false,
-      message: "l'adresse courriel n'est pas valide",
+      message: "L'adresse courriel n'est pas valide",
     })
   }
-  const userExist = await findUserByEmail(email)
-  if (userExist) {
-    return res.status(400).json({
+
+  const user = await findUserById(req.userId)
+  if (!isAbleToUpsertUser(status, user)) {
+    res.status(401).json({
       success: false,
-      message: 'cette adresse courriel est déja utilisé',
+      message: "Vous n'êtes pas autorisé à créer un utilisateur",
     })
+    return
   }
+
   try {
-    const userInfo = await findUserById(req.userId)
-    if (
-      userInfo.status === config.userStatuses.DELEGUE &&
-      status === config.userStatuses.REPARTITEUR
-    ) {
-      const password = createPassword()
-      const user = await createUser(email, password, departements, status)
-      if (user) {
-        await sendMailResetLink(email)
-        appLogger.info({
-          ...loggerInfo,
-          action: 'created-user',
-          description:
-            ' Utilisateur a bien été créé et un courriel lui a été envoyé',
-        })
-        return res.status(201).json({
-          success: true,
-          message: 'Utilisateur a bien été créé',
-        })
-      }
-      return res.status(400)({
-        success: false,
-        message: `l'utilisateur ${user.email} est déja enregistré en base`,
+    const password = createPassword()
+    const createdUser = await createUser(email, password, departements, status)
+    if (createdUser) {
+      await sendMailResetLink(email)
+      appLogger.info({
+        ...loggerInfo,
+        action: 'created-user',
+        description:
+          "L'utilisateur a bien été créé et un courriel lui a été envoyé",
+      })
+      return res.status(201).json({
+        success: true,
+        message: "L'utilisateur a bien été créé",
       })
     }
-    if (
-      userInfo.status === config.userStatuses.ADMIN &&
-      (status === config.userStatuses.DELEGUE ||
-        status === config.userStatuses.REPARTITEUR)
-    ) {
-      const password = createPassword()
-      const user = await createUser(email, password, departements, status)
-      if (user) {
-        await sendMailResetLink(email)
-        appLogger.info({
-          ...loggerInfo,
-          action: 'created-user',
-          description:
-            ' Utilisateur a bien été créé et un courriel lui a été envoyé',
-        })
-        return res.status(201).json({
-          success: true,
-          message:
-            'Utilisateur a bien été créé et un courriel lui a été envoyé ',
-        })
-      }
-      return res.status(400)({
-        success: false,
-        message: `l'utilisateur ${user.email} est déja enregistré en base`,
-      })
-    }
+    return res.status(400)({
+      success: false,
+      message: `L'utilisateur ${user.email} est déja enregistré en base`,
+    })
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
       description: "L'utilisateur n'a pas été créé",
       error,
     })
-    return res.status(500).json({
+    return res.status(error.status || 500).json({
       success: false,
-      message: "l'utilisateur n'a pas été créé",
+      message: error.message,
     })
   }
 }
+
+/**
+ * Détermine si un utilisateur (`user`) a le droit de modifier les données d'un
+ * utilisateur d'un niveau donné (`status`)
+ *
+ * @function
+ *
+ * @param {User} userToUpdate - Utilisateur dont les données sont à modifier
+ * @param {User} user - Utilisateur exécutant l'action
+ *
+ * @returns {boolean} - `true` si l'utilisateur peut faire la modification, `false` sinon
+ */
+function isAbleToUpsertUser (status, user) {
+  if (
+    user.status === config.userStatuses.DELEGUE &&
+    status === config.userStatuses.REPARTITEUR
+  ) {
+    return true
+  }
+
+  if (
+    user.status === config.userStatuses.ADMIN &&
+    (status === config.userStatuses.DELEGUE ||
+      status === config.userStatuses.REPARTITEUR)
+  ) {
+    return true
+  }
+
+  return false
+}
+
 /**
  * Met à jour les informations de l'utilisateur
  * @async
@@ -189,8 +193,8 @@ export const createUserByAdmin = async (req, res) => {
  * @param {import('express').Request} req
  * @param {string} req.userId Id de l'utilisateur souhaitant modifier un délégué ou un répartiteur
  * @param {string} req.body.email Adresse courriel de l'utilisateur mis à jour
- * @param {string} req.body.departements Départements de l'utilisateur  mis à jour
- * @param {string} req.body.status Status de l'utilisateur modifier mis à jour
+ * @param {string} req.body.departements Départements de l'utilisateur mis à jour
+ * @param {string} req.body.status Status de l'utilisateur mis à jour
  * @param {import('express').Response} res
  */
 export const updatedInfoUser = async (req, res) => {
@@ -202,60 +206,38 @@ export const updatedInfoUser = async (req, res) => {
   }
 
   appLogger.info(loggerInfo)
-  const updatedUser = await updateUser(email, departements, status)
-  const userInfo = await findUserById(req.userId)
-  if (
-    userInfo.status === config.userStatuses.DELEGUE &&
-    status === config.userStatuses.REPARTITEUR
-  ) {
-    if (updatedUser) {
-      if (
-        updatedUser.email === req.body.email &&
-        updateUser.departements === req.body.departements &&
-        updatedUser === req.body.status
-      ) {
-        try {
-          await sendMailConfirmationUpdateUserInfo(updateUser)
-          return res.status(200).json({
-            success: true,
-            message: "les informations de l'utilisateur ont été modifié",
-            user: updateUser,
-          })
-        } catch (error) {
-          res.status(500).json({
-            success: false,
-            message: "les informations de l'utilisateur n'ont pas été modifié",
-          })
-        }
-      }
-    }
+
+  const isValidEmail = regexEmail.test(email)
+  if (!isValidEmail) {
+    return res.status(400).json({
+      success: false,
+      message: "l'adresse courriel n'est pas valide",
+    })
   }
-  if (
-    userInfo.status === config.userStatuses.ADMIN &&
-    (status === config.userStatuses.DELEGUE ||
-      status === config.userStatuses.REPARTITEUR)
-  ) {
-    if (updatedUser) {
-      if (
-        updatedUser.email === req.body.email &&
-        updateUser.departements === req.body.departements &&
-        updatedUser === req.body.status
-      ) {
-        try {
-          await sendMailConfirmationUpdateUserInfo(updateUser)
-          return res.status(200).json({
-            success: true,
-            message: "les informations de l'utilisateur ont été modifié",
-            user: updateUser,
-          })
-        } catch (error) {
-          res.status(500).json({
-            success: false,
-            message: "les informations de l'utilisateur n'ont pas été modifié",
-          })
-        }
-      }
-    }
+
+  const user = await findUserById(req.userId)
+  const userToUpdate = await findUserByEmail(email)
+  if (!isAbleToUpsertUser(userToUpdate.status, user)) {
+    res.status(401).json({
+      success: false,
+      message: "Vous n'êtes pas autorisé à modifier cet utilisateur",
+    })
+    return
+  }
+
+  try {
+    const updatedUser = await updateUser(email, departements, status)
+    await sendMailConfirmationUpdateUserInfo(email)
+    return res.status(200).json({
+      success: true,
+      message: "Les informations de l'utilisateur ont été modifiées",
+      user: updatedUser,
+    })
+  } catch (error) {
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    })
   }
 }
 /**
@@ -271,63 +253,46 @@ export const updatedInfoUser = async (req, res) => {
  * @param {import('express').Response} res
  */
 export const deleteUserByAdmin = async (req, res) => {
-  const { email, status } = req.body
+  const { email: emailToDelete } = req.body
   const loggerInfo = {
     section: 'admin',
     action: 'delete-user',
     admin: req.userId,
   }
   appLogger.info(loggerInfo)
+
+  const user = await findUserById(req.userId)
+  const userToDelete = await findUserByEmail(emailToDelete)
+  if (!isAbleToUpsertUser(userToDelete.status, user)) {
+    res.status(401).json({
+      success: false,
+      message:
+        "Vous n'êtes pas autorisé à supprimer cette utilisateur utilisateur",
+    })
+    return
+  }
+
   try {
-    const userInfo = await findUserById(req.userId)
-    const user = await findUserByEmail(email)
-    if (
-      userInfo.status === config.userStatuses.DELEGUE &&
-      status === config.userStatuses.REPARTITEUR
-    ) {
-      if (user) {
-        await deleteUserByEmail(email)
-        appLogger.info({
-          ...loggerInfo,
-          action: 'delete-user',
-          description: ' Utilisateur a bien été supprimé ',
-        })
-        return res.status(200).json({
-          success: true,
-          message: 'Utilisateur a bien été supprimé',
-        })
-      }
-      return res.status(400).json({
-        success: false,
-        message: "Utilisateur n'existe pas",
+    if (userToDelete) {
+      await deleteUserByEmail(emailToDelete, user.email)
+      appLogger.info({
+        ...loggerInfo,
+        action: 'delete-user',
+        description: "L'utilisateur a bien été supprimé",
+      })
+      return res.status(200).json({
+        success: true,
+        message: "L'utilisateur a bien été supprimé",
       })
     }
-    if (
-      userInfo.status === config.userStatuses.ADMIN &&
-      (status === config.userStatuses.DELEGUE ||
-        status === config.userStatuses.REPARTITEUR)
-    ) {
-      if (user) {
-        await deleteUserByEmail(email)
-        appLogger.info({
-          ...loggerInfo,
-          action: 'delete-user',
-          description: ' Utilisateur a bien été supprimé ',
-        })
-        return res.status(200).json({
-          success: true,
-          message: 'Utilisateur a bien été supprimé',
-        })
-      }
-      return res.status(400).json({
-        success: false,
-        message: "Utilisateur n'existe pas",
-      })
-    }
+    return res.status(400).json({
+      success: false,
+      message: "L'utilisateur n'existe pas",
+    })
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      description: "Utilisateur n'a pas été supprimé",
+      description: "l'utilisateur n'a pas été supprimé",
       error,
     })
     return res.status(500).json({
@@ -336,7 +301,6 @@ export const deleteUserByAdmin = async (req, res) => {
     })
   }
 }
-
 /**
  * @typedef {Object} InfoAdmin
  * @property {string} email

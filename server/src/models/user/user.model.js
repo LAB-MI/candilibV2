@@ -19,9 +19,11 @@ export const UserFields = {
     type: Array,
     default: [],
   },
-  isDeleted: {
-    type: Boolean,
-    default: false,
+  deletedAt: {
+    type: Date,
+  },
+  deletedBy: {
+    type: String,
   },
   signUpDate: {
     type: Date,
@@ -57,6 +59,14 @@ const UserSchema = new Schema(
     timestamps: true,
   }
 )
+
+UserSchema.set('toJSON', {
+  transform (doc, ret /*, opt */) {
+    delete ret.password
+    delete ret.__v
+    return ret
+  },
+})
 
 UserSchema.pre('save', async function preSave () {
   const user = this

@@ -64,7 +64,7 @@ describe('Admin controller', () => {
     )
   })
 
-  it('Should response 200 with user tech infos', async () => {
+  xit('Should response 200 with user tech infos', async () => {
     app = express()
     app.use((req, res, next) => {
       req.userId = adminTech._id

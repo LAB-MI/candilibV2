@@ -37,17 +37,30 @@ export const findUserByCredentials = async (email, password) => {
 }
 
 export const createUser = async (email, password, departements, status) => {
-  const user = new User({ email, password, departements, status })
-  await user.save()
-  return user
+  try {
+    const user = new User({ email, password, departements, status })
+    await user.save()
+    return user
+  } catch (error) {
+    if (error.message.includes('email_1 dup key')) {
+      error.message = "l'email existe déjà"
+    }
+    const err = new Error(
+      `Impossible de créer l'utilisateur : ${error.message}`
+    )
+    err.status = 409
+    throw err
+  }
 }
 
-export const deleteUserByEmail = async email => {
-  const user = await findUserByEmail(email)
+export const deleteUserByEmail = async (emailToDelete, email) => {
+  const user = await findUserByEmail(emailToDelete)
   if (!user) {
     throw new Error('No user found')
   }
-  await user.delete()
+  user.deletedAt = new Date()
+  user.deletedBy = email
+  await user.save()
   return user
 }
 
@@ -114,11 +127,12 @@ export const updateUserStatus = async (user, status) => {
   return updatedUser
 }
 
-export const updateUser = async (user, data) => {
-  const { email, departements, status } = data
-
+export const updateUser = async (email, departements, status) => {
+  const user = await findUserByEmail(email)
   if (!user) {
-    throw new Error('user is undefined')
+    const error = new Error("L'email n'existe pas")
+    error.status = 404
+    throw error
   }
   await user.updateOne({ email, departements, status })
   const updatedUser = await User.findById(user._id)
