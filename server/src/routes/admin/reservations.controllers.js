@@ -5,7 +5,7 @@ import {
   PLACE_IS_NOT_BOOKED,
   UNKNOWN_ERROR_REMOVE_RESA,
 } from './message.constants'
-import { removeReservationPlaceByAdmin } from './places.business'
+import { removeReservationPlaceByAdmin } from './places-business'
 
 export const removeReservationByAdmin = async (req, res) => {
   const id = req.params.id

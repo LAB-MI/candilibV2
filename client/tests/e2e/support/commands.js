@@ -130,7 +130,7 @@ Cypress.Commands.add('addPlanning', () => {
     .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
 })
 
-Cypress.Commands.add('candidatePreSignUp', () => {
+Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   // The candidate fills the pre-sign-up form
   cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
   cy.contains('Se pré-inscrire')
@@ -140,11 +140,11 @@ Cypress.Commands.add('candidatePreSignUp', () => {
   cy.contains('NEPH')
     .parent()
     .children('input')
-    .type(Cypress.env('NEPH'))
+    .type(candidat ? candidat.codeNeph : Cypress.env('NEPH'))
   cy.contains('Nom de naissance')
     .parent()
     .children('input')
-    .type(Cypress.env('candidat'))
+    .type(candidat ? candidat.nomNaissance : Cypress.env('candidat'))
   cy.contains('Prénom')
     .parent()
     .children('input')
@@ -152,7 +152,7 @@ Cypress.Commands.add('candidatePreSignUp', () => {
   cy.contains('Courriel *')
     .parent()
     .children('input')
-    .type(Cypress.env('emailCandidat'))
+    .type(candidat ? candidat.email : Cypress.env('emailCandidat'))
   cy.contains('Portable')
     .parent()
     .children('input')
@@ -175,7 +175,7 @@ Cypress.Commands.add('candidatePreSignUp', () => {
     .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
     // Validates the email address
   cy.mhGetFirstRecipients()
-    .should('contain', Cypress.env('emailCandidat'))
+    .should('contain', candidat ? candidat.email : Cypress.env('emailCandidat'))
   cy.mhGetFirstSubject()
     .should('contain', 'Validation d\'adresse courriel pour Candilib')
   cy.mhGetFirstBody().then((mailBody) => {
@@ -189,7 +189,7 @@ Cypress.Commands.add('candidatePreSignUp', () => {
     .should('contain', 'Adresse courriel validée')
     // Gets the confirmation email
   cy.mhGetFirstRecipients()
-    .should('contain', Cypress.env('emailCandidat'))
+    .should('contain', candidat ? candidat.email : Cypress.env('emailCandidat'))
   cy.mhGetFirstSubject()
     .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
 })

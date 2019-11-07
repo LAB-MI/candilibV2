@@ -1,3 +1,7 @@
+/**
+ * Module concernant les actions sur les places par un utilisateur
+ * @module
+ */
 import config from '../../config'
 import {
   deletePlace,
@@ -25,7 +29,7 @@ import {
   sendMailSchedulesAllInspecteurs,
   sendMailSchedulesInspecteurs,
   validUpdateResaInspector,
-} from './places.business'
+} from './places-business'
 
 import {
   DELETE_PLACES_BY_ADMIN_SUCCESS,
@@ -34,6 +38,21 @@ import {
   UNKNOWN_ERROR_SEND_SCHEDULE_INSPECTEUR,
 } from './message.constants'
 
+/**
+ * Importe le planning des inspecteurs pour un département avec un fichier CSV ou XLSX.
+ * Le planning est une liste de places contenant les informations dans l'ordre suivant: date, heure, matricule de l'inspecteur, le nom de l'inspecteur, le nom du centre et le département.
+ * La fonction métier appelée est [importPlacesFromFile]{@link import('./places-business')..importPlacesFromFile}
+ * @async
+ * @function
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_places|Swagger: POST /admin/places}
+ * @see {@link https://expressjs.com/fr/4x/api.html#req|Documentation: express Request}
+ * @see {@link https://expressjs.com/fr/4x/api.html#res|Documentation: express Response}
+ * @param {import('express').Request} req
+ * @param {File} req.files Fichiers en format CSV ou XLSX
+ * @param {Object} req.body
+ * @param {String} req.body.departement Département selectionné par l'utilisateur
+ * @param {import('express').Response} res
+ */
 export const importPlaces = async (req, res) => {
   const { departement } = req.body
 
