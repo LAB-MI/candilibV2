@@ -44,10 +44,10 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tabs .primary--text')
+    cy.get('.v-tab .primary--text')
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-      .parents('.v-list__group')
+      .parents('.v-list')
       .within(($date) => {
         cy.root().click()
         cy.contains('08h00-08h30')
@@ -82,7 +82,7 @@ describe('Standard scenarios', () => {
     cy.adminLogin()
     // The admin find the reservation and cancels it
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    cy.get('.v-tabs')
+    cy.get('.v-tab')
       .contains(Cypress.env('centre'))
       .click({ force: true })
     cy.contains('replay')
@@ -148,7 +148,7 @@ describe('Standard scenarios', () => {
     cy.adminLogin()
     // Goes to planning
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    cy.get('.v-tabs')
+    cy.get('.v-tab')
       .contains(Cypress.env('centre'))
       .click({ force: true })
     // Add candidate to the first place
@@ -193,7 +193,7 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     // The admin Checks that the reservation has been cancelled
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    cy.get('.v-tabs')
+    cy.get('.v-tab')
       .contains(Cypress.env('centre'))
       .click({ force: true })
     cy.get('.v-window-item').not('[style="display: none;"]')
@@ -213,10 +213,10 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tabs .primary--text')
+    cy.get('.v-tab .primary--text')
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-      .parents('.v-list__group')
+      .parents('.v-list')
       .within(($date) => {
         cy.root().click()
         cy.should('contain', '08h00-08h30')
@@ -224,7 +224,7 @@ describe('Standard scenarios', () => {
     // The admin deletes the places
     cy.adminLogin()
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    cy.get('.v-tabs')
+    cy.get('.v-tab')
       .contains(Cypress.env('centre'))
       .click({ force: true })
     cy.contains('replay')
@@ -264,10 +264,10 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tabs .primary--text')
+    cy.get('.v-tab .primary--text')
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-      .parents('.v-list__group')
+      .parents('.v-list')
       .within(($date) => {
         cy.root().click()
         cy.should('not.contain', '08h00-08h30')

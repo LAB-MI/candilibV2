@@ -93,7 +93,7 @@ describe('Test delay after failed attempt', () => {
       .should('contain', 'Merci de noter Candilib')
       .find('button')
       .contains('Noter maintenant')
-      .click({ timeout: 10000 })
+      .click()
     cy.url()
       .should('contain', 'candidat-presignup')
   })

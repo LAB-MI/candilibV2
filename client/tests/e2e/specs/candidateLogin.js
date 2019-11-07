@@ -166,9 +166,9 @@ describe('Candidate login', () => {
       .should('contain', 'Merci de noter Candilib')
       .find('button')
       .contains('Noter maintenant')
-      .click({ timeout: 10000 })
-    cy.url()
-      .should('contain', 'candidat-presignup')
+      .click()
+    cy.get('body')
+      .should('contain', 'Réservez votre place d\'examen')
   })
 
   it('Tries the already signed up form without account', () => {
