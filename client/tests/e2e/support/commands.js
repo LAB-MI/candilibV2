@@ -28,14 +28,14 @@ Cypress.Commands.add('adminDisconnection', () => {
     .should('contain', 'Vous êtes déconnecté·e')
 })
 
-Cypress.Commands.add('archiveCandidate', () => {
+Cypress.Commands.add('archiveCandidate', (candidat) => {
   // Creates the aurige file
   cy.writeFile(Cypress.env('filePath') + '/aurige.end.json',
     [
       {
-        'codeNeph': Cypress.env('NEPH'),
-        'nomNaissance': Cypress.env('candidat'),
-        'email': Cypress.env('emailCandidat'),
+        'codeNeph': candidat ? candidat.codeNeph : Cypress.env('NEPH'),
+        'nomNaissance': candidat ? candidat.nomNaissance : Cypress.env('candidat'),
+        'email': candidat ? candidat.email : Cypress.env('emailCandidat'),
         'dateReussiteETG': '',
         'nbEchecsPratiques': '',
         'dateDernierNonReussite': '',
@@ -65,7 +65,7 @@ Cypress.Commands.add('archiveCandidate', () => {
     .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 })
 
-Cypress.Commands.add('addToWhitelist', (emailCandidat) => {
+Cypress.Commands.add('addToWhitelist', () => {
   cy.contains('favorite')
     .click()
   cy.get('h2')

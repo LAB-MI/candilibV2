@@ -15,7 +15,7 @@ describe('Whitelist tests', () => {
     // Delete all mails before start
     cy.deleteAllMails()
     cy.adminLogin()
-    cy.archiveCandidate()
+    cy.archiveCandidate({ codeNeph: '98745612309', nomNaissance: 'D.Monkey', email: Cypress.env('email') })
     cy.adminDisconnection()
   })
 
