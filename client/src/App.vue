@@ -4,6 +4,7 @@
       <v-dialog
         v-model="authStatus"
         width="500"
+        :hide-overlay="true"
       >
         <v-card>
           <v-card-title
