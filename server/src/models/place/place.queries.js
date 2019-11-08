@@ -291,7 +291,7 @@ export const findPlaceBookedByInspecteur = (
  * @function
  *
  * @param {string} centreId - Id du centre
- * @param {string} inspecteurIdList - List d'inspecteur id
+ * @param {string} inspecteurIdListe - List d'inspecteur id
  * @param {string} beginDate - Date au format ISO de debut de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
@@ -299,7 +299,7 @@ export const findPlaceBookedByInspecteur = (
  */
 export const findAllPlacesBookedByCentreAndInspecteur = (
   centreId,
-  inspecteurIdList,
+  inspecteurIdListe,
   beginDate,
   endDate
 ) => {
@@ -312,8 +312,8 @@ export const findAllPlacesBookedByCentreAndInspecteur = (
   }
   query.where('centre', centreId)
   query.where('candidat').exists(true)
-  if (inspecteurIdList && inspecteurIdList.length) {
-    query.where('inspecteur').in(inspecteurIdList)
+  if (inspecteurIdListe && inspecteurIdListe.length) {
+    query.where('inspecteur').in(inspecteurIdListe)
   }
   return query.exec()
 }

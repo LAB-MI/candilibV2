@@ -516,13 +516,13 @@ export const updatePlaces = async (req, res) => {
 }
 
 export const sendScheduleInspecteurs = async (req, res) => {
-  const { departement, date, isForInspecteurs, inspecteurIdList } = req.body
+  const { departement, date, isForInspecteurs, inspecteurIdListe } = req.body
   const loggerContent = {
     section: 'admin-send-mail-schedule-inspecteurs',
     admin: req.userId,
     departement,
     date,
-    inspecteurIdList,
+    inspecteurIdListe,
   }
 
   try {
@@ -556,12 +556,12 @@ export const sendScheduleInspecteurs = async (req, res) => {
         departement,
         date,
         isForInspecteurs,
-        inspecteurIdList
+        inspecteurIdListe
       )
     } else {
       appLogger.info({
         ...loggerContent,
-        message: 'Envoyer des bordereaux à les inspecteurs',
+        message: 'Envoyer les bordereaux aux inspecteurs',
       })
       results = await sendMailSchedulesAllInspecteurs(date)
     }

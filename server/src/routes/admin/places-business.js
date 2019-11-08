@@ -751,7 +751,7 @@ export const sendMailSchedulesInspecteurs = async (
   departement,
   date,
   isForInspecteurs,
-  inspecteurIdList
+  inspecteurIdListe
 ) => {
   const loggerContent = {
     section: 'admin-send-mail-schedule-inspecteurs',
@@ -774,7 +774,7 @@ export const sendMailSchedulesInspecteurs = async (
     centres.map(async centre => {
       const places = await findAllPlacesBookedByCentreAndInspecteur(
         centre._id,
-        inspecteurIdList,
+        inspecteurIdListe,
         beginDate,
         endDate
       )

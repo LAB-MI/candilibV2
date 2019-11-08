@@ -36,12 +36,6 @@ const router = express.Router()
 
 router.use(verifyRepartiteurLevel())
 
-router.post(
-  '/bordereaux',
-  verifyRepartiteurDepartement,
-  sendScheduleInspecteurs
-)
-
 /**
  * @swagger
  *
@@ -549,6 +543,75 @@ router.get('/places', verifyRepartiteurDepartement, getPlaces)
 router.post('/places', verifyRepartiteurDepartement, createOrImportPlaceByAdmin)
 router.delete('/places/:id?', deleteByAdmin)
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
+
+/**
+ * @swagger
+ *
+ * /admin/bordereaux:
+ *   post:
+ *     tags: ["Administrateur"]
+ *     summary: Envoi des bordereaux aux inspecteurs selectionnés
+ *     description: Permet d'envoyer par email, le planning de chaque inspecteurs.
+ *     produces:
+ *       - application/json
+ *     parameters:
+ *       - in: body
+ *         name: departement
+ *         schema:
+ *           type: number
+ *           example: 93
+ *         description: Valeur du département
+ *       - in: body
+ *         name: inspecteurIdListe
+ *         schema:
+ *           type: array
+ *           example: ['12345678909876543', '123456789098765432']
+ *         description: Liste des ids d'inspecteurs
+ *       - in: body
+ *         name: date
+ *         schema:
+ *           type: string
+ *           example: 2019-10-10T22:00:00.000Z
+ *         description: Date à laquelle l'action a été faite
+ *       - in: body
+ *         name: isForInspecteurs
+ *         schema:
+ *           type: boolean
+ *           example: false
+ *         description: Permet de savoir si les bordereaux doivent être envoyés au répartiteur ou à l'inspecteur
+ *     responses:
+ *       500:
+ *         description: Erreur lors de la récupération des départements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Oups, un problème est survenu. L'administrateur a été prévenu.
+ *       422:
+ *         description: Erreur sur les paramètres qui ont été envoyés
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Les paramètres renseignés sont manquante.
+ *       200:
+ *         description: Stats par départements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: true
+ *                     message: Les bordereaux ont été envoyés.
+ */
+
 router.post(
   '/bordereaux',
   verifyRepartiteurDepartement,
