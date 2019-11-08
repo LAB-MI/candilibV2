@@ -1,0 +1,8 @@
+[build]
+  base = "client/"
+  command = "( APP_VERSION=$(../ci/version.sh) ;  npm --no-git-tag-version version ${APP_VERSION} ; npm install && npm run format && npm run test && npm run build && npm install --production ) ; mv dist dst; mkdir dist/; mv dst dist/candilib ; echo -e \"/candilib/api/*   $API_URL/:splat   200\n/*   /candilib/index.html   200\" > dist/_redirects ; cat dist/_redirects"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "12.3.1"
+
