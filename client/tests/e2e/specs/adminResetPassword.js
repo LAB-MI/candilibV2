@@ -67,8 +67,10 @@ describe('Admin reset password', () => {
           .type(wrongConfirmation)
         cy.get('.submit-btn')
           .click()
-        cy.get('.v-snack')
-          .should('contain', 'Vos mots de passe ne correspondent pas')
+        cy.get('.v-messages__message').should(
+          'contain',
+          'Veuillez confirmer votre mot de passe',
+        );
       })
   })
 
