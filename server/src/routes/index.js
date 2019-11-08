@@ -17,6 +17,7 @@ const router = express.Router()
  *
  * /candidat/preinscription:
  *   post:
+ *     tags: ["Candidat"]
  *     summary: Pré-inscription du candidat sur l'application Candilib
  *     description: Ajoute un·e nouv·eau·elle candidat·e dans la base de données si les données envoyées sont correctes.
  *     produces:
@@ -112,7 +113,6 @@ const router = express.Router()
 /**
  * Ajoute un·e nouv·eau·elle candidat·e dans la base de données si les données envoyées sont correctes.
  *
- * @callback preSignup
  * @see {@link http://localhost:8000/api-docs/#/default/post_candidat_preinscription}
  */
 
@@ -123,6 +123,7 @@ router.post('/candidat/preinscription', preSignup)
  *
  * /candidat/me:
  *   put:
+ *     tags: ["Candidat"]
  *     summary: Validation de l'adresse courriel du candidat
  *     description: Vérification du hash unique correspondant à celui associé à cette adresse courriel dans la base de données Candilib.
  *     produces:
@@ -192,7 +193,6 @@ router.post('/candidat/preinscription', preSignup)
 /**
  * Vérification du hash unique correspondant à celui associé à cette adresse courriel dans la base de données Candilib.
  *
- * @callback emailValidation
  * @see {@link http://localhost:8000/api-docs/#/default/put_candidat_me}
  */
 

@@ -12,9 +12,6 @@ import routes from './routes'
 
 import npmVersion from '../package.json'
 
-const IP_QUALIF_CANDIDAT = process.env.IP_QUALIF_CANDIDAT
-const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
-
 /**
  * @swagger
  *
@@ -562,6 +559,18 @@ const app = express()
  * Use swagger-ui-express in development only
  */
 if (isDevelopment) {
+  /**
+   * Ip de l'environnement de qualification pour l'appli candidat
+   * @constant {string}
+   */
+  const IP_QUALIF_CANDIDAT = process.env.IP_QUALIF_CANDIDAT
+
+  /**
+   * Ip de l'environnement de qualification pour l'appli répartiteur
+   * @constant {string}
+   */
+  const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
+
   const swaggerJsdoc = require('swagger-jsdoc')
 
   const options = {

@@ -44,11 +44,12 @@ import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 
 /**
  * Renvoie tous les créneaux d'un centre
+ *
  * @async
  * @function
  *
- * @param {string} id identifiant du centre
- * @param {string} endDate Date maximale au format ISO pour laquelle il faut retourner les places
+ * @param {string} id - identifiant du centre
+ * @param {string} endDate - Date maximale au format ISO pour laquelle il faut retourner les places
  *
  * @returns {string[]} Tableau de dates au format ISO
  */
@@ -85,15 +86,16 @@ export const getDatesByCentreId = async (_id, beginDate, endDate) => {
 
 /**
  * Renvoie tous les créneaux (disponibles ou non) d'un centre dans une fourchette de temps
+ *
  * @async
  * @function
  *
- * @param {string} departement Code du département
- * @param {string} centre Nom du centre
- * @param {string} beginDate Date au format ISO à partir duquel des places correspondantes doivent être retournées
- * @param {string} endDate Date au format ISO
+ * @param {string} departement - Code du département
+ * @param {string} centre - Nom du centre
+ * @param {string} beginDate - Date au format ISO à partir duquel des places correspondantes doivent être retournées
+ * @param {string} endDate - Date au format ISO
  *
- * @returns {string[]} Tableau de dates au format ISO
+ * @returns {string[]} - Tableau de dates au format ISO
  */
 export const getDatesByCentre = async (
   departement,
@@ -121,13 +123,14 @@ export const getDatesByCentre = async (
 
 /**
  * Retournes les places pour un créneau (centre et date)
+ *
  * @async
  * @function
  *
- * @param {string} id Id du centre
- * @param {object} date Date en Objet natif JS Date
+ * @param {string} id - Id du centre
+ * @param {Object} date - Date en Objet natif JS Date
  *
- * @returns {string[]} Tableau de dates au format ISO
+ * @returns {string[]} - Tableau de dates au format ISO
  */
 export const hasAvailablePlaces = async (id, date) => {
   const places = await findPlacesByCentreAndDate(id, date)
@@ -139,14 +142,15 @@ export const hasAvailablePlaces = async (id, date) => {
 
 /**
  * Renvoie tous les créneaux disponibles d'un centre pour un jour donné
+ *
  * @async
  * @function
  *
- * @param {string} departement Code du département du centre
- * @param {string} nomCentre Nom du centre
- * @param {object} date Date en Objet natif JS Date
+ * @param {string} departement - Code du département du centre
+ * @param {string} nomCentre - Nom du centre
+ * @param {Object} date - Date en Objet natif JS Date
  *
- * @returns {string[]} Tableau de dates au format ISO
+ * @returns {string[]} - Tableau de dates au format ISO
  */
 export const hasAvailablePlacesByCentre = async (
   departement,
@@ -163,13 +167,14 @@ export const hasAvailablePlacesByCentre = async (
 
 /**
  * Récupère la réservation d'un candidat
+ *
  * @async
  * @function
  *
- * @param {string} candidatId Id du candidat
- * @param {object} options Options à passer à MongoDB pour la query
+ * @param {string} candidatId - Id du candidat
+ * @param {Object} options - Options à passer à MongoDB pour la query
  *
- * @returns {object} Place réservée par le candidat
+ * @returns {Object} - Place réservée par le candidat
  */
 export const getReservationByCandidat = async (candidatId, options) => {
   const place = await findPlaceBookedByCandidat(
@@ -182,14 +187,15 @@ export const getReservationByCandidat = async (candidatId, options) => {
 
 /**
  * Associe un candidat à une place à partir d'un créneau (date et centre)
+ *
  * @async
  * @function
  *
- * @param {string} candidatId Id du candidat
- * @param {string} centre Id du centre
- * @param {object} options Options à passer à MongoDB pour la requête
+ * @param {string} candidatId - Id du candidat
+ * @param {string} centre - Id du centre
+ * @param {Object} options - Options à passer à MongoDB pour la requête
  *
- * @returns {object} Place réservée par le candidat
+ * @returns {Object} - Place réservée par le candidat
  */
 export const bookPlace = async (candidatId, centre, date) => {
   const bookedAt = getFrenchLuxon().toJSDate()
@@ -214,12 +220,14 @@ export const bookPlace = async (candidatId, centre, date) => {
 
 /**
  * Supprime sur une place, l'association avec un candidat
+ *
  * @async
  * @function
  *
  * @param {PlaceModel} bookedPlace place réservée par le candidat
  * @param {boolean} isModified Booléen à `true` s'il s'agit d'une modification, à `false` ou `undefined` s'il s'agit d'une annulation
- * @param {object} loggerContent information pour les traces de l'application
+ * @param {Object} loggerContent information pour les traces de l'application
+ *
  * @returns {RemoveReservationReturn} Informations à afficher au client
  */
 export const removeReservationPlace = async (
@@ -300,11 +308,12 @@ export const removeReservationPlace = async (
 
 /**
  * Détermine si une réservation est dans le même créneau (même date/heure et même centre)
+ *
  * @function
  *
  * @param {string} centerId Type string from ObjectId of mongoose
  * @param {DateTime} date Type DateTime from luxon
- * @param {object} previewBookedPlace Type model place which populate centre and candidat
+ * @param {Object} previewBookedPlace Type model place which populate centre and candidat
  *
  * @returns {boolean} Indique s'il s'agit du même créneau (même centre et même date et heure)
  */
@@ -323,6 +332,7 @@ export const isSameReservationPlace = (centerId, date, previewBookedPlace) => {
 
 /**
  * Détermine si un candidat peut annuler sa réservation
+ *
  * @function
  *
  * @param {DateTime} previewDateReservation Type DateTime luxon
@@ -338,9 +348,11 @@ export const canCancelReservation = previewDateReservation => {
 
 /**
  * Retourne la date à partir de laquelle l'utilisateur peut réserver une place
+ *
+ * @async
  * @function
  *
- * @param {object} candidat type Candidate Model
+ * @param {Object} candidat Type Candidate Model
  * @param {Date} previewDateReservation Type Date javascript
  *
  * @returns {DateTime}
@@ -364,7 +376,7 @@ export const applyCancelRules = async (candidat, previewDateReservation) => {
  *
  * @function
  *
- * @param {object} candidat
+ * @param {Object} candidat
  * @param {DateTime} datePassage
  *
  * @returns {DateTime} La date à partir de laquelle le candidat peut prendre un place
@@ -403,10 +415,9 @@ export const getCandBookFrom = (candidat, datePassage) => {
  *
  * @function
  *
- * @param {object} candidat
- * @param {DateTime} datePassage
+ * @param {Object} candidat - Candidat
  *
- * @returns {DateTime} La date à partir de laquelle le candidat peut prendre un place
+ * @returns {DateTime} - La date à partir de laquelle le candidat peut prendre un place
  */
 
 export const getBeginDateAuthorize = candidat => {
@@ -435,11 +446,12 @@ export const getBeginDateAuthorize = candidat => {
 
 /**
  * Renvoie la date à partir de laquelle le candidat encourrera une pénalité s'il modifie ou annule sa place
+ *
  * @function
  *
- * @param {JSDate} dateReservation Date de l'examen de la place
+ * @param {Date} dateReservation - Date de l'examen de la place
  *
- * @returns {string} Date limite en ISO avant laquelle le candidat peut modifier ou annuler sa place sans encourir de pénalité
+ * @returns {string} - Date limite en ISO avant laquelle le candidat peut modifier ou annuler sa place sans encourir de pénalité
  */
 export const getLastDateToCancel = dateReservation => {
   const dateTimeResa = getFrenchLuxonFromJSDate(dateReservation)
@@ -448,12 +460,14 @@ export const getLastDateToCancel = dateReservation => {
 
 /**
  * Ajoute les informations du candidat pour sa réservation
+ *
+ * @async
  * @function
  *
- * @param {string} candidatId Identifiant de l'utilisateur
- * @param {object} reservation Place réservée par un candidat
+ * @param {string} candidatId - Identifiant de l'utilisateur
+ * @param {Object} reservation - Place réservée par un candidat
  *
- * @returns {object} La réservation avec
+ * @returns {Object} - La réservation avec
  */
 export const addInfoDateToRulesResa = async (candidatId, reservation) => {
   const {
@@ -477,16 +491,16 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
 }
 
 /**
+ * Vérifie qu'un candidat peut réserver une place
+ *
  * @async
- * @function validCentreDateReservation
+ * @function
  *
- * @param {string} candidatId Id de mongoose
- * @param {string} centre Id of mongoose
- * @param {Date|DateTime} date Date de l'examen de la place réservée
- * @param {object} previewBookedPlace Type model place which populate centre and candidat
- *
- * @returns {Promise<InfoObject>}
-
+ * @param {string} candidatId - Id de mongoose
+ * @param {string} centre - Id of mongoose
+ * @param {Date|DateTime} date - Date de l'examen de la place réservée
+ * @param {Object} previewBookedPlace - Type model place which populate centre and candidat
+ * @returns {Promise.<import('../../app').InfoObject> | Promise.<undefined>} - Une promesse résolvant `undefined` si le candidat peut réserver, un objet dans le cas contraire
  */
 export const validCentreDateReservation = async (
   candidatId,
@@ -533,17 +547,17 @@ export const validCentreDateReservation = async (
 
   let dateAuthorize = getBeginDateAuthorize(candidat)
   const { days } = dateAuthorize.diff(dateTimeResa, ['days'])
-  let isAuthorize = days < 0
+  let isAuthorized = days < 0
 
-  if (previewBookedPlace && isAuthorize) {
+  if (previewBookedPlace && isAuthorized) {
     const datePreview = getFrenchLuxonFromJSDate(previewBookedPlace.date)
     if (!canCancelReservation(datePreview)) {
       dateAuthorize = getCandBookFrom(candidat, datePreview)
-      isAuthorize = dateTimeResa > dateAuthorize
+      isAuthorized = dateTimeResa > dateAuthorize
     }
   }
 
-  if (!isAuthorize) {
+  if (!isAuthorized) {
     const success = false
     const message =
       CAN_BOOK_AFTER + getFrenchFormattedDateTime(dateAuthorize).date
