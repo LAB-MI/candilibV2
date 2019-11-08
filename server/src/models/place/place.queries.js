@@ -256,6 +256,15 @@ export const countPlacesBookedOrNot = async (centres, beginDate, isBooked) => {
   })
 }
 
+/**
+ * @function
+ *
+ * @param {string} centreId - Id du centre
+ * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {Place[]}
+ */
 export const findAllPlacesBookedByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
   if (beginDate || endDate) {
@@ -269,6 +278,15 @@ export const findAllPlacesBookedByCentre = (centreId, beginDate, endDate) => {
   return query.exec()
 }
 
+/**
+ * @function
+ *
+ * @param {string} inspecteurId - Id de l'inspecteur
+ * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {Place[]}
+ */
 export const findPlaceBookedByInspecteur = (
   inspecteurId,
   beginDate,
@@ -291,6 +309,16 @@ export const findPlaceBookedByInspecteur = (
   return query.exec()
 }
 
+/**
+ * @function
+ *
+ * @param {string} centreId - Id du centre
+ * @param {string} inspecteurIdList - List d'inspecteur id
+ * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {Place[]}
+ */
 export const findPlacesBookedByCentreAndInspecteur = (
   centreId,
   inspecteurIdList,
