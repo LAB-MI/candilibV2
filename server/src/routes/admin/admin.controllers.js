@@ -263,31 +263,31 @@ export const deleteUserByAdmin = async (req, res) => {
 
   const user = await findUserById(req.userId)
   const userToDelete = await findUserByEmail(emailToDelete)
-  if (!isAbleToUpsertUser(userToDelete.status, user)) {
-    res.status(401).json({
-      success: false,
-      message:
-        "Vous n'êtes pas autorisé à supprimer cette utilisateur utilisateur",
-    })
-    return
-  }
 
-  try {
-    if (userToDelete) {
-      await deleteUserByEmail(emailToDelete, user.email)
-      appLogger.info({
-        ...loggerInfo,
-        action: 'delete-user',
-        description: "L'utilisateur a bien été supprimé",
-      })
-      return res.status(200).json({
-        success: true,
-        message: "L'utilisateur a bien été supprimé",
-      })
-    }
+  if (!userToDelete) {
     return res.status(400).json({
       success: false,
       message: "L'utilisateur n'existe pas",
+    })
+  }
+
+  try {
+    if (!isAbleToUpsertUser(userToDelete.status, user)) {
+      res.status(401).json({
+        success: false,
+        message: "Vous n'êtes pas autorisé à supprimer cet utilisateur",
+      })
+      return
+    }
+    await deleteUserByEmail(emailToDelete, user.email)
+    appLogger.info({
+      ...loggerInfo,
+      action: 'delete-user',
+      description: "L'utilisateur a bien été supprimé",
+    })
+    return res.status(200).json({
+      success: true,
+      message: "L'utilisateur a bien été supprimé",
     })
   } catch (error) {
     appLogger.error({

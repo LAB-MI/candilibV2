@@ -7,25 +7,29 @@ import {
   getMe,
   createUserByAdmin,
   deleteUserByAdmin,
+  updatedInfoUser,
 } from './admin.controllers'
 import { createUser } from '../../models/user'
 import config from '../../config'
 
+jest.mock('../business/send-mail')
+
 const { connect, disconnect } = require('../../mongo-connection')
 const { apiPrefix } = require('../../app')
 
-let app
-let admin
-let adminTech
-
 const email = 'test@example.com'
+const emailAdmin = 'Admin@example.com'
 const emailTech = 'testTech@example.com'
-const emaildelegue = 'delegue@example.com'
+const emailDelegue = 'delegue@example.com'
 const password = 'S3cr3757uff!'
 
 const departements = ['75', '93']
 
 describe('Admin controller', () => {
+  let app
+  let admin
+  let adminTech
+
   beforeAll(async () => {
     await connect()
     admin = await createUser(email, password, departements)
@@ -64,7 +68,7 @@ describe('Admin controller', () => {
     )
   })
 
-  xit('Should response 200 with user tech infos', async () => {
+  it('Should response 200 with user tech infos', async () => {
     app = express()
     app.use((req, res, next) => {
       req.userId = adminTech._id
@@ -95,13 +99,13 @@ describe('Create user', () => {
   beforeAll(async () => {
     await connect()
     admin = await createUser(
-      email,
+      emailAdmin,
       password,
       departements,
       config.userStatuses.ADMIN
     )
     delegue = await createUser(
-      emaildelegue,
+      emailDelegue,
       password,
       departements,
       config.userStatuses.DELEGUE
@@ -113,7 +117,7 @@ describe('Create user', () => {
     await app.close()
   })
 
-  xit('Should respond 201 create user by delegue', async () => {
+  it('Should respond 201 create user by delegue', async () => {
     app = express()
     app.use((req, res, next) => {
       req.userId = delegue._id
@@ -129,7 +133,6 @@ describe('Create user', () => {
       .send({
         email,
         departements,
-        password,
         status: config.userStatuses.REPARTITEUR,
       })
       .set('Accept', 'application/json')
@@ -139,7 +142,7 @@ describe('Create user', () => {
     expect(body).toHaveProperty('message')
   })
 
-  xit('Sould repond 201 create user by admin', async () => {
+  it('Sould repond 201 create user by admin', async () => {
     app = express()
     app.use((req, res, next) => {
       req.userId = admin._id
@@ -166,29 +169,120 @@ describe('Create user', () => {
   })
 })
 
-describe(' Delete user by Delegue', () => {
+describe('Update User by admin', () => {
   let app
-  let delegue
+  let admin
+  let updateUser
 
   beforeAll(async () => {
     await connect()
     admin = await createUser(
-      email,
+      emailAdmin,
       password,
       departements,
       config.userStatuses.ADMIN
     )
-    delegue = await createUser(
-      emaildelegue,
+    updateUser = await createUser(
+      email,
       password,
       departements,
       config.userStatuses.DELEGUE
     )
   })
+  afterAll(async () => {
+    await disconnect()
+    app.close()
+  })
+  it('Should respond 200 update user by admin', async () => {
+    app = express()
+    app.use((req, res, next) => {
+      req.userId = admin._id
+      next()
+    })
+    app.use(bodyParser.json({ limit: '20mb' }))
+    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    app.put(`${apiPrefix}/admin/users`, updatedInfoUser)
+    const { body } = await request(app)
+      .put(`${apiPrefix}/admin/users`)
+      .send({ email: updateUser.email })
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message')
+  })
+})
+
+describe('Update User by delegue', () => {
+  let app
+  let delegue
+  let updateUser
+
+  beforeAll(async () => {
+    await connect()
+    delegue = await createUser(
+      emailAdmin,
+      password,
+      departements,
+      config.userStatuses.DELEGUE
+    )
+    updateUser = await createUser(
+      email,
+      password,
+      departements,
+      config.userStatuses.REPARTITEUR
+    )
+  })
+  afterAll(async () => {
+    await disconnect()
+    app.close()
+  })
+  it('Should respond 200 update user by delegue', async () => {
+    app = express()
+    app.use((req, res, next) => {
+      req.userId = delegue._id
+      next()
+    })
+    app.use(bodyParser.json({ limit: '20mb' }))
+    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    app.put(`${apiPrefix}/admin/users`, updatedInfoUser)
+    const { body } = await request(app)
+      .put(`${apiPrefix}/admin/users`)
+      .send({ email: updateUser.email })
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message')
+  })
+})
+
+describe(' Delete user by delegue', () => {
+  let app
+  let delegue
+  let userToDelete
+
+  beforeAll(async () => {
+    await connect()
+    delegue = await createUser(
+      emailDelegue,
+      password,
+      departements,
+      config.userStatuses.DELEGUE
+    )
+    userToDelete = await createUser(
+      email,
+      password,
+      departements,
+      config.userStatuses.REPARTITEUR
+    )
+  })
 
   afterAll(async () => {
     await disconnect()
-    await app.close()
+    app.close()
   })
 
   it('Should respond 200 delete user by delegue', async () => {
@@ -204,7 +298,7 @@ describe(' Delete user by Delegue', () => {
 
     const { body } = await request(app)
       .delete(`${apiPrefix}/admin/users`)
-      .send({ email, status: config.userStatuses.REPARTITEUR })
+      .send({ email: userToDelete.email })
       .set('Accept', 'application/json')
       .expect(200)
 
@@ -212,18 +306,24 @@ describe(' Delete user by Delegue', () => {
     expect(body).toHaveProperty('message')
   })
 })
-
-describe(' Delete user by Admin', () => {
+describe(' Delete user by admin', () => {
   let app
   let admin
+  let userToDelete
 
   beforeAll(async () => {
     await connect()
     admin = await createUser(
-      email,
+      emailAdmin,
       password,
       departements,
       config.userStatuses.ADMIN
+    )
+    userToDelete = await createUser(
+      email,
+      password,
+      departements,
+      config.userStatuses.DELEGUE
     )
   })
 
@@ -245,7 +345,7 @@ describe(' Delete user by Admin', () => {
 
     const { body } = await request(app)
       .delete(`${apiPrefix}/admin/users`)
-      .send({ email, status: config.userStatuses.DELEGUE })
+      .send({ email: userToDelete.email })
       .set('Accept', 'application/json')
       .expect(200)
 

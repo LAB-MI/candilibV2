@@ -114,7 +114,9 @@ describe('User', () => {
 
       // Then
       expect(error).toBeInstanceOf(Error)
-      expect(error.message).toBe('weak_password')
+      expect(error.message).toBe(
+        "Impossible de créer l'utilisateur : weak_password"
+      )
     })
 
     it('should save a user with a valid email and a "strong" password', async () => {
@@ -131,7 +133,7 @@ describe('User', () => {
 
     it('should not save a user with an existing email', async () => {
       // Given
-      const email = validEmail
+      const email = 'emailTwo@example.com'
       const password = validPassword
       user = await createUser(email, password)
 
@@ -166,7 +168,7 @@ describe('User', () => {
 
     it('should update a user′s email', async () => {
       // Given
-      const email = validEmail
+      const email = 'emailThree@example.com'
       const password = validPassword
       user = await createUser(email, password)
 
@@ -184,7 +186,7 @@ describe('User', () => {
 
     it('should update a user′s departement list', async () => {
       // Given
-      const email = validEmail
+      const email = 'emailThree@example.com'
       const password = validPassword
       user = await createUser(email, password)
       const departements = ['75', '93']
@@ -207,7 +209,7 @@ describe('User', () => {
   describe('Deleting User', () => {
     it('should delete a user', async () => {
       // Given
-      const email = validEmail
+      const email = 'emailFour@example.com'
       const password = validPassword
       user = await createUser(email, password)
 
@@ -221,13 +223,13 @@ describe('User', () => {
 
     it('should delete a user by its email', async () => {
       // Given
-      const email = validEmail
+      const emailToDelete = 'emailFive@example.com'
       const password = validPassword
-      user = await createUser(email, password)
+      user = await createUser(emailToDelete, password)
 
       // When
-      const deletedUser = await deleteUserByEmail(validEmail)
-      const noUser = await findUserByEmail(deletedUser.email)
+      const deletedUser = await deleteUserByEmail(emailToDelete)
+      const noUser = await findUserByEmail(deletedUser.emailToDelete)
 
       // Then
       expect(noUser).toBe(null)
