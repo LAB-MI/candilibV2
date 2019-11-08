@@ -516,12 +516,13 @@ export const updatePlaces = async (req, res) => {
 }
 
 export const sendScheduleInspecteurs = async (req, res) => {
-  const { departement, date, isForInspecteurs } = req.body
+  const { departement, date, isForInspecteurs, inspecteurIdList } = req.body
   const loggerContent = {
     section: 'admin-send-mail-schedule-inspecteurs',
     admin: req.userId,
     departement,
     date,
+    inspecteurIdList,
   }
 
   try {
@@ -554,7 +555,8 @@ export const sendScheduleInspecteurs = async (req, res) => {
         emailDepartement || email,
         departement,
         date,
-        isForInspecteurs
+        isForInspecteurs,
+        inspecteurIdList
       )
     } else {
       appLogger.info({

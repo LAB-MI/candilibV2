@@ -290,3 +290,22 @@ export const findPlaceBookedByInspecteur = (
   )
   return query.exec()
 }
+
+export const findPlacesBookedByCentreAndInspecteur = (
+  centreId,
+  inspecteurIdList,
+  beginDate,
+  endDate
+) => {
+  const query = Place.where('centre').exists(true)
+  if (beginDate || endDate) {
+    query.where('date')
+
+    if (beginDate) query.gte(beginDate)
+    if (endDate) query.lt(endDate)
+  }
+  query.where('centre', centreId)
+  query.where('candidat').exists(true)
+  query.where('inspecteur').in(inspecteurIdList)
+  return query.exec()
+}

@@ -26,7 +26,7 @@ import {
   bookPlaceById,
   createPlace,
   deletePlace,
-  findAllPlacesBookedByCentre,
+  findPlacesBookedByCentreAndInspecteur,
   findPlaceBookedByCandidat,
   findPlaceBookedByInspecteur,
   findPlaceById,
@@ -750,7 +750,8 @@ export const sendMailSchedulesInspecteurs = async (
   departementEmail,
   departement,
   date,
-  isForInspecteurs
+  isForInspecteurs,
+  inspecteurIdList
 ) => {
   const loggerContent = {
     section: 'admin-send-mail-schedule-inspecteurs',
@@ -771,8 +772,9 @@ export const sendMailSchedulesInspecteurs = async (
 
   await Promise.all(
     centres.map(async centre => {
-      const places = await findAllPlacesBookedByCentre(
+      const places = await findPlacesBookedByCentreAndInspecteur(
         centre._id,
+        inspecteurIdList,
         beginDate,
         endDate
       )
