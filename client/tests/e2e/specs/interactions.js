@@ -13,7 +13,7 @@ var magicLink
 describe('Standard scenarios', () => {
   before(() => {
     // Delete all mails before start
-    cy.mhDeleteAll()
+    cy.deleteAllMails()
     cy.adminLogin()
     cy.archiveCandidate()
     cy.addPlanning()
@@ -26,11 +26,11 @@ describe('Standard scenarios', () => {
     // Disconnects from the app
     cy.adminDisconnection()
     // The candidate gets the link
-    cy.mhGetFirstRecipients()
+    cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetFirstSubject()
+    cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
-    cy.mhGetFirstBody().then((mailBody) => {
+    cy.getLastMail().its('Content.Body').then((mailBody) => {
       const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
       const withoutEq = codedLink.replace(/=\r\n/g, '')
       magicLink = withoutEq.replace(/=3D/g, '=')

@@ -9,7 +9,7 @@
 describe('Stats Kpi tests', () => {
   let nbPlaces = 0
   beforeEach(() => {
-    cy.mhDeleteAll()
+    cy.deleteAllMails()
     // login admin
     cy.adminLogin()
     // archive candidat already in db

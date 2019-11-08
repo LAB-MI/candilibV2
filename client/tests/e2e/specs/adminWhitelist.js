@@ -13,7 +13,7 @@
 describe('Whitelist tests', () => {
   before(() => {
     // Delete all mails before start
-    cy.mhDeleteAll()
+    cy.deleteAllMails()
     cy.adminLogin()
     cy.archiveCandidate()
     cy.adminDisconnection()

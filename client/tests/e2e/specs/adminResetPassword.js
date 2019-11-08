@@ -11,7 +11,7 @@ describe('Admin reset password', () => {
   const wrongConfirmation = '1234'
   var validationLink
   before(() => {
-    cy.mhDeleteAll()
+    cy.deleteAllMails()
     cy.visit(Cypress.env('frontAdmin') + 'admin-login')
     cy.get('.reset-password-btn')
       .click()
@@ -25,7 +25,7 @@ describe('Admin reset password', () => {
       .contains('close')
       .click()
 
-    cy.mhGetFirstBody().then(mailBody => {
+    cy.getLastMail().its('Content.Body').then(mailBody => {
       const boundary = mailBody.substr(0, mailBody.indexOf('\n'))
       const parts = mailBody.split(boundary)
       const htmlPart = parts[2]
@@ -38,9 +38,9 @@ describe('Admin reset password', () => {
   })
 
   it('Test validates the email address', () => {
-    cy.mhGetFirstRecipients()
+    cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('admin75Login'))
-    cy.mhGetFirstSubject()
+    cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?R=C3=A9initialisation_de_votre_mot_de_pa?= =?UTF-8?Q?sse?=')
   })
 
@@ -100,9 +100,9 @@ describe('Admin reset password', () => {
     cy.get('.v-snack')
       .should('contain', 'Votre mot de passe a bien été modifié')
 
-    cy.mhGetFirstRecipients()
+    cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('admin75Login'))
-    cy.mhGetFirstSubject()
+    cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?Votre_mot_de_passe_a_=C3=A9t=C3=A9_r?= =?UTF-8?Q?=C3=A9initialis=C3=A9?=')
 
     cy.visit(Cypress.env('frontAdmin') + 'admin-login')

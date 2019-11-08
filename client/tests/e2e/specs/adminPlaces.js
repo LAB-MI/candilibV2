@@ -17,7 +17,7 @@ describe('Places tests', () => {
     const placesInspecteur1 = horaires.map(csvRowBuilder(Cypress.env('inspecteur'), Cypress.env('matricule')))
     const placesArray = [csvHeaders].concat(placesInspecteur1).join('\n')
     // Delete all mails before start
-    cy.mhDeleteAll()
+    cy.deleteAllMails()
     cy.adminLogin()
     cy.archiveCandidate()
     // Creates the csv file

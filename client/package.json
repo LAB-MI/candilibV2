@@ -70,7 +70,6 @@
     "babel-eslint": "^10.0.3",
     "cross-env": "^6.0.3",
     "cypress-file-upload": "^3.4.0",
-    "cypress-mailhog": "^1.1.0",
     "eslint": "^6.6.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-vue": "^5.2.3",
