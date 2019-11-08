@@ -206,7 +206,8 @@ export const resetMyPassword = async (req, res) => {
   if (user.emailValidationHash !== hash) {
     return res.status(401).json({
       success: false,
-      message: 'Votre lien est invalide',
+      message:
+        "Votre lien est invalide. Pour rappel, il n'est valable que durant quinze minutes; Veuillez redemander un lien de réinitialisation de mot de passe",
     })
   }
 

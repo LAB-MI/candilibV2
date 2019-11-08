@@ -54,7 +54,7 @@
             :aria-disabled="isSendingPassword"
             >
             <div class="submit-bgbtn"></div>
-            <div class="submit-label">Réinitialiser le mot de passe</div>
+            <div class="submit-label">Réinitialiser mon mot de passe</div>
           </button>
       </div>
     </v-form>
@@ -78,10 +78,10 @@ export default {
       passwordRules: [
         value => !!value || ('Veuillez renseigner votre mot de passe'),
         value => strongEnoughPassword.every(regex => regex.test(value)) ||
-          'Veuillez entrer un mot de passe fort (exemple: A@5db98)',
+          'Veuillez entrer un mot de passe fort (exemple: A@5db9812)',
       ],
       confirmNewPasswordRules: [
-        value => !!value || ('Veuillez confirmer votre mot de passe'),
+        value => (!!value && value === this.newPassword) || ('Veuillez confirmer votre mot de passe'),
       ],
 
     }
@@ -100,12 +100,6 @@ export default {
         return
       }
       const { email, hash } = this.$route.query
-      if (!this.newPassword) {
-        return this.$store.dispatch(SHOW_ERROR, `Veuillez saisir un mot de passe`)
-      }
-      if (this.newPassword !== this.confirmNewPassword) {
-        return this.$store.dispatch(SHOW_ERROR, `Vos mots de passe ne correspondent pas`)
-      }
       try {
         await this.$store.dispatch(RESET_PASSWORD_REQUEST, {
           email,
@@ -116,16 +110,9 @@ export default {
         this.$store.dispatch(SHOW_SUCCESS, `Votre mot de passe a bien été modifié`)
         this.$router.push({ name: 'admin-login' })
       } catch (error) {
-        return this.$store.dispatch(SHOW_ERROR, `Oups! Une erreur est survenue. L'administrateur a été prévenu`)
+        await this.$store.dispatch(SHOW_ERROR, error.message)
+        return setTimeout(() => this.$router.push({ name: 'admin-login' }), 2000)
       }
-    },
-
-    async redirect () {
-      if (!SHOW_SUCCESS) {
-        return this.$store.dispatch(SHOW_ERROR, 'Oups ! Une erreur est survenue')
-      }
-      await this.$store.dispatch(SHOW_SUCCESS, `Votre mot de passe a bien été modifié`)
-      return window.setTimeout(() => this.$router.push({ name: 'admin-login' }), 4000)
     },
   },
 }
