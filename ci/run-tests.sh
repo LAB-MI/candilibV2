@@ -2,7 +2,7 @@
 basename=$(basename $0)
 ret=1
 echo "# build all services (front_candidat,front_admin,api,db) in prod mode"
-time make build-all NPM_AUDIT_DRY_RUN=false
+time make build-all NPM_AUDIT_DRY_RUN=${NPM_AUDIT_DRY_RUN:-false}
 ret=$?
 if [ "$ret" -gt 0 ] ; then
   echo "$basename build-all ERROR"
