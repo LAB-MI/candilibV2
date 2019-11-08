@@ -26,7 +26,7 @@ import {
   bookPlaceById,
   createPlace,
   deletePlace,
-  findPlacesBookedByCentreAndInspecteur,
+  findAllPlacesBookedByCentreAndInspecteur,
   findPlaceBookedByCandidat,
   findPlaceBookedByInspecteur,
   findPlaceById,
@@ -772,7 +772,7 @@ export const sendMailSchedulesInspecteurs = async (
 
   await Promise.all(
     centres.map(async centre => {
-      const places = await findPlacesBookedByCentreAndInspecteur(
+      const places = await findAllPlacesBookedByCentreAndInspecteur(
         centre._id,
         inspecteurIdList,
         beginDate,
