@@ -20,7 +20,7 @@
         class="headline grey lighten-2"
         primary-title
       >
-      Réinitialiser mon mot de passe
+        Réinitialiser mon mot de passe
       </v-card-title>
       <v-form
         v-model="isValidEmail"
@@ -35,9 +35,9 @@
               @blur="removeEmailPlaceholder"
               @input="setEmailToLowerCase"
               :placeholder="emailPlaceholder"
-              aria-placeholder="admin@example.com"
+              :aria-placeholder="emailPlaceholder"
               :autofocus="showDialog"
-              hint="ex. : admin@example.com"
+              :hint="`ex. : ${emailPlaceholder}`"
               label="Adresse courriel"
               ref="emailInput"
               required
@@ -60,7 +60,8 @@
             :aria-disabled="isSendingResetLink"
             tabindex="2"
             color="#28a745"
-          > Réinitialiser le mot de passe
+          >
+            Réinitialiser mon mot de passe
           </v-btn>
         </v-card-actions>
       </v-form>
@@ -117,8 +118,8 @@ export default {
     },
 
     async sendMailResetLink () {
-      if (!this.email || emailRegex.test(this.email)) {
-        return this.$store.dispatch(SHOW_ERROR, `Veuillez fournir une adresse courriel valide`)
+      if (!this.isValidEmail) {
+        return
       }
       try {
         await this.$store.dispatch(SEND_RESET_LINK_REQUEST, this.email)
