@@ -33,6 +33,7 @@
         <v-btn
           text
           @click="showEvaluation = false"
+          class="t-evaluation-later"
         >
           {{ $formatMessage({ id: 'later' }) }}
         </v-btn>
@@ -40,6 +41,7 @@
           color="primary"
           text
           @click="sendEvaluation"
+          class="t-evaluation-submit"
         >
           {{ $formatMessage({ id: 'evaluate_now' }) }}
         </v-btn>

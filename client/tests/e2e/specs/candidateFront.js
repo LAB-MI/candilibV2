@@ -195,6 +195,8 @@ describe('Connected candidate front', () => {
       .click()
     cy.get('.v-snack')
       .should('contain', 'Votre annulation a bien été prise en compte.')
+    cy.get('.t-evaluation-later')
+      .click()
     cy.get('h2')
       .should('contain', 'Choix du centre')
     cy.getLastMail().getRecipients()
