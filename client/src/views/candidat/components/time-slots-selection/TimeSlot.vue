@@ -246,7 +246,7 @@ export default {
 
 .sticky-months {
   position: sticky;
-  top: 150px;
+  top: 180px;
   z-index: 1;
 }
 </style>

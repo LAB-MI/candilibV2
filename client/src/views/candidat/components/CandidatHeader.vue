@@ -1,5 +1,9 @@
 <template>
-  <v-toolbar dark fixed class="candidat-toolbar  u-max-width-parent">
+  <v-toolbar
+    dark
+    fixed
+    class="candidat-toolbar  u-max-width-parent"
+  >
     <v-app-bar-nav-icon
       class="u-only-on-mobile"
       @click="toggleDrawer"
@@ -121,6 +125,9 @@ export default {
 
 <style lang="stylus" scoped>
 .candidat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   justify-content: center;
   align-items: center;
 

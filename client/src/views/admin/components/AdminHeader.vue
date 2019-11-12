@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar class="header-admin" dark fixed>
+  <v-toolbar class="admin-header" dark fixed>
     <v-toolbar-title>
       <h1 class="logo">
         <router-link to="/admin" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
@@ -65,20 +65,23 @@ export default {
 
 <style lang="stylus" scoped>
 .admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
+  justify-content: space-between;
+  max-height: 64px;
   padding: 0 1em;
   background-color: black;
-  margin-top: 4em;
+
+  & >>> .v-toolbar__content {
+    padding-right: 0;
+    width: 100%;
+  }
 }
 
 .color-header {
   color: #fff;
-}
-
-.header-admin {
-  & >>> .v-toolbar__content {
-    padding-right: 0;
-  }
 }
 
 .logo {
