@@ -239,6 +239,7 @@ describe('update place by admin', () => {
     })
 
     app.patch(`${apiPrefix}/admin/places/:id`, updatePlaces)
+    app.post(`${apiPrefix}/admin/bordereaux`, sendScheduleInspecteurs)
 
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
     // if next-line is set as true, this display logger info in console
@@ -394,6 +395,47 @@ describe('update place by admin', () => {
     await place.remove()
   })
 
+  it('should return a 200 when send inspecteur bordereaux', async () => {
+    // Given
+    setInitCreatedInspecteurs()
+    const [inspecteur1] = await createInspecteurs()
+    setInitCreatedCentre()
+    const [centre1] = await createCentres()
+
+    const createdBookedPlace = {
+      date: getFrenchLuxonFromObject({ day: 19, hour: 9 })
+        .setLocale('fr')
+        .toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+      candidat: candidatsCreatedAndUpdated[0]._id,
+    }
+    const place = await createPlace(createdBookedPlace)
+    // When
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/bordereaux`)
+      .send({
+        departement: centre1.departement,
+        date: place.date,
+        isForInspecteurs: true,
+        inspecteurIdListe: [`${inspecteur1._id}`],
+      })
+      // Then
+      .expect(200)
+
+    expectMailBordereaux({
+      inspecteurName: inspecteur1.nom,
+      inspecteurMatricule: inspecteur1.matricule,
+      dateToString: getFrenchFormattedDateTime(place.date).date,
+      centreNom: centre1.nom,
+      departement: centre1.departement,
+      emailInspecteur: `${inspecteur1.email}`,
+      places: [place],
+    })
+    expect(body).toHaveProperty('success', true)
+    await place.remove()
+  })
+
   it('should return a 422 when trying to assign unexisting candidat to place', async () => {
     const [inspecteur1] = await createInspecteurs()
     const [centre1] = await createCentres()
@@ -471,6 +513,36 @@ describe('update place by admin', () => {
     await place.remove()
   })
 })
+
+async function expectMailBordereaux (subjectParams) {
+  const {
+    inspecteurName,
+    inspecteurMatricule,
+    dateToString,
+    centreNom,
+    departement,
+    emailInspecteur,
+    places,
+  } = subjectParams
+  const bodyMail = require('../business/send-mail').getMail()
+  expect(bodyMail).toBeDefined()
+  expect(bodyMail).toHaveProperty('to', emailInspecteur)
+  expect(bodyMail).toHaveProperty(
+    'subject',
+    `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
+  )
+  expect(bodyMail).toHaveProperty(
+    'html',
+    await getScheduleInspecteurBody(
+      inspecteurName,
+      inspecteurMatricule,
+      dateToString,
+      centreNom,
+      departement,
+      places
+    )
+  )
+}
 
 async function expectMailBordereaux (subjectParams) {
   const {
