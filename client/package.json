@@ -7,6 +7,7 @@
     "build": "vue-cli-service build",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" vue-cli-service test:e2e",
+    "test:e2e-local": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" vue-cli-service test:e2e --env build=1 --config numTestsKeptInMemory=1",
     "lint": "run-p lint:*",
     "build:admin": "vue-cli-service build",
     "build:candidat": "vue-cli-service build",
