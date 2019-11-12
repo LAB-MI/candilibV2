@@ -34,6 +34,10 @@ Cypress.Commands.add('getSubject', { prevSubject: true }, (mail) => {
   return cy.wrap(mail.Content.Headers).then((headers) => headers.Subject[0])
 })
 
+Cypress.Commands.add('getBody', { prevSubject: true }, (mail) => {
+  return cy.wrap(mail.Content).its('Body')
+})
+
 Cypress.Commands.add('getRecipients', { prevSubject: true }, (mail) => {
   return cy
     .wrap(mail)
