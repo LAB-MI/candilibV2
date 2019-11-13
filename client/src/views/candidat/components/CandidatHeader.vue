@@ -1,5 +1,5 @@
 <template>
-  <v-toolbar
+  <v-app-bar
     dark
     fixed
     class="candidat-toolbar  u-max-width-parent"
@@ -8,12 +8,15 @@
       class="u-only-on-mobile"
       @click="toggleDrawer"
     ></v-app-bar-nav-icon>
+
     <v-toolbar-title style="margin-left: 0; padding-left: 0;">
       <h1 class="logo">
         <router-link to="/candidat" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
       </h1>
     </v-toolbar-title>
+
     <v-spacer></v-spacer>
+
     <div class="text-xs-center d-flex align-center">
       <v-tabs
         class="u-only-on-desktop"
@@ -35,11 +38,13 @@
             :iconName="link.iconName"
             :tooltipText="link.tooltipText"
           />
+
           <span class="min-width-1170  tab-label">
             {{link.label}}
           </span>
         </v-tab>
       </v-tabs>
+
       <v-tooltip bottom v-if="isCandidatSignedIn">
         <template v-slot:activator="{ on }">
           <v-btn
@@ -53,9 +58,10 @@
         </template>
         <span>Déconnexion</span>
       </v-tooltip>
+
       <bandeau-beta />
     </div>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>
