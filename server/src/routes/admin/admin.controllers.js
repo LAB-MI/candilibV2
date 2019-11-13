@@ -140,7 +140,7 @@ export const createUserByAdmin = async (req, res) => {
     }
     return res.status(400)({
       success: false,
-      message: `L'utilisateur ${user.email} est déja enregistré en base`,
+      message: `L'utilisateur ${createdUser.email} est déja enregistré en base`,
     })
   } catch (error) {
     appLogger.error({
@@ -211,7 +211,7 @@ export const updatedInfoUser = async (req, res) => {
   if (!isValidEmail) {
     return res.status(400).json({
       success: false,
-      message: "l'adresse courriel n'est pas valide",
+      message: "L'adresse courriel n'est pas valide",
     })
   }
 

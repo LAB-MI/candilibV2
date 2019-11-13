@@ -1010,7 +1010,7 @@ router
  *                 description: Statut de l'utilisateur
  *
  *     responses:
- *       200:
+ *       201:
  *         description: Utilisateur créé
  *         content:
  *           application/json:
@@ -1036,13 +1036,14 @@ router
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: Le code du département est manquant ou l'adresse courriel est invalide
+ *                     message: L'utilisateur est déja enregistré en base
  *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
  *
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
+ *@see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_users}
  *
  */
 router.post('/users', verifyDelegueLevel, createUserByAdmin)
@@ -1180,7 +1181,7 @@ router.post('/users', verifyDelegueLevel, createUserByAdmin)
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: Le code du département est manquant ou l'adresse courriel est invalide
+ *                     message: L'adresse courriel n'est pas valide
  *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
@@ -1188,6 +1189,7 @@ router.post('/users', verifyDelegueLevel, createUserByAdmin)
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/put_admin_users}
  */
 
 router.put('/users', verifyDelegueLevel, updatedInfoUser)
@@ -1253,7 +1255,7 @@ router.put('/users', verifyDelegueLevel, updatedInfoUser)
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: Le code du département est manquant ou l'adresse courriel est invalide
+ *                     message: L'utilisateur n'existe pas
  *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
@@ -1261,6 +1263,7 @@ router.put('/users', verifyDelegueLevel, updatedInfoUser)
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_users }
  */
 
 router.delete('/users', verifyDelegueLevel, deleteUserByAdmin)
