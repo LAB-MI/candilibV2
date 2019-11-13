@@ -206,9 +206,33 @@ export default {
       return json
     },
 
+    async createUser (user) {
+      const json = await apiClient.post(apiPaths.admin.users, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify(user),
+      })
+      console.log('testCreateUsers', { user })
+      return json
+    },
+
     async getMe () {
       const json = await apiClient.get(apiPaths.admin.myProfile, {
         headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
+    async getUsers () {
+      const json = await apiClient.get(apiPaths.admin.users, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
+    async deleteUser (emailToDelete) {
+      const json = await apiClient.delete(apiPaths.admin.users, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ email: emailToDelete }),
       })
       return json
     },

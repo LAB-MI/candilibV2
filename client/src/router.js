@@ -92,6 +92,7 @@ const adminRoutes = [
         path: 'users',
         name: 'users',
         component: Users,
+        beforeEnter: checkAccess,
       },
     ],
   },
