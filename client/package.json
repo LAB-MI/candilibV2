@@ -27,8 +27,8 @@
   "dependencies": {
     "ag-grid-community": "^21.2.2",
     "ag-grid-vue": "^21.2.2",
-    "core-js": "^3.3.6",
     "chart.js": "^2.8.0",
+    "core-js": "^3.3.6",
     "delay": "^4.3.0",
     "html-loader": "^0.5.5",
     "intl": "^1.2.5",
