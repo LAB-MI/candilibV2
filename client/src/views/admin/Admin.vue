@@ -50,6 +50,11 @@ const headerIcons = [
     iconName: 'favorite',
     tooltipText: 'Liste blanche',
   },
+  {
+    routerTo: 'users',
+    iconName: 'people_alt',
+    tooltipText: 'Répartiteur/Délégué',
+  },
 ]
 
 export default {
