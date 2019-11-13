@@ -42,13 +42,13 @@ export const createUser = async (email, password, departements, status) => {
     await user.save()
     return user
   } catch (error) {
-    let message = error.message
     if (error.message.includes('email_1 dup key')) {
-      message = "l'email existe déjà"
+      const message = "l'email existe déjà"
+      const err = new Error(`Impossible de créer l'utilisateur : ${message}`)
+      err.status = 409
+      throw err
     }
-    const err = new Error(`Impossible de créer l'utilisateur : ${message}`)
-    err.status = 409
-    throw err
+    throw error
   }
 }
 

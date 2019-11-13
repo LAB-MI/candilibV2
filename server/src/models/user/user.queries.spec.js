@@ -114,9 +114,7 @@ describe('User', () => {
 
       // Then
       expect(error).toBeInstanceOf(Error)
-      expect(error.message).toBe(
-        "Impossible de créer l'utilisateur : weak_password"
-      )
+      expect(error.message).toBe('weak_password')
     })
 
     it('should save a user with a valid email and a "strong" password', async () => {
