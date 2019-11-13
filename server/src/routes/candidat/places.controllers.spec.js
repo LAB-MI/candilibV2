@@ -399,10 +399,11 @@ const placeCanNotBook = {
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1],
 }
+
 const placeCancellable = {
   date: (() =>
-    basePlaceDateTime
-      .plus({ days: config.daysForbidCancel + 1, hour: 1 })
+    getFrenchLuxon()
+      .plus({ days: config.daysForbidCancel, hour: -1 })
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
@@ -410,11 +411,12 @@ const placeCancellable = {
 const placeNoCancellable = {
   date: (() =>
     basePlaceDateTime
-      .plus({ days: config.daysForbidCancel - 1, hour: 2 })
+      .plus({ days: config.daysForbidCancel, hour: -24 })
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
 }
+
 const placeToRetry = {
   date: (() =>
     basePlaceDateTime
