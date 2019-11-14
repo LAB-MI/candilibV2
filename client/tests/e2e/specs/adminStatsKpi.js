@@ -60,6 +60,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-remplissage-futur')
       .should('contain', Number(nbBooked / nbPlaces * 100).toFixed(2))
 
+    cy.get('.v-snack button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonReussite.json',
       [
         {
@@ -116,6 +117,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-free-places-' + (nbPlaces - nbInscrits))
       .should('have.length', 1)
 
+    cy.get('.v-snack button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonRecevable.json',
       [
         {
@@ -173,6 +175,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-free-places-' + (nbPlaces - nbBooked))
       .should('have.length', 1)
 
+    cy.get('.v-snack button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonExaminable.json',
       [
         {
@@ -231,6 +234,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-free-places-' + (nbPlaces - nbBooked))
       .should('have.length', 1)
 
+    cy.get('.v-snack button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.absent.json',
       [
         {
@@ -289,6 +293,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-free-places-' + (nbPlaces - nbBooked))
       .should('have.length', 1)
 
+    cy.get('.v-snack button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.reussite.json',
       [
         {
