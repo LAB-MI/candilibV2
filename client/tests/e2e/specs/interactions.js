@@ -82,7 +82,7 @@ describe('Standard scenarios', () => {
     cy.adminLogin()
     // The admin find the reservation and cancels it
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    cy.get('.v-tab')
+    cy.get('.t-center-tabs .v-tab')
       .contains(Cypress.env('centre'))
       .click({ force: true })
     cy.contains('replay')
@@ -148,7 +148,7 @@ describe('Standard scenarios', () => {
     cy.adminLogin()
     // Goes to planning
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    cy.get('.v-tab')
+    cy.get('.t-center-tabs .v-tab')
       .contains(Cypress.env('centre'))
       .click({ force: true })
     // Add candidate to the first place
@@ -193,7 +193,7 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     // The admin Checks that the reservation has been cancelled
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    cy.get('.v-tab')
+    cy.get('.t-center-tabs .v-tab')
       .contains(Cypress.env('centre'))
       .click({ force: true })
     cy.get('.v-window-item').not('[style="display: none;"]')
@@ -224,7 +224,7 @@ describe('Standard scenarios', () => {
     // The admin deletes the places
     cy.adminLogin()
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    cy.get('.v-tab')
+    cy.get('.t-center-tabs .v-tab')
       .contains(Cypress.env('centre'))
       .click({ force: true })
     cy.contains('replay')

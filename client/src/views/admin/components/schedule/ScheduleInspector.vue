@@ -100,7 +100,7 @@
       <big-loading-indicator :is-loading="isLoading" />
 
       <v-tabs
-        class="tabs"
+        class="tabs t-center-tabs"
         v-model="activeCentreTab"
         color="dark"
         slider-color="#f82249"
