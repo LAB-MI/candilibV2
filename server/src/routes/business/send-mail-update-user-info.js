@@ -15,7 +15,7 @@ import { getHtmlBody } from './mail'
  */
 
 export const sendMailConfirmationUpdateUserInfo = email => {
-  const mail = getMailConfirmation()
+  const mail = getMailConfirmation(email)
   return sendMail(email, mail)
 }
 
@@ -28,7 +28,8 @@ export const sendMailConfirmationUpdateUserInfo = email => {
  * @returns {string} Contenu HTML de la partie informative du contenu du mail de confirmation de mise à jour des informations de l'utilisateur
  */
 export const getMailConfirmationTemplate = email => `
-  <p> les informations de l'utilisateur ${email} on bien été modifié.
+  <p>
+   Vos informations ont bien été modifiées.
   </p>
   <br>
   <p align="right">L'équipe Candilib</p>

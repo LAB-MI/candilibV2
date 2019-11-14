@@ -8,8 +8,8 @@ import express from 'express'
 import { getCandidats, importCandidats } from './candidats.controllers'
 import {
   getMe,
-  createUserByAdmin,
-  deleteUserByAdmin,
+  createUserController,
+  deleteUserController,
   updatedInfoUser,
 } from './admin.controllers'
 import { getInspecteurs } from './inspecteurs-controllers'
@@ -34,9 +34,9 @@ import {
   verifyRepartiteurDepartement,
   verifyRepartiteurLevel,
   verifyUserLevel,
+  verifyDelegueLevel,
 } from './middlewares'
 import config from '../../config'
-import { verifyDelegueLevel } from './middlewares/verify-delegue-level'
 
 const router = express.Router()
 
@@ -1046,7 +1046,7 @@ router
  *@see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_users}
  *
  */
-router.post('/users', verifyDelegueLevel, createUserByAdmin)
+router.post('/users', verifyDelegueLevel, createUserController)
 
 /**
  * @swagger
@@ -1266,6 +1266,6 @@ router.put('/users', verifyDelegueLevel, updatedInfoUser)
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_users }
  */
 
-router.delete('/users', verifyDelegueLevel, deleteUserByAdmin)
+router.delete('/users', verifyDelegueLevel, deleteUserController)
 
 export default router

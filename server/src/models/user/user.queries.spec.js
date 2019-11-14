@@ -4,7 +4,7 @@ import {
   deleteUserByEmail,
   findUserByEmail,
   findUserById,
-  updateUserDepartements,
+  updateUser,
   updateUserEmail,
 } from './'
 import { connect, disconnect } from '../../mongo-connection'
@@ -72,10 +72,13 @@ describe('User', () => {
   })
 
   describe('Saving User', () => {
+    const emailTwo = 'emailTwo@example.com'
+
     afterEach(async () => {
       await Promise.all([
         deleteUserByEmail(validEmail).catch(() => true),
         deleteUserByEmail(anotherValidEmail).catch(() => true),
+        deleteUserByEmail(emailTwo).catch(() => true),
       ])
     })
 
@@ -131,7 +134,7 @@ describe('User', () => {
 
     it('should not save a user with an existing email', async () => {
       // Given
-      const email = 'emailTwo@example.com'
+      const email = emailTwo
       const password = validPassword
       user = await createUser(email, password)
 
@@ -141,6 +144,7 @@ describe('User', () => {
       // Then
       expect(user.isNew).toBe(false)
       expect(error).toBeInstanceOf(Error)
+      expect(error.message).toContain("l'email existe déjà")
     })
 
     it('should not save a user with an invalid email', async () => {
@@ -157,16 +161,20 @@ describe('User', () => {
   })
 
   describe('Updating User', () => {
+    const emailThree = 'emailThree@example.com'
+    const emailFour = 'emailFour@example.com'
+
     afterEach(async () => {
       await Promise.all([
         deleteUserByEmail(anotherValidEmail).catch(() => true),
-        deleteUserByEmail(validEmail).catch(() => true),
+        deleteUserByEmail(emailThree).catch(() => true),
+        deleteUserByEmail(emailFour).catch(() => true),
       ])
     })
 
     it('should update a user′s email', async () => {
       // Given
-      const email = 'emailThree@example.com'
+      const email = emailThree
       const password = validPassword
       user = await createUser(email, password)
 
@@ -184,16 +192,15 @@ describe('User', () => {
 
     it('should update a user′s departement list', async () => {
       // Given
-      const email = 'emailThree@example.com'
+      const email = emailFour
       const password = validPassword
       user = await createUser(email, password)
       const departements = ['75', '93']
 
       // When
-      const sameUserWithDepartements = await updateUserDepartements(
-        user,
-        departements
-      )
+      const sameUserWithDepartements = await updateUser(user.email, {
+        departements,
+      })
 
       // Then
       expect(sameUserWithDepartements).toBeDefined()
@@ -205,9 +212,17 @@ describe('User', () => {
   })
 
   describe('Deleting User', () => {
+    const emailFive = 'emailFive@example.com'
+
+    afterEach(async () => {
+      await Promise.all([
+        deleteUserByEmail(anotherValidEmail).catch(() => true),
+        deleteUserByEmail(emailFive).catch(() => true),
+      ])
+    })
     it('should delete a user', async () => {
       // Given
-      const email = 'emailFour@example.com'
+      const email = emailFive
       const password = validPassword
       user = await createUser(email, password)
 
@@ -221,16 +236,19 @@ describe('User', () => {
 
     it('should delete a user by its email', async () => {
       // Given
+      const email = 'terminator@example.com'
       const emailToDelete = 'emailFive@example.com'
       const password = validPassword
       user = await createUser(emailToDelete, password)
 
       // When
-      const deletedUser = await deleteUserByEmail(emailToDelete)
-      const noUser = await findUserByEmail(deletedUser.emailToDelete)
+      await deleteUserByEmail(emailToDelete, email)
+      const deletedUser = await findUserByEmail(emailToDelete)
 
       // Then
-      expect(noUser).toBe(null)
+      expect(deletedUser).toBeInstanceOf(Object)
+      expect(deletedUser).toHaveProperty('deletedAt')
+      expect(deletedUser).toHaveProperty('deletedBy', email)
     })
   })
 })
