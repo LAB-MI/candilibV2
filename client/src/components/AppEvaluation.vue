@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="showEvaluation" max-width="310">
     <v-card
-      class="elevation-12 mx-auto"
+      class="t-evaluation elevation-12 mx-auto"
       width="300"
     >
       <v-card-title
