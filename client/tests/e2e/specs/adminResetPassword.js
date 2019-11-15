@@ -70,7 +70,7 @@ describe('Admin reset password', () => {
         cy.get('.v-messages__message').should(
           'contain',
           'Veuillez confirmer votre mot de passe',
-        );
+        )
       })
   })
 

@@ -145,7 +145,7 @@ export default {
       const { totalBookedPlaces, totalAvailablePlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
       return [
         {
-          label: 'Places disponibles à venir',
+          label: 'Places disponibles',
           backgroundColor: 'rgba(153, 102, 255, 0.2)',
           borderColor: 'rgba(153, 102, 255, 1)',
           borderWidth: 3,
@@ -154,7 +154,7 @@ export default {
           ],
         },
         {
-          label: 'Candidats inscrits',
+          label: 'Candidats sans réservation',
           backgroundColor: 'rgba(255, 159, 64, 0.2)',
           borderColor: 'rgba(255, 159, 64, 1)',
           borderWidth: 3,
