@@ -1,0 +1,12 @@
+build:
+  docker:
+     release:
+        dockerfile: server/Dockerfile
+        target: testing
+     web: server/Dockerfile
+  config:
+    NPM_AUDIT_DRY_RUN: true
+release:
+  image: web
+  command:
+    - npm run dev-setup
