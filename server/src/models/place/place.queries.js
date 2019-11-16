@@ -319,7 +319,7 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
   }
   query.where('centre', centreId)
   query.where('candidat').exists(true)
-  if (inspecteurIdListe && inspecteurIdListe.length) {
+  if (inspecteurIdListe) {
     query.where('inspecteur').in(inspecteurIdListe)
   }
   return query.exec()

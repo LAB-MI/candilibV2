@@ -7,8 +7,19 @@ import {
   findInspecteurByDepartement,
   findInspecteurById,
 } from '../../models/inspecteur'
-import { findAllPlacesByCentre } from '../../models/place'
-import { appLogger, getFrenchLuxonFromISO } from '../../util'
+import {
+  findCentresByDepartement,
+  findCentreById,
+} from '../../models/centre/centre.queries'
+import {
+  findAllPlacesByCentre,
+  findAllPlacesBookedByCentreAndInspecteur,
+} from '../../models/place'
+import {
+  appLogger,
+  getFrenchLuxonFromISO,
+  getFrenchLuxonRangeFromDate,
+} from '../../util'
 import { SOME_PARAMS_ARE_NOT_DEFINED } from './message.constants'
 
 /**
@@ -29,7 +40,7 @@ import { SOME_PARAMS_ARE_NOT_DEFINED } from './message.constants'
  * @param {import('express').Response} res
  */
 export const getInspecteurs = async (req, res) => {
-  const { matching, departement, centreId, begin, end } = req.query
+  const { matching, departement, centreId, begin, end, date } = req.query
 
   const loggerInfo = {
     section: 'admin-get-inspecteur',
@@ -40,7 +51,21 @@ export const getInspecteurs = async (req, res) => {
     begin,
     end,
   }
-  if (departement && !matching && !centreId && !begin && !end) {
+
+  if (date && departement && !matching && !centreId && !begin && !end) {
+    appLogger.debug({
+      ...loggerInfo,
+      func: 'getInspecteursBookedFromDepartement',
+    })
+
+    const results = await getInspecteursBookedFromDepartement(date, departement)
+    return res.status(200).send({
+      success: true,
+      results,
+    })
+  }
+
+  if (departement && !matching && !centreId && !begin && !end && !date) {
     // obtenir la liste des inspecteurs par département
     try {
       loggerInfo.action = 'get-by-departement'
@@ -63,7 +88,7 @@ export const getInspecteurs = async (req, res) => {
         message: error.message,
       })
     }
-  } else if (matching && !centreId && !begin && !end) {
+  } else if (matching && !centreId && !begin && !end && !date) {
     // Recherche un inspecteur
     try {
       loggerInfo.action = 'get-by-matching'
@@ -85,7 +110,7 @@ export const getInspecteurs = async (req, res) => {
         message: error.message,
       })
     }
-  } else if (centreId && begin && end) {
+  } else if (centreId && begin && end && !date) {
     try {
       loggerInfo.action = 'get-inspecteur-by-list-ids'
       appLogger.info(loggerInfo)
@@ -126,4 +151,53 @@ export const getInspecteurs = async (req, res) => {
       message: SOME_PARAMS_ARE_NOT_DEFINED,
     })
   }
+}
+
+export const getInspecteursBookedFromDepartement = async (
+  date,
+  departement
+) => {
+  const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
+
+  const centres = await findCentresByDepartement(departement)
+
+  const places = (await Promise.all(
+    centres.map(centre =>
+      findAllPlacesBookedByCentreAndInspecteur(
+        centre._id,
+        null,
+        beginDate,
+        endDate
+      )
+    )
+  ))
+    .flat()
+    .reduce((acc, { centre, inspecteur }) => {
+      if (
+        acc.find(place => place.inspecteur.toString() === inspecteur.toString())
+      ) {
+        return acc
+      }
+
+      return [
+        ...acc,
+        {
+          centre,
+          inspecteur,
+        },
+      ]
+    }, [])
+
+  const inspecteursInfo = await Promise.all(
+    places.map(async place => {
+      const centre = await findCentreById(place.centre)
+      const inspecteur = await findInspecteurById(place.inspecteur)
+      return {
+        centre,
+        inspecteur,
+      }
+    })
+  )
+
+  return inspecteursInfo
 }
