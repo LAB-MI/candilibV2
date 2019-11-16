@@ -179,4 +179,8 @@ if (config.smtpUser) {
   }
 }
 
+if (config.smtpService) {
+  smtpOptions.service = config.smtpService
+}
+
 export default config
