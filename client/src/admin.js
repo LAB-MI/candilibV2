@@ -47,4 +47,5 @@ export default {
   egale_examens_passes_divise_places_proposees_dans_le_passe: `= examens passés / places proposées dans le passé`,
   de_remplissage_de_places_a_venir: `de remplissage de places à venir`,
   egale_reservation_a_venir_divise_places_proposees_dans_le_futur: `= réservations à venir / places proposées dans le futur`,
+  no_inspecteurs_at_this_date: `Il n'y a pas d'inspecteur avec des réservations`,
 }
