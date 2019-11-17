@@ -88,12 +88,10 @@ export default {
       commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
       try {
         const inspecteurs = await api.admin.getInspecteursBookedByDepartement(date, getters.activeDepartement)
-        console.log({ inspecteurs })
         if (!inspecteurs.success) {
           throw new Error("Un problème s'est produit lors de là récupération de la liste des inspecteurs pour l'envoi de bordereaux")
         }
         const inspecteurList = inspecteurs.results
-        console.log({ inspecteurList })
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, inspecteurList)
       } catch (error) {
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE, error)

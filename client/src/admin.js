@@ -10,6 +10,7 @@ export default {
   les_bordereaux_inspecteurs_seront_envoyes_a_l_adresse: `Les bordereaux inspecteurs seront envoyés à l'adresse courriel`,
   annuler: 'Annuler',
   envoyer: 'Envoyer',
+  recevoir: 'Recevoir',
   nom: 'Nom',
   neph: 'Neph',
   mobile: 'Portable',
