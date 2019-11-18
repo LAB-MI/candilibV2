@@ -763,7 +763,6 @@ describe('Send bordereaux', () => {
       req.userId = user._id
       next()
     })
-
     app.post(`${apiPrefix}/admin/bordereaux`, sendScheduleInspecteurs)
 
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
