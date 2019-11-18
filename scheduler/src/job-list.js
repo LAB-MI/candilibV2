@@ -23,7 +23,7 @@ const allJobs = {
   sendBordereaux: {
     name: 'SEND_BORDEREAUX',
     fn: adminJobs.sendBordereaux,
-    repeatInterval: '12 18 * * *',
+    repeatInterval: '0 18 * * *',
   },
 }
 
