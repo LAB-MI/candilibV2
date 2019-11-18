@@ -12,9 +12,9 @@ WORKDIR /app
 # Expose the listening port of your app
 EXPOSE 8000
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone ; \
 # use proxy & private npm registry
-RUN if [ ! -z "$http_proxy" ] ; then \
+    if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \
         npm config set proxy $http_proxy; \
         npm config set https-proxy $https_proxy; \
@@ -52,18 +52,21 @@ FROM build as production
 ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
 ARG APP_VERSION
+COPY package.json package-lock.json ./
+# Copy the pm2 config
+COPY ecosystem.config.js .
 # Copy the transpiled code to use in production (in /app)
 COPY --from=build /app/dist ./dist
-COPY package.json package-lock.json ./
 # Install production dependencies and clean cache
 RUN npm --no-git-tag-version version ${APP_VERSION} && \
     npm install --production && \
     npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
-    npm cache clean --force
-# Install pm2
-RUN npm install pm2 -g
-# Copy the pm2 config
-COPY ecosystem.config.js .
+    npm cache clean --force ; \
+    npm install pm2 -g
 
 CMD [ "pm2-runtime", "start", "ecosystem.config.js", "--env", "production" ]
+
+FROM production as testing
+# Copy dev-setup (for testing phase)
+COPY dev-setup dev-setup/
