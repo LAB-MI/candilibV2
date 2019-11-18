@@ -12,11 +12,23 @@ import routes from './routes'
 
 import npmVersion from '../package.json'
 
-const IP_QUALIF_CANDIDAT = process.env.IP_QUALIF_CANDIDAT
-const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
-
 /**
  * @swagger
+ *
+ * tags: [
+ *  {
+ *    "name": "Authentification",
+ *    "description": "Pour s'authentifier à l'application"
+ *  },
+ *  {
+ *    "name": "Administrateur",
+ *    "description": "Pour toutes les actions liées aux administrateurs"
+ *  },
+ *  {
+ *    "name": "Candidat",
+ *    "description": "Pour toutes les actions liées aux candidats"
+ *  }
+ * ]
  *
  * components:
  *   securitySchemes:
@@ -38,6 +50,22 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *         message:
  *           type: string
  *           description: Un message compréhensible par l'usager
+ *
+ *     StatsKpiObject:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: Array
+ *           description: Liste des statistiques demandés par département
  *
  *     GeolocObject:
  *       type: object
@@ -84,25 +112,25 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           type: object
  *           description: Informations sur le candidat
  *           properties:
- *             "adresse":
+ *             adresse:
  *               type: string
  *               description: Adresse postale du candidat où lui seront envoyés les correspondances de l'adiminstation
- *             "codeNeph":
+ *             codeNeph:
  *               type: string
  *               description: NEPH du candidat
- *             "email":
+ *             email:
  *               type: string
  *               description: Adresse courriel du candidat
- *             "nomNaissance":
+ *             nomNaissance:
  *               type: string
  *               description: Nom de naissance du candidat
- *             "portable":
+ *             portable:
  *               type: string
  *               description: Numéro de mobile du candidat
- *             "prenom":
+ *             prenom:
  *               type: string
  *               description: Prénom du candidat
- *             "departement":
+ *             departement:
  *               type: string
  *               description: Département du candidat
  *       example:
@@ -114,14 +142,387 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *           "portable": "0603765291"
  *           "prenom": "MAY"
  *           "departement": "93"
-
- *     CentresInfo:
+ *
+ *     CandidatObject:
  *       type: object
+ *       description: Objet candidat dans la base de données
+ *       required:
+ *         - isValidatedByAurige
+ *         - isValidatedEmail
+ *         - nbEchecsPratiques
+ *         - _id
+ *         - adresse
+ *         - codeNeph
+ *         - email
+ *         - nomNaissance
+ *         - portable
+ *         - prenom
+ *         - presignedUpAt
+ *         - departement
+ *         - noReussites
  *       properties:
- *         candidat:
+ *         isValidatedByAurige:
+ *           type: boolean
+ *           description: Vaut `true` si le candidat a été validé par aurige
+ *         isValidatedEmail:
+ *           type: boolean
+ *           description: Vaut `true` si le candidat a validé son adresse courriel
+ *         nbEchecsPratiques:
+ *           type: number
+ *           description: Nombre d'échecs du candidat à l'épreuve pratique
+ *         _id:
  *           type: string
+ *           description: Identifiant du candidat
+ *         adresse:
+ *           type: string
+ *           description: Adresse postale du candidat où lui seront envoyés les correspondances de l'adminstation
+ *         codeNeph:
+ *           type: string
+ *           description: NEPH du candidat
+ *         email:
+ *           type: string
+ *           description: Adresse courriel du candidat
+ *         emailValidationHash:
+ *           type: string
+ *           description: Hash de validation du courriel
+ *         nomNaissance:
+ *           type: string
+ *           description: Nom de naissance du candidat
+ *         portable:
+ *           type: string
+ *           description: Numéro de mobile du candidat
+ *         prenom:
+ *           type: string
+ *           description: Prénom du candidat
+ *         presignedUpAt:
+ *           type: string
+ *           description: Date et heure de la préinscription du candidat
+ *         departement:
+ *           type: string
+ *           description: Département du candidat
+ *         noReussites:
+ *           type: array
+ *           description: Liste des précédents échecs à l'épreuve pratique et causes
+ *           items:
+ *             type: object
+ *             description: Informations sur l'échec à l'épreuve pratique
+ *             required:
+ *               - _id
+ *               - date
+ *               - reason
+ *             properties:
+ *               _id:
+ *                 type: string
+ *                 description: Identifiant de l'échec
+ *               date:
+ *                 type: string
+ *                 description: Date et heure de l'échec
+ *               reason:
+ *                 type: string
+ *                 description: Raison de l'échec
+ *         canBookFrom:
+ *           type: string
+ *           description: Date et heure à partir de laquelle le candidat peut réserver une place
+ *         dateReussiteETG:
+ *           type: string
+ *           description: Date et heure de la réussite de l'épreuve théorique
+ *         firstConnection:
+ *           type: string
+ *           description: Date et heure de la première connexion à Candilib
+ *         places:
+ *           type: array
+ *           description: Liste des places réservées par le candidat
+ *           items:
+ *             type: object
+ *             description: Informations sur la place
+ *             required:
+ *               - _id
+ *               - inspecteur
+ *               - centre
+ *               - date
+ *               - bookedAt
+ *             properties:
+ *               _id:
+ *                 type: string
+ *                 description: Identifiant de la place
+ *               inspecteur:
+ *                 type: string
+ *                 description: Identifiant de l'inspecteur affecté à la place
+ *               centre:
+ *                 type: string
+ *                 description: Identifiant du centre d'examen
+ *               date:
+ *                 type: string
+ *                 description: Date et heure de l'examen
+ *               archivedAt:
+ *                 type: string
+ *                 description: Date et heure à laquelle la place a été archivée
+ *               archiveReason:
+ *                 type: string
+ *                 description: Raison pour l'archivage de la place
+ *               byUser:
+ *                 type: string
+ *                 description: Adresse courriel de l'utilisateur responsable de l'archivage
+ *               bookedAt:
+ *                 type: string
+ *                 description: Date et heure à laquelle la réservation a été prise
+ *               bookedByAdmin:
+ *                 type: object
+ *                 description: Information sur l'administrateur ayant fait la réservation, si applicable
+ *                 required:
+ *                   - _id
+ *                   - departements
+ *                   - signUpDate
+ *                   - status
+ *                   - email
+ *                 properties:
+ *                   _id:
+ *                     type: string
+ *                     description: Identifiant de l'administrateur
+ *                   departements:
+ *                     type: array
+ *                     description: Liste des Départements accessibles par l'administrateur
+ *                     items:
+ *                       type: number
+ *                   signUpDate:
+ *                     type: string
+ *                     description: Date et heure à laquelle l'administrateur à été créé
+ *                   status:
+ *                     type: string
+ *                     description: Role de l'administrateur, par exemple répartiteur
+ *                   email:
+ *                     type: string
+ *                     description: Adresse courriel de l'administrateur
+ *         resaCanceledByAdmin:
+ *           type: string
+ *           description: Date et heure de la dernière annulation de place faite par un administrateur
+ *
+ *     AdminInfo:
+ *       type: object
+ *       required:
+ *         - email
+ *         - departements
+ *         - features
+ *         - emailsDepartements
+ *       properties:
+ *         email:
+ *           type: string
+ *           description: Adresse courriel de l'administrateur
+ *         departements:
+ *           type: array
+ *           description: Liste des Départements accessibles par l'administrateur
+ *           items:
+ *             type: number
+ *         features:
+ *           type: array
+ *           description: Liste de fonctionnalités accessibles par l'administrateur
+ *           items:
+ *             type: string
+ *         emailsDepartements:
+ *           type: array
+ *           description: Liste contenant les objet départements de la base de données accessibles par l'administrateur
+ *           items:
+ *             type: object
+ *             required:
+ *               - _id
+ *               - email
+ *             properties:
+ *               _id:
+ *                 type: number
+ *                 description: le code du département
+ *               email:
+ *                 type: string
+ *                 description: l'adresse courriel liée au département
+ *
+ *       example:
+ *         email: admin@exemple.com
+ *         departements: [
+ *           75
+ *         ]
+ *         features: [
+ *           aurige
+ *         ]
+ *         emailsDepartements: [ {
+ *           _id: 75,
+ *           email: email75@departement.com
+ *         } ]
+ *
+ *     StatsKpiPlacesExams:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: Array
+ *           description: Liste des stats par département
+ *           example: [{
+ *             beginDate: 2019-10-10T22:00:00.000Z,
+ *             departement: 93,
+ *             totalBookedPlaces: 2,
+ *             totalPlaces: 622,
+ *             totalCandidatsInscrits: 2
+ *           }]
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *         statsKpi: [{
+ *           beginDate: 2019-10-10T22:00:00.000Z,
+ *           departement: 93,
+ *           totalBookedPlaces: 2,
+ *           totalPlaces: 622,
+ *           totalCandidatsInscrits: 2
+ *         }]
+ *
+ *     StatsKpiPlacesResults:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: Array
+ *           description: Liste des stats resultats d'examens par département
+ *           example: [{
+ *             departement: "93",
+ *             date: "15/10/2019 à 11:00",
+ *             beginPeriode: "2019-09-14T22:00:00.000Z",
+ *             endPeriode: "2019-10-15T21:59:59.999Z",
+ *             absent: 3,
+ *             failed: 5,
+ *             notExamined: 2,
+ *             received: 15
+ *           }]
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *         statsKpi: [{
+ *           departement: "93",
+ *           date: "15/10/2019 à 11:00",
+ *           beginPeriode: "2019-09-14T22:00:00.000Z",
+ *           endPeriode: "2019-10-15T21:59:59.999Z",
+ *           absent: 3,
+ *           failed: 5,
+ *           notExamined: 2,
+ *           received: 15
+ *         }]
+ *
+ *     WhitelistedInfo:
+ *       type: object
+ *       description: Informations sur l'ajout d'adresses dans la liste blanche
+ *       required:
+ *         - code
+ *         - result
+ *         - status
+ *         - message
+ *       properties:
+ *         code:
+ *           type: number
+ *           description: Code du status http du résultat, habituellement `201`, `207` ou `422`
+ *         result:
+ *           type: array
+ *           description: Liste des adresses et le résultat de la requête
+ *           items:
+ *             type: object
+ *             description: Informations sur l'état de l'ajout d'une adresse
+ *             required:
+ *               - code
+ *               - email
+ *               - success
+ *             properties:
+ *               code:
+ *                 type: number
+ *                 description: Code du status http du résultat, habituellement `201`, `400` ou `409`
+ *               email:
+ *                 type: string
+ *                 description: Adresse entrée dans la requête
+ *               success:
+ *                 type: boolean
+ *                 description: Vaut `true` si l'adresse est bien entrée dans la base de données, `false` sinon
+ *               message:
+ *                 type: string
+ *                 description: En cas d'erreur, ce message donne plus de précision
+ *         status:
+ *           type: string
+ *           description: Réussite ou échec de la requête
+ *         message:
+ *           type: string
+ *           description: Message décrivant le résultat
+ *
+ *     WhitelistedObject:
+ *       type: object
+ *       description: Informations de l'adresse dans la liste blanche
+ *       required:
+ *         - _id
+ *         - email
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: Identifiant de l'adresse
+ *         email:
+ *           type: string
+ *           description: Adresse courriel dans la liste
+ *         departement:
+ *           type: string
+ *           description: Code du département où a été rentré l'adresse
  *
  *   responses:
+ *     InvalidPasswordResponse:
+ *       description: Réponse du serveur en cas de mots de passe erronés
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Oups! Les mots de passe ne correspondent pas
+ *
+ *     InvalidEmailResponse:
+ *       description: Réponse du serveur en cas d'email invalide
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Votre email n'est pas reconnu
+
+ *     InvalidLinkResponse:
+ *       description: Réponse du serveur en cas de lien invalide
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Votre lien est invalide
+
+ *     UnknownEmailResponse:
+ *       description: Erreur inattendue
+ *       content:
+ *         application/json:
+ *           schema:
+ *             allOf:
+ *               - $ref: '#/components/schemas/InfoObject'
+ *               - example:
+ *                   success: false
+ *                   message: Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu
+
  *     InvalidTokenResponse:
  *       description: Réponse du serveur en cas de JWT absent ou invalide
  *       content:
@@ -143,8 +544,6 @@ const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
  *               - example:
  *                   success: false
  *                   message: Oups, un problème est survenu. L'administrateur a été prévenu.
-
- *
  */
 
 /**
@@ -160,6 +559,18 @@ const app = express()
  * Use swagger-ui-express in development only
  */
 if (isDevelopment) {
+  /**
+   * Ip de l'environnement de qualification pour l'appli candidat
+   * @constant {string}
+   */
+  const IP_QUALIF_CANDIDAT = process.env.IP_QUALIF_CANDIDAT
+
+  /**
+   * Ip de l'environnement de qualification pour l'appli répartiteur
+   * @constant {string}
+   */
+  const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
+
   const swaggerJsdoc = require('swagger-jsdoc')
 
   const options = {
@@ -186,7 +597,7 @@ if (isDevelopment) {
         },
       ],
     },
-    apis: ['./src/app.js', './src/routes/**/*.js'], // <-- We add this property:
+    apis: ['./src/app.js', './src/routes/**/*.js'],
   }
 
   const specs = swaggerJsdoc(options)
@@ -237,3 +648,11 @@ app.use(fileupload({ limits: { fileSize: 50 * 1024 * 1024 } }))
 app.use(apiPrefix, routes)
 
 export default app
+
+/**
+ * @typedef {Object} InfoObject
+ *
+ * @property {boolean} success - Indique si l'action a été effectuée avec succès
+ * @property {string} message  - Message destiné à être affiché à l'utilisateur : message de réussite de l'action
+ *                              ou message d'erreur compréhensible par un non technicien
+ */

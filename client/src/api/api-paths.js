@@ -15,27 +15,25 @@ const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
   myProfile: `${apiPrefix}/candidat/me`,
   places: `${apiPrefix}/candidat/places`,
   presignup: `${apiPrefix}/candidat/preinscription`,
-  reservations: `${apiPrefix}/candidat/reservations`,
   verifyToken: `${apiPrefix}/auth/candidat/verify-token`,
 }
 
 const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   candidats: `${apiPrefix}/admin/candidats`,
   exportCsv: `${apiPrefix}/admin/candidats?for=aurige&format=csv`,
-  exportStatsKpiCsv: `${apiPrefix}/admin/stats`,
+  exportResultsExamsStatsKpi: `${apiPrefix}/admin/stats-results-exams`,
+  exportPlacesExamsStatsKpi: `${apiPrefix}/admin/stats-places-exams`,
   login: `${apiPrefix}/auth/admin/token`,
   myProfile: `${apiPrefix}/admin/me`,
-  place: `${apiPrefix}/admin/place`,
   places: `${apiPrefix}/admin/places`,
-  reservations: `${apiPrefix}/admin/reservations`,
   uploadCandidatsJson: `${apiPrefix}/admin/candidats`,
   searchCandidats: `${apiPrefix}/admin/candidats?matching=`,
   searchWhitelisted: `${apiPrefix}/admin/whitelisted?matching=`,
   inspecteurs: `${apiPrefix}/admin/inspecteurs`,
-  uploadPlacesCSV: `${apiPrefix}/admin/places`,
   verifyToken: `${apiPrefix}/auth/admin/verify-token`,
   whitelist: `${apiPrefix}/admin/whitelisted`,
   generateBordereaux: `${apiPrefix}/admin/bordereaux`,
+  resetLink: `${apiPrefix}/auth/admin/reset-link`,
 }
 
 const utilPaths = {

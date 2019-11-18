@@ -23,8 +23,6 @@ export default {
   justify-content: center;
   align-items: center;
   font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
-  background-color: #fff;
-  box-shadow: 0 -10px 10px #fff;
 
   &::after {
     content: '';
@@ -42,7 +40,7 @@ export default {
   max-width: 100%;
   margin-bottom: 10px;
   padding: 0 0.2em;
-  font-size: 2.5rem;
+  font-size: 2rem;
   text-transform: uppercase;
   text-align: center;
   font-weight: 700;

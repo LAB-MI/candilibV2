@@ -3,7 +3,7 @@
     <h2 class="text--center">Validation d'import</h2>
 
     <v-card style="background-color: unset;">
-      <ag-grid-vue style="max-width: 100%; height: 350px;" class="ag-theme-material"
+      <ag-grid-vue style="max-width: 100%; height: 350px;" class="ag-theme-material t-ag-grid-import-places-validation"
         :gridOptions="gridOptions"
         :columnDefs="columnDefs"
         :rowData="rowData"
@@ -67,6 +67,7 @@ export default {
         cellRenderer: StatusRenderer,
         filter: 'agGridAurigeStatusFilter',
         width: 90,
+        headerClass: 't-import-places-validation-header-status',
       },
       { headerName: 'Centre',
         field: 'centre',

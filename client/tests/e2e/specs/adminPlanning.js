@@ -33,34 +33,8 @@ describe('Planning tests', () => {
 
   it('Assigns a candidate and changes the inspector', () => {
     cy.adminLogin()
-    // Goes to planning
-    cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-    // Add candidate to the first place
-    cy.get('.v-tabs')
-      .contains(Cypress.env('centre'))
-      .click({ force: true })
-    cy.contains('replay')
-      .click()
-    cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
-      .and('contain', Cypress.env('inspecteur'))
-      .contains(Cypress.env('inspecteur'))
-      .parents('tbody').within(($row) => {
-        cy.get('.place-button')
-          .should('not.contain', 'block')
-          .contains('check_circle')
-          .click()
-        cy.contains('Affecter un candidat')
-          .click()
-        cy.get('.search-input [type=text]')
-          .type(Cypress.env('candidat'))
-        cy.root().parents().contains(Cypress.env('candidat'))
-          .click()
-        cy.get('.place-details')
-          .should('contain', Cypress.env('centre'))
-        cy.contains('Valider')
-          .click()
-      })
+    // Goes to planning and add candidate to the first place
+    cy.addCandidatToPlace()
     cy.get('.v-snack')
       .should('contain', Cypress.env('candidat'))
       .and('contain', 'a bien été affecté à la place')
@@ -256,15 +230,7 @@ describe('Planning tests without candidate', () => {
   })
 
   it('Tests the import of csv files in the planning', () => {
-    cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-    cy.get('[type=text]')
-      .type(Cypress.env('adminLogin'))
-    cy.get('[type=password]')
-      .type(Cypress.env('adminPass'))
-    cy.get('.submit-btn')
-      .click()
-    cy.get('.v-snack')
-      .should('contain', 'Vous êtes identifié')
+    cy.adminLogin()
     // Goes to where the places are
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
@@ -334,6 +300,16 @@ describe('Planning tests without candidate', () => {
       .should('not.contain', Cypress.env('inspecteur'))
     // Imports the places
     cy.addPlanning()
+    // Check message, when place is put in not available hours
+    const getEtatValidPlanning = cy.get('.t-import-places-validation-header-status')
+    getEtatValidPlanning.should('contain', 'Etat')
+    getEtatValidPlanning.trigger('mouseover')
+    cy.get('.t-import-places-validation-header-status .ag-cell-label-container .ag-header-cell-menu-button').click()
+    cy.get('.t-ag-grid-filter-status-icon').click()
+    cy.get('.t-ag-grid-filter-error').click()
+    cy.get('[col-id=message]').should('contain', "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée.")
+    cy.get('[col-id=status]').should('contain', 'clear')
+    cy.get('[col-id=status]').should('not.contain', 'done')
     // The inspector should be back
     cy.contains('replay')
       .click()

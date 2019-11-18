@@ -12,7 +12,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { ROUTE_AUTHORIZE_AURIGE } from '../../constants'
+import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI } from '../../constants'
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
 
@@ -35,6 +35,12 @@ const headerIcons = [
     routerTo: ROUTE_AUTHORIZE_AURIGE,
     iconName: 'import_export',
     tooltipText: 'Import / Export Aurige',
+    isProtected: true,
+  },
+  {
+    routerTo: ROUTE_AUTHORIZE_STATS_KPI,
+    iconName: 'bar_chart',
+    tooltipText: 'Stats KPI',
     isProtected: true,
   },
   {

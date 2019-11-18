@@ -1,7 +1,7 @@
 <template>
   <div :id="id" class="wrapper">
-    <stats-kpi></stats-kpi>
     <page-title :title="'Interaction Aurige'"/>
+    <big-loading-indicator :is-loading="isLoading" />
     <div class="aurige">
       <!-- propager le accept for upload-file -->
       <upload-file
@@ -25,19 +25,20 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import api from '@/api'
 import { downloadContent } from '@/util'
 import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST } from '@/store'
 import AurigeValidation from './AurigeValidation'
-import StatsKpi from './StatsKpi'
 import UploadFile from '@/components/UploadFile.vue'
+import { BigLoadingIndicator } from '@/components'
 
 export default {
   name: 'admin-aurige',
   components: {
     AurigeValidation,
     UploadFile,
-    StatsKpi,
+    BigLoadingIndicator,
   },
 
   props: {
@@ -51,11 +52,12 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      departement: state => state.admin.departements.active,
+      isLoading: state => state.aurige.isLoading,
+    }),
     inputDisabled () {
       return !this.file
-    },
-    departement () {
-      return this.$store.state.admin.departements.active
     },
   },
 

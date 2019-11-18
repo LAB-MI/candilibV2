@@ -1,9 +1,18 @@
 import User from './user.model'
+import uuidv4 from 'uuid/v4'
 
 export const findUserById = async id => {
   const user = await User.findById(id)
   return user
 }
+
+/**
+ *
+ * @param {string} email
+ * @param {boolean} populatePassword
+ *
+ * @returns {Promise.<User>}
+ */
 
 export const findUserByEmail = async (email, populatePassword) => {
   const query = User.findOne({ email })
@@ -59,10 +68,32 @@ export const updateUserEmail = async (user, email) => {
   return updatedUser
 }
 
+/**
+ * Remplace le mot de passe existant de l'utilisateur
+ *
+ * @async
+ * @function
+ *
+ * @param {User} user
+ * @param {string} password
+ *
+ * @returns {Promise.<User>}
+ */
 export const updateUserPassword = async (user, password) => {
-  await user.updateOne({ password })
-  const updatedUser = await User.findById(user._id)
-  return updatedUser
+  const now = Date.now()
+  const passwordResetRequestedAt = user.passwordResetRequestedAt
+  const difference = now - passwordResetRequestedAt
+  const fifteenMinutes = 15 * 60 * 1000
+  if (difference > fifteenMinutes) {
+    const error = new Error(
+      'Votre lien a expiré, veuillez refaire votre demande de réinitialisation de mot de passe'
+    )
+    error.status = 401
+    throw error
+  }
+  user.password = password
+  await user.save()
+  return user
 }
 
 export const updateUserDepartements = async (user, departements) => {
@@ -81,4 +112,23 @@ export const updateUserStatus = async (user, status) => {
   await user.update({ status })
   const updatedUser = await User.findById(user._id)
   return updatedUser
+}
+
+/**
+ * Retourne un email contenant un lien avec un hash
+ * @async
+ * @function
+ *
+ * @param {string} email
+ *
+ * @returns {Promise.<string>}
+ */
+
+export const addEmailValidationHash = async email => {
+  const emailValidationHash = uuidv4()
+  const user = await findUserByEmail(email)
+  user.emailValidationHash = emailValidationHash
+  user.passwordResetRequestedAt = new Date()
+  await user.save()
+  return emailValidationHash
 }

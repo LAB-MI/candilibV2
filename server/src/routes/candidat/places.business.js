@@ -7,12 +7,13 @@
 import config from '../../config'
 import {
   appLogger,
-  techLogger,
   getFrenchFormattedDateTime,
   getFrenchLuxon,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
+  techLogger,
 } from '../../util'
+
 import {
   findAvailablePlacesByCentre,
   findPlacesByCentreAndDate,
@@ -43,27 +44,40 @@ import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 
 /**
  * Renvoie tous les créneaux d'un centre
+ *
  * @async
  * @function
  *
- * @param {string} id identifiant du centre
- * @param {string} endDate Date maximale au format ISO pour laquelle il faut retourner les places
+ * @param {string} id - identifiant du centre
+ * @param {string} endDate - Date maximale au format ISO pour laquelle il faut retourner les places
  *
  * @returns {string[]} Tableau de dates au format ISO
  */
-export const getDatesByCentreId = async (_id, endDate) => {
+export const getDatesByCentreId = async (_id, beginDate, endDate) => {
   appLogger.debug({
     func: 'getDatesByCentreId',
     _id,
+    beginDate,
     endDate,
   })
 
-  const beginDate = getAuthorizedDateToBook()
-  const endDateTime = getFrenchLuxonFromISO(endDate)
+  const luxonBeginDate = getFrenchLuxonFromISO(beginDate)
+  const luxonEndDate = getFrenchLuxonFromISO(endDate)
 
-  endDate = !endDateTime.invalid ? endDateTime.toJSDate() : undefined
+  const begin =
+    luxonBeginDate.invalid || luxonBeginDate < getAuthorizedDateToBook()
+      ? getAuthorizedDateToBook()
+      : luxonBeginDate
 
-  const places = await findAvailablePlacesByCentre(_id, beginDate, endDate)
+  endDate =
+    !luxonEndDate.invalid &&
+    luxonEndDate <= luxonEndDate.plus({ month: config.numberOfVisibleMonths })
+      ? luxonEndDate.toJSDate()
+      : getFrenchLuxon()
+        .plus({ month: config.numberOfVisibleMonths })
+        .toJSDate()
+
+  const places = await findAvailablePlacesByCentre(_id, begin, endDate)
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO()
   )
@@ -72,15 +86,16 @@ export const getDatesByCentreId = async (_id, endDate) => {
 
 /**
  * Renvoie tous les créneaux (disponibles ou non) d'un centre dans une fourchette de temps
+ *
  * @async
  * @function
  *
- * @param {string} departement Code du département
- * @param {string} centre Nom du centre
- * @param {string} beginDate Date au format ISO à partir duquel des places correspondantes doivent être retournées
- * @param {string} endDate Date au format ISO
+ * @param {string} departement - Code du département
+ * @param {string} centre - Nom du centre
+ * @param {string} beginDate - Date au format ISO à partir duquel des places correspondantes doivent être retournées
+ * @param {string} endDate - Date au format ISO
  *
- * @returns {string[]} Tableau de dates au format ISO
+ * @returns {string[]} - Tableau de dates au format ISO
  */
 export const getDatesByCentre = async (
   departement,
@@ -108,13 +123,14 @@ export const getDatesByCentre = async (
 
 /**
  * Retournes les places pour un créneau (centre et date)
+ *
  * @async
  * @function
  *
- * @param {string} id Id du centre
- * @param {object} date Date en Objet natif JS Date
+ * @param {string} id - Id du centre
+ * @param {Object} date - Date en Objet natif JS Date
  *
- * @returns {string[]} Tableau de dates au format ISO
+ * @returns {string[]} - Tableau de dates au format ISO
  */
 export const hasAvailablePlaces = async (id, date) => {
   const places = await findPlacesByCentreAndDate(id, date)
@@ -126,14 +142,15 @@ export const hasAvailablePlaces = async (id, date) => {
 
 /**
  * Renvoie tous les créneaux disponibles d'un centre pour un jour donné
+ *
  * @async
  * @function
  *
- * @param {string} departement Code du département du centre
- * @param {string} nomCentre Nom du centre
- * @param {object} date Date en Objet natif JS Date
+ * @param {string} departement - Code du département du centre
+ * @param {string} nomCentre - Nom du centre
+ * @param {Object} date - Date en Objet natif JS Date
  *
- * @returns {string[]} Tableau de dates au format ISO
+ * @returns {string[]} - Tableau de dates au format ISO
  */
 export const hasAvailablePlacesByCentre = async (
   departement,
@@ -150,13 +167,14 @@ export const hasAvailablePlacesByCentre = async (
 
 /**
  * Récupère la réservation d'un candidat
+ *
  * @async
  * @function
  *
- * @param {string} candidatId Id du candidat
- * @param {object} options Options à passer à MongoDB pour la query
+ * @param {string} candidatId - Id du candidat
+ * @param {Object} options - Options à passer à MongoDB pour la query
  *
- * @returns {object} Place réservée par le candidat
+ * @returns {Object} - Place réservée par le candidat
  */
 export const getReservationByCandidat = async (candidatId, options) => {
   const place = await findPlaceBookedByCandidat(
@@ -169,14 +187,15 @@ export const getReservationByCandidat = async (candidatId, options) => {
 
 /**
  * Associe un candidat à une place à partir d'un créneau (date et centre)
+ *
  * @async
  * @function
  *
- * @param {string} candidatId Id du candidat
- * @param {string} centre Id du centre
- * @param {object} options Options à passer à MongoDB pour la requête
+ * @param {string} candidatId - Id du candidat
+ * @param {string} centre - Id du centre
+ * @param {Object} options - Options à passer à MongoDB pour la requête
  *
- * @returns {object} Place réservée par le candidat
+ * @returns {Object} - Place réservée par le candidat
  */
 export const bookPlace = async (candidatId, centre, date) => {
   const bookedAt = getFrenchLuxon().toJSDate()
@@ -201,24 +220,40 @@ export const bookPlace = async (candidatId, centre, date) => {
 
 /**
  * Supprime sur une place, l'association avec un candidat
+ *
  * @async
  * @function
  *
- * @param {string} bookedPlace Id du candidat
+ * @param {PlaceModel} bookedPlace place réservée par le candidat
  * @param {boolean} isModified Booléen à `true` s'il s'agit d'une modification, à `false` ou `undefined` s'il s'agit d'une annulation
+ * @param {Object} loggerContent information pour les traces de l'application
  *
  * @returns {RemoveReservationReturn} Informations à afficher au client
  */
-export const removeReservationPlace = async (bookedPlace, isModified) => {
+export const removeReservationPlace = async (
+  bookedPlace,
+  isModified,
+  loggerContent
+) => {
+  let loggerInfo = loggerContent
+  if (!loggerInfo) {
+    loggerInfo = {}
+  }
+  loggerInfo.isModified = isModified
+  loggerInfo.bookedPlaceId = bookedPlace._id
+  loggerInfo.func = 'removeReservationPlace'
+  loggerInfo.action = 'CALL_REMOVE_BOOKING'
   const candidat = bookedPlace.candidat
   if (!candidat) {
-    throw new Error("Il n'y pas de candidat pour annuler la reservation")
+    throw new Error("Il n'y pas de candidat pour annuler la réservation")
   }
-  const { _id: candidatId } = candidat
 
   let dateAfterBook
+  loggerInfo.action = 'CANCEL_BOOKING_RULES'
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
+  loggerInfo.action = 'REMOVE_BOOKING'
   await removeBookedPlace(bookedPlace)
+  loggerInfo.action = 'ARCHIVE_PLACE'
   await archivePlace(
     candidat,
     bookedPlace,
@@ -243,11 +278,11 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
   }
 
   try {
+    loggerInfo.action = 'SEND_MAIL'
     await sendCancelBooking(candidat, bookedPlace)
 
     appLogger.info({
-      section: 'candidat-removeReservation',
-      candidatId,
+      ...loggerInfo,
       success: true,
       statusmail,
       description: message,
@@ -255,7 +290,7 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
     })
   } catch (error) {
     techLogger.error({
-      section: 'candidat-removeReservation',
+      ...loggerInfo,
       action: 'FAILED_SEND_MAIL',
       description: error.message,
       error,
@@ -273,11 +308,12 @@ export const removeReservationPlace = async (bookedPlace, isModified) => {
 
 /**
  * Détermine si une réservation est dans le même créneau (même date/heure et même centre)
+ *
  * @function
  *
  * @param {string} centerId Type string from ObjectId of mongoose
  * @param {DateTime} date Type DateTime from luxon
- * @param {object} previewBookedPlace Type model place which populate centre and candidat
+ * @param {Object} previewBookedPlace Type model place which populate centre and candidat
  *
  * @returns {boolean} Indique s'il s'agit du même créneau (même centre et même date et heure)
  */
@@ -296,6 +332,7 @@ export const isSameReservationPlace = (centerId, date, previewBookedPlace) => {
 
 /**
  * Détermine si un candidat peut annuler sa réservation
+ *
  * @function
  *
  * @param {DateTime} previewDateReservation Type DateTime luxon
@@ -311,9 +348,11 @@ export const canCancelReservation = previewDateReservation => {
 
 /**
  * Retourne la date à partir de laquelle l'utilisateur peut réserver une place
+ *
+ * @async
  * @function
  *
- * @param {object} candidat type Candidate Model
+ * @param {Object} candidat Type Candidate Model
  * @param {Date} previewDateReservation Type Date javascript
  *
  * @returns {DateTime}
@@ -337,7 +376,7 @@ export const applyCancelRules = async (candidat, previewDateReservation) => {
  *
  * @function
  *
- * @param {object} candidat
+ * @param {Object} candidat
  * @param {DateTime} datePassage
  *
  * @returns {DateTime} La date à partir de laquelle le candidat peut prendre un place
@@ -376,10 +415,9 @@ export const getCandBookFrom = (candidat, datePassage) => {
  *
  * @function
  *
- * @param {object} candidat
- * @param {DateTime} datePassage
+ * @param {Object} candidat - Candidat
  *
- * @returns {DateTime} La date à partir de laquelle le candidat peut prendre un place
+ * @returns {DateTime} - La date à partir de laquelle le candidat peut prendre un place
  */
 
 export const getBeginDateAuthorize = candidat => {
@@ -408,11 +446,12 @@ export const getBeginDateAuthorize = candidat => {
 
 /**
  * Renvoie la date à partir de laquelle le candidat encourrera une pénalité s'il modifie ou annule sa place
+ *
  * @function
  *
- * @param {JSDate} dateReservation Date de l'examen de la place
+ * @param {Date} dateReservation - Date de l'examen de la place
  *
- * @returns {string} Date limite en ISO avant laquelle le candidat peut modifier ou annuler sa place sans encourir de pénalité
+ * @returns {string} - Date limite en ISO avant laquelle le candidat peut modifier ou annuler sa place sans encourir de pénalité
  */
 export const getLastDateToCancel = dateReservation => {
   const dateTimeResa = getFrenchLuxonFromJSDate(dateReservation)
@@ -421,12 +460,14 @@ export const getLastDateToCancel = dateReservation => {
 
 /**
  * Ajoute les informations du candidat pour sa réservation
+ *
+ * @async
  * @function
  *
- * @param {string} candidatId Identifiant de l'utilisateur
- * @param {object} reservation Place réservée par un candidat
+ * @param {string} candidatId - Identifiant de l'utilisateur
+ * @param {Object} reservation - Place réservée par un candidat
  *
- * @returns {object} La réservation avec
+ * @returns {Object} - La réservation avec
  */
 export const addInfoDateToRulesResa = async (candidatId, reservation) => {
   const {
@@ -448,14 +489,18 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
     dayToForbidCancel,
   }
 }
+
 /**
- * @async
- * @function validCentreDateReservation
+ * Vérifie qu'un candidat peut réserver une place
  *
- * @param {string} candidatId Id de mongoose
- * @param {string} centre Id of mongoose
- * @param {Date|DateTime} date Date de l'examen de la place réservée
- * @param {object} previewBookedPlace Type model place which populate centre and candidat
+ * @async
+ * @function
+ *
+ * @param {string} candidatId - Id de mongoose
+ * @param {string} centre - Id of mongoose
+ * @param {Date|DateTime} date - Date de l'examen de la place réservée
+ * @param {Object} previewBookedPlace - Type model place which populate centre and candidat
+ * @returns {Promise.<import('../../app').InfoObject> | Promise.<undefined>} - Une promesse résolvant `undefined` si le candidat peut réserver, un objet dans le cas contraire
  */
 export const validCentreDateReservation = async (
   candidatId,
@@ -502,17 +547,17 @@ export const validCentreDateReservation = async (
 
   let dateAuthorize = getBeginDateAuthorize(candidat)
   const { days } = dateAuthorize.diff(dateTimeResa, ['days'])
-  let isAuthorize = days < 0
+  let isAuthorized = days < 0
 
-  if (previewBookedPlace && isAuthorize) {
+  if (previewBookedPlace && isAuthorized) {
     const datePreview = getFrenchLuxonFromJSDate(previewBookedPlace.date)
     if (!canCancelReservation(datePreview)) {
       dateAuthorize = getCandBookFrom(candidat, datePreview)
-      isAuthorize = dateTimeResa > dateAuthorize
+      isAuthorized = dateTimeResa > dateAuthorize
     }
   }
 
-  if (!isAuthorize) {
+  if (!isAuthorized) {
     const success = false
     const message =
       CAN_BOOK_AFTER + getFrenchFormattedDateTime(dateAuthorize).date
@@ -528,3 +573,41 @@ export const validCentreDateReservation = async (
     }
   }
 }
+
+/**
+ * @typedef {Object} DateTime
+ *
+ * DateTime object from luxon {@link https://moment.github.io/luxon/docs/}
+ */
+
+/**
+ * @typedef {Object} Candidat
+ *
+ * @property {string} nomNaissance         - Nom de naissance du candidat
+ */
+
+/**
+ * @typedef {Object} Candidat
+ *
+ * @property {string} nomNaissance         - Nom de naissance du candidat
+ * @property {string} prenom               - Prénom du candidat
+ * @property {string} codeNeph             - NEPH du candidat
+ * @property {string} departement          - Département des centres à afficher au candidat
+ * @property {Date} [dateReussiteETG]      - Date de la dernière réussite à l'ETG
+ * @property {Date} [reussitePratique]     - Date de la réussite pratique
+ * @property {string} email                - Adresse courriel du candidat
+ * @property {string} portable             - Numéro de télephone mobile du candidat
+ * @property {string} adresse              - Adresse postale du candidat
+ * @property {boolean} isValidatedByAurige - Informe sur le résultat de la synchro Aurige (`null` : pas encore synchro, `false` : non validé, `true` : validé)
+ * @property {Date} presignedUpAt          - Date à laquelle le candidat a rempli et envoyé le formulaire de pré-inscription
+ * @property {boolean} isValidatedEmail    - Numéro de télephone mobile du candidat
+ * @property {string} emailValidationHash  - UUID de validation de l'adresse courriel du candidat
+ * @property {Date} [emailValidatedAt]     - Date à laquelle le candidat a validé son adresse courriel
+ * @property {Date} [aurigeValidatedAt]    - Date à laquelle le candidat a été validé par Aurige
+ * @property {Date} [canBookFrom]          - Date minimale des places visibles par le candidat
+ * @property {boolean} [isEvaluationDone]  - Informe sur le fait que le candidat a envoyé un questionnaire de satisfaction ou non
+ * @property {ArchivedPlace[]} [places]    - Liste des places que le candidat a réservé
+ * @property {number} [nbEchecsPratiques]  - Nombre d'échecs du candidat à l'examen pratique
+ * @property {NoReussite} [noReussites]    - Liste des non-réussites du candidat à l'examen pratique
+ * @property {Date} [firstConnection]      - Date à laquelle le candidat s'est connecté la première fois
+ */

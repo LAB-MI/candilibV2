@@ -1,5 +1,41 @@
 <template>
-  <v-flex>
+  <div v-if="isNumberDepartementMoreThanTwo">
+    <v-menu
+      bottom
+    >
+
+      <template v-slot:activator="{ on: menu }">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on: tooltip }">
+          <v-btn
+            fab
+            v-on="{ ...menu, ...tooltip}"
+            outline
+            ripple
+            small
+          >
+            <div class="departement-wrapper">{{ `${activeDepartement}` }}</div>
+          </v-btn>
+          </template>
+          <span>Changer de département</span>
+        </v-tooltip>
+      </template>
+      <v-list>
+        <v-list-tile
+          v-for="(departement, i) in admin.departements.list"
+          :key="i"
+          @click="activeDepartement = departement"
+        >
+          <v-chip
+            outlined
+          >
+            {{ departement }}
+          </v-chip>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
+  </div>
+  <v-flex v-else>
     <div class="c-two-hexagons">
       <hexagon
         v-for="departement in admin.departements.list"
@@ -33,6 +69,13 @@ export default {
         this.$store.dispatch(SELECT_DEPARTEMENT, departement)
       },
     },
+    isNumberDepartementMoreThanTwo () {
+      const { departements } = this.admin
+      if (departements && departements.list && departements.list.length > 2) {
+        return true
+      }
+      return false
+    },
   },
 }
 </script>
@@ -60,5 +103,9 @@ export default {
     bottom: -0.5em;
     right: -0.75em;
   }
+}
+
+.departement-wrapper {
+  font-size: 25px;
 }
 </style>

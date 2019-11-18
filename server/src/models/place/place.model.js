@@ -1,3 +1,7 @@
+/**
+ * Model Place
+ * @module models/place/place-model
+ */
 import mongoose from 'mongoose'
 
 import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
@@ -8,6 +12,14 @@ import { UserFields } from '../user/user.model'
 const { Schema } = mongoose
 const ObjectId = Schema.Types.ObjectId
 
+/**
+ * @typedef {Object} PlaceFields
+ * @property {ObjectId} inspecteur
+ * @property {centre} centre
+ * @property {date} date
+ * @property {date} bookedAt
+ * @property {UserFields} bookedByAdmin
+ */
 export const placeCommonFields = {
   inspecteur: {
     type: ObjectId,
@@ -41,6 +53,9 @@ export const placeCommonFields = {
   },
 }
 
+/**
+ * @type {PlaceModel}
+ */
 const PlaceSchema = new Schema(
   {
     ...placeCommonFields,
@@ -89,5 +104,15 @@ PlaceSchema.pre('save', async function preSave () {
 })
 
 const model = mongoose.model('Place', PlaceSchema)
+
+/**
+ * @typedef {Object} PlaceModel
+ * @property {ObjectId} inspecteur
+ * @property {centre} centre
+ * @property {date} date
+ * @property {date} bookedAt
+ * @property {UserFields} bookedByAdmin
+ * @property {ObjectId} candidat
+ */
 
 export default model

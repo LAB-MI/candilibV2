@@ -10,7 +10,7 @@ import './mailHogCommands'
 
 Cypress.Commands.add('adminLogin', () => {
   cy.visit(Cypress.env('frontAdmin') + 'admin-login')
-  cy.get('[type=text]')
+  cy.get('.t-login-email [type=text]')
     .type(Cypress.env('adminLogin'))
   cy.get('[type=password]')
     .type(Cypress.env('adminPass'))
@@ -21,6 +21,8 @@ Cypress.Commands.add('adminLogin', () => {
 })
 
 Cypress.Commands.add('adminDisconnection', () => {
+  cy.get('.home-link')
+    .click()
   cy.get('.t-disconnect')
     .click()
   cy.get('.v-snack')
@@ -64,7 +66,7 @@ Cypress.Commands.add('archiveCandidate', () => {
     .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 })
 
-Cypress.Commands.add('addToWhitelist', () => {
+Cypress.Commands.add('addToWhitelist', (emailCandidat) => {
   cy.contains('favorite')
     .click()
   cy.get('h2')
@@ -128,7 +130,7 @@ Cypress.Commands.add('addPlanning', () => {
     .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
 })
 
-Cypress.Commands.add('candidatePreSignUp', () => {
+Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   // The candidate fills the pre-sign-up form
   cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
   cy.contains('Se pré-inscrire')
@@ -138,11 +140,11 @@ Cypress.Commands.add('candidatePreSignUp', () => {
   cy.contains('NEPH')
     .parent()
     .children('input')
-    .type(Cypress.env('NEPH'))
+    .type(candidat ? candidat.codeNeph : Cypress.env('NEPH'))
   cy.contains('Nom de naissance')
     .parent()
     .children('input')
-    .type(Cypress.env('candidat'))
+    .type(candidat ? candidat.nomNaissance : Cypress.env('candidat'))
   cy.contains('Prénom')
     .parent()
     .children('input')
@@ -150,7 +152,7 @@ Cypress.Commands.add('candidatePreSignUp', () => {
   cy.contains('Courriel *')
     .parent()
     .children('input')
-    .type(Cypress.env('emailCandidat'))
+    .type(candidat ? candidat.email : Cypress.env('emailCandidat'))
   cy.contains('Portable')
     .parent()
     .children('input')
@@ -173,7 +175,7 @@ Cypress.Commands.add('candidatePreSignUp', () => {
     .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
     // Validates the email address
   cy.mhGetFirstRecipients()
-    .should('contain', Cypress.env('emailCandidat'))
+    .should('contain', candidat ? candidat.email : Cypress.env('emailCandidat'))
   cy.mhGetFirstSubject()
     .should('contain', 'Validation d\'adresse courriel pour Candilib')
   cy.mhGetFirstBody().then((mailBody) => {
@@ -187,7 +189,7 @@ Cypress.Commands.add('candidatePreSignUp', () => {
     .should('contain', 'Adresse courriel validée')
     // Gets the confirmation email
   cy.mhGetFirstRecipients()
-    .should('contain', Cypress.env('emailCandidat'))
+    .should('contain', candidat ? candidat.email : Cypress.env('emailCandidat'))
   cy.mhGetFirstSubject()
     .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
 })
@@ -236,4 +238,50 @@ Cypress.Commands.add('candidateValidation', () => {
     .mhFirst()
     .mhGetSubject()
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+})
+
+Cypress.Commands.add('addCandidatToPlace', () => {
+  // Goes to planning
+  cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+  // Add candidate to the first place
+  cy.get('.v-tabs')
+    .contains(Cypress.env('centre'))
+    .click({ force: true })
+  cy.contains('replay')
+    .click()
+  cy.get('.v-window-item').not('[style="display: none;"]')
+    .should('have.length', 1)
+    .and('contain', Cypress.env('inspecteur'))
+    .contains(Cypress.env('inspecteur'))
+    .parents('tbody').within(($row) => {
+      cy.get('.place-button')
+        .should('not.contain', 'block')
+        .contains('check_circle')
+        .click()
+      cy.contains('Affecter un candidat')
+        .click()
+      cy.get('.search-input [type=text]')
+        .type(Cypress.env('candidat'))
+      cy.root().parents().contains(Cypress.env('candidat'))
+        .click()
+      cy.get('.place-details')
+        .should('contain', Cypress.env('centre'))
+      cy.contains('Valider')
+        .click()
+    })
+})
+
+Cypress.Commands.add('removeCandidatOnPlace', () => {
+  cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+  cy.get('.v-window-item').not('[style="display: none;"]')
+    .contains(Cypress.env('inspecteur2'))
+    .parents('tbody').within(($row) => {
+      cy.get('.place-button')
+        .contains('face')
+        .click()
+      cy.contains('Annuler réservation')
+        .click()
+      cy.contains('Supprimer réservation')
+        .click()
+    })
 })

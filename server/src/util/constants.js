@@ -20,3 +20,18 @@ export const EMAIL_NOT_VERIFIED_YET = 'EMAIL_NOT_VERIFIED_YET'
 export const OK = 'OK_VALID'
 export const OK_MAIL_PB = 'OK_MAIL_PB'
 export const OK_UPDATED = 'OK_UPDATED'
+export const AUTHORIZED_HOURS = [
+  '08:00',
+  '08:30',
+  '09:00',
+  '09:30',
+  '10:00',
+  '10:30',
+  '11:00',
+  '11:30',
+  '13:30',
+  '14:00',
+  '14:30',
+  '15:00',
+  '15:30',
+]

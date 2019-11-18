@@ -7,6 +7,7 @@
         :label="`Import places`"
       ></v-switch>
       <v-layout wrap v-show="isImportPlacesActive" class="u-flex--space-between">
+        <big-loading-indicator :is-loading="isPlacesUpdating" />
         <admin-import-places class="import-places"/>
         <import-places-validation class="u-flex__item"/>
       </v-layout>
@@ -16,21 +17,30 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import AdminImportPlaces from '../AdminImportPlaces'
 import ImportPlacesValidation from '../ImportPlacesValidation'
 import ScheduleInspector from './ScheduleInspector'
+import { BigLoadingIndicator } from '@/components'
 
 export default {
   components: {
     AdminImportPlaces,
     ImportPlacesValidation,
     ScheduleInspector,
+    BigLoadingIndicator,
   },
 
   data () {
     return {
       isImportPlacesActive: false,
     }
+  },
+  computed: {
+    ...mapState({
+      isPlacesUpdating: state => state.importPlaces.isPlacesUpdating,
+    }),
   },
 }
 </script>

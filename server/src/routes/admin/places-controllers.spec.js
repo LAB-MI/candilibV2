@@ -42,7 +42,7 @@ import {
   deletePlacesByAdmin,
   getPlaces,
   updatePlaces,
-} from '../admin/places.controllers'
+} from './places-controllers'
 import { SUBJECT_CONVOCATION } from '../business'
 import { getConvocationBody } from '../business/build-mail-convocation'
 import { REASON_MODIFY_RESA_ADMIN } from '../common/reason.constants'
@@ -78,6 +78,7 @@ const bookedAt = getFrenchLuxon().toJSDate()
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
+jest.mock('../../util/token')
 
 describe('Test places controller', () => {
   let candidatsCreated

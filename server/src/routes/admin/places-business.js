@@ -1,3 +1,7 @@
+/**
+ * Module concernant les logiques métiers des actions sur les places par un utilisateur
+ * @module
+ */
 import * as csvParser from 'fast-csv'
 import XlsxStreamReader from 'xlsx-stream-reader'
 import streamBuffers from 'stream-buffers'
@@ -33,7 +37,7 @@ import {
 import {
   REASON_REMOVE_RESA_ADMIN,
   REASON_MODIFY_RESA_ADMIN,
-} from '../../routes/common/reason.constants'
+} from '../common/reason.constants'
 import {
   appLogger,
   ErrorWithStatus,
@@ -41,6 +45,7 @@ import {
   getFrenchLuxonRangeFromDate,
   getFrenchLuxon,
   FRENCH_LOCALE_INFO,
+  AUTHORIZED_HOURS,
 } from '../../util'
 import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
 import {
@@ -56,6 +61,29 @@ import {
   UNKNOWN_ERROR_UPLOAD_PLACES,
 } from './message.constants'
 
+/**
+ * Résultat d'import d'une place
+ * @typedef {Object} PlaceStatus
+ * @property {string} departement
+ * @property {string} centre
+ * @property {string} inspecteur
+ * @property {string} date
+ * @property {string} status
+ * @property {string} message
+ */
+/**
+ * Formatage de la réponse d'une place suite à un import de planning d'inspecteur
+ * @function
+ *
+ * @param {string} departement Département de la place
+ * @param {string} centre Centre de la place
+ * @param {string} inspecteur Inspecteur de la place
+ * @param {string} date Date de la place
+ * @param {string} status Etat du traitement de la place
+ * @param {string} message Message compréhensible par un utilisateur
+ *
+ * @return {PlaceStatus}
+ */
 const getPlaceStatus = (
   departement,
   centre,
@@ -73,15 +101,32 @@ const getPlaceStatus = (
 })
 
 /**
- * TODO: département à modifier
- * Analyse les données d'une ligne du fichier CSV d'import de places
- *
+ * Une ligne d'un fichier d'import de places
+ * @typedef {string[]} RowImportPlace
+ * @property {string} 1 La date  en format dd/mm/aa
+ * @property {string} 2 L'heure  en format hh:mm
+ * @property {string} 3 Le matricule de l'inspecteur
+ * @property {string} 4 Le nom de l'inspecteur
+ * @property {string} 5 Le nom du centre
+ * @property {string} 6 Le département sélectionné
+ */
+/**
+ * @typedef {Object} RowObjectPlace
+ * @property {string} departement Département sélectionné
+ * @property {import('mongoose').Schema.Types.ObjectId|string} centre Identifiant du centre enregistré dans la base de données
+ * @property {import('mongoose').Schema.Types.ObjectId|string} inspecteur Identifiant d'un inspecteur enregistré dans la base de données
+ * @property {import('luxon').DateTime} date La date et heure de la place
+ */
+/**
+ * Analyse et Convertit les données d'une ligne du fichier d'import de places
+ * - en object [RowObjectPlace]{@link import('./places-business').RowObjectPlace} compréhensiblee pour la fonction createPlaceFromFile
+ * - ou en object [PlaceStatus]{@link import('./places-business').PlaceStatus} avec la valeur 'error' dans la propriété 'status', en cas d'erreur
+ * @async
  * @function
- *
- * @param {string[]} data Données d'une ligne du fichier CSV
- * @param {string} departement Département concerné par cet import de places
- *
- * @returns {PlaceStatus}
+ * @param {Object} param
+ * @param {RowImportPlace} param.data une ligne du fichier d'import de places
+ * @param {string} param.departement Département sélectionné
+ * @return {Promise<RowObjectPlace|PlaceStatus>}
  */
 const parseRow = async ({ data, departement }) => {
   const loggerInfo = {
@@ -169,6 +214,14 @@ const parseRow = async ({ data, departement }) => {
       throw error
     }
 
+    if (!AUTHORIZED_HOURS.includes(myTime)) {
+      const error = new Error(
+        "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée."
+      )
+      error.from = 'parseRow'
+      throw error
+    }
+
     return {
       departement,
       centre: foundCentre,
@@ -202,7 +255,13 @@ const parseRow = async ({ data, departement }) => {
     )
   }
 }
-
+/**
+ * Crée une place importée dans la base de données
+ * @async
+ * @function
+ * @param {RowObjectPlace} place
+ * @return {Promise<PlaceStatus>}
+ */
 const createPlaceFromFile = async place => {
   const loggerInfo = {
     func: 'createPlaceFromFile',
@@ -252,6 +311,15 @@ const createPlaceFromFile = async place => {
   }
 }
 
+/**
+ * Importe les places d'un département dans un fichier CSV.
+ * @async
+ * @function
+ * @param {Object} param
+ * @param {string} param.csvFile Nom du fichier .csv
+ * @param {string} param.departement Département sélectionné
+ * @return {Promise<PlaceStatus[]>}
+ */
 export const importPlacesCsv = async ({ csvFile, departement }) => {
   const loggerInfo = {
     func: 'importPlacesCsv',
@@ -305,7 +373,15 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
       })
   )
 }
-
+/**
+ * Importe les places d'un département dans un fichier XLSX.
+ * @async
+ * @function
+ * @param {Object} param
+ * @param {string} param.xlsxFile Nom du fichier .xlsx
+ * @param {string} param.departement Département sélectionné
+ * @return {Promise<PlaceStatus[]>}
+ */
 export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
   const placesPromise = []
   return new Promise((resolve, reject) => {
@@ -353,6 +429,25 @@ export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
   })
 }
 
+/**
+ * Exception pour les erreurs d'import des places
+ * @typedef {Error} ErrorImportPlace
+ * @property {string} from vaut importPlacesFromFile, pour indiquer la provenance d'exception dans les traces
+ */
+
+/**
+ * Redirige vers les fonctions d'import des places suivant l'extension du fichier à importer
+ * - La fonction pour l'import des fichiers CSV est [importPlacesCsv]{@link import('./places-business')..importPlacesCsv}
+ * - La fonction pour l'import des fichiers XLSX est [importPlacesXlsx]{@link import('./places-business')..importPlacesXlsx}
+ * @async
+ * @function
+ * @param {Object} param Paramètre anonyme
+ * @param {string} param.planningFile Nom du fichier à traiter avec l'extension .csv ou xlsx
+ * @param {string} param.departement Département actif de l'utilisateur
+ * @return {Promise<PlaceStatus[]>}
+ * @throws {ErrorImportPlace} error Envoie une exception si l'extension n'est ni .csv, ni .xlsx
+ *
+ */
 export const importPlacesFromFile = async ({ planningFile, departement }) => {
   if (planningFile.name.endsWith('.csv')) {
     return importPlacesCsv({ csvFile: planningFile, departement })

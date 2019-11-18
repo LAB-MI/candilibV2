@@ -1,4 +1,8 @@
-// import { synchroAurige, getCandidatsAsCsv } from './business'
+/**
+ * Module concernant les actions du candidat
+ * @module routes/candidat/candidat-controllers
+ */
+
 import {
   DATETIME_FULL,
   email as emailRegex,
@@ -30,6 +34,9 @@ import {
 } from './message.constants'
 import { sendErrorResponse } from '../../util/send-error-response'
 
+/**
+ * @constant {string[]} - Liste des noms des champs requis
+ */
 const mandatoryFields = [
   'adresse',
   'codeNeph',
@@ -38,12 +45,37 @@ const mandatoryFields = [
   'portable',
 ]
 
+/**
+ * Supprime les espaces en début et en fin de chacune des valeurs de l'objet s'il s'agit
+ * de chaîne de caractères
+ *
+ * @function
+ *
+ * @param {Object} - Objet avec des propriétés dont certaines valeurs sont des chaînes de
+ *                   caractères et sont susceptibles d'avoir des espaces blancs en trop
+ *
+ * @returns {Object} - Objet avec les valeurs de propriétés dont les espaces blancs
+ *                     en début et en fin de chaîne sont supprimés
+ */
 const trimEveryValue = obj =>
   Object.entries(obj).reduce((acc, [key, value]) => {
     acc[key] = value && (typeof value === 'string' ? value.trim() : value)
     return acc
   }, {})
 
+/**
+ * Préinscrit le candidat
+ *
+ * @async
+ * @function
+ *
+ * @see {@link http://localhost:8000/api-docs/#/default/post_candidat_preinscription}
+ *
+ * @param {import('express').Request} req
+ * @param {Object} req.body
+ * @param {Object} req.candidatData
+ * @param {Object} res
+ */
 export async function preSignup (req, res) {
   const candidatData = trimEveryValue(req.body)
 
@@ -238,6 +270,18 @@ export async function preSignup (req, res) {
   res.status(200).json(updateResult)
 }
 
+/**
+ * Récupère les informations du candidat
+ *
+ * @async
+ * @function
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_me}
+ *
+ * @param {import('express').Request} req - Requête
+ * @param {string} req.userId - Identifiant du candidat (mis sur la requête par le middleware verifyToken)
+ * @param {Object} res - Réponse
+ */
+
 export async function getMe (req, res) {
   try {
     const options = {
@@ -266,6 +310,20 @@ export async function getMe (req, res) {
   }
 }
 
+/**
+ * Met à jour le candidat en marquant son adresse courriel comme validée
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req - Requête
+ * @param {Object} req.body - Corps de la requête
+ * @param {Object} req.body.email - Adresse courriel du candidat
+ * @param {Object} req.body.hash - Hash contenu dans le lien de validation de l'email
+ * @param {Object} res - Réponse
+ *
+ * @see {@link http://localhost:8000/api-docs/#/default/put_candidat_me}
+ */
 export async function emailValidation (req, res) {
   const { email, hash } = req.body || {}
 
@@ -331,6 +389,18 @@ export async function emailValidation (req, res) {
   }
 }
 
+/**
+ * Enregistre l'évaluation du candidat dans la base de données
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req - Requête
+ * @param {Object} req.body - Corps de la requête
+ * @param {Object} req.body.rating - Notation de l'application par le candidat
+ * @param {Object} req.body.comment - Commentaire de l'application par le candidat
+ * @param {Object} res - Réponse
+ */
 export async function saveEvaluation (req, res) {
   const { rating, comment } = req.body.evaluation || {}
   const candidatId = req.userId
@@ -356,7 +426,7 @@ export async function saveEvaluation (req, res) {
 
     const evaluation = await createEvaluation({ rating, comment })
     candidat.isEvaluationDone = true
-    updateCandidatById(candidatId, candidat)
+    await updateCandidatById(candidatId, candidat)
 
     appLogger.info({ ...loggerInfo, description: 'Évaluation enregistrée' })
 

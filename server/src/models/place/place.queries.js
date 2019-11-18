@@ -1,8 +1,13 @@
+/**
+ * Ensemble des actions sur les places dans la base de données
+ * @module module:models/place/place-queries
+ */
 import mongoose from 'mongoose'
 
 import Place from './place.model'
 import '../inspecteur/inspecteur.model'
-import { appLogger } from '../../util'
+import { appLogger, techLogger } from '../../util'
+import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
@@ -17,7 +22,34 @@ export const createPlace = async leanPlace => {
   return place.save()
 }
 
-export const deletePlace = async place => {
+/**
+ * Archiver et supprimer la place
+ *
+ * @async
+ * @function
+ * @see [createArchivedPlaceFromPlace]{@link module:models/archived-place/archived-place-queries.createArchivedPlaceFromPlace}
+ *
+ * @param {Place~PlaceModel} place La place à supprimer
+ * @param {String[]} reasons Les raisons de la suppression
+ * @param {String} byUser L'auteur de l'action
+ * @param {Boolean} isCandilib Suppression lié à une réussite ou un echec d'un examen de candilib
+ *
+ * @return {Place~PlaceModel}
+ */
+export const deletePlace = async (place, reasons, byUser, isCandilib) => {
+  if (!place) {
+    throw new Error('No place given')
+  }
+  try {
+    await createArchivedPlaceFromPlace(place, reasons, byUser, isCandilib)
+  } catch (error) {
+    techLogger.error({
+      func: 'query-place-delete',
+      action: 'archive-place',
+      description: `Could not archive place { inspecteurId:${place.inspecteur}, centreId: ${place.centre}, date: ${place.date} }: ${error.message}`,
+      error,
+    })
+  }
   const deletedPlace = place
   await place.delete()
   return deletedPlace
@@ -52,10 +84,13 @@ export const findPlaceByCandidatId = async (id, populate) => {
 }
 
 /**
+ * @function
  *
  * @param {string} centreId - Id du centre
- * @param {string} beginDate - date de debut de recherche au format ISO
- * @param {string} endDate - date de fin de recherche au format ISO
+ * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {import('mongoose').Query}
  */
 const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
@@ -72,10 +107,13 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
 }
 
 /**
- * @function findAllPlacesByCentre
+ * @function
+ *
  * @param {string} centreId - Id du centre
- * @param {string} beginDate - date de debut de recherche au format ISO
- * @param {string} endDate - date de fin de recherche au format ISO
+ * @param {string} beginDate - Date  au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {Place[]}
  */
 export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
@@ -208,6 +246,14 @@ export const findPlaceWithSameWindow = async creneau => {
   const { date, centre, inspecteur } = creneau
   const place = await Place.findOne({ date, centre, inspecteur })
   return place
+}
+
+export const countPlacesBookedOrNot = async (centres, beginDate, isBooked) => {
+  return Place.countDocuments({
+    centre: { $in: centres },
+    date: { $gte: beginDate },
+    candidat: { $exists: isBooked },
+  })
 }
 
 export const findAllPlacesBookedByCentre = (centreId, beginDate, endDate) => {

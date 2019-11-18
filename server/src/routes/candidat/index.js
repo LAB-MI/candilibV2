@@ -6,13 +6,11 @@ import express from 'express'
 
 import { getMe, saveEvaluation } from './candidat.controllers'
 import { getCentres } from '../common/centre.controllers'
-import { getPlaces } from './places.controllers'
-
 import {
-  getReservations,
-  createReservation,
-  removeReservation,
-} from './reservations.controllers'
+  getPlaces,
+  bookPlaceByCandidat,
+  unbookPlace,
+} from './places.controllers'
 
 const router = express.Router()
 
@@ -21,6 +19,7 @@ const router = express.Router()
  *
  * /candidat/me:
  *   get:
+ *     tags: ["Candidat"]
  *     summary: Récupération de mes infos candidat
  *     description: Après connexion, renvoie les infos du candidat connecté (id dans le JWT envoyé en header)
  *     produces:
@@ -47,7 +46,6 @@ const router = express.Router()
 /**
  * Après connexion, renvoie les infos du candidat connecté (id dans le JWT envoyé en header)
  *
- * @callback getMe
  * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_me}
  */
 
@@ -58,6 +56,7 @@ router.get('/me', getMe)
  *
  * /candidat/centres:
  *   get:
+ *     tags: ["Candidat"]
  *     summary: Récupération de mes infos des centres du département du candidat
  *     description: Après connexion, renvoie les infos des centres du département du candidat
  *     produces:
@@ -116,7 +115,6 @@ router.get('/me', getMe)
 /**
  * Après connexion, renvoie les infos des centres du département du candidat
  *
- * @callback getCentres
  * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_centres}
  */
 
@@ -127,10 +125,11 @@ router.get('/centres', getCentres)
  *
  * /candidat/places/{placeId}:
  *   get:
+ *     tags: ["Candidat"]
  *     summary: Récupération de mes infos des centres du département du candidat
  *     description: Après connexion, renvoie les infos des centres du département du candidat
  *     produces:
- *      - application/json
+ *       - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -159,9 +158,9 @@ router.get('/centres', getCentres)
  *         name: end
  *         schema:
  *           type: string
- *           example: 'Rosny-sous-Bois'
+ *           example:
  *         required: false
- *         description: Date de fin de la fourchette de temps dans lequel les places seront cherchés
+ *         description: Date de fin de la fourchette de temps dans laquelle les places seront cherchées
  *       - in: query
  *         name: date
  *         schema:
@@ -198,7 +197,7 @@ router.get('/centres', getCentres)
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: 'end et date ne peuvent avoir des valeurs en même temps'
+ *                     message: end et date ne peuvent avoir des valeurs en même temps
  *
  *       401:
  *         $ref: '#/components/responses/InvalidTokenResponse'
@@ -211,14 +210,12 @@ router.get('/centres', getCentres)
 /**
  * Après connexion, renvoie les infos des centres du département du candidat
  *
- * @callback getPlaces
  * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_places}
  */
 
 router.get('/places/:id?', getPlaces)
-router.get('/reservations', getReservations)
-router.post('/reservations', createReservation)
-router.delete('/reservations', removeReservation)
+router.patch('/places', bookPlaceByCandidat)
+router.delete('/places', unbookPlace)
 router.post('/evaluations', saveEvaluation)
 
 export { preSignup, emailValidation } from './candidat.controllers'

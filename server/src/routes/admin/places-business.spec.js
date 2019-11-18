@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { connect, disconnect } from '../../mongo-connection'
-import { importPlacesCsv } from './places.business'
+import { importPlacesCsv } from './places-business'
 import { createCentre } from '../../models/centre'
 import { createInspecteur } from '../../models/inspecteur'
 import { FRENCH_LOCALE_INFO } from '../../util'
@@ -107,7 +107,7 @@ describe('Test import places from CSV', () => {
     await disconnect()
   })
 
-  it('should messages errors with fields are missing ', async () => {
+  it('should have errors with fields are missing ', async () => {
     const csvFileDataInJson = [
       {
         date: ' ',
@@ -202,7 +202,7 @@ describe('Test import places from CSV', () => {
     })
   })
 
-  it('should messages errors with departements are different ', async () => {
+  it('should have errors with departements are different ', async () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
@@ -247,7 +247,7 @@ describe('Test import places from CSV', () => {
     )
   })
 
-  it('should messages errors with centres are unknown ', async () => {
+  it('should have errors with centres are unknown ', async () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
@@ -285,7 +285,7 @@ describe('Test import places from CSV', () => {
     })
   })
 
-  it('should messages errors with inspecteurs are unknown', async () => {
+  it('should have errors with inspecteurs are unknown', async () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
@@ -322,7 +322,7 @@ describe('Test import places from CSV', () => {
     })
   })
 
-  it('should messages errors with name inspecteurs are differents', async () => {
+  it('should have errors with name inspecteurs are differents', async () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
@@ -458,6 +458,59 @@ describe('Test import places from CSV', () => {
       expect(result).toHaveProperty('date', date)
       expect(result).toHaveProperty('status', 'error')
       expect(result).toHaveProperty('message', 'Place déjà enregistrée en base')
+    })
+  })
+
+  it('should have errors when the places have unauthorized hours', async () => {
+    const csvFileDataInJson = [
+      {
+        date: '06/07/19',
+        hour: '06:00',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+      {
+        date: '06/07/19',
+        hour: '08:15',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+      {
+        date: '06/07/19',
+        hour: '12:00',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+      {
+        date: '06/07/19',
+        hour: '22:00',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+    ]
+    const data = getCsvFileData(csvFileDataInJson)
+    const results = await importPlacesCsv({
+      csvFile: { data },
+      departement: '93',
+    })
+    expect(results).toBeDefined()
+    expect(results).toHaveLength(csvFileDataInJson.length)
+    results.forEach((result, index) => {
+      expectOneResultWithError(
+        result,
+        csvFileDataInJson,
+        index,
+        (dataInJson, i) =>
+          "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée."
+      )
     })
   })
 })

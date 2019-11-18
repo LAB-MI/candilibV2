@@ -65,19 +65,25 @@ export default {
     async [FETCH_DATES_REQUEST] ({ commit, dispatch, rootState, getters }, selectedCenterId) {
       commit(FETCH_DATES_REQUEST)
       try {
-        const begin = getFrenchLuxonCurrentDateTime().toISO()
+        const { canBookFrom, lastDateToCancel, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
+
+        const now = getFrenchLuxonCurrentDateTime()
+        const canBookFromLuxonObj = getFrenchLuxonFromIso(canBookFrom)
+
+        const begin = ((!canBookFromLuxonObj || canBookFromLuxonObj < now) ? now : canBookFromLuxonObj).toISO()
         const end = getFrenchLuxonCurrentDateTime()
           .plus({ month: 3 })
           .endOf('month')
           .toISO()
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
+
         if (
           result.isTokenValid === false
         ) {
           dispatch(SIGN_OUT_CANDIDAT)
           throw new Error(messages.expired_token_message)
         }
-        const { canBookFrom, lastDateToCancel, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
+
         const anticipatedCanBookAfter =
           getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel)
             ? getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })

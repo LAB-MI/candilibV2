@@ -19,6 +19,8 @@ const DEFAULT_PUBLIC_URL = isProduction
   ? 'https://beta.interieur.gouv.fr/candilib'
   : 'http://localhost:8080/candilib'
 
+const DEFAULT_ADMIN_URL = 'http://localhost:8080/candilib'
+
 /**
  * Dictionnaire des différents types de statuts des utilisateurs de l'application
  * @constant {object}
@@ -49,6 +51,7 @@ const userStatusLevels = {
  */
 const features = {
   AURIGE: 'aurige',
+  STATS_KPI: 'stats-kpi',
 }
 
 /**
@@ -58,9 +61,9 @@ const features = {
 const userStatusAccess = {
   [userStatuses.CANDIDAT]: [],
   [userStatuses.REPARTITEUR]: [],
-  [userStatuses.DELEGUE]: [],
-  [userStatuses.ADMIN]: [features.AURIGE],
-  [userStatuses.TECH]: [features.AURIGE],
+  [userStatuses.DELEGUE]: [features.STATS_KPI],
+  [userStatuses.ADMIN]: [features.AURIGE, features.STATS_KPI],
+  [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI],
 }
 
 /**
@@ -123,6 +126,7 @@ const config = {
   smtpPort: process.env.SMTP_PORT || 25,
 
   PUBLIC_URL: process.env.PUBLIC_URL || DEFAULT_PUBLIC_URL,
+  ADMIN_URL: process.env.ADMIN_URL || DEFAULT_ADMIN_URL,
   CANDIDAT_ROUTE: '/candidat',
   ADMIN_ROUTE: '/admin',
 
@@ -138,6 +142,10 @@ const config = {
     process.env.DAYS_FORBID_CANCEL !== undefined
       ? Number(process.env.DAYS_FORBID_CANCEL)
       : 7,
+  numberOfVisibleMonths:
+    process.env.NUMBER_VISIBLE_MONTHS !== undefined
+      ? Number(process.env.NUMBER_VISIBLE_MONTHS)
+      : 3,
 }
 
 /**

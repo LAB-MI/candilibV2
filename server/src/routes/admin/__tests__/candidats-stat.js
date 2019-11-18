@@ -18,13 +18,20 @@ import {
   findCentreByNameAndDepartement,
   createCentre,
 } from '../../../models/centre'
+import { createPlace } from '../../../models/place'
 import {
   findInspecteurByMatricule,
   createInspecteur,
 } from '../../../models/inspecteur'
 import { createArchivedCandidat } from '../../../models/archived-candidat/archived-candidat.queries'
 
-const nowLuxon = getFrenchLuxon()
+import {
+  bookCandidatOnSelectedPlace,
+  commonBasePlaceDateTime,
+  createCandidatAndUpdate,
+} from '../../../models/__tests__'
+
+export const nowLuxon = getFrenchLuxon()
 
 const dateReussiteETG = nowLuxon
   .minus({ days: 5 })
@@ -47,19 +54,17 @@ const dateDernierEchecPratique = dateTimeDernierEchecPratique
 //   .startOf('day')
 //   .toISO()
 
-const dateReussitePratique = nowLuxon
-  .minus({ days: 5 })
-  .startOf('day')
-  .toISO()
+export const dateReussitePratique = nowLuxon.minus({ days: 5 }).startOf('day')
+export const dateReussitePratiqueEndOfDay = nowLuxon.endOf('day')
 
 const isValidatedEmail = true
 const adresse = '40 Avenuedes terroirs de France 75012 Paris'
 const portable = '0676543986'
 
-const dateTimeDernierEchecPratiqueWithPenalty = penalty =>
+export const dateTimeDernierEchecPratiqueWithPenalty = penalty =>
   dateTimeDernierEchecPratique.minus({ days: penalty })
 
-const dateDernierEchecPratiqueWithPenalty = penalty =>
+export const dateDernierEchecPratiqueWithPenalty = penalty =>
   dateTimeDernierEchecPratiqueWithPenalty(penalty)
     .toISO()
     .split('T')[0]
@@ -340,7 +345,7 @@ const candidatPassed = {
   email: 'madmax@candilib.com',
   dateReussiteETG,
   nbEchecsPratiques: '',
-  reussitePratique: dateReussitePratique,
+  reussitePratique: dateReussitePratique.toISO(),
   candidatExistant: 'OK',
   isValidatedByAurige: false,
   isValidatedEmail,
@@ -349,7 +354,7 @@ const candidatPassed = {
   noReussites: [],
   places: [
     {
-      date: dateReussitePratique,
+      date: dateReussitePratique.toISO(),
       centre: centre1,
       inspecteur: inspecteur1,
       archiveReason: EPREUVE_PRATIQUE_OK,
@@ -368,7 +373,7 @@ const candidatPassedCentre2 = {
   email: 'madmax@candilib.com',
   dateReussiteETG,
   nbEchecsPratiques: '',
-  reussitePratique: dateReussitePratique,
+  reussitePratique: dateReussitePratique.toISO(),
   candidatExistant: 'OK',
   isValidatedByAurige: false,
   isValidatedEmail,
@@ -377,7 +382,7 @@ const candidatPassedCentre2 = {
   noReussites: [],
   places: [
     {
-      date: dateReussitePratique,
+      date: dateReussitePratique.toISO(),
       centre: centre2,
       inspecteur: inspecteur1,
       archiveReason: EPREUVE_PRATIQUE_OK,
@@ -419,7 +424,7 @@ const candidatPassedWithNoReussites = {
       isCandilib: true,
     },
     {
-      date: dateReussitePratique,
+      date: dateReussitePratique.toISO(),
       centre: centre1,
       inspecteur: inspecteur1,
       archiveReason: EPREUVE_PRATIQUE_OK,
@@ -451,7 +456,7 @@ const candidatPassedNoCandilib = {
       isCandilib: true,
     },
     {
-      date: dateReussitePratique,
+      date: dateReussitePratique.toISO(),
       centre: centre1,
       inspecteur: inspecteur1,
       archiveReason: EPREUVE_PRATIQUE_OK + NO_CANDILIB,
@@ -534,60 +539,99 @@ const archivedCandidatsStat = [
   candidatPassedCentre2,
 ]
 
-export const countSuccess = departement => {
+export const countSuccess = (departement, begin, end) => {
   const candidats = archivedCandidatsStat.filter(
     ({ places }) =>
-      places.find(
-        ({ archiveReason, centre }) =>
-          archiveReason === EPREUVE_PRATIQUE_OK &&
-          (!departement || centre.departement === departement)
-      ) !== undefined
+      places
+        .filter(
+          el =>
+            getFrenchLuxonFromISO(el.date) >= begin &&
+            getFrenchLuxonFromISO(el.date) <= end
+        )
+        .find(
+          ({ archiveReason, centre }) =>
+            archiveReason === EPREUVE_PRATIQUE_OK &&
+            (!departement || centre.departement === departement)
+        ) !== undefined
   )
   return candidats.length
 }
 
-export const countAbsent = departement => {
+export const countAbsent = (departement, begin, end) => {
   return (
-    noReussitesByResaon(candidatsStat, ABSENT, departement).length +
-    noReussitesByResaon(archivedCandidatsStat, ABSENT, departement).length
+    noReussitesByResaon(candidatsStat, ABSENT, departement, begin, end).length +
+    noReussitesByResaon(archivedCandidatsStat, ABSENT, departement, begin, end)
+      .length
   )
 }
 
-export const countFailure = departement => {
+export const countFailure = (departement, begin, end) => {
   return (
-    noReussitesByResaon(candidatsStat, ECHEC, departement).length +
-    noReussitesByResaon(archivedCandidatsStat, ECHEC, departement).length
+    noReussitesByResaon(candidatsStat, ECHEC, departement, begin, end).length +
+    noReussitesByResaon(archivedCandidatsStat, ECHEC, departement, begin, end)
+      .length
   )
 }
 
-export const countNotExamined = departement => {
+export const countNotExamined = (departement, begin, end) => {
   return (
-    noReussitesByResaon(candidatsStat, NO_EXAMINABLE, departement).length +
-    noReussitesByResaon(candidatsStat, NO_ADMISSIBLE, departement).length +
-    noReussitesByResaon(candidatsStat, CANCELED, departement).length +
-    noReussitesByResaon(archivedCandidatsStat, NO_EXAMINABLE, departement)
+    noReussitesByResaon(candidatsStat, NO_EXAMINABLE, departement, begin, end)
       .length +
-    noReussitesByResaon(archivedCandidatsStat, NO_ADMISSIBLE, departement)
+    noReussitesByResaon(candidatsStat, NO_ADMISSIBLE, departement, begin, end)
       .length +
-    noReussitesByResaon(archivedCandidatsStat, CANCELED, departement).length
+    noReussitesByResaon(candidatsStat, CANCELED, departement, begin, end)
+      .length +
+    noReussitesByResaon(
+      archivedCandidatsStat,
+      NO_EXAMINABLE,
+      departement,
+      begin,
+      end
+    ).length +
+    noReussitesByResaon(
+      archivedCandidatsStat,
+      NO_ADMISSIBLE,
+      departement,
+      begin,
+      end
+    ).length +
+    noReussitesByResaon(
+      archivedCandidatsStat,
+      CANCELED,
+      departement,
+      begin,
+      end
+    ).length
   )
 }
 
-const noReussitesByResaon = (arrayCandidat, reason, departement) => {
+const noReussitesByResaon = (
+  arrayCandidat,
+  reason,
+  departement,
+  begin,
+  end
+) => {
   return arrayCandidat
     .map(candidat =>
       candidat.noReussites.filter(
         noReussite =>
           noReussite.reason === reason &&
-          candidat.places.find(({ date, archiveReason, centre }) => {
-            const datePlace = getFrenchLuxonFromISO(date)
-            const dateNoReussite = getFrenchLuxonFromISO(noReussite.date)
-            return (
-              datePlace.hasSame(dateNoReussite, 'day') &&
-              archiveReason === REASON_EXAM_FAILED &&
-              (!departement || centre.departement === departement)
+          candidat.places
+            .filter(
+              el =>
+                getFrenchLuxonFromISO(el.date) >= begin &&
+                getFrenchLuxonFromISO(el.date) <= end
             )
-          }) !== undefined
+            .find(({ date, archiveReason, centre }) => {
+              const datePlace = getFrenchLuxonFromISO(date)
+              const dateNoReussite = getFrenchLuxonFromISO(noReussite.date)
+              return (
+                datePlace.hasSame(dateNoReussite, 'day') &&
+                archiveReason === REASON_EXAM_FAILED &&
+                (!departement || centre.departement === departement)
+              )
+            }) !== undefined
       )
     )
     .flat()
@@ -605,4 +649,63 @@ export const createCandidatsForStat = async () => {
     ...candidatsStat.map(createOneCandidatForStat),
     ...archivedCandidatsStat.map(createArchivedCandidatForStat),
   ])
+}
+
+const bookedAt = nowLuxon.toJSDate()
+
+const centreTest = {
+  departement: '92',
+  nom: 'Centre 99',
+  label: "Centre d'examen 2",
+  adresse: '2 Avenue test, Ville test 2, FR, 93420',
+  lon: 47,
+  lat: 3.5,
+}
+
+const candidatForStatsPlace = {
+  codeNeph: '123456789993',
+  nomNaissance: 'nom à tester 92',
+  prenom: 'prénom à tester',
+  email: 'test99.testbookedAt1@test.com',
+  portable: '0612345678',
+  adresse: '10 Rue Oberkampf 92100 Paris',
+  dateReussiteETG: nowLuxon.plus({ year: -1 }),
+  departement: '92',
+}
+
+const inspecteurTestForStatsPlace = {
+  nom: 'Mulder-test',
+  prenom: 'Fox',
+  matricule: '04710111166',
+  email: 'fox.mulder.bookedAt1@x-files.com',
+  departement: '92',
+}
+
+export const createStatsForPlacesExam = async () => {
+  const { nom, label, adresse, lon, lat, departement } = centreTest
+  const createdCentre = await createCentre(
+    nom,
+    label,
+    adresse,
+    lon,
+    lat,
+    departement
+  )
+
+  const createdInspecteur = await createInspecteur(inspecteurTestForStatsPlace)
+
+  const placeCreated = await createPlace({
+    date: commonBasePlaceDateTime.toISO(),
+    centre: createdCentre._id,
+    inspecteur: createdInspecteur._id,
+  })
+
+  await createPlace({
+    date: commonBasePlaceDateTime.plus({ hours: 1 }).toISO(),
+    centre: createdCentre._id,
+    inspecteur: createdInspecteur._id,
+  })
+
+  const updatedCandidat = await createCandidatAndUpdate(candidatForStatsPlace)
+  await bookCandidatOnSelectedPlace(placeCreated, updatedCandidat, bookedAt)
 }

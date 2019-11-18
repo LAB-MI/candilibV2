@@ -96,7 +96,7 @@ describe('Whitelist tests', () => {
       .and('not.contain', 'Adresse invalide')
     cy.adminDisconnection()
     // Candidate is in the whitelist, the pre sign-up should work now
-    cy.candidatePreSignUp()
+    cy.candidatePreSignUp({ codeNeph: '98745612309', nomNaissance: 'D.Monkey', email: Cypress.env('email') })
     cy.adminLogin()
     // Visits the whitelist
     cy.visit(Cypress.env('frontAdmin') + 'admin/whitelist')
