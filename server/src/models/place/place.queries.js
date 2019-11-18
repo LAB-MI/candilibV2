@@ -113,7 +113,7 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
  * @param {string} beginDate - Date  au format ISO de debut de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
- * @returns {Place[]}
+ * @returns {Promise.<Place~PlaceModel[]>}
  */
 export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
@@ -257,13 +257,16 @@ export const countPlacesBookedOrNot = async (centres, beginDate, isBooked) => {
 }
 
 /**
+ * Trouver les places réservées et affectées à un inspecteur sur une période entre beginDate et endDate
+ * - si beginDate n'est pas défini, la période sera depuis le début de l'application jusqu’à endDate
+ * - si endDate n'est pas défini, la période sera depuis beginDate jusqu’à la dernière date enregistrée dans l'application
  * @function
  *
  * @param {string} inspecteurId - Id de l'inspecteur
  * @param {string} beginDate - Date au format ISO de debut de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
- * @returns {Place[]}
+ * @returns {Promise.<Place~PlaceModel[]>}
  */
 export const findPlaceBookedByInspecteur = (
   inspecteurId,
@@ -288,16 +291,20 @@ export const findPlaceBookedByInspecteur = (
 }
 
 /**
+ * Trouver les places réservées pour un centre et des inspecteurs sur un période entre beginDate et endDate
+ * - si beginDate n'est pas défini, la période sera depuis le début de l'application jusqu’à endDate
+ * - si endDate n'est pas défini, la période sera depuis beginDate jusqu’à la dernière date enregistrée dans l'application
+ * - si la liste des inspecteurs n'est pas définie ou est vide, la recherche se fera pour tous les inspecteurs du centre
  * @function
  *
  * @param {string} centreId - Id du centre
- * @param {string} inspecteurIdListe - List d'inspecteur id
+ * @param {string} inspecteurIdListe - Liste d'id d'inspecteurs
  * @param {string} beginDate - Date au format ISO de debut de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
- * @returns {Place[]}
+ * @returns {Promise.<Place~PlaceModel[]>}
  */
-export const findAllPlacesBookedByCentreAndInspecteur = (
+export const findAllPlacesBookedByCentreAndInspecteurs = (
   centreId,
   inspecteurIdListe,
   beginDate,

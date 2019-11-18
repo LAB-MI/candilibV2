@@ -554,6 +554,8 @@ router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
  *     description: Permet d'envoyer par email, le planning de chaque inspecteurs.
  *     produces:
  *       - application/json
+ *     security:
+ *       - bearerAuth: []
  *     parameters:
  *       - in: body
  *         name: departement
@@ -572,7 +574,7 @@ router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
  *         schema:
  *           type: string
  *           example: 2019-10-10T22:00:00.000Z
- *         description: Date à laquelle l'action a été faite
+ *         description: Date sélectionnée pour l'envoi des bordereaux
  *       - in: body
  *         name: isForInspecteurs
  *         schema:
@@ -599,7 +601,7 @@ router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: Les paramètres renseignés sont manquante.
+ *                     message: Les paramètres renseignés sont manquants.
  *       200:
  *         description: Stats par départements
  *         content:
