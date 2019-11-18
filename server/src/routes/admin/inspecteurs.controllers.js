@@ -13,7 +13,7 @@ import {
 } from '../../models/centre/centre.queries'
 import {
   findAllPlacesByCentre,
-  findAllPlacesBookedByCentreAndInspecteur,
+  findAllPlacesBookedByCentreAndInspecteurs,
 } from '../../models/place'
 import {
   appLogger,
@@ -163,7 +163,7 @@ export const getInspecteursBookedFromDepartement = async (
 
   const places = (await Promise.all(
     centres.map(centre =>
-      findAllPlacesBookedByCentreAndInspecteur(
+      findAllPlacesBookedByCentreAndInspecteurs(
         centre._id,
         null,
         beginDate,

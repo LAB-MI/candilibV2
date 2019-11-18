@@ -74,7 +74,7 @@ export default {
       try {
         const { success } = await api.admin.generateBordereaux(departement, date, isForInspecteurs, inspecteurIdListe)
         if (!success) {
-          throw new Error("Un problème s'est produit lors de l'envoi des emails")
+          throw new Error("Un problème s'est produit lors de l'envoi des courriels")
         }
         commit(GENERATE_INSPECTOR_BORDEREAUX_SUCCESS)
         dispatch(SHOW_SUCCESS, 'Les emails ont bien été envoyés')
@@ -89,7 +89,7 @@ export default {
       try {
         const inspecteurs = await api.admin.getInspecteursBookedByDepartement(date, getters.activeDepartement)
         if (!inspecteurs.success) {
-          throw new Error("Un problème s'est produit lors de là récupération de la liste des inspecteurs pour l'envoi de bordereaux")
+          throw new Error("Un problème s'est produit lors de la récupération de la liste des inspecteurs pour l'envoi de bordereaux")
         }
         const inspecteurList = inspecteurs.results
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, inspecteurList)

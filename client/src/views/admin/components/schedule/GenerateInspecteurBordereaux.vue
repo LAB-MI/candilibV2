@@ -31,7 +31,8 @@
             {{`${activeDepartement}`}}
           </strong>
           <div v-if="!isForInspecteurs">
-          sur l'adresse email: &nbsp;
+            {{ $formatMessage({ id: 'sur_ladresse_courriel' }) }}
+          &nbsp;
           <strong>
             {{ emailDepartementActive }}
           </strong>
@@ -55,7 +56,7 @@
           </v-card-title>
 
           <div v-if="!(inspecteursOfCurrentDpt && inspecteursOfCurrentDpt.length)" class="headline">
-            {{ $formatMessage({ id: 'no_inspecteurs_at_this_date'})}}
+            {{ $formatMessage({ id: 'no_inspecteurs_at_this_date'}) }}
           </div>
 
           <v-form v-else>
@@ -63,11 +64,12 @@
               <v-list>
                 <v-list-tile>
                   <v-list-tile-content class="label-select-all">
-                    Tous
+                    {{ $formatMessage({ id: 'tous'}) }}
                   </v-list-tile-content>
 
                   <v-list-tile-action>
                     <v-checkbox
+                      class="t-check-all"
                       :color="isPartiallyChecked ? 'grey' : 'info'"
                       v-model="isAllChecked"
                     ></v-checkbox>
@@ -204,12 +206,12 @@ export default {
           ...this.inspecteurListToSendBordereaux,
           inspecteurId,
         ]
-        this.$store.dispatch(SHOW_SUCCESS, `l'inspecteur à bien été selectioné`)
+        this.$store.dispatch(SHOW_SUCCESS, `L'IPCSR a bien été sélectionné·e`)
         return
       }
 
       if (newSelection && this.inspecteurListToSendBordereaux.find(el => el === newSelection.value)) {
-        this.$store.dispatch(SHOW_ERROR, `l'inspecteur est déjà selectioné`)
+        this.$store.dispatch(SHOW_ERROR, `L'IPCSR est déjà sélectionné·e`)
       }
     },
 
