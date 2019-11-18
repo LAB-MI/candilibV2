@@ -8,6 +8,7 @@ import {
   deleteUserByEmail,
   findUserByEmail,
   updateUser,
+  findAllUsers,
 } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
 
@@ -98,10 +99,10 @@ const findInfoAdminById = async userId => {
  * @function
  *
  * @param {import('express').Request} req
- * @param {string} req.userId Id de l'utilisateur souhaitant créér un délégué ou un répartiteur
- * @param {string} req.body.email Adresse courriel de l'utilisateur créér
- * @param {string} req.body.departements Départements de l'utilisateur créér
- * @param {string} req.body.status Status de l'utilisateur créér
+ * @param {string} req.userId - Id de l'utilisateur souhaitant créér un délégué ou un répartiteur
+ * @param {string} req.body.email - Adresse courriel de l'utilisateur créér
+ * @param {string} req.body.departements - Départements de l'utilisateur créér
+ * @param {string} req.body.status - Status de l'utilisateur créér
  * @param {import('express').Response} res
  */
 export const createUserController = async (req, res) => {
@@ -160,6 +161,44 @@ export const createUserController = async (req, res) => {
       message: `Impossible de créer l'utilisateur : ${error.message}`,
     })
   }
+}
+
+/**
+ * Récupere un utilisateur
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId - Id de l'utilisateur souhaitant créér un délégué ou un répartiteur
+ * @param {string} req.body.email - Adresse courriel de l'utilisateur trouvé
+ * @param {string} req.body.departements - Départements de l'utilisateur trouvé
+ * @param {string} req.body.status - Status de l'utilisateur trouvé
+ * @param {import('express').Response} res
+ */
+export const getUsers = async (req, res) => {
+  const loggerInfo = {
+    section: 'admin-get-user',
+    action: 'get-user',
+    admin: req.userId,
+  }
+
+  appLogger.info(loggerInfo)
+
+  const user = await findUserById(req.userId)
+  const status = user.status
+  if (status === config.userStatuses.ADMIN) {
+    const users = await findAllUsers()
+    return res.status(200).json({ success: true, users })
+  }
+
+  // const forbiddenMessage = isForbiddenToUpsertUser(status, user, departements)
+  // if (forbiddenMessage) {
+  res.status(401).json({
+    success: false,
+    message: "Vous n'êtes pas autorisé à accéder à cette ressource", // forbiddenMessage,
+  })
+  // }
 }
 
 /**

@@ -2,6 +2,18 @@ import User from './user.model'
 import uuidv4 from 'uuid/v4'
 
 /**
+ * Recherche tous les répartiteurs/délégués de tout les départements
+ *
+ * @param {string} - ID mongo de l'utilisateur
+ *
+ * @returns {Promise.<user>} - Document de l'utilisateur
+ */
+
+export const findAllUsers = async id => {
+  const users = await User.find()
+  return users
+}
+/**
  * Recherche et retourne le document de l'utilisateur par son ID
  *
  * @param {string} id - ID mongo de l'utilisateur

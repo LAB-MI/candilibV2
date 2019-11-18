@@ -7,9 +7,10 @@ import express from 'express'
 
 import { getCandidats, importCandidats } from './candidats.controllers'
 import {
-  getMe,
   createUserController,
   deleteUserController,
+  getMe,
+  getUsers,
   updatedInfoUser,
 } from './admin.controllers'
 import { getInspecteurs } from './inspecteurs-controllers'
@@ -1011,7 +1012,7 @@ router
  *
  *     responses:
  *       201:
- *         description: Utilisateur créé
+ *         description: Utilisateur récupéré
  *         content:
  *           application/json:
  *             schema:
@@ -1019,7 +1020,7 @@ router
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: true
- *                     message: L'utilisateur a bien été créé
+ *                     message: L'utilisateur a bien été récupéré
  *                     user: {
  *                        "email": "répartiteur@example.com",
  *                        "id": "85958545487523245",
@@ -1046,7 +1047,80 @@ router
  *@see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_users}
  *
  */
-router.post('/users', verifyDelegueLevel, createUserController)
+router.post('/users', verifyDelegueLevel(), createUserController)
+
+/**
+ * @swagger
+ *
+ * /admin/users:
+ *   get:
+ *     tags: ["Administrateur"]
+ *     summary: Récupération d'un utilisateur
+ *     description: Récupération d'un utilisateur. Seul un admin peut créer un délégué (il peut aussi créer un répartiteur) et seul un délégué peut créer un répartiteur.
+ *     produces:
+ *      - application/json
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Données du tableau de Récupération d'un utilisateur
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: repartiteur@example.com
+ *                 description: Email de l'utilisateur
+ *               departements:
+ *                 type: array
+ *                 example: ["93"]
+ *                 description: Département de l'utilisateur
+ *               status:
+ *                 type: string
+ *                 example: repartiteur
+ *                 description: Statut de l'utilisateur
+ *
+ *
+ *     responses:
+ *       201:
+ *         description: Utilisateur récupéré
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: true
+ *                     message: L'utilisateur a bien été récupéré
+ *                     user: {
+ *                        "email": "répartiteur@example.com",
+ *                        "id": "85958545487523245",
+ *                        "departements": ["93"],
+ *                        "status": "repartiteur"
+ *                     }
+ *
+ *       400:
+ *         description: Paramètre(s) manquant(s)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: ""
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *@see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_users}
+ *
+ */
+router.get('/users', verifyDelegueLevel(), getUsers)
 
 /**
  * @swagger
@@ -1192,7 +1266,7 @@ router.post('/users', verifyDelegueLevel, createUserController)
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/put_admin_users}
  */
 
-router.put('/users', verifyDelegueLevel, updatedInfoUser)
+router.put('/users', verifyDelegueLevel(), updatedInfoUser)
 
 /**
  * @swagger
@@ -1266,6 +1340,6 @@ router.put('/users', verifyDelegueLevel, updatedInfoUser)
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_users }
  */
 
-router.delete('/users', verifyDelegueLevel, deleteUserController)
+router.delete('/users', verifyDelegueLevel(), deleteUserController)
 
 export default router
