@@ -1,0 +1,35 @@
+name: Deploy Testing Site
+
+on:
+  push:
+    branches:
+      - 'devops/**'
+      - 'qualif/**'
+env:
+  HEROKU_APP: candilib-api-dev
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v1
+    - name: Deploy Back
+      env:
+        HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
+        HEROKU_TOKEN: ${{ secrets.HEROKU_TOKEN }}
+      run: |
+        heroku version
+        cat >~/.netrc <<EOF
+        machine api.heroku.com
+          login $HEROKU_EMAIL
+          password $HEROKU_TOKEN
+        machine git.heroku.com
+          login $HEROKU_EMAIL
+          password $HEROKU_TOKEN
+        EOF
+        chmod 600 ~/.netrc
+        heroku git:remote --app $HEROKU_APP
+        git push heroku HEAD:master -f
+        rm -rf ~/.netrc
