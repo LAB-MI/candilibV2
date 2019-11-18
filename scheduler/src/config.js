@@ -45,8 +45,8 @@ export default () => {
 
   return {
     jobs: {
-      schedule: !DISABLE_SCHEDULE,
-      define: !DISABLE_DEFINE,
+      schedule: !(DISABLE_SCHEDULE === 'true'),
+      define: !(DISABLE_DEFINE === 'true'),
       list: JOB_LIST ? process.env.JOB_LIST.split(',') : [],
     },
 

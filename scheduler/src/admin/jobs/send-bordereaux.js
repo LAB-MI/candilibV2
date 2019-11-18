@@ -6,13 +6,10 @@ import { getToken } from '../get-token.js'
 export const sendBordereaux = async job => {
   const { apiUrl } = getConfig().api
   const token = await getToken()
-
   const body = await postJson({
     url: apiUrl + '/admin/bordereaux',
     body: {
-      departement: '93',
-      date: DateTime.local().plus({ days: 1 }),
-      isForInspecteurs: true,
+      date: DateTime.local().setLocale('fr').setZone('Europe/Paris').plus({ days: 1 }),
     },
     headers: {
       Authorization: `Bearer ${token}`,
