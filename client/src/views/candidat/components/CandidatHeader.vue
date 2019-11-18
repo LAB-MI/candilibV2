@@ -1,7 +1,6 @@
 <template>
   <v-app-bar
     dark
-    fixed
     class="candidat-toolbar  u-max-width-parent"
   >
     <v-app-bar-nav-icon

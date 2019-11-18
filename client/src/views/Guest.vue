@@ -1,5 +1,5 @@
 <template>
-  <div class="u-fullvp-height  u-flex  u-flex--column">
+  <div class="u-flex  u-flex--column">
     <candidat-header/>
     <router-view />
   </div>
@@ -14,9 +14,3 @@ export default {
   },
 }
 </script>
-
-<style lang="postcss" scoped>
-  .u-fullvp-height {
-    height: 100vh;
-  }
-</style>
