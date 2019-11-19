@@ -284,12 +284,14 @@ router.get('/centres', getCentres)
  *
  */
 /**
- * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_places}
+ * Route pour obtenir la réservation du candidat ou pour obtenir la liste les dates des places disponibles
+ * @name Router GET '/candidat/places/:id?'
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places| Swagger GET candidat/places}
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places__centreId| Swagger GET candidat/places/:id?}
  */
 router.get('/places/:id?', getPlaces)
 
 /**
- *
  *  @swagger
  *  /candidat/places:
  *    patch:
@@ -376,6 +378,11 @@ router.get('/places/:id?', getPlaces)
  *        500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
+ */
+/**
+ * Route pour réserver une place d'examen par le candidat
+ * @name Router PATCH '/candidat/places'
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/patch_candidat_places| swagger PATCH /candidat/places}
  */
 router.patch('/places', bookPlaceByCandidat)
 /**
