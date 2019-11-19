@@ -7,6 +7,7 @@
     <template v-slot:activator="{ on }">
       <v-btn
         v-on="on"
+        @click="focusOnEmailInput"
         depressed
         color="#fff"
         tabindex="8"
@@ -40,8 +41,8 @@
               @input="setEmailToLowerCase"
               :placeholder="emailPlaceholder"
               aria-placeholder="jean@dupont.fr"
-              :autofocus="showDialog"
               hint="ex. : jean@dupont.fr"
+              ref="emailInput"
               required
               :rules="emailRules"
               tabindex="1"
@@ -107,6 +108,10 @@ export default {
   },
 
   methods: {
+    focusOnEmailInput () {
+      setTimeout(() => this.$refs.emailInput.focus())
+    },
+
     getMsg (id) {
       return this.$formatMessage({ id })
     },
@@ -114,6 +119,7 @@ export default {
     async removeEmailPlaceholder () {
       this.emailPlaceholder = ''
     },
+
     async setEmailPlaceholder () {
       this.emailPlaceholder = 'jean@dupont.fr'
     },
@@ -126,6 +132,7 @@ export default {
       if (!this.magicLinkValid) {
         return this.$store.dispatch(SHOW_ERROR, this.getMsg('preinscription_magic_link_invalide'))
       }
+
       try {
         await this.$store.dispatch(SEND_MAGIC_LINK_REQUEST, this.email)
         this.$refs.magicLinkForm.reset()
@@ -133,6 +140,7 @@ export default {
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
+
       this.showDialog = false
     },
   },
@@ -158,5 +166,4 @@ export default {
     justify-content: center;
   }
 }
-
 </style>
