@@ -37,7 +37,7 @@ import {
   sendMagicLink,
   sendMailToAccount,
 } from '../../business'
-import { getCandBookFrom } from '../../candidat/places.business'
+import { getCandBookFrom } from '../../candidat/places-business'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 
 const getCandidatStatus = (nom, neph, status, details, message) => ({

@@ -7,7 +7,7 @@ import {
   removePlaces,
   centres,
 } from '../../models/__tests__/'
-import { getDatesByCentre, canCancelReservation } from './places.business'
+import { getDatesByCentre, canCancelReservation } from './places-business'
 import { getFrenchLuxon } from '../../util'
 import config from '../../config'
 

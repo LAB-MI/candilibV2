@@ -10,7 +10,7 @@ import {
   getPlaces,
   bookPlaceByCandidat,
   unbookPlace,
-} from './places.controllers'
+} from './places-controllers'
 
 const router = express.Router()
 

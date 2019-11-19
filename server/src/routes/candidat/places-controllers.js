@@ -15,7 +15,7 @@ import {
   hasAvailablePlacesByCentre,
   removeReservationPlace,
   validCentreDateReservation,
-} from './places.business'
+} from './places-business'
 
 import { sendMailConvocation } from '../business'
 import {
