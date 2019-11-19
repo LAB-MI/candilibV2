@@ -94,3 +94,13 @@ UserSchema.methods.comparePassword = function comparePassword (
 }
 
 export default mongoose.model('User', UserSchema)
+
+/**
+ * @typedef {Object} User
+ * @property {string} email
+ * @property {string[]} departements
+ * @property {Date} deletedAt
+ * @property {string} deletedBy
+ * @property {Date} signUpDate
+ * @property {string} status
+ */

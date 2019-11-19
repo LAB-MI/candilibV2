@@ -8,7 +8,6 @@ import {
   deleteUserByEmail,
   findUserByEmail,
   updateUser,
-  findAllUsers,
 } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
 
@@ -18,11 +17,10 @@ import { createPassword } from '../../util/password'
 import { sendMailResetLink } from '../business/send-mail-reset-password'
 import { sendMailConfirmationUpdateUserInfo } from '../business/send-mail-update-user-info'
 import {
-  CANNOT_ACTION_USER,
-  INCORRECT_DEPARTEMENT_LIST,
   INVALID_EMAIL,
   USER_NO_EXIST,
 } from './message.constants'
+import { getAppropriateUsers, isForbiddenToUpsertUser } from './business'
 
 /**
  * Récupère les infos de l'admin
@@ -185,62 +183,15 @@ export const getUsers = async (req, res) => {
 
   appLogger.info(loggerInfo)
 
-  const user = await findUserById(req.userId)
-  const status = user.status
-  if (status === config.userStatuses.ADMIN) {
-    const users = await findAllUsers()
+  try {
+    const users = await getAppropriateUsers(req.userId)
     return res.status(200).json({ success: true, users })
+  } catch (error) {
+    return res.status(error.status).json({
+      success: false,
+      message: error.message,
+    })
   }
-
-  // const forbiddenMessage = isForbiddenToUpsertUser(status, user, departements)
-  // if (forbiddenMessage) {
-  res.status(401).json({
-    success: false,
-    message: "Vous n'êtes pas autorisé à accéder à cette ressource", // forbiddenMessage,
-  })
-  // }
-}
-
-/**
- * Détermine si un utilisateur (`user`) a le droit de modifier les données d'un
- * utilisateur d'un niveau donné (`status`)
- *
- * @function
- *
- * @param {User} userToUpdate - Utilisateur dont les données sont à modifier
- * @param {User} user - Utilisateur exécutant l'action
- * @param {string[]} departements - Liste des départements d'intervention de l'utilisateur
- *
- * @returns {boolean} - `true` si l'utilisateur peut faire la modification, `false` sinon
- */
-function isForbiddenToUpsertUser (status, user, departements) {
-  const creatorDepartements = user.departements
-  if (
-    !departements ||
-    !Array.isArray(departements) ||
-    !departements.every(departement =>
-      creatorDepartements.includes(departement)
-    )
-  ) {
-    return INCORRECT_DEPARTEMENT_LIST
-  }
-
-  if (
-    user.status === config.userStatuses.DELEGUE &&
-    status === config.userStatuses.REPARTITEUR
-  ) {
-    return false
-  }
-
-  if (
-    user.status === config.userStatuses.ADMIN &&
-    (status === config.userStatuses.DELEGUE ||
-      status === config.userStatuses.REPARTITEUR)
-  ) {
-    return false
-  }
-
-  return CANNOT_ACTION_USER
 }
 
 /**
