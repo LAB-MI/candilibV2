@@ -12,7 +12,7 @@ import { getFrenchLuxon } from '../../util'
 import config from '../../config'
 
 describe('Test places business: utiles functions', () => {
-  it('Should true when entry date is 7 days and 2 hours days hours after now', () => {
+  it('Should return true when entry date is 7 days and 2 hours days hours after now', () => {
     const dateResa = getFrenchLuxon()
       .plus({
         days: config.daysForbidCancel,
@@ -22,7 +22,7 @@ describe('Test places business: utiles functions', () => {
     expect(result).toBe(true)
   })
 
-  it('Should false when entry date is 6 days and 2 hours days hours after now', () => {
+  it('Should return false when entry date is 6 days and 2 hours days hours after now', () => {
     const dateResa = getFrenchLuxon()
       .plus({
         days: config.daysForbidCancel - 1,

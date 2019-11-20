@@ -29,6 +29,6 @@ export const createInspecteurs = async () => {
 
 export const removeInspecteur = async () => inspecteursTests.deleteMany({})
 
-export const setInitCreatedInspecteurs = () => {
+export const resetCreatedInspecteurs = () => {
   inspecteurs = undefined
 }

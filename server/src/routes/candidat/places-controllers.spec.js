@@ -21,7 +21,7 @@ import {
   inspecteursTests,
   createInspecteurs,
   setInitCreatedCentre,
-  setInitCreatedInspecteurs,
+  resetCreatedInspecteurs,
   setInitCreatedPlaces,
 } from '../../models/__tests__'
 import {
@@ -74,7 +74,7 @@ describe('Test get dates from places available', () => {
   let createdPlaces
   beforeAll(async () => {
     setInitCreatedCentre()
-    setInitCreatedInspecteurs()
+    resetCreatedInspecteurs()
     setInitCreatedPlaces()
 
     await connect()
@@ -130,7 +130,7 @@ describe('Test get dates from places available when there are booked', () => {
   let createdPlaces
   beforeAll(async () => {
     setInitCreatedCentre()
-    setInitCreatedInspecteurs()
+    resetCreatedInspecteurs()
     setInitCreatedPlaces()
     await connect()
     const createdCandidats = await createCandidats()
@@ -446,7 +446,7 @@ describe('test to get booking by candidat', () => {
 
   beforeAll(async () => {
     setInitCreatedCentre()
-    setInitCreatedInspecteurs()
+    resetCreatedInspecteurs()
     setInitCreatedPlaces()
     await connect()
     const createdCandiats = await createCandidats()
@@ -608,7 +608,7 @@ describe('test to book with the date authorize by candiat', () => {
   beforeAll(async () => {
     await connect()
     setInitCreatedCentre()
-    setInitCreatedInspecteurs()
+    resetCreatedInspecteurs()
     setInitCreatedPlaces()
     const createdCandiats = await createCandidats()
     selectedCandidat = createdCandiats[0]
@@ -705,7 +705,7 @@ describe('test to change a booking, 6 days before the appointemnt, by candidat '
 
   beforeAll(async () => {
     setInitCreatedCentre()
-    setInitCreatedInspecteurs()
+    resetCreatedInspecteurs()
     setInitCreatedPlaces()
     await connect()
     createdCandiats = await createCandidats()
@@ -810,7 +810,7 @@ describe('Cancel a reservation', () => {
 
   beforeAll(async () => {
     setInitCreatedCentre()
-    setInitCreatedInspecteurs()
+    resetCreatedInspecteurs()
     setInitCreatedPlaces()
     await connect()
     const createdCandiats = await createCandidats()
@@ -878,7 +878,7 @@ describe('get reservation with candidat failed', () => {
     await connect()
 
     setInitCreatedCentre()
-    setInitCreatedInspecteurs()
+    resetCreatedInspecteurs()
     setInitCreatedPlaces()
 
     createdCentres = await createCentres()

@@ -45,6 +45,7 @@ export const createTestPlace = async place => {
   let inspecteurFound
   if (inspecteur instanceof Object) {
     const { _id, nom, prenom } = inspecteur
+    // TODO: A améliorer
     if (_id) {
       inspecteurFound = await findInspecteurById(_id)
     } else {
@@ -57,7 +58,9 @@ export const createTestPlace = async place => {
     )
   }
   if (!inspecteurFound) {
-    throw new Error(`L'insecteur ${JSON.stringify(inspecteur)} non trouvé`)
+    throw new Error(
+      `L'inspecteur ${JSON.stringify(inspecteur)} n'a pas été trouvé`
+    )
   }
   leanPlace.inspecteur = inspecteurFound._id
 
