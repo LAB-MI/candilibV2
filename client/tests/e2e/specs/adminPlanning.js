@@ -31,7 +31,7 @@ describe('Planning tests', () => {
     cy.adminDisconnection()
   })
 
-  it('Assigns a candidate and changes the inspector', () => {
+  it('Assigns a candidate, send bordereaux and changes the inspector of booked place', () => {
     cy.adminLogin()
     // Goes to planning and add candidate to the first place
     cy.addCandidatToPlace()

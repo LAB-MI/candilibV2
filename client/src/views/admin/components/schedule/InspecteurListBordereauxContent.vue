@@ -1,15 +1,15 @@
 <template>
-  <v-list-tile @click="$emit('set-inspecteur-list', {isChecked, inspecteurId: inspecteur._id} )">
-    <v-list-tile-content @click.prevent="isChecked = !isChecked">
-      <v-list-tile-title>{{ inspecteur.nom }} - {{ inspecteur.matricule }} - {{ centre.nom }}</v-list-tile-title>
-    </v-list-tile-content>
-    <v-list-tile-action>
+  <v-list-item @click="$emit('set-inspecteur-list', {isChecked, inspecteurId: inspecteur._id} )">
+    <v-list-item-content @click.prevent="isChecked = !isChecked">
+      <v-list-item-title>{{ inspecteur.nom }} - {{ inspecteur.matricule }} - {{ centre.nom }}</v-list-item-title>
+    </v-list-item-content>
+    <v-list-item-action>
       <v-checkbox
         color="info"
         v-model="isChecked"
       ></v-checkbox>
-    </v-list-tile-action>
-  </v-list-tile>
+    </v-list-item-action>
+  </v-list-item>
 </template>
 
 <script>

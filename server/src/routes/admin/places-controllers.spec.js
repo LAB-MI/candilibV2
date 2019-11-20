@@ -51,7 +51,10 @@ import {
   DELETE_PLACES_BY_ADMIN_SUCCESS,
   PLACE_IS_ALREADY_BOOKED,
 } from './message.constants'
-import { expectMailBordereaux, expectMailConvocation } from '../business/__tests__/expect-send-mail'
+import {
+  expectMailBordereaux,
+  expectMailConvocation,
+} from '../business/__tests__/expect-send-mail'
 
 const inspecteurTest = {
   nom: 'Doggett',

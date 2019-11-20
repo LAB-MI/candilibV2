@@ -7,20 +7,10 @@ import {
   findInspecteurByDepartement,
   findInspecteurById,
 } from '../../models/inspecteur'
-import {
-  findCentresByDepartement,
-  findCentreById,
-} from '../../models/centre/centre.queries'
-import {
-  findAllPlacesByCentre,
-  findAllPlacesBookedByCentreAndInspecteurs,
-} from '../../models/place'
-import {
-  appLogger,
-  getFrenchLuxonFromISO,
-  getFrenchLuxonRangeFromDate,
-} from '../../util'
-import { SOME_PARAMS_ARE_NOT_DEFINED } from './message.constants'
+import { findAllPlacesByCentre } from '../../models/place'
+import { appLogger, getFrenchLuxonFromISO } from '../../util'
+import { SOME_PARAMS_ARE_NOT_DEFINED_OR_INCORRECT } from './message.constants'
+import { getInspecteursBookedFromDepartement } from './inspecteurs.business'
 
 /**
  * Récupère les informations d'un ou plusieurs inspecteurs
@@ -55,10 +45,16 @@ export const getInspecteurs = async (req, res) => {
   if (date && departement && !matching && !centreId && !begin && !end) {
     appLogger.debug({
       ...loggerInfo,
-      func: 'getInspecteursBookedFromDepartement',
+      func: 'getInspecteurs',
     })
 
     const results = await getInspecteursBookedFromDepartement(date, departement)
+
+    appLogger.info({
+      ...loggerInfo,
+      nbInspecteurs: results.length,
+    })
+
     return res.status(200).send({
       success: true,
       results,
@@ -145,59 +141,13 @@ export const getInspecteurs = async (req, res) => {
       })
     }
   } else {
-    appLogger.warn({ ...loggerInfo, message: SOME_PARAMS_ARE_NOT_DEFINED })
+    appLogger.warn({
+      ...loggerInfo,
+      message: SOME_PARAMS_ARE_NOT_DEFINED_OR_INCORRECT,
+    })
     return res.status(400).send({
       success: false,
-      message: SOME_PARAMS_ARE_NOT_DEFINED,
+      message: SOME_PARAMS_ARE_NOT_DEFINED_OR_INCORRECT,
     })
   }
-}
-
-export const getInspecteursBookedFromDepartement = async (
-  date,
-  departement
-) => {
-  const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
-
-  const centres = await findCentresByDepartement(departement)
-
-  const places = (await Promise.all(
-    centres.map(centre =>
-      findAllPlacesBookedByCentreAndInspecteurs(
-        centre._id,
-        null,
-        beginDate,
-        endDate
-      )
-    )
-  ))
-    .flat()
-    .reduce((acc, { centre, inspecteur }) => {
-      if (
-        acc.find(place => place.inspecteur.toString() === inspecteur.toString())
-      ) {
-        return acc
-      }
-
-      return [
-        ...acc,
-        {
-          centre,
-          inspecteur,
-        },
-      ]
-    }, [])
-
-  const inspecteursInfo = await Promise.all(
-    places.map(async place => {
-      const centre = await findCentreById(place.centre)
-      const inspecteur = await findInspecteurById(place.inspecteur)
-      return {
-        centre,
-        inspecteur,
-      }
-    })
-  )
-
-  return inspecteursInfo
 }

@@ -50,7 +50,7 @@
                 @selection="selection"
                 :clearable="true"
                 :autofocus="true"
-                placeholder="Recherche par nom, matricule ou adresse email"
+                placeholder="Recherche par nom, matricule ou adresse courriel"
               />
             </div>
           </v-card-title>
@@ -62,19 +62,19 @@
           <v-form v-else>
             <v-card-text>
               <v-list>
-                <v-list-tile>
-                  <v-list-tile-content class="label-select-all">
+                <v-list-item>
+                  <v-list-item-content class="label-select-all">
                     {{ $formatMessage({ id: 'tous'}) }}
-                  </v-list-tile-content>
+                  </v-list-item-content>
 
-                  <v-list-tile-action>
+                  <v-list-item-action>
                     <v-checkbox
                       class="t-check-all"
                       :color="isPartiallyChecked ? 'grey' : 'info'"
                       v-model="isAllChecked"
                     ></v-checkbox>
-                  </v-list-tile-action>
-                </v-list-tile>
+                  </v-list-item-action>
+                </v-list-item>
               </v-list>
 
               <v-list
@@ -259,7 +259,7 @@ export default {
       if (this.inspecteursOfCurrentDpt && newValue &&
         newValue.length < this.inspecteursOfCurrentDpt.length) {
         this.isPartiallyChecked = true
-        if (newValue && newValue.length === 0) {
+        if (newValue.length === 0) {
           this.isAllChecked = false
         }
         return
@@ -273,7 +273,7 @@ export default {
         ({ inspecteur, centre }) => ({
           text: `${inspecteur.nom} - ${inspecteur.matricule} - ${centre.nom}`,
           value: inspecteur._id,
-        })
+        }),
       )
     },
 
