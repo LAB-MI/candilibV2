@@ -2,25 +2,19 @@
  * Contrôleur regroupant les fonctions de récupération des infos admin
  * @module routes/admin/admin-controllers
  */
-import {
-  findUserById,
-  createUser,
-  deleteUserByEmail,
-  findUserByEmail,
-  updateUser,
-} from '../../models/user'
+import { findUserById } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
 
-import { appLogger, email as regexEmail } from '../../util'
+import { appLogger } from '../../util'
 import config from '../../config'
-import { createPassword } from '../../util/password'
 import { sendMailResetLink } from '../business/send-mail-reset-password'
 import { sendMailConfirmationUpdateUserInfo } from '../business/send-mail-update-user-info'
 import {
-  INVALID_EMAIL,
-  USER_NO_EXIST,
-} from './message.constants'
-import { getAppropriateUsers, isForbiddenToUpsertUser } from './business'
+  getAppropriateUsers,
+  createAppropriateUser,
+  updateUserBusiness,
+  deleteUserBusiness,
+} from './business'
 
 /**
  * Récupère les infos de l'admin
@@ -104,7 +98,7 @@ const findInfoAdminById = async userId => {
  * @param {import('express').Response} res
  */
 export const createUserController = async (req, res) => {
-  const { email, departements, status } = req.body
+  const { email, status, departements } = req.body
   const loggerInfo = {
     section: 'admin-create-user',
     action: 'post-user',
@@ -116,27 +110,14 @@ export const createUserController = async (req, res) => {
 
   appLogger.info(loggerInfo)
 
-  const isValidEmail = regexEmail.test(email)
-  if (!isValidEmail) {
-    return res.status(400).json({
-      success: false,
-      message: INVALID_EMAIL,
-    })
-  }
-
-  const user = await findUserById(req.userId)
-  const forbiddenMessage = isForbiddenToUpsertUser(status, user, departements)
-  if (forbiddenMessage) {
-    res.status(401).json({
-      success: false,
-      message: forbiddenMessage,
-    })
-    return
-  }
-
   try {
-    const password = createPassword()
-    await createUser(email, password, departements, status)
+    const user = await createAppropriateUser(
+      req.userId,
+      email,
+      status,
+      departements
+    )
+
     await sendMailResetLink(email)
     appLogger.info({
       ...loggerInfo,
@@ -144,9 +125,11 @@ export const createUserController = async (req, res) => {
       description:
         "L'utilisateur a bien été créé et un courriel lui a été envoyé",
     })
+
     return res.status(201).json({
       success: true,
       message: `L'utilisateur a bien été créé et un courriel de mise à jour de mot passe a été envoyé à ${email}`,
+      user,
     })
   } catch (error) {
     appLogger.error({
@@ -154,9 +137,10 @@ export const createUserController = async (req, res) => {
       description: "L'utilisateur n'a pas été créé",
       error,
     })
+
     return res.status(error.status || 500).json({
       success: false,
-      message: `Impossible de créer l'utilisateur : ${error.message}`,
+      message: error.message,
     })
   }
 }
@@ -209,6 +193,7 @@ export const getUsers = async (req, res) => {
  */
 export const updatedInfoUser = async (req, res) => {
   const { email, departements, status } = req.body
+
   const loggerInfo = {
     section: 'admin-update-user',
     action: 'put-user',
@@ -220,48 +205,30 @@ export const updatedInfoUser = async (req, res) => {
 
   appLogger.info(loggerInfo)
 
-  const isValidEmail = regexEmail.test(email)
-  if (!isValidEmail) {
-    return res.status(400).json({
-      success: false,
-      message: INVALID_EMAIL,
-    })
-  }
-
-  const user = await findUserById(req.userId)
-  const userToUpdate = await findUserByEmail(email)
-
-  if (!userToUpdate) {
-    const message = "L'email n'existe pas"
-    res.status(404).json({
-      success: false,
-      message,
-    })
-    return
-  }
-
-  const forbiddenMessage = isForbiddenToUpsertUser(status, user, departements)
-
-  if (forbiddenMessage) {
-    res.status(401).json({
-      success: false,
-      message: forbiddenMessage,
-    })
-    return
-  }
-
   try {
-    const updatedUser = await updateUser(email, { departements, status })
+    const updatedUser = await updateUserBusiness(
+      req.userId,
+      email,
+      status,
+      departements
+    )
     await sendMailConfirmationUpdateUserInfo(email)
-    return res.status(200).json({
+
+    res.status(200).json({
       success: true,
       message: "Les informations de l'utilisateur ont été modifiées",
       user: updatedUser,
     })
   } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: "L'utilisateur n'a pas été modifié",
+      error,
+    })
+
     res.status(error.status || 500).json({
       success: false,
-      message: `Impossible de mettre à jour l'utilisateur : ${error.message}`,
+      message: error.message,
     })
   }
 }
@@ -281,6 +248,7 @@ export const updatedInfoUser = async (req, res) => {
  */
 export const deleteUserController = async (req, res) => {
   const { email: emailToDelete } = req.body
+
   const loggerInfo = {
     section: 'admin-delete-user',
     action: 'delete-user',
@@ -289,41 +257,19 @@ export const deleteUserController = async (req, res) => {
   }
   appLogger.info(loggerInfo)
 
-  const user = await findUserById(req.userId)
-  const userToDelete = await findUserByEmail(emailToDelete)
-
-  if (!userToDelete) {
-    res.status(400).json({
-      success: false,
-      message: USER_NO_EXIST,
-    })
-    return
-  }
-
-  const forbiddenMessage = isForbiddenToUpsertUser(
-    userToDelete.status,
-    user,
-    userToDelete.departements
-  )
-
-  if (forbiddenMessage) {
-    res.status(401).json({
-      success: false,
-      message: forbiddenMessage,
-    })
-    return
-  }
-
   try {
-    await deleteUserByEmail(emailToDelete, user.email)
+    const archivedUser = await deleteUserBusiness(req.userId, emailToDelete)
+
     appLogger.info({
       ...loggerInfo,
       action: 'delete-user',
       description: "L'utilisateur a bien été supprimé",
     })
-    return res.status(200).json({
+
+    res.status(200).json({
       success: true,
-      message: "L'utilisateur a bien été supprimé",
+      message: "Les informations de l'utilisateur a été supprimé",
+      archivedUser,
     })
   } catch (error) {
     appLogger.error({
@@ -331,9 +277,10 @@ export const deleteUserController = async (req, res) => {
       description: "L'utilisateur n'a pas été supprimé",
       error,
     })
-    return res.status(500).json({
+
+    res.status(error.status || 500).json({
       success: false,
-      message: "L'utilisateur n'a pas été supprimé",
+      message: error.message,
     })
   }
 }

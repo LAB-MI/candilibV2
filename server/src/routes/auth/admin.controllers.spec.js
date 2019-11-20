@@ -8,7 +8,7 @@ const { connect, disconnect } = require('../../mongo-connection')
 const { default: app, apiPrefix } = require('../../app')
 const {
   createUser,
-  deleteUserByEmail,
+  archiveUserByEmail,
   addEmailValidationHash,
 } = require('../../models/user')
 const { requestPasswdReset } = require('./admin-controllers')
@@ -33,7 +33,7 @@ describe('Test the auth admin', () => {
   })
 
   afterAll(async () => {
-    await deleteUserByEmail(email)
+    await archiveUserByEmail(email)
     await disconnect()
     await app.close()
   })
@@ -85,7 +85,7 @@ describe('Email on call to /reset-link', () => {
   })
 
   afterAll(async () => {
-    await deleteUserByEmail(email)
+    await archiveUserByEmail(email)
     await disconnect()
     await app.close()
   })
@@ -134,7 +134,7 @@ describe('Reset my password', () => {
   })
 
   afterAll(async () => {
-    await deleteUserByEmail(email)
+    await archiveUserByEmail(email)
     await disconnect()
     app.close()
   })

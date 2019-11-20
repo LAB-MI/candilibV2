@@ -1,6 +1,19 @@
-import { findUserById, findAllUsers } from '../../../models/user'
+import {
+  findUserById,
+  findAllActiveUsers,
+  createUser,
+  findUserByEmail,
+  updateUser,
+  archiveUserByEmail,
+} from '../../../models/user'
 import config from '../../../config'
-import { INCORRECT_DEPARTEMENT_LIST, CANNOT_ACTION_USER } from '../message.constants'
+import { email as regexEmail } from '../../../util'
+import {
+  INCORRECT_DEPARTEMENT_LIST,
+  CANNOT_ACTION_USER,
+  INVALID_EMAIL,
+} from '../message.constants'
+import { createPassword } from '../../../util/password'
 
 /**
  * Récupère les utilisateurs en fonction de son statut et de ses départements d'intervention
@@ -12,13 +25,13 @@ import { INCORRECT_DEPARTEMENT_LIST, CANNOT_ACTION_USER } from '../message.const
  *
  * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
  */
-export const getAppropriateUsers = async (userId) => {
+export const getAppropriateUsers = async userId => {
   const user = await findUserById(userId)
   const status = user.status
   const departements = user.departements
 
   if (status === config.userStatuses.ADMIN) {
-    const users = await findAllUsers()
+    const users = await findAllActiveUsers()
     return users
   }
 
@@ -28,6 +41,136 @@ export const getAppropriateUsers = async (userId) => {
     error.status = 401
     throw error
   }
+}
+
+/**
+ * Créé un utilisateur
+ *
+ * @async
+ * @function
+ *
+ * @param {string} userId - ID de l'utilisateur qui crée l' utilisateur
+ * @param {string} email - Adresse courriel de l'utilisateur créé
+ * @param {string} status - Statut de l'utilisateur créé
+ * @param {string[]} departements - Département de l'utilisateur créé
+ *
+ * @returns {Promise.<import('../../../models/user/user.model.js').User[]}
+ */
+export const createAppropriateUser = async (
+  userId,
+  email,
+  status,
+  departements
+) => {
+  const isValidEmail = regexEmail.test(email)
+  if (!isValidEmail) {
+    const error = new Error(INVALID_EMAIL)
+    error.status = 400
+    throw error
+  }
+
+  const user = await findUserById(userId)
+
+  const forbiddenMessage = isForbiddenToUpsertUser(status, user, departements)
+
+  if (forbiddenMessage) {
+    const error = new Error(forbiddenMessage)
+    error.status = 401
+    throw error
+  }
+
+  const password = createPassword()
+  const savedUser = await createUser(email, password, departements, status)
+  return savedUser
+}
+
+/**
+ * Modifie le statut et le départements d'un utilisateur
+ *
+ * @async
+ * @function
+ *
+ * @param {string} userId - ID de l'utilisateur qui modifie l' utilisateur
+ * @param {string} email - Adresse courriel de l'utilisateur à modifier
+ * @param {Object} param - Objet contenant le statut et les départements
+ * @param {string} param.status - Statut de l'utilisateur à modifier
+ * @param {string[]} param.departements - Département de l'utilisateur à modifier
+ *
+ * @returns {Promise.<import('../../../models/user/user.model.js').User[]}
+ */
+export const updateUserBusiness = async (
+  userId,
+  email,
+  status,
+  departements
+) => {
+  const isValidEmail = regexEmail.test(email)
+  if (!isValidEmail) {
+    const error = new Error(INVALID_EMAIL)
+    error.status = 400
+    throw error
+  }
+
+  const user = await findUserById(userId)
+  const userToUpdate = await findUserByEmail(email)
+
+  if (!userToUpdate) {
+    const message = "Cet utilisateur n'existe pas"
+    const error = new Error(message)
+    error.status = 404
+    throw error
+  }
+
+  const isForbiddenMessage =
+    isForbiddenToUpsertUser(status, user, departements) ||
+    isForbiddenToUpsertUser(
+      userToUpdate.status,
+      user,
+      userToUpdate.departements
+    )
+  if (isForbiddenMessage) {
+    const error = new Error(isForbiddenMessage)
+    error.status = 401
+    throw error
+  }
+
+  const updatedUser = await updateUser(email, { status, departements })
+
+  return updatedUser
+}
+
+export const deleteUserBusiness = async (userId, emailToDelete) => {
+  const isValidEmail = regexEmail.test(emailToDelete)
+  if (!isValidEmail) {
+    const error = new Error(INVALID_EMAIL)
+    error.status = 400
+    throw error
+  }
+  const user = await findUserById(userId)
+  const userToDelete = await findUserByEmail(emailToDelete)
+
+  if (!userToDelete) {
+    const message = "Cet utilisateur n'existe pas"
+    const error = new Error(message)
+    error.status = 404
+    throw error
+  }
+
+  const isForbiddenMessage = isForbiddenToUpsertUser(
+    userToDelete.status,
+    user,
+    userToDelete.departements
+  )
+
+  if (isForbiddenMessage) {
+    const error = new Error(isForbiddenMessage)
+    error.status = 401
+    throw error
+  }
+
+  const deletedUser = archiveUserByEmail(emailToDelete, user.email)
+
+  return deletedUser
 }
 
 /**

@@ -5,13 +5,26 @@ import uuidv4 from 'uuid/v4'
  * Recherche tous les répartiteurs/délégués de tous les départements
  *
  *
- * @returns {Promise.<import('./user.model.js').User[]>} - Document de l'utilisateur
+ * @returns {Promise.<import('./user.model.js').User[]>} - Liste de documents de l'utilisateur
  */
 
 export const findAllUsers = async () => {
   const users = await User.find()
   return users
 }
+
+/**
+ * Recherche tous les répartiteurs/délégués actifs (non archivés) de tous les départements
+ *
+ *
+ * @returns {Promise.<import('./user.model.js').User[]>} - LIste de documents de l'utilisateur
+ */
+
+export const findAllActiveUsers = async () => {
+  const users = await User.find({ deletedAt: { $exists: false } })
+  return users
+}
+
 /**
  * Recherche et retourne le document de l'utilisateur par son ID
  *
@@ -77,7 +90,7 @@ export const createUser = async (email, password, departements, status) => {
     await user.save()
     return user
   } catch (error) {
-    if (error.message.includes('duplicate key error dup key')) {
+    if (error.message.match(/duplicate key error.*\bemail_/)) {
       const message = "l'email existe déjà"
       const err = new Error(`Impossible de créer l'utilisateur : ${message}`)
       err.status = 409
@@ -95,7 +108,7 @@ export const createUser = async (email, password, departements, status) => {
  *
  * @returns {Promise.<User>} - Document de l'utilisateur archivé
  */
-export const deleteUserByEmail = async (emailToDelete, email) => {
+export const archiveUserByEmail = async (emailToDelete, email) => {
   const user = await findUserByEmail(emailToDelete)
   if (!user) {
     throw new Error('No user found')
@@ -174,7 +187,7 @@ export const updateUserPassword = async (user, password) => {
 
 /**
  * Remplace la liste de départements et/ou le statut de
- * l'utilisateur trouvé par son adresse courriel
+ * l'utilisateur trouvé par son adresse courriel, et renvoie l'utilisateur modifié
  *
  * @async
  * @function

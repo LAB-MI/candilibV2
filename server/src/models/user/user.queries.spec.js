@@ -1,8 +1,7 @@
 import {
   createUser,
   deleteUser,
-  deleteUserByEmail,
-  findAllUsers,
+  archiveUserByEmail,
   findUserByEmail,
   findUserById,
   updateUser,
@@ -10,6 +9,7 @@ import {
 } from './'
 import { connect, disconnect } from '../../mongo-connection'
 import config from '../../config'
+import { findAllActiveUsers } from './user.queries'
 
 const validEmail = 'dontusethis@example.com'
 const anotherValidEmail = 'dontusethis@example.fr'
@@ -80,14 +80,17 @@ describe('User', () => {
       await connect()
     })
 
-    afterAll(async () => {
-    })
-
     afterEach(async () => {
       await Promise.all([
-        deleteUserByEmail(validEmail).catch(() => true),
-        deleteUserByEmail(anotherValidEmail).catch(() => true),
-        deleteUserByEmail(emailTwo).catch(() => true),
+        findUserByEmail(validEmail)
+          .then(deleteUser)
+          .catch(() => true),
+        findUserByEmail(anotherValidEmail)
+          .then(deleteUser)
+          .catch(() => true),
+        findUserByEmail(emailTwo)
+          .then(deleteUser)
+          .catch(() => true),
       ])
       await disconnect()
     })
@@ -150,7 +153,12 @@ describe('User', () => {
       user = await createUser(duplicatedEmail, password, ['75'], 'delegue')
 
       // When
-      const error = await createUser(duplicatedEmail, password, ['75'], 'delegue').catch(error => error)
+      const error = await createUser(
+        duplicatedEmail,
+        password,
+        ['75'],
+        'delegue'
+      ).catch(error => error)
 
       // Then
       expect(user.isNew).toBe(false)
@@ -175,44 +183,63 @@ describe('User', () => {
     const email = 'admin@example.com'
     const emailDelegue = 'delegue@example.com'
     const emailRepartiteur = 'repartiteur@example.com'
+    const repartiteurToDeleteEmail = 'toDelete@email.fr'
     const password = '@85Stm9G!'
     const departements = ['75']
+    let adminPromise
+    let deleguePromise
+    let repartiteurPromise
+    let repartiteurToDeletePromise
 
     beforeAll(async () => {
       await connect()
-      const adminPromise = createUser(
+      adminPromise = createUser(
         email,
         password,
         departements,
         config.userStatuses.ADMIN
       )
-      const deleguePromise = createUser(
+      deleguePromise = createUser(
         emailDelegue,
         password,
         departements,
         config.userStatuses.DELEGUE
       )
-      const repartiteurPromise = createUser(
+      repartiteurPromise = createUser(
         emailRepartiteur,
         password,
         departements,
         config.userStatuses.REPARTITEUR
       )
-      await Promise.all([adminPromise, deleguePromise, repartiteurPromise])
+      repartiteurToDeletePromise = createUser(
+        repartiteurToDeleteEmail,
+        password,
+        departements,
+        config.userStatuses.REPARTITEUR
+      )
+
+      await Promise.all([
+        adminPromise,
+        deleguePromise,
+        repartiteurPromise,
+        repartiteurToDeletePromise,
+      ])
+      await archiveUserByEmail(repartiteurToDeleteEmail)
     })
 
     afterAll(async () => {
       await Promise.all([
-        deleteUserByEmail(email).catch(() => true),
-        deleteUserByEmail(emailDelegue).catch(() => true),
-        deleteUserByEmail(emailRepartiteur).catch(() => true),
+        adminPromise.then(deleteUser).catch(() => true),
+        deleguePromise.then(deleteUser).catch(() => true),
+        repartiteurPromise.then(deleteUser).catch(() => true),
+        repartiteurToDeletePromise.then(deleteUser).catch(() => true),
       ])
       await disconnect()
     })
 
     it('Should retrieve all users for admin session', async () => {
       // When
-      const users = await findAllUsers()
+      const users = await findAllActiveUsers()
 
       // Then
       expect(users).toBeDefined()
@@ -235,9 +262,15 @@ describe('User', () => {
 
     afterEach(async () => {
       await Promise.all([
-        deleteUserByEmail(anotherValidEmail).catch(() => true),
-        deleteUserByEmail(emailThree).catch(() => true),
-        deleteUserByEmail(emailFour).catch(() => true),
+        findUserByEmail(anotherValidEmail)
+          .then(deleteUser)
+          .catch(() => true),
+        findUserByEmail(emailThree)
+          .then(deleteUser)
+          .catch(() => true),
+        findUserByEmail(emailFour)
+          .then(deleteUser)
+          .catch(() => true),
       ])
     })
 
@@ -293,8 +326,12 @@ describe('User', () => {
 
     afterEach(async () => {
       await Promise.all([
-        deleteUserByEmail(anotherValidEmail).catch(() => true),
-        deleteUserByEmail(emailFive).catch(() => true),
+        findUserByEmail(anotherValidEmail)
+          .then(deleteUser)
+          .catch(() => true),
+        findUserByEmail(emailFive)
+          .then(deleteUser)
+          .catch(() => true),
       ])
     })
 
@@ -312,7 +349,7 @@ describe('User', () => {
       expect(noUser).toBe(null)
     })
 
-    it('Should delete a user by its email', async () => {
+    it('Should archive a user by its email', async () => {
       // Given
       const email = 'terminator@example.com'
       const emailToDelete = 'emailFive@example.com'
@@ -320,7 +357,7 @@ describe('User', () => {
       user = await createUser(emailToDelete, password)
 
       // When
-      await deleteUserByEmail(emailToDelete, email)
+      await archiveUserByEmail(emailToDelete, email)
       const deletedUser = await findUserByEmail(emailToDelete)
 
       // Then

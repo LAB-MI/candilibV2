@@ -16,7 +16,6 @@ import {
   CANNOT_ACTION_USER,
   INCORRECT_DEPARTEMENT_LIST,
   INVALID_EMAIL,
-  USER_NO_EXIST,
 } from './message.constants'
 
 jest.mock('../business/send-mail')
@@ -142,6 +141,7 @@ describe('Create user', () => {
       .post(`${apiPrefix}/admin/users`)
       .send({
         email,
+        password,
         departements,
         status: config.userStatuses.REPARTITEUR,
       })
@@ -353,7 +353,10 @@ describe('Get users', () => {
       .expect(401)
 
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur")
+    expect(body).toHaveProperty(
+      'message',
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+    )
   })
 
   it('Should respond 401 retrieve users by repartiteur', async () => {
@@ -372,7 +375,10 @@ describe('Get users', () => {
       .expect(401)
 
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur")
+    expect(body).toHaveProperty(
+      'message',
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+    )
   })
 })
 
@@ -659,7 +665,7 @@ describe(' Delete user by delegue', () => {
       .expect(400)
 
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', USER_NO_EXIST)
+    expect(body).toHaveProperty('message', INVALID_EMAIL)
   })
 
   it('Should respond 401 if "délégué" tries to delete "délégué"', async () => {
