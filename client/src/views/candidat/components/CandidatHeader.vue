@@ -31,7 +31,7 @@
           :to="link.routerTo"
           :value="link.routerTo"
           :key="link.routerTo.name"
-          class="no-margin-left"
+          :class="`no-margin-left t-${link.routerTo.name}`"
         >
           <icon-with-tooltip
             :iconName="link.iconName"
