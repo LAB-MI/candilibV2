@@ -21,12 +21,21 @@ import {
   getInscripionValidTemplate,
   getUrlFAQ,
 } from './mail'
+import { getEmailDepartementOfCandidat } from './send-mail-util'
 
 const getMailData = async (candidat, flag, urlMagicLink) => {
   const urlFAQ = getUrlFAQ()
   const urlConnexion = `${config.PUBLIC_URL}`
 
-  const { codeNeph, nomNaissance, email, emailValidationHash } = candidat
+  const {
+    codeNeph,
+    nomNaissance,
+    email,
+    emailValidationHash,
+    departement,
+  } = candidat
+
+  const contactezNous = await getEmailDepartementOfCandidat(departement)
 
   const urlValidationEmail = `${
     config.PUBLIC_URL
@@ -45,7 +54,8 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
   const VALIDATION_EMAIL_MSG = getValidationMailTemplate(
     nomMaj,
     urlValidationEmail,
-    urlConnexion
+    urlConnexion,
+    contactezNous
   )
 
   const INSCRIPTION_KO_MSG = getInscriptionKOTemplate(nomMaj, codeNeph, urlFAQ)

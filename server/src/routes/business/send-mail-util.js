@@ -1,4 +1,5 @@
 import { appLogger } from '../../util'
+import { findDepartementById } from '../../models/departement'
 
 export function buildMailResaArgsValidation (
   date,
@@ -42,4 +43,10 @@ export function buildMailResaArgsValidation (
     })
     throw new Error(message)
   }
+}
+
+export const getEmailDepartementOfCandidat = async departement => {
+  const result = await findDepartementById(departement)
+  const { email } = result
+  return email ? `<a href="mailto:${email}"> Contactez-nous </a>` : ''
 }
