@@ -1,12 +1,35 @@
 import { DateTime } from 'luxon'
 import { connect, disconnect } from '../../mongo-connection'
-import { importPlacesCsv } from './places-business'
+
+import {
+  importPlacesCsv,
+  sendMailSchedulesInspecteurs,
+  sendMailSchedulesAllInspecteurs,
+} from './places-business'
+
+import { getScheduleInspecteurBody } from '../business/send-mail-schedule-inspecteur'
+
 import { createCentre } from '../../models/centre'
+import { createPlace } from '../../models/place'
 import { createInspecteur } from '../../models/inspecteur'
-import { FRENCH_LOCALE_INFO } from '../../util'
+import {
+  FRENCH_LOCALE_INFO,
+  getFrenchLuxon,
+  getFrenchFormattedDateTime,
+} from '../../util'
+
+import {
+  bookCandidatOnSelectedPlace,
+  createCandidatAndUpdate,
+  commonBasePlaceDateTime,
+} from '../../models/__tests__'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
+jest.mock('../business/send-mail')
+
+const bookedAt = getFrenchLuxon().toJSDate()
+
 const centre = {
   departement: '93',
   nom: 'VILLEPINTE',
@@ -17,22 +40,6 @@ const centre = {
   lon: '2.552847',
 }
 
-const inspecteurs = [
-  {
-    email: 'dupont.jacques@email.fr',
-    nom: 'dupont',
-    prenom: 'jacques',
-    matricule: '01020304',
-    departement: '93',
-  },
-  {
-    email: 'dupont.jean@email.fr',
-    nom: 'dupont',
-    prenom: 'Jean',
-    matricule: '01020305',
-    departement: '93',
-  },
-]
 const getCsvFileData = csvFileDataInJson => {
   const csvFileHeader =
     ',,,' + '\n' + 'Date,Heure,Matricule,Nom,Centre,Departement'
@@ -83,6 +90,23 @@ const expectOneResultWithError = (
 }
 
 describe('Test import places from CSV', () => {
+  const inspecteurs = [
+    {
+      email: 'dupont.jacques@email.fr',
+      nom: 'dupont',
+      prenom: 'jacques',
+      matricule: '01020304',
+      departement: '93',
+    },
+    {
+      email: 'dupont.jean@email.fr',
+      nom: 'dupont',
+      prenom: 'Jean',
+      matricule: '01020305',
+      departement: '93',
+    },
+  ]
+
   let inspecteursCreated
   beforeAll(async () => {
     await connect()
@@ -104,7 +128,7 @@ describe('Test import places from CSV', () => {
     await disconnect()
   })
 
-  it('should have errors with fields are missing ', async () => {
+  it('should have errors when fields are missing ', async () => {
     const csvFileDataInJson = [
       {
         date: ' ',
@@ -199,7 +223,7 @@ describe('Test import places from CSV', () => {
     })
   })
 
-  it('should have errors with departements are different ', async () => {
+  it('should have errors when departements are different ', async () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
@@ -244,7 +268,7 @@ describe('Test import places from CSV', () => {
     )
   })
 
-  it('should have errors with centres are unknown ', async () => {
+  it('should have errors when centres are unknown ', async () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
@@ -282,7 +306,7 @@ describe('Test import places from CSV', () => {
     })
   })
 
-  it('should have errors with inspecteurs are unknown', async () => {
+  it('should have errors when inspecteurs are unknown', async () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
@@ -319,7 +343,7 @@ describe('Test import places from CSV', () => {
     })
   })
 
-  it('should have errors with name inspecteurs are differents', async () => {
+  it('should have errors when inspecteurs names are differents', async () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
@@ -422,7 +446,7 @@ describe('Test import places from CSV', () => {
     })
   })
 
-  it('should no create same places ', async () => {
+  it('should not create same places ', async () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
@@ -525,5 +549,277 @@ describe('Test import places from CSV', () => {
           "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée.",
       )
     })
+  })
+})
+
+describe('Test send mail bordereaux', () => {
+  require('../../util/logger').setWithConsole(true)
+
+  const candidats = [
+    {
+      codeNeph: '123456789001',
+      nomNaissance: 'CANDIDAT',
+      prenom: 'CANDIDAT',
+      email: 'testbordereaux1@test.com',
+      portable: '0612345678',
+      adresse: '10 Rue Oberkampf 75011 Paris',
+      dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+      isValidatedByAurige: true,
+      isValidatedEmail: true,
+    },
+    {
+      codeNeph: '123456789002',
+      nomNaissance: 'CANDIDAT2',
+      prenom: 'CANDIDAT2',
+      email: 'testbordereaux2@test.com',
+      portable: '0612345678',
+      adresse: '10 Rue Oberkampf 75011 Paris',
+      dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+      isValidatedByAurige: true,
+      isValidatedEmail: true,
+    },
+  ]
+
+  const centres = [
+    {
+      departement: '93',
+      nom: 'Villepinte'.toUpperCase(),
+      adresse:
+        'avenue Jean Fourgeaud (dernier parking circulaire) 93420 Villepinte',
+      lat: '48.962099',
+      label: "Centre d'examen du permis de conduire de Villepinte",
+      lon: '2.552847',
+    },
+    {
+      departement: '75',
+      nom: 'Noisy le Grand'.toUpperCase(),
+      adresse:
+        '5 boulevard de Champs Richardets (parking du gymnase de la butte verte) 93160 Noisy le Grand',
+      lat: '48.837378',
+      label: "Centre d'examen du permis de conduire de Noisy le Grand",
+      lon: '2.579699',
+    },
+  ]
+
+  const inspecteurs = [
+    {
+      email: 'dupont.jacques@email.fr',
+      nom: 'DUPONT',
+      prenom: 'jacques',
+      matricule: '01020304',
+      departement: '93',
+    },
+    {
+      email: 'dupontdu75.jean@email.fr',
+      nom: 'DUPONTDU75',
+      prenom: 'Jean',
+      matricule: '01020375',
+      departement: '75',
+    },
+  ]
+
+  const emailDepartement = 'email93@departement.com'
+
+  let candidatsCreated
+  let centresCreated
+  let inspecteursCreated
+  let placesBooked
+  let placesCreated
+  const date = commonBasePlaceDateTime.toISO()
+  const dateToString = getFrenchFormattedDateTime(date).date
+
+  beforeAll(async () => {
+    // Connecter à la base
+    await connect()
+    // Démarer mailhog
+    // Créer 2 inspecteurs dans 2 départements
+    try {
+      centresCreated = await Promise.all(
+        centres.map(centre =>
+          createCentre(
+            centre.nom,
+            centre.label,
+            centre.adresse,
+            centre.lon,
+            centre.lat,
+            centre.departement,
+          ),
+        ),
+      )
+
+      inspecteursCreated = await Promise.all(
+        inspecteurs.map(inspecteur => createInspecteur(inspecteur)),
+      )
+
+      placesCreated = await Promise.all(
+        inspecteursCreated.map((inspecteur, index) => {
+          return createPlace({
+            date,
+            centre: centresCreated[index]._id,
+            inspecteur: inspecteur._id,
+          })
+        }),
+      )
+
+      candidatsCreated = await Promise.all(
+        candidats.map(candidat => createCandidatAndUpdate(candidat)),
+      )
+
+      placesBooked = await Promise.all(
+        placesCreated.map((place, index) =>
+          bookCandidatOnSelectedPlace(place, candidatsCreated[index], bookedAt),
+        ),
+      )
+    } catch (e) {
+      console.warn(e)
+    }
+    // Créer 2 délégués avec les 2 mêmes départements
+  })
+
+  afterEach(async () => {
+    require('../business/send-mail').deleteMails()
+  })
+
+  afterAll(async () => {
+    // Supprimer les inspecteurs, délégués
+    // Se déconnecter
+    await disconnect()
+    // Arrêter mailhog
+  })
+
+  it("Test envoi borderaux aux inspecteurs d'un département", async () => {
+    // Given
+
+    // When
+    const result = await sendMailSchedulesInspecteurs(
+      emailDepartement,
+      '93',
+      date,
+      true,
+    )
+
+    // Then
+    expect(result).toBeDefined()
+    expect(result).toHaveProperty('success', true)
+
+    const mails = require('../business/send-mail').getMails()
+    expect(mails).toBeDefined()
+    expect(mails).toHaveLength(1)
+
+    const mail = mails[0]
+
+    expect(mail).toBeDefined()
+    expect(mail).toHaveProperty('to', inspecteurs[0].email)
+    expect(mail).toHaveProperty(
+      'subject',
+      `Bordereau de l'inspecteur ${inspecteurs[0].nom}/${inspecteurs[0].matricule} pour le ${dateToString} au centre de ${centres[0].nom} du département ${centres[0].departement}`,
+    )
+    expect(mail).toHaveProperty(
+      'html',
+      await getScheduleInspecteurBody(
+        inspecteurs[0].nom,
+        inspecteurs[0].matricule,
+        dateToString,
+        centres[0].nom,
+        centres[0].departement,
+        [placesBooked[0]],
+      ),
+    )
+  })
+
+  it("Test envoi borderaux à l'adresse d'un département", async () => {
+    // Given
+
+    // When
+    const result = await sendMailSchedulesInspecteurs(
+      emailDepartement,
+      '93',
+      date,
+      false,
+    )
+
+    // Then
+    expect(result).toBeDefined()
+    expect(result).toHaveProperty('success', true)
+
+    const mails = require('../business/send-mail').getMails()
+    expect(mails).toBeDefined()
+    expect(mails).toHaveLength(1)
+
+    const mail = mails[0]
+
+    expect(mail).toBeDefined()
+    expect(mail).toHaveProperty('to', emailDepartement)
+    expect(mail).toHaveProperty(
+      'subject',
+      `Bordereau de l'inspecteur ${inspecteurs[0].nom}/${inspecteurs[0].matricule} pour le ${dateToString} au centre de ${centres[0].nom} du département ${centres[0].departement}`,
+    )
+    expect(mail).toHaveProperty(
+      'html',
+      await getScheduleInspecteurBody(
+        inspecteurs[0].nom,
+        inspecteurs[0].matricule,
+        dateToString,
+        centres[0].nom,
+        centres[0].departement,
+        [placesBooked[0]],
+      ),
+    )
+  })
+
+  it('Test envoi borderaux tous les inspecteurs', async () => {
+    // Given
+
+    // When
+    const result = await sendMailSchedulesAllInspecteurs(
+      commonBasePlaceDateTime.toISO(),
+    )
+
+    // Then
+    expect(result).toBeDefined()
+    expect(result).toHaveProperty('success', true)
+    expect(result).toHaveProperty('results')
+
+    const mails = require('../business/send-mail').getMails()
+    expect(mails).toBeDefined()
+    expect(mails).toHaveLength(2)
+
+    const mail1 = mails.find(mail => mail.to === inspecteurs[0].email)
+    expect(mail1).toBeDefined()
+    expect(mail1).toHaveProperty('to', inspecteurs[0].email)
+    expect(mail1).toHaveProperty(
+      'subject',
+      `Bordereau de l'inspecteur ${inspecteurs[0].nom}/${inspecteurs[0].matricule} pour le ${dateToString} au centre de ${centres[0].nom} du département ${centres[0].departement}`,
+    )
+    expect(mail1).toHaveProperty(
+      'html',
+      await getScheduleInspecteurBody(
+        inspecteurs[0].nom,
+        inspecteurs[0].matricule,
+        dateToString,
+        centres[0].nom,
+        centres[0].departement,
+        [placesBooked[0]],
+      ),
+    )
+
+    const mail2 = mails.find(mail => mail.to === inspecteurs[1].email)
+    expect(mail2).toBeDefined()
+    expect(mail2).toHaveProperty('to', inspecteurs[1].email)
+    expect(mail2).toHaveProperty(
+      'subject',
+      `Bordereau de l'inspecteur ${inspecteurs[1].nom}/${inspecteurs[1].matricule} pour le ${dateToString} au centre de ${centres[1].nom} du département ${centres[1].departement}`,
+    )
+    expect(mail2).toHaveProperty(
+      'html',
+      await getScheduleInspecteurBody(
+        inspecteurs[1].nom,
+        inspecteurs[1].matricule,
+        dateToString,
+        centres[1].nom,
+        centres[1].departement,
+        [placesBooked[1]],
+      ),
+    )
   })
 })
