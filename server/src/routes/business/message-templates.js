@@ -48,7 +48,8 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     nomMaj,
     urlMagicLink,
     urlConnexion,
-    email
+    email,
+    contactezNous
   )
 
   const VALIDATION_EMAIL_MSG = getValidationMailTemplate(
