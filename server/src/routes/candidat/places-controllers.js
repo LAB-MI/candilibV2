@@ -31,7 +31,7 @@ export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
 
 /**
- * Retourne soit les dates des places disponible d'un centre par son identifiant ou par son nom et son département
+ * Retourne soit les dates des places disponibles d'un centre soit par son identifiant soit par son nom et son département
  * Si la date de debut (begin) n'est pas définie on recherche à partir de la date courante
  *
  * @async
@@ -141,7 +141,7 @@ export async function getPlacesByCentre (req, res) {
 /**
  * Cette fonction renvoie :
  * - la réservation du candidat (voir {@link import('./places-controllers')..getBookedPlaces|getBookedPlaces})
- * - ou la list des dates des places disponibles {voir {@link import('./places-controllers')..getPlacesByCentre|getPlacesByCentre}}
+ * - ou la liste des dates des places disponibles {voir {@link import('./places-controllers')..getPlacesByCentre|getPlacesByCentre}}
  * @async
  * @function
  * @param {import('express').Request} req
@@ -167,10 +167,10 @@ export const getPlaces = async (req, res) => {
  * @async
  * @function
  * @param {import('express').Request} req
- * @param {string} req.userId - identifiant du candidat
+ * @param {string} req.userId - Identifiant du candidat
  * @param {Obejt} req.query
- * @param {boolean} req.query.byMail - indicateur pour envoyer par mail
- * @param {boolean} req.query.lastDateOnly indication pour récupérer la date dont le candidat n'a plus droit d'annuler
+ * @param {boolean} req.query.byMail - Indicateur pour envoyer par mail
+ * @param {boolean} req.query.lastDateOnly - Indication pour récupérer la date dont le candidat n'a plus droit d'annuler
  * @param {import('express').Response} res
  * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places| Swagger GET candidat/places}
  */
@@ -464,7 +464,7 @@ export const bookPlaceByCandidat = async (req, res) => {
 }
 
 /**
- * Annulation la réservation par le candidat
+ * Annulation de la réservation par le candidat
  *
  * @async
  * @function
