@@ -938,10 +938,9 @@ export const sendMailSchedulesInspecteurs = async (
 
   const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
 
-  const placesByInspecteurs = {}
   const centres = await findCentresByDepartement(departement)
 
-  await Promise.all(
+  const deepPlacesByCentre = await Promise.all(
     centres.map(async centre => {
       const places = await findAllPlacesBookedByCentreAndInspecteurs(
         centre._id,
@@ -949,18 +948,25 @@ export const sendMailSchedulesInspecteurs = async (
         beginDate,
         endDate,
       )
-      places.map(place => {
-        const { inspecteur: inspecteurId } = place
-        if (!placesByInspecteurs[inspecteurId]) {
-          placesByInspecteurs[inspecteurId] = []
-        }
-
-        placesByInspecteurs[inspecteurId].push(place)
-      })
+      return places
     }),
   )
 
+  const flattenPlacesByCentre = deepPlacesByCentre.flat()
+
+  const placesByInspecteurs = flattenPlacesByCentre.reduce((acc, place) => {
+    const { inspecteur: inspecteurId } = place
+
+    if (!acc[inspecteurId]) {
+      acc[inspecteurId] = []
+    }
+
+    acc[inspecteurId] = [...acc[inspecteurId], place]
+    return acc
+  }, {})
+
   const resultsError = []
+
   await Promise.all(
     Object.entries(placesByInspecteurs).map(async ([inspecteurId, places]) => {
       try {
@@ -981,6 +987,7 @@ export const sendMailSchedulesInspecteurs = async (
           emailInspecteur: isForInspecteurs ? inspecteurMail : null,
           description: 'Bordereau envoyé',
         })
+
         return { success: true }
       } catch (error) {
         appLogger.error({
@@ -989,6 +996,7 @@ export const sendMailSchedulesInspecteurs = async (
           error,
           inspecteur: inspecteurId,
         })
+
         const inspecteur = await findInspecteurById(inspecteurId)
         resultsError.push(inspecteur)
       }
@@ -1006,8 +1014,10 @@ export const sendMailSchedulesInspecteurs = async (
     } catch (error) {
       appLogger.error({ ...loggerContent, error })
     }
+
     return { success: false, inspecteurs: resultsError }
   }
+
   return { success: true }
 }
 
@@ -1044,10 +1054,12 @@ export const sendMailSchedulesAllInspecteurs = async date => {
     const { _id, email } = inspecteur
     let nbPlaces = 0
     const places = await findPlaceBookedByInspecteur(_id, begin, end)
+
     if (places && places.length > 0) {
       nbPlaces = places.length
       try {
         await sendScheduleInspecteur(email, places, inspecteur)
+
         appLogger.info({
           ...loggerContent,
           inspecteur: _id,
@@ -1057,23 +1069,49 @@ export const sendMailSchedulesAllInspecteurs = async date => {
         })
       } catch (error) {
         appLogger.error({ ...loggerContent, inspecteur: _id, error })
-        return { success: false, inspecteur }
+
+        return {
+          success: false,
+          inspecteur,
+          message: error.message,
+        }
       }
     }
-    appLogger.warn({
+
+    appLogger.info({
       ...loggerContent,
       inspecteur: _id,
       nbPlaces: 0,
       email,
       description: 'Pas de réservarion',
     })
-    return { success: true, nbPlaces, inspecteur }
+
+    return {
+      success: true,
+      inspecteur,
+      nbPlaces,
+    }
   })
+
   const results = await Promise.all(resultsAsync)
+
   // appLogger.debug({
   //   ...loggerContent,
-  //   results,
+  //   results: results.map(({ inspecteur, message, success }) => {
+  //     const final = {
+  //       success,
+  //       inspecteur: inspecteur.email,
+  //       ...(message && { message }),
+  //     }
+
+  //     return final
+  //   }),
   // })
 
-  return results
+  const success = results.every(result => result.success)
+
+  return {
+    success,
+    results,
+  }
 }

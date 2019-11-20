@@ -599,6 +599,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
       ...loggerContent,
       message: 'Les bordereaux ont été envoyés',
     })
+
     res.status(results.success ? 200 : 400).send(results)
   } catch (error) {
     const loggerFct = error.status ? appLogger.error : appLogger.warn
