@@ -470,7 +470,7 @@ describe('test to get booking by candidat', () => {
 
   it('Should get 200 to send mail of convocation', async () => {
     const { body } = await request(app)
-      .get(`${apiPrefix}/candidat/places?bymail=true`)
+      .get(`${apiPrefix}/candidat/places?byMail=true`)
       .set('Accept', 'application/json')
       .expect(200)
 

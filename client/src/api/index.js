@@ -148,7 +148,7 @@ export default {
     },
 
     async sendEmail () {
-      const json = await apiClient.get(`${apiPaths.candidat.places}?bymail=${true}`, {
+      const json = await apiClient.get(`${apiPaths.candidat.places}?byMail=${true}`, {
         headers: getHeadersForJson(),
       })
       return json

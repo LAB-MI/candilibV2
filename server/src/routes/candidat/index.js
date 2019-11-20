@@ -134,7 +134,7 @@ router.get('/centres', getCentres)
  *       - bearerAuth: []
  *     parameters:
  *       - in: query
- *         name: bymail
+ *         name: byMail
  *         schema:
  *           type: boolean
  *         required: false

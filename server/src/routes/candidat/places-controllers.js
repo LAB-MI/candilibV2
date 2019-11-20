@@ -169,7 +169,7 @@ export const getPlaces = async (req, res) => {
  * @param {import('express').Request} req
  * @param {string} req.userId - identifiant du candidat
  * @param {Obejt} req.query
- * @param {boolean} req.query.bymail - indicateur pour envoyer par mail
+ * @param {boolean} req.query.byMail - indicateur pour envoyer par mail
  * @param {boolean} req.query.lastDateOnly indication pour récupérer la date dont le candidat n'a plus droit d'annuler
  * @param {import('express').Response} res
  * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places| Swagger GET candidat/places}
@@ -177,12 +177,12 @@ export const getPlaces = async (req, res) => {
 export const getBookedPlaces = async (req, res) => {
   const section = 'candidat-getBookedPlaces'
   const candidatId = req.userId
-  const { bymail, lastDateOnly } = req.query
+  const { byMail, lastDateOnly } = req.query
 
   appLogger.debug({
     section,
     candidatId,
-    bymail,
+    byMail,
   })
 
   if (!candidatId) {
@@ -192,7 +192,7 @@ export const getBookedPlaces = async (req, res) => {
     appLogger.warn({
       section,
       candidatId,
-      bymail,
+      byMail,
       success,
       description: message,
     })
@@ -205,10 +205,10 @@ export const getBookedPlaces = async (req, res) => {
   try {
     const bookedPlace = await getReservationByCandidat(
       candidatId,
-      bymail ? { centre: true, candidat: true } : undefined
+      byMail ? { centre: true, candidat: true } : undefined
     )
 
-    if (bymail) {
+    if (byMail) {
       let success
       let message
 
@@ -227,7 +227,7 @@ export const getBookedPlaces = async (req, res) => {
         techLogger.error({
           section,
           candidatId,
-          bymail,
+          byMail,
           success,
           description: message,
           error,
@@ -237,7 +237,7 @@ export const getBookedPlaces = async (req, res) => {
       appLogger.info({
         section,
         candidatId,
-        bymail,
+        byMail,
         success,
         description: message,
       })
@@ -271,7 +271,7 @@ export const getBookedPlaces = async (req, res) => {
         section,
         action: 'get-reservations',
         candidatId,
-        bymail,
+        byMail,
         place: reservation && reservation._id,
       })
       return res.json(reservation)
@@ -280,7 +280,7 @@ export const getBookedPlaces = async (req, res) => {
     appLogger.error({
       section: 'candidat-get-reservations',
       candidatId,
-      bymail,
+      byMail,
       error,
     })
     res.status(500).json({
