@@ -126,7 +126,7 @@ router.get('/centres', getCentres)
  * /candidat/places:
  *  get:
  *     tags: ["Candidat"]
- *     summary: Récupération la réservation du candidat
+ *     summary: Récupération de la réservation du candidat
  *     description: Après connexion, renvoie des informations de la réservation du candidat
  *     produces:
  *       - application/json
@@ -157,7 +157,7 @@ router.get('/centres', getCentres)
  *                  properties:
  *                    _id:
  *                      type: string
- *                      description: L'identifiant de la place réservé
+ *                      description: L'identifiant de la place réservée
  *                    centre:
  *                      $ref: '#/components/schemas/CenterObject'
  *                    date:
@@ -168,10 +168,10 @@ router.get('/centres', getCentres)
  *                      description: La date à partir de quand le candidat n'a pas le droit d'annuler sa réservation
  *                    timeOutToRetry:
  *                      type: integer
- *                      description: Le nombre jours attente pour une nouvelle réservation
+ *                      description: Le nombre de jours d'attente pour une nouvelle réservation
  *                    dayToForbidCancel:
  *                      type: integer
- *                      description: Le nombre jours dont le candidat n'est pas authorisé à annuler avant la réservation
+ *                      description: Le nombre de jours dont le candidat n'est pas autorisé à annuler avant la réservation
  *              example:
  *                  _id": "5dcd1fc1306aaa02926bc550"
  *                  "centre":
@@ -316,7 +316,7 @@ router.get('/places/:id?', getPlaces)
  *                  example: '5cf63145b2a7cffde20e98b7'
  *                date:
  *                  type: string
- *                  description: Date et heure selectionné
+ *                  description: Date et heure selectionnées
  *                  example: "2019-12-09T09:30:00.000Z"
  *                isAccompanied:
  *                  type: boolean
@@ -324,7 +324,7 @@ router.get('/places/:id?', getPlaces)
  *                  example: true
  *                hasDualControlCar:
  *                  type: boolean
- *                  description: Indique si la candidat possédera un véhicule à double commande
+ *                  description: Indique si le candidat possédera un véhicule à double commande
  *                  example: true
  *      responses:
  *        200:
@@ -343,7 +343,7 @@ router.get('/places/:id?', getPlaces)
  *                      dateAfterBook:
  *                        type: string
  *                        example: "2019-12-09T09:30:00.000Z"
- *                        deescription: Indique la date à partir quand il a droit de réserver
+ *                        description: Indique la date à partir de quand il a le droit de réserver
  *                      reservation:
  *                        type: object
  *                        properties:
