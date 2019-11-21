@@ -49,6 +49,10 @@ import {
   placeSameDateDernierEchecPratiqueForSuccess,
 } from './__tests__/places-aurige'
 import archivedCandidatModel from '../../../models/archived-candidat/archived-candidat.model'
+import {
+  createDepartement,
+  deleteDepartementById,
+} from '../../../models/departement'
 
 jest.mock('../../../util/logger')
 jest.mock('../../business/send-mail')
@@ -419,8 +423,9 @@ describe('synchro-aurige', () => {
     let candidatCreated
     let placesCreated
     let aurigeFile
-
+    const departementData = { _id: '93', email: 'email93@onepiece.com' }
     beforeAll(async () => {
+      await createDepartement(departementData)
       placesCreated = await createPlaces()
       aurigeFile = toAurigeJsonBuffer(candidatPassed)
     })
@@ -432,6 +437,7 @@ describe('synchro-aurige', () => {
       await candidatModel.findByIdAndDelete(candidatCreated._id)
     })
     afterAll(async () => {
+      await deleteDepartementById(departementData._id)
       await placesCreated.delete()
     })
 
@@ -558,18 +564,20 @@ describe('synchro-aurige', () => {
   describe('Synchro-aurige candidat failed 5 times', () => {
     let candidatCreated
     let aurigeFile
-
+    const departementData = { _id: '93', email: 'email93@onepiece.com' }
     beforeAll(async () => {
       aurigeFile = toAurigeJsonBuffer(candidat5FailureExam)
     })
 
     beforeEach(async () => {
+      await createDepartement(departementData)
       candidatCreated = await createCandidatToTestAurige(
         candidat5FailureExam,
         true
       )
     })
     afterEach(async () => {
+      await deleteDepartementById(departementData._id)
       const { nomNaissance, codeNeph } = candidatCreated
       await candidatModel.findByIdAndDelete(candidatCreated._id)
       await archivedCandidatModel.findOneAndDelete({ nomNaissance, codeNeph })

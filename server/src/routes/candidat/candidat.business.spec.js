@@ -2,6 +2,10 @@ import { connect, disconnect } from '../../mongo-connection'
 
 import { validateEmail } from './candidat.business'
 import { createCandidat } from '../../models/candidat'
+import {
+  createDepartement,
+  deleteDepartementById,
+} from '../../models/departement'
 
 jest.mock('../business/send-mail')
 
@@ -13,6 +17,7 @@ const adresse = '10 Rue Hoche 93420 Villepinte'
 const nomNaissance = 'Dupont'
 const codeNeph = '123456789012'
 const prenom = ' test prenom '
+const departement = '93'
 
 const validCandidat = {
   codeNeph,
@@ -21,13 +26,16 @@ const validCandidat = {
   portable,
   email: validEmail,
   adresse,
+  departement,
 }
 
 describe('Test the candidat business', () => {
   const hash = uuidv4()
   let createdCandidat
+  const departementData = { _id: '93', email: 'email93@onepiece.com' }
   beforeAll(async () => {
     await connect()
+    await createDepartement(departementData)
   })
 
   beforeEach(async () => {
@@ -50,6 +58,7 @@ describe('Test the candidat business', () => {
   })
 
   afterAll(async () => {
+    await deleteDepartementById(departementData._id)
     await disconnect()
   })
 })
