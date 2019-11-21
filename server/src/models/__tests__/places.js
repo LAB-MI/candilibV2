@@ -1,10 +1,11 @@
 import { createPlace } from '../place'
 import Place from '../place/place.model'
-import { findCentreById } from '../centre'
+import { findCentreById, findCentreByName } from '../centre'
 import config from '../../config'
 import { createCentres } from './centres'
 import { createInspecteurs } from './inspecteurs'
 import { getFrenchLuxon, getFrenchLuxonFromObject } from '../../util'
+import { findInspecteurById, findInspecteurByName } from '../inspecteur'
 
 let basePlaceDateTime = getFrenchLuxonFromObject({
   day: 18,
@@ -23,14 +24,46 @@ if (
 export const commonBasePlaceDateTime = basePlaceDateTime
 
 export const createTestPlace = async place => {
+  const { date, inspecteur, centre } = place
   const leanPlace = {
-    date: place.date,
-    inspecteur: place.inspecteur,
+    date,
   }
-  const centre = await findCentreById(place.centre && place.centre._id)
-  if (!centre) {
-    console.warn(`Le centre ${place.centre && place.centre._id} non trouvé`)
-  } else leanPlace.centre = centre._id
+  let centreFound
+
+  if (centre instanceof Object) {
+    const { _id, nom } = centre
+    centreFound = _id
+      ? await findCentreById(_id)
+      : await findCentreByName(nom.toUpperCase())
+  } else {
+    centreFound = await findCentreByName(centre.toUpperCase())
+  }
+  if (!centreFound) {
+    throw new Error(`Le centre ${JSON.stringify(centre)} non trouvé`)
+  }
+  leanPlace.centre = centreFound._id
+  let inspecteurFound
+  if (inspecteur instanceof Object) {
+    const { _id, nom, prenom } = inspecteur
+    // TODO: A améliorer
+    if (_id) {
+      inspecteurFound = await findInspecteurById(_id)
+    } else {
+      inspecteurFound = await findInspecteurByName(prenom, nom.toUpperCase())
+    }
+  } else {
+    inspecteurFound = await findInspecteurByName(
+      undefined,
+      inspecteur.toUpperCase()
+    )
+  }
+  if (!inspecteurFound) {
+    throw new Error(
+      `L'inspecteur ${JSON.stringify(inspecteur)} n'a pas été trouvé`
+    )
+  }
+  leanPlace.inspecteur = inspecteurFound._id
+
   return createPlace(leanPlace)
 }
 

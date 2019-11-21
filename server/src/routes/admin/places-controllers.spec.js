@@ -43,14 +43,13 @@ import {
   getPlaces,
   updatePlaces,
 } from './places-controllers'
-import { SUBJECT_CONVOCATION } from '../business'
-import { getConvocationBody } from '../business/build-mail-convocation'
 import { REASON_MODIFY_RESA_ADMIN } from '../common/reason.constants'
 import {
   DELETE_PLACES_BY_ADMIN_ERROR,
   DELETE_PLACES_BY_ADMIN_SUCCESS,
   PLACE_IS_ALREADY_BOOKED,
 } from './message.constants'
+import { expectMailConvocation } from '../business/__tests__/expect-send-mail'
 
 const inspecteurTest = {
   nom: 'Doggett',
@@ -468,14 +467,6 @@ describe('update place by admin', () => {
     await place.remove()
   })
 })
-function expectMailConvocation (candidat, place) {
-  const bodyMail = require('../business/send-mail').getMail()
-  expect(bodyMail).toBeDefined()
-  expect(bodyMail).toHaveProperty('to', candidat.email)
-  expect(bodyMail).toHaveProperty('subject', SUBJECT_CONVOCATION)
-  place.candidat = candidat
-  expect(bodyMail).toHaveProperty('html', getConvocationBody(place))
-}
 
 describe('delete place by admin', () => {
   const app = express()

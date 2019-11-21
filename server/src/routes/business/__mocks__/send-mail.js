@@ -1,4 +1,8 @@
 let mail
+export const __initMail = () => {
+  mail = undefined
+}
+
 export const getMail = () => mail
 
 export const sendMail = async (to, { subject, content: html } = {}) => {
