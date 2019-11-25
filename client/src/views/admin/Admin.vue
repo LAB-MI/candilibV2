@@ -1,11 +1,13 @@
 <template>
   <v-container
-    class="admin  admin-wrapper  u-flex  u-flex--column"
+    class="admin  admin-wrapper  u-flex  u-flex--column  u-full-height"
   >
     <admin-header :email="admin.email" :header-icons="headerIcons" />
+
     <main role="main" class="u-flex__item--grow" :style="{margin: '3em 0 0 0'}">
       <router-view />
     </main>
+
     <admin-footer />
   </v-container>
 </template>
@@ -75,15 +77,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .admin-container {
-    padding-top: "40px";
-  }
-
   .admin-wrapper {
     max-width: 100vw;
-    min-height: 100%;
-    padding-left: 0;
-    padding-right: 0;
-    padding-bottom: 0;
+    padding: 0;
   }
 </style>

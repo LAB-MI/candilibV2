@@ -94,7 +94,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.stepper {
+.theme--dark.stepper {
   background-color: transparent;
   box-shadow: none;
 }

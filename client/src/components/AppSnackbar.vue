@@ -9,7 +9,7 @@
   >
     {{ message.content }}
     <v-btn icon
-      flat
+      text
       @click="onClose"
     >
       <v-icon color="white">

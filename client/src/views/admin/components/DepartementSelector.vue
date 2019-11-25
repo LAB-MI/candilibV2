@@ -10,7 +10,7 @@
           <v-btn
             fab
             v-on="{ ...menu, ...tooltip}"
-            outline
+            outlined
             ripple
             small
           >
@@ -100,8 +100,8 @@ export default {
 
   .hexagon-wrapper:last-child {
     position: absolute;
-    bottom: -0.5em;
-    right: -0.75em;
+    bottom: -0.25em;
+    right: -0.5em;
   }
 }
 

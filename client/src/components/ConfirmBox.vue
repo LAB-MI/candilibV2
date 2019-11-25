@@ -6,7 +6,7 @@
       <slot/>
       <div>
         <v-btn
-          outline
+          outlined
           color="info"
           @click="closeAction"
           :aria-disabled="disabled"

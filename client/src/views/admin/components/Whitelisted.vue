@@ -1,17 +1,17 @@
 <template>
-  <v-list-tile
+  <v-list-item
     @click="() => {}"
   >
-    <v-list-tile-action v-if="whitelisted !== 'new'">
+    <v-list-item-action v-if="whitelisted !== 'new'">
       <v-btn icon @click="$emit('delete', whitelisted)">
         <v-icon color="#17a2b8">delete</v-icon>
       </v-btn>
-    </v-list-tile-action>
+    </v-list-item-action>
 
-    <v-list-tile-content>
-      <v-list-tile-title @dblclick="$emit('dblclick', whitelisted.email)">{{ whitelisted.email }}</v-list-tile-title>
-    </v-list-tile-content>
-  </v-list-tile>
+    <v-list-item-content>
+      <v-list-item-title @dblclick="$emit('dblclick', whitelisted.email)">{{ whitelisted.email }}</v-list-item-title>
+    </v-list-item-content>
+  </v-list-item>
 </template>
 
 <script>

@@ -18,7 +18,7 @@ var magicLink
 describe('Candidate login', () => {
   before(() => {
     // Delete all mails before start
-    cy.mhDeleteAll()
+    cy.deleteAllMails()
     cy.adminLogin()
     cy.archiveCandidate()
     cy.addToWhitelist()
@@ -103,11 +103,11 @@ describe('Candidate login', () => {
     cy.get('.v-snack')
       .should('contain', 'Cette adresse courriel est déjà enregistrée')
     // Validates the email address
-    cy.mhGetFirstRecipients()
+    cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetFirstSubject()
+    cy.getLastMail().getSubject()
       .should('contain', 'Validation d\'adresse courriel pour Candilib')
-    cy.mhGetFirstBody().then((mailBody) => {
+    cy.getLastMail().its('Content.Body').then((mailBody) => {
       const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
       const withoutEq = codedLink.replace(/=\r\n/g, '')
       const validationLink = withoutEq.replace(/=3D/g, '=')
@@ -116,9 +116,9 @@ describe('Candidate login', () => {
     cy.get('h3')
       .should('contain', 'Adresse courriel validée')
     // Gets the confirmation email
-    cy.mhGetFirstRecipients()
+    cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetFirstSubject()
+    cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
     // Tries to connect while awaiting Aurige validation
     cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
@@ -147,11 +147,11 @@ describe('Candidate login', () => {
     cy.get('.v-snack')
       .should('contain', 'Un lien de connexion vous a été envoyé.')
     // The candidate gets the link
-    cy.mhGetFirstRecipients()
+    cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetFirstSubject()
+    cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
-    cy.mhGetFirstBody().then((mailBody) => {
+    cy.getLastMail().its('Content.Body').then((mailBody) => {
       const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
       const withoutEq = codedLink.replace(/=\r\n/g, '')
       magicLink = withoutEq.replace(/=3D/g, '=')
@@ -162,13 +162,12 @@ describe('Candidate login', () => {
       .should('contain', 'Choix du centre')
     cy.get('.t-disconnect')
       .click()
-    cy.get('.v-dialog')
+    cy.get('.t-evaluation')
       .should('contain', 'Merci de noter Candilib')
-      .find('button')
-      .contains('Noter maintenant')
-      .click({ timeout: 10000 })
-    cy.url()
-      .should('contain', 'candidat-presignup')
+    cy.get('.t-evaluation-submit')
+      .click()
+    cy.get('body')
+      .should('contain', 'Réservez votre place d\'examen')
   })
 
   it('Tries the already signed up form without account', () => {

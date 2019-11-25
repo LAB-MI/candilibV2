@@ -8,6 +8,7 @@ import store from './store'
 import './registerServiceWorker'
 
 import './main.styl'
+import vuetify from './plugins/vuetify'
 
 Vue.config.productionTip = false
 
@@ -21,6 +22,7 @@ const runMyApp = () => {
   new Vue({
     router,
     store,
+    vuetify,
     render: h => h(App),
   }).$mount('#app')
 }

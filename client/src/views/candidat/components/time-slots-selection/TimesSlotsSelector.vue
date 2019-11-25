@@ -10,13 +10,11 @@
     >
       <template v-slot:activator>
         <keep-alive>
-          <v-list-tile>
-            <v-list-tile-content>
-              <v-list-tile-title>
-                {{ timeSlot.label }}
-              </v-list-tile-title>
-            </v-list-tile-content>
-          </v-list-tile>
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ timeSlot.label }}
+            </v-list-item-title>
+          </v-list-item-content>
         </keep-alive>
       </template>
 

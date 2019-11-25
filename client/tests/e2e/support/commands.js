@@ -5,7 +5,6 @@
 // ***********************************************
 
 import 'cypress-file-upload'
-import 'cypress-mailhog'
 import './mailHogCommands'
 
 Cypress.Commands.add('adminLogin', () => {
@@ -29,14 +28,14 @@ Cypress.Commands.add('adminDisconnection', () => {
     .should('contain', 'Vous êtes déconnecté·e')
 })
 
-Cypress.Commands.add('archiveCandidate', () => {
+Cypress.Commands.add('archiveCandidate', (candidat) => {
   // Creates the aurige file
   cy.writeFile(Cypress.env('filePath') + '/aurige.end.json',
     [
       {
-        'codeNeph': Cypress.env('NEPH'),
-        'nomNaissance': Cypress.env('candidat'),
-        'email': Cypress.env('emailCandidat'),
+        'codeNeph': candidat ? candidat.codeNeph : Cypress.env('NEPH'),
+        'nomNaissance': candidat ? candidat.nomNaissance : Cypress.env('candidat'),
+        'email': candidat ? candidat.email : Cypress.env('emailCandidat'),
         'dateReussiteETG': '',
         'nbEchecsPratiques': '',
         'dateDernierNonReussite': '',
@@ -66,7 +65,7 @@ Cypress.Commands.add('archiveCandidate', () => {
     .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 })
 
-Cypress.Commands.add('addToWhitelist', (emailCandidat) => {
+Cypress.Commands.add('addToWhitelist', () => {
   cy.contains('favorite')
     .click()
   cy.get('h2')
@@ -174,11 +173,11 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   cy.get('div')
     .should('contain', 'Vous allez bientôt recevoir un courriel à l\'adresse que vous nous avez indiqué.')
     // Validates the email address
-  cy.mhGetFirstRecipients()
+  cy.getLastMail().getRecipients()
     .should('contain', candidat ? candidat.email : Cypress.env('emailCandidat'))
-  cy.mhGetFirstSubject()
+  cy.getLastMail().getSubject()
     .should('contain', 'Validation d\'adresse courriel pour Candilib')
-  cy.mhGetFirstBody().then((mailBody) => {
+  cy.getLastMail().its('Content.Body').then((mailBody) => {
     // TODO: decode properly the href
     const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
     const withoutEq = codedLink.replace(/=\r\n/g, '')
@@ -188,9 +187,9 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   cy.get('h3')
     .should('contain', 'Adresse courriel validée')
     // Gets the confirmation email
-  cy.mhGetFirstRecipients()
+  cy.getLastMail().getRecipients()
     .should('contain', candidat ? candidat.email : Cypress.env('emailCandidat'))
-  cy.mhGetFirstSubject()
+  cy.getLastMail().getSubject()
     .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
 })
 
@@ -234,9 +233,8 @@ Cypress.Commands.add('candidateValidation', () => {
     .should('contain', Cypress.env('candidat'))
   cy.get('.ag-cell')
     .should('contain', 'Pour le 75, un magic link est envoyé à ' + Cypress.env('emailCandidat'))
-  cy.mhGetMailsByRecipient(Cypress.env('emailCandidat'))
-    .mhFirst()
-    .mhGetSubject()
+  cy.getLastMail({ recipient: Cypress.env('emailCandidat') })
+    .getSubject()
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
 })
 

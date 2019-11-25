@@ -3,7 +3,7 @@ import { valideCreneaux as validCrenx } from '../../util/creneauSetting'
 
 export const getDayString = isoDate => {
   return `${getFrenchLuxonFromIso(isoDate).weekdayLong} ${getFrenchLuxonFromIso(isoDate).toFormat(
-    'dd LLLL yyyy'
+    'dd LLLL yyyy',
   )}`
 }
 
