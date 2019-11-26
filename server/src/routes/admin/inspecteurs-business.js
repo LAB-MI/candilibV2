@@ -10,7 +10,7 @@ import {
 import { findAllPlacesBookedByCentreAndInspecteurs } from '../../models/place'
 import { getFrenchLuxonRangeFromDate } from '../../util'
 /**
- * Récupère la liste des inspecteurs qui on au moin une réservation.
+ * Récupère la liste des inspecteurs qui on au moins une réservation.
  *
  * @async
  * @function

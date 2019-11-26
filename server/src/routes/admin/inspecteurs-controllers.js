@@ -10,7 +10,7 @@ import {
 import { findAllPlacesByCentre } from '../../models/place'
 import { appLogger, getFrenchLuxonFromISO } from '../../util'
 import { SOME_PARAMS_ARE_NOT_DEFINED_OR_INCORRECT } from './message.constants'
-import { getInspecteursBookedFromDepartement } from './inspecteurs.business'
+import { getInspecteursBookedFromDepartement } from './inspecteurs-business'
 
 /**
  * Récupère les informations d'un ou plusieurs inspecteurs
