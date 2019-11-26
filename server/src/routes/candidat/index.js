@@ -22,14 +22,12 @@ const router = express.Router()
  *     tags: ["Candidat"]
  *     summary: Récupération de mes infos candidat
  *     description: Après connexion, renvoie les infos du candidat connecté (id dans le JWT envoyé en header)
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
-
+ *
  *     responses:
  *       200:
- *         description:
+ *         description: Succès de la requête
  *         content:
  *           application/json:
  *             schema:
@@ -59,8 +57,6 @@ router.get('/me', getMe)
  *     tags: ["Candidat"]
  *     summary: Récupération de mes infos des centres du département du candidat
  *     description: Après connexion, renvoie les infos des centres du département du candidat
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -75,23 +71,21 @@ router.get('/me', getMe)
  *         name: nom
  *         schema:
  *           type: string
- *           example: 'Rosny-sous-Bois'
- *         required: false
+ *           example: Rosny-sous-Bois
  *         description: Nom d'un centre
  *       - in: query
  *         name: end
  *         schema:
  *           type: string
- *           example: 'Rosny-sous-Bois'
- *         required: false
+ *           example: 2019-09-10T22:00:00.000Z
  *         description: Date de fin de la fourchette de temps dans lequel les places seront cherchés
  *     responses:
  *       200:
- *         description:
+ *         description: Succès de la requête
  *         content:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/CentresInfo'
+ *               $ref: '#/components/schemas/CenterObject'
  *
  *       400:
  *         description: Paramètre(s) manquant(s)
@@ -128,8 +122,6 @@ router.get('/centres', getCentres)
  *     tags: ["Candidat"]
  *     summary: Récupération de la réservation du candidat
  *     description: Après connexion, renvoie des informations de la réservation du candidat
- *     produces:
- *       - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -198,8 +190,6 @@ router.get('/centres', getCentres)
  *     tags: ["Candidat"]
  *     summary: Récupération de mes infos des centres du département du candidat
  *     description: Après connexion, renvoie les dates places disponibles pour un centre du département du candidat sur une période ou à une date précise
- *     produces:
- *       - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -208,21 +198,19 @@ router.get('/centres', getCentres)
  *         schema:
  *           type: string
  *           example: '5cf63145b2a7cffde20e98b7'
- *         required: false
+ *         required: true
  *         description: Identifiant d'un centre
  *       - in: query
  *         name: centre
  *         schema:
  *           type: string
  *           example: 'Rosny-sous-Bois'
- *         required: false
  *         description: Nom d'un centre
  *       - in: query
  *         name: departement
  *         schema:
  *           type: string
  *           example: '93'
- *         required: false
  *         description: Code département
  *       - in: query
  *         name: begin
@@ -235,23 +223,24 @@ router.get('/centres', getCentres)
  *         name: end
  *         schema:
  *           type: string
- *           example:
- *         required: false
+ *           example: 2019-09-10T22:00:00.000Z
  *         description: Date de fin de la fourchette de temps dans laquelle les places seront cherchées
  *       - in: query
  *         name: dateTime
  *         schema:
  *           type: string
  *           example:
- *         required: false
  *         description: Date du jour pour lequel l'API doit retourner les places
  *     responses:
  *       200:
- *         description:
+ *         description: Succès de la requête
  *         content:
  *           application/json:
  *             schema:
- *               type: Array
+ *               type: array
+ *               items:
+ *                 type: string
+ *                 description: date de la place
  *               example: ["2019-10-06T08:00:00.000+02:00","2019-10-06T08:30:00.000+02:00","2019-10-06T09:00:00.000+02:00"]
  *
  *       400:
@@ -298,8 +287,6 @@ router.get('/places/:id?', getPlaces)
  *      tags: ["Candidat"]
  *      summary: Réservation d'une place d'examen par le candidat
  *      description: Pour réserver ou modifier une réservation d'une place d'examen et envoie la convocation par e-mail
- *      produces:
- *        - application/json
  *      security:
  *        - bearerAuth: []
  *      requestBody:
@@ -312,7 +299,7 @@ router.get('/places/:id?', getPlaces)
  *              properties:
  *                id:
  *                  type: object
- *                  descritpion: Identifiant d'un centre
+ *                  description: Identifiant d'un centre
  *                  example: '5cf63145b2a7cffde20e98b7'
  *                date:
  *                  type: string
@@ -392,8 +379,6 @@ router.patch('/places', bookPlaceByCandidat)
  *      tags: ["Candidat"]
  *      summary: Annulation d'une réservation par un candidat
  *      description: Annuler une réservation d'une place d'examen et envoie l'e-mail d'annulation par le candidat
- *      produces:
- *        - application/json
  *      security:
  *        - bearerAuth: []
  *      responses:

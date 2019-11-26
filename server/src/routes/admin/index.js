@@ -50,8 +50,6 @@ router.post(
  *     tags: ["Administrateur"]
  *     summary: Récupération de mes infos administrateur
  *     description: Après connexion, renvoie les infos de l'administrateur connecté (id dans le JWT envoyé en header)
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *
@@ -88,9 +86,6 @@ router.get('/me', getMe)
  *     tags: ["Administrateur"]
  *     summary: Récupération des infos candidat
  *     description: L'administrateur récupère les informations d'un ou plusieurs candidats
- *     produces:
- *      - application/json
- *      - text/csv
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -99,21 +94,18 @@ router.get('/me', getMe)
  *         schema:
  *           type: number
  *           example: 93
- *         required: false
  *         description: Un département accessible par l'admin
  *       - in: query
  *         name: matching
  *         schema:
  *           type: string
  *           example: 'Dupont'
- *         required: false
  *         description: Une chaîne de caractères pour chercher un candidat
  *       - in: query
  *         name: format
  *         schema:
  *           type: string
  *           example: 'csv'
- *         required: false
  *         description:
  *           Si `csv`, exporte les candidats au format csv.
  *           Fonctionne correctement seulement si le champ `for` est rempli avec `aurige`
@@ -122,7 +114,6 @@ router.get('/me', getMe)
  *         schema:
  *           type: string
  *           example: 'aurige'
- *         required: false
  *         description:
  *           Si `aurige`, considère que l'action aura pour but la synchronisation avec aurige.
  *           Généralement utilisé dans le cas d'un export csv.
@@ -151,7 +142,7 @@ router.get('/me', getMe)
  *               }]
  *           text/csv:
  *             schema:
- *               type: text/csv
+ *               type: string
  *             example: |-
  *               Code NEPH;Nom de naissance;Nom d'usage;Prénom;email
  *               093496239512;SWAISEY;SWAISEY;MAY;mayswaisey@candilib.com
@@ -166,8 +157,6 @@ router.get('/me', getMe)
  *     tags: ["Administrateur"]
  *     summary: Récupération des infos candidat
  *     description: L'administrateur récupère les informations d'un candidat via son id
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -183,7 +172,6 @@ router.get('/me', getMe)
  *         schema:
  *           type: number
  *           example: 93
- *         required: false
  *         description: Un département accessible par l'admin
  *     responses:
  *       200:
@@ -241,8 +229,6 @@ router.get(
  *     tags: ["Administrateur"]
  *     summary: Ajout des candidats
  *     description: Import des candidats via le fichier délivré par aurige. Nécessite les droits administrateur
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -356,8 +342,6 @@ router.post(
  *     tags: ["Administrateur"]
  *     summary: Récupération des infos inspecteur
  *     description: L'administrateur récupère les informations d'un ou plusieurs inspecteurs
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -366,21 +350,18 @@ router.post(
  *         schema:
  *           type: string
  *           example: Dupont
- *         required: false
  *         description: Une chaîne de caractères pour chercher un inspecteur
  *       - in: query
  *         name: departement
  *         schema:
  *           type: number
  *           example: 93
- *         required: false
  *         description: S'il est entré comme seul paramètre, renvoie tous les inspecteurs d'un département
  *       - in: query
  *         name: centreId
  *         schema:
  *           type: string
  *           example: 5d8b7c6429cd5b2468d3f161
- *         required: false
  *         description:
  *           Remplir pour chercher les inspecteurs affectés à un centre pendant une période donnée.
  *           Ne fonctionne que si `begin` et `end` sont aussi paramétrés
@@ -389,7 +370,6 @@ router.post(
  *         schema:
  *           type: string
  *           example: 2019-09-25 14:40:36.724Z
- *         required: false
  *         description:
  *           Début de la période de recherche d'inspecteurs.
  *           Ne fonctionne que si `centreId` et `end` sont aussi paramétrés
@@ -398,7 +378,6 @@ router.post(
  *         schema:
  *           type: string
  *           example: 2019-09-25 14:40:36.724Z
- *         required: false
  *         description:
  *           Fin de la période de recherche d'inspecteurs.
  *           Ne fonctionne que si `centreId` et `begin` sont aussi paramétrés
@@ -483,8 +462,6 @@ router.get('/places', verifyRepartiteurDepartement, getPlaces)
  *     tags: ["Administrateur"]
  *     summary: Chargement du planning des inspecteurs
  *     description: Permet de charger le planning des inspecteurs pour le département actif de l'utilisateur
- *     produces:
- *       - application/json
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -515,13 +492,15 @@ router.get('/places', verifyRepartiteurDepartement, getPlaces)
  *                   type: string
  *                   description: Le nom de fichier en .csv ou .xlsx contenant les places
  *                 success:
- *                   type: boolean,
- *                   description: vaut true,
+ *                   type: boolean
+ *                   description: vaut true
  *                 message:
  *                   type: string
  *                   description: Un message compréhensible par l'usager
  *                 places:
  *                   type: array
+ *                   items:
+ *                     type: object
  *                   description: Les messages sur l'état de traitement des places
  *             example:
  *               fileName: planning-93.csv
@@ -584,8 +563,6 @@ router.post(
  *     tags: ["Administrateur"]
  *     summary: Récupération des statsKpi places
  *     description: Permet de récupérer les statistiques sur les places d'examens de chaque département.
- *     produces:
- *       - application/json
  *     parameters:
  *       - in: query
  *         name: isCsv
@@ -628,8 +605,6 @@ router.get(
  *     tags: ["Administrateur"]
  *     summary: Récupération des statsKpi de résultats d'examens sur une période passée
  *     description: Permet de récupérer les statistiques sur les places d'examens de chaque département.
- *     produces:
- *       - application/json
  *     parameters:
  *       - in: query
  *         name: beginPeriod
@@ -686,8 +661,6 @@ router.get(
  *     tags: ["Administrateur"]
  *     summary: Suppression d'un élément de la liste blanche
  *     description: L'administrateur supprime une adresse de la liste blanche à partir de son id
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -703,7 +676,6 @@ router.get(
  *         schema:
  *           type: number
  *           example: 93
- *         required: false
  *         description: Un département accessible par l'admin
  *
  *     responses:
@@ -747,8 +719,6 @@ router
  *     description:
  *       L'administrateur récupère une ou plusieures adresses de la liste blanche.
  *       Si le paramètre `matching` n'est pas entré, cela renvoie les dernières adresses rentrées dans la base
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     parameters:
@@ -757,7 +727,6 @@ router
  *         schema:
  *           type: string
  *           example: dupont
- *         required: false
  *         description: Une chaîne de caractères pour chercher une adresse dans la liste blanche
  *
  *     responses:
@@ -788,8 +757,6 @@ router
  *     tags: ["Administrateur"]
  *     summary: Ajout d'éléments dans la liste blanche
  *     description: L'administrateur ajoute une ou plusieures adresses dans la liste blanche.
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -830,8 +797,6 @@ router
  *                 - $ref: '#/components/schemas/WhitelistedInfo'
  *             examples:
  *               une seule adresse:
- *                 schema:
- *                   $ref: '#/components/schemas/WhitelistedObject'
  *                 value:
  *                   _id: 5d970a082a7710570f0fd7b8
  *                   email: candidat@candi.lib
@@ -949,8 +914,6 @@ router
  *     tags: ["Administrateur"]
  *     summary: Création d'un utilisateur
  *     description: Création d'un utilisateur. Seul un admin peut créer un délégué (il peut aussi créer un répartiteur) et seul un délégué peut créer un répartiteur.
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -967,13 +930,15 @@ router
  *                 description: Email de l'utilisateur
  *               departements:
  *                 type: array
+ *                 items:
+ *                   type: string
+ *                   description: Département accessible par l'utilisateur
  *                 example: ["93"]
- *                 description: Département de l'utilisateur
+ *                 description: Départements de l'utilisateur
  *               status:
  *                 type: string
  *                 example: repartiteur
  *                 description: Statut de l'utilisateur
- *
  *
  *     responses:
  *       200:
@@ -1014,12 +979,9 @@ router
  *     tags: ["Administrateur"]
  *     summary: Récupération des informations de l'utilisateur
  *     description: Après connexion récupération de l'utilisateur. Seul un admin peut récupérer les informations d'un délégué (il peut aussi récupérer les informations d'un répartiteur) et seul un délégué peut récupérer les informations d'un répartiteur.
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description:
  *       required: true
  *       content:
  *         application/json:
@@ -1032,17 +994,19 @@ router
  *                 description: Email de l'utilisateur
  *               departements:
  *                 type: array
+ *                 items:
+ *                   type: string
+ *                   description: Département accessible par l'utilisateur
  *                 example: ["93"]
- *                 description: Département de l'utilisateur
+ *                 description: Départements de l'utilisateur
  *               status:
  *                 type: string
  *                 example: repartiteur
  *                 description: Statut de l'utilisateur
  *
- *
  *     responses:
  *       200:
- *         description:
+ *         description: Succès de la requête
  *         content:
  *           application/json:
  *             schema:
@@ -1079,8 +1043,6 @@ router
  *     tags: ["Administrateur"]
  *     summary: Modification d'un utilisateur
  *     description: Modification d'un utilisateur. Seul un admin peut modifier un délégué (il peut aussi modifier un répartiteur) et seul un délégué peut modifier un répartiteur.
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -1097,13 +1059,15 @@ router
  *                 description: Email de l'utilisateur
  *               departements:
  *                 type: array
+ *                 items:
+ *                   type: string
+ *                   description: Département accessible par l'utilisateur
  *                 example: ["93"]
- *                 description: Département de l'utilisateur
+ *                 description: Départements de l'utilisateur
  *               status:
  *                 type: string
  *                 example: repartiteur
  *                 description: Statut de l'utilisateur
- *
  *
  *     responses:
  *       200:
@@ -1144,8 +1108,6 @@ router
  *     tags: ["Administrateur"]
  *     summary: Suppression d'un utilisateur
  *     description: Supression d'un utilisateur. Seul un admin peut supprimer un délégué (il peut aussi supprimer un répartiteur) et seul un délégué peut supprimer un répartiteur.
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -1162,13 +1124,15 @@ router
  *                 description: Email de l'utilisateur
  *               departements:
  *                 type: array
+ *                 items:
+ *                   type: string
+ *                   description: Département accessible par l'utilisateur
  *                 example: ["93"]
- *                 description: Département de l'utilisateur
+ *                 description: Départements de l'utilisateur
  *               status:
  *                 type: string
  *                 example: repartiteur
  *                 description: Statut de l'utilisateur
- *
  *
  *     responses:
  *       200:
