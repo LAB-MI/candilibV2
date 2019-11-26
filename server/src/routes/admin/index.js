@@ -552,35 +552,33 @@ router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
  *     tags: ["Administrateur"]
  *     summary: Envoi des bordereaux aux inspecteurs selectionnés
  *     description: Permet d'envoyer par email, le planning de chaque inspecteurs.
- *     produces:
- *       - application/json
  *     security:
  *       - bearerAuth: []
- *     parameters:
- *       - in: body
- *         name: departement
- *         schema:
- *           type: number
- *           example: 93
- *         description: Valeur du département
- *       - in: body
- *         name: inspecteurIdListe
- *         schema:
- *           type: array
- *           example: ['12345678909876543', '123456789098765432']
- *         description: Liste des ids d'inspecteurs
- *       - in: body
- *         name: date
- *         schema:
- *           type: string
- *           example: 2019-10-10T22:00:00.000Z
- *         description: Date sélectionnée pour l'envoi des bordereaux
- *       - in: body
- *         name: isForInspecteurs
- *         schema:
- *           type: boolean
- *           example: false
- *         description: Permet de savoir si les bordereaux doivent être envoyés au répartiteur ou à l'inspecteur
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               departement:
+ *                 type: number
+ *                 example: 93
+ *                 description: Valeur du département
+ *               inspecteurIdListe:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *                 example: ['12345678909876543', '123456789098765432']
+ *                 description: Liste des ids d'inspecteurs
+ *               date:
+ *                 type: string
+ *                 example: 2019-10-10T22:00:00.000Z
+ *                 description: Date sélectionnée pour l'envoi des bordereaux
+ *               isForInspecteurs:
+ *                 type: boolean
+ *                 example: false
+ *                 description: Permet de savoir si les bordereaux doivent être envoyés au répartiteur ou à l'inspecteur
  *     responses:
  *       500:
  *         description: Erreur lors de la récupération des départements
