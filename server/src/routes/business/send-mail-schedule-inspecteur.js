@@ -10,7 +10,7 @@ import { findCentreById } from '../../models/centre'
 import { findCandidatById } from '../../models/candidat'
 import { getFailedScheduleInspecteurTemplate } from './mail/failed-mail-schelude-inspecteurs-template'
 
-const getScheduleInspecteurBody = async (
+export const getScheduleInspecteurBody = async (
   inspecteurName,
   inspecteurMatricule,
   date,
