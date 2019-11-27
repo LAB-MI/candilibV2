@@ -58,28 +58,26 @@ export default {
     async FETCH_STATS_KPI_PLACES_EXAMS_REQUEST ({ state, commit, dispatch }, params) {
       const { departement, isCsv } = params
       commit(FETCH_STATS_KPI_PLACES_EXAMS_REQUEST)
-      const timeOut = 200
       try {
         const response = await api.admin.exportPlacesExamsStatsKpi(isCsv, departement)
         commit(FETCH_STATS_KPI_PLACES_EXAMS_SUCCESS, response)
-        dispatch(SHOW_SUCCESS, response.message, timeOut)
+        dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {
         commit(FETCH_STATS_KPI_PLACES_EXAMS_FAILURE)
-        dispatch(SHOW_ERROR, error.message, timeOut)
+        dispatch(SHOW_ERROR, error.message)
       }
     },
 
     async FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST ({ state, commit, dispatch }, params) {
       const { beginPeriode, endPeriode, isCsv, departement } = params
       commit(FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST)
-      const timeOut = 100
       try {
         const response = await api.admin.exportResultsExamsStatsKpi(beginPeriode, endPeriode, isCsv, departement)
         commit(FETCH_STATS_KPI_RESULTS_EXAMS_SUCCESS, response)
-        dispatch(SHOW_SUCCESS, response.message, timeOut)
+        dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {
         commit(FETCH_STATS_KPI_RESULTS_EXAMS_FAILURE)
-        dispatch(SHOW_ERROR, error.message, timeOut)
+        dispatch(SHOW_ERROR, error.message)
       }
     },
   },

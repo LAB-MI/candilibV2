@@ -109,8 +109,8 @@
           </v-btn>
 
           <v-btn
-            :aria-disabled="isCanSendBordereaux()"
-            :disabled="isCanSendBordereaux()"
+            :aria-disabled="isAbleToSendBordereaux()"
+            :disabled="isAbleToSendBordereaux()"
             type="submit"
             color="primary"
             @click="generateBordereaux"
@@ -186,7 +186,7 @@ export default {
       inspecteurListToSendBordereaux: [],
       fetchAutocompleteAction: MATCH_INSPECTEURS_IN_LIST_REQUEST,
 
-      isCanSendBordereaux: () => {
+      isAbleToSendBordereaux: () => {
         if (this.isGenerating) {
           return true
         }

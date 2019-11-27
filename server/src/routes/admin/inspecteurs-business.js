@@ -9,12 +9,12 @@ import {
 } from '../../models/centre/centre.queries'
 import { findAllPlacesBookedByCentreAndInspecteurs } from '../../models/place'
 import { getFrenchLuxonRangeFromDate } from '../../util'
+
 /**
  * Récupère la liste des inspecteurs qui on au moins une réservation.
  *
  * @async
  * @function
- *
  *
  * @param {string} date Date des réservations d'inspecteurs en chaîne de caractères
  * @param {string} departement Une chaîne de caractères qui indique le département des inspecteur

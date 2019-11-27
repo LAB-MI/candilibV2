@@ -290,7 +290,10 @@ export default {
     },
 
     async getInspecteursBookedByDepartement (date, departement) {
-      const json = await apiClient.get(`${apiPaths.admin.inspecteurs}?departement=${departement}&date=${encodeURIComponent(date)}`, {
+      const encodedDate = encodeURIComponent(date)
+      const path = apiPaths.admin.inspecteurs
+      const url = `${path}?departement=${departement}&date=${encodedDate}`
+      const json = await apiClient.get(url, {
         headers: getHeadersForAdminJson(),
       })
       return json
