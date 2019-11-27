@@ -15,20 +15,13 @@ import npmVersion from '../package.json'
 /**
  * @swagger
  *
- * tags: [
- *  {
- *    "name": "Authentification",
- *    "description": "Pour s'authentifier à l'application"
- *  },
- *  {
- *    "name": "Administrateur",
- *    "description": "Pour toutes les actions liées aux administrateurs"
- *  },
- *  {
- *    "name": "Candidat",
- *    "description": "Pour toutes les actions liées aux candidats"
- *  }
- * ]
+ * tags:
+ *   - name: Authentification
+ *     description: Pour s'authentifier à l'application
+ *   - name: Administrateur
+ *     description: Pour toutes les actions liées aux administrateurs
+ *   - name: Candidat
+ *     description: Pour toutes les actions liées aux candidats
  *
  * components:
  *   securitySchemes:
@@ -58,7 +51,10 @@ import npmVersion from '../package.json'
  *         - type
  *       properties:
  *         coordinates:
- *           type: Array
+ *           type: array
+ *           items:
+ *             type: number
+ *             description: latitude ou longitude
  *           example: [ 2.552847, 48.962099 ]
  *         type:
  *           type: string
@@ -79,15 +75,23 @@ import npmVersion from '../package.json'
  *         _id:
  *           type: string
  *           description: identifiant du centre
+ *           example: 5dce6ec901353671dead895e
  *         nom:
  *           type: string
  *           description: Nom du centre (de la ville du centre)
+ *           example: Noisy le Grand
  *         label:
  *           type: string
  *           description: Information complémentaire pour retrouver le point de rencontre du centre
+ *           example: Centre d'examen du permis de conduire de Noisy le Grand
+ *         adresse:
+ *           type: string
+ *           description: Adresse du centre
+ *           example: 5 boulevard de Champs Richardets 93160 Noisy le Grand
  *         departement:
  *           type: string
  *           description: Département du centre
+ *           example: 75
  *
  *     CandidatInfo:
  *       type: object
@@ -625,8 +629,6 @@ if (isDevelopment) {
  *   get:
  *     summary: Version exacte de l'API déployée (Disponible uniquement depuis l'URL répartiteur)
  *     description: Retourne la version exacte de l'API déployée
- *     produces:
- *       - application/json
  *     responses:
  *       200:
  *         description: Numéro de version détaillée de l'API déployée

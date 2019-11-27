@@ -33,8 +33,6 @@ const router = express.Router()
  *   tags: ["Authentification", "Administrateur"]
  *   summary: Récupération d'un token pour un adminstrateur
  *   description: Vérifie le login et le mot de passe et retourne un token
- *   produces:
- *     - application/json
  *
  *   requestBody:
  *     required: true
@@ -52,7 +50,7 @@ const router = express.Router()
  *               type: string
  *               format: password
  *               description: Mot de passe de l'administrateur
- *           require:
+ *           required:
  *            - email
  *            - password
  *         example:
@@ -72,7 +70,7 @@ const router = express.Router()
  *                 token:
  *                   type: string
  *                   format: JWT
- *                   descritpion: le token de durée de 1 journée pour l'administrateur
+ *                   description: le token de durée de 1 journée pour l'administrateur
  *             example:
  *                success: true
  *                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkOWIwNGRiMGIyNzlmMDAzYzY3NzEwZCIsImxldmVsIjoxLCJkZXBhcnRlbWVudHMiOlsiNzUiXSwiaWF0IjoxNTcxMDY1MTU5LCJleHAiOjE1NzEwOTc1OTh9.WwiOiujeCHKFIRqd0s8WPz_4fFzLlnkP3KL2ayftMHY"
@@ -118,16 +116,15 @@ const router = express.Router()
  *
  * /admin/reset-link:
  *   post:
+ *     tags: ["Administrateur"]
  *     summary: Envoi d'un mail pour réinitialiser son mot de passe
  *     description: Envoi d'un mail avec un lien vers un formulaire pour réinitialiser son mot de passe
- *     produces:
- *       - application/json
  *     security:
  *       - bearerAuth: []
  *
  *     responses:
  *       200:
- *         description:
+ *         description: Succès de la requête
  *         content:
  *           application/json:
  *             schema:
@@ -135,45 +132,7 @@ const router = express.Router()
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: true
- *                     message: Un courriel vient de vous être envoyé sur email@example.com
- *
- *       404:
- *         $ref: '#/components/responses/InvalidEmailResponse'
- *
- *       500:
- *         $ref: '#/components/responses/UnknownErrorResponse'
- *
- */
-
-/**
- *
- * @see {@link http://localhost:8000/api-docs/#/default/post_admin_reset-link}
- */
-router.post('/admin/reset-link', requestPasswdReset)
-
-/**
- * @swagger
- *
- * /admin/reset-link:
- *   post:
- *     summary: Envoi d'un mail pour réinitialiser son mot de passe
- *     description: Envoi d'un mail avec un lien vers un formulaire pour réinitialiser son mot de passe
- *     produces:
- *       - application/json
- *     security:
- *       - bearerAuth: []
- *
- *     responses:
- *       200:
- *         description:
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/InfoObject'
- *                 - example:
- *                     success: true
- *                     message: Un courriel vient de vous être envoyé sur email@example.com
+ *                     message: Un courriel vient de vous être envoyé sur email@exemple.fr
  *
  *       404:
  *         $ref: '#/components/responses/InvalidEmailResponse'
@@ -199,8 +158,6 @@ router.post('/admin/token', getAdminToken)
  *    tags: ["Authentification", "Administrateur"]
  *    summary: Vérifie que le jeton d'authentification est valide
  *    description: Vérife si le token de l'administrateur est valide et l'administrateur a les droits d'accès
- *    produces:
- *     - application/json
  *    security:
  *     - bearerAuth: []
  *    responses:
@@ -231,8 +188,6 @@ router.get(
  *   tags: ["Authentification", "Candidat"]
  *   summary: Envoie un lien de connexion par courriel
  *   description: Vérifie que le candidat à le droit de se connecter et lui envoie un e-mail avec un lien de connexion
- *   produces:
- *     - application/json
  *
  *   requestBody:
  *     required: true
@@ -246,7 +201,7 @@ router.get(
  *               type: string
  *               format: email
  *               description: adresse courriel du candidat
- *           require:
+ *           required:
  *            - email
  *         example:
  *            "email": "candilib.box-1@yahoo.com"
@@ -263,7 +218,7 @@ router.get(
  *                   description: vaut true
  *                 message:
  *                   type: string
- *                   descritpion: vaut 'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).'
+ *                   description: vaut 'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).'
  *             example:
  *                success: true
  *                message: 'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).'
@@ -328,8 +283,6 @@ router.post('/candidat/magic-link', postMagicLink)
  *    tags: ["Authentification", "Candidat"]
  *    summary: Vérifie que le jeton d'authentification est valide
  *    description: Vérife si le token de l'administrateur est valide et l'administrateur a les droits d'accès
- *    produces:
- *     - application/json
  *    security:
  *     - bearerAuth: []
  *    responses:
