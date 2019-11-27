@@ -56,7 +56,7 @@ export const getEmailDepartementOfCandidat = async departementId => {
   try {
     const departementInfo = await findDepartementById(departementId)
     if (departementInfo && departementInfo.email) {
-      return `<a href="mailto:${departementInfo.email}"> Contactez-nous </a>`
+      return `Vous pouvez nous contacter à cette adresse <a href="mailto:${departementInfo.email}">${departementInfo.email}</a>`
     }
     const message = `L'adresse courriel du département: ${departementId} est manquante.`
     appLogger.error({
