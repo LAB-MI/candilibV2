@@ -5,11 +5,14 @@ export default {
   delete_whole_day_s_places: 'Supprimer la journée',
   delete_morning_places: 'Supprimer la matinée',
   delete_afternoon_places: `Supprimer l'après-midi`,
-  recevoir_les_bordereaux_inspecteurs: 'Recevoir les bordereaux des inspecteurs du',
-  les_bordereaux_inspecteurs: 'Les bordereaux inspecteurs',
-  les_bordereaux_inspecteurs_seront_envoyes_a_l_adresse: `Les bordereaux inspecteurs seront envoyés à l'adresse courriel`,
+  recevoir_les_bordereaux_inspecteurs: 'Recevoir les bordereaux des IPCSR du',
+  les_bordereaux_inspecteurs: 'Les bordereaux IPCSR',
+  les_bordereaux_inspecteurs_seront_envoyes_a_l_adresse: `Les bordereaux IPCSR seront envoyés à l'adresse courriel`,
   annuler: 'Annuler',
   envoyer: 'Envoyer',
+  recevoir: 'Recevoir',
+  tous: 'Tous',
+  sur_ladresse_courriel: `sur l'adresse courriel :`, // eslint-disable-line no-irregular-whitespace
   nom: 'Nom',
   neph: 'Neph',
   mobile: 'Portable',
@@ -20,11 +23,10 @@ export default {
   affecter_le_candidat: 'Affecter le candidat',
   sur_la_place_du: 'sur la place du',
   au_centre: 'au centre',
-  send_bordereaux: 'Envoyer les bordereaux aux inspecteurs du',
-  send_bordereaux_for_ipcsr_email: `Les bordereaux seront envoyés aux adresses courriels de chaque inspecteurs,
+  send_bordereaux: 'Envoyer les bordereaux aux IPCSR du',
+  send_bordereaux_for_ipcsr_email: `Les bordereaux seront envoyés aux adresses courriels de chaque IPCSR,
     si l'un des courriels n'arrive pas à déstination, un courriel vous sera envoyé afin de vous prevenir.`,
-  receive_bordereaux_for_ipcsr_email: 'Recevoir les bordereaux des inspecteurs du',
-  send_bordereaux_to_email: `Les bordereaux inspecteurs seront envoyés à l'adresse courriel : `, // eslint-disable-line no-irregular-whitespace
+  send_bordereaux_to_email: `Les bordereaux IPCSR seront envoyés à l'adresse courriel : `, // eslint-disable-line no-irregular-whitespace
   date_first_day_of_week: `Date du premier jour de la semaine N°`,
   total_of_week: `Total de la Semaine`,
   non_renseignee: `Non renseignée`,
@@ -47,4 +49,5 @@ export default {
   egale_examens_passes_divise_places_proposees_dans_le_passe: `= examens passés / places proposées dans le passé`,
   de_remplissage_de_places_a_venir: `de remplissage de places à venir`,
   egale_reservation_a_venir_divise_places_proposees_dans_le_futur: `= réservations à venir / places proposées dans le futur`,
+  no_inspecteurs_at_this_date: `Il n'y a pas d'IPCSR avec des réservations`,
 }

@@ -7,7 +7,7 @@ import express from 'express'
 
 import { getCandidats, importCandidats } from './candidats.controllers'
 import { getMe } from './admin.controllers'
-import { getInspecteurs } from './inspecteurs.controllers'
+import { getInspecteurs } from './inspecteurs-controllers'
 import {
   createOrImportPlaceByAdmin,
   deleteByAdmin,

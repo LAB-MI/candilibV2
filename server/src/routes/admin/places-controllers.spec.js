@@ -45,14 +45,16 @@ import {
   sendScheduleInspecteurs,
   updatePlaces,
 } from './places-controllers'
-import { getScheduleInspecteurBody } from '../business/send-mail-schedule-inspecteur'
 import { REASON_MODIFY_RESA_ADMIN } from '../common/reason.constants'
 import {
   DELETE_PLACES_BY_ADMIN_ERROR,
   DELETE_PLACES_BY_ADMIN_SUCCESS,
   PLACE_IS_ALREADY_BOOKED,
 } from './message.constants'
-import { expectMailConvocation } from '../business/__tests__/expect-send-mail'
+import {
+  expectMailBordereaux,
+  expectMailConvocation,
+} from '../business/__tests__/expect-send-mail'
 
 const inspecteurTest = {
   nom: 'Doggett',
@@ -472,36 +474,6 @@ describe('update place by admin', () => {
   })
 })
 
-async function expectMailBordereaux (subjectParams) {
-  const {
-    inspecteurName,
-    inspecteurMatricule,
-    dateToString,
-    centreNom,
-    departement,
-    emailInspecteur,
-    places,
-  } = subjectParams
-  const bodyMail = require('../business/send-mail').getMail()
-  expect(bodyMail).toBeDefined()
-  expect(bodyMail).toHaveProperty('to', emailInspecteur)
-  expect(bodyMail).toHaveProperty(
-    'subject',
-    `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
-  )
-  expect(bodyMail).toHaveProperty(
-    'html',
-    await getScheduleInspecteurBody(
-      inspecteurName,
-      inspecteurMatricule,
-      dateToString,
-      centreNom,
-      departement,
-      places
-    )
-  )
-}
-
 describe('delete place by admin', () => {
   const app = express()
   app.use(bodyParser.json({ limit: '20mb' }))
@@ -794,7 +766,6 @@ describe('Send bordereaux', () => {
       req.userId = user._id
       next()
     })
-
     app.post(`${apiPrefix}/admin/bordereaux`, sendScheduleInspecteurs)
 
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()

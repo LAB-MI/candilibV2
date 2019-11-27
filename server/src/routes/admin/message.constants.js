@@ -12,8 +12,8 @@ export const DELETE_PLACES_BY_ADMIN_SUCCESS =
   'La suppression des places sélectionnées a bien été effectuée'
 export const DELETE_PLACES_BY_ADMIN_ERROR =
   'Les places à supprimer ne sont pas définies'
-export const SOME_PARAMS_ARE_NOT_DEFINED =
-  'Certains paramètres ne sont pas définis'
+export const SOME_PARAMS_ARE_NOT_DEFINED_OR_INCORRECT =
+  'Les paramètres renseignés sont incorrects'
 export const UNKNOW_ERROR_GET_CANDIDAT =
   'Un problème est survenu lors de la recherche du candidat'
 export const ACCESS_FORBIDDEN = 'Accès interdit'

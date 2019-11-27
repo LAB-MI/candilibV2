@@ -3,16 +3,15 @@
     <v-btn
       color="info"
       dark
-      @click.stop="dialog = true"
-
+      @click.stop="showDialog"
     >
       <span>
         {{ messageButton }}
         <strong>
           {{ activeDepartement }}
         </strong>
-        &nbsp;
       </span>
+      &nbsp;
       <v-icon>
         {{ iconButton }}
       </v-icon>
@@ -20,6 +19,7 @@
     <v-dialog
       v-model="dialog"
       max-width="580"
+      scrollable
     >
       <v-card>
         <v-card-title
@@ -30,15 +30,74 @@
           <strong>
             {{`${activeDepartement}`}}
           </strong>
-        </v-card-title>
-        <v-card-text>
-          {{ modalText }}
-          <strong v-if="!isForInspecteurs">
+          <div v-if="!isForInspecteurs">
+            {{ $formatMessage({ id: 'sur_ladresse_courriel' }) }}
+          &nbsp;
+          <strong>
             {{ emailDepartementActive }}
           </strong>
-        </v-card-text>
+        </div>
+        </v-card-title>
+        <div>
+          <v-card-title class="headline">
+            <div
+              class="u-full-width  u-flex  u-flex--row  u-flex--center"
+            >
+              <candilib-autocomplete
+                style="width: 100%;"
+                :fetch-autocomplete-action="fetchAutocompleteAction"
+                :items="autocompleteList"
+                @selection="selection"
+                :clearable="true"
+                :autofocus="true"
+                placeholder="Recherche par nom, matricule ou adresse courriel"
+              />
+            </div>
+          </v-card-title>
+
+          <div v-if="!(inspecteursOfCurrentDpt && inspecteursOfCurrentDpt.length)" class="headline">
+            {{ $formatMessage({ id: 'no_inspecteurs_at_this_date'}) }}
+          </div>
+
+          <v-form v-else>
+            <v-card-text>
+              <v-list>
+                <v-list-item>
+                  <v-list-item-content class="label-select-all">
+                    {{ $formatMessage({ id: 'tous'}) }}
+                  </v-list-item-content>
+
+                  <v-list-item-action>
+                    <v-checkbox
+                      class="t-check-all"
+                      :color="isPartiallyChecked ? 'grey' : 'info'"
+                      v-model="isAllChecked"
+                    ></v-checkbox>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list>
+
+              <v-list
+                class="wrapper-list"
+              >
+
+                <inspecteur-list-bordereaux-content
+                  v-for="item in inspecteursOfCurrentDpt"
+                  :key="item.inspecteur._id"
+                  :centre="item.centre"
+                  :inspecteur="item.inspecteur"
+                  :inspecteurListToSendBordereaux="inspecteurListToSendBordereaux"
+                  @set-inspecteur-list="setInspecteurList"
+                />
+              </v-list>
+            </v-card-text>
+          </v-form>
+
+        </div>
+
         <v-card-actions>
           <v-spacer></v-spacer>
+
           <v-btn
             outlined
             color="info"
@@ -48,9 +107,10 @@
           >
             {{ cancelDialMsg }}
           </v-btn>
+
           <v-btn
-            :aria-disabled="isGenerating"
-            :disabled="isGenerating"
+            :aria-disabled="isAbleToSendBordereaux()"
+            :disabled="isAbleToSendBordereaux()"
             type="submit"
             color="primary"
             @click="generateBordereaux"
@@ -69,9 +129,16 @@
 
 <script>
 import { mapState, mapGetters } from 'vuex'
+
 import {
+  FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST,
   GENERATE_INSPECTOR_BORDEREAUX_REQUEST,
+  MATCH_INSPECTEURS_IN_LIST_REQUEST,
+  SHOW_ERROR,
+  SHOW_SUCCESS,
 } from '@/store'
+import CandilibAutocomplete from '../CandilibAutocomplete'
+import InspecteurListBordereauxContent from './InspecteurListBordereauxContent'
 
 import {
   getFrenchLuxonFromSql,
@@ -80,6 +147,11 @@ import {
 import messageAdmin from '@/admin'
 
 export default {
+  components: {
+    CandilibAutocomplete,
+    InspecteurListBordereauxContent,
+  },
+
   props: {
     date: String,
     isForInspecteurs: Boolean,
@@ -90,30 +162,125 @@ export default {
       emailUser: state => state.admin.email,
       activeDepartement: state => state.admin.departements.active,
       isGenerating: state => state.adminBordereaux.isGenerating,
+      inspecteursOfCurrentDpt: state => state.adminBordereaux.inspecteursOfCurrentDpt.list,
+      matchInspecteurList: state => state.adminBordereaux.matchInspecteurList.list,
     }),
     ...mapGetters(['emailDepartementActive']),
+    beginDate () {
+      return getFrenchLuxonFromSql(this.date).startOf('day').toISO()
+    },
   },
 
   data () {
     return {
+      autocompleteList: undefined,
       dialog: false,
       messageButton: '',
       iconButton: '',
+      isAllChecked: false,
+      isPartiallyChecked: false,
       titleModal: '',
       modalText: '',
-      submitDialMsg: messageAdmin.envoyer,
+      submitDialMsg: this.isForInspecteurs ? messageAdmin.envoyer : messageAdmin.recevoir,
       cancelDialMsg: messageAdmin.annuler,
+      inspecteurListToSendBordereaux: [],
+      fetchAutocompleteAction: MATCH_INSPECTEURS_IN_LIST_REQUEST,
+
+      isAbleToSendBordereaux: () => {
+        if (this.isGenerating) {
+          return true
+        }
+        if (this.inspecteurListToSendBordereaux.length) {
+          return false
+        }
+        return true
+      },
     }
   },
 
   methods: {
+    selection (newSelection) {
+      if (newSelection && !this.inspecteurListToSendBordereaux.find(el => el === newSelection.value)) {
+        const inspecteurId = newSelection.value
+        this.inspecteurListToSendBordereaux = [
+          ...this.inspecteurListToSendBordereaux,
+          inspecteurId,
+        ]
+        this.$store.dispatch(SHOW_SUCCESS, `L'IPCSR a bien été sélectionné·e`)
+        return
+      }
+
+      if (newSelection && this.inspecteurListToSendBordereaux.find(el => el === newSelection.value)) {
+        this.$store.dispatch(SHOW_ERROR, `L'IPCSR est déjà sélectionné·e`)
+      }
+    },
+
+    async showDialog () {
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST, this.beginDate)
+      this.dialog = true
+    },
+
+    selectAllInspecteurs () {
+      if (!this.isAllChecked) {
+        this.inspecteurListToSendBordereaux = []
+        return
+      }
+      this.inspecteurListToSendBordereaux = this.inspecteursOfCurrentDpt.map(el => `${el.inspecteur._id}`)
+    },
+
+    setInspecteurList ({ isChecked, inspecteurId }) {
+      if (isChecked) {
+        this.inspecteurListToSendBordereaux = [
+          ...this.inspecteurListToSendBordereaux,
+          inspecteurId,
+        ]
+        return
+      }
+      this.inspecteurListToSendBordereaux = this.inspecteurListToSendBordereaux.filter(el => el !== `${inspecteurId}`)
+    },
+
     async generateBordereaux () {
       await this.$store.dispatch(GENERATE_INSPECTOR_BORDEREAUX_REQUEST, {
         departement: this.activeDepartement,
         date: getFrenchLuxonFromSql(this.date).toISO(),
         isForInspecteurs: this.isForInspecteurs,
+        inspecteurIdListe: this.inspecteurListToSendBordereaux || undefined,
       })
       this.dialog = false
+    },
+  },
+
+  watch: {
+    isAllChecked () {
+      this.selectAllInspecteurs()
+    },
+
+    inspecteurListToSendBordereaux (newValue) {
+      if (this.inspecteursOfCurrentDpt && newValue &&
+        newValue.length < this.inspecteursOfCurrentDpt.length) {
+        this.isPartiallyChecked = true
+        if (newValue.length === 0) {
+          this.isAllChecked = false
+        }
+        return
+      }
+      this.isAllChecked = true
+      this.isPartiallyChecked = false
+    },
+
+    matchInspecteurList (list) {
+      this.autocompleteList = list.map(
+        ({ inspecteur, centre }) => ({
+          text: `${inspecteur.nom} - ${inspecteur.matricule} - ${centre.nom}`,
+          value: inspecteur._id,
+        }),
+      )
+    },
+
+    dialog (newValue) {
+      if (newValue && this.inspecteursOfCurrentDpt && this.inspecteursOfCurrentDpt.length) {
+        this.inspecteurListToSendBordereaux = this.inspecteursOfCurrentDpt.map(el => `${el.inspecteur._id}`)
+      }
     },
   },
 
@@ -122,13 +289,27 @@ export default {
       this.messageButton = messageAdmin.send_bordereaux
       this.iconButton = 'contact_mail'
       this.titleModal = messageAdmin.send_bordereaux
-      this.modalText = messageAdmin.send_bordereaux_for_ipcsr_email
     } else {
       this.messageButton = messageAdmin.recevoir_les_bordereaux_inspecteurs
       this.iconButton = 'email'
       this.titleModal = messageAdmin.recevoir_les_bordereaux_inspecteurs
-      this.modalText = messageAdmin.send_bordereaux_to_email
     }
   },
 }
 </script>
+
+<style scoped>
+.label-select-all {
+  font-style: italic;
+  color: grey;
+}
+
+.wrapper-list {
+  overflow: auto;
+  height: 300px;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
+</style>

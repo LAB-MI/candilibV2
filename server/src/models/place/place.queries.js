@@ -263,7 +263,7 @@ export const countPlacesBookedOrNot = async (centres, beginDate, isBooked) => {
  * @function
  *
  * @param {string} inspecteurId - Id de l'inspecteur
- * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} beginDate - Date au format ISO de début de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
  * @returns {Promise.<Place~PlaceModel[]>}
@@ -299,7 +299,7 @@ export const findPlaceBookedByInspecteur = (
  *
  * @param {string} centreId - Id du centre
  * @param {string} inspecteurIdListe - Liste d'id d'inspecteurs
- * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} beginDate - Date au format ISO de début de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
  * @returns {Promise.<Place~PlaceModel[]>}
@@ -319,7 +319,7 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
   }
   query.where('centre', centreId)
   query.where('candidat').exists(true)
-  if (inspecteurIdListe && inspecteurIdListe.length) {
+  if (inspecteurIdListe) {
     query.where('inspecteur').in(inspecteurIdListe)
   }
   return query.exec()

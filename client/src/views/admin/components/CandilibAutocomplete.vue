@@ -12,6 +12,8 @@
       return-object
       :item-text="itemText"
       :item-value="itemValue"
+      :clearable="clearable"
+      :autofocus="autofocus"
     />
   </div>
 </template>
@@ -35,6 +37,14 @@ export default {
     itemText: String,
     itemValue: String,
     fetchAutocompleteAction: String,
+    clearable: {
+      type: Boolean,
+      default: false,
+    },
+    autofocus: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   watch: {

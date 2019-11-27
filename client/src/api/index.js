@@ -289,6 +289,16 @@ export default {
       return json
     },
 
+    async getInspecteursBookedByDepartement (date, departement) {
+      const encodedDate = encodeURIComponent(date)
+      const path = apiPaths.admin.inspecteurs
+      const url = `${path}?departement=${departement}&date=${encodedDate}`
+      const json = await apiClient.get(url, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
     async getInspecteursByCentreAndDate (centreId, begin, end) {
       const json = await apiClient.get(
         `${apiPaths.admin.inspecteurs}?centreId=${centreId}&begin=${begin}&end=${end}`,
@@ -454,10 +464,10 @@ export default {
       return json
     },
 
-    async generateBordereaux (departement, date, isForInspecteurs) {
+    async generateBordereaux (departement, date, isForInspecteurs, inspecteurIdListe) {
       const json = await apiClient.post(`${apiPaths.admin.generateBordereaux}`, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ departement, date, isForInspecteurs }),
+        body: JSON.stringify({ departement, date, isForInspecteurs, inspecteurIdListe }),
       })
       return json
     },

@@ -45,7 +45,6 @@
             :close-on-content-click="false"
             transition="scale-transition"
             offset-y
-            full-width
             max-width="290px"
             min-width="290px"
           >
@@ -485,7 +484,12 @@ export default {
         this.activeCentreId = this.firstCentreId
       }
       this.updateCenterInRoute()
-      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin: this.beginDate, end: this.endDate })
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, {
+        centreId: this.activeCentreId,
+        begin: this.beginDate,
+        end: this.endDate,
+      })
+
       this.parseInspecteursPlanning()
     },
 
