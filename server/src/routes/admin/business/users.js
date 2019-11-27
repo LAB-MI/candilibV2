@@ -16,7 +16,7 @@ import {
 import { createPassword } from '../../../util/password'
 
 /**
- * Récupère les utilisateurs en fonction de leur status et de leurs départements
+ * Récupère les utilisateurs en fonction de leur statut et de leurs départements
  *
  * @async
  * @function
@@ -35,6 +35,7 @@ export const getAppropriateUsers = async userId => {
     return users
   }
 
+  // TODO: Modifier ici pour permettre au délégué d'avoir la liste des utilisateurs de ses départements
   const forbiddenMessage = isForbiddenToUpsertUser(status, user, departements)
   if (forbiddenMessage) {
     const error = new Error(forbiddenMessage)
@@ -139,7 +140,7 @@ export const updateUserBusiness = async (
   return updatedUser
 }
 
-export const deleteUserBusiness = async (userId, emailToDelete) => {
+export const archiveUserBusiness = async (userId, emailToDelete) => {
   const isValidEmail = regexEmail.test(emailToDelete)
   if (!isValidEmail) {
     const error = new Error(INVALID_EMAIL)
@@ -153,6 +154,13 @@ export const deleteUserBusiness = async (userId, emailToDelete) => {
     const message = "Cet utilisateur n'existe pas"
     const error = new Error(message)
     error.status = 404
+    throw error
+  }
+
+  if (userToDelete.deletedAt) {
+    const message = 'Cet utilisateur est déjà archivé'
+    const error = new Error(message)
+    error.status = 409
     throw error
   }
 

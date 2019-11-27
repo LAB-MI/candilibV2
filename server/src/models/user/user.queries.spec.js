@@ -19,8 +19,6 @@ const shortPassword = 'Abc1*'
 const validPassword = 'Abcde12*'
 
 describe('User', () => {
-  let user
-
   describe('Getting User', () => {
     beforeAll(async () => {
       await connect()
@@ -76,12 +74,16 @@ describe('User', () => {
   describe('Saving User', () => {
     const emailTwo = 'emailTwo@example.com'
 
-    beforeEach(async () => {
+    beforeAll(async () => {
       await connect()
     })
 
+    afterAll(async () => {
+      await disconnect()
+    })
+
     afterEach(async () => {
-      await Promise.all([
+      return Promise.all([
         findUserByEmail(validEmail)
           .then(deleteUser)
           .catch(() => true),
@@ -92,7 +94,6 @@ describe('User', () => {
           .then(deleteUser)
           .catch(() => true),
       ])
-      await disconnect()
     })
 
     it('Should not save a user with no password', async () => {
@@ -139,7 +140,7 @@ describe('User', () => {
       const password = validPassword
 
       // When
-      user = await createUser(email, password)
+      const user = await createUser(email, password)
 
       // Then
       expect(user.isNew).toBe(false)
@@ -150,7 +151,12 @@ describe('User', () => {
       // Given
       const duplicatedEmail = 'duplicated-email@candi.lib'
       const password = validPassword
-      user = await createUser(duplicatedEmail, password, ['75'], 'delegue')
+      const user = await createUser(
+        duplicatedEmail,
+        password,
+        ['75'],
+        'delegue'
+      )
 
       // When
       const error = await createUser(
@@ -244,7 +250,7 @@ describe('User', () => {
       // Then
       expect(users).toBeDefined()
       expect(users).toBeInstanceOf(Array)
-      expect(users).toHaveProperty('length', 3)
+      expect(users).toHaveLength(3)
     })
   })
 
@@ -278,7 +284,7 @@ describe('User', () => {
       // Given
       const email = emailThree
       const password = validPassword
-      user = await createUser(email, password)
+      const user = await createUser(email, password)
 
       // When
       const sameUserDifferentEmail = await updateUserEmail(
@@ -296,7 +302,7 @@ describe('User', () => {
       // Given
       const email = emailFour
       const password = validPassword
-      user = await createUser(email, password)
+      const user = await createUser(email, password)
       const departements = ['75', '93']
 
       // When
@@ -339,7 +345,7 @@ describe('User', () => {
       // Given
       const email = emailFive
       const password = validPassword
-      user = await createUser(email, password)
+      const user = await createUser(email, password)
 
       // When
       const deletedUser = await deleteUser(user)
@@ -354,7 +360,7 @@ describe('User', () => {
       const email = 'terminator@example.com'
       const emailToDelete = 'emailFive@example.com'
       const password = validPassword
-      user = await createUser(emailToDelete, password)
+      await createUser(emailToDelete, password)
 
       // When
       await archiveUserByEmail(emailToDelete, email)

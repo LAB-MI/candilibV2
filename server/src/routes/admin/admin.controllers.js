@@ -13,7 +13,7 @@ import {
   getAppropriateUsers,
   createAppropriateUser,
   updateUserBusiness,
-  deleteUserBusiness,
+  archiveUserBusiness,
 } from './business'
 
 /**
@@ -94,7 +94,7 @@ const findInfoAdminById = async userId => {
  * @param {string} req.userId - Id de l'utilisateur souhaitant créér un délégué ou un répartiteur
  * @param {string} req.body.email - Adresse courriel de l'utilisateur créér
  * @param {string} req.body.departements - Départements de l'utilisateur créér
- * @param {string} req.body.status - Status de l'utilisateur créé
+ * @param {string} req.body.status - Statut de l'utilisateur créé
  * @param {import('express').Response} res
  */
 export const createUserController = async (req, res) => {
@@ -134,7 +134,7 @@ export const createUserController = async (req, res) => {
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      description: "L'utilisateur n'a pas été créé",
+      description: error.message,
       error,
     })
 
@@ -155,7 +155,7 @@ export const createUserController = async (req, res) => {
  * @param {string} req.userId - Id de l'utilisateur souhaitant créér un délégué ou un répartiteur
  * @param {string} req.body.email - Adresse courriel de l'utilisateur trouvé
  * @param {string} req.body.departements - Départements de l'utilisateur trouvé
- * @param {string} req.body.status - Status de l'utilisateur trouvé
+ * @param {string} req.body.status - Statut de l'utilisateur trouvé
  * @param {import('express').Response} res
  */
 export const getUsers = async (req, res) => {
@@ -169,8 +169,20 @@ export const getUsers = async (req, res) => {
 
   try {
     const users = await getAppropriateUsers(req.userId)
+
+    appLogger.info({
+      ...loggerInfo,
+      nbOfFoundUsers: users.length,
+    })
+
     return res.status(200).json({ success: true, users })
   } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: `Impossible de récupérer les utilisateurs : ${error.message}`,
+      error,
+    })
+
     return res.status(error.status).json({
       success: false,
       message: error.message,
@@ -188,7 +200,7 @@ export const getUsers = async (req, res) => {
  * @param {string} req.userId - Id de l'utilisateur souhaitant modifier un délégué ou un répartiteur
  * @param {string} req.body.email - Adresse courriel de l'utilisateur mis à jour
  * @param {string} req.body.departements - Départements de l'utilisateur mis à jour
- * @param {string} req.body.status - Status de l'utilisateur mis à jour
+ * @param {string} req.body.status - Statut de l'utilisateur mis à jour
  * @param {import('express').Response} res
  */
 export const updatedInfoUser = async (req, res) => {
@@ -222,7 +234,7 @@ export const updatedInfoUser = async (req, res) => {
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      description: "L'utilisateur n'a pas été modifié",
+      description: error.message,
       error,
     })
 
@@ -243,10 +255,10 @@ export const updatedInfoUser = async (req, res) => {
  * @param {string} req.userId - Id de l'utilisateur souhaitant supprimer un délégué ou un répartiteur
  * @param {string} req.body.email - Adresse courriel de l'utilisateur supprimer
  * @param {string} req.body.departements - Départements de l'utilisateur supprimer
- * @param {string} req.body.status - Status de l'utilisateur supprimer
+ * @param {string} req.body.status - Statut de l'utilisateur supprimer
  * @param {import('express').Response} res
  */
-export const deleteUserController = async (req, res) => {
+export const archiveUserController = async (req, res) => {
   const { email: emailToDelete } = req.body
 
   const loggerInfo = {
@@ -255,26 +267,27 @@ export const deleteUserController = async (req, res) => {
     admin: req.userId,
     emailToDelete,
   }
+
   appLogger.info(loggerInfo)
 
   try {
-    const archivedUser = await deleteUserBusiness(req.userId, emailToDelete)
+    const archivedUser = await archiveUserBusiness(req.userId, emailToDelete)
 
     appLogger.info({
       ...loggerInfo,
       action: 'delete-user',
-      description: "L'utilisateur a bien été supprimé",
+      description: "L'utilisateur a bien été archivé",
     })
 
     res.status(200).json({
       success: true,
-      message: "Les informations de l'utilisateur ont été supprimées",
+      message: "L'utilisateur a été archivé",
       archivedUser,
     })
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      description: "L'utilisateur n'a pas été supprimé",
+      description: "L'utilisateur n'a pas été archivé",
       error,
     })
 

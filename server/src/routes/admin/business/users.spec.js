@@ -1,11 +1,11 @@
 import { connect } from '../../../mongo-connection'
 import { disconnect } from 'mongoose'
-import { createUser, findUserByEmail } from '../../../models/user'
+import { createUser, findUserByEmail, deleteUser } from '../../../models/user'
 import {
   getAppropriateUsers,
   isForbiddenToUpsertUser,
   updateUserBusiness,
-  deleteUserBusiness,
+  archiveUserBusiness,
   createAppropriateUser,
 } from './users'
 import config from '../../../config'
@@ -13,13 +13,17 @@ import config from '../../../config'
 describe('Users', () => {
   const email = 'admin@example.com'
   const emailDelegue = 'delegue@example.com'
+  const emailDelegue2 = 'delegue2@example.com'
+  const emailToArchive = 'emailToArchive@candi.lib'
   const emailRepartiteur = 'repartiteur@example.com'
   const newDelegue = 'newDelegue@example.com'
   const password = '@85Stm9G!'
   const departements = ['75']
   let admin
   let delegue
+  let delegue2
   let repartiteur
+  let savedUser
 
   beforeAll(async () => {
     await connect()
@@ -35,6 +39,12 @@ describe('Users', () => {
       departements,
       config.userStatuses.DELEGUE
     )
+    delegue2 = await createUser(
+      emailDelegue2,
+      password,
+      departements,
+      config.userStatuses.DELEGUE
+    )
     repartiteur = await createUser(
       emailRepartiteur,
       password,
@@ -43,7 +53,19 @@ describe('Users', () => {
     )
   })
 
+  afterEach(async () => {
+    const user = await findUserByEmail(emailToArchive)
+    await deleteUser(savedUser).catch(error => error)
+    await deleteUser(user).catch(error => error)
+  })
+
   afterAll(async () => {
+    await Promise.all([
+      deleteUser(admin),
+      deleteUser(delegue),
+      deleteUser(delegue2),
+      deleteUser(repartiteur),
+    ])
     await disconnect()
   })
 
@@ -53,7 +75,7 @@ describe('Users', () => {
     const status = config.userStatuses.DELEGUE
 
     // when
-    const saveUser = await createAppropriateUser(
+    savedUser = await createAppropriateUser(
       adminId,
       newDelegue,
       status,
@@ -61,11 +83,11 @@ describe('Users', () => {
     )
 
     // then
-    expect(saveUser).toBeDefined()
-    expect(saveUser).toBeInstanceOf(Object)
-    expect(saveUser).toHaveProperty('_id')
-    expect(saveUser).toHaveProperty('status', status)
-    expect(saveUser.departements[0]).toBe(departements[0])
+    expect(savedUser).toBeDefined()
+    expect(savedUser).toBeInstanceOf(Object)
+    expect(savedUser).toHaveProperty('_id')
+    expect(savedUser).toHaveProperty('status', status)
+    expect(savedUser.departements[0]).toBe(departements[0])
   })
 
   it('Should not create user delegue if delegue', async () => {
@@ -171,7 +193,7 @@ describe('Users', () => {
     // then
     expect(users).toBeDefined()
     expect(users).toBeInstanceOf(Array)
-    expect(users).toHaveProperty('length', 4)
+    expect(users).toHaveLength(4)
   })
 
   it('Should be able to modify user if delegue', async () => {
@@ -368,9 +390,11 @@ describe('Users', () => {
   it('Should archive user', async () => {
     // given
     const adminId = admin.id
+    const status = config.userStatuses.DELEGUE
+    await createUser(emailToArchive, password, departements, status)
 
     // when
-    const deletedUser = await deleteUserBusiness(adminId, emailDelegue)
+    const deletedUser = await archiveUserBusiness(adminId, emailToArchive)
 
     // then
     expect(deletedUser).toBeDefined()
@@ -405,9 +429,9 @@ describe('Users', () => {
     const status = config.userStatuses.DELEGUE
 
     // when
-    const error = await deleteUserBusiness(
+    const error = await archiveUserBusiness(
       delegueId,
-      emailDelegue,
+      emailDelegue2,
       status,
       departements
     ).catch(error => error)
@@ -452,7 +476,7 @@ describe('Users', () => {
     const status = config.userStatuses.DELEGUE
 
     // when
-    const error = await deleteUserBusiness(
+    const error = await archiveUserBusiness(
       delegueId,
       emailDelegue,
       status,
@@ -475,7 +499,7 @@ describe('Users', () => {
     const status = config.userStatuses.DELEGUE
 
     // when
-    const error = await deleteUserBusiness(
+    const error = await archiveUserBusiness(
       repartiteurId,
       emailDelegue,
       status,

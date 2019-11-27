@@ -57,7 +57,7 @@
         </template>
         <span>Déconnexion</span>
       </v-tooltip>
-      <bandeau-beta fixed />
+      <bandeau-beta />
     </div>
   </v-app-bar>
 </template>

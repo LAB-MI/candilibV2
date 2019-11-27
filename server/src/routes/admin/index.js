@@ -8,7 +8,7 @@ import express from 'express'
 import { getCandidats, importCandidats } from './candidats.controllers'
 import {
   createUserController,
-  deleteUserController,
+  archiveUserController,
   getMe,
   getUsers,
   updatedInfoUser,
@@ -1057,8 +1057,6 @@ router.post('/users', verifyDelegueLevel(), createUserController)
  *     tags: ["Administrateur"]
  *     summary: Récupération d'un utilisateur
  *     description: Récupération d'un utilisateur. Seul un admin peut créer un délégué (il peut aussi créer un répartiteur) et seul un délégué peut créer un répartiteur.
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -1110,78 +1108,6 @@ router.post('/users', verifyDelegueLevel(), createUserController)
  *
  */
 router.get('/users', verifyDelegueLevel(), getUsers)
-
-/**
- * @swagger
- *
- * /admin/users:
- *   get:
- *     tags: ["Administrateur"]
- *     summary: Récupération des informations de l'utilisateur
- *     description: Après connexion récupération de l'utilisateur. Seul un admin peut récupérer les informations d'un délégué (il peut aussi récupérer les informations d'un répartiteur) et seul un délégué peut récupérer les informations d'un répartiteur.
- *     security:
- *       - bearerAuth: []
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               email:
- *                 type: string
- *                 example: repartiteur@example.com
- *                 description: Email de l'utilisateur
- *               departements:
- *                 type: array
- *                 items:
- *                   type: string
- *                   description: Département accessible par l'utilisateur
- *                 example: ["93"]
- *                 description: Départements de l'utilisateur
- *               status:
- *                 type: string
- *                 example: repartiteur
- *                 description: Statut de l'utilisateur
- *
- *     responses:
- *       200:
- *         description: Succès de la requête
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/InfoObject'
- *                 - example:
- *                     success: true
- *                     message: L'utilisateur a bien été trouvé
- *                     user: {
- *                        "email": "répartiteur@example.com",
- *                        "id": "85958545487523245",
- *                        "departements": ["93"],
- *                        "status": "repartiteur"
- *                     }
- *
- *       400:
- *         description: Paramètre(s) manquant(s)
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/InfoObject'
- *                 - example:
- *                     success: false
- *                     message: Le code du département est manquant ou l'adresse courriel est invalide
- *
- *       401:
- *        $ref: '#/components/responses/InvalidTokenResponse'
- *
- *       500:
- *          $ref: '#/components/responses/UnknownErrorResponse'
- *
- */
-
-// router.get('/users', verifyAdminLevel, retrieveUser)
 
 /**
  * @swagger
@@ -1252,10 +1178,10 @@ router.get('/users', verifyDelegueLevel(), getUsers)
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
- * @see {@link http://localhost:8000/api-docs/#/Administrateur/put_admin_users}
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/patch_admin_users}
  */
 
-router.put('/users', verifyDelegueLevel(), updatedInfoUser)
+router.patch('/users', verifyDelegueLevel(), updatedInfoUser)
 
 /**
  * @swagger
@@ -1329,6 +1255,6 @@ router.put('/users', verifyDelegueLevel(), updatedInfoUser)
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_users }
  */
 
-router.delete('/users', verifyDelegueLevel(), deleteUserController)
+router.delete('/users', verifyDelegueLevel(), archiveUserController)
 
 export default router

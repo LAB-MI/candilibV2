@@ -5,7 +5,7 @@ import bodyParser from 'body-parser'
 
 import {
   getMe,
-  deleteUserController,
+  archiveUserController,
   updatedInfoUser,
   createUserController,
   getUsers,
@@ -636,7 +636,7 @@ describe(' Delete user by delegue', () => {
     app.use(bodyParser.json({ limit: '20mb' }))
     app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 
-    app.delete(`${apiPrefix}/admin/users`, deleteUserController)
+    app.delete(`${apiPrefix}/admin/users`, archiveUserController)
 
     const { body } = await request(app)
       .delete(`${apiPrefix}/admin/users`)
@@ -656,7 +656,7 @@ describe(' Delete user by delegue', () => {
     app.use(bodyParser.json({ limit: '20mb' }))
     app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 
-    app.delete(`${apiPrefix}/admin/users`, deleteUserController)
+    app.delete(`${apiPrefix}/admin/users`, archiveUserController)
 
     const { body } = await request(app)
       .delete(`${apiPrefix}/admin/users`)
@@ -677,7 +677,7 @@ describe(' Delete user by delegue', () => {
     app.use(bodyParser.json({ limit: '20mb' }))
     app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 
-    app.delete(`${apiPrefix}/admin/users`, deleteUserController)
+    app.delete(`${apiPrefix}/admin/users`, archiveUserController)
 
     const { body } = await request(app)
       .delete(`${apiPrefix}/admin/users`)
@@ -700,7 +700,7 @@ describe(' Delete user by delegue', () => {
     app.use(bodyParser.json({ limit: '20mb' }))
     app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 
-    app.delete(`${apiPrefix}/admin/users`, deleteUserController)
+    app.delete(`${apiPrefix}/admin/users`, archiveUserController)
 
     const { body } = await request(app)
       .delete(`${apiPrefix}/admin/users`)
@@ -750,7 +750,7 @@ describe(' Delete user by admin', () => {
     app.use(bodyParser.json({ limit: '20mb' }))
     app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 
-    app.delete(`${apiPrefix}/admin/users`, deleteUserController)
+    app.delete(`${apiPrefix}/admin/users`, archiveUserController)
 
     const { body } = await request(app)
       .delete(`${apiPrefix}/admin/users`)
