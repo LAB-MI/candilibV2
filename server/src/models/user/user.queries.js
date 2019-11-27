@@ -17,7 +17,7 @@ export const findAllUsers = async () => {
  * Recherche tous les répartiteurs/délégués actifs (non archivés) de tous les départements
  *
  *
- * @returns {Promise.<import('./user.model.js').User[]>} - LIste de documents de l'utilisateur
+ * @returns {Promise.<import('./user.model.js').User[]>} - Liste de documents d'utilisateurs
  */
 
 export const findAllActiveUsers = async () => {

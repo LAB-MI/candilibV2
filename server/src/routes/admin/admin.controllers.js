@@ -94,7 +94,7 @@ const findInfoAdminById = async userId => {
  * @param {string} req.userId - Id de l'utilisateur souhaitant créér un délégué ou un répartiteur
  * @param {string} req.body.email - Adresse courriel de l'utilisateur créér
  * @param {string} req.body.departements - Départements de l'utilisateur créér
- * @param {string} req.body.status - Status de l'utilisateur créér
+ * @param {string} req.body.status - Status de l'utilisateur créé
  * @param {import('express').Response} res
  */
 export const createUserController = async (req, res) => {
@@ -146,7 +146,7 @@ export const createUserController = async (req, res) => {
 }
 
 /**
- * Récupere un utilisateur
+ * Récupère un utilisateur
  *
  * @async
  * @function
@@ -268,7 +268,7 @@ export const deleteUserController = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: "Les informations de l'utilisateur a été supprimé",
+      message: "Les informations de l'utilisateur ont été supprimées",
       archivedUser,
     })
   } catch (error) {

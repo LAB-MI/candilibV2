@@ -57,7 +57,7 @@ export const getMailConfirmationBody = email => {
  * @returns {MailData} Titre et corps du mail à envoyer pour la confirmation de mise à jour des informations de l'utilisateur
  */
 export const getMailConfirmation = email => {
-  const subject = 'Vos informations sur candilib ont changé'
+  const subject = 'Vos informations sur candilib ont changées'
   const content = getMailConfirmationBody(email)
   return { subject, content }
 }

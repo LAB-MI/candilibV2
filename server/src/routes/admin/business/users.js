@@ -16,7 +16,7 @@ import {
 import { createPassword } from '../../../util/password'
 
 /**
- * Récupère les utilisateurs en fonction de son statut et de ses départements d'intervention
+ * Récupère les utilisateurs en fonction de leur status et de leurs départements
  *
  * @async
  * @function
@@ -90,7 +90,7 @@ export const createAppropriateUser = async (
  * @async
  * @function
  *
- * @param {string} userId - ID de l'utilisateur qui modifie l' utilisateur
+ * @param {string} userId - ID de l'utilisateur qui modifie l'utilisateur
  * @param {string} email - Adresse courriel de l'utilisateur à modifier
  * @param {Object} param - Objet contenant le statut et les départements
  * @param {string} param.status - Statut de l'utilisateur à modifier

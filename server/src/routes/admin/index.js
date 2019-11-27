@@ -1012,7 +1012,7 @@ router
  *
  *     responses:
  *       201:
- *         description: Utilisateur récupéré
+ *         description: Utilisateur créé
  *         content:
  *           application/json:
  *             schema:
@@ -1020,7 +1020,7 @@ router
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: true
- *                     message: L'utilisateur a bien été récupéré
+ *                     message: L'utilisateur a bien été créé
  *                     user: {
  *                        "email": "répartiteur@example.com",
  *                        "id": "85958545487523245",
@@ -1084,7 +1084,7 @@ router.post('/users', verifyDelegueLevel(), createUserController)
  *
  *
  *     responses:
- *       201:
+ *       200:
  *         description: Utilisateur récupéré
  *         content:
  *           application/json:
@@ -1100,17 +1100,6 @@ router.post('/users', verifyDelegueLevel(), createUserController)
  *                        "departements": ["93"],
  *                        "status": "repartiteur"
  *                     }
- *
- *       400:
- *         description: Paramètre(s) manquant(s)
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/InfoObject'
- *                 - example:
- *                     success: false
- *                     message: ""
  *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
