@@ -1,13 +1,12 @@
 <template>
-  <div>
+  <div class="u-max-width">
     <page-title :title="'Liste des répartiteurs/délégués'"/>
-    <div>
-      <user-create/>
-    </div>
+
+    <user-create/>
+
     <v-divider></v-divider>
-    <div>
-      <users-list/>
-    </div>
+
+    <users-list/>
   </div>
 </template>
 

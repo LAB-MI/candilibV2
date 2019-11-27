@@ -1113,7 +1113,7 @@ router.get('/users', verifyDelegueLevel(), getUsers)
  * @swagger
  *
  * /admin/users:
- *   put:
+ *   patch:
  *     tags: ["Administrateur"]
  *     summary: Modification d'un utilisateur
  *     description: Modification d'un utilisateur. Seul un admin peut modifier un délégué (il peut aussi modifier un répartiteur) et seul un délégué peut modifier un répartiteur.

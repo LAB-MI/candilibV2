@@ -8,7 +8,7 @@
           <th class ="text-center">Email</th>
           <th class ="text-center">Statut</th>
           <th class ="text-center">Départements</th>
-          <th class ="text-center">supprimer</th>
+          <th class ="text-center">Supprimer</th>
         </tr>
       </thead>
       <tbody>

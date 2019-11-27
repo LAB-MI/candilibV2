@@ -136,6 +136,7 @@ export default {
       }
       const isAdmin = rootState.admin && rootState.admin.email
       if (isAdmin) {
+        localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
         await dispatch(SHOW_ERROR, candidatMessages.unauthorize_action)
       }
     },

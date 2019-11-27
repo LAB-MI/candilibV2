@@ -32,6 +32,7 @@
         ></v-select>
 
       <v-spacer></v-spacer>
+
       <v-select
         class="t-select-departements"
         multiple
@@ -41,20 +42,21 @@
         aria-placeholder="departements"
         hint="ex. : departements"
         tabindex="0"
+        :rules="departementsRules"
         v-model="departements"
         required
         ></v-select>
+
       <v-spacer></v-spacer>
 
       <v-btn
         class="t-create-btn"
         type="submit"
-        :disabled="isSendingUser"
-        :aria-disabled="isSendingUser"
-        dark
-        color="#4CAF50"
+        :disabled="!valid || isSendingUser"
+        :aria-disabled="!valid || isSendingUser"
         tabindex="0"
         raised
+        color="success"
         >
         Ajouter
         <v-icon>
@@ -62,26 +64,44 @@
         </v-icon>
       </v-btn>
     </v-container>
+
   </v-form>
 </template>
 
 <script>
 import { email as emailRegex } from '@/util'
 
-import { SHOW_ERROR, CREATE_USER_REQUEST, FETCH_USER_LIST_REQUEST, SHOW_SUCCESS } from '../../../../store'
+import {
+  CREATE_USER_REQUEST,
+} from '@/store'
 import { mapState } from 'vuex'
+
+const defaultAvailableStatuses = [
+  {
+    value: 'repartiteur',
+    text: 'Répartiteur',
+  },
+  {
+    value: 'delegue',
+    text: 'Délégué',
+  },
+]
 
 export default {
   data () {
     return {
-      availableStatuses: ['repartiteur', 'delegue'],
+      availableStatuses: defaultAvailableStatuses,
       departements: [],
       status: 'repartiteur',
       valid: false,
+      departementsRules: [
+        dpts => (!!dpts && !!dpts.length) ||
+          'Veuillez renseigner au moins un département',
+      ],
       email: '',
       emailRules: [
-        v => !!v || 'Veuillez renseigner votre adresse courriel',
-        v => emailRegex.test(v) || "L'adresse courriel doit être valide",
+        email => !!email || 'Veuillez renseigner votre adresse courriel',
+        email => emailRegex.test(email) || "L'adresse courriel doit être valide",
       ],
       emailPlaceholder: '',
     }
@@ -107,17 +127,16 @@ export default {
     setEmailPlaceholder () {
       this.emailPlaceholder = 'jean@dupont.fr'
     },
+
     removeEmailPlaceholder () {
       this.emailPlaceholder = ''
     },
+
     setEmailToLowerCase () {
       this.email = this.email.toLowerCase().trim()
     },
 
     async createdUser () {
-      if (!this.valid) {
-        return this.$store.dispatch(SHOW_ERROR, 'Veuillez remplir le formulaire')
-      }
       const {
         email,
         departements,
@@ -130,10 +149,9 @@ export default {
           departements,
           status,
         })
-        this.$store.dispatch(SHOW_SUCCESS, `L'utilisateur a bien été créé`)
-        this.$store.dispatch(FETCH_USER_LIST_REQUEST)
+        this.departements = this.availableDepartements
+        this.email = ''
       } catch (error) {
-        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
   },

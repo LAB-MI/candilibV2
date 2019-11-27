@@ -36,3 +36,4 @@ export const INCORRECT_DEPARTEMENT_LIST =
   "La liste des départements d'intervention est incorrecte"
 export const INVALID_EMAIL = "L'adresse courriel n'est pas valide"
 export const USER_NO_EXIST = "L'utilisateur n'existe pas"
+export const INVALID_DEPARTEMENTS_LIST = 'La liste départements est invalide'

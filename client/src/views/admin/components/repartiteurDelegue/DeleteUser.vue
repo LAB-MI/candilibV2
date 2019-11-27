@@ -54,7 +54,12 @@
 </template>
 
 <script>
-import { DELETE_USER_REQUEST, SHOW_SUCCESS, SHOW_ERROR, FETCH_USER_LIST_REQUEST } from '../../../../store'
+import {
+  DELETE_USER_REQUEST,
+  SHOW_SUCCESS,
+  SHOW_ERROR,
+  FETCH_USER_LIST_REQUEST,
+} from '@/store'
 export default {
   props: {
     email: String,

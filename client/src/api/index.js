@@ -211,7 +211,6 @@ export default {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify(user),
       })
-      console.log('testCreateUsers', { user })
       return json
     },
 

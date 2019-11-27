@@ -25,9 +25,8 @@ export default {
     CREATE_USER_REQUEST (state) {
       state.isSendingUser = true
     },
-    CREATE_USER_SUCCESS (state, user) {
+    CREATE_USER_SUCCESS (state) {
       state.isSendingUser = false
-      state.user = user
     },
     CREATE_USER_FAILURE (state) {
       state.user = undefined
@@ -57,6 +56,7 @@ export default {
     },
 
   },
+
   actions: {
     async [CREATE_USER_REQUEST] ({ commit, dispatch }, user) {
       commit(CREATE_USER_REQUEST)
@@ -65,11 +65,13 @@ export default {
         if (response.success === false) {
           throw new Error(response.message)
         }
-        commit(CREATE_USER_SUCCESS, `L'utilisateur à été créé`)
+        commit(CREATE_USER_SUCCESS)
+        dispatch(SHOW_SUCCESS, `L'utilisateur a bien été créé`)
+        dispatch(FETCH_USER_LIST_REQUEST)
         return response
       } catch (error) {
         commit(CREATE_USER_FAILURE)
-        dispatch(SHOW_ERROR, `L'utilisateur n'a pas été créé`)
+        dispatch(SHOW_ERROR, error.message)
         throw error
       }
     },
