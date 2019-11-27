@@ -24,12 +24,12 @@
           v-for="icon in headerIcons"
           :to="{name: icon.routerTo}"
           :value="icon.routerTo"
-          :key="icon.routerTo.name"
-          class="no-margin-left"
+          :key="icon.routerTo"
+          :class="no-margin-left"
         >
           <v-tooltip bottom fixed>
             <template v-slot:activator="{ on }">
-              <v-icon v-on="on" class="opaque-on-hover">{{icon.iconName}}</v-icon>
+              <v-icon v-on="on" :class="`opaque-on-hover t-icon-header-${icon.routerTo}`">{{icon.iconName}}</v-icon>
             </template>
             <span>{{icon.tooltipText}}</span>
           </v-tooltip>

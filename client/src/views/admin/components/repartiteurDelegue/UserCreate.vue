@@ -2,6 +2,7 @@
   <v-form v-model="valid" @submit.prevent="createdUser">
     <v-container class="u-flex  u-flex--between  u-full-width">
       <v-text-field
+        class="t-input-email"
         prepend-icon="email"
         aria-placeholder="jean@dupont.fr"
         hint="ex. : jean@dupont.fr"
@@ -19,6 +20,7 @@
       <v-spacer></v-spacer>
 
       <v-select
+        class="t-select-status"
         :items="availableStatuses"
         label="Statut"
         prepend-icon="person"
@@ -31,6 +33,7 @@
 
       <v-spacer></v-spacer>
       <v-select
+        class="t-select-departements"
         multiple
         :items="availableDepartements"
         label="Départements"
@@ -44,10 +47,10 @@
       <v-spacer></v-spacer>
 
       <v-btn
+        class="t-create-btn"
         type="submit"
         :disabled="isSendingUser"
         :aria-disabled="isSendingUser"
-        class="submit-button"
         dark
         color="#4CAF50"
         tabindex="0"
@@ -65,7 +68,7 @@
 <script>
 import { email as emailRegex } from '@/util'
 
-import { SHOW_ERROR, CREATE_USER_REQUEST, FETCH_USER_LIST_REQUEST } from '../../../../store'
+import { SHOW_ERROR, CREATE_USER_REQUEST, FETCH_USER_LIST_REQUEST, SHOW_SUCCESS } from '../../../../store'
 import { mapState } from 'vuex'
 
 export default {
@@ -127,6 +130,7 @@ export default {
           departements,
           status,
         })
+        this.$store.dispatch(SHOW_SUCCESS, `L'utilisateur a bien été créé`)
         this.$store.dispatch(FETCH_USER_LIST_REQUEST)
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)

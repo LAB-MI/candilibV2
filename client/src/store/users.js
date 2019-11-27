@@ -65,11 +65,11 @@ export default {
         if (response.success === false) {
           throw new Error(response.message)
         }
-        commit(CREATE_USER_SUCCESS, response)
+        commit(CREATE_USER_SUCCESS, `L'utilisateur à été créé`)
         return response
       } catch (error) {
         commit(CREATE_USER_FAILURE)
-        dispatch(SHOW_ERROR, error.message)
+        dispatch(SHOW_ERROR, `L'utilisateur n'a pas été créé`)
         throw error
       }
     },

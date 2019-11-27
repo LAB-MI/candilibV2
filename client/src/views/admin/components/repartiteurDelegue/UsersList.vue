@@ -12,12 +12,14 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="user in users" :key="user.email">
-          <td>{{ user.email }}</td>
+        <tr class="t-list" v-for="user in users" :key="user.email">
+          <td class ="t-list-email">{{user.email }}</td>
           <td>{{ user.status }}</td>
           <td>{{ user.departements.join(', ') }}</td>
           <td class="text--center">
-            <delete-user :email="user.email" />
+            <delete-user
+            :email="user.email"
+            />
           </td>
         </tr>
       </tbody>

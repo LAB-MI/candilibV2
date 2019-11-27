@@ -5,7 +5,7 @@
   >
     <template v-slot:activator="{ on }">
       <v-btn
-        class="reset-password-btn"
+        class="t-btn-delete"
         slot="activator"
         color="#DC143C"
         v-on="on"
@@ -20,7 +20,7 @@
         class="headline grey lighten-2"
         primary-title
       >
-        Suppression de <strong>{{ email }}</strong>
+        Suppression de {{ email }}
       </v-card-title>
 
       <v-card-text>
@@ -33,13 +33,16 @@
       <v-card-actions right>
         <v-spacer></v-spacer>
         <v-btn
+          class="t-btn-cancel-delete"
           color="#CD1338"
-          icon
+          tabindex="0"
+          outlined
           @click="deleting = false"
         >
-        <v-icon>cancel</v-icon>
+        Annuler
         </v-btn>
         <v-btn
+          class="t-btn-delete-confirm"
           color="primary"
           @click="archiveUser"
         >
@@ -67,7 +70,7 @@ export default {
     async archiveUser () {
       try {
         await this.$store.dispatch(DELETE_USER_REQUEST, this.email)
-        this.$store.dispatch(SHOW_SUCCESS, `L'utilisateur à bien été archivé.`)
+        this.$store.dispatch(SHOW_SUCCESS, `L'utilisateur a bien été archivé`)
         this.$store.dispatch(FETCH_USER_LIST_REQUEST)
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
