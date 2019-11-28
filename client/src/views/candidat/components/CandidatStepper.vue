@@ -90,12 +90,6 @@
 
 <script>
 export default {
-  props: {
-    candidatStep: {
-      type: Number,
-      default: 0,
-    },
-  },
   data () {
     return {
       candidatStepper: this.candidatStep || 0,

@@ -73,11 +73,11 @@ export default {
       const token = localStorage.getItem(ADMIN_TOKEN_STORAGE_KEY)
       const { auth } = await api.admin.verifyToken(token)
       if (auth) {
-        commit(SET_ADMIN_TOKEN)
-      } else {
-        localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
-        commit(SIGN_OUT_ADMIN)
+        return commit(SET_ADMIN_TOKEN)
       }
+
+      localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
+      commit(SIGN_OUT_ADMIN)
     },
 
     async [CHECK_CANDIDAT_TOKEN] ({ commit, dispatch }, queryToken) {
@@ -88,15 +88,17 @@ export default {
         commit(SIGN_OUT_CANDIDAT)
         return
       }
+
       const { auth, message } = await api.candidat.verifyToken(token, isTokenFromMagicLink)
       if (auth) {
         localStorage.setItem(CANDIDAT_TOKEN_STORAGE_KEY, token)
         commit(SET_CANDIDAT_TOKEN)
-      } else {
-        dispatch(SHOW_ERROR, message)
-        localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
-        commit(SIGN_OUT_CANDIDAT)
+        return
       }
+
+      dispatch(SHOW_ERROR, message)
+      localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
+      commit(SIGN_OUT_CANDIDAT)
     },
 
     async [FETCH_TOKEN_REQUEST] ({ commit }, { email, password }) {
@@ -106,6 +108,7 @@ export default {
         if (!token) {
           throw new Error(BAD_CREDENTIALS)
         }
+
         localStorage.setItem(ADMIN_TOKEN_STORAGE_KEY, token)
         commit(SET_ADMIN_TOKEN)
       } catch (error) {
@@ -134,6 +137,7 @@ export default {
         await dispatch(SIGN_OUT_CANDIDAT)
         await dispatch(SHOW_ERROR, candidatMessages.expired_token_message)
       }
+
       const isAdmin = rootState.admin && rootState.admin.email
       if (isAdmin) {
         localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
