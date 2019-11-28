@@ -33,17 +33,17 @@ script:
 
 deploy:
   - provider: script
-    script: bash ci/deploy.sh test $TRAVIS_BRANCH
+    script: ci/deploy.sh test $TRAVIS_BRANCH
     cleanup: true
     on:
       branch: devops/*
   - provider: script
-    script: bash ci/deploy.sh qualif $TRAVIS_BRANCH
+    script: ci/deploy.sh qualif $TRAVIS_BRANCH
     cleanup: true
     on:
       branch: qualif/*
   - provider: script
-    script: bash ci/deploy.sh develop $TRAVIS_BRANCH
+    script: ci/deploy.sh develop $TRAVIS_BRANCH
     cleanup: true
     on:
       branch: develop

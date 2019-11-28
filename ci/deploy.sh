@@ -1,22 +1,68 @@
 #!/bin/bash
 set -ex
-echo "Deploy $0 $@"
-DEPLOY_ENV="$1"
-BRANCH="$2"
 
-# env config
+# env config (can be overrided in travis Environment Variables)
 # DISABLE_DEPLOY=true # disable this script and exit 0
 # DISABLE_DEPLOY_HEROKU=true # skip heroku deployment
 # DISABLE_DEPLOY_NETLIFY=true # skip netlify deployment
+# DISABLE_SLACK_NOTIFICATION=true # disable slack notification
 # HEROKU_EMAIL
 # HEROKU_TOKEN
 # HEROKU_APP_TEST
 # HEROKU_APP_QUALIF
 # HEROKU_APP_DEV
 # NETLIFY_AUTH_TOKEN
-# NETLIFY_SITE based on HEROKU_APP.netlify.com
+# NETLIFY_SITE_ID is based on HEROKU_APP.netlify.com
+
+function clean {
+  ret=$?
+  if [ "$ret" -gt 0 ]; then
+    echo "ERROR: $0 $ret"
+    slack_post_failure
+  else
+    echo "SUCCESS: $0 $ret"
+    slack_post_success
+  fi
+  exit $ret
+}
+
+function slack_post_failure {
+  if [ -n "$DISABLE_SLACK_NOTIFICATION" ] && [ "$DISABLE_SLACK_NOTIFICATION" == "true" ]; then
+    echo "Disable slack notification"
+  else
+    (
+    SHORT_COMMIT=$(echo "$TRAVIS_COMMIT" |cut -c 1-7)
+    cat <<EOF | ci/slackpost.sh "$SLACK_WEBHOOK" "$SLACK_CHANNEL" "Travis CI" ERROR
+Deploy <$TRAVIS_BUILD_WEB_URL|#$TRAVIS_BUILD_NUMBER> (<https://github.com/$TRAVIS_REPO_SLUG/commit/$TRAVIS_COMMIT|$SHORT_COMMIT>) on $TRAVIS_BRANCH failed !
+EOF
+    ) || true
+  fi
+}
+
+function slack_post_success {
+  if [ -n "$DISABLE_SLACK_NOTIFICATION" ] && [ "$DISABLE_SLACK_NOTIFICATION" == "true" ]; then
+    echo "Disable slack notification"
+  else
+    (
+    SHORT_COMMIT=$(echo "$TRAVIS_COMMIT" |cut -c 1-7)
+    cat <<EOF | ci/slackpost.sh "$SLACK_WEBHOOK" "$SLACK_CHANNEL" "Travis CI" INFO
+Deploy <$TRAVIS_BUILD_WEB_URL|#$TRAVIS_BUILD_NUMBER> (<https://github.com/$TRAVIS_REPO_SLUG/commit/$TRAVIS_COMMIT|$SHORT_COMMIT>) on $TRAVIS_BRANCH passed.
+:arrow_right: You can connect to the <https://$NETLIFY_SITE_ID|$DEPLOY_ENV environment> !
+EOF
+    ) || true
+  fi
+}
+
+# trap exit code and call clean function
+trap clean EXIT QUIT
+
+#
+echo "Deploy $0 $*"
+DEPLOY_ENV="$1"
+BRANCH="$2"
 
 if [ -n "$DISABLE_DEPLOY" -a "$DISABLE_DEPLOY" == "true" ]; then
+  DISABLE_SLACK_NOTIFICATION=true
   echo "Disable deploy"
   exit 0
 fi
@@ -34,6 +80,8 @@ if [ -z "$HEROKU_APP" ] ;then
   echo "No deployment target available"
   exit 1
 fi
+
+export NETLIFY_SITE_ID=$HEROKU_APP.netlify.com
 
 #
 # Deploy API on heroku
@@ -93,7 +141,6 @@ if [ -n "${DISABLE_DEPLOY_NETLIFY}" -a "${DISABLE_DEPLOY_NETLIFY}" == "true" ]; 
 else
 
 echo "# Deploy front"
-export NETLIFY_SITE_ID=$HEROKU_APP.netlify.com
 
 if [ -z "$NETLIFY_AUTH_TOKEN" -o -z "$NETLIFY_SITE_ID" ]; then
   echo "ERROR: empty variable NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID"
@@ -111,6 +158,7 @@ sudo npm install -g netlify-cli
 make export-front-all
 APP_VERSION="$(./ci/version.sh)"
 
+(
 cd candilibV2-$APP_VERSION-dist
 
 # Generate route files (/api -> http://API/)
@@ -148,6 +196,7 @@ curl ${curl_args} -o /dev/null -X POST -H "Content-Type: application/json" \
   https://api.netlify.com/api/v1/deploys/${deploy_id}/restore?access_token=${NETLIFY_AUTH_TOKEN} \
   || exit $?
 echo "Publish: $?"
+)
 
 fi
 
