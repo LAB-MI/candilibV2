@@ -204,6 +204,7 @@ describe('Test to book and to delete reservation by candidat', () => {
     email: 'test4.testbookedAt1@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
+    departement: '93',
     dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
@@ -216,6 +217,7 @@ describe('Test to book and to delete reservation by candidat', () => {
     email: 'test4.testbookedAt2@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
+    departement: '93',
     dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
@@ -375,7 +377,7 @@ const placeCanBook = {
     basePlaceDateTime
       .plus({ days: config.delayToBook + 1, hour: 1 })
       .toISO())(),
-  centre: centresTests[0],
+  centre: centresTests[1],
   inspecteur: inspecteursTests[1],
 }
 const placeCanBook2 = {
@@ -388,7 +390,7 @@ const placeCanBook2 = {
 }
 const placeBeforeNow = {
   date: (() => basePlaceDateTime.minus({ days: 1, hour: 1 }).toISO())(),
-  centre: centresTests[0].nom,
+  centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1],
 }
 const placeCanNotBook = {
@@ -435,6 +437,7 @@ const candidatFailed = {
   email: 'test4.test@test.com',
   portable: '0612345678',
   adresse: '10 Rue Oberkampf 75011 Paris',
+  departement: '93',
   dateDernierEchecPratique: dateDernierEchecPratique().toISO(),
   canBookFrom: dateEchecCanBookFrom().toISO(),
 }
@@ -487,7 +490,7 @@ describe('test to get booking by candidat', () => {
   })
 
   it('Should get 200 to get the candidat reservation', async () => {
-    const selectedCentre = createdCentres[0]
+    const selectedCentre = createdCentres[1]
     const selectedPlace = createdPlaceCanBook
 
     const { body } = await request(app)
@@ -635,7 +638,7 @@ describe('test to book with the date authorize by candiat', () => {
   })
 
   it('Should get 400 to book one place before now', async () => {
-    const selectedCentre = createdCentres[0]
+    const selectedCentre = createdCentres[1]
     const selectedPlace = await createTestPlace(placeBeforeNow)
     await createReservationWithFailure(
       selectedCentre,
@@ -646,7 +649,7 @@ describe('test to book with the date authorize by candiat', () => {
   })
 
   it('Should get 200 to book one place', async () => {
-    const selectedCentre = createdCentres[0]
+    const selectedCentre = createdCentres[1]
     const selectedPlace = await createTestPlace(placeCanBook)
 
     await createReservationWithSuccess(
@@ -735,7 +738,7 @@ describe('test to change a booking, 6 days before the appointemnt, by candidat '
   })
 
   it('should 400 to book another reservation with a date no authorize', async () => {
-    const selectedCentre = createdCentres[0]
+    const selectedCentre = createdCentres[1]
     const selectedPlace = await createTestPlace(placeCanBook)
 
     await createReservationWithFailure(
