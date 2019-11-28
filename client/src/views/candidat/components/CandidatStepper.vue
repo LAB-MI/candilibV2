@@ -69,32 +69,72 @@
     </v-stepper-content>
 
     <v-stepper-step
-      step="4"
+      v-if="queueStep"
+      :step="queueStep"
       :style="{ cursor: 'pointer' }"
-      @click="candidatStepper = 4"
+      @click="candidatStepper = queueStep"
     >
       <span>
-        {{ $formatMessage({ id: 'stepper_step_4_title' }) }}
+        {{ $formatMessage({ id: 'stepper_queue_step_title' }) }}
       </span>
       <small>
-        {{ $formatMessage({ id: 'stepper_step_4_subtitle' }) }}
+        {{ $formatMessage({ id: 'stepper_queue_step_subtitle' }, { lineDelay }) }}
       </small>
     </v-stepper-step>
     <v-stepper-content step="4">
       <p>
-        {{ $formatMessage({ id: 'stepper_step_4_p' }) }}
+        {{ $formatMessage({ id: 'stepper_queue_step_p' }) }}
+      </p>
+    </v-stepper-content>
+
+    <v-stepper-step
+      :step="lastStep"
+      :style="{ cursor: 'pointer' }"
+      @click="candidatStepper = lastStep"
+    >
+      <span>
+        {{ $formatMessage({ id: 'stepper_step_5_title' }) }}
+      </span>
+      <small>
+        {{ $formatMessage({ id: 'stepper_step_5_subtitle' }) }}
+      </small>
+    </v-stepper-step>
+    <v-stepper-content step="5">
+      <p>
+        {{ $formatMessage({ id: 'stepper_step_5_p' }) }}
       </p>
     </v-stepper-content>
   </v-stepper>
 </template>
 
 <script>
+import { FETCH_CONFIG_REQUEST } from '@/store'
+
 export default {
   data () {
     return {
       candidatStepper: this.candidatStep || 0,
     }
   },
+
+  computed: {
+    lastStep () {
+      return this.queueStep ? 5 : 4
+    },
+
+    lineDelay () {
+      return this.$store.state.config.lineDelay
+    },
+
+    queueStep () {
+      return this.lineDelay ? 4 : 0
+    },
+  },
+
+  mounted () {
+    this.$store.dispatch(FETCH_CONFIG_REQUEST)
+  },
+
   methods: {
     setStepper (step) {
       this.candidatStepper = step

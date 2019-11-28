@@ -10,6 +10,7 @@ const apiPrefix = `${process.env.BASE_URL || '/'}api/v2`
 
 const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
   centres: `${apiPrefix}/candidat/centres`,
+  config: `${apiPrefix}/candidat/config`,
   evaluations: `${apiPrefix}/candidat/evaluations`,
   magicLink: `${apiPrefix}/auth/candidat/magic-link`,
   myProfile: `${apiPrefix}/candidat/me`,

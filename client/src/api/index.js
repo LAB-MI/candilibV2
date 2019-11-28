@@ -116,6 +116,15 @@ export default {
       return json
     },
 
+    async getConfig () {
+      const json = await apiClient.get(`${apiPaths.candidat.config}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      return json
+    },
+
     async getPlaces (centreId, begin, end) {
       const queryString = `begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`
       const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?${queryString}`, {

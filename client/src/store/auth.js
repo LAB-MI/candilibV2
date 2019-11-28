@@ -47,23 +47,24 @@ export default {
     [CHECKING_AUTH_ADMIN] (state) {
       state.statusAdmin = CHECKING_AUTH_ADMIN
     },
-    [CHECKING_AUTH_CANDIDAT] (state) {
-      state.statusCandidat = CHECKING_AUTH_CANDIDAT
+    [BAD_CREDENTIALS] (state) {
+      state.statusAdmin = BAD_CREDENTIALS
     },
     [SET_ADMIN_TOKEN] (state) {
       state.statusAdmin = SIGNED_IN_AS_ADMIN
     },
+    [SIGN_OUT_ADMIN] (state) {
+      state.statusAdmin = SIGNED_OUT_ADMIN
+    },
+
+    [CHECKING_AUTH_CANDIDAT] (state) {
+      state.statusCandidat = CHECKING_AUTH_CANDIDAT
+    },
     [SET_CANDIDAT_TOKEN] (state) {
       state.statusCandidat = SIGNED_IN_AS_CANDIDAT
     },
-    [BAD_CREDENTIALS] (state) {
-      state.statusAdmin = BAD_CREDENTIALS
-    },
     [SIGN_OUT_CANDIDAT] (state) {
       state.statusCandidat = SIGNED_OUT_CANDIDAT
-    },
-    [SIGN_OUT_ADMIN] (state) {
-      state.statusAdmin = SIGNED_OUT_ADMIN
     },
   },
 
