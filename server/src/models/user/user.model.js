@@ -19,9 +19,11 @@ export const UserFields = {
     type: Array,
     default: [],
   },
-  isDeleted: {
-    type: Boolean,
-    default: false,
+  deletedAt: {
+    type: Date,
+  },
+  deletedBy: {
+    type: String,
   },
   signUpDate: {
     type: Date,
@@ -58,6 +60,14 @@ const UserSchema = new Schema(
   }
 )
 
+UserSchema.set('toJSON', {
+  transform (doc, ret /*, opt */) {
+    delete ret.password
+    delete ret.__v
+    return ret
+  },
+})
+
 UserSchema.pre('save', async function preSave () {
   const user = this
 
@@ -84,3 +94,13 @@ UserSchema.methods.comparePassword = function comparePassword (
 }
 
 export default mongoose.model('User', UserSchema)
+
+/**
+ * @typedef {Object} User
+ * @property {string} email
+ * @property {string[]} departements
+ * @property {Date} deletedAt
+ * @property {string} deletedBy
+ * @property {Date} signUpDate
+ * @property {string} status
+ */

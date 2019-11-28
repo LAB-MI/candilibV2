@@ -26,7 +26,7 @@ export const createCandidat = async ({
   prenom,
   departement,
 }) => {
-  const candidat = await new Candidat({
+  const candidat = new Candidat({
     adresse,
     codeNeph,
     email,

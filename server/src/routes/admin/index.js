@@ -6,7 +6,13 @@
 import express from 'express'
 
 import { getCandidats, importCandidats } from './candidats.controllers'
-import { getMe } from './admin.controllers'
+import {
+  createUserController,
+  archiveUserController,
+  getMe,
+  getUsers,
+  updatedInfoUser,
+} from './admin.controllers'
 import { getInspecteurs } from './inspecteurs-controllers'
 import {
   createOrImportPlaceByAdmin,
@@ -29,6 +35,7 @@ import {
   verifyRepartiteurDepartement,
   verifyRepartiteurLevel,
   verifyUserLevel,
+  verifyDelegueLevel,
 } from './middlewares'
 import config from '../../config'
 
@@ -1004,7 +1011,7 @@ router
  *                 description: Statut de l'utilisateur
  *
  *     responses:
- *       200:
+ *       201:
  *         description: Utilisateur créé
  *         content:
  *           application/json:
@@ -1030,21 +1037,30 @@ router
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: Le code du département est manquant ou l'adresse courriel est invalide
+ *                     message: L'utilisateur est déja enregistré en base
  *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
  *
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
+ *@see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_users}
  *
+ */
+router.post('/users', verifyDelegueLevel(), createUserController)
+
+/**
+ * @swagger
+ *
+ * /admin/users:
  *   get:
  *     tags: ["Administrateur"]
- *     summary: Récupération des informations de l'utilisateur
- *     description: Après connexion récupération de l'utilisateur. Seul un admin peut récupérer les informations d'un délégué (il peut aussi récupérer les informations d'un répartiteur) et seul un délégué peut récupérer les informations d'un répartiteur.
+ *     summary: Récupération d'un utilisateur
+ *     description: Récupération d'un utilisateur. Seul un admin peut créer un délégué (il peut aussi créer un répartiteur) et seul un délégué peut créer un répartiteur.
  *     security:
  *       - bearerAuth: []
  *     requestBody:
+ *       description: Données du tableau de Récupération d'un utilisateur
  *       required: true
  *       content:
  *         application/json:
@@ -1057,19 +1073,17 @@ router
  *                 description: Email de l'utilisateur
  *               departements:
  *                 type: array
- *                 items:
- *                   type: string
- *                   description: Département accessible par l'utilisateur
  *                 example: ["93"]
- *                 description: Départements de l'utilisateur
+ *                 description: Département de l'utilisateur
  *               status:
  *                 type: string
  *                 example: repartiteur
  *                 description: Statut de l'utilisateur
  *
+ *
  *     responses:
  *       200:
- *         description: Succès de la requête
+ *         description: Utilisateur récupéré
  *         content:
  *           application/json:
  *             schema:
@@ -1077,7 +1091,7 @@ router
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: true
- *                     message: L'utilisateur a bien été trouvé
+ *                     message: L'utilisateur a bien été récupéré
  *                     user: {
  *                        "email": "répartiteur@example.com",
  *                        "id": "85958545487523245",
@@ -1085,23 +1099,20 @@ router
  *                        "status": "repartiteur"
  *                     }
  *
- *       400:
- *         description: Paramètre(s) manquant(s)
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/InfoObject'
- *                 - example:
- *                     success: false
- *                     message: Le code du département est manquant ou l'adresse courriel est invalide
- *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
  *
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
+ *@see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_users}
  *
+ */
+router.get('/users', verifyDelegueLevel(), getUsers)
+
+/**
+ * @swagger
+ *
+ * /admin/users:
  *   put:
  *     tags: ["Administrateur"]
  *     summary: Modification d'un utilisateur
@@ -1159,7 +1170,7 @@ router
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: Le code du département est manquant ou l'adresse courriel est invalide
+ *                     message: L'adresse courriel n'est pas valide
  *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
@@ -1167,6 +1178,15 @@ router
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/patch_admin_users}
+ */
+
+router.patch('/users', verifyDelegueLevel(), updatedInfoUser)
+
+/**
+ * @swagger
+ *
+ * /admin/users:
  *   delete:
  *     tags: ["Administrateur"]
  *     summary: Suppression d'un utilisateur
@@ -1224,7 +1244,7 @@ router
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: Le code du département est manquant ou l'adresse courriel est invalide
+ *                     message: L'utilisateur n'existe pas
  *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
@@ -1232,6 +1252,9 @@ router
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_users }
  */
+
+router.delete('/users', verifyDelegueLevel(), archiveUserController)
 
 export default router

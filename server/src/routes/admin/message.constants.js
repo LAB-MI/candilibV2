@@ -30,3 +30,9 @@ export const UNKNOWN_ERROR_ADD_WHITELISTED =
   "Un problème est survenu lors de l'ajout dans la whitelist"
 export const UNKNOWN_ERROR_UPLOAD_PLACES =
   "Un problème est survenu lors de l'import de places"
+export const CANNOT_ACTION_USER =
+  "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+export const INCORRECT_DEPARTEMENT_LIST =
+  "La liste des départements d'intervention est incorrecte"
+export const INVALID_EMAIL = "L'adresse courriel n'est pas valide"
+export const USER_NO_EXIST = "L'utilisateur n'existe pas"
