@@ -11,6 +11,7 @@ import {
   bookPlaceByCandidat,
   unbookPlace,
 } from './places-controllers'
+import { verifyAccesPlacesByCandidat } from './middlewares/verify-candidat'
 
 const router = express.Router()
 
@@ -278,7 +279,7 @@ router.get('/centres', getCentres)
  * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places| Swagger GET candidat/places}
  * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places__centreId| Swagger GET candidat/places/:id?}
  */
-router.get('/places/:id?', getPlaces)
+router.get('/places/:id?', verifyAccesPlacesByCandidat, getPlaces)
 
 /**
  *  @swagger
@@ -371,7 +372,8 @@ router.get('/places/:id?', getPlaces)
  * @name Router PATCH '/candidat/places'
  * @see {@link http://localhost:8000/api-docs/#/Candidat/patch_candidat_places| swagger PATCH /candidat/places}
  */
-router.patch('/places', bookPlaceByCandidat)
+router.patch('/places', verifyAccesPlacesByCandidat, bookPlaceByCandidat)
+
 /**
  *  @swagger
  *  /candidat/places:
