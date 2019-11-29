@@ -5,6 +5,7 @@ services:
     image: candilib_api:${APP_VERSION:-latest}
     container_name: candilib_api
     build:
+      target: production
       context: ./
       dockerfile: Dockerfile
       args:

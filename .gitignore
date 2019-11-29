@@ -188,7 +188,11 @@ server/mongo-dev/
 mongo-dev
 
 VERSION
-candilib-*-build/
+candilibV2-*-build/
+candilibV2-*-dist/
 
 test-db
 mongo
+
+# Local Netlify folder
+.netlify
