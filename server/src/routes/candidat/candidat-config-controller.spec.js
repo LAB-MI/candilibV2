@@ -2,6 +2,8 @@ import express from 'express'
 import request from 'supertest'
 
 import { getCandidatConfig } from './candidat-config-controller'
+import config from '../../config'
+
 require('dotenv').config()
 
 describe('config candidat', () => {
@@ -9,7 +11,7 @@ describe('config candidat', () => {
     // GIVEN
     const app = express()
     app.get('/config', getCandidatConfig)
-    const expectedLineDelay = Number(process.env.LINE_DELAY) || 0
+    const expectedLineDelay = config.LINE_DELAY
 
     // WHEN
     const { body } = await request(app)

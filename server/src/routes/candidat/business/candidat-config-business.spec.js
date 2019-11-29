@@ -1,15 +1,15 @@
 import { getCandidatConfigBusiness } from './candidat-config-business'
-require('dotenv').config()
+import config from '../../../config'
 
 describe('Get config for candidat', () => {
   it('Should return config', async () => {
     // GIVEN
-    const expectedLineDelay = Number(process.env.LINE_DELAY) || 0
+    const expectedLineDelay = config.LINE_DELAY
 
     // WHEN
-    const config = getCandidatConfigBusiness()
+    const configReceived = getCandidatConfigBusiness()
 
     // THEN
-    expect(config).toHaveProperty('lineDelay', expectedLineDelay)
+    expect(configReceived).toHaveProperty('lineDelay', expectedLineDelay)
   })
 })

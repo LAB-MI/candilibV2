@@ -1,4 +1,6 @@
+import config from '../../../config'
+
 export const getCandidatConfigBusiness = () => {
-  const lineDelay = Number(process.env.LINE_DELAY) || 0
+  const lineDelay = config.LINE_DELAY
   return { lineDelay }
 }
