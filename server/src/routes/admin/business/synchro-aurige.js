@@ -1,7 +1,6 @@
 import { DateTime } from 'luxon'
 import latinize from 'latinize'
 
-import config from '../../../config'
 import {
   deleteCandidat,
   findCandidatByNomNeph,
@@ -16,7 +15,6 @@ import {
   CANDIDAT_EXISTANT,
   CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
-  createToken,
   EMAIL_NOT_VERIFIED_EXPIRED,
   EMAIL_NOT_VERIFIED_YET,
   EPREUVE_ETG_KO,
@@ -306,7 +304,11 @@ const updateValidCandidat = async (
   }
 
   let codeErrMessage
+  const dateNow = getFrenchLuxon().endOf('day')
   try {
+    if (!isValidatedByAurige) {
+      infoCandidatToUpdate.canAccessAt = dateNow.plus({ days: 30 }).toISO() // Variable d'ENV
+    }
     // mise à jours du candidat
     candidat.set(infoCandidatToUpdate)
     await candidat.save()
@@ -329,8 +331,8 @@ const updateValidCandidat = async (
       ...loggerInfoCandidat,
       description: `Pour le ${departement}, ce candidat ${email} a été validé`,
     })
-    const token = createToken(candidat.id, config.userStatuses.CANDIDAT)
-    await sendMagicLink(candidat, token)
+
+    await sendMagicLink(candidat)
     const message = `Pour le ${departement}, un magic link est envoyé à ${email}`
     appLogger.info({ ...loggerInfoCandidat, description: message })
 
