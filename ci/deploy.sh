@@ -61,7 +61,7 @@ echo "Deploy $0 $*"
 DEPLOY_ENV="$1"
 BRANCH="$2"
 
-if [ -n "$DISABLE_DEPLOY" -a "$DISABLE_DEPLOY" == "true" ]; then
+if [ -n "$DISABLE_DEPLOY" ] && [ "$DISABLE_DEPLOY" == "true" ]; then
   DISABLE_SLACK_NOTIFICATION=true
   echo "Disable deploy"
   exit 0
@@ -86,11 +86,11 @@ export NETLIFY_SITE_ID=$HEROKU_APP.netlify.com
 #
 # Deploy API on heroku
 #
-if [ -n "${DISABLE_DEPLOY_HEROKU}" -a "${DISABLE_DEPLOY_HEROKU}" == "true" ]; then
+if [ -n "${DISABLE_DEPLOY_HEROKU}" ] && [ "${DISABLE_DEPLOY_HEROKU}" == "true" ]; then
   echo "Disable heroku deploy"
 else
 echo "# Deploy API"
-if [ -z "$HEROKU_EMAIL" -o -z "$HEROKU_TOKEN" ]; then
+if [ -z "$HEROKU_EMAIL" ] || [ -z "$HEROKU_TOKEN" ]; then
   echo "ERROR: empty variable HEROKU_EMAIL, HEROKU_TOKEN and HEROKU_APP"
   echo "No deployment"
   exit 1
@@ -120,13 +120,15 @@ chmod 600 ~/.netrc
 # git push heroku netlify:master -f
 
 ## or deploy app using docker registry
-echo "$(heroku auth:token)" | docker login --username=_ --password-stdin registry.heroku.com
+HEROKU_REGISTRY="registry.heroku.com"
+heroku auth:token 2>&- | docker login --username=_ --password-stdin "${HEROKU_REGISTRY}"
 APP_VERSION="$(./ci/version.sh)"
-docker tag candilib_api:$APP_VERSION registry.heroku.com/$HEROKU_APP/web
-docker push registry.heroku.com/$HEROKU_APP/web
+docker tag "candilib_api:$APP_VERSION" "${HEROKU_REGISTRY}/$HEROKU_APP/web"
+docker push "${HEROKU_REGISTRY}/$HEROKU_APP/web"
 heroku container:release web --app $HEROKU_APP
+
 # first time : setup DB
-BRANCH_DIR=$(echo $BRANCH |tr '/' '-')
+BRANCH_DIR=$(echo "$BRANCH" |tr '/' '-')
 heroku run --no-tty -a $HEROKU_APP "( cd /app && wget  -L https://github.com/LAB-MI/candilibV2/archive/${BRANCH}.tar.gz -O - |tar zxvf - --strip-components=2 candilibV2-${BRANCH_DIR}/server/dev-setup ) && npm run dev-setup"
 # TODO: variable REPO
 
@@ -136,13 +138,13 @@ fi
 #
 # Deploy FRONT on netlify
 #
-if [ -n "${DISABLE_DEPLOY_NETLIFY}" -a "${DISABLE_DEPLOY_NETLIFY}" == "true" ]; then
+if [ -n "${DISABLE_DEPLOY_NETLIFY}" ] && [ "${DISABLE_DEPLOY_NETLIFY}" == "true" ]; then
   echo "Disable netlify deploy"
 else
 
 echo "# Deploy front"
 
-if [ -z "$NETLIFY_AUTH_TOKEN" -o -z "$NETLIFY_SITE_ID" ]; then
+if [ -z "$NETLIFY_AUTH_TOKEN" ] || [ -z "$NETLIFY_SITE_ID" ]; then
   echo "ERROR: empty variable NETLIFY_AUTH_TOKEN, NETLIFY_SITE_ID"
   echo "No deployment"
   exit 1
@@ -159,15 +161,18 @@ make export-front-all
 APP_VERSION="$(./ci/version.sh)"
 
 (
-cd candilibV2-$APP_VERSION-dist
+cd "candilibV2-$APP_VERSION-dist"
 
 # Generate route files (/api -> http://API/)
+API_URL="https://$HEROKU_APP.herokuapp.com/api/"
+
 cat > dist/_redirects <<EOF
-/candilib/api/* https://$HEROKU_APP.herokuapp.com/api/:splat 200
-/candilib-repartiteur/api/* https://$HEROKU_APP.herokuapp.com/api/:splat 200
+/candilib/api/* ${API_URL}:splat 200
+/candilib-repartiteur/api/* ${API_URL}:splat 200
 /candilib/* /candilib/index.html 200
 /candilib-repartiteur/* /candilib-repartiteur/index.html 200
 EOF
+
 # Generate simple index for testing site
 cat > dist/index.html <<EOF
 <H1>CandilibV2 $APP_VERSION</H1>
@@ -180,20 +185,20 @@ EOF
 # deploy files
 netlify deploy --prod --dir=dist --message "Deploy $APP_VERSION" --json | tee -a netlify.json
 
-deploy_id="$(cat netlify.json |jq -re '.deploy_id')"
+deploy_id="$(jq -re '.deploy_id' < netlify.json)"
 
 curl_args="--fail --retry 10 --retry-delay 5 --retry-max-time 60 --connect-timeout 10 "
 # lock deployment
 curl ${curl_args} -o /dev/null -X POST -H "Content-Type: application/json" \
   -d '{}' \
-  https://api.netlify.com/api/v1/deploys/${deploy_id}/lock?access_token=${NETLIFY_AUTH_TOKEN} \
+  "https://api.netlify.com/api/v1/deploys/${deploy_id}/lock?access_token=${NETLIFY_AUTH_TOKEN}" \
   || exit $?
 echo "lock: $?"
 
 # publish file
 curl ${curl_args} -o /dev/null -X POST -H "Content-Type: application/json" \
   -d '{}' \
-  https://api.netlify.com/api/v1/deploys/${deploy_id}/restore?access_token=${NETLIFY_AUTH_TOKEN} \
+  "https://api.netlify.com/api/v1/deploys/${deploy_id}/restore?access_token=${NETLIFY_AUTH_TOKEN}" \
   || exit $?
 echo "Publish: $?"
 )
