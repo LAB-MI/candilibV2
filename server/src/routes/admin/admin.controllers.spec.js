@@ -141,7 +141,6 @@ describe('Create user', () => {
       .post(`${apiPrefix}/admin/users`)
       .send({
         email,
-        password,
         departements,
         status: config.userStatuses.REPARTITEUR,
       })
@@ -168,7 +167,6 @@ describe('Create user', () => {
       .send({
         email,
         departements,
-        password,
         status: config.userStatuses.DELEGUE,
       })
       .set('Accept', 'application/json')
@@ -192,9 +190,8 @@ describe('Create user', () => {
     const { body } = await request(app)
       .post(`${apiPrefix}/admin/users`)
       .send({
-        emailInvalid,
+        email: emailInvalid,
         departements,
-        password,
         status: config.userStatuses.DELEGUE,
       })
       .set('Accept', 'application/json')
@@ -220,7 +217,6 @@ describe('Create user', () => {
       .send({
         email,
         departements,
-        password,
         status: config.userStatuses.DELEGUE,
       })
       .set('Accept', 'application/json')
@@ -246,7 +242,6 @@ describe('Create user', () => {
       .send({
         email,
         departements,
-        password,
         status: config.userStatuses.ADMIN,
       })
       .set('Accept', 'application/json')
@@ -272,8 +267,7 @@ describe('Create user', () => {
       .post(`${apiPrefix}/admin/users`)
       .send({
         email,
-        otherDepartements,
-        password,
+        departements: otherDepartements,
         status: config.userStatuses.REPARTITEUR,
       })
       .set('Accept', 'application/json')
@@ -446,9 +440,8 @@ describe('Update User by admin', () => {
     const { body } = await request(app)
       .put(`${apiPrefix}/admin/users`)
       .send({
-        emailInvalid,
+        email: emailInvalid,
         departements,
-        password,
         status: config.userStatuses.DELEGUE,
       })
       .set('Accept', 'application/json')
@@ -457,6 +450,7 @@ describe('Update User by admin', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', INVALID_EMAIL)
   })
+
   it('Should respond 401 if "Admin" tries to update "Admin"', async () => {
     app = express()
     app.use((req, res, next) => {
@@ -473,7 +467,6 @@ describe('Update User by admin', () => {
       .send({
         email,
         departements,
-        password,
         status: config.userStatuses.ADMIN,
       })
       .set('Accept', 'application/json')
@@ -549,7 +542,6 @@ describe('Update User by delegue', () => {
       .send({
         email,
         departements,
-        password,
         status: config.userStatuses.DELEGUE,
       })
       .set('Accept', 'application/json')
@@ -574,8 +566,7 @@ describe('Update User by delegue', () => {
       .put(`${apiPrefix}/admin/users`)
       .send({
         email,
-        otherDepartements,
-        password,
+        departements: otherDepartements,
         status: config.userStatuses.REPARTITEUR,
       })
       .set('Accept', 'application/json')

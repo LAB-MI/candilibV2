@@ -37,7 +37,6 @@
             :iconName="link.iconName"
             :tooltipText="link.tooltipText"
           />
-
           <span class="min-width-1170  tab-label">
             {{link.label}}
           </span>

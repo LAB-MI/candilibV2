@@ -27,6 +27,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   myProfile: `${apiPrefix}/admin/me`,
   places: `${apiPrefix}/admin/places`,
   uploadCandidatsJson: `${apiPrefix}/admin/candidats`,
+  users: `${apiPrefix}/admin/users`,
   searchCandidats: `${apiPrefix}/admin/candidats?matching=`,
   searchWhitelisted: `${apiPrefix}/admin/whitelisted?matching=`,
   inspecteurs: `${apiPrefix}/admin/inspecteurs`,

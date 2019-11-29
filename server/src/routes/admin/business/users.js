@@ -12,8 +12,19 @@ import {
   INCORRECT_DEPARTEMENT_LIST,
   CANNOT_ACTION_USER,
   INVALID_EMAIL,
+  INVALID_DEPARTEMENTS_LIST,
 } from '../message.constants'
 import { createPassword } from '../../../util/password'
+
+/**
+ * Vérifie qu'une liste est bien un tableau non vide
+ *
+ * @param {any[]} list - Liste d'éléments
+ *
+ * @return {boolean} - True si la liste est "falsy" ou n'est pas un tableau
+ *                     ou un tableau vide
+ */
+const isInvalidList = list => !list || !Array.isArray(list) || !list.length
 
 /**
  * Récupère les utilisateurs en fonction de leur statut et de leurs départements
@@ -70,6 +81,12 @@ export const createAppropriateUser = async (
     throw error
   }
 
+  if (isInvalidList(departements)) {
+    const error = new Error(INVALID_DEPARTEMENTS_LIST)
+    error.status = 400
+    throw error
+  }
+
   const user = await findUserById(userId)
 
   const forbiddenMessage = isForbiddenToUpsertUser(status, user, departements)
@@ -108,6 +125,12 @@ export const updateUserBusiness = async (
   const isValidEmail = regexEmail.test(email)
   if (!isValidEmail) {
     const error = new Error(INVALID_EMAIL)
+    error.status = 400
+    throw error
+  }
+
+  if (isInvalidList(departements)) {
+    const error = new Error(INVALID_DEPARTEMENTS_LIST)
     error.status = 400
     throw error
   }
@@ -196,8 +219,6 @@ export const archiveUserBusiness = async (userId, emailToDelete) => {
 export function isForbiddenToUpsertUser (status, user, departements) {
   const creatorDepartements = user.departements
   if (
-    !departements ||
-    !Array.isArray(departements) ||
     !departements.every(departement =>
       creatorDepartements.includes(departement)
     )

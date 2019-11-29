@@ -18,6 +18,7 @@ import message from './message'
 import reservation from './reservation'
 import timeSlots from './time-slots'
 import whitelist from './whitelist'
+import users from './users'
 
 export * from './admin-bordereaux'
 export * from './admin-modif-inspecteur'
@@ -35,6 +36,7 @@ export * from './message'
 export * from './reservation'
 export * from './time-slots'
 export * from './whitelist'
+export * from './users'
 
 Vue.use(Vuex)
 
@@ -59,5 +61,6 @@ export default new Vuex.Store({
     reservation,
     timeSlots,
     whitelist,
+    users,
   },
 })
