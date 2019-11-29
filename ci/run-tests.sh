@@ -16,6 +16,7 @@ export DBDATA=../test-db
 # Variables stack e2e
 export PUBLIC_URL=http://candidat.candilib.local/candilib
 export ADMIN_URL=http://admin.candilib.local/candilib-repartiteur
+export LINE_DELAY=0
 export SMTP_SERVER=mailhog
 export SMTP_PORT=1025
 export CONTAINER_NAME_CANDIDAT=candidat.candilib.local

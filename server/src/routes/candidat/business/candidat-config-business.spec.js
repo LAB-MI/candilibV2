@@ -4,7 +4,7 @@ require('dotenv').config()
 describe('Get config for candidat', () => {
   it('Should return config', async () => {
     // GIVEN
-    const expectedLineDelay = Number(process.env.LINE_DELAY)
+    const expectedLineDelay = Number(process.env.LINE_DELAY) || 0
 
     // WHEN
     const config = getCandidatConfigBusiness()
