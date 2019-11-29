@@ -33,6 +33,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     email,
     emailValidationHash,
     departement,
+    canAccessAt,
   } = candidat
 
   const contactezNous = await getEmailDepartementOfCandidat(departement)
@@ -49,7 +50,8 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     urlMagicLink,
     urlConnexion,
     email,
-    contactezNous
+    contactezNous,
+    canAccessAt
   )
 
   const VALIDATION_EMAIL_MSG = getValidationMailTemplate(

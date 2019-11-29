@@ -2,10 +2,8 @@
  * Module concernant les actions pour authentifier un candidat
  * @module
  */
-import jwt from 'jsonwebtoken'
 
 import { appLogger } from '../../util'
-import config from '../../config'
 import { findCandidatByEmail, isCandidatExisting } from '../../models/candidat'
 import { sendMagicLink } from '../business'
 import { sendErrorResponse } from '../../util/send-error-response'
@@ -50,22 +48,12 @@ export const postMagicLink = async (req, res) => {
       return sendErrorResponse(res, { loggerInfo, message, status })
     }
 
-    const token = jwt.sign(
-      {
-        id: candidat._id,
-      },
-      config.secret,
-      {
-        expiresIn: config.candidatTokenExpiration,
-      }
-    )
-
     try {
       appLogger.info({
         ...loggerInfo,
         description: `Trying to send magic-link to ${email}`,
       })
-      const response = await sendMagicLink(candidat, token)
+      const response = await sendMagicLink(candidat)
       res.status(200).json({
         message:
           'Veuillez consulter votre boîte mail pour vous connecter (pensez à vérifier dans vos courriers indésirables).',
