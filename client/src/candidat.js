@@ -104,7 +104,7 @@ export default {
   stepper_step_3_p2: 'Vous recevrez un courriel vous indiquant si votre inscription est validée ou non.',
   stepper_queue_step_title: 'Mise en file d\'attente',
   stepper_queue_step_subtitle: 'Attente de {lineDelay} jours avant d\'accéder au planning de réservation',
-  stepper_queue_step_p: 'Cette mise en file d\'attente vous permet de planifier votre préparation en vue de réussir votre examen du permis de conduire',
+  stepper_queue_step_p: 'Cette mise en file d\'attente vous permet de planifier votre préparation en vue de réussir votre examen du permis de conduire.',
   stepper_step_5_title: 'Réservation de votre place d\'examen',
   stepper_step_5_subtitle: 'Connexion à l\'application par le magic link envoyé par mail pour réserver votre place',
   stepper_step_5_p: 'Si votre inscription est validée, vous pouvez réserver votre place d\'examen sur l\'application.',
