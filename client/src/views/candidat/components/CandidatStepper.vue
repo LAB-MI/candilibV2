@@ -108,8 +108,6 @@
 </template>
 
 <script>
-import { FETCH_CONFIG_REQUEST } from '@/store'
-
 export default {
   data () {
     return {

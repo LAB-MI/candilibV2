@@ -13,7 +13,6 @@ import auth from './auth'
 import candidat from './candidat'
 import candidats from './candidats'
 import center from './center'
-import config from './config'
 import importPlaces from './import-places'
 import message from './message'
 import reservation from './reservation'
@@ -32,7 +31,6 @@ export * from './auth'
 export * from './candidat'
 export * from './candidats'
 export * from './center'
-export * from './config'
 export * from './import-places'
 export * from './message'
 export * from './reservation'
@@ -42,7 +40,15 @@ export * from './users'
 
 Vue.use(Vuex)
 
+const lineDelay = +process.env.VUE_APP_LINE_DELAY || 0
+
 export default new Vuex.Store({
+  state: {
+    config: {
+      lineDelay,
+    },
+  },
+
   modules: {
     admin,
     adminBordereaux,
@@ -55,7 +61,6 @@ export default new Vuex.Store({
     candidat,
     candidats,
     center,
-    config,
     importPlaces,
     message,
     reservation,
