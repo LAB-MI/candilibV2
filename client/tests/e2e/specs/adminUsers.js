@@ -42,7 +42,7 @@ describe('Create and see users', () => {
     cy.get('.v-snack')
       .should('contain', `L'utilisateur a bien été créé`)
     cy.get('.t-list-email')
-      .contains(repartiteurEmail1)
+      .should('contain', repartiteurEmail1)
   })
 
   it('Should not create a user with existing email', () => {
@@ -95,6 +95,9 @@ describe('Create and see users', () => {
       .should('contain', `L'utilisateur a bien été créé`)
 
     cy.get('.t-list-email')
+      .should('contain', repartiteurEmail3)
+
+    cy.get('.t-list-email')
       .contains(repartiteurEmail3)
       .parents('.t-list')
       .find('.t-btn-delete')
@@ -103,7 +106,7 @@ describe('Create and see users', () => {
       .click()
 
     cy.get('.t-list-email')
-      .contains(repartiteurEmail3)
+      .should('contain', repartiteurEmail3)
   })
 
   it('Should archive existing user', () => {
@@ -124,6 +127,9 @@ describe('Create and see users', () => {
       .should('contain', `L'utilisateur a bien été créé`)
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/users')
+    cy.get('.t-list-email')
+      .should('contain', repartiteurEmail4)
+
     cy.get('.t-list-email')
       .contains(repartiteurEmail4)
       .parents('.t-list')
