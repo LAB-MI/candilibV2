@@ -5,3 +5,5 @@ export const SUBJECT_CANCEL_BY_FAILURE =
   "Annulation de votre convocation suite à l'échec de votre examen pratique"
 export const SUBJECT_CANCEL_BY_ADMIN =
   "Annulation de votre convocation à l'examen par l'administration"
+export const SUBJECT_MAIL_VALIDATION =
+  "Validation d'adresse courriel pour Candilib"
