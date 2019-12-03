@@ -1,6 +1,7 @@
 import api from '@/api'
 
 import { SHOW_SUCCESS } from '@/store'
+import { getFrenchLuxonCurrentDateTime, getFrenchLuxonFromIso } from '@/util'
 
 export const FETCH_CANDIDAT_RESERVATION_REQUEST = 'FETCH_CANDIDAT_RESERVATION_REQUEST'
 export const FETCH_CANDIDAT_RESERVATION_FAILURE = 'FETCH_CANDIDAT_RESERVATION_FAILURE'
@@ -116,6 +117,13 @@ export default {
         commit(SEND_EMAIL_CANDIDAT_RESERVATION_FAILURE)
         throw error
       }
+    },
+  },
+  getters: {
+    canCancelBooking: (state) => {
+      const { lastDateToCancel } = state.booked
+      if (!lastDateToCancel) return true
+      return getFrenchLuxonCurrentDateTime() < getFrenchLuxonFromIso(lastDateToCancel).endOf('day')
     },
   },
 }
