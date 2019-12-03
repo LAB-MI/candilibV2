@@ -251,7 +251,7 @@ export const getBookedPlaces = async (req, res) => {
       if (bookedPlace) {
         const { _id, centre, date } = bookedPlace
 
-        const lastDateToCancel = getLastDateToCancel(date)
+        const lastDateToCancel = getLastDateToCancel(date).toISODate()
 
         if (lastDateOnly) {
           return res.json({ lastDateToCancel })

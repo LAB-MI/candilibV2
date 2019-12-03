@@ -101,7 +101,6 @@ import {
   getFrenchLuxonFromIso,
   getFrenchDateFromIso,
   getFrenchDateTimeFromIso,
-  getFrenchLuxonCurrentDateTime,
 } from '../../../../util/frenchDateTime.js'
 
 import ModalConfirm from './ModalConfirm'
@@ -127,7 +126,9 @@ export default {
 
   computed: {
     ...mapState(['center', 'timeSlots', 'candidat', 'reservation']),
-
+    canCancelBooking () {
+      return this.$store.getters.canCancelBooking
+    },
     cancelReservationMessage () {
       return `recap_reservation_modal_annuler_body_with${this.isPenaltyActive ? '' : 'out'}_penalty`
     },
@@ -141,19 +142,13 @@ export default {
     },
 
     isPenaltyActive () {
-      const { lastDateToCancel } = this.$store.state.reservation.booked
-      if (!lastDateToCancel) {
-        return ''
-      }
-      if (getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel)) {
-        return true
-      }
+      if (!this.canCancelBooking) return true
       return false
     },
 
     canBookFrom () {
-      const { date, lastDateToCancel, timeOutToRetry } = this.reservation.booked
-      if ((getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel))) {
+      const { date, timeOutToRetry } = this.reservation.booked
+      if (!this.canCancelBooking) {
         return getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry }).toLocaleString({
           weekday: 'long',
           month: 'long',

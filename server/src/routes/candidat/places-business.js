@@ -3,7 +3,7 @@
  *
  * @module routes/candidat/places-business
  */
-
+import { DateTime } from 'luxon'
 import config from '../../config'
 import {
   appLogger,
@@ -340,13 +340,11 @@ export const isSameReservationPlace = (centerId, date, previewBookedPlace) => {
  * @returns {boolean} Est à `true` si le candidat peut supprimer cette réservation `false` sinon
  */
 export const canCancelReservation = previewDateReservation => {
-  const dateCancelAuthorize = getFrenchLuxon()
-    .plus({
-      days: config.daysForbidCancel,
-    })
-    .startOf('day')
+  const dateCancelAuthorize = getLastDateToCancel(previewDateReservation)
+  const result =
+    dateCancelAuthorize.diff(getFrenchLuxon(), 'days').get('days') | 0
 
-  return previewDateReservation.diff(dateCancelAuthorize, 'days') > 0
+  return result >= 0
 }
 
 /**
@@ -457,8 +455,12 @@ export const getBeginDateAuthorize = candidat => {
  * @returns {string} - Date limite en ISO avant laquelle le candidat peut modifier ou annuler sa place sans encourir de pénalité
  */
 export const getLastDateToCancel = dateReservation => {
-  const dateTimeResa = getFrenchLuxonFromJSDate(dateReservation)
-  return dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
+  let dateTimeResa = dateReservation
+  if (!(dateReservation instanceof DateTime)) {
+    dateTimeResa = getFrenchLuxonFromJSDate(dateReservation)
+  }
+
+  return dateTimeResa.minus({ days: config.daysForbidCancel }).startOf('day')
 }
 
 /**
