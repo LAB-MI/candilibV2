@@ -1,0 +1,62 @@
+<template>
+  <ul class="password-checker">
+      <checker
+        v-for="([key, value]) in checks"
+        :key="key"
+        :text="key"
+        :valid="value">
+      </checker>
+  </ul>
+</template>
+
+<script>
+
+import Checker from '@/views/admin/components/Checker.vue'
+import { strongEnoughPasswordObject } from '@/util'
+
+export default {
+  props: {
+    password: String,
+  },
+
+  components: {
+    Checker,
+  },
+
+  data () {
+    return {
+      checks: Object.entries(strongEnoughPasswordObject).map(
+        ([key, regex]) => { return [key, regex.test(this.password)] },
+      ),
+    }
+  },
+
+  watch: {
+    password (password) {
+      const checks = Object.entries(strongEnoughPasswordObject).map(
+        ([key, regex]) => { return [key, regex.test(password)] },
+      )
+
+      this.checks = checks
+    },
+  },
+
+}
+</script>
+
+<style lang="postcss" scoped>
+.password-checker {
+  list-style: none;
+  padding: 0;
+  margin-top: -1.5em;
+  font-size: 0.8em;
+}
+
+.atLeast8Chars,
+.atLeastANumber,
+.atLeastAnUppercase,
+.atLeastALowercase,
+.atLeastASpecialChar {
+  color: green;
+}
+</style>

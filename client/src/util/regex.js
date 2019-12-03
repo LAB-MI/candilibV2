@@ -9,3 +9,11 @@ export const strongEnoughPassword = [
   /.*[a-z]+/,
   /.*\W+/,
 ]
+
+export const strongEnoughPasswordObject = {
+  'Au moins 8 caractères': /^.{8,}$/,
+  'Au moins un chiffre': /.*[0-9]+/,
+  'Au moins une majuscule': /.*[A-Z]+/,
+  'Au moins une minuscule': /.*[a-z]+/,
+  'Au moins un caractère spécial': /.*\W+/,
+}
