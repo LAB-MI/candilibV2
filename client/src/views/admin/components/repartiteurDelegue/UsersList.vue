@@ -4,17 +4,17 @@
       <template v-slot:default>
         <thead>
           <tr>
-            <th class="text-center">
+            <th class="text-center  text-white">
               Email
             </th>
-            <th class="text-center">
+            <th class="text-center  text-white">
               Statut
             </th>
-            <th class="text-center">
+            <th class="text-center  text-white">
               Départements
             </th>
-            <th class="text-center">
-              Supprimer
+            <th class="text-center  text-white">
+              Actions
             </th>
           </tr>
         </thead>
@@ -27,12 +27,13 @@
             <td class="t-list-email">
               {{ user.email }}
             </td>
-            <td>{{ user.status }}</td>
-            <td>{{ user.departements.join(', ') }}</td>
+            <td>
+              {{ user.status }}
+            </td>
+            <td>{{ user.departements.join(", ") }}</td>
             <td class="text--center">
-              <delete-user
-                :email="user.email"
-              />
+              <update-user :email="user.email" />
+              <delete-user :email="user.email" />
             </td>
           </tr>
         </tbody>
@@ -42,13 +43,14 @@
 </template>
 
 <script>
-
 import { FETCH_USER_LIST_REQUEST } from '@/store'
 import deleteUser from './DeleteUser'
+import updateUser from './UpdateUser'
 
 export default {
   components: {
     deleteUser,
+    updateUser,
   },
 
   computed: {
@@ -73,7 +75,7 @@ table {
 
 thead {
   border: 1px solid;
-  background-color: #b3d4fc;
+  background-color: #4eb5c5;
 }
 
 td {
@@ -81,4 +83,7 @@ td {
   border: 1px solid grey;
 }
 
+.text-white {
+  color: white !important;
+}
 </style>

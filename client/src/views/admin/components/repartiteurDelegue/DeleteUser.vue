@@ -11,7 +11,7 @@
         icon
         v-on="on"
       >
-        <v-icon>cancel</v-icon>
+        <v-icon>delete</v-icon>
       </v-btn>
     </template>
 

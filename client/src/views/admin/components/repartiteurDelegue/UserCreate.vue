@@ -22,32 +22,14 @@
 
       <v-spacer />
 
-      <v-select
-        v-model="status"
-        class="t-select-status"
-        :items="availableStatuses"
-        label="Statut"
-        prepend-icon="person"
-        aria-placeholder="Répartiteur"
-        hint="ex. : repartiteur"
-        tabindex="0"
-        required
+      <select-status
+        @change-status="newStatus => status = newStatus"
       />
 
       <v-spacer />
 
-      <v-select
-        v-model="departements"
-        class="t-select-departements"
-        multiple
-        :items="availableDepartements"
-        label="Départements"
-        prepend-icon="my_location"
-        aria-placeholder="departements"
-        hint="ex. : departements"
-        tabindex="0"
-        :rules="departementsRules"
-        required
+      <select-departements
+        @change-departements="newDep => departements = newDep"
       />
 
       <v-spacer />
@@ -72,34 +54,24 @@
 
 <script>
 import { email as emailRegex } from '@/util'
+import SelectStatus from './SelectStatus'
+import SelectDepartements from './SelectDepartements'
 
 import {
   CREATE_USER_REQUEST,
 } from '@/store'
-import { mapState } from 'vuex'
-
-const defaultAvailableStatuses = [
-  {
-    value: 'repartiteur',
-    text: 'Répartiteur',
-  },
-  {
-    value: 'delegue',
-    text: 'Délégué',
-  },
-]
 
 export default {
+  components: {
+    SelectStatus,
+    SelectDepartements,
+  },
+
   data () {
     return {
-      availableStatuses: defaultAvailableStatuses,
       departements: [],
       status: 'repartiteur',
       valid: false,
-      departementsRules: [
-        dpts => (!!dpts && !!dpts.length) ||
-          'Veuillez renseigner au moins un département',
-      ],
       email: '',
       emailRules: [
         email => !!email || 'Veuillez renseigner votre adresse courriel',
@@ -110,18 +82,8 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      availableDepartements: state => state.admin.departements.list,
-    }),
-
     isSendingUser () {
       return this.$store.state.users.isSendingUser || false
-    },
-  },
-
-  watch: {
-    availableDepartements (departements) {
-      this.departements = departements
     },
   },
 
