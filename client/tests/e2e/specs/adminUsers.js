@@ -10,6 +10,8 @@ describe('Create and see users', () => {
   const repartiteurEmail2 = 'repartiteur2@example.com'
   const repartiteurEmail3 = 'repartiteur3@example.com'
   const repartiteurEmail4 = 'repartiteur4@example.com'
+  const repartiteurEmail5 = 'repartiteur5@example.com'
+  const repartiteurEmail6 = 'repartiteur6@example.com'
 
   before(() => {
     cy.deleteAllMails()
@@ -143,5 +145,75 @@ describe('Create and see users', () => {
 
     cy.get('.t-list-email')
       .should('not.contain', repartiteurEmail4)
+  })
+  it('Should update status and/or departements user', () => {
+    cy.visit(Cypress.env('frontAdmin') + 'admin/users')
+    cy.get('.t-input-email [type=text]')
+      .type(repartiteurEmail5)
+    cy.get('.t-select-status')
+      .click()
+    cy.contains(Cypress.env('repartiteur'))
+      .click()
+    cy.get('.t-select-departements')
+      .click()
+    cy.contains('93')
+      .click()
+    cy.get('.t-create-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', `L'utilisateur a bien été créé`)
+
+    cy.get('.t-list-email')
+      .contains(repartiteurEmail5)
+      .parents('.t-list')
+      .find('.t-btn-update')
+      .click()
+    cy.get('.t-select-update-status')
+      .click()
+    cy.contains(Cypress.env('delegue'))
+      .click()
+    cy.get('.t-select-update-departements')
+      .click()
+    cy.contains('75')
+      .click()
+    cy.get('.t-title-update')
+      .click()
+    cy.get('.t-btn-update-confirm')
+      .click()
+
+    cy.get('.v-snack')
+      .should('contain', `L'utilisateur a bien été modifié`)
+  })
+
+  it('Should not update status and/or departements user', () => {
+    cy.visit(Cypress.env('frontAdmin') + 'admin/users')
+    cy.get('.t-input-email [type=text]')
+      .type(repartiteurEmail6)
+    cy.get('.t-select-status')
+      .click()
+    cy.contains(Cypress.env('repartiteur'))
+      .click()
+    cy.get('.t-select-departements')
+      .click()
+    cy.contains('75')
+      .click()
+    cy.get('.t-create-btn')
+      .click()
+    cy.get('.v-snack')
+      .should('contain', `L'utilisateur a bien été créé`)
+
+    cy.get('.t-list-email')
+      .should('contain', repartiteurEmail6)
+
+    cy.get('.t-list-email')
+      .contains(repartiteurEmail6)
+      .parents('.t-list')
+      .find('.t-btn-update')
+      .click()
+    cy.get('.t-btn-cancel-update')
+      .click()
+
+    cy.get('.t-list-email')
+      .should('contain', repartiteurEmail6)
   })
 })

@@ -1,7 +1,7 @@
 <template>
  <v-dialog
     v-model="updating"
-    width="700"
+    width="800"
   >
     <template v-slot:activator="{ on }">
       <v-btn
@@ -17,7 +17,7 @@
 
     <v-card>
       <v-card-title
-        class="headline grey lighten-2"
+        class=" t-title-update headline grey lighten-2"
         primary-title
       >
         Modification de {{ email }}
@@ -26,24 +26,20 @@
     <v-container class="u-flex  u-flex--between  u-full-width">
 
       <select-status
+        class="t-select-update-status"
         @change-status="newStatus => status = newStatus"
       />
 
       <v-spacer></v-spacer>
 
       <select-departements
+        class="t-select-update-departements"
         @change-departements="newDep => departements = newDep"
       />
 
       <v-spacer></v-spacer>
 
-    </v-container>
-
-      <v-divider></v-divider>
-
-      <v-card-actions right>
-        <v-spacer></v-spacer>
-        <v-btn
+      <v-btn
           class="t-btn-cancel-update"
           color="#CD1338"
           tabindex="0"
@@ -61,7 +57,7 @@
         >
           Oui, modifier
         </v-btn>
-      </v-card-actions>
+    </v-container>
     </v-card>
   </v-dialog>
 </template>
