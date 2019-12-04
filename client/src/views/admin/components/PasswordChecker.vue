@@ -1,11 +1,12 @@
 <template>
   <ul class="password-checker">
-      <checker
-        v-for="([key, value]) in checks"
-        :key="key"
-        :text="key"
-        :valid="value">
-      </checker>
+    <checker
+      v-for="([key, value]) in checks"
+      v-show="!value"
+      :key="key"
+      :text="key"
+      :valid="value">
+    </checker>
   </ul>
 </template>
 
