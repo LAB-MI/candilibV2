@@ -62,7 +62,7 @@ const features = {
 const userStatusAccess = {
   [userStatuses.CANDIDAT]: [],
   [userStatuses.REPARTITEUR]: [],
-  [userStatuses.DELEGUE]: [features.STATS_KPI],
+  [userStatuses.DELEGUE]: [features.STATS_KPI, features.USERS],
   [userStatuses.ADMIN]: [features.AURIGE, features.STATS_KPI, features.USERS],
   [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI],
 }

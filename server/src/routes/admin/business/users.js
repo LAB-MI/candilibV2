@@ -36,17 +36,24 @@ const isInvalidList = list => !list || !Array.isArray(list) || !list.length
  *
  * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
  */
+
 export const getAppropriateUsers = async userId => {
   const user = await findUserById(userId)
   const status = user.status
   const departements = user.departements
 
-  if (status === config.userStatuses.ADMIN) {
+  if (
+    status === config.userStatuses.ADMIN ||
+    status === config.userStatuses.DELEGUE
+  ) {
     const users = await findAllActiveUsers()
-    return users
+    const listUsers = users.filter(
+      user =>
+        config.userStatusLevels[status] > config.userStatusLevels[user.status]
+    )
+    return listUsers
   }
 
-  // TODO: Modifier ici pour permettre au délégué d'avoir la liste des utilisateurs de ses départements
   const forbiddenMessage = isForbiddenToUpsertUser(status, user, departements)
   if (forbiddenMessage) {
     const error = new Error(forbiddenMessage)
