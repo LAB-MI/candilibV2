@@ -52,12 +52,4 @@ export default {
   margin-top: -1.5em;
   font-size: 0.8em;
 }
-
-.atLeast8Chars,
-.atLeastANumber,
-.atLeastAnUppercase,
-.atLeastALowercase,
-.atLeastASpecialChar {
-  color: green;
-}
 </style>

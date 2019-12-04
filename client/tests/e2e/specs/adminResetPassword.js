@@ -3,13 +3,15 @@
 - Admin login with new Password
 */
 
-const quotedPrintable = require('quoted-printable')
+import quotedPrintable from 'quoted-printable'
+import { strongEnoughPasswordObject } from '../../../src/util/regex'
 
 describe('Admin reset password', () => {
   const weakPassword = '123456788'
   const password = 'Am9@5medf2'
   const wrongConfirmation = '1234'
-  var validationLink
+  let validationLink
+
   before(() => {
     cy.deleteAllMails()
     cy.visit(Cypress.env('frontAdmin') + 'admin-login')
@@ -89,6 +91,42 @@ describe('Admin reset password', () => {
       .click()
     cy.get('.v-messages__message')
       .should('contain', 'Veuillez entrer un mot de passe fort')
+  })
+
+  it('Tests passwordChecker', () => {
+    cy.visit(validationLink)
+    const testingStrings = [
+      '!',
+      'A',
+      'a',
+      '1',
+      '12345678',
+    ]
+
+    for (const element of testingStrings) {
+      const checks = Object.entries(strongEnoughPasswordObject).map(
+        el => {
+          const key = el[0]
+          const regex = el[1]
+          return [key, regex.test(element)]
+        },
+      )
+      const arr = checks.filter(el => {
+        const regex = el[1]
+        return regex
+      })
+
+      const text = arr[0][0]
+
+      cy.contains(text)
+        .should('be.visible')
+
+      cy.get('.t-new-password [type=password]')
+        .type(element)
+
+      cy.contains(text)
+        .should('not.be.visible')
+    }
   })
 
   it('Successful password reset', () => {

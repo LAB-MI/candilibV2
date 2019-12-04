@@ -33,7 +33,9 @@
           @click:append="showPassword = !showPassword"
         ></v-text-field>
       </div>
+
       <password-checker :password="newPassword"/>
+
       <div class="form-input">
         <v-text-field
           v-model="confirmNewPassword"
