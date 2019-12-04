@@ -81,6 +81,7 @@ export default {
       list: [],
     },
     email: undefined,
+    status: undefined,
     features: undefined,
     places: {
       created: undefined,
@@ -109,6 +110,7 @@ export default {
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
       state.departements.list = infos.departements
       state.email = infos.email
+      state.status = infos.status
       state.features = infos.features && infos.features.map(feature => AUTHORIZED_ROUTES[feature])
 
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)

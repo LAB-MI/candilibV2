@@ -6,8 +6,8 @@
     :items="availableDepartements"
     label="Départements"
     prepend-icon="my_location"
-    aria-placeholder="departements"
-    hint="ex. : departements"
+    aria-placeholder="départements"
+    hint="ex. : 93"
     tabindex="0"
     :rules="departementsRules"
     required
@@ -16,29 +16,30 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
 export default {
+  props: {
+    availableDepartements: {
+      type: Array,
+      default () {
+        return []
+      },
+    },
+    defaultDepartements: {
+      type: Array,
+      default () {
+        return []
+      },
+    },
+  },
+
   data () {
     return {
-      departements: [],
+      departements: this.defaultDepartements,
       departementsRules: [
         dpts => (!!dpts && !!dpts.length) ||
           'Veuillez renseigner au moins un département',
       ],
     }
-  },
-
-  computed: {
-    ...mapState({
-      availableDepartements: state => state.admin.departements.list,
-    }),
-  },
-
-  watch: {
-    availableDepartements (departements) {
-      this.departements = departements
-      this.$emit('change-departements', departements)
-    },
   },
 }
 </script>

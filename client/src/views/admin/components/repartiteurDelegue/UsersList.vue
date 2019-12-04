@@ -30,10 +30,16 @@
             <td>
               {{ user.status }}
             </td>
-            <td>{{ user.departements.join(", ") }}</td>
+            <td>{{ user.departements.join(', ') }}</td>
             <td class="text--center">
-              <update-user :email="user.email" />
-              <delete-user :email="user.email" />
+              <update-user
+                :email="user.email"
+                :default-status="user.status"
+                :default-departements="user.departements"
+              />
+              <delete-user
+                :email="user.email"
+              />
             </td>
           </tr>
         </tbody>
@@ -44,13 +50,12 @@
 
 <script>
 import { FETCH_USER_LIST_REQUEST } from '@/store'
-import deleteUser from './DeleteUser'
-import updateUser from './UpdateUser'
-
+import DeleteUser from './DeleteUser'
+import UpdateUser from './UpdateUser'
 export default {
   components: {
-    deleteUser,
-    updateUser,
+    DeleteUser,
+    UpdateUser,
   },
 
   computed: {

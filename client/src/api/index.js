@@ -233,7 +233,6 @@ export default {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify({ email, status, departements }),
       })
-      console.log('test', { email, status, departements })
       return json
     },
 

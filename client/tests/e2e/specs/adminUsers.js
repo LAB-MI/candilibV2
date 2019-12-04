@@ -158,12 +158,15 @@ describe('Create and see users', () => {
       .click()
     cy.contains('93')
       .click()
+    cy.contains('93')
+      .click()
     cy.get('.t-create-btn')
       .click()
     cy.get('.v-snack')
       .should('contain', `L'utilisateur a bien été créé`)
 
     cy.get('.t-list-email')
+      .should('contain', repartiteurEmail5)
       .contains(repartiteurEmail5)
       .parents('.t-list')
       .find('.t-btn-update')
@@ -174,7 +177,7 @@ describe('Create and see users', () => {
       .click()
     cy.get('.t-select-update-departements')
       .click()
-    cy.contains('75')
+    cy.contains('93')
       .click()
     cy.get('.t-title-update')
       .click()
@@ -182,10 +185,10 @@ describe('Create and see users', () => {
       .click()
 
     cy.get('.v-snack')
-      .should('contain', `L'utilisateur a bien été modifié`)
+      .should('contain', `L'utilisateur ${repartiteurEmail5} a bien été modifié`)
   })
 
-  it('Should not update status and/or departements user', () => {
+  it.only('Should not update status and/or departements of user', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/users')
     cy.get('.t-input-email [type=text]')
       .type(repartiteurEmail6)

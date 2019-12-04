@@ -29,6 +29,8 @@
       <v-spacer />
 
       <select-departements
+        :available-departements="availableDepartements"
+        :default-departements="availableDepartements"
         @change-departements="newDep => departements = newDep"
       />
 
@@ -53,6 +55,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import { email as emailRegex } from '@/util'
 import SelectStatus from './SelectStatus'
 import SelectDepartements from './SelectDepartements'
@@ -82,8 +86,17 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      availableDepartements: state => state.admin.departements.list,
+    }),
     isSendingUser () {
       return this.$store.state.users.isSendingUser || false
+    },
+  },
+
+  watch: {
+    availableDepartements (value) {
+      this.departements = value
     },
   },
 

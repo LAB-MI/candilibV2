@@ -1,17 +1,17 @@
 <template>
- <v-dialog
+  <v-dialog
     v-model="updating"
     width="800"
   >
     <template v-slot:activator="{ on }">
       <v-btn
-        class="t-btn-update"
         slot="activator"
+        class="t-btn-update"
         color="primary"
-        v-on="on"
         icon
+        v-on="on"
       >
-      <v-icon>edit</v-icon>
+        <v-icon>edit</v-icon>
       </v-btn>
     </template>
 
@@ -20,33 +20,34 @@
         class=" t-title-update headline grey lighten-2"
         primary-title
       >
-        Modification de {{ email }}
+        Modification de {{ email }} {{ status }} {{ departements.join(', ') }}
       </v-card-title>
 
-    <v-container class="u-flex  u-flex--between  u-full-width">
+      <v-container class="u-flex  u-flex--between  u-full-width">
+        <select-status
+          class="t-select-update-status"
+          @change-status="newStatus => status = newStatus"
+        />
 
-      <select-status
-        class="t-select-update-status"
-        @change-status="newStatus => status = newStatus"
-      />
+        <v-spacer />
 
-      <v-spacer></v-spacer>
+        <select-departements
+          class="t-select-update-departements"
+          :available-departements="availableDepartements"
+          :default-departements="departements"
+          @change-departements="newDep => departements = newDep"
+        />
 
-      <select-departements
-        class="t-select-update-departements"
-        @change-departements="newDep => departements = newDep"
-      />
+        <v-spacer />
 
-      <v-spacer></v-spacer>
-
-      <v-btn
+        <v-btn
           class="t-btn-cancel-update"
           color="#CD1338"
           tabindex="0"
           outlined
           @click="updating = false"
         >
-        Annuler
+          Annuler
         </v-btn>
         <v-btn
           class="t-btn-update-confirm"
@@ -57,7 +58,7 @@
         >
           Oui, modifier
         </v-btn>
-    </v-container>
+      </v-container>
     </v-card>
   </v-dialog>
 </template>
@@ -65,7 +66,8 @@
 <script>
 import SelectStatus from './SelectStatus'
 import SelectDepartements from './SelectDepartements'
-import { SHOW_SUCCESS, FETCH_USER_LIST_REQUEST, SHOW_ERROR, UPDATE_USER_REQUEST } from '../../../../store'
+import { FETCH_USER_LIST_REQUEST, UPDATE_USER_REQUEST } from '@/store'
+import { mapState } from 'vuex'
 
 export default {
   components: {
@@ -74,18 +76,35 @@ export default {
   },
 
   props: {
-    email: String,
+    defaultDepartements: {
+      type: Array,
+      default () {
+        return []
+      },
+    },
+    defaultStatus: {
+      type: String,
+      default: 'repartiteur',
+    },
+    email: {
+      type: String,
+      default: 'repartiteur@example.com',
+    },
   },
 
   data () {
     return {
-      departements: [],
       updating: false,
-      status: 'repartiteur',
+      departements: this.defaultDepartements,
+      status: this.defaultStatus,
     }
   },
 
   computed: {
+    ...mapState({
+      availableDepartements: state => state.admin.departements.list,
+    }),
+
     isUpdatingUser () {
       return this.$store.state.users.isUpdating || false
     },
@@ -100,10 +119,8 @@ export default {
       } = this
       try {
         await this.$store.dispatch(UPDATE_USER_REQUEST, { email, status, departements })
-        this.$store.dispatch(SHOW_SUCCESS, `L'utilisateur a bien été modifié`)
         this.$store.dispatch(FETCH_USER_LIST_REQUEST)
       } catch (error) {
-        this.$store.dispatch(SHOW_ERROR, error.message)
       }
       this.updating = false
     },

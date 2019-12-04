@@ -52,10 +52,7 @@ export default {
     UPDATE_USER_REQUEST (state) {
       state.isUpdating = true
     },
-    UPDATE_USER_SUCCESS (state, email, status, departements) {
-      state.email = email
-      state.status = status
-      status.departements = departements
+    UPDATE_USER_SUCCESS (state) {
       state.isUpdating = false
     },
     UPDATE_USER_FAILURE (state, error) {
@@ -108,14 +105,18 @@ export default {
     },
 
     async [UPDATE_USER_REQUEST] ({ commit, dispatch }, { email, status, departements }) {
-      commit(UPDATE_USER_REQUEST, { status, departements })
+      commit(UPDATE_USER_REQUEST)
       try {
         const result = await api.admin.updateUser(email, { status, departements })
-        commit(UPDATE_USER_REQUEST, email)
-        dispatch(SHOW_SUCCESS, `${result.email} a bien été modifié`)
+        if (result.success === false) {
+          throw new Error(result.message)
+        }
+        commit(UPDATE_USER_SUCCESS)
+        dispatch(SHOW_SUCCESS, `L'utilisateur ${email} a bien été modifié`)
       } catch (error) {
         commit(UPDATE_USER_FAILURE)
-        return dispatch(SHOW_ERROR, error.message)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
       }
     },
 
