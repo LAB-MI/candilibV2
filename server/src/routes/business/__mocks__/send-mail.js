@@ -1,4 +1,10 @@
+import getMailData from '../message-templates'
+
 let mail
+export const __initMail = () => {
+  mail = undefined
+}
+
 export const getMail = () => mail
 
 export const sendMail = async (to, { subject, content: html } = {}) => {
@@ -7,9 +13,9 @@ export const sendMail = async (to, { subject, content: html } = {}) => {
 }
 
 export const sendMailToAccount = async (candidat, flag) => {
-  return sendMail()
+  const message = await getMailData(candidat, flag)
+  return sendMail(candidat.email, message)
 }
-
 export const sendMagicLink = async (candidat, token) => {
   return sendMail()
 }

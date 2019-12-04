@@ -24,6 +24,7 @@ export default {
     value: String,
     click: Function,
   },
+
   data () {
     return {
       hexagon,
@@ -46,8 +47,8 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 2.5em;
-  height: 2.5em;
+  width: 2.4em;
+  height: 2.4em;
   cursor: pointer;
   color: #999;
   transition: color 0.5s ease-out;

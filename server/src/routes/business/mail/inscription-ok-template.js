@@ -2,7 +2,8 @@ export const getInscriptionOkTemplate = (
   nomMaj,
   urlMagicLink,
   urlConnexion,
-  email
+  email,
+  contactezNous
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <br>
   <p>Bienvenue sur Candilib !</p>
@@ -31,5 +32,5 @@ export const getInscriptionOkTemplate = (
   <p>
   <strong>Attention : </strong>vous ne devez transmettre cet email à personne. Il permet d'accéder à votre compte personnel, de créer ou modifier votre réservation.
   </p>
-
+  ${contactezNous}
   <p align="right">L'équipe Candilib</p>`

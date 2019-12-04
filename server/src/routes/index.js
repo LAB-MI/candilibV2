@@ -20,8 +20,6 @@ const router = express.Router()
  *     tags: ["Candidat"]
  *     summary: Pré-inscription du candidat sur l'application Candilib
  *     description: Ajoute un·e nouv·eau·elle candidat·e dans la base de données si les données envoyées sont correctes.
- *     produces:
- *      - application/json
  *
  *     requestBody:
  *       description: Données du formulaire de pré-inscription
@@ -30,35 +28,35 @@ const router = express.Router()
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - codeNeph
+ *               - nomNaissance
+ *               - email
+ *               - portable
+ *               - adresse
  *             properties:
  *               codeNeph:
  *                 description: NEPH du ou de la candidat·e
- *                 required: true
  *                 type: string
  *                 example: 123456789012
  *               nomNaissance:
  *                 description: Nom de naissance du ou de la candidat·e
- *                 required: true
  *                 type: string
  *                 example: Dupont
  *               prenom:
  *                 description: Prénom du ou de la candidat·e
- *                 required: false
  *                 type: string
  *                 example: Jean
  *               email:
  *                 description: Adresse email du ou de la candidat·e
- *                 required: true
  *                 type: string
  *                 example: jean@dupont.name
  *               portable:
  *                 description: Numéro de téléphone mobile du ou de la candidat·e
- *                 required: true
  *                 type: string
  *                 example: 0612345678
  *               adresse:
  *                 description: Adresse postale du ou de la candidat·e
- *                 required: true
  *                 type: string
  *                 example: 16 avenue du général Leclerc 75014 Paris
  *     responses:
@@ -126,8 +124,6 @@ router.post('/candidat/preinscription', preSignup)
  *     tags: ["Candidat"]
  *     summary: Validation de l'adresse courriel du candidat
  *     description: Vérification du hash unique correspondant à celui associé à cette adresse courriel dans la base de données Candilib.
- *     produces:
- *      - application/json
  *
  *     requestBody:
  *       description: Adresse courriel et hash de vérification
@@ -136,15 +132,16 @@ router.post('/candidat/preinscription', preSignup)
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - email
+ *               - hash
  *             properties:
  *               email:
  *                 description: Adresse email du ou de la candidat·e
- *                 required: true
  *                 type: string
  *                 example: jean@dupont.name
  *               hash:
  *                 description: Hash qui doit correspondre au hash stocké en base pour cette adresse courriel.
- *                 required: true
  *                 type: string
  *                 example: '1b9d6bcd-bbfd-4b2d-9b5d-ab8dfbbd4bed'
  *     responses:
@@ -159,7 +156,7 @@ router.post('/candidat/preinscription', preSignup)
  *                     success: true
  *                     message: Votre adresse courriel a été validée, veuillez consulter votre messagerie (pensez à vérifier dans vos courriers indésirables).
  *       404:
- *         description:
+ *         description: Adresse introuvable dans la base
  *         content:
  *           application/json:
  *             schema:
@@ -169,7 +166,7 @@ router.post('/candidat/preinscription', preSignup)
  *                     success: false
  *                     message: Votre adresse courriel est inconnue
  *       422:
- *         description:
+ *         description: Lien expiré
  *         content:
  *           application/json:
  *             schema:
@@ -179,7 +176,7 @@ router.post('/candidat/preinscription', preSignup)
  *                     success: false
  *                     message: Candidat 291029393029/Dupont courriel non vérifié depuis plus de 2h, vous devez refaire la pré-inscription
  *       500:
- *         description:
+ *         description: Erreur serveur inconnue
  *         content:
  *           application/json:
  *             schema:
@@ -203,10 +200,9 @@ router.put('/candidat/me', emailValidation)
  *
  * /admin/me:
  *   patch:
+ *     tags: ["Administrateur"]
  *     summary: Met à jour le mot de passe
  *     description: Met à jour le mot de passe de l'utilisateur si l'email et le hash correspondent, et que la réinitialisation a été demandé il y a moins de 15 minutes
- *     produces:
- *      - application/json
  *     security:
  *       - bearerAuth: []
  *
@@ -217,35 +213,32 @@ router.put('/candidat/me', emailValidation)
  *         application/json:
  *           schema:
  *             type: object
+ *             required:
+ *               - newPassword
+ *               - confirmNewPassword
+ *               - email
+ *               - hash
  *             properties:
  *               newPassword:
  *                 description: Nouveau mot de passe
- *                 required: true
  *                 type: string
  *                 example: M9se5p@7
  *               confirmNewPassword:
  *                 description: Confirmation du nouveau mot de passe
- *                 required: true
  *                 type: string
  *                 example: M9se5p@7
  *               email:
  *                 description: Email de l'utilisateur
- *                 required: true
  *                 type: string
- *                 example: example@example.fr
+ *                 example: exemple@exemple.fr
  *               hash:
  *                 description: hash d'identification de l'utilisateur
- *                 required: true
  *                 type: string
  *                 example: 9d0a2b5e-e143-11e9-81b4-2a2ae2dbcce4
  *
- *
- *
- *
- *
  *     responses:
  *       200:
- *         description:
+ *         description: Succès de la requête
  *         content:
  *           application/json:
  *             schema:

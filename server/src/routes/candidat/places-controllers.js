@@ -15,7 +15,7 @@ import {
   hasAvailablePlacesByCentre,
   removeReservationPlace,
   validCentreDateReservation,
-} from './places.business'
+} from './places-business'
 
 import { sendMailConvocation } from '../business'
 import {
@@ -31,13 +31,12 @@ export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
 
 /**
- * Retourne soit la place dont l'Id est
+ * Retourne soit les dates des places disponibles d'un centre soit par son identifiant soit par son nom et son département
  * Si la date de debut (begin) n'est pas définie on recherche à partir de la date courante
  *
  * @async
- * @function getPlaces
- * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_places__placeId_}
-
+ * @function
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places__centreId| Swagger GET candidat/places/:id?}
  * @param {import('express').Request} req - Est attendu dans la requête :
  * @param {Object} req.params - Paramètres de la route
  * @param {string=} req.params.id - Identifiant du centre
@@ -139,7 +138,19 @@ export async function getPlacesByCentre (req, res) {
     })
   }
 }
-
+/**
+ * Cette fonction renvoie :
+ * - la réservation du candidat (voir {@link import('./places-controllers')..getBookedPlaces|getBookedPlaces})
+ * - ou la liste des dates des places disponibles {voir {@link import('./places-controllers')..getPlacesByCentre|getPlacesByCentre}}
+ * @async
+ * @function
+ * @param {import('express').Request} req
+ * @param {import('express').Response} res
+ * @see {@link import('./places-controllers')..getBookedPlaces|getBookedPlaces}
+ * @see {@link import('./places-controllers')..getPlacesByCentre|getPlacesByCentre}
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places| Swagger GET candidat/places}
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places__centreId| Swagger GET candidat/places/:id?}
+ */
 export const getPlaces = async (req, res) => {
   const { id } = req.params
 
@@ -151,15 +162,27 @@ export const getPlaces = async (req, res) => {
   }
 }
 
+/**
+ * Retourne ou envoi par mail la réservation du candidat
+ * @async
+ * @function
+ * @param {import('express').Request} req
+ * @param {string} req.userId - Identifiant du candidat
+ * @param {Obejt} req.query
+ * @param {boolean} req.query.byMail - Indicateur pour envoyer par mail
+ * @param {boolean} req.query.lastDateOnly - Indication pour récupérer la date dont le candidat n'a plus droit d'annuler
+ * @param {import('express').Response} res
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/get_candidat_places| Swagger GET candidat/places}
+ */
 export const getBookedPlaces = async (req, res) => {
   const section = 'candidat-getBookedPlaces'
   const candidatId = req.userId
-  const { bymail, lastDateOnly } = req.query
+  const { byMail, lastDateOnly } = req.query
 
   appLogger.debug({
     section,
     candidatId,
-    bymail,
+    byMail,
   })
 
   if (!candidatId) {
@@ -169,7 +192,7 @@ export const getBookedPlaces = async (req, res) => {
     appLogger.warn({
       section,
       candidatId,
-      bymail,
+      byMail,
       success,
       description: message,
     })
@@ -182,10 +205,10 @@ export const getBookedPlaces = async (req, res) => {
   try {
     const bookedPlace = await getReservationByCandidat(
       candidatId,
-      bymail ? { centre: true, candidat: true } : undefined
+      byMail ? { centre: true, candidat: true } : undefined
     )
 
-    if (bymail) {
+    if (byMail) {
       let success
       let message
 
@@ -204,7 +227,7 @@ export const getBookedPlaces = async (req, res) => {
         techLogger.error({
           section,
           candidatId,
-          bymail,
+          byMail,
           success,
           description: message,
           error,
@@ -214,7 +237,7 @@ export const getBookedPlaces = async (req, res) => {
       appLogger.info({
         section,
         candidatId,
-        bymail,
+        byMail,
         success,
         description: message,
       })
@@ -228,7 +251,7 @@ export const getBookedPlaces = async (req, res) => {
       if (bookedPlace) {
         const { _id, centre, date } = bookedPlace
 
-        const lastDateToCancel = getLastDateToCancel(date)
+        const lastDateToCancel = getLastDateToCancel(date).toISODate()
 
         if (lastDateOnly) {
           return res.json({ lastDateToCancel })
@@ -248,7 +271,7 @@ export const getBookedPlaces = async (req, res) => {
         section,
         action: 'get-reservations',
         candidatId,
-        bymail,
+        byMail,
         place: reservation && reservation._id,
       })
       return res.json(reservation)
@@ -257,7 +280,7 @@ export const getBookedPlaces = async (req, res) => {
     appLogger.error({
       section: 'candidat-get-reservations',
       candidatId,
-      bymail,
+      byMail,
       error,
     })
     res.status(500).json({
@@ -274,9 +297,14 @@ export const getBookedPlaces = async (req, res) => {
  * @function
  *
  * @param {import('express').Request} req - Requête
+ * @param {string} req.userId - Identifiant du candidat
  * @param {Object} req.body - Corps de la requête
- * @param {string} req.body.id - Identifiant
+ * @param {string} req.body.id - Identifiant du centre choisi
+ * @param {string} req.body.date - Date de la place choisi
+ * @param {boolean} req.body.isAccompanied - Indicateur pour confirmer la présence d'un accompagnateur
+ * @param {boolean} req.body.hasDualControlCar - Indicateur pour confirmer possession d'un véhicule à double commande
  * @param {import('express').Response} res - Réponse
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/patch_candidat_places| swagger PATCH /candidat/places}
  */
 export const bookPlaceByCandidat = async (req, res) => {
   const section = 'candidat-create-reservation'
@@ -436,7 +464,7 @@ export const bookPlaceByCandidat = async (req, res) => {
 }
 
 /**
- * Supprime la réservation
+ * Annulation de la réservation par le candidat
  *
  * @async
  * @function
@@ -444,6 +472,7 @@ export const bookPlaceByCandidat = async (req, res) => {
  * @param {import('express').Request} req - Requête
  * @param {string} req.userId - Identifiant du candidat
  * @param {import('express').Response} res - Réponse
+ * @see {@link http://localhost:8000/api-docs/#/Candidat/delete_candidat_places| DELETE '/candidat/places'}
  */
 export const unbookPlace = async (req, res) => {
   const candidatId = req.userId

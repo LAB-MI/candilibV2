@@ -1,5 +1,5 @@
 <template>
-  <div class="u-fullvp-height  u-flex  u-flex--center">
+  <div class="u-flex  u-flex--center">
     <div class="d-flex">
       <v-btn dark tag="a" to="/candidat" color="#33ADC0">
         Candidat
@@ -10,9 +10,3 @@
     </div>
   </div>
 </template>
-
-<style lang="postcss" scoped>
-  .u-fullvp-height {
-    height: 100vh;
-  }
-</style>

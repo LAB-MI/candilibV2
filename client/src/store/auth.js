@@ -139,7 +139,6 @@ export default {
         localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
         await dispatch(SHOW_ERROR, candidatMessages.unauthorize_action)
       }
-      commit(SIGN_OUT_ADMIN)
     },
   },
 }

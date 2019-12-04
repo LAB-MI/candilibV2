@@ -33,7 +33,6 @@
 const defaultChartInfo = {
   title: '',
   description: '',
-  classContent: 'd-block',
   rotate: -90,
   size: 150,
   width: 15,

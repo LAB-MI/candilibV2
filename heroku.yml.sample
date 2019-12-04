@@ -1,0 +1,11 @@
+build:
+  docker:
+     release:
+        dockerfile: server/Dockerfile
+     web: server/Dockerfile
+  config:
+    NPM_AUDIT_DRY_RUN: true
+release:
+  image: web
+  command:
+    - ( cd /app && wget  -L https://github.com/LAB-MI/candilibV2/archive/develop.tar.gz -O - |tar zxvf - --strip-components=2 candilibV2-develop/server/dev-setup ) && npm run dev-setup

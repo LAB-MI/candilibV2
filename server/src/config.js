@@ -52,6 +52,7 @@ const userStatusLevels = {
 const features = {
   AURIGE: 'aurige',
   STATS_KPI: 'stats-kpi',
+  USERS: 'users',
 }
 
 /**
@@ -62,7 +63,7 @@ const userStatusAccess = {
   [userStatuses.CANDIDAT]: [],
   [userStatuses.REPARTITEUR]: [],
   [userStatuses.DELEGUE]: [features.STATS_KPI],
-  [userStatuses.ADMIN]: [features.AURIGE, features.STATS_KPI],
+  [userStatuses.ADMIN]: [features.AURIGE, features.STATS_KPI, features.USERS],
   [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI],
 }
 
@@ -177,6 +178,10 @@ if (config.smtpUser) {
     user: config.smtpUser,
     pass: config.smtpPass,
   }
+}
+
+if (config.smtpService) {
+  smtpOptions.service = config.smtpService
 }
 
 export default config

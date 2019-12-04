@@ -3,7 +3,7 @@
     <v-btn
       icon
       :raised="raised"
-      :color="bgColor"
+      color="primary"
       :disabled="isLoading"
       @click="onClick"
     >

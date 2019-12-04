@@ -20,11 +20,22 @@ export default {
 
   methods: {
     renderChartBar () {
+      const chartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          xAxes: [{
+            ticks: {
+              beginAtZero: true,
+            },
+          }],
+        },
+      }
       this.renderChart({
         labels: this.labels,
         datasets: this.datasets,
       },
-      { responsive: true, maintainAspectRatio: false })
+      chartOptions)
     },
   },
 

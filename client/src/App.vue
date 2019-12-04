@@ -4,6 +4,7 @@
       <v-dialog
         v-model="authStatus"
         width="500"
+        :hide-overlay="true"
       >
         <v-card>
           <v-card-title
@@ -35,17 +36,29 @@ export default {
     AppSnackbar,
     AppEvaluation,
   },
-  computed: {
-    authStatus: {
-      get () {
-        const isChecking = this.$store.state.auth.statusAdmin === CHECKING_AUTH_ADMIN ||
-          this.$store.state.auth.statusCandidat === CHECKING_AUTH_CANDIDAT
-        return isChecking
-      },
-      set (value) {
 
-      },
+  data () {
+    return {
+      showDialog: this.authStatus,
+    }
+  },
+
+  watch: {
+    authStatus (isChecking) {
+      this.showDialog = isChecking
     },
+  },
+
+  computed: {
+    authStatus () {
+      const isChecking = this.$store.state.auth.statusAdmin === CHECKING_AUTH_ADMIN ||
+        this.$store.state.auth.statusCandidat === CHECKING_AUTH_CANDIDAT
+      return isChecking
+    },
+  },
+
+  mounted () {
+    setTimeout(() => { this.showDialog = true })
   },
 }
 </script>

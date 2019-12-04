@@ -109,7 +109,7 @@ storiesOf('Admin', module)
       },
     }),
     template: '<aurige-validation style="background-color: #3d4353;"/>',
-  })
+  }),
   )
   .add('AgGridAurigeStatusFilter', () => ({
     components: { AgGridAurigeStatusFilter },

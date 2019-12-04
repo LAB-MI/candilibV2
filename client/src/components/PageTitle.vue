@@ -1,6 +1,6 @@
 <template>
-  <header class="candidat-header">
-    <h2 class="candidat-title">
+  <header class="app-header">
+    <h2 class="app-title">
       {{title}}
       <slot></slot>
     </h2>
@@ -17,12 +17,13 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.candidat-header {
+.app-header {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
+  background-color: #fff;
 
   &::after {
     content: '';
@@ -34,7 +35,7 @@ export default {
   }
 }
 
-.candidat-title {
+.app-title {
   display: flex;
   align-items: center;
   max-width: 100%;

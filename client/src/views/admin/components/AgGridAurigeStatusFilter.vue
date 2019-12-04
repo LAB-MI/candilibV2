@@ -2,18 +2,18 @@
   <v-select class="t-ag-grid-filter-status" v-model="selected" :items="options">
     <v-icon class="t-ag-grid-filter-status-icon" slot="append">arrow_drop_down</v-icon>
     <template slot="selection" slot-scope="{ item  }">
-    <v-chip v-if="!item.value" :class="item.class">
+    <v-chip v-show="!item.value" :class="item.class">
       <span >{{ item.text }}</span>
     </v-chip>
-    <v-chip v-if="item.value" :class="item.class">
+    <v-chip v-show="item.value" :class="item.class">
       <v-icon>{{item.text}}</v-icon>
     </v-chip>
     </template>
     <template slot="item" slot-scope="{ item  }">
-      <v-chip v-if="!item.value" :class="item.class">
+      <v-chip v-show="!item.value" :class="item.class">
       <span >{{ item.text }}</span>
     </v-chip>
-    <v-chip v-if="item.value" :class="item.class">
+    <v-chip v-show="item.value" :class="item.class">
       <v-icon>{{item.text}}</v-icon>
     </v-chip>
     </template>

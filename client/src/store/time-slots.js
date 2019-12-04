@@ -65,7 +65,7 @@ export default {
     async [FETCH_DATES_REQUEST] ({ commit, dispatch, rootState, getters }, selectedCenterId) {
       commit(FETCH_DATES_REQUEST)
       try {
-        const { canBookFrom, lastDateToCancel, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
+        const { canBookFrom, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
 
         const now = getFrenchLuxonCurrentDateTime()
         const canBookFromLuxonObj = getFrenchLuxonFromIso(canBookFrom)
@@ -85,7 +85,7 @@ export default {
         }
 
         const anticipatedCanBookAfter =
-          getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel)
+          !getters.canCancelBooking
             ? getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
             : false
         const numberOfMonthToDisplay = 4

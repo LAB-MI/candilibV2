@@ -5,6 +5,7 @@ import {
   DEPARTEMENT_STORAGE_KEY,
   ROUTE_AUTHORIZE_AURIGE,
   ROUTE_AUTHORIZE_STATS_KPI,
+  ROUTE_AUTHORIZE_USERS,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -47,9 +48,11 @@ export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
 export const numberOfMonthsToFetch = 3
-const ROUTE_AUTHORIZES = {
+
+const AUTHORIZED_ROUTES = {
   'aurige': ROUTE_AUTHORIZE_AURIGE,
   'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
+  'users': ROUTE_AUTHORIZE_USERS,
 }
 
 export default {
@@ -106,7 +109,7 @@ export default {
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
       state.departements.list = infos.departements
       state.email = infos.email
-      state.features = infos.features && infos.features.map(feature => ROUTE_AUTHORIZES[feature])
+      state.features = infos.features && infos.features.map(feature => AUTHORIZED_ROUTES[feature])
 
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
 
@@ -321,7 +324,7 @@ export default {
         } = await api.admin.assignCandidatToPlace(
           placeId,
           candidatId,
-          state.departements.active
+          state.departements.active,
         )
         if (!success) {
           throw new Error(message)

@@ -115,6 +115,7 @@ const candidatFailureExam = {
   candidatExistant: 'OK',
   isValidatedByAurige: false,
   isValidatedEmail,
+  departement: '93',
   adresse,
   portable,
   noReussites: [
@@ -236,6 +237,7 @@ const candidatFailureExam3 = {
   candidatExistant: 'OK',
   isValidatedByAurige: false,
   isValidatedEmail,
+  departement: '93',
   adresse,
   portable,
   noReussites: [
@@ -315,6 +317,7 @@ const candidatFailureExamWith5Failures = {
   candidatExistant: 'OK',
   isValidatedByAurige: false,
   isValidatedEmail,
+  departement: '93',
   adresse,
   portable,
   places: [
@@ -349,6 +352,7 @@ const candidatPassed = {
   candidatExistant: 'OK',
   isValidatedByAurige: false,
   isValidatedEmail,
+  departement: '93',
   adresse,
   portable,
   noReussites: [],
@@ -377,6 +381,7 @@ const candidatPassedCentre2 = {
   candidatExistant: 'OK',
   isValidatedByAurige: false,
   isValidatedEmail,
+  departement: '93',
   adresse,
   portable,
   noReussites: [],
@@ -398,6 +403,7 @@ const candidatPassedWithNoReussites = {
   codeNeph: '0931234567891',
   nomNaissance: 'MAD1',
   email: 'madmax1@candilib.com',
+  departement: '93',
   noReussites: [
     {
       date: dateDernierEchecPratiqueWithPenalty(45 * 2),
@@ -440,6 +446,7 @@ const candidatPassedNoCandilib = {
   nomNaissance: 'MAD2',
   prenom: 'MAX2',
   email: 'madmax2@candilib.com',
+  departement: '93',
   places: [
     {
       date: dateTimeDernierEchecPratiqueWithPenalty(45 * 2).toISO(),

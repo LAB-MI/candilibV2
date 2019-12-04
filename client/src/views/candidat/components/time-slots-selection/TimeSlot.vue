@@ -7,7 +7,7 @@
       >({{ center.selected.departement }})</span>
     </page-title>
 
-    <v-alert :value="warningMessage" type="warning" style="font-size: 1em;">{{ warningMessage }}</v-alert>
+    <v-alert :value="!!warningMessage" type="warning" style="font-size: 1em;">{{ warningMessage }}</v-alert>
 
     <v-tabs
       v-model="switchTab"
@@ -45,7 +45,7 @@
     </v-tabs-items>
 
     <v-card-actions class="u-flex--center">
-      <v-btn outline color="info" @click="goToSelectCenter">
+      <v-btn outlined color="info" @click="goToSelectCenter">
         <v-icon>arrow_back_ios</v-icon>Retour
       </v-btn>
     </v-card-actions>
@@ -94,7 +94,9 @@ export default {
       numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
       timeOutToRetry: state => state.reservation.booked.timeOutToRetry,
     }),
-
+    canCancelBooking () {
+      return this.$store.getters.canCancelBooking
+    },
     isEchecPratique () {
       const { canBookFrom, dateDernierEchecPratique } = this.reservation.booked
       const dateLastEchecPlus45Days = dateDernierEchecPratique &&
@@ -117,7 +119,7 @@ export default {
           {
             numberOfDaysBeforeDate: this.numberOfDaysBeforeDate,
             canBookFromAfterCancel: this.canBookFromAfterCancel,
-          }
+          },
         )
       }
       if (this.isEchecPratique) {
@@ -128,7 +130,7 @@ export default {
           {
             dateDernierEchecPratique: getFrenchDateFromIso(this.dateDernierEchecPratique),
             canBookFromAfterFailure: this.canBookFromAfterFailure,
-          }
+          },
         )
       }
       return ''
@@ -139,11 +141,9 @@ export default {
         return false
       }
       const now = getFrenchLuxonCurrentDateTime()
-      const { canBookFrom, lastDateToCancel } = this.reservation.booked
+      const { canBookFrom } = this.reservation.booked
       const isPenaltyActive =
-        (canBookFrom && getFrenchLuxonFromIso(canBookFrom) > now) ||
-        now >
-          getFrenchLuxonFromIso(lastDateToCancel)
+        (canBookFrom && getFrenchLuxonFromIso(canBookFrom) > now) || !this.canCancelBooking
 
       return isPenaltyActive
     },
@@ -152,17 +152,14 @@ export default {
       const {
         canBookFrom,
         date,
-        lastDateToCancel,
         timeOutToRetry,
       } = this.reservation.booked
+
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      } else if (
-        getFrenchLuxonCurrentDateTime() >
-        getFrenchLuxonFromIso(lastDateToCancel)
-      ) {
+      } else if (!this.canCancelBooking) {
         return getFrenchDateFromLuxon(
-          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
+          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry }),
         )
       }
       return ''
@@ -246,7 +243,7 @@ export default {
 
 .sticky-months {
   position: sticky;
-  top: 150px;
+  top: 180px;
   z-index: 1;
 }
 </style>

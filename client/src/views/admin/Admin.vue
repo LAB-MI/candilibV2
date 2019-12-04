@@ -1,18 +1,20 @@
 <template>
   <v-container
-    class="admin  admin-wrapper  u-flex  u-flex--column"
+    class="admin  admin-wrapper  u-flex  u-flex--column  u-full-height"
   >
     <admin-header :email="admin.email" :header-icons="headerIcons" />
+
     <main role="main" class="u-flex__item--grow" :style="{margin: '3em 0 0 0'}">
       <router-view />
     </main>
+
     <admin-footer />
   </v-container>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI } from '../../constants'
+import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI, ROUTE_AUTHORIZE_USERS } from '../../constants'
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
 
@@ -48,6 +50,12 @@ const headerIcons = [
     iconName: 'favorite',
     tooltipText: 'Liste blanche',
   },
+  {
+    routerTo: ROUTE_AUTHORIZE_USERS,
+    iconName: 'people_alt',
+    tooltipText: 'Répartiteur/Délégué',
+    isProtected: true,
+  },
 ]
 
 export default {
@@ -75,15 +83,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-  .admin-container {
-    padding-top: "40px";
-  }
-
   .admin-wrapper {
     max-width: 100vw;
-    min-height: 100%;
-    padding-left: 0;
-    padding-right: 0;
-    padding-bottom: 0;
+    padding: 0;
   }
 </style>

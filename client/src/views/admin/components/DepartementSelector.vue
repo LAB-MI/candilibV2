@@ -10,7 +10,7 @@
           <v-btn
             fab
             v-on="{ ...menu, ...tooltip}"
-            outline
+            outlined
             ripple
             small
           >
@@ -21,7 +21,7 @@
         </v-tooltip>
       </template>
       <v-list>
-        <v-list-tile
+        <v-list-item
           v-for="(departement, i) in admin.departements.list"
           :key="i"
           @click="activeDepartement = departement"
@@ -31,7 +31,7 @@
           >
             {{ departement }}
           </v-chip>
-        </v-list-tile>
+        </v-list-item>
       </v-list>
     </v-menu>
   </div>
@@ -100,8 +100,8 @@ export default {
 
   .hexagon-wrapper:last-child {
     position: absolute;
-    bottom: -0.5em;
-    right: -0.75em;
+    bottom: -0.25em;
+    right: -0.5em;
   }
 }
 

@@ -5,11 +5,19 @@ import 'typeface-roboto/index.css'
 import 'vuetify/dist/vuetify.min.css'
 import fr from 'vuetify/es5/locale/fr'
 
-Vue.use(Vuetify, {
-  iconfont: 'md',
+Vue.use(Vuetify)
+
+export default new Vuetify({
+  icons: {
+    iconfont: 'md',
+  },
   theme: {
-    primary: '#169DB2',
-    error: '#891329',
+    themes: {
+      light: {
+        primary: '#169DB2',
+        error: '#891329',
+      },
+    },
   },
   lang: {
     locales: { fr },

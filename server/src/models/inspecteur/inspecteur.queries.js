@@ -54,8 +54,16 @@ export const findInspecteursMatching = async $search => {
   ]
 }
 
-export const findInspecteurByName = async prenom =>
-  Inspecteur.findOne({ prenom })
+export const findInspecteurByName = async (prenom, nom) => {
+  const inspecteur = {}
+  if (nom) {
+    inspecteur.nom = nom
+  }
+  if (prenom) {
+    inspecteur.prenom = prenom
+  }
+  return Inspecteur.findOne(inspecteur)
+}
 
 export const findInspecteurByEmail = async email =>
   Inspecteur.findOne({ email })

@@ -9,7 +9,7 @@
 describe('Dashboard tests', () => {
   before(() => {
     // Delete all mails before start
-    cy.mhDeleteAll()
+    cy.deleteAllMails()
     cy.adminLogin()
     cy.archiveCandidate()
     cy.addPlanning()
@@ -18,7 +18,7 @@ describe('Dashboard tests', () => {
     cy.candidatePreSignUp()
   })
 
-  for (var role of ['candidat', 'inspecteur']) {
+  for (const role of ['candidat', 'inspecteur']) {
     it('Searches for ' + role, () => {
       cy.adminLogin()
       cy.get('.t-search-' + role + ' [type=text]')
@@ -67,7 +67,7 @@ describe('Dashboard tests', () => {
       .should('contain', Cypress.env('placeDate'))
     cy.get('.t-date-picker [type=text]').invoke('val')
       .should('contain', Cypress.env('dateLong'))
-    cy.get('.v-tabs__item--active')
+    cy.get('.v-tab--active')
       .should('contain', Cypress.env('centre'))
     // Checks the number of places available
     cy.get('.v-window-item').not('[style="display: none;"]')

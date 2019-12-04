@@ -15,9 +15,9 @@ import {
   bookCandidatOnSelectedPlace,
   centres,
   commonBasePlaceDateTime,
+  createCandidatAndUpdate,
   createCandidats,
   createCandidatsAndUpdate,
-  createCandidatAndUpdate,
   createCentres,
   createInspecteurs,
   createPlaces,
@@ -28,6 +28,7 @@ import {
   removeCentres,
   removePlaces,
   setInitCreatedCentre,
+  resetCreatedInspecteurs,
   setInitCreatedPlaces,
 } from '../../models/__tests__'
 import { connect, disconnect } from '../../mongo-connection'
@@ -41,16 +42,19 @@ import {
 import {
   deletePlacesByAdmin,
   getPlaces,
+  sendScheduleInspecteurs,
   updatePlaces,
 } from './places-controllers'
-import { SUBJECT_CONVOCATION } from '../business'
-import { getConvocationBody } from '../business/build-mail-convocation'
 import { REASON_MODIFY_RESA_ADMIN } from '../common/reason.constants'
 import {
   DELETE_PLACES_BY_ADMIN_ERROR,
   DELETE_PLACES_BY_ADMIN_SUCCESS,
   PLACE_IS_ALREADY_BOOKED,
 } from './message.constants'
+import {
+  expectMailBordereaux,
+  expectMailConvocation,
+} from '../business/__tests__/expect-send-mail'
 
 const inspecteurTest = {
   nom: 'Doggett',
@@ -231,14 +235,15 @@ describe('update place by admin', () => {
       admin.departements,
       admin.status
     )
-
     app.use((req, res, next) => {
       req.userId = user._id
       next()
     })
+
     app.patch(`${apiPrefix}/admin/places/:id`, updatePlaces)
 
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
+    // if next-line is set as true, this display logger info in console
     require('../../util/logger').setWithConsole(false)
   })
 
@@ -468,14 +473,6 @@ describe('update place by admin', () => {
     await place.remove()
   })
 })
-function expectMailConvocation (candidat, place) {
-  const bodyMail = require('../business/send-mail').getMail()
-  expect(bodyMail).toBeDefined()
-  expect(bodyMail).toHaveProperty('to', candidat.email)
-  expect(bodyMail).toHaveProperty('subject', SUBJECT_CONVOCATION)
-  place.candidat = candidat
-  expect(bodyMail).toHaveProperty('html', getConvocationBody(place))
-}
 
 describe('delete place by admin', () => {
   const app = express()
@@ -745,5 +742,80 @@ describe('Book place and archive with bookedAt and bookedByAdmin attribut', () =
     expect(bkdByAdmin).toHaveProperty('email', email)
     expect(bkdByAdmin).toHaveProperty('signUpDate', signUpDate)
     expect(bkdByAdmin).toHaveProperty('status', status)
+  })
+})
+
+describe('Send bordereaux', () => {
+  let candidatsCreatedAndUpdated
+
+  const app = express()
+  app.use(bodyParser.json({ limit: '20mb' }))
+  app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+  beforeAll(async () => {
+    await connect()
+    setInitCreatedCentre()
+    setInitCreatedPlaces()
+    const user = await createUser(
+      admin.email,
+      admin.password,
+      admin.departements,
+      admin.status
+    )
+    app.use((req, res, next) => {
+      req.userId = user._id
+      next()
+    })
+    app.post(`${apiPrefix}/admin/bordereaux`, sendScheduleInspecteurs)
+
+    candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
+    // if next-line is set as true, this display logger info in console
+    require('../../util/logger').setWithConsole(false)
+  })
+
+  afterAll(async () => {
+    const candidats = candidatsCreatedAndUpdated.map(elt => elt.remove())
+
+    await Promise.all([...candidats])
+    await disconnect()
+  })
+
+  it('should return a 200 when send inspecteur bordereaux', async () => {
+    // Given
+    resetCreatedInspecteurs()
+    const [inspecteur1] = await createInspecteurs()
+    setInitCreatedCentre()
+    const [centre1] = await createCentres()
+
+    const createdBookedPlace = {
+      date: getFrenchLuxonFromObject({ day: 19, hour: 9 }).toISO(),
+      inspecteur: inspecteur1,
+      centre: centre1,
+      candidat: candidatsCreatedAndUpdated[0]._id,
+    }
+    const place = await createPlace(createdBookedPlace)
+    // When
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/bordereaux`)
+      .send({
+        departement: centre1.departement,
+        date: place.date,
+        isForInspecteurs: true,
+        inspecteurIdListe: [`${inspecteur1._id}`],
+      })
+      // Then
+      .expect(200)
+
+    expectMailBordereaux({
+      inspecteurName: inspecteur1.nom,
+      inspecteurMatricule: inspecteur1.matricule,
+      dateToString: getFrenchFormattedDateTime(place.date).date,
+      centreNom: centre1.nom,
+      departement: centre1.departement,
+      emailInspecteur: `${inspecteur1.email}`,
+      places: [place],
+    })
+    expect(body).toHaveProperty('success', true)
+    await place.remove()
   })
 })

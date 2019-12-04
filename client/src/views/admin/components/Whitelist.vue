@@ -104,8 +104,8 @@
 
         <v-list>
           <v-form v-model="valid" @submit.prevent="addToWhitelist">
-            <v-list-tile v-show="adding">
-              <v-list-tile-action>
+            <v-list-item v-show="adding">
+              <v-list-item-action>
                 <v-btn
                   type="submit"
                   icon
@@ -114,13 +114,13 @@
                 >
                   <v-icon color="#17a2b8">save</v-icon>
                 </v-btn>
-              </v-list-tile-action>
+              </v-list-item-action>
 
-              <v-list-tile-action @click="hideForm">
+              <v-list-item-action @click="hideForm">
                 <v-btn icon>
                   <v-icon color="#17a2b8">close</v-icon>
                 </v-btn>
-              </v-list-tile-action>
+              </v-list-item-action>
 
               <v-text-field
                 class="t-add-one-whitelist"
@@ -136,7 +136,7 @@
                 :disabled="whitelist.isUpdating"
               >
               </v-text-field>
-            </v-list-tile>
+            </v-list-item>
           </v-form>
 
           <v-dialog
@@ -164,7 +164,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   color="primary"
-                  outline
+                  outlined
                   @click="deleting = false"
                 >
                   Annuler
@@ -183,40 +183,40 @@
         <v-divider></v-divider>
 
         <v-list>
-          <v-list-tile v-if="!adding" @click="showForm">
-            <v-list-tile-action>
+          <v-list-item v-if="!adding" @click="showForm">
+            <v-list-item-action>
               <v-btn icon >
                 <v-icon color="#17a2b8">
                   add_circle
                 </v-icon>
               </v-btn>
-            </v-list-tile-action>
+            </v-list-item-action>
             <span
               class="grey--text  text--darken-1"
             >
               Ajouter une adresse courriel
             </span>
-          </v-list-tile>
+          </v-list-item>
 
           <v-divider></v-divider>
 
-          <v-list-tile
+          <v-list-item
             v-show="!addingBatch"
             @click="showBatchForm"
           >
-            <v-list-tile-action>
-              <v-btn icon >
+            <v-list-item-action>
+              <v-btn icon>
                 <v-icon color="#17a2b8">
                   playlist_add
                 </v-icon>
               </v-btn>
-            </v-list-tile-action>
+            </v-list-item-action>
             <span
               class="grey--text  text--darken-1"
             >
               Ajouter un lot d'adresse courriel
             </span>
-          </v-list-tile>
+          </v-list-item>
 
           <v-form
             v-model="validBatch"
@@ -241,16 +241,16 @@
               </v-textarea>
             </v-container>
 
-            <v-list-tile v-show="addingBatch" style="padding-bottom: 2em;">
+            <v-list-item v-show="addingBatch" style="padding-bottom: 2em;">
               <v-spacer></v-spacer>
 
-              <v-list-tile-action>
+              <v-list-item-action>
                 <v-btn
                   ref="saveBatchEmail"
                   id="save-batch-email"
                   color="primary"
                   v-ripple
-                  flat
+                  text
                   :aria-disabled="whitelist.isUpdating"
                   :disabled="whitelist.isUpdating"
                   type="submit"
@@ -272,7 +272,7 @@
                   <v-btn
                     color="primary"
                     v-ripple
-                    flat
+                    text
                     style="padding-right: 1em; padding-left: 1em;"
                   >
                     <span style="padding-right: 1em;">
@@ -281,14 +281,14 @@
                     <v-icon>cloud_upload</v-icon>
                   </v-btn>
                 </label>
-              </v-list-tile-action>
+              </v-list-item-action>
 
-              <v-list-tile-action @click="hideBatchForm">
+              <v-list-item-action @click="hideBatchForm">
                 <v-btn icon>
                   <v-icon color="#17a2b8">close</v-icon>
                 </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
           </v-form>
 
         </v-list>
@@ -297,7 +297,7 @@
       <v-card v-show="whitelist.updateResult && whitelist.updateResult.length">
         <h3>Résultat de l'opération d'ajout par lot</h3>
         <v-list class="t-whitelist-batch-result">
-          <v-list-tile v-for="result in whitelist.updateResult" :key="result.email">
+          <v-list-item v-for="result in whitelist.updateResult" :key="result.email">
             <v-icon
               :color="result.code === 201 ? 'success' : 'error'"
             >{{result.code === 201 ? 'check' : 'close'}}</v-icon>
@@ -314,7 +314,7 @@
             <span class="result-message">
               {{codeMessageDictionary[result.code]}}
             </span>
-          </v-list-tile>
+          </v-list-item>
         </v-list>
       </v-card>
     </v-container>

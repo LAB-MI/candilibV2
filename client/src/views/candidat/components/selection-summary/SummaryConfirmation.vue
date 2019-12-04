@@ -26,7 +26,7 @@
         <v-flex d-flex>
           <v-spacer></v-spacer>
           <v-btn
-            outline
+            outlined
             color="info"
             :disabled="isBackButtonDisabled"
             :aria-disabled="isBackButtonDisabled"

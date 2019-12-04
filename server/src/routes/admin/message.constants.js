@@ -12,8 +12,8 @@ export const DELETE_PLACES_BY_ADMIN_SUCCESS =
   'La suppression des places sélectionnées a bien été effectuée'
 export const DELETE_PLACES_BY_ADMIN_ERROR =
   'Les places à supprimer ne sont pas définies'
-export const SOME_PARAMS_ARE_NOT_DEFINED =
-  'Certains paramètres ne sont pas définis'
+export const SOME_PARAMS_ARE_NOT_DEFINED_OR_INCORRECT =
+  'Les paramètres renseignés sont incorrects'
 export const UNKNOW_ERROR_GET_CANDIDAT =
   'Un problème est survenu lors de la recherche du candidat'
 export const ACCESS_FORBIDDEN = 'Accès interdit'
@@ -30,3 +30,10 @@ export const UNKNOWN_ERROR_ADD_WHITELISTED =
   "Un problème est survenu lors de l'ajout dans la whitelist"
 export const UNKNOWN_ERROR_UPLOAD_PLACES =
   "Un problème est survenu lors de l'import de places"
+export const CANNOT_ACTION_USER =
+  "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+export const INCORRECT_DEPARTEMENT_LIST =
+  "La liste des départements d'intervention est incorrecte"
+export const INVALID_EMAIL = "L'adresse courriel n'est pas valide"
+export const USER_NO_EXIST = "L'utilisateur n'existe pas"
+export const INVALID_DEPARTEMENTS_LIST = 'La liste départements est invalide'

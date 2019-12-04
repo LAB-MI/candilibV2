@@ -1,7 +1,7 @@
 <template>
   <v-dialog v-model="showEvaluation" max-width="310">
     <v-card
-      class="elevation-12 mx-auto"
+      class="t-evaluation elevation-12 mx-auto"
       width="300"
     >
       <v-card-title
@@ -31,15 +31,17 @@
       <v-divider></v-divider>
       <v-card-actions class="justify-space-between">
         <v-btn
-          flat
+          text
           @click="showEvaluation = false"
+          class="t-evaluation-later"
         >
           {{ $formatMessage({ id: 'later' }) }}
         </v-btn>
         <v-btn
           color="primary"
-          flat
+          text
           @click="sendEvaluation"
+          class="t-evaluation-submit"
         >
           {{ $formatMessage({ id: 'evaluate_now' }) }}
         </v-btn>

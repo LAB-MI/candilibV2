@@ -148,7 +148,7 @@ export default {
     },
 
     async sendEmail () {
-      const json = await apiClient.get(`${apiPaths.candidat.places}?bymail=${true}`, {
+      const json = await apiClient.get(`${apiPaths.candidat.places}?byMail=${true}`, {
         headers: getHeadersForJson(),
       })
       return json
@@ -206,9 +206,32 @@ export default {
       return json
     },
 
+    async createUser (user) {
+      const json = await apiClient.post(apiPaths.admin.users, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify(user),
+      })
+      return json
+    },
+
     async getMe () {
       const json = await apiClient.get(apiPaths.admin.myProfile, {
         headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
+    async getUsers () {
+      const json = await apiClient.get(apiPaths.admin.users, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
+    async deleteUser (emailToDelete) {
+      const json = await apiClient.delete(apiPaths.admin.users, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ email: emailToDelete }),
       })
       return json
     },
@@ -289,12 +312,22 @@ export default {
       return json
     },
 
+    async getInspecteursBookedByDepartement (date, departement) {
+      const encodedDate = encodeURIComponent(date)
+      const path = apiPaths.admin.inspecteurs
+      const url = `${path}?departement=${departement}&date=${encodedDate}`
+      const json = await apiClient.get(url, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
     async getInspecteursByCentreAndDate (centreId, begin, end) {
       const json = await apiClient.get(
         `${apiPaths.admin.inspecteurs}?centreId=${centreId}&begin=${begin}&end=${end}`,
         {
           headers: getHeadersForAdminJson(),
-        }
+        },
       )
       return json
     },
@@ -304,7 +337,7 @@ export default {
         `${apiPaths.admin.inspecteurs}?matching=${search || ''}&departement=${departement}`,
         {
           headers: getHeadersForAdminJson(),
-        }
+        },
       )
       return json
     },
@@ -393,7 +426,7 @@ export default {
         {
           headers: getHeadersForAdminJson(),
           body: JSON.stringify(whitelisted),
-        }
+        },
       )
       return json
     },
@@ -454,10 +487,10 @@ export default {
       return json
     },
 
-    async generateBordereaux (departement, date, isForInspecteurs) {
+    async generateBordereaux (departement, date, isForInspecteurs, inspecteurIdListe) {
       const json = await apiClient.post(`${apiPaths.admin.generateBordereaux}`, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ departement, date, isForInspecteurs }),
+        body: JSON.stringify({ departement, date, isForInspecteurs, inspecteurIdListe }),
       })
       return json
     },

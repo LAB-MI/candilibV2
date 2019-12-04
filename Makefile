@@ -220,6 +220,26 @@ init-db-e2e:
 #
 clean-log-e2e:
 	rm e2e.log
+
+#
+# Extract files from candidat/admin docker images
+#
+export-front-all: build-dir build-dist-dir export-front-candidat export-front-admin extract-export-front-candidat extract-export-front-admin
+build-dist-dir:
+	mkdir -p $(DIST_DIR)/dist/{candilib-repartiteur,candilib}
+clean-dist-dir:
+	if [ -d "$(DIST_DIR)" ] ; then rm -rf $(DIST_DIR) ; fi
+export-front-candidat: check-up-front-candidat network-up
+#	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} run -T --no-deps --rm front_candidat /bin/bash -c "(cd /usr/share/nginx/html && find . -type f)"
+	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} run -T --no-deps --rm front_candidat /bin/bash -c "( cd /usr/share/nginx/html && tar zCcf ./ - . )"  > $(BUILD_DIR)/$(FILE_FRONT_CANDIDAT_APP_VERSION)
+export-front-admin: check-up-front-admin network-up
+	${DC} -f ${DC_APP_FRONT_ADMIN_RUN_PROD} run -T --no-deps --rm front_admin /bin/bash -c "( cd /usr/share/nginx/html && tar zCcf ./ - . )"  > $(BUILD_DIR)/$(FILE_FRONT_ADMIN_APP_VERSION)
+extract-export-front-candidat:
+	( cd $(DIST_DIR)/dist/candilib && tar -zxvf $(BUILD_DIR)/$(FILE_FRONT_CANDIDAT_APP_VERSION) )
+extract-export-front-admin:
+	( cd $(DIST_DIR)/dist/candilib-repartiteur && tar -zxvf $(BUILD_DIR)/$(FILE_FRONT_ADMIN_APP_VERSION) )
+
+
 #
 # save images
 #

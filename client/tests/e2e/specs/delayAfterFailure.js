@@ -8,7 +8,7 @@ var magicLink
 describe('Test delay after failed attempt', () => {
   before(() => {
     // Delete all mails before start
-    cy.mhDeleteAll()
+    cy.deleteAllMails()
     // Creates the aurige files
     cy.writeFile(Cypress.env('filePath') + '/aurige.json',
       [
@@ -60,18 +60,17 @@ describe('Test delay after failed attempt', () => {
       .should('contain', Cypress.env('candidat'))
     cy.get('.ag-cell')
       .should('contain', 'Pour le 75, un magic link est envoyé à ' + Cypress.env('emailCandidat'))
-    cy.mhGetMailsByRecipient(Cypress.env('emailCandidat'))
-      .mhFirst()
-      .mhGetSubject()
+    cy.getLastMail({ recipient: Cypress.env('emailCandidat') })
+      .getSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
     // Disconnects from the app
     cy.adminDisconnection()
     // The candidate gets the link
-    cy.mhGetFirstRecipients()
+    cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('emailCandidat'))
-    cy.mhGetFirstSubject()
+    cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
-    cy.mhGetFirstBody().then((mailBody) => {
+    cy.getLastMail().its('Content.Body').then((mailBody) => {
       const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
       const withoutEq = codedLink.replace(/=\r\n/g, '')
       magicLink = withoutEq.replace(/=3D/g, '=')
@@ -89,11 +88,10 @@ describe('Test delay after failed attempt', () => {
       .should('not.have.class', 'primary--text')
     cy.get('.t-disconnect')
       .click()
-    cy.get('.v-dialog')
+    cy.get('.t-evaluation')
       .should('contain', 'Merci de noter Candilib')
-      .find('button')
-      .contains('Noter maintenant')
-      .click({ timeout: 10000 })
+    cy.get('.t-evaluation-submit')
+      .click()
     cy.url()
       .should('contain', 'candidat-presignup')
   })

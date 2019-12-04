@@ -9,7 +9,8 @@ import {
 } from '../../models/inspecteur'
 import { findAllPlacesByCentre } from '../../models/place'
 import { appLogger, getFrenchLuxonFromISO } from '../../util'
-import { SOME_PARAMS_ARE_NOT_DEFINED } from './message.constants'
+import { SOME_PARAMS_ARE_NOT_DEFINED_OR_INCORRECT } from './message.constants'
+import { getInspecteursBookedFromDepartement } from './inspecteurs-business'
 
 /**
  * Récupère les informations d'un ou plusieurs inspecteurs
@@ -29,7 +30,7 @@ import { SOME_PARAMS_ARE_NOT_DEFINED } from './message.constants'
  * @param {import('express').Response} res
  */
 export const getInspecteurs = async (req, res) => {
-  const { matching, departement, centreId, begin, end } = req.query
+  const { matching, departement, centreId, begin, end, date } = req.query
 
   const loggerInfo = {
     section: 'admin-get-inspecteur',
@@ -40,7 +41,27 @@ export const getInspecteurs = async (req, res) => {
     begin,
     end,
   }
-  if (departement && !matching && !centreId && !begin && !end) {
+
+  if (date && departement && !matching && !centreId && !begin && !end) {
+    appLogger.debug({
+      ...loggerInfo,
+      func: 'getInspecteurs',
+    })
+
+    const results = await getInspecteursBookedFromDepartement(date, departement)
+
+    appLogger.info({
+      ...loggerInfo,
+      nbInspecteurs: results.length,
+    })
+
+    return res.status(200).send({
+      success: true,
+      results,
+    })
+  }
+
+  if (departement && !matching && !centreId && !begin && !end && !date) {
     // obtenir la liste des inspecteurs par département
     try {
       loggerInfo.action = 'get-by-departement'
@@ -63,7 +84,7 @@ export const getInspecteurs = async (req, res) => {
         message: error.message,
       })
     }
-  } else if (matching && !centreId && !begin && !end) {
+  } else if (matching && !centreId && !begin && !end && !date) {
     // Recherche un inspecteur
     try {
       loggerInfo.action = 'get-by-matching'
@@ -85,7 +106,7 @@ export const getInspecteurs = async (req, res) => {
         message: error.message,
       })
     }
-  } else if (centreId && begin && end) {
+  } else if (centreId && begin && end && !date) {
     try {
       loggerInfo.action = 'get-inspecteur-by-list-ids'
       appLogger.info(loggerInfo)
@@ -120,10 +141,13 @@ export const getInspecteurs = async (req, res) => {
       })
     }
   } else {
-    appLogger.warn({ ...loggerInfo, message: SOME_PARAMS_ARE_NOT_DEFINED })
+    appLogger.warn({
+      ...loggerInfo,
+      message: SOME_PARAMS_ARE_NOT_DEFINED_OR_INCORRECT,
+    })
     return res.status(400).send({
       success: false,
-      message: SOME_PARAMS_ARE_NOT_DEFINED,
+      message: SOME_PARAMS_ARE_NOT_DEFINED_OR_INCORRECT,
     })
   }
 }

@@ -27,6 +27,14 @@ module.exports = {
     svgRule
       .use('svg-inline-loader')
       .loader('svg-inline-loader')
+
+    const vueRule = config.module.rule('vue')
+
+    vueRule
+      .use('vue-loader')
+      .tap(args => {
+        args.compilerOptions.whitespace = 'condense'
+      })
   },
 
   pluginOptions: {

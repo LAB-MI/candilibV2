@@ -1,97 +1,91 @@
 <template>
-  <v-container>
-    <v-toolbar
-      style="margin-top: 65px;"
-      color="white"
-      extended
-      fixed
-    >
-      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les départements`"></v-switch>
-      <template v-slot:extension>
+  <div>
+    <page-title :title="'Stats Kpi'" />
 
-        <v-toolbar-title>
-          <v-menu
-            v-model="menuStart"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            readonly
-            full-width
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="pickerDateStart"
-                label="Date de début de période"
-                prepend-icon="event"
-                v-on="on"
-                readonly
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              v-model="dateStart"
-              @input="menuStart = false"
-              locale="fr"
-            ></v-date-picker>
-          </v-menu>
+    <v-card class="container  stats-filters">
+      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les départements`" />
 
-        </v-toolbar-title>
+      <div class="u-flex">
+        <v-menu
+          v-model="menuStart"
+          :close-on-content-click="false"
+          :nudge-right="40"
+          transition="scale-transition"
+          readonly
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="pickerDateStart"
+              label="Date de début de période"
+              prepend-icon="event"
+              v-on="on"
+              readonly
+            ></v-text-field>
+          </template>
 
-        <v-toolbar-title>
-          <v-menu
-            v-model="menuEnd"
-            :close-on-content-click="false"
-            :nudge-right="40"
-            transition="scale-transition"
-            offset-y
-            readonly
-            full-width
-            min-width="290px"
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="pickerDateEnd"
-                label="Date de fin de période"
-                prepend-icon="event"
-                v-on="on"
-                readonly
-              ></v-text-field>
-            </template>
-            <v-date-picker
-              color="red"
-              v-model="dateEnd"
-              @input="menuEnd = false"
-              locale="fr"
-            ></v-date-picker>
-          </v-menu>
-        </v-toolbar-title>
+          <v-date-picker
+            v-model="dateStart"
+            @input="menuStart = false"
+            locale="fr"
+          ></v-date-picker>
+        </v-menu>
 
-        <v-spacer></v-spacer>
-        <page-title class="title-position" :title="'Stats Kpi'" />
-        <v-spacer></v-spacer>
+        <v-menu
+          v-model="menuEnd"
+          :close-on-content-click="false"
+          :nudge-right="40"
+          transition="scale-transition"
+          readonly
+          min-width="290px"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="pickerDateEnd"
+              label="Date de fin de période"
+              prepend-icon="event"
+              v-on="on"
+              readonly
+            ></v-text-field>
+          </template>
 
+          <v-date-picker
+            color="red"
+            v-model="dateEnd"
+            @input="menuEnd = false"
+            locale="fr"
+          ></v-date-picker>
+        </v-menu>
+      </div>
+
+      <div class="u-flex  u-flex--center">
         <v-btn color="primary" @click="getStatsKpiResultsExams(true)">
+
           {{ $formatMessage({ id: 'export_stats_csv' }) }}
+
           <v-icon>
             get_app
           </v-icon>
-          <v-icon>
-            assessment
-          </v-icon>
-        </v-btn>
-        <v-btn color="primary" @click="getStatsKpiPlacesExams(true)">
-          {{ $formatMessage({ id: 'export_places_stats_csv' }) }}
-          <v-icon>
-            get_app
-          </v-icon>
+
           <v-icon>
             assessment
           </v-icon>
         </v-btn>
 
-      </template>
-    </v-toolbar>
+        <v-btn color="primary" @click="getStatsKpiPlacesExams(true)">
+
+          {{ $formatMessage({ id: 'export_places_stats_csv' }) }}
+
+          <v-icon>
+            get_app
+          </v-icon>
+
+          <v-icon>
+            assessment
+          </v-icon>
+        </v-btn>
+      </div>
+    </v-card>
 
     <v-flex
       style="margin-top: 8vh; display: block;"
@@ -115,7 +109,7 @@
         :statsPlacesExamValues="selectStatsKpiPlacesExamsByDpt(elem.departement)"
       />
     </v-flex>
-  </v-container>
+  </div>
 </template>
 
 <script>
@@ -292,7 +286,10 @@ export default {
   margin-top: 4%;
 }
 
-.title-position {
-  margin-top: -6vh;
+.stats-filters {
+  position: sticky;
+  top: 4.5em;
+  z-index: 2;
+  margin-top: 1em;
 }
 </style>
