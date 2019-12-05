@@ -1,21 +1,13 @@
 @font-face {
   font-family: Poppins-Regular;
-  src: url('./assets/fonts/poppins/Poppins-Regular.ttf');
+  src: url('./assets/fonts/poppins/Poppins-Regular.woff2'),
+       url('./assets/fonts/poppins/Poppins-Regular.ttf');
 }
 
 @font-face {
   font-family: Poppins-Medium;
-  src: url('./assets/fonts/poppins/Poppins-Medium.ttf');
-}
-
-@font-face {
-  font-family: Poppins-Bold;
-  src: url('./assets/fonts/poppins/Poppins-Bold.ttf');
-}
-
-@font-face {
-  font-family: Poppins-SemiBold;
-  src: url('./assets/fonts/poppins/Poppins-SemiBold.ttf');
+  src: url('./assets/fonts/poppins/Poppins-Medium.woff2'),
+       url('./assets/fonts/poppins/Poppins-Medium.ttf');
 }
 
 a {
@@ -23,7 +15,7 @@ a {
 }
 
 body {
-  font-family: 'Poppins-Regular', Helvetica, Arial, sans-serif;
+  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
@@ -47,8 +39,17 @@ h3 {
   text-align: center;
 }
 
+.u-centered {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .u-flex {
   display: flex;
+
+  &--wrap {
+    flex-wrap: wrap;
+  }
 
   &--center {
     justify-content: center;
@@ -157,6 +158,10 @@ h3 {
   max-width: 100vw;
 }
 
+.u-full-height {
+  height: 100%;
+}
+
 .u-fixed-header {
   position: fixed;
 }
@@ -171,6 +176,18 @@ h3 {
   @media (min-width: 600px) {
     display: none;
   }
+}
+
+.u-pointer {
+  cursor: pointer;
+}
+
+.u-pr {
+  position: relative;
+}
+
+.u-uppercase {
+  text-transform: uppercase;
 }
 
 .candidat-section-header {
@@ -219,4 +236,8 @@ h3 {
     fill: rgba(100, 100, 100, 0.8);
     stroke: rgba(200, 0, 0, 1);
   }
+}
+
+.v-btn {
+  margin: 0.5em;
 }

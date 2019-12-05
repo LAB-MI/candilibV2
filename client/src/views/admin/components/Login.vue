@@ -1,14 +1,19 @@
 <template>
   <div class="login" v-bind:style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }">
     <bandeau-beta fixed />
+
     <div class="login-bg-filter"></div>
+
     <v-form v-model="valid" class="login-form" @submit.prevent="getToken">
       <h2 class="text--center">ADMINISTRATEUR</h2>
+
       <h3 class="text--center">
         C<span class="col-red">A</span>NDILIB
       </h3>
+
       <div class="form-input">
         <v-text-field
+          class="t-login-email"
           aria-placeholder="jean@dupont.fr"
           autofocus
           hint="ex. : jean@dupont.fr"
@@ -19,6 +24,7 @@
           v-model="email"
         ></v-text-field>
       </div>
+
       <div class="form-input">
         <v-text-field
           aria-placeholder="mot de passe"
@@ -33,12 +39,15 @@
           v-model="password"
         ></v-text-field>
       </div>
+
       <div class="form-input">
         <button tabindex="3" class="submit-btn">
           <div class="submit-bgbtn"></div>
           <div class="submit-label">Connexion</div>
         </button>
+        <email-password-reset class="u-flex u-flex--center"/>
       </div>
+
       <admin-version/>
     </v-form>
   </div>
@@ -56,13 +65,17 @@ import {
   SIGNED_IN_AS_ADMIN,
 } from '@/store'
 
-import AdminVersion from '../../../components/AppVersion.vue'
+import AdminVersion from '@/components/AppVersion.vue'
+import EmailPasswordReset from './EmailPasswordReset'
 
 export default {
+  name: 'Login',
+
   components: {
     AdminVersion,
+    EmailPasswordReset,
   },
-  name: 'Login',
+
   data () {
     return {
       backgroundImgUrl,
@@ -75,6 +88,7 @@ export default {
       passwordRules: [v => !!v || 'Veuillez renseigner votre mot de passe'],
       showPassword: false,
       valid: false,
+      showDialog: false,
     }
   },
 
@@ -204,5 +218,4 @@ export default {
 .v-messages {
   min-height: 1.2em;
 }
-
 </style>

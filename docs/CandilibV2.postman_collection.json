@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "0c8fe073-e33c-4795-9cb1-192904f0a182",
+		"_postman_id": "df747b97-76ad-4b1a-977c-41127a553965",
 		"name": "CandilibV2",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -10,6 +10,19 @@
 			"item": [
 				{
 					"name": "Connexion admin",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "6cb59214-467d-410d-9776-81df6b78d244",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"pm.environment.set(\"TOKEN\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
 					"request": {
 						"auth": {
 							"type": "noauth"
@@ -24,6 +37,54 @@
 						"body": {
 							"mode": "raw",
 							"raw": "{\n\t\"email\": \"admin@example.com\",\n\t\"password\": \"Admin*78\"\n}"
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/auth/admin/token",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"auth",
+								"admin",
+								"token"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Connexion delegue",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "1e1f54b7-c2c6-4fb7-b796-718ddaf55879",
+								"exec": [
+									"var jsonData = JSON.parse(responseBody)",
+									"pm.environment.set(\"TOKEN\", jsonData.token);"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"delegue@example.com\",\n\t\"password\": \"Admin*78\"\n}"
 						},
 						"url": {
 							"raw": "http://{{HOST}}:{{PORT}}/api/v2/auth/admin/token",
@@ -64,8 +125,8 @@
 							"formdata": [
 								{
 									"key": "file",
-									"type": "file",
-									"value": ""
+									"value": "",
+									"type": "file"
 								}
 							]
 						},
@@ -102,10 +163,6 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats?format=csv",
 							"protocol": "http",
@@ -143,12 +200,8 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats?format=csv&filter=resa",
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats?format=csv&for=aurige",
 							"protocol": "http",
 							"host": [
 								"{{HOST}}"
@@ -167,7 +220,12 @@
 								},
 								{
 									"key": "filter",
-									"value": "resa"
+									"value": "resa",
+									"disabled": true
+								},
+								{
+									"key": "for",
+									"value": "aurige"
 								}
 							]
 						}
@@ -188,10 +246,6 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats?format=csv&format=resa&date={{date}}& inspecteur={{inspecteur}}&centre={{centre}}",
 							"protocol": "http",
@@ -247,10 +301,6 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
 							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/candidats",
 							"protocol": "http",
@@ -284,12 +334,8 @@
 								"value": "application/x-www-form-urlencoded"
 							}
 						],
-						"body": {
-							"mode": "raw",
-							"raw": ""
-						},
 						"url": {
-							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/whitelist",
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/whitelisted",
 							"protocol": "http",
 							"host": [
 								"{{HOST}}"
@@ -299,7 +345,7 @@
 								"api",
 								"v2",
 								"admin",
-								"whitelist"
+								"whitelisted"
 							]
 						},
 						"description": "Get list of email of the whitelist"
@@ -322,10 +368,10 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n\t\"email\": \"user.example.com\",\n}"
+							"raw": "{\n\t\"email\": \"user@example.com\"\n}"
 						},
 						"url": {
-							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/whitelist",
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/whitelisted",
 							"protocol": "http",
 							"host": [
 								"{{HOST}}"
@@ -335,7 +381,220 @@
 								"api",
 								"v2",
 								"admin",
-								"whitelist"
+								"whitelisted"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMDRkNjgxNzViMzQ4MTdhYjU2M2ZiMiIsImxldmVsIjozLCJkZXBhcnRlbWVudHMiOlsiNzUiLCI5MyJdLCJpYXQiOjE1NzE2NDAzMTYsImV4cCI6MTU3MTY5NTE5OH0.WqrWVTr3IEDhB_-M06Hru692n6SvWdH4XmxLX2znK98",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "{{TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \n\t\"email\":\"carolin@example.fr\",\n\t\"departements\":[\"93\"],\n\t\"status\":\"repartiteur\",\n\t\"password\":\"\"\n}"
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/users",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete user",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "{{TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{  \n\t\"email\":\"Caroline@example.fr\",\n\t\"departements\":[\"93\"]\n}"
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/users",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get admin",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMDRkNjgxNzViMzQ4MTdhYjU2M2ZiMiIsImxldmVsIjozLCJkZXBhcnRlbWVudHMiOlsiNzUiLCI5MyJdLCJpYXQiOjE1NzE2NDI4MDIsImV4cCI6MTU3MTY5NTE5OH0.dscP5M7-TEmCLHKj0KithBZ5Gxh80TV9lcmaOhHOXFU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/me",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put admin",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"warning": "This is a duplicate header and will be overridden by the Authorization header generated by Postman.",
+								"key": "Authorization",
+								"value": "{{TOKEN}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{   \n\t\"email\": \"newRepart@example.fr\",\n\t\"departements\": [\"75\"],\n\t\"status\":\"delegue\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/users",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get user",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkMDRkNjgxNzViMzQ4MTdhYjU2M2ZiMiIsImxldmVsIjozLCJkZXBhcnRlbWVudHMiOlsiNzUiLCI5MyJdLCJpYXQiOjE1NzQxNzEzNjIsImV4cCI6MTU3NDIwNDM5OH0.r_2NTafGmTOlI1OgUPavw68SVyw89HDkB1v14Zrecl0",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://{{HOST}}:{{PORT}}/api/v2/admin/me",
+							"protocol": "http",
+							"host": [
+								"{{HOST}}"
+							],
+							"port": "{{PORT}}",
+							"path": [
+								"api",
+								"v2",
+								"admin",
+								"users"
 							]
 						}
 					},
@@ -505,7 +764,9 @@
 					},
 					"response": []
 				}
-			]
+			],
+			"protocolProfileBehavior": {}
 		}
-	]
+	],
+	"protocolProfileBehavior": {}
 }

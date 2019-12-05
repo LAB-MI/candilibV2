@@ -9,7 +9,7 @@ const SET_LAST_FILE = 'SET_LAST_FILE'
 
 export default {
   state: {
-    isPlacessUpadating: false,
+    isPlacesUpdating: false,
     places: [],
     lastFile: undefined,
   },
@@ -18,17 +18,17 @@ export default {
       state.lastFile = file
     },
     [UPLOAD_PLACES_REQUEST] (state) {
-      state.isPlacessUpadating = true
+      state.isPlacesUpdating = true
     },
     [UPLOAD_PLACES_SUCCESS] (state, places) {
-      state.isPlacessUpadating = false
+      state.isPlacesUpdating = false
       state.places = places
     },
     [UPLOAD_PLACES_FAILURE] (state) {
-      state.isPlacessUpadating = false
+      state.isPlacesUpdating = false
     },
-
   },
+
   actions: {
     async [UPLOAD_PLACES_REQUEST] ({ commit, dispatch }, { file, departement }) {
       commit(UPLOAD_PLACES_REQUEST)

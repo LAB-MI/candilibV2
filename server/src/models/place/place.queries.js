@@ -1,13 +1,17 @@
+/**
+ * Ensemble des actions sur les places dans la base de données
+ * @module module:models/place/place-queries
+ */
 import mongoose from 'mongoose'
 
 import Place from './place.model'
 import '../inspecteur/inspecteur.model'
-import { appLogger } from '../../util'
+import { appLogger, techLogger } from '../../util'
+import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
 export const createPlace = async leanPlace => {
-  appLogger.debug({ func: 'createPlace', leanPlace })
   const previousPlace = await Place.findOne(leanPlace)
   if (previousPlace && !(previousPlace instanceof Error)) {
     throw new Error(PLACE_ALREADY_IN_DB_ERROR)
@@ -18,7 +22,34 @@ export const createPlace = async leanPlace => {
   return place.save()
 }
 
-export const deletePlace = async place => {
+/**
+ * Archiver et supprimer la place
+ *
+ * @async
+ * @function
+ * @see [createArchivedPlaceFromPlace]{@link module:models/archived-place/archived-place-queries.createArchivedPlaceFromPlace}
+ *
+ * @param {Place~PlaceModel} place La place à supprimer
+ * @param {String[]} reasons Les raisons de la suppression
+ * @param {String} byUser L'auteur de l'action
+ * @param {Boolean} isCandilib Suppression lié à une réussite ou un echec d'un examen de candilib
+ *
+ * @return {Place~PlaceModel}
+ */
+export const deletePlace = async (place, reasons, byUser, isCandilib) => {
+  if (!place) {
+    throw new Error('No place given')
+  }
+  try {
+    await createArchivedPlaceFromPlace(place, reasons, byUser, isCandilib)
+  } catch (error) {
+    techLogger.error({
+      func: 'query-place-delete',
+      action: 'archive-place',
+      description: `Could not archive place { inspecteurId:${place.inspecteur}, centreId: ${place.centre}, date: ${place.date} }: ${error.message}`,
+      error,
+    })
+  }
   const deletedPlace = place
   await place.delete()
   return deletedPlace
@@ -30,7 +61,10 @@ export const findAllPlaces = async () => {
 }
 
 export const findPlaceById = async id => {
-  const place = await Place.findById(id)
+  const placeQuery = Place.findById(id)
+    .populate('candidat')
+    .populate('centre')
+  const place = await placeQuery
   return place
 }
 export const findPlaceByIdAndPopulate = async (id, populate) => {
@@ -50,10 +84,13 @@ export const findPlaceByCandidatId = async (id, populate) => {
 }
 
 /**
+ * @function
  *
- * @param {*} centreId - centreId : recupére l'Id de l'object centre
- * @param {*} beginDate - date de debut de recherche
- * @param {*} endDate - date de fin de recherche
+ * @param {string} centreId - Id du centre
+ * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {import('mongoose').Query}
  */
 const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
@@ -70,10 +107,13 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
 }
 
 /**
+ * @function
  *
- * @param {*} centreId - centreId : recupére l'Id de l'object centre
- * @param {*} beginDate - date de debut de recherche
- * @param {*} endDate - date de fin de recherche
+ * @param {string} centreId - Id du centre
+ * @param {string} beginDate - Date  au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {Promise.<Place~PlaceModel[]>}
  */
 export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
@@ -153,12 +193,13 @@ export const findAndbookPlace = async (
   candidat,
   centre,
   date,
+  bookedAt,
   fields,
   populate
 ) => {
   const query = Place.findOneAndUpdate(
     { centre, date, candidat: { $eq: undefined } },
-    { $set: { candidat } },
+    { $set: { candidat, bookedAt } },
     { new: true, fields }
   )
   if (populate && populate.centre) {
@@ -184,10 +225,16 @@ const queryPopulate = (populate = {}, query) => {
   })
 }
 
-export const bookPlaceById = async (placeId, candidat, fields, populate) => {
+export const bookPlaceById = async (
+  placeId,
+  candidat,
+  bookedInfo = {},
+  fields,
+  populate
+) => {
   const query = Place.findOneAndUpdate(
     { _id: placeId, candidat: { $eq: undefined } },
-    { $set: { candidat } },
+    { $set: { candidat, ...bookedInfo } },
     { new: true, fields }
   )
   queryPopulate(populate, query)
@@ -201,19 +248,26 @@ export const findPlaceWithSameWindow = async creneau => {
   return place
 }
 
-export const findAllPlacesBookedByCentre = (centreId, beginDate, endDate) => {
-  const query = Place.where('centre').exists(true)
-  if (beginDate || endDate) {
-    query.where('date')
-
-    if (beginDate) query.gte(beginDate)
-    if (endDate) query.lt(endDate)
-  }
-  query.where('centre', centreId)
-  query.where('candidat').exists(true)
-  return query.exec()
+export const countPlacesBookedOrNot = async (centres, beginDate, isBooked) => {
+  return Place.countDocuments({
+    centre: { $in: centres },
+    date: { $gte: beginDate },
+    candidat: { $exists: isBooked },
+  })
 }
 
+/**
+ * Trouver les places réservées et affectées à un inspecteur sur une période entre beginDate et endDate
+ * - si beginDate n'est pas défini, la période sera depuis le début de l'application jusqu’à endDate
+ * - si endDate n'est pas défini, la période sera depuis beginDate jusqu’à la dernière date enregistrée dans l'application
+ * @function
+ *
+ * @param {string} inspecteurId - Id de l'inspecteur
+ * @param {string} beginDate - Date au format ISO de début de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {Promise.<Place~PlaceModel[]>}
+ */
 export const findPlaceBookedByInspecteur = (
   inspecteurId,
   beginDate,
@@ -233,5 +287,40 @@ export const findPlaceBookedByInspecteur = (
     },
     query
   )
+  return query.exec()
+}
+
+/**
+ * Trouver les places réservées pour un centre et des inspecteurs sur un période entre beginDate et endDate
+ * - si beginDate n'est pas défini, la période sera depuis le début de l'application jusqu’à endDate
+ * - si endDate n'est pas défini, la période sera depuis beginDate jusqu’à la dernière date enregistrée dans l'application
+ * - si la liste des inspecteurs n'est pas définie ou est vide, la recherche se fera pour tous les inspecteurs du centre
+ * @function
+ *
+ * @param {string} centreId - Id du centre
+ * @param {string} inspecteurIdListe - Liste d'id d'inspecteurs
+ * @param {string} beginDate - Date au format ISO de début de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {Promise.<Place~PlaceModel[]>}
+ */
+export const findAllPlacesBookedByCentreAndInspecteurs = (
+  centreId,
+  inspecteurIdListe,
+  beginDate,
+  endDate
+) => {
+  const query = Place.where('centre').exists(true)
+  if (beginDate || endDate) {
+    query.where('date')
+
+    if (beginDate) query.gte(beginDate)
+    if (endDate) query.lt(endDate)
+  }
+  query.where('centre', centreId)
+  query.where('candidat').exists(true)
+  if (inspecteurIdListe) {
+    query.where('inspecteur').in(inspecteurIdListe)
+  }
   return query.exec()
 }

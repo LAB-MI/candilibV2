@@ -1,6 +1,6 @@
 <template>
-  <span :class="{fixed}">
-    <img :src="beta" alt="Version bêta" class="beta" />
+  <span>
+    <img :src="beta" alt="Version bêta" class="beta" :class="{ fixed }" />
   </span>
 </template>
 
@@ -20,17 +20,18 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.fixed {
-  position: fixed;
-  top: 0;
-  right: 0;
-}
-
 .beta {
-  height: 4.2em;
+  height: 4.1em;
+  position: relative;
+  top: 0.125em;
 
-  @media (max-width: 767px) {
-    position: relative;
+  &.fixed {
+    position: fixed;
+    top: 0;
+    right: 0;
+  }
+
+  @media (max-width: 959px) {
     top: 0.225em;
     height: 3.5em;
   }

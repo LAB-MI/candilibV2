@@ -10,7 +10,7 @@ import { verifyAccessAurige } from './verify-access-aurige'
 
 const adminData = {
   email: 'admin@example.com',
-  level: 1,
+  level: config.userStatusLevels[config.userStatuses.DELEGUE],
   departements: ['93', '64'],
 }
 
@@ -20,7 +20,7 @@ const adminToken = jwt.sign(adminData, config.secret, {
 
 const techData = {
   email: 'admin@example.com',
-  level: 2,
+  level: config.userStatusLevels[config.userStatuses.ADMIN],
   departements: ['93', '64'],
 }
 

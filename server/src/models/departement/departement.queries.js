@@ -9,13 +9,13 @@ export const createDepartement = async ({ _id, email }) => {
   return departement
 }
 
-export const findDepartementbyId = async _id => Departement.findById(_id)
+export const findDepartementById = async _id => Departement.findById(_id)
 
 export const findDepartementsByEmail = async email =>
   Departement.find({ email })
 
 export const deleteDepartementById = async _id => {
-  const departement = await findDepartementbyId(_id)
+  const departement = await findDepartementById(_id)
   if (!departement) {
     throw new Error('No departement found with id')
   }

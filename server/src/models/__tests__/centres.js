@@ -36,6 +36,11 @@ export const nbCentres = departement =>
 let createdCentres
 let creatingCentres = false
 
+export const setInitCreatedCentre = () => {
+  createdCentres = undefined
+  creatingCentres = false
+}
+
 export const createCentres = async () => {
   if (createdCentres || creatingCentres) {
     return createdCentres

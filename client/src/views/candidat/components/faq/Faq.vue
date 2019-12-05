@@ -1,8 +1,20 @@
 <template>
   <v-card>
-    <page-title class="title-faq">
+    <v-btn
+      fixed
+      dark
+      fab
+      left
+      @click="goBack"
+      v-if="!me"
+    >
+      <v-icon>arrow_back</v-icon>
+    </v-btn>
+
+    <page-title>
       F.A.Q
     </page-title>
+
     <h3 class="subtitle">
       Foire aux questions
     </h3>
@@ -35,6 +47,12 @@ export default {
     },
   },
 
+  computed: {
+    me () {
+      return this.$store.state.candidat.me
+    },
+  },
+
   data () {
     return {
       arrayContent: faqJson,
@@ -58,10 +76,6 @@ export default {
     padding: 0;
     color: #0e1b4d;
     font-family: "Raleway", sans-serif;
-  }
-
-  .title-faq {
-    margin-top: 80px;
   }
 
   .subtitle {

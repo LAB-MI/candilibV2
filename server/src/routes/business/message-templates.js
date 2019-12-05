@@ -8,6 +8,7 @@ import {
   INSCRIPTION_UPDATE,
   AURIGE_OK,
   VALIDATION_EMAIL,
+  NB_FAILURES_KO,
 } from '../../util'
 import config from '../../config'
 import {
@@ -20,15 +21,25 @@ import {
   getInscripionValidTemplate,
   getUrlFAQ,
 } from './mail'
+import { getEmailDepartementOfCandidat } from './send-mail-util'
 
 const getMailData = async (candidat, flag, urlMagicLink) => {
   const urlFAQ = getUrlFAQ()
   const urlConnexion = `${config.PUBLIC_URL}`
 
-  const { codeNeph, nomNaissance, email, emailValidationHash } = candidat
+  const {
+    codeNeph,
+    nomNaissance,
+    email,
+    emailValidationHash,
+    departement,
+  } = candidat
 
-  const urlValidationEmail = `${config.PUBLIC_URL}/email-validation?e=${email}&h=${emailValidationHash}`
+  const contactezNous = await getEmailDepartementOfCandidat(departement)
 
+  const urlValidationEmail = `${
+    config.PUBLIC_URL
+  }/email-validation?e=${encodeURIComponent(email)}&h=${emailValidationHash}`
   const message = {}
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : ''
@@ -37,21 +48,18 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     nomMaj,
     urlMagicLink,
     urlConnexion,
-    email
+    email,
+    contactezNous
   )
 
   const VALIDATION_EMAIL_MSG = getValidationMailTemplate(
     nomMaj,
     urlValidationEmail,
-    urlConnexion
+    urlConnexion,
+    contactezNous
   )
 
-  const INSCRIPTION_KO_MSG = getInscriptionKOTemplate(
-    nomMaj,
-    codeNeph,
-    nomMaj,
-    urlFAQ
-  )
+  const INSCRIPTION_KO_MSG = getInscriptionKOTemplate(nomMaj, codeNeph, urlFAQ)
 
   const EPREUVE_PRATIQUE_OK_MSG = getEpreuvePratiqueOKTemplate(nomMaj, urlFAQ)
 
@@ -66,7 +74,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       return message
     case VALIDATION_EMAIL:
       message.content = getHtmlBody(VALIDATION_EMAIL_MSG)
-      message.subject = "Validation d'adresse email pour Candilib"
+      message.subject = "Validation d'adresse courriel pour Candilib"
       return message
     case INSCRIPTION_VALID:
       message.content = getHtmlBody(INSCRIPTION_VALID_MSG)
@@ -85,6 +93,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       message.subject = 'Inscription Candilib en attente de vérification'
       return message
     case EPREUVE_ETG_KO:
+    case NB_FAILURES_KO:
       message.content = getHtmlBody(EPREUVE_ETG_KO_MSG)
       message.subject = 'Problème inscription Candilib'
       return message

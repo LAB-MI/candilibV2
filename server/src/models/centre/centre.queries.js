@@ -11,7 +11,7 @@ export const findAllCentres = async () => {
 
 /**
  * @deprecated nom n'est pas unique. A remplacer par findCentreByNameAndDepartement
- * @param {*} nom
+ * @param {string} nom
  */
 export const findCentreByName = async nom => {
   const centre = await Centre.findOne({
@@ -70,8 +70,8 @@ export const updateCentreLabel = async (
   return updatedCentre
 }
 
-export const findCentresByDepartement = async departement => {
-  const centres = await Centre.find({ departement })
+export const findCentresByDepartement = async (departement, options) => {
+  const centres = await Centre.find({ departement }, options)
   return centres
 }
 
@@ -86,4 +86,18 @@ export const findCentreByNameAndDepartement = async (nom, departement) => {
 export const findCentreById = async id => {
   const centre = await Centre.findById(id)
   return centre
+}
+
+export const getDepartementsFromCentres = async () => {
+  const departements = await Centre.distinct('departement')
+  return departements
+}
+export const FindCentresGroupByDepartement = async () => {
+  const byDepartements = await Centre.aggregate()
+    .group({
+      _id: '$departement',
+      centres: { $push: { _id: '$_id' } },
+    })
+    .exec()
+  return byDepartements
 }

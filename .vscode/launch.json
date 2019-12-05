@@ -6,6 +6,12 @@
   "configurations": [
     {
       "type": "node",
+      "request": "attach",
+      "name": "Attach",
+      "port": 9229
+    },
+    {
+      "type": "node",
       "name": "vscode-jest-tests",
       "request": "launch",
       "program": "${workspaceFolder}/server/node_modules/jest/bin/jest",

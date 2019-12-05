@@ -1,10 +1,10 @@
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
 import { getFrenchLuxonFromIso, valideCreneaux, getFrenchLuxonCurrentDateTime } from '../util'
-
-import { SET_MODIFYING_RESERVATION } from '@/store'
-
 import { formatResult } from './utils'
+import messages from '@/candidat'
+
+import { SET_MODIFYING_RESERVATION, SIGN_OUT_CANDIDAT } from '@/store'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
 export const FETCH_DATES_SUCCESS = 'FETCH_DATES_SUCCESS'
@@ -22,6 +22,7 @@ export default {
       return valideCreneaux
     },
   },
+
   state: {
     confirmed: false,
     isFetching: false,
@@ -64,26 +65,38 @@ export default {
     async [FETCH_DATES_REQUEST] ({ commit, dispatch, rootState, getters }, selectedCenterId) {
       commit(FETCH_DATES_REQUEST)
       try {
-        const begin = getFrenchLuxonCurrentDateTime().toISO()
+        const { canBookFrom, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
+
+        const now = getFrenchLuxonCurrentDateTime()
+        const canBookFromLuxonObj = getFrenchLuxonFromIso(canBookFrom)
+
+        const begin = ((!canBookFromLuxonObj || canBookFromLuxonObj < now) ? now : canBookFromLuxonObj).toISO()
         const end = getFrenchLuxonCurrentDateTime()
           .plus({ month: 3 })
           .endOf('month')
           .toISO()
         const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
-        const { canBookFrom, lastDateToCancel, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
+
+        if (
+          result.isTokenValid === false
+        ) {
+          dispatch(SIGN_OUT_CANDIDAT)
+          throw new Error(messages.expired_token_message)
+        }
+
         const anticipatedCanBookAfter =
-          getFrenchLuxonCurrentDateTime() > getFrenchLuxonFromIso(lastDateToCancel)
+          !getters.canCancelBooking
             ? getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
             : false
         const numberOfMonthToDisplay = 4
 
-        const formatedResult = await formatResult(
+        const formatedResult = formatResult(
           result,
           numberOfMonthToDisplay,
           canBookFrom,
           anticipatedCanBookAfter,
           dayToForbidCancel,
-          getters.valideCreneaux
+          getters.valideCreneaux,
         )
         commit(FETCH_DATES_SUCCESS, formatedResult)
       } catch (error) {

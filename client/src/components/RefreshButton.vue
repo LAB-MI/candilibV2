@@ -3,14 +3,14 @@
     <v-btn
       icon
       :raised="raised"
-      :color="bgColor"
+      color="primary"
       :disabled="isLoading"
       @click="onClick"
     >
       <v-progress-circular
         v-show="isLoading"
         indeterminate
-        color="white"
+        :color="isLoading ? 'primary' : 'white'"
       ></v-progress-circular>
       <v-icon v-show="!isLoading">replay</v-icon>
     </v-btn>

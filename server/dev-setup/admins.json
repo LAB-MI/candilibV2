@@ -1,15 +1,32 @@
 [
     {
+        "email": "tech@example.com",
+        "password": "Admin*78",
+        "departements": ["75", "93"],
+        "status": "tech"
+    },
+    {
         "email": "admin@example.com",
         "password": "Admin*78",
-        "departements": ["75", "93"]
-    },{
+        "departements": ["75", "93"],
+        "status": "admin"
+    },
+    {
+        "email": "delegue@example.com",
+        "password": "Admin*78",
+        "departements": ["75", "93"],
+        "status": "delegue"
+    },
+    {
         "email": "admin75@example.com",
         "password": "Admin*78",
-        "departements": ["75"]
-    },{
+        "departements": ["75"],
+        "status": "repartiteur"
+    },
+    {
         "email": "admin93@example.com",
         "password": "Admin*78",
-        "departements": ["93"]
+        "departements": ["93"],
+        "status": "repartiteur"
     }
 ]

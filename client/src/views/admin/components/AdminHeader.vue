@@ -1,45 +1,83 @@
 <template>
-  <v-toolbar class="header-admin" dark fixed>
+  <v-app-bar class="admin-header" dark fixed>
     <v-toolbar-title>
       <h1 class="logo">
         <router-link to="/admin" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
       </h1>
     </v-toolbar-title>
+
     <v-spacer></v-spacer>
-    <h3>{{ email && email.split('@')[0] }}</h3>
+
+    <h3 class="color-header" >{{ email && email.split('@')[0] }}</h3>
+
     <v-spacer></v-spacer>
+
     <div class="text-xs-center d-flex align-center">
-      <header-icon
-        v-for="icon in headerIcons"
-        :key="icon.iconName"
-        :routerTo="icon.routerTo"
-        :iconName="icon.iconName"
-        :tooltipText="icon.tooltipText"
-      />
+      <v-tabs
+        slot="extension"
+        v-model="activeTab"
+        align-with-title
+      >
+        <v-tabs-slider color="#f82249"></v-tabs-slider>
+
+        <v-tab
+          v-for="icon in headerIcons"
+          :to="{name: icon.routerTo}"
+          :value="icon.routerTo"
+          :key="icon.routerTo"
+          class="no-margin-left"
+        >
+          <v-tooltip bottom fixed>
+            <template v-slot:activator="{ on }">
+              <v-icon
+              v-on="on"
+              :class="`opaque-on-hover t-icon-header-${icon.routerTo}`"
+              >
+              {{icon.iconName}}
+              </v-icon>
+            </template>
+            <span>{{icon.tooltipText}}</span>
+          </v-tooltip>
+        </v-tab>
+      </v-tabs>
+
       <v-tooltip bottom>
-        <v-btn icon @click.prevent="disconnect" slot="activator">
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
+        <template v-slot:activator="{ on: tooltip }">
+          <v-btn
+            class="t-disconnect"
+            icon
+            @click.prevent="disconnect"
+            v-on="{ ...tooltip }"
+          >
+            <v-icon>exit_to_app</v-icon>
+          </v-btn>
+        </template>
         <span>Déconnexion</span>
       </v-tooltip>
+
       <departement-selector
         class="departement-selector"
       />
-      <bandeau-beta class="beta-relative"/>
+
+      <bandeau-beta class="beta-relative" />
     </div>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>
 import { SIGN_OUT_ADMIN } from '@/store'
 import DepartementSelector from '@/views/admin/components/DepartementSelector'
-import HeaderIcon from '@/components/HeaderIcon'
 
 export default {
   name: 'admin-header',
   components: {
     DepartementSelector,
-    HeaderIcon,
+  },
+
+  data () {
+    return {
+      activeTab: '',
+    }
   },
 
   props: {
@@ -58,16 +96,23 @@ export default {
 
 <style lang="stylus" scoped>
 .admin-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   display: flex;
+  justify-content: space-between;
+  max-height: 64px;
   padding: 0 1em;
   background-color: black;
-  margin-top: 4em;
-}
 
-.header-admin {
   & >>> .v-toolbar__content {
     padding-right: 0;
+    width: 100%;
   }
+}
+
+.color-header {
+  color: #fff;
 }
 
 .logo {
@@ -86,5 +131,17 @@ export default {
     position: relative;
     top: -0.1em;
   }
+}
+
+>>> .theme--dark.v-tabs > .v-tabs-bar {
+  background-color: transparent;
+}
+
+.no-margin-left {
+  margin-left: 0 !important;
+}
+
+.opaque-on-hover:hover {
+  color: #fff !important;
 }
 </style>

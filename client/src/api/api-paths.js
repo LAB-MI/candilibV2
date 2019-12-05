@@ -10,31 +10,31 @@ const apiPrefix = `${process.env.BASE_URL || '/'}api/v2`
 
 const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
   centres: `${apiPrefix}/candidat/centres`,
+  evaluations: `${apiPrefix}/candidat/evaluations`,
   magicLink: `${apiPrefix}/auth/candidat/magic-link`,
   myProfile: `${apiPrefix}/candidat/me`,
   places: `${apiPrefix}/candidat/places`,
   presignup: `${apiPrefix}/candidat/preinscription`,
-  reservations: `${apiPrefix}/candidat/reservations`,
   verifyToken: `${apiPrefix}/auth/candidat/verify-token`,
 }
 
 const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   candidats: `${apiPrefix}/admin/candidats`,
   exportCsv: `${apiPrefix}/admin/candidats?for=aurige&format=csv`,
+  exportResultsExamsStatsKpi: `${apiPrefix}/admin/stats-results-exams`,
+  exportPlacesExamsStatsKpi: `${apiPrefix}/admin/stats-places-exams`,
   login: `${apiPrefix}/auth/admin/token`,
   myProfile: `${apiPrefix}/admin/me`,
-  place: `${apiPrefix}/admin/place`,
   places: `${apiPrefix}/admin/places`,
-  reservations: `${apiPrefix}/admin/reservations`,
   uploadCandidatsJson: `${apiPrefix}/admin/candidats`,
+  users: `${apiPrefix}/admin/users`,
   searchCandidats: `${apiPrefix}/admin/candidats?matching=`,
-  searchInspecteurs: `${apiPrefix}/admin/inspecteurs?matching=`,
   searchWhitelisted: `${apiPrefix}/admin/whitelisted?matching=`,
-  inspecteursByDepartement: `${apiPrefix}/admin/inspecteurs?departement=`,
-  uploadPlacesCSV: `${apiPrefix}/admin/places`,
+  inspecteurs: `${apiPrefix}/admin/inspecteurs`,
   verifyToken: `${apiPrefix}/auth/admin/verify-token`,
   whitelist: `${apiPrefix}/admin/whitelisted`,
   generateBordereaux: `${apiPrefix}/admin/bordereaux`,
+  resetLink: `${apiPrefix}/auth/admin/reset-link`,
 }
 
 const utilPaths = {

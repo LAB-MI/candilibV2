@@ -1,12 +1,25 @@
+/**
+ * Model Place
+ * @module models/place/place-model
+ */
 import mongoose from 'mongoose'
 
 import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
 
-import { getFrenchLuxonFromJSDate } from '../../util/date.util'
+import { getFrenchLuxonFromJSDate } from '../../util/date-util'
+import { UserFields } from '../user/user.model'
 
 const { Schema } = mongoose
 const ObjectId = Schema.Types.ObjectId
 
+/**
+ * @typedef {Object} PlaceFields
+ * @property {ObjectId} inspecteur
+ * @property {centre} centre
+ * @property {date} date
+ * @property {date} bookedAt
+ * @property {UserFields} bookedByAdmin
+ */
 export const placeCommonFields = {
   inspecteur: {
     type: ObjectId,
@@ -24,16 +37,38 @@ export const placeCommonFields = {
     type: Date,
     required: false,
   },
+  bookedAt: {
+    type: Date,
+    required: false,
+  },
+  bookedByAdmin: {
+    type: {
+      ...UserFields,
+      _id: {
+        type: ObjectId,
+        required: true,
+      },
+    },
+    required: false,
+  },
 }
 
-const PlaceSchema = new Schema({
-  ...placeCommonFields,
-  candidat: {
-    type: ObjectId, // ObjectId du candidat ayant réservé cette place
-    required: false,
-    ref: 'Candidat',
+/**
+ * @type {PlaceModel}
+ */
+const PlaceSchema = new Schema(
+  {
+    ...placeCommonFields,
+    candidat: {
+      type: ObjectId, // ObjectId du candidat ayant réservé cette place
+      required: false,
+      ref: 'Candidat',
+    },
   },
-})
+  {
+    timestamps: true,
+  }
+)
 
 PlaceSchema.index({ date: 1, inspecteur: 1 }, { unique: true })
 
@@ -69,5 +104,15 @@ PlaceSchema.pre('save', async function preSave () {
 })
 
 const model = mongoose.model('Place', PlaceSchema)
+
+/**
+ * @typedef {Object} PlaceModel
+ * @property {ObjectId} inspecteur
+ * @property {centre} centre
+ * @property {date} date
+ * @property {date} bookedAt
+ * @property {UserFields} bookedByAdmin
+ * @property {ObjectId} candidat
+ */
 
 export default model

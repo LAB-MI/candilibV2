@@ -1,0 +1,42 @@
+# development mode
+version: '3.5'
+services:
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    restart: always
+    ports:
+        - 1025:1025
+        - 8025:8025
+    logging:
+      driver: none
+  e2e:
+    image: candilib_e2e
+    container_name: e2e
+    build:
+      context: ./
+      dockerfile: e2e.Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        npm_registry: ${NPM_REGISTRY}
+        sass_registry: ${SASS_REGISTRY}
+        CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
+    environment:
+      CYPRESS_frontCandidat: http://candidat.candilib.local/candilib/
+      CYPRESS_frontAdmin: http://admin.candilib.local/candilib-repartiteur/
+      CYPRESS_mailHogUrl: http://mailhog:8025
+      CYPRESS_build: 1
+      CYPRESS_screenshotsFolder: 'tests/e2e/screenshots'
+      CYPRESS_video: 'false'
+      HTTP_PROXY: ${http_proxy}
+      HTTPS_PROXY: ${http_proxy}
+      NO_PROXY: ${no_proxy},candidat.candilib.local,admin.candilib.local,mailhog
+    volumes:
+      - ./tests/e2e/:/app/tests/e2e/
+
+networks:
+  default:
+    external:
+      name: candilibV2-network

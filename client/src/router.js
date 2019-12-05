@@ -1,27 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-import Home from '@/views/Home.vue'
-import Guest from '@/views/Guest.vue'
-import AdminLogin from '@/views/admin/components/Login'
-import CandidatHome from '@/views/CandidatHome.vue'
-import MessageView from '@/views/Message.vue'
-import EmailValidation from '@/views/candidat/components/EmailValidation.vue'
-import Error404 from '@/views/Error404.vue'
-import MentionsLegales from '@/views/candidat/components/mentions-legales/MentionsLegales.vue'
-import Faq from '@/views/candidat/components/faq/Faq.vue'
-import CenterSelection from '@/views/candidat/components/center-selection/CenterSelection.vue'
-import TimeSlot from '@/views/candidat/components/time-slots-selection/TimeSlot.vue'
-import SelectionSummary from '@/views/candidat/components/selection-summary/SelectionSummary.vue'
-import MyProfile from '@/views/candidat/components/MyProfile.vue'
-import LandingPage from '@/views/candidat/components/LandingPage.vue'
-
-import AdminAurige from '@/views/admin/components/Aurige.vue'
-import AdminCalendar from '@/views/admin/components/AdminCalendar.vue'
-import ScheduleManager from '@/views/admin/components/ScheduleManager.vue'
-import HomeAdminPage from '@/views/admin/components/HomeAdminPage.vue'
-import Whitelist from '@/views/admin/components/Whitelist.vue'
-
 import {
   requireAdminAuth,
   requireCandidatAuth,
@@ -29,8 +8,7 @@ import {
   checkCandidatToken,
   checkAccess,
 } from './router-checks'
-import { SignupForm } from './views/candidat/components'
-import { ROUTE_AUTHORIZE_AURIGE } from './constants'
+import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI } from './constants'
 
 Vue.use(Router)
 
@@ -40,12 +18,43 @@ const isBuildWithAll = ['ALL', undefined].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithCandidat = isBuildWithAll || ['CANDIDAT'].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithAdmin = isBuildWithAll || ['ADMIN'].includes(VUE_APP_CLIENT_BUILD_TARGET)
 
+const Error404 = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Error404.vue')
+const Home = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Home.vue')
+const Guest = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Guest.vue')
+const MessageView = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Message.vue')
+const CandidatHome = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/CandidatHome.vue')
+const SignupForm = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ './views/candidat/components/SignupForm.vue')
+const Faq = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/candidat/components/faq/Faq.vue')
+const MentionsLegales = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/candidat/components/mentions-legales/MentionsLegales.vue')
+const LandingPage = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/candidat/components/LandingPage.vue')
+const EmailValidation = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/candidat/components/EmailValidation.vue')
+
+const Candidat = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */'./views/candidat')
+const CenterSelection = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/center-selection/CenterSelection.vue')
+const TimeSlot = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/time-slots-selection/TimeSlot.vue')
+const SelectionSummary = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/selection-summary/SelectionSummary.vue')
+const MyProfile = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/MyProfile.vue')
+
+const AdminLogin = () => import('@/views/admin/components/Login')
+const AdminAurige = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Aurige.vue')
+const StatsKpi = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/statsKpi/StatsKpi.vue')
+const HomeAdminPage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/HomeAdminPage.vue')
+const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/schedule/ScheduleManager.vue')
+const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
+const ResetPassword = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/ResetPassword.vue')
+const Users = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/repartiteurDelegue/Users.vue')
+
 const adminRoutes = [
   {
     path: '/admin-login',
     name: 'admin-login',
     component: AdminLogin,
     beforeEnter: checkAdminToken,
+  },
+  {
+    path: '/reset-link',
+    name: 'reset-password',
+    component: ResetPassword,
   },
   {
     path: '/admin',
@@ -69,14 +78,21 @@ const adminRoutes = [
         beforeEnter: checkAccess,
       },
       {
+        path: 'stats-kpi/:begin?/:end?',
+        name: ROUTE_AUTHORIZE_STATS_KPI,
+        component: StatsKpi,
+        beforeEnter: checkAccess,
+      },
+      {
         path: 'whitelist',
         name: 'whitelist',
         component: Whitelist,
       },
       {
-        path: 'admin-calendar',
-        name: 'admin-calendar',
-        component: AdminCalendar,
+        path: 'users',
+        name: 'users',
+        component: Users,
+        beforeEnter: checkAccess,
       },
     ],
   },
@@ -114,7 +130,7 @@ const candidatRoutes = [
   {
     path: '/candidat',
     name: 'candidat',
-    component: () => import('./views/candidat'),
+    component: Candidat,
     beforeEnter: requireCandidatAuth,
     redirect: '/qu-est-ce-que-candilib',
     children: [
@@ -170,11 +186,14 @@ const candidatRoutes = [
 
 const HomeComponent = isBuildWithAll ? Home : (isBuildWithAdmin ? AdminLogin : CandidatHome)
 
+const redirectCandidatFromHome = isBuildWithAdmin ? undefined : '/qu-est-ce-que-candilib'
+
 const commonRoutes = [
   {
     path: '/',
     name: 'home',
     component: HomeComponent,
+    redirect: redirectCandidatFromHome,
   },
   {
     path: '/guest',

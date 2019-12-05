@@ -35,7 +35,7 @@ const dateReussitePratique = nowLuxon
 const isValidatedEmail = true
 const adresse = '40 Avenuedes terroirs de France 75012 Paris'
 const portable = '0676543986'
-
+const departement = '93'
 export const candidatFailureExam = {
   // candidat échec pratique récent
   codeNeph: '0938743208650',
@@ -52,6 +52,26 @@ export const candidatFailureExam = {
   isValidatedEmail,
   adresse,
   portable,
+  departement,
+}
+
+export const candidatFailureExamWith5Failures = {
+  // candidat avec 5 échec pratique récent
+  codeNeph: '0938743208651',
+  nomNaissance: 'TEST',
+  prenom: 'Fivefailures',
+  email: 'fivefailures.test@candilib.com',
+  dateReussiteETG,
+  nbEchecsPratiques: '5',
+  dateDernierNonReussite: dateDernierEchecPratique,
+  objetDernierNonReussite: 'echec',
+  reussitePratique: '',
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+  departement,
 }
 
 export const candidatPassed = {
@@ -70,9 +90,10 @@ export const candidatPassed = {
   isValidatedEmail,
   adresse,
   portable,
+  departement,
 }
 
-const candidatsToValidAurige = [
+export const candidatsToValidAurige = [
   candidatPassed,
   {
     // Candidat n'existe pas
@@ -90,6 +111,7 @@ const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // Candidat nom n'existe pas
@@ -107,6 +129,7 @@ const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // candidat échec pratique il y a plus 45 jours
@@ -124,6 +147,7 @@ const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // candidat pas d'info réssuit théorique
@@ -141,6 +165,7 @@ const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // candidat réussit la théorie y a plus de 5 ans
@@ -158,6 +183,7 @@ const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   {
     // candidat réussit la théorie y a moins 5 ans
@@ -175,6 +201,7 @@ const candidatsToValidAurige = [
     isValidatedEmail,
     adresse,
     portable,
+    departement,
   },
   candidatFailureExam,
 ]
@@ -186,9 +213,16 @@ export const createCandidatToTestAurige = async (
   const candidatCreated = await createCandidat(candidat)
   candidatCreated.isValidatedEmail = true
   candidatCreated.isValidatedByAurige = isValidatedByAurige
+  if (isValidatedByAurige) {
+    candidatCreated.dateReussiteETG = candidat.dateReussiteETG
+  }
   return candidatCreated.save()
 }
 
 export const createCandidatsToTestAurige = async () => {
-  return Promise.all(candidatsToValidAurige.map(createCandidatToTestAurige))
+  return Promise.all(
+    candidatsToValidAurige.map(candidat =>
+      createCandidatToTestAurige(candidat, false)
+    )
+  )
 }

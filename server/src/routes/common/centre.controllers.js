@@ -13,16 +13,15 @@ export async function getCentres (req, res) {
   const endDate = req.query.end
 
   appLogger.debug({
-    section: 'candidat-getCentres',
+    section: 'candidat-get-centres',
     args: { departement, nom, beginDate, endDate },
   })
 
   try {
     if (!departement) {
       const error = {
-        section: 'candidat-getCentres',
-        message:
-          'Le code de département est manquant, Veuillez choisir un code département',
+        section: 'candidat-get-centres',
+        message: NOT_CODE_DEP_MSG,
       }
       appLogger.error(error)
       return res.status(400).json({
@@ -32,7 +31,7 @@ export async function getCentres (req, res) {
     }
 
     if (!nom) {
-      if (req.userLevel !== config.userStatusLevels.admin) {
+      if (req.userLevel === config.userStatusLevels.candidat) {
         const beginDateTime = getAuthorizedDateToBook()
         beginDate = beginDateTime.toISODate()
       }

@@ -194,6 +194,53 @@ down-db: ## Build db container
 stop-db: ## Down db container
 	${DC} -f ${DC_APP_DB_RUN_PROD} stop db
 #
+# e2e
+#
+build-e2e: check-build-e2e ## Build e2e container
+	${DC} -f ${DC_APP_E2E_BUILD_PROD} build ${DC_BUILD_ARGS}
+check-build-e2e: ## Check e2e docker-compose syntax
+	${DC} -f $(DC_APP_E2E_BUILD_PROD) config
+up-e2e: check-up-e2e network-up ## Build e2e container
+	${DC} -f ${DC_APP_E2E_RUN_PROD} up --no-build --abort-on-container-exit --exit-code-from e2e 2>&1 | tee e2e.log; exit $${PIPESTATUS[0]}
+check-up-e2e: ## Check e2e docker-compose syntax
+	${DC} -f $(DC_APP_E2E_RUN_PROD) config
+down-e2e: ## Down e2e container
+	${DC} -f ${DC_APP_E2E_RUN_PROD} down
+stop-e2e: ## Stop e2e container
+	${DC} -f ${DC_APP_E2E_RUN_PROD} stop e2e
+stop-mailhog: ## Stop e2e container
+	${DC} -f ${DC_APP_E2E_RUN_PROD} stop mailhog
+#
+# init db for e2e tests
+#
+init-db-e2e:
+	bash ci/init-db-e2e.sh
+#
+# clean e2e.log
+#
+clean-log-e2e:
+	rm e2e.log
+
+#
+# Extract files from candidat/admin docker images
+#
+export-front-all: build-dir build-dist-dir export-front-candidat export-front-admin extract-export-front-candidat extract-export-front-admin
+build-dist-dir:
+	mkdir -p $(DIST_DIR)/dist/{candilib-repartiteur,candilib}
+clean-dist-dir:
+	if [ -d "$(DIST_DIR)" ] ; then rm -rf $(DIST_DIR) ; fi
+export-front-candidat: check-up-front-candidat network-up
+#	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} run -T --no-deps --rm front_candidat /bin/bash -c "(cd /usr/share/nginx/html && find . -type f)"
+	${DC} -f ${DC_APP_FRONT_CANDIDAT_RUN_PROD} run -T --no-deps --rm front_candidat /bin/bash -c "( cd /usr/share/nginx/html && tar zCcf ./ - . )"  > $(BUILD_DIR)/$(FILE_FRONT_CANDIDAT_APP_VERSION)
+export-front-admin: check-up-front-admin network-up
+	${DC} -f ${DC_APP_FRONT_ADMIN_RUN_PROD} run -T --no-deps --rm front_admin /bin/bash -c "( cd /usr/share/nginx/html && tar zCcf ./ - . )"  > $(BUILD_DIR)/$(FILE_FRONT_ADMIN_APP_VERSION)
+extract-export-front-candidat:
+	( cd $(DIST_DIR)/dist/candilib && tar -zxvf $(BUILD_DIR)/$(FILE_FRONT_CANDIDAT_APP_VERSION) )
+extract-export-front-admin:
+	( cd $(DIST_DIR)/dist/candilib-repartiteur && tar -zxvf $(BUILD_DIR)/$(FILE_FRONT_ADMIN_APP_VERSION) )
+
+
+#
 # save images
 #
 save-images: build-dir save-image-db save-image-api save-image-front-candidat save-image-front-admin ## Save images

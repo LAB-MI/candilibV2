@@ -1,15 +1,21 @@
 <template>
-  <v-toolbar dark fixed class="candidat-toolbar  u-max-width-parent">
-    <v-toolbar-side-icon
+  <v-app-bar
+    dark
+    class="candidat-toolbar  u-max-width-parent"
+  >
+    <v-app-bar-nav-icon
       class="u-only-on-mobile"
       @click="toggleDrawer"
-    ></v-toolbar-side-icon>
-    <v-toolbar-title style="margin-left:0;">
+    ></v-app-bar-nav-icon>
+
+    <v-toolbar-title style="margin-left: 0; padding-left: 0;">
       <h1 class="logo">
         <router-link to="/candidat" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
       </h1>
     </v-toolbar-title>
+
     <v-spacer></v-spacer>
+
     <div class="text-xs-center d-flex align-center">
       <v-tabs
         class="u-only-on-desktop"
@@ -25,30 +31,40 @@
           :to="link.routerTo"
           :value="link.routerTo"
           :key="link.routerTo.name"
+          :class="`no-margin-left t-${link.routerTo.name}`"
         >
           <icon-with-tooltip
             :iconName="link.iconName"
             :tooltipText="link.tooltipText"
           />
-          <span class="min-width-1170">
+          <span class="min-width-1170  tab-label">
             {{link.label}}
           </span>
         </v-tab>
       </v-tabs>
-      <v-tooltip bottom>
-        <v-btn icon @click.prevent="disconnect" slot="activator">
-          <v-icon>exit_to_app</v-icon>
-        </v-btn>
+
+      <v-tooltip bottom v-if="isCandidatSignedIn">
+        <template v-slot:activator="{ on }">
+          <v-btn
+            class="disconnect-btn  t-disconnect"
+            icon
+            @click.prevent="disconnect"
+            v-on="on"
+          >
+            <v-icon>exit_to_app</v-icon>
+          </v-btn>
+        </template>
         <span>Déconnexion</span>
       </v-tooltip>
-      <bandeau-beta class="beta-relative" />
+      <bandeau-beta />
     </div>
-  </v-toolbar>
+  </v-app-bar>
 </template>
 
 <script>
-import { DISPLAY_NAV_DRAWER, SIGN_OUT_CANDIDAT } from '@/store'
+import { mapGetters } from 'vuex'
 
+import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/store'
 import IconWithTooltip from '@/components/IconWithTooltip'
 
 export default {
@@ -62,16 +78,42 @@ export default {
     links: Array,
   },
 
+  computed: {
+    ...mapGetters([
+      'isCandidatSignedIn',
+    ]),
+    showEvaluation () {
+      return this.$store.state.candidat.showEvaluation
+    },
+  },
+
+  watch: {
+    async showEvaluation (newValue) {
+      if (newValue === false && this.wantsToDisconnect === true) {
+        await this.$store.dispatch(SIGN_OUT_CANDIDAT)
+        this.$router.push({ name: 'candidat-presignup' })
+      }
+    },
+    async wantsToDisconnect (newValue, oldValue) {
+      if (newValue === true && !this.$store.state.candidat.me.isEvaluationDone) {
+        await this.$store.dispatch(SET_SHOW_EVALUATION, true)
+      } else {
+        await this.$store.dispatch(SIGN_OUT_CANDIDAT)
+        this.$router.push({ name: 'candidat-presignup' })
+      }
+    },
+  },
+
   data () {
     return {
       activeTab: null,
+      wantsToDisconnect: false,
     }
   },
 
   methods: {
     async disconnect () {
-      await this.$store.dispatch(SIGN_OUT_CANDIDAT)
-      this.$router.push({ name: 'candidat-presignup' })
+      this.wantsToDisconnect = true
     },
     toggleDrawer () {
       try {
@@ -86,12 +128,20 @@ export default {
 
 <style lang="stylus" scoped>
 .candidat-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 2;
   justify-content: center;
   align-items: center;
 
   & >>> .v-toolbar__content {
     padding-right: 0;
   }
+}
+
+.disconnect-btn {
+  margin-left: 0;
+  margin-right: 0;
 }
 
 .logo {
@@ -110,6 +160,20 @@ export default {
     position: relative;
     top: -0.1em;
   }
+}
+
+>>> .no-margin-left {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+
+  & .v-btn {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
+.tab-label {
+  color: white;
 }
 
 .min-width-1170 {

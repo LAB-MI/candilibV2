@@ -8,10 +8,13 @@ import store, {
   CHECK_CANDIDAT_TOKEN,
   SIGNED_IN_AS_ADMIN,
   SIGNED_IN_AS_CANDIDAT,
+  FETCH_ADMIN_INFO_REQUEST,
 } from '@/store'
 
 export async function requireCandidatAuth (to, from, next) {
-  const token = to.query.token || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
+  const queryToken = to.query.token
+  const token = queryToken || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
+
   const signupRoute = {
     name: 'candidat-presignup',
     query: { nextPath: to.fullPath },
@@ -20,7 +23,7 @@ export async function requireCandidatAuth (to, from, next) {
     next(signupRoute)
     return
   }
-  await store.dispatch(CHECK_CANDIDAT_TOKEN, token)
+  await store.dispatch(CHECK_CANDIDAT_TOKEN, queryToken)
   if (store.state.auth.statusCandidat !== SIGNED_IN_AS_CANDIDAT) {
     next(signupRoute)
     return
@@ -40,6 +43,7 @@ export async function requireAdminAuth (to, from, next) {
     return
   }
   await store.dispatch(CHECK_ADMIN_TOKEN, token)
+
   if (store.state.auth.statusAdmin !== SIGNED_IN_AS_ADMIN) {
     next(signinRoute)
     return
@@ -64,20 +68,26 @@ export async function checkAdminToken (to, from, next) {
 
 export async function checkAccess (to, from, next) {
   const { name } = to
-  if (store.getters.noAuthorize === name) {
-    return next({ name: from.name || 'admin-home' })
+  if (!store.state.admin.features) {
+    await store.dispatch(FETCH_ADMIN_INFO_REQUEST)
   }
-  next()
+  if (store.state.admin.features && store.state.admin.features.includes(name)) {
+    return next()
+  }
+  next({ name: from.name || 'admin-home' })
 }
 
 export async function checkCandidatToken (to, from, next) {
-  const token = to.query.token || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
+  const queryToken = to.query.token
+  const token = queryToken || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
   if (!token) {
     next()
     return
   }
-  await store.dispatch(CHECK_CANDIDAT_TOKEN, token)
+  await store.dispatch(CHECK_CANDIDAT_TOKEN, queryToken)
   if (store.state.auth.statusCandidat === SIGNED_IN_AS_CANDIDAT) {
     next({ name: 'candidat-home' })
+    return
   }
+  next({ name: 'candidat-presignup' })
 }

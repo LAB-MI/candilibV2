@@ -2,7 +2,8 @@ export const getInscriptionOkTemplate = (
   nomMaj,
   urlMagicLink,
   urlConnexion,
-  email
+  email,
+  contactezNous
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <br>
   <p>Bienvenue sur Candilib !</p>
@@ -22,7 +23,7 @@ export const getInscriptionOkTemplate = (
       Ce lien est valable 3 jours à compter de la réception de cet email.
   </p>
   <p>
-    Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse email ${email} dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
+    Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse courriel ${email} dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
   </p>
   <p>
     Lorsque vous recevrez l’email, cliquez sur "Se connecter".
@@ -31,5 +32,5 @@ export const getInscriptionOkTemplate = (
   <p>
   <strong>Attention : </strong>vous ne devez transmettre cet email à personne. Il permet d'accéder à votre compte personnel, de créer ou modifier votre réservation.
   </p>
-
+  ${contactezNous}
   <p align="right">L'équipe Candilib</p>`

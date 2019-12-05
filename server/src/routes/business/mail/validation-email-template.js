@@ -1,7 +1,8 @@
 export const getValidationMailTemplate = (
   nomMaj,
   urlValidationEmail,
-  urlConnexion
+  urlConnexion,
+  contactezNous
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <br>
   <p>Vous avez demandé à être inscrit·e sur le site de réservation de l'examen pratique du permis de conduire.</p>
@@ -12,16 +13,16 @@ export const getValidationMailTemplate = (
   </p>
   <p>
     <a href="${urlValidationEmail}">
-      Valider mon adresse email
+      Valider mon adresse courriel
     </a>
   </p>
   <br/>
   <p>
-      Ce lien est valable 2 heures à compter de la réception de cet email.
+      <b><u>Ce lien est valable 2 heures à compter de la réception de cet email.</u></b>
   </p>
   <p>
     Passé ce délai, vous devrez de nouveau faire une demande de pré-inscription sur <a href="${urlConnexion}">Candilib</a>.
   </p>
   <br/>
-
+  ${contactezNous}
   <p align="right">L'équipe Candilib</p>`

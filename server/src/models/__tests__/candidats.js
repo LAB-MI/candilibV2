@@ -1,6 +1,6 @@
-import { createCandidat, updateCandidatById } from '../candidat'
-import candidatModel from '../candidat/candidat.model'
 import { getFrenchLuxon } from '../../util'
+import { createCandidat } from '../candidat'
+import candidatModel from '../candidat/candidat.model'
 
 export const candidats = [
   {
@@ -82,19 +82,27 @@ export const createCandidats = async () => {
 
 export const createCandidatsAndUpdate = async () => {
   const newCandidats = await Promise.all(
-    candidats2.map(candidat => createCandidat(candidat))
-  )
-  return Promise.all(
-    newCandidats.map((candidat, index) => {
-      return updateCandidatById(candidat._id, {
-        $set: {
-          dateReussiteETG: candidats2[index].dateReussiteETG,
-          isValidatedByAurige: candidats2[index].isValidatedByAurige,
-          isValidatedEmail: candidats2[index].isValidatedEmail,
-        },
-      })
+    candidats2.map(async candidat => {
+      const __candidat = await createCandidat(candidat)
+      __candidat.dateReussiteETG = candidat.dateReussiteETG
+      __candidat.isValidatedByAurige = candidat.isValidatedByAurige
+      __candidat.isValidatedEmail = candidat.isValidatedEmail
+      const __candidat1 = await __candidat.save()
+
+      return __candidat1
     })
   )
+
+  return newCandidats
+}
+
+export const createCandidatAndUpdate = async candidat => {
+  const createdCandidat = await createCandidat(candidat)
+  createdCandidat.dateReussiteETG = getFrenchLuxon().plus({ year: -1 })
+  createdCandidat.isValidatedByAurige = true
+  createdCandidat.isValidatedEmail = true
+  const updatedCandidat = await createdCandidat.save()
+  return updatedCandidat
 }
 
 export const deleteCandidats = async () => {

@@ -100,7 +100,7 @@
           aria-placeholder="Jean"
           :loading="isFetchingMatchingAdresses"
           v-model="adresse"
-          hint="ex. : 10 avenue du général Leclerc Villepinte 93420"
+          hint="ex. : 10 avenue du général Leclerc 93420 Villepinte"
           :items="adresses"
           prepend-icon="location_city"
           tabindex="6"
@@ -123,11 +123,11 @@
         </v-btn>
       </div>
       <div class="form-input  form-input-group">
-        <v-btn flat color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
+        <v-btn text color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
           {{getMsg('preinscription_bouton_mentions_legales') }}
         </v-btn>
         <already-signed-up />
-        <v-btn flat color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
+        <v-btn text color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
           {{getMsg('preinscription_bouton_faq') }}
         </v-btn>
       </div>
@@ -253,13 +253,13 @@ export default {
       this.portablePlaceholder = ''
     },
     setAdressePlaceholder () {
-      this.adressePlaceholder = '10 avenue du général Leclerc Villepinte 93420'
+      this.adressePlaceholder = '10 avenue du général Leclerc 93420 Villepinte'
     },
     removeAdressePlaceholder () {
       this.adressePlaceholder = ''
     },
     setEmailToLowerCase () {
-      this.email = this.email.toLowerCase()
+      this.email = this.email.toLowerCase().trim()
     },
     setNomNaissance () {
       this.nomNaissance = this.nomNaissance.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
@@ -345,7 +345,7 @@ export default {
   width: 90%;
   text-align: center;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
 
   @media (max-width: 599px) {
     width: 100%;

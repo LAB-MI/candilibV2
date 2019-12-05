@@ -2,7 +2,7 @@ import { Types } from 'mongoose'
 
 import { getHtmlBody } from './mail/body-mail-template'
 import { buildMailResaArgsValidation } from './send-mail-util'
-import { dateTimeToFormatFr } from '../../util/date.util'
+import { getFrenchFormattedDateTime } from '../../util/date-util'
 import { getUrlFAQ, getUrlRESA } from './mail'
 import { appLogger } from '../../util'
 import { getEpreuvePratiqueKOTemplate } from './mail/epreuve-pratique-ko-template'
@@ -38,7 +38,7 @@ export const getFailureExamBody = async (place, candidat) => {
     urlRESA
   )
 
-  const dateTimeResa = dateTimeToFormatFr(date)
+  const dateTimeResa = getFrenchFormattedDateTime(date)
 
   const body = getEpreuvePratiqueKOTemplate(
     nomNaissance,

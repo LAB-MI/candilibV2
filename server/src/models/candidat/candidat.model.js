@@ -21,6 +21,10 @@ const ArchivedPlaceFields = {
     type: String,
     default: undefined,
   },
+  isCandilib: {
+    type: Boolean,
+    default: undefined,
+  },
   byUser: {
     type: String,
     default: undefined,
@@ -119,6 +123,9 @@ export const candidatFields = {
     type: Date,
     default: undefined,
   },
+  isEvaluationDone: {
+    type: Boolean,
+  },
   places: {
     type: [ArchivedPlaceSchema],
     default: undefined,
@@ -133,9 +140,13 @@ export const candidatFields = {
     required: false,
   },
   noReussites: [noReussiteFields],
+  firstConnection: {
+    type: Date,
+    required: false,
+  },
 }
 
-const CandidatSchema = new Schema(candidatFields)
+const CandidatSchema = new Schema(candidatFields, { timestamps: true })
 
 CandidatSchema.index({ codeNeph: 1, nomNaissance: 1 }, { unique: true })
 

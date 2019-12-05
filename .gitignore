@@ -182,10 +182,17 @@ $RECYCLE.BIN/
 
 # End of https://www.gitignore.io/api/vim,node,macos,linux,windows,visualstudiocode
 
+server/out/
 server/dist/
 server/mongo-dev/
 mongo-dev
 
 VERSION
-candilib-*-build/
+candilibV2-*-build/
+candilibV2-*-dist/
 
+test-db
+mongo
+
+# Local Netlify folder
+.netlify

@@ -4,6 +4,8 @@ import api from '@/api'
 import {
   DEPARTEMENT_STORAGE_KEY,
   ROUTE_AUTHORIZE_AURIGE,
+  ROUTE_AUTHORIZE_STATS_KPI,
+  ROUTE_AUTHORIZE_USERS,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -16,17 +18,17 @@ export const FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST = 'FETCH_ADMIN_DEPARTEM
 export const FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE = 'FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE'
 export const FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS = 'FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS'
 
-export const FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST'
-export const FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE'
-export const FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS'
+export const FETCH_INSPECTEURS_BY_CENTRE_REQUEST = 'FETCH_INSPECTEURS_BY_CENTRE_REQUEST'
+export const FETCH_INSPECTEURS_BY_CENTRE_FAILURE = 'FETCH_INSPECTEURS_BY_CENTRE_FAILURE'
+export const FETCH_INSPECTEURS_BY_CENTRE_SUCCESS = 'FETCH_INSPECTEURS_BY_CENTRE_SUCCESS'
 
 export const DELETE_PLACE_REQUEST = 'DELETE_PLACE_REQUEST'
 export const DELETE_PLACE_SUCCESS = 'DELETE_PLACE_SUCCESS'
 export const DELETE_PLACE_FAILURE = 'DELETE_PLACE_FAILURE'
 
-export const CREATE_CRENEAU_REQUEST = 'CREATE_CRENEAU_REQUEST'
-export const CREATE_CRENEAU_SUCCESS = 'CREATE_CRENEAU_SUCCESS'
-export const CREATE_CRENEAU_FAILURE = 'CREATE_CRENEAU_FAILURE'
+export const CREATE_PLACE_REQUEST = 'CREATE_PLACE_REQUEST'
+export const CREATE_PLACE_SUCCESS = 'CREATE_PLACE_SUCCESS'
+export const CREATE_PLACE_FAILURE = 'CREATE_PLACE_FAILURE'
 
 export const ASSIGN_CANDIDAT_TO_CRENEAU = 'ASSIGN_CANDIDAT_TO_CRENEAU'
 
@@ -34,10 +36,24 @@ export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
 export const DELETE_BOOKED_PLACE_SUCCESS = 'DELETE_BOOKED_PLACE_SUCCESS'
 export const DELETE_BOOKED_PLACE_FAILURE = 'DELETE_BOOKED_PLACE_FAILURE'
 
-export const FETCH_CANDIDAT = 'FETCH_CANDIDAT'
+export const SEND_RESET_LINK_REQUEST = 'SEND_RESET_LINK_REQUEST'
+export const SEND_RESET_LINK_SUCCESS = 'SEND_RESET_LINK_SUCCESS'
+export const SEND_RESET_LINK_FAILURE = 'SEND_RESET_LINK_FAILURE'
+
+export const RESET_PASSWORD_REQUEST = 'RESET_PASSWORD_REQUEST'
+export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS'
+export const RESET_PASSWORD_FAILURE = 'RESET_PASSWORD_FAILURE'
 
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
+
+export const numberOfMonthsToFetch = 3
+
+const AUTHORIZED_ROUTES = {
+  'aurige': ROUTE_AUTHORIZE_AURIGE,
+  'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
+  'users': ROUTE_AUTHORIZE_USERS,
+}
 
 export default {
   getters: {
@@ -47,44 +63,43 @@ export default {
     activeDepartement: state => {
       return state.departements.active
     },
-    noAuthorize: state => {
-      if (!state.level || state.level < 2) return ROUTE_AUTHORIZE_AURIGE
+    emailDepartementActive: state => {
+      if (!state.departements.emails.length) {
+        return state.email
+      }
+      const selectedEmail = state.departements.emails.find(el => el && el._id === state.departements.active)
+      return (selectedEmail && selectedEmail.email) || state.email
     },
   },
 
   state: {
     departements: {
       active: undefined,
+      emails: [],
       error: undefined,
       isFetching: false,
       list: [],
     },
     email: undefined,
-    level: undefined,
+    features: undefined,
     places: {
+      created: undefined,
+      deleted: undefined,
+      isCreating: false,
+      isDeletingBookedPlace: false,
+      isDeletingAvailablePlace: false,
       isFetching: false,
       list: [],
     },
     inspecteurs: {
-      isFetching: false,
       error: undefined,
+      isFetching: false,
       list: [],
     },
-    deleteBookedPlace: {
-      result: undefined,
-      isDeleting: false,
-    },
-    deletePlaceAction: {
-      result: undefined,
-      isDeleting: false,
-    },
     currentWeek: undefined,
-    createCreneau: {
-      isCreating: false,
-      result: undefined,
-    },
-    fetchedCandidat: undefined,
     isFetchingCandidat: false,
+    isSendingResetLink: false,
+    isSendingResetPassword: false,
   },
 
   mutations: {
@@ -94,9 +109,12 @@ export default {
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
       state.departements.list = infos.departements
       state.email = infos.email
-      state.level = infos.level
+      state.features = infos.features && infos.features.map(feature => AUTHORIZED_ROUTES[feature])
+
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
+
       state.departements.active = activeDepartement || infos.departements[0]
+      state.departements.emails = infos.emailsDepartements || []
       state.departements.isFetching = false
     },
     [FETCH_ADMIN_INFO_FAILURE] (state) {
@@ -115,52 +133,52 @@ export default {
       state.places.isFetching = false
     },
 
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] (state) {
+    [FETCH_INSPECTEURS_BY_CENTRE_REQUEST] (state) {
       state.inspecteurs.isFetching = true
     },
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS] (state, list) {
+    [FETCH_INSPECTEURS_BY_CENTRE_SUCCESS] (state, list) {
       state.inspecteurs.list = list
       state.inspecteurs.isFetching = false
     },
-    [FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE] (state, error) {
+    [FETCH_INSPECTEURS_BY_CENTRE_FAILURE] (state, error) {
       state.inspecteurs.error = error
       state.inspecteurs.isFetching = false
     },
 
     [DELETE_PLACE_REQUEST] (state) {
-      state.deletePlaceAction.isDeleting = true
+      state.places.isDeletingAvailablePlace = true
     },
     [DELETE_PLACE_SUCCESS] (state, success) {
-      state.deletePlaceAction.result = success
-      state.deletePlaceAction.isDeleting = false
+      state.deleted = success
+      state.places.isDeletingAvailablePlace = false
     },
     [DELETE_PLACE_FAILURE] (state, error) {
-      state.deletePlaceAction.result = error
-      state.deletePlaceAction.isDeleting = false
+      state.deleted = error
+      state.places.isDeletingAvailablePlace = false
     },
 
-    [CREATE_CRENEAU_REQUEST] (state) {
-      state.createCreneau.isCreating = true
+    [CREATE_PLACE_REQUEST] (state) {
+      state.places.isCreating = true
     },
-    [CREATE_CRENEAU_SUCCESS] (state, success) {
-      state.createCreneau.result = success
-      state.createCreneau.isCreating = false
+    [CREATE_PLACE_SUCCESS] (state, success) {
+      state.places.created = success
+      state.places.isCreating = false
     },
-    [CREATE_CRENEAU_FAILURE] (state, error) {
-      state.createCreneau.result = error
-      state.createCreneau.isCreating = false
+    [CREATE_PLACE_FAILURE] (state, error) {
+      state.places.created = error
+      state.places.isCreating = false
     },
 
     [DELETE_BOOKED_PLACE_REQUEST] (state) {
-      state.deleteBookedPlace.isDeleting = true
+      state.isDeletingBookedPlace = true
     },
     [DELETE_BOOKED_PLACE_SUCCESS] (state, success) {
-      state.deleteBookedPlace.result = success
-      state.deleteBookedPlace.isDeleting = false
+      state.deleted = success
+      state.isDeletingBookedPlace = false
     },
     [DELETE_BOOKED_PLACE_FAILURE] (state, error) {
-      state.deleteBookedPlace.result = error
-      state.deleteBookedPlace.isDeleting = false
+      state.deleted = error
+      state.isDeletingBookedPlace = false
     },
 
     [SELECT_DEPARTEMENT] (state, departement) {
@@ -170,6 +188,26 @@ export default {
 
     [SET_WEEK_SECTION] (state, currentWeek) {
       state.currentWeek = currentWeek
+    },
+
+    [SEND_RESET_LINK_REQUEST] (state) {
+      state.isSendingResetLink = true
+    },
+    [SEND_RESET_LINK_SUCCESS] (state) {
+      state.isSendingResetLink = false
+    },
+    [SEND_RESET_LINK_FAILURE] (state) {
+      state.isSendingResetLink = false
+    },
+
+    [RESET_PASSWORD_REQUEST] (state) {
+      state.isSendingResetPassword = true
+    },
+    [RESET_PASSWORD_SUCCESS] (state) {
+      state.isSendingResetPassword = false
+    },
+    [RESET_PASSWORD_FAILURE] (state) {
+      state.isSendingResetPassword = false
     },
   },
 
@@ -185,14 +223,13 @@ export default {
       }
     },
 
-    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, state }, window = {}) {
-      const { begin, end } = window
+    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, rootState, state }, timeWindow = {}) {
+      const { begin, end } = timeWindow
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
         const currentDateTime = getFrenchLuxonCurrentDateTime()
-        const weekDay = currentDateTime.weekday
-        const beginDate = begin || currentDateTime.plus({ days: -weekDay }).toISO()
-        const endDate = end || currentDateTime.plus({ months: 2 }).toISO()
+        const beginDate = begin || currentDateTime.startOf('day').toISO()
+        const endDate = end || currentDateTime.plus({ months: numberOfMonthsToFetch }).endOf('day').toISO()
         const placesByCentre = await api.admin
           .getAllPlacesByDepartement(state.departements.active, beginDate, endDate)
 
@@ -200,15 +237,19 @@ export default {
           throw new Error(placesByCentre.message)
         }
 
+        rootState.center.selected = rootState.center.selected || (placesByCentre[0] && placesByCentre[0].centre)
+
         const placesByCentreAndWeek = Array.isArray(placesByCentre) ? placesByCentre.map(element => ({
           centre: element.centre,
           places: element.places.reduce((acc, place) => {
-            const key = getFrenchLuxonFromIso(place.date).weekNumber
+            const keyString = getFrenchLuxonFromIso(place.date).toISOWeekDate().split('-')
+            const key = `${keyString[0]}-${keyString[1]}`
             const places = { ...acc }
             places[key] = [...(places[key] || []), place]
             return places
           }, {}),
         })) : []
+
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS, placesByCentreAndWeek)
       } catch (error) {
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE, error)
@@ -216,19 +257,20 @@ export default {
       }
     },
 
-    async [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }) {
-      commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
+    async [FETCH_INSPECTEURS_BY_CENTRE_REQUEST] ({ commit, dispatch, state, getters }, centreIdAndDate) {
+      const { centreId, begin, end } = centreIdAndDate
+      commit(FETCH_INSPECTEURS_BY_CENTRE_REQUEST)
       try {
-        const list = await api.admin.getInspecteursByDepartement(state.departements.active)
+        const list = await api.admin.getInspecteursByCentreAndDate(centreId, begin, end)
         const newList = list.map(elem => {
           return {
             ...elem,
             creneau: getters.creneauSetup,
           }
         })
-        commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, newList)
+        commit(FETCH_INSPECTEURS_BY_CENTRE_SUCCESS, newList)
       } catch (error) {
-        commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE, error)
+        commit(FETCH_INSPECTEURS_BY_CENTRE_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
@@ -260,15 +302,15 @@ export default {
       }
     },
 
-    async [CREATE_CRENEAU_REQUEST] ({ commit, dispatch, state }, placeData = {}) {
+    async [CREATE_PLACE_REQUEST] ({ commit, dispatch, state }, placeData = {}) {
       const { centre, inspecteur, date } = placeData
-      commit(CREATE_CRENEAU_REQUEST)
+      commit(CREATE_PLACE_REQUEST)
       try {
         const result = await api.admin.createPlace(centre, inspecteur, date)
-        commit(CREATE_CRENEAU_SUCCESS, result)
+        commit(CREATE_PLACE_SUCCESS, result)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
-        commit(CREATE_CRENEAU_FAILURE, error)
+        commit(CREATE_PLACE_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
@@ -282,7 +324,7 @@ export default {
         } = await api.admin.assignCandidatToPlace(
           placeId,
           candidatId,
-          state.departements.active
+          state.departements.active,
         )
         if (!success) {
           throw new Error(message)
@@ -293,18 +335,33 @@ export default {
       }
     },
 
-    async [FETCH_CANDIDAT] ({ dispatch, state, commit }, candidatId) {
-      state.isFetchingCandidat = true
+    async [SEND_RESET_LINK_REQUEST] ({ commit, dispatch }, email) {
+      commit(SEND_RESET_LINK_REQUEST)
       try {
-        const { success, candidat, message } = await api.admin.getCandidats(candidatId, state.departements.active)
-        if (!success) {
-          throw new Error(message)
+        const response = await api.admin.sendMailResetLink(email)
+        if (response.success === false) {
+          throw new Error(response.message)
         }
-        state.fetchedCandidat = candidat
-        state.isFetchingCandidat = false
+        commit(SEND_RESET_LINK_SUCCESS)
       } catch (error) {
-        state.isFetchingCandidat = false
-        return dispatch(SHOW_ERROR, error.message)
+        commit(SEND_RESET_LINK_FAILURE)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
+      }
+    },
+
+    async [RESET_PASSWORD_REQUEST] ({ commit, dispatch }, { email, hash, newPassword, confirmNewPassword }) {
+      commit(RESET_PASSWORD_REQUEST)
+      try {
+        const response = await api.admin.resetPassword(email, hash, newPassword, confirmNewPassword)
+        if (response.success === false) {
+          throw new Error(response.message)
+        }
+        commit(RESET_PASSWORD_SUCCESS)
+      } catch (error) {
+        commit(RESET_PASSWORD_FAILURE)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
       }
     },
 
@@ -316,4 +373,5 @@ export default {
       commit(SET_WEEK_SECTION, currentWeek)
     },
   },
+
 }

@@ -2,9 +2,7 @@
   <div class="c-candidat-wrapper">
     <bandeau-beta fixed />
     <div class="c-candidat-message">
-      <h1 class="c-candidat-message__title">
-        {{$formatMessage({ id: 'app_name' })}}
-      </h1>
+      <h1 class="c-candidat-message__title" v-html="$formatMessage({ id: 'app_html_title'})" />
       <h2 class="c-candidat-message__subtitle">
         {{$formatMessage({ id: 'app_subtitle' })}}
       </h2>
@@ -92,14 +90,6 @@ export default {
   border-radius: 1em;
   box-shadow: 0.05em 0.1em 0.1em 0.3em #fff;
   color: #fff;
-
-  /*
-  @media (max-width: 599px) {
-    width: 100vw;
-    margin: 0;
-    border-radius: 0;
-  }
-*/
 
   &__title {
     margin: 0.2em 0;

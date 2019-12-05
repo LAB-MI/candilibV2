@@ -11,29 +11,33 @@ export const inspecteurFields = {
     required: true,
     uppercase: true,
   },
+
   prenom: {
     type: String,
     required: false,
   },
+
   email: {
     type: String,
     required: true,
     unique: true,
     match: emailRegex,
   },
+
   matricule: {
     type: String,
     required: true,
     match: matriculeRegex,
     unique: true,
   },
+
   departement: {
     type: String,
     required: false,
   },
 }
 
-const inspecteurSchema = new Schema(inspecteurFields)
+const inspecteurSchema = new Schema(inspecteurFields, { timestamps: true })
 
 inspecteurSchema.pre('save', async function preSave () {
   const inspecteur = this

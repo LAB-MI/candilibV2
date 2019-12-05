@@ -1,58 +1,76 @@
 <template>
-  <div>
+  <div style="margin-top: -6em;">
     <h2 class="title">
       <strong>
-        {{ nameCenter }}
+        <span class="u-uppercase">
+          {{ nameCenter }}
+        </span>
       </strong>
+
+      (
+        <strong class="text-free-places">
+        {{ allBookedPlacesByCenter }}
+        </strong>
+        <strong>
+          /
+        </strong>
+        <strong>
+          {{ allCenterPlaces }}
+        </strong>
+      )
     </h2>
 
-    <carousel
-      id="carousel"
-      class="carousel"
-      :navigationEnabled="true"
-      :paginationEnabled="false"
-      :scrollPerPage="false"
-      :perPage="3"
-      :perPageCustom="[[768, 5], [1024, 5]]"
-      :navigateTo="[currentWeekNumber, false]"
-    >
-      <slide
-        class="slide"
-        v-ripple
-        v-for="(week, index) in formatArrayByWeek()"
-        :key="week.numWeek"
-      >
-        <v-card
-          v-if="index !== 0"
-          :id="`week-${nameCenter}-${index}`"
-          class="main-card"
-          @click="goToGestionPlannings(index, centerId)"
-        >
-          <v-card-title class="week-card-title">
-            {{ `Semaine N°${index}` }}
-          </v-card-title>
-          <v-card-text class="stats-card">
-            <span class="stats-card-text-free-places">
-              {{ week.freePlaces || 0 }}
-            </span>
-            /
-            {{ week.totalPlaces || 0 }}
-          </v-card-text>
-        </v-card>
-      </slide>
-    </carousel>
+    <div class="text-xs-left">
+      <span class="stats-card-text-free-places">
+        Places reservées
+      </span>
+      <span class="slash-wrapper">
+        /
+      </span>
+      {{ $formatMessage({ id: 'total_places'}) }}
+    </div>
+
+    <data-table-week-monitor
+      :items="formattedArrayByWeek"
+      @goToGestionPlannings="goToGestionPlannings"
+      :centerId="centerId"
+    />
   </div>
 </template>
 
 <script>
 import {
+  creneauAvailable,
+  getFrenchFormattedDateFromObject,
   getFrenchLuxonCurrentDateTime,
-  getFrenchWeeksInWeekYear,
+  getFrenchLuxonFromIso,
+  validDays,
 } from '@/util'
 
-import { SET_WEEK_SECTION } from '@/store'
+import DataTableWeekMonitor from './DataTableWeekMonitor'
+
+import { SET_WEEK_SECTION, numberOfMonthsToFetch } from '@/store'
+
+export const splitWeek = (prev, day, centerId) => {
+  const weekDayNumber = getFrenchLuxonFromIso(day.date).weekday - 1
+  if (centerId === day.centre && weekDayNumber < validDays.length) {
+    if (!prev[weekDayNumber]) {
+      prev[weekDayNumber] = []
+    }
+    prev[weekDayNumber] = [
+      ...prev[weekDayNumber],
+      day,
+    ]
+  }
+
+  return prev
+}
 
 export default {
+  components: {
+    DataTableWeekMonitor,
+  },
+
   props: {
     nameCenter: {
       type: String,
@@ -62,72 +80,113 @@ export default {
     weeks: Object,
   },
 
+  data () {
+    return {
+      allCenterPlaces: 0,
+      allBookedPlacesByCenter: 0,
+    }
+  },
+
   computed: {
     currentWeekNumber () {
       return getFrenchLuxonCurrentDateTime().weekNumber
     },
+    formattedArrayByWeek () {
+      return this.formatArrayByWeek()
+    },
   },
 
   methods: {
-    goToGestionPlannings (currentWeek, centerId) {
+    getCountBookedPlaces (places) {
+      const bookedPlacesCount = places.filter(elmt => elmt.candidat).length
+      return places.length - bookedPlacesCount
+    },
+
+    getStartOfWeek (weekNumber) {
+      const currentYear = getFrenchLuxonCurrentDateTime().weekYear
+      const shape = {
+        month: 'long',
+        day: '2-digit',
+        year: 'numeric',
+      }
+      return getFrenchFormattedDateFromObject({ weekYear: currentYear, weekNumber, weekday: 1 }, shape)
+    },
+
+    goToGestionPlannings (currentWeek, weekDay, year) {
       this.$store.dispatch(SET_WEEK_SECTION, currentWeek)
-      const date = getFrenchLuxonCurrentDateTime().set({ weekNumber: currentWeek }).toSQLDate()
-      this.$router.push({ name: 'gestion-planning', params: { center: centerId, date } })
+      const date = getFrenchLuxonCurrentDateTime().set({ weekYear: year, weekNumber: currentWeek, weekday: weekDay || 1 }).toSQLDate()
+      this.$router.push({ name: 'gestion-planning', params: { center: this.centerId, date } })
+    },
+
+    getCreneauTimeAvailable (date) {
+      const hour = getFrenchLuxonFromIso(date).toLocaleString({
+        hour: '2-digit',
+        minute: '2-digit',
+      })
+      return creneauAvailable.includes(hour)
+    },
+
+    getWeeksWithPlaces (weekNb) {
+      const filteredWeeks = (this.weeks && this.weeks[weekNb] && this.weeks[weekNb].length)
+        ? this.weeks[weekNb].filter(elmt => this.getCreneauTimeAvailable(elmt.date)) : []
+      return filteredWeeks
     },
 
     formatArrayByWeek () {
-      const weeksInWeekYear = getFrenchWeeksInWeekYear(getFrenchLuxonCurrentDateTime().year)
-      const allWeeks = Array(weeksInWeekYear).fill(false)
-      Object.keys(this.weeks).map(weekNb => {
-        allWeeks[weekNb] = {
-          days: [ this.weeks[weekNb] ],
-          numWeek: weekNb,
-          totalPlaces: this.weeks[weekNb].length,
-          freePlaces: this.weeks[weekNb].length - this.weeks[weekNb].filter(elmt => elmt.candidat).length,
-        }
-      })
-      return allWeeks
+      this.allBookedPlacesByCenter = 0
+      this.allCenterPlaces = 0
+      const start = getFrenchLuxonCurrentDateTime()
+      const end = getFrenchLuxonCurrentDateTime().plus({ month: numberOfMonthsToFetch })
+      const allWeeks = Math.round(end.diff(start, ['weeks']).weeks) + 1
+
+      const normalizedArray =
+        Array.from({ length: allWeeks }).reduce((acc, item, index) => {
+          const defaultDays = Array(validDays.length).fill([])
+          const [year, week] = start.plus({ weeks: index }).toISOWeekDate().split('-')
+          const key = `${year}-${week}`
+          const placesOfWeek = this.getWeeksWithPlaces(key)
+          if (placesOfWeek && placesOfWeek.length) {
+            const totalPlaces = placesOfWeek.length
+            const bookedPlaces = placesOfWeek.filter(elmt => elmt.candidat).length
+            this.allBookedPlacesByCenter = bookedPlaces + this.allBookedPlacesByCenter
+            this.allCenterPlaces = totalPlaces + this.allCenterPlaces
+            return [
+              ...acc,
+              {
+                weekKey: key,
+                days: placesOfWeek.reduce((prev, day) => splitWeek(prev, day, this.centerId), defaultDays),
+                numWeek: week.split('W')[1],
+                numYear: year,
+                totalPlaces,
+                bookedPlaces,
+              },
+            ]
+          }
+          return [
+            ...acc,
+            {
+              weekKey: key,
+              days: defaultDays,
+              numWeek: week.split('W')[1],
+              numYear: year,
+              totalPlaces: 0,
+              bookedPlaces: 0,
+            },
+          ]
+        }, [])
+      return normalizedArray
     },
   },
 }
 </script>
 
 <style lang="postcss" scoped>
-.main-card {
-  height: 100%;
-  cursor: pointer;
-  border-width: 2px;
-  border-style: solid;
-  border-color: black;
-}
-
-.carousel {
-  border: 1px solid black;
-}
-
-.slide {
-  height: 100%;
-  text-align: center;
-}
-
-.week-card-title {
-  background-color: rgb(207, 200, 198);
-  height: 100%;
-  font-size: 1.5em;
-}
-
-.stats-card {
-  font-size: 1.5em;
-  background-color: rgb(240, 239, 239);
-  padding: 0;
-}
-
-.stats-card-text-free-places {
-  color: green;
-}
-
 .title {
   padding: 1em;
   text-align: center;
+}
+
+.text-free-places {
+  color: green;
 }
 </style>

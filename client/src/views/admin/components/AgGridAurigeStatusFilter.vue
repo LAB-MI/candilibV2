@@ -1,39 +1,42 @@
 <template>
-    <v-select v-model="selected" :items="options">
-      <template slot="selection" slot-scope="{ item  }">
-      <v-chip v-if="!item.value">
-        <span >{{ item.text }}</span>
-      </v-chip>
-      <v-chip v-if="item.value">
-        <v-icon>{{item.text}}</v-icon>
-      </v-chip>
-      </template>
-      <template slot="item" slot-scope="{ item  }">
-        <v-chip v-if="!item.value">
-        <span >{{ item.text }}</span>
-      </v-chip>
-      <v-chip v-if="item.value">
-        <v-icon>{{item.text}}</v-icon>
-      </v-chip>
-      </template>
-    </v-select>
+  <v-select class="t-ag-grid-filter-status" v-model="selected" :items="options">
+    <v-icon class="t-ag-grid-filter-status-icon" slot="append">arrow_drop_down</v-icon>
+    <template slot="selection" slot-scope="{ item  }">
+    <v-chip v-show="!item.value" :class="item.class">
+      <span >{{ item.text }}</span>
+    </v-chip>
+    <v-chip v-show="item.value" :class="item.class">
+      <v-icon>{{item.text}}</v-icon>
+    </v-chip>
+    </template>
+    <template slot="item" slot-scope="{ item  }">
+      <v-chip v-show="!item.value" :class="item.class">
+      <span >{{ item.text }}</span>
+    </v-chip>
+    <v-chip v-show="item.value" :class="item.class">
+      <v-icon>{{item.text}}</v-icon>
+    </v-chip>
+    </template>
+  </v-select>
 </template>
 
 <script>
 import Vue from 'vue'
+
 export default Vue.extend({
   data () {
     return {
       valueGetter: null,
       selected: '',
       options: [
-        { text: 'TOUS', value: '' },
-        { text: 'done', value: 'success' },
-        { text: 'clear', value: 'error' },
-        { text: 'warning', value: 'warning' },
+        { text: 'TOUS', value: '', class: 't-ag-grid-filter-all' },
+        { text: 'done', value: 'success', class: 't-ag-grid-filter-success' },
+        { text: 'clear', value: 'error', class: 't-ag-grid-filter-error' },
+        { text: 'warning', value: 'warning', class: 't-ag-grid-filter-warning' },
       ],
     }
   },
+
   methods: {
     isFilterActive () {
       const { selected } = this
@@ -45,15 +48,17 @@ export default Vue.extend({
       return !selected || !(selected[0].length > 0) || !selected.indexOf(this.valueGetter(params.node))
     },
   },
+
   watch: {
     'selected': function (val, oldVal) {
-      if (val !== oldVal) {
+      if (val !== oldVal && this.params) {
         this.params.filterChangedCallback()
       }
     },
   },
+
   created () {
-    this.valueGetter = this.params.valueGetter
+    this.valueGetter = this.params && this.params.valueGetter
   },
 
 })

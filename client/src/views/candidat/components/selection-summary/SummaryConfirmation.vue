@@ -1,8 +1,7 @@
 <template>
   <div class="text--center" v-if="!timeSlots.confirmed">
-    <p>
-      <strong>{{ $formatMessage({ id: 'confirmation_reservation_checkbox_title' }) }}</strong>
-    </p>
+    <h5 class="confirmation-reservation-checkbox-title" v-html="$formatMessage({ id: 'confirmation_reservation_checkbox_title' })">
+    </h5>
     <v-card-actions>
       <v-form
         class="u-full-width  u-flex  u-flex--column  u-flex--center"
@@ -27,7 +26,7 @@
         <v-flex d-flex>
           <v-spacer></v-spacer>
           <v-btn
-            outline
+            outlined
             color="info"
             :disabled="isBackButtonDisabled"
             :aria-disabled="isBackButtonDisabled"
@@ -36,21 +35,22 @@
             <v-icon>
               arrow_back_ios
             </v-icon>
-            {{ $formatMessage({ id: 'confirmation_reservation_boutton_retour' } )}}
+            {{ $formatMessage({ id: 'confirmation_reservation_bouton_retour' } )}}
           </v-btn>
           <v-btn
             :aria-disabled="disabled"
             :disabled="disabled"
             type="submit"
             color="primary"
+            @click="displayEvaluation"
           >
-            {{ $formatMessage({ id: 'confirmation_reservation_boutton_confirmation' } )}}
+            {{ $formatMessage({ id: 'confirmation_reservation_bouton_confirmation' } )}}
           </v-btn>
         </v-flex>
       </v-form>
     </v-card-actions>
-    </div>
-    <div class="text--center" v-else>
+  </div>
+  <div class="text--center" v-else>
     <h4>
       {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
       &nbsp;
@@ -81,6 +81,7 @@ import {
 import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,
+  SET_SHOW_EVALUATION,
 } from '@/store'
 
 export default {
@@ -146,6 +147,12 @@ export default {
     convertIsoDate (dateIso) {
       return `${getFrenchDateFromIso(dateIso)}`
     },
+
+    displayEvaluation () {
+      if (!this.$store.state.candidat.me.isEvaluationDone) {
+        window.setTimeout(() => this.$store.dispatch(SET_SHOW_EVALUATION, true), 5000)
+      }
+    },
   },
 }
 </script>
@@ -154,5 +161,10 @@ export default {
   h4 {
     padding-bottom: 2em;
     text-transform: uppercase;
+  }
+
+  .confirmation-reservation-checkbox-title {
+    font-size: 1.1em;
+    color: #333;
   }
 </style>

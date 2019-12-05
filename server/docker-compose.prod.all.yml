@@ -20,6 +20,7 @@ services:
   api:
     image: candilib_api:${APP_VERSION:-latest}
     build:
+      target: production
       context: ./
       dockerfile: Dockerfile
       args:
@@ -42,6 +43,8 @@ services:
       MAIL_FROM: ${MAIL_FROM:-noreply@interieur.gouv.fr}
       CANDIDAT_EXPIREDIN: ${CANDIDAT_EXPIREDIN:-72h}
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
+      ADMIN_URL: ${ADMIN_URL:-http://localhost:8080}
+
       SECRET: ${SECRET}
 
 #    networks:

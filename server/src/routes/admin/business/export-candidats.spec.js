@@ -33,7 +33,7 @@ describe('export-candidats', () => {
     const csv = await getCandidatsAsCsv(candidats)
 
     expect(csv.substr(0, 51)).toContain(
-      `Code NEPH;Nom de naissance;Nom d'usage;Prénom;email`
+      "Code NEPH;Nom de naissance;Nom d'usage;Prénom;email"
     )
     expect(csv.substr(51, 100)).toContain(expectedFirstLine)
   })
@@ -54,7 +54,7 @@ describe('export-candidats', () => {
     const csv = await getBookedCandidatsAsCsv(candidats)
 
     expect(csv.substr(0, 76)).toContain(
-      `"inspecteur","centre","Date réservé","Code NEPH","Nom de naissance","Prénom"`
+      '"inspecteur","centre","Date réservé","Code NEPH","Nom de naissance","Prénom"'
     )
     expect(csv.substr(76, 120)).toContain(expectedFirstLine)
   })

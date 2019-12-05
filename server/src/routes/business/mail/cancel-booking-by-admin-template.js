@@ -9,9 +9,11 @@ export const getCancelBookingByAdminTemplate = (
 ) => `<p>Madame, Monsieur ${nomNaissance},</p>
 <br>
 <p>
-  Votre réservation à ${nameCentre} le ${dateResa} à ${houreResa} avec le numéro NEPH ${codeNeph} a été annulée suite à un imprévu lié à l'administration.
-  Vous serez contacté dans les prochains jours pour replanifier un créneau à votre convenance.
-  Vous pouvez aussi solliciter <a href=${urlFAQ}>le service administratif dédié</a> dès à présent.
+  Votre réservation à ${nameCentre.toUpperCase()} le ${dateResa} à ${houreResa} avec le numéro NEPH ${codeNeph} a été annulée à la suite d'un imprévu lié à l'administration.
+  <br>Vous pouvez dès à présent replanifier un créneau à votre convenance : <a href=${urlRESA}>se connecter</a>
+</p>
+<p>
+  Veuillez nous excuser pour la gêne occasionnée.
 </p>
 <br>
 <p align="right">L'équipe Candilib</p>`

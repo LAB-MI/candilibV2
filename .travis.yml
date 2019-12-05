@@ -1,7 +1,7 @@
+os: linux
 dist: trusty
-sudo: required
 
-language: minimal
+language: shell
 
 services:
   - docker
@@ -12,6 +12,7 @@ env:
 addons:
   apt:
     packages:
+      - language-pack-fr
       - docker-ce
 
 before_install:
@@ -26,10 +27,27 @@ before_script:
   - uname -a
   - type -a docker-compose && docker-compose version
   - docker version
-
 script:
   - ( git fetch --unshallow || true ) && git tag -l
   - ci/run-tests.sh
+
+deploy:
+  - provider: script
+    script: ci/deploy.sh test $TRAVIS_BRANCH
+    cleanup: true
+    on:
+      branch: devops/*
+  - provider: script
+    script: ci/deploy.sh qualif $TRAVIS_BRANCH
+    cleanup: true
+    on:
+      branch: qualif/*
+  - provider: script
+    script: ci/deploy.sh develop $TRAVIS_BRANCH
+    cleanup: true
+    on:
+      branch: develop
+
 after_script:
   - make clean-images clean-dir
   - echo "END"

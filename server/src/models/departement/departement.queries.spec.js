@@ -1,5 +1,5 @@
 import { connect, disconnect } from '../../mongo-connection'
-import { createDepartement, findDepartementbyId } from '.'
+import { createDepartement, findDepartementById } from '.'
 import {
   deleteDepartementById,
   findDepartementsByEmail,
@@ -49,7 +49,7 @@ describe('Find Departement', () => {
     const id = _id
 
     // When
-    const departement = await findDepartementbyId(id)
+    const departement = await findDepartementById(id)
 
     // Then
     expect(departement).toBeDefined()

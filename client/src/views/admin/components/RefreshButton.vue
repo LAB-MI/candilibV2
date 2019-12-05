@@ -15,11 +15,13 @@ export default {
   components: {
     RefreshButton,
   },
+
   computed: {
     isLoading () {
       return this.$store.state.admin.places.isFetching
     },
   },
+
   methods: {
     async reloadWeekMonitor () {
       await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)

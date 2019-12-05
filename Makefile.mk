@@ -11,6 +11,7 @@ APP_DB_PATH    := $(APP_PATH)/server
 
 BUILD_DIR     := ${APP_PATH}/${APP}-${APP_VERSION}-build
 ARCHIVE_DIR   := ${APP_PATH}/${APP}-${APP_VERSION}
+DIST_DIR      := ${APP_PATH}/${APP}-${APP_VERSION}-dist
 
 # binaries
 DOCKER   := $(shell type -p docker)
@@ -52,11 +53,17 @@ DC_APP_API_BUILD_PROD            := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_API_RUN_PROD              := $(APP_API_PATH)/docker-compose.prod.api.yml
 DC_APP_DB_BUILD_PROD             := $(APP_DB_PATH)/docker-compose.prod.db.yml
 DC_APP_DB_RUN_PROD               := $(APP_DB_PATH)/docker-compose.prod.db.yml
+# tests e2e
+DC_APP_E2E_BUILD_PROD            := $(APP_FRONT_PATH)/docker-compose.e2e.yml
+DC_APP_E2E_RUN_PROD              := $(APP_FRONT_PATH)/docker-compose.e2e.yml
 
 # source archive
 FILE_ARCHIVE_APP_VERSION = $(APP)-$(APP_VERSION)-archive.tar.gz
 FILE_ARCHIVE_LATEST_VERSION = $(APP)-$(LATEST_VERSION)-archive.tar.gz
  
+FILE_FRONT_CANDIDAT_APP_VERSION = $(APP)-front-candidat-$(APP_VERSION)-archive.tar.gz
+FILE_FRONT_ADMIN_APP_VERSION = $(APP)-front-admin-$(APP_VERSION)-archive.tar.gz
+
 # docker image name save
 FILE_IMAGE_FRONT_CANDIDAT_APP_VERSION = $(APP)-front-candidat-$(APP_VERSION)-image.tar.gz
 FILE_IMAGE_FRONT_CANDIDAT_LATEST_VERSION = $(APP)-front-candidat-$(LATEST_VERSION)-image.tar.gz

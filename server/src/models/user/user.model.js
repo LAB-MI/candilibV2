@@ -8,25 +8,22 @@ import {
 
 const { Schema } = mongoose
 
-const UserSchema = new Schema({
+export const UserFields = {
   email: {
     type: String,
     trim: true,
-    unique: true,
     match: regexEmail,
-    required: true,
-  },
-  password: {
-    type: String,
     required: true,
   },
   departements: {
     type: Array,
     default: [],
   },
-  isDeleted: {
-    type: Boolean,
-    default: false,
+  deletedAt: {
+    type: Date,
+  },
+  deletedBy: {
+    type: String,
   },
   signUpDate: {
     type: Date,
@@ -35,6 +32,39 @@ const UserSchema = new Schema({
   status: {
     type: String,
     default: 'admin',
+  },
+}
+
+const UserSchema = new Schema(
+  {
+    ...UserFields,
+    email: {
+      ...UserFields.email,
+      unique: true,
+    },
+    emailValidationHash: {
+      type: String,
+      required: false,
+    },
+    passwordResetRequestedAt: {
+      type: Date,
+      default: undefined,
+    },
+    password: {
+      type: String,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  }
+)
+
+UserSchema.set('toJSON', {
+  transform (doc, ret /*, opt */) {
+    delete ret.password
+    delete ret.__v
+    return ret
   },
 })
 
@@ -64,3 +94,13 @@ UserSchema.methods.comparePassword = function comparePassword (
 }
 
 export default mongoose.model('User', UserSchema)
+
+/**
+ * @typedef {Object} User
+ * @property {string} email
+ * @property {string[]} departements
+ * @property {Date} deletedAt
+ * @property {string} deletedBy
+ * @property {Date} signUpDate
+ * @property {string} status
+ */

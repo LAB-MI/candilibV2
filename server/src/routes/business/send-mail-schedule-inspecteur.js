@@ -1,16 +1,16 @@
 import { DateTime } from 'luxon'
 
-import { appLogger } from '../../util'
+import { appLogger, AUTHORIZED_HOURS } from '../../util'
 import { getScheduleInspecteurTemplate } from './mail/body-schedule-inspecteur-template'
 import { getHtmlBody } from './mail'
-import { dateTimeToFormatFr } from '../../util/date.util'
+import { getFrenchFormattedDateTime } from '../../util/date-util'
 import { sendMail } from './send-mail'
 import { findInspecteurById } from '../../models/inspecteur'
 import { findCentreById } from '../../models/centre'
 import { findCandidatById } from '../../models/candidat'
 import { getFailedScheduleInspecteurTemplate } from './mail/failed-mail-schelude-inspecteurs-template'
 
-const getScheduleInspecteurBody = async (
+export const getScheduleInspecteurBody = async (
   inspecteurName,
   inspecteurMatricule,
   date,
@@ -25,25 +25,14 @@ const getScheduleInspecteurBody = async (
     throw new Error('NO_PLACES')
   }
 
-  const planning = {
-    '08:00': {},
-    '08:30': {},
-    '09:00': {},
-    '09:30': {},
-    '10:00': {},
-    '10:30': {},
-    '11:00': {},
-    '11:30': {},
-    '13:30': {},
-    '14:00': {},
-    '14:30': {},
-    '15:00': {},
-    '15:30': {},
-  }
+  const planning = AUTHORIZED_HOURS.reduce((accum, value) => {
+    accum[value] = {}
+    return accum
+  }, {})
   await Promise.all(
     places.map(async place => {
       const { candidat, date } = place
-      const heure = dateTimeToFormatFr(date).hour
+      const heure = getFrenchFormattedDateTime(date).hour
       let candidatObject
       if (candidat) {
         candidatObject = await findCandidatById(candidat, {
@@ -140,7 +129,7 @@ export const sendScheduleInspecteur = async (
   const centreNom = placeCentre.nom
   const departement = placeCentre.departement
 
-  const dateToString = dateTimeToFormatFr(date).date
+  const dateToString = getFrenchFormattedDateTime(date).date
   const content = await getScheduleInspecteurBody(
     inspecteurName,
     inspecteurMatricule,
@@ -167,7 +156,8 @@ export const sendMailForScheduleInspecteurFailed = async (
     args: { email, date, departement, inspecteurs },
   })
 
-  const dateToString = dateTimeToFormatFr(date, DateTime.DATE_SHORT).date
+  const dateToString = getFrenchFormattedDateTime(date, DateTime.DATE_SHORT)
+    .date
 
   const content = getFailedScheduleInspecteurTemplate(
     dateToString,

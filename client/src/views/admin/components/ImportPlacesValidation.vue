@@ -3,7 +3,7 @@
     <h2 class="text--center">Validation d'import</h2>
 
     <v-card style="background-color: unset;">
-      <ag-grid-vue style="max-width: 100%; height: 350px;" class="ag-theme-material"
+      <ag-grid-vue style="max-width: 100%; height: 350px;" class="ag-theme-material t-ag-grid-import-places-validation"
         :gridOptions="gridOptions"
         :columnDefs="columnDefs"
         :rowData="rowData"
@@ -66,16 +66,24 @@ export default {
         field: 'status',
         cellRenderer: StatusRenderer,
         filter: 'agGridAurigeStatusFilter',
-
+        width: 90,
+        headerClass: 't-import-places-validation-header-status',
       },
-      { headerName: 'Centre', field: 'centre' },
+      { headerName: 'Centre',
+        field: 'centre',
+      },
       { headerName: 'Date et heures',
         field: 'date',
         valueFormatter: valueDateFormatter,
         filter: 'agDateColumnFilter',
         filterParams: filterDateParams,
       },
-      { headerName: 'Message', field: 'message' },
+      { headerName: 'Message',
+        field: 'message',
+        cellStyle: { 'white-space': 'normal', 'line-height': 'normal' },
+        autoHeight: true,
+        width: 500,
+      },
     ]
     this.gridOptions = {
     }

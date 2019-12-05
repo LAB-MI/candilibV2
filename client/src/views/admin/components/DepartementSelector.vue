@@ -1,5 +1,41 @@
 <template>
-  <v-flex>
+  <div v-if="isNumberDepartementMoreThanTwo">
+    <v-menu
+      bottom
+    >
+
+      <template v-slot:activator="{ on: menu }">
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on: tooltip }">
+          <v-btn
+            fab
+            v-on="{ ...menu, ...tooltip}"
+            outlined
+            ripple
+            small
+          >
+            <div class="departement-wrapper">{{ `${activeDepartement}` }}</div>
+          </v-btn>
+          </template>
+          <span>Changer de département</span>
+        </v-tooltip>
+      </template>
+      <v-list>
+        <v-list-item
+          v-for="(departement, i) in admin.departements.list"
+          :key="i"
+          @click="activeDepartement = departement"
+        >
+          <v-chip
+            outlined
+          >
+            {{ departement }}
+          </v-chip>
+        </v-list-item>
+      </v-list>
+    </v-menu>
+  </div>
+  <v-flex v-else>
     <div class="c-two-hexagons">
       <hexagon
         v-for="departement in admin.departements.list"
@@ -16,12 +52,13 @@
 import { mapState } from 'vuex'
 
 import Hexagon from '@/components/Hexagon.vue'
-import { SELECT_DEPARTEMENT, FETCH_ADMIN_INFO_REQUEST } from '@/store'
+import { SELECT_DEPARTEMENT } from '@/store'
 
 export default {
   components: {
     Hexagon,
   },
+
   computed: {
     ...mapState(['admin']),
     activeDepartement: {
@@ -32,10 +69,13 @@ export default {
         this.$store.dispatch(SELECT_DEPARTEMENT, departement)
       },
     },
-  },
-
-  async mounted () {
-    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
+    isNumberDepartementMoreThanTwo () {
+      const { departements } = this.admin
+      if (departements && departements.list && departements.list.length > 2) {
+        return true
+      }
+      return false
+    },
   },
 }
 </script>
@@ -60,8 +100,12 @@ export default {
 
   .hexagon-wrapper:last-child {
     position: absolute;
-    bottom: -0.5em;
-    right: -0.75em;
+    bottom: -0.25em;
+    right: -0.5em;
   }
+}
+
+.departement-wrapper {
+  font-size: 25px;
 }
 </style>

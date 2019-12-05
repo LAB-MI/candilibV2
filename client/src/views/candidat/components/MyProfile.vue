@@ -44,10 +44,12 @@ export default {
     },
     profileInfo () {
       const me = this.$store.state.candidat.me
-      return me && Object.entries(me).map(([key, value]) => ({
-        label: labelDictionary[key],
-        value,
-      }))
+      return me && Object.entries(me)
+        .filter(el => el[0] in labelDictionary)
+        .map(([key, value]) => ({
+          label: labelDictionary[key],
+          value,
+        }))
     },
   },
 

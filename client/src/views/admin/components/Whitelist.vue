@@ -1,8 +1,49 @@
 <template>
   <div>
     <page-title :title="'Liste blanche'"/>
+
     <v-container>
-      <search-email/>
+      <v-card
+        :style="{ padding: '1em 0', position: 'relative' }"
+        :class="{'drag-over': isDragginOverWhitelist}"
+        @drop="dropHandler"
+        @dragover="dragOverHandler"
+        @dragexit="isDragginOverWhitelist = false"
+        @dragenter="isDragginOverWhitelist = true"
+      >
+        <span
+          class="loading-indicator"
+          v-if="whitelist.isFetching"
+        >
+          <v-progress-circular
+            v-show="whitelist.isFetching"
+            indeterminate
+            color="primary"
+          ></v-progress-circular>
+        </span>
+
+        <search-email />
+
+        <v-list
+          class="u-flex  u-flex--column  u-flex--center"
+          v-show="matchingList && matchingList.length"
+        >
+          <h4 class="text-xs-center">Adresses correspondant à la recherche (max 5)</h4>
+
+          <div>
+            <whitelisted
+              class="t-whitelist-search"
+              v-for="whitelisted in matchingList"
+              :key="whitelisted._id"
+              :whitelisted="whitelisted"
+              :remove-from-whitelist="removeFromWhitelist"
+              @delete="onDelete"
+              @dblclick="copyEmailInPaperclip"
+            />
+          </div>
+        </v-list>
+      </v-card>
+
       <v-card
         :style="{ padding: '1em 0' }"
         :class="{'drag-over': isDragginOverWhitelist}"
@@ -11,29 +52,60 @@
         @dragexit="isDragginOverWhitelist = false"
         @dragenter="isDragginOverWhitelist = true"
       >
+        <v-list
+          class="u-flex  u-flex--column  u-flex--center  u-max-width"
+        >
+          <h3 class="text-xs-center">Dernières adresses enregistrées</h3>
+
+          <div
+            class="u-flex"
+          >
+            <v-btn
+              @click="oneColumn = true"
+              class="u-flex"
+              :color="oneColumn ? 'primary' : ''"
+            >
+              <span>
+                Vue 1 seule colonne
+              </span>
+              &nbsp;
+              <v-icon
+              >
+                view_headline
+              </v-icon>
+            </v-btn>
+
+            <v-btn
+              @click="oneColumn = false"
+              :color="oneColumn ? '' : 'primary'"
+            >
+              <span>
+                Vue plusieurs colonnes
+              </span>
+              &nbsp;
+              <v-icon
+              >
+                view_module
+              </v-icon>
+            </v-btn>
+          </div>
+
+          <div class="whitelist-grid" :class="{'one-column': oneColumn}">
+            <whitelisted
+              v-for="whitelisted in whitelist.lastCreatedList"
+              :key="whitelisted._id"
+              :whitelisted="whitelisted"
+              :remove-from-whitelist="removeFromWhitelist"
+              @delete="onDelete"
+              @dblclick="copyEmailInPaperclip"
+            />
+          </div>
+        </v-list>
+
         <v-list>
-          <p class="text--center" v-if="whitelist.isFetching">
-            Chargement...
-            <v-progress-circular
-              v-if="whitelist.isFetching"
-              indeterminate
-              color="primary"
-            ></v-progress-circular>
-          </p>
-
-          <whitelisted
-            v-for="whitelisted in whitelist.list"
-            :key="whitelisted._id"
-            :whitelisted="whitelisted"
-            :remove-from-whitelist="removeFromWhitelist"
-            @delete="onDelete"
-            @dblclick="copyEmailInPaperclip"
-          />
-
           <v-form v-model="valid" @submit.prevent="addToWhitelist">
-            <v-list-tile v-show="adding">
-
-              <v-list-tile-action>
+            <v-list-item v-show="adding">
+              <v-list-item-action>
                 <v-btn
                   type="submit"
                   icon
@@ -42,15 +114,16 @@
                 >
                   <v-icon color="#17a2b8">save</v-icon>
                 </v-btn>
-              </v-list-tile-action>
+              </v-list-item-action>
 
-              <v-list-tile-action @click="hideForm">
+              <v-list-item-action @click="hideForm">
                 <v-btn icon>
                   <v-icon color="#17a2b8">close</v-icon>
                 </v-btn>
-              </v-list-tile-action>
+              </v-list-item-action>
 
               <v-text-field
+                class="t-add-one-whitelist"
                 placeholder="jean@dupont.fr"
                 aria-placeholder="jean@dupont.fr"
                 v-if="adding"
@@ -63,7 +136,7 @@
                 :disabled="whitelist.isUpdating"
               >
               </v-text-field>
-            </v-list-tile>
+            </v-list-item>
           </v-form>
 
           <v-dialog
@@ -91,7 +164,7 @@
                 <v-spacer></v-spacer>
                 <v-btn
                   color="primary"
-                  outline
+                  outlined
                   @click="deleting = false"
                 >
                   Annuler
@@ -105,49 +178,53 @@
               </v-card-actions>
             </v-card>
           </v-dialog>
+        </v-list>
 
-          <v-divider></v-divider>
+        <v-divider></v-divider>
 
-          <v-list-tile v-if="!adding" @click="showForm">
-            <v-list-tile-action>
+        <v-list>
+          <v-list-item v-if="!adding" @click="showForm">
+            <v-list-item-action>
               <v-btn icon >
                 <v-icon color="#17a2b8">
                   add_circle
                 </v-icon>
               </v-btn>
-            </v-list-tile-action>
+            </v-list-item-action>
             <span
               class="grey--text  text--darken-1"
             >
               Ajouter une adresse courriel
             </span>
-          </v-list-tile>
+          </v-list-item>
 
           <v-divider></v-divider>
 
-          <v-list-tile
+          <v-list-item
             v-show="!addingBatch"
             @click="showBatchForm"
           >
-            <v-list-tile-action>
-              <v-btn icon >
+            <v-list-item-action>
+              <v-btn icon>
                 <v-icon color="#17a2b8">
                   playlist_add
                 </v-icon>
               </v-btn>
-            </v-list-tile-action>
+            </v-list-item-action>
             <span
               class="grey--text  text--darken-1"
             >
               Ajouter un lot d'adresse courriel
             </span>
-          </v-list-tile>
+          </v-list-item>
 
           <v-form
             v-model="validBatch"
             v-show="addingBatch"
             @submit.prevent="addBatchToWhitelist"
+            class="u-pr"
           >
+            <big-loading-indicator :is-loading="whitelist.isUpdating" />
             <v-container>
               <v-textarea
                 id="whitelist-batch-textarea"
@@ -164,15 +241,16 @@
               </v-textarea>
             </v-container>
 
-            <v-list-tile v-show="addingBatch" style="padding-bottom: 2em;">
+            <v-list-item v-show="addingBatch" style="padding-bottom: 2em;">
               <v-spacer></v-spacer>
-              <v-list-tile-action>
+
+              <v-list-item-action>
                 <v-btn
                   ref="saveBatchEmail"
                   id="save-batch-email"
                   color="primary"
                   v-ripple
-                  flat
+                  text
                   :aria-disabled="whitelist.isUpdating"
                   :disabled="whitelist.isUpdating"
                   type="submit"
@@ -194,7 +272,7 @@
                   <v-btn
                     color="primary"
                     v-ripple
-                    flat
+                    text
                     style="padding-right: 1em; padding-left: 1em;"
                   >
                     <span style="padding-right: 1em;">
@@ -203,14 +281,14 @@
                     <v-icon>cloud_upload</v-icon>
                   </v-btn>
                 </label>
-              </v-list-tile-action>
+              </v-list-item-action>
 
-              <v-list-tile-action @click="hideBatchForm">
+              <v-list-item-action @click="hideBatchForm">
                 <v-btn icon>
                   <v-icon color="#17a2b8">close</v-icon>
                 </v-btn>
-              </v-list-tile-action>
-            </v-list-tile>
+              </v-list-item-action>
+            </v-list-item>
           </v-form>
 
         </v-list>
@@ -218,8 +296,8 @@
 
       <v-card v-show="whitelist.updateResult && whitelist.updateResult.length">
         <h3>Résultat de l'opération d'ajout par lot</h3>
-        <v-list>
-          <v-list-tile v-for="result in whitelist.updateResult" :key="result.email">
+        <v-list class="t-whitelist-batch-result">
+          <v-list-item v-for="result in whitelist.updateResult" :key="result.email">
             <v-icon
               :color="result.code === 201 ? 'success' : 'error'"
             >{{result.code === 201 ? 'check' : 'close'}}</v-icon>
@@ -232,10 +310,11 @@
             >
               {{result.email}}
             </span>
+
             <span class="result-message">
               {{codeMessageDictionary[result.code]}}
             </span>
-          </v-list-tile>
+          </v-list-item>
         </v-list>
       </v-card>
     </v-container>
@@ -248,6 +327,7 @@ import { email as emailRegex } from '@/util'
 
 import Whitelisted from './Whitelisted.vue'
 import SearchEmail from './SearchEmail'
+import { BigLoadingIndicator } from '@/components'
 import {
   DELETE_EMAIL_REQUEST,
   FETCH_WHITELIST_REQUEST,
@@ -269,7 +349,9 @@ export default {
   components: {
     Whitelisted,
     SearchEmail,
+    BigLoadingIndicator,
   },
+
   data () {
     return {
       adding: false,
@@ -284,6 +366,7 @@ export default {
       ],
       newEmail: '',
       newEmails: '',
+      oneColumn: false,
       textToCopyToClipboard: '',
       valid: false,
       validBatch: false,
@@ -299,6 +382,11 @@ export default {
 
   computed: {
     ...mapState(['whitelist']),
+
+    matchingList () {
+      return this.whitelist.matchingList.slice(0, 6)
+    },
+
     departement () {
       return this.$store.state.admin.departements.active
     },
@@ -354,18 +442,19 @@ export default {
     },
 
     loadHandler (e) {
-      return this.processFiles(e.target.files)
+      const files = Array.from(e.target.files)
+      return this.processFiles(files)
     },
 
     processFiles (files) {
       try {
         this.newEmails = ''
 
-        for (const file of files) {
+        files.forEach(file => {
           const reader = new FileReader()
           reader.onload = (e) => { this.newEmails += e.target.result }
           reader.readAsText(file)
-        }
+        })
         this.showBatchForm(true)
         setTimeout(() => this.$scrollTo(`#whitelist-batch-textarea`, 500), 5)
       } catch (error) {
@@ -427,8 +516,25 @@ export default {
   max-width: 100vw;
 }
 
+.loading-indicator {
+  position: absolute;
+  top: 1em;
+  right: 1em;
+}
+
 .drag-over {
   outline: 5px dashed rgba(23, 162, 184, 0.5);
+}
+
+.whitelist-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  width: 100%;
+
+  &.one-column {
+    width: auto;
+    grid-template-columns: 1fr;
+  }
 }
 
 h3 {

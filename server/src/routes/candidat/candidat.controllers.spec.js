@@ -1,3 +1,10 @@
+import { SUBJECT_MAIL_VALIDATION } from '../business'
+import getMailData from '../business/message-templates'
+import {
+  createDepartement,
+  deleteDepartementById,
+} from '../../models/departement/departement.queries'
+
 const request = require('supertest')
 
 const { connect, disconnect } = require('../../mongo-connection')
@@ -25,6 +32,7 @@ const adresse1 = '11 Rue Hoche 93420 Villepinte'
 const nomNaissance1 = 'test'
 const codeNeph1 = '123456789013'
 const validEmail2 = 'candidat2@example.com'
+const departementTest = '93'
 
 const incompleteCandidat = {
   codeNeph,
@@ -46,6 +54,7 @@ const validCandidat = {
   portable,
   email: validEmail,
   adresse,
+  departement: departementTest,
 }
 
 const validCandidat1 = {
@@ -77,9 +86,14 @@ const updateCandidat = {
 
 jest.mock('../business/send-mail')
 
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
+
 describe('Test the candidat signup', () => {
+  const departementData = { _id: '93', email: 'email93@onepiece.com' }
   beforeAll(async () => {
     await connect()
+    await createDepartement(departementData)
   })
 
   afterEach(async () => {
@@ -89,6 +103,7 @@ describe('Test the candidat signup', () => {
   })
 
   afterAll(async () => {
+    await deleteDepartementById(departementData._id)
     await disconnect()
     await app.close()
   })
@@ -137,8 +152,7 @@ describe('Test the candidat signup', () => {
   })
 
   it('Should response 200 for a valid form', async () => {
-    await createWhitelisted(validEmail)
-
+    await createWhitelisted(validEmail, departementData._id)
     const { body } = await request(app)
       .post(`${apiPrefix}/candidat/preinscription`)
       .send(validCandidat)
@@ -148,14 +162,16 @@ describe('Test the candidat signup', () => {
     expect(body).toHaveProperty('success')
     expect(body).not.toHaveProperty('fieldsWithErrors')
     expect(body).toHaveProperty('candidat')
+    const { candidat } = body
+    await expectMailValidationEmail(candidat)
     await deleteWhitelistedByEmail(validEmail)
   })
 
   describe('Test the update of candidat with signup', () => {
     beforeAll(async () => {
-      await createWhitelisted(validEmail)
-      await createWhitelisted(validEmail1)
-      await createWhitelisted(validEmail2)
+      await createWhitelisted(validEmail, departementData._id)
+      await createWhitelisted(validEmail1, departementData._id)
+      await createWhitelisted(validEmail2, departementData._id)
       await createCandidat(validCandidat1)
     })
 
@@ -247,3 +263,12 @@ describe('Test the candidat signup', () => {
     })
   })
 })
+
+const expectMailValidationEmail = async candidat => {
+  const bodyMail = require('../business/send-mail').getMail()
+  expect(bodyMail).toBeDefined()
+  expect(bodyMail).toHaveProperty('to', candidat.email)
+  expect(bodyMail).toHaveProperty('subject', SUBJECT_MAIL_VALIDATION)
+  const mailData = await getMailData(candidat, 'VALIDATION_EMAIL')
+  expect(bodyMail).toHaveProperty('html', mailData.content)
+}

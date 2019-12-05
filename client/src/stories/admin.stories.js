@@ -2,10 +2,12 @@
 import { storiesOf } from '@storybook/vue'
 import { action } from '@storybook/addon-actions'
 
+import Vue from 'vue'
 import Vuex from 'vuex'
 
 import router from '../router'
 
+import { BandeauBeta, PageTitle } from '@/components'
 import AdminLogin from '../views/admin/components/Login.vue'
 import AdminCalendar from '../views/admin/components/AdminCalendar.vue'
 import AdminHeader from '../views/admin/components/AdminHeader.vue'
@@ -16,6 +18,9 @@ import AurigeValidation from '../views/admin/components/AurigeValidation.vue'
 import AgGridAurigeStatusFilter from '../views/admin/components/AgGridAurigeStatusFilter.vue'
 
 import store from '../store'
+
+Vue.component('bandeau-beta', BandeauBeta)
+Vue.component('page-title', PageTitle)
 
 storiesOf('Admin', module)
   .add('AdminLogin', () => ({
@@ -30,6 +35,17 @@ storiesOf('Admin', module)
   .add('AdminHeader', () => ({
     components: { AdminHeader },
     template: '<admin-header email="admin@example.com" />',
+    store: new Vuex.Store({
+      state: {
+        admin: {
+          departements: {
+            list: [
+              '75',
+            ],
+          },
+        },
+      },
+    }),
     router,
   }))
   .add('AdminFooter', () => ({
@@ -50,6 +66,7 @@ storiesOf('Admin', module)
         },
       },
     }),
+    router,
   }))
   .add('AdminCandidatsList', () => ({
     components: { AdminCandidatsList },
@@ -69,6 +86,13 @@ storiesOf('Admin', module)
             email: 'fifi@loulou.com',
           }],
         },
+        admin: {
+          departements: {
+            list: [
+              '75',
+            ],
+          },
+        },
       },
       actions: {
         FETCH_CANDIDATS_REQUEST: () => {},
@@ -85,7 +109,7 @@ storiesOf('Admin', module)
       },
     }),
     template: '<aurige-validation style="background-color: #3d4353;"/>',
-  })
+  }),
   )
   .add('AgGridAurigeStatusFilter', () => ({
     components: { AgGridAurigeStatusFilter },

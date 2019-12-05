@@ -7,7 +7,7 @@
       >({{ center.selected.departement }})</span>
     </page-title>
 
-    <v-alert :value="warningMessage" type="warning" style="fontsize: 1em;">{{ warningMessage }}</v-alert>
+    <v-alert :value="!!warningMessage" type="warning" style="font-size: 1em;">{{ warningMessage }}</v-alert>
 
     <v-tabs
       v-model="switchTab"
@@ -45,7 +45,7 @@
     </v-tabs-items>
 
     <v-card-actions class="u-flex--center">
-      <v-btn outline color="info" @click="goToSelectCenter">
+      <v-btn outlined color="info" @click="goToSelectCenter">
         <v-icon>arrow_back_ios</v-icon>Retour
       </v-btn>
     </v-card-actions>
@@ -76,7 +76,7 @@ export default {
 
   data () {
     return {
-      timeoutid: undefined,
+      timeoutId: undefined,
       statusDayBlock: false,
       switchTab: null,
     }
@@ -92,11 +92,22 @@ export default {
         return dateDernierEchecPratique
       },
       numberOfDaysBeforeDate: state => state.reservation.booked.dayToForbidCancel,
+      timeOutToRetry: state => state.reservation.booked.timeOutToRetry,
     }),
-
+    canCancelBooking () {
+      return this.$store.getters.canCancelBooking
+    },
     isEchecPratique () {
+      const { canBookFrom, dateDernierEchecPratique } = this.reservation.booked
+      const dateLastEchecPlus45Days = dateDernierEchecPratique &&
+        getFrenchLuxonFromIso(dateDernierEchecPratique).plus({ days: this.timeOutToRetry || 45 }).endOf('day')
+
+      if (canBookFrom && dateLastEchecPlus45Days && (getFrenchLuxonFromIso(canBookFrom) > dateLastEchecPlus45Days)) {
+        return false
+      }
+
       const now = getFrenchLuxonCurrentDateTime()
-      return this.dateDernierEchecPratique && getFrenchLuxonFromIso(this.dateDernierEchecPratique).plus({ days: 45 }) > now
+      return this.dateDernierEchecPratique && dateLastEchecPlus45Days > now
     },
 
     warningMessage () {
@@ -107,8 +118,8 @@ export default {
           },
           {
             numberOfDaysBeforeDate: this.numberOfDaysBeforeDate,
-            displayDate: this.displayDate,
-          }
+            canBookFromAfterCancel: this.canBookFromAfterCancel,
+          },
         )
       }
       if (this.isEchecPratique) {
@@ -118,8 +129,8 @@ export default {
           },
           {
             dateDernierEchecPratique: getFrenchDateFromIso(this.dateDernierEchecPratique),
-            dateEchecPratique: this.dateEchecPratique,
-          }
+            canBookFromAfterFailure: this.canBookFromAfterFailure,
+          },
         )
       }
       return ''
@@ -130,47 +141,34 @@ export default {
         return false
       }
       const now = getFrenchLuxonCurrentDateTime()
-      const { canBookFrom, lastDateToCancel } = this.reservation.booked
+      const { canBookFrom } = this.reservation.booked
       const isPenaltyActive =
-        (canBookFrom && getFrenchLuxonFromIso(canBookFrom) > now) ||
-        now >
-          getFrenchLuxonFromIso(lastDateToCancel)
+        (canBookFrom && getFrenchLuxonFromIso(canBookFrom) > now) || !this.canCancelBooking
 
       return isPenaltyActive
     },
 
-    displayDate () {
+    canBookFromAfterCancel () {
       const {
         canBookFrom,
         date,
-        lastDateToCancel,
         timeOutToRetry,
       } = this.reservation.booked
+
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      } else if (
-        getFrenchLuxonCurrentDateTime() >
-        getFrenchLuxonFromIso(lastDateToCancel)
-      ) {
+      } else if (!this.canCancelBooking) {
         return getFrenchDateFromLuxon(
-          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
+          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry }),
         )
       }
       return ''
     },
 
-    dateEchecPratique () {
-      const { canBookFrom, date, timeOutToRetry } = this.reservation.booked
+    canBookFromAfterFailure () {
+      const { canBookFrom } = this.reservation.booked
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      }
-      if (
-        getFrenchLuxonCurrentDateTime() >
-        getFrenchLuxonFromIso(this.dateDernierEchecPratique)
-      ) {
-        return getFrenchDateFromLuxon(
-          getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
-        )
       }
       return ''
     },
@@ -191,11 +189,13 @@ export default {
             departement,
           })
         }
-        this.timeoutid = setTimeout(this.getTimeSlots, 100)
+        this.timeoutId = setTimeout(this.getTimeSlots, 100)
         return
       }
       await this.$store.dispatch(FETCH_DATES_REQUEST, selected._id)
-      this.timeoutid = setTimeout(this.getTimeSlots, 5000)
+      if (this.timeoutId !== null) {
+        this.timeoutId = setTimeout(this.getTimeSlots, 5000)
+      }
     },
 
     goToSelectCenter () {
@@ -214,8 +214,9 @@ export default {
     }
   },
 
-  async destroyed () {
-    clearTimeout(this.timeoutid)
+  beforeDestroy () {
+    clearTimeout(this.timeoutId)
+    this.timeoutId = null
   },
 }
 </script>
@@ -242,7 +243,7 @@ export default {
 
 .sticky-months {
   position: sticky;
-  top: 150px;
+  top: 180px;
   z-index: 1;
 }
 </style>

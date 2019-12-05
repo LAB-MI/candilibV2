@@ -1,19 +1,21 @@
 <template>
-<div>
-  <v-autocomplete
-    v-model="selected"
-    :label="label"
-    :hint="hint"
-    no-filter
-    append-outer-icon="search"
-    :placeholder="placeholder"
-    :items="emptyList || items"
-    :search-input.sync="searchInput"
-    return-object
-    :item-text="itemText"
-    :item-value="itemValue"
-  />
-</div>
+  <div>
+    <v-autocomplete
+      v-model="selected"
+      :label="label"
+      :hint="hint"
+      no-filter
+      append-outer-icon="search"
+      :placeholder="placeholder"
+      :items="emptyList || items"
+      :search-input.sync="searchInput"
+      return-object
+      :item-text="itemText"
+      :item-value="itemValue"
+      :clearable="clearable"
+      :autofocus="autofocus"
+    />
+  </div>
 </template>
 
 <script>
@@ -35,6 +37,14 @@ export default {
     itemText: String,
     itemValue: String,
     fetchAutocompleteAction: String,
+    clearable: {
+      type: Boolean,
+      default: false,
+    },
+    autofocus: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   watch: {
@@ -51,6 +61,7 @@ export default {
         }
       }, 300)
     },
+
     selected (selected) {
       this.$emit('selection', selected)
     },

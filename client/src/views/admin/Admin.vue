@@ -1,20 +1,26 @@
 <template>
   <v-container
-    class="admin  admin-wrapper  u-flex  u-flex--column"
+    class="admin  admin-wrapper  u-flex  u-flex--column  u-full-height"
   >
     <admin-header :email="admin.email" :header-icons="headerIcons" />
+
     <main role="main" class="u-flex__item--grow" :style="{margin: '3em 0 0 0'}">
       <router-view />
     </main>
+
     <admin-footer />
   </v-container>
 </template>
 
 <script>
 import { mapState } from 'vuex'
-import { ROUTE_AUTHORIZE_AURIGE } from '../../constants'
+import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI, ROUTE_AUTHORIZE_USERS } from '../../constants'
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
+
+import {
+  FETCH_ADMIN_INFO_REQUEST,
+} from '@/store'
 
 const components = {
   AdminHeader,
@@ -31,11 +37,24 @@ const headerIcons = [
     routerTo: ROUTE_AUTHORIZE_AURIGE,
     iconName: 'import_export',
     tooltipText: 'Import / Export Aurige',
+    isProtected: true,
+  },
+  {
+    routerTo: ROUTE_AUTHORIZE_STATS_KPI,
+    iconName: 'bar_chart',
+    tooltipText: 'Stats KPI',
+    isProtected: true,
   },
   {
     routerTo: 'whitelist',
     iconName: 'favorite',
     tooltipText: 'Liste blanche',
+  },
+  {
+    routerTo: ROUTE_AUTHORIZE_USERS,
+    iconName: 'people_alt',
+    tooltipText: 'Répartiteur/Délégué',
+    isProtected: true,
   },
 ]
 
@@ -50,26 +69,22 @@ export default {
   },
 
   computed: {
-    ...mapState(['admin']),
-    headerIcons () {
-      return headerIcons.filter(headerIcon => {
-        return headerIcon.routerTo !== this.$store.getters.noAuthorize
-      })
-    },
+    ...mapState({
+      admin: state => state.admin,
+      headerIcons: state => headerIcons.filter(headerIcon => {
+        return (state.admin.features && state.admin.features.includes(headerIcon.routerTo)) || !headerIcon.isProtected
+      }),
+    }),
+  },
+  async mounted () {
+    await this.$store.dispatch(FETCH_ADMIN_INFO_REQUEST)
   },
 }
 </script>
 
 <style lang="stylus" scoped>
-  .admin-container {
-    padding-top: "40px";
-  }
-
   .admin-wrapper {
     max-width: 100vw;
-    min-height: 100%;
-    padding-left: 0;
-    padding-right: 0;
-    padding-bottom: 0;
+    padding: 0;
   }
 </style>

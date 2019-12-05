@@ -63,11 +63,17 @@ export const faqJson = [
         textContent: 'Si vous modifiez ou annulez à moins de 7 jours de la date d\'examen, ou si vous ne vous présentez pas à l’examen, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
       },
       {
-        textContent: 'Si vous avez échoué, avez été refusé par l’inspecteur ou avez été absent à l\'examen pratique du permis de conduire, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
-      },
-      {
         textContent: 'Merci de nous prévenir en cas d\'empêchement afin de libérer le créneau pour un autre candidat.',
       },
+    ],
+  },
+  {
+    title: 'Je n\'ai pas réussi mon examen, puis-je reprendre une place ?',
+    content: [
+      {
+        textContent: 'Si vous avez échoué, avez été refusé par l’inspecteur ou avez été absent à l\'examen pratique du permis de conduire, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
+      },
+
     ],
   },
   {
@@ -84,7 +90,7 @@ export const faqJson = [
         ],
       },
       {
-        textContent: 'Vous présenterez: ',
+        textContent: 'Vous présenterez :',
       },
       {
         list: [
@@ -94,7 +100,6 @@ export const faqJson = [
           '<b>L\'attestation d\'assurance du véhicule<b>, en cours de validité, à votre nom ;',
           'une <b>enveloppe affranchie à 20g</b> ;',
           'votre <b>permis de conduire original si vous avez obtenu une autre catégorie</b> depuis moins de 5 ans afin de bénéficier d’une dispense d’examen théorique général ;',
-          'lorsque vous avez fait l\'objet d\'une annulation du permis, <b>le récépissé de la « fiche retour au permis de conduire »</b> que vous aurez imprimé sur le site de l\'<a class="link-in-text-style" href="https://permisdeconduire.ants.gouv.fr/" target="_blank">ANTS</a> ;',
         ],
       },
       {
@@ -115,6 +120,17 @@ export const faqJson = [
     content: [
       {
         textContent: 'Ce service est restreint aux candidats qui ont reçu un mail d\'invitation à participer à cette expérimentation.',
+      },
+    ],
+  },
+  {
+    title: 'Aide / Contact',
+    content: [
+      {
+        subTitleContent: 'Ce service est restreint aux candidats qui ont reçu un mail d\'invitation à participer à cette expérimentation.',
+      },
+      {
+        subTitleContent: 'Posez vos questions à l\'adresse courriel présente dans votre mail d\'invitation',
       },
     ],
   },

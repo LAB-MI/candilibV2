@@ -3,7 +3,7 @@ import { valideCreneaux as validCrenx } from '../../util/creneauSetting'
 
 export const getDayString = isoDate => {
   return `${getFrenchLuxonFromIso(isoDate).weekdayLong} ${getFrenchLuxonFromIso(isoDate).toFormat(
-    'dd LLLL yyyy'
+    'dd LLLL yyyy',
   )}`
 }
 
@@ -19,9 +19,9 @@ export const formatResult = (
   canBookFrom = getFrenchLuxonCurrentDateTime().toISO(),
   anticipatedCanBookAfter = getFrenchLuxonCurrentDateTime().toISO(),
   dayToForbidCancel = 0,
-  validCreneaux = validCrenx
+  validCreneaux = validCrenx,
 ) => {
-  const slots = timeslots.reduce((timeslotsByMonth, timeslot) => {
+  const slots = ('length' in timeslots ? timeslots : []).reduce((timeslotsByMonth, timeslot) => {
     const timeslotLuxon = getFrenchLuxonFromIso(timeslot)
 
     // Gestion du délai de réservation (Un candidat ne peut pas réserver avant x jours)

@@ -1,6 +1,6 @@
 import { getHtmlBody } from './mail/body-mail-template'
 import { buildMailResaArgsValidation } from './send-mail-util'
-import { dateTimeToFormatFr } from '../../util/date.util'
+import { getFrenchFormattedDateTime } from '../../util/date-util'
 import { getCancelBookingTemplate, getUrlFAQ, getUrlRESA } from './mail'
 import { appLogger } from '../../util'
 
@@ -28,7 +28,7 @@ export const getCancellationBody = (place, candidat) => {
     urlRESA
   )
 
-  const dateTimeResa = dateTimeToFormatFr(date)
+  const dateTimeResa = getFrenchFormattedDateTime(date)
 
   const body = getCancelBookingTemplate(
     nomNaissance,
