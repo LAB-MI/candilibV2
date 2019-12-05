@@ -9,8 +9,8 @@
     </v-btn>
 
     <div
-      class="sticky-container"
       :id="`table-container-${centerId}`"
+      class="sticky-container"
       @scroll="onScroll"
     >
       <table>
@@ -29,8 +29,8 @@
         <tbody ref="tableBody">
           <tr
             v-for="(week, index) in items"
-            :key="week.numWeek"
             :id="`week-position-${index}-${centerId}`"
+            :key="week.numWeek"
             :class="`${currentWeekNumber === week.numWeek ? 'blue lighten-4' : 'blue-grey lighten-5'}`"
           >
             <th :class="`th-ui-week-column ${setColorTh(week)}`">
@@ -118,9 +118,9 @@
           <template v-slot:activator="{ on }">
             <div>
               <v-btn
-                v-on="on"
                 icon
                 color="info"
+                v-on="on"
               >
                 <v-icon>info</v-icon>
               </v-btn>
@@ -171,11 +171,11 @@ export default {
   props: {
     items: {
       type: Array,
-      default: () => [],
+      default () {},
     },
     validDays: {
       type: Array,
-      default: () => [],
+      default () {},
     },
     centerId: {
       type: String,

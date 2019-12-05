@@ -11,8 +11,8 @@
       <div class="stats-card">
         <div class="text-xs-right">
           <refresh-button
-            @click="reloadWeekMonitor"
             :is-loading="isLoading"
+            @click="reloadWeekMonitor"
           />
         </div>
       </div>
@@ -22,11 +22,11 @@
         wrap
       >
         <v-flex
+          v-for="info in placeByCentreInfos"
+          :key="info.centre.nom"
           class="monitor-wrapper"
           lg6
           xs12
-          v-for="info in placeByCentreInfos"
-          :key="info.centre.nom"
         >
           <week-monitor
             :name-center="info.centre.nom"
@@ -72,16 +72,16 @@ export default {
     },
   },
 
-  methods: {
-    async reloadWeekMonitor () {
-      await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
-    },
-  },
-
   async mounted () {
     if (this.activeDepartement) {
       await this.reloadWeekMonitor()
     }
+  },
+
+  methods: {
+    async reloadWeekMonitor () {
+      await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
+    },
   },
 }
 </script>

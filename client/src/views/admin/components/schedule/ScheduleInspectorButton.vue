@@ -26,23 +26,23 @@ import { mapState } from 'vuex'
 import { FETCH_TOOLTIP_CANDIDAT_REQUEST } from '@/store'
 
 export default {
+
+  props: {
+    content: {
+      type: Object,
+      default () {},
+    },
+    inspecteurId: {
+      type: String,
+      default: '',
+    },
+  },
   data () {
     return {
       color: '#A9A9A9',
       icon: '',
       isLoadingCandidat: false,
     }
-  },
-
-  props: {
-    content: {
-      type: Object,
-      default: () => ({}),
-    },
-    inspecteurId: {
-      type: String,
-      default: '',
-    },
   },
 
   computed: {
@@ -77,6 +77,16 @@ export default {
     },
   },
 
+  watch: {
+    place (newVal) {
+      this.setContext(newVal)
+    },
+  },
+
+  mounted () {
+    this.setContext(this.place)
+  },
+
   methods: {
     setContext (place) {
       if (place === undefined) {
@@ -102,16 +112,6 @@ export default {
       }
       this.isLoadingCandidat = false
     },
-  },
-
-  watch: {
-    place (newVal) {
-      this.setContext(newVal)
-    },
-  },
-
-  mounted () {
-    this.setContext(this.place)
   },
 }
 </script>

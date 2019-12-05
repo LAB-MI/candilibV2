@@ -33,9 +33,9 @@
 
         <v-tab
           v-for="icon in headerIcons"
+          :key="icon.routerTo"
           :to="{name: icon.routerTo}"
           :value="icon.routerTo"
-          :key="icon.routerTo"
           class="no-margin-left"
         >
           <v-tooltip
@@ -44,8 +44,8 @@
           >
             <template v-slot:activator="{ on }">
               <v-icon
-                v-on="on"
                 :class="`opaque-on-hover t-icon-header-${icon.routerTo}`"
+                v-on="on"
               >
                 {{ icon.iconName }}
               </v-icon>
@@ -88,12 +88,6 @@ export default {
     DepartementSelector,
   },
 
-  data () {
-    return {
-      activeTab: '',
-    }
-  },
-
   props: {
     email: {
       type: String,
@@ -101,8 +95,14 @@ export default {
     },
     headerIcons: {
       type: Array,
-      default: () => [],
+      default () {},
     },
+  },
+
+  data () {
+    return {
+      activeTab: '',
+    }
   },
 
   methods: {

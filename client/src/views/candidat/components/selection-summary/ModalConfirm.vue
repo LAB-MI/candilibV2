@@ -7,10 +7,10 @@
     <template v-slot:activator="{ on }">
       <v-btn
         dark
-        v-on="on"
         :aria-disabled="disabled"
         :disabled="disabled"
         :color="colorButton"
+        v-on="on"
       >
         {{ $formatMessage({ id: idButtonName }) }}
         &nbsp;
@@ -82,7 +82,7 @@ export default {
   props: {
     formAction: {
       type: Function,
-      default: () => {},
+      default () {},
     },
     penaltyDaysNumber: {
       type: Number,

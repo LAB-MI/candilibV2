@@ -65,18 +65,18 @@ export default {
     ReservationInfo,
   },
 
-  data () {
-    return {
-      selectedCheckBox: [],
-      notAvailable: false,
-    }
-  },
-
   props: {
     flagRecap: {
       type: Boolean,
       default: false,
     },
+  },
+
+  data () {
+    return {
+      selectedCheckBox: [],
+      notAvailable: false,
+    }
   },
 
   computed: {
@@ -113,6 +113,11 @@ export default {
     disabled () {
       return this.selectedCheckBox.length !== 2
     },
+  },
+
+  async mounted () {
+    await this.getCandidatReservation()
+    await this.getSelectedCenterAndDate()
   },
 
   methods: {
@@ -205,11 +210,6 @@ export default {
         }
       }
     },
-  },
-
-  async mounted () {
-    await this.getCandidatReservation()
-    await this.getSelectedCenterAndDate()
   },
 }
 </script>

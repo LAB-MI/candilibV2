@@ -36,7 +36,7 @@ export default {
     },
     closeDialog: {
       type: Function,
-      default: () => {},
+      default () {},
     },
     colorIcon: {
       type: String,
@@ -52,7 +52,7 @@ export default {
     },
     content: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
     icon: {
       type: String,

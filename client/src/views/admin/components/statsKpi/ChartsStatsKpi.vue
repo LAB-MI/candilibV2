@@ -4,7 +4,7 @@
       <h3 class="d-block">
         {{ $formatMessage({ id: 'departement' }) }}
         <strong>
-          {{ `${(statsResultsExamValues && statsResultsExamValues.departement) || this.activeDepartement}` }}
+          {{ `${(statsResultsExamValues && statsResultsExamValues.departement) || activeDepartement}` }}
         </strong>
       </h3>
     </v-card-title>
@@ -18,9 +18,9 @@
         </h3>
         <div class="u-flex  u-flex--wrap  u-flex--center">
           <donuts-chart-content
-            class="u-flex__item pa-3"
             v-for="(chartInfo, idx) in getChartsResultsExams()"
             :key="`${chartInfo.classContent}-${idx}`"
+            class="u-flex__item pa-3"
             :chart-info="chartInfo"
           />
           <div class="u-flex__item">
@@ -45,9 +45,9 @@
 
         <div class="u-flex  u-flex--wrap  u-flex--center">
           <donuts-chart-content
-            class="u-flex__item pa-3"
             v-for="(chartInfo, idx) in chartsPlacesExams"
             :key="`${chartInfo.classContent}-${idx}`"
+            class="u-flex__item pa-3"
             :chart-info="chartInfo"
           />
           <div
@@ -83,12 +83,12 @@ export default {
   props: {
     statsResultsExamValues: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
 
     statsPlacesExamValues: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
   },
 

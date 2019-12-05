@@ -1,21 +1,20 @@
 <template>
   <div class="presignup-form">
     <v-form
-      dark
-      v-model="valid"
       ref="presignupForm"
+      v-model="valid"
+      dark
       class="presignup-form"
       @submit.prevent="presignup"
     >
       * Champs obligatoires
       <div class="form-input">
         <v-text-field
+          v-model="codeNeph"
           :label="`${getMsg('preinscription_neph')} *`"
           prepend-icon="assignment"
           dark
           color="#fff"
-          @focus="setNephPlaceholder"
-          @blur="removeNephPlaceholder"
           :placeholder="nephPlaceholder"
           aria-placeholder="012345678912"
           :autofocus="!showDialog"
@@ -23,89 +22,88 @@
           required
           :rules="nephRules"
           tabindex="1"
-          v-model="codeNeph"
+          @focus="setNephPlaceholder"
+          @blur="removeNephPlaceholder"
         />
       </div>
       <div class="form-input">
         <v-text-field
+          v-model="nomNaissance"
           :label="`${getMsg('preinscription_nom_naissance')} *`"
           prepend-icon="account_box"
           dark
           color="#fff"
-          @focus="setNomPlaceholder"
-          @blur="removeNomPlaceholder"
-          @input="setNomNaissance"
           :placeholder="nomPlaceholder"
           aria-placeholder="Dupont"
           hint="ex. : Dupont"
           required
           tabindex="2"
-          v-model="nomNaissance"
+          @focus="setNomPlaceholder"
+          @blur="removeNomPlaceholder"
+          @input="setNomNaissance"
         />
       </div>
       <div class="form-input">
         <v-text-field
+          v-model="prenom"
           :label="getMsg('preinscription_prenom')"
           prepend-icon="perm_identity"
           dark
           color="#fff"
-          @focus="setPrenomPlaceholder"
-          @blur="removePrenomPlaceholder"
           :placeholder="prenomPlaceholder"
           aria-placeholder="Jean"
           hint="ex. : Jean"
           required
           tabindex="3"
-          v-model="prenom"
+          @focus="setPrenomPlaceholder"
+          @blur="removePrenomPlaceholder"
         />
       </div>
       <div class="form-input">
         <v-text-field
+          v-model="email"
           :label="`${getMsg('preinscription_email')} *`"
           prepend-icon="email"
           dark
           color="#fff"
-          @focus="setEmailPlaceholder"
-          @blur="removeEmailPlaceholder"
-          @input="setEmailToLowerCase"
           :placeholder="emailPlaceholder"
           aria-placeholder="jean@dupont.fr"
           hint="ex. : jean@dupont.fr"
           required
           :rules="emailRules"
           tabindex="4"
-          v-model="email"
+          @focus="setEmailPlaceholder"
+          @blur="removeEmailPlaceholder"
+          @input="setEmailToLowerCase"
         />
       </div>
       <div class="form-input">
         <v-text-field
+          v-model="portable"
           :label="`${getMsg('preinscription_mobile')} *`"
           prepend-icon="smartphone"
           dark
           color="#fff"
-          @focus="setPortablePlaceholder"
-          @blur="removePortablePlaceholder"
           :placeholder="portablePlaceholder"
           aria-placeholder="Jean"
           hint="ex. : 0612345678"
           required
           tabindex="5"
           :rules="portableRules"
-          v-model="portable"
+          @focus="setPortablePlaceholder"
+          @blur="removePortablePlaceholder"
         />
       </div>
       <div class="form-input">
         <v-autocomplete
+          v-model="adresse"
           :label="`${getMsg('preinscription_adresse')} *`"
           dark
           color="#fff"
           item-text="label"
-          @focus="setAdressePlaceholder"
-          @blur="removeAdressePlaceholder"
           :placeholder="adressePlaceholder"
           aria-placeholder="Jean"
           :loading="isFetchingMatchingAdresses"
-          v-model="adresse"
           hint="ex. : 10 avenue du général Leclerc 93420 Villepinte"
           :items="adresses"
           prepend-icon="location_city"
@@ -113,6 +111,8 @@
           no-filter
           return-object
           :search-input.sync="searchAdresses"
+          @focus="setAdressePlaceholder"
+          @blur="removeAdressePlaceholder"
         />
       </div>
       <div class="form-input">
@@ -181,7 +181,7 @@ export default {
   props: {
     toggleForm: {
       type: Function,
-      default: () => {},
+      default () {},
     },
   },
   data: function () {

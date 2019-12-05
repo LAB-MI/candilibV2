@@ -1,16 +1,16 @@
 <template>
   <div class="input-file-container">
     <input
+      :id="inputId"
       :accept="accept"
-      :id="this.inputId"
       type="file"
       class="u-transparent"
       @change="fileSelected"
     >
     <label
-      class="input-file-label"
-      :for="this.inputId"
       ref="label"
+      class="input-file-label"
+      :for="inputId"
     >
       <v-text-field
         :dark="dark"
@@ -45,7 +45,7 @@ export default {
     dark: Boolean,
     selectedCallback: {
       type: Function,
-      default: () => {},
+      default () {},
     },
     title: {
       type: String,

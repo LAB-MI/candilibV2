@@ -41,13 +41,6 @@ export default {
     AgGridVue,
   },
 
-  mounted () {
-    if (this.departement) {
-      const now = getFrenchLuxonCurrentDateTime()
-      this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }), departement: this.departement })
-    }
-  },
-
   data () {
     return {
       columnDefs: null,
@@ -73,6 +66,13 @@ export default {
       const now = getFrenchLuxonCurrentDateTime()
       this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }), departement: newValue })
     },
+  },
+
+  mounted () {
+    if (this.departement) {
+      const now = getFrenchLuxonCurrentDateTime()
+      this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }), departement: this.departement })
+    }
   },
 
   beforeMount () {

@@ -20,9 +20,9 @@
         </thead>
         <tbody>
           <tr
-            class="t-list"
             v-for="user in users"
             :key="user.email"
+            class="t-list"
           >
             <td class="t-list-email">
               {{ user.email }}
@@ -51,14 +51,14 @@ export default {
     deleteUser,
   },
 
-  mounted () {
-    this.$store.dispatch(FETCH_USER_LIST_REQUEST)
-  },
-
   computed: {
     users () {
       return this.$store.state.users.list || []
     },
+  },
+
+  mounted () {
+    this.$store.dispatch(FETCH_USER_LIST_REQUEST)
   },
 }
 </script>

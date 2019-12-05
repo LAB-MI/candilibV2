@@ -42,8 +42,8 @@
       </v-tab>
     </v-tabs>
     <v-tabs-items
-      class="tabs-items-block"
       v-model="switchTab"
+      class="tabs-items-block"
     >
       <v-tab-item
         v-for="month in timeSlots.list"
@@ -201,6 +201,20 @@ export default {
     },
   },
 
+  async mounted () {
+    await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
+    await this.getTimeSlots()
+    this.switchTab = this.$route.params.month ? `tab-${this.$route.params.month}` : `tab-${this.timeSlots.list[0].month}`
+    if (this.timeSlots.list.length && !this.$route.params.month) {
+      this.$router.push({ name: 'time-slot', params: { month: this.timeSlots.list[0].month, day: this.$route.params.day } })
+    }
+  },
+
+  beforeDestroy () {
+    clearTimeout(this.timeoutId)
+    this.timeoutId = null
+  },
+
   methods: {
     activeDayBlock () {
       this.statusDayBlock = !this.statusDayBlock
@@ -230,20 +244,6 @@ export default {
         name: 'selection-centre',
       })
     },
-  },
-
-  async mounted () {
-    await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
-    await this.getTimeSlots()
-    this.switchTab = this.$route.params.month ? `tab-${this.$route.params.month}` : `tab-${this.timeSlots.list[0].month}`
-    if (this.timeSlots.list.length && !this.$route.params.month) {
-      this.$router.push({ name: 'time-slot', params: { month: this.timeSlots.list[0].month, day: this.$route.params.day } })
-    }
-  },
-
-  beforeDestroy () {
-    clearTimeout(this.timeoutId)
-    this.timeoutId = null
   },
 }
 </script>

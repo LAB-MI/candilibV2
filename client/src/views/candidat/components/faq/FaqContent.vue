@@ -1,10 +1,10 @@
 <template>
   <div class="question">
     <h3
+      v-ripple
       class="question-title  u-flex  u-flex--space-between"
       :class="{ 'primary--text': active }"
       @click="toggleActive"
-      v-ripple
     >
       <span>{{ question.title }}</span>
       <i
@@ -23,8 +23,8 @@
         :key="content.textContent"
       >
         <h4
-          class="question-subtitle"
           v-if="content.subTitleContent"
+          class="question-subtitle"
           v-html="content.subTitleContent"
         />
         <p
@@ -32,14 +32,14 @@
           v-html="content.textContent"
         />
         <ul
-          class="list"
           v-if="content.list"
+          class="list"
         >
           <li
             v-for="(liContent, i) in content.list"
             :key="i"
-            v-html="liContent"
             class="item"
+            v-html="liContent"
           />
         </ul>
       </div>
@@ -53,7 +53,7 @@ export default {
   props: {
     question: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
   },
   data () {

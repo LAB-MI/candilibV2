@@ -27,7 +27,7 @@ export default {
   props: {
     whitelisted: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
   },
 

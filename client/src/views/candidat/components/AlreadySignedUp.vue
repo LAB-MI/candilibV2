@@ -6,12 +6,12 @@
   >
     <template v-slot:activator="{ on }">
       <v-btn
-        v-on="on"
-        @click="focusOnEmailInput"
         depressed
         color="#fff"
         tabindex="8"
         :class="btnClassName"
+        v-on="on"
+        @click="focusOnEmailInput"
       >
         {{ getMsg('preinscription_bouton_deja_inscrit') }}
       </v-btn>
@@ -33,20 +33,20 @@
         <div class="u-flex  u-flex--center">
           <div class="form-input">
             <v-text-field
+              ref="emailInput"
+              v-model="email"
               :class="`t-magic-link-input-${testClassSuffix}`"
               :label="getMsg('preinscription_email')"
               prepend-icon="email"
-              @focus="setEmailPlaceholder"
-              @blur="removeEmailPlaceholder"
-              @input="setEmailToLowerCase"
               :placeholder="emailPlaceholder"
               aria-placeholder="jean@dupont.fr"
               hint="ex. : jean@dupont.fr"
-              ref="emailInput"
               required
               :rules="emailRules"
               tabindex="1"
-              v-model="email"
+              @focus="setEmailPlaceholder"
+              @blur="removeEmailPlaceholder"
+              @input="setEmailToLowerCase"
             />
           </div>
         </div>

@@ -7,8 +7,8 @@
         :label="`Import places`"
       />
       <v-layout
-        wrap
         v-show="isImportPlacesActive"
+        wrap
         class="u-flex--space-between"
       >
         <big-loading-indicator :is-loading="isPlacesUpdating" />

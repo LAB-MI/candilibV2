@@ -30,7 +30,7 @@ export default {
     },
     click: {
       type: Function,
-      default: () => {},
+      default () {},
     },
   },
 

@@ -3,7 +3,6 @@
     <div class="u-flex u-flex--center">
       <candilib-autocomplete
         class="search-input t-search-inspecteur"
-        @selection="displayInspecteurInfo"
         label="Inspecteurs"
         hint="Chercher un inspecteur par son nom / matricule / email"
         placeholder="Dupond"
@@ -11,6 +10,7 @@
         item-text="nom"
         item-value="_id"
         :fetch-autocomplete-action="fetchAutocompleteAction"
+        @selection="displayInspecteurInfo"
       />
       <v-btn
         icon
@@ -27,9 +27,9 @@
     </div>
     <v-expand-transition>
       <profile-info
+        v-if="displayInspecteur"
         class="t-result-inspecteur"
         title="informations inspecteur"
-        v-if="displayInspecteur"
         :profile-info="profileInfo"
       />
     </v-expand-transition>

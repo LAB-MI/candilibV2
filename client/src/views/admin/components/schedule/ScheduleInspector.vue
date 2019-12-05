@@ -50,8 +50,8 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                class="t-date-picker"
                 v-model="pickerDate"
+                class="t-date-picker"
                 persistent-hint
                 prepend-icon="event"
                 readonly
@@ -61,8 +61,8 @@
             <v-date-picker
               v-model="date"
               no-title
-              @input="datePicker = false"
               locale="fr"
+              @input="datePicker = false"
             />
           </v-menu>
           <v-btn
@@ -93,8 +93,8 @@
         <div class="stats-card">
           <div class="text-xs-right">
             <refresh-button
-              @click="reloadWeekMonitor"
               :is-loading="isLoading"
+              @click="reloadWeekMonitor"
             />
           </div>
         </div>
@@ -103,19 +103,19 @@
       <big-loading-indicator :is-loading="isLoading" />
 
       <v-tabs
-        class="tabs t-center-tabs"
         v-model="activeCentreTab"
+        class="tabs t-center-tabs"
         color="dark"
         slider-color="#f82249"
       >
         <v-tab
           v-for="element in placesByCentreList"
           :key="element.centre._id"
-          @click="centreSelector(element.centre._id)"
           :href="`#tab-${element.centre._id.toString()}`"
           ripple
           :disabled="isLoading"
           :aria-disabled="isLoading"
+          @click="centreSelector(element.centre._id)"
         >
           {{ element.centre.nom }}
         </v-tab>
@@ -341,6 +341,76 @@ export default {
     },
   },
 
+  watch: {
+    async date (newDay) {
+      const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
+      this.currentWeekNb = dateTimeFromSQL.toISOWeekDate().split('-')
+      this.activeCentreId = this.$route.params.center || this.firstCentreId
+      this.updateCenterInRoute()
+      if (this.$store.state.admin.departements.active) {
+        await this.$store
+          .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
+        this.parseInspecteursPlanning()
+      }
+    },
+
+    async activeDepartement (newDepartement) {
+      const center = this.lastActiveCenters[newDepartement] || this.firstCentreId
+      await this.$store
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
+      if (this.placesByCentreList.some(el => el.centre._id === center)) {
+        this.activeCentreId = center
+      } else {
+        this.activeCentreId = this.firstCentreId
+      }
+      this.updateCenterInRoute()
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, {
+        centreId: this.activeCentreId,
+        begin: this.beginDate,
+        end: this.endDate,
+      })
+
+      this.parseInspecteursPlanning()
+    },
+
+    async activeCentreId (newCentreId) {
+      this.lastActiveCenters[this.activeDepartement] = newCentreId
+      await this.updateStoreCenterSelected(newCentreId)
+      this.activeCentreTab = `tab-${newCentreId}`
+    },
+  },
+
+  async mounted () {
+    if (this.placesByCentreList && this.placesByCentreList.length) {
+      const centerId = this.$route.params.center
+      this.activeCentreId = centerId || this.firstCentreId
+      this.lastActiveCenters[this.activeDepartement] = this.activeCentreId
+      this.reloadWeekMonitor()
+    }
+  },
+
+  async beforeMount () {
+    this.headers = creneauTemplate
+
+    const { currentWeek } = this.$store.state.admin
+
+    const defaultDate = {
+      weekYear: getFrenchLuxonCurrentDateTime().year,
+      weekNumber: currentWeek || getFrenchLuxonCurrentDateTime().weekNumber,
+      weekday: 1,
+    }
+
+    const routeDate = this.$route.params.date
+    if (routeDate) {
+      const [year, month, day] = this.$route.params.date.split('-')
+      const date = { year, month, day }
+      this.date = getFrenchLuxonFromObject(date).toISODate()
+      return
+    }
+
+    this.date = getFrenchLuxonFromObject(defaultDate).toISODate()
+  },
+
   methods: {
     displayOnlyNumberOfWeek () {
       return `${this.currentWeekNb[1].replace('W', '')}`
@@ -480,76 +550,6 @@ export default {
     updateCenterInRoute () {
       this.$router.push({ params: { center: this.activeCentreId, date: this.date } })
     },
-  },
-
-  watch: {
-    async date (newDay) {
-      const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
-      this.currentWeekNb = dateTimeFromSQL.toISOWeekDate().split('-')
-      this.activeCentreId = this.$route.params.center || this.firstCentreId
-      this.updateCenterInRoute()
-      if (this.$store.state.admin.departements.active) {
-        await this.$store
-          .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
-        this.parseInspecteursPlanning()
-      }
-    },
-
-    async activeDepartement (newDepartement) {
-      const center = this.lastActiveCenters[newDepartement] || this.firstCentreId
-      await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
-      if (this.placesByCentreList.some(el => el.centre._id === center)) {
-        this.activeCentreId = center
-      } else {
-        this.activeCentreId = this.firstCentreId
-      }
-      this.updateCenterInRoute()
-      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, {
-        centreId: this.activeCentreId,
-        begin: this.beginDate,
-        end: this.endDate,
-      })
-
-      this.parseInspecteursPlanning()
-    },
-
-    async activeCentreId (newCentreId) {
-      this.lastActiveCenters[this.activeDepartement] = newCentreId
-      await this.updateStoreCenterSelected(newCentreId)
-      this.activeCentreTab = `tab-${newCentreId}`
-    },
-  },
-
-  async mounted () {
-    if (this.placesByCentreList && this.placesByCentreList.length) {
-      const centerId = this.$route.params.center
-      this.activeCentreId = centerId || this.firstCentreId
-      this.lastActiveCenters[this.activeDepartement] = this.activeCentreId
-      this.reloadWeekMonitor()
-    }
-  },
-
-  async beforeMount () {
-    this.headers = creneauTemplate
-
-    const { currentWeek } = this.$store.state.admin
-
-    const defaultDate = {
-      weekYear: getFrenchLuxonCurrentDateTime().year,
-      weekNumber: currentWeek || getFrenchLuxonCurrentDateTime().weekNumber,
-      weekday: 1,
-    }
-
-    const routeDate = this.$route.params.date
-    if (routeDate) {
-      const [year, month, day] = this.$route.params.date.split('-')
-      const date = { year, month, day }
-      this.date = getFrenchLuxonFromObject(date).toISODate()
-      return
-    }
-
-    this.date = getFrenchLuxonFromObject(defaultDate).toISODate()
   },
 }
 </script>

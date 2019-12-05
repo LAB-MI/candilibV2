@@ -7,7 +7,7 @@
       no-filter
       append-outer-icon="search"
       :placeholder="placeholder"
-      :items="emptyList || items"
+      :items="items"
       :search-input.sync="searchInput"
       return-object
       :item-text="itemText"
@@ -20,14 +20,6 @@
 
 <script>
 export default {
-  data () {
-    return {
-      emptyList: undefined,
-      searchInput: undefined,
-      selected: undefined,
-      timeoutId: undefined,
-    }
-  },
 
   props: {
     label: {
@@ -44,15 +36,15 @@ export default {
     },
     items: {
       type: Array,
-      default: () => [],
+      default () { return [{ text: 'Impossible', value: undefined }] },
     },
     itemText: {
       type: String,
-      default: '',
+      default: 'text',
     },
     itemValue: {
       type: String,
-      default: '',
+      default: 'value',
     },
     fetchAutocompleteAction: {
       type: String,
@@ -66,6 +58,14 @@ export default {
       type: Boolean,
       default: false,
     },
+  },
+  data () {
+    return {
+      emptyList: undefined,
+      searchInput: undefined,
+      selected: undefined,
+      timeoutId: undefined,
+    }
   },
 
   watch: {

@@ -17,20 +17,26 @@ import SelectionSummary from './candidat/components/selection-summary/SelectionS
 import CenterSelection from './candidat/components/center-selection/CenterSelection.vue'
 
 export default {
+
+  name: 'CandidatHome',
   components: {
     SelectionSummary,
     CenterSelection,
   },
 
-  name: 'CandidatHome',
-
-  computed: {
-    ...mapState(['candidat', 'reservation']),
-  },
   data () {
     return {
       candidatStatus: true,
     }
+  },
+
+  computed: {
+    ...mapState(['candidat', 'reservation']),
+  },
+
+  async mounted () {
+    this.$router.replace({ name: 'landing-page' })
+    await this.getCandidatReservation()
   },
 
   methods: {
@@ -41,11 +47,6 @@ export default {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
-  },
-
-  async mounted () {
-    this.$router.replace({ name: 'landing-page' })
-    await this.getCandidatReservation()
   },
 }
 </script>

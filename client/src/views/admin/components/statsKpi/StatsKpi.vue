@@ -22,15 +22,15 @@
               v-model="pickerDateStart"
               label="Date de début de période"
               prepend-icon="event"
-              v-on="on"
               readonly
+              v-on="on"
             />
           </template>
 
           <v-date-picker
             v-model="dateStart"
-            @input="menuStart = false"
             locale="fr"
+            @input="menuStart = false"
           />
         </v-menu>
 
@@ -47,16 +47,16 @@
               v-model="pickerDateEnd"
               label="Date de fin de période"
               prepend-icon="event"
-              v-on="on"
               readonly
+              v-on="on"
             />
           </template>
 
           <v-date-picker
-            color="red"
             v-model="dateEnd"
-            @input="menuEnd = false"
+            color="red"
             locale="fr"
+            @input="menuEnd = false"
           />
         </v-menu>
       </div>
@@ -95,8 +95,8 @@
     </v-card>
 
     <v-flex
-      style="margin-top: 8vh; display: block;"
       v-if="!isDisplayAllDepartement"
+      style="margin-top: 8vh; display: block;"
       class="pa-5"
     >
       <charts-stats-kpi
@@ -106,10 +106,10 @@
     </v-flex>
 
     <v-flex
-      style="margin-top: 13vh; display: block;"
-      v-else
       v-for="(elem, index) in (statsResultsExams ? statsResultsExams.statsKpi : [])"
+      v-else
       :key="'elem'+index"
+      style="margin-top: 13vh; display: block;"
     >
       <charts-stats-kpi
         :stats-results-exam-values="elem"
@@ -130,17 +130,13 @@ export default {
     ChartsStatsKpi,
   },
 
-  async mounted () {
-    const { begin, end } = this.$route.params
-    if (begin && end) {
-      this.dateStart = begin
-      this.dateEnd = end
-    } else {
-      this.setRouteParams()
-    }
-    await this.getStatsKpiPlacesExams()
-    await this.getStatsKpiResultsExams()
-  },
+  data: () => ({
+    dateStart: getFrenchLuxonCurrentDateTime().plus({ month: -1 }).toISODate(),
+    dateEnd: getFrenchLuxonCurrentDateTime().toISODate(),
+    menuStart: false,
+    menuEnd: false,
+    isDisplayAllDepartement: false,
+  }),
 
   computed: {
     ...mapGetters([
@@ -176,13 +172,41 @@ export default {
     },
   },
 
-  data: () => ({
-    dateStart: getFrenchLuxonCurrentDateTime().plus({ month: -1 }).toISODate(),
-    dateEnd: getFrenchLuxonCurrentDateTime().toISODate(),
-    menuStart: false,
-    menuEnd: false,
-    isDisplayAllDepartement: false,
-  }),
+  watch: {
+    async activeDepartement () {
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+
+    async dateStart () {
+      this.setRouteParams()
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+
+    async dateEnd () {
+      this.setRouteParams()
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+
+    async isDisplayAllDepartement () {
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+  },
+
+  async mounted () {
+    const { begin, end } = this.$route.params
+    if (begin && end) {
+      this.dateStart = begin
+      this.dateEnd = end
+    } else {
+      this.setRouteParams()
+    }
+    await this.getStatsKpiPlacesExams()
+    await this.getStatsKpiResultsExams()
+  },
 
   methods: {
     setRouteParams () {
@@ -223,30 +247,6 @@ export default {
       return this.statsPlacesExams
         ? this.statsPlacesExams.statsKpi.find(el => el.departement === departement)
         : {}
-    },
-  },
-
-  watch: {
-    async activeDepartement () {
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
-    },
-
-    async dateStart () {
-      this.setRouteParams()
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
-    },
-
-    async dateEnd () {
-      this.setRouteParams()
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
-    },
-
-    async isDisplayAllDepartement () {
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
     },
   },
 }

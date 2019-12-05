@@ -11,9 +11,9 @@
       </div>
       <profile-info
         v-for="info in profileInfo"
+        :key="info.label"
         :label="info.label"
         :value="info.value"
-        :key="info.label"
       />
     </div>
   </v-card>

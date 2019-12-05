@@ -13,10 +13,10 @@
         subtitle="Synchronisation JSON"
         upload-label="Synchro"
         :import-disabled="inputDisabled"
-        @select-file="fileSelected"
         :file="file"
-        @upload-file="uploadCandidats"
         accept=".json"
+        @select-file="fileSelected"
+        @upload-file="uploadCandidats"
       />
       <div class="aurige-action  aurige-action--export">
         <h4 class="aurige-subtitle">
@@ -75,6 +75,12 @@ export default {
     },
   },
 
+  mounted () {
+    if (this.$route.hash.length) {
+      this.$scrollTo(this.$route.hash)
+    }
+  },
+
   methods: {
     async fileSelected (file) {
       this.file = file
@@ -94,12 +100,6 @@ export default {
       const response = await api.admin.exportCsv(this.departement)
       downloadContent(response)
     },
-  },
-
-  mounted () {
-    if (this.$route.hash.length) {
-      this.$scrollTo(this.$route.hash)
-    }
   },
 }
 </script>

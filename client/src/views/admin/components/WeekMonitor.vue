@@ -32,8 +32,8 @@
 
     <data-table-week-monitor
       :items="formattedArrayByWeek"
-      @goToGestionPlannings="goToGestionPlannings"
       :center-id="centerId"
+      @goToGestionPlannings="goToGestionPlannings"
     />
   </div>
 </template>
@@ -82,7 +82,7 @@ export default {
     },
     weeks: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
   },
 

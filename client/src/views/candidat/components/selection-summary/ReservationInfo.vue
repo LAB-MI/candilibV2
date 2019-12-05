@@ -6,9 +6,9 @@
     <p class="text--center">
       {{ infoResa.adresse }}
       <a
+        v-ripple
         target="_blank"
         class="location-icon"
-        v-ripple
         :href="href"
       >
         <v-icon>
@@ -28,7 +28,7 @@ export default {
   props: {
     infoResa: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
   },
   computed: {

@@ -19,9 +19,9 @@
       <v-btn
         :dark="dark"
         color="#17a2b8"
-        @click="uploadFile"
         :disabled="importDisabled"
         :aria-disabled="importDisabled"
+        @click="uploadFile"
       >
         {{ uploadLabel }}
       </v-btn>
@@ -51,11 +51,11 @@ export default {
     },
     onUpload: {
       type: Function,
-      default: () => {},
+      default () {},
     },
     selectFile: {
       type: Function,
-      default: () => {},
+      default () {},
     },
     dark: Boolean,
     importDisabled: Boolean,

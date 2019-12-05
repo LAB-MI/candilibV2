@@ -8,9 +8,9 @@
     <div />
 
     <v-form
-      @submit.prevent="updatePassword"
       v-model="isPasswordCoupleValid"
       class="reset-form"
+      @submit.prevent="updatePassword"
     >
       <h2 class="text--center">
         ADMINISTRATEUR
@@ -22,32 +22,32 @@
 
       <div class="form-input">
         <v-text-field
+          v-model="newPassword"
           class="t-new-password"
           aria-placeholder="nouveau mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
-          @click:append="showPassword = !showPassword"
           hint="Au moins 8 caractères"
           label="nouveau mot de passe"
           name="password"
           :rules="passwordRules"
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
-          v-model="newPassword"
+          @click:append="showPassword = !showPassword"
         />
       </div>
       <div class="form-input">
         <v-text-field
+          v-model="confirmNewPassword"
           class="t-confirm-new-password"
           aria-placeholder="confirmation du nouveau mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
-          @click:append="showPassword = !showPassword"
           hint="Au moins 8 caractères"
           label="confirmation du nouveau mot de passe"
           name="confirmNewPassword"
           :rules="confirmNewPasswordRules"
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
-          v-model="confirmNewPassword"
+          @click:append="showPassword = !showPassword"
         />
       </div>
       <div class="form-input">

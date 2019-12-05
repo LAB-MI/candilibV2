@@ -52,7 +52,7 @@ export default {
   props: {
     closeDetails: {
       type: Function,
-      default: () => {},
+      default () {},
     },
     inspecteurId: {
       type: String,
@@ -60,7 +60,7 @@ export default {
     },
     placeInfo: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
   },
 
@@ -70,6 +70,29 @@ export default {
       deleteType: undefined,
       buttonsInfos: [],
     }
+  },
+
+  mounted () {
+    this.buttonsInfos = [
+      {
+        colorButton: 'grey',
+        buttonDeleteType: DELETE_ALL_PLACES,
+        buttonMessage: 'delete_whole_day_s_places',
+        buttonIcons: ['wb_sunny', 'brightness_3'],
+      },
+      {
+        colorButton: 'grey',
+        buttonDeleteType: DELETE_MORNING_PLACES,
+        buttonMessage: 'delete_morning_places',
+        buttonIcons: ['wb_sunny'],
+      },
+      {
+        colorButton: 'grey',
+        buttonDeleteType: DELETE_AFTERNOON_PLACES,
+        buttonMessage: 'delete_afternoon_places',
+        buttonIcons: ['brightness_3'],
+      },
+    ]
   },
 
   methods: {
@@ -140,29 +163,6 @@ export default {
       this.closeDetails()
       this.$emit('reloadWeekMonitor')
     },
-  },
-
-  mounted () {
-    this.buttonsInfos = [
-      {
-        colorButton: 'grey',
-        buttonDeleteType: DELETE_ALL_PLACES,
-        buttonMessage: 'delete_whole_day_s_places',
-        buttonIcons: ['wb_sunny', 'brightness_3'],
-      },
-      {
-        colorButton: 'grey',
-        buttonDeleteType: DELETE_MORNING_PLACES,
-        buttonMessage: 'delete_morning_places',
-        buttonIcons: ['wb_sunny'],
-      },
-      {
-        colorButton: 'grey',
-        buttonDeleteType: DELETE_AFTERNOON_PLACES,
-        buttonMessage: 'delete_afternoon_places',
-        buttonIcons: ['brightness_3'],
-      },
-    ]
   },
 }
 </script>

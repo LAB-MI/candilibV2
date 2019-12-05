@@ -9,20 +9,20 @@
       :key="index"
     >
       <h5
-        class="sub-title-style"
         v-if="el.subTitle"
+        class="sub-title-style"
         v-html="el.subTitle"
       />
       <p
-        class="sub-text-content"
         v-if="el.subTextContent"
+        class="sub-text-content"
         v-html="el.subTextContent"
       />
       <ul v-if="el.listInfo && el.listInfo.length">
         <li
-          class="li-style"
           v-for="(text, idx) in el.listInfo"
           :key="idx"
+          class="li-style"
           v-html="text"
         >
           <i class="material-icons icon-style">arrow_right</i>
@@ -47,11 +47,11 @@ export default {
     },
     textContent: {
       type: Array,
-      default: () => [],
+      default () {},
     },
     listInfo: {
       type: Array,
-      default: () => [],
+      default () {},
     },
   },
 }

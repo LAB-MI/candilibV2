@@ -1,7 +1,7 @@
 <template>
   <div
-    class="text--center"
     v-if="!timeSlots.confirmed"
+    class="text--center"
   >
     <h5
       class="confirmation-reservation-checkbox-title"
@@ -56,8 +56,8 @@
     </v-card-actions>
   </div>
   <div
-    class="text--center"
     v-else
+    class="text--center"
   >
     <h4>
       {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}

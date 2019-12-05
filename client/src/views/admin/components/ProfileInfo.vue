@@ -6,9 +6,9 @@
 
     <v-card-text>
       <v-card
-        class="spaced"
         v-for="groupInfo of profileInfo"
         :key="groupInfo[0][1]"
+        class="spaced"
       >
         <div
           v-for="([groupTitle, value]) of groupInfo"
@@ -30,19 +30,19 @@
 
 <script>
 export default {
-  data () {
-    return {
-    }
-  },
   props: {
     profileInfo: {
       type: Array,
-      default: () => [],
+      default () {},
     },
     title: {
       type: String,
       default: '',
     },
+  },
+  data () {
+    return {
+    }
   },
 }
 </script>

@@ -8,10 +8,10 @@
           <template v-slot:activator="{ on: tooltip }">
             <v-btn
               fab
-              v-on="{ ...menu, ...tooltip}"
               outlined
               ripple
               small
+              v-on="{ ...menu, ...tooltip}"
             >
               <div class="departement-wrapper">
                 {{ `${activeDepartement}` }}

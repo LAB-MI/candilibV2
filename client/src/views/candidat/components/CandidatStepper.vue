@@ -1,9 +1,9 @@
 <template>
   <v-stepper
+    v-model="candidatStepper"
     dark
     vertical
     class="stepper"
-    v-model="candidatStepper"
     @set-stepper="setStepper"
   >
     <header>
@@ -13,8 +13,8 @@
     </header>
     <v-stepper-step
       step="1"
-      @click="candidatStepper = 1"
       :style="{ cursor: 'pointer' }"
+      @click="candidatStepper = 1"
     >
       <span>
         {{ $formatMessage({ id: 'stepper_step_1_title' }) }}
@@ -31,8 +31,8 @@
 
     <v-stepper-step
       step="2"
-      @click="candidatStepper = 2"
       :style="{ cursor: 'pointer' }"
+      @click="candidatStepper = 2"
     >
       <span>
         {{ $formatMessage({ id: 'stepper_step_2_title' }) }}
@@ -49,8 +49,8 @@
 
     <v-stepper-step
       step="3"
-      @click="candidatStepper = 3"
       :style="{ cursor: 'pointer' }"
+      @click="candidatStepper = 3"
     >
       <span>
         {{ $formatMessage({ id: 'stepper_step_3_title' }) }}
@@ -70,8 +70,8 @@
 
     <v-stepper-step
       step="4"
-      @click="candidatStepper = 4"
       :style="{ cursor: 'pointer' }"
+      @click="candidatStepper = 4"
     >
       <span>
         {{ $formatMessage({ id: 'stepper_step_4_title' }) }}

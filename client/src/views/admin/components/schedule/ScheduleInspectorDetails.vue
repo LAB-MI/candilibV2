@@ -1,7 +1,7 @@
 <template>
   <v-card
-    class="details"
     v-if="isBooked"
+    class="details"
   >
     <place-action-header
       v-if="content.place && content.place.candidat"
@@ -15,8 +15,8 @@
       text-content="Annuler réservation"
       :active-text-content="!deleteBookedPlaceConfirm"
       text-button-cancel="Retour"
-      @click="displayConfirmDeleteBookedPlace"
       :content="content"
+      @click="displayConfirmDeleteBookedPlace"
     >
       <confirm-box
         v-if="deleteBookedPlaceConfirm"
@@ -61,12 +61,12 @@
       color-submit-button="blue"
       text-button-cancel="Retour"
       text-content="Modifier l'inspecteur"
-      @click="toggleInspecteurSearch"
       :active-text-content="displayModifyInspecteurTitle"
+      @click="toggleInspecteurSearch"
     >
       <list-search-inspecteurs-available
-        slot="title"
         v-if="displaySearchInspecteurs"
+        slot="title"
         :is-editing="displaySearchInspecteurs"
         :date="content.place.date"
         :centre="centreInfo._id"
@@ -85,8 +85,8 @@
   </v-card>
 
   <v-card
-    class="details"
     v-else-if="!isAvailable"
+    class="details"
   >
     <place-action
       :is-loading="isLoading"
@@ -101,8 +101,8 @@
   </v-card>
 
   <v-card
-    class="details"
     v-else-if="isAvailable"
+    class="details"
   >
     <place-action
       :is-loading="isLoading"
@@ -119,7 +119,6 @@
         <candilib-autocomplete
           v-if="!selectedCandidat"
           class="search-input"
-          @selection="selectCandidat"
           label="Candidats"
           hint="Chercher un candidat par son nom / NEPH / email"
           placeholder="Chercher un candidat par Nom / NEPH / Email"
@@ -127,6 +126,7 @@
           item-text="nameNeph"
           item-value="_id"
           :fetch-autocomplete-action="fetchAutocompleteAction"
+          @selection="selectCandidat"
         />
         <confirm-box
           v-else
@@ -203,19 +203,19 @@ export default {
   props: {
     place: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
     centreInfo: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
     closeDialog: {
-      type: Object,
-      default: () => ({}),
+      type: Function,
+      default () {},
     },
     content: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
     flagModal: {
       type: String,
@@ -230,8 +230,8 @@ export default {
       default: '',
     },
     updateContent: {
-      type: Object,
-      default: () => ({}),
+      type: Function,
+      default () {},
     },
   },
 

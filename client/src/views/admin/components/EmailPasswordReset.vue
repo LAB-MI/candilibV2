@@ -5,8 +5,8 @@
   >
     <template v-slot:activator="{ on }">
       <v-btn
-        class="reset-password-btn"
         slot="activator"
+        class="reset-password-btn"
         outlined
         color="info"
         tabindex="8"
@@ -30,21 +30,21 @@
       >
         <div class="reset-password  u-flex  u-flex--center">
           <v-text-field
+            ref="emailInput"
+            v-model="email"
             class="t-reset-password-email"
             prepend-icon="email"
-            @focus="setEmailPlaceholder"
-            @blur="removeEmailPlaceholder"
-            @input="setEmailToLowerCase"
             :placeholder="emailPlaceholder"
             :aria-placeholder="emailPlaceholder"
             :autofocus="showDialog"
             :hint="`ex. : ${emailPlaceholder}`"
             label="Adresse courriel"
-            ref="emailInput"
             required
             :rules="emailRules"
             tabindex="1"
-            v-model="email"
+            @focus="setEmailPlaceholder"
+            @blur="removeEmailPlaceholder"
+            @input="setEmailToLowerCase"
           />
         </div>
 

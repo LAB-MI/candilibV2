@@ -8,9 +8,9 @@
         <v-btn
           outlined
           color="info"
-          @click="closeAction"
           :aria-disabled="disabled"
           :disabled="disabled"
+          @click="closeAction"
         >
           <v-icon>
             arrow_back_ios
@@ -19,9 +19,9 @@
         </v-btn>
         <v-btn
           :color="okButtonColor"
-          @click="submitAction"
           :aria-disabled="disabled"
           :disabled="disabled"
+          @click="submitAction"
         >
           {{ okButtonText }}
         </v-btn>
@@ -35,11 +35,11 @@ export default {
   props: {
     closeAction: {
       type: Function,
-      default: () => {},
+      default () {},
     },
     submitAction: {
       type: Function,
-      default: () => {},
+      default () {},
     },
     disabled: {
       type: Boolean,

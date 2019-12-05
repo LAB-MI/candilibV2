@@ -108,7 +108,7 @@
     },
     "extends": [
       "plugin:vue/essential",
-      "plugin:vue/strongly-recommended",
+      "plugin:vue/recommended",
       "@vue/standard"
     ],
     "rules": {
@@ -119,7 +119,8 @@
       "comma-dangle": [
         2,
         "always-multiline"
-      ]
+      ],
+      "vue/no-v-html": 0
     },
     "overrides": [
       {

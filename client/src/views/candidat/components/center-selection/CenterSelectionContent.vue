@@ -1,9 +1,9 @@
 <template>
   <v-card-text
-    v-on="{ [hasPlaces && 'click']: selectCenter }"
     :class="{
       'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !hasPlaces
     }"
+    v-on="{ [hasPlaces && 'click']: selectCenter }"
   >
     <div
       class="u-flex"
@@ -34,11 +34,11 @@
       </v-list-item-content>
 
       <a
+        v-ripple
         target="_blank"
         class="location-icon  u-flex"
-        @click.stop="() => true"
-        v-ripple
         :href="href"
+        @click.stop="() => true"
       >
         <v-icon>
           location_on
@@ -54,7 +54,7 @@ export default {
   props: {
     center: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
   },
 

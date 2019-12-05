@@ -5,8 +5,8 @@
     </v-list-item-content>
     <v-list-item-action>
       <v-checkbox
-        color="info"
         v-model="isChecked"
+        color="info"
       />
     </v-list-item-action>
   </v-list-item>
@@ -17,15 +17,15 @@ export default {
   props: {
     centre: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
     inspecteur: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
     inspecteurListToSendBordereaux: {
       type: Array,
-      default: () => [],
+      default () {},
     },
   },
 

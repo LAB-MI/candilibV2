@@ -23,9 +23,9 @@
 
     <div class="text-xs-center d-flex align-center">
       <v-tabs
-        class="u-only-on-desktop"
         slot="extension"
         v-model="activeTab"
+        class="u-only-on-desktop"
         color="transparent"
         align-with-title
       >
@@ -33,9 +33,9 @@
 
         <v-tab
           v-for="link in links"
+          :key="link.routerTo.name"
           :to="link.routerTo"
           :value="link.routerTo"
-          :key="link.routerTo.name"
           :class="`no-margin-left t-${link.routerTo.name}`"
         >
           <icon-with-tooltip
@@ -49,8 +49,8 @@
       </v-tabs>
 
       <v-tooltip
-        bottom
         v-if="isCandidatSignedIn"
+        bottom
       >
         <template v-slot:activator="{ on }">
           <v-btn
@@ -84,12 +84,19 @@ export default {
   props: {
     ids: {
       type: Object,
-      default: () => ({}),
+      default () {},
     },
     links: {
       type: Array,
-      default: () => [],
+      default () {},
     },
+  },
+
+  data () {
+    return {
+      activeTab: null,
+      wantsToDisconnect: false,
+    }
   },
 
   computed: {
@@ -108,6 +115,7 @@ export default {
         this.$router.push({ name: 'candidat-presignup' })
       }
     },
+
     async wantsToDisconnect (newValue, oldValue) {
       if (newValue === true && !this.$store.state.candidat.me.isEvaluationDone) {
         await this.$store.dispatch(SET_SHOW_EVALUATION, true)
@@ -116,13 +124,6 @@ export default {
         this.$router.push({ name: 'candidat-presignup' })
       }
     },
-  },
-
-  data () {
-    return {
-      activeTab: null,
-      wantsToDisconnect: false,
-    }
   },
 
   methods: {

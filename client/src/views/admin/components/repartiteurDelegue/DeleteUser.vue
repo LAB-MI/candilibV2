@@ -5,11 +5,11 @@
   >
     <template v-slot:activator="{ on }">
       <v-btn
-        class="t-btn-delete"
         slot="activator"
+        class="t-btn-delete"
         color="#DC143C"
-        v-on="on"
         icon
+        v-on="on"
       >
         <v-icon>cancel</v-icon>
       </v-btn>

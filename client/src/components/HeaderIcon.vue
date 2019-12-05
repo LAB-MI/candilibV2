@@ -6,8 +6,8 @@
     <template v-slot:activator="{ on }">
       <router-link
         class="d-block"
-        v-on="on"
         :to="{ name: routerTo}"
+        v-on="on"
       >
         <v-btn icon>
           <v-icon>{{ iconName }}</v-icon>

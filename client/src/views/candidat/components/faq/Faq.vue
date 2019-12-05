@@ -1,12 +1,12 @@
 <template>
   <v-card>
     <v-btn
+      v-if="!me"
       fixed
       dark
       fab
       left
       @click="goBack"
-      v-if="!me"
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
@@ -21,9 +21,9 @@
 
     <ul class="list-faq">
       <li
-        class="question-wrapper"
         v-for="question in arrayContent"
         :key="question.title"
+        class="question-wrapper"
       >
         <faq-content :question="question" />
       </li>
@@ -41,10 +41,10 @@ export default {
     FaqContent,
   },
 
-  methods: {
-    goBack () {
-      this.$router.back()
-    },
+  data () {
+    return {
+      arrayContent: faqJson,
+    }
   },
 
   computed: {
@@ -53,10 +53,10 @@ export default {
     },
   },
 
-  data () {
-    return {
-      arrayContent: faqJson,
-    }
+  methods: {
+    goBack () {
+      this.$router.back()
+    },
   },
 }
 </script>

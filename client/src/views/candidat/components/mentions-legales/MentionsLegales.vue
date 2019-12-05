@@ -1,12 +1,12 @@
 <template>
   <v-card>
     <v-btn
+      v-if="!me"
       fixed
       dark
       fab
       left
       @click="goBack"
-      v-if="!me"
     >
       <v-icon>arrow_back</v-icon>
     </v-btn>
@@ -43,10 +43,10 @@ export default {
     MentionsLegalesContent,
   },
 
-  methods: {
-    goBack () {
-      this.$router.back()
-    },
+  data () {
+    return {
+      ArrayContent: mentionsLegalesJson,
+    }
   },
 
   computed: {
@@ -55,10 +55,10 @@ export default {
     },
   },
 
-  data () {
-    return {
-      ArrayContent: mentionsLegalesJson,
-    }
+  methods: {
+    goBack () {
+      this.$router.back()
+    },
   },
 }
 </script>

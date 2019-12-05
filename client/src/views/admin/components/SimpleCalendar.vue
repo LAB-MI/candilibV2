@@ -5,9 +5,9 @@
     </div>
 
     <div
-      class="calendar-day"
       v-for="(day, i) in days"
       :key="i"
+      class="calendar-day"
     >
       <span>{{ day }}</span>
     </div>
@@ -21,7 +21,7 @@ export default {
   props: {
     places: {
       type: Array,
-      default: () => [],
+      default () {},
     },
   },
 

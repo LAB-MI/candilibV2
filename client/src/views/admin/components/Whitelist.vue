@@ -12,8 +12,8 @@
         @dragenter="isDragginOverWhitelist = true"
       >
         <span
-          class="loading-indicator"
           v-if="whitelist.isFetching"
+          class="loading-indicator"
         >
           <v-progress-circular
             v-show="whitelist.isFetching"
@@ -25,8 +25,8 @@
         <search-email />
 
         <v-list
-          class="u-flex  u-flex--column  u-flex--center"
           v-show="matchingList && matchingList.length"
+          class="u-flex  u-flex--column  u-flex--center"
         >
           <h4 class="text-xs-center">
             Adresses correspondant à la recherche (max 5)
@@ -34,9 +34,9 @@
 
           <div>
             <whitelisted
-              class="t-whitelist-search"
               v-for="whitelisted in matchingList"
               :key="whitelisted._id"
+              class="t-whitelist-search"
               :whitelisted="whitelisted"
               :remove-from-whitelist="removeFromWhitelist"
               @delete="onDelete"
@@ -65,9 +65,9 @@
             class="u-flex"
           >
             <v-btn
-              @click="oneColumn = true"
               class="u-flex"
               :color="oneColumn ? 'primary' : ''"
+              @click="oneColumn = true"
             >
               <span>
                 Vue 1 seule colonne
@@ -79,8 +79,8 @@
             </v-btn>
 
             <v-btn
-              @click="oneColumn = false"
               :color="oneColumn ? '' : 'primary'"
+              @click="oneColumn = false"
             >
               <span>
                 Vue plusieurs colonnes
@@ -135,17 +135,17 @@
               </v-list-item-action>
 
               <v-text-field
+                v-if="adding"
+                v-model="newEmail"
                 class="t-add-one-whitelist"
                 placeholder="jean@dupont.fr"
                 aria-placeholder="jean@dupont.fr"
-                v-if="adding"
-                v-model="newEmail"
                 :autofocus="adding"
                 :rules="emailRules"
                 color="#17a2b8"
-                @keyup.escape="hideForm"
                 :aria-disabled="whitelist.isUpdating"
                 :disabled="whitelist.isUpdating"
+                @keyup.escape="hideForm"
               />
             </v-list-item>
           </v-form>
@@ -233,24 +233,24 @@
           </v-list-item>
 
           <v-form
-            v-model="validBatch"
             v-show="addingBatch"
-            @submit.prevent="addBatchToWhitelist"
+            v-model="validBatch"
             class="u-pr"
+            @submit.prevent="addBatchToWhitelist"
           >
             <big-loading-indicator :is-loading="whitelist.isUpdating" />
             <v-container>
               <v-textarea
-                id="whitelist-batch-textarea"
                 v-if="addingBatch"
+                id="whitelist-batch-textarea"
                 v-model="newEmails"
-                @keyup.escape="hideBatchForm"
                 :autofocus="addingBatch"
                 :aria-disabled="whitelist.isUpdating"
                 :disabled="whitelist.isUpdating"
                 :placeholder="'adresse1@examble.com\nadresse2@example.com\nadresse3@example.com'"
                 :aria-placeholder="'adresse1@examble.com\nadresse2@example.com\nadresse3@example.com'"
                 rows="10"
+                @keyup.escape="hideBatchForm"
               />
             </v-container>
 
@@ -262,10 +262,10 @@
 
               <v-list-item-action>
                 <v-btn
-                  ref="saveBatchEmail"
                   id="save-batch-email"
-                  color="primary"
+                  ref="saveBatchEmail"
                   v-ripple
+                  color="primary"
                   text
                   :aria-disabled="whitelist.isUpdating"
                   :disabled="whitelist.isUpdating"
@@ -278,19 +278,19 @@
                   <v-icon>save</v-icon>
                 </v-btn>
                 <input
-                  type="file"
-                  ref="batchEmailFile"
                   id="batch-email-file"
-                  @change="loadHandler"
+                  ref="batchEmailFile"
+                  type="file"
                   style="width: 1px; height: 1px; opacity: 0;"
+                  @change="loadHandler"
                 >
                 <label
                   for="batch-email-file"
                   @click="() => this.$refs.batchEmailFile.click()"
                 >
                   <v-btn
-                    color="primary"
                     v-ripple
+                    color="primary"
                     text
                     style="padding-right: 1em; padding-left: 1em;"
                   >
@@ -399,12 +399,6 @@ export default {
     }
   },
 
-  mounted () {
-    if (this.departement) {
-      this.$store.dispatch(FETCH_WHITELIST_REQUEST, this.departement)
-    }
-  },
-
   computed: {
     ...mapState(['whitelist']),
 
@@ -423,6 +417,12 @@ export default {
         this.$store.dispatch(FETCH_WHITELIST_REQUEST, this.departement)
       }
     },
+  },
+
+  mounted () {
+    if (this.departement) {
+      this.$store.dispatch(FETCH_WHITELIST_REQUEST, this.departement)
+    }
   },
 
   methods: {

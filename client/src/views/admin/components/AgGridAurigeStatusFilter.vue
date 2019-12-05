@@ -1,12 +1,12 @@
 <template>
   <v-select
-    class="t-ag-grid-filter-status"
     v-model="selected"
+    class="t-ag-grid-filter-status"
     :items="options"
   >
     <v-icon
-      class="t-ag-grid-filter-status-icon"
       slot="append"
+      class="t-ag-grid-filter-status-icon"
     >
       arrow_drop_down
     </v-icon>
@@ -64,18 +64,6 @@ export default Vue.extend({
     }
   },
 
-  methods: {
-    isFilterActive () {
-      const { selected } = this
-      return selected && selected.length > 0
-    },
-
-    doesFilterPass (params) {
-      const { selected } = this
-      return !selected || !(selected[0].length > 0) || !selected.indexOf(this.valueGetter(params.node))
-    },
-  },
-
   watch: {
     'selected': function (val, oldVal) {
       if (val !== oldVal && this.params) {
@@ -86,6 +74,18 @@ export default Vue.extend({
 
   created () {
     this.valueGetter = this.params && this.params.valueGetter
+  },
+
+  methods: {
+    isFilterActive () {
+      const { selected } = this
+      return selected && selected.length > 0
+    },
+
+    doesFilterPass (params) {
+      const { selected } = this
+      return !selected || !(selected[0].length > 0) || !selected.indexOf(this.valueGetter(params.node))
+    },
   },
 
 })

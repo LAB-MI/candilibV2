@@ -22,6 +22,7 @@
 
       <div class="form-input">
         <v-text-field
+          v-model="email"
           class="t-login-email"
           aria-placeholder="jean@dupont.fr"
           autofocus
@@ -30,22 +31,21 @@
           required
           :rules="emailRules"
           tabindex="1"
-          v-model="email"
         />
       </div>
 
       <div class="form-input">
         <v-text-field
+          v-model="password"
           aria-placeholder="mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
-          @click:append="showPassword = !showPassword"
           hint="Au moins 8 caractères"
           label="mot de passe"
           name="password"
           :rules="passwordRules"
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
-          v-model="password"
+          @click:append="showPassword = !showPassword"
         />
       </div>
 

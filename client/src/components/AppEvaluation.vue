@@ -23,8 +23,8 @@
           hover
         />
         <v-textarea
-          class="no-resize"
           v-model="comment"
+          class="no-resize"
           cols="30"
           rows="10"
           :label="leaveAComment"
@@ -35,16 +35,16 @@
       <v-card-actions class="justify-space-between">
         <v-btn
           text
-          @click="showEvaluation = false"
           class="t-evaluation-later"
+          @click="showEvaluation = false"
         >
           {{ $formatMessage({ id: 'later' }) }}
         </v-btn>
         <v-btn
           color="primary"
           text
-          @click="sendEvaluation"
           class="t-evaluation-submit"
+          @click="sendEvaluation"
         >
           {{ $formatMessage({ id: 'evaluate_now' }) }}
         </v-btn>
