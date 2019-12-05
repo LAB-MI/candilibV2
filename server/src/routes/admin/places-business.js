@@ -464,7 +464,7 @@ export const importPlacesFromFile = async ({ planningFile, departement }) => {
 export const releaseResa = async ({ _id }) => {
   const loggerInfo = {
     func: 'releaseResa',
-    candidat: _id,
+    candidatId: _id,
   }
   appLogger.debug(loggerInfo)
   const place = await findPlaceBookedByCandidat(_id)
@@ -472,7 +472,7 @@ export const releaseResa = async ({ _id }) => {
     appLogger.debug({
       func: 'releaseResa',
       acion: 'remove-place',
-      candidat: _id,
+      candidatId: _id,
       place,
     })
     return removeBookedPlace(place)
@@ -482,9 +482,9 @@ export const releaseResa = async ({ _id }) => {
 export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
   const loggerInfo = {
     func: 'removeReservationPlaceByAdmin',
-    place,
-    candidat,
-    admin,
+    placeId: place._id,
+    candidatId: candidat._id,
+    adminId: admin._id,
   }
   appLogger.debug(loggerInfo)
 
