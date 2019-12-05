@@ -32,7 +32,7 @@
         <v-card-text>
           <cancel-reservation-message
             v-if="currentReservationDateTime"
-            class="confirm-suppr-text-content"
+            class="confirm-suppr-text-content t-confirm-suppr-text-content"
             :id-format-message="idReservationMessage"
             :date-current-resa="currentReservationDateTime"
             :nb-of-days-before-date="String(numberOfDaysBeforeDate)"

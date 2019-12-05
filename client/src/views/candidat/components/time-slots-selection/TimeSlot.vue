@@ -11,6 +11,7 @@
     </page-title>
 
     <v-alert
+      class="t-warning-message"
       :value="!!warningMessage"
       type="warning"
       style="font-size: 1em;"
