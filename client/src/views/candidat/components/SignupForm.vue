@@ -1,6 +1,12 @@
 <template>
   <div class="presignup-form">
-    <v-form dark v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
+    <v-form
+      dark
+      v-model="valid"
+      ref="presignupForm"
+      class="presignup-form"
+      @submit.prevent="presignup"
+    >
       * Champs obligatoires
       <div class="form-input">
         <v-text-field
@@ -18,7 +24,7 @@
           :rules="nephRules"
           tabindex="1"
           v-model="codeNeph"
-        ></v-text-field>
+        />
       </div>
       <div class="form-input">
         <v-text-field
@@ -35,7 +41,7 @@
           required
           tabindex="2"
           v-model="nomNaissance"
-        ></v-text-field>
+        />
       </div>
       <div class="form-input">
         <v-text-field
@@ -51,7 +57,7 @@
           required
           tabindex="3"
           v-model="prenom"
-        ></v-text-field>
+        />
       </div>
       <div class="form-input">
         <v-text-field
@@ -69,7 +75,7 @@
           :rules="emailRules"
           tabindex="4"
           v-model="email"
-        ></v-text-field>
+        />
       </div>
       <div class="form-input">
         <v-text-field
@@ -86,7 +92,7 @@
           tabindex="5"
           :rules="portableRules"
           v-model="portable"
-        ></v-text-field>
+        />
       </div>
       <div class="form-input">
         <v-autocomplete
@@ -107,8 +113,7 @@
           no-filter
           return-object
           :search-input.sync="searchAdresses"
-        >
-        </v-autocomplete>
+        />
       </div>
       <div class="form-input">
         <v-btn
@@ -118,17 +123,32 @@
           class="submit-button"
           dark
           tabindex="7"
-          color="#28a745">
-          <div class="submit-label">{{getMsg('preinscription_bouton_submit')}}</div>
+          color="#28a745"
+        >
+          <div class="submit-label">
+            {{ getMsg('preinscription_bouton_submit') }}
+          </div>
         </v-btn>
       </div>
       <div class="form-input  form-input-group">
-        <v-btn text color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
-          {{getMsg('preinscription_bouton_mentions_legales') }}
+        <v-btn
+          text
+          color="#fff"
+          tag="a"
+          :to="{ name: 'mentions-legales' }"
+          tabindex="9"
+        >
+          {{ getMsg('preinscription_bouton_mentions_legales') }}
         </v-btn>
         <already-signed-up />
-        <v-btn text color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
-          {{getMsg('preinscription_bouton_faq') }}
+        <v-btn
+          text
+          color="#fff"
+          tag="a"
+          :to="{ name: 'faq' }"
+          tabindex="10"
+        >
+          {{ getMsg('preinscription_bouton_faq') }}
         </v-btn>
       </div>
     </v-form>
@@ -154,12 +174,15 @@ const getAdresses = pDebounce((query) => {
 }, 300)
 
 export default {
-  name: 'signup-form',
+  name: 'SignupForm',
   components: {
     AlreadySignedUp,
   },
   props: {
-    toggleForm: Function,
+    toggleForm: {
+      type: Function,
+      default: () => {},
+    },
   },
   data: function () {
     return {

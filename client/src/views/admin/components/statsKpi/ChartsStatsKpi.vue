@@ -9,10 +9,9 @@
       </h3>
     </v-card-title>
 
-    <v-divider/>
+    <v-divider />
 
     <div class="stats  u-flex  u-flex--center">
-
       <div>
         <h3 style="color: #00b0ff;">
           {{ $formatMessage({ id: 'resultats_des_examens' }) }}
@@ -22,7 +21,7 @@
             class="u-flex__item pa-3"
             v-for="(chartInfo, idx) in getChartsResultsExams()"
             :key="`${chartInfo.classContent}-${idx}`"
-            :chartInfo="chartInfo"
+            :chart-info="chartInfo"
           />
           <div class="u-flex__item">
             <strong :class="`total-places t-total-places-${Math.round(getTotalExamPlaces)}`">
@@ -34,10 +33,9 @@
           </div>
         </div>
       </div>
-
     </div>
 
-    <v-divider/>
+    <v-divider />
 
     <div style="margin-left: 6.5vw;">
       <v-container>
@@ -50,7 +48,7 @@
             class="u-flex__item pa-3"
             v-for="(chartInfo, idx) in chartsPlacesExams"
             :key="`${chartInfo.classContent}-${idx}`"
-            :chartInfo="chartInfo"
+            :chart-info="chartInfo"
           />
           <div
             :class="`u-flex__item pa-3
@@ -63,10 +61,9 @@
               :labels="labels"
               :datasets="datasets"
             />
-            <div style="display: block;"></div>
+            <div style="display: block;" />
           </div>
         </div>
-
       </v-container>
     </div>
   </v-card>
@@ -86,10 +83,12 @@ export default {
   props: {
     statsResultsExamValues: {
       type: Object,
+      default: () => ({}),
     },
 
     statsPlacesExamValues: {
       type: Object,
+      default: () => ({}),
     },
   },
 

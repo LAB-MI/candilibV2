@@ -1,18 +1,26 @@
 <template>
   <v-card>
     <v-card-title class="title u-flex u-flex--center">
-    <h3>{{ title }}</h3>
+      <h3>{{ title }}</h3>
     </v-card-title>
+
     <v-card-text>
       <v-card
         class="spaced"
         v-for="groupInfo of profileInfo"
         :key="groupInfo[0][1]"
       >
-        <div v-for="([title, value]) of groupInfo" :key="title">
+        <div
+          v-for="([groupTitle, value]) of groupInfo"
+          :key="groupTitle"
+        >
           <div class="u-flex  u-flex--v-center">
-            <strong class="label">{{ title }}&nbsp;:</strong>
-            <span class="value" v-html="value"></span>
+            <strong class="label">{{ groupTitle }}&nbsp;:</strong>
+
+            <span
+              class="value"
+              v-html="value"
+            />
           </div>
         </div>
       </v-card>
@@ -27,8 +35,14 @@ export default {
     }
   },
   props: {
-    profileInfo: Array,
-    title: String,
+    profileInfo: {
+      type: Array,
+      default: () => [],
+    },
+    title: {
+      type: String,
+      default: '',
+    },
   },
 }
 </script>

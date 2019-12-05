@@ -8,15 +8,15 @@
       </strong>
 
       (
-        <strong class="text-free-places">
+      <strong class="text-free-places">
         {{ allBookedPlacesByCenter }}
-        </strong>
-        <strong>
-          /
-        </strong>
-        <strong>
-          {{ allCenterPlaces }}
-        </strong>
+      </strong>
+      <strong>
+        /
+      </strong>
+      <strong>
+        {{ allCenterPlaces }}
+      </strong>
       )
     </h2>
 
@@ -33,7 +33,7 @@
     <data-table-week-monitor
       :items="formattedArrayByWeek"
       @goToGestionPlannings="goToGestionPlannings"
-      :centerId="centerId"
+      :center-id="centerId"
     />
   </div>
 </template>
@@ -76,8 +76,14 @@ export default {
       type: String,
       default: '',
     },
-    centerId: String,
-    weeks: Object,
+    centerId: {
+      type: String,
+      default: '',
+    },
+    weeks: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 
   data () {

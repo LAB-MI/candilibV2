@@ -1,5 +1,8 @@
 <template>
-  <v-layout row justify-center>
+  <v-layout
+    row
+    justify-center
+  >
     <v-btn
       color="info"
       dark
@@ -28,15 +31,15 @@
           {{ titleModal }}
           &nbsp;
           <strong>
-            {{`${activeDepartement}`}}
+            {{ `${activeDepartement}` }}
           </strong>
           <div v-if="!isForInspecteurs">
             {{ $formatMessage({ id: 'sur_ladresse_courriel' }) }}
           &nbsp;
-          <strong>
-            {{ emailDepartementActive }}
-          </strong>
-        </div>
+            <strong>
+              {{ emailDepartementActive }}
+            </strong>
+          </div>
         </v-card-title>
         <div>
           <v-card-title class="headline">
@@ -55,7 +58,10 @@
             </div>
           </v-card-title>
 
-          <div v-if="!(inspecteursOfCurrentDpt && inspecteursOfCurrentDpt.length)" class="headline">
+          <div
+            v-if="!(inspecteursOfCurrentDpt && inspecteursOfCurrentDpt.length)"
+            class="headline"
+          >
             {{ $formatMessage({ id: 'no_inspecteurs_at_this_date'}) }}
           </div>
 
@@ -72,7 +78,7 @@
                       class="t-check-all"
                       :color="isPartiallyChecked ? 'grey' : 'info'"
                       v-model="isAllChecked"
-                    ></v-checkbox>
+                    />
                   </v-list-item-action>
                 </v-list-item>
               </v-list>
@@ -80,23 +86,21 @@
               <v-list
                 class="wrapper-list"
               >
-
                 <inspecteur-list-bordereaux-content
                   v-for="item in inspecteursOfCurrentDpt"
                   :key="item.inspecteur._id"
                   :centre="item.centre"
                   :inspecteur="item.inspecteur"
-                  :inspecteurListToSendBordereaux="inspecteurListToSendBordereaux"
+                  :inspecteur-list-to-send-bordereaux="inspecteurListToSendBordereaux"
                   @set-inspecteur-list="setInspecteurList"
                 />
               </v-list>
             </v-card-text>
           </v-form>
-
         </div>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
 
           <v-btn
             outlined
@@ -153,7 +157,10 @@ export default {
   },
 
   props: {
-    date: String,
+    date: {
+      type: String,
+      default: '',
+    },
     isForInspecteurs: Boolean,
   },
 

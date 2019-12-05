@@ -1,6 +1,6 @@
 <template>
-  <v-card class="text--center" >
-    <page-title :title="title"/>
+  <v-card class="text--center">
+    <page-title :title="title" />
     <div class="text--center">
       <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
       <reservation-info
@@ -23,7 +23,7 @@
           La place que vous avez sélectionnée n'est plus disponible
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             @click="closeAndGoBack"
           >

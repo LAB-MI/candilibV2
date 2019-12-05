@@ -12,7 +12,7 @@
             fast_rewind
           </v-icon>
         </v-btn>
-          Semaine {{ displayOnlyNumberOfWeek() }}
+        Semaine {{ displayOnlyNumberOfWeek() }}
         <v-btn
           class="t-btn-next-week"
           icon
@@ -58,7 +58,12 @@
                 v-on="on"
               />
             </template>
-            <v-date-picker v-model="date" no-title @input="datePicker = false" locale="fr"/>
+            <v-date-picker
+              v-model="date"
+              no-title
+              @input="datePicker = false"
+              locale="fr"
+            />
           </v-menu>
           <v-btn
             icon
@@ -70,21 +75,20 @@
               play_arrow
             </v-icon>
           </v-btn>
-
         </div>
       </div>
     </div>
 
-    <div >
+    <div>
       <div class="u-flex  u-flex--center  u-flex--space-between">
         <h3>Centres d'examen</h3>
         <generate-inspecteur-bordereaux
           :date="date"
-          :isForInspecteurs="true"
+          :is-for-inspecteurs="true"
         />
         <generate-inspecteur-bordereaux
           :date="date"
-          :isForInspecteurs="false"
+          :is-for-inspecteurs="false"
         />
         <div class="stats-card">
           <div class="text-xs-right">
@@ -124,16 +128,25 @@
             :key="placesByCentre.centre._id"
             :value="`tab-${placesByCentre.centre._id}`"
           >
-            <table class="table u-full-width" :style="{ opacity: isLoading ? '0.5' : '1' }">
+            <table
+              class="table u-full-width"
+              :style="{ opacity: isLoading ? '0.5' : '1' }"
+            >
               <thead>
                 <tr>
-                  <th v-for="creneau in headers" :key="creneau">
+                  <th
+                    v-for="creneau in headers"
+                    :key="creneau"
+                  >
                     {{ creneau }}
                   </th>
                 </tr>
               </thead>
 
-              <tbody v-for="inspecteurData in inspecteursData" :key="inspecteurData.matricule">
+              <tbody
+                v-for="inspecteurData in inspecteursData"
+                :key="inspecteurData.matricule"
+              >
                 <tr>
                   <th
                     class="inspecteur-button"
@@ -141,14 +154,19 @@
                   >
                     <v-layout row>
                       <span class="name-ipcsr-wrap">
-                        {{inspecteurData.prenom}}
-                        {{inspecteurData.nom}}
+                        {{ inspecteurData.prenom }}
+                        {{ inspecteurData.nom }}
                       </span>
                       <v-btn
                         icon
                         @click="activeDeleteMode(inspecteurData._id, inspecteurData)"
                       >
-                        <v-icon size="20" color="#A9A9A9">delete</v-icon>
+                        <v-icon
+                          size="20"
+                          color="#A9A9A9"
+                        >
+                          delete
+                        </v-icon>
                       </v-btn>
                     </v-layout>
                   </th>
@@ -161,10 +179,10 @@
                     <schedule-inspector-button
                       :key="`creneau-${placeInfo.hour}-${inspecteurData._id}`"
                       :content="placeInfo"
-                      :selectedDate="date"
-                      :inspecteurId="inspecteurData._id"
-                      :updateContent="reloadWeekMonitor"
-                      :centreInfo="placeInfo.centre"
+                      :selected-date="date"
+                      :inspecteur-id="inspecteurData._id"
+                      :update-content="reloadWeekMonitor"
+                      :centre-info="placeInfo.centre"
                       @click="setActiveInspecteurRow"
                     />
                   </td>
@@ -175,25 +193,28 @@
                     v-if="deleteMode"
                     class="inspecteur-button"
                     :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
-                  ></td>
+                  />
 
                   <td colspan="20">
-                    <div class="place-details  u-flex  u-flex--center" :class="{ active: activeInspecteurRow === inspecteurData._id }">
+                    <div
+                      class="place-details  u-flex  u-flex--center"
+                      :class="{ active: activeInspecteurRow === inspecteurData._id }"
+                    >
                       <schedule-inspector-details
                         v-if="!deleteMode"
                         :place="activePlace"
                         :content="selectedPlaceInfo"
                         :close-dialog="closeDetails"
-                        :selectedDate="date"
-                        :updateContent="reloadWeekMonitor"
-                        :inspecteurId="inspecteurData._id"
-                        :centreInfo="placesByCentre.centre"
+                        :selected-date="date"
+                        :update-content="reloadWeekMonitor"
+                        :inspecteur-id="inspecteurData._id"
+                        :centre-info="placesByCentre.centre"
                       />
                       <delete-schedule-inspector
                         v-if="deleteMode"
-                        :placeInfo="inspecteurData"
-                        :inspecteurId="inspecteurData._id"
-                        :closeDetails="closeDetails"
+                        :place-info="inspecteurData"
+                        :inspecteur-id="inspecteurData._id"
+                        :close-details="closeDetails"
                         @reloadWeekMonitor="reloadWeekMonitor"
                       />
                     </div>

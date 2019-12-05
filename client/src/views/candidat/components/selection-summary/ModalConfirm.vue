@@ -1,5 +1,9 @@
 <template>
-  <v-dialog v-model="dialog" persistent max-width="290">
+  <v-dialog
+    v-model="dialog"
+    persistent
+    max-width="290"
+  >
     <template v-slot:activator="{ on }">
       <v-btn
         dark
@@ -11,7 +15,7 @@
         {{ $formatMessage({ id: idButtonName }) }}
         &nbsp;
         <v-icon>
-            {{ iconName }}
+          {{ iconName }}
         </v-icon>
       </v-btn>
     </template>
@@ -26,18 +30,18 @@
           {{ titleModal }}
         </v-card-title>
         <v-card-text>
-        <cancel-reservation-message
-          v-if="currentReservationDateTime"
-          class="confirm-suppr-text-content"
-          :idFormatMessage="idReservationMessage"
-          :dateCurrentResa="currentReservationDateTime"
-          :nbOfDaysBeforeDate="String(numberOfDaysBeforeDate)"
-          :penaltyNb="String(penaltyDaysNumber)"
-          :canBookFrom="canBookFrom"
-        />
+          <cancel-reservation-message
+            v-if="currentReservationDateTime"
+            class="confirm-suppr-text-content"
+            :id-format-message="idReservationMessage"
+            :date-current-resa="currentReservationDateTime"
+            :nb-of-days-before-date="String(numberOfDaysBeforeDate)"
+            :penalty-nb="String(penaltyDaysNumber)"
+            :can-book-from="canBookFrom"
+          />
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             :color="colorButtonRetour"
             class="u-flex  u-flex--center"
@@ -76,21 +80,63 @@ export default {
   },
 
   props: {
-    formAction: Function,
-    penaltyDaysNumber: Number,
-    numberOfDaysBeforeDate: Number,
-    currentReservationDateTime: String,
+    formAction: {
+      type: Function,
+      default: () => {},
+    },
+    penaltyDaysNumber: {
+      type: Number,
+      default: 7,
+    },
+    numberOfDaysBeforeDate: {
+      type: Number,
+      default: 7,
+    },
+    currentReservationDateTime: {
+      type: String,
+      default: '',
+    },
     isPenaltyActive: Boolean,
-    canBookFrom: String,
-    idReservationMessage: String,
-    idButtonName: String,
-    titleModal: String,
-    colorButton: String,
-    iconName: String,
-    idMessageButtonRetour: String,
-    idMessageButtonConfirmer: String,
-    colorButtonConfirmer: String,
-    colorButtonRetour: String,
+    canBookFrom: {
+      type: String,
+      default: '',
+    },
+    idReservationMessage: {
+      type: String,
+      default: '',
+    },
+    idButtonName: {
+      type: String,
+      default: '',
+    },
+    titleModal: {
+      type: String,
+      default: '',
+    },
+    colorButton: {
+      type: String,
+      default: '',
+    },
+    iconName: {
+      type: String,
+      default: '',
+    },
+    idMessageButtonRetour: {
+      type: String,
+      default: '',
+    },
+    idMessageButtonConfirmer: {
+      type: String,
+      default: '',
+    },
+    colorButtonConfirmer: {
+      type: String,
+      default: '',
+    },
+    colorButtonRetour: {
+      type: String,
+      default: '',
+    },
     disabled: Boolean,
   },
 

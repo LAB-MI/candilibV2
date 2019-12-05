@@ -5,21 +5,34 @@
       'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !hasPlaces
     }"
   >
-    <div class="u-flex" :class="{'u-flex u-pointer': hasPlaces}">
+    <div
+      class="u-flex"
+      :class="{'u-flex u-pointer': hasPlaces}"
+    >
       <v-list-item-content v-ripple="hasPlaces">
-        <v-list-item-title >
+        <v-list-item-title>
           <span class="u-uppercase">
             {{ center.centre.nom }}
           </span>
+
           ({{ center.centre.departement }})
         </v-list-item-title>
-        <v-list-item-subtitle  class="u-flex__item--grow" :class="{'blue-grey--text  text--lighten-2': !hasPlaces}">
+
+        <v-list-item-subtitle
+          class="u-flex__item--grow"
+          :class="{'blue-grey--text  text--lighten-2': !hasPlaces}"
+        >
           {{ center.centre.adresse }}
         </v-list-item-subtitle>
-        <span v-if="!hasPlaces" class="u-flex__item--grow  blue-grey--text  text--darken-2">
+
+        <span
+          v-if="!hasPlaces"
+          class="u-flex__item--grow  blue-grey--text  text--darken-2"
+        >
           Plus de place disponible pour le moment
         </span>
       </v-list-item-content>
+
       <a
         target="_blank"
         class="location-icon  u-flex"
@@ -39,7 +52,10 @@
 import { SELECT_CENTER } from '@/store/center'
 export default {
   props: {
-    center: Object,
+    center: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 
   computed: {

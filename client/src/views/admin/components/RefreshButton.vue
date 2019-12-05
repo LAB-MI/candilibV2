@@ -2,7 +2,7 @@
   <div class="text-xs-center">
     <refresh-button
       @click="reloadWeekMonitor"
-      :isLoading="!!isLoading"
+      :is-loading="!!isLoading"
     />
   </div>
 </template>

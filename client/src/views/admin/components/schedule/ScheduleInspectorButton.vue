@@ -2,20 +2,20 @@
   <div class="text-xs-center">
     <v-tooltip bottom>
       {{ tooltipContent }}
-        <template v-slot:activator="{ on }">
-          <v-btn
-            class="t-select-place"
-            color="white"
-            dark
-            v-on="on"
-            @mouseenter="getCandidat"
-            @click="$emit('click', inspecteurId, content)"
-          >
-            <v-icon :color="color">
-              {{ icon }}
-            </v-icon>
-          </v-btn>
-        </template>
+      <template v-slot:activator="{ on }">
+        <v-btn
+          class="t-select-place"
+          color="white"
+          dark
+          v-on="on"
+          @mouseenter="getCandidat"
+          @click="$emit('click', inspecteurId, content)"
+        >
+          <v-icon :color="color">
+            {{ icon }}
+          </v-icon>
+        </v-btn>
+      </template>
     </v-tooltip>
   </div>
 </template>
@@ -35,8 +35,14 @@ export default {
   },
 
   props: {
-    content: Object,
-    inspecteurId: String,
+    content: {
+      type: Object,
+      default: () => ({}),
+    },
+    inspecteurId: {
+      type: String,
+      default: '',
+    },
   },
 
   computed: {

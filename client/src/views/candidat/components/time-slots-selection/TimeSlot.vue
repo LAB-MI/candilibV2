@@ -1,13 +1,22 @@
 <template>
   <v-card style="position: relative;">
-    <page-title v-if="center.selected" class="sticky-title">
+    <page-title
+      v-if="center.selected"
+      class="sticky-title"
+    >
       <span class="u-truncated">{{ center.selected.nom }}</span>
       <span
         class="title__small ws-nowrap"
       >({{ center.selected.departement }})</span>
     </page-title>
 
-    <v-alert :value="!!warningMessage" type="warning" style="font-size: 1em;">{{ warningMessage }}</v-alert>
+    <v-alert
+      :value="!!warningMessage"
+      type="warning"
+      style="font-size: 1em;"
+    >
+      {{ warningMessage }}
+    </v-alert>
 
     <v-tabs
       v-model="switchTab"
@@ -22,11 +31,20 @@
         :href="`#tab-${month.label}`"
         @click="$router.push({ name: 'time-slot', params: { month: month.label, day: $route.params.day } })"
       >
-        <span v-if="month.days" class="primary--text">{{ month.label }}</span>
-        <span v-else class="blue-grey--text">{{ month.label }}</span>
+        <span
+          v-if="month.days"
+          class="primary--text"
+        >{{ month.label }}</span>
+        <span
+          v-else
+          class="blue-grey--text"
+        >{{ month.label }}</span>
       </v-tab>
     </v-tabs>
-    <v-tabs-items class="tabs-items-block" v-model="switchTab">
+    <v-tabs-items
+      class="tabs-items-block"
+      v-model="switchTab"
+    >
       <v-tab-item
         v-for="month in timeSlots.list"
         :key="month.label"
@@ -34,18 +52,27 @@
       >
         <v-card flat>
           <v-card-text>
-            <times-slots-selector v-if="month.days" :initial-time-slots="Array.from(month.days).map(e => e[1])"/>
+            <times-slots-selector
+              v-if="month.days"
+              :initial-time-slots="Array.from(month.days).map(e => e[1])"
+            />
             <div
               v-else
               class="blue-grey--text font-italic"
-            >Il n'y a pas de créneau disponible pour ce mois.</div>
+            >
+              Il n'y a pas de créneau disponible pour ce mois.
+            </div>
           </v-card-text>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
 
     <v-card-actions class="u-flex--center">
-      <v-btn outlined color="info" @click="goToSelectCenter">
+      <v-btn
+        outlined
+        color="info"
+        @click="goToSelectCenter"
+      >
         <v-icon>arrow_back_ios</v-icon>Retour
       </v-btn>
     </v-card-actions>

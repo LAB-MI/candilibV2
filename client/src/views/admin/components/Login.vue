@@ -1,11 +1,20 @@
 <template>
-  <div class="login" v-bind:style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }">
+  <div
+    class="login"
+    :style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }"
+  >
     <bandeau-beta fixed />
 
-    <div class="login-bg-filter"></div>
+    <div class="login-bg-filter" />
 
-    <v-form v-model="valid" class="login-form" @submit.prevent="getToken">
-      <h2 class="text--center">ADMINISTRATEUR</h2>
+    <v-form
+      v-model="valid"
+      class="login-form"
+      @submit.prevent="getToken"
+    >
+      <h2 class="text--center">
+        ADMINISTRATEUR
+      </h2>
 
       <h3 class="text--center">
         C<span class="col-red">A</span>NDILIB
@@ -22,7 +31,7 @@
           :rules="emailRules"
           tabindex="1"
           v-model="email"
-        ></v-text-field>
+        />
       </div>
 
       <div class="form-input">
@@ -37,18 +46,23 @@
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
           v-model="password"
-        ></v-text-field>
+        />
       </div>
 
       <div class="form-input">
-        <button tabindex="3" class="submit-btn">
-          <div class="submit-bgbtn"></div>
-          <div class="submit-label">Connexion</div>
+        <button
+          tabindex="3"
+          class="submit-btn"
+        >
+          <div class="submit-bgbtn" />
+          <div class="submit-label">
+            Connexion
+          </div>
         </button>
-        <email-password-reset class="u-flex u-flex--center"/>
+        <email-password-reset class="u-flex u-flex--center" />
       </div>
 
-      <admin-version/>
+      <admin-version />
     </v-form>
   </div>
 </template>

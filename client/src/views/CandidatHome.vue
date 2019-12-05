@@ -1,7 +1,7 @@
 <template>
   <div style="max-width: 100vw;">
     <selection-summary v-if="reservation.booked.isBooked" />
-    <center-selection v-else/>
+    <center-selection v-else />
   </div>
 </template>
 
@@ -22,7 +22,7 @@ export default {
     CenterSelection,
   },
 
-  name: 'candidat-home',
+  name: 'CandidatHome',
 
   computed: {
     ...mapState(['candidat', 'reservation']),

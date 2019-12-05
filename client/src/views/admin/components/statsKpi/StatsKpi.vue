@@ -3,7 +3,10 @@
     <page-title :title="'Stats Kpi'" />
 
     <v-card class="container  stats-filters">
-      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les départements`" />
+      <v-switch
+        v-model="isDisplayAllDepartement"
+        :label="`Afficher tous les départements`"
+      />
 
       <div class="u-flex">
         <v-menu
@@ -21,14 +24,14 @@
               prepend-icon="event"
               v-on="on"
               readonly
-            ></v-text-field>
+            />
           </template>
 
           <v-date-picker
             v-model="dateStart"
             @input="menuStart = false"
             locale="fr"
-          ></v-date-picker>
+          />
         </v-menu>
 
         <v-menu
@@ -46,7 +49,7 @@
               prepend-icon="event"
               v-on="on"
               readonly
-            ></v-text-field>
+            />
           </template>
 
           <v-date-picker
@@ -54,13 +57,15 @@
             v-model="dateEnd"
             @input="menuEnd = false"
             locale="fr"
-          ></v-date-picker>
+          />
         </v-menu>
       </div>
 
       <div class="u-flex  u-flex--center">
-        <v-btn color="primary" @click="getStatsKpiResultsExams(true)">
-
+        <v-btn
+          color="primary"
+          @click="getStatsKpiResultsExams(true)"
+        >
           {{ $formatMessage({ id: 'export_stats_csv' }) }}
 
           <v-icon>
@@ -72,8 +77,10 @@
           </v-icon>
         </v-btn>
 
-        <v-btn color="primary" @click="getStatsKpiPlacesExams(true)">
-
+        <v-btn
+          color="primary"
+          @click="getStatsKpiPlacesExams(true)"
+        >
           {{ $formatMessage({ id: 'export_places_stats_csv' }) }}
 
           <v-icon>
@@ -93,8 +100,8 @@
       class="pa-5"
     >
       <charts-stats-kpi
-        :statsResultsExamValues="currentStatsResultExam"
-        :statsPlacesExamValues="currentStatsPlacesExam"
+        :stats-results-exam-values="currentStatsResultExam"
+        :stats-places-exam-values="currentStatsPlacesExam"
       />
     </v-flex>
 
@@ -105,8 +112,8 @@
       :key="'elem'+index"
     >
       <charts-stats-kpi
-        :statsResultsExamValues="elem"
-        :statsPlacesExamValues="selectStatsKpiPlacesExamsByDpt(elem.departement)"
+        :stats-results-exam-values="elem"
+        :stats-places-exam-values="selectStatsKpiPlacesExamsByDpt(elem.departement)"
       />
     </v-flex>
   </div>

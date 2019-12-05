@@ -1,7 +1,9 @@
 <template>
   <div class="import-file">
     <div class="import-file-action  import-file-action--file">
-      <h4 class="import-file-subtitle">Fichier</h4>
+      <h4 class="import-file-subtitle">
+        Fichier
+      </h4>
       <input-file
         :dark="dark"
         title="Choisir un fichier..."
@@ -11,15 +13,17 @@
       />
     </div>
     <div class="import-file-action">
-      <h4 class="import-file-subtitle">{{subtitle}}</h4>
+      <h4 class="import-file-subtitle">
+        {{ subtitle }}
+      </h4>
       <v-btn
-        :dark='dark'
+        :dark="dark"
         color="#17a2b8"
         @click="uploadFile"
         :disabled="importDisabled"
         :aria-disabled="importDisabled"
       >
-        {{uploadLabel}}
+        {{ uploadLabel }}
       </v-btn>
     </div>
   </div>
@@ -33,11 +37,26 @@ export default {
     InputFile,
   },
   props: {
-    accept: String,
-    subtitle: String,
-    uploadLabel: String,
-    onUpload: Function,
-    selectFile: Function,
+    accept: {
+      type: String,
+      default: '',
+    },
+    subtitle: {
+      type: String,
+      default: '',
+    },
+    uploadLabel: {
+      type: String,
+      default: '',
+    },
+    onUpload: {
+      type: Function,
+      default: () => {},
+    },
+    selectFile: {
+      type: Function,
+      default: () => {},
+    },
     dark: Boolean,
     importDisabled: Boolean,
     file: File,

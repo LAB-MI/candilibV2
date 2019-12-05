@@ -20,16 +20,18 @@
       >
         <v-icon
           :color="color"
-        >{{icon}}</v-icon>
+        >
+          {{ icon }}
+        </v-icon>
       </v-btn>
     </div>
     <v-expand-transition>
-    <profile-info
-      class="t-result-candidat"
-      title= 'Informations candidats'
-      v-if="profileInfo"
-      :profileInfo="profileInfo"
-    />
+      <profile-info
+        class="t-result-candidat"
+        title="Informations candidats"
+        v-if="profileInfo"
+        :profile-info="profileInfo"
+      />
     </v-expand-transition>
   </div>
 </template>

@@ -1,6 +1,9 @@
 <template>
-  <div :id="id" class="wrapper">
-    <page-title :title="'Interaction Aurige'"/>
+  <div
+    :id="id"
+    class="wrapper"
+  >
+    <page-title :title="'Interaction Aurige'" />
     <big-loading-indicator :is-loading="isLoading" />
     <div class="aurige">
       <!-- propager le accept for upload-file -->
@@ -16,8 +19,16 @@
         accept=".json"
       />
       <div class="aurige-action  aurige-action--export">
-        <h4 class="aurige-subtitle">Export CSV</h4>
-        <v-btn color="#17a2b8" dark @click="getCandidatsAsCsv">Export</v-btn>
+        <h4 class="aurige-subtitle">
+          Export CSV
+        </h4>
+        <v-btn
+          color="#17a2b8"
+          dark
+          @click="getCandidatsAsCsv"
+        >
+          Export
+        </v-btn>
       </div>
     </div>
     <aurige-validation />
@@ -34,7 +45,7 @@ import UploadFile from '@/components/UploadFile.vue'
 import { BigLoadingIndicator } from '@/components'
 
 export default {
-  name: 'admin-aurige',
+  name: 'AdminAurige',
   components: {
     AurigeValidation,
     UploadFile,
@@ -42,7 +53,10 @@ export default {
   },
 
   props: {
-    id: String,
+    id: {
+      type: String,
+      default: 'aurige-vue-id',
+    },
   },
 
   data () {

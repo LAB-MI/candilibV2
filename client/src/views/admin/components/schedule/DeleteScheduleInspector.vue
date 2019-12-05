@@ -25,8 +25,7 @@
       v-if="!isCancel"
       :close-action="cancelAction"
       :submit-action="deleteInspecteurPlaces"
-    >
-    </confirm-box>
+    />
   </v-card>
 </template>
 
@@ -51,9 +50,18 @@ export default {
   },
 
   props: {
-    closeDetails: Function,
-    inspecteurId: String,
-    placeInfo: Object,
+    closeDetails: {
+      type: Function,
+      default: () => {},
+    },
+    inspecteurId: {
+      type: String,
+      default: '',
+    },
+    placeInfo: {
+      type: Object,
+      default: () => ({}),
+    },
   },
 
   data () {

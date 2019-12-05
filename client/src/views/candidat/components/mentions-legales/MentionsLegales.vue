@@ -13,15 +13,20 @@
 
     <page-title>Mentions légales</page-title>
 
-    <h3 class="date-info">Modifié le 21 décembre 2018</h3>
+    <h3 class="date-info">
+      Modifié le 21 décembre 2018
+    </h3>
 
     <section class="mentions-legales">
-      <div v-for="content in ArrayContent" :key="content.mainTitle">
+      <div
+        v-for="content in ArrayContent"
+        :key="content.mainTitle"
+      >
         <mentions-legales-content
           :icon="content.icon"
-          :mainTitle="content.mainTitle"
-          :textContent="content.textContent"
-          :listInfo="content.listInfo"
+          :main-title="content.mainTitle"
+          :text-content="content.textContent"
+          :list-info="content.listInfo"
         />
       </div>
     </section>
@@ -33,7 +38,7 @@ import MentionsLegalesContent from './MentionsLegalesContent.vue'
 import { mentionsLegalesJson } from './MentionsLegalesJson'
 
 export default {
-  name: 'mentions-legales',
+  name: 'MentionsLegales',
   components: {
     MentionsLegalesContent,
   },

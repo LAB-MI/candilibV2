@@ -19,7 +19,7 @@
       </template>
 
       <v-container
-          class="scroll-y"
+        class="scroll-y"
       >
         <v-btn
           color="primary"
@@ -29,7 +29,7 @@
         >
           {{ hour }}
         </v-btn>
-    </v-container>
+      </v-container>
     </v-list-group>
   </v-list>
 </template>
@@ -48,7 +48,10 @@ import { getFrenchLuxon } from '@/util/frenchDateTime'
 
 export default {
   props: {
-    initialTimeSlots: Array,
+    initialTimeSlots: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   data () {

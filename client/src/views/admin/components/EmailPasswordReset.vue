@@ -45,13 +45,13 @@
             :rules="emailRules"
             tabindex="1"
             v-model="email"
-          ></v-text-field>
+          />
         </div>
 
-        <v-divider></v-divider>
+        <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             class="t-reset-link-btn"
             dark

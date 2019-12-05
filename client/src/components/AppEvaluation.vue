@@ -1,5 +1,8 @@
 <template>
-  <v-dialog v-model="showEvaluation" max-width="310">
+  <v-dialog
+    v-model="showEvaluation"
+    max-width="310"
+  >
     <v-card
       class="t-evaluation elevation-12 mx-auto"
       width="300"
@@ -28,7 +31,7 @@
           :aria-label="leaveAComment"
         />
       </v-card-text>
-      <v-divider></v-divider>
+      <v-divider />
       <v-card-actions class="justify-space-between">
         <v-btn
           text

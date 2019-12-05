@@ -11,7 +11,7 @@
         v-on="on"
         icon
       >
-      <v-icon>cancel</v-icon>
+        <v-icon>cancel</v-icon>
       </v-btn>
     </template>
 
@@ -28,10 +28,10 @@
         Cette action est irréversible
       </v-card-text>
 
-      <v-divider></v-divider>
+      <v-divider />
 
       <v-card-actions right>
-        <v-spacer></v-spacer>
+        <v-spacer />
         <v-btn
           class="t-btn-cancel-delete"
           color="#CD1338"
@@ -39,7 +39,7 @@
           outlined
           @click="deleting = false"
         >
-        Annuler
+          Annuler
         </v-btn>
         <v-btn
           class="t-btn-delete-confirm"
@@ -62,7 +62,10 @@ import {
 } from '@/store'
 export default {
   props: {
-    email: String,
+    email: {
+      type: String,
+      default: 'user@example.com',
+    },
   },
 
   data () {

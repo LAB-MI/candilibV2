@@ -1,5 +1,8 @@
 <template>
-  <v-form v-model="valid" @submit.prevent="createdUser">
+  <v-form
+    v-model="valid"
+    @submit.prevent="createdUser"
+  >
     <v-container class="u-flex  u-flex--between  u-full-width">
       <v-text-field
         class="t-input-email"
@@ -15,9 +18,9 @@
         @input="setEmailToLowerCase"
         :placeholder="emailPlaceholder"
         required
-      ></v-text-field>
+      />
 
-      <v-spacer></v-spacer>
+      <v-spacer />
 
       <v-select
         class="t-select-status"
@@ -29,9 +32,9 @@
         tabindex="0"
         v-model="status"
         required
-        ></v-select>
+      />
 
-      <v-spacer></v-spacer>
+      <v-spacer />
 
       <v-select
         class="t-select-departements"
@@ -45,9 +48,9 @@
         :rules="departementsRules"
         v-model="departements"
         required
-        ></v-select>
+      />
 
-      <v-spacer></v-spacer>
+      <v-spacer />
 
       <v-btn
         class="t-create-btn"
@@ -57,14 +60,13 @@
         tabindex="0"
         raised
         color="success"
-        >
+      >
         Ajouter
         <v-icon>
           add_circle
         </v-icon>
       </v-btn>
     </v-container>
-
   </v-form>
 </template>
 

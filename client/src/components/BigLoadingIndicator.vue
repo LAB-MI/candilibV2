@@ -1,10 +1,13 @@
 <template>
-  <div v-show="isLoading" class="loading-indicator">
+  <div
+    v-show="isLoading"
+    class="loading-indicator"
+  >
     <div class="loading-indicator-progress">
       <v-progress-circular
         indeterminate
         color="primary"
-      ></v-progress-circular>
+      />
     </div>
   </div>
 </template>
@@ -12,7 +15,10 @@
 <script>
 export default {
   props: {
-    isLoading: Boolean,
+    isLoading: {
+      type: Boolean,
+      default: false,
+    },
   },
 }
 </script>

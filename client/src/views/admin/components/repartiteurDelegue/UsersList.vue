@@ -2,27 +2,40 @@
   <div>
     <v-simple-table class="u-centered text-uppercase">
       <template v-slot:default>
-
-      <thead>
-        <tr>
-          <th class ="text-center">Email</th>
-          <th class ="text-center">Statut</th>
-          <th class ="text-center">Départements</th>
-          <th class ="text-center">Supprimer</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="t-list" v-for="user in users" :key="user.email">
-          <td class ="t-list-email">{{user.email }}</td>
-          <td>{{ user.status }}</td>
-          <td>{{ user.departements.join(', ') }}</td>
-          <td class="text--center">
-            <delete-user
-            :email="user.email"
-            />
-          </td>
-        </tr>
-      </tbody>
+        <thead>
+          <tr>
+            <th class="text-center">
+              Email
+            </th>
+            <th class="text-center">
+              Statut
+            </th>
+            <th class="text-center">
+              Départements
+            </th>
+            <th class="text-center">
+              Supprimer
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            class="t-list"
+            v-for="user in users"
+            :key="user.email"
+          >
+            <td class="t-list-email">
+              {{ user.email }}
+            </td>
+            <td>{{ user.status }}</td>
+            <td>{{ user.departements.join(', ') }}</td>
+            <td class="text--center">
+              <delete-user
+                :email="user.email"
+              />
+            </td>
+          </tr>
+        </tbody>
       </template>
     </v-simple-table>
   </div>

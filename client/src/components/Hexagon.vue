@@ -1,5 +1,8 @@
 <template>
-  <div :class="{'hexagon-wrapper': true, active}" @click="$emit('click', value)">
+  <div
+    :class="{'hexagon-wrapper': true, active}"
+    @click="$emit('click', value)"
+  >
     <div
       class="icon"
       :class="{active}"
@@ -21,8 +24,14 @@ export default {
       default: false,
       required: false,
     },
-    value: String,
-    click: Function,
+    value: {
+      type: String,
+      default: '',
+    },
+    click: {
+      type: Function,
+      default: () => {},
+    },
   },
 
   data () {

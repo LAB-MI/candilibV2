@@ -4,17 +4,23 @@
       {{ $formatMessage({ id: 'tableau_de_bord'}) }}
     </page-title>
 
-    <v-container fluid class="less-padding">
+    <v-container
+      fluid
+      class="less-padding"
+    >
       <div class="stats-card">
         <div class="text-xs-right">
           <refresh-button
             @click="reloadWeekMonitor"
-            :isLoading="isLoading"
+            :is-loading="isLoading"
           />
         </div>
       </div>
 
-      <v-layout row wrap>
+      <v-layout
+        row
+        wrap
+      >
         <v-flex
           class="monitor-wrapper"
           lg6
@@ -23,10 +29,10 @@
           :key="info.centre.nom"
         >
           <week-monitor
-            :nameCenter="info.centre.nom"
-            :centerId="info.centre._id"
+            :name-center="info.centre.nom"
+            :center-id="info.centre._id"
             :weeks="info.places"
-            :isLoading="isLoading"
+            :is-loading="isLoading"
           />
         </v-flex>
       </v-layout>

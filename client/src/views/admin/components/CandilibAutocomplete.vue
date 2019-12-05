@@ -30,13 +30,34 @@ export default {
   },
 
   props: {
-    label: String,
-    hint: String,
-    placeholder: String,
-    items: Array,
-    itemText: String,
-    itemValue: String,
-    fetchAutocompleteAction: String,
+    label: {
+      type: String,
+      default: '',
+    },
+    hint: {
+      type: String,
+      default: '',
+    },
+    placeholder: {
+      type: String,
+      default: '',
+    },
+    items: {
+      type: Array,
+      default: () => [],
+    },
+    itemText: {
+      type: String,
+      default: '',
+    },
+    itemValue: {
+      type: String,
+      default: '',
+    },
+    fetchAutocompleteAction: {
+      type: String,
+      default: '',
+    },
     clearable: {
       type: Boolean,
       default: false,

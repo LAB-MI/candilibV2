@@ -1,6 +1,8 @@
 <template>
   <div>
-    <h3 class="text--center u-uppercase">{{ infoResa.nom }}</h3>
+    <h3 class="text--center u-uppercase">
+      {{ infoResa.nom }}
+    </h3>
     <p class="text--center">
       {{ infoResa.adresse }}
       <a
@@ -13,9 +15,10 @@
           location_on
         </v-icon>
       </a>
+    </p>
     <p class="text--center">
-        Le
-        {{ infoResa.date }}
+      Le
+      {{ infoResa.date }}
     </p>
   </div>
 </template>
@@ -23,7 +26,10 @@
 <script>
 export default {
   props: {
-    infoResa: Object,
+    infoResa: {
+      type: Object,
+      default: () => ({}),
+    },
   },
   computed: {
     href () {

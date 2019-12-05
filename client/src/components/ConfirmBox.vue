@@ -3,7 +3,7 @@
     <div
       class="u-full-width  u-flex  u-flex--column  u-flex--center"
     >
-      <slot/>
+      <slot />
       <div>
         <v-btn
           outlined
@@ -15,7 +15,7 @@
           <v-icon>
             arrow_back_ios
           </v-icon>
-          {{cancelButtonText}}
+          {{ cancelButtonText }}
         </v-btn>
         <v-btn
           :color="okButtonColor"
@@ -33,9 +33,18 @@
 <script>
 export default {
   props: {
-    closeAction: Function,
-    submitAction: Function,
-    disabled: Boolean,
+    closeAction: {
+      type: Function,
+      default: () => {},
+    },
+    submitAction: {
+      type: Function,
+      default: () => {},
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
     cancelButtonText: {
       type: String,
       default: 'Retour',
@@ -53,9 +62,7 @@ export default {
 </script>
 
 <style lang="stylus">
-
 .with-margin {
   margin: 1em;
 }
-
 </style>

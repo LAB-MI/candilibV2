@@ -6,15 +6,20 @@
     <v-app-bar-nav-icon
       class="u-only-on-mobile"
       @click="toggleDrawer"
-    ></v-app-bar-nav-icon>
+    />
 
     <v-toolbar-title style="margin-left: 0; padding-left: 0;">
       <h1 class="logo">
-        <router-link to="/candidat" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
+        <router-link
+          to="/candidat"
+          class="home-link"
+        >
+          C<span class="col-red">A</span>NDILIB
+        </router-link>
       </h1>
     </v-toolbar-title>
 
-    <v-spacer></v-spacer>
+    <v-spacer />
 
     <div class="text-xs-center d-flex align-center">
       <v-tabs
@@ -24,7 +29,7 @@
         color="transparent"
         align-with-title
       >
-        <v-tabs-slider color="#f82249"></v-tabs-slider>
+        <v-tabs-slider color="#f82249" />
 
         <v-tab
           v-for="link in links"
@@ -34,16 +39,19 @@
           :class="`no-margin-left t-${link.routerTo.name}`"
         >
           <icon-with-tooltip
-            :iconName="link.iconName"
-            :tooltipText="link.tooltipText"
+            :icon-name="link.iconName"
+            :tooltip-text="link.tooltipText"
           />
           <span class="min-width-1170  tab-label">
-            {{link.label}}
+            {{ link.label }}
           </span>
         </v-tab>
       </v-tabs>
 
-      <v-tooltip bottom v-if="isCandidatSignedIn">
+      <v-tooltip
+        bottom
+        v-if="isCandidatSignedIn"
+      >
         <template v-slot:activator="{ on }">
           <v-btn
             class="disconnect-btn  t-disconnect"
@@ -68,14 +76,20 @@ import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/st
 import IconWithTooltip from '@/components/IconWithTooltip'
 
 export default {
-  name: 'candidat-header',
+  name: 'CandidatHeader',
   components: {
     IconWithTooltip,
   },
 
   props: {
-    ids: Object,
-    links: Array,
+    ids: {
+      type: Object,
+      default: () => ({}),
+    },
+    links: {
+      type: Array,
+      default: () => [],
+    },
   },
 
   computed: {

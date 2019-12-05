@@ -1,15 +1,20 @@
 <template>
-  <div class="reset-card" v-bind:style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }">
+  <div
+    class="reset-card"
+    :style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }"
+  >
     <bandeau-beta fixed />
 
-    <div></div>
+    <div />
 
     <v-form
       @submit.prevent="updatePassword"
       v-model="isPasswordCoupleValid"
       class="reset-form"
     >
-      <h2 class="text--center">ADMINISTRATEUR</h2>
+      <h2 class="text--center">
+        ADMINISTRATEUR
+      </h2>
 
       <h3 class="text--center">
         C<span class="col-red">A</span>NDILIB
@@ -28,9 +33,9 @@
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
           v-model="newPassword"
-        ></v-text-field>
-        </div>
-        <div class="form-input">
+        />
+      </div>
+      <div class="form-input">
         <v-text-field
           class="t-confirm-new-password"
           aria-placeholder="confirmation du nouveau mot de passe"
@@ -43,19 +48,20 @@
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
           v-model="confirmNewPassword"
+        />
+      </div>
+      <div class="form-input">
+        <button
+          tabindex="3"
+          class="submit-btn"
+          :disabled="isSendingPassword"
+          :aria-disabled="isSendingPassword"
         >
-        </v-text-field>
-        </div>
-          <div class="form-input">
-          <button
-            tabindex="3"
-            class="submit-btn"
-            :disabled="isSendingPassword"
-            :aria-disabled="isSendingPassword"
-            >
-            <div class="submit-bgbtn"></div>
-            <div class="submit-label">Réinitialiser mon mot de passe</div>
-          </button>
+          <div class="submit-bgbtn" />
+          <div class="submit-label">
+            Réinitialiser mon mot de passe
+          </div>
+        </button>
       </div>
     </v-form>
   </div>

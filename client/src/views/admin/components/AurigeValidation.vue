@@ -1,24 +1,25 @@
 <template>
   <div>
-    <page-title :title="'Validation Aurige'"/>
+    <page-title :title="'Validation Aurige'" />
     <v-card style="background-color: unset;">
-      <ag-grid-vue style="max-width: 100%; height: 450px;" class="ag-theme-material"
-        :gridOptions="gridOptions"
-        :columnDefs="columnDefs"
-        :rowData="rowData"
-        :sideBar="sideBar"
+      <ag-grid-vue
+        style="max-width: 100%; height: 450px;"
+        class="ag-theme-material"
+        :grid-options="gridOptions"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        :side-bar="sideBar"
         :pagination="true"
-        :paginationPageSize="7"
-        :defaultColDef="{
+        :pagination-page-size="7"
+        :default-col-def="{
           sortable: true,
           resizable: true,
           filter: true
         }"
-        :localeText="localeText"
-        :frameworkComponents="frameworkComponents"
+        :locale-text="localeText"
+        :framework-components="frameworkComponents"
         @grid-ready="onReady"
-      >
-      </ag-grid-vue>
+      />
     </v-card>
   </div>
 </template>

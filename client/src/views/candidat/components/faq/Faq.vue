@@ -25,7 +25,7 @@
         v-for="question in arrayContent"
         :key="question.title"
       >
-        <faq-content :question="question"/>
+        <faq-content :question="question" />
       </li>
     </ul>
   </v-card>
@@ -36,7 +36,7 @@ import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
 
 export default {
-  name: 'faq',
+  name: 'Faq',
   components: {
     FaqContent,
   },

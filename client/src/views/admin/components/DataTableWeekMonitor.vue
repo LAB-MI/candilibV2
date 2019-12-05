@@ -8,7 +8,11 @@
       <v-icon>keyboard_arrow_up</v-icon>
     </v-btn>
 
-    <div class="sticky-container" :id="`table-container-${centerId}`" @scroll="onScroll">
+    <div
+      class="sticky-container"
+      :id="`table-container-${centerId}`"
+      @scroll="onScroll"
+    >
       <table>
         <thead>
           <tr>
@@ -16,7 +20,9 @@
               v-for="validDay in headers"
               :key="validDay.text"
               style="text-transform: uppercase;"
-            >{{ validDay.text }}</th>
+            >
+              {{ validDay.text }}
+            </th>
           </tr>
         </thead>
 
@@ -43,7 +49,7 @@
                 <v-divider
                   vertical
                   style="margin: 0 1em;"
-                ></v-divider>
+                />
 
                 <v-tooltip
                   bottom
@@ -83,8 +89,12 @@
     </div>
 
     <div class="u-flex  u-flex--space-between  u-full-width">
-      <div style="flex-basis: 4em;">&nbsp;</div>
-      <div style="flex-grow: 1;">&nbsp;</div>
+      <div style="flex-basis: 4em;">
+&nbsp;
+      </div>
+      <div style="flex-grow: 1;">
+&nbsp;
+      </div>
 
       <div>
         <v-btn
@@ -96,7 +106,9 @@
         </v-btn>
       </div>
 
-      <div style="flex-grow: 1;">&nbsp;</div>
+      <div style="flex-grow: 1;">
+&nbsp;
+      </div>
 
       <div>
         <v-tooltip
@@ -137,7 +149,6 @@
           </v-chip>
         </v-tooltip>
       </div>
-
     </div>
   </v-card>
 </template>
@@ -158,9 +169,18 @@ const redColor = 'red lighten-1'
 
 export default {
   props: {
-    items: Array,
-    validDays: Array,
-    centerId: String,
+    items: {
+      type: Array,
+      default: () => [],
+    },
+    validDays: {
+      type: Array,
+      default: () => [],
+    },
+    centerId: {
+      type: String,
+      default: '',
+    },
   },
 
   data () {

@@ -7,14 +7,17 @@ export default {
   props: {
     labels: {
       type: Array,
+      default: () => [],
     },
 
     datasets: {
       type: Array,
+      default: () => [],
     },
 
     chartData: {
       type: Array,
+      default: () => [],
     },
   },
 

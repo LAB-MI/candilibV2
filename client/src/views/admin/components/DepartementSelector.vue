@@ -3,19 +3,20 @@
     <v-menu
       bottom
     >
-
       <template v-slot:activator="{ on: menu }">
         <v-tooltip bottom>
           <template v-slot:activator="{ on: tooltip }">
-          <v-btn
-            fab
-            v-on="{ ...menu, ...tooltip}"
-            outlined
-            ripple
-            small
-          >
-            <div class="departement-wrapper">{{ `${activeDepartement}` }}</div>
-          </v-btn>
+            <v-btn
+              fab
+              v-on="{ ...menu, ...tooltip}"
+              outlined
+              ripple
+              small
+            >
+              <div class="departement-wrapper">
+                {{ `${activeDepartement}` }}
+              </div>
+            </v-btn>
           </template>
           <span>Changer de département</span>
         </v-tooltip>
@@ -44,7 +45,7 @@
         :active="activeDepartement === departement"
         @click="activeDepartement = departement"
       />
-      </div>
+    </div>
   </v-flex>
 </template>
 

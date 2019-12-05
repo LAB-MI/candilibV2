@@ -1,15 +1,15 @@
 <template>
-    <div>
-        <v-autocomplete
-          v-model="select"
-          :items="inspecteurs"
-          :loading="isLoading"
-          label="Inspecteur..."
-          :readonly="!isEditing"
-          item-text='text'
-          item-value='value'
-        />
-    </div>
+  <div>
+    <v-autocomplete
+      v-model="select"
+      :items="inspecteurs"
+      :loading="isLoading"
+      label="Inspecteur..."
+      :readonly="!isEditing"
+      item-text="text"
+      item-value="value"
+    />
+  </div>
 </template>
 
 <script>
@@ -17,8 +17,14 @@ import { FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST } from '@/store'
 import { mapGetters } from 'vuex'
 export default {
   props: {
-    centre: String,
-    date: String,
+    centre: {
+      type: String,
+      default: '',
+    },
+    date: {
+      type: String,
+      default: '',
+    },
     isEditing: Boolean,
   },
   data () {

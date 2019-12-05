@@ -13,7 +13,7 @@
         tabindex="8"
         :class="btnClassName"
       >
-        {{getMsg('preinscription_bouton_deja_inscrit') }}
+        {{ getMsg('preinscription_bouton_deja_inscrit') }}
       </v-btn>
     </template>
 
@@ -22,7 +22,7 @@
         class="headline grey lighten-2"
         primary-title
       >
-        {{getMsg('preinscription_magic_link_title') }}
+        {{ getMsg('preinscription_magic_link_title') }}
       </v-card-title>
 
       <v-form
@@ -47,14 +47,14 @@
               :rules="emailRules"
               tabindex="1"
               v-model="email"
-            ></v-text-field>
+            />
           </div>
         </div>
 
-        <v-divider></v-divider>
+        <v-divider />
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             dark
             :class="`t-magic-link-button-${testClassSuffix}`"
@@ -65,7 +65,7 @@
             color="#28a745"
           >
             <div class="submit-label">
-              {{getMsg('preinscription_bouton_magic_link')}}
+              {{ getMsg('preinscription_bouton_magic_link') }}
             </div>
           </v-btn>
         </v-card-actions>
@@ -84,8 +84,14 @@ import { email as emailRegex } from '@/util'
 
 export default {
   props: {
-    testClassSuffix: String,
-    btnClassName: String,
+    testClassSuffix: {
+      type: String,
+      default: '',
+    },
+    btnClassName: {
+      type: String,
+      default: '',
+    },
   },
 
   data () {
