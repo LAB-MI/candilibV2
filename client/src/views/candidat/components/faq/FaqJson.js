@@ -132,6 +132,9 @@ export const faqJson = [
       {
         subTitleContent: 'Posez vos questions à l\'adresse courriel présente dans votre mail d\'invitation',
       },
+      {
+        subTitleContent: 'Si vous n\'avez pas trouvé de réponse à vos questions dans ces informations, vous pouvez nous contacter à cette adresse <a href="mailto:candilib@interieur.gouv.fr">candilib@interieur.gouv.fr</a>.',
+      },
     ],
   },
 ]
