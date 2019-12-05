@@ -17,16 +17,21 @@ PUBLIC CANDIDATE FRONT
 */
 
 // Initialise magicLink
+import { now } from '../support/dateUtils'
 
 describe('Connected candidate front', () => {
   let magicLink
+  const numberOfDaysBeforeDate = 7
+  const numberOfDaysPenalty = 45
+  const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate })
+  const nowIn1WeekAnd1DaysBefore = now.plus({ days: (numberOfDaysBeforeDate - 1) })
 
   before(() => {
     // Delete all mails before start
     cy.deleteAllMails()
     cy.adminLogin()
     cy.archiveCandidate()
-    cy.addPlanning()
+    cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore])
     cy.addToWhitelist()
     cy.adminDisconnection()
     cy.candidatePreSignUp()
@@ -253,6 +258,52 @@ describe('Connected candidate front', () => {
       .its('Content.Body')
       .should('contain', Cypress.env('centre').toUpperCase())
       .and('contain', '10:00')
+  })
+
+  it('Should have a penalty when candidat cancel within 6 days of booked place ', () => {
+    cy.adminLogin()
+    cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore)
+    cy.adminDisconnection()
+
+    cy.visit(magicLink)
+    cy.contains('Annuler ma réservation').click()
+    // Vérifie si le message d'avertissement pour le cas de pénalité est présent
+    cy.get('.t-confirm-suppr-text-content').should('contain',
+      `De plus, étant à moins de ${numberOfDaysBeforeDate} jours de la date d`)
+    cy.get('.t-confirm-suppr-text-content').should('contain',
+      `un délai de repassage de ${numberOfDaysPenalty} jours`)
+
+    cy.get('button')
+      .contains('Confirmer')
+      .click()
+    cy.get('.v-snack').should(
+      'contain',
+      'Votre annulation a bien été prise en compte.',
+    )
+    cy.get('h2').should('contain', 'Choix du centre')
+    cy.contains(Cypress.env('centre')).click()
+    // Vérifie si le message d'avertissement pour le cas de pénalité est présent
+    const canBookFromAfterCancel = nowIn1WeekAnd1DaysBefore.plus({ days: numberOfDaysPenalty }).toLocaleString({
+      weekday: 'long',
+      month: 'long',
+      day: '2-digit',
+      year: 'numeric',
+    })
+    cy.get('.t-warning-message').should('contain', `Vous avez annulé ou modifié votre réservation à moins de ${numberOfDaysBeforeDate} jours de la date d'examen.`)
+    cy.get('.t-warning-message').should('contain', `Vous ne pouvez sélectionner une date qu'à partir du ${canBookFromAfterCancel}`)
+    cy.getLastMail()
+      .getRecipients()
+      .should('contain', Cypress.env('emailCandidat'))
+    cy.getLastMail()
+      .getSubject()
+      .should(
+        'contain',
+        '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=',
+      )
+    cy.getLastMail()
+      .its('Content.Body')
+      .should('contain', Cypress.env('centre').toUpperCase())
+      .and('contain', '08:00')
   })
 
   it('Should disconnect', () => {
