@@ -331,7 +331,7 @@ describe('Get users', () => {
     expect(body.users).toBeInstanceOf(Array)
   })
 
-  it('Should respond 401 retrieve users by Delegue', async () => {
+  it('Should respond 200 retrieve users by Delegue', async () => {
     app = express()
     app.use((req, res, next) => {
       req.userId = delegue._id
@@ -344,13 +344,11 @@ describe('Get users', () => {
       .get(`${apiPrefix}/admin/users`)
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json; charset=utf-8')
-      .expect(401)
+      .expect(200)
 
-    expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty(
-      'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
-    )
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('users')
+    expect(body.users).toBeInstanceOf(Array)
   })
 
   it('Should respond 401 retrieve users by repartiteur', async () => {

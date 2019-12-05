@@ -183,7 +183,7 @@ describe('Users', () => {
     )
   })
 
-  it('Should return users', async () => {
+  it('Should return users with a filter by admin', async () => {
     // given
     const id = admin.id
 
@@ -193,7 +193,20 @@ describe('Users', () => {
     // then
     expect(users).toBeDefined()
     expect(users).toBeInstanceOf(Array)
-    expect(users).toHaveLength(4)
+    expect(users).toHaveProperty('length', 3)
+  })
+
+  it('Should return users with a filter by delegue', async () => {
+    // given
+    const id = delegue.id
+
+    // when
+    const users = await getAppropriateUsers(id)
+
+    // then
+    expect(users).toBeDefined()
+    expect(users).toBeInstanceOf(Array)
+    expect(users).toHaveProperty('length', 1)
   })
 
   it('Should be able to modify user if delegue', async () => {
