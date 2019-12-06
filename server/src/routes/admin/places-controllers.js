@@ -304,6 +304,17 @@ export const deletePlacesByAdmin = async (req, res) => {
     placesToDelete,
   }
 
+  const admin = await findUserById(req.userId)
+
+  if (!admin) {
+    const message = 'Utilisateur non trouvé'
+    appLogger.warn({ ...loggerInfo, description: message })
+    return res.status(404).send({
+      success: false,
+      message,
+    })
+  }
+
   if (!placesToDelete || !placesToDelete.length) {
     appLogger.warn({
       ...loggerInfo,
@@ -343,7 +354,7 @@ export const deletePlacesByAdmin = async (req, res) => {
             } = await removeReservationPlaceByAdmin(
               placeFound,
               candidatFound,
-              adminId
+              admin
             )
             appLogger.info({
               ...loggerInfo,
