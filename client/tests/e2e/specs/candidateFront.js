@@ -17,7 +17,7 @@ PUBLIC CANDIDATE FRONT
 */
 
 // Initialise magicLink
-import { now } from '../support/dateUtils'
+import { now, date1 } from '../support/dateUtils'
 
 describe('Connected candidate front', () => {
   let magicLink
@@ -91,7 +91,7 @@ describe('Connected candidate front', () => {
     cy.wait(1000)
     cy.get('h2').should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre')).click()
-    cy.get('.v-tab .primary--text').click()
+    cy.get(`[href="#tab-${date1.monthLong}"]`).click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list')
       .within($date => {
@@ -146,7 +146,7 @@ describe('Connected candidate front', () => {
     cy.get('.t-candidat-home').click()
     cy.contains('Modifier ma réservation').click()
     cy.contains(Cypress.env('centre')).click()
-    cy.get('.v-tab .primary--text').click()
+    cy.get(`[href="#tab-${date1.monthLong}"]`).click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list')
       .within($date => {

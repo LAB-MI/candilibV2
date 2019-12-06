@@ -15,10 +15,7 @@
 
 import './commands'
 import { DateTime } from 'luxon'
-import { now } from './dateUtils'
-
-const date1 = now.plus({ months: 1 }).startOf('week')
-const date2 = date1.plus({ weeks: 1 })
+import { now, date1, date2 } from './dateUtils'
 
 before(() => {
   // Initialise env variables for dates

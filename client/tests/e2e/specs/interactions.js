@@ -1,3 +1,5 @@
+import { date1 } from '../support/dateUtils'
+
 /* Tests :
 - The candidate reservation is visible on the admin front
 - The reservation made by the admin is visible on the candidate front
@@ -44,7 +46,7 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tab .primary--text')
+    cy.get(`[href="#tab-${date1.monthLong}"]`)
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list')
@@ -213,7 +215,7 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tab .primary--text')
+    cy.get(`[href="#tab-${date1.monthLong}"]`)
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list')
@@ -264,7 +266,7 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tab .primary--text')
+    cy.get(`[href="#tab-${date1.monthLong}"]`)
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list')
