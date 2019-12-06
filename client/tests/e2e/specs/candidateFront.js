@@ -25,13 +25,22 @@ describe('Connected candidate front', () => {
   const numberOfDaysPenalty = 45
   const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate })
   const nowIn1WeekAnd1DaysBefore = now.plus({ days: (numberOfDaysBeforeDate - 1) })
+  const bookedPlaceIn45Days = nowIn1WeekAnd1DaysBefore.plus({ days: numberOfDaysPenalty })
+  const dayAfter45Days = bookedPlaceIn45Days.weekday > 6 ? bookedPlaceIn45Days.plus({ days: 1 }) : bookedPlaceIn45Days
+  const dayBefore45Days = bookedPlaceIn45Days.minus({ days: (bookedPlaceIn45Days.weekday === 1 ? 2 : 1) })
+  const FORMAT_DATE_TEXT = {
+    weekday: 'long',
+    month: 'long',
+    day: '2-digit',
+    year: 'numeric',
+  }
 
   before(() => {
     // Delete all mails before start
     cy.deleteAllMails()
     cy.adminLogin()
     cy.archiveCandidate()
-    cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore])
+    cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore, dayAfter45Days, dayBefore45Days])
     cy.addToWhitelist()
     cy.adminDisconnection()
     cy.candidatePreSignUp()
@@ -260,6 +269,27 @@ describe('Connected candidate front', () => {
       .and('contain', '10:00')
   })
 
+  const expectedPenaltyCancel = () => {
+    // Vérifie si le message d'avertissement pour le cas de pénalité est présent
+    const canBookFromAfterCancel = bookedPlaceIn45Days.toLocaleString(FORMAT_DATE_TEXT)
+    cy.get('.t-warning-message')
+      .should('contain', `Vous avez annulé ou modifié votre réservation à moins de ${numberOfDaysBeforeDate} jours de la date d'examen.`)
+      .and('contain', `Vous ne pouvez sélectionner une date qu'à partir du ${canBookFromAfterCancel}`)
+    // Verifie s'il y a des places sur le 1er mois
+    const nbMonthsBefore45Days = dayAfter45Days.diff(now, 'months').months | 0
+    for (let nbMonth = 0; nbMonth < nbMonthsBefore45Days; nbMonth++) {
+      const monthLong = now.plus({ 'months': nbMonth }).monthLong
+      cy.get(`[href="#tab-${monthLong}"]`).click()
+      cy.get(`.t-tab-${monthLong}`).should('contain', "Il n'y a pas de créneau disponible pour ce mois.")
+    }
+
+    // Verifie s'il y a des places dans le mois du 45eme jours
+    cy.get(`[href="#tab-${dayAfter45Days.monthLong}"]`).click()
+    cy.get(`.t-tab-${dayAfter45Days.monthLong}`).should('contain', dayAfter45Days.toLocaleString(FORMAT_DATE_TEXT))
+    cy.get(`[href="#tab-${dayBefore45Days.monthLong}"]`).click()
+    cy.get(`.t-tab-${dayBefore45Days.monthLong}`).should('not.contain', dayBefore45Days.toLocaleString(FORMAT_DATE_TEXT))
+  }
+
   it('Should have a penalty when candidat cancel within 6 days of booked place ', () => {
     cy.adminLogin()
     cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore)
@@ -268,10 +298,9 @@ describe('Connected candidate front', () => {
     cy.visit(magicLink)
     cy.contains('Annuler ma réservation').click()
     // Vérifie si le message d'avertissement pour le cas de pénalité est présent
-    cy.get('.t-confirm-suppr-text-content').should('contain',
-      `De plus, étant à moins de ${numberOfDaysBeforeDate} jours de la date d`)
-    cy.get('.t-confirm-suppr-text-content').should('contain',
-      `un délai de repassage de ${numberOfDaysPenalty} jours`)
+    cy.get('.t-confirm-suppr-text-content')
+      .should('contain', `De plus, étant à moins de ${numberOfDaysBeforeDate} jours de la date d`)
+      .and('contain', `un délai de repassage de ${numberOfDaysPenalty} jours`)
 
     cy.get('button')
       .contains('Confirmer')
@@ -282,15 +311,7 @@ describe('Connected candidate front', () => {
     )
     cy.get('h2').should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre')).click()
-    // Vérifie si le message d'avertissement pour le cas de pénalité est présent
-    const canBookFromAfterCancel = nowIn1WeekAnd1DaysBefore.plus({ days: numberOfDaysPenalty }).toLocaleString({
-      weekday: 'long',
-      month: 'long',
-      day: '2-digit',
-      year: 'numeric',
-    })
-    cy.get('.t-warning-message').should('contain', `Vous avez annulé ou modifié votre réservation à moins de ${numberOfDaysBeforeDate} jours de la date d'examen.`)
-    cy.get('.t-warning-message').should('contain', `Vous ne pouvez sélectionner une date qu'à partir du ${canBookFromAfterCancel}`)
+    expectedPenaltyCancel()
     cy.getLastMail()
       .getRecipients()
       .should('contain', Cypress.env('emailCandidat'))
