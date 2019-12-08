@@ -1,5 +1,8 @@
 <template>
-  <v-dialog v-model="showEvaluation" max-width="310">
+  <v-dialog
+    v-model="showEvaluation"
+    max-width="310"
+  >
     <v-card
       class="t-evaluation elevation-12 mx-auto"
       width="300"
@@ -20,28 +23,28 @@
           hover
         />
         <v-textarea
-          class="no-resize"
           v-model="comment"
+          class="no-resize"
           cols="30"
           rows="10"
           :label="leaveAComment"
           :aria-label="leaveAComment"
         />
       </v-card-text>
-      <v-divider></v-divider>
+      <v-divider />
       <v-card-actions class="justify-space-between">
         <v-btn
           text
-          @click="showEvaluation = false"
           class="t-evaluation-later"
+          @click="showEvaluation = false"
         >
           {{ $formatMessage({ id: 'later' }) }}
         </v-btn>
         <v-btn
           color="primary"
           text
-          @click="sendEvaluation"
           class="t-evaluation-submit"
+          @click="sendEvaluation"
         >
           {{ $formatMessage({ id: 'evaluate_now' }) }}
         </v-btn>

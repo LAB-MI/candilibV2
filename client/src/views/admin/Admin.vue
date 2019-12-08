@@ -2,9 +2,16 @@
   <v-container
     class="admin  admin-wrapper  u-flex  u-flex--column  u-full-height"
   >
-    <admin-header :email="admin.email" :header-icons="headerIcons" />
+    <admin-header
+      :email="admin.email"
+      :header-icons="headerIcons"
+    />
 
-    <main role="main" class="u-flex__item--grow" :style="{margin: '3em 0 0 0'}">
+    <main
+      role="main"
+      class="u-flex__item--grow"
+      :style="{margin: '3em 0 0 0'}"
+    >
       <router-view />
     </main>
 

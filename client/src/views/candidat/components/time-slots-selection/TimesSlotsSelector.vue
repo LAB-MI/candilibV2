@@ -19,17 +19,17 @@
       </template>
 
       <v-container
-          class="scroll-y"
+        class="scroll-y"
       >
         <v-btn
-          color="primary"
           v-for="hour in timeSlot.slots"
           :key="hour"
+          color="primary"
           @click="selectSlot({ hour, day: timeSlot.label })"
         >
           {{ hour }}
         </v-btn>
-    </v-container>
+      </v-container>
     </v-list-group>
   </v-list>
 </template>
@@ -48,7 +48,10 @@ import { getFrenchLuxon } from '@/util/frenchDateTime'
 
 export default {
   props: {
-    initialTimeSlots: Array,
+    initialTimeSlots: {
+      type: Array,
+      default () {},
+    },
   },
 
   data () {
@@ -56,6 +59,10 @@ export default {
       timeSlots: this.initialTimeSlots,
       memoDay: undefined,
     }
+  },
+
+  computed: {
+    ...mapState(['center']),
   },
 
   watch: {
@@ -79,10 +86,6 @@ export default {
   async mounted () {
     await this.getTimeSlots()
     this.checkDayToDisplay()
-  },
-
-  computed: {
-    ...mapState(['center']),
   },
 
   methods: {

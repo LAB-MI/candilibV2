@@ -2,20 +2,20 @@
   <div class="text-xs-center">
     <v-tooltip bottom>
       {{ tooltipContent }}
-        <template v-slot:activator="{ on }">
-          <v-btn
-            class="t-select-place"
-            color="white"
-            dark
-            v-on="on"
-            @mouseenter="getCandidat"
-            @click="$emit('click', inspecteurId, content)"
-          >
-            <v-icon :color="color">
-              {{ icon }}
-            </v-icon>
-          </v-btn>
-        </template>
+      <template v-slot:activator="{ on }">
+        <v-btn
+          class="t-select-place"
+          color="white"
+          dark
+          v-on="on"
+          @mouseenter="getCandidat"
+          @click="$emit('click', inspecteurId, content)"
+        >
+          <v-icon :color="color">
+            {{ icon }}
+          </v-icon>
+        </v-btn>
+      </template>
     </v-tooltip>
   </div>
 </template>
@@ -26,17 +26,23 @@ import { mapState } from 'vuex'
 import { FETCH_TOOLTIP_CANDIDAT_REQUEST } from '@/store'
 
 export default {
+
+  props: {
+    content: {
+      type: Object,
+      default () {},
+    },
+    inspecteurId: {
+      type: String,
+      default: '',
+    },
+  },
   data () {
     return {
       color: '#A9A9A9',
       icon: '',
       isLoadingCandidat: false,
     }
-  },
-
-  props: {
-    content: Object,
-    inspecteurId: String,
   },
 
   computed: {
@@ -71,6 +77,16 @@ export default {
     },
   },
 
+  watch: {
+    place (newVal) {
+      this.setContext(newVal)
+    },
+  },
+
+  mounted () {
+    this.setContext(this.place)
+  },
+
   methods: {
     setContext (place) {
       if (place === undefined) {
@@ -96,16 +112,6 @@ export default {
       }
       this.isLoadingCandidat = false
     },
-  },
-
-  watch: {
-    place (newVal) {
-      this.setContext(newVal)
-    },
-  },
-
-  mounted () {
-    this.setContext(this.place)
   },
 }
 </script>

@@ -1,25 +1,28 @@
 <template>
   <div>
-    <h2 class="text--center">Validation d'import</h2>
+    <h2 class="text--center">
+      Validation d'import
+    </h2>
 
     <v-card style="background-color: unset;">
-      <ag-grid-vue style="max-width: 100%; height: 350px;" class="ag-theme-material t-ag-grid-import-places-validation"
-        :gridOptions="gridOptions"
-        :columnDefs="columnDefs"
-        :rowData="rowData"
-        :sideBar="sideBar"
+      <ag-grid-vue
+        style="max-width: 100%; height: 350px;"
+        class="ag-theme-material t-ag-grid-import-places-validation"
+        :grid-options="gridOptions"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        :side-bar="sideBar"
         :pagination="true"
-        :paginationPageSize="5"
-        :defaultColDef="{
+        :pagination-page-size="5"
+        :default-col-def="{
           sortable: true,
           resizable: true,
           filter: true
         }"
-        :localeText="localeText"
-        :frameworkComponents="frameworkComponents"
+        :locale-text="localeText"
+        :framework-components="frameworkComponents"
         @grid-ready="onReady"
-      >
-      </ag-grid-vue>
+      />
     </v-card>
   </div>
 </template>

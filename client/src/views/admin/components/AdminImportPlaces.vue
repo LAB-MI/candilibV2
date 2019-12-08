@@ -1,14 +1,16 @@
 <template>
   <div>
-    <h2 class="text--center">Import places</h2>
+    <h2 class="text--center">
+      Import places
+    </h2>
     <upload-file
       subtitle="Les places en CSV"
       upload-label="Import"
       :import-disabled="inputDisabled"
-      @select-file="fileSelected"
       :file="file"
-      @upload-file="uploadPlaces"
       accept=".csv, .xlsx"
+      @select-file="fileSelected"
+      @upload-file="uploadPlaces"
     />
   </div>
 </template>

@@ -1,5 +1,8 @@
 <template>
-  <v-layout row justify-center>
+  <v-layout
+    row
+    justify-center
+  >
     <v-btn
       color="info"
       dark
@@ -28,15 +31,15 @@
           {{ titleModal }}
           &nbsp;
           <strong>
-            {{`${activeDepartement}`}}
+            {{ `${activeDepartement}` }}
           </strong>
           <div v-if="!isForInspecteurs">
             {{ $formatMessage({ id: 'sur_ladresse_courriel' }) }}
-          &nbsp;
-          <strong>
-            {{ emailDepartementActive }}
-          </strong>
-        </div>
+            &nbsp;
+            <strong>
+              {{ emailDepartementActive }}
+            </strong>
+          </div>
         </v-card-title>
         <div>
           <v-card-title class="headline">
@@ -47,15 +50,18 @@
                 style="width: 100%;"
                 :fetch-autocomplete-action="fetchAutocompleteAction"
                 :items="autocompleteList"
-                @selection="selection"
                 :clearable="true"
                 :autofocus="true"
                 placeholder="Recherche par nom, matricule ou adresse courriel"
+                @selection="selection"
               />
             </div>
           </v-card-title>
 
-          <div v-if="!(inspecteursOfCurrentDpt && inspecteursOfCurrentDpt.length)" class="headline">
+          <div
+            v-if="!(inspecteursOfCurrentDpt && inspecteursOfCurrentDpt.length)"
+            class="headline"
+          >
             {{ $formatMessage({ id: 'no_inspecteurs_at_this_date'}) }}
           </div>
 
@@ -69,10 +75,10 @@
 
                   <v-list-item-action>
                     <v-checkbox
+                      v-model="isAllChecked"
                       class="t-check-all"
                       :color="isPartiallyChecked ? 'grey' : 'info'"
-                      v-model="isAllChecked"
-                    ></v-checkbox>
+                    />
                   </v-list-item-action>
                 </v-list-item>
               </v-list>
@@ -80,23 +86,21 @@
               <v-list
                 class="wrapper-list"
               >
-
                 <inspecteur-list-bordereaux-content
                   v-for="item in inspecteursOfCurrentDpt"
                   :key="item.inspecteur._id"
                   :centre="item.centre"
                   :inspecteur="item.inspecteur"
-                  :inspecteurListToSendBordereaux="inspecteurListToSendBordereaux"
+                  :inspecteur-list-to-send-bordereaux="inspecteurListToSendBordereaux"
                   @set-inspecteur-list="setInspecteurList"
                 />
               </v-list>
             </v-card-text>
           </v-form>
-
         </div>
 
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
 
           <v-btn
             outlined
@@ -153,22 +157,11 @@ export default {
   },
 
   props: {
-    date: String,
-    isForInspecteurs: Boolean,
-  },
-
-  computed: {
-    ...mapState({
-      emailUser: state => state.admin.email,
-      activeDepartement: state => state.admin.departements.active,
-      isGenerating: state => state.adminBordereaux.isGenerating,
-      inspecteursOfCurrentDpt: state => state.adminBordereaux.inspecteursOfCurrentDpt.list,
-      matchInspecteurList: state => state.adminBordereaux.matchInspecteurList.list,
-    }),
-    ...mapGetters(['emailDepartementActive']),
-    beginDate () {
-      return getFrenchLuxonFromSql(this.date).startOf('day').toISO()
+    date: {
+      type: String,
+      default: '',
     },
+    isForInspecteurs: Boolean,
   },
 
   data () {
@@ -195,6 +188,66 @@ export default {
         }
         return true
       },
+    }
+  },
+
+  computed: {
+    ...mapState({
+      emailUser: state => state.admin.email,
+      activeDepartement: state => state.admin.departements.active,
+      isGenerating: state => state.adminBordereaux.isGenerating,
+      inspecteursOfCurrentDpt: state => state.adminBordereaux.inspecteursOfCurrentDpt.list,
+      matchInspecteurList: state => state.adminBordereaux.matchInspecteurList.list,
+    }),
+    ...mapGetters(['emailDepartementActive']),
+    beginDate () {
+      return getFrenchLuxonFromSql(this.date).startOf('day').toISO()
+    },
+  },
+
+  watch: {
+    isAllChecked () {
+      this.selectAllInspecteurs()
+    },
+
+    inspecteurListToSendBordereaux (newValue) {
+      if (this.inspecteursOfCurrentDpt && newValue &&
+        newValue.length < this.inspecteursOfCurrentDpt.length) {
+        this.isPartiallyChecked = true
+        if (newValue.length === 0) {
+          this.isAllChecked = false
+        }
+        return
+      }
+      this.isAllChecked = true
+      this.isPartiallyChecked = false
+    },
+
+    matchInspecteurList (list) {
+      this.autocompleteList = list.map(
+        ({ inspecteur, centre }) => ({
+          text: `${inspecteur.nom} - ${inspecteur.matricule} - ${centre.nom}`,
+          value: inspecteur._id,
+        }),
+      )
+    },
+
+    dialog (newValue) {
+      if (newValue && this.inspecteursOfCurrentDpt && this.inspecteursOfCurrentDpt.length) {
+        this.inspecteurListToSendBordereaux = this.inspecteursOfCurrentDpt.map(el => `${el.inspecteur._id}`)
+      }
+    },
+  },
+
+  mounted () {
+    if (this.isForInspecteurs) {
+      this.messageButton = messageAdmin.send_bordereaux
+      this.iconButton = 'contact_mail'
+      this.titleModal = messageAdmin.send_bordereaux
+    } else {
+      this.messageButton = messageAdmin.recevoir_les_bordereaux_inspecteurs
+      this.iconButton = 'email'
+      this.titleModal = messageAdmin.recevoir_les_bordereaux_inspecteurs
     }
   },
 
@@ -248,52 +301,6 @@ export default {
       })
       this.dialog = false
     },
-  },
-
-  watch: {
-    isAllChecked () {
-      this.selectAllInspecteurs()
-    },
-
-    inspecteurListToSendBordereaux (newValue) {
-      if (this.inspecteursOfCurrentDpt && newValue &&
-        newValue.length < this.inspecteursOfCurrentDpt.length) {
-        this.isPartiallyChecked = true
-        if (newValue.length === 0) {
-          this.isAllChecked = false
-        }
-        return
-      }
-      this.isAllChecked = true
-      this.isPartiallyChecked = false
-    },
-
-    matchInspecteurList (list) {
-      this.autocompleteList = list.map(
-        ({ inspecteur, centre }) => ({
-          text: `${inspecteur.nom} - ${inspecteur.matricule} - ${centre.nom}`,
-          value: inspecteur._id,
-        }),
-      )
-    },
-
-    dialog (newValue) {
-      if (newValue && this.inspecteursOfCurrentDpt && this.inspecteursOfCurrentDpt.length) {
-        this.inspecteurListToSendBordereaux = this.inspecteursOfCurrentDpt.map(el => `${el.inspecteur._id}`)
-      }
-    },
-  },
-
-  mounted () {
-    if (this.isForInspecteurs) {
-      this.messageButton = messageAdmin.send_bordereaux
-      this.iconButton = 'contact_mail'
-      this.titleModal = messageAdmin.send_bordereaux
-    } else {
-      this.messageButton = messageAdmin.recevoir_les_bordereaux_inspecteurs
-      this.iconButton = 'email'
-      this.titleModal = messageAdmin.recevoir_les_bordereaux_inspecteurs
-    }
   },
 }
 </script>

@@ -1,72 +1,88 @@
 <template>
   <v-stepper
+    v-model="candidatStepper"
     dark
     vertical
     class="stepper"
-    v-model="candidatStepper"
-    v-on:set-stepper="setStepper"
+    @set-stepper="setStepper"
   >
     <header>
       <h3 class="stepper-title">
         Les étapes de la pré-inscription à la réservation
       </h3>
     </header>
-    <v-stepper-step step="1" @click="candidatStepper = 1" :style="{ cursor: 'pointer' }">
+    <v-stepper-step
+      step="1"
+      :style="{ cursor: 'pointer' }"
+      @click="candidatStepper = 1"
+    >
       <span>
-        {{$formatMessage({ id: 'stepper_step_1_title' })}}
+        {{ $formatMessage({ id: 'stepper_step_1_title' }) }}
       </span>
       <small>
-        {{$formatMessage({ id: 'stepper_step_1_subtitle' })}}
+        {{ $formatMessage({ id: 'stepper_step_1_subtitle' }) }}
       </small>
     </v-stepper-step>
     <v-stepper-content step="1">
       <p>
-        {{$formatMessage({ id: 'stepper_step_1_p' })}}
+        {{ $formatMessage({ id: 'stepper_step_1_p' }) }}
       </p>
     </v-stepper-content>
 
-    <v-stepper-step step="2" @click="candidatStepper = 2" :style="{ cursor: 'pointer' }">
+    <v-stepper-step
+      step="2"
+      :style="{ cursor: 'pointer' }"
+      @click="candidatStepper = 2"
+    >
       <span>
-        {{$formatMessage({ id: 'stepper_step_2_title' })}}
+        {{ $formatMessage({ id: 'stepper_step_2_title' }) }}
       </span>
       <small>
-        {{$formatMessage({ id: 'stepper_step_2_subtitle' })}}
+        {{ $formatMessage({ id: 'stepper_step_2_subtitle' }) }}
       </small>
     </v-stepper-step>
     <v-stepper-content step="2">
       <p>
-        {{$formatMessage({ id: 'stepper_step_2_p' })}}
+        {{ $formatMessage({ id: 'stepper_step_2_p' }) }}
       </p>
     </v-stepper-content>
 
-    <v-stepper-step step="3" @click="candidatStepper = 3" :style="{ cursor: 'pointer' }">
+    <v-stepper-step
+      step="3"
+      :style="{ cursor: 'pointer' }"
+      @click="candidatStepper = 3"
+    >
       <span>
-        {{$formatMessage({ id: 'stepper_step_3_title' })}}
+        {{ $formatMessage({ id: 'stepper_step_3_title' }) }}
       </span>
       <small>
-        {{$formatMessage({ id: 'stepper_step_3_subtitle' })}}
+        {{ $formatMessage({ id: 'stepper_step_3_subtitle' }) }}
       </small>
     </v-stepper-step>
     <v-stepper-content step="3">
       <p>
-        {{$formatMessage({ id: 'stepper_step_3_p1' })}}
+        {{ $formatMessage({ id: 'stepper_step_3_p1' }) }}
       </p>
       <p>
-        {{$formatMessage({ id: 'stepper_step_3_p2' })}}
+        {{ $formatMessage({ id: 'stepper_step_3_p2' }) }}
       </p>
     </v-stepper-content>
 
-    <v-stepper-step step="4" @click="candidatStepper = 4" :style="{ cursor: 'pointer' }">
+    <v-stepper-step
+      step="4"
+      :style="{ cursor: 'pointer' }"
+      @click="candidatStepper = 4"
+    >
       <span>
-        {{$formatMessage({ id: 'stepper_step_4_title' })}}
+        {{ $formatMessage({ id: 'stepper_step_4_title' }) }}
       </span>
       <small>
-        {{$formatMessage({ id: 'stepper_step_4_subtitle' })}}
+        {{ $formatMessage({ id: 'stepper_step_4_subtitle' }) }}
       </small>
     </v-stepper-step>
     <v-stepper-content step="4">
       <p>
-        {{$formatMessage({ id: 'stepper_step_4_p' })}}
+        {{ $formatMessage({ id: 'stepper_step_4_p' }) }}
       </p>
     </v-stepper-content>
   </v-stepper>

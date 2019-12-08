@@ -79,6 +79,10 @@ export default {
     },
   },
 
+  async mounted () {
+    await this.getMyProfile()
+  },
+
   methods: {
     async getMyProfile () {
       try {
@@ -87,10 +91,6 @@ export default {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
-  },
-
-  async mounted () {
-    await this.getMyProfile()
   },
 }
 </script>

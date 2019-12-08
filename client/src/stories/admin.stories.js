@@ -95,7 +95,7 @@ storiesOf('Admin', module)
         },
       },
       actions: {
-        FETCH_CANDIDATS_REQUEST: () => {},
+        FETCH_CANDIDATS_REQUEST () {},
       },
     }),
   }))

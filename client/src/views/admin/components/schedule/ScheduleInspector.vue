@@ -12,7 +12,7 @@
             fast_rewind
           </v-icon>
         </v-btn>
-          Semaine {{ displayOnlyNumberOfWeek() }}
+        Semaine {{ displayOnlyNumberOfWeek() }}
         <v-btn
           class="t-btn-next-week"
           icon
@@ -50,15 +50,20 @@
           >
             <template v-slot:activator="{ on }">
               <v-text-field
-                class="t-date-picker"
                 v-model="pickerDate"
+                class="t-date-picker"
                 persistent-hint
                 prepend-icon="event"
                 readonly
                 v-on="on"
               />
             </template>
-            <v-date-picker v-model="date" no-title @input="datePicker = false" locale="fr"/>
+            <v-date-picker
+              v-model="date"
+              no-title
+              locale="fr"
+              @input="datePicker = false"
+            />
           </v-menu>
           <v-btn
             icon
@@ -70,27 +75,26 @@
               play_arrow
             </v-icon>
           </v-btn>
-
         </div>
       </div>
     </div>
 
-    <div >
+    <div>
       <div class="u-flex  u-flex--center  u-flex--space-between">
         <h3>Centres d'examen</h3>
         <generate-inspecteur-bordereaux
           :date="date"
-          :isForInspecteurs="true"
+          :is-for-inspecteurs="true"
         />
         <generate-inspecteur-bordereaux
           :date="date"
-          :isForInspecteurs="false"
+          :is-for-inspecteurs="false"
         />
         <div class="stats-card">
           <div class="text-xs-right">
             <refresh-button
-              @click="reloadWeekMonitor"
               :is-loading="isLoading"
+              @click="reloadWeekMonitor"
             />
           </div>
         </div>
@@ -99,19 +103,19 @@
       <big-loading-indicator :is-loading="isLoading" />
 
       <v-tabs
-        class="tabs t-center-tabs"
         v-model="activeCentreTab"
+        class="tabs t-center-tabs"
         color="dark"
         slider-color="#f82249"
       >
         <v-tab
           v-for="element in placesByCentreList"
           :key="element.centre._id"
-          @click="centreSelector(element.centre._id)"
           :href="`#tab-${element.centre._id.toString()}`"
           ripple
           :disabled="isLoading"
           :aria-disabled="isLoading"
+          @click="centreSelector(element.centre._id)"
         >
           {{ element.centre.nom }}
         </v-tab>
@@ -124,16 +128,25 @@
             :key="placesByCentre.centre._id"
             :value="`tab-${placesByCentre.centre._id}`"
           >
-            <table class="table u-full-width" :style="{ opacity: isLoading ? '0.5' : '1' }">
+            <table
+              class="table u-full-width"
+              :style="{ opacity: isLoading ? '0.5' : '1' }"
+            >
               <thead>
                 <tr>
-                  <th v-for="creneau in headers" :key="creneau">
+                  <th
+                    v-for="creneau in headers"
+                    :key="creneau"
+                  >
                     {{ creneau }}
                   </th>
                 </tr>
               </thead>
 
-              <tbody v-for="inspecteurData in inspecteursData" :key="inspecteurData.matricule">
+              <tbody
+                v-for="inspecteurData in inspecteursData"
+                :key="inspecteurData.matricule"
+              >
                 <tr>
                   <th
                     class="inspecteur-button"
@@ -141,14 +154,19 @@
                   >
                     <v-layout row>
                       <span class="name-ipcsr-wrap">
-                        {{inspecteurData.prenom}}
-                        {{inspecteurData.nom}}
+                        {{ inspecteurData.prenom }}
+                        {{ inspecteurData.nom }}
                       </span>
                       <v-btn
                         icon
                         @click="activeDeleteMode(inspecteurData._id, inspecteurData)"
                       >
-                        <v-icon size="20" color="#A9A9A9">delete</v-icon>
+                        <v-icon
+                          size="20"
+                          color="#A9A9A9"
+                        >
+                          delete
+                        </v-icon>
                       </v-btn>
                     </v-layout>
                   </th>
@@ -161,10 +179,10 @@
                     <schedule-inspector-button
                       :key="`creneau-${placeInfo.hour}-${inspecteurData._id}`"
                       :content="placeInfo"
-                      :selectedDate="date"
-                      :inspecteurId="inspecteurData._id"
-                      :updateContent="reloadWeekMonitor"
-                      :centreInfo="placeInfo.centre"
+                      :selected-date="date"
+                      :inspecteur-id="inspecteurData._id"
+                      :update-content="reloadWeekMonitor"
+                      :centre-info="placeInfo.centre"
                       @click="setActiveInspecteurRow"
                     />
                   </td>
@@ -175,25 +193,28 @@
                     v-if="deleteMode"
                     class="inspecteur-button"
                     :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
-                  ></td>
+                  />
 
                   <td colspan="20">
-                    <div class="place-details  u-flex  u-flex--center" :class="{ active: activeInspecteurRow === inspecteurData._id }">
+                    <div
+                      class="place-details  u-flex  u-flex--center"
+                      :class="{ active: activeInspecteurRow === inspecteurData._id }"
+                    >
                       <schedule-inspector-details
                         v-if="!deleteMode"
                         :place="activePlace"
                         :content="selectedPlaceInfo"
                         :close-dialog="closeDetails"
-                        :selectedDate="date"
-                        :updateContent="reloadWeekMonitor"
-                        :inspecteurId="inspecteurData._id"
-                        :centreInfo="placesByCentre.centre"
+                        :selected-date="date"
+                        :update-content="reloadWeekMonitor"
+                        :inspecteur-id="inspecteurData._id"
+                        :centre-info="placesByCentre.centre"
                       />
                       <delete-schedule-inspector
                         v-if="deleteMode"
-                        :placeInfo="inspecteurData"
-                        :inspecteurId="inspecteurData._id"
-                        :closeDetails="closeDetails"
+                        :place-info="inspecteurData"
+                        :inspecteur-id="inspecteurData._id"
+                        :close-details="closeDetails"
                         @reloadWeekMonitor="reloadWeekMonitor"
                       />
                     </div>
@@ -318,6 +339,76 @@ export default {
       return this.isFetching ||
         this.isComputing
     },
+  },
+
+  watch: {
+    async date (newDay) {
+      const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
+      this.currentWeekNb = dateTimeFromSQL.toISOWeekDate().split('-')
+      this.activeCentreId = this.$route.params.center || this.firstCentreId
+      this.updateCenterInRoute()
+      if (this.$store.state.admin.departements.active) {
+        await this.$store
+          .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
+        this.parseInspecteursPlanning()
+      }
+    },
+
+    async activeDepartement (newDepartement) {
+      const center = this.lastActiveCenters[newDepartement] || this.firstCentreId
+      await this.$store
+        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
+      if (this.placesByCentreList.some(el => el.centre._id === center)) {
+        this.activeCentreId = center
+      } else {
+        this.activeCentreId = this.firstCentreId
+      }
+      this.updateCenterInRoute()
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, {
+        centreId: this.activeCentreId,
+        begin: this.beginDate,
+        end: this.endDate,
+      })
+
+      this.parseInspecteursPlanning()
+    },
+
+    async activeCentreId (newCentreId) {
+      this.lastActiveCenters[this.activeDepartement] = newCentreId
+      await this.updateStoreCenterSelected(newCentreId)
+      this.activeCentreTab = `tab-${newCentreId}`
+    },
+  },
+
+  async mounted () {
+    if (this.placesByCentreList && this.placesByCentreList.length) {
+      const centerId = this.$route.params.center
+      this.activeCentreId = centerId || this.firstCentreId
+      this.lastActiveCenters[this.activeDepartement] = this.activeCentreId
+      this.reloadWeekMonitor()
+    }
+  },
+
+  async beforeMount () {
+    this.headers = creneauTemplate
+
+    const { currentWeek } = this.$store.state.admin
+
+    const defaultDate = {
+      weekYear: getFrenchLuxonCurrentDateTime().year,
+      weekNumber: currentWeek || getFrenchLuxonCurrentDateTime().weekNumber,
+      weekday: 1,
+    }
+
+    const routeDate = this.$route.params.date
+    if (routeDate) {
+      const [year, month, day] = this.$route.params.date.split('-')
+      const date = { year, month, day }
+      this.date = getFrenchLuxonFromObject(date).toISODate()
+      return
+    }
+
+    this.date = getFrenchLuxonFromObject(defaultDate).toISODate()
   },
 
   methods: {
@@ -459,76 +550,6 @@ export default {
     updateCenterInRoute () {
       this.$router.push({ params: { center: this.activeCentreId, date: this.date } })
     },
-  },
-
-  watch: {
-    async date (newDay) {
-      const dateTimeFromSQL = getFrenchLuxonFromSql(newDay)
-      this.currentWeekNb = dateTimeFromSQL.toISOWeekDate().split('-')
-      this.activeCentreId = this.$route.params.center || this.firstCentreId
-      this.updateCenterInRoute()
-      if (this.$store.state.admin.departements.active) {
-        await this.$store
-          .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
-        this.parseInspecteursPlanning()
-      }
-    },
-
-    async activeDepartement (newDepartement) {
-      const center = this.lastActiveCenters[newDepartement] || this.firstCentreId
-      await this.$store
-        .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
-      if (this.placesByCentreList.some(el => el.centre._id === center)) {
-        this.activeCentreId = center
-      } else {
-        this.activeCentreId = this.firstCentreId
-      }
-      this.updateCenterInRoute()
-      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, {
-        centreId: this.activeCentreId,
-        begin: this.beginDate,
-        end: this.endDate,
-      })
-
-      this.parseInspecteursPlanning()
-    },
-
-    async activeCentreId (newCentreId) {
-      this.lastActiveCenters[this.activeDepartement] = newCentreId
-      await this.updateStoreCenterSelected(newCentreId)
-      this.activeCentreTab = `tab-${newCentreId}`
-    },
-  },
-
-  async mounted () {
-    if (this.placesByCentreList && this.placesByCentreList.length) {
-      const centerId = this.$route.params.center
-      this.activeCentreId = centerId || this.firstCentreId
-      this.lastActiveCenters[this.activeDepartement] = this.activeCentreId
-      this.reloadWeekMonitor()
-    }
-  },
-
-  async beforeMount () {
-    this.headers = creneauTemplate
-
-    const { currentWeek } = this.$store.state.admin
-
-    const defaultDate = {
-      weekYear: getFrenchLuxonCurrentDateTime().year,
-      weekNumber: currentWeek || getFrenchLuxonCurrentDateTime().weekNumber,
-      weekday: 1,
-    }
-
-    const routeDate = this.$route.params.date
-    if (routeDate) {
-      const [year, month, day] = this.$route.params.date.split('-')
-      const date = { year, month, day }
-      this.date = getFrenchLuxonFromObject(date).toISODate()
-      return
-    }
-
-    this.date = getFrenchLuxonFromObject(defaultDate).toISODate()
   },
 }
 </script>

@@ -1,11 +1,15 @@
 <template>
   <div class="calendar-month">
     <div>
-      <h2>{{calendarTitle}}</h2>
+      <h2>{{ calendarTitle }}</h2>
     </div>
 
-    <div class="calendar-day" v-for="(day, i) in days" :key="i">
-      <span>{{day}}</span>
+    <div
+      v-for="(day, i) in days"
+      :key="i"
+      class="calendar-day"
+    >
+      <span>{{ day }}</span>
     </div>
   </div>
 </template>
@@ -15,7 +19,10 @@ import { getDataOfTheMonth } from '@/util'
 
 export default {
   props: {
-    places: Array,
+    places: {
+      type: Array,
+      default () {},
+    },
   },
 
   data () {

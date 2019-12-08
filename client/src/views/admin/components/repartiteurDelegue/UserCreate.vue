@@ -1,25 +1,29 @@
 <template>
-  <v-form v-model="valid" @submit.prevent="createdUser">
+  <v-form
+    v-model="valid"
+    @submit.prevent="createdUser"
+  >
     <v-container class="u-flex  u-flex--between  u-full-width">
       <v-text-field
+        v-model="email"
         class="t-input-email"
         prepend-icon="email"
         aria-placeholder="jean@dupont.fr"
         hint="ex. : jean@dupont.fr"
         tabindex="0"
-        v-model="email"
         :rules="emailRules"
         label="E-mail"
+        :placeholder="emailPlaceholder"
+        required
         @focus="setEmailPlaceholder"
         @blur="removeEmailPlaceholder"
         @input="setEmailToLowerCase"
-        :placeholder="emailPlaceholder"
-        required
-      ></v-text-field>
+      />
 
-      <v-spacer></v-spacer>
+      <v-spacer />
 
       <v-select
+        v-model="status"
         class="t-select-status"
         :items="availableStatuses"
         label="Statut"
@@ -27,13 +31,13 @@
         aria-placeholder="Répartiteur"
         hint="ex. : repartiteur"
         tabindex="0"
-        v-model="status"
         required
-        ></v-select>
+      />
 
-      <v-spacer></v-spacer>
+      <v-spacer />
 
       <v-select
+        v-model="departements"
         class="t-select-departements"
         multiple
         :items="availableDepartements"
@@ -43,11 +47,10 @@
         hint="ex. : departements"
         tabindex="0"
         :rules="departementsRules"
-        v-model="departements"
         required
-        ></v-select>
+      />
 
-      <v-spacer></v-spacer>
+      <v-spacer />
 
       <v-btn
         class="t-create-btn"
@@ -57,14 +60,13 @@
         tabindex="0"
         raised
         color="success"
-        >
+      >
         Ajouter
         <v-icon>
           add_circle
         </v-icon>
       </v-btn>
     </v-container>
-
   </v-form>
 </template>
 

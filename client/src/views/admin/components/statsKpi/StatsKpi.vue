@@ -3,7 +3,10 @@
     <page-title :title="'Stats Kpi'" />
 
     <v-card class="container  stats-filters">
-      <v-switch v-model="isDisplayAllDepartement" :label="`Afficher tous les départements`" />
+      <v-switch
+        v-model="isDisplayAllDepartement"
+        :label="`Afficher tous les départements`"
+      />
 
       <div class="u-flex">
         <v-menu
@@ -19,16 +22,16 @@
               v-model="pickerDateStart"
               label="Date de début de période"
               prepend-icon="event"
-              v-on="on"
               readonly
-            ></v-text-field>
+              v-on="on"
+            />
           </template>
 
           <v-date-picker
             v-model="dateStart"
-            @input="menuStart = false"
             locale="fr"
-          ></v-date-picker>
+            @input="menuStart = false"
+          />
         </v-menu>
 
         <v-menu
@@ -44,23 +47,25 @@
               v-model="pickerDateEnd"
               label="Date de fin de période"
               prepend-icon="event"
-              v-on="on"
               readonly
-            ></v-text-field>
+              v-on="on"
+            />
           </template>
 
           <v-date-picker
-            color="red"
             v-model="dateEnd"
-            @input="menuEnd = false"
+            color="red"
             locale="fr"
-          ></v-date-picker>
+            @input="menuEnd = false"
+          />
         </v-menu>
       </div>
 
       <div class="u-flex  u-flex--center">
-        <v-btn color="primary" @click="getStatsKpiResultsExams(true)">
-
+        <v-btn
+          color="primary"
+          @click="getStatsKpiResultsExams(true)"
+        >
           {{ $formatMessage({ id: 'export_stats_csv' }) }}
 
           <v-icon>
@@ -72,8 +77,10 @@
           </v-icon>
         </v-btn>
 
-        <v-btn color="primary" @click="getStatsKpiPlacesExams(true)">
-
+        <v-btn
+          color="primary"
+          @click="getStatsKpiPlacesExams(true)"
+        >
           {{ $formatMessage({ id: 'export_places_stats_csv' }) }}
 
           <v-icon>
@@ -88,25 +95,25 @@
     </v-card>
 
     <v-flex
-      style="margin-top: 8vh; display: block;"
       v-if="!isDisplayAllDepartement"
+      style="margin-top: 8vh; display: block;"
       class="pa-5"
     >
       <charts-stats-kpi
-        :statsResultsExamValues="currentStatsResultExam"
-        :statsPlacesExamValues="currentStatsPlacesExam"
+        :stats-results-exam-values="currentStatsResultExam"
+        :stats-places-exam-values="currentStatsPlacesExam"
       />
     </v-flex>
 
     <v-flex
-      style="margin-top: 13vh; display: block;"
-      v-else
       v-for="(elem, index) in (statsResultsExams ? statsResultsExams.statsKpi : [])"
+      v-else
       :key="'elem'+index"
+      style="margin-top: 13vh; display: block;"
     >
       <charts-stats-kpi
-        :statsResultsExamValues="elem"
-        :statsPlacesExamValues="selectStatsKpiPlacesExamsByDpt(elem.departement)"
+        :stats-results-exam-values="elem"
+        :stats-places-exam-values="selectStatsKpiPlacesExamsByDpt(elem.departement)"
       />
     </v-flex>
   </div>
@@ -123,17 +130,13 @@ export default {
     ChartsStatsKpi,
   },
 
-  async mounted () {
-    const { begin, end } = this.$route.params
-    if (begin && end) {
-      this.dateStart = begin
-      this.dateEnd = end
-    } else {
-      this.setRouteParams()
-    }
-    await this.getStatsKpiPlacesExams()
-    await this.getStatsKpiResultsExams()
-  },
+  data: () => ({
+    dateStart: getFrenchLuxonCurrentDateTime().plus({ month: -1 }).toISODate(),
+    dateEnd: getFrenchLuxonCurrentDateTime().toISODate(),
+    menuStart: false,
+    menuEnd: false,
+    isDisplayAllDepartement: false,
+  }),
 
   computed: {
     ...mapGetters([
@@ -169,13 +172,41 @@ export default {
     },
   },
 
-  data: () => ({
-    dateStart: getFrenchLuxonCurrentDateTime().plus({ month: -1 }).toISODate(),
-    dateEnd: getFrenchLuxonCurrentDateTime().toISODate(),
-    menuStart: false,
-    menuEnd: false,
-    isDisplayAllDepartement: false,
-  }),
+  watch: {
+    async activeDepartement () {
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+
+    async dateStart () {
+      this.setRouteParams()
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+
+    async dateEnd () {
+      this.setRouteParams()
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+
+    async isDisplayAllDepartement () {
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+    },
+  },
+
+  async mounted () {
+    const { begin, end } = this.$route.params
+    if (begin && end) {
+      this.dateStart = begin
+      this.dateEnd = end
+    } else {
+      this.setRouteParams()
+    }
+    await this.getStatsKpiPlacesExams()
+    await this.getStatsKpiResultsExams()
+  },
 
   methods: {
     setRouteParams () {
@@ -216,30 +247,6 @@ export default {
       return this.statsPlacesExams
         ? this.statsPlacesExams.statsKpi.find(el => el.departement === departement)
         : {}
-    },
-  },
-
-  watch: {
-    async activeDepartement () {
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
-    },
-
-    async dateStart () {
-      this.setRouteParams()
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
-    },
-
-    async dateEnd () {
-      this.setRouteParams()
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
-    },
-
-    async isDisplayAllDepartement () {
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
     },
   },
 }

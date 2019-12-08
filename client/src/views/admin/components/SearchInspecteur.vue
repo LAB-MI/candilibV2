@@ -1,34 +1,36 @@
 <template>
   <div>
     <div class="u-flex u-flex--center">
-    <candilib-autocomplete
-      class="search-input t-search-inspecteur"
-      @selection="displayInspecteurInfo"
-      label="Inspecteurs"
-      hint="Chercher un inspecteur par son nom / matricule / email"
-      placeholder="Dupond"
-      :items="inspecteurs"
-      item-text="nom"
-      item-value="_id"
-      :fetch-autocomplete-action="fetchAutocompleteAction"
-    />
-    <v-btn
-      icon
-      :disabled="!profileInfo"
-      color="white"
-      @click="toggleProfileInfo"
-    >
-      <v-icon
-      :color="color"
-      >{{icon}}</v-icon>
-    </v-btn>
+      <candilib-autocomplete
+        class="search-input t-search-inspecteur"
+        label="Inspecteurs"
+        hint="Chercher un inspecteur par son nom / matricule / email"
+        placeholder="Dupond"
+        :items="inspecteurs"
+        item-text="nom"
+        item-value="_id"
+        :fetch-autocomplete-action="fetchAutocompleteAction"
+        @selection="displayInspecteurInfo"
+      />
+      <v-btn
+        icon
+        :disabled="!profileInfo"
+        color="white"
+        @click="toggleProfileInfo"
+      >
+        <v-icon
+          :color="color"
+        >
+          {{ icon }}
+        </v-icon>
+      </v-btn>
     </div>
     <v-expand-transition>
       <profile-info
-      class="t-result-inspecteur"
-      title='informations inspecteur'
-      v-if="displayInspecteur"
-      :profileInfo="profileInfo"
+        v-if="displayInspecteur"
+        class="t-result-inspecteur"
+        title="informations inspecteur"
+        :profile-info="profileInfo"
       />
     </v-expand-transition>
   </div>
