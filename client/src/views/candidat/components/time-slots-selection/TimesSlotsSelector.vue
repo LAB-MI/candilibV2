@@ -4,6 +4,7 @@
       v-for="timeSlot in timeSlots"
       :key="timeSlot.label"
       v-model="timeSlot.active"
+      class="t-time-slot-list-group"
       :prepend-icon="timeSlot.action"
       no-action
       @click="gotoDay(timeSlot.label)"

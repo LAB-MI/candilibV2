@@ -49,7 +49,7 @@ describe('Standard scenarios', () => {
     cy.get(`[href="#tab-${date1.monthLong}"]`)
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-      .parents('.v-list')
+      .parents('.t-time-slot-list-group')
       .within(($date) => {
         cy.root().click()
         cy.contains('08h00-08h30')
@@ -218,7 +218,7 @@ describe('Standard scenarios', () => {
     cy.get(`[href="#tab-${date1.monthLong}"]`)
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-      .parents('.v-list')
+      .parents('.t-time-slot-list-group')
       .within(($date) => {
         cy.root().click()
         cy.should('contain', '08h00-08h30')
@@ -269,7 +269,7 @@ describe('Standard scenarios', () => {
     cy.get(`[href="#tab-${date1.monthLong}"]`)
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-      .parents('.v-list')
+      .parents('.t-time-slot-list-group')
       .within(($date) => {
         cy.root().click()
         cy.should('not.contain', '08h00-08h30')
