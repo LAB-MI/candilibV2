@@ -369,7 +369,7 @@ describe('Get users', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à accéder à cette ressource"
     )
   })
 })

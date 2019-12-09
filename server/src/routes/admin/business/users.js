@@ -40,26 +40,25 @@ const isInvalidList = list => !list || !Array.isArray(list) || !list.length
 export const getAppropriateUsers = async userId => {
   const user = await findUserById(userId)
   const status = user.status
-  const departements = user.departements
 
-  if (
-    status === config.userStatuses.ADMIN ||
-    status === config.userStatuses.DELEGUE
-  ) {
-    const users = await findAllActiveUsers()
-    const listUsers = users.filter(
-      user =>
-        config.userStatusLevels[status] > config.userStatusLevels[user.status]
+  const isAdmin = status === config.userStatuses.ADMIN
+  const isDelegue = status === config.userStatuses.DELEGUE
+  const departements = isAdmin ? undefined : user.departements
+  const maxStatus = config.userStatusesOrderedList.findIndex(
+    stat => stat === status
+  )
+  const allowedStatuses = config.userStatusesOrderedList.slice(0, maxStatus)
+
+  if (!isAdmin && !isDelegue) {
+    const error = new Error(
+      "Vous n'êtes pas autorisé à accéder à cette ressource"
     )
-    return listUsers
-  }
-
-  const forbiddenMessage = isForbiddenToUpsertUser(status, user, departements)
-  if (forbiddenMessage) {
-    const error = new Error(forbiddenMessage)
     error.status = 401
     throw error
   }
+
+  const users = await findAllActiveUsers(departements, allowedStatuses)
+  return users
 }
 
 /**
@@ -224,10 +223,10 @@ export const archiveUserBusiness = async (userId, emailToDelete) => {
  * @returns {boolean | string} - `false` si l'utilisateur peut faire la modification, sinon `string` contenant le message d'erreur
  */
 export function isForbiddenToUpsertUser (status, user, departements) {
-  const creatorDepartements = user.departements
+  const authorizedDepartements = user.departements
   if (
     !departements.every(departement =>
-      creatorDepartements.includes(departement)
+      authorizedDepartements.includes(departement)
     )
   ) {
     return INCORRECT_DEPARTEMENT_LIST
