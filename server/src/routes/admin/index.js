@@ -34,7 +34,10 @@ import {
   addWhitelisted,
   removeWhitelisted,
 } from './whitelisted.controllers'
-import { getAdminCentres } from '../common/centre.controllers'
+import {
+  getAdminCentres,
+  enableOrDisableCentre,
+} from '../common/centre.controllers'
 import {
   verifyAccessAurige,
   verifyRepartiteurDepartement,
@@ -1525,6 +1528,12 @@ router.get(
   '/centres',
   verifyUserLevel(config.userStatusLevels.delegue),
   getAdminCentres
+)
+
+router.patch(
+  '/centres',
+  verifyUserLevel(config.userStatusLevels.admin),
+  enableOrDisableCentre
 )
 
 export default router

@@ -1,6 +1,7 @@
 import {
   findCentresWithNbPlaces,
   findAllCentresForAdmin,
+  updateCentreStatus,
 } from './centre.business'
 import { findCentreByNameAndDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
@@ -87,5 +88,35 @@ export async function getAdminCentres (req, res) {
   res.status(200).json({
     success: true,
     centres,
+  })
+}
+
+export async function enableOrDisableCentre (req, res) {
+  const userId = req.userId
+
+  const { centreId, active } = req.body
+
+  if (!centreId) {
+    return res.status(400).send({
+      success: false,
+      message: 'Aucun centre sélectionné',
+    })
+  }
+  const loggerContent = {
+    section: 'admin-enable-or-disable-centre',
+    admin: userId,
+  }
+
+  const centre = await updateCentreStatus(centreId, active, userId)
+
+  appLogger.info({
+    ...loggerContent,
+    action: 'ENABLE OR DISABLE ADMIN CENTRES',
+    centre,
+  })
+
+  res.status(200).json({
+    success: true,
+    centre,
   })
 }

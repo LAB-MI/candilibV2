@@ -9,10 +9,17 @@ import {
 } from '../../models/__tests__/centres'
 
 import { findAllCentresForAdmin, updateCentreStatus } from './centre.business'
+import { createUser } from '../../models/user'
 
 describe('Centres business', () => {
+  let admin
+
   beforeAll(async () => {
     await connect()
+    const departements = ['93']
+    const email = 'admin@example.com'
+    const password = 'S3cr3757uff!'
+    admin = await createUser(email, password, departements)
     setInitCreatedCentre()
     await createCentres()
   })
@@ -43,7 +50,7 @@ describe('Centres business', () => {
       centre => centre.nom === centres[0].nom
     )[0]
 
-    await updateCentreStatus(testCentre._id, false)
+    await updateCentreStatus(testCentre._id, false, admin._id)
 
     const allCentresAfter = await findAllCentresForAdmin([
       centres[0].departement,
@@ -63,7 +70,7 @@ describe('Centres business', () => {
       centre => centre.nom === centres[0].nom
     )[0]
 
-    await updateCentreStatus(testCentre._id, true)
+    await updateCentreStatus(testCentre._id, true,  admin._id)
 
     const allCentresAfter = await findAllCentresForAdmin([
       centres[0].departement,

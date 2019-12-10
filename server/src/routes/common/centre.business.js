@@ -90,7 +90,11 @@ export async function updateCentreStatus (id, status, userId) {
   if (!centre) throw new Error('Centre introuvable')
 
   const user = await findUserById(userId)
-  const updatedCentre = await updateCentreActiveState(centre, status, user.email)
+  const updatedCentre = await updateCentreActiveState(
+    centre,
+    status,
+    user.email
+  )
 
   return updatedCentre
 }
