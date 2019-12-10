@@ -113,9 +113,12 @@ export const deleteCentre = async centre => {
  * @param {Centre} centre - Le centre à modifier
  * @param {boolean} active - L'état dans lequel mettre le centre
  */
-export const updateCentreActiveState = async (centre, active) => {
+export const updateCentreActiveState = async (centre, active, email) => {
   if (!centre) {
     throw new Error('No centre given')
+  }
+  if (!active && email) {
+    await centre.updateOne({ disabledBy: email })
   }
   await centre.updateOne({ active })
   const updatedCentre = await Centre.findById(centre._id)

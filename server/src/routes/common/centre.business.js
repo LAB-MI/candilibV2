@@ -3,6 +3,8 @@ import {
   findAllPlacesByCentre,
 } from '../../models/place'
 
+import { findUserById } from '../../models/user'
+
 import {
   findCentresByDepartement,
   findAllActiveCentres,
@@ -81,13 +83,14 @@ export async function findAllCentresForAdmin (departements) {
  * @param {string} id - Id du centre à modifier
  * @param {boolean} status - Statut désiré, `true` pour un centre à activer, `false` pour le désactiver
  */
-export async function updateCentreStatus (id, status) {
+export async function updateCentreStatus (id, status, userId) {
   const allCentres = await findAllCentres()
   const centre = allCentres.filter(centre => (centre._id = id))[0]
 
   if (!centre) throw new Error('Centre introuvable')
 
-  const updatedCentre = await updateCentreActiveState(centre, status)
+  const user = await findUserById(userId)
+  const updatedCentre = await updateCentreActiveState(centre, status, user.email)
 
   return updatedCentre
 }

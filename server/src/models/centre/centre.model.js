@@ -31,6 +31,9 @@ const CentreSchema = new Schema(
     active: {
       $type: Boolean,
     },
+    disabledBy: {
+      $type: String,
+    },
   },
   { typeKey: '$type', timestamps: true }
 )
