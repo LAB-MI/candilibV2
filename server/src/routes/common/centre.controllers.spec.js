@@ -1,6 +1,12 @@
 import request from 'supertest'
+import express from 'express'
+
 import { connect, disconnect } from '../../mongo-connection'
+
+import { createUser } from '../../models/user'
+
 import {
+  setInitCreatedCentre,
   createCentres,
   removeCentres,
   createPlaces,
@@ -12,7 +18,7 @@ import {
   commonBasePlaceDateTime,
 } from '../../models/__tests__/'
 
-import { NOT_CODE_DEP_MSG } from './centre.controllers'
+import { NOT_CODE_DEP_MSG, getAdminCentres } from './centre.controllers'
 import { getFrenchLuxon } from '../../util'
 
 const { default: app, apiPrefix } = require('../../app')
@@ -21,7 +27,7 @@ jest.mock('../middlewares/verify-token')
 
 const bookedAt = getFrenchLuxon().toJSDate()
 
-xdescribe('Test centre controllers', () => {
+xdescribe('Test centre candidat controllers', () => {
   beforeAll(async () => {
     await connect()
   })
@@ -159,5 +165,46 @@ xdescribe('Test centre controllers', () => {
       expect(centre).toHaveProperty('departement', departement)
       expect(centre.adresse).toContain(departement)
     })
+  })
+})
+
+describe('Centre controllers admin', () => {
+  let mockApp
+  let admin
+
+  beforeAll(async () => {
+    await connect()
+    const departements = ['93']
+    const email = 'admin@example.com'
+    const password = 'S3cr3757uff!'
+    admin = await createUser(email, password, departements)
+    setInitCreatedCentre()
+    await createCentres()
+  })
+
+  afterAll(async () => {
+    await removeCentres()
+    await disconnect()
+    await mockApp.close()
+  })
+
+  it('Get all centers from the 93 for admin', async () => {
+    mockApp = express()
+    mockApp.use((req, res, next) => {
+      req.userId = admin._id
+      req.departements = admin.departements
+      next()
+    })
+    mockApp.use(getAdminCentres)
+
+    const { body } = await request(mockApp)
+      .get(`${apiPrefix}/admin/centres`)
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('centres')
+    expect(body.centres).toHaveLength(2)
   })
 })

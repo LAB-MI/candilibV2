@@ -34,6 +34,7 @@ import {
   addWhitelisted,
   removeWhitelisted,
 } from './whitelisted.controllers'
+import { getAdminCentres } from '../common/centre.controllers'
 import {
   verifyAccessAurige,
   verifyRepartiteurDepartement,
@@ -1518,7 +1519,12 @@ router.patch('/users', verifyDelegueLevel(), updatedInfoUser)
  *
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_users }
  */
-
 router.delete('/users', verifyDelegueLevel(), archiveUserController)
+
+router.get(
+  '/centres',
+  verifyUserLevel(config.userStatusLevels.delegue),
+  getAdminCentres
+)
 
 export default router

@@ -1,4 +1,7 @@
-import { findCentresWithNbPlaces } from './centre.business'
+import {
+  findCentresWithNbPlaces,
+  findAllCentresForAdmin,
+} from './centre.business'
 import { findCentreByNameAndDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
 import config from '../../config'
@@ -54,4 +57,35 @@ export async function getCentres (req, res) {
       error: JSON.stringify(error),
     })
   }
+}
+
+/**
+ * Retourne tous les centres des départements d'un utilisateur
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req Requête express
+ * @param {Object} req.departements - Départements de l'utilisateur
+ * @param {string} req.userId - Identifiant de l'utilisateur
+ * @param {import('express').Response} res Réponse express
+ */
+export async function getAdminCentres (req, res) {
+  const { departements, userId } = req
+
+  const loggerContent = {
+    section: 'admin-get-centres',
+    admin: userId,
+  }
+  const centres = await findAllCentresForAdmin(departements)
+
+  appLogger.info({
+    ...loggerContent,
+    action: 'GET ADMIN CENTRES',
+    centres,
+  })
+
+  res.status(200).json({
+    success: true,
+    centres,
+  })
 }
