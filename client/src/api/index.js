@@ -514,6 +514,15 @@ export default {
   },
 
   util: {
+    async getConfigCandidat () {
+      const json = await apiClient.get(apiPaths.util.configCandidat, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      return json
+    },
+
     async searchAdresses (query) {
       const json = await apiClient.get(apiPaths.util.adressesQuery(query), {
         headers: {},
