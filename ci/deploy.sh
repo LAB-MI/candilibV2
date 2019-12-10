@@ -81,7 +81,7 @@ if [ -z "$HEROKU_APP" ] ;then
   exit 1
 fi
 
-export NETLIFY_SITE_ID=$HEROKU_APP.netlify.com
+export NETLIFY_SITE_ID=${NETLIFY_SITE_ID:-$HEROKU_APP.netlify.com}
 
 #
 # Deploy API on heroku
@@ -159,12 +159,12 @@ curl -sL https://deb.nodesource.com/setup_12.x | sudo -E bash -
 sudo apt-get install -y nodejs
 node --version
 npm --version
-sudo npm install -g netlify-cli@2.23.0
+sudo npm install -g netlify-cli@2.24.0
 
 # Extract front files from previously docker images
 make export-front-all
-APP_VERSION="$(./ci/version.sh)"
 
+APP_VERSION="$(./ci/version.sh)"
 (
 cd "candilibV2-$APP_VERSION-dist"
 
@@ -188,10 +188,12 @@ cat > dist/index.html <<EOF
 EOF
 
 # deploy files
-netlify deploy --prod --dir=dist --message "Deploy $APP_VERSION" --json | tee -a netlify.json
+json=$(netlify deploy --timeout 30 --prod --dir=./dist --message "Deploy $APP_VERSION" --json)
+echo "$json" > netlify.json
+cat netlify.json
 
 deploy_id="$(jq -re '.deploy_id' < netlify.json)"
-if [ -z "$deploy_id" ] ; then
+if [ "$?" -gt 0 ] || [ -z "$deploy_id" ] ; then
    echo "Netlify error: deploy_id empty"
    exit 1
 fi
