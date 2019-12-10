@@ -6,6 +6,8 @@ import {
 import {
   findCentresByDepartement,
   findAllActiveCentres,
+  findAllCentres,
+  updateCentreActiveState,
 } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
 
@@ -47,4 +49,45 @@ export async function findCentresWithPlaces (departement, beginDate, endDate) {
     })
   )
   return centresWithPlaces
+}
+
+/**
+ * Retourne une liste de centre pour les départements voulus
+ *
+ * @async
+ * @function
+ *
+ * @param {string[]} departements - Départements pour lesquels récupérer les centres
+ * @returns {Centre[]} Liste des centres correspondants
+ */
+export async function findAllCentresForAdmin (departements) {
+  if (!departements || !departements.length) {
+    throw new Error('departement value is undefined')
+  }
+
+  const allCentres = await findAllCentres()
+  const centres = allCentres.filter(centre =>
+    departements.includes(centre.departement)
+  )
+
+  return centres
+}
+
+/**
+ * Met à jour le statut (actif ou inactif) d'un centre
+ * @async
+ * @function
+ *
+ * @param {string} id - Id du centre à modifier
+ * @param {boolean} status - Statut désiré, `true` pour un centre à activer, `false` pour le désactiver
+ */
+export async function updateCentreStatus (id, status) {
+  const allCentres = await findAllCentres()
+  const centre = allCentres.filter(centre => (centre._id = id))[0]
+
+  if (!centre) throw new Error('Centre introuvable')
+
+  const updatedCentre = await updateCentreActiveState(centre, status)
+
+  return updatedCentre
 }
