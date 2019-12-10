@@ -225,11 +225,13 @@ export const getCandidats = async (req, res) => {
         })
       )
     }
+
     if (format && format === 'csv') {
       req.candidats = candidats
       exportCandidats(req, res)
       return
     }
+
     res.json(candidats)
   } catch (error) {
     appLogger.error({

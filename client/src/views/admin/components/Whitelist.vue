@@ -342,6 +342,7 @@
           </v-list-item>
         </v-list>
       </v-card>
+      <candidats-list />
     </v-container>
   </div>
 </template>
@@ -352,6 +353,7 @@ import { email as emailRegex } from '@/util'
 
 import Whitelisted from './Whitelisted.vue'
 import SearchEmail from './SearchEmail'
+import CandidatsList from './CandidatsList'
 import { BigLoadingIndicator } from '@/components'
 import {
   DELETE_EMAIL_REQUEST,
@@ -375,6 +377,7 @@ export default {
     Whitelisted,
     SearchEmail,
     BigLoadingIndicator,
+    CandidatsList,
   },
 
   data () {

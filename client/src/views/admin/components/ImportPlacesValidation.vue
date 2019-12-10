@@ -33,7 +33,7 @@ import { AgGridVue } from 'ag-grid-vue'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
-import { AgGridLocaleText, StatusRenderer, valueDateFormatter, filterDateParams } from './ag-grid-utils'
+import { AgGridLocaleText, statusRenderer, valueDateFormatter, filterDateParams } from './ag-grid-utils'
 import AgGridAurigeStatusFilter from './AgGridAurigeStatusFilter'
 
 export default {
@@ -67,7 +67,7 @@ export default {
       {
         headerName: 'Etat',
         field: 'status',
-        cellRenderer: StatusRenderer,
+        cellRenderer: statusRenderer,
         filter: 'agGridAurigeStatusFilter',
         width: 90,
         headerClass: 't-import-places-validation-header-status',

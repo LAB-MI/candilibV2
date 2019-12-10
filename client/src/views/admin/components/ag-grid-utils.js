@@ -42,11 +42,20 @@ export const filterDateParams = {
   browserDatePicker: true,
 }
 
-export const StatusRenderer = (param) => {
-  const StatusIcon = {
+export const statusRenderer = ({ value }) => {
+  const statusIcon = {
     'success': 'done',
     'error': 'clear',
     'warning': 'warning',
   }
-  return '<i class="material-icons">' + StatusIcon[param.value] + '</i>'
+  return '<i class="material-icons">' + statusIcon[value] + '</i>'
+}
+
+export const checkRenderer = ({ value }) => {
+  if (!value) {
+    return ''
+  }
+  const color = value ? 'green' : 'grey'
+  const iconName = 'done'
+  return `<i class="material-icons" style="color: ${color}">${iconName}</i>`
 }
