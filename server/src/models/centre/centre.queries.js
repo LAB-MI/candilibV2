@@ -9,6 +9,11 @@ export const findAllCentres = async () => {
   return centres
 }
 
+export const findAllActiveCentres = async () => {
+  const centres = await Centre.find({ active: { $ne: false } })
+  return centres
+}
+
 /**
  * @deprecated nom n'est pas unique. A remplacer par findCentreByNameAndDepartement
  * @param {string} nom
@@ -16,6 +21,7 @@ export const findAllCentres = async () => {
 export const findCentreByName = async nom => {
   const centre = await Centre.findOne({
     nom: caseInsensitive(nom),
+    active: { $ne: false },
   })
   return centre
 }
@@ -32,17 +38,15 @@ export const createCentre = async (
     type: 'Point',
     coordinates: [lon, lat],
   }
-  const centre = new Centre({ nom, label, adresse, geoloc, departement })
+  const centre = new Centre({
+    nom,
+    label,
+    adresse,
+    geoloc,
+    departement,
+    active: true,
+  })
   await centre.save()
-  return centre
-}
-
-export const deleteCentreByName = async nom => {
-  const centre = await Centre.findOne({ nom: caseInsensitive(nom) })
-  if (!centre) {
-    throw new Error('No centre found')
-  }
-  await centre.delete()
   return centre
 }
 
@@ -52,6 +56,15 @@ export const deleteCentre = async centre => {
   }
   await centre.delete()
   return centre
+}
+
+export const disableCentre = async centre => {
+  if (!centre) {
+    throw new Error('No centre given')
+  }
+  await centre.updateOne({ active: false })
+  const updatedCentre = await Centre.findById(centre._id)
+  return updatedCentre
 }
 
 export const updateCentreLabel = async (
@@ -70,15 +83,20 @@ export const updateCentreLabel = async (
   return updatedCentre
 }
 
-export const findCentresByDepartement = async (
-  departementId,
-  options = '-__v'
-) => {
-  const filters = {}
+export const findCentresByDepartement = async (departementId, options = '-__v') => {
+  const filters = {
+    active: { $ne: false },
+  }
+
   if (departementId) {
     filters.departement = departementId
   }
-  const centres = await Centre.find(filters, options)
+
+  const centres = await Centre.find(
+    filters,
+    options
+  )
+
   return centres
 }
 
@@ -86,25 +104,17 @@ export const findCentreByNameAndDepartement = async (nom, departement) => {
   const centre = await Centre.findOne({
     nom: caseInsensitive(nom),
     departement,
+    active: { $ne: false },
   })
   return centre
 }
 
 export const findCentreById = async id => {
-  const centre = await Centre.findById(id)
+  const centre = await Centre.findOne({ _id: id, active: { $ne: false } })
   return centre
 }
 
 export const getDepartementsFromCentres = async () => {
   const departements = await Centre.distinct('departement')
   return departements
-}
-export const FindCentresGroupByDepartement = async () => {
-  const byDepartements = await Centre.aggregate()
-    .group({
-      _id: '$departement',
-      centres: { $push: { _id: '$_id' } },
-    })
-    .exec()
-  return byDepartements
 }
