@@ -2,11 +2,14 @@ import { connect, disconnect } from '../../mongo-connection'
 import {
   findCentresByDepartement,
   findAllCentres,
+  findAllActiveCentres,
   findCentreByName,
   findCentreByNameAndDepartement,
   createCentre,
+  disableCentre,
 } from './centre.queries'
 import {
+  setInitCreatedCentre,
   createCentres,
   removeCentres,
   nbCentres,
@@ -22,7 +25,7 @@ describe('Centre', () => {
     await disconnect()
   })
 
-  describe('create centre', () => {
+  describe('Create centre', () => {
     it('should not create 2 centres with same name and same department', async () => {
       const nom = 'test.1.centre.nom'
       const label = 'test label'
@@ -100,6 +103,7 @@ describe('Centre', () => {
 
   describe('Find centre', () => {
     beforeAll(async () => {
+      setInitCreatedCentre()
       await createCentres()
     })
 
@@ -121,7 +125,7 @@ describe('Centre', () => {
     })
 
     it('Should find all centres, there are 3 centres', async () => {
-      const centresResult = await findAllCentres()
+      const centresResult = await findAllActiveCentres()
       expect(centresResult).toBeDefined()
       expect(centresResult).not.toBeNull()
       expect(centresResult).toHaveLength(nbCentres())
@@ -134,7 +138,7 @@ describe('Centre', () => {
       expect(centresResult).toHaveLength(nbCentres(departement))
     })
 
-    it('Should find one centre by deparetement and name', async () => {
+    it('Should find one centre by departement and name', async () => {
       const departement = '93'
       try {
         const centresResult = await findCentreByNameAndDepartement(
@@ -147,6 +151,50 @@ describe('Centre', () => {
       } catch (error) {
         expect(error).toBeUndefined()
       }
+    })
+  })
+
+  describe('Disable centre', () => {
+    beforeAll(async () => {
+      setInitCreatedCentre()
+      await createCentres()
+    })
+
+    afterAll(async () => {
+      await removeCentres()
+    })
+    it('Should disable one centre', async () => {
+      const testCentre = await findCentreByNameAndDepartement(
+        centres[2].nom,
+        centres[2].departement
+      )
+      const centreResult = await disableCentre(testCentre)
+
+      const unableToFindCentre = await findCentreByNameAndDepartement(
+        centres[2].nom,
+        centres[2].departement
+      )
+      const allCentres = await findAllCentres()
+      const disabledCentre = allCentres.filter(centre => !centre.active)[0]
+
+      expect(testCentre).toBeDefined()
+      expect(testCentre).not.toBeNull()
+      expect(testCentre).toHaveProperty('nom', centres[2].nom)
+      expect(testCentre).toHaveProperty('label', centres[2].label)
+
+      expect(centreResult).toBeDefined()
+      expect(centreResult).not.toBeNull()
+      expect(centreResult).toHaveProperty('nom', centres[2].nom)
+      expect(centreResult).toHaveProperty('label', centres[2].label)
+
+      expect(unableToFindCentre).toBeDefined()
+      expect(unableToFindCentre).toBeNull()
+
+      expect(disabledCentre).toBeDefined()
+      expect(disabledCentre).not.toBeNull()
+      expect(disabledCentre).toHaveProperty('nom', centres[2].nom)
+      expect(disabledCentre).toHaveProperty('label', centres[2].label)
+      expect(disabledCentre).toHaveProperty('active', false)
     })
   })
 })

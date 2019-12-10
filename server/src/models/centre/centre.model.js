@@ -28,6 +28,9 @@ const CentreSchema = new Schema(
       type: String,
       coordinates: [Number],
     },
+    active: {
+      $type: Boolean,
+    },
   },
   { typeKey: '$type', timestamps: true }
 )

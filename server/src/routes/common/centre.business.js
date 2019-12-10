@@ -3,13 +3,16 @@ import {
   findAllPlacesByCentre,
 } from '../../models/place'
 
-import { findCentresByDepartement, findAllCentres } from '../../models/centre'
+import {
+  findCentresByDepartement,
+  findAllActiveCentres,
+} from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
 
 export async function findCentresWithNbPlaces (departement, beginDate, endDate) {
   const centres = departement
     ? await findCentresByDepartement(departement)
-    : await findAllCentres()
+    : await findAllActiveCentres()
 
   if (!beginDate) {
     beginDate = getFrenchLuxon().toISODate()
