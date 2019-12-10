@@ -6,7 +6,7 @@ import {
   findCentreByName,
   findCentreByNameAndDepartement,
   createCentre,
-  disableCentre,
+  updateCentreActiveState,
 } from './centre.queries'
 import {
   setInitCreatedCentre,
@@ -168,7 +168,7 @@ describe('Centre', () => {
         centres[2].nom,
         centres[2].departement
       )
-      const centreResult = await disableCentre(testCentre)
+      const centreResult = await updateCentreActiveState(testCentre, false)
 
       const unableToFindCentre = await findCentreByNameAndDepartement(
         centres[2].nom,
@@ -195,6 +195,24 @@ describe('Centre', () => {
       expect(disabledCentre).toHaveProperty('nom', centres[2].nom)
       expect(disabledCentre).toHaveProperty('label', centres[2].label)
       expect(disabledCentre).toHaveProperty('active', false)
+    })
+
+    it('Should enable one centre', async () => {
+      const allCentres = await findAllCentres()
+      const disabledCentre = allCentres.filter(centre => !centre.active)[0]
+
+      await updateCentreActiveState(disabledCentre, true)
+
+      const enabledCentre = await findCentreByNameAndDepartement(
+        centres[2].nom,
+        centres[2].departement
+      )
+
+      expect(enabledCentre).toBeDefined()
+      expect(enabledCentre).not.toBeNull()
+      expect(enabledCentre).toHaveProperty('nom', centres[2].nom)
+      expect(enabledCentre).toHaveProperty('label', centres[2].label)
+      expect(enabledCentre).toHaveProperty('active', true)
     })
   })
 })
