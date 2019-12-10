@@ -16,7 +16,7 @@ describe('Centres business', () => {
 
   beforeAll(async () => {
     await connect()
-    const departements = ['93']
+    const departements = ['92', '93']
     const email = 'admin@example.com'
     const password = 'S3cr3757uff!'
     admin = await createUser(email, password, departements)
@@ -70,7 +70,7 @@ describe('Centres business', () => {
       centre => centre.nom === centres[0].nom
     )[0]
 
-    await updateCentreStatus(testCentre._id, true,  admin._id)
+    await updateCentreStatus(testCentre._id, true, admin._id)
 
     const allCentresAfter = await findAllCentresForAdmin([
       centres[0].departement,

@@ -179,7 +179,7 @@ describe('Centre controllers admin', () => {
 
   beforeAll(async () => {
     await connect()
-    const departements = ['93']
+    const departements = ['92', '93']
     const email = 'admin@example.com'
     const password = 'S3cr3757uff!'
     admin = await createUser(email, password, departements)
@@ -197,7 +197,7 @@ describe('Centre controllers admin', () => {
     mockApp = express()
     mockApp.use((req, res, next) => {
       req.userId = admin._id
-      req.departements = admin.departements
+      req.departements = ['93']
       next()
     })
     mockApp.use(getAdminCentres)

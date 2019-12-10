@@ -85,11 +85,24 @@ export async function findAllCentresForAdmin (departements) {
  */
 export async function updateCentreStatus (id, status, userId) {
   const allCentres = await findAllCentres()
-  const centre = allCentres.filter(centre => (centre._id = id))[0]
+  const centre = allCentres.filter(
+    centre => String(centre._id) === String(id)
+  )[0]
 
-  if (!centre) throw new Error('Centre introuvable')
+  if (!centre) {
+    const error = new Error('Centre introuvable')
+    error.status = 404
+    throw error
+  }
 
   const user = await findUserById(userId)
+
+  if (!user.departements.includes(centre.departement)) {
+    const error = new Error("Vous n'avez pas accès à ce centre")
+    error.status = 403
+    throw error
+  }
+
   const updatedCentre = await updateCentreActiveState(
     centre,
     status,
