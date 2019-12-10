@@ -58,11 +58,11 @@ export const deleteCentre = async centre => {
   return centre
 }
 
-export const disableCentre = async centre => {
+export const updateCentreActiveState = async (centre, active) => {
   if (!centre) {
     throw new Error('No centre given')
   }
-  await centre.updateOne({ active: false })
+  await centre.updateOne({ active })
   const updatedCentre = await Centre.findById(centre._id)
   return updatedCentre
 }
