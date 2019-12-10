@@ -7,6 +7,7 @@ import { findCentreByNameAndDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
 import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
+import { UNKNOWN_ERROR_UPDATE_CENTRE } from '../admin/message.constants'
 
 export const NOT_CODE_DEP_MSG =
   'Le code de département est manquant, Veuillez choisir un code département'
@@ -105,18 +106,28 @@ export async function enableOrDisableCentre (req, res) {
   const loggerContent = {
     section: 'admin-enable-or-disable-centre',
     admin: userId,
-  }
-
-  const centre = await updateCentreStatus(centreId, active, userId)
-
-  appLogger.info({
-    ...loggerContent,
     action: 'ENABLE OR DISABLE ADMIN CENTRES',
-    centre,
-  })
+  }
+  try {
+    const centre = await updateCentreStatus(centreId, active, userId)
 
-  res.status(200).json({
-    success: true,
-    centre,
-  })
+    appLogger.info({
+      ...loggerContent,
+      centre,
+    })
+
+    res.status(200).json({
+      success: true,
+      centre,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      error,
+    })
+    return res.status(error.status || 500).json({
+      success: false,
+      message: error.status ? error.message : UNKNOWN_ERROR_UPDATE_CENTRE,
+    })
+  }
 }

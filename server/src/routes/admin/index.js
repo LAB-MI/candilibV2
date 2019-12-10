@@ -1532,7 +1532,7 @@ router.get(
 
 router.patch(
   '/centres',
-  verifyUserLevel(config.userStatusLevels.admin),
+  verifyUserLevel(config.userStatusLevels.delegue),
   enableOrDisableCentre
 )
 
