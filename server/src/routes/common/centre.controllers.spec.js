@@ -1,5 +1,6 @@
 import request from 'supertest'
 import express from 'express'
+import bodyParser from 'body-parser'
 
 import { connect, disconnect } from '../../mongo-connection'
 
@@ -18,7 +19,11 @@ import {
   commonBasePlaceDateTime,
 } from '../../models/__tests__/'
 
-import { NOT_CODE_DEP_MSG, getAdminCentres } from './centre.controllers'
+import {
+  NOT_CODE_DEP_MSG,
+  getAdminCentres,
+  enableOrDisableCentre,
+} from './centre.controllers'
 import { getFrenchLuxon } from '../../util'
 
 const { default: app, apiPrefix } = require('../../app')
@@ -206,5 +211,36 @@ describe('Centre controllers admin', () => {
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('centres')
     expect(body.centres).toHaveLength(2)
+  })
+
+  it('Disable a center', async () => {
+    mockApp = express()
+    mockApp.use((req, res, next) => {
+      req.userId = admin._id
+      req.departements = admin.departements
+      next()
+    })
+    mockApp.use(bodyParser.json({ limit: '20mb' }))
+    mockApp.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    mockApp.get(`${apiPrefix}/admin/centres`, getAdminCentres)
+    mockApp.patch(`${apiPrefix}/admin/centres`, enableOrDisableCentre)
+
+    const getRequest = await request(mockApp)
+      .get(`${apiPrefix}/admin/centres`)
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    const centreId = getRequest.body.centres[0]._id
+    const { body } = await request(mockApp)
+      .patch(`${apiPrefix}/admin/centres`)
+      .send({ centreId, active: false })
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('centre')
+    expect(body.centre).toHaveProperty('active', false)
   })
 })
