@@ -1524,12 +1524,116 @@ router.patch('/users', verifyDelegueLevel(), updatedInfoUser)
  */
 router.delete('/users', verifyDelegueLevel(), archiveUserController)
 
+/**
+ * @swagger
+ *
+ * /admin/centres:
+ *   get:
+ *     tags: ["Administrateur"]
+ *     summary: Récupération des centres pour l'administrateur
+ *     description: Retourne la liste complète des centres accessible par l'administrateur
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *                 centres:
+ *                   type: array
+ *                   description: Liste des centres
+ *                   items:
+ *                     $ref: '#/components/schemas/CenterObject'
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
 router.get(
   '/centres',
   verifyUserLevel(config.userStatusLevels.delegue),
   getAdminCentres
 )
 
+/**
+ * @swagger
+ *
+ * /admin/centres:
+ *   patch:
+ *     tags: ["Administrateur"]
+ *     summary: Activation ou désactivation d'un centre par l'administrateur
+ *     description: Permet à un administrateur de désactiver un centre, ou de réactiver un centre désactivé
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Données du formulaire
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               centreId:
+ *                 type: string
+ *                 example: 5dce6ec901353671dead8959
+ *                 description: Identifiant du centre affecté
+ *               active:
+ *                 type: boolean
+ *                 description: État à donner au centre
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *                 centre:
+ *                   $ref: '#/components/schemas/CenterObject'
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       403:
+ *         description: L'utilisateur n'a pas accès au centre
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Vous n'avez pas accès à ce centre
+ *
+ *       404:
+ *         description: Le centre n'existe pas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Centre introuvable
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
 router.patch(
   '/centres',
   verifyUserLevel(config.userStatusLevels.delegue),
