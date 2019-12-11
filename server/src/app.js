@@ -82,6 +82,47 @@ import npmVersion from '../package.json'
  *           email: email75@departement.com
  *         } ]
  *
+ *     CenterObject:
+ *       type: object
+ *       required:
+ *         - geoloc
+ *         - _id
+ *         - nom
+ *         - label
+ *         - adresse
+ *         - departement
+ *       properties:
+ *         geoloc:
+ *           $ref: '#/components/schemas/GeolocObject'
+ *         _id:
+ *           type: string
+ *           description: identifiant du centre
+ *           example: 5dce6ec901353671dead895e
+ *         nom:
+ *           type: string
+ *           description: Nom du centre (de la ville du centre)
+ *           example: Noisy le Grand
+ *         label:
+ *           type: string
+ *           description: Information complémentaire pour retrouver le point de rencontre du centre
+ *           example: Centre d'examen du permis de conduire de Noisy le Grand
+ *         adresse:
+ *           type: string
+ *           description: Adresse du centre
+ *           example: 5 boulevard de Champs Richardets 93160 Noisy le Grand
+ *         departement:
+ *           type: string
+ *           description: Département du centre
+ *           example: 75
+ *         active:
+ *           type: boolean
+ *           description: Si `false`, le centre n'apparaitra pas dans les requêtes des utilisateurs
+ *           example: true
+ *         disabledBy:
+ *           type: string
+ *           description: Adresse courriel du dernier utilisateur ayant désactivé le centre
+ *           example: admin@exemple.com
+ *
  *     CandidatInfo:
  *       type: object
  *       properties:
