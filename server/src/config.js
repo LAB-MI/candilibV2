@@ -23,7 +23,7 @@ const DEFAULT_ADMIN_URL = 'http://localhost:8080/candilib'
 
 /**
  * Dictionnaire des différents types de statuts des utilisateurs de l'application
- * @constant {object}
+ * @constant {Object}
  */
 const userStatuses = {
   CANDIDAT: 'candidat',
@@ -34,20 +34,33 @@ const userStatuses = {
 }
 
 /**
- * Dictionnaire des différents niveaux de permission des utilisateurs de l'application
- * @constant {object}
+ * Liste des différents statuts des utilisateurs de l'application
+ * ordonnée selon leur niveau d'accès
+ *
+ * @constant {string[]}
  */
-const userStatusLevels = {
-  [userStatuses.CANDIDAT]: 0,
-  [userStatuses.REPARTITEUR]: 1,
-  [userStatuses.DELEGUE]: 2,
-  [userStatuses.ADMIN]: 3,
-  [userStatuses.TECH]: 4,
-}
+const userStatusesOrderedList = [
+  userStatuses.CANDIDAT,
+  userStatuses.REPARTITEUR,
+  userStatuses.DELEGUE,
+  userStatuses.ADMIN,
+  userStatuses.TECH,
+]
+
+/**
+ * Dictionnaire des différents niveaux de permission des utilisateurs de l'application
+ * @constant {Object}
+ */
+const userStatusLevels = userStatusesOrderedList.reduce((acc, value, index) => {
+  return {
+    ...acc,
+    [value]: index,
+  }
+}, {})
 
 /**
  * Dictionnaire des fonctionnalitées à activer ou non
- * @constant {object}
+ * @constant {Object}
  */
 const features = {
   AURIGE: 'aurige',
@@ -57,12 +70,12 @@ const features = {
 
 /**
  * Dictionnaire des différentes fonctionnalités accessibles selon le type d'utilisateurs de l'application
- * @constant {object}
+ * @constant {Object}
  */
 const userStatusAccess = {
   [userStatuses.CANDIDAT]: [],
   [userStatuses.REPARTITEUR]: [],
-  [userStatuses.DELEGUE]: [features.STATS_KPI],
+  [userStatuses.DELEGUE]: [features.STATS_KPI, features.USERS],
   [userStatuses.ADMIN]: [features.AURIGE, features.STATS_KPI, features.USERS],
   [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI],
 }
@@ -112,6 +125,7 @@ const config = {
   features,
 
   userStatusLevels,
+  userStatusesOrderedList,
   userStatusFeatures: userStatusAccess,
 
   dbName: process.env.DB_NAME,
@@ -151,7 +165,7 @@ const config = {
 
 /**
  * Données de connexion à la base de données
- * @constant {object}
+ * @constant {Object}
  */
 export const dbOptions = {
   db: config.dbName,
@@ -161,7 +175,7 @@ export const dbOptions = {
 
 /**
  * Données de connexion au serveur de SMTP pour les envois de mail
- * @constant {object}
+ * @constant {Object}
  */
 export const smtpOptions = {
   host: config.smtpServer,
