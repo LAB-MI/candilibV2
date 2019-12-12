@@ -81,7 +81,10 @@
         {{ $formatMessage({ id: 'stepper_queue_step_subtitle' }, { lineDelay }) }}
       </small>
     </v-stepper-step>
-    <v-stepper-content step="4">
+    <v-stepper-content
+      v-if="queueStep"
+      :step="queueStep"
+    >
       <p>
         {{ $formatMessage({ id: 'stepper_queue_step_p' }) }}
       </p>
@@ -99,7 +102,9 @@
         {{ $formatMessage({ id: 'stepper_step_5_subtitle' }) }}
       </small>
     </v-stepper-step>
-    <v-stepper-content step="5">
+    <v-stepper-content
+      :step="lastStep"
+    >
       <p>
         {{ $formatMessage({ id: 'stepper_step_5_p' }) }}
       </p>
