@@ -6,6 +6,7 @@ export async function getCandidatConfig (req, res) {
   appLogger.info({
     description: 'Getting candidat config',
     section: 'candidat-config',
+    config,
   })
   res.json({ success: true, config })
 }
