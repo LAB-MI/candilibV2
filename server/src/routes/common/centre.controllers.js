@@ -72,18 +72,18 @@ export async function getCentres (req, res) {
  * @param {import('express').Response} res Réponse express
  */
 export async function getAdminCentres (req, res) {
-  const { departements, userId } = req
+  const { departements } = req
 
   const loggerContent = {
     section: 'admin-get-centres',
-    admin: userId,
+    action: 'GET ADMIN CENTRES',
+    admin: req.userId,
   }
   const centres = await findAllCentresForAdmin(departements)
 
   appLogger.info({
     ...loggerContent,
-    action: 'GET ADMIN CENTRES',
-    centres,
+    nbCentres: centres.length,
   })
 
   res.status(200).json({
@@ -97,17 +97,29 @@ export async function enableOrDisableCentre (req, res) {
 
   const { centreId, active } = req.body
 
-  if (!centreId) {
-    return res.status(400).send({
-      success: false,
-      message: 'Aucun centre sélectionné',
-    })
-  }
   const loggerContent = {
     section: 'admin-enable-or-disable-centre',
-    admin: userId,
     action: 'ENABLE OR DISABLE ADMIN CENTRES',
+    admin: userId,
+    centreId,
+    enable: active,
   }
+
+  if (!centreId) {
+    const errorNoCentre = {
+      success: false,
+      message: 'Aucun centre sélectionné',
+    }
+
+    appLogger.error({
+      ...loggerContent,
+      error: new Error(errorNoCentre.message),
+      description: errorNoCentre.message,
+    })
+
+    return res.status(400).send({ errorNoCentre })
+  }
+
   try {
     const centre = await updateCentreStatus(centreId, active, userId)
 
@@ -124,7 +136,9 @@ export async function enableOrDisableCentre (req, res) {
     appLogger.error({
       ...loggerContent,
       error,
+      description: error.message,
     })
+
     return res.status(error.status || 500).json({
       success: false,
       message: error.status ? error.message : UNKNOWN_ERROR_UPDATE_CENTRE,
