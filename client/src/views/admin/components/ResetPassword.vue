@@ -31,10 +31,10 @@
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
           @click:append="showPassword = !showPassword"
-        ></v-text-field>
+        />
       </div>
 
-      <password-checker :password="newPassword"/>
+      <password-checker :password="newPassword" />
 
       <div class="form-input">
         <v-text-field

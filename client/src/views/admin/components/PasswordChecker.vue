@@ -5,8 +5,8 @@
       v-show="!value"
       :key="key"
       :text="key"
-      :valid="value">
-    </checker>
+      :valid="value"
+    />
   </ul>
 </template>
 
@@ -16,12 +16,12 @@ import Checker from '@/views/admin/components/Checker.vue'
 import { strongEnoughPasswordObject } from '@/util'
 
 export default {
-  props: {
-    password: String,
-  },
 
   components: {
     Checker,
+  },
+  props: {
+    password: String,
   },
 
   data () {
