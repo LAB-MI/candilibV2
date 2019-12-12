@@ -4,6 +4,7 @@ const caseInsensitive = nom => ({
   $regex: new RegExp('^' + nom.toLowerCase(), 'i'),
 })
 
+// TODO: Add typeDef for Centre type and modify filenames
 /**
  * Retourne tous les centres présents dans la base de données
  *
