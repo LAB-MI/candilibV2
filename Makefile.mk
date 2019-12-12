@@ -98,5 +98,6 @@ CYPRESS_DOWNLOAD_MIRROR  := $(shell echo $$CYPRESS_DOWNLOAD_MIRROR )
 NPM_AUDIT_DRY_RUN  := $(shell echo $$NPM_AUDIT_DRY_RUN )
 
 # Run env
+LINE_DELAY := 0
 # export all variables in subshell
 export
