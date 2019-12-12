@@ -132,6 +132,7 @@ describe('Connected candidate front', () => {
       'contain',
       'Merci de noter Candilib',
     )
+    cy.wait(1000)
     cy.get('.t-evaluation-submit').click()
   })
 
