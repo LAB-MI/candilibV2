@@ -9,6 +9,7 @@ import {
   findCentresByDepartement,
   findAllActiveCentres,
   findAllCentres,
+  findCentreById,
   updateCentreActiveState,
 } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
@@ -67,10 +68,7 @@ export async function findAllCentresForAdmin (departements) {
     throw new Error('departement value is undefined')
   }
 
-  const allCentres = await findAllCentres()
-  const centres = allCentres.filter(centre =>
-    departements.includes(centre.departement)
-  )
+  const centres = await findAllCentres(departements)
 
   return centres
 }
@@ -84,10 +82,7 @@ export async function findAllCentresForAdmin (departements) {
  * @param {boolean} status - Statut désiré, `true` pour un centre à activer, `false` pour le désactiver
  */
 export async function updateCentreStatus (id, status, userId) {
-  const allCentres = await findAllCentres()
-  const centre = allCentres.filter(
-    centre => String(centre._id) === String(id)
-  )[0]
+  const centre = await findCentreById(id)
 
   if (!centre) {
     const error = new Error('Centre introuvable')

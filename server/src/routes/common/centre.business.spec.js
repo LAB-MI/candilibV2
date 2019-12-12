@@ -50,12 +50,11 @@ describe('Centres business', () => {
       centre => centre.nom === centres[0].nom
     )[0]
 
-    await updateCentreStatus(testCentre._id, false, admin._id)
-
-    const allCentresAfter = await findAllCentresForAdmin([
-      centres[0].departement,
-    ])
-    const disabledCentre = allCentresAfter.filter(centre => !centre.active)[0]
+    const disabledCentre = await updateCentreStatus(
+      testCentre._id,
+      false,
+      admin._id
+    )
 
     expect(disabledCentre).toBeDefined()
     expect(disabledCentre).not.toBeNull()
@@ -70,14 +69,11 @@ describe('Centres business', () => {
       centre => centre.nom === centres[0].nom
     )[0]
 
-    await updateCentreStatus(testCentre._id, true, admin._id)
-
-    const allCentresAfter = await findAllCentresForAdmin([
-      centres[0].departement,
-    ])
-    const disabledCentre = allCentresAfter.filter(
-      centre => centre.active && centre.nom === centres[0].nom
-    )[0]
+    const disabledCentre = await updateCentreStatus(
+      testCentre._id,
+      true,
+      admin._id
+    )
 
     expect(disabledCentre).toBeDefined()
     expect(disabledCentre).not.toBeNull()

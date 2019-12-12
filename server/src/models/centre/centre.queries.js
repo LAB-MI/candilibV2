@@ -10,10 +10,13 @@ const caseInsensitive = nom => ({
  * @async
  * @function
  *
+ * @param {string[]} departements - Liste des départements pour filtrer les centres
  * @returns {Centre[]} Liste des centres
  */
-export const findAllCentres = async () => {
-  const centres = await Centre.find({})
+export const findAllCentres = async departements => {
+  const centres = await Centre.find(
+    departements ? { departement: { $in: departements } } : {}
+  )
   return centres
 }
 
@@ -117,10 +120,11 @@ export const updateCentreActiveState = async (centre, active, email) => {
   if (!centre) {
     throw new Error('No centre given')
   }
+  const updateObject = { active }
   if (!active && email) {
-    await centre.updateOne({ disabledBy: email })
+    updateObject.disabledBy = email
   }
-  await centre.updateOne({ active })
+  await centre.updateOne(updateObject)
   const updatedCentre = await Centre.findById(centre._id)
   return updatedCentre
 }
@@ -212,7 +216,7 @@ export const findCentreByNameAndDepartement = async (nom, departement) => {
  * @returns {Centre} Centre correspondant
  */
 export const findCentreById = async id => {
-  const centre = await Centre.findOne({ _id: id, active: { $ne: false } })
+  const centre = await Centre.findById(id)
   return centre
 }
 
