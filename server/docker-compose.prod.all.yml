@@ -44,7 +44,7 @@ services:
       CANDIDAT_EXPIREDIN: ${CANDIDAT_EXPIREDIN:-72h}
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
       ADMIN_URL: ${ADMIN_URL:-http://localhost:8080}
-      LINE_DELAY: ${LINE_DELAY:-0}
+      LINE_DELAY: ${LINE_DELAY}
 
       SECRET: ${SECRET}
 
