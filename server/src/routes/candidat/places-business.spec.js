@@ -10,6 +10,9 @@ import {
 import { getDatesByCentre, canCancelReservation } from './places-business'
 import { getFrenchLuxon } from '../../util'
 import config from '../../config'
+import { findCandidatById } from '../../models/candidat'
+
+jest.mock('../../models/candidat')
 
 describe('Test places business: utiles functions', () => {
   it('Should return true when entry date is 7 days and 2 hours days hours after now', () => {
@@ -47,6 +50,10 @@ describe('Test places business: get dates from places available', () => {
   })
 
   it('Should get 2 dates from places Centre 2', async () => {
+    findCandidatById.mockResolvedValue({
+      dateReussiteETG: getFrenchLuxon().toJSDate(),
+    })
+
     const centreSelected = centres[1]
     const dates = await getDatesByCentre(
       centreSelected.departement,

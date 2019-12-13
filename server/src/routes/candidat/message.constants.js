@@ -32,3 +32,5 @@ export const CANDIDAT_EMAIL_NOT_CONFIRM_IN_2H =
   'Votre lien de validation courriel a expiré, car sa durée de validitée est de 2h, vous devez refaire la pré-inscription'
 export const PARAMETERS_VERSUS_INFOS_CANDIDAT =
   'Les paramètres ne correspondent pas aux informations que vous avez transmises'
+export const CANDIDAT_DATE_ETG_KO =
+  'Votre code de la route n’est plus valide à partir du '
