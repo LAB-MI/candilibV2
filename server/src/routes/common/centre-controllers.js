@@ -186,7 +186,7 @@ export async function enableOrDisableCentre (req, res) {
  * @param {string} req.body.departement - Département du centre
  * @param {import('express').Response} res Réponse express
  */
-export async function addNewCentre (req, res) {
+export async function createCentre (req, res) {
   const { departements, userId } = req
 
   const { nom, label, adresse, lon, lat, departement } = req.body

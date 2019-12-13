@@ -55,6 +55,7 @@ export default model
  * @property {Geoloc} geoloc - Informations de géolocalisation du centre
  * @property {boolean} active - Si `false`, le centre n'apparaîtra pas dans les requêtes des utilisateurs
  * @property {string} disabledBy - Adresse courriel du dernier utilisateur ayant désactivé le centre
+ * @property {string} disabledAt - Date à laquelle le centre a été désactivé
  *
  * @typedef {Object} module:models/centre/centre-model~Geoloc
  * @global

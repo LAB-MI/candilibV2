@@ -37,7 +37,7 @@ import {
 import {
   getAdminCentres,
   enableOrDisableCentre,
-  addNewCentre,
+  createCentre,
 } from '../common/centre-controllers'
 import {
   verifyAccessAurige,
@@ -1748,7 +1748,7 @@ router.patch(
 router.post(
   '/centres',
   verifyUserLevel(config.userStatusLevels.admin),
-  addNewCentre
+  createCentre
 )
 
 export default router
