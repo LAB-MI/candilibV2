@@ -1,3 +1,9 @@
+/**
+ * Module regroupant la logique métier concernant les actions possibles sur les centres
+ *
+ * @module routes/common/centre-business
+ */
+
 import {
   countAvailablePlacesByCentre,
   findAllPlacesByCentre,
@@ -61,7 +67,7 @@ export async function findCentresWithPlaces (departement, beginDate, endDate) {
  * @function
  *
  * @param {string[]} departements - Départements pour lesquels récupérer les centres
- * @returns {Centre[]} Liste des centres correspondants
+ * @returns {Promise.<CentreMongo[]>} Liste des centres correspondants
  */
 export async function findAllCentresForAdmin (departements) {
   if (!departements || !departements.length) {

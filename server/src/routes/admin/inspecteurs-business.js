@@ -12,7 +12,7 @@ import {
 import {
   findCentresByDepartement,
   findCentreById,
-} from '../../models/centre/centre.queries'
+} from '../../models/centre'
 import {
   findAllPlacesBookedByCentreAndInspecteurs,
   findPlaceBookedByInspecteur,
