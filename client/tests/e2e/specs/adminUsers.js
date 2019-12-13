@@ -146,6 +146,7 @@ describe('Create and see users', () => {
     cy.get('.t-list-email')
       .should('not.contain', repartiteurEmail4)
   })
+
   it('Should update status and/or departements user', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/users')
     cy.get('.t-input-email [type=text]')
@@ -155,10 +156,6 @@ describe('Create and see users', () => {
     cy.contains(Cypress.env('repartiteur'))
       .click()
     cy.get('.t-select-departements')
-      .click()
-    cy.contains('93')
-      .click()
-    cy.contains('93')
       .click()
     cy.get('.t-create-btn')
       .click()
@@ -188,7 +185,7 @@ describe('Create and see users', () => {
       .should('contain', `L'utilisateur ${repartiteurEmail5} a bien été modifié`)
   })
 
-  it.only('Should not update status and/or departements of user', () => {
+  it('Should not update status and/or departements of user', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/users')
     cy.get('.t-input-email [type=text]')
       .type(repartiteurEmail6)
@@ -207,8 +204,6 @@ describe('Create and see users', () => {
 
     cy.get('.t-list-email')
       .should('contain', repartiteurEmail6)
-
-    cy.get('.t-list-email')
       .contains(repartiteurEmail6)
       .parents('.t-list')
       .find('.t-btn-update')

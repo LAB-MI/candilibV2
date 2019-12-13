@@ -56,7 +56,7 @@
           :aria-disabled="isUpdatingUser"
           @click="updateUser"
         >
-          Oui, modifier
+          Modifier
         </v-btn>
       </v-container>
     </v-card>
