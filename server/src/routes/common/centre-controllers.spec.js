@@ -23,7 +23,7 @@ import {
   NOT_CODE_DEP_MSG,
   getAdminCentres,
   enableOrDisableCentre,
-  addNewCentre,
+  createCentre,
 } from './centre-controllers'
 import { getFrenchLuxon } from '../../util'
 
@@ -255,7 +255,7 @@ describe('Centre controllers admin', () => {
     mockApp.use(bodyParser.json({ limit: '20mb' }))
     mockApp.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 
-    mockApp.post(`${apiPrefix}/admin/centres`, addNewCentre)
+    mockApp.post(`${apiPrefix}/admin/centres`, createCentre)
 
     const { body } = await request(mockApp)
       .post(`${apiPrefix}/admin/centres`)
