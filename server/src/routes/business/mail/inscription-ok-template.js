@@ -8,6 +8,8 @@ export const getInscriptionOkTemplate = (
   contactezNous,
   canAccessAt
 ) => {
+  if (!urlMagicLink) return ''
+
   const header = `
     <p>Madame, Monsieur ${nomMaj},</p>
     <br>
@@ -53,6 +55,14 @@ export const getInscriptionOkTemplate = (
     <strong>Attention : </strong>vous ne devez transmettre cet email à personne. Il permet d'accéder à votre compte personnel, de créer ou modifier votre réservation.
     </p>
   `
+
+  if (!canAccessAt) {
+    return `
+    ${header}
+    ${contentForAllowedCandidat}
+    ${footer}
+  `
+  }
 
   const dateCanAccess = getFrenchFormattedDateTime(canAccessAt).date
   const contentForQueuedCandidat = `
