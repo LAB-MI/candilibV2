@@ -63,6 +63,11 @@ const headerIcons = [
     tooltipText: 'Répartiteur/Délégué',
     isProtected: true,
   },
+  {
+    routerTo: 'centres',
+    iconName: 'business',
+    tooltipText: "Centres d'examens",
+  },
 ]
 
 export default {
