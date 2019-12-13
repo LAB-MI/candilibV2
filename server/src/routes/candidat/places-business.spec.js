@@ -47,6 +47,10 @@ describe('Test places business: get dates from places available', () => {
   })
 
   it('Should get 2 dates from places Centre 2', async () => {
+    findCandidatById.mockResolvedValue({
+      dateReussiteETG: getFrenchLuxon().toJSDate(),
+    })
+
     const centreSelected = centres[1]
     const dates = await getDatesByCentre(
       centreSelected.departement,
