@@ -1,4 +1,8 @@
-import { getFrenchLuxonFromIso, creneauSetting, getFrenchLuxonCurrentDateTime } from '../util'
+import {
+  getFrenchLuxonFromIso,
+  creneauSetting,
+  getFrenchLuxonCurrentDateTime,
+} from '../util'
 
 import api from '@/api'
 import {
@@ -50,9 +54,9 @@ export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 export const numberOfMonthsToFetch = 3
 
 const AUTHORIZED_ROUTES = {
-  'aurige': ROUTE_AUTHORIZE_AURIGE,
+  aurige: ROUTE_AUTHORIZE_AURIGE,
   'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
-  'users': ROUTE_AUTHORIZE_USERS,
+  users: ROUTE_AUTHORIZE_USERS,
 }
 
 export default {
@@ -67,7 +71,9 @@ export default {
       if (!state.departements.emails.length) {
         return state.email
       }
-      const selectedEmail = state.departements.emails.find(el => el && el._id === state.departements.active)
+      const selectedEmail = state.departements.emails.find(
+        el => el && el._id === state.departements.active,
+      )
       return (selectedEmail && selectedEmail.email) || state.email
     },
   },
@@ -108,15 +114,23 @@ export default {
       state.departements.isFetching = true
     },
     [FETCH_ADMIN_INFO_SUCCESS] (state, infos) {
-      state.departements.list = infos.departements
-      state.email = infos.email
-      state.status = infos.status
-      state.features = infos.features && infos.features.map(feature => AUTHORIZED_ROUTES[feature])
+      const {
+        email,
+        departements,
+        status,
+        features,
+        emailsDepartements,
+      } = infos
+
+      state.departements.list = departements
+      state.email = email
+      state.status = status
+      state.features = features && features.map(feature => AUTHORIZED_ROUTES[feature])
 
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
 
-      state.departements.active = activeDepartement || infos.departements[0]
-      state.departements.emails = infos.emailsDepartements || []
+      state.departements.active = activeDepartement || departements[0]
+      state.departements.emails = emailsDepartements || []
       state.departements.isFetching = false
     },
     [FETCH_ADMIN_INFO_FAILURE] (state) {
@@ -225,45 +239,72 @@ export default {
       }
     },
 
-    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] ({ commit, dispatch, rootState, state }, timeWindow = {}) {
+    async [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] (
+      { commit, dispatch, rootState, state },
+      timeWindow = {},
+    ) {
       const { begin, end } = timeWindow
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
       try {
         const currentDateTime = getFrenchLuxonCurrentDateTime()
         const beginDate = begin || currentDateTime.startOf('day').toISO()
-        const endDate = end || currentDateTime.plus({ months: numberOfMonthsToFetch }).endOf('day').toISO()
-        const placesByCentre = await api.admin
-          .getAllPlacesByDepartement(state.departements.active, beginDate, endDate)
+        const endDate =
+          end ||
+          currentDateTime
+            .plus({ months: numberOfMonthsToFetch })
+            .endOf('day')
+            .toISO()
+        const placesByCentre = await api.admin.getAllPlacesByDepartement(
+          state.departements.active,
+          beginDate,
+          endDate,
+        )
 
         if (placesByCentre.success === false) {
           throw new Error(placesByCentre.message)
         }
 
-        rootState.center.selected = rootState.center.selected || (placesByCentre[0] && placesByCentre[0].centre)
+        rootState.center.selected =
+          rootState.center.selected ||
+          (placesByCentre[0] && placesByCentre[0].centre)
 
-        const placesByCentreAndWeek = Array.isArray(placesByCentre) ? placesByCentre.map(element => ({
-          centre: element.centre,
-          places: element.places.reduce((acc, place) => {
-            const keyString = getFrenchLuxonFromIso(place.date).toISOWeekDate().split('-')
-            const key = `${keyString[0]}-${keyString[1]}`
-            const places = { ...acc }
-            places[key] = [...(places[key] || []), place]
-            return places
-          }, {}),
-        })) : []
+        const placesByCentreAndWeek = Array.isArray(placesByCentre)
+          ? placesByCentre.map(element => ({
+            centre: element.centre,
+            places: element.places.reduce((acc, place) => {
+              const keyString = getFrenchLuxonFromIso(place.date)
+                .toISOWeekDate()
+                .split('-')
+              const key = `${keyString[0]}-${keyString[1]}`
+              const places = { ...acc }
+              places[key] = [...(places[key] || []), place]
+              return places
+            }, {}),
+          }))
+          : []
 
-        commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS, placesByCentreAndWeek)
+        commit(
+          FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS,
+          placesByCentreAndWeek,
+        )
       } catch (error) {
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
 
-    async [FETCH_INSPECTEURS_BY_CENTRE_REQUEST] ({ commit, dispatch, state, getters }, centreIdAndDate) {
+    async [FETCH_INSPECTEURS_BY_CENTRE_REQUEST] (
+      { commit, dispatch, state, getters },
+      centreIdAndDate,
+    ) {
       const { centreId, begin, end } = centreIdAndDate
       commit(FETCH_INSPECTEURS_BY_CENTRE_REQUEST)
       try {
-        const list = await api.admin.getInspecteursByCentreAndDate(centreId, begin, end)
+        const list = await api.admin.getInspecteursByCentreAndDate(
+          centreId,
+          begin,
+          end,
+        )
         const newList = list.map(elem => {
           return {
             ...elem,
@@ -320,10 +361,7 @@ export default {
     async [ASSIGN_CANDIDAT_TO_CRENEAU] ({ dispatch, state }, assignData = {}) {
       const { placeId, candidatId } = assignData
       try {
-        const {
-          success,
-          message,
-        } = await api.admin.assignCandidatToPlace(
+        const { success, message } = await api.admin.assignCandidatToPlace(
           placeId,
           candidatId,
           state.departements.active,
@@ -352,10 +390,18 @@ export default {
       }
     },
 
-    async [RESET_PASSWORD_REQUEST] ({ commit, dispatch }, { email, hash, newPassword, confirmNewPassword }) {
+    async [RESET_PASSWORD_REQUEST] (
+      { commit, dispatch },
+      { email, hash, newPassword, confirmNewPassword },
+    ) {
       commit(RESET_PASSWORD_REQUEST)
       try {
-        const response = await api.admin.resetPassword(email, hash, newPassword, confirmNewPassword)
+        const response = await api.admin.resetPassword(
+          email,
+          hash,
+          newPassword,
+          confirmNewPassword,
+        )
         if (response.success === false) {
           throw new Error(response.message)
         }
@@ -375,5 +421,4 @@ export default {
       commit(SET_WEEK_SECTION, currentWeek)
     },
   },
-
 }
