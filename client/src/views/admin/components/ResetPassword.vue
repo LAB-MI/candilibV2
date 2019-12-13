@@ -19,14 +19,12 @@
       <h3 class="text--center">
         C<span class="col-red">A</span>NDILIB
       </h3>
-
       <div class="form-input">
         <v-text-field
           v-model="newPassword"
           class="t-new-password"
           aria-placeholder="nouveau mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
-          hint="Au moins 8 caractères"
           label="nouveau mot de passe"
           name="password"
           :rules="passwordRules"
@@ -35,13 +33,15 @@
           @click:append="showPassword = !showPassword"
         />
       </div>
+
+      <password-checker :password="newPassword" />
+
       <div class="form-input">
         <v-text-field
           v-model="confirmNewPassword"
           class="t-confirm-new-password"
           aria-placeholder="confirmation du nouveau mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
-          hint="Au moins 8 caractères"
           label="confirmation du nouveau mot de passe"
           name="confirmNewPassword"
           :rules="confirmNewPasswordRules"
@@ -69,11 +69,15 @@
 
 <script>
 
+import PasswordChecker from '@/views/admin/components/PasswordChecker.vue'
 import backgroundImgUrl from '@/assets/bg-login.jpg'
 import { SHOW_ERROR, SHOW_SUCCESS, RESET_PASSWORD_REQUEST } from '../../../store'
 import { strongEnoughPassword } from '@/util'
 
 export default {
+  components: {
+    PasswordChecker,
+  },
   data () {
     return {
       backgroundImgUrl,
