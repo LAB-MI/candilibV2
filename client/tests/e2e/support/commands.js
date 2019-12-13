@@ -80,7 +80,7 @@ Cypress.Commands.add('addToWhitelist', () => {
     .click()
 })
 
-Cypress.Commands.add('addPlanning', () => {
+Cypress.Commands.add('addPlanning', (dates) => {
   const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
   const horaires = [
     '07:30',
@@ -103,12 +103,15 @@ Cypress.Commands.add('addPlanning', () => {
     '16:00',
   ]
 
-  const csvRowBuilder = (inspecteur, matricule) => horaire => `${Cypress.env('datePlace')},${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
-
-  const placesInspecteur1 = horaires.map(csvRowBuilder(Cypress.env('inspecteur'), Cypress.env('matricule')))
-  const placesInspecteur2 = horaires.map(csvRowBuilder(Cypress.env('inspecteur2'), Cypress.env('matricule2')))
-
-  const placesArray = [csvHeaders].concat(placesInspecteur1).concat(placesInspecteur2).join('\n')
+  const datePlaces = dates ? dates.map(date => date.toFormat('dd/MM/yy')) : []
+  datePlaces.push(Cypress.env('datePlace'))
+  const placesInspecteurs = datePlaces.reduce((acc, datePlace) => {
+    const csvRowBuilder = (inspecteur, matricule) => horaire => `${datePlace},${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
+    const placesInspecteur1 = horaires.map(csvRowBuilder(Cypress.env('inspecteur'), Cypress.env('matricule')))
+    const placesInspecteur2 = horaires.map(csvRowBuilder(Cypress.env('inspecteur2'), Cypress.env('matricule2')))
+    return acc.concat(placesInspecteur1).concat(placesInspecteur2)
+  }, [])
+  const placesArray = [csvHeaders].concat(placesInspecteurs).join('\n')
   // Creates the csv file
   cy.writeFile(Cypress.env('filePath') + '/planning.csv', placesArray)
   // Adds the places from the created planning file
@@ -238,9 +241,10 @@ Cypress.Commands.add('candidateValidation', () => {
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
 })
 
-Cypress.Commands.add('addCandidatToPlace', () => {
+Cypress.Commands.add('addCandidatToPlace', (date) => {
   // Goes to planning
-  cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+  const placeDate = (date && date.toFormat('yyyy-MM-dd')) || Cypress.env('placeDate')
+  cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + placeDate)
   // Add candidate to the first place
   cy.get('.v-tabs')
     .contains(Cypress.env('centre'))

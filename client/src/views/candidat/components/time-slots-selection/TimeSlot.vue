@@ -11,6 +11,7 @@
     </page-title>
 
     <v-alert
+      class="t-warning-message"
       :value="!!warningMessage"
       type="warning"
       style="font-size: 1em;"
@@ -49,6 +50,7 @@
         v-for="month in timeSlots.list"
         :key="month.label"
         :value="`tab-${month.label}`"
+        :class="`t-tab-${month.label}`"
       >
         <v-card flat>
           <v-card-text>
@@ -58,7 +60,7 @@
             />
             <div
               v-else
-              class="blue-grey--text font-italic"
+              class="blue-grey--text font-italic t-time-slots-message-empty-places"
             >
               Il n'y a pas de créneau disponible pour ce mois.
             </div>
