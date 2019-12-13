@@ -48,7 +48,7 @@ import npmVersion from '../package.json'
  *           type: array
  *           description: Liste des départements accessibles par l'administrateur
  *           items:
- *             type: number
+ *             type: string
  *         features:
  *           type: array
  *           description: Liste de fonctionnalités accessibles par l'administrateur
@@ -72,14 +72,14 @@ import npmVersion from '../package.json'
  *       example:
  *         email: admin@exemple.com
  *         departements: [
- *           75
+ *           '75'
  *         ]
  *         features: [
- *           aurige
+ *           'aurige'
  *         ]
  *         emailsDepartements: [ {
- *           _id: 75,
- *           email: email75@departement.com
+ *           _id: '75',
+ *           email: 'email75@departement.com'
  *         } ]
  *
  *     CenterObject:

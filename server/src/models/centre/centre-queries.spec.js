@@ -7,7 +7,7 @@ import {
   findCentreByNameAndDepartement,
   createCentre,
   updateCentreActiveState,
-} from './centre.queries'
+} from './centre-queries'
 import {
   setInitCreatedCentre,
   createCentres,

@@ -5,7 +5,7 @@
 import express from 'express'
 
 import { getMe, saveEvaluation } from './candidat.controllers'
-import { getCentres } from '../common/centre.controllers'
+import { getCentres } from '../common/centre-controllers'
 import {
   getPlaces,
   bookPlaceByCandidat,

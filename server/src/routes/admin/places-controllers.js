@@ -20,7 +20,7 @@ import {
   getFrenchFormattedDateTime,
   ErrorWithStatus,
 } from '../../util'
-import { findCentresWithPlaces } from '../common/centre.business'
+import { findCentresWithPlaces } from '../common/centre-business'
 import {
   assignCandidatInPlace,
   createPlaceForInspector,

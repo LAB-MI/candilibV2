@@ -23,7 +23,7 @@ import {
   NOT_CODE_DEP_MSG,
   getAdminCentres,
   enableOrDisableCentre,
-} from './centre.controllers'
+} from './centre-controllers'
 import { getFrenchLuxon } from '../../util'
 
 const { default: app, apiPrefix } = require('../../app')

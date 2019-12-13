@@ -37,7 +37,7 @@ import {
 import {
   getAdminCentres,
   enableOrDisableCentre,
-} from '../common/centre.controllers'
+} from '../common/centre-controllers'
 import {
   verifyAccessAurige,
   verifyRepartiteurDepartement,

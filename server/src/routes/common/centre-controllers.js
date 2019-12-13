@@ -1,8 +1,14 @@
+/**
+ * Modules concernant les actions possibles sur les centres
+ *
+ * @module routes/common/centre-controllers
+ */
+
 import {
   findCentresWithNbPlaces,
   findAllCentresForAdmin,
   updateCentreStatus,
-} from './centre.business'
+} from './centre-business'
 import { findCentreByNameAndDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
 import config from '../../config'
@@ -92,6 +98,18 @@ export async function getAdminCentres (req, res) {
   })
 }
 
+/**
+ * Active ou désactive un centre
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req Requête express
+ * @param {string} req.userId - Identifiant de l'utilisateur
+ * @param {Object} req.body
+ * @param {string} req.body.centreId - Identifiant du centre à modifier
+ * @param {boolean} req.body.active - Vaut `false` si le centre doit être désactivé ou `true` s'il doit être activé
+ * @param {import('express').Response} res Réponse express
+ */
 export async function enableOrDisableCentre (req, res) {
   const userId = req.userId
 

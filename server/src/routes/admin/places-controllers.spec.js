@@ -4,12 +4,12 @@ import express from 'express'
 import app, { apiPrefix } from '../../app'
 import config from '../../config'
 import { findCandidatById } from '../../models/candidat'
-import centreModel from '../../models/centre/centre.model'
+import centreModel from '../../models/centre/centre-model'
 import { createInspecteur } from '../../models/inspecteur'
 import { createPlace, findPlaceById } from '../../models/place'
 import placeModel from '../../models/place/place.model'
 import { createUser } from '../../models/user'
-import { createCentre } from '../../models/centre/centre.queries'
+import { createCentre } from '../../models/centre/centre-queries'
 
 import {
   bookCandidatOnSelectedPlace,

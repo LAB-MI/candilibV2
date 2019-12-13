@@ -8,7 +8,7 @@ import {
   centres,
 } from '../../models/__tests__/centres'
 
-import { findAllCentresForAdmin, updateCentreStatus } from './centre.business'
+import { findAllCentresForAdmin, updateCentreStatus } from './centre-business'
 import { createUser } from '../../models/user'
 
 describe('Centres business', () => {

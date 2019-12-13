@@ -589,12 +589,6 @@ export const validCentreDateReservation = async (
  * @typedef {Object} Candidat
  *
  * @property {string} nomNaissance         - Nom de naissance du candidat
- */
-
-/**
- * @typedef {Object} Candidat
- *
- * @property {string} nomNaissance         - Nom de naissance du candidat
  * @property {string} prenom               - Prénom du candidat
  * @property {string} codeNeph             - NEPH du candidat
  * @property {string} departement          - Département des centres à afficher au candidat
