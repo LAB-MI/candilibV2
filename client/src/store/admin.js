@@ -42,6 +42,10 @@ export const FETCH_INSPECTEURS_BY_CENTRE_REQUEST = 'FETCH_INSPECTEURS_BY_CENTRE_
 export const FETCH_INSPECTEURS_BY_CENTRE_FAILURE = 'FETCH_INSPECTEURS_BY_CENTRE_FAILURE'
 export const FETCH_INSPECTEURS_BY_CENTRE_SUCCESS = 'FETCH_INSPECTEURS_BY_CENTRE_SUCCESS'
 
+export const FETCH_ALL_CENTERS_REQUEST = 'FETCH_ALL_CENTERS_REQUEST'
+export const FETCH_ALL_CENTERS_SUCCESS = 'FETCH_ALL_CENTERS_SUCCESS'
+export const FETCH_ALL_CENTERS_FAILURE = 'FETCH_ALL_CENTERS_FAILURE'
+
 export const DELETE_PLACE_REQUEST = 'DELETE_PLACE_REQUEST'
 export const DELETE_PLACE_SUCCESS = 'DELETE_PLACE_SUCCESS'
 export const DELETE_PLACE_FAILURE = 'DELETE_PLACE_FAILURE'
@@ -95,6 +99,11 @@ export default {
   },
 
   state: {
+    centres: {
+      isFetching: false,
+      error: undefined,
+      list: [],
+    },
     departements: {
       active: undefined,
       emails: [],
@@ -229,6 +238,18 @@ export default {
     [FETCH_INSPECTEURS_BY_CENTRE_FAILURE] (state, error) {
       state.inspecteurs.error = error
       state.inspecteurs.isFetching = false
+    },
+
+    [FETCH_ALL_CENTERS_REQUEST] (state) {
+      state.centres.isFetching = true
+    },
+    [FETCH_ALL_CENTERS_SUCCESS] (state, list) {
+      state.centres.list = list
+      state.centres.isFetching = false
+    },
+    [FETCH_ALL_CENTERS_FAILURE] (state, error) {
+      state.centres.error = error
+      state.centres.isFetching = false
     },
 
     [DELETE_PLACE_REQUEST] (state) {
@@ -436,6 +457,16 @@ export default {
         commit(DELETE_IPCSR_FAILURE, error)
         dispatch(SHOW_ERROR, error.message)
         throw error
+      }
+    },
+
+    async [FETCH_ALL_CENTERS_REQUEST] ({ commit }) {
+      commit(FETCH_ALL_CENTERS_REQUEST)
+      try {
+        const { centres } = await api.admin.getAllCentres()
+        commit(FETCH_ALL_CENTERS_SUCCESS, centres)
+      } catch (error) {
+        commit(FETCH_ALL_CENTERS_FAILURE, error)
       }
     },
 

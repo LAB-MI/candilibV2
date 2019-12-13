@@ -563,6 +563,14 @@ export default {
       })
       return json
     },
+
+    async getAllCentres () {
+      const url = apiPaths.admin.centres
+      const json = await apiClient.get(url, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
   },
 
   util: {
