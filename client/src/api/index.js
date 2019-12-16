@@ -228,6 +228,14 @@ export default {
       return json
     },
 
+    async updateUser (email, { status, departements }) {
+      const json = await apiClient.patch(apiPaths.admin.users, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ email, status, departements }),
+      })
+      return json
+    },
+
     async deleteUser (emailToDelete) {
       const json = await apiClient.delete(apiPaths.admin.users, {
         headers: getHeadersForAdminJson(),

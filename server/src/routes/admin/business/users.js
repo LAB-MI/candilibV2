@@ -72,7 +72,7 @@ export const getAppropriateUsers = async userId => {
  * @param {string} status - Statut de l'utilisateur créé
  * @param {string[]} departements - Département de l'utilisateur créé
  *
- * @returns {Promise.<import('../../../models/user/user.model.js').User[]}
+ * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
  */
 export const createAppropriateUser = async (
   userId,
@@ -120,7 +120,7 @@ export const createAppropriateUser = async (
  * @param {string} param.status - Statut de l'utilisateur à modifier
  * @param {string[]} param.departements - Département de l'utilisateur à modifier
  *
- * @returns {Promise.<import('../../../models/user/user.model.js').User[]}
+ * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
  */
 export const updateUserBusiness = async (
   userId,

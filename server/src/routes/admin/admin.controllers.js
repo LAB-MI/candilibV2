@@ -79,6 +79,7 @@ const findInfoAdminById = async userId => {
   return {
     email,
     departements,
+    status,
     features,
     emailsDepartements,
   }
