@@ -4,6 +4,21 @@
 #
 set -e
 APP=candilib
+# Set Front env variables at run time
+if [ -n "${LINE_DELAY}" ] ;then
+  (
+  cd /usr/share/nginx/html
+  if [ -f config-candilib.json ] ;then
+    cat > config-candilib.json <<EOF
+{
+  "lineDelay": ${LINE_DELAY}
+}
+EOF
+  fi
+  )
+fi
+
+# Set nginx env variables
 [ -z "${APP}" -o -z "${API_HOST}" -o -z "${API_PORT}" ] && exit 1
 (
  cat /etc/nginx/conf.d/default.template | \

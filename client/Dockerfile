@@ -40,6 +40,8 @@ COPY .env.candidat .env.admin ./
 COPY babel.config.js cypress.json jsconfig.json package-lock.json package.json vue.config.js ./
 # Install app dependencies
 
+ARG LINE_DELAY
+RUN [ -z "$LINE_DELAY" ] || [ -f "public/config-candilib.json" ]  && { echo '{"lineDelay": '"$LINE_DELAY"'}' > public/config-candilib.json  ; }
 RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm install --loglevel http
 EXPOSE 8080
 

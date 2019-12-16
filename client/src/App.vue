@@ -37,12 +37,6 @@ export default {
     AppEvaluation,
   },
 
-  data () {
-    return {
-      showDialog: this.authStatus,
-    }
-  },
-
   computed: {
     authStatus () {
       const isChecking = this.$store.state.auth.statusAdmin === CHECKING_AUTH_ADMIN ||

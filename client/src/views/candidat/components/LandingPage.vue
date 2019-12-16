@@ -11,7 +11,9 @@
         </v-btn>
       </router-link>
     </div>
+
     <candidat-stepper />
+
     <footer>
       <div class="actions">
         <already-signed-up
