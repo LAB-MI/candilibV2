@@ -1,44 +1,38 @@
 <template>
   <div class="u-max-width">
     <page-title title="Centres d'examens" />    <v-container>
-      <v-card
-        :style="{ padding: '1em 0', position: 'relative' }"
-      >
+      <v-card>
         <v-list
           class="centre-grid"
         >
           <v-list-item
             v-for="centre in centres"
             :key="centre._id"
-            :disabled="!centre.active"
-            :class="{
-              'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !centre.active
-            }"
-            @click="() => {}"
+            selectable
+            :class="{ 'blue-grey  lighten-5': !centre.active }"
           >
             <v-card-text>
-              <div
-                class="u-flex"
-              >
+              <div>
                 <v-list-item-content>
                   <v-list-item-title>
                     <span class="u-uppercase">
                       {{ centre.nom }}
+                      ({{ centre.departement }})
                     </span>
-
-                    ({{ centre.departement }})
                   </v-list-item-title>
 
-                  <v-list-item-subtitle
-                    class="u-flex__item--grow"
-                  >
+                  <v-list-item-subtitle>
                     {{ centre.adresse }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
               </div>
             </v-card-text>
-            <v-icon>{{ centre.active ? 'check' : 'error' }}</v-icon>
-            {{ centre.active ? 'Actif' : 'Désactivé' }}
+            <center-list-dialog
+              :centre="centre.nom + ' (' + centre.departement + ')'"
+              :action="centre.active ? 'Désactiver' : 'Activer'"
+              :active="centre.active"
+              @click="changeState(centre._id, !centre.active)"
+            />
           </v-list-item>
         </v-list>
       </v-card>
@@ -47,8 +41,12 @@
 </template>
 
 <script>
-import { FETCH_ALL_CENTERS_REQUEST } from '../../../store'
+import { FETCH_ALL_CENTERS_REQUEST, CHANGE_CENTER_STATE_REQUEST } from '@/store'
+import centerListDialog from './CenterListDialog'
 export default {
+  components: {
+    centerListDialog,
+  },
   computed: {
     centres () {
       return this.$store.state.admin.centres.list
@@ -56,6 +54,11 @@ export default {
   },
   mounted () {
     this.$store.dispatch(FETCH_ALL_CENTERS_REQUEST)
+  },
+  methods: {
+    changeState (id, active) {
+      this.$store.dispatch(CHANGE_CENTER_STATE_REQUEST, { id, active })
+    },
   },
 }
 </script>
