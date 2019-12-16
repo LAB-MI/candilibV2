@@ -135,7 +135,7 @@ export async function enableOrDisableCentre (req, res) {
       description: errorNoCentre.message,
     })
 
-    return res.status(400).send({ errorNoCentre })
+    return res.status(400).send(errorNoCentre)
   }
 
   try {
@@ -148,6 +148,7 @@ export async function enableOrDisableCentre (req, res) {
 
     res.status(200).json({
       success: true,
+      message: 'Le centre a bien été ' + (active ? 'activé' : 'désactivé'),
       centre,
     })
   } catch (error) {

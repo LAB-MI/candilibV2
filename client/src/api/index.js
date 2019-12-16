@@ -571,6 +571,14 @@ export default {
       })
       return json
     },
+
+    async changeCentreStatus (centreId, active) {
+      const json = await apiClient.patch(apiPaths.admin.centres, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ centreId, active }),
+      })
+      return json
+    },
   },
 
   util: {

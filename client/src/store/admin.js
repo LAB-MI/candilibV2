@@ -68,6 +68,10 @@ export const RESET_PASSWORD_REQUEST = 'RESET_PASSWORD_REQUEST'
 export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS'
 export const RESET_PASSWORD_FAILURE = 'RESET_PASSWORD_FAILURE'
 
+export const CHANGE_CENTER_STATE_REQUEST = 'CHANGE_CENTER_STATE_REQUEST'
+export const CHANGE_CENTER_STATE_SUCCESS = 'CHANGE_CENTER_STATE_SUCCESS'
+export const CHANGE_CENTER_STATE_FAILURE = 'CHANGE_CENTER_STATE_FAILURE'
+
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
@@ -101,6 +105,7 @@ export default {
   state: {
     centres: {
       isFetching: false,
+      isUpdating: false,
       error: undefined,
       list: [],
     },
@@ -315,6 +320,17 @@ export default {
     },
     [RESET_PASSWORD_FAILURE] (state) {
       state.isSendingResetPassword = false
+    },
+
+    [CHANGE_CENTER_STATE_REQUEST] (state) {
+      state.centres.isUpdating = true
+    },
+    [CHANGE_CENTER_STATE_SUCCESS] (state) {
+      state.centres.isUpdating = false
+    },
+    [CHANGE_CENTER_STATE_FAILURE] (state, error) {
+      state.centres.error = error
+      state.centres.isUpdating = false
     },
   },
 
@@ -563,6 +579,23 @@ export default {
         commit(RESET_PASSWORD_SUCCESS)
       } catch (error) {
         commit(RESET_PASSWORD_FAILURE)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
+      }
+    },
+
+    async [CHANGE_CENTER_STATE_REQUEST] ({ commit, dispatch }, { id, active }) {
+      commit(CHANGE_CENTER_STATE_REQUEST)
+      try {
+        const response = await api.admin.changeCentreStatus(id, active)
+        if (response.success === false) {
+          throw new Error(response.message)
+        }
+        commit(CHANGE_CENTER_STATE_SUCCESS)
+        dispatch(FETCH_ALL_CENTERS_REQUEST)
+        dispatch(SHOW_SUCCESS, response.message)
+      } catch (error) {
+        commit(CHANGE_CENTER_STATE_FAILURE)
         dispatch(SHOW_ERROR, error.message)
         throw error
       }
