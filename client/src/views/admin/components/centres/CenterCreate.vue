@@ -94,6 +94,7 @@
           type="submit"
           :disabled="!valid || isCreating"
           :aria-disabled="!valid || isCreating"
+          tabindex="0"
           raised
           color="success"
         >
