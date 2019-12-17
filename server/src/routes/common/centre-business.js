@@ -137,7 +137,10 @@ export async function addCentre (nom, label, adresse, lon, lat, departement) {
     throw error
   }
 
-  const alreadyCreatedCentre = await findCentreByNameAndDepartement(nom, departement)
+  const alreadyCreatedCentre = await findCentreByNameAndDepartement(
+    nom,
+    departement
+  )
 
   if (alreadyCreatedCentre) {
     const error = new Error('Centre déjà présent dans la base de données')

@@ -14,7 +14,10 @@ import { findCentreByNameAndDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
 import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
-import { UNKNOWN_ERROR_UPDATE_CENTRE, UNKNOWN_ERROR_ADD_CENTRE } from '../admin/message.constants'
+import {
+  UNKNOWN_ERROR_UPDATE_CENTRE,
+  UNKNOWN_ERROR_ADD_CENTRE,
+} from '../admin/message.constants'
 
 export const NOT_CODE_DEP_MSG =
   'Le code de département est manquant, Veuillez choisir un code département'
@@ -186,14 +189,7 @@ export async function enableOrDisableCentre (req, res) {
 export async function addNewCentre (req, res) {
   const { departements, userId } = req
 
-  const {
-    nom,
-    label,
-    adresse,
-    lon,
-    lat,
-    departement,
-  } = req.body
+  const { nom, label, adresse, lon, lat, departement } = req.body
 
   const loggerContent = {
     section: 'admin-add-new-centre',
