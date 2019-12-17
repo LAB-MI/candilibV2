@@ -23,7 +23,13 @@ export const faqJson = [
     title: 'Qui peut utiliser le service ?',
     content: [
       {
-        textContent: 'Les « candidats libres » qui ont reçu un mail d\'invitation pour participer à l\'expérimentation.',
+        textContent: 'Tout « candidat libre » peut utiliser le service.',
+      },
+      {
+        textContent: 'Cependant, seuls les départements de la liste suivante proposent des places via ce service : 38, 69, 75, 77, 78, 91, 92, 93, 94, 95.',
+      },
+      {
+        textContent: 'NB : les candidats du 75, du fait des conditions de circulation dans Paris intramuros, pourront choisir parmi les centres d\'examen suivants : Rosny Sous Bois, Noisy Le Grand, Saint Leu La Forêt, Gennevilliers, Bobigny, Vélizy-Villacoublay"',
       },
     ],
   },
@@ -49,6 +55,14 @@ export const faqJson = [
       },
       {
         textContent: 'Confirmez votre réservation.',
+      },
+    ],
+  },
+  {
+    title: 'Quand pourrais-je accéder au planning de réservation ?',
+    content: [
+      {
+        textContent: 'Après l\'acceptation de votre inscription, vous devez attendre 30 jours avant de pouvoir accéder au planning de réservation. Cette mise en file d\'attente vous permet de planifier votre préparation en vue de réussir votre examen du permis de conduire.',
       },
     ],
   },
@@ -115,22 +129,15 @@ export const faqJson = [
       },
     ],
   },
-  {
-    title: 'Je n’ai pas été invité à participer à l’expérimentation ?',
-    content: [
-      {
-        textContent: 'Ce service est restreint aux candidats qui ont reçu un mail d\'invitation à participer à cette expérimentation.',
-      },
-    ],
-  },
+
   {
     title: 'Aide / Contact',
     content: [
       {
-        subTitleContent: 'Ce service est restreint aux candidats qui ont reçu un mail d\'invitation à participer à cette expérimentation.',
+        subTitleContent: 'Si vous vous êtes déjà pré-inscrit, posez vos questions à l\'adresse de contact personnalisée que vous avez reçue par courriel.',
       },
       {
-        subTitleContent: 'Posez vos questions à l\'adresse courriel présente dans votre mail d\'invitation',
+        subTitleContent: 'Si vous n\'êtes pas pré-inscrit, vous pouvez nous contacter à cette adresse candilib@interieur.gouv.fr',
       },
       {
         subTitleContent: 'Si vous n\'avez pas trouvé de réponse à vos questions dans ces informations, vous pouvez nous contacter à cette adresse <a href="mailto:candilib@interieur.gouv.fr">candilib@interieur.gouv.fr</a>.',
