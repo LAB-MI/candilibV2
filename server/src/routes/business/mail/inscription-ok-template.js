@@ -6,10 +6,8 @@ export const getInscriptionOkTemplate = (
   urlConnexion,
   email,
   contactezNous,
-  canAccessAt
+  accessDate
 ) => {
-  if (!urlMagicLink) return ''
-
   const header = `
     <p>Madame, Monsieur ${nomMaj},</p>
     <br>
@@ -31,11 +29,6 @@ export const getInscriptionOkTemplate = (
 
   const contentForAllowedCandidat = `
     <p>
-      Vous êtes inscrit sur
-      le site de réservation de l'examen pratique du permis de conduire.
-    </p>
-    <br/>
-    <p>
       <a href="${urlMagicLink}">
         Se connecter
       </a>
@@ -45,7 +38,7 @@ export const getInscriptionOkTemplate = (
         Ce lien est valable 3 jours à compter de la réception de cet email.
     </p>
     <p>
-      Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse courriel ${email} dans  "déjà inscrit" et vous recevrez un nouveau lien par email.
+      Passé ce délai, allez sur <a href="${urlConnexion}">Candilib</a>, saisissez votre adresse courriel ${email} dans "déjà inscrit" et vous recevrez un nouveau lien par email.
     </p>
     <p>
       Lorsque vous recevrez l’email, cliquez sur "Se connecter".
@@ -56,7 +49,7 @@ export const getInscriptionOkTemplate = (
     </p>
   `
 
-  if (!canAccessAt) {
+  if (!accessDate) {
     return `
     ${header}
     ${contentForAllowedCandidat}
@@ -64,10 +57,11 @@ export const getInscriptionOkTemplate = (
   `
   }
 
-  const dateCanAccess = getFrenchFormattedDateTime(canAccessAt).date
+  const dateCanAccess = getFrenchFormattedDateTime(accessDate).date
   const contentForQueuedCandidat = `
     <p>
-      par-contre connexion possible a partir du ${dateCanAccess}
+      Cependant vous devez attendre 30 jours à partir de votre validation soit la date du ${dateCanAccess},
+      avant d'accéder au planning de réservation. Cette mise en file d'attente vous permet de planifier votre préparation en vue de réussir votre examen pratique du permis de conduire.
     </p>
   `
 
