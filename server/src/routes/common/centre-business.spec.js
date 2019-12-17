@@ -87,7 +87,14 @@ describe('Centres business', () => {
   })
 
   it('Should add one centre', async () => {
-    const centreAdded = await addCentre('CentreTest', 'LabelTest', '1', 42, 104, '93')
+    const centreAdded = await addCentre(
+      'CentreTest',
+      'LabelTest',
+      '1',
+      42,
+      104,
+      '93'
+    )
 
     expect(centreAdded).toBeDefined()
     expect(centreAdded).not.toBeNull()

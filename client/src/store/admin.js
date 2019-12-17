@@ -73,6 +73,10 @@ export const CHANGE_CENTER_STATE_REQUEST = 'CHANGE_CENTER_STATE_REQUEST'
 export const CHANGE_CENTER_STATE_SUCCESS = 'CHANGE_CENTER_STATE_SUCCESS'
 export const CHANGE_CENTER_STATE_FAILURE = 'CHANGE_CENTER_STATE_FAILURE'
 
+export const ADD_NEW_CENTER_REQUEST = 'ADD_NEW_CENTER_REQUEST'
+export const ADD_NEW_CENTER_SUCCESS = 'ADD_NEW_CENTER_SUCCESS'
+export const ADD_NEW_CENTER_FAILURE = 'CHANGE_CENTER_STATE_FAILURE'
+
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
@@ -108,6 +112,7 @@ export default {
     centres: {
       isFetching: false,
       isUpdating: false,
+      isCreating: false,
       error: undefined,
       list: [],
     },
@@ -333,6 +338,17 @@ export default {
     [CHANGE_CENTER_STATE_FAILURE] (state, error) {
       state.centres.error = error
       state.centres.isUpdating = false
+    },
+
+    [ADD_NEW_CENTER_REQUEST] (state) {
+      state.centres.isCreating = true
+    },
+    [ADD_NEW_CENTER_SUCCESS] (state) {
+      state.centres.isCreating = false
+    },
+    [ADD_NEW_CENTER_FAILURE] (state, error) {
+      state.centres.error = error
+      state.centres.isCreating = false
     },
   },
 
@@ -594,7 +610,24 @@ export default {
         dispatch(FETCH_ALL_CENTERS_REQUEST)
         dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {
-        commit(CHANGE_CENTER_STATE_FAILURE)
+        commit(CHANGE_CENTER_STATE_FAILURE, error)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
+      }
+    },
+
+    async [ADD_NEW_CENTER_REQUEST] ({ commit, dispatch }, { nom, label, adresse, lon, lat, departement }) {
+      commit(ADD_NEW_CENTER_REQUEST)
+      try {
+        const response = await api.admin.addNewCenter(nom, label, adresse, lon, lat, departement)
+        if (response.success === false) {
+          throw new Error(response.message)
+        }
+        commit(ADD_NEW_CENTER_SUCCESS)
+        dispatch(FETCH_ALL_CENTERS_REQUEST)
+        dispatch(SHOW_SUCCESS, response.message)
+      } catch (error) {
+        commit(ADD_NEW_CENTER_FAILURE, error)
         dispatch(SHOW_ERROR, error.message)
         throw error
       }

@@ -2,6 +2,7 @@
   <div class="u-max-width">
     <page-title title="Centres d'examens" />    <v-container>
       <v-card>
+        <center-create />
         <v-list
           class="centre-grid"
         >
@@ -42,9 +43,12 @@
 
 <script>
 import { FETCH_ALL_CENTERS_REQUEST, CHANGE_CENTER_STATE_REQUEST } from '@/store'
+import centerCreate from './CenterCreate'
 import centerListDialog from './CenterListDialog'
+
 export default {
   components: {
+    centerCreate,
     centerListDialog,
   },
   computed: {
