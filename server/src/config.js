@@ -66,6 +66,7 @@ const features = {
   AURIGE: 'aurige',
   STATS_KPI: 'stats-kpi',
   AGENTS: 'agents',
+  CENTRES: 'centres',
 }
 
 /**
@@ -76,7 +77,7 @@ const userStatusAccess = {
   [userStatuses.CANDIDAT]: [],
   [userStatuses.REPARTITEUR]: [],
   [userStatuses.DELEGUE]: [features.STATS_KPI, features.AGENTS],
-  [userStatuses.ADMIN]: [features.AURIGE, features.STATS_KPI, features.AGENTS],
+  [userStatuses.ADMIN]: [features.AURIGE, features.STATS_KPI, features.AGENTS, features.CENTRES],
   [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI],
 }
 

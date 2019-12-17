@@ -1562,7 +1562,7 @@ router.delete('/users', verifyDelegueLevel(), archiveUserController)
  */
 router.get(
   '/centres',
-  verifyUserLevel(config.userStatusLevels.delegue),
+  verifyUserLevel(config.userStatusLevels.admin),
   getAdminCentres
 )
 
@@ -1641,7 +1641,7 @@ router.get(
  */
 router.patch(
   '/centres',
-  verifyUserLevel(config.userStatusLevels.delegue),
+  verifyUserLevel(config.userStatusLevels.admin),
   enableOrDisableCentre
 )
 

@@ -10,6 +10,7 @@ import {
   ROUTE_AUTHORIZE_AURIGE,
   ROUTE_AUTHORIZE_STATS_KPI,
   ROUTE_AUTHORIZE_AGENTS,
+  ROUTE_AUTHORIZE_CENTRES,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -81,6 +82,7 @@ const AUTHORIZED_ROUTES = {
   agents: ROUTE_AUTHORIZE_AGENTS,
   aurige: ROUTE_AUTHORIZE_AURIGE,
   'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
+  centres: ROUTE_AUTHORIZE_CENTRES,
 }
 
 export default {
