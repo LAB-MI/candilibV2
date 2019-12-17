@@ -1,17 +1,20 @@
 <template>
   <header class="app-header">
     <h2 class="app-title">
-      {{title}}
-      <slot></slot>
+      {{ title }}
+      <slot />
     </h2>
   </header>
 </template>
 
 <script>
 export default {
-  name: 'page-title',
+  name: 'PageTitle',
   props: {
-    title: String,
+    title: {
+      type: String,
+      default: '',
+    },
   },
 }
 </script>

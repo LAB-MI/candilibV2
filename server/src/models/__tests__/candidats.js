@@ -10,6 +10,7 @@ export const candidats = [
     email: 'test1.test@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
+    departement: '93',
   },
   {
     codeNeph: '123456789001',
@@ -18,6 +19,7 @@ export const candidats = [
     email: 'test2.test@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
+    departement: '93',
   },
   {
     codeNeph: '123456789002',
@@ -26,6 +28,7 @@ export const candidats = [
     email: 'test3.test@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
+    departement: '93',
   },
 ]
 
@@ -37,6 +40,7 @@ export const candidats2 = [
     email: 'test4.test@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
+    departement: '93',
     dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
@@ -48,6 +52,7 @@ export const candidats2 = [
     email: 'test5.test@test.com',
     portable: '0612355678',
     adresse: '10 Rue Oberkampf 75011 Paris',
+    departement: '93',
     dateReussiteETG: getFrenchLuxon().plus({ year: -5, day: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
@@ -59,6 +64,7 @@ export const candidats2 = [
     email: 'test6.test@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
+    departement: '93',
     dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
@@ -70,6 +76,7 @@ export const candidats2 = [
     email: 'test7.test@test.com',
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
+    departement: '93',
     dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
     isValidatedByAurige: false,
     isValidatedEmail: true,

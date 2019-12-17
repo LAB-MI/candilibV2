@@ -45,7 +45,10 @@ import {
   sendScheduleInspecteurs,
   updatePlaces,
 } from './places-controllers'
-import { REASON_MODIFY_RESA_ADMIN } from '../common/reason.constants'
+import {
+  REASON_MODIFY_RESA_ADMIN,
+  REASON_REMOVE_RESA_ADMIN,
+} from '../common/reason.constants'
 import {
   DELETE_PLACES_BY_ADMIN_ERROR,
   DELETE_PLACES_BY_ADMIN_SUCCESS,
@@ -510,7 +513,30 @@ describe('delete place by admin', () => {
       .expect(200)
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('message', DELETE_PLACES_BY_ADMIN_SUCCESS)
+    await Promise.all([
+      expectedArchivedBookedPlaces(result.result1),
+      expectedArchivedBookedPlaces(result.result2),
+    ])
   })
+  const expectedArchivedBookedPlaces = async bookedPlace => {
+    const candidat = await findCandidatById(bookedPlace.candidat)
+
+    expect(candidat).toBeDefined()
+    expect(candidat).toHaveProperty('_id', bookedPlace.candidat)
+    expect(candidat.places.length).toBeGreaterThan(0)
+    const archivedPlace = candidat.places[0]
+    expect(archivedPlace).toHaveProperty('_id', bookedPlace._id)
+    expect(archivedPlace).toHaveProperty(
+      'archiveReason',
+      REASON_REMOVE_RESA_ADMIN
+    )
+    expect(archivedPlace.archivedAt).toBeDefined()
+    const archivedAt = getFrenchLuxonFromJSDate(archivedPlace.archivedAt)
+    const now = getFrenchLuxon()
+    expect(archivedAt.hasSame(now, 'day')).toBe(true)
+
+    expect(archivedPlace).toHaveProperty('byUser', admin.email)
+  }
   it('should return a 400 when array of places to delete is empty', async () => {
     const { body } = await request(app)
       .delete(`${apiPrefix}/admin/places/`)
@@ -742,6 +768,7 @@ describe('Book place and archive with bookedAt and bookedByAdmin attribut', () =
     expect(bkdByAdmin).toHaveProperty('email', email)
     expect(bkdByAdmin).toHaveProperty('signUpDate', signUpDate)
     expect(bkdByAdmin).toHaveProperty('status', status)
+    expect()
   })
 })
 

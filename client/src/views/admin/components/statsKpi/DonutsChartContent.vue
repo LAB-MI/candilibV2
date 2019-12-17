@@ -45,6 +45,7 @@ export default {
   props: {
     chartInfo: {
       type: Object,
+      default () {},
     },
   },
 

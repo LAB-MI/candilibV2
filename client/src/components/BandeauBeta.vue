@@ -1,6 +1,11 @@
 <template>
   <span>
-    <img :src="beta" alt="Version bêta" class="beta" :class="{ fixed }" />
+    <img
+      :src="beta"
+      alt="Version bêta"
+      class="beta"
+      :class="{ fixed }"
+    >
   </span>
 </template>
 
@@ -9,7 +14,10 @@ import beta from '@/assets/images/beta.png'
 
 export default {
   props: {
-    fixed: Boolean,
+    fixed: {
+      type: Boolean,
+      default: false,
+    },
   },
   data () {
     return {

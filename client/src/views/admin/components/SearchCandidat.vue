@@ -3,7 +3,6 @@
     <div class="u-flex u-flex--center">
       <candilib-autocomplete
         class="search-input t-search-candidat"
-        @selection="displayCandidatInfo"
         label="Candidats"
         hint="Chercher un candidat par son nom / NEPH / email"
         placeholder="Dupont"
@@ -11,6 +10,7 @@
         item-text="nameNeph"
         item-value="_id"
         :fetch-autocomplete-action="fetchAutocompleteAction"
+        @selection="displayCandidatInfo"
       />
       <v-btn
         icon
@@ -20,16 +20,18 @@
       >
         <v-icon
           :color="color"
-        >{{icon}}</v-icon>
+        >
+          {{ icon }}
+        </v-icon>
       </v-btn>
     </div>
     <v-expand-transition>
-    <profile-info
-      class="t-result-candidat"
-      title= 'Informations candidats'
-      v-if="profileInfo"
-      :profileInfo="profileInfo"
-    />
+      <profile-info
+        v-if="profileInfo"
+        class="t-result-candidat"
+        title="Informations candidats"
+        :profile-info="profileInfo"
+      />
     </v-expand-transition>
   </div>
 </template>

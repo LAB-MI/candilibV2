@@ -1,6 +1,6 @@
 <template>
   <div class="u-flex  u-flex--column">
-    <candidat-header/>
+    <candidat-header />
     <router-view />
   </div>
 </template>

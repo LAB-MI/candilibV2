@@ -1,25 +1,28 @@
 <template>
-  <div
-  >
+  <div>
     <div
       class="u-flex  u-flex--center  u-flex--column  u-full-width"
     >
       <v-btn
-        v-if="activeTextContent" class="white--text"
+        v-if="activeTextContent"
+        class="white--text"
         :color="colorSubmitButton"
         :loading="isLoading"
         :aria-disabled="isLoading"
         :disabled="isLoading"
         @click="submitDial"
       >
-        <v-icon :color="colorIcon" large>
+        <v-icon
+          :color="colorIcon"
+          large
+        >
           {{ icon }}
         </v-icon>
         &nbsp;
         {{ textContent }}
       </v-btn>
-      <slot name="title"/>
-      <slot/>
+      <slot name="title" />
+      <slot />
     </div>
   </div>
 </template>
@@ -31,18 +34,42 @@ export default {
       type: Boolean,
       default: true,
     },
-    closeDialog: Function,
-    colorIcon: String,
-    colorSubmitButton: String,
-    colorAlert: String,
-    content: Object,
-    icon: String,
+    closeDialog: {
+      type: Function,
+      default () {},
+    },
+    colorIcon: {
+      type: String,
+      default: '',
+    },
+    colorSubmitButton: {
+      type: String,
+      default: '',
+    },
+    colorAlert: {
+      type: String,
+      default: '',
+    },
+    content: {
+      type: Object,
+      default () {},
+    },
+    icon: {
+      type: String,
+      default: '',
+    },
     isLoading: {
       type: Boolean,
       default: false,
     },
-    textButtonCancel: String,
-    textContent: String,
+    textButtonCancel: {
+      type: String,
+      default: '',
+    },
+    textContent: {
+      type: String,
+      default: '',
+    },
   },
 
   methods: {

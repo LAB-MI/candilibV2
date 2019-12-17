@@ -1,21 +1,27 @@
 <template>
   <div>
     <v-chip label>
-      {{label}}
+      {{ label }}
     </v-chip>
     <p style="padding: 1em;">
       {{ value }}
     </p>
-    <v-divider/>
+    <v-divider />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'profile-info',
+  name: 'ProfileInfo',
   props: {
-    label: String,
-    value: String,
+    label: {
+      type: String,
+      default: '',
+    },
+    value: {
+      type: String,
+      default: '',
+    },
   },
 }
 </script>

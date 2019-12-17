@@ -1,10 +1,16 @@
 <template>
   <div>
     <!-- TODO: en attente de spécification de resultat d'import place dans le calendrier by Baudoin -->
-    <page-title  v-show="false" :title="'Calendrier'"/>
-    <simple-calendar v-show="false" :places="places" />
-    <admin-import-places/>
-    <import-places-validation/>
+    <page-title
+      v-show="false"
+      :title="'Calendrier'"
+    />
+    <simple-calendar
+      v-show="false"
+      :places="places"
+    />
+    <admin-import-places />
+    <import-places-validation />
   </div>
 </template>
 
@@ -14,7 +20,7 @@ import AdminImportPlaces from './AdminImportPlaces.vue'
 import ImportPlacesValidation from './ImportPlacesValidation.vue'
 
 export default {
-  name: 'admin-calendar',
+  name: 'AdminCalendar',
   components: {
     AdminImportPlaces,
     ImportPlacesValidation,

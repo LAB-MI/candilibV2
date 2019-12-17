@@ -18,16 +18,17 @@
       </v-icon>
     </p>
     <p>
-      <span v-html="
-        $formatMessage(
-          {
-            id: 'recap_reservation_last_date_to_cancel',
-          },
-          {
-            lastDateToCancelString: `<strong>${lastDateToCancelString}</strong>`,
-            penaltyDaysNumber: `<strong>${penaltyDaysNumber}</strong>`,
-          },
-        )"
+      <span
+        v-html="
+          $formatMessage(
+            {
+              id: 'recap_reservation_last_date_to_cancel',
+            },
+            {
+              lastDateToCancelString: `<strong>${lastDateToCancelString}</strong>`,
+              penaltyDaysNumber: `<strong>${penaltyDaysNumber}</strong>`,
+            },
+          )"
       />
       &nbsp;
       <v-icon color="red">
@@ -35,40 +36,40 @@
       </v-icon>
     </p>
     <modal-confirm
-      titleModal="Confirmer l'annulation"
-      :formAction="deleteConfirm"
-      :penaltyDaysNumber="penaltyDaysNumber"
-      :numberOfDaysBeforeDate="numberOfDaysBeforeDate"
-      :currentReservationDateTime="currentReservationDateTime"
-      :isPenaltyActive="isPenaltyActive"
-      :idReservationMessage="cancelReservationMessage"
-      idButtonName="recap_reservation_boutton_annuler"
-      idMessageButtonRetour="recap_reservation_modal_annuler_boutton_retour"
-      idMessageButtonConfirmer="recap_reservation_modal_annuler_boutton_confirmer"
+      title-modal="Confirmer l'annulation"
+      :form-action="deleteConfirm"
+      :penalty-days-number="penaltyDaysNumber"
+      :number-of-days-before-date="numberOfDaysBeforeDate"
+      :current-reservation-date-time="currentReservationDateTime"
+      :is-penalty-active="isPenaltyActive"
+      :id-reservation-message="cancelReservationMessage"
+      id-button-name="recap_reservation_boutton_annuler"
+      id-message-button-retour="recap_reservation_modal_annuler_boutton_retour"
+      id-message-button-confirmer="recap_reservation_modal_annuler_boutton_confirmer"
       :disabled="disabled"
-      colorButton="#f82249"
-      colorButtonConfirmer="error"
-      colorButtonRetour="info"
-      iconName="delete_forever"
+      color-button="#f82249"
+      color-button-confirmer="error"
+      color-button-retour="info"
+      icon-name="delete_forever"
     />
     <modal-confirm
       v-if="isPenaltyActive"
-      titleModal="Confirmer la modification"
-      :formAction="modifyReservation"
-      :penaltyDaysNumber="penaltyDaysNumber"
-      :numberOfDaysBeforeDate="numberOfDaysBeforeDate"
-      :currentReservationDateTime="currentReservationDate"
-      :isPenaltyActive="isPenaltyActive"
-      :canBookFrom="canBookFrom"
-      :idReservationMessage="modificationReservationMessage"
-      idButtonName="recap_reservation_boutton_modifier"
-      idMessageButtonRetour="recap_reservation_modal_annuler_boutton_retour"
-      idMessageButtonConfirmer="recap_reservation_modal_modification_boutton_continuer"
+      title-modal="Confirmer la modification"
+      :form-action="modifyReservation"
+      :penalty-days-number="penaltyDaysNumber"
+      :number-of-days-before-date="numberOfDaysBeforeDate"
+      :current-reservation-date-time="currentReservationDate"
+      :is-penalty-active="isPenaltyActive"
+      :can-book-from="canBookFrom"
+      :id-reservation-message="modificationReservationMessage"
+      id-button-name="recap_reservation_boutton_modifier"
+      id-message-button-retour="recap_reservation_modal_annuler_boutton_retour"
+      id-message-button-confirmer="recap_reservation_modal_modification_boutton_continuer"
       :disabled="disabled"
-      colorButton="primary"
-      colorButtonConfirmer="primary"
-      colorButtonRetour="info"
-      iconName="edit"
+      color-button="primary"
+      color-button-confirmer="primary"
+      color-button-retour="info"
+      icon-name="edit"
     />
     <v-btn
       v-else
@@ -85,11 +86,11 @@
       color="success"
       @click="resendEmailConfirmation"
     >
-        {{ $formatMessage({ id: 'recap_reservation_boutton_renvoyer_email' }) }}
+      {{ $formatMessage({ id: 'recap_reservation_boutton_renvoyer_email' }) }}
         &nbsp;
-        <v-icon>
-          mail
-        </v-icon>
+      <v-icon>
+        mail
+      </v-icon>
     </v-btn>
   </div>
 </template>

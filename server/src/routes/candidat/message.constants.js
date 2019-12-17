@@ -30,3 +30,5 @@ export const CANDIDAT_ALREADY_PRESIGNUP =
   "Vous êtes déjà pré-inscrit sur Candilib avec cette adresse courriel, votre compte est en cours de vérification par l'administration."
 export const CANDIDAT_EMAIL_NOT_CONFIRM_IN_2H =
   'Votre lien de validation courriel a expiré, car sa durée de validitée est de 2h, vous devez refaire la pré-inscription'
+export const PARAMETERS_VERSUS_INFOS_CANDIDAT =
+  'Les paramètres ne correspondent pas aux informations que vous avez transmises'

@@ -1,30 +1,45 @@
 <template>
   <div class="question">
     <h3
+      v-ripple
       class="question-title  u-flex  u-flex--space-between"
       :class="{ 'primary--text': active }"
       @click="toggleActive"
-      v-ripple
     >
       <span>{{ question.title }}</span>
-      <i class="material-icons  icon" :class="{ 'primary--text': active }">
+      <i
+        class="material-icons  icon"
+        :class="{ 'primary--text': active }"
+      >
         {{ active ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
       </i>
     </h3>
-    <div v-show="active" class="question-content">
-      <div v-for="content in question.content" :key="content.textContent">
+    <div
+      v-show="active"
+      class="question-content"
+    >
+      <div
+        v-for="content in question.content"
+        :key="content.textContent"
+      >
         <h4
-          class="question-subtitle"
           v-if="content.subTitleContent"
+          class="question-subtitle"
           v-html="content.subTitleContent"
         />
-        <p v-if="content.textContent" v-html="content.textContent"></p>
-        <ul class="list" v-if="content.list">
+        <p
+          v-if="content.textContent"
+          v-html="content.textContent"
+        />
+        <ul
+          v-if="content.list"
+          class="list"
+        >
           <li
             v-for="(liContent, i) in content.list"
             :key="i"
-            v-html="liContent"
             class="item"
+            v-html="liContent"
           />
         </ul>
       </div>
@@ -34,9 +49,12 @@
 
 <script>
 export default {
-  name: 'faq-content',
+  name: 'FaqContent',
   props: {
-    question: Object,
+    question: {
+      type: Object,
+      default () {},
+    },
   },
   data () {
     return {

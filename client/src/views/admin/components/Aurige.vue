@@ -1,6 +1,9 @@
 <template>
-  <div :id="id" class="wrapper">
-    <page-title :title="'Interaction Aurige'"/>
+  <div
+    :id="id"
+    class="wrapper"
+  >
+    <page-title :title="'Interaction Aurige'" />
     <big-loading-indicator :is-loading="isLoading" />
     <div class="aurige">
       <!-- propager le accept for upload-file -->
@@ -10,14 +13,22 @@
         subtitle="Synchronisation JSON"
         upload-label="Synchro"
         :import-disabled="inputDisabled"
-        @select-file="fileSelected"
         :file="file"
-        @upload-file="uploadCandidats"
         accept=".json"
+        @select-file="fileSelected"
+        @upload-file="uploadCandidats"
       />
       <div class="aurige-action  aurige-action--export">
-        <h4 class="aurige-subtitle">Export CSV</h4>
-        <v-btn color="#17a2b8" dark @click="getCandidatsAsCsv">Export</v-btn>
+        <h4 class="aurige-subtitle">
+          Export CSV
+        </h4>
+        <v-btn
+          color="#17a2b8"
+          dark
+          @click="getCandidatsAsCsv"
+        >
+          Export
+        </v-btn>
       </div>
     </div>
     <aurige-validation />
@@ -34,7 +45,7 @@ import UploadFile from '@/components/UploadFile.vue'
 import { BigLoadingIndicator } from '@/components'
 
 export default {
-  name: 'admin-aurige',
+  name: 'AdminAurige',
   components: {
     AurigeValidation,
     UploadFile,
@@ -42,7 +53,10 @@ export default {
   },
 
   props: {
-    id: String,
+    id: {
+      type: String,
+      default: 'aurige-vue-id',
+    },
   },
 
   data () {
@@ -59,6 +73,12 @@ export default {
     inputDisabled () {
       return !this.file
     },
+  },
+
+  mounted () {
+    if (this.$route.hash.length) {
+      this.$scrollTo(this.$route.hash)
+    }
   },
 
   methods: {
@@ -80,12 +100,6 @@ export default {
       const response = await api.admin.exportCsv(this.departement)
       downloadContent(response)
     },
-  },
-
-  mounted () {
-    if (this.$route.hash.length) {
-      this.$scrollTo(this.$route.hash)
-    }
   },
 }
 </script>

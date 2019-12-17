@@ -1,16 +1,27 @@
 <template>
-  <v-app-bar class="admin-header" dark fixed>
+  <v-app-bar
+    class="admin-header"
+    dark
+    fixed
+  >
     <v-toolbar-title>
       <h1 class="logo">
-        <router-link to="/admin" class="home-link">C<span class="col-red">A</span>NDILIB</router-link>
+        <router-link
+          to="/admin"
+          class="home-link"
+        >
+          C<span class="col-red">A</span>NDILIB
+        </router-link>
       </h1>
     </v-toolbar-title>
 
-    <v-spacer></v-spacer>
+    <v-spacer />
 
-    <h3 class="color-header" >{{ email && email.split('@')[0] }}</h3>
+    <h3 class="color-header">
+      {{ email && email.split('@')[0] }}
+    </h3>
 
-    <v-spacer></v-spacer>
+    <v-spacer />
 
     <div class="text-xs-center d-flex align-center">
       <v-tabs
@@ -18,25 +29,28 @@
         v-model="activeTab"
         align-with-title
       >
-        <v-tabs-slider color="#f82249"></v-tabs-slider>
+        <v-tabs-slider color="#f82249" />
 
         <v-tab
           v-for="icon in headerIcons"
+          :key="icon.routerTo"
           :to="{name: icon.routerTo}"
           :value="icon.routerTo"
-          :key="icon.routerTo"
           class="no-margin-left"
         >
-          <v-tooltip bottom fixed>
+          <v-tooltip
+            bottom
+            fixed
+          >
             <template v-slot:activator="{ on }">
               <v-icon
-              v-on="on"
-              :class="`opaque-on-hover t-icon-header-${icon.routerTo}`"
+                :class="`opaque-on-hover t-icon-header-${icon.routerTo}`"
+                v-on="on"
               >
-              {{icon.iconName}}
+                {{ icon.iconName }}
               </v-icon>
             </template>
-            <span>{{icon.tooltipText}}</span>
+            <span>{{ icon.tooltipText }}</span>
           </v-tooltip>
         </v-tab>
       </v-tabs>
@@ -69,20 +83,26 @@ import { SIGN_OUT_ADMIN } from '@/store'
 import DepartementSelector from '@/views/admin/components/DepartementSelector'
 
 export default {
-  name: 'admin-header',
+  name: 'AdminHeader',
   components: {
     DepartementSelector,
+  },
+
+  props: {
+    email: {
+      type: String,
+      default: 'user@example.com',
+    },
+    headerIcons: {
+      type: Array,
+      default () {},
+    },
   },
 
   data () {
     return {
       activeTab: '',
     }
-  },
-
-  props: {
-    email: String,
-    headerIcons: Array,
   },
 
   methods: {

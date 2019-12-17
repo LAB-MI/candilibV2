@@ -10,6 +10,7 @@ const apiPrefix = `${process.env.BASE_URL || '/'}api/v2`
 
 const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
   centres: `${apiPrefix}/candidat/centres`,
+  config: `${apiPrefix}/candidat/config`,
   evaluations: `${apiPrefix}/candidat/evaluations`,
   magicLink: `${apiPrefix}/auth/candidat/magic-link`,
   myProfile: `${apiPrefix}/candidat/me`,
@@ -39,6 +40,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
 
 const utilPaths = {
   adressesQuery (search) { return `https://api-adresse.data.gouv.fr/search/?q=${search}` },
+  configCandidat: 'config-candilib.json',
 }
 
 const apiPaths = {

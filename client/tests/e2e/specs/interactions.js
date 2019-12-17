@@ -1,3 +1,5 @@
+import { date1 } from '../support/dateUtils'
+
 /* Tests :
 - The candidate reservation is visible on the admin front
 - The reservation made by the admin is visible on the candidate front
@@ -44,10 +46,10 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tab .primary--text')
+    cy.get(`[href="#tab-${date1.monthLong}"]`)
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-      .parents('.v-list')
+      .parents('.t-time-slot-list-group')
       .within(($date) => {
         cy.root().click()
         cy.contains('08h00-08h30')
@@ -213,10 +215,10 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tab .primary--text')
+    cy.get(`[href="#tab-${date1.monthLong}"]`)
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-      .parents('.v-list')
+      .parents('.t-time-slot-list-group')
       .within(($date) => {
         cy.root().click()
         cy.should('contain', '08h00-08h30')
@@ -264,10 +266,10 @@ describe('Standard scenarios', () => {
       .should('contain', 'Choix du centre')
     cy.contains(Cypress.env('centre'))
       .click()
-    cy.get('.v-tab .primary--text')
+    cy.get(`[href="#tab-${date1.monthLong}"]`)
       .click()
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-      .parents('.v-list')
+      .parents('.t-time-slot-list-group')
       .within(($date) => {
         cy.root().click()
         cy.should('not.contain', '08h00-08h30')

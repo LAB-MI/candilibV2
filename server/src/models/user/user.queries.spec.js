@@ -48,6 +48,7 @@ describe('User', () => {
       expect(departements).toHaveLength(expectedDepartements.length)
       expect(status).toBe(expectedStatus)
     })
+
     it('Should return a user by id with status tech', async () => {
       // Given
       const expectedEmail = 'test1@example.com'
@@ -251,6 +252,22 @@ describe('User', () => {
       expect(users).toBeDefined()
       expect(users).toBeInstanceOf(Array)
       expect(users).toHaveLength(3)
+    })
+
+    it('Should retrieve all users from 75 or 93 for delegue session', async () => {
+      // Given
+      const departements = ['75', '93']
+      const userStatus = config.userStatuses.DELEGUE
+      const userLevel = config.userStatusLevels[userStatus]
+      const allowedStatuses = config.userStatusesOrderedList.slice(0, userLevel)
+
+      // When
+      const users = await findAllActiveUsers(departements, allowedStatuses)
+
+      // Then
+      expect(users).toBeDefined()
+      expect(users).toBeInstanceOf(Array)
+      expect(users).toHaveLength(1)
     })
   })
 

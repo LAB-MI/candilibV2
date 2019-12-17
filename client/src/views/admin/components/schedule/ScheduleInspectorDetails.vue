@@ -1,5 +1,8 @@
 <template>
-  <v-card class="details" v-if="isBooked">
+  <v-card
+    v-if="isBooked"
+    class="details"
+  >
     <place-action-header
       v-if="content.place && content.place.candidat"
       :candidat="candidat"
@@ -9,22 +12,22 @@
       icon="block"
       color-icon="white"
       color-submit-button="grey"
-      textContent="Annuler réservation"
+      text-content="Annuler réservation"
       :active-text-content="!deleteBookedPlaceConfirm"
       text-button-cancel="Retour"
-      @click="displayConfirmDeleteBookedPlace"
       :content="content"
+      @click="displayConfirmDeleteBookedPlace"
     >
       <confirm-box
         v-if="deleteBookedPlaceConfirm"
-        :close-action='cancelDeleteBookedPlace'
-        :submit-action='deleteBookedPlace'
+        :close-action="cancelDeleteBookedPlace"
+        :submit-action="deleteBookedPlace"
         ok-button-text="Supprimer réservation"
         ok-button-color="warning"
       >
-      <!-- TODO: Refactor Create composant for each subcontent dialogs -->
+        <!-- TODO: Refactor Create composant for each subcontent dialogs -->
         <div v-if="isFetchingCandidat">
-            {{ $formatMessage({ id: 'loading'}) }}...
+          {{ $formatMessage({ id: 'loading'}) }}...
         </div>
         <div v-else>
           <p>
@@ -52,36 +55,39 @@
     </place-action>
     <place-action
       :is-loading="isLoading"
-      colorAlert="white"
+      color-alert="white"
       icon="account_box"
       color-icon="white"
       color-submit-button="blue"
       text-button-cancel="Retour"
       text-content="Modifier l'inspecteur"
-      @click="toggleInspecteurSearch"
       :active-text-content="displayModifyInspecteurTitle"
+      @click="toggleInspecteurSearch"
     >
       <list-search-inspecteurs-available
-        slot="title"
         v-if="displaySearchInspecteurs"
-        :isEditing="displaySearchInspecteurs"
+        slot="title"
+        :is-editing="displaySearchInspecteurs"
         :date="content.place.date"
         :centre="centreInfo._id"
         @select-inspecteur="selectInspecteur"
       />
       <confirm-box
         v-if="hasConfirm"
-        :closeAction='cancelSelection'
-        :submitAction='validSelection'
+        :close-action="cancelSelection"
+        :submit-action="validSelection"
       >
         <p>
-          {{textInspecteurSelected}}
+          {{ textInspecteurSelected }}
         </p>
       </confirm-box>
     </place-action>
   </v-card>
 
-  <v-card class="details" v-else-if="!isAvailable">
+  <v-card
+    v-else-if="!isAvailable"
+    class="details"
+  >
     <place-action
       :is-loading="isLoading"
       color-alert="white"
@@ -94,7 +100,10 @@
     />
   </v-card>
 
-  <v-card class="details" v-else-if="isAvailable">
+  <v-card
+    v-else-if="isAvailable"
+    class="details"
+  >
     <place-action
       :is-loading="isLoading"
       color-alert="white"
@@ -110,7 +119,6 @@
         <candilib-autocomplete
           v-if="!selectedCandidat"
           class="search-input"
-          @selection="selectCandidat"
           label="Candidats"
           hint="Chercher un candidat par son nom / NEPH / email"
           placeholder="Chercher un candidat par Nom / NEPH / Email"
@@ -118,6 +126,7 @@
           item-text="nameNeph"
           item-value="_id"
           :fetch-autocomplete-action="fetchAutocompleteAction"
+          @selection="selectCandidat"
         />
         <confirm-box
           v-else
@@ -149,7 +158,7 @@
     </place-action>
     <place-action
       :is-loading="isLoading"
-      colorAlert="white"
+      color-alert="white"
       icon="block"
       color-icon="white"
       color-submit-button="grey"
@@ -192,14 +201,38 @@ export default {
   },
 
   props: {
-    place: Object,
-    centreInfo: Object,
-    closeDialog: Function,
-    content: Object,
-    flagModal: String,
-    inspecteurId: String,
-    selectedDate: String,
-    updateContent: Function,
+    place: {
+      type: Object,
+      default () {},
+    },
+    centreInfo: {
+      type: Object,
+      default () {},
+    },
+    closeDialog: {
+      type: Function,
+      default () {},
+    },
+    content: {
+      type: Object,
+      default () {},
+    },
+    flagModal: {
+      type: String,
+      default: '',
+    },
+    inspecteurId: {
+      type: String,
+      default: '',
+    },
+    selectedDate: {
+      type: String,
+      default: '',
+    },
+    updateContent: {
+      type: Function,
+      default () {},
+    },
   },
 
   data () {

@@ -1,21 +1,48 @@
 <template>
-  <v-select class="t-ag-grid-filter-status" v-model="selected" :items="options">
-    <v-icon class="t-ag-grid-filter-status-icon" slot="append">arrow_drop_down</v-icon>
-    <template slot="selection" slot-scope="{ item  }">
-    <v-chip v-show="!item.value" :class="item.class">
-      <span >{{ item.text }}</span>
-    </v-chip>
-    <v-chip v-show="item.value" :class="item.class">
-      <v-icon>{{item.text}}</v-icon>
-    </v-chip>
+  <v-select
+    v-model="selected"
+    class="t-ag-grid-filter-status"
+    :items="options"
+  >
+    <v-icon
+      slot="append"
+      class="t-ag-grid-filter-status-icon"
+    >
+      arrow_drop_down
+    </v-icon>
+    <template
+      slot="selection"
+      slot-scope="{ item }"
+    >
+      <v-chip
+        v-show="!item.value"
+        :class="item.class"
+      >
+        <span>{{ item.text }}</span>
+      </v-chip>
+      <v-chip
+        v-show="item.value"
+        :class="item.class"
+      >
+        <v-icon>{{ item.text }}</v-icon>
+      </v-chip>
     </template>
-    <template slot="item" slot-scope="{ item  }">
-      <v-chip v-show="!item.value" :class="item.class">
-      <span >{{ item.text }}</span>
-    </v-chip>
-    <v-chip v-show="item.value" :class="item.class">
-      <v-icon>{{item.text}}</v-icon>
-    </v-chip>
+    <template
+      slot="item"
+      slot-scope="{ item }"
+    >
+      <v-chip
+        v-show="!item.value"
+        :class="item.class"
+      >
+        <span>{{ item.text }}</span>
+      </v-chip>
+      <v-chip
+        v-show="item.value"
+        :class="item.class"
+      >
+        <v-icon>{{ item.text }}</v-icon>
+      </v-chip>
     </template>
   </v-select>
 </template>
@@ -37,18 +64,6 @@ export default Vue.extend({
     }
   },
 
-  methods: {
-    isFilterActive () {
-      const { selected } = this
-      return selected && selected.length > 0
-    },
-
-    doesFilterPass (params) {
-      const { selected } = this
-      return !selected || !(selected[0].length > 0) || !selected.indexOf(this.valueGetter(params.node))
-    },
-  },
-
   watch: {
     'selected': function (val, oldVal) {
       if (val !== oldVal && this.params) {
@@ -59,6 +74,18 @@ export default Vue.extend({
 
   created () {
     this.valueGetter = this.params && this.params.valueGetter
+  },
+
+  methods: {
+    isFilterActive () {
+      const { selected } = this
+      return selected && selected.length > 0
+    },
+
+    doesFilterPass (params) {
+      const { selected } = this
+      return !selected || !(selected[0].length > 0) || !selected.indexOf(this.valueGetter(params.node))
+    },
   },
 
 })

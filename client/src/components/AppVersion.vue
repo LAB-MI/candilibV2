@@ -1,6 +1,6 @@
 <template>
   <div class="text-version">
-    &copy; {{ new Date().getFullYear() }} — Version: {{version}}
+    &copy; {{ new Date().getFullYear() }} — Version: {{ version }}
   </div>
 </template>
 
