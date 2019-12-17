@@ -9,6 +9,7 @@ import {
   AURIGE_OK,
   VALIDATION_EMAIL,
   NB_FAILURES_KO,
+  getFrenchLuxon,
 } from '../../util'
 import config from '../../config'
 import {
@@ -45,27 +46,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : ''
 
-  const INSCRIPTION_OK_MSG = getInscriptionOkTemplate(
-    nomMaj,
-    urlMagicLink,
-    urlConnexion,
-    email,
-    contactezNous,
-    canAccessAt
-  )
-
-  const VALIDATION_EMAIL_MSG = getValidationMailTemplate(
-    nomMaj,
-    urlValidationEmail,
-    urlConnexion,
-    contactezNous
-  )
-
   const INSCRIPTION_KO_MSG = getInscriptionKOTemplate(nomMaj, codeNeph, urlFAQ)
-
-  const EPREUVE_PRATIQUE_OK_MSG = getEpreuvePratiqueOKTemplate(nomMaj, urlFAQ)
-
-  const EPREUVE_ETG_KO_MSG = getEpreuveEtgKoTemplate(nomMaj, urlFAQ)
 
   const INSCRIPTION_VALID_MSG = getInscripionValidTemplate(nomMaj)
 
@@ -74,10 +55,17 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       message.content = getHtmlBody(INSCRIPTION_KO_MSG)
       message.subject = 'Inscription Candilib non validée'
       return message
-    case VALIDATION_EMAIL:
+    case VALIDATION_EMAIL: {
+      const VALIDATION_EMAIL_MSG = getValidationMailTemplate(
+        nomMaj,
+        urlValidationEmail,
+        urlConnexion,
+        contactezNous
+      )
       message.content = getHtmlBody(VALIDATION_EMAIL_MSG)
       message.subject = "Validation d'adresse courriel pour Candilib"
       return message
+    }
     case INSCRIPTION_VALID:
       message.content = getHtmlBody(INSCRIPTION_VALID_MSG)
       message.subject = "Confirmation d'inscription Candilib"
@@ -86,23 +74,41 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       message.content = getHtmlBody(INSCRIPTION_KO_MSG)
       message.subject = 'Inscription Candilib non validée'
       return message
-    case EPREUVE_PRATIQUE_OK:
+    case EPREUVE_PRATIQUE_OK: {
+      const EPREUVE_PRATIQUE_OK_MSG = getEpreuvePratiqueOKTemplate(
+        nomMaj,
+        urlFAQ
+      )
       message.content = getHtmlBody(EPREUVE_PRATIQUE_OK_MSG)
       message.subject = 'Problème inscription Candilib'
       return message
+    }
     case INSCRIPTION_OK:
       message.content = getHtmlBody(INSCRIPTION_VALID_MSG)
       message.subject = 'Inscription Candilib en attente de vérification'
       return message
     case EPREUVE_ETG_KO:
-    case NB_FAILURES_KO:
+    case NB_FAILURES_KO: {
+      const EPREUVE_ETG_KO_MSG = getEpreuveEtgKoTemplate(nomMaj, urlFAQ)
       message.content = getHtmlBody(EPREUVE_ETG_KO_MSG)
       message.subject = 'Problème inscription Candilib'
       return message
-    case AURIGE_OK:
+    }
+    case AURIGE_OK: {
+      const dateAccess =
+        canAccessAt > getFrenchLuxon() ? canAccessAt : undefined
+      const INSCRIPTION_OK_MSG = getInscriptionOkTemplate(
+        nomMaj,
+        urlMagicLink,
+        urlConnexion,
+        email,
+        contactezNous,
+        dateAccess
+      )
       message.content = getHtmlBody(INSCRIPTION_OK_MSG)
       message.subject = 'Validation de votre inscription à Candilib'
       return message
+    }
     case INSCRIPTION_UPDATE:
       message.content = getHtmlBody(INSCRIPTION_VALID_MSG)
       message.subject = 'Inscription Candilib en attente de vérification'
