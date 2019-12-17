@@ -18,8 +18,14 @@ server {
   }
 
   location <PUBLIC_PATH> {
+    expires 24h;
     alias /usr/share/nginx/html;
     try_files $uri $uri/ @rewrites;
+
+    location ~ "^<PUBLIC_PATH>/config-candilib.json" {
+      expires -1;
+      add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+    }
   }
 
   location @rewrites {
@@ -42,6 +48,5 @@ server {
     proxy_buffering off;
     proxy_http_version 1.1;
   }
-
 
 }
