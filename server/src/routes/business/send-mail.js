@@ -10,6 +10,7 @@ import {
   getFrenchLuxonFromJSDate,
   techLogger,
   getFrenchLuxon,
+  AURIGE_OK,
 } from '../../util'
 
 export const sendMail = async (to, { subject, content: html }) => {
@@ -53,7 +54,7 @@ export const sendMailToAccount = async (candidat, flag) => {
 }
 
 export const sendMagicLink = async candidat => {
-  const flag = 'CHECK_OK'
+  const flag = AURIGE_OK
 
   const url = getUrl(candidat)
 
@@ -61,7 +62,7 @@ export const sendMagicLink = async candidat => {
   return sendMail(candidat.email, message)
 }
 
-function getUrl (candidat) {
+export const getUrl = candidat => {
   const candidatAccessDate = getFrenchLuxonFromJSDate(candidat.canAccessAt)
   const dateNow = getFrenchLuxon()
 

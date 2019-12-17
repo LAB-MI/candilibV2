@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
 import latinize from 'latinize'
 
+import config from '../../../config'
 import {
   deleteCandidat,
   findCandidatByNomNeph,
@@ -307,7 +308,9 @@ const updateValidCandidat = async (
   const dateNow = getFrenchLuxon().endOf('day')
   try {
     if (!isValidatedByAurige) {
-      infoCandidatToUpdate.canAccessAt = dateNow.plus({ days: 30 }).toISO() // Variable d'ENV
+      infoCandidatToUpdate.canAccessAt = dateNow
+        .plus({ days: config.Line_Delay })
+        .toISO()
     }
     // mise à jours du candidat
     candidat.set(infoCandidatToUpdate)
