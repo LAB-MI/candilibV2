@@ -41,7 +41,9 @@ COPY babel.config.js cypress.json jsconfig.json package-lock.json package.json v
 # Install app dependencies
 
 ARG LINE_DELAY
-RUN [ -z "$LINE_DELAY" ] || [ -f "public/config-candilib.json" ]  && { echo '{"lineDelay": '"$LINE_DELAY"'}' > public/config-candilib.json  ; }
+RUN if [ -n "$LINE_DELAY" ] && [ -f "public/config-candilib.json" ] ; then \
+      echo '{"lineDelay": '"$LINE_DELAY"'}' > public/config-candilib.json ; \
+    fi
 RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm install --loglevel http
 EXPOSE 8080
 
