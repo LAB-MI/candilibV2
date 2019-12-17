@@ -67,8 +67,8 @@ export const findCentreByName = async nom => {
  * @param {string} nom - Nom du centre (de la ville du centre)
  * @param {string} label - Information complémentaire pour retrouver le point de rencontre du centre
  * @param {string} adresse - Adresse du centre
- * @param {string} lon - Longitude géographique du centre
- * @param {string} lat - Latitude géographique du centre
+ * @param {number} lon - Longitude géographique du centre
+ * @param {number} lat - Latitude géographique du centre
  * @param {string} departement - Département du centre
  * @returns {Promise.<CentreMongo>} Centre créé
  */

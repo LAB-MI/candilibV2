@@ -12,7 +12,9 @@ import {
 import { findUserById } from '../../models/user'
 
 import {
+  createCentre,
   findCentresByDepartement,
+  findCentreByNameAndDepartement,
   findAllActiveCentres,
   findAllCentres,
   findCentreById,
@@ -86,6 +88,7 @@ export async function findAllCentresForAdmin (departements) {
  *
  * @param {string} id - Id du centre à modifier
  * @param {boolean} status - Statut désiré, `true` pour un centre à activer, `false` pour le désactiver
+ * @returns {Promise.<CentreMongo>} Centre modifié
  */
 export async function updateCentreStatus (id, status, userId) {
   const centre = await findCentreById(id)
@@ -111,4 +114,36 @@ export async function updateCentreStatus (id, status, userId) {
   )
 
   return updatedCentre
+}
+
+/**
+ * Crée un centre dans la base de données
+ *
+ * @async
+ * @function
+ *
+ * @param {string} nom - Nom du centre (de la ville du centre)
+ * @param {string} label - Information complémentaire pour retrouver le point de rencontre du centre
+ * @param {string} adresse - Adresse du centre
+ * @param {number} lon - Longitude géographique du centre
+ * @param {number} lat - Latitude géographique du centre
+ * @param {string} departement - Département du centre
+ * @returns {Promise.<CentreMongo>} Centre créé
+ */
+export async function addCentre (nom, label, adresse, lon, lat, departement) {
+  if (!nom || !label || !adresse || !lon || !lat || !departement) {
+    const error = new Error('Tous les paramètres doivent être renseignés')
+    error.status = 400
+    throw error
+  }
+
+  const alreadyCreatedCentre = await findCentreByNameAndDepartement(nom, departement)
+
+  if (alreadyCreatedCentre) {
+    const error = new Error('Centre déjà présent dans la base de données')
+    error.status = 409
+    throw error
+  }
+  const centre = await createCentre(nom, label, adresse, lon, lat, departement)
+  return centre
 }

@@ -8,7 +8,11 @@ import {
   centres,
 } from '../../models/__tests__/centres'
 
-import { findAllCentresForAdmin, updateCentreStatus } from './centre-business'
+import {
+  addCentre,
+  findAllCentresForAdmin,
+  updateCentreStatus,
+} from './centre-business'
 import { createUser } from '../../models/user'
 
 describe('Centres business', () => {
@@ -80,5 +84,16 @@ describe('Centres business', () => {
     expect(disabledCentre).toHaveProperty('nom', centres[0].nom)
     expect(disabledCentre).toHaveProperty('label', centres[0].label)
     expect(disabledCentre).toHaveProperty('active', true)
+  })
+
+  it('Should add one centre', async () => {
+    const centreAdded = await addCentre('CentreTest', 'LabelTest', '1', 42, 104, '93')
+
+    expect(centreAdded).toBeDefined()
+    expect(centreAdded).not.toBeNull()
+    expect(centreAdded).toHaveProperty('nom', 'CentreTest')
+    expect(centreAdded).toHaveProperty('label', 'LabelTest')
+    expect(centreAdded).toHaveProperty('departement', '93')
+    expect(centreAdded).toHaveProperty('active', true)
   })
 })

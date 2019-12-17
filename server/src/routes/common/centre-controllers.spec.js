@@ -23,6 +23,7 @@ import {
   NOT_CODE_DEP_MSG,
   getAdminCentres,
   enableOrDisableCentre,
+  addNewCentre,
 } from './centre-controllers'
 import { getFrenchLuxon } from '../../util'
 
@@ -242,5 +243,37 @@ describe('Centre controllers admin', () => {
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('centre')
     expect(body.centre).toHaveProperty('active', false)
+  })
+
+  it('Add a center', async () => {
+    mockApp = express()
+    mockApp.use((req, res, next) => {
+      req.userId = admin._id
+      req.departements = admin.departements
+      next()
+    })
+    mockApp.use(bodyParser.json({ limit: '20mb' }))
+    mockApp.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    mockApp.post(`${apiPrefix}/admin/centres`, addNewCentre)
+
+    const { body } = await request(mockApp)
+      .post(`${apiPrefix}/admin/centres`)
+      .send({
+        nom: 'Noisy le Grand',
+        label: "Centre d'examen du permis de conduire de Noisy le Grand",
+        adresse: '5 boulevard de Champs Richardets 93160 Noisy le Grand',
+        lon: 2.473647,
+        lat: 48.883956,
+        departement: '93',
+      })
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('centre')
+    expect(body.centre).toHaveProperty('nom', 'Noisy le Grand')
+    expect(body.centre).toHaveProperty('departement', '93')
   })
 })
