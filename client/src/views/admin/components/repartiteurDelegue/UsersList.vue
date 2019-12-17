@@ -1,50 +1,22 @@
 <template>
-  <div>
-    <v-simple-table class="u-centered text-uppercase">
-      <template v-slot:default>
-        <thead>
-          <tr>
-            <th class="text-center  text-white">
-              Email
-            </th>
-            <th class="text-center  text-white">
-              Statut
-            </th>
-            <th class="text-center  text-white">
-              Départements
-            </th>
-            <th class="text-center  text-white">
-              Actions
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="user in users"
-            :key="user.email"
-            class="t-list"
-          >
-            <td class="t-list-email">
-              {{ user.email }}
-            </td>
-            <td>
-              {{ user.status }}
-            </td>
-            <td>{{ user.departements.join(', ') }}</td>
-            <td class="text--center">
-              <update-user
-                :email="user.email"
-                :default-status="user.status"
-                :default-departements="user.departements"
-              />
-              <delete-user
-                :email="user.email"
-              />
-            </td>
-          </tr>
-        </tbody>
+  <div class="users-list  text-uppercase">
+    <v-data-table
+      :headers="headers"
+      :items="users"
+      :items-per-page="5"
+      class="elevation-1"
+    >
+      <template v-slot:item.action="{ item }">
+        <update-user
+          :email="item.email"
+          :default-status="item.status"
+          :default-departements="item.departements"
+        />
+        <delete-user
+          :email="item.email"
+        />
       </template>
-    </v-simple-table>
+    </v-data-table>
   </div>
 </template>
 
@@ -58,9 +30,26 @@ export default {
     UpdateUser,
   },
 
+  data () {
+    return {
+      headers: [
+        { text: 'Email', value: 'email' },
+        { text: 'Statut', value: 'status' },
+        { text: 'Départements', value: 'departementsAsString' },
+        { text: 'Actions', value: 'action', align: 'center' },
+      ],
+      editedUser: {},
+    }
+  },
+
   computed: {
     users () {
-      return this.$store.state.users.list || []
+      return (this.$store.state.users.list || []).map(user => (
+        {
+          ...user,
+          departementsAsString: (user.departements || []).join(', '),
+        }
+      ))
     },
   },
 
@@ -71,24 +60,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-
-table {
-  margin-top: 30px;
-  width: 90%;
-  border-collapse: collapse;
-}
-
-thead {
-  border: 1px solid;
-  background-color: #4eb5c5;
-}
-
-td {
-  padding: 10px;
-  border: 1px solid grey;
-}
-
-.text-white {
-  color: white !important;
+.users-list {
+  margin-top: 2em;
+  margin-bottom: 2em;
 }
 </style>
