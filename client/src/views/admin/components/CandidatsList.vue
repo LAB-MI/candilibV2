@@ -1,25 +1,26 @@
 <template>
   <div>
-    <page-title :title="'Liste des candidats'"/>
+    <page-title :title="'Liste des candidats'" />
     <v-card>
-      <ag-grid-vue style="width: 100%; height: 500px;" class="ag-theme-material"
-        :columnDefs="columnDefs"
-        :rowData="rowData"
-        :sideBar="sideBar"
+      <ag-grid-vue
+        style="width: 100%; height: 500px;"
+        class="ag-theme-material"
+        :column-defs="columnDefs"
+        :row-data="rowData"
+        :side-bar="sideBar"
         :pagination="true"
-        :paginationPageSize="8"
-        :defaultColDef="{
+        :pagination-page-size="8"
+        :default-col-def="{
           sortable: true,
           resizable: true,
           filter: true
         }"
 
-        :groupHeaders="true"
-        :localeText="localeText"
+        :group-headers="true"
+        :locale-text="localeText"
 
         @grid-ready="onReady"
-      >
-      </ag-grid-vue>
+      />
     </v-card>
   </div>
 </template>
@@ -35,16 +36,9 @@ import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './ag-gri
 import { getFrenchLuxonCurrentDateTime } from '@/util/frenchDateTime.js'
 
 export default {
-  name: 'candidat-list',
+  name: 'CandidatList',
   components: {
     AgGridVue,
-  },
-
-  mounted () {
-    if (this.departement) {
-      const now = getFrenchLuxonCurrentDateTime()
-      this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }), departement: this.departement })
-    }
   },
 
   data () {
@@ -72,6 +66,13 @@ export default {
       const now = getFrenchLuxonCurrentDateTime()
       this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }), departement: newValue })
     },
+  },
+
+  mounted () {
+    if (this.departement) {
+      const now = getFrenchLuxonCurrentDateTime()
+      this.$store.dispatch(FETCH_CANDIDATS_REQUEST, { since: now, until: now.set({ day: now.daysInMonth }), departement: this.departement })
+    }
   },
 
   beforeMount () {

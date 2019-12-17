@@ -2,50 +2,70 @@
   <div>
     <v-simple-table class="u-centered text-uppercase">
       <template v-slot:default>
-
-      <thead>
-        <tr>
-          <th class ="text-center">Email</th>
-          <th class ="text-center">Statut</th>
-          <th class ="text-center">Départements</th>
-          <th class ="text-center">Supprimer</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr class="t-list" v-for="user in users" :key="user.email">
-          <td class ="t-list-email">{{user.email }}</td>
-          <td>{{ user.status }}</td>
-          <td>{{ user.departements.join(', ') }}</td>
-          <td class="text--center">
-            <delete-user
-            :email="user.email"
-            />
-          </td>
-        </tr>
-      </tbody>
+        <thead>
+          <tr>
+            <th class="text-center  text-white">
+              Email
+            </th>
+            <th class="text-center  text-white">
+              Statut
+            </th>
+            <th class="text-center  text-white">
+              Départements
+            </th>
+            <th class="text-center  text-white">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="user in users"
+            :key="user.email"
+            class="t-list"
+          >
+            <td class="t-list-email">
+              {{ user.email }}
+            </td>
+            <td>
+              {{ user.status }}
+            </td>
+            <td>{{ user.departements.join(', ') }}</td>
+            <td class="text--center">
+              <update-user
+                :email="user.email"
+                :default-status="user.status"
+                :default-departements="user.departements"
+              />
+              <delete-user
+                :email="user.email"
+              />
+            </td>
+          </tr>
+        </tbody>
       </template>
     </v-simple-table>
   </div>
 </template>
 
 <script>
-
 import { FETCH_USER_LIST_REQUEST } from '@/store'
-import deleteUser from './DeleteUser'
-
+import DeleteUser from './DeleteUser'
+import UpdateUser from './UpdateUser'
 export default {
   components: {
-    deleteUser,
-  },
-
-  mounted () {
-    this.$store.dispatch(FETCH_USER_LIST_REQUEST)
+    DeleteUser,
+    UpdateUser,
   },
 
   computed: {
     users () {
       return this.$store.state.users.list || []
     },
+  },
+
+  mounted () {
+    this.$store.dispatch(FETCH_USER_LIST_REQUEST)
   },
 }
 </script>
@@ -60,7 +80,7 @@ table {
 
 thead {
   border: 1px solid;
-  background-color: #b3d4fc;
+  background-color: #4eb5c5;
 }
 
 td {
@@ -68,4 +88,7 @@ td {
   border: 1px solid grey;
 }
 
+.text-white {
+  color: white !important;
+}
 </style>

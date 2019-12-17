@@ -7,15 +7,28 @@ export default {
   props: {
     labels: {
       type: Array,
+      default () {},
     },
 
     datasets: {
       type: Array,
+      default () {},
     },
 
     chartData: {
       type: Array,
+      default () {},
     },
+  },
+
+  watch: {
+    datasets (newValue, oldValue) {
+      this.renderChartBar()
+    },
+  },
+
+  mounted () {
+    this.renderChartBar()
   },
 
   methods: {
@@ -37,16 +50,6 @@ export default {
       },
       chartOptions)
     },
-  },
-
-  watch: {
-    datasets (newValue, oldValue) {
-      this.renderChartBar()
-    },
-  },
-
-  mounted () {
-    this.renderChartBar()
   },
 }
 </script>

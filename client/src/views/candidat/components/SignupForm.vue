@@ -1,15 +1,20 @@
 <template>
   <div class="presignup-form">
-    <v-form dark v-model="valid" ref="presignupForm" class="presignup-form" @submit.prevent="presignup">
+    <v-form
+      ref="presignupForm"
+      v-model="valid"
+      dark
+      class="presignup-form"
+      @submit.prevent="presignup"
+    >
       * Champs obligatoires
       <div class="form-input">
         <v-text-field
+          v-model="codeNeph"
           :label="`${getMsg('preinscription_neph')} *`"
           prepend-icon="assignment"
           dark
           color="#fff"
-          @focus="setNephPlaceholder"
-          @blur="removeNephPlaceholder"
           :placeholder="nephPlaceholder"
           aria-placeholder="012345678912"
           :autofocus="!showDialog"
@@ -17,89 +22,88 @@
           required
           :rules="nephRules"
           tabindex="1"
-          v-model="codeNeph"
-        ></v-text-field>
+          @focus="setNephPlaceholder"
+          @blur="removeNephPlaceholder"
+        />
       </div>
       <div class="form-input">
         <v-text-field
+          v-model="nomNaissance"
           :label="`${getMsg('preinscription_nom_naissance')} *`"
           prepend-icon="account_box"
           dark
           color="#fff"
-          @focus="setNomPlaceholder"
-          @blur="removeNomPlaceholder"
-          @input="setNomNaissance"
           :placeholder="nomPlaceholder"
           aria-placeholder="Dupont"
           hint="ex. : Dupont"
           required
           tabindex="2"
-          v-model="nomNaissance"
-        ></v-text-field>
+          @focus="setNomPlaceholder"
+          @blur="removeNomPlaceholder"
+          @input="setNomNaissance"
+        />
       </div>
       <div class="form-input">
         <v-text-field
+          v-model="prenom"
           :label="getMsg('preinscription_prenom')"
           prepend-icon="perm_identity"
           dark
           color="#fff"
-          @focus="setPrenomPlaceholder"
-          @blur="removePrenomPlaceholder"
           :placeholder="prenomPlaceholder"
           aria-placeholder="Jean"
           hint="ex. : Jean"
           required
           tabindex="3"
-          v-model="prenom"
-        ></v-text-field>
+          @focus="setPrenomPlaceholder"
+          @blur="removePrenomPlaceholder"
+        />
       </div>
       <div class="form-input">
         <v-text-field
+          v-model="email"
           :label="`${getMsg('preinscription_email')} *`"
           prepend-icon="email"
           dark
           color="#fff"
-          @focus="setEmailPlaceholder"
-          @blur="removeEmailPlaceholder"
-          @input="setEmailToLowerCase"
           :placeholder="emailPlaceholder"
           aria-placeholder="jean@dupont.fr"
           hint="ex. : jean@dupont.fr"
           required
           :rules="emailRules"
           tabindex="4"
-          v-model="email"
-        ></v-text-field>
+          @focus="setEmailPlaceholder"
+          @blur="removeEmailPlaceholder"
+          @input="setEmailToLowerCase"
+        />
       </div>
       <div class="form-input">
         <v-text-field
+          v-model="portable"
           :label="`${getMsg('preinscription_mobile')} *`"
           prepend-icon="smartphone"
           dark
           color="#fff"
-          @focus="setPortablePlaceholder"
-          @blur="removePortablePlaceholder"
           :placeholder="portablePlaceholder"
           aria-placeholder="Jean"
           hint="ex. : 0612345678"
           required
           tabindex="5"
           :rules="portableRules"
-          v-model="portable"
-        ></v-text-field>
+          @focus="setPortablePlaceholder"
+          @blur="removePortablePlaceholder"
+        />
       </div>
       <div class="form-input">
         <v-autocomplete
+          v-model="adresse"
           :label="`${getMsg('preinscription_adresse')} *`"
           dark
           color="#fff"
           item-text="label"
-          @focus="setAdressePlaceholder"
-          @blur="removeAdressePlaceholder"
           :placeholder="adressePlaceholder"
           aria-placeholder="Jean"
           :loading="isFetchingMatchingAdresses"
-          v-model="adresse"
           hint="ex. : 10 avenue du général Leclerc 93420 Villepinte"
           :items="adresses"
           prepend-icon="location_city"
@@ -107,8 +111,9 @@
           no-filter
           return-object
           :search-input.sync="searchAdresses"
-        >
-        </v-autocomplete>
+          @focus="setAdressePlaceholder"
+          @blur="removeAdressePlaceholder"
+        />
       </div>
       <div class="form-input">
         <v-btn
@@ -118,17 +123,32 @@
           class="submit-button"
           dark
           tabindex="7"
-          color="#28a745">
-          <div class="submit-label">{{getMsg('preinscription_bouton_submit')}}</div>
+          color="#28a745"
+        >
+          <div class="submit-label">
+            {{ getMsg('preinscription_bouton_submit') }}
+          </div>
         </v-btn>
       </div>
       <div class="form-input  form-input-group">
-        <v-btn text color="#fff" tag="a" :to="{ name: 'mentions-legales' }" tabindex="9">
-          {{getMsg('preinscription_bouton_mentions_legales') }}
+        <v-btn
+          text
+          color="#fff"
+          tag="a"
+          :to="{ name: 'mentions-legales' }"
+          tabindex="9"
+        >
+          {{ getMsg('preinscription_bouton_mentions_legales') }}
         </v-btn>
         <already-signed-up />
-        <v-btn text color="#fff" tag="a" :to="{ name: 'faq' }" tabindex="10">
-          {{getMsg('preinscription_bouton_faq') }}
+        <v-btn
+          text
+          color="#fff"
+          tag="a"
+          :to="{ name: 'faq' }"
+          tabindex="10"
+        >
+          {{ getMsg('preinscription_bouton_faq') }}
         </v-btn>
       </div>
     </v-form>
@@ -154,12 +174,15 @@ const getAdresses = pDebounce((query) => {
 }, 300)
 
 export default {
-  name: 'signup-form',
+  name: 'SignupForm',
   components: {
     AlreadySignedUp,
   },
   props: {
-    toggleForm: Function,
+    toggleForm: {
+      type: Function,
+      default () {},
+    },
   },
   data: function () {
     return {

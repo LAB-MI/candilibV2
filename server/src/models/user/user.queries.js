@@ -7,7 +7,6 @@ import uuidv4 from 'uuid/v4'
  *
  * @returns {Promise.<import('./user.model.js').User[]>} - Liste de documents de l'utilisateur
  */
-
 export const findAllUsers = async () => {
   const users = await User.find()
   return users
@@ -16,12 +15,25 @@ export const findAllUsers = async () => {
 /**
  * Recherche tous les répartiteurs/délégués actifs (non archivés) de tous les départements
  *
+ * @param {string[]} [departements] - Liste des départements des utilisateurs à retourner
+ *                                   Si cette liste n'est pas définie, la fonction retourne
+ *                                   les utilisateurs de tous les départements
+ * @param {string} [status] - Statut maximum
  *
  * @returns {Promise.<import('./user.model.js').User[]>} - Liste de documents d'utilisateurs
  */
+export const findAllActiveUsers = async (departements, statuses) => {
+  const filters = { deletedAt: { $exists: false } }
 
-export const findAllActiveUsers = async () => {
-  const users = await User.find({ deletedAt: { $exists: false } })
+  if (departements) {
+    filters.departements = { $in: departements }
+  }
+
+  if (statuses) {
+    filters.status = { $in: statuses }
+  }
+
+  const users = await User.find(filters)
   return users
 }
 

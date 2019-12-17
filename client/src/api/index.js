@@ -116,6 +116,15 @@ export default {
       return json
     },
 
+    async getConfig () {
+      const json = await apiClient.get(`${apiPaths.candidat.config}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      return json
+    },
+
     async getPlaces (centreId, begin, end) {
       const queryString = `begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`
       const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?${queryString}`, {
@@ -224,6 +233,14 @@ export default {
     async getUsers () {
       const json = await apiClient.get(apiPaths.admin.users, {
         headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
+    async updateUser (email, { status, departements }) {
+      const json = await apiClient.patch(apiPaths.admin.users, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ email, status, departements }),
       })
       return json
     },
@@ -497,6 +514,15 @@ export default {
   },
 
   util: {
+    async getConfigCandidat () {
+      const json = await apiClient.get(apiPaths.util.configCandidat, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      return json
+    },
+
     async searchAdresses (query) {
       const json = await apiClient.get(apiPaths.util.adressesQuery(query), {
         headers: {},

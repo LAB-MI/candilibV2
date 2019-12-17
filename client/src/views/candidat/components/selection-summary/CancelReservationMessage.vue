@@ -1,27 +1,42 @@
 <template>
-    <p
-      v-html="$formatMessage(
-        {
-          id: idFormatMessage,
-        },
-        {
-          dateCurrentResa,
-          nbOfDaysBeforeDate,
-          penaltyNb,
-          canBookFrom,
-        },
-      )"
-    />
+  <p
+    v-html="$formatMessage(
+      {
+        id: idFormatMessage,
+      },
+      {
+        dateCurrentResa,
+        nbOfDaysBeforeDate,
+        penaltyNb,
+        canBookFrom,
+      },
+    )"
+  />
 </template>
 
 <script>
 export default {
   props: {
-    idFormatMessage: String,
-    dateCurrentResa: String,
-    nbOfDaysBeforeDate: String,
-    canBookFrom: String,
-    penaltyNb: String,
+    idFormatMessage: {
+      type: String,
+      default: '',
+    },
+    dateCurrentResa: {
+      type: String,
+      default: '',
+    },
+    nbOfDaysBeforeDate: {
+      type: String,
+      default: '',
+    },
+    canBookFrom: {
+      type: String,
+      default: '',
+    },
+    penaltyNb: {
+      type: String,
+      default: '',
+    },
   },
 }
 </script>

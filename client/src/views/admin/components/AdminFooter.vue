@@ -3,14 +3,14 @@
     dark
     height="auto"
   >
-    <admin-version/>
+    <admin-version />
   </v-footer>
 </template>
 
 <script>
 import AdminVersion from '../../../components/AppVersion.vue'
 export default {
-  name: 'admin-footer',
+  name: 'AdminFooter',
   components: {
     AdminVersion,
   },

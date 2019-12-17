@@ -1,26 +1,34 @@
 <template>
   <div class="input-file-container">
     <input
+      :id="inputId"
       :accept="accept"
-      :id="this.inputId"
       type="file"
       class="u-transparent"
       @change="fileSelected"
     >
-    <label class="input-file-label" :for="this.inputId" ref="label">
+    <label
+      ref="label"
+      class="input-file-label"
+      :for="inputId"
+    >
       <v-text-field
         :dark="dark"
         class="d-inline-block"
         :label="label"
-        :placeholder="inputPlaceholder"
+        :placeholder="placeholder"
         :value="filename"
         aria-readonly
         readonly
         @focus="selectFile"
-      ></v-text-field>
+      />
 
       <span class="d-inline-block">
-        <v-icon :dark="dark" large class="upload-icon">file_upload</v-icon>
+        <v-icon
+          :dark="dark"
+          large
+          class="upload-icon"
+        >file_upload</v-icon>
       </span>
     </label>
   </div>
@@ -28,23 +36,34 @@
 
 <script>
 export default {
-  name: 'upload-button',
+  name: 'UploadButton',
   props: {
     accept: {
       type: String,
       default: '*',
     },
     dark: Boolean,
-    selectedCallback: Function,
-    title: String,
-    placeholder: String,
-    filename: String,
+    selectedCallback: {
+      type: Function,
+      default () {},
+    },
+    title: {
+      type: String,
+      default: 'Chargement en cours...',
+    },
+    placeholder: {
+      type: String,
+      default: 'fichier.csv',
+    },
+    filename: {
+      type: String,
+      default: 'fichier.csv',
+    },
   },
   data () {
     return {
       inputId: this.key + '_' + Math.random().toString().substring(2),
       label: this.title,
-      inputPlaceholder: this.placeholder,
     }
   },
   methods: {

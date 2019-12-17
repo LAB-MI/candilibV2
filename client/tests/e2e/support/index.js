@@ -15,12 +15,7 @@
 
 import './commands'
 import { DateTime } from 'luxon'
-
-const FRENCH_TIME_ZONE = 'Europe/Paris'
-
-const now = DateTime.local().setLocale('fr').setZone(FRENCH_TIME_ZONE)
-const date1 = now.plus({ months: 1 }).startOf('week')
-const date2 = date1.plus({ weeks: 1 })
+import { now, date1, date2 } from './dateUtils'
 
 before(() => {
   // Initialise env variables for dates

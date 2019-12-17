@@ -3,7 +3,6 @@
     <div class="u-flex u-flex--column u-flex--center">
       <candilib-autocomplete
         class="search-input"
-        @selection="displayEmailSearch"
         label="Emails"
         hint="Chercher un email dans la whitelist"
         placeholder="marguerite@example.fr"
@@ -11,6 +10,7 @@
         item-text="email"
         item-value="_id"
         :fetch-autocomplete-action="fetchAutocompleteAction"
+        @selection="displayEmailSearch"
       />
     </div>
   </div>

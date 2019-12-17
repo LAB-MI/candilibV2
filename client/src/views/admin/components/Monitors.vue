@@ -4,29 +4,35 @@
       {{ $formatMessage({ id: 'tableau_de_bord'}) }}
     </page-title>
 
-    <v-container fluid class="less-padding">
+    <v-container
+      fluid
+      class="less-padding"
+    >
       <div class="stats-card">
         <div class="text-xs-right">
           <refresh-button
+            :is-loading="isLoading"
             @click="reloadWeekMonitor"
-            :isLoading="isLoading"
           />
         </div>
       </div>
 
-      <v-layout row wrap>
+      <v-layout
+        row
+        wrap
+      >
         <v-flex
+          v-for="info in placeByCentreInfos"
+          :key="info.centre.nom"
           class="monitor-wrapper"
           lg6
           xs12
-          v-for="info in placeByCentreInfos"
-          :key="info.centre.nom"
         >
           <week-monitor
-            :nameCenter="info.centre.nom"
-            :centerId="info.centre._id"
+            :name-center="info.centre.nom"
+            :center-id="info.centre._id"
             :weeks="info.places"
-            :isLoading="isLoading"
+            :is-loading="isLoading"
           />
         </v-flex>
       </v-layout>
@@ -66,16 +72,16 @@ export default {
     },
   },
 
-  methods: {
-    async reloadWeekMonitor () {
-      await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
-    },
-  },
-
   async mounted () {
     if (this.activeDepartement) {
       await this.reloadWeekMonitor()
     }
+  },
+
+  methods: {
+    async reloadWeekMonitor () {
+      await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
+    },
   },
 }
 </script>

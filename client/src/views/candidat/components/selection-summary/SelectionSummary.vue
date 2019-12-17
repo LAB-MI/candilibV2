@@ -1,6 +1,6 @@
 <template>
-  <v-card class="text--center" >
-    <page-title :title="title"/>
+  <v-card class="text--center">
+    <page-title :title="title" />
     <div class="text--center">
       <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
       <reservation-info
@@ -23,7 +23,7 @@
           La place que vous avez sélectionnée n'est plus disponible
         </v-card-text>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             @click="closeAndGoBack"
           >
@@ -65,18 +65,18 @@ export default {
     ReservationInfo,
   },
 
-  data () {
-    return {
-      selectedCheckBox: [],
-      notAvailable: false,
-    }
-  },
-
   props: {
     flagRecap: {
       type: Boolean,
       default: false,
     },
+  },
+
+  data () {
+    return {
+      selectedCheckBox: [],
+      notAvailable: false,
+    }
   },
 
   computed: {
@@ -113,6 +113,11 @@ export default {
     disabled () {
       return this.selectedCheckBox.length !== 2
     },
+  },
+
+  async mounted () {
+    await this.getCandidatReservation()
+    await this.getSelectedCenterAndDate()
   },
 
   methods: {
@@ -205,11 +210,6 @@ export default {
         }
       }
     },
-  },
-
-  async mounted () {
-    await this.getCandidatReservation()
-    await this.getSelectedCenterAndDate()
   },
 }
 </script>

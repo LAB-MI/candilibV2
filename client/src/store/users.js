@@ -9,6 +9,10 @@ export const FETCH_USER_LIST_REQUEST = 'FETCH_USER_LIST_REQUEST'
 export const FETCH_USER_LIST_SUCCESS = 'FETCH_USER_LIST_SUCCESS'
 export const FETCH_USER_LIST_FAILURE = 'FETCH_USER_LIST_FAILURE'
 
+export const UPDATE_USER_REQUEST = 'UPDATE_USER_REQUEST'
+export const UPDATE_USER_SUCCESS = 'UPDATE_USER_SUCCESS'
+export const UPDATE_USER_FAILURE = 'UPDATE_USER_FAILURE'
+
 export const DELETE_USER_REQUEST = 'DELETE_USER_REQUEST'
 export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS'
 export const DELETE_USER_FAILURE = 'DELETE_USER_FAILURE'
@@ -17,6 +21,7 @@ export default {
   state: {
     list: [],
     isArchive: false,
+    isUpdating: false,
     isFetching: false,
     isSendingUser: false,
   },
@@ -44,6 +49,16 @@ export default {
       state.isFetching = false
     },
 
+    UPDATE_USER_REQUEST (state) {
+      state.isUpdating = true
+    },
+    UPDATE_USER_SUCCESS (state) {
+      state.isUpdating = false
+    },
+    UPDATE_USER_FAILURE (state, error) {
+      state.isUpdating = false
+    },
+
     DELETE_USER_REQUEST (state) {
       state.isArchive = true
     },
@@ -54,7 +69,6 @@ export default {
     DELETE_USER_FAILURE (state, error) {
       state.isArchive = false
     },
-
   },
 
   actions: {
@@ -87,6 +101,22 @@ export default {
       } catch (error) {
         commit(FETCH_USER_LIST_FAILURE)
         return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [UPDATE_USER_REQUEST] ({ commit, dispatch }, { email, status, departements }) {
+      commit(UPDATE_USER_REQUEST)
+      try {
+        const result = await api.admin.updateUser(email, { status, departements })
+        if (result.success === false) {
+          throw new Error(result.message)
+        }
+        commit(UPDATE_USER_SUCCESS)
+        dispatch(SHOW_SUCCESS, `L'utilisateur ${email} a bien été modifié`)
+      } catch (error) {
+        commit(UPDATE_USER_FAILURE)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
       }
     },
 

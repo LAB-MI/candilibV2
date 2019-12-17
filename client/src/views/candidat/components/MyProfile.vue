@@ -7,13 +7,13 @@
           v-if="isFetchingProfile"
           indeterminate
           color="primary"
-        ></v-progress-circular>
+        />
       </div>
       <profile-info
         v-for="info in profileInfo"
+        :key="info.label"
         :label="info.label"
         :value="info.value"
-        :key="info.label"
       />
     </div>
   </v-card>
@@ -33,7 +33,7 @@ const labelDictionary = {
 }
 
 export default {
-  name: 'my-profile',
+  name: 'MyProfile',
   components: {
     ProfileInfo,
   },

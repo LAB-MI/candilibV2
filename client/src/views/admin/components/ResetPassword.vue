@@ -1,61 +1,67 @@
 <template>
-  <div class="reset-card" v-bind:style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }">
+  <div
+    class="reset-card"
+    :style="{ backgroundImage: 'url(' + backgroundImgUrl + ')' }"
+  >
     <bandeau-beta fixed />
 
-    <div></div>
+    <div />
 
     <v-form
-      @submit.prevent="updatePassword"
       v-model="isPasswordCoupleValid"
       class="reset-form"
+      @submit.prevent="updatePassword"
     >
-      <h2 class="text--center">ADMINISTRATEUR</h2>
+      <h2 class="text--center">
+        ADMINISTRATEUR
+      </h2>
 
       <h3 class="text--center">
         C<span class="col-red">A</span>NDILIB
       </h3>
-
       <div class="form-input">
         <v-text-field
+          v-model="newPassword"
           class="t-new-password"
           aria-placeholder="nouveau mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
-          @click:append="showPassword = !showPassword"
-          hint="Au moins 8 caractères"
           label="nouveau mot de passe"
           name="password"
           :rules="passwordRules"
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
-          v-model="newPassword"
-        ></v-text-field>
-        </div>
-        <div class="form-input">
+          @click:append="showPassword = !showPassword"
+        />
+      </div>
+
+      <password-checker :password="newPassword" />
+
+      <div class="form-input">
         <v-text-field
+          v-model="confirmNewPassword"
           class="t-confirm-new-password"
           aria-placeholder="confirmation du nouveau mot de passe"
           :append-icon="showPassword ? 'visibility_off' : 'visibility'"
-          @click:append="showPassword = !showPassword"
-          hint="Au moins 8 caractères"
           label="confirmation du nouveau mot de passe"
           name="confirmNewPassword"
           :rules="confirmNewPasswordRules"
           tabindex="2"
           :type="showPassword ? 'text' : 'password'"
-          v-model="confirmNewPassword"
+          @click:append="showPassword = !showPassword"
+        />
+      </div>
+      <div class="form-input">
+        <button
+          tabindex="3"
+          class="submit-btn"
+          :disabled="isSendingPassword"
+          :aria-disabled="isSendingPassword"
         >
-        </v-text-field>
-        </div>
-          <div class="form-input">
-          <button
-            tabindex="3"
-            class="submit-btn"
-            :disabled="isSendingPassword"
-            :aria-disabled="isSendingPassword"
-            >
-            <div class="submit-bgbtn"></div>
-            <div class="submit-label">Réinitialiser mon mot de passe</div>
-          </button>
+          <div class="submit-bgbtn" />
+          <div class="submit-label">
+            Réinitialiser mon mot de passe
+          </div>
+        </button>
       </div>
     </v-form>
   </div>
@@ -63,11 +69,15 @@
 
 <script>
 
+import PasswordChecker from '@/views/admin/components/PasswordChecker.vue'
 import backgroundImgUrl from '@/assets/bg-login.jpg'
 import { SHOW_ERROR, SHOW_SUCCESS, RESET_PASSWORD_REQUEST } from '../../../store'
 import { strongEnoughPassword } from '@/util'
 
 export default {
+  components: {
+    PasswordChecker,
+  },
   data () {
     return {
       backgroundImgUrl,

@@ -16,9 +16,12 @@ describe('Users', () => {
   const emailDelegue2 = 'delegue2@example.com'
   const emailToArchive = 'emailToArchive@candi.lib'
   const emailRepartiteur = 'repartiteur@example.com'
+  const emailRepartiteur2 = 'repartiteur78@example.com'
   const newDelegue = 'newDelegue@example.com'
   const password = '@85Stm9G!'
   const departements = ['75']
+  const otherDepartements = ['78']
+
   let admin
   let delegue
   let delegue2
@@ -49,6 +52,12 @@ describe('Users', () => {
       emailRepartiteur,
       password,
       departements,
+      config.userStatuses.REPARTITEUR
+    )
+    await createUser(
+      emailRepartiteur2,
+      password,
+      otherDepartements,
       config.userStatuses.REPARTITEUR
     )
   })
@@ -183,7 +192,7 @@ describe('Users', () => {
     )
   })
 
-  it('Should return users', async () => {
+  it('Should return users with a filter by admin', async () => {
     // given
     const id = admin.id
 
@@ -193,7 +202,22 @@ describe('Users', () => {
     // then
     expect(users).toBeDefined()
     expect(users).toBeInstanceOf(Array)
-    expect(users).toHaveLength(4)
+    expect(users).toHaveProperty('length', 4)
+  })
+
+  it('Should return users with a filter by delegue', async () => {
+    // given
+    const id = delegue.id
+
+    // when
+    const users = await getAppropriateUsers(id)
+
+    // then
+    expect(users).toBeDefined()
+    expect(users).toBeInstanceOf(Array)
+    expect(users).toHaveProperty('length', 1)
+    expect(users[0]).toHaveProperty('status', config.userStatuses.REPARTITEUR)
+    expect(users[0]).toHaveProperty('email', emailRepartiteur)
   })
 
   it('Should be able to modify user if delegue', async () => {

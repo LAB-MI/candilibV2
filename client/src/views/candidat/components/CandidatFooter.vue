@@ -3,14 +3,14 @@
     dark
     height="auto"
   >
-    <app-version/>
+    <app-version />
   </v-footer>
 </template>
 
 <script>
 import AppVersion from '../../../components/AppVersion.vue'
 export default {
-  name: 'candidat-footer',
+  name: 'CandidatFooter',
   components: {
     AppVersion,
   },

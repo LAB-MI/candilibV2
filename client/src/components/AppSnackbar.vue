@@ -8,7 +8,8 @@
     @input="onClose"
   >
     {{ message.content }}
-    <v-btn icon
+    <v-btn
+      icon
       text
       @click="onClose"
     >

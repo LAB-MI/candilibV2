@@ -11,8 +11,10 @@
         v-show="isLoading"
         indeterminate
         :color="isLoading ? 'primary' : 'white'"
-      ></v-progress-circular>
-      <v-icon v-show="!isLoading">replay</v-icon>
+      />
+      <v-icon v-show="!isLoading">
+        replay
+      </v-icon>
     </v-btn>
   </div>
 </template>

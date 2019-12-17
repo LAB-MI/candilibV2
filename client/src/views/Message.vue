@@ -2,16 +2,22 @@
   <div class="c-candidat-wrapper">
     <bandeau-beta fixed />
     <div class="c-candidat-message">
-      <h1 class="c-candidat-message__title" v-html="$formatMessage({ id: 'app_html_title'})" />
+      <h1
+        class="c-candidat-message__title"
+        v-html="$formatMessage({ id: 'app_html_title'})"
+      />
       <h2 class="c-candidat-message__subtitle">
-        {{$formatMessage({ id: 'app_subtitle' })}}
+        {{ $formatMessage({ id: 'app_subtitle' }) }}
       </h2>
-      <hr class="u-separator" />
+      <hr class="u-separator">
 
       <router-view />
 
-      <hr class="u-separator" />
-      <div class="u-flex  u-flex--center  u-flex--space-between" style="width: 80%;">
+      <hr class="u-separator">
+      <div
+        class="u-flex  u-flex--center  u-flex--space-between"
+        style="width: 80%;"
+      >
         <a href="https://www.interieur.gouv.fr/">
           <img :src="logoMI">
         </a>
@@ -23,7 +29,7 @@
         </a>
       </div>
       <div style="margin-top: 10px;">
-        <app-version/>
+        <app-version />
       </div>
     </div>
   </div>

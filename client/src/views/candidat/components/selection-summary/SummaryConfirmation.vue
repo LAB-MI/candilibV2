@@ -1,7 +1,12 @@
 <template>
-  <div class="text--center" v-if="!timeSlots.confirmed">
-    <h5 class="confirmation-reservation-checkbox-title" v-html="$formatMessage({ id: 'confirmation_reservation_checkbox_title' })">
-    </h5>
+  <div
+    v-if="!timeSlots.confirmed"
+    class="text--center"
+  >
+    <h5
+      class="confirmation-reservation-checkbox-title"
+      v-html="$formatMessage({ id: 'confirmation_reservation_checkbox_title' })"
+    />
     <v-card-actions>
       <v-form
         class="u-full-width  u-flex  u-flex--column  u-flex--center"
@@ -14,17 +19,17 @@
             v-model="selectedCheckBox"
             :label="$formatMessage({ id: 'confirmation_reservation_checkbox_accompagner' })"
             value="companion"
-          ></v-checkbox>
+          />
 
           <v-checkbox
             v-model="selectedCheckBox"
             :label="$formatMessage({ id: 'confirmation_reservation_checkbox_double_commande' })"
             value="doubleControlCar"
-          ></v-checkbox>
+          />
         </div>
 
         <v-flex d-flex>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             outlined
             color="info"
@@ -35,7 +40,7 @@
             <v-icon>
               arrow_back_ios
             </v-icon>
-            {{ $formatMessage({ id: 'confirmation_reservation_bouton_retour' } )}}
+            {{ $formatMessage({ id: 'confirmation_reservation_bouton_retour' } ) }}
           </v-btn>
           <v-btn
             :aria-disabled="disabled"
@@ -44,13 +49,16 @@
             color="primary"
             @click="displayEvaluation"
           >
-            {{ $formatMessage({ id: 'confirmation_reservation_bouton_confirmation' } )}}
+            {{ $formatMessage({ id: 'confirmation_reservation_bouton_confirmation' } ) }}
           </v-btn>
         </v-flex>
       </v-form>
     </v-card-actions>
   </div>
-  <div class="text--center" v-else>
+  <div
+    v-else
+    class="text--center"
+  >
     <h4>
       {{ $formatMessage({ id: 'recap_reservation_confirmee' }) }}
       &nbsp;
@@ -63,10 +71,10 @@
       <strong>{{ candidat.me ? candidat.me.email : '' }}</strong>
       &nbsp;
       <v-icon color="success">
-      check
+        check
       </v-icon>
     </h4>
-    <v-btn @click="goToHome()" >
+    <v-btn @click="goToHome()">
       Retour à l'accueil
     </v-btn>
   </div>

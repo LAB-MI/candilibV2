@@ -9,6 +9,7 @@ import admin from './admin'
 import candidat, { preSignup, emailValidation } from './candidat'
 import { verifyToken } from './middlewares'
 import { resetMyPassword } from './auth/admin-controllers'
+import { getCandidatConfig } from './candidat/candidat-config-controller'
 
 const router = express.Router()
 
@@ -194,6 +195,35 @@ router.post('/candidat/preinscription', preSignup)
  */
 
 router.put('/candidat/me', emailValidation)
+
+/**
+ *  @swagger
+ *  /candidat/config:
+ *    get:
+ *      tags: ["Candidat"]
+ *      summary: Récupère la configuration pour le candidat
+ *      responses:
+ *        200:
+ *          description: Succès de la requête
+ *          content:
+ *            application/json:
+ *              schema:
+ *                type: object
+ *                properties:
+ *                  success:
+ *                    type: boolean
+ *                    description: succès de la requête
+ *                  config:
+ *                    type: object
+ *                    description: Configuration de l'application
+ *                    properties:
+ *                      lineDelay:
+ *                        type: number
+ *                        description: Nombre de jours avant de pouvoir se connecter à l'application
+ *        500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ */
+router.get('/candidat/config', getCandidatConfig)
 
 /**
  * @swagger
