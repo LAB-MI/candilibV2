@@ -37,6 +37,7 @@ import {
 import {
   getAdminCentres,
   enableOrDisableCentre,
+  addNewCentre,
 } from '../common/centre-controllers'
 import {
   verifyAccessAurige,
@@ -1602,6 +1603,10 @@ router.get(
  *                 success:
  *                   type: boolean
  *                   description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *                 message:
+ *                   type: string
+ *                   description: informations sur l'état de la requête
+ *                   example: Le centre a bien été activé
  *                 centre:
  *                   $ref: '#/components/schemas/CenterObject'
  *
@@ -1638,6 +1643,112 @@ router.patch(
   '/centres',
   verifyUserLevel(config.userStatusLevels.delegue),
   enableOrDisableCentre
+)
+
+/**
+ * @swagger
+ *
+ * /admin/centres:
+ *   post:
+ *     tags: ["Administrateur"]
+ *     summary: Ajout d'un centre par un administrateur
+ *     description: Permet à un administrateur d'ajouter un centre dans la base de données
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Données du formulaire
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nom:
+ *                 type: string
+ *                 description: Nom du centre (de la ville du centre)
+ *                 example: Noisy le Grand
+ *               label:
+ *                 type: string
+ *                 description: Information complémentaire pour retrouver le point de rencontre du centre
+ *                 example: Centre d'examen du permis de conduire de Noisy le Grand
+ *               adresse:
+ *                 type: string
+ *                 description: Adresse du centre
+ *                 example: 5 boulevard de Champs Richardets 93160 Noisy le Grand
+ *               lon:
+ *                 type: number
+ *                 description: Longitude géographique du centre
+ *                 example: 2.473647
+ *               lat:
+ *                 type: number
+ *                 description: Latitude géographique du centre
+ *                 example: 48.883956
+ *               departement:
+ *                 type: string
+ *                 description: Département du centre
+ *                 example: "75"
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *                 message:
+ *                   type: string
+ *                   description: informations sur l'état de la requête
+ *                   example: Le centre a bien été créé
+ *                 centre:
+ *                   $ref: '#/components/schemas/CenterObject'
+ *
+ *       400:
+ *         description: Certaines informations sont manquantes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Tous les paramètres doivent être renseignés
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       403:
+ *         description: L'utilisateur n'a pas accès au département dans lequel il veut créer le centre
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Vous n'avez pas accès à ce département
+ *
+ *       409:
+ *         description: Le centre existe déjà dans la base de données
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Centre déjà présent dans la base de données
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+router.post(
+  '/centres',
+  verifyUserLevel(config.userStatusLevels.admin),
+  addNewCentre
 )
 
 export default router

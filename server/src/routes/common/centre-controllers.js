@@ -5,6 +5,7 @@
  */
 
 import {
+  addCentre,
   findCentresWithNbPlaces,
   findAllCentresForAdmin,
   updateCentreStatus,
@@ -13,7 +14,7 @@ import { findCentreByNameAndDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
 import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
-import { UNKNOWN_ERROR_UPDATE_CENTRE } from '../admin/message.constants'
+import { UNKNOWN_ERROR_UPDATE_CENTRE, UNKNOWN_ERROR_ADD_CENTRE } from '../admin/message.constants'
 
 export const NOT_CODE_DEP_MSG =
   'Le code de département est manquant, Veuillez choisir un code département'
@@ -161,6 +162,90 @@ export async function enableOrDisableCentre (req, res) {
     return res.status(error.status || 500).json({
       success: false,
       message: error.status ? error.message : UNKNOWN_ERROR_UPDATE_CENTRE,
+    })
+  }
+}
+
+/**
+ * Ajoute un nouveau centre dans la base de données
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req Requête express
+ * @param {string} req.userId - Identifiant de l'utilisateur
+ * @param {Object} req.body
+ * @param {string} req.body.nom - Nom du centre (de la ville du centre)
+ * @param {string} req.body.label - Information complémentaire pour retrouver le point de rencontre du centre
+ * @param {string} req.body.adresse - Adresse du centre
+ * @param {number} req.body.lon - Longitude géographique du centre
+ * @param {number} req.body.lat - Latitude géographique du centre
+ * @param {string} req.body.departement - Département du centre
+ * @param {import('express').Response} res Réponse express
+ */
+export async function addNewCentre (req, res) {
+  const { departements, userId } = req
+
+  const {
+    nom,
+    label,
+    adresse,
+    lon,
+    lat,
+    departement,
+  } = req.body
+
+  const loggerContent = {
+    section: 'admin-add-new-centre',
+    action: 'ADD A NEW CENTRE',
+    admin: userId,
+    nom,
+    adresse,
+    departement,
+  }
+
+  if (!departements.includes(departement)) {
+    const errorNoAccess = {
+      success: false,
+      status: 403,
+      message: "Vous n'avez pas accès à ce département",
+    }
+
+    appLogger.error({
+      ...loggerContent,
+      error: new Error(errorNoAccess.message),
+      description: errorNoAccess.message,
+    })
+
+    return res.status(errorNoAccess.status).json({
+      success: errorNoAccess.success,
+      message: errorNoAccess.message,
+    })
+  }
+
+  try {
+    const centre = await addCentre(nom, label, adresse, lon, lat, departement)
+
+    appLogger.info({
+      ...loggerContent,
+      centre,
+    })
+
+    res.status(200).json({
+      success: true,
+      message: 'Le centre a bien été créé',
+      centre,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      error,
+      description: error.message,
+    })
+
+    return res.status(error.status || 500).json({
+      success: false,
+      message: error.status ? error.message : UNKNOWN_ERROR_ADD_CENTRE,
     })
   }
 }
