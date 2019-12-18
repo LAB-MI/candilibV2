@@ -9,7 +9,6 @@ import {
   AURIGE_OK,
   VALIDATION_EMAIL,
   NB_FAILURES_KO,
-  getFrenchLuxon,
 } from '../../util'
 import config from '../../config'
 import {
@@ -95,15 +94,13 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       return message
     }
     case AURIGE_OK: {
-      const dateAccess =
-        canAccessAt > getFrenchLuxon() ? canAccessAt : undefined
       const INSCRIPTION_OK_MSG = getInscriptionOkTemplate(
         nomMaj,
         urlMagicLink,
         urlConnexion,
         email,
         contactezNous,
-        dateAccess
+        canAccessAt
       )
       message.content = getHtmlBody(INSCRIPTION_OK_MSG)
       message.subject = 'Validation de votre inscription à Candilib'

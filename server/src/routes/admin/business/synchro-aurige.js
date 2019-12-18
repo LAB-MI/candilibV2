@@ -308,7 +308,8 @@ const updateValidCandidat = async (
   try {
     if (!isValidatedByAurige) {
       infoCandidatToUpdate.canAccessAt = dateNow
-        .plus({ days: config.Line_Delay })
+        .startOf('day')
+        .plus({ days: config.LINE_DELAY })
         .toISO()
     }
     // mise à jours du candidat
