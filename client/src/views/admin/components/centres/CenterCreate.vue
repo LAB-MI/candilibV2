@@ -1,5 +1,6 @@
 <template>
   <v-form
+    ref="createCenterForm"
     v-model="valid"
     @submit.prevent="createCentre"
   >
@@ -8,68 +9,67 @@
         <v-text-field
           v-model="nom"
           prepend-icon="edit"
-          aria-placeholder="Rosny sous Bois"
-          hint="ex. : Rosny sous Bois"
+          :aria-placeholder="defaults.nom"
+          :hint="'ex. : ' + defaults.nom"
           label="Nom"
-          :placeholder="emailPlaceholder"
+          :placeholder="placeholders.nom"
           required
           :rules="generalRules"
-          @focus="setEmailPlaceholder"
-          @blur="removeEmailPlaceholder"
+          @focus="setPlaceholder('nom')"
+          @blur="removePlaceholder('nom')"
         />
         <v-text-field
           v-model="label"
           prepend-icon="comment"
-          aria-placeholder="Centre d'examen du permis de conduire"
-          hint="ex. : Centre d'examen du permis de conduire de Bobigny"
+          :aria-placeholder="defaults.label"
+          :hint="'ex. : ' + defaults.label"
           label="Label"
-          :placeholder="emailPlaceholder"
+          :placeholder="placeholders.label"
           required
           :rules="generalRules"
-          @focus="setEmailPlaceholder"
-          @blur="removeEmailPlaceholder"
+          @focus="setPlaceholder('label')"
+          @blur="removePlaceholder('label')"
         />
       </v-row>
       <v-row class="mx-10">
         <v-text-field
           v-model="adresse"
           prepend-icon="room"
-          aria-placeholder="3 avenue Couturier 93000 Bobigny"
-          hint="ex. : 3 avenue Couturier 93000 Bobigny"
+          :aria-placeholder="defaults.adresse"
+          :hint="'ex. : ' + defaults.adresse"
           label="Adresse"
-          :placeholder="emailPlaceholder"
+          :placeholder="placeholders.adresse"
           required
           :rules="generalRules"
-          @focus="setEmailPlaceholder"
-          @blur="removeEmailPlaceholder"
+          @focus="setPlaceholder('adresse')"
+          @blur="removePlaceholder('adresse')"
         />
       </v-row>
       <v-row class="mx-10">
         <v-text-field
-          v-model="
-            lon"
+          v-model="lon"
           prepend-icon="border_vertical"
-          aria-placeholder="2.458401"
-          hint="ex. : 2.458401"
+          :aria-placeholder="defaults.lon"
+          :hint="'ex. : ' + defaults.lon"
           label="Longitude"
-          :placeholder="emailPlaceholder"
+          :placeholder="placeholders.lon"
           required
           :rules="[...generalRules, ...numberRules]"
-          @focus="setEmailPlaceholder"
-          @blur="removeEmailPlaceholder"
+          @focus="setPlaceholder('lon')"
+          @blur="removePlaceholder('lon')"
         />
 
         <v-text-field
           v-model="lat"
           prepend-icon="border_horizontal"
-          aria-placeholder="48.905842"
-          hint="ex. : 48.905842"
+          :aria-placeholder="defaults.lat"
+          :hint="'ex. : ' + defaults.lat"
           label="Latitude"
-          :placeholder="emailPlaceholder"
+          :placeholder="placeholders.lat"
           required
           :rules="[...generalRules, ...numberRules]"
-          @focus="setEmailPlaceholder"
-          @blur="removeEmailPlaceholder"
+          @focus="setPlaceholder('lat')"
+          @blur="removePlaceholder('lat')"
         />
 
         <v-select
@@ -77,7 +77,7 @@
           :items="availableDepartements"
           label="Département"
           prepend-icon="my_location"
-          aria-placeholder="département"
+          aria-placeholder="93"
           hint="ex. : 93"
           :rules="departementRules"
           required
@@ -88,7 +88,6 @@
           type="submit"
           :disabled="!valid || isCreating"
           :aria-disabled="!valid || isCreating"
-          tabindex="0"
           raised
           color="success"
         >
@@ -124,12 +123,25 @@ export default {
       ],
       valid: false,
       generalRules: [
-        text => text.length > 0 || 'Veuillez renseigner ce champ',
+        text => text !== '' || 'Veuillez renseigner ce champ',
       ],
       numberRules: [
         numberStr => !isNaN(Number(numberStr)) || 'Veuillez entrer un nombre',
       ],
-      emailPlaceholder: '',
+      placeholders: {
+        nom: '',
+        label: '',
+        adresse: '',
+        lon: '',
+        lat: '',
+      },
+      defaults: {
+        nom: 'Rosny sous Bois',
+        label: "Centre d'examen du permis de conduire de Rosny sous Bois",
+        adresse: '320 avenue Paul Vaillant Couturier 93000 Bobigny',
+        lon: '2.458441',
+        lat: '48.905818',
+      },
     }
   },
 
@@ -143,12 +155,12 @@ export default {
   },
 
   methods: {
-    setEmailPlaceholder () {
-      this.emailPlaceholder = 'jean@dupont.fr'
+    setPlaceholder (type) {
+      this.placeholders[type] = this.defaults[type]
     },
 
-    removeEmailPlaceholder () {
-      this.emailPlaceholder = ''
+    removePlaceholder (type) {
+      this.placeholders[type] = ''
     },
 
     async createCentre () {
@@ -161,23 +173,15 @@ export default {
         departement,
       } = this
 
-      try {
-        await this.$store.dispatch(ADD_NEW_CENTER_REQUEST, {
-          nom,
-          label,
-          adresse,
-          lon: Number(lon),
-          lat: Number(lat),
-          departement,
-        })
-        this.nom = ''
-        this.label = ''
-        this.adresse = ''
-        this.lon = ''
-        this.lat = ''
-        this.departement = ''
-      } catch (error) {
-      }
+      await this.$store.dispatch(ADD_NEW_CENTER_REQUEST, {
+        nom,
+        label,
+        adresse,
+        lon: Number(lon),
+        lat: Number(lat),
+        departement,
+      })
+      this.$refs.createCenterForm.reset()
     },
   },
 }

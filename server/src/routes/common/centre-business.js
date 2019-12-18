@@ -131,8 +131,17 @@ export async function updateCentreStatus (id, status, userId) {
  * @returns {Promise.<CentreMongo>} Centre créé
  */
 export async function addCentre (nom, label, adresse, lon, lat, departement) {
-  if (!nom || !label || !adresse || !lon || !lat || !departement) {
-    const error = new Error('Tous les paramètres doivent être renseignés')
+  if (
+    !nom ||
+    !label ||
+    !adresse ||
+    !Number(lon) ||
+    !Number(lat) ||
+    !departement
+  ) {
+    const error = new Error(
+      'Tous les paramètres doivent être correctement renseignés'
+    )
     error.status = 400
     throw error
   }
@@ -147,6 +156,13 @@ export async function addCentre (nom, label, adresse, lon, lat, departement) {
     error.status = 409
     throw error
   }
-  const centre = await createCentre(nom, label, adresse, lon, lat, departement)
+  const centre = await createCentre(
+    nom,
+    label,
+    adresse,
+    Number(lon),
+    Number(lat),
+    departement
+  )
   return centre
 }
