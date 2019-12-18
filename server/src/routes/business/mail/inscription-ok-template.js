@@ -65,12 +65,11 @@ export const getInscriptionOkTemplate = (
   }
 
   const dateNow = getFrenchLuxon().startOf('day')
-  const remainingDays = Interval.fromDateTimes(
-    dateNow,
-    getFrenchLuxonFromJSDate(accessDate).startOf('day')
-  )
-    .toDuration('days')
-    .toObject()
+  const remainingDays =
+    Interval.fromDateTimes(
+      dateNow,
+      getFrenchLuxonFromJSDate(accessDate).startOf('day')
+    ).count('days') - 1
 
   const contentForQueuedCandidat = `
     <p>
@@ -78,9 +77,7 @@ export const getInscriptionOkTemplate = (
         config.LINE_DELAY
       } jours à partir de votre validation, avant d'accéder au planning de réservation.
       Cette mise en file d'attente vous permet de planifier votre préparation en vue de réussir votre examen pratique du permis de conduire.
-      A ce jour, il vous reste donc ${
-        remainingDays.days
-      } jours avant de pouvoir vous connecter.
+      À ce jour, il vous reste donc ${remainingDays} jours avant de pouvoir vous connecter.
       Vous pourrez accéder au planning de réservation le ${
         getFrenchFormattedDateTime(accessDate).date
       }.

@@ -57,7 +57,7 @@ import {
 
 jest.mock('../../../util/logger')
 jest.mock('../../business/send-mail')
-require('../../../util/logger').setWithConsole(true)
+require('../../../util/logger').setWithConsole(false)
 
 const bookedAt = getFrenchLuxon().toJSDate()
 const readFileAsPromise = util.promisify(fs.readFile)

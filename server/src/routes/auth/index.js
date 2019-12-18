@@ -187,7 +187,7 @@ router.get(
  *  post:
  *   tags: ["Authentification", "Candidat"]
  *   summary: Envoie un lien de connexion par courriel
- *   description: Vérifie que le candidat à le droit de se connecter et lui envoie un e-mail avec un lien de connexion
+ *   description: Vérifie que le candidat à le droit de se connecter et lui envoie un e-mail avec un lien de connexion ou un message indiquant le nombre de jours restant avant d'accéder à l'interface de réservation
  *
  *   requestBody:
  *     required: true
