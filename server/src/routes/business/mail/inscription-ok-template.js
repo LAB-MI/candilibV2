@@ -1,4 +1,11 @@
-import { getFrenchFormattedDateTime } from '../../../util/date-util'
+import {
+  getFrenchFormattedDateTime,
+  getFrenchLuxon,
+  getFrenchLuxonFromJSDate,
+} from '../../../util/date-util'
+import { Interval } from 'luxon'
+
+import config from '../../../config'
 
 export const getInscriptionOkTemplate = (
   nomMaj,
@@ -49,29 +56,39 @@ export const getInscriptionOkTemplate = (
     </p>
   `
 
-  if (!accessDate) {
+  if (urlMagicLink) {
     return `
     ${header}
     ${contentForAllowedCandidat}
     ${footer}
-  `
+    `
   }
 
-  const dateCanAccess = getFrenchFormattedDateTime(accessDate).date
+  const dateNow = getFrenchLuxon().startOf('day')
+  const remainingDays = Interval.fromDateTimes(
+    dateNow,
+    getFrenchLuxonFromJSDate(accessDate).startOf('day')
+  )
+    .toDuration('days')
+    .toObject()
+
   const contentForQueuedCandidat = `
     <p>
-      Cependant vous devez attendre 30 jours à partir de votre validation soit la date du ${dateCanAccess},
-      avant d'accéder au planning de réservation. Cette mise en file d'attente vous permet de planifier votre préparation en vue de réussir votre examen pratique du permis de conduire.
+      Cependant vous devez attendre ${
+        config.LINE_DELAY
+      } jours à partir de votre validation, avant d'accéder au planning de réservation.
+      Cette mise en file d'attente vous permet de planifier votre préparation en vue de réussir votre examen pratique du permis de conduire.
+      A ce jour, il vous reste donc ${
+        remainingDays.days
+      } jours avant de pouvoir vous connecter.
+      Vous pourrez accéder au planning de réservation le ${
+        getFrenchFormattedDateTime(accessDate).date
+      }.
     </p>
   `
-
-  const mainContent = urlMagicLink
-    ? contentForAllowedCandidat
-    : contentForQueuedCandidat
-
   return `
     ${header}
-    ${mainContent}
+    ${contentForQueuedCandidat}
     ${footer}
   `
 }

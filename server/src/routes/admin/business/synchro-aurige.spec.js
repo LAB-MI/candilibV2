@@ -57,7 +57,7 @@ import {
 
 jest.mock('../../../util/logger')
 jest.mock('../../business/send-mail')
-require('../../../util/logger').setWithConsole(false)
+require('../../../util/logger').setWithConsole(true)
 
 const bookedAt = getFrenchLuxon().toJSDate()
 const readFileAsPromise = util.promisify(fs.readFile)
@@ -718,8 +718,8 @@ describe('Check canAccess property of aurige', () => {
     expect(candidat01).toHaveProperty(
       'canAccessAt',
       getFrenchLuxon()
-        .endOf('day')
-        .plus({ days: config.Line_Delay })
+        .startOf('day')
+        .plus({ days: config.LINE_DELAY })
         .toJSDate()
     )
     expect(candidat02).toHaveProperty('canAccessAt', undefined)

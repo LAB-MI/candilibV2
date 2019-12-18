@@ -64,9 +64,9 @@ export const sendMagicLink = async candidat => {
 
 export const getUrl = candidat => {
   const candidatAccessDate = getFrenchLuxonFromJSDate(candidat.canAccessAt)
-  const dateNow = getFrenchLuxon()
+  const dateNow = getFrenchLuxon().startOf('day')
 
-  if (!candidatAccessDate || dateNow > candidatAccessDate) {
+  if (!candidat.canAccessAt || dateNow >= candidatAccessDate) {
     const token = createToken(candidat.id, config.userStatuses.CANDIDAT)
     const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
     return `${authUrl}?token=${encodeURIComponent(token)}`
