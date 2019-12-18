@@ -2,7 +2,17 @@
   <div class="u-max-width">
     <page-title title="Centres d'examens" />    <v-container>
       <v-card>
+        <h3 class="text-xs-center">
+          Ajouter un centre
+        </h3>
         <center-create />
+      </v-card>
+      <v-divider />
+
+      <v-card>
+        <h3 class="text-xs-center">
+          Liste des centres
+        </h3>
         <v-list
           class="centre-grid"
         >
@@ -74,6 +84,11 @@ export default {
   grid-template-columns: 1fr;
   width: 100%;
   width: auto;
+}
+
+h3 {
+  padding-top: 1em;
+  padding-left: 1em;
 }
 
 </style>

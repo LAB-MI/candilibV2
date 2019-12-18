@@ -1715,7 +1715,7 @@ router.patch(
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: Tous les paramètres doivent être renseignés
+ *                     message: Tous les paramètres doivent être correctement renseignés
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
  *
