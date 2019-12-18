@@ -38,12 +38,14 @@
                 </v-list-item-content>
               </div>
             </v-card-text>
+            <!--
             <center-list-dialog
               :centre="centre.nom + ' (' + centre.departement + ')'"
               :action="centre.active ? 'Désactiver' : 'Activer'"
               :active="centre.active"
               @click="changeState(centre._id, !centre.active)"
             />
+            -->
           </v-list-item>
         </v-list>
       </v-card>
@@ -54,12 +56,12 @@
 <script>
 import { FETCH_ALL_CENTERS_REQUEST, CHANGE_CENTER_STATE_REQUEST } from '@/store'
 import centerCreate from './CenterCreate'
-import centerListDialog from './CenterListDialog'
+// import centerListDialog from './CenterListDialog'
 
 export default {
   components: {
     centerCreate,
-    centerListDialog,
+    // centerListDialog,
   },
   computed: {
     centres () {
