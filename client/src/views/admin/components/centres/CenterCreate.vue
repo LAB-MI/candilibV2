@@ -32,15 +32,21 @@
         />
       </v-row>
       <v-row class="mx-10">
-        <v-text-field
+        <v-autocomplete
           v-model="adresse"
-          prepend-icon="room"
           :aria-placeholder="defaults.adresse"
           :hint="'ex. : ' + defaults.adresse"
+          item-text="label"
+          :items="adresses"
           label="Adresse"
+          :loading="isFetchingMatchingAdresses"
+          no-filter
           :placeholder="placeholders.adresse"
+          prepend-icon="location_city"
           required
+          return-object
           :rules="generalRules"
+          :search-input.sync="searchAdresses"
           @focus="setPlaceholder('adresse')"
           @blur="removePlaceholder('adresse')"
         />
@@ -102,11 +108,18 @@
 </template>
 
 <script>
+import pDebounce from 'p-debounce'
+
 import { mapState } from 'vuex'
 
 import {
   ADD_NEW_CENTER_REQUEST,
 } from '@/store'
+import api from '@/api'
+
+const getAdresses = pDebounce((query) => {
+  return api.util.searchAdresses(query)
+}, 300)
 
 export default {
   data () {
@@ -142,6 +155,9 @@ export default {
         lon: '2.458441',
         lat: '48.905818',
       },
+      adresses: [],
+      searchAdresses: null,
+      isFetchingMatchingAdresses: false,
     }
   },
 
@@ -151,6 +167,12 @@ export default {
     }),
     isCreating () {
       return this.$store.state.admin.centres.isCreating || false
+    },
+  },
+
+  watch: {
+    searchAdresses (val) {
+      val && val !== this.select && this.fetchMatchingAdresses(val)
     },
   },
 
@@ -176,12 +198,31 @@ export default {
       await this.$store.dispatch(ADD_NEW_CENTER_REQUEST, {
         nom,
         label,
-        adresse,
+        adresse: adresse.label,
         lon: Number(lon),
         lat: Number(lat),
         departement,
       })
       this.$refs.createCenterForm.reset()
+    },
+
+    async fetchMatchingAdresses (val) {
+      this.isFetchingMatchingAdresses = true
+      this.adresses[Math.min(this.adresses.length - 1, 0)] = val
+      try {
+        const adresses = await getAdresses(val)
+        this.adresses = (adresses.features && adresses.features.length)
+          ? adresses.features
+            .filter(adr => adr.properties.type.includes('housenumber'))
+            .map(feature => ({
+              label: feature.properties.label,
+              context: feature.properties.context,
+            }))
+            .concat([{ label: val }])
+          : this.adresses
+      } catch (error) {
+      }
+      this.isFetchingMatchingAdresses = false
     },
   },
 }
