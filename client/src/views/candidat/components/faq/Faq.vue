@@ -32,6 +32,7 @@
 </template>
 
 <script>
+import { FETCH_CONFIG_REQUEST } from '@/store'
 import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
 
@@ -43,14 +44,26 @@ export default {
 
   data () {
     return {
-      arrayContent: faqJson,
     }
   },
 
   computed: {
+
+    lineDelay () {
+      return this.$store.state.config.lineDelay
+    },
+
+    arrayContent () {
+      return faqJson(this.lineDelay)
+    },
+
     me () {
       return this.$store.state.candidat.me
     },
+  },
+
+  mounted () {
+    this.$store.dispatch(FETCH_CONFIG_REQUEST)
   },
 
   methods: {
