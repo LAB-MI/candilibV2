@@ -23,7 +23,7 @@
           prepend-icon="comment"
           :aria-placeholder="defaults.label"
           :hint="'ex. : ' + defaults.label"
-          label="Label"
+          label="Étiquette"
           :placeholder="placeholders.label"
           required
           :rules="generalRules"

@@ -1,6 +1,7 @@
 <template>
   <div class="u-max-width">
-    <page-title title="Centres d'examens" />    <v-container>
+    <page-title title="Centres d'examens" />
+    <v-container>
       <v-card>
         <h3 class="text-xs-center">
           Ajouter un centre
@@ -23,7 +24,7 @@
             :class="{ 'blue-grey  lighten-5': !centre.active }"
           >
             <v-card-text>
-              <div>
+              <div class="u-flex">
                 <v-list-item-content>
                   <v-list-item-title>
                     <span class="u-uppercase">
@@ -36,6 +37,16 @@
                     {{ centre.adresse }}
                   </v-list-item-subtitle>
                 </v-list-item-content>
+                <a
+                  target="_blank"
+                  class="location-icon  u-flex"
+                  :href="href(centre.geoloc.coordinates)"
+                  @click.stop="() => true"
+                >
+                  <v-icon>
+                    location_on
+                  </v-icon>
+                </a>
               </div>
             </v-card-text>
             <!--
@@ -68,10 +79,17 @@ export default {
       return this.$store.state.admin.centres.list
     },
   },
+
   mounted () {
     this.$store.dispatch(FETCH_ALL_CENTERS_REQUEST)
   },
+
   methods: {
+    href (coordinates) {
+      const [lon, lat] = coordinates
+      return `http://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=24`
+    },
+
     changeState (id, active) {
       this.$store.dispatch(CHANGE_CENTER_STATE_REQUEST, { id, active })
     },
@@ -80,6 +98,12 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
+.location-icon {
+  border-left: 1px solid rgba(150, 150, 150, 0.5);
+  height: 3em;
+  padding: 0 1.5em;
+  text-decoration: none;
+}
 
 .centre-grid {
   display: grid;
