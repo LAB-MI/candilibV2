@@ -300,6 +300,7 @@ export const getBookedCandidats = async (req, res) => {
  * @param {string} firstConnection Date et heure de la première connexion à Candilib
  * @param {Place[]} places Liste des places réservées par le candidat
  * @param {string} resaCanceledByAdmin Date et heure de la dernière annulation de place faite par un administrateur
+ * @param {string} canAccessAt Date et heure auxquelles le candidat peut accéder à l'interface de réservation
  *
  * @typedef {Object} NoReussite
  * @param {string} _id Identifiant de l'échec

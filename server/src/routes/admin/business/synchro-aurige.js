@@ -8,6 +8,9 @@ import {
   addPlaceToArchive,
 } from '../../../models/candidat'
 import {
+  findWhitelistedByEmail,
+} from '../../../models/whitelisted'
+import {
   findPlaceBookedByCandidat,
   removeBookedPlace,
 } from '../../../models/place'
