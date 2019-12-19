@@ -9,6 +9,11 @@ server {
     try_files $uri @rew;
   }
 
+  location /robots.txt {
+    expires 24h;
+    return 200 "User-agent: *\nDisallow: <PUBLIC_PATH>/api/\nAllow: /";
+  }
+
   location @rew {
     expires 24h;
     if ($http_x_forwarded_proto) {
@@ -19,6 +24,8 @@ server {
 
   location <PUBLIC_PATH> {
     expires 24h;
+    limit_req zone=app burst=<APP_USER_BURST>;
+    limit_req_status 429;
     alias /usr/share/nginx/html;
     try_files $uri $uri/ @rewrites;
 
@@ -33,6 +40,8 @@ server {
   }
 
   location ~ "^<PUBLIC_PATH>/api/v2/candidat" {
+    limit_req zone=api burst=<API_USER_BURST>;
+    limit_req_status 429;
     rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
     add_header Access-Control-Allow-Origin '$http_origin';
     proxy_pass http://<API_HOST>:<API_PORT>;
@@ -41,6 +50,8 @@ server {
     proxy_http_version 1.1;
   }
   location ~ "^<PUBLIC_PATH>/api/v2/auth/candidat" {
+    limit_req zone=api burst=<API_USER_BURST>;
+    limit_req_status 429;
     rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
     add_header Access-Control-Allow-Origin '$http_origin';
     proxy_pass http://<API_HOST>:<API_PORT>;

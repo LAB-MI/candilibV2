@@ -15,6 +15,10 @@ http {
     default_type  application/octet-stream;
 
     server_tokens off;
+
+    limit_req_zone $<API_USER_SCOPE> zone=app:10m rate=<APP_USER_LIMIT_RATE>;
+    limit_req_zone $<API_USER_SCOPE> zone=api:2m rate=<API_USER_LIMIT_RATE>;
+
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     add_header X-Frame-Options SAMEORIGIN;
     add_header X-Content-Type-Options nosniff;
