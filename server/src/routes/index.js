@@ -10,6 +10,7 @@ import candidat, { preSignup, emailValidation } from './candidat'
 import { verifyToken } from './middlewares'
 import { resetMyPassword } from './auth/admin-controllers'
 import { getCandidatConfig } from './candidat/candidat-config-controller'
+import { getDepartements } from './candidat/candidat-departements-controller'
 
 const router = express.Router()
 
@@ -224,6 +225,12 @@ router.put('/candidat/me', emailValidation)
  *          $ref: '#/components/responses/UnknownErrorResponse'
  */
 router.get('/candidat/config', getCandidatConfig)
+
+/**
+ * Route pour obtenir la liste des départements
+ *
+ */
+router.get('/departements', getDepartements)
 
 /**
  * @swagger
