@@ -21,7 +21,7 @@
 
     <ul class="list-faq">
       <li
-        v-for="question in arrayContent"
+        v-for="question in faqQuestions"
         :key="question.title"
         class="question-wrapper"
       >
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { FETCH_CONFIG_REQUEST } from '@/store'
+import { FETCH_CONFIG_REQUEST, FETCH_DEPARTEMENTS_REQUEST } from '@/store'
 import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
 
@@ -53,8 +53,12 @@ export default {
       return this.$store.state.config.lineDelay
     },
 
-    arrayContent () {
-      return faqJson(this.lineDelay)
+    departements () {
+      return this.$store.state.departements.list
+    },
+
+    faqQuestions () {
+      return faqJson(this.lineDelay, this.departements)
     },
 
     me () {
@@ -64,6 +68,7 @@ export default {
 
   mounted () {
     this.$store.dispatch(FETCH_CONFIG_REQUEST)
+    this.$store.dispatch(FETCH_DEPARTEMENTS_REQUEST)
   },
 
   methods: {
