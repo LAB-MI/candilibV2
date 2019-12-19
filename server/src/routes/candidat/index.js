@@ -273,6 +273,7 @@ router.get('/centres', getCentres)
  *         $ref: '#/components/responses/UnknownErrorResponse'
  *
  */
+
 /**
  * Route pour obtenir la réservation du candidat ou pour obtenir la liste des dates des places disponibles
  * @name Router GET '/candidat/places/:id?'

@@ -22,3 +22,5 @@ export const deleteDepartementById = async _id => {
   await departement.delete()
   return departement
 }
+
+export const findDepartements = async () => Departement.find({}, '_id')

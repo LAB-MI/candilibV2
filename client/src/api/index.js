@@ -523,6 +523,15 @@ export default {
       return json
     },
 
+    async getDepartements () {
+      const json = await apiClient.get(`${apiPaths.util.departements}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      return json
+    },
+
     async searchAdresses (query) {
       const json = await apiClient.get(apiPaths.util.adressesQuery(query), {
         headers: {},
