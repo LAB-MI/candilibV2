@@ -82,6 +82,7 @@ const adminRoutes = [
         path: 'centres',
         name: 'centres',
         component: CenterList,
+        beforeEnter: checkAccess,
       },
       {
         path: 'stats-kpi/:begin?/:end?',
