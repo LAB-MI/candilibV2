@@ -19,6 +19,11 @@ import {
   updateIpcsr,
 } from './inspecteurs-controllers'
 import {
+  createDepartementsController,
+  getDepartementsController,
+  updateDepartementsController,
+} from './departement-controllers'
+import {
   createOrImportPlaceByAdmin,
   deleteByAdmin,
   getPlaces,

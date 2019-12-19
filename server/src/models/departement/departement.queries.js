@@ -22,3 +22,14 @@ export const deleteDepartementById = async _id => {
   await departement.delete()
   return departement
 }
+
+export const findAllDepartements = async () => Departement.find({}, '-__v')
+
+export const updateDepartementById = async ({ _id, email }) => {
+  const departement = await findDepartementById(_id)
+  if (!departement) {
+    throw new Error('No departement found with id')
+  }
+  await departement.updateOne({ email })
+  return departement
+}
