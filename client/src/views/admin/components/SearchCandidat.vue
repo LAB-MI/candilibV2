@@ -89,7 +89,7 @@ const iconAccess = (canAccessAt) => {
   const newDate = new Date()
   const today = newDate.getDay()
   const dayLeft = canAccessAt - today
-  const result = canAccessAt > today ? `il reste ${dayLeft} jours` : ` - `
+  const result = canAccessAt > today ? `<i class="red--text">il reste ${dayLeft}jours</i>` : `<i class="material-icons green--text">done</i>`
   return result
 }
 
