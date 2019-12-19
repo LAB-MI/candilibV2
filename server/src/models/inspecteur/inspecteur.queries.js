@@ -23,8 +23,17 @@ export const findInspecteurById = async id => Inspecteur.findById(id)
 export const findInspecteurByMatricule = async matricule =>
   Inspecteur.findOne({ matricule })
 
-export const findInspecteurByDepartement = async departement =>
+export const findInspecteursByDepartement = async departement =>
   Inspecteur.find({ departement })
+
+export const findInspecteursByDepartements = async departements =>
+  Inspecteur.find({ departement: { $in: departements } })
+
+export const findActiveInspecteursByDepartements = async departements =>
+  Inspecteur.find({
+    departement: { $in: departements },
+    active: { $ne: false },
+  })
 
 export const findInspecteursMatching = async $search => {
   const search = new RegExp($search, 'i')
@@ -89,4 +98,12 @@ export const deleteInspecteurById = async id => {
 export const findAllInspecteurs = async () => {
   const inspecteurs = await Inspecteur.find()
   return inspecteurs
+}
+
+export const updateIpcsr = (ipcsrId, newData) => {
+  return Inspecteur.findByIdAndUpdate(ipcsrId, newData)
+}
+
+export const disableIpcsr = ipcsrId => {
+  return Inspecteur.findByIdAndUpdate(ipcsrId, { active: false })
 }

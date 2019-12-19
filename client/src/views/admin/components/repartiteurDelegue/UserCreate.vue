@@ -12,7 +12,7 @@
         hint="ex. : jean@dupont.fr"
         tabindex="0"
         :rules="emailRules"
-        label="E-mail"
+        label="Adresse courriel"
         :placeholder="emailPlaceholder"
         required
         @focus="setEmailPlaceholder"
@@ -29,6 +29,7 @@
       <v-spacer />
 
       <select-departements
+        multiple
         :available-departements="availableDepartements"
         :default-departements="availableDepartements"
         @change-departements="newDep => departements = newDep"
@@ -58,8 +59,9 @@
 import { mapState } from 'vuex'
 
 import { email as emailRegex } from '@/util'
+
 import SelectStatus from './SelectStatus'
-import SelectDepartements from './SelectDepartements'
+import SelectDepartements from '../SelectDepartements'
 
 import {
   CREATE_USER_REQUEST,

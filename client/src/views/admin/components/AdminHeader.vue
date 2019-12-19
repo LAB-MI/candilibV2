@@ -2,7 +2,6 @@
   <v-app-bar
     class="admin-header"
     dark
-    fixed
   >
     <v-toolbar-title>
       <h1 class="logo">

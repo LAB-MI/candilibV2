@@ -6,6 +6,11 @@ import { email as emailRegex, matricule as matriculeRegex } from '../../util'
 const { Schema } = mongoose
 
 export const inspecteurFields = {
+  active: {
+    type: Boolean,
+    required: false,
+  },
+
   nom: {
     type: String,
     required: true,

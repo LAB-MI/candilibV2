@@ -1,5 +1,5 @@
 <template>
-  <div class="users-list  text-uppercase">
+  <div>
     <v-data-table
       :headers="headers"
       :items="users"
@@ -33,10 +33,10 @@ export default {
   data () {
     return {
       headers: [
-        { text: 'Email', value: 'email' },
-        { text: 'Statut', value: 'status' },
-        { text: 'Départements', value: 'departementsAsString' },
-        { text: 'Actions', value: 'action', align: 'center' },
+        { text: 'Adresse courriel', value: 'email', class: 'text-uppercase' },
+        { text: 'Statut', value: 'status', class: 'text-uppercase' },
+        { text: 'Départements', value: 'departementsAsString', class: 'text-uppercase' },
+        { text: 'Actions', value: 'action', align: 'center', class: 'text-uppercase' },
       ],
       editedUser: {},
     }
@@ -58,10 +58,3 @@ export default {
   },
 }
 </script>
-
-<style lang="stylus" scoped>
-.users-list {
-  margin-top: 2em;
-  margin-bottom: 2em;
-}
-</style>
