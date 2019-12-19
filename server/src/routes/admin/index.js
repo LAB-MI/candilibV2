@@ -13,7 +13,11 @@ import {
   getUsers,
   updatedInfoUser,
 } from './admin.controllers'
-import { getInspecteurs } from './inspecteurs-controllers'
+import {
+  createIpcsr,
+  getInspecteurs,
+  updateIpcsr,
+} from './inspecteurs-controllers'
 import {
   createOrImportPlaceByAdmin,
   deleteByAdmin,
@@ -455,7 +459,267 @@ router.post(
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_inspecteurs}
  */
 router.get('/inspecteurs', getInspecteurs)
+
+/**
+ * @swagger
+ *
+ * /admin/inspecteurs:
+ *   put:
+ *     tags: ["Administrateur"]
+ *     summary: Modification des infos d'un inspecteur
+ *     description: L'administrateur modifie les informations d'un inspecteur
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           example: 456088afdaecd3462089
+ *         required: true
+ *         description: Identifiant de l'IPCSR dans la base de données
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               departement:
+ *                 type: string
+ *                 example: 93
+ *                 description: Valeur du département d'intervention de l'IPCSR
+ *               email:
+ *                 type: string
+ *                 example: jacques.dupont@example.com
+ *                 description: Adresse courriel de l'IPCSR
+ *               matricule:
+ *                 type: string
+ *                 example: '059049585'
+ *                 description: Matricule de l'IPCSR
+ *               nom:
+ *                 type: string
+ *                 example: 'Dupont'
+ *                 description: Nom de l'IPCSR
+ *               prenom:
+ *                 type: string
+ *                 example: 'Jacques'
+ *                 description: Prénom de l'IPCSR
+ *     responses:
+ *       200:
+ *         description: Succès de la requête, l'IPCSR a été modifié
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: Statut de la requête et IPCSR modifié
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 ipcsr:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       description: Identifiant de l'IPCSR
+ *                     email:
+ *                       type: string
+ *                       description: Adresse courriel de l'IPCSR
+ *                     matricule:
+ *                       type: string
+ *                       description: Matricule de l'IPCSR
+ *                     nom:
+ *                       type: string
+ *                       description: Nom de l'IPCSR
+ *                     prenom:
+ *                       type: string
+ *                       description: Prénom de l'IPCSR
+ *                     departement:
+ *                       type: string
+ *                       description: Code du département de l'IPCSR
+ *             example: {
+ *               success: true,
+ *               ipcsr: {
+ *                 _id: 5d970a006a503f67d254124d,
+ *                 email: dupond.jacques@email.fr,
+ *                 matricule: 01020301,
+ *                 nom: DUPOND,
+ *                 prenom: Jacques,
+ *                 departement: 93
+ *               }
+ *             }
+ *
+ *       403:
+ *         description: L'utilisateur n'est pas autorisé à modifier cet IPCSR
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Vous n'êtes pas autorisé à modifier cet IPCSR ${prenom} ${nom} ${matricule} (${ipcsrId})
+ *
+ *       409:
+ *         description: L'IPCSR ne peut pas être supprimé car il est sur des places qui lui sont réservées
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: "Impossible d'archiver cet inspecteur : il est associé à des places d'examens"
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * L'administrateur modifie les informations d'un inspecteur
+ *
+ * @callback updateIpcsr
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/put_admin_inspecteurs}
+ */
+router.put('/inspecteurs/:id', updateIpcsr)
+
+// router.patch('/inspecteurs/:id', updateIpcsr) // Activer/désactiver un inspecteur
+
+/**
+ * @swagger
+ *
+ * /admin/inspecteurs:
+ *   put:
+ *     tags: ["Administrateur"]
+ *     summary: Ajout d'un IPCSR dans un département
+ *     description: L'administrateur crée un IPCSR dans la base de données
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               departement:
+ *                 type: string
+ *                 required: true,
+ *                 example: 93
+ *                 description: Valeur du département d'intervention de l'IPCSR
+ *               email:
+ *                 type: string
+ *                 required: true,
+ *                 example: jacques.dupont@example.com
+ *                 description: Adresse courriel de l'IPCSR
+ *               matricule:
+ *                 type: string
+ *                 required: true,
+ *                 example: '059049585'
+ *                 description: Matricule de l'IPCSR
+ *               nom:
+ *                 type: string
+ *                 required: true,
+ *                 example: 'Dupont'
+ *                 description: Nom de l'IPCSR
+ *               prenom:
+ *                 type: string
+ *                 required: true,
+ *                 example: 'Jacques'
+ *                 description: Prénom de l'IPCSR
+ *     responses:
+ *       200:
+ *         description: Succès de la requête, l'IPCSR a été créé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: Statut de la requête et IPCSR créé
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 ipcsr:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       description: Identifiant de l'IPCSR
+ *                     email:
+ *                       type: string
+ *                       description: Adresse courriel de l'IPCSR
+ *                     matricule:
+ *                       type: string
+ *                       description: Matricule de l'IPCSR
+ *                     nom:
+ *                       type: string
+ *                       description: Nom de l'IPCSR
+ *                     prenom:
+ *                       type: string
+ *                       description: Prénom de l'IPCSR
+ *                     departement:
+ *                       type: string
+ *                       description: Code du département de l'IPCSR
+ *             example: {
+ *               success: true,
+ *               ipcsr: {
+ *                 _id: 5d970a006a503f67d254124d,
+ *                 email: dupond.jacques@email.fr,
+ *                 matricule: 01020301,
+ *                 nom: DUPOND,
+ *                 prenom: Jacques,
+ *                 departement: 93
+ *               }
+ *             }
+ *
+ *       400:
+ *         description: Au moins un des paramètres requis est absent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Tous les champs sont obligatoires
+ *
+ *
+ *       403:
+ *         description: L'utilisateur n'est pas autorisé à créer cet IPCSR
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Vous n'êtes pas autorisé à créer cet IPCSR dans ce département
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * L'administrateur crée un IPCSR
+ *
+ * @callback createIpcsr
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_inspecteurs}
+ */
+router.post('/inspecteurs', createIpcsr)
+
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
+
 /**
  * @swagger
  * /admin/places:

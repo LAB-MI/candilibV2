@@ -2,7 +2,7 @@
   <v-select
     v-model="departements"
     class="t-select-departements"
-    multiple
+    :multiple="multiple"
     :items="availableDepartements"
     label="Départements"
     prepend-icon="my_location"
@@ -26,15 +26,21 @@ export default {
     },
     defaultDepartements: {
       type: Array,
-      default () {
-        return []
-      },
+      default () {},
+    },
+    defaultDepartement: {
+      type: String,
+      default: '',
+    },
+    multiple: {
+      type: Boolean,
+      default: false,
     },
   },
 
   data () {
     return {
-      departements: this.defaultDepartements,
+      departements: this.defaultDepartements || this.defaultDepartement,
       departementsRules: [
         dpts => (!!dpts && !!dpts.length) ||
           'Veuillez renseigner au moins un département',

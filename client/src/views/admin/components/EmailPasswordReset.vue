@@ -106,14 +106,14 @@ export default {
   },
 
   methods: {
-    async removeEmailPlaceholder () {
+    removeEmailPlaceholder () {
       this.emailPlaceholder = ''
     },
-    async setEmailPlaceholder () {
+    setEmailPlaceholder () {
       this.emailPlaceholder = 'admin@example.com'
     },
 
-    async setEmailToLowerCase () {
+    setEmailToLowerCase () {
       this.email = this.email && this.email.toLowerCase()
     },
 
