@@ -84,7 +84,18 @@ const historiqueAction = (places) => {
     return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
   }).reverse().join('') + '</ul>'
 }
+
+const iconAccess = (canAccessAt) => {
+  const newDate = new Date()
+  const today = newDate.getDay()
+  const dayLeft = canAccessAt - today
+  const result = canAccessAt > today ? `il reste ${dayLeft} jours` : ` - `
+  return result
+}
+
 const candidatProfileInfoDictionary = [
+  [['', 'Statut', iconAccess]],
+  [['canAccessAt', 'Date d\'accès', convertToLegibleDateTime]],
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
   [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
   [
