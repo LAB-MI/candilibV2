@@ -1,5 +1,5 @@
-export function faqJson (lineDelay) {
-  const arr1 = [
+export function faqJson (lineDelay, departements = []) {
+  const returnArray = [
     {
       title: 'Qu\'est-ce que Candilib ?',
       content: [
@@ -27,7 +27,7 @@ export function faqJson (lineDelay) {
           textContent: 'Tout « candidat libre » peut utiliser le service.',
         },
         {
-          textContent: 'Cependant, seuls les départements de la liste suivante proposent des places via ce service : 38, 69, 75, 77, 78, 91, 92, 93, 94, 95.',
+          textContent: `Cependant, seuls les départements de la liste suivante proposent des places via ce service : ${departements.join(', ')}`,
         },
         {
           textContent: 'NB : les candidats du 75, du fait des conditions de circulation dans Paris intramuros, pourront choisir parmi les centres d\'examen suivants : Rosny Sous Bois, Noisy Le Grand, Saint Leu La Forêt, Gennevilliers, Bobigny, Vélizy-Villacoublay"',
@@ -59,22 +59,14 @@ export function faqJson (lineDelay) {
         },
       ],
     },
-  ]
-
-  const arr2 = []
-  const text = 'Après l\'acceptation de votre inscription, vous devez attendre ' + lineDelay + ' jours avant de pouvoir accéder au planning de réservation. Cette mise en file d\'attente vous permet de planifier votre préparation en vue de réussir votre examen du permis de conduire.'
-  var obj = {
-    title: 'Quand pourrais-je accéder au planning de réservation ?',
-    content: [
-      {
-        textContent: '',
-      },
-    ],
-  }
-  obj.content[0].textContent = text
-  arr2.push(obj)
-
-  const arr3 = [
+    {
+      title: 'Quand pourrais-je accéder au planning de réservation ?',
+      content: [
+        {
+          textContent: `Après l'acceptation de votre inscription, vous devez attendre ${lineDelay} jours avant de pouvoir accéder au planning de réservation. Cette mise en file d'attente vous permet de planifier votre préparation en vue de réussir votre examen du permis de conduire.`,
+        },
+      ],
+    },
     {
       title: 'Est-ce que je peux modifier ou annuler mon rendez-vous ?',
       content: [
@@ -155,6 +147,5 @@ export function faqJson (lineDelay) {
     },
   ]
 
-  const returnArray = arr1.concat(arr2).concat(arr3)
   return returnArray
 }

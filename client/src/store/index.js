@@ -15,6 +15,7 @@ import candidat from './candidat'
 import candidats from './candidats'
 import center from './center'
 import config from './config'
+import departements from './departements'
 import importPlaces from './import-places'
 import message from './message'
 import reservation from './reservation'
@@ -35,6 +36,7 @@ export * from './candidat'
 export * from './candidats'
 export * from './center'
 export * from './config'
+export * from './departements'
 export * from './import-places'
 export * from './message'
 export * from './reservation'
@@ -58,6 +60,7 @@ export default new Vuex.Store({
     candidats,
     center,
     config,
+    departements,
     importPlaces,
     message,
     reservation,
