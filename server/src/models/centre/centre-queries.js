@@ -159,16 +159,22 @@ export const updateCentreActiveState = async (centre, active, email) => {
  */
 export const updateCentreLabel = async (
   centre,
-  name,
-  label,
-  adresse,
-  lon,
-  lat
+  { nom, label, adresse, lon, lat }
 ) => {
   if (!centre) {
     throw new Error('centre is undefined')
   }
-  await centre.updateOne({ nom: name, label, adresse, lon, lat })
+  const updateObject = {}
+  if (nom) updateObject.nom = nom
+  if (label) updateObject.label = label
+  if (adresse) updateObject.adresse = adresse
+  if (lon && lat) {
+    updateObject.geoloc = { coordinates: [] }
+    updateObject.geoloc.coordinates[0] = lon
+    updateObject.geoloc.coordinates[1] = lat
+  }
+
+  await centre.updateOne(updateObject)
   const updatedCentre = await Centre.findById(centre._id)
   return updatedCentre
 }

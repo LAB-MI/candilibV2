@@ -19,6 +19,7 @@ import {
   findAllCentres,
   findCentreById,
   updateCentreActiveState,
+  updateCentreLabel,
 } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
 
@@ -168,4 +169,62 @@ export async function addCentre (nom, label, adresse, lon, lat, departement) {
     departement
   )
   return centre
+}
+
+/**
+ * Modifie un centre dans la base de données
+ *
+ * @async
+ * @function
+ *
+ * @param {string} id - Id du centre à modifier
+ * @param {string} nom - Nom du centre (de la ville du centre)
+ * @param {string} label - Information complémentaire pour retrouver le point de rencontre du centre
+ * @param {string} adresse - Adresse du centre
+ * @param {number} lon - Longitude géographique du centre
+ * @param {number} lat - Latitude géographique du centre
+ * @param {string} userId - Identifiant de l'utilisateur souhaitant effectuer l'action
+ *
+ * @returns {Promise.<CentreMongo>} Centre modifié
+ */
+export async function updateCentre (
+  id,
+  { nom, label, adresse, lon, lat },
+  userId
+) {
+  const centre = await findCentreById(id)
+
+  if (!centre) {
+    const error = new Error('Centre introuvable')
+    error.status = 404
+    throw error
+  }
+
+  const user = await findUserById(userId)
+
+  if (!user.departements.includes(centre.departement)) {
+    const error = new Error("Vous n'avez pas accès à ce centre")
+    error.status = 403
+    throw error
+  }
+  const alreadyExistingCentre = await findCentreByNameAndDepartement(
+    nom,
+    centre.departement
+  )
+
+  if (alreadyExistingCentre) {
+    const error = new Error('Centre déjà présent dans la base de données')
+    error.status = 409
+    throw error
+  }
+
+  const updatedCentre = await updateCentreLabel(centre, {
+    nom,
+    label,
+    adresse,
+    lon,
+    lat,
+  })
+
+  return updatedCentre
 }
