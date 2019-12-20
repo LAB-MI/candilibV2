@@ -17,6 +17,7 @@
           :rules="generalRules"
           @focus="setPlaceholder('nom')"
           @blur="removePlaceholder('nom')"
+          @change="onChange"
         />
         <v-text-field
           v-model="label"
@@ -29,6 +30,7 @@
           :rules="generalRules"
           @focus="setPlaceholder('label')"
           @blur="removePlaceholder('label')"
+          @change="onChange"
         />
       </v-row>
       <v-row class="mx-10">
@@ -49,6 +51,7 @@
           :search-input.sync="searchAdresses"
           @focus="setPlaceholder('adresse')"
           @blur="removePlaceholder('adresse')"
+          @change="onChange"
         />
       </v-row>
       <v-row class="mx-10">
@@ -63,6 +66,7 @@
           :rules="[...generalRules, ...numberRules]"
           @focus="setPlaceholder('lon')"
           @blur="removePlaceholder('lon')"
+          @change="onChange"
         />
 
         <v-text-field
@@ -76,9 +80,11 @@
           :rules="[...generalRules, ...numberRules]"
           @focus="setPlaceholder('lat')"
           @blur="removePlaceholder('lat')"
+          @change="onChange"
         />
 
         <v-select
+          v-if="addCentre"
           v-model="departement"
           :items="availableDepartements"
           label="Département"
@@ -89,7 +95,10 @@
           required
         />
       </v-row>
-      <v-row class="mx-10">
+      <v-row
+        v-if="addCentre"
+        class="mx-10"
+      >
         <v-btn
           type="submit"
           :disabled="!valid || isCreating"
@@ -123,6 +132,13 @@ const getAdresses = pDebounce((query) => {
 }, 300)
 
 export default {
+  props: {
+    addCentre: {
+      type: Boolean,
+      default: true,
+    },
+  },
+
   data () {
     return {
       nom: '',
@@ -136,9 +152,6 @@ export default {
           'Veuillez renseigner un département',
       ],
       valid: false,
-      generalRules: [
-        text => text !== '' || 'Veuillez renseigner ce champ',
-      ],
       numberRules: [
         numberStr => !isNaN(Number(numberStr)) || 'Veuillez entrer un nombre',
       ],
@@ -163,6 +176,12 @@ export default {
   },
 
   computed: {
+    generalRules () {
+      if (this.addCentre) {
+        return [ text => text !== '' || 'Veuillez renseigner ce champ' ]
+      }
+      return []
+    },
     ...mapState({
       availableDepartements: state => state.admin.departements.list,
     }),
@@ -224,6 +243,23 @@ export default {
       } catch (error) {
       }
       this.isFetchingMatchingAdresses = false
+    },
+
+    onChange () {
+      const {
+        nom,
+        label,
+        adresse,
+        lon,
+        lat,
+      } = this
+      this.$emit('change', {
+        nom,
+        label,
+        adresse: adresse.label,
+        lon,
+        lat,
+      })
     },
   },
 }

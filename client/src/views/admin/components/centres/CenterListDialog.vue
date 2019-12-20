@@ -11,7 +11,6 @@
       >
         <v-icon>edit</v-icon>
       </v-btn>
-      {{ active ? 'Actif' : 'Désactivé' }}
     </template>
 
     <v-card>
@@ -19,11 +18,15 @@
         class="headline grey lighten-2"
         primary-title
       >
-        {{ action }} {{ centre }}
+        Modification de {{ centre }}
       </v-card-title>
 
+      <center-form
+        :add-centre="false"
+        @change="getFormData"
+      />
       <v-card-text>
-        Voulez-vous vraiment {{ action.toLowerCase() }} ce centre <strong>{{ centre }}</strong> ?
+        Voulez-vous vraiment modifier ce centre <strong>{{ centre }}</strong> ?
       </v-card-text>
 
       <v-divider />
@@ -40,9 +43,9 @@
         </v-btn>
         <v-btn
           color="primary"
-          @click="$emit('click'); showDialog = false"
+          @click="sendFormData"
         >
-          Oui, {{ action.toLowerCase() }}
+          Oui, modifier
         </v-btn>
       </v-card-actions>
     </v-card>
@@ -50,26 +53,60 @@
 </template>
 
 <script>
+import CenterForm from './CenterForm'
+
 export default {
+
+  components: {
+    CenterForm,
+  },
+
   props: {
+    item: {
+      type: Object,
+      default: () => {},
+    },
     centre: {
       type: String,
       default: 'un centre',
-    },
-    action: {
-      type: String,
-      default: 'Désactiver',
-    },
-    active: {
-      type: Boolean,
-      default: true,
     },
   },
 
   data () {
     return {
       showDialog: false,
+      nom: '',
+      adresse: '',
+      lon: '',
+      lat: '',
     }
+  },
+
+  methods: {
+    getFormData ({
+      nom,
+      label,
+      adresse,
+      lon,
+      lat,
+    }) {
+      this.nom = nom
+      this.label = label
+      this.adresse = adresse
+      this.lon = lon
+      this.lat = lat
+    },
+    sendFormData () {
+      this.$emit('click', {
+        id: this.item._id,
+        nom: this.nom,
+        label: this.label,
+        adresse: this.adresse,
+        lon: this.lon,
+        lat: this.lat,
+      })
+      this.showDialog = false
+    },
   },
 }
 </script>

@@ -123,15 +123,7 @@ export async function getAdminCentres (req, res) {
 export async function modifyCentre (req, res) {
   const userId = req.userId
 
-  const {
-    centreId,
-    nom,
-    label,
-    adresse,
-    lon,
-    lat,
-    active,
-  } = req.body
+  const { centreId, nom, label, adresse, lon, lat, active } = req.body
 
   const loggerContent = {
     section: 'admin-modify-centre',
@@ -164,7 +156,11 @@ export async function modifyCentre (req, res) {
       message = 'Le centre a bien été ' + (active ? 'activé' : 'désactivé')
     }
 
-    const centre = await updateCentre(centreId, { nom, label, adresse, lon, lat }, userId)
+    const centre = await updateCentre(
+      centreId,
+      { nom, label, adresse, lon, lat },
+      userId
+    )
 
     appLogger.info({
       ...loggerContent,
