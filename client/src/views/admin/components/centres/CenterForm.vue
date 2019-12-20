@@ -34,21 +34,15 @@
         />
       </v-row>
       <v-row class="mx-10">
-        <v-autocomplete
+        <v-text-field
           v-model="adresse"
+          prepend-icon="location_city"
           :aria-placeholder="defaults.adresse"
           :hint="'ex. : ' + defaults.adresse"
-          item-text="label"
-          :items="adresses"
           label="Adresse"
-          :loading="isFetchingMatchingAdresses"
-          no-filter
           :placeholder="placeholders.adresse"
-          prepend-icon="location_city"
           required
-          return-object
           :rules="generalRules"
-          :search-input.sync="searchAdresses"
           @focus="setPlaceholder('adresse')"
           @blur="removePlaceholder('adresse')"
           @change="onChange"
@@ -118,24 +112,21 @@
 </template>
 
 <script>
-import pDebounce from 'p-debounce'
-
 import { mapState } from 'vuex'
 
 import {
   CREATE_CENTER_REQUEST,
 } from '@/store'
-import api from '@/api'
-
-const getAdresses = pDebounce((query) => {
-  return api.util.searchAdresses(query)
-}, 300)
 
 export default {
   props: {
     addCentre: {
       type: Boolean,
       default: true,
+    },
+    defaultValues: {
+      type: Object,
+      default: () => ({}),
     },
   },
 
@@ -163,15 +154,12 @@ export default {
         lat: '',
       },
       defaults: {
-        nom: 'Rosny sous Bois',
-        label: "Centre d'examen du permis de conduire de Rosny sous Bois",
-        adresse: '320 avenue Paul Vaillant Couturier 93000 Bobigny',
-        lon: '2.458441',
-        lat: '48.905818',
+        nom: 'Metropolis',
+        label: "Centre d'examen du permis de conduire de Metropolis",
+        adresse: '320 rue de la kryptonite 00000 Metropolis',
+        lon: '2.45',
+        lat: '48.90',
       },
-      adresses: [],
-      searchAdresses: null,
-      isFetchingMatchingAdresses: false,
     }
   },
 
@@ -190,10 +178,10 @@ export default {
     },
   },
 
-  watch: {
-    searchAdresses (val) {
-      val && val !== this.select && this.fetchMatchingAdresses(val)
-    },
+  mounted () {
+    if (this.defaultValues.nom) {
+      this.resetForm()
+    }
   },
 
   methods: {
@@ -218,31 +206,12 @@ export default {
       await this.$store.dispatch(CREATE_CENTER_REQUEST, {
         nom,
         label,
-        adresse: adresse.label,
+        adresse,
         lon: Number(lon),
         lat: Number(lat),
         departement,
       })
       this.$refs.createCenterForm.reset()
-    },
-
-    async fetchMatchingAdresses (val) {
-      this.isFetchingMatchingAdresses = true
-      this.adresses[Math.min(this.adresses.length - 1, 0)] = val
-      try {
-        const adresses = await getAdresses(val)
-        this.adresses = (adresses.features && adresses.features.length)
-          ? adresses.features
-            .filter(adr => adr.properties.type.includes('housenumber'))
-            .map(feature => ({
-              label: feature.properties.label,
-              context: feature.properties.context,
-            }))
-            .concat([{ label: val }])
-          : this.adresses
-      } catch (error) {
-      }
-      this.isFetchingMatchingAdresses = false
     },
 
     onChange () {
@@ -256,11 +225,20 @@ export default {
       this.$emit('change', {
         nom,
         label,
-        adresse: adresse.label,
+        adresse,
         lon,
         lat,
       })
     },
+
+    resetForm () {
+      this.nom = this.defaultValues.nom
+      this.label = this.defaultValues.label
+      this.adresse = this.defaultValues.adresse
+      this.lon = this.defaultValues.geoloc.coordinates[0]
+      this.lat = this.defaultValues.geoloc.coordinates[1]
+    },
   },
+
 }
 </script>

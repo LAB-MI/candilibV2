@@ -208,13 +208,19 @@ export async function updateCentre (
     throw error
   }
 
-  if (nom) {
+  if (nom && nom.toUpperCase() !== centre.nom.toUpperCase()) {
+    console.log(nom)
     const alreadyExistingCentre = await findCentreByNameAndDepartement(
       nom,
       centre.departement
     )
 
-    if (alreadyExistingCentre) {
+    console.log(alreadyExistingCentre)
+
+    if (
+      alreadyExistingCentre &&
+      alreadyExistingCentre.nom.toUpperCase() === nom.toUpperCase()
+    ) {
       const error = new Error('Centre déjà présent dans la base de données')
       error.status = 409
       throw error
