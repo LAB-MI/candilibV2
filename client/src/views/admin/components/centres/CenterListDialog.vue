@@ -9,7 +9,9 @@
         icon
         v-on="on"
       >
-        <v-icon>edit</v-icon>
+        <v-icon color="primary">
+          edit
+        </v-icon>
       </v-btn>
     </template>
 
