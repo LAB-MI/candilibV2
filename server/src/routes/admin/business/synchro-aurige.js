@@ -314,7 +314,7 @@ const updateValidCandidat = async (
       // if (!isWhitelisted) {
       infoCandidatToUpdate.canAccessAt = dateNow
         .startOf('day')
-        .plus({ days: config.LINE_DELAY })
+        .plus({ days: config.LINE_DELAY || 0 })
         .toISO()
       // }
     }
