@@ -123,8 +123,6 @@ describe('Centres business', () => {
       admin._id
     )
 
-    console.log(updatedCentre)
-
     expect(updatedCentre).toBeDefined()
     expect(updatedCentre).not.toBeNull()
     expect(updatedCentre).toHaveProperty('nom', 'Nouveau nom')

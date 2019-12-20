@@ -8,6 +8,7 @@ import {
   addCentre,
   findCentresWithNbPlaces,
   findAllCentresForAdmin,
+  updateCentre,
   updateCentreStatus,
 } from './centre-business'
 import { findCentreByNameAndDepartement } from '../../models/centre'
@@ -103,7 +104,7 @@ export async function getAdminCentres (req, res) {
 }
 
 /**
- * Active ou désactive un centre
+ * Modifie un centre
  * @async
  * @function
  *
@@ -111,17 +112,30 @@ export async function getAdminCentres (req, res) {
  * @param {string} req.userId - Identifiant de l'utilisateur
  * @param {Object} req.body
  * @param {string} req.body.centreId - Identifiant du centre à modifier
+ * @param {string} req.body.nom - Nom du centre (de la ville du centre)
+ * @param {string} req.body.label - Information complémentaire pour retrouver le point de rencontre du centre
+ * @param {string} req.body.adresse - Adresse du centre
+ * @param {number} req.body.lon - Longitude géographique du centre
+ * @param {number} req.body.lat - Latitude géographique du centre
  * @param {boolean} req.body.active - Vaut `false` si le centre doit être désactivé ou `true` s'il doit être activé
  * @param {import('express').Response} res Réponse express
  */
-export async function enableOrDisableCentre (req, res) {
+export async function modifyCentre (req, res) {
   const userId = req.userId
 
-  const { centreId, active } = req.body
+  const {
+    centreId,
+    nom,
+    label,
+    adresse,
+    lon,
+    lat,
+    active,
+  } = req.body
 
   const loggerContent = {
-    section: 'admin-enable-or-disable-centre',
-    action: 'ENABLE OR DISABLE ADMIN CENTRES',
+    section: 'admin-modify-centre',
+    action: 'MODIFY ADMIN CENTRES',
     admin: userId,
     centreId,
     enable: active,
@@ -143,7 +157,14 @@ export async function enableOrDisableCentre (req, res) {
   }
 
   try {
-    const centre = await updateCentreStatus(centreId, active, userId)
+    let message = 'Le centre a bien été modifié'
+
+    if (active !== undefined) {
+      await updateCentreStatus(centreId, active, userId)
+      message = 'Le centre a bien été ' + (active ? 'activé' : 'désactivé')
+    }
+
+    const centre = await updateCentre(centreId, { nom, label, adresse, lon, lat }, userId)
 
     appLogger.info({
       ...loggerContent,
@@ -152,7 +173,7 @@ export async function enableOrDisableCentre (req, res) {
 
     res.status(200).json({
       success: true,
-      message: 'Le centre a bien été ' + (active ? 'activé' : 'désactivé'),
+      message,
       centre,
     })
   } catch (error) {

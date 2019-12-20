@@ -207,15 +207,18 @@ export async function updateCentre (
     error.status = 403
     throw error
   }
-  const alreadyExistingCentre = await findCentreByNameAndDepartement(
-    nom,
-    centre.departement
-  )
 
-  if (alreadyExistingCentre) {
-    const error = new Error('Centre déjà présent dans la base de données')
-    error.status = 409
-    throw error
+  if (nom) {
+    const alreadyExistingCentre = await findCentreByNameAndDepartement(
+      nom,
+      centre.departement
+    )
+
+    if (alreadyExistingCentre) {
+      const error = new Error('Centre déjà présent dans la base de données')
+      error.status = 409
+      throw error
+    }
   }
 
   const updatedCentre = await updateCentreLabel(centre, {
