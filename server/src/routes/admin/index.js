@@ -1572,8 +1572,8 @@ router.get(
  * /admin/centres:
  *   patch:
  *     tags: ["Administrateur"]
- *     summary: Activation ou désactivation d'un centre par l'administrateur
- *     description: Permet à un administrateur de désactiver un centre, ou de réactiver un centre désactivé
+ *     summary: Modification d'un centre par l'administrateur
+ *     description: Permet à un administrateur de modifier ou désactiver un centre
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -1588,6 +1588,26 @@ router.get(
  *                 type: string
  *                 example: 5dce6ec901353671dead8959
  *                 description: Identifiant du centre affecté
+ *               nom:
+ *                 type: string
+ *                 description: Nom du centre (de la ville du centre)
+ *                 example: Noisy le Grand
+ *               label:
+ *                 type: string
+ *                 description: Information complémentaire pour retrouver le point de rencontre du centre
+ *                 example: Centre d'examen du permis de conduire de Noisy le Grand
+ *               adresse:
+ *                 type: string
+ *                 description: Adresse du centre
+ *                 example: 5 boulevard de Champs Richardets 93160 Noisy le Grand
+ *               lon:
+ *                 type: number
+ *                 description: Longitude géographique du centre
+ *                 example: 2.473647
+ *               lat:
+ *                 type: number
+ *                 description: Latitude géographique du centre
+ *                 example: 48.883956
  *               active:
  *                 type: boolean
  *                 description: État à donner au centre
@@ -1606,7 +1626,7 @@ router.get(
  *                 message:
  *                   type: string
  *                   description: informations sur l'état de la requête
- *                   example: Le centre a bien été activé
+ *                   example: Le centre a bien été modifié
  *                 centre:
  *                   $ref: '#/components/schemas/CenterObject'
  *
@@ -1634,6 +1654,17 @@ router.get(
  *                 - example:
  *                     success: false
  *                     message: Centre introuvable
+ *
+ *       409:
+ *         description: Un centre avec le nouveau nom existe déjà, la modification ne peut donc pas s'effectuer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Centre déjà présent dans la base de données
  *
  *       500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
