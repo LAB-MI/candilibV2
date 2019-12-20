@@ -2,6 +2,7 @@
   <v-dialog
     v-model="showDialog"
     width="500"
+    @click:outside="close"
   >
     <template v-slot:activator="{ on }">
       <v-btn
@@ -24,7 +25,9 @@
       </v-card-title>
 
       <center-form
+        ref="updateForm"
         :add-centre="false"
+        :default-values="item"
         @change="getFormData"
       />
       <v-card-text>
@@ -39,13 +42,13 @@
           color="#CD1338"
           tabindex="0"
           outlined
-          @click="showDialog = false"
+          @click="close"
         >
           Annuler
         </v-btn>
         <v-btn
           color="primary"
-          @click="sendFormData"
+          @click="sendFormData()"
         >
           Oui, modifier
         </v-btn>
@@ -98,7 +101,9 @@ export default {
       this.lon = lon
       this.lat = lat
     },
+
     sendFormData () {
+      this.close()
       this.$emit('click', {
         id: this.item._id,
         nom: this.nom,
@@ -107,7 +112,11 @@ export default {
         lon: this.lon,
         lat: this.lat,
       })
+    },
+
+    close () {
       this.showDialog = false
+      this.$refs.updateForm.resetForm()
     },
   },
 }

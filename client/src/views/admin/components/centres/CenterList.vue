@@ -59,13 +59,11 @@
           <template
             v-slot:item.active="{ item }"
           >
-            <div>
-              <center-list-dialog
-                :centre="item.nom + ' (' + item.departement + ')'"
-                :item="item"
-                @click="changeCenter"
-              />
-            </div>
+            <center-list-dialog
+              :centre="item.nom + ' (' + item.departement + ')'"
+              :item="item"
+              @click="changeCenter"
+            />
           </template>
         </v-data-table>
       </v-card>
