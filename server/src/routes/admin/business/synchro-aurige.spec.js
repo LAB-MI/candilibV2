@@ -38,6 +38,7 @@ import {
   candidatFailureExam,
   candidatPassed,
   createCandidatToTestAurige,
+  candidatsWithPreRequired,
   candidatFailureExamWith5Failures as candidat5FailureExam,
 } from './__tests__/candidats-aurige'
 import {
@@ -247,7 +248,7 @@ describe('synchro-aurige', () => {
       )
     })
 
-    it('Should return ', async () => {
+    it('Should return details', async () => {
       const result = await synchroAurige(aurigeFile)
 
       expect(result[0]).toHaveProperty('details', OK)
@@ -689,5 +690,65 @@ describe('synchro-aurige', () => {
 
       await deletePlace(placeSelected)
     })
+  })
+})
+
+describe('Check canAccess property of aurige', () => {
+  let candidatsToCreate
+  let candidatsCreated
+  let aurigeFile
+
+  beforeAll(async () => {
+    await connect()
+    candidatsToCreate = candidatsWithPreRequired.map(candidat =>
+      createCandidatToTestAurige(candidat, candidat.isValidatedByAurige)
+    )
+    candidatsCreated = await Promise.all(candidatsToCreate)
+
+    aurigeFile = await readFileAsPromise(
+      path.resolve(__dirname, './', '__tests__', 'aurigeWithAccessAt.json')
+    )
+  })
+
+  it('Should apply canAccesAt to candidat not validate by aurige', async () => {
+    const result = await synchroAurige(aurigeFile)
+    const candidat01 = await candidatModel.findById(candidatsCreated[0]._id)
+    const candidat02 = await candidatModel.findById(candidatsCreated[1]._id)
+
+    expect(candidat01).toHaveProperty(
+      'canAccessAt',
+      getFrenchLuxon()
+        .startOf('day')
+        .plus({ days: config.LINE_DELAY })
+        .toJSDate()
+    )
+    expect(candidat02).toHaveProperty('canAccessAt', undefined)
+
+    expect(result[0]).toHaveProperty('nom', candidat01.nomNaissance)
+    expect(result[0]).toHaveProperty('neph', candidat01.codeNeph)
+    expect(result[0]).toHaveProperty('status', 'success')
+    expect(result[0]).toHaveProperty('details', 'OK_VALID')
+    expect(result[0]).toHaveProperty(
+      'message',
+      `Pour le 93, un magic link est envoyé à ${candidat01.email}`
+    )
+
+    expect(result[1]).toHaveProperty('nom', candidat02.nomNaissance)
+    expect(result[1]).toHaveProperty('neph', candidat02.codeNeph)
+    expect(result[1]).toHaveProperty('status', 'success')
+    expect(result[1]).toHaveProperty('details', 'OK_UPDATED')
+    expect(result[1]).toHaveProperty(
+      'message',
+      `Pour le 93, ce candidat ${candidat02.email} a été mis à jour`
+    )
+  })
+
+  afterAll(async () => {
+    await Promise.all(
+      candidatsToCreate.map(candidat =>
+        candidatModel.findByIdAndDelete(candidat._id)
+      )
+    )
+    await disconnect()
   })
 })
