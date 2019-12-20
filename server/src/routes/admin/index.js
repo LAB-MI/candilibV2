@@ -36,7 +36,7 @@ import {
 } from './whitelisted.controllers'
 import {
   getAdminCentres,
-  enableOrDisableCentre,
+  modifyCentre,
   createCentre,
 } from '../common/centre-controllers'
 import {
@@ -1642,7 +1642,7 @@ router.get(
 router.patch(
   '/centres',
   verifyUserLevel(config.userStatusLevels.admin),
-  enableOrDisableCentre
+  modifyCentre
 )
 
 /**
