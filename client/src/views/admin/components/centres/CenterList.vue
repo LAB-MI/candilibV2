@@ -88,7 +88,7 @@ export default {
     return {
       headers: [
         { text: '', value: 'departement', align: 'center' },
-        { text: 'Centre', value: 'nom' },
+        { text: '', value: 'nom' },
         { text: '', value: 'geoloc', sortable: false, align: 'center' },
         { text: '', value: 'active', align: 'center', sortable: false },
       ],
