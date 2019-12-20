@@ -7,9 +7,7 @@ import {
   findCandidatByNomNeph,
   addPlaceToArchive,
 } from '../../../models/candidat'
-import {
-  findWhitelistedByEmail,
-} from '../../../models/whitelisted'
+// import { findWhitelistedByEmail } from '../../../models/whitelisted'
 import {
   findPlaceBookedByCandidat,
   removeBookedPlace,
@@ -311,10 +309,14 @@ const updateValidCandidat = async (
   const dateNow = getFrenchLuxon().endOf('day')
   try {
     if (!isValidatedByAurige) {
+      // TODO: supprimer les 3 prochains commantaires devient un list de VIP Cf jclaudan
+      // const isWhitelisted = await findWhitelistedByEmail(email)
+      // if (!isWhitelisted) {
       infoCandidatToUpdate.canAccessAt = dateNow
         .startOf('day')
-        .plus({ days: config.LINE_DELAY })
+        .plus({ days: config.LINE_DELAY || 0 })
         .toISO()
+      // }
     }
     // mise à jours du candidat
     candidat.set(infoCandidatToUpdate)
