@@ -77,44 +77,25 @@
           @input="setEmailToLowerCase"
         />
       </div>
-      <div class="form-input">
-        <v-text-field
-          v-model="portable"
-          :label="`${getMsg('preinscription_mobile')} *`"
-          prepend-icon="smartphone"
-          dark
-          color="#fff"
-          :placeholder="portablePlaceholder"
-          aria-placeholder="Jean"
-          hint="ex. : 0612345678"
-          required
-          tabindex="5"
-          :rules="portableRules"
-          @focus="setPortablePlaceholder"
-          @blur="removePortablePlaceholder"
+      <div>
+        <v-checkbox
+          v-model="checkbox"
+          label="Je confirme choisir le département X pour passer mon examen"
         />
       </div>
       <div class="form-input">
-        <v-autocomplete
-          v-model="adresse"
-          :label="`${getMsg('preinscription_adresse')} *`"
-          dark
-          color="#fff"
-          item-text="label"
-          :placeholder="adressePlaceholder"
-          aria-placeholder="Jean"
-          :loading="isFetchingMatchingAdresses"
-          hint="ex. : 10 avenue du général Leclerc 93420 Villepinte"
-          :items="adresses"
+        <v-select
+          v-model="departement"
+          label="Département"
+          :departement="departement"
           prepend-icon="location_city"
-          tabindex="6"
-          no-filter
-          return-object
-          :search-input.sync="searchAdresses"
-          @focus="setAdressePlaceholder"
-          @blur="removeAdressePlaceholder"
+          aria-placeholder="93"
+          hint="ex. : 93"
+          :rules="departementRules"
+          required
         />
       </div>
+      <div class="form-input" />
       <div class="form-input">
         <v-btn
           type="submit"
@@ -186,12 +167,17 @@ export default {
   },
   data: function () {
     return {
-      departement: undefined,
       magicLinkValid: false,
       nephPlaceholder: '',
       codeNeph: '',
+      checkbox: false,
       nephRules: [
         v => nephRegex.test(v) || this.getMsg('preinscription_neph_erreur'),
+      ],
+      departement: ['93', '38', '78'],
+      departementRules: [
+        dpt => !!dpt ||
+          'Veuillez renseigner un département',
       ],
       nomPlaceholder: '',
       nomNaissance: '',
