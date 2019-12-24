@@ -1486,14 +1486,10 @@ router.patch('/users', verifyDelegueLevel(), updatedInfoUser)
  *                   description: Département accessible par l'utilisateur
  *                 example: ["93"]
  *                 description: Départements de l'utilisateur
- *               status:
- *                 type: string
- *                 example: repartiteur
- *                 description: Statut de l'utilisateur
  *
  *     responses:
  *       200:
- *         description: Utilisateur supprimé
+ *         description: Département crée
  *         content:
  *           application/json:
  *             schema:

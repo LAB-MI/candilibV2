@@ -6,11 +6,20 @@
 
 import {
   createDepartement,
+  deleteDepartementById,
+  findAllDepartement,
   findDepartementById,
   updateDepartementById,
-  deleteDepartementById,
 } from '../../models/departement'
 
+/**
+ * Crée un département
+ * @async
+ * @function
+ *
+ * @param {string} departementId Une chaîne de caractères correspondant à l'ID du département
+ * @param {string} departementEmail Une chaîne de caractères correspondant à l'adresse courriel du département
+ */
 export const createDepartements = async (departementId, email) => {
   const isDepartementAlreadyExist = await findDepartementById(departementId)
 
@@ -19,21 +28,46 @@ export const createDepartements = async (departementId, email) => {
     throw new Error(message)
   }
 
-  const result = await createDepartement({ departementId, email })
+  const result = await createDepartement({ _id: departementId, email })
   return result
 }
 
-export const getDepartements = async (departementIds) => {
-  const result = await Promise.all(departementIds.map(departementId => findDepartementById(departementId)))
+/**
+ * Récupère les informations d'un ou plusieurs départements
+ * @async
+ * @function
+ *
+ * @param {string} departementId Une chaîne de caractères correspondant à l'ID du département
+ */
+export const getDepartements = async departementId => {
+  if (departementId) {
+    const result = await findDepartementById(departementId)
+    return result
+  }
+  const result = await findAllDepartement()
   return result
 }
 
-export const updateDepartements = async (departementId) => {
-  const result = await updateDepartementById(departementId)
+/**
+ * Met à jours les informations d'un département
+ * @async
+ * @function
+ *
+ * @param {object} departement Contient toute les information du département
+ */
+export const updateDepartements = async departement => {
+  const result = await updateDepartementById(departement)
   return result
 }
 
-export const deleteDepartement = async (departementId) => {
+/**
+ * Récupère les informations d'un ou plusieurs départements
+ * @async
+ * @function
+ *
+ * @param {string} departementId Une chaîne de caractères correspondant à l'ID du département
+ */
+export const deleteDepartement = async departementId => {
   const result = await deleteDepartementById(departementId)
   return result
 }
