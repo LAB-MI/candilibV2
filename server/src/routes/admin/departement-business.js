@@ -123,7 +123,6 @@ export const isDepartementAlreadyExist = async departementId => {
   const departement = await findDepartementById(departementId)
   return !!departement
 }
-
 /**
  * Crée un département
  *
