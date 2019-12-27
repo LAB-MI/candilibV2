@@ -7,7 +7,9 @@ import {
   createDepartements,
   getDepartements,
   updateDepartements,
+  isDepartementAlreadyExist,
 } from './departement-business'
+
 import { appLogger } from '../../util'
 // import { appLogger } from '../../util/logger'
 
@@ -46,8 +48,20 @@ export const createDepartementsController = async (req, res) => {
     })
   }
   try {
-    await createDepartements(departementId, departementEmail)
-    const message = `Le département ${departementId} a bien été crée`
+    const isExist = await isDepartementAlreadyExist(departementId)
+    if (isExist) {
+      const message = 'Département exist déjà'
+      res.status(400).json({
+        success: false,
+        message,
+      })
+    }
+
+    const departementCreated = await createDepartements(
+      departementId,
+      departementEmail
+    )
+    const message = `Le département ${departementCreated._id} a bien été crée avec l'adresse courriel ${departementCreated.email}`
     appLogger.info({
       ...loggerInfo,
       departementId,
@@ -97,7 +111,7 @@ export const getDepartementsController = async (req, res) => {
 
   try {
     if (departementId) {
-      const result = await getDepartements(departementId)
+      const result = [await getDepartements(departementId)]
 
       appLogger.info({
         ...loggerInfo,

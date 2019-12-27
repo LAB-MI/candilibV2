@@ -45,7 +45,7 @@ describe('Name of the group', () => {
     await disconnect()
   })
 
-  it('Should not create one departement', async () => {
+  it('Should create one departement', async () => {
     const { body } = await request(app)
       .post(`${apiPrefix}/admin/departements`)
       .send({
@@ -57,7 +57,7 @@ describe('Name of the group', () => {
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty(
       'message',
-      `Le département ${departementId01} a bien été crée`
+      `Le département ${departementId01} a bien été crée avec l'adresse courriel ${departementEmail01}`
     )
     await deleteDepartementTest(departementId01)
   })
@@ -83,8 +83,8 @@ describe('Name of the group', () => {
       .expect(200)
 
     expect(body).toHaveProperty('success', true)
-    expect(body.result).toHaveProperty('_id', departementList[0]._id)
-    expect(body.result).toHaveProperty('email', departementList[0].email)
+    expect(body.result[0]).toHaveProperty('_id', departementList[0]._id)
+    expect(body.result[0]).toHaveProperty('email', departementList[0].email)
   })
 
   it('Should get a list of departement', async () => {

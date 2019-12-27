@@ -12,6 +12,14 @@ import {
   updateDepartementById,
 } from '../../models/departement'
 
+export const isDepartementAlreadyExist = async departementId => {
+  const isDepartementAlreadyExist = await findDepartementById(departementId)
+
+  if (isDepartementAlreadyExist) {
+    return true
+  }
+  return false
+}
 /**
  * Crée un département
  * @async
@@ -21,13 +29,6 @@ import {
  * @param {string} departementEmail Une chaîne de caractères correspondant à l'adresse courriel du département
  */
 export const createDepartements = async (departementId, email) => {
-  const isDepartementAlreadyExist = await findDepartementById(departementId)
-
-  if (isDepartementAlreadyExist) {
-    const message = 'Département exist déjà'
-    throw new Error(message)
-  }
-
   const result = await createDepartement({ _id: departementId, email })
   return result
 }
