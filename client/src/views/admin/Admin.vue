@@ -26,6 +26,7 @@ import {
   ROUTE_AUTHORIZE_STATS_KPI,
   ROUTE_AUTHORIZE_AGENTS,
   ROUTE_AUTHORIZE_CENTRES,
+  ROUTE_AUTHORIZE_DEPARTEMENTS,
 } from '@/constants'
 
 import AdminHeader from './components/AdminHeader.vue'
@@ -73,6 +74,11 @@ const headerIcons = [
     routerTo: ROUTE_AUTHORIZE_CENTRES,
     iconName: 'business',
     tooltipText: "Centres d'examens",
+  },
+  {
+    routerTo: ROUTE_AUTHORIZE_DEPARTEMENTS,
+    iconName: 'location_searching',
+    tooltipText: 'Départements',
     isProtected: true,
   },
 ]

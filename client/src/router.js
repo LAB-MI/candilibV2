@@ -44,6 +44,7 @@ const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefet
 const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
 const ResetPassword = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/ResetPassword.vue')
 const Agents = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Agents.vue')
+const DepartementList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/departementsManager/DepartementList.vue')
 
 const adminRoutes = [
   {
@@ -99,6 +100,12 @@ const adminRoutes = [
         path: 'agents',
         name: 'agents',
         component: Agents,
+        beforeEnter: checkAccess,
+      },
+      {
+        path: 'departements',
+        name: 'departements',
+        component: DepartementList,
         beforeEnter: checkAccess,
       },
     ],

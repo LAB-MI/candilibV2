@@ -3,6 +3,7 @@ export const email = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+
 export const matricule = /^[0-9]{3,12}$/
 export const neph = /^[ 0-9]{10,19}$/
 export const phone = /^0[67][0-9]{8}$/
+// export const departement = /^((0[1-9])|([1-8][0-9])|(9[0-8])|(2A)|(2B)|(".+"))-(\[a-zàâçéèêëîïôûùüÿñæœ .-])$/
 
 export const strongEnoughPasswordObject = {
   'Au moins 8 caractères': /^.{8,}$/,
