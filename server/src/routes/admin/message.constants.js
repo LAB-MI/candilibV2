@@ -41,3 +41,13 @@ export const INCORRECT_DEPARTEMENT_LIST =
 export const INVALID_EMAIL = "L'adresse courriel n'est pas valide"
 export const USER_NO_EXIST = "L'utilisateur n'existe pas"
 export const INVALID_DEPARTEMENTS_LIST = 'La liste départements est invalide'
+export const INVALID_DEPARTEMENT_NUMBER = 'Numéro de département non renséigné'
+export const DEPARTEMENT_ALREADY_EXIST = 'Département exist déjà'
+export const ERROR_AT_DEPARTEMENT_CREATION =
+  'Erreur survenue lors de création du département'
+export const FETCH_ALL_DEPARTEMENTS = 'Récupération de tous les départements'
+export const BAD_PARAMS = 'Paramètre saisie invalide'
+export const INVALID_EMAIL_INSERT =
+  'Adresse courriel du departement manquante saisie invalide'
+export const ERROR_UPDATE_DEPARTEMENT =
+  "Une erreur c'est produite lors de la mise à jour du département"

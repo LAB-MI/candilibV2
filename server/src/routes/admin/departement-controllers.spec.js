@@ -76,10 +76,7 @@ describe('Name of the group', () => {
 
   it('Should get departement', async () => {
     const { body } = await request(app)
-      .get(`${apiPrefix}/admin/departements`)
-      .send({
-        departementId: departementList[0]._id,
-      })
+      .get(`${apiPrefix}/admin/departements/${departementList[0]._id}`)
       .expect(200)
 
     expect(body).toHaveProperty('success', true)

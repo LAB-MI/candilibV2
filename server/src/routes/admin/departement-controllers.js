@@ -10,10 +10,17 @@ import {
   isDepartementAlreadyExist,
 } from './departement-business'
 
-import { appLogger } from '../../util'
-// import { appLogger } from '../../util/logger'
+import {
+  INVALID_DEPARTEMENT_NUMBER,
+  DEPARTEMENT_ALREADY_EXIST,
+  ERROR_AT_DEPARTEMENT_CREATION,
+  FETCH_ALL_DEPARTEMENTS,
+  BAD_PARAMS,
+  INVALID_EMAIL_INSERT,
+  ERROR_UPDATE_DEPARTEMENT,
+} from './message.constants'
 
-// TODO: definir les message dans le fichier constant et les log
+import { appLogger } from '../../util'
 
 /**
  * Crée un département
@@ -28,13 +35,15 @@ import { appLogger } from '../../util'
  * @param {string} req.body.departementEmail Une chaîne de caractères correspondant à l'adresse courriel du département
  */
 export const createDepartementsController = async (req, res) => {
+  const { departementId, departementEmail } = req.body
   const loggerInfo = {
     section: 'admin-departement',
     action: 'create-departement',
     admin: req.userId,
+    departementId,
+    departementEmail,
   }
-  const { departementId, departementEmail } = req.body
-  const message = 'Numéro de département non renséigné'
+  const message = INVALID_DEPARTEMENT_NUMBER
   if (!departementId) {
     appLogger.warn({
       ...loggerInfo,
@@ -50,7 +59,7 @@ export const createDepartementsController = async (req, res) => {
   try {
     const isExist = await isDepartementAlreadyExist(departementId)
     if (isExist) {
-      const message = 'Département exist déjà'
+      const message = DEPARTEMENT_ALREADY_EXIST
       res.status(400).json({
         success: false,
         message,
@@ -74,7 +83,7 @@ export const createDepartementsController = async (req, res) => {
       message,
     })
   } catch (error) {
-    const message = 'Erreur survenue lors de création du département'
+    const message = ERROR_AT_DEPARTEMENT_CREATION
     appLogger.error({
       ...loggerInfo,
       departementId,
@@ -88,7 +97,7 @@ export const createDepartementsController = async (req, res) => {
     })
   }
 }
-// TODO: definir les message dans le fichier constant et les log
+
 /**
  * Récupère les informations d'un ou plusieurs départements
  * @async
@@ -101,21 +110,26 @@ export const createDepartementsController = async (req, res) => {
  * @param {string} req.body.departementId Un Array contenant une liste d'ID de département
  */
 export const getDepartementsController = async (req, res) => {
+  const departementId = req.query.id
   const loggerInfo = {
     section: 'admin-departement',
     action: 'get-departement',
     admin: req.userId,
   }
-  // req.query
-  const { departementId } = req.body
 
   try {
-    if (departementId) {
+    // TODO: solution plus opti à trouver pour ce `if`
+    if (
+      departementId &&
+      departementId !== 'undefined' &&
+      departementId !== 'null'
+    ) {
       const result = [await getDepartements(departementId)]
 
       appLogger.info({
         ...loggerInfo,
         departementId,
+        description: 'get one departement',
       })
       return res.status(200).json({
         success: true,
@@ -124,10 +138,10 @@ export const getDepartementsController = async (req, res) => {
     }
 
     const result = await getDepartements()
-    const message = 'Récupération de tous les département'
+    const message = FETCH_ALL_DEPARTEMENTS
     appLogger.info({
       ...loggerInfo,
-      message,
+      description: message,
     })
 
     res.status(200).json({
@@ -147,7 +161,7 @@ export const getDepartementsController = async (req, res) => {
     })
   }
 }
-// TODO: definir les message dans le fichier constant et les log
+
 /**
  * Met à jours les informations d'un département
  * @async
@@ -172,7 +186,7 @@ export const updateDepartementsController = async (req, res) => {
   }
 
   if (!departementId) {
-    const message = 'Paramètre saisie invalide'
+    const message = BAD_PARAMS
 
     appLogger.info({
       ...loggerInfo,
@@ -185,7 +199,7 @@ export const updateDepartementsController = async (req, res) => {
   }
 
   if (!newEmail) {
-    const message = 'Adresse courriel du departement manquante saisie invalide'
+    const message = INVALID_EMAIL_INSERT
 
     appLogger.info({
       ...loggerInfo,
@@ -214,8 +228,7 @@ export const updateDepartementsController = async (req, res) => {
       result,
     })
   } catch (error) {
-    const message =
-      "Une erreur c'est produite lors de la mise à jour du département"
+    const message = ERROR_UPDATE_DEPARTEMENT
     appLogger.error({ ...loggerInfo, departementId, error })
     return res.status(500).json({
       success: false,
