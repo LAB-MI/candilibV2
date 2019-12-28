@@ -15,7 +15,7 @@ import {
   updateDepartements,
   updateDepartementsUsersAdminAndTech,
 } from './departement-business'
-import { appLogger, appLogger } from '../../util'
+import { appLogger } from '../../util'
 // import { appLogger } from '../../util/logger'
 
 import { appLogger } from '../../util'
@@ -170,7 +170,12 @@ export const getDepartementsController = async (req, res) => {
   }
 
   try {
-    if (departementId) {
+    // TODO: solution plus opti à trouver pour ce `if`
+    if (
+      departementId &&
+      departementId !== 'undefined' &&
+      departementId !== 'null'
+    ) {
       const result = [await getDepartements(departementId)]
 
       appLogger.info({
