@@ -15,16 +15,16 @@
         <v-data-table
           class="centre-grid"
         >
-          <v-list-item
-            v-for="centre in centres"
-            :key="centre._id"
-            selectable
-            :class="{ 'blue-grey  lighten-5': !centre.active }"
+          <template
+            v-slot:item.nom="{ item }"
           >
             <div class="u-flex">
               <v-list-item-content>
                 <v-list-item-title>
-                  <span class="u-uppercase">
+                  <span
+                    class="u-uppercase"
+                    :class="!item.active ? 'blue-grey--text' : ''"
+                  >
                     {{ item.nom }}
                   </span>
                 </v-list-item-title>
@@ -32,16 +32,11 @@
                 <v-list-item-subtitle
                   class="blue-grey--text"
                 >
-                  {{ item.adresse }}
+                  {{ item.active ? item.adresse : "Ce centre est archivé." }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </div>
-          </v-list-item>
-        </v-data-table>
-      </v-card>
-    </v-container>
-  </div>
-</template>
+          </template>
           <template
             v-slot:item.geoloc="{ item }"
           >
@@ -64,6 +59,12 @@
               :item="item"
               @click="changeCenter"
             />
+            <delete-centre
+              :centre="item.nom + ' (' + item.departement + ')'"
+              :action="item.active ? 'Archiver' : 'Réactiver'"
+              :active="item.active"
+              @click="changeCenter({id: item._id, active: !item.active})"
+            />
           </template>
         </v-data-table>
       </v-card>
@@ -75,11 +76,13 @@
 import { FETCH_ALL_CENTERS_REQUEST, MODIFY_CENTER_REQUEST } from '@/store'
 import CenterForm from './CenterForm'
 import CenterListDialog from './CenterListDialog'
+import DeleteCentre from './DeleteCentre'
 
 export default {
   components: {
     CenterForm,
     CenterListDialog,
+    DeleteCentre,
   },
 
   data () {

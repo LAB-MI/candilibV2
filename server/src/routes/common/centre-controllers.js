@@ -153,7 +153,7 @@ export async function modifyCentre (req, res) {
 
     if (active !== undefined) {
       await updateCentreStatus(centreId, active, userId)
-      message = 'Le centre a bien été ' + (active ? 'activé' : 'désactivé')
+      message = 'Le centre a bien été ' + (active ? 'réactivé' : 'archivé')
     }
 
     const centre = await updateCentre(
