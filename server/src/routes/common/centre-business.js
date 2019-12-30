@@ -110,6 +110,14 @@ export async function updateCentreStatus (id, status, userId) {
     throw error
   }
 
+  const places = await findAllPlacesByCentre(id)
+
+  if (places.length && !status) {
+    const error = new Error('Le centre possède des places à venir, il ne peut pas être archivé.')
+    error.status = 409
+    throw error
+  }
+
   const updatedCentre = await updateCentreActiveState(
     centre,
     status,
