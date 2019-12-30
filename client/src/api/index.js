@@ -580,7 +580,7 @@ export default {
       return json
     },
 
-    async addNewCenter (nom, label, adresse, lon, lat, departement) {
+    async createCentre (nom, label, adresse, lon, lat, departement) {
       const json = await apiClient.post(apiPaths.admin.centres, {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify({ nom, label, adresse, lon, lat, departement }),

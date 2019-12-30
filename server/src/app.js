@@ -116,7 +116,7 @@ import npmVersion from '../package.json'
  *           example: 75
  *         active:
  *           type: boolean
- *           description: Si `false`, le centre n'apparaitra pas dans les requêtes des utilisateurs
+ *           description: Si `false`, le centre n'apparaîtra pas dans les requêtes des utilisateurs
  *           example: true
  *         disabledBy:
  *           type: string
