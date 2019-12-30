@@ -40,7 +40,7 @@ appLogger.info({
     placeId,
     inspecteur,
     action: 'UPDATE_RESA',
-    description: `Changer l'inspecteur de la reservation candidat`,
+    description: `Changer l'inspecteur de la réservation candidat`,
 })
 ```
 

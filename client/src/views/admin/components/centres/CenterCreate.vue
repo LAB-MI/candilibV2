@@ -113,7 +113,7 @@ import pDebounce from 'p-debounce'
 import { mapState } from 'vuex'
 
 import {
-  ADD_NEW_CENTER_REQUEST,
+  CREATE_CENTER_REQUEST,
 } from '@/store'
 import api from '@/api'
 
@@ -195,7 +195,7 @@ export default {
         departement,
       } = this
 
-      await this.$store.dispatch(ADD_NEW_CENTER_REQUEST, {
+      await this.$store.dispatch(CREATE_CENTER_REQUEST, {
         nom,
         label,
         adresse: adresse.label,

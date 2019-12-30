@@ -49,7 +49,7 @@ export default mongoose.model('Centre', CentreSchema)
  * @property {string} adresse - Adresse du centre
  * @property {string} departement - Département du centre
  * @property {Geoloc} geoloc - Informations de géolocalisation du centre
- * @property {boolean} active - Si `false`, le centre n'apparaitra pas dans les requêtes des utilisateurs
+ * @property {boolean} active - Si `false`, le centre n'apparaîtra pas dans les requêtes des utilisateurs
  * @property {string} disabledBy - Adresse courriel du dernier utilisateur ayant désactivé le centre
  */
 /**

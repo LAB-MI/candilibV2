@@ -57,20 +57,6 @@
               </v-icon>
             </a>
           </template>
-          <!--
-          <template
-            v-slot:item.active="{ item }"
-          >
-            <div class="table-column">
-              <center-list-dialog
-                :centre="item.nom + ' (' + item.departement + ')'"
-                :action="item.active ? 'Désactiver' : 'Activer'"
-                :active="item.active"
-                @click="changeState(item._id, !item.active)"
-              />
-            </div>
-          </template>
-          -->
         </v-data-table>
       </v-card>
     </v-container>
@@ -80,12 +66,10 @@
 <script>
 import { FETCH_ALL_CENTERS_REQUEST, CHANGE_CENTER_STATE_REQUEST } from '@/store'
 import centerCreate from './CenterCreate'
-// import centerListDialog from './CenterListDialog'
 
 export default {
   components: {
     centerCreate,
-    // centerListDialog,
   },
 
   data () {
@@ -94,7 +78,6 @@ export default {
         { text: '', value: 'departement', align: 'center' },
         { text: 'Centre', value: 'nom' },
         { text: '', value: 'geoloc', sortable: false, align: 'center' },
-        // { text: 'Actions', value: 'active', align: 'center' },
       ],
     }
   },
