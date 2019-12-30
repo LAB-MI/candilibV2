@@ -24,7 +24,7 @@
       </v-card-title>
 
       <v-card-text>
-        Voulez-vous vraiment archiver cet utilisateur <strong>{{ prenom }} {{ nom }}</strong> ?
+        Voulez-vous vraiment archiver cet IPCSR <strong>{{ prenom }} {{ nom }}</strong> ?
         Cette action est irréversible
       </v-card-text>
 
@@ -91,7 +91,7 @@ export default {
     async deleteUser () {
       try {
         await this.$store.dispatch(DELETE_IPCSR_REQUEST, this.ipcsrId)
-        this.$store.dispatch(SHOW_SUCCESS, `L'IPCSR a bien été archivé`)
+        this.$store.dispatch(SHOW_SUCCESS, `L'IPCSR a bien été archivé·e`)
         this.$store.dispatch(FETCH_IPCSR_LIST_REQUEST)
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)

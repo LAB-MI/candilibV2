@@ -168,7 +168,7 @@ export const getInspecteurs = async (req, res) => {
 }
 
 /**
- * Crée un nouvel IPCSR  dans la base de données Candilib
+ * Crée un nouvel IPCSR dans la base de données Candilib
  * @async
  * @function
  *
@@ -232,7 +232,7 @@ export const createIpcsr = async (req, res) => {
 }
 
 /**
- * Crée un nouvel IPCSR  dans la base de données Candilib
+ * Modifie un nouvel IPCSR dans la base de données Candilib
  * @async
  * @function
  *

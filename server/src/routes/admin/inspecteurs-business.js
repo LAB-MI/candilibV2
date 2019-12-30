@@ -88,7 +88,7 @@ export const getInspecteursBookedFromDepartement = async (
  *
  * @param {string} userId - Id de l'utilisateur faisant la requête (admin, délégué ou répartiteur)
  *
- * @returns {Promise.<Inspecteur[]>} - Tableau de tous les inspecteurs trouvés dans les départements de l'utilisateurs
+ * @returns {Promise.<Inspecteur[]>} - Tableau de tous les inspecteurs trouvés dans les départements de l'utilisateur
  */
 export const getAllAppropriateInspecteurs = async userId => {
   const user = await findUserById(userId)
@@ -104,7 +104,7 @@ export const getAllAppropriateInspecteurs = async userId => {
  *
  * @param {string} userId - Id de l'utilisateur faisant la requête (admin, délégué ou répartiteur)
  *
- * @returns {Promise.<Inspecteur[]>} - Tableau de tous les inspecteurs trouvés dans les départements de l'utilisateurs
+ * @returns {Promise.<Inspecteur[]>} - Tableau de tous les inspecteurs trouvés dans les départements de l'utilisateur
  */
 export const getAllAppropriateActiveInspecteurs = async userId => {
   const user = await findUserById(userId)
@@ -190,7 +190,7 @@ export const disableInspecteur = ipcsrId => {
 }
 
 /**
- * Retourne les places un IPCSR et retourne le document de l'IPCSR modifié
+ * Retourne les places d'un IPCSR
  *
  * @async
  * @function
