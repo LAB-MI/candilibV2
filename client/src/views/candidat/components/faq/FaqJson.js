@@ -138,10 +138,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           subTitleContent: 'Si vous vous êtes déjà pré-inscrit, posez vos questions à l\'adresse de contact personnalisée que vous avez reçue par courriel.',
         },
         {
-          subTitleContent: 'Si vous n\'êtes pas pré-inscrit, vous pouvez nous contacter à cette adresse candilib@interieur.gouv.fr',
-        },
-        {
-          subTitleContent: 'Si vous n\'avez pas trouvé de réponse à vos questions dans ces informations, vous pouvez nous contacter à cette adresse <a href="mailto:candilib@interieur.gouv.fr">candilib@interieur.gouv.fr</a>.',
+          subTitleContent: 'Si vous n\'êtes pas pré-inscrit ou si vous n\'avez pas trouvé de réponse à vos questions dans ces informations, vous pouvez nous contacter à cette adresse <a href="mailto:candilib@interieur.gouv.fr">candilib@interieur.gouv.fr</a>.',
         },
       ],
     },
