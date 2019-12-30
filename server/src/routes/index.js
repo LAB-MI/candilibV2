@@ -11,6 +11,7 @@ import { verifyToken } from './middlewares'
 import { resetMyPassword } from './auth/admin-controllers'
 import { getCandidatConfig } from './candidat/candidat-config-controller'
 import { getDepartements } from './candidat/candidat-departements-controller'
+import { getDeptCenters } from './candidat/candidat-deptCenters-controller'
 
 const router = express.Router()
 
@@ -231,6 +232,12 @@ router.get('/candidat/config', getCandidatConfig)
  *
  */
 router.get('/departements', getDepartements)
+
+/**
+ * Route pour obtenir la liste des départements
+ *
+ */
+router.get('/centres/:dept', getDeptCenters)
 
 /**
  * @swagger

@@ -18,6 +18,7 @@ import config from './config'
 import departements from './departements'
 import importPlaces from './import-places'
 import message from './message'
+import parisCenters from './paris-centers'
 import reservation from './reservation'
 import timeSlots from './time-slots'
 import users from './users'
@@ -39,6 +40,7 @@ export * from './config'
 export * from './departements'
 export * from './import-places'
 export * from './message'
+export * from './paris-centers'
 export * from './reservation'
 export * from './time-slots'
 export * from './users'
@@ -63,6 +65,7 @@ export default new Vuex.Store({
     departements,
     importPlaces,
     message,
+    parisCenters,
     reservation,
     timeSlots,
     whitelist,
