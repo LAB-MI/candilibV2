@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import { FETCH_CONFIG_REQUEST, FETCH_DEPARTEMENTS_REQUEST } from '@/store'
+import { FETCH_CONFIG_REQUEST, FETCH_DEPARTEMENTS_REQUEST, FETCH_PARIS_CENTERS_REQUEST } from '@/store'
 import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
 
@@ -57,8 +57,12 @@ export default {
       return this.$store.state.departements.list
     },
 
+    parisCenters () {
+      return this.$store.state.parisCenters.list
+    },
+
     faqQuestions () {
-      return faqJson(this.lineDelay, this.departements)
+      return faqJson(this.lineDelay, this.departements, this.parisCenters)
     },
 
     me () {
@@ -69,6 +73,7 @@ export default {
   mounted () {
     this.$store.dispatch(FETCH_CONFIG_REQUEST)
     this.$store.dispatch(FETCH_DEPARTEMENTS_REQUEST)
+    this.$store.dispatch(FETCH_PARIS_CENTERS_REQUEST)
   },
 
   methods: {
