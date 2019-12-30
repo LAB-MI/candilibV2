@@ -113,7 +113,9 @@ export async function updateCentreStatus (id, status, userId) {
   const places = await findAllPlacesByCentre(id)
 
   if (places.length && !status) {
-    const error = new Error('Le centre possède des places à venir, il ne peut pas être archivé.')
+    const error = new Error(
+      'Le centre possède des places à venir, il ne peut pas être archivé.'
+    )
     error.status = 409
     throw error
   }
