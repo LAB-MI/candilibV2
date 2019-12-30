@@ -219,13 +219,10 @@ export async function updateCentre (
   }
 
   if (nom && nom.toUpperCase() !== centre.nom.toUpperCase()) {
-    console.log(nom)
     const alreadyExistingCentre = await findCentreByNameAndDepartement(
       nom,
       centre.departement
     )
-
-    console.log(alreadyExistingCentre)
 
     if (
       alreadyExistingCentre &&
