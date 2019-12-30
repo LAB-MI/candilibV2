@@ -463,7 +463,7 @@ router.get('/inspecteurs', getInspecteurs)
 /**
  * @swagger
  *
- * /admin/inspecteurs:
+ * /admin/inspecteurs/{id}:
  *   put:
  *     tags: ["Administrateur"]
  *     summary: Modification des infos d'un inspecteur

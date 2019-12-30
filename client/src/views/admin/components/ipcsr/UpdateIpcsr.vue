@@ -119,8 +119,8 @@
         <v-btn
           class="t-btn-update-confirm"
           color="primary"
-          :disabled="isUpdatingIpscsr"
-          :aria-disabled="isUpdatingIpscsr"
+          :disabled="isUpdatingIpcsr"
+          :aria-disabled="isUpdatingIpcsr"
           @click="updateIpcsr"
         >
           Modifier
@@ -204,7 +204,7 @@ export default {
   computed: {
     ...mapState({
       availableDepartements: state => state.admin.departements.list,
-      isUpdatingIpscsr: state => state.admin.inspecteurs.isFetching,
+      isUpdatingIpcsr: state => state.admin.inspecteurs.isFetching,
     }),
 
     isUpdatingUser () {
