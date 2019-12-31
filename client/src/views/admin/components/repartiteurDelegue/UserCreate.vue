@@ -1,5 +1,6 @@
 <template>
   <v-form
+    ref="createUserForm"
     v-model="valid"
     @submit.prevent="createdUser"
   >
@@ -8,8 +9,8 @@
         v-model="email"
         class="t-input-email"
         prepend-icon="email"
-        aria-placeholder="jean@dupont.fr"
-        hint="ex. : jean@dupont.fr"
+        :aria-placeholder="emailPlaceholder"
+        :hint="`ex. : ${emailPlaceholder}`"
         tabindex="0"
         :rules="emailRules"
         label="Adresse courriel"
@@ -29,6 +30,7 @@
       <v-spacer />
 
       <select-departements
+        class="t-select-departements"
         multiple
         :available-departements="availableDepartements"
         :default-departements="availableDepartements"
@@ -128,8 +130,8 @@ export default {
           departements,
           status,
         })
+        this.$refs.createUserForm.reset()
         this.departements = this.availableDepartements
-        this.email = ''
       } catch (error) {
       }
     },

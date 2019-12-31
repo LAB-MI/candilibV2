@@ -1,7 +1,6 @@
 <template>
   <v-select
     v-model="departements"
-    class="t-select-departements"
     :multiple="multiple"
     :items="availableDepartements"
     label="Départements"

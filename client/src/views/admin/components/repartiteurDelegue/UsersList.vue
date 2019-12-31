@@ -4,7 +4,7 @@
       :headers="headers"
       :items="users"
       :items-per-page="5"
-      class="elevation-1"
+      class="elevation-1  t-list-users"
     >
       <template v-slot:item.action="{ item }">
         <update-user

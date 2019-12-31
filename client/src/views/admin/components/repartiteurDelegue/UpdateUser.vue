@@ -32,6 +32,7 @@
         <v-spacer />
 
         <select-departements
+          multiple
           class="t-select-update-departements"
           :available-departements="availableDepartements"
           :default-departements="departements"
