@@ -12,6 +12,29 @@ import {
   updateDepartementById,
 } from '../../models/departement'
 
+import { updateManyUser } from '../../models/user'
+
+import config from '../../config'
+
+export const updateDepartementsUsersAdminAndTech = async departementId => {
+  const inValue = [config.userStatuses.ADMIN, config.userStatuses.TECH]
+  const filterBy = 'status'
+  const updatedResult = await updateManyUser(
+    {
+      filterBy,
+      inValue,
+    },
+    {
+      $addToSet: { departements: [`${departementId}`] },
+    }
+  )
+
+  if (updatedResult.ok) {
+    return true
+  }
+  return false
+}
+
 export const isDepartementAlreadyExist = async departementId => {
   const isDepartementAlreadyExist = await findDepartementById(departementId)
 

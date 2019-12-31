@@ -21,6 +21,7 @@ import {
 import {
   createDepartementsController,
   getDepartementsController,
+  deleteDepartementController,
   updateDepartementsController,
 } from './departement-controllers'
 import {
@@ -1783,4 +1784,65 @@ router.post(
   createCentre
 )
 
+// TODO: SWAGGER DOC 4
+/**
+ * @swagger
+ *
+ * /admin/departements:
+ *   delete:
+ *     tags: ["Administrateur"]
+ *     summary: supprimer le departement par son Id
+ *     description: Permet supprimer un département.
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Numero du département
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               departement:
+ *                 type: string
+ *                 example: "93"
+ *                 description: Nom du épartement
+ *
+ *     responses:
+ *       200:
+ *         description: Département crée
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                       success: true
+ *                       message: Le departement a bien été supprimé
+ *
+ *       400:
+ *         description: Pas d'erreur 400 possible pour le moment a voir avec la team
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Numéro de département non renséigné
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_departements }
+ */
+
+router.delete(
+  '/departements/:id?',
+  verifyUserLevel(config.userStatusLevels.admin),
+  // verifyUserLevel(config.userStatusLevels.delegue),
+  deleteDepartementController
+)
 export default router

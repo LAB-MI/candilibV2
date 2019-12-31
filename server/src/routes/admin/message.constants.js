@@ -51,3 +51,5 @@ export const INVALID_EMAIL_INSERT =
   'Adresse courriel du departement manquante saisie invalide'
 export const ERROR_UPDATE_DEPARTEMENT =
   "Une erreur c'est produite lors de la mise à jour du département"
+export const ERROR_UPDATE_ADMIN_AND_TECH_USERS =
+  'Suite à un problème lors de la mise à jour des users Admin et Tech'

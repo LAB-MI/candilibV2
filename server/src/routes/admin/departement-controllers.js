@@ -5,19 +5,22 @@
 
 import {
   createDepartements,
+  deleteDepartement,
   getDepartements,
-  updateDepartements,
   isDepartementAlreadyExist,
+  updateDepartements,
+  updateDepartementsUsersAdminAndTech,
 } from './departement-business'
 
 import {
-  INVALID_DEPARTEMENT_NUMBER,
+  BAD_PARAMS,
   DEPARTEMENT_ALREADY_EXIST,
   ERROR_AT_DEPARTEMENT_CREATION,
-  FETCH_ALL_DEPARTEMENTS,
-  BAD_PARAMS,
-  INVALID_EMAIL_INSERT,
+  ERROR_UPDATE_ADMIN_AND_TECH_USERS,
   ERROR_UPDATE_DEPARTEMENT,
+  FETCH_ALL_DEPARTEMENTS,
+  INVALID_DEPARTEMENT_NUMBER,
+  INVALID_EMAIL_INSERT,
 } from './message.constants'
 
 import { appLogger } from '../../util'
@@ -70,24 +73,33 @@ export const createDepartementsController = async (req, res) => {
       departementId,
       departementEmail
     )
-    const message = `Le département ${departementCreated._id} a bien été crée avec l'adresse courriel ${departementCreated.email}`
-    appLogger.info({
-      ...loggerInfo,
-      departementId,
-      departementEmail,
-      descripton: message,
-    })
+    const isUsersUpdated = await updateDepartementsUsersAdminAndTech(departementId)
+    let message = ''
+    if (isUsersUpdated) {
+      message = `Le département ${departementCreated._id} a bien été crée avec l'adresse courriel ${departementCreated.email}`
+      appLogger.info({
+        ...loggerInfo,
+        departementId,
+        departementEmail,
+        descripton: message,
+      })
 
-    res.status(200).json({
-      success: true,
-      message,
-    })
+      return res.status(200).json({
+        success: true,
+        message,
+      })
+    }
+
+    message = ERROR_UPDATE_ADMIN_AND_TECH_USERS
+    await deleteDepartement(departementCreated._id)
+    throw new Error(message)
   } catch (error) {
     const message = ERROR_AT_DEPARTEMENT_CREATION
     appLogger.error({
       ...loggerInfo,
       departementId,
       departementEmail,
+      description: message,
       error,
     })
 
@@ -106,8 +118,8 @@ export const createDepartementsController = async (req, res) => {
  * @param {import('express').Request} req
  * @param {string} req.userId Id de l'utilisateur
  *
- * @param {Object} req.body
- * @param {string} req.body.departementId Un Array contenant une liste d'ID de département
+ * @param {Object} req.query
+ * @param {string} req.query.id Une chaine de caractère représentant l'ID du département
  */
 export const getDepartementsController = async (req, res) => {
   const departementId = req.query.id
@@ -115,6 +127,7 @@ export const getDepartementsController = async (req, res) => {
     section: 'admin-departement',
     action: 'get-departement',
     admin: req.userId,
+    departementId,
   }
 
   try {
@@ -147,6 +160,67 @@ export const getDepartementsController = async (req, res) => {
     res.status(200).json({
       success: true,
       result,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      departementId,
+      error,
+    })
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    })
+  }
+}
+
+/**
+ * Supprime un départements
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId Id de l'utilisateur
+ *
+ * @param {Object} req.query
+ * @param {string} req.query.id Une chaine de caractère représentant l'ID du département
+ */
+export const deleteDepartementController = async (req, res) => {
+  const departementId = req.query.id
+  const loggerInfo = {
+    section: 'admin-departement',
+    action: 'delete-departement',
+    admin: req.userId,
+    departementId,
+  }
+
+  try {
+    let message = ''
+    // TODO: solution plus opti à trouver pour ce `if`
+    if (
+      departementId &&
+      departementId !== 'undefined' &&
+      departementId !== 'null'
+    ) {
+      await deleteDepartement(departementId)
+      // TODO: REMOVE DEPARTEMENT FROM USER ADMIN AND TECH
+      message = `Le département ${departementId} a bien été supprimé`
+      appLogger.info({
+        ...loggerInfo,
+        departementId,
+        description: message,
+      })
+      return res.status(200).json({
+        success: true,
+        message,
+      })
+    }
+    message = BAD_PARAMS
+
+    return res.status(400).json({
+      success: false,
+      message,
     })
   } catch (error) {
     appLogger.error({

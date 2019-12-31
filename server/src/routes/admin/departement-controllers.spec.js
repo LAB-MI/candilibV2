@@ -1,6 +1,7 @@
 import request from 'supertest'
 import { connect, disconnect } from '../../mongo-connection'
 const {
+  createDepartementTest,
   createManyDepartementTest,
   deleteDepartementTest,
   deleteManyDepartementsTest,
@@ -16,6 +17,9 @@ require('../../util/logger').setWithConsole(false)
 
 const departementId01 = '30'
 const departementEmail01 = 'emaildu30@mail.com'
+
+const departementId02 = '31'
+const departementEmail02 = 'emaildu31@mail.com'
 
 const departementList = [
   {
@@ -60,6 +64,28 @@ describe('Name of the group', () => {
       `Le département ${departementId01} a bien été crée avec l'adresse courriel ${departementEmail01}`
     )
     await deleteDepartementTest(departementId01)
+  })
+
+  it('Should delete one departement', async () => {
+    await createDepartementTest(departementId02, departementEmail02)
+
+    const message = `Le département ${departementId02} a bien été supprimé`
+
+    const { body } = await request(app)
+      .delete(`${apiPrefix}/admin/departements/?id=${departementId02}`)
+      .expect(200)
+
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message', message)
+  })
+
+  it('Should not delete one departement and to be 400', async () => {
+    const { body } = await request(app)
+      .delete(`${apiPrefix}/admin/departements`)
+      .expect(400)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', 'Paramètre saisie invalide')
   })
 
   it('Should not create one departement', async () => {
