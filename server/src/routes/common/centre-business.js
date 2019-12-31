@@ -69,7 +69,7 @@ export async function findCentresWithPlaces (departement, beginDate, endDate) {
  * @function
  *
  * @param {string[]} departements - Départements pour lesquels récupérer les centres
- * @returns {Promise.<CentreMongo[]>} Liste des centres correspondants
+ * @returns {Promise.<CentreMongooseDocument[]>} Liste des centres correspondants
  */
 export async function findAllCentresForAdmin (departements) {
   if (!departements || !departements.length) {
@@ -88,7 +88,7 @@ export async function findAllCentresForAdmin (departements) {
  *
  * @param {string} id - Id du centre à modifier
  * @param {boolean} status - Statut désiré, `true` pour un centre à activer, `false` pour le désactiver
- * @returns {Promise.<CentreMongo>} Centre modifié
+ * @returns {Promise.<CentreMongooseDocument>} Centre modifié
  */
 export async function updateCentreStatus (id, status, userId) {
   const centre = await findCentreById(id)
@@ -128,7 +128,7 @@ export async function updateCentreStatus (id, status, userId) {
  * @param {number} lon - Longitude géographique du centre
  * @param {number} lat - Latitude géographique du centre
  * @param {string} departement - Département du centre
- * @returns {Promise.<CentreMongo>} Centre créé
+ * @returns {Promise.<CentreMongooseDocument>} Centre créé
  */
 export async function addCentre (nom, label, adresse, lon, lat, departement) {
   if (

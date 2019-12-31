@@ -65,6 +65,8 @@ describe('Centres business', () => {
     expect(disabledCentre).toHaveProperty('nom', centres[0].nom)
     expect(disabledCentre).toHaveProperty('label', centres[0].label)
     expect(disabledCentre).toHaveProperty('active', false)
+    expect(disabledCentre).toHaveProperty('disabledBy', admin.email)
+    expect(disabledCentre.disabledAt).toBeInstanceOf(Date)
   })
 
   it('Should enable one centre', async () => {
