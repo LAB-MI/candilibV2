@@ -168,7 +168,11 @@ describe('Centre', () => {
         centres[2].nom,
         centres[2].departement
       )
-      const centreResult = await updateCentreActiveState(testCentre, false)
+      const centreResult = await updateCentreActiveState(
+        testCentre,
+        false,
+        'onepiece@madmax.com'
+      )
 
       const unableToFindCentre = await findCentreByNameAndDepartement(
         centres[2].nom,
@@ -195,6 +199,8 @@ describe('Centre', () => {
       expect(disabledCentre).toHaveProperty('nom', centres[2].nom)
       expect(disabledCentre).toHaveProperty('label', centres[2].label)
       expect(disabledCentre).toHaveProperty('active', false)
+      expect(disabledCentre).toHaveProperty('disabledBy', 'onepiece@madmax.com')
+      expect(disabledCentre.disabledAt).toBeInstanceOf(Date)
     })
 
     it('Should enable one centre', async () => {

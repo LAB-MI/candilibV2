@@ -34,16 +34,20 @@ const CentreSchema = new Schema(
     disabledBy: {
       $type: String,
     },
+    disabledAt: {
+      $type: Date,
+    },
   },
   { typeKey: '$type', timestamps: true }
 )
 
 CentreSchema.index({ nom: 1, departement: 1 }, { unique: true })
 
-export default mongoose.model('Centre', CentreSchema)
+const model = mongoose.model('Centre', CentreSchema)
+export default model
 
 /**
- * @typedef {Object} CentreMongo
+ * @typedef {Object} CentreMongooseDocument
  * @property {string} nom - Nom du centre (de la ville du centre)
  * @property {string} label - Information complémentaire pour retrouver le point de rencontre du centre
  * @property {string} adresse - Adresse du centre
@@ -51,8 +55,7 @@ export default mongoose.model('Centre', CentreSchema)
  * @property {Geoloc} geoloc - Informations de géolocalisation du centre
  * @property {boolean} active - Si `false`, le centre n'apparaîtra pas dans les requêtes des utilisateurs
  * @property {string} disabledBy - Adresse courriel du dernier utilisateur ayant désactivé le centre
- */
-/**
+ *
  * @typedef {Object} module:models/centre/centre-model~Geoloc
  * @global
  * @property {string} type
