@@ -28,7 +28,7 @@
       <v-container class="u-flex  u-flex--between  u-full-width">
         <v-text-field
           v-model="email"
-          class="t-input-email"
+          class="t-input-ipcsr-email"
           prepend-icon="email"
           aria-placeholder="jean@dupont.fr"
           hint="ex. : jean@dupont.fr"
@@ -117,7 +117,7 @@
         </v-btn>
 
         <v-btn
-          class="t-btn-update-confirm"
+          class="t-btn-update-ipcsr-confirm"
           color="primary"
           :disabled="isUpdatingIpcsr"
           :aria-disabled="isUpdatingIpcsr"

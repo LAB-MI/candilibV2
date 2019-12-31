@@ -4,7 +4,7 @@
       :headers="headers"
       :items="ipcsr"
       :items-per-page="5"
-      class="elevation-1"
+      class="elevation-1 t-list-ipcsr"
     >
       <template v-slot:item.action="{ item }">
         <update-ipcsr

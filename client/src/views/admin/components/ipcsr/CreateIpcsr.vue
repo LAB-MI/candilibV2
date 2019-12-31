@@ -6,7 +6,7 @@
     <v-container class="u-flex  u-flex--between  u-full-width">
       <v-text-field
         v-model="email"
-        class="t-input-email"
+        class="t-input-ipcsr-email"
         prepend-icon="email"
         aria-placeholder="jean@dupont.fr"
         hint="ex. : jean@dupont.fr"
@@ -24,7 +24,7 @@
 
       <v-text-field
         v-model="prenom"
-        class="t-input-prenom"
+        class="t-input-ipcsr-prenom"
         prepend-icon="perm_identity"
         hint="ex. : Jean"
         tabindex="0"
@@ -40,7 +40,7 @@
 
       <v-text-field
         v-model="nom"
-        class="t-input-nom"
+        class="t-input-ipcsr-nom"
         prepend-icon="account_box"
         hint="ex. : Dupont"
         tabindex="0"
@@ -56,7 +56,7 @@
 
       <v-text-field
         v-model="matricule"
-        class="t-input-matricule"
+        class="t-input-ipcsr-matricule"
         prepend-icon="confirmation_number"
         hint="ex. : 0954390439"
         tabindex="0"
@@ -72,7 +72,7 @@
       <v-spacer />
 
       <select-departements
-        class="select-departement"
+        class="select-departement t-select-ipcsr-departement"
         :available-departements="availableDepartements"
         :default-departement="availableDepartements[0]"
         @change-departements="newDep => departement = newDep"
@@ -81,7 +81,7 @@
       <v-spacer />
 
       <v-btn
-        class="t-create-btn"
+        class="t-create-ipcsr-btn"
         type="submit"
         :disabled="!valid || isCreatingIpcsr"
         :aria-disabled="!valid || isCreatingIpcsr"
