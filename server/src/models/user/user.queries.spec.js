@@ -279,8 +279,9 @@ describe('User', () => {
       // when
       const updatedUsers = await updateManyUser(
         {
-          filterBy: 'status',
-          inValue: userStatus,
+          status: {
+            $in: userStatus,
+          },
         },
         {
           $addToSet: { departements: ['94', '77'] },

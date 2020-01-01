@@ -1784,19 +1784,206 @@ router.post(
   createCentre
 )
 
-// TODO: SWAGGER DOC 4
+/**
+ * @swagger
+ *
+ * /admin/departements:
+ *   post:
+ *     tags: ["Administrateur"]
+ *     summary: Création d'un departement
+ *     description: Permet de créer un département
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Données du formulaire de création de département
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: departement94@example.com
+ *                 description: Email du département
+ *               departement:
+ *                 type: string
+ *                 example: "93"
+ *                 description: Nom du épartement
+ *
+ *     responses:
+ *       200:
+ *         description: Utilisateur supprimé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: true
+ *                     message: Le département 93 a bien été crée avec l'adresse courriel emaildepartement:@:example.com
+ *
+ *       400:
+ *         description: Paramètre(s) manquant(s) ou le département est déjà existant
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Numéro de département non renseigné
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_departements }
+ */
+
+router.post(
+  '/departements',
+  verifyUserLevel(config.userStatusLevels.admin),
+  createDepartementsController
+)
+
+/**
+ * @swagger
+ *
+ * /admin/departements:
+ *   get:
+ *     tags: ["Administrateur"]
+ *     summary: Récupération de tous les département(s) ou d'un seul
+ *     description: Permet de créer un département
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Numéro du département ou sans paramètre
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: departement94@example.com
+ *                 description: Email du département
+ *               departement:
+ *                 type: string
+ *                 example: "93"
+ *                 description: Nom du épartement
+ *
+ *     responses:
+ *       200:
+ *         description: Département créé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                       success: true
+ *                       result: [{
+ *                          "email": "répartiteur@example.com",
+ *                          "id": "93",
+ *                       }]
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_departements }
+ */
+
+router.get(
+  '/departements/:id?',
+  verifyUserLevel(config.userStatusLevels.admin),
+  getDepartementsController
+)
+
+/**
+ * @swagger
+ *
+ * /admin/departements:
+ *   patch:
+ *     tags: ["Administrateur"]
+ *     summary: Mise à jour du département
+ *     description: Permet de mettre à jour l'adresse email du département
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Numéro du département et nouvelle adresse courriel
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newEmail:
+ *                 type: string
+ *                 example: departement94@example.com
+ *                 description: Email du département
+ *               departement:
+ *                 type: string
+ *                 example: "93"
+ *                 description: Nom du épartement
+ *
+ *     responses:
+ *       200:
+ *         description: Département créé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                       success: true
+ *                       result: {
+ *                          "email": "répartiteur@example.com",
+ *                          "id": "93",
+ *                       }
+ *
+ *       400:
+ *         description: Paramètre(s) manquant(s)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Adresse courriel du departement manquante saisie invalide
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/patch_admin_departements }
+ */
+
+router.patch(
+  '/departements',
+  verifyUserLevel(config.userStatusLevels.admin),
+  updateDepartementsController
+)
+
 /**
  * @swagger
  *
  * /admin/departements:
  *   delete:
  *     tags: ["Administrateur"]
- *     summary: supprimer le departement par son Id
- *     description: Permet supprimer un département.
+ *     summary: supprimer le département par son Id
+ *     description: Permet supprimer un département
  *     security:
  *       - bearerAuth: []
  *     requestBody:
- *       description: Numero du département
+ *       description: Numéro du département
  *       content:
  *         application/json:
  *           schema:
@@ -1809,7 +1996,7 @@ router.post(
  *
  *     responses:
  *       200:
- *         description: Département crée
+ *         description: Département créé
  *         content:
  *           application/json:
  *             schema:
@@ -1817,18 +2004,7 @@ router.post(
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                       success: true
- *                       message: Le departement a bien été supprimé
- *
- *       400:
- *         description: Pas d'erreur 400 possible pour le moment a voir avec la team
- *         content:
- *           application/json:
- *             schema:
- *               allOf:
- *                 - $ref: '#/components/schemas/InfoObject'
- *                 - example:
- *                     success: false
- *                     message: Numéro de département non renséigné
+ *                       message: Le département a bien été supprimé
  *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
@@ -1842,7 +2018,6 @@ router.post(
 router.delete(
   '/departements/:id?',
   verifyUserLevel(config.userStatusLevels.admin),
-  // verifyUserLevel(config.userStatusLevels.delegue),
   deleteDepartementController
 )
 export default router

@@ -232,15 +232,8 @@ export const updateUser = async (email, { departements, status }) => {
  *
  * @returns {Promise.<object>} - Un  object contenant le nombre de user modifier
  */
-export const updateManyUser = async ({ filterBy, inValue }, valueToSet) => {
-  const updatedUsers = await User.updateMany(
-    {
-      [filterBy]: {
-        $in: [...inValue],
-      },
-    },
-    valueToSet
-  )
+export const updateManyUser = async (filter, valueToSet) => {
+  const updatedUsers = await User.updateMany(filter, valueToSet)
 
   return updatedUsers
 }

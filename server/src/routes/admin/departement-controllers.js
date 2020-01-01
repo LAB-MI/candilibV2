@@ -4,10 +4,12 @@
  */
 
 import {
+  checkIfDepartementUseByCentre,
   createDepartements,
   deleteDepartement,
   getDepartements,
   isDepartementAlreadyExist,
+  removeDepartementOfUsersByStatus,
   updateDepartements,
   updateDepartementsUsersAdminAndTech,
 } from './departement-business'
@@ -22,6 +24,8 @@ import {
   INVALID_DEPARTEMENT_NUMBER,
   INVALID_EMAIL_INSERT,
 } from './message.constants'
+
+import config from '../../config'
 
 import { appLogger } from '../../util'
 
@@ -73,7 +77,9 @@ export const createDepartementsController = async (req, res) => {
       departementId,
       departementEmail
     )
-    const isUsersUpdated = await updateDepartementsUsersAdminAndTech(departementId)
+    const isUsersUpdated = await updateDepartementsUsersAdminAndTech(
+      departementId
+    )
     let message = ''
     if (isUsersUpdated) {
       message = `Le département ${departementCreated._id} a bien été crée avec l'adresse courriel ${departementCreated.email}`
@@ -203,18 +209,40 @@ export const deleteDepartementController = async (req, res) => {
       departementId !== 'undefined' &&
       departementId !== 'null'
     ) {
-      await deleteDepartement(departementId)
-      // TODO: REMOVE DEPARTEMENT FROM USER ADMIN AND TECH
-      message = `Le département ${departementId} a bien été supprimé`
-      appLogger.info({
-        ...loggerInfo,
-        departementId,
-        description: message,
-      })
-      return res.status(200).json({
-        success: true,
-        message,
-      })
+      const isDepartementUse = await checkIfDepartementUseByCentre(
+        departementId
+      )
+      if (!isDepartementUse) {
+        const userStatus = [
+          config.userStatuses.ADMIN,
+          config.userStatuses.TECH,
+          config.userStatuses.REPARTITEUR,
+          config.userStatuses.DELEGUE,
+        ]
+
+        const isDepartementRemovedFormUsers = await removeDepartementOfUsersByStatus(
+          departementId,
+          userStatus
+        )
+        if (isDepartementRemovedFormUsers) {
+          await deleteDepartement(departementId)
+          message = `Le département ${departementId} a bien été supprimé`
+          appLogger.info({
+            ...loggerInfo,
+            departementId,
+            description: message,
+          })
+          return res.status(200).json({
+            success: true,
+            message,
+          })
+        }
+        message = `Erreur survenue, impossible de supprimé le département ${departementId} pour les admins, répartiteurs et délégués, le département n'a donc pas été supprimé.`
+
+        throw new Error(message)
+      }
+      message = `Le département ${departementId} n'a pas été supprimé, car des centres y sont liée`
+      throw new Error(message)
     }
     message = BAD_PARAMS
 

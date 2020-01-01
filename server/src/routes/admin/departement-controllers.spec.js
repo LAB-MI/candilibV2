@@ -1,5 +1,13 @@
 import request from 'supertest'
 import { connect, disconnect } from '../../mongo-connection'
+
+import { createUser, deleteUser, findUserByEmail } from '../../models/user'
+import config from '../../config'
+
+const emailAdmin = 'Admin@example.com'
+const password = 'S3cr3757uff!'
+const departements = ['75', '93']
+
 const {
   createDepartementTest,
   createManyDepartementTest,
@@ -38,10 +46,16 @@ const departementList = [
 
 const newEmail = 'newemaildu37@test.com'
 
-describe('Name of the group', () => {
+describe('Département controllers', () => {
   beforeAll(async () => {
     await connect()
     await createManyDepartementTest(departementList)
+    await createUser(
+      emailAdmin,
+      password,
+      departements,
+      config.userStatuses.ADMIN
+    )
   })
 
   afterAll(async () => {
@@ -63,6 +77,10 @@ describe('Name of the group', () => {
       'message',
       `Le département ${departementId01} a bien été crée avec l'adresse courriel ${departementEmail01}`
     )
+    const expected = [...departements, departementId01]
+    const userInfo = await findUserByEmail(emailAdmin, true)
+    expect(userInfo.departements).toEqual(expect.arrayContaining(expected))
+    await deleteUser(userInfo)
     await deleteDepartementTest(departementId01)
   })
 
@@ -96,7 +114,7 @@ describe('Name of the group', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty(
       'message',
-      'Numéro de département non renséigné'
+      'Numéro de département non renseigné'
     )
   })
 

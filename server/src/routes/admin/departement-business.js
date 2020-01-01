@@ -13,16 +13,18 @@ import {
 } from '../../models/departement'
 
 import { updateManyUser } from '../../models/user'
+import { findCentresByDepartement } from '../../models/centre'
 
 import config from '../../config'
 
 export const updateDepartementsUsersAdminAndTech = async departementId => {
-  const inValue = [config.userStatuses.ADMIN, config.userStatuses.TECH]
-  const filterBy = 'status'
+  const usersStatus = [config.userStatuses.ADMIN, config.userStatuses.TECH]
+
   const updatedResult = await updateManyUser(
     {
-      filterBy,
-      inValue,
+      status: {
+        $in: usersStatus,
+      },
     },
     {
       $addToSet: { departements: [`${departementId}`] },
@@ -30,6 +32,36 @@ export const updateDepartementsUsersAdminAndTech = async departementId => {
   )
 
   if (updatedResult.ok) {
+    return true
+  }
+  return false
+}
+
+export const removeDepartementOfUsersByStatus = async (
+  departementId,
+  userStatus
+) => {
+  const updatedResult = await updateManyUser(
+    {
+      status: {
+        $in: userStatus,
+      },
+    },
+    {
+      $pull: { departements: `${departementId}` },
+    }
+  )
+
+  if (updatedResult.ok) {
+    return true
+  }
+  return false
+}
+
+export const checkIfDepartementUseByCentre = async departementId => {
+  const foundedCentre = await findCentresByDepartement(departementId, {})
+
+  if (foundedCentre.length) {
     return true
   }
   return false
@@ -43,6 +75,7 @@ export const isDepartementAlreadyExist = async departementId => {
   }
   return false
 }
+
 /**
  * Crée un département
  * @async

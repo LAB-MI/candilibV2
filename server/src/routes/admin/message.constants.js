@@ -41,7 +41,7 @@ export const INCORRECT_DEPARTEMENT_LIST =
 export const INVALID_EMAIL = "L'adresse courriel n'est pas valide"
 export const USER_NO_EXIST = "L'utilisateur n'existe pas"
 export const INVALID_DEPARTEMENTS_LIST = 'La liste départements est invalide'
-export const INVALID_DEPARTEMENT_NUMBER = 'Numéro de département non renséigné'
+export const INVALID_DEPARTEMENT_NUMBER = 'Numéro de département non renseigné'
 export const DEPARTEMENT_ALREADY_EXIST = 'Département exist déjà'
 export const ERROR_AT_DEPARTEMENT_CREATION =
   'Erreur survenue lors de création du département'
