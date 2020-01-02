@@ -70,8 +70,15 @@ export const updateCentreLabel = async (
   return updatedCentre
 }
 
-export const findCentresByDepartement = async (departement, options) => {
-  const centres = await Centre.find({ departement }, options)
+export const findCentresByDepartement = async (
+  departementId,
+  options = '-__v'
+) => {
+  const filters = {}
+  if (departementId) {
+    filters.departement = departementId
+  }
+  const centres = await Centre.find(filters, options)
   return centres
 }
 
