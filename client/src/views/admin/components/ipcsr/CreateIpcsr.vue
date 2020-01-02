@@ -1,10 +1,12 @@
 <template>
   <v-form
+    ref="createIpcsrForm"
     v-model="valid"
     @submit.prevent="createIpcsr"
   >
     <v-container class="u-flex  u-flex--between  u-full-width">
       <v-text-field
+        ref="email"
         v-model="email"
         class="t-input-ipcsr-email"
         prepend-icon="email"
@@ -24,7 +26,7 @@
 
       <v-text-field
         v-model="prenom"
-        class="t-input-ipcsr-prenom"
+        class="t-input-ipcsr-firstname"
         prepend-icon="perm_identity"
         hint="ex. : Jean"
         tabindex="0"
@@ -40,7 +42,7 @@
 
       <v-text-field
         v-model="nom"
-        class="t-input-ipcsr-nom"
+        class="t-input-ipcsr-name"
         prepend-icon="account_box"
         hint="ex. : Dupont"
         tabindex="0"
@@ -55,6 +57,7 @@
       <v-spacer />
 
       <v-text-field
+        ref="matricule"
         v-model="matricule"
         class="t-input-ipcsr-matricule"
         prepend-icon="confirmation_number"
@@ -72,7 +75,8 @@
       <v-spacer />
 
       <select-departements
-        class="select-departement t-select-ipcsr-departement"
+        ref="ipcsrDepartement"
+        class="select-departement  t-select-ipcsr-departement"
         :available-departements="availableDepartements"
         :default-departement="availableDepartements[0]"
         @change-departements="newDep => departement = newDep"
@@ -106,7 +110,10 @@ import { email as emailRegex } from '@/util'
 import SelectDepartements from '../SelectDepartements'
 
 import {
-  CREATE_IPCSR_REQUEST, FETCH_IPCSR_LIST_REQUEST,
+  CREATE_IPCSR_REQUEST,
+  FETCH_IPCSR_LIST_REQUEST,
+  SHOW_SUCCESS,
+  SHOW_ERROR,
 } from '@/store'
 
 export default {
@@ -146,7 +153,7 @@ export default {
   computed: {
     ...mapState({
       availableDepartements: state => state.admin.departements.list,
-      isCreatingIpcsr: state => state.admin.inspecteurs.isCreatingIpcsr || false,
+      isCreatingIpcsr: state => !!state.admin.inspecteurs.isCreatingIpcsr,
     }),
   },
 
@@ -190,7 +197,7 @@ export default {
 
     async createIpcsr () {
       const {
-        departement,
+        departement = this.availableDepartements[0],
         email,
         matricule,
         nom,
@@ -205,13 +212,14 @@ export default {
           nom,
           prenom,
         })
+        this.$store.dispatch(SHOW_SUCCESS, "L'IPCSR a bien été créé")
+        this.$refs.createIpcsrForm.reset()
         this.departement = this.availableDepartements[0]
-        this.email = ''
-        this.matricule = ''
-        this.nom = ''
-        this.prenom = ''
+        this.$refs.ipcsrDepartement.defaultDepartement = this.departement
+
         await this.$store.dispatch(FETCH_IPCSR_LIST_REQUEST)
       } catch (error) {
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
   },

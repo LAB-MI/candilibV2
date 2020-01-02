@@ -2,7 +2,7 @@
   <div class="u-max-width">
     <page-title :title="'Liste des inspecteurs'" />
 
-    <create-ipcsr class="elevation-1  mt-4  white" />
+    <create-ipcsr class="elevation-1  mt-4  white  t-create-ipcsr-form" />
 
     <list-ipcsr class="mt-4  mb-8" />
   </div>

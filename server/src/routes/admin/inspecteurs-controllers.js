@@ -169,6 +169,7 @@ export const getInspecteurs = async (req, res) => {
 
 /**
  * Crée un nouvel IPCSR dans la base de données Candilib
+ *
  * @async
  * @function
  *
@@ -217,18 +218,38 @@ export const createIpcsr = async (req, res) => {
     })
   }
 
-  const ipcsr = await createInspecteur({
-    departement,
-    email,
-    matricule,
-    nom,
-    prenom,
-  })
+  try {
+    const ipcsr = await createInspecteur({
+      departement,
+      email,
+      matricule,
+      nom,
+      prenom,
+    })
 
-  return res.status(201).json({
-    success: true,
-    ipcsr,
-  })
+    return res.status(201).json({
+      success: true,
+      ipcsr,
+    })
+  } catch (error) {
+    let message = error.message
+    let status = 500
+
+    if (message.includes('duplicate')) {
+      status = 409
+      if (message.includes('matricule')) {
+        message = `Ce matricule existe déjà : ${matricule}`
+      }
+      if (message.includes('email')) {
+        message = `Cette adresse courriel existe déjà : ${email}`
+      }
+    }
+
+    return res.status(status).json({
+      success: false,
+      message,
+    })
+  }
 }
 
 /**
