@@ -3,7 +3,7 @@ import getMailData from '../business/message-templates'
 import {
   createDepartement,
   deleteDepartementById,
-} from '../../models/departement/departement.queries'
+} from '../../models/departement/departement-queries'
 
 const request = require('supertest')
 

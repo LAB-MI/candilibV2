@@ -3,6 +3,7 @@ export default {
   app_name: 'Candilib',
   app_html_title: 'C<span class="col-red">a</span>ndilib',
   app_subtitle: 'Réservez votre place d\'examen',
+  confirmation_choix_departement: 'Je confirme choisir le département {département} pour passer mon examen',
   confirmation_reservation_title: 'Confirmation',
   confirmation_reservation_subtitle: 'Vous avez choisi de passer l’épreuve pratique du permis à',
   confirmation_reservation_word: 'Le',

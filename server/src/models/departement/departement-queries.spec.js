@@ -3,7 +3,7 @@ import { createDepartement, findDepartementById } from '.'
 import {
   deleteDepartementById,
   findDepartementsByEmail,
-} from './departement.queries'
+} from './departement-queries'
 
 const validEmail = 'candidat@example.com'
 const _id = '95'

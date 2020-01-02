@@ -34,3 +34,4 @@ export const PARAMETERS_VERSUS_INFOS_CANDIDAT =
   'Les paramètres ne correspondent pas aux informations que vous avez transmises'
 export const CANDIDAT_DATE_ETG_KO =
   'Votre code de la route n’est plus valide après le '
+export const DEPARTEMENT_LIST = 'Veuillez choisir un département de la liste'

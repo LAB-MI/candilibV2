@@ -1,4 +1,4 @@
-import Departement from './departement.model'
+import Departement from './departement-model'
 
 /**
  * Crée un département
