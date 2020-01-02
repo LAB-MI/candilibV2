@@ -39,11 +39,11 @@ import { findAllDepartements } from '../../models/departement'
  * @constant {string[]} - Liste des noms des champs requis
  */
 const mandatoryFields = [
-  'adresse',
   'codeNeph',
   'email',
   'nomNaissance',
   'portable',
+  'departement',
 ]
 
 /**
@@ -86,28 +86,27 @@ export async function preSignup (req, res) {
   }
   appLogger.info({ ...loggerInfo, candidatData })
 
-  const { codeNeph, nomNaissance, portable, email, departement } = candidatData
+  const { email, departement } = candidatData
 
-  const isFormFilled = [codeNeph, nomNaissance, email, portable, departement]
+  const fieldsWithErrors = mandatoryFields
+    .map(key => (candidatData[key] ? '' : key))
+    .filter(e => e)
 
   const isValidEmail = emailRegex.test(email)
 
-  const departements = await findAllDepartements()
+  if (fieldsWithErrors.length) {
+    const departements = await findAllDepartements()
 
-  const departementList = departements.map(dep => dep._id)
+    const departementList = departements.map(dep => dep._id)
 
-  if (!departementList.includes(departement)) {
-    res.status(400).json({
-      success: false,
-      message: DEPARTEMENT_LIST,
-    })
-    return
-  }
-
-  if (!isFormFilled) {
-    const fieldsWithErrors = mandatoryFields
-      .map(key => (candidatData[key] ? '' : key))
-      .filter(e => e)
+    if (!departementList.includes(departement)) {
+      res.status(400).json({
+        success: false,
+        message: DEPARTEMENT_LIST,
+        fieldsWithErrors,
+      })
+      return
+    }
 
     if (!isValidEmail && !fieldsWithErrors.includes('email')) {
       fieldsWithErrors.push('email')
