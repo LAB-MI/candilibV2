@@ -32,6 +32,8 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
 import { FETCH_CONFIG_REQUEST, FETCH_DEPARTEMENTS_REQUEST, FETCH_PARIS_CENTERS_REQUEST } from '@/store'
 import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
@@ -48,25 +50,15 @@ export default {
   },
 
   computed: {
-
-    lineDelay () {
-      return this.$store.state.config.lineDelay
-    },
-
-    departements () {
-      return this.$store.state.departements.list
-    },
-
-    parisCenters () {
-      return this.$store.state.parisCenters.list
-    },
+    ...mapState({
+      lineDelay (state) { return state.config.lineDelay },
+      departements (state) { return state.departements.list },
+      parisCenters (state) { return state.parisCenters.list },
+      me (state) { return state.candidat.me },
+    }),
 
     faqQuestions () {
       return faqJson(this.lineDelay, this.departements, this.parisCenters)
-    },
-
-    me () {
-      return this.$store.state.candidat.me
     },
   },
 
