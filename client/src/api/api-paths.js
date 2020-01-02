@@ -44,7 +44,7 @@ const utilPaths = {
   adressesQuery (search) { return `https://api-adresse.data.gouv.fr/search/?q=${search}` },
   configCandidat: 'config-candilib.json',
   departements: `${apiPrefix}/departements`,
-  deptCenters: `${apiPrefix}/centres`,
+  centres: `${apiPrefix}/centres`,
 }
 
 const apiPaths = {

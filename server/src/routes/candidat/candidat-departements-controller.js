@@ -1,8 +1,8 @@
 import { appLogger } from '../../util'
-import { findDepartements } from '../../models/departement'
+import { findAllDepartements } from '../../models/departement'
 
 export async function getDepartements (req, res) {
-  const departements = await findDepartements()
+  const departements = await findAllDepartements()
   appLogger.info({
     description: 'Getting candidat departements',
     section: 'candidat-departements',

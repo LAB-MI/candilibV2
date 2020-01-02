@@ -49,7 +49,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         },
         {
           subTitleContent: 'Pour réserver',
-          textContent: 'Connectez vous à Candilib après réception du mail « Validation de votre inscription à Candilib » (lien de connexion dans le mail de validation).',
+          textContent: 'Connectez-vous à Candilib après réception du mail « Validation de votre inscription à Candilib » (lien de connexion dans le mail de validation).',
         },
         {
           textContent: 'Sélectionnez votre centre d\'examen, puis un créneau disponible à la date qui vous convient (si besoin, déplacez-vous sur les vues « mois », « semaine » et « jour »).',
