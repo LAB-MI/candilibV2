@@ -98,6 +98,8 @@
       <div class="form-input">
         <v-select
           v-model="departement"
+          dark
+          color="#fff"
           class="t-select-departements"
           :items="availableDepartements"
           label="Département"
@@ -105,7 +107,7 @@
           aria-placeholder="93"
           persistent-hint
           hint="Vous devez dès à présent choisir votre département de passage à l'examen.
-          Votre choix permet à l'administration de provisionner un nombre de place d'examen suffisant pour chaque département où Candilib est disponible"
+          Votre choix permet à l'administration de provisionner un nombre de places d'examen suffisant pour chaque département où Candilib est disponible"
           :rules="departementRules"
           required
         />
@@ -116,6 +118,8 @@
       >
         <v-checkbox
           v-model="isCheckDepartement"
+          dark
+          color="#fff"
           class="t-checkbox"
           :label="$formatMessage({ id: 'confirmation_choix_departement' }, { departement })"
         />
@@ -168,6 +172,7 @@ import {
   SEND_MAGIC_LINK_REQUEST,
   SHOW_ERROR,
   SHOW_SUCCESS,
+  FETCH_DEPARTEMENTS_REQUEST,
 } from '@/store'
 
 import AlreadySignedUp from './AlreadySignedUp'
@@ -227,10 +232,13 @@ export default {
       return state.candidat.isSendingMagicLink
     },
     availableDepartements (state) {
-      return (state.departements && state.departements.list) ||
-        ['38', '69', '75', '77', '78', '91', '92', '93', '94', '95']
+      return state.departements && state.departements.list
     },
   }),
+
+  mounted () {
+    this.$store.dispatch(FETCH_DEPARTEMENTS_REQUEST)
+  },
 
   methods: {
     getMsg (id) {

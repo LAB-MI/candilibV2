@@ -33,7 +33,7 @@ import {
   DEPARTEMENT_LIST,
 } from './message.constants'
 import { sendErrorResponse } from '../../util/send-error-response'
-import { findAllDepartements } from '../../models/departement'
+import { isDepartementExisting } from '../../models/departement'
 
 /**
  * @constant {string[]} - Liste des noms des champs requis
@@ -95,29 +95,22 @@ export async function preSignup (req, res) {
   const isValidEmail = emailRegex.test(email)
 
   if (fieldsWithErrors.length) {
-    const departements = await findAllDepartements()
-
-    const departementList = departements.map(dep => dep._id)
-
-    if (!departementList.includes(departement)) {
-      res.status(400).json({
-        success: false,
-        message: DEPARTEMENT_LIST,
-        fieldsWithErrors,
-      })
-      return
-    }
-
-    if (!isValidEmail && !fieldsWithErrors.includes('email')) {
-      fieldsWithErrors.push('email')
-    }
-
     appLogger.error({ ...loggerInfo, fieldsWithErrors })
 
     res.status(400).json({
       success: false,
       message: CANDIDAT_FIELD_EMPTY,
       fieldsWithErrors,
+    })
+    return
+  }
+
+  const isDeptExist = await isDepartementExisting(departement)
+
+  if (!isDeptExist) {
+    res.status(400).json({
+      success: false,
+      message: DEPARTEMENT_LIST,
     })
     return
   }

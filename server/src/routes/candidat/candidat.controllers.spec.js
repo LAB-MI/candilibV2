@@ -4,6 +4,7 @@ import {
   createDepartement,
   deleteDepartementById,
 } from '../../models/departement/departement-queries'
+import { DEPARTEMENT_LIST } from './message.constants'
 
 const request = require('supertest')
 
@@ -31,6 +32,7 @@ const nomNaissance1 = 'test'
 const codeNeph1 = '123456789013'
 const validEmail2 = 'candidat2@example.com'
 const departementTest = '93'
+const departementNotExisting = '60'
 
 const incompleteCandidat = {
   codeNeph,
@@ -43,6 +45,15 @@ const candidatWithInvalidEmail = {
   prenom,
   portable,
   departement: departementTest,
+}
+
+const candidatWithNotExistingDepartement = {
+  codeNeph,
+  email: validEmail,
+  nomNaissance,
+  prenom,
+  portable,
+  departement: departementNotExisting,
 }
 
 const validCandidat = {
@@ -119,6 +130,17 @@ describe('Test the candidat signup', () => {
     expect(body.fieldsWithErrors).toContain('portable')
     expect(body.fieldsWithErrors).toContain('departement')
     expect(body.fieldsWithErrors).not.toContain('codeNeph')
+  })
+  it('Should response 400 if departement is not existing', async () => {
+    const { body } = await request(app)
+      .post(`${apiPrefix}/candidat/preinscription`)
+      .send(candidatWithNotExistingDepartement)
+      .set('Accept', 'application/json')
+      .expect(400)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).not.toHaveProperty('fieldsWhithErrors')
+    expect(body).toHaveProperty('message', DEPARTEMENT_LIST)
   })
 
   it('Should response 400 and a list of 1 field for complete form with an invalid email', async () => {
