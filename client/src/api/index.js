@@ -322,10 +322,62 @@ export default {
       return json
     },
 
-    async getInspecteursByDepartement (departement) {
-      const json = await apiClient.get(`${apiPaths.admin.inspecteurs}?departement=${departement}`, {
+    async getInspecteurs () {
+      const json = await apiClient.get(`${apiPaths.admin.inspecteurs}`, {
         headers: getHeadersForAdminJson(),
       })
+      return json
+    },
+
+    async createInspecteur ({ departement, email, matricule, nom, prenom }) {
+      const json = await apiClient.post(`${apiPaths.admin.inspecteurs}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({
+          departement,
+          email,
+          matricule,
+          nom,
+          prenom,
+        }),
+      })
+      return json
+    },
+
+    async updateInspecteur ({ departement, email, ipcsrId, matricule, nom, prenom }) {
+      const json = await apiClient.put(
+        `${apiPaths.admin.inspecteurs}/${ipcsrId}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({
+            departement,
+            email,
+            matricule,
+            nom,
+            prenom,
+          }),
+        },
+      )
+      return json
+    },
+
+    async disableInspecteur (ipcsrId) {
+      const json = await apiClient.patch(
+        `${apiPaths.admin.inspecteurs}/${ipcsrId}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({
+            active: false,
+          }),
+        },
+      )
+      return json
+    },
+
+    async getInspecteursByDepartement (departement) {
+      const json = await apiClient.get(
+        `${apiPaths.admin.inspecteurs}?departement=${departement}`, {
+          headers: getHeadersForAdminJson(),
+        })
       return json
     },
 

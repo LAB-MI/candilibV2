@@ -32,6 +32,7 @@
         <v-spacer />
 
         <select-departements
+          multiple
           class="t-select-update-departements"
           :available-departements="availableDepartements"
           :default-departements="departements"
@@ -65,7 +66,7 @@
 
 <script>
 import SelectStatus from './SelectStatus'
-import SelectDepartements from './SelectDepartements'
+import SelectDepartements from '../SelectDepartements'
 import { FETCH_USER_LIST_REQUEST, UPDATE_USER_REQUEST } from '@/store'
 import { mapState } from 'vuex'
 

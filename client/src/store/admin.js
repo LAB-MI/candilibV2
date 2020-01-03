@@ -9,7 +9,7 @@ import {
   DEPARTEMENT_STORAGE_KEY,
   ROUTE_AUTHORIZE_AURIGE,
   ROUTE_AUTHORIZE_STATS_KPI,
-  ROUTE_AUTHORIZE_USERS,
+  ROUTE_AUTHORIZE_AGENTS,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -17,6 +17,22 @@ import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
 export const FETCH_ADMIN_INFO_REQUEST = 'FETCH_ADMIN_INFO_REQUEST'
 export const FETCH_ADMIN_INFO_FAILURE = 'FETCH_ADMIN_INFO_FAILURE'
 export const FETCH_ADMIN_INFO_SUCCESS = 'FETCH_ADMIN_INFO_SUCCESS'
+
+export const FETCH_IPCSR_LIST_REQUEST = 'FETCH_IPCSR_LIST_REQUEST'
+export const FETCH_IPCSR_LIST_FAILURE = 'FETCH_IPCSR_LIST_FAILURE'
+export const FETCH_IPCSR_LIST_SUCCESS = 'FETCH_IPCSR_LIST_SUCCESS'
+
+export const CREATE_IPCSR_REQUEST = 'CREATE_IPCSR_REQUEST'
+export const CREATE_IPCSR_FAILURE = 'CREATE_IPCSR_FAILURE'
+export const CREATE_IPCSR_SUCCESS = 'CREATE_IPCSR_SUCCESS'
+
+export const UPDATE_IPCSR_REQUEST = 'UPDATE_IPCSR_REQUEST'
+export const UPDATE_IPCSR_FAILURE = 'UPDATE_IPCSR_FAILURE'
+export const UPDATE_IPCSR_SUCCESS = 'UPDATE_IPCSR_SUCCESS'
+
+export const DELETE_IPCSR_REQUEST = 'DELETE_IPCSR_REQUEST'
+export const DELETE_IPCSR_FAILURE = 'DELETE_IPCSR_FAILURE'
+export const DELETE_IPCSR_SUCCESS = 'DELETE_IPCSR_SUCCESS'
 
 export const FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST = 'FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST'
 export const FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE = 'FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE'
@@ -54,9 +70,9 @@ export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 export const numberOfMonthsToFetch = 3
 
 const AUTHORIZED_ROUTES = {
+  agents: ROUTE_AUTHORIZE_AGENTS,
   aurige: ROUTE_AUTHORIZE_AURIGE,
   'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
-  users: ROUTE_AUTHORIZE_USERS,
 }
 
 export default {
@@ -99,8 +115,12 @@ export default {
       list: [],
     },
     inspecteurs: {
+      created: undefined,
+      deleted: undefined,
       error: undefined,
       isFetching: false,
+      isCreating: false,
+      isDeleting: false,
       list: [],
     },
     currentWeek: undefined,
@@ -125,7 +145,8 @@ export default {
       state.departements.list = departements
       state.email = email
       state.status = status
-      state.features = features && features.map(feature => AUTHORIZED_ROUTES[feature])
+      state.features =
+        features && features.map(feature => AUTHORIZED_ROUTES[feature])
 
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
 
@@ -135,6 +156,55 @@ export default {
     },
     [FETCH_ADMIN_INFO_FAILURE] (state) {
       state.departements.isFetching = false
+    },
+
+    [FETCH_IPCSR_LIST_REQUEST] (state) {
+      state.inspecteurs.isFetching = true
+    },
+    [FETCH_IPCSR_LIST_SUCCESS] (state, list) {
+      state.inspecteurs.list = list
+      state.inspecteurs.isFetching = false
+    },
+    [FETCH_IPCSR_LIST_FAILURE] (state) {
+      state.inspecteurs.isFetching = false
+    },
+
+    [CREATE_IPCSR_REQUEST] (state) {
+      state.inspecteurs.error = undefined
+      state.inspecteurs.isCreating = true
+    },
+    [CREATE_IPCSR_SUCCESS] (state, ipcsr) {
+      state.inspecteurs.created = ipcsr
+      state.inspecteurs.isCreating = false
+    },
+    [CREATE_IPCSR_FAILURE] (state, error) {
+      state.inspecteurs.error = error
+      state.inspecteurs.isCreating = false
+    },
+
+    [UPDATE_IPCSR_REQUEST] (state) {
+      state.inspecteurs.error = undefined
+      state.inspecteurs.isCreating = true
+    },
+    [UPDATE_IPCSR_SUCCESS] (state, ipcsr) {
+      state.inspecteurs.updated = ipcsr
+      state.inspecteurs.isCreating = false
+    },
+    [UPDATE_IPCSR_FAILURE] (state, error) {
+      state.inspecteurs.error = error
+      state.inspecteurs.isCreating = false
+    },
+
+    [DELETE_IPCSR_REQUEST] (state) {
+      state.inspecteurs.isDeleting = true
+    },
+    [DELETE_IPCSR_SUCCESS] (state, ipcsr) {
+      state.inspecteurs.deleted = ipcsr
+      state.inspecteurs.isDeleting = false
+    },
+    [DELETE_IPCSR_FAILURE] (state, error) {
+      state.inspecteurs.error = error
+      state.inspecteurs.isDeleting = false
     },
 
     [FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST] (state) {
@@ -315,6 +385,57 @@ export default {
       } catch (error) {
         commit(FETCH_INSPECTEURS_BY_CENTRE_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [FETCH_IPCSR_LIST_REQUEST] ({ commit, dispatch }) {
+      commit(FETCH_IPCSR_LIST_REQUEST)
+      try {
+        const { ipcsr } = await api.admin.getInspecteurs()
+        commit(FETCH_IPCSR_LIST_SUCCESS, ipcsr)
+      } catch (error) {
+        commit(FETCH_IPCSR_LIST_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [CREATE_IPCSR_REQUEST] ({ commit, dispatch }, newIpcsr) {
+      commit(CREATE_IPCSR_REQUEST)
+      try {
+        const { ipcsr, success, message } = await api.admin.createInspecteur(newIpcsr)
+        if (success === false) {
+          throw new Error(message)
+        }
+        commit(CREATE_IPCSR_SUCCESS, ipcsr)
+      } catch (error) {
+        commit(CREATE_IPCSR_FAILURE, error)
+        throw error
+      }
+    },
+
+    async [UPDATE_IPCSR_REQUEST] ({ commit, dispatch }, ipcsrToUpdate) {
+      commit(UPDATE_IPCSR_REQUEST)
+      try {
+        const { ipcsr } = await api.admin.updateInspecteur(ipcsrToUpdate)
+        commit(UPDATE_IPCSR_SUCCESS, ipcsr)
+      } catch (error) {
+        commit(UPDATE_IPCSR_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [DELETE_IPCSR_REQUEST] ({ commit, dispatch }, id) {
+      commit(DELETE_IPCSR_REQUEST)
+      try {
+        const { ipcsr, message, success } = await api.admin.disableInspecteur(id)
+        if (!success) {
+          throw new Error(message)
+        }
+        commit(DELETE_IPCSR_SUCCESS, ipcsr)
+      } catch (error) {
+        commit(DELETE_IPCSR_FAILURE, error)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
       }
     },
 
