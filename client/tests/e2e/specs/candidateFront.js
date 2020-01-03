@@ -42,7 +42,6 @@ describe('Connected candidate front', () => {
     cy.adminLogin()
     cy.archiveCandidate()
     cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore, dayAfter45Days, dayBefore45Days])
-    cy.addToWhitelist()
     cy.adminDisconnection()
     cy.candidatePreSignUp()
     // The admin validates the candidate via Aurige

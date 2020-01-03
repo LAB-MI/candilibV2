@@ -98,6 +98,7 @@
       <div class="form-input">
         <v-select
           v-model="departement"
+          class="t-select-departements"
           :items="availableDepartements"
           label="Département"
           prepend-icon="location_city"
@@ -115,6 +116,7 @@
       >
         <v-checkbox
           v-model="isCheckDepartement"
+          class="t-checkbox"
           :label="$formatMessage({ id: 'confirmation_choix_departement' })"
         />
       </div>
