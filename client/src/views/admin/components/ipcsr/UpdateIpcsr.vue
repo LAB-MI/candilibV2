@@ -97,7 +97,7 @@
         <v-spacer />
 
         <select-departements
-          class="select-departement  t-select-update-departements"
+          class="select-departement  t-select-update-ipcsr-departements"
           :available-departements="availableDepartements"
           :multiple="false"
           :default-departement="departement"
