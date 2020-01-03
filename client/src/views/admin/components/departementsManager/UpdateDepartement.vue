@@ -6,7 +6,7 @@
     <template v-slot:activator="{ on }">
       <v-btn
         slot="activator"
-        class="t-btn-update"
+        :class="`t-btn-update-${departementId}`"
         color="primary"
         icon
         v-on="on"
@@ -21,7 +21,7 @@
     >
       <v-card>
         <v-card-title
-          class=" t-title-update headline grey lighten-2"
+          class="t-title-update headline grey lighten-2"
           primary-title
         >
           Modification de l'adresse couriel du departement &nbsp; <strong>{{ departementId }}</strong>

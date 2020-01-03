@@ -6,7 +6,7 @@
     <template v-slot:activator="{ on }">
       <v-btn
         slot="activator"
-        class="t-btn-delete"
+        :class="`t-btn-delete-${departementId}`"
         color="#DC143C"
         icon
         v-on="on"
@@ -17,7 +17,7 @@
 
     <v-card>
       <v-card-title
-        class="headline red darken-1"
+        class="headline red darken-1 white--text"
         primary-title
       >
         Suppression du département {{ departementId }}
@@ -35,16 +35,17 @@
 
       <v-text-field
         v-model="confirmString"
-        class="pa-3"
+        class="pa-3 t-input-confirm-id"
         label="département"
         outlined
+        color="error"
       />
 
       <v-card-actions right>
         <v-spacer />
         <v-btn
           class="t-btn-cancel-delete"
-          color="#CD1338"
+          color="info"
           tabindex="0"
           outlined
           @click="deleting = false"
@@ -53,7 +54,8 @@
         </v-btn>
         <v-btn
           class="t-btn-delete-confirm"
-          color="primary"
+          color="error"
+          tabindex="0"
           :disabled="!isStringConfirm"
           @click="deleteDepartement"
         >
