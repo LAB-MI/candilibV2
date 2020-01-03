@@ -177,7 +177,10 @@ export const updateCentreLabel = async (
  *
  * @returns {Promise.<CentreMongooseDocument[]>} Liste des centres trouvés
  */
-export const findCentresByDepartement = async (departementId, options = '-__v') => {
+export const findCentresByDepartement = async (
+  departementId,
+  options = '-__v'
+) => {
   const filters = {
     active: { $ne: false },
   }
@@ -186,10 +189,7 @@ export const findCentresByDepartement = async (departementId, options = '-__v') 
     filters.departement = departementId
   }
 
-  const centres = await Centre.find(
-    filters,
-    options
-  )
+  const centres = await Centre.find(filters, options)
 
   return centres
 }

@@ -6,6 +6,7 @@
         <h3 class="text-xs-center">
           Ajouter un centre
         </h3>
+
         <center-create />
       </v-card>
 
@@ -13,6 +14,7 @@
         <h3 class="text-xs-center">
           Liste des centres
         </h3>
+
         <v-data-table
           class="centre-grid"
           :headers="headers"
@@ -24,6 +26,7 @@
             v-slot:header.departement
             class="pa-0"
           />
+
           <template
             v-slot:item.nom="{ item }"
           >
@@ -43,6 +46,7 @@
               </v-list-item-content>
             </div>
           </template>
+
           <template
             v-slot:item.geoloc="{ item }"
           >
