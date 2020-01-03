@@ -402,8 +402,8 @@ export default {
     async [CREATE_IPCSR_REQUEST] ({ commit, dispatch }, newIpcsr) {
       commit(CREATE_IPCSR_REQUEST)
       try {
-        const { ipcsr, status, message } = await api.admin.createInspecteur(newIpcsr)
-        if (status !== 201) {
+        const { ipcsr, success, message } = await api.admin.createInspecteur(newIpcsr)
+        if (success === false) {
           throw new Error(message)
         }
         commit(CREATE_IPCSR_SUCCESS, ipcsr)
