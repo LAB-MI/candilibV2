@@ -60,6 +60,11 @@ const headerIcons = [
     isProtected: true,
   },
   {
+    routerTo: 'admin-candidat',
+    iconName: 'face',
+    tooltipText: 'Recherche Candidat',
+  },
+  {
     routerTo: ROUTE_AUTHORIZE_AGENTS,
     iconName: 'people_alt',
     tooltipText: 'Répartiteur/Délégué',

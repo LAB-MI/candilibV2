@@ -183,7 +183,14 @@ export const getCandidats = async (req, res) => {
       return
     }
 
-    const { matching, format, filter, for: actionAsk } = req.query
+    const {
+      matching,
+      format,
+      filter,
+      for: actionAsk,
+      startingWith,
+      endingWith,
+    } = req.query
 
     // Rechercher des candiats
     if (matching) {
@@ -191,7 +198,11 @@ export const getCandidats = async (req, res) => {
       loggerInfo.matching = matching
       appLogger.info(loggerInfo)
 
-      const candidats = await findCandidatsMatching(matching)
+      const candidats = await findCandidatsMatching(
+        matching,
+        startingWith,
+        endingWith
+      )
       res.json(candidats)
       return
     }

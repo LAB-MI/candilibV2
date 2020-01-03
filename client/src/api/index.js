@@ -358,14 +358,17 @@ export default {
       return json
     },
 
-    async searchCandidats (search, departement) {
-      const json = await apiClient.get(
-        `${apiPaths.admin.searchCandidats}${search ||
-          ''}&departement=${departement}`,
-        {
-          headers: getHeadersForAdminJson(),
-        },
-      )
+    async searchCandidats (search, departement, startingWith, endingWith) {
+      let url = `${apiPaths.admin.searchCandidats}${search || ''}&departement=${departement}`
+      if (startingWith) {
+        url += `&startingWith=true`
+      }
+      if (endingWith) {
+        url += `&endingWith=true`
+      }
+      const json = await apiClient.get(url, {
+        headers: getHeadersForAdminJson(),
+      })
       return json
     },
 

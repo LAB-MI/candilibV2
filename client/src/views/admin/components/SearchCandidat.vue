@@ -29,7 +29,8 @@
       <profile-info
         v-if="profileInfo"
         class="t-result-candidat"
-        title="Informations candidats"
+        title="Informations Candidat"
+        :subtitle="candiInfo.toString()"
         :profile-info="profileInfo"
       />
     </v-expand-transition>
@@ -55,13 +56,13 @@ const convertToLegibleDate = date => date ? getFrenchDateFromIso(date) : adminMe
 const convertToLegibleDateTime = date => date ? getFrenchDateTimeFromIso(date) : adminMessage.non_renseignee
 const placeReserve = (place) => {
   if (place == null) {
-    return '-'
+    return `Ce candidat n'a pas de réservation`
   }
   const { inspecteur, centre, date } = place
   const nameInspecteur = inspecteur.nom
   const examCentre = centre.nom
   const frenchDate = convertToLegibleDateTime(date)
-  return `${frenchDate}  -  ${examCentre}  -  ${nameInspecteur}`
+  return `${frenchDate}  <br>  ${examCentre}  <br>  ${nameInspecteur}`
 }
 
 const legibleNoReussites = (noReussites) => {
@@ -69,14 +70,14 @@ const legibleNoReussites = (noReussites) => {
     return '-'
   }
   return '<ol>' + noReussites.map(({ reason, date }) => {
-    const frenchDate = convertToLegibleDate(date)
+    const frenchDate = convertToLegibleDate(date).filter()
     return `<li>${frenchDate} : ${reason}</li>`
   }).join(' - ') + '</ol>'
 }
 
 const historiqueAction = (places) => {
   if (!places || !(places.length)) {
-    return ' - '
+    return 'Aucune action pour ce candidat'
   }
   return '<ul style="margin: 0; padding: 0; list-style: square;">' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
     const frenchDate = convertToLegibleDateTime(date)
@@ -101,23 +102,26 @@ const iconAccess = (canAccessAt) => {
 }
 
 const candidatProfileInfoDictionary = [
-  [['canAccessAt', 'Statut', iconAccess]],
-  [['canAccessAt', 'Date d\'accès', convertToLegibleDateTime]],
-  [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
-  [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
+  [
+    ['canAccessAt', 'Statut', iconAccess],
+    ['canAccessAt', 'Date d\'accès', convertToLegibleDate],
+  ],
+  [
+    ['email', 'Email'], ['portable', 'Portable'], ['departement', ' Département'],
+  //   // ['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom'],
+  ],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDateTime],
     ['isValidatedEmail', 'Email validé', transformBoolean],
     ['isValidatedByAurige', 'Statut Aurige', transformBoolean],
     ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
-    ['place', 'Réservation', placeReserve],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
     ['noReussites', 'Non réussites', legibleNoReussites],
     ['nbEchecsPratiques', 'Nombre d\'échec(s)'],
     ['reussitePratique', 'Réussite Pratique', isReussitePratiqueExist],
-
+    ['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDate],
   ],
-  [['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDateTime]],
+  [['place', 'Réservation', placeReserve]],
   [
     ['places', 'Historique des actions', historiqueAction],
   ],
@@ -146,6 +150,13 @@ export default {
         const nameNeph = nomNaissance + '  ' + prenom + ' | ' + codeNeph
         return { nameNeph, ...candidat }
       }),
+    candiInfo: state => state.adminSearch.candidats.list
+      .map(candidat => {
+        const { nomNaissance, prenom, codeNeph } = candidat
+        const nameNeph = nomNaissance + '  ' + prenom + ' - ' + codeNeph
+        return nameNeph
+      }),
+
   }),
 
   watch: {
@@ -156,6 +167,7 @@ export default {
       this.toggelInfo(newVal)
     },
   },
+
   mounted () {
     const candidat = this.candidat
     const profileInfo = this.profileInfo
