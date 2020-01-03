@@ -27,7 +27,7 @@ import { findUserById } from '../../models/user'
  * @function
  *
  * @param {string} date - Date des réservations d'inspecteurs en chaîne de caractères
- * @param {string} departement - Une chaîne de caractères qui indique le département des inspecteur
+ * @param {string} departement - Une chaîne de caractères qui indique le département des inspecteurs
  *
  * @return {Promise.<inspecteursInfo[]>}
  */

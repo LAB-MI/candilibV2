@@ -21,7 +21,7 @@ import {
   findAllInspecteurs,
   findInspecteurById,
   findInspecteurByMatricule,
-} from '../../models/inspecteur/inspecteur.queries'
+} from '../../models/inspecteur'
 import {
   bookPlaceById,
   createPlace,
