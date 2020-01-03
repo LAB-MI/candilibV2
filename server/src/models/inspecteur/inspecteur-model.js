@@ -1,3 +1,9 @@
+/**
+ * Schema et model des IPCSR
+ *
+ * @module
+ */
+
 import mongoose from 'mongoose'
 import sanitizeHtml from 'sanitize-html'
 
@@ -72,3 +78,14 @@ inspecteurSchema.index({
 })
 
 export default mongoose.model('Inspecteur', inspecteurSchema)
+
+/**
+ * @typedef {Object} InspecteurMongooseDocument
+ * @mixes import('mongoose').Document
+ *
+ * @property {string} email - Adresse courriel de l'IPCSR
+ * @property {string} matricule - Matricule de l'IPCSR
+ * @property {string} departement - Département d'intervention de l'IPCSR
+ * @property {string} nom - Nom de l'IPCSR
+ * @property {string} prenom - Prénom de l'IPCSR
+ */

@@ -1,3 +1,8 @@
+/**
+ * Gestion des utilisateurs (Admin, répartiteurs et délégués)
+ * @module
+ */
+
 import {
   findUserById,
   findAllActiveUsers,
@@ -62,7 +67,7 @@ export const getAppropriateUsers = async userId => {
 }
 
 /**
- * Créé un utilisateur
+ * Crée un utilisateur
  *
  * @async
  * @function
@@ -70,9 +75,9 @@ export const getAppropriateUsers = async userId => {
  * @param {string} userId - ID de l'utilisateur qui crée l' utilisateur
  * @param {string} email - Adresse courriel de l'utilisateur créé
  * @param {string} status - Statut de l'utilisateur créé
- * @param {string[]} departements - Département de l'utilisateur créé
+ * @param {string[]} departements - Départements d'intervention de l'utilisateur créé
  *
- * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
+ * @returns {Promise.<UserMongooseDocument[]>}
  */
 export const createAppropriateUser = async (
   userId,

@@ -12,7 +12,6 @@ import { findAllPlacesByCentre } from '../../models/place'
 import { appLogger, getFrenchLuxonFromISO } from '../../util'
 import {
   getInspecteursBookedFromDepartement,
-  // getAllAppropriateInspecteurs,
   isUserAllowedToCreateIpcsr,
   isUserAllowedToUpdateIpcsr,
   updateInspecteur,
@@ -31,7 +30,7 @@ import {
  * @param {Object} req.query
  * @param {string} req.query.matching - Une chaîne de caractères pour chercher un inspecteur
  * @param {string} req.query.departement - S'il s'agit du seul paramètre entré, retourne tous les inspecteurs du département
- * @param {string} req.query.centreId - Remplir pour chercher les inspecteurs affecté à un centre pendant une période donnée
+ * @param {string} req.query.centreId - Remplir pour chercher les inspecteurs affectés à un centre pendant une période donnée
  * @param {string} req.query.begin - Début de la période de recherche d'inspecteurs affectés à un centre
  * @param {string} req.query.end - Fin de la période de recherche d'inspecteurs affectés à un centre
  *
