@@ -111,13 +111,13 @@
         />
       </div>
       <div
-        v-show="departement"
+        v-show="!!departement"
         class="form-input"
       >
         <v-checkbox
           v-model="isCheckDepartement"
           class="t-checkbox"
-          :label="$formatMessage({ id: 'confirmation_choix_departement' })"
+          :label="$formatMessage({ id: 'confirmation_choix_departement' }, { departement })"
         />
       </div>
       <div class="form-input">

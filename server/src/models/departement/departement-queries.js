@@ -22,7 +22,7 @@ export const createDepartement = async ({ _id, email }) => {
 }
 
 /**
- * Renvoie le departement par la recherche avec son id
+ * Renvoie le département par la recherche avec son id
  *
  * @async
  * @function
@@ -34,12 +34,12 @@ export const createDepartement = async ({ _id, email }) => {
 export const findDepartementById = async _id => Departement.findById(_id)
 
 /**
- * Renvoie le departement par la recherche avec son adresse courriel
+ * Renvoie le département par la recherche avec son adresse courriel
  *
  * @async
  * @function
  *
- * @param {Object} email - Adresse courriel du departement
+ * @param {Object} email - Adresse courriel du département
  *
  * @returns {Promise.<Departement>}
  */
@@ -47,7 +47,7 @@ export const findDepartementsByEmail = async email =>
   Departement.find({ email })
 
 /**
- * Supprime le departement par la recherche avec son id
+ * Supprime le département par la recherche avec son id
  *
  * @async
  * @function
