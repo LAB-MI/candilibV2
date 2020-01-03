@@ -56,11 +56,13 @@ export default {
       default () {},
     },
   },
+
   data () {
     return {
       active: false,
     }
   },
+
   methods: {
     toggleActive () {
       this.active = !this.active

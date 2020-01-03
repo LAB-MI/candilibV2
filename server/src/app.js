@@ -22,6 +22,8 @@ import npmVersion from '../package.json'
  *     description: Pour toutes les actions liées aux administrateurs
  *   - name: Candidat
  *     description: Pour toutes les actions liées aux candidats
+ *   - name: Public
+ *     description: Pour toutes les actions publiques (sans besoin d'authentification)
  *
  * components:
  *   securitySchemes:
@@ -31,67 +33,54 @@ import npmVersion from '../package.json'
  *       bearerFormat: JWT
  *
  *   schemas:
- *     InfoObject:
+ *     AdminInfo:
  *       type: object
  *       required:
- *         - success
- *         - message
+ *         - email
+ *         - departements
+ *         - features
+ *         - emailsDepartements
  *       properties:
- *         success:
- *           type: boolean
- *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
- *         message:
+ *         email:
  *           type: string
- *           description: Un message compréhensible par l'usager
- *
- *     GeolocObject:
- *       type: object
- *       required:
- *         - coordinates
- *         - type
- *       properties:
- *         coordinates:
+ *           description: Adresse courriel de l'administrateur
+ *         departements:
  *           type: array
+ *           description: Liste des départements accessibles par l'administrateur
  *           items:
  *             type: number
- *             description: latitude ou longitude
- *           example: [ 2.552847, 48.962099 ]
- *         type:
- *           type: string
- *           example: "Point"
- *
- *     CenterObject:
- *       type: object
- *       required:
- *         - geoloc
- *         - _id
- *         - nom
- *         - label
- *         - adresse
- *         - departement
- *       properties:
- *         geoloc:
- *           $ref: '#/components/schemas/GeolocObject'
- *         _id:
- *           type: string
- *           description: identifiant du centre
- *           example: 5dce6ec901353671dead895e
- *         nom:
- *           type: string
- *           description: Nom du centre (de la ville du centre)
- *           example: Noisy le Grand
- *         label:
- *           type: string
- *           description: Information complémentaire pour retrouver le point de rencontre du centre
- *           example: Centre d'examen du permis de conduire de Noisy le Grand
- *         adresse:
- *           type: string
- *           description: Adresse du centre
- *           example: 5 boulevard de Champs Richardets 93160 Noisy le Grand
- *         departement:
- *           type: string
- *           description: Département du centre
- *           example: 75
+ *         features:
+ *           type: array
+ *           description: Liste de fonctionnalités accessibles par l'administrateur
+ *           items:
+ *             type: string
+ *         emailsDepartements:
+ *           type: array
+ *           description: Liste contenant les objets départements de la base de données accessibles par l'administrateur
+ *           items:
+ *             type: object
+ *             required:
+ *               - _id
+ *               - email
+ *             properties:
+ *               _id:
+ *                 type: number
+ *                 description: le code du département
+ *               email:
+ *                 type: string
+ *                 description: l'adresse courriel liée au département
+ *       example:
+ *         email: admin@exemple.com
+ *         departements: [
+ *           75
+ *         ]
+ *         features: [
+ *           aurige
+ *         ]
+ *         emailsDepartements: [ {
+ *           _id: 75,
+ *           email: email75@departement.com
+ *         } ]
  *
  *     CandidatInfo:
  *       type: object
@@ -269,7 +258,7 @@ import npmVersion from '../package.json'
  *                     description: Identifiant de l'administrateur
  *                   departements:
  *                     type: array
- *                     description: Liste des Départements accessibles par l'administrateur
+ *                     description: Liste des départements accessibles par l'administrateur
  *                     items:
  *                       type: number
  *                   signUpDate:
@@ -285,55 +274,82 @@ import npmVersion from '../package.json'
  *           type: string
  *           description: Date et heure de la dernière annulation de place faite par un administrateur
  *
- *     AdminInfo:
+ *     CenterObject:
  *       type: object
  *       required:
- *         - email
- *         - departements
- *         - features
- *         - emailsDepartements
+ *         - geoloc
+ *         - _id
+ *         - nom
+ *         - label
+ *         - adresse
+ *         - departement
  *       properties:
+ *         geoloc:
+ *           $ref: '#/components/schemas/GeolocObject'
+ *         _id:
+ *           type: string
+ *           description: Identifiant du centre
+ *           example: 5dce6ec901353671dead895e
+ *         nom:
+ *           type: string
+ *           description: Nom du centre (de la ville du centre)
+ *           example: Noisy le Grand
+ *         label:
+ *           type: string
+ *           description: Information complémentaire pour retrouver le point de rencontre du centre
+ *           example: Centre d'examen du permis de conduire de Noisy le Grand
+ *         adresse:
+ *           type: string
+ *           description: Adresse du centre
+ *           example: 5 boulevard de Champs Richardets 93160 Noisy le Grand
+ *         departement:
+ *           type: string
+ *           description: Département du centre
+ *           example: 75
+ *
+ *     DepartementObject:
+ *       type: object
+ *       required:
+ *         - _id
+ *         - email
+ *       properties:
+ *         _id:
+ *           type: string
+ *           description: Identifiant du département
+ *           example: 75
  *         email:
  *           type: string
- *           description: Adresse courriel de l'administrateur
- *         departements:
+ *           description: Adresse couriel de contact pour le département
+ *           example: email75@departement.com
+ *
+ *     GeolocObject:
+ *       type: object
+ *       required:
+ *         - coordinates
+ *         - type
+ *       properties:
+ *         coordinates:
  *           type: array
- *           description: Liste des Départements accessibles par l'administrateur
  *           items:
  *             type: number
- *         features:
- *           type: array
- *           description: Liste de fonctionnalités accessibles par l'administrateur
- *           items:
- *             type: string
- *         emailsDepartements:
- *           type: array
- *           description: Liste contenant les objet départements de la base de données accessibles par l'administrateur
- *           items:
- *             type: object
- *             required:
- *               - _id
- *               - email
- *             properties:
- *               _id:
- *                 type: number
- *                 description: le code du département
- *               email:
- *                 type: string
- *                 description: l'adresse courriel liée au département
+ *             description: Latitude ou longitude
+ *           example: [ 2.552847, 48.962099 ]
+ *         type:
+ *           type: string
+ *           example: "Point"
  *
- *       example:
- *         email: admin@exemple.com
- *         departements: [
- *           75
- *         ]
- *         features: [
- *           aurige
- *         ]
- *         emailsDepartements: [ {
- *           _id: 75,
- *           email: email75@departement.com
- *         } ]
+ *     InfoObject:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
  *
  *     StatsKpiPlacesExams:
  *       type: object
@@ -516,7 +532,6 @@ import npmVersion from '../package.json'
  *               - example:
  *                   success: false
  *                   message: Votre email n'est pas reconnu
-
  *     InvalidLinkResponse:
  *       description: Réponse du serveur en cas de lien invalide
  *       content:
@@ -527,7 +542,6 @@ import npmVersion from '../package.json'
  *               - example:
  *                   success: false
  *                   message: Votre lien est invalide
-
  *     UnknownEmailResponse:
  *       description: Erreur inattendue
  *       content:
@@ -538,7 +552,6 @@ import npmVersion from '../package.json'
  *               - example:
  *                   success: false
  *                   message: Oups ! Une erreur est survenue lors de l'envoi du courriel. L'administrateur a été prévenu
-
  *     InvalidTokenResponse:
  *       description: Réponse du serveur en cas de JWT absent ou invalide
  *       content:
@@ -549,7 +562,6 @@ import npmVersion from '../package.json'
  *               - example:
  *                   success: false
  *                   message: Vous n'êtes pas connecté, veuillez vous reconnecter
-
  *     UnknownErrorResponse:
  *       description: Erreur inattendue
  *       content:

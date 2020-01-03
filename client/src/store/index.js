@@ -14,8 +14,10 @@ import candidat from './candidat'
 import candidats from './candidats'
 import center from './center'
 import config from './config'
+import departements from './departements'
 import importPlaces from './import-places'
 import message from './message'
+import parisCenters from './paris-centers'
 import reservation from './reservation'
 import timeSlots from './time-slots'
 import whitelist from './whitelist'
@@ -33,8 +35,10 @@ export * from './candidat'
 export * from './candidats'
 export * from './center'
 export * from './config'
+export * from './departements'
 export * from './import-places'
 export * from './message'
+export * from './paris-centers'
 export * from './reservation'
 export * from './time-slots'
 export * from './whitelist'
@@ -56,8 +60,10 @@ export default new Vuex.Store({
     candidats,
     center,
     config,
+    departements,
     importPlaces,
     message,
+    parisCenters,
     reservation,
     timeSlots,
     whitelist,
