@@ -11,7 +11,10 @@ import {
   updateCentre,
   updateCentreStatus,
 } from './centre-business'
-import { findCentreByNameAndDepartement } from '../../models/centre'
+import {
+  findCentreByNameAndDepartement,
+  findCentresByDepartement,
+} from '../../models/centre'
 import { appLogger } from '../../util'
 import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
@@ -261,4 +264,15 @@ export async function createCentre (req, res) {
       message: error.status ? error.message : UNKNOWN_ERROR_ADD_CENTRE,
     })
   }
+}
+
+export async function getCentresByDepartement (req, res) {
+  const { departementId } = req.query
+  const deptCenters = await findCentresByDepartement(departementId)
+  appLogger.info({
+    description: 'Getting candidat centers associated to Paris',
+    section: 'candidat-deptCenters',
+    deptCenters,
+  })
+  res.json({ success: true, deptCenters })
 }
