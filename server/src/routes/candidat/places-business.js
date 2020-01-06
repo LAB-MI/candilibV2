@@ -32,6 +32,7 @@ import {
   USER_INFO_MISSING,
   CANDIDAT_NOT_FOUND,
   CAN_BOOK_AFTER,
+  CANDIDAT_DATE_ETG_KO,
 } from './message.constants'
 import { sendCancelBooking } from '../business'
 import { getAuthorizedDateToBook } from './authorize.business'
@@ -41,6 +42,20 @@ import {
   archivePlace,
 } from '../../models/candidat'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
+import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
+
+const getDateETGExpired = async candidatId => {
+  const { dateReussiteETG } = await findCandidatById(candidatId, {
+    _id: 0,
+    dateReussiteETG: 1,
+  })
+  const luxonDateETGExpired = getFrenchLuxonFromJSDate(dateReussiteETG)
+    .plus({
+      years: NB_YEARS_ETG_EXPIRED,
+    })
+    .endOf('day')
+  return luxonDateETGExpired
+}
 
 /**
  * Renvoie tous les créneaux d'un centre
@@ -53,14 +68,21 @@ import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
  *
  * @returns {string[]} Tableau de dates au format ISO
  */
-export const getDatesByCentreId = async (_id, beginDate, endDate) => {
+export const getDatesByCentreId = async (
+  _id,
+  beginDate,
+  endDate,
+  candidatId
+) => {
   appLogger.debug({
     func: 'getDatesByCentreId',
     _id,
     beginDate,
     endDate,
+    candidatId,
   })
 
+  const luxonDateETGExpired = await getDateETGExpired(candidatId)
   const luxonBeginDate = getFrenchLuxonFromISO(beginDate)
   const luxonEndDate = getFrenchLuxonFromISO(endDate)
 
@@ -69,13 +91,27 @@ export const getDatesByCentreId = async (_id, beginDate, endDate) => {
       ? getAuthorizedDateToBook()
       : luxonBeginDate
 
+  if (luxonDateETGExpired < begin) {
+    const error = new Error(
+      CANDIDAT_DATE_ETG_KO +
+        getFrenchFormattedDateTime(luxonDateETGExpired).date
+    )
+    error.status = 400
+    throw error
+  }
+
+  let luxonDateVisible = getFrenchLuxon().plus({
+    month: config.numberOfVisibleMonths,
+  })
+  luxonDateVisible =
+    luxonDateETGExpired <= luxonDateVisible
+      ? luxonDateETGExpired
+      : luxonDateVisible
+
   endDate =
-    !luxonEndDate.invalid &&
-    luxonEndDate <= luxonEndDate.plus({ month: config.numberOfVisibleMonths })
+    !luxonEndDate.invalid && luxonEndDate <= luxonDateVisible
       ? luxonEndDate.toJSDate()
-      : getFrenchLuxon()
-        .plus({ month: config.numberOfVisibleMonths })
-        .toJSDate()
+      : luxonDateVisible.toJSDate()
 
   const places = await findAvailablePlacesByCentre(_id, begin, endDate)
   const dates = places.map(place =>
@@ -101,7 +137,8 @@ export const getDatesByCentre = async (
   departement,
   nomCentre,
   beginDate,
-  endDate
+  endDate,
+  candidatId
 ) => {
   appLogger.debug({
     func: 'getDatesByCentre',
@@ -117,7 +154,12 @@ export const getDatesByCentre = async (
   } else {
     foundCentre = await findCentreByName(nomCentre)
   }
-  const dates = await getDatesByCentreId(foundCentre._id, beginDate, endDate)
+  const dates = await getDatesByCentreId(
+    foundCentre._id,
+    beginDate,
+    endDate,
+    candidatId
+  )
   return dates
 }
 

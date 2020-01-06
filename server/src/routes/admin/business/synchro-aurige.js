@@ -39,6 +39,7 @@ import {
 } from '../../business'
 import { getCandBookFrom } from '../../candidat/places-business'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
+import { NB_YEARS_ETG_EXPIRED } from '../../common/constants'
 
 const getCandidatStatus = (nom, neph, status, details, message) => ({
   nom,
@@ -57,7 +58,7 @@ export const isETGExpired = dateReussiteETG => {
   } else {
     datetime = getFrenchLuxonFromISO(dateReussiteETG)
   }
-  return datetime.diffNow('years').years < -5
+  return datetime.diffNow('years').years < -NB_YEARS_ETG_EXPIRED
 }
 
 export const isMoreThan2HoursAgo = date =>
