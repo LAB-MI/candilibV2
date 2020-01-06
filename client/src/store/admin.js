@@ -10,6 +10,7 @@ import {
   ROUTE_AUTHORIZE_AURIGE,
   ROUTE_AUTHORIZE_STATS_KPI,
   ROUTE_AUTHORIZE_AGENTS,
+  ROUTE_AUTHORIZE_CENTRES,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -42,6 +43,10 @@ export const FETCH_INSPECTEURS_BY_CENTRE_REQUEST = 'FETCH_INSPECTEURS_BY_CENTRE_
 export const FETCH_INSPECTEURS_BY_CENTRE_FAILURE = 'FETCH_INSPECTEURS_BY_CENTRE_FAILURE'
 export const FETCH_INSPECTEURS_BY_CENTRE_SUCCESS = 'FETCH_INSPECTEURS_BY_CENTRE_SUCCESS'
 
+export const FETCH_ALL_CENTERS_REQUEST = 'FETCH_ALL_CENTERS_REQUEST'
+export const FETCH_ALL_CENTERS_SUCCESS = 'FETCH_ALL_CENTERS_SUCCESS'
+export const FETCH_ALL_CENTERS_FAILURE = 'FETCH_ALL_CENTERS_FAILURE'
+
 export const DELETE_PLACE_REQUEST = 'DELETE_PLACE_REQUEST'
 export const DELETE_PLACE_SUCCESS = 'DELETE_PLACE_SUCCESS'
 export const DELETE_PLACE_FAILURE = 'DELETE_PLACE_FAILURE'
@@ -64,6 +69,14 @@ export const RESET_PASSWORD_REQUEST = 'RESET_PASSWORD_REQUEST'
 export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS'
 export const RESET_PASSWORD_FAILURE = 'RESET_PASSWORD_FAILURE'
 
+export const CHANGE_CENTER_STATE_REQUEST = 'CHANGE_CENTER_STATE_REQUEST'
+export const CHANGE_CENTER_STATE_SUCCESS = 'CHANGE_CENTER_STATE_SUCCESS'
+export const CHANGE_CENTER_STATE_FAILURE = 'CHANGE_CENTER_STATE_FAILURE'
+
+export const CREATE_CENTER_REQUEST = 'CREATE_CENTER_REQUEST'
+export const CREATE_CENTER_SUCCESS = 'CREATE_CENTER_SUCCESS'
+export const CREATE_CENTER_FAILURE = 'CREATE_CENTER_FAILURE'
+
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
@@ -73,6 +86,7 @@ const AUTHORIZED_ROUTES = {
   agents: ROUTE_AUTHORIZE_AGENTS,
   aurige: ROUTE_AUTHORIZE_AURIGE,
   'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
+  centres: ROUTE_AUTHORIZE_CENTRES,
 }
 
 export default {
@@ -95,6 +109,13 @@ export default {
   },
 
   state: {
+    centres: {
+      isFetching: false,
+      isUpdating: false,
+      isCreating: false,
+      error: undefined,
+      list: [],
+    },
     departements: {
       active: undefined,
       emails: [],
@@ -231,6 +252,18 @@ export default {
       state.inspecteurs.isFetching = false
     },
 
+    [FETCH_ALL_CENTERS_REQUEST] (state) {
+      state.centres.isFetching = true
+    },
+    [FETCH_ALL_CENTERS_SUCCESS] (state, list) {
+      state.centres.list = list
+      state.centres.isFetching = false
+    },
+    [FETCH_ALL_CENTERS_FAILURE] (state, error) {
+      state.centres.error = error
+      state.centres.isFetching = false
+    },
+
     [DELETE_PLACE_REQUEST] (state) {
       state.places.isDeletingAvailablePlace = true
     },
@@ -294,6 +327,28 @@ export default {
     },
     [RESET_PASSWORD_FAILURE] (state) {
       state.isSendingResetPassword = false
+    },
+
+    [CHANGE_CENTER_STATE_REQUEST] (state) {
+      state.centres.isUpdating = true
+    },
+    [CHANGE_CENTER_STATE_SUCCESS] (state) {
+      state.centres.isUpdating = false
+    },
+    [CHANGE_CENTER_STATE_FAILURE] (state, error) {
+      state.centres.error = error
+      state.centres.isUpdating = false
+    },
+
+    [CREATE_CENTER_REQUEST] (state) {
+      state.centres.isCreating = true
+    },
+    [CREATE_CENTER_SUCCESS] (state) {
+      state.centres.isCreating = false
+    },
+    [CREATE_CENTER_FAILURE] (state, error) {
+      state.centres.error = error
+      state.centres.isCreating = false
     },
   },
 
@@ -439,6 +494,16 @@ export default {
       }
     },
 
+    async [FETCH_ALL_CENTERS_REQUEST] ({ commit }) {
+      commit(FETCH_ALL_CENTERS_REQUEST)
+      try {
+        const { centres } = await api.admin.getAllCentres()
+        commit(FETCH_ALL_CENTERS_SUCCESS, centres)
+      } catch (error) {
+        commit(FETCH_ALL_CENTERS_FAILURE, error)
+      }
+    },
+
     async [DELETE_BOOKED_PLACE_REQUEST] ({ commit, dispatch, state }, placeId) {
       commit(DELETE_BOOKED_PLACE_REQUEST)
       try {
@@ -529,6 +594,40 @@ export default {
         commit(RESET_PASSWORD_SUCCESS)
       } catch (error) {
         commit(RESET_PASSWORD_FAILURE)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
+      }
+    },
+
+    async [CHANGE_CENTER_STATE_REQUEST] ({ commit, dispatch }, { id, active }) {
+      commit(CHANGE_CENTER_STATE_REQUEST)
+      try {
+        const response = await api.admin.changeCentreStatus(id, active)
+        if (response.success === false) {
+          throw new Error(response.message)
+        }
+        commit(CHANGE_CENTER_STATE_SUCCESS)
+        dispatch(FETCH_ALL_CENTERS_REQUEST)
+        dispatch(SHOW_SUCCESS, response.message)
+      } catch (error) {
+        commit(CHANGE_CENTER_STATE_FAILURE, error)
+        dispatch(SHOW_ERROR, error.message)
+        throw error
+      }
+    },
+
+    async [CREATE_CENTER_REQUEST] ({ commit, dispatch }, { nom, label, adresse, lon, lat, departement }) {
+      commit(CREATE_CENTER_REQUEST)
+      try {
+        const response = await api.admin.createCentre(nom, label, adresse, lon, lat, departement)
+        if (response.success === false) {
+          throw new Error(response.message)
+        }
+        commit(CREATE_CENTER_SUCCESS)
+        dispatch(FETCH_ALL_CENTERS_REQUEST)
+        dispatch(SHOW_SUCCESS, response.message)
+      } catch (error) {
+        commit(CREATE_CENTER_FAILURE, error)
         dispatch(SHOW_ERROR, error.message)
         throw error
       }

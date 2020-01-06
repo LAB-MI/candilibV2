@@ -1,1 +1,1 @@
-export * from './centre.queries'
+export * from './centre-queries'

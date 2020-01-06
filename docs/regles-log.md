@@ -11,9 +11,9 @@
 
 | clé | valeur | description |
 |-----|--------|-------------|
-| section | `admin-...` ou `candidat-...` | Pour indiquer la fonctionnalité se situe coté administrateur ou coté candidat |
-| action | nom de la fonction ou action | nom ou clé représentant l'action du parti code |
-| user | `req.userId` | id de l'utilisateur |
+| section | `admin-...` ou `candidat-...` | Pour indiquer si la fonctionnalité se situe côté administrateur ou côté candidat |
+| action | nom de la fonction ou action | nom ou clé représentant l'action de la partie code |
+| admin | `req.userId` | id de l'utilisateur |
 | func | nom de la fonction | Surtout pour le debug |
 | error | Objet ou instance de `Error` | Afficher les piles d'appels pour les exceptions ou toute autre erreur |
 | description | message d'erreur ou autre message | |
@@ -25,9 +25,9 @@ Clé à ne pas utliser en JSON : message, sinon, cela entraîne la suppression 
 ### Dans les controllers, sur les post
 
 - Tracer la fonctionnalité et les paramètres d'entrée utiles avec le niveau info :
-  - section
-  - action
-  - id de l'utilisateur
+  - `section`
+  - `action`
+  - `id` de l'utilisateur
   - listes des arguments/paramètres/queries utiles pour le controller
   - description
 
@@ -36,20 +36,20 @@ Exemple:
 ```javascript
 appLogger.info({
     section: 'admin-update-place',
-    user: req.userId,
+    admin: req.userId,
     placeId,
     inspecteur,
     action: 'UPDATE_RESA',
-    description: `Changer l'inspecteur de la reservaton candidat`,
+    description: `Changer l'inspecteur de la réservation candidat`,
 })
 ```
 
-- Tracer le résultat envoyée avec le niveau debug:
+- Tracer le résultat envoyé avec le niveau debug:
   - `section`
   - `action`
   - `id` de l'utilisateur
   - arguments des arguments/paramètres/queries pour le controller
-  - resultats
+  - résultats
 
 ### Dans les 'catch'
 
@@ -64,16 +64,16 @@ Exemple:
 ```javascript
 appLogger.error({
     section: 'admin-update-place',
-    user: req.userId,
+    admin: req.userId,
     action: 'ERROR',
     description: 'Description plus compréhensible que le message de l\'erreur',
     error: error,
 })
 ```
 
-### Dans les 'bussiness'
+### Dans les 'business'
 
-- Tracer l'appel de la fonction en le niveau debug
+- Tracer l'appel de la fonction en niveau debug
   - func
   - arguments utiles pour la fonction
 
