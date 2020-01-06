@@ -170,12 +170,7 @@ export const getDepartementsController = async (req, res) => {
   }
 
   try {
-    // TODO: solution plus opti à trouver pour ce `if`
-    if (
-      departementId &&
-      departementId !== 'undefined' &&
-      departementId !== 'null'
-    ) {
+    if (departementId) {
       const result = [await getDepartements(departementId)]
 
       appLogger.info({
