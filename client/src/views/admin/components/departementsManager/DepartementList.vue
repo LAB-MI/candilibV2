@@ -19,7 +19,7 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import { FETCH_DEPARTEMENTS_REQUEST } from '@/store'
+import { FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST } from '@/store'
 import CreateDepartement from './CreateDepartement'
 import UpdateDepartement from './UpdateDepartement'
 import DeleteDepartement from './DeleteDepartement'
@@ -72,7 +72,7 @@ export default {
   },
   methods: {
     getAllDepartement () {
-      this.$store.dispatch(FETCH_DEPARTEMENTS_REQUEST)
+      this.$store.dispatch(FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST)
     },
   },
 }

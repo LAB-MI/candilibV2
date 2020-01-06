@@ -2,9 +2,9 @@ import api from '@/api'
 
 import { SHOW_ERROR, SHOW_SUCCESS, FETCH_ADMIN_INFO_REQUEST } from '@/store'
 
-export const FETCH_DEPARTEMENTS_REQUEST = 'FETCH_DEPARTEMENTS_REQUEST'
-export const FETCH_DEPARTEMENTS_SUCCESS = 'FETCH_DEPARTEMENTS_SUCCESS'
-export const FETCH_DEPARTEMENTS_FAILURE = 'FETCH_DEPARTEMENTS_FAILURE'
+export const FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST = 'FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST'
+export const FETCH_DEPARTEMENTS_BY_ADMIN_SUCCESS = 'FETCH_DEPARTEMENTS_BY_ADMIN_SUCCESS'
+export const FETCH_DEPARTEMENTS_BY_ADMIN_FAILURE = 'FETCH_DEPARTEMENTS_BY_ADMIN_FAILURE'
 
 export const UPDATE_DEPARTEMENT_REQUEST = 'UPDATE_DEPARTEMENT_REQUEST'
 export const UPDATE_DEPARTEMENT_SUCCESS = 'UPDATE_DEPARTEMENT_SUCCESS'
@@ -50,14 +50,14 @@ export default {
   },
 
   mutations: {
-    [FETCH_DEPARTEMENTS_REQUEST] (state) {
+    [FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST] (state) {
       state.isFetching = true
     },
-    [FETCH_DEPARTEMENTS_SUCCESS] (state, list) {
+    [FETCH_DEPARTEMENTS_BY_ADMIN_SUCCESS] (state, list) {
       state.list = list
       state.isFetching = false
     },
-    [FETCH_DEPARTEMENTS_FAILURE] (state, error) {
+    [FETCH_DEPARTEMENTS_BY_ADMIN_FAILURE] (state, error) {
       state.errorFetch = error
       state.isFetching = false
     },
@@ -97,17 +97,17 @@ export default {
   },
 
   actions: {
-    async [FETCH_DEPARTEMENTS_REQUEST] ({ commit, dispatch, state, getters }, departementId) {
-      commit(FETCH_DEPARTEMENTS_REQUEST)
+    async [FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST] ({ commit, dispatch, state, getters }, departementId) {
+      commit(FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST)
       try {
         const departements = await api.admin.getDepartements(departementId || undefined)
         if (!departements.success) {
           throw new Error(departements.message)
         }
         const departementList = departements.result
-        commit(FETCH_DEPARTEMENTS_SUCCESS, departementList)
+        commit(FETCH_DEPARTEMENTS_BY_ADMIN_SUCCESS, departementList)
       } catch (error) {
-        commit(FETCH_DEPARTEMENTS_FAILURE, error)
+        commit(FETCH_DEPARTEMENTS_BY_ADMIN_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
