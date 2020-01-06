@@ -11,6 +11,11 @@ server {
     try_files $uri @rew;
   }
 
+  location /robots.txt {
+    expires 24h;
+    return 200 "User-agent: *\nDisallow: <PUBLIC_PATH>/api/\nAllow: /";
+  }
+
   location @rew {
     expires 24h;
     if ($http_x_forwarded_proto) {
