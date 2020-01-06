@@ -1,6 +1,5 @@
-// TODO: JSDOC
 /**
- * Contrôleur regroupant les fonctions d'actions sur les départements
+ * Fonctions métiers pour la gestion des départements
  * @module routes/admin/departement-business
  */
 
@@ -58,7 +57,7 @@ export const removeDepartementOfUsersByStatus = async (
   return false
 }
 
-export const checkIfDepartementUseByCentre = async departementId => {
+export const isContainingCentre = async departementId => {
   const foundedCentre = await findCentresByDepartement(departementId, {})
 
   if (foundedCentre.length) {
@@ -68,12 +67,8 @@ export const checkIfDepartementUseByCentre = async departementId => {
 }
 
 export const isDepartementAlreadyExist = async departementId => {
-  const isDepartementAlreadyExist = await findDepartementById(departementId)
-
-  if (isDepartementAlreadyExist) {
-    return true
-  }
-  return false
+  const departement = await findDepartementById(departementId)
+  return !!departement
 }
 
 /**
@@ -81,8 +76,8 @@ export const isDepartementAlreadyExist = async departementId => {
  * @async
  * @function
  *
- * @param {string} departementId Une chaîne de caractères correspondant à l'ID du département
- * @param {string} departementEmail Une chaîne de caractères correspondant à l'adresse courriel du département
+ * @param {string} departementId ID du département
+ * @param {string} departementEmail Adresse courriel du département
  */
 export const createDepartements = async (departementId, email) => {
   const result = await createDepartement({ _id: departementId, email })
@@ -94,19 +89,18 @@ export const createDepartements = async (departementId, email) => {
  * @async
  * @function
  *
- * @param {string} departementId Une chaîne de caractères correspondant à l'ID du département
+ * @param {string} departementId ID du département
+ * @returns {Promise.<Departement | Departement[]>} Si le departementId n'est pas renseigné, la fonction retourne tous les départements
  */
-export const getDepartements = async departementId => {
+export const getDepartements = departementId => {
   if (departementId) {
-    const result = await findDepartementById(departementId)
-    return result
+    return findDepartementById(departementId)
   }
-  const result = await findAllDepartement()
-  return result
+  return findAllDepartement()
 }
 
 /**
- * Met à jours les informations d'un département
+ * Met à jour les informations d'un département
  * @async
  * @function
  *
@@ -122,7 +116,7 @@ export const updateDepartements = async departement => {
  * @async
  * @function
  *
- * @param {string} departementId Une chaîne de caractères correspondant à l'ID du département
+ * @param {string} departementId ID du département
  */
 export const deleteDepartement = async departementId => {
   const result = await deleteDepartementById(departementId)

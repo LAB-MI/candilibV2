@@ -1,10 +1,10 @@
 /**
- * Contrôleur regroupant les fonctions d'actions sur les départements
+ * Contrôleurs pour la gestion des départements
  * @module routes/admin/departement-controllers
  */
 
 import {
-  checkIfDepartementUseByCentre,
+  isContainingCentre,
   createDepartements,
   deleteDepartement,
   getDepartements,
@@ -38,8 +38,8 @@ import { appLogger } from '../../util'
  * @param {string} req.userId Id de l'utilisateur
  *
  * @param {Object} req.body
- * @param {string} req.body.departementId Une chaîne de caractères correspondant à l'ID du département
- * @param {string} req.body.departementEmail Une chaîne de caractères correspondant à l'adresse courriel du département
+ * @param {string} req.body.departementId ID du département
+ * @param {string} req.body.departementEmail Adresse courriel du département
  */
 export const createDepartementsController = async (req, res) => {
   const { departementId, departementEmail } = req.body
@@ -125,24 +125,19 @@ export const createDepartementsController = async (req, res) => {
  * @param {string} req.userId Id de l'utilisateur
  *
  * @param {Object} req.query
- * @param {string} req.query.id Une chaine de caractère représentant l'ID du département
+ * @param {string} req.query.id ID du département
  */
 export const getDepartementsController = async (req, res) => {
   const departementId = req.query.id
   const loggerInfo = {
     section: 'admin-departement',
-    action: 'get-departement',
+    action: 'get-departements',
     admin: req.userId,
     departementId,
   }
 
   try {
-    // TODO: solution plus opti à trouver pour ce `if`
-    if (
-      departementId &&
-      departementId !== 'undefined' &&
-      departementId !== 'null'
-    ) {
+    if (departementId) {
       const result = [await getDepartements(departementId)]
 
       appLogger.info({
@@ -182,7 +177,7 @@ export const getDepartementsController = async (req, res) => {
 }
 
 /**
- * Supprime un départements
+ * Supprime un département
  * @async
  * @function
  *
@@ -190,7 +185,7 @@ export const getDepartementsController = async (req, res) => {
  * @param {string} req.userId Id de l'utilisateur
  *
  * @param {Object} req.query
- * @param {string} req.query.id Une chaine de caractère représentant l'ID du département
+ * @param {string} req.query.id ID du département
  */
 export const deleteDepartementController = async (req, res) => {
   const departementId = req.query.id
@@ -203,16 +198,9 @@ export const deleteDepartementController = async (req, res) => {
 
   try {
     let message = ''
-    // TODO: solution plus opti à trouver pour ce `if`
-    if (
-      departementId &&
-      departementId !== 'undefined' &&
-      departementId !== 'null'
-    ) {
-      const isDepartementUse = await checkIfDepartementUseByCentre(
-        departementId
-      )
-      if (!isDepartementUse) {
+    if (departementId) {
+      const isDepartementUsed = await isContainingCentre(departementId)
+      if (!isDepartementUsed) {
         const userStatus = [
           config.userStatuses.ADMIN,
           config.userStatuses.TECH,
@@ -237,11 +225,11 @@ export const deleteDepartementController = async (req, res) => {
             message,
           })
         }
-        message = `Erreur survenue, impossible de supprimé le département ${departementId} pour les admins, répartiteurs et délégués, le département n'a donc pas été supprimé.`
+        message = `Erreur survenue, impossible de supprimer le département ${departementId} pour les admins, répartiteurs et délégués, le département n'a donc pas été supprimé.`
 
         throw new Error(message)
       }
-      message = `Le département ${departementId} n'a pas été supprimé, car des centres y sont liée`
+      message = `Le département ${departementId} n'a pas été supprimé, car des centres y sont liés`
       throw new Error(message)
     }
     message = BAD_PARAMS
@@ -265,7 +253,7 @@ export const deleteDepartementController = async (req, res) => {
 }
 
 /**
- * Met à jours les informations d'un département
+ * Met à jour les informations d'un département
  * @async
  * @function
  *
@@ -273,8 +261,8 @@ export const deleteDepartementController = async (req, res) => {
  * @param {string} req.userId Id de l'utilisateur
  *
  * @param {Object} req.body
- * @param {string} req.body.departementId Une chaîne de caractères correspondant à l'ID du département
- * @param {string} req.body.newEmail Une chaîne de caractères correspondant au nouveau courriel
+ * @param {string} req.body.departementId ID du département
+ * @param {string} req.body.newEmail Nouveau courriel
  */
 export const updateDepartementsController = async (req, res) => {
   const { departementId, newEmail } = req.body

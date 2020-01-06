@@ -299,15 +299,24 @@ describe('User', () => {
     it('Should get all users with status admin and tech', async () => {
       // Given
       const userStatus = [config.userStatuses.ADMIN, config.userStatuses.TECH]
-
+      const userShouldNotHaveStatus = [
+        config.userStatuses.CANDIDAT,
+        config.userStatuses.REPARTITEUR,
+        config.userStatuses.DELEGUE,
+      ]
       // when
       const foundedUsers = await findManyUser({
         filterBy: 'status',
         inValue: userStatus,
       })
+
       // Then
       expect(foundedUsers[0]).toBeDefined()
+      expect(foundedUsers[0]).toBeDefined()
       expect(foundedUsers).toBeInstanceOf(Array)
+      foundedUsers.forEach(user => {
+        expect(userShouldNotHaveStatus.includes(user.status)).toBeFalsy()
+      })
       expect(foundedUsers).toHaveProperty('length', 1)
     })
   })

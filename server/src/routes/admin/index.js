@@ -1490,7 +1490,7 @@ router.patch('/users', verifyDelegueLevel(), updatedInfoUser)
  *
  *     responses:
  *       200:
- *         description: Département crée
+ *         description: Département créé
  *         content:
  *           application/json:
  *             schema:
