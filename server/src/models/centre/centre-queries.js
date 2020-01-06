@@ -17,6 +17,7 @@ const caseInsensitive = nom => ({
  * @function
  *
  * @param {string[]} departements - Liste des départements pour filtrer les centres
+ *
  * @returns {Promise.<CentreMongooseDocument[]>} Liste des centres
  */
 export const findAllCentres = async departements => {
@@ -48,6 +49,7 @@ export const findAllActiveCentres = async () => {
  *
  * @deprecated nom n'est pas unique. A remplacer par findCentreByNameAndDepartement
  * @param {string} nom - Nom du centre
+ *
  * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
  */
 export const findCentreByName = async nom => {
@@ -70,6 +72,7 @@ export const findCentreByName = async nom => {
  * @param {number} lon - Longitude géographique du centre
  * @param {number} lat - Latitude géographique du centre
  * @param {string} departement - Département du centre
+ *
  * @returns {Promise.<CentreMongooseDocument>} Centre créé
  */
 export const createCentre = async (
@@ -103,6 +106,7 @@ export const createCentre = async (
  * @function
  *
  * @param {CentreMongooseDocument} centre - Le centre à supprimer
+ *
  * @returns {Promise.<CentreMongooseDocument>} Le centre supprimé
  */
 export const deleteCentre = async centre => {
@@ -122,6 +126,8 @@ export const deleteCentre = async centre => {
  * @param {CentreMongooseDocument} centre - Le centre à modifier
  * @param {boolean} active - L'état dans lequel mettre le centre
  * @param {string} email - Adresse couriel de l'utilisateur à l'origine de la modification
+ *
+ * @returns {Promise.<CentreMongooseDocument>} Centre modifié
  */
 export const updateCentreActiveState = async (centre, active, email) => {
   if (!centre) {
@@ -148,20 +154,27 @@ export const updateCentreActiveState = async (centre, active, email) => {
  * @param {string} adresse - Adresse du centre
  * @param {string} lon - Longitude géographique du centre
  * @param {string} lat - Latitude géographique du centre
+ *
  * @returns {Promise.<CentreMongooseDocument>} Centre modifié
  */
 export const updateCentreLabel = async (
   centre,
-  name,
-  label,
-  adresse,
-  lon,
-  lat
+  { nom, label, adresse, lon, lat }
 ) => {
   if (!centre) {
     throw new Error('centre is undefined')
   }
-  await centre.updateOne({ nom: name, label, adresse, lon, lat })
+  const updateObject = {}
+  if (nom) updateObject.nom = nom
+  if (label) updateObject.label = label
+  if (adresse) updateObject.adresse = adresse
+  if (lon && lat) {
+    updateObject.geoloc = { coordinates: [] }
+    updateObject.geoloc.coordinates[0] = lon
+    updateObject.geoloc.coordinates[1] = lat
+  }
+
+  await centre.updateOne(updateObject)
   const updatedCentre = await Centre.findById(centre._id)
   return updatedCentre
 }
@@ -202,6 +215,7 @@ export const findCentresByDepartement = async (
  *
  * @param {string} nom - Nom du centre
  * @param {string} departement - Département du centre
+ *
  * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
  */
 export const findCentreByNameAndDepartement = async (nom, departement) => {
@@ -220,6 +234,7 @@ export const findCentreByNameAndDepartement = async (nom, departement) => {
  * @function
  *
  * @param {string} id - Id du centre
+ *
  * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
  */
 export const findCentreById = async id => {
@@ -229,6 +244,7 @@ export const findCentreById = async id => {
 
 /**
  * Retourne la liste des départements possédant des centres
+ *
  * @async
  * @function
  *
