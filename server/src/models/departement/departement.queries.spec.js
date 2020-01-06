@@ -3,6 +3,7 @@ import { createDepartement, findDepartementById } from '.'
 import {
   deleteDepartementById,
   findDepartementsByEmail,
+  findAllDepartementsId,
 } from './departement.queries'
 
 const validEmail = 'candidat@example.com'
@@ -69,5 +70,18 @@ describe('Find Departement', () => {
     expect(departements).not.toBeNull()
     expect(departements).toHaveLength(1)
     expect(departements[0]).toHaveProperty('email', email)
+  })
+
+  it('Find all departements id', async () => {
+    // Given
+
+    // When
+    const departementsId = await findAllDepartementsId()
+
+    // Then
+    expect(departementsId).toBeDefined()
+    expect(departementsId).not.toBeNull()
+    expect(departementsId).toHaveLength(1)
+    expect(departementsId[0]).toHaveProperty('_id')
   })
 })
