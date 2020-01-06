@@ -597,7 +597,7 @@ export default {
     },
 
     async getDepartements (departementId) {
-      const queryString = `id=${departementId}`
+      const queryString = departementId ? `id=${departementId}` : ''
       const json = await apiClient.get(`${apiPaths.admin.departements}?${queryString}`, {
         headers: getHeadersForAdminJson(),
       })
@@ -620,7 +620,7 @@ export default {
     },
 
     async deleteDepartement (departementId) {
-      const queryString = `id=${departementId}`
+      const queryString = departementId ? `id=${departementId}` : ''
       const json = await apiClient.delete(`${apiPaths.admin.departements}?${queryString}`, {
         headers: getHeadersForAdminJson(),
       })
