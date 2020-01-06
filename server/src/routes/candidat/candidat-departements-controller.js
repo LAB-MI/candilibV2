@@ -1,12 +1,12 @@
 import { appLogger } from '../../util'
-import { findAllDepartements } from '../../models/departement'
+import { findAllDepartementsId } from '../../models/departement'
 
-export async function getDepartements (req, res) {
-  const departements = await findAllDepartements()
+export async function getDepartementsId (req, res) {
+  const departementsId = await findAllDepartementsId()
   appLogger.info({
-    description: 'Getting candidat departements',
+    description: 'Getting candidat departements id',
     section: 'candidat-departements',
-    departements,
+    departementsId,
   })
-  res.json({ success: true, departements })
+  res.json({ success: true, departementsId })
 }
