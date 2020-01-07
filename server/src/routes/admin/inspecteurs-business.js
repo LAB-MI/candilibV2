@@ -9,10 +9,7 @@ import {
   disableIpcsr,
   findActiveInspecteursByDepartements,
 } from '../../models/inspecteur'
-import {
-  findCentresByDepartement,
-  findCentreById,
-} from '../../models/centre/centre.queries'
+import { findCentresByDepartement, findCentreById } from '../../models/centre'
 import {
   findAllPlacesBookedByCentreAndInspecteurs,
   findPlaceBookedByInspecteur,

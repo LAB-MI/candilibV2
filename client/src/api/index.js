@@ -563,6 +563,30 @@ export default {
       })
       return json
     },
+
+    async getAllCentres () {
+      const url = apiPaths.admin.centres
+      const json = await apiClient.get(url, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
+    async changeCentreStatus (centreId, active) {
+      const json = await apiClient.patch(apiPaths.admin.centres, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ centreId, active }),
+      })
+      return json
+    },
+
+    async createCentre (nom, label, adresse, lon, lat, departement) {
+      const json = await apiClient.post(apiPaths.admin.centres, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ nom, label, adresse, lon, lat, departement }),
+      })
+      return json
+    },
   },
 
   util: {

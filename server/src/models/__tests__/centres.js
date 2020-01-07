@@ -1,5 +1,5 @@
-import { createCentre } from '../centre/centre.queries'
-import Centre from '../centre/centre.model'
+import { createCentre } from '../centre/centre-queries'
+import Centre from '../centre/centre-model'
 
 export const centres = [
   {

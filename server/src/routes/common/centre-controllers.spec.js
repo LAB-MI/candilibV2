@@ -1,6 +1,13 @@
 import request from 'supertest'
+import express from 'express'
+import bodyParser from 'body-parser'
+
 import { connect, disconnect } from '../../mongo-connection'
+
+import { createUser } from '../../models/user'
+
 import {
+  setInitCreatedCentre,
   createCentres,
   removeCentres,
   createPlaces,
@@ -12,7 +19,12 @@ import {
   commonBasePlaceDateTime,
 } from '../../models/__tests__/'
 
-import { NOT_CODE_DEP_MSG } from './centre.controllers'
+import {
+  NOT_CODE_DEP_MSG,
+  getAdminCentres,
+  enableOrDisableCentre,
+  addNewCentre,
+} from './centre-controllers'
 import { getFrenchLuxon } from '../../util'
 
 const { default: app, apiPrefix } = require('../../app')
@@ -21,7 +33,7 @@ jest.mock('../middlewares/verify-token')
 
 const bookedAt = getFrenchLuxon().toJSDate()
 
-xdescribe('Test centre controllers', () => {
+xdescribe('Test centre candidat controllers', () => {
   beforeAll(async () => {
     await connect()
   })
@@ -159,5 +171,109 @@ xdescribe('Test centre controllers', () => {
       expect(centre).toHaveProperty('departement', departement)
       expect(centre.adresse).toContain(departement)
     })
+  })
+})
+
+describe('Centre controllers admin', () => {
+  let mockApp
+  let admin
+
+  beforeAll(async () => {
+    await connect()
+    const departements = ['92', '93']
+    const email = 'admin@example.com'
+    const password = 'S3cr3757uff!'
+    admin = await createUser(email, password, departements)
+    setInitCreatedCentre()
+    await createCentres()
+  })
+
+  afterAll(async () => {
+    await removeCentres()
+    await disconnect()
+    await mockApp.close()
+  })
+
+  it('Get all centers from the 93 for admin', async () => {
+    mockApp = express()
+    mockApp.use((req, res, next) => {
+      req.userId = admin._id
+      req.departements = ['93']
+      next()
+    })
+    mockApp.use(getAdminCentres)
+
+    const { body } = await request(mockApp)
+      .get(`${apiPrefix}/admin/centres`)
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('centres')
+    expect(body.centres).toHaveLength(2)
+  })
+
+  it('Disable a center', async () => {
+    mockApp = express()
+    mockApp.use((req, res, next) => {
+      req.userId = admin._id
+      req.departements = admin.departements
+      next()
+    })
+    mockApp.use(bodyParser.json({ limit: '20mb' }))
+    mockApp.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    mockApp.get(`${apiPrefix}/admin/centres`, getAdminCentres)
+    mockApp.patch(`${apiPrefix}/admin/centres`, enableOrDisableCentre)
+
+    const getRequest = await request(mockApp)
+      .get(`${apiPrefix}/admin/centres`)
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    const centreId = getRequest.body.centres[0]._id
+    const { body } = await request(mockApp)
+      .patch(`${apiPrefix}/admin/centres`)
+      .send({ centreId, active: false })
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('centre')
+    expect(body.centre).toHaveProperty('active', false)
+  })
+
+  it('Add a center', async () => {
+    mockApp = express()
+    mockApp.use((req, res, next) => {
+      req.userId = admin._id
+      req.departements = admin.departements
+      next()
+    })
+    mockApp.use(bodyParser.json({ limit: '20mb' }))
+    mockApp.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    mockApp.post(`${apiPrefix}/admin/centres`, addNewCentre)
+
+    const { body } = await request(mockApp)
+      .post(`${apiPrefix}/admin/centres`)
+      .send({
+        nom: 'Noisy le Grand',
+        label: "Centre d'examen du permis de conduire de Noisy le Grand",
+        adresse: '5 boulevard de Champs Richardets 93160 Noisy le Grand',
+        lon: 2.473647,
+        lat: 48.883956,
+        departement: '93',
+      })
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toBeDefined()
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('centre')
+    expect(body.centre).toHaveProperty('nom', 'Noisy le Grand')
+    expect(body.centre).toHaveProperty('departement', '93')
   })
 })

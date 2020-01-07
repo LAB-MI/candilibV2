@@ -16,7 +16,7 @@ import {
 import {
   findCentreByNameAndDepartement,
   findCentresByDepartement,
-} from '../../models/centre/centre.queries'
+} from '../../models/centre/centre-queries'
 import {
   findAllInspecteurs,
   findInspecteurById,
