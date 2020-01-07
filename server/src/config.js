@@ -85,6 +85,7 @@ const userStatusAccess = {
   [userStatuses.ADMIN]: [
     features.AGENTS,
     features.AURIGE,
+    features.CENTRES,
     features.DEPARTEMENTS,
     features.STATS_KPI,
   ],
