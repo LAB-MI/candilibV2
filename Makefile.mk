@@ -100,5 +100,12 @@ NPM_AUDIT_DRY_RUN  := $(shell echo $$NPM_AUDIT_DRY_RUN )
 # Run env
 LINE_DELAY := $(shell [ -n "$$LINE_DELAY" ] && echo $$LINE_DELAY )
 
+# Reverse proxy (nginx)
+API_USER_SCOPE=http_x_forwarded_for
+API_USER_LIMIT_RATE=10r/s
+API_USER_BURST=5 nodelay
+APP_USER_LIMIT_RATE=30r/s
+APP_USER_BURST=80 nodelay
+
 # export all variables in subshell
 export
