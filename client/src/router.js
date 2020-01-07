@@ -46,7 +46,6 @@ const CenterList = () => import(/* webpackChunkName: "admin", webpackPrefetch: t
 const StatsKpi = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/statsKpi/StatsKpi.vue')
 const HomeAdminPage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/HomeAdminPage.vue')
 const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/schedule/ScheduleManager.vue')
-const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
 const ResetPassword = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/ResetPassword.vue')
 const Agents = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Agents.vue')
 const DepartementList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/departementsManager/DepartementList.vue')
@@ -95,11 +94,6 @@ const adminRoutes = [
         name: ROUTE_AUTHORIZE_STATS_KPI,
         component: StatsKpi,
         beforeEnter: checkAccess,
-      },
-      {
-        path: 'whitelist',
-        name: 'whitelist',
-        component: Whitelist,
       },
       {
         path: 'agents',
