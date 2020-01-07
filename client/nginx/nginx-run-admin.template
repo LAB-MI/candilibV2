@@ -1,6 +1,10 @@
 # conf front admin
 server {
   listen 80 default_server;
+  set_real_ip_from 0.0.0.0/0;
+  real_ip_header X-Real-IP;
+  real_ip_recursive on;
+
   client_max_body_size 10m;
 
   location / {
@@ -8,12 +12,22 @@ server {
   }
 
   location @rew {
+    expires 24h;
+    if ($http_x_forwarded_proto) {
+       return 302 $http_x_forwarded_proto://$http_host<PUBLIC_PATH>/;
+    }
     return 302 $scheme://$http_host<PUBLIC_PATH>/;
   }
 
   location <PUBLIC_PATH> {
+    expires 24h;
     alias /usr/share/nginx/html;
     try_files $uri $uri/ @rewrites;
+
+    location ~ "^<PUBLIC_PATH>/config-candilib.json" {
+      expires -1;
+      add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+    }
   }
 
   location @rewrites {
