@@ -416,11 +416,14 @@ export default {
     async [UPDATE_IPCSR_REQUEST] ({ commit, dispatch }, ipcsrToUpdate) {
       commit(UPDATE_IPCSR_REQUEST)
       try {
-        const { ipcsr } = await api.admin.updateInspecteur(ipcsrToUpdate)
+        const { ipcsr, success, message } = await api.admin.updateInspecteur(ipcsrToUpdate)
+        if (success === false) {
+          throw new Error(message)
+        }
         commit(UPDATE_IPCSR_SUCCESS, ipcsr)
       } catch (error) {
         commit(UPDATE_IPCSR_FAILURE, error)
-        return dispatch(SHOW_ERROR, error.message)
+        throw error
       }
     },
 

@@ -25,107 +25,108 @@
         Modification de {{ prenom }} {{ nom }} {{ matricule }} ({{ departement }})
       </v-card-title>
 
-      <v-container class="u-flex  u-flex--between  u-full-width">
-        <v-text-field
-          v-model="email"
-          class="t-input-ipcsr-email"
-          prepend-icon="email"
-          aria-placeholder="jean@dupont.fr"
-          hint="ex. : jean@dupont.fr"
-          tabindex="0"
-          :rules="emailRules"
-          label="Adresse courriel"
-          :placeholder="emailPlaceholder"
-          required
-          @focus="setEmailPlaceholder"
-          @blur="removeEmailPlaceholder"
-          @input="setEmailToLowerCase"
-        />
+      <v-form
+        v-model="valid"
+      >
+        <v-container class="u-flex  u-flex--between  u-full-width">
+          <v-text-field
+            v-model="email"
+            class="t-input-ipcsr-email"
+            prepend-icon="email"
+            aria-placeholder="jean@dupont.fr"
+            hint="ex. : jean@dupont.fr"
+            tabindex="0"
+            :rules="emailRules"
+            label="Adresse courriel"
+            :placeholder="emailPlaceholder"
+            required
+            @focus="setEmailPlaceholder"
+            @blur="removeEmailPlaceholder"
+            @input="setEmailToLowerCase"
+          />
 
-        <v-spacer />
+          <v-spacer />
 
-        <v-text-field
-          v-model="prenom"
-          class="t-input-prenom"
-          prepend-icon="perm_identity"
-          hint="ex. : Jean"
-          tabindex="0"
-          label="Prénom"
-          :aria-placeholder="prenomPlaceholder"
-          :placeholder="prenomPlaceholder"
-          required
-          @focus="setPrenomPlaceholder"
-          @blur="removePrenomPlaceholder"
-          @input="setOnlyNumbers"
-        />
+          <v-text-field
+            v-model="prenom"
+            class="t-input-prenom"
+            prepend-icon="perm_identity"
+            hint="ex. : Jean"
+            tabindex="0"
+            label="Prénom"
+            :aria-placeholder="prenomPlaceholder"
+            :placeholder="prenomPlaceholder"
+            required
+            @focus="setPrenomPlaceholder"
+            @blur="removePrenomPlaceholder"
+          />
 
-        <v-spacer />
+          <v-spacer />
 
-        <v-text-field
-          v-model="nom"
-          class="t-input-nom"
-          prepend-icon="account_box"
-          hint="ex. : Dupont"
-          tabindex="0"
-          label="Nom"
-          :aria-placeholder="nomPlaceholder"
-          :placeholder="nomPlaceholder"
-          required
-          @focus="setNomPlaceholder"
-          @blur="removeNomPlaceholder"
-          @input="setOnlyNumbers"
-        />
+          <v-text-field
+            v-model="nom"
+            class="t-input-nom"
+            prepend-icon="account_box"
+            hint="ex. : Dupont"
+            tabindex="0"
+            label="Nom"
+            :aria-placeholder="nomPlaceholder"
+            :placeholder="nomPlaceholder"
+            required
+            @focus="setNomPlaceholder"
+            @blur="removeNomPlaceholder"
+          />
 
-        <v-spacer />
+          <v-spacer />
 
-        <v-text-field
-          v-model="matricule"
-          class="t-input-matricule"
-          prepend-icon="confirmation_number"
-          hint="ex. : 0954390439"
-          tabindex="0"
-          :rules="matriculeRules"
-          label="Matricule"
-          :aria-placeholder="prenomPlaceholder"
-          :placeholder="matriculePlaceholder"
-          required
-          @focus="setMatriculePlaceholder"
-          @blur="removeMatriculePlaceholder"
-          @input="setOnlyNumbers"
-        />
+          <v-text-field
+            v-model="matricule"
+            class="t-input-matricule"
+            prepend-icon="confirmation_number"
+            hint="ex. : 0954390439"
+            tabindex="0"
+            :rules="matriculeRules"
+            label="Matricule"
+            :aria-placeholder="prenomPlaceholder"
+            :placeholder="matriculePlaceholder"
+            required
+            @focus="setMatriculePlaceholder"
+            @blur="removeMatriculePlaceholder"
+          />
 
-        <v-spacer />
+          <v-spacer />
 
-        <select-departements
-          class="select-departement  t-select-update-ipcsr-departements"
-          :available-departements="availableDepartements"
-          :multiple="false"
-          :default-departement="departement"
-          @change-departements="newDep => departement = newDep"
-        />
+          <select-departements
+            class="select-departement  t-select-update-ipcsr-departements"
+            :available-departements="availableDepartements"
+            :multiple="false"
+            :default-departement="departement"
+            @change-departements="newDep => departement = newDep"
+          />
 
-        <v-spacer />
+          <v-spacer />
 
-        <v-btn
-          class="t-btn-cancel-update"
-          color="#CD1338"
-          tabindex="0"
-          outlined
-          @click="close"
-        >
-          Annuler
-        </v-btn>
+          <v-btn
+            class="t-btn-cancel-update"
+            color="#CD1338"
+            tabindex="0"
+            outlined
+            @click="close"
+          >
+            Annuler
+          </v-btn>
 
-        <v-btn
-          class="t-btn-update-ipcsr-confirm"
-          color="primary"
-          :disabled="isUpdatingIpcsr"
-          :aria-disabled="isUpdatingIpcsr"
-          @click="updateIpcsr"
-        >
-          Modifier
-        </v-btn>
-      </v-container>
+          <v-btn
+            class="t-btn-update-ipcsr-confirm"
+            color="primary"
+            :disabled="isUpdatingIpcsr || !valid"
+            :aria-disabled="isUpdatingIpcsr || !valid"
+            @click="updateIpcsr"
+          >
+            Modifier
+          </v-btn>
+        </v-container>
+      </v-form>
     </v-card>
   </v-dialog>
 </template>
@@ -133,9 +134,9 @@
 <script>
 import { mapState } from 'vuex'
 
-import { email as emailRegex } from '@/util'
+import { email as emailRegex, matricule as matriculeRegex } from '@/util'
 
-import { UPDATE_IPCSR_REQUEST, FETCH_IPCSR_LIST_REQUEST } from '@/store'
+import { UPDATE_IPCSR_REQUEST, FETCH_IPCSR_LIST_REQUEST, SHOW_ERROR } from '@/store'
 
 import SelectDepartements from '../SelectDepartements'
 
@@ -182,11 +183,11 @@ export default {
       ],
       emailPlaceholder: '',
       status: 'repartiteur',
-      valid: false,
       matricule: this.defaultMatricule,
       matriculePlaceholder: '',
       matriculeRules: [
         matricule => !!matricule || 'Veuillez renseigner un matricule',
+        matricule => matriculeRegex.test(matricule) || 'Le matricule est invalide',
       ],
       nom: this.defaultNom,
       nomPlaceholder: '',
@@ -198,6 +199,7 @@ export default {
       prenomRules: [
         prenom => !!prenom || 'Veuillez renseigner un prénom',
       ],
+      valid: false,
     }
   },
 
@@ -244,10 +246,6 @@ export default {
       this.nomPlaceholder = ''
     },
 
-    setOnlyNumbers () {
-      this.matricule = this.matricule.replace(/[^\D]/g, '')
-    },
-
     async updateIpcsr () {
       const {
         departement,
@@ -261,9 +259,10 @@ export default {
       try {
         await this.$store.dispatch(UPDATE_IPCSR_REQUEST, { ipcsrId, departement, email, matricule, nom, prenom })
         this.$store.dispatch(FETCH_IPCSR_LIST_REQUEST)
+        this.updating = false
       } catch (error) {
+        this.$store.dispatch(SHOW_ERROR, error.message)
       }
-      this.updating = false
     },
 
     close () {

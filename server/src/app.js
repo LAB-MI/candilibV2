@@ -92,6 +92,18 @@ import npmVersion from '../package.json'
  *           type: string
  *           description: Département du centre
  *           example: 75
+ *         active:
+ *           type: boolean
+ *           description: Si `false`, le centre n'apparaîtra pas dans les requêtes des utilisateurs
+ *           example: true
+ *         disabledBy:
+ *           type: string
+ *           description: Adresse courriel du dernier utilisateur ayant désactivé le centre
+ *           example: admin@exemple.com
+ *         disabledAt:
+ *           type: Date
+ *           description: Date à laquelle le centre a été désactivé
+ *           example: 2020-01-01 00:00:00
  *
  *     CandidatInfo:
  *       type: object

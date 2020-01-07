@@ -9,7 +9,12 @@ import {
   createInspecteur,
 } from '../../models/inspecteur'
 import { findAllPlacesByCentre } from '../../models/place'
-import { appLogger, getFrenchLuxonFromISO } from '../../util'
+import {
+  appLogger,
+  email as emailRegex,
+  matricule as matriculeRegex,
+  getFrenchLuxonFromISO,
+} from '../../util'
 import {
   getInspecteursBookedFromDepartement,
   isUserAllowedToCreateIpcsr,
@@ -275,6 +280,7 @@ export const updateIpcsr = async (req, res) => {
   const {
     active,
     departement = '',
+    email = '',
     matricule = '',
     nom = '',
     prenom = '',
@@ -282,11 +288,21 @@ export const updateIpcsr = async (req, res) => {
   const userId = req.userId
   const { id: ipcsrId } = req.params
 
+  const fieldsWithErrors = checkIpcsrData(req.body)
+
+  if (fieldsWithErrors.length) {
+    return res.status(400).json({
+      success: false,
+      message: `Des champs sont incorrects : ${fieldsWithErrors.join(', ')}`,
+    })
+  }
+
   const loggerInfo = {
-    section: 'admin-get-inspecteur',
+    section: 'admin-update-inspecteur',
     admin: userId,
     ipcsrId,
     departement,
+    email,
     nom,
     matricule,
     prenom,
@@ -318,12 +334,31 @@ export const updateIpcsr = async (req, res) => {
       })
     }
 
-    const ipcsr = await updateInspecteur(ipcsrId, { active })
+    try {
+      const ipcsr = await updateInspecteur(ipcsrId, { active })
+      return res.status(200).json({
+        success: true,
+        ipcsr,
+      })
+    } catch (error) {
+      let message = error.message
+      let status = 500
 
-    return res.status(200).json({
-      success: true,
-      ipcsr,
-    })
+      if (message.includes('duplicate')) {
+        status = 409
+        if (message.includes('matricule')) {
+          message = `Ce matricule existe déjà : ${matricule}`
+        }
+        if (message.includes('email')) {
+          message = `Cette adresse courriel existe déjà : ${email}`
+        }
+      }
+
+      return res.status(status).json({
+        success: false,
+        message,
+      })
+    }
   }
 
   const ipcsr = await updateInspecteur(ipcsrId, {
@@ -337,4 +372,31 @@ export const updateIpcsr = async (req, res) => {
     success: true,
     ipcsr,
   })
+}
+
+const mandatoryIpcsrFields = [
+  'departement',
+  'email',
+  'matricule',
+  'nom',
+  'prenom',
+]
+
+function checkIpcsrData (ipcsrData) {
+  const fieldsWithErrors = mandatoryIpcsrFields
+    .map(key => (ipcsrData[key] ? '' : key))
+    .filter(e => e)
+
+  const isValidEmail = emailRegex.test(ipcsrData.email)
+  const isValidMatricule = matriculeRegex.test(ipcsrData.matricule)
+
+  if (!isValidEmail && !fieldsWithErrors.includes('email')) {
+    fieldsWithErrors.push('email')
+  }
+
+  if (!isValidMatricule && !fieldsWithErrors.includes('matricule')) {
+    fieldsWithErrors.push('matricule')
+  }
+
+  return fieldsWithErrors.concat('un champs')
 }
