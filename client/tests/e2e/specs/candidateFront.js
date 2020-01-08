@@ -64,7 +64,7 @@ describe('Connected candidate front', () => {
 
   it('Should display FAQ', () => {
     cy.visit(magicLink).wait(1000)
-    cy.should('contain', 'help_outline')
+    cy.get('i').should('contain', 'help_outline')
     cy.contains('help_outline').click()
     cy.url().should('contain', 'faq')
     cy.get('h2').should('contain', 'F.A.Q')
@@ -78,7 +78,7 @@ describe('Connected candidate front', () => {
 
   it('Should display Mentions légales', () => {
     cy.visit(magicLink).wait(1000)
-    cy.should('contain', 'account_balance')
+    cy.get('i').should('contain', 'account_balance')
     cy.contains('account_balance').click()
     cy.url().should('contain', 'mentions-legales')
     cy.get('h2').should('contain', 'Mentions légales')
@@ -93,7 +93,7 @@ describe('Connected candidate front', () => {
       .should('contain', 'mon-profil')
     cy.get('h2')
       .should('contain', 'Mon profil')
-    cy.should('contain', 'Nom de naissance')
+    cy.get('.v-chip').should('contain', 'Nom de naissance')
     cy.contains('Nom de naissance')
       .parent().parent()
       .should('contain', Cypress.env('candidat'))
@@ -103,19 +103,20 @@ describe('Connected candidate front', () => {
     cy.visit(magicLink)
     cy.wait(1000)
     cy.get('h2').should('contain', 'Choix du centre')
-    cy.should('contain', Cypress.env('centre'))
+    cy.get('body').should('contain', Cypress.env('centre'))
     cy.contains(Cypress.env('centre')).click()
     cy.get(`[href="#tab-${date1.monthLong}"]`).click()
-    cy.should('contain', ' ' + Cypress.env('placeDate').split('-')[2] + ' ')
+    cy.get('body').should('contain', ' ' + Cypress.env('placeDate').split('-')[2] + ' ')
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list')
       .within($date => {
         cy.root().click()
-        cy.get('container')
+        cy.get('.container')
           .should('not.contain', '07h30-08h00')
           .and('not.contain', '16h00-16h30')
           .and('not.contain', '12h30-13h00')
-        cy.should('contain', '08h30-09h00').click()
+        cy.get('.container')
+          .should('contain', '08h30-09h00')
         cy.contains('08h30-09h00').click()
       })
     cy.get('h2').should('contain', 'Confirmation')
@@ -162,18 +163,18 @@ describe('Connected candidate front', () => {
   it('Should change the booked place', () => {
     cy.visit(magicLink)
     cy.get('.t-candidat-home').click()
-    cy.should('contain', 'Modifier ma réservation')
+    cy.get('body').should('contain', 'Modifier ma réservation')
     cy.contains('Modifier ma réservation').click()
-    cy.should('contain', Cypress.env('centre'))
+    cy.get('body').should('contain', Cypress.env('centre'))
     cy.contains(Cypress.env('centre')).click()
     cy.get(`[href="#tab-${date1.monthLong}"]`).click()
-    cy.should('contain', ' ' + Cypress.env('placeDate').split('-')[2] + ' ')
+    cy.get('body').should('contain', ' ' + Cypress.env('placeDate').split('-')[2] + ' ')
     cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
       .parents('.v-list')
       .within($date => {
         cy.root().click()
-        cy.should('contain', '10h00-10h30')
-        cy.contains('10h00-10h30').click()
+        cy.get('.container').should('contain', '10h00-10h30')
+        cy.get('.container').contains('10h00-10h30').click()
       })
     cy.get('h2').should('contain', 'Confirmer la modification')
     cy.get('h3').should('contain', Cypress.env('centre'))
@@ -216,7 +217,7 @@ describe('Connected candidate front', () => {
 
   it('Should resend convocation', () => {
     cy.visit(magicLink)
-    cy.should('contain', 'Renvoyer ma convocation')
+    cy.get('body').should('contain', 'Renvoyer ma convocation')
     cy.contains('Renvoyer ma convocation').click()
     cy.get('.v-snack').should(
       'contain',
@@ -239,7 +240,7 @@ describe('Connected candidate front', () => {
 
   it('Should resend confirmation mail', () => {
     cy.visit(magicLink)
-    cy.should('contain', 'Renvoyer ma convocation').click()
+    cy.get('body').should('contain', 'Renvoyer ma convocation').click()
     cy.contains('Renvoyer ma convocation').click()
     cy.get('.v-snack').should(
       'contain',
@@ -262,7 +263,7 @@ describe('Connected candidate front', () => {
 
   it('Should cancel booked place', () => {
     cy.visit(magicLink)
-    cy.should('contain', 'Annuler ma réservation')
+    cy.get('body').should('contain', 'Annuler ma réservation')
     cy.contains('Annuler ma réservation').click()
     cy.get('button')
       .should('contain', 'Confirmer')
@@ -317,7 +318,7 @@ describe('Connected candidate front', () => {
 
     cy.visit(magicLink)
     cy.get('.t-candidat-home').click()
-    cy.should('contain', 'Modifier ma réservation')
+    cy.get('body').should('contain', 'Modifier ma réservation')
     cy.contains('Modifier ma réservation').click()
 
     // Vérifie si le message d'avertissement pour le cas de pénalité est présent
@@ -329,21 +330,22 @@ describe('Connected candidate front', () => {
       .and('contain', "Vous pourrez donc sélectionner une date qu'à partir du")
       .and('contain', bookedPlaceIn45Days.toLocaleString(FORMAT_DATE_TEXT))
 
-    cy.should('contain', 'Continuer')
+    cy.get('body').should('contain', 'Continuer')
     cy.contains('Continuer').click()
 
-    cy.should('contain', Cypress.env('centre'))
+    cy.get('body').should('contain', Cypress.env('centre'))
     cy.contains(Cypress.env('centre')).click()
     expectedPenaltyCancel()
 
     cy.get(`[href="#tab-${dayAfter45Days.monthLong}"]`).click()
-    cy.should('contain', dayAfter45Days.toLocaleString(FORMAT_DATE_TEXT))
+    cy.get('body').should('contain', dayAfter45Days.toLocaleString(FORMAT_DATE_TEXT))
     cy.contains(dayAfter45Days.toLocaleString(FORMAT_DATE_TEXT))
       .parents('.v-list')
       .within($date => {
         cy.root().click()
-        cy.should('contain', '10h00-10h30')
-        cy.contains('10h00-10h30').click()
+        cy.get('.container').should('contain', '10h00-10h30')
+        cy.get('.container')
+          .contains('10h00-10h30').click()
       })
     cy.get('h2').should('contain', 'Confirmer la modification')
     cy.get('h3').should('contain', Cypress.env('centre'))
@@ -390,7 +392,7 @@ describe('Connected candidate front', () => {
     cy.adminDisconnection()
 
     cy.visit(magicLink)
-    cy.should('contain', 'Annuler ma réservation')
+    cy.get('body').should('contain', 'Annuler ma réservation')
     cy.contains('Annuler ma réservation').click()
     // Vérifie si le message d'avertissement pour le cas de pénalité est présent
     cy.get('.t-confirm-suppr-text-content')
@@ -407,7 +409,7 @@ describe('Connected candidate front', () => {
       'Votre annulation a bien été prise en compte.',
     )
     cy.get('h2').should('contain', 'Choix du centre')
-    cy.should('contain', Cypress.env('centre'))
+    cy.get('body').should('contain', Cypress.env('centre'))
     cy.contains(Cypress.env('centre')).click()
     expectedPenaltyCancel()
     cy.getLastMail()

@@ -74,7 +74,7 @@ describe('Planning tests', () => {
           .click()
       })
     cy.get('.v-snack')
-      .should('contain', 'a bien été crée')
+      .should('contain', 'a bien été créée')
     cy.get('.v-snack button').should('be.visible').click({ force: true })
     // Sends the mail for the inspectors
     cy.deleteAllMails()
@@ -170,7 +170,7 @@ describe('Planning tests', () => {
           .click()
       })
     cy.get('.v-snack')
-      .should('contain', 'a bien été crée.')
+      .should('contain', 'a bien été créée.')
   })
 })
 
@@ -243,7 +243,7 @@ describe('Planning tests without candidate', () => {
           .click()
       })
     cy.get('.v-snack')
-      .should('contain', 'a bien été crée')
+      .should('contain', 'a bien été créée')
   })
 
   it('Tests the import of csv files in the planning', () => {
