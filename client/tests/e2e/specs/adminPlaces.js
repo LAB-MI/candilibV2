@@ -38,7 +38,6 @@ describe('Places tests', () => {
       .click({ force: true })
     cy.get('.v-snack--active', { timeout: 10000 })
       .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
-    cy.addToWhitelist()
     cy.adminDisconnection()
     cy.candidatePreSignUp()
     // The admin validates the candidate via Aurige

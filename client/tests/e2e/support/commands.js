@@ -65,21 +65,6 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
     .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 })
 
-Cypress.Commands.add('addToWhitelist', () => {
-  cy.contains('favorite')
-    .click()
-  cy.get('h2')
-    .should('contain', 'Liste blanche')
-  cy.contains('Ajouter un lot d\'adresse courriel')
-    .click()
-  cy.get('#whitelist-batch-textarea')
-    .type(Cypress.env('emailCandidat'))
-  cy.contains('Enregistrer ces adresses')
-    .click()
-  cy.get('.home-link')
-    .click()
-})
-
 Cypress.Commands.add('addPlanning', (dates) => {
   const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
   const horaires = [

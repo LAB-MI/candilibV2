@@ -16,8 +16,6 @@ describe('Stats Kpi tests', () => {
     cy.archiveCandidate()
     // ajouter des places
     cy.addPlanning()
-    // ajouter email candidat a la white list
-    cy.addToWhitelist()
     // deconnecter l'admin
     cy.adminDisconnection()
     // pre-inscription candidat
