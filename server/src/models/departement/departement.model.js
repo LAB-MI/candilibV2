@@ -12,6 +12,8 @@ const DepartementSchema = new Schema(
       type: String,
       trim: true,
       match: emailRegex,
+      required: true,
+      unique: true,
     },
   },
   { timestamps: true }
