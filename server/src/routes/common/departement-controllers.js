@@ -1,8 +1,8 @@
 import { appLogger } from '../../util'
-import { findAllDepartementsId } from '../../models/departement'
+import { getDepartementsFromCentres } from '../../models/centre'
 
-export async function getDepartementsId (req, res) {
-  const departementsId = await findAllDepartementsId()
+export async function getActiveDepartementsId (req, res) {
+  const departementsId = await getDepartementsFromCentres()
   appLogger.info({
     description: 'Getting candidat departements id',
     section: 'candidat-departements',
