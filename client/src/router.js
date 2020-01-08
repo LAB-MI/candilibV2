@@ -8,7 +8,12 @@ import {
   checkCandidatToken,
   checkAccess,
 } from './router-checks'
-import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI } from './constants'
+import {
+  ROUTE_AUTHORIZE_AURIGE,
+  ROUTE_AUTHORIZE_STATS_KPI,
+  ROUTE_AUTHORIZE_CENTRES,
+  ROUTE_AUTHORIZE_DEPARTEMENTS,
+} from './constants'
 
 Vue.use(Router)
 
@@ -81,7 +86,7 @@ const adminRoutes = [
       },
       {
         path: 'centres',
-        name: 'centres',
+        name: ROUTE_AUTHORIZE_CENTRES,
         component: CenterList,
         beforeEnter: checkAccess,
       },
@@ -104,7 +109,7 @@ const adminRoutes = [
       },
       {
         path: 'departements',
-        name: 'departements',
+        name: ROUTE_AUTHORIZE_DEPARTEMENTS,
         component: DepartementList,
         beforeEnter: checkAccess,
       },

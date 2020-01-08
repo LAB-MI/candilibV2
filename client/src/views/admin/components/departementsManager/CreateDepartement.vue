@@ -40,8 +40,8 @@
         <v-btn
           class="t-create-btn"
           type="submit"
-          :disabled="!valid || departementId === ''"
-          :aria-disabled="!valid || departementId === ''"
+          :disabled="!valid || departementId === '' || departementEmail === ''"
+          :aria-disabled="!valid || departementId === '' || departementEmail === ''"
           tabindex="0"
           raised
           color="success"
