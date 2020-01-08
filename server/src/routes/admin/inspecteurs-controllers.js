@@ -398,5 +398,5 @@ function checkIpcsrData (ipcsrData) {
     fieldsWithErrors.push('matricule')
   }
 
-  return fieldsWithErrors.concat('un champs')
+  return fieldsWithErrors
 }
