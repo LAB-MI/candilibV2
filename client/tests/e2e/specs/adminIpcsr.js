@@ -1,11 +1,11 @@
 /*
-Add user in users list
-Add user with an exiting email
-Cancel Archive user
-Archive user
+Add IPCSR in IPCSRs list
+Add IPCSR with an exiting email
+Cancel Archive IPCSR
+Archive IPCSR
 */
 
-describe('Create and see users', () => {
+describe('Create and see the list of IPCSR', () => {
   const ipcsr1 = {
     email: 'inspecteur1@example.com',
     firstname: 'Premier',
@@ -44,7 +44,7 @@ describe('Create and see users', () => {
     cy.adminDisconnection()
   })
 
-  it('Should create a new user', () => {
+  it('Should create a new IPCSR', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type('{selectall}{backspace}', { force: true })
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type(ipcsr1.email, { force: true })
@@ -72,7 +72,7 @@ describe('Create and see users', () => {
     cy.get('.t-list-ipcsr').should('contain', ipcsr1.email)
   })
 
-  it('Should not create a new user with existing email or existing matricule', () => {
+  it('Should not create a new IPCSR with existing email or existing matricule', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type('{selectall}{backspace}', { force: true })
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type(ipcsr2.email, { force: true })
@@ -119,7 +119,7 @@ describe('Create and see users', () => {
     cy.get('.t-list-ipcsr').should('contain', ipcsr2.email)
   })
 
-  it('Should update a user', () => {
+  it('Should update an IPCSR', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type(ipcsr3.email, { force: true })
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-firstname  input').type(ipcsr3.firstname, { force: true })
@@ -148,7 +148,7 @@ describe('Create and see users', () => {
       .contains(ipcsr3.newDepartement)
       .click()
     cy.get('.v-dialog--active').find('.t-btn-update-ipcsr-confirm')
-      .click()
+      .click({ force: true })
 
     cy.contains(ipcsr3.email)
       .parents('tr')
