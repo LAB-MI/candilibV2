@@ -17,7 +17,7 @@ export default {
 
   actions: {
     async [FETCH_DEPARTEMENTS_REQUEST] ({ commit }) {
-      const listFromApi = await api.util.getDepartementsId()
+      const listFromApi = await api.util.getActiveDepartementsId()
       const list = []
       listFromApi.departements.forEach(function (dept) {
         list.push(dept._id)

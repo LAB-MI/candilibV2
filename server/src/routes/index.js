@@ -10,7 +10,7 @@ import candidat, { preSignup, emailValidation } from './candidat'
 import { verifyToken } from './middlewares'
 import { resetMyPassword } from './auth/admin-controllers'
 import { getCandidatConfig } from './candidat/candidat-config-controller'
-import { getDepartementsId } from './common/departement-controllers'
+import { getActiveDepartementsId } from './common/departement-controllers'
 import { getCentresByDepartement } from './common/centre-controllers'
 
 const router = express.Router()
@@ -270,7 +270,7 @@ router.get('/candidat/config', getCandidatConfig)
  * @see {@link http://localhost:8000/api-docs/#/Public/get_departements}
  */
 
-router.get('/departements', getDepartementsId)
+router.get('/departements', getActiveDepartementsId)
 
 /**
  *  @swagger
