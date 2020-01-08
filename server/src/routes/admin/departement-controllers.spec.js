@@ -4,6 +4,12 @@ import { connect, disconnect } from '../../mongo-connection'
 import { createUser, deleteUser, findUserByEmail } from '../../models/user'
 import config from '../../config'
 
+import {
+  BAD_PARAMS,
+  INVALID_DEPARTEMENT_EMAIL,
+  INVALID_DEPARTEMENT_NUMBER,
+} from './message.constants'
+
 const emailAdmin = 'Admin@example.com'
 const password = 'S3cr3757uff!'
 const departements = ['75', '93']
@@ -21,8 +27,9 @@ jest.mock('./middlewares/verify-user-level')
 jest.mock('../middlewares/verify-token')
 
 jest.mock('../../util/logger')
-require('../../util/logger').setWithConsole(false)
+require('../../util/logger').setWithConsole(true)
 
+const departementId00 = '44'
 const departementId01 = '30'
 const departementEmail01 = 'emaildu30@mail.com'
 
@@ -103,19 +110,28 @@ describe('Département controllers', () => {
       .expect(400)
 
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', 'Paramètre saisie invalide')
+    expect(body).toHaveProperty('message', BAD_PARAMS)
   })
 
-  it('Should not create one departement', async () => {
+  it('Should not create one departement with invalid departement number', async () => {
     const { body } = await request(app)
       .post(`${apiPrefix}/admin/departements`)
       .expect(400)
 
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty(
-      'message',
-      'Numéro de département non renseigné'
-    )
+    expect(body).toHaveProperty('message', INVALID_DEPARTEMENT_NUMBER)
+  })
+
+  it('Should not create one departement with invalid departement email', async () => {
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/departements`)
+      .send({
+        departementId: departementId00,
+      })
+      .expect(400)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', INVALID_DEPARTEMENT_EMAIL)
   })
 
   it('Should get departement', async () => {
@@ -155,6 +171,6 @@ describe('Département controllers', () => {
       .expect(400)
 
     expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', 'Paramètre saisie invalide')
+    expect(body).toHaveProperty('message', BAD_PARAMS)
   })
 })

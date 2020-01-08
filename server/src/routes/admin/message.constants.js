@@ -42,6 +42,10 @@ export const INVALID_EMAIL = "L'adresse courriel n'est pas valide"
 export const USER_NO_EXIST = "L'utilisateur n'existe pas"
 export const INVALID_DEPARTEMENTS_LIST = 'La liste départements est invalide'
 export const INVALID_DEPARTEMENT_NUMBER = 'Numéro de département non renseigné'
+export const INVALID_DEPARTEMENT_EMAIL =
+  'Adresse courriel du département non renseigné'
+export const DEPARTEMENT_EMAIL_ALREADY_USE =
+  'Adresse courriel est déjà utilisé par un autre département'
 export const DEPARTEMENT_ALREADY_EXIST = 'Ce département existe déjà'
 export const ERROR_AT_DEPARTEMENT_CREATION =
   'Erreur survenue lors de création du département'

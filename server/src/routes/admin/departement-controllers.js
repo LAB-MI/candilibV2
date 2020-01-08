@@ -4,11 +4,12 @@
  */
 
 import {
-  isContainingCentre,
   createDepartements,
   deleteDepartement,
   getDepartements,
+  isContainingCentre,
   isDepartementAlreadyExist,
+  isEmailAlreadyUse,
   removeDepartementOfUsersByStatus,
   updateDepartements,
   updateDepartementsUsersAdminAndTech,
@@ -17,10 +18,12 @@ import {
 import {
   BAD_PARAMS,
   DEPARTEMENT_ALREADY_EXIST,
+  DEPARTEMENT_EMAIL_ALREADY_USE,
   ERROR_AT_DEPARTEMENT_CREATION,
   ERROR_UPDATE_ADMIN_AND_TECH_USERS,
   ERROR_UPDATE_DEPARTEMENT,
   FETCH_ALL_DEPARTEMENTS,
+  INVALID_DEPARTEMENT_EMAIL,
   INVALID_DEPARTEMENT_NUMBER,
   INVALID_EMAIL_INSERT,
 } from './message.constants'
@@ -50,12 +53,10 @@ export const createDepartementsController = async (req, res) => {
     departementId,
     departementEmail,
   }
-  const message = INVALID_DEPARTEMENT_NUMBER
   if (!departementId) {
+    const message = INVALID_DEPARTEMENT_NUMBER
     appLogger.warn({
       ...loggerInfo,
-      departementId,
-      departementEmail,
       message,
     })
     return res.status(400).json({
@@ -63,10 +64,41 @@ export const createDepartementsController = async (req, res) => {
       message,
     })
   }
+
+  if (!departementEmail) {
+    const message = INVALID_DEPARTEMENT_EMAIL
+    appLogger.warn({
+      ...loggerInfo,
+      message,
+    })
+    return res.status(400).json({
+      success: false,
+      message,
+    })
+  }
+
+  const isEmailUse = await isEmailAlreadyUse(departementEmail)
+
+  if (isEmailUse) {
+    const message = DEPARTEMENT_EMAIL_ALREADY_USE
+    appLogger.warn({
+      ...loggerInfo,
+      message,
+    })
+    return res.status(400).json({
+      success: false,
+      message,
+    })
+  }
+
   try {
     const isExist = await isDepartementAlreadyExist(departementId)
     if (isExist) {
       const message = DEPARTEMENT_ALREADY_EXIST
+      appLogger.info({
+        ...loggerInfo,
+        descripton: message,
+      })
       res.status(400).json({
         success: false,
         message,
@@ -85,8 +117,6 @@ export const createDepartementsController = async (req, res) => {
       message = `Le département ${departementCreated._id} a bien été crée avec l'adresse courriel ${departementCreated.email}`
       appLogger.info({
         ...loggerInfo,
-        departementId,
-        departementEmail,
         descripton: message,
       })
 
@@ -103,8 +133,6 @@ export const createDepartementsController = async (req, res) => {
     const message = ERROR_AT_DEPARTEMENT_CREATION
     appLogger.error({
       ...loggerInfo,
-      departementId,
-      departementEmail,
       description: message,
       error,
     })
@@ -165,7 +193,6 @@ export const getDepartementsController = async (req, res) => {
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      departementId,
       error,
     })
 
@@ -217,7 +244,6 @@ export const deleteDepartementController = async (req, res) => {
           message = `Le département ${departementId} a bien été supprimé`
           appLogger.info({
             ...loggerInfo,
-            departementId,
             description: message,
           })
           return res.status(200).json({
@@ -241,7 +267,6 @@ export const deleteDepartementController = async (req, res) => {
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      departementId,
       error,
     })
 
@@ -319,7 +344,7 @@ export const updateDepartementsController = async (req, res) => {
     })
   } catch (error) {
     const message = ERROR_UPDATE_DEPARTEMENT
-    appLogger.error({ ...loggerInfo, departementId, error })
+    appLogger.error({ ...loggerInfo, error })
     return res.status(500).json({
       success: false,
       message,
