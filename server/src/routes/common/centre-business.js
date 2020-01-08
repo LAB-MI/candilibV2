@@ -19,6 +19,7 @@ import {
   findAllCentres,
   findCentreById,
   updateCentreActiveState,
+  updateCentreLabel,
 } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
 
@@ -69,6 +70,7 @@ export async function findCentresWithPlaces (departement, beginDate, endDate) {
  * @function
  *
  * @param {string[]} departements - Départements pour lesquels récupérer les centres
+ *
  * @returns {Promise.<CentreMongooseDocument[]>} Liste des centres correspondants
  */
 export async function findAllCentresForAdmin (departements) {
@@ -88,6 +90,7 @@ export async function findAllCentresForAdmin (departements) {
  *
  * @param {string} id - Id du centre à modifier
  * @param {boolean} status - Statut désiré, `true` pour un centre à activer, `false` pour le désactiver
+ *
  * @returns {Promise.<CentreMongooseDocument>} Centre modifié
  */
 export async function updateCentreStatus (id, status, userId) {
@@ -104,6 +107,16 @@ export async function updateCentreStatus (id, status, userId) {
   if (!user.departements.includes(centre.departement)) {
     const error = new Error("Vous n'avez pas accès à ce centre")
     error.status = 403
+    throw error
+  }
+
+  const places = await findAllPlacesByCentre(id)
+
+  if (places.length && !status) {
+    const error = new Error(
+      'Le centre possède des places à venir, il ne peut pas être archivé.'
+    )
+    error.status = 409
     throw error
   }
 
@@ -128,6 +141,7 @@ export async function updateCentreStatus (id, status, userId) {
  * @param {number} lon - Longitude géographique du centre
  * @param {number} lat - Latitude géographique du centre
  * @param {string} departement - Département du centre
+ *
  * @returns {Promise.<CentreMongooseDocument>} Centre créé
  */
 export async function addCentre (nom, label, adresse, lon, lat, departement) {
@@ -165,4 +179,68 @@ export async function addCentre (nom, label, adresse, lon, lat, departement) {
     departement
   )
   return centre
+}
+
+/**
+ * Modifie un centre dans la base de données
+ *
+ * @async
+ * @function
+ *
+ * @param {string} id - Id du centre à modifier
+ * @param {string} nom - Nom du centre (de la ville du centre)
+ * @param {string} label - Information complémentaire pour retrouver le point de rencontre du centre
+ * @param {string} adresse - Adresse du centre
+ * @param {number} lon - Longitude géographique du centre
+ * @param {number} lat - Latitude géographique du centre
+ * @param {string} userId - Identifiant de l'utilisateur souhaitant effectuer l'action
+ *
+ * @returns {Promise.<CentreMongo>} Centre modifié
+ */
+export async function updateCentre (
+  id,
+  { nom, label, adresse, lon, lat },
+  userId
+) {
+  const centre = await findCentreById(id)
+
+  if (!centre) {
+    const error = new Error('Centre introuvable')
+    error.status = 404
+    throw error
+  }
+
+  const user = await findUserById(userId)
+
+  if (!user.departements.includes(centre.departement)) {
+    const error = new Error("Vous n'avez pas accès à ce centre")
+    error.status = 403
+    throw error
+  }
+
+  if (nom && nom.toUpperCase() !== centre.nom.toUpperCase()) {
+    const alreadyExistingCentre = await findCentreByNameAndDepartement(
+      nom,
+      centre.departement
+    )
+
+    if (
+      alreadyExistingCentre &&
+      alreadyExistingCentre.nom.toUpperCase() === nom.toUpperCase()
+    ) {
+      const error = new Error('Centre déjà présent dans la base de données')
+      error.status = 409
+      throw error
+    }
+  }
+
+  const updatedCentre = await updateCentreLabel(centre, {
+    nom,
+    label,
+    adresse,
+    lon,
+    lat,
+  })
+
+  return updatedCentre
 }

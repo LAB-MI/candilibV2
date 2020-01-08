@@ -12,8 +12,10 @@ import {
   addCentre,
   findAllCentresForAdmin,
   updateCentreStatus,
+  updateCentre,
 } from './centre-business'
 import { createUser } from '../../models/user'
+import { findCentreByNameAndDepartement } from '../../models/centre'
 
 describe('Centres business', () => {
   let admin
@@ -104,5 +106,30 @@ describe('Centres business', () => {
     expect(centreAdded).toHaveProperty('label', 'LabelTest')
     expect(centreAdded).toHaveProperty('departement', '93')
     expect(centreAdded).toHaveProperty('active', true)
+  })
+
+  it('Should update a center', async () => {
+    const originalCentre = await findCentreByNameAndDepartement(
+      centres[0].nom,
+      centres[0].departement
+    )
+    const updatedCentre = await updateCentre(
+      originalCentre._id,
+      {
+        nom: 'Nouveau nom',
+        lon: 45.3,
+        lat: 8,
+      },
+      admin._id
+    )
+
+    expect(updatedCentre).toBeDefined()
+    expect(updatedCentre).not.toBeNull()
+    expect(updatedCentre).toHaveProperty('nom', 'Nouveau nom')
+    expect(updatedCentre).toHaveProperty('label', centres[0].label)
+    expect(updatedCentre).toHaveProperty('geoloc')
+    expect(updatedCentre.geoloc).toHaveProperty('coordinates')
+    expect(updatedCentre.geoloc.coordinates).toHaveProperty('0', 45.3)
+    expect(updatedCentre.geoloc.coordinates).toHaveProperty('1', 8)
   })
 })

@@ -69,9 +69,9 @@ export const RESET_PASSWORD_REQUEST = 'RESET_PASSWORD_REQUEST'
 export const RESET_PASSWORD_SUCCESS = 'RESET_PASSWORD_SUCCESS'
 export const RESET_PASSWORD_FAILURE = 'RESET_PASSWORD_FAILURE'
 
-export const CHANGE_CENTER_STATE_REQUEST = 'CHANGE_CENTER_STATE_REQUEST'
-export const CHANGE_CENTER_STATE_SUCCESS = 'CHANGE_CENTER_STATE_SUCCESS'
-export const CHANGE_CENTER_STATE_FAILURE = 'CHANGE_CENTER_STATE_FAILURE'
+export const MODIFY_CENTER_REQUEST = 'MODIFY_CENTER_REQUEST'
+export const MODIFY_CENTER_SUCCESS = 'MODIFY_CENTER_SUCCESS'
+export const MODIFY_CENTER_FAILURE = 'MODIFY_CENTER_FAILURE'
 
 export const CREATE_CENTER_REQUEST = 'CREATE_CENTER_REQUEST'
 export const CREATE_CENTER_SUCCESS = 'CREATE_CENTER_SUCCESS'
@@ -329,13 +329,13 @@ export default {
       state.isSendingResetPassword = false
     },
 
-    [CHANGE_CENTER_STATE_REQUEST] (state) {
+    [MODIFY_CENTER_REQUEST] (state) {
       state.centres.isUpdating = true
     },
-    [CHANGE_CENTER_STATE_SUCCESS] (state) {
+    [MODIFY_CENTER_SUCCESS] (state) {
       state.centres.isUpdating = false
     },
-    [CHANGE_CENTER_STATE_FAILURE] (state, error) {
+    [MODIFY_CENTER_FAILURE] (state, error) {
       state.centres.error = error
       state.centres.isUpdating = false
     },
@@ -602,18 +602,19 @@ export default {
       }
     },
 
-    async [CHANGE_CENTER_STATE_REQUEST] ({ commit, dispatch }, { id, active }) {
-      commit(CHANGE_CENTER_STATE_REQUEST)
+    async [MODIFY_CENTER_REQUEST] ({ commit, dispatch }, { id, nom, label, adresse, lon, lat, active }) {
+      commit(MODIFY_CENTER_REQUEST)
       try {
-        const response = await api.admin.changeCentreStatus(id, active)
+        const response = await api.admin.modifyCentre({ centreId: id, nom, label, adresse, lon, lat, active })
         if (response.success === false) {
           throw new Error(response.message)
         }
-        commit(CHANGE_CENTER_STATE_SUCCESS)
+        commit(MODIFY_CENTER_SUCCESS)
+
         dispatch(FETCH_ALL_CENTERS_REQUEST)
         dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {
-        commit(CHANGE_CENTER_STATE_FAILURE, error)
+        commit(MODIFY_CENTER_FAILURE, error)
         dispatch(SHOW_ERROR, error.message)
         throw error
       }
@@ -622,7 +623,7 @@ export default {
     async [CREATE_CENTER_REQUEST] ({ commit, dispatch }, { nom, label, adresse, lon, lat, departement }) {
       commit(CREATE_CENTER_REQUEST)
       try {
-        const response = await api.admin.createCentre(nom, label, adresse, lon, lat, departement)
+        const response = await api.admin.createCentre({ nom, label, adresse, lon, lat, departement })
         if (response.success === false) {
           throw new Error(response.message)
         }

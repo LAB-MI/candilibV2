@@ -1,65 +1,74 @@
 <template>
   <div class="u-max-width">
-    <page-title title="Centres d'examens" />
-    <v-container>
-      <v-card>
-        <h3 class="text-xs-center">
+    <page-title title="Centres d'examens" />    <v-container>
+      <v-card class="pa-2">
+        <h3 class="text-center">
           Ajouter un centre
         </h3>
-
-        <center-create />
+        <center-form />
       </v-card>
 
       <v-card class="mt-4">
-        <h3 class="text-xs-center">
+        <h3 class="text-center">
           Liste des centres
         </h3>
-
         <v-data-table
-          class="centre-grid"
           :headers="headers"
           :items="centres"
-          must-sort
-          :sort-by="['departement', 'nom']"
+          :items-per-page="5"
+          class="elevation-1  centre-grid  t-list-centres"
         >
           <template
-            v-slot:header.departement
-            class="pa-0"
-          />
-
-          <template
-            v-slot:item.nom="{ item }"
+            v-slot:item.nom="{ item: centre }"
           >
-            <div class="table-column  u-flex">
+            <div class="u-flex">
               <v-list-item-content>
                 <v-list-item-title>
-                  <span class="u-uppercase">
-                    {{ item.nom }}
+                  <span
+                    class="u-uppercase"
+                    :class="!centre.active ? 'blue-grey--text' : ''"
+                  >
+                    {{ centre.nom }}
                   </span>
                 </v-list-item-title>
 
                 <v-list-item-subtitle
                   class="blue-grey--text"
                 >
-                  {{ item.adresse }}
+                  {{ centre.active ? centre.adresse : "Ce centre est archivé." }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </div>
           </template>
-
           <template
-            v-slot:item.geoloc="{ item }"
+            v-slot:item.geoloc="{ item: centre }"
           >
             <a
               target="_blank"
-              class="table-column  u-flex"
-              :href="href(item.geoloc.coordinates)"
+              class="u-flex"
+              :href="href(centre.geoloc.coordinates)"
               @click.stop="() => true"
             >
               <v-icon>
                 location_on
               </v-icon>
             </a>
+          </template>
+          <template
+            v-slot:item.active="{ item: centre }"
+          >
+            <center-list-dialog
+              :key="`${centre._id}_edit`"
+              :centre-name="centre.nom + ' (' + centre.departement + ')'"
+              :centre="centre"
+              @click="changeCenter"
+            />
+            <delete-centre
+              :key="`${centre._id}_delete`"
+              :centre-name="centre.nom + ' (' + centre.departement + ')'"
+              :is-active="centre.active"
+              @click="changeCenter({id: centre._id, active: !centre.active})"
+            />
           </template>
         </v-data-table>
       </v-card>
@@ -68,20 +77,25 @@
 </template>
 
 <script>
-import { FETCH_ALL_CENTERS_REQUEST, CHANGE_CENTER_STATE_REQUEST } from '@/store'
-import centerCreate from './CenterCreate'
+import { FETCH_ALL_CENTERS_REQUEST, MODIFY_CENTER_REQUEST } from '@/store'
+import CenterForm from './CenterForm'
+import CenterListDialog from './CenterListDialog'
+import DeleteCentre from './DeleteCentre'
 
 export default {
   components: {
-    centerCreate,
+    CenterForm,
+    CenterListDialog,
+    DeleteCentre,
   },
 
   data () {
     return {
       headers: [
-        { text: '', value: 'departement', align: 'center' },
-        { text: 'Centre', value: 'nom' },
-        { text: '', value: 'geoloc', sortable: false, align: 'center' },
+        { text: 'Département', value: 'departement', align: 'center' },
+        { text: 'Nom du centre', value: 'nom' },
+        { text: 'Géolocalisation', value: 'geoloc', sortable: false, align: 'center' },
+        { text: 'Actions', value: 'active', align: 'center', sortable: false },
       ],
     }
   },
@@ -91,46 +105,27 @@ export default {
       return this.$store.state.admin.centres.list
     },
   },
-
   mounted () {
     this.$store.dispatch(FETCH_ALL_CENTERS_REQUEST)
   },
-
   methods: {
     href (coordinates) {
       const [lon, lat] = coordinates
       return `http://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=24`
     },
 
-    changeState (id, active) {
-      this.$store.dispatch(CHANGE_CENTER_STATE_REQUEST, { id, active })
+    changeCenter ({ id, nom, label, adresse, lon, lat, active }) {
+      this.$store.dispatch(MODIFY_CENTER_REQUEST, { id, nom, label, adresse, lon, lat, active })
     },
   },
 }
 </script>
 
-<style lang="stylus" scoped>
-.table-column {
-  border-left: 1px solid rgba(150, 150, 150, 0.5);
-  height: 3em;
-  padding: 0 1.5em;
-  text-decoration: none;
-}
-
+<style lang="postcss" scoped>
 .centre-grid {
   display: grid;
   grid-template-columns: 1fr;
   width: 100%;
   width: auto;
-
-  >>> td {
-    padding: 0;
-  }
 }
-
-h3 {
-  padding-top: 1em;
-  padding-left: 1em;
-}
-
 </style>
