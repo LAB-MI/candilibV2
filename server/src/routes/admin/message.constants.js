@@ -53,6 +53,8 @@ export const FETCH_ALL_DEPARTEMENTS = 'Récupération de tous les départements'
 export const BAD_PARAMS = 'Paramètre saisie invalide'
 export const INVALID_EMAIL_INSERT =
   'Adresse courriel du département manquante saisie invalide'
+export const EMAIL_ALREADY_USE =
+  'Adresse courriel du département saisie existe déjà sur un autre département'
 export const ERROR_UPDATE_DEPARTEMENT =
   "Une erreur s'est produite lors de la mise à jour du département"
 export const ERROR_UPDATE_ADMIN_AND_TECH_USERS =

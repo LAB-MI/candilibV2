@@ -19,6 +19,7 @@ import {
   BAD_PARAMS,
   DEPARTEMENT_ALREADY_EXIST,
   DEPARTEMENT_EMAIL_ALREADY_USE,
+  EMAIL_ALREADY_USE,
   ERROR_AT_DEPARTEMENT_CREATION,
   ERROR_UPDATE_ADMIN_AND_TECH_USERS,
   ERROR_UPDATE_DEPARTEMENT,
@@ -315,6 +316,20 @@ export const updateDepartementsController = async (req, res) => {
 
   if (!newEmail) {
     const message = INVALID_EMAIL_INSERT
+
+    appLogger.info({
+      ...loggerInfo,
+      description: message,
+    })
+    return res.status(400).json({
+      success: false,
+      message,
+    })
+  }
+
+  const isEmailUse = await isEmailAlreadyUse(newEmail)
+  if (isEmailUse) {
+    const message = EMAIL_ALREADY_USE
 
     appLogger.info({
       ...loggerInfo,

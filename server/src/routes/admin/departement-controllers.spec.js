@@ -27,7 +27,7 @@ jest.mock('./middlewares/verify-user-level')
 jest.mock('../middlewares/verify-token')
 
 jest.mock('../../util/logger')
-require('../../util/logger').setWithConsole(true)
+require('../../util/logger').setWithConsole(false)
 
 const departementId00 = '44'
 const departementId01 = '30'
