@@ -120,13 +120,10 @@ import {
 
 export default {
   props: {
-    addCentre: {
-      type: Boolean,
-      default: true,
-    },
+    addCentre: Boolean,
     defaultValues: {
       type: Object,
-      default: () => ({}),
+      default: () => undefined,
     },
   },
 
@@ -179,7 +176,7 @@ export default {
   },
 
   mounted () {
-    if (this.defaultValues.nom) {
+    if (this.defaultValues) {
       this.resetForm()
     }
   },
@@ -235,10 +232,9 @@ export default {
       this.nom = this.defaultValues.nom
       this.label = this.defaultValues.label
       this.adresse = this.defaultValues.adresse
-      this.lon = this.defaultValues.geoloc.coordinates[0]
-      this.lat = this.defaultValues.geoloc.coordinates[1]
+      this.lon = this.defaultValues && this.defaultValues.geoloc && this.defaultValues.geoloc.coordinates[0]
+      this.lat = this.defaultValues && this.defaultValues.geoloc && this.defaultValues.geoloc.coordinates[1]
     },
   },
-
 }
 </script>

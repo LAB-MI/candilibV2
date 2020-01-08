@@ -21,17 +21,18 @@
         class="headline grey lighten-2"
         primary-title
       >
-        Modification de {{ centre }}
+        Modification de {{ centreName }}
       </v-card-title>
 
       <center-form
         ref="updateForm"
+        :key="centre._id"
         :add-centre="false"
-        :default-values="item"
+        :default-values="centre"
         @change="getFormData"
       />
       <v-card-text>
-        Voulez-vous vraiment modifier ce centre <strong>{{ centre }}</strong> ?
+        Voulez-vous vraiment modifier ce centre <strong>{{ centreName }}</strong> ?
       </v-card-text>
 
       <v-divider />
@@ -48,7 +49,7 @@
         </v-btn>
         <v-btn
           color="primary"
-          @click="sendFormData()"
+          @click="sendFormData"
         >
           Oui, modifier
         </v-btn>
@@ -67,11 +68,12 @@ export default {
   },
 
   props: {
-    item: {
+    centre: {
       type: Object,
       default: () => {},
     },
-    centre: {
+
+    centreName: {
       type: String,
       default: 'un centre',
     },
@@ -80,10 +82,6 @@ export default {
   data () {
     return {
       showDialog: false,
-      nom: '',
-      adresse: '',
-      lon: '',
-      lat: '',
     }
   },
 
@@ -95,22 +93,22 @@ export default {
       lon,
       lat,
     }) {
-      this.nom = nom
-      this.label = label
-      this.adresse = adresse
-      this.lon = lon
-      this.lat = lat
+      this.centre.nom = nom
+      this.centre.label = label
+      this.centre.adresse = adresse
+      this.centre.lon = lon
+      this.centre.lat = lat
     },
 
     sendFormData () {
       this.close()
       this.$emit('click', {
-        id: this.item._id,
-        nom: this.nom,
-        label: this.label,
-        adresse: this.adresse,
-        lon: this.lon,
-        lat: this.lat,
+        id: this.centre._id,
+        nom: this.centre.nom,
+        label: this.centre.label,
+        adresse: this.centre.adresse,
+        lon: this.centre.lon,
+        lat: this.centre.lat,
       })
     },
 

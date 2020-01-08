@@ -6,11 +6,11 @@
     <template v-slot:activator="{ on }">
       <v-btn
         slot="activator"
-        :color="active ? '#DC143C' : 'primary'"
+        :color="isActive ? '#DC143C' : 'primary'"
         icon
         v-on="on"
       >
-        <v-icon>{{ active ? 'delete' : 'restore' }}</v-icon>
+        <v-icon>{{ isActive ? 'delete' : 'restore_from_trash' }}</v-icon>
       </v-btn>
     </template>
 
@@ -60,19 +60,14 @@ export default {
       type: String,
       default: 'un centre',
     },
-    action: {
-      type: String,
-      default: 'Désactiver',
-    },
-    active: {
-      type: Boolean,
-      default: true,
-    },
+    isActive: Boolean,
   },
 
   data () {
     return {
       showDialog: false,
+      action: this.isActive ? 'Archiver' : 'Réactiver',
+
     }
   },
 }

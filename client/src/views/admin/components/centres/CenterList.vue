@@ -1,49 +1,52 @@
 <template>
   <div class="u-max-width">
     <page-title title="Centres d'examens" />    <v-container>
-      <v-card>
-        <h3 class="text-xs-center">
+      <v-card class="pa-2">
+        <h3 class="text-center">
           Ajouter un centre
         </h3>
         <center-form />
       </v-card>
 
       <v-card class="mt-4">
-        <h3 class="text-xs-center">
+        <h3 class="text-center">
           Liste des centres
         </h3>
         <v-data-table
-          class="centre-grid"
+          :headers="headers"
+          :items="centres"
+          :items-per-page="5"
+          class="elevation-1  centre-grid  t-list-centres"
         >
           <template
-            v-slot:item.nom="{ item }"
+            v-slot:item.nom="{ item: centre }"
           >
             <div class="u-flex">
               <v-list-item-content>
                 <v-list-item-title>
                   <span
                     class="u-uppercase"
-                    :class="!item.active ? 'blue-grey--text' : ''"
+                    :class="!centre.active ? 'blue-grey--text' : ''"
                   >
-                    {{ item.nom }}
+                    {{ centre.nom }}
                   </span>
                 </v-list-item-title>
 
                 <v-list-item-subtitle
                   class="blue-grey--text"
                 >
-                  {{ item.active ? item.adresse : "Ce centre est archivé." }}
+                  {{ centre.active ? centre.adresse : "Ce centre est archivé." }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </div>
           </template>
           <template
-            v-slot:item.geoloc="{ item }"
+            v-slot:item.geoloc="{ item: centre }"
           >
             <a
               target="_blank"
               class="u-flex"
-              :href="href(item.geoloc.coordinates)"
+              :href="href(centre.geoloc.coordinates)"
               @click.stop="() => true"
             >
               <v-icon>
@@ -52,18 +55,19 @@
             </a>
           </template>
           <template
-            v-slot:item.active="{ item }"
+            v-slot:item.active="{ item: centre }"
           >
             <center-list-dialog
-              :centre="item.nom + ' (' + item.departement + ')'"
-              :item="item"
+              :key="`${centre._id}_edit`"
+              :centre-name="centre.nom + ' (' + centre.departement + ')'"
+              :centre="centre"
               @click="changeCenter"
             />
             <delete-centre
-              :centre="item.nom + ' (' + item.departement + ')'"
-              :action="item.active ? 'Archiver' : 'Réactiver'"
-              :active="item.active"
-              @click="changeCenter({id: item._id, active: !item.active})"
+              :key="`${centre._id}_delete`"
+              :centre-name="centre.nom + ' (' + centre.departement + ')'"
+              :is-active="centre.active"
+              @click="changeCenter({id: centre._id, active: !centre.active})"
             />
           </template>
         </v-data-table>
@@ -88,10 +92,10 @@ export default {
   data () {
     return {
       headers: [
-        { text: '', value: 'departement', align: 'center' },
-        { text: '', value: 'nom' },
-        { text: '', value: 'geoloc', sortable: false, align: 'center' },
-        { text: '', value: 'active', align: 'center', sortable: false },
+        { text: 'Département', value: 'departement', align: 'center' },
+        { text: 'Nom du centre', value: 'nom' },
+        { text: 'Géolocalisation', value: 'geoloc', sortable: false, align: 'center' },
+        { text: 'Actions', value: 'active', align: 'center', sortable: false },
       ],
     }
   },
