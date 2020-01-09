@@ -1,6 +1,6 @@
 <template>
   <v-dialog
-    v-model="updating"
+    v-model="isUpdating"
     width="800"
   >
     <template v-slot:activator="{ on }">
@@ -48,7 +48,7 @@
             color="#CD1338"
             tabindex="0"
             outlined
-            @click="updating = false"
+            @click="isUpdating = false"
           >
             Annuler
           </v-btn>
@@ -84,14 +84,13 @@ export default {
   data () {
     return {
       departementId: this.deprtId,
-      updating: false,
+      isUpdating: false,
       valid: false,
       newEmail: '',
       emailRules: [
         newEmail => newEmail ? (emailRegex.test(newEmail) || "L'adresse courriel doit être valide") : true,
       ],
       emailPlaceholder: '',
-      isUpdatingUser: false,
     }
   },
 
@@ -101,8 +100,8 @@ export default {
         departementId,
         newEmail,
       } = this
-      this.$store.dispatch(UPDATE_DEPARTEMENT_REQUEST, { departementId, newEmail })
-      this.updating = false
+      await this.$store.dispatch(UPDATE_DEPARTEMENT_REQUEST, { departementId, newEmail })
+      this.isUpdating = false
     },
     setEmailPlaceholder () {
       this.emailPlaceholder = 'adressedela@repartition.fr'

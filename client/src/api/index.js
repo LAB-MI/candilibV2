@@ -597,8 +597,8 @@ export default {
     },
 
     async getDepartements (departementId) {
-      const queryString = departementId ? `id=${departementId}` : ''
-      const json = await apiClient.get(`${apiPaths.admin.departements}?${queryString}`, {
+      const paramString = departementId ? `${departementId}` : ''
+      const json = await apiClient.get(`${apiPaths.admin.departements}/${paramString}`, {
         headers: getHeadersForAdminJson(),
       })
       return json
@@ -612,16 +612,16 @@ export default {
       return json
     },
     async updateDepartement (departementId, newEmail) {
-      const json = await apiClient.patch(`${apiPaths.admin.departements}`, {
+      const json = await apiClient.patch(`${apiPaths.admin.departements}/${departementId}`, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ departementId, newEmail }),
+        body: JSON.stringify({ newEmail }),
       })
       return json
     },
 
     async deleteDepartement (departementId) {
-      const queryString = departementId ? `id=${departementId}` : ''
-      const json = await apiClient.delete(`${apiPaths.admin.departements}?${queryString}`, {
+      const paramString = departementId ? `${departementId}` : ''
+      const json = await apiClient.delete(`${apiPaths.admin.departements}/${paramString}`, {
         headers: getHeadersForAdminJson(),
       })
       return json

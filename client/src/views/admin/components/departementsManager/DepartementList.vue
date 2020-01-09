@@ -59,17 +59,23 @@ export default {
   },
 
   watch: {
-    departementList (newValue, oldValue) {
+    departementList (newValue) {
       this.departements = newValue
     },
     isCreating (newValue, oldValue) {
-      this.getAllDepartement()
+      if (oldValue === true && newValue === false) {
+        this.getAllDepartement()
+      }
     },
     isUpdating (newValue, oldValue) {
-      this.getAllDepartement()
+      if (oldValue === true && newValue === false) {
+        this.getAllDepartement()
+      }
     },
     isDeleting (newValue, oldValue) {
-      this.getAllDepartement()
+      if (oldValue === true && newValue === false) {
+        this.getAllDepartement()
+      }
     },
   },
 

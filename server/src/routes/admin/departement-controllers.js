@@ -18,8 +18,6 @@ import {
 
 import { appLogger } from '../../util'
 
-import { appLogger } from '../../util'
-
 import {
   BAD_PARAMS,
   DEPARTEMENT_ALREADY_EXIST,
@@ -83,7 +81,6 @@ export const createDepartementsController = async (req, res) => {
   }
 
   try {
-
     const isEmailUsed = await isEmailAlreadyUse(departementEmail)
 
     if (isEmailUsed) {

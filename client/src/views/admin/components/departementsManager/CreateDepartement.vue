@@ -117,7 +117,8 @@ export default {
         departementId,
         departementEmail,
       } = this
-      this.$store.dispatch(CREATE_DEPARTEMENT_REQUEST, { departementId, departementEmail })
+
+      await this.$store.dispatch(CREATE_DEPARTEMENT_REQUEST, { departementId, departementEmail })
       this.departementId = null
       this.departementEmail = ''
     },
