@@ -1,9 +1,9 @@
 <template>
   <v-card class="spaced">
-    <v-card-title class="title u-flex u-flex--center ">
+    <v-card-title class="title  u-flex  u-flex--center ">
       <h3>{{ title }}</h3>
     </v-card-title>
-    <v-card-subtitle class="title u-flex u-flex--center ">
+    <v-card-subtitle class="title  u-flex  u-flex--center ">
       <h4>{{ subtitle }}</h4>
     </v-card-subtitle>
 
@@ -17,7 +17,7 @@
           v-for="([groupTitle, value]) of groupInfo"
           :key="groupTitle"
         >
-          <div class="u-flex u-flex--v-center">
+          <div class="u-flex  u-flex--v-center">
             <strong class="label">{{ groupTitle }}&nbsp;:</strong>
 
             <span

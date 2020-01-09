@@ -192,7 +192,7 @@ export const getCandidats = async (req, res) => {
       endingWith,
     } = req.query
 
-    // Rechercher des candiats
+    // Rechercher des candidats
     if (matching) {
       loggerInfo.action = 'SEARCH-CANDIDAT'
       loggerInfo.matching = matching

@@ -100,6 +100,7 @@ const adminRoutes = [
         path: 'agents',
         name: 'agents',
         component: Agents,
+        beforeEnter: checkAccess,
       },
       {
         path: 'departements',

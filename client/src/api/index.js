@@ -361,10 +361,10 @@ export default {
     async searchCandidats (search, departement, startingWith, endingWith) {
       let url = `${apiPaths.admin.searchCandidats}${search || ''}&departement=${departement}`
       if (startingWith) {
-        url += `&startingWith=true`
+        url += '&startingWith=true'
       }
       if (endingWith) {
-        url += `&endingWith=true`
+        url += '&endingWith=true'
       }
       const json = await apiClient.get(url, {
         headers: getHeadersForAdminJson(),

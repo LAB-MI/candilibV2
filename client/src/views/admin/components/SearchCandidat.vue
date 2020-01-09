@@ -108,7 +108,6 @@ const candidatProfileInfoDictionary = [
   ],
   [
     ['email', 'Email'], ['portable', 'Portable'], ['departement', ' Département'],
-  //   // ['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom'],
   ],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDateTime],
