@@ -25,9 +25,7 @@ export const deleteDepartementTest = async departementId => {
 
 export const deleteManyDepartementsTest = async departementList => {
   const deletedDepartements = await Promise.all(
-    departementList.map(({ _id }) => {
-      deleteDepartementTest(_id)
-    })
+    departementList.map(({ _id }) => deleteDepartementTest(_id))
   )
   return deletedDepartements
 }

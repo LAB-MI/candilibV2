@@ -1967,7 +1967,7 @@ router.get(
  */
 
 router.patch(
-  '/departements',
+  '/departements/:id?',
   verifyUserLevel(config.userStatusLevels.admin),
   updateDepartementsController
 )

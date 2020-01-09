@@ -60,7 +60,7 @@ export const createDepartementsController = async (req, res) => {
     const message = INVALID_DEPARTEMENT_NUMBER
     appLogger.warn({
       ...loggerInfo,
-      message,
+      description: message,
     })
     return res.status(400).json({
       success: false,
@@ -72,7 +72,7 @@ export const createDepartementsController = async (req, res) => {
     const message = INVALID_DEPARTEMENT_EMAIL
     appLogger.warn({
       ...loggerInfo,
-      message,
+      description: message,
     })
     return res.status(400).json({
       success: false,
@@ -86,7 +86,7 @@ export const createDepartementsController = async (req, res) => {
     const message = DEPARTEMENT_EMAIL_ALREADY_USED
     appLogger.warn({
       ...loggerInfo,
-      message,
+      description: message,
     })
     return res.status(400).json({
       success: false,
@@ -136,8 +136,7 @@ export const createDepartementsController = async (req, res) => {
     const message = ERROR_AT_DEPARTEMENT_CREATION
     appLogger.error({
       ...loggerInfo,
-      description: message,
-      error,
+      description: error.message,
     })
 
     res.status(500).json({
@@ -159,7 +158,7 @@ export const createDepartementsController = async (req, res) => {
  * @param {string} req.query.id - Identifiant du département
  */
 export const getDepartementsController = async (req, res) => {
-  const departementId = req.query.id
+  const departementId = req.params.id
   const loggerInfo = {
     section: 'admin-departement',
     action: 'get-departements',
@@ -187,6 +186,7 @@ export const getDepartementsController = async (req, res) => {
     appLogger.info({
       ...loggerInfo,
       description: message,
+      nbDepartement: result.length,
     })
 
     res.status(200).json({
@@ -196,7 +196,7 @@ export const getDepartementsController = async (req, res) => {
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
-      error,
+      description: error.message,
     })
 
     res.status(500).json({
@@ -219,7 +219,7 @@ export const getDepartementsController = async (req, res) => {
  * @param {string} req.query.id - Identifiant du département
  */
 export const deleteDepartementController = async (req, res) => {
-  const departementId = req.query.id
+  const departementId = req.params.id
   const loggerInfo = {
     section: 'admin-departement',
     action: 'delete-departement',
@@ -264,6 +264,11 @@ export const deleteDepartementController = async (req, res) => {
     }
     message = BAD_PARAMS
 
+    appLogger.error({
+      ...loggerInfo,
+      description: message,
+    })
+
     return res.status(400).json({
       success: false,
       message,
@@ -295,7 +300,8 @@ export const deleteDepartementController = async (req, res) => {
  * @param {string} req.body.newEmail - Nouvelle adresse courriel
  */
 export const updateDepartementsController = async (req, res) => {
-  const { departementId, newEmail } = req.body
+  const departementId = req.params.id
+  const { newEmail } = req.body
 
   const loggerInfo = {
     section: 'admin-departement',
@@ -353,7 +359,7 @@ export const updateDepartementsController = async (req, res) => {
     const message = `Le département ${departementId} a bien été mis à jour`
     appLogger.info({
       ...loggerInfo,
-      message,
+      description: message,
     })
 
     return res.status(200).json({
@@ -363,7 +369,13 @@ export const updateDepartementsController = async (req, res) => {
     })
   } catch (error) {
     const message = ERROR_UPDATE_DEPARTEMENT
-    appLogger.error({ ...loggerInfo, error })
+
+    appLogger.error({
+      ...loggerInfo,
+      description: error.message,
+      error,
+    })
+
     return res.status(500).json({
       success: false,
       message,

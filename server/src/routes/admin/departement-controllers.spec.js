@@ -97,7 +97,7 @@ describe('Département controllers', () => {
     const message = `Le département ${departementId02} a bien été supprimé`
 
     const { body } = await request(app)
-      .delete(`${apiPrefix}/admin/departements/?id=${departementId02}`)
+      .delete(`${apiPrefix}/admin/departements/${departementId02}`)
       .expect(200)
 
     expect(body).toHaveProperty('success', true)
@@ -140,9 +140,9 @@ describe('Département controllers', () => {
       .expect(200)
 
     expect(body).toHaveProperty('success', true)
-    expect(body.result.map(el => ({ _id: el._id, email: el.email }))).toEqual(
-      expect.arrayContaining(departementList)
-    )
+    expect(body.result).toHaveLength(1)
+    expect(body.result[0]).toHaveProperty('_id', departementList[0]._id)
+    expect(body.result[0]).toHaveProperty('email', departementList[0].email)
   })
 
   it('Should get a list of departement', async () => {
@@ -154,12 +154,15 @@ describe('Département controllers', () => {
     expect(body).toHaveProperty('result')
     expect(body.result).toBeDefined()
     expect(body.result).toHaveLength(departementList.length)
+    expect(body.result.map(el => ({ _id: el._id, email: el.email }))).toEqual(
+      expect.arrayContaining(departementList)
+    )
   })
 
   it('Should update one departement', async () => {
     const { body } = await request(app)
-      .patch(`${apiPrefix}/admin/departements`)
-      .send({ departementId: departementList[2]._id, newEmail })
+      .patch(`${apiPrefix}/admin/departements/${departementList[2]._id}`)
+      .send({ newEmail })
       .expect(200)
 
     expect(body.result).toHaveProperty('_id', departementList[2]._id)
