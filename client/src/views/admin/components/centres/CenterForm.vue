@@ -89,9 +89,9 @@
           required
         />
       </v-row>
-      <v-row
+      <div
         v-if="addCentre"
-        class="mx-10"
+        class="mx-10  text-right"
       >
         <v-btn
           type="submit"
@@ -106,7 +106,7 @@
             add_circle
           </v-icon>
         </v-btn>
-      </v-row>
+      </div>
     </v-container>
   </v-form>
 </template>
