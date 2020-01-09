@@ -19,11 +19,11 @@
         class="headline grey lighten-2"
         primary-title
       >
-        {{ action }} {{ centre }}
+        {{ action }} {{ centreName }}
       </v-card-title>
 
       <v-card-text>
-        Voulez-vous vraiment {{ action.toLowerCase() }} ce centre <strong>{{ centre }}</strong> ?
+        Voulez-vous vraiment {{ action.toLowerCase() }} ce centre <strong>{{ centreName }}</strong> ?
         <br> Le chargement de places sur un centre archivé est impossible.
         Un centre archivé n'est pas visible par les candidats.
         Un centre peut être archivé seulement lorsqu'il n'a plus de places d'examen.
@@ -56,7 +56,7 @@
 <script>
 export default {
   props: {
-    centre: {
+    centreName: {
       type: String,
       default: 'un centre',
     },
@@ -66,9 +66,13 @@ export default {
   data () {
     return {
       showDialog: false,
-      action: this.isActive ? 'Archiver' : 'Réactiver',
-
     }
+  },
+
+  computed: {
+    action () {
+      return this.isActive ? 'Archiver' : 'Réactiver'
+    },
   },
 }
 </script>
