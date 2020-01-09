@@ -4,7 +4,7 @@
       <h3>{{ title }}</h3>
     </v-card-title>
     <v-card-subtitle class="title u-flex u-flex--center ">
-      {{ subtitle }}
+      <h4>{{ subtitle }}</h4>
     </v-card-subtitle>
 
     <v-card-text>
