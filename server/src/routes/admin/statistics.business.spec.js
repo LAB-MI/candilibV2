@@ -137,9 +137,23 @@ describe('test statistics', () => {
   it('Should to have, stats in future with total subscript', async () => {
     const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
     const result = await getAllPlacesProposeInFutureByDpt(dateBeginPeriode)
-    expect(result[0]).toHaveProperty('departement', '92')
-    expect(result[0]).toHaveProperty('totalBookedPlaces', 1)
-    expect(result[0]).toHaveProperty('totalAvailablePlaces', 1)
-    expect(result[0]).toHaveProperty('totalCandidatsInscrits', 1)
+    const shouldHaveThisResult = [
+      {
+        beginDate: dateBeginPeriode,
+        departement: '92',
+        totalBookedPlaces: 1,
+        totalAvailablePlaces: 1,
+        totalCandidatsInscrits: 1,
+      },
+      {
+        beginDate: dateBeginPeriode,
+        departement: '91',
+        totalBookedPlaces: 0,
+        totalAvailablePlaces: 0,
+        totalCandidatsInscrits: 0,
+      },
+    ]
+
+    expect(result).toEqual(expect.arrayContaining(shouldHaveThisResult))
   })
 })
