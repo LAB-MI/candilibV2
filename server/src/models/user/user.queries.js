@@ -222,6 +222,44 @@ export const updateUser = async (email, { departements, status }) => {
 }
 
 /**
+ * Permet de mettre à jour plusieurs utilisateurs
+ *
+ * @async
+ * @function
+ *
+ * @param {Object} filter - filtre
+ * @param {Object} valueToSet - Les données à modifier
+ *
+ * @returns {Promise.<object>} - Un  objet contenant le nombre de utilisateurs modifiés
+ */
+export const updateManyUser = async (filter, valueToSet) => {
+  const updatedUsers = await User.updateMany(filter, valueToSet)
+
+  return updatedUsers
+}
+
+/**
+ * Permet de récupérer plusieurs utilisateurs en fonction d'un filtre
+ *
+ * @async
+ * @function
+ *
+ * @param {Object} filter
+ * @param {string} filter.filterBy - nom du champ à filtrer
+ * @param {array} filter.inValue - tableau contenant les filtres
+ *
+ * @returns {Promise.<Array>} - Un tableau d'object User
+ */
+export const findManyUser = async ({ filterBy, inValue }) => {
+  const foundUsers = await User.find({
+    [filterBy]: {
+      $in: [...inValue],
+    },
+  })
+  return foundUsers
+}
+
+/**
  * Retourne un email contenant un lien avec un hash
  * @async
  * @function
