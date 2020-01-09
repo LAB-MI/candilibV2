@@ -1,5 +1,6 @@
 /**
  * Fonctions métiers pour la gestion des départements
+ *
  * @module routes/admin/departement-business
  */
 
@@ -18,13 +19,13 @@ import { findCentresByDepartement } from '../../models/centre'
 import config from '../../config'
 
 /**
- * Mes à jour les départements de chaque utilisateur ayant les status admin et tech
+ * Met à jour les départements de chaque utilisateur ayant les statut admin et tech
  *
  * @async
  * @function
  *
- * @param {string} departementId Identifiant du département
- * @returns {boolean} retourne `true` si le département a bien été mis à jour pour chaque users, sinon `false`
+ * @param {string} departementId - Identifiant du département
+ * @returns {boolean} - Retourne `true` si le département a bien été mis à jour pour chaque users, sinon `false`
  */
 export const updateDepartementsUsersAdminAndTech = async departementId => {
   const usersStatus = [config.userStatuses.ADMIN, config.userStatuses.TECH]
@@ -47,14 +48,14 @@ export const updateDepartementsUsersAdminAndTech = async departementId => {
 }
 
 /**
- * Supprime le département de chaque utilisateur du status en paramètre
+ * Supprime le département de chaque utilisateur du statut en paramètre
  *
  * @async
  * @function
  *
- * @param {string} departementId Identifiant du département
- * @param {array} userStatus list des status de user
- * @returns {boolean} retourne `true` si le département a bien été supprimer des users, sinon `false`
+ * @param {string} departementId - Identifiant du département
+ * @param {array} userStatus - Liste des statut de user
+ * @returns {boolean} - Retourne `true` si le département a bien été supprimé des users, sinon `false`
  */
 export const removeDepartementOfUsersByStatus = async (
   departementId,
@@ -83,8 +84,8 @@ export const removeDepartementOfUsersByStatus = async (
  * @async
  * @function
  *
- * @param {string} departementId Identifiant du département
- * @returns {boolean} retourne `true` si le département est lié à un centre, sinon `false`
+ * @param {string} departementId - Identifiant du département
+ * @returns {boolean} - Retourne `true` si le département est lié à un centre, sinon `false`
  */
 export const isContainingCentre = async departementId => {
   const foundedCentre = await findCentresByDepartement(departementId, {})
@@ -101,8 +102,8 @@ export const isContainingCentre = async departementId => {
  * @async
  * @function
  *
- * @param {string} departementEmail Adresse courriel du département
- * @returns {boolean} retourne `true` si le département avec cette adresse courriel existe déjà, sinon `false`
+ * @param {string} departementEmail - Adresse courriel du département
+ * @returns {boolean} - Retourne `true` si le département avec cette adresse courriel existe déjà, sinon `false`
  */
 export const isEmailAlreadyUse = async departementEmail => {
   const departements = await findDepartementsByEmail(departementEmail)
@@ -115,8 +116,8 @@ export const isEmailAlreadyUse = async departementEmail => {
  * @async
  * @function
  *
- * @param {string} departementId ID du département
- * @returns {boolean} retourne `true` si le département existe déjà, sinon `false`
+ * @param {string} departementId - Identifiant du département
+ * @returns {boolean} - Retourne `true` si le département existe déjà, sinon `false`
  */
 export const isDepartementAlreadyExist = async departementId => {
   const departement = await findDepartementById(departementId)
@@ -125,13 +126,14 @@ export const isDepartementAlreadyExist = async departementId => {
 
 /**
  * Crée un département
+ *
  * @async
  * @function
  *
- * @param {string} departementId ID du département
- * @param {string} departementEmail Adresse courriel du département
+ * @param {string} departementId - Identifiant du département
+ * @param {string} departementEmail - Adresse courriel du département
  *
- * @returns {Promise.<Departement>} retourne le département créé
+ * @returns {Promise.<Departement>} - Retourne le département créé
  */
 export const createDepartements = async (departementId, email) => {
   const result = await createDepartement({ _id: departementId, email })
@@ -140,11 +142,12 @@ export const createDepartements = async (departementId, email) => {
 
 /**
  * Récupère les informations d'un ou plusieurs départements
+ *
  * @async
  * @function
  *
- * @param {string} departementId ID du département
- * @returns {Promise.<Departement | Departement[]>} Si le departementId n'est pas renseigné, la fonction retourne tous les départements
+ * @param {string} departementId - Identifiant du département
+ * @returns {Promise.<Departement | Departement[]>} - Si le departementId n'est pas renseigné, la fonction retourne tous les départements
  */
 export const getDepartements = departementId => {
   if (departementId) {
@@ -155,10 +158,11 @@ export const getDepartements = departementId => {
 
 /**
  * Met à jour les informations d'un département
+ *
  * @async
  * @function
  *
- * @param {object} departement Contient toute les information du département
+ * @param {object} departement - Contient toute les information du département
  */
 export const updateDepartements = async departement => {
   const result = await updateDepartementById(departement)
@@ -167,10 +171,11 @@ export const updateDepartements = async departement => {
 
 /**
  * Récupère les informations d'un ou plusieurs départements
+ *
  * @async
  * @function
  *
- * @param {string} departementId ID du département
+ * @param {string} departementId - Identifiant du département
  */
 export const deleteDepartement = async departementId => {
   const result = await deleteDepartementById(departementId)

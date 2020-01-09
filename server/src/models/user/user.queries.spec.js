@@ -305,19 +305,19 @@ describe('User', () => {
         config.userStatuses.DELEGUE,
       ]
       // when
-      const foundedUsers = await findManyUser({
+      const foundUsers = await findManyUser({
         filterBy: 'status',
         inValue: userStatus,
       })
 
       // Then
-      expect(foundedUsers[0]).toBeDefined()
-      expect(foundedUsers[0]).toBeDefined()
-      expect(foundedUsers).toBeInstanceOf(Array)
-      foundedUsers.forEach(user => {
+      expect(foundUsers[0]).toBeDefined()
+      expect(foundUsers[0]).toBeDefined()
+      expect(foundUsers).toBeInstanceOf(Array)
+      foundUsers.forEach(user => {
         expect(userShouldNotHaveStatus.includes(user.status)).toBeFalsy()
       })
-      expect(foundedUsers).toHaveProperty('length', 1)
+      expect(foundUsers).toHaveProperty('length', 1)
     })
   })
 

@@ -82,7 +82,7 @@ describe('Département controllers', () => {
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty(
       'message',
-      `Le département ${departementId01} a bien été crée avec l'adresse courriel ${departementEmail01}`
+      `Le département ${departementId01} a bien été créé avec l'adresse courriel ${departementEmail01}`
     )
     const expected = [...departements, departementId01]
     const userInfo = await findUserByEmail(emailAdmin, true)

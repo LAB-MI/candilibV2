@@ -1809,7 +1809,7 @@ router.post(
  *               departement:
  *                 type: string
  *                 example: "93"
- *                 description: Nom du épartement
+ *                 description: Nom du département
  *
  *     responses:
  *       200:
@@ -1821,7 +1821,7 @@ router.post(
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: true
- *                     message: Le département 93 a bien été crée avec l'adresse courriel emaildepartement:@:example.com
+ *                     message: Le département 93 a bien été créé avec l'adresse courriel emaildepartement:@:example.com
  *
  *       400:
  *         description: Paramètre(s) manquant(s) ou le département est déjà existant
@@ -1855,7 +1855,7 @@ router.post(
  * /admin/departements:
  *   get:
  *     tags: ["Administrateur"]
- *     summary: Récupération de tous les département(s) ou d'un seul
+ *     summary: Récupération de tous les départements ou d'un seul
  *     description: Permet de créer un département
  *     security:
  *       - bearerAuth: []
@@ -1873,7 +1873,7 @@ router.post(
  *               departement:
  *                 type: string
  *                 example: "93"
- *                 description: Nom du épartement
+ *                 description: Nom du département
  *
  *     responses:
  *       200:
@@ -1929,7 +1929,7 @@ router.get(
  *               departement:
  *                 type: string
  *                 example: "93"
- *                 description: Nom du épartement
+ *                 description: Nom du département
  *
  *     responses:
  *       200:
@@ -1955,7 +1955,7 @@ router.get(
  *                 - $ref: '#/components/schemas/InfoObject'
  *                 - example:
  *                     success: false
- *                     message: Adresse courriel du departement manquante saisie invalide
+ *                     message: Adresse courriel du département manquante, saisie invalide
  *
  *       401:
  *        $ref: '#/components/responses/InvalidTokenResponse'
@@ -1979,7 +1979,7 @@ router.patch(
  *   delete:
  *     tags: ["Administrateur"]
  *     summary: supprimer le département par son Id
- *     description: Permet supprimer un département
+ *     description: Permet de supprimer un département
  *     security:
  *       - bearerAuth: []
  *     requestBody:
@@ -1992,7 +1992,7 @@ router.patch(
  *               departement:
  *                 type: string
  *                 example: "93"
- *                 description: Nom du épartement
+ *                 description: Nom du département
  *
  *     responses:
  *       200:

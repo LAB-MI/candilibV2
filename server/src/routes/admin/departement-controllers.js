@@ -1,5 +1,6 @@
 /**
  * Contrôleurs pour la gestion des départements
+ *
  * @module routes/admin/departement-controllers
  */
 
@@ -15,10 +16,12 @@ import {
   updateDepartementsUsersAdminAndTech,
 } from './departement-business'
 
+import { appLogger } from '../../util'
+
 import {
   BAD_PARAMS,
   DEPARTEMENT_ALREADY_EXIST,
-  DEPARTEMENT_EMAIL_ALREADY_USE,
+  DEPARTEMENT_EMAIL_ALREADY_USED,
   EMAIL_ALREADY_USE,
   ERROR_AT_DEPARTEMENT_CREATION,
   ERROR_UPDATE_ADMIN_AND_TECH_USERS,
@@ -31,19 +34,18 @@ import {
 
 import config from '../../config'
 
-import { appLogger } from '../../util'
-
 /**
  * Crée un département
+ *
  * @async
  * @function
  *
  * @param {import('express').Request} req
- * @param {string} req.userId Id de l'utilisateur
+ * @param {string} req.userId - Identifiant de l'utilisateur
  *
  * @param {Object} req.body
- * @param {string} req.body.departementId ID du département
- * @param {string} req.body.departementEmail Adresse courriel du département
+ * @param {string} req.body.departementId - Identifiant du département
+ * @param {string} req.body.departementEmail - Adresse courriel du département
  */
 export const createDepartementsController = async (req, res) => {
   const { departementId, departementEmail } = req.body
@@ -78,10 +80,10 @@ export const createDepartementsController = async (req, res) => {
     })
   }
 
-  const isEmailUse = await isEmailAlreadyUse(departementEmail)
+  const isEmailUsed = await isEmailAlreadyUse(departementEmail)
 
-  if (isEmailUse) {
-    const message = DEPARTEMENT_EMAIL_ALREADY_USE
+  if (isEmailUsed) {
+    const message = DEPARTEMENT_EMAIL_ALREADY_USED
     appLogger.warn({
       ...loggerInfo,
       message,
@@ -115,7 +117,7 @@ export const createDepartementsController = async (req, res) => {
     )
     let message = ''
     if (isUsersUpdated) {
-      message = `Le département ${departementCreated._id} a bien été crée avec l'adresse courriel ${departementCreated.email}`
+      message = `Le département ${departementCreated._id} a bien été créé avec l'adresse courriel ${departementCreated.email}`
       appLogger.info({
         ...loggerInfo,
         descripton: message,
@@ -144,17 +146,17 @@ export const createDepartementsController = async (req, res) => {
     })
   }
 }
-
 /**
  * Récupère les informations d'un ou plusieurs départements
+ *
  * @async
  * @function
  *
  * @param {import('express').Request} req
- * @param {string} req.userId Id de l'utilisateur
+ * @param {string} req.userId - Identifiant de l'utilisateur
  *
  * @param {Object} req.query
- * @param {string} req.query.id ID du département
+ * @param {string} req.query.id - Identifiant du département
  */
 export const getDepartementsController = async (req, res) => {
   const departementId = req.query.id
@@ -172,7 +174,7 @@ export const getDepartementsController = async (req, res) => {
       appLogger.info({
         ...loggerInfo,
         departementId,
-        description: 'get one departement',
+        description: 'Get one departement',
       })
       return res.status(200).json({
         success: true,
@@ -206,14 +208,15 @@ export const getDepartementsController = async (req, res) => {
 
 /**
  * Supprime un département
+ *
  * @async
  * @function
  *
  * @param {import('express').Request} req
- * @param {string} req.userId Id de l'utilisateur
+ * @param {string} req.userId - Identifiant de l'utilisateur
  *
  * @param {Object} req.query
- * @param {string} req.query.id ID du département
+ * @param {string} req.query.id - Identifiant du département
  */
 export const deleteDepartementController = async (req, res) => {
   const departementId = req.query.id
@@ -236,11 +239,11 @@ export const deleteDepartementController = async (req, res) => {
           config.userStatuses.DELEGUE,
         ]
 
-        const isDepartementRemovedFormUsers = await removeDepartementOfUsersByStatus(
+        const isDepartementRemovedFromUsers = await removeDepartementOfUsersByStatus(
           departementId,
           userStatus
         )
-        if (isDepartementRemovedFormUsers) {
+        if (isDepartementRemovedFromUsers) {
           await deleteDepartement(departementId)
           message = `Le département ${departementId} a bien été supprimé`
           appLogger.info({
@@ -280,15 +283,16 @@ export const deleteDepartementController = async (req, res) => {
 
 /**
  * Met à jour les informations d'un département
+ *
  * @async
  * @function
  *
  * @param {import('express').Request} req
- * @param {string} req.userId Id de l'utilisateur
+ * @param {string} req.userId - Identifiant de l'utilisateur
  *
  * @param {Object} req.body
- * @param {string} req.body.departementId ID du département
- * @param {string} req.body.newEmail Nouveau courriel
+ * @param {string} req.body.departementId - Identifiant du département
+ * @param {string} req.body.newEmail - Nouvelle adresse courriel
  */
 export const updateDepartementsController = async (req, res) => {
   const { departementId, newEmail } = req.body
@@ -327,8 +331,8 @@ export const updateDepartementsController = async (req, res) => {
     })
   }
 
-  const isEmailUse = await isEmailAlreadyUse(newEmail)
-  if (isEmailUse) {
+  const isEmailUsed = await isEmailAlreadyUse(newEmail)
+  if (isEmailUsed) {
     const message = EMAIL_ALREADY_USE
 
     appLogger.info({

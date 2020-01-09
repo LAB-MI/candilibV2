@@ -44,18 +44,18 @@ export const INVALID_DEPARTEMENTS_LIST = 'La liste départements est invalide'
 export const INVALID_DEPARTEMENT_NUMBER = 'Numéro de département non renseigné'
 export const INVALID_DEPARTEMENT_EMAIL =
   'Adresse courriel du département non renseigné'
-export const DEPARTEMENT_EMAIL_ALREADY_USE =
-  'Adresse courriel est déjà utilisé par un autre département'
+export const DEPARTEMENT_EMAIL_ALREADY_USED =
+  'Cette adresse courriel est déjà utilisée par un autre département'
 export const DEPARTEMENT_ALREADY_EXIST = 'Ce département existe déjà'
 export const ERROR_AT_DEPARTEMENT_CREATION =
   'Erreur survenue lors de création du département'
 export const FETCH_ALL_DEPARTEMENTS = 'Récupération de tous les départements'
 export const BAD_PARAMS = 'Paramètre saisie invalide'
 export const INVALID_EMAIL_INSERT =
-  'Adresse courriel du département manquante saisie invalide'
+  'Adresse courriel du département manquante, saisie invalide'
 export const EMAIL_ALREADY_USE =
-  'Adresse courriel du département saisie existe déjà sur un autre département'
+  "L'adresse courriel du département saisie existe déjà sur un autre département"
 export const ERROR_UPDATE_DEPARTEMENT =
   "Une erreur s'est produite lors de la mise à jour du département"
 export const ERROR_UPDATE_ADMIN_AND_TECH_USERS =
-  'Suite à un problème lors de la mise à jour des utilisateurs Admin'
+  'Erreur survenue, suite à un problème lors de la mise à jour des utilisateurs Admin'

@@ -227,7 +227,7 @@ export const updateUser = async (email, { departements, status }) => {
  * @async
  * @function
  *
- * @param {Object} filter - Adresse courriel de l'utilisateur à modifier
+ * @param {Object} filter - filtre
  * @param {Object} valueToSet - Les données à modifier
  *
  * @returns {Promise.<object>} - Un  objet contenant le nombre de utilisateurs modifiés
@@ -244,17 +244,19 @@ export const updateManyUser = async (filter, valueToSet) => {
  * @async
  * @function
  *
- * @param {Object} filter - Adresse courriel de l'utilisateur à modifier
+ * @param {Object} filter
+ * @param {string} filter.filterBy - nom du champ à filtrer
+ * @param {array} filter.inValue - tableau contenant les filtres
  *
  * @returns {Promise.<Array>} - Un tableau d'object User
  */
 export const findManyUser = async ({ filterBy, inValue }) => {
-  const foundedUsers = await User.find({
+  const foundUsers = await User.find({
     [filterBy]: {
       $in: [...inValue],
     },
   })
-  return foundedUsers
+  return foundUsers
 }
 
 /**
