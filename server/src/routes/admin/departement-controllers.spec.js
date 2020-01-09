@@ -140,8 +140,9 @@ describe('Département controllers', () => {
       .expect(200)
 
     expect(body).toHaveProperty('success', true)
-    expect(body.result[0]).toHaveProperty('_id', departementList[0]._id)
-    expect(body.result[0]).toHaveProperty('email', departementList[0].email)
+    expect(body.result.map(el => ({ _id: el._id, email: el.email }))).toEqual(
+      expect.arrayContaining(departementList)
+    )
   })
 
   it('Should get a list of departement', async () => {
