@@ -57,7 +57,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 import { CREATE_DEPARTEMENT_REQUEST } from '@/store'
 import {
@@ -79,13 +79,16 @@ export default {
         departementEmail => departementEmail ? (emailRegex.test(departementEmail) || "L'adresse courriel doit être valide") : true,
       ],
       departementRules: [
-        departementId => !!departementId || 'Veuillez renseigner le numero département',
+        departementId => !!departementId || 'Veuillez renseigner le numéro département',
       ],
     }
   },
 
   computed: {
-    ...mapGetters(['isFetching', 'departementList']),
+    ...mapState({
+      isFetching: state => state.adminDepartements.isFetching,
+      departementList: state => state.adminDepartements.list,
+    }),
   },
 
   methods: {

@@ -8,9 +8,10 @@ Delete departement use by center
 
 describe('Create, see, update and delete departement', () => {
   const departement77Email = 'departement77@example.com'
+  const departement077Email = 'departement077@example.com'
   const departement77Id = '77'
   const departement75Id = '75'
-  const departement75Email = 'departement75@example.com'
+  const departement75Email = 'departement075@example.com'
 
   before(() => {
     cy.deleteAllMails()
@@ -34,18 +35,20 @@ describe('Create, see, update and delete departement', () => {
       .click()
 
     cy.get('.v-snack')
-      .should('contain', `Le département ${departement77Id} a bien été crée avec l'adresse courriel ${departement77Email}`)
+      .should('contain', `Le département ${departement77Id} a bien été créé avec l'adresse courriel ${departement77Email}`)
   })
 
   it('Should not create a departement with existing id', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/departements')
+    cy.get('.t-input-email [type=text]')
+      .type(departement077Email)
     cy.get('.t-input-departementId [type=text]')
       .type(departement77Id)
     cy.get('.t-create-btn')
       .click()
 
     cy.get('.v-snack')
-      .should('contain', `Département exist déjà`)
+      .should('contain', `Ce département existe déjà`)
   })
 
   it('Should delete departement unused by center', () => {
@@ -69,7 +72,9 @@ describe('Create, see, update and delete departement', () => {
     cy.get('.t-btn-delete-confirm')
       .click()
     cy.get('.v-snack')
-      .should('contain', `Le département ${departement75Id} n'a pas été supprimé, car des centres y sont liée`)
+      .should('contain', `Le département ${departement75Id} n'a pas été supprimé, car des centres y sont liés`)
+    cy.get('.t-btn-cancel-delete')
+      .click()
   })
 
   it('Should update departement', () => {

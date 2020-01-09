@@ -17,7 +17,6 @@ import {
 } from './departement-business'
 
 import { appLogger } from '../../util'
-// import { appLogger } from '../../util/logger'
 
 import { appLogger } from '../../util'
 

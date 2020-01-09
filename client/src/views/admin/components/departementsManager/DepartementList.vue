@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapState } from 'vuex'
 
 import { FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST } from '@/store'
 import CreateDepartement from './CreateDepartement'
@@ -49,7 +49,13 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['isFetching', 'isCreating', 'isUpdating', 'isDeleting', 'departementList']),
+    ...mapState({
+      isCreating: state => state.adminDepartements.isCreating,
+      isFetching: state => state.adminDepartements.isFetching,
+      isUpdating: state => state.adminDepartements.isUpdating,
+      isDeleting: state => state.adminDepartements.isDeleting,
+      departementList: state => state.adminDepartements.list,
+    }),
   },
 
   watch: {

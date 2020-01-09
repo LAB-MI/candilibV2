@@ -19,24 +19,6 @@ export const DELETE_DEPARTEMENT_SUCCESS = 'DELETE_DEPARTEMENT_SUCCESS'
 export const DELETE_DEPARTEMENT_FAILURE = 'DELETE_DEPARTEMENT_FAILURE'
 
 export default {
-  getters: {
-    isCreating: state => {
-      return state.isCreating
-    },
-    isFetching: state => {
-      return state.isFetching
-    },
-    isUpdating: state => {
-      return state.isUpdating
-    },
-    isDeleting: state => {
-      return state.isDeleting
-    },
-    departementList: state => {
-      return state.list
-    },
-  },
-
   state: {
     errorCreate: {},
     errorFetch: {},
@@ -108,7 +90,7 @@ export default {
         commit(FETCH_DEPARTEMENTS_BY_ADMIN_SUCCESS, departementList)
       } catch (error) {
         commit(FETCH_DEPARTEMENTS_BY_ADMIN_FAILURE, error)
-        return dispatch(SHOW_ERROR, error.message)
+        throw dispatch(SHOW_ERROR, error.message)
       }
     },
 
@@ -123,7 +105,7 @@ export default {
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
         commit(UPDATE_DEPARTEMENT_FAILURE, error)
-        return dispatch(SHOW_ERROR, error.message)
+        throw dispatch(SHOW_ERROR, error.message)
       }
     },
 
@@ -139,7 +121,7 @@ export default {
         dispatch(FETCH_ADMIN_INFO_REQUEST)
       } catch (error) {
         commit(CREATE_DEPARTEMENT_FAILURE, error)
-        return dispatch(SHOW_ERROR, error.message)
+        throw dispatch(SHOW_ERROR, error.message)
       }
     },
 
@@ -156,7 +138,7 @@ export default {
         dispatch(FETCH_ADMIN_INFO_REQUEST)
       } catch (error) {
         commit(DELETE_DEPARTEMENT_FAILURE, error)
-        return dispatch(SHOW_ERROR, error.message)
+        throw dispatch(SHOW_ERROR, error.message)
       }
     },
   },
