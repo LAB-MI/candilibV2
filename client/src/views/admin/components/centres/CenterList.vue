@@ -26,7 +26,7 @@
                 <v-list-item-title>
                   <span
                     class="u-uppercase"
-                    :class="!centre.active ? 'blue-grey--text' : ''"
+                    :class="centre.active !== false ? '' : 'blue-grey--text'"
                   >
                     {{ centre.nom }}
                   </span>
@@ -35,7 +35,7 @@
                 <v-list-item-subtitle
                   class="blue-grey--text"
                 >
-                  {{ centre.active ? centre.adresse : "Ce centre est archivé." }}
+                  {{ centre.active !== false ? centre.adresse : "Ce centre est archivé." }}
                 </v-list-item-subtitle>
               </v-list-item-content>
             </div>
@@ -66,7 +66,7 @@
             <delete-centre
               :key="`${centre._id}_delete`"
               :centre-name="centre.nom + ' (' + centre.departement + ')'"
-              :is-active="centre.active"
+              :is-active="centre.active !== false"
               @click="changeCenter({id: centre._id, active: !centre.active})"
             />
           </template>
