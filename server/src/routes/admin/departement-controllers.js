@@ -80,21 +80,21 @@ export const createDepartementsController = async (req, res) => {
     })
   }
 
-  const isEmailUsed = await isEmailAlreadyUse(departementEmail)
-
-  if (isEmailUsed) {
-    const message = DEPARTEMENT_EMAIL_ALREADY_USED
-    appLogger.warn({
-      ...loggerInfo,
-      description: message,
-    })
-    return res.status(400).json({
-      success: false,
-      message,
-    })
-  }
-
   try {
+    const isEmailUsed = await isEmailAlreadyUse(departementEmail)
+
+    if (isEmailUsed) {
+      const message = DEPARTEMENT_EMAIL_ALREADY_USED
+      appLogger.warn({
+        ...loggerInfo,
+        description: message,
+      })
+      return res.status(400).json({
+        success: false,
+        message,
+      })
+    }
+
     const isExist = await isDepartementAlreadyExist(departementId)
     if (isExist) {
       const message = DEPARTEMENT_ALREADY_EXIST
@@ -197,6 +197,7 @@ export const getDepartementsController = async (req, res) => {
     appLogger.error({
       ...loggerInfo,
       description: error.message,
+      error,
     })
 
     res.status(500).json({
@@ -276,6 +277,7 @@ export const deleteDepartementController = async (req, res) => {
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
+      description: error.message,
       error,
     })
 

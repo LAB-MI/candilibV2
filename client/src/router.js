@@ -8,7 +8,12 @@ import {
   checkCandidatToken,
   checkAccess,
 } from './router-checks'
-import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI } from './constants'
+import {
+  ROUTE_AUTHORIZE_AURIGE,
+  ROUTE_AUTHORIZE_STATS_KPI,
+  ROUTE_AUTHORIZE_CENTRES,
+  ROUTE_AUTHORIZE_DEPARTEMENTS,
+} from './constants'
 
 Vue.use(Router)
 
@@ -44,6 +49,7 @@ const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefet
 const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
 const ResetPassword = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/ResetPassword.vue')
 const Agents = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Agents.vue')
+const DepartementList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/departementsManager/DepartementList.vue')
 
 const adminRoutes = [
   {
@@ -80,7 +86,7 @@ const adminRoutes = [
       },
       {
         path: 'centres',
-        name: 'centres',
+        name: ROUTE_AUTHORIZE_CENTRES,
         component: CenterList,
         beforeEnter: checkAccess,
       },
@@ -99,6 +105,12 @@ const adminRoutes = [
         path: 'agents',
         name: 'agents',
         component: Agents,
+        beforeEnter: checkAccess,
+      },
+      {
+        path: 'departements',
+        name: ROUTE_AUTHORIZE_DEPARTEMENTS,
+        component: DepartementList,
         beforeEnter: checkAccess,
       },
     ],

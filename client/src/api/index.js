@@ -572,6 +572,14 @@ export default {
       return json
     },
 
+    async createDepartement (departementId, departementEmail) {
+      const json = await apiClient.post(`${apiPaths.admin.departements}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ departementId, departementEmail }),
+      })
+      return json
+    },
+
     async modifyCentre ({ centreId, nom, label, adresse, lon, lat, active }) {
       const json = await apiClient.patch(apiPaths.admin.centres, {
         headers: getHeadersForAdminJson(),
@@ -588,10 +596,33 @@ export default {
       return json
     },
 
+    async getDepartements (departementId) {
+      const paramString = departementId ? `${departementId}` : ''
+      const json = await apiClient.get(`${apiPaths.admin.departements}/${paramString}`, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
     async createCentre ({ nom, label, adresse, lon, lat, departement }) {
       const json = await apiClient.post(apiPaths.admin.centres, {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify({ nom, label, adresse, lon, lat, departement }),
+      })
+      return json
+    },
+    async updateDepartement (departementId, newEmail) {
+      const json = await apiClient.patch(`${apiPaths.admin.departements}/${departementId}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ newEmail }),
+      })
+      return json
+    },
+
+    async deleteDepartement (departementId) {
+      const paramString = departementId ? `${departementId}` : ''
+      const json = await apiClient.delete(`${apiPaths.admin.departements}/${paramString}`, {
+        headers: getHeadersForAdminJson(),
       })
       return json
     },
