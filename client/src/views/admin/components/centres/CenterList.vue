@@ -5,7 +5,7 @@
         <h3 class="text-center">
           Ajouter un centre
         </h3>
-        <center-form />
+        <center-form :add-centre="true" />
       </v-card>
 
       <v-card class="mt-4">
