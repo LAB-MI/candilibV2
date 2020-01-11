@@ -359,7 +359,7 @@ export default {
     },
 
     async searchCandidats (search, departement, startingWith, endingWith) {
-      let url = `${apiPaths.admin.searchCandidats}${search || ''}&departement=${departement}`
+      let url = `${apiPaths.admin.candidats}?matching=${search || ''}&departement=${departement}`
       if (startingWith) {
         url += '&startingWith=true'
       }
@@ -460,14 +460,17 @@ export default {
       return json
     },
 
-    async searchInspecteurs (search, departement) {
-      const json = await apiClient.get(
-        `${apiPaths.admin.inspecteurs}?matching=${search ||
-          ''}&departement=${departement}`,
-        {
-          headers: getHeadersForAdminJson(),
-        },
-      )
+    async searchInspecteurs (search, departement, startingWith, endingWith) {
+      let url = `${apiPaths.admin.inspecteurs}?matching=${search || ''}&departement=${departement}`
+      if (startingWith) {
+        url += '&startingWith=true'
+      }
+      if (endingWith) {
+        url += '&endingWith=true'
+      }
+      const json = await apiClient.get(url, {
+        headers: getHeadersForAdminJson(),
+      })
       return json
     },
 

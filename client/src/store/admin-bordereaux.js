@@ -2,17 +2,26 @@ import api from '@/api'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
 
-export const GENERATE_INSPECTOR_BORDEREAUX_REQUEST = 'GENERATE_INSPECTOR_BORDEREAUX_REQUEST'
-export const GENERATE_INSPECTOR_BORDEREAUX_SUCCESS = 'GENERATE_INSPECTOR_BORDEREAUX_SUCCESS'
-export const GENERATE_INSPECTOR_BORDEREAUX_FAILURE = 'GENERATE_INSPECTOR_BORDEREAUX_FAILURE'
+export const GENERATE_INSPECTOR_BORDEREAUX_REQUEST =
+  'GENERATE_INSPECTOR_BORDEREAUX_REQUEST'
+export const GENERATE_INSPECTOR_BORDEREAUX_SUCCESS =
+  'GENERATE_INSPECTOR_BORDEREAUX_SUCCESS'
+export const GENERATE_INSPECTOR_BORDEREAUX_FAILURE =
+  'GENERATE_INSPECTOR_BORDEREAUX_FAILURE'
 
-export const FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST'
-export const FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS'
-export const FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE = 'FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE'
+export const FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST =
+  'FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST'
+export const FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS =
+  'FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS'
+export const FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE =
+  'FETCH_INSPECTEURS_BY_DEPARTEMENT_FAILURE'
 
-export const MATCH_INSPECTEURS_IN_LIST_REQUEST = 'MATCH_INSPECTEURS_IN_LIST_REQUEST'
-export const MATCH_INSPECTEURS_IN_LIST_SUCCESS = 'MATCH_INSPECTEURS_IN_LIST_SUCCESS'
-export const MATCH_INSPECTEURS_IN_LIST_FAILURE = 'MATCH_INSPECTEURS_IN_LIST_FAILURE'
+export const MATCH_INSPECTEURS_IN_LIST_REQUEST =
+  'MATCH_INSPECTEURS_IN_LIST_REQUEST'
+export const MATCH_INSPECTEURS_IN_LIST_SUCCESS =
+  'MATCH_INSPECTEURS_IN_LIST_SUCCESS'
+export const MATCH_INSPECTEURS_IN_LIST_FAILURE =
+  'MATCH_INSPECTEURS_IN_LIST_FAILURE'
 
 export default {
   state: {
@@ -69,12 +78,19 @@ export default {
 
   actions: {
     async [GENERATE_INSPECTOR_BORDEREAUX_REQUEST] ({ commit, dispatch }, infos) {
-      const { departement, date, isForInspecteurs, inspecteurIdListe } = infos
+      const { departement, date, isForInspecteurs, inspecteurIdList } = infos
       commit(GENERATE_INSPECTOR_BORDEREAUX_REQUEST)
       try {
-        const { success } = await api.admin.generateBordereaux(departement, date, isForInspecteurs, inspecteurIdListe)
+        const { success } = await api.admin.generateBordereaux(
+          departement,
+          date,
+          isForInspecteurs,
+          inspecteurIdList,
+        )
         if (!success) {
-          throw new Error("Un problème s'est produit lors de l'envoi des courriels")
+          throw new Error(
+            "Un problème s'est produit lors de l'envoi des courriels",
+          )
         }
         commit(GENERATE_INSPECTOR_BORDEREAUX_SUCCESS)
         dispatch(SHOW_SUCCESS, 'Les emails ont bien été envoyés')
@@ -84,12 +100,20 @@ export default {
       }
     },
 
-    async [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }, date) {
+    async [FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST] (
+      { commit, dispatch, getters },
+      date,
+    ) {
       commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_REQUEST)
       try {
-        const inspecteurs = await api.admin.getInspecteursBookedByDepartement(date, getters.activeDepartement)
+        const inspecteurs = await api.admin.getInspecteursBookedByDepartement(
+          date,
+          getters.activeDepartement,
+        )
         if (!inspecteurs.success) {
-          throw new Error("Un problème s'est produit lors de la récupération de la liste des inspecteurs pour l'envoi de bordereaux")
+          throw new Error(
+            "Un problème s'est produit lors de la récupération de la liste des inspecteurs pour l'envoi de bordereaux",
+          )
         }
         const inspecteurList = inspecteurs.results
         commit(FETCH_INSPECTEURS_BY_DEPARTEMENT_SUCCESS, inspecteurList)
@@ -99,14 +123,21 @@ export default {
       }
     },
 
-    async [MATCH_INSPECTEURS_IN_LIST_REQUEST] ({ commit, dispatch, state, getters }, stringToMatch) {
+    async [MATCH_INSPECTEURS_IN_LIST_REQUEST] (
+      { commit, dispatch, state },
+      { search, startingWith, endingWith },
+    ) {
       commit(MATCH_INSPECTEURS_IN_LIST_REQUEST)
       try {
-        const matchList = state.inspecteursOfCurrentDpt.list.filter(({ inspecteur }) => (
-          inspecteur.nom.includes(stringToMatch) ||
-            inspecteur.matricule.includes(stringToMatch) ||
-            inspecteur.email.includes(stringToMatch)
-        ))
+        const $search = new RegExp(`${startingWith ? '^' : ''}${search}${endingWith ? '$' : ''}`, 'i')
+
+        const matchList = state.inspecteursOfCurrentDpt.list.filter(
+          ({ inspecteur }) =>
+            inspecteur.prenom.match($search) ||
+            inspecteur.nom.match($search) ||
+            inspecteur.matricule.match($search) ||
+            inspecteur.email.match($search),
+        )
 
         commit(MATCH_INSPECTEURS_IN_LIST_SUCCESS, matchList)
       } catch (error) {

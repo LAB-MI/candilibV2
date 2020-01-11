@@ -1,17 +1,14 @@
 /* Tests :
 - Candidate search and display of the name
-- Inspector search and display of the name
-- Checks the display of the centers for the 75 and 93
-- Checks the correct display of the places in the center
-- Checks that the link directs to the right date and center
 */
 
-describe('Search Candidat', () => {
+describe('Search Candidate', () => {
   before(() => {
     // Delete all mails before start
     cy.deleteAllMails()
     cy.adminLogin()
-    cy.addToWhitelist()
+    cy.archiveCandidate()
+    cy.addPlanning()
     cy.adminDisconnection()
     cy.candidatePreSignUp()
   })
@@ -25,7 +22,10 @@ describe('Search Candidat', () => {
       .click()
     cy.get('h3')
       .should('contain', 'nformations')
-    cy.get('h4')
-      .should('contain', Cypress.env('candidat'))
+    cy.get('.t-result-candidat')
+      .contains('Email')
+      .parent()
+      .should('contain', Cypress.env('emailCandidat'))
+    cy.adminDisconnection()
   })
 })

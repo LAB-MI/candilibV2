@@ -22,7 +22,7 @@
       />
       <v-checkbox
         v-model="endingWith"
-        label="Fini par"
+        label="Finit par"
       />
     </div>
   </div>
@@ -45,7 +45,7 @@ export default {
     },
     items: {
       type: Array,
-      default () { return [{ text: 'Impossible', value: undefined }] },
+      default () { return [{ text: 'Veuillez taper au moins 3 caractères', value: undefined }] },
     },
     itemText: {
       type: String,
@@ -74,8 +74,8 @@ export default {
       searchInput: undefined,
       selected: undefined,
       timeoutId: undefined,
-      startingWith: false,
-      endingWith: false,
+      startingWith: true,
+      endingWith: true,
     }
   },
 
@@ -85,10 +85,13 @@ export default {
         startingWith,
         endingWith,
       } = this
+
+      searchQuery = searchQuery.trim()
       if (!searchQuery || searchQuery.length < 3) {
         this.emptyList = []
         return
       }
+
       this.emptyList = undefined
       clearTimeout(this.timeoutId)
       this.timeoutId = setTimeout(() => {

@@ -11,26 +11,27 @@
         item-value="_id"
         :fetch-autocomplete-action="fetchAutocompleteAction"
         @selection="displayCandidatInfo"
-      />
-      <v-btn
-        icon
-        :disabled="!candidat"
-        color="white"
-        @click="toggleProfileInfo"
       >
-        <v-icon
-          :color="color"
+        <v-btn
+          icon
+          :disabled="!candidat"
+          color="white"
+          @click="toggleProfileInfo"
         >
-          {{ icon }}
-        </v-icon>
-      </v-btn>
+          <v-icon
+            :color="color"
+          >
+            {{ icon }}
+          </v-icon>
+        </v-btn>
+      </candilib-autocomplete>
     </div>
     <v-expand-transition>
       <profile-info
         v-if="profileInfo"
         class="t-result-candidat"
         title="Informations Candidat"
-        :subtitle="candiInfo.toString()"
+        :subtitle="candidat.prenom + ' ' + candidat.nomNaissance + ' | ' + candidat.codeNeph"
         :profile-info="profileInfo"
       />
     </v-expand-transition>
@@ -149,13 +150,6 @@ export default {
         const nameNeph = nomNaissance + '  ' + prenom + ' | ' + codeNeph
         return { nameNeph, ...candidat }
       }),
-    candiInfo: state => state.adminSearch.candidats.list
-      .map(candidat => {
-        const { nomNaissance, prenom, codeNeph } = candidat
-        const nameNeph = nomNaissance + '  ' + prenom + ' - ' + codeNeph
-        return nameNeph
-      }),
-
   }),
 
   watch: {

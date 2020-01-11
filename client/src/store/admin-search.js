@@ -90,9 +90,13 @@ export default {
       }
     },
 
-    async FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST ({ commit, rootState }, search) {
+    async FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST (
+      { commit, rootState: { admin: { departements } } },
+      { search, startingWith, endingWith },
+    ) {
       try {
-        const list = await api.admin.searchInspecteurs(search, rootState.admin.departements.active || rootState.admin.departements.list[0])
+        const departement = departements.active || departements.list[0]
+        const list = await api.admin.searchInspecteurs(search, departement, startingWith, endingWith)
         commit(FETCH_AUTOCOMPLETE_INSPECTEURS_SUCCESS, list)
       } catch (error) {
         commit(FETCH_AUTOCOMPLETE_INSPECTEURS_FAILURE, error)
