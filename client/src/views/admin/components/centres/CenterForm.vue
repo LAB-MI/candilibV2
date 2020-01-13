@@ -4,7 +4,12 @@
     v-model="valid"
     @submit.prevent="createCentre"
   >
-    <v-container>
+    <v-container
+      :class="{
+        't-create-centre-form': addCentre,
+        't-update-centre-form': !addCentre,
+      }"
+    >
       <v-row class="mx-10">
         <v-text-field
           v-model="nom"
@@ -14,6 +19,7 @@
           label="Nom"
           :placeholder="placeholders.nom"
           required
+          name="nom-centre"
           :rules="generalRules"
           @focus="setPlaceholder('nom')"
           @blur="removePlaceholder('nom')"
@@ -24,9 +30,10 @@
           prepend-icon="comment"
           :aria-placeholder="defaults.label"
           :hint="'ex. : ' + defaults.label"
-          label="Étiquette"
+          label="Informations complémentaires"
           :placeholder="placeholders.label"
           required
+          name="label-centre"
           :rules="generalRules"
           @focus="setPlaceholder('label')"
           @blur="removePlaceholder('label')"
@@ -42,6 +49,7 @@
           label="Adresse"
           :placeholder="placeholders.adresse"
           required
+          name="adresse-centre"
           :rules="generalRules"
           @focus="setPlaceholder('adresse')"
           @blur="removePlaceholder('adresse')"
@@ -57,6 +65,7 @@
           label="Longitude"
           :placeholder="placeholders.lon"
           required
+          name="lon-centre"
           :rules="[...generalRules, ...numberRules]"
           @focus="setPlaceholder('lon')"
           @blur="removePlaceholder('lon')"
@@ -71,6 +80,7 @@
           label="Latitude"
           :placeholder="placeholders.lat"
           required
+          name="lat-centre"
           :rules="[...generalRules, ...numberRules]"
           @focus="setPlaceholder('lat')"
           @blur="removePlaceholder('lat')"
@@ -80,11 +90,13 @@
         <v-select
           v-if="addCentre"
           v-model="departement"
+          class="t-create-center-select-departement"
           :items="availableDepartements"
           label="Département"
           prepend-icon="my_location"
           aria-placeholder="93"
           hint="ex. : 93"
+          name="departement-centre"
           :rules="departementRules"
           required
         />
@@ -99,6 +111,7 @@
           :aria-disabled="!valid || isCreating"
           tabindex="0"
           raised
+          class="t-create-centre-submit"
           color="success"
         >
           Ajouter

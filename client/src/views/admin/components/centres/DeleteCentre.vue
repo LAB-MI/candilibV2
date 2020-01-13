@@ -10,13 +10,15 @@
         icon
         v-on="on"
       >
-        <v-icon>{{ isActive ? 'delete' : 'restore_from_trash' }}</v-icon>
+        <v-icon class="t-archive-centre-icon">
+          {{ isActive ? 'delete' : 'restore_from_trash' }}
+        </v-icon>
       </v-btn>
     </template>
 
     <v-card>
       <v-card-title
-        class="headline grey lighten-2"
+        class="headline  grey  lighten-2  t-centre-archive-btn"
         primary-title
       >
         {{ action }} {{ centreName }}
@@ -42,7 +44,8 @@
           Annuler
         </v-btn>
         <v-btn
-          class="t-btn-delete-confirm"
+          class="t-archive-centre-submit"
+          type="submit"
           color="primary"
           @click="$emit('click'); showDialog = false"
         >

@@ -74,6 +74,7 @@ const headerIcons = [
     routerTo: ROUTE_AUTHORIZE_CENTRES,
     iconName: 'business',
     tooltipText: "Centres d'examens",
+    isProtected: true,
   },
   {
     routerTo: ROUTE_AUTHORIZE_DEPARTEMENTS,
