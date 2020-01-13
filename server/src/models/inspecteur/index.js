@@ -1,1 +1,1 @@
-export * from './inspecteur.queries'
+export * from './inspecteur-queries'

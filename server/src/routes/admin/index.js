@@ -13,7 +13,17 @@ import {
   getUsers,
   updatedInfoUser,
 } from './admin.controllers'
-import { getInspecteurs } from './inspecteurs-controllers'
+import {
+  createIpcsr,
+  getInspecteurs,
+  updateIpcsr,
+} from './inspecteurs-controllers'
+import {
+  createDepartementsController,
+  getDepartementsController,
+  deleteDepartementController,
+  updateDepartementsController,
+} from './departement-controllers'
 import {
   createOrImportPlaceByAdmin,
   deleteByAdmin,
@@ -30,6 +40,11 @@ import {
   addWhitelisted,
   removeWhitelisted,
 } from './whitelisted.controllers'
+import {
+  getAdminCentres,
+  modifyCentre,
+  createCentre,
+} from '../common/centre-controllers'
 import {
   verifyAccessAurige,
   verifyRepartiteurDepartement,
@@ -455,7 +470,267 @@ router.post(
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_inspecteurs}
  */
 router.get('/inspecteurs', getInspecteurs)
+
+/**
+ * @swagger
+ *
+ * /admin/inspecteurs/{id}:
+ *   put:
+ *     tags: ["Administrateur"]
+ *     summary: Modification des infos d'un inspecteur
+ *     description: L'administrateur modifie les informations d'un inspecteur
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *           example: 456088afdaecd3462089
+ *         required: true
+ *         description: Identifiant de l'IPCSR dans la base de données
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               departement:
+ *                 type: string
+ *                 example: 93
+ *                 description: Valeur du département d'intervention de l'IPCSR
+ *               email:
+ *                 type: string
+ *                 example: jacques.dupont@example.com
+ *                 description: Adresse courriel de l'IPCSR
+ *               matricule:
+ *                 type: string
+ *                 example: '059049585'
+ *                 description: Matricule de l'IPCSR
+ *               nom:
+ *                 type: string
+ *                 example: 'Dupont'
+ *                 description: Nom de l'IPCSR
+ *               prenom:
+ *                 type: string
+ *                 example: 'Jacques'
+ *                 description: Prénom de l'IPCSR
+ *     responses:
+ *       200:
+ *         description: Succès de la requête, l'IPCSR a été modifié
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: Statut de la requête et IPCSR modifié
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 ipcsr:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       description: Identifiant de l'IPCSR
+ *                     email:
+ *                       type: string
+ *                       description: Adresse courriel de l'IPCSR
+ *                     matricule:
+ *                       type: string
+ *                       description: Matricule de l'IPCSR
+ *                     nom:
+ *                       type: string
+ *                       description: Nom de l'IPCSR
+ *                     prenom:
+ *                       type: string
+ *                       description: Prénom de l'IPCSR
+ *                     departement:
+ *                       type: string
+ *                       description: Code du département de l'IPCSR
+ *             example: {
+ *               success: true,
+ *               ipcsr: {
+ *                 _id: 5d970a006a503f67d254124d,
+ *                 email: dupond.jacques@email.fr,
+ *                 matricule: 01020301,
+ *                 nom: DUPOND,
+ *                 prenom: Jacques,
+ *                 departement: 93
+ *               }
+ *             }
+ *
+ *       403:
+ *         description: L'utilisateur n'est pas autorisé à modifier cet IPCSR
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Vous n'êtes pas autorisé à modifier cet IPCSR ${prenom} ${nom} ${matricule} (${ipcsrId})
+ *
+ *       409:
+ *         description: L'IPCSR ne peut pas être supprimé car il est sur des places qui lui sont réservées
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: "Impossible d'archiver cet inspecteur : il est associé à des places d'examens"
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * L'administrateur modifie les informations d'un inspecteur
+ *
+ * @callback updateIpcsr
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/put_admin_inspecteurs}
+ */
+router.put('/inspecteurs/:id', updateIpcsr)
+
+// router.patch('/inspecteurs/:id', updateIpcsr) // Activer/désactiver un inspecteur
+
+/**
+ * @swagger
+ *
+ * /admin/inspecteurs:
+ *   put:
+ *     tags: ["Administrateur"]
+ *     summary: Ajout d'un IPCSR dans un département
+ *     description: L'administrateur crée un IPCSR dans la base de données
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               departement:
+ *                 type: string
+ *                 required: true,
+ *                 example: 93
+ *                 description: Valeur du département d'intervention de l'IPCSR
+ *               email:
+ *                 type: string
+ *                 required: true,
+ *                 example: jacques.dupont@example.com
+ *                 description: Adresse courriel de l'IPCSR
+ *               matricule:
+ *                 type: string
+ *                 required: true,
+ *                 example: '059049585'
+ *                 description: Matricule de l'IPCSR
+ *               nom:
+ *                 type: string
+ *                 required: true,
+ *                 example: 'Dupont'
+ *                 description: Nom de l'IPCSR
+ *               prenom:
+ *                 type: string
+ *                 required: true,
+ *                 example: 'Jacques'
+ *                 description: Prénom de l'IPCSR
+ *     responses:
+ *       200:
+ *         description: Succès de la requête, l'IPCSR a été créé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               description: Statut de la requête et IPCSR créé
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 ipcsr:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       description: Identifiant de l'IPCSR
+ *                     email:
+ *                       type: string
+ *                       description: Adresse courriel de l'IPCSR
+ *                     matricule:
+ *                       type: string
+ *                       description: Matricule de l'IPCSR
+ *                     nom:
+ *                       type: string
+ *                       description: Nom de l'IPCSR
+ *                     prenom:
+ *                       type: string
+ *                       description: Prénom de l'IPCSR
+ *                     departement:
+ *                       type: string
+ *                       description: Code du département de l'IPCSR
+ *             example: {
+ *               success: true,
+ *               ipcsr: {
+ *                 _id: 5d970a006a503f67d254124d,
+ *                 email: dupond.jacques@email.fr,
+ *                 matricule: 01020301,
+ *                 nom: DUPOND,
+ *                 prenom: Jacques,
+ *                 departement: 93
+ *               }
+ *             }
+ *
+ *       400:
+ *         description: Au moins un des paramètres requis est absent
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Tous les champs sont obligatoires
+ *
+ *
+ *       403:
+ *         description: L'utilisateur n'est pas autorisé à créer cet IPCSR
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Vous n'êtes pas autorisé à créer cet IPCSR dans ce département
+ *
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * L'administrateur crée un IPCSR
+ *
+ * @callback createIpcsr
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_inspecteurs}
+ */
+router.post('/inspecteurs', createIpcsr)
+
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
+
 /**
  * @swagger
  * /admin/places:
@@ -1212,14 +1487,10 @@ router.patch('/users', verifyDelegueLevel(), updatedInfoUser)
  *                   description: Département accessible par l'utilisateur
  *                 example: ["93"]
  *                 description: Départements de l'utilisateur
- *               status:
- *                 type: string
- *                 example: repartiteur
- *                 description: Statut de l'utilisateur
  *
  *     responses:
  *       200:
- *         description: Utilisateur supprimé
+ *         description: Département créé
  *         content:
  *           application/json:
  *             schema:
@@ -1254,7 +1525,499 @@ router.patch('/users', verifyDelegueLevel(), updatedInfoUser)
  *
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_users }
  */
-
 router.delete('/users', verifyDelegueLevel(), archiveUserController)
 
+/**
+ * @swagger
+ *
+ * /admin/centres:
+ *   get:
+ *     tags: ["Administrateur"]
+ *     summary: Récupération des centres pour l'administrateur
+ *     description: Retourne la liste complète des centres accessible par l'administrateur
+ *     security:
+ *       - bearerAuth: []
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *                 centres:
+ *                   type: array
+ *                   description: Liste des centres
+ *                   items:
+ *                     $ref: '#/components/schemas/CenterObject'
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+router.get(
+  '/centres',
+  verifyUserLevel(config.userStatusLevels.delegue),
+  getAdminCentres
+)
+
+/**
+ * @swagger
+ *
+ * /admin/centres:
+ *   patch:
+ *     tags: ["Administrateur"]
+ *     summary: Modification d'un centre par l'administrateur
+ *     description: Permet à un administrateur de modifier ou désactiver un centre
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Données du formulaire
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               centreId:
+ *                 type: string
+ *                 example: 5dce6ec901353671dead8959
+ *                 description: Identifiant du centre affecté
+ *               nom:
+ *                 type: string
+ *                 description: Nom du centre (de la ville du centre)
+ *                 example: Noisy le Grand
+ *               label:
+ *                 type: string
+ *                 description: Information complémentaire pour retrouver le point de rencontre du centre
+ *                 example: Centre d'examen du permis de conduire de Noisy le Grand
+ *               adresse:
+ *                 type: string
+ *                 description: Adresse du centre
+ *                 example: 5 boulevard de Champs Richardets 93160 Noisy le Grand
+ *               lon:
+ *                 type: number
+ *                 description: Longitude géographique du centre
+ *                 example: 2.473647
+ *               lat:
+ *                 type: number
+ *                 description: Latitude géographique du centre
+ *                 example: 48.883956
+ *               active:
+ *                 type: boolean
+ *                 description: État à donner au centre
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *                 message:
+ *                   type: string
+ *                   description: informations sur l'état de la requête
+ *                   example: Le centre a bien été modifié
+ *                 centre:
+ *                   $ref: '#/components/schemas/CenterObject'
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       403:
+ *         description: L'utilisateur n'a pas accès au centre
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Vous n'avez pas accès à ce centre
+ *
+ *       404:
+ *         description: Le centre n'existe pas
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Centre introuvable
+ *
+ *       409:
+ *         description: Un centre avec le nouveau nom existe déjà, la modification ne peut donc pas s'effectuer
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Centre déjà présent dans la base de données
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+router.patch(
+  '/centres',
+  verifyUserLevel(config.userStatusLevels.delegue),
+  modifyCentre
+)
+
+/**
+ * @swagger
+ *
+ * /admin/centres:
+ *   post:
+ *     tags: ["Administrateur"]
+ *     summary: Ajout d'un centre par un administrateur
+ *     description: Permet à un administrateur d'ajouter un centre dans la base de données
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Données du formulaire
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               nom:
+ *                 type: string
+ *                 description: Nom du centre (de la ville du centre)
+ *                 example: Noisy le Grand
+ *               label:
+ *                 type: string
+ *                 description: Information complémentaire pour retrouver le point de rencontre du centre
+ *                 example: Centre d'examen du permis de conduire de Noisy le Grand
+ *               adresse:
+ *                 type: string
+ *                 description: Adresse du centre
+ *                 example: 5 boulevard de Champs Richardets 93160 Noisy le Grand
+ *               lon:
+ *                 type: number
+ *                 description: Longitude géographique du centre
+ *                 example: 2.473647
+ *               lat:
+ *                 type: number
+ *                 description: Latitude géographique du centre
+ *                 example: 48.883956
+ *               departement:
+ *                 type: string
+ *                 description: Département du centre
+ *                 example: "75"
+ *
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *                 message:
+ *                   type: string
+ *                   description: informations sur l'état de la requête
+ *                   example: Le centre a bien été créé
+ *                 centre:
+ *                   $ref: '#/components/schemas/CenterObject'
+ *
+ *       400:
+ *         description: Certaines informations sont manquantes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Tous les paramètres doivent être correctement renseignés
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       403:
+ *         description: L'utilisateur n'a pas accès au département dans lequel il veut créer le centre
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Vous n'avez pas accès à ce département
+ *
+ *       409:
+ *         description: Le centre existe déjà dans la base de données
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Centre déjà présent dans la base de données
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+router.post(
+  '/centres',
+  verifyUserLevel(config.userStatusLevels.admin),
+  createCentre
+)
+
+/**
+ * @swagger
+ *
+ * /admin/departements:
+ *   post:
+ *     tags: ["Administrateur"]
+ *     summary: Création d'un departement
+ *     description: Permet de créer un département
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Données du formulaire de création de département
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: departement94@example.com
+ *                 description: Email du département
+ *               departement:
+ *                 type: string
+ *                 example: "93"
+ *                 description: Nom du département
+ *
+ *     responses:
+ *       200:
+ *         description: Utilisateur supprimé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: true
+ *                     message: Le département 93 a bien été créé avec l'adresse courriel emaildepartement:@:example.com
+ *
+ *       400:
+ *         description: Paramètre(s) manquant(s) ou le département est déjà existant
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Numéro de département non renseigné
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_departements }
+ */
+
+router.post(
+  '/departements',
+  verifyUserLevel(config.userStatusLevels.admin),
+  createDepartementsController
+)
+
+/**
+ * @swagger
+ *
+ * /admin/departements:
+ *   get:
+ *     tags: ["Administrateur"]
+ *     summary: Récupération de tous les départements ou d'un seul
+ *     description: Permet de créer un département
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Numéro du département ou sans paramètre
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 example: departement94@example.com
+ *                 description: Email du département
+ *               departement:
+ *                 type: string
+ *                 example: "93"
+ *                 description: Nom du département
+ *
+ *     responses:
+ *       200:
+ *         description: Département créé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                       success: true
+ *                       result: [{
+ *                          "email": "répartiteur@example.com",
+ *                          "id": "93",
+ *                       }]
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/get_admin_departements }
+ */
+
+router.get(
+  '/departements/:id?',
+  verifyUserLevel(config.userStatusLevels.admin),
+  getDepartementsController
+)
+
+/**
+ * @swagger
+ *
+ * /admin/departements:
+ *   patch:
+ *     tags: ["Administrateur"]
+ *     summary: Mise à jour du département
+ *     description: Permet de mettre à jour l'adresse email du département
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Numéro du département et nouvelle adresse courriel
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               newEmail:
+ *                 type: string
+ *                 example: departement94@example.com
+ *                 description: Email du département
+ *               departement:
+ *                 type: string
+ *                 example: "93"
+ *                 description: Nom du département
+ *
+ *     responses:
+ *       200:
+ *         description: Département créé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                       success: true
+ *                       result: {
+ *                          "email": "répartiteur@example.com",
+ *                          "id": "93",
+ *                       }
+ *
+ *       400:
+ *         description: Paramètre(s) manquant(s)
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Adresse courriel du département manquante, saisie invalide
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/patch_admin_departements }
+ */
+
+router.patch(
+  '/departements/:id?',
+  verifyUserLevel(config.userStatusLevels.admin),
+  updateDepartementsController
+)
+
+/**
+ * @swagger
+ *
+ * /admin/departements:
+ *   delete:
+ *     tags: ["Administrateur"]
+ *     summary: supprimer le département par son Id
+ *     description: Permet de supprimer un département
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       description: Numéro du département
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               departement:
+ *                 type: string
+ *                 example: "93"
+ *                 description: Nom du département
+ *
+ *     responses:
+ *       200:
+ *         description: Département créé
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                       success: true
+ *                       message: Le département a bien été supprimé
+ *
+ *       401:
+ *        $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *          $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ * @see {@link http://localhost:8000/api-docs/#/Administrateur/delete_admin_departements }
+ */
+
+router.delete(
+  '/departements/:id?',
+  verifyUserLevel(config.userStatusLevels.admin),
+  deleteDepartementController
+)
 export default router

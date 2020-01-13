@@ -20,7 +20,7 @@ import {
   getFrenchFormattedDateTime,
   ErrorWithStatus,
 } from '../../util'
-import { findCentresWithPlaces } from '../common/centre.business'
+import { findCentresWithPlaces } from '../common/centre-business'
 import {
   assignCandidatInPlace,
   createPlaceForInspector,
@@ -193,7 +193,7 @@ export const createPlaceByAdmin = async (req, res) => {
     })
     res.json({
       success: true,
-      message: `La place du [${createdPlaceResult.date}] a bien été crée.`,
+      message: `La place du [${createdPlaceResult.date}] a bien été créée.`,
     })
   } catch (error) {
     appLogger.error({

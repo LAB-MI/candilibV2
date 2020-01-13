@@ -123,7 +123,7 @@ describe('Standard scenarios', () => {
           })
       })
     cy.get('.v-snack')
-      .should('contain', 'a bien été crée.')
+      .should('contain', 'a bien été créée.')
     // The candidate doesn't have the reservation anymore
     cy.visit(magicLink)
     cy.get('h2')

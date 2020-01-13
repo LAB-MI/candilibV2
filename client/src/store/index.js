@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 
 import admin from './admin'
 import adminBordereaux from './admin-bordereaux'
+import adminDepartements from './admin-departements'
 import adminModifInspecteur from './admin-modif-inspecteur'
 import adminPlacesInspecteur from './admin-places-inspecteur'
 import adminSearch from './admin-search'
@@ -18,10 +19,11 @@ import importPlaces from './import-places'
 import message from './message'
 import reservation from './reservation'
 import timeSlots from './time-slots'
-import whitelist from './whitelist'
 import users from './users'
+import whitelist from './whitelist'
 
 export * from './admin-bordereaux'
+export * from './admin-departements'
 export * from './admin-modif-inspecteur'
 export * from './admin-places-inspecteur'
 export * from './admin-search'
@@ -37,8 +39,8 @@ export * from './import-places'
 export * from './message'
 export * from './reservation'
 export * from './time-slots'
-export * from './whitelist'
 export * from './users'
+export * from './whitelist'
 
 Vue.use(Vuex)
 
@@ -62,5 +64,6 @@ export default new Vuex.Store({
     timeSlots,
     whitelist,
     users,
+    adminDepartements,
   },
 })

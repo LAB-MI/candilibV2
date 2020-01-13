@@ -8,7 +8,12 @@ import {
   checkCandidatToken,
   checkAccess,
 } from './router-checks'
-import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI } from './constants'
+import {
+  ROUTE_AUTHORIZE_AURIGE,
+  ROUTE_AUTHORIZE_STATS_KPI,
+  ROUTE_AUTHORIZE_CENTRES,
+  ROUTE_AUTHORIZE_DEPARTEMENTS,
+} from './constants'
 
 Vue.use(Router)
 
@@ -37,12 +42,14 @@ const MyProfile = () => import(/* webpackChunkName: "candidat", webpackPrefetch:
 
 const AdminLogin = () => import('@/views/admin/components/Login')
 const AdminAurige = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Aurige.vue')
+const CenterList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/centres/CenterList.vue')
 const StatsKpi = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/statsKpi/StatsKpi.vue')
 const HomeAdminPage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/HomeAdminPage.vue')
 const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/schedule/ScheduleManager.vue')
 const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
 const ResetPassword = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/ResetPassword.vue')
-const Users = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/repartiteurDelegue/Users.vue')
+const Agents = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Agents.vue')
+const DepartementList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/departementsManager/DepartementList.vue')
 
 const adminRoutes = [
   {
@@ -78,6 +85,12 @@ const adminRoutes = [
         beforeEnter: checkAccess,
       },
       {
+        path: 'centres',
+        name: ROUTE_AUTHORIZE_CENTRES,
+        component: CenterList,
+        beforeEnter: checkAccess,
+      },
+      {
         path: 'stats-kpi/:begin?/:end?',
         name: ROUTE_AUTHORIZE_STATS_KPI,
         component: StatsKpi,
@@ -89,9 +102,15 @@ const adminRoutes = [
         component: Whitelist,
       },
       {
-        path: 'users',
-        name: 'users',
-        component: Users,
+        path: 'agents',
+        name: 'agents',
+        component: Agents,
+        beforeEnter: checkAccess,
+      },
+      {
+        path: 'departements',
+        name: ROUTE_AUTHORIZE_DEPARTEMENTS,
+        component: DepartementList,
         beforeEnter: checkAccess,
       },
     ],

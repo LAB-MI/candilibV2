@@ -2,9 +2,8 @@
   <v-app-bar
     class="admin-header"
     dark
-    fixed
   >
-    <v-toolbar-title>
+    <v-toolbar-title class="u-flex__item--shrink-0">
       <h1 class="logo">
         <router-link
           to="/admin"
@@ -28,6 +27,7 @@
         slot="extension"
         v-model="activeTab"
         align-with-title
+        class="px-0  mx-0"
       >
         <v-tabs-slider color="#f82249" />
 
@@ -36,7 +36,7 @@
           :key="icon.routerTo"
           :to="{name: icon.routerTo}"
           :value="icon.routerTo"
-          class="no-margin-left"
+          class="no-margin-left  px-0  mx-0"
         >
           <v-tooltip
             bottom
@@ -44,7 +44,7 @@
           >
             <template v-slot:activator="{ on }">
               <v-icon
-                :class="`opaque-on-hover t-icon-header-${icon.routerTo}`"
+                :class="`opaque-on-hover  px-0  mx-0  t-icon-header-${icon.routerTo}`"
                 v-on="on"
               >
                 {{ icon.iconName }}

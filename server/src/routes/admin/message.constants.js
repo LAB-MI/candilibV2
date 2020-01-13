@@ -30,6 +30,10 @@ export const UNKNOWN_ERROR_ADD_WHITELISTED =
   "Un problème est survenu lors de l'ajout dans la whitelist"
 export const UNKNOWN_ERROR_UPLOAD_PLACES =
   "Un problème est survenu lors de l'import de places"
+export const UNKNOWN_ERROR_UPDATE_CENTRE =
+  "Un problème est survenu lors de la modification d'un centre"
+export const UNKNOWN_ERROR_ADD_CENTRE =
+  "Un problème est survenu lors de l'ajout d'un centre"
 export const CANNOT_ACTION_USER =
   "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
 export const INCORRECT_DEPARTEMENT_LIST =
@@ -37,3 +41,21 @@ export const INCORRECT_DEPARTEMENT_LIST =
 export const INVALID_EMAIL = "L'adresse courriel n'est pas valide"
 export const USER_NO_EXIST = "L'utilisateur n'existe pas"
 export const INVALID_DEPARTEMENTS_LIST = 'La liste départements est invalide'
+export const INVALID_DEPARTEMENT_NUMBER = 'Numéro de département non renseigné'
+export const INVALID_DEPARTEMENT_EMAIL =
+  'Adresse courriel du département non renseigné'
+export const DEPARTEMENT_EMAIL_ALREADY_USED =
+  'Cette adresse courriel est déjà utilisée par un autre département'
+export const DEPARTEMENT_ALREADY_EXIST = 'Ce département existe déjà'
+export const ERROR_AT_DEPARTEMENT_CREATION =
+  'Une erreur survenue lors de création du département'
+export const FETCH_ALL_DEPARTEMENTS = 'Récupération de tous les départements'
+export const BAD_PARAMS = 'Paramètre saisi invalide'
+export const INVALID_EMAIL_INSERT =
+  'Adresse courriel du département manquante, saisie invalide'
+export const EMAIL_ALREADY_USE =
+  "L'adresse courriel du département saisie existe déjà sur un autre département"
+export const ERROR_UPDATE_DEPARTEMENT =
+  "Une erreur s'est produite lors de la mise à jour du département"
+export const ERROR_UPDATE_ADMIN_AND_TECH_USERS =
+  'Une erreur survenue, suite à un problème lors de la mise à jour des utilisateurs Admin'

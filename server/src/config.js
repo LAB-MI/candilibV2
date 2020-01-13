@@ -65,7 +65,9 @@ const userStatusLevels = userStatusesOrderedList.reduce((acc, value, index) => {
 const features = {
   AURIGE: 'aurige',
   STATS_KPI: 'stats-kpi',
-  USERS: 'users',
+  AGENTS: 'agents',
+  CENTRES: 'centres',
+  DEPARTEMENTS: 'departements',
 }
 
 /**
@@ -75,8 +77,18 @@ const features = {
 const userStatusAccess = {
   [userStatuses.CANDIDAT]: [],
   [userStatuses.REPARTITEUR]: [],
-  [userStatuses.DELEGUE]: [features.STATS_KPI, features.USERS],
-  [userStatuses.ADMIN]: [features.AURIGE, features.STATS_KPI, features.USERS],
+  [userStatuses.DELEGUE]: [
+    features.AGENTS,
+    features.CENTRES,
+    features.STATS_KPI,
+  ],
+  [userStatuses.ADMIN]: [
+    features.AGENTS,
+    features.AURIGE,
+    features.CENTRES,
+    features.DEPARTEMENTS,
+    features.STATS_KPI,
+  ],
   [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI],
 }
 

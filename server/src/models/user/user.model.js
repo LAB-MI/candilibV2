@@ -1,3 +1,8 @@
+/**
+ * Module de définition du Schéma et du modèle de User
+ *
+ * @module models/user/user-model
+ */
 import mongoose from 'mongoose'
 import {
   compareToHash,
@@ -96,7 +101,9 @@ UserSchema.methods.comparePassword = function comparePassword (
 export default mongoose.model('User', UserSchema)
 
 /**
- * @typedef {Object} User
+ * @typedef {Object} UserMongooseDocument
+ * @mixes import('mongoose').Document
+ *
  * @property {string} email
  * @property {string[]} departements
  * @property {Date} deletedAt

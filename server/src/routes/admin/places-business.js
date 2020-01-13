@@ -16,12 +16,12 @@ import {
 import {
   findCentreByNameAndDepartement,
   findCentresByDepartement,
-} from '../../models/centre/centre.queries'
+} from '../../models/centre/centre-queries'
 import {
   findAllInspecteurs,
   findInspecteurById,
   findInspecteurByMatricule,
-} from '../../models/inspecteur/inspecteur.queries'
+} from '../../models/inspecteur'
 import {
   bookPlaceById,
   createPlace,
@@ -60,6 +60,7 @@ import {
   PLACE_IS_ALREADY_BOOKED,
   UNKNOWN_ERROR_UPLOAD_PLACES,
 } from './message.constants'
+import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
 
 /**
  * Résultat d'import d'une place
@@ -675,8 +676,9 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   }
 
   if (
-    getFrenchLuxonFromJSDate(candidat.dateReussiteETG).plus({ year: 5 }) <
-    getFrenchLuxonFromJSDate(place.date)
+    getFrenchLuxonFromJSDate(candidat.dateReussiteETG).plus({
+      year: NB_YEARS_ETG_EXPIRED,
+    }) < getFrenchLuxonFromJSDate(place.date)
   ) {
     throw new ErrorWithStatus(
       400,

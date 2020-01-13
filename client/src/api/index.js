@@ -322,10 +322,62 @@ export default {
       return json
     },
 
-    async getInspecteursByDepartement (departement) {
-      const json = await apiClient.get(`${apiPaths.admin.inspecteurs}?departement=${departement}`, {
+    async getInspecteurs () {
+      const json = await apiClient.get(`${apiPaths.admin.inspecteurs}`, {
         headers: getHeadersForAdminJson(),
       })
+      return json
+    },
+
+    async createInspecteur ({ departement, email, matricule, nom, prenom }) {
+      const json = await apiClient.post(`${apiPaths.admin.inspecteurs}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({
+          departement,
+          email,
+          matricule,
+          nom,
+          prenom,
+        }),
+      })
+      return json
+    },
+
+    async updateInspecteur ({ departement, email, ipcsrId, matricule, nom, prenom }) {
+      const json = await apiClient.put(
+        `${apiPaths.admin.inspecteurs}/${ipcsrId}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({
+            departement,
+            email,
+            matricule,
+            nom,
+            prenom,
+          }),
+        },
+      )
+      return json
+    },
+
+    async disableInspecteur (ipcsrId) {
+      const json = await apiClient.patch(
+        `${apiPaths.admin.inspecteurs}/${ipcsrId}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({
+            active: false,
+          }),
+        },
+      )
+      return json
+    },
+
+    async getInspecteursByDepartement (departement) {
+      const json = await apiClient.get(
+        `${apiPaths.admin.inspecteurs}?departement=${departement}`, {
+          headers: getHeadersForAdminJson(),
+        })
       return json
     },
 
@@ -508,6 +560,69 @@ export default {
       const json = await apiClient.post(`${apiPaths.admin.generateBordereaux}`, {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify({ departement, date, isForInspecteurs, inspecteurIdListe }),
+      })
+      return json
+    },
+
+    async getAllCentres () {
+      const url = apiPaths.admin.centres
+      const json = await apiClient.get(url, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
+    async createDepartement (departementId, departementEmail) {
+      const json = await apiClient.post(`${apiPaths.admin.departements}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ departementId, departementEmail }),
+      })
+      return json
+    },
+
+    async modifyCentre ({ centreId, nom, label, adresse, lon, lat, active }) {
+      const json = await apiClient.patch(apiPaths.admin.centres, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({
+          centreId,
+          nom,
+          label,
+          adresse,
+          lon,
+          lat,
+          active,
+        }),
+      })
+      return json
+    },
+
+    async getDepartements (departementId) {
+      const paramString = departementId ? `${departementId}` : ''
+      const json = await apiClient.get(`${apiPaths.admin.departements}/${paramString}`, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
+    async createCentre ({ nom, label, adresse, lon, lat, departement }) {
+      const json = await apiClient.post(apiPaths.admin.centres, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ nom, label, adresse, lon, lat, departement }),
+      })
+      return json
+    },
+    async updateDepartement (departementId, newEmail) {
+      const json = await apiClient.patch(`${apiPaths.admin.departements}/${departementId}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ newEmail }),
+      })
+      return json
+    },
+
+    async deleteDepartement (departementId) {
+      const paramString = departementId ? `${departementId}` : ''
+      const json = await apiClient.delete(`${apiPaths.admin.departements}/${paramString}`, {
+        headers: getHeadersForAdminJson(),
       })
       return json
     },
