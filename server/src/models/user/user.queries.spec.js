@@ -5,6 +5,8 @@ import {
   findUserByEmail,
   findUserById,
   updateUser,
+  updateManyUser,
+  findManyUser,
   updateUserEmail,
 } from './'
 import { connect, disconnect } from '../../mongo-connection'
@@ -268,6 +270,54 @@ describe('User', () => {
       expect(users).toBeDefined()
       expect(users).toBeInstanceOf(Array)
       expect(users).toHaveLength(1)
+    })
+
+    it('Should update all users with status admin and tech', async () => {
+      // Given
+      const userStatus = [config.userStatuses.ADMIN, config.userStatuses.TECH]
+
+      // when
+      const updatedUsers = await updateManyUser(
+        {
+          status: {
+            $in: userStatus,
+          },
+        },
+        {
+          $addToSet: { departements: ['94', '77'] },
+        }
+      )
+
+      // Then
+      expect(updatedUsers).toBeDefined()
+      expect(updatedUsers).toBeInstanceOf(Object)
+      expect(updatedUsers).toHaveProperty('n', 1)
+      expect(updatedUsers).toHaveProperty('nModified', 1)
+      expect(updatedUsers).toHaveProperty('ok', 1)
+    })
+
+    it('Should get all users with status admin and tech', async () => {
+      // Given
+      const userStatus = [config.userStatuses.ADMIN, config.userStatuses.TECH]
+      const userShouldNotHaveStatus = [
+        config.userStatuses.CANDIDAT,
+        config.userStatuses.REPARTITEUR,
+        config.userStatuses.DELEGUE,
+      ]
+      // when
+      const foundUsers = await findManyUser({
+        filterBy: 'status',
+        inValue: userStatus,
+      })
+
+      // Then
+      expect(foundUsers[0]).toBeDefined()
+      expect(foundUsers[0]).toBeDefined()
+      expect(foundUsers).toBeInstanceOf(Array)
+      foundUsers.forEach(user => {
+        expect(userShouldNotHaveStatus.includes(user.status)).toBeFalsy()
+      })
+      expect(foundUsers).toHaveProperty('length', 1)
     })
   })
 

@@ -21,7 +21,14 @@
 
 <script>
 import { mapState } from 'vuex'
-import { ROUTE_AUTHORIZE_AURIGE, ROUTE_AUTHORIZE_STATS_KPI, ROUTE_AUTHORIZE_USERS } from '../../constants'
+import {
+  ROUTE_AUTHORIZE_AURIGE,
+  ROUTE_AUTHORIZE_STATS_KPI,
+  ROUTE_AUTHORIZE_AGENTS,
+  ROUTE_AUTHORIZE_CENTRES,
+  ROUTE_AUTHORIZE_DEPARTEMENTS,
+} from '@/constants'
+
 import AdminHeader from './components/AdminHeader.vue'
 import AdminFooter from './components/AdminFooter.vue'
 
@@ -58,9 +65,21 @@ const headerIcons = [
     tooltipText: 'Liste blanche',
   },
   {
-    routerTo: ROUTE_AUTHORIZE_USERS,
+    routerTo: ROUTE_AUTHORIZE_AGENTS,
     iconName: 'people_alt',
     tooltipText: 'Répartiteur/Délégué',
+    isProtected: true,
+  },
+  {
+    routerTo: ROUTE_AUTHORIZE_CENTRES,
+    iconName: 'business',
+    tooltipText: "Centres d'examens",
+    isProtected: true,
+  },
+  {
+    routerTo: ROUTE_AUTHORIZE_DEPARTEMENTS,
+    iconName: 'location_searching',
+    tooltipText: 'Départements',
     isProtected: true,
   },
 ]

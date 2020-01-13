@@ -85,7 +85,13 @@ export async function getPlacesByCentre (req, res) {
 
   const loggerInfo = {
     section: 'candidat-getPlacesByCentre',
-    argument: { departement, centreId, nomCentre, begin, end, dateTime },
+    departement,
+    centreId,
+    nomCentre,
+    begin,
+    end,
+    dateTime,
+    candidatId: req.userId,
   }
 
   if (end && dateTime) {
@@ -105,9 +111,9 @@ export async function getPlacesByCentre (req, res) {
   try {
     if (centreId) {
       if (dateTime) {
-        dates = await hasAvailablePlaces(centreId, dateTime)
+        dates = await hasAvailablePlaces(centreId, dateTime, req.userId)
       } else {
-        dates = await getDatesByCentreId(centreId, begin, end)
+        dates = await getDatesByCentreId(centreId, begin, end, req.userId)
       }
     } else {
       if (!(departement && nomCentre)) {
@@ -117,10 +123,17 @@ export async function getPlacesByCentre (req, res) {
         dates = await hasAvailablePlacesByCentre(
           departement,
           nomCentre,
-          dateTime
+          dateTime,
+          req.userId
         )
       } else {
-        dates = await getDatesByCentre(departement, nomCentre, begin, end)
+        dates = await getDatesByCentre(
+          departement,
+          nomCentre,
+          begin,
+          end,
+          req.userId
+        )
       }
     }
 

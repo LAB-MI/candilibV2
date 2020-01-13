@@ -21,6 +21,7 @@ const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
 
 const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   candidats: `${apiPrefix}/admin/candidats`,
+  centres: `${apiPrefix}/admin/centres`,
   exportCsv: `${apiPrefix}/admin/candidats?for=aurige&format=csv`,
   exportResultsExamsStatsKpi: `${apiPrefix}/admin/stats-results-exams`,
   exportPlacesExamsStatsKpi: `${apiPrefix}/admin/stats-places-exams`,
@@ -36,6 +37,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   whitelist: `${apiPrefix}/admin/whitelisted`,
   generateBordereaux: `${apiPrefix}/admin/bordereaux`,
   resetLink: `${apiPrefix}/auth/admin/reset-link`,
+  departements: `${apiPrefix}/admin/departements`,
 }
 
 const utilPaths = {

@@ -21,7 +21,10 @@ export default {
     Checker,
   },
   props: {
-    password: String,
+    password: {
+      type: String,
+      default: '',
+    },
   },
 
   data () {

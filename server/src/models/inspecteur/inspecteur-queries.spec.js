@@ -9,7 +9,7 @@ import { connect, disconnect } from '../../mongo-connection'
 import {
   findInspecteurByMatricule,
   findAllInspecteurs,
-} from './inspecteur.queries'
+} from './inspecteur-queries'
 
 const validEmail = 'dontusethis@example.fr'
 const anotherValidEmail = 'dontusethis@example.com'

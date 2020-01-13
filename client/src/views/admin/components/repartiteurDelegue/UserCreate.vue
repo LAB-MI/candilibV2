@@ -1,5 +1,6 @@
 <template>
   <v-form
+    ref="createUserForm"
     v-model="valid"
     @submit.prevent="createdUser"
   >
@@ -8,11 +9,11 @@
         v-model="email"
         class="t-input-email"
         prepend-icon="email"
-        aria-placeholder="jean@dupont.fr"
-        hint="ex. : jean@dupont.fr"
+        :aria-placeholder="emailPlaceholder"
+        :hint="`ex. : ${emailPlaceholder}`"
         tabindex="0"
         :rules="emailRules"
-        label="E-mail"
+        label="Adresse courriel"
         :placeholder="emailPlaceholder"
         required
         @focus="setEmailPlaceholder"
@@ -29,6 +30,8 @@
       <v-spacer />
 
       <select-departements
+        class="t-select-departements"
+        multiple
         :available-departements="availableDepartements"
         :default-departements="availableDepartements"
         @change-departements="newDep => departements = newDep"
@@ -58,8 +61,9 @@
 import { mapState } from 'vuex'
 
 import { email as emailRegex } from '@/util'
+
 import SelectStatus from './SelectStatus'
-import SelectDepartements from './SelectDepartements'
+import SelectDepartements from '../SelectDepartements'
 
 import {
   CREATE_USER_REQUEST,
@@ -126,8 +130,8 @@ export default {
           departements,
           status,
         })
+        this.$refs.createUserForm.reset()
         this.departements = this.availableDepartements
-        this.email = ''
       } catch (error) {
       }
     },

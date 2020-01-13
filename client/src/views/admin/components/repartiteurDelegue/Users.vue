@@ -2,11 +2,9 @@
   <div class="u-max-width">
     <page-title :title="'Liste des répartiteurs/délégués'" />
 
-    <user-create />
+    <user-create class="elevation-1  mt-4  white" />
 
-    <v-divider />
-
-    <users-list />
+    <users-list class="mt-4  mb-8" />
   </div>
 </template>
 
