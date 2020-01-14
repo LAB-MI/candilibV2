@@ -251,15 +251,11 @@ router.get('/candidat/config', getCandidatConfig)
  *                  success:
  *                    type: boolean
  *                    description: Succès de la requête
- *                  departements:
+ *                  departementsId:
  *                    type: array
  *                    description: Liste des id de départements
- *                    items:
- *                      $ref: '#/components/schemas/DepartementObject'
- *                  example: [{
- *                    _id: "93",
- *                    email: "email93@departement.com"
- *                    }]
+ *                example: ["93","75"]
+ *
  *        500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  */
