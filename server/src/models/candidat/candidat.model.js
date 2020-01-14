@@ -144,6 +144,10 @@ export const candidatFields = {
     type: Date,
     required: false,
   },
+  canAccessAt: {
+    type: Date,
+    required: false,
+  },
 }
 
 const CandidatSchema = new Schema(candidatFields, { timestamps: true })
