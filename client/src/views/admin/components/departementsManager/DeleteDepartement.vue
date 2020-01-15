@@ -29,7 +29,7 @@
       </v-card-text>
 
       <v-card-text>
-        Afin de confirmer votre action saisissez le nom du département dans la zone de text suivante puis confirmer.
+        Afin de confirmer votre action saisissez le numéro du département <strong>{{ departementId }}</strong> dans la zone de texte suivante puis confirmer.
       </v-card-text>
       <v-divider />
 
@@ -98,7 +98,7 @@ export default {
     },
 
     verifyStringConfimation () {
-      if (this.confirmString === this.departementId) {
+      if (this.confirmString.trim() === this.departementId) {
         this.isStringConfirm = true
         return
       }
