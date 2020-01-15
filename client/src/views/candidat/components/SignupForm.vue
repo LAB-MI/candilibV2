@@ -4,7 +4,7 @@
       ref="presignupForm"
       v-model="valid"
       dark
-      class="presignup-form"
+      class="t-presignup-form presignup-form"
       @submit.prevent="presignup"
     >
       * Champs obligatoires
@@ -96,20 +96,20 @@
         />
       </div>
       <div class="form-input">
-        <v-select
-          v-model="departement"
-          dark
-          color="#fff"
+        <select-departement
+          :dark="true"
           class="t-select-departements"
-          :items="availableDepartements"
+          :available-departements="availableDepartements"
+          :multiple="false"
           label="Département"
           prepend-icon="location_city"
           aria-placeholder="93"
-          persistent-hint
+          :persistent-hint="true"
           hint="Vous devez dès à présent choisir votre département de passage à l'examen.
           Votre choix permet à l'administration de provisionner un nombre de places d'examen suffisant pour chaque département où Candilib est disponible"
           :rules="departementRules"
           required
+          @change-departements="newDep => departement = newDep"
         />
       </div>
       <div
@@ -176,12 +176,14 @@ import {
 } from '@/store'
 
 import AlreadySignedUp from './AlreadySignedUp'
+import SelectDepartement from '@/views/admin/components/SelectDepartements'
 import { mapState } from 'vuex'
 
 export default {
   name: 'SignupForm',
   components: {
     AlreadySignedUp,
+    SelectDepartement,
   },
   props: {
     toggleForm: {
