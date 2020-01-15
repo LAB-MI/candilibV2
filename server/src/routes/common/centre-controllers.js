@@ -277,9 +277,7 @@ export async function getCentresByDepartement (req, res) {
   try {
     const deptCenters = await findCentresByDepartement(departementId, 'nom')
     appLogger.info({
-
       ...loggerContent,
-
       deptCentersName: deptCenters,
     })
     res.json({ success: true, deptCenters })
