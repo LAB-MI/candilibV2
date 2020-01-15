@@ -2,6 +2,32 @@
   <div>
     <page-title>
       {{ $formatMessage({ id: 'tableau_de_bord'}) }}
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <div
+            v-on="on"
+          >
+            &nbsp;
+            (&nbsp;
+            <strong class="text-free-places">
+              {{ `${countPlacesForAllCenters.totalBookedPlaces}` }}
+            </strong>
+            &nbsp;
+            <strong>
+              /
+            </strong>
+            &nbsp;
+            <strong>
+              {{ `${countPlacesForAllCenters.totalPlaces}` }}
+            </strong>
+            &nbsp;)
+            &nbsp;
+          </div>
+        </template>
+        <span>
+          Total Places reservées des centres / Total places des centres
+        </span>
+      </v-tooltip>
     </page-title>
 
     <v-container
@@ -43,6 +69,7 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
+  DELETE_TOTAL_PLACES_FOR_ALL_CENTERS,
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
 } from '@/store'
 import WeekMonitor from './WeekMonitor.vue'
@@ -55,7 +82,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['activeDepartement']),
+    ...mapGetters(['activeDepartement', 'countPlacesForAllCenters']),
 
     placeByCentreInfos () {
       return this.$store.state.admin.places.list
@@ -68,8 +95,13 @@ export default {
 
   watch: {
     async activeDepartement (newValue) {
+      await this.$store.dispatch(DELETE_TOTAL_PLACES_FOR_ALL_CENTERS)
       await this.reloadWeekMonitor()
     },
+  },
+
+  destroyed () {
+    this.resetTotalPlacesCount()
   },
 
   async mounted () {
@@ -82,11 +114,15 @@ export default {
     async reloadWeekMonitor () {
       await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
     },
+
+    async resetTotalPlacesCount () {
+      await this.$store.dispatch(DELETE_TOTAL_PLACES_FOR_ALL_CENTERS)
+    },
   },
 }
 </script>
 
-<style lang="postcss">
+<style scope lang="postcss">
 .less-padding {
   padding-top: 0.1em;
 }
@@ -104,4 +140,7 @@ export default {
   color: green;
 }
 
+.text-free-places {
+  color: green;
+}
 </style>
