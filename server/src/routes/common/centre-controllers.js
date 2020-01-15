@@ -21,6 +21,7 @@ import { getAuthorizedDateToBook } from '../candidat/authorize.business'
 import {
   UNKNOWN_ERROR_UPDATE_CENTRE,
   UNKNOWN_ERROR_ADD_CENTRE,
+  UNKNOWN_ERROR_GET_CENTRE,
 } from '../admin/message.constants'
 
 export const NOT_CODE_DEP_MSG =
@@ -268,12 +269,30 @@ export async function createCentre (req, res) {
 
 export async function getCentresByDepartement (req, res) {
   const { departementId } = req.query
-  const deptCenters = await findCentresByDepartement(departementId, 'nom')
-  appLogger.info({
+  const loggerContent = {
     description: 'Getting candidat centers associated to a departement',
     section: 'candidat-deptCenters',
     departementId,
-    deptCentersName: deptCenters,
-  })
-  res.json({ success: true, deptCenters })
+  }
+  try {
+    const deptCenters = await findCentresByDepartement(departementId, 'nom')
+    appLogger.info({
+
+      ...loggerContent,
+
+      deptCentersName: deptCenters,
+    })
+    res.json({ success: true, deptCenters })
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      error,
+      description: error.message,
+    })
+
+    return res.status(500).json({
+      success: false,
+      message: UNKNOWN_ERROR_GET_CENTRE,
+    })
+  }
 }
