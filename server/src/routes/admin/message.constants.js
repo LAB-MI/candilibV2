@@ -61,3 +61,5 @@ export const ERROR_UPDATE_DEPARTEMENT =
   "Une erreur s'est produite lors de la mise à jour du département"
 export const ERROR_UPDATE_ADMIN_AND_TECH_USERS =
   'Une erreur survenue, suite à un problème lors de la mise à jour des utilisateurs Admin'
+export const UNKNOWN_ERROR_GET_DEPARTEMENT =
+  "Un problème est survenu lors de la récuperation d'un département"
