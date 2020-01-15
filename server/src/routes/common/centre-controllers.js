@@ -268,11 +268,12 @@ export async function createCentre (req, res) {
 
 export async function getCentresByDepartement (req, res) {
   const { departementId } = req.query
-  const deptCenters = await findCentresByDepartement(departementId)
+  const deptCenters = await findCentresByDepartement(departementId, 'nom')
   appLogger.info({
-    description: 'Getting candidat centers associated to Paris',
+    description: 'Getting candidat centers associated to a departement',
     section: 'candidat-deptCenters',
-    deptCenters,
+    departementId,
+    deptCentersName: deptCenters,
   })
   res.json({ success: true, deptCenters })
 }
