@@ -638,7 +638,7 @@ export default {
       return json
     },
 
-    async getDepartements () {
+    async getActiveDepartementsId () {
       const json = await apiClient.get(`${apiPaths.util.departements}`, {
         headers: {
           'Content-Type': 'application/json',
@@ -647,7 +647,7 @@ export default {
       return json
     },
 
-    async getDeptCenters (departement) {
+    async getCentresByDepartement (departement) {
       const json = await apiClient.get(`${apiPaths.util.centres}?departementId=${departement}`, {
         headers: {
           'Content-Type': 'application/json',
