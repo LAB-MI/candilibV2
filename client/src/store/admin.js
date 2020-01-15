@@ -81,6 +81,9 @@ export const CREATE_CENTER_FAILURE = 'CREATE_CENTER_FAILURE'
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
+export const CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS = 'CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS'
+export const DELETE_TOTAL_PLACES_FOR_ALL_CENTERS = 'DELETE_TOTAL_PLACES_FOR_ALL_CENTERS'
+
 export const numberOfMonthsToFetch = 3
 
 const AUTHORIZED_ROUTES = {
@@ -108,9 +111,16 @@ export default {
       )
       return (selectedEmail && selectedEmail.email) || state.email
     },
+    countPlacesForAllCenters: state => {
+      return state.countPlacesForAllCenters
+    },
   },
 
   state: {
+    countPlacesForAllCenters: {
+      totalBookedPlaces: 0,
+      totalPlaces: 0,
+    },
     centres: {
       isFetching: false,
       isUpdating: false,
@@ -351,6 +361,16 @@ export default {
     [CREATE_CENTER_FAILURE] (state, error) {
       state.centres.error = error
       state.centres.isCreating = false
+    },
+
+    [CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS] (state, coutCenterPlaces) {
+      state.countPlacesForAllCenters = coutCenterPlaces
+    },
+    [DELETE_TOTAL_PLACES_FOR_ALL_CENTERS] (state) {
+      state.countPlacesForAllCenters = {
+        totalBookedPlaces: 0,
+        totalPlaces: 0,
+      }
     },
   },
 
@@ -645,6 +665,21 @@ export default {
 
     [SET_WEEK_SECTION] ({ commit }, currentWeek) {
       commit(SET_WEEK_SECTION, currentWeek)
+    },
+
+    [CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS] ({ commit, state }, { countBookedPlaces, countPlaces }) {
+      const totalBooked = state.countPlacesForAllCenters.totalBookedPlaces + countBookedPlaces
+      const totalPlaces = state.countPlacesForAllCenters.totalPlaces + countPlaces
+
+      const result = {
+        totalBookedPlaces: totalBooked,
+        totalPlaces: totalPlaces,
+      }
+      commit(CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS, result)
+    },
+
+    [DELETE_TOTAL_PLACES_FOR_ALL_CENTERS] ({ commit, state }) {
+      commit(DELETE_TOTAL_PLACES_FOR_ALL_CENTERS)
     },
   },
 }
