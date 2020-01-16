@@ -27,6 +27,7 @@ describe('Candidate login', () => {
   it('Create an account and verify line delay mail', () => {
     // The candidate fills the pre-sign-up form
     cy.clearLocalStorage()
+    cy.reload(true)
     cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup')
 
     cy.wait(5000)
