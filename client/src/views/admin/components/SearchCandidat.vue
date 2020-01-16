@@ -38,18 +38,18 @@
 
 <script>
 import { mapState } from 'vuex'
-
+import { Interval } from 'luxon'
 import {
   FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
   FETCH_CANDIDAT_INFO_REQUEST,
 } from '@/store'
 import CandilibAutocomplete from './CandilibAutocomplete'
 import ProfileInfo from './ProfileInfo'
-import { getFrenchDateTimeFromIso, getFrenchDateFromIso } from '../../../util/frenchDateTime.js'
+import { getFrenchDateTimeFromIso, getFrenchDateFromIso, getFrenchLuxon, getFrenchLuxonFromIso } from '../../../util/frenchDateTime.js'
 import { transformToProfileInfo } from '@/util'
 import adminMessage from '../../../admin.js'
 
-const transformBoolean = value => value ? 'Oui' : 'Non'
+const transformBoolean = value => value ? `<i class="material-icons green--text">done</i>` : `<i class="material-icons red--text">close</i>`
 const isReussitePratiqueExist = value => value || ''
 const convertToLegibleDate = date => date ? getFrenchDateFromIso(date) : adminMessage.non_renseignee
 const convertToLegibleDateTime = date => date ? getFrenchDateTimeFromIso(date) : adminMessage.non_renseignee
@@ -84,7 +84,25 @@ const historiqueAction = (places) => {
     return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
   }).reverse().join('') + '</ul>'
 }
+
+const iconAccess = (canAccessAt) => {
+  if (!canAccessAt) {
+    return `<i class="material-icons green--text">done</i>`
+  }
+  const luxonDateCanAccessAt = getFrenchLuxonFromIso(canAccessAt)
+  const today = getFrenchLuxon()
+  const dayLeft = Interval.fromDateTimes(
+    today,
+    luxonDateCanAccessAt,
+  )
+    .count('days') - 1
+  const result = luxonDateCanAccessAt > today ? `<i class="red--text">il reste ${dayLeft} jours</i>` : `<i class="material-icons green--text">done</i>`
+  return result
+}
+
 const candidatProfileInfoDictionary = [
+  [['canAccessAt', 'Statut', iconAccess]],
+  [['canAccessAt', 'Date d\'accès', convertToLegibleDateTime]],
   [['codeNeph', 'NEPH'], ['nomNaissance', 'Nom'], ['prenom', 'Prenom']],
   [['email', 'Email'], ['portable', 'Portable'], ['adresse', ' Adresse']],
   [
