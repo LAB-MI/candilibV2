@@ -43,14 +43,18 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
 const utilPaths = {
   adressesQuery (search) { return `https://api-adresse.data.gouv.fr/search/?q=${search}` },
   configCandidat: 'config-candilib.json',
-  departements: `${apiPrefix}/departements`,
-  centres: `${apiPrefix}/centres`,
+}
+
+const publicPaths = {
+  departements: `${apiPrefix}/public/departements`,
+  centres: `${apiPrefix}/public/centres`,
 }
 
 const apiPaths = {
   candidat: candidatApiPaths,
   admin: adminApiPaths,
   util: utilPaths,
+  public: publicPaths,
 }
 
 export default apiPaths

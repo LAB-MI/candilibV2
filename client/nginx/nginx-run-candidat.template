@@ -39,17 +39,7 @@ server {
     rewrite ^(.+)$ <PUBLIC_PATH>/index.html last;
   }
 
-  location ~ "^<PUBLIC_PATH>/api/v2/candidat" {
-    limit_req zone=api burst=<API_USER_BURST>;
-    limit_req_status 429;
-    rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
-    add_header Access-Control-Allow-Origin '$http_origin';
-    proxy_pass http://<API_HOST>:<API_PORT>;
-    proxy_redirect off;
-    proxy_buffering off;
-    proxy_http_version 1.1;
-  }
-  location ~ "^<PUBLIC_PATH>/api/v2/auth/candidat" {
+  location ~ "^<PUBLIC_PATH>/api/v2(/public|(/auth)?/candidat)" {
     limit_req zone=api burst=<API_USER_BURST>;
     limit_req_status 429;
     rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
