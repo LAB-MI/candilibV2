@@ -34,3 +34,7 @@ export const removeInspecteur = async () => {
 export const resetCreatedInspecteurs = () => {
   inspecteurs = undefined
 }
+
+export const setInitCreatedInspecteurs = () => {
+  inspecteurs = undefined
+}
