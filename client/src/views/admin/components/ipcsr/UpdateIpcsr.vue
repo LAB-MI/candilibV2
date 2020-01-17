@@ -134,7 +134,10 @@
 <script>
 import { mapState } from 'vuex'
 
-import { email as emailRegex, matricule as matriculeRegex } from '@/util'
+import {
+  email as emailRegex,
+  matricule as matriculeRegex,
+} from '@/util'
 
 import { UPDATE_IPCSR_REQUEST, FETCH_IPCSR_LIST_REQUEST, SHOW_ERROR } from '@/store'
 
@@ -187,7 +190,7 @@ export default {
       matriculePlaceholder: '',
       matriculeRules: [
         matricule => !!matricule || 'Veuillez renseigner un matricule',
-        matricule => matriculeRegex.test(matricule) || 'Le matricule est invalide',
+        matricule => matriculeRegex.test(matricule) || 'Veuillez renseigner un matricule valide',
       ],
       nom: this.defaultNom,
       nomPlaceholder: '',
