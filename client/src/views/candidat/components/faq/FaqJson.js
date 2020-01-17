@@ -121,7 +121,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           ],
         },
         {
-          textContent: '<b>Attention</b> : le mauvais état du véhicule (pneus lisses, rétroviseurs cassés ou absents, dysfonctionnement d’un feu, etc.), ou l\'absence ou la non-validité d\'un des documents exigés ci-dessus, pour le candidat ou son accompagnateur,l’inspecteur sera dans l’obligation réglementaire de vous refuser le passage de l’examen.',
+          textContent: '<b>Attention</b> : en cas de mauvais état du véhicule (pneus lisses, rétroviseurs cassés ou absents, dysfonctionnement d\'un feu, etc.), ou d\'absence ou de non-validité d\'un des documents exigés ci-dessus, pour le candidat ou son accompagnateur, l\'inspecteur sera dans l\'obligation réglementaire de vous refuser le passage de l\'examen.',
         },
       ],
     },
@@ -129,24 +129,16 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je ne trouve pas de place disponible ?',
       content: [
         {
-          textContent: 'De nouveaux créneaux sont ajoutés régulièrement.',
+          textContent: `De nouveaux créneaux sont ajoutés régulièrement. D'autres peuvent se libérer à tout moment par l'annulation d'un candidat ayant réservé.`,
         },
       ],
     },
     {
-      title: 'Je souhaite passer en boite automatique',
+      title: 'Je souhaite passer en boîte automatique',
       content: [
         {
-          textContent: `Il n'y a pas d'examens en boite automatique ou boite manuelle.
-          C'est le véhicule que vous utiliserez à l'examen qui déterminera si, en cas de réussite, vous avez une restriction à la seule conduite des véhicules à boite automatique ou pas.`,
-        },
-      ],
-    },
-    {
-      title: `Quels sont les pré-requis le jour de l'examen ?`,
-      content: [
-        {
-          textContent: `Attention : en cas de mauvais état du véhicule (pneus lisses, rétroviseurs cassés ou absents, dysfonctionnement d’un feu, etc.), ou d'absence ou de non-validité d'un des documents exigés ci-dessus, pour le candidat ou son accompagnateur, l’inspecteur sera dans l’obligation réglementaire de vous refuser le passage de l’examen.`,
+          textContent: `Il n'y a pas d'examens en boîte automatique ou boîte manuelle.
+          C'est le véhicule que vous utiliserez à l'examen qui déterminera si, en cas de réussite, vous avez une restriction à la seule conduite des véhicules à boîte automatique ou pas.`,
         },
       ],
     },
