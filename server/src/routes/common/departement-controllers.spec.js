@@ -26,7 +26,7 @@ describe('Test departements controllers', () => {
 
       // WHEN
       const { body } = await request(app)
-        .get(`${apiPrefix}/departements`)
+        .get(`${apiPrefix}/public/departements`)
         .set('Accept', 'application/json')
         .expect(200)
 
