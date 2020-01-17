@@ -1,4 +1,7 @@
-import { dateTimeDernierEchecPratique } from './candidats-aurige'
+import {
+  dateTimeDernierEchecPratique,
+  DateTimeReussiteETGKO,
+} from './candidats-aurige'
 import config from '../../../../config'
 import { findCentreByName } from '../../../../models/centre'
 import { findInspecteurByMatricule } from '../../../../models/inspecteur'
@@ -45,6 +48,14 @@ export const placeNoSameDateDernierEchecPratique = {
     .toISO({ zone: 'utc' }),
   centre: 'Centre 2',
   inspecteur: inspecteursTests[1].matricule,
+}
+
+export const placeAtETG = {
+  date: DateTimeReussiteETGKO.plus({ years: 5, hours: 8 }).toISO({
+    zone: 'utc',
+  }),
+  centre: 'Centre 1',
+  inspecteur: inspecteursTests[0].matricule,
 }
 
 export const createTestPlaceAurige = async place => {
