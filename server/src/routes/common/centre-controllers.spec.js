@@ -9,7 +9,10 @@ import {
   createDepartement,
   deleteDepartementById,
 } from '../../models/departement'
-import { createCentre as modelCreateCentre, deleteCentre } from '../../models/centre'
+import {
+  createCentre as modelCreateCentre,
+  deleteCentre,
+} from '../../models/centre'
 
 import {
   setInitCreatedCentre,
