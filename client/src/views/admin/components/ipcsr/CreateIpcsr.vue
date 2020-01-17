@@ -105,7 +105,10 @@
 <script>
 import { mapState } from 'vuex'
 
-import { email as emailRegex } from '@/util'
+import {
+  email as emailRegex,
+  matricule as matriculeRegex,
+} from '@/util'
 
 import SelectDepartements from '../SelectDepartements'
 
@@ -136,6 +139,7 @@ export default {
       matriculePlaceholder: '',
       matriculeRules: [
         matricule => !!matricule || 'Veuillez renseigner un matricule',
+        matricule => matriculeRegex.test(matricule) || 'Veuillez renseigner un matricule valide',
       ],
       nom: '',
       nomPlaceholder: '',
