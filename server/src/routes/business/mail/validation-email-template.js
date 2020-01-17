@@ -9,7 +9,7 @@ export const getValidationMailTemplate = (
   <br/>
   <p>
   <p>
-    Pour poursuivre votre inscription, vous devez valider votre adresse mail en cliquant sur lien ci-après :
+    Pour poursuivre votre inscription, vous devez valider votre adresse mail en cliquant sur le lien ci-après :
   </p>
   <p>
     <a href="${urlValidationEmail}">

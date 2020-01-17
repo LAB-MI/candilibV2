@@ -45,9 +45,17 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
 
   const nomMaj = nomNaissance ? nomNaissance.toUpperCase() : ''
 
-  const INSCRIPTION_KO_MSG = getInscriptionKOTemplate(nomMaj, codeNeph, urlFAQ)
+  const INSCRIPTION_KO_MSG = getInscriptionKOTemplate(
+    nomMaj,
+    codeNeph,
+    urlFAQ,
+    contactezNous
+  )
 
-  const INSCRIPTION_VALID_MSG = getInscripionValidTemplate(nomMaj)
+  const INSCRIPTION_VALID_MSG = getInscripionValidTemplate(
+    nomMaj,
+    contactezNous
+  )
 
   switch (flag) {
     case CANDIDAT_NOK:
@@ -76,7 +84,8 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     case EPREUVE_PRATIQUE_OK: {
       const EPREUVE_PRATIQUE_OK_MSG = getEpreuvePratiqueOKTemplate(
         nomMaj,
-        urlFAQ
+        urlFAQ,
+        contactezNous
       )
       message.content = getHtmlBody(EPREUVE_PRATIQUE_OK_MSG)
       message.subject = 'Problème inscription Candilib'
@@ -88,7 +97,11 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       return message
     case EPREUVE_ETG_KO:
     case NB_FAILURES_KO: {
-      const EPREUVE_ETG_KO_MSG = getEpreuveEtgKoTemplate(nomMaj, urlFAQ)
+      const EPREUVE_ETG_KO_MSG = getEpreuveEtgKoTemplate(
+        nomMaj,
+        urlFAQ,
+        contactezNous
+      )
       message.content = getHtmlBody(EPREUVE_ETG_KO_MSG)
       message.subject = 'Problème inscription Candilib'
       return message
