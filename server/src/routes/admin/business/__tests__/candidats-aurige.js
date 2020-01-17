@@ -4,13 +4,14 @@ import { getFrenchLuxon } from '../../../../util'
 
 const nowLuxon = getFrenchLuxon()
 
-const dateReussiteETG = nowLuxon
+export const DateTimeReussiteETGKO = nowLuxon.minus({ years: 5 }).startOf('day')
+export const dateReussiteETG = nowLuxon
   .minus({ days: 5 })
   .startOf('day')
   .toISO()
 
-const dateReussiteETGKO = nowLuxon
-  .minus({ years: 5 })
+export const dateReussiteETGKO = nowLuxon
+  .minus({ years: 5, day: 1 })
   .startOf('day')
   .toISO()
 
@@ -264,4 +265,42 @@ export const createCandidatsToTestAurige = async () => {
       createCandidatToTestAurige(candidat, false)
     )
   )
+}
+
+export const candidatWithEtgExpiredToArchive = {
+  // candidat réussit la théorie y a plus de 5 ans
+  codeNeph: '0936317542831',
+  nomNaissance: 'TESTOVERETG',
+  prenom: 'TestPrenom',
+  email: 'test.over.etg.testprenon@test.com',
+  dateReussiteETG: dateReussiteETGKO,
+  nbEchecsPratiques: '',
+  dateDernierNonReussite: '',
+  objetDernierNonReussite: '',
+  reussitePratique: '',
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+  departement,
+}
+
+export const candidatWithEtg = {
+  // candidat réussit la théorie y a plus de 5 ans
+  codeNeph: '0936317542831',
+  nomNaissance: 'TESTOVERETG',
+  prenom: 'TestPrenom',
+  email: 'test.over.etg.testprenon@test.com',
+  dateReussiteETG: dateReussiteETG,
+  nbEchecsPratiques: '',
+  dateDernierNonReussite: '',
+  objetDernierNonReussite: '',
+  reussitePratique: '',
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+  departement,
 }

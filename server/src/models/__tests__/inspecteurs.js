@@ -32,3 +32,7 @@ export const removeInspecteur = async () => inspecteursTests.deleteMany({})
 export const resetCreatedInspecteurs = () => {
   inspecteurs = undefined
 }
+
+export const setInitCreatedInspecteurs = () => {
+  inspecteurs = undefined
+}
