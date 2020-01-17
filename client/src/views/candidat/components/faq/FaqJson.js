@@ -38,14 +38,14 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Comment ça marche ?',
       content: [
         {
-          textContent: 'Vous avez reçu une invitation nominative par mail à vous inscrire sur Candilib.',
-        },
-        {
           subTitleContent: 'Pour s\'inscrire',
           textContent: 'Rendez-vous sur la page d\'accueil du service pour se pré-inscrire.',
         },
         {
-          textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et adresse postale.',
+          textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et département de passage.',
+        },
+        {
+          textContent: `Vous devez dès à présent choisir votre département de passage à l'examen. Votre choix permet à l'administration de provisionner un nombre de places d'examen suffisant pour chaque département où Candilib est disponible`,
         },
         {
           subTitleContent: 'Pour réserver',
@@ -87,6 +87,9 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       content: [
         {
           textContent: 'Si vous avez échoué, avez été refusé par l’inspecteur ou avez été absent à l\'examen pratique du permis de conduire, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
+        },
+        {
+          textContent: 'Vous devez, sans autre formalité, retourner dans votre espace Candilib pour réserver une nouvelle place.',
         },
 
       ],
@@ -130,7 +133,23 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         },
       ],
     },
-
+    {
+      title: 'Je souhaite passer en boite automatique',
+      content: [
+        {
+          textContent: `Il n'y a pas d'examens en boite automatique ou boite manuelle.
+          C'est le véhicule que vous utiliserez à l'examen qui déterminera si, en cas de réussite, vous avez une restriction à la seule conduite des véhicules à boite automatique ou pas.`,
+        },
+      ],
+    },
+    {
+      title: `Quels sont les pré-requis le jour de l'examen ?`,
+      content: [
+        {
+          textContent: `Attention : en cas de mauvais état du véhicule (pneus lisses, rétroviseurs cassés ou absents, dysfonctionnement d’un feu, etc.), ou d'absence ou de non-validité d'un des documents exigés ci-dessus, pour le candidat ou son accompagnateur, l’inspecteur sera dans l’obligation réglementaire de vous refuser le passage de l’examen.`,
+        },
+      ],
+    },
     {
       title: 'Aide / Contact',
       content: [
