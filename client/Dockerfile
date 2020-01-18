@@ -44,7 +44,7 @@ ARG LINE_DELAY
 RUN if [ -n "$LINE_DELAY" ] && [ -f "public/config-candilib.json" ] ; then \
       echo '{"lineDelay": '$LINE_DELAY'}' > public/config-candilib.json ; \
     fi
-RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm install --loglevel http
+RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm install --loglevel warn
 EXPOSE 8080
 
 CMD ["npm","run", "serve"]
