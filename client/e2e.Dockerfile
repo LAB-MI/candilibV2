@@ -34,7 +34,7 @@ COPY package.json package-lock.json ./
 COPY cypress.json cypress.env.json ./
 COPY e2e-entrypoint.sh /e2e-entrypoint.sh
 # Install app dependencies
-RUN npm --no-git-tag-version version ${APP_VERSION} ; npm install cypress-file-upload cypress@3.6.1
+RUN npm --no-git-tag-version version ${APP_VERSION} ; npm install cypress-file-upload cypress@3.8.1
 RUN [ -f /e2e-entrypoint.sh ]&& chmod +x /e2e-entrypoint.sh
 
 #CMD ["npm","run", "cypress"]
