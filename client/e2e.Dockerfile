@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM cypress/browsers:node12.4.0-chrome76 as base
+FROM cypress/browsers:node12.6.0-chrome77 as base
 ARG http_proxy
 ARG https_proxy
 ARG npm_registry
