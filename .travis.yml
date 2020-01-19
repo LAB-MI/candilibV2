@@ -1,6 +1,9 @@
 os: linux
 dist: xenial
 
+git:
+  depth: false
+
 language: shell
 
 services:
