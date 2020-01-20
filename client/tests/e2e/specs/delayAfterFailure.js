@@ -49,11 +49,11 @@ describe('Test delay after failed attempt', () => {
           mimeType: 'application/json',
         })
     })
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', fileName2 + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Le fichier ' + fileName2 + ' a été synchronisé.')
     // Checks that the candidate is validated
     cy.get('.ag-cell')

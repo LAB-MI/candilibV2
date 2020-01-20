@@ -38,7 +38,10 @@ describe('Dashboard tests', () => {
     cy.adminLogin()
     // Checks the number of centers in the 75 and 93
     cy.get('.layout.row.wrap').children()
-      .should('have.length', 3)
+      .should(children => {
+        // Can be either 3 or 6 depending on when this test is done, and both are valid
+        expect([3, 6].includes(children.length)).to.be.true // eslint-disable-line no-unused-expressions
+      })
     cy.get('.hexagon-wrapper').contains('93')
       .click()
     cy.get('.layout.row.wrap').children()

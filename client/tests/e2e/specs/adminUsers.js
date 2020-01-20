@@ -41,7 +41,7 @@ describe('Create and see users', () => {
     cy.get('.t-create-btn')
       .click()
 
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `L'utilisateur a bien été créé`)
     cy.get('.t-list-users')
       .should('contain', repartiteurEmail1)
@@ -61,7 +61,7 @@ describe('Create and see users', () => {
       .click()
     cy.get('.t-create-btn')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `L'utilisateur a bien été créé`)
 
     cy.get('.t-input-email input')
@@ -75,7 +75,7 @@ describe('Create and see users', () => {
     cy.get('.t-create-btn')
       .click()
 
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `Impossible de créer l'utilisateur : l'email existe déjà`)
   })
 
@@ -93,7 +93,7 @@ describe('Create and see users', () => {
       .click()
     cy.get('.t-create-btn')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `L'utilisateur a bien été créé`)
 
     cy.get('.t-list-users')
@@ -130,7 +130,7 @@ describe('Create and see users', () => {
       .click()
     cy.get('.t-create-btn')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `L'utilisateur a bien été créé`)
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
@@ -150,7 +150,7 @@ describe('Create and see users', () => {
     cy.get('.t-btn-delete-confirm')
       .click()
 
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `L'utilisateur a bien été archivé`)
 
     cy.get('.t-list-users')
@@ -169,7 +169,7 @@ describe('Create and see users', () => {
       .click()
     cy.get('.t-create-btn')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `L'utilisateur a bien été créé`)
 
     cy.get('.t-list-users')
@@ -196,7 +196,7 @@ describe('Create and see users', () => {
     cy.get('.t-btn-update-confirm')
       .click()
 
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `L'utilisateur ${repartiteurEmail5} a bien été modifié`)
   })
 
@@ -214,7 +214,7 @@ describe('Create and see users', () => {
       .click()
     cy.get('.t-create-btn')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `L'utilisateur a bien été créé`)
 
     cy.get('.t-list-users')

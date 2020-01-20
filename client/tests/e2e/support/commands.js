@@ -15,7 +15,7 @@ Cypress.Commands.add('adminLogin', () => {
     .type(Cypress.env('adminPass'))
   cy.get('.submit-btn')
     .click()
-  cy.get('.v-snack')
+  cy.get('.v-snack--active')
     .should('contain', 'Vous êtes identifié')
 })
 
@@ -24,8 +24,8 @@ Cypress.Commands.add('adminDisconnection', () => {
     .click()
   cy.get('.t-disconnect')
     .click()
-  cy.get('.v-snack')
-    .should('contain', 'Vous êtes déconnecté·e')
+  cy.url()
+    .should('contain', '/admin-login')
 })
 
 Cypress.Commands.add('archiveCandidate', (candidat) => {
@@ -57,11 +57,11 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
         mimeType: 'application/json',
       })
   })
-  cy.get('.v-snack')
+  cy.get('.v-snack--active')
     .should('contain', fileName + ' prêt à être synchronisé')
   cy.get('.import-file-action [type=button]')
     .click()
-  cy.get('.v-snack')
+  cy.get('.v-snack--active')
     .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 })
 
@@ -124,11 +124,11 @@ Cypress.Commands.add('addPlanning', (dates) => {
   cy.fixture(filePath1).then(fileContent => {
     cy.get('[type=file]').upload({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
   })
-  cy.get('.v-snack')
+  cy.get('.v-snack--active')
     .should('contain', fileName1 + ' prêt à être synchronisé')
   cy.get('.import-file-action [type=button]')
     .click({ force: true })
-  cy.get('.v-snack', { timeout: 10000 })
+  cy.get('.v-snack--active', { timeout: 10000 })
     .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
 })
 
@@ -225,11 +225,11 @@ Cypress.Commands.add('candidateValidation', () => {
         mimeType: 'application/json',
       })
   })
-  cy.get('.v-snack')
+  cy.get('.v-snack--active')
     .should('contain', fileName2 + ' prêt à être synchronisé')
   cy.get('.import-file-action [type=button]')
     .click()
-  cy.get('.v-snack')
+  cy.get('.v-snack--active')
     .should('contain', 'Le fichier ' + fileName2 + ' a été synchronisé.')
     // Checks that the candidate is validated
   cy.get('.ag-cell')

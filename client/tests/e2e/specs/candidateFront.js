@@ -132,7 +132,7 @@ describe('Connected candidate front', () => {
     cy.get('button')
       .contains('Confirmer')
       .click()
-    cy.get('.v-snack').should(
+    cy.get('.v-snack--active').should(
       'contain',
       'Votre réservation a bien été prise en compte',
     )
@@ -189,7 +189,7 @@ describe('Connected candidate front', () => {
     cy.get('button')
       .contains('Confirmer')
       .click()
-    cy.get('.v-snack').should(
+    cy.get('.v-snack--active').should(
       'contain',
       'Votre réservation a bien été prise en compte',
     )
@@ -219,7 +219,7 @@ describe('Connected candidate front', () => {
     cy.visit(magicLink)
     cy.get('body').should('contain', 'Renvoyer ma convocation')
     cy.contains('Renvoyer ma convocation').click()
-    cy.get('.v-snack').should(
+    cy.get('.v-snack--active').should(
       'contain',
       'Votre convocation a été envoyée dans votre boîte mail.',
     )
@@ -242,7 +242,7 @@ describe('Connected candidate front', () => {
     cy.visit(magicLink)
     cy.get('body').should('contain', 'Renvoyer ma convocation').click()
     cy.contains('Renvoyer ma convocation').click()
-    cy.get('.v-snack').should(
+    cy.get('.v-snack--active').should(
       'contain',
       'Votre convocation a été envoyée dans votre boîte mail.',
     )
@@ -270,7 +270,7 @@ describe('Connected candidate front', () => {
     cy.get('button')
       .contains('Confirmer')
       .click()
-    cy.get('.v-snack').should(
+    cy.get('.v-snack--active').should(
       'contain',
       'Votre annulation a bien été prise en compte.',
     )
@@ -360,7 +360,7 @@ describe('Connected candidate front', () => {
     cy.get('button')
       .contains('Confirmer')
       .click()
-    cy.get('.v-snack').should(
+    cy.get('.v-snack--active').should(
       'contain',
       'Votre réservation a bien été prise en compte',
     )
@@ -404,7 +404,7 @@ describe('Connected candidate front', () => {
     cy.get('button')
       .contains('Confirmer')
       .click()
-    cy.get('.v-snack').should(
+    cy.get('.v-snack--active').should(
       'contain',
       'Votre annulation a bien été prise en compte.',
     )
