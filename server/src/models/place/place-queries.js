@@ -4,7 +4,8 @@
  */
 import mongoose from 'mongoose'
 
-import Place from './place.model'
+import Place from './place-model'
+import '../inspecteur/inspecteur-model'
 import { appLogger, techLogger } from '../../util'
 import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
 

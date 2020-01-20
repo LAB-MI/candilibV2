@@ -33,15 +33,15 @@ import {
   removeCentres,
   removePlaces,
 } from '../__tests__'
-import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
-import placeModel from './place.model'
+import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors-constants'
+import Place from './place-model'
 import {
   bookPlaceById,
   findAndbookPlace,
   findPlaceBookedByInspecteur,
   findPlacesByCentreAndDate,
   removeBookedPlace,
-} from './place.queries'
+} from './place-queries'
 import { expectedArchivedPlace } from '../archived-place/__tests__/expect-archive-place'
 
 jest.mock('../../util/logger')

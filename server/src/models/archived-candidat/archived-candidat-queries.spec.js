@@ -9,8 +9,8 @@ import {
 
 import { connect, disconnect } from '../../mongo-connection'
 
-import { countArchivedCandidats } from './archived-candidat.queries'
-import ArchivedCandidatModel from './archived-candidat.model'
+import { countArchivedCandidats } from './archived-candidat-queries'
+import ArchivedCandidatModel from './archived-candidat-model'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'

@@ -1,4 +1,4 @@
-import Whitelisted from './whitelisted.model'
+import Whitelisted from './whitelisted-model'
 
 export const findAllWhitelisted = async departement => {
   const whitelisted = await Whitelisted.find({ departement })

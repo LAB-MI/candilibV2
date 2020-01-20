@@ -103,7 +103,7 @@ describe('Test the candidat signup', () => {
   afterEach(async () => {
     try {
       await deleteCandidatByNomNeph(nomNaissance, codeNeph)
-    } catch (error) {}
+    } catch (error) { }
   })
 
   afterAll(async () => {
@@ -190,7 +190,7 @@ describe('Test the candidat signup', () => {
           validCandidat1.nomNaissance,
           validCandidat1.codeNeph
         )
-      } catch (error) {}
+      } catch (error) { }
     })
 
     it('Should response 409 for an existing candidat', async () => {

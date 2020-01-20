@@ -1,1 +1,1 @@
-export * from './candidat.queries'
+export * from './candidat-queries'

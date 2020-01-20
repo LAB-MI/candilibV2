@@ -1,4 +1,4 @@
-import Evaluation from './evaluation.model'
+import Evaluation from './evaluation-model'
 
 export const createEvaluation = async ({ rating, comment }) => {
   try {

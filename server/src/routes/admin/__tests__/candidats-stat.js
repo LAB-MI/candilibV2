@@ -12,7 +12,7 @@ import {
   ABSENT,
   NO_ADMISSIBLE,
   CANCELED,
-} from '../../../models/candidat/objetDernierNonReussite.values'
+} from '../../../models/candidat/objetDernierNonReussite-values'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
   findCentreByNameAndDepartement,
@@ -23,7 +23,7 @@ import {
   findInspecteurByMatricule,
   createInspecteur,
 } from '../../../models/inspecteur'
-import { createArchivedCandidat } from '../../../models/archived-candidat/archived-candidat.queries'
+import { createArchivedCandidat } from '../../../models/archived-candidat/archived-candidat-queries'
 
 import {
   bookCandidatOnSelectedPlace,

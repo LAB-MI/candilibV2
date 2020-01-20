@@ -39,7 +39,7 @@ const isInvalidList = list => !list || !Array.isArray(list) || !list.length
  *
  * @param {string} userId - ID de l'utilisateur qui demande la liste des utilisateurs
  *
- * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
+ * @returns {Promise.<import('../../../models/user/user-model.js').User[]>}
  */
 
 export const getAppropriateUsers = async userId => {
@@ -125,7 +125,7 @@ export const createAppropriateUser = async (
  * @param {string} param.status - Statut de l'utilisateur à modifier
  * @param {string[]} param.departements - Département de l'utilisateur à modifier
  *
- * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
+ * @returns {Promise.<import('../../../models/user/user-model.js').User[]>}
  */
 export const updateUserBusiness = async (
   userId,
@@ -222,7 +222,7 @@ export const archiveUserBusiness = async (userId, emailToDelete) => {
  * @function
  *
  * @param {string} status - Utilisateur dont les données sont à modifier
- * @param {import('../../../models/user/user.model.js').User} user - Utilisateur exécutant l'action
+ * @param {import('../../../models/user/user-model.js').User} user - Utilisateur exécutant l'action
  * @param {string[]} departements - Liste des départements d'intervention de l'utilisateur
  *
  * @returns {boolean | string} - `false` si l'utilisateur peut faire la modification, sinon `string` contenant le message d'erreur

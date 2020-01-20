@@ -4,7 +4,7 @@ import {
   deleteEvaluationById,
   findEvaluationById,
   updateEvaluationById,
-} from './evaluation.queries'
+} from './evaluation-queries'
 
 const rating = 5
 const comment = 'chouette'

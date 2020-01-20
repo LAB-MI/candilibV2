@@ -1,5 +1,5 @@
-import ArchivedCandidat from './archived-candidat.model'
-import Place from '../place/place.model'
+import ArchivedCandidat from './archived-candidat-model'
+import Place from '../place/place-model'
 import moment from 'moment'
 
 export const createArchivedCandidat = async candidatData => {

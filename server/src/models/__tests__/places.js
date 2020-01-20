@@ -1,5 +1,5 @@
 import { createPlace } from '../place'
-import Place from '../place/place.model'
+import Place from '../place/place-model'
 import { findCentreById, findCentreByName } from '../centre'
 import config from '../../config'
 import { createCentres } from './centres'

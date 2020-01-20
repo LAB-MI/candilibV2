@@ -1,1 +1,1 @@
-export * from './whitelisted.queries'
+export * from './whitelisted-queries'

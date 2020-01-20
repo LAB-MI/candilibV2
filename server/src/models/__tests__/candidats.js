@@ -1,6 +1,6 @@
 import { getFrenchLuxon } from '../../util'
 import { createCandidat } from '../candidat'
-import candidatModel from '../candidat/candidat.model'
+import candidatModel from '../candidat/candidat-model'
 
 export const candidats = [
   {

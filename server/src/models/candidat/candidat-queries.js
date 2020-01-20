@@ -1,8 +1,8 @@
 import moment from 'moment'
 
-import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
-import Candidat from './candidat.model'
-import Place from '../place/place.model'
+import ArchivedCandidat from '../archived-candidat/archived-candidat-model'
+import Candidat from './candidat-model'
+import Place from '../place/place-model'
 import { getFrenchLuxon, techLogger } from '../../util'
 
 /**

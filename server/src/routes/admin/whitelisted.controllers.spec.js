@@ -10,7 +10,7 @@ import {
   addWhitelisted,
 } from './whitelisted.controllers'
 import { createWhitelisted } from '../../models/whitelisted'
-import whitelistedModel from '../../models/whitelisted/whitelisted.model'
+import whitelistedModel from '../../models/whitelisted/whitelisted-model'
 
 describe('Test get and export candidats', () => {
   const department = '93'

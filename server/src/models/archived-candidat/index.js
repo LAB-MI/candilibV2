@@ -1,1 +1,1 @@
-export * from './archived-candidat.queries'
+export * from './archived-candidat-queries'

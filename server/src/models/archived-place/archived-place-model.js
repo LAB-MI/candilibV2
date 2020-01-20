@@ -3,7 +3,7 @@
  * @module
  */
 import mongoose from 'mongoose'
-import { placeCommonFields } from '../place/place.model'
+import { placeCommonFields } from '../place/place-model'
 
 const { Schema } = mongoose
 

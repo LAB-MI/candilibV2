@@ -1,7 +1,7 @@
 import { commonBasePlaceDateTime } from './places'
 import { findCandidatByEmail } from '../candidat'
 import { candidats, createCandidats } from './candidats'
-import placeModel from '../place/place.model'
+import Place from '../place/place-model'
 
 export const makeResa = (
   place,
@@ -21,7 +21,7 @@ export const bookCandidatOnSelectedPlace = async (
   bookedAt = undefined,
   bookedByAdmin = undefined
 ) => {
-  const placeFounded = await placeModel.findOne({
+  const placeFounded = await Place.findOne({
     _id: place._id || place,
   })
   placeFounded.candidat = candidat._id
@@ -36,10 +36,10 @@ export const makeResas = async (
   bookedAt = undefined,
   bookedByAdmin = undefined
 ) => {
-  const place1 = await placeModel.findOne({
+  const place1 = await Place.findOne({
     date: commonBasePlaceDateTime.toISO(),
   })
-  const place2 = await placeModel.findOne({
+  const place2 = await Place.findOne({
     date: commonBasePlaceDateTime.plus({ days: 1, hour: 1 }).toISO(),
   })
 
@@ -59,10 +59,10 @@ export const makeCandidatsResas = async (
 ) => {
   const candidats = await createCandidats()
 
-  const place1 = await placeModel.findOne({
+  const place1 = await Place.findOne({
     date: commonBasePlaceDateTime.plus({ days: 1, hour: 1 }).toISO(),
   })
-  const place2 = await placeModel.findOne({
+  const place2 = await Place.findOne({
     date: commonBasePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
   })
 
@@ -97,7 +97,7 @@ export const nbPlacesDispoByCentres = async ({ nom }) => {
 }
 
 export const removeAllResas = async () => {
-  const places = await placeModel.find({ candidat: { $ne: undefined } })
+  const places = await Place.find({ candidat: { $ne: undefined } })
   const promsieSaves = places.map(place => {
     place.candidat = undefined
     return place.save()

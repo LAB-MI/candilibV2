@@ -7,7 +7,7 @@ import { findCandidatById } from '../../models/candidat'
 import centreModel from '../../models/centre/centre-model'
 import { createInspecteur } from '../../models/inspecteur'
 import { createPlace, findPlaceById } from '../../models/place'
-import placeModel from '../../models/place/place.model'
+import Place from '../../models/place/place-model'
 import { createUser } from '../../models/user'
 import { createCentre } from '../../models/centre/centre-queries'
 
@@ -120,7 +120,7 @@ describe('Test places controller', () => {
     await createPlaces()
     await makeResas(bookedAt)
     centreSelected = await centreModel.findOne({ nom: centres[1].nom })
-    placeSelected = await placeModel.findOne({
+    placeSelected = await Place.findOne({
       centre: centreSelected._id,
       candidat: { $exists: true },
     })
@@ -196,7 +196,7 @@ describe('Test places controller', () => {
   })
 
   it('should 400 when modify inspecteur from a reservation with anthor reservation', async () => {
-    const { _id: resa } = await placeModel.findOne({
+    const { _id: resa } = await Place.findOne({
       centre: placeSelected.centre,
       candidat: { $exists: true },
     })

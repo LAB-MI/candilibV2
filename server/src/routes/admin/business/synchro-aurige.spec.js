@@ -2,9 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import util from 'util'
 import config from '../../../config'
-import { findArchivedCandidatByNomNeph } from '../../../models/archived-candidat/archived-candidat.queries'
+import { findArchivedCandidatByNomNeph } from '../../../models/archived-candidat/archived-candidat-queries'
 import { createCandidat, findCandidatById } from '../../../models/candidat'
-import candidatModel from '../../../models/candidat/candidat.model'
+import candidatModel from '../../../models/candidat/candidat-model'
 import { deletePlace, findPlaceById } from '../../../models/place'
 import { createCentres, removeCentres } from '../../../models/__tests__/centres'
 import {
@@ -49,7 +49,7 @@ import {
   placeNoSameDateDernierEchecPratique,
   placeSameDateDernierEchecPratiqueForSuccess,
 } from './__tests__/places-aurige'
-import archivedCandidatModel from '../../../models/archived-candidat/archived-candidat.model'
+import archivedCandidatModel from '../../../models/archived-candidat/archived-candidat-model'
 import {
   createDepartement,
   deleteDepartementById,

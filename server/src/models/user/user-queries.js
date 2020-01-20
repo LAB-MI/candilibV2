@@ -1,11 +1,11 @@
-import User from './user.model'
+import User from './user-model'
 import uuidv4 from 'uuid/v4'
 
 /**
  * Recherche tous les répartiteurs/délégués de tous les départements
  *
  *
- * @returns {Promise.<import('./user.model.js').User[]>} - Liste de documents de l'utilisateur
+ * @returns {Promise.<import('./user-model.js/index.js').User[]>} - Liste de documents de l'utilisateur
  */
 export const findAllUsers = async () => {
   const users = await User.find()
@@ -20,7 +20,7 @@ export const findAllUsers = async () => {
  *                                   les utilisateurs de tous les départements
  * @param {string} [status] - Statut maximum
  *
- * @returns {Promise.<import('./user.model.js').User[]>} - Liste de documents d'utilisateurs
+ * @returns {Promise.<import('./user-model.js/index.js').User[]>} - Liste de documents d'utilisateurs
  */
 export const findAllActiveUsers = async (departements, statuses) => {
   const filters = { deletedAt: { $exists: false } }

@@ -1,6 +1,6 @@
 import mongoose from 'mongoose'
 
-import { candidatFields } from '../candidat/candidat.model'
+import { candidatFields } from '../candidat/candidat-model'
 
 const { Schema } = mongoose
 

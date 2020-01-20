@@ -6,8 +6,8 @@ import {
   phone as phoneRegex,
   neph as nephRegex,
 } from '../../util'
-import { placeCommonFields } from '../place/place.model'
-import { ECHEC } from './objetDernierNonReussite.values'
+import { placeCommonFields } from '../place/place-model'
+import { ECHEC } from './objetDernierNonReussite-values'
 
 const { Schema } = mongoose
 

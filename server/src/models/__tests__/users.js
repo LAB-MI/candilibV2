@@ -1,4 +1,4 @@
-import userModel from '../user/user.model'
+import userModel from '../user/user-model'
 import { createUser } from '../user'
 
 export const users = [
