@@ -12,3 +12,9 @@ const EvaluationSchema = new Schema({
 })
 
 export default mongoose.model('Evaluation', EvaluationSchema)
+
+/**
+ * @typedef {Object} EvaluationMongooseDocument
+ * @property {number} rating
+ * @property {string} comment
+ */

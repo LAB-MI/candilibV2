@@ -54,7 +54,7 @@ export const placeCommonFields = {
 }
 
 /**
- * @type {PlaceModel}
+ * @type {PlaceMongooseDocument}
  */
 const PlaceSchema = new Schema(
   {
@@ -104,9 +104,10 @@ PlaceSchema.pre('save', async function preSave () {
 })
 
 const model = mongoose.model('Place', PlaceSchema)
+export default model
 
 /**
- * @typedef {Object} PlaceModel
+ * @typedef {Object} PlaceMongooseDocument
  * @property {ObjectId} inspecteur
  * @property {centre} centre
  * @property {date} date
@@ -114,5 +115,3 @@ const model = mongoose.model('Place', PlaceSchema)
  * @property {UserFields} bookedByAdmin
  * @property {ObjectId} candidat
  */
-
-export default model

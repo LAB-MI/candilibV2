@@ -270,7 +270,7 @@ export const bookPlace = async (candidatId, centre, date) => {
  * @async
  * @function
  *
- * @param {PlaceModel} bookedPlace place réservée par le candidat
+ * @param {PlaceMongooseDocument} bookedPlace place réservée par le candidat
  * @param {boolean} isModified Booléen à `true` s'il s'agit d'une modification, à `false` ou `undefined` s'il s'agit d'une annulation
  * @param {Object} loggerContent information pour les traces de l'application
  *

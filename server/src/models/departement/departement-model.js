@@ -20,3 +20,9 @@ const DepartementSchema = new Schema(
   { timestamps: true }
 )
 export default mongoose.model('departement', DepartementSchema)
+
+/**
+ * @typedef {Object} DepartementMongooseDocument
+ * @property {string} _id - Code département (ex 75, 2B, 973)
+ * @property {string} email - Adresse couriel de contact du département
+ */

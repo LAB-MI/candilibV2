@@ -614,7 +614,7 @@ describe('to book places', () => {
   })
 
   it('Should book the place which has not booking with candidat 123456789002 ', async () => {
-    const selectedPlace = await placeModel.findOne({
+    const selectedPlace = await Place.findOne({
       candidat: { $exists: false },
     })
     const selectedCandidat = createdcandidats.find(
@@ -631,7 +631,7 @@ describe('to book places', () => {
   })
 
   it('Should not book the place booked with candidat 123456789002 ', async () => {
-    const selectedPlace = await placeModel.findOne({
+    const selectedPlace = await Place.findOne({
       candidat: { $exists: true },
     })
 

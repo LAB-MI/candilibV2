@@ -29,12 +29,12 @@ export const createPlace = async leanPlace => {
  * @function
  * @see [createArchivedPlaceFromPlace]{@link module:models/archived-place/archived-place-queries.createArchivedPlaceFromPlace}
  *
- * @param {Place~PlaceModel} place La place à supprimer
+ * @param {Place~PlaceMongooseDocument} place La place à supprimer
  * @param {String[]} reasons Les raisons de la suppression
  * @param {String} byUser L'auteur de l'action
  * @param {Boolean} isCandilib Suppression lié à une réussite ou un echec d'un examen de candilib
  *
- * @return {Place~PlaceModel}
+ * @return {Place~PlaceMongooseDocument}
  */
 export const deletePlace = async (place, reasons, byUser, isCandilib) => {
   if (!place) {
@@ -113,7 +113,7 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
  * @param {string} beginDate - Date  au format ISO de debut de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
- * @returns {Promise.<Place~PlaceModel[]>}
+ * @returns {Promise.<Place~PlaceMongooseDocument[]>}
  */
 export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
   const query = Place.where('centre').exists(true)
@@ -266,7 +266,7 @@ export const countPlacesBookedOrNot = async (centres, beginDate, isBooked) => {
  * @param {string} beginDate - Date au format ISO de début de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
- * @returns {Promise.<Place~PlaceModel[]>}
+ * @returns {Promise.<Place~PlaceMongooseDocument[]>}
  */
 export const findPlaceBookedByInspecteur = (
   inspecteurId,
@@ -302,7 +302,7 @@ export const findPlaceBookedByInspecteur = (
  * @param {string} beginDate - Date au format ISO de début de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
- * @returns {Promise.<Place~PlaceModel[]>}
+ * @returns {Promise.<Place~PlaceMongooseDocument[]>}
  */
 export const findAllPlacesBookedByCentreAndInspecteurs = (
   centreId,

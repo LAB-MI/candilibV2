@@ -228,3 +228,28 @@ CandidatSchema.virtual('lastNoReussite')
   })
 
 export default mongoose.model('Candidat', CandidatSchema)
+
+/**
+ * @typedef {Object} CandidatMongooseDocument
+ * @property {string} nomNaissance - Nom de naissance du candidat
+ * @property {string} prenom - Prénom de naissance du candidat
+ * @property {string} codeNeph - Code NEPH du candidat
+ * @property {ObjectId} departement - Département du candidat
+ * @property {string} email - Adresse courriel du candidat
+ * @property {string} portable - Numéro de portable du candidat
+ * @property {string} adresse - Adresse du candidat
+ * @property {date} dateReussiteETG - date de réussite
+ * @property {date} reussitePratique - date de réussite de l'examen pratique
+ * @property {date} presignedUpAt - date de pré-inscription
+ * @property {boolean} isValidatedEmail - validité de l'adresse de couriel
+ * @property {string} emailValidationHash - hash de validation de l'addresse couriel
+ * @property {date} emailValidatedAt - date de validation de l'adresse couriel du candidat
+ * @property {date} aurigeValidatedAt - date de validation par Aurige
+ * @property {date} canBookFrom -date à partir de laquelle le candidat peut réserver une place
+ * @property {boolean} isEvaluationDone -
+ * @property {ObjectId} places - place attribuée au candidat
+ * @property {date} resaCanceledByAdmin - date de
+ * @property {number} nbEchecsPratiques - nombre d'echec à l'examen pratique
+ * @property {date} firstConnection - date de la première connexion
+ * @property {date} canAccessAt - date à partir de laquelle le candidat peut accèder au service
+ */

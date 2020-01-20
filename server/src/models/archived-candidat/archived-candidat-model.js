@@ -43,3 +43,19 @@ ArchivedCandidatSchema.pre('save', async function preSave () {
 })
 
 export default mongoose.model('ArchivedCandidat', ArchivedCandidatSchema)
+
+/**
+ * Modèle de données des places archivées
+ * @typedef {Object} ArchivedPlaceMongooseDocument
+ * //@property {ObjectId} candidatId identifiant du candidat à archiver
+ * @property {Date} archivedAt la date de création de l'archive
+ * @property {string} archiveReason Raison de l'archivage
+ * @property {candidatFields} ArchivedCandidatFields Les champs de [PlaceFields]{@link module:models/candidat/candidat-model~CandidatFields} sont réutilisés dans ce modèle
+ *
+ *
+ *
+ * ...candidatFields,
+
+ *
+ *
+ */
