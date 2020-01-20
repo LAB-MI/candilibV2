@@ -22,7 +22,7 @@ describe('Admin reset password', () => {
     cy.get('.t-reset-link-btn')
       .click()
 
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `Un courriel vient de vous être envoyé à l'adresse ` + (Cypress.env('admin75Login')))
       .contains('close')
       .click()
@@ -137,7 +137,7 @@ describe('Admin reset password', () => {
       .type(password)
     cy.get('.submit-btn')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Votre mot de passe a bien été modifié')
 
     cy.getLastMail().getRecipients()
@@ -152,7 +152,7 @@ describe('Admin reset password', () => {
       .type(password)
     cy.get('.submit-btn')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Vous êtes identifié')
   })
 })

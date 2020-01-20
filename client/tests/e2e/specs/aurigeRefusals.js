@@ -60,11 +60,11 @@ describe('Aurige Refusals', () => {
           mimeType: 'application/json',
         })
     })
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'aurige.json prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Le fichier aurige.json a été synchronisé.')
     // Checks the error messages
     cy.get('.ag-cell')

@@ -60,7 +60,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-remplissage-futur')
       .should('contain', Number(nbBooked / nbPlaces * 100).toFixed(2))
 
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonReussite.json',
       [
         {
@@ -88,11 +88,11 @@ describe('Stats Kpi tests', () => {
           mimeType: 'application/json',
         })
     })
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
@@ -103,7 +103,7 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-number-future-free-places-' + nbPlaces)
       .should('have.length', 1)
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.adminDisconnection()
   })
 
@@ -117,7 +117,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-free-places-' + (nbPlaces - nbInscrits))
       .should('have.length', 1)
 
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonRecevable.json',
       [
         {
@@ -146,11 +146,11 @@ describe('Stats Kpi tests', () => {
           mimeType: 'application/json',
         })
     })
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     nbExams++
     nbNotExamined++
@@ -161,7 +161,7 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-number-future-free-places-' + nbPlaces)
       .should('have.length', 1)
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.adminDisconnection()
   })
 
@@ -175,7 +175,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-free-places-' + (nbPlaces - nbBooked))
       .should('have.length', 1)
 
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonExaminable.json',
       [
         {
@@ -204,11 +204,11 @@ describe('Stats Kpi tests', () => {
           mimeType: 'application/json',
         })
     })
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     nbExams++
     nbNotExamined++
@@ -220,7 +220,7 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-non-examines')
       .should('contain', Number(nbNotExamined / nbExams * 100).toFixed(2))
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.adminDisconnection()
   })
 
@@ -234,7 +234,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-free-places-' + (nbPlaces - nbBooked))
       .should('have.length', 1)
 
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.absent.json',
       [
         {
@@ -263,11 +263,11 @@ describe('Stats Kpi tests', () => {
           mimeType: 'application/json',
         })
     })
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     nbExams++
 
@@ -279,7 +279,7 @@ describe('Stats Kpi tests', () => {
       .should('have.length', 1)
     cy.get('.t-absenteisme')
       .should('contain', Number(1 / nbExams * 100).toFixed(2))
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.adminDisconnection()
   })
 
@@ -293,7 +293,7 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-free-places-' + (nbPlaces - nbBooked))
       .should('have.length', 1)
 
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.reussite.json',
       [
         {
@@ -322,11 +322,11 @@ describe('Stats Kpi tests', () => {
           mimeType: 'application/json',
         })
     })
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     nbExams++
     const nbSuccess = 1
@@ -340,7 +340,7 @@ describe('Stats Kpi tests', () => {
       .should('contain', Number(nbSuccess / (nbSuccess + nbFailed) * 100).toFixed(2))
     cy.get('.t-total-places-' + nbExams)
       .should('have.length', 1)
-    cy.get('.v-snack button').should('be.visible').click({ force: true })
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.adminDisconnection()
   })
 })

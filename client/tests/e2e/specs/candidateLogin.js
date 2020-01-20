@@ -100,7 +100,7 @@ describe('Candidate login', () => {
       .click()
     cy.contains('Pré-inscription')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Cette adresse courriel est déjà enregistrée')
     // Validates the email address
     cy.getLastMail().getRecipients()
@@ -129,7 +129,7 @@ describe('Candidate login', () => {
       .type(Cypress.env('emailCandidat'))
     cy.get('.t-magic-link-button-top')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Utilisateur en attente de validation.')
     // The admin validates the candidate via Aurige
     cy.adminLogin()
@@ -144,7 +144,7 @@ describe('Candidate login', () => {
       .type(Cypress.env('emailCandidat'))
     cy.get('.t-magic-link-button-top')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Un lien de connexion vous a été envoyé.')
     // The candidate gets the link
     cy.getLastMail().getRecipients()
@@ -179,7 +179,7 @@ describe('Candidate login', () => {
       .type('badtest@example.com')
     cy.get('.t-magic-link-button-top')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Utilisateur non reconnu')
   })
 
@@ -218,7 +218,7 @@ describe('Candidate login', () => {
       .click()
     cy.contains('Pré-inscription')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Veuillez remplir le formulaire')
   })
 
@@ -257,7 +257,7 @@ describe('Candidate login', () => {
       .click()
     cy.contains('Pré-inscription')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Veuillez remplir le formulaire')
   })
 
@@ -296,7 +296,7 @@ describe('Candidate login', () => {
       .click()
     cy.contains('Pré-inscription')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Veuillez remplir le formulaire')
   })
 })
