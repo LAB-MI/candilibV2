@@ -24,8 +24,8 @@ Cypress.Commands.add('adminDisconnection', () => {
     .click()
   cy.get('.t-disconnect')
     .click()
-  cy.get('.v-snack')
-    .should('contain', 'Vous êtes déconnecté·e')
+  cy.url()
+    .should('contain', '/admin-login')
 })
 
 Cypress.Commands.add('archiveCandidate', (candidat) => {
