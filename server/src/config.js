@@ -154,7 +154,7 @@ const config = {
 
   PUBLIC_URL: process.env.PUBLIC_URL || DEFAULT_PUBLIC_URL,
   ADMIN_URL: process.env.ADMIN_URL || DEFAULT_ADMIN_URL,
-  LINE_DELAY: Number(process.env.LINE_DELAY) || 0,
+  LINE_DELAY: Number(process.env.LINE_DELAY) || 30,
   CANDIDAT_ROUTE: '/candidat',
   ADMIN_ROUTE: '/admin',
 
