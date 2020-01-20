@@ -454,7 +454,8 @@ export const getCandBookFrom = (candidat, datePassage) => {
 }
 
 /**
- * Récupère la première date à laquelle le candidat peut réserver une place (Les places avant cette date ne doivent pas lui être présentées)
+ * Récupère la première date à laquelle le candidat peut réserver une place
+ * (Les places avant cette date ne doivent pas lui être présentées)
  *
  * @function
  *
@@ -467,12 +468,12 @@ export const getBeginDateAuthorize = candidat => {
   let beginDateAutoriseDefault
   if (config.delayToBook) {
     beginDateAutoriseDefault = getFrenchLuxon()
-      .endOf('day')
+      .startOf('day')
       .plus({
         days: config.delayToBook,
       })
   } else {
-    beginDateAutoriseDefault = getFrenchLuxon()
+    beginDateAutoriseDefault = getFrenchLuxon().endOf('day')
   }
 
   const dateCanBookFrom = getFrenchLuxonFromJSDate(candidat.canBookFrom)
