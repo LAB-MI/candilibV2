@@ -86,3 +86,4 @@ export const updateDepartementById = async ({ _id, email }) => {
   const updatedDepartement = await departement.save()
   return updatedDepartement
 }
+export const findDepartements = async () => Departement.find({}, '_id')
