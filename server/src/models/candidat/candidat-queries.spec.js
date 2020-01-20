@@ -269,7 +269,7 @@ describe('Candidat', () => {
       expect(sameCandidatDifferentEmail._id.toString()).toBe(
         candidat._id.toString()
       )
-      expect(sameCandidatDifferentEmail.email).not.toBe(candidat.email)
+      expect(sameCandidatDifferentEmail.email).not.toBe(email)
     })
 
     it('should update a candidat', async () => {

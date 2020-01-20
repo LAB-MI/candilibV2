@@ -215,7 +215,7 @@ describe('ArchivedCandidat', () => {
       expect(sameArchivedCandidatDifferentEmail._id.toString()).toBe(
         candidat._id.toString()
       )
-      expect(sameArchivedCandidatDifferentEmail.email).not.toBe(candidat.email)
+      expect(sameArchivedCandidatDifferentEmail.email).not.toBe(validEmail)
     })
   })
 
