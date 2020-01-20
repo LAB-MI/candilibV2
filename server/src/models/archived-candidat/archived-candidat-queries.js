@@ -69,13 +69,12 @@ export const deleteArchivedCandidat = async candidat => {
   return candidat
 }
 
-export const updateArchivedCandidatEmail = async (candidat, email) => {
+export const updateArchivedCandidatEmail = (candidat, email) => {
   if (!candidat) {
     throw new Error('candidat is undefined')
   }
-  await candidat.updateOne({ email })
-  const updatedArchivedCandidat = await ArchivedCandidat.findById(candidat._id)
-  return updatedArchivedCandidat
+  candidat.email = email
+  return candidat.save()
 }
 
 export const findBookedArchivedCandidats = async (date, inspecteur, centre) => {
@@ -114,15 +113,19 @@ export const findBookedArchivedCandidats = async (date, inspecteur, centre) => {
   return null
 }
 
-export const updateArchivedCandidatSignUp = async (candidat, data) => {
+export const updateArchivedCandidatSignUp = (candidat, data) => {
   const { prenom, email, portable, adresse } = data
 
   if (!candidat) {
     throw new Error('candidat is undefined')
   }
-  await candidat.updateOne({ prenom, email, portable, adresse })
-  const updatedArchivedCandidat = await ArchivedCandidat.findById(candidat._id)
-  return updatedArchivedCandidat
+
+  candidat.prenom = prenom
+  candidat.email = email
+  candidat.portable = portable
+  candidat.adresse = adresse
+
+  return candidat.save()
 }
 
 export const updateArchivedCandidatById = async (id, updatedData) => {

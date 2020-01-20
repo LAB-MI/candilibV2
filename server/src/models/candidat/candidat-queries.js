@@ -215,13 +215,12 @@ export const deleteCandidat = async (candidat, reason) => {
  *
  * @returns {Promise.<Candidat>}
  */
-export const updateCandidatEmail = async (candidat, email) => {
+export const updateCandidatEmail = (candidat, email) => {
   if (!candidat) {
     throw new Error('candidat is undefined')
   }
-  await candidat.updateOne({ email })
-  const updatedCandidat = await Candidat.findById(candidat._id)
-  return updatedCandidat
+  candidat.email = email
+  return candidat.save()
 }
 
 /**
@@ -288,15 +287,17 @@ export const findBookedCandidats = async (date, inspecteur, centre) => {
  *
  * @returns {Promise.<Candidat>}
  */
-export const updateCandidatSignUp = async (candidat, data) => {
+export const updateCandidatSignUp = (candidat, data) => {
   const { prenom, email, portable, adresse } = data
 
   if (!candidat) {
     throw new Error('candidat is undefined')
   }
-  await candidat.updateOne({ prenom, email, portable, adresse })
-  const updatedCandidat = await Candidat.findById(candidat._id)
-  return updatedCandidat
+  candidat.prenom = prenom
+  candidat.email = email
+  candidat.portable = portable
+  candidat.adresse = adresse
+  return candidat.save()
 }
 
 /**
