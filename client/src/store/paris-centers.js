@@ -17,7 +17,7 @@ export default {
 
   actions: {
     async [FETCH_PARIS_CENTERS_REQUEST] ({ commit }) {
-      const listFromApi = await api.util.getDeptCenters('75')
+      const listFromApi = await api.public.getCentresByDepartement('75')
       const list = []
       listFromApi.deptCenters.forEach(function (center) {
         list.push(center.nom)
