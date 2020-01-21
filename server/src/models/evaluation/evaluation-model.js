@@ -1,3 +1,8 @@
+/**
+ * Modèle Mongoose des évaluations dans la base de données
+ * @module
+ */
+
 import mongoose from 'mongoose'
 
 const { Schema } = mongoose
@@ -15,6 +20,6 @@ export default mongoose.model('Evaluation', EvaluationSchema)
 
 /**
  * @typedef {Object} EvaluationMongooseDocument
- * @property {number} rating
- * @property {string} comment
+ * @property {number} rating - Note
+ * @property {string} comment - Commentaire
  */

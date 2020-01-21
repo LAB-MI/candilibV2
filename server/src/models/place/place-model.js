@@ -1,6 +1,6 @@
 /**
  * Model Place
- * @module models/place/place-model
+ * @module
  */
 import mongoose from 'mongoose'
 
@@ -108,10 +108,20 @@ export default model
 
 /**
  * @typedef {Object} PlaceMongooseDocument
- * @property {ObjectId} inspecteur
- * @property {centre} centre
+ * @property {ObjectId | Inspecteur} inspecteur
+ * @property {ObjectId | Centre} centre
  * @property {date} date
  * @property {date} bookedAt
  * @property {UserFields} bookedByAdmin
- * @property {ObjectId} candidat
+ * @property {ObjectId | Candidat} [candidat]
+ */
+
+/**
+ * @typedef {Object} PlacePOJO
+ * @property {ObjectId | Inspecteur} inspecteur
+ * @property {ObjectId | Centre} centre
+ * @property {date} date
+ * @property {date} bookedAt
+ * @property {UserFields} bookedByAdmin
+ * @property {ObjectId | Candidat} [candidat]
  */

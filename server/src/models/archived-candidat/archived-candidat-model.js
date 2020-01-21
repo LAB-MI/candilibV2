@@ -1,3 +1,8 @@
+/**
+ * Modèle Mongoose des candidats archivés dans la base de données
+ * @module
+ */
+
 import mongoose from 'mongoose'
 
 import { candidatFields } from '../candidat/candidat-model'
@@ -46,16 +51,19 @@ export default mongoose.model('ArchivedCandidat', ArchivedCandidatSchema)
 
 /**
  * Modèle de données des places archivées
- * @typedef {Object} ArchivedPlaceMongooseDocument
- * //@property {ObjectId} candidatId identifiant du candidat à archiver
+ * @typedef {Object} ArchivedCandidatMongooseDocument
+ * @mixes import('mongoose').Document
+ *
  * @property {Date} archivedAt la date de création de l'archive
  * @property {string} archiveReason Raison de l'archivage
- * @property {candidatFields} ArchivedCandidatFields Les champs de [PlaceFields]{@link module:models/candidat/candidat-model~CandidatFields} sont réutilisés dans ce modèle
- *
- *
- *
- * ...candidatFields,
+ * //@property {candidatFields} ArchivedCandidatFields Les champs de [PlaceFields]{@link module:models/candidat/candidat-model~CandidatFields} sont réutilisés dans ce modèle
+ */
 
+/**
+ * Modèle de données leger des places archivées
+ * @typedef {Object} ArchivedCandidatMongooseLeanDocument
  *
- *
+ * @property {Date} archivedAt la date de création de l'archive
+ * @property {string} archiveReason Raison de l'archivage
+ * //@property {candidatFields} ArchivedCandidatFields Les champs de [PlaceFields]{@link module:models/candidat/candidat-model~CandidatFields} sont réutilisés dans ce modèle
  */

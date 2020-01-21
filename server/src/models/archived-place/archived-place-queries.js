@@ -9,8 +9,8 @@ import ArchivedPlace from './archived-place-model'
  * @async
  * @function
  *
- * @param {ArchivedPlace~ArchivedPlaceSchema} archivedPlaceData Place à archiver
- * @returns {ArchivedPlace~ArchivedPlaceSchema}
+ * @param {ArchivedPlace~ArchivedPlaceMongooseDocument} archivedPlaceData Place à archiver
+ * @returns {ArchivedPlace~ArchivedPlaceMongooseDocument}
  */
 export const createArchivedPlace = async archivedPlaceData => {
   const archivedPlace = await ArchivedPlace.create(archivedPlaceData)

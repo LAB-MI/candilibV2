@@ -1,3 +1,9 @@
+/**
+ * Ensemble des actions sur les candidats dans la base de données
+ * @module
+ *
+ */
+
 import moment from 'moment'
 
 import ArchivedCandidat from '../archived-candidat/archived-candidat-model'
@@ -13,7 +19,7 @@ import { getFrenchLuxon, techLogger } from '../../util'
  *
  * @param {CandidatFormData}
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const createCandidat = async ({
   adresse,
@@ -48,7 +54,7 @@ export const createCandidat = async ({
  * @async
  * @function
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseLeanDocument>}
  */
 export const findAllCandidatsLean = async () => {
   const candidats = await Candidat.find({}).lean()
@@ -61,11 +67,10 @@ export const findAllCandidatsLean = async () => {
  * @async
  * @function
  *
- * @param {Object} email - Adresse courriel du candidat
+ * @param {string} email - Adresse courriel du candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
-
 export const findCandidatByEmail = async email => {
   const candidat = await Candidat.findOne({ email })
   return candidat
@@ -80,7 +85,7 @@ export const findCandidatByEmail = async email => {
  * @param {string} id - Identitifiant du candidat
  * @param {string} options - Options mongoose pour la query de recherche candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const findCandidatById = async (id, options) => {
   if (options && options.dateDernierEchecPratique) {
@@ -98,7 +103,7 @@ export const findCandidatById = async (id, options) => {
  *
  * @param {string} $search - Expression rationnelle pour la recherche par le nom, prénom, code NEPH et adresse courriel
  *
- * @returns {Promise.<Candidat[]>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument[]>}
  */
 export const findCandidatsMatching = async (
   $search,
@@ -139,7 +144,7 @@ export const findCandidatsMatching = async (
  * @param {string} nomNaissance - Nom de naissance du candidat
  * @param {string} codeNeph - NEPH du candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
   const candidat = await Candidat.findOne({ nomNaissance, codeNeph })
@@ -157,7 +162,7 @@ export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
  * @param {string} codeNeph - Code NEPH du candidat
  * @param {string} reason - Raison de l'archivage du candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const deleteCandidatByNomNeph = async (
   nomNaissance,
@@ -178,10 +183,10 @@ export const deleteCandidatByNomNeph = async (
  * @async
  * @function
  *
- * @param {Candidat} candidat - Candidat
+ * @param {Candidat~CandidatMongooseDocument} candidat - Candidat
  * @param {string} reason - Raison de l'archivage du candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const deleteCandidat = async (candidat, reason) => {
   if (!candidat) {
@@ -213,7 +218,7 @@ export const deleteCandidat = async (candidat, reason) => {
  * @param {Candidat} candidat - Candidat
  * @param {string} email - Adresse courriel du candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const updateCandidatEmail = (candidat, email) => {
   if (!candidat) {
@@ -233,7 +238,7 @@ export const updateCandidatEmail = (candidat, email) => {
  * @param {string} inspecteur - Identifiant de l'inspecteur
  * @param {string} centre - Identifiant du centre d'examen
  *
- * @returns {Promise.<Candidat[]>} Liste des candidats ayant réservé ce jour avec cet inspecteur dans ce centre
+ * @returns {Promise.<Candidat~CandidatMongooseDocument[]>} Liste des candidats ayant réservé ce jour avec cet inspecteur dans ce centre
  */
 export const findBookedCandidats = async (date, inspecteur, centre) => {
   let query = Place.where('candidat').exists(true)
@@ -285,7 +290,7 @@ export const findBookedCandidats = async (date, inspecteur, centre) => {
  * @param {string} portable - Numéro de téléphone mobile du candidat
  * @param {string} adresse - Adresse postale du candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const updateCandidatSignUp = (candidat, data) => {
   const { prenom, email, portable, adresse } = data
@@ -309,7 +314,7 @@ export const updateCandidatSignUp = (candidat, data) => {
  * @param {string} id - Identifiant du candidat
  * @param {CandidatUpdateData} updatedData - Données à modifier du candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const updateCandidatById = async (id, updatedData) => {
   const updateInfo = await Candidat.findByIdAndUpdate(id, updatedData)
@@ -325,7 +330,7 @@ export const updateCandidatById = async (id, updatedData) => {
  * @param {Candidat} candidat - Candidat
  * @param {Date} canBookFrom - Date possible de réservation d'une place
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const updateCandidatCanBookFrom = async (candidat, canBookFrom) => {
   candidat.canBookFrom = canBookFrom
@@ -340,7 +345,7 @@ export const updateCandidatCanBookFrom = async (candidat, canBookFrom) => {
  *
  * @param {string} id - Identifiant du candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const setCandidatFirstConnection = async id => {
   const candidat = await findCandidatById(id)
@@ -364,7 +369,7 @@ export const setCandidatFirstConnection = async id => {
  * @param {string=} byUser - Adresse courriel du répartiteur ou Délégué ou AURIGE ayant archivé la place le cas échéant
  * @param {boolean=} isCandilib - Présent et à `true` si le candidat a passé l'examen avec Candilib
  *
- * @returns {Promise.<Candidat>} - Candidat
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>} - Candidat
  */
 export const addPlaceToArchive = (
   candidat,
@@ -406,7 +411,7 @@ export const addPlaceToArchive = (
  * @param {string=} byUser - Adresse courriel du répartiteur ou Délégué ou AURIGE ayant archivé la place le cas échéant
  * @param {boolean=} isCandilib - Présent et à `true` si le candidat a passé l'examen avec Candilib
  *
- * @returns {Promise.<Candidat>} - Candidat avec la nouvelle place archivée
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>} - Candidat avec la nouvelle place archivée
  */
 export const archivePlace = async (
   candidat,
@@ -430,7 +435,7 @@ export const archivePlace = async (
  * @param {Date} dateDernierEchecPratique - Date du dernier échec pratique
  * @param {Date} canBookFrom - Date à partir de laquelle la place peut être réservée par le candidat
  *
- * @returns {Promise.<Candidat>} - Candidat mis à jour après une non réussite
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>} - Candidat mis à jour après une non réussite
  */
 export const updateCandidatFailed = async (
   candidat,
@@ -449,7 +454,7 @@ export const updateCandidatFailed = async (
  *
  * @param {Candidat} candidat
  *
- * @returns {Promise.<Candidat>}
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>}
  */
 export const updateCandidatNoReussite = async (
   candidat,
@@ -469,7 +474,7 @@ export const updateCandidatNoReussite = async (
  * @param {Object} candidat - Candidat
  * @param {Date} resaCanceledByAdmin - Date de l'annulation de la place par un délégué ou un répartiteur
  *
- * @returns {Promise.<Candidat>} - Candidat mis à jour
+ * @returns {Promise.<Candidat~CandidatMongooseDocument>} - Candidat mis à jour
  */
 export const setCandidatToVIP = (candidat, resaCanceledByAdmin) => {
   candidat.resaCanceledByAdmin = resaCanceledByAdmin
@@ -491,6 +496,16 @@ export const isCandidatExisting = async _id => {
   return isExist
 }
 
+/**
+ * Compte les candidats inscrits dans un département
+ *
+  * @async
+ * @function
+ *
+ * @param {string} departement - Id du département
+ *
+ * @returns {Promise.<number>} - Nombre de candidats inscrits dans le département
+ */
 export const countCandidatsInscritsByDepartement = async departement => {
   return Candidat.countDocuments({
     departement,

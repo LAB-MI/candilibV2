@@ -1,3 +1,9 @@
+/**
+ * Ensemble des actions sur les départements dans la base de données
+ * @module
+ *
+ */
+
 import Departement from './departement-model'
 
 /**
@@ -10,7 +16,7 @@ import Departement from './departement-model'
  * @param {string} param._id - Identifiant du département
  * @param {string} param.email - Adresse courriel du département
  *
- * @returns {Promise.<DepartementMongooseDocument>} - Le département créé
+ * @returns {Promise.<Departement~DepartementMongooseDocument>} - Le département créé
  */
 export const createDepartement = async ({ _id, email }) => {
   const departement = new Departement({
@@ -29,7 +35,7 @@ export const createDepartement = async ({ _id, email }) => {
  *
  * @param {string} _id - Identifiant du département
  *
- * @returns {Promise.<DepartementMongooseDocument | null>} - Le département trouvé le cas échéant
+ * @returns {Promise.<Departement~DepartementMongooseDocument | null>} - Le département trouvé le cas échéant
  */
 export const findDepartementById = async _id => Departement.findById(_id)
 
@@ -70,7 +76,7 @@ export const isDepartementExisting = async _id => {
  *
  * @param {string} _id - Identifiant du département
  *
- * @returns {Promise.<DepartementMongooseDocument>} - Le département supprimé
+ * @returns {Promise.<Departement~DepartementMongooseDocument>} - Le département supprimé
  */
 export const deleteDepartementById = async _id => {
   const departement = await findDepartementById(_id)
@@ -87,7 +93,7 @@ export const deleteDepartementById = async _id => {
  * @async
  * @function
  *
- * @returns {Promise.<DepartementMongooseDocument[]>} - Les départements trouvés
+ * @returns {Promise.<Departement~DepartementMongooseDocument[]>} - Les départements trouvés
  */
 export const findAllDepartements = async () => Departement.find({}, '-__v')
 
@@ -101,7 +107,7 @@ export const findAllDepartements = async () => Departement.find({}, '-__v')
  * @param {string} param._id - Identifiant du département
  * @param {string} param.email - Adresse courriel du département
  *
- * @returns {Promise.<DepartementMongooseDocument>} - Le département modifié
+ * @returns {Promise.<Departement~DepartementMongooseDocument>} - Le département modifié
  */
 export const updateDepartementById = async ({ _id, email }) => {
   const departement = await findDepartementById(_id)

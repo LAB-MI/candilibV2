@@ -18,7 +18,7 @@ const caseInsensitive = nom => ({
  *
  * @param {string[]} departements - Liste des départements pour filtrer les centres
  *
- * @returns {Promise.<CentreMongooseDocument[]>} Liste des centres
+ * @returns {Promise.<Centre~MongooseDocument[]>} Liste des centres
  */
 export const findAllCentres = async departements => {
   const centres = await Centre.find(
@@ -34,7 +34,7 @@ export const findAllCentres = async departements => {
  * @async
  * @function
  *
- * @returns {Promise.<CentreMongooseDocument[]>} Liste des centres
+ * @returns {Promise.<Centre~CentreMongooseDocument[]>} Liste des centres
  */
 export const findAllActiveCentres = async () => {
   const centres = await Centre.find({ active: { $ne: false } })
@@ -50,7 +50,7 @@ export const findAllActiveCentres = async () => {
  * @deprecated nom n'est pas unique. A remplacer par findCentreByNameAndDepartement
  * @param {string} nom - Nom du centre
  *
- * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
+ * @returns {Promise.<Centre~CentreMongooseDocument>} Centre correspondant
  */
 export const findCentreByName = async nom => {
   const centre = await Centre.findOne({
@@ -73,7 +73,7 @@ export const findCentreByName = async nom => {
  * @param {number} lat - Latitude géographique du centre
  * @param {string} departement - Département du centre
  *
- * @returns {Promise.<CentreMongooseDocument>} Centre créé
+ * @returns {Promise.<Centre~CentreMongooseDocument>} Centre créé
  */
 export const createCentre = async (
   nom,
@@ -105,9 +105,9 @@ export const createCentre = async (
  * @async
  * @function
  *
- * @param {CentreMongooseDocument} centre - Le centre à supprimer
+ * @param {Centre~CentreMongooseDocument} centre - Le centre à supprimer
  *
- * @returns {Promise.<CentreMongooseDocument>} Le centre supprimé
+ * @returns {Promise.<Centre~CentreMongooseDocument>} Le centre supprimé
  */
 export const deleteCentre = async centre => {
   if (!centre) {
@@ -123,11 +123,11 @@ export const deleteCentre = async centre => {
  * @async
  * @function
  *
- * @param {CentreMongooseDocument} centre - Le centre à modifier
+ * @param {Centre~CentreMongooseDocument} centre - Le centre à modifier
  * @param {boolean} active - L'état dans lequel mettre le centre
  * @param {string} email - Adresse couriel de l'utilisateur à l'origine de la modification
  *
- * @returns {Promise.<CentreMongooseDocument>} Centre modifié
+ * @returns {Promise.<Centre~CentreMongooseDocument>} Centre modifié
  */
 export const updateCentreActiveState = async (centre, active, email) => {
   if (!centre) {
@@ -148,14 +148,14 @@ export const updateCentreActiveState = async (centre, active, email) => {
  * @async
  * @function
  *
- * @param {CentreMongooseDocument} centre - Le centre à modifier
+ * @param {Centre~CentreMongooseDocument} centre - Le centre à modifier
  * @param {string} name - Nom du centre (de la ville du centre)
  * @param {string} label - Information complémentaire pour retrouver le point de rencontre du centre
  * @param {string} adresse - Adresse du centre
  * @param {string} lon - Longitude géographique du centre
  * @param {string} lat - Latitude géographique du centre
  *
- * @returns {Promise.<CentreMongooseDocument>} Centre modifié
+ * @returns {Promise.<Centre~CentreMongooseDocument>} Centre modifié
  */
 export const updateCentreLabel = async (
   centre,
@@ -187,7 +187,7 @@ export const updateCentreLabel = async (
  * @param {string} departement - Département dont les centres seront récupérés
  * @param {Object} options - Objet contenant des options pour la requête
  *
- * @returns {Promise.<CentreMongooseDocument[]>} Liste des centres trouvés
+ * @returns {Promise.<Centre~CentreMongooseDocument[]>} Liste des centres trouvés
  */
 export const findCentresByDepartement = async (
   departementId,
@@ -215,7 +215,7 @@ export const findCentresByDepartement = async (
  * @param {string} nom - Nom du centre
  * @param {string} departement - Département du centre
  *
- * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
+ * @returns {Promise.<Centre~CentreMongooseDocument>} Centre correspondant
  */
 export const findCentreByNameAndDepartement = async (nom, departement) => {
   const centre = await Centre.findOne({
@@ -234,7 +234,7 @@ export const findCentreByNameAndDepartement = async (nom, departement) => {
  *
  * @param {string} id - Id du centre
  *
- * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
+ * @returns {Promise.<Centre~CentreMongooseDocument>} Centre correspondant
  */
 export const findCentreById = async id => {
   const centre = await Centre.findById(id)

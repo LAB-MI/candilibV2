@@ -1,5 +1,5 @@
 /**
- * Model archived-place
+ * Modèle Mongoose des places archivées dans la base de données
  * @module
  */
 import mongoose from 'mongoose'
@@ -9,6 +9,7 @@ const { Schema } = mongoose
 
 const ArchivedPlaceFields = {
   ...placeCommonFields,
+
   placeId: {
     type: Schema.Types.ObjectId,
     default: undefined,

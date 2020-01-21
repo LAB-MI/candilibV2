@@ -19,7 +19,7 @@ import Inspecteur from './inspecteur-model'
  * @param {param.prenom} - Prénom de l'inspecteur à créer
  * @param {param.departement} - Département d'intervention de l'inspecteur à créer
  *
- * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'inspecteur créé
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument>} - Objet mongoose de l'inspecteur créé
  */
 export const createInspecteur = async ({
   email,
@@ -47,7 +47,7 @@ export const createInspecteur = async ({
  *
  * @param {string} departement - Identifiant du département
  *
- * @returns {Promise.<InspecteurMongooseDocument[]>} - Liste d'objets mongoose de tous les IPCSR
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument[]>} - Liste d'objets mongoose de tous les IPCSR
  */
 export const findAllInspecteurs = async () => {
   const inspecteurs = await Inspecteur.find()
@@ -62,7 +62,7 @@ export const findAllInspecteurs = async () => {
  *
  * @param {string} id - Identifiant de l'IPCSR
  *
- * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR
  */
 export const findInspecteurById = async id => Inspecteur.findById(id)
 
@@ -74,7 +74,7 @@ export const findInspecteurById = async id => Inspecteur.findById(id)
  *
  * @param {string} matricule
  *
- * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR
  */
 export const findInspecteurByMatricule = async matricule =>
   Inspecteur.findOne({ matricule })
@@ -87,7 +87,7 @@ export const findInspecteurByMatricule = async matricule =>
  *
  * @param {string} departement - Identifiant du département
  *
- * @returns {Promise.<InspecteurMongooseDocument[]>} - Liste d'objets mongoose des IPCSR correspondants
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument[]>} - Liste d'objets mongoose des IPCSR correspondants
  */
 export const findInspecteursByDepartement = async departement =>
   Inspecteur.find({ departement })
@@ -100,7 +100,7 @@ export const findInspecteursByDepartement = async departement =>
  *
  * @param {string[]} departement - Liste d'identifiants de départements
  *
- * @returns {Promise.<InspecteurMongooseDocument[]>} - Liste d'objets mongoose des IPCSR correspondants
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument[]>} - Liste d'objets mongoose des IPCSR correspondants
  */
 export const findInspecteursByDepartements = async departements =>
   Inspecteur.find({ departement: { $in: departements } })
@@ -113,7 +113,7 @@ export const findInspecteursByDepartements = async departements =>
  *
  * @param {string[]} departements - Liste d'identifiants de départements
  *
- * @returns {Promise.<InspecteurMongooseDocument[]>} - Liste d'objets mongoose des IPCSR correspondants
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument[]>} - Liste d'objets mongoose des IPCSR correspondants
  */
 export const findActiveInspecteursByDepartements = async departements =>
   Inspecteur.find({
@@ -129,7 +129,7 @@ export const findActiveInspecteursByDepartements = async departements =>
  *
  * @param {string} $search - Chaîne de caractère à rechercher
  *
- * @returns {Promise.<InspecteurMongooseDocument[]>} - Liste d'objets mongoose des IPCSR correspondants
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument[]>} - Liste d'objets mongoose des IPCSR correspondants
  */
 export const findInspecteursMatching = async (
   $search,
@@ -172,7 +172,7 @@ export const findInspecteursMatching = async (
  * @param {string} prenom - Prénom de l'IPCSR à rechercher
  * @param {string} nom - Nom de l'IPCSR à rechercher
  *
- * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR correspondant
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR correspondant
  */
 export const findInspecteurByName = async (prenom, nom) => {
   const inspecteur = {}
@@ -193,7 +193,7 @@ export const findInspecteurByName = async (prenom, nom) => {
  *
  * @param {string} email - Adresse courriel de l'IPCSR à rechercher
  *
- * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR correspondant
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR correspondant
  */
 export const findInspecteurByEmail = async email =>
   Inspecteur.findOne({ email })
@@ -206,7 +206,7 @@ export const findInspecteurByEmail = async email =>
  *
  * @param {string} matricule - Matricule de l'IPCSR à supprimer
  *
- * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR supprimé
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR supprimé
  */
 export const deleteInspecteurByMatricule = async matricule => {
   const inspecteur = await findInspecteurByMatricule(matricule)
@@ -225,7 +225,7 @@ export const deleteInspecteurByMatricule = async matricule => {
  *
  * @param {string} id - Identifiant de l'IPCSR à supprimer
  *
- * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR supprimé
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR supprimé
  */
 export const deleteInspecteurById = async id => {
   const inspecteur = await findInspecteurById(id)
@@ -244,7 +244,7 @@ export const deleteInspecteurById = async id => {
  *
  * @param {string} ipcsrId - Identifiant de l'IPCSR à modifier
  *
- * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR modifié
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR modifié
  */
 export const updateIpcsr = (ipcsrId, newData) => {
   return Inspecteur.findByIdAndUpdate(ipcsrId, newData)
@@ -258,7 +258,7 @@ export const updateIpcsr = (ipcsrId, newData) => {
  *
  * @param {string} ipcsrId - Identifiant de l'IPCSR à modifier
  *
- * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR modifié
+ * @returns {Promise.<Inspecteur~InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR modifié
  */
 export const disableIpcsr = ipcsrId => {
   return Inspecteur.findByIdAndUpdate(ipcsrId, { active: false })

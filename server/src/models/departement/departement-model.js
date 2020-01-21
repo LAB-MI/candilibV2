@@ -1,3 +1,8 @@
+/**
+ * Modèle Mongoose des départements dans la base de données
+ * @module
+ */
+
 import mongoose from 'mongoose'
 import { email as emailRegex } from '../../util'
 
