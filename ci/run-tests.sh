@@ -21,6 +21,10 @@ export SMTP_PORT=1025
 export CONTAINER_NAME_CANDIDAT=candidat.candilib.local
 export CONTAINER_NAME_ADMIN=admin.candilib.local
 export LC_ALL=fr_FR.UTF-8
+export API_USER_LIMIT_RATE=1000r/s
+export API_USER_BURST=1000 nodelay
+export APP_USER_LIMIT_RATE=1000r/s
+export APP_USER_BURST=1000 nodelay
 
 ret=1
 echo "# run all separated services (front_candidat,front_admin,api,db) in prod mode"
