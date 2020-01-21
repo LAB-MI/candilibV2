@@ -31,7 +31,7 @@ export default {
       commit(FETCH_DEPARTEMENTS_REQUEST)
 
       try {
-        const listFromApi = await api.util.getActiveDepartementsId()
+        const listFromApi = await api.public.getActiveDepartementsId()
         const list = listFromApi.departementsId
         commit(FETCH_DEPARTEMENTS_SUCCESS, list)
       } catch (error) {
