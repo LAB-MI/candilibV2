@@ -76,14 +76,6 @@ export const findArchivedCandidatById = async (id, options) => {
   return archivedCandidat
 }
 
-export const findActiveArchivedCandidatByEmail = async email => {
-  const candidat = await ArchivedCandidat.findOne({
-    email,
-    archived: undefined,
-  })
-  return candidat
-}
-
 /**
  * Renvoie un candidat archivé par son nom et son code NEPH
  *
@@ -98,14 +90,6 @@ export const findActiveArchivedCandidatByEmail = async email => {
 export const findArchivedCandidatByNomNeph = async (nomNaissance, codeNeph) => {
   const archivedCandidat = await ArchivedCandidat.findOne({ nomNaissance, codeNeph })
   return archivedCandidat
-}
-
-export const findArchivedCandidatByNomNephFullText = async $search => {
-  const candidat = await ArchivedCandidat.find(
-    { $text: { $search } },
-    { score: { $meta: 'textScore' } }
-  ).sort({ score: { $meta: 'textScore' } })
-  return candidat
 }
 
 /**
@@ -216,24 +200,4 @@ export const findBookedArchivedCandidats = async (date, inspecteur, centre) => {
     return candidats
   }
   return null
-}
-
-export const updateArchivedCandidatSignUp = (candidat, data) => {
-  const { prenom, email, portable, adresse } = data
-
-  if (!candidat) {
-    throw new Error('candidat is undefined')
-  }
-
-  candidat.prenom = prenom
-  candidat.email = email
-  candidat.portable = portable
-  candidat.adresse = adresse
-
-  return candidat.save()
-}
-
-export const updateArchivedCandidatById = async (id, updatedData) => {
-  const updateInfo = await ArchivedCandidat.findByIdAndUpdate(id, updatedData)
-  return updateInfo
 }

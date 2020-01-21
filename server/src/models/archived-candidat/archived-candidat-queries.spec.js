@@ -4,7 +4,6 @@ import {
   deleteArchivedCandidat,
   deleteArchivedCandidatByNomNeph,
   findArchivedCandidatByNomNeph,
-  updateArchivedCandidatSignUp,
 } from '.'
 
 import { connect, disconnect } from '../../mongo-connection'
@@ -22,11 +21,6 @@ const autreNomNaissance = 'Dupond'
 const prenom = 'Jean'
 const codeNeph = '123456789012'
 const autreCodeNeph = '123456789013'
-
-const validEmail1 = 'test@example.com'
-const portable1 = '0612345679'
-const adresse1 = '110 Rue Hoche 93420 Villepinte'
-const prenom1 = 'Test prenom'
 
 describe('ArchivedCandidat', () => {
   let candidat
@@ -265,32 +259,6 @@ describe('ArchivedCandidat', () => {
 
       // Then
       expect(noArchivedCandidat).toBe(null)
-    })
-
-    it('should update a candidat', async () => {
-      // Given
-      const email = validEmail
-      candidat = await createArchivedCandidat({
-        codeNeph,
-        nomNaissance,
-        prenom,
-        email,
-        portable,
-        adresse,
-      })
-
-      const candidat1 = await updateArchivedCandidatSignUp(candidat, {
-        prenom: prenom1,
-        email: validEmail1,
-        adresse: adresse1,
-        portable: portable1,
-      })
-
-      expect(candidat1).not.toBe(null)
-      expect(candidat1).toHaveProperty('prenom', prenom1)
-      expect(candidat1).toHaveProperty('portable', portable1)
-      expect(candidat1).toHaveProperty('adresse', adresse1)
-      expect(candidat1).toHaveProperty('email', validEmail1)
     })
   })
 })
