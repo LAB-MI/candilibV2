@@ -9,7 +9,7 @@ import {
   deleteDepartementById,
   findAllDepartements,
   findDepartementById,
-  findDepartementsByEmail,
+  findDepartementByEmail,
   updateDepartementById,
 } from '../../models/departement'
 
@@ -106,8 +106,8 @@ export const isContainingCentre = async departementId => {
  * @returns {boolean} - Retourne `true` si le département avec cette adresse courriel existe déjà, sinon `false`
  */
 export const isEmailAlreadyUse = async departementEmail => {
-  const departements = await findDepartementsByEmail(departementEmail)
-  return !!departements.length
+  const departement = await findDepartementByEmail(departementEmail)
+  return !!departement
 }
 
 /**

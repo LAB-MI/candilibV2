@@ -44,8 +44,8 @@ export const findDepartementById = async _id => Departement.findById(_id)
  * @returns {Promise.<Departement>}
  */
 
-export const findDepartementsByEmail = async email =>
-  Departement.find({ email })
+export const findDepartementByEmail = async email =>
+  Departement.findOne({ email })
 
 /**
  * Vérifie si le departement existe, et renvoie `true` si c'est le cas, `false` sinon
@@ -53,9 +53,9 @@ export const findDepartementsByEmail = async email =>
  * @async
  * @function
  *
- * @param {string} _id - Identifiant du departement à trouver dans la base de données
+ * @param {string} _id - Identifiant du département à trouver dans la base de données
  *
- * @returns {Promise.<boolean>} - `true` si un departement existe avec cet identifiant
+ * @returns {Promise.<boolean>} - `true` si un département existe avec cet identifiant
  */
 export const isDepartementExisting = async _id => {
   const isExist = await Departement.exists({ _id })
