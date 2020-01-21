@@ -107,5 +107,8 @@ API_USER_BURST=15 nodelay
 APP_USER_LIMIT_RATE=30r/s
 APP_USER_BURST=80 nodelay
 
+# e2e
+
+CYPRESS_ARG  := $(shell echo $$CYPRESS_ARG )
 # export all variables in subshell
 export
