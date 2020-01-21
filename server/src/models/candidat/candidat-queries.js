@@ -499,7 +499,7 @@ export const isCandidatExisting = async _id => {
 /**
  * Compte les candidats inscrits dans un département
  *
-  * @async
+ * @async
  * @function
  *
  * @param {string} departement - Id du département

@@ -181,7 +181,7 @@ export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
 /**
  * Renvoie les places disponibles pour un centre
  *
-  * @async
+ * @async
  * @function
  *
  * @param {string} centreId - Id du centre
@@ -381,7 +381,7 @@ export const findPlaceWithSameWindow = async creneau => {
 
 /**
  * Compte les places réservé ou non
-  * @async
+ * @async
  * @function
  *
  * @param {objectId[]} centres - Liste des centres

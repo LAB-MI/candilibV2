@@ -21,7 +21,7 @@ export const createArchivedCandidat = async candidatData => {
 
 /**
  * Compte les candidats archivés
-  * @async
+ * @async
  * @function
  *
  * @returns {Promise.<number>} - Nombre de candidats archivés
@@ -88,7 +88,10 @@ export const findArchivedCandidatById = async (id, options) => {
  * @returns {Promise.<ArchivedCandidat~ArchivedCandidatMongooseDocument>}
  */
 export const findArchivedCandidatByNomNeph = async (nomNaissance, codeNeph) => {
-  const archivedCandidat = await ArchivedCandidat.findOne({ nomNaissance, codeNeph })
+  const archivedCandidat = await ArchivedCandidat.findOne({
+    nomNaissance,
+    codeNeph,
+  })
   return archivedCandidat
 }
 
@@ -109,7 +112,10 @@ export const deleteArchivedCandidatByNomNeph = async (
   nomNaissance,
   codeNeph
 ) => {
-  const archivedCandidat = await ArchivedCandidat.findOne({ nomNaissance, codeNeph })
+  const archivedCandidat = await ArchivedCandidat.findOne({
+    nomNaissance,
+    codeNeph,
+  })
   if (!archivedCandidat) {
     throw new Error('No candidat found')
   }
