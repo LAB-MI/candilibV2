@@ -52,8 +52,7 @@ describe('Candidate login', () => {
 
     cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
     cy.get('.v-list-item')
-      .first()
-      .contains(Cypress.env('departements'))
+      .contains(Cypress.env('departement'))
       .click()
 
     cy.get('.t-checkbox')
@@ -96,8 +95,7 @@ describe('Candidate login', () => {
 
     cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
     cy.get('.v-list-item')
-      .first()
-      .contains(Cypress.env('departements'))
+      .contains(Cypress.env('departement'))
       .click()
 
     cy.get('.t-checkbox')
@@ -217,8 +215,7 @@ describe('Candidate login', () => {
 
     cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
     cy.get('.v-list-item')
-      .first()
-      .contains(Cypress.env('departements'))
+      .contains(Cypress.env('departement'))
       .click()
 
     cy.get('.t-checkbox')
@@ -259,8 +256,7 @@ describe('Candidate login', () => {
 
     cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
     cy.get('.v-list-item')
-      .first()
-      .contains(Cypress.env('departements'))
+      .contains(Cypress.env('departement'))
       .click()
 
     cy.get('.t-checkbox')
@@ -301,8 +297,7 @@ describe('Candidate login', () => {
 
     cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
     cy.get('.v-list-item')
-      .first()
-      .contains(Cypress.env('departements'))
+      .contains(Cypress.env('departement'))
       .click()
 
     cy.get('.t-checkbox')

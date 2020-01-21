@@ -161,7 +161,7 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
     .type('0716253443')
 
   cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
-  cy.get('.v-list-item__title').contains(Cypress.env('departements')).click()
+  cy.get('.v-list-item__title').contains(Cypress.env('departement')).click()
 
   cy.get('.t-checkbox')
     .parent()
