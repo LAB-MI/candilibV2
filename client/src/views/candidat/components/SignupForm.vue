@@ -4,7 +4,7 @@
       ref="presignupForm"
       v-model="valid"
       dark
-      class="presignup-form"
+      class="t-presignup-form presignup-form"
       @submit.prevent="presignup"
     >
       * Champs obligatoires
@@ -77,6 +77,7 @@
           @input="setEmailToLowerCase"
         />
       </div>
+
       <div class="form-input">
         <v-text-field
           v-model="portable"
@@ -95,31 +96,39 @@
         />
       </div>
       <div class="form-input">
-        <v-autocomplete
-          v-model="adresse"
-          :label="`${getMsg('preinscription_adresse')} *`"
+        <select-departement
+          :dark="true"
+          class="t-select-departements"
+          :available-departements="availableDepartements"
+          :multiple="false"
+          label="Département"
+          prepend-icon="location_city"
+          aria-placeholder="93"
+          :persistent-hint="true"
+          hint="Vous devez dès à présent choisir votre département de passage à l'examen.
+          Votre choix permet à l'administration de provisionner un nombre de places d'examen suffisant pour chaque département où Candilib est disponible"
+          :rules="departementRules"
+          required
+          @change-departements="newDep => departement = newDep"
+        />
+      </div>
+      <div
+        v-show="!!departement"
+        class="form-input"
+      >
+        <v-checkbox
+          v-model="isCheckDepartement"
           dark
           color="#fff"
-          item-text="label"
-          :placeholder="adressePlaceholder"
-          aria-placeholder="Jean"
-          :loading="isFetchingMatchingAdresses"
-          hint="ex. : 10 avenue du général Leclerc 93420 Villepinte"
-          :items="adresses"
-          prepend-icon="location_city"
-          tabindex="6"
-          no-filter
-          return-object
-          :search-input.sync="searchAdresses"
-          @focus="setAdressePlaceholder"
-          @blur="removeAdressePlaceholder"
+          class="t-checkbox"
+          :label="$formatMessage({ id: 'confirmation_choix_departement' }, { departement })"
         />
       </div>
       <div class="form-input">
         <v-btn
           type="submit"
-          :disabled="isSendingPresignup"
-          :aria-disabled="isSendingPresignup"
+          :disabled="!isCheckDepartement || isSendingPresignup"
+          :aria-disabled="!isCheckDepartement || isSendingPresignup"
           class="submit-button"
           dark
           tabindex="7"
@@ -156,7 +165,6 @@
 </template>
 
 <script>
-import pDebounce from 'p-debounce'
 
 import { email as emailRegex, neph as nephRegex, phone as phoneRegex } from '@/util'
 import {
@@ -164,19 +172,18 @@ import {
   SEND_MAGIC_LINK_REQUEST,
   SHOW_ERROR,
   SHOW_SUCCESS,
+  FETCH_DEPARTEMENTS_REQUEST,
 } from '@/store'
-import api from '@/api'
 
 import AlreadySignedUp from './AlreadySignedUp'
-
-const getAdresses = pDebounce((query) => {
-  return api.util.searchAdresses(query)
-}, 300)
+import SelectDepartement from '@/views/admin/components/SelectDepartements'
+import { mapState } from 'vuex'
 
 export default {
   name: 'SignupForm',
   components: {
     AlreadySignedUp,
+    SelectDepartement,
   },
   props: {
     toggleForm: {
@@ -186,12 +193,17 @@ export default {
   },
   data: function () {
     return {
-      departement: undefined,
       magicLinkValid: false,
       nephPlaceholder: '',
       codeNeph: '',
+      isCheckDepartement: false,
       nephRules: [
         v => nephRegex.test(v) || this.getMsg('preinscription_neph_erreur'),
+      ],
+      departement: undefined,
+      departementRules: [
+        dpt => !!dpt ||
+          'Veuillez renseigner un département',
       ],
       nomPlaceholder: '',
       nomNaissance: '',
@@ -208,37 +220,26 @@ export default {
       portableRules: [
         v => phoneRegex.test(v) || this.getMsg('preinscription_mobile_erreur'),
       ],
-      adressePlaceholder: '',
-      adresse: '',
       valid: false,
       showDialog: false,
-      adresses: [],
-      searchAdresses: null,
-      isFetchingMatchingAdresses: false,
+
     }
   },
 
-  computed: {
-    isSendingPresignup () {
-      return this.$store.state.candidat.isSendingPresignup
+  computed: mapState({
+    isSendingPresignup (state) {
+      return state.candidat.isSendingPresignup
     },
-    isSendingMagicLink () {
-      return this.$store.state.candidat.isSendingMagicLink
+    isSendingMagicLink (state) {
+      return state.candidat.isSendingMagicLink
     },
-  },
+    availableDepartements (state) {
+      return state.departements && state.departements.list
+    },
+  }),
 
-  watch: {
-    adresse (val) {
-      if (val.context) {
-        const contextParts = val.context.split(',')
-        this.departement = contextParts[0]
-        return
-      }
-      this.departement = ''
-    },
-    searchAdresses (val) {
-      val && val !== this.select && this.fetchMatchingAdresses(val)
-    },
+  mounted () {
+    this.$store.dispatch(FETCH_DEPARTEMENTS_REQUEST)
   },
 
   methods: {
@@ -275,12 +276,6 @@ export default {
     removePortablePlaceholder () {
       this.portablePlaceholder = ''
     },
-    setAdressePlaceholder () {
-      this.adressePlaceholder = '10 avenue du général Leclerc 93420 Villepinte'
-    },
-    removeAdressePlaceholder () {
-      this.adressePlaceholder = ''
-    },
     setEmailToLowerCase () {
       this.email = this.email.toLowerCase().trim()
     },
@@ -298,7 +293,6 @@ export default {
         prenom,
         email,
         portable,
-        adresse,
         departement,
       } = this
 
@@ -309,7 +303,6 @@ export default {
           prenom,
           email,
           portable,
-          adresse: adresse.label,
           departement,
         })
         this.$refs.presignupForm.reset()
@@ -331,25 +324,6 @@ export default {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
       this.showDialog = false
-    },
-
-    async fetchMatchingAdresses (val) {
-      this.isFetchingMatchingAdresses = true
-      this.adresses[Math.min(this.adresses.length - 1, 0)] = val
-      try {
-        const adresses = await getAdresses(val)
-        this.adresses = (adresses.features && adresses.features.length)
-          ? adresses.features
-            .filter(adr => adr.properties.type.includes('housenumber'))
-            .map(feature => ({
-              label: feature.properties.label,
-              context: feature.properties.context,
-            }))
-            .concat([{ label: val }])
-          : this.adresses
-      } catch (error) {
-      }
-      this.isFetchingMatchingAdresses = false
     },
   },
 }
