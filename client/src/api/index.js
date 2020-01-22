@@ -743,9 +743,9 @@ export default {
     },
   },
 
-  util: {
+  public: {
     async getConfigCandidat () {
-      const json = await apiClient.get(apiPaths.util.configCandidat, {
+      const json = await apiClient.get(apiPaths.public.configCandidat, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -753,15 +753,6 @@ export default {
       return json
     },
 
-    async searchAdresses (query) {
-      const json = await apiClient.get(apiPaths.util.adressesQuery(query), {
-        headers: {},
-      })
-      return json
-    },
-  },
-
-  public: {
     async getActiveDepartementsId () {
       const json = await apiClient.get(`${apiPaths.public.departements}`, {
         headers: {
