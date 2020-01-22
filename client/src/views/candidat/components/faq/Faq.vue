@@ -22,7 +22,6 @@
     <ul class="list-faq">
       <li
         v-for="question in faqQuestions"
-        :id="slugify(question.title)"
         :key="question.title"
         class="question-wrapper"
       >
@@ -34,7 +33,6 @@
 
 <script>
 import { mapState } from 'vuex'
-import slugify from '@sindresorhus/slugify'
 
 import { FETCH_CONFIG_REQUEST, FETCH_DEPARTEMENTS_REQUEST, FETCH_PARIS_CENTERS_REQUEST } from '@/store'
 import FaqContent from './FaqContent.vue'
@@ -74,7 +72,6 @@ export default {
     goBack () {
       this.$router.back()
     },
-    slugify,
   },
 }
 </script>
