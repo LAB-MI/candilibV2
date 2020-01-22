@@ -16,10 +16,10 @@ PUBLIC CANDIDATE FRONT
 - Ability to go back to the introduction page
 */
 
-// Initialise magicLink
 import { now, date1 } from '../support/dateUtils'
 
 describe('Connected candidate front', () => {
+  // Initialise magicLink
   let magicLink
   const numberOfDaysBeforeDate = 7
   const numberOfDaysPenalty = 45 // 45éme jours inclus et 46 eme jours reservable //TODO: A vérifier
@@ -43,17 +43,8 @@ describe('Connected candidate front', () => {
     cy.archiveCandidate()
     cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore, dayAfter45Days, dayBefore45Days])
     cy.adminDisconnection()
-    cy.candidatePreSignUp()
-    // The admin validates the candidate via Aurige
-    cy.adminLogin()
-    cy.candidateValidation()
-    // Disconnects from the app
-    cy.adminDisconnection()
-    // The candidate gets the link
-    cy.getLastMail().getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
-    cy.getLastMail().getSubject()
-      .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+    cy.candidatConnection(Cypress.env('emailCandidatFront'))
+
     cy.getLastMail().its('Content.Body').then((mailBody) => {
       const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
       const withoutEq = codedLink.replace(/=\r\n/g, '')
@@ -95,7 +86,7 @@ describe('Connected candidate front', () => {
     cy.get('.v-chip').should('contain', 'Nom de naissance')
     cy.contains('Nom de naissance')
       .parent().parent()
-      .should('contain', Cypress.env('candidat'))
+      .should('contain', Cypress.env('candidatFront'))
   })
 
   it('Should book a place', () => {
@@ -140,7 +131,7 @@ describe('Connected candidate front', () => {
     cy.get('p').should('contain', 'à 08:30')
     cy.getLastMail()
       .getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
+      .should('contain', Cypress.env('emailCandidatFront'))
     cy.getLastMail()
       .getSubject()
       .should(
@@ -197,7 +188,7 @@ describe('Connected candidate front', () => {
     cy.get('p').should('contain', 'à 10:00')
     cy.getLastMail()
       .getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
+      .should('contain', Cypress.env('emailCandidatFront'))
     cy.getLastMail()
       .getSubject()
       .should(
@@ -224,7 +215,7 @@ describe('Connected candidate front', () => {
     )
     cy.getLastMail()
       .getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
+      .should('contain', Cypress.env('emailCandidatFront'))
     cy.getLastMail()
       .getSubject()
       .should(
@@ -247,7 +238,7 @@ describe('Connected candidate front', () => {
     )
     cy.getLastMail()
       .getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
+      .should('contain', Cypress.env('emailCandidatFront'))
     cy.getLastMail()
       .getSubject()
       .should(
@@ -276,7 +267,7 @@ describe('Connected candidate front', () => {
     cy.get('h2').should('contain', 'Choix du centre')
     cy.getLastMail()
       .getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
+      .should('contain', Cypress.env('emailCandidatFront'))
     cy.getLastMail()
       .getSubject()
       .should(
@@ -312,7 +303,7 @@ describe('Connected candidate front', () => {
 
   it('Should have a penalty when candidat change the booked place within 6 days', () => {
     cy.adminLogin()
-    cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore)
+    cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore, Cypress.env('candidatFront'))
     cy.adminDisconnection()
 
     cy.visit(magicLink)
@@ -368,7 +359,7 @@ describe('Connected candidate front', () => {
     cy.get('p').should('contain', 'à 10:00')
     cy.getLastMail()
       .getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
+      .should('contain', Cypress.env('emailCandidatFront'))
     cy.getLastMail()
       .getSubject()
       .should(
@@ -387,7 +378,7 @@ describe('Connected candidate front', () => {
 
   it('Should have a penalty when candidat cancel within 6 days of booked place ', () => {
     cy.adminLogin()
-    cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore)
+    cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore, Cypress.env('candidatFront'))
     cy.adminDisconnection()
 
     cy.visit(magicLink)
@@ -413,7 +404,7 @@ describe('Connected candidate front', () => {
     expectedPenaltyCancel()
     cy.getLastMail()
       .getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
+      .should('contain', Cypress.env('emailCandidatFront'))
     cy.getLastMail()
       .getSubject()
       .should(

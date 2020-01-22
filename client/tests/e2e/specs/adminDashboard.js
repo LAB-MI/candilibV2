@@ -11,10 +11,8 @@ describe('Dashboard tests', () => {
     // Delete all mails before start
     cy.deleteAllMails()
     cy.adminLogin()
-    cy.archiveCandidate()
     cy.addPlanning()
     cy.adminDisconnection()
-    cy.candidatePreSignUp()
   })
 
   for (const role of ['candidat', 'inspecteur']) {
