@@ -25,6 +25,7 @@
     "test:watch": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" npm run -s test:unit -- --watch"
   },
   "dependencies": {
+    "@sindresorhus/slugify": "^0.9.1",
     "ag-grid-community": "^21.2.2",
     "ag-grid-vue": "^21.2.2",
     "chart.js": "^2.8.0",

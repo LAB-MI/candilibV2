@@ -130,7 +130,20 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         },
       ],
     },
-
+    {
+      title: 'Je n’ai pas été invité à participer à l’expérimentation ?',
+      content: [
+        {
+          textContent: `L’inscription à candilib se fait obligatoirement après réception d’un mail d’invitation envoyé par les services départementaux en charge de l’expérimentation. La priorité est donnée aux candidat·e·s qui sont en attente depuis plusieurs mois.`,
+        },
+        {
+          textContent: `Pour rappel, les candidat·e·s qui peuvent faire partie de l’expérimentation sont inscrits sur le <a href="https://permisdeconduire.ants.gouv.fr/Services-associes/Effectuer-une-demande-de-permis-de-conduire-en-ligne" rel="nofollow">site Permis de conduire de l’ANTS</a>, ont réussi l’épreuve théorique du code de la route et ont effectué une demande de place d’examen en candidat libre.`,
+        },
+        {
+          textContent: `La demande de place d’examen en candidat libre s’effectue auprès du service en charge des examens du permis de conduire de votre lieu de résidence (information et précisions disponibles sur le site <a href="https://www.service-public.fr/particuliers/vosdroits/F2825" rel="nofollow">site services-public.fr</a>). Toute demande en dehors de ce circuit ne peut pas être prise en compte.`,
+        },
+      ],
+    },
     {
       title: 'Aide / Contact',
       content: [

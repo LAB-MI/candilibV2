@@ -70,9 +70,27 @@ describe('Connected candidate front', () => {
 
     cy.get('.question-content').should('not.be.visible')
     cy.get('.question')
-      .contains('?')
-      .click()
-    cy.get('.question-content').should('be.visible')
+      .each(($el) => {
+        // $el is a wrapped jQuery element
+
+        // wrap this element so we can
+        // use cypress commands on it
+        cy.wrap($el)
+          .find('.question-content')
+          .should('not.be.visible')
+        cy.wrap($el)
+          .find('.question-title')
+          .click()
+        cy.wrap($el)
+          .find('.question-content')
+          .should('be.visible')
+        cy.wrap($el)
+          .find('.question-title')
+          .click()
+        cy.wrap($el)
+          .find('.question-content')
+          .should('not.be.visible')
+      })
   })
 
   it('Should display Mentions légales', () => {
