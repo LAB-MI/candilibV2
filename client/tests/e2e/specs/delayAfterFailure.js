@@ -27,7 +27,6 @@ describe('Test delay after failed attempt', () => {
     cy.adminLogin()
     cy.archiveCandidate()
     cy.addPlanning()
-    cy.addToWhitelist()
     cy.adminDisconnection()
   })
 

@@ -19,7 +19,6 @@ describe('Standard scenarios', () => {
     cy.adminLogin()
     cy.archiveCandidate()
     cy.addPlanning()
-    cy.addToWhitelist()
     cy.adminDisconnection()
     cy.candidatePreSignUp()
     // The admin validates the candidate via Aurige

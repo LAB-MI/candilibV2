@@ -60,11 +60,6 @@ const headerIcons = [
     isProtected: true,
   },
   {
-    routerTo: 'whitelist',
-    iconName: 'favorite',
-    tooltipText: 'Liste blanche',
-  },
-  {
     routerTo: ROUTE_AUTHORIZE_AGENTS,
     iconName: 'people_alt',
     tooltipText: 'Répartiteur/Délégué',

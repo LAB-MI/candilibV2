@@ -14,10 +14,6 @@ const {
   findCandidatByNomNeph,
   createCandidat,
 } = require('../../models/candidat')
-const {
-  createWhitelisted,
-  deleteWhitelistedByEmail,
-} = require('../../models/whitelisted')
 const { default: app, apiPrefix } = require('../../app')
 
 const validEmail = 'candidat@example.com'
@@ -160,7 +156,6 @@ describe('Test the candidat signup', () => {
   })
 
   it('Should response 200 for a valid form', async () => {
-    await createWhitelisted(validEmail, departementData._id)
     const { body } = await request(app)
       .post(`${apiPrefix}/candidat/preinscription`)
       .send(validCandidat)
@@ -172,14 +167,10 @@ describe('Test the candidat signup', () => {
     expect(body).toHaveProperty('candidat')
     const { candidat } = body
     await expectMailValidationEmail(candidat)
-    await deleteWhitelistedByEmail(validEmail)
   })
 
   describe('Test the update of candidat with signup', () => {
     beforeAll(async () => {
-      await createWhitelisted(validEmail, departementData._id)
-      await createWhitelisted(validEmail1, departementData._id)
-      await createWhitelisted(validEmail2, departementData._id)
       await createCandidat(validCandidat1)
     })
 
@@ -195,9 +186,6 @@ describe('Test the candidat signup', () => {
 
     afterAll(async () => {
       try {
-        await deleteWhitelistedByEmail(validEmail)
-        await deleteWhitelistedByEmail(validEmail1)
-        await deleteWhitelistedByEmail(validEmail2)
         await deleteCandidatByNomNeph(
           validCandidat1.nomNaissance,
           validCandidat1.codeNeph
