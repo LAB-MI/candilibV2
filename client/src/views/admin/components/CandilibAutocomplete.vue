@@ -18,10 +18,12 @@
     <div class="u-flex  u-flex--center  u-flex--v-start">
       <v-checkbox
         v-model="startingWith"
+        class="t-checkbox-one"
         label="Commence par"
       />
       <v-checkbox
         v-model="endingWith"
+        class="t-checkbox-two"
         label="Finit par"
       />
     </div>
