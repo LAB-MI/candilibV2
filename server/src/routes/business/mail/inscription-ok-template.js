@@ -77,10 +77,15 @@ export const getInscriptionOkTemplate = (
         config.LINE_DELAY
       } jours à partir de votre validation, avant d'accéder au planning de réservation.
       Cette mise en file d'attente vous permet de planifier votre préparation en vue de réussir votre examen pratique du permis de conduire.
-      À ce jour, il vous reste donc ${remainingDays} jours avant de pouvoir vous connecter.
-      Vous pourrez accéder au planning de réservation le ${
-        getFrenchFormattedDateTime(accessDate).date
-      }.
+    </p>
+    <p>
+      À ce jour, il vous reste donc <strong style="font-size: 1.2em;">${remainingDays} jours</strong> avant de pouvoir vous connecter.
+    </p>
+    <p>
+    Vous pourrez accéder au planning de réservation le
+    <strong style="font-size: 1.2em;">
+    ${getFrenchFormattedDateTime(accessDate).date}
+    </strong>.
     </p>
   `
   return `
