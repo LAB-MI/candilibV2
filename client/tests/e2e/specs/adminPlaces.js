@@ -39,12 +39,6 @@ describe('Places tests', () => {
     cy.get('.v-snack--active', { timeout: 10000 })
       .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
     cy.adminDisconnection()
-    cy.candidatePreSignUp()
-    // The admin validates the candidate via Aurige
-    cy.adminLogin()
-    cy.candidateValidation()
-    // Disconnects from the app
-    cy.adminDisconnection()
   })
 
   it('Checks the colours on the dashboard', () => {
@@ -80,8 +74,8 @@ describe('Places tests', () => {
         cy.contains('Affecter un candidat')
           .click()
         cy.get('.search-input [type=text]')
-          .type(Cypress.env('candidat'))
-        cy.root().parents().contains(Cypress.env('candidat'))
+          .type('CANDIDAT_FRONT')
+        cy.root().parents().contains('CANDIDAT_FRONT')
           .click()
         cy.get('.place-details')
           .should('contain', Cypress.env('centre'))
@@ -89,7 +83,7 @@ describe('Places tests', () => {
           .click()
       })
     cy.get('.v-snack--active')
-      .should('contain', Cypress.env('candidat'))
+      .should('contain', 'CANDIDAT_FRONT')
       .and('contain', 'a bien été affecté à la place')
       .contains('close').click()
     // Should be orange on the dashboard

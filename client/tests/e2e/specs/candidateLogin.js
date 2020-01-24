@@ -12,10 +12,10 @@
 - Candidate deconnection
 */
 
-// Initialise magicLink
-var magicLink
-
 describe('Candidate login', () => {
+  // Initialise magicLink
+  let magicLink
+
   before(() => {
     // Delete all mails before start
     cy.deleteAllMails()
@@ -24,7 +24,7 @@ describe('Candidate login', () => {
     cy.adminDisconnection()
   })
 
-  it('Create an account and logins', () => {
+  it('Create an account and verify line delay mail', () => {
     // The candidate fills the pre-sign-up form
     cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup')
     cy.get('h2')
@@ -154,6 +154,21 @@ describe('Candidate login', () => {
       .should('contain', Cypress.env('emailCandidat'))
     cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+  })
+
+  it('Tires login with valide candidat', () => {
+    // Changement d'utilisateur afin de récupérer un magicLink avec un candidat qui déjà passé la zone de quarantaine
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
+    cy.get('.t-already-signed-up-button-top')
+      .should('contain', 'Déjà Inscrit ?')
+      .click()
+    cy.get('.t-magic-link-input-top [type=text]')
+      .type(Cypress.env('emailCandidatFront'))
+    cy.get('.t-magic-link-button-top')
+      .click()
+    cy.get('.v-snack--active')
+      .should('contain', 'Un lien de connexion vous a été envoyé.')
+
     cy.getLastMail().its('Content.Body').then((mailBody) => {
       const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
       const withoutEq = codedLink.replace(/=\r\n/g, '')
@@ -165,12 +180,6 @@ describe('Candidate login', () => {
       .should('contain', 'Choix du centre')
     cy.get('.t-disconnect')
       .click()
-    cy.get('.t-evaluation')
-      .should('contain', 'Merci de noter Candilib')
-    cy.get('.t-evaluation-submit')
-      .click()
-    cy.get('body')
-      .should('contain', 'Réservez votre place d\'examen')
   })
 
   it('Tries the already signed up form without account', () => {
