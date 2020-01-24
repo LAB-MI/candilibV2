@@ -15,8 +15,9 @@ Cypress.Commands.add('adminLogin', () => {
     .type(Cypress.env('adminPass'))
   cy.get('.submit-btn')
     .click()
-  cy.get('.v-snack--active')
-    .should('contain', 'Vous êtes identifié')
+  cy.url()
+    .should('not.contain', '/admin-login')
+    .should('contain', '/admin')
 })
 
 Cypress.Commands.add('adminDisconnection', () => {

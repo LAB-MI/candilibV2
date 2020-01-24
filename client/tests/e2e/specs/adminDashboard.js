@@ -15,21 +15,19 @@ describe('Dashboard tests', () => {
     cy.adminDisconnection()
   })
 
-  for (const role of ['candidat', 'inspecteur']) {
-    it('Searches for ' + role, () => {
-      cy.adminLogin()
-      cy.get('.t-search-' + role + ' [type=text]')
-        .type(Cypress.env(role))
-      cy.contains(Cypress.env(role))
-        .click()
-      cy.get('h3')
-        .should('contain', 'nformations ' + role)
-      cy.get('.t-result-' + role)
-        .contains('Nom')
-        .parent()
-        .should('contain', Cypress.env(role))
-    })
-  }
+  it('Searches for inspecteur', () => {
+    cy.adminLogin()
+    cy.get('.t-search-inspecteur [type=text]')
+      .type(Cypress.env('inspecteur'))
+    cy.contains(Cypress.env('inspecteur'))
+      .click()
+    cy.get('h3')
+      .should('contain', 'nformations')
+    cy.get('.t-result-inspecteur')
+      .contains('Nom')
+      .parent()
+      .should('contain', Cypress.env('inspecteur'))
+  })
 
   it('Checks the number of centers in the 75 and 93', () => {
     cy.adminLogin()

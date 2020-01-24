@@ -183,15 +183,26 @@ export const getCandidats = async (req, res) => {
       return
     }
 
-    const { matching, format, filter, for: actionAsk } = req.query
+    const {
+      matching,
+      format,
+      filter,
+      for: actionAsk,
+      startingWith,
+      endingWith,
+    } = req.query
 
-    // Rechercher des candiats
+    // Rechercher des candidats
     if (matching) {
       loggerInfo.action = 'SEARCH-CANDIDAT'
       loggerInfo.matching = matching
       appLogger.info(loggerInfo)
 
-      const candidats = await findCandidatsMatching(matching)
+      const candidats = await findCandidatsMatching(
+        matching,
+        startingWith,
+        endingWith
+      )
       res.json(candidats)
       return
     }

@@ -100,15 +100,20 @@ export const findCandidatById = async (id, options) => {
  *
  * @returns {Promise.<Candidat[]>}
  */
-export const findCandidatsMatching = async $search => {
-  const search = new RegExp($search, 'i')
+export const findCandidatsMatching = async (
+  $search,
+  startingWith,
+  endingWith
+) => {
+  const search = `${startingWith ? '^' : ''}${$search}${endingWith ? '$' : ''}`
+  const searchRegex = new RegExp(`${search}`, 'i')
 
   const candidats = await Candidat.find({
     $or: [
-      { nomNaissance: search },
-      { prenom: search },
-      { codeNeph: search },
-      { email: search },
+      { nomNaissance: searchRegex },
+      { prenom: searchRegex },
+      { codeNeph: searchRegex },
+      { email: searchRegex },
     ],
   })
   const fullTextCandidats = await Candidat.find(
