@@ -366,12 +366,6 @@ export default {
     [CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS] (state, coutCenterPlaces) {
       state.countPlacesForAllCenters = coutCenterPlaces
     },
-    [DELETE_TOTAL_PLACES_FOR_ALL_CENTERS] (state) {
-      state.countPlacesForAllCenters = {
-        totalBookedPlaces: 0,
-        totalPlaces: 0,
-      }
-    },
   },
 
   actions: {
@@ -392,6 +386,7 @@ export default {
     ) {
       const { begin, end } = timeWindow
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
+
       try {
         const currentDateTime = getFrenchLuxonCurrentDateTime()
         const beginDate = begin || currentDateTime.startOf('day').toISO()
@@ -415,25 +410,35 @@ export default {
           rootState.center.selected ||
           (placesByCentre[0] && placesByCentre[0].centre)
 
+        const count = {
+          totalBookedPlaces: 0,
+          totalPlaces: 0,
+        }
+
         const placesByCentreAndWeek = Array.isArray(placesByCentre)
-          ? placesByCentre.map(element => ({
-            centre: element.centre,
-            places: element.places.reduce((acc, place) => {
-              const keyString = getFrenchLuxonFromIso(place.date)
-                .toISOWeekDate()
-                .split('-')
-              const key = `${keyString[0]}-${keyString[1]}`
-              const places = { ...acc }
-              places[key] = [...(places[key] || []), place]
-              return places
-            }, {}),
-          }))
+          ? placesByCentre.map(element => {
+            count.totalPlaces += element.places.length
+            count.totalBookedPlaces += element.places.filter(el => el.candidat).length
+            return ({
+              centre: element.centre,
+              places: element.places.reduce((acc, place) => {
+                const keyString = getFrenchLuxonFromIso(place.date)
+                  .toISOWeekDate()
+                  .split('-')
+                const key = `${keyString[0]}-${keyString[1]}`
+                const places = { ...acc }
+                places[key] = [...(places[key] || []), place]
+                return places
+              }, {}),
+            })
+          })
           : []
 
         commit(
           FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS,
           placesByCentreAndWeek,
         )
+        commit(CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS, count)
       } catch (error) {
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
@@ -665,21 +670,6 @@ export default {
 
     [SET_WEEK_SECTION] ({ commit }, currentWeek) {
       commit(SET_WEEK_SECTION, currentWeek)
-    },
-
-    [CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS] ({ commit, state }, { countBookedPlaces, countPlaces }) {
-      const totalBooked = state.countPlacesForAllCenters.totalBookedPlaces + countBookedPlaces
-      const totalPlaces = state.countPlacesForAllCenters.totalPlaces + countPlaces
-
-      const result = {
-        totalBookedPlaces: totalBooked,
-        totalPlaces: totalPlaces,
-      }
-      commit(CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS, result)
-    },
-
-    [DELETE_TOTAL_PLACES_FOR_ALL_CENTERS] ({ commit, state }) {
-      commit(DELETE_TOTAL_PLACES_FOR_ALL_CENTERS)
     },
   },
 }
