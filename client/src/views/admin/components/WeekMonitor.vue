@@ -52,7 +52,6 @@ import DataTableWeekMonitor from './DataTableWeekMonitor'
 import {
   SET_WEEK_SECTION,
   numberOfMonthsToFetch,
-  CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS,
 } from '@/store'
 
 export const splitWeek = (prev, day, centerId) => {
@@ -106,12 +105,6 @@ export default {
     },
   },
 
-  watch: {
-    allBookedPlacesByCenter (newValue) {
-      this.setGlobalPlacesCount()
-    },
-  },
-
   methods: {
     getCountBookedPlaces (places) {
       const bookedPlacesCount = places.filter(elmt => elmt.candidat).length
@@ -148,16 +141,10 @@ export default {
       return filteredWeeks
     },
 
-    setGlobalPlacesCount () {
-      this.$store.dispatch(CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS, {
-        countBookedPlaces: this.allBookedPlacesByCenter,
-        countPlaces: this.allCenterPlaces,
-      })
-    },
-
     formatArrayByWeek () {
-      this.allBookedPlacesByCenter = 0
-      this.allCenterPlaces = 0
+      let allBookedPlacesByCenter = 0
+      let allCenterPlaces = 0
+
       const start = getFrenchLuxonCurrentDateTime()
       const end = getFrenchLuxonCurrentDateTime().plus({ month: numberOfMonthsToFetch })
       const allWeeks = Math.round(end.diff(start, ['weeks']).weeks) + 1
@@ -171,8 +158,8 @@ export default {
           if (placesOfWeek && placesOfWeek.length) {
             const totalPlaces = placesOfWeek.length
             const bookedPlaces = placesOfWeek.filter(elmt => elmt.candidat).length
-            this.allBookedPlacesByCenter = bookedPlaces + this.allBookedPlacesByCenter
-            this.allCenterPlaces = totalPlaces + this.allCenterPlaces
+            allBookedPlacesByCenter += bookedPlaces
+            allCenterPlaces += totalPlaces
             return [
               ...acc,
               {
@@ -197,6 +184,8 @@ export default {
             },
           ]
         }, [])
+      this.allBookedPlacesByCenter = allBookedPlacesByCenter
+      this.allCenterPlaces = allCenterPlaces
       return normalizedArray
     },
   },

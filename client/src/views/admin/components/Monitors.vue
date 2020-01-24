@@ -69,7 +69,6 @@
 <script>
 import { mapGetters } from 'vuex'
 import {
-  DELETE_TOTAL_PLACES_FOR_ALL_CENTERS,
   FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST,
 } from '@/store'
 import WeekMonitor from './WeekMonitor.vue'
@@ -95,13 +94,8 @@ export default {
 
   watch: {
     async activeDepartement (newValue) {
-      await this.$store.dispatch(DELETE_TOTAL_PLACES_FOR_ALL_CENTERS)
       await this.reloadWeekMonitor()
     },
-  },
-
-  destroyed () {
-    this.resetTotalPlacesCount()
   },
 
   async mounted () {
@@ -113,10 +107,6 @@ export default {
   methods: {
     async reloadWeekMonitor () {
       await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
-    },
-
-    async resetTotalPlacesCount () {
-      await this.$store.dispatch(DELETE_TOTAL_PLACES_FOR_ALL_CENTERS)
     },
   },
 }
