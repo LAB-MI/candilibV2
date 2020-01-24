@@ -366,12 +366,6 @@ export default {
     [CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS] (state, coutCenterPlaces) {
       state.countPlacesForAllCenters = coutCenterPlaces
     },
-    [DELETE_TOTAL_PLACES_FOR_ALL_CENTERS] (state) {
-      state.countPlacesForAllCenters = {
-        totalBookedPlaces: 0,
-        totalPlaces: 0,
-      }
-    },
   },
 
   actions: {
@@ -676,21 +670,6 @@ export default {
 
     [SET_WEEK_SECTION] ({ commit }, currentWeek) {
       commit(SET_WEEK_SECTION, currentWeek)
-    },
-
-    [CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS] ({ commit, state }, { countBookedPlaces, countPlaces }) {
-      const totalBooked = state.countPlacesForAllCenters.totalBookedPlaces + countBookedPlaces
-      const totalPlaces = state.countPlacesForAllCenters.totalPlaces + countPlaces
-
-      const result = {
-        totalBookedPlaces: totalBooked,
-        totalPlaces: totalPlaces,
-      }
-      commit(CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS, result)
-    },
-
-    [DELETE_TOTAL_PLACES_FOR_ALL_CENTERS] ({ commit, state }) {
-      commit(DELETE_TOTAL_PLACES_FOR_ALL_CENTERS)
     },
   },
 }

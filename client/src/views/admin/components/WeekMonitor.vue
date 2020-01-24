@@ -52,7 +52,6 @@ import DataTableWeekMonitor from './DataTableWeekMonitor'
 import {
   SET_WEEK_SECTION,
   numberOfMonthsToFetch,
-  CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS,
 } from '@/store'
 
 export const splitWeek = (prev, day, centerId) => {
@@ -106,12 +105,6 @@ export default {
     },
   },
 
-  watch: {
-    allBookedPlacesByCenter (newValue) {
-      this.setGlobalPlacesCount()
-    },
-  },
-
   methods: {
     getCountBookedPlaces (places) {
       const bookedPlacesCount = places.filter(elmt => elmt.candidat).length
@@ -146,13 +139,6 @@ export default {
       const filteredWeeks = (this.weeks && this.weeks[weekNb] && this.weeks[weekNb].length)
         ? this.weeks[weekNb].filter(elmt => this.getCreneauTimeAvailable(elmt.date)) : []
       return filteredWeeks
-    },
-
-    setGlobalPlacesCount () {
-      this.$store.dispatch(CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS, {
-        countBookedPlaces: this.allBookedPlacesByCenter,
-        countPlaces: this.allCenterPlaces,
-      })
     },
 
     formatArrayByWeek () {
