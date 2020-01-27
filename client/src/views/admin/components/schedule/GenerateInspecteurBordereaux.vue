@@ -49,7 +49,7 @@
               <candilib-autocomplete
                 style="width: 100%;"
                 :fetch-autocomplete-action="fetchAutocompleteAction"
-                :items="autocompleteList"
+                :items="matchingInspecteurs"
                 :clearable="true"
                 :autofocus="true"
                 placeholder="Recherche par nom, matricule ou adresse courriel"
@@ -166,7 +166,6 @@ export default {
 
   data () {
     return {
-      autocompleteList: undefined,
       dialog: false,
       messageButton: '',
       iconButton: '',
@@ -197,7 +196,12 @@ export default {
       activeDepartement: state => state.admin.departements.active,
       isGenerating: state => state.adminBordereaux.isGenerating,
       inspecteursOfCurrentDpt: state => state.adminBordereaux.inspecteursOfCurrentDpt.list,
-      matchInspecteurList: state => state.adminBordereaux.matchInspecteurList.list,
+      matchingInspecteurs: state => state.adminBordereaux.matchInspecteurList.list.map(
+        ({ inspecteur, centre }) => ({
+          text: `${inspecteur.prenom} ${inspecteur.nom} - ${inspecteur.matricule} - ${centre.nom}`,
+          value: inspecteur._id,
+        }),
+      ),
     }),
     ...mapGetters(['emailDepartementActive']),
     beginDate () {
@@ -221,15 +225,6 @@ export default {
       }
       this.isAllChecked = true
       this.isPartiallyChecked = false
-    },
-
-    matchInspecteurList (list) {
-      this.autocompleteList = list.map(
-        ({ inspecteur, centre }) => ({
-          text: `${inspecteur.nom} - ${inspecteur.matricule} - ${centre.nom}`,
-          value: inspecteur._id,
-        }),
-      )
     },
 
     dialog (newValue) {

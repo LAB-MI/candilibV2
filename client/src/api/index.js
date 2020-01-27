@@ -64,12 +64,15 @@ export default {
           'x-magic-link': isTokenFromMagicLink,
         },
       }
-      const json = await apiClient.get(`${apiPaths.candidat.verifyToken}?token=${token}`, {
-        headers: {
-          'Content-Type': 'application/json',
-          ...options.headers,
+      const json = await apiClient.get(
+        `${apiPaths.candidat.verifyToken}?token=${token}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            ...options.headers,
+          },
         },
-      })
+      )
       return json
     },
 
@@ -102,17 +105,25 @@ export default {
 
     async getCentre (departement, nom) {
       const queryString = `departement=${departement}&nom=${nom}`
-      const json = await apiClient.get(`${apiPaths.candidat.centres}?${queryString}`, {
-        headers: getHeadersForJson(),
-      })
+      const json = await apiClient.get(
+        `${apiPaths.candidat.centres}?${queryString}`,
+        {
+          headers: getHeadersForJson(),
+        },
+      )
       return json
     },
 
     async getCentres (departement, end) {
-      const queryString = `departement=${departement}&end=${encodeURIComponent(end)}`
-      const json = await apiClient.get(`${apiPaths.candidat.centres}?${queryString}`, {
-        headers: getHeadersForJson(),
-      })
+      const queryString = `departement=${departement}&end=${encodeURIComponent(
+        end,
+      )}`
+      const json = await apiClient.get(
+        `${apiPaths.candidat.centres}?${queryString}`,
+        {
+          headers: getHeadersForJson(),
+        },
+      )
       return json
     },
 
@@ -126,18 +137,26 @@ export default {
     },
 
     async getPlaces (centreId, begin, end) {
-      const queryString = `begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`
-      const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?${queryString}`, {
-        headers: getHeadersForJson(),
-      })
+      const queryString = `begin=${encodeURIComponent(
+        begin,
+      )}&end=${encodeURIComponent(end)}`
+      const json = await apiClient.get(
+        `${apiPaths.candidat.places}/${centreId}?${queryString}`,
+        {
+          headers: getHeadersForJson(),
+        },
+      )
       return json
     },
 
     async checkPlacesAvailability (centreId, date) {
       const queryString = `dateTime=${encodeURIComponent(date)}`
-      const json = await apiClient.get(`${apiPaths.candidat.places}/${centreId}?${queryString}`, {
-        headers: getHeadersForJson(),
-      })
+      const json = await apiClient.get(
+        `${apiPaths.candidat.places}/${centreId}?${queryString}`,
+        {
+          headers: getHeadersForJson(),
+        },
+      )
       return json
     },
 
@@ -150,16 +169,24 @@ export default {
 
     async setReservations (centreId, date, isAccompanied, hasDualControlCar) {
       const json = await apiClient.patch(`${apiPaths.candidat.places}`, {
-        body: JSON.stringify({ id: centreId, date, isAccompanied, hasDualControlCar }),
+        body: JSON.stringify({
+          id: centreId,
+          date,
+          isAccompanied,
+          hasDualControlCar,
+        }),
         headers: getHeadersForJson(),
       })
       return json
     },
 
     async sendEmail () {
-      const json = await apiClient.get(`${apiPaths.candidat.places}?byMail=${true}`, {
-        headers: getHeadersForJson(),
-      })
+      const json = await apiClient.get(
+        `${apiPaths.candidat.places}?byMail=${true}`,
+        {
+          headers: getHeadersForJson(),
+        },
+      )
       return json
     },
 
@@ -207,11 +234,14 @@ export default {
     },
 
     async verifyToken (token) {
-      const json = await apiClient.get(`${apiPaths.admin.verifyToken}?token=${token}`, {
-        headers: {
-          'Content-Type': 'application/json',
+      const json = await apiClient.get(
+        `${apiPaths.admin.verifyToken}?token=${token}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         },
-      })
+      )
       return json
     },
 
@@ -269,7 +299,10 @@ export default {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          email, hash, newPassword, confirmNewPassword,
+          email,
+          hash,
+          newPassword,
+          confirmNewPassword,
         }),
       })
       return json
@@ -280,9 +313,12 @@ export default {
       const beginDateInfo = `beginDate=${encodeURIComponent(beginDate)}`
       const endDateInfo = `endDate=${encodeURIComponent(endDate)}`
       const queryString = `${departementInfo}&${beginDateInfo}&${endDateInfo}`
-      const json = await apiClient.get(`${apiPaths.admin.places}?${queryString}`, {
-        headers: getHeadersForAdminJson(),
-      })
+      const json = await apiClient.get(
+        `${apiPaths.admin.places}?${queryString}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+      )
       return json
     },
 
@@ -300,23 +336,37 @@ export default {
     },
 
     async deletePlace (placeId) {
-      const json = await apiClient.delete(`${apiPaths.admin.places}/${placeId}`, {
-        headers: getHeadersForAdminJson(),
-      })
+      const json = await apiClient.delete(
+        `${apiPaths.admin.places}/${placeId}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+      )
       return json
     },
 
     async getCandidats (candidatId, departement) {
-      const candidatInfo = candidatId && typeof candidatId === 'string' ? '/' + candidatId : ''
+      const candidatInfo =
+        candidatId && typeof candidatId === 'string' ? '/' + candidatId : ''
       const queryString = departement ? `departement=${departement}` : ''
-      const json = await apiClient.get(`${apiPaths.admin.candidats}${candidatInfo}?${queryString}`, {
-        headers: getHeadersForAdminJson(),
-      })
+      const json = await apiClient.get(
+        `${apiPaths.admin.candidats}${candidatInfo}?${queryString}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+      )
       return json
     },
 
-    async searchCandidats (search, departement) {
-      const json = await apiClient.get(`${apiPaths.admin.searchCandidats}${search || ''}&departement=${departement}`, {
+    async searchCandidats (search, departement, startingWith, endingWith) {
+      let url = `${apiPaths.admin.candidats}?matching=${search || ''}&departement=${departement}`
+      if (startingWith) {
+        url += '&startingWith=true'
+      }
+      if (endingWith) {
+        url += '&endingWith=true'
+      }
+      const json = await apiClient.get(url, {
         headers: getHeadersForAdminJson(),
       })
       return json
@@ -343,7 +393,14 @@ export default {
       return json
     },
 
-    async updateInspecteur ({ departement, email, ipcsrId, matricule, nom, prenom }) {
+    async updateInspecteur ({
+      departement,
+      email,
+      ipcsrId,
+      matricule,
+      nom,
+      prenom,
+    }) {
       const json = await apiClient.put(
         `${apiPaths.admin.inspecteurs}/${ipcsrId}`,
         {
@@ -375,9 +432,11 @@ export default {
 
     async getInspecteursByDepartement (departement) {
       const json = await apiClient.get(
-        `${apiPaths.admin.inspecteurs}?departement=${departement}`, {
+        `${apiPaths.admin.inspecteurs}?departement=${departement}`,
+        {
           headers: getHeadersForAdminJson(),
-        })
+        },
+      )
       return json
     },
 
@@ -401,13 +460,17 @@ export default {
       return json
     },
 
-    async searchInspecteurs (search, departement) {
-      const json = await apiClient.get(
-        `${apiPaths.admin.inspecteurs}?matching=${search || ''}&departement=${departement}`,
-        {
-          headers: getHeadersForAdminJson(),
-        },
-      )
+    async searchInspecteurs (search, departement, startingWith, endingWith) {
+      let url = `${apiPaths.admin.inspecteurs}?matching=${search || ''}&departement=${departement}`
+      if (startingWith) {
+        url += '&startingWith=true'
+      }
+      if (endingWith) {
+        url += '&endingWith=true'
+      }
+      const json = await apiClient.get(url, {
+        headers: getHeadersForAdminJson(),
+      })
       return json
     },
 
@@ -428,14 +491,26 @@ export default {
 
     async exportCsv (departement) {
       const departementInfo = departement ? `departement=${departement}` : ''
-      const json = await apiClient.getRaw(`${apiPaths.admin.exportCsv}&${departementInfo}`, {
-        headers: getAdminTokenHeader(),
-      })
+      const json = await apiClient.getRaw(
+        `${apiPaths.admin.exportCsv}&${departementInfo}`,
+        {
+          headers: getAdminTokenHeader(),
+        },
+      )
       return json
     },
 
-    exportResultsExamsStatsKpi (beginPeriod = '', endPeriod = '', isCsv = false, departement) {
-      const queryString = (departement ? `departement=${departement}&` : '') + `isCsv=${isCsv}&beginPeriod=${encodeURIComponent(beginPeriod)}&endPeriod=${encodeURIComponent(endPeriod)}`
+    exportResultsExamsStatsKpi (
+      beginPeriod = '',
+      endPeriod = '',
+      isCsv = false,
+      departement,
+    ) {
+      const queryString =
+        (departement ? `departement=${departement}&` : '') +
+        `isCsv=${isCsv}&beginPeriod=${encodeURIComponent(
+          beginPeriod,
+        )}&endPeriod=${encodeURIComponent(endPeriod)}`
       const path = `${apiPaths.admin.exportResultsExamsStatsKpi}?${queryString}`
       const headers = {
         headers: getAdminTokenHeader(),
@@ -448,7 +523,8 @@ export default {
     },
 
     exportPlacesExamsStatsKpi (isCsv = false, departement) {
-      const queryString = (departement ? `departement=${departement}&` : '') + `isCsv=${isCsv}`
+      const queryString =
+        (departement ? `departement=${departement}&` : '') + `isCsv=${isCsv}`
       const path = `${apiPaths.admin.exportPlacesExamsStatsKpi}?${queryString}`
       const headers = {
         headers: getAdminTokenHeader(),
@@ -469,23 +545,33 @@ export default {
     },
 
     async searchWhitelisted (email, departement) {
-      const json = await apiClient.get(`${apiPaths.admin.searchWhitelisted}${email || ''}&departement=${departement}`, {
-        headers: getHeadersForAdminJson(),
-      })
+      const json = await apiClient.get(
+        `${apiPaths.admin.searchWhitelisted}${email ||
+          ''}&departement=${departement}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+      )
       return json
     },
 
     async getWhitelist (departement) {
-      const json = await apiClient.get(`${apiPaths.admin.whitelist}?departement=${departement}`, {
-        headers: getAdminTokenHeader(),
-      })
+      const json = await apiClient.get(
+        `${apiPaths.admin.whitelist}?departement=${departement}`,
+        {
+          headers: getAdminTokenHeader(),
+        },
+      )
       return json
     },
 
     async removeFromWhitelist (id, departement) {
-      const json = await apiClient.delete(`${apiPaths.admin.whitelist}/${id}?departement=${departement}`, {
-        headers: getAdminTokenHeader(),
-      })
+      const json = await apiClient.delete(
+        `${apiPaths.admin.whitelist}/${id}?departement=${departement}`,
+        {
+          headers: getAdminTokenHeader(),
+        },
+      )
       return json
     },
 
@@ -516,51 +602,77 @@ export default {
       return json
     },
     async deleteBookedPlace (placeId) {
-      const json = await apiClient.delete(`${apiPaths.admin.places}/${placeId}`, {
-        headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ isBookedPlace: true }),
-      })
+      const json = await apiClient.delete(
+        `${apiPaths.admin.places}/${placeId}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({ isBookedPlace: true }),
+        },
+      )
       return json
     },
 
     async getPlacesAvailableByCentreAndDate (departement, centre, date) {
-      const queryString = `departement=${departement}&centre=${centre}&date=${encodeURIComponent(date)}`
-      const json = await apiClient.get(`${apiPaths.admin.places}?${queryString}`, {
-        headers: getHeadersForAdminJson(),
-      })
+      const queryString = `departement=${departement}&centre=${centre}&date=${encodeURIComponent(
+        date,
+      )}`
+      const json = await apiClient.get(
+        `${apiPaths.admin.places}?${queryString}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+      )
       return json
     },
 
     async updateInspecteurForResa (departement, placeId, inspecteur) {
-      const json = await apiClient.patch(`${apiPaths.admin.places}/${placeId}`, {
-        headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ departement, inspecteur }),
-      })
+      const json = await apiClient.patch(
+        `${apiPaths.admin.places}/${placeId}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({ departement, inspecteur }),
+        },
+      )
       return json
     },
 
     async deletePlacesInspecteur (placesToDelete) {
-      const json = await apiClient
-        .delete(`${apiPaths.admin.places}`, {
-          headers: getHeadersForAdminJson(),
-          body: JSON.stringify({ placesToDelete }),
-        })
+      const json = await apiClient.delete(`${apiPaths.admin.places}`, {
+        headers: getHeadersForAdminJson(),
+        body: JSON.stringify({ placesToDelete }),
+      })
       return json
     },
 
     async assignCandidatToPlace (placeId, candidatId, departement) {
-      const json = await apiClient.patch(`${apiPaths.admin.places}/${placeId}`, {
-        headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ candidatId, departement }),
-      })
+      const json = await apiClient.patch(
+        `${apiPaths.admin.places}/${placeId}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({ candidatId, departement }),
+        },
+      )
       return json
     },
 
-    async generateBordereaux (departement, date, isForInspecteurs, inspecteurIdListe) {
-      const json = await apiClient.post(`${apiPaths.admin.generateBordereaux}`, {
-        headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ departement, date, isForInspecteurs, inspecteurIdListe }),
-      })
+    async generateBordereaux (
+      departement,
+      date,
+      isForInspecteurs,
+      inspecteurIdListe,
+    ) {
+      const json = await apiClient.post(
+        `${apiPaths.admin.generateBordereaux}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({
+            departement,
+            date,
+            isForInspecteurs,
+            inspecteurIdListe,
+          }),
+        },
+      )
       return json
     },
 
@@ -598,9 +710,12 @@ export default {
 
     async getDepartements (departementId) {
       const paramString = departementId ? `${departementId}` : ''
-      const json = await apiClient.get(`${apiPaths.admin.departements}/${paramString}`, {
-        headers: getHeadersForAdminJson(),
-      })
+      const json = await apiClient.get(
+        `${apiPaths.admin.departements}/${paramString}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+      )
       return json
     },
 
@@ -612,25 +727,31 @@ export default {
       return json
     },
     async updateDepartement (departementId, newEmail) {
-      const json = await apiClient.patch(`${apiPaths.admin.departements}/${departementId}`, {
-        headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ newEmail }),
-      })
+      const json = await apiClient.patch(
+        `${apiPaths.admin.departements}/${departementId}`,
+        {
+          headers: getHeadersForAdminJson(),
+          body: JSON.stringify({ newEmail }),
+        },
+      )
       return json
     },
 
     async deleteDepartement (departementId) {
       const paramString = departementId ? `${departementId}` : ''
-      const json = await apiClient.delete(`${apiPaths.admin.departements}/${paramString}`, {
-        headers: getHeadersForAdminJson(),
-      })
+      const json = await apiClient.delete(
+        `${apiPaths.admin.departements}/${paramString}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+      )
       return json
     },
   },
 
-  util: {
+  public: {
     async getConfigCandidat () {
-      const json = await apiClient.get(apiPaths.util.configCandidat, {
+      const json = await apiClient.get(apiPaths.public.configCandidat, {
         headers: {
           'Content-Type': 'application/json',
         },
@@ -638,10 +759,24 @@ export default {
       return json
     },
 
-    async searchAdresses (query) {
-      const json = await apiClient.get(apiPaths.util.adressesQuery(query), {
-        headers: {},
+    async getActiveDepartementsId () {
+      const json = await apiClient.get(`${apiPaths.public.departements}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        },
       })
+      return json
+    },
+
+    async getCentresByDepartement (departement) {
+      const json = await apiClient.get(
+        `${apiPaths.public.centres}?departementId=${departement}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        },
+      )
       return json
     },
   },

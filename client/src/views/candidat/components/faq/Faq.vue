@@ -21,7 +21,7 @@
 
     <ul class="list-faq">
       <li
-        v-for="question in arrayContent"
+        v-for="question in faqQuestions"
         :key="question.title"
         class="question-wrapper"
       >
@@ -32,6 +32,9 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
+
+import { FETCH_CONFIG_REQUEST, FETCH_DEPARTEMENTS_REQUEST, FETCH_PARIS_CENTERS_REQUEST } from '@/store'
 import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
 
@@ -43,14 +46,26 @@ export default {
 
   data () {
     return {
-      arrayContent: faqJson,
     }
   },
 
   computed: {
-    me () {
-      return this.$store.state.candidat.me
+    ...mapState({
+      lineDelay (state) { return state.config.lineDelay },
+      departements (state) { return state.departements.list },
+      parisCenters (state) { return state.parisCenters.list },
+      me (state) { return state.candidat.me },
+    }),
+
+    faqQuestions () {
+      return faqJson(this.lineDelay, this.departements, this.parisCenters)
     },
+  },
+
+  mounted () {
+    this.$store.dispatch(FETCH_CONFIG_REQUEST)
+    this.$store.dispatch(FETCH_DEPARTEMENTS_REQUEST)
+    this.$store.dispatch(FETCH_PARIS_CENTERS_REQUEST)
   },
 
   methods: {

@@ -24,10 +24,6 @@ const fieldsResultExams = [
     value: 'departement',
   },
   {
-    label: 'Invités',
-    value: 'invited',
-  },
-  {
     label: 'Inscrits',
     value: 'registered',
   },

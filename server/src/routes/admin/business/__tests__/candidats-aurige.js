@@ -206,6 +206,45 @@ export const candidatsToValidAurige = [
   candidatFailureExam,
 ]
 
+export const candidatsWithPreRequired = [
+  {
+    // candidat remplit tous les prérequis sauf la validation aurige
+    codeNeph: '09349623951991',
+    nomNaissance: 'SWAISEY01',
+    prenom: 'MAY01',
+    email: 'mayswaisey01@candilib.com',
+    dateReussiteETG,
+    nbEchecsPratiques: '',
+    dateDernierNonReussite: '',
+    objetDernierNonReussite: '',
+    reussitePratique: '',
+    candidatExistant: 'OK',
+    isValidatedByAurige: false,
+    isValidatedEmail,
+    adresse,
+    portable,
+    departement,
+  },
+  {
+    // candidat remplit tous les prérequis avec la validation aurige
+    codeNeph: '09349623951992',
+    nomNaissance: 'SWAISEY02',
+    prenom: 'MAY02',
+    email: 'mayswaisey02@candilib.com',
+    dateReussiteETG,
+    nbEchecsPratiques: '',
+    dateDernierNonReussite: '',
+    objetDernierNonReussite: '',
+    reussitePratique: '',
+    candidatExistant: 'OK',
+    isValidatedByAurige: true,
+    isValidatedEmail,
+    adresse,
+    portable,
+    departement,
+  },
+]
+
 export const createCandidatToTestAurige = async (
   candidat,
   isValidatedByAurige = false

@@ -6,7 +6,6 @@ import {
   VALIDATION_EMAIL,
   techLogger,
 } from '../../util'
-import { findWhitelistedByEmail } from '../../models/whitelisted'
 import {
   createCandidat,
   deleteCandidat,
@@ -164,26 +163,6 @@ export async function presignUpCandidat (candidatData) {
       candidat,
     }
   }
-}
-
-export async function getDepartementFromWhitelist ({ email, departement }) {
-  const whitelisted = await findWhitelistedByEmail(email)
-
-  if (!whitelisted) {
-    return null
-  }
-
-  if (departement !== whitelisted.departement) {
-    appLogger.warn({
-      section: 'candidat-pre-signup',
-      action: 'INCONSISTENT_DEPARTEMENT',
-      description: `Le département de l'adresse du candidat ${departement} est différent de celui de sa whitelist (${whitelisted.departement})`,
-      candidatDepartement: departement,
-      whitelistDepartement: whitelisted.departement,
-    })
-  }
-
-  return whitelisted.departement
 }
 
 export async function validateEmail (email, hash) {

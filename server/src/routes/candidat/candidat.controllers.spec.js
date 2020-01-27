@@ -3,7 +3,8 @@ import getMailData from '../business/message-templates'
 import {
   createDepartement,
   deleteDepartementById,
-} from '../../models/departement/departement.queries'
+} from '../../models/departement/departement-queries'
+import { DEPARTEMENT_LIST } from './message.constants'
 
 const request = require('supertest')
 
@@ -13,26 +14,21 @@ const {
   findCandidatByNomNeph,
   createCandidat,
 } = require('../../models/candidat')
-const {
-  createWhitelisted,
-  deleteWhitelistedByEmail,
-} = require('../../models/whitelisted')
 const { default: app, apiPrefix } = require('../../app')
 
 const validEmail = 'candidat@example.com'
 const invalidEmail = 'candidatexample.com'
 const portable = '0612345678'
-const adresse = '10 Rue Hoche 93420 Villepinte'
 const nomNaissance = 'Dupont'
 const codeNeph = '123456789012'
 const prenom = ' test prenom '
 const validEmail1 = 'candidat1@example.com'
 const portable1 = '0612345679'
-const adresse1 = '11 Rue Hoche 93420 Villepinte'
 const nomNaissance1 = 'test'
 const codeNeph1 = '123456789013'
 const validEmail2 = 'candidat2@example.com'
 const departementTest = '93'
+const departementNotExisting = '60'
 
 const incompleteCandidat = {
   codeNeph,
@@ -40,30 +36,38 @@ const incompleteCandidat = {
 
 const candidatWithInvalidEmail = {
   codeNeph,
+  email: invalidEmail,
   nomNaissance,
   prenom,
   portable,
-  email: invalidEmail,
-  adresse,
+  departement: departementTest,
+}
+
+const candidatWithNotExistingDepartement = {
+  codeNeph,
+  email: validEmail,
+  nomNaissance,
+  prenom,
+  portable,
+  departement: departementNotExisting,
 }
 
 const validCandidat = {
   codeNeph,
+  email: validEmail,
   nomNaissance,
   prenom,
   portable,
-  email: validEmail,
-  adresse,
   departement: departementTest,
 }
 
 const validCandidat1 = {
   codeNeph: codeNeph1,
+  email: validEmail1,
   nomNaissance: nomNaissance1,
   prenom,
   portable: portable1,
-  email: validEmail1,
-  adresse: adresse1,
+  departement: departementTest,
 }
 
 const updateFailedCandidatWithEmailExist = {
@@ -72,7 +76,7 @@ const updateFailedCandidatWithEmailExist = {
   prenom,
   portable,
   email: validEmail1,
-  adresse,
+  departement: departementTest,
 }
 
 const updateCandidat = {
@@ -81,7 +85,7 @@ const updateCandidat = {
   prenom,
   portable: portable1,
   email: validEmail2,
-  adresse: adresse1,
+  departement: departementTest,
 }
 
 jest.mock('../business/send-mail')
@@ -119,9 +123,20 @@ describe('Test the candidat signup', () => {
     expect(body).toHaveProperty('fieldsWithErrors')
     expect(body.fieldsWithErrors).toContain('email')
     expect(body.fieldsWithErrors).toContain('nomNaissance')
-    expect(body.fieldsWithErrors).toContain('adresse')
     expect(body.fieldsWithErrors).toContain('portable')
+    expect(body.fieldsWithErrors).toContain('departement')
     expect(body.fieldsWithErrors).not.toContain('codeNeph')
+  })
+  it('Should response 400 if departement is not existing', async () => {
+    const { body } = await request(app)
+      .post(`${apiPrefix}/candidat/preinscription`)
+      .send(candidatWithNotExistingDepartement)
+      .set('Accept', 'application/json')
+      .expect(400)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).not.toHaveProperty('fieldsWhithErrors')
+    expect(body).toHaveProperty('message', DEPARTEMENT_LIST)
   })
 
   it('Should response 400 and a list of 1 field for complete form with an invalid email', async () => {
@@ -140,19 +155,7 @@ describe('Test the candidat signup', () => {
     expect(body.fieldsWithErrors).not.toContain('codeNeph')
   })
 
-  it('Should response 401 for a valid form but an unknown email', async () => {
-    const { body } = await request(app)
-      .post(`${apiPrefix}/candidat/preinscription`)
-      .send(validCandidat)
-      .set('Accept', 'application/json')
-      .expect(401)
-
-    expect(body).toHaveProperty('success', false)
-    expect(body).not.toHaveProperty('candidat')
-  })
-
   it('Should response 200 for a valid form', async () => {
-    await createWhitelisted(validEmail, departementData._id)
     const { body } = await request(app)
       .post(`${apiPrefix}/candidat/preinscription`)
       .send(validCandidat)
@@ -164,14 +167,10 @@ describe('Test the candidat signup', () => {
     expect(body).toHaveProperty('candidat')
     const { candidat } = body
     await expectMailValidationEmail(candidat)
-    await deleteWhitelistedByEmail(validEmail)
   })
 
   describe('Test the update of candidat with signup', () => {
     beforeAll(async () => {
-      await createWhitelisted(validEmail, departementData._id)
-      await createWhitelisted(validEmail1, departementData._id)
-      await createWhitelisted(validEmail2, departementData._id)
       await createCandidat(validCandidat1)
     })
 
@@ -187,9 +186,6 @@ describe('Test the candidat signup', () => {
 
     afterAll(async () => {
       try {
-        await deleteWhitelistedByEmail(validEmail)
-        await deleteWhitelistedByEmail(validEmail1)
-        await deleteWhitelistedByEmail(validEmail2)
         await deleteCandidatByNomNeph(
           validCandidat1.nomNaissance,
           validCandidat1.codeNeph
@@ -258,8 +254,8 @@ describe('Test the candidat signup', () => {
         'portable',
         updateCandidat.portable.trim()
       )
-      expect(candidat).toHaveProperty('adresse', updateCandidat.adresse.trim())
       expect(candidat).toHaveProperty('email', updateCandidat.email.trim())
+      expect(candidat).toHaveProperty('departement', updateCandidat.departement)
     })
   })
 })

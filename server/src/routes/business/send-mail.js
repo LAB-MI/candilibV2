@@ -4,7 +4,14 @@ import { htmlToText } from 'nodemailer-html-to-text'
 
 import getMailData from './message-templates'
 import config, { smtpOptions } from '../../config'
-import { techLogger, appLogger } from '../../util'
+import {
+  appLogger,
+  createToken,
+  getFrenchLuxonFromJSDate,
+  techLogger,
+  getFrenchLuxon,
+  AURIGE_OK,
+} from '../../util'
 
 export const sendMail = async (to, { subject, content: html }) => {
   const transporter = nodemailer.createTransport(smtpTransport(smtpOptions))
@@ -46,12 +53,24 @@ export const sendMailToAccount = async (candidat, flag) => {
   return sendMail(candidat.email, message)
 }
 
-export const sendMagicLink = async (candidat, token) => {
-  const flag = 'CHECK_OK'
-  const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
+export const sendMagicLink = async candidat => {
+  const flag = AURIGE_OK
 
-  const url = `${authUrl}?token=${encodeURIComponent(token)}`
+  const url = getUrl(candidat)
 
   const message = await getMailData(candidat, flag, url)
   return sendMail(candidat.email, message)
+}
+
+export const getUrl = candidat => {
+  const candidatAccessDate = getFrenchLuxonFromJSDate(candidat.canAccessAt)
+  const dateNow = getFrenchLuxon().startOf('day')
+
+  if (!candidat.canAccessAt || dateNow >= candidatAccessDate) {
+    const token = createToken(candidat.id, config.userStatuses.CANDIDAT)
+    const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
+    return `${authUrl}?token=${encodeURIComponent(token)}`
+  }
+
+  return null
 }

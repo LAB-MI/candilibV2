@@ -1,0 +1,26 @@
+[
+  {
+    "codeNeph": "09349623951991",
+    "nomNaissance": "SWAISEY01",
+    "prenom": "MAY01",
+    "email": "mayswaisey01@candilib.com",
+    "dateReussiteETG": "2018-08-15",
+    "nbEchecsPratiques": "0",
+    "dateDernierNonReussite": "",
+    "objetDernierNonReussite": "",
+    "reussitePratique": "",
+    "candidatExistant": "OK"
+  },
+  {
+    "codeNeph": "09349623951992",
+    "nomNaissance": "SWAISEY02",
+    "prenom": "MAY02",
+    "email": "mayswaisey02@candilib.com",
+    "dateReussiteETG": "2018-08-15",
+    "nbEchecsPratiques": "0",
+    "dateDernierNonReussite": "",
+    "objetDernierNonReussite": "",
+    "reussitePratique": "",
+    "candidatExistant": "OK"
+  }
+]

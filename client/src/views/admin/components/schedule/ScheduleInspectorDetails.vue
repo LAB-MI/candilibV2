@@ -76,8 +76,11 @@
         v-if="hasConfirm"
         :close-action="cancelSelection"
         :submit-action="validSelection"
+        class="t-inspecteur-confirm-box"
       >
-        <p>
+        <p
+          class="t-inspecteur-detail"
+        >
           {{ textInspecteurSelected }}
         </p>
       </confirm-box>
@@ -273,25 +276,30 @@ export default {
         return state.candidats.candidat
       },
 
+      candidats (state) {
+        return state.adminSearch.candidats.list
+          .filter(candidat => candidat.isValidatedByAurige)
+          .map(candidat => {
+            const { nomNaissance, codeNeph } = candidat
+            const nameNeph = nomNaissance + ' | ' + codeNeph
+            return { nameNeph, ...candidat }
+          })
+      },
+
       isFetchingCandidat (state) {
         return state.candidats.isFetching
       },
+
+      inspecteurInfos (state) {
+        return state.admin.inspecteurs.list
+          .find(inspecteur => inspecteur._id === this.inspecteurId)
+      },
+
+      centerName (state) {
+        const centre = state.center.selected
+        return centre && centre.nom
+      },
     }),
-
-    candidats () {
-      return this.$store.state.adminSearch.candidats.list
-        .filter(candidat => candidat.isValidatedByAurige)
-        .map(candidat => {
-          const { nomNaissance, codeNeph } = candidat
-          const nameNeph = nomNaissance + ' | ' + codeNeph
-          return { nameNeph, ...candidat }
-        })
-    },
-
-    inspecteurInfos () {
-      return this.$store.state.admin.inspecteurs.list
-        .find(inspecteur => inspecteur._id === this.inspecteurId)
-    },
 
     isAvailable () {
       return !!this.place && !('candidat' in this.place)
@@ -305,10 +313,6 @@ export default {
       return getFrenchDateTimeFromIso(this.content.place.date)
     },
 
-    centerName () {
-      const centre = this.$store.state.center.selected
-      return centre && centre.nom
-    },
   },
 
   methods: {
@@ -319,7 +323,7 @@ export default {
 
     selectInspecteur (inspecteur) {
       this.inspecteurSelected = inspecteur
-      this.textInspecteurSelected = `Vous avez choisi l'inspecteur ${inspecteur.nom}, ${inspecteur.matricule}`
+      this.textInspecteurSelected = `Vous avez choisi l'inspecteur ${inspecteur.prenom}, ${inspecteur.nom}, ${inspecteur.matricule}`
       this.hasConfirm = true
       this.displaySearchInspecteurs = false
       this.displayModifyInspecteurTitle = false

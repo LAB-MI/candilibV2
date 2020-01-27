@@ -14,24 +14,15 @@ var magicLink
 
 describe('Standard scenarios', () => {
   before(() => {
-    // Delete all mails before start
     cy.deleteAllMails()
     cy.adminLogin()
     cy.archiveCandidate()
     cy.addPlanning()
-    cy.addToWhitelist()
     cy.adminDisconnection()
-    cy.candidatePreSignUp()
-    // The admin validates the candidate via Aurige
     cy.adminLogin()
-    cy.candidateValidation()
-    // Disconnects from the app
     cy.adminDisconnection()
-    // The candidate gets the link
-    cy.getLastMail().getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
-    cy.getLastMail().getSubject()
-      .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+    cy.candidatConnection(Cypress.env('emailCandidatInteractive'))
+
     cy.getLastMail().its('Content.Body').then((mailBody) => {
       const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
       const withoutEq = codedLink.replace(/=\r\n/g, '')
@@ -79,7 +70,7 @@ describe('Standard scenarios', () => {
       .click()
     cy.contains('Nom de naissance')
       .parent().parent()
-      .should('contain', Cypress.env('candidat'))
+      .should('contain', Cypress.env('candidatInteractive'))
     // The admin connects
     cy.adminLogin()
     // The admin find the reservation and cancels it
@@ -100,7 +91,7 @@ describe('Standard scenarios', () => {
               .contains('face')
               .click()
             cy.get('.place-details')
-              .should('contain', Cypress.env('candidat'))
+              .should('contain', Cypress.env('candidatInteractive'))
             cy.contains('Annuler réservation')
               .click()
             cy.contains('Supprimer réservation')
@@ -133,7 +124,7 @@ describe('Standard scenarios', () => {
       .click()
     cy.contains('Nom de naissance')
       .parent().parent()
-      .should('contain', Cypress.env('candidat'))
+      .should('contain', Cypress.env('candidatInteractive'))
   })
 
   it('The admin assigns a candidate and the candidate cancels it', () => {
@@ -145,7 +136,7 @@ describe('Standard scenarios', () => {
       .click()
     cy.contains('Nom de naissance')
       .parent().parent()
-      .should('contain', Cypress.env('candidat'))
+      .should('contain', Cypress.env('candidatInteractive'))
     // The admin assigns the candidate to a place
     cy.adminLogin()
     // Goes to planning
@@ -165,8 +156,8 @@ describe('Standard scenarios', () => {
         cy.contains('Affecter un candidat')
           .click()
         cy.get('.search-input [type=text]')
-          .type(Cypress.env('candidat'))
-        cy.root().parents().contains(Cypress.env('candidat'))
+          .type(Cypress.env('candidatInteractive'))
+        cy.root().parents().contains(Cypress.env('candidatInteractive'))
           .click()
         cy.get('.place-details')
           .should('contain', Cypress.env('centre'))
@@ -174,7 +165,7 @@ describe('Standard scenarios', () => {
           .click()
       })
     cy.get('.v-snack--active')
-      .should('contain', Cypress.env('candidat'))
+      .should('contain', Cypress.env('candidatInteractive'))
       .and('contain', 'a bien été affecté à la place')
     // The candidate cancels the place
     cy.visit(magicLink)

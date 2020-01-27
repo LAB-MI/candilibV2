@@ -19,27 +19,19 @@ describe('Planning tests', () => {
     // Delete all mails before start
     cy.deleteAllMails()
     cy.adminLogin()
-    cy.archiveCandidate()
     cy.addPlanning()
-    cy.addToWhitelist()
-    cy.adminDisconnection()
-    cy.candidatePreSignUp()
-    // The admin validates the candidate via Aurige
-    cy.adminLogin()
-    cy.candidateValidation()
-    // Disconnects from the app
     cy.adminDisconnection()
   })
 
   it('Assigns a candidate, send bordereaux and changes the inspector of booked place', () => {
     cy.adminLogin()
     // Goes to planning and add candidate to the first place
-    cy.addCandidatToPlace()
+    cy.addCandidatToPlace(undefined, 'CANDIDAT_FRONT')
     cy.get('.v-snack--active')
-      .should('contain', Cypress.env('candidat'))
+      .should('contain', 'CANDIDAT_FRONT')
       .and('contain', 'a bien été affecté à la place')
     cy.getLastMail().getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
+      .should('contain', 'candidat_front@candi.lib')
     cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=')
     cy.getLastMail().its('Content.Body')
@@ -55,8 +47,9 @@ describe('Planning tests', () => {
           .click()
         cy.get('[type=text]')
           .type(Cypress.env('inspecteur2') + '{enter}')
-        cy.root()
-          .should('contain', 'Vous avez choisi l\'inspecteur ' + Cypress.env('inspecteur2'))
+        cy.get('.t-inspecteur-confirm-box')
+          .find('.t-inspecteur-detail')
+          .should('contain', Cypress.env('inspecteurPrenom') + ', ' + Cypress.env('inspecteur2'))
         cy.get('button')
           .contains('Valider')
           .click()
@@ -107,7 +100,7 @@ describe('Planning tests', () => {
       .should('contain', '=?UTF-8?Q?Bordereau_de_l=27inspecteur_')
     cy.getLastMail().its('Content.Body')
       .should('contain', Cypress.env('centre'))
-      .and('contain', Cypress.env('candidat'))
+      .and('contain', 'CANDIDAT_FRONT')
     // Receive the mail for the inspectors
     cy.deleteAllMails()
     cy.get('button')
@@ -140,7 +133,7 @@ describe('Planning tests', () => {
       .should('contain', '=?UTF-8?Q?Bordereau_de_l=27inspecteur_')
     cy.getLastMail().its('Content.Body')
       .should('contain', Cypress.env('centre'))
-      .and('contain', Cypress.env('candidat'))
+      .and('contain', 'CANDIDAT_FRONT')
     // Removes the candidate from the place
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur2'))
@@ -156,7 +149,7 @@ describe('Planning tests', () => {
     cy.get('.v-snack--active')
       .should('contain', 'La réservation choisie a été annulée.')
     cy.getLastMail().getRecipients()
-      .should('contain', Cypress.env('emailCandidat'))
+      .should('contain', 'candidat_front@candi.lib')
     cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen_par_l=27administration?=')
     // Add the place back

@@ -1,6 +1,7 @@
 export const getEpreuvePratiqueOKTemplate = (
   nomMaj,
-  urlFAQ
+  urlFAQ,
+  contactezNous
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <br>
   <p>Selon nos informations vous avez déjà réussi votre examen du permis de conduire, notre service ne vous est plus utile.</p>
@@ -12,5 +13,7 @@ export const getEpreuvePratiqueOKTemplate = (
     et en cours de validité.
   </p>
   <p>Vous pourrez trouver des informations utiles en consultant notre <a href=${urlFAQ}>aide en ligne</a>.<p>
+  <br>
+  ${contactezNous}
   <br>
   <p align="right">L'équipe Candilib</p>`

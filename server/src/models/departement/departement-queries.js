@@ -1,4 +1,4 @@
-import Departement from './departement.model'
+import Departement from './departement-model'
 
 /**
  * Crée un département
@@ -22,7 +22,7 @@ export const createDepartement = async ({ _id, email }) => {
 }
 
 /**
- * Cherche un département à partir de son identifiant
+ * Renvoie le département par la recherche avec son id
  *
  * @async
  * @function
@@ -33,11 +33,37 @@ export const createDepartement = async ({ _id, email }) => {
  */
 export const findDepartementById = async _id => Departement.findById(_id)
 
-export const findDepartementsByEmail = async email =>
-  Departement.find({ email })
+/**
+ * Renvoie le département par la recherche avec son adresse courriel
+ *
+ * @async
+ * @function
+ *
+ * @param {Object} email - Adresse courriel du département
+ *
+ * @returns {Promise.<Departement>}
+ */
+
+export const findDepartementByEmail = async email =>
+  Departement.findOne({ email })
 
 /**
- * Supprime un département
+ * Vérifie si le departement existe, et renvoie `true` si c'est le cas, `false` sinon
+ *
+ * @async
+ * @function
+ *
+ * @param {string} _id - Identifiant du département à trouver dans la base de données
+ *
+ * @returns {Promise.<boolean>} - `true` si un département existe avec cet identifiant
+ */
+export const isDepartementExisting = async _id => {
+  const isExist = await Departement.exists({ _id })
+  return isExist
+}
+
+/**
+ * Supprime le département par la recherche avec son id
  *
  * @async
  * @function
@@ -86,3 +112,5 @@ export const updateDepartementById = async ({ _id, email }) => {
   const updatedDepartement = await departement.save()
   return updatedDepartement
 }
+export const findDepartements = async () => Departement.find({}, '_id')
+export const findAllDepartementsId = async () => Departement.find({}, '_id')

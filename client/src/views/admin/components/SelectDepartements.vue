@@ -1,12 +1,14 @@
 <template>
   <v-select
     v-model="departements"
+    :dark="dark"
     :multiple="multiple"
     :items="availableDepartements"
     label="Départements"
     prepend-icon="my_location"
     aria-placeholder="départements"
-    hint="ex. : 93"
+    :persistent-hint="persistentHint"
+    :hint="hint"
     tabindex="0"
     :rules="departementsRules"
     required
@@ -32,6 +34,18 @@ export default {
       default: '',
     },
     multiple: {
+      type: Boolean,
+      default: false,
+    },
+    hint: {
+      type: String,
+      default: '',
+    },
+    dark: {
+      type: Boolean,
+      default: false,
+    },
+    persistentHint: {
       type: Boolean,
       default: false,
     },

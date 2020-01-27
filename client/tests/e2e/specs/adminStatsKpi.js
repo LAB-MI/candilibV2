@@ -5,32 +5,25 @@
   candidate absent
   candidate success
 */
-
+import { date1 } from '../support/dateUtils'
 describe('Stats Kpi tests', () => {
   let nbPlaces = 0
+  const nowIn1WeekAnd1DaysBefore01 = date1.plus({ days: 1 })
+  const nowIn1WeekAnd1DaysBefore02 = date1.plus({ days: 2 })
+  const nowIn1WeekAnd1DaysBefore03 = date1.plus({ days: 3 })
   beforeEach(() => {
     cy.deleteAllMails()
-    // login admin
     cy.adminLogin()
-    // archive candidat already in db
-    cy.archiveCandidate()
-    // ajouter des places
-    cy.addPlanning()
-    // ajouter email candidat a la white list
-    cy.addToWhitelist()
-    // deconnecter l'admin
-    cy.adminDisconnection()
-    // pre-inscription candidat
-    cy.candidatePreSignUp()
-    cy.adminLogin()
-    // validation candidat pas aurige
-    cy.candidateValidation()
-    // deconnecter l'admin
+    cy.addPlanning([
+      nowIn1WeekAnd1DaysBefore01,
+      nowIn1WeekAnd1DaysBefore02,
+      nowIn1WeekAnd1DaysBefore03,
+    ])
     cy.adminDisconnection()
     nbPlaces = Cypress.env('nbPlaces')
   })
 
-  const nbInscrits = 1
+  const nbInscrits = 4
   const nbBooked = 1
   let nbExams = 0
   let nbNotExamined = 0
@@ -38,7 +31,7 @@ describe('Stats Kpi tests', () => {
 
   it('Checks candidate nonReussite stats', () => {
     cy.adminLogin()
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-remplissage-futur')
       .should('contain', '0.00%')
@@ -49,9 +42,9 @@ describe('Stats Kpi tests', () => {
     cy.get('.t-number-future-free-places-' + nbPlaces)
       .should('have.length', 1)
 
-    cy.addCandidatToPlace()
+    cy.addCandidatToPlace(undefined, 'CANDIDAT_STATS_KPI')
 
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-number-inscrit-' + (nbInscrits - nbBooked))
       .should('have.length', 1)
@@ -64,10 +57,10 @@ describe('Stats Kpi tests', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonReussite.json',
       [
         {
-          'codeNeph': Cypress.env('NEPH'),
-          'nomNaissance': Cypress.env('candidat'),
-          'email': Cypress.env('emailCandidat'),
-          'dateReussiteETG': '2018-10-12',
+          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
+          'nomNaissance': Cypress.env('candidatStatsKpi'),
+          'email': Cypress.env('emailCandidatStatsKpi'),
+          'dateReussiteETG': new Date(),
           'nbEchecsPratiques': '0',
           'dateDernierNonReussite': Cypress.env('placeDate'),
           'objetDernierNonReussite': 'Echec',
@@ -95,11 +88,11 @@ describe('Stats Kpi tests', () => {
     cy.get('.v-snack--active')
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
     nbExams++
     nbFailed++
 
-    cy.get('.t-number-inscrit-' + (nbInscrits - nbBooked))
+    cy.get('.t-number-inscrit-' + nbInscrits)
       .should('have.length', 1)
     cy.get('.t-number-future-free-places-' + nbPlaces)
       .should('have.length', 1)
@@ -109,24 +102,24 @@ describe('Stats Kpi tests', () => {
 
   it('Checks candidate no receivable', () => {
     cy.adminLogin()
-    cy.addCandidatToPlace()
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore01, 'CANDIDAT_STATS_KPI')
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-number-inscrit-' + (nbInscrits - nbBooked))
       .should('have.length', 1)
-    cy.get('.t-number-future-free-places-' + (nbPlaces - nbInscrits))
+    cy.get('.t-number-future-free-places-' + (nbPlaces - nbBooked))
       .should('have.length', 1)
 
     cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonRecevable.json',
       [
         {
-          'codeNeph': Cypress.env('NEPH'),
-          'nomNaissance': Cypress.env('candidat'),
-          'email': Cypress.env('emailCandidat'),
-          'dateReussiteETG': '2018-10-12',
+          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
+          'nomNaissance': Cypress.env('candidatStatsKpi'),
+          'email': Cypress.env('emailCandidatStatsKpi'),
+          'dateReussiteETG': new Date(),
           'nbEchecsPratiques': '0',
-          'dateDernierNonReussite': Cypress.env('placeDate'),
+          'dateDernierNonReussite': nowIn1WeekAnd1DaysBefore01.toFormat('yyyy-MM-dd'),
           'objetDernierNonReussite': 'Non recevable',
           'reussitePratique': '',
           'candidatExistant': 'OK',
@@ -155,7 +148,7 @@ describe('Stats Kpi tests', () => {
     nbExams++
     nbNotExamined++
 
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-number-inscrit-' + nbInscrits)
       .should('have.length', 1)
@@ -167,8 +160,8 @@ describe('Stats Kpi tests', () => {
 
   it('Checks candidate no examinable', () => {
     cy.adminLogin()
-    cy.addCandidatToPlace()
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore02, 'CANDIDAT_STATS_KPI')
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-number-inscrit-' + (nbInscrits - nbBooked))
       .should('have.length', 1)
@@ -179,12 +172,12 @@ describe('Stats Kpi tests', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonExaminable.json',
       [
         {
-          'codeNeph': Cypress.env('NEPH'),
-          'nomNaissance': Cypress.env('candidat'),
-          'email': Cypress.env('emailCandidat'),
-          'dateReussiteETG': '2018-10-12',
+          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
+          'nomNaissance': Cypress.env('candidatStatsKpi'),
+          'email': Cypress.env('emailCandidatStatsKpi'),
+          'dateReussiteETG': new Date(),
           'nbEchecsPratiques': '0',
-          'dateDernierNonReussite': Cypress.env('placeDate'),
+          'dateDernierNonReussite': nowIn1WeekAnd1DaysBefore02.toFormat('yyyy-MM-dd'),
           'objetDernierNonReussite': 'Non examinable',
           'reussitePratique': '',
           'candidatExistant': 'OK',
@@ -212,7 +205,7 @@ describe('Stats Kpi tests', () => {
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     nbExams++
     nbNotExamined++
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-number-inscrit-' + nbInscrits)
       .should('have.length', 1)
@@ -226,8 +219,8 @@ describe('Stats Kpi tests', () => {
 
   it('Checks candidate absent', () => {
     cy.adminLogin()
-    cy.addCandidatToPlace()
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore03, 'CANDIDAT_STATS_KPI')
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-number-inscrit-' + (nbInscrits - nbBooked))
       .should('have.length', 1)
@@ -238,12 +231,12 @@ describe('Stats Kpi tests', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.absent.json',
       [
         {
-          'codeNeph': Cypress.env('NEPH'),
-          'nomNaissance': Cypress.env('candidat'),
-          'email': Cypress.env('emailCandidat'),
-          'dateReussiteETG': '2018-10-12',
+          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
+          'nomNaissance': Cypress.env('candidatStatsKpi'),
+          'email': Cypress.env('emailCandidatStatsKpi'),
+          'dateReussiteETG': new Date(),
           'nbEchecsPratiques': '0',
-          'dateDernierNonReussite': Cypress.env('placeDate'),
+          'dateDernierNonReussite': nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'),
           'objetDernierNonReussite': 'Absent',
           'reussitePratique': '',
           'candidatExistant': 'OK',
@@ -271,7 +264,7 @@ describe('Stats Kpi tests', () => {
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     nbExams++
 
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-number-inscrit-' + nbInscrits)
       .should('have.length', 1)
@@ -285,8 +278,8 @@ describe('Stats Kpi tests', () => {
 
   it('Checks candidate success', () => {
     cy.adminLogin()
-    cy.addCandidatToPlace()
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.addCandidatToPlace(undefined, 'CANDIDAT_STATS_KPI')
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-number-inscrit-' + (nbInscrits - nbBooked))
       .should('have.length', 1)
@@ -297,10 +290,10 @@ describe('Stats Kpi tests', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.reussite.json',
       [
         {
-          'codeNeph': Cypress.env('NEPH'),
-          'nomNaissance': Cypress.env('candidat'),
-          'email': Cypress.env('emailCandidat'),
-          'dateReussiteETG': '2018-10-12',
+          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
+          'nomNaissance': Cypress.env('candidatStatsKpi'),
+          'email': Cypress.env('emailCandidatStatsKpi'),
+          'dateReussiteETG': new Date(),
           'nbEchecsPratiques': '0',
           'dateDernierNonReussite': '',
           'objetDernierNonReussite': '',
@@ -330,7 +323,7 @@ describe('Stats Kpi tests', () => {
       .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
     nbExams++
     const nbSuccess = 1
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + Cypress.env('placeDate'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
 
     cy.get('.t-number-inscrit-0')
       .should('have.length', 1)

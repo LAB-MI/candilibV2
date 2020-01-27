@@ -5,6 +5,14 @@ import bodyParser from 'body-parser'
 import { connect, disconnect } from '../../mongo-connection'
 
 import { createUser } from '../../models/user'
+import {
+  createDepartement,
+  deleteDepartementById,
+} from '../../models/departement'
+import {
+  createCentre as modelCreateCentre,
+  deleteCentre,
+} from '../../models/centre'
 
 import {
   setInitCreatedCentre,
@@ -318,5 +326,55 @@ describe('Centre controllers admin', () => {
     expect(body.centre.geoloc).toHaveProperty('coordinates')
     expect(body.centre.geoloc.coordinates).toHaveProperty('0', 45.3)
     expect(body.centre.geoloc.coordinates).toHaveProperty('1', 8)
+  })
+})
+describe('Test centres of departement', () => {
+  const centre = {
+    departement: '75',
+    nom: 'Villepinte',
+    adresse:
+      'avenue Jean Fourgeaud (dernier parking circulaire) 93420 Villepinte',
+    lat: '48.962099',
+    label: "Centre d'examen du permis de conduire de Villepinte",
+    lon: '2.552847',
+  }
+  const departementData = { _id: '75', email: 'email93@onepiece.com' }
+  let createdCentre
+
+  beforeAll(async () => {
+    await connect()
+    await createDepartement(departementData)
+    createdCentre = await modelCreateCentre(
+      centre.nom,
+      centre.label,
+      centre.adresse,
+      centre.lon,
+      centre.lat,
+      centre.departement
+    )
+  })
+
+  afterAll(async () => {
+    deleteDepartementById(departementData._id)
+    await deleteCentre(createdCentre)
+    await disconnect()
+    // await app.close()
+  })
+
+  describe('deptCenters', () => {
+    it('should get departement centers', async () => {
+      // GIVEN
+
+      // WHEN
+      const { body } = await request(app)
+        .get(`${apiPrefix}/public/centres?departementId=75`)
+        .set('Accept', 'application/json')
+        .expect(200)
+
+      // THEN
+      expect(body).toHaveProperty('success', true)
+      expect(body).toHaveProperty('deptCenters')
+      expect(body.deptCenters[0]).toHaveProperty('nom', centre.nom)
+    })
   })
 })

@@ -1,1 +1,1 @@
-export * from './departement.queries'
+export * from './departement-queries'

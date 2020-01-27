@@ -37,8 +37,8 @@ export default {
     ...mapGetters(['activeDepartement']),
     inspecteurs () {
       return this.$store.state.adminModifInspecteur.inspecteurs.list.map(inspecteur => {
-        const { _id: value, nom, matricule } = inspecteur
-        const text = nom + ' | ' + matricule
+        const { _id: value, prenom, nom, matricule } = inspecteur
+        const text = prenom + nom + ' | ' + matricule
         return { value, text, inspecteur }
       })
     },

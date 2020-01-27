@@ -2,8 +2,9 @@ import { connect, disconnect } from '../../mongo-connection'
 import { createDepartement, findDepartementById } from '.'
 import {
   deleteDepartementById,
-  findDepartementsByEmail,
-} from './departement.queries'
+  findDepartementByEmail,
+  isDepartementExisting,
+} from './departement-queries'
 
 const validEmail = 'candidat@example.com'
 const _id = '95'
@@ -56,18 +57,26 @@ describe('Find Departement', () => {
     expect(departement).not.toBeNull()
     expect(departement).toHaveProperty('email', validEmail)
   })
+  it('Find departement by id if is existing', async () => {
+    // Given
+    const id = _id
+    // When
+    const departement = await isDepartementExisting(id)
+    // Then
+    expect(departement).toBeDefined()
+    expect(departement).not.toBeNull()
+  })
 
   it('Find departement by email', async () => {
     // Given
     const email = validEmail
 
     // When
-    const departements = await findDepartementsByEmail(email)
+    const departement = await findDepartementByEmail(email)
 
     // Then
-    expect(departements).toBeDefined()
-    expect(departements).not.toBeNull()
-    expect(departements).toHaveLength(1)
-    expect(departements[0]).toHaveProperty('email', email)
+    expect(departement).toBeDefined()
+    expect(departement).not.toBeNull()
+    expect(departement).toHaveProperty('email', email)
   })
 })

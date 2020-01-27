@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="u-flex  u-flex--center  u-flex--v-start">
     <v-autocomplete
       v-model="selected"
       :label="label"
@@ -15,12 +15,23 @@
       :clearable="clearable"
       :autofocus="autofocus"
     />
+    <div class="u-flex  u-flex--center  u-flex--v-start">
+      <v-checkbox
+        v-model="startingWith"
+        class="t-checkbox-one"
+        label="Commence par"
+      />
+      <v-checkbox
+        v-model="endingWith"
+        class="t-checkbox-two"
+        label="Finit par"
+      />
+    </div>
   </div>
 </template>
 
 <script>
 export default {
-
   props: {
     label: {
       type: String,
@@ -36,7 +47,7 @@ export default {
     },
     items: {
       type: Array,
-      default () { return [{ text: 'Impossible', value: undefined }] },
+      default () { return [{ text: 'Veuillez taper au moins 3 caractères', value: undefined }] },
     },
     itemText: {
       type: String,
@@ -65,20 +76,29 @@ export default {
       searchInput: undefined,
       selected: undefined,
       timeoutId: undefined,
+      startingWith: true,
+      endingWith: true,
     }
   },
 
   watch: {
     searchInput (searchQuery) {
+      const {
+        startingWith,
+        endingWith,
+      } = this
+
+      searchQuery = searchQuery.trim()
       if (!searchQuery || searchQuery.length < 3) {
         this.emptyList = []
         return
       }
+
       this.emptyList = undefined
       clearTimeout(this.timeoutId)
       this.timeoutId = setTimeout(() => {
         if (searchQuery && searchQuery.length > 2) {
-          this.$store.dispatch(this.fetchAutocompleteAction, searchQuery)
+          this.$store.dispatch(this.fetchAutocompleteAction, { search: searchQuery, startingWith, endingWith })
         }
       }, 300)
     },

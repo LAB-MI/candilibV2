@@ -1,7 +1,9 @@
 <template>
   <div>
+    <page-title>
+      {{ $formatMessage({ id: 'Recherche'}) }}
+    </page-title>
     <div class="u-flex  u-flex--center  u-flex--v-start">
-      <search-candidat class="search-input" />
       <search-inspecteur class="search-input" />
     </div>
     <monitors />
@@ -9,7 +11,6 @@
 </template>
 
 <script>
-import SearchCandidat from './SearchCandidat'
 import SearchInspecteur from './SearchInspecteur'
 import Monitors from './Monitors.vue'
 import { getFrenchLuxonCurrentDateTime } from '@/util'
@@ -17,7 +18,6 @@ import { getFrenchLuxonCurrentDateTime } from '@/util'
 export default {
   components: {
     Monitors,
-    SearchCandidat,
     SearchInspecteur,
   },
 

@@ -7,7 +7,7 @@
         hint="Chercher un inspecteur par son nom / matricule / email"
         placeholder="Dupond"
         :items="inspecteurs"
-        item-text="nom"
+        item-text="nomPrenomMatricule"
         item-value="_id"
         :fetch-autocomplete-action="fetchAutocompleteAction"
         @selection="displayInspecteurInfo"
@@ -46,9 +46,8 @@ import { transformToProfileInfo } from '@/util'
 
 const inspecteurProfileInfoDictionary = [
   [
-    ['matricule', 'Matricule'],
+    ['prenom', 'Prenom'],
     ['nom', 'Nom'],
-    ['prenom', 'Prénom'],
     ['email', 'Email'],
     ['departement', 'Département'],
   ],
@@ -71,7 +70,13 @@ export default {
   },
 
   computed: mapState({
-    inspecteurs: state => state.adminSearch.inspecteurs.list,
+    inspecteur: state => state.adminSearch.inspecteurs.list,
+    inspecteurs: state => state.adminSearch.inspecteurs.list
+      .map(inspecteur => {
+        const { nom, prenom, matricule } = inspecteur
+        const nomPrenomMatricule = nom + '  ' + prenom + ' | ' + matricule
+        return { nomPrenomMatricule, ...inspecteur }
+      }),
   }),
 
   watch: {

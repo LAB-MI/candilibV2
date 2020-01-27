@@ -29,77 +29,78 @@ const router = express.Router()
  *                auth: true
  *
  * /auth/admin/token:
- *  post:
- *   tags: ["Authentification", "Administrateur"]
- *   summary: Récupération d'un token pour un adminstrateur
- *   description: Vérifie le login et le mot de passe et retourne un token
+ *   post:
+ *    tags: ["Authentification", "Administrateur"]
+ *    summary: Récupération d'un token pour un adminstrateur
+ *    description: Vérifie le login et le mot de passe et retourne un token
  *
- *   requestBody:
- *     required: true
- *     description: Le login et le mot passe provenant du formulaire de connexion
- *     content:
- *       application/json:
- *         schema:
- *           type: object
- *           properties:
- *             email:
- *               type: string
- *               format: email
- *               description: adresse courriel de l'administrateur
- *             password:
- *               type: string
- *               format: password
- *               description: Mot de passe de l'administrateur
- *           required:
- *            - email
- *            - password
- *         example:
- *            "email": "admin75@example.com"
- *            "password": "Admin*78"
- *   responses:
- *       '201':
- *         description: Retour d'une réussite de demande de connexion
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: vaut true, le login et le mot de passe de l'administrateur sont corrects
- *                 token:
- *                   type: string
- *                   format: JWT
- *                   description: le token de durée de 1 journée pour l'administrateur
- *             example:
- *                success: true
- *                token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkOWIwNGRiMGIyNzlmMDAzYzY3NzEwZCIsImxldmVsIjoxLCJkZXBhcnRlbWVudHMiOlsiNzUiXSwiaWF0IjoxNTcxMDY1MTU5LCJleHAiOjE1NzEwOTc1OTh9.WwiOiujeCHKFIRqd0s8WPz_4fFzLlnkP3KL2ayftMHY"
- *       '401':
- *         description: Retour d'un échec de demande de connexion
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 success:
- *                   type: boolean
- *                   description: vaut false, le login ou le mot de passe sont incorrects
- *                 message:
- *                   type: string
- *                   description: vaut 'Mauvaise combinaison email/mot de passe.'
- *             example:
- *                success: false
- *                message: 'Mauvaise combinaison email/mot de passe.'
- *       '500':
- *         description: Retour d'un erreur survenu au niveau du serveur
- *         content:
+ *    requestBody:
+ *      required: true
+ *      description: Le login et le mot passe provenant du formulaire de connexion
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *                format: email
+ *                description: adresse courriel de l'administrateur
+ *              password:
+ *                type: string
+ *                format: password
+ *                description: Mot de passe de l'administrateur
+ *            required:
+ *             - email
+ *             - password
+ *          example:
+ *             "email": "admin75@example.com"
+ *             "password": "Admin*78"
+ *
+ *    responses:
+ *      201:
+ *        description: Retour d'une réussite de demande de connexion
+ *        content:
  *          application/json:
- *             schema:
- *              allOf:
- *               - $ref: '#/components/schemas/InfoObject'
- *               - example:
- *                  success: false
- *                  message: "Erreur serveur : failed to reconnect after 30 attempts with interval 1000 ms"
+ *            schema:
+ *              type: object
+ *              properties:
+ *                success:
+ *                  type: boolean
+ *                  description: vaut true, le login et le mot de passe de l'administrateur sont corrects
+ *                token:
+ *                  type: string
+ *                  format: JWT
+ *                  description: le token de durée de 1 journée pour l'administrateur
+ *            example:
+ *               success: true
+ *               token: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkOWIwNGRiMGIyNzlmMDAzYzY3NzEwZCIsImxldmVsIjoxLCJkZXBhcnRlbWVudHMiOlsiNzUiXSwiaWF0IjoxNTcxMDY1MTU5LCJleHAiOjE1NzEwOTc1OTh9.WwiOiujeCHKFIRqd0s8WPz_4fFzLlnkP3KL2ayftMHY"
+ *      401:
+ *        description: Retour d'un échec de demande de connexion
+ *        content:
+ *          application/json:
+ *            schema:
+ *              type: object
+ *              properties:
+ *                success:
+ *                  type: boolean
+ *                  description: vaut false, le login ou le mot de passe sont incorrects
+ *                message:
+ *                  type: string
+ *                  description: vaut 'Mauvaise combinaison email/mot de passe.'
+ *            example:
+ *               success: false
+ *               message: 'Mauvaise combinaison email/mot de passe.'
+ *      '500':
+ *        description: Retour d'un erreur survenu au niveau du serveur
+ *        content:
+ *         application/json:
+ *            schema:
+ *             allOf:
+ *              - $ref: '#/components/schemas/InfoObject'
+ *              - example:
+ *                 success: false
+ *                 message: "Erreur serveur : failed to reconnect after 30 attempts with interval 1000 ms"
  *
  */
 /**
@@ -115,7 +116,7 @@ const router = express.Router()
  * @swagger
  *
  * /admin/reset-link:
- *   post:
+ *    post:
  *     tags: ["Administrateur"]
  *     summary: Envoi d'un mail pour réinitialiser son mot de passe
  *     description: Envoi d'un mail avec un lien vers un formulaire pour réinitialiser son mot de passe
@@ -187,7 +188,7 @@ router.get(
  *  post:
  *   tags: ["Authentification", "Candidat"]
  *   summary: Envoie un lien de connexion par courriel
- *   description: Vérifie que le candidat à le droit de se connecter et lui envoie un e-mail avec un lien de connexion
+ *   description: Vérifie que le candidat à le droit de se connecter et lui envoie un e-mail avec un lien de connexion ou un message indiquant le nombre de jours restant avant d'accéder à l'interface de réservation
  *
  *   requestBody:
  *     required: true

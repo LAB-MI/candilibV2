@@ -15,8 +15,9 @@ Cypress.Commands.add('adminLogin', () => {
     .type(Cypress.env('adminPass'))
   cy.get('.submit-btn')
     .click()
-  cy.get('.v-snack--active')
-    .should('contain', 'Vous êtes identifié')
+  cy.url()
+    .should('not.contain', '/admin-login')
+    .should('contain', '/admin')
 })
 
 Cypress.Commands.add('adminDisconnection', () => {
@@ -63,21 +64,6 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
     .click()
   cy.get('.v-snack--active')
     .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
-})
-
-Cypress.Commands.add('addToWhitelist', () => {
-  cy.contains('favorite')
-    .click()
-  cy.get('h2')
-    .should('contain', 'Liste blanche')
-  cy.contains('Ajouter un lot d\'adresse courriel')
-    .click()
-  cy.get('#whitelist-batch-textarea')
-    .type(Cypress.env('emailCandidat'))
-  cy.contains('Enregistrer ces adresses')
-    .click()
-  cy.get('.home-link')
-    .click()
 })
 
 Cypress.Commands.add('addPlanning', (dates) => {
@@ -159,13 +145,14 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
     .parent()
     .children('input')
     .type('0716253443')
-  cy.contains('Adresse')
+
+  cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
+  cy.get('.v-list-item__title').contains(Cypress.env('departement')).click()
+
+  cy.get('.t-checkbox')
     .parent()
-    .children('input')
-    .type('avenue')
-  cy.get('.v-select-list')
-    .contains('avenue')
     .click()
+
   cy.contains('Pré-inscription')
     .click()
     // Checks the access
@@ -194,6 +181,19 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
     .should('contain', candidat ? candidat.email : Cypress.env('emailCandidat'))
   cy.getLastMail().getSubject()
     .should('contain', '=?UTF-8?Q?Inscription_Candilib_en_attente_de_v?= =?UTF-8?Q?=C3=A9rification?=')
+})
+
+Cypress.Commands.add('candidatConnection', (candidatEmail) => {
+  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
+  cy.contains('Déjà')
+    .click()
+  cy.get('input').type(candidatEmail)
+  cy.get('form').find('button').click()
+  cy.getLastMail().getRecipients()
+    .should('contain', candidatEmail)
+  cy.getLastMail()
+    .getSubject()
+    .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
 })
 
 Cypress.Commands.add('candidateValidation', () => {
@@ -241,7 +241,7 @@ Cypress.Commands.add('candidateValidation', () => {
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
 })
 
-Cypress.Commands.add('addCandidatToPlace', (date) => {
+Cypress.Commands.add('addCandidatToPlace', (date, candidatName) => {
   // Goes to planning
   const placeDate = (date && date.toFormat('yyyy-MM-dd')) || Cypress.env('placeDate')
   cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + placeDate)
@@ -263,8 +263,8 @@ Cypress.Commands.add('addCandidatToPlace', (date) => {
       cy.contains('Affecter un candidat')
         .click()
       cy.get('.search-input [type=text]')
-        .type(Cypress.env('candidat'))
-      cy.root().parents().contains(Cypress.env('candidat'))
+        .type(candidatName || Cypress.env('candidat'))
+      cy.root().parents().contains(candidatName || Cypress.env('candidat'))
         .click()
       cy.get('.place-details')
         .should('contain', Cypress.env('centre'))
