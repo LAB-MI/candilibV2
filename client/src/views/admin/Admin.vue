@@ -60,9 +60,9 @@ const headerIcons = [
     isProtected: true,
   },
   {
-    routerTo: 'whitelist',
-    iconName: 'favorite',
-    tooltipText: 'Liste blanche',
+    routerTo: 'admin-candidat',
+    iconName: 'face',
+    tooltipText: 'Recherche Candidat',
   },
   {
     routerTo: ROUTE_AUTHORIZE_AGENTS,

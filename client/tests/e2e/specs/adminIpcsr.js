@@ -61,7 +61,7 @@ describe('Create and see the list of IPCSR', () => {
     cy.get('.v-list-item').first().click()
     cy.get('.t-create-ipcsr-btn').click()
 
-    cy.get('.v-snack').should('contain', `L'IPCSR a bien été créé`)
+    cy.get('.v-snack--active').should('contain', `L'IPCSR a bien été créé`)
 
     cy.get('.t-list-ipcsr')
       .find('th span')
@@ -87,7 +87,7 @@ describe('Create and see the list of IPCSR', () => {
     cy.get('.v-list-item').contains(ipcsr1.departement).click()
     cy.get('.t-create-ipcsr-btn').click()
 
-    cy.get('.v-snack').should('contain', `L'IPCSR a bien été créé`)
+    cy.get('.v-snack--active').should('contain', `L'IPCSR a bien été créé`)
 
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type('{selectall}{backspace}', { force: true })
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type(ipcsr2.email, { force: true })
@@ -102,13 +102,13 @@ describe('Create and see the list of IPCSR', () => {
     cy.get('.v-list-item__title').contains(ipcsr2.departement).click()
     cy.get('.t-create-ipcsr-btn').click()
 
-    cy.get('.v-snack').should('contain', `Cette adresse courriel existe déjà : ${ipcsr2.email}`)
+    cy.get('.v-snack--active').should('contain', `Cette adresse courriel existe déjà : ${ipcsr2.email}`)
 
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type('{selectall}{backspace}', { force: true })
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type(ipcsr2.newEmail, { force: true })
     cy.get('.t-create-ipcsr-btn').click()
 
-    cy.get('.v-snack').should('contain', `Ce matricule existe déjà : ${ipcsr2.matricule}`)
+    cy.get('.v-snack--active').should('contain', `Ce matricule existe déjà : ${ipcsr2.matricule}`)
 
     cy.get('.t-list-ipcsr')
       .find('th span')
@@ -129,7 +129,7 @@ describe('Create and see the list of IPCSR', () => {
     cy.get('.v-list-item__title').contains(ipcsr3.departement).click()
     cy.get('.t-create-ipcsr-btn').click()
 
-    cy.get('.v-snack').should('contain', `L'IPCSR a bien été créé`)
+    cy.get('.v-snack--active').should('contain', `L'IPCSR a bien été créé`)
 
     cy.get('.t-list-ipcsr')
       .find('th span')

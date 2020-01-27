@@ -1,6 +1,5 @@
 import archivedCandidatModel from '../../models/archived-candidat/archived-candidat.model'
 import candidatModel from '../../models/candidat/candidat.model'
-import whitelistedModel from '../../models/whitelisted/whitelisted.model'
 import { countCandidatsInscritsByDepartement } from '../../models/candidat/candidat.queries'
 import { countPlacesBookedOrNot } from '../../models/place/place.queries'
 
@@ -77,7 +76,6 @@ export const getResultsExamByDpt = async (
   const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
   const centres = centresFromDB.map(({ _id }) => _id)
   const [
-    invited,
     registered,
     checked,
     waiting,
@@ -86,7 +84,6 @@ export const getResultsExamByDpt = async (
     failed,
     notExamined,
   ] = await Promise.all([
-    countInvitedCandidatsByDepartement(departement),
     countCandidatsByDepartement(departement),
     countCheckedCandidatsByDepartement(departement),
     countWaitingCandidatsByDepartement(departement),
@@ -99,7 +96,6 @@ export const getResultsExamByDpt = async (
   return {
     date,
     departement,
-    invited,
     registered,
     checked,
     waiting,
@@ -110,12 +106,6 @@ export const getResultsExamByDpt = async (
     beginPeriode,
     endPeriode,
   }
-}
-
-export const countInvitedCandidatsByDepartement = departement => {
-  return whitelistedModel.countDocuments({
-    departement,
-  })
 }
 
 export const countCandidatsByDepartement = departement => {

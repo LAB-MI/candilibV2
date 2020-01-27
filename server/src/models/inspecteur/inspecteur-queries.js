@@ -131,15 +131,19 @@ export const findActiveInspecteursByDepartements = async departements =>
  *
  * @returns {Promise.<InspecteurMongooseDocument[]>} - Liste d'objets mongoose des IPCSR correspondants
  */
-export const findInspecteursMatching = async $search => {
-  const search = new RegExp($search, 'i')
-
+export const findInspecteursMatching = async (
+  $search,
+  startingWith,
+  endingWith
+) => {
+  const search = `${startingWith ? '^' : ''}${$search}${endingWith ? '$' : ''}`
+  const searchRegex = new RegExp(`${search}`, 'i')
   const inspecteurs = await Inspecteur.find({
     $or: [
-      { nom: search },
-      { prenom: search },
-      { matricule: search },
-      { email: search },
+      { nom: searchRegex },
+      { prenom: searchRegex },
+      { matricule: searchRegex },
+      { email: searchRegex },
     ],
   })
 

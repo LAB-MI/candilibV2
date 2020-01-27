@@ -34,7 +34,7 @@ describe('Create, see, update and delete departement', () => {
     cy.get('.t-create-btn')
       .click()
 
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `Le département ${departement77Id} a bien été créé avec l'adresse courriel ${departement77Email}`)
   })
 
@@ -47,7 +47,7 @@ describe('Create, see, update and delete departement', () => {
     cy.get('.t-create-btn')
       .click()
 
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `Ce département existe déjà`)
   })
 
@@ -59,7 +59,7 @@ describe('Create, see, update and delete departement', () => {
       .type(departement0077Email)
     cy.get('.t-btn-update-confirm')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `Le département ${departement77Id} a bien été mis à jour`)
     cy.get('.t-btn-update-confirm')
       .click()
@@ -73,7 +73,7 @@ describe('Create, see, update and delete departement', () => {
       .type(departement77Id)
     cy.get('.t-btn-delete-confirm')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `Le département ${departement77Id} a bien été supprimé`)
   })
 
@@ -85,7 +85,7 @@ describe('Create, see, update and delete departement', () => {
       .type(departement75Id)
     cy.get('.t-btn-delete-confirm')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', `Le département ${departement75Id} n'a pas été supprimé, car des centres y sont liés`)
     cy.get('.t-btn-cancel-delete')
       .click()

@@ -10,6 +10,7 @@ import candidat, { preSignup, emailValidation } from './candidat'
 import { verifyToken } from './middlewares'
 import { resetMyPassword } from './auth/admin-controllers'
 import { getCandidatConfig } from './candidat/candidat-config-controller'
+import publicRoutes from './public'
 
 const router = express.Router()
 
@@ -200,7 +201,7 @@ router.put('/candidat/me', emailValidation)
  *  @swagger
  *  /candidat/config:
  *    get:
- *      tags: ["Candidat"]
+ *      tags: ["Public"]
  *      summary: Récupère la configuration pour le candidat
  *      responses:
  *        200:
@@ -212,7 +213,7 @@ router.put('/candidat/me', emailValidation)
  *                properties:
  *                  success:
  *                    type: boolean
- *                    description: succès de la requête
+ *                    description: Succès de la requête
  *                  config:
  *                    type: object
  *                    description: Configuration de l'application
@@ -223,7 +224,16 @@ router.put('/candidat/me', emailValidation)
  *        500:
  *          $ref: '#/components/responses/UnknownErrorResponse'
  */
+
+/**
+ * Route pour obtenir la configuration candidat
+ *
+ * @see {@link http://localhost:8000/api-docs/#/Public/get_candidat_config}
+ */
+
 router.get('/candidat/config', getCandidatConfig)
+
+router.use('/public', publicRoutes)
 
 /**
  * @swagger

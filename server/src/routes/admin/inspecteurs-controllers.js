@@ -42,7 +42,16 @@ import {
  * @param {import('express').Response} res
  */
 export const getInspecteurs = async (req, res) => {
-  const { matching, departement, centreId, begin, end, date } = req.query
+  const {
+    matching,
+    departement,
+    centreId,
+    begin,
+    end,
+    date,
+    startingWith,
+    endingWith,
+  } = req.query
   const userId = req.userId
 
   const loggerInfo = {
@@ -53,6 +62,8 @@ export const getInspecteurs = async (req, res) => {
     centreId,
     begin,
     end,
+    startingWith,
+    endingWith,
   }
 
   if (date && departement && !matching && !centreId && !begin && !end) {
@@ -88,7 +99,7 @@ export const getInspecteurs = async (req, res) => {
             ? inspecteurs.length
             : 0,
       })
-      res.json(inspecteurs)
+      return res.json(inspecteurs)
     } catch (error) {
       appLogger.error({ ...loggerInfo, description: error.message, error })
 
@@ -97,13 +108,19 @@ export const getInspecteurs = async (req, res) => {
         message: error.message,
       })
     }
-  } else if (matching && !centreId && !begin && !end && !date) {
+  }
+
+  if (matching && !centreId && !begin && !end && !date) {
     // Recherche un inspecteur
     try {
       loggerInfo.action = 'get-by-matching'
       appLogger.info(loggerInfo)
 
-      const inspecteurs = await findInspecteursMatching(matching)
+      const inspecteurs = await findInspecteursMatching(
+        matching,
+        startingWith,
+        endingWith
+      )
       appLogger.info({
         ...loggerInfo,
         description:
@@ -111,7 +128,7 @@ export const getInspecteurs = async (req, res) => {
             ? inspecteurs.length
             : 0,
       })
-      res.json(inspecteurs)
+      return res.json(inspecteurs)
     } catch (error) {
       appLogger.error({ ...loggerInfo, description: error.message, error })
       return res.status(500).json({
@@ -119,7 +136,9 @@ export const getInspecteurs = async (req, res) => {
         message: error.message,
       })
     }
-  } else if (centreId && begin && end && !date) {
+  }
+
+  if (centreId && begin && end && !date) {
     try {
       loggerInfo.action = 'get-inspecteur-by-list-ids'
       appLogger.info(loggerInfo)
@@ -144,7 +163,7 @@ export const getInspecteurs = async (req, res) => {
             ? inspecteurs.length
             : 0,
       })
-      res.json(inspecteurs)
+      return res.json(inspecteurs)
     } catch (error) {
       appLogger.error({ ...loggerInfo, description: error.message, error })
       return res.status(500).json({
@@ -153,21 +172,21 @@ export const getInspecteurs = async (req, res) => {
         error,
       })
     }
-  } else {
-    try {
-      const ipcsr = await getAllAppropriateActiveInspecteurs(userId)
-      return res.status(200).json({
-        success: true,
-        ipcsr,
-      })
-    } catch (error) {
-      appLogger.error({ ...loggerInfo, description: error.message, error })
-      return res.status(500).json({
-        success: false,
-        message: error.message,
-        error,
-      })
-    }
+  }
+
+  try {
+    const ipcsr = await getAllAppropriateActiveInspecteurs(userId)
+    return res.status(200).json({
+      success: true,
+      ipcsr,
+    })
+  } catch (error) {
+    appLogger.error({ ...loggerInfo, description: error.message, error })
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+      error,
+    })
   }
 }
 
@@ -362,6 +381,7 @@ export const updateIpcsr = async (req, res) => {
   }
 
   const ipcsr = await updateInspecteur(ipcsrId, {
+    email,
     departement,
     matricule,
     nom,

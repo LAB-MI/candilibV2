@@ -34,6 +34,8 @@ export const UNKNOWN_ERROR_UPDATE_CENTRE =
   "Un problème est survenu lors de la modification d'un centre"
 export const UNKNOWN_ERROR_ADD_CENTRE =
   "Un problème est survenu lors de l'ajout d'un centre"
+export const UNKNOWN_ERROR_GET_CENTRE =
+  "Un problème est survenu lors de la récuperation d'un centre"
 export const CANNOT_ACTION_USER =
   "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
 export const INCORRECT_DEPARTEMENT_LIST =
@@ -59,3 +61,5 @@ export const ERROR_UPDATE_DEPARTEMENT =
   "Une erreur s'est produite lors de la mise à jour du département"
 export const ERROR_UPDATE_ADMIN_AND_TECH_USERS =
   'Une erreur survenue, suite à un problème lors de la mise à jour des utilisateurs Admin'
+export const UNKNOWN_ERROR_GET_DEPARTEMENT =
+  "Un problème est survenu lors de la récuperation d'un département"

@@ -93,7 +93,7 @@ export default {
     return {
       headers: [
         { text: 'Département', value: 'departement', align: 'center' },
-        { text: 'Nom du centre', value: 'nom' },
+        { text: 'Nom du centre', value: 'nom', class: 't-centre-list-header-name' },
         { text: 'Géolocalisation', value: 'geoloc', sortable: false, align: 'center' },
         { text: 'Actions', value: 'active', align: 'center', sortable: false },
       ],

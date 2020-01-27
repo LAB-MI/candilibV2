@@ -12,20 +12,19 @@
 - Candidate deconnection
 */
 
-// Initialise magicLink
-var magicLink
-
 describe('Candidate login', () => {
+  // Initialise magicLink
+  let magicLink
+
   before(() => {
     // Delete all mails before start
     cy.deleteAllMails()
     cy.adminLogin()
     cy.archiveCandidate()
-    cy.addToWhitelist()
     cy.adminDisconnection()
   })
 
-  it('Create an account and logins', () => {
+  it('Create an account and verify line delay mail', () => {
     // The candidate fills the pre-sign-up form
     cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup')
     cy.get('h2')
@@ -50,12 +49,14 @@ describe('Candidate login', () => {
       .parent()
       .children('input')
       .type('0716253443')
-    cy.contains('Adresse')
+
+    cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
+    cy.get('.v-list-item')
+      .contains(Cypress.env('departement'))
+      .click()
+
+    cy.get('.t-checkbox')
       .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
       .click()
     cy.contains('Pré-inscription')
       .click()
@@ -91,16 +92,18 @@ describe('Candidate login', () => {
       .parent()
       .children('input')
       .type('0716253443')
-    cy.contains('Adresse')
+
+    cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
+    cy.get('.v-list-item')
+      .contains(Cypress.env('departement'))
+      .click()
+
+    cy.get('.t-checkbox')
       .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
       .click()
     cy.contains('Pré-inscription')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Cette adresse courriel est déjà enregistrée')
     // Validates the email address
     cy.getLastMail().getRecipients()
@@ -129,7 +132,7 @@ describe('Candidate login', () => {
       .type(Cypress.env('emailCandidat'))
     cy.get('.t-magic-link-button-top')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Utilisateur en attente de validation.')
     // The admin validates the candidate via Aurige
     cy.adminLogin()
@@ -144,13 +147,28 @@ describe('Candidate login', () => {
       .type(Cypress.env('emailCandidat'))
     cy.get('.t-magic-link-button-top')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Un lien de connexion vous a été envoyé.')
     // The candidate gets the link
     cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('emailCandidat'))
     cy.getLastMail().getSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+  })
+
+  it('Tires login with valide candidat', () => {
+    // Changement d'utilisateur afin de récupérer un magicLink avec un candidat qui déjà passé la zone de quarantaine
+    cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
+    cy.get('.t-already-signed-up-button-top')
+      .should('contain', 'Déjà Inscrit ?')
+      .click()
+    cy.get('.t-magic-link-input-top [type=text]')
+      .type(Cypress.env('emailCandidatFront'))
+    cy.get('.t-magic-link-button-top')
+      .click()
+    cy.get('.v-snack--active')
+      .should('contain', 'Un lien de connexion vous a été envoyé.')
+
     cy.getLastMail().its('Content.Body').then((mailBody) => {
       const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
       const withoutEq = codedLink.replace(/=\r\n/g, '')
@@ -162,12 +180,6 @@ describe('Candidate login', () => {
       .should('contain', 'Choix du centre')
     cy.get('.t-disconnect')
       .click()
-    cy.get('.t-evaluation')
-      .should('contain', 'Merci de noter Candilib')
-    cy.get('.t-evaluation-submit')
-      .click()
-    cy.get('body')
-      .should('contain', 'Réservez votre place d\'examen')
   })
 
   it('Tries the already signed up form without account', () => {
@@ -179,7 +191,7 @@ describe('Candidate login', () => {
       .type('badtest@example.com')
     cy.get('.t-magic-link-button-top')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Utilisateur non reconnu')
   })
 
@@ -209,16 +221,18 @@ describe('Candidate login', () => {
       .parent()
       .children('input')
       .type('0716253443')
-    cy.contains('Adresse')
+
+    cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
+    cy.get('.v-list-item')
+      .contains(Cypress.env('departement'))
+      .click()
+
+    cy.get('.t-checkbox')
       .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
       .click()
     cy.contains('Pré-inscription')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Veuillez remplir le formulaire')
   })
 
@@ -248,16 +262,18 @@ describe('Candidate login', () => {
       .parent()
       .children('input')
       .type('0716253443')
-    cy.contains('Adresse')
+
+    cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
+    cy.get('.v-list-item')
+      .contains(Cypress.env('departement'))
+      .click()
+
+    cy.get('.t-checkbox')
       .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
       .click()
     cy.contains('Pré-inscription')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Veuillez remplir le formulaire')
   })
 
@@ -287,16 +303,18 @@ describe('Candidate login', () => {
       .parent()
       .children('input')
       .type('0000000000')
-    cy.contains('Adresse')
+
+    cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
+    cy.get('.v-list-item')
+      .contains(Cypress.env('departement'))
+      .click()
+
+    cy.get('.t-checkbox')
       .parent()
-      .children('input')
-      .type('avenue')
-    cy.get('.v-select-list')
-      .contains('avenue')
       .click()
     cy.contains('Pré-inscription')
       .click()
-    cy.get('.v-snack')
+    cy.get('.v-snack--active')
       .should('contain', 'Veuillez remplir le formulaire')
   })
 })

@@ -8,6 +8,7 @@
       <v-btn
         slot="activator"
         icon
+        class="t-centre-edit-btn"
         v-on="on"
       >
         <v-icon color="primary">
@@ -18,7 +19,7 @@
 
     <v-card>
       <v-card-title
-        class="headline grey lighten-2"
+        class="headline  grey  lighten-2"
         primary-title
       >
         Modification de {{ centreName }}
@@ -31,6 +32,7 @@
         :default-values="centre"
         @change="getFormData"
       />
+
       <v-card-text>
         Voulez-vous vraiment modifier ce centre <strong>{{ centreName }}</strong> ?
       </v-card-text>
@@ -47,8 +49,10 @@
         >
           Annuler
         </v-btn>
+
         <v-btn
           color="primary"
+          class="t-update-centre-submit"
           @click="sendFormData"
         >
           Oui, modifier

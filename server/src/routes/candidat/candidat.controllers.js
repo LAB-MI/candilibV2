@@ -17,7 +17,6 @@ import {
   updateCandidatById,
 } from '../../models/candidat'
 import {
-  getDepartementFromWhitelist,
   isAlreadyPresignedUp,
   presignUpCandidat,
   updateInfoCandidat,
@@ -31,18 +30,20 @@ import {
   CANDIDAT_EMAIL_NOT_VALID,
   CANDIDAT_FIELD_EMPTY,
   CANDIDAT_NOT_FOUND,
+  DEPARTEMENT_LIST,
 } from './message.constants'
 import { sendErrorResponse } from '../../util/send-error-response'
+import { isDepartementExisting } from '../../models/departement'
 
 /**
  * @constant {string[]} - Liste des noms des champs requis
  */
 const mandatoryFields = [
-  'adresse',
   'codeNeph',
   'email',
   'nomNaissance',
   'portable',
+  'departement',
 ]
 
 /**
@@ -85,23 +86,15 @@ export async function preSignup (req, res) {
   }
   appLogger.info({ ...loggerInfo, candidatData })
 
-  const { codeNeph, nomNaissance, portable, adresse, email } = candidatData
+  const { email, departement } = candidatData
 
-  const isFormFilled = [codeNeph, nomNaissance, email, portable, adresse].every(
-    value => value
-  )
+  const fieldsWithErrors = mandatoryFields
+    .map(key => (candidatData[key] ? '' : key))
+    .filter(e => e)
 
   const isValidEmail = emailRegex.test(email)
 
-  if (!isFormFilled) {
-    const fieldsWithErrors = mandatoryFields
-      .map(key => (candidatData[key] ? '' : key))
-      .filter(e => e)
-
-    if (!isValidEmail && !fieldsWithErrors.includes('email')) {
-      fieldsWithErrors.push('email')
-    }
-
+  if (fieldsWithErrors.length) {
     appLogger.error({ ...loggerInfo, fieldsWithErrors })
 
     res.status(400).json({
@@ -112,48 +105,22 @@ export async function preSignup (req, res) {
     return
   }
 
+  const isDeptExist = await isDepartementExisting(departement)
+
+  if (!isDeptExist) {
+    res.status(400).json({
+      success: false,
+      message: DEPARTEMENT_LIST,
+    })
+    return
+  }
+
   if (!isValidEmail) {
     appLogger.error({ ...loggerInfo, fieldsWithErrors: ['email'] })
     res.status(400).json({
       success: false,
       message: CANDIDAT_EMAIL_NOT_VALID,
       fieldsWithErrors: ['email'],
-    })
-    return
-  }
-
-  try {
-    const departement = await getDepartementFromWhitelist(candidatData)
-
-    if (departement === null) {
-      const message = `L'adresse courriel renseignée (${email}) n'est pas dans la liste des invités`
-      appLogger.warn({
-        section: 'candidat-pre-signup',
-        action: 'check-email-is-in-whitelist',
-        description: message,
-        candidatDepartement: departement,
-      })
-      return res.status(401).json({
-        success: false,
-        message,
-      })
-    }
-
-    appLogger.info({ ...loggerInfo, departementFromWhitelist: departement })
-
-    // Forcer le département du candidat par le département de la whitelist correspondant à son email
-    candidatData.departement = departement
-  } catch (error) {
-    appLogger.error({
-      ...loggerInfo,
-      error,
-      function: 'getDepartementFromWhitelist',
-      description: error.message,
-    })
-    res.status(401).json({
-      success: false,
-      message:
-        "Une erreur est survenue, impossible de vous pré-enregistrer. L'administrateur a été prévenu.",
     })
     return
   }

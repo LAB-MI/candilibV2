@@ -43,7 +43,7 @@ describe('test statistics', () => {
     await deleteCandidats()
     await disconnect()
   })
-  it('should to have nb success', async () => {
+  it('Should have nb success', async () => {
     const centres = await findCentresByDepartement('92', { _id: 1 })
     const results = await countSuccessByCentres(
       centres.map(({ _id }) => _id),
@@ -56,7 +56,7 @@ describe('test statistics', () => {
     )
   })
 
-  it('should to have nb absent', async () => {
+  it('Should have nb absent', async () => {
     const centres = await findCentresByDepartement('92', { _id: 1 })
     const begin = dateTimeDernierEchecPratiqueWithPenalty(45 * 3).toJSDate()
     const end = dateTimeDernierEchecPratique.toJSDate()
@@ -65,7 +65,7 @@ describe('test statistics', () => {
     expect(results).toBeDefined()
     expect(results).toBe(countAbsent('92', begin, end))
   })
-  it('should to have nb failure', async () => {
+  it('Should have nb failure', async () => {
     const centres = await findCentresByDepartement('91', { _id: 1 })
     const results = await countFailureByCentres(
       centres.map(({ _id }) => _id),
@@ -75,7 +75,7 @@ describe('test statistics', () => {
     expect(results).toBeDefined()
     expect(results).toBe(countFailure('91'))
   })
-  it('should to have nb not examined', async () => {
+  it('Should have nb not examined', async () => {
     const centres = await findCentresByDepartement('92', { _id: 1 })
     const begin = dateTimeDernierEchecPratiqueWithPenalty(45 * 3).toJSDate()
     const end = dateTimeDernierEchecPratique
@@ -87,7 +87,7 @@ describe('test statistics', () => {
     expect(results).toBeDefined()
     expect(results).toBe(countNotExamined('92', begin, end))
   })
-  it('should to have nb not examined, absent, received, failed', async () => {
+  it('Should have nb not examined, absent, received, failed', async () => {
     const begin = dateTimeDernierEchecPratiqueWithPenalty(45 * 3)
     const end = dateReussitePratique
 
@@ -105,7 +105,7 @@ describe('test statistics', () => {
     expect(result).toHaveProperty('failed', countFailure('92', begin, end))
     expect(result).toHaveProperty('received', countSuccess('92', begin, end))
   })
-  it('Should to have, for all departement, nb not examined, absent, received, failed', async () => {
+  it('Should have, for all departement, nb not examined, absent, received, failed', async () => {
     const begin = dateTimeDernierEchecPratiqueWithPenalty(45 * 3)
     const end = dateReussitePratique
 
@@ -134,7 +134,7 @@ describe('test statistics', () => {
       )
     })
   })
-  it('Should to have, stats in future with total subscript', async () => {
+  it('Should have, stats in future with total subscript', async () => {
     const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
     const result = await getAllPlacesProposeInFutureByDpt(dateBeginPeriode)
     const shouldHaveThisResult = [

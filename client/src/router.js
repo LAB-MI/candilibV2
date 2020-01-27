@@ -46,7 +46,7 @@ const CenterList = () => import(/* webpackChunkName: "admin", webpackPrefetch: t
 const StatsKpi = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/statsKpi/StatsKpi.vue')
 const HomeAdminPage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/HomeAdminPage.vue')
 const ScheduleManager = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/schedule/ScheduleManager.vue')
-const Whitelist = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Whitelist.vue')
+const AdminCandidat = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/AdminCandidat.vue')
 const ResetPassword = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/ResetPassword.vue')
 const Agents = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Agents.vue')
 const DepartementList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/departementsManager/DepartementList.vue')
@@ -97,11 +97,6 @@ const adminRoutes = [
         beforeEnter: checkAccess,
       },
       {
-        path: 'whitelist',
-        name: 'whitelist',
-        component: Whitelist,
-      },
-      {
         path: 'agents',
         name: 'agents',
         component: Agents,
@@ -113,6 +108,12 @@ const adminRoutes = [
         component: DepartementList,
         beforeEnter: checkAccess,
       },
+      {
+        path: 'admin-candidat',
+        name: 'admin-candidat',
+        component: AdminCandidat,
+      },
+
     ],
   },
 ]
