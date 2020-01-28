@@ -71,7 +71,7 @@ const legibleNoReussites = (noReussites) => {
     return '-'
   }
   return '<ol>' + noReussites.map(({ reason, date }) => {
-    const frenchDate = convertToLegibleDate(date).filter()
+    const frenchDate = convertToLegibleDate(date)
     return `<li>${frenchDate} : ${reason}</li>`
   }).join(' - ') + '</ol>'
 }
