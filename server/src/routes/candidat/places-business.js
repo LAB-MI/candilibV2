@@ -110,10 +110,14 @@ export const getDatesByCentreId = async (
 
   endDate =
     !luxonEndDate.invalid && luxonEndDate <= luxonDateVisible
-      ? luxonEndDate.toJSDate()
-      : luxonDateVisible.toJSDate()
+      ? luxonEndDate
+      : luxonDateVisible
 
-  const places = await findAvailablePlacesByCentre(_id, begin, endDate)
+  const places = await findAvailablePlacesByCentre(
+    _id,
+    begin.toISODate(),
+    endDate.toISODate()
+  )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO()
   )
