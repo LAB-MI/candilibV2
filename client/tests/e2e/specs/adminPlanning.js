@@ -248,7 +248,7 @@ describe('Planning tests without candidate', () => {
       .click({ force: true })
     // Removes the inspector's places
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
+      .should('have.length', 1, { timeout: 10000 })
       .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
       .contains(Cypress.env('inspecteur'))
       .parents('tbody')

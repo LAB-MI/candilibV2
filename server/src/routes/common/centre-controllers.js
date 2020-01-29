@@ -32,10 +32,11 @@ export async function getCentres (req, res) {
   let beginDate = req.query.begin
   const endDate = req.query.end
 
-  appLogger.debug({
+  const loggerContent = {
     section: 'candidat-get-centres',
+    action: 'GET CANDIDAT CENTRES',
     args: { departement, nom, beginDate, endDate },
-  })
+  }
 
   try {
     if (!departement) {
@@ -61,9 +62,21 @@ export async function getCentres (req, res) {
         beginDate,
         endDate
       )
+
+      appLogger.info({
+        ...loggerContent,
+        description: `Récupération des centres du département ${departement}`,
+      })
+
       res.status(200).json(centres)
     } else {
       const centre = await findCentreByNameAndDepartement(nom, departement)
+
+      appLogger.info({
+        ...loggerContent,
+        description: `Récupération par nom du centre du département ${departement}`,
+      })
+
       res.status(200).json(centre)
     }
   } catch (error) {

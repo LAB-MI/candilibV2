@@ -452,7 +452,7 @@ export default {
 
     async getInspecteursByCentreAndDate (centreId, begin, end) {
       const json = await apiClient.get(
-        `${apiPaths.admin.inspecteurs}?centreId=${centreId}&begin=${begin}&end=${end}`,
+        `${apiPaths.admin.inspecteurs}?centreId=${centreId}&begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`,
         {
           headers: getHeadersForAdminJson(),
         },

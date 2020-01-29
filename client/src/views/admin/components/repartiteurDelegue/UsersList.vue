@@ -3,7 +3,7 @@
     <v-data-table
       :headers="headers"
       :items="users"
-      :items-per-page="5"
+      :items-per-page="10"
       class="elevation-1  t-list-users"
     >
       <template v-slot:item.action="{ item }">
