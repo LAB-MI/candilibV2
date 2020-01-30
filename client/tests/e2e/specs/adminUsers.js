@@ -157,7 +157,7 @@ describe('Create and see users', () => {
       .should('not.contain', repartiteurEmail4)
   })
 
-  it.only('Should update status and/or departements user', () => {
+  it('Should update status and/or departements user', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
     cy.get('.t-input-email input')
       .type(repartiteurEmail5, { force: true })
@@ -213,10 +213,6 @@ describe('Create and see users', () => {
       .contains(repartiteurEmail5)
       .parents('tr')
       .should('contain', '75')
-    cy.get('.t-list-users')
-      .contains(repartiteurEmail5)
-      .parents('tr')
-      .should('contain', 'delegue')
   })
 
   it('Should not update status and/or departements of user', () => {

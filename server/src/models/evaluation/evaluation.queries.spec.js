@@ -18,7 +18,7 @@ describe('Saving Evaluation', () => {
     await disconnect()
   })
 
-  it.only('Create Evaluation', async () => {
+  it('Create Evaluation', async () => {
     // Given
     const evaluationLean = { rating, comment }
 
