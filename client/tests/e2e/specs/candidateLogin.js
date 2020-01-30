@@ -26,7 +26,7 @@ describe('Candidate login', () => {
 
   it('Create an account and verify line delay mail', () => {
     // The candidate fills the pre-sign-up form
-    cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup')
+    cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup').wait(500)
     cy.get('.c-candidat-message__subtitle', { timeout: 10000 })
       .should('contain', 'Réservez votre place d\'examen')
     cy.contains('NEPH')
