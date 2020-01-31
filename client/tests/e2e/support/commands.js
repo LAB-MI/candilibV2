@@ -189,6 +189,7 @@ Cypress.Commands.add('candidatConnection', (candidatEmail) => {
     .click()
   cy.get('input').type(candidatEmail)
   cy.get('form').find('button').click()
+  cy.wait(500)
   cy.getLastMail().getRecipients()
     .should('contain', candidatEmail)
   cy.getLastMail()
