@@ -259,13 +259,13 @@ describe('Planning tests without candidate', () => {
         // Removes the morning
         cy.get('tr').eq(0).within(($inTr) => {
           cy.get('th').within(($inTh) => {
-            cy.get('button').click()
+            cy.get('button').should('contain', 'delete').click().wait(500)
           })
         })
         cy.get('tr').eq(1).within(($inTr) => {
           cy.get('td').eq(1).within(($inTd) => {
-            cy.get('button').eq(1).click()
-            cy.get('button').eq(4).click()
+            cy.get('button').eq(1).should('contain', 'Supprimer la matinée').click().wait(500)
+            cy.get('button').eq(4).should('contain', 'Valide').click()
           })
         })
       })
@@ -279,13 +279,13 @@ describe('Planning tests without candidate', () => {
         // Removes the morning
         cy.get('tr').eq(0).within(($inTr) => {
           cy.get('th').within(($inTh) => {
-            cy.get('button').click()
+            cy.get('button').should('contain', 'delete').click().wait(500)
           })
         })
         cy.get('tr').eq(1).within(($inTr) => {
           cy.get('td').eq(1).within(($inTd) => {
-            cy.get('button').eq(2).click()
-            cy.get('button').eq(4).click()
+            cy.get('button').eq(2).should('contain', `Supprimer l'après-midi`).click().wait(500)
+            cy.get('button').eq(4).should('contain', 'Valide').click()
           })
         })
       })
@@ -310,15 +310,18 @@ describe('Planning tests without candidate', () => {
         // Removes the entire day
         cy.contains('delete')
           .click()
-        cy.root().parent()
-          .should('contain', 'Supprimer la journée')
-        cy.root().parent()
-          .contains('Supprimer la journée')
-          .click()
-        cy.root().parent().should('contain', 'Valider')
-        cy.root().parent()
-          .contains('Valider')
-          .click()
+      })
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1, { timeout: 500 })
+      .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
+      .contains(Cypress.env('inspecteur'))
+      .parents('tbody').within(($row) => {
+        cy.get('tr').eq(1).within(($inTr) => {
+          cy.get('td').eq(1).within(($inTd) => {
+            cy.get('button').eq(0).should('contain', 'Supprimer la journée').click().wait(500)
+            cy.get('button').eq(4).should('contain', 'Valide').click()
+          })
+        })
       })
     // The inspector should not be present anymore
     cy.get('.name-ipcsr-wrap')
