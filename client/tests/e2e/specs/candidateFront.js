@@ -95,7 +95,7 @@ describe('Connected candidate front', () => {
     cy.get('h2').should('contain', 'Choix du centre')
     cy.get('body').should('contain', Cypress.env('centre'))
     cy.contains(Cypress.env('centre')).click()
-    cy.get(`[href="#tab-${date1.monthLong}"]`).click()
+    cy.get(`[href="#tab-${nowIn1Week.monthLong}"]`).click()
     const oneDayBeforeSelected = nowIn1WeekAnd1DaysBefore.toFormat('dd')
     cy.get('body').should('not.contain', ' ' + oneDayBeforeSelected)
     const daySelected = nowIn1Week.toFormat('dd')
