@@ -239,13 +239,15 @@ describe('Planning tests without candidate', () => {
       .should('contain', 'a bien été créée')
   })
 
-  it('Tests the import of csv files in the planning', () => {
+  it.only('Tests the import of csv files in the planning', () => {
     cy.adminLogin()
     // Goes to where the places are
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.get('.v-tabs')
       .contains(Cypress.env('centre'))
       .click({ force: true })
+
+    cy.log('je suis la')
     // Removes the inspector's places
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1, { timeout: 10000 })
@@ -255,12 +257,17 @@ describe('Planning tests without candidate', () => {
       .should('not.contain', 'block')
       .within(($row) => {
         // Removes the morning
-        cy.contains('delete')
-          .click()
-        cy.contains('Supprimer la matinée')
-          .click()
-        cy.contains('Valider')
-          .click()
+        cy.get('tr').eq(0).within(($inTr) => {
+          cy.get('th').within(($inTh) => {
+            cy.get('button').click()
+          })
+        })
+        cy.get('tr').eq(1).within(($inTr) => {
+          cy.get('td').eq(1).within(($inTd) => {
+            cy.get('button').eq(1).click()
+            cy.get('button').eq(4).click()
+          })
+        })
       })
     cy.get('.v-snack--active')
       .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
@@ -269,13 +276,18 @@ describe('Planning tests without candidate', () => {
       .parents('tbody')
       .should('not.contain', 'block')
       .within(($row) => {
-        // Removes the afternoon
-        cy.contains('delete')
-          .click()
-        cy.contains('Supprimer l\'après-midi')
-          .click()
-        cy.contains('Valider')
-          .click()
+        // Removes the morning
+        cy.get('tr').eq(0).within(($inTr) => {
+          cy.get('th').within(($inTh) => {
+            cy.get('button').click()
+          })
+        })
+        cy.get('tr').eq(1).within(($inTr) => {
+          cy.get('td').eq(1).within(($inTd) => {
+            cy.get('button').eq(2).click()
+            cy.get('button').eq(4).click()
+          })
+        })
       })
     cy.get('.v-snack--active')
       .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
@@ -299,8 +311,11 @@ describe('Planning tests without candidate', () => {
         cy.contains('delete')
           .click()
         cy.root().parent()
+          .should('contain', 'Supprimer la journée')
+        cy.root().parent()
           .contains('Supprimer la journée')
           .click()
+        cy.root().parent().should('contain', 'Valider')
         cy.root().parent()
           .contains('Valider')
           .click()
