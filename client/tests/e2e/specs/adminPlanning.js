@@ -37,22 +37,23 @@ describe('Planning tests', () => {
     cy.getLastMail().its('Content.Body')
       .should('contain', Cypress.env('centre').toUpperCase())
     // Change the inspector
+
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .contains('face')
           .click()
-        cy.contains('Modifier l\'inspecteur')
-          .click()
-        cy.get('[type=text]')
-          .type(Cypress.env('inspecteur2') + '{enter}')
-        cy.get('.t-inspecteur-confirm-box')
-          .find('.t-inspecteur-detail')
-          .should('contain', Cypress.env('inspecteurPrenom') + ', ' + Cypress.env('inspecteur2'))
-        cy.get('button')
-          .contains('Valider')
-          .click()
+        cy.get('tr').eq(1).within(($inTr) => {
+          cy.get('button').eq(1).click()
+          cy.get('[type=text]')
+            .type(Cypress.env('inspecteur2') + '{enter}')
+          cy.get('.t-inspecteur-confirm-box')
+            .find('.t-inspecteur-detail')
+            .should('contain', Cypress.env('inspecteurPrenom') + ', ' + Cypress.env('inspecteur2'))
+          cy.get('button').eq(2)
+            .click()
+        })
       })
     cy.get('.v-snack--active')
       .should('contain', 'La modification est confirmée.')
@@ -239,7 +240,7 @@ describe('Planning tests without candidate', () => {
       .should('contain', 'a bien été créée')
   })
 
-  it.only('Tests the import of csv files in the planning', () => {
+  it('Tests the import of csv files in the planning', () => {
     cy.adminLogin()
     // Goes to where the places are
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
@@ -247,7 +248,6 @@ describe('Planning tests without candidate', () => {
       .contains(Cypress.env('centre'))
       .click({ force: true })
 
-    cy.log('je suis la')
     // Removes the inspector's places
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1, { timeout: 10000 })
