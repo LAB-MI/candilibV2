@@ -89,7 +89,72 @@ describe('Connected candidate front', () => {
       .should('contain', Cypress.env('candidatFront'))
   })
 
-  it('Should book a place', () => {
+  it('Should book a place at 7th days', () => {
+    cy.visit(magicLink)
+    cy.wait(1000)
+    cy.get('h2').should('contain', 'Choix du centre')
+    cy.get('body').should('contain', Cypress.env('centre'))
+    cy.contains(Cypress.env('centre')).click()
+    cy.get(`[href="#tab-${date1.monthLong}"]`).click()
+    const oneDayBeforeSelected = nowIn1WeekAnd1DaysBefore.toFormat('dd')
+    cy.get('body').should('not.contain', ' ' + oneDayBeforeSelected)
+    const daySelected = nowIn1Week.toFormat('dd')
+    cy.get('body').should('contain', ' ' + daySelected + ' ')
+    cy.contains(' ' + daySelected + ' ')
+      .parents('.v-list-group').click()
+
+    cy.get('.v-list-group--active')
+      .within($date => {
+        cy.get('.container')
+          .should('not.contain', '07h30-08h00')
+          .and('not.contain', '16h00-16h30')
+          .and('not.contain', '12h30-13h00')
+        cy.get('.container')
+          .should('contain', '08h30-09h00')
+        cy.contains('08h30-09h00').click()
+      })
+    cy.get('h2').should('contain', 'Confirmation')
+    cy.get('h3').should('contain', Cypress.env('centre'))
+    cy.get('[type=checkbox]')
+      .first()
+      .check({ force: true })
+    cy.get('[type=checkbox]')
+      .last()
+      .check({ force: true })
+    cy.get('button')
+      .should('contain', 'Confirmer')
+    cy.get('button')
+      .contains('Confirmer')
+      .click()
+    cy.get('.v-snack--active').should(
+      'contain',
+      'Votre réservation a bien été prise en compte',
+    )
+    cy.get('h2').should('contain', 'Ma réservation')
+    cy.get('h3').should('contain', Cypress.env('centre'))
+    cy.get('p').should('contain', 'à 08:30')
+    cy.getLastMail()
+      .getRecipients()
+      .should('contain', Cypress.env('emailCandidatFront'))
+    cy.getLastMail()
+      .getSubject()
+      .should(
+        'contain',
+        '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=',
+      )
+    cy.getLastMail()
+      .its('Content.Body')
+      .should('contain', Cypress.env('centre').toUpperCase())
+      .and('contain', '8:30')
+    cy.get('.t-evaluation', { timeout: 10000 }).should(
+      'contain',
+      'Merci de noter Candilib',
+    )
+    cy.wait(1000)
+    cy.get('.t-evaluation-submit').click()
+  })
+
+  it.skip('Should book a place', () => {
     cy.visit(magicLink)
     cy.wait(1000)
     cy.get('h2').should('contain', 'Choix du centre')
