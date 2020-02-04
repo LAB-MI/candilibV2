@@ -533,7 +533,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     func: 'createPlaceForInspector',
     centreId: centre._id,
     inspecteur,
-    date,
+    dateStr: date,
   }
   appLogger.debug(loggerInfo)
 
