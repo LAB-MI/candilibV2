@@ -7,6 +7,7 @@ const DepartementSchema = new Schema(
   {
     _id: {
       type: String,
+      trim: true,
     },
     email: {
       type: String,
