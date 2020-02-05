@@ -51,9 +51,11 @@ import {
   candidatPassed,
   candidatsWithPreRequired,
   candidatWithEtgExpiredToArchive,
+  candidatWithEtgExpired,
   createCandidatToTestAurige,
   dateReussiteETG,
   dateReussiteETGKO,
+  candidatWithEtgExpiredAndFailedToArchive,
 } from './__tests__/candidats-aurige'
 import {
   createTestPlaceAurige,
@@ -128,6 +130,81 @@ const candidatArchivedExpect = async (infoCandidat, archiveReason) => {
     expect(candidatArchived.noReussites[lengthNoReussite - 1].date).toEqual(
       getFrenchLuxonFromISO(dateDernierNonReussite).toJSDate()
     )
+  }
+
+  return candidatArchived
+}
+
+async function synchroAurigeSuccess (
+  aurigeFile,
+  candidatCreated,
+  candidatInfo = candidatFailureExam
+) {
+  const result = await synchroAurige(aurigeFile)
+  expect(result).toBeDefined()
+  expect(result).toHaveLength(1)
+  expect(result[0]).toHaveProperty('nom', candidatInfo.nomNaissance)
+  expect(result[0]).toHaveProperty('neph', candidatInfo.codeNeph)
+  expect(result[0]).toHaveProperty('status', 'success')
+  expect(result[0]).toHaveProperty('details', OK_UPDATED)
+  const candidat = await findCandidatById(candidatCreated._id)
+  if (candidatInfo.dateDernierNonReussite) {
+    const { canBookFrom } = candidat
+    const dateTimeCanBookFrom = getFrenchLuxonFromISO(
+      candidatInfo.dateDernierNonReussite
+    )
+      .endOf('day')
+      .plus({ days: config.timeoutToRetry })
+
+    expect(canBookFrom).toBeDefined()
+    expect(canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
+  }
+
+  return candidat
+}
+
+const synchroAurigeToPassExam = async (
+  aurigeFile,
+  infoCandidat,
+  candidatId
+) => {
+  const { nomNaissance, codeNeph, email } = infoCandidat
+  const result = await synchroAurige(aurigeFile)
+  expect(result).toBeDefined()
+  expect(result).toHaveLength(1)
+  expect(result[0]).toHaveProperty('nom', nomNaissance)
+  expect(result[0]).toHaveProperty('neph', codeNeph)
+  expect(result[0]).toHaveProperty('status', 'warning')
+  expect(result[0]).toHaveProperty('details', EPREUVE_PRATIQUE_OK)
+
+  const candidat = await findCandidatById(candidatId, {})
+  expect(candidat).toBeNull()
+
+  const candidatArchived = await findArchivedCandidatByNomNeph(
+    nomNaissance,
+    codeNeph
+  )
+
+  expect(candidatArchived).toBeDefined()
+  expect(candidatArchived).toHaveProperty('email', email)
+  expect(candidatArchived.archivedAt).toBeDefined()
+  const archivedAt = getFrenchLuxonFromJSDate(candidatArchived.archivedAt)
+  const now = getFrenchLuxon()
+  expect(archivedAt.hasSame(now, 'day')).toBe(true)
+
+  expect(candidatArchived).toHaveProperty('archiveReason', EPREUVE_PRATIQUE_OK)
+  expect(candidatArchived.reussitePratique).toEqual(
+    getFrenchLuxonFromISO(infoCandidat.reussitePratique).toJSDate()
+  )
+
+  expect(candidatArchived).toHaveProperty('isValidatedByAurige', true)
+
+  if (infoCandidat.dateReussiteETG) {
+    expect(getFrenchLuxonFromJSDate(candidatArchived.dateReussiteETG)).toEqual(
+      getFrenchLuxonFromISO(infoCandidat.dateReussiteETG)
+    )
+  } else {
+    expect(candidatArchived).toHaveProperty('dateReussiteETG')
   }
 
   return candidatArchived
@@ -371,28 +448,6 @@ describe('synchro-aurige', () => {
       await Promise.all(places.map(deletePlace))
     })
 
-    async function synchroAurigeSuccess (aurigeFile, candidatCreated) {
-      const result = await synchroAurige(aurigeFile)
-      expect(result).toBeDefined()
-      expect(result).toHaveLength(1)
-      expect(result[0]).toHaveProperty('nom', candidatFailureExam.nomNaissance)
-      expect(result[0]).toHaveProperty('neph', candidatFailureExam.codeNeph)
-      expect(result[0]).toHaveProperty('status', 'success')
-      expect(result[0]).toHaveProperty('details', OK_UPDATED)
-      const candidat = await findCandidatById(candidatCreated._id)
-      const { canBookFrom } = candidat
-      const dateTimeCanBookFrom = getFrenchLuxonFromISO(
-        candidatFailureExam.dateDernierNonReussite
-      )
-        .endOf('day')
-        .plus({ days: config.timeoutToRetry })
-
-      expect(canBookFrom).toBeDefined()
-      expect(canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
-
-      return candidat
-    }
-
     function expectNoReussites (nbEchecsPratiques, noReussites) {
       expect(nbEchecsPratiques).toBe(
         Number(candidatFailureExam.nbEchecsPratiques)
@@ -509,56 +564,6 @@ describe('synchro-aurige', () => {
       await deleteDepartementById(departementData._id)
       await placesCreated.delete()
     })
-
-    const synchroAurigeToPassExam = async (
-      aurigeFile,
-      infoCandidat,
-      candidatId
-    ) => {
-      const { nomNaissance, codeNeph, email } = infoCandidat
-      const result = await synchroAurige(aurigeFile)
-      expect(result).toBeDefined()
-      expect(result).toHaveLength(1)
-      expect(result[0]).toHaveProperty('nom', nomNaissance)
-      expect(result[0]).toHaveProperty('neph', codeNeph)
-      expect(result[0]).toHaveProperty('status', 'warning')
-      expect(result[0]).toHaveProperty('details', EPREUVE_PRATIQUE_OK)
-
-      const candidat = await findCandidatById(candidatId, {})
-      expect(candidat).toBeNull()
-
-      const candidatArchived = await findArchivedCandidatByNomNeph(
-        nomNaissance,
-        codeNeph
-      )
-
-      expect(candidatArchived).toBeDefined()
-      expect(candidatArchived).toHaveProperty('email', email)
-      expect(candidatArchived.archivedAt).toBeDefined()
-      const archivedAt = getFrenchLuxonFromJSDate(candidatArchived.archivedAt)
-      const now = getFrenchLuxon()
-      expect(archivedAt.hasSame(now, 'day')).toBe(true)
-
-      expect(candidatArchived).toHaveProperty(
-        'archiveReason',
-        EPREUVE_PRATIQUE_OK
-      )
-      expect(candidatArchived.reussitePratique).toEqual(
-        getFrenchLuxonFromISO(infoCandidat.reussitePratique).toJSDate()
-      )
-
-      expect(candidatArchived).toHaveProperty('isValidatedByAurige', true)
-
-      if (infoCandidat.dateReussiteETG) {
-        expect(
-          getFrenchLuxonFromJSDate(candidatArchived.dateReussiteETG)
-        ).toEqual(getFrenchLuxonFromISO(infoCandidat.dateReussiteETG))
-      } else {
-        expect(candidatArchived).toHaveProperty('dateReussiteETG')
-      }
-
-      return candidatArchived
-    }
 
     it('should archive candidat', async () => {
       const candidatArchived = await synchroAurigeToPassExam(
@@ -841,29 +846,57 @@ describe('Synchro-aurige candidat with etg expired', () => {
   }
 
   it('should arviche a candidat with date etg expired', async () => {
-    const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpiredToArchive)
+    const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpired)
     const candidatCreated = await createCandidatToTestAurige(
-      candidatWithEtgExpiredToArchive,
+      candidatWithEtgExpired,
       true
     )
-
     const candidat = await synchroAurigeETGKO(
       aurigeFile,
-      candidatWithEtgExpiredToArchive,
+      candidatWithEtgExpired,
       candidatCreated
     )
 
     expect(candidat).toBeNull()
 
     const archivedCandidat = await candidatArchivedExpect(
-      candidatWithEtgExpiredToArchive,
+      candidatWithEtgExpired,
       EPREUVE_ETG_KO
     )
 
     await archivedCandidat.remove()
+    await candidatCreated.remove
   })
 
-  it.skip('should do not arviche a candidat boooked at date etg expired', async () => {
+  it('should do not arviche a candidat boooked at date etg expired', async () => {
+    const placeSelected = await createTestPlaceAurige(placeAtETG)
+
+    const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpired)
+    const candidatCreated = await createCandidatToTestAurige(
+      candidatWithEtgExpired,
+      true
+    )
+
+    await makeResa(placeSelected, candidatCreated, bookedAt)
+
+    const candidat = await synchroAurigeSuccess(
+      aurigeFile,
+      candidatCreated,
+      candidatWithEtgExpired
+    )
+    expect(candidat).toBeDefined()
+    expect(candidat).not.toBeNull()
+
+    const candidatArchived = await findArchivedCandidatByNomNeph(
+      candidatWithEtgExpired.nomNaissance,
+      candidatWithEtgExpired.codeNeph
+    )
+    expect(candidatArchived).toBeNull()
+    await candidat.remove()
+    await placeSelected.remove()
+  })
+
+  it('should do arviche a candidat boooked at date etg expired and without resultat from Aurige', async () => {
     const placeSelected = await createTestPlaceAurige(placeAtETG)
 
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpiredToArchive)
@@ -874,20 +907,39 @@ describe('Synchro-aurige candidat with etg expired', () => {
 
     await makeResa(placeSelected, candidatCreated, bookedAt)
 
-    const candidat = await synchroAurigeETGKO(
+    const archivedCandidat = await synchroAurigeToPassExam(
       aurigeFile,
       candidatWithEtgExpiredToArchive,
-      candidatCreated
+      candidatCreated._id
+    )
+
+    await archivedCandidat.remove()
+    await placeSelected.remove()
+  })
+
+  it('should do arviche a candidat boooked at date etg expired and with resultat failed from Aurige', async () => {
+    const placeSelected = await createTestPlaceAurige(placeAtETG)
+
+    const aurigeFile = toAurigeJsonBuffer(
+      candidatWithEtgExpiredAndFailedToArchive
+    )
+    const candidatCreated = await createCandidatToTestAurige(
+      candidatWithEtgExpiredAndFailedToArchive,
+      true
+    )
+
+    await makeResa(placeSelected, candidatCreated, bookedAt)
+
+    const candidat = await synchroAurigeSuccess(
+      aurigeFile,
+      candidatCreated,
+      candidatWithEtgExpiredAndFailedToArchive
     )
 
     expect(candidat).toBeDefined()
     expect(candidat).not.toBeNull()
 
-    const archivedCandidat = await candidatArchivedExpect(
-      candidatWithEtgExpiredToArchive,
-      EPREUVE_ETG_KO
-    )
-
-    await archivedCandidat.remove()
+    await candidat.remove()
+    await placeSelected.remove()
   })
 })
