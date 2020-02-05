@@ -58,7 +58,7 @@ export const isETGExpired = dateReussiteETG => {
   } else {
     datetime = getFrenchLuxonFromISO(dateReussiteETG)
   }
-  return datetime.diffNow('years').years < -NB_YEARS_ETG_EXPIRED
+  return datetime.endOf('day').diffNow('years').years < -NB_YEARS_ETG_EXPIRED
 }
 
 export const isMoreThan2HoursAgo = date =>
