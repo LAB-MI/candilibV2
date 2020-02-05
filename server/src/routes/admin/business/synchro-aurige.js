@@ -202,6 +202,8 @@ const checkAndArchiveCandidat = async (
   let aurigeFeedback
   let dateFeedBack
   let message
+  let place
+  let datePlace
   if (candidatExistant === CANDIDAT_NOK) {
     message = `Pour le ${departement}, ce candidat ${codeNeph}/${nomNaissance} sera archivé : NEPH inconnu`
     appLogger.warn({ ...loggerInfoCandidat, description: message })
@@ -220,47 +222,51 @@ const checkAndArchiveCandidat = async (
       'UNKNOW_CASE',
       message
     )
-  } else if (!infoCandidatToUpdate.dateReussiteETG.isValid) {
-    message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG est invalide`
-    appLogger.warn({ ...loggerInfoCandidat, description: message })
-    infoCandidatToUpdate.dateReussiteETG = undefined
-    dateFeedBack = getFrenchLuxon()
-    aurigeFeedback = EPREUVE_ETG_KO
-  } else if (isETGExpired(infoCandidatToUpdate.dateReussiteETG)) {
-    message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG KO`
-    appLogger.warn({ ...loggerInfoCandidat, description: message })
-    dateFeedBack = getFrenchLuxon()
-    aurigeFeedback = EPREUVE_ETG_KO
-  } else if (isTooManyFailure(infoCandidatToUpdate.nbEchecsPratiques)) {
-    message = `Pour le ${departement}, ce candidat ${email} sera archivé : A 5 échecs pratiques`
-    appLogger.warn({ ...loggerInfoCandidat, description: message })
+  } else {
+    // Possible que s'il y a une validation Aurige
+    place = await findPlaceBookedByCandidat(candidat._id)
+    datePlace = place && getFrenchLuxonFromJSDate(place.date)
+    if (!infoCandidatToUpdate.dateReussiteETG.isValid) {
+      message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG est invalide`
+      appLogger.warn({ ...loggerInfoCandidat, description: message })
+      infoCandidatToUpdate.dateReussiteETG = undefined
+      dateFeedBack = getFrenchLuxon()
+      aurigeFeedback = EPREUVE_ETG_KO
+    } else if (
+      !(datePlace && datePlace.diffNow('days') <= 1) &&
+      isETGExpired(infoCandidatToUpdate.dateReussiteETG)
+    ) {
+      message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG KO`
+      appLogger.warn({ ...loggerInfoCandidat, description: message })
+      dateFeedBack = getFrenchLuxon()
+      aurigeFeedback = EPREUVE_ETG_KO
+    } else if (isTooManyFailure(infoCandidatToUpdate.nbEchecsPratiques)) {
+      message = `Pour le ${departement}, ce candidat ${email} sera archivé : A 5 échecs pratiques`
+      appLogger.warn({ ...loggerInfoCandidat, description: message })
 
-    dateFeedBack =
-      infoCandidatToUpdate.lastNoReussite &&
-      infoCandidatToUpdate.lastNoReussite.date
-    aurigeFeedback = NB_FAILURES_KO
-  } else if (infoCandidatToUpdate.reussitePratique) {
-    message = `Pour le ${departement}, ce candidat ${email} sera archivé : PRATIQUE OK`
-    appLogger.warn({ ...loggerInfoCandidat, description: message })
+      dateFeedBack =
+        infoCandidatToUpdate.lastNoReussite &&
+        infoCandidatToUpdate.lastNoReussite.date
+      aurigeFeedback = NB_FAILURES_KO
+    } else if (infoCandidatToUpdate.reussitePratique) {
+      message = `Pour le ${departement}, ce candidat ${email} sera archivé : PRATIQUE OK`
+      appLogger.warn({ ...loggerInfoCandidat, description: message })
 
-    dateFeedBack = infoCandidatToUpdate.reussitePratique
-    aurigeFeedback = EPREUVE_PRATIQUE_OK
+      dateFeedBack = infoCandidatToUpdate.reussitePratique
+      aurigeFeedback = EPREUVE_PRATIQUE_OK
+    }
   }
 
   // Archiver le candidat et envoi de mail
   if (aurigeFeedback) {
-    if (dateFeedBack) {
-      const place = await findPlaceBookedByCandidat(candidat._id)
-      if (place) {
-        const datePlace = getFrenchLuxonFromJSDate(place.date)
-        candidat = await releaseAndArchivePlace(
-          dateFeedBack,
-          datePlace,
-          aurigeFeedback,
-          candidat,
-          place
-        )
-      }
+    if (dateFeedBack && datePlace) {
+      candidat = await releaseAndArchivePlace(
+        dateFeedBack,
+        datePlace,
+        aurigeFeedback,
+        candidat,
+        place
+      )
     }
 
     candidat.set(infoCandidatToUpdate)
