@@ -4,16 +4,15 @@ import { getFrenchLuxon } from '../../../../util'
 
 const nowLuxon = getFrenchLuxon()
 
-export const DateTimeReussiteETGKO = nowLuxon.minus({ years: 5 }).startOf('day')
+export const DateTimeReussiteETGKO = nowLuxon
+  .minus({ years: 5, days: 1 })
+  .startOf('day')
 export const dateReussiteETG = nowLuxon
   .minus({ days: 5 })
   .startOf('day')
   .toISO()
 
-export const dateReussiteETGKO = nowLuxon
-  .minus({ years: 5, day: 1 })
-  .startOf('day')
-  .toISO()
+export const dateReussiteETGKO = DateTimeReussiteETGKO.startOf('day').toISO()
 
 export const dateTimeDernierEchecPratique = nowLuxon
   .minus({ days: 5 })
@@ -267,7 +266,7 @@ export const createCandidatsToTestAurige = async () => {
   )
 }
 
-export const candidatWithEtgExpiredToArchive = {
+export const candidatWithEtgExpired = {
   // candidat réussit la théorie y a plus de 5 ans
   codeNeph: '0936317542831',
   nomNaissance: 'TESTOVERETG',
@@ -286,16 +285,35 @@ export const candidatWithEtgExpiredToArchive = {
   departement,
 }
 
-export const candidatWithEtg = {
+export const candidatWithEtgExpiredToArchive = {
   // candidat réussit la théorie y a plus de 5 ans
   codeNeph: '0936317542831',
   nomNaissance: 'TESTOVERETG',
   prenom: 'TestPrenom',
   email: 'test.over.etg.testprenon@test.com',
-  dateReussiteETG: dateReussiteETG,
+  dateReussiteETG: dateReussiteETGKO,
   nbEchecsPratiques: '',
   dateDernierNonReussite: '',
   objetDernierNonReussite: '',
+  reussitePratique: dateReussitePratique,
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+  departement,
+}
+
+export const candidatWithEtgExpiredAndFailedToArchive = {
+  // candidat réussit la théorie y a plus de 5 ans
+  codeNeph: '0936317542831',
+  nomNaissance: 'TESTOVERETG',
+  prenom: 'TestPrenom',
+  email: 'test.over.etg.testprenon@test.com',
+  dateReussiteETG: dateReussiteETGKO,
+  nbEchecsPratiques: '',
+  dateDernierNonReussite: dateDernierEchecPratiqueAncien,
+  objetDernierNonReussite: 'absent',
   reussitePratique: '',
   candidatExistant: 'OK',
   isValidatedByAurige: false,
