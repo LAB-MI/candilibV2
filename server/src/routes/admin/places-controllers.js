@@ -178,7 +178,7 @@ export const createPlaceByAdmin = async (req, res) => {
     admin: req.userId,
     centreId: centre._id,
     inspecteur,
-    date,
+    dateStr: date,
   }
   try {
     const createdPlaceResult = await createPlaceForInspector(
