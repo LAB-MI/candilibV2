@@ -285,7 +285,7 @@ export const getBookedPlaces = async (req, res) => {
         action: 'get-reservations',
         candidatId,
         byMail,
-        place: reservation && reservation._id,
+        placeId: reservation && reservation._id,
       })
       return res.json(reservation)
     }
