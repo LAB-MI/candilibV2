@@ -1,4 +1,5 @@
 import { createLogger, format, transports } from 'winston'
+import { getFrenchLuxonFromISO } from './date-util'
 const { combine, timestamp, label, printf } = format
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -30,6 +31,33 @@ export const getProperObjectFromError = error => {
   )
 }
 
+/**
+ * Encapsule les valeurs des clés begin, end, date et dateTime par un '[]' pour que fluend-elastic ne les convertive pas en date
+ * @param {Object} message - Message structuré
+ */
+export const getProperObjectFromDate = message => {
+  return Object.getOwnPropertyNames(message).reduce((acc, key) => {
+    let value = message[key]
+    if (['begin', 'end', 'date', 'dateTime'].includes(key)) {
+      const newkey = key + 'Str'
+      acc = {
+        ...acc,
+        [newkey]: `__${value}__`,
+      }
+      const datetimevalue = getFrenchLuxonFromISO(value)
+      if (datetimevalue.isValid) {
+        value = datetimevalue.toISO()
+        acc[key] = value
+      }
+      return acc
+    }
+    return {
+      ...acc,
+      [key]: value,
+    }
+  }, Object.create(null))
+}
+
 export const getProperObject = message => {
   if (message == null) {
     return { default: '<empty message>' }
@@ -43,7 +71,7 @@ export const getProperObject = message => {
   if ('error' in message) {
     message.error = getProperObjectFromError(message.error)
   }
-  return message
+  return getProperObjectFromDate(message)
 }
 
 const logJsonFormat = printf(({ label, level, message, timestamp }) => {
