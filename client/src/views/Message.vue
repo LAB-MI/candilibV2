@@ -15,7 +15,7 @@
 
       <hr class="u-separator">
       <div
-        class="u-flex  u-flex--center  u-flex--space-between"
+        class="u-flex u-flex--center u-flex--space-between"
         style="width: 80%;"
       >
         <a href="https://www.interieur.gouv.fr/">
@@ -25,7 +25,10 @@
           <img :src="logoLabMI">
         </a>
         <a href="http://www.securite-routiere.gouv.fr/">
-          <img :src="logoSR">
+          <img
+            style="width: 80px;"
+            :src="logoSR"
+          >
         </a>
       </div>
       <div style="margin-top: 10px;">
@@ -38,7 +41,7 @@
 <script>
 import logoMI from '@/assets/images/logo_mi_40x50.png'
 import logoLabMI from '@/assets/images/lab_100.png'
-import logoSR from '@/assets/images/securite_routiere_70x27.png'
+import logoSR from '@/assets/images/logo_securite_routiere.png'
 import AppVersion from '@/components/AppVersion.vue'
 
 export default {
@@ -77,7 +80,7 @@ export default {
   background: #555;
 
   @media (min-width: 600px) {
-    background-image: url(../assets/bg-presignup.jpg);
+    background-image: url('../assets/bg-presignup.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;

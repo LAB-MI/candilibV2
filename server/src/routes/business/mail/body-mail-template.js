@@ -1,3 +1,7 @@
+import config from '../../../config'
+
+import { getFrenchLuxon } from '../../../util'
+
 export const getHtmlBody = content =>
   `<!DOCTYPE html>
 <html>
@@ -71,7 +75,9 @@ export const getHtmlBody = content =>
                                                           <tbody>
                                                               <tr>
                                                                   <td>
-                                                                    <img width="80px" src="https://www.cartaplac.com/images/logo-securite-routiere.jpg" />
+                                                                    <img width="80px" src="${
+                                                                      config.PUBLIC_URL
+                                                                    }/img/logo_securite_routiere.png" />
                                                                   </td>
                                                                   <td class="w580"  width="580" align="center">
                                                                       <h2>
@@ -113,7 +119,9 @@ export const getHtmlBody = content =>
                                               <tr>
                                                   <td class="w30"  width="30"></td>
                                                   <td class="w580"  width="580" valign="top">
-                                                      <p align="right" class="pagebottom-content-left"><span style="color:rgba(0,0,0, 0.54)">&copy; 2019 Candilib</span>
+                                                      <p align="right" class="pagebottom-content-left"><span style="color:rgba(0,0,0, 0.54)">&copy; ${
+                                                        getFrenchLuxon().year
+                                                      } Candilib</span>
                                                       </p>
                                                   </td>
 
