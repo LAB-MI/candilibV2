@@ -30,7 +30,7 @@ ARG APP_VERSION
 COPY src src/
 COPY babel.config.js package.json package-lock.json ./
 # Install app dependencies
-RUN npm --no-git-tag-version version ${APP_VERSION} ; npm install
+RUN npm --no-git-tag-version version ${APP_VERSION} ; npm ci
 ENV NODE_ICU_DATA="/app/node_modules/full-icu"
 
 #CMD ["npm", "start"]
@@ -59,7 +59,7 @@ COPY ecosystem.config.js .
 COPY --from=build /app/dist ./dist
 # Install production dependencies and clean cache
 RUN npm --no-git-tag-version version ${APP_VERSION} && \
-    npm install --production && \
+    npm ci --only=production && \
     npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org --production || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force ; \
