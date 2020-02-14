@@ -371,7 +371,7 @@ const updateValidCandidat = async (
   }
 }
 
-export const synchroAurige = async buffer => {
+export const synchroAurige = async (buffer, callback) => {
   const loggerInfo = {
     func: 'synchroAurige',
   }
@@ -458,7 +458,10 @@ export const synchroAurige = async buffer => {
     }
   })
   const results = await Promise.all(resultsPromise)
+  callback && callback(results)
   sendMails()
+  appLogger.debug({ ...loggerInfo, nbResults: results.length })
+
   return results
 }
 
