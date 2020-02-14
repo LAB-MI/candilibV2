@@ -206,6 +206,7 @@ export const getCandidats = async (req, res) => {
         startingWith,
         endingWith
       )
+
       res.json(candidats)
       return
     }

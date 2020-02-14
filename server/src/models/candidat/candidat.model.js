@@ -177,6 +177,7 @@ CandidatSchema.pre('save', async function preSave () {
 CandidatSchema.index({
   nom: 'text',
   prenom: 'text',
+  // TODO: Correction à apporter mail en email et le modifier directement en PROD
   mail: 'text',
   codeNeph: 'text',
 })
