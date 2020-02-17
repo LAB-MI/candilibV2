@@ -6,8 +6,9 @@ import { parseAsync } from 'json2csv'
 
 import { appLogger, getFrenchLuxon, getFrenchLuxonFromISO } from '../../util'
 import {
-  getResultsExamAllDpt,
   getAllPlacesProposeInFutureByDpt,
+  getCountCandidatsInRetentionArea,
+  getResultsExamAllDpt,
 } from './statistics.business'
 
 /**
@@ -189,6 +190,62 @@ export const getStatsResultsExam = async (req, res) => {
     success: true,
     message: 'Les stats ont bien été mises à jour',
     statsKpi,
+  })
+}
+
+/**
+ *
+ * @param {import('express').Request} req Requête express
+ * @param {Object} req.query Query string de la requête
+ * @param {Object} req.query.departement Département selectionné
+ * @param {string} req.query.beginPeriod Date de début de période
+ * @param {string} req.query.endPeriod Date de fin de période
+ * @param {import('express').Response} res Réponse express
+ */
+
+export const getCandidatsInRetentionArea = async (req, res) => {
+  const {
+    beginPeriod,
+    endPeriod,
+    departement,
+    isAllDepartement,
+  } = req.query
+  const { departements, userId } = req
+
+  const loggerContent = {
+    section: 'admin-getStatsResultsExam',
+    admin: userId,
+    beginPeriod,
+    endPeriod,
+    selectedDepartement: departement,
+    isAllDepartement,
+  }
+
+  const begin = getFrenchLuxonFromISO(beginPeriod)
+    .startOf('day')
+    .toJSDate()
+  const end = getFrenchLuxonFromISO(endPeriod)
+    .endOf('day')
+    .toJSDate()
+
+  let dpts = departements
+  console.log({ dpts })
+  if (departement && departements.includes(departement)) {
+    dpts = [departement]
+  }
+
+  const statsKpiCandidatsInRetention = await getCountCandidatsInRetentionArea(dpts, begin, end)
+
+  appLogger.info({
+    ...loggerContent,
+    action: 'GET STATS KPI NUMBER CANDIDAT IN RETENTION AREA',
+    statsKpiCandidatsInRetention,
+  })
+
+  res.status(200).json({
+    success: true,
+    message: 'Les stats ont bien été mises à jour',
+    statsKpiCandidatsInRetention,
   })
 }
 

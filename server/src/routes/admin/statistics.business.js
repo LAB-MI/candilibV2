@@ -282,3 +282,48 @@ const countNoReussitesAndPlacesByReasonAndCentres = (
     .count('count')
     .exec()
 }
+
+export const getCountCandidatsInRetentionArea = async (
+  departements,
+  beginPeriode,
+  endPeriode
+) => {
+  console.log({ departements }, { beginPeriode }, { endPeriode }, { candidatModel })
+  const expression = {}
+  if (beginPeriode) {
+    expression.$gte = beginPeriode
+  } else {
+    expression.$gte = getFrenchLuxon()
+      .startOf('day')
+      .toJSDate()
+  }
+
+  if (endPeriode) {
+    expression.$lt = endPeriode
+  }
+
+  const result = await candidatModel
+    .aggregate(
+      [
+        {
+          $match: {
+            departement: { $in: departements },
+            canAccessAt: {
+              ...expression,
+            },
+          },
+        },
+        {
+          $group: {
+            _id: '$departement',
+            count: {
+              $sum: 1,
+            },
+          },
+        },
+      ]
+    )
+  console.log('qwerty!!', { result })
+  console.log('qwerty!!', result.length)
+  return result
+}

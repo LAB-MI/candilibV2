@@ -5,9 +5,10 @@ import {
   countFailureByCentres,
   countNotExaminedByCentres,
   countSuccessByCentres,
-  getResultsExamByDpt,
-  getResultsExamAllDpt,
   getAllPlacesProposeInFutureByDpt,
+  getCountCandidatsInRetentionArea,
+  getResultsExamAllDpt,
+  getResultsExamByDpt,
 } from './statistics.business'
 
 import {
@@ -155,5 +156,11 @@ describe('test statistics', () => {
     ]
 
     expect(result).toEqual(expect.arrayContaining(shouldHaveThisResult))
+  })
+
+  it('Should have, stats of all départements candidats in retention area', async () => {
+    const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
+    const result = await getCountCandidatsInRetentionArea(['93', '92'], dateBeginPeriode, null)
+    expect(typeof result).toEqual(typeof [])
   })
 })
