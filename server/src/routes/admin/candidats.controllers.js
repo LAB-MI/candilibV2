@@ -201,13 +201,13 @@ export const getCandidats = async (req, res) => {
       loggerInfo.endingWith = endingWith
       appLogger.info(loggerInfo)
 
-      const candidats = await findCandidatsMatching(
+      const result = await findCandidatsMatching(
         matching,
         startingWith,
         endingWith
       )
 
-      res.json(candidats)
+      res.json(result.candidats)
       return
     }
 
