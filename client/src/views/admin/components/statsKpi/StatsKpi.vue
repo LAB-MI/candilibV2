@@ -102,6 +102,7 @@
       <charts-stats-kpi
         :stats-results-exam-values="currentStatsResultExam"
         :stats-places-exam-values="currentStatsPlacesExam"
+        :stats-nb-candidat-in-retention-area="currentStatsPlacesExam"
       />
     </v-flex>
 
@@ -145,6 +146,7 @@ export default {
       'isFetchingPlacesExams',
       'statsResultsExams',
       'statsPlacesExams',
+      'statsCandidatInRetentionArea',
     ]),
 
     currentStatsResultExam () {

@@ -9,6 +9,10 @@ export const FETCH_STATS_KPI_PLACES_EXAMS_REQUEST = 'FETCH_STATS_KPI_PLACES_EXAM
 export const FETCH_STATS_KPI_PLACES_EXAMS_SUCCESS = 'FETCH_STATS_KPI_PLACES_EXAMS_SUCCESS'
 export const FETCH_STATS_KPI_PLACES_EXAMS_FAILURE = 'FETCH_STATS_KPI_PLACES_EXAMS_FAILURE'
 
+export const FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST = 'FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST'
+export const FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_SUCCESS = 'FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_SUCCESS'
+export const FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_FAILURE = 'FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_FAILURE'
+
 export default {
   getters: {
     isFetchingResultsExams: state => {
@@ -71,6 +75,19 @@ export default {
     async FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST ({ state, commit, dispatch }, params) {
       const { beginPeriode, endPeriode, isCsv, departement } = params
       commit(FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST)
+      try {
+        const response = await api.admin.exportResultsExamsStatsKpi(beginPeriode, endPeriode, isCsv, departement)
+        commit(FETCH_STATS_KPI_RESULTS_EXAMS_SUCCESS, response)
+        dispatch(SHOW_SUCCESS, response.message)
+      } catch (error) {
+        commit(FETCH_STATS_KPI_RESULTS_EXAMS_FAILURE)
+        dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST ({ state, commit, dispatch }, params) {
+      const { beginPeriode, endPeriode, isCsv, departement } = params
+      commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST)
       try {
         const response = await api.admin.exportResultsExamsStatsKpi(beginPeriode, endPeriode, isCsv, departement)
         commit(FETCH_STATS_KPI_RESULTS_EXAMS_SUCCESS, response)

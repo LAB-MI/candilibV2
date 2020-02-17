@@ -90,6 +90,11 @@ export default {
       type: Object,
       default () {},
     },
+
+    statsNbCandidatInRetentionArea: {
+      type: Object,
+      default () {},
+    },
   },
 
   data () {
@@ -145,8 +150,8 @@ export default {
       return [
         {
           label: 'Places disponibles',
-          backgroundColor: 'rgba(153, 102, 255, 0.2)',
-          borderColor: 'rgba(153, 102, 255, 1)',
+          backgroundColor: 'rgba(96, 224, 64, 0.2)',
+          borderColor: 'rgba(96, 192, 0, 1)',
           borderWidth: 3,
           data: [
             totalAvailablePlaces || 0,
@@ -154,8 +159,17 @@ export default {
         },
         {
           label: 'Candidats sans réservation',
-          backgroundColor: 'rgba(255, 159, 64, 0.2)',
-          borderColor: 'rgba(255, 159, 64, 1)',
+          backgroundColor: 'rgba(64, 96, 255, 0.2)',
+          borderColor: 'rgba(64, 32, 224, 1)',
+          borderWidth: 3,
+          data: [
+            totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 0,
+          ],
+        },
+        {
+          label: 'Candidats en zone de retention du departement',
+          backgroundColor: 'rgba(255, 0, 64, 0.2)',
+          borderColor: 'rgba(255, 0, 0, 1)',
           borderWidth: 3,
           data: [
             totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 0,
