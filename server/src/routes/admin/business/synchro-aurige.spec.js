@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import util from 'util'
-import config from '../../../config'
+import config, { smtpOptions } from '../../../config'
 import { findArchivedCandidatByNomNeph } from '../../../models/archived-candidat/archived-candidat.queries'
 import { createCandidat, findCandidatById } from '../../../models/candidat'
 import candidatModel from '../../../models/candidat/candidat.model'
@@ -54,10 +54,40 @@ import {
   createDepartement,
   deleteDepartementById,
 } from '../../../models/departement'
+import { buildSmtpServer } from '../../business/__tests__/smtp-server'
 
 jest.mock('../../../util/logger')
-jest.mock('../../business/send-mail')
 require('../../../util/logger').setWithConsole(false)
+
+jest.mock('../../../config', () => ({
+  smtpMaxConnections: 1,
+  smtpRateDelta: 1000,
+  smtpRateLimit: undefined,
+  smtpMaxAttemptsToSend: 5,
+  smtpOptions: {
+    host: 'localhost',
+    port: 10025,
+    secure: false,
+    tls: {
+      // do not failed with selfsign certificates
+      rejectUnauthorized: false,
+    },
+    auth: {
+      user: 'test',
+      pass: 'test',
+    },
+  },
+  dbOptions: {},
+  delayToBook: 7,
+  timeoutToRetry: 7,
+  userStatuses: {
+    CANDIDAT: 'candidat',
+  },
+  userStatusLevels: {
+    candidat: 0,
+  },
+  secret: 'TEST',
+}))
 
 const bookedAt = getFrenchLuxon().toJSDate()
 const readFileAsPromise = util.promisify(fs.readFile)
@@ -70,15 +100,18 @@ const placeExpect = (place, expectPlace) => {
 }
 
 describe('synchro-aurige', () => {
-  beforeAll(async () => {
+  let server
+  beforeAll(async done => {
     await connect()
     await createInspecteurs()
     await createCentres()
+    server = buildSmtpServer(smtpOptions.port, done)
   })
-  afterAll(async () => {
+  afterAll(async done => {
     await removeCentres()
     await removeInspecteur()
     await disconnect()
+    server.close(done)
   })
   it('Should return expired', () => {
     const fiveYearsAgo = new Date()
@@ -213,7 +246,6 @@ describe('synchro-aurige', () => {
   describe('check candidats have valided their email', () => {
     let candidatsToCreate
     let aurigeFile
-
     beforeAll(async () => {
       candidatsToCreate = candidats.map(candidat => createCandidat(candidat))
       const candidatsCreated = await Promise.all(candidatsToCreate)
@@ -250,7 +282,6 @@ describe('synchro-aurige', () => {
 
     it('Should return details', async () => {
       const result = await synchroAurige(aurigeFile)
-
       expect(result[0]).toHaveProperty('details', OK)
       expect(result[1]).toHaveProperty('details', 'EMAIL_NOT_VERIFIED_EXPIRED')
       expect(result[2]).toHaveProperty('details', 'EMAIL_NOT_VERIFIED_YET')
