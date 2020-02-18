@@ -12,6 +12,7 @@ import {
   createPlaces,
   removeCentres,
   removePlaces,
+  commonBasePlaceDateTime,
 } from '../../models/__tests__/'
 import {
   getDatesByCentre,
@@ -58,6 +59,7 @@ describe('Test places business: get dates from places available', () => {
   beforeAll(async () => {
     await connect()
     const centresCreated = await createCentres()
+
     placesCreated = await createPlaces()
     centreSelected = centresCreated.find(
       ({ nom, departement }) =>
@@ -71,21 +73,27 @@ describe('Test places business: get dates from places available', () => {
     dateIn3Months = getFrenchLuxon().plus({
       month: 3,
     })
+
+    const dateIn1Month = getFrenchLuxon().plus({ month: 1 })
+    const sameDateInTestData = commonBasePlaceDateTime.hasSame(
+      dateIn1Month,
+      'days'
+    )
     const count = (await Promise.all([
       createPlace({
         centre: centreSelected._id,
         inspecteur,
-        date: getFrenchLuxon().plus({
-          month: 1,
-        }),
+        date: sameDateInTestData
+          ? dateIn1Month.plus({ days: 1 })
+          : dateIn1Month,
       }),
       createPlace({
         centre: centreSelected._id,
         inspecteur,
-        date: getFrenchLuxon().plus({
-          month: 1,
-          hours: 1,
-        }),
+        date: (sameDateInTestData
+          ? dateIn1Month.plus({ days: 1 })
+          : dateIn1Month
+        ).plus({ hours: 1 }),
       }),
       createPlace({
         centre: centreSelected._id,
