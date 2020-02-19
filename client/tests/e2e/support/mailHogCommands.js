@@ -8,6 +8,7 @@ Cypress.Commands.add('deleteAllMails', () => {
 })
 
 Cypress.Commands.add('getLastMail', (infos) => {
+  cy.wait(100)
   cy.request({
     method: 'GET',
     url: mhApiUrl('/v2/messages?limit=10'),
