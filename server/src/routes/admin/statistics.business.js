@@ -288,7 +288,6 @@ export const getCountCandidatsInRetentionArea = async (
   beginPeriode,
   endPeriode
 ) => {
-  console.log({ departements }, { beginPeriode }, { endPeriode }, { candidatModel })
   const expression = {}
   if (beginPeriode) {
     expression.$gte = beginPeriode
@@ -302,28 +301,30 @@ export const getCountCandidatsInRetentionArea = async (
     expression.$lt = endPeriode
   }
 
-  const result = await candidatModel
-    .aggregate(
-      [
-        {
-          $match: {
-            departement: { $in: departements },
-            canAccessAt: {
-              ...expression,
-            },
-          },
+  const result = await candidatModel.aggregate([
+    {
+      $match: {
+        departement: { $in: departements },
+        canAccessAt: {
+          ...expression,
         },
-        {
-          $group: {
-            _id: '$departement',
-            count: {
-              $sum: 1,
-            },
-          },
+      },
+    },
+    {
+      $group: {
+        _id: '$departement',
+        count: {
+          $sum: 1,
         },
-      ]
-    )
-  console.log('qwerty!!', { result })
-  console.log('qwerty!!', result.length)
+      },
+    },
+    {
+      $project: {
+        beginPeriode,
+        endPeriode,
+        count: 1,
+      },
+    },
+  ])
   return result
 }

@@ -716,3 +716,81 @@ export const createStatsForPlacesExam = async () => {
   const updatedCandidat = await createCandidatAndUpdate(candidatForStatsPlace)
   await bookCandidatOnSelectedPlace(placeCreated, updatedCandidat, bookedAt)
 }
+
+const candidatsForStatsRetention = [
+  {
+    codeNeph: '888856789980',
+    nomNaissance: 'nom à tester 92 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test01.retention92@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 92100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '92',
+    canAccessAt: nowLuxon.plus({ days: 15 }),
+  },
+  {
+    codeNeph: '888856789981',
+    nomNaissance: 'nom à tester 92 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test02.retention92@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 92100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '92',
+    canAccessAt: nowLuxon.plus({ days: 15 }),
+  },
+  {
+    codeNeph: '878856789980',
+    nomNaissance: 'nom à tester 93 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test01.retention93@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 93100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '93',
+    canAccessAt: nowLuxon.plus({ days: 15 }),
+  },
+  {
+    codeNeph: '878856789981',
+    nomNaissance: 'nom à tester 93 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test02.retention93@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 93100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '93',
+    canAccessAt: nowLuxon.plus({ days: 15 }),
+  },
+  {
+    codeNeph: '858856789980',
+    nomNaissance: 'nom à tester 94 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test01.retention94@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 942100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '94',
+    canAccessAt: nowLuxon.plus({ days: 25 }),
+  },
+  {
+    codeNeph: '858856789981',
+    nomNaissance: 'nom à tester 94 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test02.retention94@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 94100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '94',
+    canAccessAt: nowLuxon.plus({ days: 19 }),
+  },
+]
+
+export const createCandidatInRetentionArea = async canAccessAt => {
+  const result = await Promise.all(
+    candidatsForStatsRetention.map(el =>
+      createCandidatAndUpdate(el, el.canAccessAt)
+    )
+  )
+  return result
+}

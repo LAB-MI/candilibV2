@@ -147,6 +147,7 @@ export default {
 
     datasets () {
       const { totalBookedPlaces, totalAvailablePlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
+      const { count } = this.statsNbCandidatInRetentionArea || {}
       return [
         {
           label: 'Places disponibles',
@@ -167,12 +168,12 @@ export default {
           ],
         },
         {
-          label: 'Candidats en zone de retention du departement',
+          label: 'Candidats en zone de retention du departement sur la periode',
           backgroundColor: 'rgba(255, 0, 64, 0.2)',
           borderColor: 'rgba(255, 0, 0, 1)',
           borderWidth: 3,
           data: [
-            totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 0,
+            count || 0,
           ],
         },
       ]

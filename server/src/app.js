@@ -462,6 +462,48 @@ import npmVersion from '../package.json'
  *           notExamined: 2,
  *           received: 15
  *         }]
+ *     StatsKpiCandidatsInRetentionArea:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: array
+ *           description: Liste des stats par département et période
+ *           items:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 description: Date de la demande de stats
+ *               departement:
+ *                 type: string
+ *                 description: Département concerné
+ *               beginPeriode:
+ *                 type: string
+ *                 description: Date de début de période
+ *               endPeriode:
+ *                 type: string
+ *                 description: Date de fin de période
+ *               count:
+ *                 type: number
+ *                 description: Nombre de candidats dans la zone de rétention
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *         statsKpiCandidatsInRetention: [{
+ *           departement: "93",
+ *           beginPeriode: "2019-09-14T22:00:00.000Z",
+ *           endPeriode: "2019-10-15T21:59:59.999Z",
+ *           count: 3
+ *         }]
  *
  *     lastSyncAurigeInfos:
  *       type: object

@@ -21,6 +21,12 @@ export default {
     isFetchingPlacesExams: state => {
       return state.isFetchingPlacesExams
     },
+    isFetchingCandidatInRetentionArea: state => {
+      return state.isFetchingCandidatInRetentionArea
+    },
+    statsCandidatInRetentionArea: state => {
+      return state.statsCandidatInRetentionArea
+    },
     statsResultsExams: state => {
       return state.statsResultsExams
     },
@@ -32,8 +38,10 @@ export default {
   state: {
     isFetchingResultsExams: false,
     isFetchingPlacesExams: false,
+    isFetchingCandidatInRetentionArea: false,
     statsResultsExams: undefined,
     statsPlacesExams: undefined,
+    statsCandidatInRetentionArea: undefined,
   },
 
   mutations: {
@@ -55,6 +63,16 @@ export default {
     },
     FETCH_STATS_KPI_PLACES_EXAMS_FAILURE (state, error) {
       state.isFetchingPlacesExams = false
+    },
+
+    FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST (state) {
+      state.isFetchingCandidatInRetentionArea = true
+    },
+    FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_SUCCESS (state, statsKpi) {
+      state.statsCandidatInRetentionArea = statsKpi
+    },
+    FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_FAILURE (state, error) {
+      state.isFetchingCandidatInRetentionArea = false
     },
   },
 
@@ -89,11 +107,11 @@ export default {
       const { beginPeriode, endPeriode, isCsv, departement } = params
       commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST)
       try {
-        const response = await api.admin.exportResultsExamsStatsKpi(beginPeriode, endPeriode, isCsv, departement)
-        commit(FETCH_STATS_KPI_RESULTS_EXAMS_SUCCESS, response)
+        const response = await api.admin.exportCandidatsRetentionStatsKpi(beginPeriode, endPeriode, isCsv, departement)
+        commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_SUCCESS, response)
         dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {
-        commit(FETCH_STATS_KPI_RESULTS_EXAMS_FAILURE)
+        commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_FAILURE)
         dispatch(SHOW_ERROR, error.message)
       }
     },

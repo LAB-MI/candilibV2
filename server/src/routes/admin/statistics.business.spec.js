@@ -17,6 +17,7 @@ import {
   countNotExamined,
   countSuccess,
   createCandidatsForStat,
+  createCandidatInRetentionArea,
   createStatsForPlacesExam,
   dateReussitePratique,
   dateTimeDernierEchecPratique,
@@ -36,6 +37,7 @@ describe('test statistics', () => {
   beforeAll(async () => {
     await connect()
     await createCandidatsForStat()
+    await createCandidatInRetentionArea()
     await createStatsForPlacesExam()
   })
   afterAll(async () => {
@@ -144,7 +146,7 @@ describe('test statistics', () => {
         departement: '92',
         totalBookedPlaces: 1,
         totalAvailablePlaces: 1,
-        totalCandidatsInscrits: 1,
+        totalCandidatsInscrits: 3,
       },
       {
         beginDate: dateBeginPeriode,
@@ -158,9 +160,64 @@ describe('test statistics', () => {
     expect(result).toEqual(expect.arrayContaining(shouldHaveThisResult))
   })
 
-  it('Should have, stats of all départements candidats in retention area', async () => {
+  it('Should have two candidat stats by departement in retention area', async () => {
+    const dpts = ['93', '92']
     const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
-    const result = await getCountCandidatsInRetentionArea(['93', '92'], dateBeginPeriode, null)
+    const dateEndPeriode = nowLuxon
+      .plus({ days: 20 })
+      .startOf('day')
+      .toJSDate()
+    const result = await getCountCandidatsInRetentionArea(
+      dpts,
+      dateBeginPeriode,
+      dateEndPeriode
+    )
     expect(typeof result).toEqual(typeof [])
+    expect(result.length).toEqual(2)
+    expect(result).toEqual(
+      expect.arrayContaining([
+        {
+          _id: dpts[0],
+          count: 2,
+          beginPeriode: dateBeginPeriode,
+          endPeriode: dateEndPeriode,
+        },
+        {
+          _id: dpts[1],
+          count: 2,
+          beginPeriode: dateBeginPeriode,
+          endPeriode: dateEndPeriode,
+        },
+      ])
+    )
+  })
+
+  it('Should have one candidat in stats of all départements in retention area', async () => {
+    const dpts = ['94', '93', '92']
+    const dateBeginPeriode = nowLuxon
+      .plus({ days: 20 })
+      .startOf('day')
+      .toJSDate()
+    const dateEndPeriode = nowLuxon
+      .plus({ days: 45 })
+      .startOf('day')
+      .toJSDate()
+    const result = await getCountCandidatsInRetentionArea(
+      dpts,
+      dateBeginPeriode,
+      dateEndPeriode
+    )
+    expect(typeof result).toEqual(typeof [])
+    expect(result.length).toEqual(1)
+    expect(result).toEqual(
+      expect.arrayContaining([
+        {
+          _id: dpts[0],
+          count: 1,
+          beginPeriode: dateBeginPeriode,
+          endPeriode: dateEndPeriode,
+        },
+      ])
+    )
   })
 })

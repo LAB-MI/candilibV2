@@ -82,11 +82,44 @@ const fieldsPlacesExams = [
 ]
 
 /**
+ * @constant {LabelValue[]}
+ */
+
+const fieldsCandidatsInRetentionArea = [
+  {
+    label: 'Département',
+    value: '_id',
+  },
+  {
+    label: 'nombre de Candidats',
+    value: 'count',
+  },
+  {
+    label: 'Date de début période',
+    value: 'beginPeriode',
+  },
+  {
+    label: 'Date de fin période',
+    value: 'endPeriode',
+  },
+]
+
+/**
  * @constant {CSVOptions}
  */
 
 const optionsPlacesExam = {
   fields: fieldsPlacesExams,
+  delimiter: ';',
+  quote: '',
+}
+
+/**
+ * @constant {CSVOptions}
+ */
+
+const optionsCandidatsInRetentionArea = {
+  fields: fieldsCandidatsInRetentionArea,
   delimiter: ';',
   quote: '',
 }
@@ -118,6 +151,17 @@ const parseStatsResultsExams = statsData =>
  * @param {Object[]} statsData Données statistiques
  */
 
+const parseStatsCandidatRetention = statsData =>
+  console.log({ statsData }) ||
+  parseAsync(statsData, optionsCandidatsInRetentionArea)
+
+/**
+ * Crée le CSV à partir du contenu `statsData`
+ * @function
+ *
+ * @param {Object[]} statsData Données statistiques
+ */
+
 const parseStatsPlacesExams = statsData =>
   parseAsync(statsData, optionsPlacesExam)
 
@@ -133,13 +177,7 @@ const parseStatsPlacesExams = statsData =>
  */
 
 export const getStatsResultsExam = async (req, res) => {
-  const {
-    beginPeriod,
-    endPeriod,
-    isCsv,
-    departement,
-    isAllDepartement,
-  } = req.query
+  const { beginPeriod, endPeriod, isCsv, departement } = req.query
   const { departements, userId } = req
 
   const loggerContent = {
@@ -149,7 +187,6 @@ export const getStatsResultsExam = async (req, res) => {
     endPeriod,
     isCsv,
     selectedDepartement: departement,
-    isAllDepartement,
   }
 
   const begin = getFrenchLuxonFromISO(beginPeriod)
@@ -204,21 +241,15 @@ export const getStatsResultsExam = async (req, res) => {
  */
 
 export const getCandidatsInRetentionArea = async (req, res) => {
-  const {
-    beginPeriod,
-    endPeriod,
-    departement,
-    isAllDepartement,
-  } = req.query
+  const { beginPeriod, endPeriod, isCsv, departement } = req.query
   const { departements, userId } = req
 
   const loggerContent = {
-    section: 'admin-getStatsResultsExam',
+    section: 'admin-get-candidats-in-retention-area',
     admin: userId,
-    beginPeriod,
-    endPeriod,
+    begin: beginPeriod,
+    end: endPeriod,
     selectedDepartement: departement,
-    isAllDepartement,
   }
 
   const begin = getFrenchLuxonFromISO(beginPeriod)
@@ -229,18 +260,48 @@ export const getCandidatsInRetentionArea = async (req, res) => {
     .toJSDate()
 
   let dpts = departements
-  console.log({ dpts })
   if (departement && departements.includes(departement)) {
     dpts = [departement]
   }
 
-  const statsKpiCandidatsInRetention = await getCountCandidatsInRetentionArea(dpts, begin, end)
+  const statsKpiCandidatsInRetention = await getCountCandidatsInRetentionArea(
+    dpts,
+    begin,
+    end
+  )
+  const candidatsInRetention = statsKpiCandidatsInRetention.reduce(
+    (accu, currValue) => {
+      accu.departements = accu.departements + currValue._id + ', '
+      accu.totalCount = accu.totalCount + currValue.count
+      return accu
+    },
+    {
+      departements: '',
+      totalCount: 0,
+    }
+  )
 
   appLogger.info({
     ...loggerContent,
     action: 'GET STATS KPI NUMBER CANDIDAT IN RETENTION AREA',
-    statsKpiCandidatsInRetention,
+    candidatsInRetention,
   })
+
+  if (isCsv === 'true') {
+    const statsKpiCsv = await parseStatsCandidatRetention(
+      statsKpiCandidatsInRetention
+    )
+    const filename = 'statsCandidatsInRetention.csv'
+    appLogger.info({
+      ...loggerContent,
+      action: 'GET STATS KPI NUMBER CANDIDAT IN RETENTION AREA CSV',
+      filename,
+    })
+    return res
+      .status(200)
+      .attachment(filename)
+      .send(statsKpiCsv)
+  }
 
   res.status(200).json({
     success: true,
