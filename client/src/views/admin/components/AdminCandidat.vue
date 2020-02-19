@@ -1,5 +1,6 @@
 <template>
   <div>
+    <last-aurige-date-time />
     <page-title>
       {{ $formatMessage({ id: 'Rechercher un candidat'}) }}
     </page-title>
@@ -11,10 +12,12 @@
 
 <script>
 import SearchCandidat from './SearchCandidat'
+import LastAurigeDateTime from './LastAurigeDateTime'
 
 export default {
   components: {
     SearchCandidat,
+    LastAurigeDateTime,
   },
 }
 </script>
