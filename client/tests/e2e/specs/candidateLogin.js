@@ -26,10 +26,12 @@ describe('Candidate login', () => {
 
   it('Create an account and verify line delay mail', () => {
     // The candidate fills the pre-sign-up form
-    cy.clearLocalStorage()
-    cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup')
-
-    cy.wait(5000)
+    cy.visit(Cypress.env('frontCandidat') + 'candidat-presignup',{
+      onBeforeLoad: (win) => {
+        win.localStorage.clear()
+      }
+    })
+    
     cy.get('.t-presignup-form').within(($inForm) => {
       cy.get('label').eq(0).should('contain', 'NEPH')
       cy.get('input').eq(0)
