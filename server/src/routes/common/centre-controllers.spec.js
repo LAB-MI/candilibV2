@@ -355,7 +355,7 @@ describe('Test centres of departement', () => {
   })
 
   afterAll(async () => {
-    deleteDepartementById(departementData._id)
+    await deleteDepartementById(departementData._id)
     await deleteCentre(createdCentre)
     await disconnect()
     // await app.close()

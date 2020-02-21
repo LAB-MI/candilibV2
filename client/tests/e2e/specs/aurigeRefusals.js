@@ -81,7 +81,7 @@ describe('Aurige Refusals', () => {
           .should('contain', '=?UTF-8?Q?Probl=C3=A8me_inscription_Candilib?=')
         cy.wrap($mail)
           .its('Content.Body')
-          .should('contain', 'vous avez d=C3=A9j=C3=A0 =\r\nr=C3=A9ussi votre examen du permis de conduire')
+          .should('contain', 'vous avez =\r\nd=C3=A9j=C3=A0 r=C3=A9ussi votre examen du permis de conduire,\r\nnotre service ne vous est plus utile.')
       })
     cy.getLastMail({ recipient: 'jessierockatansky@candilib.com' })
       .then($mail => {
@@ -90,7 +90,7 @@ describe('Aurige Refusals', () => {
           .should('contain', '=?UTF-8?Q?Inscription_Candilib_non_valid=C3=A9e?=')
         cy.wrap($mail)
           .its('Content.Body')
-          .should('contain', 'Malheureusement les informations\r\n    que vous avez fournies sont erron=C3=A9es')
+          .should('contain', 'Malheureusement les informations que vous avez fournies sont erron=C3=A9es')
       })
     cy.getLastMail({ recipient: 'toecutter@candilib.com' })
       .then($mail => {
@@ -99,7 +99,7 @@ describe('Aurige Refusals', () => {
           .should('contain', '=?UTF-8?Q?Inscription_Candilib_non_valid=C3=A9e?=')
         cy.wrap($mail)
           .its('Content.Body')
-          .should('contain', 'Malheureusement les informations\r\n    que vous avez fournies sont erron=C3=A9es')
+          .should('contain', 'Malheureusement les informations que vous avez fournies sont erron=C3=A9es')
       })
     cy.getLastMail({ recipient: 'jimgoose@candilib.com' })
       .then($mail => {
@@ -108,7 +108,7 @@ describe('Aurige Refusals', () => {
           .should('contain', '=?UTF-8?Q?Probl=C3=A8me_inscription_Candilib?=')
         cy.wrap($mail)
           .its('Content.Body')
-          .should('contain', 'Votre code de la route n=E2=80=99est pas/plus =\r\nvalide.')
+          .should('contain', 'Votre code de la route n=E2=80=99est =\r\npas/plus valide.')
       })
     cy.getLastMail({ recipient: 'johnnyboy@candilib.com' })
       .then($mail => {
@@ -117,7 +117,7 @@ describe('Aurige Refusals', () => {
           .should('contain', '=?UTF-8?Q?Probl=C3=A8me_inscription_Candilib?=')
         cy.wrap($mail)
           .its('Content.Body')
-          .should('contain', 'Votre code de la route n=E2=80=99est pas/plus =\r\nvalide.')
+          .should('contain', 'Votre code de la route n=E2=80=99est =\r\npas/plus valide.')
       })
     cy.getLastMail({ recipient: 'timburns@candilib.com' })
       .then($mail => {
@@ -126,7 +126,7 @@ describe('Aurige Refusals', () => {
           .should('contain', '=?UTF-8?Q?Probl=C3=A8me_inscription_Candilib?=')
         cy.wrap($mail)
           .its('Content.Body')
-          .should('contain', 'Votre code de la route n=E2=80=99est pas/plus =\r\nvalide.')
+          .should('contain', 'Votre code de la route n=E2=80=99est =\r\npas/plus valide.')
       })
   })
 })

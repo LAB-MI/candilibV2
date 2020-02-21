@@ -110,10 +110,14 @@ export const getDatesByCentreId = async (
 
   endDate =
     !luxonEndDate.invalid && luxonEndDate <= luxonDateVisible
-      ? luxonEndDate.toJSDate()
-      : luxonDateVisible.toJSDate()
+      ? luxonEndDate
+      : luxonDateVisible
 
-  const places = await findAvailablePlacesByCentre(_id, begin, endDate)
+  const places = await findAvailablePlacesByCentre(
+    _id,
+    begin.toISODate(),
+    endDate.toISODate()
+  )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO()
   )
@@ -454,7 +458,8 @@ export const getCandBookFrom = (candidat, datePassage) => {
 }
 
 /**
- * Récupère la première date à laquelle le candidat peut réserver une place (Les places avant cette date ne doivent pas lui être présentées)
+ * Récupère la première date à laquelle le candidat peut réserver une place
+ * (Les places avant cette date ne doivent pas lui être présentées)
  *
  * @function
  *
@@ -467,12 +472,12 @@ export const getBeginDateAuthorize = candidat => {
   let beginDateAutoriseDefault
   if (config.delayToBook) {
     beginDateAutoriseDefault = getFrenchLuxon()
-      .endOf('day')
+      .startOf('day')
       .plus({
         days: config.delayToBook,
       })
   } else {
-    beginDateAutoriseDefault = getFrenchLuxon()
+    beginDateAutoriseDefault = getFrenchLuxon().endOf('day')
   }
 
   const dateCanBookFrom = getFrenchLuxonFromJSDate(candidat.canBookFrom)

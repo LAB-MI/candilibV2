@@ -2,6 +2,32 @@
   <div>
     <page-title>
       {{ $formatMessage({ id: 'tableau_de_bord'}) }}
+      <v-tooltip bottom>
+        <template v-slot:activator="{ on }">
+          <div
+            v-on="on"
+          >
+            &nbsp;
+            (&nbsp;
+            <strong class="text-free-places">
+              {{ `${countPlacesForAllCenters.totalBookedPlaces}` }}
+            </strong>
+            &nbsp;
+            <strong>
+              /
+            </strong>
+            &nbsp;
+            <strong>
+              {{ `${countPlacesForAllCenters.totalPlaces}` }}
+            </strong>
+            &nbsp;)
+            &nbsp;
+          </div>
+        </template>
+        <span>
+          Total Places reservées des centres / Total places des centres
+        </span>
+      </v-tooltip>
     </page-title>
 
     <v-container
@@ -55,7 +81,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters(['activeDepartement']),
+    ...mapGetters(['activeDepartement', 'countPlacesForAllCenters']),
 
     placeByCentreInfos () {
       return this.$store.state.admin.places.list
@@ -86,7 +112,7 @@ export default {
 }
 </script>
 
-<style lang="postcss">
+<style scope lang="postcss">
 .less-padding {
   padding-top: 0.1em;
 }
@@ -104,4 +130,7 @@ export default {
   color: green;
 }
 
+.text-free-places {
+  color: green;
+}
 </style>
