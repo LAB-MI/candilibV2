@@ -36,6 +36,7 @@ import {
   sendFailureExam,
   sendMagicLink,
   sendMailToAccount,
+  sendMails,
 } from '../../business'
 import { getCandBookFrom } from '../../candidat/places-business'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
@@ -265,7 +266,7 @@ const checkAndArchiveCandidat = async (
 
     candidat.set(infoCandidatToUpdate)
     await deleteCandidat(candidat, aurigeFeedback)
-    await sendMailToAccount(candidat, aurigeFeedback)
+    await sendMailToAccount(candidat, aurigeFeedback, true)
     appLogger.info({
       ...loggerInfoCandidat,
       description: `Envoi de mail ${aurigeFeedback} à ${email}`,
@@ -341,7 +342,7 @@ const updateValidCandidat = async (
       description: `Pour le ${departement}, ce candidat ${email} a été validé`,
     })
 
-    await sendMagicLink(candidat)
+    await sendMagicLink(candidat, true)
     const message = `Pour le ${departement}, un magic link est envoyé à ${email}`
     appLogger.info({ ...loggerInfoCandidat, description: message })
 
@@ -370,14 +371,14 @@ const updateValidCandidat = async (
   }
 }
 
-export const synchroAurige = async buffer => {
+export const synchroAurige = async (buffer, callback) => {
   const loggerInfo = {
     func: 'synchroAurige',
   }
 
   const retourAurige = JSON.parse(buffer.toString())
 
-  const result = retourAurige.map(async candidatAurige => {
+  const resultsPromise = retourAurige.map(async candidatAurige => {
     const loggerInfoCandidat = {
       ...loggerInfo,
       candidatAurige,
@@ -456,8 +457,12 @@ export const synchroAurige = async buffer => {
       )
     }
   })
+  const results = await Promise.all(resultsPromise)
+  callback && callback(results)
+  sendMails()
+  appLogger.debug({ ...loggerInfo, nbResults: results.length })
 
-  return Promise.all(result)
+  return results
 }
 
 const releaseAndArchivePlace = async (
