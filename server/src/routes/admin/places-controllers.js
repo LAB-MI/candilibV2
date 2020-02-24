@@ -511,7 +511,7 @@ export const updatePlaces = async (req, res) => {
       ...loggerContent,
       action: loggerContent.action || 'ERROR',
       description: error.message,
-      error: error.stack,
+      error: error,
     })
 
     return res.status(status).json({
