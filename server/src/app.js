@@ -463,6 +463,32 @@ import npmVersion from '../package.json'
  *           received: 15
  *         }]
  *
+ *     lastSyncAurigeInfos:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         aurigeInfo:
+ *           type: object
+ *           description: Contient la Date/heure et le message concernant la dernière étape éffectué par le batch Aurige
+ *           properties:
+ *             date:
+ *               type: string
+ *               description: Date/heure du dernier passage du batch Aurige
+ *             message:
+ *               type: string
+ *               description: Message indiquant la dernière étape éffectué par le batch Aurige depuis son lancement
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *
  *     WhitelistedInfo:
  *       type: object
  *       description: Informations sur l'ajout d'adresses dans la liste blanche
