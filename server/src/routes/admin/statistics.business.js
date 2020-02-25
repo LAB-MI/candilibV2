@@ -43,12 +43,17 @@ export const getAllPlacesProposeInFutureByDpt = async beginDate => {
     throw new Error('Aucun département trouvé')
   }
   const results = await Promise.all(
-    departements.map(departement => getPlacesByDpt(departement, beginDate))
+    departements.map(departement =>
+      getPlacesAndCandidatsInscritsByDpt(departement, beginDate)
+    )
   )
   return results
 }
 
-export const getPlacesByDpt = async (departement, beginDate) => {
+export const getPlacesAndCandidatsInscritsByDpt = async (
+  departement,
+  beginDate
+) => {
   const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
   const centres = centresFromDB.map(({ _id }) => _id)
 

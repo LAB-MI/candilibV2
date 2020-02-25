@@ -513,9 +513,18 @@ export const isCandidatExisting = async _id => {
 }
 
 export const countCandidatsInscritsByDepartement = async departement => {
+  const dateNow = getFrenchLuxon()
   return Candidat.countDocuments({
     departement,
     isValidatedByAurige: true,
+    $or: [
+      {
+        canAccessAt: { $lt: dateNow },
+      },
+      {
+        canAccessAt: { $exists: false },
+      },
+    ],
   })
 }
 
