@@ -33,15 +33,15 @@ import {
   removeCentres,
   removePlaces,
 } from '../__tests__'
-import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
-import placeModel from './place.model'
+import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors-constants'
+import Place from './place-model'
 import {
   bookPlaceById,
   findAndbookPlace,
   findPlaceBookedByInspecteur,
   findPlacesByCentreAndDate,
   removeBookedPlace,
-} from './place.queries'
+} from './place-queries'
 import { expectedArchivedPlace } from '../archived-place/__tests__/expect-archive-place'
 
 jest.mock('../../util/logger')
@@ -614,7 +614,7 @@ describe('to book places', () => {
   })
 
   it('Should book the place which has not booking with candidat 123456789002 ', async () => {
-    const selectedPlace = await placeModel.findOne({
+    const selectedPlace = await Place.findOne({
       candidat: { $exists: false },
     })
     const selectedCandidat = createdcandidats.find(
@@ -631,7 +631,7 @@ describe('to book places', () => {
   })
 
   it('Should not book the place booked with candidat 123456789002 ', async () => {
-    const selectedPlace = await placeModel.findOne({
+    const selectedPlace = await Place.findOne({
       candidat: { $exists: true },
     })
 

@@ -1,13 +1,13 @@
 /**
  * Model Place
- * @module models/place/place-model
+ * @module
  */
 import mongoose from 'mongoose'
 
-import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
+import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors-constants'
 
 import { getFrenchLuxonFromJSDate } from '../../util/date-util'
-import { UserFields } from '../user/user.model'
+import { UserFields } from '../user/user-model'
 
 const { Schema } = mongoose
 const ObjectId = Schema.Types.ObjectId
@@ -54,7 +54,7 @@ export const placeCommonFields = {
 }
 
 /**
- * @type {PlaceModel}
+ * @type {PlaceMongooseDocument}
  */
 const PlaceSchema = new Schema(
   {
@@ -104,15 +104,24 @@ PlaceSchema.pre('save', async function preSave () {
 })
 
 const model = mongoose.model('Place', PlaceSchema)
+export default model
 
 /**
- * @typedef {Object} PlaceModel
- * @property {ObjectId} inspecteur
- * @property {centre} centre
+ * @typedef {Object} PlaceMongooseDocument
+ * @property {ObjectId | Inspecteur} inspecteur
+ * @property {ObjectId | Centre} centre
  * @property {date} date
  * @property {date} bookedAt
  * @property {UserFields} bookedByAdmin
- * @property {ObjectId} candidat
+ * @property {ObjectId | Candidat} [candidat]
  */
 
-export default model
+/**
+ * @typedef {Object} PlacePOJO
+ * @property {ObjectId | Inspecteur} inspecteur
+ * @property {ObjectId | Centre} centre
+ * @property {date} date
+ * @property {date} bookedAt
+ * @property {UserFields} bookedByAdmin
+ * @property {ObjectId | Candidat} [candidat]
+ */

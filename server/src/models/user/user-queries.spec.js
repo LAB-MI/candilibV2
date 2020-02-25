@@ -8,10 +8,10 @@ import {
   updateManyUser,
   findManyUser,
   updateUserEmail,
-} from './'
+} from '.'
 import { connect, disconnect } from '../../mongo-connection'
 import config from '../../config'
-import { findAllActiveUsers } from './user.queries'
+import { findAllActiveUsers } from './user-queries'
 
 const validEmail = 'dontusethis@example.com'
 const anotherValidEmail = 'dontusethis@example.fr'

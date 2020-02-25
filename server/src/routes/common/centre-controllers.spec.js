@@ -38,6 +38,8 @@ import { getFrenchLuxon } from '../../util'
 const { default: app, apiPrefix } = require('../../app')
 
 jest.mock('../middlewares/verify-token')
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
 
 const bookedAt = getFrenchLuxon().toJSDate()
 

@@ -9,8 +9,8 @@ import ArchivedPlace from './archived-place-model'
  * @async
  * @function
  *
- * @param {ArchivedPlace~ArchivedPlaceSchema} archivedPlaceData Place à archiver
- * @returns {ArchivedPlace~ArchivedPlaceSchema}
+ * @param {ArchivedPlace~ArchivedPlaceMongooseDocument} archivedPlaceData Place à archiver
+ * @returns {ArchivedPlace~ArchivedPlaceMongooseDocument}
  */
 export const createArchivedPlace = async archivedPlaceData => {
   const archivedPlace = await ArchivedPlace.create(archivedPlaceData)
@@ -22,7 +22,7 @@ export const createArchivedPlace = async archivedPlaceData => {
  * @async
  * @function
  *
- * @param {module:models/place/place-model~PlaceModel} placeData La place à archiver qui ne contient pas le propriété candidat
+ * @param {module:models/place/place-model~PlaceMongooseDocument} placeData La place à archiver qui ne contient pas le propriété candidat
  * @param {string[]} archiveReasons Les raisons de l'archivage
  * @param {string} byUser L'auteur de l'action (Admin (userId) ou Aurige )
  * @param {boolean} isCandilib S'il y a eu une réussite ou un échec par le biais de candilib

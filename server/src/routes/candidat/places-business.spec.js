@@ -5,7 +5,7 @@ import { findCandidatById } from '../../models/candidat'
 
 import { findCentreByNameAndDepartement } from '../../models/centre'
 import { createPlace } from '../../models/place'
-import PlaceModel from '../../models/place/place.model'
+import PlaceModel from '../../models/place/place-model'
 import {
   centres,
   createCentres,

@@ -1,2 +1,2 @@
-export * from './place.queries'
-export * from './errors.constants'
+export * from './place-queries'
+export * from './errors-constants'

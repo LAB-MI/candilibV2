@@ -23,7 +23,7 @@ import {
   validateEmail,
 } from './candidat.business'
 import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
-import { createEvaluation } from '../../models/evaluation/evaluation.queries'
+import { createEvaluation } from '../../models/evaluation/evaluation-queries'
 import {
   CANDIDAT_ALREADY_EXIST,
   CANDIDAT_ALREADY_PRESIGNUP,

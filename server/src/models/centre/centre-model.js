@@ -1,3 +1,8 @@
+/**
+ * Modèle Mongoose des centres dans la base de données
+ * @module
+ */
+
 import mongoose from 'mongoose'
 
 const { Schema } = mongoose

@@ -1,12 +1,12 @@
-import archivedCandidatModel from '../../models/archived-candidat/archived-candidat.model'
-import candidatModel from '../../models/candidat/candidat.model'
-import { countCandidatsInscritsByDepartement } from '../../models/candidat/candidat.queries'
-import { countPlacesBookedOrNot } from '../../models/place/place.queries'
+import archivedCandidatModel from '../../models/archived-candidat/archived-candidat-model'
+import candidatModel from '../../models/candidat/candidat-model'
+import { countCandidatsInscritsByDepartement } from '../../models/candidat/candidat-queries'
+import { countPlacesBookedOrNot } from '../../models/place/place-queries'
 
 import {
   ABSENT,
   ECHEC,
-} from '../../models/candidat/objetDernierNonReussite.values'
+} from '../../models/candidat/objetDernierNonReussite-values'
 import {
   findCentresByDepartement,
   getDepartementsFromCentres,

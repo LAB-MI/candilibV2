@@ -3,9 +3,9 @@ import {
   deleteWhitelistedByEmail,
   deleteWhitelisted,
   findWhitelistedByEmail,
-} from '.'
+  findAllWhitelisted,
+} from './whitelisted-queries'
 import { connect, disconnect } from '../../mongo-connection'
-import { findAllWhitelisted } from './whitelisted.queries'
 
 const validEmail = 'dontusethis@example.com'
 const anotherValidEmail = 'dontusethis@example.fr'

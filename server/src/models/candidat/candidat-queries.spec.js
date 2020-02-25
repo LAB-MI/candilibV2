@@ -6,7 +6,7 @@ import {
   findCandidatByNomNeph,
   findBookedCandidats,
   updateCandidatSignUp,
-} from './'
+} from '.'
 
 import { connect, disconnect } from '../../mongo-connection'
 
@@ -24,7 +24,7 @@ import {
   archivePlace,
   updateCandidatFailed,
   updateCandidatNoReussite,
-} from './candidat.queries'
+} from './candidat-queries'
 import {
   REASON_CANCEL,
   REASON_EXAM_FAILED,
@@ -32,7 +32,7 @@ import {
 } from '../../routes/common/reason.constants'
 
 import { getFrenchLuxon } from '../../util'
-import { ABSENT, ECHEC } from './objetDernierNonReussite.values'
+import { ABSENT, ECHEC } from './objetDernierNonReussite-values'
 
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
@@ -269,7 +269,7 @@ describe('Candidat', () => {
       expect(sameCandidatDifferentEmail._id.toString()).toBe(
         candidat._id.toString()
       )
-      expect(sameCandidatDifferentEmail.email).not.toBe(candidat.email)
+      expect(sameCandidatDifferentEmail.email).not.toBe(email)
     })
 
     it('should update a candidat', async () => {

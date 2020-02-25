@@ -1,14 +1,15 @@
 /**
- * Model archived-place
+ * Modèle Mongoose des places archivées dans la base de données
  * @module
  */
 import mongoose from 'mongoose'
-import { placeCommonFields } from '../place/place.model'
+import { placeCommonFields } from '../place/place-model'
 
 const { Schema } = mongoose
 
 const ArchivedPlaceFields = {
   ...placeCommonFields,
+
   placeId: {
     type: Schema.Types.ObjectId,
     default: undefined,
@@ -33,7 +34,7 @@ const ArchivedPlaceFields = {
 
 /**
  * Schéma du modèle de données des places archivées
- * @type {ArchivedPlaceModel}
+ * @type {ArchivedPlaceMongooseDocument}
  */
 const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields, {
   timestamps: true,
@@ -48,7 +49,7 @@ ArchivedPlaceSchema.pre('save', async function preSave () {
 
 /**
  * Modèle de données des places archivées
- * @typedef {Object} ArchivedPlaceModel
+ * @typedef {Object} ArchivedPlaceMongooseDocument
  * @property {ObjectId} placeId identifiant de la place à archiver
  * @property {Date} archivedAt la date de création de l'archive
  * @property {string[]} archiveReasons Les raisons de l'archivage
