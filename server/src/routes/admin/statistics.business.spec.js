@@ -146,7 +146,7 @@ describe('test statistics', () => {
         departement: '92',
         totalBookedPlaces: 1,
         totalAvailablePlaces: 1,
-        totalCandidatsInscrits: 3,
+        totalCandidatsInscrits: 1,
       },
       {
         beginDate: dateBeginPeriode,
