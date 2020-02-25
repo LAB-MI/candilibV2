@@ -159,7 +159,7 @@ export default {
           ],
         },
         {
-          label: 'Candidats sans réservation',
+          label: 'Candidats sans réservation et hors de la zone de rétention',
           backgroundColor: 'rgba(64, 96, 255, 0.2)',
           borderColor: 'rgba(64, 32, 224, 1)',
           borderWidth: 3,
@@ -168,7 +168,7 @@ export default {
           ],
         },
         {
-          label: 'Candidats en zone de retention du departement sur la periode',
+          label: 'Candidats sortant de la zone de rétention sur la periode sélectionnée',
           backgroundColor: 'rgba(255, 0, 64, 0.2)',
           borderColor: 'rgba(255, 0, 0, 1)',
           borderWidth: 3,
