@@ -3,7 +3,7 @@
     <v-btn
       icon
       :raised="raised"
-      color="primary"
+      :color="colorBtn"
       :disabled="isLoading"
       @click="onClick"
     >
@@ -22,6 +22,10 @@
 <script>
 export default {
   props: {
+    colorBtn: {
+      type: String,
+      default: 'primary',
+    },
     isLoading: Boolean,
     bgColor: {
       type: String,
