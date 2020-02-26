@@ -182,9 +182,9 @@ export default {
     },
 
     currentStatsCandidatsInRetentionArea () {
-      const { statsKpiCandidatsInRetention } = this.statsCandidatInRetentionArea || {}
-      return (statsKpiCandidatsInRetention && statsKpiCandidatsInRetention)
-        ? statsKpiCandidatsInRetention.find(el => el._id === this.activeDepartement)
+      const { statsKpiCandidatsLeaveRetention } = this.statsCandidatInRetentionArea || {}
+      return (statsKpiCandidatsLeaveRetention && statsKpiCandidatsLeaveRetention)
+        ? statsKpiCandidatsLeaveRetention.find(el => el._id === this.activeDepartement)
         : {}
     },
 
@@ -293,10 +293,10 @@ export default {
     },
 
     selectStatsKpiCandidatsRetentionByDpt (departement) {
-      const { statsKpiCandidatsInRetention } = this.statsCandidatInRetentionArea || {}
+      const { statsKpiCandidatsLeaveRetention } = this.statsCandidatInRetentionArea || {}
 
-      return statsKpiCandidatsInRetention
-        ? statsKpiCandidatsInRetention.find(el => el._id === departement)
+      return statsKpiCandidatsLeaveRetention
+        ? statsKpiCandidatsLeaveRetention.find(el => el._id === departement)
         : {}
     },
   },

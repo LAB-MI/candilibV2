@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card style="border-radius: 3%;">
     <v-card-title class="justify-center">
       <h3 class="d-block">
         {{ $formatMessage({ id: 'departement' }) }}
@@ -66,6 +66,28 @@
         </div>
       </v-container>
     </div>
+
+    <v-divider />
+
+    <div style="margin-left: 6.5vw;">
+      <v-container>
+        <div class="u-flex  u-flex--wrap  u-flex--center">
+          <div
+            :class="`u-flex__item pa-3
+              t-number-inscrit-${Math.round(datasets[1].data[0])}
+              t-number-future-free-places-${Math.round(datasets[0].data[0])}
+              `"
+          >
+            <chart-bar-vertical
+              class="chart-wrapper"
+              :labels="['semaine_1', 'semaine_2', 'semaine_3', 'semaine_4', 'semaine_5']"
+              :datasets="datasetsVerticalChart"
+            />
+            <div style="display: block;" />
+          </div>
+        </div>
+      </v-container>
+    </div>
   </v-card>
 </template>
 
@@ -73,11 +95,13 @@
 import { mapGetters } from 'vuex'
 import DonutsChartContent from './DonutsChartContent.vue'
 import ChartBar from './ChartBar.vue'
+import ChartBarVertical from './ChartBarVertical.vue'
 
 export default {
   components: {
     DonutsChartContent,
     ChartBar,
+    ChartBarVertical,
   },
 
   props: {
@@ -143,6 +167,36 @@ export default {
           idCypress: 't-remplissage-futur',
         },
       ]
+    },
+
+    datasetsVerticalChart () {
+      const { totalBookedPlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
+
+      return [{
+        label: 'Candidats sans réservation et hors de la zone de rétention',
+        backgroundColor: [
+          'rgba(96, 224, 64, 0.2)',
+          'rgba(96, 224, 64, 0.2)',
+          'rgba(96, 224, 64, 0.2)',
+          'rgba(96, 224, 64, 0.2)',
+          'rgba(96, 224, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(64, 32, 224, 1)',
+          'rgba(64, 32, 224, 1)',
+          'rgba(64, 32, 224, 1)',
+          'rgba(64, 32, 224, 1)',
+          'rgba(64, 32, 224, 1)',
+        ],
+        borderWidth: 3,
+        data: [
+          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
+          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
+          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
+          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
+          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
+        ],
+      }]
     },
 
     datasets () {
