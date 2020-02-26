@@ -6,6 +6,7 @@ import {
   findCandidatByNomNeph,
   findBookedCandidats,
   updateCandidatSignUp,
+  countCandidatsInscritsByDepartementAndWeek,
 } from './'
 
 import { connect, disconnect } from '../../mongo-connection'
@@ -19,6 +20,7 @@ import {
   makeResas,
   removeCentres,
   removePlaces,
+  createCandidatAndUpdate,
 } from '../__tests__'
 import {
   archivePlace,
@@ -87,6 +89,149 @@ describe('Candidat', () => {
 
       // Then
       expect(candidat.isNew).toBe(false)
+    })
+
+    it('test Cool', async () => {
+      const candidat = [
+        {
+          codeNeph: '123456789003',
+          nomNaissance: 'Monkey D',
+          prenom: 'Luffy',
+          email: 'luffy.monkey.d@onepiece.com',
+          portable: '0612345678',
+          departement: '93',
+          dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+          isValidatedByAurige: true,
+          isValidatedEmail: true,
+          canAccessAt: getFrenchLuxon()
+            .plus({ weeks: 0, days: 1 })
+            .startOf('day'),
+        },
+        {
+          codeNeph: '12345678989003',
+          nomNaissance: 'Monkey D',
+          prenom: 'Luffy',
+          email: 'luffy.monkey.d22@onepiece.com',
+          portable: '0612345678',
+          departement: '93',
+          dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+          isValidatedByAurige: true,
+          isValidatedEmail: true,
+          canAccessAt: getFrenchLuxon()
+            .plus({ weeks: 0, days: 2 })
+            .startOf('day'),
+        },
+        {
+          codeNeph: '12341278989003',
+          nomNaissance: 'Monkey D',
+          prenom: 'Luffy',
+          email: 'luffy.monkey.d222@onepiece.com',
+          portable: '0612345678',
+          departement: '93',
+          dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+          isValidatedByAurige: true,
+          isValidatedEmail: true,
+          canAccessAt: getFrenchLuxon()
+            .plus({ weeks: 0, days: 3 })
+            .startOf('day'),
+        },
+        {
+          codeNeph: '123456789002',
+          nomNaissance: 'Roronoa',
+          prenom: 'Zoro',
+          email: 'zoro.roronoa@onepiece.com',
+          portable: '0612345678',
+          departement: '93',
+          dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+          isValidatedByAurige: true,
+          isValidatedEmail: true,
+          canAccessAt: getFrenchLuxon()
+            .plus({ weeks: 1, days: 1 })
+            .startOf('day'),
+        },
+        {
+          codeNeph: '123456789099',
+          nomNaissance: 'Trafalgar D water',
+          prenom: 'Law',
+          email: 'test03.test@test.com',
+          portable: '0612345678',
+          departement: '93',
+          dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+          isValidatedByAurige: true,
+          isValidatedEmail: true,
+          canAccessAt: getFrenchLuxon()
+            .plus({ weeks: 2, days: 1 })
+            .startOf('day'),
+        },
+        {
+          codeNeph: '123456789449',
+          nomNaissance: 'Trafalgar D water  03',
+          prenom: 'Law',
+          email: 'test033.test@test.com',
+          portable: '0612345678',
+          departement: '93',
+          dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+          isValidatedByAurige: true,
+          isValidatedEmail: true,
+          canAccessAt: getFrenchLuxon()
+            .plus({ weeks: 3, days: 1 })
+            .startOf('day'),
+        },
+        {
+          codeNeph: '123453389099',
+          nomNaissance: 'Trafalgar D water  04',
+          prenom: 'Law',
+          email: 'test034.test@test.com',
+          portable: '0612345678',
+          departement: '93',
+          dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+          isValidatedByAurige: true,
+          isValidatedEmail: true,
+          canAccessAt: getFrenchLuxon()
+            .plus({ weeks: 4, days: 1 })
+            .startOf('day'),
+        },
+        {
+          codeNeph: '1234567389099',
+          nomNaissance: 'Trafalgar D water 05',
+          prenom: 'Law',
+          email: 'test0398.test@test.com',
+          portable: '0612345678',
+          departement: '93',
+          dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
+          isValidatedByAurige: true,
+          isValidatedEmail: true,
+          canAccessAt: getFrenchLuxon()
+            .plus({ weeks: 5, days: 0 })
+            .startOf('day'),
+        },
+      ]
+
+      const resultCandidats = await Promise.all(
+        candidat.map(el => createCandidatAndUpdate(el, el.canAccessAt))
+      )
+      console.log({ resultCandidats })
+      // Given
+      const fctTest = weekNumber =>
+        getFrenchLuxon()
+          .plus({ weeks: weekNumber })
+          .startOf('day')
+      const weeksTmp = Array(6)
+        .fill(true)
+        .map(async (el, index) => ({
+          weekNumber: index,
+          value: await countCandidatsInscritsByDepartementAndWeek(
+            '93',
+            fctTest(index),
+            fctTest(index + 1)
+          ),
+        }))
+
+      const fullResult = await Promise.all(weeksTmp)
+      console.log({ fullResult })
+      // const result = await countCandidatsInscritsByDepartementAndWeek('93', start, end)
+      // console.log({ result })
+      // Then
     })
 
     it('should not save a candidat with an existing email', async () => {

@@ -7,7 +7,7 @@ import { parseAsync } from 'json2csv'
 import { appLogger, getFrenchLuxon, getFrenchLuxonFromISO } from '../../util'
 import {
   getAllPlacesProposeInFutureByDpt,
-  getCountCandidatsInRetentionArea,
+  getCountCandidatsLeaveRetentionArea,
   getResultsExamAllDpt,
 } from './statistics.business'
 
@@ -240,12 +240,12 @@ export const getStatsResultsExam = async (req, res) => {
  * @param {import('express').Response} res Réponse express
  */
 
-export const getCandidatsInRetentionArea = async (req, res) => {
+export const getCandidatsLeaveRetentionArea = async (req, res) => {
   const { beginPeriod, endPeriod, isCsv, departement } = req.query
   const { departements, userId } = req
 
   const loggerContent = {
-    section: 'admin-get-candidats-in-retention-area',
+    section: 'admin-get-candidats-leave-retention-area',
     admin: userId,
     begin: beginPeriod,
     end: endPeriod,
@@ -264,12 +264,12 @@ export const getCandidatsInRetentionArea = async (req, res) => {
     dpts = [departement]
   }
 
-  const statsKpiCandidatsInRetention = await getCountCandidatsInRetentionArea(
+  const statsKpiCandidatsLeaveRetention = await getCountCandidatsLeaveRetentionArea(
     dpts,
     begin,
     end
   )
-  const candidatsInRetention = statsKpiCandidatsInRetention.reduce(
+  const candidatsInRetention = statsKpiCandidatsLeaveRetention.reduce(
     (accu, currValue) => {
       accu.departements = accu.departements + currValue._id + ', '
       accu.totalCount = accu.totalCount + currValue.count
@@ -289,7 +289,7 @@ export const getCandidatsInRetentionArea = async (req, res) => {
 
   if (isCsv === 'true') {
     const statsKpiCsv = await parseStatsCandidatRetention(
-      statsKpiCandidatsInRetention
+      statsKpiCandidatsLeaveRetention
     )
     const filename = 'statsCandidatsInRetention.csv'
     appLogger.info({
@@ -306,7 +306,7 @@ export const getCandidatsInRetentionArea = async (req, res) => {
   res.status(200).json({
     success: true,
     message: 'Les stats ont bien été mises à jour',
-    statsKpiCandidatsInRetention,
+    statsKpiCandidatsLeaveRetention,
   })
 }
 

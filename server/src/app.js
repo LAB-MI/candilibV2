@@ -498,7 +498,7 @@ import npmVersion from '../package.json'
  *       example:
  *         success: true
  *         message: Les stats ont bien été mises à jour
- *         statsKpiCandidatsInRetention: [{
+ *         statsKpiCandidatsLeaveRetention: [{
  *           departement: "93",
  *           beginPeriode: "2019-09-14T22:00:00.000Z",
  *           endPeriode: "2019-10-15T21:59:59.999Z",

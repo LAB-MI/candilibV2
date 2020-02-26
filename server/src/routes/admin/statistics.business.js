@@ -1,6 +1,6 @@
 import archivedCandidatModel from '../../models/archived-candidat/archived-candidat.model'
 import candidatModel from '../../models/candidat/candidat.model'
-import { countCandidatsInscritsByDepartement } from '../../models/candidat/candidat.queries'
+import { countCandidatsInscritsByDepartement, countCandidatsInscritsByDepartementAndWeek } from '../../models/candidat/candidat.queries'
 import { countPlacesBookedOrNot } from '../../models/place/place.queries'
 
 import {
@@ -288,7 +288,7 @@ const countNoReussitesAndPlacesByReasonAndCentres = (
     .exec()
 }
 
-export const getCountCandidatsInRetentionArea = async (
+export const getCountCandidatsLeaveRetentionArea = async (
   departements,
   beginPeriode,
   endPeriode
@@ -332,4 +332,34 @@ export const getCountCandidatsInRetentionArea = async (
     },
   ])
   return result
+}
+
+const setDateOfWeek = (weekNumber) => getFrenchLuxon().plus({ weeks: weekNumber }).startOf('day')
+
+const countCandidatsInscritsByDeptAndWeek = async (departement, shapedArray) => {
+  const weeks = shapedArray.map(async (useless, index) => ({
+    weekNumber: index,
+    value: await countCandidatsInscritsByDepartementAndWeek(departement, setDateOfWeek(index), setDateOfWeek(index + 1)),
+  }))
+  return Promise.all(weeks)
+}
+
+export const getCountCandidatsLeaveRetentionAreaByWeek = async (
+  departements
+) => {
+  const numberOfWeekToDisplay = 5
+  const shapedArray = Array(numberOfWeekToDisplay).fill(true)
+
+  if (departements && departements.length && departements.length === 1) {
+    const result = shapedArray.map(async (useless, index) => ({
+      weekNumber: index,
+      value: await countCandidatsInscritsByDepartementAndWeek(departements[0], setDateOfWeek(index), setDateOfWeek(index + 1)),
+    }))
+
+    return Promise.all(result)
+  }
+  const result = departements.map(async departement => {
+    return { departement, candidatsInscritsByWeek: await countCandidatsInscritsByDeptAndWeek(departement, shapedArray) }
+  })
+  return Promise.all(result)
 }

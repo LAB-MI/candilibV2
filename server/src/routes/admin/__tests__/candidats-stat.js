@@ -786,10 +786,10 @@ const candidatsForStatsRetention = [
   },
 ]
 
-export const createCandidatInRetentionArea = async canAccessAt => {
+export const createCandidatInRetentionArea = async (canAccessAt = null) => {
   const result = await Promise.all(
     candidatsForStatsRetention.map(el =>
-      createCandidatAndUpdate(el, el.canAccessAt)
+      createCandidatAndUpdate(el, canAccessAt || el.canAccessAt)
     )
   )
   return result

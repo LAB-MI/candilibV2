@@ -6,9 +6,10 @@ import {
   countNotExaminedByCentres,
   countSuccessByCentres,
   getAllPlacesProposeInFutureByDpt,
-  getCountCandidatsInRetentionArea,
+  getCountCandidatsLeaveRetentionArea,
   getResultsExamAllDpt,
   getResultsExamByDpt,
+  getCountCandidatsLeaveRetentionAreaByWeek,
 } from './statistics.business'
 
 import {
@@ -32,6 +33,9 @@ import {
 } from '../../models/__tests__'
 
 import { findCentresByDepartement } from '../../models/centre'
+
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(true)
 
 describe('test statistics', () => {
   beforeAll(async () => {
@@ -160,14 +164,14 @@ describe('test statistics', () => {
     expect(result).toEqual(expect.arrayContaining(shouldHaveThisResult))
   })
 
-  it('Should have two candidat stats by departement in retention area', async () => {
+  it('Should have two candidat stats by departement leave retention area', async () => {
     const dpts = ['93', '92']
     const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
     const dateEndPeriode = nowLuxon
       .plus({ days: 20 })
       .startOf('day')
       .toJSDate()
-    const result = await getCountCandidatsInRetentionArea(
+    const result = await getCountCandidatsLeaveRetentionArea(
       dpts,
       dateBeginPeriode,
       dateEndPeriode
@@ -192,7 +196,7 @@ describe('test statistics', () => {
     )
   })
 
-  it('Should have one candidat in stats of all départements in retention area', async () => {
+  it('Should have one candidat in stats of all départements leave retention area', async () => {
     const dpts = ['94', '93', '92']
     const dateBeginPeriode = nowLuxon
       .plus({ days: 20 })
@@ -202,11 +206,12 @@ describe('test statistics', () => {
       .plus({ days: 45 })
       .startOf('day')
       .toJSDate()
-    const result = await getCountCandidatsInRetentionArea(
+    const result = await getCountCandidatsLeaveRetentionArea(
       dpts,
       dateBeginPeriode,
       dateEndPeriode
     )
+
     expect(typeof result).toEqual(typeof [])
     expect(result.length).toEqual(1)
     expect(result).toEqual(
@@ -219,5 +224,38 @@ describe('test statistics', () => {
         },
       ])
     )
+  })
+
+  it('Should get all candidats in stats of all départements leave retention area', async () => {
+    const dpts = ['94', '93', '92']
+    // const dateBeginPeriode = nowLuxon
+    //   .plus({ days: 20 })
+    //   .startOf('day')
+    //   .toJSDate()
+    // const dateEndPeriode = nowLuxon
+    //   .plus({ days: 45 })
+    //   .startOf('day')
+    //   .toJSDate()
+    // const result = await getCountCandidatsLeaveRetentionArea(
+    //   dpts,
+    //   dateBeginPeriode,
+    //   dateEndPeriode
+    // )
+    const test = await getCountCandidatsLeaveRetentionAreaByWeek(dpts)
+    // test.map(el => el.candidatsInscritsByWeek.map(ell => console.log({ ell })))
+    console.log(test)
+    // expect(typeof result).toEqual(typeof [])
+    // expect(result.length).toEqual(1)
+    // expect(result).toEqual(
+    //   expect.arrayContaining([
+    //     {
+    //       _id: dpts[0],
+    //       count: 1,
+    //       beginPeriode: dateBeginPeriode,
+    //       endPeriode: dateEndPeriode,
+    //     },
+    //   ])
+    // )
+    // TODO: retention
   })
 })

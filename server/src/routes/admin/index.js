@@ -34,7 +34,7 @@ import {
 import {
   getStatsPlacesExam,
   getStatsResultsExam,
-  getCandidatsInRetentionArea,
+  getCandidatsLeaveRetentionArea,
 } from './statistics.controllers'
 
 import { getInfoLastSyncAurige } from './status-candilib-controllers'
@@ -1055,7 +1055,7 @@ router.get(
 router.get(
   '/stats-candidats-retention',
   verifyUserLevel(config.userStatusLevels.delegue),
-  getCandidatsInRetentionArea
+  getCandidatsLeaveRetentionArea
 )
 
 /**
