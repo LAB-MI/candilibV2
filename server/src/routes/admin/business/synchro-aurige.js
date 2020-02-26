@@ -469,11 +469,11 @@ export const synchroAurige = async (buffer, callback) => {
   )
 
   callback && callback(results)
-  sendMails()
+  await upsertLastSyncAurige('Début de l\'envoie des courriels aux candidats')
+  sendMails(async () => {
+    await upsertLastSyncAurige('Fin de l\'envoie des courriels aux candidats')
+  })
   appLogger.debug({ ...loggerInfo, nbResults: results.length })
-  // TODO: ajouter les deux ligne suivante lorsque la branche du nouveau mecanisme d'envoi de mail
-  // await upsertLastSyncAurige('Début de l'envoie des courriels aux candidats')
-  // await upsertLastSyncAurige('Fin de l'envoie des courriels aux candidats')
 
   return results
 }

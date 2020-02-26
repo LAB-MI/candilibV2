@@ -29,7 +29,7 @@ export const getInfoLastSyncAurige = async (req, res) => {
     if (lastSyncAurigetInfo) {
       const { type, message, createdAt, updatedAt } = lastSyncAurigetInfo
       if (!type) {
-        res.status(400).send({
+        return res.status(400).send({
           success: false,
           message: "La date du dernier batch Aurige n'est pas encore renseigné",
         })
@@ -44,7 +44,7 @@ export const getInfoLastSyncAurige = async (req, res) => {
           updatedAt,
         },
       })
-      res.status(200).send({
+      return res.status(200).send({
         success: true,
         aurigeInfo: {
           date: updatedAt,
@@ -58,6 +58,6 @@ export const getInfoLastSyncAurige = async (req, res) => {
       description: error.message,
       error: error,
     })
-    res.status(500).send({ success: false, message: error.message })
+    return res.status(500).send({ success: false, message: error.message })
   }
 }
