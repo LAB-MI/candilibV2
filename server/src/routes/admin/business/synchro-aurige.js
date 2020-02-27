@@ -38,6 +38,7 @@ import {
   sendMailToAccount,
   sendMails,
 } from '../../business'
+import { upsertLastSyncAurige } from '../../admin/status-candilib-business'
 import { getCandBookFrom } from '../../candidat/places-business'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import { NB_YEARS_ETG_EXPIRED } from '../../common/constants'
@@ -378,6 +379,10 @@ export const synchroAurige = async (buffer, callback) => {
 
   const retourAurige = JSON.parse(buffer.toString())
 
+  await upsertLastSyncAurige(
+    'Début de la mise à jour des candidats dans la base de données'
+  )
+
   const resultsPromise = retourAurige.map(async candidatAurige => {
     const loggerInfoCandidat = {
       ...loggerInfo,
@@ -458,8 +463,16 @@ export const synchroAurige = async (buffer, callback) => {
     }
   })
   const results = await Promise.all(resultsPromise)
+
+  await upsertLastSyncAurige(
+    'Fin de la mise à jour des candidats dans la base de données'
+  )
+
   callback && callback(results)
-  sendMails()
+  await upsertLastSyncAurige("Début de l'envoie des courriels aux candidats")
+  sendMails(async () => {
+    await upsertLastSyncAurige("Fin de l'envoie des courriels aux candidats")
+  })
   appLogger.debug({ ...loggerInfo, nbResults: results.length })
 
   return results
