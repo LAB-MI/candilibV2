@@ -1,6 +1,6 @@
 import api from '@/api'
-
-import { SHOW_SUCCESS, SHOW_ERROR } from '@/store'
+import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
+import { getFrenchDateTimeFromIso } from '../util/frenchDateTime'
 
 export const SHOW_AURIGE_RESULT = 'SHOW_AURIGE_RESULT'
 export const AURIGE_UPLOAD_CANDIDATS_REQUEST = 'AURIGE_UPLOAD_CANDIDATS_REQUEST'
@@ -17,7 +17,7 @@ export default {
     isLoading: false,
     candidats: [],
     lastFile: undefined,
-    lastSyncDateTime: 'Information non renseignée',
+    lastSyncDateTime: 'La date du dernier batch Aurige n\'est pas encore renseigné',
     isLastSyncDateTimeLoading: false,
   },
   mutations: {
@@ -75,10 +75,10 @@ export default {
         if (result.success === false) {
           throw new Error(result.message)
         }
-        commit(FETCH_AURIGE_LAST_DATETIME_SUCCESS, result.aurigeInfo.date)
+
+        commit(FETCH_AURIGE_LAST_DATETIME_SUCCESS, getFrenchDateTimeFromIso(result.aurigeInfo.date))
       } catch (error) {
         commit(FETCH_AURIGE_LAST_DATETIME_FAILURE)
-        dispatch(SHOW_ERROR, error.message)
       }
     },
   },

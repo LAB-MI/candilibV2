@@ -28,15 +28,13 @@
 import { FETCH_AURIGE_LAST_DATETIME_REQUEST } from '@/store'
 import { RefreshButton } from '@/components'
 
-import { getFrenchDateTimeFromIso } from '../../../util/frenchDateTime'
-
 export default {
   components: {
     RefreshButton,
   },
   computed: {
     lastDateTimeAurige () {
-      return getFrenchDateTimeFromIso(this.$store.state.aurige.lastSyncDateTime)
+      return this.$store.state.aurige.lastSyncDateTime
     },
     isLoading () {
       return this.$store.state.aurige.isLastSyncDateTimeLoading

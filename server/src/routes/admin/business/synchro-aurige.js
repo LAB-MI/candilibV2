@@ -469,9 +469,9 @@ export const synchroAurige = async (buffer, callback) => {
   )
 
   callback && callback(results)
-  await upsertLastSyncAurige('Début de l\'envoie des courriels aux candidats')
+  await upsertLastSyncAurige("Début de l'envoie des courriels aux candidats")
   sendMails(async () => {
-    await upsertLastSyncAurige('Fin de l\'envoie des courriels aux candidats')
+    await upsertLastSyncAurige("Fin de l'envoie des courriels aux candidats")
   })
   appLogger.debug({ ...loggerInfo, nbResults: results.length })
 

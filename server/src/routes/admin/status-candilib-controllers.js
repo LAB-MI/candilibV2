@@ -20,18 +20,24 @@ export const getInfoLastSyncAurige = async (req, res) => {
     action: 'getLastSyncAurigeDateTime',
     admin: req.userId,
   }
+
+  appLogger.info({
+    ...loggerInfo,
+  })
   try {
-    appLogger.info({
-      ...loggerInfo,
-    })
     const lastSyncAurigetInfo = await getLastSyncAurigeDateTime()
-    // TODO: to review
+    const message = "La date du dernier batch Aurige n'est pas encore renseigné"
+
     if (lastSyncAurigetInfo) {
-      const { type, message, createdAt, updatedAt } = lastSyncAurigetInfo
+      const { type, message, updatedAt } = lastSyncAurigetInfo
       if (!type) {
+        appLogger.info({
+          ...loggerInfo,
+          type,
+        })
         return res.status(400).send({
           success: false,
-          message: "La date du dernier batch Aurige n'est pas encore renseigné",
+          message,
         })
       }
       appLogger.info({
@@ -40,7 +46,6 @@ export const getInfoLastSyncAurige = async (req, res) => {
         aurigeInfo: {
           type,
           message,
-          createdAt,
           updatedAt,
         },
       })
@@ -52,6 +57,10 @@ export const getInfoLastSyncAurige = async (req, res) => {
         },
       })
     }
+    return res.status(400).send({
+      success: false,
+      message,
+    })
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
