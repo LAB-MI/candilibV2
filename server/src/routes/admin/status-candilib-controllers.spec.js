@@ -1,14 +1,12 @@
 import request from 'supertest'
 import express from 'express'
 import path from 'path'
-import config from '../../config'
 import fs from 'fs'
 import util from 'util'
 
 import { connect, disconnect } from '../../mongo-connection'
 import { getFrenchLuxon, getFrenchLuxonFromISO } from '../../util'
 import { synchroAurige } from './business/synchro-aurige'
-import { createUser } from '../../models/user'
 
 import { getInfoLastSyncAurige } from './status-candilib-controllers'
 
