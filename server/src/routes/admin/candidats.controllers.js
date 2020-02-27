@@ -197,6 +197,8 @@ export const getCandidats = async (req, res) => {
     if (matching) {
       loggerInfo.action = 'SEARCH-CANDIDAT'
       loggerInfo.matching = matching
+      loggerInfo.startingWith = startingWith
+      loggerInfo.endingWith = endingWith
       appLogger.info(loggerInfo)
 
       const candidats = await findCandidatsMatching(
@@ -204,6 +206,7 @@ export const getCandidats = async (req, res) => {
         startingWith,
         endingWith
       )
+
       res.json(candidats)
       return
     }
