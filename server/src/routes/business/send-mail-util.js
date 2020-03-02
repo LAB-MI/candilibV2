@@ -1,5 +1,7 @@
 import { appLogger } from '../../util'
 import { findDepartementById } from '../../models/departement'
+import config from '../../config'
+import { addEmailValidationHash } from '../../models/user'
 
 export function buildMailResaArgsValidation (
   date,
@@ -72,4 +74,19 @@ export const getEmailDepartementOfCandidat = async departementId => {
     })
     throw new Error(message)
   }
+}
+
+/**
+ * Renvoi le lien de réinitialisation contenant le hash
+ * @async
+ * @function
+ *
+ * @param {string} email - Adresse courriel de l'utilisateur
+ */
+
+export const getUrlResetLink = async email => {
+  const emailValidationHash = await addEmailValidationHash(email)
+  return `${config.ADMIN_URL}/reset-link?email=${encodeURIComponent(
+    email
+  )}&hash=${encodeURIComponent(emailValidationHash)}`
 }

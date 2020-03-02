@@ -260,6 +260,13 @@ export default {
       return json
     },
 
+    async getLastSyncAurigeDateTime () {
+      const json = await apiClient.get(apiPaths.admin.lastSyncAurigeDateTime, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
     async getUsers () {
       const json = await apiClient.get(apiPaths.admin.users, {
         headers: getHeadersForAdminJson(),

@@ -72,7 +72,7 @@ export default {
   },
   data () {
     return {
-      emptyList: undefined,
+
       searchInput: undefined,
       selected: undefined,
       timeoutId: undefined,
@@ -88,13 +88,11 @@ export default {
         endingWith,
       } = this
 
-      searchQuery = searchQuery.trim()
+      searchQuery = searchQuery && searchQuery.trim()
       if (!searchQuery || searchQuery.length < 3) {
-        this.emptyList = []
         return
       }
 
-      this.emptyList = undefined
       clearTimeout(this.timeoutId)
       this.timeoutId = setTimeout(() => {
         if (searchQuery && searchQuery.length > 2) {

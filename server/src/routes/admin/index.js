@@ -35,6 +35,9 @@ import {
   getStatsPlacesExam,
   getStatsResultsExam,
 } from './statistics.controllers'
+
+import { getInfoLastSyncAurige } from './status-candilib-controllers'
+
 import {
   getWhitelisted,
   addWhitelisted,
@@ -997,6 +1000,36 @@ router.get(
   verifyUserLevel(config.userStatusLevels.delegue),
   getStatsResultsExam
 )
+
+/**
+ * @swagger
+ *
+ * /admin/last-sync-aurige-info:
+ *   get:
+ *     tags: ["Administrateur"]
+ *     summary: Récupération du jour et de l'heure du dernier passage du batch Aurige
+ *     description: Permet de récupérer le jour et de l'heure ainsi qu'un message indiquant la derniere étape éffectué par le batch Aurige
+ *     responses:
+ *       500:
+ *         description: Erreur lors de la récupération des informations du batch Aurige
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/InfoObject'
+ *                 - example:
+ *                     success: false
+ *                     message: Oups, un problème est survenu. L'administrateur a été prévenu.
+ *       200:
+ *         description: Stats par départements
+ *         content:
+ *           application/json:
+ *             schema:
+ *               allOf:
+ *                 - $ref: '#/components/schemas/lastSyncAurigeInfos'
+ */
+
+router.get('/last-sync-aurige-info', getInfoLastSyncAurige)
 
 /**
  * @swagger

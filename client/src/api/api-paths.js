@@ -23,6 +23,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   candidats: `${apiPrefix}/admin/candidats`,
   centres: `${apiPrefix}/admin/centres`,
   exportCsv: `${apiPrefix}/admin/candidats?for=aurige&format=csv`,
+  lastSyncAurigeDateTime: `${apiPrefix}/admin/last-sync-aurige-info`,
   exportResultsExamsStatsKpi: `${apiPrefix}/admin/stats-results-exams`,
   exportPlacesExamsStatsKpi: `${apiPrefix}/admin/stats-places-exams`,
   login: `${apiPrefix}/auth/admin/token`,

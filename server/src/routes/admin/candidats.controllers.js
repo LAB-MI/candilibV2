@@ -51,18 +51,19 @@ export const importCandidats = async (req, res) => {
     loggerInfo.filename = jsonFile.name
     appLogger.info({ ...loggerInfo })
 
-    const result = await synchroAurige(jsonFile.data)
-    const message = `Le fichier ${jsonFile.name} a été synchronisé.`
-    appLogger.info({
-      ...loggerInfo,
-      description: message,
-      nbCandidats: result ? result.length : 0,
-    })
-    res.status(200).send({
-      fileName: jsonFile.name,
-      success: true,
-      message,
-      candidats: result,
+    synchroAurige(jsonFile.data, result => {
+      const message = `Le fichier ${jsonFile.name} a été synchronisé.`
+      appLogger.info({
+        ...loggerInfo,
+        description: message,
+        nbCandidats: result ? result.length : 0,
+      })
+      res.status(200).send({
+        fileName: jsonFile.name,
+        success: true,
+        message,
+        candidats: result,
+      })
     })
   } catch (error) {
     appLogger.error({ ...loggerInfo, error })
@@ -196,6 +197,8 @@ export const getCandidats = async (req, res) => {
     if (matching) {
       loggerInfo.action = 'SEARCH-CANDIDAT'
       loggerInfo.matching = matching
+      loggerInfo.startingWith = startingWith
+      loggerInfo.endingWith = endingWith
       appLogger.info(loggerInfo)
 
       const candidats = await findCandidatsMatching(
@@ -203,6 +206,7 @@ export const getCandidats = async (req, res) => {
         startingWith,
         endingWith
       )
+
       res.json(candidats)
       return
     }
