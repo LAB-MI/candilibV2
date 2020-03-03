@@ -497,6 +497,18 @@ export const countCandidatsInscritsByDepartement = async departement => {
   })
 }
 
+export const findCandidatWithBooking = async (nomNaissance, codeNeph) => {
+  const candidat = await Candidat.aggregate()
+    .match({ nomNaissance, codeNeph })
+    .lookup({
+      from: 'places',
+      localField: '_id',
+      foreignField: 'candidat',
+      as: 'booking',
+    })
+  return candidat[0]
+}
+
 /**
  * @typedef {Object} CandidatUpdateData
  * @property {boolean} isEvaluationDone - `true` si le candidat à rempli le questionnaire d'évaluation

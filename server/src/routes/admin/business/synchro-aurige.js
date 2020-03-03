@@ -41,7 +41,10 @@ import {
 import { upsertLastSyncAurige } from '../../admin/status-candilib-business'
 import { getCandBookFrom } from '../../candidat/places-business'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
-import { NB_YEARS_ETG_EXPIRED } from '../../common/constants'
+import {
+  NB_YEARS_ETG_EXPIRED,
+  NB_DAYS_WAITING_FOR_ETG_EXPIERED,
+} from '../../common/constants'
 
 const getCandidatStatus = (nom, neph, status, details, message) => ({
   nom,
@@ -60,7 +63,7 @@ export const isETGExpired = dateReussiteETG => {
   } else {
     datetime = getFrenchLuxonFromISO(dateReussiteETG)
   }
-  return datetime.diffNow('years').years < -NB_YEARS_ETG_EXPIRED
+  return datetime.endOf('day').diffNow('years').years < -NB_YEARS_ETG_EXPIRED
 }
 
 export const isMoreThan2HoursAgo = date =>
@@ -204,6 +207,8 @@ const checkAndArchiveCandidat = async (
   let aurigeFeedback
   let dateFeedBack
   let message
+  let place
+  let datePlace
   if (candidatExistant === CANDIDAT_NOK) {
     message = `Pour le ${departement}, ce candidat ${codeNeph}/${nomNaissance} sera archivé : NEPH inconnu`
     appLogger.warn({ ...loggerInfoCandidat, description: message })
@@ -222,47 +227,57 @@ const checkAndArchiveCandidat = async (
       'UNKNOW_CASE',
       message
     )
-  } else if (!infoCandidatToUpdate.dateReussiteETG.isValid) {
-    message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG est invalide`
-    appLogger.warn({ ...loggerInfoCandidat, description: message })
-    infoCandidatToUpdate.dateReussiteETG = undefined
-    dateFeedBack = getFrenchLuxon()
-    aurigeFeedback = EPREUVE_ETG_KO
-  } else if (isETGExpired(infoCandidatToUpdate.dateReussiteETG)) {
-    message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG KO`
-    appLogger.warn({ ...loggerInfoCandidat, description: message })
-    dateFeedBack = getFrenchLuxon()
-    aurigeFeedback = EPREUVE_ETG_KO
-  } else if (isTooManyFailure(infoCandidatToUpdate.nbEchecsPratiques)) {
-    message = `Pour le ${departement}, ce candidat ${email} sera archivé : A 5 échecs pratiques`
-    appLogger.warn({ ...loggerInfoCandidat, description: message })
+  } else {
+    // Possible que s'il y a une validation Aurige
+    place = await findPlaceBookedByCandidat(candidat._id)
+    datePlace = place && getFrenchLuxonFromJSDate(place.date)
+    const diffDatePlace = datePlace && datePlace.diffNow('days')
 
-    dateFeedBack =
-      infoCandidatToUpdate.lastNoReussite &&
-      infoCandidatToUpdate.lastNoReussite.date
-    aurigeFeedback = NB_FAILURES_KO
-  } else if (infoCandidatToUpdate.reussitePratique) {
-    message = `Pour le ${departement}, ce candidat ${email} sera archivé : PRATIQUE OK`
-    appLogger.warn({ ...loggerInfoCandidat, description: message })
+    if (!infoCandidatToUpdate.dateReussiteETG.isValid) {
+      message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG est invalide`
+      appLogger.warn({ ...loggerInfoCandidat, description: message })
+      infoCandidatToUpdate.dateReussiteETG = undefined
+      dateFeedBack = getFrenchLuxon()
+      aurigeFeedback = EPREUVE_ETG_KO
+    } else if (
+      isETGExpired(infoCandidatToUpdate.dateReussiteETG) &&
+      !(
+        diffDatePlace &&
+        diffDatePlace.days > -NB_DAYS_WAITING_FOR_ETG_EXPIERED &&
+        diffDatePlace.days < 1
+      )
+    ) {
+      message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG KO`
+      appLogger.warn({ ...loggerInfoCandidat, description: message })
+      dateFeedBack = getFrenchLuxon()
+      aurigeFeedback = EPREUVE_ETG_KO
+    } else if (isTooManyFailure(infoCandidatToUpdate.nbEchecsPratiques)) {
+      message = `Pour le ${departement}, ce candidat ${email} sera archivé : A 5 échecs pratiques`
+      appLogger.warn({ ...loggerInfoCandidat, description: message })
 
-    dateFeedBack = infoCandidatToUpdate.reussitePratique
-    aurigeFeedback = EPREUVE_PRATIQUE_OK
+      dateFeedBack =
+        infoCandidatToUpdate.lastNoReussite &&
+        infoCandidatToUpdate.lastNoReussite.date
+      aurigeFeedback = NB_FAILURES_KO
+    } else if (infoCandidatToUpdate.reussitePratique) {
+      message = `Pour le ${departement}, ce candidat ${email} sera archivé : PRATIQUE OK`
+      appLogger.warn({ ...loggerInfoCandidat, description: message })
+
+      dateFeedBack = infoCandidatToUpdate.reussitePratique
+      aurigeFeedback = EPREUVE_PRATIQUE_OK
+    }
   }
 
   // Archiver le candidat et envoi de mail
   if (aurigeFeedback) {
-    if (dateFeedBack) {
-      const place = await findPlaceBookedByCandidat(candidat._id)
-      if (place) {
-        const datePlace = getFrenchLuxonFromJSDate(place.date)
-        candidat = await releaseAndArchivePlace(
-          dateFeedBack,
-          datePlace,
-          aurigeFeedback,
-          candidat,
-          place
-        )
-      }
+    if (dateFeedBack && datePlace) {
+      candidat = await releaseAndArchivePlace(
+        dateFeedBack,
+        datePlace,
+        aurigeFeedback,
+        candidat,
+        place
+      )
     }
 
     candidat.set(infoCandidatToUpdate)
