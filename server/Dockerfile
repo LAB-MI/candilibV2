@@ -59,7 +59,7 @@ COPY ecosystem.config.js .
 COPY --from=build /app/dist ./dist
 # Install production dependencies and clean cache
 RUN npm --no-git-tag-version version ${APP_VERSION} && \
-    npm ci --only=production && \
+    npm install --production && \
     npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org --production || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force ; \
