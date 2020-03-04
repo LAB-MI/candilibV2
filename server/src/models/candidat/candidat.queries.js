@@ -105,10 +105,11 @@ export const findCandidatsMatching = async (
   startingWith,
   endingWith
 ) => {
+  const MAX_RESULT = 300
   const search = `${startingWith ? '^' : ''}${$search}${endingWith ? '$' : ''}`
   const searchRegex = new RegExp(`${search}`, 'i')
 
-  const candidats = await Candidat.find({
+  const nbResultsMax = await Candidat.count({
     $or: [
       { nomNaissance: searchRegex },
       { prenom: searchRegex },
@@ -116,18 +117,39 @@ export const findCandidatsMatching = async (
       { email: searchRegex },
     ],
   })
-  const fullTextCandidats = await Candidat.find(
-    { $text: { $search } },
-    { score: { $meta: 'textScore' } }
-  ).sort({ score: { $meta: 'textScore' } })
+  const candidats = await Candidat.find({
+    $or: [
+      { nomNaissance: searchRegex },
+      { prenom: searchRegex },
+      { codeNeph: searchRegex },
+      { email: searchRegex },
+    ],
+  }).limit(MAX_RESULT)
 
-  return [
-    ...candidats,
-    ...fullTextCandidats.filter(
-      candidat =>
-        !candidats.some(cand => cand._id.toString() === candidat._id.toString())
-    ),
-  ]
+  let searchText = $search
+  if (startingWith && endingWith) {
+    searchText = `\\"${$search}\\"`
+  }
+
+  const fullTextCandidats = await Candidat.find(
+    { $text: { $search: searchText } },
+    { score: { $meta: 'textScore' } }
+  )
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(MAX_RESULT)
+
+  return {
+    candidats: [
+      ...candidats,
+      ...fullTextCandidats.filter(
+        candidat =>
+          !candidats.some(
+            cand => cand._id.toString() === candidat._id.toString()
+          )
+      ),
+    ],
+    nbResultsMax,
+  }
 }
 
 /**
