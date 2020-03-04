@@ -1,5 +1,8 @@
 import api from '@/api'
-import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
+import {
+  SHOW_ERROR,
+  SHOW_SUCCESS,
+} from '@/store'
 
 export const FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST = 'FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST'
 export const FETCH_STATS_KPI_RESULTS_EXAMS_SUCCESS = 'FETCH_STATS_KPI_RESULTS_EXAMS_SUCCESS'
@@ -13,6 +16,10 @@ export const FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST = 'FETCH_STATS_KPI_CA
 export const FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_SUCCESS = 'FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_SUCCESS'
 export const FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_FAILURE = 'FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_FAILURE'
 
+export const FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_REQUEST = 'FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_REQUEST'
+export const FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_SUCCESS = 'FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_SUCCESS'
+export const FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_FAILURE = 'FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_FAILURE'
+
 export default {
   getters: {
     isFetchingResultsExams: state => {
@@ -21,11 +28,14 @@ export default {
     isFetchingPlacesExams: state => {
       return state.isFetchingPlacesExams
     },
-    isFetchingCandidatInRetentionArea: state => {
-      return state.isFetchingCandidatInRetentionArea
+    isFetchingCandidatLeaveRetentionArea: state => {
+      return state.isFetchingCandidatLeaveRetentionArea
     },
-    statsCandidatInRetentionArea: state => {
-      return state.statsCandidatInRetentionArea
+    statsCandidatLeaveRetentionArea: state => {
+      return state.statsCandidatLeaveRetentionArea
+    },
+    statsCandidatLeaveRetentionAreaByWeek: state => {
+      return state.statsCandidatLeaveRetentionAreaByWeek
     },
     statsResultsExams: state => {
       return state.statsResultsExams
@@ -38,10 +48,12 @@ export default {
   state: {
     isFetchingResultsExams: false,
     isFetchingPlacesExams: false,
-    isFetchingCandidatInRetentionArea: false,
+    isFetchingCandidatLeaveRetentionArea: false,
+    isFetchingCandidatLeaveRetentionAreaByWeek: false,
     statsResultsExams: undefined,
     statsPlacesExams: undefined,
-    statsCandidatInRetentionArea: undefined,
+    statsCandidatLeaveRetentionArea: undefined,
+    statsCandidatLeaveRetentionAreaByWeek: undefined,
   },
 
   mutations: {
@@ -66,13 +78,23 @@ export default {
     },
 
     FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST (state) {
-      state.isFetchingCandidatInRetentionArea = true
+      state.isFetchingCandidatLeaveRetentionArea = true
     },
     FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_SUCCESS (state, statsKpi) {
-      state.statsCandidatInRetentionArea = statsKpi
+      state.statsCandidatLeaveRetentionArea = statsKpi
     },
     FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_FAILURE (state, error) {
-      state.isFetchingCandidatInRetentionArea = false
+      state.isFetchingCandidatLeaveRetentionArea = false
+    },
+
+    FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_REQUEST (state) {
+      state.isFetchingCandidatLeaveRetentionAreaByWeek = true
+    },
+    FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_SUCCESS (state, statsKpi) {
+      state.statsCandidatLeaveRetentionAreaByWeek = statsKpi
+    },
+    FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_FAILURE (state, error) {
+      state.isFetchingCandidatLeaveRetentionAreaByWeek = false
     },
   },
 
@@ -112,6 +134,27 @@ export default {
         dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {
         commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_FAILURE)
+        dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_REQUEST ({ state, commit, dispatch }, departement) {
+      commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_REQUEST)
+      try {
+        const {
+          candidatsLeaveRetentionByWeekAndDepartement,
+          success,
+          message,
+        } = await api.admin.exportCandidatsRetentionByWeekStatsKpi(departement)
+
+        if (!success) {
+          throw new Error(message)
+        }
+
+        commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_SUCCESS, candidatsLeaveRetentionByWeekAndDepartement)
+        dispatch(SHOW_SUCCESS, message)
+      } catch (error) {
+        commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_FAILURE)
         dispatch(SHOW_ERROR, error.message)
       }
     },

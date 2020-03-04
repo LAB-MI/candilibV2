@@ -58,7 +58,7 @@
           >
             <chart-bar
               class="chart-wrapper"
-              :labels="labels"
+              :labels="labelsHorizontal"
               :datasets="datasets"
             />
             <div style="display: block;" />
@@ -69,18 +69,15 @@
 
     <v-divider />
 
-    <div style="margin-left: 6.5vw;">
+    <div>
       <v-container>
         <div class="u-flex  u-flex--wrap  u-flex--center">
           <div
-            :class="`u-flex__item pa-3
-              t-number-inscrit-${Math.round(datasets[1].data[0])}
-              t-number-future-free-places-${Math.round(datasets[0].data[0])}
-              `"
+            class="`u-flex__item pa-3"
           >
             <chart-bar-vertical
-              class="chart-wrapper"
-              :labels="['semaine_1', 'semaine_2', 'semaine_3', 'semaine_4', 'semaine_5']"
+              class="chart-vertical-wrapper"
+              :labels="labelsVertical"
               :datasets="datasetsVerticalChart"
             />
             <div style="display: block;" />
@@ -115,16 +112,15 @@ export default {
       default () {},
     },
 
-    statsNbCandidatInRetentionArea: {
+    statsNbCandidatLeaveRetentionArea: {
       type: Object,
       default () {},
     },
-  },
 
-  data () {
-    return {
-      labels: [[`Stats:`]],
-    }
+    statsNbCandidatLeaveRetentionAreaByWeek: {
+      type: Array,
+      default () { return [] },
+    },
   },
 
   computed: {
@@ -139,6 +135,14 @@ export default {
           this.statsResultsExamValues.received
         )
       ) || 0
+    },
+    labelsHorizontal () {
+      return [[`Stats:`]]
+    },
+
+    labelsVertical () {
+      const dataCountCandidatByWeek = this.statsNbCandidatLeaveRetentionAreaByWeek || []
+      return dataCountCandidatByWeek.map(el => el.weekDate)
     },
 
     receiveAndFaildPlaces () {
@@ -170,10 +174,10 @@ export default {
     },
 
     datasetsVerticalChart () {
-      const { totalBookedPlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
+      const dataCountCandidatByWeek = this.statsNbCandidatLeaveRetentionAreaByWeek || []
 
       return [{
-        label: 'Candidats sans réservation et hors de la zone de rétention',
+        label: 'Candidats sortant de la zone de rétention par semaine',
         backgroundColor: [
           'rgba(96, 224, 64, 0.2)',
           'rgba(96, 224, 64, 0.2)',
@@ -189,19 +193,13 @@ export default {
           'rgba(64, 32, 224, 1)',
         ],
         borderWidth: 3,
-        data: [
-          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
-          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
-          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
-          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
-          totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 10,
-        ],
+        data: dataCountCandidatByWeek.map(el => (el.value || 0) && el.value.count),
       }]
     },
 
     datasets () {
       const { totalBookedPlaces, totalAvailablePlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
-      const { count } = this.statsNbCandidatInRetentionArea || {}
+      const { count } = this.statsNbCandidatLeaveRetentionArea || {}
       return [
         {
           label: 'Places disponibles',
@@ -280,7 +278,12 @@ export default {
 }
 
 .chart-wrapper {
-  width: 30vw;
-  height: 20vh;
+  width: 35vw;
+  height: 25vh;
+}
+
+.chart-vertical-wrapper {
+  width: 55vw;
+  height: 25vh;
 }
 </style>
