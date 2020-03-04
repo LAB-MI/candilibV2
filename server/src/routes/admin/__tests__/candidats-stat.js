@@ -1,4 +1,5 @@
 import { createCandidat } from '../../../models/candidat'
+import Candidat from '../../../models/candidat/candidat.model'
 import {
   getFrenchLuxon,
   NO_CANDILIB,
@@ -786,11 +787,70 @@ const candidatsForStatsRetention = [
   },
 ]
 
-export const createCandidatInRetentionArea = async (canAccessAt = null) => {
+export const createCandidatLeaveRetentionArea = async (canAccessAt = null) => {
   const result = await Promise.all(
     candidatsForStatsRetention.map(el =>
       createCandidatAndUpdate(el, canAccessAt || el.canAccessAt)
     )
   )
   return result
+}
+
+const generateFakeEmail = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyz1234567890'
+  let string = ''
+  for (let idx = 0; idx < 20; idx++) {
+    string += chars[Math.floor(Math.random() * chars.length)]
+  }
+  return string + 'onepiecesaroxxe' + '@shinsekai.com'
+}
+
+const generateFakeLastName = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  let string = ''
+  for (let idx = 0; idx < 30; idx++) {
+    string += chars[Math.floor(Math.random() * chars.length)]
+  }
+  return string + 'Monkey-D-Luffy'
+}
+
+export const createCandidatsForCountRetentionByWeek = async (
+  numberOfCandidats,
+  departement
+) => {
+  if (!numberOfCandidats) {
+    return []
+  }
+  const randomNeph = () =>
+    Math.floor(Math.random() * 999999999999 + 100000000000)
+  const luxonDateObject = () => getFrenchLuxon()
+
+  const ArrayOfCandidats = Array(numberOfCandidats)
+    .fill(true)
+    .map(async (el, index) => {
+      const candidat = {
+        codeNeph: randomNeph(),
+        nomNaissance: generateFakeLastName(),
+        prenom: 'Sanji',
+        email: generateFakeEmail(),
+        portable: '0612345678',
+        departement: departement || '93',
+        dateReussiteETG: luxonDateObject().plus({ year: -1 }),
+        isValidatedByAurige: true,
+        isValidatedEmail: true,
+        canAccessAt: luxonDateObject()
+          .plus({ weeks: index })
+          .startOf('day'),
+      }
+      return createCandidatAndUpdate(candidat, candidat.canAccessAt)
+    })
+  return Promise.all(ArrayOfCandidats)
+}
+
+export const deleteCandidatsForCountRetentionByWeek = candidatsToDelete => {
+  return Promise.all(
+    candidatsToDelete.map(candidat => {
+      return Candidat.findByIdAndDelete(candidat._id)
+    })
+  )
 }

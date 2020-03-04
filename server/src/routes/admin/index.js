@@ -32,9 +32,10 @@ import {
   updatePlaces,
 } from './places-controllers'
 import {
+  getCandidatsLeaveRetentionArea,
+  getCandidatsLeaveRetentionAreaByWeekAndDepartement,
   getStatsPlacesExam,
   getStatsResultsExam,
-  getCandidatsLeaveRetentionArea,
 } from './statistics.controllers'
 
 import { getInfoLastSyncAurige } from './status-candilib-controllers'
@@ -1049,13 +1050,56 @@ router.get(
  *           application/json:
  *             schema:
  *               allOf:
- *                 - $ref: '#/components/schemas/StatsKpiCandidatsInRetentionArea'
+ *                 - $ref: '#/components/schemas/StatsKpiCandidatsLeaveRetentionArea'
  */
 
 router.get(
   '/stats-candidats-retention',
   verifyUserLevel(config.userStatusLevels.delegue),
   getCandidatsLeaveRetentionArea
+)
+
+/**
+ * @swagger
+ *
+* /admin/stats-candidats-retention-by-week:
+*   get:
+*     tags: ["Administrateur"]
+*     summary: Récupération des statsKpi des candidats en zone rétention sur 5 semaines
+*     description: Permet de récupérer les statistiques des candidats en zone rétention par département à compter de la date du jour plus 4 semaines.
+*     parameters:
+*       - in: query
+*         name: beginPeriod
+*         schema:
+*           type: string
+*           example: 2019-10-10T22:00:00.000Z
+*         description: Date de début de période
+*         required: true
+*       - in: query
+*         name: endPeriod
+*         schema:
+*           type: string
+*           example: 2019-09-10T22:00:00.000Z
+*         description: Date de fin de période
+*         required: true
+*       - in: query
+*         name: isCsv
+*         schema:
+*           type: string
+*           example: true
+*         description: Demande d'un fichier CSV des stats résultats de place
+*
+*     responses:
+*       500:
+*         description: Erreur lors de la récupération des départements
+
+*                 - $ref: '#/components/schemas/StatsKpiCandidatsLeaveRetentionArea'
+*/
+
+router.get(
+  '/stats-candidats-retention-by-week',
+  verifyUserLevel(config.userStatusLevels.delegue),
+  getCandidatsLeaveRetentionAreaByWeekAndDepartement
 )
 
 /**

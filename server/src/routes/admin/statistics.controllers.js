@@ -8,6 +8,7 @@ import { appLogger, getFrenchLuxon, getFrenchLuxonFromISO } from '../../util'
 import {
   getAllPlacesProposeInFutureByDpt,
   getCountCandidatsLeaveRetentionArea,
+  getCountCandidatsLeaveRetentionAreaByWeek,
   getResultsExamAllDpt,
 } from './statistics.business'
 
@@ -85,7 +86,7 @@ const fieldsPlacesExams = [
  * @constant {LabelValue[]}
  */
 
-const fieldsCandidatsInRetentionArea = [
+const fieldsCandidatsLeaveRetentionArea = [
   {
     label: 'Département',
     value: '_id',
@@ -118,8 +119,8 @@ const optionsPlacesExam = {
  * @constant {CSVOptions}
  */
 
-const optionsCandidatsInRetentionArea = {
-  fields: fieldsCandidatsInRetentionArea,
+const optionsCandidatsLeaveRetentionArea = {
+  fields: fieldsCandidatsLeaveRetentionArea,
   delimiter: ';',
   quote: '',
 }
@@ -153,7 +154,7 @@ const parseStatsResultsExams = statsData =>
 
 const parseStatsCandidatRetention = statsData =>
   console.log({ statsData }) ||
-  parseAsync(statsData, optionsCandidatsInRetentionArea)
+  parseAsync(statsData, optionsCandidatsLeaveRetentionArea)
 
 /**
  * Crée le CSV à partir du contenu `statsData`
@@ -308,6 +309,63 @@ export const getCandidatsLeaveRetentionArea = async (req, res) => {
     message: 'Les stats ont bien été mises à jour',
     statsKpiCandidatsLeaveRetention,
   })
+}
+
+/**
+ *
+ * @param {import('express').Request} req Requête express
+ * @param {Object} req.query Query string de la requête
+ * @param {Object} req.query.departement Département selectionné
+ * @param {Object} req.departements Départements dont l'utilisateur à accès
+ * @param {Object} req.userId Id de l'utilisateur faisant l'action
+ * @param {import('express').Response} res Réponse express
+ */
+
+export const getCandidatsLeaveRetentionAreaByWeekAndDepartement = async (
+  req,
+  res
+) => {
+  const { departement } = req.query
+  const { departements, userId } = req
+
+  const loggerContent = {
+    section: 'admin-get-candidats-leave-retention-area-by-week-and-departement',
+    admin: userId,
+    selectedDepartement: departement,
+  }
+
+  let dpts = departements
+  if (departement && departements.includes(departement)) {
+    dpts = [departement]
+  }
+
+  try {
+    const candidatsLeaveRetentionByWeekAndDepartement = await getCountCandidatsLeaveRetentionAreaByWeek(
+      dpts
+    )
+
+    appLogger.info({
+      ...loggerContent,
+      action:
+        'GET STATS KPI NUMBER CANDIDAT LEAVE RETENTION AREA BY WEEK AND DEPARTEMENT',
+      departements: dpts,
+    })
+
+    return res.status(200).json({
+      success: true,
+      message: 'Les stats ont bien été mises à jour',
+      candidatsLeaveRetentionByWeekAndDepartement,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      action:
+        'ERROR GET STATS KPI NUMBER CANDIDAT LEAVE RETENTION AREA BY WEEK AND DEPARTEMENT',
+      description: error.message,
+      error,
+    })
+    return res.status(500).json({ success: false, message: error.message })
+  }
 }
 
 /**

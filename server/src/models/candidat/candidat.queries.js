@@ -582,7 +582,7 @@ export const countCandidatsInscritsByDepartementAndWeek = async (
       },
     ],
   })
-  return result
+  return { count: result }
 }
 
 /**

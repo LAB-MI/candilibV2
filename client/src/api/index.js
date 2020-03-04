@@ -565,6 +565,17 @@ export default {
       return apiClient.get(path, headers)
     },
 
+    exportCandidatsRetentionByWeekStatsKpi (
+      departement,
+    ) {
+      const queryString = (departement ? `departement=${departement}&` : '')
+      const path = `${apiPaths.admin.exportCandidatsRetentionByWeekStatsKpi}?${queryString}`
+      const headers = {
+        headers: getAdminTokenHeader(),
+      }
+      return apiClient.get(path, headers)
+    },
+
     async uploadPlacesCSV (body) {
       const json = await apiClient.post(apiPaths.admin.places, {
         headers: getAdminTokenHeader(),
