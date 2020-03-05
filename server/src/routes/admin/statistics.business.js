@@ -1,6 +1,9 @@
 import archivedCandidatModel from '../../models/archived-candidat/archived-candidat.model'
 import candidatModel from '../../models/candidat/candidat.model'
-import { countCandidatsInscritsByDepartement } from '../../models/candidat/candidat.queries'
+import {
+  countCandidatsInscritsByDepartement,
+  countCandidatsInscritsByDepartementAndWeek,
+} from '../../models/candidat/candidat.queries'
 import { countPlacesBookedOrNot } from '../../models/place/place.queries'
 
 import {
@@ -43,12 +46,17 @@ export const getAllPlacesProposeInFutureByDpt = async beginDate => {
     throw new Error('Aucun département trouvé')
   }
   const results = await Promise.all(
-    departements.map(departement => getPlacesByDpt(departement, beginDate))
+    departements.map(departement =>
+      getPlacesAndCandidatsInscritsByDpt(departement, beginDate)
+    )
   )
   return results
 }
 
-export const getPlacesByDpt = async (departement, beginDate) => {
+export const getPlacesAndCandidatsInscritsByDpt = async (
+  departement,
+  beginDate
+) => {
   const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
   const centres = centresFromDB.map(({ _id }) => _id)
 
@@ -281,4 +289,114 @@ const countNoReussitesAndPlacesByReasonAndCentres = (
     })
     .count('count')
     .exec()
+}
+
+export const getCountCandidatsLeaveRetentionArea = async (
+  departements,
+  beginPeriode,
+  endPeriode
+) => {
+  const expression = {}
+  if (beginPeriode) {
+    expression.$gte = beginPeriode
+  } else {
+    expression.$gte = getFrenchLuxon()
+      .startOf('day')
+      .toJSDate()
+  }
+
+  if (endPeriode) {
+    expression.$lt = endPeriode
+  }
+
+  const result = await candidatModel.aggregate([
+    {
+      $match: {
+        departement: { $in: departements },
+        canAccessAt: {
+          ...expression,
+        },
+      },
+    },
+    {
+      $group: {
+        _id: '$departement',
+        count: {
+          $sum: 1,
+        },
+      },
+    },
+    {
+      $project: {
+        beginPeriode,
+        endPeriode,
+        count: 1,
+      },
+    },
+  ])
+  return result
+}
+
+const setDateOfWeek = (weekNumber, flag) => {
+  if (weekNumber && !flag) {
+    const toReturn = getFrenchLuxon()
+      .startOf('week')
+      .plus({ weeks: weekNumber })
+      .startOf('day')
+    return toReturn
+  } else {
+    const toReturn = getFrenchLuxon()
+      .startOf('week')
+      .plus({ weeks: weekNumber })
+      .startOf('day')
+    return toReturn
+  }
+}
+
+const countCandidatsInscritsByDeptAndWeek = async (
+  departement,
+  shapedArray
+) => {
+  const weeks = shapedArray.map(async (useless, index) => {
+    const startWeekDate = setDateOfWeek(index, false)
+    const endWeekDate = setDateOfWeek(index + 1, index === 0)
+    return {
+      weekNumber: index,
+      weekDate: startWeekDate.startOf('week').toLocaleString(),
+      value: await countCandidatsInscritsByDepartementAndWeek(
+        departement,
+        startWeekDate,
+        endWeekDate
+      ),
+    }
+  })
+  return Promise.all(weeks)
+}
+
+export const getCountCandidatsLeaveRetentionAreaByWeek = async departements => {
+  const numberOfWeekToDisplay = 5
+  const shapedArray = Array(numberOfWeekToDisplay).fill(true)
+
+  if (departements && departements.length && departements.length === 1) {
+    const result = [
+      {
+        departement: departements[0],
+        candidatsLeaveRetentionByWeek: await countCandidatsInscritsByDeptAndWeek(
+          departements[0],
+          shapedArray
+        ),
+      },
+    ]
+    return Promise.all(result)
+  }
+  const result = departements.map(async departement => {
+    return {
+      departement,
+      candidatsLeaveRetentionByWeek: await countCandidatsInscritsByDeptAndWeek(
+        departement,
+        shapedArray
+      ),
+    }
+  })
+  return Promise.all(result)
 }

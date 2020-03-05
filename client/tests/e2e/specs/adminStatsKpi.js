@@ -31,7 +31,7 @@ describe('Stats Kpi tests', () => {
 
   it('Checks candidate nonReussite stats', () => {
     cy.adminLogin()
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd')).wait(500)
 
     cy.get('.t-remplissage-futur')
       .should('contain', '0.00%')
@@ -44,7 +44,7 @@ describe('Stats Kpi tests', () => {
 
     cy.addCandidatToPlace(undefined, 'CANDIDAT_STATS_KPI')
 
-    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'))
+    cy.visit(Cypress.env('frontAdmin') + 'admin/stats-kpi/' + Cypress.env('placeDate') + '/' + nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd')).wait(500)
 
     cy.get('.t-number-inscrit-' + (nbInscrits - nbBooked))
       .should('have.length', 1)

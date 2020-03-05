@@ -543,6 +543,39 @@ export default {
       return apiClient.get(path, headers)
     },
 
+    exportCandidatsRetentionStatsKpi (
+      beginPeriod = '',
+      endPeriod = '',
+      isCsv = false,
+      departement,
+    ) {
+      const queryString =
+        (departement ? `departement=${departement}&` : '') +
+          `isCsv=${isCsv}&beginPeriod=${encodeURIComponent(
+            beginPeriod,
+          )}&endPeriod=${encodeURIComponent(endPeriod)}`
+      const path = `${apiPaths.admin.exportCandidatsRetentionStatsKpi}?${queryString}`
+      const headers = {
+        headers: getAdminTokenHeader(),
+      }
+
+      if (isCsv) {
+        return apiClient.getRaw(path, headers)
+      }
+      return apiClient.get(path, headers)
+    },
+
+    exportCandidatsRetentionByWeekStatsKpi (
+      departement,
+    ) {
+      const queryString = (departement ? `departement=${departement}&` : '')
+      const path = `${apiPaths.admin.exportCandidatsRetentionByWeekStatsKpi}?${queryString}`
+      const headers = {
+        headers: getAdminTokenHeader(),
+      }
+      return apiClient.get(path, headers)
+    },
+
     async uploadPlacesCSV (body) {
       const json = await apiClient.post(apiPaths.admin.places, {
         headers: getAdminTokenHeader(),

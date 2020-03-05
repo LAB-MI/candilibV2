@@ -1,4 +1,5 @@
 import { createCandidat } from '../../../models/candidat'
+import Candidat from '../../../models/candidat/candidat.model'
 import {
   getFrenchLuxon,
   NO_CANDILIB,
@@ -715,4 +716,141 @@ export const createStatsForPlacesExam = async () => {
 
   const updatedCandidat = await createCandidatAndUpdate(candidatForStatsPlace)
   await bookCandidatOnSelectedPlace(placeCreated, updatedCandidat, bookedAt)
+}
+
+const candidatsForStatsRetention = [
+  {
+    codeNeph: '888856789980',
+    nomNaissance: 'nom à tester 92 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test01.retention92@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 92100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '92',
+    canAccessAt: nowLuxon.plus({ days: 15 }),
+  },
+  {
+    codeNeph: '888856789981',
+    nomNaissance: 'nom à tester 92 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test02.retention92@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 92100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '92',
+    canAccessAt: nowLuxon.plus({ days: 15 }),
+  },
+  {
+    codeNeph: '878856789980',
+    nomNaissance: 'nom à tester 93 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test01.retention93@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 93100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '93',
+    canAccessAt: nowLuxon.plus({ days: 15 }),
+  },
+  {
+    codeNeph: '878856789981',
+    nomNaissance: 'nom à tester 93 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test02.retention93@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 93100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '93',
+    canAccessAt: nowLuxon.plus({ days: 15 }),
+  },
+  {
+    codeNeph: '858856789980',
+    nomNaissance: 'nom à tester 94 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test01.retention94@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 942100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '94',
+    canAccessAt: nowLuxon.plus({ days: 25 }),
+  },
+  {
+    codeNeph: '858856789981',
+    nomNaissance: 'nom à tester 94 retention',
+    prenom: 'prénom à tester retention',
+    email: 'test02.retention94@test.com',
+    portable: '0612345678',
+    adresse: '10 Rue Oberkampf 94100 Paris',
+    dateReussiteETG: nowLuxon.plus({ year: -1 }),
+    departement: '94',
+    canAccessAt: nowLuxon.plus({ days: 19 }),
+  },
+]
+
+export const createCandidatLeaveRetentionArea = async (canAccessAt = null) => {
+  const result = await Promise.all(
+    candidatsForStatsRetention.map(el =>
+      createCandidatAndUpdate(el, canAccessAt || el.canAccessAt)
+    )
+  )
+  return result
+}
+
+const generateFakeEmail = () => {
+  const chars = 'abcdefghijklmnopqrstuvwxyz1234567890'
+  let string = ''
+  for (let idx = 0; idx < 20; idx++) {
+    string += chars[Math.floor(Math.random() * chars.length)]
+  }
+  return string + 'onepiecesaroxxe' + '@shinsekai.com'
+}
+
+const generateFakeLastName = () => {
+  const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  let string = ''
+  for (let idx = 0; idx < 30; idx++) {
+    string += chars[Math.floor(Math.random() * chars.length)]
+  }
+  return string + 'Monkey-D-Luffy'
+}
+
+export const createCandidatsForCountRetentionByWeek = async (
+  numberOfCandidats,
+  departement
+) => {
+  if (!numberOfCandidats) {
+    return []
+  }
+  const randomNeph = () =>
+    Math.floor(Math.random() * 999999999999 + 100000000000)
+  const luxonDateObject = () => getFrenchLuxon()
+
+  const ArrayOfCandidats = Array(numberOfCandidats)
+    .fill(true)
+    .map(async (el, index) => {
+      const candidat = {
+        codeNeph: randomNeph(),
+        nomNaissance: generateFakeLastName(),
+        prenom: 'Sanji',
+        email: generateFakeEmail(),
+        portable: '0612345678',
+        departement: departement || '93',
+        dateReussiteETG: luxonDateObject().plus({ year: -1 }),
+        isValidatedByAurige: true,
+        isValidatedEmail: true,
+        canAccessAt: luxonDateObject()
+          .plus({ weeks: index })
+          .startOf('day'),
+      }
+      return createCandidatAndUpdate(candidat, candidat.canAccessAt)
+    })
+  return Promise.all(ArrayOfCandidats)
+}
+
+export const deleteCandidatsForCountRetentionByWeek = candidatsToDelete => {
+  return Promise.all(
+    candidatsToDelete.map(candidat => {
+      return Candidat.findByIdAndDelete(candidat._id)
+    })
+  )
 }

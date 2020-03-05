@@ -103,11 +103,14 @@ export const createCandidatsAndUpdate = async () => {
   return newCandidats
 }
 
-export const createCandidatAndUpdate = async candidat => {
+export const createCandidatAndUpdate = async (candidat, canAccessAt = null) => {
   const createdCandidat = await createCandidat(candidat)
   createdCandidat.dateReussiteETG = getFrenchLuxon().plus({ year: -1 })
   createdCandidat.isValidatedByAurige = true
   createdCandidat.isValidatedEmail = true
+  if (canAccessAt) {
+    createdCandidat.canAccessAt = canAccessAt
+  }
   const updatedCandidat = await createdCandidat.save()
   return updatedCandidat
 }

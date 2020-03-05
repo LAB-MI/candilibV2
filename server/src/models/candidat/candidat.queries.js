@@ -512,10 +512,29 @@ export const isCandidatExisting = async _id => {
   return isExist
 }
 
+/**
+ * Compte le nombre de candidats validé par Aurige et qui ne sont pas dans la zone de rétention
+ *
+ * @async
+ * @function
+ *
+ * @param {string} departement - Identifiant du département sélectionné
+ *
+ * @returns {Promise.<number>} - le nombre de candidat compté
+ */
 export const countCandidatsInscritsByDepartement = async departement => {
+  const dateNow = getFrenchLuxon()
   return Candidat.countDocuments({
     departement,
     isValidatedByAurige: true,
+    $or: [
+      {
+        canAccessAt: { $lt: dateNow },
+      },
+      {
+        canAccessAt: { $exists: false },
+      },
+    ],
   })
 }
 
@@ -529,6 +548,41 @@ export const findCandidatWithBooking = async (nomNaissance, codeNeph) => {
       as: 'booking',
     })
   return candidat[0]
+}
+
+/**
+ * Compte le nombre de candidats validé par Aurige et qui ne sont pas dans la zone de rétention sur une période
+ *
+ * @async
+ * @function
+ *
+ * @param {string} departement - Identifiant du département sélectionné
+ * @param {string} startDate - Date au format ISO de debut de période
+ * @param {string} endDate - Date au format ISO de fin période
+ *
+ * @returns {Promise.<number>} - le nombre de candidat compté
+ */
+export const countCandidatsInscritsByDepartementAndWeek = async (
+  departement,
+  startDate,
+  endDate
+) => {
+  const result = await Candidat.countDocuments({
+    departement,
+    isValidatedByAurige: true,
+    $and: [
+      {
+        canAccessAt: { $exists: true },
+      },
+      {
+        canAccessAt: { $gte: startDate },
+      },
+      {
+        canAccessAt: { $lt: endDate },
+      },
+    ],
+  })
+  return { count: result }
 }
 
 /**
