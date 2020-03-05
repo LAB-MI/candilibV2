@@ -131,7 +131,7 @@ export default {
       try {
         const response = await api.admin.exportCandidatsRetentionStatsKpi(beginPeriode, endPeriode, isCsv, departement)
         commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_SUCCESS, response)
-        dispatch(SHOW_SUCCESS, response.message)
+        // dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {
         commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_FAILURE)
         dispatch(SHOW_ERROR, error.message)
@@ -152,7 +152,7 @@ export default {
         }
 
         commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_SUCCESS, candidatsLeaveRetentionByWeekAndDepartement)
-        dispatch(SHOW_SUCCESS, message)
+        // dispatch(SHOW_SUCCESS, message)
       } catch (error) {
         commit(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_FAILURE)
         dispatch(SHOW_ERROR, error.message)
