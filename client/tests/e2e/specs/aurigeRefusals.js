@@ -78,7 +78,7 @@ describe('Aurige Refusals', () => {
       .then($mail => {
         cy.wrap($mail)
           .getSubject()
-          .should('contain', '=?UTF-8?Q?Probl=C3=A8me_inscription_Candilib?=')
+          .should('contain', 'Informations Candilib')
         cy.wrap($mail)
           .its('Content.Body')
           .should('contain', 'vous avez =\r\nd=C3=A9j=C3=A0 r=C3=A9ussi votre examen du permis de conduire,\r\nnotre service ne vous est plus utile.')

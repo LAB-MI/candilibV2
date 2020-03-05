@@ -88,7 +88,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
         contactezNous
       )
       message.content = getHtmlBody(EPREUVE_PRATIQUE_OK_MSG)
-      message.subject = 'Problème inscription Candilib'
+      message.subject = 'Informations Candilib'
       return message
     }
     case INSCRIPTION_OK:
