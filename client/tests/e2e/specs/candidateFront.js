@@ -354,7 +354,7 @@ describe('Connected candidate front', () => {
     // Verifie s'il y a des places sur le 1er mois
     const nbMonthsBefore45Days = dayAfter45Days.diff(now, 'months').months | 0
     for (let nbMonth = 0; nbMonth < nbMonthsBefore45Days; nbMonth++) {
-      const monthLong = now.plus({ 'months': nbMonth }).monthLong
+      const monthLong = now.plus({ months: nbMonth }).monthLong
       cy.get(`[href="#tab-${monthLong}"]`).click()
       cy.get(`.t-tab-${monthLong}`).should('contain', "Il n'y a pas de créneau disponible pour ce mois.")
     }

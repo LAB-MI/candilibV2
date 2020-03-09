@@ -191,9 +191,9 @@ describe('Planning tests without candidate', () => {
       .click()
     cy.url()
       .then(($url) => {
-        let url = $url.split('/')
-        let date = url[url.length - 1]
-        let ymd = date.split('-')
+        const url = $url.split('/')
+        const date = url[url.length - 1]
+        const ymd = date.split('-')
         cy.get('.t-date-picker [type=text]').invoke('val')
           .should('contain', ymd[2] + '/' + ymd[1] + '/' + ymd[0])
       })
@@ -201,9 +201,9 @@ describe('Planning tests without candidate', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.url()
       .then(($url) => {
-        let url = $url.split('/')
-        let date = url[url.length - 1]
-        let ymd = date.split('-')
+        const url = $url.split('/')
+        const date = url[url.length - 1]
+        const ymd = date.split('-')
         cy.get('.t-date-picker [type=text]').invoke('val')
           .should('contain', ymd[2] + '/' + ymd[1] + '/' + ymd[0])
       })
@@ -284,7 +284,7 @@ describe('Planning tests without candidate', () => {
         })
         cy.get('tr').eq(1).within(($inTr) => {
           cy.get('td').eq(1).within(($inTd) => {
-            cy.get('button').eq(2).should('contain', `Supprimer l'après-midi`).click().wait(500)
+            cy.get('button').eq(2).should('contain', 'Supprimer l\'après-midi').click().wait(500)
             cy.get('button').eq(4).should('contain', 'Valide').click()
           })
         })

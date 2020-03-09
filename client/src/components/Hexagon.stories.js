@@ -15,5 +15,5 @@ storiesOf('Common/Hexagon', module)
     components: {
       Hexagon,
     },
-    template: `<v-toolbar dark><hexagon value="75" /></v-toolbar>`,
+    template: '<v-toolbar dark><hexagon value="75" /></v-toolbar>',
   }))

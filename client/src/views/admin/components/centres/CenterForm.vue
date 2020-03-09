@@ -176,7 +176,7 @@ export default {
   computed: {
     generalRules () {
       if (this.addCentre) {
-        return [ text => text !== '' || 'Veuillez renseigner ce champ' ]
+        return [text => text !== '' || 'Veuillez renseigner ce champ']
       }
       return []
     },

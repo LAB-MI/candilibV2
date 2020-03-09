@@ -21,7 +21,8 @@
 <script>
 import { mapGetters } from 'vuex'
 
-import { SIGNED_OUT_CANDIDAT,
+import {
+  SIGNED_OUT_CANDIDAT,
   FETCH_MY_PROFILE_REQUEST,
   SHOW_ERROR,
 } from '@/store'

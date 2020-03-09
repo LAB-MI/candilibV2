@@ -13,15 +13,15 @@ describe('Test delay after failed attempt', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.json',
       [
         {
-          'codeNeph': Cypress.env('candidatDelayAfterFailureNeph'),
-          'nomNaissance': Cypress.env('candidatDelayAfterFailure'),
-          'email': Cypress.env('emailCandidatDelayAfterFailure'),
-          'dateReussiteETG': new Date(),
-          'nbEchecsPratiques': '1',
-          'dateDernierNonReussite': Cypress.env('dateFail'),
-          'objetDernierNonReussite': 'echec',
-          'reussitePratique': '',
-          'candidatExistant': 'OK',
+          codeNeph: Cypress.env('candidatDelayAfterFailureNeph'),
+          nomNaissance: Cypress.env('candidatDelayAfterFailure'),
+          email: Cypress.env('emailCandidatDelayAfterFailure'),
+          dateReussiteETG: new Date(),
+          nbEchecsPratiques: '1',
+          dateDernierNonReussite: Cypress.env('dateFail'),
+          objetDernierNonReussite: 'echec',
+          reussitePratique: '',
+          candidatExistant: 'OK',
         },
       ])
     cy.adminLogin()

@@ -34,15 +34,15 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
   cy.writeFile(Cypress.env('filePath') + '/aurige.end.json',
     [
       {
-        'codeNeph': candidat ? candidat.codeNeph : Cypress.env('NEPH'),
-        'nomNaissance': candidat ? candidat.nomNaissance : Cypress.env('candidat'),
-        'email': candidat ? candidat.email : Cypress.env('emailCandidat'),
-        'dateReussiteETG': '',
-        'nbEchecsPratiques': '',
-        'dateDernierNonReussite': '',
-        'objetDernierNonReussite': '',
-        'reussitePratique': '',
-        'candidatExistant': 'NOK',
+        codeNeph: candidat ? candidat.codeNeph : Cypress.env('NEPH'),
+        nomNaissance: candidat ? candidat.nomNaissance : Cypress.env('candidat'),
+        email: candidat ? candidat.email : Cypress.env('emailCandidat'),
+        dateReussiteETG: '',
+        nbEchecsPratiques: '',
+        dateDernierNonReussite: '',
+        objetDernierNonReussite: '',
+        reussitePratique: '',
+        candidatExistant: 'NOK',
       },
     ])
   // Archives the candidate
@@ -201,15 +201,15 @@ Cypress.Commands.add('candidateValidation', () => {
   cy.writeFile(Cypress.env('filePath') + '/aurige.json',
     [
       {
-        'codeNeph': Cypress.env('NEPH'),
-        'nomNaissance': Cypress.env('candidat'),
-        'email': Cypress.env('emailCandidat'),
-        'dateReussiteETG': '2018-10-12',
-        'nbEchecsPratiques': '0',
-        'dateDernierNonReussite': '',
-        'objetDernierNonReussite': '',
-        'reussitePratique': '',
-        'candidatExistant': 'OK',
+        codeNeph: Cypress.env('NEPH'),
+        nomNaissance: Cypress.env('candidat'),
+        email: Cypress.env('emailCandidat'),
+        dateReussiteETG: '2018-10-12',
+        nbEchecsPratiques: '0',
+        dateDernierNonReussite: '',
+        objetDernierNonReussite: '',
+        reussitePratique: '',
+        candidatExistant: 'OK',
       },
     ])
   cy.contains('import_export')

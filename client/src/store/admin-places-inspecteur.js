@@ -27,7 +27,7 @@ export default {
       try {
         commit(DELETE_INSPECTEUR_PLACES_REQUEST)
         if (!placesToDelete.length) {
-          throw new Error(`Il n'y a pas de place à supprimer pour cet inspecteur sur la tranche horaire sélectionnée`)
+          throw new Error('Il n\'y a pas de place à supprimer pour cet inspecteur sur la tranche horaire sélectionnée')
         }
         const { success, message } = await api.admin.deletePlacesInspecteur(placesToDelete)
         if (!success) {

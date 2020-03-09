@@ -42,7 +42,7 @@ describe('Create and see users', () => {
       .click()
 
     cy.get('.v-snack--active')
-      .should('contain', `L'utilisateur a bien été créé`)
+      .should('contain', 'L\'utilisateur a bien été créé')
     cy.get('.t-list-users')
       .should('contain', repartiteurEmail1)
   })
@@ -62,7 +62,7 @@ describe('Create and see users', () => {
     cy.get('.t-create-btn')
       .click()
     cy.get('.v-snack--active')
-      .should('contain', `L'utilisateur a bien été créé`)
+      .should('contain', 'L\'utilisateur a bien été créé')
 
     cy.get('.t-input-email input')
       .type(repartiteurEmail2, { force: true })
@@ -76,7 +76,7 @@ describe('Create and see users', () => {
       .click()
 
     cy.get('.v-snack--active')
-      .should('contain', `Impossible de créer l'utilisateur : l'email existe déjà`)
+      .should('contain', 'Impossible de créer l\'utilisateur : l\'email existe déjà')
   })
 
   it('Should not archive user if cancel archive users', () => {
@@ -94,7 +94,7 @@ describe('Create and see users', () => {
     cy.get('.t-create-btn')
       .click()
     cy.get('.v-snack--active')
-      .should('contain', `L'utilisateur a bien été créé`)
+      .should('contain', 'L\'utilisateur a bien été créé')
 
     cy.get('.t-list-users')
       .find('th span')
@@ -131,7 +131,7 @@ describe('Create and see users', () => {
     cy.get('.t-create-btn')
       .click()
     cy.get('.v-snack--active')
-      .should('contain', `L'utilisateur a bien été créé`)
+      .should('contain', 'L\'utilisateur a bien été créé')
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
     cy.get('.t-list-users')
@@ -151,7 +151,7 @@ describe('Create and see users', () => {
       .click()
 
     cy.get('.v-snack--active')
-      .should('contain', `L'utilisateur a bien été archivé`)
+      .should('contain', 'L\'utilisateur a bien été archivé')
 
     cy.get('.t-list-users')
       .should('not.contain', repartiteurEmail4)
@@ -170,7 +170,7 @@ describe('Create and see users', () => {
     cy.get('.t-create-btn')
       .click()
     cy.get('.v-snack--active')
-      .should('contain', `L'utilisateur a bien été créé`)
+      .should('contain', 'L\'utilisateur a bien été créé')
 
     cy.get('.t-list-users')
       .find('th span')
@@ -230,7 +230,7 @@ describe('Create and see users', () => {
     cy.get('.t-create-btn')
       .click()
     cy.get('.v-snack--active')
-      .should('contain', `L'utilisateur a bien été créé`)
+      .should('contain', 'L\'utilisateur a bien été créé')
 
     cy.get('.t-list-users')
       .find('th span')

@@ -57,15 +57,15 @@ describe('Stats Kpi tests', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonReussite.json',
       [
         {
-          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
-          'nomNaissance': Cypress.env('candidatStatsKpi'),
-          'email': Cypress.env('emailCandidatStatsKpi'),
-          'dateReussiteETG': new Date(),
-          'nbEchecsPratiques': '0',
-          'dateDernierNonReussite': Cypress.env('placeDate'),
-          'objetDernierNonReussite': 'Echec',
-          'reussitePratique': '',
-          'candidatExistant': 'OK',
+          codeNeph: Cypress.env('candidatStatsKpiNeph'),
+          nomNaissance: Cypress.env('candidatStatsKpi'),
+          email: Cypress.env('emailCandidatStatsKpi'),
+          dateReussiteETG: new Date(),
+          nbEchecsPratiques: '0',
+          dateDernierNonReussite: Cypress.env('placeDate'),
+          objetDernierNonReussite: 'Echec',
+          reussitePratique: '',
+          candidatExistant: 'OK',
         },
       ])
     cy.contains('import_export')
@@ -114,15 +114,15 @@ describe('Stats Kpi tests', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonRecevable.json',
       [
         {
-          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
-          'nomNaissance': Cypress.env('candidatStatsKpi'),
-          'email': Cypress.env('emailCandidatStatsKpi'),
-          'dateReussiteETG': new Date(),
-          'nbEchecsPratiques': '0',
-          'dateDernierNonReussite': nowIn1WeekAnd1DaysBefore01.toFormat('yyyy-MM-dd'),
-          'objetDernierNonReussite': 'Non recevable',
-          'reussitePratique': '',
-          'candidatExistant': 'OK',
+          codeNeph: Cypress.env('candidatStatsKpiNeph'),
+          nomNaissance: Cypress.env('candidatStatsKpi'),
+          email: Cypress.env('emailCandidatStatsKpi'),
+          dateReussiteETG: new Date(),
+          nbEchecsPratiques: '0',
+          dateDernierNonReussite: nowIn1WeekAnd1DaysBefore01.toFormat('yyyy-MM-dd'),
+          objetDernierNonReussite: 'Non recevable',
+          reussitePratique: '',
+          candidatExistant: 'OK',
         },
       ])
 
@@ -172,15 +172,15 @@ describe('Stats Kpi tests', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.nonExaminable.json',
       [
         {
-          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
-          'nomNaissance': Cypress.env('candidatStatsKpi'),
-          'email': Cypress.env('emailCandidatStatsKpi'),
-          'dateReussiteETG': new Date(),
-          'nbEchecsPratiques': '0',
-          'dateDernierNonReussite': nowIn1WeekAnd1DaysBefore02.toFormat('yyyy-MM-dd'),
-          'objetDernierNonReussite': 'Non examinable',
-          'reussitePratique': '',
-          'candidatExistant': 'OK',
+          codeNeph: Cypress.env('candidatStatsKpiNeph'),
+          nomNaissance: Cypress.env('candidatStatsKpi'),
+          email: Cypress.env('emailCandidatStatsKpi'),
+          dateReussiteETG: new Date(),
+          nbEchecsPratiques: '0',
+          dateDernierNonReussite: nowIn1WeekAnd1DaysBefore02.toFormat('yyyy-MM-dd'),
+          objetDernierNonReussite: 'Non examinable',
+          reussitePratique: '',
+          candidatExistant: 'OK',
         },
       ])
 
@@ -231,15 +231,15 @@ describe('Stats Kpi tests', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.absent.json',
       [
         {
-          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
-          'nomNaissance': Cypress.env('candidatStatsKpi'),
-          'email': Cypress.env('emailCandidatStatsKpi'),
-          'dateReussiteETG': new Date(),
-          'nbEchecsPratiques': '0',
-          'dateDernierNonReussite': nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'),
-          'objetDernierNonReussite': 'Absent',
-          'reussitePratique': '',
-          'candidatExistant': 'OK',
+          codeNeph: Cypress.env('candidatStatsKpiNeph'),
+          nomNaissance: Cypress.env('candidatStatsKpi'),
+          email: Cypress.env('emailCandidatStatsKpi'),
+          dateReussiteETG: new Date(),
+          nbEchecsPratiques: '0',
+          dateDernierNonReussite: nowIn1WeekAnd1DaysBefore03.toFormat('yyyy-MM-dd'),
+          objetDernierNonReussite: 'Absent',
+          reussitePratique: '',
+          candidatExistant: 'OK',
         },
       ])
 
@@ -290,15 +290,15 @@ describe('Stats Kpi tests', () => {
     cy.writeFile(Cypress.env('filePath') + '/aurige.reussite.json',
       [
         {
-          'codeNeph': Cypress.env('candidatStatsKpiNeph'),
-          'nomNaissance': Cypress.env('candidatStatsKpi'),
-          'email': Cypress.env('emailCandidatStatsKpi'),
-          'dateReussiteETG': new Date(),
-          'nbEchecsPratiques': '0',
-          'dateDernierNonReussite': '',
-          'objetDernierNonReussite': '',
-          'reussitePratique': Cypress.env('placeDate'),
-          'candidatExistant': 'OK',
+          codeNeph: Cypress.env('candidatStatsKpiNeph'),
+          nomNaissance: Cypress.env('candidatStatsKpi'),
+          email: Cypress.env('emailCandidatStatsKpi'),
+          dateReussiteETG: new Date(),
+          nbEchecsPratiques: '0',
+          dateDernierNonReussite: '',
+          objetDernierNonReussite: '',
+          reussitePratique: Cypress.env('placeDate'),
+          candidatExistant: 'OK',
         },
       ])
 

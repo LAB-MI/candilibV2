@@ -481,7 +481,7 @@ export default {
           reader.readAsText(file)
         })
         this.showBatchForm(true)
-        setTimeout(() => this.$scrollTo(`#whitelist-batch-textarea`, 500), 5)
+        setTimeout(() => this.$scrollTo('#whitelist-batch-textarea', 500), 5)
       } catch (error) {
         console.error(error)
       }
@@ -521,7 +521,7 @@ export default {
     showBatchForm (noScroll) {
       this.addingBatch = true
       if (!noScroll) {
-        setTimeout(() => this.$scrollTo(`#save-batch-email`, 1000), 10)
+        setTimeout(() => this.$scrollTo('#save-batch-email', 1000), 10)
       }
     },
 
