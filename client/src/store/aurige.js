@@ -1,6 +1,13 @@
+
+import { chunk } from 'lodash'
+
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
-import { getFrenchDateTimeFromIso } from '../util/frenchDateTime'
+import {
+  getFrenchDateTimeFromIso,
+  uploadFileBatchAurige,
+  getJsonFromFile,
+} from '@/util'
 
 export const SHOW_AURIGE_RESULT = 'SHOW_AURIGE_RESULT'
 export const AURIGE_UPLOAD_CANDIDATS_REQUEST = 'AURIGE_UPLOAD_CANDIDATS_REQUEST'
@@ -11,8 +18,6 @@ export const FETCH_AURIGE_LAST_DATETIME_REQUEST = 'FETCH_AURIGE_LAST_DATETIME_RE
 export const FETCH_AURIGE_LAST_DATETIME_SUCCESS = 'FETCH_AURIGE_LAST_DATETIME_SUCCESS'
 export const FETCH_AURIGE_LAST_DATETIME_FAILURE = 'FETCH_AURIGE_LAST_DATETIME_FAILURE'
 
-export const SET_AURIGE_FEED_BACK = 'SET_AURIGE_FEED_BACK'
-
 export default {
   state: {
     isLoading: false,
@@ -22,15 +27,12 @@ export default {
     isLastSyncDateTimeLoading: false,
   },
   mutations: {
-    [SET_AURIGE_FEED_BACK] (state, feedBack) {
-      state.candidats = feedBack
-    },
     [AURIGE_UPLOAD_CANDIDATS_REQUEST] (state) {
       state.isLoading = true
     },
     [AURIGE_UPLOAD_CANDIDATS_SUCCESS] (state, candidats) {
       state.isLoading = false
-      state.feedBack = candidats
+      state.candidats = candidats
     },
     [AURIGE_UPLOAD_CANDIDATS_FAILURE] (state) {
       state.isLoading = false
@@ -51,18 +53,50 @@ export default {
   actions: {
     async [AURIGE_UPLOAD_CANDIDATS_REQUEST] ({ commit, dispatch, state }, file) {
       commit(AURIGE_UPLOAD_CANDIDATS_REQUEST)
-      const data = new FormData()
-      data.append('file', file)
-
       try {
-        const result = await api.admin.uploadCandidatsJson(data)
-        if (result.success === false) {
-          throw new Error(result.message)
+        const candidats = await getJsonFromFile(file)
+        const divideArrayBy = 1000
+
+        const files = chunk(candidats, divideArrayBy)
+          .map((chunk, index) => {
+            const builtFile = new File(
+              [JSON.stringify(chunk)],
+              `batchFileChunk_${index}`,
+              { type: 'application/json' })
+            return builtFile
+          })
+
+        const uploadResults = await files.reduce(async (acc, currentFile) => {
+          return acc.then(async results => {
+            try {
+              const candidatsFeedBack = await uploadFileBatchAurige(api, currentFile)
+              results.success = [
+                ...results.success,
+                ...candidatsFeedBack,
+              ]
+            } catch (error) {
+              results.errors = [
+                ...results.errors,
+                error.message,
+              ]
+            }
+            return results
+          })
+        }, Promise.resolve({ success: [], errors: [] }))
+
+        commit(AURIGE_UPLOAD_CANDIDATS_SUCCESS, uploadResults.success)
+
+        if (uploadResults && uploadResults.errors.length) {
+          throw new Error('Une ou plusieurs erreurs on été détecté pendant le traitement du fichier .json merci de vérifier son contenu ou de relancer le batch.')
         }
-        commit(AURIGE_UPLOAD_CANDIDATS_SUCCESS, result.candidats)
+
+        if (uploadResults.success.length) {
+          return dispatch(SHOW_SUCCESS, `Le fichier ${file.name} a été synchronisé.`)
+        }
+        throw new Error('La synchro aurige c\'est bien déroulé cependant il semblerais que aucun candidats n\'est été mis à jours.')
       } catch (error) {
         commit(AURIGE_UPLOAD_CANDIDATS_FAILURE)
-        throw new Error(error.message)
+        return dispatch(SHOW_ERROR, error.message)
       }
     },
 
@@ -78,19 +112,6 @@ export default {
       } catch (error) {
         commit(FETCH_AURIGE_LAST_DATETIME_FAILURE)
       }
-    },
-
-    async [SET_AURIGE_FEED_BACK] ({ commit, dispatch }, feedBack) {
-      commit(SET_AURIGE_FEED_BACK, feedBack.success)
-      if (feedBack && feedBack.errors.length) {
-        dispatch(SHOW_ERROR, 'Une ou plusieurs erreurs on été détecté sur le formatage du fichier .json merci de vérifier son contenu.')
-        return
-      }
-      if (feedBack.success.length) {
-        dispatch(SHOW_SUCCESS, 'Le fichier a bien été synchronisé.')
-        return
-      }
-      dispatch(SHOW_ERROR, 'La synchro c\'est bien déroulé cependant il semblerais que aucun candidats n\'est été mis à jours.')
     },
   },
 }
