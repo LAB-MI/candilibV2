@@ -41,13 +41,11 @@ import { mapState } from 'vuex'
 import api from '@/api'
 import {
   downloadContent,
-  getJsonFromFile,
 } from '@/util'
-import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST, SET_AURIGE_FEED_BACK } from '@/store'
+import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST } from '@/store'
 import AurigeValidation from './AurigeValidation'
 import UploadFile from '@/components/UploadFile.vue'
 import { BigLoadingIndicator } from '@/components'
-import { chunk } from 'lodash-es'
 
 export default {
   name: 'AdminAurige',
@@ -95,37 +93,7 @@ export default {
     async uploadCandidats () {
       const file = this.file
       this.file = null
-      const candidats = await getJsonFromFile(file)
-      const divideArrayBy = 1000
-
-      const files = chunk(candidats, divideArrayBy)
-        .map((chunk, index) => {
-          const builtFile = new File(
-            [JSON.stringify(chunk)],
-            `batchFileChunk_${index}`,
-            { type: 'application/json' })
-          return builtFile
-        })
-
-      const uploadResults = await files.reduce(async (acc, currentFile) => {
-        return acc.then(async results => {
-          try {
-            await this.$store.dispatch(AURIGE_UPLOAD_CANDIDATS_REQUEST, currentFile)
-            results.success = [
-              ...results.success,
-              ...this.$store.state.aurige.feedBack,
-            ]
-          } catch (error) {
-            results.errors = [
-              ...results.errors,
-              error.message,
-            ]
-          }
-          return results
-        })
-      }, Promise.resolve({ success: [], errors: [] }))
-
-      this.$store.dispatch(SET_AURIGE_FEED_BACK, uploadResults)
+      await this.$store.dispatch(AURIGE_UPLOAD_CANDIDATS_REQUEST, file)
     },
     async getCandidatsAsCsv () {
       const response = await api.admin.exportCsv(this.departement)
