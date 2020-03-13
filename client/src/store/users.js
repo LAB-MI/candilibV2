@@ -80,7 +80,7 @@ export default {
           throw new Error(response.message)
         }
         commit(CREATE_USER_SUCCESS)
-        dispatch(SHOW_SUCCESS, `L'utilisateur a bien été créé`)
+        dispatch(SHOW_SUCCESS, 'L\'utilisateur a bien été créé')
         dispatch(FETCH_USER_LIST_REQUEST)
         return response
       } catch (error) {
@@ -95,7 +95,7 @@ export default {
       try {
         const list = await api.admin.getUsers()
         if (!list || list.success === false) {
-          throw new Error(`Vous n'êtes pas autorisé à voir les utilisateurs`)
+          throw new Error('Vous n\'êtes pas autorisé à voir les utilisateurs')
         }
         commit(FETCH_USER_LIST_SUCCESS, list.users)
       } catch (error) {

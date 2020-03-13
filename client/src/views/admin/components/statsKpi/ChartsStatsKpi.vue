@@ -137,7 +137,7 @@ export default {
       ) || 0
     },
     labelsHorizontal () {
-      return [[`Stats:`]]
+      return [['Stats:']]
     },
 
     labelsVertical () {

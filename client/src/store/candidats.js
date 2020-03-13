@@ -96,7 +96,7 @@ export default {
       try {
         const list = await api.admin.getCandidats({ since, until }, departement)
         if (list.success === false) {
-          let error = new Error(list.message || 'Error while fetching candidats')
+          const error = new Error(list.message || 'Error while fetching candidats')
           if (list.isTokenInvalid) {
             error.message = 'Vous devez être connecté'
           }

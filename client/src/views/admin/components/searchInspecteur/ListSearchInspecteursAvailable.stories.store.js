@@ -2,7 +2,7 @@
 import delay from 'delay'
 
 const inspecteursList = {
-  'Centre1': {
+  Centre1: {
     '2019-06-15':
         [
           {

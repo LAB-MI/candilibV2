@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:12.3.1-slim as base
+FROM node:12.13.1-slim as base
 ARG http_proxy
 ARG https_proxy
 ARG npm_registry
@@ -79,7 +79,7 @@ COPY package.json package-lock.json ./
 RUN npm --no-git-tag-version version ${APP_VERSION} && \
     npm install --production && \
     npm config set audit-level moderate && \
-    npm audit --json --registry=https://registry.npmjs.org || ${NPM_AUDIT_DRY_RUN:-false} && \
+    npm audit --json --registry=https://registry.npmjs.org --production || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force
 
 # Deliver the dist folder with Nginx
