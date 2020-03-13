@@ -479,7 +479,7 @@ describe('Connected candidate front', () => {
     cy.getLastMail()
       .its('Content.Body')
       .should('contain', Cypress.env('centre').toUpperCase())
-      .and('contain', '08:00')
+      .and('contain', '8:00')
   })
 
   it('Should disconnect', () => {
