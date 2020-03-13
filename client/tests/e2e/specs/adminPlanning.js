@@ -85,7 +85,7 @@ describe('Planning tests', () => {
         cy.get('[type=submit][disabled="disabled"]')
         cy.get('[type=text]').type(Cypress.env('inspecteur2'))
       })
-    cy.get('.v-select-list').contains(Cypress.env('inspecteur2')).click()
+    cy.get('.menuable__content__active .v-select-list').contains(Cypress.env('inspecteur2')).click()
     cy.get('@dialogContent').within(() => {
       cy.get('[type=submit]')
         .contains('Envoyer')
@@ -118,7 +118,7 @@ describe('Planning tests', () => {
         cy.get('[type=submit][disabled="disabled"]')
         cy.get('[type=text]').type(Cypress.env('inspecteur2'))
       })
-    cy.get('.v-select-list').contains(Cypress.env('inspecteur2')).click()
+    cy.get('.menuable__content__active .v-select-list').contains(Cypress.env('inspecteur2')).click()
     cy.get('@dialogContent').within(() => {
       cy.get('[type=submit]')
         .contains('Recevoir')
