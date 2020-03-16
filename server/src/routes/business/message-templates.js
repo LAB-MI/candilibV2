@@ -9,6 +9,7 @@ import {
   AURIGE_OK,
   VALIDATION_EMAIL,
   NB_FAILURES_KO,
+  EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
 } from '../../util'
 import config from '../../config'
 import {
@@ -20,6 +21,7 @@ import {
   getEpreuveEtgKoTemplate,
   getInscripionValidTemplate,
   getUrlFAQ,
+  getEpreuvePratiqueOKBeforeTemplate,
 } from './mail'
 import { getEmailDepartementOfCandidat } from './send-mail-util'
 
@@ -83,6 +85,16 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       return message
     case EPREUVE_PRATIQUE_OK: {
       const EPREUVE_PRATIQUE_OK_MSG = getEpreuvePratiqueOKTemplate(
+        nomMaj,
+        urlFAQ,
+        contactezNous
+      )
+      message.content = getHtmlBody(EPREUVE_PRATIQUE_OK_MSG)
+      message.subject = 'Informations Candilib'
+      return message
+    }
+    case EPREUVE_PRATIQUE_OK_BEFORE_SING_UP: {
+      const EPREUVE_PRATIQUE_OK_MSG = getEpreuvePratiqueOKBeforeTemplate(
         nomMaj,
         urlFAQ,
         contactezNous
