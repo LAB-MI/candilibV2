@@ -6,8 +6,10 @@ import { parseAsync } from 'json2csv'
 
 import { appLogger, getFrenchLuxon, getFrenchLuxonFromISO } from '../../util'
 import {
-  getResultsExamAllDpt,
   getAllPlacesProposeInFutureByDpt,
+  getCountCandidatsLeaveRetentionArea,
+  getCountCandidatsLeaveRetentionAreaByWeek,
+  getResultsExamAllDpt,
 } from './statistics.business'
 
 /**
@@ -81,11 +83,44 @@ const fieldsPlacesExams = [
 ]
 
 /**
+ * @constant {LabelValue[]}
+ */
+
+const fieldsCandidatsLeaveRetentionArea = [
+  {
+    label: 'Département',
+    value: '_id',
+  },
+  {
+    label: 'nombre de Candidats',
+    value: 'count',
+  },
+  {
+    label: 'Date de début période',
+    value: 'beginPeriode',
+  },
+  {
+    label: 'Date de fin période',
+    value: 'endPeriode',
+  },
+]
+
+/**
  * @constant {CSVOptions}
  */
 
 const optionsPlacesExam = {
   fields: fieldsPlacesExams,
+  delimiter: ';',
+  quote: '',
+}
+
+/**
+ * @constant {CSVOptions}
+ */
+
+const optionsCandidatsLeaveRetentionArea = {
+  fields: fieldsCandidatsLeaveRetentionArea,
   delimiter: ';',
   quote: '',
 }
@@ -117,6 +152,17 @@ const parseStatsResultsExams = statsData =>
  * @param {Object[]} statsData Données statistiques
  */
 
+const parseStatsCandidatRetention = statsData =>
+  console.log({ statsData }) ||
+  parseAsync(statsData, optionsCandidatsLeaveRetentionArea)
+
+/**
+ * Crée le CSV à partir du contenu `statsData`
+ * @function
+ *
+ * @param {Object[]} statsData Données statistiques
+ */
+
 const parseStatsPlacesExams = statsData =>
   parseAsync(statsData, optionsPlacesExam)
 
@@ -132,13 +178,7 @@ const parseStatsPlacesExams = statsData =>
  */
 
 export const getStatsResultsExam = async (req, res) => {
-  const {
-    beginPeriod,
-    endPeriod,
-    isCsv,
-    departement,
-    isAllDepartement,
-  } = req.query
+  const { beginPeriod, endPeriod, isCsv, departement } = req.query
   const { departements, userId } = req
 
   const loggerContent = {
@@ -148,7 +188,6 @@ export const getStatsResultsExam = async (req, res) => {
     endPeriod,
     isCsv,
     selectedDepartement: departement,
-    isAllDepartement,
   }
 
   const begin = getFrenchLuxonFromISO(beginPeriod)
@@ -190,6 +229,143 @@ export const getStatsResultsExam = async (req, res) => {
     message: 'Les stats ont bien été mises à jour',
     statsKpi,
   })
+}
+
+/**
+ *
+ * @param {import('express').Request} req Requête express
+ * @param {Object} req.query Query string de la requête
+ * @param {Object} req.query.departement Département selectionné
+ * @param {string} req.query.beginPeriod Date de début de période
+ * @param {string} req.query.endPeriod Date de fin de période
+ * @param {import('express').Response} res Réponse express
+ */
+
+export const getCandidatsLeaveRetentionArea = async (req, res) => {
+  const { beginPeriod, endPeriod, isCsv, departement } = req.query
+  const { departements, userId } = req
+
+  const loggerContent = {
+    section: 'admin-get-candidats-leave-retention-area',
+    admin: userId,
+    begin: beginPeriod,
+    end: endPeriod,
+    selectedDepartement: departement,
+  }
+
+  const begin = getFrenchLuxonFromISO(beginPeriod)
+    .startOf('day')
+    .toJSDate()
+  const end = getFrenchLuxonFromISO(endPeriod)
+    .endOf('day')
+    .toJSDate()
+
+  let dpts = departements
+  if (departement && departements.includes(departement)) {
+    dpts = [departement]
+  }
+
+  const statsKpiCandidatsLeaveRetention = await getCountCandidatsLeaveRetentionArea(
+    dpts,
+    begin,
+    end
+  )
+  const candidatsInRetention = statsKpiCandidatsLeaveRetention.reduce(
+    (accu, currValue) => {
+      accu.departements = accu.departements + currValue._id + ', '
+      accu.totalCount = accu.totalCount + currValue.count
+      return accu
+    },
+    {
+      departements: '',
+      totalCount: 0,
+    }
+  )
+
+  appLogger.info({
+    ...loggerContent,
+    action: 'GET STATS KPI NUMBER CANDIDAT IN RETENTION AREA',
+    candidatsInRetention,
+  })
+
+  if (isCsv === 'true') {
+    const statsKpiCsv = await parseStatsCandidatRetention(
+      statsKpiCandidatsLeaveRetention
+    )
+    const filename = 'statsCandidatsInRetention.csv'
+    appLogger.info({
+      ...loggerContent,
+      action: 'GET STATS KPI NUMBER CANDIDAT IN RETENTION AREA CSV',
+      filename,
+    })
+    return res
+      .status(200)
+      .attachment(filename)
+      .send(statsKpiCsv)
+  }
+
+  res.status(200).json({
+    success: true,
+    message: 'Les stats ont bien été mises à jour',
+    statsKpiCandidatsLeaveRetention,
+  })
+}
+
+/**
+ *
+ * @param {import('express').Request} req Requête express
+ * @param {Object} req.query Query string de la requête
+ * @param {Object} req.query.departement Département selectionné
+ * @param {Object} req.departements Départements dont l'utilisateur à accès
+ * @param {Object} req.userId Id de l'utilisateur faisant l'action
+ * @param {import('express').Response} res Réponse express
+ */
+
+export const getCandidatsLeaveRetentionAreaByWeekAndDepartement = async (
+  req,
+  res
+) => {
+  const { departement } = req.query
+  const { departements, userId } = req
+
+  const loggerContent = {
+    section: 'admin-get-candidats-leave-retention-area-by-week-and-departement',
+    admin: userId,
+    selectedDepartement: departement,
+  }
+
+  let dpts = departements
+  if (departement && departements.includes(departement)) {
+    dpts = [departement]
+  }
+
+  try {
+    const candidatsLeaveRetentionByWeekAndDepartement = await getCountCandidatsLeaveRetentionAreaByWeek(
+      dpts
+    )
+
+    appLogger.info({
+      ...loggerContent,
+      action:
+        'GET STATS KPI NUMBER CANDIDAT LEAVE RETENTION AREA BY WEEK AND DEPARTEMENT',
+      departements: dpts,
+    })
+
+    return res.status(200).json({
+      success: true,
+      message: 'Les stats ont bien été mises à jour',
+      candidatsLeaveRetentionByWeekAndDepartement,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      action:
+        'ERROR GET STATS KPI NUMBER CANDIDAT LEAVE RETENTION AREA BY WEEK AND DEPARTEMENT',
+      description: error.message,
+      error,
+    })
+    return res.status(500).json({ success: false, message: error.message })
+  }
 }
 
 /**

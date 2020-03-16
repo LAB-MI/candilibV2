@@ -8,7 +8,7 @@ import AppSnackbar from '../../components/AppSnackbar.vue'
 storiesOf('Common/AppSnackbar', module)
   .add('Error', () => ({
     components: { AppSnackbar },
-    template: `<app-snackbar @click="action">Hello AppSnackbar</app-snackbar>`,
+    template: '<app-snackbar @click="action">Hello AppSnackbar</app-snackbar>',
     methods: { action: action('clicked') },
     store: new Vuex.Store({
       state: {
@@ -23,7 +23,7 @@ storiesOf('Common/AppSnackbar', module)
   }))
   .add('Info', () => ({
     components: { AppSnackbar },
-    template: `<app-snackbar @click="action">Hello AppSnackbar</app-snackbar>`,
+    template: '<app-snackbar @click="action">Hello AppSnackbar</app-snackbar>',
     store: new Vuex.Store({
       state: {
         message: {
@@ -38,7 +38,7 @@ storiesOf('Common/AppSnackbar', module)
   }))
   .add('Success', () => ({
     components: { AppSnackbar },
-    template: `<app-snackbar @click="action">Hello AppSnackbar</app-snackbar>`,
+    template: '<app-snackbar @click="action">Hello AppSnackbar</app-snackbar>',
     store: new Vuex.Store({
       state: {
         message: {

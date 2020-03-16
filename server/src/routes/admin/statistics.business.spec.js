@@ -5,9 +5,11 @@ import {
   countFailureByCentres,
   countNotExaminedByCentres,
   countSuccessByCentres,
-  getResultsExamByDpt,
-  getResultsExamAllDpt,
   getAllPlacesProposeInFutureByDpt,
+  getCountCandidatsLeaveRetentionArea,
+  getResultsExamAllDpt,
+  getResultsExamByDpt,
+  getCountCandidatsLeaveRetentionAreaByWeek,
 } from './statistics.business'
 
 import {
@@ -15,11 +17,14 @@ import {
   countFailure,
   countNotExamined,
   countSuccess,
+  createCandidatLeaveRetentionArea,
+  createCandidatsForCountRetentionByWeek,
   createCandidatsForStat,
   createStatsForPlacesExam,
   dateReussitePratique,
   dateTimeDernierEchecPratique,
   dateTimeDernierEchecPratiqueWithPenalty,
+  deleteCandidatsForCountRetentionByWeek,
   nowLuxon,
 } from './__tests__/candidats-stat'
 
@@ -31,10 +36,16 @@ import {
 
 import { findCentresByDepartement } from '../../models/centre'
 
+import { getFrenchLuxon } from '../../util'
+
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(true)
+
 describe('test statistics', () => {
   beforeAll(async () => {
     await connect()
     await createCandidatsForStat()
+    await createCandidatLeaveRetentionArea()
     await createStatsForPlacesExam()
   })
   afterAll(async () => {
@@ -155,5 +166,235 @@ describe('test statistics', () => {
     ]
 
     expect(result).toEqual(expect.arrayContaining(shouldHaveThisResult))
+  })
+
+  it('Should have two candidat stats by departement leave retention area', async () => {
+    const dpts = ['93', '92']
+    const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
+    const dateEndPeriode = nowLuxon
+      .plus({ days: 20 })
+      .startOf('day')
+      .toJSDate()
+    const result = await getCountCandidatsLeaveRetentionArea(
+      dpts,
+      dateBeginPeriode,
+      dateEndPeriode
+    )
+    expect(typeof result).toEqual(typeof [])
+    expect(result.length).toEqual(2)
+    expect(result).toEqual(
+      expect.arrayContaining([
+        {
+          _id: dpts[0],
+          count: 2,
+          beginPeriode: dateBeginPeriode,
+          endPeriode: dateEndPeriode,
+        },
+        {
+          _id: dpts[1],
+          count: 2,
+          beginPeriode: dateBeginPeriode,
+          endPeriode: dateEndPeriode,
+        },
+      ])
+    )
+  })
+
+  it('Should have one candidat in stats of all départements leave retention area', async () => {
+    const dpts = ['94', '93', '92']
+    const dateBeginPeriode = nowLuxon
+      .plus({ days: 20 })
+      .startOf('day')
+      .toJSDate()
+    const dateEndPeriode = nowLuxon
+      .plus({ days: 45 })
+      .startOf('day')
+      .toJSDate()
+    const result = await getCountCandidatsLeaveRetentionArea(
+      dpts,
+      dateBeginPeriode,
+      dateEndPeriode
+    )
+
+    expect(typeof result).toEqual(typeof [])
+    expect(result.length).toEqual(1)
+    expect(result).toEqual(
+      expect.arrayContaining([
+        {
+          _id: dpts[0],
+          count: 1,
+          beginPeriode: dateBeginPeriode,
+          endPeriode: dateEndPeriode,
+        },
+      ])
+    )
+  })
+
+  it('Should get all candidats in stats of all départements leave retention area', async () => {
+    const departements = ['79', '78', '76']
+
+    const candidatCreated = await Promise.all(
+      departements.map(async dept => {
+        const createdCandidats = await createCandidatsForCountRetentionByWeek(
+          5,
+          dept
+        )
+        return {
+          dept,
+          createdCandidats,
+        }
+      })
+    )
+
+    const dateNow = () => getFrenchLuxon()
+
+    const candidatsLeaveRetentionByWeek = [
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 0 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 0,
+      },
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 1 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 1,
+      },
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 2 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 2,
+      },
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 3 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 3,
+      },
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 4 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 4,
+      },
+    ]
+    const exptedObject = [
+      {
+        candidatsLeaveRetentionByWeek,
+        departement: '79',
+      },
+      {
+        candidatsLeaveRetentionByWeek,
+        departement: '78',
+      },
+      {
+        candidatsLeaveRetentionByWeek,
+        departement: '76',
+      },
+    ]
+
+    const result = await getCountCandidatsLeaveRetentionAreaByWeek(departements)
+
+    expect(typeof result).toEqual(typeof [])
+    expect(result.length).toEqual(3)
+    expect(result).toEqual(expect.arrayContaining(exptedObject))
+
+    await Promise.all(
+      candidatCreated.map(el => {
+        return deleteCandidatsForCountRetentionByWeek(el.createdCandidats)
+      })
+    )
+  })
+
+  it('Should get all candidats in stats of one départements leave retention area', async () => {
+    const departements = ['76']
+
+    const candidatCreated = await Promise.all(
+      departements.map(async dept => {
+        const createdCandidats = await createCandidatsForCountRetentionByWeek(
+          5,
+          dept
+        )
+        return {
+          dept,
+          createdCandidats,
+        }
+      })
+    )
+
+    const dateNow = () => getFrenchLuxon()
+
+    const candidatsLeaveRetentionByWeek = [
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 0 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 0,
+      },
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 1 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 1,
+      },
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 2 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 2,
+      },
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 3 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 3,
+      },
+      {
+        value: { count: 1 },
+        weekDate: dateNow()
+          .plus({ weeks: 4 })
+          .startOf('week')
+          .toLocaleString(),
+        weekNumber: 4,
+      },
+    ]
+    const exptedObject = [
+      {
+        candidatsLeaveRetentionByWeek,
+        departement: '76',
+      },
+    ]
+
+    const result = await getCountCandidatsLeaveRetentionAreaByWeek(departements)
+
+    expect(typeof result).toEqual(typeof [])
+    expect(result.length).toEqual(1)
+    expect(result).toEqual(expect.arrayContaining(exptedObject))
+
+    await Promise.all(
+      candidatCreated.map(el => {
+        return deleteCandidatsForCountRetentionByWeek(el.createdCandidats)
+      })
+    )
   })
 })

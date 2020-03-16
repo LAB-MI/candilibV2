@@ -78,7 +78,7 @@ export default {
     async archiveUser () {
       try {
         await this.$store.dispatch(DELETE_USER_REQUEST, this.email)
-        this.$store.dispatch(SHOW_SUCCESS, `L'utilisateur a bien été archivé`)
+        this.$store.dispatch(SHOW_SUCCESS, 'L\'utilisateur a bien été archivé')
         this.$store.dispatch(FETCH_USER_LIST_REQUEST)
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)

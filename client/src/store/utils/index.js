@@ -88,7 +88,7 @@ export const formatResult = (
     .reduce((timeslots, item, index) => {
       const luxonMonth = getFrenchLuxonCurrentDateTime().plus({ month: index })
       const month = `${luxonMonth.year}-${String(luxonMonth.month).padStart(2, '0')}`
-      let result = new Map(timeslots)
+      const result = new Map(timeslots)
       if (!timeslots.has(month)) {
         result.set(month, {
           label: luxonMonth.monthLong,

@@ -23,7 +23,7 @@ describe('Admin reset password', () => {
       .click()
 
     cy.get('.v-snack--active')
-      .should('contain', `Un courriel vient de vous être envoyé à l'adresse ` + (Cypress.env('admin75Login')))
+      .should('contain', 'Un courriel vient de vous être envoyé à l\'adresse ' + (Cypress.env('admin75Login')))
       .contains('close')
       .click()
 

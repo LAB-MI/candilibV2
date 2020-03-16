@@ -45,7 +45,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et département de passage.',
         },
         {
-          textContent: `Vous devez dès à présent choisir votre département de passage à l'examen. Votre choix permet à l'administration de provisionner un nombre de places d'examen suffisant pour chaque département où Candilib est disponible`,
+          textContent: 'Vous devez dès à présent choisir votre département de passage à l\'examen. Votre choix permet à l\'administration de provisionner un nombre de places d\'examen suffisant pour chaque département où Candilib est disponible',
         },
         {
           subTitleContent: 'Pour réserver',
@@ -101,7 +101,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: 'Nous vous rappelons les éléments à vérifier le jour de l\'examen:',
         },
         {
-          list: [ 'Vous fournirez un véhicule en parfait état, équipé d ’une double commande de frein et d’embrayage, de 2 rétroviseurs intérieurs et de 2 rétroviseurs latéraux.',
+          list: ['Vous fournirez un véhicule en parfait état, équipé d ’une double commande de frein et d’embrayage, de 2 rétroviseurs intérieurs et de 2 rétroviseurs latéraux.',
             'Votre accompagnateur sera :',
             'soit un enseignant de la conduite en possession de son autorisation d\'enseigner pour la présenter à l\'inspecteur,',
             'soit une personne dont le permis B est en cours de validité. Cette dernière devra présenter l’original de son permis de conduire ainsi que la «charte de l’accompagnateur» remplie et signée pour la remettre à l’inspecteur avant le début de l’examen.',
@@ -129,7 +129,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je ne trouve pas de place disponible ?',
       content: [
         {
-          textContent: `De nouveaux créneaux sont ajoutés régulièrement. D'autres peuvent se libérer à tout moment par l'annulation d'un candidat ayant réservé.`,
+          textContent: 'De nouveaux créneaux sont ajoutés régulièrement. D\'autres peuvent se libérer à tout moment par l\'annulation d\'un candidat ayant réservé.',
         },
       ],
     },

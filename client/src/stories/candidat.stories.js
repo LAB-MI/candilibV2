@@ -20,7 +20,7 @@ storiesOf('Candidat', module)
   .addParameters({ viewport })
   .add('Pré-inscription', () => ({
     components: { CandidatPresignup },
-    template: `<div :style="{display: 'flex', background: '#118098'}"><candidat-presignup /></div>`,
+    template: '<div :style="{display: \'flex\', background: \'#118098\'}"><candidat-presignup /></div>',
     router,
     store: new Vuex.Store({
       state: {

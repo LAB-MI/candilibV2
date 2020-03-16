@@ -7,4 +7,5 @@ storiesOf('Admin/EmailResetPassword', module)
     components: { EmailPasswordReset },
     template: `<email-password-reset
     @submit.prevent="sendMailResetLink"
-    />` }))
+    />`,
+  }))

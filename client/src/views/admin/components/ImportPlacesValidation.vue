@@ -72,16 +72,19 @@ export default {
         width: 90,
         headerClass: 't-import-places-validation-header-status',
       },
-      { headerName: 'Centre',
+      {
+        headerName: 'Centre',
         field: 'centre',
       },
-      { headerName: 'Date et heures',
+      {
+        headerName: 'Date et heures',
         field: 'date',
         valueFormatter: valueDateFormatter,
         filter: 'agDateColumnFilter',
         filterParams: filterDateParams,
       },
-      { headerName: 'Message',
+      {
+        headerName: 'Message',
         field: 'message',
         cellStyle: { 'white-space': 'normal', 'line-height': 'normal' },
         autoHeight: true,

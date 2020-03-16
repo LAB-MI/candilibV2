@@ -1,1 +1,2 @@
 export const NB_YEARS_ETG_EXPIRED = 5
+export const NB_DAYS_WAITING_FOR_ETG_EXPIERED = 7

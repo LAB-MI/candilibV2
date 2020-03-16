@@ -5,5 +5,5 @@ storiesOf('Common/BandeauBeta', module).add('BandeauBeta', () => ({
   components: {
     BandeauBeta,
   },
-  template: `<bandeau-beta />`,
+  template: '<bandeau-beta />',
 }))
