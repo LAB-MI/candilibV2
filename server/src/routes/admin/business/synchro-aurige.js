@@ -31,6 +31,7 @@ import {
   NB_FAILURES_KO,
   NO_CANDILIB,
   getFrenchLuxon,
+  EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
 } from '../../../util'
 import {
   sendFailureExam,
@@ -202,7 +203,11 @@ const checkAndArchiveCandidat = async (
   loggerInfoCandidat
 ) => {
   const { candidatExistant, codeNeph, nomNaissance } = candidatAurige
-  const { email, departement } = candidat
+  const {
+    email,
+    departement,
+    isValidatedByAurige: isAlreadyValidByAurgie,
+  } = candidat
 
   let aurigeFeedback
   let dateFeedBack
@@ -264,7 +269,9 @@ const checkAndArchiveCandidat = async (
       appLogger.warn({ ...loggerInfoCandidat, description: message })
 
       dateFeedBack = infoCandidatToUpdate.reussitePratique
-      aurigeFeedback = EPREUVE_PRATIQUE_OK
+      aurigeFeedback = isAlreadyValidByAurgie
+        ? EPREUVE_PRATIQUE_OK
+        : EPREUVE_PRATIQUE_OK_BEFORE_SING_UP
     }
   }
 
