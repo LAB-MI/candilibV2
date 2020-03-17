@@ -74,7 +74,7 @@ describe('Planning tests', () => {
     cy.deleteAllMails()
     cy.get('button')
       .contains('Envoyer les bordereaux aux IPCSR du')
-      .click()
+      .click().wait(500)
     cy.get('.v-dialog')
       .contains('Envoyer les bordereaux aux IPCSR du')
       .parents('.v-dialog').as('dialogContent').within(() => {
@@ -106,7 +106,7 @@ describe('Planning tests', () => {
     cy.deleteAllMails()
     cy.get('button')
       .contains('Recevoir les bordereaux des IPCSR du')
-      .click()
+      .click().wait(500)
     cy.get('.v-dialog')
       .contains('Recevoir les bordereaux des IPCSR du')
       .should('contain', Cypress.env('emailRepartiteur'))
