@@ -34,6 +34,7 @@ import {
   NO_CANDILIB,
   OK,
   OK_UPDATED,
+  EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
 } from '../../../util'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
@@ -198,7 +199,8 @@ async function synchroAurigeSuccess (
 const synchroAurigeToPassExam = async (
   aurigeFile,
   infoCandidat,
-  candidatId
+  candidatId,
+  reason = EPREUVE_PRATIQUE_OK
 ) => {
   const { nomNaissance, codeNeph, email } = infoCandidat
   const result = await synchroAurige(aurigeFile)
@@ -207,7 +209,7 @@ const synchroAurigeToPassExam = async (
   expect(result[0]).toHaveProperty('nom', nomNaissance)
   expect(result[0]).toHaveProperty('neph', codeNeph)
   expect(result[0]).toHaveProperty('status', 'warning')
-  expect(result[0]).toHaveProperty('details', EPREUVE_PRATIQUE_OK)
+  expect(result[0]).toHaveProperty('details', reason)
 
   const candidat = await findCandidatById(candidatId, {})
   expect(candidat).toBeNull()
@@ -224,7 +226,7 @@ const synchroAurigeToPassExam = async (
   const now = getFrenchLuxon()
   expect(archivedAt.hasSame(now, 'day')).toBe(true)
 
-  expect(candidatArchived).toHaveProperty('archiveReason', EPREUVE_PRATIQUE_OK)
+  expect(candidatArchived).toHaveProperty('archiveReason', reason)
   expect(candidatArchived.reussitePratique).toEqual(
     getFrenchLuxonFromISO(infoCandidat.reussitePratique).toJSDate()
   )
@@ -598,7 +600,23 @@ describe('synchro-aurige', () => {
       await placesCreated.delete()
     })
 
-    it('should archive candidat', async () => {
+    it('should archive candidat who passed exam and have not already valided by aurige', async () => {
+      await candidatModel.update(
+        { codeNeph: candidatPassed.codeNeph },
+        { $set: { isValidatedByAurige: false } }
+      )
+      const candidatArchived = await synchroAurigeToPassExam(
+        aurigeFile,
+        candidatPassed,
+        candidatCreated._id,
+        EPREUVE_PRATIQUE_OK_BEFORE_SING_UP
+      )
+      expectDataCandidat(candidatArchived, candidatPassed)
+      expect(candidatArchived.places).toBeUndefined()
+      await candidatArchived.delete()
+    })
+
+    it('should archive candidat who passed exam and have already valided by aurige', async () => {
       const candidatArchived = await synchroAurigeToPassExam(
         aurigeFile,
         candidatPassed,
