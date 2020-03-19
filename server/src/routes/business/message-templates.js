@@ -11,6 +11,7 @@ import {
   NB_FAILURES_KO,
   EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
 } from '../../util'
+import { SUBJECT_MAIL_INFO } from '../business/send-message-constants'
 import config from '../../config'
 import {
   getHtmlBody,
@@ -38,8 +39,11 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     canAccessAt,
   } = candidat
 
-  const contactezNous = await getEmailDepartementOfCandidat(departement)
+  let contactezNous = ''
 
+  try {
+    contactezNous = await getEmailDepartementOfCandidat(departement)
+  } catch (error) {}
   const urlValidationEmail = `${
     config.PUBLIC_URL
   }/email-validation?e=${encodeURIComponent(email)}&h=${emailValidationHash}`
@@ -90,7 +94,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
         contactezNous
       )
       message.content = getHtmlBody(EPREUVE_PRATIQUE_OK_MSG)
-      message.subject = 'Informations Candilib'
+      message.subject = SUBJECT_MAIL_INFO
       return message
     }
     case EPREUVE_PRATIQUE_OK_BEFORE_SING_UP: {
@@ -100,7 +104,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
         contactezNous
       )
       message.content = getHtmlBody(EPREUVE_PRATIQUE_OK_MSG)
-      message.subject = 'Informations Candilib'
+      message.subject = SUBJECT_MAIL_INFO
       return message
     }
     case INSCRIPTION_OK:
