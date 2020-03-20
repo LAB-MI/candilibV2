@@ -50,10 +50,10 @@ export default {
     isFetchingPlacesExams: false,
     isFetchingCandidatLeaveRetentionArea: false,
     isFetchingCandidatLeaveRetentionAreaByWeek: false,
-    statsResultsExams: undefined,
-    statsPlacesExams: undefined,
-    statsCandidatLeaveRetentionArea: undefined,
-    statsCandidatLeaveRetentionAreaByWeek: undefined,
+    statsResultsExams: [],
+    statsPlacesExams: [],
+    statsCandidatLeaveRetentionArea: [],
+    statsCandidatLeaveRetentionAreaByWeek: [],
   },
 
   mutations: {
