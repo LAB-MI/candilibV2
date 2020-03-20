@@ -5,6 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "prerender": "react-snap",
+    "postbuild": "npm run prerender",
     "test:unit": "vue-cli-service test:unit",
     "test:e2e": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" vue-cli-service test:e2e",
     "lint": "run-p lint:*",
@@ -54,13 +56,13 @@
   },
   "devDependencies": {
     "@ascendancyy/vue-cli-plugin-stylelint": "^1.1.2",
-    "@storybook/addon-actions": "5.0.6",
+    "@storybook/addon-actions": "^5.3.17",
     "@storybook/addon-console": "^1.2.1",
-    "@storybook/addon-knobs": "5.0.6",
+    "@storybook/addon-knobs": "^5.3.17",
     "@storybook/addon-links": "5.0.6",
-    "@storybook/addon-notes": "5.0.6",
-    "@storybook/addon-viewport": "5.0.6",
-    "@storybook/vue": "5.0.6",
+    "@storybook/addon-notes": "^5.3.17",
+    "@storybook/addon-viewport": "^5.3.17",
+    "@storybook/vue": "^5.3.17",
     "@vue/cli-plugin-babel": "~4.2.3",
     "@vue/cli-plugin-e2e-cypress": "~4.2.3",
     "@vue/cli-plugin-eslint": "~4.2.3",
@@ -88,6 +90,7 @@
     "postcss-nesting": "^7.0.1",
     "postcss-preset-env": "^6.7.0",
     "quoted-printable": "^1.0.1",
+    "react-snap": "^1.23.0",
     "resolve-url-loader": "^3.1.1",
     "sass": "^1.26.2",
     "sass-loader": "^8.0.2",
@@ -190,5 +193,13 @@
     "transformIgnorePatterns": [
       "/node_modules/(?!lodash-es)"
     ]
+  },
+  "homepage": "https://beta.interieur.gouv.fr/candilib/",
+  "reactSnap": {
+    "source": "dist",
+    "minifyHtml": {
+      "collapseWhitespace": false,
+      "removeComments": false
+    }
   }
 }
