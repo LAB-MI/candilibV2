@@ -17,11 +17,12 @@ import {
 
 Vue.use(Router)
 
-const { VUE_APP_CLIENT_BUILD_TARGET } = process.env
+const { VUE_APP_CLIENT_BUILD_TARGET, VUE_APP_CLIENT_BUILD_INFO } = process.env
 
 const isBuildWithAll = ['ALL', undefined].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithCandidat = isBuildWithAll || ['CANDIDAT'].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithAdmin = isBuildWithAll || ['ADMIN'].includes(VUE_APP_CLIENT_BUILD_TARGET)
+const isBuildWithInfoCovid = false || ['COVID'].includes(VUE_APP_CLIENT_BUILD_INFO)
 
 const Error404 = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Error404.vue')
 const Home = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Home.vue')
@@ -50,6 +51,7 @@ const AdminCandidat = () => import(/* webpackChunkName: "admin", webpackPrefetch
 const ResetPassword = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/ResetPassword.vue')
 const Agents = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Agents.vue')
 const DepartementList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/departementsManager/DepartementList.vue')
+const CovidMessage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/candidat/components/CovidMessage.vue')
 
 const adminRoutes = [
   {
@@ -118,6 +120,17 @@ const adminRoutes = [
   },
 ]
 
+const candidatRoutesInfo = [
+  {
+    path: '/candidat-guest',
+    component: MessageView,
+    children: [{
+      path: '/informations',
+      name: 'covid-message',
+      component: CovidMessage,
+    },
+    ],
+  }]
 const candidatRoutes = [
   {
     path: '/candidat-guest',
@@ -144,6 +157,11 @@ const candidatRoutes = [
         path: '/email-validation',
         name: 'email-validation',
         component: EmailValidation,
+      },
+      {
+        path: '/informations',
+        name: 'covid-message',
+        component: CovidMessage,
       },
     ],
   },
@@ -206,7 +224,7 @@ const candidatRoutes = [
 
 const HomeComponent = isBuildWithAll ? Home : (isBuildWithAdmin ? AdminLogin : CandidatHome)
 
-const redirectCandidatFromHome = isBuildWithAdmin ? undefined : '/qu-est-ce-que-candilib'
+const redirectCandidatFromHome = isBuildWithAdmin ? undefined : isBuildWithInfoCovid ? '/informations' : '/qu-est-ce-que-candilib'
 
 const commonRoutes = [
   {
@@ -235,11 +253,12 @@ const commonRoutes = [
     path: '/*',
     name: '404',
     component: Error404,
+    ...(isBuildWithInfoCovid ? { redirect: redirectCandidatFromHome } : undefined),
   },
 ]
 
 const routes = [
-  ...(isBuildWithCandidat ? candidatRoutes : []),
+  ...(isBuildWithCandidat ? (isBuildWithInfoCovid ? candidatRoutesInfo : candidatRoutes) : []),
   ...(isBuildWithAdmin ? adminRoutes : []),
   ...commonRoutes,
 ]
