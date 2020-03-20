@@ -17,8 +17,11 @@ export default {
 
   actions: {
     async [FETCH_CONFIG_REQUEST] ({ commit }) {
-      const config = await api.public.getConfigCandidat()
-      commit(FETCH_CONFIG_SUCCESS, config.lineDelay)
+      try {
+        const config = await api.public.getConfigCandidat()
+        commit(FETCH_CONFIG_SUCCESS, config.lineDelay)
+      } catch (error) {
+      }
     },
   },
 }
