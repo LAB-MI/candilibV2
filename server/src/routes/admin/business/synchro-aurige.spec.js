@@ -11,6 +11,7 @@ import {
   deleteDepartementById,
 } from '../../../models/departement'
 import { deletePlace, findPlaceById } from '../../../models/place'
+import placeModel from '../../../models/place/place.model'
 import {
   createCentres,
   removeCentres,
@@ -72,8 +73,9 @@ import archivedCandidatModel from '../../../models/archived-candidat/archived-ca
 
 import { buildSmtpServer } from '../../business/__tests__/smtp-server'
 import archivedPlaceModel from '../../../models/archived-place/archived-place-model'
-import placeModel from '../../../models/place/place.model'
+
 import { SUBJECT_MAIL_INFO } from '../../business'
+import { ObjectLastNoReussitValues } from '../../../models/candidat/objetDernierNonReussite.values'
 
 jest.mock('../../../util/logger')
 require('../../../util/logger').setWithConsole(false)
@@ -817,7 +819,7 @@ describe('Check canAccess property of aurige', () => {
   let candidatsToCreate
   let candidatsCreated
   let aurigeFile
-
+  let server
   beforeAll(async () => {
     await connect()
     candidatsToCreate = candidatsWithPreRequired.map(candidat =>
@@ -829,7 +831,6 @@ describe('Check canAccess property of aurige', () => {
       path.resolve(__dirname, './', '__tests__', 'aurigeWithAccessAt.json')
     )
   })
-  let server
   beforeEach(done => {
     server = buildSmtpServer(smtpOptions.port, done)
   })
@@ -872,15 +873,17 @@ describe('Check canAccess property of aurige', () => {
 
   afterAll(async () => {
     await Promise.all(
-      candidatsToCreate.map(candidat =>
-        candidatModel.findByIdAndDelete(candidat._id)
-      )
+      candidatsToCreate.map(async candidat => {
+        const tmp = await candidatModel.findByIdAndDelete(candidat._id)
+        return tmp
+      })
     )
     await disconnect()
   })
 })
 
 describe('Synchro-aurige candidat with etg expired', () => {
+  let server
   beforeAll(async () => {
     await connect()
     await setInitCreatedInspecteurs()
@@ -888,7 +891,6 @@ describe('Synchro-aurige candidat with etg expired', () => {
     await setInitCreatedCentre()
     await createCentres()
   })
-  let server
   beforeEach(done => {
     server = buildSmtpServer(smtpOptions.port, done)
   })
@@ -1159,6 +1161,70 @@ describe('Synchro-aurige: send mail', () => {
     const result = await synchroAurige(aurigeFile)
     expect(result).toBeDefined()
   })
+
+  it('should no send mail failed exam when candidat failed exam', async done => {
+    let isDone = false
+    candidatCreated = await createCandidatToTestAurige(
+      candidatFailureExam,
+      true
+    )
+    const aurigeFile = toAurigeJsonBuffer(candidatFailureExam)
+    server.onData = function (stream, session, callback) {
+      const chunks = []
+      stream.on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+
+      stream.on('end', function () {
+        expect(chunks).toHaveLength(0)
+        isDone = true
+        done()
+        return callback()
+      })
+    }
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+    setTimeout(() => {
+      expect(isDone).toBe(false)
+      done()
+    }, 1000)
+  })
+
+  it('should send mail failed exam when candidat have booking and failed exam', async done => {
+    candidatCreated = await createCandidatToTestAurige(
+      candidatFailureExam,
+      true
+    )
+    placeSelected = await createTestPlaceAurige(
+      placeSameDateDernierEchecPratique
+    )
+
+    await makeResa(placeSelected, candidatCreated, bookedAt)
+
+    const aurigeFile = toAurigeJsonBuffer(candidatFailureExam)
+
+    server.onData = function (stream, session, callback) {
+      const chunks = []
+      stream.on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+      stream.on('end', function () {
+        var body = Buffer.concat(chunks)
+        expect(body.toString()).toMatch(
+          new RegExp(`To:.${candidatCreated.email}`)
+        )
+        expect(body.toString()).toMatch(
+          new RegExp(`Subject:.${SUBJECT_MAIL_INFO}`)
+        )
+        expect(body.toString()).toMatch(new RegExp("En cas d'=C3=A9chec,"))
+        done()
+        return callback()
+      })
+    }
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+  })
+
   it('should get mail success already validate aurige', async done => {
     candidatCreated = await createCandidatToTestAurige(candidatPassed, true)
     const aurigeFile = toAurigeJsonBuffer(candidatPassed)
@@ -1177,6 +1243,83 @@ describe('Synchro-aurige: send mail', () => {
         expect(mail.headers.get('subject')).toBe(SUBJECT_MAIL_INFO)
         expect(mail.text).toMatch(
           /Selon nos informations, vous avez réussi l'examen que vous venez de passer./
+        )
+        done()
+        return callback()
+      })
+    }
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+  })
+
+  it('should send mail absent exam when candidat have booking and absent at exam', async done => {
+    const candidat = {
+      ...candidatFailureExam,
+      objetDernierNonReussite: ObjectLastNoReussitValues.ABSENT,
+    }
+
+    candidatCreated = await createCandidatToTestAurige(candidat, true)
+    placeSelected = await createTestPlaceAurige(
+      placeSameDateDernierEchecPratique
+    )
+
+    await makeResa(placeSelected, candidatCreated, bookedAt)
+
+    const aurigeFile = toAurigeJsonBuffer(candidat)
+
+    server.onData = function (stream, session, callback) {
+      const chunks = []
+      stream.on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+      stream.on('end', function () {
+        var body = Buffer.concat(chunks)
+        expect(body.toString()).toMatch(
+          new RegExp(`To:.${candidatCreated.email}`)
+        )
+        expect(body.toString()).toMatch(
+          new RegExp(`Subject:.${SUBJECT_MAIL_INFO}`)
+        )
+        expect(body.toString()).toMatch(
+          new RegExp(" l'examen, et nous avons perdu une place qui aurait pu")
+        )
+        done()
+        return callback()
+      })
+    }
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+  })
+
+  it('should send mail no examine at exam when candidat have booking and is no examinable at exam', async done => {
+    const candidat = {
+      ...candidatFailureExam,
+      objetDernierNonReussite: ObjectLastNoReussitValues.NO_EXAMINABLE,
+    }
+    candidatCreated = await createCandidatToTestAurige(candidat, true)
+    placeSelected = await createTestPlaceAurige(
+      placeSameDateDernierEchecPratique
+    )
+
+    await makeResa(placeSelected, candidatCreated, bookedAt)
+
+    const aurigeFile = toAurigeJsonBuffer(candidat)
+
+    server.onData = function (stream, session, callback) {
+      const chunks = []
+      stream.on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+      stream.on('end', function () {
+        var body = Buffer.concat(chunks)
+        expect(body.toString()).toMatch(
+          new RegExp(`To:.${candidatCreated.email}`)
+        )
+        expect(body.toString()).toMatch(
+          new RegExp(`Subject:.${SUBJECT_MAIL_INFO}`)
+        )
+        expect(body.toString()).toMatch(
+          new RegExp('car vous ne remplissiez pas toutes les conditions')
         )
         done()
         return callback()
