@@ -71,6 +71,10 @@
 
     <div>
       <v-container>
+        <h3>
+          {{ $formatMessage({ id: 'candidats_sortant_de_retention_par_semaine' }) }}
+        </h3>
+
         <div class="u-flex  u-flex--wrap  u-flex--center">
           <div
             class="`u-flex__item pa-3"
@@ -179,18 +183,18 @@ export default {
       return [{
         label: 'Candidats sortant de la zone de rétention par semaine',
         backgroundColor: [
-          'rgba(96, 224, 64, 0.2)',
-          'rgba(96, 224, 64, 0.2)',
-          'rgba(96, 224, 64, 0.2)',
-          'rgba(96, 224, 64, 0.2)',
-          'rgba(96, 224, 64, 0.2)',
+          'rgba(255, 0, 64, 0.2)',
+          'rgba(255, 0, 64, 0.2)',
+          'rgba(255, 0, 64, 0.2)',
+          'rgba(255, 0, 64, 0.2)',
+          'rgba(255, 0, 64, 0.2)',
         ],
         borderColor: [
-          'rgba(64, 32, 224, 1)',
-          'rgba(64, 32, 224, 1)',
-          'rgba(64, 32, 224, 1)',
-          'rgba(64, 32, 224, 1)',
-          'rgba(64, 32, 224, 1)',
+          'rgba(255, 0, 0, 1)',
+          'rgba(255, 0, 0, 1)',
+          'rgba(255, 0, 0, 1)',
+          'rgba(255, 0, 0, 1)',
+          'rgba(255, 0, 0, 1)',
         ],
         borderWidth: 3,
         data: dataCountCandidatByWeek.map(el => (el.value || 0) && el.value.count),

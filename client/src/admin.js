@@ -38,6 +38,7 @@ export default {
   export_candidats_retention_stats_csv: 'Export candidats rétention Stats CSV',
   departement: 'Département : ', // eslint-disable-line no-irregular-whitespace
   resultats_des_examens: 'Résultats des examens',
+  candidats_sortant_de_retention_par_semaine: 'Candidats sortant de la zone rétention',
   de_reussite: 'de réussite',
   egale_recus_divise_reçus_plus_echecs: '= reçus / (reçus + échecs)',
   d_absenteisme: 'd\'absentéisme',

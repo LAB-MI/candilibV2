@@ -1,12 +1,18 @@
+
+import { chunk } from 'lodash'
+
 import api from '@/api'
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
-import { getFrenchDateTimeFromIso } from '../util/frenchDateTime'
+import {
+  getFrenchDateTimeFromIso,
+  uploadFileBatchAurige,
+  getJsonFromFile,
+} from '@/util'
 
 export const SHOW_AURIGE_RESULT = 'SHOW_AURIGE_RESULT'
 export const AURIGE_UPLOAD_CANDIDATS_REQUEST = 'AURIGE_UPLOAD_CANDIDATS_REQUEST'
 export const AURIGE_UPLOAD_CANDIDATS_SUCCESS = 'AURIGE_UPLOAD_CANDIDATS_SUCCESS'
 export const AURIGE_UPLOAD_CANDIDATS_FAILURE = 'AURIGE_UPLOAD_CANDIDATS_FAILURE'
-const SET_LAST_FILE = 'SET_LAST_FILE'
 
 export const FETCH_AURIGE_LAST_DATETIME_REQUEST = 'FETCH_AURIGE_LAST_DATETIME_REQUEST'
 export const FETCH_AURIGE_LAST_DATETIME_SUCCESS = 'FETCH_AURIGE_LAST_DATETIME_SUCCESS'
@@ -16,14 +22,11 @@ export default {
   state: {
     isLoading: false,
     candidats: [],
-    lastFile: undefined,
+    feedBack: [],
     lastSyncDateTime: 'La date du dernier batch Aurige n\'est pas encore renseigné',
     isLastSyncDateTimeLoading: false,
   },
   mutations: {
-    [SET_LAST_FILE] (state, file) {
-      state.lastFile = file
-    },
     [AURIGE_UPLOAD_CANDIDATS_REQUEST] (state) {
       state.isLoading = true
     },
@@ -48,23 +51,52 @@ export default {
 
   },
   actions: {
-    async [AURIGE_UPLOAD_CANDIDATS_REQUEST] ({ commit, dispatch }, file) {
+    async [AURIGE_UPLOAD_CANDIDATS_REQUEST] ({ commit, dispatch, state }, file) {
       commit(AURIGE_UPLOAD_CANDIDATS_REQUEST)
-      const data = new FormData()
-      data.append('file', file)
-
       try {
-        const result = await api.admin.uploadCandidatsJson(data)
-        if (result.success === false) {
-          throw new Error(result.message)
+        const candidats = await getJsonFromFile(file)
+        const divideArrayBy = 1000
+
+        const files = chunk(candidats, divideArrayBy)
+          .map((chunk, index) => {
+            const builtFile = new File(
+              [JSON.stringify(chunk)],
+              `batchFileChunk_${index}`,
+              { type: 'application/json' })
+            return builtFile
+          })
+
+        const uploadResults = await files.reduce(async (acc, currentFile) => {
+          return acc.then(async results => {
+            try {
+              const candidatsFeedBack = await uploadFileBatchAurige(api, currentFile)
+              results.success = [
+                ...results.success,
+                ...candidatsFeedBack,
+              ]
+            } catch (error) {
+              results.errors = [
+                ...results.errors,
+                error.message,
+              ]
+            }
+            return results
+          })
+        }, Promise.resolve({ success: [], errors: [] }))
+
+        commit(AURIGE_UPLOAD_CANDIDATS_SUCCESS, uploadResults.success)
+
+        if (uploadResults && uploadResults.errors.length) {
+          throw new Error('Une ou plusieurs erreurs on été détecté pendant le traitement du fichier .json merci de vérifier son contenu ou de relancer le batch.')
         }
-        commit(AURIGE_UPLOAD_CANDIDATS_SUCCESS, result.candidats)
-        commit(SET_LAST_FILE, undefined)
-        dispatch(SHOW_SUCCESS, result.message)
+
+        if (uploadResults.success.length) {
+          return dispatch(SHOW_SUCCESS, `Le fichier ${file.name} a été synchronisé.`)
+        }
+        throw new Error('La synchro aurige c\'est bien déroulé cependant il semblerais que aucun candidats n\'est été mis à jours.')
       } catch (error) {
         commit(AURIGE_UPLOAD_CANDIDATS_FAILURE)
-        commit(SET_LAST_FILE, file)
-        dispatch(SHOW_ERROR, error.message)
+        return dispatch(SHOW_ERROR, error.message)
       }
     },
 

@@ -51,6 +51,9 @@ export const importCandidats = async (req, res) => {
     loggerInfo.filename = jsonFile.name
     appLogger.info({ ...loggerInfo })
 
+    // Next line is use to catch error when jsonFile.data not have the good format
+    JSON.parse(jsonFile.data.toString())
+
     synchroAurige(jsonFile.data, result => {
       const message = `Le fichier ${jsonFile.name} a été synchronisé.`
       appLogger.info({
