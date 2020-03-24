@@ -72,7 +72,8 @@ export const getDatesByCentreId = async (
   _id,
   beginDate,
   endDate,
-  candidatId
+  candidatId,
+  nbMsBeforePublishPlace
 ) => {
   appLogger.debug({
     func: 'getDatesByCentreId',
@@ -118,11 +119,44 @@ export const getDatesByCentreId = async (
     begin.toISODate(),
     endDate.toISODate()
   )
-  const dates = places.map(place =>
-    getFrenchLuxonFromJSDate(place.date).toISO()
-  )
+
+  return getPlacesWithPassedDelay(places, nbMsBeforePublishPlace)
+}
+
+const getPlacesWithPassedDelay = (places, nbMsBeforePublishPlace) => {
+  const nbMsBfrPublishPlace =
+    nbMsBeforePublishPlace || nbMsBeforePublishPlace === 0
+      ? nbMsBeforePublishPlace
+      : config.numberMillisecondBeforePublishPlace
+
+  const dates = []
+  for (const key in places) {
+    const place = places[key]
+    if (isPlaceWithPassedDelay(place, nbMsBfrPublishPlace)) {
+      dates.push(getFrenchLuxonFromJSDate(place.date).toISO())
+    }
+  }
   return [...new Set(dates)]
 }
+
+const isPlaceWithPassedDelay = (place, nbMsBeforePublishPlace) => {
+  const placeDatePlusDelay = getFrenchLuxonFromJSDate(place.createdAt).plus({
+    milliseconds: nbMsBeforePublishPlace,
+  })
+  const placeDatePlusDelay02 = getFrenchLuxonFromJSDate(place.createdAt)
+    .plus({ milliseconds: nbMsBeforePublishPlace })
+    .toISO()
+  const dateNow = getFrenchLuxon()
+  const createdAt = getFrenchLuxonFromJSDate(place.createdAt).toISO()
+  console.log(
+    { nbMsBeforePublishPlace },
+    { createdAt, placeDatePlusDelay02, dateNow: dateNow.toISO() }
+  )
+
+  return placeDatePlusDelay <= dateNow
+}
+
+// const convertToMilliseconds = (h, m, s) => ((h * 60 * 60 + m * 60 + s) * 1000)
 
 /**
  * Renvoie tous les créneaux (disponibles ou non) d'un centre dans une fourchette de temps
@@ -142,7 +176,8 @@ export const getDatesByCentre = async (
   nomCentre,
   beginDate,
   endDate,
-  candidatId
+  candidatId,
+  nbMsBeforePublishPlace
 ) => {
   appLogger.debug({
     func: 'getDatesByCentre',
@@ -162,7 +197,8 @@ export const getDatesByCentre = async (
     foundCentre._id,
     beginDate,
     endDate,
-    candidatId
+    candidatId,
+    nbMsBeforePublishPlace
   )
   return dates
 }
@@ -178,12 +214,9 @@ export const getDatesByCentre = async (
  *
  * @returns {string[]} - Tableau de dates au format ISO
  */
-export const hasAvailablePlaces = async (id, date) => {
+export const hasAvailablePlaces = async (id, date, nbMsBeforePublishPlace) => {
   const places = await findPlacesByCentreAndDate(id, date)
-  const dates = places.map(place =>
-    getFrenchLuxonFromJSDate(place.date).toISO()
-  )
-  return [...new Set(dates)]
+  return getPlacesWithPassedDelay(places, nbMsBeforePublishPlace)
 }
 
 /**
@@ -201,13 +234,18 @@ export const hasAvailablePlaces = async (id, date) => {
 export const hasAvailablePlacesByCentre = async (
   departement,
   nomCentre,
-  date
+  date,
+  nbMsBeforePublishPlace
 ) => {
   const foundCentre = await findCentreByNameAndDepartement(
     nomCentre,
     departement
   )
-  const dates = await hasAvailablePlaces(foundCentre._id, date)
+  const dates = await hasAvailablePlaces(
+    foundCentre._id,
+    date,
+    nbMsBeforePublishPlace
+  )
   return dates
 }
 

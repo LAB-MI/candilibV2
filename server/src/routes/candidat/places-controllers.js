@@ -3,6 +3,8 @@
  * @module routes/candidat/places-controllers
  */
 
+import config from '../../config'
+
 import { appLogger, techLogger } from '../../util'
 import {
   addInfoDateToRulesResa,
@@ -83,6 +85,9 @@ export async function getPlacesByCentre (req, res) {
 
   const { centre: nomCentre, departement, begin, end, dateTime } = req.query
 
+  const numberMillisecondBeforePublishPlace =
+    config.numberMillisecondBeforePublishPlace
+
   const loggerInfo = {
     section: 'candidat-getPlacesByCentre',
     departement,
@@ -92,6 +97,7 @@ export async function getPlacesByCentre (req, res) {
     end,
     dateTime,
     candidatId: req.userId,
+    numberMillisecondBeforePublishPlace,
   }
 
   if (end && dateTime) {
@@ -111,9 +117,20 @@ export async function getPlacesByCentre (req, res) {
   try {
     if (centreId) {
       if (dateTime) {
-        dates = await hasAvailablePlaces(centreId, dateTime, req.userId)
+        dates = await hasAvailablePlaces(
+          centreId,
+          dateTime,
+          req.userId,
+          numberMillisecondBeforePublishPlace
+        )
       } else {
-        dates = await getDatesByCentreId(centreId, begin, end, req.userId)
+        dates = await getDatesByCentreId(
+          centreId,
+          begin,
+          end,
+          req.userId,
+          numberMillisecondBeforePublishPlace
+        )
       }
     } else {
       if (!(departement && nomCentre)) {
@@ -124,7 +141,8 @@ export async function getPlacesByCentre (req, res) {
           departement,
           nomCentre,
           dateTime,
-          req.userId
+          req.userId,
+          numberMillisecondBeforePublishPlace
         )
       } else {
         dates = await getDatesByCentre(
@@ -132,7 +150,8 @@ export async function getPlacesByCentre (req, res) {
           nomCentre,
           begin,
           end,
-          req.userId
+          req.userId,
+          numberMillisecondBeforePublishPlace
         )
       }
     }

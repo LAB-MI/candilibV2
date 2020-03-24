@@ -178,6 +178,10 @@ const config = {
     process.env.NUMBER_VISIBLE_MONTHS !== undefined
       ? Number(process.env.NUMBER_VISIBLE_MONTHS)
       : 3,
+  numberMillisecondBeforePublishPlace:
+    process.env.NUMBER_MILLISECOND_BEFORE_PUBLISH_PLACE !== undefined
+      ? Number(process.env.NUMBER_MILLISECOND_BEFORE_PUBLISH_PLACE)
+      : 60000 * 15,
 }
 
 /**

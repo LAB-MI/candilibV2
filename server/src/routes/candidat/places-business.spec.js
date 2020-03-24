@@ -130,11 +130,68 @@ describe('Test places business: get dates from places available', () => {
 
     const dates = await getDatesByCentre(
       centreSelected.departement,
-      centreSelected.nom
+      centreSelected.nom,
+      undefined,
+      undefined,
+      undefined,
+      0
     )
+    console.log({ dates })
 
     expect(dates).toBeDefined()
     expect(dates).toHaveLength(nbPlacesAvaibles)
+  })
+
+  it('Should not get dates, because the delay is not pass, from places Centre 2', async () => {
+    findCandidatById.mockResolvedValue({
+      dateReussiteETG: getFrenchLuxon().toISODate(),
+    })
+
+    const test = () =>
+      new Promise(function (resolve, reject) {
+        setTimeout(async () => {
+          const dates = await getDatesByCentre(
+            centreSelected.departement,
+            centreSelected.nom,
+            undefined,
+            undefined,
+            undefined,
+            2000
+          )
+          console.log({ dates })
+          resolve(dates)
+        }, 1000)
+      })
+
+    const dates = await test()
+    expect(dates).toBeDefined()
+    expect(dates).toHaveLength(0)
+  })
+
+  it('Should get 6 dates, because the delay pass, from places Centre 2', async () => {
+    findCandidatById.mockResolvedValue({
+      dateReussiteETG: getFrenchLuxon().toISODate(),
+    })
+
+    const test = () =>
+      new Promise(function (resolve, reject) {
+        setTimeout(async () => {
+          const dates = await getDatesByCentre(
+            centreSelected.departement,
+            centreSelected.nom,
+            undefined,
+            undefined,
+            undefined,
+            2000
+          )
+          console.log({ dates })
+          resolve(dates)
+        }, 3000)
+      })
+
+    const dates = await test()
+    expect(dates).toBeDefined()
+    expect(dates).toHaveLength(6)
   })
 
   it('Should get any places from Centre2 when ETG expired now', async () => {
@@ -158,7 +215,8 @@ describe('Test places business: get dates from places available', () => {
         centreSelected._id,
         begin,
         end,
-        'candidatId'
+        'candidatId',
+        0
       )
       expect(dates).toBeUndefined()
     } catch (error) {
@@ -187,7 +245,8 @@ describe('Test places business: get dates from places available', () => {
       centreSelected._id,
       begin,
       end,
-      'candidatId'
+      'candidatId',
+      0
     )
     expect(dates).toBeDefined()
 
