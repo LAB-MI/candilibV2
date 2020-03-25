@@ -244,6 +244,9 @@ export default {
     goToSelectCenter () {
       this.$router.push({
         name: 'selection-centre',
+        params: {
+          departement: `${this.$route.params.departement || this.$store.state.departements.selectedDepartement.departement}`,
+        },
       })
     },
   },

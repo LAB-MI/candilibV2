@@ -217,6 +217,13 @@ export default {
       })
       return json
     },
+
+    async getActiveDepartementsInfos () {
+      const json = await apiClient.get(`${apiPaths.candidat.departements}`, {
+        headers: getHeadersForJson(),
+      })
+      return json
+    },
   },
 
   admin: {
