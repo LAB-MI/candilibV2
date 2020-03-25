@@ -102,34 +102,20 @@
           class="t-select-departements"
           :available-departements="availableDepartements"
           :multiple="false"
-          label="Département"
+          label="Mon département de résidence"
           prepend-icon="location_city"
           aria-placeholder="93"
           :persistent-hint="true"
-          hint="Vous devez dès à présent choisir votre département de passage à l'examen.
-          Votre choix permet à l'administration de provisionner un nombre de places d'examen suffisant pour chaque département où Candilib est disponible"
           :rules="departementRules"
           required
-          @change-departements="newDep => departement = newDep"
-        />
-      </div>
-      <div
-        v-show="!!departement"
-        class="form-input"
-      >
-        <v-checkbox
-          v-model="isCheckDepartement"
-          dark
-          color="#fff"
-          class="t-checkbox"
-          :label="$formatMessage({ id: 'confirmation_choix_departement' }, { departement })"
+          @change-departements="newDep => departement = newDep "
         />
       </div>
       <div class="form-input">
         <v-btn
           type="submit"
-          :disabled="!isCheckDepartement || isSendingPresignup"
-          :aria-disabled="!isCheckDepartement || isSendingPresignup"
+          :disabled="!departement || isSendingPresignup"
+          :aria-disabled="!departement || isSendingPresignup"
           class="submit-button"
           dark
           tabindex="7"
@@ -197,7 +183,6 @@ export default {
       magicLinkValid: false,
       nephPlaceholder: '',
       codeNeph: '',
-      isCheckDepartement: false,
       nephRules: [
         v => nephRegex.test(v) || this.getMsg('preinscription_neph_erreur'),
       ],
