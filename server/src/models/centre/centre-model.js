@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { codePostal } from '../../util'
 
 const { Schema } = mongoose
 
@@ -24,6 +25,11 @@ const CentreSchema = new Schema(
       required: true,
       trim: true,
     },
+    geoDepartement: {
+      $type: String,
+      required: true,
+      trim: true,
+    },
     geoloc: {
       type: String,
       coordinates: [Number],
@@ -42,7 +48,13 @@ const CentreSchema = new Schema(
 )
 
 CentreSchema.index({ nom: 1, departement: 1 }, { unique: true })
-
+CentreSchema.virtual('getGeoDepartement').get(function () {
+  return (
+    this.geoDepartement ||
+    (this.adresse && this.adresse.match(codePostal)[1]) ||
+    this.departement
+  )
+})
 const model = mongoose.model('Centre', CentreSchema)
 export default model
 
