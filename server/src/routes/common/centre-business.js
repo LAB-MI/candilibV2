@@ -144,7 +144,15 @@ export async function updateCentreStatus (id, status, userId) {
  *
  * @returns {Promise.<CentreMongooseDocument>} Centre créé
  */
-export async function addCentre (nom, label, adresse, lon, lat, departement) {
+export async function addCentre (
+  nom,
+  label,
+  adresse,
+  lon,
+  lat,
+  departement,
+  geoDepartement
+) {
   if (
     !nom ||
     !label ||
@@ -176,7 +184,8 @@ export async function addCentre (nom, label, adresse, lon, lat, departement) {
     adresse,
     Number(lon),
     Number(lat),
-    departement
+    departement,
+    geoDepartement
   )
   return centre
 }
@@ -199,7 +208,7 @@ export async function addCentre (nom, label, adresse, lon, lat, departement) {
  */
 export async function updateCentre (
   id,
-  { nom, label, adresse, lon, lat },
+  { nom, label, adresse, lon, lat, geoDepartement },
   userId
 ) {
   const centre = await findCentreById(id)
@@ -234,12 +243,18 @@ export async function updateCentre (
     }
   }
 
+  // TODO: To update old data
+  if (!centre.geoDepartement && !geoDepartement) {
+    geoDepartement = centre.getGeoDepartement
+  }
+
   const updatedCentre = await updateCentreLabel(centre, {
     nom,
     label,
     adresse,
     lon,
     lat,
+    geoDepartement,
   })
 
   return updatedCentre
