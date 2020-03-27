@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import util from 'util'
+import { simpleParser } from 'mailparser'
 import config, { smtpOptions } from '../../../config'
 import { findArchivedCandidatByNomNeph } from '../../../models/archived-candidat/archived-candidat.queries'
 import { createCandidat, findCandidatById } from '../../../models/candidat'
@@ -34,6 +35,7 @@ import {
   NO_CANDILIB,
   OK,
   OK_UPDATED,
+  EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
 } from '../../../util'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
@@ -69,6 +71,9 @@ import {
 import archivedCandidatModel from '../../../models/archived-candidat/archived-candidat.model'
 
 import { buildSmtpServer } from '../../business/__tests__/smtp-server'
+import archivedPlaceModel from '../../../models/archived-place/archived-place-model'
+import placeModel from '../../../models/place/place.model'
+import { SUBJECT_MAIL_INFO } from '../../business'
 
 jest.mock('../../../util/logger')
 require('../../../util/logger').setWithConsole(false)
@@ -198,7 +203,8 @@ async function synchroAurigeSuccess (
 const synchroAurigeToPassExam = async (
   aurigeFile,
   infoCandidat,
-  candidatId
+  candidatId,
+  reason = EPREUVE_PRATIQUE_OK
 ) => {
   const { nomNaissance, codeNeph, email } = infoCandidat
   const result = await synchroAurige(aurigeFile)
@@ -207,7 +213,7 @@ const synchroAurigeToPassExam = async (
   expect(result[0]).toHaveProperty('nom', nomNaissance)
   expect(result[0]).toHaveProperty('neph', codeNeph)
   expect(result[0]).toHaveProperty('status', 'warning')
-  expect(result[0]).toHaveProperty('details', EPREUVE_PRATIQUE_OK)
+  expect(result[0]).toHaveProperty('details', reason)
 
   const candidat = await findCandidatById(candidatId, {})
   expect(candidat).toBeNull()
@@ -224,7 +230,7 @@ const synchroAurigeToPassExam = async (
   const now = getFrenchLuxon()
   expect(archivedAt.hasSame(now, 'day')).toBe(true)
 
-  expect(candidatArchived).toHaveProperty('archiveReason', EPREUVE_PRATIQUE_OK)
+  expect(candidatArchived).toHaveProperty('archiveReason', reason)
   expect(candidatArchived.reussitePratique).toEqual(
     getFrenchLuxonFromISO(infoCandidat.reussitePratique).toJSDate()
   )
@@ -244,17 +250,21 @@ const synchroAurigeToPassExam = async (
 
 describe('synchro-aurige', () => {
   let server
-  beforeAll(async done => {
+  beforeAll(async () => {
     await connect()
     await createInspecteurs()
     await createCentres()
+  })
+  beforeEach(done => {
     server = buildSmtpServer(smtpOptions.port, done)
   })
-  afterAll(async done => {
+  afterEach(done => {
+    server.close(done)
+  })
+  afterAll(async () => {
     await removeCentres()
     await removeInspecteur()
     await disconnect()
-    server.close(done)
   })
   it('Should return expired', () => {
     const fiveYearsAgo = new Date()
@@ -598,7 +608,23 @@ describe('synchro-aurige', () => {
       await placesCreated.delete()
     })
 
-    it('should archive candidat', async () => {
+    it('should archive candidat who passed exam and have not already valided by aurige', async () => {
+      await candidatModel.update(
+        { codeNeph: candidatPassed.codeNeph },
+        { $set: { isValidatedByAurige: false } }
+      )
+      const candidatArchived = await synchroAurigeToPassExam(
+        aurigeFile,
+        candidatPassed,
+        candidatCreated._id,
+        EPREUVE_PRATIQUE_OK_BEFORE_SING_UP
+      )
+      expectDataCandidat(candidatArchived, candidatPassed)
+      expect(candidatArchived.places).toBeUndefined()
+      await candidatArchived.delete()
+    })
+
+    it('should archive candidat who passed exam and have already valided by aurige', async () => {
       const candidatArchived = await synchroAurigeToPassExam(
         aurigeFile,
         candidatPassed,
@@ -803,6 +829,13 @@ describe('Check canAccess property of aurige', () => {
       path.resolve(__dirname, './', '__tests__', 'aurigeWithAccessAt.json')
     )
   })
+  let server
+  beforeEach(done => {
+    server = buildSmtpServer(smtpOptions.port, done)
+  })
+  afterEach(done => {
+    server.close(done)
+  })
 
   it('Should apply canAccesAt to candidat not validate by aurige', async () => {
     const result = await synchroAurige(aurigeFile)
@@ -855,6 +888,14 @@ describe('Synchro-aurige candidat with etg expired', () => {
     await setInitCreatedCentre()
     await createCentres()
   })
+  let server
+  beforeEach(done => {
+    server = buildSmtpServer(smtpOptions.port, done)
+  })
+  afterEach(done => {
+    server.close(done)
+  })
+
   afterAll(async () => {
     await removeCentres()
     await removeInspecteur()
@@ -1055,5 +1096,93 @@ describe('Synchro-aurige candidat with etg expired', () => {
 
     await candidat.remove()
     await placeSelected.remove()
+  })
+})
+
+describe('Synchro-aurige: send mail', () => {
+  let server
+  let candidatCreated
+  let placeSelected
+  beforeAll(async () => {
+    await connect()
+    await setInitCreatedInspecteurs()
+    await createInspecteurs()
+    await setInitCreatedCentre()
+    await createCentres()
+    const departementData = { _id: '93', email: 'email93@onepiece.com' }
+    await createDepartement(departementData)
+  })
+  beforeEach(done => {
+    server = buildSmtpServer(smtpOptions.port, done)
+  })
+  afterEach(async done => {
+    if (placeSelected) {
+      const archivedPlace = await archivedPlaceModel.findOne({
+        date: placeSelected.date,
+        inspecteur: placeSelected.inspecteur,
+      })
+      if (archivedPlace) await archivedPlace.delete()
+      const placeTmp = await placeModel.findOne({ _id: placeSelected._id })
+      if (placeTmp) await placeTmp.delete()
+    }
+    await candidatModel.findByIdAndDelete(candidatCreated._id)
+    server.close(done)
+  })
+  afterAll(async () => {
+    await removeCentres()
+    await removeInspecteur()
+    await disconnect()
+  })
+  it('should get mail success before validate aurige', async done => {
+    candidatCreated = await createCandidatToTestAurige(candidatPassed)
+    const aurigeFile = toAurigeJsonBuffer(candidatPassed)
+    server.onData = function (stream, session, callback) {
+      const chunks = []
+      stream.on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+      stream.on('end', async function () {
+        const body = Buffer.concat(chunks)
+        const mail = await simpleParser(body)
+        expect(mail.headers.get('to')).toHaveProperty(
+          'text',
+          candidatPassed.email
+        )
+        expect(mail.headers.get('subject')).toBe(SUBJECT_MAIL_INFO)
+        expect(mail.text).toMatch(
+          /Selon nos informations vous avez déjà réussi votre examen du permis de conduire,[\n ]notre service ne vous est plus utile/
+        )
+        done()
+        return callback()
+      })
+    }
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+  })
+  it('should get mail success already validate aurige', async done => {
+    candidatCreated = await createCandidatToTestAurige(candidatPassed, true)
+    const aurigeFile = toAurigeJsonBuffer(candidatPassed)
+    server.onData = function (stream, session, callback) {
+      const chunks = []
+      stream.on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+      stream.on('end', async function () {
+        const body = Buffer.concat(chunks)
+        const mail = await simpleParser(body)
+        expect(mail.headers.get('to')).toHaveProperty(
+          'text',
+          candidatPassed.email
+        )
+        expect(mail.headers.get('subject')).toBe(SUBJECT_MAIL_INFO)
+        expect(mail.text).toMatch(
+          /Selon nos informations, vous avez réussi l'examen que vous venez de passer./
+        )
+        done()
+        return callback()
+      })
+    }
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
   })
 })
