@@ -1,0 +1,135 @@
+[
+    {  
+        "codeNeph": "01234567890120",
+        "nomNaissance": "TESTETG",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-28",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "01234567890121",
+        "nomNaissance": "TESTETG1",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-27",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "01234567890122",
+        "nomNaissance": "TESTETG2",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-26",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "01234567890123",
+        "nomNaissance": "TESTETG3",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-29",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "01234567890124",
+        "nomNaissance": "TESTETG4",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-03-02",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "012345678901201",
+        "nomNaissance": "TESTETG01",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-28",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "012345678901211",
+        "nomNaissance": "TESTETG11",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-27",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "012345678901221",
+        "nomNaissance": "TESTETG21",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-26",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "012345678901231",
+        "nomNaissance": "TESTETG31",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-29",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "012345678901241",
+        "nomNaissance": "TESTETG41",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-03-02",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    }
+    {  
+        "codeNeph": "01234567890127",
+        "nomNaissance": "TESTETG7",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-21",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+    {  
+        "codeNeph": "012345678901271",
+        "nomNaissance": "TESTETG71",
+        "prenom": "Luffy",
+        "dateReussiteETG" : "2015-02-21",
+        "nbEchecsPratiques" : "1",
+        "dateDernierNonReussite" : "",
+        "objetDernierNonReussite" : "",
+        "reussitePratique" : "",
+        "candidatExistant" : "OK"
+    },
+
+]
