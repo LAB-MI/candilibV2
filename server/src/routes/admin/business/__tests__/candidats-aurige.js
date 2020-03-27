@@ -1,6 +1,7 @@
 import { createCandidat } from '../../../../models/candidat'
 import config from '../../../../config'
 import { getFrenchLuxon } from '../../../../util'
+import { ObjectLastNoReussitValues } from '../../../../models/candidat/objetDernierNonReussite.values'
 
 const nowLuxon = getFrenchLuxon()
 
@@ -45,7 +46,7 @@ export const candidatFailureExam = {
   dateReussiteETG,
   nbEchecsPratiques: '2',
   dateDernierNonReussite: dateDernierEchecPratique,
-  objetDernierNonReussite: 'echec',
+  objetDernierNonReussite: ObjectLastNoReussitValues.ECHEC,
   reussitePratique: '',
   candidatExistant: 'OK',
   isValidatedByAurige: false,

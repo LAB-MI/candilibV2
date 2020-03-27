@@ -3,13 +3,19 @@ import { getCancellationBody } from './build-mail-cancellation'
 import { getCancellationByAdminBody } from './build-mail-cancellation-by-admin'
 import { getConvocationBody } from './build-mail-convocation'
 import { getFailureExamBody } from './build-mail-failure-exam'
-import { sendMail } from './send-mail'
+import { sendMail, addMailToSend } from './send-mail'
 import {
   SUBJECT_CANCEL_BY_FAILURE,
   SUBJECT_CANCEL_RESA,
   SUBJECT_CONVOCATION,
   SUBJECT_CANCEL_BY_ADMIN,
+  SUBJECT_MAIL_INFO,
 } from './send-message-constants'
+import { ObjectLastNoReussitValues } from '../../models/candidat/objetDernierNonReussite.values'
+import { getFailedAtExamTemplate } from './mail/epreuve-pratique-failed-template'
+import { getAbsentAtExamTemplate } from './mail/epreuve-pratique-absent-template'
+import { getNoExamineAtExamTemplate } from './mail/epreuve-pratique-non-examine-template'
+import { getNoSuccessAtExamBody } from './build-mail-no-success-exam'
 
 const section = 'candidat-sendMail'
 
@@ -79,28 +85,56 @@ export const sendCancelBooking = (candidat, place) => {
   return sendMail(email, { content, subject })
 }
 
-export const sendFailureExam = async (place, candidat) => {
-  appLogger.debug({
-    func: 'sendFailureExam',
-    args: { candidat, place },
-  })
-  const action = 'SEND_REMOVE_BOOKING_BY_AURIGE'
-  const { email } = candidat
-
-  appLogger.debug({ func: 'sendFailureExam', place, candidat, email })
+export const sendFailureExam = async (
+  place,
+  candidat,
+  lastNoReussite,
+  addInQueue
+) => {
+  let action = 'SEND_BY_AURIGE_TO_NO_SUCCESS'
   try {
     sendMailResaArgsValidation(place, candidat)
   } catch (error) {
     appLogger.error({ section, action, error })
     throw error
   }
-
-  const content = await getFailureExamBody(place, candidat)
-  const subject = SUBJECT_CANCEL_BY_FAILURE
-
-  appLogger.debug({ func: 'sendFailureExam', content, subject })
-
-  return sendMail(email, { content, subject })
+  appLogger.debug(section, action, place, candidat)
+  const { email } = candidat
+  let content
+  let subject = SUBJECT_MAIL_INFO
+  switch (lastNoReussite.reason) {
+    case ObjectLastNoReussitValues.ECHEC: {
+      action = 'SEND_BY_AURIGE_TO_FAIL'
+      content = await getNoSuccessAtExamBody(candidat, getFailedAtExamTemplate)
+      break
+    }
+    case ObjectLastNoReussitValues.ABSENT: {
+      action = 'SEND_BY_AURIGE_TO_ABSENT'
+      content = await getNoSuccessAtExamBody(candidat, getAbsentAtExamTemplate)
+      break
+    }
+    case ObjectLastNoReussitValues.CANCELED:
+    case ObjectLastNoReussitValues.NO_ADMISSIBLE:
+    case ObjectLastNoReussitValues.NO_EXAMINABLE: {
+      action = 'SEND_BY_AURIGE_TO_NO_EXAMINE'
+      content = await getNoSuccessAtExamBody(
+        candidat,
+        getNoExamineAtExamTemplate
+      )
+      break
+    }
+    default: {
+      action = 'SEND_REMOVE_BOOKING_BY_AURIGE'
+      content = await getFailureExamBody(place, candidat)
+      subject = SUBJECT_CANCEL_BY_FAILURE
+    }
+  }
+  appLogger.info({ section, action, email })
+  if (addInQueue) {
+    return addMailToSend(email, { content, subject })
+  } else {
+    return sendMail(email, { content, subject })
+  }
 }
 
 export const sendCancelBookingByAdmin = async (place, candidat) => {

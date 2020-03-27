@@ -5,16 +5,19 @@ export const getEpreuvePratiqueKOTemplate = (
   dateResa,
   houreResa,
   urlRESA,
-  urlFAQ
+  urlFAQ,
+  contactezNous
 ) => `<p>Madame, Monsieur ${nameCandidat},</p>
 <br>
 <p>
-En raison de l’application de la réglementation relative au délai imposé entre 2 passages de l’examen,
-votre réservation à l'examen pratique du permis de conduire à ${nameCentre.toUpperCase()} le ${dateResa} à ${houreResa} avec le numéro NEPH ${codeNeph} est malheureusement annulée.
+Votre réservation à l'examen pratique du permis de conduire à ${nameCentre.toUpperCase()} le ${dateResa} à ${houreResa} avec le numéro NEPH ${codeNeph} est annulée.
 </p>
 <p>
 Nous vous invitons à vous positionner sur <a href=${urlRESA}>un nouveau créneau</a>.
 Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
+<br>
+${contactezNous}
+<br>
 </p>
 <br>
 <p align="right">L'équipe Candilib</p>`

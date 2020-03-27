@@ -325,7 +325,12 @@ const updateValidCandidat = async (
     const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
     if (canBookFrom) {
       infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
-      await cancelBookingAfterExamFailure(candidat, canBookFrom, dateTimeEchec)
+      await cancelBookingAfterExamFailure(
+        candidat,
+        canBookFrom,
+        dateTimeEchec,
+        lastNoReussite
+      )
     }
   }
 
@@ -553,7 +558,8 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
 const cancelBookingAfterExamFailure = async (
   candidat,
   canBookFrom,
-  dateEchec
+  dateEchec,
+  lastNoReussite
 ) => {
   const { _id } = candidat
   const place = await findPlaceBookedByCandidat(_id)
@@ -563,7 +569,6 @@ const cancelBookingAfterExamFailure = async (
   // check date
   const dateTimeResa = getFrenchLuxonFromJSDate(date)
   const diffDateResaAndCanBook = dateTimeResa.diff(canBookFrom, 'days')
-  const diffDateResaAndNow = dateTimeResa.diffNow('days')
 
   if (diffDateResaAndCanBook.days > 0) return candidat
 
@@ -575,16 +580,14 @@ const cancelBookingAfterExamFailure = async (
     place
   )
 
-  if (diffDateResaAndNow.days > 0) {
-    try {
-      await sendFailureExam(place, updatedCandidat)
-    } catch (error) {
-      appLogger.error({
-        func: 'cancelBookingAfterExamFailure',
-        description: `Impossible d'envoyer un mail à ce candidat ${updatedCandidat.email} pour lui informer que sa réservation est annulée suite à l'échec de l'examen pratique`,
-        error,
-      })
-    }
+  try {
+    await sendFailureExam(place, updatedCandidat, lastNoReussite, true)
+  } catch (error) {
+    appLogger.error({
+      func: 'cancelBookingAfterExamFailure',
+      description: `Impossible d'envoyer un mail à ce candidat ${updatedCandidat.email} pour lui informer que sa réservation est annulée suite à l'échec de l'examen pratique`,
+      error,
+    })
   }
   return updatedCandidat
 }
