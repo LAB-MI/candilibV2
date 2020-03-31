@@ -12,15 +12,17 @@ WORKDIR /app
 # Expose the listening port of your app
 EXPOSE 8000
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone ; \
 # use proxy & private npm registry
+# With internal npm repo (autosigned) disable strict ssl : strict-ssl false
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone ; \
     if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \
         npm config set proxy $http_proxy; \
-        npm config set https-proxy $https_proxy; \
+        npm config set https-proxy $https_proxy ; \
         npm config set no-proxy $no_proxy; \
    fi ; \
-   [ -z "$npm_registry" ] || npm config set registry=$npm_registry
+   [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
+   [ -z "$npm_registry" ] || npm config set strict-ssl false
 
 ################################
 # Step 2: "development" target #
