@@ -175,9 +175,9 @@ CandidatSchema.pre('save', async function preSave () {
 })
 
 CandidatSchema.index({
-  nom: 'text',
+  nomNaissance: 'text',
   prenom: 'text',
-  mail: 'text',
+  email: 'text',
   codeNeph: 'text',
 })
 

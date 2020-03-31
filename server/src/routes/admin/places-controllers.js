@@ -178,7 +178,7 @@ export const createPlaceByAdmin = async (req, res) => {
     admin: req.userId,
     centreId: centre._id,
     inspecteur,
-    date,
+    dateStr: date,
   }
   try {
     const createdPlaceResult = await createPlaceForInspector(
@@ -511,7 +511,7 @@ export const updatePlaces = async (req, res) => {
       ...loggerContent,
       action: loggerContent.action || 'ERROR',
       description: error.message,
-      error: error.stack,
+      error: error,
     })
 
     return res.status(status).json({
@@ -608,7 +608,7 @@ export const removeReservationByAdmin = async (req, res) => {
   const loggerContent = {
     section: 'admin-delete-resa',
     admin: req.userId,
-    place: id,
+    placeId: id,
   }
   const admin = await findUserById(req.userId)
 

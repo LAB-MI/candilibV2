@@ -8,6 +8,7 @@ Cypress.Commands.add('deleteAllMails', () => {
 })
 
 Cypress.Commands.add('getLastMail', (infos) => {
+  cy.wait(100)
   cy.request({
     method: 'GET',
     url: mhApiUrl('/v2/messages?limit=10'),
@@ -41,9 +42,9 @@ Cypress.Commands.add('getBody', { prevSubject: true }, (mail) => {
 Cypress.Commands.add('getRecipients', { prevSubject: true }, (mail) => {
   return cy
     .wrap(mail)
-    .then((mail) =>
-      mail.To.map(
+    .then((mail) => {
+      return (mail.To || []).map(
         (recipientObj) => `${recipientObj.Mailbox}@${recipientObj.Domain}`,
-      ),
-    )
+      )
+    })
 })

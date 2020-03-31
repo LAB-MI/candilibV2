@@ -6,30 +6,14 @@
 
 import { sendMail } from './send-mail'
 import { getHtmlBody } from './mail'
-import config from '../../config'
-import { addEmailValidationHash } from '../../models/user'
-
-/**
- * Renvoi le lien de réinitialisation contenant le hash
- * @async
- * @function
- *
- * @param {string} email Adresse courriel de l'utilisateur
- */
-
-export const getUrlResetLink = async email => {
-  const emailValidationHash = await addEmailValidationHash(email)
-  return `${config.ADMIN_URL}/reset-link?email=${encodeURIComponent(
-    email
-  )}&hash=${encodeURIComponent(emailValidationHash)}`
-}
+import { getUrlResetLink } from './send-mail-util'
 
 /**
  * Envoi un email contenant le lien de réinitialisation
  * @async
  * @function
  *
- * @param {string} email Adresse courriel de l'utilisateur
+ * @param {string} email - Adresse courriel de l'utilisateur
  */
 export const sendMailResetLink = async email => {
   const urlResetLink = await getUrlResetLink(email)
@@ -38,12 +22,12 @@ export const sendMailResetLink = async email => {
 }
 
 /**
- * Retourne le corps du mail
+ *Génère le contenu du mail
  * @function
  *
- * @param {string} urlResetLink Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
+ * @param {string} urlResetLink - Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
  *
- * @returns {string} Contenu HTML de la partie informative du contenu du mail de réinitialisation du mot de passe
+ * @returns {string} - Contenu HTML de la partie informative du contenu du mail de réinitialisation du mot de passe
  */
 export const getResetLinkTemplate = urlResetLink => `
   <p>
@@ -56,25 +40,25 @@ export const getResetLinkTemplate = urlResetLink => `
 `
 
 /**
- * Retourne le corps du mail
+ * Retourne le contenu du mail
  * @function
  *
- * @param {string} urlResetLink Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
+ * @param {string} urlResetLink - Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
  *
- * @returns {string} Contenu HTML de tout le contenu du mail de réinitialisation du mot de passe
+ * @returns {string} - Contenu HTML de tout le contenu du mail de réinitialisation du mot de passe
  */
 export const getResetLinkMailBody = urlResetLink => {
-  const body = getResetLinkTemplate(urlResetLink)
-  return getHtmlBody(body)
+  const content = getResetLinkTemplate(urlResetLink)
+  return getHtmlBody(content)
 }
 
 /**
  * Retourne le sujet et le contenu du mail
  * @function
  *
- * @param {string} urlResetLink Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
+ * @param {string} urlResetLink - Lien à envoyer dans le mail avec l'adresse courriel et le hash de réinitialisation
  *
- * @returns {MailData} Titre et corps du mail à envoyer pour la réinitialisation du mot de passe
+ * @returns {MailData} - Titre et corps du mail à envoyer pour la réinitialisation du mot de passe
  */
 export const getResetLinkMail = urlResetLink => {
   const subject = 'Réinitialisation de votre mot de passe'

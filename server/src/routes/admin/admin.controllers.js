@@ -7,7 +7,7 @@ import { findDepartementById } from '../../models/departement'
 
 import { appLogger } from '../../util'
 import config from '../../config'
-import { sendMailResetLink } from '../business/send-mail-reset-password'
+import { sendMailCreateAccount } from '../business/send-mail-create-account'
 import { sendMailConfirmationUpdateUserInfo } from '../business/send-mail-update-user-info'
 import {
   getAppropriateUsers,
@@ -119,7 +119,7 @@ export const createUserController = async (req, res) => {
       departements
     )
 
-    await sendMailResetLink(email)
+    await sendMailCreateAccount(email)
     appLogger.info({
       ...loggerInfo,
       action: 'created-user',

@@ -117,7 +117,7 @@ export default {
           newPassword: this.newPassword,
           confirmNewPassword: this.confirmNewPassword,
         })
-        this.$store.dispatch(SHOW_SUCCESS, `Votre mot de passe a bien été modifié`)
+        this.$store.dispatch(SHOW_SUCCESS, 'Votre mot de passe a bien été modifié')
         this.$router.push({ name: 'admin-login' })
       } catch (error) {
         await this.$store.dispatch(SHOW_ERROR, error.message)

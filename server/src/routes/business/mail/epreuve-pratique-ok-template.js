@@ -4,13 +4,14 @@ export const getEpreuvePratiqueOKTemplate = (
   contactezNous
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <br>
-  <p>Selon nos informations vous avez déjà réussi votre examen du permis de conduire, notre service ne vous est plus utile.</p>
+  <p>Selon nos informations, vous avez réussi l'examen que vous venez de passer.</p>
+  <p>Votre certificat d'examen sera disponible sous 24 heures (hors week-end et jours fériés) <a href:'https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire#/step-connexion'> ici</a>.
+  </p>
   <br>
   <p><b>Attention :</b></p>
   <p>
-    Si vous recevez ce message et que vous êtes en situation de retour au permis de conduire après une annulation,
-    vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi
-    et en cours de validité.
+    Seul le certificat téléchargé sur ce site établira officiellement votre réussite et vous autorisera la conduite.
+    <br>Ce mail est purement informatif et n'engage en rien l'administration sur votre résultat définitif.
   </p>
   <p>Vous pourrez trouver des informations utiles en consultant notre <a href=${urlFAQ}>aide en ligne</a>.<p>
   <br>

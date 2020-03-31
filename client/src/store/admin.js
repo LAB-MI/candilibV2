@@ -81,6 +81,9 @@ export const CREATE_CENTER_FAILURE = 'CREATE_CENTER_FAILURE'
 export const SELECT_DEPARTEMENT = 'SELECT_DEPARTEMENT'
 export const SET_WEEK_SECTION = 'SET_WEEK_SECTION'
 
+export const CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS = 'CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS'
+export const DELETE_TOTAL_PLACES_FOR_ALL_CENTERS = 'DELETE_TOTAL_PLACES_FOR_ALL_CENTERS'
+
 export const numberOfMonthsToFetch = 3
 
 const AUTHORIZED_ROUTES = {
@@ -108,9 +111,16 @@ export default {
       )
       return (selectedEmail && selectedEmail.email) || state.email
     },
+    countPlacesForAllCenters: state => {
+      return state.countPlacesForAllCenters
+    },
   },
 
   state: {
+    countPlacesForAllCenters: {
+      totalBookedPlaces: 0,
+      totalPlaces: 0,
+    },
     centres: {
       isFetching: false,
       isUpdating: false,
@@ -352,6 +362,10 @@ export default {
       state.centres.error = error
       state.centres.isCreating = false
     },
+
+    [CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS] (state, coutCenterPlaces) {
+      state.countPlacesForAllCenters = coutCenterPlaces
+    },
   },
 
   actions: {
@@ -372,6 +386,7 @@ export default {
     ) {
       const { begin, end } = timeWindow
       commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
+
       try {
         const currentDateTime = getFrenchLuxonCurrentDateTime()
         const beginDate = begin || currentDateTime.startOf('day').toISO()
@@ -395,25 +410,35 @@ export default {
           rootState.center.selected ||
           (placesByCentre[0] && placesByCentre[0].centre)
 
+        const count = {
+          totalBookedPlaces: 0,
+          totalPlaces: 0,
+        }
+
         const placesByCentreAndWeek = Array.isArray(placesByCentre)
-          ? placesByCentre.map(element => ({
-            centre: element.centre,
-            places: element.places.reduce((acc, place) => {
-              const keyString = getFrenchLuxonFromIso(place.date)
-                .toISOWeekDate()
-                .split('-')
-              const key = `${keyString[0]}-${keyString[1]}`
-              const places = { ...acc }
-              places[key] = [...(places[key] || []), place]
-              return places
-            }, {}),
-          }))
+          ? placesByCentre.map(element => {
+            count.totalPlaces += element.places.length
+            count.totalBookedPlaces += element.places.filter(el => el.candidat).length
+            return ({
+              centre: element.centre,
+              places: element.places.reduce((acc, place) => {
+                const keyString = getFrenchLuxonFromIso(place.date)
+                  .toISOWeekDate()
+                  .split('-')
+                const key = `${keyString[0]}-${keyString[1]}`
+                const places = { ...acc }
+                places[key] = [...(places[key] || []), place]
+                return places
+              }, {}),
+            })
+          })
           : []
 
         commit(
           FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_SUCCESS,
           placesByCentreAndWeek,
         )
+        commit(CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS, count)
       } catch (error) {
         commit(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)

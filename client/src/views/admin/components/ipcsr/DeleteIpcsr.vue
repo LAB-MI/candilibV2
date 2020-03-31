@@ -91,7 +91,7 @@ export default {
     async deleteUser () {
       try {
         await this.$store.dispatch(DELETE_IPCSR_REQUEST, this.ipcsrId)
-        this.$store.dispatch(SHOW_SUCCESS, `L'IPCSR a bien été archivé·e`)
+        this.$store.dispatch(SHOW_SUCCESS, 'L\'IPCSR a bien été archivé·e')
         this.$store.dispatch(FETCH_IPCSR_LIST_REQUEST)
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)

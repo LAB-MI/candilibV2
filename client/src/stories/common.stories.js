@@ -6,5 +6,5 @@ import AppVersion from '../components/AppVersion.vue'
 storiesOf('Common/AppVersion', module)
   .add('Basic', () => ({
     components: { AppVersion },
-    template: `<app-version />`,
+    template: '<app-version />',
   }))

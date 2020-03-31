@@ -151,6 +151,10 @@ const config = {
   smtpUser: process.env.SMTP_USER,
   smtpPass: process.env.SMTP_PASS,
   smtpPort: process.env.SMTP_PORT || 25,
+  smtpMaxConnections: process.env.SMTP_MAX_CONNECTIONS || 1,
+  smtpRateDelta: process.env.SMTP_RATE_DELTA || 1000,
+  smtpRateLimit: process.env.SMTP_RATE_LIMIT || undefined,
+  smtpMaxAttemptsToSend: process.env.SMTP_MAX_ATTEMPS_TO_SEND || 10,
 
   PUBLIC_URL: process.env.PUBLIC_URL || DEFAULT_PUBLIC_URL,
   ADMIN_URL: process.env.ADMIN_URL || DEFAULT_ADMIN_URL,

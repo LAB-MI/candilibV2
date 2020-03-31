@@ -70,7 +70,6 @@ describe('Candidat', () => {
         deleteCandidat(candidat2).catch(() => true),
       ])
     })
-
     it('should save a candidat with a valid nom, portable, adresse, email and a valid neph', async () => {
       // Given
       const email = validEmail

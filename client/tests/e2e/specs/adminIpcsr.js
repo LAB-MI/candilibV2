@@ -61,7 +61,7 @@ describe('Create and see the list of IPCSR', () => {
     cy.get('.v-list-item').first().click()
     cy.get('.t-create-ipcsr-btn').click()
 
-    cy.get('.v-snack--active').should('contain', `L'IPCSR a bien été créé`)
+    cy.get('.v-snack--active').should('contain', 'L\'IPCSR a bien été créé')
 
     cy.get('.t-list-ipcsr')
       .find('th span')
@@ -87,7 +87,7 @@ describe('Create and see the list of IPCSR', () => {
     cy.get('.v-list-item').contains(ipcsr1.departement).click()
     cy.get('.t-create-ipcsr-btn').click()
 
-    cy.get('.v-snack--active').should('contain', `L'IPCSR a bien été créé`)
+    cy.get('.v-snack--active').should('contain', 'L\'IPCSR a bien été créé')
 
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type('{selectall}{backspace}', { force: true })
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-email  input').type(ipcsr2.email, { force: true })
@@ -126,10 +126,10 @@ describe('Create and see the list of IPCSR', () => {
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-name  input').type(ipcsr3.name, { force: true })
     cy.get('.t-create-ipcsr-form  .t-input-ipcsr-matricule  input').type(ipcsr3.matricule, { force: true })
     cy.get('.t-create-ipcsr-form  .t-select-ipcsr-departement .v-input__slot').click()
-    cy.get('.v-list-item__title').contains(ipcsr3.departement).click()
+    cy.get('.menuable__content__active .v-list-item__title').contains(ipcsr3.departement).should('be.visible').click()
     cy.get('.t-create-ipcsr-btn').click()
 
-    cy.get('.v-snack--active').should('contain', `L'IPCSR a bien été créé`)
+    cy.get('.v-snack--active').should('contain', 'L\'IPCSR a bien été créé')
 
     cy.get('.t-list-ipcsr')
       .find('th span')
@@ -144,8 +144,8 @@ describe('Create and see the list of IPCSR', () => {
     cy.get('.v-dialog--active')
       .find('.t-select-update-ipcsr-departements .v-input__slot')
       .click()
-    cy.get('.v-list-item__title')
-      .contains(ipcsr3.newDepartement)
+    cy.get('.menuable__content__active .v-list-item__title')
+      .contains(ipcsr3.newDepartement).should('be.visible')
       .click()
     cy.get('.v-dialog--active').find('.t-btn-update-ipcsr-confirm')
       .click({ force: true })

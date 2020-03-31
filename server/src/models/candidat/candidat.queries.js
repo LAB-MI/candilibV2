@@ -105,10 +105,11 @@ export const findCandidatsMatching = async (
   startingWith,
   endingWith
 ) => {
+  const MAX_RESULT = 300
   const search = `${startingWith ? '^' : ''}${$search}${endingWith ? '$' : ''}`
   const searchRegex = new RegExp(`${search}`, 'i')
 
-  const candidats = await Candidat.find({
+  const nbResultsMax = await Candidat.count({
     $or: [
       { nomNaissance: searchRegex },
       { prenom: searchRegex },
@@ -116,18 +117,39 @@ export const findCandidatsMatching = async (
       { email: searchRegex },
     ],
   })
-  const fullTextCandidats = await Candidat.find(
-    { $text: { $search } },
-    { score: { $meta: 'textScore' } }
-  ).sort({ score: { $meta: 'textScore' } })
+  const candidats = await Candidat.find({
+    $or: [
+      { nomNaissance: searchRegex },
+      { prenom: searchRegex },
+      { codeNeph: searchRegex },
+      { email: searchRegex },
+    ],
+  }).limit(MAX_RESULT)
 
-  return [
-    ...candidats,
-    ...fullTextCandidats.filter(
-      candidat =>
-        !candidats.some(cand => cand._id.toString() === candidat._id.toString())
-    ),
-  ]
+  let searchText = $search
+  if (startingWith && endingWith) {
+    searchText = `\\"${$search}\\"`
+  }
+
+  const fullTextCandidats = await Candidat.find(
+    { $text: { $search: searchText } },
+    { score: { $meta: 'textScore' } }
+  )
+    .sort({ score: { $meta: 'textScore' } })
+    .limit(MAX_RESULT)
+
+  return {
+    candidats: [
+      ...candidats,
+      ...fullTextCandidats.filter(
+        candidat =>
+          !candidats.some(
+            cand => cand._id.toString() === candidat._id.toString()
+          )
+      ),
+    ],
+    nbResultsMax,
+  }
 }
 
 /**
@@ -490,11 +512,77 @@ export const isCandidatExisting = async _id => {
   return isExist
 }
 
+/**
+ * Compte le nombre de candidats validé par Aurige et qui ne sont pas dans la zone de rétention
+ *
+ * @async
+ * @function
+ *
+ * @param {string} departement - Identifiant du département sélectionné
+ *
+ * @returns {Promise.<number>} - le nombre de candidat compté
+ */
 export const countCandidatsInscritsByDepartement = async departement => {
+  const dateNow = getFrenchLuxon()
   return Candidat.countDocuments({
     departement,
     isValidatedByAurige: true,
+    $or: [
+      {
+        canAccessAt: { $lt: dateNow },
+      },
+      {
+        canAccessAt: { $exists: false },
+      },
+    ],
   })
+}
+
+export const findCandidatWithBooking = async (nomNaissance, codeNeph) => {
+  const candidat = await Candidat.aggregate()
+    .match({ nomNaissance, codeNeph })
+    .lookup({
+      from: 'places',
+      localField: '_id',
+      foreignField: 'candidat',
+      as: 'booking',
+    })
+  return candidat[0]
+}
+
+/**
+ * Compte le nombre de candidats validé par Aurige et qui ne sont pas dans la zone de rétention sur une période
+ *
+ * @async
+ * @function
+ *
+ * @param {string} departement - Identifiant du département sélectionné
+ * @param {string} startDate - Date au format ISO de debut de période
+ * @param {string} endDate - Date au format ISO de fin période
+ *
+ * @returns {Promise.<number>} - le nombre de candidat compté
+ */
+export const countCandidatsInscritsByDepartementAndWeek = async (
+  departement,
+  startDate,
+  endDate
+) => {
+  const result = await Candidat.countDocuments({
+    departement,
+    isValidatedByAurige: true,
+    $and: [
+      {
+        canAccessAt: { $exists: true },
+      },
+      {
+        canAccessAt: { $gte: startDate },
+      },
+      {
+        canAccessAt: { $lt: endDate },
+      },
+    ],
+  })
+  return { count: result }
 }
 
 /**

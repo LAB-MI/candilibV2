@@ -78,14 +78,14 @@ export default {
 
   actions: {
     async [GENERATE_INSPECTOR_BORDEREAUX_REQUEST] ({ commit, dispatch }, infos) {
-      const { departement, date, isForInspecteurs, inspecteurIdList } = infos
+      const { departement, date, isForInspecteurs, inspecteurIdListe } = infos
       commit(GENERATE_INSPECTOR_BORDEREAUX_REQUEST)
       try {
         const { success } = await api.admin.generateBordereaux(
           departement,
           date,
           isForInspecteurs,
-          inspecteurIdList,
+          inspecteurIdListe,
         )
         if (!success) {
           throw new Error(

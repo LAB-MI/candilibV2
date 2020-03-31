@@ -78,11 +78,14 @@ export default {
   beforeMount () {
     this.localeText = AgGridLocaleText
     this.columnDefs = [
-      { headerName: 'Centre',
+      {
+        headerName: 'Centre',
         field: 'place.centre',
-        filter: 'agTextColumnFilter' },
+        filter: 'agTextColumnFilter',
+      },
       { headerName: 'Inspecteur', field: 'place.inspecteur' },
-      { headerName: 'Date',
+      {
+        headerName: 'Date',
         field: 'place.date',
         valueFormatter: valueDateFormatter,
         filter: 'agDateColumnFilter',

@@ -12,6 +12,7 @@ import {
   createPlaces,
   removeCentres,
   removePlaces,
+  commonBasePlaceDateTime,
 } from '../../models/__tests__/'
 import {
   getDatesByCentre,
@@ -24,6 +25,8 @@ import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
 import { CANDIDAT_DATE_ETG_KO } from './message.constants'
 
 jest.mock('../../models/candidat')
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
 
 describe('Test places business: utiles functions', () => {
   it('Should return true when entry date is 7 days and 2 hours days hours after now', () => {
@@ -56,6 +59,7 @@ describe('Test places business: get dates from places available', () => {
   beforeAll(async () => {
     await connect()
     const centresCreated = await createCentres()
+
     placesCreated = await createPlaces()
     centreSelected = centresCreated.find(
       ({ nom, departement }) =>
@@ -69,21 +73,27 @@ describe('Test places business: get dates from places available', () => {
     dateIn3Months = getFrenchLuxon().plus({
       month: 3,
     })
+
+    const dateIn1Month = getFrenchLuxon().plus({ month: 1 })
+    const sameDateInTestData = commonBasePlaceDateTime.hasSame(
+      dateIn1Month,
+      'days'
+    )
     const count = (await Promise.all([
       createPlace({
         centre: centreSelected._id,
         inspecteur,
-        date: getFrenchLuxon().plus({
-          month: 1,
-        }),
+        date: sameDateInTestData
+          ? dateIn1Month.plus({ days: 1 })
+          : dateIn1Month,
       }),
       createPlace({
         centre: centreSelected._id,
         inspecteur,
-        date: getFrenchLuxon().plus({
-          month: 1,
-          hours: 1,
-        }),
+        date: (sameDateInTestData
+          ? dateIn1Month.plus({ days: 1 })
+          : dateIn1Month
+        ).plus({ hours: 1 }),
       }),
       createPlace({
         centre: centreSelected._id,
@@ -104,7 +114,7 @@ describe('Test places business: get dates from places available', () => {
       }),
     ])).length
 
-    nbPlacesAvaibles = placesCreatedFromSelected.length + count - 1
+    nbPlacesAvaibles = placesCreatedFromSelected.length + count - 2
   })
 
   afterAll(async () => {
@@ -115,14 +125,14 @@ describe('Test places business: get dates from places available', () => {
 
   it('Should get 2 dates from places Centre 2', async () => {
     findCandidatById.mockResolvedValue({
-      dateReussiteETG: getFrenchLuxon().toJSDate(),
+      dateReussiteETG: getFrenchLuxon().toISODate(),
     })
 
-    const centreSelected = centres[2]
     const dates = await getDatesByCentre(
       centreSelected.departement,
       centreSelected.nom
     )
+
     expect(dates).toBeDefined()
     expect(dates).toHaveLength(nbPlacesAvaibles)
   })
@@ -160,24 +170,21 @@ describe('Test places business: get dates from places available', () => {
     }
   })
 
-  xit('Should get many places from Centre2 when ETG expired in 2 months', async () => {
+  it('Should get many places from Centre2 when ETG expired in 2 months', async () => {
     const dateETGExpired = getFrenchLuxon().plus({ months: 1 })
+
     findCandidatById.mockResolvedValue({
       dateReussiteETG: dateETGExpired
         .minus({ years: NB_YEARS_ETG_EXPIRED })
         .toJSDate(),
     })
-    const centreSelected = await findCentreByNameAndDepartement(
-      centres[2].nom,
-      centres[2].departement
-    )
     const begin = getFrenchLuxon().toISODate()
     const end = getFrenchLuxon()
       .plus({ months: 6 })
       .toISODate()
 
     const dates = await getDatesByCentreId(
-      centreSelected._id.toString(),
+      centreSelected._id,
       begin,
       end,
       'candidatId'
@@ -186,8 +193,7 @@ describe('Test places business: get dates from places available', () => {
 
     const count = await PlaceModel.countDocuments({
       centre: centreSelected._id,
-      inspecteur,
-      date: { $lt: dateETGExpired.endOf('days') },
+      date: { $lt: dateETGExpired.toISODate() },
     })
     expect(dates).toHaveLength(count)
     expect(dates.includes(dateIn3Months.toISO()))

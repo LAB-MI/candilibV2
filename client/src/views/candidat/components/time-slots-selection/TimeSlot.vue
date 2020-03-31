@@ -95,8 +95,8 @@ import {
   getFrenchDateFromLuxon,
   getFrenchLuxonFromIso,
   getFrenchDateFromIso,
+  getFrenchLuxonCurrentDateTime,
 } from '@/util/frenchDateTime.js'
-import { getFrenchLuxonCurrentDateTime } from '../../../../util/frenchDateTime'
 
 export default {
   components: {

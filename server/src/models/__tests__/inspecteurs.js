@@ -27,8 +27,21 @@ export const createInspecteurs = async () => {
   return inspecteurs
 }
 
-export const removeInspecteur = async () => inspecteursTests.deleteMany({})
-
+export const removeInspecteur = async () => {
+  const tmp =
+    inspecteurs &&
+    (await Promise.all(
+      inspecteurs.map(async inspecteur => {
+        const tmp = await inspecteur.delete()
+        return tmp
+      })
+    ))
+  return tmp
+}
 export const resetCreatedInspecteurs = () => {
+  inspecteurs = undefined
+}
+
+export const setInitCreatedInspecteurs = () => {
   inspecteurs = undefined
 }

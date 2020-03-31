@@ -36,7 +36,7 @@ describe('Regex', () => {
     const nephWith9Characters = '12 34 567'
     const nephWith20Characters = '12 34 56789 0 1234567890'
     const nephWithLetters = '12 34 56789A'
-    const validNeph = '12 34 56789 0 12'
+    const validNeph = '123456789012'
 
     it('Should invalidate NEPH with less than 10 characters', () => {
       const testNeph = regex.neph.test(nephWith9Characters)

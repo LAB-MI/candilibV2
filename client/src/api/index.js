@@ -260,6 +260,13 @@ export default {
       return json
     },
 
+    async getLastSyncAurigeDateTime () {
+      const json = await apiClient.get(apiPaths.admin.lastSyncAurigeDateTime, {
+        headers: getHeadersForAdminJson(),
+      })
+      return json
+    },
+
     async getUsers () {
       const json = await apiClient.get(apiPaths.admin.users, {
         headers: getHeadersForAdminJson(),
@@ -452,7 +459,7 @@ export default {
 
     async getInspecteursByCentreAndDate (centreId, begin, end) {
       const json = await apiClient.get(
-        `${apiPaths.admin.inspecteurs}?centreId=${centreId}&begin=${begin}&end=${end}`,
+        `${apiPaths.admin.inspecteurs}?centreId=${centreId}&begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`,
         {
           headers: getHeadersForAdminJson(),
         },
@@ -532,6 +539,39 @@ export default {
 
       if (isCsv) {
         return apiClient.getRaw(path, headers)
+      }
+      return apiClient.get(path, headers)
+    },
+
+    exportCandidatsRetentionStatsKpi (
+      beginPeriod = '',
+      endPeriod = '',
+      isCsv = false,
+      departement,
+    ) {
+      const queryString =
+        (departement ? `departement=${departement}&` : '') +
+          `isCsv=${isCsv}&beginPeriod=${encodeURIComponent(
+            beginPeriod,
+          )}&endPeriod=${encodeURIComponent(endPeriod)}`
+      const path = `${apiPaths.admin.exportCandidatsRetentionStatsKpi}?${queryString}`
+      const headers = {
+        headers: getAdminTokenHeader(),
+      }
+
+      if (isCsv) {
+        return apiClient.getRaw(path, headers)
+      }
+      return apiClient.get(path, headers)
+    },
+
+    exportCandidatsRetentionByWeekStatsKpi (
+      departement,
+    ) {
+      const queryString = (departement ? `departement=${departement}&` : '')
+      const path = `${apiPaths.admin.exportCandidatsRetentionByWeekStatsKpi}?${queryString}`
+      const headers = {
+        headers: getAdminTokenHeader(),
       }
       return apiClient.get(path, headers)
     },

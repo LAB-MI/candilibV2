@@ -463,6 +463,118 @@ import npmVersion from '../package.json'
  *           received: 15
  *         }]
  *
+ *     StatsKpiCandidatsLeaveRetentionArea:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: array
+ *           description: Liste des stats par département et période
+ *           items:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 description: Date de la demande de stats
+ *               departement:
+ *                 type: string
+ *                 description: Département concerné
+ *               beginPeriode:
+ *                 type: string
+ *                 description: Date de début de période
+ *               endPeriode:
+ *                 type: string
+ *                 description: Date de fin de période
+ *               count:
+ *                 type: number
+ *                 description: Nombre de candidats dans la zone de rétention
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *         statsKpiCandidatsLeaveRetention: [{
+ *           departement: "93",
+ *           beginPeriode: "2019-09-14T22:00:00.000Z",
+ *           endPeriode: "2019-10-15T21:59:59.999Z",
+ *           count: 3
+ *         }]
+ *
+ *     StatsKpiCandidatsLeaveRetentionAreaByWeek:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         statsKpi:
+ *           type: array
+ *           description: Liste des stats par département et période
+ *           items:
+ *             type: object
+ *             properties:
+ *               date:
+ *                 type: string
+ *                 description: Date de la demande de stats
+ *               departement:
+ *                 type: string
+ *                 description: Département concerné
+ *               beginPeriode:
+ *                 type: string
+ *                 description: Date de début de période
+ *               endPeriode:
+ *                 type: string
+ *                 description: Date de fin de période
+ *               count:
+ *                 type: number
+ *                 description: Nombre de candidats dans la zone de rétention
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *         statsKpiCandidatsLeaveRetention: [{
+ *           departement: "93",
+ *           beginPeriode: "2019-09-14T22:00:00.000Z",
+ *           endPeriode: "2019-10-15T21:59:59.999Z",
+ *           count: 3
+ *         }]
+ *
+ *     lastSyncAurigeInfos:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         aurigeInfo:
+ *           type: object
+ *           description: Contient la Date/heure et le message concernant la dernière étape éffectué par le batch Aurige
+ *           properties:
+ *             date:
+ *               type: string
+ *               description: Date/heure du dernier passage du batch Aurige
+ *             message:
+ *               type: string
+ *               description: Message indiquant la dernière étape éffectué par le batch Aurige depuis son lancement
+ *       example:
+ *         success: true
+ *         message: Les stats ont bien été mises à jour
+ *
  *     WhitelistedInfo:
  *       type: object
  *       description: Informations sur l'ajout d'adresses dans la liste blanche

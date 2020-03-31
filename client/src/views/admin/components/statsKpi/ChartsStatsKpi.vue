@@ -1,5 +1,5 @@
 <template>
-  <v-card>
+  <v-card style="border-radius: 3%;">
     <v-card-title class="justify-center">
       <h3 class="d-block">
         {{ $formatMessage({ id: 'departement' }) }}
@@ -58,8 +58,31 @@
           >
             <chart-bar
               class="chart-wrapper"
-              :labels="labels"
+              :labels="labelsHorizontal"
               :datasets="datasets"
+            />
+            <div style="display: block;" />
+          </div>
+        </div>
+      </v-container>
+    </div>
+
+    <v-divider />
+
+    <div>
+      <v-container>
+        <h3>
+          {{ $formatMessage({ id: 'candidats_sortant_de_retention_par_semaine' }) }}
+        </h3>
+
+        <div class="u-flex  u-flex--wrap  u-flex--center">
+          <div
+            class="`u-flex__item pa-3"
+          >
+            <chart-bar-vertical
+              class="chart-vertical-wrapper"
+              :labels="labelsVertical"
+              :datasets="datasetsVerticalChart"
             />
             <div style="display: block;" />
           </div>
@@ -73,11 +96,13 @@
 import { mapGetters } from 'vuex'
 import DonutsChartContent from './DonutsChartContent.vue'
 import ChartBar from './ChartBar.vue'
+import ChartBarVertical from './ChartBarVertical.vue'
 
 export default {
   components: {
     DonutsChartContent,
     ChartBar,
+    ChartBarVertical,
   },
 
   props: {
@@ -90,12 +115,16 @@ export default {
       type: Object,
       default () {},
     },
-  },
 
-  data () {
-    return {
-      labels: [[`Stats:`]],
-    }
+    statsNbCandidatLeaveRetentionArea: {
+      type: Object,
+      default () {},
+    },
+
+    statsNbCandidatLeaveRetentionAreaByWeek: {
+      type: Array,
+      default () { return [] },
+    },
   },
 
   computed: {
@@ -110,6 +139,14 @@ export default {
           this.statsResultsExamValues.received
         )
       ) || 0
+    },
+    labelsHorizontal () {
+      return [['Stats:']]
+    },
+
+    labelsVertical () {
+      const dataCountCandidatByWeek = this.statsNbCandidatLeaveRetentionAreaByWeek || []
+      return dataCountCandidatByWeek.map(el => el.weekDate)
     },
 
     receiveAndFaildPlaces () {
@@ -140,25 +177,59 @@ export default {
       ]
     },
 
+    datasetsVerticalChart () {
+      const dataCountCandidatByWeek = this.statsNbCandidatLeaveRetentionAreaByWeek || []
+
+      return [{
+        label: 'Candidats sortant de la zone de rétention par semaine',
+        backgroundColor: [
+          'rgba(255, 0, 64, 0.2)',
+          'rgba(255, 0, 64, 0.2)',
+          'rgba(255, 0, 64, 0.2)',
+          'rgba(255, 0, 64, 0.2)',
+          'rgba(255, 0, 64, 0.2)',
+        ],
+        borderColor: [
+          'rgba(255, 0, 0, 1)',
+          'rgba(255, 0, 0, 1)',
+          'rgba(255, 0, 0, 1)',
+          'rgba(255, 0, 0, 1)',
+          'rgba(255, 0, 0, 1)',
+        ],
+        borderWidth: 3,
+        data: dataCountCandidatByWeek.map(el => (el.value || 0) && el.value.count),
+      }]
+    },
+
     datasets () {
       const { totalBookedPlaces, totalAvailablePlaces, totalCandidatsInscrits } = this.statsPlacesExamValues || {}
+      const { count } = this.statsNbCandidatLeaveRetentionArea || {}
       return [
         {
           label: 'Places disponibles',
-          backgroundColor: 'rgba(153, 102, 255, 0.2)',
-          borderColor: 'rgba(153, 102, 255, 1)',
+          backgroundColor: 'rgba(96, 224, 64, 0.2)',
+          borderColor: 'rgba(96, 192, 0, 1)',
           borderWidth: 3,
           data: [
             totalAvailablePlaces || 0,
           ],
         },
         {
-          label: 'Candidats sans réservation',
-          backgroundColor: 'rgba(255, 159, 64, 0.2)',
-          borderColor: 'rgba(255, 159, 64, 1)',
+          label: 'Candidats sans réservation et hors de la zone de rétention',
+          backgroundColor: 'rgba(64, 96, 255, 0.2)',
+          borderColor: 'rgba(64, 32, 224, 1)',
           borderWidth: 3,
           data: [
             totalCandidatsInscrits ? (totalCandidatsInscrits - totalBookedPlaces) : 0,
+          ],
+        },
+        {
+          label: 'Candidats sortant de la zone de rétention sur la periode sélectionnée',
+          backgroundColor: 'rgba(255, 0, 64, 0.2)',
+          borderColor: 'rgba(255, 0, 0, 1)',
+          borderWidth: 3,
+          data: [
+            count || 0,
           ],
         },
       ]
@@ -211,7 +282,12 @@ export default {
 }
 
 .chart-wrapper {
-  width: 30vw;
-  height: 20vh;
+  width: 35vw;
+  height: 25vh;
+}
+
+.chart-vertical-wrapper {
+  width: 55vw;
+  height: 25vh;
 }
 </style>

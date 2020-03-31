@@ -1,18 +1,19 @@
 import { createCandidat } from '../../../../models/candidat'
 import config from '../../../../config'
 import { getFrenchLuxon } from '../../../../util'
+import { ObjectLastNoReussitValues } from '../../../../models/candidat/objetDernierNonReussite.values'
 
 const nowLuxon = getFrenchLuxon()
 
-const dateReussiteETG = nowLuxon
+export const DateTimeReussiteETGKO = nowLuxon
+  .minus({ years: 5, days: 1 })
+  .startOf('day')
+export const dateReussiteETG = nowLuxon
   .minus({ days: 5 })
   .startOf('day')
   .toISO()
 
-const dateReussiteETGKO = nowLuxon
-  .minus({ years: 5 })
-  .startOf('day')
-  .toISO()
+export const dateReussiteETGKO = DateTimeReussiteETGKO.startOf('day').toISO()
 
 export const dateTimeDernierEchecPratique = nowLuxon
   .minus({ days: 5 })
@@ -45,7 +46,7 @@ export const candidatFailureExam = {
   dateReussiteETG,
   nbEchecsPratiques: '2',
   dateDernierNonReussite: dateDernierEchecPratique,
-  objetDernierNonReussite: 'echec',
+  objetDernierNonReussite: ObjectLastNoReussitValues.ECHEC,
   reussitePratique: '',
   candidatExistant: 'OK',
   isValidatedByAurige: false,
@@ -264,4 +265,61 @@ export const createCandidatsToTestAurige = async () => {
       createCandidatToTestAurige(candidat, false)
     )
   )
+}
+
+export const candidatWithEtgExpired = {
+  // candidat réussit la théorie y a plus de 5 ans
+  codeNeph: '0936317542831',
+  nomNaissance: 'TESTOVERETG',
+  prenom: 'TestPrenom',
+  email: 'test.over.etg.testprenon@test.com',
+  dateReussiteETG: dateReussiteETGKO,
+  nbEchecsPratiques: '',
+  dateDernierNonReussite: '',
+  objetDernierNonReussite: '',
+  reussitePratique: '',
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+  departement,
+}
+
+export const candidatWithEtgExpiredToArchive = {
+  // candidat réussit la théorie y a plus de 5 ans
+  codeNeph: '0936317542831',
+  nomNaissance: 'TESTOVERETG',
+  prenom: 'TestPrenom',
+  email: 'test.over.etg.testprenon@test.com',
+  dateReussiteETG: dateReussiteETGKO,
+  nbEchecsPratiques: '',
+  dateDernierNonReussite: '',
+  objetDernierNonReussite: '',
+  reussitePratique: dateReussitePratique,
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+  departement,
+}
+
+export const candidatWithEtgExpiredAndFailedToArchive = {
+  // candidat réussit la théorie y a plus de 5 ans
+  codeNeph: '0936317542831',
+  nomNaissance: 'TESTOVERETG',
+  prenom: 'TestPrenom',
+  email: 'test.over.etg.testprenon@test.com',
+  dateReussiteETG: dateReussiteETGKO,
+  nbEchecsPratiques: '',
+  dateDernierNonReussite: dateDernierEchecPratiqueAncien,
+  objetDernierNonReussite: 'absent',
+  reussitePratique: '',
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+  departement,
 }

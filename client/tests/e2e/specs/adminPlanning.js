@@ -37,22 +37,23 @@ describe('Planning tests', () => {
     cy.getLastMail().its('Content.Body')
       .should('contain', Cypress.env('centre').toUpperCase())
     // Change the inspector
+
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
         cy.get('.place-button')
           .contains('face')
           .click()
-        cy.contains('Modifier l\'inspecteur')
-          .click()
-        cy.get('[type=text]')
-          .type(Cypress.env('inspecteur2') + '{enter}')
-        cy.get('.t-inspecteur-confirm-box')
-          .find('.t-inspecteur-detail')
-          .should('contain', Cypress.env('inspecteurPrenom') + ', ' + Cypress.env('inspecteur2'))
-        cy.get('button')
-          .contains('Valider')
-          .click()
+        cy.get('tr').eq(1).within(($inTr) => {
+          cy.get('button').eq(1).click()
+          cy.get('[type=text]')
+            .type(Cypress.env('inspecteur2') + '{enter}')
+          cy.get('.t-inspecteur-confirm-box')
+            .find('.t-inspecteur-detail')
+            .should('contain', Cypress.env('inspecteurPrenom') + ', ' + Cypress.env('inspecteur2'))
+          cy.get('button').eq(2)
+            .click()
+        })
       })
     cy.get('.v-snack--active')
       .should('contain', 'La modification est confirmée.')
@@ -73,7 +74,7 @@ describe('Planning tests', () => {
     cy.deleteAllMails()
     cy.get('button')
       .contains('Envoyer les bordereaux aux IPCSR du')
-      .click()
+      .click().wait(500)
     cy.get('.v-dialog')
       .contains('Envoyer les bordereaux aux IPCSR du')
       .parents('.v-dialog').as('dialogContent').within(() => {
@@ -84,7 +85,7 @@ describe('Planning tests', () => {
         cy.get('[type=submit][disabled="disabled"]')
         cy.get('[type=text]').type(Cypress.env('inspecteur2'))
       })
-    cy.get('.v-select-list').contains(Cypress.env('inspecteur2')).click()
+    cy.get('.menuable__content__active .v-select-list').contains(Cypress.env('inspecteur2')).click()
     cy.get('@dialogContent').within(() => {
       cy.get('[type=submit]')
         .contains('Envoyer')
@@ -105,7 +106,7 @@ describe('Planning tests', () => {
     cy.deleteAllMails()
     cy.get('button')
       .contains('Recevoir les bordereaux des IPCSR du')
-      .click()
+      .click().wait(500)
     cy.get('.v-dialog')
       .contains('Recevoir les bordereaux des IPCSR du')
       .should('contain', Cypress.env('emailRepartiteur'))
@@ -117,7 +118,7 @@ describe('Planning tests', () => {
         cy.get('[type=submit][disabled="disabled"]')
         cy.get('[type=text]').type(Cypress.env('inspecteur2'))
       })
-    cy.get('.v-select-list').contains(Cypress.env('inspecteur2')).click()
+    cy.get('.menuable__content__active .v-select-list').contains(Cypress.env('inspecteur2')).click()
     cy.get('@dialogContent').within(() => {
       cy.get('[type=submit]')
         .contains('Recevoir')
@@ -190,9 +191,9 @@ describe('Planning tests without candidate', () => {
       .click()
     cy.url()
       .then(($url) => {
-        let url = $url.split('/')
-        let date = url[url.length - 1]
-        let ymd = date.split('-')
+        const url = $url.split('/')
+        const date = url[url.length - 1]
+        const ymd = date.split('-')
         cy.get('.t-date-picker [type=text]').invoke('val')
           .should('contain', ymd[2] + '/' + ymd[1] + '/' + ymd[0])
       })
@@ -200,9 +201,9 @@ describe('Planning tests without candidate', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
     cy.url()
       .then(($url) => {
-        let url = $url.split('/')
-        let date = url[url.length - 1]
-        let ymd = date.split('-')
+        const url = $url.split('/')
+        const date = url[url.length - 1]
+        const ymd = date.split('-')
         cy.get('.t-date-picker [type=text]').invoke('val')
           .should('contain', ymd[2] + '/' + ymd[1] + '/' + ymd[0])
       })
@@ -246,21 +247,27 @@ describe('Planning tests without candidate', () => {
     cy.get('.v-tabs')
       .contains(Cypress.env('centre'))
       .click({ force: true })
+
     // Removes the inspector's places
     cy.get('.v-window-item').not('[style="display: none;"]')
-      .should('have.length', 1)
+      .should('have.length', 1, { timeout: 10000 })
       .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
       .contains(Cypress.env('inspecteur'))
       .parents('tbody')
       .should('not.contain', 'block')
       .within(($row) => {
         // Removes the morning
-        cy.contains('delete')
-          .click()
-        cy.contains('Supprimer la matinée')
-          .click()
-        cy.contains('Valider')
-          .click()
+        cy.get('tr').eq(0).within(($inTr) => {
+          cy.get('th').within(($inTh) => {
+            cy.get('button').should('contain', 'delete').click().wait(500)
+          })
+        })
+        cy.get('tr').eq(1).within(($inTr) => {
+          cy.get('td').eq(1).within(($inTd) => {
+            cy.get('button').eq(1).should('contain', 'Supprimer la matinée').click().wait(500)
+            cy.get('button').eq(4).should('contain', 'Valide').click()
+          })
+        })
       })
     cy.get('.v-snack--active')
       .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
@@ -269,13 +276,18 @@ describe('Planning tests without candidate', () => {
       .parents('tbody')
       .should('not.contain', 'block')
       .within(($row) => {
-        // Removes the afternoon
-        cy.contains('delete')
-          .click()
-        cy.contains('Supprimer l\'après-midi')
-          .click()
-        cy.contains('Valider')
-          .click()
+        // Removes the morning
+        cy.get('tr').eq(0).within(($inTr) => {
+          cy.get('th').within(($inTh) => {
+            cy.get('button').should('contain', 'delete').click().wait(500)
+          })
+        })
+        cy.get('tr').eq(1).within(($inTr) => {
+          cy.get('td').eq(1).within(($inTd) => {
+            cy.get('button').eq(2).should('contain', 'Supprimer l\'après-midi').click().wait(500)
+            cy.get('button').eq(4).should('contain', 'Valide').click()
+          })
+        })
       })
     cy.get('.v-snack--active')
       .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
@@ -298,12 +310,18 @@ describe('Planning tests without candidate', () => {
         // Removes the entire day
         cy.contains('delete')
           .click()
-        cy.root().parent()
-          .contains('Supprimer la journée')
-          .click()
-        cy.root().parent()
-          .contains('Valider')
-          .click()
+      })
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1, { timeout: 500 })
+      .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
+      .contains(Cypress.env('inspecteur'))
+      .parents('tbody').within(($row) => {
+        cy.get('tr').eq(1).within(($inTr) => {
+          cy.get('td').eq(1).within(($inTd) => {
+            cy.get('button').eq(0).should('contain', 'Supprimer la journée').click().wait(500)
+            cy.get('button').eq(4).should('contain', 'Valide').click()
+          })
+        })
       })
     // The inspector should not be present anymore
     cy.get('.name-ipcsr-wrap')

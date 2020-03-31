@@ -24,6 +24,7 @@
           tabindex="1"
           @focus="setNephPlaceholder"
           @blur="removeNephPlaceholder"
+          @change="removeSpaceCodeNeph"
         />
       </div>
       <div class="form-input">
@@ -282,7 +283,9 @@ export default {
     setNomNaissance () {
       this.nomNaissance = this.nomNaissance.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
     },
-
+    removeSpaceCodeNeph (value) {
+      this.codeNeph = value.replace(/ /g, '')
+    },
     async presignup () {
       if (!this.valid) {
         return this.$store.dispatch(SHOW_ERROR, this.getMsg('preinscription_formulaire_invalide'))

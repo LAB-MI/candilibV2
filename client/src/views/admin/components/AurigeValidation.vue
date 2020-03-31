@@ -59,9 +59,9 @@ export default {
     this.localeText = AgGridLocaleText
     const statusCellRenderer = (param) => {
       const statusIcon = {
-        'success': 'done',
-        'error': 'clear',
-        'warning': 'warning',
+        success: 'done',
+        error: 'clear',
+        warning: 'warning',
       }
       return '<i class="material-icons">' + statusIcon[param.value] + '</i>'
     }

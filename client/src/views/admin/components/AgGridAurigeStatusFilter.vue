@@ -65,7 +65,7 @@ export default Vue.extend({
   },
 
   watch: {
-    'selected': function (val, oldVal) {
+    selected: function (val, oldVal) {
       if (val !== oldVal && this.params) {
         this.params.filterChangedCallback()
       }

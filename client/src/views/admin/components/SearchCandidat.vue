@@ -51,13 +51,13 @@ import { getFrenchDateTimeFromIso, getFrenchDateFromIso, getFrenchLuxon, getFren
 import { transformToProfileInfo } from '@/util'
 import adminMessage from '../../../admin.js'
 
-const transformBoolean = value => value ? `<i class="material-icons green--text">done</i>` : `<i class="material-icons red--text">close</i>`
+const transformBoolean = value => value ? '<i class="material-icons green--text">done</i>' : '<i class="material-icons red--text">close</i>'
 const isReussitePratiqueExist = value => value || ''
 const convertToLegibleDate = date => date ? getFrenchDateFromIso(date) : adminMessage.non_renseignee
 const convertToLegibleDateTime = date => date ? getFrenchDateTimeFromIso(date) : adminMessage.non_renseignee
 const placeReserve = (place) => {
   if (place == null) {
-    return `Ce candidat n'a pas de réservation`
+    return 'Ce candidat n\'a pas de réservation'
   }
   const { inspecteur, centre, date } = place
   const nameInspecteur = inspecteur.nom
@@ -71,7 +71,7 @@ const legibleNoReussites = (noReussites) => {
     return '-'
   }
   return '<ol>' + noReussites.map(({ reason, date }) => {
-    const frenchDate = convertToLegibleDate(date).filter()
+    const frenchDate = convertToLegibleDate(date)
     return `<li>${frenchDate} : ${reason}</li>`
   }).join(' - ') + '</ol>'
 }
@@ -89,7 +89,7 @@ const historiqueAction = (places) => {
 
 const iconAccess = (canAccessAt) => {
   if (!canAccessAt) {
-    return `<i class="material-icons green--text">done</i>`
+    return '<i class="material-icons green--text">done</i>'
   }
   const luxonDateCanAccessAt = getFrenchLuxonFromIso(canAccessAt)
   const today = getFrenchLuxon()
@@ -98,7 +98,7 @@ const iconAccess = (canAccessAt) => {
     luxonDateCanAccessAt,
   )
     .count('days') - 1
-  const result = luxonDateCanAccessAt > today ? `<i class="red--text">il reste ${dayLeft} jours</i>` : `<i class="material-icons green--text">done</i>`
+  const result = luxonDateCanAccessAt > today ? `<i class="red--text">il reste ${dayLeft} jours</i>` : '<i class="material-icons green--text">done</i>'
   return result
 }
 

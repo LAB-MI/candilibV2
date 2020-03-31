@@ -254,12 +254,12 @@ export default {
           ...this.inspecteurListToSendBordereaux,
           inspecteurId,
         ]
-        this.$store.dispatch(SHOW_SUCCESS, `L'IPCSR a bien été sélectionné·e`)
+        this.$store.dispatch(SHOW_SUCCESS, 'L\'IPCSR a bien été sélectionné·e')
         return
       }
 
       if (newSelection && this.inspecteurListToSendBordereaux.find(el => el === newSelection.value)) {
-        this.$store.dispatch(SHOW_ERROR, `L'IPCSR est déjà sélectionné·e`)
+        this.$store.dispatch(SHOW_ERROR, 'L\'IPCSR est déjà sélectionné·e')
       }
     },
 

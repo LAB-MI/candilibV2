@@ -49,7 +49,10 @@ import {
 
 import DataTableWeekMonitor from './DataTableWeekMonitor'
 
-import { SET_WEEK_SECTION, numberOfMonthsToFetch } from '@/store'
+import {
+  SET_WEEK_SECTION,
+  numberOfMonthsToFetch,
+} from '@/store'
 
 export const splitWeek = (prev, day, centerId) => {
   const weekDayNumber = getFrenchLuxonFromIso(day.date).weekday - 1
@@ -139,8 +142,9 @@ export default {
     },
 
     formatArrayByWeek () {
-      this.allBookedPlacesByCenter = 0
-      this.allCenterPlaces = 0
+      let allBookedPlacesByCenter = 0
+      let allCenterPlaces = 0
+
       const start = getFrenchLuxonCurrentDateTime()
       const end = getFrenchLuxonCurrentDateTime().plus({ month: numberOfMonthsToFetch })
       const allWeeks = Math.round(end.diff(start, ['weeks']).weeks) + 1
@@ -154,8 +158,8 @@ export default {
           if (placesOfWeek && placesOfWeek.length) {
             const totalPlaces = placesOfWeek.length
             const bookedPlaces = placesOfWeek.filter(elmt => elmt.candidat).length
-            this.allBookedPlacesByCenter = bookedPlaces + this.allBookedPlacesByCenter
-            this.allCenterPlaces = totalPlaces + this.allCenterPlaces
+            allBookedPlacesByCenter += bookedPlaces
+            allCenterPlaces += totalPlaces
             return [
               ...acc,
               {
@@ -180,6 +184,8 @@ export default {
             },
           ]
         }, [])
+      this.allBookedPlacesByCenter = allBookedPlacesByCenter
+      this.allCenterPlaces = allCenterPlaces
       return normalizedArray
     },
   },

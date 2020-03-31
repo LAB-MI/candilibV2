@@ -48,7 +48,7 @@ describe('Create, see, update and delete departement', () => {
       .click()
 
     cy.get('.v-snack--active')
-      .should('contain', `Ce département existe déjà`)
+      .should('contain', 'Ce département existe déjà')
   })
 
   it('Should update departement', () => {

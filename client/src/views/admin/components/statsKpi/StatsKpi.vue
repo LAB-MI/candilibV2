@@ -91,6 +91,21 @@
             assessment
           </v-icon>
         </v-btn>
+
+        <v-btn
+          color="primary"
+          @click="getStatsKpiCandidatsRetention(true)"
+        >
+          {{ $formatMessage({ id: 'export_candidats_retention_stats_csv' }) }}
+
+          <v-icon>
+            get_app
+          </v-icon>
+
+          <v-icon>
+            assessment
+          </v-icon>
+        </v-btn>
       </div>
     </v-card>
 
@@ -102,6 +117,8 @@
       <charts-stats-kpi
         :stats-results-exam-values="currentStatsResultExam"
         :stats-places-exam-values="currentStatsPlacesExam"
+        :stats-nb-candidat-leave-retention-area="currentStatsCandidatsLeaveRetentionArea"
+        :stats-nb-candidat-leave-retention-area-by-week="currentStatsCandidatLeaveRetentionAreaByWeek"
       />
     </v-flex>
 
@@ -114,6 +131,8 @@
       <charts-stats-kpi
         :stats-results-exam-values="elem"
         :stats-places-exam-values="selectStatsKpiPlacesExamsByDpt(elem.departement)"
+        :stats-nb-candidat-leave-retention-area="selectStatsKpiCandidatsRetentionByDpt(elem.departement)"
+        :stats-nb-candidat-leave-retention-area-by-week="setStatsCandidatLeaveRetentionAreaByWeek(elem.departement)"
       />
     </v-flex>
   </div>
@@ -123,7 +142,12 @@
 import { mapGetters } from 'vuex'
 import { downloadContent, getFrenchLuxonCurrentDateTime } from '@/util'
 import ChartsStatsKpi from './ChartsStatsKpi.vue'
-import { FETCH_STATS_KPI_PLACES_EXAMS_REQUEST, FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST } from '@/store'
+import {
+  FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_REQUEST,
+  FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST,
+  FETCH_STATS_KPI_PLACES_EXAMS_REQUEST,
+  FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST,
+} from '@/store'
 
 export default {
   components: {
@@ -145,6 +169,8 @@ export default {
       'isFetchingPlacesExams',
       'statsResultsExams',
       'statsPlacesExams',
+      'statsCandidatLeaveRetentionArea',
+      'statsCandidatLeaveRetentionAreaByWeek',
     ]),
 
     currentStatsResultExam () {
@@ -157,6 +183,18 @@ export default {
       return (this.statsPlacesExams && this.statsPlacesExams.statsKpi)
         ? this.statsPlacesExams.statsKpi.find(el => el.departement === this.activeDepartement)
         : {}
+    },
+
+    currentStatsCandidatsLeaveRetentionArea () {
+      const { statsKpiCandidatsLeaveRetention } = this.statsCandidatLeaveRetentionArea || {}
+      return (statsKpiCandidatsLeaveRetention && statsKpiCandidatsLeaveRetention)
+        ? statsKpiCandidatsLeaveRetention.find(el => el._id === this.activeDepartement)
+        : {}
+    },
+
+    currentStatsCandidatLeaveRetentionAreaByWeek () {
+      const statsCandidatLeaveRetentionAreaByWeek = this.statsCandidatLeaveRetentionAreaByWeek || []
+      return statsCandidatLeaveRetentionAreaByWeek[0] ? statsCandidatLeaveRetentionAreaByWeek[0].candidatsLeaveRetentionByWeek : []
     },
 
     pickerDateStart () {
@@ -174,25 +212,21 @@ export default {
 
   watch: {
     async activeDepartement () {
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
+      await this.updateAllStats()
     },
 
     async dateStart () {
       this.setRouteParams()
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
+      await this.updateAllStats()
     },
 
     async dateEnd () {
       this.setRouteParams()
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
+      await this.updateAllStats()
     },
 
     async isDisplayAllDepartement () {
-      await this.getStatsKpiPlacesExams()
-      await this.getStatsKpiResultsExams()
+      await this.updateAllStats()
     },
   },
 
@@ -204,11 +238,17 @@ export default {
     } else {
       this.setRouteParams()
     }
-    await this.getStatsKpiPlacesExams()
-    await this.getStatsKpiResultsExams()
+    await this.updateAllStats()
   },
 
   methods: {
+    async updateAllStats () {
+      await this.getStatsKpiPlacesExams()
+      await this.getStatsKpiResultsExams()
+      await this.getStatsKpiCandidatsRetention()
+      await this.getStatsKpiCandidatsRetentionByWeek()
+    },
+
     setRouteParams () {
       this.$router.push({
         name: 'stats-kpi',
@@ -230,6 +270,39 @@ export default {
       }
     },
 
+    async getStatsKpiCandidatsRetention (isCsv = false) {
+      await this.$store.dispatch(FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST, {
+        beginPeriode: this.dateStart,
+        endPeriode: this.dateEnd,
+        isCsv,
+        departement: this.departementSelected,
+      })
+
+      if (isCsv) {
+        downloadContent(this.statsCandidatLeaveRetentionArea)
+      }
+    },
+
+    async getStatsKpiCandidatsRetentionByWeek () {
+      if (!this.isDisplayAllDepartement) {
+        await this.$store.dispatch(
+          FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_REQUEST,
+          this.activeDepartement || undefined,
+        )
+        return
+      }
+      await this.$store.dispatch(
+        FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_REQUEST,
+        undefined,
+      )
+    },
+
+    setStatsCandidatLeaveRetentionAreaByWeek (departement) {
+      const statsCandidatLeaveRetentionAreaByWeek = this.statsCandidatLeaveRetentionAreaByWeek || []
+      const foundStats = statsCandidatLeaveRetentionAreaByWeek.find(el => el.departement === departement)
+      return foundStats ? foundStats.candidatsLeaveRetentionByWeek : []
+    },
+
     async getStatsKpiResultsExams (isCsv = false) {
       await this.$store.dispatch(FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST, {
         beginPeriode: this.dateStart,
@@ -246,6 +319,14 @@ export default {
     selectStatsKpiPlacesExamsByDpt (departement) {
       return this.statsPlacesExams
         ? this.statsPlacesExams.statsKpi.find(el => el.departement === departement)
+        : {}
+    },
+
+    selectStatsKpiCandidatsRetentionByDpt (departement) {
+      const { statsKpiCandidatsLeaveRetention } = this.statsCandidatLeaveRetentionArea || {}
+
+      return statsKpiCandidatsLeaveRetention
+        ? statsKpiCandidatsLeaveRetention.find(el => el._id === departement)
         : {}
     },
   },

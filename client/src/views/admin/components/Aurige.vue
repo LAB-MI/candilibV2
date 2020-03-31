@@ -18,7 +18,7 @@
         @select-file="fileSelected"
         @upload-file="uploadCandidats"
       />
-      <div class="aurige-action  aurige-action--export">
+      <div class="aurige-action aurige-action--export">
         <h4 class="aurige-subtitle">
           Export CSV
         </h4>
@@ -37,8 +37,11 @@
 
 <script>
 import { mapState } from 'vuex'
+
 import api from '@/api'
-import { downloadContent } from '@/util'
+import {
+  downloadContent,
+} from '@/util'
 import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST } from '@/store'
 import AurigeValidation from './AurigeValidation'
 import UploadFile from '@/components/UploadFile.vue'
@@ -91,10 +94,6 @@ export default {
       const file = this.file
       this.file = null
       await this.$store.dispatch(AURIGE_UPLOAD_CANDIDATS_REQUEST, file)
-      const { aurige } = this.$store.state
-      if (aurige.lastFile !== undefined) {
-        this.file = aurige.lastFile
-      }
     },
     async getCandidatsAsCsv () {
       const response = await api.admin.exportCsv(this.departement)

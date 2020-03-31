@@ -1,4 +1,5 @@
 import { getProperObject, getProperObjectFromError } from './logger'
+import { getFrenchLuxon } from './date-util'
 
 describe('Logger', () => {
   describe('getProperObject(string)', () => {
@@ -64,6 +65,42 @@ describe('Logger', () => {
       // Then
       expect(jsonReadyObject).toHaveProperty('error')
       expect(jsonReadyObject.error.message).toBe(errorMessage)
+    })
+  })
+
+  describe('getProperObject(Object with a date)', () => {
+    it('Should return an object with at least "message" and "stack"', () => {
+      // Given
+      const message = {
+        section: 'Test section',
+        begin: getFrenchLuxon().toISO(),
+      }
+
+      // When
+      const properObject = getProperObject(message)
+      const jsonReadyObject = JSON.parse(JSON.stringify(properObject))
+
+      // Then
+      expect(jsonReadyObject).toHaveProperty('begin', message.begin)
+      expect(jsonReadyObject).toHaveProperty('beginStr', `__${message.begin}__`)
+      expect(jsonReadyObject).toHaveProperty('section', message.section)
+    })
+
+    it('Should return an object with at least "message" and "stack" with a invalid format date ', () => {
+      // Given
+      const message = {
+        section: 'Test section',
+        begin: ' 01/40/2020 25:00',
+      }
+
+      // When
+      const properObject = getProperObject(message)
+      const jsonReadyObject = JSON.parse(JSON.stringify(properObject))
+
+      // Then
+      expect(jsonReadyObject).not.toHaveProperty('begin')
+      expect(jsonReadyObject).toHaveProperty('beginStr', `__${message.begin}__`)
+      expect(jsonReadyObject).toHaveProperty('section', message.section)
     })
   })
 })

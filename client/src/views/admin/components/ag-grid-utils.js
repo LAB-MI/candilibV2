@@ -36,7 +36,7 @@ export const filterDateParams = {
       cellDate = getFrenchDateFromXslx(cellValue)
     }
     const selectedDate = getFrenchLuxonFromJSDate(filterLocalDateAtMidnight)
-    const diffDate = cellDate.diff(selectedDate, [ 'days', 'hours' ])
+    const diffDate = cellDate.diff(selectedDate, ['days', 'hours'])
     return Object.is(diffDate.values.days, -0) ? -1 : diffDate.days
   },
   browserDatePicker: true,
@@ -44,9 +44,9 @@ export const filterDateParams = {
 
 export const StatusRenderer = (param) => {
   const StatusIcon = {
-    'success': 'done',
-    'error': 'clear',
-    'warning': 'warning',
+    success: 'done',
+    error: 'clear',
+    warning: 'warning',
   }
   return '<i class="material-icons">' + StatusIcon[param.value] + '</i>'
 }

@@ -174,21 +174,17 @@ describe('Reset my password', () => {
     const newPassword = 'Psr@85df'
     const confirmNewPassword = 'Psr@85df'
     const passwordResetRequestedAt = new Date()
-    try {
-      const { body } = await request(app)
-        .patch('/admin/me')
-        .send({
-          passwordResetRequestedAt,
-          newPassword,
-          confirmNewPassword,
-          email: validEmail,
-          hash,
-        })
-        .set('Accept', 'application/json')
-        .expect(200)
-      expect(body).property('success', true)
-    } catch (error) {
-      console.error(error)
-    }
+    const { body } = await request(app)
+      .patch('/admin/me')
+      .send({
+        passwordResetRequestedAt,
+        newPassword,
+        confirmNewPassword,
+        email: validEmail,
+        hash,
+      })
+      .set('Accept', 'application/json')
+      .expect(200)
+    expect(body).toHaveProperty('success', true)
   })
 })
