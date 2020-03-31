@@ -24,7 +24,7 @@ jest.mock('../../../models/centre')
 jest.mock('../../../util/logger')
 require('../../../util/logger').setWithConsole(false)
 
-describe('verify acces candidat', () => {
+xdescribe('verify acces candidat', () => {
   it('should 401 when candidat not existe', async () => {
     findCandidatById.mockResolvedValue(null)
 
