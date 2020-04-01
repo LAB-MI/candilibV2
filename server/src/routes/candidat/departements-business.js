@@ -6,10 +6,11 @@ import { getAuthorizedDateToBook } from './authorize.business'
 
 import { findCentresWithNbPlaces } from '../common/centre-business'
 
+// TODO: ADD JSDOC
 export const getDepartementsInfos = async departementsId => {
   const loggerContent = {
     description: 'Getting active departements infos',
-    section: 'candidat get departements',
+    section: 'candidat departements business',
   }
 
   try {

@@ -117,6 +117,7 @@ router.get('/me', getMe)
 
 router.get('/centres', getCentres)
 
+// TODO: DOC SWAGGER
 router.get('/departements', getActiveDepartementsInfos)
 
 /**

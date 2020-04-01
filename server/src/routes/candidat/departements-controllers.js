@@ -12,13 +12,15 @@ import {
 import config from '../../config'
 import { getDepartementsInfos } from './departements-business'
 
+// TODO: ADD JSDOC
 export async function getActiveDepartementsInfos (req, res) {
   const loggerContent = {
     description: 'Getting active departements infos',
-    section: 'common get departements',
+    section: 'candidat departements controllers',
   }
 
   try {
+    // TODO: A MODIFIER POUR LES DEPARTEMENT GEOLOCALISER
     const departementsId = await getDepartementsFromCentres()
     appLogger.info({
       ...loggerContent,
