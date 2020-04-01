@@ -276,6 +276,12 @@ export default {
       this.adresse = this.defaultValues.adresse
       this.lon = this.defaultValues && this.defaultValues.geoloc && this.defaultValues.geoloc.coordinates[0]
       this.lat = this.defaultValues && this.defaultValues.geoloc && this.defaultValues.geoloc.coordinates[1]
+      if (this.defaultValues && this.defaultValues.geoDepartement) {
+        this.geoDepartement = this.defaultValues.geoDepartement
+      } else if (this.defaultValues && this.adresse) {
+        const zipcode = this.adresse.match(codePostalRegex)
+        this.geoDepartement = zipcode && (zipcode.length > 1) && zipcode[1]
+      }
     },
   },
 }
