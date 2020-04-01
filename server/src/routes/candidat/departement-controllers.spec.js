@@ -15,7 +15,7 @@ import {
   setInitCreatedPlaces,
 } from '../../models/__tests__'
 
-// import { getActiveDepartementsInfos } from './departements-controllers'
+// import { getActiveGeoDepartementsInfos } from './departements-controllers'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')

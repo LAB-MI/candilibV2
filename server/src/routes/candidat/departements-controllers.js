@@ -5,15 +5,11 @@
 
 import { appLogger } from '../../util'
 import { getDepartementsFromCentres } from '../../models/centre'
-import {
-  UNKNOWN_ERROR_GET_DEPARTEMENTS_INFOS,
-  USER_NO_EXIST,
-} from '../admin/message.constants'
-import config from '../../config'
+import { UNKNOWN_ERROR_GET_DEPARTEMENTS_INFOS } from '../admin/message.constants'
 import { getDepartementsInfos } from './departements-business'
 
 // TODO: ADD JSDOC
-export async function getActiveDepartementsInfos (req, res) {
+export async function getActiveGeoDepartementsInfos (req, res) {
   const loggerContent = {
     description: 'Getting active departements infos',
     section: 'candidat departements controllers',
@@ -26,14 +22,12 @@ export async function getActiveDepartementsInfos (req, res) {
       ...loggerContent,
       departementsId: JSON.stringify(departementsId),
     })
-    if (req.userLevel === config.userStatusLevels.candidat) {
-      const departementsInfos = await getDepartementsInfos(departementsId)
-      return res.status(200).json({
-        success: true,
-        departementsInfos,
-      })
-    }
-    throw new Error(USER_NO_EXIST)
+
+    const departementsInfos = await getDepartementsInfos(departementsId)
+    return res.status(200).json({
+      success: true,
+      departementsInfos,
+    })
   } catch (error) {
     appLogger.error({
       ...loggerContent,

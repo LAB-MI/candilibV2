@@ -218,7 +218,7 @@ export default {
       return json
     },
 
-    async getActiveDepartementsInfos () {
+    async getActiveGeoDepartementsInfos () {
       const json = await apiClient.get(`${apiPaths.candidat.departements}`, {
         headers: getHeadersForJson(),
       })

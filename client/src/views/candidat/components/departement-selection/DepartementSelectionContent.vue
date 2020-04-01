@@ -18,11 +18,7 @@
         <v-list-item-subtitle
           class="u-flex__item--grow"
           :class="'blue-grey--text  text--lighten-2'"
-        >
-          <!-- Contient actuellement:
-          {{ departementInfos.count }}
-          place(s) -->
-        </v-list-item-subtitle>
+        />
       </v-list-item-content>
       <v-tooltip
         left
@@ -60,18 +56,9 @@ export default {
     },
   },
 
-  computed: {
-    // hasPlaces () {
-    //   return !!this.departementInfos.count
-    // },
-  },
-
   methods: {
     async selectDepartement () {
       const departementInfos = this.departementInfos
-      if (!departementInfos.count) {
-        return
-      }
       await this.$store.dispatch(CANDIDAT_SELECT_DEPARTEMENT, departementInfos)
       this.$router.push({
         name: 'selection-centre',

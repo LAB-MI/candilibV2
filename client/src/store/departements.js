@@ -68,7 +68,7 @@ export default {
       commit(FETCH_DEPARTEMENTS_INFOS_REQUEST)
 
       try {
-        const { success, message, departementsInfos } = await api.candidat.getActiveDepartementsInfos()
+        const { success, message, departementsInfos } = await api.candidat.getActiveGeoDepartementsInfos()
         if (!success) {
           throw new Error(message)
         }

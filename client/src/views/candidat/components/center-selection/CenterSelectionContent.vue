@@ -14,8 +14,6 @@
           <span class="u-uppercase">
             {{ center.centre.nom }}
           </span>
-
-          ({{ center.centre.departement }})
         </v-list-item-title>
 
         <v-list-item-subtitle

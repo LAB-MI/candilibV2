@@ -16,7 +16,7 @@
         </v-text-field>
       </v-list-item-content>
       <departement-selection-content
-        v-for="({departement, centres, count}) in (departements.filter(item => filtre ? (item.departement === filtre) : item))"
+        v-for="({departement, centres, count}) in departements"
         :key="departement"
         :departement-infos="{ departement, count, centres }"
       />
