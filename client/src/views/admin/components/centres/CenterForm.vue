@@ -55,10 +55,24 @@
           @blur="removePlaceholder('adresse')"
           @change="onChange"
         />
+        <v-text-field
+          v-model="geoDepartement"
+          :class="addCentre && 'col-md-4'"
+          label="Département géographique"
+          prepend-icon="location_on"
+          aria-placeholder="93"
+          hint="ex. : 93"
+          name="geo-departement-centre"
+          :rules="regexDepartements"
+          @focus="setPlaceholder('geoDepartement')"
+          @blur="removePlaceholder('geoDepartement')"
+          @change="onChange"
+        />
       </v-row>
       <v-row class="mx-10">
         <v-text-field
           v-model="lon"
+          :class="!addCentre && 'col-md-6'"
           prepend-icon="border_vertical"
           :aria-placeholder="defaults.lon"
           :hint="'ex. : ' + defaults.lon"
@@ -74,6 +88,7 @@
 
         <v-text-field
           v-model="lat"
+          :class="!addCentre && 'col-md-6'"
           prepend-icon="border_horizontal"
           :aria-placeholder="defaults.lat"
           :hint="'ex. : ' + defaults.lat"
@@ -92,7 +107,7 @@
           v-model="departement"
           class="t-create-center-select-departement"
           :items="availableDepartements"
-          label="Département"
+          label="Département Administratif"
           prepend-icon="my_location"
           aria-placeholder="93"
           hint="ex. : 93"
@@ -130,7 +145,7 @@ import { mapState } from 'vuex'
 import {
   CREATE_CENTER_REQUEST,
 } from '@/store'
-
+import { departementRegex, codePostalRegex } from '@/util'
 export default {
   props: {
     addCentre: Boolean,
@@ -148,6 +163,10 @@ export default {
       lon: '',
       lat: '',
       departement: '',
+      geoDepartement: '',
+      regexDepartements: [
+        dpt => departementRegex.test(dpt),
+      ],
       departementRules: [
         dpt => !!dpt ||
           'Veuillez renseigner un département',
@@ -211,6 +230,7 @@ export default {
         lon,
         lat,
         departement,
+        geoDepartement,
       } = this
 
       await this.$store.dispatch(CREATE_CENTER_REQUEST, {
@@ -220,6 +240,7 @@ export default {
         lon: Number(lon),
         lat: Number(lat),
         departement,
+        geoDepartement,
       })
       this.$refs.createCenterForm.reset()
     },
@@ -231,13 +252,21 @@ export default {
         adresse,
         lon,
         lat,
+        geoDepartement,
       } = this
+
+      const zipcode = adresse && adresse.match(codePostalRegex)
+      if (!geoDepartement && !this.geoDepartement) {
+        this.geoDepartement = zipcode && (zipcode.length > 1) && zipcode[1]
+      }
+
       this.$emit('change', {
         nom,
         label,
         adresse,
         lon,
         lat,
+        geoDepartement,
       })
     },
 
