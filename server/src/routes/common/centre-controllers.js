@@ -107,8 +107,12 @@ export async function getAdminCentres (req, res) {
     action: 'GET ADMIN CENTRES',
     admin: req.userId,
   }
-  const centres = await findAllCentresForAdmin(departements)
-
+  const centresTmp = await findAllCentresForAdmin(departements)
+  // TODO: à retirer dés que tous centre posséde le geoDepartement
+  const centres = centresTmp.map(centre => {
+    centre.geoDepartement = centre.getGeoDepartement
+    return centre
+  })
   appLogger.info({
     ...loggerContent,
     nbCentres: centres.length,
