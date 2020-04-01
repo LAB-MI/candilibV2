@@ -6,6 +6,8 @@ import express from 'express'
 
 import { getMe, saveEvaluation } from './candidat.controllers'
 import { getCentres } from '../common/centre-controllers'
+import { getActiveDepartementsInfos } from '../candidat/departements-controllers'
+
 import {
   getPlaces,
   bookPlaceByCandidat,
@@ -114,6 +116,8 @@ router.get('/me', getMe)
  */
 
 router.get('/centres', getCentres)
+
+router.get('/departements', getActiveDepartementsInfos)
 
 /**
  * @swagger
