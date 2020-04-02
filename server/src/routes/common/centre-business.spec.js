@@ -94,7 +94,7 @@ describe('Centres business', () => {
     const centreAdded = await addCentre(
       'CentreTest',
       'LabelTest',
-      '1',
+      '1 94000 ',
       42,
       104,
       '93'
@@ -105,6 +105,7 @@ describe('Centres business', () => {
     expect(centreAdded).toHaveProperty('nom', 'CentreTest')
     expect(centreAdded).toHaveProperty('label', 'LabelTest')
     expect(centreAdded).toHaveProperty('departement', '93')
+    expect(centreAdded).toHaveProperty('geoDepartement', '94')
     expect(centreAdded).toHaveProperty('active', true)
   })
 

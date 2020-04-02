@@ -7,6 +7,7 @@ import {
   findCentreByNameAndDepartement,
   createCentre,
   updateCentreActiveState,
+  findCentreByNameAndGeoDepartement,
 } from './centre-queries'
 import {
   setInitCreatedCentre,
@@ -33,18 +34,20 @@ describe('Centre', () => {
       const departement = '93'
       const lon = 48
       const lat = 3
-
+      const geoDepartement = '94'
       const centre1Created = await createCentre(
         nom,
         label,
         adresse,
         lon,
         lat,
-        departement
+        departement,
+        geoDepartement
       )
       expect(centre1Created).toBeDefined()
       expect(centre1Created).toHaveProperty('nom', nom)
       expect(centre1Created).toHaveProperty('departement', departement)
+      expect(centre1Created).toHaveProperty('geoDepartement', geoDepartement)
 
       const label2 = 'test 2 label'
       const adresse2 = 'adresse 2 93001'
@@ -140,17 +143,29 @@ describe('Centre', () => {
 
     it('Should find one centre by departement and name', async () => {
       const departement = '93'
+      let centresResult
       try {
-        const centresResult = await findCentreByNameAndDepartement(
+        centresResult = await findCentreByNameAndDepartement(
           centres[2].nom,
           departement
         )
-        expect(centresResult).toBeDefined()
-        expect(centresResult).toHaveProperty('nom', centres[2].nom)
-        expect(centresResult).toHaveProperty('departement', departement)
       } catch (error) {
         expect(error).toBeUndefined()
       }
+      expect(centresResult).toBeDefined()
+      expect(centresResult).toHaveProperty('nom', centres[2].nom)
+      expect(centresResult).toHaveProperty('departement', departement)
+    })
+
+    it('Should find one centre by geographie departement and name', async () => {
+      const geoDepartement = '93'
+      const centresResult = await findCentreByNameAndGeoDepartement(
+        centres[2].nom,
+        geoDepartement
+      )
+      expect(centresResult).toBeDefined()
+      expect(centresResult).toHaveProperty('nom', centres[2].nom)
+      expect(centresResult).toHaveProperty('geoDepartement', geoDepartement)
     })
   })
 
