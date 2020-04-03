@@ -301,6 +301,7 @@ describe('Test to book and to delete reservation by candidat', () => {
       console.warn(e)
     }
     await disconnect()
+    await app.close()
   })
 
   it('should booked place by candidat with info bookedAt', async () => {
