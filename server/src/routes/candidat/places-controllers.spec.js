@@ -603,7 +603,13 @@ const createReservationWithSuccess = async (
   }
   const place = await selectedPlace.populate('centre').execPopulate()
 
-  expectMailConvocation(selectedCandidat, place)
+  const newSelectedCandidat = await findCandidatById(selectedCandidat._id)
+  expect(newSelectedCandidat).toHaveProperty(
+    'departement',
+    selectedCentre.departement
+  )
+
+  expectMailConvocation(newSelectedCandidat, place)
 }
 
 describe('test to book with the date authorize by candiat', () => {
@@ -650,8 +656,12 @@ describe('test to book with the date authorize by candiat', () => {
   })
 
   it('Should get 200 to book one place', async () => {
-    const selectedCentre = createdCentres[1]
-    const selectedPlace = await createTestPlace(placeCanBook)
+    const selectedCentre = createdCentres[0]
+    const placeCanBook1 = {
+      ...placeCanBook,
+      centre: selectedCentre,
+    }
+    const selectedPlace = await createTestPlace(placeCanBook1)
 
     await createReservationWithSuccess(
       selectedCentre,
