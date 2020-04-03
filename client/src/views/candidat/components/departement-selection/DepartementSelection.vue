@@ -16,9 +16,9 @@
         </v-text-field>
       </v-list-item-content>
       <departement-selection-content
-        v-for="({departement, centres, count}) in departements"
-        :key="departement"
-        :departement-infos="{ departement, count, centres }"
+        v-for="({geoDepartement, centres, count}) in departements"
+        :key="geoDepartement"
+        :geo-departement-infos="{ geoDepartement, count, centres }"
       />
     </v-list>
   </v-card>
@@ -42,8 +42,8 @@ export default {
   computed: {
     ...mapState({
       departements (state) {
-        return state.departements.departementsInfos
-          .filter(item => this.filtre ? (item.departement === this.filtre) : item)
+        return state.departements.geoDepartementsInfos
+          .filter(item => this.filtre ? (item.geoDepartement === this.filtre) : item)
       },
     }),
   },

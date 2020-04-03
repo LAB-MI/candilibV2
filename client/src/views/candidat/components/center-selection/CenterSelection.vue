@@ -50,7 +50,7 @@ export default {
   methods: {
     async getCenters () {
       const departementInfos = this.$store.state.departements.selectedDepartement
-      await this.$store.dispatch(FETCH_CENTERS_REQUEST, this.$route.params.departement || departementInfos.departement)
+      await this.$store.dispatch(FETCH_CENTERS_REQUEST, this.$route.params.departement || departementInfos.geoDepartement)
     },
 
     goToSelectDepartement () {

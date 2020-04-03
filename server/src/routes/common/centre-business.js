@@ -46,7 +46,11 @@ export async function findCentresWithNbPlaces (departement, beginDate, endDate) 
   return centresWithNbPlaces
 }
 
-export async function findCentresWithNbPlacesByGeoDepartement (geoDepartement, beginDate, endDate) {
+export async function findCentresWithNbPlacesByGeoDepartement (
+  geoDepartement,
+  beginDate,
+  endDate
+) {
   const centres = geoDepartement
     ? await findCentreByGeoDepartement(geoDepartement)
     : await findAllActiveCentres()

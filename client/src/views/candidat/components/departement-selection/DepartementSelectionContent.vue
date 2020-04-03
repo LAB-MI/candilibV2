@@ -10,10 +10,10 @@
       >
         <v-list-item-title>
           <strong class="u-uppercase">
-            {{ departementInfos.departement }}
+            {{ geoDepartementInfos.geoDepartement }}
           </strong>
           &nbsp;
-          ({{ departementInfos.count }} {{ departementInfos.count ? 'places disponibles' : 'place disponible' }})
+          ({{ geoDepartementInfos.count }} {{ geoDepartementInfos.count ? 'places disponibles' : 'place disponible' }})
         </v-list-item-title>
         <v-list-item-subtitle
           class="u-flex__item--grow"
@@ -34,7 +34,7 @@
         </template>
         <div>
           <span
-            v-for="{centre, count} in departementInfos.centres"
+            v-for="{centre, count} in geoDepartementInfos.centres"
             :key="centre._id"
           >
             &nbsp; {{ centre.nom }}: {{ count }} place(s) &nbsp;
@@ -50,7 +50,7 @@ import { CANDIDAT_SELECT_DEPARTEMENT } from '@/store'
 
 export default {
   props: {
-    departementInfos: {
+    geoDepartementInfos: {
       type: Object,
       default () {},
     },
@@ -58,12 +58,12 @@ export default {
 
   methods: {
     async selectDepartement () {
-      const departementInfos = this.departementInfos
-      await this.$store.dispatch(CANDIDAT_SELECT_DEPARTEMENT, departementInfos)
+      const geoDepartementInfos = this.geoDepartementInfos
+      await this.$store.dispatch(CANDIDAT_SELECT_DEPARTEMENT, geoDepartementInfos)
       this.$router.push({
         name: 'selection-centre',
         params: {
-          departement: `${departementInfos.departement}`,
+          departement: `${geoDepartementInfos.geoDepartement}`,
           modifying: (this.$route.params.modifying === 'modification' || this.$store.state.reservation.isModifying)
             ? 'modification' : 'selection',
         },

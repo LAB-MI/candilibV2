@@ -17,8 +17,8 @@ export default {
   state: {
     isFetchingDepartements: false,
     list: [],
-    departementsInfos: [],
-    isFetchingDepartementsInfos: false,
+    geoDepartementsInfos: [],
+    isFetchingGeoDepartementsInfos: false,
     selectedDepartement: undefined,
   },
 
@@ -35,14 +35,14 @@ export default {
     },
 
     [FETCH_DEPARTEMENTS_INFOS_REQUEST] (state) {
-      state.isFetchingDepartementsInfos = true
+      state.isFetchingGeoDepartementsInfos = true
     },
-    [FETCH_DEPARTEMENTS_INFOS_SUCCESS] (state, departementsInfos) {
-      state.departementsInfos = departementsInfos
-      state.isFetchingDepartementsInfos = false
+    [FETCH_DEPARTEMENTS_INFOS_SUCCESS] (state, geoDepartementsInfos) {
+      state.geoDepartementsInfos = geoDepartementsInfos
+      state.isFetchingGeoDepartementsInfos = false
     },
     [FETCH_DEPARTEMENTS_INFOS_FAILURE] (state) {
-      state.isFetchingDepartementsInfos = false
+      state.isFetchingGeoDepartementsInfos = false
     },
 
     [CANDIDAT_SELECT_DEPARTEMENT] (state, selectedDepartement) {
@@ -68,11 +68,11 @@ export default {
       commit(FETCH_DEPARTEMENTS_INFOS_REQUEST)
 
       try {
-        const { success, message, departementsInfos } = await api.candidat.getActiveGeoDepartementsInfos()
+        const { success, message, geoDepartementsInfos } = await api.candidat.getActiveGeoDepartementsInfos()
         if (!success) {
           throw new Error(message)
         }
-        commit(FETCH_DEPARTEMENTS_INFOS_SUCCESS, departementsInfos)
+        commit(FETCH_DEPARTEMENTS_INFOS_SUCCESS, geoDepartementsInfos)
       } catch (error) {
         commit(FETCH_DEPARTEMENTS_INFOS_FAILURE, error.message)
         dispatch(SHOW_ERROR, error.message)

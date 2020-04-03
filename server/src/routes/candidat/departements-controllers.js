@@ -16,15 +16,15 @@ export async function getActiveGeoDepartementsInfos (req, res) {
   }
 
   try {
-    // TODO: A MODIFIER POUR LES DEPARTEMENT GEOLOCALISER
     const geoDepartementsId = await getGeoDepartementsFromCentres()
     appLogger.info({
       ...loggerContent,
       geoDepartementsId: JSON.stringify(geoDepartementsId),
     })
 
-    // TODO: A MODIFIER POUR LES DEPARTEMENT GEOLOCALISER
-    const geoDepartementsInfos = await getGeoDepartementsInfos(geoDepartementsId)
+    const geoDepartementsInfos = await getGeoDepartementsInfos(
+      geoDepartementsId
+    )
     return res.status(200).json({
       success: true,
       geoDepartementsInfos,
