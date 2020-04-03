@@ -588,6 +588,20 @@ export const countCandidatsInscritsByDepartementAndWeek = async (
 }
 
 /**
+ * Mettre à jours le département du candidat
+ * @async
+ * @function
+ * @param {Object} candidat - Candidat
+ * @param {*} departement - departement administratif
+ * @returns {Promise.<Candidat>} - Candidat mis à jour
+ * */
+export const updateCandidatDepartement = (candidat, departement) => {
+  if (!departement) throw new Error('le département est incorrect')
+  candidat.departement = departement
+  return candidat.save()
+}
+
+/**
  * @typedef {Object} CandidatUpdateData
  * @property {boolean} isEvaluationDone - `true` si le candidat à rempli le questionnaire d'évaluation
  * @property {string} prenom - Prénom du candidat
