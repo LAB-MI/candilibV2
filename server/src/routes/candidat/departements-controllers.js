@@ -4,9 +4,9 @@
  */
 
 import { appLogger } from '../../util'
-import { getDepartementsFromCentres } from '../../models/centre'
+import { getGeoDepartementsFromCentres } from '../../models/centre'
 import { UNKNOWN_ERROR_GET_DEPARTEMENTS_INFOS } from '../admin/message.constants'
-import { getDepartementsInfos } from './departements-business'
+import { getGeoDepartementsInfos } from './departements-business'
 
 // TODO: ADD JSDOC
 export async function getActiveGeoDepartementsInfos (req, res) {
@@ -17,16 +17,17 @@ export async function getActiveGeoDepartementsInfos (req, res) {
 
   try {
     // TODO: A MODIFIER POUR LES DEPARTEMENT GEOLOCALISER
-    const departementsId = await getDepartementsFromCentres()
+    const geoDepartementsId = await getGeoDepartementsFromCentres()
     appLogger.info({
       ...loggerContent,
-      departementsId: JSON.stringify(departementsId),
+      geoDepartementsId: JSON.stringify(geoDepartementsId),
     })
 
-    const departementsInfos = await getDepartementsInfos(departementsId)
+    // TODO: A MODIFIER POUR LES DEPARTEMENT GEOLOCALISER
+    const geoDepartementsInfos = await getGeoDepartementsInfos(geoDepartementsId)
     return res.status(200).json({
       success: true,
-      departementsInfos,
+      geoDepartementsInfos,
     })
   } catch (error) {
     appLogger.error({

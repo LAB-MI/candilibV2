@@ -4,13 +4,13 @@ import { UNKNOWN_ERROR_GET_DEPARTEMENT } from '../admin/message.constants'
 
 import { getAuthorizedDateToBook } from './authorize.business'
 
-import { findCentresWithNbPlaces } from '../common/centre-business'
+import { findCentresWithNbPlacesByGeoDepartement } from '../common/centre-business'
 
 // TODO: ADD JSDOC
-export const getDepartementsInfos = async departementsId => {
+export const getGeoDepartementsInfos = async geoDepartementsId => {
   const loggerContent = {
-    description: 'Getting active departements infos',
-    section: 'candidat departements business',
+    description: 'Getting active geo departements infos',
+    section: 'candidat geo departements business',
   }
 
   try {
@@ -21,10 +21,10 @@ export const getDepartementsInfos = async departementsId => {
       .endOf('day')
       .toISODate()
 
-    const departementsInfos = await Promise.all(
-      departementsId.map(async departement => {
-        const centresInfos = await findCentresWithNbPlaces(
-          departement,
+    const geoDepartementsInfos = await Promise.all(
+      geoDepartementsId.map(async geoDepartement => {
+        const centresInfos = await findCentresWithNbPlacesByGeoDepartement(
+          geoDepartement,
           beginDate,
           endDate
         )
@@ -34,15 +34,15 @@ export const getDepartementsInfos = async departementsId => {
           someOfCountPlaces = someOfCountPlaces + Number(count)
           return { centre, count }
         })
-        const shapedDepartementInfo = {
-          departement,
+        const shapedGeoDepartementInfo = {
+          geoDepartement,
           centres: shapedCentresInfos,
           count: someOfCountPlaces,
         }
-        return shapedDepartementInfo
+        return shapedGeoDepartementInfo
       })
     )
-    return departementsInfos
+    return geoDepartementsInfos
   } catch (error) {
     appLogger.error({
       ...loggerContent,

@@ -248,6 +248,22 @@ export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
   return findCentreByNameAndDepartement(nom, undefined, geoDepartement)
 }
 
+export const findCentreByGeoDepartement = async (
+  geoDepartement,
+  options = '-__v'
+) => {
+  const filters = {
+    active: { $ne: false },
+  }
+
+  if (geoDepartement) {
+    filters.geoDepartement = geoDepartement
+  }
+
+  const centres = await Centre.find(filters, options)
+  return centres
+}
+
 /**
  * Récupère un centre actif par son id
  *
@@ -274,4 +290,17 @@ export const findCentreById = async id => {
 export const getDepartementsFromCentres = async () => {
   const departements = await Centre.distinct('departement')
   return departements
+}
+
+/**
+ * Retourne la liste des geolocalisé départements possédant des centres
+ *
+ * @async
+ * @function
+ *
+ * @returns {Promise.<string[]>} Liste des identifiants des départements
+ */
+export const getGeoDepartementsFromCentres = async () => {
+  const geoDepartements = await Centre.distinct('geoDepartement')
+  return geoDepartements
 }

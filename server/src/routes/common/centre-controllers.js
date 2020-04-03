@@ -6,7 +6,7 @@
 
 import {
   addCentre,
-  findCentresWithNbPlaces,
+  findCentresWithNbPlacesByGeoDepartement,
   findAllCentresForAdmin,
   updateCentre,
   updateCentreStatus,
@@ -57,7 +57,7 @@ export async function getCentres (req, res) {
         beginDate = beginDateTime.toISODate()
       }
 
-      const centres = await findCentresWithNbPlaces(
+      const centres = await findCentresWithNbPlacesByGeoDepartement(
         departement,
         beginDate,
         endDate
