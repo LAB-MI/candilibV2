@@ -232,6 +232,8 @@ describe('update place by admin', () => {
     await connect()
     setInitCreatedCentre()
     setInitCreatedPlaces()
+    await createInspecteurs()
+    await createCentres()
     const user = await createUser(
       admin.email,
       admin.password,
@@ -253,7 +255,7 @@ describe('update place by admin', () => {
   afterAll(async () => {
     const candidats = candidatsCreatedAndUpdated.map(elt => elt.remove())
 
-    await Promise.all([...candidats])
+    await Promise.all(candidats)
     await disconnect()
   })
 
@@ -294,6 +296,7 @@ describe('update place by admin', () => {
 
     const newCandidat = await findCandidatById(candidat._id)
     expect(newCandidat.places).toBeUndefined()
+    expect(newCandidat).toHaveProperty('departement', centre1.departement)
 
     expectMailConvocation(candidat, place)
 
@@ -803,7 +806,7 @@ describe('Send bordereaux', () => {
   afterAll(async () => {
     const candidats = candidatsCreatedAndUpdated.map(elt => elt.remove())
 
-    await Promise.all([...candidats])
+    await Promise.all(candidats)
     await disconnect()
   })
 
