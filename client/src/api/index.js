@@ -732,7 +732,7 @@ export default {
       return json
     },
 
-    async modifyCentre ({ centreId, nom, label, adresse, lon, lat, active }) {
+    async modifyCentre ({ centreId, nom, label, adresse, lon, lat, active, geoDepartement }) {
       const json = await apiClient.patch(apiPaths.admin.centres, {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify({
@@ -743,6 +743,7 @@ export default {
           lon,
           lat,
           active,
+          geoDepartement,
         }),
       })
       return json
@@ -759,10 +760,10 @@ export default {
       return json
     },
 
-    async createCentre ({ nom, label, adresse, lon, lat, departement }) {
+    async createCentre ({ nom, label, adresse, lon, lat, departement, geoDepartement }) {
       const json = await apiClient.post(apiPaths.admin.centres, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ nom, label, adresse, lon, lat, departement }),
+        body: JSON.stringify({ nom, label, adresse, lon, lat, departement, geoDepartement }),
       })
       return json
     },
