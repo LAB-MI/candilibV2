@@ -52,16 +52,32 @@ describe('Test get dates from places available', () => {
       .get(`${apiPrefix}/candidat/departements`)
       .set('Accept', 'application/json')
       .expect(200)
+    console.log(body.geoDepartementsInfos[0])
+    console.log(body.geoDepartementsInfos[0].centres)
+    body.geoDepartementsInfos[0].centres.map(el => {
+      console.log({ el })
+    })
+    console.log(body.geoDepartementsInfos[0].centres.length)
+    console.log(body.geoDepartementsInfos[1])
+    console.log(body.geoDepartementsInfos[1].centres.length)
+    const { geoDepartementsInfos } = body
+
+    // const expectedArray = []
+    console.log({ geoDepartementsInfos })
+
+    // expect(geoDepartementsInfos).toEqual(
+    //   expect.arrayContaining(expectedArray)
+    // )
 
     expect(body).toBeDefined()
     expect(body).toHaveProperty('success', true)
-    expect(body).toHaveProperty('departementsInfos')
-    expect(body.departementsInfos).toHaveLength(2)
-    expect(body.departementsInfos[0]).toHaveProperty('count', 1)
-    expect(body.departementsInfos[0]).toHaveProperty('centres')
-    expect(body.departementsInfos[0].centres).toHaveLength(1)
-    expect(body.departementsInfos[1]).toHaveProperty('count', 6)
-    expect(body.departementsInfos[1]).toHaveProperty('centres')
-    expect(body.departementsInfos[1].centres).toHaveLength(2)
+    expect(body).toHaveProperty('geoDepartementsInfos')
+    expect(geoDepartementsInfos).toHaveLength(2)
+    expect(geoDepartementsInfos[0]).toHaveProperty('count', 1)
+    expect(geoDepartementsInfos[0]).toHaveProperty('centres')
+    expect(geoDepartementsInfos[0].centres).toHaveLength(1)
+    expect(geoDepartementsInfos[1]).toHaveProperty('count', 6)
+    expect(geoDepartementsInfos[1]).toHaveProperty('centres')
+    expect(geoDepartementsInfos[1].centres).toHaveLength(2)
   })
 })
