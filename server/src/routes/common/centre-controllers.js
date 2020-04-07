@@ -107,8 +107,12 @@ export async function getAdminCentres (req, res) {
     action: 'GET ADMIN CENTRES',
     admin: req.userId,
   }
-  const centres = await findAllCentresForAdmin(departements)
-
+  const centresTmp = await findAllCentresForAdmin(departements)
+  // TODO: à retirer dés que tous centre posséde le geoDepartement
+  const centres = centresTmp.map(centre => {
+    centre.geoDepartement = centre.getGeoDepartement
+    return centre
+  })
   appLogger.info({
     ...loggerContent,
     nbCentres: centres.length,
@@ -140,7 +144,16 @@ export async function getAdminCentres (req, res) {
 export async function modifyCentre (req, res) {
   const userId = req.userId
 
-  const { centreId, nom, label, adresse, lon, lat, active } = req.body
+  const {
+    centreId,
+    nom,
+    label,
+    adresse,
+    lon,
+    lat,
+    active,
+    geoDepartement,
+  } = req.body
 
   const loggerContent = {
     section: 'admin-modify-centre',
@@ -148,6 +161,7 @@ export async function modifyCentre (req, res) {
     admin: userId,
     centreId,
     enable: active,
+    geoDepartement,
   }
 
   if (!centreId) {
@@ -175,7 +189,7 @@ export async function modifyCentre (req, res) {
 
     const centre = await updateCentre(
       centreId,
-      { nom, label, adresse, lon, lat },
+      { nom, label, adresse, lon, lat, geoDepartement },
       userId
     )
 
@@ -223,7 +237,15 @@ export async function modifyCentre (req, res) {
 export async function createCentre (req, res) {
   const { departements, userId } = req
 
-  const { nom, label, adresse, lon, lat, departement } = req.body
+  const {
+    nom,
+    label,
+    adresse,
+    lon,
+    lat,
+    departement,
+    geoDepartement,
+  } = req.body
 
   const loggerContent = {
     section: 'admin-add-new-centre',
@@ -254,7 +276,15 @@ export async function createCentre (req, res) {
   }
 
   try {
-    const centre = await addCentre(nom, label, adresse, lon, lat, departement)
+    const centre = await addCentre(
+      nom,
+      label,
+      adresse,
+      lon,
+      lat,
+      departement,
+      geoDepartement
+    )
 
     appLogger.info({
       ...loggerContent,

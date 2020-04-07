@@ -44,14 +44,15 @@
             v-slot:item.geoloc="{ item: centre }"
           >
             <a
+              class="pa-2 "
               target="_blank"
-              class="u-flex"
               :href="href(centre.geoloc.coordinates)"
               @click.stop="() => true"
             >
               <v-icon>
                 location_on
               </v-icon>
+
             </a>
           </template>
           <template
@@ -92,8 +93,9 @@ export default {
   data () {
     return {
       headers: [
-        { text: 'Département', value: 'departement', align: 'center' },
+        { text: 'Dépt. administratif', value: 'departement', align: 'center' },
         { text: 'Nom du centre', value: 'nom', class: 't-centre-list-header-name' },
+        { text: 'Dépt. geographique', value: 'geoDepartement', align: 'center' },
         { text: 'Géolocalisation', value: 'geoloc', sortable: false, align: 'center' },
         { text: 'Actions', value: 'active', align: 'center', sortable: false },
       ],
@@ -114,8 +116,8 @@ export default {
       return `http://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=24`
     },
 
-    changeCenter ({ id, nom, label, adresse, lon, lat, active }) {
-      this.$store.dispatch(MODIFY_CENTER_REQUEST, { id, nom, label, adresse, lon, lat, active })
+    changeCenter ({ id, nom, label, adresse, lon, lat, active, geoDepartement }) {
+      this.$store.dispatch(MODIFY_CENTER_REQUEST, { id, nom, label, adresse, lon, lat, active, geoDepartement })
     },
   },
 }

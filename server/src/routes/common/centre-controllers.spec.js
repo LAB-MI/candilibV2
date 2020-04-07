@@ -274,6 +274,7 @@ describe('Centre controllers admin', () => {
         lon: 2.473647,
         lat: 48.883956,
         departement: '93',
+        geoDepartement: '92',
       })
       .set('Accept', 'application/json')
       .expect(200)
@@ -283,6 +284,7 @@ describe('Centre controllers admin', () => {
     expect(body).toHaveProperty('centre')
     expect(body.centre).toHaveProperty('nom', 'Noisy le Grand')
     expect(body.centre).toHaveProperty('departement', '93')
+    expect(body.centre).toHaveProperty('geoDepartement', '92')
   })
 
   it('Modify a center', async () => {
@@ -311,6 +313,7 @@ describe('Centre controllers admin', () => {
         nom: 'Nouveau nom',
         lon: 45.3,
         lat: 8,
+        geoDepartement: '40',
       })
       .set('Accept', 'application/json')
       .expect(200)
@@ -322,6 +325,7 @@ describe('Centre controllers admin', () => {
     expect(body.centre).not.toBeNull()
     expect(body.centre).toHaveProperty('nom', 'Nouveau nom')
     expect(body.centre).toHaveProperty('label', centres[0].label)
+    expect(body.centre).toHaveProperty('geoDepartement', '40')
     expect(body.centre).toHaveProperty('geoloc')
     expect(body.centre.geoloc).toHaveProperty('coordinates')
     expect(body.centre.geoloc.coordinates).toHaveProperty('0', 45.3)

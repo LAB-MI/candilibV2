@@ -6,6 +6,7 @@
 
 import Centre from './centre-model'
 
+import { codePostal } from '../../util/regex'
 const caseInsensitive = nom => ({
   $regex: new RegExp('^' + nom.toLowerCase(), 'i'),
 })
@@ -81,11 +82,17 @@ export const createCentre = async (
   adresse,
   lon,
   lat,
-  departement
+  departement,
+  geoDepartement
 ) => {
   const geoloc = {
     type: 'Point',
     coordinates: [lon, lat],
+  }
+  if (!geoDepartement) {
+    const zipCode = adresse && adresse.match(codePostal)
+    geoDepartement =
+      (zipCode && zipCode.length > 1 && zipCode[1]) || departement
   }
   const centre = new Centre({
     nom,
@@ -94,6 +101,7 @@ export const createCentre = async (
     geoloc,
     departement,
     active: true,
+    geoDepartement,
   })
   await centre.save()
   return centre
@@ -159,7 +167,7 @@ export const updateCentreActiveState = async (centre, active, email) => {
  */
 export const updateCentreLabel = async (
   centre,
-  { nom, label, adresse, lon, lat }
+  { nom, label, adresse, lon, lat, geoDepartement }
 ) => {
   if (!centre) {
     throw new Error('centre is undefined')
@@ -172,6 +180,9 @@ export const updateCentreLabel = async (
     updateObject.geoloc = { coordinates: [] }
     updateObject.geoloc.coordinates[0] = lon
     updateObject.geoloc.coordinates[1] = lat
+  }
+  if (geoDepartement) {
+    updateObject.geoDepartement = geoDepartement
   }
 
   await centre.updateOne(updateObject)
@@ -218,13 +229,23 @@ export const findCentresByDepartement = async (
  *
  * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
  */
-export const findCentreByNameAndDepartement = async (nom, departement) => {
-  const centre = await Centre.findOne({
+export const findCentreByNameAndDepartement = async (
+  nom,
+  departement,
+  geoDepartement
+) => {
+  const filter = {
     nom: caseInsensitive(nom),
-    departement,
     active: { $ne: false },
-  })
+  }
+  if (departement) filter.departement = departement
+  if (geoDepartement) filter.geoDepartement = geoDepartement
+  const centre = await Centre.findOne(filter)
   return centre
+}
+
+export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
+  return findCentreByNameAndDepartement(nom, undefined, geoDepartement)
 }
 
 /**

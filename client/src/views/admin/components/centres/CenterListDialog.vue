@@ -96,12 +96,14 @@ export default {
       adresse,
       lon,
       lat,
+      geoDepartement,
     }) {
       this.centre.nom = nom
       this.centre.label = label
       this.centre.adresse = adresse
       this.centre.lon = lon
       this.centre.lat = lat
+      this.centre.geoDepartement = geoDepartement
     },
 
     sendFormData () {
@@ -113,6 +115,7 @@ export default {
         adresse: this.centre.adresse,
         lon: this.centre.lon,
         lat: this.centre.lat,
+        geoDepartement: this.centre.geoDepartement,
       })
     },
 
