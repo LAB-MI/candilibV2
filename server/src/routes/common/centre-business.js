@@ -286,3 +286,23 @@ export async function updateCentre (
 
   return updatedCentre
 }
+
+/**
+ * Modifie un centre dans la base de données
+ *
+ * @async
+ * @function
+ *
+ * @param {string} centreId - Id du centre
+ *
+ * @returns {Promise.<CentreMongo>} Centre
+ */
+export async function findCentre (centreId) {
+  if (!centreId) {
+    const error = new Error('Centre introuvable')
+    error.status = 404
+    throw error
+  }
+
+  return findCentreById(centreId)
+}

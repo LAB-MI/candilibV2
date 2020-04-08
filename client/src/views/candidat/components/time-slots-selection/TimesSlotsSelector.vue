@@ -39,6 +39,8 @@
 import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
+import { CANDIDAT_SELECTED_CENTER } from '../../../../constants'
+
 import {
   FETCH_CENTER_REQUEST,
   FETCH_DATES_REQUEST,
@@ -93,8 +95,8 @@ export default {
     async getTimeSlots () {
       const selected = this.center.selected
       if (!selected || !selected._id) {
-        const { center: nom, departement } = this.$route.params
-        await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
+        const { departement } = this.$route.params
+        await this.$store.dispatch(FETCH_CENTER_REQUEST, { centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER), departement })
         this.getTimeSlots()
         return
       }
@@ -132,7 +134,7 @@ export default {
         return
       }
 
-      const { nom, departement, _id } = this.$store.state.center.selected
+      const { nom, geoDepartement, _id } = this.$store.state.center.selected
       const day = slot.day.split(' ')
       const hour = slot.hour.split('-')[0].split('h')
       // TODO: Optimize this
@@ -143,7 +145,7 @@ export default {
         centre: {
           id: _id,
           nom,
-          departement,
+          geoDepartement,
         },
       }
 
@@ -153,7 +155,7 @@ export default {
           this.$router.push({
             name: 'selection-summary',
             params: {
-              departement: `${selectedSlot.centre.departement}`,
+              departement: `${selectedSlot.centre.geoDepartement}`,
               center: `${selectedSlot.centre.nom}`,
               day: this.$route.params.day,
               slot: selectedSlot.slot,

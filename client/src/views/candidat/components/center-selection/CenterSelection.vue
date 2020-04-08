@@ -27,6 +27,7 @@
 <script>
 import { mapState } from 'vuex'
 
+import { CANDIDAT_SELECTED_CENTER } from '../../../../constants'
 import { BigLoadingIndicator } from '@/components'
 import CenterSelectionContent from './CenterSelectionContent'
 import {
@@ -57,6 +58,7 @@ export default {
       this.$router.push({
         name: 'selection-departement',
       })
+      localStorage.setItem(CANDIDAT_SELECTED_CENTER, undefined)
     },
   },
 }

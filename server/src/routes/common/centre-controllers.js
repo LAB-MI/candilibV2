@@ -12,7 +12,7 @@ import {
   updateCentreStatus,
 } from './centre-business'
 import {
-  findCentreByNameAndDepartement,
+  findCentreById,
   findCentresByDepartement,
 } from '../../models/centre'
 import { appLogger } from '../../util'
@@ -28,14 +28,14 @@ export const NOT_CODE_DEP_MSG =
   'Le code de département est manquant, Veuillez choisir un code département'
 
 export async function getCentres (req, res) {
-  const { departement, nom } = req.query
+  const { departement, centreId } = req.query
   let beginDate = req.query.begin
   const endDate = req.query.end
 
   const loggerContent = {
     section: 'candidat-get-centres',
     action: 'GET CANDIDAT CENTRES',
-    args: { departement, nom, beginDate, endDate },
+    args: { departement, centreId, beginDate, endDate },
   }
 
   try {
@@ -51,7 +51,7 @@ export async function getCentres (req, res) {
       })
     }
 
-    if (!nom) {
+    if (!centreId) {
       if (req.userLevel === config.userStatusLevels.candidat) {
         const beginDateTime = getAuthorizedDateToBook()
         beginDate = beginDateTime.toISODate()
@@ -70,7 +70,7 @@ export async function getCentres (req, res) {
 
       res.status(200).json(centres)
     } else {
-      const centre = await findCentreByNameAndDepartement(nom, departement)
+      const centre = await findCentreById(centreId)
 
       appLogger.info({
         ...loggerContent,

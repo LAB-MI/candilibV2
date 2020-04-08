@@ -83,7 +83,7 @@ export default {
         name: 'time-slot',
         params: {
           center: `${center.centre.nom}`,
-          departement: `${center.centre.departement}`,
+          departement: `${center.centre.geoDepartement}`,
           month: this.firstMonthOfTimeSlotsList,
           day: this.$route.params.day || 'undefinedDay',
           // params modifying is not always define

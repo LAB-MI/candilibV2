@@ -41,12 +41,14 @@
 <script>
 import { mapState } from 'vuex'
 
+import { CANDIDAT_SELECTED_CENTER } from '../../../../constants'
 import {
   CONFIRM_SELECT_DAY_REQUEST,
   DELETE_CANDIDAT_RESERVATION_REQUEST,
   FETCH_CANDIDAT_RESERVATION_REQUEST,
   FETCH_CENTER_REQUEST,
   SELECT_DAY,
+  SET_MODIFYING_RESERVATION,
   SHOW_ERROR,
   SHOW_SUCCESS,
 } from '@/store'
@@ -116,6 +118,9 @@ export default {
   },
 
   async mounted () {
+    if (this.$route.params.modifying === 'modification') {
+      await this.$store.dispatch(SET_MODIFYING_RESERVATION, true)
+    }
     await this.getCandidatReservation()
     await this.getSelectedCenterAndDate()
   },
@@ -189,7 +194,7 @@ export default {
       const selected = this.center.selected
       if (this.$route.meta.isConfirmation) {
         if (!selected || !selected._id) {
-          await this.$store.dispatch(FETCH_CENTER_REQUEST, { departement, nom })
+          await this.$store.dispatch(FETCH_CENTER_REQUEST, { departement, centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER) })
           setTimeout(this.getSelectedCenterAndDate, 100)
           return
         }

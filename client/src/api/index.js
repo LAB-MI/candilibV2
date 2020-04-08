@@ -103,8 +103,8 @@ export default {
       return json
     },
 
-    async getCentre (departement, nom) {
-      const queryString = `departement=${departement}&nom=${nom}`
+    async getCentre (departement, centreId) {
+      const queryString = `departement=${departement}&centreId=${centreId}`
       const json = await apiClient.get(
         `${apiPaths.candidat.centres}?${queryString}`,
         {

@@ -1,5 +1,7 @@
 import api from '@/api'
 
+import { CANDIDAT_SELECTED_CENTER } from '../constants'
+
 import {
   SHOW_ERROR,
   FETCH_MY_PROFILE_REQUEST,
@@ -66,16 +68,17 @@ export default {
 
     [SELECT_CENTER] ({ commit }, center) {
       commit(SELECT_CENTER, center)
+      localStorage.setItem(CANDIDAT_SELECTED_CENTER, center._id)
     },
 
-    async [FETCH_CENTER_REQUEST] ({ commit, dispatch, state }, { departement, nom }) {
+    async [FETCH_CENTER_REQUEST] ({ commit, dispatch, state }, { departement, centreId }) {
       if (state.isFetchingCenter) {
         return
       }
 
       commit(FETCH_CENTER_REQUEST)
       try {
-        const centre = await api.candidat.getCentre(departement, nom)
+        const centre = await api.candidat.getCentre(departement, centreId)
         commit(FETCH_CENTER_SUCCESS, centre)
       } catch (error) {
         commit(FETCH_CENTER_FAILURE, error.message)
