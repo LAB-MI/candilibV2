@@ -15,8 +15,6 @@ import {
   setInitCreatedPlaces,
 } from '../../models/__tests__'
 
-// import { getActiveGeoDepartementsInfos } from './departements-controllers'
-
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
@@ -47,37 +45,66 @@ describe('Test get dates from places available', () => {
     await app.close()
   })
 
-  it('should have two departements, 92 with 1 centre / 1 place and 93 with 2 centres / 6 places', async () => {
+  it('should have two geoDepartements, 93 with 1 centre / 1 place and 75 with 2 centres / 6 places', async () => {
     const { body } = await request(app)
       .get(`${apiPrefix}/candidat/departements`)
       .set('Accept', 'application/json')
       .expect(200)
-    console.log(body.geoDepartementsInfos[0])
-    console.log(body.geoDepartementsInfos[0].centres)
-    body.geoDepartementsInfos[0].centres.map(el => {
-      console.log({ el })
-    })
-    console.log(body.geoDepartementsInfos[0].centres.length)
-    console.log(body.geoDepartementsInfos[1])
-    console.log(body.geoDepartementsInfos[1].centres.length)
-    const { geoDepartementsInfos } = body
-
-    // const expectedArray = []
-    console.log({ geoDepartementsInfos })
-
-    // expect(geoDepartementsInfos).toEqual(
-    //   expect.arrayContaining(expectedArray)
-    // )
 
     expect(body).toBeDefined()
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('geoDepartementsInfos')
+
+    const { geoDepartementsInfos } = body
+
     expect(geoDepartementsInfos).toHaveLength(2)
-    expect(geoDepartementsInfos[0]).toHaveProperty('count', 1)
-    expect(geoDepartementsInfos[0]).toHaveProperty('centres')
-    expect(geoDepartementsInfos[0].centres).toHaveLength(1)
-    expect(geoDepartementsInfos[1]).toHaveProperty('count', 6)
-    expect(geoDepartementsInfos[1]).toHaveProperty('centres')
-    expect(geoDepartementsInfos[1].centres).toHaveLength(2)
+
+    const geoDepartementInfo93 = body.geoDepartementsInfos.find(
+      el => el.geoDepartement === '93'
+    )
+    const geoDepartementInfo75 = body.geoDepartementsInfos.find(
+      el => el.geoDepartement === '75'
+    )
+
+    expect(geoDepartementInfo93).toBeDefined()
+    expect(geoDepartementInfo93).toHaveProperty('centres')
+    expect(geoDepartementInfo93).toHaveProperty('count', 1)
+    expect(geoDepartementInfo93.centres).toHaveLength(1)
+    expect(geoDepartementInfo93.centres[0]).toHaveProperty('centre')
+    expect(geoDepartementInfo93.centres[0].centre).toHaveProperty(
+      'departement',
+      '92'
+    )
+    expect(geoDepartementInfo93.centres[0].centre).toHaveProperty(
+      'geoDepartement',
+      '93'
+    )
+    expect(geoDepartementInfo93.centres[0].centre).toHaveProperty(
+      'nom',
+      'Centre 1'
+    )
+    expect(geoDepartementInfo93.centres[0]).toHaveProperty('count', 1)
+
+    expect(geoDepartementInfo75).toBeDefined()
+    expect(geoDepartementInfo75).toHaveProperty('centres')
+    expect(geoDepartementInfo75).toHaveProperty('count', 6)
+    expect(geoDepartementInfo75.centres).toHaveLength(2)
+
+    const centreInfos2 = geoDepartementInfo75.centres.find(
+      el => el.centre.nom === 'Centre 2'
+    )
+    const centreInfos3 = geoDepartementInfo75.centres.find(
+      el => el.centre.nom === 'Centre 3'
+    )
+
+    expect(centreInfos2).toHaveProperty('centre')
+    expect(centreInfos2.centre).toHaveProperty('departement', '93')
+    expect(centreInfos2.centre).toHaveProperty('geoDepartement', '75')
+    expect(centreInfos2).toHaveProperty('count', 3)
+
+    expect(centreInfos3).toHaveProperty('centre')
+    expect(centreInfos3.centre).toHaveProperty('departement', '93')
+    expect(centreInfos3.centre).toHaveProperty('geoDepartement', '75')
+    expect(centreInfos3).toHaveProperty('count', 3)
   })
 })

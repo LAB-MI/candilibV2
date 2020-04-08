@@ -11,10 +11,7 @@ import {
   updateCentre,
   updateCentreStatus,
 } from './centre-business'
-import {
-  findCentreById,
-  findCentresByDepartement,
-} from '../../models/centre'
+import { findCentreById, findCentresByDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
 import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
