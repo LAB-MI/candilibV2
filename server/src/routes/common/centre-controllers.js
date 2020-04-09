@@ -6,12 +6,13 @@
 
 import {
   addCentre,
-  findCentresWithNbPlacesByGeoDepartement,
   findAllCentresForAdmin,
+  findCentresWithNbPlacesByGeoDepartement,
+  getCentreById,
   updateCentre,
   updateCentreStatus,
 } from './centre-business'
-import { findCentreById, findCentresByDepartement } from '../../models/centre'
+import { findCentresByDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
 import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
@@ -36,7 +37,7 @@ export async function getCentres (req, res) {
   }
 
   try {
-    if (!departement) {
+    if (!departement && !centreId) {
       const error = {
         section: 'candidat-get-centres',
         message: NOT_CODE_DEP_MSG,
@@ -67,7 +68,7 @@ export async function getCentres (req, res) {
 
       res.status(200).json(centres)
     } else {
-      const centre = await findCentreById(centreId)
+      const centre = await getCentreById(centreId)
 
       appLogger.info({
         ...loggerContent,

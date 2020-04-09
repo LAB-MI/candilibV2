@@ -5,17 +5,24 @@ import { UNKNOWN_ERROR_GET_DEPARTEMENT } from '../admin/message.constants'
 import { getAuthorizedDateToBook } from './authorize.business'
 
 import { findCentresWithNbPlacesByGeoDepartement } from '../common/centre-business'
+// TODO: Add filter by ETG for endDate
+// import { findCandidatById } from '../../models/candidat/candidat.queries'
 
 // TODO: ADD JSDOC
-export const getGeoDepartementsInfos = async geoDepartementsId => {
+export const getGeoDepartementsInfos = async (geoDepartementsId, userId) => {
   const loggerContent = {
-    description: 'Getting active geo departements infos',
-    section: 'candidat geo departements business',
+    action: 'Getting active geo departements business',
+    section: 'candidat-departements-business',
+    userId,
   }
 
   try {
     const beginDateTime = getAuthorizedDateToBook()
     const beginDate = beginDateTime.toISODate()
+    // TODO: Add filter by ETG for endDate
+    // console.log({ userId })
+    // const infosCandidat = await findCandidatById(userId)
+    // console.log({ infosCandidat: infosCandidat.dateReussiteETG })
     const endDate = getFrenchLuxon()
       .plus({ months: config.numberOfVisibleMonths })
       .endOf('day')
@@ -29,14 +36,14 @@ export const getGeoDepartementsInfos = async geoDepartementsId => {
           endDate
         )
 
-        let someOfCountPlaces = 0
-        const shapedCentresInfos = centresInfos.map(({ centre, count }) => {
-          someOfCountPlaces = someOfCountPlaces + Number(count)
-          return { centre, count }
-        })
+        const someOfCountPlaces = centresInfos.reduce(
+          (sumCount, { count }) => sumCount + count,
+          0
+        )
+
         const shapedGeoDepartementInfo = {
           geoDepartement,
-          centres: shapedCentresInfos,
+          centres: centresInfos,
           count: someOfCountPlaces,
         }
         return shapedGeoDepartementInfo

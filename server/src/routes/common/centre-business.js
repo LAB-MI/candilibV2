@@ -52,7 +52,12 @@ export async function findCentresWithNbPlacesByGeoDepartement (
   endDate
 ) {
   const centres = geoDepartement
-    ? await findCentreByGeoDepartement(geoDepartement)
+    ? await findCentreByGeoDepartement(geoDepartement, {
+      nom: 1,
+      geoDepartement: 1,
+      _id: 1,
+      geoloc: 1,
+    })
     : await findAllActiveCentres()
 
   if (!beginDate) {
@@ -297,7 +302,7 @@ export async function updateCentre (
  *
  * @returns {Promise.<CentreMongo>} Centre
  */
-export async function findCentre (centreId) {
+export async function getCentreById (centreId) {
   if (!centreId) {
     const error = new Error('Centre introuvable')
     error.status = 404

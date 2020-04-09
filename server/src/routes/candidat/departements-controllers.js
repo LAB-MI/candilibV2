@@ -10,20 +10,24 @@ import { getGeoDepartementsInfos } from './departements-business'
 
 // TODO: ADD JSDOC
 export async function getActiveGeoDepartementsInfos (req, res) {
+  const { userId } = req
   const loggerContent = {
-    description: 'Getting active departements infos',
-    section: 'candidat departements controllers',
+    action: 'Getting active departements infos controller',
+    section: 'candidat-departements-controllers',
+    candidatId: userId,
   }
 
   try {
     const geoDepartementsId = await getGeoDepartementsFromCentres()
     appLogger.info({
       ...loggerContent,
-      geoDepartementsId: JSON.stringify(geoDepartementsId),
+      description: `nombres d'élements trouvé: ${geoDepartementsId.length ||
+        0}`,
     })
 
     const geoDepartementsInfos = await getGeoDepartementsInfos(
-      geoDepartementsId
+      geoDepartementsId,
+      userId
     )
     return res.status(200).json({
       success: true,

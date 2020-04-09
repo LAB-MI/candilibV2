@@ -248,6 +248,17 @@ export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
   return findCentreByNameAndDepartement(nom, undefined, geoDepartement)
 }
 
+/**
+ * Récupère les centres actifs d'un geo département
+ *
+ * @async
+ * @function
+ *
+ * @param {string} geoDepartement - Geo département dont les centres seront récupérés
+ * @param {Object} options - Objet contenant des options pour la requête
+ *
+ * @returns {Promise.<CentreMongooseDocument[]>} Liste des centres trouvés
+ */
 export const findCentreByGeoDepartement = async (
   geoDepartement,
   options = '-__v'
@@ -300,7 +311,12 @@ export const getDepartementsFromCentres = async () => {
  *
  * @returns {Promise.<string[]>} Liste des identifiants des départements
  */
-export const getGeoDepartementsFromCentres = async () => {
-  const geoDepartements = await Centre.distinct('geoDepartement')
+export const getGeoDepartementsFromCentres = async (options = '-__v') => {
+  const filters = {
+    active: { $ne: false },
+  }
+  const geoDepartements = await Centre.find(filters, options).distinct(
+    'geoDepartement'
+  )
   return geoDepartements
 }
