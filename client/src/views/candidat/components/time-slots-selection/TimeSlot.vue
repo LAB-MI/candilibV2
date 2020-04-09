@@ -230,10 +230,8 @@ export default {
       const selected = this.center.selected
       if (!selected || !selected._id) {
         if (!this.center.isFetchingCenter) {
-          const { departement } = this.$route.params
           await this.$store.dispatch(FETCH_CENTER_REQUEST, {
             centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER),
-            departement,
           })
         }
         this.timeoutId = setTimeout(this.getTimeSlots, 100)

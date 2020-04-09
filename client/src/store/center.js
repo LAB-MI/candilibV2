@@ -71,14 +71,14 @@ export default {
       localStorage.setItem(CANDIDAT_SELECTED_CENTER, center._id)
     },
 
-    async [FETCH_CENTER_REQUEST] ({ commit, dispatch, state }, { departement, centreId }) {
+    async [FETCH_CENTER_REQUEST] ({ commit, dispatch, state }, { centreId }) {
       if (state.isFetchingCenter) {
         return
       }
 
       commit(FETCH_CENTER_REQUEST)
       try {
-        const centre = await api.candidat.getCentre(departement, centreId)
+        const centre = await api.candidat.getCentre(centreId)
         commit(FETCH_CENTER_SUCCESS, centre)
       } catch (error) {
         commit(FETCH_CENTER_FAILURE, error.message)

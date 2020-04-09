@@ -194,7 +194,7 @@ export default {
       const selected = this.center.selected
       if (this.$route.meta.isConfirmation) {
         if (!selected || !selected._id) {
-          await this.$store.dispatch(FETCH_CENTER_REQUEST, { departement, centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER) })
+          await this.$store.dispatch(FETCH_CENTER_REQUEST, { centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER) })
           setTimeout(this.getSelectedCenterAndDate, 100)
           return
         }

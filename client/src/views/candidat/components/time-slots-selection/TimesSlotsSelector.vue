@@ -95,8 +95,7 @@ export default {
     async getTimeSlots () {
       const selected = this.center.selected
       if (!selected || !selected._id) {
-        const { departement } = this.$route.params
-        await this.$store.dispatch(FETCH_CENTER_REQUEST, { centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER), departement })
+        await this.$store.dispatch(FETCH_CENTER_REQUEST, { centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER) })
         this.getTimeSlots()
         return
       }
