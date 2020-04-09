@@ -55,6 +55,7 @@ ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
 ARG APP_VERSION
 COPY package.json package-lock.json ./
+COPY ci ci/
 # Copy the pm2 config
 COPY ecosystem.config.js .
 # Copy the transpiled code to use in production (in /app)
