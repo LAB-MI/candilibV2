@@ -26,6 +26,7 @@ import {
   SEND_MAIL_ASKED_RESA_EMPTY,
   USER_INFO_MISSING,
 } from './message.constants'
+import { updateCandidatDepartement } from '../../models/candidat'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -421,6 +422,14 @@ export const bookPlaceByCandidat = async (req, res) => {
           error,
         })
       }
+    }
+
+    const deptCentre = reservation.centre.departement
+    if (deptCentre !== reservation.candidat.departement) {
+      reservation.candidat = await updateCandidatDepartement(
+        reservation.candidat,
+        deptCentre
+      )
     }
 
     try {
