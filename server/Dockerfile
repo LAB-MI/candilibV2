@@ -29,6 +29,8 @@ FROM base as development
 ARG APP_VERSION
 COPY src src/
 COPY babel.config.js package.json package-lock.json ./
+# Install package utils for development
+RUN apt-get update && apt-get install -y libcurl3 libssl1.1 --no-install-recommends  
 # Install app dependencies
 RUN npm --no-git-tag-version version ${APP_VERSION} ; npm ci
 ENV NODE_ICU_DATA="/app/node_modules/full-icu"
@@ -57,6 +59,7 @@ COPY package.json package-lock.json ./
 COPY ecosystem.config.js .
 # Copy the transpiled code to use in production (in /app)
 COPY --from=build /app/dist ./dist
+RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 # Install production dependencies and clean cache
 RUN unset NODE_ICU_DATA && \
     npm --no-git-tag-version version ${APP_VERSION} && \
