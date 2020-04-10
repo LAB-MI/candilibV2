@@ -26,11 +26,14 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc
 # Step 2: "development" target #
 ################################
 FROM base as development
+ARG MIRROR_DEBIAN
 ARG APP_VERSION
 COPY src src/
 COPY babel.config.js package.json package-lock.json ./
 # Install package utils for development
-RUN apt-get update && apt-get install -y libcurl3 libssl1.1 --no-install-recommends  
+RUN (set -x && [ -z "$MIRROR_DEBIAN" ] || sed -i.orig -e "s|http://deb.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9|g ; s|http://security.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9-security|g" /etc/apt/sources.list) ; \
+      buildPkgs="libcurl3 libssl1.1" ; \
+      apt-get update && apt-get install -y --no-install-recommends $buildPkgs
 # Install app dependencies
 RUN npm --no-git-tag-version version ${APP_VERSION} ; npm ci
 ENV NODE_ICU_DATA="/app/node_modules/full-icu"
@@ -45,6 +48,9 @@ FROM development as build
 ENV NPM_CONFIG_LOGLEVEL warn
 # Transpile the code with babel
 RUN npm run build
+RUN buildPkgs="libcurl3 libssl1.1" ; \
+      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildPkgs ; \
+      rm -rf /var/lib/apt/lists/* # remove the cached files
 
 ###############################
 # Step 4: "production" target #
@@ -60,7 +66,6 @@ COPY ci ci/
 COPY ecosystem.config.js .
 # Copy the transpiled code to use in production (in /app)
 COPY --from=build /app/dist ./dist
-RUN apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false
 # Install production dependencies and clean cache
 RUN unset NODE_ICU_DATA && \
     npm --no-git-tag-version version ${APP_VERSION} && \
