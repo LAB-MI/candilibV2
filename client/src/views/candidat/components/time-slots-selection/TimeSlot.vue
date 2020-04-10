@@ -7,7 +7,9 @@
       <span class="u-truncated">{{ center.selected.nom }}</span>
       <span
         class="title__small ws-nowrap"
-      >({{ center.selected.departement }})</span>
+      >
+        ({{ center.selected.geoDepartement }})
+      </span>
     </page-title>
 
     <v-alert
@@ -83,6 +85,8 @@
 
 <script>
 import { mapState } from 'vuex'
+
+import { CANDIDAT_SELECTED_CENTER } from '../../../../constants'
 
 import TimesSlotsSelector from './TimesSlotsSelector'
 import {
@@ -226,10 +230,8 @@ export default {
       const selected = this.center.selected
       if (!selected || !selected._id) {
         if (!this.center.isFetchingCenter) {
-          const { center: nom, departement } = this.$route.params
           await this.$store.dispatch(FETCH_CENTER_REQUEST, {
-            nom,
-            departement,
+            centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER),
           })
         }
         this.timeoutId = setTimeout(this.getTimeSlots, 100)
@@ -244,7 +246,11 @@ export default {
     goToSelectCenter () {
       this.$router.push({
         name: 'selection-centre',
+        params: {
+          departement: `${this.$route.params.departement || this.$store.state.departements.selectedDepartement.departement}`,
+        },
       })
+      localStorage.setItem(CANDIDAT_SELECTED_CENTER, undefined)
     },
   },
 }

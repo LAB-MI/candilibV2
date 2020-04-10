@@ -9,6 +9,7 @@ export const centres = [
     adresse: '1 rue Test, ville test, FR, 92001',
     lon: 48,
     lat: 3,
+    geoDepartement: '93',
   },
   {
     departement: '93',
@@ -17,6 +18,7 @@ export const centres = [
     adresse: '2 Avenue test, Ville test 2, FR, 93420',
     lon: 47,
     lat: 3.5,
+    geoDepartement: '75',
   },
   {
     departement: '93',
@@ -25,6 +27,7 @@ export const centres = [
     adresse: '3 Avenue test, ville test 3, FR, 93000',
     lon: 49,
     lat: 2.5,
+    geoDepartement: '75',
   },
 ]
 
@@ -48,8 +51,24 @@ export const createCentres = async () => {
   creatingCentres = true
   createdCentres = Promise.all(
     centres.map(centre => {
-      const { nom, label, adresse, lon, lat, departement } = centre
-      return createCentre(nom, label, adresse, lon, lat, departement)
+      const {
+        nom,
+        label,
+        adresse,
+        lon,
+        lat,
+        departement,
+        geoDepartement,
+      } = centre
+      return createCentre(
+        nom,
+        label,
+        adresse,
+        lon,
+        lat,
+        departement,
+        geoDepartement
+      )
     })
   )
   creatingCentres = false

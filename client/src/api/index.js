@@ -103,8 +103,8 @@ export default {
       return json
     },
 
-    async getCentre (departement, nom) {
-      const queryString = `departement=${departement}&nom=${nom}`
+    async getCentre (centreId) {
+      const queryString = `centreId=${centreId}`
       const json = await apiClient.get(
         `${apiPaths.candidat.centres}?${queryString}`,
         {
@@ -214,6 +214,13 @@ export default {
         body: JSON.stringify({
           evaluation,
         }),
+      })
+      return json
+    },
+
+    async getActiveGeoDepartementsInfos () {
+      const json = await apiClient.get(`${apiPaths.candidat.departements}`, {
+        headers: getHeadersForJson(),
       })
       return json
     },

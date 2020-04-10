@@ -40,6 +40,7 @@ export default {
   preinscription_magic_link_invalide: 'Veuillez fournir votre adresse courriel',
   preinscription_magic_link_envoyé: 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel',
   home_choix_du_centre: 'Choix du centre',
+  home_choix_du_departement: 'Choix du département',
   home_choix_date_creneau_message_de_penalite: `Vous avez annulé ou modifié votre réservation à moins de {numberOfDaysBeforeDate} jours de la date d'examen.
   Vous ne pouvez sélectionner une date qu'à partir du {canBookFromAfterCancel}`,
   recap_reservation_confirmee: 'Votre réservation est confirmée',

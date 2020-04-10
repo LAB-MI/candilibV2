@@ -1,13 +1,13 @@
 import { connect, disconnect } from '../../mongo-connection'
 import {
-  findCentresByDepartement,
-  findAllCentres,
+  createCentre,
   findAllActiveCentres,
+  findAllCentres,
+  findCentreById,
   findCentreByName,
   findCentreByNameAndDepartement,
-  createCentre,
+  findCentresByDepartement,
   updateCentreActiveState,
-  findCentreByNameAndGeoDepartement,
 } from './centre-queries'
 import {
   setInitCreatedCentre,
@@ -157,15 +157,31 @@ describe('Centre', () => {
       expect(centresResult).toHaveProperty('departement', departement)
     })
 
-    it('Should find one centre by geographie departement and name', async () => {
-      const geoDepartement = '93'
-      const centresResult = await findCentreByNameAndGeoDepartement(
-        centres[2].nom,
+    it('Should find centre by id', async () => {
+      const nom = 'test.1.centre.nom'
+      const label = 'test label'
+      const adresse = 'adresse 93001'
+      const departement = '93'
+      const lon = 48
+      const lat = 3
+      const geoDepartement = '94'
+      const centre1Created = await createCentre(
+        nom,
+        label,
+        adresse,
+        lon,
+        lat,
+        departement,
         geoDepartement
       )
-      expect(centresResult).toBeDefined()
-      expect(centresResult).toHaveProperty('nom', centres[2].nom)
-      expect(centresResult).toHaveProperty('geoDepartement', geoDepartement)
+      const centreResult = await findCentreById(centre1Created._id)
+
+      expect(centreResult).toBeDefined()
+      expect(centreResult).toHaveProperty('nom', nom)
+      expect(centreResult).toHaveProperty('label', label)
+      expect(centreResult).toHaveProperty('adresse', adresse)
+      expect(centreResult).toHaveProperty('departement', departement)
+      expect(centreResult).toHaveProperty('geoDepartement', geoDepartement)
     })
   })
 
