@@ -1,0 +1,8 @@
+{
+  "name": "candilib-utils",
+  "dependencies": {
+    "jsonwebtoken": "^8.5.1",
+    "bcryptjs": "^2.4.3",
+    "luxon": "^1.19.3"
+  }
+}
