@@ -1,0 +1,9 @@
+{
+  "name": "candilib-models",
+  "dependencies": {
+    "luxon": "^1.19.3",
+    "moment": "^2.24.0",
+   "mongoose": "^5.7.5",
+   "sanitize-html": "^1.20.1"
+  }
+}
