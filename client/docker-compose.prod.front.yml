@@ -19,6 +19,7 @@ services:
         PUBLIC_PATH: /candilib
         APP_VERSION: ${APP_VERSION}
         LINE_DELAY: ${LINE_DELAY}
+        VUE_APP_CLIENT_BUILD_INFO: ${VUE_APP_CLIENT_BUILD_INFO}
 #    env_file:
 #      - ${cnf:-.env}
     environment:
