@@ -60,6 +60,7 @@ CMD ["npm", "run", "storybook:serve" ]
 FROM development as build
 ENV NPM_CONFIG_LOGLEVEL warn
 ARG CLIENT_BUILD_TARGET
+ARG VUE_APP_CLIENT_BUILD_INFO
 # Transpile the code with babel
 #RUN set -x ; npm run format && npm run lint && npm run test && npm run build:${CLIENT_BUILD_TARGET}
 RUN set -x ; npm run format && npm run test && npm run build:${CLIENT_BUILD_TARGET}
