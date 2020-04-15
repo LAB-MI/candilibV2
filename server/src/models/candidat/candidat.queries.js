@@ -25,6 +25,7 @@ export const createCandidat = async ({
   portable,
   prenom,
   departement,
+  homeDepartement,
 }) => {
   const candidat = new Candidat({
     adresse,
@@ -37,6 +38,7 @@ export const createCandidat = async ({
     prenom,
     presignedUpAt: new Date(),
     departement,
+    homeDepartement: homeDepartement || departement,
   })
   await candidat.save()
   return candidat
@@ -583,6 +585,20 @@ export const countCandidatsInscritsByDepartementAndWeek = async (
     ],
   })
   return { count: result }
+}
+
+/**
+ * Mettre à jours le département du candidat
+ * @async
+ * @function
+ * @param {Object} candidat - Candidat
+ * @param {*} departement - departement administratif
+ * @returns {Promise.<Candidat>} - Candidat mis à jour
+ * */
+export const updateCandidatDepartement = (candidat, departement) => {
+  if (!departement) throw new Error('le département est incorrect')
+  candidat.departement = departement
+  return candidat.save()
 }
 
 /**

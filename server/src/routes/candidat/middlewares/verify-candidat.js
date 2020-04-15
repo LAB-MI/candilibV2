@@ -4,9 +4,7 @@
  */
 import { findCandidatById } from '../../../models/candidat'
 import { sendErrorResponse } from '../../../util/send-error-response'
-import { findCentreById } from '../../../models/centre'
 import { appLogger } from '../../../util'
-import { PARAMETERS_VERSUS_INFOS_CANDIDAT } from '../message.constants'
 
 /**
  * Vérifier l'accès du candidat pour obtenir les places et pour réserver
@@ -48,20 +46,6 @@ export async function verifyAccesPlacesByCandidat (req, res, next) {
       throw error
     }
 
-    if (departement && departement !== candidat.departement) {
-      const error = new Error(PARAMETERS_VERSUS_INFOS_CANDIDAT)
-      error.status = 403
-      throw error
-    }
-
-    if (centreId) {
-      const centre = await findCentreById(centreId)
-      if (centre && centre.departement !== candidat.departement) {
-        const error = new Error(PARAMETERS_VERSUS_INFOS_CANDIDAT)
-        error.status = 403
-        throw error
-      }
-    }
     next()
     return
   } catch (error) {

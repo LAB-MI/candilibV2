@@ -32,30 +32,15 @@ import {
   USER_INFO_MISSING,
   CANDIDAT_NOT_FOUND,
   CAN_BOOK_AFTER,
-  CANDIDAT_DATE_ETG_KO,
 } from './message.constants'
 import { sendCancelBooking } from '../business'
-import { getAuthorizedDateToBook } from './authorize.business'
 import {
   updateCandidatCanBookFrom,
   findCandidatById,
   archivePlace,
 } from '../../models/candidat'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
-import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
-
-const getDateETGExpired = async candidatId => {
-  const { dateReussiteETG } = await findCandidatById(candidatId, {
-    _id: 0,
-    dateReussiteETG: 1,
-  })
-  const luxonDateETGExpired = getFrenchLuxonFromJSDate(dateReussiteETG)
-    .plus({
-      years: NB_YEARS_ETG_EXPIRED,
-    })
-    .endOf('day')
-  return luxonDateETGExpired
-}
+import { candidatCanReservePlaceForThisPeriod } from './util'
 
 /**
  * Renvoie tous les créneaux d'un centre
@@ -82,41 +67,16 @@ export const getDatesByCentreId = async (
     candidatId,
   })
 
-  const luxonDateETGExpired = await getDateETGExpired(candidatId)
-  const luxonBeginDate = getFrenchLuxonFromISO(beginDate)
-  const luxonEndDate = getFrenchLuxonFromISO(endDate)
-
-  const begin =
-    luxonBeginDate.invalid || luxonBeginDate < getAuthorizedDateToBook()
-      ? getAuthorizedDateToBook()
-      : luxonBeginDate
-
-  if (luxonDateETGExpired < begin) {
-    const error = new Error(
-      CANDIDAT_DATE_ETG_KO +
-        getFrenchFormattedDateTime(luxonDateETGExpired).date
-    )
-    error.status = 400
-    throw error
-  }
-
-  let luxonDateVisible = getFrenchLuxon().plus({
-    month: config.numberOfVisibleMonths,
-  })
-  luxonDateVisible =
-    luxonDateETGExpired <= luxonDateVisible
-      ? luxonDateETGExpired
-      : luxonDateVisible
-
-  endDate =
-    !luxonEndDate.invalid && luxonEndDate <= luxonDateVisible
-      ? luxonEndDate
-      : luxonDateVisible
+  const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
+    candidatId,
+    beginDate,
+    endDate
+  )
 
   const places = await findAvailablePlacesByCentre(
     _id,
-    begin.toISODate(),
-    endDate.toISODate()
+    beginPeriod.toISODate(),
+    endPeriod.toISODate()
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO()

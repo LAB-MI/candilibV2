@@ -3,8 +3,6 @@ import request from 'supertest'
 import bodyParser from 'body-parser'
 import { verifyAccesPlacesByCandidat } from './verify-candidat'
 import { findCandidatById } from '../../../models/candidat'
-import { findCentreById } from '../../../models/centre'
-import { PARAMETERS_VERSUS_INFOS_CANDIDAT } from '../message.constants'
 
 const testPrefix = '/test'
 const app = express()
@@ -28,6 +26,8 @@ require('../../../util/logger').setWithConsole(false)
 
 describe('verify acces candidat', () => {
   it('should 401 when candidat not existe', async () => {
+    findCandidatById.mockResolvedValue(null)
+
     const { body } = await request(app)
       .get(`${testPrefix}`)
       .set('Accept', 'application/json')
@@ -37,7 +37,7 @@ describe('verify acces candidat', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', 'Candidat non trouvé')
   })
-  it('should 200 when candidat existe and without departement and centre', async () => {
+  it('should 200 when candidat existe', async () => {
     findCandidatById.mockResolvedValue({
       departement: '93',
     })
@@ -45,138 +45,6 @@ describe('verify acces candidat', () => {
       .get(`${testPrefix}`)
       .set('Accept', 'application/json')
       .expect(200)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveProperty('ok', true)
-  })
-
-  it('should 403 when candidat not same departement for GET', async () => {
-    findCandidatById.mockResolvedValue({
-      departement: '93',
-    })
-    const { body } = await request(app)
-      .get(`${testPrefix}?departement=94`)
-      .set('Accept', 'application/json')
-      .expect(403)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', PARAMETERS_VERSUS_INFOS_CANDIDAT)
-  })
-
-  it('should 200 when candidat same departement for GET', async () => {
-    findCandidatById.mockResolvedValue({
-      departement: '94',
-    })
-    const { body } = await request(app)
-      .get(`${testPrefix}?departement=94`)
-      .set('Accept', 'application/json')
-      .expect(200)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveProperty('ok', true)
-  })
-
-  it('should 403 when candidat not same departement for POST', async () => {
-    findCandidatById.mockResolvedValue({
-      departement: '93',
-    })
-    const { body } = await request(app)
-      .post(`${testPrefix}`)
-      .send({
-        departement: '94',
-      })
-      .set('Accept', 'application/json')
-      .expect(403)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', PARAMETERS_VERSUS_INFOS_CANDIDAT)
-  })
-
-  it('should 201 when candidat has same departement for POST', async () => {
-    findCandidatById.mockResolvedValue({
-      departement: '94',
-    })
-    const { body } = await request(app)
-      .post(`${testPrefix}`)
-      .send({ departement: '94' })
-      .set('Accept', 'application/json')
-      .expect(201)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveProperty('ok', true)
-  })
-
-  it('should 403 when candidat has not same departement with a centre for GET', async () => {
-    findCandidatById.mockResolvedValue({
-      departement: '93',
-    })
-    findCentreById.mockResolvedValue({
-      departement: '94',
-    })
-    const { body } = await request(app)
-      .get(`${testPrefix}/centreId`)
-      .set('Accept', 'application/json')
-      .expect(403)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', PARAMETERS_VERSUS_INFOS_CANDIDAT)
-  })
-
-  it('should 200 when candidat has same departement with a centre for GET', async () => {
-    findCandidatById.mockResolvedValue({
-      departement: '94',
-    })
-    findCentreById.mockResolvedValue({
-      departement: '94',
-    })
-    const { body } = await request(app)
-      .get(`${testPrefix}/centreId`)
-      .set('Accept', 'application/json')
-      .expect(200)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveProperty('ok', true)
-  })
-
-  it('should 403 when candidat has not same departement with a centre for POST', async () => {
-    findCandidatById.mockResolvedValue({
-      departement: '93',
-    })
-    findCentreById.mockResolvedValue({
-      departement: '94',
-    })
-
-    const { body } = await request(app)
-      .post(`${testPrefix}`)
-      .send({
-        id: 'centreId',
-      })
-      .set('Accept', 'application/json')
-      .expect(403)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveProperty('success', false)
-    expect(body).toHaveProperty('message', PARAMETERS_VERSUS_INFOS_CANDIDAT)
-  })
-
-  it('should 201 when candidat has same departement with a centre for POST', async () => {
-    findCandidatById.mockResolvedValue({
-      departement: '94',
-    })
-    findCentreById.mockResolvedValue({
-      departement: '94',
-    })
-
-    const { body } = await request(app)
-      .post(`${testPrefix}`)
-      .send({
-        id: 'centreId',
-      })
-      .set('Accept', 'application/json')
-      .expect(201)
 
     expect(body).toBeDefined()
     expect(body).toHaveProperty('ok', true)

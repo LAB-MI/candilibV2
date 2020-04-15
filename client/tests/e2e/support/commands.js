@@ -149,10 +149,6 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   cy.get('.t-presignup-form .t-select-departements .v-input__slot').click()
   cy.get('.v-list-item__title').contains(Cypress.env('departement')).click()
 
-  cy.get('.t-checkbox')
-    .parent()
-    .click()
-
   cy.contains('Pré-inscription')
     .click()
     // Checks the access

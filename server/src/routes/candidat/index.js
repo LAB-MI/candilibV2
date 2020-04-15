@@ -6,6 +6,8 @@ import express from 'express'
 
 import { getMe, saveEvaluation } from './candidat.controllers'
 import { getCentres } from '../common/centre-controllers'
+import { getActiveGeoDepartementsInfos } from '../candidat/departements-controllers'
+
 import {
   getPlaces,
   bookPlaceByCandidat,
@@ -114,6 +116,9 @@ router.get('/me', getMe)
  */
 
 router.get('/centres', getCentres)
+
+// TODO: DOC SWAGGER
+router.get('/departements', getActiveGeoDepartementsInfos)
 
 /**
  * @swagger

@@ -68,6 +68,10 @@ export const candidatFields = {
     type: String,
     trim: true,
   },
+  homeDepartement: {
+    type: String,
+    trim: true,
+  },
   dateReussiteETG: {
     type: Date,
     required: false,

@@ -36,6 +36,7 @@ const LandingPage = () => import(/* webpackChunkName: "candidat-guest", webpackP
 const EmailValidation = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/candidat/components/EmailValidation.vue')
 
 const Candidat = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */'./views/candidat')
+const DepartementSelection = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/departement-selection/DepartementSelection.vue')
 const CenterSelection = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/center-selection/CenterSelection.vue')
 const TimeSlot = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/time-slots-selection/TimeSlot.vue')
 const SelectionSummary = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/selection-summary/SelectionSummary.vue')
@@ -181,7 +182,12 @@ const candidatRoutes = [
         },
       },
       {
-        path: ':modifying/selection-centre',
+        path: ':modifying/selection-departement',
+        name: 'selection-departement',
+        component: DepartementSelection,
+      },
+      {
+        path: ':departement/:modifying/selection-centre',
         name: 'selection-centre',
         component: CenterSelection,
       },

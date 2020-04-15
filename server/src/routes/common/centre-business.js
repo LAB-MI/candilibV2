@@ -13,11 +13,12 @@ import { findUserById } from '../../models/user'
 
 import {
   createCentre,
-  findCentresByDepartement,
-  findCentreByNameAndDepartement,
   findAllActiveCentres,
   findAllCentres,
+  findCentreByGeoDepartement,
   findCentreById,
+  findCentreByNameAndDepartement,
+  findCentresByDepartement,
   updateCentreActiveState,
   updateCentreLabel,
 } from '../../models/centre'
@@ -26,6 +27,37 @@ import { getFrenchLuxon } from '../../util'
 export async function findCentresWithNbPlaces (departement, beginDate, endDate) {
   const centres = departement
     ? await findCentresByDepartement(departement)
+    : await findAllActiveCentres()
+
+  if (!beginDate) {
+    beginDate = getFrenchLuxon().toISODate()
+  }
+
+  const centresWithNbPlaces = await Promise.all(
+    centres.map(async centre => {
+      const count = await countAvailablePlacesByCentre(
+        centre._id,
+        beginDate,
+        endDate
+      )
+      return { centre, count }
+    })
+  )
+  return centresWithNbPlaces
+}
+
+export async function findCentresWithNbPlacesByGeoDepartement (
+  geoDepartement,
+  beginDate,
+  endDate
+) {
+  const centres = geoDepartement
+    ? await findCentreByGeoDepartement(geoDepartement, {
+      nom: 1,
+      geoDepartement: 1,
+      _id: 1,
+      geoloc: 1,
+    })
     : await findAllActiveCentres()
 
   if (!beginDate) {
@@ -258,4 +290,24 @@ export async function updateCentre (
   })
 
   return updatedCentre
+}
+
+/**
+ * Modifie un centre dans la base de données
+ *
+ * @async
+ * @function
+ *
+ * @param {string} centreId - Id du centre
+ *
+ * @returns {Promise.<CentreMongo>} Centre
+ */
+export async function getCentreById (centreId) {
+  if (!centreId) {
+    const error = new Error('Centre introuvable')
+    error.status = 404
+    throw error
+  }
+
+  return findCentreById(centreId)
 }
