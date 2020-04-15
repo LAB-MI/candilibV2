@@ -1,4 +1,5 @@
 import mongoose from 'mongoose'
+import { codePostal } from '../../util'
 
 const { Schema } = mongoose
 
@@ -24,6 +25,11 @@ const CentreSchema = new Schema(
       required: true,
       trim: true,
     },
+    geoDepartement: {
+      $type: String,
+      required: true,
+      trim: true,
+    },
     geoloc: {
       type: String,
       coordinates: [Number],
@@ -42,7 +48,14 @@ const CentreSchema = new Schema(
 )
 
 CentreSchema.index({ nom: 1, departement: 1 }, { unique: true })
-
+CentreSchema.virtual('getGeoDepartement').get(function () {
+  const zipCode = this.adresse && this.adresse.match(codePostal)
+  return (
+    this.geoDepartement ||
+    (zipCode && zipCode.length > 1 && zipCode[1]) ||
+    this.departement
+  )
+})
 const model = mongoose.model('Centre', CentreSchema)
 export default model
 
@@ -52,6 +65,7 @@ export default model
  * @property {string} label - Information complémentaire pour retrouver le point de rencontre du centre
  * @property {string} adresse - Adresse du centre
  * @property {string} departement - Département du centre
+ * @property {string} geoDepartement - Département géographique du centre
  * @property {Geoloc} geoloc - Informations de géolocalisation du centre
  * @property {boolean} active - Si `false`, le centre n'apparaîtra pas dans les requêtes des utilisateurs
  * @property {string} disabledBy - Adresse courriel du dernier utilisateur ayant désactivé le centre

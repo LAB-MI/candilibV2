@@ -1,7 +1,7 @@
 <template>
   <div style="max-width: 100vw;">
     <selection-summary v-if="reservation.booked.isBooked" />
-    <center-selection v-else />
+    <departement-selection v-else />
   </div>
 </template>
 
@@ -14,14 +14,14 @@ import {
 } from '@/store'
 
 import SelectionSummary from './candidat/components/selection-summary/SelectionSummary.vue'
-import CenterSelection from './candidat/components/center-selection/CenterSelection.vue'
+import DepartementSelection from './candidat/components/departement-selection/DepartementSelection.vue'
 
 export default {
 
   name: 'CandidatHome',
   components: {
     SelectionSummary,
-    CenterSelection,
+    DepartementSelection,
   },
 
   data () {

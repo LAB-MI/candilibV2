@@ -56,9 +56,6 @@ describe('Candidate login', () => {
         .contains(Cypress.env('departement'))
         .click()
 
-      cy.get('.t-checkbox')
-        .parent()
-        .click()
       cy.contains('Pré-inscription')
         .click()
       // Checks the access
@@ -94,9 +91,6 @@ describe('Candidate login', () => {
         .contains(Cypress.env('departement'))
         .click()
 
-      cy.get('.t-checkbox')
-        .parent()
-        .click()
       cy.contains('Pré-inscription')
         .click()
       cy.get('.v-snack--active')
@@ -218,10 +212,6 @@ describe('Candidate login', () => {
         .contains(Cypress.env('departement'))
         .click()
 
-      cy.get('.t-checkbox')
-        .parent()
-        .click()
-
       cy.get('button').eq(0)
         .should('contain', 'Pré-inscription').click()
 
@@ -256,9 +246,6 @@ describe('Candidate login', () => {
         .contains(Cypress.env('departement'))
         .click()
 
-      cy.get('.t-checkbox')
-        .parent()
-        .click()
       cy.get('button').eq(0)
         .should('contain', 'Pré-inscription').click()
       cy.get('.v-snack--active')
@@ -292,9 +279,6 @@ describe('Candidate login', () => {
         .contains(Cypress.env('departement'))
         .click()
 
-      cy.get('.t-checkbox')
-        .parent()
-        .click()
       cy.get('button').eq(0)
         .should('contain', 'Pré-inscription').click()
       cy.get('.v-snack--active')

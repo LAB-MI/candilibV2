@@ -1,28 +1,43 @@
 <template>
   <v-card>
     <page-title :title="$formatMessage({ id: 'home_choix_du_centre' })" />
-    <v-list three-line>
+    <big-loading-indicator :is-loading="center.isFetchingCenter" />
+    <v-list
+      v-if="!center.isFetchingCenter"
+      three-line
+    >
       <center-selection-content
         v-for="center in center.list"
         :key="center._id"
         :center="center"
       />
     </v-list>
+    <v-card-actions class="u-flex--center">
+      <v-btn
+        outlined
+        color="info"
+        @click="goToSelectDepartement"
+      >
+        <v-icon>arrow_back_ios</v-icon>Retour
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
 import { mapState } from 'vuex'
 
+import { CANDIDAT_SELECTED_CENTER } from '../../../../constants'
+import { BigLoadingIndicator } from '@/components'
 import CenterSelectionContent from './CenterSelectionContent'
 import {
   FETCH_CENTERS_REQUEST,
-  FETCH_MY_PROFILE_REQUEST,
 } from '@/store'
 
 export default {
   components: {
     CenterSelectionContent,
+    BigLoadingIndicator,
   },
 
   computed: {
@@ -35,14 +50,15 @@ export default {
 
   methods: {
     async getCenters () {
-      const candidat = this.$store.state.candidat
-      if (!candidat || !candidat.me) {
-        await this.$store.dispatch(FETCH_MY_PROFILE_REQUEST)
-        setTimeout(this.getCenters, 100)
-        return
-      }
-      const { departement } = candidat.me
-      await this.$store.dispatch(FETCH_CENTERS_REQUEST, departement)
+      const departementInfos = this.$store.state.departements.selectedDepartement
+      await this.$store.dispatch(FETCH_CENTERS_REQUEST, this.$route.params.departement || departementInfos.geoDepartement)
+    },
+
+    goToSelectDepartement () {
+      this.$router.push({
+        name: 'selection-departement',
+      })
+      localStorage.setItem(CANDIDAT_SELECTED_CENTER, undefined)
     },
   },
 }

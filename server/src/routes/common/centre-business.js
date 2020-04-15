@@ -13,11 +13,12 @@ import { findUserById } from '../../models/user'
 
 import {
   createCentre,
-  findCentresByDepartement,
-  findCentreByNameAndDepartement,
   findAllActiveCentres,
   findAllCentres,
+  findCentreByGeoDepartement,
   findCentreById,
+  findCentreByNameAndDepartement,
+  findCentresByDepartement,
   updateCentreActiveState,
   updateCentreLabel,
 } from '../../models/centre'
@@ -26,6 +27,37 @@ import { getFrenchLuxon } from '../../util'
 export async function findCentresWithNbPlaces (departement, beginDate, endDate) {
   const centres = departement
     ? await findCentresByDepartement(departement)
+    : await findAllActiveCentres()
+
+  if (!beginDate) {
+    beginDate = getFrenchLuxon().toISODate()
+  }
+
+  const centresWithNbPlaces = await Promise.all(
+    centres.map(async centre => {
+      const count = await countAvailablePlacesByCentre(
+        centre._id,
+        beginDate,
+        endDate
+      )
+      return { centre, count }
+    })
+  )
+  return centresWithNbPlaces
+}
+
+export async function findCentresWithNbPlacesByGeoDepartement (
+  geoDepartement,
+  beginDate,
+  endDate
+) {
+  const centres = geoDepartement
+    ? await findCentreByGeoDepartement(geoDepartement, {
+      nom: 1,
+      geoDepartement: 1,
+      _id: 1,
+      geoloc: 1,
+    })
     : await findAllActiveCentres()
 
   if (!beginDate) {
@@ -144,7 +176,15 @@ export async function updateCentreStatus (id, status, userId) {
  *
  * @returns {Promise.<CentreMongooseDocument>} Centre créé
  */
-export async function addCentre (nom, label, adresse, lon, lat, departement) {
+export async function addCentre (
+  nom,
+  label,
+  adresse,
+  lon,
+  lat,
+  departement,
+  geoDepartement
+) {
   if (
     !nom ||
     !label ||
@@ -176,7 +216,8 @@ export async function addCentre (nom, label, adresse, lon, lat, departement) {
     adresse,
     Number(lon),
     Number(lat),
-    departement
+    departement,
+    geoDepartement
   )
   return centre
 }
@@ -199,7 +240,7 @@ export async function addCentre (nom, label, adresse, lon, lat, departement) {
  */
 export async function updateCentre (
   id,
-  { nom, label, adresse, lon, lat },
+  { nom, label, adresse, lon, lat, geoDepartement },
   userId
 ) {
   const centre = await findCentreById(id)
@@ -234,13 +275,39 @@ export async function updateCentre (
     }
   }
 
+  // TODO: To update old data
+  if (!centre.geoDepartement && !geoDepartement) {
+    geoDepartement = centre.getGeoDepartement
+  }
+
   const updatedCentre = await updateCentreLabel(centre, {
     nom,
     label,
     adresse,
     lon,
     lat,
+    geoDepartement,
   })
 
   return updatedCentre
+}
+
+/**
+ * Modifie un centre dans la base de données
+ *
+ * @async
+ * @function
+ *
+ * @param {string} centreId - Id du centre
+ *
+ * @returns {Promise.<CentreMongo>} Centre
+ */
+export async function getCentreById (centreId) {
+  if (!centreId) {
+    const error = new Error('Centre introuvable')
+    error.status = 404
+    throw error
+  }
+
+  return findCentreById(centreId)
 }

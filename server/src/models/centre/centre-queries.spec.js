@@ -1,11 +1,12 @@
 import { connect, disconnect } from '../../mongo-connection'
 import {
-  findCentresByDepartement,
-  findAllCentres,
+  createCentre,
   findAllActiveCentres,
+  findAllCentres,
+  findCentreById,
   findCentreByName,
   findCentreByNameAndDepartement,
-  createCentre,
+  findCentresByDepartement,
   updateCentreActiveState,
 } from './centre-queries'
 import {
@@ -33,18 +34,20 @@ describe('Centre', () => {
       const departement = '93'
       const lon = 48
       const lat = 3
-
+      const geoDepartement = '94'
       const centre1Created = await createCentre(
         nom,
         label,
         adresse,
         lon,
         lat,
-        departement
+        departement,
+        geoDepartement
       )
       expect(centre1Created).toBeDefined()
       expect(centre1Created).toHaveProperty('nom', nom)
       expect(centre1Created).toHaveProperty('departement', departement)
+      expect(centre1Created).toHaveProperty('geoDepartement', geoDepartement)
 
       const label2 = 'test 2 label'
       const adresse2 = 'adresse 2 93001'
@@ -140,17 +143,45 @@ describe('Centre', () => {
 
     it('Should find one centre by departement and name', async () => {
       const departement = '93'
+      let centresResult
       try {
-        const centresResult = await findCentreByNameAndDepartement(
+        centresResult = await findCentreByNameAndDepartement(
           centres[2].nom,
           departement
         )
-        expect(centresResult).toBeDefined()
-        expect(centresResult).toHaveProperty('nom', centres[2].nom)
-        expect(centresResult).toHaveProperty('departement', departement)
       } catch (error) {
         expect(error).toBeUndefined()
       }
+      expect(centresResult).toBeDefined()
+      expect(centresResult).toHaveProperty('nom', centres[2].nom)
+      expect(centresResult).toHaveProperty('departement', departement)
+    })
+
+    it('Should find centre by id', async () => {
+      const nom = 'test.1.centre.nom'
+      const label = 'test label'
+      const adresse = 'adresse 93001'
+      const departement = '93'
+      const lon = 48
+      const lat = 3
+      const geoDepartement = '94'
+      const centre1Created = await createCentre(
+        nom,
+        label,
+        adresse,
+        lon,
+        lat,
+        departement,
+        geoDepartement
+      )
+      const centreResult = await findCentreById(centre1Created._id)
+
+      expect(centreResult).toBeDefined()
+      expect(centreResult).toHaveProperty('nom', nom)
+      expect(centreResult).toHaveProperty('label', label)
+      expect(centreResult).toHaveProperty('adresse', adresse)
+      expect(centreResult).toHaveProperty('departement', departement)
+      expect(centreResult).toHaveProperty('geoDepartement', geoDepartement)
     })
   })
 

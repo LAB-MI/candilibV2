@@ -4,7 +4,7 @@
     :dark="dark"
     :multiple="multiple"
     :items="availableDepartements"
-    label="Départements"
+    :label="label"
     prepend-icon="my_location"
     aria-placeholder="départements"
     :persistent-hint="persistentHint"
@@ -48,6 +48,10 @@ export default {
     persistentHint: {
       type: Boolean,
       default: false,
+    },
+    label: {
+      type: String,
+      default: 'Départements',
     },
   },
 

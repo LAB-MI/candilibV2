@@ -103,8 +103,8 @@ export default {
       return json
     },
 
-    async getCentre (departement, nom) {
-      const queryString = `departement=${departement}&nom=${nom}`
+    async getCentre (centreId) {
+      const queryString = `centreId=${centreId}`
       const json = await apiClient.get(
         `${apiPaths.candidat.centres}?${queryString}`,
         {
@@ -214,6 +214,13 @@ export default {
         body: JSON.stringify({
           evaluation,
         }),
+      })
+      return json
+    },
+
+    async getActiveGeoDepartementsInfos () {
+      const json = await apiClient.get(`${apiPaths.candidat.departements}`, {
+        headers: getHeadersForJson(),
       })
       return json
     },
@@ -732,7 +739,7 @@ export default {
       return json
     },
 
-    async modifyCentre ({ centreId, nom, label, adresse, lon, lat, active }) {
+    async modifyCentre ({ centreId, nom, label, adresse, lon, lat, active, geoDepartement }) {
       const json = await apiClient.patch(apiPaths.admin.centres, {
         headers: getHeadersForAdminJson(),
         body: JSON.stringify({
@@ -743,6 +750,7 @@ export default {
           lon,
           lat,
           active,
+          geoDepartement,
         }),
       })
       return json
@@ -759,10 +767,10 @@ export default {
       return json
     },
 
-    async createCentre ({ nom, label, adresse, lon, lat, departement }) {
+    async createCentre ({ nom, label, adresse, lon, lat, departement, geoDepartement }) {
       const json = await apiClient.post(apiPaths.admin.centres, {
         headers: getHeadersForAdminJson(),
-        body: JSON.stringify({ nom, label, adresse, lon, lat, departement }),
+        body: JSON.stringify({ nom, label, adresse, lon, lat, departement, geoDepartement }),
       })
       return json
     },

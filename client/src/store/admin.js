@@ -629,10 +629,10 @@ export default {
       }
     },
 
-    async [MODIFY_CENTER_REQUEST] ({ commit, dispatch }, { id, nom, label, adresse, lon, lat, active }) {
+    async [MODIFY_CENTER_REQUEST] ({ commit, dispatch }, { id, nom, label, adresse, lon, lat, active, geoDepartement }) {
       commit(MODIFY_CENTER_REQUEST)
       try {
-        const response = await api.admin.modifyCentre({ centreId: id, nom, label, adresse, lon, lat, active })
+        const response = await api.admin.modifyCentre({ centreId: id, nom, label, adresse, lon, lat, active, geoDepartement })
         if (response.success === false) {
           throw new Error(response.message)
         }
@@ -647,10 +647,10 @@ export default {
       }
     },
 
-    async [CREATE_CENTER_REQUEST] ({ commit, dispatch }, { nom, label, adresse, lon, lat, departement }) {
+    async [CREATE_CENTER_REQUEST] ({ commit, dispatch }, { nom, label, adresse, lon, lat, departement, geoDepartement }) {
       commit(CREATE_CENTER_REQUEST)
       try {
-        const response = await api.admin.createCentre({ nom, label, adresse, lon, lat, departement })
+        const response = await api.admin.createCentre({ nom, label, adresse, lon, lat, departement, geoDepartement })
         if (response.success === false) {
           throw new Error(response.message)
         }

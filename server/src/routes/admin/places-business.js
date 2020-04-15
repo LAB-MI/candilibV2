@@ -12,6 +12,7 @@ import {
   findCandidatById,
   setCandidatToVIP,
   archivePlace,
+  updateCandidatDepartement,
 } from '../../models/candidat'
 import {
   findCentreByNameAndDepartement,
@@ -725,7 +726,13 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
       admin.email
     )
   }
-
+  const deptCentre = newBookedPlace.centre.departement
+  if (deptCentre !== candidat.departement) {
+    newBookedPlace.candidat = await updateCandidatDepartement(
+      candidat,
+      deptCentre
+    )
+  }
   let statusmail
   let message
   try {
