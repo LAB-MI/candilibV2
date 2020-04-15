@@ -130,8 +130,10 @@ heroku container:release web --app $HEROKU_APP
 # first time : setup DB
 BRANCH_DIR=$(echo "$BRANCH" |tr '/' '-')
 GIT_REMOTE_URL=$(git config --get remote.origin.url | sed -e 's/.git$//g')
-heroku run --no-tty -a $HEROKU_APP "set -e ; ( cd /app && wget  -L ${GIT_REMOTE_URL}/archive/${BRANCH}.tar.gz -O - |tar zxvf - --strip-components=2 candilibV2-${BRANCH_DIR}/server/dev-setup ) && npm run dev-setup"
+echo "Start db setup init"
+heroku run --no-tty -a $HEROKU_APP "set -ex ; ( cd /app && node ci/wget.js ${GIT_REMOTE_URL}/archive/${BRANCH}.tar.gz && tar -zxvf $(basename ${BRANCH}.tar.gz) --strip-components=2 candilibV2-${BRANCH_DIR}/server/dev-setup ) && npm run dev-setup"
 res=$?
+echo "End db setup init"
 # TODO: variable REPO
 if  [ "$res" -gt 0 ] ; then
    exit $res
