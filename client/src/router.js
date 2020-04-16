@@ -41,6 +41,7 @@ const CenterSelection = () => import(/* webpackChunkName: "candidat", webpackPre
 const TimeSlot = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/time-slots-selection/TimeSlot.vue')
 const SelectionSummary = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/selection-summary/SelectionSummary.vue')
 const MyProfile = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/MyProfile.vue')
+const FormContact = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/form-contact/FormContact.vue')
 
 const AdminLogin = () => import('@/views/admin/components/Login')
 const AdminAurige = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Aurige.vue')
@@ -158,6 +159,11 @@ const candidatRoutes = [
         path: '/email-validation',
         name: 'email-validation',
         component: EmailValidation,
+      },
+      {
+        path: '/form-contact',
+        name: 'form-contact',
+        component: FormContact,
       },
       {
         path: '/informations',
