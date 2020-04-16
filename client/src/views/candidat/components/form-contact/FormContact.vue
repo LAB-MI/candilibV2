@@ -1,6 +1,6 @@
 <template>
-  <div class="presignup-form">
-    <covid-message-presignup-exam />
+  <div>
+    Page de contact
     <v-form
       ref="presignupForm"
       v-model="valid"
@@ -79,24 +79,6 @@
           @input="setEmailToLowerCase"
         />
       </div>
-
-      <div class="form-input">
-        <v-text-field
-          v-model="portable"
-          :label="`${getMsg('preinscription_mobile')} *`"
-          prepend-icon="smartphone"
-          dark
-          color="#fff"
-          :placeholder="portablePlaceholder"
-          aria-placeholder="Jean"
-          hint="ex. : 0612345678"
-          required
-          tabindex="5"
-          :rules="portableRules"
-          @focus="setPortablePlaceholder"
-          @blur="removePortablePlaceholder"
-        />
-      </div>
       <div class="form-input">
         <select-departement
           :dark="true"
@@ -109,82 +91,37 @@
           :persistent-hint="true"
           :rules="departementRules"
           required
-          hint="Si votre département de résidence n'apparaît pas, vous pouvez néanmoins sélectionner un autre département pour y passer l'examen."
           @change-departements="newDep => departement = newDep "
         />
       </div>
       <div class="form-input">
-        <v-btn
-          type="submit"
-          :disabled="!departement || isSendingPresignup"
-          :aria-disabled="!departement || isSendingPresignup"
-          class="submit-button"
-          dark
-          tabindex="7"
-          color="#28a745"
-        >
-          <div class="submit-label">
-            {{ getMsg('preinscription_bouton_submit') }}
-          </div>
-        </v-btn>
-      </div>
-      <div class="form-input  form-input-group">
-        <v-btn
-          text
-          color="#fff"
-          tag="a"
-          :to="{ name: 'mentions-legales' }"
-          tabindex="9"
-        >
-          {{ getMsg('preinscription_bouton_mentions_legales') }}
-        </v-btn>
-        <already-signed-up />
-        <v-btn
-          text
-          color="#fff"
-          tag="a"
-          :to="{ name: 'faq' }"
-          tabindex="10"
-        >
-          {{ getMsg('preinscription_bouton_faq') }}
-        </v-btn>
+        <v-textarea
+          outlined
+          name="input-7-4"
+          label="Message:"
+          :value="messageContent"
+        />
       </div>
     </v-form>
   </div>
 </template>
 
 <script>
+import { email as emailRegex, neph as nephRegex } from '@/util'
+import SelectDepartement from '@/views/admin/components/SelectDepartements'
 
-import { email as emailRegex, neph as nephRegex, phone as phoneRegex } from '@/util'
 import {
   PRESIGNUP_REQUEST,
-  SEND_MAGIC_LINK_REQUEST,
   SHOW_ERROR,
-  SHOW_SUCCESS,
-  FETCH_DEPARTEMENTS_REQUEST,
 } from '@/store'
 
-import AlreadySignedUp from './AlreadySignedUp'
-import CovidMessagePresignupExam from '@/views/candidat/components/CovidMessagePresignupExam'
-import SelectDepartement from '@/views/admin/components/SelectDepartements'
-import { mapState } from 'vuex'
-
 export default {
-  name: 'SignupForm',
   components: {
-    AlreadySignedUp,
     SelectDepartement,
-    CovidMessagePresignupExam,
   },
-  props: {
-    toggleForm: {
-      type: Function,
-      default () {},
-    },
-  },
-  data: function () {
+  data () {
     return {
-      magicLinkValid: false,
+      messageContent: '',
       nephPlaceholder: '',
       codeNeph: '',
       nephRules: [
@@ -197,38 +134,18 @@ export default {
       ],
       nomPlaceholder: '',
       nomNaissance: '',
-      prenomPlaceholder: '',
-      prenom: '',
       emailPlaceholder: '',
       email: '',
       emailRules: [
         v => v !== '' || this.getMsg('preinscription_email_vide'),
         v => emailRegex.test(v) || this.getMsg('preinscription_email_erreur'),
       ],
-      portablePlaceholder: '',
-      portable: '',
-      portableRules: [
-        v => phoneRegex.test(v) || this.getMsg('preinscription_mobile_erreur'),
-      ],
+
+      // ----------------------------------------------------------------------
+      magicLinkValid: false,
       valid: false,
       showDialog: false,
     }
-  },
-
-  computed: mapState({
-    isSendingPresignup (state) {
-      return state.candidat.isSendingPresignup
-    },
-    isSendingMagicLink (state) {
-      return state.candidat.isSendingMagicLink
-    },
-    availableDepartements (state) {
-      return state.departements && state.departements.list
-    },
-  }),
-
-  mounted () {
-    this.$store.dispatch(FETCH_DEPARTEMENTS_REQUEST)
   },
 
   methods: {
@@ -301,20 +218,6 @@ export default {
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
-    },
-
-    async sendMagicLink () {
-      if (!this.magicLinkValid) {
-        return this.$store.dispatch(SHOW_ERROR, this.getMsg('preinscription_magic_link_invalide'))
-      }
-      try {
-        await this.$store.dispatch(SEND_MAGIC_LINK_REQUEST, this.email)
-        this.$refs.presignupForm.reset()
-        this.$store.dispatch(SHOW_SUCCESS, this.getMsg('preinscription_magic_link_envoyé'))
-      } catch (error) {
-        this.$store.dispatch(SHOW_ERROR, error.message)
-      }
-      this.showDialog = false
     },
   },
 }
