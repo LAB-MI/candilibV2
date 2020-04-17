@@ -35,6 +35,10 @@ describe('Standard scenarios', () => {
       cy.visit(magicLink)
       // Adds the reservation
       cy.get('h2')
+        .should('contain', 'Choix du département')
+      cy.contains(Cypress.env('geoDepartement'))
+        .click()
+      cy.get('h2')
         .should('contain', 'Choix du centre')
       cy.contains(Cypress.env('centre'))
         .click()
@@ -119,7 +123,7 @@ describe('Standard scenarios', () => {
       // The candidate doesn't have the reservation anymore
       cy.visit(magicLink)
       cy.get('h2')
-        .should('contain', 'Choix du centre')
+        .should('contain', 'Choix du département')
       // Check candidate profile
       cy.contains('supervised_user_circle')
         .click()
@@ -132,7 +136,7 @@ describe('Standard scenarios', () => {
     // Check the candidate
       cy.visit(magicLink)
       cy.get('h2')
-        .should('contain', 'Choix du centre')
+        .should('contain', 'Choix du département')
       cy.contains('supervised_user_circle')
         .click()
       cy.contains('Nom de naissance')
@@ -184,7 +188,7 @@ describe('Standard scenarios', () => {
       cy.get('.v-snack--active')
         .should('contain', 'Votre annulation a bien été prise en compte.')
       cy.get('h2')
-        .should('contain', 'Choix du centre')
+        .should('contain', 'Choix du département')
       // The admin Checks that the reservation has been cancelled
       cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
       cy.get('.t-center-tabs .v-tab')
@@ -203,6 +207,10 @@ describe('Standard scenarios', () => {
     // Will only work if the places in db were cleared first.
       cy.visit(magicLink)
       // The 8:00 slot should be there
+      cy.get('h2')
+        .should('contain', 'Choix du département')
+      cy.contains(Cypress.env('geoDepartement'))
+        .click()
       cy.get('h2')
         .should('contain', 'Choix du centre')
       cy.contains(Cypress.env('centre'))
@@ -254,6 +262,10 @@ describe('Standard scenarios', () => {
         .click()
       cy.visit(magicLink)
       // The 8:00 slot should not be there anymore
+      cy.get('h2')
+        .should('contain', 'Choix du département')
+      cy.contains(Cypress.env('geoDepartement'))
+        .click()
       cy.get('h2')
         .should('contain', 'Choix du centre')
       cy.contains(Cypress.env('centre'))
