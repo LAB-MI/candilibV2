@@ -10,6 +10,32 @@ services:
         - 8025:8025
     logging:
       driver: none
+
+  db-rest:
+    image: candilib-db-rest
+    container_name: candilib_db_rest
+    build:
+      target: development
+      context: ../server/db/app
+      dockerfile: Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        npm_registry: ${NPM_REGISTRY}
+    ports:
+      - "8090:8090"
+    volumes:
+      - ../server/db/app/app.js:/app/app.js
+      - ../server/db/app/index.js:/app/index.js
+      - ../server/db/app/package.json:/app/package.json
+      - ../server/db/app/package-lock.json:/app/package-lock.json
+    environment:
+      MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
+      DB_NAME: ${DB_NAME:-candilib}
+      DB_USER: ${DB_USER:-adminCandilib}
+      DB_PASS: ${DB_PASS:-changeme78}
+
   e2e:
     image: candilib_e2e
     container_name: e2e
@@ -24,6 +50,7 @@ services:
         sass_registry: ${SASS_REGISTRY}
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
     environment:
+      CYPRESS_ApiRestDB: http://candilib_db_rest:8090
       CYPRESS_frontCandidat: http://candidat.candilib.local/candilib/
       CYPRESS_frontAdmin: http://admin.candilib.local/candilib-repartiteur/
       CYPRESS_mailHogUrl: http://mailhog:8025
