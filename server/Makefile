@@ -38,3 +38,6 @@ mongo-express-up:
 	${DC} -f ${DC_APP_BUILD_DEV} up mongo-express
 mongo-express-down: 
 	${DC} -f ${DC_APP_BUILD_DEV} down mongo-express
+
+db-rest-up: 
+	${DC} -f ${DC_APP_BUILD_DEV} up -d db-rest
