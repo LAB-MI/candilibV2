@@ -28,6 +28,9 @@ describe('Dashboard tests', () => {
     departement: '75',
   }
 
+  before(() => {
+    cy.deleteCentres([centre, centre2, centre3, { nom: centre2.nom + ' updated' }])
+  })
   beforeEach(() => {
     cy.adminLogin()
   })
