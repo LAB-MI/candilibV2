@@ -30,7 +30,7 @@ ARG APP_VERSION
 COPY src src/
 COPY babel.config.js package.json package-lock.json ./
 # Install app dependencies
-RUN npm --no-git-tag-version version ${APP_VERSION} ; npm install
+RUN npm --no-git-tag-version version ${APP_VERSION} ; npm ci
 ENV NODE_ICU_DATA="/app/node_modules/full-icu"
 
 #CMD ["npm", "start"]
@@ -58,11 +58,13 @@ COPY ecosystem.config.js .
 # Copy the transpiled code to use in production (in /app)
 COPY --from=build /app/dist ./dist
 # Install production dependencies and clean cache
-RUN npm --no-git-tag-version version ${APP_VERSION} && \
-    npm install --production && \
+RUN unset NODE_ICU_DATA && \
+    npm --no-git-tag-version version ${APP_VERSION} && \
+    npm ci --production && \
     npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org --production || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force ; \
     npm install pm2 -g
+ENV NODE_ICU_DATA="/app/node_modules/full-icu"
 
 CMD [ "pm2-runtime", "start", "ecosystem.config.js", "--env", "production" ]
