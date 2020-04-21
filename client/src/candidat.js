@@ -121,4 +121,5 @@ export default {
   contact_us_cancel: 'Précédent',
   contact_us_had_signup: 'Déjà pré-inscrit ou inscrit sur le site Candilib',
   contact_us_formulaire_invalide: 'Veuillez remplir le formulaire',
+  constat_us_message_too_long: 'Votre message dépasse le nombre de caractéres autorisés.',
 }
