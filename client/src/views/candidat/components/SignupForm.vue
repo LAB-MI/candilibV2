@@ -121,7 +121,6 @@ export default {
         return this.$store.dispatch(SHOW_ERROR, this.getMsg('preinscription_formulaire_invalide'))
       }
 
-      console.log(this.candidat)
       const {
         codeNeph,
         nomNaissance,
