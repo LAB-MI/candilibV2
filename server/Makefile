@@ -12,16 +12,16 @@ down-dev:
 db-up-dev:
 	${DC} -f ${DC_APP_BUILD_DEV} up db
 
-db-down-dev: 
+db-down-dev:
 	${DC} -f ${DC_APP_BUILD_DEV} down db
 
-api-build-dev: 
+api-build-dev:
 	${DC} -f ${DC_APP_BUILD_DEV} build api
 
-api-up-dev: 
+api-up-dev:
 	${DC} -f ${DC_APP_BUILD_DEV} up api
 
-api-down-dev: 
+api-down-dev:
 	${DC} -f ${DC_APP_BUILD_DEV} down api
 
 init-db-e2e:
@@ -34,10 +34,10 @@ mailhog-stop:
 mailhog-rm:
 	${DC} -f ${DC_APP_BUILD_DEV} rm mailhog
 
-mongo-express-up: 
+mongo-express-up:
 	${DC} -f ${DC_APP_BUILD_DEV} up mongo-express
-mongo-express-down: 
+mongo-express-down:
 	${DC} -f ${DC_APP_BUILD_DEV} down mongo-express
 
-db-rest-up: 
+db-rest-up:
 	${DC} -f ${DC_APP_BUILD_DEV} up -d db-rest

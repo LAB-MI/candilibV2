@@ -25,11 +25,6 @@ services:
         npm_registry: ${NPM_REGISTRY}
     ports:
       - "8090:8090"
-    volumes:
-      - ../server/db/app/app.js:/app/app.js
-      - ../server/db/app/index.js:/app/index.js
-      - ../server/db/app/package.json:/app/package.json
-      - ../server/db/app/package-lock.json:/app/package-lock.json
     environment:
       MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
       DB_NAME: ${DB_NAME:-candilib}
