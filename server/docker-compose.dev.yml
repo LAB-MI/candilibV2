@@ -45,7 +45,7 @@ services:
       DB_USER: ${DB_USER:-adminCandilib}
       DB_PASS: ${DB_PASS:-changeme78}
 
-    
+
   api:
     image: candilib_api:${APP_VERSION:-latest}
     build:
