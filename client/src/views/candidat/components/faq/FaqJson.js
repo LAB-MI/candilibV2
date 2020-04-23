@@ -152,6 +152,9 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         {
           subTitleContent: 'Si vous n\'êtes pas pré-inscrit ou si vous n\'avez pas trouvé de réponse à vos questions dans ces informations, vous pouvez nous contacter à cette adresse <a href="mailto:candilib@interieur.gouv.fr">candilib@interieur.gouv.fr</a>.',
         },
+        {
+          subTitleContent: '<a href="./contact-us">Nous contacter</a>',
+        },
       ],
     },
   ]
