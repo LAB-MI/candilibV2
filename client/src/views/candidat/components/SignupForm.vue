@@ -108,6 +108,7 @@
           :persistent-hint="true"
           :rules="departementRules"
           required
+          hint="Si votre département de résidence n'apparaît pas, vous pouvez néanmoins sélectionner un autre département pour y passer l'examen."
           @change-departements="newDep => departement = newDep "
         />
       </div>
