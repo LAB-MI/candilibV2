@@ -1,11 +1,13 @@
 <template>
-  <div>
-    Page de contact
+  <div class="contact-us-form">
+    <page-title v-if="me">
+      {{ $formatMessage({ id: 'contact_us_title' }) }}
+    </page-title>
     <v-form
-      ref="presignupForm"
+      ref="contactForm"
       v-model="valid"
-      class="t-presignup-form presignup-form"
-      @submit.prevent="presignup"
+      class="t-contact-us-form contact-us-form"
+      @submit.prevent="sendContactUs"
     >
       <form-group-info-candidat
         :value="candidat || me "
@@ -47,6 +49,7 @@
 
       <div class="form-input">
         <v-textarea
+          v-model="message"
           outlined
           name="message"
           :label="labelMessage"
@@ -87,9 +90,8 @@ const messageMaxLength = 2000
 export default {
   components: {
     FormGroupInfoCandidat,
-
   },
-  data () {
+  data: function () {
     return {
       valid: false,
       candidat: undefined,
@@ -162,7 +164,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-.presignup-form {
+.contact-us-form {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -183,13 +185,20 @@ export default {
   }
 }
 
-.already-signed-up {
-  @media (max-width: 599px) {
-    order: -1;
-  }
+.c-candidat-message__subtitle {
+  padding: 5px 0 15px 0;
+  line-height: 1;
+  font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
+  font-size: 14px;
+  color: #fff;
+  letter-spacing: 3px;
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: 8px 8px 12px #333;
 }
 
-.submit-button {
+.contact-us-button {
   width: 100%;
 }
+
 </style>
