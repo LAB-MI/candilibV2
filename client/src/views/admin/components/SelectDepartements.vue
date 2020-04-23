@@ -12,6 +12,7 @@
     tabindex="0"
     :rules="departementsRules"
     required
+    :readonly="readonly"
     @change="$emit('change-departements', departements)"
   />
 </template>
@@ -53,6 +54,11 @@ export default {
       type: String,
       default: 'Départements',
     },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+
   },
 
   data () {
