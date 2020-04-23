@@ -115,7 +115,7 @@ export default {
   deconexion_message: 'Vous êtes déconnecté·e',
   unauthorize_action: 'Action non autorisée',
   contact_us_title: 'Nous contacter',
-  contact_us_subject: "Ajouter l'objet de la demande",
+  contact_us_subject: 'Objet du message',
   contact_us_message: 'Message',
   contact_us_submit: 'Envoyer',
   contact_us_cancel: 'Précédent',
