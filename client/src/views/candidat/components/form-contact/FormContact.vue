@@ -81,7 +81,7 @@
 </template>
 
 <script>
-import { FETCH_DEPARTEMENTS_REQUEST, SHOW_ERROR } from '@/store'
+import { FETCH_DEPARTEMENTS_REQUEST, SHOW_ERROR, FETCH_SEND_CONTACT_US_REQUEST } from '@/store'
 
 import FormGroupInfoCandidat from '../FormGroupInfoCandidat'
 import { mapState } from 'vuex'
@@ -130,34 +130,20 @@ export default {
     setValues (value) {
       this.candidat = value
     },
-    sendContactUs () {
-      console.log(this.candidat)
+    async sendContactUs () {
       if (!this.valid) {
         return this.$store.dispatch(SHOW_ERROR, this.$formatMessage({ id: 'contact_us_formulaire_invalide' }))
       }
-      // const {
-      //   codeNeph,
-      //   nomNaissance,
-      //   prenom,
-      //   email,
-      //   portable,
-      //   departement,
-      // } = this.candidat
-
-      // try {
-      //   const response = await this.$store.dispatch(PRESIGNUP_REQUEST, {
-      //     codeNeph,
-      //     nomNaissance,
-      //     prenom,
-      //     email,
-      //     portable,
-      //     departement,
-      //   })
-      //   this.$refs.presignupForm.reset()
-      //   this.$router.push({ name: 'email-validation', params: { response } })
-      // } catch (error) {
-      //   this.$store.dispatch(SHOW_ERROR, error.message)
-      // }
+      try {
+        await this.$store.dispatch(FETCH_SEND_CONTACT_US_REQUEST, {
+          candidat: this.candidat,
+          subject: this.subject,
+          message: this.message,
+          hadSignup: this.hadSingup,
+        })
+        this.$router.push({ name: 'home' })
+      } catch (error) {
+      }
     },
   },
 }
