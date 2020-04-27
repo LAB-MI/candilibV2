@@ -5,9 +5,10 @@ import apiClient from './api-utils'
 
 const getHeadersForJson = () => {
   const token = localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
+  const Authorization = token ? `Bearer ${token}` : undefined
   return {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${token}`,
+    Authorization,
   }
 }
 
@@ -175,6 +176,15 @@ const apiCandidat = {
   async getActiveGeoDepartementsInfos () {
     const json = await apiClient.get(`${apiPaths.candidat.departements}`, {
       headers: getHeadersForJson(),
+    })
+    return json
+  },
+  async sendContactUs (candidat, subject, message, hadSignUp) {
+    const json = await apiClient.post(`${apiPaths.candidat.contactUs}`, {
+      headers: getHeadersForJson(),
+      body: JSON.stringify({
+        candidat, subject, message, hadSignUp,
+      }),
     })
     return json
   },
