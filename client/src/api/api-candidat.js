@@ -5,13 +5,11 @@ import apiClient from './api-utils'
 
 const getHeadersForJson = () => {
   const token = localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
-  if (token) {
-    return {
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`,
-    }
+  const Authorization = token ? `Bearer ${token}` : undefined
+  return {
+    'Content-Type': 'application/json',
+    Authorization,
   }
-  return undefined
 }
 
 const apiCandidat = {
@@ -186,11 +184,12 @@ const apiCandidat = {
     })
     return json
   },
-  async sendContactUs (candiat, subject, message, hadSignUp) {
+
+  async sendContactUs (candidat, subject, message, hadSignUp) {
     const json = await apiClient.post(`${apiPaths.candidat.contactUs}`, {
       headers: getHeadersForJson(),
       body: JSON.stringify({
-        candiat, subject, message, hadSignUp,
+        candidat, subject, message, hadSignUp,
       }),
     })
     return json
