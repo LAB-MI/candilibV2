@@ -110,7 +110,7 @@
         :persistent-hint="true"
         :rules="departementRules"
         required
-        :default-departement="value.departement"
+        :default-departement="departement"
         :readonly="readonly"
         tabindex="6"
         @change-departements="setDepartement"
@@ -178,16 +178,6 @@ export default {
       portable: this.value && this.value.portable,
       departement: this.value && this.value.departement,
     }
-  },
-  watch: {
-    value (newValue, oldValue) {
-      this.codeNeph = newValue.codeNeph
-      this.nomNaissance = newValue.nomNaissance
-      this.prenom = newValue.prenom
-      this.email = newValue.email
-      this.portable = newValue.portable
-      this.departement = newValue.departement
-    },
   },
   methods: {
     getMsg (id) {

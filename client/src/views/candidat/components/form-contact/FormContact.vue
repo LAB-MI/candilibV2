@@ -1,8 +1,5 @@
 <template>
   <div class="contact-us-form">
-    <page-title v-if="me">
-      {{ $formatMessage({ id: 'contact_us_title' }) }}
-    </page-title>
     <v-form
       ref="contactForm"
       v-model="valid"
@@ -10,15 +7,14 @@
       @submit.prevent="sendContactUs"
     >
       <form-group-info-candidat
-        :value="candidat || me "
-        :dark="me ? false : true"
+        v-model="candidat"
+        :dark="dark"
         is-contact
-        :readonly="me?true:false"
+        :readonly="readonly"
         :available-departements="availableDepartements"
-        @input="setValues"
       >
         <template
-          v-if="!me"
+          v-if="withHadSingup"
           v-slot:before
         >
           <div
@@ -26,7 +22,7 @@
           >
             <v-checkbox
               v-model="hadSingup"
-              :dark="me? false: true"
+              :dark="dark"
               class="t-checkbox"
               :label="$formatMessage({ id: 'contact_us_had_signup' })"
             />
@@ -37,8 +33,8 @@
         <v-text-field
           v-model="subject"
           :label="`${$formatMessage({ id:'contact_us_subject'}) } *`"
-          :dark="me? false: true"
-          :color="me?'':'#fff'"
+          :dark="dark"
+          :color="dark?'#fff':''"
           :placeholder="subjectPlaceholder"
           aria-placeholder="Réservation pour demain"
           hint="ex. : Réservation pour demain"
@@ -54,8 +50,8 @@
           name="message"
           :label="labelMessage"
           rows="20"
-          :dark="me? false: true"
-          :color="me?'':'#fff'"
+          :dark="dark"
+          :color="dark?'#fff':''"
           required
           :rules="messageRules"
           @keydown="onKeyDownMessage"
@@ -67,7 +63,7 @@
           :disabled="!isCompleted || isSending"
           :aria-disabled="!isCompleted || isSending"
           class="contact-us-button"
-          :dark="me ? false : true"
+          :dark="dark"
           tabindex="8"
           color="#28a745"
         >
@@ -91,10 +87,28 @@ export default {
   components: {
     FormGroupInfoCandidat,
   },
+  props: {
+    defaultCandidat: {
+      type: Object,
+      default () { },
+    },
+    dark: {
+      type: Boolean,
+      default: false,
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
+    },
+    withHadSingup: {
+      type: Boolean,
+      default: false,
+    },
+  },
   data: function () {
     return {
       valid: false,
-      candidat: undefined,
+      candidat: this.defaultCandidat,
       hadSingup: false,
       message: '',
       subject: '',
@@ -107,7 +121,6 @@ export default {
   },
   computed: {
     ...mapState({
-      me: state => state.candidat.me,
       availableDepartements: state => state.departements && state.departements.list,
     }),
     isCompleted: function () {
@@ -126,9 +139,6 @@ export default {
       if (this.message.length >= messageMaxLength) {
         evt.preventDefault()
       }
-    },
-    setValues (value) {
-      this.candidat = value
     },
     async sendContactUs () {
       if (!this.valid) {
