@@ -31,8 +31,6 @@ import { FETCH_DEPARTEMENTS_INFOS_REQUEST } from '@/store'
 
 import DepartementSelectionContent from './DepartementSelectionContent'
 
-import { CANDIDAT_SELECTED_CENTER } from '../../../../constants'
-
 export default {
   components: {
     DepartementSelectionContent,
@@ -51,7 +49,6 @@ export default {
     }),
   },
   mounted () {
-    localStorage.setItem(CANDIDAT_SELECTED_CENTER, undefined)
     this.$store.dispatch(FETCH_DEPARTEMENTS_INFOS_REQUEST)
   },
 
