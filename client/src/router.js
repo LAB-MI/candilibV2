@@ -7,6 +7,7 @@ import {
   checkAdminToken,
   checkCandidatToken,
   checkAccess,
+  checkCandidatTokenForContactUs,
 } from './router-checks'
 import {
   ROUTE_AUTHORIZE_AURIGE,
@@ -165,6 +166,7 @@ const candidatRoutes = [
         path: '/contact-us',
         name: 'contact-us',
         component: ContactUsNotSignUp,
+        beforeEnter: checkCandidatTokenForContactUs,
       },
       {
         path: '/informations',
