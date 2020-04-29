@@ -11,6 +11,7 @@ import {
   getCentreById,
   updateCentre,
   updateCentreStatus,
+  getCentresByNameAndGeoDepartement,
 } from './centre-business'
 import { findCentresByDepartement } from '../../models/centre'
 import { appLogger } from '../../util'
@@ -26,7 +27,7 @@ export const NOT_CODE_DEP_MSG =
   'Le code de département est manquant, Veuillez choisir un code département'
 
 export async function getCentres (req, res) {
-  const { departement, centreId } = req.query
+  const { departement, centreId, nom } = req.query
   let beginDate = req.query.begin
   const endDate = req.query.end
 
@@ -37,7 +38,7 @@ export async function getCentres (req, res) {
   }
 
   try {
-    if (!departement && !centreId) {
+    if (!departement && (!centreId || !nom)) {
       const error = {
         section: 'candidat-get-centres',
         message: NOT_CODE_DEP_MSG,
@@ -49,7 +50,7 @@ export async function getCentres (req, res) {
       })
     }
 
-    if (!centreId) {
+    if (!centreId && !nom) {
       if (req.userLevel === config.userStatusLevels.candidat) {
         const beginDateTime = getAuthorizedDateToBook()
         beginDate = beginDateTime.toISODate()
@@ -68,14 +69,26 @@ export async function getCentres (req, res) {
 
       res.status(200).json(centres)
     } else {
-      const centre = await getCentreById(centreId)
+      if (centreId && !nom) {
+        const centre = await getCentreById(centreId)
 
-      appLogger.info({
-        ...loggerContent,
-        description: `Récupération par nom du centre du département ${departement}`,
-      })
+        appLogger.info({
+          ...loggerContent,
+          description: `Récupération par l'id du centre du département ${departement}`,
+        })
 
-      res.status(200).json(centre)
+        res.status(200).json(centre)
+      }
+      if (nom && !centreId) {
+        const centres = await getCentresByNameAndGeoDepartement(nom, departement)
+
+        appLogger.info({
+          ...loggerContent,
+          description: `Récupération par nom du centre du département ${departement}`,
+        })
+
+        res.status(200).json(centres)
+      }
     }
   } catch (error) {
     appLogger.error(error)

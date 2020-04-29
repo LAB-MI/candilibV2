@@ -54,7 +54,7 @@ export const findAllActiveCentres = async () => {
  * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
  */
 export const findCentreByName = async nom => {
-  const centre = await Centre.findOne({
+  const centre = await Centre.find({
     nom: caseInsensitive(nom),
     active: { $ne: false },
   })
@@ -232,7 +232,8 @@ export const findCentresByDepartement = async (
 export const findCentreByNameAndDepartement = async (
   nom,
   departement,
-  geoDepartement
+  geoDepartement,
+  options = '-__v'
 ) => {
   const filter = {
     nom: caseInsensitive(nom),
@@ -240,12 +241,12 @@ export const findCentreByNameAndDepartement = async (
   }
   if (departement) filter.departement = departement
   if (geoDepartement) filter.geoDepartement = geoDepartement
-  const centre = await Centre.findOne(filter)
-  return centre
+  const centres = await Centre.find(filter, options)
+  return centres
 }
 
 export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
-  return findCentreByNameAndDepartement(nom, undefined, geoDepartement)
+  return findCentreByNameAndDepartement(nom, undefined, geoDepartement, '-departement -_id -active -createdAt -updatedAt -__v')
 }
 
 /**
@@ -271,6 +272,10 @@ export const findCentreByGeoDepartement = async (
     filters.geoDepartement = geoDepartement
   }
 
+  // const TMP = await Centre.distinct('nom', (error, res) => {
+  //   console.log({ error, res })
+  // })
+  // console.log({ TMP })
   const centres = await Centre.find(filters, options)
   return centres
 }
