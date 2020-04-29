@@ -113,6 +113,7 @@
         :default-departement="departement"
         :readonly="readonly"
         tabindex="6"
+        :hint="`${getMsg('preinscription_departement_hint')}`"
         @change-departements="setDepartement"
       />
     </div>

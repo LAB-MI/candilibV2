@@ -40,6 +40,7 @@ export default {
   preinscription_magic_link_invalide: 'Veuillez fournir votre adresse courriel',
   preinscription_magic_link_envoyé: 'Un lien de connexion vous a été envoyé. Veuillez consulter votre boîte courriel',
   preinscription_departement: 'Mon département de résidence',
+  preinscription_departement_hint: "Si votre département de résidence n'apparaît pas, vous pouvez néanmoins sélectionner un autre département pour y passer l'examen.",
   home_choix_du_centre: 'Choix du centre',
   home_choix_du_departement: 'Choix du département',
   home_choix_date_creneau_message_de_penalite: `Vous avez annulé ou modifié votre réservation à moins de {numberOfDaysBeforeDate} jours de la date d'examen.
