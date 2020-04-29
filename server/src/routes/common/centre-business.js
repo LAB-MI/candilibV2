@@ -18,6 +18,7 @@ import {
   findCentreByGeoDepartement,
   findCentreById,
   findCentreByNameAndDepartement,
+  findCentreByNameAndGeoDepartement,
   findCentresByDepartement,
   updateCentreActiveState,
   updateCentreLabel,
@@ -65,16 +66,30 @@ export async function findCentresWithNbPlacesByGeoDepartement (
   }
 
   const centresWithNbPlaces = await Promise.all(
-    centres.map(async centre => {
-      const count = await countAvailablePlacesByCentre(
-        centre._id,
-        beginDate,
-        endDate
-      )
-      return { centre, count }
-    })
+    centres.map(
+      async centre => ({
+        centre,
+        count: await countAvailablePlacesByCentre(
+          centre._id,
+          beginDate,
+          endDate
+        ),
+      })
+    )
   )
-  return centresWithNbPlaces
+  // TODO: Refactor next block
+  const result = [...Object.values(
+    centresWithNbPlaces.reduce((accu, { centre, count }) => {
+      if (!accu[centre.nom]) {
+        accu[centre.nom] = { count: 0 }
+      }
+      accu[centre.nom].centre = centre
+      accu[centre.nom].count += count
+      return accu
+    }, {})
+  )]
+
+  return result
 }
 
 export async function findCentresWithPlaces (departement, beginDate, endDate) {
@@ -293,7 +308,7 @@ export async function updateCentre (
 }
 
 /**
- * Modifie un centre dans la base de données
+ * Recupère un centre dans la base de données par son identifiant
  *
  * @async
  * @function
@@ -310,4 +325,25 @@ export async function getCentreById (centreId) {
   }
 
   return findCentreById(centreId)
+}
+
+/**
+ * Recupère les centres dans la base de données par son nom et geoDepartement
+ *
+ * @async
+ * @function
+ *
+ * @param {string} nom - Non du centre
+ * @param {string} geoDepartement - Departement geographique du centre
+ *
+ * @returns {Promise.<CentreMongo>} Centre
+ */
+export async function getCentresByNameAndGeoDepartement (nom, geoDepartement) {
+  if (!nom) {
+    const error = new Error('Centre introuvable')
+    error.status = 404
+    throw error
+  }
+
+  return findCentreByNameAndGeoDepartement(nom, geoDepartement)
 }
