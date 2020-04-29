@@ -12,6 +12,7 @@
         v-model="candidat"
         dark
         :available-departements="availableDepartements"
+        :show-dialog="showDialog"
       />
       <div class="form-input">
         <v-btn

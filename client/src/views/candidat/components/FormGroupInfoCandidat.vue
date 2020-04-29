@@ -78,19 +78,18 @@
     </div>
 
     <div
-      v-if="!isContact"
       class="form-input"
     >
       <v-text-field
         v-model="portable"
-        :label="`${getMsg('preinscription_mobile')} *`"
+        :label="`${getMsg('preinscription_mobile') + (portableRequired?' *':'')}`"
         prepend-icon="smartphone"
         :dark="dark"
         :color="dark?'#fff':''"
         :placeholder="portablePlaceholder"
         aria-placeholder="Jean"
         hint="ex. : 0612345678"
-        required
+        :required="portableRequired"
         tabindex="5"
         :rules="portableRules"
         :readonly="readonly"
@@ -148,6 +147,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    showDialog: {
+      type: Boolean,
+      default: false,
+    },
   },
   data: function () {
     return {
@@ -167,11 +170,10 @@ export default {
         v => emailRegex.test(v) || this.getMsg('preinscription_email_erreur'),
       ],
       portablePlaceholder: '',
+      portableRequired: !this.isContact,
       portableRules: [
-        v => phoneRegex.test(v) || this.getMsg('preinscription_mobile_erreur'),
+        v => (!this.portableRequired && (v ? v.length === 0 : true)) || phoneRegex.test(v) || this.getMsg('preinscription_mobile_erreur'),
       ],
-      valid: false,
-      showDialog: false,
       codeNeph: this.value && this.value.codeNeph,
       nomNaissance: this.value && this.value.nomNaissance,
       prenom: this.value && this.value.prenom,
