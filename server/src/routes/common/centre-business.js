@@ -66,28 +66,24 @@ export async function findCentresWithNbPlacesByGeoDepartement (
   }
 
   const centresWithNbPlaces = await Promise.all(
-    centres.map(
-      async centre => ({
-        centre,
-        count: await countAvailablePlacesByCentre(
-          centre._id,
-          beginDate,
-          endDate
-        ),
-      })
-    )
+    centres.map(async centre => ({
+      centre,
+      count: await countAvailablePlacesByCentre(centre._id, beginDate, endDate),
+    }))
   )
   // TODO: Refactor next block
-  const result = [...Object.values(
-    centresWithNbPlaces.reduce((accu, { centre, count }) => {
-      if (!accu[centre.nom]) {
-        accu[centre.nom] = { count: 0 }
-      }
-      accu[centre.nom].centre = centre
-      accu[centre.nom].count += count
-      return accu
-    }, {})
-  )]
+  const result = [
+    ...Object.values(
+      centresWithNbPlaces.reduce((accu, { centre, count }) => {
+        if (!accu[centre.nom]) {
+          accu[centre.nom] = { count: 0 }
+        }
+        accu[centre.nom].centre = centre
+        accu[centre.nom].count += count
+        return accu
+      }, {})
+    ),
+  ]
 
   return result
 }

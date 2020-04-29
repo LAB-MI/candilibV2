@@ -117,7 +117,11 @@ export const getDatesByCentresNameAndGeoDepartement = async (
     endDate
   )
 
-  const centres = await findCentreByNameAndDepartement(nomCentre, undefined, geoDepartement)
+  const centres = await findCentreByNameAndDepartement(
+    nomCentre,
+    undefined,
+    geoDepartement
+  )
 
   const places = await findAvailablePlacesByCentres(
     centres,
@@ -218,22 +222,19 @@ export const hasAvailablePlacesByCentre = async (
 
   if (foundCentre && foundCentre && foundCentre.length > 1) {
     const allDates = await Promise.all(
-      foundCentre.map(
-        async centre => {
-          const dates = await hasAvailablePlaces(centre._id, date)
-          if (dates && dates.length) {
-            return { dates }
-          }
+      foundCentre.map(async centre => {
+        const dates = await hasAvailablePlaces(centre._id, date)
+        if (dates && dates.length) {
+          return { dates }
         }
-      )
+      })
     )
-    const result = allDates.reduce(
-      (accu, value) => {
-        if (value && value.dates && value.dates.length) {
-          return [...new Set(accu.concat(value.dates))]
-        }
-        return accu
-      }, [])
+    const result = allDates.reduce((accu, value) => {
+      if (value && value.dates && value.dates.length) {
+        return [...new Set(accu.concat(value.dates))]
+      }
+      return accu
+    }, [])
     return result
   }
   const dates = await hasAvailablePlaces(foundCentre._id, date)
@@ -275,9 +276,18 @@ export const getReservationByCandidat = async (candidatId, options) => {
  *
  * @returns {Object} - Place réservée par le candidat
  */
-export const bookPlace = async (candidatId, nomCentre, date, geoDepartement) => {
+export const bookPlace = async (
+  candidatId,
+  nomCentre,
+  date,
+  geoDepartement
+) => {
   // TODO: Refactor
-  const foundCentres = await findCentreByNameAndDepartement(nomCentre, undefined, geoDepartement)
+  const foundCentres = await findCentreByNameAndDepartement(
+    nomCentre,
+    undefined,
+    geoDepartement
+  )
   const centres = foundCentres.map(centre => centre._id)
   const bookedAt = getFrenchLuxon().toJSDate()
   const place = await findAndbookPlace(

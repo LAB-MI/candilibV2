@@ -246,7 +246,12 @@ export const findCentreByNameAndDepartement = async (
 }
 
 export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
-  return findCentreByNameAndDepartement(nom, undefined, geoDepartement, '-departement -_id -active -createdAt -updatedAt -__v')
+  return findCentreByNameAndDepartement(
+    nom,
+    undefined,
+    geoDepartement,
+    '-departement -_id -active -createdAt -updatedAt -__v'
+  )
 }
 
 /**
@@ -272,10 +277,6 @@ export const findCentreByGeoDepartement = async (
     filters.geoDepartement = geoDepartement
   }
 
-  // const TMP = await Centre.distinct('nom', (error, res) => {
-  //   console.log({ error, res })
-  // })
-  // console.log({ TMP })
   const centres = await Centre.find(filters, options)
   return centres
 }

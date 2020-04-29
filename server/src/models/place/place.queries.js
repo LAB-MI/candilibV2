@@ -179,7 +179,11 @@ export const findAvailablePlacesByCentres = async (
 
   const result = await Promise.all(
     centres.map(async centre => {
-      const query = queryAvailablePlacesByCentres(centre._id, beginDate, endDate)
+      const query = queryAvailablePlacesByCentres(
+        centre._id,
+        beginDate,
+        endDate
+      )
       queryPopulate(populate, query)
       return query.exec()
     }, {})
@@ -188,8 +192,6 @@ export const findAvailablePlacesByCentres = async (
   const finalResult = result.reduce((accu, places) => {
     return accu.concat(places)
   }, [])
-
-  console.log('qwerty::002', finalResult.length)
 
   return finalResult
 }

@@ -83,7 +83,6 @@ export async function getPlacesByCentre (req, res) {
   const centreId = req.params.id
 
   const { nomCentre, geoDepartement, begin, end, dateTime } = req.query
-  console.log('je suis dans getPlacesByCentre du controller !!')
 
   const loggerInfo = {
     section: 'candidat-getPlacesByCentre',
@@ -111,27 +110,17 @@ export async function getPlacesByCentre (req, res) {
 
   let dates = []
   try {
-    // TODO: Add NomCentre
     if (centreId) {
-      console.log('je dans le IF centreId !!')
-
       if (dateTime) {
-        console.log('je dans le IF centreId puis dateTime !!')
         dates = await hasAvailablePlaces(centreId, dateTime, req.userId)
       } else {
-        console.log('je dans le IF centreId puis dans le Else !!')
         dates = await getDatesByCentreId(centreId, begin, end, req.userId)
       }
     } else {
-      console.log('je dans le Else du IF de centreId !!', geoDepartement, nomCentre)
       if (!(geoDepartement && nomCentre)) {
-        console.log('je dans le Else du IF de centreId et ca renvoi error!!')
-
         throw new Error(ErrorMsgArgEmpty)
       }
       if (dateTime) {
-        console.log('je dans le Else du IF de centreId puis dans le IF de dateTime!!')
-
         dates = await hasAvailablePlacesByCentre(
           geoDepartement,
           nomCentre,
@@ -139,8 +128,6 @@ export async function getPlacesByCentre (req, res) {
           req.userId
         )
       } else {
-        console.log('je dans le Else du IF de centreId puis dans le Else de dateTime!!')
-
         dates = await getDatesByCentresNameAndGeoDepartement(
           nomCentre,
           geoDepartement,
@@ -183,10 +170,8 @@ export const getPlaces = async (req, res) => {
 
   const { centre, departement, begin, end, dateTime, nomCentre } = req.query
   if (id || nomCentre || dateTime || departement || centre || begin || end) {
-    console.log('je suis dans getPlaces du controller et je rentre dans getPlacesByCentre')
     await getPlacesByCentre(req, res)
   } else {
-    console.log('je suis dans getPlaces du controller et je rentre dans getBookedPlaces')
     await getBookedPlaces(req, res)
   }
 }
@@ -338,7 +323,13 @@ export const getBookedPlaces = async (req, res) => {
 export const bookPlaceByCandidat = async (req, res) => {
   const section = 'candidat-create-reservation'
   const candidatId = req.userId
-  const { nomCentre, geoDepartement, date, isAccompanied, hasDualControlCar } = req.body
+  const {
+    nomCentre,
+    geoDepartement,
+    date,
+    isAccompanied,
+    hasDualControlCar,
+  } = req.body
 
   appLogger.info({
     section,
@@ -404,7 +395,12 @@ export const bookPlaceByCandidat = async (req, res) => {
       })
     }
 
-    const reservation = await bookPlace(candidatId, nomCentre, date, geoDepartement)
+    const reservation = await bookPlace(
+      candidatId,
+      nomCentre,
+      date,
+      geoDepartement
+    )
     if (!reservation) {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"

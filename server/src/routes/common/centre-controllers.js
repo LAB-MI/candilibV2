@@ -80,7 +80,10 @@ export async function getCentres (req, res) {
         res.status(200).json(centre)
       }
       if (nom && !centreId) {
-        const centres = await getCentresByNameAndGeoDepartement(nom, departement)
+        const centres = await getCentresByNameAndGeoDepartement(
+          nom,
+          departement
+        )
 
         appLogger.info({
           ...loggerContent,
