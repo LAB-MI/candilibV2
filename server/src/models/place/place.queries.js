@@ -105,6 +105,30 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
   return query.where('centre', centreId)
 }
 
+// TODO: Refactor
+/**
+ * @function
+ *
+ * @param {string} centresId - Ids des centres
+ * @param {string} beginDate - Date au format ISO de debut de recherche
+ * @param {string} endDate - Date au format ISO de fin de recherche
+ *
+ * @returns {import('mongoose').Query}
+ */
+const queryAvailablePlacesByCentres = (centreId, beginDate, endDate) => {
+  const query = Place.where('centre').exists(true)
+  if (beginDate || endDate) {
+    query.where('date')
+
+    if (beginDate) query.gte(beginDate)
+    if (endDate) query.lt(endDate)
+  }
+
+  query.where('candidat').equals(undefined)
+
+  return query.where('centre', centreId)
+}
+
 /**
  * @function
  *
@@ -139,6 +163,35 @@ export const findAvailablePlacesByCentre = async (
   queryPopulate(populate, query)
   const places = await query.exec()
   return places
+}
+
+// TODO: Refactor
+export const findAvailablePlacesByCentres = async (
+  centres,
+  beginDate,
+  endDate,
+  populate
+) => {
+  appLogger.debug({
+    func: 'findAvailablePlacesByCentre',
+    args: { centres, beginDate, endDate },
+  })
+
+  const result = await Promise.all(
+    centres.map(async centre => {
+      const query = queryAvailablePlacesByCentres(centre._id, beginDate, endDate)
+      queryPopulate(populate, query)
+      return query.exec()
+    }, {})
+  )
+
+  const finalResult = result.reduce((accu, places) => {
+    return accu.concat(places)
+  }, [])
+
+  console.log('qwerty::002', finalResult.length)
+
+  return finalResult
 }
 
 export const countAvailablePlacesByCentre = async (
@@ -190,14 +243,18 @@ export const findPlaceBookedByCandidat = async (
 
 export const findAndbookPlace = async (
   candidat,
-  centre,
+  centres,
   date,
   bookedAt,
   fields,
   populate
 ) => {
+  // let centre = { $in: centres }
+  // if (typeof centres === 'string') {
+  //   centre = centres
+  // }
   const query = Place.findOneAndUpdate(
-    { centre, date, candidat: { $eq: undefined } },
+    { centre: { $in: centres }, date, candidat: { $eq: undefined } },
     { $set: { candidat, bookedAt } },
     { new: true, fields }
   )
