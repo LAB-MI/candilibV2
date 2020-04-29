@@ -44,7 +44,7 @@ ARG LINE_DELAY
 RUN if [ -n "$LINE_DELAY" ] && [ -f "public/config-candilib.json" ] ; then \
       echo '{"lineDelay": '"$LINE_DELAY"'}' > public/config-candilib.json ; \
     fi
-RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm install --loglevel http
+RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm ci --loglevel http
 EXPOSE 8080
 
 CMD ["npm","run", "serve"]
@@ -77,7 +77,7 @@ COPY --from=build /app/dist ./dist
 COPY package.json package-lock.json ./
 # Install production dependencies and clean cache
 RUN npm --no-git-tag-version version ${APP_VERSION} && \
-    npm install --production && \
+    npm ci --only=production && \
     npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org --production || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force
