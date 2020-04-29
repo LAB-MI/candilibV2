@@ -153,7 +153,6 @@ const parseStatsResultsExams = statsData =>
  */
 
 const parseStatsCandidatRetention = statsData =>
-  console.log({ statsData }) ||
   parseAsync(statsData, optionsCandidatsLeaveRetentionArea)
 
 /**

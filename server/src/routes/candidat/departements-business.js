@@ -40,10 +40,8 @@ export const getGeoDepartementsInfos = async (geoDepartementsId, userId) => {
         return shapedGeoDepartementInfo
       })
     )
-    console.log({ geoDepartementsInfos })
     return geoDepartementsInfos
   } catch (error) {
-    console.log('errrrrrrooooorrrr', { error })
     appLogger.error({
       ...loggerContent,
       error,

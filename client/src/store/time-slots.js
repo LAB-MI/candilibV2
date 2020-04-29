@@ -107,9 +107,7 @@ export default {
 
     async [SELECT_DAY] ({ commit, dispatch }, selected) {
       const { slot, centre } = selected
-      console.log({ selected })
       const result = await api.candidat.checkPlacesAvailability(undefined, centre.nom, slot, centre.geoDepartement)
-      console.log({ result })
       if (result.length > 0) {
         commit(SELECT_DAY, selected)
       } else {
