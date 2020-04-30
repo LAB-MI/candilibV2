@@ -167,7 +167,7 @@ describe('Candidate login', () => {
         cy.visit(magicLink)
       })
       cy.get('h2').eq(0)
-        .should('contain', 'Choix du centre')
+        .should('contain', 'Choix du département')
       cy.get('.t-disconnect')
         .click()
     })

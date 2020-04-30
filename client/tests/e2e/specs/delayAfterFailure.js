@@ -74,6 +74,10 @@ describe('Test delay after failed attempt', () => {
 
       // Tries to add the reservation
       cy.get('h2')
+        .should('contain', 'Choix du département')
+      cy.contains(Cypress.env('geoDepartement'))
+        .click()
+      cy.get('h2')
         .should('contain', 'Choix du centre')
       cy.contains(Cypress.env('centre'))
         .click()

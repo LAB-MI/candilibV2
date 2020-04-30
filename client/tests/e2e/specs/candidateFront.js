@@ -95,8 +95,8 @@ describe('Connected candidate front', () => {
       cy.wait(1000)
 
       cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('departement'))
-      cy.contains(Cypress.env('departement')).click()
+      cy.get('body').should('contain', Cypress.env('geoDepartement'))
+      cy.contains(Cypress.env('geoDepartement')).click()
 
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
@@ -165,8 +165,8 @@ describe('Connected candidate front', () => {
       cy.wait(1000)
 
       cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('departement'))
-      cy.contains(Cypress.env('departement')).click()
+      cy.get('body').should('contain', Cypress.env('geoDepartement'))
+      cy.contains(Cypress.env('geoDepartement')).click()
 
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
@@ -233,8 +233,8 @@ describe('Connected candidate front', () => {
       cy.contains('Modifier ma réservation').click()
 
       cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('departement'))
-      cy.contains(Cypress.env('departement')).click()
+      cy.get('body').should('contain', Cypress.env('geoDepartement'))
+      cy.contains(Cypress.env('geoDepartement')).click()
 
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
@@ -406,8 +406,8 @@ describe('Connected candidate front', () => {
       cy.contains('Continuer').click()
 
       cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('departement'))
-      cy.contains(Cypress.env('departement')).click()
+      cy.get('body').should('contain', Cypress.env('geoDepartement'))
+      cy.contains(Cypress.env('geoDepartement')).click()
 
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
@@ -486,8 +486,8 @@ describe('Connected candidate front', () => {
       )
 
       cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('departement'))
-      cy.contains(Cypress.env('departement')).click()
+      cy.get('body').should('contain', Cypress.env('geoDepartement'))
+      cy.contains(Cypress.env('geoDepartement')).click()
 
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))

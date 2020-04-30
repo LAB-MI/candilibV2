@@ -27,10 +27,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: 'Tout « candidat libre » peut utiliser le service.',
         },
         {
-          textContent: `Cependant, seuls les départements de la liste suivante proposent des places via ce service : ${departements.join(', ')}`,
-        },
-        {
-          textContent: `NB : les candidats du 75, du fait des conditions de circulation dans Paris intramuros, pourront choisir parmi les centres d'examen suivants : ${parisCenters.join(', ')}`,
+          textContent: `Cependant, seuls les départements de la liste suivante proposent actuellement des places via ce service : ${departements.join(', ')}`,
         },
       ],
     },
@@ -42,17 +39,17 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: 'Rendez-vous sur la page d\'accueil du service pour se pré-inscrire.',
         },
         {
-          textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et département de passage.',
+          textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et mon département de résidence.',
         },
         {
-          textContent: 'Vous devez dès à présent choisir votre département de passage à l\'examen. Votre choix permet à l\'administration de provisionner un nombre de places d\'examen suffisant pour chaque département où Candilib est disponible',
+          textContent: 'Si celui-ci ne figure pas dans la liste déroulante, vous devrez choisir le département le plus proche de chez vous. Cela n’aura pas de conséquence pour le choix de votre lieu de passage de l’examen.',
         },
         {
           subTitleContent: 'Pour réserver',
           textContent: 'Connectez-vous à Candilib après réception du mail « Validation de votre inscription à Candilib » (lien de connexion dans le mail de validation).',
         },
         {
-          textContent: 'Sélectionnez votre centre d\'examen, puis un créneau disponible à la date qui vous convient (si besoin, déplacez-vous sur les vues « mois », « semaine » et « jour »).',
+          textContent: 'Sélectionnez le département choisi, puis votre centre d\'examen, puis un créneau disponible à la date qui vous convient (si besoin, déplacez-vous sur les vues « mois », « semaine » et « jour »).',
         },
         {
           textContent: 'Confirmez votre réservation.',
@@ -131,6 +128,10 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         {
           textContent: 'De nouveaux créneaux sont ajoutés régulièrement. D\'autres peuvent se libérer à tout moment par l\'annulation d\'un candidat ayant réservé.',
         },
+        {
+          textContent: 'Vous pouvez aussi réserver une place dans un autre département.',
+        },
+
       ],
     },
     {
