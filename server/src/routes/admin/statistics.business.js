@@ -142,7 +142,7 @@ export const countSuccessByCentres = async (
   endPeriode
 ) => {
   const expression = {}
-  if (centres) {
+  if (centres && centres.length) {
     expression['places.centre'] = { $in: centres }
   }
 
@@ -180,7 +180,7 @@ export const countSuccessByCentres = async (
       },
     ])
     .count('count')
-
+  console.log({ result })
   return result[0] ? result[0].count : 0
 }
 

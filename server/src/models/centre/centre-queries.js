@@ -54,7 +54,7 @@ export const findAllActiveCentres = async () => {
  * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
  */
 export const findCentreByName = async nom => {
-  const centre = await Centre.find({
+  const centre = await Centre.findOne({
     nom: caseInsensitive(nom),
     active: { $ne: false },
   })

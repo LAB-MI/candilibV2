@@ -168,8 +168,25 @@ export async function getPlacesByCentre (req, res) {
 export const getPlaces = async (req, res) => {
   const { id } = req.params
 
-  const { centre, departement, begin, end, dateTime, nomCentre } = req.query
-  if (id || nomCentre || dateTime || departement || centre || begin || end) {
+  const {
+    centre,
+    departement,
+    begin,
+    end,
+    dateTime,
+    nomCentre,
+    geoDepartement,
+  } = req.query
+  if (
+    id ||
+    nomCentre ||
+    dateTime ||
+    departement ||
+    geoDepartement ||
+    centre ||
+    begin ||
+    end
+  ) {
     await getPlacesByCentre(req, res)
   } else {
     await getBookedPlaces(req, res)

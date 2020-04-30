@@ -216,7 +216,7 @@ export async function addCentre (
     departement
   )
 
-  if (alreadyCreatedCentre) {
+  if (alreadyCreatedCentre && alreadyCreatedCentre.length) {
     const error = new Error('Centre déjà présent dans la base de données')
     error.status = 409
     throw error
@@ -278,7 +278,8 @@ export async function updateCentre (
 
     if (
       alreadyExistingCentre &&
-      alreadyExistingCentre.nom.toUpperCase() === nom.toUpperCase()
+      alreadyExistingCentre.length &&
+      alreadyExistingCentre[0].nom.toUpperCase() === nom.toUpperCase()
     ) {
       const error = new Error('Centre déjà présent dans la base de données')
       error.status = 409
