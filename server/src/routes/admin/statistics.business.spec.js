@@ -61,6 +61,8 @@ describe('test statistics', () => {
       dateReussitePratique.toJSDate(),
       dateReussitePratique.toJSDate()
     )
+    console.log({ results })
+
     expect(results).toBeDefined()
     expect(results).toBe(
       countSuccess('92', dateReussitePratique, dateReussitePratique)
