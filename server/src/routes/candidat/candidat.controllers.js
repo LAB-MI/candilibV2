@@ -255,6 +255,7 @@ export async function getMe (req, res) {
       _id: 0,
       adresse: 1,
       codeNeph: 1,
+      homeDepartement: 1,
       departement: 1,
       email: 1,
       isEvaluationDone: 1,
