@@ -1,9 +1,9 @@
 
-const https = require('https')
 const fs = require('fs')
 
 const lengthArgv = process.argv.length
 const url = process.argv[lengthArgv - 1]
+const https = url.startsWith('https') ? require('https') : require('http')
 const paths = url.split('/')
 const fileName = paths[paths.length - 1]
 const writeStream = fs.createWriteStream(`./${fileName}`)
