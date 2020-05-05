@@ -35,3 +35,12 @@ export const PARAMETERS_VERSUS_INFOS_CANDIDAT =
 export const CANDIDAT_DATE_ETG_KO =
   'Votre code de la route n’est plus valide après le '
 export const DEPARTEMENT_LIST = 'Veuillez choisir un département de la liste'
+export const PARAMS_MISSING = 'Veuillez saisir les champs obligatoirs.'
+export const DEPARTEMENT_EMAIL_MISSING =
+  'Département ou email du Département non trouvé dans la base de données'
+export const CONTACT_US_SEND_TO_ADMIN_FAILED =
+  "Désolé, votre message n'a pas pu être envoyé. Réitérer votre demande ultérieurement"
+export const CONTACT_US_SEND_TO_CANDIDAT_FAILED =
+  "Votre message a été envoyé, la confirmation de votre demande n'a pas pu être envoyé."
+export const CONTACT_US_CONFIRM_SEND = email =>
+  `Votre message a été envoyé. Un courriel de conifrmation a été envoyé à l'adresse ${email}`
