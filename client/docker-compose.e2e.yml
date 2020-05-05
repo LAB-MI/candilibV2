@@ -54,7 +54,7 @@ services:
       CYPRESS_video: 'false'
       HTTP_PROXY: ${http_proxy}
       HTTPS_PROXY: ${http_proxy}
-      NO_PROXY: ${no_proxy},candidat.candilib.local,admin.candilib.local,mailhog
+      NO_PROXY: ${no_proxy},candidat.candilib.local,admin.candilib.local,mailhog,candilib_db_rest
     entrypoint: ["/e2e-entrypoint.sh","$CYPRESS_ARG"]
     volumes:
       - ./tests/e2e/:/app/tests/e2e/
