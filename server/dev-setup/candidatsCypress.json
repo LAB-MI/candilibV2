@@ -46,5 +46,19 @@
     "isEvaluationDone": false,
     "isValidatedEmail": true,
     "isValidatedByAurige": true
+  },
+  {
+    "codeNeph": "6123456789011",
+    "prenom": "CC_FRONT",
+    "nomNaissance": "CANDIDAT_CONTACT_US",
+    "adresse": "40 Avenue des terroirs de France 75012 Paris",
+    "portable": "0676543986",
+    "email": "candidat_contact_us@candi.lib",
+    "departement": "93",
+    "homeDepartement": "75",
+    "isEvaluationDone": false,
+    "isValidatedEmail": true,
+    "isValidatedByAurige": true
   }
+
 ]
