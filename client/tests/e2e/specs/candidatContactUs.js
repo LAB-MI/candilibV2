@@ -16,7 +16,32 @@ describe('Contact Us', () => {
     const message = 'Text du message du candidat'
 
     it('Should get confirm mail to candidat and send mail to admin when candidat is sign-in', () => {
-      cy.visit(Cypress.env('frontCandidat') + 'contact-us')
+      if (!Cypress.env('API_CONTACT_US')) {
+        cy.server()
+        cy.route('GET', Cypress.env('frontCandidat') + 'api/v2/candidat/me', {
+          candidat: {
+            codeNeph: Cypress.env('codeNephCandidatContactUs'),
+            nomNaissance: Cypress.env('candidatContactUs'),
+            prenom: Cypress.env('prenomCandidatContactUs'),
+            email: Cypress.env('emailCandidatContactUs'),
+            portable: Cypress.env('portableCandidatContactUs'),
+            departement: Cypress.env('departementCandidatContactUs'),
+            homeDepartement: Cypress.env('homeDepartementCandidatContactUs'),
+          },
+        })
+        cy.route('GET', Cypress.env('frontCandidat') + 'api/v2/auth/candidat/verify-token?token=test_token', { auth: true })
+        cy.route('POST', Cypress.env('frontCandidat') + 'api/v2/candidat/contact-us', { success: true })
+        cy.AddFakeMail(Cypress.env('emailCandidatContactUs'), subjectForCandidat, '<html></html>')
+        cy.AddFakeMail(Cypress.env('emailRepartiteur93'), subject, '<html><p>' + message + '</p></html>')
+        cy.visit(Cypress.env('frontCandidat') + 'contact-us', {
+          onBeforeLoad: (win) => {
+            win.fetch = null
+            win.localStorage.setItem('token', 'test_token')
+          },
+        })
+      } else {
+        cy.visit(Cypress.env('frontCandidat') + 'contact-us')
+      }
 
       cy.get('.app-title').should('contain', 'Nous contacter')
       cy.get('.t-contact-us-form').within(($inForm) => {
@@ -76,15 +101,28 @@ describe('Contact Us', () => {
 
     it('Should get confirm mail to candidat and send mail to admin when candidat is not sign-in', () => {
       cy.deleteAllMails()
-      cy.visit(Cypress.env('frontCandidat') + 'contact-us', {
-        onBeforeLoad: (win) => {
-          win.localStorage.clear()
-        },
-      })
+      if (!Cypress.env('API_CONTACT_US')) {
+        cy.server()
+        cy.route('POST', Cypress.env('frontCandidat') + 'api/v2/candidat/contact-us', { success: true })
+        cy.AddFakeMail(Cypress.env('emailCandidat'), subjectForCandidat, '<html></html>')
+        cy.AddFakeMail(Cypress.env('emailRepartiteur'), subject, '<html><p>' + message + '</p></html>')
+
+        cy.visit(Cypress.env('frontCandidat') + 'contact-us', {
+          onBeforeLoad: (win) => {
+            win.fetch = null
+            win.localStorage.clear()
+          },
+        })
+      } else {
+        cy.visit(Cypress.env('frontCandidat') + 'contact-us', {
+          onBeforeLoad: (win) => {
+            win.localStorage.clear()
+          },
+        })
+      }
       cy.get('.contact-us-title').should('contain', 'Nous contacter')
       cy.get('.t-contact-us-form').within(($inForm) => {
         cy.get('.contact-us-button').should('contain', 'Envoyer').should('be.disabled')
-
         cy.get('.t-checkbox').parent().click()
         const dataInfos = [
           { label: 'NEPH', value: Cypress.env('NEPH') },
@@ -133,6 +171,10 @@ describe('Contact Us', () => {
 
       cy.getLastMail({ subject: subjectForCandidat, recipient: Cypress.env('emailCandidat') })
         .getSubject().should('contain', subjectForCandidat)
+
+      if (!Cypress.env('API_CONTACT_US')) {
+        cy.server({ enable: false })
+      }
     })
   } else {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
