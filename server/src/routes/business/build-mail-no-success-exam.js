@@ -1,17 +1,19 @@
-import { getUrlFAQ, getUrlRESA, getHtmlBody } from './mail'
-import { getEmailDepartementOfCandidat } from './send-mail-util'
+import { getUrlFAQ, getHtmlBody } from './mail'
+import {
+  getContactUs,
+  getCandidatToken,
+  getUrlRESAByToken,
+} from './send-mail-util'
 import config from '../../config'
 
 export const getNoSuccessAtExamBody = async (candidat, fnGetTemplate) => {
-  const { _id, nomNaissance, departement } = candidat
+  const { _id, nomNaissance } = candidat
 
   const urlFAQ = getUrlFAQ()
-  const urlRESA = getUrlRESA(_id)
   const timeoutToRetry = config.timeoutToRetry
-  let contactezNous = ''
-  try {
-    contactezNous = await getEmailDepartementOfCandidat(departement)
-  } catch (error) {}
+  const token = getCandidatToken(_id)
+  const urlRESA = getUrlRESAByToken(token)
+  const contactezNous = getContactUs(token)
 
   const body = fnGetTemplate(
     nomNaissance,
