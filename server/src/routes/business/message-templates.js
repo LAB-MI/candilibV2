@@ -24,7 +24,7 @@ import {
   getUrlFAQ,
   getEpreuvePratiqueOKBeforeTemplate,
 } from './mail'
-import { getEmailDepartementOfCandidat } from './send-mail-util'
+import { getContactUs } from './send-mail-util'
 
 const getMailData = async (candidat, flag, urlMagicLink) => {
   const urlFAQ = getUrlFAQ()
@@ -35,15 +35,11 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     nomNaissance,
     email,
     emailValidationHash,
-    departement,
     canAccessAt,
   } = candidat
 
-  let contactezNous = ''
+  const contactezNous = getContactUs()
 
-  try {
-    contactezNous = await getEmailDepartementOfCandidat(departement)
-  } catch (error) {}
   const urlValidationEmail = `${
     config.PUBLIC_URL
   }/email-validation?e=${encodeURIComponent(email)}&h=${emailValidationHash}`
