@@ -109,7 +109,7 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
 /**
  * @function
  *
- * @param {string} centresId - Ids des centres
+ * @param {string} centresId - Id de centre
  * @param {string} beginDate - Date au format ISO de debut de recherche
  * @param {string} endDate - Date au format ISO de fin de recherche
  *
