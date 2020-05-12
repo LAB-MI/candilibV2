@@ -61,7 +61,6 @@ describe('test statistics', () => {
       dateReussitePratique.toJSDate(),
       dateReussitePratique.toJSDate()
     )
-    console.log({ results })
 
     expect(results).toBeDefined()
     expect(results).toBe(
@@ -78,6 +77,7 @@ describe('test statistics', () => {
     expect(results).toBeDefined()
     expect(results).toBe(countAbsent('92', begin, end))
   })
+
   it('Should have nb failure', async () => {
     const centres = await findCentresByDepartement('91', { _id: 1 })
     const results = await countFailureByCentres(
@@ -88,6 +88,7 @@ describe('test statistics', () => {
     expect(results).toBeDefined()
     expect(results).toBe(countFailure('91'))
   })
+
   it('Should have nb not examined', async () => {
     const centres = await findCentresByDepartement('92', { _id: 1 })
     const begin = dateTimeDernierEchecPratiqueWithPenalty(45 * 3).toJSDate()
@@ -100,6 +101,7 @@ describe('test statistics', () => {
     expect(results).toBeDefined()
     expect(results).toBe(countNotExamined('92', begin, end))
   })
+
   it('Should have nb not examined, absent, received, failed', async () => {
     const begin = dateTimeDernierEchecPratiqueWithPenalty(45 * 3)
     const end = dateReussitePratique
@@ -118,6 +120,7 @@ describe('test statistics', () => {
     expect(result).toHaveProperty('failed', countFailure('92', begin, end))
     expect(result).toHaveProperty('received', countSuccess('92', begin, end))
   })
+
   it('Should have, for all departement, nb not examined, absent, received, failed', async () => {
     const begin = dateTimeDernierEchecPratiqueWithPenalty(45 * 3)
     const end = dateReussitePratique
@@ -137,16 +140,19 @@ describe('test statistics', () => {
         'absent',
         countAbsent(result.departement, begin, end)
       )
+
       expect(result).toHaveProperty(
         'received',
         countSuccess(result.departement, begin, end)
       )
+
       expect(result).toHaveProperty(
         'failed',
         countFailure(result.departement, begin, end)
       )
     })
   })
+
   it('Should have, stats in future with total subscript', async () => {
     const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
     const result = await getAllPlacesProposeInFutureByDpt(dateBeginPeriode)
