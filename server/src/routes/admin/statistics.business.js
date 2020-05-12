@@ -28,7 +28,7 @@ export const getResultsExamAllDpt = async (
     dpts = await getDepartementsFromCentres()
   }
 
-  if (!dpts) {
+  if (!(dpts && dpts.length)) {
     throw new Error('Aucun département trouvé')
   }
   const results = await Promise.all(
@@ -180,7 +180,7 @@ export const countSuccessByCentres = async (
       },
     ])
     .count('count')
-  console.log({ result })
+
   return result[0] ? result[0].count : 0
 }
 
@@ -224,6 +224,7 @@ export const countNotExaminedByCentres = async (
     beginPeriode,
     endPeriode
   )
+
   return count
 }
 
@@ -240,6 +241,7 @@ const countByReasonAndCentres = async (
     beginPeriode,
     endPeriode
   )
+
   const countForArchivedCandidats = await countNoReussitesAndPlacesByReasonAndCentres(
     archivedCandidatModel.aggregate(),
     reason,
@@ -247,8 +249,10 @@ const countByReasonAndCentres = async (
     beginPeriode,
     endPeriode
   )
+
   let count = countForCandidats[0] ? countForCandidats[0].count : 0
   count += countForArchivedCandidats[0] ? countForArchivedCandidats[0].count : 0
+
   return count
 }
 
@@ -260,7 +264,7 @@ const countNoReussitesAndPlacesByReasonAndCentres = (
   endPeriode
 ) => {
   const expression = {}
-  if (centres) {
+  if (centres && centres.length) {
     expression['places.centre'] = { $in: centres }
   }
 

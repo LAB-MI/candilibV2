@@ -485,10 +485,10 @@ export const createOneCandidatForStat = async candidat => {
   const places = await Promise.all(
     candidat.places.map(async place => {
       const { centre, inspecteur } = place
-      const centreInDB = await findCentreByNameAndDepartement(
+      const centreInDB = (await findCentreByNameAndDepartement(
         centre.nom,
         centre.departement
-      )
+      ))[0]
       const inspecteurInDB = await findInspecteurByMatricule(
         inspecteur.matricule
       )
@@ -514,10 +514,10 @@ export const createArchivedCandidatForStat = async candidat => {
     const places = await Promise.all(
       candidat.places.map(async place => {
         const { centre, inspecteur } = place
-        const centreInDB = await findCentreByNameAndDepartement(
+        const centreInDB = (await findCentreByNameAndDepartement(
           centre.nom,
           centre.departement
-        )
+        ))[0]
         const inspecteurInDB = await findInspecteurByMatricule(
           inspecteur.matricule
         )
