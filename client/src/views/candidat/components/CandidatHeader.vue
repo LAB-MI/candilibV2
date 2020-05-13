@@ -66,12 +66,13 @@
       </v-tooltip>
       <bandeau-beta />
     </div>
+    <!-- <covid-message-exam /> -->
   </v-app-bar>
 </template>
 
 <script>
 import { mapGetters } from 'vuex'
-
+// import CovidMessageExam from '@/views/candidat/components/CovidMessageExam'
 import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/store'
 import IconWithTooltip from '@/components/IconWithTooltip'
 
@@ -79,6 +80,7 @@ export default {
   name: 'CandidatHeader',
   components: {
     IconWithTooltip,
+    // CovidMessageExam,
   },
 
   props: {
