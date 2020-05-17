@@ -61,7 +61,9 @@ import {
   PLACE_IS_ALREADY_BOOKED,
   UNKNOWN_ERROR_UPLOAD_PLACES,
 } from './message.constants'
-import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
+// TODO: Uncomment next line after 31/12/2020
+// import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
+import { isETGExpired } from './business'
 
 /**
  * Résultat d'import d'une place
@@ -676,12 +678,17 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
     throw new ErrorWithStatus(400, "Le candidat n'est pas validé par Aurige")
   }
 
+  const dateReussiteETG = getFrenchLuxonFromJSDate(candidat.dateReussiteETG)
+  const datePlace = getFrenchLuxonFromJSDate(place.date)
   if (
-    getFrenchLuxonFromJSDate(candidat.dateReussiteETG)
-      .plus({
-        year: NB_YEARS_ETG_EXPIRED,
-      })
-      .endOf('day') < getFrenchLuxonFromJSDate(place.date)
+    // TODO: remove next line after 31/12/2020
+    isETGExpired(dateReussiteETG, datePlace)
+    // TODO: Uncomment next compare after 31/12/2020
+    // dateReussiteETG
+    //   .plus({
+    //     year: NB_YEARS_ETG_EXPIRED,
+    //   })
+    //   .endOf('day') < datePlace
   ) {
     throw new ErrorWithStatus(
       400,
