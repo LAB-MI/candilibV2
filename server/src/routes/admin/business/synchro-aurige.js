@@ -60,6 +60,7 @@ const getCandidatStatus = (nom, neph, status, details, message) => ({
 
 const isInAuthorizedRangeOfExpiredETG = (
   dateTimeReussiteETG,
+  optionalDateOfPlace = undefined,
   objectDateStart = AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED,
   objectDateEnd = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED
 ) => {
@@ -69,8 +70,11 @@ const isInAuthorizedRangeOfExpiredETG = (
   const dateTimeEtgWithNbYearsExpired = dateTimeReussiteETG.plus({
     years: NB_YEARS_ETG_EXPIRED,
   })
+
+  const dateToCompare = optionalDateOfPlace || getFrenchLuxon()
   if (
-    !(getFrenchLuxon() > rangeEnd) &&
+    !(dateToCompare > rangeEnd) &&
+    !(dateToCompare < rangeStart) &&
     dateTimeEtgWithNbYearsExpired.endOf('day') >= rangeStart &&
     dateTimeEtgWithNbYearsExpired.endOf('day') <= rangeEnd
   ) {
@@ -79,8 +83,12 @@ const isInAuthorizedRangeOfExpiredETG = (
   return false
 }
 
-export const isETGExpired = dateReussiteETG => {
+export const isETGExpired = (
+  dateReussiteETG,
+  optionalDateOfPlace = undefined
+) => {
   let dateTime
+  let optDateOfPlace
   if (dateReussiteETG instanceof DateTime) {
     dateTime = dateReussiteETG
   } else if (dateReussiteETG instanceof Date) {
@@ -89,7 +97,17 @@ export const isETGExpired = dateReussiteETG => {
     dateTime = getFrenchLuxonFromISO(dateReussiteETG)
   }
 
-  if (isInAuthorizedRangeOfExpiredETG(dateTime)) {
+  if (optionalDateOfPlace) {
+    if (optionalDateOfPlace instanceof DateTime) {
+      optDateOfPlace = optionalDateOfPlace
+    } else if (optionalDateOfPlace instanceof Date) {
+      optDateOfPlace = getFrenchLuxonFromJSDate(optionalDateOfPlace)
+    } else {
+      optDateOfPlace = getFrenchLuxonFromISO(optionalDateOfPlace)
+    }
+  }
+
+  if (isInAuthorizedRangeOfExpiredETG(dateTime, optDateOfPlace)) {
     return false
   }
 

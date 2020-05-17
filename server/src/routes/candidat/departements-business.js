@@ -10,6 +10,7 @@ export const getGeoDepartementsInfos = async (geoDepartementsId, userId) => {
     action: 'Getting active geo departements business',
     section: 'candidat-departements-business',
     userId,
+    geoDepartementsId,
   }
 
   try {
