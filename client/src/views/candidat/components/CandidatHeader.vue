@@ -71,7 +71,6 @@
 
 <script>
 import { mapGetters } from 'vuex'
-
 import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/store'
 import IconWithTooltip from '@/components/IconWithTooltip'
 

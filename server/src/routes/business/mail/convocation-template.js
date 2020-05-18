@@ -10,6 +10,10 @@ export const getConvocationTemplate = (
   urlRESA,
   urlFAQ
 ) => `<p>Le présent mail vaut convocation.</p>
+<br>  <div style="border: 5px solid red;">
+Lorem ipsum dolor, sit amet consectetur adipisicing elit. Facere ipsa eum labore! Quis nihil quisquam quia ex sunt dolore recusandae nam sit deleniti, dolor tempore iste quod saepe, consectetur corporis?
+</div>
+<br>
 <p>Madame, Monsieur ${nameCandidat},</p>
 <br>
 <p>Nous avons bien pris en compte votre réservation à l'examen pratique du permis de conduire le ${dateResa} à ${houreResa}

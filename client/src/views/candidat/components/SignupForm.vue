@@ -1,5 +1,6 @@
 <template>
   <div class="presignup-form">
+    <covid-message-presignup-exam />
     <v-form
       ref="presignupForm"
       v-model="valid"
@@ -164,6 +165,7 @@ import {
 } from '@/store'
 
 import AlreadySignedUp from './AlreadySignedUp'
+import CovidMessagePresignupExam from '@/views/candidat/components/CovidMessagePresignupExam'
 import SelectDepartement from '@/views/admin/components/SelectDepartements'
 import { mapState } from 'vuex'
 
@@ -172,6 +174,7 @@ export default {
   components: {
     AlreadySignedUp,
     SelectDepartement,
+    CovidMessagePresignupExam,
   },
   props: {
     toggleForm: {
