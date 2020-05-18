@@ -12,7 +12,7 @@
       </router-link>
     </div>
 
-    <covid-message-exam />
+    <covid-message-presignup-exam />
 
     <candidat-stepper />
 
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import CovidMessageExam from '@/views/candidat/components/CovidMessageExam'
+import CovidMessagePresignupExam from '@/views/candidat/components/CovidMessagePresignupExam'
 import CandidatStepper from './CandidatStepper'
 import AlreadySignedUp from './AlreadySignedUp'
 
@@ -71,7 +71,7 @@ export default {
   components: {
     AlreadySignedUp,
     CandidatStepper,
-    CovidMessageExam,
+    CovidMessagePresignupExam,
   },
 }
 </script>
