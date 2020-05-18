@@ -30,10 +30,8 @@ export const getDateETG = async candidatId => {
     _id: 0,
     dateReussiteETG: 1,
   })
-  const luxonDateETGExpired = getFrenchLuxonFromJSDate(dateReussiteETG).endOf(
-    'day'
-  )
-  return luxonDateETGExpired
+  const luxonDateETG = getFrenchLuxonFromJSDate(dateReussiteETG).endOf('day')
+  return luxonDateETG
 }
 
 export const candidatCanReservePlaceForThisPeriod = async (

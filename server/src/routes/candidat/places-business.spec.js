@@ -136,8 +136,8 @@ describe('Test places business: get dates from places available', () => {
     expect(dates).toBeDefined()
     expect(dates).toHaveLength(nbPlacesAvaibles)
   })
-
-  it('Should get any places from Centre2 when ETG expired now', async () => {
+  // TODO: Unskip next 'it' test after 31/12/2020
+  xit('Should get any places from Centre2 when ETG expired now', async () => {
     const dateETGExpired = getFrenchLuxon()
     findCandidatById.mockResolvedValue({
       dateReussiteETG: dateETGExpired
@@ -170,7 +170,8 @@ describe('Test places business: get dates from places available', () => {
     }
   })
 
-  it('Should get many places from Centre2 when ETG expired in 2 months', async () => {
+  // TODO: Unskip next 'it' test after 31/12/2020
+  xit('Should get many places from Centre2 when ETG expired in 2 months', async () => {
     const dateETGExpired = getFrenchLuxon().plus({ months: 1 })
 
     findCandidatById.mockResolvedValue({
