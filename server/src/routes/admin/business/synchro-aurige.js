@@ -15,23 +15,24 @@ import {
 import {
   appLogger,
   CANDIDAT_EXISTANT,
-  CANDIDAT_NOK,
   CANDIDAT_NOK_NOM,
+  CANDIDAT_NOK,
   EMAIL_NOT_VERIFIED_EXPIRED,
   EMAIL_NOT_VERIFIED_YET,
   EPREUVE_ETG_KO,
+  EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
   EPREUVE_PRATIQUE_OK,
+  getFrenchLuxon,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
-  NOT_FOUND,
-  NO_NAME,
-  OK,
-  OK_MAIL_PB,
-  OK_UPDATED,
+  getFrenchLuxonFromObject,
   NB_FAILURES_KO,
   NO_CANDILIB,
-  getFrenchLuxon,
-  EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
+  NO_NAME,
+  NOT_FOUND,
+  OK_MAIL_PB,
+  OK_UPDATED,
+  OK,
 } from '../../../util'
 import {
   sendFailureExam,
@@ -45,6 +46,8 @@ import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
   NB_YEARS_ETG_EXPIRED,
   NB_DAYS_WAITING_FOR_ETG_EXPIERED,
+  AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED,
+  AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED,
 } from '../../common/constants'
 
 const getCandidatStatus = (nom, neph, status, details, message) => ({
@@ -55,16 +58,60 @@ const getCandidatStatus = (nom, neph, status, details, message) => ({
   message,
 })
 
-export const isETGExpired = dateReussiteETG => {
-  let datetime
-  if (dateReussiteETG instanceof DateTime) {
-    datetime = dateReussiteETG
-  } else if (dateReussiteETG instanceof Date) {
-    datetime = getFrenchLuxonFromJSDate(dateReussiteETG)
-  } else {
-    datetime = getFrenchLuxonFromISO(dateReussiteETG)
+const isInAuthorizedRangeOfExpiredETG = (
+  dateTimeReussiteETG,
+  optionalDateOfPlace = undefined,
+  objectDateStart = AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED,
+  objectDateEnd = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED
+) => {
+  const rangeStart = getFrenchLuxonFromObject(objectDateStart).endOf('day')
+  const rangeEnd = getFrenchLuxonFromObject(objectDateEnd).endOf('day')
+
+  const dateTimeEtgWithNbYearsExpired = dateTimeReussiteETG.plus({
+    years: NB_YEARS_ETG_EXPIRED,
+  })
+
+  const dateToCompare = optionalDateOfPlace || getFrenchLuxon()
+  if (
+    !(dateToCompare > rangeEnd) &&
+    !(dateToCompare < rangeStart) &&
+    dateTimeEtgWithNbYearsExpired.endOf('day') >= rangeStart &&
+    dateTimeEtgWithNbYearsExpired.endOf('day') <= rangeEnd
+  ) {
+    return true
   }
-  return datetime.endOf('day').diffNow('years').years < -NB_YEARS_ETG_EXPIRED
+  return false
+}
+
+export const isETGExpired = (
+  dateReussiteETG,
+  optionalDateOfPlace = undefined
+) => {
+  let dateTime
+  let optDateOfPlace
+  if (dateReussiteETG instanceof DateTime) {
+    dateTime = dateReussiteETG
+  } else if (dateReussiteETG instanceof Date) {
+    dateTime = getFrenchLuxonFromJSDate(dateReussiteETG)
+  } else {
+    dateTime = getFrenchLuxonFromISO(dateReussiteETG)
+  }
+
+  if (optionalDateOfPlace) {
+    if (optionalDateOfPlace instanceof DateTime) {
+      optDateOfPlace = optionalDateOfPlace
+    } else if (optionalDateOfPlace instanceof Date) {
+      optDateOfPlace = getFrenchLuxonFromJSDate(optionalDateOfPlace)
+    } else {
+      optDateOfPlace = getFrenchLuxonFromISO(optionalDateOfPlace)
+    }
+  }
+
+  if (isInAuthorizedRangeOfExpiredETG(dateTime, optDateOfPlace)) {
+    return false
+  }
+
+  return dateTime.endOf('day').diffNow('years').years < -NB_YEARS_ETG_EXPIRED
 }
 
 export const isMoreThan2HoursAgo = date =>
@@ -338,7 +385,7 @@ const updateValidCandidat = async (
   const dateNow = getFrenchLuxon().endOf('day')
   try {
     if (!isValidatedByAurige) {
-      // TODO: supprimer les 3 prochains commantaires devient un list de VIP Cf jclaudan
+      // TODO: supprimer les 3 prochains commantaires devient une list de VIP Cf jclaudan
       // const isWhitelisted = await findWhitelistedByEmail(email)
       // if (!isWhitelisted) {
       infoCandidatToUpdate.canAccessAt = dateNow
