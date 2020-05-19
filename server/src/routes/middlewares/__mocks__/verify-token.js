@@ -20,3 +20,10 @@ export function verifyToken (req, res, next) {
   req.departements = departements
   next()
 }
+
+export function getToken (req, res, next) {
+  req.userId = idUser
+  req.userLevel = level
+  req.departements = departements
+  next()
+}
