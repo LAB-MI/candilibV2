@@ -39,7 +39,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: 'Rendez-vous sur la page d\'accueil du service pour se pré-inscrire.',
         },
         {
-          textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et mon département de résidence.',
+          textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et votre département de résidence.',
         },
         {
           textContent: 'Si celui-ci ne figure pas dans la liste déroulante, vous devrez choisir le département le plus proche de chez vous. Cela n’aura pas de conséquence pour le choix de votre lieu de passage de l’examen.',
