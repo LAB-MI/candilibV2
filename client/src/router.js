@@ -41,6 +41,8 @@ const CenterSelection = () => import(/* webpackChunkName: "candidat", webpackPre
 const TimeSlot = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/time-slots-selection/TimeSlot.vue')
 const SelectionSummary = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/selection-summary/SelectionSummary.vue')
 const MyProfile = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/MyProfile.vue')
+const FormContact = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/form-contact/FormContact.vue')
+const ContactUsNotSignUp = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/form-contact/ContactUsNotSignUp.vue')
 
 const AdminLogin = () => import('@/views/admin/components/Login')
 const AdminAurige = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Aurige.vue')
@@ -160,6 +162,11 @@ const candidatRoutes = [
         component: EmailValidation,
       },
       {
+        path: '/contact-us',
+        name: 'contact-us',
+        component: ContactUsNotSignUp,
+      },
+      {
         path: '/informations',
         name: 'covid-message',
         component: CovidMessage,
@@ -223,6 +230,11 @@ const candidatRoutes = [
         path: 'faq',
         name: 'faq-candidat',
         component: Faq,
+      },
+      {
+        path: 'contact-us',
+        name: 'contact-us',
+        component: FormContact,
       },
     ],
   },
