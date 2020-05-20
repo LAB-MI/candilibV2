@@ -109,7 +109,7 @@ describe('Test get dates from places available', () => {
     const centreSelected = centresTests[1]
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places?departement=${centreSelected.departement}&centre=${centreSelected.nom}`
+        `${apiPrefix}/candidat/places?geoDepartement=${centreSelected.geoDepartement}&nomCentre=${centreSelected.nom}`
       )
       .set('Accept', 'application/json')
       .expect(200)
@@ -315,7 +315,8 @@ describe('Test to book and to delete reservation by candidat', () => {
       .patch(`${apiPrefix}/candidat/places`)
       .set('Accept', 'application/json')
       .send({
-        id: placeSelected.centre,
+        nomCentre: createdCentre.nom,
+        geoDepartement: createdCentre.geoDepartement,
         date: placeSelected.date,
         isAccompanied: true,
         hasDualControlCar: true,
@@ -532,7 +533,8 @@ const createReservationWithFailure = async (
   const { body } = await request(app)
     .patch(`${apiPrefix}/candidat/places`)
     .send({
-      id: selectedCentre._id,
+      nomCentre: selectedCentre.nom,
+      geoDepartement: selectedCentre.geoDepartement,
       date: selectedPlace.date,
       isAccompanied: true,
       hasDualControlCar: true,
@@ -571,7 +573,8 @@ const createReservationWithSuccess = async (
   const { body } = await request(app)
     .patch(`${apiPrefix}/candidat/places`)
     .send({
-      id: selectedCentre._id,
+      nomCentre: selectedCentre.nom,
+      geoDepartement: selectedCentre.geoDepartement,
       date: selectedPlace.date,
       isAccompanied: true,
       hasDualControlCar: true,
@@ -692,7 +695,8 @@ describe('test to book with the date authorize by candiat', () => {
     const { body } = await request(app)
       .patch(`${apiPrefix}/candidat/places`)
       .send({
-        id: selectedPlace.centre,
+        nomCentre: placeCanBook.centre.nom,
+        geoDepartement: placeCanBook.centre.geoDepartement,
         date: selectedPlace.date,
         isAccompanied: true,
         hasDualControlCar: true,

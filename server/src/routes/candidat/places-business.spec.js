@@ -123,7 +123,7 @@ describe('Test places business: get dates from places available', () => {
     await disconnect()
   })
 
-  it('Should get 2 dates from places Centre 2', async () => {
+  it('Should get 2 dates from places Centre 6', async () => {
     findCandidatById.mockResolvedValue({
       dateReussiteETG: getFrenchLuxon().toISODate(),
     })
@@ -136,9 +136,9 @@ describe('Test places business: get dates from places available', () => {
     expect(dates).toBeDefined()
     expect(dates).toHaveLength(nbPlacesAvaibles)
   })
-  // TODO: Unskip next 'it' test after 31/12/2020
-  xit('Should get any places from Centre2 when ETG expired now', async () => {
-    const dateETGExpired = getFrenchLuxon()
+
+  it('Should get any places from Centre2 when ETG expired now', async () => {
+    const dateETGExpired = getFrenchLuxon().minus({ years: 1 })
     findCandidatById.mockResolvedValue({
       dateReussiteETG: dateETGExpired
         .minus({ years: NB_YEARS_ETG_EXPIRED })

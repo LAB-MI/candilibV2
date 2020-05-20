@@ -1,5 +1,4 @@
 export const CANDIDAT_TOKEN_STORAGE_KEY = 'token'
-export const CANDIDAT_SELECTED_CENTER = 'selected-center'
 export const ADMIN_TOKEN_STORAGE_KEY = 'admin-token'
 export const DEPARTEMENT_STORAGE_KEY = 'departement'
 
