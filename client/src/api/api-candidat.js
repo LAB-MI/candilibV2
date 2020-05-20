@@ -60,8 +60,8 @@ const apiCandidat = {
     return json
   },
 
-  async getCentre (centreId) {
-    const queryString = `centreId=${centreId}`
+  async getCentre (departement, nom) {
+    const queryString = `departement=${departement}&nom=${nom}`
     const json = await apiClient.get(
         `${apiPaths.candidat.centres}?${queryString}`,
         {
@@ -93,26 +93,30 @@ const apiCandidat = {
     return json
   },
 
-  async getPlaces (centreId, begin, end) {
+  async getPlaces (geoDepartement, nomCentre, begin, end) {
     const queryString = `begin=${encodeURIComponent(
         begin,
-      )}&end=${encodeURIComponent(end)}`
+        )}&end=${encodeURIComponent(end)}&geoDepartement=${geoDepartement}&nomCentre=${nomCentre}`
     const json = await apiClient.get(
-        `${apiPaths.candidat.places}/${centreId}?${queryString}`,
-        {
-          headers: getHeadersForJson(),
-        },
+      `${apiPaths.candidat.places}?${queryString}`,
+      {
+        headers: getHeadersForJson(),
+      },
     )
     return json
   },
 
-  async checkPlacesAvailability (centreId, date) {
-    const queryString = `dateTime=${encodeURIComponent(date)}`
+  async checkPlacesAvailability (centreId, nomCentre, date, geoDepartement) {
+    const queryDate = `dateTime=${encodeURIComponent(date)}`
+    const queryGeoDepartement = `geoDepartement=${geoDepartement}`
+    const queryNomCentre = `nomCentre=${nomCentre}`
+    const fullQuery = centreId
+      ? `/${centreId}?${queryDate}` : `?${queryDate}&${queryNomCentre}&${queryGeoDepartement}`
     const json = await apiClient.get(
-        `${apiPaths.candidat.places}/${centreId}?${queryString}`,
-        {
-          headers: getHeadersForJson(),
-        },
+      `${apiPaths.candidat.places}${fullQuery}`,
+      {
+        headers: getHeadersForJson(),
+      },
     )
     return json
   },
@@ -124,10 +128,11 @@ const apiCandidat = {
     return json
   },
 
-  async setReservations (centreId, date, isAccompanied, hasDualControlCar) {
+  async setReservations (nomCentre, geoDepartement, date, isAccompanied, hasDualControlCar) {
     const json = await apiClient.patch(`${apiPaths.candidat.places}`, {
       body: JSON.stringify({
-        id: centreId,
+        nomCentre,
+        geoDepartement,
         date,
         isAccompanied,
         hasDualControlCar,

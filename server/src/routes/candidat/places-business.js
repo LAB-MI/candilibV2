@@ -67,7 +67,6 @@ export const getDatesByCentreId = async (
     endDate,
     candidatId,
   })
-
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
     beginDate,
@@ -82,7 +81,8 @@ export const getDatesByCentreId = async (
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO()
   )
-  return [...new Set(dates)]
+  const result = [...new Set(dates)]
+  return result && result.length ? result : undefined
 }
 
 /**
@@ -167,7 +167,14 @@ export const getDatesByCentre = async (
     foundCentre = await findCentreByNameAndDepartement(nomCentre, departement)
   } else {
     foundCentre = await findCentreByName(nomCentre)
+    const rawDates = Promise.all(
+      foundCentre.map(fndCentre =>
+        getDatesByCentreId(fndCentre._id, beginDate, endDate, candidatId)
+      )
+    )
+    return [...new Set(rawDates)]
   }
+
   const dates = await getDatesByCentreId(
     foundCentre._id,
     beginDate,
@@ -220,7 +227,7 @@ export const hasAvailablePlacesByCentre = async (
     geoDepartement
   )
 
-  if (foundCentre && foundCentre && foundCentre.length > 1) {
+  if (foundCentre && foundCentre.length > 1) {
     const allDates = await Promise.all(
       foundCentre.map(async centre => {
         const dates = await hasAvailablePlaces(centre._id, date)
@@ -237,7 +244,7 @@ export const hasAvailablePlacesByCentre = async (
     }, [])
     return result
   }
-  const dates = await hasAvailablePlaces(foundCentre._id, date)
+  const dates = await hasAvailablePlaces(foundCentre[0]._id, date)
   // TODO: Refactor --->
   return dates
 }

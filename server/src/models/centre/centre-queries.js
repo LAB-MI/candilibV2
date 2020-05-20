@@ -227,7 +227,7 @@ export const findCentresByDepartement = async (
  * @param {string} nom - Nom du centre
  * @param {string} departement - Département du centre
  *
- * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
+ * @returns {Promise.<CentreMongooseDocument[]>} - List des Centres correspondant
  */
 export const findCentreByNameAndDepartement = async (
   nom,
@@ -242,7 +242,13 @@ export const findCentreByNameAndDepartement = async (
   if (departement) filter.departement = departement
   if (geoDepartement) filter.geoDepartement = geoDepartement
   const centres = await Centre.find(filter, options)
-  return centres
+  return departement
+    ? centres.length
+      ? centres[0]
+      : null
+    : centres.length
+      ? centres
+      : null
 }
 
 export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
