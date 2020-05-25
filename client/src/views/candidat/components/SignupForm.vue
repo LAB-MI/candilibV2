@@ -12,6 +12,7 @@
         v-model="candidat"
         dark
         :available-departements="availableDepartements"
+        :show-dialog="showDialog"
       />
       <div class="form-input">
         <v-btn
@@ -121,7 +122,6 @@ export default {
         return this.$store.dispatch(SHOW_ERROR, this.getMsg('preinscription_formulaire_invalide'))
       }
 
-      console.log(this.candidat)
       const {
         codeNeph,
         nomNaissance,

@@ -4,7 +4,10 @@
       <h3 class="contact-us-title">
         {{ $formatMessage({ id: 'contact_us_title' }) }}
       </h3>
-      <form-contact />
+      <form-contact
+        dark
+        with-had-singup
+      />
     </template>
   </layout-landing-page>
 </template>

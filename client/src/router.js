@@ -7,6 +7,7 @@ import {
   checkAdminToken,
   checkCandidatToken,
   checkAccess,
+  checkCandidatTokenForContactUs,
 } from './router-checks'
 import {
   ROUTE_AUTHORIZE_AURIGE,
@@ -41,7 +42,7 @@ const CenterSelection = () => import(/* webpackChunkName: "candidat", webpackPre
 const TimeSlot = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/time-slots-selection/TimeSlot.vue')
 const SelectionSummary = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/selection-summary/SelectionSummary.vue')
 const MyProfile = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/MyProfile.vue')
-const FormContact = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/form-contact/FormContact.vue')
+const ContactUsSignUp = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/form-contact/ContactUsSignUp.vue')
 const ContactUsNotSignUp = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/form-contact/ContactUsNotSignUp.vue')
 
 const AdminLogin = () => import('@/views/admin/components/Login')
@@ -165,6 +166,7 @@ const candidatRoutes = [
         path: '/contact-us',
         name: 'contact-us',
         component: ContactUsNotSignUp,
+        beforeEnter: checkCandidatTokenForContactUs,
       },
       {
         path: '/informations',
@@ -234,7 +236,7 @@ const candidatRoutes = [
       {
         path: 'contact-us',
         name: 'contact-us',
-        component: FormContact,
+        component: ContactUsSignUp,
       },
     ],
   },
