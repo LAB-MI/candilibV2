@@ -54,7 +54,6 @@
           :color="dark?'#fff':''"
           required
           :rules="messageRules"
-          @keydown="onKeyDownMessage"
         />
       </div>
       <div class="form-input  form-input-group">
@@ -135,11 +134,6 @@ export default {
   },
 
   methods: {
-    onKeyDownMessage (evt) {
-      if (this.message.length >= messageMaxLength) {
-        evt.preventDefault()
-      }
-    },
     async sendContactUs () {
       if (!this.valid) {
         return this.$store.dispatch(SHOW_ERROR, this.$formatMessage({ id: 'contact_us_formulaire_invalide' }))
