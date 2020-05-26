@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:12.13.1-slim as base
+FROM node:12.16.1-slim as base
 ARG http_proxy
 ARG https_proxy
 ARG npm_registry
@@ -11,16 +11,18 @@ ARG no_proxy
 # Base dir /app
 WORKDIR /app
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone
 # use proxy & private npm registry
-RUN if [ ! -z "$http_proxy" ] ; then \
+# With internal npm repo (autosigned) disable strict ssl : strict-ssl false
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone ; \
+    if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \
         npm config set proxy $http_proxy; \
         npm config set https-proxy $https_proxy ; \
         npm config set no-proxy $no_proxy; \
    fi ; \
-   [ -z "$npm_registry" ] || npm config set registry=$npm_registry; \
-   [ -z "$sass_registry" ] || npm config set sass_binary_site=$sass_registry;
+   [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
+   [ -z "$npm_registry" ] || npm config set strict-ssl false ; \
+   [ -z "$sass_registry" ] || npm config set sass-binary-site=$sass_registry;
 
 ################################
 # Step 2: "development" target #
@@ -44,7 +46,10 @@ ARG LINE_DELAY
 RUN if [ -n "$LINE_DELAY" ] && [ -f "public/config-candilib.json" ] ; then \
       echo '{"lineDelay": '"$LINE_DELAY"'}' > public/config-candilib.json ; \
     fi
-RUN set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm ci --loglevel http
+# With internal npm repo (autosigned) NODE_TLS_REJECT_UNAUTHORIZED=0: to disable ssl verify  https.request (ex: cypress)
+#   in post-install steps in modules install
+RUN ssl="$(npm config get strict-ssl)" ; [ "x$ssl" = "xfalse" ] && export NODE_TLS_REJECT_UNAUTHORIZED=0 || true ; \
+    set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm ci --loglevel http
 EXPOSE 8080
 
 CMD ["npm","run", "serve"]
