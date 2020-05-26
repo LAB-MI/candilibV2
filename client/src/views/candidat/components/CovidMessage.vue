@@ -7,9 +7,7 @@
         class="rounded-corner"
       >
         <p>
-          En raison de la situation de crise pandémique liée au coronavirus COVID 19, les examens du permis de conduire sont suspendus jusqu'à nouvel ordre.
-          <br>
-          Le site candilib restera indisponible durant cette période.
+          Le site candilib rouvrira le 4 juin 2020 pour des premiers examens à partir du 15 juin 2020.
           <br>Toutes les informations sur
           <a
             class="link-color"
