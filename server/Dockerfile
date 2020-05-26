@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:12.13.1-slim as base
+FROM node:12.16.1-slim as base
 ARG http_proxy
 ARG https_proxy
 ARG npm_registry
@@ -12,23 +12,30 @@ WORKDIR /app
 # Expose the listening port of your app
 EXPOSE 8000
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone ; \
 # use proxy & private npm registry
+# With internal npm repo (autosigned) disable strict ssl : strict-ssl false
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone ; \
     if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \
         npm config set proxy $http_proxy; \
-        npm config set https-proxy $https_proxy; \
+        npm config set https-proxy $https_proxy ; \
         npm config set no-proxy $no_proxy; \
    fi ; \
-   [ -z "$npm_registry" ] || npm config set registry=$npm_registry
+   [ -z "$npm_registry" ] || npm config set registry=$npm_registry ; \
+   [ -z "$npm_registry" ] || npm config set strict-ssl false
 
 ################################
 # Step 2: "development" target #
 ################################
 FROM base as development
+ARG MIRROR_DEBIAN
 ARG APP_VERSION
 COPY src src/
 COPY babel.config.js package.json package-lock.json ./
+# Install package utils for development
+RUN (set -x && [ -z "$MIRROR_DEBIAN" ] || sed -i.orig -e "s|http://deb.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9|g ; s|http://security.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9-security|g" /etc/apt/sources.list) ; \
+      buildPkgs="libcurl3 libssl1.1" ; \
+      apt-get update && apt-get install -y --no-install-recommends $buildPkgs
 # Install app dependencies
 RUN npm --no-git-tag-version version ${APP_VERSION} ; npm ci
 ENV NODE_ICU_DATA="/app/node_modules/full-icu"
@@ -43,6 +50,9 @@ FROM development as build
 ENV NPM_CONFIG_LOGLEVEL warn
 # Transpile the code with babel
 RUN npm run build
+RUN buildPkgs="libcurl3 libssl1.1" ; \
+      apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildPkgs ; \
+      rm -rf /var/lib/apt/lists/* # remove the cached files
 
 ###############################
 # Step 4: "production" target #
@@ -53,6 +63,7 @@ ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
 ARG APP_VERSION
 COPY package.json package-lock.json ./
+COPY ci ci/
 # Copy the pm2 config
 COPY ecosystem.config.js .
 # Copy the transpiled code to use in production (in /app)

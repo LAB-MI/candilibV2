@@ -16,7 +16,7 @@ timeout=120;
 test_result=1
 dirname=$(dirname $0)
 until [ "$timeout" -le 0 -o "$test_result" -eq "0" ] ; do
-	${DC} -f ${DC_APP_API_RUN_PROD} exec ${DC_USE_TTY} $container_name curl --retry-max-time 120 --retry-delay 1  --retry 1 --fail -s http://localhost:8000/api/v2/version
+	${DC} -f ${DC_APP_API_RUN_PROD} exec ${DC_USE_TTY} $container_name node ci/curl.js --retry-max-time 120 --retry-delay 1  --retry 1 --fail -s http://localhost:8000/api/v2/version
 	test_result=$?
 	echo "Wait $timeout seconds: ${APP}-$container_name up $test_result";
 	(( timeout-- ))
