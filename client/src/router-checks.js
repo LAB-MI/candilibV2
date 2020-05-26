@@ -92,7 +92,7 @@ export async function checkCandidatToken (to, from, next) {
   next({ name: 'candidat-presignup' })
 }
 
-export async function checkCandidatTokenForContactUs (to, from, next) {
+export async function checkCandidatTokenToRedirect (to, from, next) {
   const queryToken = to.query.token
   const token = queryToken || localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
   if (!token) {
@@ -101,7 +101,7 @@ export async function checkCandidatTokenForContactUs (to, from, next) {
   }
   await store.dispatch(CHECK_CANDIDAT_TOKEN, queryToken)
   if (store.state.auth.statusCandidat === SIGNED_IN_AS_CANDIDAT) {
-    next({ path: 'candidat/contact-us' })
+    next({ name: to.name + '-candidat' })
     return
   }
   next()
