@@ -180,7 +180,12 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
 })
 
 Cypress.Commands.add('candidatConnection', (candidatEmail) => {
-  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
+  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib', {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear()
+    },
+  })
+
   cy.contains('Déjà')
     .click()
   cy.get('input').type(candidatEmail)
