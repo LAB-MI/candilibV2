@@ -18,7 +18,7 @@ import {
 
 Vue.use(Router)
 
-const { VUE_APP_CLIENT_BUILD_TARGET, VUE_APP_CLIENT_BUILD_INFO } = process.env
+const { VUE_APP_CLIENT_BUILD_TARGET, VUE_APP_CLIENT_BUILD_INFO, VUE_APP_CLIENT_BUILD_WITH_CONTACT_US } = process.env
 
 const isBuildWithAll = ['ALL', undefined].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithCandidat = isBuildWithAll || ['CANDIDAT'].includes(VUE_APP_CLIENT_BUILD_TARGET)
@@ -135,6 +135,20 @@ const candidatRoutesInfo = [
     },
     ],
   }]
+
+const candidatGuestRouteContactUs = VUE_APP_CLIENT_BUILD_WITH_CONTACT_US ? {
+  path: '/contact-us',
+  name: 'contact-us',
+  component: ContactUsNotSignUp,
+  beforeEnter: checkCandidatTokenToRedirect,
+} : undefined
+
+const candidatRouteContactUs = {
+  path: 'contact-us',
+  name: 'contact-us-candidat',
+  component: ContactUsSignUp,
+}
+
 const candidatRoutes = [
   {
     path: '/candidat-guest',
@@ -161,12 +175,6 @@ const candidatRoutes = [
         path: '/email-validation',
         name: 'email-validation',
         component: EmailValidation,
-      },
-      {
-        path: '/contact-us',
-        name: 'contact-us',
-        component: ContactUsNotSignUp,
-        beforeEnter: checkCandidatTokenToRedirect,
       },
       {
         path: '/informations',
@@ -233,14 +241,12 @@ const candidatRoutes = [
         name: 'faq-candidat',
         component: Faq,
       },
-      {
-        path: 'contact-us',
-        name: 'contact-us-candidat',
-        component: ContactUsSignUp,
-      },
     ],
   },
 ]
+
+VUE_APP_CLIENT_BUILD_WITH_CONTACT_US && candidatRoutes[0].children.push(candidatGuestRouteContactUs)
+VUE_APP_CLIENT_BUILD_WITH_CONTACT_US && candidatRoutes[1].children.push(candidatRouteContactUs)
 
 const HomeComponent = isBuildWithAll ? Home : (isBuildWithAdmin ? AdminLogin : CandidatHome)
 
