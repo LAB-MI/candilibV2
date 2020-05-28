@@ -145,7 +145,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
     },
     {
       title: 'Aide / Contact',
-      content: [
+      content: process.env.VUE_APP_CLIENT_BUILD_WITH_CONTACT_US ? [
         {
           subTitleContent: "Si vous n'avez jamais réalisé de demande de NEPH, veuillez vous rendre sur le site de l'<a href='https://www.permisdeconduire.ants.gouv.fr/'>ANTS</a>.",
         },
@@ -155,7 +155,13 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         {
           subTitleContent: 'Sinon, contactez-nous via ce <a href="./contact-us">formulaire</a>.',
         },
-
+      ] : [
+        {
+          subTitleContent: 'Si vous vous êtes déjà pré-inscrit, posez vos questions à l\'adresse de contact personnalisée que vous avez reçue par courriel.',
+        },
+        {
+          subTitleContent: 'Si vous n\'êtes pas pré-inscrit ou si vous n\'avez pas trouvé de réponse à vos questions dans ces informations, vous pouvez nous contacter à cette adresse <a href="mailto:candilib@interieur.gouv.fr">candilib@interieur.gouv.fr</a>.',
+        },
       ],
     },
   ]
