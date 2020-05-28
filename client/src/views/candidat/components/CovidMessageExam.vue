@@ -1,20 +1,13 @@
 <template>
   <section>
     <v-alert
-      value="true"
       type="error"
       class="rounded-corner"
     >
       <p>
-        EXAM COVID 19
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Cupiditate, error. Repellendus .
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Eius repudiandae rerum fuga
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-
-        <router-link
+        <strong>COVID-19</strong>: mesures de sécurité sanitaire à respecter pour le passage de l’examen à consulter sur la         <router-link
           :to="{ name: 'faq' }"
           class="t-faq"
-          style="border: 2px solid red;"
         >
           <v-btn
             text
@@ -22,10 +15,12 @@
             tag="a"
             :to="{ name: 'faq' }"
             tabindex="10"
+            outlined
           >
-            FAQ
+            F.A.Q &nbsp; <v-icon>launch</v-icon>
           </v-btn>
-        </router-link>
+        </router-link>.
+        <br><strong>ATTENTION</strong> : si ces conditions ne sont pas respectées, <strong>l’examen n’aura pas lieu</strong> et vous ne pourrez pas réserver une nouvelle place avant 45 jours.
       </p>
     </v-alert>
   </section>

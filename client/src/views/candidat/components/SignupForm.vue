@@ -1,6 +1,6 @@
 <template>
   <div class="presignup-form">
-    <covid-message-presignup-exam />
+    <covid-message-exam />
     <v-form
       ref="presignupForm"
       v-model="valid"
@@ -64,7 +64,7 @@ import {
 } from '@/store'
 
 import AlreadySignedUp from './AlreadySignedUp'
-import CovidMessagePresignupExam from '@/views/candidat/components/CovidMessagePresignupExam'
+import CovidMessageExam from '@/views/candidat/components/CovidMessageExam'
 import FormGroupInfoCandidat from './FormGroupInfoCandidat'
 import { mapState } from 'vuex'
 
@@ -72,7 +72,7 @@ export default {
   name: 'SignupForm',
   components: {
     AlreadySignedUp,
-    CovidMessagePresignupExam,
+    CovidMessageExam,
     FormGroupInfoCandidat,
   },
   props: {

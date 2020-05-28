@@ -7,7 +7,7 @@ import {
   checkAdminToken,
   checkCandidatToken,
   checkAccess,
-  checkCandidatTokenForContactUs,
+  checkCandidatTokenToRedirect,
 } from './router-checks'
 import {
   ROUTE_AUTHORIZE_AURIGE,
@@ -166,7 +166,7 @@ const candidatRoutes = [
         path: '/contact-us',
         name: 'contact-us',
         component: ContactUsNotSignUp,
-        beforeEnter: checkCandidatTokenForContactUs,
+        beforeEnter: checkCandidatTokenToRedirect,
       },
       {
         path: '/informations',
@@ -235,7 +235,7 @@ const candidatRoutes = [
       },
       {
         path: 'contact-us',
-        name: 'contact-us',
+        name: 'contact-us-candidat',
         component: ContactUsSignUp,
       },
     ],
@@ -261,11 +261,13 @@ const commonRoutes = [
         path: '/mentions-legales',
         name: 'mentions-legales',
         component: MentionsLegales,
+        beforeEnter: checkCandidatTokenToRedirect,
       },
       {
         path: '/faq',
         name: 'faq',
         component: Faq,
+        beforeEnter: checkCandidatTokenToRedirect,
       },
     ],
   },
