@@ -1,5 +1,5 @@
 describe('Contact Us', () => {
-  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
+  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID' && Cypress.env('VUE_APP_CLIENT_BUILD_WITH_CONTACT_US') === true) {
     before(() => {
       cy.deleteAllMails()
       cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
