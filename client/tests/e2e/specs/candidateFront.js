@@ -522,7 +522,7 @@ describe('Connected candidate front', () => {
 describe('Public candidate front', () => {
   it('Should display FAQ', () => {
     cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
-    cy.get('.t-faq').click()
+    cy.get('.t-faq').first().click()
     cy.url().should('contain', 'faq')
     cy.get('h2').should('contain', 'F.A.Q')
     cy.get('.question-content').should('not.be.visible')
