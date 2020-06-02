@@ -4,7 +4,7 @@ import Centre from '../centre/centre-model'
 export const centres = [
   {
     departement: '92',
-    nom: 'Centre 1',
+    nom: 'CENTRE 1',
     label: "Centre d'examen 1",
     adresse: '1 rue Test, ville test, FR, 92001',
     lon: 48,
@@ -13,7 +13,7 @@ export const centres = [
   },
   {
     departement: '93',
-    nom: 'Centre 2',
+    nom: 'CENTRE 2',
     label: "Centre d'examen 2",
     adresse: '2 Avenue test, Ville test 2, FR, 93420',
     lon: 47,
@@ -22,7 +22,7 @@ export const centres = [
   },
   {
     departement: '93',
-    nom: 'Centre 3',
+    nom: 'CENTRE 3',
     label: "Centre d'examen 3",
     adresse: '3 Avenue test, ville test 3, FR, 93000',
     lon: 49,
