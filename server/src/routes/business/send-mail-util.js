@@ -1,4 +1,9 @@
-import { appLogger, createToken } from '../../util'
+import {
+  appLogger,
+  createToken,
+  getFrenchLuxonFromJSDate,
+  getFrenchLuxon,
+} from '../../util'
 import { findDepartementById } from '../../models/departement'
 import config from '../../config'
 import { addEmailValidationHash } from '../../models/user'
@@ -96,8 +101,26 @@ export const getCandidatToken = id =>
 export const getContactUs = token => {
   return `Pour nous contacter, vous pouvez utiliser ce <a href="${
     config.PUBLIC_URL
-  }/contact-us${token ? '?token=' + token : ''}">formulaire en ligne</a>.`
+  }/contact-us${
+    token ? '?token=' + encodeURIComponent(token) : ''
+  }">formulaire en ligne</a>.`
 }
 export const getUrlRESAByToken = token => {
   return `${config.PUBLIC_URL}/candidat/home?token=${token}`
+}
+
+export const getUrlMagicLink = candidat => {
+  const candidatAccessDate = getFrenchLuxonFromJSDate(candidat.canAccessAt)
+  const dateNow = getFrenchLuxon().startOf('day')
+
+  if (!candidat.canAccessAt || dateNow >= candidatAccessDate) {
+    const token = createToken(candidat.id, config.userStatuses.CANDIDAT)
+    const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
+    return {
+      url: `${authUrl}?token=${encodeURIComponent(token)}`,
+      urlContactUs: getContactUs(token),
+    }
+  }
+
+  return null
 }

@@ -8,14 +8,8 @@ import { htmlToText } from 'nodemailer-html-to-text'
 
 import getMailData from './message-templates'
 import config, { smtpOptions } from '../../config'
-import {
-  appLogger,
-  createToken,
-  getFrenchLuxonFromJSDate,
-  techLogger,
-  getFrenchLuxon,
-  AURIGE_OK,
-} from '../../util'
+import { appLogger, techLogger, AURIGE_OK } from '../../util'
+import { getUrlMagicLink } from './send-mail-util'
 
 const messages = []
 
@@ -175,7 +169,7 @@ export const sendMailToAccount = async (candidat, flag, addInQueue) => {
 export const sendMagicLink = async (candidat, addInQueue) => {
   const flag = AURIGE_OK
 
-  const url = getUrl(candidat)
+  const url = getUrlMagicLink(candidat)
 
   const message = await getMailData(candidat, flag, url)
   if (addInQueue) {
@@ -183,17 +177,4 @@ export const sendMagicLink = async (candidat, addInQueue) => {
   } else {
     return sendMail(candidat.email, message)
   }
-}
-
-export const getUrl = candidat => {
-  const candidatAccessDate = getFrenchLuxonFromJSDate(candidat.canAccessAt)
-  const dateNow = getFrenchLuxon().startOf('day')
-
-  if (!candidat.canAccessAt || dateNow >= candidatAccessDate) {
-    const token = createToken(candidat.id, config.userStatuses.CANDIDAT)
-    const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
-    return `${authUrl}?token=${encodeURIComponent(token)}`
-  }
-
-  return null
 }
