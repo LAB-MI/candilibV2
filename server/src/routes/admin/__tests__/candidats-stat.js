@@ -72,7 +72,7 @@ export const dateDernierEchecPratiqueWithPenalty = penalty =>
 
 const centre1 = {
   departement: '92',
-  nom: 'Centre 1',
+  nom: 'CENTRE 1',
   label: "Centre d'examen 1",
   adresse: '1 rue Test, ville test, FR, 92001',
   lon: 48,
@@ -80,7 +80,7 @@ const centre1 = {
 }
 const centre3 = {
   departement: '92',
-  nom: 'Centre 3',
+  nom: 'CENTRE 3',
   label: "Centre d'examen 3",
   adresse: '1 rue Test, ville test, FR, 92001',
   lon: 48,
@@ -89,7 +89,7 @@ const centre3 = {
 
 const centre2 = {
   departement: '91',
-  nom: 'Centre 91',
+  nom: 'CENTRE 91',
   label: "Centre d'examen 91",
   adresse: '1 rue Test, ville test, FR, 91001',
   lon: 48,
@@ -663,7 +663,7 @@ const bookedAt = nowLuxon.toJSDate()
 
 const centreTest = {
   departement: '92',
-  nom: 'Centre 99',
+  nom: 'CENTRE 99',
   label: "Centre d'examen 2",
   adresse: '2 Avenue test, Ville test 2, FR, 93420',
   lon: 47,

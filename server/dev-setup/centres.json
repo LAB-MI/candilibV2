@@ -1,7 +1,7 @@
 [
   {
     "departement": "93",
-    "nom": "Bobigny",
+    "nom": "BOBIGNY",
     "adresse": "320 avenue Paul Vaillant Couturier 93000 Bobigny",
     "lat": "48.905818",
     "label": "Centre d'examen du permis de conduire de Bobigny",
@@ -9,7 +9,7 @@
   },
   {
     "departement": "93",
-    "nom": "Villepinte",
+    "nom": "VILLEPINTE",
     "adresse": "avenue Jean Fourgeaud (dernier parking circulaire) 93420 Villepinte",
     "lat": "48.962099",
     "label": "Centre d'examen du permis de conduire de Villepinte",
@@ -17,7 +17,7 @@
   },
   {
     "departement": "93",
-    "nom": "Saint Brice",
+    "nom": "SAINT BRICE",
     "adresse": "rue de la forêt 95350 Saint Brice sous forêt",
     "lat": "49.004632",
     "label": "Centre d'examen du permis de conduire de Saint Brice",
@@ -25,7 +25,7 @@
   },
   {
     "departement": "93",
-    "nom": "Rosny sous bois",
+    "nom": "ROSNY SOUS BOIS",
     "adresse": "99 avenue du général de Gaulle 93110 Rosny sous bois",
     "lat": "48.883956",
     "label": "Centre d'examen du permis de conduire de Rosny sous bois",
@@ -33,7 +33,7 @@
   },
   {
     "departement": "75",
-    "nom": "Saint Leu la Foret",
+    "nom": "SAINT LEU LA FORET",
     "adresse": "1 rue Charles Cros (en face) 95320 Saint Leu la Forêt",
     "lat": "49.003131",
     "label": "Centre d'examen du permis de conduire de Saint Leu la Foret",
@@ -41,7 +41,7 @@
   },
   {
     "departement": "75",
-    "nom": "Rosny sous bois",
+    "nom": "ROSNY SOUS BOIS",
     "adresse": "99 avenue du général de Gaulle 93110 Rosny sous bois",
     "lat": "48.883956",
     "label": "Centre d'examen du permis de conduire de Rosny sous bois",
@@ -49,7 +49,7 @@
   },
   {
     "departement": "75",
-    "nom": "Noisy le Grand",
+    "nom": "NOISY LE GRAND",
     "adresse": "5 boulevard de Champs Richardets (parking du gymnase de la butte verte) 93160 Noisy le Grand",
     "lat": "48.837378",
     "label": "Centre d'examen du permis de conduire de Noisy le Grand",
