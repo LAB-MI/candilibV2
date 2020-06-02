@@ -180,3 +180,37 @@ describe('Contact Us', () => {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
   }
 })
+
+describe('To go to the page Contact Us', () => {
+  before(() => {
+    cy.deleteAllMails()
+    cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
+    cy.getLastMail().its('Content.Body').then((mailBody) => {
+      const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
+      const withoutEq = codedLink.replace(/=\r\n/g, '')
+      const magicLink = withoutEq.replace(/=3D/g, '=')
+      cy.visit(magicLink)
+    })
+  })
+  it('should go to contact us from FAQ by candidat no signin', () => {
+    cy.visit(Cypress.env('frontCandidat') + 'faq')
+    cy.contains('Aide / Contact').click()
+    cy.get('.question-subtitle').should('contain', 'formulaire')
+    cy.get('a[href*="contact-us"]').click()
+    cy.url().should('contain', Cypress.env('frontCandidat') + 'candidat/contact-us')
+    cy.get('h2').should('contain', 'Nous contacter')
+  })
+
+  it('should go to contact us from FAQ by candidat no signin', () => {
+    cy.visit(Cypress.env('frontCandidat') + 'faq', {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear()
+      },
+    })
+    cy.contains('Aide / Contact').click()
+    cy.get('.question-subtitle').should('contain', 'formulaire')
+    cy.get('a[href*="contact-us"]').click()
+    cy.url().should('contain', Cypress.env('frontCandidat') + 'contact-us')
+    cy.get('h3').should('contain', 'Nous contacter')
+  })
+})
