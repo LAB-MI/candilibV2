@@ -62,7 +62,7 @@ export default {
   },
 
   actions: {
-    async [FETCH_DATES_REQUEST] ({ commit, dispatch, rootState, getters }, selectedCenterId) {
+    async [FETCH_DATES_REQUEST] ({ commit, dispatch, rootState, getters }, { geoDepartement, nomCentre }) {
       commit(FETCH_DATES_REQUEST)
       try {
         const { canBookFrom, date, timeOutToRetry, dayToForbidCancel } = rootState.reservation.booked
@@ -75,7 +75,7 @@ export default {
           .plus({ month: 3 })
           .endOf('month')
           .toISO()
-        const result = await api.candidat.getPlaces(selectedCenterId, begin, end)
+        const result = await api.candidat.getPlaces(geoDepartement, nomCentre, begin, end)
 
         if (
           result.isTokenValid === false
@@ -107,7 +107,7 @@ export default {
 
     async [SELECT_DAY] ({ commit, dispatch }, selected) {
       const { slot, centre } = selected
-      const result = await api.candidat.checkPlacesAvailability(centre.id, slot)
+      const result = await api.candidat.checkPlacesAvailability(undefined, centre.nom, slot, centre.geoDepartement)
       if (result.length > 0) {
         commit(SELECT_DAY, selected)
       } else {
@@ -119,7 +119,7 @@ export default {
     async [CONFIRM_SELECT_DAY_REQUEST] ({ commit, dispatch }, selected) {
       commit(CONFIRM_SELECT_DAY_REQUEST)
       const { slot, centre, isAccompanied, hasDualControlCar } = selected
-      const result = await api.candidat.setReservations(centre.id, slot, isAccompanied, hasDualControlCar)
+      const result = await api.candidat.setReservations(centre.nom, centre.geoDepartement, slot, isAccompanied, hasDualControlCar)
       if (result && result.success) {
         commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
         dispatch(SHOW_SUCCESS, 'Votre réservation a bien été prise en compte')

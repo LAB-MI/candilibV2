@@ -287,6 +287,46 @@ describe('synchro-aurige', () => {
     expect(isExpired).toBe(false)
   })
 
+  it('Should return not expired with expired ETG at 31/12/2020 because it is in range 12/03/2020 and 31/12/2020', () => {
+    const almostFiveYearsAgo = new Date('December 31, 2020')
+    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
+
+    const isExpired = isETGExpired(almostFiveYearsAgo)
+    expect(isExpired).toBe(false)
+  })
+
+  it('Should return not expired with expired ETG at 12/03/2020 because it is in range 12/03/2020 and 31/12/2020', () => {
+    const almostFiveYearsAgo = new Date('March 12, 2020')
+    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
+
+    const isExpired = isETGExpired(almostFiveYearsAgo)
+    expect(isExpired).toBe(false)
+  })
+
+  it('Should return not expired with expired ETG at 01/06/2020 because it is in range 12/03/2020 and 31/12/2020', () => {
+    const almostFiveYearsAgo = new Date('June 01, 2020')
+    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
+
+    const isExpired = isETGExpired(almostFiveYearsAgo)
+    expect(isExpired).toBe(false)
+  })
+
+  it('Should return expired with expired ETG at 11/03/2020 because it is not in range 12/03/2020 and 31/12/2020', () => {
+    const almostFiveYearsAgo = new Date('March 11, 2020')
+    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
+
+    const isExpired = isETGExpired(almostFiveYearsAgo)
+    expect(isExpired).toBe(true)
+  })
+
+  it('Should return expired with expired ETG at 01/01/2021 because it is not in range 12/03/2020 and 31/12/2020', () => {
+    const almostFiveYearsAgo = new Date('January 01, 2021')
+    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
+
+    const isExpired = isETGExpired(almostFiveYearsAgo)
+    expect(isExpired).toBe(true)
+  })
+
   it('Should return not expired with 5 years ago', () => {
     const almostFiveYearsAgo = getFrenchLuxonFromISO(dateReussiteETG)
 
@@ -295,7 +335,8 @@ describe('synchro-aurige', () => {
     expect(isExpired).toBe(false)
   })
 
-  it('Should return not expired with 5 years and 1 day ago ', () => {
+  // TODO: Unskip this test when date now will over 31/12/2020
+  xit('Should return expired with 5 years and 1 day ago', () => {
     const almostFiveYearsAgo = getFrenchLuxonFromISO(dateReussiteETGKO)
 
     const isExpired = isETGExpired(almostFiveYearsAgo)
@@ -921,7 +962,8 @@ describe('Synchro-aurige candidat with etg expired', () => {
     return candidat
   }
 
-  it('should archive a candidat with date etg expired', async () => {
+  // TODO: Unskip this test when date now will over 31/12/2020
+  xit('should archive a candidat with date etg expired', async () => {
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpired)
     const candidatCreated = await createCandidatToTestAurige(
       candidatWithEtgExpired,
@@ -1012,7 +1054,8 @@ describe('Synchro-aurige candidat with etg expired', () => {
     await placeSelected.remove()
   })
 
-  it('should archive a candidat boooked at date etg expired, 8 ago', async () => {
+  // TODO: Unskip this test when date now will over 31/12/2020
+  xit('should archive a candidat boooked at date etg expired, 8 ago', async () => {
     const dateTimeReussiteETGKO8 = DateTimeReussiteETGKO.minus({ days: 7 })
     const placeAtETG8 = {
       ...placeAtETG,
@@ -1053,7 +1096,8 @@ describe('Synchro-aurige candidat with etg expired', () => {
     await placeSelected.remove()
   })
 
-  it('should do archive a candidat boooked at date etg expired and without resultat from Aurige', async () => {
+  // TODO: Unskip this test when date now will over 31/12/2020
+  xit('should do archive a candidat boooked at date etg expired and without resultat from Aurige', async () => {
     const placeSelected = await createTestPlaceAurige(placeAtETG)
 
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpiredToArchive)
@@ -1074,7 +1118,8 @@ describe('Synchro-aurige candidat with etg expired', () => {
     await placeSelected.remove()
   })
 
-  it('should do archive a candidat boooked at date etg expired and with resultat failed from Aurige', async () => {
+  // TODO: Unskip this test when date now will over 31/12/2020
+  xit('should do archive a candidat boooked at date etg expired and with resultat failed from Aurige', async () => {
     const placeSelected = await createTestPlaceAurige(placeAtETG)
 
     const aurigeFile = toAurigeJsonBuffer(

@@ -18,8 +18,10 @@
     <h3 class="subtitle">
       Foire aux questions
     </h3>
-
     <ul class="list-faq">
+      <li class="question-wrapper">
+        <faq-covid-message />
+      </li>
       <li
         v-for="question in faqQuestions"
         :key="question.title"
@@ -37,11 +39,12 @@ import { mapState } from 'vuex'
 import { FETCH_CONFIG_REQUEST, FETCH_DEPARTEMENTS_REQUEST, FETCH_PARIS_CENTERS_REQUEST } from '@/store'
 import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
-
+import FaqCovidMessage from './FaqCOVIDMessage'
 export default {
   name: 'Faq',
   components: {
     FaqContent,
+    FaqCovidMessage,
   },
 
   data () {

@@ -227,12 +227,13 @@ export const findCentresByDepartement = async (
  * @param {string} nom - Nom du centre
  * @param {string} departement - Département du centre
  *
- * @returns {Promise.<CentreMongooseDocument>} Centre correspondant
+ * @returns {Promise.<CentreMongooseDocument[]>} - List des Centres correspondant
  */
 export const findCentreByNameAndDepartement = async (
   nom,
   departement,
-  geoDepartement
+  geoDepartement,
+  options = '-__v'
 ) => {
   const filter = {
     nom: caseInsensitive(nom),
@@ -240,12 +241,23 @@ export const findCentreByNameAndDepartement = async (
   }
   if (departement) filter.departement = departement
   if (geoDepartement) filter.geoDepartement = geoDepartement
-  const centre = await Centre.findOne(filter)
-  return centre
+  const centres = await Centre.find(filter, options)
+  return departement
+    ? centres.length
+      ? centres[0]
+      : null
+    : centres.length
+      ? centres
+      : null
 }
 
 export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
-  return findCentreByNameAndDepartement(nom, undefined, geoDepartement)
+  return findCentreByNameAndDepartement(
+    nom,
+    undefined,
+    geoDepartement,
+    '-departement -_id -active -createdAt -updatedAt -__v'
+  )
 }
 
 /**

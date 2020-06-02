@@ -9,5 +9,7 @@ export * from './inscription-ok-template'
 export * from './inscription-valid-template'
 export * from './validation-email-template'
 export * from './cancel-booking-by-admin-template'
+export * from './contact-us-for-admin'
+export * from './contact-us-for-candidat'
 
 export * from './mail.constants'

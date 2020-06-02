@@ -86,8 +86,6 @@
 <script>
 import { mapState } from 'vuex'
 
-import { CANDIDAT_SELECTED_CENTER } from '../../../../constants'
-
 import TimesSlotsSelector from './TimesSlotsSelector'
 import {
   FETCH_CENTER_REQUEST,
@@ -227,17 +225,22 @@ export default {
     },
 
     async getTimeSlots () {
+      const {
+        center: nom,
+        departement,
+      } = this.$route.params
       const selected = this.center.selected
       if (!selected || !selected._id) {
         if (!this.center.isFetchingCenter) {
           await this.$store.dispatch(FETCH_CENTER_REQUEST, {
-            centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER),
+            nom,
+            departement,
           })
         }
         this.timeoutId = setTimeout(this.getTimeSlots, 100)
         return
       }
-      await this.$store.dispatch(FETCH_DATES_REQUEST, selected._id)
+      await this.$store.dispatch(FETCH_DATES_REQUEST, { geoDepartement: selected.geoDepartement, nomCentre: selected.nom })
       if (this.timeoutId !== null) {
         this.timeoutId = setTimeout(this.getTimeSlots, 5000)
       }
@@ -250,7 +253,6 @@ export default {
           departement: `${this.$route.params.departement || this.$store.state.departements.selectedDepartement.departement}`,
         },
       })
-      localStorage.setItem(CANDIDAT_SELECTED_CENTER, undefined)
     },
   },
 }

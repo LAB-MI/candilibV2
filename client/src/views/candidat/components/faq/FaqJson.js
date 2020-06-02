@@ -39,7 +39,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: 'Rendez-vous sur la page d\'accueil du service pour se pré-inscrire.',
         },
         {
-          textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et mon département de résidence.',
+          textContent: 'Vous saisirez sur le formulaire vos NEPH (le numéro que vous avez reçu pour l\'inscription au permis), nom de naissance, prénom, mail, téléphone et votre département de résidence.',
         },
         {
           textContent: 'Si celui-ci ne figure pas dans la liste déroulante, vous devrez choisir le département le plus proche de chez vous. Cela n’aura pas de conséquence pour le choix de votre lieu de passage de l’examen.',
@@ -147,11 +147,15 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Aide / Contact',
       content: [
         {
-          subTitleContent: 'Si vous vous êtes déjà pré-inscrit, posez vos questions à l\'adresse de contact personnalisée que vous avez reçue par courriel.',
+          subTitleContent: "Si vous n'avez jamais réalisé de demande de NEPH, veuillez vous rendre sur le site de l'<a href='https://www.permisdeconduire.ants.gouv.fr/'>ANTS</a>.",
         },
         {
-          subTitleContent: 'Si vous n\'êtes pas pré-inscrit ou si vous n\'avez pas trouvé de réponse à vos questions dans ces informations, vous pouvez nous contacter à cette adresse <a href="mailto:candilib@interieur.gouv.fr">candilib@interieur.gouv.fr</a>.',
+          subTitleContent: 'Si vous ne vous souvenez pas de votre NEPH, veuillez vous rapprocher du Bureau Éducation Routière de votre département.',
         },
+        {
+          subTitleContent: 'Sinon, contactez-nous via ce <a href="./contact-us">formulaire</a>.',
+        },
+
       ],
     },
   ]

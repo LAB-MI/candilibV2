@@ -41,7 +41,6 @@
 <script>
 import { mapState } from 'vuex'
 
-import { CANDIDAT_SELECTED_CENTER } from '../../../../constants'
 import {
   CONFIRM_SELECT_DAY_REQUEST,
   DELETE_CANDIDAT_RESERVATION_REQUEST,
@@ -194,7 +193,7 @@ export default {
       const selected = this.center.selected
       if (this.$route.meta.isConfirmation) {
         if (!selected || !selected._id) {
-          await this.$store.dispatch(FETCH_CENTER_REQUEST, { centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER) })
+          await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
           setTimeout(this.getSelectedCenterAndDate, 100)
           return
         }
@@ -204,7 +203,7 @@ export default {
           centre: {
             id: selected._id,
             nom,
-            departement,
+            geoDepartement: departement,
           },
         }
         try {
