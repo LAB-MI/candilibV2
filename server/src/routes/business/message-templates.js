@@ -121,10 +121,10 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     case AURIGE_OK: {
       const INSCRIPTION_OK_MSG = getInscriptionOkTemplate(
         nomMaj,
-        urlMagicLink,
+        urlMagicLink ? urlMagicLink.url : undefined,
         urlConnexion,
         email,
-        contactezNous,
+        urlMagicLink ? urlMagicLink.urlContactUs : contactezNous,
         canAccessAt
       )
       message.content = getHtmlBody(INSCRIPTION_OK_MSG)
