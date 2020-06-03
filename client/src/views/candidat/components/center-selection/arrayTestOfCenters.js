@@ -2,7 +2,7 @@ export default [
   {
     centre: {
       _id: '123456789',
-      nom: 'Bobigny',
+      nom: 'BOBIGNY',
       departement: 93000,
       adresse: '320 avenue Paul Vaillant Couturier',
       label: 'LabelTest',
@@ -12,7 +12,7 @@ export default [
   {
     centre: {
       _id: '321654987',
-      nom: 'Rosny',
+      nom: 'ROSNY',
       departement: 93000,
       adresse: '320 avenue Paul Vaillant Couturier',
       label: 'LabelTest',
@@ -22,7 +22,7 @@ export default [
   {
     centre: {
       _id: '3215515987',
-      nom: 'Villepinte',
+      nom: 'VILLEPINTE',
       departement: 93000,
       adresse: '320 avenue Paul Vaillant Couturier',
       label: 'LabelTest',
