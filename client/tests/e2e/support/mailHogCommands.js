@@ -33,6 +33,10 @@ Cypress.Commands.add('getLastMail', (infos) => {
     .then(response => JSON.parse(JSON.stringify(response.body)))
     .then(parsed => parsed.items)
     .then(mails => mails.concat(fakeMails))
+    .then(mails => infos && infos.subjectContains
+      ? mails.filter(mail => new RegExp(infos.subjectContains).test(mail.Content.Headers.Subject[0]))
+      : mails,
+    )
     .then(mails => infos && infos.subject
       ? mails.filter(mail => mail.Content.Headers.Subject[0] === infos.subject)
       : mails,
