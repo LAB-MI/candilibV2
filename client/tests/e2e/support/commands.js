@@ -120,7 +120,12 @@ Cypress.Commands.add('addPlanning', (dates) => {
 
 Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   // The candidate fills the pre-sign-up form
-  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
+  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib',
+    {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear()
+      },
+    })
   cy.contains('Se pré-inscrire')
     .click()
   cy.get('h2')
@@ -198,20 +203,27 @@ Cypress.Commands.add('candidatConnection', (candidatEmail) => {
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
 })
 
-Cypress.Commands.add('candidateValidation', () => {
+Cypress.Commands.add('candidateValidation', (candidat) => {
+  const candidatAurige = {
+    codeNeph: candidat ? candidat.codeNeph : Cypress.env('NEPH'),
+    nomNaissance: candidat ? candidat.nomNaissance : Cypress.env('candidat'),
+    email: candidat ? candidat.email : Cypress.env('emailCandidat'),
+    dateReussiteETG: '2018-10-12',
+    nbEchecsPratiques: '0',
+    dateDernierNonReussite: '',
+    objetDernierNonReussite: '',
+    reussitePratique: '',
+    candidatExistant: 'OK',
+  }
+  if (candidat && candidat.dateReussiteETG) candidatAurige.dateReussiteETG = candidat.dateReussiteETG
+  if (candidat && candidat.nbEchecsPratiques) candidatAurige.nbEchecsPratiques = candidat.nbEchecsPratiques
+  if (candidat && candidat.dateDernierNonReussite) candidatAurige.dateDernierNonReussite = candidat.dateDernierNonReussite
+  if (candidat && candidat.objetDernierNonReussite) candidatAurige.objetDernierNonReussite = candidat.objetDernierNonReussite
+  if (candidat && candidat.reussitePratique) candidatAurige.reussitePratique = candidat.reussitePratique
+
   cy.writeFile(Cypress.env('filePath') + '/aurige.json',
     [
-      {
-        codeNeph: Cypress.env('NEPH'),
-        nomNaissance: Cypress.env('candidat'),
-        email: Cypress.env('emailCandidat'),
-        dateReussiteETG: '2018-10-12',
-        nbEchecsPratiques: '0',
-        dateDernierNonReussite: '',
-        objetDernierNonReussite: '',
-        reussitePratique: '',
-        candidatExistant: 'OK',
-      },
+      candidatAurige,
     ])
   cy.contains('import_export')
     .click()
@@ -237,8 +249,8 @@ Cypress.Commands.add('candidateValidation', () => {
   cy.get('.ag-cell')
     .should('contain', Cypress.env('candidat'))
   cy.get('.ag-cell')
-    .should('contain', 'Pour le 75, un magic link est envoyé à ' + Cypress.env('emailCandidat'))
-  cy.getLastMail({ recipient: Cypress.env('emailCandidat') })
+    .should('contain', 'Pour le 75, un magic link est envoyé à ' + candidat ? candidat.email : Cypress.env('emailCandidat'))
+  cy.getLastMail({ recipient: candidat ? candidat.email : Cypress.env('emailCandidat') })
     .getSubject()
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
 })
