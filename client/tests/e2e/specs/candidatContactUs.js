@@ -181,7 +181,7 @@ describe('Contact Us', () => {
   }
 })
 
-describe('To go to the page Contact Us', () => {
+describe('From FAQ, To go to the page Contact Us', () => {
   before(() => {
     cy.deleteAllMails()
     cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
@@ -213,4 +213,67 @@ describe('To go to the page Contact Us', () => {
     cy.url().should('contain', Cypress.env('frontCandidat') + 'contact-us')
     cy.get('h3').should('contain', 'Nous contacter')
   })
+})
+describe('From the mails, To go to the page Contact Us', () => {
+  before(() => {
+    cy.deleteAllMails()
+  })
+  const candidat = {
+    codeNeph: '01234567890111',
+    nomNaissance: 'CANDIDAT_PRESIGNUP_CONTACTUS',
+    email: 'candidat.presignup.contactus@test.com',
+  }
+
+  // Candidat presignup
+  it('should go to the page contact-us no-signin from the mail presign-up ', () => {
+    cy.candidatePreSignUp(candidat)
+    cy.getLastMail({
+      recipient: candidat.email,
+      subject: "Validation d'adresse courriel pour Candilib",
+    }).its('Content.Body').then((mailBody) => {
+      const codedLink = mailBody.match(/href=3D"(.*)">formulaire en ligne/)
+      expect(codedLink).to.have.lengthOf(2)
+      expect(codedLink[1]).to.not.match(/token/)
+      cy.visit(codedLink[1])
+      cy.get('h3').should('contain', 'Nous contacter')
+    })
+  })
+
+  // Candidat is valided
+  it('should go to the page contact-us no-signin from the aurige valided mail  ', () => {
+    cy.adminLogin()
+    cy.candidateValidation(candidat)
+
+    cy.getLastMail({
+      recipient: candidat.email,
+      subjectContains: 'Validation_de_votre_inscription_',
+    }).its('Content.Body').then((mailBody) => {
+      const codedLink = mailBody.match(/href=3D"(.*)">formulaire en ligne/)
+      expect(codedLink).to.have.lengthOf(2)
+      expect(codedLink[1]).to.not.match(/token/)
+      cy.visit(codedLink[1])
+      cy.get('h3').should('contain', 'Nous contacter')
+    })
+  })
+
+  // TODO:Candidat failed
+  // TODO: Candidat failed 5 times
+  // TODO: Candidat Success
+
+  // Candidat Signin
+  it.only('should go to the page contact-us signin from the sign-in mail  ', () => {
+    cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
+    cy.getLastMail({
+      recipient: Cypress.env('emailCandidatContactUs'),
+      subjectContains: 'Validation_de_votre_inscription_',
+    }).its('Content.Body').then((mailBody) => {
+      const codedLink = mailBody.replace(/=\r\n/g, '').match(/href=3D"(.*)">formulaire en ligne/)
+      expect(codedLink).to.have.lengthOf(2)
+      expect(codedLink[1]).to.match(/token/)
+      cy.visit(codedLink[1].replace(/=3D/g, '='))
+      cy.get('h2').should('contain', 'Nous contacter')
+    })
+  })
+
+  // Candidat convocation
 })
