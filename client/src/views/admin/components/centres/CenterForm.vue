@@ -24,6 +24,7 @@
           @focus="setPlaceholder('nom')"
           @blur="removePlaceholder('nom')"
           @change="onChange"
+          @input="setNom"
         />
         <v-text-field
           v-model="label"
@@ -282,6 +283,10 @@ export default {
         const zipcode = this.adresse.match(codePostalRegex)
         this.geoDepartement = zipcode && (zipcode.length > 1) && zipcode[1]
       }
+    },
+
+    setNom () {
+      this.nom = this.nom.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toUpperCase()
     },
   },
 }

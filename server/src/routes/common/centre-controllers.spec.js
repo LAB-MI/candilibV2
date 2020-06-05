@@ -164,7 +164,7 @@ xdescribe('Test centre candidat controllers', () => {
     })
 
     it('Should response 200 and a center', async () => {
-      const nom = 'Centre 1'
+      const nom = 'CENTRE 1'
       const departement = '92'
       const { body: centre } = await request(app)
         .get(
@@ -282,7 +282,7 @@ describe('Centre controllers admin', () => {
     expect(body).toBeDefined()
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('centre')
-    expect(body.centre).toHaveProperty('nom', 'Noisy le Grand')
+    expect(body.centre).toHaveProperty('nom', 'NOISY LE GRAND')
     expect(body.centre).toHaveProperty('departement', '93')
     expect(body.centre).toHaveProperty('geoDepartement', '92')
   })
@@ -323,7 +323,7 @@ describe('Centre controllers admin', () => {
     expect(body).toHaveProperty('centre')
     expect(body.centre).toBeDefined()
     expect(body.centre).not.toBeNull()
-    expect(body.centre).toHaveProperty('nom', 'Nouveau nom')
+    expect(body.centre).toHaveProperty('nom', 'NOUVEAU NOM')
     expect(body.centre).toHaveProperty('label', centres[0].label)
     expect(body.centre).toHaveProperty('geoDepartement', '40')
     expect(body.centre).toHaveProperty('geoloc')
@@ -335,7 +335,7 @@ describe('Centre controllers admin', () => {
 describe('Test centres of departement', () => {
   const centre = {
     departement: '75',
-    nom: 'Villepinte',
+    nom: 'VILLEPINTE',
     adresse:
       'avenue Jean Fourgeaud (dernier parking circulaire) 93420 Villepinte',
     lat: '48.962099',

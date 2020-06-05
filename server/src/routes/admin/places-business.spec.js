@@ -9,7 +9,7 @@ jest.mock('../../util/logger')
 
 const centre = {
   departement: '93',
-  nom: 'Villepinte',
+  nom: 'VILLEPINTE',
   adresse:
     'avenue Jean Fourgeaud (dernier parking circulaire) 93420 Villepinte',
   lat: '48.962099',

@@ -12,7 +12,7 @@ export const placeBeforTimeOutRetry = {
   date: dateTimeDernierEchecPratique
     .plus({ days: config.timeoutToRetry - 1 })
     .toISO({ zone: 'utc' }),
-  centre: 'Centre 1',
+  centre: 'CENTRE 1',
   inspecteur: inspecteursTests[0].matricule,
 }
 
@@ -20,7 +20,7 @@ export const placeAfterTimeOutRetry = {
   date: dateTimeDernierEchecPratique
     .plus({ days: config.timeoutToRetry + 1 })
     .toISO({ zone: 'utc' }),
-  centre: 'Centre 2',
+  centre: 'CENTRE 2',
   inspecteur: inspecteursTests[1].matricule,
 }
 const places = [placeBeforTimeOutRetry, placeAfterTimeOutRetry]
@@ -30,7 +30,7 @@ export const placeSameDateDernierEchecPratiqueForSuccess = {
     .startOf('day')
     .plus({ hours: 8 })
     .toISO({ zone: 'utc' }),
-  centre: 'Centre 1',
+  centre: 'CENTRE 1',
   inspecteur: inspecteursTests[0].matricule,
 }
 
@@ -39,14 +39,14 @@ export const placeSameDateDernierEchecPratique = {
     .startOf('day')
     .plus({ hours: 8 })
     .toISO({ zone: 'utc' }),
-  centre: 'Centre 2',
+  centre: 'CENTRE 2',
   inspecteur: inspecteursTests[1].matricule,
 }
 export const placeNoSameDateDernierEchecPratique = {
   date: dateTimeDernierEchecPratique
     .plus({ days: 2, hours: 5 })
     .toISO({ zone: 'utc' }),
-  centre: 'Centre 2',
+  centre: 'CENTRE 2',
   inspecteur: inspecteursTests[1].matricule,
 }
 
@@ -54,7 +54,7 @@ export const placeAtETG = {
   date: DateTimeReussiteETGKO.plus({ years: 5, hours: 8 }).toISO({
     zone: 'utc',
   }),
-  centre: 'Centre 1',
+  centre: 'CENTRE 1',
   inspecteur: inspecteursTests[0].matricule,
 }
 
