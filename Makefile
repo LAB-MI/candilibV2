@@ -210,7 +210,9 @@ stop-e2e: ## Stop e2e container
 	${DC} -f ${DC_APP_E2E_RUN_PROD} stop e2e
 stop-mailhog: ## Stop e2e container
 	${DC} -f ${DC_APP_E2E_RUN_PROD} stop mailhog
-#
+stop-db-rest: ## Stop e2e container
+	${DC} -f ${DC_APP_E2E_RUN_PROD} stop db-rest
+##
 # init db for e2e tests
 #
 init-db-e2e:
