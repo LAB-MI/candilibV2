@@ -24,6 +24,7 @@ Cypress.Commands.add('AddFakeMail', (to, subject, Body) => {
     }],
   })
 })
+
 Cypress.Commands.add('getLastMail', (infos) => {
   cy.wait(100)
   cy.request({
@@ -33,6 +34,14 @@ Cypress.Commands.add('getLastMail', (infos) => {
     .then(response => JSON.parse(JSON.stringify(response.body)))
     .then(parsed => parsed.items)
     .then(mails => mails.concat(fakeMails))
+    .then(mails => infos && infos.recipient
+      ? mails.filter(mail =>
+        mail.To.map(
+          recipientObj => `${recipientObj.Mailbox}@${recipientObj.Domain}`,
+        ).includes(infos.recipient),
+      )
+      : mails,
+    )
     .then(mails => infos && infos.subjectContains
       ? mails.filter(mail => new RegExp(infos.subjectContains).test(mail.Content.Headers.Subject[0]))
       : mails,
@@ -41,14 +50,7 @@ Cypress.Commands.add('getLastMail', (infos) => {
       ? mails.filter(mail => mail.Content.Headers.Subject[0] === infos.subject)
       : mails,
     )
-    .then(mails => infos && infos.recipient
-      ? mails.filter(mail =>
-        mail.To.map(
-          recipientObj => `${recipientObj.Mailbox}@${recipientObj.Domain}`,
-        ).includes(infos.recipient),
-      )
-      : mails,
-    ).then(mails => {
+    .then(mails => {
       return Array.isArray(mails) && mails.length > 0 ? mails[0] : mails
     })
 })
