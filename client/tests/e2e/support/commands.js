@@ -8,7 +8,12 @@ import 'cypress-file-upload'
 import './mailHogCommands'
 
 Cypress.Commands.add('adminLogin', () => {
-  cy.visit(Cypress.env('frontAdmin') + 'admin-login')
+  cy.visit(Cypress.env('frontAdmin') + 'admin-login',
+  {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear()
+    },
+  })
   cy.get('.t-login-email [type=text]')
     .type(Cypress.env('adminLogin'))
   cy.get('[type=password]')

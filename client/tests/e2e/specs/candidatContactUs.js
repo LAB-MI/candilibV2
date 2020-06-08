@@ -226,32 +226,42 @@ describe('From the mails, To go to the page Contact Us', () => {
   }
 
   const checkContactUsForUnsignedByMail = (email, subject) => {
-    const lastMail = () => cy.getLastMail({
-      recipient: email,
-      subjectContains: subject,
-    })
-    lastMail().getSubject().should('contain', subject)
-    lastMail().getBody().then((mailBody) => {
-      const codedLink = mailBody.match(/href=3D"(.*)">formulaire en ligne/)
-      expect(codedLink).to.have.lengthOf(2)
-      expect(codedLink[1]).to.not.match(/token/)
-      cy.visit(codedLink[1])
-      cy.get('h3').should('contain', 'Nous contacter')
-    })
+    cy.getLastMail({
+        recipient: email,
+        subjectContains: subject,
+      })
+      .its('Content')
+      .then((Content) => {
+        const subject = Content.Headers.Subject[0]
+        expect(subject).to.contain(subject)
+
+        const mailBody = Content.Body.replace(/=\r\n/g, '').replace(/=3D/g, '=')
+        expect(mailBody).to.match(/href=".*">formulaire en ligne/)
+        const codedLink = mailBody.match(/href="(.*)">formulaire en ligne/)
+        expect(codedLink).to.have.lengthOf(2)
+        expect(codedLink[1]).to.not.match(/token/)
+        cy.visit(codedLink[1])
+        cy.get('h3').should('contain', 'Nous contacter')
+      })
   }
   const checkContactUsForSignedByMail = (email, subject) => {
-    const lastMail = () => cy.getLastMail({
+    cy.getLastMail({
       recipient: email,
-      subjectContains: subject,
     })
-    lastMail().getSubject().should('contain', subject)
-    lastMail().getBody().then((mailBody) => {
-      const codedLink = mailBody.replace(/=\r\n/g, '').replace(/=3D/g, '=').match(/href="(.*)">formulaire en ligne/)
+    .its('Content')
+    .then((Content) => {
+      const subject = Content.Headers.Subject[0]
+      expect(subject).to.contain(subject)
+
+      const mailBody = Content.Body.replace(/=\r\n/g, '').replace(/=3D/g, '=')
+      expect(mailBody).to.match(/href=".*">formulaire en ligne/)
+      const codedLink = mailBody.match(/href="(.*)">formulaire en ligne/)
       expect(codedLink).to.have.lengthOf(2)
       expect(codedLink[1]).to.match(/token/)
       cy.visit(codedLink[1])
       cy.get('h2').should('contain', 'Nous contacter')
-    })
+  })
+
   }
   let magicLink
   before(() => {
@@ -296,7 +306,8 @@ describe('From the mails, To go to the page Contact Us', () => {
   it('should go to the page contact-us signin from the convocation mail', () => {
     cy.adminLogin()
     cy.addCandidatToPlace(undefined, candidat.nomNaissance)
-    checkContactUsForSignedByMail(candidat.email, 'Convocation_=C3=A0_l=27examen_pratique_d')
+    cy.wait(100)
+    checkContactUsForSignedByMail(candidat.email, 'Convocation')
   })
 
   // Candidat failed 5 times
