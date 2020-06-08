@@ -29,6 +29,9 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         {
           textContent: `Cependant, seuls les départements de la liste suivante proposent actuellement des places via ce service : ${departements.join(', ')}`,
         },
+        {
+          textContent: `NB : les candidats du 75, du fait des conditions de circulation dans Paris intramuros, pourront choisir parmi les centres d'examen suivants : ${parisCenters.join(', ')}`,
+        },
       ],
     },
     {
