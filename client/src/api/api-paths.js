@@ -18,6 +18,7 @@ const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
   presignup: `${apiPrefix}/candidat/preinscription`,
   verifyToken: `${apiPrefix}/auth/candidat/verify-token`,
   departements: `${apiPrefix}/candidat/departements`,
+  contactUs: `${apiPrefix}/candidat/contact-us`,
 }
 
 const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {

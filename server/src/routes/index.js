@@ -7,10 +7,11 @@ import express from 'express'
 import auth from './auth'
 import admin from './admin'
 import candidat, { preSignup, emailValidation } from './candidat'
-import { verifyToken } from './middlewares'
+import { verifyToken, getToken } from './middlewares'
 import { resetMyPassword } from './auth/admin-controllers'
 import { getCandidatConfig } from './candidat/candidat-config-controller'
 import publicRoutes from './public'
+import { contactUs } from './candidat/contact-us-controller'
 
 const router = express.Router()
 
@@ -310,7 +311,7 @@ router.use('/public', publicRoutes)
  */
 
 router.patch('/admin/me', resetMyPassword)
-
+router.post('/candidat/contact-us', getToken, contactUs)
 router.use('/candidat', verifyToken, candidat)
 router.use('/auth', auth)
 router.use('/admin', verifyToken, admin)

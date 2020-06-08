@@ -10,6 +10,28 @@ export const getConvocationTemplate = (
   urlRESA,
   urlFAQ
 ) => `<p>Le présent mail vaut convocation.</p>
+<br> 
+<div style="border: 5px solid red; padding:5px;">
+<ul>
+<li>
+Port obligatoire d’un masque a minima de type à usage non-sanitaire de catégorie 1 pour vous et votre accompagnateur (principe de protection croisée).
+</li>
+<li>
+Port obligatoire d’une visière de protection (en supplément du masque) pour votre accompagnateur.
+</li>
+<li>
+Climatisation et ventilation coupées et véhicule aéré pendant l’examen.
+</li>
+<li>
+Housse de protection obligatoire sur les sièges.
+</li>
+<li>
+Nettoyage (produit ou lingette virucide respectant la norme EN 14476), aération et désinfection du véhicule avant l’examen.
+</li>
+</ul>
+  <span style="color: red;"><strong> ATTENTION:</strong></span>&nbsp;Si toutes les conditions sanitaires précitées ne peuvent être réunies, ou en cas de suspicion du covid-19 (toux, état fébrile), l’examen de conduite ne pourra avoir lieu.
+</div>
+<br>
 <p>Madame, Monsieur ${nameCandidat},</p>
 <br>
 <p>Nous avons bien pris en compte votre réservation à l'examen pratique du permis de conduire le ${dateResa} à ${houreResa}

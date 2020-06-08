@@ -7,7 +7,7 @@ import { appLogger, techLogger } from '../../util'
 import {
   addInfoDateToRulesResa,
   bookPlace,
-  getDatesByCentre,
+  getDatesByCentresNameAndGeoDepartement,
   getDatesByCentreId,
   getLastDateToCancel,
   getReservationByCandidat,
@@ -82,11 +82,11 @@ export const ErrorMsgArgEmpty =
 export async function getPlacesByCentre (req, res) {
   const centreId = req.params.id
 
-  const { centre: nomCentre, departement, begin, end, dateTime } = req.query
+  const { nomCentre, geoDepartement, begin, end, dateTime } = req.query
 
   const loggerInfo = {
     section: 'candidat-getPlacesByCentre',
-    departement,
+    geoDepartement,
     centreId,
     nomCentre,
     begin,
@@ -117,20 +117,20 @@ export async function getPlacesByCentre (req, res) {
         dates = await getDatesByCentreId(centreId, begin, end, req.userId)
       }
     } else {
-      if (!(departement && nomCentre)) {
+      if (!(geoDepartement && nomCentre)) {
         throw new Error(ErrorMsgArgEmpty)
       }
       if (dateTime) {
         dates = await hasAvailablePlacesByCentre(
-          departement,
+          geoDepartement,
           nomCentre,
           dateTime,
           req.userId
         )
       } else {
-        dates = await getDatesByCentre(
-          departement,
+        dates = await getDatesByCentresNameAndGeoDepartement(
           nomCentre,
+          geoDepartement,
           begin,
           end,
           req.userId
@@ -168,8 +168,25 @@ export async function getPlacesByCentre (req, res) {
 export const getPlaces = async (req, res) => {
   const { id } = req.params
 
-  const { centre, departement, begin, end, dateTime } = req.query
-  if (id || dateTime || departement || centre || begin || end) {
+  const {
+    centre,
+    departement,
+    begin,
+    end,
+    dateTime,
+    nomCentre,
+    geoDepartement,
+  } = req.query
+  if (
+    id ||
+    nomCentre ||
+    dateTime ||
+    departement ||
+    geoDepartement ||
+    centre ||
+    begin ||
+    end
+  ) {
     await getPlacesByCentre(req, res)
   } else {
     await getBookedPlaces(req, res)
@@ -323,20 +340,27 @@ export const getBookedPlaces = async (req, res) => {
 export const bookPlaceByCandidat = async (req, res) => {
   const section = 'candidat-create-reservation'
   const candidatId = req.userId
-  const { id: centre, date, isAccompanied, hasDualControlCar } = req.body
+  const {
+    nomCentre,
+    geoDepartement,
+    date,
+    isAccompanied,
+    hasDualControlCar,
+  } = req.body
 
   appLogger.info({
     section,
     candidatId,
-    centre,
+    nomCentre,
     date,
     isAccompanied,
     hasDualControlCar,
   })
+  // TODO: GET CENTRE ID BY NAME AND GEODEPT
 
-  if (!centre || !date || !isAccompanied || !hasDualControlCar) {
+  if (!nomCentre || !date || !isAccompanied || !hasDualControlCar) {
     const msg = []
-    if (!centre) msg.push(' du centre')
+    if (!nomCentre) msg.push(' du centre')
     if (!date) msg.push(' de la date reservation')
     if (!isAccompanied) msg.push(" d'être accompagné")
     if (!hasDualControlCar) msg.push(" d'avoir un véhicule à double commande")
@@ -370,7 +394,7 @@ export const bookPlaceByCandidat = async (req, res) => {
 
     const statusValidResa = await validCentreDateReservation(
       candidatId,
-      centre,
+      nomCentre,
       date,
       previewBookedPlace
     )
@@ -388,7 +412,12 @@ export const bookPlaceByCandidat = async (req, res) => {
       })
     }
 
-    const reservation = await bookPlace(candidatId, centre, date)
+    const reservation = await bookPlace(
+      candidatId,
+      nomCentre,
+      date,
+      geoDepartement
+    )
     if (!reservation) {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"

@@ -39,8 +39,6 @@
 import { DateTime } from 'luxon'
 import { mapState } from 'vuex'
 
-import { CANDIDAT_SELECTED_CENTER } from '../../../../constants'
-
 import {
   FETCH_CENTER_REQUEST,
   FETCH_DATES_REQUEST,
@@ -93,13 +91,17 @@ export default {
 
   methods: {
     async getTimeSlots () {
+      const {
+        center: nom,
+        departement,
+      } = this.$route.params
       const selected = this.center.selected
       if (!selected || !selected._id) {
-        await this.$store.dispatch(FETCH_CENTER_REQUEST, { centreId: localStorage.getItem(CANDIDAT_SELECTED_CENTER) })
+        await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
         this.getTimeSlots()
         return
       }
-      await this.$store.dispatch(FETCH_DATES_REQUEST, selected._id)
+      await this.$store.dispatch(FETCH_DATES_REQUEST, { geoDepartement: selected.geoDepartement, nomCentre: selected.nom })
     },
 
     checkDayToDisplay () {

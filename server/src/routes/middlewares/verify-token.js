@@ -23,26 +23,24 @@ import { PLEASE_LOG_IN } from '../../messages.constants'
  */
 
 export async function verifyToken (req, res, next) {
-  const authHeader = req.headers.authorization
-  const tokenInAuthHeader = authHeader && authHeader.replace('Bearer ', '')
-  const token = tokenInAuthHeader || req.query.token
   const isMagicLink = req.get('x-magic-link')
 
-  if (!token) {
-    appLogger.error({
-      section: 'verify-token',
-      action: 'ABSENT',
-      description: 'Token absent',
-    })
-    return res.status(401).send({
-      message: PLEASE_LOG_IN,
-      success: false,
-    })
-  }
-
   try {
-    const decoded = checkToken(token)
-    const { id, level, departements } = decoded
+    const token = fctGetToken(req)
+
+    if (!token) {
+      appLogger.error({
+        section: 'verify-token',
+        action: 'ABSENT',
+        description: 'Token absent',
+      })
+      return res.status(401).send({
+        message: PLEASE_LOG_IN,
+        success: false,
+      })
+    }
+
+    const { id, level, departements } = token
     req.userId = id
     req.userLevel = level
     req.departements = departements
@@ -81,4 +79,35 @@ export async function verifyToken (req, res, next) {
       error,
     })
   }
+}
+
+function fctGetToken (req) {
+  const authHeader = req.headers.authorization
+  const tokenInAuthHeader = authHeader && authHeader.replace('Bearer ', '')
+  const token = tokenInAuthHeader || req.query.token
+  if (!token) {
+    return
+  }
+  const decoded = checkToken(token)
+  const { id, level, departements } = decoded
+  return { id, level, departements }
+}
+
+export function getToken (req, res, next) {
+  try {
+    const decoded = fctGetToken(req)
+    if (!decoded) next()
+    const { id, level, departements } = decoded
+    req.userId = id
+    req.userLevel = level
+    req.departements = departements
+  } catch (error) {
+    appLogger.error({
+      section: 'get-token',
+      action: 'GET',
+      description: `Could not getToken: ${error.message}`,
+      error,
+    })
+  }
+  next()
 }

@@ -13,6 +13,7 @@ services:
         https_proxy: ${http_proxy}
         no_proxy: ${no_proxy}
         npm_registry: ${NPM_REGISTRY}
+        MIRROR_DEBIAN: ${MIRROR_DEBIAN}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         APP_VERSION: ${APP_VERSION}
     ports:

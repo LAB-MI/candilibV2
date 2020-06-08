@@ -1,12 +1,29 @@
+let fakeMails = []
+
 const mhApiUrl = path => {
   const basePath = Cypress.config('mailHogUrl')
   return `${basePath}/api${path}`
 }
 
 Cypress.Commands.add('deleteAllMails', () => {
+  fakeMails = []
   return cy.request('DELETE', mhApiUrl('/v1/messages'))
 })
-
+Cypress.Commands.add('AddFakeMail', (to, subject, Body) => {
+  const ToSplit = to.split('@')
+  fakeMails.push({
+    Content: {
+      Headers: {
+        Subject: [subject],
+      },
+      Body,
+    },
+    To: [{
+      Mailbox: ToSplit[0],
+      Domain: ToSplit[1],
+    }],
+  })
+})
 Cypress.Commands.add('getLastMail', (infos) => {
   cy.wait(100)
   cy.request({
@@ -15,6 +32,7 @@ Cypress.Commands.add('getLastMail', (infos) => {
   })
     .then(response => JSON.parse(JSON.stringify(response.body)))
     .then(parsed => parsed.items)
+    .then(mails => mails.concat(fakeMails))
     .then(mails => infos && infos.subject
       ? mails.filter(mail => mail.Content.Headers.Subject[0] === infos.subject)
       : mails,
