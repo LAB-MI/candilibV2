@@ -57,7 +57,9 @@ describe('Centre', () => {
         throw new Error()
       } catch (error) {
         expect(error).toHaveProperty('name', 'MongoError')
-        expect(error.message).toMatch(/duplicate key error dup key/)
+        expect(error.message).toMatch(
+          /duplicate key error collection: .* dup key/
+        )
       }
 
       await centre1Created.remove()
