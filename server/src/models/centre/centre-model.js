@@ -9,6 +9,7 @@ const CentreSchema = new Schema(
       $type: String,
       required: true,
       trim: true,
+      uppercase: true,
     },
     label: {
       $type: String,

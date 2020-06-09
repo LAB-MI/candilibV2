@@ -77,7 +77,7 @@ describe('Test get dates from places available', () => {
     )
     expect(geoDepartementInfo93.centres[0].centre).toHaveProperty(
       'nom',
-      'Centre 1'
+      'CENTRE 1'
     )
     expect(geoDepartementInfo93.centres[0]).toHaveProperty('count', 1)
 
@@ -87,10 +87,10 @@ describe('Test get dates from places available', () => {
     expect(geoDepartementInfo75.centres).toHaveLength(2)
 
     const centreInfos2 = geoDepartementInfo75.centres.find(
-      el => el.centre.nom === 'Centre 2'
+      el => el.centre.nom === 'CENTRE 2'
     )
     const centreInfos3 = geoDepartementInfo75.centres.find(
-      el => el.centre.nom === 'Centre 3'
+      el => el.centre.nom === 'CENTRE 3'
     )
 
     expect(centreInfos2).toHaveProperty('centre')
@@ -135,7 +135,7 @@ describe('Test get dates from places available', () => {
     )
     expect(geoDepartementInfo93.centres[0].centre).toHaveProperty(
       'nom',
-      'Centre 1'
+      'CENTRE 1'
     )
     expect(geoDepartementInfo93.centres[0]).toHaveProperty('count', 0)
 
@@ -145,10 +145,10 @@ describe('Test get dates from places available', () => {
     expect(geoDepartementInfo75.centres).toHaveLength(2)
 
     const centreInfos2 = geoDepartementInfo75.centres.find(
-      el => el.centre.nom === 'Centre 2'
+      el => el.centre.nom === 'CENTRE 2'
     )
     const centreInfos3 = geoDepartementInfo75.centres.find(
-      el => el.centre.nom === 'Centre 3'
+      el => el.centre.nom === 'CENTRE 3'
     )
 
     expect(centreInfos2).toHaveProperty('centre')

@@ -289,3 +289,14 @@ Cypress.Commands.add('removeCandidatOnPlace', () => {
         .click()
     })
 })
+
+Cypress.Commands.add('deleteCentres', (centres) => {
+  cy.request(Cypress.env('ApiRestDB') + '/centres').then((content) => {
+    const centresFound = content.body
+    if (centresFound && centresFound.length > 0) {
+      const centersName = centres.map(({ nom }) => nom)
+      centresFound.filter(centre => centersName.includes(centre.nom))
+        .map(({ _id }) => cy.request('DELETE', Cypress.env('ApiRestDB') + '/centres/' + _id))
+    }
+  })
+})

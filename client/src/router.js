@@ -45,7 +45,7 @@ const MyProfile = () => import(/* webpackChunkName: "candidat", webpackPrefetch:
 const ContactUsSignUp = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/form-contact/ContactUsSignUp.vue')
 const ContactUsNotSignUp = () => import(/* webpackChunkName: "candidat", webpackPrefetch: true */ '@/views/candidat/components/form-contact/ContactUsNotSignUp.vue')
 
-const AdminLogin = () => import('@/views/admin/components/Login')
+const AdminLogin = () => import(/* webpackChunkName: "admin-login", webpackPrefetch: true */ '@/views/admin/components/Login')
 const AdminAurige = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Aurige.vue')
 const CenterList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/centres/CenterList.vue')
 const StatsKpi = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/statsKpi/StatsKpi.vue')

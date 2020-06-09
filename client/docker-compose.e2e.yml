@@ -10,6 +10,27 @@ services:
         - 8025:8025
     logging:
       driver: none
+
+  db-rest:
+    image: candilib-db-rest
+    container_name: candilib_db_rest
+    build:
+      target: development
+      context: ../server/db/app
+      dockerfile: Dockerfile
+      args:
+        http_proxy: ${http_proxy}
+        https_proxy: ${http_proxy}
+        no_proxy: ${no_proxy}
+        npm_registry: ${NPM_REGISTRY}
+    ports:
+      - "8090:8090"
+    environment:
+      MONGO_URL: ${MONGO_URL:-mongodb://adminCandilib:changeme78@db:27017/candilib}
+      DB_NAME: ${DB_NAME:-candilib}
+      DB_USER: ${DB_USER:-adminCandilib}
+      DB_PASS: ${DB_PASS:-changeme78}
+
   e2e:
     image: candilib_e2e
     container_name: e2e
@@ -24,6 +45,7 @@ services:
         sass_registry: ${SASS_REGISTRY}
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
     environment:
+      CYPRESS_ApiRestDB: http://candilib_db_rest:8090
       CYPRESS_frontCandidat: http://candidat.candilib.local/candilib/
       CYPRESS_frontAdmin: http://admin.candilib.local/candilib-repartiteur/
       CYPRESS_mailHogUrl: http://mailhog:8025
@@ -32,7 +54,7 @@ services:
       CYPRESS_video: 'false'
       HTTP_PROXY: ${http_proxy}
       HTTPS_PROXY: ${http_proxy}
-      NO_PROXY: ${no_proxy},candidat.candilib.local,admin.candilib.local,mailhog
+      NO_PROXY: ${no_proxy},candidat.candilib.local,admin.candilib.local,mailhog,candilib_db_rest
     entrypoint: ["/e2e-entrypoint.sh","$CYPRESS_ARG"]
     volumes:
       - ./tests/e2e/:/app/tests/e2e/
