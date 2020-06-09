@@ -61,7 +61,7 @@ export const disconnect = async () => {
       const { stopMongoMemoryServer } = await import(
         './mongo-memory-server-setup'
       )
-      stopMongoMemoryServer()
+      await stopMongoMemoryServer()
     }
   } catch (error) {
     techLogger.info('Disconnected from Mongo')
