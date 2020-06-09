@@ -29,6 +29,12 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         {
           textContent: `Cependant, seuls les départements de la liste suivante proposent actuellement des places via ce service : ${departements.join(', ')}`,
         },
+        {
+          textContent: `NB : les candidats du 75 pourront choisir parmi les centres d'examen suivants : ${parisCenters.join(', ')}`,
+        },
+        {
+          textContent: "Pour rappel, il n'existe pas de centre d'examen localisé à Paris.",
+        },
       ],
     },
     {
