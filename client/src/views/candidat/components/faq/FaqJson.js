@@ -52,7 +52,10 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         },
         {
           subTitleContent: 'Pour réserver',
-          textContent: 'Connectez-vous à Candilib après réception du mail « Validation de votre inscription à Candilib » (lien de connexion dans le mail de validation).',
+          textContent: 'Connectez-vous à Candilib après réception du mail « Validation de votre inscription à Candilib » (lien de connexion dans le mail de validation).',
+        },
+        {
+          textContent: '<div style="display: flex; align-items: center;"> <span class="material-icons"> warning </span> <span style="padding-left: 5px"> Si vous êtes déjà inscrit sur Candilib, cliquez sur "Déjà inscrit" en indiquant l\'adresse mail utilisée pour votre inscription, vous recevrez un nouveau lien vous permettant d\'accéder au planning de réservation.</span></div> ',
         },
         {
           textContent: 'Sélectionnez le département choisi, puis votre centre d\'examen, puis un créneau disponible à la date qui vous convient (si besoin, déplacez-vous sur les vues « mois », « semaine » et « jour »).',
