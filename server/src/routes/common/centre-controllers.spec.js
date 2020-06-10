@@ -335,6 +335,7 @@ describe('Centre controllers admin', () => {
 describe('Test centres of departement', () => {
   const centre = {
     departement: '75',
+    geoDepartement: '93',
     nom: 'VILLEPINTE',
     adresse:
       'avenue Jean Fourgeaud (dernier parking circulaire) 93420 Villepinte',
@@ -354,7 +355,8 @@ describe('Test centres of departement', () => {
       centre.adresse,
       centre.lon,
       centre.lat,
-      centre.departement
+      centre.departement,
+      centre.geoDepartement
     )
   })
 
@@ -379,6 +381,10 @@ describe('Test centres of departement', () => {
       expect(body).toHaveProperty('success', true)
       expect(body).toHaveProperty('deptCenters')
       expect(body.deptCenters[0]).toHaveProperty('nom', centre.nom)
+      expect(body.deptCenters[0]).toHaveProperty(
+        'geoDepartement',
+        centre.geoDepartement
+      )
     })
   })
 })

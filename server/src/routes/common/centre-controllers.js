@@ -332,7 +332,10 @@ export async function getCentresByDepartement (req, res) {
     departementId,
   }
   try {
-    const deptCenters = await findCentresByDepartement(departementId, 'nom')
+    const deptCenters = await findCentresByDepartement(
+      departementId,
+      'nom geoDepartement'
+    )
     appLogger.info({
       ...loggerContent,
       deptCentersName: deptCenters,
