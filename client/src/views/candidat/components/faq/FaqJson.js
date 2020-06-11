@@ -1,3 +1,6 @@
+export const NB_FOR_CENTERS_75 = (parisCenters = []) => {
+  return `Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants : ${parisCenters.join(', ')}`
+}
 export function faqJson (lineDelay, departements = [], parisCenters = []) {
   const returnArray = [
     {
@@ -30,7 +33,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: `Cependant, seuls les départements de la liste suivante proposent actuellement des places via ce service : ${departements.join(', ')}`,
         },
         {
-          textContent: `NB : les candidats du 75 pourront choisir parmi les centres d'examen suivants : ${parisCenters.join(', ')}`,
+          textContent: 'NB : ' + NB_FOR_CENTERS_75(parisCenters),
         },
         {
           textContent: "Pour rappel, il n'existe pas de centre d'examen localisé à Paris.",
