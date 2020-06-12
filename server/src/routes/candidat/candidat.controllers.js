@@ -248,7 +248,6 @@ export async function preSignup (req, res) {
  * @param {string} req.userId - Identifiant du candidat (mis sur la requête par le middleware verifyToken)
  * @param {Object} res - Réponse
  */
-
 export async function getMe (req, res) {
   try {
     const options = {
@@ -265,6 +264,8 @@ export async function getMe (req, res) {
     }
 
     const candidat = await findCandidatById(req.userId, options)
+    // Pour corriger les anciennes donnés
+    candidat.homeDepartement = candidat.homeDepartement || candidat.departement
 
     res.json({
       candidat,
