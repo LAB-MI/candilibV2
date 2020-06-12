@@ -332,3 +332,38 @@ export const getGeoDepartementsFromCentres = async (options = '-__v') => {
   )
   return geoDepartements
 }
+
+export const countCenterByNameAndGeoDep = async (nom, geoDepartement) => {
+  const filters = {
+    active: { $ne: false },
+    nom,
+    geoDepartement,
+  }
+
+  const countCentres = await Centre.count(filters)
+
+  return countCentres
+}
+
+export const findCentresUniqByDepartement = async departement => {
+  const filters = {
+    active: { $ne: false },
+  }
+
+  const centres = await Centre.find({ ...filters, departement })
+  const centresWithCount = await Promise.all(
+    centres.map(async centre => {
+      const { nom, geoDepartement } = centre
+      const count = await Centre.count({
+        ...filters,
+        nom: caseInsensitive(nom),
+        geoDepartement,
+      })
+      centre.count = count
+
+      return centre
+    })
+  )
+
+  return centresWithCount.filter(centre => centre.count === 1)
+}
