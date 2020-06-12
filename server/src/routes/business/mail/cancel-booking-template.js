@@ -7,7 +7,8 @@ export const getCancelBookingTemplate = (
   dateResa,
   houreResa,
   urlRESA,
-  urlFAQ
+  urlFAQ,
+  contactezNous
 ) => `<p>Madame, Monsieur ${nomNaissance},</p>
 <br>
 <p>
@@ -24,6 +25,7 @@ Si vous avez annulé ${config.daysForbidCancel} jours avant la date prévue,
     config.timeoutToRetry
   } jours à partir de la date de réservation annulée, vous sera appliqué.
   Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>
+  ${contactezNous}
 </p>
 <br>
 <p align="right">L'équipe Candilib</p>`
