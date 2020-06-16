@@ -6,5 +6,24 @@
   "videosFolder": "tests/e2e/videos",
   "supportFile": "tests/e2e/support/index.js",
   "viewportWidth": 1200,
-  "viewportHeight": 800
+  "viewportHeight": 800,
+  "testFiles": [
+    "adminStatsKpi.js",
+    "adminCandidatSearch.js",
+    "admin-centres.js",
+    "adminDashboard.js",
+    "adminDepartements.js",
+    "adminIpcsr.js",
+    "adminLogin.js",
+    "adminPlaces.js",
+    "adminPlanning.js",
+    "adminResetPassword.js",
+    "adminUsers.js",
+    "aurigeRefusals.js",
+    "candidatContactUs.js",
+    "candidateFront.js",
+    "candidateLogin.js",
+    "delayAfterFailure.js",
+    "interactions.js"
+  ]
 }

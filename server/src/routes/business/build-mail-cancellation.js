@@ -1,7 +1,12 @@
 import { getHtmlBody } from './mail/body-mail-template'
-import { buildMailResaArgsValidation } from './send-mail-util'
+import {
+  buildMailResaArgsValidation,
+  getUrlRESAByToken,
+  getContactUs,
+  getCandidatToken,
+} from './send-mail-util'
 import { getFrenchFormattedDateTime } from '../../util/date-util'
-import { getCancelBookingTemplate, getUrlFAQ, getUrlRESA } from './mail'
+import { getCancelBookingTemplate, getUrlFAQ } from './mail'
 import { appLogger } from '../../util'
 
 const section = 'candidat-sendMail'
@@ -14,7 +19,9 @@ export const getCancellationBody = (place, candidat) => {
   const { nom, adresse } = centre
   const { _id, nomNaissance, codeNeph } = candidat
   const urlFAQ = getUrlFAQ()
-  const urlRESA = getUrlRESA(_id)
+  const token = getCandidatToken(_id)
+  const urlRESA = getUrlRESAByToken(token)
+  const contactezNous = getContactUs(token)
 
   buildMailResaArgsValidation(
     date,
@@ -37,7 +44,8 @@ export const getCancellationBody = (place, candidat) => {
     dateTimeResa.date,
     dateTimeResa.hour,
     urlRESA,
-    urlFAQ
+    urlFAQ,
+    contactezNous
   )
 
   return getHtmlBody(body)

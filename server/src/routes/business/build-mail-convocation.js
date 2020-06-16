@@ -1,8 +1,13 @@
 import { getFrenchFormattedDateTime } from '../../util/date-util'
 import { getHtmlBody } from './mail/body-mail-template'
 import { getConvocationTemplate } from './mail/convocation-template'
-import { getUrlFAQ, getUrlRESA } from './mail/mail.constants'
-import { buildMailResaArgsValidation } from './send-mail-util'
+import { getUrlFAQ } from './mail/mail.constants'
+import {
+  buildMailResaArgsValidation,
+  getCandidatToken,
+  getUrlRESAByToken,
+  getContactUs,
+} from './send-mail-util'
 
 const section = 'candidat-sendMail'
 
@@ -13,7 +18,9 @@ export const getConvocationBody = place => {
   const { _id, nomNaissance, codeNeph } = candidat
 
   const urlFAQ = getUrlFAQ()
-  const urlRESA = getUrlRESA(_id)
+  const token = getCandidatToken(_id)
+  const urlRESA = getUrlRESAByToken(token)
+  const contactezNous = getContactUs(token)
 
   buildMailResaArgsValidation(
     date,
@@ -37,7 +44,8 @@ export const getConvocationBody = place => {
     codeNeph,
     adresse,
     urlRESA,
-    urlFAQ
+    urlFAQ,
+    contactezNous
   )
 
   return getHtmlBody(body)

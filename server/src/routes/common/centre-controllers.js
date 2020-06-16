@@ -1,7 +1,7 @@
 /**
  * Modules concernant les actions possibles sur les centres
  *
- * @module routes/common/centre-controllers
+ * @module
  */
 
 import {
@@ -324,6 +324,17 @@ export async function createCentre (req, res) {
   }
 }
 
+/**
+ * Obtenir la liste des centres par un département administrative
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req Requête express
+ * @param {Object} req.query
+ * @param {string} req.query.departementId - Département administrative
+ * @param {import('express').Response} res Réponse express
+ */
 export async function getCentresByDepartement (req, res) {
   const { departementId } = req.query
   const loggerContent = {
@@ -332,7 +343,10 @@ export async function getCentresByDepartement (req, res) {
     departementId,
   }
   try {
-    const deptCenters = await findCentresByDepartement(departementId, 'nom')
+    const deptCenters = await findCentresByDepartement(
+      departementId,
+      'nom geoDepartement'
+    )
     appLogger.info({
       ...loggerContent,
       deptCentersName: deptCenters,

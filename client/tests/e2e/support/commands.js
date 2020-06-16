@@ -8,7 +8,12 @@ import 'cypress-file-upload'
 import './mailHogCommands'
 
 Cypress.Commands.add('adminLogin', () => {
-  cy.visit(Cypress.env('frontAdmin') + 'admin-login')
+  cy.visit(Cypress.env('frontAdmin') + 'admin-login',
+  {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear()
+    },
+  })
   cy.get('.t-login-email [type=text]')
     .type(Cypress.env('adminLogin'))
   cy.get('[type=password]')
@@ -120,7 +125,12 @@ Cypress.Commands.add('addPlanning', (dates) => {
 
 Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   // The candidate fills the pre-sign-up form
-  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
+  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib',
+    {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear()
+      },
+    })
   cy.contains('Se pré-inscrire')
     .click()
   cy.get('h2')
@@ -198,27 +208,41 @@ Cypress.Commands.add('candidatConnection', (candidatEmail) => {
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
 })
 
-Cypress.Commands.add('candidateValidation', () => {
-  cy.writeFile(Cypress.env('filePath') + '/aurige.json',
+Cypress.Commands.add('candidateValidation', (candidat, filename, hasChecked = true) => {
+  const candidatAurige = {
+    codeNeph: candidat ? candidat.codeNeph : Cypress.env('NEPH'),
+    nomNaissance: candidat ? candidat.nomNaissance : Cypress.env('candidat'),
+    email: candidat ? candidat.email : Cypress.env('emailCandidat'),
+    dateReussiteETG: '2018-10-12',
+    nbEchecsPratiques: '0',
+    dateDernierNonReussite: '',
+    objetDernierNonReussite: '',
+    reussitePratique: '',
+    candidatExistant: 'OK',
+  }
+  if (candidat && candidat.dateReussiteETG) candidatAurige.dateReussiteETG = candidat.dateReussiteETG
+  if (candidat && candidat.nbEchecsPratiques) candidatAurige.nbEchecsPratiques = candidat.nbEchecsPratiques
+  if (candidat && candidat.dateDernierNonReussite) candidatAurige.dateDernierNonReussite = candidat.dateDernierNonReussite
+  if (candidat && candidat.objetDernierNonReussite) candidatAurige.objetDernierNonReussite = candidat.objetDernierNonReussite
+  if (candidat && candidat.reussitePratique) candidatAurige.reussitePratique = candidat.reussitePratique
+
+  let filepathAurige
+  if (filename) {
+    filepathAurige = Cypress.env('filePath') + '/' + filename
+  } else {
+    filepathAurige = Cypress.env('filePath') + '/' + 'aurige.json'
+  }
+  cy.writeFile(filepathAurige,
     [
-      {
-        codeNeph: Cypress.env('NEPH'),
-        nomNaissance: Cypress.env('candidat'),
-        email: Cypress.env('emailCandidat'),
-        dateReussiteETG: '2018-10-12',
-        nbEchecsPratiques: '0',
-        dateDernierNonReussite: '',
-        objetDernierNonReussite: '',
-        reussitePratique: '',
-        candidatExistant: 'OK',
-      },
+      candidatAurige,
     ])
   cy.contains('import_export')
     .click()
   cy.get('.ag-overlay')
     .should('contain', 'No Rows To Show')
-  const filePath2 = '../../../' + Cypress.env('filePath') + '/aurige.json'
-  const fileName2 = 'aurige.json'
+  const filePath2 = '../../../' + filepathAurige
+  let fileName2
+  if (filename) { fileName2 = filename } else { fileName2 = 'aurige.json' }
   cy.fixture(filePath2).then(fileContent => {
     cy.get('.input-file-container [type=file]')
       .upload({
@@ -235,12 +259,16 @@ Cypress.Commands.add('candidateValidation', () => {
     .should('contain', 'Le fichier ' + fileName2 + ' a été synchronisé.')
     // Checks that the candidate is validated
   cy.get('.ag-cell')
-    .should('contain', Cypress.env('candidat'))
-  cy.get('.ag-cell')
-    .should('contain', 'Pour le 75, un magic link est envoyé à ' + Cypress.env('emailCandidat'))
-  cy.getLastMail({ recipient: Cypress.env('emailCandidat') })
-    .getSubject()
-    .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+    .should('contain', candidatAurige.nomNaissance)
+
+  if (hasChecked) {
+  // Checks that the candidate is validated
+    cy.get('.ag-cell')
+      .should('contain', 'Pour le 75, un magic link est envoyé à ' + candidatAurige.email)
+    cy.getLastMail({ recipient: candidatAurige.email })
+      .getSubject()
+      .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+  }
 })
 
 Cypress.Commands.add('addCandidatToPlace', (date, candidatName) => {
@@ -275,10 +303,15 @@ Cypress.Commands.add('addCandidatToPlace', (date, candidatName) => {
     })
 })
 
-Cypress.Commands.add('removeCandidatOnPlace', () => {
+Cypress.Commands.add('removeCandidatOnPlace', (inspecteur) => {
   cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
+  cy.get('.v-tabs')
+    .contains(Cypress.env('centre'))
+    .click({ force: true })
+  cy.contains('replay')
+    .click()
   cy.get('.v-window-item').not('[style="display: none;"]')
-    .contains(Cypress.env('inspecteur2'))
+    .contains(inspecteur || Cypress.env('inspecteur2'))
     .parents('tbody').within(($row) => {
       cy.get('.place-button')
         .contains('face')
