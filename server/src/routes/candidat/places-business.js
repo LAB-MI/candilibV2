@@ -313,7 +313,8 @@ export const bookPlace = async (
     date,
     bookedAt,
     { inspecteur: 0 },
-    { centre: true, candidat: true }
+    { centre: true, candidat: true },
+    getDateDisplayPlaces()
   )
 
   return place

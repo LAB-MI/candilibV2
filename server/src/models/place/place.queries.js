@@ -285,7 +285,8 @@ export const findAndbookPlace = async (
   date,
   bookedAt,
   fields,
-  populate
+  populate,
+  createdBefore
 ) => {
   // let centre = { $in: centres }
   // if (typeof centres === 'string') {
@@ -301,6 +302,9 @@ export const findAndbookPlace = async (
   }
   if (populate && populate.candidat) {
     query.populate('candidat')
+  }
+  if (createdBefore) {
+    query.where('createdAt').lt(createdBefore)
   }
 
   const place = await query.exec()
