@@ -59,6 +59,7 @@ import {
   expectMailConvocation,
   expectMailCancelBooking,
 } from '../business/__tests__/expect-send-mail'
+import { getDateDisplayPlaces } from './util/date-to-display'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -120,7 +121,11 @@ describe('Test get dates from places available', () => {
       centre => centre.nom === centreSelected.nom
     )
     expect(body).toHaveLength(
-      createdPlaces.filter(place => place.centre._id === centreId._id).length
+      createdPlaces.filter(
+        place =>
+          place.centre._id === centreId._id &&
+          place.createdAt < getDateDisplayPlaces()
+      ).length
     )
   })
 })
