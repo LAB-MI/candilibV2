@@ -51,6 +51,8 @@ describe('Connected candidate front', () => {
         const withoutEq = codedLink.replace(/=\r\n/g, '')
         magicLink = withoutEq.replace(/=3D/g, '=')
       })
+
+      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
     })
 
     it('Should display FAQ', () => {

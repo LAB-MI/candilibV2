@@ -1,4 +1,4 @@
-import { date1 } from '../support/dateUtils'
+import { date1, now } from '../support/dateUtils'
 
 /* Tests :
 - The candidate reservation is visible on the admin front
@@ -29,6 +29,7 @@ describe('Standard scenarios', () => {
         const withoutEq = codedLink.replace(/=\r\n/g, '')
         magicLink = withoutEq.replace(/=3D/g, '=')
       })
+      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
     })
 
     it('The candidate chooses a place and the admin cancels it', () => {
