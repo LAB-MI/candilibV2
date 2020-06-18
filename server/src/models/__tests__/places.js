@@ -24,9 +24,10 @@ if (
 export const commonBasePlaceDateTime = basePlaceDateTime
 
 export const createTestPlace = async place => {
-  const { date, inspecteur, centre } = place
+  const { date, inspecteur, centre, createdAt } = place
   const leanPlace = {
     date,
+    createdAt,
   }
   let centreFound
 
@@ -75,7 +76,7 @@ export const setInitCreatedPlaces = () => {
   creatingPlaces = false
 }
 
-const dateYesteday = getFrenchLuxonFromObject({ hour: 10 })
+export const dateYesteday = getFrenchLuxonFromObject({ hour: 10 })
   .minus({ days: 1 })
   .toISO()
 
