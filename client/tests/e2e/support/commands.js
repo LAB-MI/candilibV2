@@ -9,11 +9,11 @@ import './mailHogCommands'
 
 Cypress.Commands.add('adminLogin', () => {
   cy.visit(Cypress.env('frontAdmin') + 'admin-login',
-  {
-    onBeforeLoad: (win) => {
-      win.localStorage.clear()
-    },
-  })
+    {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear()
+      },
+    })
   cy.get('.t-login-email [type=text]')
     .type(Cypress.env('adminLogin'))
   cy.get('[type=password]')
@@ -331,5 +331,11 @@ Cypress.Commands.add('deleteCentres', (centres) => {
       centresFound.filter(centre => centersName.includes(centre.nom))
         .map(({ _id }) => cy.request('DELETE', Cypress.env('ApiRestDB') + '/centres/' + _id))
     }
+  })
+})
+
+Cypress.Commands.add('updatePlaces', (query, update, many) => {
+  cy.request('PATCH', Cypress.env('ApiRestDB') + '/places', { query, update, many }).then((content) => {
+    cy.log(JSON.stringify(content.body))
   })
 })

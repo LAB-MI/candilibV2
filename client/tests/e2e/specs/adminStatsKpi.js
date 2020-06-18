@@ -5,7 +5,7 @@
   candidate absent
   candidate success
 */
-import { date1 } from '../support/dateUtils'
+import { date1, now } from '../support/dateUtils'
 describe('Stats Kpi tests', () => {
   let nbPlaces = 0
   const nowIn1WeekAnd1DaysBefore01 = date1.plus({ days: 1 })
@@ -21,6 +21,7 @@ describe('Stats Kpi tests', () => {
     ])
     cy.adminDisconnection()
     nbPlaces = Cypress.env('nbPlaces')
+    cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
   })
 
   const nbInscrits = 4

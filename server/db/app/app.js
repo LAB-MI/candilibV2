@@ -20,6 +20,18 @@ const connectAndCallback = (callback) => {
     callback(dbo, () => db.close())
   })
 }
+
+const dateRegexp = new RegExp(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)
+const parseToDatesFromObj = (obj) => {
+  for (const property in obj) {
+    const value = obj[property]
+
+    if (dateRegexp.test(value)) {
+      obj[property] = new Date(value)
+    }
+  }
+  return obj
+}
 const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -79,4 +91,59 @@ app.post('/:collection', (req, res) => {
     res.status(500).send(err)
   }
 })
+
+app.patch('/:collection', (req, res) => {
+  const { collection } = req.params
+  const { query, update, many } = req.body
+  try {
+    const newUpdate = parseToDatesFromObj(update)
+    connectAndCallback((db, done) => {
+      if (many) {
+        try {
+          db.collection(collection).updateMany(query || { }, { $set: newUpdate }, (err, obj) => {
+            try {
+              if (err) { return res.status(500).send(err) }
+              res.send({
+                success: true,
+                result: obj.result,
+              // _id: obj.ops.length > 0 ? obj.ops[1]._id : undefined,
+              })
+              done()
+            } catch (err) {
+              console.error({ collection, query, newUpdate, err })
+              res.status(500).send(err.message)
+            }
+          })
+        } catch (err) {
+          console.error({ collection, query, newUpdate, err })
+          res.status(500).send(err.message)
+        }
+      } else {
+        try {
+          db.collection(collection).updateOne(query || { }, { $set: newUpdate }, (err, obj) => {
+            try {
+              if (err) { return res.status(500).send(err) }
+              res.send({
+                success: true,
+                result: obj.result,
+                // _id: obj.ops.length > 0 ? obj.ops[1]._id : undefined,
+              })
+              done()
+            } catch (err) {
+              console.error({ collection, query, newUpdate, err })
+              res.status(500).send(err.message)
+            }
+          })
+        } catch (err) {
+          console.error({ collection, query, newUpdate, err })
+          res.status(500).send(err.message)
+        }
+      }
+    })
+  } catch (err) {
+    console.error(err)
+    res.status(500).send(err)
+  }
+})
+
 module.exports = app

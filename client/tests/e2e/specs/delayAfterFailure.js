@@ -2,6 +2,8 @@
 - The delay before trying again after failure
 */
 
+const { now } = require('../support/dateUtils')
+
 // Initialise magicLink
 var magicLink
 
@@ -29,6 +31,7 @@ describe('Test delay after failed attempt', () => {
       // cy.archiveCandidate()
       cy.addPlanning()
       cy.adminDisconnection()
+      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
     })
 
     it('Goes to the reservation page and can\'t add reservation', () => {
