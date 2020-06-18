@@ -13,7 +13,12 @@ import {
   centreDateDisplay,
   createPlacesWithCreatedAtDiff,
 } from '../../models/__tests__/places.date.display'
-import { Settings } from 'luxon'
+
+import {
+  setNowBefore12h,
+  setNowAfter12h,
+  setNowAtNow,
+} from '../candidat/__tests__/luxon-time-setting'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
@@ -35,11 +40,11 @@ describe('Get centres with the numbers places available in departements and disp
 
   afterAll(async () => {
     await disconnect()
-    Settings.now = () => Date.now
+    setNowAtNow()
   })
 
-  it('Should response 200 to find 2 centres from departement 75', async () => {
-    Settings.now = () => new Date().setHours(11, 59, 59).valueOf()
+  it('Should response 200 to find 2 centres with one place from departement 75 when is before 12h', async () => {
+    setNowBefore12h()
 
     const departement = centreDateDisplay.geoDepartement
     const { body } = await request(app)
@@ -55,8 +60,8 @@ describe('Get centres with the numbers places available in departements and disp
     )
     expect(centre).toHaveProperty('count', 1)
   })
-  it('Should response 200 to find 2 centres from departement 75', async () => {
-    Settings.now = () => new Date().setHours(12, 0, 0).valueOf()
+  it('Should response 200 to find 2 centres whit 3 places from departement 75 when is after 12h', async () => {
+    setNowAfter12h()
 
     const departement = centreDateDisplay.geoDepartement
     const { body } = await request(app)

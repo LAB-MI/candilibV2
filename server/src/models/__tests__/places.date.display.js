@@ -3,7 +3,7 @@ import { getFrenchLuxonFromObject } from '../../util'
 import { createPlace } from '../../models/place'
 
 export let centreDateDisplay
-export const createdAtBefore = getFrenchLuxonFromObject({ hour: 11 })
+export const createdAtBefore = getFrenchLuxonFromObject({ hour: 9 })
 export const createPlacesWithCreatedAtDiff = async () => {
   const createdCentres = await createCentres()
   centreDateDisplay = createdCentres[1]
@@ -19,7 +19,7 @@ export const createPlacesWithCreatedAtDiff = async () => {
       date: basePlaceDateTime.set({ hour: 9 }).toISO(),
       centre: centreDateDisplay._id,
       inspecteur: createdInspecteurs[1]._id,
-      createdAt: getFrenchLuxonFromObject({ hour: 11 }).minus({ days: 1 }),
+      createdAt: getFrenchLuxonFromObject({ hour: 9 }).minus({ days: 1 }),
     },
     {
       date: basePlaceDateTime.set({ hour: 10 }).toISO(),

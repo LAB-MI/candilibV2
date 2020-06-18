@@ -76,7 +76,7 @@ export const setInitCreatedPlaces = () => {
   creatingPlaces = false
 }
 
-export const dateYesteday = getFrenchLuxonFromObject({ hour: 10 })
+export const dateYesteday = getFrenchLuxonFromObject({ hour: 9 })
   .minus({ days: 1 })
   .toISO()
 
