@@ -23,6 +23,7 @@ import {
   setInitCreatedCentre,
   resetCreatedInspecteurs,
   setInitCreatedPlaces,
+  dateYesteday,
 } from '../../models/__tests__'
 import {
   SAVE_RESA_WITH_MAIL_SENT,
@@ -275,12 +276,14 @@ describe('Test to book and to delete reservation by candidat', () => {
         date: commonBasePlaceDateTime.toISO(),
         centre: createdCentre._id,
         inspecteur: createdInspecteur._id,
+        createdAt: dateYesteday,
       })
 
       placeCreated2 = await createPlace({
         date: commonBasePlaceDateTime.toISO(),
         centre: createdCentre._id,
         inspecteur: createdInspecteur2._id,
+        createdAt: dateYesteday,
       })
 
       updatedCandidat = await createCandidatAndUpdate(candidat)
@@ -386,6 +389,7 @@ const placeCanBook = {
       .toISO())(),
   centre: centresTests[1],
   inspecteur: inspecteursTests[1],
+  createdAt: dateYesteday,
 }
 const placeCanBook2 = {
   date: (() =>
@@ -394,11 +398,13 @@ const placeCanBook2 = {
       .toISO())(),
   centre: centresTests[1],
   inspecteur: inspecteursTests[1],
+  createdAt: dateYesteday,
 }
 const placeBeforeNow = {
   date: (() => basePlaceDateTime.minus({ days: 1, hour: 1 }).toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1],
+  createdAt: dateYesteday,
 }
 const placeCanNotBook = {
   date: (() =>
@@ -407,6 +413,7 @@ const placeCanNotBook = {
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1],
+  createdAt: dateYesteday,
 }
 
 const placeCancellable = {
@@ -416,6 +423,7 @@ const placeCancellable = {
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
+  createdAt: dateYesteday,
 }
 const placeNoCancellable = {
   date: (() =>
@@ -424,6 +432,7 @@ const placeNoCancellable = {
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
+  createdAt: dateYesteday,
 }
 
 const placeToRetry = {
@@ -433,6 +442,7 @@ const placeToRetry = {
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
+  createdAt: dateYesteday,
 }
 const dateDernierEchecPratique = () => basePlaceDateTime.plus({ hour: 2 })
 const dateEchecCanBookFrom = () => basePlaceDateTime.plus({ days: 45, hour: 2 })
