@@ -5,9 +5,7 @@ import { getDateDisplayPlaces } from './date-to-display'
 jest.mock('../../../util/date-util')
 
 const dateFct = obj =>
-  DateTime.fromObject(obj)
-    .setLocale('fr')
-    .setZone(FRENCH_TIME_ZONE)
+  DateTime.fromObject({ ...obj, zone: FRENCH_TIME_ZONE, locale: 'fr' })
 
 describe('Date to display places', () => {
   it('get yesterday at 12h when now is 11h59', () => {

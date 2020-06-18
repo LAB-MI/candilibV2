@@ -14,9 +14,13 @@ import {
   createPlacesWithCreatedAtDiff,
   createdAtBefore,
 } from '../../models/__tests__/places.date.display'
-import { Settings } from 'luxon'
 import { getFrenchLuxonFromJSDate } from '../../util'
 import { findPlaceByCandidatId } from '../../models/place'
+import {
+  setNowBefore12h,
+  setNowAtNow,
+  setNowAfter12h,
+} from './__tests__/luxon-time-setting'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
@@ -44,12 +48,11 @@ describe('Get places available and display at 12h', () => {
 
   afterAll(async () => {
     await disconnect()
-    Settings.now = () => Date.now
+    setNowAtNow()
   })
 
   it('Should get 1 place for 75 when now is before 12h', async () => {
-    Settings.now = () => new Date().setHours(11, 59, 59).valueOf()
-
+    setNowBefore12h()
     const { body } = await request(app)
       .get(
         `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`
@@ -61,7 +64,7 @@ describe('Get places available and display at 12h', () => {
     expect(body).toHaveLength(1)
   })
   it('Should get 3 places for 75 when now is after 12h', async () => {
-    Settings.now = () => new Date().setHours(12, 0, 0).valueOf()
+    setNowAfter12h()
 
     const { body } = await request(app)
       .get(
@@ -75,7 +78,7 @@ describe('Get places available and display at 12h', () => {
   })
 
   it('Should 200 with an available place before 12h when it is after 12h by centreId', async () => {
-    Settings.now = () => new Date().setHours(12, 0, 0).valueOf()
+    setNowAfter12h()
 
     const date = placesCreatedBefore.date
     const placeSelected = encodeURIComponent(date)
@@ -91,7 +94,7 @@ describe('Get places available and display at 12h', () => {
     expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
   })
   it('Should 200 with an available place before 12h when it is after 12h by center name and geo-departement', async () => {
-    Settings.now = () => new Date().setHours(12, 0, 0).valueOf()
+    setNowAfter12h()
 
     const date = placesCreatedBefore.date
     const placeSelected = encodeURIComponent(date)
@@ -108,7 +111,7 @@ describe('Get places available and display at 12h', () => {
   })
 
   it('Should 200 with no available place before 12h when it is before 12h by centreId', async () => {
-    Settings.now = () => new Date().setHours(11, 59, 59).valueOf()
+    setNowBefore12h()
 
     const date = placesCreatedBefore.date
     const placeSelected = encodeURIComponent(date)
@@ -124,7 +127,7 @@ describe('Get places available and display at 12h', () => {
   })
 
   it('Should 200 with no available place before 12h when it is after 12h by center name and geo-departement', async () => {
-    Settings.now = () => new Date().setHours(11, 59, 59).valueOf()
+    setNowBefore12h()
 
     const date = placesCreatedBefore.date
     const placeSelected = encodeURIComponent(date)
@@ -140,7 +143,7 @@ describe('Get places available and display at 12h', () => {
   })
 
   it('should booked place by candidat with info bookedAt when it is after 12h', async () => {
-    Settings.now = () => new Date().setHours(12, 0, 0).valueOf()
+    setNowAfter12h()
 
     const { body } = await request(app)
       .patch(`${apiPrefix}/candidat/places`)
@@ -168,7 +171,7 @@ describe('Get places available and display at 12h', () => {
   })
 
   it('should not booked place by candidat with info bookedAt when it is before 12h', async () => {
-    Settings.now = () => new Date().setHours(11, 59, 59).valueOf()
+    setNowBefore12h()
 
     const { body } = await request(app)
       .patch(`${apiPrefix}/candidat/places`)

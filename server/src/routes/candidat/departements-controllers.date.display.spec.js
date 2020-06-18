@@ -13,7 +13,11 @@ import {
   centreDateDisplay,
   createPlacesWithCreatedAtDiff,
 } from '../../models/__tests__/places.date.display'
-import { Settings } from 'luxon'
+import {
+  setNowBefore12h,
+  setNowAtNow,
+  setNowAfter12h,
+} from './__tests__/luxon-time-setting'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
@@ -35,12 +39,11 @@ describe('Get departement with the numbers places available in departements and 
 
   afterAll(async () => {
     await disconnect()
-    Settings.now = () => Date.now
+    setNowAtNow()
   })
 
   it('Should get 1 place for 75 when now is before 12h', async () => {
-    Settings.now = () => new Date().setHours(11, 59, 59).valueOf()
-
+    setNowBefore12h()
     const { body } = await request(app)
       .get(`${apiPrefix}/candidat/departements`)
       .set('Accept', 'application/json')
@@ -62,8 +65,7 @@ describe('Get departement with the numbers places available in departements and 
     ).toHaveProperty('count', 1)
   })
   it('Should get 3 places for 75 when now is after 12h', async () => {
-    Settings.now = () => new Date().setHours(12, 0, 0).valueOf()
-
+    setNowAfter12h()
     const { body } = await request(app)
       .get(`${apiPrefix}/candidat/departements`)
       .set('Accept', 'application/json')
