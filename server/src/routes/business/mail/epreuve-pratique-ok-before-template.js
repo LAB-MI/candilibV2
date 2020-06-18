@@ -8,12 +8,14 @@ export const getEpreuvePratiqueOKBeforeTemplate = (
   <br>
   <p><b>Attention :</b></p>
   <p>
-    Si vous recevez ce message et que vous êtes en situation de retour au permis de conduire après une annulation,
-    vous ne pouvez pas rejoindre le site de réservation des candidats libres sans examen du code de la route réussi
-    et en cours de validité.
+  Si vous recevez ce message et que vous êtes en situation de retour au
+  permis de conduire après une annulation de votre permis, vous ne pouvez pas vous
+  pré-inscrire sur le site Candilib.
+  <br> Nous vous invitons à prendre contact
+  avec le service Candilib en indiquant votre situation.
   </p>
-  <p>Vous pourrez trouver des informations utiles en consultant notre <a href=${urlFAQ}>aide en ligne</a>.<p>
-  <br>
   ${contactezNous}
+  <br>
+  <p>Vous pourrez trouver des informations utiles en consultant notre <a href=${urlFAQ}>aide en ligne</a>.<p>
   <br>
   <p align="right">L'équipe Candilib</p>`

@@ -28,7 +28,7 @@ describe('Centre', () => {
 
   describe('Create centre', () => {
     it('should not create 2 centres with same name and same department', async () => {
-      const nom = 'test.1.centre.nom'
+      const nom = 'TEST.1.CENTRE.NOM'
       const label = 'test label'
       const adresse = 'adresse 93001'
       const departement = '93'
@@ -64,7 +64,7 @@ describe('Centre', () => {
     })
 
     it('should add 2 centres with same name', async () => {
-      const nom = 'test.1.centre.nom'
+      const nom = 'TEST.1.CENTRE.NOM'
       const label = 'test label'
       const adresse = 'adresse 93000'
       const departement1 = '93'
@@ -158,7 +158,7 @@ describe('Centre', () => {
     })
 
     it('Should find centre by id', async () => {
-      const nom = 'test.1.centre.nom'
+      const nom = 'TEST.1.CENTRE.NOM'
       const label = 'test label'
       const adresse = 'adresse 93001'
       const departement = '93'

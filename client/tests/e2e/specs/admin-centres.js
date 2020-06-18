@@ -1,7 +1,7 @@
 
 describe('Dashboard tests', () => {
   const centre = {
-    nom: 'Bobo',
+    nom: 'BOBO',
     label: 'Infos complémentaires bloblo',
     adresse: 'Adresse précise du centre avec un code postale en 2A000',
     lon: 2,
@@ -10,7 +10,7 @@ describe('Dashboard tests', () => {
   }
 
   const centre2 = {
-    nom: 'Baba',
+    nom: 'BABA',
     label: 'Infos complémentaires blabla',
     adresse: 'Adresse précise du centre',
     lon: 2,
@@ -20,7 +20,7 @@ describe('Dashboard tests', () => {
   }
 
   const centre3 = {
-    nom: 'Bibi',
+    nom: 'BIBI',
     label: 'Infos complémentaires blibli',
     adresse: 'Adresse précise du centre avec un code postale 94000',
     lon: 2,
@@ -28,6 +28,9 @@ describe('Dashboard tests', () => {
     departement: '75',
   }
 
+  before(() => {
+    cy.deleteCentres([centre, centre2, centre3, { nom: centre2.nom + ' updated' }])
+  })
   beforeEach(() => {
     cy.adminLogin()
   })
@@ -129,7 +132,7 @@ describe('Dashboard tests', () => {
         cy.get('[name=nom-centre]')
           .should('have.value', centre2.nom)
           .type('{selectall}{backspace}')
-          .type(centre2.nom + ' updated')
+          .type(centre2.nom + ' UPDATED')
           .blur()
         cy.get('[name=geo-departement-centre]')
           .should('have.value', centre2.geoDepartement)
@@ -141,7 +144,7 @@ describe('Dashboard tests', () => {
       .find('.t-update-centre-submit')
       .click()
 
-    cy.get('.t-list-centres').should('contain', centre2.nom + ' updated')
+    cy.get('.t-list-centres').should('contain', centre2.nom + ' UPDATED')
     cy.get('.t-list-centres')
       .should('contain', centre2.departement)
     cy.get('.t-list-centres')

@@ -24,7 +24,7 @@ import {
   getUrlFAQ,
   getEpreuvePratiqueOKBeforeTemplate,
 } from './mail'
-import { getEmailDepartementOfCandidat } from './send-mail-util'
+import { getContactUs } from './send-mail-util'
 
 const getMailData = async (candidat, flag, urlMagicLink) => {
   const urlFAQ = getUrlFAQ()
@@ -35,15 +35,11 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     nomNaissance,
     email,
     emailValidationHash,
-    departement,
     canAccessAt,
   } = candidat
 
-  let contactezNous = ''
+  const contactezNous = getContactUs()
 
-  try {
-    contactezNous = await getEmailDepartementOfCandidat(departement)
-  } catch (error) {}
   const urlValidationEmail = `${
     config.PUBLIC_URL
   }/email-validation?e=${encodeURIComponent(email)}&h=${emailValidationHash}`
@@ -125,10 +121,10 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     case AURIGE_OK: {
       const INSCRIPTION_OK_MSG = getInscriptionOkTemplate(
         nomMaj,
-        urlMagicLink,
+        urlMagicLink ? urlMagicLink.url : undefined,
         urlConnexion,
         email,
-        contactezNous,
+        urlMagicLink ? urlMagicLink.urlContactUs : contactezNous,
         canAccessAt
       )
       message.content = getHtmlBody(INSCRIPTION_OK_MSG)

@@ -102,7 +102,7 @@ describe('Centres business', () => {
 
     expect(centreAdded).toBeDefined()
     expect(centreAdded).not.toBeNull()
-    expect(centreAdded).toHaveProperty('nom', 'CentreTest')
+    expect(centreAdded).toHaveProperty('nom', 'CENTRETEST')
     expect(centreAdded).toHaveProperty('label', 'LabelTest')
     expect(centreAdded).toHaveProperty('departement', '93')
     expect(centreAdded).toHaveProperty('geoDepartement', '94')
@@ -126,7 +126,7 @@ describe('Centres business', () => {
 
     expect(updatedCentre).toBeDefined()
     expect(updatedCentre).not.toBeNull()
-    expect(updatedCentre).toHaveProperty('nom', 'Nouveau nom')
+    expect(updatedCentre).toHaveProperty('nom', 'NOUVEAU NOM')
     expect(updatedCentre).toHaveProperty('label', centres[0].label)
     expect(updatedCentre).toHaveProperty('geoloc')
     expect(updatedCentre.geoloc).toHaveProperty('coordinates')

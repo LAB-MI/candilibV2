@@ -183,7 +183,7 @@ describe('Planning tests without candidate', () => {
     cy.get('.hexagon-wrapper').contains('93')
       .click()
     cy.get('.v-tab')
-      .should('contain', 'Bobigny')
+      .should('contain', 'BOBIGNY')
     // Checks if the url matches the date displayed
     cy.get('.hexagon-wrapper').contains('75')
       .click()

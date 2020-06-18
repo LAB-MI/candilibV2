@@ -2,12 +2,14 @@ import { Types } from 'mongoose'
 import { findCentreById } from '../../models/centre'
 import { appLogger } from '../../util'
 import { getFrenchFormattedDateTime } from '../../util/date-util'
-import { getUrlFAQ, getUrlRESA } from './mail'
+import { getUrlFAQ } from './mail'
 import { getHtmlBody } from './mail/body-mail-template'
 import { getEpreuvePratiqueKOTemplate } from './mail/epreuve-pratique-ko-template'
 import {
   buildMailResaArgsValidation,
-  getEmailDepartementOfCandidat,
+  getContactUs,
+  getUrlRESAByToken,
+  getCandidatToken,
 } from './send-mail-util'
 
 const section = 'candidat-sendMail'
@@ -24,14 +26,12 @@ export const getFailureExamBody = async (place, candidat) => {
   }
 
   const { nom, adresse } = centreObject
-  const { _id, nomNaissance, codeNeph, departement } = candidat
+  const { _id, nomNaissance, codeNeph } = candidat
 
   const urlFAQ = getUrlFAQ()
-  const urlRESA = getUrlRESA(_id)
-  let contactezNous = ''
-  try {
-    contactezNous = await getEmailDepartementOfCandidat(departement)
-  } catch (error) {}
+  const token = getCandidatToken(_id)
+  const urlRESA = getUrlRESAByToken(token)
+  const contactezNous = getContactUs(token)
 
   buildMailResaArgsValidation(
     date,

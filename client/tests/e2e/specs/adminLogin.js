@@ -35,12 +35,12 @@ describe('Admin login', () => {
     cy.get('h3')
       .should('contain', 'admin93')
     cy.get('.title')
-      .should('contain', 'Bobigny')
+      .should('contain', 'BOBIGNY')
     cy.get('.v-toolbar')
       .should('not.contain', 'import_export')
     cy.contains('calendar_today').click()
     cy.get('.v-tab')
-      .should('contain', 'Bobigny')
+      .should('contain', 'BOBIGNY')
   })
 
   it('Tries the admin login with an invalid password', () => {

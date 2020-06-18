@@ -1,3 +1,5 @@
+import { now } from '../support/dateUtils'
+
 describe('Contact Us', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
     before(() => {
@@ -179,4 +181,164 @@ describe('Contact Us', () => {
   } else {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
   }
+})
+
+describe('From FAQ, To go to the page Contact Us', () => {
+  before(() => {
+    cy.deleteAllMails()
+    cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
+    cy.getLastMail().its('Content.Body').then((mailBody) => {
+      const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
+      const withoutEq = codedLink.replace(/=\r\n/g, '')
+      const magicLink = withoutEq.replace(/=3D/g, '=')
+      cy.visit(magicLink)
+    })
+  })
+
+  it('should go to contact us from FAQ by candidat no signin', () => {
+    cy.visit(Cypress.env('frontCandidat') + 'faq')
+    cy.contains('Aide / Contact').click()
+    cy.get('.question-subtitle').should('contain', 'formulaire')
+    cy.get('a[href*="contact-us"]').click()
+    cy.url().should('contain', Cypress.env('frontCandidat') + 'candidat/contact-us')
+    cy.get('h2').should('contain', 'Nous contacter')
+  })
+
+  it('should go to contact us from FAQ by candidat no signin', () => {
+    cy.visit(Cypress.env('frontCandidat') + 'faq', {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear()
+      },
+    })
+    cy.contains('Aide / Contact').click()
+    cy.get('.question-subtitle').should('contain', 'formulaire')
+    cy.get('a[href*="contact-us"]').click()
+    cy.url().should('contain', Cypress.env('frontCandidat') + 'contact-us')
+    cy.get('h3').should('contain', 'Nous contacter')
+  })
+})
+
+describe('From the mails, To go to the page Contact Us', () => {
+  const candidat = {
+    codeNeph: '01234567890111',
+    nomNaissance: 'CANDIDAT_PRESIGNUP_CONTACTUS',
+    email: 'candidat.presignup.contactus@test.com',
+  }
+
+  const checkContactUsForUnsignedByMail = (email, subject) => {
+    cy.getLastMail({
+        recipient: email,
+        subjectContains: subject,
+      })
+      .its('Content')
+      .then((Content) => {
+        const subject = Content.Headers.Subject[0]
+        expect(subject).to.contain(subject)
+
+        const mailBody = Content.Body.replace(/=\r\n/g, '').replace(/=3D/g, '=')
+        expect(mailBody).to.match(/href=".*">formulaire en ligne/)
+        const codedLink = mailBody.match(/href="(.*)">formulaire en ligne/)
+        expect(codedLink).to.have.lengthOf(2)
+        expect(codedLink[1]).to.not.match(/token/)
+        cy.visit(codedLink[1])
+        cy.get('h3').should('contain', 'Nous contacter')
+      })
+  }
+  const checkContactUsForSignedByMail = (email, subject) => {
+    cy.getLastMail({
+      recipient: email,
+    })
+    .its('Content')
+    .then((Content) => {
+      const subject = Content.Headers.Subject[0]
+      expect(subject).to.contain(subject)
+
+      const mailBody = Content.Body.replace(/=\r\n/g, '').replace(/=3D/g, '=')
+      expect(mailBody).to.match(/href=".*">formulaire en ligne/)
+      const codedLink = mailBody.match(/href="(.*)">formulaire en ligne/)
+      expect(codedLink).to.have.lengthOf(2)
+      expect(codedLink[1]).to.match(/token/)
+      cy.visit(codedLink[1])
+      cy.get('h2').should('contain', 'Nous contacter')
+  })
+
+  }
+  let magicLink
+  before(() => {
+    cy.adminLogin()
+    cy.addPlanning()
+    cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
+    cy.getLastMail().its('Content.Body').then((mailBody) => {
+      const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
+      const withoutEq = codedLink.replace(/=\r\n/g, '')
+      magicLink = withoutEq.replace(/=3D/g, '=')
+    })
+  })
+  beforeEach(() => {
+    cy.deleteAllMails()
+    cy.visit(Cypress.env('frontCandidat') + 'contact-us', {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear()
+      },
+    })
+  })
+
+  // Candidat Signin
+  it('should go to the page contact-us signin from the sign-in mail  ', () => {
+    cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
+    checkContactUsForSignedByMail(Cypress.env('emailCandidatContactUs'), 'Validation_de_votre_inscription_')
+  })
+
+  // Candidat presignup
+  it('should go to the page contact-us no-signin from the mail presign-up ', () => {
+    cy.candidatePreSignUp(candidat)
+    checkContactUsForUnsignedByMail(candidat.email, "Validation d'adresse courriel pour Candilib")
+  })
+
+  // Candidat is valided
+  it('should go to the page contact-us no-signin from the aurige valided mail  ', () => {
+    cy.adminLogin()
+    cy.candidateValidation(candidat)
+    checkContactUsForUnsignedByMail(candidat.email, 'Validation_de_votre_inscription_')
+  })
+
+  // Candidat convocation
+  it('should go to the page contact-us signin from the convocation mail', () => {
+    cy.adminLogin()
+    cy.addCandidatToPlace(undefined, candidat.nomNaissance)
+    cy.wait(100)
+    checkContactUsForSignedByMail(candidat.email, 'Convocation')
+  })
+
+  // Candidat failed 5 times
+  it('should go to the page contact-us no-signin from the aurige 5 failed mail  ', () => {
+    candidat.nbEchecsPratiques = '5'
+    candidat.dateDernierNonReussite = now.minus({ days: 5 }).toFormat('yyyy-MM-dd')
+    candidat.objetDernierNonReussite = 'Echec'
+
+    cy.adminLogin()
+    cy.candidateValidation(candidat, 'aurige5failed.json', false)
+    checkContactUsForUnsignedByMail(candidat.email, 'Probl=C3=A8me_inscription_Candilib')
+  })
+
+  // Candidat cancel
+  it('should go to the page contact-us signin from the cancel mail', () => {
+    cy.adminLogin()
+    cy.addCandidatToPlace(undefined, Cypress.env('candidatContactUs'))
+    cy.visit(magicLink)
+    cy.get('body').should('contain', 'Annuler ma réservation')
+    cy.contains('Annuler ma réservation').click()
+    cy.get('button')
+      .should('contain', 'Confirmer')
+    cy.get('button')
+      .contains('Confirmer')
+      .click()
+
+    cy.visit(Cypress.env('frontCandidat') + 'contact-us', {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear()
+      },
+    })
+    checkContactUsForSignedByMail(Cypress.env('emailCandidatContactUs'), 'Annulation_de_votre_convocation_')
+  })
 })
