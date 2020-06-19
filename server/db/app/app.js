@@ -12,26 +12,49 @@ const mongoURL =
   process.env.MONGO_URL ||
   `mongodb://${dbAdmin}:${dbPassword}@localhost:27017/${dbName}`
 
-const connectAndCallback = (callback) => {
-  mongoClient.connect(mongoURL, function (err, db) {
-    if (err) throw err
-    console.log('Database connected!')
-    const dbo = db.db(dbName)
-    callback(dbo, () => db.close())
-  })
+class Dbo {
+  constructor (db) {
+    this.db = db
+    this.dbo = db.db(dbName)
+  }
+
+  collection (collectionName) {
+    return this.dbo.collection(collectionName)
+  }
+
+  close () {
+    this.db.close()
+  }
+}
+
+const connectDb = async () => {
+  const db = await mongoClient.connect(mongoURL)
+  return new Dbo(db)
 }
 
 const dateRegexp = new RegExp(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)
-const parseToDatesFromObj = (obj) => {
+const parseFromObj = (obj) => {
   for (const property in obj) {
     const value = obj[property]
-
-    if (dateRegexp.test(value)) {
+    if (value && value instanceof Object) {
+      obj[property] = parseFromObj(value)
+    } else if (value && dateRegexp.test(value)) {
       obj[property] = new Date(value)
     }
   }
   return obj
 }
+
+const parseBody = (req, res, next) => {
+  try {
+    req.newBody = parseFromObj(req.body)
+    next()
+  } catch (err) {
+    console.error({ err })
+    res.status(500).send(err.message)
+  }
+}
+
 const app = express()
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
@@ -42,107 +65,112 @@ app.get('/version', (req, res) => {
   res.send('0.0.0')
 })
 
-app.get('/:collection', (req, res) => {
+app.get('/:collection', async (req, res) => {
   const { collection } = req.params
   console.info(collection)
+  let dbo
   try {
-    connectAndCallback((db, done) => {
-      db.collection(collection).find({}).toArray((err, result) => {
-        if (err) throw err
-        res.json(result)
-        done()
-      })
-    })
+    dbo = await connectDb()
+    const result = await dbo.collection(collection).find({}).toArray()
+    res.json(result)
   } catch (err) {
-    res.status(500).send(err)
+    console.error(err)
+    res.status(500).send(err.message)
+  } finally {
+    dbo && dbo.close()
   }
 })
 
-app.delete('/:collection/:id', (req, res) => {
+app.delete('/:collection', async (req, res) => {
+  const { collection } = req.params
+  console.info('delete', collection, req.body)
+
+  let filter = {}
+  if (req.body) filter = { ...req.body }
+
+  let dbo
+  try {
+    dbo = await connectDb()
+    const obj = await dbo.collection(collection).deleteMany(filter)
+    res.send({ success: true, result: obj.result })
+  } catch (err) {
+    console.error(err)
+    res.status(500).send(err)
+  } finally {
+    dbo && dbo.close()
+  }
+})
+
+app.delete('/:collection/:id', parseBody, async (req, res) => {
   const { collection, id } = req.params
   console.info('delete', collection, id)
   let filter = {}
   if (req.body) filter = { ...req.body }
-  if (id) filter._id = new ObjectId(id)
+  let dbo
   try {
-    connectAndCallback((db, done) => {
-      db.collection(collection).deleteOne(filter, (err, obj) => {
-        if (err) throw err
-        res.send({ success: true, result: obj.result })
-        done()
-      })
-    })
+    if (id) filter._id = new ObjectId(id)
+    dbo = await connectDb()
+    const obj = await collection(collection).deleteOne(filter)
+    res.send({ success: true, result: obj.result })
   } catch (err) {
     res.status(500).send(err)
-  }
-})
-app.post('/:collection', (req, res) => {
-  const { collection } = req.params
-
-  try {
-    connectAndCallback((db, done) => {
-      db.collection(collection).insertOne(req.body, (err, obj) => {
-        if (err) throw err
-        res.send({ success: true, result: obj.result, _id: obj.ops.length > 0 ? obj.ops[1]._id : undefined })
-        done()
-      })
-    })
-  } catch (err) {
-    res.status(500).send(err)
+  } finally {
+    dbo && dbo.close()
   }
 })
 
-app.patch('/:collection', (req, res) => {
+app.post('/:collection', parseBody, async (req, res) => {
   const { collection } = req.params
-  const { query, update, many } = req.body
+  let dbo
   try {
-    const newUpdate = parseToDatesFromObj(update)
-    connectAndCallback((db, done) => {
-      if (many) {
-        try {
-          db.collection(collection).updateMany(query || { }, { $set: newUpdate }, (err, obj) => {
-            try {
-              if (err) { return res.status(500).send(err) }
-              res.send({
-                success: true,
-                result: obj.result,
-              // _id: obj.ops.length > 0 ? obj.ops[1]._id : undefined,
-              })
-              done()
-            } catch (err) {
-              console.error({ collection, query, newUpdate, err })
-              res.status(500).send(err.message)
-            }
-          })
-        } catch (err) {
-          console.error({ collection, query, newUpdate, err })
-          res.status(500).send(err.message)
-        }
-      } else {
-        try {
-          db.collection(collection).updateOne(query || { }, { $set: newUpdate }, (err, obj) => {
-            try {
-              if (err) { return res.status(500).send(err) }
-              res.send({
-                success: true,
-                result: obj.result,
-                // _id: obj.ops.length > 0 ? obj.ops[1]._id : undefined,
-              })
-              done()
-            } catch (err) {
-              console.error({ collection, query, newUpdate, err })
-              res.status(500).send(err.message)
-            }
-          })
-        } catch (err) {
-          console.error({ collection, query, newUpdate, err })
-          res.status(500).send(err.message)
-        }
-      }
+    dbo = await connectDb()
+    const obj = await dbo.collection(collection).insertOne(req.body)
+
+    res.send({ success: true, result: obj.result, _id: obj.ops.length > 0 ? obj.ops[1]._id : undefined })
+  } catch (err) {
+    res.status(500).send(err)
+  } finally {
+    dbo && dbo.close()
+  }
+})
+
+app.patch('/:collection', parseBody, async (req, res) => {
+  const { collection } = req.params
+  console.log(req.newBody)
+  const { query, update } = req.newBody
+  console.log({ query, update })
+  let dbo
+  try {
+    dbo = await connectDb()
+    const obj = await dbo.collection(collection).updateMany(query || { }, { $set: update })
+    res.send({
+      success: true,
+      result: obj.result,
     })
   } catch (err) {
-    console.error(err)
-    res.status(500).send(err)
+    console.error({ collection, query, update, err })
+    res.status(500).send(err.message)
+  } finally {
+    dbo && dbo.close()
+  }
+})
+
+app.patch('/:collection/:id', parseBody, async (req, res) => {
+  const { collection } = req.params
+  const { query, update } = req.newBody
+  let dbo
+  try {
+    dbo = await connectDb()
+    const obj = await dbo.collection(collection).updateOne(query || { }, { $set: update })
+    res.send({
+      success: true,
+      result: obj.result,
+    })
+  } catch (err) {
+    console.error({ collection, query, update, err })
+    res.status(500).send(err.message)
+  } finally {
+    dbo && dbo.close()
   }
 })
 
