@@ -135,7 +135,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je ne trouve pas de place disponible ?',
       content: [
         {
-          textContent: 'De nouveaux créneaux sont ajoutés régulièrement. D\'autres peuvent se libérer à tout moment par l\'annulation d\'un candidat ayant réservé.',
+          textContent: 'Si de nouveaux créneaux sont ajoutés, ils seront mises en ligne tous les midis. D\'autres peuvent se libérer à tout moment par l\'annulation d\'un candidat ayant réservé.',
         },
         {
           textContent: 'Vous pouvez aussi réserver une place dans un autre département.',
