@@ -1,0 +1,13 @@
+
+
+http://localhost:8090/places
+
+###
+PATCH http://localhost:8090/places
+content-type: application/json
+
+{
+  "query":  {  },
+  "update": {  "createdAt": "2020-06-10T12:44:19.472Z" },
+  "many": true
+}
