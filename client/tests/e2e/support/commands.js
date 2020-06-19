@@ -334,8 +334,18 @@ Cypress.Commands.add('deleteCentres', (centres) => {
   })
 })
 
-Cypress.Commands.add('updatePlaces', (query, update, many) => {
-  cy.request('PATCH', Cypress.env('ApiRestDB') + '/places', { query, update, many }).then((content) => {
+Cypress.Commands.add('updatePlaces', (query, update) => {
+  cy.request('PATCH', Cypress.env('ApiRestDB') + '/places', { query, update }).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+Cypress.Commands.add('daleteAllPlaces', () => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/places').then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+Cypress.Commands.add('updateCandidat', (query, update) => {
+  cy.request('PATCH', Cypress.env('ApiRestDB') + '/candidats', { query, update }).then((content) => {
     cy.log(JSON.stringify(content.body))
   })
 })
