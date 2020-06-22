@@ -31,8 +31,10 @@ export default {
         if (result.success === false) {
           throw new Error("Désolé, votre demande n'a pas pu être envoyé. Veuillez réessayer plus tard.")
         }
+        commit(FETCH_SEND_CONTACT_US_SUCCESS)
         dispatch(SHOW_SUCCESS, 'Votre demande a été envoyé.')
       } catch (error) {
+        commit(FETCH_SEND_CONTACT_US_FAILED)
         dispatch(SHOW_ERROR, error.message)
         throw (error)
       }
