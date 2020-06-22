@@ -36,16 +36,19 @@ describe('Display new place after 12h', () => {
   const NbCreneaux = now.hour < 12 ? NbCreneauxByDay : NbCreneauxByDay * 3
   it(`Should ${NbCreneaux} places for 93`, () => {
     cy.visit(magicLink)
+    cy.wait(100)
 
     cy.get('h2').should('contain', 'Choix du département')
     cy.get('body').should('contain', Cypress.env('geoDepartement'))
     cy.contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
       cy.root().should('contain', `${NbCreneaux} places`)
     }).click()
+    cy.wait(100)
 
     cy.get('h2').should('contain', 'Choix du centre')
     cy.get('body').should('contain', Cypress.env('centre'))
     cy.contains(Cypress.env('centre')).click()
+    cy.wait(100)
 
     const dates = [dateAt2Weeks]
     const datesNoDisplay = [dateAt3Months]
