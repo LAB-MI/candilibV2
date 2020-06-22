@@ -18,6 +18,12 @@ PUBLIC CANDIDATE FRONT
 
 import { now, date1 } from '../support/dateUtils'
 
+const checkAndSelectDepartement = () => {
+  cy.get('h2').should('contain', 'Choix du département')
+  cy.get('[role="list"]').should('contain', Cypress.env('geoDepartement'))
+  cy.get('[role="list"]').contains(Cypress.env('geoDepartement')).click()
+}
+
 describe('Connected candidate front', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
     // Initialise magicLink
@@ -91,14 +97,11 @@ describe('Connected candidate front', () => {
         .parent().parent()
         .should('contain', Cypress.env('candidatFront'))
     })
-
     it('Should book a place at 7th days', () => {
       cy.visit(magicLink)
       cy.wait(1000)
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
+      checkAndSelectDepartement()
 
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
@@ -166,9 +169,7 @@ describe('Connected candidate front', () => {
       cy.visit(magicLink)
       cy.wait(1000)
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
+      checkAndSelectDepartement()
 
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
@@ -234,9 +235,7 @@ describe('Connected candidate front', () => {
       cy.get('body').should('contain', 'Modifier ma réservation')
       cy.contains('Modifier ma réservation').click()
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
+      checkAndSelectDepartement()
 
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
@@ -407,9 +406,7 @@ describe('Connected candidate front', () => {
       cy.get('body').should('contain', 'Continuer')
       cy.contains('Continuer').click()
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
+      checkAndSelectDepartement()
 
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
@@ -487,9 +484,7 @@ describe('Connected candidate front', () => {
         'Votre annulation a bien été prise en compte.',
       )
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
+      checkAndSelectDepartement()
 
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
