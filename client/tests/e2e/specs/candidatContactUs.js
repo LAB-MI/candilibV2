@@ -227,9 +227,9 @@ describe('From the mails, To go to the page Contact Us', () => {
 
   const checkContactUsForUnsignedByMail = (email, subject) => {
     cy.getLastMail({
-        recipient: email,
-        subjectContains: subject,
-      })
+      recipient: email,
+      subjectContains: subject,
+    })
       .its('Content')
       .then((Content) => {
         const subject = Content.Headers.Subject[0]
@@ -248,20 +248,19 @@ describe('From the mails, To go to the page Contact Us', () => {
     cy.getLastMail({
       recipient: email,
     })
-    .its('Content')
-    .then((Content) => {
-      const subject = Content.Headers.Subject[0]
-      expect(subject).to.contain(subject)
+      .its('Content')
+      .then((Content) => {
+        const subject = Content.Headers.Subject[0]
+        expect(subject).to.contain(subject)
 
-      const mailBody = Content.Body.replace(/=\r\n/g, '').replace(/=3D/g, '=')
-      expect(mailBody).to.match(/href=".*">formulaire en ligne/)
-      const codedLink = mailBody.match(/href="(.*)">formulaire en ligne/)
-      expect(codedLink).to.have.lengthOf(2)
-      expect(codedLink[1]).to.match(/token/)
-      cy.visit(codedLink[1])
-      cy.get('h2').should('contain', 'Nous contacter')
-  })
-
+        const mailBody = Content.Body.replace(/=\r\n/g, '').replace(/=3D/g, '=')
+        expect(mailBody).to.match(/href=".*">formulaire en ligne/)
+        const codedLink = mailBody.match(/href="(.*)">formulaire en ligne/)
+        expect(codedLink).to.have.lengthOf(2)
+        expect(codedLink[1]).to.match(/token/)
+        cy.visit(codedLink[1])
+        cy.get('h2').should('contain', 'Nous contacter')
+      })
   }
   let magicLink
   before(() => {
@@ -273,6 +272,7 @@ describe('From the mails, To go to the page Contact Us', () => {
       const withoutEq = codedLink.replace(/=\r\n/g, '')
       magicLink = withoutEq.replace(/=3D/g, '=')
     })
+    cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
   })
   beforeEach(() => {
     cy.deleteAllMails()

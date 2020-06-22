@@ -91,7 +91,12 @@ export const findPlaceByCandidatId = async (id, populate) => {
  *
  * @returns {import('mongoose').Query}
  */
-const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
+const queryAvailablePlacesByCentre = (
+  centreId,
+  beginDate,
+  endDate,
+  createdBefore
+) => {
   const query = Place.where('centre').exists(true)
   if (beginDate || endDate) {
     query.where('date')
@@ -100,6 +105,9 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
     if (endDate) query.lt(endDate)
   }
 
+  if (createdBefore) {
+    query.where('createdAt').lt(createdBefore)
+  }
   query.where('candidat').equals(undefined)
 
   return query.where('centre', centreId)
@@ -115,7 +123,12 @@ const queryAvailablePlacesByCentre = (centreId, beginDate, endDate) => {
  *
  * @returns {import('mongoose').Query}
  */
-const queryAvailablePlacesByCentres = (centreId, beginDate, endDate) => {
+const queryAvailablePlacesByCentres = (
+  centreId,
+  beginDate,
+  endDate,
+  createdBefore
+) => {
   const query = Place.where('centre').exists(true)
   if (beginDate || endDate) {
     query.where('date')
@@ -124,6 +137,9 @@ const queryAvailablePlacesByCentres = (centreId, beginDate, endDate) => {
     if (endDate) query.lt(endDate)
   }
 
+  if (createdBefore) {
+    query.where('createdAt').lt(createdBefore)
+  }
   query.where('candidat').equals(undefined)
 
   return query.where('centre', centreId)
@@ -153,13 +169,19 @@ export const findAvailablePlacesByCentre = async (
   centreId,
   beginDate,
   endDate,
-  populate
+  populate,
+  createdBefore
 ) => {
   appLogger.debug({
     func: 'findAvailablePlacesByCentre',
     args: { centreId, beginDate, endDate },
   })
-  const query = queryAvailablePlacesByCentre(centreId, beginDate, endDate)
+  const query = queryAvailablePlacesByCentre(
+    centreId,
+    beginDate,
+    endDate,
+    createdBefore
+  )
   queryPopulate(populate, query)
   const places = await query.exec()
   return places
@@ -170,7 +192,8 @@ export const findAvailablePlacesByCentres = async (
   centres,
   beginDate,
   endDate,
-  populate
+  populate,
+  createdBefore
 ) => {
   appLogger.debug({
     func: 'findAvailablePlacesByCentre',
@@ -182,7 +205,8 @@ export const findAvailablePlacesByCentres = async (
       const query = queryAvailablePlacesByCentres(
         centre._id,
         beginDate,
-        endDate
+        endDate,
+        createdBefore
       )
       queryPopulate(populate, query)
       return query.exec()
@@ -199,7 +223,8 @@ export const findAvailablePlacesByCentres = async (
 export const countAvailablePlacesByCentre = async (
   centreId,
   beginDate,
-  endDate
+  endDate,
+  createdBefore
 ) => {
   appLogger.debug({
     func: 'countAvailablePlacesByCentre',
@@ -209,12 +234,18 @@ export const countAvailablePlacesByCentre = async (
   const nbPlaces = await queryAvailablePlacesByCentre(
     centreId,
     beginDate,
-    endDate
+    endDate,
+    createdBefore
   ).countDocuments()
   return nbPlaces
 }
 
-export const findPlacesByCentreAndDate = async (_id, date, populate) => {
+export const findPlacesByCentreAndDate = async (
+  _id,
+  date,
+  populate,
+  createdBefore
+) => {
   appLogger.debug({
     func: 'findPlacesByCentreAndDate',
     args: { _id, date, populate },
@@ -226,6 +257,11 @@ export const findPlacesByCentreAndDate = async (_id, date, populate) => {
     .where('candidat')
     .equals(undefined)
   queryPopulate(populate, query)
+
+  if (createdBefore) {
+    query.where('createdAt').lt(createdBefore)
+  }
+
   const places = await query.exec()
 
   return places
@@ -249,7 +285,8 @@ export const findAndbookPlace = async (
   date,
   bookedAt,
   fields,
-  populate
+  populate,
+  createdBefore
 ) => {
   // let centre = { $in: centres }
   // if (typeof centres === 'string') {
@@ -265,6 +302,9 @@ export const findAndbookPlace = async (
   }
   if (populate && populate.candidat) {
     query.populate('candidat')
+  }
+  if (createdBefore) {
+    query.where('createdAt').lt(createdBefore)
   }
 
   const place = await query.exec()

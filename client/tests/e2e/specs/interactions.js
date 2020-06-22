@@ -1,4 +1,4 @@
-import { date1 } from '../support/dateUtils'
+import { date1, now } from '../support/dateUtils'
 
 /* Tests :
 - The candidate reservation is visible on the admin front
@@ -29,6 +29,7 @@ describe('Standard scenarios', () => {
         const withoutEq = codedLink.replace(/=\r\n/g, '')
         magicLink = withoutEq.replace(/=3D/g, '=')
       })
+      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
     })
 
     it('The candidate chooses a place and the admin cancels it', () => {
@@ -38,10 +39,14 @@ describe('Standard scenarios', () => {
         .should('contain', 'Choix du département')
       cy.contains(Cypress.env('geoDepartement'))
         .click()
+      cy.wait(100)
+
       cy.get('h2')
         .should('contain', 'Choix du centre')
       cy.contains(Cypress.env('centre'))
         .click()
+      cy.wait(100)
+
       cy.get(`[href="#tab-${date1.monthLong}"]`)
         .click()
       cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
@@ -194,6 +199,8 @@ describe('Standard scenarios', () => {
       cy.get('.t-center-tabs .v-tab')
         .contains(Cypress.env('centre'))
         .click({ force: true })
+      cy.wait(100)
+
       cy.get('.v-window-item').not('[style="display: none;"]')
         .should('have.length', 1)
         .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability

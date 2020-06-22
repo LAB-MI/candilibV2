@@ -42,6 +42,7 @@ import {
 } from '../../models/candidat'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
+import { getDateDisplayPlaces } from './util/date-to-display'
 
 /**
  * Renvoie tous les créneaux d'un centre
@@ -76,7 +77,9 @@ export const getDatesByCentreId = async (
   const places = await findAvailablePlacesByCentre(
     _id,
     beginPeriod.toISODate(),
-    endPeriod.toISODate()
+    endPeriod.toISODate(),
+    undefined,
+    getDateDisplayPlaces()
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO()
@@ -126,7 +129,9 @@ export const getDatesByCentresNameAndGeoDepartement = async (
   const places = await findAvailablePlacesByCentres(
     centres,
     beginPeriod.toISODate(),
-    endPeriod.toISODate()
+    endPeriod.toISODate(),
+    undefined,
+    getDateDisplayPlaces()
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO()
@@ -196,7 +201,12 @@ export const getDatesByCentre = async (
  * @returns {string[]} - Tableau de dates au format ISO
  */
 export const hasAvailablePlaces = async (id, date) => {
-  const places = await findPlacesByCentreAndDate(id, date)
+  const places = await findPlacesByCentreAndDate(
+    id,
+    date,
+    undefined,
+    getDateDisplayPlaces()
+  )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO()
   )
@@ -303,7 +313,8 @@ export const bookPlace = async (
     date,
     bookedAt,
     { inspecteur: 0 },
-    { centre: true, candidat: true }
+    { centre: true, candidat: true },
+    getDateDisplayPlaces()
   )
 
   return place
