@@ -67,7 +67,6 @@ app.get('/version', (req, res) => {
 
 app.get('/:collection', async (req, res) => {
   const { collection } = req.params
-  console.info(collection)
   let dbo
   try {
     dbo = await connectDb()
@@ -83,8 +82,6 @@ app.get('/:collection', async (req, res) => {
 
 app.delete('/:collection', async (req, res) => {
   const { collection } = req.params
-  console.info('delete', collection, req.body)
-
   let filter = {}
   if (req.body) filter = { ...req.body }
 
@@ -103,7 +100,6 @@ app.delete('/:collection', async (req, res) => {
 
 app.delete('/:collection/:id', parseBody, async (req, res) => {
   const { collection, id } = req.params
-  console.info('delete', collection, id)
   let filter = {}
   if (req.body) filter = { ...req.body }
   let dbo
@@ -136,9 +132,7 @@ app.post('/:collection', parseBody, async (req, res) => {
 
 app.patch('/:collection', parseBody, async (req, res) => {
   const { collection } = req.params
-  console.log(req.newBody)
   const { query, update } = req.newBody
-  console.log({ query, update })
   let dbo
   try {
     dbo = await connectDb()
