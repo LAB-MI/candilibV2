@@ -176,6 +176,7 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   cy.getLastMail().its('Content.Body').then((mailBody) => {
     // TODO: decode properly the href
     const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
+    cy.log(codedLink)
     const withoutEq = codedLink.replace(/=\r\n/g, '')
     const validationLink = withoutEq.replace(/=3D/g, '=')
     cy.visit(validationLink)
@@ -206,6 +207,30 @@ Cypress.Commands.add('candidatConnection', (candidatEmail) => {
   cy.getLastMail()
     .getSubject()
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+})
+
+Cypress.Commands.add('getNewMagicLinkCandidat', (candidatEmail) => {
+  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib', {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear()
+    },
+  })
+
+  cy.contains('Déjà')
+    .click()
+  cy.get('input').type(candidatEmail)
+  cy.get('form').find('button').click()
+  cy.wait(500)
+  cy.getLastMail().getRecipients()
+    .should('contain', candidatEmail)
+  cy.getLastMail()
+    .getSubject()
+    .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+  cy.getLastMail().its('Content.Body').then((mailBody) => {
+    const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
+    const withoutEq = codedLink.replace(/=\r\n/g, '')
+    return withoutEq.replace(/=3D/g, '=')
+  })
 })
 
 Cypress.Commands.add('candidateValidation', (candidat, filename, hasChecked = true) => {
@@ -357,4 +382,16 @@ Cypress.Commands.add('checkAndSelectDepartement', (NbCreneaux) => {
   cy.get('[role="list"]').contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
     if (NbCreneaux) cy.root().should('contain', `${NbCreneaux} places`)
   }).click()
+})
+
+Cypress.Commands.add('addCandidat', (candidat) => {
+  cy.log(JSON.stringify(candidat))
+  cy.request('POST', Cypress.env('ApiRestDB') + '/candidats', candidat).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+Cypress.Commands.add('deleteCandidat', (query) => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/candidats', query).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
 })

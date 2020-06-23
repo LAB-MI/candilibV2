@@ -120,10 +120,11 @@ app.post('/:collection', parseBody, async (req, res) => {
   let dbo
   try {
     dbo = await connectDb()
-    const obj = await dbo.collection(collection).insertOne(req.body)
-
-    res.send({ success: true, result: obj.result, _id: obj.ops.length > 0 ? obj.ops[1]._id : undefined })
+    const obj = await dbo.collection(collection).insertOne(req.newBody)
+    console.log(obj)
+    res.send({ success: true, result: obj.result, _id: obj.ops.length > 0 ? obj.ops[0]._id : undefined })
   } catch (err) {
+    console.error({ collection, body: req.body, err })
     res.status(500).send(err)
   } finally {
     dbo && dbo.close()
