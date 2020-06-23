@@ -66,7 +66,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       ],
     },
     {
-      title: 'Quand pourrais-je accéder au planning de réservation ?',
+      title: 'Quand pourrai-je accéder au planning de réservation ?',
       content: [
         {
           textContent: `Après l'acceptation de votre inscription, vous devez attendre ${lineDelay} jours avant de pouvoir accéder au planning de réservation. Cette mise en file d'attente vous permet de planifier votre préparation en vue de réussir votre examen du permis de conduire.`,
