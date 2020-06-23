@@ -18,12 +18,6 @@ PUBLIC CANDIDATE FRONT
 
 import { now, date1 } from '../support/dateUtils'
 
-const checkAndSelectDepartement = () => {
-  cy.get('h2').should('contain', 'Choix du département')
-  cy.get('[role="list"]').should('contain', Cypress.env('geoDepartement'))
-  cy.get('[role="list"]').contains(Cypress.env('geoDepartement')).click()
-}
-
 describe('Connected candidate front', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
     // Initialise magicLink
@@ -101,8 +95,8 @@ describe('Connected candidate front', () => {
       cy.visit(magicLink)
       cy.wait(1000)
 
-      checkAndSelectDepartement()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
@@ -169,8 +163,8 @@ describe('Connected candidate front', () => {
       cy.visit(magicLink)
       cy.wait(1000)
 
-      checkAndSelectDepartement()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
@@ -235,8 +229,8 @@ describe('Connected candidate front', () => {
       cy.get('body').should('contain', 'Modifier ma réservation')
       cy.contains('Modifier ma réservation').click()
 
-      checkAndSelectDepartement()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
       cy.get(`[href="#tab-${date1.monthLong}"]`).click()
@@ -406,8 +400,8 @@ describe('Connected candidate front', () => {
       cy.get('body').should('contain', 'Continuer')
       cy.contains('Continuer').click()
 
-      checkAndSelectDepartement()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
       expectedPenaltyCancel()
@@ -484,8 +478,8 @@ describe('Connected candidate front', () => {
         'Votre annulation a bien été prise en compte.',
       )
 
-      checkAndSelectDepartement()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()

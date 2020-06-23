@@ -349,3 +349,12 @@ Cypress.Commands.add('updateCandidat', (query, update) => {
     cy.log(JSON.stringify(content.body))
   })
 })
+
+Cypress.Commands.add('checkAndSelectDepartement', (NbCreneaux) => {
+  cy.get('h2').should('contain', 'Choix du département')
+  cy.get('[role="list"]').should('contain', Cypress.env('geoDepartement'))
+  // cy.get('[role="list"]').contains(Cypress.env('geoDepartement')).click()
+  cy.get('[role="list"]').contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
+    if (NbCreneaux) cy.root().should('contain', `${NbCreneaux} places`)
+  }).click()
+})
