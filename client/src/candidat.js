@@ -123,4 +123,5 @@ export default {
   contact_us_had_signup: 'Déjà pré-inscrit ou inscrit sur le site Candilib',
   contact_us_formulaire_invalide: 'Veuillez remplir le formulaire',
   constat_us_message_too_long: 'Votre message dépasse le nombre de caractéres autorisés.',
+  messsage_mise_a_disposition_des_places: 'Si de nouveaux créneaux sont ajoutés, ils seront mis en ligne tous les midis.',
 }

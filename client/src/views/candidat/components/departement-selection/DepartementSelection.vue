@@ -2,6 +2,12 @@
   <v-card>
     <page-title :title="$formatMessage({ id: 'home_choix_du_departement' })" />
     <message-info-centers-75 v-if="isFrom75" />
+    <div class="text-center">
+      <v-icon color="black">
+        info
+      </v-icon>
+      <span>{{ $formatMessage({ id: 'messsage_mise_a_disposition_des_places' }) }}</span>
+    </div>
     <v-list three-line>
       <v-list-item-content class="pl-5  pr-5">
         <v-text-field
