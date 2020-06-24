@@ -66,7 +66,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       ],
     },
     {
-      title: 'Quand pourrais-je accéder au planning de réservation ?',
+      title: 'Quand pourrai-je accéder au planning de réservation ?',
       content: [
         {
           textContent: `Après l'acceptation de votre inscription, vous devez attendre ${lineDelay} jours avant de pouvoir accéder au planning de réservation. Cette mise en file d'attente vous permet de planifier votre préparation en vue de réussir votre examen du permis de conduire.`,
@@ -135,7 +135,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je ne trouve pas de place disponible ?',
       content: [
         {
-          textContent: 'De nouveaux créneaux sont ajoutés régulièrement. D\'autres peuvent se libérer à tout moment par l\'annulation d\'un candidat ayant réservé.',
+          textContent: 'Si de nouveaux créneaux sont ajoutés, ils seront mis en ligne tous les midis. D\'autres peuvent se libérer à tout moment par l\'annulation d\'un candidat ayant réservé.',
         },
         {
           textContent: 'Vous pouvez aussi réserver une place dans un autre département.',

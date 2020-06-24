@@ -1,5 +1,5 @@
 
-describe('Dashboard tests', () => {
+describe('Manage centers', () => {
   const centre = {
     nom: 'BOBO',
     label: 'Infos complémentaires bloblo',

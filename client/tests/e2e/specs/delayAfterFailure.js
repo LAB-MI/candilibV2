@@ -2,6 +2,8 @@
 - The delay before trying again after failure
 */
 
+const { now } = require('../support/dateUtils')
+
 // Initialise magicLink
 var magicLink
 
@@ -29,6 +31,7 @@ describe('Test delay after failed attempt', () => {
       // cy.archiveCandidate()
       cy.addPlanning()
       cy.adminDisconnection()
+      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
     })
 
     it('Goes to the reservation page and can\'t add reservation', () => {
@@ -77,10 +80,13 @@ describe('Test delay after failed attempt', () => {
         .should('contain', 'Choix du département')
       cy.contains(Cypress.env('geoDepartement'))
         .click()
+      cy.wait(100)
+
       cy.get('h2')
         .should('contain', 'Choix du centre')
       cy.contains(Cypress.env('centre'))
         .click()
+      cy.wait(100)
       cy.get('.v-alert.warning')
         .should('contain', 'Vous avez échoué le ' + Cypress.env('dateFailLong') + ' à l\'examen pratique du permis de conduire. Vous ne pouvez sélectionner une date qu\'à partir du ' + Cypress.env('timeoutToRetry') + '.')
       cy.get('.v-tabs')

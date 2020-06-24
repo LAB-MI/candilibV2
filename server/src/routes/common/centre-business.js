@@ -24,6 +24,7 @@ import {
   updateCentreLabel,
 } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
+import { getDateDisplayPlaces } from '../candidat/util/date-to-display'
 
 export async function findCentresWithNbPlaces (departement, beginDate, endDate) {
   const centres = departement
@@ -47,6 +48,17 @@ export async function findCentresWithNbPlaces (departement, beginDate, endDate) 
   return centresWithNbPlaces
 }
 
+/**
+ * Récupérer les centres avec leur nombre de places disponible
+ * Utilisé que dans la partie Candidat pour obtenir la listes des centres et la liste des départements
+ *
+ * @async
+ * @function
+ * @param {*} geoDepartement
+ * @param {*} beginDate
+ * @param {*} endDate
+ * @param {*} createdBefore
+ */
 export async function findCentresWithNbPlacesByGeoDepartement (
   geoDepartement,
   beginDate,
@@ -68,7 +80,12 @@ export async function findCentresWithNbPlacesByGeoDepartement (
   const centresWithNbPlaces = await Promise.all(
     centres.map(async centre => ({
       centre,
-      count: await countAvailablePlacesByCentre(centre._id, beginDate, endDate),
+      count: await countAvailablePlacesByCentre(
+        centre._id,
+        beginDate,
+        endDate,
+        getDateDisplayPlaces()
+      ),
     }))
   )
   // TODO: Refactor next block
