@@ -22,6 +22,8 @@ export const OK = 'OK_VALID'
 export const OK_MAIL_PB = 'OK_MAIL_PB'
 export const OK_UPDATED = 'OK_UPDATED'
 export const AUTHORIZED_HOURS = [
+  '07:00',
+  '07:30',
   '08:00',
   '08:30',
   '09:00',

@@ -128,100 +128,110 @@
             :key="placesByCentre.centre._id"
             :value="`tab-${placesByCentre.centre._id}`"
           >
-            <table
-              class="table u-full-width"
-              :style="{ opacity: isLoading ? '0.5' : '1' }"
-            >
-              <thead>
-                <tr>
-                  <th
-                    v-for="creneau in headers"
-                    :key="creneau"
-                  >
-                    {{ creneau }}
-                  </th>
-                </tr>
-              </thead>
-
-              <tbody
-                v-for="inspecteurData in inspecteursData"
-                :key="inspecteurData.matricule"
+            <v-card>
+              <table
+                class="table u-full-width"
+                :style="{ opacity: isLoading ? '0.5' : '1' }"
               >
-                <tr>
-                  <th
-                    class="inspecteur-button"
-                    :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
-                  >
-                    <v-layout row>
-                      <span class="name-ipcsr-wrap">
-                        {{ inspecteurData.prenom }}
-                        {{ inspecteurData.nom }}
-                      </span>
-                      <v-btn
-                        icon
-                        @click="activeDeleteMode(inspecteurData._id, inspecteurData)"
-                      >
-                        <v-icon
-                          size="20"
-                          color="#A9A9A9"
-                        >
-                          delete
-                        </v-icon>
-                      </v-btn>
-                    </v-layout>
-                  </th>
-                  <td
-                    v-for="placeInfo in inspecteurData.creneau"
-                    :key="placeInfo._id"
-                    class="place-button"
-                    :class="{ active: activeInspecteurRow === inspecteurData._id && activeHour === placeInfo.hour }"
-                  >
-                    <schedule-inspector-button
-                      :key="`creneau-${placeInfo.hour}-${inspecteurData._id}`"
-                      :content="placeInfo"
-                      :selected-date="date"
-                      :inspecteur-id="inspecteurData._id"
-                      :update-content="reloadWeekMonitor"
-                      :centre-info="placeInfo.centre"
-                      @click="setActiveInspecteurRow"
-                    />
-                  </td>
-                </tr>
-
-                <tr>
-                  <td
-                    v-if="deleteMode"
-                    class="inspecteur-button"
-                    :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
-                  />
-
-                  <td colspan="20">
-                    <div
-                      class="place-details  u-flex  u-flex--center"
-                      :class="{ active: activeInspecteurRow === inspecteurData._id }"
+                <thead>
+                  <tr>
+                    <th
+                      v-for="creneau in headers"
+                      :key="creneau"
                     >
-                      <schedule-inspector-details
-                        v-if="!deleteMode"
-                        :place="activePlace"
-                        :content="selectedPlaceInfo"
-                        :close-dialog="closeDetails"
+                      {{ creneau }}
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody
+                  v-for="inspecteurData in inspecteursData"
+                  :key="inspecteurData.matricule"
+                >
+                  <tr>
+                    <th
+                      class="inspecteur-button"
+                      :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
+                    >
+                      <v-layout row>
+                        <v-tooltip bottom>
+                          {{ inspecteurData.prenom + ' ' + inspecteurData.nom }}
+                          <template v-slot:activator="{ on }">
+                            <span
+                              class="name-ipcsr-wrap"
+                              v-on="on"
+                            >
+                              {{ inspecteurData.prenom }}
+                              {{ inspecteurData.nom }}
+                            </span>
+                          </template>
+                        </v-tooltip>
+                        <v-btn
+                          icon
+                          @click="activeDeleteMode(inspecteurData._id, inspecteurData)"
+                        >
+                          <v-icon
+                            size="20"
+                            color="#A9A9A9"
+                          >
+                            delete
+                          </v-icon>
+                        </v-btn>
+                      </v-layout>
+                    </th>
+                    <td
+                      v-for="placeInfo in inspecteurData.creneau"
+                      :key="placeInfo._id"
+                      class="place-button"
+                      :class="{ active: activeInspecteurRow === inspecteurData._id && activeHour === placeInfo.hour }"
+                    >
+                      <schedule-inspector-button
+                        :key="`creneau-${placeInfo.hour}-${inspecteurData._id}`"
+                        :content="placeInfo"
                         :selected-date="date"
+                        :inspecteur-id="inspecteurData._id"
                         :update-content="reloadWeekMonitor"
-                        :inspecteur-id="inspecteurData._id"
-                        :centre-info="placesByCentre.centre"
+                        :centre-info="placeInfo.centre"
+                        @click="setActiveInspecteurRow"
                       />
-                      <delete-schedule-inspector
-                        v-if="deleteMode"
-                        :place-info="inspecteurData"
-                        :inspecteur-id="inspecteurData._id"
-                        :close-details="closeDetails"
-                        @reloadWeekMonitor="reloadWeekMonitor"
-                      />
-                    </div>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      v-if="deleteMode"
+                      class="inspecteur-button"
+                      :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
+                    />
+
+                    <td colspan="20">
+                      <div
+                        class="place-details  u-flex  u-flex--center"
+                        :class="{ active: activeInspecteurRow === inspecteurData._id }"
+                      >
+                        <schedule-inspector-details
+                          v-if="!deleteMode"
+                          :place="activePlace"
+                          :content="selectedPlaceInfo"
+                          :close-dialog="closeDetails"
+                          :selected-date="date"
+                          :update-content="reloadWeekMonitor"
+                          :inspecteur-id="inspecteurData._id"
+                          :centre-info="placesByCentre.centre"
+                        />
+                        <delete-schedule-inspector
+                          v-if="deleteMode"
+                          :place-info="inspecteurData"
+                          :inspecteur-id="inspecteurData._id"
+                          :close-details="closeDetails"
+                          @reloadWeekMonitor="reloadWeekMonitor"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </v-card>
           </v-tab-item>
         </v-tabs-items>
       </v-tabs>
@@ -257,6 +267,8 @@ const creneauTemplate = [
   'Inspecteurs',
   ...creneauSetting,
 ]
+
+const numberOfCreneau = creneauSetting.length || 0
 
 export default {
   components: {
@@ -469,16 +481,19 @@ export default {
 
       if (dayPlaces && dayPlaces.length) {
         this.inspecteursData = this.inspecteurs.map(inspecteur => {
-          const filteredCreneaux = dayPlaces.filter(plce => inspecteur._id === plce.inspecteur).map(place => {
-            const currentHourString = getFrenchLuxonFromIso(place.date).toFormat("HH'h'mm")
-            if (creneaux.some(crn => crn === currentHourString)) {
-              return {
-                place,
-                hour: currentHourString,
+          const filteredCreneaux = dayPlaces.filter(plce => inspecteur._id === plce.inspecteur)
+            .map(place => {
+              const currentHourString = getFrenchLuxonFromIso(place.date).toFormat("HH'h'mm")
+              if (creneaux.some(crn => crn === currentHourString)) {
+                return {
+                  place,
+                  hour: currentHourString,
+                }
               }
-            }
-          }).filter(plce => plce)
-          if (filteredCreneaux.length < 13) {
+            })
+            .filter(plce => plce)
+
+          if (filteredCreneaux.length < numberOfCreneau) {
             creneaux.forEach(cren => {
               if (!filteredCreneaux.some(crn => crn.hour === cren)) {
                 filteredCreneaux.push({
@@ -488,15 +503,12 @@ export default {
               }
             })
           }
+
           return {
             ...inspecteur,
             creneau: filteredCreneaux.sort((currentCreneau, creneauToCompare) => {
-              if (currentCreneau.hour < creneauToCompare.hour) {
-                return -1
-              }
-              if (currentCreneau.hour > creneauToCompare.hour) {
-                return 1
-              }
+              if (currentCreneau.hour < creneauToCompare.hour) return -1
+              if (currentCreneau.hour > creneauToCompare.hour) return 1
               return 0
             }),
           }
@@ -572,6 +584,8 @@ export default {
 .table {
   border-collapse: collapse;
   background-color: white;
+  table-layout: fixed;
+  width: 98em;
 }
 
 .page-title {
