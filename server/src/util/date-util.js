@@ -33,7 +33,7 @@ export const FRENCH_LOCALE_INFO = { locale: 'fr', zone: FRENCH_TIME_ZONE }
  *
  * @param  {...any} args Arguments à passer à DateTime.local() de Luxon
  *
- * @returns {DateTime} DateTime de Luxon avec la locale fr et la TimeZone de la France métropolitaine
+ * @returns {import('luxon').DateTime} DateTime de Luxon avec la locale fr et la TimeZone de la France métropolitaine
  */
 export const getFrenchLuxon = (...args) =>
   DateTime.local(...args)
@@ -45,19 +45,17 @@ export const getFrenchLuxon = (...args) =>
  *
  * @param  {Object} obj Arguments à passer à DateTime.fromObject() de Luxon
  *
- * @returns {DateTime} DateTime de Luxon avec la locale fr et la TimeZone de la France métropolitaine
+ * @returns {import('luxon').DateTime} DateTime de Luxon avec la locale fr et la TimeZone de la France métropolitaine
  */
 export const getFrenchLuxonFromObject = obj =>
-  DateTime.fromObject(obj)
-    .setLocale('fr')
-    .setZone(FRENCH_TIME_ZONE)
+  DateTime.fromObject({ ...obj, ...FRENCH_LOCALE_INFO })
 
 /**
  * @function
  *
  * @param  {Object} isoDate Date au format ISO
  *
- * @returns {DateTime} DateTime de Luxon avec la locale fr et la TimeZone de la France métropolitaine
+ * @returns {import('luxon').DateTime} DateTime de Luxon avec la locale fr et la TimeZone de la France métropolitaine
  */
 export const getFrenchLuxonFromISO = isoDate =>
   DateTime.fromISO(isoDate)
@@ -69,7 +67,7 @@ export const getFrenchLuxonFromISO = isoDate =>
  *
  * @param  {Date} jsDate Date sous forme d'objet JavaScript natif Date
  *
- * @returns {DateTime} DateTime de Luxon avec la locale fr et la TimeZone de la France métropolitaine
+ * @returns {import('luxon').DateTime} DateTime de Luxon avec la locale fr et la TimeZone de la France métropolitaine
  */
 export const getFrenchLuxonFromJSDate = jsDate =>
   DateTime.fromJSDate(jsDate, FRENCH_LOCALE_INFO)
@@ -77,8 +75,8 @@ export const getFrenchLuxonFromJSDate = jsDate =>
 /**
  *
  * @typedef {Object} BeginAndEnd
- * @property {DateTime} begin DateTime Luxon
- * @property {DateTime} end DateTime Luxon
+ * @property {import('luxon').DateTime} begin DateTime Luxon
+ * @property {import('luxon').DateTime} end DateTime Luxon
  *
  * @function
  *
@@ -106,7 +104,7 @@ export const getFrenchLuxonRangeFromDate = date => {
  *
  * @function
  *
- * @param {DateTime} pDate Date sous la forme d'un objet DateTime de Luxon
+ * @param {import('luxon').DateTime} pDate Date sous la forme d'un objet DateTime de Luxon
  * @param {string} dateFormat Format de la date sous forme de chaîne de caractères
  * @param {string} hourFormat Format de l'heure sous forme de chaîne de caractères
  *
@@ -196,7 +194,7 @@ const secondsPerDay = 24 * 60 * 60
 /**
  * @function
  *
- * @param {DateTime} date Date dans un objet DateTime de Luxon à vérifier
+ * @param {import('luxon').DateTime} date Date dans un objet DateTime de Luxon à vérifier
  *
  * @returns {boolean} `true` if `date` is a holiday, `false` otherwise
  */
