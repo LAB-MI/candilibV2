@@ -42,7 +42,6 @@
   "author": "Ministère de l'intérieur",
   "license": "ISC",
   "dependencies": {
-    "@types/express": "^4.17.1",
     "bcryptjs": "^2.4.3",
     "cross-env": "^6.0.3",
     "delay": "^4.3.0",
@@ -77,6 +76,7 @@
     "@babel/preset-env": "^7.9.5",
     "@babel/register": "^7.9.0",
     "@types/express": "^4.17.1",
+    "@types/luxon": "^1.24.1",
     "@types/mongoose": "^5.5.38",
     "agent-base": "^4.3.0",
     "babel-core": "^7.0.0-bridge.0",

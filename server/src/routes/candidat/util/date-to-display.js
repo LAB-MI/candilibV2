@@ -6,7 +6,7 @@ import { getFrenchLuxon } from '../../../util'
  * exemple: les places créés aprés le jour J à 12h seront affiché lendemain à 12h
  * @function
  */
-export const getDateDisplayPlaces = () => {
+export const getDateDisplayPlaces = (hour = 12) => {
   const newDate = getFrenchLuxon().minus({ hours: 12 })
-  return newDate.set({ hour: 12, minute: 0, second: 0 })
+  return newDate.set({ hour, minute: 0, second: 0 })
 }
