@@ -6,6 +6,7 @@
 import {
   DATETIME_FULL,
   email as emailRegex,
+  firstNameAndLastName as firstNameAndLastNameRegex,
   EMAIL_NOT_VERIFIED_EXPIRED,
   getFrenchLuxonFromJSDate,
 } from '../../util'
@@ -31,6 +32,8 @@ import {
   CANDIDAT_FIELD_EMPTY,
   CANDIDAT_NOT_FOUND,
   DEPARTEMENT_LIST,
+  CANDIDAT_LAST_NAME_NOT_VALID,
+  CANDIDAT_FIRST_NAME_NOT_VALID,
 } from './message.constants'
 import { sendErrorResponse } from '../../util/send-error-response'
 import { isDepartementExisting } from '../../models/departement'
@@ -42,6 +45,7 @@ const mandatoryFields = [
   'codeNeph',
   'email',
   'nomNaissance',
+  'prenom',
   'portable',
   'departement',
 ]
@@ -86,13 +90,15 @@ export async function preSignup (req, res) {
   }
   appLogger.info({ ...loggerInfo, candidatData })
 
-  const { email, departement } = candidatData
+  const { email, departement, nomNaissance, prenom } = candidatData
 
   const fieldsWithErrors = mandatoryFields
     .map(key => (candidatData[key] ? '' : key))
     .filter(e => e)
 
   const isValidEmail = emailRegex.test(email)
+  const isInvalidLastName = firstNameAndLastNameRegex.test(nomNaissance)
+  const isInvalidFirstName = firstNameAndLastNameRegex.test(prenom)
 
   if (fieldsWithErrors.length) {
     appLogger.error({ ...loggerInfo, fieldsWithErrors })
@@ -121,6 +127,26 @@ export async function preSignup (req, res) {
       success: false,
       message: CANDIDAT_EMAIL_NOT_VALID,
       fieldsWithErrors: ['email'],
+    })
+    return
+  }
+
+  if (isInvalidLastName) {
+    appLogger.error({ ...loggerInfo, fieldsWithErrors: ['nomNaissance'] })
+    res.status(400).json({
+      success: false,
+      message: CANDIDAT_LAST_NAME_NOT_VALID,
+      fieldsWithErrors: ['nomNaissance'],
+    })
+    return
+  }
+
+  if (isInvalidFirstName) {
+    appLogger.error({ ...loggerInfo, fieldsWithErrors: ['prenom'] })
+    res.status(400).json({
+      success: false,
+      message: CANDIDAT_FIRST_NAME_NOT_VALID,
+      fieldsWithErrors: ['prenom'],
     })
     return
   }
