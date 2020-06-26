@@ -30,7 +30,7 @@ export default {
 
     candidat () {
       const me = this.$store.state.candidat.me
-      return {
+      return me && {
         ...me,
         departement: me.homeDepartement,
       }
