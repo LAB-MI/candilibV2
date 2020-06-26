@@ -13,7 +13,10 @@ import {
   updateCentreStatus,
   getCentresByNameAndGeoDepartement,
 } from './centre-business'
-import { findCentresByDepartement } from '../../models/centre'
+import {
+  findCentresByDepartement,
+  findCentresUniqByDepartement,
+} from '../../models/centre'
 import { appLogger } from '../../util'
 import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
@@ -336,17 +339,28 @@ export async function createCentre (req, res) {
  * @param {import('express').Response} res Réponse express
  */
 export async function getCentresByDepartement (req, res) {
-  const { departementId } = req.query
+  const { departementId, uniq } = req.query
   const loggerContent = {
     description: 'Getting candidat centers associated to a departement',
     section: 'candidat-deptCenters',
     departementId,
+    uniq,
   }
   try {
-    const deptCenters = await findCentresByDepartement(
-      departementId,
-      'nom geoDepartement'
-    )
+    let deptCenters
+    if (uniq) {
+      const centers = await findCentresUniqByDepartement(departementId)
+      deptCenters = centers?.map(({ nom, geoDepartement }) => ({
+        nom,
+        geoDepartement,
+      }))
+    } else {
+      deptCenters = await findCentresByDepartement(
+        departementId,
+        'nom geoDepartement'
+      )
+    }
+
     appLogger.info({
       ...loggerContent,
       deptCentersName: deptCenters,

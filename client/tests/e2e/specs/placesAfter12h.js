@@ -38,11 +38,12 @@ describe('Display new place after 12h', () => {
     cy.visit(magicLink)
     cy.wait(100)
 
-    cy.get('h2').should('contain', 'Choix du département')
-    cy.get('body').should('contain', Cypress.env('geoDepartement'))
-    cy.contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
-      cy.root().should('contain', `${NbCreneaux} places`)
-    }).click()
+    // cy.get('h2').should('contain', 'Choix du département')
+    // cy.get('body').should('contain', Cypress.env('geoDepartement'))
+    // cy.contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
+    //   cy.root().should('contain', `${NbCreneaux} places`)
+    // }).click()
+    cy.checkAndSelectDepartement(NbCreneaux)
     cy.wait(100)
 
     cy.get('h2').should('contain', 'Choix du centre')

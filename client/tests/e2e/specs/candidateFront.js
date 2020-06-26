@@ -37,6 +37,31 @@ describe('Connected candidate front', () => {
       year: 'numeric',
     }
 
+    const candidatsByDepartments = [{
+      codeNeph: '6123456789012',
+      prenom: 'CC_FRONT',
+      nomNaissance: 'CANDIDAT_FRONT_75',
+      adresse: '40 Avenue des terroirs de France 75012 Paris',
+      portable: '0676543986',
+      email: 'candidat_front_75@candi.lib',
+      departement: '75',
+      isEvaluationDone: false,
+      isValidatedEmail: true,
+      isValidatedByAurige: true,
+    },
+    {
+      codeNeph: '6123456789013',
+      prenom: 'CC_FRONT',
+      nomNaissance: 'CANDIDAT_FRONT_93',
+      adresse: '40 Avenue des terroirs de France 75012 Paris',
+      portable: '0676543986',
+      email: 'candidat_front_93@candi.lib',
+      departement: '93',
+      isEvaluationDone: false,
+      isValidatedEmail: true,
+      isValidatedByAurige: true,
+    }]
+
     before(() => {
     // Delete all mails before start
       cy.deleteAllMails()
@@ -55,6 +80,11 @@ describe('Connected candidate front', () => {
       cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
     })
 
+    after(() => {
+      candidatsByDepartments.forEach(candidat => {
+        cy.deleteCandidat({ email: candidat.email })
+      })
+    })
     it('Should display FAQ', () => {
       cy.visit(magicLink).wait(1000)
       cy.get('i').should('contain', 'help_outline')
@@ -91,15 +121,12 @@ describe('Connected candidate front', () => {
         .parent().parent()
         .should('contain', Cypress.env('candidatFront'))
     })
-
     it('Should book a place at 7th days', () => {
       cy.visit(magicLink)
       cy.wait(1000)
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
@@ -166,10 +193,8 @@ describe('Connected candidate front', () => {
       cy.visit(magicLink)
       cy.wait(1000)
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
@@ -234,10 +259,8 @@ describe('Connected candidate front', () => {
       cy.get('body').should('contain', 'Modifier ma réservation')
       cy.contains('Modifier ma réservation').click()
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
       cy.get(`[href="#tab-${date1.monthLong}"]`).click()
@@ -407,10 +430,8 @@ describe('Connected candidate front', () => {
       cy.get('body').should('contain', 'Continuer')
       cy.contains('Continuer').click()
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
       expectedPenaltyCancel()
@@ -487,10 +508,8 @@ describe('Connected candidate front', () => {
         'Votre annulation a bien été prise en compte.',
       )
 
-      cy.get('h2').should('contain', 'Choix du département')
-      cy.get('body').should('contain', Cypress.env('geoDepartement'))
-      cy.contains(Cypress.env('geoDepartement')).click()
-
+      cy.checkAndSelectDepartement()
+      cy.wait(100)
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
@@ -515,6 +534,26 @@ describe('Connected candidate front', () => {
       cy.get('.t-disconnect')
         .click()
       cy.url().should('contain', 'presignup')
+    })
+
+    it('Should have alert info 75 for 75', () => {
+      cy.addCandidat(candidatsByDepartments[0])
+      cy.getNewMagicLinkCandidat('candidat_front_75@candi.lib').then(magicLink => {
+        cy.visit(magicLink)
+        cy.wait(100)
+        cy.get('h2').should('contain', 'Choix du département')
+        cy.get('body').should('contain', 'Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants')
+      })
+    })
+
+    it('Should have not alert info 75 for 93', () => {
+      cy.addCandidat(candidatsByDepartments[1])
+      cy.getNewMagicLinkCandidat('candidat_front_93@candi.lib').then(magicLink => {
+        cy.visit(magicLink)
+        cy.wait(100)
+        cy.get('h2').should('contain', 'Choix du département')
+        cy.get('body').should('not.contain', 'Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants')
+      })
     })
   } else {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })

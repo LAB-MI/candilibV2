@@ -49,6 +49,8 @@ router.get('/departements', getActiveDepartementsId)
  *      parameters:
  *       - in: query
  *         name: departementId
+ *       - in: query
+ *         name: uniq
  *      responses:
  *        200:
  *          description: Succès de la requête

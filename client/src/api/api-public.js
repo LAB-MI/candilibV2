@@ -20,9 +20,9 @@ const apiPublic = {
     return json
   },
 
-  async getCentresByDepartement (departement) {
+  async getCentresByDepartement (departement, uniq) {
     const json = await apiClient.get(
-        `${apiPaths.public.centres}?departementId=${departement}`,
+        `${apiPaths.public.centres}?departementId=${departement}` + (uniq ? '&uniq=true' : ''),
         {
           headers: {
             'Content-Type': 'application/json',

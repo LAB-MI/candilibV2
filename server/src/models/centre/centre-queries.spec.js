@@ -8,6 +8,7 @@ import {
   findCentreByNameAndDepartement,
   findCentresByDepartement,
   updateCentreActiveState,
+  findCentresUniqByDepartement,
 } from './centre-queries'
 import {
   setInitCreatedCentre,
@@ -182,6 +183,63 @@ describe('Centre', () => {
       expect(centreResult).toHaveProperty('adresse', adresse)
       expect(centreResult).toHaveProperty('departement', departement)
       expect(centreResult).toHaveProperty('geoDepartement', geoDepartement)
+    })
+
+    it('Should find 2 centres which are uniq in dataabse', async () => {
+      const centres75 = [
+        ...centres.map(centre => ({ ...centre, departement: '75' })),
+        {
+          departement: '75',
+          nom: 'CENTRE 4',
+          label: "Centre d'examen 4",
+          adresse: '1 rue Test, ville test, FR, 92001',
+          lon: 48,
+          lat: 3,
+          geoDepartement: '93',
+        },
+        {
+          departement: '75',
+          nom: 'CENTRE 5',
+          label: "Centre d'examen 5",
+          adresse: '2 Avenue test, Ville test 2, FR, 93420',
+          lon: 47,
+          lat: 3.5,
+          geoDepartement: '75',
+        },
+      ]
+      await Promise.all(
+        centres75.map(centre => {
+          const {
+            nom,
+            label,
+            adresse,
+            lon,
+            lat,
+            departement,
+            geoDepartement,
+          } = centre
+          return createCentre(
+            nom,
+            label,
+            adresse,
+            lon,
+            lat,
+            departement,
+            geoDepartement
+          )
+        })
+      )
+
+      const centres75Found = await findCentresByDepartement('75')
+      expect(centres75Found).toHaveLength(
+        centres75.filter(({ departement }) => departement === '75').length
+      )
+
+      const centres75UniqFound = await findCentresUniqByDepartement('75')
+      expect(centres75UniqFound).toHaveLength(
+        centres75.filter(({ departement }) => departement === '75').length -
+          centres.length
+      )
     })
   })
 
