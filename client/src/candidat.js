@@ -126,6 +126,6 @@ export default {
   messsage_mise_a_disposition_des_places: 'Si de nouveaux créneaux sont ajoutés, ils seront mis en ligne tous les midis.',
   preinscription_nom_naissance_vide: 'Veuillez renseigner votre nom naissance.',
   preinscription_prenom_vide: 'Veuillez renseigner votre prénom.',
-  preinscription_nom_naissance_erreur: 'Votre nom de naissance ne doit pas contenir le caractère: `;`',
-  preinscription_prenom_erreur: 'Votre prénom ne doit pas contenir le caractère: `;`',
+  preinscription_nom_naissance_erreur: 'Votre nom de naissance ne doit pas contenir le caractère `;`',
+  preinscription_prenom_erreur: 'Votre prénom ne doit pas contenir le caractère `;`',
 }
