@@ -74,6 +74,8 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
 Cypress.Commands.add('addPlanning', (dates) => {
   const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
   const horaires = [
+    '06:30',
+    '07:00',
     '07:30',
     '08:00',
     '08:30',
