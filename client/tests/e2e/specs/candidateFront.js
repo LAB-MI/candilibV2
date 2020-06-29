@@ -121,7 +121,7 @@ describe('Connected candidate front', () => {
         .parent().parent()
         .should('contain', Cypress.env('candidatFront'))
     })
-    it('Should book a place at 7th days', () => {
+    it.only('Should book a place at 7th days', () => {
       cy.visit(magicLink)
       cy.wait(1000)
 
@@ -131,6 +131,7 @@ describe('Connected candidate front', () => {
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
       cy.get(`[href="#tab-${nowIn1Week.monthLong}"]`).click()
+      cy.reload(true)
       const oneDayBeforeSelected = nowIn1WeekAnd1DaysBefore.toFormat('dd')
       cy.get('body').should('not.contain', ' ' + oneDayBeforeSelected)
       const daySelected = nowIn1Week.toFormat('dd')

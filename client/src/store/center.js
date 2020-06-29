@@ -76,7 +76,8 @@ export default {
       commit(FETCH_CENTER_REQUEST)
       try {
         const centre = await api.candidat.getCentre(departement, nom)
-        commit(FETCH_CENTER_SUCCESS, centre)
+        if (!(centre && centre.length)) throw new Error('Centre d\'examen introuvable')
+        commit(FETCH_CENTER_SUCCESS, centre[0])
       } catch (error) {
         commit(FETCH_CENTER_FAILURE, error.message)
         dispatch(SHOW_ERROR, error.message)

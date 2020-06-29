@@ -192,7 +192,7 @@ export default {
       } = this.$route.params
       const selected = this.center.selected
       if (this.$route.meta.isConfirmation) {
-        if (!selected || !selected._id) {
+        if (!selected) {
           await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
           setTimeout(this.getSelectedCenterAndDate, 100)
           return
