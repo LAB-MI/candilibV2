@@ -128,7 +128,9 @@
             :key="placesByCentre.centre._id"
             :value="`tab-${placesByCentre.centre._id}`"
           >
-            <v-card>
+            <v-card
+              class="center-content-wrapper pa-1"
+            >
               <table
                 class="table u-full-width"
                 :style="{ opacity: isLoading ? '0.5' : '1' }"
@@ -581,11 +583,14 @@ export default {
   padding: 1em;
 }
 
+.center-content-wrapper {
+  overflow-x: auto;
+  transform: scale(1, 1);
+}
+
 .table {
   border-collapse: collapse;
   background-color: white;
-  table-layout: fixed;
-  width: 98em;
 }
 
 .page-title {

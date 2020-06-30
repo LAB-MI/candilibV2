@@ -10,7 +10,7 @@
     <main
       role="main"
       class="u-flex__item--grow"
-      :style="{margin: '3em 0 0 0'}"
+      :style="{margin: '0.5em 0 0 0'}"
     >
       <router-view />
     </main>
