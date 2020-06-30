@@ -16,11 +16,11 @@ const fields = [
   },
   {
     label: 'Prénom',
-    value: 'prenom',
+    value: '',
   },
   {
     label: 'email',
-    value: 'email',
+    value: '',
   },
 ]
 
