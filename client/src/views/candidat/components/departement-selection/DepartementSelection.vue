@@ -2,12 +2,7 @@
   <v-card>
     <page-title :title="$formatMessage({ id: 'home_choix_du_departement' })" />
     <message-info-centers-75 v-if="isFrom75" />
-    <div class="text-center">
-      <v-icon color="black">
-        info
-      </v-icon>
-      <span>{{ $formatMessage({ id: 'messsage_mise_a_disposition_des_places' }) }}</span>
-    </div>
+    <message-info-places />
     <v-list three-line>
       <v-list-item-content class="pl-5  pr-5">
         <v-text-field
@@ -38,11 +33,13 @@ import { FETCH_DEPARTEMENTS_INFOS_REQUEST } from '@/store'
 
 import DepartementSelectionContent from './DepartementSelectionContent'
 import MessageInfoCenters75 from './MessageInfoCenters75'
+import MessageInfoPlaces from '../MessageInfoPlaces'
 
 export default {
   components: {
     DepartementSelectionContent,
     MessageInfoCenters75,
+    MessageInfoPlaces,
   },
   data () {
     return {
