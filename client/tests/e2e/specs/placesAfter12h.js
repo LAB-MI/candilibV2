@@ -1,10 +1,11 @@
 const { now } = require('../support/dateUtils')
+
 let dateAt3Months
 let dateAt2Months
 let dateAt1Months
 let dateAt2Weeks
 describe('Display new place after 12h', () => {
-  const NbCreneauxByDay = 13 * 2
+  const NbCreneauxByDay = 15 * 2
   let magicLink
   before(() => {
     cy.daleteAllPlaces()
