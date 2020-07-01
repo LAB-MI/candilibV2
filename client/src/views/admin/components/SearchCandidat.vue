@@ -69,11 +69,15 @@ const placeReserve = (place) => {
   if (place == null) {
     return 'Ce candidat n\'a pas de réservation'
   }
-  const { inspecteur, centre, date } = place
+  const { inspecteur, centre, date, bookedByAdmin, bookedAt } = place
   const nameInspecteur = inspecteur.nom
   const examCentre = centre.nom
+  const examDepartement = centre.departement
   const frenchDate = convertToLegibleDateTime(date)
-  return `${frenchDate}  <br>  ${examCentre}  <br>  ${nameInspecteur}`
+  const actionBookedAtDate = convertToLegibleDateTime(bookedAt)
+  const bookedByAdm = `${bookedByAdmin ? ('Réservé par ' + bookedByAdmin.email + ', le ' + actionBookedAtDate)
+  : ('Réservé par le Candidat, le ' + actionBookedAtDate)}`
+  return `${frenchDate}  <br>  ${examCentre}  <br> ${examDepartement} <br> ${nameInspecteur} <br> ${bookedByAdm}`
 }
 
 const legibleNoReussites = (noReussites) => {
