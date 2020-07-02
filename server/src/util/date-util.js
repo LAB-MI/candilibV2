@@ -110,11 +110,15 @@ export const getFrenchLuxonRangeFromDate = date => {
  *
  * @returns {DateHour}
  */
-export const getFrenchFormattedDateTime = (pDate, dateFormat, hourFormat) => {
+export const getFrenchFormattedDateTime = (
+  pDate,
+  dateFormat = FORMAT_DATE,
+  hourFormat = DateTime.TIME_24_SIMPLE
+) => {
   let datetime
 
   if (pDate instanceof DateTime) {
-    datetime = pDate.setLocale('fr').setZone(FRENCH_TIME_ZONE)
+    datetime = pDate.setLocale('es').setZone(FRENCH_TIME_ZONE)
   } else if (pDate instanceof Date) {
     datetime = getFrenchLuxonFromJSDate(pDate)
   } else if (pDate instanceof String || typeof pDate === 'string') {
@@ -125,10 +129,10 @@ export const getFrenchFormattedDateTime = (pDate, dateFormat, hourFormat) => {
   if (dateFormat instanceof Object) {
     date = datetime.toLocaleString(dateFormat)
   } else {
-    date = datetime.toFormat(dateFormat || FORMAT_DATE)
+    date = datetime.toFormat(dateFormat)
   }
 
-  const hour = datetime.toLocaleString(hourFormat || DateTime.TIME_24_SIMPLE)
+  const hour = datetime.toLocaleString(hourFormat)
 
   return {
     date,

@@ -1,5 +1,11 @@
 import { DateTime } from 'luxon'
-import { isHolidays, isWorkingDay, getFrenchLuxonFromObject } from './date-util'
+import {
+  isHolidays,
+  isWorkingDay,
+  getFrenchLuxon,
+  getFrenchLuxonFromObject,
+  getFrenchFormattedDateTime,
+} from './date-util'
 
 DateTime.prototype.isHolidays = function () {
   return isHolidays(this)
@@ -39,5 +45,21 @@ describe('Date utils', () => {
     const dateAsISOString = luxonFrenchDate.toJSDate().toISOString()
     const time = dateAsISOString.split('T')[1].split(':')[0]
     expect(time).toBe('08')
+  })
+  it('Should get hour wiht 08:00', () => {
+    const dateTest = getFrenchLuxon().set({ hour: 8, minute: 0 })
+    const hourJsTest = dateTest.toLocaleString({
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+    expect(hourJsTest).toBe('08:00')
+
+    const dateResult = getFrenchFormattedDateTime(dateTest, undefined, {
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false,
+    })
+    expect(dateResult).toHaveProperty('hour', '08:00')
   })
 })
