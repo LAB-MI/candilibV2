@@ -33,6 +33,7 @@
         title="Informations Candidat"
         :subtitle="candidat.prenom + ' ' + candidat.nomNaissance + ' | ' + candidat.codeNeph"
         :profile-info="profileInfo"
+        :actions-history="getActionsHistory()"
       />
     </v-expand-transition>
   </div>
@@ -76,17 +77,6 @@ const legibleNoReussites = (noReussites) => {
   }).join(' - ') + '</ol>'
 }
 
-const historiqueAction = (places) => {
-  if (!places || !(places.length)) {
-    return 'Aucune action pour ce candidat'
-  }
-  return '<ul style="margin: 0; padding: 0; list-style: square;">' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
-    const frenchDate = convertToLegibleDateTime(date)
-    const actionDate = convertToLegibleDateTime(archivedAt)
-    return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
-  }).reverse().join('') + '</ul>'
-}
-
 const iconAccess = (canAccessAt) => {
   if (!canAccessAt) {
     return '<i class="material-icons green--text">done</i>'
@@ -122,9 +112,6 @@ const candidatProfileInfoDictionary = [
     ['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDate],
   ],
   [['place', 'Réservation', placeReserve]],
-  [
-    ['places', 'Historique des actions', historiqueAction],
-  ],
 ]
 
 export default {
@@ -186,6 +173,28 @@ export default {
       }
       this.color = 'green'
       this.icon = 'keyboard_arrow_up'
+    },
+
+    getActionsHistory () {
+      const { places } = this.candidat
+      if (!places || !(places.length)) {
+        return 'Aucune action pour ce candidat'
+      }
+      return places.map(({ archivedAt, archiveReason, byUser, centre, date, departement, inspecteur }) => {
+        const frenchDate = convertToLegibleDateTime(date)
+        const actionDate = convertToLegibleDateTime(archivedAt)
+        return {
+          actionDate,
+          actionDateTime: archivedAt,
+          archiveReason,
+          byUser: byUser || 'Le Candidat',
+          centre: centre.nom,
+          departement: centre.departement || '',
+          frenchDate,
+          frenchDateTime: date,
+          inspecteur: typeof inspecteur === 'object' ? `${inspecteur.nom} | ${inspecteur.prenom}` : inspecteur,
+        }
+      })
     },
   },
 }
