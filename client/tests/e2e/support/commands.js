@@ -73,7 +73,9 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
 
 Cypress.Commands.add('addPlanning', (dates) => {
   const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
-  const horaires = [
+
+  const horaireMorning = [
+    '07:00',
     '07:30',
     '08:00',
     '08:30',
@@ -83,18 +85,27 @@ Cypress.Commands.add('addPlanning', (dates) => {
     '10:30',
     '11:00',
     '11:30',
-    '12:00',
-    '12:30',
-    '13:00',
+  ]
+
+  const horaireAfterNoon = [
     '13:30',
     '14:00',
     '14:30',
     '15:00',
     '15:30',
+  ]
+
+  const horaires = [
+    '06:30',
+    ...horaireMorning,
+    '12:00',
+    '12:30',
+    '13:00',
+    ...horaireAfterNoon,
     '16:00',
   ]
 
-  const datePlaces = dates ? dates.map(date => date.toFormat('dd/MM/yy')) : []
+  const datePlaces = (dates && dates.length) ? dates.map(date => date.toFormat('dd/MM/yy')) : []
   datePlaces.push(Cypress.env('datePlace'))
   const placesInspecteurs = datePlaces.reduce((acc, datePlace) => {
     const csvRowBuilder = (inspecteur, matricule) => horaire => `${datePlace},${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
@@ -121,6 +132,10 @@ Cypress.Commands.add('addPlanning', (dates) => {
     .click({ force: true })
   cy.get('.v-snack--active', { timeout: 10000 })
     .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
+
+  return cy.wrap(
+    { avalaiblePlaces: ((horaireMorning.length + horaireAfterNoon.length) * 2) * datePlaces.length },
+  )
 })
 
 Cypress.Commands.add('candidatePreSignUp', (candidat) => {

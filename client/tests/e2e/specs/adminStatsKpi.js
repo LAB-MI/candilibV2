@@ -14,13 +14,16 @@ describe('Stats Kpi tests', () => {
   beforeEach(() => {
     cy.deleteAllMails()
     cy.adminLogin()
+
     cy.addPlanning([
       nowIn1WeekAnd1DaysBefore01,
       nowIn1WeekAnd1DaysBefore02,
       nowIn1WeekAnd1DaysBefore03,
-    ])
+    ]).its('avalaiblePlaces').then(el => {
+      nbPlaces = el
+    })
+
     cy.adminDisconnection()
-    nbPlaces = Cypress.env('nbPlaces')
     cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
   })
 

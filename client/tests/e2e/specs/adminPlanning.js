@@ -294,18 +294,18 @@ describe('Planning tests without candidate', () => {
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur2'))
       .parents('tr').within(($row) => {
-        cy.get(':nth-child(9)')
-          .should('contain', 'check_circle')
         cy.get(':nth-child(10)')
+          .should('contain', 'check_circle')
+        cy.get(':nth-child(12)')
           .should('contain', 'block')
       })
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur'))
       .parents('tr')
       .within(($row) => {
-        cy.get(':nth-child(9)')
-          .should('contain', 'block')
         cy.get(':nth-child(10)')
+          .should('contain', 'block')
+        cy.get(':nth-child(12)')
           .should('contain', 'check_circle')
         // Removes the entire day
         cy.contains('delete')
