@@ -8,6 +8,8 @@ module.exports = {
   publicPath: publicPath,
   outputDir: 'dist',
 
+  runtimeCompiler: true,
+
   devServer: {
     proxy: {
       '/candilib/api': {
