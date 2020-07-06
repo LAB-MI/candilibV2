@@ -70,14 +70,14 @@ const checkAddWhitelistRequest = body => {
   const { email, emails } = body
   if (email && emails) {
     const error = new Error(
-      'Parameters "email" and "emails" cannot be sent in the same request'
+      'Parameters "email" and "emails" cannot be sent in the same request',
     )
     error.statusCode = 409
     throw error
   }
   if (!email && !emails) {
     const error = new Error(
-      'Either "email" or "emails" parameter must be sent in body'
+      'Either "email" or "emails" parameter must be sent in body',
     )
     error.statusCode = 400
     throw error
@@ -145,7 +145,7 @@ export const addWhitelisted = async (req, res) => {
       loggerInfo.action = 'ADD_MANY'
       const result = await createWhitelistedBatch(
         emails.filter(em => em && em.trim()),
-        departement
+        departement,
       )
       const allSucceeded = result.every(whitelisted => whitelisted.success)
       const allFailed = result.every(whitelisted => !whitelisted.success)

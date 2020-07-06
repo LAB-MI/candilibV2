@@ -31,7 +31,7 @@ describe('Archive place', () => {
       place,
       [ECHEC, 'SALVATION'],
       'admin75@example.com',
-      true
+      true,
     )
 
     const archivedPlace = await ArchiviedPlaceModel.findOne({
@@ -42,7 +42,7 @@ describe('Archive place', () => {
       place,
       [ECHEC, 'SALVATION'],
       'admin75@example.com',
-      true
+      true,
     )
   })
 })

@@ -17,7 +17,7 @@ export function buildMailResaArgsValidation (
   section,
   action,
   urlFAQ,
-  urlRESA
+  urlRESA,
 ) {
   if (!date || !nom || !adresse || !nomNaissance || !codeNeph) {
     const message =
@@ -92,7 +92,7 @@ export const getEmailDepartementOfCandidat = async departementId => {
 export const getUrlResetLink = async email => {
   const emailValidationHash = await addEmailValidationHash(email)
   return `${config.ADMIN_URL}/reset-link?email=${encodeURIComponent(
-    email
+    email,
   )}&hash=${encodeURIComponent(emailValidationHash)}`
 }
 

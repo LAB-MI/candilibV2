@@ -65,7 +65,7 @@ describe('Whitelisted', () => {
       const departement = '93'
       // When
       const error = await createWhitelisted(email, departement).catch(
-        error => error
+        error => error,
       )
 
       // Then
@@ -84,7 +84,7 @@ describe('Whitelisted', () => {
       // When
       const deletedWhitelisted = await deleteWhitelisted(whitelisted)
       const noWhitelisted = await findWhitelistedByEmail(
-        deletedWhitelisted.email
+        deletedWhitelisted.email,
       )
 
       // Then
@@ -100,7 +100,7 @@ describe('Whitelisted', () => {
       // When
       const deletedWhitelisted = await deleteWhitelistedByEmail(validEmail)
       const noWhitelisted = await findWhitelistedByEmail(
-        deletedWhitelisted.email
+        deletedWhitelisted.email,
       )
 
       // Then
@@ -119,13 +119,13 @@ describe('Whitelisted', () => {
     beforeAll(async () => {
       createdWhitelisteds = await Promise.all(
         listWhitelists.map(({ email, departement }) =>
-          createWhitelisted(email, departement)
-        )
+          createWhitelisted(email, departement),
+        ),
       )
     })
     afterAll(async () => {
       await Promise.all(
-        createdWhitelisteds.map(whitelisted => whitelisted.remove())
+        createdWhitelisteds.map(whitelisted => whitelisted.remove()),
       )
     })
     it('should get 2 whitelisted with departement 93', async () => {

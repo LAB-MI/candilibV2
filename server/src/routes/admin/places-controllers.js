@@ -184,7 +184,7 @@ export const createPlaceByAdmin = async (req, res) => {
     const createdPlaceResult = await createPlaceForInspector(
       centre,
       inspecteur,
-      date
+      date,
     )
     appLogger.info({
       ...loggerInfo,
@@ -251,7 +251,7 @@ export const deletePlaceByAdmin = async (req, res) => {
 
     if (place.candidat) {
       const error = new Error(
-        `La place id: [${id}] vient d'être réservée par un candidat.`
+        `La place id: [${id}] vient d'être réservée par un candidat.`,
       )
       error.messageToUser = 'La place est réservée par un candidat'
       throw error
@@ -354,7 +354,7 @@ export const deletePlacesByAdmin = async (req, res) => {
             } = await removeReservationPlaceByAdmin(
               placeFound,
               candidatFound,
-              admin
+              admin,
             )
             appLogger.info({
               ...loggerInfo,
@@ -384,7 +384,7 @@ export const deletePlacesByAdmin = async (req, res) => {
             candidatId: removedPlace.candidat && removedPlace.candidat._id,
           },
         })
-      })
+      }),
     )
 
     appLogger.info({
@@ -467,7 +467,7 @@ export const updatePlaces = async (req, res) => {
 
       const result = await assignCandidatInPlace(candidatId, placeId, admin)
       const { date, hour } = getFrenchFormattedDateTime(
-        result.newBookedPlace.date
+        result.newBookedPlace.date,
       )
 
       const {
@@ -567,7 +567,7 @@ export const sendScheduleInspecteurs = async (req, res) => {
         departement,
         date,
         isForInspecteurs,
-        inspecteurIdListe
+        inspecteurIdListe,
       )
     } else {
       appLogger.info({

@@ -39,7 +39,7 @@ export async function expectMailBordereaux (subjectParams) {
   expect(bodyMail).toHaveProperty('to', emailInspecteur)
   expect(bodyMail).toHaveProperty(
     'subject',
-    `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
+    `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`,
   )
   expect(bodyMail).toHaveProperty(
     'html',
@@ -49,7 +49,7 @@ export async function expectMailBordereaux (subjectParams) {
       dateToString,
       centreNom,
       departement,
-      places
-    )
+      places,
+    ),
   )
 }

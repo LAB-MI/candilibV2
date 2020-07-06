@@ -62,7 +62,7 @@ const isInAuthorizedRangeOfExpiredETG = (
   dateTimeReussiteETG,
   optionalDateOfPlace = undefined,
   objectDateStart = AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED,
-  objectDateEnd = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED
+  objectDateEnd = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED,
 ) => {
   const rangeStart = getFrenchLuxonFromObject(objectDateStart).endOf('day')
   const rangeEnd = getFrenchLuxonFromObject(objectDateEnd).endOf('day')
@@ -85,7 +85,7 @@ const isInAuthorizedRangeOfExpiredETG = (
 
 export const isETGExpired = (
   dateReussiteETG,
-  optionalDateOfPlace = undefined
+  optionalDateOfPlace = undefined,
 ) => {
   let dateTime
   let optDateOfPlace
@@ -132,7 +132,7 @@ const checkCandidatFound = async (candidat, loggerInfoCandidat) => {
       codeNeph,
       'error',
       NOT_FOUND,
-      message
+      message,
     )
   }
 
@@ -149,7 +149,7 @@ const checkCandidatFound = async (candidat, loggerInfoCandidat) => {
         codeNeph,
         'error',
         EMAIL_NOT_VERIFIED_EXPIRED,
-        message
+        message,
       )
     }
     const message = `Pour le ${departement}, ce candidat ${email} n'a pas validé son email, il est inscrit depuis moins de 2h`
@@ -159,7 +159,7 @@ const checkCandidatFound = async (candidat, loggerInfoCandidat) => {
       codeNeph,
       'warning',
       EMAIL_NOT_VERIFIED_YET,
-      message
+      message,
     )
   }
 }
@@ -167,7 +167,7 @@ const checkCandidatFound = async (candidat, loggerInfoCandidat) => {
 const prepareInfoCandidatToUpdate = (
   candidat,
   candidatAurige,
-  loggerInfoCandidat
+  loggerInfoCandidat,
 ) => {
   const {
     candidatExistant,
@@ -190,7 +190,7 @@ const prepareInfoCandidatToUpdate = (
   try {
     const dateLastNonReussite = checkFailureDate(
       candidat,
-      dateDernierNonReussite
+      dateDernierNonReussite,
     )
     if (dateLastNonReussite && dateLastNonReussite.isValid) {
       infoCandidatToUpdate.lastNoReussite = {
@@ -247,7 +247,7 @@ const checkAndArchiveCandidat = async (
   candidat,
   candidatAurige,
   infoCandidatToUpdate,
-  loggerInfoCandidat
+  loggerInfoCandidat,
 ) => {
   const { candidatExistant, codeNeph, nomNaissance } = candidatAurige
   const {
@@ -277,7 +277,7 @@ const checkAndArchiveCandidat = async (
       codeNeph,
       'error',
       'UNKNOW_CASE',
-      message
+      message,
     )
   } else {
     // Possible que s'il y a une validation Aurige
@@ -330,7 +330,7 @@ const checkAndArchiveCandidat = async (
         datePlace,
         aurigeFeedback,
         candidat,
-        place
+        place,
       )
     }
 
@@ -347,7 +347,7 @@ const checkAndArchiveCandidat = async (
       codeNeph,
       'warning',
       aurigeFeedback,
-      message
+      message,
     )
   }
 }
@@ -355,7 +355,7 @@ const checkAndArchiveCandidat = async (
 const updateValidCandidat = async (
   candidat,
   infoCandidatToUpdate,
-  loggerInfoCandidat
+  loggerInfoCandidat,
 ) => {
   const {
     departement,
@@ -376,7 +376,7 @@ const updateValidCandidat = async (
         candidat,
         canBookFrom,
         dateTimeEchec,
-        lastNoReussite
+        lastNoReussite,
       )
     }
   }
@@ -406,7 +406,7 @@ const updateValidCandidat = async (
         codeNeph,
         'success',
         OK_UPDATED,
-        message
+        message,
       )
     }
 
@@ -454,7 +454,7 @@ export const synchroAurige = async (buffer, callback) => {
   const retourAurige = JSON.parse(buffer.toString())
 
   await upsertLastSyncAurige(
-    'Début de la mise à jour des candidats dans la base de données'
+    'Début de la mise à jour des candidats dans la base de données',
   )
 
   const resultsPromise = retourAurige.map(async candidatAurige => {
@@ -474,7 +474,7 @@ export const synchroAurige = async (buffer, callback) => {
         codeNeph,
         'error',
         NO_NAME,
-        message
+        message,
       )
     }
 
@@ -493,7 +493,7 @@ export const synchroAurige = async (buffer, callback) => {
       const infoCandidatToUpdate = prepareInfoCandidatToUpdate(
         candidat,
         candidatAurige,
-        loggerInfoCandidat
+        loggerInfoCandidat,
       )
 
       // Vérifier l'état du candidat provenant d'aurige et archive si le faut
@@ -501,7 +501,7 @@ export const synchroAurige = async (buffer, callback) => {
         candidat,
         candidatAurige,
         infoCandidatToUpdate,
-        loggerInfoCandidat
+        loggerInfoCandidat,
       )
       if (resultArchive) {
         appLogger.debug({ ...loggerInfoCandidat, resultArchive })
@@ -511,7 +511,7 @@ export const synchroAurige = async (buffer, callback) => {
       const resultUpdated = await updateValidCandidat(
         candidat,
         infoCandidatToUpdate,
-        loggerInfoCandidat
+        loggerInfoCandidat,
       )
       return resultUpdated
     } catch (error) {
@@ -521,7 +521,7 @@ export const synchroAurige = async (buffer, callback) => {
           codeNeph,
           error.level || 'error',
           error.codeMessage,
-          error.messageToUser
+          error.messageToUser,
         )
       }
       const description = `Erreur inconnue dans traitement de ce candidat ${codeNeph}/${nomNaissance}`
@@ -532,14 +532,14 @@ export const synchroAurige = async (buffer, callback) => {
         codeNeph,
         'error',
         'UNKNOW_ERROR',
-        message
+        message,
       )
     }
   })
   const results = await Promise.all(resultsPromise)
 
   await upsertLastSyncAurige(
-    'Fin de la mise à jour des candidats dans la base de données'
+    'Fin de la mise à jour des candidats dans la base de données',
   )
 
   callback && callback(results)
@@ -557,7 +557,7 @@ const releaseAndArchivePlace = async (
   datePlace,
   reason,
   candidat,
-  place
+  place,
 ) => {
   const isCandilib = dateAurige.hasSame(datePlace, 'day')
   const newReason = reason + (isCandilib ? '' : NO_CANDILIB)
@@ -566,7 +566,7 @@ const releaseAndArchivePlace = async (
     place,
     newReason,
     'AURIGE',
-    isCandilib
+    isCandilib,
   )
   await removeBookedPlace(place)
   return updatedCandiat
@@ -583,7 +583,7 @@ function checkFailureDate (candidat, dateDernierEchecPratique) {
 
   if (candidat && candidat.lastNoReussite && candidat.lastNoReussite.date) {
     const dateLastNoReussite = getFrenchLuxonFromJSDate(
-      candidat.lastNoReussite.date
+      candidat.lastNoReussite.date,
     )
     if (dateTimeEchec.diff(dateLastNoReussite).toObject().milliseconds <= 0) {
       return
@@ -606,7 +606,7 @@ const cancelBookingAfterExamFailure = async (
   candidat,
   canBookFrom,
   dateEchec,
-  lastNoReussite
+  lastNoReussite,
 ) => {
   const { _id } = candidat
   const place = await findPlaceBookedByCandidat(_id)
@@ -624,7 +624,7 @@ const cancelBookingAfterExamFailure = async (
     dateTimeResa,
     REASON_EXAM_FAILED,
     candidat,
-    place
+    place,
   )
 
   try {
@@ -642,7 +642,7 @@ const cancelBookingAfterExamFailure = async (
 export const updateCandidatLastNoReussite = (
   candidat,
   lastDateNoReussiteIso,
-  lastReasonNoReussite
+  lastReasonNoReussite,
 ) => {
   const { noReussites } = candidat
 
@@ -675,7 +675,7 @@ export const updateCandidatLastNoReussite = (
         cumul.push(current)
       }
       return cumul
-    }
+    },
   )
 
   candidat.noReussites = newNoReussites

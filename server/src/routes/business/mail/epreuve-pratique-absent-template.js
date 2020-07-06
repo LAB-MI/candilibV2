@@ -3,7 +3,7 @@ export const getAbsentAtExamTemplate = (
   timeoutToRetry,
   urlRESA,
   urlFAQ,
-  contactezNous
+  contactezNous,
 ) => `<p>Madame, Monsieur ${nameCandidat},</p>
 <br>
 <p>

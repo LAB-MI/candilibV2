@@ -1,6 +1,6 @@
 export const getInscripionValidTemplate = (
   nomMaj,
-  contactezNous
+  contactezNous,
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <p>
     Votre adresse courriel a été validée et votre demande d’inscription est en cours de vérification.

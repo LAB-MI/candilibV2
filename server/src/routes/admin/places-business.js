@@ -94,7 +94,7 @@ const getPlaceStatus = (
   inspecteur,
   date,
   status,
-  message
+  message,
 ) => ({
   departement,
   centre,
@@ -166,7 +166,7 @@ const parseRow = async ({ data, departement }) => {
           nom: ${myNom || ''},
           centre: ${myCentre || ''},
           departement: ${myDept || ''}
-        ]`
+        ]`,
       )
       error.from = 'parseRow'
       throw error
@@ -175,12 +175,12 @@ const parseRow = async ({ data, departement }) => {
     const date = DateTime.fromFormat(
       myDate,
       'dd/MM/yy HH:mm',
-      FRENCH_LOCALE_INFO
+      FRENCH_LOCALE_INFO,
     )
 
     if (dept.trim() !== departement) {
       const error = new Error(
-        `Le département du centre (${dept.trim()}) ne correspond pas au département dont vous avez la charge (${departement})`
+        `Le département du centre (${dept.trim()}) ne correspond pas au département dont vous avez la charge (${departement})`,
       )
       error.from = 'parseRow'
       throw error
@@ -195,7 +195,7 @@ const parseRow = async ({ data, departement }) => {
     // TODO: create test unit for search centre by center name and departement
     const foundCentre = await findCentreByNameAndDepartement(
       centre.trim(),
-      departement
+      departement,
     )
     if (!foundCentre) {
       const error = new Error(`Le centre ${centre.trim()} est inconnu`)
@@ -212,7 +212,7 @@ const parseRow = async ({ data, departement }) => {
 
     if (inspecteurFound.nom.toUpperCase() !== nom.trim().toUpperCase()) {
       const error = new Error(
-        `Le nom "${nom.trim()}" de l'inspecteur ne correspond pas au matricule "${matricule.trim()}"`
+        `Le nom "${nom.trim()}" de l'inspecteur ne correspond pas au matricule "${matricule.trim()}"`,
       )
       error.from = 'parseRow'
       throw error
@@ -220,7 +220,7 @@ const parseRow = async ({ data, departement }) => {
 
     if (!AUTHORIZED_HOURS.includes(myTime)) {
       const error = new Error(
-        "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée."
+        "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée.",
       )
       error.from = 'parseRow'
       throw error
@@ -255,7 +255,7 @@ const parseRow = async ({ data, departement }) => {
       myMatricule,
       myDate,
       'error',
-      message
+      message,
     )
   }
 }
@@ -284,7 +284,7 @@ const createPlaceFromFile = async place => {
       leanPlace.inspecteur,
       date,
       'success',
-      'Place enregistrée en base'
+      'Place enregistrée en base',
     )
   } catch (error) {
     loggerInfo.place = { centre, inspecteur, date }
@@ -301,7 +301,7 @@ const createPlaceFromFile = async place => {
         inspecteur,
         date,
         'error',
-        'Place déjà enregistrée en base'
+        'Place déjà enregistrée en base',
       )
     }
     return getPlaceStatus(
@@ -310,7 +310,7 @@ const createPlaceFromFile = async place => {
       inspecteur,
       date,
       'error',
-      error.message
+      error.message,
     )
   }
 }
@@ -374,7 +374,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
       })
       .on('end', () => {
         resolve(Promise.all(PlacesPromise))
-      })
+      }),
   )
 }
 /**
@@ -419,7 +419,7 @@ export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
             return place
           }
           return createPlaceFromFile(place)
-        })
+        }),
       )
       resolve(placesInDb)
     })
@@ -499,7 +499,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     candidat,
     place,
     REASON_REMOVE_RESA_ADMIN,
-    admin.email
+    admin.email,
   )
   candidatUpdated = await setCandidatToVIP(candidatUpdated, place.date)
 
@@ -560,7 +560,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       inspecteur,
       myDate,
       'success',
-      'Place enregistrée en base'
+      'Place enregistrée en base',
     )
   } catch (error) {
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
@@ -575,7 +575,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
         inspecteur,
         myDate,
         'error',
-        'Place déjà enregistrée en base'
+        'Place déjà enregistrée en base',
       )
     }
     appLogger.error({
@@ -589,7 +589,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       inspecteur,
       date,
       'error',
-      error.message
+      error.message,
     )
   }
 }
@@ -692,12 +692,12 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   ) {
     throw new ErrorWithStatus(
       400,
-      'Date ETG ne sera plus valide pour cette place'
+      'Date ETG ne sera plus valide pour cette place',
     )
   }
 
   const placeAlreadyBookedByCandidat = await findPlaceBookedByCandidat(
-    candidatId
+    candidatId,
   )
   const { _id, departements, signUpDate, status, email } = admin
   const newBookedPlace = await bookPlaceById(
@@ -717,7 +717,7 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
     {
       candidat: true,
       centre: true,
-    }
+    },
   )
 
   if (!newBookedPlace) {
@@ -730,14 +730,14 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
       candidat,
       placeAlreadyBookedByCandidat,
       REASON_MODIFY_RESA_ADMIN,
-      admin.email
+      admin.email,
     )
   }
   const deptCentre = newBookedPlace.centre.departement
   if (deptCentre !== candidat.departement) {
     newBookedPlace.candidat = await updateCandidatDepartement(
       candidat,
-      deptCentre
+      deptCentre,
     )
   }
   let statusmail
@@ -769,7 +769,7 @@ export const sendMailSchedulesInspecteurs = async (
   departement,
   date,
   isForInspecteurs,
-  inspecteurIdListe
+  inspecteurIdListe,
 ) => {
   const loggerContent = {
     section: 'admin-send-mail-schedule-inspecteurs',
@@ -795,7 +795,7 @@ export const sendMailSchedulesInspecteurs = async (
         centre._id,
         inspecteurIdListe,
         beginDate,
-        endDate
+        endDate,
       )
       places.map(place => {
         const { inspecteur: inspecteurId } = place
@@ -805,7 +805,7 @@ export const sendMailSchedulesInspecteurs = async (
 
         placesByInspecteurs[inspecteurId].push(place)
       })
-    })
+    }),
   )
 
   const resultsError = []
@@ -819,7 +819,7 @@ export const sendMailSchedulesInspecteurs = async (
         }
         await sendScheduleInspecteur(
           isForInspecteurs ? inspecteurMail : departementEmail,
-          places
+          places,
         )
         appLogger.info({
           ...loggerContent,
@@ -840,7 +840,7 @@ export const sendMailSchedulesInspecteurs = async (
         const inspecteur = await findInspecteurById(inspecteurId)
         resultsError.push(inspecteur)
       }
-    })
+    }),
   )
 
   if (resultsError.length) {
@@ -849,7 +849,7 @@ export const sendMailSchedulesInspecteurs = async (
         departementEmail,
         date,
         departement,
-        resultsError
+        resultsError,
       )
     } catch (error) {
       appLogger.error({ ...loggerContent, error })

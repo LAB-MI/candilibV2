@@ -39,7 +39,7 @@ describe('User', () => {
       const admin = await createUser(
         expectedEmail,
         password,
-        expectedDepartements
+        expectedDepartements,
       )
 
       // When
@@ -61,7 +61,7 @@ describe('User', () => {
         expectedEmail,
         password,
         expectedDepartements,
-        expectedStatus
+        expectedStatus,
       )
 
       // When
@@ -158,7 +158,7 @@ describe('User', () => {
         duplicatedEmail,
         password,
         ['75'],
-        'delegue'
+        'delegue',
       )
 
       // When
@@ -166,7 +166,7 @@ describe('User', () => {
         duplicatedEmail,
         password,
         ['75'],
-        'delegue'
+        'delegue',
       ).catch(error => error)
 
       // Then
@@ -206,25 +206,25 @@ describe('User', () => {
         email,
         password,
         departements,
-        config.userStatuses.ADMIN
+        config.userStatuses.ADMIN,
       )
       deleguePromise = createUser(
         emailDelegue,
         password,
         departements,
-        config.userStatuses.DELEGUE
+        config.userStatuses.DELEGUE,
       )
       repartiteurPromise = createUser(
         emailRepartiteur,
         password,
         departements,
-        config.userStatuses.REPARTITEUR
+        config.userStatuses.REPARTITEUR,
       )
       repartiteurToDeletePromise = createUser(
         repartiteurToDeleteEmail,
         password,
         departements,
-        config.userStatuses.REPARTITEUR
+        config.userStatuses.REPARTITEUR,
       )
 
       await Promise.all([
@@ -285,7 +285,7 @@ describe('User', () => {
         },
         {
           $addToSet: { departements: ['94', '77'] },
-        }
+        },
       )
 
       // Then
@@ -356,7 +356,7 @@ describe('User', () => {
       // When
       const sameUserDifferentEmail = await updateUserEmail(
         user,
-        anotherValidEmail
+        anotherValidEmail,
       )
 
       // Then

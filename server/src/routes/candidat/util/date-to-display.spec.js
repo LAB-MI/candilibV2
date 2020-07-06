@@ -10,11 +10,11 @@ const dateFct = obj =>
 describe('Date to display places', () => {
   it('get yesterday at 12h when now is 11h59', () => {
     getFrenchLuxon.mockReturnValue(
-      dateFct({ hour: 11, minute: 59, second: 59 })
+      dateFct({ hour: 11, minute: 59, second: 59 }),
     )
     const dateToDisplay = getDateDisplayPlaces()
     expect(dateToDisplay).toEqual(
-      dateFct({ hour: 12, minute: 0, second: 0 }).minus({ days: 1 })
+      dateFct({ hour: 12, minute: 0, second: 0 }).minus({ days: 1 }),
     )
   })
 

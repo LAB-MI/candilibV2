@@ -62,7 +62,7 @@ const UserSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 )
 
 UserSchema.set('toJSON', {
@@ -80,7 +80,7 @@ UserSchema.pre('save', async function preSave () {
   if (!user.isModified('password')) return
 
   const isPasswordStrongEnough = strongEnoughPassword.every(regex =>
-    regex.test(user.password)
+    regex.test(user.password),
   )
 
   if (!isPasswordStrongEnough) {
@@ -93,7 +93,7 @@ UserSchema.pre('save', async function preSave () {
 
 UserSchema.methods.comparePassword = function comparePassword (
   candidatePassword,
-  cb
+  cb,
 ) {
   return compareToHash(candidatePassword, this.password)
 }

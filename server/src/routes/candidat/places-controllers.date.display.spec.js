@@ -42,7 +42,7 @@ describe('Get places available and display at 12h', () => {
 
     places = await createPlacesWithCreatedAtDiff()
     placesCreatedBefore = places.find(({ createdAt }) =>
-      getFrenchLuxonFromJSDate(createdAt).equals(createdAtBefore)
+      getFrenchLuxonFromJSDate(createdAt).equals(createdAtBefore),
     )
   })
 
@@ -55,7 +55,7 @@ describe('Get places available and display at 12h', () => {
     setNowBefore12h()
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`
+        `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`,
       )
       .set('Accept', 'application/json')
       .expect(200)
@@ -68,7 +68,7 @@ describe('Get places available and display at 12h', () => {
 
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`
+        `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`,
       )
       .set('Accept', 'application/json')
       .expect(200)
@@ -84,7 +84,7 @@ describe('Get places available and display at 12h', () => {
     const placeSelected = encodeURIComponent(date)
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places/${centreDateDisplay._id}?dateTime=${placeSelected}`
+        `${apiPrefix}/candidat/places/${centreDateDisplay._id}?dateTime=${placeSelected}`,
       )
       .set('Accept', 'application/json')
       .expect(200)
@@ -100,7 +100,7 @@ describe('Get places available and display at 12h', () => {
     const placeSelected = encodeURIComponent(date)
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places/?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}&dateTime=${placeSelected}`
+        `${apiPrefix}/candidat/places/?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}&dateTime=${placeSelected}`,
       )
       .set('Accept', 'application/json')
       .expect(200)
@@ -117,7 +117,7 @@ describe('Get places available and display at 12h', () => {
     const placeSelected = encodeURIComponent(date)
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places/${centreDateDisplay._id}?dateTime=${placeSelected}`
+        `${apiPrefix}/candidat/places/${centreDateDisplay._id}?dateTime=${placeSelected}`,
       )
       .set('Accept', 'application/json')
       .expect(200)
@@ -133,7 +133,7 @@ describe('Get places available and display at 12h', () => {
     const placeSelected = encodeURIComponent(date)
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places/?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}&dateTime=${placeSelected}`
+        `${apiPrefix}/candidat/places/?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}&dateTime=${placeSelected}`,
       )
       .set('Accept', 'application/json')
       .expect(200)
@@ -189,7 +189,7 @@ describe('Get places available and display at 12h', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty(
       'message',
-      "Il n'y a pas de place pour ce créneau"
+      "Il n'y a pas de place pour ce créneau",
     )
 
     const placefounded = await findPlaceByCandidatId(idCandidat)

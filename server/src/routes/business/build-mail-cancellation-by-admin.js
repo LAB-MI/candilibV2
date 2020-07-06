@@ -31,7 +31,7 @@ export const getCancellationByAdminBody = async (place, candidat) => {
     section,
     action,
     urlFAQ,
-    urlRESA
+    urlRESA,
   )
 
   const dateTimeResa = getFrenchFormattedDateTime(date)
@@ -43,7 +43,7 @@ export const getCancellationByAdminBody = async (place, candidat) => {
     dateTimeResa.date,
     dateTimeResa.hour,
     urlRESA,
-    urlFAQ
+    urlFAQ,
   )
 
   return getHtmlBody(body)

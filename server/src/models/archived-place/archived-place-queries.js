@@ -31,7 +31,7 @@ export const createArchivedPlaceFromPlace = async (
   placeData,
   archiveReasons,
   byUser,
-  isCandilib
+  isCandilib,
 ) => {
   const { _id: placeId, date, centre, inspecteur } = placeData
   const archivedPlaceData = {

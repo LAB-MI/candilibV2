@@ -125,7 +125,7 @@ export async function getPlacesByCentre (req, res) {
           geoDepartement,
           nomCentre,
           dateTime,
-          req.userId
+          req.userId,
         )
       } else {
         dates = await getDatesByCentresNameAndGeoDepartement(
@@ -133,7 +133,7 @@ export async function getPlacesByCentre (req, res) {
           geoDepartement,
           begin,
           end,
-          req.userId
+          req.userId,
         )
       }
     }
@@ -236,7 +236,7 @@ export const getBookedPlaces = async (req, res) => {
   try {
     const bookedPlace = await getReservationByCandidat(
       candidatId,
-      byMail ? { centre: true, candidat: true } : undefined
+      byMail ? { centre: true, candidat: true } : undefined,
     )
 
     if (byMail) {
@@ -396,7 +396,7 @@ export const bookPlaceByCandidat = async (req, res) => {
       candidatId,
       nomCentre,
       date,
-      previewBookedPlace
+      previewBookedPlace,
     )
 
     if (statusValidResa) {
@@ -416,7 +416,7 @@ export const bookPlaceByCandidat = async (req, res) => {
       candidatId,
       nomCentre,
       date,
-      geoDepartement
+      geoDepartement,
     )
     if (!reservation) {
       const success = false
@@ -457,7 +457,7 @@ export const bookPlaceByCandidat = async (req, res) => {
     if (deptCentre !== reservation.candidat.departement) {
       reservation.candidat = await updateCandidatDepartement(
         reservation.candidat,
-        deptCentre
+        deptCentre,
       )
     }
 

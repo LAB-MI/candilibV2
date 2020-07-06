@@ -94,7 +94,7 @@ describe('Place', () => {
       centre.adresse,
       centre.lon,
       centre.lat,
-      centre.departement
+      centre.departement,
     )
     createdCentre2 = await createCentre(
       centre2.nom,
@@ -102,7 +102,7 @@ describe('Place', () => {
       centre2.adresse,
       centre2.lon,
       centre2.lat,
-      centre2.departement
+      centre2.departement,
     )
 
     createdInspecteur = await createInspecteur(inspecteur)
@@ -217,7 +217,7 @@ describe('Place', () => {
         place,
         EPREUVE_PRATIQUE_OK,
         'AURIGE',
-        true
+        true,
       )
       const noPlace = await findPlaceById(deletedPlace._id)
 
@@ -230,7 +230,7 @@ describe('Place', () => {
         place,
         EPREUVE_PRATIQUE_OK,
         'AURIGE',
-        true
+        true,
       )
     })
   })
@@ -276,7 +276,7 @@ describe('Place', () => {
       const nbPlaces = nbPlacesAvailables(
         createdPlacesBooked,
         createdPlaces,
-        centreSelected
+        centreSelected,
       )
 
       expect(listPlaces).toHaveLength(nbPlaces)
@@ -292,7 +292,7 @@ describe('Place', () => {
       const nbPlaces = nbPlacesAvailables(
         createdPlacesBooked,
         createdPlaces,
-        centreSelected
+        centreSelected,
       )
 
       expect(countPlaces).toBe(nbPlaces)
@@ -305,7 +305,7 @@ describe('Place', () => {
         centreSelected._id,
         undefined,
         undefined,
-        getFrenchLuxonFromObject({ hour: 12 })
+        getFrenchLuxonFromObject({ hour: 12 }),
       )
 
       expect(countPlaces).toBeDefined()
@@ -315,7 +315,7 @@ describe('Place', () => {
         createdPlaces,
         centreSelected,
         undefined,
-        getFrenchLuxonFromObject({ hour: 12 })
+        getFrenchLuxonFromObject({ hour: 12 }),
       )
 
       expect(countPlaces).toBe(nbPlaces)
@@ -327,14 +327,14 @@ describe('Place', () => {
       const begindate = getFrenchLuxonFromObject({ day: 19 }).toISO()
       const listPlaces = await findAvailablePlacesByCentre(
         centreSelected._id,
-        begindate
+        begindate,
       )
       expect(listPlaces).toBeDefined()
       const nbPlaces = nbPlacesAvailables(
         createdPlacesBooked,
         createdPlaces,
         centreSelected,
-        begindate
+        begindate,
       )
 
       expect(listPlaces).toHaveLength(nbPlaces)
@@ -351,14 +351,14 @@ describe('Place', () => {
       const begindate = dateTime.toISO()
       const listPlaces = await findAvailablePlacesByCentre(
         centreSelected._id,
-        begindate
+        begindate,
       )
       expect(listPlaces).toBeDefined()
       const nbPlaces = nbPlacesAvailables(
         createdPlacesBooked,
         createdPlaces,
         centreSelected,
-        begindate
+        begindate,
       )
 
       expect(listPlaces).toHaveLength(nbPlaces)
@@ -372,7 +372,7 @@ describe('Place', () => {
       const placeBooked = await findPlaceBookedByInspecteur(
         inspecteur,
         begin,
-        end
+        end,
       )
       expect(placeBooked).toBeDefined()
       expect(placeBooked).toHaveLength(1)
@@ -466,7 +466,7 @@ describe('to book places', () => {
         adresse,
         lon,
         lat,
-        departement
+        departement,
       )
 
       createdInspecteur = await createInspecteur(inspecteurTest)
@@ -536,7 +536,7 @@ describe('to book places', () => {
 
     const foundPlaces = await findPlacesByCentreAndDate(
       selectedCentre._id,
-      selectedDate
+      selectedDate,
     )
 
     expect(foundPlaces).toBeDefined()
@@ -550,7 +550,7 @@ describe('to book places', () => {
 
     const foundPlaces = await findPlacesByCentreAndDate(
       selectedCentre._id,
-      selectedDate
+      selectedDate,
     )
 
     expect(foundPlaces).toBeDefined()
@@ -566,7 +566,7 @@ describe('to book places', () => {
       selectedCandidat._id,
       selectedCentre._id,
       selectedPlace.date,
-      bookedAt
+      bookedAt,
     )
 
     expect(place).toBeDefined()
@@ -576,7 +576,7 @@ describe('to book places', () => {
     expect(place.centre.toString()).toEqual(selectedCentre._id.toString())
     expect(place).toHaveProperty('inspecteur')
     expect(place.inspecteur.toString()).toEqual(
-      createdInspecteur._id.toString()
+      createdInspecteur._id.toString(),
     )
     expect(place.date.toString()).toEqual(selectedPlace.date.toString())
   })
@@ -590,28 +590,28 @@ describe('to book places', () => {
       candidatToBook._id,
       selectedCentre._id,
       selectedPlace.date,
-      bookedAt
+      bookedAt,
     )
 
     expect(placeAlreadyBooked).toBeDefined()
     expect(placeAlreadyBooked).toHaveProperty('candidat')
     expect(placeAlreadyBooked.candidat.toString()).toEqual(
-      candidatToBook._id.toString()
+      candidatToBook._id.toString(),
     )
     expect(placeAlreadyBooked).toHaveProperty('inspecteur')
     expect(placeAlreadyBooked.inspecteur.toString()).toEqual(
-      createdInspecteur2._id.toString()
+      createdInspecteur2._id.toString(),
     )
     expect(placeAlreadyBooked).toHaveProperty('centre')
     expect(placeAlreadyBooked.centre.toString()).toEqual(
-      createdCentre._id.toString()
+      createdCentre._id.toString(),
     )
 
     const placeUnbookable = await findAndbookPlace(
       selectedCandidat._id,
       selectedCentre._id,
       selectedPlace.date,
-      bookedAt
+      bookedAt,
     )
 
     expect(placeUnbookable).toBeDefined()
@@ -626,7 +626,7 @@ describe('to book places', () => {
       selectedCandidat._id,
       selectedCentre._id,
       selectedPlace.date,
-      bookedAt
+      bookedAt,
     )
 
     expect(place).toBeDefined()
@@ -642,7 +642,7 @@ describe('to book places', () => {
       candidat: { $exists: false },
     })
     const selectedCandidat = createdcandidats.find(
-      candidat => candidat.codeNeph === '123456789002'
+      candidat => candidat.codeNeph === '123456789002',
     )._id
 
     const place = await bookPlaceById(selectedPlace._id, selectedCandidat)
@@ -710,7 +710,7 @@ describe('Remove the booking places', () => {
       adresse,
       lon,
       lat,
-      departement
+      departement,
     )
     createdInspecteur = await createInspecteur(inspecteurTest)
     placeCreated = await createPlace({
@@ -723,7 +723,7 @@ describe('Remove the booking places', () => {
     placeToDelete = await bookCandidatOnSelectedPlace(
       placeCreated,
       updatedCandidat,
-      bookedAt
+      bookedAt,
     )
   })
 
@@ -750,10 +750,10 @@ function nbPlacesAvailables (
   createdPlaces,
   centreSelected,
   begindate,
-  createdBefore
+  createdBefore,
 ) {
   const idPlacesBooked = createdPlacesBooked.map(placeBooked =>
-    placeBooked._id.toString()
+    placeBooked._id.toString(),
   )
 
   const arrayExpectPlaces = createdPlaces.filter(
@@ -773,7 +773,7 @@ function nbPlacesAvailables (
             getFrenchLuxonFromISO(createdBefore)
       }
       return bresult
-    }
+    },
   )
 
   let nbPlaces = 0

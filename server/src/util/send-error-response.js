@@ -2,7 +2,7 @@ import { appLogger } from './'
 
 export const sendErrorResponse = (
   res,
-  { loggerInfo, message, status, otherData }
+  { loggerInfo, message, status, otherData },
 ) => {
   appLogger.info({
     ...loggerInfo,

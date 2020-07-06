@@ -11,7 +11,7 @@ export const sendMailContactUsForAdmin = (
   candidat,
   hasSignup,
   subject,
-  message
+  message,
 ) => {
   const {
     codeNeph,
@@ -31,7 +31,7 @@ export const sendMailContactUsForAdmin = (
     homeDepartement,
     hasSignup ? 'OUI' : 'NON',
     subject,
-    message
+    message,
   )
   const content = getHtmlBody(body)
 
@@ -47,7 +47,7 @@ export const sendMailContactUsForCandidat = candidat => {
   const { email, homeDepartement, departement } = candidat
 
   const body = getContactUsForCandidat(
-    departement === homeDepartement ? '' : departement
+    departement === homeDepartement ? '' : departement,
   )
 
   const content = getHtmlBody(body)

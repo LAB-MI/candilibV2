@@ -104,7 +104,7 @@ describe('Test places controller', () => {
       admin.email,
       admin.password,
       admin.departements,
-      admin.status
+      admin.status,
     )
 
     app.use((req, res, next) => {
@@ -146,11 +146,11 @@ describe('Test places controller', () => {
 
   it('Should get 200 with 2 avialables places with inspecteurs for Centre 2', async () => {
     const dateSelected = encodeURIComponent(
-      getFrenchLuxonFromJSDate(placeSelected.date).toISO()
+      getFrenchLuxonFromJSDate(placeSelected.date).toISO(),
     )
     const { body } = await request(app)
       .get(
-        `/places?departement=93&centre=${centreSelected._id}&date=${dateSelected}`
+        `/places?departement=93&centre=${centreSelected._id}&date=${dateSelected}`,
       )
       .set('Accept', 'application/json')
       .expect(200)
@@ -191,7 +191,7 @@ describe('Test places controller', () => {
       'date',
       getFrenchLuxonFromJSDate(date)
         .setZone('utc')
-        .toISO()
+        .toISO(),
     )
   })
 
@@ -238,7 +238,7 @@ describe('update place by admin', () => {
       admin.email,
       admin.password,
       admin.departements,
-      admin.status
+      admin.status,
     )
     app.use((req, res, next) => {
       req.userId = user._id
@@ -285,11 +285,11 @@ describe('update place by admin', () => {
       .expect(200)
 
     expect(getFrenchLuxonFromISO(body.place.date).toISO()).toBe(
-      getFrenchLuxonFromJSDate(place.date).toISO()
+      getFrenchLuxonFromJSDate(place.date).toISO(),
     )
     expect(body.place).toHaveProperty(
       'inspecteur',
-      place.inspecteur._id.toString()
+      place.inspecteur._id.toString(),
     )
     expect(body.place).toHaveProperty('centre', place.centre._id.toString())
     expect(body.place).toHaveProperty('candidat', candidat._id.toString())
@@ -335,11 +335,11 @@ describe('update place by admin', () => {
       .expect(200)
 
     expect(getFrenchLuxonFromISO(body.place.date).toISO()).toBe(
-      getFrenchLuxonFromJSDate(place.date).toISO()
+      getFrenchLuxonFromJSDate(place.date).toISO(),
     )
     expect(body.place).toHaveProperty(
       'inspecteur',
-      place.inspecteur._id.toString()
+      place.inspecteur._id.toString(),
     )
     expect(body.place).toHaveProperty('centre', place.centre._id.toString())
     expect(body.place).toHaveProperty('candidat', candidat._id.toString())
@@ -348,20 +348,20 @@ describe('update place by admin', () => {
     expect(newCandidat.places).toBeDefined()
     expect(newCandidat.places).toHaveLength(1)
     expect(getFrenchLuxonFromJSDate(newCandidat.places[0].date)).toEqual(
-      getFrenchLuxonFromISO(placeBooked.date)
+      getFrenchLuxonFromISO(placeBooked.date),
     )
     expect(newCandidat.places[0]).toHaveProperty(
       'inspecteur',
-      placeBooked.inspecteur._id
+      placeBooked.inspecteur._id,
     )
     expect(newCandidat.places[0]).toHaveProperty(
       'centre',
-      placeBooked.centre._id
+      placeBooked.centre._id,
     )
     expect(newCandidat.places[0]).toHaveProperty('archivedAt')
     expect(newCandidat.places[0]).toHaveProperty(
       'archiveReason',
-      REASON_MODIFY_RESA_ADMIN
+      REASON_MODIFY_RESA_ADMIN,
     )
     expect(newCandidat.places[0]).toHaveProperty('byUser', admin.email)
 
@@ -424,7 +424,7 @@ describe('update place by admin', () => {
 
     expect(body).toHaveProperty(
       'message',
-      'Les paramètres renseignés sont incorrects'
+      'Les paramètres renseignés sont incorrects',
     )
     expect(body).toHaveProperty('success', false)
     await place.remove()
@@ -443,7 +443,7 @@ describe('update place by admin', () => {
 
     expect(body).toHaveProperty(
       'message',
-      'Les paramètres renseignés sont incorrects'
+      'Les paramètres renseignés sont incorrects',
     )
     expect(body).toHaveProperty('success', false)
   })
@@ -473,7 +473,7 @@ describe('update place by admin', () => {
 
     expect(body).toHaveProperty(
       'message',
-      "Le candidat n'est pas validé par Aurige"
+      "Le candidat n'est pas validé par Aurige",
     )
     expect(body).toHaveProperty('success', false)
     await place.remove()
@@ -493,7 +493,7 @@ describe('delete place by admin', () => {
       admin.email,
       admin.password,
       admin.departements,
-      admin.status
+      admin.status,
     )
     app.use((req, res, next) => {
       req.userId = user._id
@@ -531,7 +531,7 @@ describe('delete place by admin', () => {
     expect(archivedPlace).toHaveProperty('_id', bookedPlace._id)
     expect(archivedPlace).toHaveProperty(
       'archiveReason',
-      REASON_REMOVE_RESA_ADMIN
+      REASON_REMOVE_RESA_ADMIN,
     )
     expect(archivedPlace.archivedAt).toBeDefined()
     const archivedAt = getFrenchLuxonFromJSDate(archivedPlace.archivedAt)
@@ -635,7 +635,7 @@ describe('Book place and archive with bookedAt and bookedByAdmin attribut', () =
         adresse,
         lon,
         lat,
-        departement
+        departement,
       )
 
       createdInspecteur = await createInspecteur(inspecteurTest)
@@ -676,14 +676,14 @@ describe('Book place and archive with bookedAt and bookedByAdmin attribut', () =
         placeCreated2,
         updatedCandidat2,
         bookedAt,
-        bookedByAdmin
+        bookedByAdmin,
       )
     } catch (e) {
       console.warn(e)
     }
     require('../middlewares/verify-token').__setIdAdmin(
       createdAdmin._id,
-      createdAdmin.departements
+      createdAdmin.departements,
     )
   })
 
@@ -760,7 +760,7 @@ describe('Book place and archive with bookedAt and bookedByAdmin attribut', () =
     expect(candidatFound.places[0]).toHaveProperty('bookedByAdmin')
     expect(candidatFound.places[0]).toHaveProperty(
       'archiveReason',
-      'REMOVE_RESA_ADMIN'
+      'REMOVE_RESA_ADMIN',
     )
 
     const { bookedByAdmin: bkdByAdmin } = candidatFound.places[0]
@@ -790,7 +790,7 @@ describe('Send bordereaux', () => {
       admin.email,
       admin.password,
       admin.departements,
-      admin.status
+      admin.status,
     )
     app.use((req, res, next) => {
       req.userId = user._id

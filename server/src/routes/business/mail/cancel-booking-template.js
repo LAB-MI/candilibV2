@@ -8,7 +8,7 @@ export const getCancelBookingTemplate = (
   houreResa,
   urlRESA,
   urlFAQ,
-  contactezNous
+  contactezNous,
 ) => `<p>Madame, Monsieur ${nomNaissance},</p>
 <br>
 <p>

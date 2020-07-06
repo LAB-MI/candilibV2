@@ -1,5 +1,5 @@
 import User from './user.model'
-import uuidv4 from 'uuid/v4'
+import { v4 as uuidv4 } from 'uuid'
 
 /**
  * Recherche tous les répartiteurs/délégués de tous les départements
@@ -164,7 +164,7 @@ export const updateUserEmail = async (user, email) => {
   const updatedUser = await User.findByIdAndUpdate(
     user._id,
     { email },
-    { new: true }
+    { new: true },
   )
   return updatedUser
 }
@@ -187,7 +187,7 @@ export const updateUserPassword = async (user, password) => {
   const fifteenMinutes = 15 * 60 * 1000
   if (difference > fifteenMinutes) {
     const error = new Error(
-      'Votre lien a expiré, veuillez refaire votre demande de réinitialisation de mot de passe'
+      'Votre lien a expiré, veuillez refaire votre demande de réinitialisation de mot de passe',
     )
     error.status = 401
     throw error
@@ -216,7 +216,7 @@ export const updateUser = async (email, { departements, status }) => {
   const updatedUser = await User.findOneAndUpdate(
     { email }, // filter
     { departements, status }, // update
-    { new: true } // Return the updated document
+    { new: true }, // Return the updated document
   )
   return updatedUser
 }

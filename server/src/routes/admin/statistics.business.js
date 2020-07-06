@@ -20,7 +20,7 @@ import { REASON_EXAM_FAILED } from '../common/reason.constants'
 export const getResultsExamAllDpt = async (
   departements,
   beginPeriode,
-  endPeriode
+  endPeriode,
 ) => {
   let dpts = departements
 
@@ -33,8 +33,8 @@ export const getResultsExamAllDpt = async (
   }
   const results = await Promise.all(
     dpts.map(departement =>
-      getResultsExamByDpt(departement, beginPeriode, endPeriode)
-    )
+      getResultsExamByDpt(departement, beginPeriode, endPeriode),
+    ),
   )
   return results
 }
@@ -47,15 +47,15 @@ export const getAllPlacesProposeInFutureByDpt = async beginDate => {
   }
   const results = await Promise.all(
     departements.map(departement =>
-      getPlacesAndCandidatsInscritsByDpt(departement, beginDate)
-    )
+      getPlacesAndCandidatsInscritsByDpt(departement, beginDate),
+    ),
   )
   return results
 }
 
 export const getPlacesAndCandidatsInscritsByDpt = async (
   departement,
-  beginDate
+  beginDate,
 ) => {
   const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
   const centres = centresFromDB.map(({ _id }) => _id)
@@ -67,10 +67,10 @@ export const getPlacesAndCandidatsInscritsByDpt = async (
     totalAvailablePlaces: await countPlacesBookedOrNot(
       centres,
       beginDate,
-      false
+      false,
     ),
     totalCandidatsInscrits: await countCandidatsInscritsByDepartement(
-      departement
+      departement,
     ),
   }
 }
@@ -78,7 +78,7 @@ export const getPlacesAndCandidatsInscritsByDpt = async (
 export const getResultsExamByDpt = async (
   departement,
   beginPeriode,
-  endPeriode
+  endPeriode,
 ) => {
   const date = getFrenchLuxon().toLocaleString(DATETIME_FULL)
   const centresFromDB = await findCentresByDepartement(departement, { _id: 1 })
@@ -139,7 +139,7 @@ export const countWaitingCandidatsByDepartement = departement => {
 export const countSuccessByCentres = async (
   centres,
   beginPeriode,
-  endPeriode
+  endPeriode,
 ) => {
   const expression = {}
   if (centres && centres.length) {
@@ -187,13 +187,13 @@ export const countSuccessByCentres = async (
 export const countAbsentByCentres = async (
   centres,
   beginPeriode,
-  endPeriode
+  endPeriode,
 ) => {
   const count = await countByReasonAndCentres(
     ABSENT,
     centres,
     beginPeriode,
-    endPeriode
+    endPeriode,
   )
   return count
 }
@@ -201,13 +201,13 @@ export const countAbsentByCentres = async (
 export const countFailureByCentres = async (
   centres,
   beginPeriode,
-  endPeriode
+  endPeriode,
 ) => {
   const count = await countByReasonAndCentres(
     ECHEC,
     centres,
     beginPeriode,
-    endPeriode
+    endPeriode,
   )
   return count
 }
@@ -215,14 +215,14 @@ export const countFailureByCentres = async (
 export const countNotExaminedByCentres = async (
   centres,
   beginPeriode,
-  endPeriode
+  endPeriode,
 ) => {
   const noExamined = { $nin: [ECHEC, ABSENT] }
   const count = await countByReasonAndCentres(
     noExamined,
     centres,
     beginPeriode,
-    endPeriode
+    endPeriode,
   )
 
   return count
@@ -232,14 +232,14 @@ const countByReasonAndCentres = async (
   reason,
   centres,
   beginPeriode,
-  endPeriode
+  endPeriode,
 ) => {
   const countForCandidats = await countNoReussitesAndPlacesByReasonAndCentres(
     candidatModel.aggregate(),
     reason,
     centres,
     beginPeriode,
-    endPeriode
+    endPeriode,
   )
 
   const countForArchivedCandidats = await countNoReussitesAndPlacesByReasonAndCentres(
@@ -247,7 +247,7 @@ const countByReasonAndCentres = async (
     reason,
     centres,
     beginPeriode,
-    endPeriode
+    endPeriode,
   )
 
   let count = countForCandidats[0] ? countForCandidats[0].count : 0
@@ -261,7 +261,7 @@ const countNoReussitesAndPlacesByReasonAndCentres = (
   reason,
   centres,
   beginPeriode,
-  endPeriode
+  endPeriode,
 ) => {
   const expression = {}
   if (centres && centres.length) {
@@ -298,7 +298,7 @@ const countNoReussitesAndPlacesByReasonAndCentres = (
 export const getCountCandidatsLeaveRetentionArea = async (
   departements,
   beginPeriode,
-  endPeriode
+  endPeriode,
 ) => {
   const expression = {}
   if (beginPeriode) {
@@ -359,7 +359,7 @@ const setDateOfWeek = (weekNumber, flag) => {
 
 const countCandidatsInscritsByDeptAndWeek = async (
   departement,
-  shapedArray
+  shapedArray,
 ) => {
   const weeks = shapedArray.map(async (useless, index) => {
     const startWeekDate = setDateOfWeek(index, false)
@@ -370,7 +370,7 @@ const countCandidatsInscritsByDeptAndWeek = async (
       value: await countCandidatsInscritsByDepartementAndWeek(
         departement,
         startWeekDate,
-        endWeekDate
+        endWeekDate,
       ),
     }
   })
@@ -387,7 +387,7 @@ export const getCountCandidatsLeaveRetentionAreaByWeek = async departements => {
         departement: departements[0],
         candidatsLeaveRetentionByWeek: await countCandidatsInscritsByDeptAndWeek(
           departements[0],
-          shapedArray
+          shapedArray,
         ),
       },
     ]
@@ -398,7 +398,7 @@ export const getCountCandidatsLeaveRetentionAreaByWeek = async departements => {
       departement,
       candidatsLeaveRetentionByWeek: await countCandidatsInscritsByDeptAndWeek(
         departement,
-        shapedArray
+        shapedArray,
       ),
     }
   })

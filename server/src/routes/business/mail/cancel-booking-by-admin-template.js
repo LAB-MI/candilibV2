@@ -5,7 +5,7 @@ export const getCancelBookingByAdminTemplate = (
   dateResa,
   houreResa,
   urlRESA,
-  urlFAQ
+  urlFAQ,
 ) => `<p>Madame, Monsieur ${nomNaissance},</p>
 <br>
 <p>

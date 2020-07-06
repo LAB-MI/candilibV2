@@ -9,7 +9,7 @@ export const getConvocationTemplate = (
   addressCentre,
   urlRESA,
   urlFAQ,
-  contactezNous
+  contactezNous,
 ) => `<p>Le présent mail vaut convocation.</p>
 <br> 
 <div style="border: 5px solid red; padding:5px;">

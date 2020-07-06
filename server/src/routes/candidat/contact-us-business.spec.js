@@ -36,7 +36,7 @@ describe('Test business of contact us', () => {
         candidat,
         false,
         subjectTest,
-        message
+        message,
       )
       expect(response).toBeUndefined()
     } catch (error) {
@@ -56,13 +56,13 @@ describe('Test business of contact us', () => {
       candidat,
       false,
       subjectTest,
-      message
+      message,
     )
     expect(response).toBe(CONTACT_US_CONFIRM_SEND(candidat.email))
     const bodyMails = require('../business/send-mail').getMails()
     expect(bodyMails).toHaveLength(2)
     expect(bodyMails.map(({ to }) => to)).toEqual(
-      expect.arrayContaining([candidat.email, departementEmail])
+      expect.arrayContaining([candidat.email, departementEmail]),
     )
   })
 
@@ -72,7 +72,7 @@ describe('Test business of contact us', () => {
     findDepartementById.mockImplementation(dep =>
       dep === candidatInDB.departement
         ? { email: departement75Email }
-        : { email: departementEmail }
+        : { email: departementEmail },
     )
     const candidatInDB = {
       ...candidat,
@@ -87,13 +87,13 @@ describe('Test business of contact us', () => {
       candidat,
       false,
       subjectTest,
-      message
+      message,
     )
     expect(response).toBe(CONTACT_US_CONFIRM_SEND(candidatInDB.email))
     const bodyMails = require('../business/send-mail').getMails()
     expect(bodyMails).toHaveLength(2)
     expect(bodyMails.map(({ to }) => to)).toEqual(
-      expect.arrayContaining([candidatInDB.email, departement75Email])
+      expect.arrayContaining([candidatInDB.email, departement75Email]),
     )
 
     bodyMails.forEach(({ to, subject, html }) => {
@@ -115,7 +115,7 @@ describe('Test business of contact us', () => {
     const departementEmail = 'test@departement.com'
     const departement75Email = 'test.75@departement.com'
     findDepartementById.mockImplementation(dep =>
-      dep === '75' ? { email: departement75Email } : { email: departementEmail }
+      dep === '75' ? { email: departement75Email } : { email: departementEmail },
     )
     findCandidatById.mockResolvedValue(null)
     const response = await sendMessageByContactUs(
@@ -124,13 +124,13 @@ describe('Test business of contact us', () => {
       candidat,
       false,
       subjectTest,
-      message
+      message,
     )
     expect(response).toBe(CONTACT_US_CONFIRM_SEND(candidat.email))
     const bodyMails = require('../business/send-mail').getMails()
     expect(bodyMails).toHaveLength(2)
     expect(bodyMails.map(({ to }) => to)).toEqual(
-      expect.arrayContaining([candidat.email, departementEmail])
+      expect.arrayContaining([candidat.email, departementEmail]),
     )
 
     bodyMails.forEach(({ to, subject, html }) => {

@@ -150,7 +150,7 @@ const candidatArchivedExpect = async (infoCandidat, archiveReason) => {
   } = infoCandidat
   const candidatArchived = await findArchivedCandidatByNomNeph(
     nomNaissance,
-    codeNeph
+    codeNeph,
   )
 
   expect(candidatArchived).toBeDefined()
@@ -162,13 +162,13 @@ const candidatArchivedExpect = async (infoCandidat, archiveReason) => {
     const lengthNoReussite = candidatArchived.noReussites.length
 
     const dateETGCandidat = getFrenchLuxonFromJSDate(
-      candidatArchived.dateReussiteETG
+      candidatArchived.dateReussiteETG,
     )
     const dateETGExpected = getFrenchLuxonFromISO(dateReussiteETG)
     expect(dateETGCandidat.hasSame(dateETGExpected, 'day')).toBe(true)
 
     expect(candidatArchived.noReussites[lengthNoReussite - 1].date).toEqual(
-      getFrenchLuxonFromISO(dateDernierNonReussite).toJSDate()
+      getFrenchLuxonFromISO(dateDernierNonReussite).toJSDate(),
     )
   }
 
@@ -178,7 +178,7 @@ const candidatArchivedExpect = async (infoCandidat, archiveReason) => {
 async function synchroAurigeSuccess (
   aurigeFile,
   candidatCreated,
-  candidatInfo = candidatFailureExam
+  candidatInfo = candidatFailureExam,
 ) {
   const result = await synchroAurige(aurigeFile)
   expect(result).toBeDefined()
@@ -191,7 +191,7 @@ async function synchroAurigeSuccess (
   if (candidatInfo.dateDernierNonReussite) {
     const { canBookFrom } = candidat
     const dateTimeCanBookFrom = getFrenchLuxonFromISO(
-      candidatInfo.dateDernierNonReussite
+      candidatInfo.dateDernierNonReussite,
     )
       .endOf('day')
       .plus({ days: config.timeoutToRetry })
@@ -207,7 +207,7 @@ const synchroAurigeToPassExam = async (
   aurigeFile,
   infoCandidat,
   candidatId,
-  reason = EPREUVE_PRATIQUE_OK
+  reason = EPREUVE_PRATIQUE_OK,
 ) => {
   const { nomNaissance, codeNeph, email } = infoCandidat
   const result = await synchroAurige(aurigeFile)
@@ -223,7 +223,7 @@ const synchroAurigeToPassExam = async (
 
   const candidatArchived = await findArchivedCandidatByNomNeph(
     nomNaissance,
-    codeNeph
+    codeNeph,
   )
 
   expect(candidatArchived).toBeDefined()
@@ -235,14 +235,14 @@ const synchroAurigeToPassExam = async (
 
   expect(candidatArchived).toHaveProperty('archiveReason', reason)
   expect(candidatArchived.reussitePratique).toEqual(
-    getFrenchLuxonFromISO(infoCandidat.reussitePratique).toJSDate()
+    getFrenchLuxonFromISO(infoCandidat.reussitePratique).toJSDate(),
   )
 
   expect(candidatArchived).toHaveProperty('isValidatedByAurige', true)
 
   if (infoCandidat.dateReussiteETG) {
     expect(getFrenchLuxonFromJSDate(candidatArchived.dateReussiteETG)).toEqual(
-      getFrenchLuxonFromISO(infoCandidat.dateReussiteETG)
+      getFrenchLuxonFromISO(infoCandidat.dateReussiteETG),
     )
   } else {
     expect(candidatArchived).toHaveProperty('dateReussiteETG')
@@ -356,7 +356,7 @@ describe('synchro-aurige', () => {
   it('Should return true for date more than 2 hours ago', () => {
     const moreThan2HoursAgo = getFrenchLuxon()
       .minus(
-        2 * 60 * 60 * 1000 + 10000 //  A little more than 2h
+        2 * 60 * 60 * 1000 + 10000, //  A little more than 2h
       )
       .toJSDate()
 
@@ -376,7 +376,7 @@ describe('synchro-aurige', () => {
   it('Should return false for date less than 2 hours ago', () => {
     const lessThan2HoursAgo = getFrenchLuxon()
       .minus(
-        2 * 60 * 60 * 1000 - 10000 //  A little less than 2h
+        2 * 60 * 60 * 1000 - 10000, //  A little less than 2h
       )
       .toJSDate()
 
@@ -452,7 +452,7 @@ describe('synchro-aurige', () => {
     expect(candidat.noReussites).toBeDefined()
     expect(candidat.noReussites).toHaveLength(4)
     expect(
-      candidat.noReussites[candidat.noReussites.length - 1]
+      candidat.noReussites[candidat.noReussites.length - 1],
     ).toHaveProperty('reason', 'Absent')
   })
 
@@ -468,28 +468,28 @@ describe('synchro-aurige', () => {
 
       candidatsCreated[1].presignedUpAt = getFrenchLuxon()
         .minus(
-          2 * 60 * 60 * 1000 + 10000 // A little more than 2h
+          2 * 60 * 60 * 1000 + 10000, // A little more than 2h
         )
         .toJSDate()
       await candidatsCreated[1].save()
 
       candidatsCreated[2].presignedUpAt = getFrenchLuxon()
         .minus(
-          2 * 60 * 60 * 1000 - 10000 // A little less than 2h
+          2 * 60 * 60 * 1000 - 10000, // A little less than 2h
         )
         .toJSDate()
       await candidatsCreated[2].save()
 
       aurigeFile = await readFileAsPromise(
-        path.resolve(__dirname, './', '__tests__', 'aurige.json')
+        path.resolve(__dirname, './', '__tests__', 'aurige.json'),
       )
     })
 
     afterAll(async () => {
       await Promise.all(
         candidatsToCreate.map(candidat =>
-          candidatModel.findByIdAndDelete(candidat._id)
-        )
+          candidatModel.findByIdAndDelete(candidat._id),
+        ),
       )
     })
 
@@ -509,10 +509,10 @@ describe('synchro-aurige', () => {
     let places
     beforeAll(async () => {
       placeBeforTimeOutRetryCreated = await createTestPlaceAurige(
-        placeBeforTimeOutRetry
+        placeBeforTimeOutRetry,
       )
       placeAfterTimeOutRetryCreated = await createTestPlaceAurige(
-        placeAfterTimeOutRetry
+        placeAfterTimeOutRetry,
       )
       places = [placeBeforTimeOutRetryCreated, placeAfterTimeOutRetryCreated]
 
@@ -522,7 +522,7 @@ describe('synchro-aurige', () => {
     beforeEach(async () => {
       candidatCreated = await createCandidatToTestAurige(
         candidatFailureExam,
-        true
+        true,
       )
       require('../../../util/logger').setWithConsole(false)
     })
@@ -537,17 +537,17 @@ describe('synchro-aurige', () => {
 
     function expectNoReussites (nbEchecsPratiques, noReussites) {
       expect(nbEchecsPratiques).toBe(
-        Number(candidatFailureExam.nbEchecsPratiques)
+        Number(candidatFailureExam.nbEchecsPratiques),
       )
       expect(noReussites).toHaveLength(1)
       expect(noReussites[0]).toHaveProperty(
         'reason',
-        candidatFailureExam.objetDernierNonReussite
+        candidatFailureExam.objetDernierNonReussite,
       )
       expect(noReussites[0].date).toEqual(
         getFrenchLuxonFromISO(
-          candidatFailureExam.dateDernierNonReussite
-        ).toJSDate()
+          candidatFailureExam.dateDernierNonReussite,
+        ).toJSDate(),
       )
     }
 
@@ -560,7 +560,7 @@ describe('synchro-aurige', () => {
 
     it('should have penalty when candidat failed in exam and date ETG changed', async () => {
       const dateReussiteETG = getFrenchLuxonFromISO(
-        candidatFailureExam.dateReussiteETG
+        candidatFailureExam.dateReussiteETG,
       )
         .plus({ days: 5 })
         .toISODate()
@@ -569,12 +569,12 @@ describe('synchro-aurige', () => {
         dateReussiteETG,
       }
       const aurigeFileDateETGChanged = toAurigeJsonBuffer(
-        candidatFailureExamDateETGChanged
+        candidatFailureExamDateETGChanged,
       )
 
       const candidat = await synchroAurigeSuccess(
         aurigeFileDateETGChanged,
-        candidatCreated
+        candidatCreated,
       )
       const { noReussites, nbEchecsPratiques } = candidat
       expectDataCandidat(candidat, candidatFailureExamDateETGChanged)
@@ -592,19 +592,19 @@ describe('synchro-aurige', () => {
       expect(places).toHaveLength(1)
       expect(places[0]).toHaveProperty(
         'centre',
-        placeBeforTimeOutRetryCreated.centre
+        placeBeforTimeOutRetryCreated.centre,
       )
       expect(places[0].inspecteur.toString()).toBe(
-        placeBeforTimeOutRetryCreated.inspecteur._id.toString()
+        placeBeforTimeOutRetryCreated.inspecteur._id.toString(),
       )
       expect(places[0]).toHaveProperty(
         'date',
-        placeBeforTimeOutRetryCreated.date
+        placeBeforTimeOutRetryCreated.date,
       )
       expect(places[0].archivedAt).toBeDefined()
       expect(places[0]).toHaveProperty(
         'archiveReason',
-        REASON_EXAM_FAILED + NO_CANDILIB
+        REASON_EXAM_FAILED + NO_CANDILIB,
       )
       expect(places[0]).toHaveProperty('isCandilib', false)
 
@@ -655,13 +655,13 @@ describe('synchro-aurige', () => {
     it('should archive candidat who passed exam and have not already valided by aurige', async () => {
       await candidatModel.update(
         { codeNeph: candidatPassed.codeNeph },
-        { $set: { isValidatedByAurige: false } }
+        { $set: { isValidatedByAurige: false } },
       )
       const candidatArchived = await synchroAurigeToPassExam(
         aurigeFile,
         candidatPassed,
         candidatCreated._id,
-        EPREUVE_PRATIQUE_OK_BEFORE_SING_UP
+        EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
       )
       expectDataCandidat(candidatArchived, candidatPassed)
       expect(candidatArchived.places).toBeUndefined()
@@ -672,7 +672,7 @@ describe('synchro-aurige', () => {
       const candidatArchived = await synchroAurigeToPassExam(
         aurigeFile,
         candidatPassed,
-        candidatCreated._id
+        candidatCreated._id,
       )
       expectDataCandidat(candidatArchived, candidatPassed)
       expect(candidatArchived.places).toBeUndefined()
@@ -681,25 +681,25 @@ describe('synchro-aurige', () => {
 
     it('should archive candidat and release place with success is in candilib', async () => {
       const placeSelected = await createTestPlaceAurige(
-        placeSameDateDernierEchecPratiqueForSuccess
+        placeSameDateDernierEchecPratiqueForSuccess,
       )
       await makeResa(placeSelected, candidatCreated, bookedAt)
       const candidatArchived = await synchroAurigeToPassExam(
         aurigeFile,
         candidatPassed,
-        candidatCreated._id
+        candidatCreated._id,
       )
       expectDataCandidat(candidatArchived, candidatPassed)
       expect(candidatArchived.places).toHaveLength(1)
       placeExpect(candidatArchived.places[0], placeSelected)
       const archivedAt = getFrenchLuxonFromJSDate(
-        candidatArchived.places[0].archivedAt
+        candidatArchived.places[0].archivedAt,
       )
       const now = getFrenchLuxon()
       expect(archivedAt.hasSame(now, 'day')).toBe(true)
       expect(candidatArchived.places[0]).toHaveProperty(
         'archiveReason',
-        EPREUVE_PRATIQUE_OK
+        EPREUVE_PRATIQUE_OK,
       )
       expect(candidatArchived.places[0]).toHaveProperty('isCandilib', true)
 
@@ -715,20 +715,20 @@ describe('synchro-aurige', () => {
       const candidatArchived = await synchroAurigeToPassExam(
         aurigeFile,
         candidatPassed,
-        candidatCreated._id
+        candidatCreated._id,
       )
       expectDataCandidat(candidatArchived, candidatPassed)
 
       expect(candidatArchived.places).toHaveLength(1)
       placeExpect(candidatArchived.places[0], placeSelected)
       const archivedAt = getFrenchLuxonFromJSDate(
-        candidatArchived.places[0].archivedAt
+        candidatArchived.places[0].archivedAt,
       )
       const now = getFrenchLuxon()
       expect(archivedAt.hasSame(now, 'day')).toBe(true)
       expect(candidatArchived.places[0]).toHaveProperty(
         'archiveReason',
-        EPREUVE_PRATIQUE_OK + NO_CANDILIB
+        EPREUVE_PRATIQUE_OK + NO_CANDILIB,
       )
       expect(candidatArchived.places[0]).toHaveProperty('isCandilib', false)
 
@@ -750,7 +750,7 @@ describe('synchro-aurige', () => {
       await createDepartement(departementData)
       candidatCreated = await createCandidatToTestAurige(
         candidat5FailureExam,
-        true
+        true,
       )
     })
     afterEach(async () => {
@@ -763,7 +763,7 @@ describe('synchro-aurige', () => {
     const synchroAurigeTo5FailureExam = async (
       aurigeFile,
       infoCandidat,
-      candidatId
+      candidatId,
     ) => {
       const { nomNaissance, codeNeph } = infoCandidat
       const result = await synchroAurige(aurigeFile)
@@ -780,7 +780,7 @@ describe('synchro-aurige', () => {
 
       const candidatArchived = await candidatArchivedExpect(
         infoCandidat,
-        NB_FAILURES_KO
+        NB_FAILURES_KO,
       )
       return candidatArchived
     }
@@ -789,7 +789,7 @@ describe('synchro-aurige', () => {
       const candidatArchived = await synchroAurigeTo5FailureExam(
         aurigeFile,
         candidat5FailureExam,
-        candidatCreated._id
+        candidatCreated._id,
       )
 
       expectDataCandidat(candidatArchived, candidat5FailureExam)
@@ -797,27 +797,27 @@ describe('synchro-aurige', () => {
 
     it('should release place and archive candidat and place', async () => {
       const placeSelected = await createTestPlaceAurige(
-        placeSameDateDernierEchecPratique
+        placeSameDateDernierEchecPratique,
       )
 
       await makeResa(placeSelected, candidatCreated, bookedAt)
       const candidatArchived = await synchroAurigeTo5FailureExam(
         aurigeFile,
         candidat5FailureExam,
-        candidatCreated._id
+        candidatCreated._id,
       )
       expectDataCandidat(candidatArchived, candidat5FailureExam)
 
       expect(candidatArchived.places).toHaveLength(1)
       placeExpect(candidatArchived.places[0], placeSelected)
       const archivedAt = getFrenchLuxonFromJSDate(
-        candidatArchived.places[0].archivedAt
+        candidatArchived.places[0].archivedAt,
       )
       const now = getFrenchLuxon()
       expect(archivedAt.hasSame(now, 'day')).toBe(true)
       expect(candidatArchived.places[0]).toHaveProperty(
         'archiveReason',
-        NB_FAILURES_KO
+        NB_FAILURES_KO,
       )
 
       const place = await findPlaceById(placeSelected._id)
@@ -828,24 +828,24 @@ describe('synchro-aurige', () => {
 
     it('should release place and archive candidat and place with failure is out candilib', async () => {
       const placeSelected = await createTestPlaceAurige(
-        placeNoSameDateDernierEchecPratique
+        placeNoSameDateDernierEchecPratique,
       )
       await makeResa(placeSelected, candidatCreated, bookedAt)
       const candidatArchived = await synchroAurigeTo5FailureExam(
         aurigeFile,
         candidat5FailureExam,
-        candidatCreated._id
+        candidatCreated._id,
       )
       expect(candidatArchived.places).toHaveLength(1)
       placeExpect(candidatArchived.places[0], placeSelected)
       const archivedAt = getFrenchLuxonFromJSDate(
-        candidatArchived.places[0].archivedAt
+        candidatArchived.places[0].archivedAt,
       )
       const now = getFrenchLuxon()
       expect(archivedAt.hasSame(now, 'day')).toBe(true)
       expect(candidatArchived.places[0]).toHaveProperty(
         'archiveReason',
-        NB_FAILURES_KO + NO_CANDILIB
+        NB_FAILURES_KO + NO_CANDILIB,
       )
       expect(candidatArchived.places[0]).toHaveProperty('isCandilib', false)
 
@@ -865,12 +865,12 @@ describe('Check canAccess property of aurige', () => {
   beforeAll(async () => {
     await connect()
     candidatsToCreate = candidatsWithPreRequired.map(candidat =>
-      createCandidatToTestAurige(candidat, candidat.isValidatedByAurige)
+      createCandidatToTestAurige(candidat, candidat.isValidatedByAurige),
     )
     candidatsCreated = await Promise.all(candidatsToCreate)
 
     aurigeFile = await readFileAsPromise(
-      path.resolve(__dirname, './', '__tests__', 'aurigeWithAccessAt.json')
+      path.resolve(__dirname, './', '__tests__', 'aurigeWithAccessAt.json'),
     )
   })
   beforeEach(done => {
@@ -890,7 +890,7 @@ describe('Check canAccess property of aurige', () => {
       getFrenchLuxon()
         .startOf('day')
         .plus({ days: config.LINE_DELAY })
-        .toJSDate()
+        .toJSDate(),
     )
     expect(candidat02).toHaveProperty('canAccessAt', undefined)
 
@@ -900,7 +900,7 @@ describe('Check canAccess property of aurige', () => {
     expect(result[0]).toHaveProperty('details', 'OK_VALID')
     expect(result[0]).toHaveProperty(
       'message',
-      `Pour le 93, un magic link est envoyé à ${candidat01.email}`
+      `Pour le 93, un magic link est envoyé à ${candidat01.email}`,
     )
 
     expect(result[1]).toHaveProperty('nom', candidat02.nomNaissance)
@@ -909,7 +909,7 @@ describe('Check canAccess property of aurige', () => {
     expect(result[1]).toHaveProperty('details', 'OK_UPDATED')
     expect(result[1]).toHaveProperty(
       'message',
-      `Pour le 93, ce candidat ${candidat02.email} a été mis à jour`
+      `Pour le 93, ce candidat ${candidat02.email} a été mis à jour`,
     )
   })
 
@@ -918,7 +918,7 @@ describe('Check canAccess property of aurige', () => {
       candidatsToCreate.map(async candidat => {
         const tmp = await candidatModel.findByIdAndDelete(candidat._id)
         return tmp
-      })
+      }),
     )
     await disconnect()
   })
@@ -949,7 +949,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
   async function synchroAurigeETGKO (
     aurigeFile,
     candidatInJson,
-    candidatCreated
+    candidatCreated,
   ) {
     const result = await synchroAurige(aurigeFile)
     expect(result).toBeDefined()
@@ -968,19 +968,19 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpired)
     const candidatCreated = await createCandidatToTestAurige(
       candidatWithEtgExpired,
-      true
+      true,
     )
     const candidat = await synchroAurigeETGKO(
       aurigeFile,
       candidatWithEtgExpired,
-      candidatCreated
+      candidatCreated,
     )
 
     expect(candidat).toBeNull()
 
     const archivedCandidat = await candidatArchivedExpect(
       candidatWithEtgExpired,
-      EPREUVE_ETG_KO
+      EPREUVE_ETG_KO,
     )
 
     await archivedCandidat.remove()
@@ -993,7 +993,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpired)
     const candidatCreated = await createCandidatToTestAurige(
       candidatWithEtgExpired,
-      true
+      true,
     )
 
     await makeResa(placeSelected, candidatCreated, bookedAt)
@@ -1001,14 +1001,14 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const candidat = await synchroAurigeSuccess(
       aurigeFile,
       candidatCreated,
-      candidatWithEtgExpired
+      candidatWithEtgExpired,
     )
     expect(candidat).toBeDefined()
     expect(candidat).not.toBeNull()
 
     const candidatArchived = await findArchivedCandidatByNomNeph(
       candidatWithEtgExpired.nomNaissance,
-      candidatWithEtgExpired.codeNeph
+      candidatWithEtgExpired.codeNeph,
     )
     expect(candidatArchived).toBeNull()
     await candidat.remove()
@@ -1033,7 +1033,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpired7)
     const candidatCreated = await createCandidatToTestAurige(
       candidatWithEtgExpired7,
-      true
+      true,
     )
 
     await makeResa(placeSelected, candidatCreated, bookedAt)
@@ -1041,13 +1041,13 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const candidat = await synchroAurigeSuccess(
       aurigeFile,
       candidatCreated,
-      candidatWithEtgExpired7
+      candidatWithEtgExpired7,
     )
     expect(candidat).toBeDefined()
     expect(candidat).not.toBeNull()
     const candidatArchived = await findArchivedCandidatByNomNeph(
       candidatWithEtgExpired7.nomNaissance,
-      candidatWithEtgExpired7.codeNeph
+      candidatWithEtgExpired7.codeNeph,
     )
 
     expect(candidatArchived).toBeNull()
@@ -1075,7 +1075,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
 
     const candidatCreated = await createCandidatToTestAurige(
       candidatWithEtgExpired8,
-      true
+      true,
     )
 
     await makeResa(placeSelected, candidatCreated, bookedAt)
@@ -1083,14 +1083,14 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const candidat = await synchroAurigeETGKO(
       aurigeFile,
       candidatWithEtgExpired8,
-      candidatCreated
+      candidatCreated,
     )
 
     expect(candidat).toBeNull()
 
     const archivedCandidat = await candidatArchivedExpect(
       candidatWithEtgExpired8,
-      EPREUVE_ETG_KO
+      EPREUVE_ETG_KO,
     )
 
     await archivedCandidat.remove()
@@ -1104,7 +1104,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpiredToArchive)
     const candidatCreated = await createCandidatToTestAurige(
       candidatWithEtgExpiredToArchive,
-      true
+      true,
     )
 
     await makeResa(placeSelected, candidatCreated, bookedAt)
@@ -1112,7 +1112,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const archivedCandidat = await synchroAurigeToPassExam(
       aurigeFile,
       candidatWithEtgExpiredToArchive,
-      candidatCreated._id
+      candidatCreated._id,
     )
 
     await archivedCandidat.remove()
@@ -1124,11 +1124,11 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const placeSelected = await createTestPlaceAurige(placeAtETG)
 
     const aurigeFile = toAurigeJsonBuffer(
-      candidatWithEtgExpiredAndFailedToArchive
+      candidatWithEtgExpiredAndFailedToArchive,
     )
     const candidatCreated = await createCandidatToTestAurige(
       candidatWithEtgExpiredAndFailedToArchive,
-      true
+      true,
     )
 
     await makeResa(placeSelected, candidatCreated, bookedAt)
@@ -1136,7 +1136,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const candidat = await synchroAurigeSuccess(
       aurigeFile,
       candidatCreated,
-      candidatWithEtgExpiredAndFailedToArchive
+      candidatWithEtgExpiredAndFailedToArchive,
     )
 
     expect(candidat).toBeDefined()
@@ -1194,11 +1194,11 @@ describe('Synchro-aurige: send mail', () => {
         const mail = await simpleParser(body)
         expect(mail.headers.get('to')).toHaveProperty(
           'text',
-          candidatPassed.email
+          candidatPassed.email,
         )
         expect(mail.headers.get('subject')).toBe(SUBJECT_MAIL_INFO)
         expect(mail.text).toMatch(
-          /Selon nos informations vous avez déjà réussi votre examen du permis de conduire,[\n ]notre service ne vous est plus utile/
+          /Selon nos informations vous avez déjà réussi votre examen du permis de conduire,[\n ]notre service ne vous est plus utile/,
         )
         done()
         return callback()
@@ -1212,7 +1212,7 @@ describe('Synchro-aurige: send mail', () => {
     let isDone = false
     candidatCreated = await createCandidatToTestAurige(
       candidatFailureExam,
-      true
+      true,
     )
     const aurigeFile = toAurigeJsonBuffer(candidatFailureExam)
     server.onData = function (stream, session, callback) {
@@ -1239,10 +1239,10 @@ describe('Synchro-aurige: send mail', () => {
   it('should send mail failed exam when candidat have booking and failed exam', async done => {
     candidatCreated = await createCandidatToTestAurige(
       candidatFailureExam,
-      true
+      true,
     )
     placeSelected = await createTestPlaceAurige(
-      placeSameDateDernierEchecPratique
+      placeSameDateDernierEchecPratique,
     )
 
     await makeResa(placeSelected, candidatCreated, bookedAt)
@@ -1257,10 +1257,10 @@ describe('Synchro-aurige: send mail', () => {
       stream.on('end', function () {
         var body = Buffer.concat(chunks)
         expect(body.toString()).toMatch(
-          new RegExp(`To:.${candidatCreated.email}`)
+          new RegExp(`To:.${candidatCreated.email}`),
         )
         expect(body.toString()).toMatch(
-          new RegExp(`Subject:.${SUBJECT_MAIL_INFO}`)
+          new RegExp(`Subject:.${SUBJECT_MAIL_INFO}`),
         )
         expect(body.toString()).toMatch(new RegExp("En cas d'=C3=A9chec,"))
         done()
@@ -1284,11 +1284,11 @@ describe('Synchro-aurige: send mail', () => {
         const mail = await simpleParser(body)
         expect(mail.headers.get('to')).toHaveProperty(
           'text',
-          candidatPassed.email
+          candidatPassed.email,
         )
         expect(mail.headers.get('subject')).toBe(SUBJECT_MAIL_INFO)
         expect(mail.text).toMatch(
-          /Selon nos informations, vous avez réussi l'examen que vous venez de passer./
+          /Selon nos informations, vous avez réussi l'examen que vous venez de passer./,
         )
         done()
         return callback()
@@ -1306,7 +1306,7 @@ describe('Synchro-aurige: send mail', () => {
 
     candidatCreated = await createCandidatToTestAurige(candidat, true)
     placeSelected = await createTestPlaceAurige(
-      placeSameDateDernierEchecPratique
+      placeSameDateDernierEchecPratique,
     )
 
     await makeResa(placeSelected, candidatCreated, bookedAt)
@@ -1321,13 +1321,13 @@ describe('Synchro-aurige: send mail', () => {
       stream.on('end', function () {
         var body = Buffer.concat(chunks)
         expect(body.toString()).toMatch(
-          new RegExp(`To:.${candidatCreated.email}`)
+          new RegExp(`To:.${candidatCreated.email}`),
         )
         expect(body.toString()).toMatch(
-          new RegExp(`Subject:.${SUBJECT_MAIL_INFO}`)
+          new RegExp(`Subject:.${SUBJECT_MAIL_INFO}`),
         )
         expect(body.toString()).toMatch(
-          new RegExp(" l'examen, et nous avons perdu une place qui aurait pu")
+          new RegExp(" l'examen, et nous avons perdu une place qui aurait pu"),
         )
         done()
         return callback()
@@ -1344,7 +1344,7 @@ describe('Synchro-aurige: send mail', () => {
     }
     candidatCreated = await createCandidatToTestAurige(candidat, true)
     placeSelected = await createTestPlaceAurige(
-      placeSameDateDernierEchecPratique
+      placeSameDateDernierEchecPratique,
     )
 
     await makeResa(placeSelected, candidatCreated, bookedAt)
@@ -1359,13 +1359,13 @@ describe('Synchro-aurige: send mail', () => {
       stream.on('end', function () {
         var body = Buffer.concat(chunks)
         expect(body.toString()).toMatch(
-          new RegExp(`To:.${candidatCreated.email}`)
+          new RegExp(`To:.${candidatCreated.email}`),
         )
         expect(body.toString()).toMatch(
-          new RegExp(`Subject:.${SUBJECT_MAIL_INFO}`)
+          new RegExp(`Subject:.${SUBJECT_MAIL_INFO}`),
         )
         expect(body.toString()).toMatch(
-          new RegExp('car vous ne remplissiez pas toutes les conditions')
+          new RegExp('car vous ne remplissiez pas toutes les conditions'),
         )
         done()
         return callback()

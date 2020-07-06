@@ -16,7 +16,7 @@ import {
 } from '../../models/candidat'
 import { isMoreThan2HoursAgo } from '../admin/business/synchro-aurige'
 
-const uuidv4 = require('uuid/v4')
+import { v4 as uuidv4 } from 'uuid'
 
 export async function isAlreadyPresignedUp (candidatData) {
   const {
@@ -78,7 +78,7 @@ export async function isAlreadyPresignedUp (candidatData) {
   if (existCandidatEmail !== email) {
     await deleteCandidat(
       candidat,
-      'EMAIL_NOT_VERIFIED_AND_CANDIDAT_CHANGE_HIS_EMAIL'
+      'EMAIL_NOT_VERIFIED_AND_CANDIDAT_CHANGE_HIS_EMAIL',
     )
     return { success: true }
   }
@@ -94,7 +94,7 @@ export async function updateInfoCandidat (candidat, candidatData) {
       try {
         const response = await sendMailToAccount(
           updateCandidat,
-          INSCRIPTION_UPDATE
+          INSCRIPTION_UPDATE,
         )
         return {
           success: true,

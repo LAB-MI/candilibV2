@@ -55,12 +55,12 @@ export const createTestPlace = async place => {
   } else {
     inspecteurFound = await findInspecteurByName(
       undefined,
-      inspecteur.toUpperCase()
+      inspecteur.toUpperCase(),
     )
   }
   if (!inspecteurFound) {
     throw new Error(
-      `L'inspecteur ${JSON.stringify(inspecteur)} n'a pas été trouvé`
+      `L'inspecteur ${JSON.stringify(inspecteur)} n'a pas été trouvé`,
     )
   }
   leanPlace.inspecteur = inspecteurFound._id

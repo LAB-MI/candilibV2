@@ -71,7 +71,7 @@ const findInfoAdminById = async userId => {
     return
   }
   const emailsDepartements = await Promise.all(
-    departements.map(findDepartementById)
+    departements.map(findDepartementById),
   )
 
   const features = config.userStatusFeatures[status]
@@ -116,7 +116,7 @@ export const createUserController = async (req, res) => {
       req.userId,
       email,
       status,
-      departements
+      departements,
     )
 
     await sendMailCreateAccount(email)
@@ -223,7 +223,7 @@ export const updatedInfoUser = async (req, res) => {
       req.userId,
       email,
       status,
-      departements
+      departements,
     )
     await sendMailConfirmationUpdateUserInfo(email)
 

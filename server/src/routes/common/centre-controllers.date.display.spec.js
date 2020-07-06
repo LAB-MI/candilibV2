@@ -32,7 +32,7 @@ describe('Get centres with the numbers places available in departements and disp
     await connect()
     const createdCandidats = await createCandidats()
     require('../middlewares/verify-token').__setIdCandidat(
-      createdCandidats[0]._id
+      createdCandidats[0]._id,
     )
 
     await createPlacesWithCreatedAtDiff()
@@ -56,7 +56,7 @@ describe('Get centres with the numbers places available in departements and disp
     expect(body).toHaveLength(2)
     const centre = body.find(
       ({ centre: { _id } }) =>
-        _id.toString() === centreDateDisplay._id.toString()
+        _id.toString() === centreDateDisplay._id.toString(),
     )
     expect(centre).toHaveProperty('count', 1)
   })
@@ -73,7 +73,7 @@ describe('Get centres with the numbers places available in departements and disp
     expect(body).toHaveLength(2)
     const centre = body.find(
       ({ centre: { _id } }) =>
-        _id.toString() === centreDateDisplay._id.toString()
+        _id.toString() === centreDateDisplay._id.toString(),
     )
     expect(centre).toHaveProperty('count', 3)
   })

@@ -53,13 +53,13 @@ describe('Centres business', () => {
   it('Should disable one centre', async () => {
     const allCentres = await findAllCentresForAdmin([centres[0].departement])
     const testCentre = allCentres.filter(
-      centre => centre.nom === centres[0].nom
+      centre => centre.nom === centres[0].nom,
     )[0]
 
     const disabledCentre = await updateCentreStatus(
       testCentre._id,
       false,
-      admin._id
+      admin._id,
     )
 
     expect(disabledCentre).toBeDefined()
@@ -74,13 +74,13 @@ describe('Centres business', () => {
   it('Should enable one centre', async () => {
     const allCentres = await findAllCentresForAdmin([centres[0].departement])
     const testCentre = allCentres.filter(
-      centre => centre.nom === centres[0].nom
+      centre => centre.nom === centres[0].nom,
     )[0]
 
     const disabledCentre = await updateCentreStatus(
       testCentre._id,
       true,
-      admin._id
+      admin._id,
     )
 
     expect(disabledCentre).toBeDefined()
@@ -97,7 +97,7 @@ describe('Centres business', () => {
       '1 94000 ',
       42,
       104,
-      '93'
+      '93',
     )
 
     expect(centreAdded).toBeDefined()
@@ -112,7 +112,7 @@ describe('Centres business', () => {
   it('Should update a center', async () => {
     const originalCentre = await findCentreByNameAndDepartement(
       centres[0].nom,
-      centres[0].departement
+      centres[0].departement,
     )
     const updatedCentre = await updateCentre(
       originalCentre._id,
@@ -121,7 +121,7 @@ describe('Centres business', () => {
         lon: 45.3,
         lat: 8,
       },
-      admin._id
+      admin._id,
     )
 
     expect(updatedCentre).toBeDefined()

@@ -23,7 +23,7 @@ const caseInsensitive = nom => ({
  */
 export const findAllCentres = async departements => {
   const centres = await Centre.find(
-    departements ? { departement: { $in: departements } } : {}
+    departements ? { departement: { $in: departements } } : {},
   )
   return centres
 }
@@ -83,7 +83,7 @@ export const createCentre = async (
   lon,
   lat,
   departement,
-  geoDepartement
+  geoDepartement,
 ) => {
   const geoloc = {
     type: 'Point',
@@ -167,7 +167,7 @@ export const updateCentreActiveState = async (centre, active, email) => {
  */
 export const updateCentreLabel = async (
   centre,
-  { nom, label, adresse, lon, lat, geoDepartement }
+  { nom, label, adresse, lon, lat, geoDepartement },
 ) => {
   if (!centre) {
     throw new Error('centre is undefined')
@@ -203,7 +203,7 @@ export const updateCentreLabel = async (
  */
 export const findCentresByDepartement = async (
   departementId,
-  options = '-__v'
+  options = '-__v',
 ) => {
   const filters = {
     active: { $ne: false },
@@ -233,7 +233,7 @@ export const findCentreByNameAndDepartement = async (
   nom,
   departement,
   geoDepartement,
-  options = '-__v'
+  options = '-__v',
 ) => {
   const filter = {
     nom: caseInsensitive(nom),
@@ -256,7 +256,7 @@ export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
     nom,
     undefined,
     geoDepartement,
-    '-departement -_id -active -createdAt -updatedAt -__v'
+    '-departement -_id -active -createdAt -updatedAt -__v',
   )
 }
 
@@ -273,7 +273,7 @@ export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
  */
 export const findCentreByGeoDepartement = async (
   geoDepartement,
-  options = '-__v'
+  options = '-__v',
 ) => {
   const filters = {
     active: { $ne: false },
@@ -328,7 +328,7 @@ export const getGeoDepartementsFromCentres = async (options = '-__v') => {
     active: { $ne: false },
   }
   const geoDepartements = await Centre.find(filters, options).distinct(
-    'geoDepartement'
+    'geoDepartement',
   )
   return geoDepartements
 }
@@ -362,7 +362,7 @@ export const findCentresUniqByDepartement = async departement => {
       centre.count = count
 
       return centre
-    })
+    }),
   )
 
   return centresWithCount.filter(centre => centre.count === 1)
