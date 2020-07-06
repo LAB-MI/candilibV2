@@ -338,7 +338,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
 
   return new Promise((resolve, reject) =>
     csvParser
-      .fromString(csvFile.data.toString(), {
+      .parseString(csvFile.data.toString(), {
         headers: false,
         ignoreEmpty: true,
       })
