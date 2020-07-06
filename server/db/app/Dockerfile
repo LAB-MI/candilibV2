@@ -20,7 +20,8 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc
         npm config set https-proxy $https_proxy; \
         npm config set no-proxy $no_proxy; \
    fi ; \
-   [ -z "$npm_registry" ] || npm config set registry=$npm_registry
+   [ -z "$npm_registry" ] || npm config set registry=$npm_registry; \
+   [ -z "$npm_registry" ] || npm config set strict-ssl false
 
 ################################
 # Step 2: "development" target #
@@ -30,6 +31,7 @@ ARG APP_VERSION
 COPY app.js index.js ./
 COPY package.json package-lock.json ./
 # Install app dependencies
-RUN npm --no-git-tag-version version ${APP_VERSION} ; npm install
+RUN ssl="$(npm config get strict-ssl)" ; [ "x$ssl" = "xfalse" ] && export NODE_TLS_REJECT_UNAUTHORIZED=0 || true ; \
+    npm --no-git-tag-version version ${APP_VERSION} ; npm install
 
 CMD ["npm", "start"]
