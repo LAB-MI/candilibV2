@@ -1,10 +1,11 @@
 const { now } = require('../support/dateUtils')
+
 let dateAt3Months
 let dateAt2Months
 let dateAt1Months
 let dateAt2Weeks
 describe('Display new place after 12h', () => {
-  const NbCreneauxByDay = 13 * 2
+  const NbCreneauxByDay = 15 * 2
   let magicLink
   before(() => {
     cy.daleteAllPlaces()
@@ -38,11 +39,12 @@ describe('Display new place after 12h', () => {
     cy.visit(magicLink)
     cy.wait(100)
 
-    cy.get('h2').should('contain', 'Choix du département')
-    cy.get('body').should('contain', Cypress.env('geoDepartement'))
-    cy.contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
-      cy.root().should('contain', `${NbCreneaux} places`)
-    }).click()
+    // cy.get('h2').should('contain', 'Choix du département')
+    // cy.get('body').should('contain', Cypress.env('geoDepartement'))
+    // cy.contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
+    //   cy.root().should('contain', `${NbCreneaux} places`)
+    // }).click()
+    cy.checkAndSelectDepartement(NbCreneaux)
     cy.wait(100)
 
     cy.get('h2').should('contain', 'Choix du centre')

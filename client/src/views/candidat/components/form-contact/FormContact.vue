@@ -112,7 +112,6 @@ export default {
       message: '',
       subject: '',
       subjectPlaceholder: '',
-      isSending: false,
       messageRules: [
         v => v.length <= messageMaxLength || this.$formatMessage({ id: 'constat_us_message_too_long' }),
       ],
@@ -121,6 +120,7 @@ export default {
   computed: {
     ...mapState({
       availableDepartements: state => state.departements && state.departements.list,
+      isSending: state => state.contactUs && state.contactUs.isFetching,
     }),
     isCompleted: function () {
       return this.valid && this.candidat && this.candidat.codeNeph && this.candidat.nomNaissance && this.candidat.email && this.candidat.departement && this.subject && this.message

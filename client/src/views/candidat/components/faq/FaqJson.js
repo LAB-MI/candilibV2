@@ -1,3 +1,9 @@
+import { candidat } from '../../../../messages'
+
+export const NB_FOR_CENTERS_75 = (parisCenters = []) => {
+  return `Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants : ${parisCenters.join(', ')}`
+}
+
 export function faqJson (lineDelay, departements = [], parisCenters = []) {
   const returnArray = [
     {
@@ -30,7 +36,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: `Cependant, seuls les départements de la liste suivante proposent actuellement des places via ce service : ${departements.join(', ')}`,
         },
         {
-          textContent: `NB : les candidats du 75 pourront choisir parmi les centres d'examen suivants : ${parisCenters.join(', ')}`,
+          textContent: 'NB : ' + NB_FOR_CENTERS_75(parisCenters),
         },
         {
           textContent: "Pour rappel, il n'existe pas de centre d'examen localisé à Paris.",
@@ -135,7 +141,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je ne trouve pas de place disponible ?',
       content: [
         {
-          textContent: 'Si de nouveaux créneaux sont ajoutés, ils seront mis en ligne tous les midis. D\'autres peuvent se libérer à tout moment par l\'annulation d\'un candidat ayant réservé.',
+          textContent: `${candidat.messsage_mise_a_disposition_des_places} D'autres peuvent se libérer à tout moment par l'annulation d'un candidat ayant réservé.`,
         },
         {
           textContent: 'Vous pouvez aussi réserver une place dans un autre département.',

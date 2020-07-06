@@ -11,6 +11,7 @@
         ({{ center.selected.geoDepartement }})
       </span>
     </page-title>
+    <message-info-places />
 
     <v-alert
       class="t-warning-message"
@@ -99,10 +100,12 @@ import {
   getFrenchDateFromIso,
   getFrenchLuxonCurrentDateTime,
 } from '@/util/frenchDateTime.js'
+import MessageInfoPlaces from '../MessageInfoPlaces'
 
 export default {
   components: {
     TimesSlotsSelector,
+    MessageInfoPlaces,
   },
 
   data () {
@@ -230,7 +233,7 @@ export default {
         departement,
       } = this.$route.params
       const selected = this.center.selected
-      if (!selected || !selected._id) {
+      if (!selected) {
         if (!this.center.isFetchingCenter) {
           await this.$store.dispatch(FETCH_CENTER_REQUEST, {
             nom,

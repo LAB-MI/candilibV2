@@ -27,8 +27,8 @@ const candidats = [
 
 describe('export-candidats', () => {
   it('Should return a CSV string with ";" as delimiter', async () => {
-    const { codeNeph, nomNaissance, prenom, email } = candidats[0]
-    const expectedFirstLine = `${codeNeph};${nomNaissance};${nomNaissance};${prenom};${email}`
+    const { codeNeph, nomNaissance } = candidats[0]
+    const expectedFirstLine = `${codeNeph};${nomNaissance};${nomNaissance};;`
 
     const csv = await getCandidatsAsCsv(candidats)
 

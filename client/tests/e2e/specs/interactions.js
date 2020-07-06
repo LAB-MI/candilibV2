@@ -184,7 +184,7 @@ describe('Standard scenarios', () => {
       cy.get('h3')
         .should('contain', Cypress.env('centre'))
       cy.get('p')
-        .should('contain', 'à 08:00')
+        .should('contain', 'à 07:00')
       cy.contains('Annuler ma réservation')
         .click()
       cy.get('button')
@@ -283,7 +283,7 @@ describe('Standard scenarios', () => {
         .parents('.t-time-slot-list-group')
         .within(($date) => {
           cy.root().click()
-          cy.should('not.contain', '08h00-08h30')
+          cy.should('not.contain', '07h00-07h30')
             .and('contain', '08h30-09h00')
         })
     })

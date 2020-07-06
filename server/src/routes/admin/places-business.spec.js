@@ -366,6 +366,22 @@ describe('Test import places from CSV', () => {
     const csvFileDataInJson = [
       {
         date: '06/07/19',
+        hour: '07:00',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+      {
+        date: '06/07/19',
+        hour: '07:30',
+        matricule: '01020304',
+        nom: 'dupont',
+        centre: 'VILLEPINTE',
+        departement: '93',
+      },
+      {
+        date: '06/07/19',
         hour: '08:00',
         matricule: '01020304',
         nom: 'dupont',

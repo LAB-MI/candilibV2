@@ -1,4 +1,6 @@
 export const creneauSetting = [
+  '07h00',
+  '07h30',
   '08h00',
   '08h30',
   '09h00',
@@ -15,6 +17,8 @@ export const creneauSetting = [
 ]
 
 export const creneauAvailable = [
+  '07:00',
+  '07:30',
   '08:00',
   '08:30',
   '09:00',
@@ -31,6 +35,8 @@ export const creneauAvailable = [
 ]
 
 export const valideCreneaux = [
+  '07h00-07h30',
+  '07h30-08h00',
   '08h00-08h30',
   '08h30-09h00',
   '09h00-09h30',
@@ -58,7 +64,7 @@ export const validDays = [
 export const hoursRangeOfDay = {
   morning: {
     begin: {
-      hour: 8,
+      hour: 7,
       minute: 0,
     },
     end: {

@@ -44,3 +44,7 @@ export const CONTACT_US_SEND_TO_CANDIDAT_FAILED =
   "Votre message a été envoyé, la confirmation de votre demande n'a pas pu être envoyé."
 export const CONTACT_US_CONFIRM_SEND = email =>
   `Votre message a été envoyé. Un courriel de conifrmation a été envoyé à l'adresse ${email}`
+export const CANDIDAT_LAST_NAME_NOT_VALID =
+  "Le nom de naissance renseigné n'est pas valide"
+export const CANDIDAT_FIRST_NAME_NOT_VALID =
+  "Le prénom renseigné n'est pas valide"

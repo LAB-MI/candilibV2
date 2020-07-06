@@ -20,13 +20,18 @@ const validEmail = 'candidat@example.com'
 const invalidEmail = 'candidatexample.com'
 const portable = '0612345678'
 const nomNaissance = 'Dupont'
+const invalidNomNaissance = 'Dup ; ont'
 const codeNeph = '123456789012'
 const prenom = ' test prenom '
+const invalidPrenom = ' test ; invalidPrenom '
 const validEmail1 = 'candidat1@example.com'
 const portable1 = '0612345679'
 const nomNaissance1 = 'test'
 const codeNeph1 = '123456789013'
+const codeNeph2 = '123456789014'
 const validEmail2 = 'candidat2@example.com'
+const validEmail3 = 'candidat3@example.com'
+const validEmail4 = 'candidat4@example.com'
 const departementTest = '93'
 const departementNotExisting = '60'
 
@@ -66,6 +71,24 @@ const validCandidat1 = {
   email: validEmail1,
   nomNaissance: nomNaissance1,
   prenom,
+  portable: portable1,
+  departement: departementTest,
+}
+
+const inValidCandidat2 = {
+  codeNeph: codeNeph1,
+  email: validEmail3,
+  nomNaissance: invalidNomNaissance,
+  prenom,
+  portable: portable1,
+  departement: departementTest,
+}
+
+const inValidCandidat3 = {
+  codeNeph: codeNeph2,
+  email: validEmail4,
+  nomNaissance,
+  prenom: invalidPrenom,
   portable: portable1,
   departement: departementTest,
 }
@@ -212,6 +235,28 @@ describe('Test the candidat signup', () => {
       expect(candidat).toHaveProperty('portable', validCandidat.portable)
       expect(candidat).toHaveProperty('adresse', validCandidat.adresse)
       expect(candidat).toHaveProperty('email', validCandidat.email)
+    })
+
+    it('Should response 400 for firstName invalide', async () => {
+      const { body } = await request(app)
+        .post(`${apiPrefix}/candidat/preinscription`)
+        .send(inValidCandidat3)
+        .set('Accept', 'application/json')
+        .expect(400)
+
+      expect(body).toHaveProperty('success', false)
+      expect(body).toHaveProperty('message')
+    })
+
+    it('Should response 400 for lastName invalide', async () => {
+      const { body } = await request(app)
+        .post(`${apiPrefix}/candidat/preinscription`)
+        .send(inValidCandidat2)
+        .set('Accept', 'application/json')
+        .expect(400)
+
+      expect(body).toHaveProperty('success', false)
+      expect(body).toHaveProperty('message')
     })
 
     it('Should response 409 with an existing email', async () => {
