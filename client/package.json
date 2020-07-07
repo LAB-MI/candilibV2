@@ -72,7 +72,7 @@
     "@vue/cli-service": "^4.4.6",
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/test-utils": "^1.0.3",
-    "babel-core": "6.26.3",
+    "babel-core": "7.0.0-bridge.0",
     "babel-eslint": "^10.1.0",
     "cross-env": "^7.0.2",
     "cypress-file-upload": "^4.0.7",
