@@ -55,14 +55,13 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
     .click()
   const filePath = '../../../' + Cypress.env('filePath') + '/aurige.end.json'
   const fileName = 'aurige.json'
-  cy.fixture(filePath).then(fileContent => {
-    cy.get('.input-file-container [type=file]')
-      .upload({
-        fileContent: JSON.stringify(fileContent),
-        fileName,
-        mimeType: 'application/json',
-      })
-  })
+  cy.get('.input-file-container [type=file]')
+    .attachFile({
+      filePath,
+      fileName,
+      mimeType: 'application/json',
+    })
+
   cy.get('.v-snack--active')
     .should('contain', fileName + ' prêt à être synchronisé')
   cy.get('.import-file-action [type=button]')
@@ -124,7 +123,7 @@ Cypress.Commands.add('addPlanning', (dates) => {
   const filePath1 = '../../../' + Cypress.env('filePath') + '/planning.csv'
   const fileName1 = 'planning.csv'
   cy.fixture(filePath1).then(fileContent => {
-    cy.get('[type=file]').upload({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
+    cy.get('[type=file]').attachFile({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
   })
   cy.get('.v-snack--active')
     .should('contain', fileName1 + ' prêt à être synchronisé')
@@ -283,14 +282,13 @@ Cypress.Commands.add('candidateValidation', (candidat, filename, hasChecked = tr
   const filePath2 = '../../../' + filepathAurige
   let fileName2
   if (filename) { fileName2 = filename } else { fileName2 = 'aurige.json' }
-  cy.fixture(filePath2).then(fileContent => {
-    cy.get('.input-file-container [type=file]')
-      .upload({
-        fileContent: JSON.stringify(fileContent),
-        fileName: fileName2,
-        mimeType: 'application/json',
-      })
-  })
+  cy.get('.input-file-container [type=file]')
+    .attachFile({
+      filePath: filePath2,
+      fileName: fileName2,
+      mimeType: 'application/json',
+    })
+
   cy.get('.v-snack--active')
     .should('contain', fileName2 + ' prêt à être synchronisé')
   cy.get('.import-file-action [type=button]')
@@ -379,7 +377,7 @@ Cypress.Commands.add('updatePlaces', (query, update) => {
     cy.log(JSON.stringify(content.body))
   })
 })
-Cypress.Commands.add('daleteAllPlaces', () => {
+Cypress.Commands.add('deleteAllPlaces', () => {
   cy.request('DELETE', Cypress.env('ApiRestDB') + '/places').then((content) => {
     cy.log(JSON.stringify(content.body))
   })

@@ -30,7 +30,7 @@ describe('Places tests', () => {
     const filePath1 = '../../../' + Cypress.env('filePath') + '/planning.csv'
     const fileName1 = 'planning.csv'
     cy.fixture(filePath1).then(fileContent => {
-      cy.get('[type=file]').upload({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
+      cy.get('[type=file]').attachFile({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
     })
     cy.get('.v-snack--active')
       .should('contain', fileName1 + ' prêt à être synchronisé')
