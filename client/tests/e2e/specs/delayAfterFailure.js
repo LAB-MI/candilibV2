@@ -44,14 +44,13 @@ describe('Test delay after failed attempt', () => {
         .should('contain', 'No Rows To Show')
       const filePath2 = '../../../' + Cypress.env('filePath') + '/aurige.json'
       const fileName2 = 'aurige.json'
-      cy.fixture(filePath2).then(fileContent => {
-        cy.get('.input-file-container [type=file]')
-          .upload({
-            fileContent: JSON.stringify(fileContent),
-            fileName: fileName2,
-            mimeType: 'application/json',
-          })
-      })
+      cy.get('.input-file-container [type=file]')
+        .attachFile({
+          filePath: filePath2,
+          fileName: fileName2,
+          mimeType: 'application/json',
+        })
+
       cy.get('.v-snack--active')
         .should('contain', fileName2 + ' prêt à être synchronisé')
       cy.get('.import-file-action [type=button]')
