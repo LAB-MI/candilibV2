@@ -318,12 +318,6 @@ export const removeBookedPlace = place => {
   return place.save()
 }
 
-// const queryPopulate = (populate = {}, query) => {
-//   Object.entries(populate).forEach(([key, value]) => {
-//     value && query.populate(key)
-//   })
-// }
-
 export const bookPlaceById = async (
   placeId,
   candidat,
