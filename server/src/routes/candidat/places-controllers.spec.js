@@ -369,7 +369,7 @@ describe('Test to book and to delete reservation by candidat', () => {
 
     const candidatFounded = await findCandidatById(updatedCandidat2._id)
     const place = candidatFounded.places.find(
-      place => place.archiveReason === 'CANCEL',
+      elt => elt.archiveReason === 'CANCEL',
     )
 
     expect(place).toBeDefined()

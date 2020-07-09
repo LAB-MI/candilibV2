@@ -642,7 +642,7 @@ describe('to book places', () => {
       candidat: { $exists: false },
     })
     const selectedCandidat = createdcandidats.find(
-      candidat => candidat.codeNeph === '123456789002',
+      elt => elt.codeNeph === '123456789002',
     )._id
 
     const place = await bookPlaceById(selectedPlace._id, selectedCandidat)
