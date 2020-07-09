@@ -46,7 +46,7 @@ export const getInfoLastSyncAurige = async (req, res) => {
         aurigeInfo: {
           type,
           message,
-          updatedAt,
+          dateTime: updatedAt,
         },
       })
       return res.status(200).send({
