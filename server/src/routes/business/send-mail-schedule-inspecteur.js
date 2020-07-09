@@ -32,7 +32,11 @@ export const getScheduleInspecteurBody = async (
   await Promise.all(
     places.map(async place => {
       const { candidat, date } = place
-      const heure = getFrenchFormattedDateTime(date).hour
+      const heure = getFrenchFormattedDateTime(date, undefined, {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false,
+      }).hour
       let candidatObject
       if (candidat) {
         candidatObject = await findCandidatById(candidat, {

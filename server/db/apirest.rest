@@ -1,0 +1,30 @@
+
+
+http://localhost:8090/places
+
+###
+PATCH http://localhost:8090/places
+content-type: application/json
+
+{
+  "query":  {  },
+  "update": {  "createdAt": "2020-06-10T12:44:19.472Z" },
+  "many": true
+}
+
+###
+POST http://localhost:8090/candidats
+content-type: application/json
+
+{
+  "codeNeph": "6123456789012",
+  "prenom": "CC_FRONT",
+  "nomNaissance": "CANDIDAT_FRONT_75",
+  "adresse": "40 Avenue des terroirs de France 75012 Paris",
+  "portable": "0676543986",
+  "email": "candidat_front_75@candi.lib",
+  "departement": "75",
+  "isEvaluationDone": "false",
+  "isValidatedEmail": "true",
+  "isValidatedByAurige": "true"
+}

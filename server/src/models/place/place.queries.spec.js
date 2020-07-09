@@ -297,6 +297,30 @@ describe('Place', () => {
 
       expect(countPlaces).toBe(nbPlaces)
     })
+
+    it('Should 1 places availables for centre "Centre 2" which created before 12h ', async () => {
+      const { nom } = centres[1]
+      const centreSelected = await findCentreByName(nom)
+      const countPlaces = await countAvailablePlacesByCentre(
+        centreSelected._id,
+        undefined,
+        undefined,
+        getFrenchLuxonFromObject({ hour: 12 })
+      )
+
+      expect(countPlaces).toBeDefined()
+      expect(countPlaces).not.toBeNull()
+      const nbPlaces = nbPlacesAvailables(
+        createdPlacesBooked,
+        createdPlaces,
+        centreSelected,
+        undefined,
+        getFrenchLuxonFromObject({ hour: 12 })
+      )
+
+      expect(countPlaces).toBe(nbPlaces)
+    })
+
     it('Should find 0 places for centre "Centre 2" at day 19', async () => {
       const { nom } = centres[1]
       const centreSelected = await findCentreByName(nom)
@@ -725,23 +749,32 @@ function nbPlacesAvailables (
   createdPlacesBooked,
   createdPlaces,
   centreSelected,
-  begindate
+  begindate,
+  createdBefore
 ) {
   const idPlacesBooked = createdPlacesBooked.map(placeBooked =>
     placeBooked._id.toString()
   )
 
-  const arrayExpectPlaces = createdPlaces.filter(({ _id, centre, date }) => {
-    let bresult =
-      centre._id.toString() === centreSelected._id.toString() &&
-      !idPlacesBooked.includes(_id.toString())
-    if (begindate) {
-      bresult =
-        bresult &&
-        getFrenchLuxonFromJSDate(date) > getFrenchLuxonFromISO(begindate)
+  const arrayExpectPlaces = createdPlaces.filter(
+    ({ _id, centre, date, createdAt }) => {
+      let bresult =
+        centre._id.toString() === centreSelected._id.toString() &&
+        !idPlacesBooked.includes(_id.toString())
+      if (begindate) {
+        bresult =
+          bresult &&
+          getFrenchLuxonFromJSDate(date) > getFrenchLuxonFromISO(begindate)
+      }
+      if (createdBefore) {
+        bresult =
+          bresult &&
+          getFrenchLuxonFromJSDate(createdAt) <
+            getFrenchLuxonFromISO(createdBefore)
+      }
+      return bresult
     }
-    return bresult
-  })
+  )
 
   let nbPlaces = 0
   if (arrayExpectPlaces) {

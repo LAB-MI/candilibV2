@@ -1,6 +1,8 @@
 <template>
   <v-card>
     <page-title :title="$formatMessage({ id: 'home_choix_du_departement' })" />
+    <message-info-centers-75 v-if="isFrom75" />
+    <message-info-places />
     <v-list three-line>
       <v-list-item-content class="pl-5  pr-5">
         <v-text-field
@@ -30,10 +32,14 @@ import { mapState } from 'vuex'
 import { FETCH_DEPARTEMENTS_INFOS_REQUEST } from '@/store'
 
 import DepartementSelectionContent from './DepartementSelectionContent'
+import MessageInfoCenters75 from './MessageInfoCenters75'
+import MessageInfoPlaces from '../MessageInfoPlaces'
 
 export default {
   components: {
     DepartementSelectionContent,
+    MessageInfoCenters75,
+    MessageInfoPlaces,
   },
   data () {
     return {
@@ -46,6 +52,7 @@ export default {
         return state.departements.geoDepartementsInfos
           .filter(item => this.filtre ? (item.geoDepartement === this.filtre) : item)
       },
+      isFrom75 (state) { return (state.candidat.me?.homeDepartement || state.candidat.me?.departement) === '75' },
     }),
   },
   mounted () {

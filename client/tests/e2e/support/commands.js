@@ -9,11 +9,11 @@ import './mailHogCommands'
 
 Cypress.Commands.add('adminLogin', () => {
   cy.visit(Cypress.env('frontAdmin') + 'admin-login',
-  {
-    onBeforeLoad: (win) => {
-      win.localStorage.clear()
-    },
-  })
+    {
+      onBeforeLoad: (win) => {
+        win.localStorage.clear()
+      },
+    })
   cy.get('.t-login-email [type=text]')
     .type(Cypress.env('adminLogin'))
   cy.get('[type=password]')
@@ -73,7 +73,9 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
 
 Cypress.Commands.add('addPlanning', (dates) => {
   const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
-  const horaires = [
+
+  const horaireMorning = [
+    '07:00',
     '07:30',
     '08:00',
     '08:30',
@@ -83,18 +85,27 @@ Cypress.Commands.add('addPlanning', (dates) => {
     '10:30',
     '11:00',
     '11:30',
-    '12:00',
-    '12:30',
-    '13:00',
+  ]
+
+  const horaireAfterNoon = [
     '13:30',
     '14:00',
     '14:30',
     '15:00',
     '15:30',
+  ]
+
+  const horaires = [
+    '06:30',
+    ...horaireMorning,
+    '12:00',
+    '12:30',
+    '13:00',
+    ...horaireAfterNoon,
     '16:00',
   ]
 
-  const datePlaces = dates ? dates.map(date => date.toFormat('dd/MM/yy')) : []
+  const datePlaces = (dates && dates.length) ? dates.map(date => date.toFormat('dd/MM/yy')) : []
   datePlaces.push(Cypress.env('datePlace'))
   const placesInspecteurs = datePlaces.reduce((acc, datePlace) => {
     const csvRowBuilder = (inspecteur, matricule) => horaire => `${datePlace},${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
@@ -121,6 +132,10 @@ Cypress.Commands.add('addPlanning', (dates) => {
     .click({ force: true })
   cy.get('.v-snack--active', { timeout: 10000 })
     .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
+
+  return cy.wrap(
+    { avalaiblePlaces: ((horaireMorning.length + horaireAfterNoon.length) * 2) * datePlaces.length },
+  )
 })
 
 Cypress.Commands.add('candidatePreSignUp', (candidat) => {
@@ -176,6 +191,7 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   cy.getLastMail().its('Content.Body').then((mailBody) => {
     // TODO: decode properly the href
     const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
+    cy.log(codedLink)
     const withoutEq = codedLink.replace(/=\r\n/g, '')
     const validationLink = withoutEq.replace(/=3D/g, '=')
     cy.visit(validationLink)
@@ -206,6 +222,30 @@ Cypress.Commands.add('candidatConnection', (candidatEmail) => {
   cy.getLastMail()
     .getSubject()
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+})
+
+Cypress.Commands.add('getNewMagicLinkCandidat', (candidatEmail) => {
+  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib', {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear()
+    },
+  })
+
+  cy.contains('Déjà')
+    .click()
+  cy.get('input').type(candidatEmail)
+  cy.get('form').find('button').click()
+  cy.wait(500)
+  cy.getLastMail().getRecipients()
+    .should('contain', candidatEmail)
+  cy.getLastMail()
+    .getSubject()
+    .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+  cy.getLastMail().its('Content.Body').then((mailBody) => {
+    const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
+    const withoutEq = codedLink.replace(/=\r\n/g, '')
+    return withoutEq.replace(/=3D/g, '=')
+  })
 })
 
 Cypress.Commands.add('candidateValidation', (candidat, filename, hasChecked = true) => {
@@ -331,5 +371,42 @@ Cypress.Commands.add('deleteCentres', (centres) => {
       centresFound.filter(centre => centersName.includes(centre.nom))
         .map(({ _id }) => cy.request('DELETE', Cypress.env('ApiRestDB') + '/centres/' + _id))
     }
+  })
+})
+
+Cypress.Commands.add('updatePlaces', (query, update) => {
+  cy.request('PATCH', Cypress.env('ApiRestDB') + '/places', { query, update }).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+Cypress.Commands.add('daleteAllPlaces', () => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/places').then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+Cypress.Commands.add('updateCandidat', (query, update) => {
+  cy.request('PATCH', Cypress.env('ApiRestDB') + '/candidats', { query, update }).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+
+Cypress.Commands.add('checkAndSelectDepartement', (NbCreneaux) => {
+  cy.get('h2').should('contain', 'Choix du département')
+  cy.get('[role="list"]').should('contain', Cypress.env('geoDepartement'))
+  // cy.get('[role="list"]').contains(Cypress.env('geoDepartement')).click()
+  cy.get('[role="list"]').contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
+    if (NbCreneaux) cy.root().should('contain', `${NbCreneaux} places`)
+  }).click()
+})
+
+Cypress.Commands.add('addCandidat', (candidat) => {
+  cy.log(JSON.stringify(candidat))
+  cy.request('POST', Cypress.env('ApiRestDB') + '/candidats', candidat).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+Cypress.Commands.add('deleteCandidat', (query) => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/candidats', query).then((content) => {
+    cy.log(JSON.stringify(content.body))
   })
 })

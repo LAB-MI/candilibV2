@@ -19,7 +19,11 @@ import {
   canCancelReservation,
   getDatesByCentreId,
 } from './places-business'
-import { getFrenchLuxon, getFrenchFormattedDateTime } from '../../util'
+import {
+  getFrenchLuxon,
+  getFrenchFormattedDateTime,
+  getFrenchLuxonFromObject,
+} from '../../util'
 
 import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
 import { CANDIDAT_DATE_ETG_KO } from './message.constants'
@@ -27,6 +31,7 @@ import { CANDIDAT_DATE_ETG_KO } from './message.constants'
 jest.mock('../../models/candidat')
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
+jest.mock('./util/date-to-display')
 
 describe('Test places business: utiles functions', () => {
   it('Should return true when entry date is 7 days and 2 hours days hours after now', () => {
@@ -53,7 +58,7 @@ describe('Test places business: utiles functions', () => {
 describe('Test places business: get dates from places available', () => {
   let placesCreated
   let centreSelected
-  let nbPlacesAvaibles
+  let nbPlacesAvailable
   let dateIn3Months
   let inspecteur
   beforeAll(async () => {
@@ -86,6 +91,7 @@ describe('Test places business: get dates from places available', () => {
         date: sameDateInTestData
           ? dateIn1Month.plus({ days: 1 })
           : dateIn1Month,
+        createdAt: getFrenchLuxonFromObject({ hour: 9 }).minus({ days: 1 }),
       }),
       createPlace({
         centre: centreSelected._id,
@@ -94,16 +100,19 @@ describe('Test places business: get dates from places available', () => {
           ? dateIn1Month.plus({ days: 1 })
           : dateIn1Month
         ).plus({ hours: 1 }),
+        createdAt: getFrenchLuxonFromObject({ hour: 9 }).minus({ days: 1 }),
       }),
       createPlace({
         centre: centreSelected._id,
         inspecteur,
         date: getFrenchLuxon().plus({ month: 2 }),
+        createdAt: getFrenchLuxonFromObject({ hour: 9 }).minus({ days: 1 }),
       }),
       createPlace({
         centre: centreSelected._id,
         inspecteur,
         date: dateIn3Months,
+        createdAt: getFrenchLuxonFromObject({ hour: 9 }).minus({ days: 1 }),
       }),
       createPlace({
         centre: centreSelected._id,
@@ -111,10 +120,11 @@ describe('Test places business: get dates from places available', () => {
         date: getFrenchLuxon().plus({
           month: 4, // config.numberOfVisibleMonths + 1
         }),
+        createdAt: getFrenchLuxonFromObject({ hour: 9 }).minus({ days: 1 }),
       }),
     ])).length
 
-    nbPlacesAvaibles = placesCreatedFromSelected.length + count - 2
+    nbPlacesAvailable = placesCreatedFromSelected.length + count - 2
   })
 
   afterAll(async () => {
@@ -134,7 +144,7 @@ describe('Test places business: get dates from places available', () => {
     )
 
     expect(dates).toBeDefined()
-    expect(dates).toHaveLength(nbPlacesAvaibles)
+    expect(dates).toHaveLength(nbPlacesAvailable)
   })
 
   it('Should get any places from Centre2 when ETG expired now', async () => {

@@ -96,7 +96,7 @@ export default {
         departement,
       } = this.$route.params
       const selected = this.center.selected
-      if (!selected || !selected._id) {
+      if (!selected) {
         await this.$store.dispatch(FETCH_CENTER_REQUEST, { nom, departement })
         this.getTimeSlots()
         return

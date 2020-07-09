@@ -106,6 +106,7 @@ describe('Candidate login', () => {
         const validationLink = withoutEq.replace(/=3D/g, '=')
         cy.visit(validationLink)
       })
+      cy.wait(100)
       cy.get('h3')
         .should('contain', 'Adresse courriel validée')
       // Gets the confirmation email
@@ -146,7 +147,7 @@ describe('Candidate login', () => {
         .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
     })
 
-    it('Tires login with valide candidat', () => {
+    it('Tries login with valide candidat', () => {
     // Changement d'utilisateur afin de récupérer un magicLink avec un candidat qui déjà passé la zone de quarantaine
       cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib')
       cy.get('.t-already-signed-up-button-top')
@@ -163,9 +164,9 @@ describe('Candidate login', () => {
         const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
         const withoutEq = codedLink.replace(/=\r\n/g, '')
         magicLink = withoutEq.replace(/=3D/g, '=')
-      }).then(($link) => {
         cy.visit(magicLink)
       })
+      cy.wait(100)
       cy.get('h2').eq(0)
         .should('contain', 'Choix du département')
       cy.get('.t-disconnect')

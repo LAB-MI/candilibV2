@@ -1,3 +1,9 @@
+import { candidat } from '../../../../messages'
+
+export const NB_FOR_CENTERS_75 = (parisCenters = []) => {
+  return `Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants : ${parisCenters.join(', ')}`
+}
+
 export function faqJson (lineDelay, departements = [], parisCenters = []) {
   const returnArray = [
     {
@@ -30,7 +36,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: `Cependant, seuls les départements de la liste suivante proposent actuellement des places via ce service : ${departements.join(', ')}`,
         },
         {
-          textContent: `NB : les candidats du 75 pourront choisir parmi les centres d'examen suivants : ${parisCenters.join(', ')}`,
+          textContent: 'NB : ' + NB_FOR_CENTERS_75(parisCenters),
         },
         {
           textContent: "Pour rappel, il n'existe pas de centre d'examen localisé à Paris.",
@@ -66,7 +72,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       ],
     },
     {
-      title: 'Quand pourrais-je accéder au planning de réservation ?',
+      title: 'Quand pourrai-je accéder au planning de réservation ?',
       content: [
         {
           textContent: `Après l'acceptation de votre inscription, vous devez attendre ${lineDelay} jours avant de pouvoir accéder au planning de réservation. Cette mise en file d'attente vous permet de planifier votre préparation en vue de réussir votre examen du permis de conduire.`,
@@ -135,7 +141,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je ne trouve pas de place disponible ?',
       content: [
         {
-          textContent: 'De nouveaux créneaux sont ajoutés régulièrement. D\'autres peuvent se libérer à tout moment par l\'annulation d\'un candidat ayant réservé.',
+          textContent: `${candidat.messsage_mise_a_disposition_des_places} D'autres peuvent se libérer à tout moment par l'annulation d'un candidat ayant réservé.`,
         },
         {
           textContent: 'Vous pouvez aussi réserver une place dans un autre département.',

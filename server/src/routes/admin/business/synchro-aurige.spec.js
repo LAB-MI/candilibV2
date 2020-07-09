@@ -892,7 +892,6 @@ describe('Check canAccess property of aurige', () => {
         .plus({ days: config.LINE_DELAY })
         .toJSDate()
     )
-    console.log(candidat01)
     expect(candidat02).toHaveProperty('canAccessAt', undefined)
 
     expect(result[0]).toHaveProperty('nom', candidat01.nomNaissance)

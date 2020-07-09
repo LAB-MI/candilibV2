@@ -24,9 +24,10 @@ if (
 export const commonBasePlaceDateTime = basePlaceDateTime
 
 export const createTestPlace = async place => {
-  const { date, inspecteur, centre } = place
+  const { date, inspecteur, centre, createdAt } = place
   const leanPlace = {
     date,
+    createdAt,
   }
   let centreFound
 
@@ -75,6 +76,10 @@ export const setInitCreatedPlaces = () => {
   creatingPlaces = false
 }
 
+export const dateYesterday = getFrenchLuxonFromObject({ hour: 11 })
+  .minus({ days: 1 })
+  .toISO()
+
 export const createPlaces = async () => {
   if (testPlaces || creatingPlaces) {
     return testPlaces
@@ -88,36 +93,43 @@ export const createPlaces = async () => {
       date: basePlaceDateTime.toISO(),
       centre: centre1._id,
       inspecteur: inspecteur1._id,
+      createdAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 1, hour: 1 }).toISO(),
       centre: centre2._id,
       inspecteur: inspecteur2._id,
+      createdAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
       centre: centre2._id,
       inspecteur: inspecteur2._id,
+      createdAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 1 }).toISO(),
       centre: centre2._id,
       inspecteur: inspecteur2._id,
+      createdAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 2 }).toISO(),
       centre: centre3._id,
       inspecteur: inspecteur1._id,
+      createdAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 3, hour: 1 }).toISO(),
       centre: centre3._id,
       inspecteur: inspecteur1._id,
+      createdAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 3, hour: 2 }).toISO(),
       centre: centre3._id,
       inspecteur: inspecteur2._id,
+      createdAt: dateYesterday,
     },
   ]
 

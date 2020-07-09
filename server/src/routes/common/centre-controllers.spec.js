@@ -5,14 +5,6 @@ import bodyParser from 'body-parser'
 import { connect, disconnect } from '../../mongo-connection'
 
 import { createUser } from '../../models/user'
-import {
-  createDepartement,
-  deleteDepartementById,
-} from '../../models/departement'
-import {
-  createCentre as modelCreateCentre,
-  deleteCentre,
-} from '../../models/centre'
 
 import {
   setInitCreatedCentre,
@@ -33,6 +25,7 @@ import {
   modifyCentre,
   createCentre,
 } from './centre-controllers'
+import { createCentre as createCentreModel } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
 
 const { default: app, apiPrefix } = require('../../app')
@@ -333,58 +326,113 @@ describe('Centre controllers admin', () => {
   })
 })
 describe('Test centres of departement', () => {
-  const centre = {
-    departement: '75',
-    geoDepartement: '93',
-    nom: 'VILLEPINTE',
-    adresse:
-      'avenue Jean Fourgeaud (dernier parking circulaire) 93420 Villepinte',
-    lat: '48.962099',
-    label: "Centre d'examen du permis de conduire de Villepinte",
-    lon: '2.552847',
-  }
-  const departementData = { _id: '75', email: 'email93@onepiece.com' }
-  let createdCentre
+  const centres75 = [
+    ...centres.map(centre => ({ ...centre, departement: '75' })),
+    {
+      departement: '75',
+      nom: 'CENTRE 4',
+      label: "Centre d'examen 4",
+      adresse: '1 rue Test, ville test, FR, 92001',
+      lon: 48,
+      lat: 3,
+      geoDepartement: '93',
+    },
+    {
+      departement: '75',
+      nom: 'CENTRE 5',
+      label: "Centre d'examen 5",
+      adresse: '2 Avenue test, Ville test 2, FR, 93420',
+      lon: 47,
+      lat: 3.5,
+      geoDepartement: '75',
+    },
+  ]
+
+  // const departementData = { _id: '75', email: 'email93@onepiece.com' }
+  // let createdCentre
 
   beforeAll(async () => {
     await connect()
-    await createDepartement(departementData)
-    createdCentre = await modelCreateCentre(
-      centre.nom,
-      centre.label,
-      centre.adresse,
-      centre.lon,
-      centre.lat,
-      centre.departement,
-      centre.geoDepartement
+    // await createDepartement(departementData)
+    // createdCentre = await modelCreateCentre(
+    //   centre.nom,
+    //   centre.label,
+    //   centre.adresse,
+    //   centre.lon,
+    //   centre.lat,
+    //   centre.departement
+    // )
+    setInitCreatedCentre()
+    await createCentres()
+
+    await Promise.all(
+      centres75.map(centre => {
+        const {
+          nom,
+          label,
+          adresse,
+          lon,
+          lat,
+          departement,
+          geoDepartement,
+        } = centre
+        return createCentreModel(
+          nom,
+          label,
+          adresse,
+          lon,
+          lat,
+          departement,
+          geoDepartement
+        )
+      })
     )
   })
 
   afterAll(async () => {
-    await deleteDepartementById(departementData._id)
-    await deleteCentre(createdCentre)
+    // await deleteDepartementById(departementData._id)
+    // await deleteCentre(createdCentre)
+    await removeCentres()
     await disconnect()
     // await app.close()
   })
 
-  describe('deptCenters', () => {
-    it('should get departement centers', async () => {
-      // GIVEN
+  it('should get departement centers', async () => {
+    // GIVEN
 
-      // WHEN
-      const { body } = await request(app)
-        .get(`${apiPrefix}/public/centres?departementId=75`)
-        .set('Accept', 'application/json')
-        .expect(200)
+    // WHEN
+    const { body } = await request(app)
+      .get(`${apiPrefix}/public/centres?departementId=75`)
+      .set('Accept', 'application/json')
+      .expect(200)
 
-      // THEN
-      expect(body).toHaveProperty('success', true)
-      expect(body).toHaveProperty('deptCenters')
-      expect(body.deptCenters[0]).toHaveProperty('nom', centre.nom)
-      expect(body.deptCenters[0]).toHaveProperty(
-        'geoDepartement',
-        centre.geoDepartement
-      )
-    })
+    // THEN
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('deptCenters')
+    expect(body.deptCenters).toHaveLength(
+      centres75.filter(({ departement }) => departement === '75').length
+    )
+    // TODO: A corriger
+    // expect(body.deptCenters[0]).toHaveProperty('nom', centres75[0].nom)
+    // expect(body.deptCenters[0]).toHaveProperty(
+    //   'geoDepartement',
+    //   centres75[0].geoDepartement
+    // )
+
+    // expect(body.deptCenters[0]).toHaveProperty('nom', centre.nom)
+  })
+  it('should get department centers which are uniq', async () => {
+    const { body } = await request(app)
+      .get(`${apiPrefix}/public/centres?departementId=75&&uniq=true`)
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    // THEN
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('deptCenters')
+    expect(body.deptCenters).toHaveLength(
+      centres75.filter(({ departement }) => departement === '75').length -
+        centres.length
+    )
   })
 })

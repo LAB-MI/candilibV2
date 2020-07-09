@@ -33,6 +33,7 @@
         aria-placeholder="Dupont"
         hint="ex. : Dupont"
         required
+        :rules="lastNameRules"
         tabindex="2"
         :readonly="readonly"
         @focus="setNomPlaceholder"
@@ -51,6 +52,7 @@
         aria-placeholder="Jean"
         hint="ex. : Jean"
         required
+        :rules="firstNameRules"
         tabindex="3"
         :readonly="readonly"
         @focus="setPrenomPlaceholder"
@@ -119,7 +121,7 @@
   </div>
 </template>
 <script>
-import { email as emailRegex, neph as nephRegex, phone as phoneRegex } from '@/util'
+import { email as emailRegex, neph as nephRegex, phone as phoneRegex, firstNameAndLastName as firstNameAndLastNameRegex } from '@/util'
 import SelectDepartement from '@/views/admin/components/SelectDepartements'
 export default {
   name: 'FormGroupInfoCandidat',
@@ -163,7 +165,15 @@ export default {
           'Veuillez renseigner un département',
       ],
       nomPlaceholder: '',
+      lastNameRules: [
+        v => v !== '' || this.getMsg('preinscription_nom_naissance_vide'),
+        v => !firstNameAndLastNameRegex.test(v) || this.getMsg('preinscription_nom_naissance_erreur'),
+      ],
       prenomPlaceholder: '',
+      firstNameRules: [
+        v => v !== '' || this.getMsg('preinscription_prenom_vide'),
+        v => !firstNameAndLastNameRegex.test(v) || this.getMsg('preinscription_prenom_erreur'),
+      ],
       emailPlaceholder: '',
       emailRules: [
         v => v !== '' || this.getMsg('preinscription_email_vide'),
