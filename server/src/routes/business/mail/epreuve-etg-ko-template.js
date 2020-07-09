@@ -1,7 +1,7 @@
 export const getEpreuveEtgKoTemplate = (
   nomMaj,
   urlFAQ,
-  contactezNous
+  contactezNous,
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
 <br>
 <p>Votre code de la route n’est pas/plus valide.</p>

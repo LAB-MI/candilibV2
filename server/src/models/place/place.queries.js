@@ -95,7 +95,7 @@ const queryAvailablePlacesByCentre = (
   centreId,
   beginDate,
   endDate,
-  createdBefore
+  createdBefore,
 ) => {
   const query = Place.where('centre').exists(true)
   if (beginDate || endDate) {
@@ -127,7 +127,7 @@ const queryAvailablePlacesByCentres = (
   centreId,
   beginDate,
   endDate,
-  createdBefore
+  createdBefore,
 ) => {
   const query = Place.where('centre').exists(true)
   if (beginDate || endDate) {
@@ -170,7 +170,7 @@ export const findAvailablePlacesByCentre = async (
   beginDate,
   endDate,
   populate,
-  createdBefore
+  createdBefore,
 ) => {
   appLogger.debug({
     func: 'findAvailablePlacesByCentre',
@@ -180,7 +180,7 @@ export const findAvailablePlacesByCentre = async (
     centreId,
     beginDate,
     endDate,
-    createdBefore
+    createdBefore,
   )
   queryPopulate(populate, query)
   const places = await query.exec()
@@ -193,7 +193,7 @@ export const findAvailablePlacesByCentres = async (
   beginDate,
   endDate,
   populate,
-  createdBefore
+  createdBefore,
 ) => {
   appLogger.debug({
     func: 'findAvailablePlacesByCentre',
@@ -206,11 +206,11 @@ export const findAvailablePlacesByCentres = async (
         centre._id,
         beginDate,
         endDate,
-        createdBefore
+        createdBefore,
       )
       queryPopulate(populate, query)
       return query.exec()
-    }, {})
+    }, {}),
   )
 
   const finalResult = result.reduce((accu, places) => {
@@ -224,7 +224,7 @@ export const countAvailablePlacesByCentre = async (
   centreId,
   beginDate,
   endDate,
-  createdBefore
+  createdBefore,
 ) => {
   appLogger.debug({
     func: 'countAvailablePlacesByCentre',
@@ -235,7 +235,7 @@ export const countAvailablePlacesByCentre = async (
     centreId,
     beginDate,
     endDate,
-    createdBefore
+    createdBefore,
   ).countDocuments()
   return nbPlaces
 }
@@ -244,7 +244,7 @@ export const findPlacesByCentreAndDate = async (
   _id,
   date,
   populate,
-  createdBefore
+  createdBefore,
 ) => {
   appLogger.debug({
     func: 'findPlacesByCentreAndDate',
@@ -270,7 +270,7 @@ export const findPlacesByCentreAndDate = async (
 export const findPlaceBookedByCandidat = async (
   candidat,
   options = {},
-  populate
+  populate,
 ) => {
   const query = Place.findOne({ candidat }, options)
   queryPopulate(populate, query)
@@ -286,7 +286,7 @@ export const findAndbookPlace = async (
   bookedAt,
   fields,
   populate,
-  createdBefore
+  createdBefore,
 ) => {
   // let centre = { $in: centres }
   // if (typeof centres === 'string') {
@@ -295,7 +295,7 @@ export const findAndbookPlace = async (
   const query = Place.findOneAndUpdate(
     { centre: { $in: centres }, date, candidat: { $eq: undefined } },
     { $set: { candidat, bookedAt } },
-    { new: true, fields }
+    { new: true, fields },
   )
   if (populate && populate.centre) {
     query.populate('centre')
@@ -328,12 +328,12 @@ export const bookPlaceById = async (
   candidat,
   bookedInfo = {},
   fields,
-  populate
+  populate,
 ) => {
   const query = Place.findOneAndUpdate(
     { _id: placeId, candidat: { $eq: undefined } },
     { $set: { candidat, ...bookedInfo } },
-    { new: true, fields }
+    { new: true, fields },
   )
   queryPopulate(populate, query)
   const place = await query.exec()
@@ -369,7 +369,7 @@ export const countPlacesBookedOrNot = async (centres, beginDate, isBooked) => {
 export const findPlaceBookedByInspecteur = (
   inspecteurId,
   beginDate,
-  endDate
+  endDate,
 ) => {
   const query = Place.where('candidat').exists(true)
   if (beginDate || endDate) {
@@ -383,7 +383,7 @@ export const findPlaceBookedByInspecteur = (
       inspecteur: true,
       centre: true,
     },
-    query
+    query,
   )
   return query.exec()
 }
@@ -406,7 +406,7 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
   centreId,
   inspecteurIdListe,
   beginDate,
-  endDate
+  endDate,
 ) => {
   const query = Place.where('centre').exists(true)
   if (beginDate || endDate) {

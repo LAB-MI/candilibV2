@@ -45,7 +45,7 @@ const CentreSchema = new Schema(
       $type: Date,
     },
   },
-  { typeKey: '$type', timestamps: true }
+  { typeKey: '$type', timestamps: true },
 )
 
 CentreSchema.index({ nom: 1, departement: 1 }, { unique: true })

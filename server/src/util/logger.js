@@ -27,7 +27,7 @@ export const getProperObjectFromError = error => {
       ...acc,
       [key]: error[key],
     }),
-    Object.create(null)
+    Object.create(null),
   )
 }
 
@@ -128,7 +128,7 @@ export const techLogger = createLogger({
   format: combine(
     label({ label: TECH_LABEL }),
     timestamp(),
-    isTest ? logFormat : logJsonFormat
+    isTest ? logFormat : logJsonFormat,
   ),
   transports: [new transports.Console(options.console)],
   exitOnError: false,
@@ -144,7 +144,7 @@ export const appLogger = createLogger({
   format: combine(
     label({ label: APP_LABEL }),
     timestamp(),
-    isTest ? logFormat : logJsonFormat
+    isTest ? logFormat : logJsonFormat,
   ),
   transports: [new transports.Console(options.console)],
   exitOnError: false,

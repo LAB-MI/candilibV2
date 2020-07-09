@@ -32,7 +32,7 @@ export const getCancellationBody = (place, candidat) => {
     section,
     action,
     urlFAQ,
-    urlRESA
+    urlRESA,
   )
 
   const dateTimeResa = getFrenchFormattedDateTime(date)
@@ -45,7 +45,7 @@ export const getCancellationBody = (place, candidat) => {
     dateTimeResa.hour,
     urlRESA,
     urlFAQ,
-    contactezNous
+    contactezNous,
   )
 
   return getHtmlBody(body)

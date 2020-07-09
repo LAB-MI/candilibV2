@@ -48,7 +48,7 @@ export const sendMailConvocation = reservation => {
   try {
     sendMailResaArgsValidation(
       reservation,
-      reservation ? reservation.candidat : undefined
+      reservation ? reservation.candidat : undefined,
     )
   } catch (error) {
     appLogger.error({ section, action, error })
@@ -89,7 +89,7 @@ export const sendFailureExam = async (
   place,
   candidat,
   lastNoReussite,
-  addInQueue
+  addInQueue,
 ) => {
   let action = 'SEND_BY_AURIGE_TO_NO_SUCCESS'
   try {
@@ -119,7 +119,7 @@ export const sendFailureExam = async (
       action = 'SEND_BY_AURIGE_TO_NO_EXAMINE'
       content = await getNoSuccessAtExamBody(
         candidat,
-        getNoExamineAtExamTemplate
+        getNoExamineAtExamTemplate,
       )
       break
     }

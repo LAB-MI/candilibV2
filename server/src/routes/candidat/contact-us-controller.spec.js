@@ -24,7 +24,7 @@ app.post(
   (req, res, next) => {
     next()
   },
-  contactUs
+  contactUs,
 )
 const contactUsConnectedPath = contactUsPath + 'candidatConnected'
 app.post(
@@ -33,7 +33,7 @@ app.post(
     req.userId = 'candidatId'
     next()
   },
-  contactUs
+  contactUs,
 )
 
 const candidat = {
@@ -87,7 +87,7 @@ describe('Test controller contact us', () => {
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty(
       'message',
-      CONTACT_US_CONFIRM_SEND(candidat.email)
+      CONTACT_US_CONFIRM_SEND(candidat.email),
     )
   })
 
@@ -95,7 +95,7 @@ describe('Test controller contact us', () => {
     const departementEmail = 'test@departement.com'
     const departement75Email = 'test.75@departement.com'
     findDepartementById.mockImplementation(dep =>
-      dep === '75' ? { email: departement75Email } : { email: departementEmail }
+      dep === '75' ? { email: departement75Email } : { email: departementEmail },
     )
     const candidatInDB = {
       ...candidat,
@@ -114,7 +114,7 @@ describe('Test controller contact us', () => {
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty(
       'message',
-      CONTACT_US_CONFIRM_SEND(candidatInDB.email)
+      CONTACT_US_CONFIRM_SEND(candidatInDB.email),
     )
   })
 })

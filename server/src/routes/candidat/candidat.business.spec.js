@@ -7,9 +7,9 @@ import {
   deleteDepartementById,
 } from '../../models/departement'
 
-jest.mock('../business/send-mail')
+import { v4 as uuidv4 } from 'uuid'
 
-const uuidv4 = require('uuid/v4')
+jest.mock('../business/send-mail')
 
 const validEmail = 'candidat-validate-email@example.com'
 const portable = '0612345678'

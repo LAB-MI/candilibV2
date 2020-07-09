@@ -51,12 +51,12 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     nomMaj,
     codeNeph,
     urlFAQ,
-    contactezNous
+    contactezNous,
   )
 
   const INSCRIPTION_VALID_MSG = getInscripionValidTemplate(
     nomMaj,
-    contactezNous
+    contactezNous,
   )
 
   switch (flag) {
@@ -69,7 +69,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
         nomMaj,
         urlValidationEmail,
         urlConnexion,
-        contactezNous
+        contactezNous,
       )
       message.content = getHtmlBody(VALIDATION_EMAIL_MSG)
       message.subject = "Validation d'adresse courriel pour Candilib"
@@ -87,7 +87,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       const EPREUVE_PRATIQUE_OK_MSG = getEpreuvePratiqueOKTemplate(
         nomMaj,
         urlFAQ,
-        contactezNous
+        contactezNous,
       )
       message.content = getHtmlBody(EPREUVE_PRATIQUE_OK_MSG)
       message.subject = SUBJECT_MAIL_INFO
@@ -97,7 +97,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       const EPREUVE_PRATIQUE_OK_MSG = getEpreuvePratiqueOKBeforeTemplate(
         nomMaj,
         urlFAQ,
-        contactezNous
+        contactezNous,
       )
       message.content = getHtmlBody(EPREUVE_PRATIQUE_OK_MSG)
       message.subject = SUBJECT_MAIL_INFO
@@ -112,7 +112,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       const EPREUVE_ETG_KO_MSG = getEpreuveEtgKoTemplate(
         nomMaj,
         urlFAQ,
-        contactezNous
+        contactezNous,
       )
       message.content = getHtmlBody(EPREUVE_ETG_KO_MSG)
       message.subject = 'Problème inscription Candilib'
@@ -125,7 +125,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
         urlConnexion,
         email,
         urlMagicLink ? urlMagicLink.urlContactUs : contactezNous,
-        canAccessAt
+        canAccessAt,
       )
       message.content = getHtmlBody(INSCRIPTION_OK_MSG)
       message.subject = 'Validation de votre inscription à Candilib'

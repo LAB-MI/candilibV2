@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:12.16.1-slim as base
+FROM node:12.18.2-slim as base
 ARG http_proxy
 ARG https_proxy
 ARG npm_registry

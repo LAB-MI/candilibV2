@@ -22,7 +22,7 @@ const WhitelistedSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 )
 
 WhitelistedSchema.pre('save', async function preSave () {

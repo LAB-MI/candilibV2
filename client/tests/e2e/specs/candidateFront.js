@@ -65,6 +65,7 @@ describe('Connected candidate front', () => {
     before(() => {
     // Delete all mails before start
       cy.deleteAllMails()
+      cy.deleteAllPlaces()
       cy.adminLogin()
       cy.archiveCandidate()
       cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore, dayAfter45Days, dayBefore45Days])
@@ -121,7 +122,7 @@ describe('Connected candidate front', () => {
         .parent().parent()
         .should('contain', Cypress.env('candidatFront'))
     })
-    it.only('Should book a place at 7th days', () => {
+    it('Should book a place at 7th days', () => {
       cy.visit(magicLink)
       cy.wait(1000)
 
@@ -527,7 +528,7 @@ describe('Connected candidate front', () => {
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '8:00')
+        .and('contain', '7:00')
     })
 
     it('Should disconnect', () => {

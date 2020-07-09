@@ -39,13 +39,13 @@ describe('Test get and export candidats', () => {
     beforeAll(async () => {
       createdWhitelisteds = await Promise.all(
         listWhitelists.map(({ email, department }) =>
-          createWhitelisted(email, department)
-        )
+          createWhitelisted(email, department),
+        ),
       )
     })
     afterAll(async () => {
       await Promise.all(
-        createdWhitelisteds.map(whitelisted => whitelisted.remove())
+        createdWhitelisteds.map(whitelisted => whitelisted.remove()),
       )
     })
 
@@ -174,7 +174,7 @@ describe('Test get and export candidats', () => {
           expect(emailFound).toHaveProperty('email', email)
           expect(emailFound).toHaveProperty('departement', departement)
           return emailFound
-        })
+        }),
       )
 
       await Promise.all(emailsFound.map(email => email.remove()))

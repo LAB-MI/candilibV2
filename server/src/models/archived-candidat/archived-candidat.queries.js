@@ -44,14 +44,14 @@ export const findArchivedCandidatByNomNeph = async (nomNaissance, codeNeph) => {
 export const findArchivedCandidatByNomNephFullText = async $search => {
   const candidat = await ArchivedCandidat.find(
     { $text: { $search } },
-    { score: { $meta: 'textScore' } }
+    { score: { $meta: 'textScore' } },
   ).sort({ score: { $meta: 'textScore' } })
   return candidat
 }
 
 export const deleteArchivedCandidatByNomNeph = async (
   nomNaissance,
-  codeNeph
+  codeNeph,
 ) => {
   const candidat = await ArchivedCandidat.findOne({ nomNaissance, codeNeph })
   if (!candidat) {
@@ -107,7 +107,7 @@ export const findBookedArchivedCandidats = async (date, inspecteur, centre) => {
         if (!candidat) return {}
         candidat.place = place
         return candidat
-      })
+      }),
     )
     return candidats
   }

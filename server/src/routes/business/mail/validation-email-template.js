@@ -2,7 +2,7 @@ export const getValidationMailTemplate = (
   nomMaj,
   urlValidationEmail,
   urlConnexion,
-  contactezNous
+  contactezNous,
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <br>
   <p>Vous avez demandé à être inscrit·e sur le site de réservation de l'examen pratique du permis de conduire.</p>

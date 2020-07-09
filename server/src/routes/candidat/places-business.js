@@ -59,7 +59,7 @@ export const getDatesByCentreId = async (
   _id,
   beginDate,
   endDate,
-  candidatId
+  candidatId,
 ) => {
   appLogger.debug({
     func: 'getDatesByCentreId',
@@ -71,7 +71,7 @@ export const getDatesByCentreId = async (
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
     beginDate,
-    endDate
+    endDate,
   )
 
   const places = await findAvailablePlacesByCentre(
@@ -79,10 +79,10 @@ export const getDatesByCentreId = async (
     beginPeriod.toISODate(),
     endPeriod.toISODate(),
     undefined,
-    getDateDisplayPlaces()
+    getDateDisplayPlaces(),
   )
   const dates = places.map(place =>
-    getFrenchLuxonFromJSDate(place.date).toISO()
+    getFrenchLuxonFromJSDate(place.date).toISO(),
   )
   const result = [...new Set(dates)]
   return result && result.length ? result : undefined
@@ -104,7 +104,7 @@ export const getDatesByCentresNameAndGeoDepartement = async (
   geoDepartement,
   beginDate,
   endDate,
-  candidatId
+  candidatId,
 ) => {
   appLogger.debug({
     func: 'getDatesByCentreName',
@@ -117,13 +117,13 @@ export const getDatesByCentresNameAndGeoDepartement = async (
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
     beginDate,
-    endDate
+    endDate,
   )
 
   const centres = await findCentreByNameAndDepartement(
     nomCentre,
     undefined,
-    geoDepartement
+    geoDepartement,
   )
 
   const places = await findAvailablePlacesByCentres(
@@ -131,10 +131,10 @@ export const getDatesByCentresNameAndGeoDepartement = async (
     beginPeriod.toISODate(),
     endPeriod.toISODate(),
     undefined,
-    getDateDisplayPlaces()
+    getDateDisplayPlaces(),
   )
   const dates = places.map(place =>
-    getFrenchLuxonFromJSDate(place.date).toISO()
+    getFrenchLuxonFromJSDate(place.date).toISO(),
   )
   return [...new Set(dates)]
 }
@@ -157,7 +157,7 @@ export const getDatesByCentre = async (
   nomCentre,
   beginDate,
   endDate,
-  candidatId
+  candidatId,
 ) => {
   appLogger.debug({
     func: 'getDatesByCentre',
@@ -174,8 +174,8 @@ export const getDatesByCentre = async (
     foundCentre = await findCentreByName(nomCentre)
     const rawDates = Promise.all(
       foundCentre.map(fndCentre =>
-        getDatesByCentreId(fndCentre._id, beginDate, endDate, candidatId)
-      )
+        getDatesByCentreId(fndCentre._id, beginDate, endDate, candidatId),
+      ),
     )
     return [...new Set(rawDates)]
   }
@@ -184,7 +184,7 @@ export const getDatesByCentre = async (
     foundCentre._id,
     beginDate,
     endDate,
-    candidatId
+    candidatId,
   )
   return dates
 }
@@ -205,10 +205,10 @@ export const hasAvailablePlaces = async (id, date) => {
     id,
     date,
     undefined,
-    getDateDisplayPlaces()
+    getDateDisplayPlaces(),
   )
   const dates = places.map(place =>
-    getFrenchLuxonFromJSDate(place.date).toISO()
+    getFrenchLuxonFromJSDate(place.date).toISO(),
   )
   return [...new Set(dates)]
 }
@@ -228,13 +228,13 @@ export const hasAvailablePlaces = async (id, date) => {
 export const hasAvailablePlacesByCentre = async (
   geoDepartement,
   nomCentre,
-  date
+  date,
 ) => {
   // TODO: <--- Refactor
   const foundCentre = await findCentreByNameAndDepartement(
     nomCentre,
     undefined,
-    geoDepartement
+    geoDepartement,
   )
 
   if (foundCentre && foundCentre.length > 1) {
@@ -244,7 +244,7 @@ export const hasAvailablePlacesByCentre = async (
         if (dates && dates.length) {
           return { dates }
         }
-      })
+      }),
     )
     const result = allDates.reduce((accu, value) => {
       if (value && value.dates && value.dates.length) {
@@ -274,7 +274,7 @@ export const getReservationByCandidat = async (candidatId, options) => {
   const place = await findPlaceBookedByCandidat(
     candidatId,
     {},
-    options || { centre: true }
+    options || { centre: true },
   )
   return place
 }
@@ -297,13 +297,13 @@ export const bookPlace = async (
   candidatId,
   nomCentre,
   date,
-  geoDepartement
+  geoDepartement,
 ) => {
   // TODO: Refactor
   const foundCentres = await findCentreByNameAndDepartement(
     nomCentre,
     undefined,
-    geoDepartement
+    geoDepartement,
   )
   const centres = foundCentres.map(centre => centre._id)
   const bookedAt = getFrenchLuxon().toJSDate()
@@ -314,7 +314,7 @@ export const bookPlace = async (
     bookedAt,
     { inspecteur: 0 },
     { centre: true, candidat: true },
-    getDateDisplayPlaces()
+    getDateDisplayPlaces(),
   )
 
   return place
@@ -342,7 +342,7 @@ export const bookPlace = async (
 export const removeReservationPlace = async (
   bookedPlace,
   isModified,
-  loggerContent
+  loggerContent,
 ) => {
   let loggerInfo = loggerContent
   if (!loggerInfo) {
@@ -366,7 +366,7 @@ export const removeReservationPlace = async (
   await archivePlace(
     candidat,
     bookedPlace,
-    isModified ? REASON_MODIFY : REASON_CANCEL
+    isModified ? REASON_MODIFY : REASON_CANCEL,
   )
 
   let statusmail = true
@@ -430,7 +430,7 @@ export const isSameReservationPlace = (nomCentre, date, previewBookedPlace) => {
   if (nomCentre === previewBookedPlace.centre.nom) {
     const diffDateTime = date.diff(
       getFrenchLuxonFromJSDate(previewBookedPlace.date),
-      'second'
+      'second',
     )
     if (diffDateTime.seconds === 0) {
       return true
@@ -621,7 +621,7 @@ export const validCentreDateReservation = async (
   candidatId,
   nomCentre,
   date,
-  previewBookedPlace
+  previewBookedPlace,
 ) => {
   let candidat
   const dateTimeResa = getFrenchLuxonFromISO(date)
@@ -629,7 +629,7 @@ export const validCentreDateReservation = async (
     const isSame = isSameReservationPlace(
       nomCentre,
       dateTimeResa,
-      previewBookedPlace
+      previewBookedPlace,
     )
 
     if (isSame) {

@@ -17,6 +17,6 @@ const DepartementSchema = new Schema(
       unique: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 )
 export default mongoose.model('departement', DepartementSchema)

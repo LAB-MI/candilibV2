@@ -61,7 +61,7 @@ describe('Département controllers', () => {
       emailAdmin,
       password,
       departements,
-      config.userStatuses.ADMIN
+      config.userStatuses.ADMIN,
     )
   })
 
@@ -82,7 +82,7 @@ describe('Département controllers', () => {
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty(
       'message',
-      `Le département ${departementId01} a bien été créé avec l'adresse courriel ${departementEmail01}`
+      `Le département ${departementId01} a bien été créé avec l'adresse courriel ${departementEmail01}`,
     )
     const expected = [...departements, departementId01]
     const userInfo = await findUserByEmail(emailAdmin, true)
@@ -155,7 +155,7 @@ describe('Département controllers', () => {
     expect(body.result).toBeDefined()
     expect(body.result).toHaveLength(departementList.length)
     expect(body.result.map(el => ({ _id: el._id, email: el.email }))).toEqual(
-      expect.arrayContaining(departementList)
+      expect.arrayContaining(departementList),
     )
   })
 

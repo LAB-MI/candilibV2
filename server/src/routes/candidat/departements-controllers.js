@@ -27,7 +27,7 @@ export async function getActiveGeoDepartementsInfos (req, res) {
 
     const geoDepartementsInfos = await getGeoDepartementsInfos(
       geoDepartementsId,
-      userId
+      userId,
     )
     return res.status(200).json({
       success: true,

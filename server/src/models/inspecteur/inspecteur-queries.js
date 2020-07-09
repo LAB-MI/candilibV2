@@ -134,7 +134,7 @@ export const findActiveInspecteursByDepartements = async departements =>
 export const findInspecteursMatching = async (
   $search,
   startingWith,
-  endingWith
+  endingWith,
 ) => {
   const search = `${startingWith ? '^' : ''}${$search}${endingWith ? '$' : ''}`
   const searchRegex = new RegExp(`${search}`, 'i')
@@ -149,7 +149,7 @@ export const findInspecteursMatching = async (
 
   const fullTextInspecteurs = await Inspecteur.find(
     { $text: { $search } },
-    { score: { $meta: 'textScore' } }
+    { score: { $meta: 'textScore' } },
   ).sort({ score: { $meta: 'textScore' } })
 
   return [
@@ -157,8 +157,8 @@ export const findInspecteursMatching = async (
     ...fullTextInspecteurs.filter(
       inspecteur =>
         !inspecteurs.some(
-          ins => ins._id.toString() === inspecteur._id.toString()
-        )
+          ins => ins._id.toString() === inspecteur._id.toString(),
+        ),
     ),
   ]
 }

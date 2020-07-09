@@ -13,10 +13,10 @@ app.use((req, res, next) => {
   next()
 })
 app.get(`${testPrefix}/:id?`, verifyAccesPlacesByCandidat, (req, res) =>
-  res.json({ ok: true })
+  res.json({ ok: true }),
 )
 app.post(`${testPrefix}/:id?`, verifyAccesPlacesByCandidat, (req, res) =>
-  res.status(201).json({ ok: true })
+  res.status(201).json({ ok: true }),
 )
 
 jest.mock('../../../models/candidat')

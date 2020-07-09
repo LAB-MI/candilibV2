@@ -2,7 +2,7 @@ export const getInscriptionKOTemplate = (
   nomMaj,
   codeNeph,
   urlFAQ,
-  contactezNous
+  contactezNous,
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <br>
   <p>

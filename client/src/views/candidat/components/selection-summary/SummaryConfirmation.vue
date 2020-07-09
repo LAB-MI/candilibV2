@@ -11,7 +11,6 @@
       <v-form
         class="u-full-width  u-flex  u-flex--column  u-flex--center"
         :aria-disabled="disabled"
-        :disabled="disabled"
         @submit.prevent="confirmReservation"
       >
         <div>

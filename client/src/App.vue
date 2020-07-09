@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <v-content>
+    <v-main>
       <v-dialog
         v-model="authStatus"
         width="500"
@@ -21,7 +21,7 @@
       </v-dialog>
 
       <router-view />
-    </v-content>
+    </v-main>
     <app-evaluation />
     <app-snackbar />
   </v-app>

@@ -31,7 +31,7 @@ export const getConvocationBody = place => {
     section,
     action,
     urlFAQ,
-    urlRESA
+    urlRESA,
   )
 
   const dateTimeResa = getFrenchFormattedDateTime(date)
@@ -45,7 +45,7 @@ export const getConvocationBody = place => {
     adresse,
     urlRESA,
     urlFAQ,
-    contactezNous
+    contactezNous,
   )
 
   return getHtmlBody(body)

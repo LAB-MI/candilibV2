@@ -6,7 +6,7 @@ export const getEpreuvePratiqueKOTemplate = (
   houreResa,
   urlRESA,
   urlFAQ,
-  contactezNous
+  contactezNous,
 ) => `<p>Madame, Monsieur ${nameCandidat},</p>
 <br>
 <p>

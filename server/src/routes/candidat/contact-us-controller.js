@@ -37,7 +37,7 @@ export const contactUs = async (req, res) => {
       candidat,
       hasSignUp,
       subject,
-      message
+      message,
     )
 
     appLogger.info({ ...loggerInfo, description })

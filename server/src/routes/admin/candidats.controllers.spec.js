@@ -52,7 +52,7 @@ xdescribe('Test get and export candidats', () => {
       .expect('Content-Type', 'text/csv; charset=utf-8')
       .expect(
         'Content-Disposition',
-        'attachment; filename="candidatsLibresPrintel.csv"'
+        'attachment; filename="candidatsLibresPrintel.csv"',
       )
       .expect(200)
 

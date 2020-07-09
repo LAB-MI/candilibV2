@@ -203,7 +203,7 @@ describe('Test the candidat signup', () => {
     afterEach(async () => {
       await deleteCandidatByNomNeph(
         validCandidat.nomNaissance,
-        validCandidat.codeNeph
+        validCandidat.codeNeph,
       )
     })
 
@@ -211,7 +211,7 @@ describe('Test the candidat signup', () => {
       try {
         await deleteCandidatByNomNeph(
           validCandidat1.nomNaissance,
-          validCandidat1.codeNeph
+          validCandidat1.codeNeph,
         )
       } catch (error) {}
     })
@@ -228,7 +228,7 @@ describe('Test the candidat signup', () => {
 
       const candidat = await findCandidatByNomNeph(
         validCandidat.nomNaissance,
-        validCandidat.codeNeph
+        validCandidat.codeNeph,
       )
       expect(candidat).toHaveProperty('email', validCandidat.email)
       expect(candidat).toHaveProperty('prenom', validCandidat.prenom.trim())
@@ -271,11 +271,11 @@ describe('Test the candidat signup', () => {
 
       const candidat = await findCandidatByNomNeph(
         validCandidat.nomNaissance,
-        validCandidat.codeNeph
+        validCandidat.codeNeph,
       )
       expect(candidat).not.toHaveProperty(
         'email',
-        updateFailedCandidatWithEmailExist.email
+        updateFailedCandidatWithEmailExist.email,
       )
     })
 
@@ -291,13 +291,13 @@ describe('Test the candidat signup', () => {
 
       const candidat = await findCandidatByNomNeph(
         updateCandidat.nomNaissance,
-        updateCandidat.codeNeph
+        updateCandidat.codeNeph,
       )
 
       expect(candidat).toHaveProperty('prenom', updateCandidat.prenom.trim())
       expect(candidat).toHaveProperty(
         'portable',
-        updateCandidat.portable.trim()
+        updateCandidat.portable.trim(),
       )
       expect(candidat).toHaveProperty('email', updateCandidat.email.trim())
       expect(candidat).toHaveProperty('departement', updateCandidat.departement)

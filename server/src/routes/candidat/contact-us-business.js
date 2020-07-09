@@ -19,7 +19,7 @@ export const sendMessageByContactUs = async (
   candidat,
   hasSignUp,
   subject,
-  message
+  message,
 ) => {
   let candidatData = candidat
   candidatData.homeDepartement = candidat.departement
@@ -68,7 +68,7 @@ export const sendMessageByContactUs = async (
       candidatData,
       hasSignUpData,
       subject,
-      message
+      message,
     )
   } catch (error) {
     throw new Error(CONTACT_US_SEND_TO_ADMIN_FAILED)

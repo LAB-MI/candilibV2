@@ -67,9 +67,9 @@ export const createCentres = async () => {
         lon,
         lat,
         departement,
-        geoDepartement
+        geoDepartement,
       )
-    })
+    }),
   )
   creatingCentres = false
   return createdCentres
