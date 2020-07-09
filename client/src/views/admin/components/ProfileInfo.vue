@@ -11,7 +11,7 @@
       <v-card
         v-for="groupInfo of profileInfo"
         :key="groupInfo[0][1]"
-        class="spaced"
+        class="spaced t-result-candidat-item"
       >
         <div
           v-for="([groupTitle, value]) of groupInfo"
@@ -29,9 +29,9 @@
       </v-card>
     </v-card-text>
     <v-card-text>
-      <v-card>
+      <v-card class="t-result-candidat-historique-des-actions t-result-candidat-item">
         <v-card-title primary-title>
-          Historique des actions :
+          Historique des actions&nbsp;:
         </v-card-title>
         <candidat-action-history-tab
           :items="actionsHistory"

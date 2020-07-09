@@ -40,7 +40,7 @@ export default function getHistoryData () {
           :headers="headers"
           :items="items"
           hide-default-footer
-          class="elevation-1"
+          class="elevation-1 t-history-table"
         ></v-data-table>
       </div>
     `,
