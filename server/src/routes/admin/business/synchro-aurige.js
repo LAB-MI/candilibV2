@@ -287,7 +287,11 @@ const checkAndArchiveCandidat = async (
 
     if (!infoCandidatToUpdate.dateReussiteETG.isValid) {
       message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG est invalide`
-      appLogger.warn({ ...loggerInfoCandidat, description: message })
+      appLogger.warn({
+        ...loggerInfoCandidat,
+        dateReussiteETG: `__${candidatAurige.dateReussiteETG}__`,
+        description: message,
+      })
       infoCandidatToUpdate.dateReussiteETG = undefined
       dateFeedBack = getFrenchLuxon()
       aurigeFeedback = EPREUVE_ETG_KO
@@ -300,7 +304,11 @@ const checkAndArchiveCandidat = async (
       )
     ) {
       message = `Pour le ${departement}, ce candidat ${email} sera archivé : Date ETG KO`
-      appLogger.warn({ ...loggerInfoCandidat, description: message })
+      appLogger.warn({
+        ...loggerInfoCandidat,
+        dateReussiteETG: `__${candidatAurige.dateReussiteETG}__`,
+        description: message,
+      })
       dateFeedBack = getFrenchLuxon()
       aurigeFeedback = EPREUVE_ETG_KO
     } else if (isTooManyFailure(infoCandidatToUpdate.nbEchecsPratiques)) {
@@ -313,7 +321,11 @@ const checkAndArchiveCandidat = async (
       aurigeFeedback = NB_FAILURES_KO
     } else if (infoCandidatToUpdate.reussitePratique) {
       message = `Pour le ${departement}, ce candidat ${email} sera archivé : PRATIQUE OK`
-      appLogger.warn({ ...loggerInfoCandidat, description: message })
+      appLogger.warn({
+        ...loggerInfoCandidat,
+        reussitePratique: `__${candidatAurige.reussitePratique}__`,
+        description: message,
+      })
 
       dateFeedBack = infoCandidatToUpdate.reussitePratique
       aurigeFeedback = isAlreadyValidByAurgie
@@ -460,7 +472,10 @@ export const synchroAurige = async (buffer, callback) => {
   const resultsPromise = retourAurige.map(async candidatAurige => {
     const loggerInfoCandidat = {
       ...loggerInfo,
-      candidatAurige,
+      candidatAurige: {
+        codeNeph: candidatAurige.codeNeph,
+        nomNaissance: candidatAurige.nomNaissance,
+      },
     }
     const { codeNeph } = candidatAurige
 
@@ -504,7 +519,6 @@ export const synchroAurige = async (buffer, callback) => {
         loggerInfoCandidat,
       )
       if (resultArchive) {
-        appLogger.debug({ ...loggerInfoCandidat, resultArchive })
         return resultArchive
       }
       // Mettre à jour le candidat
@@ -547,8 +561,6 @@ export const synchroAurige = async (buffer, callback) => {
   sendMails(async () => {
     await upsertLastSyncAurige("Fin de l'envoie des courriels aux candidats")
   })
-  appLogger.debug({ ...loggerInfo, nbResults: results.length })
-
   return results
 }
 
