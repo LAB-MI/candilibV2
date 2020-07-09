@@ -9,6 +9,7 @@
   "viewportHeight": 800,
   "testFiles": [
     "adminStatsKpi.js",
+    "candidateLogin.js",
     "adminCandidatSearch.js",
     "admin-centres.js",
     "adminDashboard.js",
@@ -22,7 +23,6 @@
     "aurigeRefusals.js",
     "candidatContactUs.js",
     "candidateFront.js",
-    "candidateLogin.js",
     "delayAfterFailure.js",
     "interactions.js",
     "placesAfter12h.js"
