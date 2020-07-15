@@ -46,6 +46,35 @@ const noReussiteFields = {
   },
 }
 
+const archivedEmailFields = {
+  email: {
+    type: String,
+    default: undefined,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: undefined,
+    required: true,
+  },
+  user: {
+    userId: {
+      type: String,
+      default: undefined,
+      required: true,
+    },
+    email: {
+      type: String,
+      default: undefined,
+      required: true,
+    },
+    departement: {
+      type: String,
+      default: undefined,
+      required: true,
+    },
+  },
+}
 export const candidatFields = {
   nomNaissance: {
     type: String,
@@ -151,6 +180,10 @@ export const candidatFields = {
   canAccessAt: {
     type: Date,
     required: false,
+  },
+  emails: {
+    type: [archivedEmailFields],
+    default: undefined,
   },
 }
 
