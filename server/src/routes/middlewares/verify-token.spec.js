@@ -43,7 +43,7 @@ describe('Verify-token', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty(
       'message',
-      'Impossible de vérifier votre authentification. Veuillez vous reconnecter.'
+      'Impossible de vérifier votre authentification. Veuillez vous reconnecter.',
     )
   })
 

@@ -113,7 +113,7 @@ export const getFrenchLuxonRangeFromDate = date => {
 export const getFrenchFormattedDateTime = (
   pDate,
   dateFormat = FORMAT_DATE,
-  hourFormat = DateTime.TIME_24_SIMPLE
+  hourFormat = DateTime.TIME_24_SIMPLE,
 ) => {
   let datetime
 
@@ -211,7 +211,7 @@ export const isHolidays = date => {
   const seconds = DateTime.local(
     datetime.year,
     monthOfEasterDay,
-    dayOfEasterDay
+    dayOfEasterDay,
   ).toSeconds()
   const secondsNow = datetime.toSeconds()
   const month = datetime.month

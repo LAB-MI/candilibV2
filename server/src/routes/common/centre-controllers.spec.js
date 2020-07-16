@@ -80,7 +80,7 @@ xdescribe('Test centre candidat controllers', () => {
       const date = encodeURIComponent(dateTime.toISO())
       const { body } = await request(app)
         .get(
-          `${apiPrefix}/candidat/centres?departement=${departement}&begin=${date}`
+          `${apiPrefix}/candidat/centres?departement=${departement}&begin=${date}`,
         )
         .set('Accept', 'application/json')
         .expect(200)
@@ -110,7 +110,7 @@ xdescribe('Test centre candidat controllers', () => {
       const date = encodeURIComponent(dateTime.toISO())
       const { body } = await request(app)
         .get(
-          `${apiPrefix}/candidat/centres?departement=${departement}&begin=${date}`
+          `${apiPrefix}/candidat/centres?departement=${departement}&begin=${date}`,
         )
         .set('Accept', 'application/json')
         .expect(200)
@@ -133,7 +133,7 @@ xdescribe('Test centre candidat controllers', () => {
     it('Should response 200 to find 2 centres from departement 93', async () => {
       const selectedCandidat = createdCandiats[0]
       require('../middlewares/verify-token').__setIdCandidat(
-        selectedCandidat._id
+        selectedCandidat._id,
       )
       const departement = '93'
       const { body } = await request(app)
@@ -161,7 +161,7 @@ xdescribe('Test centre candidat controllers', () => {
       const departement = '92'
       const { body: centre } = await request(app)
         .get(
-          `${apiPrefix}/candidat/centres?nom=${nom}&departement=${departement}`
+          `${apiPrefix}/candidat/centres?nom=${nom}&departement=${departement}`,
         )
         .set('Accept', 'application/json')
         .expect(200)
@@ -383,9 +383,9 @@ describe('Test centres of departement', () => {
           lon,
           lat,
           departement,
-          geoDepartement
+          geoDepartement,
         )
-      })
+      }),
     )
   })
 
@@ -410,7 +410,7 @@ describe('Test centres of departement', () => {
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('deptCenters')
     expect(body.deptCenters).toHaveLength(
-      centres75.filter(({ departement }) => departement === '75').length
+      centres75.filter(({ departement }) => departement === '75').length,
     )
     // TODO: A corriger
     // expect(body.deptCenters[0]).toHaveProperty('nom', centres75[0].nom)
@@ -432,7 +432,7 @@ describe('Test centres of departement', () => {
     expect(body).toHaveProperty('deptCenters')
     expect(body.deptCenters).toHaveLength(
       centres75.filter(({ departement }) => departement === '75').length -
-        centres.length
+        centres.length,
     )
   })
 })

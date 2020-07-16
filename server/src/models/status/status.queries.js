@@ -21,7 +21,7 @@ export const upsertStatusByType = async ({ type, message }) => {
   const newStatus = await Status.updateOne(
     { type },
     { message },
-    { upsert: true }
+    { upsert: true },
   )
   return { ...newStatus }
 }

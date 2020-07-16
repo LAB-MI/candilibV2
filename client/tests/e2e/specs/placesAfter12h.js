@@ -8,7 +8,7 @@ describe('Display new place after 12h', () => {
   const NbCreneauxByDay = 15 * 2
   let magicLink
   before(() => {
-    cy.daleteAllPlaces()
+    cy.deleteAllPlaces()
 
     cy.deleteAllMails()
     cy.adminLogin()

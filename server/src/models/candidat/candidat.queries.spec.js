@@ -260,13 +260,13 @@ describe('Candidat', () => {
       // When
       const sameCandidatDifferentEmail = await updateCandidatEmail(
         candidat,
-        anotherValidEmail
+        anotherValidEmail,
       )
 
       // Then
       expect(sameCandidatDifferentEmail).toBeDefined()
       expect(sameCandidatDifferentEmail._id.toString()).toBe(
-        candidat._id.toString()
+        candidat._id.toString(),
       )
       expect(sameCandidatDifferentEmail.email).not.toBe(candidat.email)
     })
@@ -315,7 +315,7 @@ describe('Candidat', () => {
       const deletedCandidat = await deleteCandidat(candidat)
       const noCandidat = await findCandidatByNomNeph(
         deletedCandidat.nomNaissance,
-        deletedCandidat.codeNeph
+        deletedCandidat.codeNeph,
       )
 
       // Then
@@ -337,11 +337,11 @@ describe('Candidat', () => {
       // When
       const deletedCandidat = await deleteCandidatByNomNeph(
         nomNaissance,
-        codeNeph
+        codeNeph,
       )
       const noCandidat = await findCandidatByNomNeph(
         deletedCandidat.nomNaissance,
-        deletedCandidat.codeNeph
+        deletedCandidat.codeNeph,
       )
 
       // Then
@@ -395,7 +395,7 @@ describe('Candidat', () => {
       expect(candidat1).not.toBe(null)
       expect(candidat1).toHaveProperty(
         'dateDernierEchecPratique',
-        dateDernierEchecPratique.toJSDate()
+        dateDernierEchecPratique.toJSDate(),
       )
       expect(candidat1).toHaveProperty('objetDernierNonReussite', ECHEC)
       expect(candidat1).toHaveProperty('canBookFrom', canBookFrom.toJSDate())
@@ -475,7 +475,7 @@ describe('Candidat', () => {
       const bookedCandidats = await findBookedCandidats(
         undefined,
         undefined,
-        centre._id
+        centre._id,
       )
       expect(bookedCandidats.length).toBe(1)
       bookedCandidats.forEach(candidat => {
@@ -533,13 +533,13 @@ describe('Candidat', () => {
       expect(candidat1.places[1]).toHaveProperty('centre', place1.centre)
       expect(candidat1.places[1]).toHaveProperty(
         'inspecteur',
-        place1.inspecteur
+        place1.inspecteur,
       )
       expect(candidat1.places[1].archivedAt).toBeDefined()
       expect(candidat1.places[1].archiveReason).toBeDefined()
       expect(candidat1.places[1]).toHaveProperty(
         'archiveReason',
-        REASON_EXAM_FAILED
+        REASON_EXAM_FAILED,
       )
     })
     it('should add a place in archive place from admin', async () => {
@@ -562,7 +562,7 @@ describe('Candidat', () => {
         selectCandidat,
         place,
         REASON_REMOVE_RESA_ADMIN,
-        'test.admin@test.com'
+        'test.admin@test.com',
       )
 
       expect(candidat).toBeDefined()
@@ -576,7 +576,7 @@ describe('Candidat', () => {
       expect(candidat.places[0].archiveReason).toBeDefined()
       expect(candidat.places[0]).toHaveProperty(
         'archiveReason',
-        REASON_REMOVE_RESA_ADMIN
+        REASON_REMOVE_RESA_ADMIN,
       )
       expect(candidat.places[0]).toHaveProperty('byUser', 'test.admin@test.com')
     })

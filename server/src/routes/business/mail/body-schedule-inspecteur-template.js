@@ -4,7 +4,7 @@ export const getScheduleInspecteurTemplate = (
   dateExam,
   nomCentre,
   departement,
-  planning
+  planning,
 ) => {
   const list = Object.keys(planning)
     .sort((heure1, heure2) => {

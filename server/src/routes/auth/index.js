@@ -179,7 +179,7 @@ router.get(
   '/admin/verify-token',
   verifyToken,
   verifyRepartiteurLevel(),
-  (req, res) => res.json({ auth: true })
+  (req, res) => res.json({ auth: true }),
 )
 /**
  * @swagger

@@ -7,7 +7,7 @@ export const makeResa = (
   place,
   candidat,
   bookedAt = undefined,
-  bookedByAdmin = undefined
+  bookedByAdmin = undefined,
 ) => {
   place.candidat = candidat._id
   place.bookedAt = bookedAt
@@ -19,7 +19,7 @@ export const bookCandidatOnSelectedPlace = async (
   place,
   candidat,
   bookedAt = undefined,
-  bookedByAdmin = undefined
+  bookedByAdmin = undefined,
 ) => {
   const placeFounded = await placeModel.findOne({
     _id: place._id || place,
@@ -34,7 +34,7 @@ let placesDb
 
 export const makeResas = async (
   bookedAt = undefined,
-  bookedByAdmin = undefined
+  bookedByAdmin = undefined,
 ) => {
   const place1 = await placeModel.findOne({
     date: commonBasePlaceDateTime.toISO(),
@@ -55,7 +55,7 @@ export const makeResas = async (
 
 export const makeCandidatsResas = async (
   bookedAt = undefined,
-  bookedByAdmin = undefined
+  bookedByAdmin = undefined,
 ) => {
   const candidats = await createCandidats()
 

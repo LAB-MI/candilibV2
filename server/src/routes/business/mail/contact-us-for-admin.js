@@ -7,7 +7,7 @@ export const getContactUsForAdmin = (
   homeDepartement,
   hasSignUp,
   subject,
-  message
+  message,
 ) => `<p>
   <strong>Infromation Candidat:</strong><br>
   <ul>

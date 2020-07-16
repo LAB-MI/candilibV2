@@ -16,7 +16,7 @@ export const getScheduleInspecteurBody = async (
   date,
   centre,
   departement,
-  places
+  places,
 ) => {
   const action = 'get-body-shechule-inspecteur'
   appLogger.debug({ func: 'getScheduleInspecteurBody', action, places })
@@ -58,7 +58,7 @@ export const getScheduleInspecteurBody = async (
         prenom,
       }
       return planning[heure]
-    })
+    }),
   )
 
   const body = getScheduleInspecteurTemplate(
@@ -67,7 +67,7 @@ export const getScheduleInspecteurBody = async (
     date,
     centre,
     departement,
-    planning
+    planning,
   )
 
   return getHtmlBody(body)
@@ -77,7 +77,7 @@ export const sendScheduleInspecteur = async (
   email,
   places,
   inspecteur,
-  centre
+  centre,
 ) => {
   const loggerInfo = {
     func: 'sendScheduleInspecteur',
@@ -140,7 +140,7 @@ export const sendScheduleInspecteur = async (
     dateToString,
     centreNom,
     departement,
-    places
+    places,
   )
   const subject = `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
 
@@ -153,7 +153,7 @@ export const sendMailForScheduleInspecteurFailed = async (
   email,
   date,
   departement,
-  inspecteurs
+  inspecteurs,
 ) => {
   appLogger.debug({
     func: 'sendMailForScheduleInspecteurFailed',
@@ -165,7 +165,7 @@ export const sendMailForScheduleInspecteurFailed = async (
 
   const content = getFailedScheduleInspecteurTemplate(
     dateToString,
-    inspecteurs.map(inspecteur => inspecteur.nom + '/' + inspecteur.matricule)
+    inspecteurs.map(inspecteur => inspecteur.nom + '/' + inspecteur.matricule),
   )
   const subject = `Echec d'envoi de mail pour le bordereau du ${dateToString} du département ${departement}`
   return sendMail(email, { content, subject })

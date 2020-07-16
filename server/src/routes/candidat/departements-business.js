@@ -24,12 +24,12 @@ export const getGeoDepartementsInfos = async (geoDepartementsId, userId) => {
         const centresInfos = await findCentresWithNbPlacesByGeoDepartement(
           geoDepartement,
           beginPeriod,
-          endPeriod
+          endPeriod,
         )
 
         const someOfCountPlaces = centresInfos.reduce(
           (sumCount, { count }) => sumCount + count,
-          0
+          0,
         )
 
         const shapedGeoDepartementInfo = {
@@ -38,7 +38,7 @@ export const getGeoDepartementsInfos = async (geoDepartementsId, userId) => {
           count: someOfCountPlaces,
         }
         return shapedGeoDepartementInfo
-      })
+      }),
     )
     return geoDepartementsInfos
   } catch (error) {

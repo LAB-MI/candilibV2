@@ -267,7 +267,7 @@ export const getCandidatsLeaveRetentionArea = async (req, res) => {
   const statsKpiCandidatsLeaveRetention = await getCountCandidatsLeaveRetentionArea(
     dpts,
     begin,
-    end
+    end,
   )
   const candidatsInRetention = statsKpiCandidatsLeaveRetention.reduce(
     (accu, currValue) => {
@@ -278,7 +278,7 @@ export const getCandidatsLeaveRetentionArea = async (req, res) => {
     {
       departements: '',
       totalCount: 0,
-    }
+    },
   )
 
   appLogger.info({
@@ -289,7 +289,7 @@ export const getCandidatsLeaveRetentionArea = async (req, res) => {
 
   if (isCsv === 'true') {
     const statsKpiCsv = await parseStatsCandidatRetention(
-      statsKpiCandidatsLeaveRetention
+      statsKpiCandidatsLeaveRetention,
     )
     const filename = 'statsCandidatsInRetention.csv'
     appLogger.info({
@@ -322,7 +322,7 @@ export const getCandidatsLeaveRetentionArea = async (req, res) => {
 
 export const getCandidatsLeaveRetentionAreaByWeekAndDepartement = async (
   req,
-  res
+  res,
 ) => {
   const { departement } = req.query
   const { departements, userId } = req
@@ -340,7 +340,7 @@ export const getCandidatsLeaveRetentionAreaByWeekAndDepartement = async (
 
   try {
     const candidatsLeaveRetentionByWeekAndDepartement = await getCountCandidatsLeaveRetentionAreaByWeek(
-      dpts
+      dpts,
     )
 
     appLogger.info({
@@ -397,7 +397,7 @@ export const getStatsPlacesExam = async (req, res) => {
         ...loggerContent,
         action: 'GET STATS KPI CSV',
         description: `Calcul de stats des départements: ${statsKpi.map(
-          el => el.departement
+          el => el.departement,
         )}`,
       })
 

@@ -248,7 +248,7 @@ export const candidatsWithPreRequired = [
 
 export const createCandidatToTestAurige = async (
   candidat,
-  isValidatedByAurige = false
+  isValidatedByAurige = false,
 ) => {
   const candidatCreated = await createCandidat(candidat)
   candidatCreated.isValidatedEmail = true
@@ -262,8 +262,8 @@ export const createCandidatToTestAurige = async (
 export const createCandidatsToTestAurige = async () => {
   return Promise.all(
     candidatsToValidAurige.map(candidat =>
-      createCandidatToTestAurige(candidat, false)
-    )
+      createCandidatToTestAurige(candidat, false),
+    ),
   )
 }
 

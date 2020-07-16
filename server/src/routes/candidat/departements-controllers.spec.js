@@ -33,7 +33,7 @@ describe('Test get dates from places available', () => {
     await createCentres()
     await createPlaces()
     require('../middlewares/verify-token').__setIdCandidat(
-      createdCandidats[0]._id
+      createdCandidats[0]._id,
     )
   })
 
@@ -60,10 +60,10 @@ describe('Test get dates from places available', () => {
     expect(geoDepartementsInfos).toHaveLength(2)
 
     const geoDepartementInfo93 = body.geoDepartementsInfos.find(
-      el => el.geoDepartement === '93'
+      el => el.geoDepartement === '93',
     )
     const geoDepartementInfo75 = body.geoDepartementsInfos.find(
-      el => el.geoDepartement === '75'
+      el => el.geoDepartement === '75',
     )
     expect(geoDepartementInfo93).toBeDefined()
     expect(geoDepartementInfo93).toHaveProperty('centres')
@@ -72,11 +72,11 @@ describe('Test get dates from places available', () => {
     expect(geoDepartementInfo93.centres[0]).toHaveProperty('centre')
     expect(geoDepartementInfo93.centres[0].centre).toHaveProperty(
       'geoDepartement',
-      '93'
+      '93',
     )
     expect(geoDepartementInfo93.centres[0].centre).toHaveProperty(
       'nom',
-      'CENTRE 1'
+      'CENTRE 1',
     )
     expect(geoDepartementInfo93.centres[0]).toHaveProperty('count', 1)
 
@@ -86,15 +86,15 @@ describe('Test get dates from places available', () => {
     expect(geoDepartementInfo75).toHaveProperty('centres')
     expect(geoDepartementInfo75).toHaveProperty(
       'count',
-      nbPlacesForCentre2 + nbPlacesForCentre3
+      nbPlacesForCentre2 + nbPlacesForCentre3,
     )
     expect(geoDepartementInfo75.centres).toHaveLength(2)
 
     const centreInfos2 = geoDepartementInfo75.centres.find(
-      el => el.centre.nom === 'CENTRE 2'
+      el => el.centre.nom === 'CENTRE 2',
     )
     const centreInfos3 = geoDepartementInfo75.centres.find(
-      el => el.centre.nom === 'CENTRE 3'
+      el => el.centre.nom === 'CENTRE 3',
     )
 
     expect(centreInfos2).toHaveProperty('centre')
@@ -122,10 +122,10 @@ describe('Test get dates from places available', () => {
     expect(geoDepartementsInfos).toHaveLength(2)
 
     const geoDepartementInfo93 = body.geoDepartementsInfos.find(
-      el => el.geoDepartement === '93'
+      el => el.geoDepartement === '93',
     )
     const geoDepartementInfo75 = body.geoDepartementsInfos.find(
-      el => el.geoDepartement === '75'
+      el => el.geoDepartement === '75',
     )
 
     expect(geoDepartementInfo93).toBeDefined()
@@ -135,11 +135,11 @@ describe('Test get dates from places available', () => {
     expect(geoDepartementInfo93.centres[0]).toHaveProperty('centre')
     expect(geoDepartementInfo93.centres[0].centre).toHaveProperty(
       'geoDepartement',
-      '93'
+      '93',
     )
     expect(geoDepartementInfo93.centres[0].centre).toHaveProperty(
       'nom',
-      'CENTRE 1'
+      'CENTRE 1',
     )
     expect(geoDepartementInfo93.centres[0]).toHaveProperty('count', 0)
 
@@ -149,10 +149,10 @@ describe('Test get dates from places available', () => {
     expect(geoDepartementInfo75.centres).toHaveLength(2)
 
     const centreInfos2 = geoDepartementInfo75.centres.find(
-      el => el.centre.nom === 'CENTRE 2'
+      el => el.centre.nom === 'CENTRE 2',
     )
     const centreInfos3 = geoDepartementInfo75.centres.find(
-      el => el.centre.nom === 'CENTRE 3'
+      el => el.centre.nom === 'CENTRE 3',
     )
 
     expect(centreInfos2).toHaveProperty('centre')

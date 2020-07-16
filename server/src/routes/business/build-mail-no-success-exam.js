@@ -20,7 +20,7 @@ export const getNoSuccessAtExamBody = async (candidat, fnGetTemplate) => {
     timeoutToRetry,
     urlRESA,
     urlFAQ,
-    contactezNous
+    contactezNous,
   )
   return getHtmlBody(body)
 }

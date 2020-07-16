@@ -62,7 +62,7 @@ export async function getCentres (req, res) {
       const centres = await findCentresWithNbPlacesByGeoDepartement(
         departement,
         beginDate,
-        endDate
+        endDate,
       )
 
       appLogger.info({
@@ -85,7 +85,7 @@ export async function getCentres (req, res) {
       if (nom && !centreId) {
         const centres = await getCentresByNameAndGeoDepartement(
           nom,
-          departement
+          departement,
         )
 
         appLogger.info({
@@ -207,7 +207,7 @@ export async function modifyCentre (req, res) {
     const centre = await updateCentre(
       centreId,
       { nom, label, adresse, lon, lat, geoDepartement },
-      userId
+      userId,
     )
 
     appLogger.info({
@@ -300,7 +300,7 @@ export async function createCentre (req, res) {
       lon,
       lat,
       departement,
-      geoDepartement
+      geoDepartement,
     )
 
     appLogger.info({
@@ -357,7 +357,7 @@ export async function getCentresByDepartement (req, res) {
     } else {
       deptCenters = await findCentresByDepartement(
         departementId,
-        'nom geoDepartement'
+        'nom geoDepartement',
       )
     }
 

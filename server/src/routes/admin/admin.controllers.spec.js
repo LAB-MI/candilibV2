@@ -44,7 +44,7 @@ describe('Admin controller', () => {
       emailTech,
       password,
       departements,
-      config.userStatuses.TECH
+      config.userStatuses.TECH,
     )
   })
 
@@ -71,7 +71,7 @@ describe('Admin controller', () => {
     expect(body.departements).toHaveLength(departements.length)
     expect(body).toHaveProperty(
       'features',
-      config.userStatusFeatures[config.userStatuses.ADMIN]
+      config.userStatusFeatures[config.userStatuses.ADMIN],
     )
   })
 
@@ -93,7 +93,7 @@ describe('Admin controller', () => {
     expect(body.departements).toHaveLength(departements.length)
     expect(body).toHaveProperty(
       'features',
-      config.userStatusFeatures[config.userStatuses.TECH]
+      config.userStatusFeatures[config.userStatuses.TECH],
     )
   })
 })
@@ -110,14 +110,14 @@ describe('Create user', () => {
       emailAdmin,
       password,
       departements,
-      config.userStatuses.ADMIN
+      config.userStatuses.ADMIN,
     )
 
     delegue = await createUser(
       emailDelegue,
       password,
       departements,
-      config.userStatuses.DELEGUE
+      config.userStatuses.DELEGUE,
     )
   })
 
@@ -290,19 +290,19 @@ describe('Get users', () => {
       emailAdmin,
       password,
       departements,
-      config.userStatuses.ADMIN
+      config.userStatuses.ADMIN,
     )
     delegue = await createUser(
       emailDelegue,
       password,
       departements,
-      config.userStatuses.DELEGUE
+      config.userStatuses.DELEGUE,
     )
     repartiteur = await createUser(
       email,
       password,
       departements,
-      config.userStatuses.REPARTITEUR
+      config.userStatuses.REPARTITEUR,
     )
   })
 
@@ -369,7 +369,7 @@ describe('Get users', () => {
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à accéder à cette ressource"
+      "Vous n'êtes pas autorisé à accéder à cette ressource",
     )
   })
 })
@@ -385,13 +385,13 @@ describe('Update User by admin', () => {
       emailAdmin,
       password,
       departements,
-      config.userStatuses.ADMIN
+      config.userStatuses.ADMIN,
     )
     updateUser = await createUser(
       email,
       password,
       departements,
-      config.userStatuses.DELEGUE
+      config.userStatuses.DELEGUE,
     )
   })
 
@@ -486,13 +486,13 @@ describe('Update User by delegue', () => {
       emailAdmin,
       password,
       departements,
-      config.userStatuses.DELEGUE
+      config.userStatuses.DELEGUE,
     )
     updateUser = await createUser(
       email,
       password,
       departements,
-      config.userStatuses.REPARTITEUR
+      config.userStatuses.REPARTITEUR,
     )
   })
 
@@ -589,25 +589,25 @@ describe(' Delete user by delegue', () => {
       emailDelegue,
       password,
       departements,
-      config.userStatuses.DELEGUE
+      config.userStatuses.DELEGUE,
     )
     userToDelete = await createUser(
       email,
       password,
       departements,
-      config.userStatuses.REPARTITEUR
+      config.userStatuses.REPARTITEUR,
     )
     await createUser(
       emailDelegueToDelete,
       password,
       departements,
-      config.userStatuses.DELEGUE
+      config.userStatuses.DELEGUE,
     )
     await createUser(
       emailDelegueToDelete2,
       password,
       otherDepartements,
-      config.userStatuses.REPARTITEUR
+      config.userStatuses.REPARTITEUR,
     )
   })
 
@@ -715,13 +715,13 @@ describe(' Delete user by admin', () => {
       emailAdmin,
       password,
       departements,
-      config.userStatuses.ADMIN
+      config.userStatuses.ADMIN,
     )
     userToDelete = await createUser(
       email,
       password,
       departements,
-      config.userStatuses.DELEGUE
+      config.userStatuses.DELEGUE,
     )
   })
 

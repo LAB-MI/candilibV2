@@ -52,14 +52,13 @@ describe('Aurige Refusals', () => {
     // Uploads the JSON file
     const filePath = '../../../' + Cypress.env('filePath') + '/aurige.json'
     const fileName = 'aurige.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
+    cy.get('.input-file-container [type=file]')
+      .attachFile({
+        filePath,
+        fileName,
+        mimeType: 'application/json',
+      })
+
     cy.get('.v-snack--active')
       .should('contain', 'aurige.json prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')

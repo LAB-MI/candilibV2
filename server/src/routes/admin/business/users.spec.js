@@ -34,31 +34,31 @@ describe('Users', () => {
       email,
       password,
       departements,
-      config.userStatuses.ADMIN
+      config.userStatuses.ADMIN,
     )
     delegue = await createUser(
       emailDelegue,
       password,
       departements,
-      config.userStatuses.DELEGUE
+      config.userStatuses.DELEGUE,
     )
     delegue2 = await createUser(
       emailDelegue2,
       password,
       departements,
-      config.userStatuses.DELEGUE
+      config.userStatuses.DELEGUE,
     )
     repartiteur = await createUser(
       emailRepartiteur,
       password,
       departements,
-      config.userStatuses.REPARTITEUR
+      config.userStatuses.REPARTITEUR,
     )
     await createUser(
       emailRepartiteur2,
       password,
       otherDepartements,
-      config.userStatuses.REPARTITEUR
+      config.userStatuses.REPARTITEUR,
     )
   })
 
@@ -88,7 +88,7 @@ describe('Users', () => {
       adminId,
       newDelegue,
       status,
-      departements
+      departements,
     )
 
     // then
@@ -109,7 +109,7 @@ describe('Users', () => {
       delegueId,
       emailDelegue,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -118,7 +118,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -133,7 +133,7 @@ describe('Users', () => {
       delegueId,
       emailRepartiteur,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -142,7 +142,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "La liste des départements d'intervention est incorrecte"
+      "La liste des départements d'intervention est incorrecte",
     )
   })
 
@@ -156,7 +156,7 @@ describe('Users', () => {
       delegueId,
       emailDelegue,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -165,7 +165,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -179,7 +179,7 @@ describe('Users', () => {
       repartiteurId,
       emailDelegue,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -188,7 +188,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -231,7 +231,7 @@ describe('Users', () => {
     // then
     expect(result).toBeDefined()
     expect(result).toBe(
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -257,7 +257,7 @@ describe('Users', () => {
     // then
     expect(result).toBeDefined()
     expect(result).toBe(
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -273,7 +273,7 @@ describe('Users', () => {
     // then
     expect(result).toBeDefined()
     expect(result).toBe(
-      "La liste des départements d'intervention est incorrecte"
+      "La liste des départements d'intervention est incorrecte",
     )
   })
 
@@ -287,7 +287,7 @@ describe('Users', () => {
       adminId,
       emailRepartiteur,
       status,
-      departements
+      departements,
     )
 
     // then
@@ -308,7 +308,7 @@ describe('Users', () => {
       delegueId,
       'doesnotexist@example.com',
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -328,7 +328,7 @@ describe('Users', () => {
       delegueId,
       emailDelegue,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -337,7 +337,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -352,7 +352,7 @@ describe('Users', () => {
       delegueId,
       emailRepartiteur,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -361,7 +361,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "La liste des départements d'intervention est incorrecte"
+      "La liste des départements d'intervention est incorrecte",
     )
   })
 
@@ -375,7 +375,7 @@ describe('Users', () => {
       delegueId,
       emailRepartiteur,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -384,7 +384,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -398,7 +398,7 @@ describe('Users', () => {
       delegueId,
       emailDelegue,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -407,7 +407,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -437,7 +437,7 @@ describe('Users', () => {
       delegueId,
       'doesnotexist@example.com',
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -457,7 +457,7 @@ describe('Users', () => {
       delegueId,
       emailDelegue2,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -466,7 +466,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -481,7 +481,7 @@ describe('Users', () => {
       delegueId,
       emailRepartiteur,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -490,7 +490,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "La liste des départements d'intervention est incorrecte"
+      "La liste des départements d'intervention est incorrecte",
     )
   })
 
@@ -504,7 +504,7 @@ describe('Users', () => {
       delegueId,
       emailDelegue,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -513,7 +513,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 
@@ -527,7 +527,7 @@ describe('Users', () => {
       repartiteurId,
       emailDelegue,
       status,
-      departements
+      departements,
     ).catch(error => error)
 
     // then
@@ -536,7 +536,7 @@ describe('Users', () => {
     expect(error).toHaveProperty('status', 401)
     expect(error).toHaveProperty(
       'message',
-      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur"
+      "Vous n'êtes pas autorisé à effectuer une action sur ce type d'utilisateur",
     )
   })
 })

@@ -207,13 +207,13 @@ describe('ArchivedCandidat', () => {
       // When
       const sameArchivedCandidatDifferentEmail = await updateArchivedCandidatEmail(
         candidat,
-        anotherValidEmail
+        anotherValidEmail,
       )
 
       // Then
       expect(sameArchivedCandidatDifferentEmail).toBeDefined()
       expect(sameArchivedCandidatDifferentEmail._id.toString()).toBe(
-        candidat._id.toString()
+        candidat._id.toString(),
       )
       expect(sameArchivedCandidatDifferentEmail.email).not.toBe(candidat.email)
     })
@@ -256,11 +256,11 @@ describe('ArchivedCandidat', () => {
       // When
       const deletedArchivedCandidat = await deleteArchivedCandidatByNomNeph(
         nomNaissance,
-        codeNeph
+        codeNeph,
       )
       const noArchivedCandidat = await findArchivedCandidatByNomNeph(
         deletedArchivedCandidat.nomNaissance,
-        deletedArchivedCandidat.codeNeph
+        deletedArchivedCandidat.codeNeph,
       )
 
       // Then

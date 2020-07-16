@@ -54,7 +54,7 @@ const getCsvFileData = csvFileDataInJson => {
         current.centre +
         ', ' +
         current.departement,
-      ''
+      '',
     )
   )
 }
@@ -63,12 +63,12 @@ const expectOneResultWithError = (
   result,
   csvFileDataInJson,
   index,
-  messageFct
+  messageFct,
 ) => {
   expect(result).toHaveProperty('departement', '93')
   expect(result).toHaveProperty(
     'centre',
-    csvFileDataInJson[index].centre.trim()
+    csvFileDataInJson[index].centre.trim(),
   )
   const matricule =
     csvFileDataInJson[index].matricule &&
@@ -76,7 +76,7 @@ const expectOneResultWithError = (
 
   expect(result).toHaveProperty(
     'inspecteur',
-    matricule === undefined ? 'undefined' : matricule || ''
+    matricule === undefined ? 'undefined' : matricule || '',
   )
   const date = csvFileDataInJson[index].date.trim()
   const hour = csvFileDataInJson[index].hour.trim()
@@ -95,10 +95,10 @@ describe('Test import places from CSV', () => {
       centre.adresse,
       centre.lon,
       centre.lat,
-      centre.departement
+      centre.departement,
     )
     inspecteursCreated = await Promise.all(
-      inspecteurs.map(inspecteur => createInspecteur(inspecteur))
+      inspecteurs.map(inspecteur => createInspecteur(inspecteur)),
     )
     require('../../util/logger').setWithConsole(false)
   })
@@ -197,7 +197,7 @@ describe('Test import places from CSV', () => {
           centre: ${centre && centre.trim()},
           departement: ${departement && departement.trim()}
         ]`
-        }
+        },
       )
     })
   })
@@ -236,14 +236,14 @@ describe('Test import places from CSV', () => {
       csvFileDataInJson,
       0,
       (dataInJson, i) =>
-        'Le département du centre (75) ne correspond pas au département dont vous avez la charge (93)'
+        'Le département du centre (75) ne correspond pas au département dont vous avez la charge (93)',
     )
     expectOneResultWithError(
       results[1],
       csvFileDataInJson,
       1,
       (dataInJson, i) =>
-        'Le département du centre (94) ne correspond pas au département dont vous avez la charge (93)'
+        'Le département du centre (94) ne correspond pas au département dont vous avez la charge (93)',
     )
   })
 
@@ -280,7 +280,7 @@ describe('Test import places from CSV', () => {
         result,
         csvFileDataInJson,
         index,
-        (dataInJson, i) => `Le centre ${dataInJson[i].centre} est inconnu`
+        (dataInJson, i) => `Le centre ${dataInJson[i].centre} est inconnu`,
       )
     })
   })
@@ -317,7 +317,7 @@ describe('Test import places from CSV', () => {
         result,
         csvFileDataInJson,
         index,
-        (dataInJson, i) => `L'inspecteur ${dataInJson[i].matricule} est inconnu`
+        (dataInJson, i) => `L'inspecteur ${dataInJson[i].matricule} est inconnu`,
       )
     })
   })
@@ -357,7 +357,7 @@ describe('Test import places from CSV', () => {
           const nom = dataInJson[i].nom.trim()
           const matricule = dataInJson[i].matricule.trim()
           return `Le nom "${nom}" de l'inspecteur ne correspond pas au matricule "${matricule}"`
-        }
+        },
       )
     })
   })
@@ -408,13 +408,13 @@ describe('Test import places from CSV', () => {
     results.forEach((result, index) => {
       const inspecteurExpected = inspecteursCreated.find(
         inspecteur =>
-          inspecteur.matricule === csvFileDataInJson[index].matricule
+          inspecteur.matricule === csvFileDataInJson[index].matricule,
       )
 
       const date = DateTime.fromFormat(
         csvFileDataInJson[index].date + ' ' + csvFileDataInJson[index].hour,
         'dd/MM/yy HH:mm',
-        FRENCH_LOCALE_INFO
+        FRENCH_LOCALE_INFO,
       )
       expect(result).toHaveProperty('departement', '93')
       expect(result).toHaveProperty('centre', centre.nom)
@@ -460,13 +460,13 @@ describe('Test import places from CSV', () => {
     results.forEach((result, index) => {
       const inspecteurExpected = inspecteursCreated.find(
         inspecteur =>
-          inspecteur.matricule === csvFileDataInJson[index].matricule
+          inspecteur.matricule === csvFileDataInJson[index].matricule,
       )
 
       const date = DateTime.fromFormat(
         csvFileDataInJson[index].date + ' ' + csvFileDataInJson[index].hour,
         'dd/MM/yy HH:mm',
-        FRENCH_LOCALE_INFO
+        FRENCH_LOCALE_INFO,
       )
       expect(result).toHaveProperty('departement', '93')
       expect(result).toHaveProperty('centre', centre.nom)
@@ -525,7 +525,7 @@ describe('Test import places from CSV', () => {
         csvFileDataInJson,
         index,
         (dataInJson, i) =>
-          "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée."
+          "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée.",
       )
     })
   })

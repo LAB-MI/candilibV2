@@ -67,7 +67,7 @@ const PlaceSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 )
 
 PlaceSchema.index({ date: 1, inspecteur: 1 }, { unique: true })
@@ -93,7 +93,7 @@ PlaceSchema.pre('save', async function preSave () {
       places.some(
         currentPlace =>
           currentPlace.centre.toString() !==
-          (place.centre._id || place.centre).toString()
+          (place.centre._id || place.centre).toString(),
       )
     ) {
       const error = new Error(INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR)

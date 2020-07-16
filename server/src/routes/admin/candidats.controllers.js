@@ -207,7 +207,7 @@ export const getCandidats = async (req, res) => {
       const result = await findCandidatsMatching(
         matching,
         startingWith,
-        endingWith
+        endingWith,
       )
 
       res.json(result.candidats)
@@ -240,7 +240,7 @@ export const getCandidats = async (req, res) => {
           }
           candidat.place = (places && places[0]) || {}
           return candidat
-        })
+        }),
       )
     }
     if (format && format === 'csv') {

@@ -37,7 +37,7 @@ export const getDateETG = async candidatId => {
 export const candidatCanReservePlaceForThisPeriod = async (
   candidatId,
   beginDate,
-  endDate
+  endDate,
 ) => {
   const luxonDateETGExpired = await getDateETGExpired(candidatId)
   // TODO: remove next line after 31/12/2020
@@ -62,7 +62,7 @@ export const candidatCanReservePlaceForThisPeriod = async (
   if (isETGExpired(luxonDateETG) /* luxonDateETGExpired < begin */) {
     const error = new Error(
       CANDIDAT_DATE_ETG_KO +
-        getFrenchFormattedDateTime(luxonDateETGExpired).date
+        getFrenchFormattedDateTime(luxonDateETGExpired).date,
     )
     error.status = 400
     throw error

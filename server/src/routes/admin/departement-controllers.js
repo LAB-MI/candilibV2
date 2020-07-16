@@ -110,10 +110,10 @@ export const createDepartementsController = async (req, res) => {
 
     const departementCreated = await createDepartements(
       departementId,
-      departementEmail
+      departementEmail,
     )
     const isUsersUpdated = await updateDepartementsUsersAdminAndTech(
-      departementId
+      departementId,
     )
     let message = ''
     if (isUsersUpdated) {
@@ -242,7 +242,7 @@ export const deleteDepartementController = async (req, res) => {
 
         const isDepartementRemovedFromUsers = await removeDepartementOfUsersByStatus(
           departementId,
-          userStatus
+          userStatus,
         )
         if (isDepartementRemovedFromUsers) {
           await deleteDepartement(departementId)

@@ -188,7 +188,7 @@ export async function preSignup (req, res) {
 
     if (!isValidatedEmail && !isMoreThan2HoursAgo(presignedUpAt)) {
       const deadlineBeforeValidateEmail = getFrenchLuxonFromJSDate(
-        presignedUpAt
+        presignedUpAt,
       )
         .plus({ hours: 2 })
         .toLocaleString(DATETIME_FULL)
@@ -206,7 +206,7 @@ export async function preSignup (req, res) {
     }
     const result = await deleteCandidat(
       candidatWithSameEmail,
-      'EMAIL_NOT_VERIFIED_EXPIRED'
+      'EMAIL_NOT_VERIFIED_EXPIRED',
     )
     appLogger.info({ ...loggerInfo, function: 'deleteCandidat', result })
   }

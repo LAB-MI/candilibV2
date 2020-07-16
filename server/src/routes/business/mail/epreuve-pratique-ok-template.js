@@ -1,7 +1,7 @@
 export const getEpreuvePratiqueOKTemplate = (
   nomMaj,
   urlFAQ,
-  contactezNous
+  contactezNous,
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <br>
   <p>Selon nos informations, vous avez réussi l'examen que vous venez de passer.</p>

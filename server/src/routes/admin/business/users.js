@@ -50,13 +50,13 @@ export const getAppropriateUsers = async userId => {
   const isDelegue = status === config.userStatuses.DELEGUE
   const departements = isAdmin ? undefined : user.departements
   const maxStatus = config.userStatusesOrderedList.findIndex(
-    stat => stat === status
+    stat => stat === status,
   )
   const allowedStatuses = config.userStatusesOrderedList.slice(0, maxStatus)
 
   if (!isAdmin && !isDelegue) {
     const error = new Error(
-      "Vous n'êtes pas autorisé à accéder à cette ressource"
+      "Vous n'êtes pas autorisé à accéder à cette ressource",
     )
     error.status = 401
     throw error
@@ -83,7 +83,7 @@ export const createAppropriateUser = async (
   userId,
   email,
   status,
-  departements
+  departements,
 ) => {
   const isValidEmail = regexEmail.test(email)
   if (!isValidEmail) {
@@ -131,7 +131,7 @@ export const updateUserBusiness = async (
   userId,
   email,
   status,
-  departements
+  departements,
 ) => {
   const isValidEmail = regexEmail.test(email)
   if (!isValidEmail) {
@@ -161,7 +161,7 @@ export const updateUserBusiness = async (
     isForbiddenToUpsertUser(
       userToUpdate.status,
       user,
-      userToUpdate.departements
+      userToUpdate.departements,
     )
   if (isForbiddenMessage) {
     const error = new Error(isForbiddenMessage)
@@ -201,7 +201,7 @@ export const archiveUserBusiness = async (userId, emailToDelete) => {
   const isForbiddenMessage = isForbiddenToUpsertUser(
     userToDelete.status,
     user,
-    userToDelete.departements
+    userToDelete.departements,
   )
 
   if (isForbiddenMessage) {
@@ -231,7 +231,7 @@ export function isForbiddenToUpsertUser (status, user, departements) {
   const authorizedDepartements = user.departements
   if (
     !departements.every(departement =>
-      authorizedDepartements.includes(departement)
+      authorizedDepartements.includes(departement),
     )
   ) {
     return INCORRECT_DEPARTEMENT_LIST

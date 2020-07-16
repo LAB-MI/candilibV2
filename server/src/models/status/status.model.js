@@ -11,7 +11,7 @@ const StatusSchema = new Schema(
       type: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 )
 
 export default mongoose.model('Status', StatusSchema)
