@@ -28,26 +28,12 @@
         </div>
       </v-card>
     </v-card-text>
-    <v-card-text>
-      <v-card class="t-result-candidat-historique-des-actions t-result-candidat-item">
-        <v-card-title primary-title>
-          Historique des actions&nbsp;:
-        </v-card-title>
-        <candidat-action-history-tab
-          :items="actionsHistory"
-        />
-      </v-card>
-    </v-card-text>
+    <slot />
   </v-card>
 </template>
 
 <script>
-import CandidatActionHistTab from '../components/CandidatActionHistoryTab'
-
 export default {
-  components: {
-    CandidatActionHistoryTab: CandidatActionHistTab(),
-  },
   props: {
     profileInfo: {
       type: Array,
@@ -60,10 +46,6 @@ export default {
     subtitle: {
       type: String,
       default: '',
-    },
-    actionsHistory: {
-      type: Array,
-      default () {},
     },
   },
   data () {

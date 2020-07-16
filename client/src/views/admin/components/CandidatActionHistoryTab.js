@@ -30,19 +30,23 @@ export default function getHistoryData () {
           { text: 'Action', value: 'archiveReason' },
           { text: 'Éffectué par ', value: 'byUser' },
           { text: 'Éffectué le ', value: 'actionDate' },
+          { text: 'Réservé par ', value: 'bookedByAdmin' },
+          { text: 'Réservé le ', value: 'bookedAt' },
         ],
       }
     },
 
     template: `
-        <div>
-        <v-data-table
-          :headers="headers"
-          :items="items"
-          hide-default-footer
-          class="elevation-1 t-history-table"
-        ></v-data-table>
-      </div>
+    <v-card-text>
+      <div>
+      <v-data-table
+      :headers="headers"
+      :items="items"
+      hide-default-footer
+      class="elevation-1 t-history-table"
+      ></v-data-table>
+    </div>
+    </v-card-text>
     `,
   })
 }
