@@ -33,8 +33,16 @@
         title="Informations Candidat"
         :subtitle="candidat.prenom + ' ' + candidat.nomNaissance + ' | ' + candidat.codeNeph"
         :profile-info="profileInfo"
-        :actions-history="getActionsHistory()"
-      />
+      >
+        <v-card class="t-result-candidat-historique-des-actions t-result-candidat-item">
+          <v-card-title primary-title>
+            Historique des actions&nbsp;:
+          </v-card-title>
+          <candidat-action-history-tab
+            :items="getActionsHistory()"
+          />
+        </v-card>
+      </profile-info>
     </v-expand-transition>
   </div>
 </template>
@@ -51,6 +59,7 @@ import ProfileInfo from './ProfileInfo'
 import { getFrenchDateTimeFromIso, getFrenchDateFromIso, getFrenchLuxon, getFrenchLuxonFromIso } from '../../../util/frenchDateTime.js'
 import { transformToProfileInfo } from '@/util'
 import adminMessage from '../../../admin.js'
+import CandidatActionHistTab from '../components/CandidatActionHistoryTab'
 
 const transformBoolean = value => value ? '<i class="material-icons green--text">done</i>' : '<i class="material-icons red--text">close</i>'
 const isReussitePratiqueExist = value => value || ''
@@ -116,6 +125,7 @@ const candidatProfileInfoDictionary = [
 
 export default {
   components: {
+    CandidatActionHistoryTab: CandidatActionHistTab(),
     CandilibAutocomplete,
     ProfileInfo,
   },
@@ -180,9 +190,10 @@ export default {
       if (!places || !(places.length)) {
         return 'Aucune action pour ce candidat'
       }
-      return places.map(({ archivedAt, archiveReason, byUser, centre, date, departement, inspecteur }) => {
+      return places.map(({ archivedAt, archiveReason, byUser, centre, date, departement, inspecteur, bookedByAdmin, bookedAt }) => {
         const frenchDate = convertToLegibleDateTime(date)
         const actionDate = convertToLegibleDateTime(archivedAt)
+        const actionBookedAtDate = convertToLegibleDateTime(bookedAt)
         return {
           actionDate,
           actionDateTime: archivedAt,
@@ -193,6 +204,8 @@ export default {
           frenchDate,
           frenchDateTime: date,
           inspecteur: typeof inspecteur === 'object' ? `${inspecteur.nom} | ${inspecteur.prenom}` : inspecteur,
+          bookedByAdmin: bookedByAdmin ? bookedByAdmin.email : 'Le Candidat',
+          bookedAt: actionBookedAtDate,
         }
       })
     },
