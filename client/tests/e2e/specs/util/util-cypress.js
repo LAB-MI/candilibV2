@@ -118,7 +118,6 @@ export const candidatModifyPlace = (magicLink, candidatsByDepartments, nowIn1Wee
   cy.get('.t-candidat-home').click()
   cy.get('body').should('contain', 'Modifier ma réservation')
   cy.contains('Modifier ma réservation').click()
-  cy.log('qwert', { nowIn1WeekInfo })
 
   cy.checkAndSelectDepartement()
   cy.wait(100)
@@ -174,32 +173,7 @@ export const candidatModifyPlace = (magicLink, candidatsByDepartments, nowIn1Wee
 }
 
 export const adminCancelBookedPlace = (date) => {
-  const dateLocalString = date.startOf('week').toLocaleString({ month: 'short', day: '2-digit', year: 'numeric' })
-  const dateFormated = date.toFormat('yyyy-MM-dd')
-  const dateFormatedFrench = date.toFormat('dd/MM/yyyy')
-  cy.adminLogin()
-
-  cy.get('.home-link')
-    .click()
-  cy.get('h2.title')
-    .should('contain', Cypress.env('centre'))
-    .contains(Cypress.env('centre'))
-    .parents('.monitor-wrapper').within(($centre) => {
-      cy.contains(`${dateLocalString}`)
-        .parents('.th-ui-week-column')
-        .should('have.class', 'red')
-        .parents('tr')
-        .find('button').eq(2)
-        .click()
-    })
-
-  cy.url()
-    .should('contain', `${dateFormated}`)
-  cy.get('.t-date-picker [type=text]').invoke('val')
-    .should('contain', `${dateFormatedFrench}`)
-  cy.get('.v-tab--active')
-    .should('contain', Cypress.env('centre'))
-
+  adminAccessToPlanning(date)
   cy.get('.v-window-item').not('[style="display: none;"]')
     .should('have.length', 1)
     .contains(Cypress.env('inspecteur'))
@@ -214,4 +188,58 @@ export const adminCancelBookedPlace = (date) => {
     })
   cy.get('.v-snack--active')
     .should('contain', 'La réservation choisie a été annulée.')
+}
+
+export const adminBookPlaceForCandidat = (date, candidatsByDepartments) => {
+  adminAccessToPlanning(date)
+  cy.get('.v-window-item').not('[style="display: none;"]')
+    .should('have.length', 1)
+    .contains(Cypress.env('inspecteur'))
+    .parents('tbody').within(($row) => {
+      cy.get('.place-button')
+        .contains('check_circle')
+        .click()
+      cy.contains('Affecter un candidat')
+        .click()
+      cy.get('.search-input [type=text]')
+        .type(candidatsByDepartments[0].email)
+      cy.root().parents().contains(candidatsByDepartments[0].nomNaissance)
+        .click()
+      cy.get('.place-details')
+        .should('contain', Cypress.env('centre'))
+      cy.contains('Valider')
+        .click()
+    })
+  cy.get('.v-snack--active')
+    .should('contain', candidatsByDepartments[0].nomNaissance.toUpperCase())
+    .and('contain', 'a bien été affecté à la place')
+}
+
+const adminAccessToPlanning = (date) => {
+  const dateLocalString = date.startOf('week').toLocaleString({ month: 'short', day: '2-digit', year: 'numeric' })
+  const dateFormated = date.toFormat('yyyy-MM-dd')
+  const dayNumOfWeek = date.weekday
+  const dateFormatedFrench = date.toFormat('dd/MM/yyyy')
+  cy.adminLogin()
+
+  cy.get('.home-link')
+    .click()
+  cy.get('h2.title')
+    .should('contain', Cypress.env('centre'))
+    .contains(Cypress.env('centre'))
+    .parents('.monitor-wrapper').within(($centre) => {
+      cy.contains(`${dateLocalString}`)
+        .parents('.th-ui-week-column')
+        .should('have.class', 'red')
+        .parents('tr')
+        .find('button').eq(dayNumOfWeek - 1)
+        .click()
+    })
+
+  cy.url()
+    .should('contain', `${dateFormated}`)
+  cy.get('.t-date-picker [type=text]').invoke('val')
+    .should('contain', `${dateFormatedFrench}`)
+  cy.get('.v-tab--active')
+    .should('contain', Cypress.env('centre'))
 }
