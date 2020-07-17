@@ -166,7 +166,7 @@ export const getCandidats = async (req, res) => {
       const candidatFound = await findCandidatById(
         candidatId,
         undefined,
-        populate
+        populate,
       )
 
       if (candidatFound) {
