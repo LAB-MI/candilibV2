@@ -159,7 +159,15 @@ export const getCandidats = async (req, res) => {
       loggerInfo.candidatId = candidatId
       appLogger.info(loggerInfo)
 
-      const candidatFound = await findCandidatById(candidatId)
+      const populate = {
+        'places.centre': true,
+        'places.inspecteur': true,
+      }
+      const candidatFound = await findCandidatById(
+        candidatId,
+        undefined,
+        populate,
+      )
 
       if (candidatFound) {
         const placeFound = await findPlaceByCandidatId(candidatId, true)

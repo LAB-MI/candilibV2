@@ -7,6 +7,7 @@ import mongoose from 'mongoose'
 import Place from './place.model'
 import { appLogger, techLogger } from '../../util'
 import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
+import { queryPopulate } from '../util/populate-tools'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
@@ -315,12 +316,6 @@ export const removeBookedPlace = place => {
   place.candidat = undefined
 
   return place.save()
-}
-
-const queryPopulate = (populate = {}, query) => {
-  Object.entries(populate).forEach(([key, value]) => {
-    value && query.populate(key)
-  })
 }
 
 export const bookPlaceById = async (

@@ -4,6 +4,7 @@ import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
 import { getFrenchLuxon, techLogger } from '../../util'
+import { queryPopulate } from '../util/populate-tools'
 
 /**
  * Crée un candidat
@@ -84,11 +85,14 @@ export const findCandidatByEmail = async email => {
  *
  * @returns {Promise.<Candidat>}
  */
-export const findCandidatById = async (id, options) => {
+export const findCandidatById = async (id, options, populate) => {
   if (options && options.dateDernierEchecPratique) {
     options.noReussites = 1
   }
-  const candidat = await Candidat.findById(id, options)
+
+  const query = Candidat.findById(id, options)
+  queryPopulate(populate, query)
+  const candidat = await query.exec()
   return candidat
 }
 

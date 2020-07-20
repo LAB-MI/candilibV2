@@ -11,7 +11,7 @@
       <v-card
         v-for="groupInfo of profileInfo"
         :key="groupInfo[0][1]"
-        class="spaced"
+        class="spaced t-result-candidat-item"
       >
         <div
           v-for="([groupTitle, value]) of groupInfo"
@@ -28,6 +28,7 @@
         </div>
       </v-card>
     </v-card-text>
+    <slot />
   </v-card>
 </template>
 

@@ -2,6 +2,20 @@
 - Candidate search and display of the name
 */
 
+import {
+  now,
+  getFrenchDateTimeFromIso,
+} from '../support/dateUtils'
+
+import {
+  adminBookPlaceForCandidat,
+  adminCancelBookedPlace,
+  adminCheckCandidatHystoryActionsByType,
+  candidatBookPlace,
+  candidatCancelPlace,
+  candidatModifyPlace,
+} from './util/util-cypress'
+
 describe('Search Candidate', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
     before(() => {
@@ -49,6 +63,87 @@ describe('Search Candidate', () => {
       cy.get('.t-checkbox-two')
         .parent()
         .click()
+    })
+  } else {
+    it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
+  }
+})
+
+describe('Candidate Profile', () => {
+  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
+    let magicLink
+
+    const numberOfDaysBeforeDate = 7
+    const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate })
+
+    const candidatsByDepartments = [
+      {
+        codeNeph: '612345678901299',
+        prenom: 'CC_FRONT',
+        nomNaissance: 'CANDIDAT_FRONT_LUFFY_75',
+        adresse: '40 Avenue des terroirs de France 75012 Paris',
+        portable: '0676543986',
+        email: 'candidat_front_luffy_75@candi.lib',
+        departement: '75',
+        isEvaluationDone: true,
+        isValidatedEmail: true,
+        isValidatedByAurige: true,
+      },
+    ]
+
+    beforeEach(() => {
+      cy.deleteAllPlaces()
+      cy.deleteAllMails()
+      cy.adminLogin()
+      cy.addPlanning([nowIn1Week], 'planning01.csv')
+      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
+      cy.adminDisconnection()
+      cy.addCandidat(candidatsByDepartments[0])
+      cy.getNewMagicLinkCandidat(candidatsByDepartments[0].email).then(mLink => {
+        magicLink = mLink
+      })
+    })
+
+    afterEach(() => {
+      candidatsByDepartments.forEach(candidat => {
+        cy.deleteCandidat({ email: candidat.email })
+      })
+    })
+
+    it('Verify candidat archived modification place', () => {
+      const typeAction = 'Modification'
+      candidatBookPlace(magicLink, candidatsByDepartments, nowIn1Week)
+      candidatModifyPlace(magicLink, candidatsByDepartments, nowIn1Week)
+      adminCheckCandidatHystoryActionsByType(candidatsByDepartments, typeAction)
+    })
+
+    it('Verify candidat archived annulation place', () => {
+      const typeAction = 'Annulation'
+      const makeBy = 'Le Candidat'
+      candidatBookPlace(magicLink, candidatsByDepartments, nowIn1Week)
+      candidatCancelPlace(magicLink, candidatsByDepartments)
+      adminCheckCandidatHystoryActionsByType(candidatsByDepartments, typeAction, makeBy)
+    })
+
+    it('Verify candidat archived annulation place by admin', () => {
+      const typeAction = 'Annulation admin'
+      const makeBy = Cypress.env('adminLogin')
+      candidatBookPlace(magicLink, candidatsByDepartments, nowIn1Week)
+      cy.adminLogin()
+      adminCancelBookedPlace(nowIn1Week)
+      adminCheckCandidatHystoryActionsByType(candidatsByDepartments, typeAction, makeBy)
+      cy.get('tbody > tr > :nth-child(9)').should('contain', getFrenchDateTimeFromIso(now).split('à')[0])
+      cy.get('tbody > tr > :nth-child(8)').should('contain', 'Le Candidat')
+    })
+
+    it('Verify candidat affect candidat place by admin', () => {
+      const typeAction = 'Annulation admin'
+      const makeBy = Cypress.env('adminLogin')
+      adminBookPlaceForCandidat(nowIn1Week, candidatsByDepartments)
+      adminCancelBookedPlace(nowIn1Week)
+      adminCheckCandidatHystoryActionsByType(candidatsByDepartments, typeAction, makeBy)
+      cy.get('tbody > tr > :nth-child(9)').should('contain', getFrenchDateTimeFromIso(now).split('à')[0])
+      cy.get('tbody > tr > :nth-child(8)').should('contain', Cypress.env('adminLogin'))
     })
   } else {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
