@@ -16,7 +16,11 @@ import {
 } from '../../models/candidat'
 import { findPlaceByCandidatId } from '../../models/place'
 import { statutReasonDictionnary } from '../common/reason.constants'
-import { UNKNOWN_ERROR_GET_CANDIDAT } from './message.constants'
+import { UNKNOWN_ERROR_GET_CANDIDAT, BAD_PARAMS } from './message.constants'
+import {
+  email as emailRegex,
+} from '../../util'
+import { modifyCandidatEmail } from './candidats-business'
 
 /**
  * Importe le fichier JSON d'aurige
@@ -303,6 +307,49 @@ export const getBookedCandidats = async (req, res) => {
     return
   }
   res.json(candidats)
+}
+
+/**
+ * Msie à jour de l'adresse e-mail du candidat par l'adminstrateur
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId Id de l'utilisateur
+ * @param {Object} req.body
+ * @param {string} req.body.candidatId Id du candidat
+ * @param {string} req.newEmail nouvel adresse e-mail
+ * @param {import('express').Response} res
+ */
+export const updateCandidats = async (req, res) => {
+  const { id: candidatId } = req.params
+  const { email: newEmail } = req.body
+  const loggerInfo = {
+    section: 'admin-update-candidats',
+    candidatId,
+    newEmail,
+    admin: req.userId,
+  }
+
+  // Check params
+  if (!candidatId || !newEmail || !emailRegex.test(newEmail)) {
+    const message = BAD_PARAMS
+    appLogger.warn({ ...loggerInfo, description: message })
+    res.status(400).json({
+      success: false,
+      message,
+    })
+    return
+  }
+  try {
+    const candidat = await modifyCandidatEmail(candidatId, newEmail)
+    const message = `Le courriel du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`
+    appLogger.info({ ...loggerInfo, description: message })
+    res.status(200).send({ success: true, message })
+  } catch (error) {
+    appLogger.error({ ...loggerInfo, description: error.message, error })
+    res.status(500).send({ success: false, message: error.message })
+  }
 }
 
 /**
