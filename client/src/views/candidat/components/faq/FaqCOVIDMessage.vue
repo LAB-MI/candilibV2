@@ -19,16 +19,7 @@
           <img :src="imgMasque">
         </td>
         <td>
-          Port obligatoire d’un masque a minima de type à usage non-sanitaire de catégorie 1 pour vous et votre accompagnateur (principe de protection croisée). Masque chirurgical recommandé (port plus confortable)
-          <v-divider class="mt-2" />
-        </td>
-      </tr>
-      <tr>
-        <td class="question-covid-content-col1">
-          <img :src="imgCasque">
-        </td>
-        <td>
-          Port obligatoire d’une visière de protection (en supplément du masque) pour votre accompagnateur.
+          Port obligatoire d'un masque à usage médical (vous et votre accompagnateur).
           <v-divider class="mt-2" />
         </td>
       </tr>
@@ -46,7 +37,7 @@
           <img :src="imgHousse">
         </td>
         <td>
-          Housse de protection obligatoire sur les sièges.
+          Ventilation autorisée en position basse et sans recyclage d'air.
           <v-divider class="mt-2" />
         </td>
       </tr>
