@@ -48,6 +48,9 @@
 </template>
 
 <script>
+
+import Vue from 'vue'
+
 import { mapState } from 'vuex'
 import { Interval } from 'luxon'
 import {
@@ -111,7 +114,12 @@ const candidatProfileInfoDictionary = [
     ['canAccessAt', 'Date d\'accès', convertToLegibleDate],
   ],
   [
-    ['email', 'Email'], ['portable', 'Portable'], ['departement', ' Département'],
+    ['email', 'Email', (email) => {
+      Vue.component('fiche-candidat-email', () => import('./candidats/FicheCandidatEmail'))
+      return { name: 'fiche-candidat-email', data: { email } }
+    }, true],
+    ['portable', 'Portable'],
+    ['departement', ' Département'],
   ],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDateTime],
@@ -155,7 +163,7 @@ export default {
 
   watch: {
     candidat (newVal) {
-      this.toggelInfo(newVal)
+      this.profileInfo = transformToProfileInfo(newVal, candidatProfileInfoDictionary)
     },
     profileInfo (newVal) {
       this.toggelInfo(newVal)
