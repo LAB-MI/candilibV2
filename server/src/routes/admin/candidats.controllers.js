@@ -342,13 +342,14 @@ export const updateCandidats = async (req, res) => {
     return
   }
   try {
-    const candidat = await modifyCandidatEmail(candidatId, newEmail)
+    const { candidat, messages } = await modifyCandidatEmail(candidatId, newEmail, loggerInfo)
     const message = `Le courriel du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`
     appLogger.info({ ...loggerInfo, description: message })
-    res.status(200).send({ success: true, message })
+
+    res.status(200).send({ success: true, message: [message, ...messages].toString() })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.message, error })
-    res.status(500).send({ success: false, message: error.message })
+    res.status(error.status || 500).send({ success: false, message: error.message })
   }
 }
 
