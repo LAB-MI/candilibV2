@@ -273,7 +273,7 @@ export const findPlaceBookedByCandidat = async (
   options = {},
   populate,
 ) => {
-  const query = Place.findOne({ candidat }, options)
+  const query = Place.findOne({ candidat, booked: true }, options)
   queryPopulate(populate, query)
 
   const place = await query.exec()
@@ -295,7 +295,7 @@ export const findAndbookPlace = async (
   // }
   const query = Place.findOneAndUpdate(
     { centre: { $in: centres }, date, candidat: { $eq: undefined } },
-    { $set: { candidat, bookedAt } },
+    { $set: { candidat, bookedAt, booked: true } },
     { new: true, fields },
   )
   if (populate && populate.centre) {
@@ -308,12 +308,13 @@ export const findAndbookPlace = async (
     query.where('createdAt').lt(createdBefore)
   }
 
-  const place = await query.exec()
-  return place
+  const updatedPlace = await query.exec()
+  return updatedPlace
 }
 
 export const removeBookedPlace = place => {
   place.candidat = undefined
+  place.booked = undefined
 
   return place.save()
 }

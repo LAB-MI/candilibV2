@@ -381,22 +381,28 @@ export const bookPlaceByCandidat = async (req, res) => {
   }
 
   try {
-    const previewBookedPlace = await getReservationByCandidat(candidatId, {
+    const previousBookedPlace = await getReservationByCandidat(candidatId, {
       centre: true,
       candidat: true,
     })
+    // TODO: extract to external function (two next lines)
+    console.log({ previousBookedPlace })
+    if (previousBookedPlace) {
+      previousBookedPlace.booked = false
+      await previousBookedPlace.save()
+    }
     appLogger.info({
       section,
       action: 'get-reservation',
       candidatId,
-      previewBookedPlace,
+      previousBookedPlace,
     })
 
     const statusValidResa = await validCentreDateReservation(
       candidatId,
       nomCentre,
       date,
-      previewBookedPlace,
+      previousBookedPlace,
     )
 
     if (statusValidResa) {
@@ -438,18 +444,20 @@ export const bookPlaceByCandidat = async (req, res) => {
     let statusRemove
     let dateAfterBook
 
-    if (previewBookedPlace) {
+    if (previousBookedPlace) {
       try {
-        statusRemove = await removeReservationPlace(previewBookedPlace, true)
+        statusRemove = await removeReservationPlace(previousBookedPlace, true)
         dateAfterBook = statusRemove.dateAfterBook
       } catch (error) {
         techLogger.error({
           section,
           candidatId,
           description: 'Échec de suppression de la réservation',
-          previewBookedPlace,
+          previousBookedPlace,
           error,
         })
+        previousBookedPlace.booked = true
+        await previousBookedPlace.save()
       }
     }
 
