@@ -307,17 +307,24 @@ export const bookPlace = async (
   )
   const centres = foundCentres.map(centre => centre._id)
   const bookedAt = getFrenchLuxon().toJSDate()
-  const place = await findAndbookPlace(
-    candidatId,
-    centres,
-    date,
-    bookedAt,
-    { inspecteur: 0 },
-    { centre: true, candidat: true },
-    getDateDisplayPlaces(),
-  )
-
-  return place
+  try {
+    const place = await findAndbookPlace(
+      candidatId,
+      centres,
+      date,
+      bookedAt,
+      { inspecteur: 0 },
+      { centre: true, candidat: true },
+      getDateDisplayPlaces(),
+    )
+    return place
+  } catch (error) {
+    if (error.code === 11000) {
+      error.code = 509
+      error.message = 'Erreur: la place est déjà réservée.'
+    }
+    throw error
+  }
 }
 
 /**

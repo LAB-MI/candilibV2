@@ -34,6 +34,7 @@ import {
   findPlaceWithSameWindow,
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
+  setBookedPlaceKeyToFalseOrTrue,
 } from '../../models/place'
 import {
   REASON_REMOVE_RESA_ADMIN,
@@ -491,7 +492,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     adminId: admin._id,
   }
   appLogger.debug(loggerInfo)
-
+  // TODO: Probleme posible si booked est egale a false et qu'il y a une place avec booked a true sur le meme candiddat
   // Annuler la place
   const placeUpdated = await removeBookedPlace(place)
   // Archive place
@@ -637,11 +638,14 @@ export const moveCandidatInPlaces = async (resa, place) => {
     candidat,
   })
 
+  await setBookedPlaceKeyToFalseOrTrue(resa, false)
+
   const newResa = await bookPlaceById(placeId, candidat, {
     bookedAt,
     bookedByAdmin,
   })
   if (!newResa) {
+    await setBookedPlaceKeyToFalseOrTrue(resa, true)
     throw new ErrorWithStatus(400, 'Cette place posséde une réservation')
   }
 
@@ -699,7 +703,12 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   const placeAlreadyBookedByCandidat = await findPlaceBookedByCandidat(
     candidatId,
   )
+
   const { _id, departements, signUpDate, status, email } = admin
+  if (placeAlreadyBookedByCandidat) {
+    await setBookedPlaceKeyToFalseOrTrue(placeAlreadyBookedByCandidat, false)
+  }
+
   const newBookedPlace = await bookPlaceById(
     placeId,
     candidatId,
@@ -721,6 +730,9 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   )
 
   if (!newBookedPlace) {
+    if (placeAlreadyBookedByCandidat) {
+      await setBookedPlaceKeyToFalseOrTrue(placeAlreadyBookedByCandidat, true)
+    }
     throw new ErrorWithStatus(400, PLACE_IS_ALREADY_BOOKED)
   }
 

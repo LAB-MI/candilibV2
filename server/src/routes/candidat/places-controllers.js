@@ -7,8 +7,8 @@ import { appLogger, techLogger } from '../../util'
 import {
   addInfoDateToRulesResa,
   bookPlace,
-  getDatesByCentresNameAndGeoDepartement,
   getDatesByCentreId,
+  getDatesByCentresNameAndGeoDepartement,
   getLastDateToCancel,
   getReservationByCandidat,
   hasAvailablePlaces,
@@ -27,6 +27,7 @@ import {
   USER_INFO_MISSING,
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
+import { setBookedPlaceKeyToFalseOrTrue } from '../../models/place'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -385,12 +386,11 @@ export const bookPlaceByCandidat = async (req, res) => {
       centre: true,
       candidat: true,
     })
-    // TODO: extract to external function (two next lines)
-    console.log({ previousBookedPlace })
+
     if (previousBookedPlace) {
-      previousBookedPlace.booked = false
-      await previousBookedPlace.save()
+      await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, false)
     }
+
     appLogger.info({
       section,
       action: 'get-reservation',
@@ -424,9 +424,13 @@ export const bookPlaceByCandidat = async (req, res) => {
       date,
       geoDepartement,
     )
+
     if (!reservation) {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"
+      if (previousBookedPlace) {
+        await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
+      }
       appLogger.warn({
         section,
         candidatId,
@@ -456,8 +460,7 @@ export const bookPlaceByCandidat = async (req, res) => {
           previousBookedPlace,
           error,
         })
-        previousBookedPlace.booked = true
-        await previousBookedPlace.save()
+        await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
       }
     }
 
@@ -514,10 +517,17 @@ export const bookPlaceByCandidat = async (req, res) => {
       description: error.message,
       error,
     })
-    res.status(500).json({
+    let errorMessage = "Une erreur est survenue : Impossible de réserver la place. L'administrateur du site a été prévenu"
+    let statusCode = 500
+    // TODO: Gérer le probleme de duplicate key
+    if ((error.code === 509) || (error.code === 11000)) {
+      errorMessage = (error.code === 11000)
+        ? 'Une erreur est survenue : Impossible de supprimer la place précedente. L\'administrateur du site a été prévenu' : error.message
+      statusCode = 509
+    }
+    res.status(statusCode).json({
       success: false,
-      message:
-        "Une erreur est survenue : Impossible de réserver la place. L'administrateur du site a été prévenu",
+      message: errorMessage,
     })
   }
 }

@@ -273,7 +273,7 @@ export const findPlaceBookedByCandidat = async (
   options = {},
   populate,
 ) => {
-  const query = Place.findOne({ candidat, booked: true }, options)
+  const query = Place.findOne({ candidat, booked: { $ne: false } }, options)
   queryPopulate(populate, query)
 
   const place = await query.exec()
@@ -328,7 +328,7 @@ export const bookPlaceById = async (
 ) => {
   const query = Place.findOneAndUpdate(
     { _id: placeId, candidat: { $eq: undefined } },
-    { $set: { candidat, ...bookedInfo } },
+    { $set: { candidat, ...bookedInfo, booked: true } },
     { new: true, fields },
   )
   queryPopulate(populate, query)
@@ -417,4 +417,17 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
     query.where('inspecteur').in(inspecteurIdListe)
   }
   return query.exec()
+}
+
+/**
+ * Permet de mettre à "false" la clef "booked" d'une place
+ *
+ * @async
+ * @function
+ *
+ * @param {Object} bookedPlace - Type model place which populate centre and candidat
+ */
+export const setBookedPlaceKeyToFalseOrTrue = (bookedPlace, flag) => {
+  bookedPlace.booked = flag
+  return bookedPlace.save()
 }
