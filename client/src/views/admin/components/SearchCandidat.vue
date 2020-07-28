@@ -192,7 +192,7 @@ export default {
     getActionsHistory () {
       const { places } = this.candidat
       if (!places || !(places.length)) {
-        return 'Aucune action pour ce candidat'
+        return []
       }
       return places.map(({ archivedAt, archiveReason, byUser, centre, date, departement, inspecteur, bookedByAdmin, bookedAt }) => {
         const frenchDate = convertToLegibleDateTime(date)
@@ -211,7 +211,7 @@ export default {
           bookedByAdmin: bookedByAdmin ? bookedByAdmin.email : 'Le Candidat',
           bookedAt: actionBookedAtDate,
         }
-      })
+      }).reverse()
     },
   },
 }
