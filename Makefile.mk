@@ -102,8 +102,8 @@ LINE_DELAY := $(shell [ -n "$$LINE_DELAY" ] && echo $$LINE_DELAY )
 
 # Reverse proxy (nginx)
 API_USER_SCOPE=http_x_forwarded_for
-API_USER_LIMIT_RATE=10r/s
-API_USER_BURST=15 nodelay
+API_USER_LIMIT_RATE=5r/s
+API_USER_BURST=12 delay=8
 APP_USER_LIMIT_RATE=30r/s
 APP_USER_BURST=80 nodelay
 
