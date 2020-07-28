@@ -1,10 +1,10 @@
 <template>
-  <div>
+  <div class="t-update-candidat-email">
     <div
       v-if="!isOnEdit"
-      class="u-flex u-flex--v-center"
+      class="u-flex u-flex--v-center t-update-candidat-email-read"
     >
-      <strong class="label">{{ title }}&nbsp;:</strong>
+      <strong class="label">{{ title }} :</strong>
       <span
 
         class="value"
@@ -13,7 +13,7 @@
         v-show="!isOnEdit"
         color="success"
         icon
-        class="btn-label"
+        class="btn-label t-update-candidat-email-edit"
         @click="isOnEdit=true"
       >
         <v-icon>create</v-icon>
@@ -29,7 +29,7 @@
         v-model="email"
         label="Saisir la nouvelle adresse courriel"
         :rules="emailRules"
-        class="u-full-width"
+        class="u-full-width t-update-candidat-email-write"
       />
     </confirm-box>
   </div>

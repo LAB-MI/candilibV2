@@ -40,8 +40,9 @@ describe('Search Candidate', () => {
       cy.get('.t-search-candidat [type=text]').type(Cypress.env('candidat'))
       cy.contains(Cypress.env('candidat')).click()
       cy.get('h3').should('contain', 'nformations')
+
       cy.get('.t-result-candidat')
-        .contains('Email')
+        .contains('Email :')
         .parent()
         .should('contain', Cypress.env('emailCandidat'))
     })
@@ -63,6 +64,62 @@ describe('Search Candidate', () => {
       cy.get('.t-checkbox-two')
         .parent()
         .click()
+    })
+
+    const checkEmailValue = (email = Cypress.env('emailCandidat')) => {
+      cy.get('.t-result-candidat')
+        .contains('Email :')
+        .parent()
+        .should('contain', email)
+    }
+    const adminGoToInfoCandidat = (nomNaissance, editEmail, emailToVerify = Cypress.env('emailCandidat')) => {
+      cy.get('.t-search-candidat [type=text]').type(nomNaissance)
+      cy.contains(nomNaissance).click()
+      cy.get('h3').should('contain', 'nformations')
+
+      checkEmailValue(emailToVerify)
+
+      cy.get('.t-update-candidat-email-edit').click()
+      cy.get('.t-update-candidat-email-write').within(updatetowrite => {
+        cy.get('input').should('have.value', emailToVerify)
+        editEmail && editEmail()
+      })
+    }
+
+    it('Update candidat email with incorrect format', () => {
+      adminGoToInfoCandidat(Cypress.env('candidat'), () => {
+        cy.get('input').type('{selectall}{backspace}')
+      })
+      cy.get('.v-btn--contained').contains('Valider').parent().should('be.disabled')
+      cy.get('button').contains('Retour').click()
+      checkEmailValue()
+    })
+
+    it('Update candidat email with same email', () => {
+      adminGoToInfoCandidat(Cypress.env('candidat'))
+
+      cy.get('.v-btn--contained').contains('Valider').parent().should('not.be.disabled')
+      cy.get('.v-btn--contained').contains('Valider').click()
+
+      cy.get('.v-snack--active')
+        .should('contain', 'La nouvelle adresse courriel est identique à ')
+    })
+
+    it('Update candidat email', () => {
+      let emailToVerify
+      for (const newEmail of ['test@test.com', Cypress.env('emailCandidat')]) {
+        adminGoToInfoCandidat(Cypress.env('candidat'), () => {
+          cy.get('input').type('{selectall}{backspace}')
+          cy.get('input').type(newEmail)
+        }, emailToVerify)
+        cy.get('.v-btn--contained').contains('Valider').parent().should('not.be.disabled')
+        cy.get('.v-btn--contained').contains('Valider').click()
+
+        cy.get('.v-snack--active')
+          .should('contain', 'a été changé.')
+        checkEmailValue(newEmail)
+        emailToVerify = newEmail
+      }
     })
   } else {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
