@@ -322,6 +322,10 @@ export const getBookedPlaces = async (req, res) => {
   }
 }
 
+function isMissingPrerequesite (nomCentre, date, isAccompanied, hasDualControlCar) {
+  return !nomCentre || !date || !isAccompanied || !hasDualControlCar
+}
+
 /**
  * Marque une place comme réservée par le candidat
  *
@@ -345,9 +349,12 @@ export const bookPlaceByCandidat = async (req, res) => {
     nomCentre,
     geoDepartement,
     date,
-    isAccompanied,
-    hasDualControlCar,
+    isAccompanied: isAccompaniedAsBoolean,
+    hasDualControlCar: hasDualControlCarAsBoolean,
   } = req.body
+
+  const isAccompanied = isAccompaniedAsBoolean === true
+  const hasDualControlCar = hasDualControlCarAsBoolean === true
 
   appLogger.info({
     section,
@@ -357,9 +364,9 @@ export const bookPlaceByCandidat = async (req, res) => {
     isAccompanied,
     hasDualControlCar,
   })
-  // TODO: GET CENTRE ID BY NAME AND GEODEPT
 
-  if (!nomCentre || !date || !isAccompanied || !hasDualControlCar) {
+  // TODO: GET CENTRE ID BY NAME AND GEODEPT
+  if (isMissingPrerequesite(nomCentre, date, isAccompanied, hasDualControlCar)) {
     const msg = []
     if (!nomCentre) msg.push(' du centre')
     if (!date) msg.push(' de la date reservation')
