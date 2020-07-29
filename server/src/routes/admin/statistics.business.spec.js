@@ -153,10 +153,10 @@ describe('test statistics', () => {
     })
   })
 
-  it('Should have, stats in future with total subscript', async () => {
+  it('Should have stats in future with total subscript', async () => {
     const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
     const result = await getAllPlacesProposeInFutureByDpt(dateBeginPeriode)
-    const shouldHaveThisResult = [
+    const expectedResult = [
       {
         beginDate: dateBeginPeriode,
         departement: '92',
@@ -173,7 +173,7 @@ describe('test statistics', () => {
       },
     ]
 
-    expect(result).toEqual(expect.arrayContaining(shouldHaveThisResult))
+    expect(result).toEqual(expect.arrayContaining(expectedResult))
   })
 
   it('Should have two candidat stats by departement leave retention area', async () => {

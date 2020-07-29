@@ -64,6 +64,9 @@ const PlaceSchema = new Schema(
       required: false,
       ref: 'Candidat',
     },
+    booked: {
+      type: Boolean,
+    },
   },
   {
     timestamps: true,
@@ -71,6 +74,7 @@ const PlaceSchema = new Schema(
 )
 
 PlaceSchema.index({ date: 1, inspecteur: 1 }, { unique: true })
+PlaceSchema.index({ candidat: 1, booked: 1 }, { unique: true, sparse: true })
 
 PlaceSchema.pre('save', async function preSave () {
   const place = this

@@ -276,7 +276,7 @@ const checkAndArchiveCandidat = async (
       nomNaissance,
       codeNeph,
       'error',
-      'UNKNOW_CASE',
+      'UNKNOWN_CASE',
       message,
     )
   } else {
@@ -406,7 +406,7 @@ const updateValidCandidat = async (
         .toISO()
       // }
     }
-    // mise à jours du candidat
+    // mise à jour du candidat
     candidat.set(infoCandidatToUpdate)
     await candidat.save()
     // Candidat déjà validé
@@ -435,6 +435,7 @@ const updateValidCandidat = async (
 
     return getCandidatStatus(nomNaissance, codeNeph, 'success', OK, message)
   } catch (err) {
+    appLogger.error(err)
     if (codeErrMessage) {
       err.codeMessage = codeErrMessage
       err.messageToUser = `Pour le ${departement}, Impossible d'envoyer un magic link par un mail à ce candidat ${email}, il a été validé, cependant`
@@ -453,7 +454,7 @@ const updateValidCandidat = async (
       error: err,
     })
 
-    err.codeMessage = 'UNKNOW_ERROR'
+    err.codeMessage = 'UNKNOWN_ERROR'
     throw err
   }
 }
@@ -545,7 +546,7 @@ export const synchroAurige = async (buffer, callback) => {
         nomNaissance,
         codeNeph,
         'error',
-        'UNKNOW_ERROR',
+        'UNKNOWN_ERROR',
         message,
       )
     }
