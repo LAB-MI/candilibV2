@@ -14,10 +14,13 @@
         class="spaced t-result-candidat-item"
       >
         <div
-          v-for="([groupTitle, value]) of groupInfo"
+          v-for="([groupTitle, value, isComponent, info ]) of groupInfo"
           :key="groupTitle"
         >
-          <div class="u-flex  u-flex--v-center">
+          <div
+            v-if="!isComponent"
+            class="u-flex  u-flex--v-center"
+          >
             <strong class="label">{{ groupTitle }}&nbsp;:</strong>
 
             <span
@@ -25,6 +28,12 @@
               v-html="value"
             />
           </div>
+          <component
+            :is="value"
+            v-else
+            :info="info"
+            :title="groupTitle"
+          />
         </div>
       </v-card>
     </v-card-text>

@@ -5,7 +5,7 @@
 
 import express from 'express'
 
-import { getCandidats, importCandidats } from './candidats.controllers'
+import { getCandidats, importCandidats, updateCandidats } from './candidats.controllers'
 import {
   createUserController,
   archiveUserController,
@@ -242,6 +242,10 @@ router.get(
   getCandidats,
 )
 
+/**
+ * Mise à jour des données d'un candidat
+ */
+router.patch('/candidats/:id', updateCandidats)
 /**
  * @swagger
  *
