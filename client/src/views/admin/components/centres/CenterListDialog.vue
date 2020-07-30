@@ -29,7 +29,7 @@
         ref="updateForm"
         :key="centre._id"
         :add-centre="false"
-        :default-values="centre"
+        :default-values="defaultCentreDialog"
         @change="getFormData"
       />
 
@@ -86,6 +86,7 @@ export default {
   data () {
     return {
       showDialog: false,
+      defaultCentreDialog: { ...this.centre },
     }
   },
 
@@ -98,29 +99,30 @@ export default {
       lat,
       geoDepartement,
     }) {
-      this.centre.nom = nom
-      this.centre.label = label
-      this.centre.adresse = adresse
-      this.centre.lon = lon
-      this.centre.lat = lat
-      this.centre.geoDepartement = geoDepartement
+      this.defaultCentreDialog.nom = nom
+      this.defaultCentreDialog.label = label
+      this.defaultCentreDialog.adresse = adresse
+      this.defaultCentreDialog.lon = lon
+      this.defaultCentreDialog.lat = lat
+      this.defaultCentreDialog.geoDepartement = geoDepartement
     },
 
     sendFormData () {
-      this.close()
       this.$emit('click', {
-        id: this.centre._id,
-        nom: this.centre.nom,
-        label: this.centre.label,
-        adresse: this.centre.adresse,
-        lon: this.centre.lon,
-        lat: this.centre.lat,
-        geoDepartement: this.centre.geoDepartement,
+        id: this.defaultCentreDialog._id,
+        nom: this.defaultCentreDialog.nom,
+        label: this.defaultCentreDialog.label,
+        adresse: this.defaultCentreDialog.adresse,
+        lon: this.defaultCentreDialog.lon,
+        lat: this.defaultCentreDialog.lat,
+        geoDepartement: this.defaultCentreDialog.geoDepartement,
       })
+      this.close()
     },
 
     close () {
       this.showDialog = false
+      this.defaultCentreDialog = { ...this.centre }
       this.$refs.updateForm.resetForm()
     },
   },
