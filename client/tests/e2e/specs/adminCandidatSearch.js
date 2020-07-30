@@ -14,6 +14,7 @@ import {
   candidatBookPlace,
   candidatCancelPlace,
   candidatModifyPlace,
+  checkEmailValue,
 } from './util/util-cypress'
 
 describe('Search Candidate', () => {
@@ -66,12 +67,6 @@ describe('Search Candidate', () => {
         .click()
     })
 
-    const checkEmailValue = (email = Cypress.env('emailCandidat')) => {
-      cy.get('.t-result-candidat')
-        .contains('Email :')
-        .parent()
-        .should('contain', email)
-    }
     const adminGoToInfoCandidat = (nomNaissance, editEmail, emailToVerify = Cypress.env('emailCandidat')) => {
       cy.get('.t-search-candidat [type=text]').type(nomNaissance)
       cy.contains(nomNaissance).click()

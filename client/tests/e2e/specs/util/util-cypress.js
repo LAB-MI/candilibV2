@@ -1,14 +1,18 @@
 
+export const checkEmailValue = (email = Cypress.env('emailCandidat')) => {
+  cy.get('.t-result-candidat')
+    .contains('Email :')
+    .parent()
+    .should('contain', email)
+}
+
 export const adminCheckCandidatHystoryActionsByType = (candidatsByDepartments, typeAction, byThis) => {
   cy.adminLogin()
   cy.visit(Cypress.env('frontAdmin') + 'admin/admin-candidat')
   cy.get('.t-search-candidat [type=text]').type(candidatsByDepartments[0].nomNaissance)
   cy.contains(candidatsByDepartments[0].nomNaissance).click()
   cy.get('h3').should('contain', 'nformations')
-  cy.get('.t-result-candidat')
-    .contains('Email')
-    .parent()
-    .should('contain', candidatsByDepartments[0].email)
+  checkEmailValue(candidatsByDepartments[0].email)
   cy.get('.t-result-candidat-item').eq(4)
     .parent()
     .should('contain', Cypress.env('centre').toUpperCase())
@@ -22,7 +26,7 @@ export const adminCheckCandidatHystoryActionsByType = (candidatsByDepartments, t
   }
 }
 
-export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week) => {
+export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week, hasCheckMail) => {
   cy.visit(magicLink)
   cy.wait(100)
   cy.get('h2').eq(0)
@@ -65,22 +69,24 @@ export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week)
   cy.get('h2').should('contain', 'Ma réservation')
   cy.get('h3').should('contain', Cypress.env('centre'))
   cy.get('p').should('contain', 'à 08:30')
-  cy.getLastMail()
-    .getRecipients()
-    .should('contain', candidatsByDepartments[0].email)
-  cy.getLastMail()
-    .getSubject()
-    .should(
-      'contain',
-      '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=',
-    )
-  cy.getLastMail()
-    .its('Content.Body')
-    .should('contain', Cypress.env('centre').toUpperCase())
-    .and('contain', '8:30')
+  if (hasCheckMail) {
+    cy.getLastMail()
+      .getRecipients()
+      .should('contain', candidatsByDepartments[0].email)
+    cy.getLastMail()
+      .getSubject()
+      .should(
+        'contain',
+        '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=',
+      )
+    cy.getLastMail()
+      .its('Content.Body')
+      .should('contain', Cypress.env('centre').toUpperCase())
+      .and('contain', '8:30')
+  }
 }
 
-export const candidatCancelPlace = (magicLink, candidatsByDepartments) => {
+export const candidatCancelPlace = (magicLink, candidatsByDepartments, hasCheckMail) => {
   cy.deleteAllMails()
   cy.visit(magicLink)
   cy.get('body').should('contain', 'Annuler ma réservation')
@@ -96,22 +102,24 @@ export const candidatCancelPlace = (magicLink, candidatsByDepartments) => {
   )
 
   cy.get('h2').should('contain', 'Choix du département')
-  cy.getLastMail()
-    .getRecipients()
-    .should('contain', candidatsByDepartments[0].email)
-  cy.getLastMail()
-    .getSubject()
-    .should(
-      'contain',
-      '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=',
-    )
-  cy.getLastMail()
-    .its('Content.Body')
-    .should('contain', Cypress.env('centre').toUpperCase())
-    .and('contain', '08:30')
+  if (hasCheckMail) {
+    cy.getLastMail()
+      .getRecipients()
+      .should('contain', candidatsByDepartments[0].email)
+    cy.getLastMail()
+      .getSubject()
+      .should(
+        'contain',
+        '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=',
+      )
+    cy.getLastMail()
+      .its('Content.Body')
+      .should('contain', Cypress.env('centre').toUpperCase())
+      .and('contain', '08:30')
+  }
 }
 
-export const candidatModifyPlace = (magicLink, candidatsByDepartments, nowIn1Week) => {
+export const candidatModifyPlace = (magicLink, candidatsByDepartments, nowIn1Week, hasCheckMail) => {
   cy.deleteAllMails()
   const nowIn1WeekInfo = nowIn1Week.toFormat('yyyy-MM-dd')
   cy.visit(magicLink)
@@ -153,23 +161,25 @@ export const candidatModifyPlace = (magicLink, candidatsByDepartments, nowIn1Wee
   cy.get('h2').should('contain', 'Ma réservation')
   cy.get('h3').should('contain', Cypress.env('centre'))
   cy.get('p').should('contain', 'à 09:00')
-  cy.getLastMail()
-    .getRecipients()
-    .should('contain', candidatsByDepartments[0].email)
-  cy.getLastMail()
-    .getSubject()
-    .should(
-      'contain',
-      '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=',
-    )
-  cy.getLastMail()
-    .its('Content.Body')
-    .should('contain', Cypress.env('centre').toUpperCase())
-    .and('contain', '09:00')
-  cy.getLastMail({
-    subject:
-    '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=',
-  }).should('have.property', 'Content')
+  if (hasCheckMail) {
+    cy.getLastMail()
+      .getRecipients()
+      .should('contain', candidatsByDepartments[0].email)
+    cy.getLastMail()
+      .getSubject()
+      .should(
+        'contain',
+        '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=',
+      )
+    cy.getLastMail()
+      .its('Content.Body')
+      .should('contain', Cypress.env('centre').toUpperCase())
+      .and('contain', '09:00')
+    cy.getLastMail({
+      subject:
+        '=?UTF-8?Q?Annulation_de_votre_convocation_=C3=A0_l?= =?UTF-8?Q?=27examen?=',
+    }).should('have.property', 'Content')
+  }
 }
 
 export const adminCancelBookedPlace = (date) => {
