@@ -301,9 +301,6 @@ export const findAndbookPlace = async (
   if (populate && populate.centre) {
     query.populate('centre')
   }
-  if (populate && populate.candidat) {
-    query.populate('candidat')
-  }
   if (createdBefore) {
     query.where('createdAt').lt(createdBefore)
   }
@@ -338,7 +335,7 @@ export const bookPlaceById = async (
 
 export const findPlaceWithSameWindow = async creneau => {
   const { date, centre, inspecteur } = creneau
-  const place = await Place.findOne({ date, centre, inspecteur })
+  const place = await Place.findOne({ centre, date, inspecteur })
   return place
 }
 
