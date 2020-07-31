@@ -8,3 +8,4 @@ export const SUBJECT_CANCEL_BY_ADMIN =
 export const SUBJECT_MAIL_VALIDATION =
   "Validation d'adresse courriel pour Candilib"
 export const SUBJECT_MAIL_INFO = 'Information Candilib'
+export const SUBJECT_UPDATE_CANDDIAT_MAIL = 'Modification de votre adresse courriel'

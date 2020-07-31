@@ -7,8 +7,8 @@ import { appLogger, techLogger } from '../../util'
 import {
   addInfoDateToRulesResa,
   bookPlace,
-  getDatesByCentresNameAndGeoDepartement,
   getDatesByCentreId,
+  getDatesByCentresNameAndGeoDepartement,
   getLastDateToCancel,
   getReservationByCandidat,
   hasAvailablePlaces,
@@ -27,6 +27,7 @@ import {
   USER_INFO_MISSING,
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
+import { setBookedPlaceKeyToFalseOrTrue } from '../../models/place'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -321,6 +322,10 @@ export const getBookedPlaces = async (req, res) => {
   }
 }
 
+function isMissingPrerequesite (nomCentre, date, isAccompanied, hasDualControlCar) {
+  return !nomCentre || !date || !isAccompanied || !hasDualControlCar
+}
+
 /**
  * Marque une place comme réservée par le candidat
  *
@@ -344,9 +349,12 @@ export const bookPlaceByCandidat = async (req, res) => {
     nomCentre,
     geoDepartement,
     date,
-    isAccompanied,
-    hasDualControlCar,
+    isAccompanied: isAccompaniedAsBoolean,
+    hasDualControlCar: hasDualControlCarAsBoolean,
   } = req.body
+
+  const isAccompanied = isAccompaniedAsBoolean === true
+  const hasDualControlCar = hasDualControlCarAsBoolean === true
 
   appLogger.info({
     section,
@@ -356,9 +364,9 @@ export const bookPlaceByCandidat = async (req, res) => {
     isAccompanied,
     hasDualControlCar,
   })
-  // TODO: GET CENTRE ID BY NAME AND GEODEPT
 
-  if (!nomCentre || !date || !isAccompanied || !hasDualControlCar) {
+  // TODO: GET CENTRE ID BY NAME AND GEODEPT
+  if (isMissingPrerequesite(nomCentre, date, isAccompanied, hasDualControlCar)) {
     const msg = []
     if (!nomCentre) msg.push(' du centre')
     if (!date) msg.push(' de la date reservation')
@@ -381,22 +389,27 @@ export const bookPlaceByCandidat = async (req, res) => {
   }
 
   try {
-    const previewBookedPlace = await getReservationByCandidat(candidatId, {
+    const previousBookedPlace = await getReservationByCandidat(candidatId, {
       centre: true,
       candidat: true,
     })
+
+    if (previousBookedPlace) {
+      await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, false)
+    }
+
     appLogger.info({
       section,
       action: 'get-reservation',
       candidatId,
-      previewBookedPlace,
+      previousBookedPlace,
     })
 
     const statusValidResa = await validCentreDateReservation(
       candidatId,
       nomCentre,
       date,
-      previewBookedPlace,
+      previousBookedPlace,
     )
 
     if (statusValidResa) {
@@ -418,9 +431,13 @@ export const bookPlaceByCandidat = async (req, res) => {
       date,
       geoDepartement,
     )
+
     if (!reservation) {
       const success = false
       const message = "Il n'y a pas de place pour ce créneau"
+      if (previousBookedPlace) {
+        await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
+      }
       appLogger.warn({
         section,
         candidatId,
@@ -438,18 +455,19 @@ export const bookPlaceByCandidat = async (req, res) => {
     let statusRemove
     let dateAfterBook
 
-    if (previewBookedPlace) {
+    if (previousBookedPlace) {
       try {
-        statusRemove = await removeReservationPlace(previewBookedPlace, true)
+        statusRemove = await removeReservationPlace(previousBookedPlace, true)
         dateAfterBook = statusRemove.dateAfterBook
       } catch (error) {
         techLogger.error({
           section,
           candidatId,
           description: 'Échec de suppression de la réservation',
-          previewBookedPlace,
+          previousBookedPlace,
           error,
         })
+        await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
       }
     }
 
@@ -506,10 +524,17 @@ export const bookPlaceByCandidat = async (req, res) => {
       description: error.message,
       error,
     })
-    res.status(500).json({
+    let errorMessage = "Une erreur est survenue : Impossible de réserver la place. L'administrateur du site a été prévenu"
+    let statusCode = 500
+    // TODO: Gérer le probleme de duplicate key
+    if ((error.code === 509) || (error.code === 11000)) {
+      errorMessage = (error.code === 11000)
+        ? 'Une erreur est survenue : Impossible de supprimer la place précedente. L\'administrateur du site a été prévenu' : error.message
+      statusCode = 509
+    }
+    res.status(statusCode).json({
       success: false,
-      message:
-        "Une erreur est survenue : Impossible de réserver la place. L'administrateur du site a été prévenu",
+      message: errorMessage,
     })
   }
 }

@@ -112,7 +112,7 @@ describe('Test places controller', () => {
       next()
     })
     app.get('/places', getPlaces)
-    app.patch('/reservation/:id', updatePlaces)
+    app.patch('/places/:id', updatePlaces)
 
     candidatsCreated = await createCandidats()
     inspecteurCreated = await createInspecteur(inspecteurTest)
@@ -174,7 +174,7 @@ describe('Test places controller', () => {
 
     const departement = '93'
     const { body } = await request(app)
-      .patch(`/reservation/${resa}`)
+      .patch(`/places/${resa}`)
       .send({
         departement,
         inspecteur,
@@ -207,7 +207,7 @@ describe('Test places controller', () => {
 
     const departement = '93'
     const { body } = await request(app)
-      .patch(`/reservation/${resa}`)
+      .patch(`/places/${resa}`)
       .send({
         departement,
         inspecteur,
@@ -307,7 +307,7 @@ describe('update place by admin', () => {
     const [inspecteur1] = await createInspecteurs()
     const [centre1] = await createCentres()
 
-    const placeCanBook = {
+    const availablePlace = {
       date: getFrenchLuxonFromObject({ day: 18, hour: 9 })
         .setLocale('fr')
         .toISO(),
@@ -315,17 +315,18 @@ describe('update place by admin', () => {
       centre: centre1,
     }
 
-    const place = await createPlace(placeCanBook)
+    const place = await createPlace(availablePlace)
     place.centre = centre1
 
     const candidat = candidatsCreatedAndUpdated[0]
-    const placeBooked = {
+    const bookedPlace = {
       date: getFrenchLuxonFromObject({ day: 17, hour: 9 }).toISO(),
       inspecteur: inspecteur1,
       centre: centre1,
       candidat: candidat._id,
+      booked: true,
     }
-    const oldResa = await createPlace(placeBooked)
+    const oldResa = await createPlace(bookedPlace)
 
     const { body } = await request(app)
       .patch(`${apiPrefix}/admin/places/${place._id}`)
@@ -348,15 +349,15 @@ describe('update place by admin', () => {
     expect(newCandidat.places).toBeDefined()
     expect(newCandidat.places).toHaveLength(1)
     expect(getFrenchLuxonFromJSDate(newCandidat.places[0].date)).toEqual(
-      getFrenchLuxonFromISO(placeBooked.date),
+      getFrenchLuxonFromISO(bookedPlace.date),
     )
     expect(newCandidat.places[0]).toHaveProperty(
       'inspecteur',
-      placeBooked.inspecteur._id,
+      bookedPlace.inspecteur._id,
     )
     expect(newCandidat.places[0]).toHaveProperty(
       'centre',
-      placeBooked.centre._id,
+      bookedPlace.centre._id,
     )
     expect(newCandidat.places[0]).toHaveProperty('archivedAt')
     expect(newCandidat.places[0]).toHaveProperty(

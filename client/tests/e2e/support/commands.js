@@ -70,7 +70,7 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
     .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 })
 
-Cypress.Commands.add('addPlanning', (dates) => {
+Cypress.Commands.add('addPlanning', (dates, fileNameTmp = 'planning.csv') => {
   const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
 
   const horaireMorning = [
@@ -87,6 +87,7 @@ Cypress.Commands.add('addPlanning', (dates) => {
   ]
 
   const horaireAfterNoon = [
+    '13:00',
     '13:30',
     '14:00',
     '14:30',
@@ -99,7 +100,6 @@ Cypress.Commands.add('addPlanning', (dates) => {
     ...horaireMorning,
     '12:00',
     '12:30',
-    '13:00',
     ...horaireAfterNoon,
     '16:00',
   ]
@@ -113,18 +113,21 @@ Cypress.Commands.add('addPlanning', (dates) => {
     return acc.concat(placesInspecteur1).concat(placesInspecteur2)
   }, [])
   const placesArray = [csvHeaders].concat(placesInspecteurs).join('\n')
+
+  const fileName1 = fileNameTmp
+  const filePath1 = '../../../' + Cypress.env('filePath') + `/${fileName1}`
+
   // Creates the csv file
-  cy.writeFile(Cypress.env('filePath') + '/planning.csv', placesArray)
+  cy.writeFile(Cypress.env('filePath') + `/${fileName1}`, placesArray)
   // Adds the places from the created planning file
   cy.contains('calendar_today')
     .click()
   cy.get('.t-import-places [type=checkbox]')
     .check({ force: true })
-  const filePath1 = '../../../' + Cypress.env('filePath') + '/planning.csv'
-  const fileName1 = 'planning.csv'
   cy.fixture(filePath1).then(fileContent => {
     cy.get('[type=file]').attachFile({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
   })
+
   cy.get('.v-snack--active')
     .should('contain', fileName1 + ' prêt à être synchronisé')
   cy.get('.import-file-action [type=button]')

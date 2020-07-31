@@ -12,6 +12,7 @@ export const makeResa = (
   place.candidat = candidat._id
   place.bookedAt = bookedAt
   place.bookedByAdmin = bookedByAdmin
+  place.booked = true
   return place.save()
 }
 
@@ -26,6 +27,7 @@ export const bookCandidatOnSelectedPlace = async (
   })
   placeFounded.candidat = candidat._id
   placeFounded.bookedAt = bookedAt
+  placeFounded.booked = true
   placeFounded.bookedByAdmin = bookedByAdmin
   return placeFounded.save()
 }
@@ -71,11 +73,13 @@ export const makeCandidatsResas = async (
 
   place1.candidat = candidat1._id
   place1.bookedAt = bookedAt
+  place1.booked = true
   place1.bookedByAdmin = bookedByAdmin
   const result1 = await place1.save()
 
   place2.candidat = candidat2._id
   place2.bookedAt = bookedAt
+  place2.booked = true
   place2.bookedByAdmin = bookedByAdmin
   const result2 = await place2.save()
 

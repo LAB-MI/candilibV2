@@ -7,6 +7,7 @@ import mongoose from 'mongoose'
 import Place from './place.model'
 import { appLogger, techLogger } from '../../util'
 import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
+import { queryPopulate } from '../util/populate-tools'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
@@ -272,7 +273,7 @@ export const findPlaceBookedByCandidat = async (
   options = {},
   populate,
 ) => {
-  const query = Place.findOne({ candidat }, options)
+  const query = Place.findOne({ candidat, booked: { $ne: false } }, options)
   queryPopulate(populate, query)
 
   const place = await query.exec()
@@ -294,7 +295,7 @@ export const findAndbookPlace = async (
   // }
   const query = Place.findOneAndUpdate(
     { centre: { $in: centres }, date, candidat: { $eq: undefined } },
-    { $set: { candidat, bookedAt } },
+    { $set: { candidat, bookedAt, booked: true } },
     { new: true, fields },
   )
   if (populate && populate.centre) {
@@ -307,20 +308,15 @@ export const findAndbookPlace = async (
     query.where('createdAt').lt(createdBefore)
   }
 
-  const place = await query.exec()
-  return place
+  const updatedPlace = await query.exec()
+  return updatedPlace
 }
 
 export const removeBookedPlace = place => {
   place.candidat = undefined
+  place.booked = undefined
 
   return place.save()
-}
-
-const queryPopulate = (populate = {}, query) => {
-  Object.entries(populate).forEach(([key, value]) => {
-    value && query.populate(key)
-  })
 }
 
 export const bookPlaceById = async (
@@ -332,7 +328,7 @@ export const bookPlaceById = async (
 ) => {
   const query = Place.findOneAndUpdate(
     { _id: placeId, candidat: { $eq: undefined } },
-    { $set: { candidat, ...bookedInfo } },
+    { $set: { candidat, ...bookedInfo, booked: true } },
     { new: true, fields },
   )
   queryPopulate(populate, query)
@@ -421,4 +417,17 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
     query.where('inspecteur').in(inspecteurIdListe)
   }
   return query.exec()
+}
+
+/**
+ * Permet de mettre à "false" la clef "booked" d'une place
+ *
+ * @async
+ * @function
+ *
+ * @param {Object} bookedPlace - Type model place which populate centre and candidat
+ */
+export const setBookedPlaceKeyToFalseOrTrue = (bookedPlace, flag) => {
+  bookedPlace.booked = flag
+  return bookedPlace.save()
 }

@@ -33,12 +33,24 @@
         title="Informations Candidat"
         :subtitle="candidat.prenom + ' ' + candidat.nomNaissance + ' | ' + candidat.codeNeph"
         :profile-info="profileInfo"
-      />
+      >
+        <v-card class="t-result-candidat-historique-des-actions t-result-candidat-item">
+          <v-card-title primary-title>
+            Historique des actions&nbsp;:
+          </v-card-title>
+          <candidat-action-history-tab
+            :items="getActionsHistory()"
+          />
+        </v-card>
+      </profile-info>
     </v-expand-transition>
   </div>
 </template>
 
 <script>
+
+import Vue from 'vue'
+
 import { mapState } from 'vuex'
 import { Interval } from 'luxon'
 import {
@@ -50,6 +62,7 @@ import ProfileInfo from './ProfileInfo'
 import { getFrenchDateTimeFromIso, getFrenchDateFromIso, getFrenchLuxon, getFrenchLuxonFromIso } from '../../../util/frenchDateTime.js'
 import { transformToProfileInfo } from '@/util'
 import adminMessage from '../../../admin.js'
+import CandidatActionHistTab from '../components/CandidatActionHistoryTab'
 
 const transformBoolean = value => value ? '<i class="material-icons green--text">done</i>' : '<i class="material-icons red--text">close</i>'
 const isReussitePratiqueExist = value => value || ''
@@ -59,11 +72,15 @@ const placeReserve = (place) => {
   if (place == null) {
     return 'Ce candidat n\'a pas de réservation'
   }
-  const { inspecteur, centre, date } = place
+  const { inspecteur, centre, date, bookedByAdmin, bookedAt } = place
   const nameInspecteur = inspecteur.nom
   const examCentre = centre.nom
+  const examDepartement = centre.departement
   const frenchDate = convertToLegibleDateTime(date)
-  return `${frenchDate}  <br>  ${examCentre}  <br>  ${nameInspecteur}`
+  const actionBookedAtDate = convertToLegibleDateTime(bookedAt)
+  const bookedByAdm = `${bookedByAdmin ? ('Réservé par ' + bookedByAdmin.email + ', le ' + actionBookedAtDate)
+  : ('Réservé par le Candidat, le ' + actionBookedAtDate)}`
+  return `${frenchDate}  <br>  ${examCentre}  <br> ${examDepartement} <br> ${nameInspecteur} <br> ${bookedByAdm}`
 }
 
 const legibleNoReussites = (noReussites) => {
@@ -74,17 +91,6 @@ const legibleNoReussites = (noReussites) => {
     const frenchDate = convertToLegibleDate(date)
     return `<li>${frenchDate} : ${reason}</li>`
   }).join(' - ') + '</ol>'
-}
-
-const historiqueAction = (places) => {
-  if (!places || !(places.length)) {
-    return 'Aucune action pour ce candidat'
-  }
-  return '<ul style="margin: 0; padding: 0; list-style: square;">' + places.map(({ date, archiveReason, byUser, archivedAt }) => {
-    const frenchDate = convertToLegibleDateTime(date)
-    const actionDate = convertToLegibleDateTime(archivedAt)
-    return `<li>Place du ${frenchDate} : ${archiveReason} par ${byUser || 'le candidat'} le  ${actionDate}</li>`
-  }).reverse().join('') + '</ul>'
 }
 
 const iconAccess = (canAccessAt) => {
@@ -108,7 +114,12 @@ const candidatProfileInfoDictionary = [
     ['canAccessAt', 'Date d\'accès', convertToLegibleDate],
   ],
   [
-    ['email', 'Email'], ['portable', 'Portable'], ['departement', ' Département'],
+    ['email', 'Email', (email) => {
+      Vue.component('fiche-candidat-email', () => import('./candidats/FicheCandidatEmail'))
+      return { name: 'fiche-candidat-email', data: { email } }
+    }, true],
+    ['portable', 'Portable'],
+    ['departement', ' Département'],
   ],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDateTime],
@@ -122,13 +133,11 @@ const candidatProfileInfoDictionary = [
     ['resaCanceledByAdmin', 'Dernière annulation par l\'administration', convertToLegibleDate],
   ],
   [['place', 'Réservation', placeReserve]],
-  [
-    ['places', 'Historique des actions', historiqueAction],
-  ],
 ]
 
 export default {
   components: {
+    CandidatActionHistoryTab: CandidatActionHistTab(),
     CandilibAutocomplete,
     ProfileInfo,
   },
@@ -154,7 +163,7 @@ export default {
 
   watch: {
     candidat (newVal) {
-      this.toggelInfo(newVal)
+      this.profileInfo = transformToProfileInfo(newVal, candidatProfileInfoDictionary)
     },
     profileInfo (newVal) {
       this.toggelInfo(newVal)
@@ -186,6 +195,31 @@ export default {
       }
       this.color = 'green'
       this.icon = 'keyboard_arrow_up'
+    },
+
+    getActionsHistory () {
+      const { places } = this.candidat
+      if (!places || !(places.length)) {
+        return []
+      }
+      return places.map(({ archivedAt, archiveReason, byUser, centre, date, departement, inspecteur, bookedByAdmin, bookedAt }) => {
+        const frenchDate = convertToLegibleDateTime(date)
+        const actionDate = convertToLegibleDateTime(archivedAt)
+        const actionBookedAtDate = convertToLegibleDateTime(bookedAt)
+        return {
+          actionDate,
+          actionDateTime: archivedAt,
+          archiveReason,
+          byUser: byUser || 'Le Candidat',
+          centre: centre.nom,
+          departement: centre.departement || '',
+          frenchDate,
+          frenchDateTime: date,
+          inspecteur: typeof inspecteur === 'object' ? `${inspecteur.nom} | ${inspecteur.prenom}` : inspecteur,
+          bookedByAdmin: bookedByAdmin ? bookedByAdmin.email : 'Le Candidat',
+          bookedAt: actionBookedAtDate,
+        }
+      }).reverse()
     },
   },
 }
