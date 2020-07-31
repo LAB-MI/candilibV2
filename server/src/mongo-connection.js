@@ -23,6 +23,7 @@ const mongooseOpts = {
   useFindAndModify: false,
   useCreateIndex: true,
   useUnifiedTopology: true,
+  autoIndex: process.env.MONGODB_AUTO_INDEX === 'true',
 }
 
 export const connect = async () => {

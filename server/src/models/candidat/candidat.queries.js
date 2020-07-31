@@ -170,7 +170,7 @@ export const findCandidatsMatching = async (
  * @returns {Promise.<Candidat>}
  */
 export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
-  const candidat = await Candidat.findOne({ nomNaissance, codeNeph })
+  const candidat = await Candidat.findOne({ codeNeph, nomNaissance })
   return candidat
 }
 
