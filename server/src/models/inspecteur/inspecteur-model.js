@@ -49,6 +49,14 @@ export const inspecteurFields = {
 }
 
 const InspecteurSchema = new Schema(inspecteurFields, { timestamps: true })
+
+InspecteurSchema.index({
+  nom: 'text',
+  prenom: 'text',
+  email: 'text',
+  matricule: 'text',
+})
+
 InspecteurSchema.index({ matricule: 1 })
 InspecteurSchema.index({ departement: 1, active: 1 })
 InspecteurSchema.index({ email: 1 })
@@ -71,13 +79,6 @@ InspecteurSchema.pre('save', async function preSave () {
     inspecteur.nom.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
   inspecteur.email = inspecteur.email.toLowerCase()
-})
-
-InspecteurSchema.index({
-  nom: 'text',
-  prenom: 'text',
-  mail: 'text',
-  matricule: 'text',
 })
 
 export default mongoose.model('Inspecteur', InspecteurSchema)
