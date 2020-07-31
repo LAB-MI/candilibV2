@@ -18,12 +18,16 @@ const mongoURL =
 let reconnectTries = 30
 const reconnectInterval = process.env.NODE_ENV === 'production' ? 2000 : 1000
 
+const autoIndex = process.env.MONGODB_AUTO_INDEX === 'true' ||
+process.env.NODE_ENV === 'test' ||
+process.env.CI === 'true'
+
 const mongooseOpts = {
   useNewUrlParser: true,
   useFindAndModify: false,
   useCreateIndex: true,
   useUnifiedTopology: true,
-  autoIndex: process.env.MONGODB_AUTO_INDEX === 'true',
+  autoIndex,
 }
 
 export const connect = async () => {
