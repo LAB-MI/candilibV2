@@ -65,6 +65,9 @@ const UserSchema = new Schema(
   },
 )
 
+UserSchema.index({ email: 1 })
+UserSchema.index({ deletedAt: 1 })
+
 UserSchema.set('toJSON', {
   transform (doc, ret /*, opt */) {
     delete ret.password
