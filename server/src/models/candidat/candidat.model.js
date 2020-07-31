@@ -156,6 +156,13 @@ export const candidatFields = {
 
 const CandidatSchema = new Schema(candidatFields, { timestamps: true })
 
+CandidatSchema.index({
+  nomNaissance: 'text',
+  prenom: 'text',
+  email: 'text',
+  codeNeph: 'text',
+})
+
 CandidatSchema.index({ codeNeph: 1, nomNaissance: 1 }, { unique: true })
 CandidatSchema.index({ email: 1 })
 CandidatSchema.index({ departement: 1, canAccessAt: 1 })
@@ -178,13 +185,6 @@ CandidatSchema.pre('save', async function preSave () {
   candidat.nomNaissance =
     candidat.nomNaissance &&
     candidat.nomNaissance.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-})
-
-CandidatSchema.index({
-  nomNaissance: 'text',
-  prenom: 'text',
-  email: 'text',
-  codeNeph: 'text',
 })
 
 const theLast = noReussite => {
