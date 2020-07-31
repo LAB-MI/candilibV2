@@ -301,6 +301,9 @@ export const findAndbookPlace = async (
   if (populate && populate.centre) {
     query.populate('centre')
   }
+  if (populate && populate.candidat) {
+    query.populate('candidat')
+  }
   if (createdBefore) {
     query.where('createdAt').lt(createdBefore)
   }
