@@ -404,7 +404,7 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
   beginDate,
   endDate,
 ) => {
-  const query = Place.where('centre').exists(true)
+  const query = Place.where('centre')
   if (beginDate || endDate) {
     query.where('date')
 

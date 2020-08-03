@@ -26,5 +26,8 @@
   "prettier.semi": false,
   "prettier.singleQuote": true,
   "prettier.trailingComma": "all",
-  "rest-client.fontSize": 14
+  "rest-client.fontSize": 14,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  }
 }
