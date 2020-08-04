@@ -20,6 +20,7 @@ import {
   findAvailablePlacesByCentres,
   findPlaceBookedByCandidat,
   findPlacesByCentreAndDate,
+  findPlacesByDepartementAndCentre,
   removeBookedPlace,
 } from '../../models/place'
 import {
@@ -137,6 +138,34 @@ export const getDatesByCentresNameAndGeoDepartement = async (
     getFrenchLuxonFromJSDate(place.date).toISO(),
   )
   return [...new Set(dates)]
+}
+
+export const getPlacesByDepartementAndCentre = async (
+  nomCentre,
+  geoDepartement,
+  candidatId,
+  beginDate,
+  endDate,
+) => {
+  const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
+    candidatId,
+    beginDate,
+    endDate,
+  )
+
+  const dates = await findPlacesByDepartementAndCentre(
+    nomCentre,
+    geoDepartement,
+    beginPeriod,
+    endPeriod,
+  )
+
+  const result = dates
+    .map(({ placesInfo }) => placesInfo)
+    .flat(1)
+    .map(place => getFrenchLuxonFromJSDate(place.date).toISO())
+
+  return [...new Set(result)]
 }
 
 /**

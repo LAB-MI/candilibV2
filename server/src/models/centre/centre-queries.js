@@ -7,6 +7,7 @@
 import Centre from './centre-model'
 
 import { codePostal } from '../../util/regex'
+
 const caseInsensitive = nom => ({
   $regex: new RegExp('^' + nom.toLowerCase(), 'i'),
 })

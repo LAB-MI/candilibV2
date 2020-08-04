@@ -8,8 +8,8 @@ import {
   addInfoDateToRulesResa,
   bookPlace,
   getDatesByCentreId,
-  getDatesByCentresNameAndGeoDepartement,
   getLastDateToCancel,
+  getPlacesByDepartementAndCentre,
   getReservationByCandidat,
   hasAvailablePlaces,
   hasAvailablePlacesByCentre,
@@ -129,12 +129,12 @@ export async function getPlacesByCentre (req, res) {
           req.userId,
         )
       } else {
-        dates = await getDatesByCentresNameAndGeoDepartement(
+        dates = await getPlacesByDepartementAndCentre(
           nomCentre,
           geoDepartement,
+          req.userId,
           begin,
           end,
-          req.userId,
         )
       }
     }
