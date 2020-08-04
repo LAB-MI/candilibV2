@@ -39,7 +39,7 @@ import { findCentresByDepartement } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
 
 jest.mock('../../util/logger')
-require('../../util/logger').setWithConsole(true)
+require('../../util/logger').setWithConsole(false)
 
 describe('test statistics', () => {
   beforeAll(async () => {

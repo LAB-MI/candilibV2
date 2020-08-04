@@ -439,15 +439,17 @@ export const setBookedPlaceKeyToFalseOrTrue = (bookedPlace, flag) => {
  * @async
  * @function
  *
- * @param {Object} departementId - Identifiant du département
  * @param {Object} nomCentre - Nom du centre
- * @param {Object} candidatId - Identifiant du candidat
+ * @param {Object} geoDepartement - Identifiant du département
+ * @param {Object} beginPeriod - Date de début de période
+ * @param {Object} endPeriod - Date de fin de période
  */
 export const findPlacesByDepartementAndCentre = async (
   nomCentre,
   geoDepartement,
   beginPeriod,
   endPeriod,
+  createdBefore,
 ) => {
   const dates = await Centre.aggregate([
     {
@@ -470,6 +472,7 @@ export const findPlacesByDepartementAndCentre = async (
                 {
                   $and:
                   [
+                    { $lt: ['$createdAt', createdBefore] },
                     { $eq: ['$centre', '$$centre_id'] },
                     { $lt: ['$date', endPeriod] },
                     { $gte: ['$date', beginPeriod] },

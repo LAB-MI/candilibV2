@@ -24,7 +24,8 @@ describe('Connected candidate front', () => {
     let magicLink
     const numberOfDaysBeforeDate = 7
     const numberOfDaysPenalty = 45 // 45éme jours inclus et 46 eme jours reservable //TODO: A vérifier
-    const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate })
+    const arbitraryValue = 7
+    const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate + arbitraryValue })
     const nowIn1WeekAnd1DaysBefore = now.plus({ days: (numberOfDaysBeforeDate - 1) })
     const bookedPlaceIn45Days = nowIn1WeekAnd1DaysBefore.plus({ days: numberOfDaysPenalty })
     const dayAfter46thDays = bookedPlaceIn45Days.plus({ days: 1 })
@@ -70,6 +71,7 @@ describe('Connected candidate front', () => {
       cy.archiveCandidate()
       cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore, dayAfter45Days, dayBefore45Days])
       cy.adminDisconnection()
+      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
       cy.candidatConnection(Cypress.env('emailCandidatFront'))
 
       cy.getLastMail().its('Content.Body').then((mailBody) => {

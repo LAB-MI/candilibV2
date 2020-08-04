@@ -158,6 +158,7 @@ export const getPlacesByDepartementAndCentre = async (
     geoDepartement,
     beginPeriod,
     endPeriod,
+    getDateDisplayPlaces(),
   )
 
   const result = dates

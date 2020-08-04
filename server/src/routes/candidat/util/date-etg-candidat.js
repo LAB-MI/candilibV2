@@ -103,7 +103,6 @@ export const candidatCanReservePlaceForThisPeriod = async (
     luxonEndDate && !luxonEndDate.invalid && luxonEndDate <= luxonDateVisible
       ? luxonEndDate
       : luxonDateVisible
-  console.log({ begin, end })
   return {
     beginPeriod: begin,
     endPeriod: end,
