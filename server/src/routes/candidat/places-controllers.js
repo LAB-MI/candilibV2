@@ -211,11 +211,11 @@ export const getBookedPlaces = async (req, res) => {
   const candidatId = req.userId
   const { byMail, lastDateOnly } = req.query
 
-  appLogger.debug({
-    section,
-    candidatId,
-    byMail,
-  })
+  // appLogger.debug({
+  //   section,
+  //   candidatId,
+  //   byMail,
+  // })
 
   if (!candidatId) {
     const success = false
