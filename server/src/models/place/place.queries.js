@@ -114,6 +114,28 @@ const queryAvailablePlacesByCentre = (
   return query.where('centre', centreId)
 }
 
+export const countAvailablePlacesByCentreIds = (
+  centreIds,
+  beginDate,
+  endDate,
+  createdBefore,
+) => {
+  const query = Place.countDocuments({
+    centre: { $in: centreIds },
+    candidat: undefined,
+  })
+  if (beginDate || endDate) {
+    query.where('date')
+
+    if (beginDate) query.gte(beginDate)
+    if (endDate) query.lt(endDate)
+  }
+  if (createdBefore) {
+    query.where('createdAt').lt(createdBefore)
+  }
+  return query
+}
+
 // TODO: Refactor
 /**
  * @function
@@ -227,10 +249,10 @@ export const countAvailablePlacesByCentre = async (
   endDate,
   createdBefore,
 ) => {
-  appLogger.debug({
-    func: 'countAvailablePlacesByCentre',
-    args: { centreId, beginDate, endDate },
-  })
+  // appLogger.debug({
+  //   func: 'countAvailablePlacesByCentre',
+  //   args: { centreId, beginDate, endDate },
+  // })
 
   const nbPlaces = await queryAvailablePlacesByCentre(
     centreId,
