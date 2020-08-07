@@ -1,7 +1,7 @@
 import moment from 'moment'
 
 import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
-import Candidat from './candidat.model'
+import Candidat, { CandidatModel, CandidatModelConnection } from './candidat.model'
 import Place from '../place/place.model'
 import { getFrenchLuxon, techLogger } from '../../util'
 import { queryPopulate } from '../util/populate-tools'
@@ -89,9 +89,10 @@ export const findCandidatById = async (id, options, populate) => {
   if (options && options.dateDernierEchecPratique) {
     options.noReussites = 1
   }
-
-  const query = Candidat.findById(id, options)
-  queryPopulate(populate, query)
+  const query = CandidatModel.findById(id, options).hint({ _id: 1 })
+  if (populate) {
+    queryPopulate(populate, query)
+  }
   const candidat = await query.exec()
   return candidat
 }
@@ -514,7 +515,7 @@ export const setCandidatToVIP = (candidat, resaCanceledByAdmin) => {
  * @returns {Promise.<boolean>} - `true` si un candidat existe avec cet identifiant
  */
 export const isCandidatExisting = async _id => {
-  const isExist = await Candidat.exists({ _id })
+  const isExist = await CandidatModel.exists({ _id })
   return isExist
 }
 
