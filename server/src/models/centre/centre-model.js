@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { codePostal } from '../../util'
+import { anotherConnexion } from '../../mongo-connection'
 
 const { Schema } = mongoose
 
@@ -49,7 +50,8 @@ const CentreSchema = new Schema(
 )
 
 CentreSchema.index({ departement: 1, nom: 1 }, { unique: true })
-CentreSchema.index({ active: 1, nom: 1 })
+CentreSchema.index({ nom: 1, active: 1 })
+CentreSchema.index({ geoDepartement: 1, active: 1 })
 
 CentreSchema.virtual('getGeoDepartement').get(function () {
   const zipCode = this.adresse && this.adresse.match(codePostal)
@@ -62,6 +64,12 @@ CentreSchema.virtual('getGeoDepartement').get(function () {
 const model = mongoose.model('Centre', CentreSchema)
 export default model
 
+export let CentreModelConnection
+export let CentreModel
+export const createConnectionCentreModel = async () => {
+  CentreModelConnection = await anotherConnexion()
+  CentreModel = CentreModelConnection.model('Centre', CentreSchema)
+}
 /**
  * @typedef {Object} CentreMongooseDocument
  * @property {string} nom - Nom du centre (de la ville du centre)

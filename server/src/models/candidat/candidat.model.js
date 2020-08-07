@@ -1,4 +1,4 @@
-import mongoose from 'mongoose'
+import mongoose, { Model } from 'mongoose'
 import sanitizeHtml from 'sanitize-html'
 
 import {
@@ -8,6 +8,7 @@ import {
 } from '../../util'
 import { placeCommonFields } from '../place/place.model'
 import { ECHEC } from './objetDernierNonReussite.values'
+import { anotherConnexion, mongoConnectTool } from '../../mongo-connection'
 
 const { Schema } = mongoose
 
@@ -234,3 +235,16 @@ CandidatSchema.virtual('lastNoReussite')
   })
 
 export default mongoose.model('Candidat', CandidatSchema)
+
+export let CandidatModelConnection
+export let CandidatModel
+export const createConnectionCandidatModel = async () => {
+  CandidatModelConnection = await anotherConnexion()
+  CandidatModel = CandidatModelConnection.model('Candidat', CandidatSchema)
+  // console.log({ CandidatModelConnection, CandidatModel })
+}
+
+// export const CandidatModel = async () => {
+//   const mongoConctionObject = await mongoConnectTool('Candidat', CandidatSchema)
+//   return mongoConctionObject
+// }

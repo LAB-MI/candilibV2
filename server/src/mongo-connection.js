@@ -23,18 +23,28 @@ const mongooseOpts = {
   useFindAndModify: false,
   useCreateIndex: true,
   useUnifiedTopology: true,
+  poolSize: 10,
+  family: 4,
 }
 
+const mongoUrl = async () => {
+  if (isTest) {
+    const { getMongoServerConnectionString } = await import(
+      './mongo-memory-server-setup'
+    )
+    mongoUri = await getMongoServerConnectionString()
+    // mongoUri = 'mongodb://adminCandilib:changeme78@localhost:27017/candilib'
+  } else {
+    mongoUri = mongoURL
+  }
+  return mongoUri
+}
+let mongoUri
+mongoUrl().then(uri => mongoUri = uri)
 export const connect = async () => {
-  let mongoUri
   try {
-    if (isTest) {
-      const { getMongoServerConnectionString } = await import(
-        './mongo-memory-server-setup'
-      )
-      mongoUri = await getMongoServerConnectionString()
-    } else {
-      mongoUri = mongoURL
+    if (!mongoUri) {
+      mongoUri = await mongoUrl()
     }
     await mongoose.connect(mongoUri, mongooseOpts)
     techLogger.info('Connected to Mongo!')
@@ -66,4 +76,16 @@ export const disconnect = async () => {
   } catch (error) {
     techLogger.info('Disconnected from Mongo')
   }
+}
+
+export const anotherConnexion = async () => {
+  // mongoUri = 'mongodb://adminCandilib:changeme78@localhost:27017/candilib'
+
+  if (!mongoUri) {
+    mongoUri = await mongoUrl()
+  }
+
+  return mongoose.createConnection(
+    mongoUri,
+    { ...mongooseOpts, useCreateIndex: false, autoIndex: false })
 }

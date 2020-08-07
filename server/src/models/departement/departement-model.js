@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import { email as emailRegex } from '../../util'
+import { anotherConnexion } from '../../mongo-connection'
 
 const { Schema } = mongoose
 
@@ -20,3 +21,10 @@ const DepartementSchema = new Schema(
   { timestamps: true },
 )
 export default mongoose.model('departement', DepartementSchema)
+
+export let DepartementModelConnection
+export let DepartementModel
+export const createConnectionDepartementModel = async () => {
+  DepartementModelConnection = await anotherConnexion()
+  DepartementModel = DepartementModelConnection.model('departement', DepartementSchema)
+}
