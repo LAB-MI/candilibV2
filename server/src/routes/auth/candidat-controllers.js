@@ -4,7 +4,7 @@
  */
 
 import { appLogger } from '../../util'
-import { findCandidatByEmail, isCandidatExisting } from '../../models/candidat'
+import { findCandidatByEmail, isCandidatExisting, findCandidatById } from '../../models/candidat'
 import { sendMagicLink } from '../business'
 import { sendErrorResponse } from '../../util/send-error-response'
 
@@ -110,13 +110,13 @@ export const checkCandidat = async (req, res) => {
     candidatId,
   }
 
-  appLogger.debug({
-    ...loggerInfo,
-    description: "Vérification de l'existence du candidat",
-  })
+  // appLogger.debug({
+  //   ...loggerInfo,
+  //   description: "Vérification de l'existence du candidat",
+  // })
 
   try {
-    const isExisting = await isCandidatExisting(candidatId)
+    const isExisting = await findCandidatById(candidatId, { _id: 1 })
     if (!isExisting) {
       const status = 401
       return sendErrorResponse(res, {
