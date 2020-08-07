@@ -2,7 +2,7 @@
  * Middleware de vérification de l'accès du candidat
  * @module
  */
-import { findCandidatById } from '../../../models/candidat'
+import { findCandidatById, isCandidatExisting } from '../../../models/candidat'
 import { sendErrorResponse } from '../../../util/send-error-response'
 import { appLogger } from '../../../util'
 
@@ -36,8 +36,8 @@ export async function verifyAccesPlacesByCandidat (req, res, next) {
   }
 
   try {
-    appLogger.debug(loggerInfo)
-    const candidat = await findCandidatById(userId)
+    // appLogger.debug(loggerInfo)
+    const candidat = await findCandidatById(userId, { _id: 1 })
     if (!candidat) {
       const error = new Error('Candidat non trouvé')
       error.status = 401
