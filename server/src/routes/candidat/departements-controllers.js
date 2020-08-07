@@ -6,7 +6,7 @@
 import { appLogger } from '../../util'
 import { getGeoDepartementsFromCentres } from '../../models/centre'
 import { UNKNOWN_ERROR_GET_DEPARTEMENTS_INFOS } from '../admin/message.constants'
-import { getGeoDepartementsInfos } from './departements-business'
+import { getGeoDepartementsInfos, getAllGeoDepartemenntsInfos } from './departements-business'
 
 // TODO: ADD JSDOC
 export async function getActiveGeoDepartementsInfos (req, res) {
@@ -18,17 +18,26 @@ export async function getActiveGeoDepartementsInfos (req, res) {
   }
 
   try {
-    const geoDepartementsId = await getGeoDepartementsFromCentres()
+    // const now = Date.now()
+    // const geoDepartementsId = await getGeoDepartementsFromCentres()
+    // appLogger.info({
+    //   ...loggerContent,
+    //   description: `nombres d'élements trouvé: ${geoDepartementsId.length ||
+    //     0}`,
+    // })
+    // console.log('geoDepartementsId', Date.now() - now)
+
+    // const geoDepartementsInfos = await getGeoDepartementsInfos(
+    //   geoDepartementsId,
+    //   userId,
+    // )
+    const geoDepartementsInfos = await getAllGeoDepartemenntsInfos(userId)
     appLogger.info({
       ...loggerContent,
-      description: `nombres d'élements trouvé: ${geoDepartementsId.length ||
+      description: `nombres d'élements trouvé: ${geoDepartementsInfos.length ||
         0}`,
     })
 
-    const geoDepartementsInfos = await getGeoDepartementsInfos(
-      geoDepartementsId,
-      userId,
-    )
     return res.status(200).json({
       success: true,
       geoDepartementsInfos,
