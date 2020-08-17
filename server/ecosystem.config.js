@@ -6,6 +6,10 @@ module.exports = {
     exec_mode: 'cluster',
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     autorestart: true,
+    log_file: '/dev/null',
+    out_file: '/dev/null',
+    error_file: '/dev/null',
+    merge_logs: true,
     env: {
       NODE_ENV: 'development',
     },
