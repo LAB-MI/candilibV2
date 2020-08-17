@@ -34,18 +34,40 @@ export const getDateETG = async candidatId => {
   return luxonDateETG
 }
 
+export const getDateETGExpiredAndgetDateETG = async candidatId => {
+  const { dateReussiteETG } = await findCandidatById(candidatId, {
+    _id: 0,
+    dateReussiteETG: 1,
+  })
+  const luxonDateETG = getFrenchLuxonFromJSDate(dateReussiteETG).endOf('day')
+  const luxonDateETGExpired = luxonDateETG
+    .plus({
+      years: NB_YEARS_ETG_EXPIRED,
+    })
+  return {
+    luxonDateETG,
+    luxonDateETGExpired,
+  }
+}
+
 export const candidatCanReservePlaceForThisPeriod = async (
   candidatId,
   beginDate,
   endDate,
 ) => {
-  const luxonDateETGExpired = await getDateETGExpired(candidatId)
-  // TODO: remove next line after 31/12/2020
-  const luxonDateETG = await getDateETG(candidatId)
+  // const luxonDateETGExpired = await getDateETGExpired(candidatId)
+  // // TODO: remove next line after 31/12/2020
+  // const luxonDateETG = await getDateETG(candidatId)
+
+  const {
+    luxonDateETG,
+    luxonDateETGExpired,
+  } = await getDateETGExpiredAndgetDateETG(candidatId)
 
   const luxonBeginDate = beginDate
     ? getFrenchLuxonFromISO(beginDate)
     : undefined
+
   const luxonEndDate = endDate ? getFrenchLuxonFromISO(endDate) : undefined
 
   const authorizedDateToBook = getAuthorizedDateToBook()
@@ -59,7 +81,9 @@ export const candidatCanReservePlaceForThisPeriod = async (
   /* TODO: Remove isETGExpired of this condition and
       uncomment 'luxonDateETGExpired < begin' after 31/12/2020
   */
-  if (isETGExpired(luxonDateETG) /* luxonDateETGExpired < begin */) {
+  const ETGExpired = isETGExpired(luxonDateETG)
+
+  if (ETGExpired/* luxonDateETGExpired < begin */) {
     const error = new Error(
       CANDIDAT_DATE_ETG_KO +
         getFrenchFormattedDateTime(luxonDateETGExpired).date,
@@ -71,11 +95,12 @@ export const candidatCanReservePlaceForThisPeriod = async (
   let luxonDateVisible = getFrenchLuxon().plus({
     month: config.numberOfVisibleMonths,
   })
+
   luxonDateVisible =
     // TODO: Uncomment next line after 31/12/2020
     // luxonDateETGExpired <= luxonDateVisible
     // TODO: remove next line after 31/12/2020
-    isETGExpired(luxonDateETG) ? luxonDateETGExpired : luxonDateVisible
+    ETGExpired ? luxonDateETGExpired : luxonDateVisible
 
   const end =
     luxonEndDate && !luxonEndDate.invalid && luxonEndDate <= luxonDateVisible

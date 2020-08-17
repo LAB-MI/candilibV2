@@ -24,6 +24,7 @@ import {
   archivePlace,
   updateCandidatFailed,
   updateCandidatNoReussite,
+  findCandidatsMatching,
 } from './candidat.queries'
 import {
   REASON_CANCEL,
@@ -61,6 +62,49 @@ describe('Candidat', () => {
 
   afterAll(async () => {
     await disconnect()
+  })
+
+  it('Find 2 candidats', async () => {
+    // Given
+    const candidat1 = await createCandidat({
+      codeNeph,
+      nomNaissance,
+      prenom,
+      email: validEmail,
+      portable,
+      adresse,
+    })
+
+    const candidat2 = await createCandidat({
+      codeNeph: codeNeph + 1,
+      nomNaissance: nomNaissance + 1,
+      prenom: prenom + 1,
+      email: '1' + validEmail,
+      portable,
+      adresse,
+    })
+
+    // When
+    const foundCandidats = await findCandidatsMatching(nomNaissance.substring(0, 5))
+
+    // Then
+    expect(foundCandidats).toBeDefined()
+    expect(foundCandidats.candidats).toHaveLength(2)
+    expect(foundCandidats.candidats[0]).toHaveProperty(
+      'email',
+      candidat1.email,
+    )
+    expect(foundCandidats.candidats[0]).toHaveProperty(
+      'nomNaissance',
+      candidat1.nomNaissance.toUpperCase(),
+    )
+    expect(foundCandidats.candidats[0]).toHaveProperty(
+      'prenom',
+      candidat1.prenom,
+    )
+
+    await deleteCandidat(candidat1)
+    await deleteCandidat(candidat2)
   })
 
   describe('Saving Candidat', () => {
