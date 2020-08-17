@@ -48,9 +48,20 @@ export const inspecteurFields = {
   },
 }
 
-const inspecteurSchema = new Schema(inspecteurFields, { timestamps: true })
+const InspecteurSchema = new Schema(inspecteurFields, { timestamps: true })
 
-inspecteurSchema.pre('save', async function preSave () {
+InspecteurSchema.index({
+  nom: 'text',
+  prenom: 'text',
+  email: 'text',
+  matricule: 'text',
+})
+
+InspecteurSchema.index({ matricule: 1 })
+InspecteurSchema.index({ departement: 1, active: 1 })
+InspecteurSchema.index({ email: 1 })
+
+InspecteurSchema.pre('save', async function preSave () {
   const inspecteur = this
 
   Object.keys(inspecteurFields).map(key => {
@@ -70,14 +81,7 @@ inspecteurSchema.pre('save', async function preSave () {
   inspecteur.email = inspecteur.email.toLowerCase()
 })
 
-inspecteurSchema.index({
-  nom: 'text',
-  prenom: 'text',
-  mail: 'text',
-  matricule: 'text',
-})
-
-export default mongoose.model('Inspecteur', inspecteurSchema)
+export default mongoose.model('Inspecteur', InspecteurSchema)
 
 /**
  * @typedef {Object} InspecteurMongooseDocument

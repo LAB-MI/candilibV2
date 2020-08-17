@@ -130,7 +130,7 @@ const queryAvailablePlacesByCentres = (
   endDate,
   createdBefore,
 ) => {
-  const query = Place.where('centre').exists(true)
+  const query = Place.where('centre')
   if (beginDate || endDate) {
     query.where('date')
 
@@ -156,7 +156,7 @@ const queryAvailablePlacesByCentres = (
  * @returns {Promise.<Place~PlaceModel[]>}
  */
 export const findAllPlacesByCentre = (centreId, beginDate, endDate) => {
-  const query = Place.where('centre').exists(true)
+  const query = Place.where('centre')
   if (beginDate || endDate) {
     query.where('date')
 
@@ -338,7 +338,7 @@ export const bookPlaceById = async (
 
 export const findPlaceWithSameWindow = async creneau => {
   const { date, centre, inspecteur } = creneau
-  const place = await Place.findOne({ date, centre, inspecteur })
+  const place = await Place.findOne({ centre, date, inspecteur })
   return place
 }
 
@@ -404,7 +404,7 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
   beginDate,
   endDate,
 ) => {
-  const query = Place.where('centre').exists(true)
+  const query = Place.where('centre')
   if (beginDate || endDate) {
     query.where('date')
 

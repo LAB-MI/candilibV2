@@ -25,7 +25,6 @@ import {
   getFrenchLuxon,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
-  getFrenchLuxonFromObject,
   NB_FAILURES_KO,
   NO_CANDILIB,
   NO_NAME,
@@ -61,11 +60,11 @@ const getCandidatStatus = (nom, neph, status, details, message) => ({
 const isInAuthorizedRangeOfExpiredETG = (
   dateTimeReussiteETG,
   optionalDateOfPlace = undefined,
-  objectDateStart = AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED,
-  objectDateEnd = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED,
+  // objectDateStart = AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED,
+  // objectDateEnd = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED,
 ) => {
-  const rangeStart = getFrenchLuxonFromObject(objectDateStart).endOf('day')
-  const rangeEnd = getFrenchLuxonFromObject(objectDateEnd).endOf('day')
+  const rangeStart = AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED // getFrenchLuxonFromObject(objectDateStart).endOf('day')
+  const rangeEnd = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED // getFrenchLuxonFromObject(objectDateEnd).endOf('day')
 
   const dateTimeEtgWithNbYearsExpired = dateTimeReussiteETG.plus({
     years: NB_YEARS_ETG_EXPIRED,

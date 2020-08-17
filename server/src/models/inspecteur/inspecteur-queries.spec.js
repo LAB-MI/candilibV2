@@ -26,7 +26,7 @@ nom = 'Dupond'
 prenom = 'Jean'
 const defaultInspecteur2 = { email, matricule, nom, prenom }
 
-describe('User', () => {
+describe('Inspecteur', () => {
   beforeAll(async () => {
     await connect()
   })
