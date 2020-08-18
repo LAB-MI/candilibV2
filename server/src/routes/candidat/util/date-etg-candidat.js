@@ -64,10 +64,7 @@ export const candidatCanReservePlaceForThisPeriod = async (
     luxonDateETGExpired,
   } = await getDateETGExpiredAndgetDateETG(candidatId)
 
-  const luxonBeginDate = beginDate
-    ? getFrenchLuxonFromISO(beginDate)
-    : undefined
-
+  const luxonBeginDate = beginDate ? getFrenchLuxonFromISO(beginDate) : undefined
   const luxonEndDate = endDate ? getFrenchLuxonFromISO(endDate) : undefined
 
   const authorizedDateToBook = getAuthorizedDateToBook()
@@ -106,7 +103,6 @@ export const candidatCanReservePlaceForThisPeriod = async (
     luxonEndDate && !luxonEndDate.invalid && luxonEndDate <= luxonDateVisible
       ? luxonEndDate
       : luxonDateVisible
-
   return {
     beginPeriod: begin,
     endPeriod: end,

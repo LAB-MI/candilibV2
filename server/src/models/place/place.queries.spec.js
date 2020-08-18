@@ -19,7 +19,11 @@ import {
 } from '../../util'
 import { findArchivedPlaceByPlaceId } from '../archived-place'
 
-import { createCentre, deleteCentre, findCentreByName } from '../centre'
+import {
+  createCentre, deleteCentre,
+  findCentreByName,
+} from '../centre'
+
 import { createInspecteur, deleteInspecteurByMatricule } from '../inspecteur'
 import {
   bookCandidatOnSelectedPlace,
@@ -32,6 +36,8 @@ import {
   makeResas,
   removeCentres,
   removePlaces,
+  setInitCreatedCentre,
+  resetCreatedInspecteurs,
 } from '../__tests__'
 import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
 import placeModel from './place.model'
@@ -40,9 +46,21 @@ import {
   findAndbookPlace,
   findPlaceBookedByInspecteur,
   findPlacesByCentreAndDate,
+  findPlacesByDepartementAndCentre,
   removeBookedPlace,
 } from './place.queries'
 import { expectedArchivedPlace } from '../archived-place/__tests__/expect-archive-place'
+
+import {
+  setNowBefore12h, setNowAfter12h,
+} from '../../routes/candidat/__tests__/luxon-time-setting'
+
+import { getDateDisplayPlaces } from '../../routes/candidat/util/date-to-display'
+
+import {
+  centreDateDisplay,
+  createPlacesWithCreatedAtDiff,
+} from '../../models/__tests__/places.date.display'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
@@ -379,6 +397,41 @@ describe('Place', () => {
     })
   })
 })
+
+describe('Test places queries', () => {
+  let begin
+  let end
+  beforeAll(async () => {
+    await connect()
+    setInitCreatedCentre()
+    resetCreatedInspecteurs()
+    await createPlacesWithCreatedAtDiff()
+    begin = getFrenchLuxonFromObject({ day: 28, hour: 9 }).plus({ month: -1 })
+    end = getFrenchLuxonFromObject({ day: 28, hour: 9 }).plus({ month: 2 })
+  })
+
+  afterAll(async () => {
+    await disconnect()
+  })
+
+  it('should not found 1 place', async () => {
+    setNowBefore12h()
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces())
+    const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
+    expect(formatedResult).toHaveLength(1)
+  })
+
+  it('should found 3 places', async () => {
+    setNowAfter12h()
+
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces())
+
+    const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
+
+    expect(formatedResult).toHaveLength(3)
+  })
+})
+
 describe('to book places', () => {
   const centreTest = {
     departement: '93',
