@@ -58,18 +58,22 @@
           <template
             v-slot:item.active="{ item: centre }"
           >
-            <center-list-dialog
-              :key="`${centre._id}_edit`"
-              :centre-name="centre.nom + ' (' + centre.departement + ')'"
-              :centre="centre"
-              @click="changeCenter"
-            />
-            <delete-centre
-              :key="`${centre._id}_delete`"
-              :centre-name="centre.nom + ' (' + centre.departement + ')'"
-              :is-active="centre.active !== false"
-              @click="changeCenter({id: centre._id, active: !centre.active})"
-            />
+            <div
+              class="u-flex"
+            >
+              <center-list-dialog
+                :key="`${centre._id}_edit`"
+                :centre-name="centre.nom + ' (' + centre.departement + ')'"
+                :centre="centre"
+                @click="changeCenter"
+              />
+              <delete-centre
+                :key="`${centre._id}_delete`"
+                :centre-name="centre.nom + ' (' + centre.departement + ')'"
+                :is-active="centre.active !== false"
+                @click="changeCenter({id: centre._id, active: !centre.active})"
+              />
+            </div>
           </template>
         </v-data-table>
       </v-card>
