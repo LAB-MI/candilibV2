@@ -2,11 +2,13 @@ import { createCentres, createInspecteurs } from '../../models/__tests__'
 import { getFrenchLuxonFromObject } from '../../util'
 import { createPlace } from '../../models/place'
 
-export let centreDateDisplay
-export const createdAtBefore = getFrenchLuxonFromObject({ hour: 9 })
+export let centreDateDisplay01
+export let centreDateDisplay02
+export const createdAtBefore = getFrenchLuxonFromObject({ hour: 10 })
 export const createPlacesWithCreatedAtDiff = async () => {
   const createdCentres = await createCentres()
-  centreDateDisplay = createdCentres[1]
+  centreDateDisplay01 = createdCentres[1]
+  centreDateDisplay02 = createdCentres[0]
   const createdInspecteurs = await createInspecteurs()
   const basePlaceDateTime = getFrenchLuxonFromObject({
     day: 18,
@@ -17,27 +19,27 @@ export const createPlacesWithCreatedAtDiff = async () => {
   const places = [
     {
       date: basePlaceDateTime.set({ hour: 9 }).toISO(),
-      centre: centreDateDisplay._id,
+      centre: centreDateDisplay01._id,
       inspecteur: createdInspecteurs[1]._id,
-      createdAt: getFrenchLuxonFromObject({ hour: 9 }).minus({ days: 1 }),
+      createdAt: getFrenchLuxonFromObject({ hour: 10 }),
     },
     {
       date: basePlaceDateTime.set({ hour: 10 }).toISO(),
-      centre: centreDateDisplay._id,
-      inspecteur: createdInspecteurs[1]._id,
-      createdAt: getFrenchLuxonFromObject({ hour: 16 }).minus({ days: 1 }),
+      centre: centreDateDisplay02._id,
+      inspecteur: createdInspecteurs[0]._id,
+      createdAt: getFrenchLuxonFromObject({ hour: 12 }),
     },
     {
       date: basePlaceDateTime.set({ hour: 11 }).toISO(),
-      centre: centreDateDisplay._id,
+      centre: centreDateDisplay01._id,
       inspecteur: createdInspecteurs[1]._id,
-      createdAt: createdAtBefore,
+      createdAt: getFrenchLuxonFromObject({ hour: 13 }),
     },
     {
       date: basePlaceDateTime.set({ hour: 14 }).toISO(),
-      centre: centreDateDisplay._id,
+      centre: centreDateDisplay01._id,
       inspecteur: createdInspecteurs[1]._id,
-      createdAt: getFrenchLuxonFromObject({ hour: 16 }),
+      createdAt: getFrenchLuxonFromObject({ hour: 14 }),
     },
   ]
 

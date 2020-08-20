@@ -10,13 +10,12 @@ import {
   resetCreatedInspecteurs,
 } from '../../models/__tests__'
 import {
-  centreDateDisplay,
+  centreDateDisplay01,
   createPlacesWithCreatedAtDiff,
 } from '../../models/__tests__/places.date.display'
 
 import {
-  setNowBefore12h,
-  setNowAfter12h,
+  setHoursMinutesSeconds,
   setNowAtNow,
 } from '../candidat/__tests__/luxon-time-setting'
 
@@ -24,7 +23,7 @@ jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
 jest.mock('../middlewares/verify-token')
 
-describe('Get centres with the numbers places available in departements and display at 12h', () => {
+describe('Get centres with the numbers places available in departements and display when delay expired', () => {
   beforeAll(async () => {
     setInitCreatedCentre()
     resetCreatedInspecteurs()
@@ -43,10 +42,10 @@ describe('Get centres with the numbers places available in departements and disp
     setNowAtNow()
   })
 
-  it('Should response 200 to find 2 centres with one place from departement 75 when is before 12h', async () => {
-    setNowBefore12h()
+  it('Should response 200 to find 2 centres with one place from departement 75 delays is left', async () => {
+    setHoursMinutesSeconds(14, 0, 1)
 
-    const departement = centreDateDisplay.geoDepartement
+    const departement = centreDateDisplay01.geoDepartement
     const { body } = await request(app)
       .get(`${apiPrefix}/candidat/centres?departement=${departement}`)
       .set('Accept', 'application/json')
@@ -56,14 +55,14 @@ describe('Get centres with the numbers places available in departements and disp
     expect(body).toHaveLength(2)
     const centre = body.find(
       ({ centre: { _id } }) =>
-        _id.toString() === centreDateDisplay._id.toString(),
+        _id.toString() === centreDateDisplay01._id.toString(),
     )
     expect(centre).toHaveProperty('count', 1)
   })
-  it('Should response 200 to find 2 centres whit 3 places from departement 75 when is after 12h', async () => {
-    setNowAfter12h()
+  it('Should response 200 to find 2 centres whit 3 places from departement 75 when delay is left', async () => {
+    setHoursMinutesSeconds(16, 0, 1)
 
-    const departement = centreDateDisplay.geoDepartement
+    const departement = centreDateDisplay01.geoDepartement
     const { body } = await request(app)
       .get(`${apiPrefix}/candidat/centres?departement=${departement}`)
       .set('Accept', 'application/json')
@@ -73,7 +72,7 @@ describe('Get centres with the numbers places available in departements and disp
     expect(body).toHaveLength(2)
     const centre = body.find(
       ({ centre: { _id } }) =>
-        _id.toString() === centreDateDisplay._id.toString(),
+        _id.toString() === centreDateDisplay01._id.toString(),
     )
     expect(centre).toHaveProperty('count', 3)
   })

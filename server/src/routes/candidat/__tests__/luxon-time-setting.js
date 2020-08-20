@@ -1,16 +1,22 @@
 import { Settings } from 'luxon'
-
-export const setNowBefore12h = () => {
+const dockerTimeZone = 0 /* set -2 because time zone in docker */
+/**
+ * Met l'heure et la date de la machine à la date donnée pour les tests.
+ * Ne sert que pour les tests
+ *
+ * @function
+ *
+ * @params {number} hours - Heure
+ * @params {number} min - Minutes
+ * @params {number} sec - Secondes
+ */
+export const setHoursMinutesSeconds = (hours, min, sec) => {
   Settings.now = () =>
     new Date()
-      .setHours(11 - 2 /* -2 because time zone in docker */, 59, 59)
+      .setHours((hours - dockerTimeZone), min, sec)
       .valueOf()
 }
 
 export const setNowAtNow = () => {
   Settings.now = () => Date.now
-}
-
-export const setNowAfter12h = () => {
-  Settings.now = () => new Date().setHours(12, 0, 0).valueOf()
 }

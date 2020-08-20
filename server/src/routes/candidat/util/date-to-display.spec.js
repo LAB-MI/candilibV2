@@ -8,19 +8,22 @@ const dateFct = obj =>
   DateTime.fromObject({ ...obj, zone: FRENCH_TIME_ZONE, locale: 'fr' })
 
 describe('Date to display places', () => {
-  it('get yesterday at 12h when now is 11h59', () => {
+  it('Should be true if createdAt is after 2 hours', () => {
     getFrenchLuxon.mockReturnValue(
-      dateFct({ hour: 11, minute: 59, second: 59 }),
+      dateFct({ hour: 11, minute: 0, second: 1 }),
     )
-    const dateToDisplay = getDateDisplayPlaces()
-    expect(dateToDisplay).toEqual(
-      dateFct({ hour: 12, minute: 0, second: 0 }).minus({ days: 1 }),
-    )
-  })
 
-  it('get yesterday at 12h when now is 12h00', () => {
-    getFrenchLuxon.mockReturnValue(dateFct({ hour: 12, minute: 0, second: 0 }))
+    const fakeDatePlaceCreatedAt = dateFct({ hour: 9, minute: 0, second: 0 })
     const dateToDisplay = getDateDisplayPlaces()
-    expect(dateToDisplay).toEqual(dateFct({ hour: 12, minute: 0, second: 0 }))
+    expect(fakeDatePlaceCreatedAt < dateToDisplay).toEqual(true)
+  })
+  it('Should be false if createdAt is before 2 hours', () => {
+    getFrenchLuxon.mockReturnValue(
+      dateFct({ hour: 11, minute: 0, second: 0 }),
+    )
+
+    const fakeDatePlaceCreatedAt = dateFct({ hour: 11, minute: 0, second: 1 })
+    const dateToDisplay = getDateDisplayPlaces()
+    expect(fakeDatePlaceCreatedAt < dateToDisplay).toEqual(false)
   })
 })

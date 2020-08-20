@@ -140,6 +140,7 @@ export const getDatesByCentresNameAndGeoDepartement = async (
   return [...new Set(dates)]
 }
 
+// TODO: this function is unuse
 export const getPlacesByDepartementAndCentre = async (
   nomCentre,
   geoDepartement,

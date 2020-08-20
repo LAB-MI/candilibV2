@@ -52,13 +52,13 @@ import {
 import { expectedArchivedPlace } from '../archived-place/__tests__/expect-archive-place'
 
 import {
-  setNowBefore12h, setNowAfter12h,
+  setHoursMinutesSeconds,
 } from '../../routes/candidat/__tests__/luxon-time-setting'
 
 import { getDateDisplayPlaces } from '../../routes/candidat/util/date-to-display'
 
 import {
-  centreDateDisplay,
+  centreDateDisplay01,
   createPlacesWithCreatedAtDiff,
 } from '../../models/__tests__/places.date.display'
 
@@ -414,17 +414,34 @@ describe('Test places queries', () => {
     await disconnect()
   })
 
-  it('should not found 1 place', async () => {
-    setNowBefore12h()
-    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces())
+  it('should found 0 place', async () => {
+    setHoursMinutesSeconds(11, 59, 59)
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay01.nom, centreDateDisplay01.geoDepartement, begin, end, getDateDisplayPlaces())
+    const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
+    expect(formatedResult).toHaveLength(0)
+  })
+
+  it('should found 1 place', async () => {
+    setHoursMinutesSeconds(12, 0, 1)
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay01.nom, centreDateDisplay01.geoDepartement, begin, end, getDateDisplayPlaces())
     const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
     expect(formatedResult).toHaveLength(1)
   })
 
-  it('should found 3 places', async () => {
-    setNowAfter12h()
+  it('should found 2 places', async () => {
+    setHoursMinutesSeconds(15, 0, 1)
 
-    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces())
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay01.nom, centreDateDisplay01.geoDepartement, begin, end, getDateDisplayPlaces())
+
+    const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
+
+    expect(formatedResult).toHaveLength(2)
+  })
+
+  it('should found 3 places', async () => {
+    setHoursMinutesSeconds(16, 0, 1)
+
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay01.nom, centreDateDisplay01.geoDepartement, begin, end, getDateDisplayPlaces())
 
     const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
 
