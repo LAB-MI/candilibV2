@@ -134,6 +134,7 @@ export const getDatesByCentresNameAndGeoDepartement = async (
     undefined,
     getDateDisplayPlaces(),
   )
+
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
   )
