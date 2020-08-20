@@ -9,7 +9,7 @@ import {
   bookPlace,
   getDatesByCentreId,
   getLastDateToCancel,
-  getPlacesByDepartementAndCentre,
+  getDatesByCentresNameAndGeoDepartement,
   getReservationByCandidat,
   hasAvailablePlaces,
   hasAvailablePlacesByCentre,
@@ -129,12 +129,12 @@ export async function getPlacesByCentre (req, res) {
           candidatId,
         )
       } else {
-        dates = await getPlacesByDepartementAndCentre(
+        dates = await getDatesByCentresNameAndGeoDepartement(
           nomCentre,
           geoDepartement,
-          candidatId,
           begin,
           end,
+          candidatId,
         )
       }
     }

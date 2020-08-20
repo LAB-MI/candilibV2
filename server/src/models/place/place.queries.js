@@ -444,6 +444,7 @@ export const setBookedPlaceKeyToFalseOrTrue = (bookedPlace, flag) => {
  * @param {Object} beginPeriod - Date de début de période
  * @param {Object} endPeriod - Date de fin de période
  */
+// TODO: REMOVE THIS FUNCTION
 export const findPlacesByDepartementAndCentre = async (
   nomCentre,
   geoDepartement,

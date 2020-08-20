@@ -351,9 +351,31 @@ export const findCentresUniqByDepartement = async departement => {
     active: { $ne: false },
   }
 
+  const centres = await Centre.find({ ...filters, departement })
+  const centresWithCount = await Promise.all(
+    centres.map(async centre => {
+      const { nom, geoDepartement } = centre
+      const count = await Centre.count({
+        ...filters,
+        nom: caseInsensitive(nom),
+        geoDepartement,
+      })
+      centre.count = count
+
+      return centre
+    }),
+  )
+
+  return centresWithCount.filter(centre => centre.count === 1)
+}
+
+export const findCentresUniqByDepartementWithAggregate = async departement => {
+  const filters = {
+    active: { $ne: false },
+  }
+
   const centres = await Centre.find({ ...filters, departement }, { _id: 0, nom: 1, geoDepartement: 1 })
   const orCentres = centres.map(({ nom, geoDepartement }) => ({ nom, geoDepartement }))
-  console.log(orCentres)
   const centresWithCount = await Centre.aggregate()
     .match({
       $or: orCentres,
