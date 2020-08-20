@@ -8,8 +8,8 @@ import {
   addInfoDateToRulesResa,
   bookPlace,
   getDatesByCentreId,
-  getDatesByCentresNameAndGeoDepartement,
   getLastDateToCancel,
+  getPlacesByDepartementAndCentre,
   getReservationByCandidat,
   hasAvailablePlaces,
   hasAvailablePlacesByCentre,
@@ -82,7 +82,7 @@ export const ErrorMsgArgEmpty =
  */
 export async function getPlacesByCentre (req, res) {
   const centreId = req.params.id
-
+  const candidatId = req.userId
   const { nomCentre, geoDepartement, begin, end, dateTime } = req.query
 
   const loggerInfo = {
@@ -93,7 +93,7 @@ export async function getPlacesByCentre (req, res) {
     begin,
     end,
     dateTime,
-    candidatId: req.userId,
+    candidatId,
   }
 
   if (end && dateTime) {
@@ -113,9 +113,9 @@ export async function getPlacesByCentre (req, res) {
   try {
     if (centreId) {
       if (dateTime) {
-        dates = await hasAvailablePlaces(centreId, dateTime, req.userId)
+        dates = await hasAvailablePlaces(centreId, dateTime, candidatId)
       } else {
-        dates = await getDatesByCentreId(centreId, begin, end, req.userId)
+        dates = await getDatesByCentreId(centreId, begin, end, candidatId)
       }
     } else {
       if (!(geoDepartement && nomCentre)) {
@@ -126,15 +126,15 @@ export async function getPlacesByCentre (req, res) {
           geoDepartement,
           nomCentre,
           dateTime,
-          req.userId,
+          candidatId,
         )
       } else {
-        dates = await getDatesByCentresNameAndGeoDepartement(
+        dates = await getPlacesByDepartementAndCentre(
           nomCentre,
           geoDepartement,
+          candidatId,
           begin,
           end,
-          req.userId,
         )
       }
     }

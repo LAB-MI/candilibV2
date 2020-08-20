@@ -126,7 +126,8 @@ describe('Candidate Profile', () => {
     let magicLink
 
     const numberOfDaysBeforeDate = 7
-    const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate })
+    const arbitraryValue = 7
+    const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate + arbitraryValue })
 
     const candidatsByDepartments = [
       {
@@ -148,8 +149,8 @@ describe('Candidate Profile', () => {
       cy.deleteAllMails()
       cy.adminLogin()
       cy.addPlanning([nowIn1Week], 'planning01.csv')
-      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
       cy.adminDisconnection()
+      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
       cy.addCandidat(candidatsByDepartments[0])
       cy.getNewMagicLinkCandidat(candidatsByDepartments[0].email).then(mLink => {
         magicLink = mLink

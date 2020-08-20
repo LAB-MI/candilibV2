@@ -8,6 +8,7 @@ import Place from './place.model'
 import { appLogger, techLogger } from '../../util'
 import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
 import { queryPopulate } from '../util/populate-tools'
+import Centre from '../centre/centre-model'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
@@ -430,4 +431,66 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
 export const setBookedPlaceKeyToFalseOrTrue = (bookedPlace, flag) => {
   bookedPlace.booked = flag
   return bookedPlace.save()
+}
+
+/**
+ * Permet de récupérer les places disponibles pour le candidat
+ *
+ * @async
+ * @function
+ *
+ * @param {Object} nomCentre - Nom du centre
+ * @param {Object} geoDepartement - Identifiant du département
+ * @param {Object} beginPeriod - Date de début de période
+ * @param {Object} endPeriod - Date de fin de période
+ */
+export const findPlacesByDepartementAndCentre = async (
+  nomCentre,
+  geoDepartement,
+  beginPeriod,
+  endPeriod,
+  createdBefore,
+) => {
+  const dates = await Centre.aggregate([
+    {
+      $match: { geoDepartement, nom: nomCentre },
+    },
+    {
+      $project: {
+        _id: 1,
+      },
+    },
+    {
+      $lookup: {
+        from: 'places',
+        let: { centre_id: '$_id' },
+        pipeline: [
+          {
+            $match:
+              {
+                $expr:
+                {
+                  $and:
+                  [
+                    { $lt: ['$createdAt', createdBefore] },
+                    { $eq: ['$centre', '$$centre_id'] },
+                    { $lt: ['$date', endPeriod] },
+                    { $gte: ['$date', beginPeriod] },
+                  ],
+                },
+              },
+          },
+          {
+            $project: {
+              _id: 0,
+              date: 1,
+            },
+          },
+        ],
+        as: 'placesInfo',
+      },
+    },
+  ])
+
+  return dates
 }

@@ -115,7 +115,6 @@ describe('Test get dates from places available', () => {
       )
       .set('Accept', 'application/json')
       .expect(200)
-
     expect(body).toBeDefined()
 
     const centreId = createdCentres.find(

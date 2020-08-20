@@ -10,6 +10,7 @@ import {
   updateCentreActiveState,
   findCentresUniqByDepartement,
 } from './centre-queries'
+
 import {
   setInitCreatedCentre,
   createCentres,
