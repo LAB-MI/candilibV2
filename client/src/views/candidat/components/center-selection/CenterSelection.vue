@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <page-title :title="$formatMessage({ id: 'home_choix_du_centre' })" />
-    <message-info-places />
+    <!-- <message-info-places /> -->
 
     <big-loading-indicator :is-loading="center.isFetchingCenter" />
     <v-list
@@ -31,7 +31,7 @@ import { mapState } from 'vuex'
 
 import { BigLoadingIndicator } from '@/components'
 import CenterSelectionContent from './CenterSelectionContent'
-import MessageInfoPlaces from '../MessageInfoPlaces'
+// import MessageInfoPlaces from '../MessageInfoPlaces'
 
 import {
   FETCH_CENTERS_REQUEST,
@@ -41,7 +41,7 @@ export default {
   components: {
     CenterSelectionContent,
     BigLoadingIndicator,
-    MessageInfoPlaces,
+    // MessageInfoPlaces,
   },
 
   computed: {
