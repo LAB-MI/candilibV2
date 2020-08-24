@@ -1,5 +1,5 @@
 import { Settings } from 'luxon'
-const dockerTimeZone = 0 /* set -2 because time zone in docker */
+const dockerTimeZone = 2 /* set -2 because time zone in docker */
 /**
  * Met l'heure et la date de la machine à la date donnée pour les tests.
  * Ne sert que pour les tests
