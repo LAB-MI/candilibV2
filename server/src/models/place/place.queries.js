@@ -283,7 +283,6 @@ const queryVerifyIsAvailablePlacesByCentre = (
   }
   filters.candidat = { $eq: undefined }
   filters.centre = { $eq: centreId }
-  console.log({ filters })
   return Place.findOne(filters).exec()
 }
 

@@ -8,7 +8,7 @@
         v-ripple
         v-on="{ ['click']: selectDepartement }"
       >
-        <v-list-item-title class="text-center">
+        <v-list-item-title :class="`text-center t-geo-departement-${geoDepartementInfos.geoDepartement}`">
           <strong class="u-uppercase">
             {{ geoDepartementInfos.geoDepartement }}
           </strong>
