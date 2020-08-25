@@ -2,7 +2,6 @@ import api from '@/api'
 
 import {
   SHOW_ERROR,
-  FETCH_MY_PROFILE_REQUEST,
 } from '@/store'
 import { getFrenchLuxonCurrentDateTime } from '@/util'
 
@@ -51,9 +50,6 @@ export default {
   actions: {
     async [FETCH_CENTERS_REQUEST] ({ commit, dispatch, rootState }, departement) {
       commit(FETCH_CENTERS_REQUEST)
-      if (!rootState.candidat || !rootState.candidat.me) {
-        await dispatch(FETCH_MY_PROFILE_REQUEST)
-      }
       try {
         const end = getFrenchLuxonCurrentDateTime().plus({ month: 3 }).endOf('month').toISO()
         const result = await api.candidat.getCentres(departement, end)
