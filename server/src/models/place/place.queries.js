@@ -242,6 +242,51 @@ export const countAvailablePlacesByCentre = async (
   return nbPlaces
 }
 
+export const verifyIsAvailablePlacesByCentre = async (
+  centreId,
+  beginDate,
+  endDate,
+  createdBefore,
+) => {
+  appLogger.debug({
+    func: 'verifyIsAvailablePlacesByCentre',
+    args: { centreId, beginDate, endDate },
+  })
+
+  const foundPlace = await queryVerifyIsAvailablePlacesByCentre(
+    centreId,
+    beginDate,
+    endDate,
+    createdBefore,
+  )
+
+  return (foundPlace && foundPlace._id) ? 1 : 0
+}
+
+const queryVerifyIsAvailablePlacesByCentre = (
+  centreId,
+  beginDate,
+  endDate,
+  createdBefore,
+) => {
+  const filters = {}
+  filters.centre = { $eq: centreId, $exists: true }
+  if (beginDate || endDate) {
+    filters.date = {}
+    if (beginDate) filters.date.$gte = beginDate
+    if (endDate) filters.date.$lt = endDate
+  }
+
+  if (createdBefore) {
+    filters.createdAt = {}
+    filters.createdAt.$lt = createdBefore
+  }
+  filters.candidat = { $eq: undefined }
+  filters.centre = { $eq: centreId }
+  console.log({ filters })
+  return Place.findOne(filters).exec()
+}
+
 export const findPlacesByCentreAndDate = async (
   _id,
   date,
