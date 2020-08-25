@@ -8,40 +8,19 @@
         v-ripple
         v-on="{ ['click']: selectDepartement }"
       >
-        <v-list-item-title>
+        <v-list-item-title class="text-center">
           <strong class="u-uppercase">
             {{ geoDepartementInfos.geoDepartement }}
           </strong>
           &nbsp;
-          ({{ geoDepartementInfos.count }} {{ geoDepartementInfos.count ? 'places disponibles' : 'place disponible' }})
         </v-list-item-title>
         <v-list-item-subtitle
           class="u-flex__item--grow"
           :class="'blue-grey--text  text--lighten-2'"
         />
       </v-list-item-content>
-      <v-tooltip
-        left
-        open-on-click
-      >
-        <template v-slot:activator="{ on }">
-          <v-icon
-            class="location-icon"
-            v-on="on"
-          >
-            info
-          </v-icon>
-        </template>
-        <div>
-          <span
-            v-for="{centre, count} in geoDepartementInfos.centres"
-            :key="centre._id"
-          >
-            &nbsp; {{ centre.nom }}: {{ count }} place(s) &nbsp;
-          </span>
-        </div>
-      </v-tooltip>
     </div>
+    <v-divider />
   </v-card-text>
 </template>
 
