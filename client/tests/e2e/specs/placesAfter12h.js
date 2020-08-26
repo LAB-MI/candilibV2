@@ -5,7 +5,6 @@ let dateAt2Months
 let dateAt1Months
 let dateAt2Weeks
 describe('Display new place after 12h', () => {
-  const NbCreneauxByDay = 16 * 2
   let magicLink
   before(() => {
     cy.deleteAllPlaces()
@@ -34,17 +33,13 @@ describe('Display new place after 12h', () => {
     cy.updateCandidat({ email: Cypress.env('emailCandidatFront') }, { canBookFrom: '' })
   })
 
-  const NbCreneaux = now.hour < 12 ? NbCreneauxByDay : NbCreneauxByDay * 3
-  it(`Should ${NbCreneaux} places for 93`, () => {
+  it('Should have places for 93', () => {
     cy.visit(magicLink)
     cy.wait(100)
 
-    // cy.get('h2').should('contain', 'Choix du département')
-    // cy.get('body').should('contain', Cypress.env('geoDepartement'))
-    // cy.contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
-    //   cy.root().should('contain', `${NbCreneaux} places`)
-    // }).click()
-    cy.checkAndSelectDepartement(NbCreneaux)
+    cy.get('h2').should('contain', 'Choix du département')
+    cy.get('body').should('contain', Cypress.env('geoDepartement'))
+    cy.get(`.t-geo-departement-${Cypress.env('geoDepartement')}`).click()
     cy.wait(100)
 
     cy.get('h2').should('contain', 'Choix du centre')

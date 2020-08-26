@@ -23,7 +23,7 @@ jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
 jest.mock('../middlewares/verify-token')
 
-describe('Get departement with the numbers places available in departements and display at 12h', () => {
+xdescribe('Get departement with the numbers places available in departements and display at 12h', () => {
   beforeAll(async () => {
     setInitCreatedCentre()
     resetCreatedInspecteurs()

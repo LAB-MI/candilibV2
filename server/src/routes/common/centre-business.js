@@ -7,6 +7,7 @@
 import {
   countAvailablePlacesByCentre,
   findAllPlacesByCentre,
+  verifyIsAvailablePlacesByCentre,
 } from '../../models/place'
 
 import { findUserById } from '../../models/user'
@@ -63,6 +64,7 @@ export async function findCentresWithNbPlacesByGeoDepartement (
   geoDepartement,
   beginDate,
   endDate,
+  justIsCentreHaveAvailablePlace = true,
 ) {
   const centres = geoDepartement
     ? await findCentreByGeoDepartement(geoDepartement, {
@@ -77,6 +79,35 @@ export async function findCentresWithNbPlacesByGeoDepartement (
     beginDate = getFrenchLuxon().toISODate()
   }
 
+  if (justIsCentreHaveAvailablePlace) {
+    const centresWithNbPlaces = await Promise.all(
+      centres.map(async centre => ({
+        centre,
+        count: await verifyIsAvailablePlacesByCentre(
+          centre._id,
+          beginDate,
+          endDate,
+          getDateDisplayPlaces(),
+        ),
+      })),
+    )
+
+    const result = [
+      ...Object.values(
+        centresWithNbPlaces.reduce((accu, { centre, count }) => {
+          if (!accu[centre.nom]) {
+            accu[centre.nom] = { count: 0 }
+          }
+          accu[centre.nom].centre = centre
+          accu[centre.nom].count = !accu[centre.nom].count ? count : accu[centre.nom].count
+          return accu
+        }, {}),
+      ),
+    ]
+
+    return result
+  }
+
   const centresWithNbPlaces = await Promise.all(
     centres.map(async centre => ({
       centre,
@@ -88,6 +119,7 @@ export async function findCentresWithNbPlacesByGeoDepartement (
       ),
     })),
   )
+
   // TODO: Refactor next block
   const result = [
     ...Object.values(
