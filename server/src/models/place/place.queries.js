@@ -497,7 +497,7 @@ export const findPlacesByDepartementAndCentre = async (
 ) => {
   const dates = await Centre.aggregate([
     {
-      $match: { geoDepartement, nom: nomCentre },
+      $match: { nom: nomCentre, geoDepartement },
     },
     {
       $project: {
