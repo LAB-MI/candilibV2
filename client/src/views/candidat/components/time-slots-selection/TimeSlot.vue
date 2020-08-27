@@ -21,57 +21,60 @@
     >
       {{ warningMessage }}
     </v-alert>
-
-    <v-tabs
-      v-model="switchTab"
-      centered
-      slider-color="primary"
-      color="#dfdfdf"
-      class="sticky-months"
+    <big-loading-indicator :is-loading="timeSlots.isFetching" />
+    <div
+      v-show="!timeSlots.isFetching"
     >
-      <v-tab
-        v-for="month in timeSlots.list"
-        :key="month.label"
-        :href="`#tab-${month.label}`"
-        @click="$router.push({ name: 'time-slot', params: { month: month.label, day: $route.params.day } })"
+      <v-tabs
+        v-model="switchTab"
+        centered
+        slider-color="primary"
+        color="#dfdfdf"
+        class="sticky-months"
       >
-        <span
-          v-if="month.days"
-          class="primary--text"
-        >{{ month.label }}</span>
-        <span
-          v-else
-          class="blue-grey--text"
-        >{{ month.label }}</span>
-      </v-tab>
-    </v-tabs>
-    <v-tabs-items
-      v-model="switchTab"
-      class="tabs-items-block"
-    >
-      <v-tab-item
-        v-for="month in timeSlots.list"
-        :key="month.label"
-        :value="`tab-${month.label}`"
-        :class="`t-tab-${month.label}`"
+        <v-tab
+          v-for="month in timeSlots.list"
+          :key="month.label"
+          :href="`#tab-${month.label}`"
+          @click="$router.push({ name: 'time-slot', params: { month: month.label, day: $route.params.day } })"
+        >
+          <span
+            v-if="month.days"
+            class="primary--text"
+          >{{ month.label }}</span>
+          <span
+            v-else
+            class="blue-grey--text"
+          >{{ month.label }}</span>
+        </v-tab>
+      </v-tabs>
+      <v-tabs-items
+        v-model="switchTab"
+        class="tabs-items-block"
       >
-        <v-card flat>
-          <v-card-text>
-            <times-slots-selector
-              v-if="month.days"
-              :initial-time-slots="Array.from(month.days).map(e => e[1])"
-            />
-            <div
-              v-else
-              class="blue-grey--text font-italic t-time-slots-message-empty-places"
-            >
-              Il n'y a pas de créneau disponible pour ce mois.
-            </div>
-          </v-card-text>
-        </v-card>
-      </v-tab-item>
-    </v-tabs-items>
-
+        <v-tab-item
+          v-for="month in timeSlots.list"
+          :key="month.label"
+          :value="`tab-${month.label}`"
+          :class="`t-tab-${month.label}`"
+        >
+          <v-card flat>
+            <v-card-text>
+              <times-slots-selector
+                v-if="month.days"
+                :initial-time-slots="Array.from(month.days).map(e => e[1])"
+              />
+              <div
+                v-else
+                class="blue-grey--text font-italic t-time-slots-message-empty-places"
+              >
+                Il n'y a pas de créneau disponible pour ce mois.
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs-items>
+    </div>
     <v-card-actions class="u-flex--center">
       <v-btn
         outlined
@@ -101,11 +104,13 @@ import {
   getFrenchLuxonCurrentDateTime,
 } from '@/util/frenchDateTime.js'
 import MessageInfoPlaces from '../MessageInfoPlaces'
+import { BigLoadingIndicator } from '@/components'
 
 export default {
   components: {
-    TimesSlotsSelector,
+    BigLoadingIndicator,
     MessageInfoPlaces,
+    TimesSlotsSelector,
   },
 
   data () {
@@ -245,7 +250,7 @@ export default {
       }
       await this.$store.dispatch(FETCH_DATES_REQUEST, { geoDepartement: selected.geoDepartement, nomCentre: selected.nom })
       if (this.timeoutId !== null) {
-        this.timeoutId = setTimeout(this.getTimeSlots, 5000)
+        this.timeoutId = setTimeout(this.getTimeSlots, 10000)
       }
     },
 

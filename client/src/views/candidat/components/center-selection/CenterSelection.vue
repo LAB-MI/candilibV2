@@ -3,9 +3,9 @@
     <page-title :title="$formatMessage({ id: 'home_choix_du_centre' })" />
     <message-info-places />
 
-    <big-loading-indicator :is-loading="center.isFetchingCenter" />
+    <big-loading-indicator :is-loading="center.isFetchingCenters" />
     <v-list
-      v-if="!center.isFetchingCenter"
+      v-if="!center.isFetchingCenters"
       three-line
     >
       <center-selection-content
