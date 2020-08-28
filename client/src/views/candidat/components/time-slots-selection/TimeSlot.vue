@@ -21,10 +21,8 @@
     >
       {{ warningMessage }}
     </v-alert>
-    <big-loading-indicator :is-loading="timeSlots.isFetching" />
-    <div
-      v-show="!timeSlots.isFetching"
-    >
+    <div style="position: relative;">
+      <big-loading-indicator :is-loading="timeSlots.isFetching" />
       <v-tabs
         v-model="switchTab"
         centered
