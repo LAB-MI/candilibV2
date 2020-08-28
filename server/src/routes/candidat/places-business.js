@@ -298,7 +298,7 @@ export const hasAvailablePlacesByCentre = async (
  * @param {string} candidatId - Id du candidat
  * @param {Object} options - Options à passer à MongoDB pour la query
  *
- * @returns {Object} - Place réservée par le candidat
+ * @returns {Object} Place réservée par le candidat
  */
 export const getReservationByCandidat = async (candidatId, options) => {
   const place = await findPlaceBookedByCandidat(
@@ -365,14 +365,14 @@ export const bookPlace = async (
  */
 
 /**
- * Supprime sur une place, l'association avec un candidat
+ * Archive sur une place, et supprime l'association avec un candidat
  *
  * @async
  * @function
  *
- * @param {PlaceModel} bookedPlace place réservée par le candidat
- * @param {boolean} isModified Booléen à `true` s'il s'agit d'une modification, à `false` ou `undefined` s'il s'agit d'une annulation
- * @param {Object} loggerContent information pour les traces de l'application
+ * @param {PlaceModel} bookedPlace - Place réservée par le candidat
+ * @param {boolean} isModified - Booléen à `true` s'il s'agit d'une modification, à `false` ou `undefined` s'il s'agit d'une annulation
+ * @param {Object} loggerContent - Information pour les traces de l'application
  *
  * @returns {RemoveReservationReturn} Informations à afficher au client
  */
@@ -643,7 +643,9 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
 }
 
 /**
- * Vérifie qu'un candidat peut réserver une place
+ * Vérifie qu'un candidat peut réserver une place.
+ * Renvoie une promesse résolvant `undefined` si le candidat peut réserver,
+ * un objet dans le cas contraire.
  *
  * @async
  * @function
@@ -652,6 +654,7 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
  * @param {string} centre - Id of mongoose
  * @param {Date|DateTime} date - Date de l'examen de la place réservée
  * @param {Object} previewBookedPlace - Type model place which populate centre and candidat
+ *
  * @returns {Promise.<import('../../app').InfoObject> | Promise.<undefined>} - Une promesse résolvant `undefined` si le candidat peut réserver, un objet dans le cas contraire
  */
 export const validCentreDateReservation = async (

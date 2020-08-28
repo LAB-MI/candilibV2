@@ -405,23 +405,28 @@ export const bookPlaceByCandidat = async (req, res) => {
       previousBookedPlace,
     })
 
-    const statusValidResa = await validCentreDateReservation(
+    const statusCanBookPlace = await validCentreDateReservation(
       candidatId,
       nomCentre,
       date,
       previousBookedPlace,
     )
 
-    if (statusValidResa) {
+    if (statusCanBookPlace) {
       appLogger.warn({
         section,
         action: 'valid-reservation',
         candidatId,
-        statusValidResa,
+        statusValidResa: statusCanBookPlace,
       })
+
+      if (previousBookedPlace) {
+        await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
+      }
+
       return res.status(400).json({
-        success: statusValidResa.success,
-        message: statusValidResa.message,
+        success: statusCanBookPlace.success,
+        message: statusCanBookPlace.message,
       })
     }
 

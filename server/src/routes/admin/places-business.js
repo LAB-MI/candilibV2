@@ -622,9 +622,9 @@ export const validUpdateResaInspector = async (resaId, inspecteur) => {
   return { resa, place }
 }
 
-export const moveCandidatInPlaces = async (resa, place) => {
+export const moveCandidatInPlaces = async (previousBookedPlace, place) => {
   const placeId = place._id
-  const { _id: resaId, candidat, bookedAt, bookedByAdmin } = resa
+  const { _id: resaId, candidat, bookedAt, bookedByAdmin } = previousBookedPlace
   const loggerContent = {
     func: 'moveCandidatInPlaces',
     resaId,
@@ -638,14 +638,15 @@ export const moveCandidatInPlaces = async (resa, place) => {
     candidat,
   })
 
-  await setBookedPlaceKeyToFalseOrTrue(resa, false)
+  await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, false)
 
-  const newResa = await bookPlaceById(placeId, candidat, {
+  const newBookedPlace = await bookPlaceById(placeId, candidat, {
     bookedAt,
     bookedByAdmin,
   })
-  if (!newResa) {
-    await setBookedPlaceKeyToFalseOrTrue(resa, true)
+
+  if (!newBookedPlace) {
+    await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
     throw new ErrorWithStatus(400, 'Cette place posséde une réservation')
   }
 
@@ -654,9 +655,10 @@ export const moveCandidatInPlaces = async (resa, place) => {
     action: 'DELETE_RESA',
     resaId,
   })
-  await deletePlace(resa)
 
-  return newResa
+  await deletePlace(previousBookedPlace)
+
+  return newBookedPlace
 }
 
 export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
