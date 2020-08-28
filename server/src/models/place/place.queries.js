@@ -465,16 +465,16 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
 }
 
 /**
- * Permet de mettre à "false" la clef "booked" d'une place
+ * Change la clef "booked" d'une place
  *
  * @async
  * @function
  *
  * @param {Object} bookedPlace - Type model place which populate centre and candidat
  */
-export const setBookedPlaceKeyToFalseOrTrue = (bookedPlace, flag) => {
-  bookedPlace.booked = flag
-  return bookedPlace.save()
+export const setBookedPlaceKeyToFalseOrTrue = (place, booked) => {
+  place.booked = booked
+  return place.save()
 }
 
 /**
