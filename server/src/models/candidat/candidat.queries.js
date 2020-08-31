@@ -546,7 +546,7 @@ export const countCandidatsInscritsByDepartement = async departement => {
 
 export const findCandidatWithBooking = async (nomNaissance, codeNeph) => {
   const candidat = await Candidat.aggregate()
-    .match({ nomNaissance, codeNeph })
+    .match({ codeNeph, nomNaissance })
     .lookup({
       from: 'places',
       localField: '_id',

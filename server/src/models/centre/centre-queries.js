@@ -353,7 +353,7 @@ export const findCentresUniqByDepartement = async departement => {
 
   const centres = await Centre.find({ ...filters, departement }, { _id: 0, nom: 1, geoDepartement: 1 })
   const orCentres = centres.map(({ nom, geoDepartement }) => ({ nom, geoDepartement }))
-  console.log(orCentres)
+
   const centresWithCount = await Centre.aggregate()
     .match({
       $or: orCentres,
