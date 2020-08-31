@@ -2,19 +2,24 @@
   <div>
     <v-card class="t-import-places">
       <page-title title="Gestion planning" />
+
       <v-switch
         v-model="isImportPlacesActive"
         :label="`Import places`"
       />
-      <v-layout
-        v-show="isImportPlacesActive"
-        wrap
-        class="u-flex--space-between"
-      >
+
+      <div class="u-pr">
         <big-loading-indicator :is-loading="isPlacesUpdating" />
-        <admin-import-places class="import-places" />
-        <import-places-validation class="u-flex__item" />
-      </v-layout>
+
+        <v-layout
+          v-show="isImportPlacesActive"
+          wrap
+          class="u-flex--space-between  u-pr"
+        >
+          <admin-import-places class="import-places" />
+          <import-places-validation class="u-flex__item" />
+        </v-layout>
+      </div>
     </v-card>
     <schedule-inspector />
   </div>

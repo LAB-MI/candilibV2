@@ -3,7 +3,7 @@
     <!-- TODO: en attente de spécification de resultat d'import place dans le calendrier by Baudoin -->
     <page-title
       v-show="false"
-      :title="'Calendrier'"
+      title="Calendrier"
     />
     <simple-calendar
       v-show="false"

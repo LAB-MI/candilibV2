@@ -1,13 +1,23 @@
 <template>
   <div
     v-show="isLoading"
-    class="loading-indicator"
+    class="u-pa"
+    style="top: 0; bottom: 0; left: 0; right: 0;"
   >
-    <div class="loading-indicator-progress">
-      <v-progress-circular
-        indeterminate
-        color="primary"
-      />
+    <v-overlay
+      color="white"
+      absolute
+      z-index="1"
+    />
+    <div
+      class="loading-indicator"
+    >
+      <div class="loading-indicator-progress">
+        <v-progress-circular
+          indeterminate
+          color="primary"
+        />
+      </div>
     </div>
   </div>
 </template>
