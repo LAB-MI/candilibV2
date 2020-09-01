@@ -522,6 +522,7 @@ export const findPlacesByDepartementAndCentre = async (
                     { $gte: ['$date', beginPeriod] },
                   ],
                 },
+                candidat: { $exists: false },
               },
           },
           {
