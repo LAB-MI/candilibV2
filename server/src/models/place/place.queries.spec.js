@@ -288,6 +288,7 @@ describe('Place', () => {
       const { nom } = centres[1]
       const centreSelected = await findCentreByName(nom)
       const listPlaces = await findAvailablePlacesByCentre(centreSelected._id)
+
       expect(listPlaces).toBeDefined()
       expect(listPlaces).not.toBeNull()
 
@@ -298,6 +299,31 @@ describe('Place', () => {
       )
 
       expect(listPlaces).toHaveLength(nbPlaces)
+    })
+
+    it('Should find 1 place for centre "Centre 2" by findPlacesByDepartementAndCentre', async () => {
+      const { nom, geoDepartement } = centres[1]
+      const centreSelected = await findCentreByName(nom)
+      const listPlaces = await findPlacesByDepartementAndCentre(
+        nom,
+        geoDepartement,
+        getFrenchLuxon().toJSDate(),
+        getFrenchLuxon().plus({ months: 4 }).toJSDate(),
+        getFrenchLuxonFromObject({ hour: 12 }).toJSDate(),
+      )
+      expect(listPlaces[0]).toBeDefined()
+      expect(listPlaces[0]).not.toBeNull()
+
+      expect(listPlaces[0]).toHaveProperty('_id', centreSelected._id)
+
+      const nbPlaces = nbPlacesAvailables(
+        createdPlacesBooked,
+        createdPlaces,
+        centreSelected,
+        getFrenchLuxonFromObject({ hour: 12 }),
+      )
+
+      expect(listPlaces[0].placesInfo).toHaveLength(nbPlaces)
     })
 
     it('Should 1 places availables for centre "Centre 2"', async () => {
