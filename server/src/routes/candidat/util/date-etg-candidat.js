@@ -91,7 +91,7 @@ export const candidatCanReservePlaceForThisPeriod = async (
 
   let luxonDateVisible = getFrenchLuxon().plus({
     month: config.numberOfVisibleMonths,
-  })
+  }).endOf('month')
 
   luxonDateVisible =
     // TODO: Uncomment next line after 31/12/2020
@@ -103,6 +103,7 @@ export const candidatCanReservePlaceForThisPeriod = async (
     luxonEndDate && !luxonEndDate.invalid && luxonEndDate <= luxonDateVisible
       ? luxonEndDate
       : luxonDateVisible
+
   return {
     beginPeriod: begin,
     endPeriod: end,

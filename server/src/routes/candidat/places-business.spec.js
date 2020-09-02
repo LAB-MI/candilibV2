@@ -124,7 +124,7 @@ describe('Test places business: get dates from places available', () => {
       }),
     ])).length
 
-    nbPlacesAvailable = placesCreatedFromSelected.length + count - 2
+    nbPlacesAvailable = placesCreatedFromSelected.length + count - 1
   })
 
   afterAll(async () => {
