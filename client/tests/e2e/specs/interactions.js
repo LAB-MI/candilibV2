@@ -218,6 +218,7 @@ describe('Standard scenarios', () => {
         .should('contain', 'Choix du département')
       cy.contains(Cypress.env('geoDepartement'))
         .click()
+      cy.wait(100)
       cy.get('h2')
         .should('contain', 'Choix du centre')
       cy.contains(Cypress.env('centre'))
