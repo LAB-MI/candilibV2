@@ -402,7 +402,7 @@ export const bookPlaceByCandidat = async (req, res) => {
       section,
       action: 'get-reservation',
       candidatId,
-      previousBookedPlace,
+      previousBookedPlaceId: previousBookedPlace && previousBookedPlace._id,
     })
 
     const statusCanBookPlace = await validCentreDateReservation(
@@ -469,7 +469,7 @@ export const bookPlaceByCandidat = async (req, res) => {
           section,
           candidatId,
           description: 'Échec de suppression de la réservation',
-          previousBookedPlace,
+          previousBookedPlaceId: previousBookedPlace._id,
           error,
         })
         await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
