@@ -270,7 +270,8 @@ const queryVerifyIsAvailablePlacesByCentre = (
   createdBefore,
 ) => {
   const filters = {}
-  filters.centre = { $eq: centreId, $exists: true }
+  filters.centre = { $eq: centreId }
+
   if (beginDate || endDate) {
     filters.date = {}
     if (beginDate) filters.date.$gte = beginDate
@@ -282,7 +283,7 @@ const queryVerifyIsAvailablePlacesByCentre = (
     filters.createdAt.$lt = createdBefore
   }
   filters.candidat = { $eq: undefined }
-  filters.centre = { $eq: centreId }
+
   return Place.findOne(filters).exec()
 }
 
