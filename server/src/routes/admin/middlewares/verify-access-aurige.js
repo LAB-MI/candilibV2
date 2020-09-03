@@ -32,7 +32,7 @@ export function verifyAccessAurige (req, res, next) {
     userLevel,
     requestedAction,
   }
-  appLogger.debug({ ...loggerInfo })
+  // appLogger.debug({ ...loggerInfo })
   try {
     if (
       !(

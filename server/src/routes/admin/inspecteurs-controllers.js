@@ -67,11 +67,6 @@ export const getInspecteurs = async (req, res) => {
   }
 
   if (date && departement && !matching && !centreId && !begin && !end) {
-    appLogger.debug({
-      ...loggerInfo,
-      func: 'getInspecteurs',
-    })
-
     const results = await getInspecteursBookedFromDepartement(date, departement)
 
     appLogger.info({

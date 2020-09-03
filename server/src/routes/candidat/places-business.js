@@ -62,13 +62,13 @@ export const getDatesByCentreId = async (
   endDate,
   candidatId,
 ) => {
-  appLogger.debug({
-    func: 'getDatesByCentreId',
-    _id,
-    beginDate,
-    endDate,
-    candidatId,
-  })
+  // appLogger.debug({
+  //   func: 'getDatesByCentreId',
+  //   _id,
+  //   beginDate,
+  //   endDate,
+  //   candidatId,
+  // })
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
     beginDate,
@@ -107,13 +107,13 @@ export const getDatesByCentresNameAndGeoDepartement = async (
   endDate,
   candidatId,
 ) => {
-  appLogger.debug({
-    func: 'getDatesByCentreName',
-    nomCentre,
-    beginDate,
-    endDate,
-    candidatId,
-  })
+  // appLogger.debug({
+  //   func: 'getDatesByCentreName',
+  //   nomCentre,
+  //   beginDate,
+  //   endDate,
+  //   candidatId,
+  // })
 
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
@@ -189,13 +189,13 @@ export const getDatesByCentre = async (
   endDate,
   candidatId,
 ) => {
-  appLogger.debug({
-    func: 'getDatesByCentre',
-    departement,
-    nomCentre,
-    beginDate,
-    endDate,
-  })
+  // appLogger.debug({
+  //   func: 'getDatesByCentre',
+  //   departement,
+  //   nomCentre,
+  //   beginDate,
+  //   endDate,
+  // })
 
   let foundCentre
   if (departement) {

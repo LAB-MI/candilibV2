@@ -1,7 +1,6 @@
 import jwt from 'jsonwebtoken'
 
 import config from '../config'
-import { appLogger } from './logger'
 
 export function createToken (id, userStatus, departements) {
   const level = config.userStatusLevels[userStatus] || 0
@@ -19,7 +18,7 @@ export function createToken (id, userStatus, departements) {
     expiresIn: tokenExpiration || 0,
   }
 
-  appLogger.debug({ action: 'create-token', payload, options })
+  // appLogger.debug({ action: 'create-token', payload, options })
 
   const token = jwt.sign(payload, secret, options)
 

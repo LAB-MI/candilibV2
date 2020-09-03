@@ -5,7 +5,7 @@
 import mongoose from 'mongoose'
 
 import Place from './place.model'
-import { appLogger, techLogger } from '../../util'
+import { techLogger } from '../../util'
 import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
 import { queryPopulate } from '../util/populate-tools'
 import Centre from '../centre/centre-model'
@@ -174,10 +174,6 @@ export const findAvailablePlacesByCentre = async (
   populate,
   createdBefore,
 ) => {
-  appLogger.debug({
-    func: 'findAvailablePlacesByCentre',
-    args: { centreId, beginDate, endDate },
-  })
   const query = queryAvailablePlacesByCentre(
     centreId,
     beginDate,
@@ -197,11 +193,6 @@ export const findAvailablePlacesByCentres = async (
   populate,
   createdBefore,
 ) => {
-  appLogger.debug({
-    func: 'findAvailablePlacesByCentre',
-    args: { centres, beginDate, endDate },
-  })
-
   const result = await Promise.all(
     centres.map(async centre => {
       const query = queryAvailablePlacesByCentres(
@@ -228,11 +219,6 @@ export const countAvailablePlacesByCentre = async (
   endDate,
   createdBefore,
 ) => {
-  appLogger.debug({
-    func: 'countAvailablePlacesByCentre',
-    args: { centreId, beginDate, endDate },
-  })
-
   const nbPlaces = await queryAvailablePlacesByCentre(
     centreId,
     beginDate,
@@ -248,11 +234,6 @@ export const verifyIsAvailablePlacesByCentre = async (
   endDate,
   createdBefore,
 ) => {
-  appLogger.debug({
-    func: 'verifyIsAvailablePlacesByCentre',
-    args: { centreId, beginDate, endDate },
-  })
-
   const foundPlace = await queryVerifyIsAvailablePlacesByCentre(
     centreId,
     beginDate,
@@ -293,10 +274,6 @@ export const findPlacesByCentreAndDate = async (
   populate,
   createdBefore,
 ) => {
-  appLogger.debug({
-    func: 'findPlacesByCentreAndDate',
-    args: { _id, date, populate },
-  })
   const query = Place.find({
     centre: _id,
     date,
