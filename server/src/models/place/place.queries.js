@@ -5,12 +5,14 @@
 import mongoose from 'mongoose'
 
 import Place from './place.model'
-import { appLogger, techLogger } from '../../util'
+import { appLogger, techLogger, getFrenchLuxonFromJSDate } from '../../util'
 import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
 import { queryPopulate } from '../util/populate-tools'
 import Centre from '../centre/centre-model'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
+
+const getId = x => x._id.toString()
 
 export const createPlace = async leanPlace => {
   const previousPlace = await Place.findOne(leanPlace)
@@ -125,27 +127,27 @@ const queryAvailablePlacesByCentre = (
  *
  * @returns {import('mongoose').Query}
  */
-const queryAvailablePlacesByCentres = (
-  centreId,
-  beginDate,
-  endDate,
-  createdBefore,
-) => {
-  const query = Place.where('centre')
-  if (beginDate || endDate) {
-    query.where('date')
+// const queryAvailablePlacesByCentres = (
+//   centreId,
+//   beginDate,
+//   endDate,
+//   createdBefore,
+// ) => {
+//   const query = Place.where('centre')
+//   if (beginDate || endDate) {
+//     query.where('date')
 
-    if (beginDate) query.gte(beginDate)
-    if (endDate) query.lt(endDate)
-  }
+//     if (beginDate) query.gte(beginDate)
+//     if (endDate) query.lt(endDate)
+//   }
 
-  if (createdBefore) {
-    query.where('createdAt').lt(createdBefore)
-  }
-  query.where('candidat').equals(undefined)
+//   if (createdBefore) {
+//     query.where('createdAt').lt(createdBefore)
+//   }
+//   query.where('candidat').equals(undefined)
 
-  return query.where('centre', centreId)
-}
+//   return query.where('centre', centreId)
+// }
 
 /**
  * @function
@@ -189,37 +191,27 @@ export const findAvailablePlacesByCentre = async (
   return places
 }
 
-// TODO: Refactor
 export const findAvailablePlacesByCentres = async (
-  centres,
+  nomCentre,
+  geoDepartement,
   beginDate,
   endDate,
-  populate,
   createdBefore,
 ) => {
   appLogger.debug({
     func: 'findAvailablePlacesByCentre',
-    args: { centres, beginDate, endDate },
+    args: { nomCentre, beginDate, endDate },
   })
 
-  const result = await Promise.all(
-    centres.map(async centre => {
-      const query = queryAvailablePlacesByCentres(
-        centre._id,
-        beginDate,
-        endDate,
-        createdBefore,
-      )
-      queryPopulate(populate, query)
-      return query.exec()
-    }, {}),
-  )
+  const centres = await Centre.find({ nom: nomCentre, geoDepartement })
+  const centresIds = centres.map(getId)
 
-  const finalResult = result.reduce((accu, places) => {
-    return accu.concat(places)
-  }, [])
+  const availablePlaces = await Place.find({ date: { $gte: beginDate, $lt: endDate }, candidat: { $exists: false } })
 
-  return finalResult
+  const result = availablePlaces
+    .filter(place => centresIds.includes(place.centre.toString()) && (place.createdAt < createdBefore))
+    .map(place => getFrenchLuxonFromJSDate(place.date).toISO())
+  return result
 }
 
 export const countAvailablePlacesByCentre = async (

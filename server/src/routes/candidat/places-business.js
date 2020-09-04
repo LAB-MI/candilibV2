@@ -20,7 +20,6 @@ import {
   findAvailablePlacesByCentres,
   findPlaceBookedByCandidat,
   findPlacesByCentreAndDate,
-  findPlacesByDepartementAndCentre,
   removeBookedPlace,
 } from '../../models/place'
 import {
@@ -131,7 +130,6 @@ export const getDatesByCentresNameAndGeoDepartement = async (
     centres,
     beginPeriod.toISODate(),
     endPeriod.toISODate(),
-    undefined,
     getDateDisplayPlaces(),
   )
   const dates = places.map(place =>
@@ -153,7 +151,7 @@ export const getPlacesByDepartementAndCentre = async (
     endDate,
   )
 
-  const dates = await findPlacesByDepartementAndCentre(
+  const dates = await findAvailablePlacesByCentres(
     nomCentre,
     geoDepartement,
     beginPeriod,
@@ -161,12 +159,7 @@ export const getPlacesByDepartementAndCentre = async (
     getDateDisplayPlaces(),
   )
 
-  const result = dates
-    .map(({ placesInfo }) => placesInfo)
-    .flat(1)
-    .map(place => getFrenchLuxonFromJSDate(place.date).toISO())
-
-  return [...new Set(result)]
+  return [...new Set(dates)]
 }
 
 /**
