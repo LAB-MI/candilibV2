@@ -189,7 +189,6 @@ export const findAvailablePlacesByCentre = async (
   return places
 }
 
-// TODO: Refactor
 export const findAvailablePlacesByCentres = async (
   centres,
   beginDate,
@@ -210,15 +209,14 @@ export const findAvailablePlacesByCentres = async (
         endDate,
         createdBefore,
       )
-      queryPopulate(populate, query)
+      if (populate) {
+        queryPopulate(populate, query)
+      }
       return query.exec()
     }, {}),
   )
 
-  const finalResult = result.reduce((accu, places) => {
-    return accu.concat(places)
-  }, [])
-
+  const finalResult = result.flat(1)
   return finalResult
 }
 
@@ -489,6 +487,7 @@ export const setBookedPlaceKeyToFalseOrTrue = (place, booked) => {
  * @param {Object} beginPeriod - Date de début de période
  * @param {Object} endPeriod - Date de fin de période
  */
+// TODO: REMOVE THIS FUNCTION
 export const findPlacesByDepartementAndCentre = async (
   nomCentre,
   geoDepartement,
