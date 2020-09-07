@@ -15,6 +15,7 @@ import {
   hasAvailablePlacesByCentre,
   removeReservationPlace,
   validCentreDateReservation,
+  canModifyReservation,
 } from './places-business'
 
 import { sendMailConvocation } from '../business'
@@ -389,7 +390,7 @@ export const bookPlaceByCandidat = async (req, res) => {
   }
 
   try {
-    const previousBookedPlace = await getReservationByCandidat(candidatId, {
+    const previousBookedPlace = await canModifyReservation(candidatId, {
       centre: true,
       candidat: true,
     })
@@ -549,9 +550,9 @@ export const bookPlaceByCandidat = async (req, res) => {
         ? 'Une erreur est survenue : Impossible de supprimer la place précedente. L\'administrateur du site a été prévenu' : error.message
       statusCode = 509
     }
-    res.status(statusCode).json({
+    res.status(error.status || statusCode).json({
       success: false,
-      message: errorMessage,
+      message: error.status ? error.message : errorMessage,
     })
   }
 }

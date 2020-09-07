@@ -22,6 +22,7 @@ import {
   findPlacesByCentreAndDate,
   findPlacesByDepartementAndCentre,
   removeBookedPlace,
+  findPlacesByCandidat,
 } from '../../models/place'
 import {
   findCentreByName,
@@ -307,6 +308,34 @@ export const getReservationByCandidat = async (candidatId, options) => {
     options || { centre: true },
   )
   return place
+}
+
+/**
+ * Vérifie s'il y a reservation en cours
+ * Sinon retourne le reservation
+ *
+ * @async
+ * @function
+ *
+ * @param {string} candidatId - Id du candidat
+ * @param {Object} options - Options à passer à MongoDB pour la query
+ *
+ * @returns {Object} Place réservée par le candidat
+ */
+export const canModifyReservation = async (candidatId, options) => {
+  const places = await findPlacesByCandidat(
+    candidatId,
+    {},
+    options || { centre: true },
+  )
+
+  if (places.length > 1 || places.find(place => place.booked === false)) {
+    const error = new Error('Votre demande est refusé, Votre réservation est en cours de modication.')
+    error.status = 409
+    throw error
+  }
+
+  return places[0]
 }
 
 /**

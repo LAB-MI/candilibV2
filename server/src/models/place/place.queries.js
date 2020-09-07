@@ -303,6 +303,17 @@ export const findPlaceBookedByCandidat = async (
   return place
 }
 
+export const findPlacesByCandidat = async (candidat,
+  options = {},
+  populate,
+) => {
+  const query = Place.find({ candidat }, options)
+  queryPopulate(populate, query)
+
+  const places = await query.exec()
+  return places
+}
+
 export const findAndbookPlace = async (
   candidat,
   centres,
