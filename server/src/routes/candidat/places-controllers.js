@@ -430,16 +430,28 @@ export const bookPlaceByCandidat = async (req, res) => {
       })
     }
 
-    const reservation = await bookPlace(
-      candidatId,
-      nomCentre,
-      date,
-      geoDepartement,
-    )
+    let reservation
+    let reservationMessage
+    try {
+      reservation = await bookPlace(
+        candidatId,
+        nomCentre,
+        date,
+        geoDepartement,
+      )
+    } catch (error) {
+      appLogger.error({
+        section,
+        candidatId,
+        error,
+        description: error.message,
+      })
+      reservationMessage = error.message
+    }
 
     if (!reservation) {
       const success = false
-      const message = "Il n'y a pas de place pour ce créneau"
+      const message = reservationMessage || "Il n'y a pas de place pour ce créneau"
       if (previousBookedPlace) {
         await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
       }

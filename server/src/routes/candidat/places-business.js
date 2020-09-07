@@ -351,7 +351,8 @@ export const bookPlace = async (
   } catch (error) {
     if (error.code === 11000) {
       error.code = 509
-      error.message = 'Erreur: la place est déjà réservée.'
+      error.errorMessage = error.message
+      error.message = 'Vous avez déjà une réservation.'
     }
     throw error
   }
