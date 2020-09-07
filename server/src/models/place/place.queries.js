@@ -451,8 +451,8 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
  * @param {Object} bookedPlace - Type model place which populate centre and candidat
  */
 export const setBookedPlaceKeyToFalseOrTrue = (place, booked) => {
-  place.booked = booked
-  return place.save()
+  const { _id, candidat } = place
+  Place.updateOne({ _id, candidat }, { $set: { booked } })
 }
 
 /**
