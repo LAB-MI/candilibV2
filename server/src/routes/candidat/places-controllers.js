@@ -357,9 +357,14 @@ export const bookPlaceByCandidat = async (req, res) => {
   const isAccompanied = isAccompaniedAsBoolean === true
   const hasDualControlCar = hasDualControlCarAsBoolean === true
 
-  appLogger.info({
+  const loggerContent = {
     section,
+    action: 'call-create-reservation',
     candidatId,
+  }
+
+  appLogger.info({
+    ...loggerContent,
     nomCentre,
     date,
     isAccompanied,
@@ -378,8 +383,7 @@ export const bookPlaceByCandidat = async (req, res) => {
     const message = `Une ou plusieurs informations sont manquantes : ${messageList}`
 
     appLogger.warn({
-      section,
-      candidatId,
+      ...loggerContent,
       success,
       description: message,
     })
@@ -390,6 +394,7 @@ export const bookPlaceByCandidat = async (req, res) => {
   }
 
   try {
+    loggerContent.action = 'get-reservation'
     const previousBookedPlace = await canModifyReservation(candidatId, {
       centre: true,
       candidat: true,
@@ -400,12 +405,11 @@ export const bookPlaceByCandidat = async (req, res) => {
     }
 
     appLogger.info({
-      section,
-      action: 'get-reservation',
-      candidatId,
+      ...loggerContent,
       previousBookedPlaceId: previousBookedPlace && previousBookedPlace._id,
     })
 
+    loggerContent.action = 'valid-reservation'
     const statusCanBookPlace = await validCentreDateReservation(
       candidatId,
       nomCentre,
@@ -415,9 +419,7 @@ export const bookPlaceByCandidat = async (req, res) => {
 
     if (statusCanBookPlace) {
       appLogger.warn({
-        section,
-        action: 'valid-reservation',
-        candidatId,
+        ...loggerContent,
         statusValidResa: statusCanBookPlace,
       })
 
@@ -431,6 +433,7 @@ export const bookPlaceByCandidat = async (req, res) => {
       })
     }
 
+    loggerContent.action = 'create-reservation'
     let reservation
     let reservationMessage
     try {
@@ -442,7 +445,7 @@ export const bookPlaceByCandidat = async (req, res) => {
       )
     } catch (error) {
       appLogger.error({
-        section,
+        ...loggerContent,
         candidatId,
         error,
         description: error.message,
@@ -457,8 +460,7 @@ export const bookPlaceByCandidat = async (req, res) => {
         await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
       }
       appLogger.warn({
-        section,
-        candidatId,
+        ...loggerContent,
         success,
         description: message,
       })
@@ -474,13 +476,13 @@ export const bookPlaceByCandidat = async (req, res) => {
     let dateAfterBook
 
     if (previousBookedPlace) {
+      loggerContent.action = 'remove-previous-reservation'
       try {
         statusRemove = await removeReservationPlace(previousBookedPlace, true)
         dateAfterBook = statusRemove.dateAfterBook
       } catch (error) {
         techLogger.error({
-          section,
-          candidatId,
+          ...loggerContent,
           description: 'Échec de suppression de la réservation',
           previousBookedPlaceId: previousBookedPlace._id,
           error,
@@ -491,6 +493,7 @@ export const bookPlaceByCandidat = async (req, res) => {
 
     const deptCentre = reservation.centre.departement
     if (deptCentre !== reservation.candidat.departement) {
+      loggerContent.action = 'update-departement'
       reservation.candidat = await updateCandidatDepartement(
         reservation.candidat,
         deptCentre,
@@ -498,6 +501,7 @@ export const bookPlaceByCandidat = async (req, res) => {
     }
 
     try {
+      loggerContent.action = 'send-convocation'
       await sendMailConvocation(reservation)
       statusmail = true
       message = SAVE_RESA_WITH_MAIL_SENT
@@ -506,8 +510,7 @@ export const bookPlaceByCandidat = async (req, res) => {
       const { nom, departement } = reservation.centre
       const { date } = reservation
       appLogger.warn({
-        section: 'candidat-create-reservation',
-        candidatId,
+        ...loggerContent,
         description: `Le courriel de convocation n'a pu être envoyé pour la réservation du candidat ${nomNaissance}/${codeNeph} sur le centre ${nom} du département ${departement} à la date ${date} `,
         error,
       })
@@ -515,10 +518,9 @@ export const bookPlaceByCandidat = async (req, res) => {
       message = SAVE_RESA_WITH_NO_MAIL_SENT
     }
 
+    loggerContent.action = 'created-reservation'
     appLogger.info({
-      section: 'candidat-create-reservation',
-      action: 'create-reservation',
-      candidatId,
+      ...loggerContent,
       statusmail,
       description: message,
       reservation: reservation._id,
@@ -537,8 +539,7 @@ export const bookPlaceByCandidat = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
-      section: 'candidat-create-reservation',
-      candidatId,
+      ...loggerContent,
       description: error.message,
       error,
     })

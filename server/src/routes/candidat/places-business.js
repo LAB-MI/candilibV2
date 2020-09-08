@@ -311,8 +311,8 @@ export const getReservationByCandidat = async (candidatId, options) => {
 }
 
 /**
- * Vérifie s'il y a reservation en cours
- * Sinon retourne le reservation
+ * Vérifie si le candidat est en cours de modification de réservation.
+ * Renvoie une erreur dans ce cas, ou sa réservation
  *
  * @async
  * @function
@@ -330,7 +330,7 @@ export const canModifyReservation = async (candidatId, options) => {
   )
 
   if (places.length > 1 || places.find(place => place.booked === false)) {
-    const error = new Error('Votre demande est refusé, Votre réservation est en cours de modication.')
+    const error = new Error('Votre demande est refusée. Votre réservation est en cours de modication.')
     error.status = 409
     throw error
   }
