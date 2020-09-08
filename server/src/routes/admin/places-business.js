@@ -623,12 +623,12 @@ export const validUpdateResaInspector = async (resaId, inspecteur) => {
 
 export const moveCandidatInPlaces = async (previousBookedPlace, place) => {
   const placeId = place._id
-  const { /* _id: resaId, */ candidat, bookedAt, bookedByAdmin } = previousBookedPlace
-  // const loggerContent = {
-  //   func: 'moveCandidatInPlaces',
-  //   resaId,
-  //   placeId,
-  // }
+  const { candidat, bookedAt, bookedByAdmin } = previousBookedPlace
+  const loggerContent = {
+    func: 'moveCandidatInPlaces',
+    resaId: previousBookedPlace._id,
+    placeId,
+  }
 
   // appLogger.debug({
   //   ...loggerContent,
@@ -639,14 +639,21 @@ export const moveCandidatInPlaces = async (previousBookedPlace, place) => {
 
   await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, false)
 
-  const newBookedPlace = await bookPlaceById(placeId, candidat, {
-    bookedAt,
-    bookedByAdmin,
-  })
+  let newBookedPlace
+  let messageError
+  try {
+    newBookedPlace = await bookPlaceById(placeId, candidat, {
+      bookedAt,
+      bookedByAdmin,
+    })
+  } catch (error) {
+    appLogger.error({ ...loggerContent, error, description: error.message })
+    messageError = `L'Affection du candidat a échoué ${error.code === 11000 ? ', le candidat a une autre réservation.' : '.'}`
+  }
 
   if (!newBookedPlace) {
     await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
-    throw new ErrorWithStatus(400, 'Cette place posséde une réservation')
+    throw new ErrorWithStatus(400, messageError || 'Cette place possède une réservation')
   }
 
   // appLogger.debug({
