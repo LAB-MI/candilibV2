@@ -461,9 +461,10 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
  *
  * @param {Object} bookedPlace - Type model place which populate centre and candidat
  */
-export const setBookedPlaceKeyToFalseOrTrue = (place, booked) => {
+export const setBookedPlaceKeyToFalseOrTrue = async (place, booked) => {
   const { _id, candidat } = place
-  Place.updateOne({ _id, candidat }, { $set: { booked } })
+  const result = await Place.updateOne({ _id, candidat }, { $set: { booked } })
+  return result.nModified === 1 && result.ok === 1
 }
 
 /**
