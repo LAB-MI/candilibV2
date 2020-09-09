@@ -434,7 +434,6 @@ const updateValidCandidat = async (
 
     return getCandidatStatus(nomNaissance, codeNeph, 'success', OK, message)
   } catch (err) {
-    appLogger.error(err)
     if (codeErrMessage) {
       err.codeMessage = codeErrMessage
       err.messageToUser = `Pour le ${departement}, Impossible d'envoyer un magic link par un mail à ce candidat ${email}, il a été validé, cependant`
