@@ -4,7 +4,6 @@
  */
 import { findCandidatById } from '../../../models/candidat'
 import { sendErrorResponse } from '../../../util/send-error-response'
-import { appLogger } from '../../../util'
 
 /**
  * Vérifier l'accès du candidat pour obtenir les places et pour réserver
@@ -36,7 +35,7 @@ export async function verifyAccesPlacesByCandidat (req, res, next) {
   }
 
   try {
-    appLogger.debug(loggerInfo)
+    // appLogger.debug(loggerInfo)
     const candidat = await findCandidatById(userId)
     if (!candidat) {
       const error = new Error('Candidat non trouvé')

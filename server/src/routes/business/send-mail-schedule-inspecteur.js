@@ -18,8 +18,8 @@ export const getScheduleInspecteurBody = async (
   departement,
   places,
 ) => {
-  const action = 'get-body-shechule-inspecteur'
-  appLogger.debug({ func: 'getScheduleInspecteurBody', action, places })
+  // const action = 'get-body-shechule-inspecteur'
+  // appLogger.debug({ func: 'getScheduleInspecteurBody', action, places })
 
   if (!places || places.length === 0) {
     throw new Error('NO_PLACES')
@@ -79,16 +79,16 @@ export const sendScheduleInspecteur = async (
   inspecteur,
   centre,
 ) => {
-  const loggerInfo = {
-    func: 'sendScheduleInspecteur',
-    email,
-    places,
-    inspecteur,
-    centre,
-    action: 'SEND_SCHEDULE_INSPECTEUR',
-  }
+  // const loggerInfo = {
+  //   func: 'sendScheduleInspecteur',
+  //   email,
+  //   places,
+  //   inspecteur,
+  //   centre,
+  //   action: 'SEND_SCHEDULE_INSPECTEUR',
+  // }
 
-  appLogger.debug(loggerInfo)
+  // appLogger.debug(loggerInfo)
   const action = 'SEND_SCHEDULE_INSPECTEUR'
 
   if (!email || !places || places.length <= 0) {
@@ -105,12 +105,12 @@ export const sendScheduleInspecteur = async (
   } = places[0]
 
   let inspecteurObject = inspecteur || inspecteurFromPlace
-  appLogger.debug({
-    ...loggerInfo,
-    description: "rechercher l'inspecteur",
-    inspecteur_id: inspecteurObject.matricule,
-    inspecteurObject,
-  })
+  // appLogger.debug({
+  //   ...loggerInfo,
+  //   description: "rechercher l'inspecteur",
+  //   inspecteur_id: inspecteurObject.matricule,
+  //   inspecteurObject,
+  // })
 
   if (!inspecteurObject.matricule || !inspecteurObject.nom) {
     inspecteurObject = await findInspecteurById(inspecteurObject._id)
@@ -144,7 +144,7 @@ export const sendScheduleInspecteur = async (
   )
   const subject = `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
 
-  appLogger.debug({ func: 'sendScheduleInspecteur', content, subject })
+  // appLogger.debug({ func: 'sendScheduleInspecteur', content, subject })
 
   return sendMail(email, { content, subject })
 }
@@ -155,10 +155,10 @@ export const sendMailForScheduleInspecteurFailed = async (
   departement,
   inspecteurs,
 ) => {
-  appLogger.debug({
-    func: 'sendMailForScheduleInspecteurFailed',
-    args: { email, date, departement, inspecteurs },
-  })
+  // appLogger.debug({
+  //   func: 'sendMailForScheduleInspecteurFailed',
+  //   args: { email, date, departement, inspecteurs },
+  // })
 
   const dateToString = getFrenchFormattedDateTime(date, DateTime.DATE_SHORT)
     .date

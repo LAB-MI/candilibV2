@@ -110,10 +110,10 @@ export const checkCandidat = async (req, res) => {
     candidatId,
   }
 
-  appLogger.debug({
-    ...loggerInfo,
-    description: "Vérification de l'existence du candidat",
-  })
+  // appLogger.debug({
+  //   ...loggerInfo,
+  //   description: "Vérification de l'existence du candidat",
+  // })
 
   try {
     const isExisting = await isCandidatExisting(candidatId)
