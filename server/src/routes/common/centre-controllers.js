@@ -37,7 +37,15 @@ export async function getCentres (req, res) {
   const loggerContent = {
     section: 'candidat-get-centres',
     action: 'GET CANDIDAT CENTRES',
-    args: { departement, centreId, beginDate, endDate },
+    departement,
+    centreId,
+    beginDate,
+    endDate,
+  }
+  if (req.userLevel === config.userStatusLevels.candidat) {
+    loggerContent.candidatId = req.userId
+  } else {
+    loggerContent.userId = req.userId
   }
 
   try {
@@ -46,7 +54,11 @@ export async function getCentres (req, res) {
         section: 'candidat-get-centres',
         message: NOT_CODE_DEP_MSG,
       }
-      appLogger.error(error)
+      appLogger.error({
+        ...loggerContent,
+        error,
+        description: error.message,
+      })
       return res.status(400).json({
         success: false,
         message: error.message,
@@ -97,7 +109,7 @@ export async function getCentres (req, res) {
       }
     }
   } catch (error) {
-    appLogger.error(error)
+    appLogger.error({ ...loggerContent, description: error.message, error })
     res.status(500).json({
       success: false,
       message: error.message,

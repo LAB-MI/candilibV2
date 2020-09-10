@@ -22,6 +22,7 @@ import {
   findPlacesByCentreAndDate,
   findPlacesByDepartementAndCentre,
   removeBookedPlace,
+  findPlacesByCandidat,
 } from '../../models/place'
 import {
   findCentreByName,
@@ -62,13 +63,13 @@ export const getDatesByCentreId = async (
   endDate,
   candidatId,
 ) => {
-  appLogger.debug({
-    func: 'getDatesByCentreId',
-    _id,
-    beginDate,
-    endDate,
-    candidatId,
-  })
+  // appLogger.debug({
+  //   func: 'getDatesByCentreId',
+  //   _id,
+  //   beginDate,
+  //   endDate,
+  //   candidatId,
+  // })
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
     beginDate,
@@ -107,13 +108,13 @@ export const getDatesByCentresNameAndGeoDepartement = async (
   endDate,
   candidatId,
 ) => {
-  appLogger.debug({
-    func: 'getDatesByCentreName',
-    nomCentre,
-    beginDate,
-    endDate,
-    candidatId,
-  })
+  // appLogger.debug({
+  //   func: 'getDatesByCentreName',
+  //   nomCentre,
+  //   beginDate,
+  //   endDate,
+  //   candidatId,
+  // })
 
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
@@ -189,13 +190,13 @@ export const getDatesByCentre = async (
   endDate,
   candidatId,
 ) => {
-  appLogger.debug({
-    func: 'getDatesByCentre',
-    departement,
-    nomCentre,
-    beginDate,
-    endDate,
-  })
+  // appLogger.debug({
+  //   func: 'getDatesByCentre',
+  //   departement,
+  //   nomCentre,
+  //   beginDate,
+  //   endDate,
+  // })
 
   let foundCentre
   if (departement) {
@@ -310,6 +311,34 @@ export const getReservationByCandidat = async (candidatId, options) => {
 }
 
 /**
+ * Vérifie si le candidat est en cours de modification de réservation.
+ * Renvoie une erreur dans ce cas, ou sa réservation
+ *
+ * @async
+ * @function
+ *
+ * @param {string} candidatId - Id du candidat
+ * @param {Object} options - Options à passer à MongoDB pour la query
+ *
+ * @returns {Object} Place réservée par le candidat
+ */
+export const canModifyReservation = async (candidatId, options) => {
+  const places = await findPlacesByCandidat(
+    candidatId,
+    {},
+    options || { centre: true },
+  )
+
+  if (places.length > 1 || places.find(place => place.booked === false)) {
+    const error = new Error('Votre demande est refusée. Votre réservation est en cours de modication.')
+    error.status = 409
+    throw error
+  }
+
+  return places[0]
+}
+
+/**
  * Associe un candidat à une place à partir d'un créneau (date et centre)
  *
  * @async
@@ -351,7 +380,8 @@ export const bookPlace = async (
   } catch (error) {
     if (error.code === 11000) {
       error.code = 509
-      error.message = 'Erreur: la place est déjà réservée.'
+      error.errorMessage = error.message
+      error.message = 'Vous avez déjà une réservation.'
     }
     throw error
   }

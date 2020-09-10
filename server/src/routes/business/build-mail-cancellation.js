@@ -7,13 +7,12 @@ import {
 } from './send-mail-util'
 import { getFrenchFormattedDateTime } from '../../util/date-util'
 import { getCancelBookingTemplate, getUrlFAQ } from './mail'
-import { appLogger } from '../../util'
 
 const section = 'candidat-sendMail'
 
 export const getCancellationBody = (place, candidat) => {
   const action = 'get-body-cancellation'
-  appLogger.debug({ func: 'sendMailCancellation', action, place, candidat })
+  // appLogger.debug({ func: 'sendMailCancellation', action, place, candidat })
 
   const { centre, date } = place
   const { nom, adresse } = centre

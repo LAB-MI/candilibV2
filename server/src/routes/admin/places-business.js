@@ -348,11 +348,11 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
           if (data[0] === 'Date') next()
           else {
             parseRow({ data, departement }).then(result => {
-              appLogger.debug({
-                ...loggerInfo,
-                action: 'resolve-transformCsv',
-                result,
-              })
+              // appLogger.debug({
+              //   ...loggerInfo,
+              //   action: 'resolve-transformCsv',
+              //   result,
+              // })
               if (result.status && result.status === 'error') {
                 PlacesPromise.push(result)
                 next()
@@ -467,19 +467,18 @@ export const importPlacesFromFile = async ({ planningFile, departement }) => {
 }
 
 export const releaseResa = async ({ _id }) => {
-  const loggerInfo = {
-    func: 'releaseResa',
-    candidatId: _id,
-  }
-  appLogger.debug(loggerInfo)
+  // const loggerInfo = {
+  //   func: 'releaseResa',
+  //   candidatId: _id,
+  // }
   const place = await findPlaceBookedByCandidat(_id)
   if (place) {
-    appLogger.debug({
-      func: 'releaseResa',
-      acion: 'remove-place',
-      candidatId: _id,
-      place,
-    })
+    // appLogger.debug({
+    //   func: 'releaseResa',
+    //   acion: 'remove-place',
+    //   candidatId: _id,
+    //   place,
+    // })
     return removeBookedPlace(place)
   }
 }
@@ -491,7 +490,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     candidatId: candidat._id,
     adminId: admin._id,
   }
-  appLogger.debug(loggerInfo)
+  // appLogger.debug(loggerInfo)
   // TODO: Probleme posible si booked est egale a false et qu'il y a une place avec booked a true sur le meme candiddat
   // Annuler la place
   const placeUpdated = await removeBookedPlace(place)
@@ -539,7 +538,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     inspecteur,
     dateStr: date,
   }
-  appLogger.debug(loggerInfo)
+  // appLogger.debug(loggerInfo)
 
   const myDate = date
   try {
@@ -624,37 +623,44 @@ export const validUpdateResaInspector = async (resaId, inspecteur) => {
 
 export const moveCandidatInPlaces = async (previousBookedPlace, place) => {
   const placeId = place._id
-  const { _id: resaId, candidat, bookedAt, bookedByAdmin } = previousBookedPlace
+  const { candidat, bookedAt, bookedByAdmin } = previousBookedPlace
   const loggerContent = {
     func: 'moveCandidatInPlaces',
-    resaId,
+    resaId: previousBookedPlace._id,
     placeId,
   }
 
-  appLogger.debug({
-    ...loggerContent,
-    action: 'BOOK_RESA',
-    placeId,
-    candidat,
-  })
+  // appLogger.debug({
+  //   ...loggerContent,
+  //   action: 'BOOK_RESA',
+  //   placeId,
+  //   candidat,
+  // })
 
   await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, false)
 
-  const newBookedPlace = await bookPlaceById(placeId, candidat, {
-    bookedAt,
-    bookedByAdmin,
-  })
+  let newBookedPlace
+  let messageError
+  try {
+    newBookedPlace = await bookPlaceById(placeId, candidat, {
+      bookedAt,
+      bookedByAdmin,
+    })
+  } catch (error) {
+    appLogger.error({ ...loggerContent, error, description: error.message })
+    messageError = `L'Affection du candidat a échoué ${error.code === 11000 ? ', le candidat a une autre réservation.' : '.'}`
+  }
 
   if (!newBookedPlace) {
     await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
-    throw new ErrorWithStatus(400, 'Cette place posséde une réservation')
+    throw new ErrorWithStatus(400, messageError || 'Cette place possède une réservation')
   }
 
-  appLogger.debug({
-    ...loggerContent,
-    action: 'DELETE_RESA',
-    resaId,
-  })
+  // appLogger.debug({
+  //   ...loggerContent,
+  //   action: 'DELETE_RESA',
+  //   resaId,
+  // })
 
   await deletePlace(previousBookedPlace)
 
@@ -793,10 +799,10 @@ export const sendMailSchedulesInspecteurs = async (
     inspecteurIdListe,
   }
 
-  appLogger.debug({
-    ...loggerContent,
-    func: 'sendMailSchedulesInspecteurs',
-  })
+  // appLogger.debug({
+  //   ...loggerContent,
+  //   func: 'sendMailSchedulesInspecteurs',
+  // })
 
   const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
 
@@ -878,9 +884,9 @@ export const sendMailSchedulesAllInspecteurs = async date => {
     func: 'sendMailSchedulesAllInspecteurs',
     date,
   }
-  appLogger.debug({
-    ...loggerContent,
-  })
+  // appLogger.debug({
+  //   ...loggerContent,
+  // })
 
   const { begin, end } = getFrenchLuxonRangeFromDate(date)
 
@@ -916,10 +922,10 @@ export const sendMailSchedulesAllInspecteurs = async date => {
     return { success: true, nbPlaces, inspecteur }
   })
   const results = await Promise.all(resultsAsync)
-  appLogger.debug({
-    ...loggerContent,
-    results,
-  })
+  // appLogger.debug({
+  //   ...loggerContent,
+  //   results,
+  // })
 
   return results
 }
