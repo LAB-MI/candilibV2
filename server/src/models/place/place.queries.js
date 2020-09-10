@@ -303,6 +303,17 @@ export const findPlaceBookedByCandidat = async (
   return place
 }
 
+export const findPlacesByCandidat = async (candidat,
+  options = {},
+  populate,
+) => {
+  const query = Place.find({ candidat }, options)
+  queryPopulate(populate, query)
+
+  const places = await query.exec()
+  return places
+}
+
 export const findAndbookPlace = async (
   candidat,
   centres,
@@ -450,9 +461,10 @@ export const findAllPlacesBookedByCentreAndInspecteurs = (
  *
  * @param {Object} bookedPlace - Type model place which populate centre and candidat
  */
-export const setBookedPlaceKeyToFalseOrTrue = (place, booked) => {
-  place.booked = booked
-  return place.save()
+export const setBookedPlaceKeyToFalseOrTrue = async (place, booked) => {
+  const { _id, candidat } = place
+  const result = await Place.updateOne({ _id, candidat }, { $set: { booked } })
+  return result.nModified === 1 && result.ok === 1
 }
 
 /**
