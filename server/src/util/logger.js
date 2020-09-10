@@ -38,7 +38,7 @@ export const getProperObjectFromError = error => {
 export const getProperObjectFromDate = message => {
   return Object.getOwnPropertyNames(message).reduce((acc, key) => {
     let value = message[key]
-    if (['begin', 'end', 'date', 'dateTime'].includes(key)) {
+    if (['begin', 'end', 'date', 'dateTime', 'beginDate', 'endDate'].includes(key)) {
       const newkey = key + 'Str'
       acc = {
         ...acc,
