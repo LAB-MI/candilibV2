@@ -26,7 +26,7 @@ nom = 'Dupond'
 prenom = 'Jean'
 const defaultInspecteur2 = { email, matricule, nom, prenom }
 
-describe('User', () => {
+describe('Inspecteur', () => {
   beforeAll(async () => {
     await connect()
   })
@@ -39,7 +39,7 @@ describe('User', () => {
     afterEach(async () => {
       await Promise.all([
         deleteInspecteurByMatricule(defaultInspecteur.matricule).catch(
-          () => true
+          () => true,
         ),
       ])
     })
@@ -60,7 +60,7 @@ describe('User', () => {
     afterEach(async () => {
       await Promise.all([
         deleteInspecteurByMatricule(defaultInspecteur.matricule).catch(
-          () => true
+          () => true,
         ),
       ])
     })
@@ -72,13 +72,13 @@ describe('User', () => {
 
       // When
       const beforeInspecteur = await findInspecteurByMatricule(
-        savedInspecteur.matricule
+        savedInspecteur.matricule,
       )
       const removedInspecteur = await deleteInspecteurByMatricule(
-        savedInspecteur.matricule
+        savedInspecteur.matricule,
       )
       const afterInspecteur = await findInspecteurByMatricule(
-        removedInspecteur.matricule
+        removedInspecteur.matricule,
       )
 
       // Then
@@ -108,10 +108,10 @@ describe('User', () => {
     afterEach(async () => {
       await Promise.all([
         deleteInspecteurByMatricule(defaultInspecteur.matricule).catch(
-          () => true
+          () => true,
         ),
         deleteInspecteurByMatricule(defaultInspecteur2.matricule).catch(
-          () => true
+          () => true,
         ),
       ])
     })
@@ -129,11 +129,11 @@ describe('User', () => {
       expect(foundInspecteur).toHaveProperty('email', defaultInspecteur.email)
       expect(foundInspecteur).toHaveProperty(
         'matricule',
-        defaultInspecteur.matricule
+        defaultInspecteur.matricule,
       )
       expect(foundInspecteur).toHaveProperty(
         'nom',
-        defaultInspecteur.nom.toUpperCase()
+        defaultInspecteur.nom.toUpperCase(),
       )
       expect(foundInspecteur).toHaveProperty('prenom', defaultInspecteur.prenom)
     })
@@ -151,19 +151,19 @@ describe('User', () => {
       expect(foundInspecteurs).toHaveLength(2)
       expect(foundInspecteurs[0]).toHaveProperty(
         'email',
-        defaultInspecteur.email
+        defaultInspecteur.email,
       )
       expect(foundInspecteurs[0]).toHaveProperty(
         'matricule',
-        defaultInspecteur.matricule
+        defaultInspecteur.matricule,
       )
       expect(foundInspecteurs[0]).toHaveProperty(
         'nom',
-        defaultInspecteur.nom.toUpperCase()
+        defaultInspecteur.nom.toUpperCase(),
       )
       expect(foundInspecteurs[0]).toHaveProperty(
         'prenom',
-        defaultInspecteur.prenom
+        defaultInspecteur.prenom,
       )
     })
 
@@ -174,7 +174,7 @@ describe('User', () => {
 
       // When
       const foundInspecteurs = await findInspecteursMatching(
-        `${defaultInspecteur.nom} 153`
+        `${defaultInspecteur.nom} 153`,
       )
 
       // Then
@@ -182,19 +182,19 @@ describe('User', () => {
       expect(foundInspecteurs).toHaveLength(1)
       expect(foundInspecteurs[0]).toHaveProperty(
         'email',
-        defaultInspecteur.email
+        defaultInspecteur.email,
       )
       expect(foundInspecteurs[0]).toHaveProperty(
         'matricule',
-        defaultInspecteur.matricule
+        defaultInspecteur.matricule,
       )
       expect(foundInspecteurs[0]).toHaveProperty(
         'nom',
-        defaultInspecteur.nom.toUpperCase()
+        defaultInspecteur.nom.toUpperCase(),
       )
       expect(foundInspecteurs[0]).toHaveProperty(
         'prenom',
-        defaultInspecteur.prenom
+        defaultInspecteur.prenom,
       )
     })
 
@@ -205,7 +205,7 @@ describe('User', () => {
 
       // When
       const foundInspecteurs = await findInspecteursMatching(
-        `${defaultInspecteur.nom}`
+        `${defaultInspecteur.nom}`,
       )
 
       // Then
@@ -213,19 +213,19 @@ describe('User', () => {
       expect(foundInspecteurs).toHaveLength(1)
       expect(foundInspecteurs[0]).toHaveProperty(
         'email',
-        defaultInspecteur.email
+        defaultInspecteur.email,
       )
       expect(foundInspecteurs[0]).toHaveProperty(
         'matricule',
-        defaultInspecteur.matricule
+        defaultInspecteur.matricule,
       )
       expect(foundInspecteurs[0]).toHaveProperty(
         'nom',
-        defaultInspecteur.nom.toUpperCase()
+        defaultInspecteur.nom.toUpperCase(),
       )
       expect(foundInspecteurs[0]).toHaveProperty(
         'prenom',
-        defaultInspecteur.prenom
+        defaultInspecteur.prenom,
       )
     })
 

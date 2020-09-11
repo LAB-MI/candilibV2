@@ -1,6 +1,6 @@
 import { Types } from 'mongoose'
 import { findCentreById } from '../../models/centre'
-import { appLogger } from '../../util'
+
 import { getFrenchFormattedDateTime } from '../../util/date-util'
 import { getUrlFAQ } from './mail'
 import { getHtmlBody } from './mail/body-mail-template'
@@ -16,7 +16,7 @@ const section = 'candidat-sendMail'
 
 export const getFailureExamBody = async (place, candidat) => {
   const action = 'get-body-failure-exam'
-  appLogger.debug({ func: 'getFailureExamBody', action, place, candidat })
+  // appLogger.debug({ func: 'getFailureExamBody', action, place, candidat })
 
   const { centre, date } = place
 
@@ -42,7 +42,7 @@ export const getFailureExamBody = async (place, candidat) => {
     section,
     action,
     urlFAQ,
-    urlRESA
+    urlRESA,
   )
 
   const dateTimeResa = getFrenchFormattedDateTime(date)
@@ -55,7 +55,7 @@ export const getFailureExamBody = async (place, candidat) => {
     dateTimeResa.hour,
     urlRESA,
     urlFAQ,
-    contactezNous
+    contactezNous,
   )
 
   return getHtmlBody(body)

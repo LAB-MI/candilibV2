@@ -5,7 +5,7 @@ export const expectedArchivedPlace = (
   place,
   reason,
   byUser,
-  isCandilib
+  isCandilib,
 ) => {
   expect(archivedPlace).toBeDefined()
   expect(archivedPlace).toHaveProperty('placeId', place._id)
@@ -15,7 +15,7 @@ export const expectedArchivedPlace = (
   if (reason) {
     const expectedReason = Array.isArray(reason) ? reason : [reason]
     expect(archivedPlace.archiveReasons).toEqual(
-      expect.arrayContaining(expectedReason)
+      expect.arrayContaining(expectedReason),
     )
   } else {
     expect(archivedPlace.archiveReasons).toBeUndefined()

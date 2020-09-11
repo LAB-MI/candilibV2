@@ -39,7 +39,7 @@ import { findCentresByDepartement } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
 
 jest.mock('../../util/logger')
-require('../../util/logger').setWithConsole(true)
+require('../../util/logger').setWithConsole(false)
 
 describe('test statistics', () => {
   beforeAll(async () => {
@@ -59,12 +59,12 @@ describe('test statistics', () => {
     const results = await countSuccessByCentres(
       centres.map(({ _id }) => _id),
       dateReussitePratique.toJSDate(),
-      dateReussitePratique.toJSDate()
+      dateReussitePratique.toJSDate(),
     )
 
     expect(results).toBeDefined()
     expect(results).toBe(
-      countSuccess('92', dateReussitePratique, dateReussitePratique)
+      countSuccess('92', dateReussitePratique, dateReussitePratique),
     )
   })
 
@@ -83,7 +83,7 @@ describe('test statistics', () => {
     const results = await countFailureByCentres(
       centres.map(({ _id }) => _id),
       dateReussitePratique,
-      dateReussitePratique
+      dateReussitePratique,
     )
     expect(results).toBeDefined()
     expect(results).toBe(countFailure('91'))
@@ -96,7 +96,7 @@ describe('test statistics', () => {
     const results = await countNotExaminedByCentres(
       centres.map(({ _id }) => _id),
       begin,
-      end.toJSDate()
+      end.toJSDate(),
     )
     expect(results).toBeDefined()
     expect(results).toBe(countNotExamined('92', begin, end))
@@ -109,12 +109,12 @@ describe('test statistics', () => {
     const result = await getResultsExamByDpt(
       '92',
       begin.toJSDate(),
-      end.toJSDate()
+      end.toJSDate(),
     )
     expect(result).toBeDefined()
     expect(result).toHaveProperty(
       'notExamined',
-      countNotExamined('92', begin, end)
+      countNotExamined('92', begin, end),
     )
     expect(result).toHaveProperty('absent', countAbsent('92', begin, end))
     expect(result).toHaveProperty('failed', countFailure('92', begin, end))
@@ -134,29 +134,29 @@ describe('test statistics', () => {
       expect(result).toHaveProperty('departement')
       expect(result).toHaveProperty(
         'notExamined',
-        countNotExamined(result.departement, begin, end)
+        countNotExamined(result.departement, begin, end),
       )
       expect(result).toHaveProperty(
         'absent',
-        countAbsent(result.departement, begin, end)
+        countAbsent(result.departement, begin, end),
       )
 
       expect(result).toHaveProperty(
         'received',
-        countSuccess(result.departement, begin, end)
+        countSuccess(result.departement, begin, end),
       )
 
       expect(result).toHaveProperty(
         'failed',
-        countFailure(result.departement, begin, end)
+        countFailure(result.departement, begin, end),
       )
     })
   })
 
-  it('Should have, stats in future with total subscript', async () => {
+  it('Should have stats in future with total subscript', async () => {
     const dateBeginPeriode = nowLuxon.startOf('day').toJSDate()
     const result = await getAllPlacesProposeInFutureByDpt(dateBeginPeriode)
-    const shouldHaveThisResult = [
+    const expectedResult = [
       {
         beginDate: dateBeginPeriode,
         departement: '92',
@@ -173,7 +173,7 @@ describe('test statistics', () => {
       },
     ]
 
-    expect(result).toEqual(expect.arrayContaining(shouldHaveThisResult))
+    expect(result).toEqual(expect.arrayContaining(expectedResult))
   })
 
   it('Should have two candidat stats by departement leave retention area', async () => {
@@ -186,7 +186,7 @@ describe('test statistics', () => {
     const result = await getCountCandidatsLeaveRetentionArea(
       dpts,
       dateBeginPeriode,
-      dateEndPeriode
+      dateEndPeriode,
     )
     expect(typeof result).toEqual(typeof [])
     expect(result.length).toEqual(2)
@@ -204,7 +204,7 @@ describe('test statistics', () => {
           beginPeriode: dateBeginPeriode,
           endPeriode: dateEndPeriode,
         },
-      ])
+      ]),
     )
   })
 
@@ -221,7 +221,7 @@ describe('test statistics', () => {
     const result = await getCountCandidatsLeaveRetentionArea(
       dpts,
       dateBeginPeriode,
-      dateEndPeriode
+      dateEndPeriode,
     )
 
     expect(typeof result).toEqual(typeof [])
@@ -234,7 +234,7 @@ describe('test statistics', () => {
           beginPeriode: dateBeginPeriode,
           endPeriode: dateEndPeriode,
         },
-      ])
+      ]),
     )
   })
 
@@ -245,13 +245,13 @@ describe('test statistics', () => {
       departements.map(async dept => {
         const createdCandidats = await createCandidatsForCountRetentionByWeek(
           5,
-          dept
+          dept,
         )
         return {
           dept,
           createdCandidats,
         }
-      })
+      }),
     )
 
     const dateNow = () => getFrenchLuxon()
@@ -322,7 +322,7 @@ describe('test statistics', () => {
     await Promise.all(
       candidatCreated.map(el => {
         return deleteCandidatsForCountRetentionByWeek(el.createdCandidats)
-      })
+      }),
     )
   })
 
@@ -333,13 +333,13 @@ describe('test statistics', () => {
       departements.map(async dept => {
         const createdCandidats = await createCandidatsForCountRetentionByWeek(
           5,
-          dept
+          dept,
         )
         return {
           dept,
           createdCandidats,
         }
-      })
+      }),
     )
 
     const dateNow = () => getFrenchLuxon()
@@ -402,7 +402,7 @@ describe('test statistics', () => {
     await Promise.all(
       candidatCreated.map(el => {
         return deleteCandidatsForCountRetentionByWeek(el.createdCandidats)
-      })
+      }),
     )
   })
 })

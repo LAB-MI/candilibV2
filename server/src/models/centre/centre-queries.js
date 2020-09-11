@@ -7,6 +7,7 @@
 import Centre from './centre-model'
 
 import { codePostal } from '../../util/regex'
+
 const caseInsensitive = nom => ({
   $regex: new RegExp('^' + nom.toLowerCase(), 'i'),
 })
@@ -23,7 +24,7 @@ const caseInsensitive = nom => ({
  */
 export const findAllCentres = async departements => {
   const centres = await Centre.find(
-    departements ? { departement: { $in: departements } } : {}
+    departements ? { departement: { $in: departements } } : {},
   )
   return centres
 }
@@ -83,7 +84,7 @@ export const createCentre = async (
   lon,
   lat,
   departement,
-  geoDepartement
+  geoDepartement,
 ) => {
   const geoloc = {
     type: 'Point',
@@ -167,7 +168,7 @@ export const updateCentreActiveState = async (centre, active, email) => {
  */
 export const updateCentreLabel = async (
   centre,
-  { nom, label, adresse, lon, lat, geoDepartement }
+  { nom, label, adresse, lon, lat, geoDepartement },
 ) => {
   if (!centre) {
     throw new Error('centre is undefined')
@@ -203,7 +204,7 @@ export const updateCentreLabel = async (
  */
 export const findCentresByDepartement = async (
   departementId,
-  options = '-__v'
+  options = '-__v',
 ) => {
   const filters = {
     active: { $ne: false },
@@ -233,7 +234,7 @@ export const findCentreByNameAndDepartement = async (
   nom,
   departement,
   geoDepartement,
-  options = '-__v'
+  options = '-__v',
 ) => {
   const filter = {
     nom: caseInsensitive(nom),
@@ -256,7 +257,7 @@ export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
     nom,
     undefined,
     geoDepartement,
-    '-departement -_id -active -createdAt -updatedAt -__v'
+    '-departement -_id -active -createdAt -updatedAt -__v',
   )
 }
 
@@ -273,7 +274,7 @@ export const findCentreByNameAndGeoDepartement = (nom, geoDepartement) => {
  */
 export const findCentreByGeoDepartement = async (
   geoDepartement,
-  options = '-__v'
+  options = '-__v',
 ) => {
   const filters = {
     active: { $ne: false },
@@ -328,7 +329,7 @@ export const getGeoDepartementsFromCentres = async (options = '-__v') => {
     active: { $ne: false },
   }
   const geoDepartements = await Centre.find(filters, options).distinct(
-    'geoDepartement'
+    'geoDepartement',
   )
   return geoDepartements
 }
@@ -350,20 +351,24 @@ export const findCentresUniqByDepartement = async departement => {
     active: { $ne: false },
   }
 
-  const centres = await Centre.find({ ...filters, departement })
-  const centresWithCount = await Promise.all(
-    centres.map(async centre => {
-      const { nom, geoDepartement } = centre
-      const count = await Centre.count({
-        ...filters,
-        nom: caseInsensitive(nom),
-        geoDepartement,
-      })
-      centre.count = count
+  const centres = await Centre.find({ ...filters, departement }, { _id: 0, nom: 1, geoDepartement: 1 })
+  const orCentres = centres.map(({ nom, geoDepartement }) => ({ nom, geoDepartement }))
 
-      return centre
+  const centresWithCount = await Centre.aggregate()
+    .match({
+      $or: orCentres,
+      active: { $ne: false },
     })
-  )
+    .group({
+      _id: { nom: '$nom', geoDepartement: '$geoDepartement' },
+      count: { $sum: 1 },
+    })
+    .match({
+      count: 1,
+    })
+    .project({
+      _id: 1,
+    })
 
-  return centresWithCount.filter(centre => centre.count === 1)
+  return centresWithCount.map(group => group._id)
 }

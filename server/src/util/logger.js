@@ -27,7 +27,7 @@ export const getProperObjectFromError = error => {
       ...acc,
       [key]: error[key],
     }),
-    Object.create(null)
+    Object.create(null),
   )
 }
 
@@ -38,7 +38,7 @@ export const getProperObjectFromError = error => {
 export const getProperObjectFromDate = message => {
   return Object.getOwnPropertyNames(message).reduce((acc, key) => {
     let value = message[key]
-    if (['begin', 'end', 'date', 'dateTime'].includes(key)) {
+    if (['begin', 'end', 'date', 'dateTime', 'beginDate', 'endDate'].includes(key)) {
       const newkey = key + 'Str'
       acc = {
         ...acc,
@@ -128,7 +128,7 @@ export const techLogger = createLogger({
   format: combine(
     label({ label: TECH_LABEL }),
     timestamp(),
-    isTest ? logFormat : logJsonFormat
+    isTest ? logFormat : logJsonFormat,
   ),
   transports: [new transports.Console(options.console)],
   exitOnError: false,
@@ -144,7 +144,7 @@ export const appLogger = createLogger({
   format: combine(
     label({ label: APP_LABEL }),
     timestamp(),
-    isTest ? logFormat : logJsonFormat
+    isTest ? logFormat : logJsonFormat,
   ),
   transports: [new transports.Console(options.console)],
   exitOnError: false,

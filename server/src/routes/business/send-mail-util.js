@@ -17,7 +17,7 @@ export function buildMailResaArgsValidation (
   section,
   action,
   urlFAQ,
-  urlRESA
+  urlRESA,
 ) {
   if (!date || !nom || !adresse || !nomNaissance || !codeNeph) {
     const message =
@@ -92,19 +92,21 @@ export const getEmailDepartementOfCandidat = async departementId => {
 export const getUrlResetLink = async email => {
   const emailValidationHash = await addEmailValidationHash(email)
   return `${config.ADMIN_URL}/reset-link?email=${encodeURIComponent(
-    email
+    email,
   )}&hash=${encodeURIComponent(emailValidationHash)}`
 }
 
 export const getCandidatToken = id =>
   createToken(id, config.userStatuses.CANDIDAT)
+
+export const getUrlContactUs = token => `${config.PUBLIC_URL
+}/contact-us${
+  token ? '?token=' + encodeURIComponent(token) : ''
+}`
 export const getContactUs = token => {
-  return `Pour nous contacter, vous pouvez utiliser ce <a href="${
-    config.PUBLIC_URL
-  }/contact-us${
-    token ? '?token=' + encodeURIComponent(token) : ''
-  }">formulaire en ligne</a>.`
+  return `Pour nous contacter, vous pouvez utiliser ce <a href="${getUrlContactUs(token)}">formulaire en ligne</a>.`
 }
+
 export const getUrlRESAByToken = token => {
   return `${config.PUBLIC_URL}/candidat/home?token=${token}`
 }

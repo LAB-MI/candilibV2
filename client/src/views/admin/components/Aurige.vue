@@ -1,7 +1,7 @@
 <template>
   <div
     :id="id"
-    class="wrapper"
+    class="wrapper u-pr"
   >
     <page-title :title="'Interaction Aurige'" />
     <big-loading-indicator :is-loading="isLoading" />

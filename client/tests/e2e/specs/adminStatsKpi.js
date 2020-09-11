@@ -77,14 +77,13 @@ describe('Stats Kpi tests', () => {
 
     const filePath = '../../../' + Cypress.env('filePath') + '/aurige.nonReussite.json'
     const fileName = 'aurige.nonReussite.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
+    cy.get('.input-file-container [type=file]')
+      .attachFile({
+        filePath,
+        fileName,
+        mimeType: 'application/json',
+      })
+
     cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
@@ -135,14 +134,13 @@ describe('Stats Kpi tests', () => {
 
     const filePath = '../../../' + Cypress.env('filePath') + '/aurige.nonRecevable.json'
     const fileName = 'aurige.nonRecevable.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
+    cy.get('.input-file-container [type=file]')
+      .attachFile({
+        filePath,
+        fileName,
+        mimeType: 'application/json',
+      })
+
     cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
@@ -193,14 +191,13 @@ describe('Stats Kpi tests', () => {
 
     const filePath = '../../../' + Cypress.env('filePath') + '/aurige.nonExaminable.json'
     const fileName = 'aurige.nonExaminable.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
+    cy.get('.input-file-container [type=file]')
+      .attachFile({
+        filePath,
+        fileName,
+        mimeType: 'application/json',
+      })
+
     cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
@@ -252,14 +249,12 @@ describe('Stats Kpi tests', () => {
 
     const filePath = '../../../' + Cypress.env('filePath') + '/aurige.absent.json'
     const fileName = 'aurige.absent.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
+    cy.get('.input-file-container [type=file]')
+      .attachFile({
+        filePath,
+        fileName,
+        mimeType: 'application/json',
+      })
     cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')
@@ -311,14 +306,13 @@ describe('Stats Kpi tests', () => {
 
     const filePath = '../../../' + Cypress.env('filePath') + '/aurige.reussite.json'
     const fileName = 'aurige.reussite.json'
-    cy.fixture(filePath).then(fileContent => {
-      cy.get('.input-file-container [type=file]')
-        .upload({
-          fileContent: JSON.stringify(fileContent),
-          fileName,
-          mimeType: 'application/json',
-        })
-    })
+    cy.get('.input-file-container [type=file]')
+      .attachFile({
+        filePath,
+        fileName,
+        mimeType: 'application/json',
+      })
+
     cy.get('.v-snack--active')
       .should('contain', fileName + ' prêt à être synchronisé')
     cy.get('.import-file-action [type=button]')

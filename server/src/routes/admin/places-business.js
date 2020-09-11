@@ -34,6 +34,7 @@ import {
   findPlaceWithSameWindow,
   PLACE_ALREADY_IN_DB_ERROR,
   removeBookedPlace,
+  setBookedPlaceKeyToFalseOrTrue,
 } from '../../models/place'
 import {
   REASON_REMOVE_RESA_ADMIN,
@@ -94,7 +95,7 @@ const getPlaceStatus = (
   inspecteur,
   date,
   status,
-  message
+  message,
 ) => ({
   departement,
   centre,
@@ -166,7 +167,7 @@ const parseRow = async ({ data, departement }) => {
           nom: ${myNom || ''},
           centre: ${myCentre || ''},
           departement: ${myDept || ''}
-        ]`
+        ]`,
       )
       error.from = 'parseRow'
       throw error
@@ -175,12 +176,12 @@ const parseRow = async ({ data, departement }) => {
     const date = DateTime.fromFormat(
       myDate,
       'dd/MM/yy HH:mm',
-      FRENCH_LOCALE_INFO
+      FRENCH_LOCALE_INFO,
     )
 
     if (dept.trim() !== departement) {
       const error = new Error(
-        `Le département du centre (${dept.trim()}) ne correspond pas au département dont vous avez la charge (${departement})`
+        `Le département du centre (${dept.trim()}) ne correspond pas au département dont vous avez la charge (${departement})`,
       )
       error.from = 'parseRow'
       throw error
@@ -195,7 +196,7 @@ const parseRow = async ({ data, departement }) => {
     // TODO: create test unit for search centre by center name and departement
     const foundCentre = await findCentreByNameAndDepartement(
       centre.trim(),
-      departement
+      departement,
     )
     if (!foundCentre) {
       const error = new Error(`Le centre ${centre.trim()} est inconnu`)
@@ -212,7 +213,7 @@ const parseRow = async ({ data, departement }) => {
 
     if (inspecteurFound.nom.toUpperCase() !== nom.trim().toUpperCase()) {
       const error = new Error(
-        `Le nom "${nom.trim()}" de l'inspecteur ne correspond pas au matricule "${matricule.trim()}"`
+        `Le nom "${nom.trim()}" de l'inspecteur ne correspond pas au matricule "${matricule.trim()}"`,
       )
       error.from = 'parseRow'
       throw error
@@ -220,7 +221,7 @@ const parseRow = async ({ data, departement }) => {
 
     if (!AUTHORIZED_HOURS.includes(myTime)) {
       const error = new Error(
-        "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée."
+        "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée.",
       )
       error.from = 'parseRow'
       throw error
@@ -255,7 +256,7 @@ const parseRow = async ({ data, departement }) => {
       myMatricule,
       myDate,
       'error',
-      message
+      message,
     )
   }
 }
@@ -284,7 +285,7 @@ const createPlaceFromFile = async place => {
       leanPlace.inspecteur,
       date,
       'success',
-      'Place enregistrée en base'
+      'Place enregistrée en base',
     )
   } catch (error) {
     loggerInfo.place = { centre, inspecteur, date }
@@ -301,7 +302,7 @@ const createPlaceFromFile = async place => {
         inspecteur,
         date,
         'error',
-        'Place déjà enregistrée en base'
+        'Place déjà enregistrée en base',
       )
     }
     return getPlaceStatus(
@@ -310,7 +311,7 @@ const createPlaceFromFile = async place => {
       inspecteur,
       date,
       'error',
-      error.message
+      error.message,
     )
   }
 }
@@ -338,7 +339,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
 
   return new Promise((resolve, reject) =>
     csvParser
-      .fromString(csvFile.data.toString(), {
+      .parseString(csvFile.data.toString(), {
         headers: false,
         ignoreEmpty: true,
       })
@@ -347,11 +348,11 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
           if (data[0] === 'Date') next()
           else {
             parseRow({ data, departement }).then(result => {
-              appLogger.debug({
-                ...loggerInfo,
-                action: 'resolve-transformCsv',
-                result,
-              })
+              // appLogger.debug({
+              //   ...loggerInfo,
+              //   action: 'resolve-transformCsv',
+              //   result,
+              // })
               if (result.status && result.status === 'error') {
                 PlacesPromise.push(result)
                 next()
@@ -374,7 +375,7 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
       })
       .on('end', () => {
         resolve(Promise.all(PlacesPromise))
-      })
+      }),
   )
 }
 /**
@@ -419,7 +420,7 @@ export const importPlacesXlsx = async ({ xlsxFile, departement }) => {
             return place
           }
           return createPlaceFromFile(place)
-        })
+        }),
       )
       resolve(placesInDb)
     })
@@ -466,19 +467,18 @@ export const importPlacesFromFile = async ({ planningFile, departement }) => {
 }
 
 export const releaseResa = async ({ _id }) => {
-  const loggerInfo = {
-    func: 'releaseResa',
-    candidatId: _id,
-  }
-  appLogger.debug(loggerInfo)
+  // const loggerInfo = {
+  //   func: 'releaseResa',
+  //   candidatId: _id,
+  // }
   const place = await findPlaceBookedByCandidat(_id)
   if (place) {
-    appLogger.debug({
-      func: 'releaseResa',
-      acion: 'remove-place',
-      candidatId: _id,
-      place,
-    })
+    // appLogger.debug({
+    //   func: 'releaseResa',
+    //   acion: 'remove-place',
+    //   candidatId: _id,
+    //   place,
+    // })
     return removeBookedPlace(place)
   }
 }
@@ -490,8 +490,8 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     candidatId: candidat._id,
     adminId: admin._id,
   }
-  appLogger.debug(loggerInfo)
-
+  // appLogger.debug(loggerInfo)
+  // TODO: Probleme posible si booked est egale a false et qu'il y a une place avec booked a true sur le meme candiddat
   // Annuler la place
   const placeUpdated = await removeBookedPlace(place)
   // Archive place
@@ -499,7 +499,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     candidat,
     place,
     REASON_REMOVE_RESA_ADMIN,
-    admin.email
+    admin.email,
   )
   candidatUpdated = await setCandidatToVIP(candidatUpdated, place.date)
 
@@ -538,7 +538,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     inspecteur,
     dateStr: date,
   }
-  appLogger.debug(loggerInfo)
+  // appLogger.debug(loggerInfo)
 
   const myDate = date
   try {
@@ -560,7 +560,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       inspecteur,
       myDate,
       'success',
-      'Place enregistrée en base'
+      'Place enregistrée en base',
     )
   } catch (error) {
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
@@ -575,7 +575,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
         inspecteur,
         myDate,
         'error',
-        'Place déjà enregistrée en base'
+        'Place déjà enregistrée en base',
       )
     }
     appLogger.error({
@@ -589,7 +589,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       inspecteur,
       date,
       'error',
-      error.message
+      error.message,
     )
   }
 }
@@ -621,38 +621,50 @@ export const validUpdateResaInspector = async (resaId, inspecteur) => {
   return { resa, place }
 }
 
-export const moveCandidatInPlaces = async (resa, place) => {
+export const moveCandidatInPlaces = async (previousBookedPlace, place) => {
   const placeId = place._id
-  const { _id: resaId, candidat, bookedAt, bookedByAdmin } = resa
+  const { candidat, bookedAt, bookedByAdmin } = previousBookedPlace
   const loggerContent = {
     func: 'moveCandidatInPlaces',
-    resaId,
+    resaId: previousBookedPlace._id,
     placeId,
   }
 
-  appLogger.debug({
-    ...loggerContent,
-    action: 'BOOK_RESA',
-    placeId,
-    candidat,
-  })
+  // appLogger.debug({
+  //   ...loggerContent,
+  //   action: 'BOOK_RESA',
+  //   placeId,
+  //   candidat,
+  // })
 
-  const newResa = await bookPlaceById(placeId, candidat, {
-    bookedAt,
-    bookedByAdmin,
-  })
-  if (!newResa) {
-    throw new ErrorWithStatus(400, 'Cette place posséde une réservation')
+  await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, false)
+
+  let newBookedPlace
+  let messageError
+  try {
+    newBookedPlace = await bookPlaceById(placeId, candidat, {
+      bookedAt,
+      bookedByAdmin,
+    })
+  } catch (error) {
+    appLogger.error({ ...loggerContent, error, description: error.message })
+    messageError = `L'Affection du candidat a échoué ${error.code === 11000 ? ', le candidat a une autre réservation.' : '.'}`
   }
 
-  appLogger.debug({
-    ...loggerContent,
-    action: 'DELETE_RESA',
-    resaId,
-  })
-  await deletePlace(resa)
+  if (!newBookedPlace) {
+    await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
+    throw new ErrorWithStatus(400, messageError || 'Cette place possède une réservation')
+  }
 
-  return newResa
+  // appLogger.debug({
+  //   ...loggerContent,
+  //   action: 'DELETE_RESA',
+  //   resaId,
+  // })
+
+  await deletePlace(previousBookedPlace)
+
+  return newBookedPlace
 }
 
 export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
@@ -692,14 +704,19 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   ) {
     throw new ErrorWithStatus(
       400,
-      'Date ETG ne sera plus valide pour cette place'
+      'Date ETG ne sera plus valide pour cette place',
     )
   }
 
   const placeAlreadyBookedByCandidat = await findPlaceBookedByCandidat(
-    candidatId
+    candidatId,
   )
+
   const { _id, departements, signUpDate, status, email } = admin
+  if (placeAlreadyBookedByCandidat) {
+    await setBookedPlaceKeyToFalseOrTrue(placeAlreadyBookedByCandidat, false)
+  }
+
   const newBookedPlace = await bookPlaceById(
     placeId,
     candidatId,
@@ -717,10 +734,13 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
     {
       candidat: true,
       centre: true,
-    }
+    },
   )
 
   if (!newBookedPlace) {
+    if (placeAlreadyBookedByCandidat) {
+      await setBookedPlaceKeyToFalseOrTrue(placeAlreadyBookedByCandidat, true)
+    }
     throw new ErrorWithStatus(400, PLACE_IS_ALREADY_BOOKED)
   }
 
@@ -730,14 +750,14 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
       candidat,
       placeAlreadyBookedByCandidat,
       REASON_MODIFY_RESA_ADMIN,
-      admin.email
+      admin.email,
     )
   }
   const deptCentre = newBookedPlace.centre.departement
   if (deptCentre !== candidat.departement) {
     newBookedPlace.candidat = await updateCandidatDepartement(
       candidat,
-      deptCentre
+      deptCentre,
     )
   }
   let statusmail
@@ -769,7 +789,7 @@ export const sendMailSchedulesInspecteurs = async (
   departement,
   date,
   isForInspecteurs,
-  inspecteurIdListe
+  inspecteurIdListe,
 ) => {
   const loggerContent = {
     section: 'admin-send-mail-schedule-inspecteurs',
@@ -779,10 +799,10 @@ export const sendMailSchedulesInspecteurs = async (
     inspecteurIdListe,
   }
 
-  appLogger.debug({
-    ...loggerContent,
-    func: 'sendMailSchedulesInspecteurs',
-  })
+  // appLogger.debug({
+  //   ...loggerContent,
+  //   func: 'sendMailSchedulesInspecteurs',
+  // })
 
   const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
 
@@ -795,7 +815,7 @@ export const sendMailSchedulesInspecteurs = async (
         centre._id,
         inspecteurIdListe,
         beginDate,
-        endDate
+        endDate,
       )
       places.map(place => {
         const { inspecteur: inspecteurId } = place
@@ -805,7 +825,7 @@ export const sendMailSchedulesInspecteurs = async (
 
         placesByInspecteurs[inspecteurId].push(place)
       })
-    })
+    }),
   )
 
   const resultsError = []
@@ -819,7 +839,7 @@ export const sendMailSchedulesInspecteurs = async (
         }
         await sendScheduleInspecteur(
           isForInspecteurs ? inspecteurMail : departementEmail,
-          places
+          places,
         )
         appLogger.info({
           ...loggerContent,
@@ -840,7 +860,7 @@ export const sendMailSchedulesInspecteurs = async (
         const inspecteur = await findInspecteurById(inspecteurId)
         resultsError.push(inspecteur)
       }
-    })
+    }),
   )
 
   if (resultsError.length) {
@@ -849,7 +869,7 @@ export const sendMailSchedulesInspecteurs = async (
         departementEmail,
         date,
         departement,
-        resultsError
+        resultsError,
       )
     } catch (error) {
       appLogger.error({ ...loggerContent, error })
@@ -864,9 +884,9 @@ export const sendMailSchedulesAllInspecteurs = async date => {
     func: 'sendMailSchedulesAllInspecteurs',
     date,
   }
-  appLogger.debug({
-    ...loggerContent,
-  })
+  // appLogger.debug({
+  //   ...loggerContent,
+  // })
 
   const { begin, end } = getFrenchLuxonRangeFromDate(date)
 
@@ -902,10 +922,10 @@ export const sendMailSchedulesAllInspecteurs = async date => {
     return { success: true, nbPlaces, inspecteur }
   })
   const results = await Promise.all(resultsAsync)
-  appLogger.debug({
-    ...loggerContent,
-    results,
-  })
+  // appLogger.debug({
+  //   ...loggerContent,
+  //   results,
+  // })
 
   return results
 }

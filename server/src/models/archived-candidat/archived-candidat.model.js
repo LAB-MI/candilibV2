@@ -32,7 +32,7 @@ ArchivedCandidatSchema.index(
   },
   {
     name: 'NephNom',
-  }
+  },
 )
 
 ArchivedCandidatSchema.pre('save', async function preSave () {

@@ -20,7 +20,7 @@
         <v-btn
           :color="okButtonColor"
           :aria-disabled="disabled"
-          :disabled="disabled"
+          :disabled="disabled || disabledOk"
           @click="submitAction"
         >
           {{ okButtonText }}
@@ -56,6 +56,10 @@ export default {
     okButtonColor: {
       type: String,
       default: 'success',
+    },
+    disabledOk: {
+      type: Boolean,
+      default: false,
     },
   },
 }

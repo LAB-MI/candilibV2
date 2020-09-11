@@ -97,7 +97,7 @@ export const createCandidatsAndUpdate = async () => {
       const __candidat1 = await __candidat.save()
 
       return __candidat1
-    })
+    }),
   )
 
   return newCandidats

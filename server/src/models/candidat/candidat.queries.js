@@ -4,6 +4,7 @@ import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
 import { getFrenchLuxon, techLogger } from '../../util'
+import { queryPopulate } from '../util/populate-tools'
 
 /**
  * Crée un candidat
@@ -84,11 +85,14 @@ export const findCandidatByEmail = async email => {
  *
  * @returns {Promise.<Candidat>}
  */
-export const findCandidatById = async (id, options) => {
+export const findCandidatById = async (id, options, populate) => {
   if (options && options.dateDernierEchecPratique) {
     options.noReussites = 1
   }
-  const candidat = await Candidat.findById(id, options)
+
+  const query = Candidat.findById(id, options)
+  queryPopulate(populate, query)
+  const candidat = await query.exec()
   return candidat
 }
 
@@ -105,7 +109,7 @@ export const findCandidatById = async (id, options) => {
 export const findCandidatsMatching = async (
   $search,
   startingWith,
-  endingWith
+  endingWith,
 ) => {
   const MAX_RESULT = 300
   const search = `${startingWith ? '^' : ''}${$search}${endingWith ? '$' : ''}`
@@ -135,7 +139,7 @@ export const findCandidatsMatching = async (
 
   const fullTextCandidats = await Candidat.find(
     { $text: { $search: searchText } },
-    { score: { $meta: 'textScore' } }
+    { score: { $meta: 'textScore' } },
   )
     .sort({ score: { $meta: 'textScore' } })
     .limit(MAX_RESULT)
@@ -146,8 +150,8 @@ export const findCandidatsMatching = async (
       ...fullTextCandidats.filter(
         candidat =>
           !candidats.some(
-            cand => cand._id.toString() === candidat._id.toString()
-          )
+            cand => cand._id.toString() === candidat._id.toString(),
+          ),
       ),
     ],
     nbResultsMax,
@@ -166,7 +170,7 @@ export const findCandidatsMatching = async (
  * @returns {Promise.<Candidat>}
  */
 export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
-  const candidat = await Candidat.findOne({ nomNaissance, codeNeph })
+  const candidat = await Candidat.findOne({ codeNeph, nomNaissance })
   return candidat
 }
 
@@ -186,7 +190,7 @@ export const findCandidatByNomNeph = async (nomNaissance, codeNeph) => {
 export const deleteCandidatByNomNeph = async (
   nomNaissance,
   codeNeph,
-  reason
+  reason,
 ) => {
   const candidat = await findCandidatByNomNeph(nomNaissance, codeNeph)
   if (!candidat) {
@@ -290,7 +294,7 @@ export const findBookedCandidats = async (date, inspecteur, centre) => {
         if (!candidat) return {}
         candidat.place = place
         return candidat
-      })
+      }),
     )
     return candidats
   }
@@ -394,7 +398,7 @@ export const addPlaceToArchive = (
   place,
   reason,
   byUser,
-  isCandilib
+  isCandilib,
 ) => {
   const { _id, inspecteur, centre, date, bookedAt, bookedByAdmin } = place
   const archivedAt = getFrenchLuxon()
@@ -436,7 +440,7 @@ export const archivePlace = async (
   place,
   reason,
   byUser,
-  isCandilib
+  isCandilib,
 ) => {
   candidat = addPlaceToArchive(candidat, place, reason, byUser, isCandilib)
   return candidat.save()
@@ -457,7 +461,7 @@ export const archivePlace = async (
  */
 export const updateCandidatFailed = async (
   candidat,
-  { dateDernierEchecPratique, canBookFrom }
+  { dateDernierEchecPratique, canBookFrom },
 ) => {
   candidat.dateDernierEchecPratique = dateDernierEchecPratique
   candidat.canBookFrom = canBookFrom
@@ -476,7 +480,7 @@ export const updateCandidatFailed = async (
  */
 export const updateCandidatNoReussite = async (
   candidat,
-  { lastNoReussite, canBookFrom }
+  { lastNoReussite, canBookFrom },
 ) => {
   candidat.lastNoReussite = lastNoReussite
   candidat.canBookFrom = canBookFrom
@@ -542,7 +546,7 @@ export const countCandidatsInscritsByDepartement = async departement => {
 
 export const findCandidatWithBooking = async (nomNaissance, codeNeph) => {
   const candidat = await Candidat.aggregate()
-    .match({ nomNaissance, codeNeph })
+    .match({ codeNeph, nomNaissance })
     .lookup({
       from: 'places',
       localField: '_id',
@@ -567,7 +571,7 @@ export const findCandidatWithBooking = async (nomNaissance, codeNeph) => {
 export const countCandidatsInscritsByDepartementAndWeek = async (
   departement,
   startDate,
-  endDate
+  endDate,
 ) => {
   const result = await Candidat.countDocuments({
     departement,

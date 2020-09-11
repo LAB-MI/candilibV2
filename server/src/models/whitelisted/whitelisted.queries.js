@@ -17,7 +17,7 @@ export const findLastCreatedWhitelisted = async (departement, limit = 50) => {
 export const findWhitelistedMatching = async (searchQuery, departement) => {
   const email = new RegExp(searchQuery, 'i')
   const whitelisted = await Whitelisted.find({ email, departement }).sort(
-    '-dateAdded'
+    '-dateAdded',
   )
   return whitelisted
 }
@@ -56,8 +56,8 @@ export const createWhitelistedBatch = (emails, departement) =>
           email,
           success: false,
           message: error.message,
-        }))
-    )
+        })),
+    ),
   )
 
 export const deleteWhitelistedByEmail = async email => {

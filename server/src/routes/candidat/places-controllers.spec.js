@@ -84,7 +84,7 @@ describe('Test get dates from places available', () => {
     createdCentres = await createCentres()
     createdPlaces = await createPlaces()
     require('../middlewares/verify-token').__setIdCandidat(
-      createdCandidats[0]._id
+      createdCandidats[0]._id,
     )
   })
 
@@ -111,22 +111,21 @@ describe('Test get dates from places available', () => {
     const centreSelected = centresTests[1]
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places?geoDepartement=${centreSelected.geoDepartement}&nomCentre=${centreSelected.nom}`
+        `${apiPrefix}/candidat/places?geoDepartement=${centreSelected.geoDepartement}&nomCentre=${centreSelected.nom}`,
       )
       .set('Accept', 'application/json')
       .expect(200)
-
     expect(body).toBeDefined()
 
     const centreId = createdCentres.find(
-      centre => centre.nom === centreSelected.nom
+      centre => centre.nom === centreSelected.nom,
     )
     expect(body).toHaveLength(
       createdPlaces.filter(
         place =>
           place.centre._id === centreId._id &&
-          place.createdAt < getDateDisplayPlaces()
-      ).length
+          place.createdAt < getDateDisplayPlaces(),
+      ).length,
     )
   })
 })
@@ -146,7 +145,7 @@ describe('Test get dates from places available when there are booked', () => {
     await makeResas()
 
     require('../middlewares/verify-token').__setIdCandidat(
-      createdCandidats[0]._id
+      createdCandidats[0]._id,
     )
   })
 
@@ -160,13 +159,13 @@ describe('Test get dates from places available when there are booked', () => {
 
   it('Should 200 with an available place for centre 2 at a day 19 11h', async () => {
     const centreSelected = createdCentres.find(
-      centre => centre.nom === centresTests[1].nom
+      centre => centre.nom === centresTests[1].nom,
     )._id
     const date = createdPlaces[2].date
     const placeSelected = encodeURIComponent(date)
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places/${centreSelected}?dateTime=${placeSelected}`
+        `${apiPrefix}/candidat/places/${centreSelected}?dateTime=${placeSelected}`,
       )
 
       .set('Accept', 'application/json')
@@ -178,12 +177,12 @@ describe('Test get dates from places available when there are booked', () => {
 
   it('Should 200 without places because the seleted place is booked', async () => {
     const centreSelected = createdCentres.find(
-      centre => centre.nom === centresTests[1].nom
+      centre => centre.nom === centresTests[1].nom,
     )._id
     const placeSelected = encodeURIComponent(createdPlaces[1].date)
     const { body } = await request(app)
       .get(
-        `${apiPrefix}/candidat/places/${centreSelected}?dateTime=${placeSelected}`
+        `${apiPrefix}/candidat/places/${centreSelected}?dateTime=${placeSelected}`,
       )
       .set('Accept', 'application/json')
       .expect(200)
@@ -266,7 +265,7 @@ describe('Test to book and to delete reservation by candidat', () => {
         adresse,
         lon,
         lat,
-        departement
+        departement,
       )
 
       createdInspecteur = await createInspecteur(inspecteurTest)
@@ -292,7 +291,7 @@ describe('Test to book and to delete reservation by candidat', () => {
       placeToDelete = await bookCandidatOnSelectedPlace(
         placeCreated2,
         updatedCandidat2,
-        bookedAt
+        bookedAt,
       )
     } catch (e) {
       console.warn(e)
@@ -369,7 +368,7 @@ describe('Test to book and to delete reservation by candidat', () => {
 
     const candidatFounded = await findCandidatById(updatedCandidat2._id)
     const place = candidatFounded.places.find(
-      place => place.archiveReason === 'CANCEL'
+      elt => elt.archiveReason === 'CANCEL',
     )
 
     expect(place).toBeDefined()
@@ -523,14 +522,14 @@ describe('test to get booking by candidat', () => {
     expect(body.centre).toHaveProperty('nom', selectedCentre.nom)
     expect(body.centre).toHaveProperty(
       'departement',
-      selectedCentre.departement
+      selectedCentre.departement,
     )
     expect(body.centre).toHaveProperty('adresse', selectedCentre.adresse)
     expect(body.inspecteur).toBeUndefined()
     expect(body.candidat).toBeUndefined()
     expect(body).toHaveProperty(
       'lastDateToCancel',
-      dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
+      dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate(),
     )
     expect(body.dateDernierEchecPratique).toBeUndefined()
     expect(body.canBookFrom).toBeUndefined()
@@ -543,7 +542,7 @@ const createReservationWithFailure = async (
   selectedCentre,
   selectedPlace,
   previewDate,
-  offsetDate
+  offsetDate,
 ) => {
   const { body } = await request(app)
     .patch(`${apiPrefix}/candidat/places`)
@@ -571,8 +570,8 @@ const createReservationWithFailure = async (
       getFrenchFormattedDateTime(
         datetimeAuthorize.plus({
           days: offsetDate,
-        })
-      ).date
+        }),
+      ).date,
   )
 
   const bodyMail = require('../business/send-mail').getMail()
@@ -583,7 +582,7 @@ const createReservationWithSuccess = async (
   selectedCentre,
   selectedPlace,
   previewsPlaceId,
-  selectedCandidat
+  selectedCandidat,
 ) => {
   const { body } = await request(app)
     .patch(`${apiPrefix}/candidat/places`)
@@ -605,12 +604,12 @@ const createReservationWithSuccess = async (
     'date',
     getFrenchLuxonFromJSDate(selectedPlace.date)
       .setZone('utc')
-      .toISO()
+      .toISO(),
   )
   expect(body.reservation).toHaveProperty('centre', selectedCentre.nom)
   expect(body.reservation).toHaveProperty(
     'departement',
-    selectedCentre.departement
+    selectedCentre.departement,
   )
   expect(body.reservation).not.toHaveProperty('inspecteur')
 
@@ -624,7 +623,7 @@ const createReservationWithSuccess = async (
   const newSelectedCandidat = await findCandidatById(selectedCandidat._id)
   expect(newSelectedCandidat).toHaveProperty(
     'departement',
-    selectedCentre.departement
+    selectedCentre.departement,
   )
 
   expectMailConvocation(newSelectedCandidat, place)
@@ -669,7 +668,7 @@ describe('test to book with the date authorize by candiat', () => {
       selectedCentre,
       selectedPlace,
       getFrenchLuxon(),
-      config.delayToBook
+      config.delayToBook,
     )
   })
 
@@ -685,7 +684,7 @@ describe('test to book with the date authorize by candiat', () => {
       selectedCentre,
       selectedPlace,
       undefined,
-      selectedCandidat
+      selectedCandidat,
     )
   })
 
@@ -700,7 +699,7 @@ describe('test to book with the date authorize by candiat', () => {
       selectedCentre,
       selectedPlace,
       previewPlaceId,
-      selectedCandidat
+      selectedCandidat,
     )
   })
 
@@ -775,7 +774,7 @@ describe('test to change a booking, 6 days before the appointemnt, by candidat '
       selectedCentre,
       selectedPlace,
       createdPlaceCanNotBook.date,
-      config.timeoutToRetry
+      config.timeoutToRetry,
     )
   })
 
@@ -787,7 +786,7 @@ describe('test to change a booking, 6 days before the appointemnt, by candidat '
       selectedCentre,
       selectedPlace,
       createdPlaceCanNotBook._id,
-      selectedCandidat
+      selectedCandidat,
     )
   })
 })
@@ -796,7 +795,7 @@ const cancelReservationWithSuccess = async (
   selectedCandidatId,
   previewPlaceId,
   message,
-  hasCanBookFrom
+  hasCanBookFrom,
 ) => {
   const { body } = await request(app)
     .delete(`${apiPrefix}/candidat/places`)
@@ -824,7 +823,7 @@ const cancelReservationWithSuccess = async (
   expect(candidat.places.length).toBeGreaterThan(0)
 
   const foundPlace = candidat.places.find(
-    pPlace => pPlace._id.toString() === previewPlace._id.toString()
+    pPlace => pPlace._id.toString() === previewPlace._id.toString(),
   )
 
   expect(foundPlace).toBeDefined()
@@ -851,7 +850,7 @@ describe('Cancel a reservation', () => {
     await createInspecteurs()
     selectedCandidat1 = createdCandiats[1]
     require('../middlewares/verify-token').__setIdCandidat(
-      selectedCandidat1._id
+      selectedCandidat1._id,
     )
   })
   afterEach(async () => {
@@ -873,7 +872,7 @@ describe('Cancel a reservation', () => {
     await cancelReservationWithSuccess(
       selectedCandidat1._id,
       place._id,
-      CANCEL_RESA_WITH_MAIL_SENT
+      CANCEL_RESA_WITH_MAIL_SENT,
     )
   })
 
@@ -890,14 +889,14 @@ describe('Cancel a reservation', () => {
           .endOf('day')
           .plus({
             days: config.timeoutToRetry,
-          })
+          }),
       ).date
 
     await cancelReservationWithSuccess(
       selectedCandidat1._id,
       place._id,
       message,
-      true
+      true,
     )
   })
 })
@@ -920,11 +919,11 @@ describe('get reservation with candidat failed', () => {
     createdPlaceToRetry = await createTestPlace(placeToRetry)
 
     require('../middlewares/verify-token').__setIdCandidat(
-      createdCandidatFailed._id
+      createdCandidatFailed._id,
     )
     createdCandidatFailed = await updateCandidatFailed(
       createdCandidatFailed,
-      candidatFailed
+      candidatFailed,
     )
     await makeResa(createdPlaceToRetry, createdCandidatFailed, bookedAt)
   })
@@ -952,24 +951,24 @@ describe('get reservation with candidat failed', () => {
     expect(body.centre).toHaveProperty('nom', selectedCentre.nom)
     expect(body.centre).toHaveProperty(
       'departement',
-      selectedCentre.departement
+      selectedCentre.departement,
     )
     expect(body.centre).toHaveProperty('adresse', selectedCentre.adresse)
     expect(body.inspecteur).toBeUndefined()
     expect(body.candidat).toBeUndefined()
     expect(body).toHaveProperty(
       'lastDateToCancel',
-      dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate()
+      dateTimeResa.minus({ days: config.daysForbidCancel }).toISODate(),
     )
     expect(body.dateDernierEchecPratique).toBe(
       dateDernierEchecPratique()
         .setZone('utc')
-        .toISO()
+        .toISO(),
     )
     expect(body.canBookFrom).toBe(
       dateEchecCanBookFrom()
         .setZone('utc')
-        .toISO()
+        .toISO(),
     )
     expect(body.timeOutToRetry).toBe(config.timeoutToRetry)
     expect(body.dayToForbidCancel).toBe(config.daysForbidCancel)

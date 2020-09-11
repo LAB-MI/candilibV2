@@ -24,7 +24,8 @@ describe('Connected candidate front', () => {
     let magicLink
     const numberOfDaysBeforeDate = 7
     const numberOfDaysPenalty = 45 // 45éme jours inclus et 46 eme jours reservable //TODO: A vérifier
-    const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate })
+    const arbitraryValue = 7
+    const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate + arbitraryValue })
     const nowIn1WeekAnd1DaysBefore = now.plus({ days: (numberOfDaysBeforeDate - 1) })
     const bookedPlaceIn45Days = nowIn1WeekAnd1DaysBefore.plus({ days: numberOfDaysPenalty })
     const dayAfter46thDays = bookedPlaceIn45Days.plus({ days: 1 })
@@ -65,10 +66,12 @@ describe('Connected candidate front', () => {
     before(() => {
     // Delete all mails before start
       cy.deleteAllMails()
+      cy.deleteAllPlaces()
       cy.adminLogin()
       cy.archiveCandidate()
       cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore, dayAfter45Days, dayBefore45Days])
       cy.adminDisconnection()
+      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
       cy.candidatConnection(Cypress.env('emailCandidatFront'))
 
       cy.getLastMail().its('Content.Body').then((mailBody) => {
@@ -121,7 +124,7 @@ describe('Connected candidate front', () => {
         .parent().parent()
         .should('contain', Cypress.env('candidatFront'))
     })
-    it.only('Should book a place at 7th days', () => {
+    it('Should book a place at 7th days', () => {
       cy.visit(magicLink)
       cy.wait(1000)
 
@@ -527,7 +530,7 @@ describe('Connected candidate front', () => {
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '8:00')
+        .and('contain', '7:00')
     })
 
     it('Should disconnect', () => {

@@ -3,14 +3,13 @@ import { getHtmlBody } from './mail/body-mail-template'
 import { buildMailResaArgsValidation } from './send-mail-util'
 import { getFrenchFormattedDateTime } from '../../util/date-util'
 import { getCancelBookingByAdminTemplate, getUrlFAQ, getUrlRESA } from './mail'
-import { appLogger } from '../../util'
 import { findCentreById } from '../../models/centre'
 
 const section = 'candidat-sendMail'
 
 export const getCancellationByAdminBody = async (place, candidat) => {
   const action = 'get-body-cancellation'
-  appLogger.debug({ func: 'sendMailCancellation', action, place, candidat })
+  // appLogger.debug({ func: 'sendMailCancellation', action, place, candidat })
 
   const { centre, date } = place
   let centreObject = centre
@@ -31,7 +30,7 @@ export const getCancellationByAdminBody = async (place, candidat) => {
     section,
     action,
     urlFAQ,
-    urlRESA
+    urlRESA,
   )
 
   const dateTimeResa = getFrenchFormattedDateTime(date)
@@ -43,7 +42,7 @@ export const getCancellationByAdminBody = async (place, candidat) => {
     dateTimeResa.date,
     dateTimeResa.hour,
     urlRESA,
-    urlFAQ
+    urlFAQ,
   )
 
   return getHtmlBody(body)

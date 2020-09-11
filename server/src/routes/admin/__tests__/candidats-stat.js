@@ -487,17 +487,17 @@ export const createOneCandidatForStat = async candidat => {
       const { centre, inspecteur } = place
       const centreInDB = await findCentreByNameAndDepartement(
         centre.nom,
-        centre.departement
+        centre.departement,
       )
       const inspecteurInDB = await findInspecteurByMatricule(
-        inspecteur.matricule
+        inspecteur.matricule,
       )
       return {
         ...place,
         centre: centreInDB._id,
         inspecteur: inspecteurInDB._id,
       }
-    })
+    }),
   )
 
   candidatCreated.places = places
@@ -516,17 +516,17 @@ export const createArchivedCandidatForStat = async candidat => {
         const { centre, inspecteur } = place
         const centreInDB = await findCentreByNameAndDepartement(
           centre.nom,
-          centre.departement
+          centre.departement,
         )
         const inspecteurInDB = await findInspecteurByMatricule(
-          inspecteur.matricule
+          inspecteur.matricule,
         )
         return {
           ...place,
           centre: centreInDB._id,
           inspecteur: inspecteurInDB._id,
         }
-      })
+      }),
     )
     candidatCreated.places = places
   }
@@ -554,13 +554,13 @@ export const countSuccess = (departement, begin, end) => {
         .filter(
           el =>
             getFrenchLuxonFromISO(el.date) >= begin &&
-            getFrenchLuxonFromISO(el.date) <= end
+            getFrenchLuxonFromISO(el.date) <= end,
         )
         .find(
           ({ archiveReason, centre }) =>
             archiveReason === EPREUVE_PRATIQUE_OK &&
-            (!departement || centre.departement === departement)
-        ) !== undefined
+            (!departement || centre.departement === departement),
+        ) !== undefined,
   )
   return candidats.length
 }
@@ -594,21 +594,21 @@ export const countNotExamined = (departement, begin, end) => {
       NO_EXAMINABLE,
       departement,
       begin,
-      end
+      end,
     ).length +
     noReussitesByResaon(
       archivedCandidatsStat,
       NO_ADMISSIBLE,
       departement,
       begin,
-      end
+      end,
     ).length +
     noReussitesByResaon(
       archivedCandidatsStat,
       CANCELED,
       departement,
       begin,
-      end
+      end,
     ).length
   )
 }
@@ -618,7 +618,7 @@ const noReussitesByResaon = (
   reason,
   departement,
   begin,
-  end
+  end,
 ) => {
   return arrayCandidat
     .map(candidat =>
@@ -629,7 +629,7 @@ const noReussitesByResaon = (
             .filter(
               el =>
                 getFrenchLuxonFromISO(el.date) >= begin &&
-                getFrenchLuxonFromISO(el.date) <= end
+                getFrenchLuxonFromISO(el.date) <= end,
             )
             .find(({ date, archiveReason, centre }) => {
               const datePlace = getFrenchLuxonFromISO(date)
@@ -639,8 +639,8 @@ const noReussitesByResaon = (
                 archiveReason === REASON_EXAM_FAILED &&
                 (!departement || centre.departement === departement)
               )
-            }) !== undefined
-      )
+            }) !== undefined,
+      ),
     )
     .flat()
 }
@@ -649,8 +649,8 @@ export const createCandidatsForStat = async () => {
   await Promise.all(
     [centre1, centre2, centre3].map(
       ({ nom, label, adresse, lon, lat, departement }) =>
-        createCentre(nom, label, adresse, lon, lat, departement)
-    )
+        createCentre(nom, label, adresse, lon, lat, departement),
+    ),
   )
   await createInspecteur(inspecteur1)
   return Promise.all([
@@ -697,7 +697,7 @@ export const createStatsForPlacesExam = async () => {
     adresse,
     lon,
     lat,
-    departement
+    departement,
   )
 
   const createdInspecteur = await createInspecteur(inspecteurTestForStatsPlace)
@@ -790,8 +790,8 @@ const candidatsForStatsRetention = [
 export const createCandidatLeaveRetentionArea = async (canAccessAt = null) => {
   const result = await Promise.all(
     candidatsForStatsRetention.map(el =>
-      createCandidatAndUpdate(el, canAccessAt || el.canAccessAt)
-    )
+      createCandidatAndUpdate(el, canAccessAt || el.canAccessAt),
+    ),
   )
   return result
 }
@@ -816,7 +816,7 @@ const generateFakeLastName = () => {
 
 export const createCandidatsForCountRetentionByWeek = async (
   numberOfCandidats,
-  departement
+  departement,
 ) => {
   if (!numberOfCandidats) {
     return []
@@ -851,6 +851,6 @@ export const deleteCandidatsForCountRetentionByWeek = candidatsToDelete => {
   return Promise.all(
     candidatsToDelete.map(candidat => {
       return Candidat.findByIdAndDelete(candidat._id)
-    })
+    }),
   )
 }

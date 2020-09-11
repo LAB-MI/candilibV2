@@ -13,7 +13,7 @@ export const getInscriptionOkTemplate = (
   urlConnexion,
   email,
   contactezNous,
-  accessDate
+  accessDate,
 ) => {
   const header = `
     <p>Madame, Monsieur ${nomMaj},</p>
@@ -68,7 +68,7 @@ export const getInscriptionOkTemplate = (
   const remainingDays =
     Interval.fromDateTimes(
       dateNow,
-      getFrenchLuxonFromJSDate(accessDate).startOf('day')
+      getFrenchLuxonFromJSDate(accessDate).startOf('day'),
     ).count('days') - 1
 
   const contentForQueuedCandidat = `

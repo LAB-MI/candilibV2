@@ -23,7 +23,7 @@ jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
 jest.mock('../middlewares/verify-token')
 
-describe('Get departement with the numbers places available in departements and display at 12h', () => {
+xdescribe('Get departement with the numbers places available in departements and display at 12h', () => {
   beforeAll(async () => {
     setInitCreatedCentre()
     resetCreatedInspecteurs()
@@ -31,7 +31,7 @@ describe('Get departement with the numbers places available in departements and 
     await connect()
     const createdCandidats = await createCandidats()
     require('../middlewares/verify-token').__setIdCandidat(
-      createdCandidats[0]._id
+      createdCandidats[0]._id,
     )
 
     await createPlacesWithCreatedAtDiff()
@@ -60,8 +60,8 @@ describe('Get departement with the numbers places available in departements and 
     expect(
       geoDepartementsInfos.find(
         ({ geoDepartement }) =>
-          geoDepartement === centreDateDisplay.geoDepartement
-      )
+          geoDepartement === centreDateDisplay.geoDepartement,
+      ),
     ).toHaveProperty('count', 1)
   })
   it('Should get 3 places for 75 when now is after 12h', async () => {
@@ -82,8 +82,8 @@ describe('Get departement with the numbers places available in departements and 
     expect(
       geoDepartementsInfos.find(
         ({ geoDepartement }) =>
-          geoDepartement === centreDateDisplay.geoDepartement
-      )
+          geoDepartement === centreDateDisplay.geoDepartement,
+      ),
     ).toHaveProperty('count', 3)
   })
 })

@@ -10,6 +10,7 @@ import {
   updateCentreActiveState,
   findCentresUniqByDepartement,
 } from './centre-queries'
+
 import {
   setInitCreatedCentre,
   createCentres,
@@ -43,7 +44,7 @@ describe('Centre', () => {
         lon,
         lat,
         departement,
-        geoDepartement
+        geoDepartement,
       )
       expect(centre1Created).toBeDefined()
       expect(centre1Created).toHaveProperty('nom', nom)
@@ -81,7 +82,7 @@ describe('Centre', () => {
         adresse,
         lon,
         lat,
-        departement1
+        departement1,
       )
       expect(centre1Created).toBeDefined()
       expect(centre1Created).toHaveProperty('nom', nom)
@@ -93,7 +94,7 @@ describe('Centre', () => {
         adresse,
         lon2,
         lat2,
-        departement2
+        departement2,
       )
 
       expect(centre2Created).toBeDefined()
@@ -124,7 +125,7 @@ describe('Centre', () => {
       expect(centresResult).toHaveProperty('adresse', centres[2].adresse)
       expect(centresResult).toHaveProperty(
         'departement',
-        centres[2].departement
+        centres[2].departement,
       )
     })
 
@@ -148,7 +149,7 @@ describe('Centre', () => {
       try {
         centresResult = await findCentreByNameAndDepartement(
           centres[2].nom,
-          departement
+          departement,
         )
       } catch (error) {
         expect(error).toBeUndefined()
@@ -173,7 +174,7 @@ describe('Centre', () => {
         lon,
         lat,
         departement,
-        geoDepartement
+        geoDepartement,
       )
       const centreResult = await findCentreById(centre1Created._id)
 
@@ -225,20 +226,20 @@ describe('Centre', () => {
             lon,
             lat,
             departement,
-            geoDepartement
+            geoDepartement,
           )
-        })
+        }),
       )
 
       const centres75Found = await findCentresByDepartement('75')
       expect(centres75Found).toHaveLength(
-        centres75.filter(({ departement }) => departement === '75').length
+        centres75.filter(({ departement }) => departement === '75').length,
       )
 
       const centres75UniqFound = await findCentresUniqByDepartement('75')
       expect(centres75UniqFound).toHaveLength(
         centres75.filter(({ departement }) => departement === '75').length -
-          centres.length
+          centres.length,
       )
     })
   })
@@ -255,17 +256,17 @@ describe('Centre', () => {
     it('Should disable one centre', async () => {
       const testCentre = await findCentreByNameAndDepartement(
         centres[2].nom,
-        centres[2].departement
+        centres[2].departement,
       )
       const centreResult = await updateCentreActiveState(
         testCentre,
         false,
-        'onepiece@madmax.com'
+        'onepiece@madmax.com',
       )
 
       const unableToFindCentre = await findCentreByNameAndDepartement(
         centres[2].nom,
-        centres[2].departement
+        centres[2].departement,
       )
       const allCentres = await findAllCentres()
       const disabledCentre = allCentres.filter(centre => !centre.active)[0]
@@ -300,7 +301,7 @@ describe('Centre', () => {
 
       const enabledCentre = await findCentreByNameAndDepartement(
         centres[2].nom,
-        centres[2].departement
+        centres[2].departement,
       )
 
       expect(enabledCentre).toBeDefined()

@@ -271,7 +271,8 @@ export default {
       })
     },
 
-    resetForm () {
+    async resetForm () {
+      await this.$nextTick()
       this.nom = this.defaultValues.nom
       this.label = this.defaultValues.label
       this.adresse = this.defaultValues.adresse

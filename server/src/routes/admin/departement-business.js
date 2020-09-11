@@ -38,7 +38,7 @@ export const updateDepartementsUsersAdminAndTech = async departementId => {
     },
     {
       $addToSet: { departements: [`${departementId}`] },
-    }
+    },
   )
 
   if (updatedResult.ok) {
@@ -59,7 +59,7 @@ export const updateDepartementsUsersAdminAndTech = async departementId => {
  */
 export const removeDepartementOfUsersByStatus = async (
   departementId,
-  userStatus
+  userStatus,
 ) => {
   const updatedResult = await updateManyUser(
     {
@@ -69,7 +69,7 @@ export const removeDepartementOfUsersByStatus = async (
     },
     {
       $pull: { departements: `${departementId}` },
-    }
+    },
   )
 
   if (updatedResult.ok) {

@@ -55,14 +55,13 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
     .click()
   const filePath = '../../../' + Cypress.env('filePath') + '/aurige.end.json'
   const fileName = 'aurige.json'
-  cy.fixture(filePath).then(fileContent => {
-    cy.get('.input-file-container [type=file]')
-      .upload({
-        fileContent: JSON.stringify(fileContent),
-        fileName,
-        mimeType: 'application/json',
-      })
-  })
+  cy.get('.input-file-container [type=file]')
+    .attachFile({
+      filePath,
+      fileName,
+      mimeType: 'application/json',
+    })
+
   cy.get('.v-snack--active')
     .should('contain', fileName + ' prêt à être synchronisé')
   cy.get('.import-file-action [type=button]')
@@ -71,7 +70,7 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
     .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 })
 
-Cypress.Commands.add('addPlanning', (dates) => {
+Cypress.Commands.add('addPlanning', (dates, fileNameTmp = 'planning.csv') => {
   const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
 
   const horaireMorning = [
@@ -88,6 +87,7 @@ Cypress.Commands.add('addPlanning', (dates) => {
   ]
 
   const horaireAfterNoon = [
+    '13:00',
     '13:30',
     '14:00',
     '14:30',
@@ -100,7 +100,6 @@ Cypress.Commands.add('addPlanning', (dates) => {
     ...horaireMorning,
     '12:00',
     '12:30',
-    '13:00',
     ...horaireAfterNoon,
     '16:00',
   ]
@@ -114,18 +113,21 @@ Cypress.Commands.add('addPlanning', (dates) => {
     return acc.concat(placesInspecteur1).concat(placesInspecteur2)
   }, [])
   const placesArray = [csvHeaders].concat(placesInspecteurs).join('\n')
+
+  const fileName1 = fileNameTmp
+  const filePath1 = '../../../' + Cypress.env('filePath') + `/${fileName1}`
+
   // Creates the csv file
-  cy.writeFile(Cypress.env('filePath') + '/planning.csv', placesArray)
+  cy.writeFile(Cypress.env('filePath') + `/${fileName1}`, placesArray)
   // Adds the places from the created planning file
   cy.contains('calendar_today')
     .click()
   cy.get('.t-import-places [type=checkbox]')
     .check({ force: true })
-  const filePath1 = '../../../' + Cypress.env('filePath') + '/planning.csv'
-  const fileName1 = 'planning.csv'
   cy.fixture(filePath1).then(fileContent => {
-    cy.get('[type=file]').upload({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
+    cy.get('[type=file]').attachFile({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
   })
+
   cy.get('.v-snack--active')
     .should('contain', fileName1 + ' prêt à être synchronisé')
   cy.get('.import-file-action [type=button]')
@@ -283,14 +285,13 @@ Cypress.Commands.add('candidateValidation', (candidat, filename, hasChecked = tr
   const filePath2 = '../../../' + filepathAurige
   let fileName2
   if (filename) { fileName2 = filename } else { fileName2 = 'aurige.json' }
-  cy.fixture(filePath2).then(fileContent => {
-    cy.get('.input-file-container [type=file]')
-      .upload({
-        fileContent: JSON.stringify(fileContent),
-        fileName: fileName2,
-        mimeType: 'application/json',
-      })
-  })
+  cy.get('.input-file-container [type=file]')
+    .attachFile({
+      filePath: filePath2,
+      fileName: fileName2,
+      mimeType: 'application/json',
+    })
+
   cy.get('.v-snack--active')
     .should('contain', fileName2 + ' prêt à être synchronisé')
   cy.get('.import-file-action [type=button]')
@@ -379,7 +380,7 @@ Cypress.Commands.add('updatePlaces', (query, update) => {
     cy.log(JSON.stringify(content.body))
   })
 })
-Cypress.Commands.add('daleteAllPlaces', () => {
+Cypress.Commands.add('deleteAllPlaces', () => {
   cy.request('DELETE', Cypress.env('ApiRestDB') + '/places').then((content) => {
     cy.log(JSON.stringify(content.body))
   })

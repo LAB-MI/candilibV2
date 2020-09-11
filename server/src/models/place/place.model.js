@@ -2,6 +2,7 @@
  * Model Place
  * @module models/place/place-model
  */
+
 import mongoose from 'mongoose'
 
 import { INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR } from './errors.constants'
@@ -64,13 +65,19 @@ const PlaceSchema = new Schema(
       required: false,
       ref: 'Candidat',
     },
+    booked: {
+      type: Boolean,
+    },
   },
   {
     timestamps: true,
-  }
+  },
 )
 
 PlaceSchema.index({ date: 1, inspecteur: 1 }, { unique: true })
+PlaceSchema.index({ candidat: 1, booked: 1 }, { unique: true, sparse: true })
+PlaceSchema.index({ centre: 1, date: 1, inspecteur: 1 })
+PlaceSchema.index({ createdAt: 1, centre: 1, date: 1, candidat: 1 })
 
 PlaceSchema.pre('save', async function preSave () {
   const place = this
@@ -93,7 +100,7 @@ PlaceSchema.pre('save', async function preSave () {
       places.some(
         currentPlace =>
           currentPlace.centre.toString() !==
-          (place.centre._id || place.centre).toString()
+          (place.centre._id || place.centre).toString(),
       )
     ) {
       const error = new Error(INSPECTEUR_SCHEDULE_INCONSISTENCY_ERROR)

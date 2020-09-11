@@ -30,7 +30,7 @@ import { findUserById } from '../../models/user'
  */
 export const getInspecteursBookedFromDepartement = async (
   date,
-  departement
+  departement,
 ) => {
   const { begin: beginDate, end: endDate } = getFrenchLuxonRangeFromDate(date)
 
@@ -42,9 +42,9 @@ export const getInspecteursBookedFromDepartement = async (
         centre._id,
         null,
         beginDate,
-        endDate
-      )
-    )
+        endDate,
+      ),
+    ),
   ))
     .flat()
     .reduce((acc, { centre, inspecteur }) => {
@@ -71,7 +71,7 @@ export const getInspecteursBookedFromDepartement = async (
         centre,
         inspecteur,
       }
-    })
+    }),
   )
 
   return inspecteursInfo
@@ -106,7 +106,7 @@ export const getAllAppropriateInspecteurs = async userId => {
 export const getAllAppropriateActiveInspecteurs = async userId => {
   const user = await findUserById(userId)
   const inspecteurs = await findActiveInspecteursByDepartements(
-    user.departements
+    user.departements,
   )
   return inspecteurs
 }
@@ -139,7 +139,7 @@ export const isUserAllowedToCreateIpcsr = async (userId, departement) => {
 export const isUserAllowedToUpdateIpcsr = async (
   userId,
   ipcsrId,
-  newDepartement
+  newDepartement,
 ) => {
   const user = await findUserById(userId)
   const ipcsr = await findInspecteurById(ipcsrId)

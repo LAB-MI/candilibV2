@@ -9,22 +9,19 @@ export const getConvocationTemplate = (
   addressCentre,
   urlRESA,
   urlFAQ,
-  contactezNous
+  contactezNous,
 ) => `<p>Le présent mail vaut convocation.</p>
-<br> 
+<br>
 <div style="border: 5px solid red; padding:5px;">
 <ul>
 <li>
-Port obligatoire d’un masque a minima de type à usage non-sanitaire de catégorie 1 pour vous et votre accompagnateur (principe de protection croisée).
+Port obligatoire d'un masque à usage médical (vous et votre accompagnateur).
 </li>
 <li>
-Port obligatoire d’une visière de protection (en supplément du masque) pour votre accompagnateur.
+Climatisation coupée et véhicule aéré pendant l'examen.
 </li>
 <li>
-Climatisation et ventilation coupées et véhicule aéré pendant l’examen.
-</li>
-<li>
-Housse de protection obligatoire sur les sièges.
+Ventilation autorisée en position basse et sans recyclage d'air.
 </li>
 <li>
 Nettoyage (produit ou lingette virucide respectant la norme EN 14476), aération et désinfection du véhicule avant l’examen.

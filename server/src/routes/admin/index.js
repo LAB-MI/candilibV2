@@ -5,7 +5,7 @@
 
 import express from 'express'
 
-import { getCandidats, importCandidats } from './candidats.controllers'
+import { getCandidats, importCandidats, updateCandidats } from './candidats.controllers'
 import {
   createUserController,
   archiveUserController,
@@ -239,9 +239,13 @@ router.get(
   '/candidats/:id?',
   verifyRepartiteurDepartement,
   verifyAccessAurige,
-  getCandidats
+  getCandidats,
 )
 
+/**
+ * Mise à jour des données d'un candidat
+ */
+router.patch('/candidats/:id', updateCandidats)
 /**
  * @swagger
  *
@@ -352,7 +356,7 @@ router.get(
 router.post(
   '/candidats',
   verifyUserLevel(config.userStatusLevels.admin),
-  importCandidats
+  importCandidats,
 )
 
 /**
@@ -902,7 +906,7 @@ router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
 router.post(
   '/bordereaux',
   verifyRepartiteurDepartement,
-  sendScheduleInspecteurs
+  sendScheduleInspecteurs,
 )
 
 /**
@@ -944,7 +948,7 @@ router.post(
 router.get(
   '/stats-places-exams',
   verifyUserLevel(config.userStatusLevels.delegue),
-  getStatsPlacesExam
+  getStatsPlacesExam,
 )
 
 /**
@@ -1000,7 +1004,7 @@ router.get(
 router.get(
   '/stats-results-exams',
   verifyUserLevel(config.userStatusLevels.delegue),
-  getStatsResultsExam
+  getStatsResultsExam,
 )
 
 /**
@@ -1056,7 +1060,7 @@ router.get(
 router.get(
   '/stats-candidats-retention',
   verifyUserLevel(config.userStatusLevels.delegue),
-  getCandidatsLeaveRetentionArea
+  getCandidatsLeaveRetentionArea,
 )
 
 // TODO: SWAGGER DOC
@@ -1113,7 +1117,7 @@ router.get(
 router.get(
   '/stats-candidats-retention-by-week',
   verifyUserLevel(config.userStatusLevels.delegue),
-  getCandidatsLeaveRetentionAreaByWeekAndDepartement
+  getCandidatsLeaveRetentionAreaByWeekAndDepartement,
 )
 
 /**
@@ -1713,7 +1717,7 @@ router.delete('/users', verifyDelegueLevel(), archiveUserController)
 router.get(
   '/centres',
   verifyUserLevel(config.userStatusLevels.delegue),
-  getAdminCentres
+  getAdminCentres,
 )
 
 /**
@@ -1823,7 +1827,7 @@ router.get(
 router.patch(
   '/centres',
   verifyUserLevel(config.userStatusLevels.delegue),
-  modifyCentre
+  modifyCentre,
 )
 
 /**
@@ -1929,7 +1933,7 @@ router.patch(
 router.post(
   '/centres',
   verifyUserLevel(config.userStatusLevels.admin),
-  createCentre
+  createCentre,
 )
 
 /**
@@ -1994,7 +1998,7 @@ router.post(
 router.post(
   '/departements',
   verifyUserLevel(config.userStatusLevels.admin),
-  createDepartementsController
+  createDepartementsController,
 )
 
 /**
@@ -2050,7 +2054,7 @@ router.post(
 router.get(
   '/departements/:id?',
   verifyUserLevel(config.userStatusLevels.admin),
-  getDepartementsController
+  getDepartementsController,
 )
 
 /**
@@ -2117,7 +2121,7 @@ router.get(
 router.patch(
   '/departements/:id?',
   verifyUserLevel(config.userStatusLevels.admin),
-  updateDepartementsController
+  updateDepartementsController,
 )
 
 /**
@@ -2166,6 +2170,6 @@ router.patch(
 router.delete(
   '/departements/:id?',
   verifyUserLevel(config.userStatusLevels.admin),
-  deleteDepartementController
+  deleteDepartementController,
 )
 export default router

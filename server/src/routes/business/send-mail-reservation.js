@@ -21,21 +21,21 @@ const section = 'candidat-sendMail'
 
 const sendMailResaArgsValidation = (reservation, candidat) => {
   if (!reservation) {
-    appLogger.debug({ func: 'sendMailResaArgsValidation', reservation })
+    // appLogger.debug({ func: 'sendMailResaArgsValidation', reservation })
     throw new Error("Il n'y a aucune réservation")
   }
 
   if (!candidat) {
-    appLogger.debug({
-      func: 'sendMailResaArgsValidation',
-      candidat: candidat,
-    })
+    // appLogger.debug({
+    //   func: 'sendMailResaArgsValidation',
+    //   candidat: candidat,
+    // })
     throw new Error("Il n'y a aucun candidat pour cette réservation")
   }
 
   const { email } = candidat
   if (!email) {
-    appLogger.debug({ func: 'sendMailResaArgsValidation', email })
+    // appLogger.debug({ func: 'sendMailResaArgsValidation', email })
     throw new Error("Le candidat n'a pas de courriel")
   }
   return email
@@ -43,12 +43,12 @@ const sendMailResaArgsValidation = (reservation, candidat) => {
 
 export const sendMailConvocation = reservation => {
   const action = 'SEND_CONVOVATION'
-  appLogger.debug({ func: 'sendMailConvocation', arg: { reservation } })
+  // appLogger.debug({ func: 'sendMailConvocation', arg: { reservation } })
 
   try {
     sendMailResaArgsValidation(
       reservation,
-      reservation ? reservation.candidat : undefined
+      reservation ? reservation.candidat : undefined,
     )
   } catch (error) {
     appLogger.error({ section, action, error })
@@ -59,17 +59,17 @@ export const sendMailConvocation = reservation => {
   const content = getConvocationBody(reservation)
   const subject = SUBJECT_CONVOCATION
 
-  appLogger.debug({ func: 'sendMailConvocation', content, subject })
+  // appLogger.debug({ func: 'sendMailConvocation', content, subject })
 
   return sendMail(email, { content, subject })
 }
 
 export const sendCancelBooking = (candidat, place) => {
-  appLogger.debug({ func: 'sendMailCancellation', args: { candidat, place } })
+  // appLogger.debug({ func: 'sendMailCancellation', args: { candidat, place } })
   const action = 'SEND_CANCELLATION'
   const { email } = candidat
 
-  appLogger.debug({ func: 'sendMailCancellation', candidat, place, email })
+  // appLogger.debug({ func: 'sendMailCancellation', candidat, place, email })
   try {
     sendMailResaArgsValidation(place, candidat)
   } catch (error) {
@@ -80,7 +80,7 @@ export const sendCancelBooking = (candidat, place) => {
   const content = getCancellationBody(place, candidat)
   const subject = SUBJECT_CANCEL_RESA
 
-  appLogger.debug({ func: 'sendMailCancellation', content, subject })
+  // appLogger.debug({ func: 'sendMailCancellation', content, subject })
 
   return sendMail(email, { content, subject })
 }
@@ -89,7 +89,7 @@ export const sendFailureExam = async (
   place,
   candidat,
   lastNoReussite,
-  addInQueue
+  addInQueue,
 ) => {
   let action = 'SEND_BY_AURIGE_TO_NO_SUCCESS'
   try {
@@ -98,7 +98,7 @@ export const sendFailureExam = async (
     appLogger.error({ section, action, error })
     throw error
   }
-  appLogger.debug(section, action, place, candidat)
+  // appLogger.debug(section, action, place, candidat)
   const { email } = candidat
   let content
   let subject = SUBJECT_MAIL_INFO
@@ -119,7 +119,7 @@ export const sendFailureExam = async (
       action = 'SEND_BY_AURIGE_TO_NO_EXAMINE'
       content = await getNoSuccessAtExamBody(
         candidat,
-        getNoExamineAtExamTemplate
+        getNoExamineAtExamTemplate,
       )
       break
     }
@@ -138,14 +138,14 @@ export const sendFailureExam = async (
 }
 
 export const sendCancelBookingByAdmin = async (place, candidat) => {
-  appLogger.debug({
-    func: 'sendCancelBookingByAdmin',
-    args: { candidat, place },
-  })
+  // appLogger.debug({
+  //   func: 'sendCancelBookingByAdmin',
+  //   args: { candidat, place },
+  // })
   const action = 'SEND_CANCELLATION_BY_ADMIN'
   const { email } = candidat
 
-  appLogger.debug({ func: 'sendCancelBookingByAdmin', candidat, place, email })
+  // appLogger.debug({ func: 'sendCancelBookingByAdmin', candidat, place, email })
   try {
     sendMailResaArgsValidation(place, candidat)
   } catch (error) {
@@ -156,7 +156,7 @@ export const sendCancelBookingByAdmin = async (place, candidat) => {
   const content = await getCancellationByAdminBody(place, candidat)
   const subject = SUBJECT_CANCEL_BY_ADMIN
 
-  appLogger.debug({ func: 'sendCancelBookingByAdmin', content, subject })
+  // appLogger.debug({ func: 'sendCancelBookingByAdmin', content, subject })
 
   return sendMail(email, { content, subject })
 }

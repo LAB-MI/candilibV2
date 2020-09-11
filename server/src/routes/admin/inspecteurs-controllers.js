@@ -67,11 +67,6 @@ export const getInspecteurs = async (req, res) => {
   }
 
   if (date && departement && !matching && !centreId && !begin && !end) {
-    appLogger.debug({
-      ...loggerInfo,
-      func: 'getInspecteurs',
-    })
-
     const results = await getInspecteursBookedFromDepartement(date, departement)
 
     appLogger.info({
@@ -119,7 +114,7 @@ export const getInspecteurs = async (req, res) => {
       const inspecteurs = await findInspecteursMatching(
         matching,
         startingWith,
-        endingWith
+        endingWith,
       )
       appLogger.info({
         ...loggerInfo,
@@ -154,7 +149,7 @@ export const getInspecteurs = async (req, res) => {
         return accu
       }, [])
       const inspecteurs = await Promise.all(
-        inspecteursIdList.map(findInspecteurById)
+        inspecteursIdList.map(findInspecteurById),
       )
       appLogger.info({
         ...loggerInfo,
@@ -330,7 +325,7 @@ export const updateIpcsr = async (req, res) => {
   const isAllowed = await isUserAllowedToUpdateIpcsr(
     userId,
     ipcsrId,
-    departement
+    departement,
   )
 
   if (!isAllowed) {

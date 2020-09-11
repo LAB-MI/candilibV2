@@ -7,11 +7,12 @@ export const makeResa = (
   place,
   candidat,
   bookedAt = undefined,
-  bookedByAdmin = undefined
+  bookedByAdmin = undefined,
 ) => {
   place.candidat = candidat._id
   place.bookedAt = bookedAt
   place.bookedByAdmin = bookedByAdmin
+  place.booked = true
   return place.save()
 }
 
@@ -19,13 +20,14 @@ export const bookCandidatOnSelectedPlace = async (
   place,
   candidat,
   bookedAt = undefined,
-  bookedByAdmin = undefined
+  bookedByAdmin = undefined,
 ) => {
   const placeFounded = await placeModel.findOne({
     _id: place._id || place,
   })
   placeFounded.candidat = candidat._id
   placeFounded.bookedAt = bookedAt
+  placeFounded.booked = true
   placeFounded.bookedByAdmin = bookedByAdmin
   return placeFounded.save()
 }
@@ -34,7 +36,7 @@ let placesDb
 
 export const makeResas = async (
   bookedAt = undefined,
-  bookedByAdmin = undefined
+  bookedByAdmin = undefined,
 ) => {
   const place1 = await placeModel.findOne({
     date: commonBasePlaceDateTime.toISO(),
@@ -55,7 +57,7 @@ export const makeResas = async (
 
 export const makeCandidatsResas = async (
   bookedAt = undefined,
-  bookedByAdmin = undefined
+  bookedByAdmin = undefined,
 ) => {
   const candidats = await createCandidats()
 
@@ -71,11 +73,13 @@ export const makeCandidatsResas = async (
 
   place1.candidat = candidat1._id
   place1.bookedAt = bookedAt
+  place1.booked = true
   place1.bookedByAdmin = bookedByAdmin
   const result1 = await place1.save()
 
   place2.candidat = candidat2._id
   place2.bookedAt = bookedAt
+  place2.booked = true
   place2.bookedByAdmin = bookedByAdmin
   const result2 = await place2.save()
 

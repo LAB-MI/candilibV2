@@ -34,7 +34,7 @@ export const removeInspecteur = async () => {
       inspecteurs.map(async inspecteur => {
         const tmp = await inspecteur.delete()
         return tmp
-      })
+      }),
     ))
   return tmp
 }

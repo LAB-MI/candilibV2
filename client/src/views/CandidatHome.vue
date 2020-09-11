@@ -35,7 +35,6 @@ export default {
   },
 
   async mounted () {
-    this.$router.replace({ name: 'landing-page' })
     await this.getCandidatReservation()
   },
 

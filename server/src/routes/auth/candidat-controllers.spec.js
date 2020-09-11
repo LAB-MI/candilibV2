@@ -31,7 +31,7 @@ describe('authentification of candidat', () => {
 
   it('should 401 if candidat do not found ', async () => {
     require('../middlewares/verify-token').__setIdCandidat(
-      '5d4078f77fb2b90043d96c89'
+      '5d4078f77fb2b90043d96c89',
     )
     require('../../util/logger').setWithConsole(false)
 

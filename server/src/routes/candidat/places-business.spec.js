@@ -68,10 +68,10 @@ describe('Test places business: get dates from places available', () => {
     placesCreated = await createPlaces()
     centreSelected = centresCreated.find(
       ({ nom, departement }) =>
-        nom === centres[2].nom && departement === centres[2].departement
+        nom === centres[2].nom && departement === centres[2].departement,
     )
     const placesCreatedFromSelected = placesCreated.filter(
-      ({ centre }) => centre === centreSelected._id
+      ({ centre }) => centre === centreSelected._id,
     )
     inspecteur = placesCreatedFromSelected[0].inspecteur
 
@@ -82,7 +82,7 @@ describe('Test places business: get dates from places available', () => {
     const dateIn1Month = getFrenchLuxon().plus({ month: 1 })
     const sameDateInTestData = commonBasePlaceDateTime.hasSame(
       dateIn1Month,
-      'days'
+      'days',
     )
     const count = (await Promise.all([
       createPlace({
@@ -124,7 +124,7 @@ describe('Test places business: get dates from places available', () => {
       }),
     ])).length
 
-    nbPlacesAvailable = placesCreatedFromSelected.length + count - 2
+    nbPlacesAvailable = placesCreatedFromSelected.length + count - 1
   })
 
   afterAll(async () => {
@@ -140,7 +140,7 @@ describe('Test places business: get dates from places available', () => {
 
     const dates = await getDatesByCentre(
       centreSelected.departement,
-      centreSelected.nom
+      centreSelected.nom,
     )
 
     expect(dates).toBeDefined()
@@ -156,7 +156,7 @@ describe('Test places business: get dates from places available', () => {
     })
     const centreSelected = await findCentreByNameAndDepartement(
       centres[2].nom,
-      centres[2].departement
+      centres[2].departement,
     )
     const begin = getFrenchLuxon().toISODate()
     const end = getFrenchLuxon()
@@ -168,14 +168,14 @@ describe('Test places business: get dates from places available', () => {
         centreSelected._id,
         begin,
         end,
-        'candidatId'
+        'candidatId',
       )
       expect(dates).toBeUndefined()
     } catch (error) {
       expect(error).toHaveProperty('status', 400)
       expect(error).toHaveProperty(
         'message',
-        CANDIDAT_DATE_ETG_KO + getFrenchFormattedDateTime(dateETGExpired).date
+        CANDIDAT_DATE_ETG_KO + getFrenchFormattedDateTime(dateETGExpired).date,
       )
     }
   })
@@ -198,7 +198,7 @@ describe('Test places business: get dates from places available', () => {
       centreSelected._id,
       begin,
       end,
-      'candidatId'
+      'candidatId',
     )
     expect(dates).toBeDefined()
 

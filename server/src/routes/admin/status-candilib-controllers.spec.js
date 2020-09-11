@@ -27,8 +27,8 @@ describe('Check canAccess property of aurige', () => {
         __dirname,
         './business/',
         '__tests__',
-        'aurigeWithAccessAt.json'
-      )
+        'aurigeWithAccessAt.json',
+      ),
     )
 
     app.use((req, res, next) => {
@@ -51,7 +51,7 @@ describe('Check canAccess property of aurige', () => {
     expect(body).toHaveProperty('aurigeInfo')
     expect(body.aurigeInfo).toHaveProperty('date')
     expect(getFrenchLuxonFromISO(body.aurigeInfo.date).toLocaleString()).toBe(
-      dateNow
+      dateNow,
     )
     expect(body.aurigeInfo).toHaveProperty('message')
   })

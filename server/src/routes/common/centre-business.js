@@ -7,6 +7,7 @@
 import {
   countAvailablePlacesByCentre,
   findAllPlacesByCentre,
+  verifyIsAvailablePlacesByCentre,
 } from '../../models/place'
 
 import { findUserById } from '../../models/user'
@@ -40,10 +41,10 @@ export async function findCentresWithNbPlaces (departement, beginDate, endDate) 
       const count = await countAvailablePlacesByCentre(
         centre._id,
         beginDate,
-        endDate
+        endDate,
       )
       return { centre, count }
-    })
+    }),
   )
   return centresWithNbPlaces
 }
@@ -62,7 +63,8 @@ export async function findCentresWithNbPlaces (departement, beginDate, endDate) 
 export async function findCentresWithNbPlacesByGeoDepartement (
   geoDepartement,
   beginDate,
-  endDate
+  endDate,
+  justIsCentreHaveAvailablePlace = true,
 ) {
   const centres = geoDepartement
     ? await findCentreByGeoDepartement(geoDepartement, {
@@ -77,6 +79,35 @@ export async function findCentresWithNbPlacesByGeoDepartement (
     beginDate = getFrenchLuxon().toISODate()
   }
 
+  if (justIsCentreHaveAvailablePlace) {
+    const centresWithNbPlaces = await Promise.all(
+      centres.map(async centre => ({
+        centre,
+        count: await verifyIsAvailablePlacesByCentre(
+          centre._id,
+          beginDate,
+          endDate,
+          getDateDisplayPlaces(),
+        ),
+      })),
+    )
+
+    const result = [
+      ...Object.values(
+        centresWithNbPlaces.reduce((accu, { centre, count }) => {
+          if (!accu[centre.nom]) {
+            accu[centre.nom] = { count: 0 }
+          }
+          accu[centre.nom].centre = centre
+          accu[centre.nom].count = !accu[centre.nom].count ? count : accu[centre.nom].count
+          return accu
+        }, {}),
+      ),
+    ]
+
+    return result
+  }
+
   const centresWithNbPlaces = await Promise.all(
     centres.map(async centre => ({
       centre,
@@ -84,10 +115,11 @@ export async function findCentresWithNbPlacesByGeoDepartement (
         centre._id,
         beginDate,
         endDate,
-        getDateDisplayPlaces()
+        getDateDisplayPlaces(),
       ),
-    }))
+    })),
   )
+
   // TODO: Refactor next block
   const result = [
     ...Object.values(
@@ -98,7 +130,7 @@ export async function findCentresWithNbPlacesByGeoDepartement (
         accu[centre.nom].centre = centre
         accu[centre.nom].count += count
         return accu
-      }, {})
+      }, {}),
     ),
   ]
 
@@ -118,7 +150,7 @@ export async function findCentresWithPlaces (departement, beginDate, endDate) {
     centres.map(async centre => {
       const places = await findAllPlacesByCentre(centre._id, beginDate, endDate)
       return { centre, places }
-    })
+    }),
   )
   return centresWithPlaces
 }
@@ -174,7 +206,7 @@ export async function updateCentreStatus (id, status, userId) {
 
   if (places.length && !status) {
     const error = new Error(
-      'Le centre possède des places à venir, il ne peut pas être archivé.'
+      'Le centre possède des places à venir, il ne peut pas être archivé.',
     )
     error.status = 409
     throw error
@@ -183,7 +215,7 @@ export async function updateCentreStatus (id, status, userId) {
   const updatedCentre = await updateCentreActiveState(
     centre,
     status,
-    user.email
+    user.email,
   )
 
   return updatedCentre
@@ -211,7 +243,7 @@ export async function addCentre (
   lon,
   lat,
   departement,
-  geoDepartement
+  geoDepartement,
 ) {
   if (
     !nom ||
@@ -222,7 +254,7 @@ export async function addCentre (
     !departement
   ) {
     const error = new Error(
-      'Tous les paramètres doivent être correctement renseignés'
+      'Tous les paramètres doivent être correctement renseignés',
     )
     error.status = 400
     throw error
@@ -230,7 +262,7 @@ export async function addCentre (
 
   const alreadyCreatedCentre = await findCentreByNameAndDepartement(
     nom,
-    departement
+    departement,
   )
 
   if (alreadyCreatedCentre && alreadyCreatedCentre.length) {
@@ -245,7 +277,7 @@ export async function addCentre (
     Number(lon),
     Number(lat),
     departement,
-    geoDepartement
+    geoDepartement,
   )
   return centre
 }
@@ -269,7 +301,7 @@ export async function addCentre (
 export async function updateCentre (
   id,
   { nom, label, adresse, lon, lat, geoDepartement },
-  userId
+  userId,
 ) {
   const centre = await findCentreById(id)
 
@@ -290,7 +322,7 @@ export async function updateCentre (
   if (nom && nom.toUpperCase() !== centre.nom.toUpperCase()) {
     const alreadyExistingCentre = await findCentreByNameAndDepartement(
       nom,
-      centre.departement
+      centre.departement,
     )
 
     if (

@@ -43,7 +43,7 @@ export const connect = async () => {
     --reconnectTries
     if (reconnectTries > 0) {
       techLogger.warn(
-        `Could not connect to Mongo at ${mongoUri}, ${reconnectTries} tries left`
+        `Could not connect to Mongo at ${mongoUri}, ${reconnectTries} tries left`,
       )
       return delay(reconnectInterval).then(connect)
     } else {

@@ -1,12 +1,13 @@
 user  nginx;
-worker_processes  2;
+worker_processes  4;
+worker_rlimit_nofile  8192;
 
 error_log  /var/log/nginx/error.log warn;
 pid        /var/run/nginx.pid;
 
 
 events {
-    worker_connections  1024;
+    worker_connections  4096;
 }
 
 
@@ -16,8 +17,44 @@ http {
 
     server_tokens off;
 
+    map $request_method $limit_get {
+      "GET" $<API_USER_SCOPE>;
+      default "";
+    }
+    map $request_method $limit_post {
+      "POST" $<API_USER_SCOPE>;
+      default "";
+    }
+    map $request_method $limit_patch {
+      "PATCH" $<API_USER_SCOPE>;
+      default "";
+    }
+    map $request_method $limit_put {
+      "PUT" $<API_USER_SCOPE>;
+      default "";
+    }
+    map $request_method $limit_head {
+      "HEAD" $<API_USER_SCOPE>;
+      default "";
+    }
+    map $request_method $limit_delete {
+      "DELETE" $<API_USER_SCOPE>;
+      default "";
+    }
+    map $request_method $limit_options {
+      "OPTIONS" $<API_USER_SCOPE>;
+      default "";
+    }
+
+    limit_req_zone $limit_get zone=api_get:2m rate=<API_USER_GET_LIMIT_RATE>;
+    limit_req_zone $limit_post zone=api_post:2m rate=<API_USER_POST_LIMIT_RATE>;
+    limit_req_zone $limit_patch zone=api_patch:2m rate=<API_USER_PATCH_LIMIT_RATE>;
+    limit_req_zone $limit_put zone=api_put:2m rate=<API_USER_PUT_LIMIT_RATE>;
+    limit_req_zone $limit_head zone=api_head:2m rate=<API_USER_HEAD_LIMIT_RATE>;
+    limit_req_zone $limit_delete zone=api_delete:2m rate=<API_USER_DELETE_LIMIT_RATE>;
+    limit_req_zone $limit_options zone=api_options:2m rate=<API_USER_OPTIONS_LIMIT_RATE>;
+
     limit_req_zone $<API_USER_SCOPE> zone=app:10m rate=<APP_USER_LIMIT_RATE>;
-    limit_req_zone $<API_USER_SCOPE> zone=api:2m rate=<API_USER_LIMIT_RATE>;
 
     add_header Strict-Transport-Security "max-age=31536000; includeSubDomains" always;
     add_header X-Frame-Options SAMEORIGIN;

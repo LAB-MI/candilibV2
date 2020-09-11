@@ -45,10 +45,13 @@ const CentreSchema = new Schema(
       $type: Date,
     },
   },
-  { typeKey: '$type', timestamps: true }
+  { typeKey: '$type', timestamps: true },
 )
 
-CentreSchema.index({ nom: 1, departement: 1 }, { unique: true })
+CentreSchema.index({ departement: 1, nom: 1 }, { unique: true })
+CentreSchema.index({ active: 1, nom: 1 })
+CentreSchema.index({ nom: 1, geoDepartement: 1 })
+
 CentreSchema.virtual('getGeoDepartement').get(function () {
   const zipCode = this.adresse && this.adresse.match(codePostal)
   return (

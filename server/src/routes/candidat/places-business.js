@@ -20,7 +20,9 @@ import {
   findAvailablePlacesByCentres,
   findPlaceBookedByCandidat,
   findPlacesByCentreAndDate,
+  findPlacesByDepartementAndCentre,
   removeBookedPlace,
+  findPlacesByCandidat,
 } from '../../models/place'
 import {
   findCentreByName,
@@ -59,19 +61,19 @@ export const getDatesByCentreId = async (
   _id,
   beginDate,
   endDate,
-  candidatId
+  candidatId,
 ) => {
-  appLogger.debug({
-    func: 'getDatesByCentreId',
-    _id,
-    beginDate,
-    endDate,
-    candidatId,
-  })
+  // appLogger.debug({
+  //   func: 'getDatesByCentreId',
+  //   _id,
+  //   beginDate,
+  //   endDate,
+  //   candidatId,
+  // })
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
     beginDate,
-    endDate
+    endDate,
   )
 
   const places = await findAvailablePlacesByCentre(
@@ -79,10 +81,10 @@ export const getDatesByCentreId = async (
     beginPeriod.toISODate(),
     endPeriod.toISODate(),
     undefined,
-    getDateDisplayPlaces()
+    getDateDisplayPlaces(),
   )
   const dates = places.map(place =>
-    getFrenchLuxonFromJSDate(place.date).toISO()
+    getFrenchLuxonFromJSDate(place.date).toISO(),
   )
   const result = [...new Set(dates)]
   return result && result.length ? result : undefined
@@ -104,26 +106,26 @@ export const getDatesByCentresNameAndGeoDepartement = async (
   geoDepartement,
   beginDate,
   endDate,
-  candidatId
+  candidatId,
 ) => {
-  appLogger.debug({
-    func: 'getDatesByCentreName',
-    nomCentre,
-    beginDate,
-    endDate,
-    candidatId,
-  })
+  // appLogger.debug({
+  //   func: 'getDatesByCentreName',
+  //   nomCentre,
+  //   beginDate,
+  //   endDate,
+  //   candidatId,
+  // })
 
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
     beginDate,
-    endDate
+    endDate,
   )
 
   const centres = await findCentreByNameAndDepartement(
     nomCentre,
     undefined,
-    geoDepartement
+    geoDepartement,
   )
 
   const places = await findAvailablePlacesByCentres(
@@ -131,12 +133,41 @@ export const getDatesByCentresNameAndGeoDepartement = async (
     beginPeriod.toISODate(),
     endPeriod.toISODate(),
     undefined,
-    getDateDisplayPlaces()
+    getDateDisplayPlaces(),
   )
   const dates = places.map(place =>
-    getFrenchLuxonFromJSDate(place.date).toISO()
+    getFrenchLuxonFromJSDate(place.date).toISO(),
   )
   return [...new Set(dates)]
+}
+
+export const getPlacesByDepartementAndCentre = async (
+  nomCentre,
+  geoDepartement,
+  candidatId,
+  beginDate,
+  endDate,
+) => {
+  const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
+    candidatId,
+    beginDate,
+    endDate,
+  )
+
+  const dates = await findPlacesByDepartementAndCentre(
+    nomCentre,
+    geoDepartement,
+    beginPeriod,
+    endPeriod,
+    getDateDisplayPlaces(),
+  )
+
+  const result = dates
+    .map(({ placesInfo }) => placesInfo)
+    .flat(1)
+    .map(place => getFrenchLuxonFromJSDate(place.date).toISO())
+
+  return [...new Set(result)]
 }
 
 /**
@@ -157,15 +188,15 @@ export const getDatesByCentre = async (
   nomCentre,
   beginDate,
   endDate,
-  candidatId
+  candidatId,
 ) => {
-  appLogger.debug({
-    func: 'getDatesByCentre',
-    departement,
-    nomCentre,
-    beginDate,
-    endDate,
-  })
+  // appLogger.debug({
+  //   func: 'getDatesByCentre',
+  //   departement,
+  //   nomCentre,
+  //   beginDate,
+  //   endDate,
+  // })
 
   let foundCentre
   if (departement) {
@@ -174,8 +205,8 @@ export const getDatesByCentre = async (
     foundCentre = await findCentreByName(nomCentre)
     const rawDates = Promise.all(
       foundCentre.map(fndCentre =>
-        getDatesByCentreId(fndCentre._id, beginDate, endDate, candidatId)
-      )
+        getDatesByCentreId(fndCentre._id, beginDate, endDate, candidatId),
+      ),
     )
     return [...new Set(rawDates)]
   }
@@ -184,7 +215,7 @@ export const getDatesByCentre = async (
     foundCentre._id,
     beginDate,
     endDate,
-    candidatId
+    candidatId,
   )
   return dates
 }
@@ -205,10 +236,10 @@ export const hasAvailablePlaces = async (id, date) => {
     id,
     date,
     undefined,
-    getDateDisplayPlaces()
+    getDateDisplayPlaces(),
   )
   const dates = places.map(place =>
-    getFrenchLuxonFromJSDate(place.date).toISO()
+    getFrenchLuxonFromJSDate(place.date).toISO(),
   )
   return [...new Set(dates)]
 }
@@ -228,13 +259,13 @@ export const hasAvailablePlaces = async (id, date) => {
 export const hasAvailablePlacesByCentre = async (
   geoDepartement,
   nomCentre,
-  date
+  date,
 ) => {
   // TODO: <--- Refactor
   const foundCentre = await findCentreByNameAndDepartement(
     nomCentre,
     undefined,
-    geoDepartement
+    geoDepartement,
   )
 
   if (foundCentre && foundCentre.length > 1) {
@@ -244,7 +275,7 @@ export const hasAvailablePlacesByCentre = async (
         if (dates && dates.length) {
           return { dates }
         }
-      })
+      }),
     )
     const result = allDates.reduce((accu, value) => {
       if (value && value.dates && value.dates.length) {
@@ -268,15 +299,43 @@ export const hasAvailablePlacesByCentre = async (
  * @param {string} candidatId - Id du candidat
  * @param {Object} options - Options à passer à MongoDB pour la query
  *
- * @returns {Object} - Place réservée par le candidat
+ * @returns {Object} Place réservée par le candidat
  */
 export const getReservationByCandidat = async (candidatId, options) => {
   const place = await findPlaceBookedByCandidat(
     candidatId,
     {},
-    options || { centre: true }
+    options || { centre: true },
   )
   return place
+}
+
+/**
+ * Vérifie si le candidat est en cours de modification de réservation.
+ * Renvoie une erreur dans ce cas, ou sa réservation
+ *
+ * @async
+ * @function
+ *
+ * @param {string} candidatId - Id du candidat
+ * @param {Object} options - Options à passer à MongoDB pour la query
+ *
+ * @returns {Object} Place réservée par le candidat
+ */
+export const canModifyReservation = async (candidatId, options) => {
+  const places = await findPlacesByCandidat(
+    candidatId,
+    {},
+    options || { centre: true },
+  )
+
+  if (places.length > 1 || places.find(place => place.booked === false)) {
+    const error = new Error('Votre demande est refusée. Votre réservation est en cours de modication.')
+    error.status = 409
+    throw error
+  }
+
+  return places[0]
 }
 
 /**
@@ -297,27 +356,35 @@ export const bookPlace = async (
   candidatId,
   nomCentre,
   date,
-  geoDepartement
+  geoDepartement,
 ) => {
   // TODO: Refactor
   const foundCentres = await findCentreByNameAndDepartement(
     nomCentre,
     undefined,
-    geoDepartement
+    geoDepartement,
   )
   const centres = foundCentres.map(centre => centre._id)
   const bookedAt = getFrenchLuxon().toJSDate()
-  const place = await findAndbookPlace(
-    candidatId,
-    centres,
-    date,
-    bookedAt,
-    { inspecteur: 0 },
-    { centre: true, candidat: true },
-    getDateDisplayPlaces()
-  )
-
-  return place
+  try {
+    const place = await findAndbookPlace(
+      candidatId,
+      centres,
+      date,
+      bookedAt,
+      { inspecteur: 0 },
+      { centre: true, candidat: true },
+      getDateDisplayPlaces(),
+    )
+    return place
+  } catch (error) {
+    if (error.code === 11000) {
+      error.code = 509
+      error.errorMessage = error.message
+      error.message = 'Vous avez déjà une réservation.'
+    }
+    throw error
+  }
 }
 
 /**
@@ -328,21 +395,21 @@ export const bookPlace = async (
  */
 
 /**
- * Supprime sur une place, l'association avec un candidat
+ * Archive sur une place, et supprime l'association avec un candidat
  *
  * @async
  * @function
  *
- * @param {PlaceModel} bookedPlace place réservée par le candidat
- * @param {boolean} isModified Booléen à `true` s'il s'agit d'une modification, à `false` ou `undefined` s'il s'agit d'une annulation
- * @param {Object} loggerContent information pour les traces de l'application
+ * @param {PlaceModel} bookedPlace - Place réservée par le candidat
+ * @param {boolean} isModified - Booléen à `true` s'il s'agit d'une modification, à `false` ou `undefined` s'il s'agit d'une annulation
+ * @param {Object} loggerContent - Information pour les traces de l'application
  *
  * @returns {RemoveReservationReturn} Informations à afficher au client
  */
 export const removeReservationPlace = async (
   bookedPlace,
   isModified,
-  loggerContent
+  loggerContent,
 ) => {
   let loggerInfo = loggerContent
   if (!loggerInfo) {
@@ -366,7 +433,7 @@ export const removeReservationPlace = async (
   await archivePlace(
     candidat,
     bookedPlace,
-    isModified ? REASON_MODIFY : REASON_CANCEL
+    isModified ? REASON_MODIFY : REASON_CANCEL,
   )
 
   let statusmail = true
@@ -430,7 +497,7 @@ export const isSameReservationPlace = (nomCentre, date, previewBookedPlace) => {
   if (nomCentre === previewBookedPlace.centre.nom) {
     const diffDateTime = date.diff(
       getFrenchLuxonFromJSDate(previewBookedPlace.date),
-      'second'
+      'second',
     )
     if (diffDateTime.seconds === 0) {
       return true
@@ -606,7 +673,9 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
 }
 
 /**
- * Vérifie qu'un candidat peut réserver une place
+ * Vérifie qu'un candidat peut réserver une place.
+ * Renvoie une promesse résolvant `undefined` si le candidat peut réserver,
+ * un objet dans le cas contraire.
  *
  * @async
  * @function
@@ -615,13 +684,14 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
  * @param {string} centre - Id of mongoose
  * @param {Date|DateTime} date - Date de l'examen de la place réservée
  * @param {Object} previewBookedPlace - Type model place which populate centre and candidat
+ *
  * @returns {Promise.<import('../../app').InfoObject> | Promise.<undefined>} - Une promesse résolvant `undefined` si le candidat peut réserver, un objet dans le cas contraire
  */
 export const validCentreDateReservation = async (
   candidatId,
   nomCentre,
   date,
-  previewBookedPlace
+  previewBookedPlace,
 ) => {
   let candidat
   const dateTimeResa = getFrenchLuxonFromISO(date)
@@ -629,7 +699,7 @@ export const validCentreDateReservation = async (
     const isSame = isSameReservationPlace(
       nomCentre,
       dateTimeResa,
-      previewBookedPlace
+      previewBookedPlace,
     )
 
     if (isSame) {
