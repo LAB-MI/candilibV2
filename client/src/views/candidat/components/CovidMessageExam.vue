@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section data-nosnippet="true">
     <v-alert
       type="error"
       class="rounded-corner"

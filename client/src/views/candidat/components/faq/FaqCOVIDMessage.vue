@@ -1,6 +1,7 @@
 <template>
   <div
     class="question-covid"
+    data-nosnippet="true"
   >
     <h3
       class="question-covid-title"
