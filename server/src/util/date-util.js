@@ -118,7 +118,7 @@ export const getFrenchFormattedDateTime = (
   let datetime
 
   if (pDate instanceof DateTime) {
-    datetime = pDate.setLocale('es').setZone(FRENCH_TIME_ZONE)
+    datetime = pDate.setLocale('fr').setZone(FRENCH_TIME_ZONE)
   } else if (pDate instanceof Date) {
     datetime = getFrenchLuxonFromJSDate(pDate)
   } else if (pDate instanceof String || typeof pDate === 'string') {
