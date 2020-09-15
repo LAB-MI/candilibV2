@@ -1,15 +1,18 @@
 import { CANDIDAT_TOKEN_STORAGE_KEY } from '../constants'
 
 import apiPaths from './api-paths'
-import apiClient from './api-utils'
+import apiClient, { xuserid } from './api-utils'
 
 const getHeadersForJson = () => {
   const token = localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
   const Authorization = token ? `Bearer ${token}` : undefined
-  return {
+
+  const headers = {
     'Content-Type': 'application/json',
     Authorization,
+    'X-USER-ID': xuserid,
   }
+  return headers
 }
 
 const apiCandidat = {
