@@ -26,6 +26,7 @@ jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
 jest.mock('../middlewares/verify-token')
 jest.mock('../business/send-mail')
+jest.mock('../middlewares/verify-user')
 
 describe('Get places available and display at 12h', () => {
   let places
