@@ -836,7 +836,7 @@ function nbPlacesAvailables (
   )
 
   const arrayExpectPlaces = createdPlaces.filter(
-    ({ _id, centre, date, createdAt }) => {
+    ({ _id, centre, date, updatedAt }) => {
       let bresult =
         centre._id.toString() === centreSelected._id.toString() &&
         !idPlacesBooked.includes(_id.toString())
@@ -848,7 +848,7 @@ function nbPlacesAvailables (
       if (createdBefore) {
         bresult =
           bresult &&
-          getFrenchLuxonFromJSDate(createdAt) <
+          getFrenchLuxonFromJSDate(updatedAt) <
             getFrenchLuxonFromISO(createdBefore)
       }
       return bresult

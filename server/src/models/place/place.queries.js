@@ -108,7 +108,7 @@ const queryAvailablePlacesByCentre = (
   }
 
   if (createdBefore) {
-    query.where('createdAt').lt(createdBefore)
+    query.where('updatedAt').lt(createdBefore)
   }
   query.where('candidat').equals(undefined)
 
@@ -140,7 +140,7 @@ const queryAvailablePlacesByCentres = (
   }
 
   if (createdBefore) {
-    query.where('createdAt').lt(createdBefore)
+    query.where('updatedAt').lt(createdBefore)
   }
   query.where('candidat').equals(undefined)
 
@@ -260,8 +260,8 @@ const queryVerifyIsAvailablePlacesByCentre = (
   }
 
   if (createdBefore) {
-    filters.createdAt = {}
-    filters.createdAt.$lt = createdBefore
+    filters.updatedAt = {}
+    filters.updatedAt.$lt = createdBefore
   }
   filters.candidat = { $eq: undefined }
 
@@ -283,7 +283,7 @@ export const findPlacesByCentreAndDate = async (
   queryPopulate(populate, query)
 
   if (createdBefore) {
-    query.where('createdAt').lt(createdBefore)
+    query.where('updatedAt').lt(createdBefore)
   }
 
   const places = await query.exec()
@@ -339,7 +339,7 @@ export const findAndbookPlace = async (
     query.populate('candidat')
   }
   if (createdBefore) {
-    query.where('createdAt').lt(createdBefore)
+    query.where('updatedAt').lt(createdBefore)
   }
 
   const updatedPlace = await query.exec()
@@ -506,7 +506,7 @@ export const findPlacesByDepartementAndCentre = async (
                 {
                   $and:
                   [
-                    { $lt: ['$createdAt', createdBefore] },
+                    { $lt: ['$updatedAt', createdBefore] },
                     { $eq: ['$centre', '$$centre_id'] },
                     { $lt: ['$date', endPeriod] },
                     { $gte: ['$date', beginPeriod] },
