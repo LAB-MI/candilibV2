@@ -7,6 +7,7 @@ import { appLogger } from '../../util'
 import { findCandidatByEmail, isCandidatExisting } from '../../models/candidat'
 import { sendMagicLink } from '../business'
 import { sendErrorResponse } from '../../util/send-error-response'
+import { XUserId } from '../middlewares/verify-user'
 
 /**
  * Envoi un e-mail avec le lien de connexion à candilib au candidat
@@ -127,6 +128,7 @@ export const checkCandidat = async (req, res) => {
       })
     }
     appLogger.info({ ...loggerInfo, description: 'Le candidat existe bien' })
+    res.set({ [XUserId]: isExisting._id })
     return res.json({ auth: true })
   } catch (error) {
     appLogger.error({

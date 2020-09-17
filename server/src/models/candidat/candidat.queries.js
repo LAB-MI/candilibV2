@@ -514,7 +514,7 @@ export const setCandidatToVIP = (candidat, resaCanceledByAdmin) => {
  * @returns {Promise.<boolean>} - `true` si un candidat existe avec cet identifiant
  */
 export const isCandidatExisting = async _id => {
-  const isExist = await Candidat.exists({ _id })
+  const isExist = await Candidat.findOne({ _id }, { _id: 1 })
   return isExist
 }
 
