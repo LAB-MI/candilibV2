@@ -19,6 +19,7 @@ jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
 jest.mock('../../util/token')
+jest.mock('../middlewares/verify-user')
 
 require('../../util/logger').setWithConsole(false)
 
