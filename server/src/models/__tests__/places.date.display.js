@@ -41,6 +41,12 @@ export const createPlacesWithCreatedAtDiff = async () => {
     },
   ]
 
+  let placesUpdated = await createPlace({ ...places[0], date: basePlaceDateTime.set({ hour: 9 }).plus({ days: 1 }).toISO() })
+  placesUpdated.updatedAt = getFrenchLuxonFromObject({ hour: 9 })
+  placesUpdated = await placesUpdated.save()
+
   const createdPlaces = await Promise.all(places.map(createPlace))
+  createdPlaces.push(placesUpdated)
+
   return createdPlaces
 }
