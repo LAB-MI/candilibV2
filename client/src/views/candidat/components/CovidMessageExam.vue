@@ -17,7 +17,9 @@
             tabindex="10"
             outlined
           >
-            F.A.Q &nbsp; <v-icon>launch</v-icon>
+            F.A.Q &nbsp; <v-icon data-nosnippet="true">
+              launch
+            </v-icon>
           </v-btn>
         </router-link>.
         <br><strong>ATTENTION</strong> : si ces conditions ne sont pas respectées, <strong>l’examen n’aura pas lieu</strong> et vous ne pourrez pas réserver une nouvelle place avant 45 jours.
