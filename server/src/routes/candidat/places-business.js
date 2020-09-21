@@ -44,7 +44,9 @@ import {
 } from '../../models/candidat'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
-import { getDateDisplayPlaces } from './util/date-to-display'
+import { getDateDisplayPlaces, getDateDisplayPlacesUnbooked } from './util/date-to-display'
+
+const filterVisiblePlaces = (places) => places.filter(place => !place.visibleAt || place.visibleAt < Date.now())
 
 /**
  * Renvoie tous les créneaux d'un centre
@@ -83,7 +85,7 @@ export const getDatesByCentreId = async (
     undefined,
     getDateDisplayPlaces(),
   )
-  const dates = places.map(place =>
+  const dates = filterVisiblePlaces(places).map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
   )
   const result = [...new Set(dates)]
@@ -162,9 +164,9 @@ export const getPlacesByDepartementAndCentre = async (
     getDateDisplayPlaces(),
   )
 
-  const result = dates
+  const result = filterVisiblePlaces(dates
     .map(({ placesInfo }) => placesInfo)
-    .flat(1)
+    .flat(1))
     .map(place => getFrenchLuxonFromJSDate(place.date).toISO())
 
   return [...new Set(result)]
@@ -238,7 +240,7 @@ export const hasAvailablePlaces = async (id, date) => {
     undefined,
     getDateDisplayPlaces(),
   )
-  const dates = places.map(place =>
+  const dates = filterVisiblePlaces(places).map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
   )
   return [...new Set(dates)]
@@ -261,33 +263,17 @@ export const hasAvailablePlacesByCentre = async (
   nomCentre,
   date,
 ) => {
-  // TODO: <--- Refactor
   const foundCentre = await findCentreByNameAndDepartement(
     nomCentre,
     undefined,
     geoDepartement,
   )
 
-  if (foundCentre && foundCentre.length > 1) {
-    const allDates = await Promise.all(
-      foundCentre.map(async centre => {
-        const dates = await hasAvailablePlaces(centre._id, date)
-        if (dates && dates.length) {
-          return { dates }
-        }
-      }),
-    )
-    const result = allDates.reduce((accu, value) => {
-      if (value && value.dates && value.dates.length) {
-        return [...new Set(accu.concat(value.dates))]
-      }
-      return accu
-    }, [])
-    return result
-  }
-  const dates = await hasAvailablePlaces(foundCentre[0]._id, date)
-  // TODO: Refactor --->
-  return dates
+  if (!foundCentre) return []
+
+  const datePlaces = await Promise.all(foundCentre.map(({ _id }) => hasAvailablePlaces(_id, date)))
+  const dates = datePlaces.flat(1)
+  return dates[0] ? [dates[0]] : []
 }
 
 /**
@@ -428,6 +414,7 @@ export const removeReservationPlace = async (
   loggerInfo.action = 'CANCEL_BOOKING_RULES'
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
   loggerInfo.action = 'REMOVE_BOOKING'
+  bookedPlace.visibleAt = getDateDisplayPlacesUnbooked()
   await removeBookedPlace(bookedPlace)
   loggerInfo.action = 'ARCHIVE_PLACE'
   await archivePlace(
