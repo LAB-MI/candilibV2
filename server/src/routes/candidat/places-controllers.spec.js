@@ -377,6 +377,13 @@ describe('Test to book and to delete reservation by candidat', () => {
     expect(place).toHaveProperty('archiveReason', 'CANCEL')
     expect(place).toHaveProperty('date', date)
     expect(place).toHaveProperty('centre', centre)
+
+    const placeUpdated = await findPlaceById(placeSelected._id)
+    expect(placeUpdated).toHaveProperty('visibleAt')
+    const visibleAt = getFrenchLuxonFromJSDate(placeUpdated.visibleAt).set({ millisecond: 0 })
+    const now = getFrenchLuxon()
+    const expectVisibleAt = now.hour < 12 ? getFrenchLuxonFromObject({ hour: 12, minute: 0, second: 0 }) : getFrenchLuxonFromObject({ hour: 12, minute: 0, second: 0 }).plus({ days: 1 })
+    expect(visibleAt).toEqual(expectVisibleAt)
   })
 })
 
