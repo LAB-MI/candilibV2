@@ -10,6 +10,7 @@
       <i
         class="material-icons  icon"
         :class="{ 'primary--text': active }"
+        data-nosnippet="true"
       >
         {{ active ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}
       </i>
