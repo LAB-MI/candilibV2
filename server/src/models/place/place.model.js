@@ -52,6 +52,10 @@ export const placeCommonFields = {
     },
     required: false,
   },
+  visibleAt: {
+    type: Date,
+    required: false,
+  },
 }
 
 /**
