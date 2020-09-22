@@ -334,6 +334,7 @@ export const findAndbookPlace = async (
   fields,
   populate,
   createdBefore,
+  visibleAt,
 ) => {
   // let centre = { $in: centres }
   // if (typeof centres === 'string') {
@@ -352,6 +353,9 @@ export const findAndbookPlace = async (
   }
   if (createdBefore) {
     query.where('createdAt').lt(createdBefore)
+  }
+  if (visibleAt) {
+    query.or([{ visibleAt: { $exists: false } }, { visibleAt: { $lt: visibleAt } }])
   }
 
   const updatedPlace = await query.exec()

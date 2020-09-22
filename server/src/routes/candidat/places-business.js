@@ -352,8 +352,10 @@ export const bookPlace = async (
     geoDepartement,
   )
   const centres = foundCentres.map(centre => centre._id)
-  const bookedAt = getFrenchLuxon().toJSDate()
+  const dateNow = getFrenchLuxon().toJSDate()
+  const bookedAt = dateNow
   try {
+    const dateDisplayPlaces = getDateDisplayPlaces()
     const place = await findAndbookPlace(
       candidatId,
       centres,
@@ -362,6 +364,7 @@ export const bookPlace = async (
       { inspecteur: 0 },
       { centre: true, candidat: true },
       getDateDisplayPlaces(),
+      dateNow,
     )
     return place
   } catch (error) {
