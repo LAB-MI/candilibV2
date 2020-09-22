@@ -1,5 +1,5 @@
 import { createCentres, createInspecteurs } from '../../models/__tests__'
-import { getFrenchLuxonFromObject } from '../../util'
+import { getFrenchLuxonFromObject, getFrenchLuxon } from '../../util'
 import { createPlace } from '../../models/place'
 
 export let centreDateDisplay
@@ -41,6 +41,13 @@ export const createPlacesWithCreatedAtDiff = async () => {
     },
   ]
 
+  let placesUpdated = await createPlace({ ...places[0], date: basePlaceDateTime.set({ hour: 9 }).plus({ days: 1 }).toISO() })
+  placesUpdated.visibleAt = getFrenchLuxon().set({ hour: 12, minute: 0, second: 0, millisecond: 0 }).toISO()
+  placesUpdated = await placesUpdated.save()
+
   const createdPlaces = await Promise.all(places.map(createPlace))
+
+  createdPlaces.push(placesUpdated)
+
   return createdPlaces
 }
