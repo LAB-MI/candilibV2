@@ -378,6 +378,7 @@ describe('Test to book and to delete reservation by candidat', () => {
     expect(place).toHaveProperty('date', date)
     expect(place).toHaveProperty('centre', centre)
 
+    // To display places at 12h
     const placeUpdated = await findPlaceById(placeSelected._id)
     expect(placeUpdated).toHaveProperty('visibleAt')
     const visibleAt = getFrenchLuxonFromJSDate(placeUpdated.visibleAt).set({ millisecond: 0 })
