@@ -46,7 +46,7 @@ import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
 import { getDateDisplayPlaces, getDateDisplayPlacesUnbooked } from './util/date-to-display'
 
-const filterVisiblePlaces = (places) => places.filter(place => !place.visibleAt || place.visibleAt < Date.now())
+const filterVisiblePlaces = (places) => places.filter(place => !place.visibleAt || place.visibleAt < getFrenchLuxon().toJSDate())
 
 /**
  * Renvoie tous les créneaux d'un centre
@@ -351,8 +351,10 @@ export const bookPlace = async (
     geoDepartement,
   )
   const centres = foundCentres.map(centre => centre._id)
-  const bookedAt = getFrenchLuxon().toJSDate()
+  const dateNow = getFrenchLuxon().toJSDate()
+  const bookedAt = dateNow
   try {
+    const dateDisplayPlaces = getDateDisplayPlaces()
     const place = await findAndbookPlace(
       candidatId,
       centres,
@@ -360,7 +362,8 @@ export const bookPlace = async (
       bookedAt,
       { inspecteur: 0 },
       { centre: true, candidat: true },
-      getDateDisplayPlaces(),
+      dateDisplayPlaces,
+      dateNow,
     )
     return place
   } catch (error) {
