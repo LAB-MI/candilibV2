@@ -8,7 +8,7 @@ import { getFrenchLuxon } from '../../../util'
  */
 export const getDateDisplayPlaces = (hour = 12) => {
   const newDate = getFrenchLuxon().minus({ hours: 12 })
-  return newDate.set({ hour, minute: 0, second: 0 })
+  return newDate.set({ hour, minute: 0, second: 0, millisecond: 0 })
 }
 
 /**
@@ -19,5 +19,5 @@ export const getDateDisplayPlaces = (hour = 12) => {
  */
 export const getDateVisibleForPlaces = (hour = 12) => {
   const newDate = getFrenchLuxon().plus({ hours: 12 })
-  return newDate.set({ hour, minute: 0, second: 0 })
+  return newDate.set({ hour, minute: 0, second: 0, millisecond: 0 })
 }
