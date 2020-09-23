@@ -55,11 +55,9 @@ import {
   setNowBefore12h, setNowAfter12h,
 } from '../../routes/candidat/__tests__/luxon-time-setting'
 
-import { getDateDisplayPlaces } from '../../routes/candidat/util/date-to-display'
-
 import {
   centreDateDisplay,
-  createPlacesWithCreatedAtDiff,
+  createPlacesWithVisibleAt,
 } from '../../models/__tests__/places.date.display'
 
 jest.mock('../../util/logger')
@@ -431,7 +429,7 @@ describe('Test places queries', () => {
     await connect()
     setInitCreatedCentre()
     resetCreatedInspecteurs()
-    await createPlacesWithCreatedAtDiff()
+    await createPlacesWithVisibleAt()
     begin = getFrenchLuxonFromObject({ day: 28, hour: 9 }).plus({ month: -1 })
     end = getFrenchLuxonFromObject({ day: 28, hour: 9 }).plus({ month: 2 })
   })
@@ -442,7 +440,7 @@ describe('Test places queries', () => {
 
   it('should not found 1 place', async () => {
     setNowBefore12h()
-    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces())
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getFrenchLuxon())
     const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
     expect(formatedResult).toHaveLength(1)
   })
@@ -450,7 +448,7 @@ describe('Test places queries', () => {
   it('should found 3 places', async () => {
     setNowAfter12h()
 
-    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces())
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getFrenchLuxon())
 
     const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
 
@@ -829,14 +827,14 @@ function nbPlacesAvailables (
   createdPlaces,
   centreSelected,
   begindate,
-  createdBefore,
+  visibleBefore,
 ) {
   const idPlacesBooked = createdPlacesBooked.map(placeBooked =>
     placeBooked._id.toString(),
   )
 
   const arrayExpectPlaces = createdPlaces.filter(
-    ({ _id, centre, date, createdAt }) => {
+    ({ _id, centre, date, visibleAt }) => {
       let bresult =
         centre._id.toString() === centreSelected._id.toString() &&
         !idPlacesBooked.includes(_id.toString())
@@ -845,11 +843,11 @@ function nbPlacesAvailables (
           bresult &&
           getFrenchLuxonFromJSDate(date) > getFrenchLuxonFromISO(begindate)
       }
-      if (createdBefore) {
+      if (visibleBefore) {
         bresult =
           bresult &&
-          getFrenchLuxonFromJSDate(createdAt) <
-            getFrenchLuxonFromISO(createdBefore)
+          getFrenchLuxonFromJSDate(visibleAt) <
+            getFrenchLuxonFromISO(visibleBefore)
       }
       return bresult
     },

@@ -60,7 +60,6 @@ import {
   expectMailConvocation,
   expectMailCancelBooking,
 } from '../business/__tests__/expect-send-mail'
-import { getDateDisplayPlaces } from './util/date-to-display'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -125,7 +124,7 @@ describe('Test get dates from places available', () => {
       createdPlaces.filter(
         place =>
           place.centre._id === centreId._id &&
-          place.createdAt < getDateDisplayPlaces(),
+          place.visibleAt < getFrenchLuxon(),
       ).length,
     )
   })
@@ -276,14 +275,14 @@ describe('Test to book and to delete reservation by candidat', () => {
         date: commonBasePlaceDateTime.toISO(),
         centre: createdCentre._id,
         inspecteur: createdInspecteur._id,
-        createdAt: dateYesterday,
+        visibleAt: dateYesterday,
       })
 
       placeCreated2 = await createPlace({
         date: commonBasePlaceDateTime.toISO(),
         centre: createdCentre._id,
         inspecteur: createdInspecteur2._id,
-        createdAt: dateYesterday,
+        visibleAt: dateYesterday,
       })
 
       updatedCandidat = await createCandidatAndUpdate(candidat)
@@ -397,7 +396,7 @@ const placeCanBook = {
       .toISO())(),
   centre: centresTests[1],
   inspecteur: inspecteursTests[1],
-  createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const placeCanBook2 = {
   date: (() =>
@@ -406,13 +405,13 @@ const placeCanBook2 = {
       .toISO())(),
   centre: centresTests[1],
   inspecteur: inspecteursTests[1],
-  createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const placeBeforeNow = {
   date: (() => basePlaceDateTime.minus({ days: 1, hour: 1 }).toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1],
-  createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const placeCanNotBook = {
   date: (() =>
@@ -421,7 +420,7 @@ const placeCanNotBook = {
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1],
-  createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 
 const placeCancellable = {
@@ -431,7 +430,7 @@ const placeCancellable = {
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
-  createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const placeNoCancellable = {
   date: (() =>
@@ -440,7 +439,7 @@ const placeNoCancellable = {
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
-  createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 
 const placeToRetry = {
@@ -450,7 +449,7 @@ const placeToRetry = {
       .toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
-  createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const dateDernierEchecPratique = () => basePlaceDateTime.plus({ hour: 2 })
 const dateEchecCanBookFrom = () => basePlaceDateTime.plus({ days: 45, hour: 2 })
