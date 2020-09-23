@@ -23,7 +23,7 @@ describe('Planning tests', () => {
     cy.adminDisconnection()
   })
 
-  it('Assigns a candidate, send bordereaux and changes the inspector of booked place', () => {
+  it.only('Assigns a candidate, send bordereaux and changes the inspector of booked place', () => {
     cy.adminLogin()
     // Goes to planning and add candidate to the first place
     cy.addCandidatToPlace(undefined, 'CANDIDAT_FRONT')
@@ -37,6 +37,8 @@ describe('Planning tests', () => {
     cy.getLastMail().its('Content.Body')
       .should('contain', Cypress.env('centre').toUpperCase())
     // Change the inspector
+
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
 
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur'))

@@ -150,7 +150,10 @@ describe('Candidate Profile', () => {
       cy.adminLogin()
       cy.addPlanning([nowIn1Week], 'planning01.csv')
       cy.adminDisconnection()
-      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
+      cy.updatePlaces({}, {
+        createdAt: now.minus({ days: 2 }).toUTC(),
+        visibleAt: now.minus({ days: 2 }).toUTC(),
+      }, true)
       cy.addCandidat(candidatsByDepartments[0])
       cy.getNewMagicLinkCandidat(candidatsByDepartments[0].email).then(mLink => {
         magicLink = mLink

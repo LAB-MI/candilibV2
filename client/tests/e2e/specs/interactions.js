@@ -29,7 +29,10 @@ describe('Standard scenarios', () => {
         const withoutEq = codedLink.replace(/=\r\n/g, '')
         magicLink = withoutEq.replace(/=3D/g, '=')
       })
-      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
+      cy.updatePlaces({}, {
+        createdAt: now.minus({ days: 2 }).toUTC(),
+        visibleAt: now.minus({ days: 2 }).toUTC(),
+      }, true)
     })
 
     it('The candidate chooses a place and the admin cancels it', () => {
