@@ -55,11 +55,9 @@ import {
   setNowBefore12h, setNowAfter12h,
 } from '../../routes/candidat/__tests__/luxon-time-setting'
 
-import { getDateDisplayPlaces } from '../../routes/candidat/util/date-to-display'
-
 import {
   centreDateDisplay,
-  createPlacesWithCreatedAtDiff,
+  createPlacesWithVisibleAt,
 } from '../../models/__tests__/places.date.display'
 import { getDateDisplayPlaces } from '../../routes/candidat/util/date-to-display'
 
@@ -433,7 +431,7 @@ describe('Test places queries', () => {
     await connect()
     setInitCreatedCentre()
     resetCreatedInspecteurs()
-    await createPlacesWithCreatedAtDiff()
+    await createPlacesWithVisibleAt()
     begin = getFrenchLuxonFromObject({ day: 28, hour: 9 }).plus({ month: -1 })
     end = getFrenchLuxonFromObject({ day: 28, hour: 9 }).plus({ month: 2 })
   })
@@ -831,14 +829,14 @@ function nbPlacesAvailables (
   createdPlaces,
   centreSelected,
   begindate,
-  createdBefore,
+  visibleBefore,
 ) {
   const idPlacesBooked = createdPlacesBooked.map(placeBooked =>
     placeBooked._id.toString(),
   )
 
   const arrayExpectPlaces = createdPlaces.filter(
-    ({ _id, centre, date, createdAt }) => {
+    ({ _id, centre, date, visibleAt }) => {
       let bresult =
         centre._id.toString() === centreSelected._id.toString() &&
         !idPlacesBooked.includes(_id.toString())
@@ -847,11 +845,11 @@ function nbPlacesAvailables (
           bresult &&
           getFrenchLuxonFromJSDate(date) > getFrenchLuxonFromISO(begindate)
       }
-      if (createdBefore) {
+      if (visibleBefore) {
         bresult =
           bresult &&
-          getFrenchLuxonFromJSDate(createdAt) <
-            getFrenchLuxonFromISO(createdBefore)
+          getFrenchLuxonFromJSDate(visibleAt) <
+            getFrenchLuxonFromISO(visibleBefore)
       }
       return bresult
     },

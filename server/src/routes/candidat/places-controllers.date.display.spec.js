@@ -11,8 +11,8 @@ import {
 } from '../../models/__tests__'
 import {
   centreDateDisplay,
-  createPlacesWithCreatedAtDiff,
-  createdAtBefore,
+  createPlacesWithVisibleAt,
+  visibleAtNow12h,
 } from '../../models/__tests__/places.date.display'
 import { getFrenchLuxonFromJSDate } from '../../util'
 import { findPlaceByCandidatId } from '../../models/place'
@@ -32,7 +32,6 @@ describe('Get places available and display at 12h', () => {
   let places
   let placesCreatedBefore
   let idCandidat
-  let placesUpdated
 
   beforeAll(async () => {
     setInitCreatedCentre()
@@ -43,11 +42,10 @@ describe('Get places available and display at 12h', () => {
     idCandidat = createdCandidats[0]._id
     require('../middlewares/verify-token').__setIdCandidat(idCandidat)
 
-    places = await createPlacesWithCreatedAtDiff()
-    placesCreatedBefore = places.find(({ updatedAt }) =>
-      getFrenchLuxonFromJSDate(updatedAt).equals(createdAtBefore),
+    places = await createPlacesWithVisibleAt()
+    placesCreatedBefore = places.find(({ visibleAt }) =>
+      getFrenchLuxonFromJSDate(visibleAt).equals(visibleAtNow12h),
     )
-    placesUpdated = places.find(({ createdAt, updatedAt }) => createdAt !== updatedAt)
   })
 
   afterAll(async () => {
@@ -73,7 +71,7 @@ describe('Get places available and display at 12h', () => {
 
   it('Should get 3 places for 75 when now is after 12h', async () => {
     setNowAfter12h()
-    await expectedPlaces(4)
+    await expectedPlaces(3)
   })
 
   const expectedPlaceByCentreId = async (date, nbPlaces) => {
@@ -92,16 +90,6 @@ describe('Get places available and display at 12h', () => {
   it('Should 200 with an available place created before 12h when it is after 12h by centreId', async () => {
     setNowAfter12h()
     await expectedPlaceByCentreId(placesCreatedBefore.date, 1)
-  })
-
-  it('Should 200 with an available place updated now when it is after 12h by centreId', async () => {
-    setNowAfter12h()
-    await expectedPlaceByCentreId(placesUpdated.date, 1)
-  })
-
-  it('Should 200 with no available place updated now when it is before 12h by centreId', async () => {
-    setNowBefore12h()
-    await expectedPlaceByCentreId(placesUpdated.date, 0)
   })
 
   const expectedPlaceByNameCentreAndGeoDep = async (date, nbPlaces) => {
@@ -123,19 +111,9 @@ describe('Get places available and display at 12h', () => {
     await expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, 1)
   })
 
-  it('Should 200 with an available place updated now when it is after 12h by center name and geo-departement', async () => {
-    setNowAfter12h()
-    await expectedPlaceByNameCentreAndGeoDep(placesUpdated.date, 1)
-  })
-
   it('Should 200 with no available place before 12h when it is after 12h by center name and geo-departement', async () => {
     setNowBefore12h()
     await expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, 0)
-  })
-
-  it('Should 200 with no available place updated now when it is after 12h by center name and geo-departement', async () => {
-    setNowBefore12h()
-    await expectedPlaceByNameCentreAndGeoDep(placesUpdated.date, 0)
   })
 
   const expectedBooked = async (placeSelected) => {
@@ -197,15 +175,5 @@ describe('Get places available and display at 12h', () => {
   it('should not booked place by candidat with info bookedAt when it is before 12h', async () => {
     setNowBefore12h()
     await expectedBookedFailed(placesCreatedBefore)
-  })
-
-  it('should booked place updated now by candidat with info bookedAt when it is after 12h', async () => {
-    setNowAfter12h()
-    await expectedBooked(placesUpdated)
-  })
-
-  it('should not booked place updated now by candidat with info bookedAt when it is before 12h', async () => {
-    setNowBefore12h()
-    await expectedBookedFailed(placesUpdated)
   })
 })
