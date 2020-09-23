@@ -135,6 +135,7 @@ export const getDatesByCentresNameAndGeoDepartement = async (
     endPeriod.toISODate(),
     undefined,
     getDateDisplayPlaces(),
+    getFrenchLuxon(),
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
@@ -355,7 +356,6 @@ export const bookPlace = async (
   const dateNow = getFrenchLuxon().toJSDate()
   const bookedAt = dateNow
   try {
-    const dateDisplayPlaces = getDateDisplayPlaces()
     const place = await findAndbookPlace(
       candidatId,
       centres,
@@ -418,7 +418,7 @@ export const removeReservationPlace = async (
   loggerInfo.action = 'CANCEL_BOOKING_RULES'
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
   loggerInfo.action = 'REMOVE_BOOKING'
-  bookedPlace.visibleAt = getDateDisplayPlacesUnbooked()
+  bookedPlace.visibleAt = getDateVisibleForPlaces()
   await removeBookedPlace(bookedPlace)
   loggerInfo.action = 'ARCHIVE_PLACE'
   await archivePlace(
