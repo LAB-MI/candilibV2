@@ -44,7 +44,7 @@ import {
 } from '../../models/candidat'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
-import { getDateDisplayPlaces, getDateDisplayPlacesUnbooked } from './util/date-to-display'
+import { getDateVisibleForPlaces } from './util/date-to-display'
 
 const filterVisiblePlaces = (places) => places.filter(place => !place.visibleAt || place.visibleAt < getFrenchLuxon().toJSDate())
 
@@ -83,7 +83,7 @@ export const getDatesByCentreId = async (
     beginPeriod.toISODate(),
     endPeriod.toISODate(),
     undefined,
-    getDateDisplayPlaces(),
+    getFrenchLuxon(),
   )
   const dates = filterVisiblePlaces(places).map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
@@ -135,7 +135,7 @@ export const getDatesByCentresNameAndGeoDepartement = async (
     beginPeriod.toISODate(),
     endPeriod.toISODate(),
     undefined,
-    getDateDisplayPlaces(),
+    getFrenchLuxon(),
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
@@ -161,7 +161,7 @@ export const getPlacesByDepartementAndCentre = async (
     geoDepartement,
     beginPeriod,
     endPeriod,
-    getDateDisplayPlaces(),
+    getFrenchLuxon(),
   )
 
   const result = filterVisiblePlaces(dates
@@ -238,7 +238,7 @@ export const hasAvailablePlaces = async (id, date) => {
     id,
     date,
     undefined,
-    getDateDisplayPlaces(),
+    getFrenchLuxon(),
   )
   const dates = filterVisiblePlaces(places).map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
@@ -354,7 +354,6 @@ export const bookPlace = async (
   const dateNow = getFrenchLuxon().toJSDate()
   const bookedAt = dateNow
   try {
-    const dateDisplayPlaces = getDateDisplayPlaces()
     const place = await findAndbookPlace(
       candidatId,
       centres,
@@ -362,7 +361,6 @@ export const bookPlace = async (
       bookedAt,
       { inspecteur: 0 },
       { centre: true, candidat: true },
-      dateDisplayPlaces,
       dateNow,
     )
     return place
@@ -417,7 +415,7 @@ export const removeReservationPlace = async (
   loggerInfo.action = 'CANCEL_BOOKING_RULES'
   const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
   loggerInfo.action = 'REMOVE_BOOKING'
-  bookedPlace.visibleAt = getDateDisplayPlacesUnbooked()
+  bookedPlace.visibleAt = getDateVisibleForPlaces()
   await removeBookedPlace(bookedPlace)
   loggerInfo.action = 'ARCHIVE_PLACE'
   await archivePlace(
