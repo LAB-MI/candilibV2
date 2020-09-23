@@ -71,7 +71,7 @@ describe('Connected candidate front', () => {
       cy.archiveCandidate()
       cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore, dayAfter45Days, dayBefore45Days])
       cy.adminDisconnection()
-      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
+      cy.updatePlaces({}, { visibleAt: now.minus({ days: 2 }).toUTC() }, true)
       cy.candidatConnection(Cypress.env('emailCandidatFront'))
 
       cy.getLastMail().its('Content.Body').then((mailBody) => {
@@ -80,7 +80,7 @@ describe('Connected candidate front', () => {
         magicLink = withoutEq.replace(/=3D/g, '=')
       })
 
-      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
+      cy.updatePlaces({}, { visibleAt: now.minus({ days: 2 }).toUTC() }, true)
     })
 
     after(() => {
