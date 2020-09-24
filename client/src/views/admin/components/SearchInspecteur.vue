@@ -42,16 +42,7 @@ import { mapState } from 'vuex'
 import { FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST } from '@/store'
 import CandilibAutocomplete from './CandilibAutocomplete'
 import ProfileInfo from './ProfileInfo'
-import { transformToProfileInfo } from '@/util'
-
-const inspecteurProfileInfoDictionary = [
-  [
-    ['prenom', 'Prenom'],
-    ['nom', 'Nom'],
-    ['email', 'Email'],
-    ['departement', 'Département'],
-  ],
-]
+import { transformToProfileInfo, inspecteurProfileInfoDictionary } from '@/util'
 
 export default {
   components: {
