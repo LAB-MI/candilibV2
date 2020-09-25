@@ -411,3 +411,9 @@ Cypress.Commands.add('deleteCandidat', (query) => {
     cy.log(JSON.stringify(content.body))
   })
 })
+Cypress.Commands.add('checkAndCloseSnackBar', (message) => {
+  cy.get('.v-snack--active')
+    .should('contain', message)
+
+  cy.get('.v-snack--active button').should('be.visible').click({ force: true })
+})
