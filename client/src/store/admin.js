@@ -566,6 +566,10 @@ export default {
       commit(CREATE_PLACE_REQUEST)
       try {
         const result = await api.admin.createPlace(centre, inspecteur, date)
+        console.log(result)
+        if (!result.success) {
+          throw new Error(result.message)
+        }
         commit(CREATE_PLACE_SUCCESS, result)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
