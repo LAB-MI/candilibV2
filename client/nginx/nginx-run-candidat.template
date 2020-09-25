@@ -40,6 +40,7 @@ server {
   }
 
   location ~ "^<PUBLIC_PATH>/api/v2(/public|(/auth)?/candidat)" {
+    limit_req zone=api_user_id burst=<API_USER_ID_BURST>;
     limit_req zone=api_get burst=<API_USER_GET_BURST>;
     limit_req zone=api_post burst=<API_USER_POST_BURST>;
     limit_req zone=api_patch burst=<API_USER_PATCH_BURST>;
