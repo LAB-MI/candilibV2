@@ -552,8 +552,8 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
     })
     const visibleAt = getDateVisibleForPlaces()
     const leanPlace = { inspecteur, date: formatedDate, centre: centre._id, visibleAt }
-    const newPlace = await createPlace(leanPlace)
-    console.log({ newPlace })
+    await createPlace(leanPlace)
+
     appLogger.info({
       ...loggerInfo,
       description: `Place {${centre.departement}, ${centre.nom}, ${inspecteur}, ${myDate}} enregistrée en base`,
