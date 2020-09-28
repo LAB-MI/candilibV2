@@ -536,7 +536,7 @@ describe('Connected candidate front', () => {
     it('Should disconnect', () => {
       cy.visit(magicLink)
       cy.url().should('contain', 'home')
-
+      cy.get('.beta').should('be.visible')
       cy.get('.t-disconnect')
         .click()
       cy.url().should('contain', 'presignup')
