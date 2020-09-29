@@ -10,6 +10,8 @@ import {
   findUserByEmail,
   updateUser,
   archiveUserByEmail,
+  findAllArchivedUsers,
+  unArchiveUserByEmail,
 } from '../../../models/user'
 import config from '../../../config'
 import { email as regexEmail } from '../../../util'
@@ -64,6 +66,37 @@ export const getAppropriateUsers = async userId => {
 
   const users = await findAllActiveUsers(departements, allowedStatuses)
   return users
+}
+
+/**
+ * Récupère les utilisateurs archivés en fonction de leur statut et de leurs départements
+ *
+ * @async
+ * @function
+ *
+ * @param {string} userId - ID de l'utilisateur qui demande la liste des utilisateurs archivés
+ *
+ * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
+ */
+
+export const getArchivedUsersByAdmin = async userId => {
+  const user = await findUserById(userId)
+  const status = user.status
+  const departements = user.departements
+  const maxStatus = config.userStatusesOrderedList.findIndex(
+    stat => stat === status,
+  )
+  const allowedStatuses = config.userStatusesOrderedList.slice(0, maxStatus)
+
+  if ([config.userStatuses.ADMIN, config.userStatuses.TECH].includes(status)) {
+    const users = await findAllArchivedUsers(departements, allowedStatuses)
+    return users
+  }
+  const error = new Error(
+    "Vous n'êtes pas autorisé à accéder à cette ressource",
+  )
+  error.status = 401
+  throw error
 }
 
 /**
@@ -132,6 +165,7 @@ export const updateUserBusiness = async (
   email,
   status,
   departements,
+  isUnArchive,
 ) => {
   const isValidEmail = regexEmail.test(email)
   if (!isValidEmail) {
@@ -169,7 +203,13 @@ export const updateUserBusiness = async (
     throw error
   }
 
-  const updatedUser = await updateUser(email, { status, departements })
+  let updatedUser
+
+  if (!isUnArchive) {
+    updatedUser = await updateUser(email, { status, departements })
+  }
+
+  updatedUser = await unArchiveUserByEmail(email)
 
   return updatedUser
 }

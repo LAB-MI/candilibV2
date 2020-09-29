@@ -14,6 +14,7 @@ import {
   createAppropriateUser,
   updateUserBusiness,
   archiveUserBusiness,
+  getArchivedUsersByAdmin,
 } from './business'
 
 /**
@@ -160,16 +161,20 @@ export const createUserController = async (req, res) => {
  * @param {import('express').Response} res
  */
 export const getUsers = async (req, res) => {
+  const { isArchivedOnly } = req.query
+  const { userId } = req
+
   const loggerInfo = {
     section: 'admin-get-user',
     action: 'get-user',
     admin: req.userId,
+    isArchivedOnly,
   }
 
   appLogger.info(loggerInfo)
 
   try {
-    const users = await getAppropriateUsers(req.userId)
+    const users = isArchivedOnly === 'true' ? await getArchivedUsersByAdmin(userId) : await getAppropriateUsers(userId)
 
     appLogger.info({
       ...loggerInfo,
@@ -202,10 +207,11 @@ export const getUsers = async (req, res) => {
  * @param {string} req.body.email - Adresse courriel de l'utilisateur mis à jour
  * @param {string} req.body.departements - Départements de l'utilisateur mis à jour
  * @param {string} req.body.status - Statut de l'utilisateur mis à jour
+ * @param {boolean} req.body.isUnArchive - Si le paramètre est à 'true', cela signifie qu'il s'agit d'une réactivation d'utilisateur
  * @param {import('express').Response} res
  */
 export const updatedInfoUser = async (req, res) => {
-  const { email, departements, status } = req.body
+  const { email, departements, status, isUnArchive } = req.body
 
   const loggerInfo = {
     section: 'admin-update-user',
@@ -214,6 +220,7 @@ export const updatedInfoUser = async (req, res) => {
     departements,
     email,
     status,
+    isUnArchive,
   }
 
   appLogger.info(loggerInfo)
@@ -224,6 +231,7 @@ export const updatedInfoUser = async (req, res) => {
       email,
       status,
       departements,
+      isUnArchive,
     )
     await sendMailConfirmationUpdateUserInfo(email)
 

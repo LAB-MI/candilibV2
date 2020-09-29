@@ -38,6 +38,31 @@ export const findAllActiveUsers = async (departements, statuses) => {
 }
 
 /**
+ * Recherche tous les répartiteurs/délégués archivés (non actifs) de tous les départements
+ *
+ * @param {string[]} [departements] - Liste des départements des utilisateurs à retourner
+ *                                   Si cette liste n'est pas définie, la fonction retourne
+ *                                   les utilisateurs de tous les départements
+ * @param {string} [statuses] - Statut maximum
+ *
+ * @returns {Promise.<import('./user.model.js').User[]>} - Liste de documents d'utilisateurs
+ */
+
+export const findAllArchivedUsers = async (departements, statuses) => {
+  const filters = { deletedAt: { $exists: true } }
+
+  if (departements) {
+    filters.departements = { $in: departements }
+  }
+
+  if (statuses) {
+    filters.status = { $in: statuses }
+  }
+  const users = await User.find(filters)
+  return users
+}
+
+/**
  * Recherche et retourne le document de l'utilisateur par son ID
  *
  * @param {string} id - ID mongo de l'utilisateur
@@ -127,6 +152,17 @@ export const archiveUserByEmail = async (emailToDelete, email) => {
   }
   user.deletedAt = new Date()
   user.deletedBy = email
+  await user.save()
+  return user
+}
+
+export const unArchiveUserByEmail = async (emailToUnAchive) => {
+  const user = await findUserByEmail(emailToUnAchive)
+  if (!user) {
+    throw new Error('No user found')
+  }
+  user.deletedAt = undefined
+  user.deletedBy = undefined
   await user.save()
   return user
 }
