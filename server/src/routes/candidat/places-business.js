@@ -44,7 +44,7 @@ import {
 } from '../../models/candidat'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
-import { getDateDisplayPlaces, getDateDisplayPlacesUnbooked } from './util/date-to-display'
+import { getDateVisibleForPlaces, getDateDisplayPlaces } from './util/date-to-display'
 
 /**
  * Renvoie tous les créneaux d'un centre
@@ -82,6 +82,7 @@ export const getDatesByCentreId = async (
     endPeriod.toISODate(),
     undefined,
     getDateDisplayPlaces(),
+    getFrenchLuxon(),
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
@@ -160,6 +161,7 @@ export const getPlacesByDepartementAndCentre = async (
     beginPeriod,
     endPeriod,
     getDateDisplayPlaces(),
+    getFrenchLuxon(),
   )
 
   const result = dates
@@ -237,6 +239,7 @@ export const hasAvailablePlaces = async (id, date) => {
     date,
     undefined,
     getDateDisplayPlaces(),
+    getFrenchLuxon(),
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),

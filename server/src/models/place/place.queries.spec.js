@@ -61,6 +61,7 @@ import {
   centreDateDisplay,
   createPlacesWithCreatedAtDiff,
 } from '../../models/__tests__/places.date.display'
+import { getDateDisplayPlaces } from '../../routes/candidat/util/date-to-display'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
@@ -310,6 +311,7 @@ describe('Place', () => {
         getFrenchLuxon().toJSDate(),
         getFrenchLuxon().plus({ months: 4 }).toJSDate(),
         getFrenchLuxonFromObject({ hour: 12 }).toJSDate(),
+        getFrenchLuxonFromObject({ hour: 12 }).toJSDate(),
       )
       expect(listPlaces[0]).toBeDefined()
       expect(listPlaces[0]).not.toBeNull()
@@ -442,7 +444,7 @@ describe('Test places queries', () => {
 
   it('should not found 1 place', async () => {
     setNowBefore12h()
-    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces())
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces(), getFrenchLuxon())
     const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
     expect(formatedResult).toHaveLength(1)
   })
@@ -450,7 +452,7 @@ describe('Test places queries', () => {
   it('should found 3 places', async () => {
     setNowAfter12h()
 
-    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces())
+    const foundedPlaces = await findPlacesByDepartementAndCentre(centreDateDisplay.nom, centreDateDisplay.geoDepartement, begin, end, getDateDisplayPlaces(), getFrenchLuxon())
 
     const formatedResult = foundedPlaces.map(place => place.placesInfo).flat(1)
 
