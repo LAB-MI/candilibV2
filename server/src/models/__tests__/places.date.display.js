@@ -3,6 +3,7 @@ import { getFrenchLuxonFromObject, getFrenchLuxon } from '../../util'
 import { createPlace } from '../../models/place'
 
 export let centreDateDisplay
+export const createdAtBefore = getFrenchLuxonFromObject({ hour: 9 })
 export const visibleAtBefore = getFrenchLuxonFromObject({ hour: 9 })
 export const visibleAtNow12h = getFrenchLuxon().set({ hour: 12, minute: 0, second: 0, millisecond: 0 })
 export const visibleAtYesterday12h = visibleAtNow12h.minus({ days: 1 })
@@ -22,24 +23,28 @@ export const createPlacesWithVisibleAt = async () => {
       date: basePlaceDateTime.set({ hour: 9 }).toISO(),
       centre: centreDateDisplay._id,
       inspecteur: createdInspecteurs[1]._id,
+      createdAt: getFrenchLuxonFromObject({ hour: 9 }).minus({ days: 1 }),
       visibleAt: visibleAtYesterday12h.toISO(),
     },
     {
       date: basePlaceDateTime.set({ hour: 10 }).toISO(),
       centre: centreDateDisplay._id,
       inspecteur: createdInspecteurs[1]._id,
+      createdAt: getFrenchLuxonFromObject({ hour: 16 }).minus({ days: 1 }),
       visibleAt: visibleAtNow12h,
     },
     {
       date: basePlaceDateTime.set({ hour: 11 }).toISO(),
       centre: centreDateDisplay._id,
       inspecteur: createdInspecteurs[1]._id,
+      createdAt: createdAtBefore,
       visibleAt: visibleAtNow12h,
     },
     {
       date: basePlaceDateTime.set({ hour: 14 }).toISO(),
       centre: centreDateDisplay._id,
       inspecteur: createdInspecteurs[1]._id,
+      createdAt: getFrenchLuxonFromObject({ hour: 16 }),
       visibleAt: getFrenchLuxonFromObject({ hour: 16 }),
     },
   ]
