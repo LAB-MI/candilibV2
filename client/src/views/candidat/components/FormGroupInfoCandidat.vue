@@ -1,5 +1,8 @@
 <template>
-  <div class="form-group-input-candidat">
+  <div
+    class="form-group-input-candidat"
+    data-nosnippet="true"
+  >
     * Champs obligatoires
     <slot name="before" />
     <div class="form-input">
