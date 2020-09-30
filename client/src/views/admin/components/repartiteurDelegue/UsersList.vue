@@ -4,9 +4,9 @@
       :headers="headers"
       :items="users"
       :items-per-page="10"
-      class="elevation-1  t-list-users"
+      :class="`elevation-1 ${isArchivedUsers ? 't-list-archive-users' : 't-list-users'}`"
     >
-      <template v-slot:item.action="{ item }">
+      <template v-slot:[`item.action`]="{ item }">
         <update-user
           :is-archived-users="isArchivedUsers"
           :email="item.email"
