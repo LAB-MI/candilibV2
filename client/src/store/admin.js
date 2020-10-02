@@ -89,6 +89,7 @@ export const numberOfMonthsToFetch = 3
 const AUTHORIZED_ROUTES = {
   agents: ROUTE_AUTHORIZE_AGENTS,
   aurige: ROUTE_AUTHORIZE_AURIGE,
+  'unarchive-candidat': 'unarchive-candidat',
   'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
   centres: ROUTE_AUTHORIZE_CENTRES,
   departements: ROUTE_AUTHORIZE_DEPARTEMENTS,

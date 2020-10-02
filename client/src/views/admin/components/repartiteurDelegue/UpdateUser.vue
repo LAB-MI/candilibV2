@@ -166,14 +166,14 @@ export default {
   },
 
   methods: {
-    async updateUser () {
+    async updateUser (isUnArchive) {
       const {
         email,
         status,
         departements,
       } = this
       try {
-        await this.$store.dispatch(UPDATE_USER_REQUEST, { email, status, departements })
+        await this.$store.dispatch(UPDATE_USER_REQUEST, { email, status, departements, isUnArchive })
         this.$store.dispatch(FETCH_USER_LIST_REQUEST)
         this.$store.dispatch(FETCH_ARCHIVED_USER_LIST_REQUEST)
       } catch (error) {
