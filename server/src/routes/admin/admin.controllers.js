@@ -15,6 +15,7 @@ import {
   updateUserBusiness,
   archiveUserBusiness,
   getArchivedUsersByAdmin,
+  unArchiveUserBusiness,
 } from './business'
 
 /**
@@ -223,21 +224,31 @@ export const updatedInfoUser = async (req, res) => {
     isUnArchive,
   }
 
-  appLogger.info(loggerInfo)
+  // appLogger.info(loggerInfo)
 
   try {
-    const updatedUser = await updateUserBusiness(
-      req.userId,
-      email,
-      status,
-      departements,
-      isUnArchive,
-    )
-    await sendMailConfirmationUpdateUserInfo(email)
+    let updatedUser
+    let message = ''
+    if (isUnArchive) {
+      updatedUser = await unArchiveUserBusiness(email, req.userId)
+      message = "L'utilisateur a bien été désarchivé"
+    } else {
+      updatedUser = await updateUserBusiness(
+        req.userId,
+        email,
+        status,
+        departements,
+      )
+      message = "Les informations de l'utilisateur ont été modifiées"
+
+      await sendMailConfirmationUpdateUserInfo(email)
+    }
+
+    appLogger.info({ ...loggerInfo, description: message })
 
     res.status(200).json({
       success: true,
-      message: "Les informations de l'utilisateur ont été modifiées",
+      message,
       user: updatedUser,
     })
   } catch (error) {

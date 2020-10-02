@@ -64,6 +64,7 @@ const userStatusLevels = userStatusesOrderedList.reduce((acc, value, index) => {
  */
 const features = {
   AURIGE: 'aurige',
+  UNARCHIVE_CANDIDAT: 'unarchive-candidat',
   STATS_KPI: 'stats-kpi',
   AGENTS: 'agents',
   CENTRES: 'centres',
@@ -85,11 +86,12 @@ const userStatusAccess = {
   [userStatuses.ADMIN]: [
     features.AGENTS,
     features.AURIGE,
+    features.UNARCHIVE_CANDIDAT,
     features.CENTRES,
     features.DEPARTEMENTS,
     features.STATS_KPI,
   ],
-  [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI],
+  [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI, features.UNARCHIVE_CANDIDAT],
 }
 
 /**

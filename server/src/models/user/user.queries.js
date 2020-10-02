@@ -82,9 +82,11 @@ export const findUserById = async id => {
  *
  * @returns {Promise.<User>} - Document de l'utilisateur
  */
-export const findUserByEmail = async (email, populatePassword) => {
+export const findUserByEmail = async (email, populatePassword, wasDeleted = false) => {
   const query = User.findOne({ email })
-
+  if (wasDeleted) {
+    query.where('deletedAt').exists(false)
+  }
   if (populatePassword) {
     return query.select('+password').exec()
   }
@@ -100,7 +102,7 @@ export const findUserByEmail = async (email, populatePassword) => {
  * @returns {Promise.<User>} - Document de l'utilisateur
  */
 export const findUserByCredentials = async (email, password) => {
-  const user = await findUserByEmail(email, true)
+  const user = await findUserByEmail(email, true, true)
   if (!user) {
     return undefined
   }
@@ -159,7 +161,7 @@ export const archiveUserByEmail = async (emailToDelete, email) => {
 export const unArchiveUserByEmail = async (emailToUnAchive) => {
   const user = await findUserByEmail(emailToUnAchive)
   if (!user) {
-    throw new Error('No user found')
+    throw new Error("Cet utilisateur n'existe pas")
   }
   user.deletedAt = undefined
   user.deletedBy = undefined

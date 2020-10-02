@@ -165,7 +165,6 @@ export const updateUserBusiness = async (
   email,
   status,
   departements,
-  isUnArchive,
 ) => {
   const isValidEmail = regexEmail.test(email)
   if (!isValidEmail) {
@@ -203,15 +202,24 @@ export const updateUserBusiness = async (
     throw error
   }
 
-  let updatedUser
-
-  if (!isUnArchive) {
-    updatedUser = await updateUser(email, { status, departements })
-  }
-
-  updatedUser = await unArchiveUserByEmail(email)
+  const updatedUser = await updateUser(email, { status, departements })
 
   return updatedUser
+}
+
+export const unArchiveUserBusiness = async (
+  emailToUnAchive,
+  userId,
+) => {
+  const user = await findUserById(userId)
+
+  if ([config.userStatuses.ADMIN, config.userStatuses.TECH].includes(user.status)) {
+    return await unArchiveUserByEmail(emailToUnAchive)
+  }
+
+  const error = new Error("Vous n'êtes pas autorisé à faire cette action")
+  error.status = 403
+  throw error
 }
 
 export const archiveUserBusiness = async (userId, emailToDelete) => {
