@@ -152,9 +152,8 @@ const parseRow = async ({ data, departement }) => {
     myMatricule = matricule && matricule.trim()
     const myDay = day && day.trim()
 
-    const myTime = time && time.trim()
+    let myTime = time && time.trim()
     const myNom = nom && nom.trim()
-    myDate = `${myDay} ${myTime}`
 
     const myDept = dept && dept.trim()
 
@@ -173,7 +172,8 @@ const parseRow = async ({ data, departement }) => {
       error.from = 'parseRow'
       throw error
     }
-
+    myTime = /..:../.test(myTime) ? myTime : '0' + myTime
+    myDate = `${myDay} ${myTime}`
     const date = DateTime.fromFormat(
       myDate,
       'dd/MM/yy HH:mm',
@@ -350,11 +350,11 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
           if (data[0] === 'Date') next()
           else {
             parseRow({ data, departement }).then(result => {
-              // appLogger.debug({
-              //   ...loggerInfo,
-              //   action: 'resolve-transformCsv',
-              //   result,
-              // })
+              appLogger.debug({
+                ...loggerInfo,
+                action: 'resolve-transformCsv',
+                result,
+              })
               if (result.status && result.status === 'error') {
                 PlacesPromise.push(result)
                 next()
