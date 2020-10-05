@@ -65,6 +65,7 @@ import {
 // TODO: Uncomment next line after 31/12/2020
 // import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
 import { isETGExpired } from './business'
+import { getDateVisibleForPlaces } from '../candidat/util/date-to-display'
 
 /**
  * Résultat d'import d'une place
@@ -273,7 +274,8 @@ const createPlaceFromFile = async place => {
   }
   const { centre, inspecteur, date } = place
   try {
-    const leanPlace = { inspecteur, date, centre: centre._id }
+    const visibleAt = getDateVisibleForPlaces()
+    const leanPlace = { inspecteur, date, centre: centre._id, visibleAt }
     await createPlace(leanPlace)
     appLogger.info({
       ...loggerInfo,
@@ -548,8 +550,10 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       zone: 'Europe/Paris',
       locale: 'fr',
     })
-    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id }
+    const visibleAt = getDateVisibleForPlaces()
+    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id, visibleAt }
     await createPlace(leanPlace)
+
     appLogger.info({
       ...loggerInfo,
       description: `Place {${centre.departement}, ${centre.nom}, ${inspecteur}, ${myDate}} enregistrée en base`,
@@ -563,34 +567,23 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       'Place enregistrée en base',
     )
   } catch (error) {
+    let message = error.message
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
+      const description = `Place [${myDate}] déjà enregistrée en base`
       appLogger.warn({
         ...loggerInfo,
-        description: 'Place déjà enregistrée en base',
+        description,
         error,
       })
-      return getPlaceStatus(
-        centre.departement,
-        centre.nom,
-        inspecteur,
-        myDate,
-        'error',
-        'Place déjà enregistrée en base',
-      )
+      message = description
+    } else {
+      appLogger.error({
+        ...loggerInfo,
+        description: error.message,
+        error,
+      })
     }
-    appLogger.error({
-      ...loggerInfo,
-      description: error.message,
-      error,
-    })
-    return getPlaceStatus(
-      centre.departement,
-      centre.nom,
-      inspecteur,
-      date,
-      'error',
-      error.message,
-    )
+    throw new Error(message)
   }
 }
 

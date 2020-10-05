@@ -48,7 +48,6 @@ export default {
   actions: {
     async FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST ({ commit }, { centre, date }) {
       commit('FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST')
-      console.log({ centre, date })
       await delay(1000)
       const list = inspecteursList[centre][date]
       commit('FETCH_GET_INSPECTEURS_AVAILABLE_SUCCESS', list)

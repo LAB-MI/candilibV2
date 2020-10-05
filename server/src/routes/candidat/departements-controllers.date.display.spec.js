@@ -11,7 +11,7 @@ import {
 } from '../../models/__tests__'
 import {
   centreDateDisplay,
-  createPlacesWithCreatedAtDiff,
+  createPlacesWithVisibleAt,
 } from '../../models/__tests__/places.date.display'
 import {
   setNowBefore12h,
@@ -34,7 +34,7 @@ xdescribe('Get departement with the numbers places available in departements and
       createdCandidats[0]._id,
     )
 
-    await createPlacesWithCreatedAtDiff()
+    await createPlacesWithVisibleAt()
   })
 
   afterAll(async () => {

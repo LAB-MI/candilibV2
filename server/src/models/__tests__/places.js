@@ -24,10 +24,11 @@ if (
 export const commonBasePlaceDateTime = basePlaceDateTime
 
 export const createTestPlace = async place => {
-  const { date, inspecteur, centre, createdAt } = place
+  const { date, inspecteur, centre, createdAt, visibleAt } = place
   const leanPlace = {
     date,
     createdAt,
+    visibleAt,
   }
   let centreFound
 
@@ -94,42 +95,49 @@ export const createPlaces = async () => {
       centre: centre1._id,
       inspecteur: inspecteur1._id,
       createdAt: dateYesterday,
+      visibleAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 1, hour: 1 }).toISO(),
       centre: centre2._id,
       inspecteur: inspecteur2._id,
       createdAt: dateYesterday,
+      visibleAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 1, hour: 2 }).toISO(),
       centre: centre2._id,
       inspecteur: inspecteur2._id,
       createdAt: dateYesterday,
+      visibleAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 1 }).toISO(),
       centre: centre2._id,
       inspecteur: inspecteur2._id,
       createdAt: dateYesterday,
+      visibleAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 2 }).toISO(),
       centre: centre3._id,
       inspecteur: inspecteur1._id,
       createdAt: dateYesterday,
+      visibleAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 3, hour: 1 }).toISO(),
       centre: centre3._id,
       inspecteur: inspecteur1._id,
       createdAt: dateYesterday,
+      visibleAt: dateYesterday,
     },
     {
       date: basePlaceDateTime.plus({ days: 3, hour: 2 }).toISO(),
       centre: centre3._id,
       inspecteur: inspecteur2._id,
       createdAt: dateYesterday,
+      visibleAt: dateYesterday,
     },
   ]
 

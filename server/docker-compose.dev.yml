@@ -61,6 +61,7 @@ services:
       - .:/app:delegated
       - ./package.json:/app/package.json
       - ./package-lock.json:/app/package-lock.json
+      - ./ecosystem.config.dev.js:/app/ecosystem.config.js
       # this is a workaround to prevent host node_modules from accidently getting mounted in container
       # in case you want to use node/npm both outside container for test/lint etc. and also inside container
       # this will overwrite the default node_modules dir in container so it won't conflict with our
@@ -89,9 +90,9 @@ services:
       DELAY_TO_BOOK: 7
       TIMEOUT_TO_RETRY: 45
       DAYS_FORBID_CANCEL: 7
-
     networks:
       - candilib-network
+    entrypoint: npm run dev_pm2
 
   mailhog:
     container_name: mailhog

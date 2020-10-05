@@ -11,8 +11,8 @@ import {
 } from '../../models/__tests__'
 import {
   centreDateDisplay,
-  createPlacesWithCreatedAtDiff,
-  createdAtBefore,
+  createPlacesWithVisibleAt,
+  visibleAtNow12h,
 } from '../../models/__tests__/places.date.display'
 import { getFrenchLuxonFromJSDate } from '../../util'
 import { findPlaceByCandidatId } from '../../models/place'
@@ -32,6 +32,7 @@ describe('Get places available and display at 12h', () => {
   let places
   let placesCreatedBefore
   let idCandidat
+
   beforeAll(async () => {
     setInitCreatedCentre()
     resetCreatedInspecteurs()
@@ -41,9 +42,9 @@ describe('Get places available and display at 12h', () => {
     idCandidat = createdCandidats[0]._id
     require('../middlewares/verify-token').__setIdCandidat(idCandidat)
 
-    places = await createPlacesWithCreatedAtDiff()
-    placesCreatedBefore = places.find(({ createdAt }) =>
-      getFrenchLuxonFromJSDate(createdAt).equals(createdAtBefore),
+    places = await createPlacesWithVisibleAt()
+    placesCreatedBefore = places.find(({ visibleAt }) =>
+      getFrenchLuxonFromJSDate(visibleAt).equals(visibleAtNow12h),
     )
   })
 
@@ -52,36 +53,28 @@ describe('Get places available and display at 12h', () => {
     setNowAtNow()
   })
 
+  async function expectedPlaces (nbplaces) {
+    const { body } = await request(app)
+      .get(
+        `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`,
+      )
+      .set('Accept', 'application/json')
+      .expect(200)
+    expect(body).toBeDefined()
+    expect(body).toHaveLength(nbplaces)
+  }
+
   it('Should get 1 place for 75 when now is before 12h', async () => {
     setNowBefore12h()
-    const { body } = await request(app)
-      .get(
-        `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`,
-      )
-      .set('Accept', 'application/json')
-      .expect(200)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveLength(1)
+    await expectedPlaces(1)
   })
+
   it('Should get 3 places for 75 when now is after 12h', async () => {
     setNowAfter12h()
-
-    const { body } = await request(app)
-      .get(
-        `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`,
-      )
-      .set('Accept', 'application/json')
-      .expect(200)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveLength(3)
+    await expectedPlaces(3)
   })
 
-  it('Should 200 with an available place before 12h when it is after 12h by centreId', async () => {
-    setNowAfter12h()
-
-    const date = placesCreatedBefore.date
+  const expectedPlaceByCentreId = async (date, nbPlaces) => {
     const placeSelected = encodeURIComponent(date)
     const { body } = await request(app)
       .get(
@@ -89,15 +82,17 @@ describe('Get places available and display at 12h', () => {
       )
       .set('Accept', 'application/json')
       .expect(200)
-
     expect(body).toBeDefined()
-    expect(body).toHaveLength(1)
-    expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
-  })
-  it('Should 200 with an available place before 12h when it is after 12h by center name and geo-departement', async () => {
-    setNowAfter12h()
+    expect(body).toHaveLength(nbPlaces)
+    nbPlaces && expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
+  }
 
-    const date = placesCreatedBefore.date
+  it('Should 200 with an available place created before 12h when it is after 12h by centreId', async () => {
+    setNowAfter12h()
+    await expectedPlaceByCentreId(placesCreatedBefore.date, 1)
+  })
+
+  const expectedPlaceByNameCentreAndGeoDep = async (date, nbPlaces) => {
     const placeSelected = encodeURIComponent(date)
     const { body } = await request(app)
       .get(
@@ -107,52 +102,28 @@ describe('Get places available and display at 12h', () => {
       .expect(200)
 
     expect(body).toBeDefined()
-    expect(body).toHaveLength(1)
-    expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
-  })
+    expect(body).toHaveLength(nbPlaces)
+    nbPlaces && expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
+  }
 
-  it('Should 200 with no available place before 12h when it is before 12h by centreId', async () => {
-    setNowBefore12h()
-
-    const date = placesCreatedBefore.date
-    const placeSelected = encodeURIComponent(date)
-    const { body } = await request(app)
-      .get(
-        `${apiPrefix}/candidat/places/${centreDateDisplay._id}?dateTime=${placeSelected}`,
-      )
-      .set('Accept', 'application/json')
-      .expect(200)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveLength(0)
+  it('Should 200 with an available place before 12h when it is after 12h by center name and geo-departement', async () => {
+    setNowAfter12h()
+    await expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, 1)
   })
 
   it('Should 200 with no available place before 12h when it is after 12h by center name and geo-departement', async () => {
     setNowBefore12h()
-
-    const date = placesCreatedBefore.date
-    const placeSelected = encodeURIComponent(date)
-    const { body } = await request(app)
-      .get(
-        `${apiPrefix}/candidat/places/?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}&dateTime=${placeSelected}`,
-      )
-      .set('Accept', 'application/json')
-      .expect(200)
-
-    expect(body).toBeDefined()
-    expect(body).toHaveLength(0)
+    await expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, 0)
   })
 
-  it('should booked place by candidat with info bookedAt when it is after 12h', async () => {
-    setNowAfter12h()
-
+  const expectedBooked = async (placeSelected) => {
     const { body } = await request(app)
       .patch(`${apiPrefix}/candidat/places`)
       .set('Accept', 'application/json')
       .send({
         nomCentre: centreDateDisplay.nom,
         geoDepartement: centreDateDisplay.geoDepartement,
-        date: placesCreatedBefore.date,
+        date: placeSelected.date,
         isAccompanied: true,
         hasDualControlCar: true,
       })
@@ -164,23 +135,27 @@ describe('Get places available and display at 12h', () => {
     const placefounded = await findPlaceByCandidatId(idCandidat)
     expect(placefounded).toBeDefined()
     expect(placefounded).toHaveProperty('bookedAt')
-    expect(placefounded).toHaveProperty('date', placesCreatedBefore.date)
-    expect(placefounded).toHaveProperty('centre', placesCreatedBefore.centre)
+    expect(placefounded).toHaveProperty('date', placeSelected.date)
+    expect(placefounded).toHaveProperty('centre', placeSelected.centre)
 
     placefounded.candidat = undefined
+    placefounded.booked = undefined
     await placefounded.save()
+  }
+
+  it('should booked place by candidat with info bookedAt when it is after 12h', async () => {
+    setNowAfter12h()
+    await expectedBooked(placesCreatedBefore)
   })
 
-  it('should not booked place by candidat with info bookedAt when it is before 12h', async () => {
-    setNowBefore12h()
-
+  const expectedBookedFailed = async (placeSelected) => {
     const { body } = await request(app)
       .patch(`${apiPrefix}/candidat/places`)
       .set('Accept', 'application/json')
       .send({
         nomCentre: centreDateDisplay.nom,
         geoDepartement: centreDateDisplay.geoDepartement,
-        date: placesCreatedBefore.date,
+        date: placeSelected.date,
         isAccompanied: true,
         hasDualControlCar: true,
       })
@@ -195,5 +170,10 @@ describe('Get places available and display at 12h', () => {
 
     const placefounded = await findPlaceByCandidatId(idCandidat)
     expect(placefounded).toBeNull()
+  }
+
+  it('should not booked place by candidat with info bookedAt when it is before 12h', async () => {
+    setNowBefore12h()
+    await expectedBookedFailed(placesCreatedBefore)
   })
 })
