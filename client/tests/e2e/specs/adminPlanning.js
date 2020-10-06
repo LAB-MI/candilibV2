@@ -38,6 +38,8 @@ describe('Planning tests', () => {
       .should('contain', Cypress.env('centre').toUpperCase())
     // Change the inspector
 
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
+
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur'))
       .parents('tbody').within(($row) => {
@@ -55,8 +57,7 @@ describe('Planning tests', () => {
             .click()
         })
       })
-    cy.get('.v-snack--active')
-      .should('contain', 'La modification est confirmée.')
+    cy.checkAndCloseSnackBar('La modification est confirmée.')
     // Add the place back
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur'))
@@ -67,9 +68,7 @@ describe('Planning tests', () => {
         cy.contains('Rendre le créneau disponible')
           .click()
       })
-    cy.get('.v-snack--active')
-      .should('contain', 'a bien été créée')
-    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
+    cy.checkAndCloseSnackBar('a bien été créée')
     // Sends the mail for the inspectors
     cy.deleteAllMails()
     cy.get('button')
@@ -91,10 +90,7 @@ describe('Planning tests', () => {
         .contains('Envoyer')
         .click()
     })
-    cy.get('.v-snack--active')
-      .should('contain', 'Les emails ont bien été envoyés')
-      .contains('close')
-      .click({ force: true })
+    cy.checkAndCloseSnackBar('Les emails ont bien été envoyés')
     cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('emailInspecteur'))
     cy.getLastMail().getSubject()
@@ -124,10 +120,7 @@ describe('Planning tests', () => {
         .contains('Recevoir')
         .click()
     })
-    cy.get('.v-snack--active')
-      .should('contain', 'Les emails ont bien été envoyés')
-      .contains('close')
-      .click({ force: true })
+    cy.checkAndCloseSnackBar('Les emails ont bien été envoyés')
     cy.getLastMail().getRecipients()
       .should('contain', Cypress.env('emailRepartiteur'))
     cy.getLastMail().getSubject()
@@ -147,8 +140,7 @@ describe('Planning tests', () => {
         cy.contains('Supprimer réservation')
           .click()
       })
-    cy.get('.v-snack--active')
-      .should('contain', 'La réservation choisie a été annulée.')
+    cy.checkAndCloseSnackBar('La réservation choisie a été annulée.')
     cy.getLastMail().getRecipients()
       .should('contain', 'candidat_front@candi.lib')
     cy.getLastMail().getSubject()
@@ -163,8 +155,8 @@ describe('Planning tests', () => {
         cy.contains('Rendre le créneau disponible')
           .click()
       })
-    cy.get('.v-snack--active')
-      .should('contain', 'a bien été créée.')
+
+    cy.checkAndCloseSnackBar('a bien été créée.')
   })
 })
 
@@ -224,8 +216,7 @@ describe('Planning tests without candidate', () => {
         cy.contains('Rendre indisponible')
           .click()
       })
-    cy.get('.v-snack--active')
-      .should('contain', 'a bien été supprimée de la base')
+    cy.checkAndCloseSnackBar('a bien été supprimée de la base')
     // Add the first place
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur'))
@@ -236,8 +227,12 @@ describe('Planning tests without candidate', () => {
         cy.contains('Rendre le créneau disponible')
           .click()
       })
-    cy.get('.v-snack--active')
-      .should('contain', 'a bien été créée')
+
+    cy.checkAndCloseSnackBar('a bien été créée')
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(Cypress.env('inspecteur'))
+      .parents('tbody')
+      .should('not.contain', 'block')
   })
 
   it('Tests the import of csv files in the planning', () => {
@@ -269,8 +264,9 @@ describe('Planning tests without candidate', () => {
           })
         })
       })
-    cy.get('.v-snack--active')
-      .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
+
+    cy.checkAndCloseSnackBar('La suppression des places sélectionnées a bien été effectuée')
+
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur2'))
       .parents('tbody')
@@ -289,8 +285,7 @@ describe('Planning tests without candidate', () => {
           })
         })
       })
-    cy.get('.v-snack--active')
-      .should('contain', 'La suppression des places sélectionnées a bien été effectuée')
+    cy.checkAndCloseSnackBar('La suppression des places sélectionnées a bien été effectuée')
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur2'))
       .parents('tr').within(($row) => {

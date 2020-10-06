@@ -89,6 +89,7 @@ export const numberOfMonthsToFetch = 3
 const AUTHORIZED_ROUTES = {
   agents: ROUTE_AUTHORIZE_AGENTS,
   aurige: ROUTE_AUTHORIZE_AURIGE,
+  'unarchive-candidat': 'unarchive-candidat',
   'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
   centres: ROUTE_AUTHORIZE_CENTRES,
   departements: ROUTE_AUTHORIZE_DEPARTEMENTS,
@@ -566,6 +567,9 @@ export default {
       commit(CREATE_PLACE_REQUEST)
       try {
         const result = await api.admin.createPlace(centre, inspecteur, date)
+        if (!result.success) {
+          throw new Error(result.message)
+        }
         commit(CREATE_PLACE_SUCCESS, result)
         dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {

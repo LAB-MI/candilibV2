@@ -18,10 +18,22 @@ describe('Display new place after 12h', () => {
     dateAt3Months = now.plus({ months: 3 }).startOf('week')
     cy.addPlanning([dateAt2Weeks, dateAt1Months, dateAt3Months, dateAt2Months])
     cy.adminDisconnection()
-    cy.updatePlaces({}, { createdAt: now.set({ hour: 9 }).minus({ days: 1 }).toUTC() })
-    cy.updatePlaces({ date: { $gte: dateAt1Months.toUTC() } }, { createdAt: now.set({ hour: 12 }).minus({ days: 1 }).toUTC() })
-    cy.updatePlaces({ date: { $gte: dateAt2Months.toUTC() } }, { createdAt: now.set({ hour: 9 }).toUTC() })
-    cy.updatePlaces({ date: { $gte: dateAt3Months.toUTC() } }, { createdAt: now.set({ hour: 12 }).toUTC() })
+    cy.updatePlaces({}, {
+      createdAt: now.set({ hour: 9 }).minus({ days: 1 }).toUTC(),
+      visibleAt: now.set({ hour: 12, minute: 0, second: 0, millisecond: 0 }).minus({ days: 1 }).toUTC(),
+    })
+    cy.updatePlaces({ date: { $gte: dateAt1Months.toUTC() } }, {
+      createdAt: now.set({ hour: 12 }).minus({ days: 1 }).toUTC(),
+      visibleAt: now.set({ hour: 12, minute: 0, second: 0, millisecond: 0 }).plus({ days: 1 }).toUTC(),
+    })
+    cy.updatePlaces({ date: { $gte: dateAt2Months.toUTC() } }, {
+      createdAt: now.set({ hour: 9 }).toUTC(),
+      visibleAt: now.set({ hour: 12, minute: 0, second: 0, millisecond: 0 }).toUTC(),
+    })
+    cy.updatePlaces({ date: { $gte: dateAt3Months.toUTC() } }, {
+      createdAt: now.set({ hour: 12 }).toUTC(),
+      visibleAt: now.set({ hour: 12, minute: 0, second: 0, millisecond: 0 }).plus({ days: 1 }).toUTC(),
+    })
 
     cy.candidatConnection(Cypress.env('emailCandidatFront'))
     cy.getLastMail().its('Content.Body').then((mailBody) => {

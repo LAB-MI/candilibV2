@@ -7,7 +7,7 @@ const publicPath = process.env.VUE_APP_URL_PUBLIC_PATH || '/candilib'
 module.exports = {
   publicPath: publicPath,
   outputDir: 'dist',
-
+  productionSourceMap: false,
   runtimeCompiler: true,
 
   devServer: {

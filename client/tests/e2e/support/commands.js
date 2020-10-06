@@ -7,7 +7,7 @@
 import 'cypress-file-upload'
 import './mailHogCommands'
 
-Cypress.Commands.add('adminLogin', () => {
+const connectionUserByStatus = (cypressEnvUserEmail) => {
   cy.visit(Cypress.env('frontAdmin') + 'admin-login',
     {
       onBeforeLoad: (win) => {
@@ -15,7 +15,7 @@ Cypress.Commands.add('adminLogin', () => {
       },
     })
   cy.get('.t-login-email [type=text]')
-    .type(Cypress.env('adminLogin'))
+    .type(cypressEnvUserEmail)
   cy.get('[type=password]')
     .type(Cypress.env('adminPass'))
   cy.get('.submit-btn')
@@ -23,6 +23,14 @@ Cypress.Commands.add('adminLogin', () => {
   cy.url()
     .should('not.contain', '/admin-login')
     .should('contain', '/admin')
+}
+
+Cypress.Commands.add('adminLogin', () => {
+  connectionUserByStatus(Cypress.env('adminLogin'))
+})
+
+Cypress.Commands.add('delegueLogin', () => {
+  connectionUserByStatus(Cypress.env('delegue75And93Login'))
 })
 
 Cypress.Commands.add('adminDisconnection', () => {
@@ -410,4 +418,10 @@ Cypress.Commands.add('deleteCandidat', (query) => {
   cy.request('DELETE', Cypress.env('ApiRestDB') + '/candidats', query).then((content) => {
     cy.log(JSON.stringify(content.body))
   })
+})
+Cypress.Commands.add('checkAndCloseSnackBar', (message) => {
+  cy.get('.v-snack--active')
+    .should('contain', message)
+
+  cy.get('.v-snack--active button').should('be.visible').click({ force: true })
 })

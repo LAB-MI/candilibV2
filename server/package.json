@@ -11,6 +11,7 @@
     "build:all": "docker-compose -f docker-compose.prod.all.yml build",
     "dev-setup": "node dev-setup/index.js",
     "dev": "nodemon --inspect --watch src boot-dev.js",
+    "dev_pm2": "pm2-runtime start ecosystem.config.js --watch --env develop",
     "format": "eslint src --fix",
     "lint:all": "run-p lint:client lint --",
     "lint:client": "cd .. ; cd client ; npm run lint",
@@ -29,7 +30,9 @@
     "jsdoc:watch": "nodemon --watch src --watch README.md --exec 'npm run jsdoc'",
     "jsdoc:serve": "browser-sync start --no-ui --server --open --files out/**/* --ss out",
     "jsdoc-dev": "run-p jsdoc:*",
-    "jsdoc": "jsdoc -c jsdoc-config.js -r src README.md"
+    "jsdoc": "jsdoc -c jsdoc-config.js -r src README.md",
+    "pm2Monitor": "pm2 monit",
+    "pm2ls": "pm2 list"
   },
   "keywords": [
     "Candidat",
@@ -55,12 +58,12 @@
     "jsonwebtoken": "^8.5.1",
     "latinize": "^0.4.1",
     "luxon": "^1.25.0",
-    "moment": "^2.28.0",
     "mongoose": "^5.10.5",
     "morgan": "^1.10.0",
     "nodemailer": "^6.4.11",
     "nodemailer-html-to-text": "^3.1.0",
     "nodemailer-smtp-transport": "^2.7.4",
+    "pm2": "^4.5.0",
     "sanitize-html": "^1.27.4",
     "stream-buffers": "^3.0.2",
     "uuid": "^8.3.0",

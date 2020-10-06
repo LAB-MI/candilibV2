@@ -60,7 +60,6 @@ import {
   expectMailConvocation,
   expectMailCancelBooking,
 } from '../business/__tests__/expect-send-mail'
-import { getDateDisplayPlaces } from './util/date-to-display'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -125,7 +124,7 @@ describe('Test get dates from places available', () => {
       createdPlaces.filter(
         place =>
           place.centre._id === centreId._id &&
-          place.createdAt < getDateDisplayPlaces(),
+          place.visibleAt < getFrenchLuxon(),
       ).length,
     )
   })
@@ -277,6 +276,7 @@ describe('Test to book and to delete reservation by candidat', () => {
         centre: createdCentre._id,
         inspecteur: createdInspecteur._id,
         createdAt: dateYesterday,
+        visibleAt: dateYesterday,
       })
 
       placeCreated2 = await createPlace({
@@ -284,6 +284,7 @@ describe('Test to book and to delete reservation by candidat', () => {
         centre: createdCentre._id,
         inspecteur: createdInspecteur2._id,
         createdAt: dateYesterday,
+        visibleAt: dateYesterday,
       })
 
       updatedCandidat = await createCandidatAndUpdate(candidat)
@@ -377,6 +378,14 @@ describe('Test to book and to delete reservation by candidat', () => {
     expect(place).toHaveProperty('archiveReason', 'CANCEL')
     expect(place).toHaveProperty('date', date)
     expect(place).toHaveProperty('centre', centre)
+
+    // To display places at 12h
+    const placeUpdated = await findPlaceById(placeSelected._id)
+    expect(placeUpdated).toHaveProperty('visibleAt')
+    const visibleAt = getFrenchLuxonFromJSDate(placeUpdated.visibleAt).set({ millisecond: 0 })
+    const now = getFrenchLuxon()
+    const expectVisibleAt = now.hour < 12 ? getFrenchLuxonFromObject({ hour: 12, minute: 0, second: 0 }) : getFrenchLuxonFromObject({ hour: 12, minute: 0, second: 0 }).plus({ days: 1 })
+    expect(visibleAt).toEqual(expectVisibleAt)
   })
 })
 
@@ -390,6 +399,7 @@ const placeCanBook = {
   centre: centresTests[1],
   inspecteur: inspecteursTests[1],
   createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const placeCanBook2 = {
   date: (() =>
@@ -399,12 +409,14 @@ const placeCanBook2 = {
   centre: centresTests[1],
   inspecteur: inspecteursTests[1],
   createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const placeBeforeNow = {
   date: (() => basePlaceDateTime.minus({ days: 1, hour: 1 }).toISO())(),
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1],
   createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const placeCanNotBook = {
   date: (() =>
@@ -414,6 +426,7 @@ const placeCanNotBook = {
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1],
   createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 
 const placeCancellable = {
@@ -424,6 +437,7 @@ const placeCancellable = {
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
   createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const placeNoCancellable = {
   date: (() =>
@@ -433,6 +447,7 @@ const placeNoCancellable = {
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
   createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 
 const placeToRetry = {
@@ -443,6 +458,7 @@ const placeToRetry = {
   centre: centresTests[1].nom,
   inspecteur: inspecteursTests[1].nom,
   createdAt: dateYesterday,
+  visibleAt: dateYesterday,
 }
 const dateDernierEchecPratique = () => basePlaceDateTime.plus({ hour: 2 })
 const dateEchecCanBookFrom = () => basePlaceDateTime.plus({ days: 45, hour: 2 })
@@ -680,7 +696,6 @@ describe('test to book with the date authorize by candiat', () => {
       centre: selectedCentre,
     }
     const selectedPlace = await createTestPlace(placeCanBook1)
-
     await createReservationWithSuccess(
       selectedCentre,
       selectedPlace,

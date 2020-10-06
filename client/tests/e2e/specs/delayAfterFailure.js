@@ -31,7 +31,10 @@ describe('Test delay after failed attempt', () => {
       // cy.archiveCandidate()
       cy.addPlanning()
       cy.adminDisconnection()
-      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
+      cy.updatePlaces({}, {
+        createdAt: now.minus({ days: 2 }).toUTC(),
+        visibleAt: now.minus({ days: 2 }).toUTC(),
+      }, true)
     })
 
     it('Goes to the reservation page and can\'t add reservation', () => {
