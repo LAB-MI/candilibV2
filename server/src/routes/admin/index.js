@@ -1932,7 +1932,7 @@ router.patch(
  */
 router.post(
   '/centres',
-  verifyUserLevel(config.userStatusLevels.admin),
+  verifyUserLevel(config.userStatusLevels.delegue),
   createCentre,
 )
 
