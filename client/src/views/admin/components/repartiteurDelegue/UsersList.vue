@@ -4,15 +4,17 @@
       :headers="headers"
       :items="users"
       :items-per-page="10"
-      class="elevation-1  t-list-users"
+      :class="`elevation-1 ${isArchivedUsers ? 't-list-archive-users' : 't-list-users'}`"
     >
-      <template v-slot:item.action="{ item }">
+      <template v-slot:[`item.action`]="{ item }">
         <update-user
+          :is-archived-users="isArchivedUsers"
           :email="item.email"
           :default-status="item.status"
           :default-departements="item.departements"
         />
         <delete-user
+          v-if="!isArchivedUsers"
           :email="item.email"
         />
       </template>
@@ -21,13 +23,25 @@
 </template>
 
 <script>
-import { FETCH_USER_LIST_REQUEST } from '@/store'
 import DeleteUser from './DeleteUser'
 import UpdateUser from './UpdateUser'
 export default {
+  name: 'UsersList',
+
   components: {
     DeleteUser,
     UpdateUser,
+  },
+
+  props: {
+    users: {
+      type: Array,
+      default: () => [],
+    },
+    isArchivedUsers: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data () {
@@ -40,21 +54,6 @@ export default {
       ],
       editedUser: {},
     }
-  },
-
-  computed: {
-    users () {
-      return (this.$store.state.users.list || []).map(user => (
-        {
-          ...user,
-          departementsAsString: (user.departements || []).join(', '),
-        }
-      ))
-    },
-  },
-
-  mounted () {
-    this.$store.dispatch(FETCH_USER_LIST_REQUEST)
   },
 }
 </script>
