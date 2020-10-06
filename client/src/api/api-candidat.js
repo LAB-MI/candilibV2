@@ -1,7 +1,20 @@
+import { v4 as uuid } from 'uuid'
+import { version } from '../../package.json'
 import { CANDIDAT_TOKEN_STORAGE_KEY } from '../constants'
 
 import apiPaths from './api-paths'
 import apiClient, { xuserid } from './api-utils'
+const clientid = `${uuid()}.${version || 'DEV'}.${process.env.clientid || ''}`
+
+const getHeadersClientId = () => {
+  const headers = {
+    'X-REQUEST-ID': uuid(),
+  }
+  if (clientid) {
+    headers['X-CLIENT-ID'] = clientid
+  }
+  return headers
+}
 
 const getHeadersForJson = () => {
   const token = localStorage.getItem(CANDIDAT_TOKEN_STORAGE_KEY)
@@ -11,7 +24,9 @@ const getHeadersForJson = () => {
     'Content-Type': 'application/json',
     Authorization,
     'X-USER-ID': xuserid,
+    ...getHeadersClientId(),
   }
+
   return headers
 }
 
@@ -20,6 +35,7 @@ const apiCandidat = {
     const options = {
       headers: {
         'x-magic-link': isTokenFromMagicLink,
+        ...getHeadersClientId(),
       },
     }
     const json = await apiClient.get(
@@ -38,6 +54,7 @@ const apiCandidat = {
     const json = await apiClient.post(apiPaths.candidat.presignup, {
       headers: {
         'Content-Type': 'application/json',
+        ...getHeadersClientId(),
       },
       body: JSON.stringify(candidat),
     })
@@ -48,6 +65,7 @@ const apiCandidat = {
     const json = await apiClient.post(apiPaths.candidat.magicLink, {
       headers: {
         'Content-Type': 'application/json',
+        ...getHeadersClientId(),
       },
       body: JSON.stringify({ email }),
     })
@@ -89,6 +107,7 @@ const apiCandidat = {
     const json = await apiClient.get(`${apiPaths.candidat.config}`, {
       headers: {
         'Content-Type': 'application/json',
+        ...getHeadersClientId(),
       },
     })
     return json
