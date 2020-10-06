@@ -108,6 +108,10 @@ export function jsonFormat (tokens, req, res) {
       remote_user: tokens['remote-user'](req, res),
       http_user_agent: tokens['user-agent'](req, res),
       response_time: +tokens['response-time'](req, res),
+      user_id: tokens.res(req, res, 'x-user-id') || req.headers['x-user-id'],
+      request_id: req.headers['x-request-id'],
+      client_id: req.headers['x-client-id'],
+      forwarded_for: req.headers['x-forwarded-for'],
     },
   })
 }
