@@ -1,6 +1,6 @@
 /**
  * Contrôleur regroupant les fonctions candidats à l'attention des répartiteurs
- * @module routes/admin/candidats-controllers
+ * @module
  */
 import { appLogger } from '../../util/logger'
 import {
@@ -53,7 +53,6 @@ export const importCandidats = async (req, res) => {
 
   try {
     loggerInfo.filename = jsonFile.name
-    appLogger.info({ ...loggerInfo })
 
     // Next line is use to catch error when jsonFile.data not have the good format
     JSON.parse(jsonFile.data.toString())
@@ -92,14 +91,16 @@ export const importCandidats = async (req, res) => {
  * @param {import('express').Response} res
  */
 export const exportCandidats = async (req, res) => {
+  const candidatsAsCsv = await getCandidatsAsCsv(req.candidats)
+  const filename = 'candidatsLibresPrintel.csv'
+
   appLogger.info({
     section: 'admin-export-cvs',
     action: 'candidats',
     admin: req.userId,
+    description: `fichier ${filename} envoyé`,
   })
 
-  const candidatsAsCsv = await getCandidatsAsCsv(req.candidats)
-  const filename = 'candidatsLibresPrintel.csv'
   res
     .status(200)
     .attachment(filename)
@@ -117,14 +118,16 @@ export const exportCandidats = async (req, res) => {
  * @param {import('express').Response} res
  */
 export const exportBookedCandidats = async (req, res) => {
+  const candidatsAsCsv = await getBookedCandidatsAsCsv(req.candidats)
+  const filename = 'candidatsLibresReserve.csv'
+
   appLogger.info({
     section: 'admin-export-cvs',
     action: 'booked-candidats',
     admin: req.userId,
+    description: `fichier ${filename} envoyé`,
   })
 
-  const candidatsAsCsv = await getBookedCandidatsAsCsv(req.candidats)
-  const filename = 'candidatsLibresReserve.csv'
   res
     .status(200)
     .attachment(filename)
@@ -161,7 +164,6 @@ export const getCandidats = async (req, res) => {
     if (candidatId) {
       loggerInfo.action = 'INFO-CANDIDAT'
       loggerInfo.candidatId = candidatId
-      appLogger.info(loggerInfo)
 
       const populate = {
         'places.centre': true,
@@ -186,6 +188,7 @@ export const getCandidats = async (req, res) => {
               archiveReason: humanReadableReason,
             }
           })
+        appLogger.info({ ...loggerInfo, description: 'Candidiat trouvé' + placeFound ? 'avec une réservztion' : '' })
         res.json({
           success: true,
           candidat: { ...candidat, place: placeFound },
@@ -214,7 +217,6 @@ export const getCandidats = async (req, res) => {
       loggerInfo.matching = matching
       loggerInfo.startingWith = startingWith
       loggerInfo.endingWith = endingWith
-      appLogger.info(loggerInfo)
 
       const result = await findCandidatsMatching(
         matching,
@@ -222,6 +224,7 @@ export const getCandidats = async (req, res) => {
         endingWith,
       )
 
+      appLogger.info({ ...loggerInfo, description: result?.candidats?.length + ' candidats trouvés' })
       res.json(result.candidats)
       return
     }
@@ -234,7 +237,7 @@ export const getCandidats = async (req, res) => {
     appLogger.info(loggerInfo)
 
     const candidatsLean = await findAllCandidatsLean()
-    appLogger.debug({ ...loggerInfo, candidatsLean })
+    // appLogger.debug({ ...loggerInfo, candidatsLean })
     let candidats
     if (actionAsk === 'aurige') {
       candidats = candidatsLean
