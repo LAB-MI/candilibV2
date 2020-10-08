@@ -550,8 +550,7 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       zone: 'Europe/Paris',
       locale: 'fr',
     })
-    const visibleAt = getDateVisibleForPlaces()
-    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id, visibleAt }
+    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id }
     await createPlace(leanPlace)
 
     appLogger.info({
@@ -567,23 +566,34 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       'Place enregistrée en base',
     )
   } catch (error) {
-    let message = error.message
     if (error.message === PLACE_ALREADY_IN_DB_ERROR) {
-      const description = `Place [${myDate}] déjà enregistrée en base`
       appLogger.warn({
         ...loggerInfo,
-        description,
+        description: 'Place déjà enregistrée en base',
         error,
       })
-      message = description
-    } else {
-      appLogger.error({
-        ...loggerInfo,
-        description: error.message,
-        error,
-      })
+      return getPlaceStatus(
+        centre.departement,
+        centre.nom,
+        inspecteur,
+        myDate,
+        'error',
+        'Place déjà enregistrée en base',
+      )
     }
-    throw new Error(message)
+    appLogger.error({
+      ...loggerInfo,
+      description: error.message,
+      error,
+    })
+    return getPlaceStatus(
+      centre.departement,
+      centre.nom,
+      inspecteur,
+      date,
+      'error',
+      error.message,
+    )
   }
 }
 

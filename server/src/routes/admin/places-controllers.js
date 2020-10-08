@@ -222,68 +222,6 @@ export const createPlaceByAdmin = async (req, res) => {
       error: error.message,
     })
   }
-
-  /*
-  if (dates) {
-    try {
-      const createdPlacesResult = await Promise.all(dates.map(currentDate => createPlaceForInspector(centre, inspecteur, currentDate)))
-      const hasError = createdPlacesResult.find(({ status }) => status === 'error')
-      if (hasError) {
-        throw new ErrorWithStatus(400, hasError.message)
-      }
-      appLogger.info({
-        ...loggerInfo,
-        action: 'created-places',
-        description: 'create by admin place : Les places ont bien été créées.',
-      })
-      res.json({
-        success: true,
-        message: 'Les places bien été créées.',
-      })
-    } catch (error) {
-      appLogger.error({
-        ...loggerInfo,
-        action: 'error',
-        description: "create by admin place : Une ou plusieurs places n'ont pas été créées.",
-        error,
-      })
-      res.json({
-        success: false,
-        message: "Une ou plusieurs places n'ont pas été créées.",
-        error: error.message,
-      })
-    }
-  } else {
-    try {
-      const createdPlaceResult = await createPlaceForInspector(
-        centre,
-        inspecteur,
-        date,
-      )
-      appLogger.info({
-        ...loggerInfo,
-        action: 'created-place',
-        description: 'create by admin place : La place a bien été créée.',
-      })
-      res.json({
-        success: true,
-        message: `La place du [${createdPlaceResult.date}] a bien été créée.`,
-      })
-    } catch (error) {
-      appLogger.error({
-        ...loggerInfo,
-        action: 'error',
-        description: "create by admin place : La place n'a pas été créée.",
-        error,
-      })
-      res.json({
-        success: false,
-        message: "La place n'a pas été créée",
-        error: error.nessage,
-      })
-    }
-  }
-  */
 }
 
 export const createOrImportPlaceByAdmin = async (req, res) => {
