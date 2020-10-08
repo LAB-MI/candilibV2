@@ -8,6 +8,7 @@ import centreModel from '../../models/centre/centre-model'
 import { createInspecteur } from '../../models/inspecteur'
 import { createPlace, findPlaceById } from '../../models/place'
 import placeModel from '../../models/place/place.model'
+import inspecteurModel from '../../models/inspecteur/inspecteur-model'
 import { createUser } from '../../models/user'
 import { createCentre } from '../../models/centre/centre-queries'
 
@@ -40,6 +41,7 @@ import {
   getFrenchLuxonFromObject,
 } from '../../util'
 import {
+  createPlaceByAdmin,
   deletePlacesByAdmin,
   getPlaces,
   sendScheduleInspecteurs,
@@ -848,5 +850,139 @@ describe('Send bordereaux', () => {
     })
     expect(body).toHaveProperty('success', true)
     await place.remove()
+  })
+})
+
+describe('Admin create places for one inspecteur', () => {
+  const datesTest01 = getFrenchLuxonFromObject({ day: 19, hour: 9 }).toFormat("dd/LL/yyyy HH':'mm")
+  const datesTest02 = getFrenchLuxonFromObject({ day: 19, hour: 9, minutes: 30 }).toFormat("dd/LL/yyyy HH':'mm")
+  const datesTest03 = getFrenchLuxonFromObject({ day: 19, hour: 10 }).toFormat("dd/LL/yyyy HH':'mm")
+  let inspecteur
+  let centre
+  const app = express()
+  app.use(bodyParser.json({ limit: '20mb' }))
+  app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+  beforeAll(async () => {
+    await connect()
+    setInitCreatedCentre()
+    resetCreatedInspecteurs()
+    inspecteur = await createInspecteurs()
+    centre = await createCentres()
+
+    const user = await createUser(
+      admin.email,
+      admin.password,
+      admin.departements,
+      admin.status,
+    )
+
+    app.use((req, res, next) => {
+      req.userId = user._id
+      next()
+    })
+    app.post(`${apiPrefix}/admin/places`, createPlaceByAdmin)
+    // if next-line is set as true, this display logger info in console
+    require('../../util/logger').setWithConsole(false)
+  })
+
+  afterAll(async () => {
+    await disconnect()
+  })
+
+  it('should return a 200 when IPCSR places has created', async () => {
+    // Given
+
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/places`)
+      .send({
+        centre: centre[0],
+        inspecteur: inspecteur[0]._id,
+        dates: [
+          datesTest01,
+          datesTest02,
+          datesTest03,
+        ],
+      })
+      // Then
+      .expect(200)
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message', 'La ou les places bien été créée(s).')
+
+    await placeModel.deleteMany({})
+    await centreModel.deleteMany({})
+    await inspecteurModel.deleteMany({})
+  })
+
+  it('should return a 200 when IPCSR places already created with error message', async () => {
+    // Given
+    await request(app)
+      .post(`${apiPrefix}/admin/places`)
+      .send({
+        centre: centre[1],
+        inspecteur: inspecteur[1]._id,
+        dates: [
+          datesTest01,
+          datesTest02,
+          datesTest03,
+        ],
+      })
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/places`)
+      .send({
+        centre: centre[1],
+        inspecteur: inspecteur[1]._id,
+        dates: [
+          datesTest01,
+          datesTest02,
+          datesTest03,
+        ],
+      })
+      // Then
+      .expect(200)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', "Une ou plusieurs places n'ont pas été créée(s).")
+    expect(body).toHaveProperty('error', 'Place déjà enregistrée en base')
+
+    await placeModel.deleteMany({})
+    await centreModel.deleteMany({})
+    await inspecteurModel.deleteMany({})
+  })
+
+  it('should return a 200 when IPCSR already on a other center', async () => {
+    // Given
+
+    await request(app)
+      .post(`${apiPrefix}/admin/places`)
+      .send({
+        centre: centre[1],
+        inspecteur: inspecteur[2]._id,
+        dates: [
+          datesTest01,
+          datesTest02,
+          datesTest03,
+        ],
+      })
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/places`)
+      .send({
+        centre: centre[2],
+        inspecteur: inspecteur[2]._id,
+        dates: [
+          datesTest01,
+          datesTest02,
+          datesTest03,
+        ],
+      })
+      // Then
+      .expect(200)
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', "Une ou plusieurs places n'ont pas été créée(s).")
+    expect(body).toHaveProperty('error', "l'inspecteur est déjà sur un autre centre pour ce créneau")
+
+    await placeModel.deleteMany({})
+    await centreModel.deleteMany({})
+    await inspecteurModel.deleteMany({})
   })
 })

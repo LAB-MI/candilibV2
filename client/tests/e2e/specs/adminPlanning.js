@@ -68,7 +68,9 @@ describe('Planning tests', () => {
         cy.contains('Rendre le créneau disponible')
           .click()
       })
-    cy.checkAndCloseSnackBar('a bien été créée')
+    cy.get('.v-snack--active')
+      .should('contain', 'La ou les places bien été créée(s).')
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     // Sends the mail for the inspectors
     cy.deleteAllMails()
     cy.get('button')
@@ -155,8 +157,8 @@ describe('Planning tests', () => {
         cy.contains('Rendre le créneau disponible')
           .click()
       })
-
-    cy.checkAndCloseSnackBar('a bien été créée.')
+    cy.get('.v-snack--active')
+      .should('contain', 'La ou les places bien été créée(s).')
   })
 })
 
@@ -227,12 +229,8 @@ describe('Planning tests without candidate', () => {
         cy.contains('Rendre le créneau disponible')
           .click()
       })
-
-    cy.checkAndCloseSnackBar('a bien été créée')
-    cy.get('.v-window-item').not('[style="display: none;"]')
-      .contains(Cypress.env('inspecteur'))
-      .parents('tbody')
-      .should('not.contain', 'block')
+    cy.get('.v-snack--active')
+      .should('contain', 'La ou les places bien été créée(s).')
   })
 
   it('Tests the import of csv files in the planning', () => {
@@ -342,4 +340,116 @@ describe('Planning tests without candidate', () => {
     cy.get('.name-ipcsr-wrap')
       .should('contain', Cypress.env('inspecteur'))
   })
+
+  it('Tests add one inspecteur in the planning', () => {
+    cy.adminLogin()
+    cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning')
+
+    cy.get('.t-import-places').click()
+    cy.get('.t-modal-input-places-search-inspecteur').type('dupond')
+    cy.contains('01020301').click()
+
+    cy.get('.t-import-places-modal-btn-all').click()
+    morningBeChecked()
+    eveningBeChecked()
+    cy.get('.t-import-places-modal-btn-all').click()
+    morningNotBeChecked()
+    eveningNotBeChecked()
+
+    cy.get('.t-import-places-modal-btn-morning').click()
+    morningBeChecked()
+    eveningNotBeChecked()
+    cy.get('.t-import-places-modal-btn-morning').click()
+    morningNotBeChecked()
+    eveningNotBeChecked()
+
+    cy.get('.t-import-places-modal-btn-evening').click()
+
+    cy.get('.t-import-places-modal-confirm-btn').click()
+    cy.get('.v-snack--active').should('contain', 'La ou les places bien été créée(s).')
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
+    cy.get('tbody > :nth-child(1) > :nth-child(12)').contains('check_circle')
+    cy.get('tbody > :nth-child(1) > :nth-child(13)').contains('check_circle')
+    cy.get('tbody > :nth-child(1) > :nth-child(14)').contains('check_circle')
+    cy.get('tbody > :nth-child(1) > :nth-child(15)').contains('check_circle')
+
+    cy.get('.t-import-places').click()
+    cy.get('.t-import-places-modal-btn-evening').click()
+    cy.get('.t-import-places-modal-confirm-btn').click()
+    cy.get('.v-snack--active').should('contain', 'Place déjà enregistrée en base')
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
+
+    cy.contains('ROSNY SOUS BOIS').click()
+    cy.get('.t-import-places').click()
+    cy.get('.t-import-places-modal-btn-evening').click()
+    cy.get('.t-import-places-modal-confirm-btn').click()
+    cy.contains('NOISY LE GRAND').click()
+
+    cy.get('.v-snack__content').should('contain', "l'inspecteur est déjà sur un autre centre pour ce créneau")
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
+
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains('DUPOND')
+      .parents('tr')
+      .within(($row) => {
+        cy.contains('delete')
+          .click()
+      })
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .should('have.length', 1, { timeout: 500 })
+      .and('contain', 'DUPOND') // To ensure retry-ability
+      .contains('DUPOND')
+      .parents('tbody').within(($row) => {
+        cy.get('tr').eq(1).within(($inTr) => {
+          cy.get('td').eq(1).within(($inTd) => {
+            cy.get('button').eq(0).should('contain', 'Supprimer la journée').click().wait(500)
+          })
+        })
+      })
+    cy.get('.u-full-width > div > .v-btn--contained').click()
+  })
 })
+
+const morningBeChecked = () => {
+  cy.get('[type="checkbox"]').eq(0).should('be.checked')
+  cy.get('[type="checkbox"]').eq(1).should('be.checked')
+  cy.get('[type="checkbox"]').eq(2).should('be.checked')
+  cy.get('[type="checkbox"]').eq(3).should('be.checked')
+  cy.get('[type="checkbox"]').eq(4).should('be.checked')
+  cy.get('[type="checkbox"]').eq(5).should('be.checked')
+  cy.get('[type="checkbox"]').eq(6).should('be.checked')
+  cy.get('[type="checkbox"]').eq(7).should('be.checked')
+  cy.get('[type="checkbox"]').eq(8).should('be.checked')
+  cy.get('[type="checkbox"]').eq(9).should('be.checked')
+}
+
+const eveningBeChecked = () => {
+  cy.get('[type="checkbox"]').eq(10).should('be.checked')
+  cy.get('[type="checkbox"]').eq(11).should('be.checked')
+  cy.get('[type="checkbox"]').eq(12).should('be.checked')
+  cy.get('[type="checkbox"]').eq(13).should('be.checked')
+  cy.get('[type="checkbox"]').eq(14).should('be.checked')
+  cy.get('[type="checkbox"]').eq(15).should('be.checked')
+}
+
+const morningNotBeChecked = () => {
+  cy.get('[type="checkbox"]').eq(0).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(1).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(2).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(3).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(4).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(5).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(6).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(7).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(8).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(9).should('not.be.visible')
+}
+
+const eveningNotBeChecked = () => {
+  cy.get('[type="checkbox"]').eq(10).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(11).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(12).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(13).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(14).should('not.be.visible')
+  cy.get('[type="checkbox"]').eq(15).should('not.be.visible')
+}

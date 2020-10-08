@@ -15,6 +15,13 @@ export const inspecteursTests = [
     email: 'dana.scully@x-files.com',
     departement: '93',
   },
+  {
+    nom: 'Scully01',
+    prenom: 'Dana01',
+    matricule: '033161301',
+    email: 'dana.scully01@x-files.com',
+    departement: '93',
+  },
 ]
 
 let inspecteurs
