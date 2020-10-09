@@ -143,7 +143,6 @@
   "postcss": {
     "plugins": {
       "tailwindcss": {},
-      "vue-cli-plugin-tailwind/purgecss": {},
       "autoprefixer": {},
       "postcss-preset-env": {},
       "postcss-nested-ancestors": {},
