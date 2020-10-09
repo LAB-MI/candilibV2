@@ -17,7 +17,7 @@ export const creneauSetting = [
   '15h30',
 ]
 
-export const creneauMorningEveningSetting = {
+export const creneauMorningAfternoonSetting = {
   morning: [
     '07h00',
     '07h30',
@@ -30,7 +30,7 @@ export const creneauMorningEveningSetting = {
     '11h00',
     '11h30',
   ],
-  evening: [
+  afternoon: [
     '13h00',
     '13h30',
     '14h00',

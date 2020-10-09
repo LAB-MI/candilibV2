@@ -907,7 +907,7 @@ describe('Admin create places for one inspecteur', () => {
       // Then
       .expect(200)
     expect(body).toHaveProperty('success', true)
-    expect(body).toHaveProperty('message', 'La ou les places bien été créée(s).')
+    expect(body).toHaveProperty('message', 'La ou les places ont bien été créée(s).')
 
     await placeModel.deleteMany({})
     await centreModel.deleteMany({})

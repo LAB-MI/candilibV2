@@ -69,7 +69,7 @@ describe('Planning tests', () => {
           .click()
       })
     cy.get('.v-snack--active')
-      .should('contain', 'La ou les places bien été créée(s).')
+      .should('contain', 'La ou les places ont bien été créée(s).')
     cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     // Sends the mail for the inspectors
     cy.deleteAllMails()
@@ -158,7 +158,7 @@ describe('Planning tests', () => {
           .click()
       })
     cy.get('.v-snack--active')
-      .should('contain', 'La ou les places bien été créée(s).')
+      .should('contain', 'La ou les places ont bien été créée(s).')
   })
 })
 
@@ -230,10 +230,10 @@ describe('Planning tests without candidate', () => {
           .click()
       })
     cy.get('.v-snack--active')
-      .should('contain', 'La ou les places bien été créée(s).')
+      .should('contain', 'La ou les places ont bien été créée(s).')
   })
 
-  it('Tests the import of csv files in the planning', () => {
+  it.only('Tests the import of csv files in the planning', () => {
     cy.adminLogin()
     // Goes to where the places are
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
@@ -321,6 +321,8 @@ describe('Planning tests without candidate', () => {
       .should('not.contain', Cypress.env('inspecteur'))
     // Imports the places
     cy.addPlanning()
+    cy.get('.t-import-places').click()
+
     // Check message, when place is put in not available hours
     const getEtatValidPlanning = cy.get('.t-import-places-validation-header-status')
     getEtatValidPlanning.should('contain', 'Etat')
@@ -331,6 +333,9 @@ describe('Planning tests without candidate', () => {
     cy.get('[col-id=message]').should('contain', "La place n'est pas enregistrée. La place est en dehors de la plage horaire autorisée.")
     cy.get('[col-id=status]').should('contain', 'clear')
     cy.get('[col-id=status]').should('not.contain', 'done')
+
+    cy.get('.t-close-btn-import-places').click()
+
     // The inspector should be back
     cy.contains('replay')
       .click()
@@ -351,22 +356,22 @@ describe('Planning tests without candidate', () => {
 
     cy.get('.t-import-places-modal-btn-all').click()
     morningBeChecked()
-    eveningBeChecked()
+    afternoonBeChecked()
     cy.get('.t-import-places-modal-btn-all').click()
     morningNotBeChecked()
-    eveningNotBeChecked()
+    afternoonNotBeChecked()
 
     cy.get('.t-import-places-modal-btn-morning').click()
     morningBeChecked()
-    eveningNotBeChecked()
+    afternoonNotBeChecked()
     cy.get('.t-import-places-modal-btn-morning').click()
     morningNotBeChecked()
-    eveningNotBeChecked()
+    afternoonNotBeChecked()
 
-    cy.get('.t-import-places-modal-btn-evening').click()
+    cy.get('.t-import-places-modal-btn-afternoon').click()
 
     cy.get('.t-import-places-modal-confirm-btn').click()
-    cy.get('.v-snack--active').should('contain', 'La ou les places bien été créée(s).')
+    cy.get('.v-snack--active').should('contain', 'La ou les places ont bien été créée(s).')
     cy.get('.v-snack--active button').should('be.visible').click({ force: true })
     cy.get('tbody > :nth-child(1) > :nth-child(12)').contains('check_circle')
     cy.get('tbody > :nth-child(1) > :nth-child(13)').contains('check_circle')
@@ -374,14 +379,14 @@ describe('Planning tests without candidate', () => {
     cy.get('tbody > :nth-child(1) > :nth-child(15)').contains('check_circle')
 
     cy.get('.t-import-places').click()
-    cy.get('.t-import-places-modal-btn-evening').click()
+    cy.get('.t-import-places-modal-btn-afternoon').click()
     cy.get('.t-import-places-modal-confirm-btn').click()
     cy.get('.v-snack--active').should('contain', 'Place déjà enregistrée en base')
     cy.get('.v-snack--active button').should('be.visible').click({ force: true })
 
     cy.contains('ROSNY SOUS BOIS').click()
     cy.get('.t-import-places').click()
-    cy.get('.t-import-places-modal-btn-evening').click()
+    cy.get('.t-import-places-modal-btn-afternoon').click()
     cy.get('.t-import-places-modal-confirm-btn').click()
     cy.contains('NOISY LE GRAND').click()
 
@@ -423,7 +428,7 @@ const morningBeChecked = () => {
   cy.get('[type="checkbox"]').eq(9).should('be.checked')
 }
 
-const eveningBeChecked = () => {
+const afternoonBeChecked = () => {
   cy.get('[type="checkbox"]').eq(10).should('be.checked')
   cy.get('[type="checkbox"]').eq(11).should('be.checked')
   cy.get('[type="checkbox"]').eq(12).should('be.checked')
@@ -445,7 +450,7 @@ const morningNotBeChecked = () => {
   cy.get('[type="checkbox"]').eq(9).should('not.be.visible')
 }
 
-const eveningNotBeChecked = () => {
+const afternoonNotBeChecked = () => {
   cy.get('[type="checkbox"]').eq(10).should('not.be.visible')
   cy.get('[type="checkbox"]').eq(11).should('not.be.visible')
   cy.get('[type="checkbox"]').eq(12).should('not.be.visible')

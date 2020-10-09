@@ -74,31 +74,31 @@
               :color="isSelectAllSlots ? 'primary' : colorDisabledButton"
               @click="selectAllSlots()"
             >
-              Tout selectionner
+              Tout sélectionner
             </v-btn>
             <v-btn
               class="t-import-places-modal-btn-morning"
               :disabled="!isIpcsrHasSelected"
-              :outlined="isselectAllMorningSlots ? false : true"
-              :color="isselectAllMorningSlots ? 'primary' : colorDisabledButton"
+              :outlined="isSelectAllMorningSlots ? false : true"
+              :color="isSelectAllMorningSlots ? 'primary' : colorDisabledButton"
               @click="selectAllMorningSlots()"
             >
-              Selectionner le matin
+              Sélectionner le matin
             </v-btn>
             <v-btn
-              class="t-import-places-modal-btn-evening"
+              class="t-import-places-modal-btn-afternoon"
               :disabled="!isIpcsrHasSelected"
-              :outlined="isselectAllEveningSlots ? false : true"
-              :color="isselectAllEveningSlots ? 'primary' : colorDisabledButton"
-              @click="selectAllEveningSlots()"
+              :outlined="isSelectAllAfternoonSlots ? false : true"
+              :color="isSelectAllAfternoonSlots ? 'primary' : colorDisabledButton"
+              @click="selectAllAfternoonSlots()"
             >
-              Selectionner l'apres midi
+              Sélectionner l'après-midi
             </v-btn>
           </div>
 
           <div class="flex flex-wrap align-center justify-center t-import-places-modal-checkbox-content">
             <v-checkbox
-              v-for="(creneau, index) in creneauMorningEveningSetting.morning"
+              v-for="(creneau, index) in creneauMorningAfternoonSetting.morning"
               :key="creneau"
               v-model="selectedCreneauForIPCSR"
               :label="creneau"
@@ -110,13 +110,13 @@
               {{ creneau }}
             </v-checkbox>
             <v-checkbox
-              v-for="(creneau, index) in creneauMorningEveningSetting.evening"
+              v-for="(creneau, index) in creneauMorningAfternoonSetting.afternoon"
               :key="creneau"
               v-model="selectedCreneauForIPCSR"
               :label="creneau"
               :value="creneau"
               color="primary"
-              :class="`check-box-style t-import-places-modal-checkbox-evening-${index}`"
+              :class="`check-box-style t-import-places-modal-checkbox-afternoon-${index}`"
               :disabled="!isIpcsrHasSelected"
             >
               {{ creneau }}
@@ -152,7 +152,7 @@
       <v-card class="ma-2">
         <v-card-title class="flex flex-wrap align-center justify-center">
           <span>
-            Planifier plusieurs inspecteurs par fichier:
+            Importation des places:
           </span>
         </v-card-title>
         <div class="u-pr">
@@ -173,7 +173,7 @@
 <script>
 import { mapGetters, mapState } from 'vuex'
 import { CREATE_PLACES_REQUEST, FETCH_AUTOCOMPLETE_INSPECTEURS_REQUEST } from '@/store'
-import { creneauMorningEveningSetting, getFrenchLuxonFromSql } from '../../../../util'
+import { creneauMorningAfternoonSetting, getFrenchLuxonFromSql } from '../../../../util'
 import CandilibAutocomplete from '../CandilibAutocomplete'
 import AdminImportPlaces from '../AdminImportPlaces'
 import ImportPlacesValidation from '../ImportPlacesValidation'
@@ -211,8 +211,8 @@ export default {
       selectedCreneauForIPCSR: [],
       isImportPlacesActive: false,
       isSelectAllSlots: false,
-      isselectAllMorningSlots: false,
-      isselectAllEveningSlots: false,
+      isSelectAllMorningSlots: false,
+      isSelectAllAfternoonSlots: false,
       currentSelectedInspecteur: { inspecteurInfos: {}, places: [] },
       isIpcsrHasSelected: false,
 
@@ -258,7 +258,7 @@ export default {
   },
 
   beforeMount () {
-    this.creneauMorningEveningSetting = creneauMorningEveningSetting
+    this.creneauMorningAfternoonSetting = creneauMorningAfternoonSetting
   },
 
   methods: {
@@ -267,30 +267,30 @@ export default {
       this.currentSelectedInspecteur.inspecteurInfos = inspecteur
     },
     selectAllSlots () {
-      const { morning, evening } = this.creneauMorningEveningSetting
+      const { morning, afternoon } = this.creneauMorningAfternoonSetting
       this.isSelectAllSlots = !this.isSelectAllSlots
-      this.isselectAllMorningSlots = false
-      this.isselectAllEveningSlots = false
+      this.isSelectAllMorningSlots = false
+      this.isSelectAllAfternoonSlots = false
 
-      this.selectedCreneauForIPCSR = this.isSelectAllSlots ? [...morning, ...evening] : []
+      this.selectedCreneauForIPCSR = this.isSelectAllSlots ? [...morning, ...afternoon] : []
     },
 
     selectAllMorningSlots () {
-      const { morning } = this.creneauMorningEveningSetting
+      const { morning } = this.creneauMorningAfternoonSetting
 
-      this.isselectAllMorningSlots = !this.isselectAllMorningSlots
-      this.isselectAllEveningSlots = false
+      this.isSelectAllMorningSlots = !this.isSelectAllMorningSlots
+      this.isSelectAllAfternoonSlots = false
       this.isSelectAllSlots = false
-      this.selectedCreneauForIPCSR = this.isselectAllMorningSlots ? morning : []
+      this.selectedCreneauForIPCSR = this.isSelectAllMorningSlots ? morning : []
     },
 
-    selectAllEveningSlots () {
-      const { evening } = this.creneauMorningEveningSetting
+    selectAllAfternoonSlots () {
+      const { afternoon } = this.creneauMorningAfternoonSetting
 
-      this.isselectAllEveningSlots = !this.isselectAllEveningSlots
-      this.isselectAllMorningSlots = false
+      this.isSelectAllAfternoonSlots = !this.isSelectAllAfternoonSlots
+      this.isSelectAllMorningSlots = false
       this.isSelectAllSlots = false
-      this.selectedCreneauForIPCSR = this.isselectAllEveningSlots ? evening : []
+      this.selectedCreneauForIPCSR = this.isSelectAllAfternoonSlots ? afternoon : []
     },
 
     async addPlacesForOneIPCSR () {
@@ -315,8 +315,8 @@ export default {
     resetFormPlaceForOneIPCSR () {
       this.currentSelectedInspecteur = { inspecteurInfos: this.currentSelectedInspecteur.inspecteurInfos, places: [] }
       this.selectedCreneauForIPCSR = []
-      this.isselectAllMorningSlots = false
-      this.isselectAllEveningSlots = false
+      this.isSelectAllMorningSlots = false
+      this.isSelectAllAfternoonSlots = false
       this.isSelectAllSlots = false
     },
   },

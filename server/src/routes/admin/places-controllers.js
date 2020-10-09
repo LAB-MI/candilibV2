@@ -207,7 +207,7 @@ export const createPlaceByAdmin = async (req, res) => {
     })
     res.json({
       success: true,
-      message: 'La ou les places bien été créée(s).',
+      message: 'La ou les places ont bien été créée(s).',
     })
   } catch (error) {
     appLogger.error({
