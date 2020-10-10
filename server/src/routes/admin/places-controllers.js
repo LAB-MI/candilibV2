@@ -199,7 +199,11 @@ export const createPlaceByAdmin = async (req, res) => {
       if (hasError) {
         throw new ErrorWithStatus(400, hasError.message)
       }
+      loggerInfo.countNumberCreatedPlaces = createdPlacesResult.length
     }
+
+    loggerInfo.countNumberCreatedPlaces = 1
+
     appLogger.info({
       ...loggerInfo,
       action: 'created-place(s)',
