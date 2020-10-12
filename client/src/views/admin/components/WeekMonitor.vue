@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: -6em;">
+  <div>
     <h2 class="title">
       <strong>
         <span class="u-uppercase">

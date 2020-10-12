@@ -149,6 +149,18 @@ const apiAdmin = {
     return json
   },
 
+  async createPlaces ({ centre, inspecteur, dates }) {
+    const json = await apiClient.post(`${apiPaths.admin.places}`, {
+      headers: getHeadersForAdminJson(),
+      body: JSON.stringify({
+        centre,
+        inspecteur,
+        dates,
+      }),
+    })
+    return json
+  },
+
   async deletePlace (placeId) {
     const json = await apiClient.delete(
         `${apiPaths.admin.places}/${placeId}`,
