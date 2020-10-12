@@ -45,7 +45,7 @@
           <v-card-title>
             Planifier un seul inspecteur pour le Centre&nbsp;
             <strong>{{ activeCentreInfos.nom }}</strong>&nbsp;
-            du departement&nbsp;
+            du département&nbsp;
             <strong>{{ activeDepartement }}</strong>&nbsp;
             le &nbsp;
             <strong>
