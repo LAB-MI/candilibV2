@@ -1063,7 +1063,6 @@ router.get(
   getCandidatsLeaveRetentionArea,
 )
 
-// TODO: SWAGGER DOC
 /**
  * @swagger
  *
