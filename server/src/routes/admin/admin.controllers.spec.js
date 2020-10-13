@@ -9,7 +9,7 @@ import {
   updatedInfoUser,
   createUserController,
   getUsers,
-} from './admin.controllers'
+} from './admin-controllers'
 import { createUser } from '../../models/user'
 import config from '../../config'
 import {

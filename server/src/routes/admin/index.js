@@ -12,7 +12,7 @@ import {
   getMe,
   getUsers,
   updatedInfoUser,
-} from './admin.controllers'
+} from './admin-controllers'
 import {
   createIpcsr,
   getInspecteurs,
