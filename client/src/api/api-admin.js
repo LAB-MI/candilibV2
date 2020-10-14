@@ -153,6 +153,7 @@ const apiAdmin = {
     const json = await apiClient.post(`${apiPaths.admin.places}`, {
       headers: getHeadersForAdminJson(),
       body: JSON.stringify({
+        departement: centre.departement,
         centre,
         inspecteur,
         dates,

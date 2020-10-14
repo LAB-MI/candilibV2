@@ -34,6 +34,7 @@ export async function verifyRepartiteurDepartement (req, res, next) {
     departement,
     departements,
   }
+
   try {
     if (departements && departements.includes(departement)) {
       return next()
@@ -53,6 +54,7 @@ export async function verifyRepartiteurDepartement (req, res, next) {
       error,
     })
   }
+
   return res.status(401).send({
     isTokenValid: false,
     message: ACCESS_FORBIDDEN,
