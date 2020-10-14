@@ -550,7 +550,8 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       zone: 'Europe/Paris',
       locale: 'fr',
     })
-    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id }
+    const visibleAt = getDateVisibleForPlaces()
+    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id, visibleAt }
     await createPlace(leanPlace)
 
     appLogger.info({
