@@ -5,14 +5,14 @@
 
 import express from 'express'
 
-import { getCandidats, importCandidats, updateCandidats } from './candidats.controllers'
+import { getCandidats, importCandidats, updateCandidats } from './candidats-controllers'
 import {
   createUserController,
   archiveUserController,
   getMe,
   getUsers,
   updatedInfoUser,
-} from './admin.controllers'
+} from './admin-controllers'
 import {
   createIpcsr,
   getInspecteurs,

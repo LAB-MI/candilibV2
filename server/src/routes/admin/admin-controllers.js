@@ -1,6 +1,6 @@
 /**
  * Contrôleur regroupant les fonctions de récupération des infos admin
- * @module routes/admin/admin-controllers
+ * @module
  */
 import { findUserById } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
@@ -34,10 +34,10 @@ export const getMe = async (req, res) => {
     action: 'get-me',
     admin: req.userId,
   }
-  appLogger.info(loggerInfo)
   try {
     const infoAdmin = await findInfoAdminById(req.userId)
     if (infoAdmin) {
+      appLogger.info({ ...loggerInfo, description: 'Utilisateur trouvé' })
       return res.json(infoAdmin)
     }
     appLogger.warn({
@@ -111,8 +111,6 @@ export const createUserController = async (req, res) => {
     status,
   }
 
-  appLogger.info(loggerInfo)
-
   try {
     const user = await createAppropriateUser(
       req.userId,
@@ -172,8 +170,6 @@ export const getUsers = async (req, res) => {
     isArchivedOnly,
   }
 
-  appLogger.info(loggerInfo)
-
   try {
     const users = isArchivedOnly === 'true' ? await getArchivedUsersByAdmin(userId) : await getAppropriateUsers(userId)
 
@@ -223,8 +219,6 @@ export const updatedInfoUser = async (req, res) => {
     status,
     isUnArchive,
   }
-
-  // appLogger.info(loggerInfo)
 
   try {
     let updatedUser
@@ -287,8 +281,6 @@ export const archiveUserController = async (req, res) => {
     admin: req.userId,
     emailToDelete,
   }
-
-  appLogger.info(loggerInfo)
 
   try {
     const archivedUser = await archiveUserBusiness(req.userId, emailToDelete)

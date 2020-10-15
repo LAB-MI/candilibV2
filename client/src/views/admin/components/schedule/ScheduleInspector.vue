@@ -80,12 +80,18 @@
     </div>
 
     <div>
-      <div class="u-flex  u-flex--center  u-flex--space-between">
+      <div class="flex flex-wrap u-flex--center">
         <h3>Centres d'examen</h3>
         <generate-inspecteur-bordereaux
           :date="date"
           :is-for-inspecteurs="true"
         />
+        <modal-add-schedule-inspecteur
+          :active-centre-infos="{_id: activeCentreId, nom: activeNomCentre, departement: activeDepartement}"
+          :selected-date="date"
+          @reload-week-monitor="reloadWeekMonitor"
+        />
+
         <generate-inspecteur-bordereaux
           :date="date"
           :is-for-inspecteurs="false"
@@ -251,11 +257,12 @@ import {
   RESET_CANDIDAT,
 } from '@/store'
 
+import { RefreshButton, BigLoadingIndicator } from '@/components'
 import DeleteScheduleInspector from './DeleteScheduleInspector'
 import GenerateInspecteurBordereaux from './GenerateInspecteurBordereaux'
 import ScheduleInspectorButton from './ScheduleInspectorButton'
 import ScheduleInspectorDetails from './ScheduleInspectorDetails'
-import { RefreshButton, BigLoadingIndicator } from '@/components'
+import ModalAddScheduleInspecteur from './ModalAddScheduleInspecteur'
 
 import {
   creneauSetting,
@@ -274,12 +281,13 @@ const numberOfCreneau = creneauSetting.length || 0
 
 export default {
   components: {
+    BigLoadingIndicator,
     DeleteScheduleInspector,
     GenerateInspecteurBordereaux,
     RefreshButton,
     ScheduleInspectorButton,
     ScheduleInspectorDetails,
-    BigLoadingIndicator,
+    ModalAddScheduleInspecteur,
   },
 
   data () {
@@ -301,6 +309,7 @@ export default {
       isParseInspecteursPlanningLoading: false,
       selectedPlaceInfo: undefined,
       lastActiveCenters: [],
+      selectedCreneau: [],
     }
   },
 
@@ -316,7 +325,7 @@ export default {
           inspecteurs.isFetching ||
           places.isDeletingBookedPlace ||
           places.isDeletingAvailablePlace ||
-          places.isCreating
+          places.isCreating || state.adminSearch.isFetching
       },
 
       currentWeekNumber () {
@@ -335,6 +344,13 @@ export default {
       inspecteurs (state) {
         return state.admin.inspecteurs.list
       },
+      inspecteursFullList (state) {
+        return state.adminSearch.inspecteurs.list.map(inspecteur => {
+          const { nom, prenom, matricule } = inspecteur
+          const nomPrenomMatricule = nom + '  ' + prenom + ' | ' + matricule
+          return { nomPrenomMatricule, ...inspecteur }
+        })
+      },
     }),
 
     beginDate () {
@@ -352,6 +368,10 @@ export default {
     isLoading () {
       return this.isFetching ||
         this.isComputing
+    },
+    allInspecteurs: state => state.adminSearch.inspecteurs.list,
+    activeNomCentre () {
+      return this.placesByCentreList.find(el => el.centre._id === this.activeCentreId)?.centre?.nom
     },
   },
 
@@ -398,6 +418,9 @@ export default {
     if (this.placesByCentreList && this.placesByCentreList.length) {
       const centerId = this.$route.params.center
       this.activeCentreId = centerId || this.firstCentreId
+      this.activeCentreInfos = {
+
+      }
       this.lastActiveCenters[this.activeDepartement] = this.activeCentreId
       this.reloadWeekMonitor()
     }
@@ -514,6 +537,8 @@ export default {
               return 0
             }),
           }
+        }).sort((item, itemToCompare) => {
+          return item.nom.localeCompare(itemToCompare.nom)
         })
       }
       if (!this.inspecteursData.length) {
@@ -563,6 +588,12 @@ export default {
 
     updateCenterInRoute () {
       this.$router.push({ params: { center: this.activeCentreId, date: this.date } })
+    },
+
+    addOrRemoveCreneauInList (creneau) {
+      this.selectedCreneau = this.selectedCreneau.find(el => el === creneau)
+        ? this.selectedCreneau.filter(el => el !== creneau)
+        : this.selectedCreneau.concat(creneau)
     },
   },
 }

@@ -1,5 +1,5 @@
 <template>
-  <div class="u-flex  u-flex--center  u-flex--v-start">
+  <div class="flex flex-wrap align-center justify-center">
     <v-autocomplete
       v-model="selected"
       :label="label"
