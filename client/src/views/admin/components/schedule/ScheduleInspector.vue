@@ -87,7 +87,7 @@
           :is-for-inspecteurs="true"
         />
         <modal-add-schedule-inspecteur
-          :active-centre-infos="{_id: activeCentreId, nom: activeNomCentre}"
+          :active-centre-infos="{_id: activeCentreId, nom: activeNomCentre, departement: activeDepartement}"
           :selected-date="date"
           @reload-week-monitor="reloadWeekMonitor"
         />
