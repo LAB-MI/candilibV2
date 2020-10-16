@@ -7,6 +7,21 @@ export const createArchivedCandidat = async candidatData => {
   return candidat
 }
 
+export const createArchivedCandidatFromCandidat = async (
+  candidat,
+  archiveReason,
+) => {
+  const { _id: candidatId } = candidat
+  const candidatData = {
+    ...candidat,
+    candidatId,
+    archiveReason,
+  }
+  delete candidatData._id
+  const archiviedCandidat = await ArchivedCandidat.create(candidatData)
+  return archiviedCandidat
+}
+
 export const countArchivedCandidats = async () =>
   ArchivedCandidat.countDocuments()
 
