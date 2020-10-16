@@ -217,6 +217,7 @@ export const deleteCandidat = async (candidat, reason) => {
   }
   try {
     const cleanedCandidat = candidat.toObject ? candidat.toObject() : candidat
+    cleanedCandidat.candidatId = cleanedCandidat._id
     delete cleanedCandidat._id
     cleanedCandidat.archiveReason = reason
     await ArchivedCandidat.create(cleanedCandidat)

@@ -1,15 +1,11 @@
-import {
-  createCandidat,
-  updateCandidatEmail,
-  deleteCandidat,
-  deleteCandidatByNomNeph,
-  findCandidatByNomNeph,
-  findBookedCandidats,
-  updateCandidatSignUp,
-} from './'
-
 import { connect, disconnect } from '../../mongo-connection'
-
+import {
+  REASON_CANCEL,
+  REASON_EXAM_FAILED,
+  REASON_REMOVE_RESA_ADMIN,
+} from '../../routes/common/reason.constants'
+import { getFrenchLuxon } from '../../util'
+import { findArchivedCandidatByCandidatId } from '../archived-candidat/archived-candidat.queries'
 import {
   commonBasePlaceDateTime,
   createCandidats,
@@ -21,18 +17,20 @@ import {
   removePlaces,
 } from '../__tests__'
 import {
-  archivePlace,
-  updateCandidatFailed,
-  updateCandidatNoReussite,
-  findCandidatsMatching,
-} from './candidat.queries'
+  createCandidat,
+  deleteCandidat,
+  deleteCandidatByNomNeph,
+  findBookedCandidats,
+  findCandidatByNomNeph,
+  updateCandidatEmail,
+  updateCandidatSignUp,
+} from './'
 import {
-  REASON_CANCEL,
-  REASON_EXAM_FAILED,
-  REASON_REMOVE_RESA_ADMIN,
-} from '../../routes/common/reason.constants'
+  archivePlace,
 
-import { getFrenchLuxon } from '../../util'
+  findCandidatsMatching, updateCandidatFailed,
+  updateCandidatNoReussite,
+} from './candidat.queries'
 import { ABSENT, ECHEC } from './objetDernierNonReussite.values'
 
 const validEmail = 'candidat@example.com'
@@ -364,6 +362,9 @@ describe('Candidat', () => {
 
       // Then
       expect(noCandidat).toBe(null)
+
+      const archivedCandidat = await findArchivedCandidatByCandidatId(deletedCandidat._id)
+      expect(archivedCandidat).toBeDefined()
     })
 
     it('should delete a candidat by its email', async () => {

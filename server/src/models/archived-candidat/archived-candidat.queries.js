@@ -33,6 +33,11 @@ export const findAllArchivedCandidatsLean = async (limit = 20, skip = 0) => {
   return candidats
 }
 
+export const findArchivedCandidatByCandidatId = async candidatId => {
+  const candidat = await ArchivedCandidat.findOne({ candidatId })
+  return candidat
+}
+
 export const findArchivedCandidatByEmail = async email => {
   const candidat = await ArchivedCandidat.findOne({ email })
   return candidat
