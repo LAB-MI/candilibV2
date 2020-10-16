@@ -36,7 +36,7 @@ import {
   getCandidatsLeaveRetentionAreaByWeekAndDepartement,
   getStatsPlacesExam,
   getStatsResultsExam,
-} from './statistics.controllers'
+} from './statistics-controllers'
 
 import { getInfoLastSyncAurige } from './status-candilib-controllers'
 

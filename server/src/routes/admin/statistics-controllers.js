@@ -1,6 +1,6 @@
 /**
  * Module de gestion des statistiques d'examen
- * @module routes/admin/statistics-controllers
+ * @module
  */
 import { parseAsync } from 'json2csv'
 
