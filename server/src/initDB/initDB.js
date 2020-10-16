@@ -27,7 +27,7 @@ export const initDB = async () => {
     versionDB = Number(statusVersion.message)
   }
 
-  ModelPlace.syncIndexes()
+  await ModelPlace.syncIndexes()
 }
 
 /**
