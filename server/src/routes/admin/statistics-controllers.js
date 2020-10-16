@@ -166,6 +166,9 @@ const parseStatsPlacesExams = statsData =>
   parseAsync(statsData, optionsPlacesExam)
 
 /**
+ * Obtenir les statistiques des réussites des examens
+ * @async
+ * @function
  *
  * @param {import('express').Request} req Requête express
  * @param {Object} req.query Query string de la requête
@@ -231,7 +234,9 @@ export const getStatsResultsExam = async (req, res) => {
 }
 
 /**
- *
+ * Obtenir les statistiques des candidats en rétentions
+ * @aysnc
+ * @function
  * @param {import('express').Request} req Requête express
  * @param {Object} req.query Query string de la requête
  * @param {Object} req.query.departement Département selectionné
@@ -311,7 +316,9 @@ export const getCandidatsLeaveRetentionArea = async (req, res) => {
 }
 
 /**
- *
+ * Obtenir les statistiques des candidats en rétention par semaine et départemenet
+ * @async
+ * @function
  * @param {import('express').Request} req Requête express
  * @param {Object} req.query Query string de la requête
  * @param {Object} req.query.departement Département selectionné
@@ -368,7 +375,9 @@ export const getCandidatsLeaveRetentionAreaByWeekAndDepartement = async (
 }
 
 /**
- *
+ * Obtenir les statistiques des places d'examins
+ * @async
+ * @function
  * @param {import('express').Request} req Requête express
  * @param {Object} req.query Query string de la requête
  * @param {string} req.query.isCsv Indique si l'on souhaite un CSV en réponse
