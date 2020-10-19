@@ -40,6 +40,7 @@
       <v-container class="u-flex  u-flex--between  u-full-width">
         <select-status
           class="t-select-update-status"
+          :menu-props="{ minWidth: 150 }"
           @change-status="newStatus => status = newStatus"
         />
 
@@ -50,6 +51,7 @@
           class="t-select-update-departements"
           :available-departements="availableDepartements"
           :default-departements="departements"
+          :menu-props="{ minWidth: 150 }"
           @change-departements="newDep => departements = newDep"
         />
 

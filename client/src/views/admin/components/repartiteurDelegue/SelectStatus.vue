@@ -10,6 +10,7 @@
     hint="ex. : Répartiteur"
     tabindex="0"
     required
+    :menu-props="menuProps"
     @change="$emit('change-status', status)"
   />
 </template>
@@ -25,6 +26,13 @@ const defaultAvailableStatuses = [
 ]
 
 export default {
+  props: {
+    menuProps: {
+      type: Object,
+      default () {},
+    },
+  },
+
   data () {
     return {
       status: 'repartiteur',
