@@ -2053,7 +2053,7 @@ router.post(
 
 router.get(
   '/departements/:id?',
-  verifyUserLevel(config.userStatusLevels.admin),
+  verifyUserLevel(config.userStatusLevels.delegue),
   getDepartementsController,
 )
 
