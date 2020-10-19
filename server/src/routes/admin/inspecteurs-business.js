@@ -16,6 +16,7 @@ import {
 } from '../../models/place'
 import { getFrenchLuxonRangeFromDate } from '../../util'
 import { findUserById } from '../../models/user'
+import config from '../../config'
 
 /**
  * Récupère la liste des inspecteurs qui on au moins une réservation.
@@ -144,10 +145,7 @@ export const isUserAllowedToUpdateIpcsr = async (
   const user = await findUserById(userId)
   const ipcsr = await findInspecteurById(ipcsrId)
   if (newDepartement) {
-    return (
-      user.departements.includes(newDepartement) &&
-      user.departements.includes(ipcsr.departement)
-    )
+    return (user.departements.includes(newDepartement) || (user.status === config.userStatuses.DELEGUE)) && user.departements.includes(ipcsr.departement)
   }
   return user.departements.includes(ipcsr.departement)
 }

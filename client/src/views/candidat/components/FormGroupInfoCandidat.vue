@@ -118,6 +118,7 @@
         :readonly="readonly"
         tabindex="6"
         :hint="`${getMsg('preinscription_departement_hint')}`"
+        :menu-props="{ minWidth: 150 }"
         @change-departements="setDepartement"
       />
     </div>
