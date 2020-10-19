@@ -13,7 +13,7 @@ export const mentionsLegalesJson = [
     icon: 'import_contacts',
     textContent: [
       {
-        subTextContent: 'Emmanuel Barbe, délégué interministériel à la Sécurité routière. (<a href="http://www.securite-routiere.gouv.fr/" target="_blank">DSR</a>)',
+        subTextContent: 'Marie Gautier-Melleray, délégué interministériel à la Sécurité routière. (<a href="http://www.securite-routiere.gouv.fr/" target="_blank">DSR</a>)',
       },
     ],
   },
@@ -34,7 +34,7 @@ export const mentionsLegalesJson = [
     icon: 'brush',
     textContent: [
       {
-        subTextContent: 'Conception et réalisation Lab DSIC du Ministère de l\'Intérieur avec le Bureau du permis de conduire et de l’organisation des examens (BRPCE) de la Délégation à la sécurité routière (<a href="http://www.securite-routiere.gouv.fr/" target="_blank">DSR</a>)',
+        subTextContent: 'Conception et réalisation par le laboratoire innovation (DNUM) du Ministère de l\'Intérieur avec le Bureau du permis de conduire et de l’organisation des examens (BRPCE) de la Délégation à la sécurité routière (<a href="http://www.securite-routiere.gouv.fr/" target="_blank">DSR</a>)',
       },
     ],
   },
