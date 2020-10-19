@@ -145,7 +145,7 @@ export const isUserAllowedToUpdateIpcsr = async (
   const user = await findUserById(userId)
   const ipcsr = await findInspecteurById(ipcsrId)
   if (newDepartement) {
-    return (user.departements.includes(newDepartement) && user.departements.includes(ipcsr.departement)) || (user.status === config.userStatuses.DELEGUE)
+    return (user.departements.includes(newDepartement) || (user.status === config.userStatuses.DELEGUE)) && user.departements.includes(ipcsr.departement)
   }
   return user.departements.includes(ipcsr.departement)
 }

@@ -607,7 +607,7 @@ router.get('/inspecteurs', getInspecteurs)
  * @callback updateIpcsr
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/put_admin_inspecteurs}
  */
-router.put('/inspecteurs/:id', updateIpcsr)
+router.put('/inspecteurs/:id', verifyUserLevel(config.userStatusLevels.delegue), updateIpcsr)
 
 // router.patch('/inspecteurs/:id', updateIpcsr) // Activer/désactiver un inspecteur
 
@@ -736,7 +736,7 @@ router.put('/inspecteurs/:id', updateIpcsr)
  * @callback createIpcsr
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_inspecteurs}
  */
-router.post('/inspecteurs', createIpcsr)
+router.post('/inspecteurs', verifyUserLevel(config.userStatusLevels.delegue), createIpcsr)
 
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
 

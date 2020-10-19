@@ -210,7 +210,7 @@ export default {
   computed: {
     ...mapState({
       availableDepartements: state => {
-        return [...new Set(state.admin.departements.list.concat(state.adminDepartements.list.map(dptInfos => dptInfos._id)))]
+        return state.adminDepartements.list.map(dptInfos => dptInfos._id)
       },
       isUpdatingIpcsr: state => state.admin.inspecteurs.isFetching,
     }),
