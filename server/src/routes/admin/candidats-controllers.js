@@ -185,7 +185,7 @@ export const getCandidats = async (req, res) => {
               statutReasonDictionnary[place.archiveReason]
             return {
               ...place,
-              archiveReason: humanReadableReason,
+              archiveReason: humanReadableReason || place.archiveReason,
             }
           })
         appLogger.info({ ...loggerInfo, description: 'Candidiat trouvé' + placeFound ? 'avec une réservztion' : '' })
