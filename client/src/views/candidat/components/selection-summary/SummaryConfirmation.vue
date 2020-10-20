@@ -73,6 +73,7 @@
         check
       </v-icon>
     </h4>
+    <recaptcha />
     <v-btn @click="goToHome()">
       Retour à l'accueil
     </v-btn>
@@ -91,7 +92,12 @@ import {
   SET_SHOW_EVALUATION,
 } from '@/store'
 
+import Recaptcha from '../reCaptcha.vue'
+
 export default {
+  components: {
+    Recaptcha,
+  },
   data () {
     return {
       selectedCheckBox: [],
