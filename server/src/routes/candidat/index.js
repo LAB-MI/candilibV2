@@ -4,7 +4,7 @@
  */
 import express from 'express'
 
-import { getMe, saveEvaluation } from './candidat.controllers'
+import { getMe, saveEvaluation } from './candidat-controllers'
 import { getCentres } from '../common/centre-controllers'
 import { getActiveGeoDepartementsInfos } from '../candidat/departements-controllers'
 
@@ -449,6 +449,6 @@ router.patch('/places', verifyAccesPlacesByCandidat, bookPlaceByCandidat)
 router.delete('/places', unbookPlace)
 router.post('/evaluations', saveEvaluation)
 
-export { preSignup, emailValidation } from './candidat.controllers'
+export { preSignup, emailValidation } from './candidat-controllers'
 
 export default router
