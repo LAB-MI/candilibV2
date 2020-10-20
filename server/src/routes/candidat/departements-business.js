@@ -4,7 +4,15 @@ import { UNKNOWN_ERROR_GET_DEPARTEMENT } from '../admin/message.constants'
 import { findCentresWithNbPlacesByGeoDepartement } from '../common/centre-business'
 import { candidatCanReservePlaceForThisPeriod } from './util'
 
-// TODO: ADD JSDOC
+/**
+ * Récupérer les nombres places par géo-département et par centres
+ * @async
+ * @function
+ *
+ * @param {array} geoDepartementsId Liste d'id par geoDepartement
+ * @param {string} userId Id de l'utilisateur candidat
+ * @return {geoDepartementsInfo[]} Liste contenant les nombres de places par centres et par geo-deaprtements
+ */
 export const getGeoDepartementsInfos = async (geoDepartementsId, userId) => {
   const loggerContent = {
     action: 'Getting active geo departements business',
@@ -51,3 +59,10 @@ export const getGeoDepartementsInfos = async (geoDepartementsId, userId) => {
     throw new Error(UNKNOWN_ERROR_GET_DEPARTEMENT)
   }
 }
+
+/**
+*  @typedef {Object} geoDepartementsInfo
+*  @property {string} geoDepartement - Identifiant du géo-département
+*  @property {array} centres - Liste des des centres du géo-département
+*  @property {number} count - Total de places
+*/

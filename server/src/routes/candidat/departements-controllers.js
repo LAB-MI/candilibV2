@@ -8,7 +8,15 @@ import { getGeoDepartementsFromCentres } from '../../models/centre'
 import { UNKNOWN_ERROR_GET_DEPARTEMENTS_INFOS } from '../admin/message.constants'
 import { getGeoDepartementsInfos } from './departements-business'
 
-// TODO: ADD JSDOC
+/**
+ * Récupérer les géo-départements actives
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId Id de l'utilisateur
+ * @param {import('express').Response} res
+ */
 export async function getActiveGeoDepartementsInfos (req, res) {
   const { userId } = req
   const loggerContent = {

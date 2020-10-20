@@ -58,7 +58,7 @@ router.get('/me', getMe)
  * /candidat/centres:
  *   get:
  *     tags: ["Candidat"]
- *     summary: Récupération de mes infos des centres du département du candidat
+ *     summary: Récupération des infos des centres du département du candidat
  *     description: Après connexion, renvoie les infos des centres du département du candidat
  *     security:
  *       - bearerAuth: []
@@ -117,7 +117,45 @@ router.get('/me', getMe)
 
 router.get('/centres', getCentres)
 
-// TODO: DOC SWAGGER
+/**
+ * @swagger
+ *
+ * /candidat/departements:
+ *   get:
+ *     tags: ["Candidat"]
+ *     summary: Récupération des infos des départements coté candidat
+ *     description: Après connexion, renvoie les infos des géo-départements du candidat
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: userId
+ *         schema:
+ *           type: string
+ *           example: 'eyJ7hbGc3iOiJIUzI1NiIsInR5'
+ *         required: true
+ *         description: Id du candidat
+ *     responses:
+ *       200:
+ *         description: Succès de la requête
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/GeoDepartementsInfos'
+ *       401:
+ *         $ref: '#/components/responses/InvalidTokenResponse'
+ *
+ *       500:
+ *         $ref: '#/components/responses/UnknownErrorResponse'
+ *
+ */
+
+/**
+ * Après connexion, renvoie les infos des géo-departements actives
+ *
+ * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_departements}
+ */
+
 router.get('/departements', getActiveGeoDepartementsInfos)
 
 /**

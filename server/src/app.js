@@ -350,6 +350,34 @@ import npmVersion from '../package.json'
  *           type: string
  *           example: "Point"
  *
+ *     GeoDepartementsInfos:
+ *       type: object
+ *       required:
+ *         - success
+ *         - message
+ *       properties:
+ *         success:
+ *           type: boolean
+ *           description: Booléen à `true` si l'action a été effectuée en entier et correctement, à `false` sinon.
+ *         message:
+ *           type: string
+ *           description: Un message compréhensible par l'usager
+ *         geoDepartementsInfos:
+ *           type: array
+ *           description: Liste des géo-départements
+ *           items:
+ *             type: object
+ *             properties:
+ *               geoDepartement:
+ *                 type: string
+ *                 description: Géo-département concerné
+ *               centres:
+ *                 type: array
+ *                 description: Contient la liste des centres disponibles
+ *               count:
+ *                 type: string
+ *                 description: Total de places disponible sur le géo-departement concerné
+ *
  *     InfoObject:
  *       type: object
  *       required:
