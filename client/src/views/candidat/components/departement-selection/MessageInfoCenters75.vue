@@ -2,7 +2,7 @@
   <v-alert
     v-if="centers && centers.length"
     type="info"
-    class="rounded-corner"
+    class="rounded-corner t-info-centers-75"
   >
     {{ message }}
     <div v-if="centersUniq && centersUniq.length">
