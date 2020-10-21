@@ -47,7 +47,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Comment ça marche ?',
       content: [
         {
-          subTitleContent: 'Pour s\'inscrire',
+          subTitleContent: '- Pour s\'inscrire:',
           textContent: 'Rendez-vous sur la page d\'accueil du service pour se pré-inscrire.',
         },
         {
@@ -57,7 +57,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: 'Si celui-ci ne figure pas dans la liste déroulante, vous devrez choisir le département le plus proche de chez vous. Cela n’aura pas de conséquence pour le choix de votre lieu de passage de l’examen.',
         },
         {
-          subTitleContent: 'Pour réserver',
+          subTitleContent: '- Pour réserver:',
           textContent: 'Connectez-vous à Candilib après réception du mail « Validation de votre inscription à Candilib » (lien de connexion dans le mail de validation).',
         },
         {
@@ -68,6 +68,14 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         },
         {
           textContent: 'Confirmez votre réservation.',
+        },
+        {
+          subTitleContent: '- Je n’ai pas reçu la validation de ma pré-inscription après 48h:',
+          textContent: 'Un problème technique peut avoir empêché la vérification de votre pré-inscription. Si vous n’avez pas reçu de mail de validation ou de rejet après 4 jours (hors week-ends et jours fériés), vous pourrez contacter votre service Candilib.',
+        },
+        {
+          subTitleContent: '- Je n’ai pas accès à mon résultat d\'examen:',
+          textContent: 'Candilib me fait savoir que j’aurais réussi mon examen mais je ne vois pas le résultat sur le site de la Sécurité Routière. Les résultats sont généralement en ligne sous 72 h (hors week-ends et jours fériés mais il y a pu y avoir un problème de remontée informatique. À noter qu’entre 2 visites sur le site, vous devez quitter votre navigateur et vous reconnecter, le simple "rafraîchissement" de la page ne permettant pas de provoquer un nouvel affichage des résultats.',
         },
       ],
     },
@@ -141,7 +149,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je ne trouve pas de place disponible ?',
       content: [
         {
-          textContent: `${candidat.messsage_mise_a_disposition_des_places} D'autres peuvent se libérer à tout moment par l'annulation d'un candidat ayant réservé.`,
+          textContent: `${candidat.messsage_mise_a_disposition_des_places}`,
         },
         {
           textContent: 'Vous pouvez aussi réserver une place dans un autre département.',
