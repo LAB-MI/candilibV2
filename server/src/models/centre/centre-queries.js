@@ -8,6 +8,8 @@ import Centre from './centre-model'
 
 import { codePostal } from '../../util/regex'
 
+import { centreValidator } from './centre-validator'
+
 const caseInsensitive = nom => ({
   $regex: new RegExp('^' + nom.toLowerCase(), 'i'),
 })
@@ -90,6 +92,18 @@ export const createCentre = async (
     type: 'Point',
     coordinates: [lon, lat],
   }
+
+  const validated = centreValidator.validateAsync({
+    nom,
+    label,
+    adresse,
+    geoloc,
+    departement,
+    geoDepartement,
+  })
+
+  if (validated.error) throw new Error(validated.error)
+
   if (!geoDepartement) {
     const zipCode = adresse && adresse.match(codePostal)
     geoDepartement =
