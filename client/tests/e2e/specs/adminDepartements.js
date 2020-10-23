@@ -61,9 +61,6 @@ describe('Create, see, update and delete departement', () => {
       .click()
     cy.get('.v-snack--active')
       .should('contain', `Le département ${departement77Id} a bien été mis à jour`)
-    // TODO: Pourquoi faut-il cliqué suur ce bouton ?
-      // cy.get('.t-btn-update-confirm')
-    //   .click()
   })
 
   it('Should delete departement unused by center', () => {

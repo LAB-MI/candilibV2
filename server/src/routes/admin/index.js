@@ -738,6 +738,7 @@ router.put('/inspecteurs/:id', verifyUserLevel(config.userStatusLevels.delegue),
  */
 router.post('/inspecteurs', verifyUserLevel(config.userStatusLevels.delegue), createIpcsr)
 
+// TODO: swagger
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
 
 /**
@@ -832,7 +833,9 @@ router.get('/places', verifyRepartiteurDepartement, getPlaces)
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_places|Swagger: POST /admin/places}
  */
 router.post('/places', verifyRepartiteurDepartement, createOrImportPlaceByAdmin)
+// TODO: swagger
 router.delete('/places/:id?', deleteByAdmin)
+// TODO: swagger
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
 
 /**
