@@ -93,6 +93,12 @@ export const createCentre = async (
     coordinates: [lon, lat],
   }
 
+  if (!geoDepartement) {
+    const zipCode = adresse && adresse.match(codePostal)
+    geoDepartement =
+      (zipCode && zipCode.length > 1 && zipCode[1]) || departement
+  }
+
   const validated = centreValidator.validateAsync({
     nom,
     label,
@@ -104,11 +110,6 @@ export const createCentre = async (
 
   if (validated.error) throw new Error(validated.error)
 
-  if (!geoDepartement) {
-    const zipCode = adresse && adresse.match(codePostal)
-    geoDepartement =
-      (zipCode && zipCode.length > 1 && zipCode[1]) || departement
-  }
   const centre = new Centre({
     nom,
     label,

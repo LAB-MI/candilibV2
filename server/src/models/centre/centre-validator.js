@@ -9,7 +9,7 @@ export const centreValidator = Joi.object({
   label: Joi.string().trim().min(1).required(),
   adresse: Joi.string().trim().min(1).required(),
   departement: Joi.string().trim().min(2).pattern(departementRegex).required(),
-  geoDepartement: Joi.string().trim().min(2).pattern(departementRegex),
+  geoDepartement: Joi.string().trim().min(2).pattern(departementRegex).required(),
   geoloc: Joi.object({
     type: Joi.string().trim(),
     coordinates: Joi.array().items(Joi.number()),
