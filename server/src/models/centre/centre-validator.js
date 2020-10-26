@@ -16,5 +16,8 @@ export const centreValidator = Joi.object({
   }),
   active: Joi.boolean(),
   disabledBy: Joi.string(),
-  disabledAt: Joi.string().trim().isoDate(),
+  disabledAt: Joi.alternatives().try(
+    Joi.string().trim().isoDate(),
+    Joi.date(),
+  ),
 })
