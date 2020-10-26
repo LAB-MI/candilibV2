@@ -49,15 +49,7 @@ describe('Display new place after 12h', () => {
     cy.visit(magicLink)
     cy.wait(100)
 
-    cy.get('h2').should('contain', 'Choix du département')
-    cy.get('body').should('contain', Cypress.env('geoDepartement'))
-    cy.get(`.t-geo-departement-${Cypress.env('geoDepartement')}`).click()
-    cy.wait(100)
-
-    cy.get('h2').should('contain', 'Choix du centre')
-    cy.get('body').should('contain', Cypress.env('centre'))
-    cy.contains(Cypress.env('centre')).click()
-    cy.wait(100)
+    cy.toGoSelectPlaces()
 
     const dates = [dateAt2Weeks]
     const datesNoDisplay = [dateAt3Months]

@@ -1,6 +1,6 @@
 /**
  * Module concernant les actions du candidat
- * @module routes/candidat/candidat-controllers
+ * @module
  */
 
 import {
