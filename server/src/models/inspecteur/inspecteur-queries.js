@@ -5,6 +5,7 @@
  */
 
 import Inspecteur from './inspecteur-model'
+import { inspecteurValidator } from './inspecteur-validator'
 
 /**
  * Crée un IPCSR dans la base de données
@@ -28,6 +29,16 @@ export const createInspecteur = async ({
   prenom,
   departement,
 }) => {
+  const validated = inspecteurValidator.validateAsync({
+    email,
+    matricule,
+    nom,
+    prenom,
+    departement,
+  })
+
+  if (validated.error) throw new Error(validated.error)
+
   const inspecteur = new Inspecteur({
     email,
     matricule,
