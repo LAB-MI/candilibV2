@@ -21,6 +21,120 @@ const shortPassword = 'Abc1*'
 const validPassword = 'Abcde12*'
 
 describe('User', () => {
+  describe('Saving User', () => {
+    const emailTwo = 'emailTwo@example.com'
+
+    beforeAll(async () => {
+      await connect()
+    })
+
+    afterAll(async () => {
+      await disconnect()
+    })
+
+    afterEach(async () => {
+      return Promise.all([
+        findUserByEmail(validEmail)
+          .then(deleteUser)
+          .catch(() => true),
+        findUserByEmail(anotherValidEmail)
+          .then(deleteUser)
+          .catch(() => true),
+        findUserByEmail(emailTwo)
+          .then(deleteUser)
+          .catch(() => true),
+      ])
+    })
+
+    it('Should not save a user with no password', async () => {
+      // Given
+      const email = validEmail
+
+      // When
+      const error = await createUser(email).catch(error => error)
+
+      // Then
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toContain('"password" is required')
+    })
+
+    it('Should not save a user with an empty password', async () => {
+      // Given
+      const email = validEmail
+      const password = emptyPassword
+
+      // When
+      const error = await createUser(email, password).catch(error => error)
+
+      // Then
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toContain('"password" is not allowed to be empty')
+    })
+
+    it('Should not save a user with a short password', async () => {
+      // Given
+      const email = validEmail
+      const password = shortPassword
+
+      // When
+      const error = await createUser(email, password).catch(error => error)
+
+      // Then
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toBe('weak_password')
+    })
+
+    it('Should save a user with a valid email and a "strong" password', async () => {
+      // Given
+      const email = validEmail
+      const password = validPassword
+
+      // When
+      const user = await createUser(email, password)
+
+      // Then
+      expect(user.isNew).toBe(false)
+    })
+
+    // Seems to be a problem with mongodb-memory-server handling of 'unique'
+    it('Should not save a user with an existing email', async () => {
+      // Given
+      const duplicatedEmail = 'duplicated-email@candi.lib'
+      const password = validPassword
+      const user = await createUser(
+        duplicatedEmail,
+        password,
+        ['75'],
+        'delegue',
+      )
+
+      // When
+      const error = await createUser(
+        duplicatedEmail,
+        password,
+        ['75'],
+        'delegue',
+      ).catch(error => error)
+
+      // Then
+      expect(user.isNew).toBe(false)
+      expect(error).toBeInstanceOf(Error)
+      expect(error.message).toContain(`E11000 duplicate key error dup key: { : "${duplicatedEmail}" }`)
+    })
+
+    it('Should not save a user with an invalid email', async () => {
+      // Given
+      const email = invalidEmail
+      const password = validPassword
+
+      // When
+      const error = await createUser(email, password).catch(error => error)
+
+      // Then
+      expect(error).toBeInstanceOf(Error)
+    })
+  })
+
   describe('Getting User', () => {
     beforeAll(async () => {
       await connect()
@@ -71,120 +185,6 @@ describe('User', () => {
       expect(email).toBe(expectedEmail)
       expect(departements).toHaveLength(expectedDepartements.length)
       expect(status).toBe(expectedStatus)
-    })
-  })
-
-  describe('Saving User', () => {
-    const emailTwo = 'emailTwo@example.com'
-
-    beforeAll(async () => {
-      await connect()
-    })
-
-    afterAll(async () => {
-      await disconnect()
-    })
-
-    afterEach(async () => {
-      return Promise.all([
-        findUserByEmail(validEmail)
-          .then(deleteUser)
-          .catch(() => true),
-        findUserByEmail(anotherValidEmail)
-          .then(deleteUser)
-          .catch(() => true),
-        findUserByEmail(emailTwo)
-          .then(deleteUser)
-          .catch(() => true),
-      ])
-    })
-
-    it('Should not save a user with no password', async () => {
-      // Given
-      const email = validEmail
-
-      // When
-      const error = await createUser(email).catch(error => error)
-
-      // Then
-      expect(error).toBeInstanceOf(Error)
-      expect(error.message).toContain('`password` is required')
-    })
-
-    it('Should not save a user with an empty password', async () => {
-      // Given
-      const email = validEmail
-      const password = emptyPassword
-
-      // When
-      const error = await createUser(email, password).catch(error => error)
-
-      // Then
-      expect(error).toBeInstanceOf(Error)
-      expect(error.message).toContain('`password` is required')
-    })
-
-    it('Should not save a user with a short password', async () => {
-      // Given
-      const email = validEmail
-      const password = shortPassword
-
-      // When
-      const error = await createUser(email, password).catch(error => error)
-
-      // Then
-      expect(error).toBeInstanceOf(Error)
-      expect(error.message).toBe('weak_password')
-    })
-
-    it('Should save a user with a valid email and a "strong" password', async () => {
-      // Given
-      const email = validEmail
-      const password = validPassword
-
-      // When
-      const user = await createUser(email, password)
-
-      // Then
-      expect(user.isNew).toBe(false)
-    })
-
-    // Seems to be a problem with mongodb-memory-server handling of 'unique'
-    xit('Should not save a user with an existing email', async () => {
-      // Given
-      const duplicatedEmail = 'duplicated-email@candi.lib'
-      const password = validPassword
-      const user = await createUser(
-        duplicatedEmail,
-        password,
-        ['75'],
-        'delegue',
-      )
-
-      // When
-      const error = await createUser(
-        duplicatedEmail,
-        password,
-        ['75'],
-        'delegue',
-      ).catch(error => error)
-
-      // Then
-      expect(user.isNew).toBe(false)
-      expect(error).toBeInstanceOf(Error)
-      expect(error.message).toContain("l'email existe déjà")
-    })
-
-    it('Should not save a user with an invalid email', async () => {
-      // Given
-      const email = invalidEmail
-      const password = validPassword
-
-      // When
-      const error = await createUser(email, password).catch(error => error)
-
-      // Then
-      expect(error).toBeInstanceOf(Error)
     })
   })
 

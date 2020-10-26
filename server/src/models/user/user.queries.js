@@ -1,5 +1,6 @@
 import User from './user.model'
 import { v4 as uuidv4 } from 'uuid'
+import { userValidator } from './user-validator'
 
 /**
  * Recherche tous les répartiteurs/délégués de tous les départements
@@ -125,6 +126,10 @@ export const findUserByCredentials = async (email, password) => {
  */
 export const createUser = async (email, password, departements, status) => {
   try {
+    const validated = await userValidator.validateAsync({ email, password, departements, status })
+
+    if (validated.error) throw new Error(validated.error)
+
     const user = new User({ email, password, departements, status })
     await user.save()
     return user
