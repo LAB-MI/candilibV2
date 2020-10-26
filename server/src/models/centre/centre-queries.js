@@ -99,7 +99,7 @@ export const createCentre = async (
       (zipCode && zipCode.length > 1 && zipCode[1]) || departement
   }
 
-  const validated = centreValidator.validateAsync({
+  const validated = await centreValidator.validateAsync({
     nom,
     label,
     adresse,

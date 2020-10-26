@@ -29,7 +29,7 @@ export const createInspecteur = async ({
   prenom,
   departement,
 }) => {
-  const validated = inspecteurValidator.validateAsync({
+  const validated = await inspecteurValidator.validateAsync({
     email,
     matricule,
     nom,

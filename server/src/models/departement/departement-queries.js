@@ -14,7 +14,7 @@ import { departementValidator } from './departement-validator'
  * @returns {Promise.<DepartementMongooseDocument>} - Le département créé
  */
 export const createDepartement = async ({ _id, email }) => {
-  const validated = departementValidator.validateAsync({
+  const validated = await departementValidator.validateAsync({
     _id,
     email,
   })
