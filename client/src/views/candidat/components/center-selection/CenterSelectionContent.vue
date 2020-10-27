@@ -10,7 +10,7 @@
       :class="{'u-flex u-pointer': hasPlaces}"
     >
       <v-list-item-content v-ripple="hasPlaces">
-        <v-list-item-title>
+        <v-list-item-title :class="`t-centers-${center.centre.nom.toLowerCase().replace(/ /g,'-')}`">
           <span class="u-uppercase">
             {{ center.centre.nom }}
           </span>

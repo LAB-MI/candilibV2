@@ -13,6 +13,7 @@
     :rules="departementsRules"
     required
     :readonly="readonly"
+    :menu-props="menuProps"
     @change="$emit('change-departements', departements)"
   />
 </template>
@@ -58,7 +59,10 @@ export default {
       type: Boolean,
       default: false,
     },
-
+    menuProps: {
+      type: Object,
+      default () {},
+    },
   },
 
   data () {

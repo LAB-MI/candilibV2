@@ -101,6 +101,7 @@
             :available-departements="availableDepartements"
             :multiple="false"
             :default-departement="departement"
+            :menu-props="{ minWidth: 150 }"
             @change-departements="newDep => departement = newDep"
           />
 
@@ -139,7 +140,7 @@ import {
   matricule as matriculeRegex,
 } from '@/util'
 
-import { UPDATE_IPCSR_REQUEST, FETCH_IPCSR_LIST_REQUEST, SHOW_ERROR } from '@/store'
+import { UPDATE_IPCSR_REQUEST, FETCH_IPCSR_LIST_REQUEST, SHOW_ERROR, FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST } from '@/store'
 
 import SelectDepartements from '../SelectDepartements'
 
@@ -208,13 +209,19 @@ export default {
 
   computed: {
     ...mapState({
-      availableDepartements: state => state.admin.departements.list,
+      availableDepartements: state => {
+        return state.adminDepartements.list.map(dptInfos => dptInfos._id)
+      },
       isUpdatingIpcsr: state => state.admin.inspecteurs.isFetching,
     }),
 
     isUpdatingUser () {
       return this.$store.state.users.isUpdating || false
     },
+  },
+
+  mounted () {
+    this.$store.dispatch(FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST)
   },
 
   methods: {

@@ -6,7 +6,10 @@ const { Schema } = mongoose
 
 const ArchivedCandidatFields = {
   ...candidatFields,
-
+  candidatId: {
+    type: Schema.Types.ObjectId,
+    default: undefined,
+  },
   archivedAt: {
     type: Date,
     default: undefined,

@@ -36,7 +36,7 @@ import {
   getCandidatsLeaveRetentionAreaByWeekAndDepartement,
   getStatsPlacesExam,
   getStatsResultsExam,
-} from './statistics.controllers'
+} from './statistics-controllers'
 
 import { getInfoLastSyncAurige } from './status-candilib-controllers'
 
@@ -607,7 +607,7 @@ router.get('/inspecteurs', getInspecteurs)
  * @callback updateIpcsr
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/put_admin_inspecteurs}
  */
-router.put('/inspecteurs/:id', updateIpcsr)
+router.put('/inspecteurs/:id', verifyUserLevel(config.userStatusLevels.delegue), updateIpcsr)
 
 // router.patch('/inspecteurs/:id', updateIpcsr) // Activer/désactiver un inspecteur
 
@@ -736,8 +736,9 @@ router.put('/inspecteurs/:id', updateIpcsr)
  * @callback createIpcsr
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_inspecteurs}
  */
-router.post('/inspecteurs', createIpcsr)
+router.post('/inspecteurs', verifyUserLevel(config.userStatusLevels.delegue), createIpcsr)
 
+// TODO: swagger
 router.get('/places', verifyRepartiteurDepartement, getPlaces)
 
 /**
@@ -832,7 +833,9 @@ router.get('/places', verifyRepartiteurDepartement, getPlaces)
  * @see {@link http://localhost:8000/api-docs/#/Administrateur/post_admin_places|Swagger: POST /admin/places}
  */
 router.post('/places', verifyRepartiteurDepartement, createOrImportPlaceByAdmin)
+// TODO: swagger
 router.delete('/places/:id?', deleteByAdmin)
+// TODO: swagger
 router.patch('/places/:id', verifyRepartiteurDepartement, updatePlaces)
 
 /**
@@ -1063,7 +1066,6 @@ router.get(
   getCandidatsLeaveRetentionArea,
 )
 
-// TODO: SWAGGER DOC
 /**
  * @swagger
  *
@@ -2053,7 +2055,7 @@ router.post(
 
 router.get(
   '/departements/:id?',
-  verifyUserLevel(config.userStatusLevels.admin),
+  verifyUserLevel(config.userStatusLevels.delegue),
   getDepartementsController,
 )
 

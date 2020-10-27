@@ -213,7 +213,7 @@ describe('Candidate login', () => {
         .contains(Cypress.env('departement'))
         .click()
 
-      cy.get('button').eq(0)
+      cy.get('button').eq(1)
         .should('contain', 'Pré-inscription').click()
 
       cy.get('.v-snack--active')
@@ -247,7 +247,7 @@ describe('Candidate login', () => {
         .contains(Cypress.env('departement'))
         .click()
 
-      cy.get('button').eq(0)
+      cy.get('button').eq(1)
         .should('contain', 'Pré-inscription').click()
       cy.get('.v-snack--active')
         .should('contain', 'Veuillez remplir le formulaire')
@@ -280,7 +280,7 @@ describe('Candidate login', () => {
         .contains(Cypress.env('departement'))
         .click()
 
-      cy.get('button').eq(0)
+      cy.get('button').eq(1)
         .should('contain', 'Pré-inscription').click()
       cy.get('.v-snack--active')
         .should('contain', 'Veuillez remplir le formulaire')

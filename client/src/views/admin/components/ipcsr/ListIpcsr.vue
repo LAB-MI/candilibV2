@@ -6,7 +6,7 @@
       :items-per-page="5"
       class="elevation-1 t-list-ipcsr"
     >
-      <template v-slot:item.action="{ item }">
+      <template v-slot:[`item.action`]="{ item }">
         <update-ipcsr
           :key="item._id"
           :default-email="item.email"

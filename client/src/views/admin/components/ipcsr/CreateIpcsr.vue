@@ -79,6 +79,7 @@
         class="select-departement  t-select-ipcsr-departement"
         :available-departements="availableDepartements"
         :default-departement="availableDepartements[0]"
+        :menu-props="{ minWidth: 150 }"
         @change-departements="newDep => departement = newDep"
       />
 

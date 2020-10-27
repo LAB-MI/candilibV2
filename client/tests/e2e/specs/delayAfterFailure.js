@@ -78,17 +78,8 @@ describe('Test delay after failed attempt', () => {
       })
 
       // Tries to add the reservation
-      cy.get('h2')
-        .should('contain', 'Choix du département')
-      cy.contains(Cypress.env('geoDepartement'))
-        .click()
-      cy.wait(100)
+      cy.toGoSelectPlaces()
 
-      cy.get('h2')
-        .should('contain', 'Choix du centre')
-      cy.contains(Cypress.env('centre'))
-        .click()
-      cy.wait(100)
       cy.get('.v-alert.warning')
         .should('contain', 'Vous avez échoué le ' + Cypress.env('dateFailLong') + ' à l\'examen pratique du permis de conduire. Vous ne pouvez sélectionner une date qu\'à partir du ' + Cypress.env('timeoutToRetry') + '.')
       cy.get('.v-tabs')
