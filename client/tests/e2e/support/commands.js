@@ -419,6 +419,13 @@ Cypress.Commands.add('deleteCandidat', (query) => {
     cy.log(JSON.stringify(content.body))
   })
 })
+
+Cypress.Commands.add('deleteUser', (query) => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/users', query).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+
 Cypress.Commands.add('checkAndCloseSnackBar', (message) => {
   cy.get('.v-snack--active')
     .should('contain', message)
