@@ -29,7 +29,7 @@ export const adminCheckCandidatHystoryActionsByType = (candidatsByDepartments, t
 export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week, hasCheckMail) => {
   cy.visit(magicLink)
 
-  cy.toGoSelectPlaces('candidatBookPlace')
+  cy.toGoSelectPlaces()
 
   cy.log('nowIn1WeekInfo.monthLong:', nowIn1Week.monthLong)
   cy.get(`[href="#tab-${nowIn1Week.monthLong}"]`).click()
@@ -113,7 +113,7 @@ export const candidatCancelPlace = (magicLink, candidatsByDepartments, hasCheckM
   }
 }
 
-export const candidatModifyPlace = (magicLink, candidatsByDepartments, nowIn1Week, hasCheckMail) => {
+export const candidatModifyPlace = (magicLink, candidatsByDepartments, nowIn1Week, hasCheckMail, tInfoCenters75TimeOut) => {
   cy.deleteAllMails()
   const nowIn1WeekInfo = nowIn1Week.toFormat('yyyy-MM-dd')
   cy.visit(magicLink)
@@ -121,7 +121,7 @@ export const candidatModifyPlace = (magicLink, candidatsByDepartments, nowIn1Wee
   cy.get('body').should('contain', 'Modifier ma réservation')
   cy.contains('Modifier ma réservation').click()
 
-  cy.toGoSelectPlaces('candidatModifyPlace')
+  cy.toGoSelectPlaces({ tInfoCenters75TimeOut })
 
   cy.get(`[href="#tab-${nowIn1Week.monthLong}"]`).click()
 
