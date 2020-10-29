@@ -7,18 +7,7 @@
         class="rounded-corner"
       >
         <p>
-          Le site candilib rouvrira le 4 juin 2020 pour des premiers examens à partir du 15 juin 2020.
-          <br>Toutes les informations sur
-          <a
-            class="link-color"
-            href="https://www.securite-routiere.gouv.fr"
-          >www.securite-routiere.gouv.fr</a>
-          <br>Ne vous déplacez pas.
-          <br>Toutes les informations sur
-          <a
-            class="link-color"
-            href="https://www.gouvernement.fr"
-          >www.gouvernement.fr</a>
+          <span v-html="message1" />
         </p>
       </v-alert>
     </div>
@@ -62,6 +51,14 @@
 
 export default {
   components: {
+  },
+  data () {
+    return {
+      message1: `En raison de la situation de crise pandémique liée au coronavirus COVID 19, les examens du permis de conduire sont suspendus jusqu'à nouvel ordre. \n
+          <br> \n
+          Le site candilib restera indisponible durant cette période.`,
+      message2: 'Le site candilib rouvrira le 4 juin 2020 pour des premiers examens à partir du 15 juin 2020.',
+    }
   },
 }
 </script>
