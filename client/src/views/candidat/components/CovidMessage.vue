@@ -2,7 +2,7 @@
   <section data-nosnippet="true">
     <div class="text--center">
       <v-alert
-        value="true"
+        :value="true"
         type="info"
         class="rounded-corner"
       >

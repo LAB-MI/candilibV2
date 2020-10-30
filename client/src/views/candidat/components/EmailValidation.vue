@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-alert
-      value="true"
+      :value="true"
       :type="messageType"
       class="rounded-corner"
     >
