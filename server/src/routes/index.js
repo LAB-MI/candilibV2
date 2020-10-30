@@ -13,6 +13,7 @@ import { getCandidatConfig } from './candidat/candidat-config-controller'
 import publicRoutes from './public'
 import { contactUs } from './candidat/contact-us-controller'
 import { verifyUser } from './middlewares/verify-user'
+import config from '../config'
 
 const router = express.Router()
 
@@ -313,7 +314,9 @@ router.use('/public', publicRoutes)
 
 router.patch('/admin/me', resetMyPassword)
 router.post('/candidat/contact-us', getToken, contactUs)
-router.use('/candidat', verifyToken, verifyUser, candidat)
+if (config.isFRONTCandidatClosed) {
+  router.use('/candidat', verifyToken, verifyUser, candidat)
+}
 router.use('/auth', auth)
 router.use('/admin', verifyToken, admin)
 

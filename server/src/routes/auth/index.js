@@ -9,6 +9,7 @@ import { getAdminToken, requestPasswdReset } from './admin-controllers'
 import { verifyToken } from '../middlewares'
 import { verifyRepartiteurLevel } from '../admin/middlewares/verify-user-level'
 import { postMagicLink, checkCandidat } from './candidat-controllers'
+import config from '../../config'
 
 const router = express.Router()
 /**
@@ -276,6 +277,7 @@ router.get(
  * @see {@link http://localhost:8000/api-docs/#/Authentification/post_auth_candidat_magic_link}
  */
 router.post('/candidat/magic-link', postMagicLink)
+
 /**
  * @swagger
  *
@@ -300,6 +302,7 @@ router.post('/candidat/magic-link', postMagicLink)
  * @see [checkCandidat]{@link module:routes/auth/candidat-controllers.checkCandidat}
  * @see {@link http://localhost:8000/api-docs/#/Authentification/get_auth_candidat_verify_token}
  */
-router.get('/candidat/verify-token', verifyToken, checkCandidat)
-
+if (config.isFRONTCandidatClosed) {
+  router.get('/candidat/verify-token', verifyToken, checkCandidat)
+}
 export default router

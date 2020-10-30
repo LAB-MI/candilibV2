@@ -10,7 +10,7 @@ import moment from 'moment'
  * @constant {boolean} isProduction
  */
 const isProduction = process.env.NODE_ENV === 'production'
-
+const isTest = process.env.NODE_ENV === 'test'
 /**
  * URL d'accès à l'application, important pour la configuration du router vue-router
  * @constant {string} DEFAULT_PUBLIC_URL
@@ -21,6 +21,7 @@ const DEFAULT_PUBLIC_URL = isProduction
 
 const DEFAULT_ADMIN_URL = 'http://localhost:8080/candilib'
 
+const isFRONTCandidatClosed = !!isTest
 /**
  * Dictionnaire des différents types de statuts des utilisateurs de l'application
  * @constant {Object}
@@ -120,6 +121,7 @@ const getTokenExpiration = () => {
 }
 
 const config = {
+  isFRONTCandidatClosed,
   secret: process.env.SECRET || 'secret',
   candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '3d',
   get repartiteurTokenExpiration () {
