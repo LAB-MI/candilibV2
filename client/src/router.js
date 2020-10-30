@@ -23,7 +23,7 @@ const { VUE_APP_CLIENT_BUILD_TARGET, VUE_APP_CLIENT_BUILD_INFO } = process.env
 const isBuildWithAll = ['ALL', undefined].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithCandidat = isBuildWithAll || ['CANDIDAT'].includes(VUE_APP_CLIENT_BUILD_TARGET)
 const isBuildWithAdmin = isBuildWithAll || ['ADMIN'].includes(VUE_APP_CLIENT_BUILD_TARGET)
-const isBuildWithInfoCovid = false || ['COVID'].includes(VUE_APP_CLIENT_BUILD_INFO)
+export const isBuildWithInfoCovid = false || ['COVID'].includes(VUE_APP_CLIENT_BUILD_INFO)
 
 const Error404 = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Error404.vue')
 const Home = () => import(/* webpackChunkName: "candidat-guest", webpackPrefetch: true */ '@/views/Home.vue')

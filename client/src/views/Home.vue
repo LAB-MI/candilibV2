@@ -4,7 +4,7 @@
       <v-btn
         dark
         tag="a"
-        to="/candidat"
+        :to="pathCandidat"
         color="#33ADC0"
       >
         Candidat
@@ -20,3 +20,14 @@
     </div>
   </div>
 </template>
+
+<script>
+import { isBuildWithInfoCovid } from '../router'
+export default {
+  data () {
+    return {
+      pathCandidat: isBuildWithInfoCovid ? '/informations' : '/candidat',
+    }
+  },
+}
+</script>
