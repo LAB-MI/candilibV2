@@ -80,6 +80,23 @@ app.get('/:collection', async (req, res) => {
   }
 })
 
+app.delete('/:collection/:id', parseBody, async (req, res) => {
+  const { collection, id } = req.params
+  let filter = {}
+  if (req.body) filter = { ...req.body }
+  let dbo
+  try {
+    if (id) filter._id = new ObjectId(id)
+    dbo = await connectDb()
+    const obj = await dbo.collection(collection).deleteOne(filter)
+    res.send({ success: true, result: obj.result })
+  } catch (err) {
+    res.status(500).send(err.message)
+  } finally {
+    dbo && dbo.close()
+  }
+})
+
 app.delete('/:collection', async (req, res) => {
   const { collection } = req.params
   let filter = {}
@@ -92,23 +109,6 @@ app.delete('/:collection', async (req, res) => {
     res.send({ success: true, result: obj.result })
   } catch (err) {
     console.error(err)
-    res.status(500).send(err)
-  } finally {
-    dbo && dbo.close()
-  }
-})
-
-app.delete('/:collection/:id', parseBody, async (req, res) => {
-  const { collection, id } = req.params
-  let filter = {}
-  if (req.body) filter = { ...req.body }
-  let dbo
-  try {
-    if (id) filter._id = new ObjectId(id)
-    dbo = await connectDb()
-    const obj = await collection(collection).deleteOne(filter)
-    res.send({ success: true, result: obj.result })
-  } catch (err) {
     res.status(500).send(err)
   } finally {
     dbo && dbo.close()

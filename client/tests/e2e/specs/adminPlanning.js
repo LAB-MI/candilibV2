@@ -17,6 +17,8 @@
 describe('Planning tests', () => {
   before(() => {
     // Delete all mails before start
+    cy.deleteAllPlaces()
+
     cy.deleteAllMails()
     cy.adminLogin()
     cy.addPlanning()
@@ -164,6 +166,8 @@ describe('Planning tests', () => {
 
 describe('Planning tests without candidate', () => {
   before(() => {
+    cy.deleteAllPlaces()
+
     cy.adminLogin()
     cy.addPlanning()
     cy.adminDisconnection()
@@ -233,7 +237,7 @@ describe('Planning tests without candidate', () => {
       .should('contain', 'La ou les places ont bien été créée(s).')
   })
 
-  it.only('Tests the import of csv files in the planning', () => {
+  it('Tests the import of csv files in the planning', () => {
     cy.adminLogin()
     // Goes to where the places are
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
@@ -349,6 +353,9 @@ describe('Planning tests without candidate', () => {
   it('Tests add one inspecteur in the planning', () => {
     cy.adminLogin()
     cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning')
+    cy.get('.v-overlay__scrim').should('not.be.visible')
+
+    cy.contains('NOISY LE GRAND').click()
 
     cy.get('.t-import-places').click()
     cy.get('.t-modal-input-places-search-inspecteur').type('dupond')

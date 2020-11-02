@@ -29,11 +29,15 @@ describe('Manage centers', () => {
   }
 
   before(() => {
-    cy.deleteCentres([centre, centre2, centre3, { nom: centre2.nom + ' updated' }])
+    cy.deleteCentres([centre, centre2, centre3, { nom: centre2.nom + ' UPDATED' }])
   })
 
   afterEach(() => {
     cy.adminDisconnection()
+  })
+
+  after(() => {
+    cy.deleteCentres([centre, centre2, centre3, { nom: centre2.nom + ' UPDATED' }])
   })
 
   it('Ajouter un centre', () => {
