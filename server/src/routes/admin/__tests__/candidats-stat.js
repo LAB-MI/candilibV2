@@ -829,7 +829,7 @@ export const createCandidatsForCountRetentionByWeek = async (
     .fill(true)
     .map(async (el, index) => {
       const candidat = {
-        codeNeph: randomNeph(),
+        codeNeph: `${randomNeph()}`,
         nomNaissance: generateFakeLastName(),
         prenom: 'Sanji',
         email: generateFakeEmail(),
