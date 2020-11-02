@@ -45,6 +45,7 @@
   "author": "Ministère de l'intérieur",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.21.0",
     "bcryptjs": "^2.4.3",
     "cross-env": "^7.0.2",
     "delay": "^4.4.0",
