@@ -10,6 +10,8 @@ export const getConvocationTemplate = (
   urlRESA,
   urlFAQ,
   contactezNous,
+  departementCentre,
+  linkOfLocalisation,
 ) => `<p>Le présent mail vaut convocation.</p>
 <br>
 <div style="border: 5px solid red; padding:5px;">
@@ -30,10 +32,13 @@ Nettoyage (produit ou lingette virucide respectant la norme EN 14476), aération
   <span style="color: red;"><strong> ATTENTION:</strong></span>&nbsp;Si toutes les conditions sanitaires précitées ne peuvent être réunies, ou en cas de suspicion du covid-19 (toux, état fébrile), l’examen de conduite ne pourra avoir lieu.
 </div>
 <br>
+<p> Bureau éducation routière ${departementCentre} </p>
+<br>
 <p>Madame, Monsieur ${nameCandidat},</p>
 <br>
 <p>Nous avons bien pris en compte votre réservation à l'examen pratique du permis de conduire le ${dateResa} à ${houreResa}
 avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre.toUpperCase()} à l'adresse ${addressCentre}</p>
+<p>Position exacte du centre : <a href="${linkOfLocalisation}" target="_blank">${linkOfLocalisation}</a></p>
 <p>Nous vous rappelons les éléments à vérifier le jour de l'examen :</p>
 <ul>
   <li>
