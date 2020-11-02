@@ -3,7 +3,7 @@
  * @module routes/candidat/places-controllers
  */
 
-import { appLogger, techLogger } from '../../util'
+import { apiRecaptcha, appLogger, techLogger } from '../../util'
 import {
   addInfoDateToRulesResa,
   bookPlace,
@@ -29,6 +29,7 @@ import {
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
 import { setBookedPlaceKeyToFalseOrTrue } from '../../models/place'
+import config from '../../config'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -352,6 +353,7 @@ export const bookPlaceByCandidat = async (req, res) => {
     date,
     isAccompanied: isAccompaniedAsBoolean,
     hasDualControlCar: hasDualControlCarAsBoolean,
+    recaptchaTokenResult,
   } = req.body
 
   const isAccompanied = isAccompaniedAsBoolean === true
@@ -370,6 +372,26 @@ export const bookPlaceByCandidat = async (req, res) => {
     isAccompanied,
     hasDualControlCar,
   })
+
+  try {
+    const response = await apiRecaptcha.verify(recaptchaTokenResult)
+    console.log({ data: response.data },
+    )
+    if (!(response?.data.success && (response?.data.score >= Number(config.GOOGLE_RECAPTCHA_MINIMUM_SCORE)) && response?.data.action.includes('bookPlace'))) {
+      const message = 'Google reCaptcha vous a identifié comme étant un robot.'
+      return res.status(400).json({
+        success: false,
+        message,
+      })
+    }
+  } catch (error) {
+    console.log({ error })
+    const message = 'le Google reCaptcha n\'est actuellement pas disponible veuillez refaire une tentative.'
+    return res.status(400).json({
+      success: false,
+      message,
+    })
+  }
 
   // TODO: GET CENTRE ID BY NAME AND GEODEPT
   if (isMissingPrerequesite(nomCentre, date, isAccompanied, hasDualControlCar)) {
