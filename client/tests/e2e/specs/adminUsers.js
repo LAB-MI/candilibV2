@@ -156,6 +156,45 @@ describe('Create and see users', () => {
 
     cy.get('.t-list-users')
       .should('not.contain', repartiteurEmail4)
+
+    cy.get('.t-list-archive-users')
+      .should('contain', repartiteurEmail4)
+
+    cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
+    cy.get('.t-list-archive-users')
+      .find('th span')
+      .first()
+      .click({ force: true })
+      .click({ force: true })
+    cy.get('.t-list-archive-users')
+      .should('contain', repartiteurEmail4)
+    cy.get('.t-archive-user-icon').click()
+    cy.get('.t-archive-user-submit').click()
+    cy.get('.t-list-users')
+      .should('contain', repartiteurEmail4)
+
+    // cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
+    cy.get('.t-list-users')
+      .find('th span')
+      .first()
+      .click({ force: true })
+      .click({ force: true })
+    cy.get('.t-list-users')
+      .should('contain', repartiteurEmail4)
+
+    cy.get('.t-list-users')
+      .contains(repartiteurEmail4)
+      .parents('tr')
+      .find('.t-btn-delete')
+      .click()
+    cy.get('.t-btn-delete-confirm')
+      .click()
+
+    cy.get('.v-snack--active')
+      .should('contain', 'L\'utilisateur a bien été archivé')
+
+    cy.get('.t-list-users')
+      .should('not.contain', repartiteurEmail4)
   })
 
   it('Should update status and/or departements user', () => {

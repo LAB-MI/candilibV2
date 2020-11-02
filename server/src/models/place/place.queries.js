@@ -98,6 +98,7 @@ const queryAvailablePlacesByCentre = (
   beginDate,
   endDate,
   createdBefore,
+  visibleBefore,
 ) => {
   const query = Place.where('centre').exists(true)
   if (beginDate || endDate) {
@@ -110,6 +111,8 @@ const queryAvailablePlacesByCentre = (
   if (createdBefore) {
     query.where('createdAt').lt(createdBefore)
   }
+
+  filterByVisibleAt(visibleBefore, query)
   query.where('candidat').equals(undefined)
 
   return query.where('centre', centreId)
@@ -130,6 +133,7 @@ const queryAvailablePlacesByCentres = (
   beginDate,
   endDate,
   createdBefore,
+  visibleBefore,
 ) => {
   const query = Place.where('centre')
   if (beginDate || endDate) {
@@ -138,10 +142,11 @@ const queryAvailablePlacesByCentres = (
     if (beginDate) query.gte(beginDate)
     if (endDate) query.lt(endDate)
   }
-
   if (createdBefore) {
     query.where('createdAt').lt(createdBefore)
   }
+
+  filterByVisibleAt(visibleBefore, query)
   query.where('candidat').equals(undefined)
 
   return query.where('centre', centreId)
@@ -173,12 +178,14 @@ export const findAvailablePlacesByCentre = async (
   endDate,
   populate,
   createdBefore,
+  visibleBefore,
 ) => {
   const query = queryAvailablePlacesByCentre(
     centreId,
     beginDate,
     endDate,
     createdBefore,
+    visibleBefore,
   )
   queryPopulate(populate, query)
   const places = await query.exec()
@@ -192,6 +199,7 @@ export const findAvailablePlacesByCentres = async (
   endDate,
   populate,
   createdBefore,
+  visibleBefore,
 ) => {
   const result = await Promise.all(
     centres.map(async centre => {
@@ -200,6 +208,7 @@ export const findAvailablePlacesByCentres = async (
         beginDate,
         endDate,
         createdBefore,
+        visibleBefore,
       )
       queryPopulate(populate, query)
       return query.exec()
@@ -218,12 +227,14 @@ export const countAvailablePlacesByCentre = async (
   beginDate,
   endDate,
   createdBefore,
+  visibleBefore,
 ) => {
   const nbPlaces = await queryAvailablePlacesByCentre(
     centreId,
     beginDate,
     endDate,
     createdBefore,
+    visibleBefore,
   ).countDocuments()
   return nbPlaces
 }
@@ -233,12 +244,14 @@ export const verifyIsAvailablePlacesByCentre = async (
   beginDate,
   endDate,
   createdBefore,
+  visibleBefore,
 ) => {
   const foundPlace = await queryVerifyIsAvailablePlacesByCentre(
     centreId,
     beginDate,
     endDate,
     createdBefore,
+    visibleBefore,
   )
 
   return (foundPlace && foundPlace._id) ? 1 : 0
@@ -249,6 +262,7 @@ const queryVerifyIsAvailablePlacesByCentre = (
   beginDate,
   endDate,
   createdBefore,
+  visibleBefore,
 ) => {
   const filters = {}
   filters.centre = { $eq: centreId }
@@ -263,6 +277,14 @@ const queryVerifyIsAvailablePlacesByCentre = (
     filters.createdAt = {}
     filters.createdAt.$lt = createdBefore
   }
+
+  if (visibleBefore) {
+    filters.$or = [
+      { visibleAt: { $exists: false } },
+      { visibleAt: { $lt: visibleBefore } },
+    ]
+  }
+
   filters.candidat = { $eq: undefined }
 
   return Place.findOne(filters).exec()
@@ -273,6 +295,7 @@ export const findPlacesByCentreAndDate = async (
   date,
   populate,
   createdBefore,
+  visibleBefore,
 ) => {
   const query = Place.find({
     centre: _id,
@@ -286,6 +309,7 @@ export const findPlacesByCentreAndDate = async (
     query.where('createdAt').lt(createdBefore)
   }
 
+  filterByVisibleAt(visibleBefore, query)
   const places = await query.exec()
 
   return places
@@ -322,6 +346,7 @@ export const findAndbookPlace = async (
   fields,
   populate,
   createdBefore,
+  visibleBefore,
 ) => {
   // let centre = { $in: centres }
   // if (typeof centres === 'string') {
@@ -341,6 +366,8 @@ export const findAndbookPlace = async (
   if (createdBefore) {
     query.where('createdAt').lt(createdBefore)
   }
+
+  filterByVisibleAt(visibleBefore, query)
 
   const updatedPlace = await query.exec()
   return updatedPlace
@@ -484,6 +511,7 @@ export const findPlacesByDepartementAndCentre = async (
   beginPeriod,
   endPeriod,
   createdBefore,
+  visibleBefore,
 ) => {
   const dates = await Centre.aggregate([
     {
@@ -516,6 +544,14 @@ export const findPlacesByDepartementAndCentre = async (
               },
           },
           {
+            $match: {
+              $or: [
+                { visibleAt: { $lt: visibleBefore } },
+                { visibleAt: { $exists: false } },
+              ],
+            },
+          },
+          {
             $project: {
               _id: 0,
               date: 1,
@@ -528,4 +564,12 @@ export const findPlacesByDepartementAndCentre = async (
   ])
 
   return dates
+}
+function filterByVisibleAt (visibleBefore, query) {
+  if (visibleBefore) {
+    query.or([
+      { visibleAt: { $exists: false } },
+      { visibleAt: { $lt: visibleBefore } },
+    ])
+  }
 }

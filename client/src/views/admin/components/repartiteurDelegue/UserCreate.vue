@@ -24,6 +24,7 @@
       <v-spacer />
 
       <select-status
+        :menu-props="{ minWidth: 150 }"
         @change-status="newStatus => status = newStatus"
       />
 
@@ -34,6 +35,7 @@
         multiple
         :available-departements="availableDepartements"
         :default-departements="availableDepartements"
+        :menu-props="{ minWidth: 150 }"
         @change-departements="newDep => departements = newDep"
       />
 

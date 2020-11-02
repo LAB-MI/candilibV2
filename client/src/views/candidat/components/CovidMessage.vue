@@ -1,5 +1,5 @@
 <template>
-  <section>
+  <section data-nosnippet="true">
     <div class="text--center">
       <v-alert
         value="true"

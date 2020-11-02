@@ -46,6 +46,12 @@ http {
       default "";
     }
 
+    map $http_x_user_id $limit_user_id {
+      "~.+" $http_x_user_id;
+      default $<API_USER_SCOPE>;
+    }
+
+    limit_req_zone $limit_user_id zone=api_user_id:5m rate=<API_USER_ID_LIMIT_RATE>;
     limit_req_zone $limit_get zone=api_get:2m rate=<API_USER_GET_LIMIT_RATE>;
     limit_req_zone $limit_post zone=api_post:2m rate=<API_USER_POST_LIMIT_RATE>;
     limit_req_zone $limit_patch zone=api_patch:2m rate=<API_USER_PATCH_LIMIT_RATE>;
@@ -77,6 +83,7 @@ http {
     }
 
     log_format main escape=json '{ "nginx": {'
+      '"http_x_user_id":"$http_x_user_id",'
       '"http_x_forwarded_for":"$http_x_forwarded_for",'
       '"http_referer":"$http_referer",'
       '"http_user_agent":"$http_user_agent",'

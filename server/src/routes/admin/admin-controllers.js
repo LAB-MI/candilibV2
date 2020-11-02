@@ -1,6 +1,6 @@
 /**
  * Contrôleur regroupant les fonctions de récupération des infos admin
- * @module routes/admin/admin-controllers
+ * @module
  */
 import { findUserById } from '../../models/user'
 import { findDepartementById } from '../../models/departement'
@@ -14,6 +14,8 @@ import {
   createAppropriateUser,
   updateUserBusiness,
   archiveUserBusiness,
+  getArchivedUsersByAdmin,
+  unArchiveUserBusiness,
 } from './business'
 
 /**
@@ -32,10 +34,10 @@ export const getMe = async (req, res) => {
     action: 'get-me',
     admin: req.userId,
   }
-  appLogger.info(loggerInfo)
   try {
     const infoAdmin = await findInfoAdminById(req.userId)
     if (infoAdmin) {
+      appLogger.info({ ...loggerInfo, description: 'Utilisateur trouvé' })
       return res.json(infoAdmin)
     }
     appLogger.warn({
@@ -109,8 +111,6 @@ export const createUserController = async (req, res) => {
     status,
   }
 
-  appLogger.info(loggerInfo)
-
   try {
     const user = await createAppropriateUser(
       req.userId,
@@ -160,16 +160,18 @@ export const createUserController = async (req, res) => {
  * @param {import('express').Response} res
  */
 export const getUsers = async (req, res) => {
+  const { isArchivedOnly } = req.query
+  const { userId } = req
+
   const loggerInfo = {
     section: 'admin-get-user',
     action: 'get-user',
     admin: req.userId,
+    isArchivedOnly,
   }
 
-  appLogger.info(loggerInfo)
-
   try {
-    const users = await getAppropriateUsers(req.userId)
+    const users = isArchivedOnly === 'true' ? await getArchivedUsersByAdmin(userId) : await getAppropriateUsers(userId)
 
     appLogger.info({
       ...loggerInfo,
@@ -202,10 +204,11 @@ export const getUsers = async (req, res) => {
  * @param {string} req.body.email - Adresse courriel de l'utilisateur mis à jour
  * @param {string} req.body.departements - Départements de l'utilisateur mis à jour
  * @param {string} req.body.status - Statut de l'utilisateur mis à jour
+ * @param {boolean} req.body.isUnArchive - Si le paramètre est à 'true', cela signifie qu'il s'agit d'une réactivation d'utilisateur
  * @param {import('express').Response} res
  */
 export const updatedInfoUser = async (req, res) => {
-  const { email, departements, status } = req.body
+  const { email, departements, status, isUnArchive } = req.body
 
   const loggerInfo = {
     section: 'admin-update-user',
@@ -214,22 +217,32 @@ export const updatedInfoUser = async (req, res) => {
     departements,
     email,
     status,
+    isUnArchive,
   }
 
-  appLogger.info(loggerInfo)
-
   try {
-    const updatedUser = await updateUserBusiness(
-      req.userId,
-      email,
-      status,
-      departements,
-    )
-    await sendMailConfirmationUpdateUserInfo(email)
+    let updatedUser
+    let message = ''
+    if (isUnArchive) {
+      updatedUser = await unArchiveUserBusiness(email, req.userId)
+      message = "L'utilisateur a bien été désarchivé"
+    } else {
+      updatedUser = await updateUserBusiness(
+        req.userId,
+        email,
+        status,
+        departements,
+      )
+      message = "Les informations de l'utilisateur ont été modifiées"
+
+      await sendMailConfirmationUpdateUserInfo(email)
+    }
+
+    appLogger.info({ ...loggerInfo, description: message })
 
     res.status(200).json({
       success: true,
-      message: "Les informations de l'utilisateur ont été modifiées",
+      message,
       user: updatedUser,
     })
   } catch (error) {
@@ -268,8 +281,6 @@ export const archiveUserController = async (req, res) => {
     admin: req.userId,
     emailToDelete,
   }
-
-  appLogger.info(loggerInfo)
 
   try {
     const archivedUser = await archiveUserBusiness(req.userId, emailToDelete)

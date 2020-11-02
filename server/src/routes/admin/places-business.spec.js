@@ -6,7 +6,7 @@ import { createInspecteur } from '../../models/inspecteur'
 import { FRENCH_LOCALE_INFO } from '../../util'
 
 jest.mock('../../util/logger')
-
+require('../../util/logger').setWithConsole(false)
 const centre = {
   departement: '93',
   nom: 'VILLEPINTE',
@@ -78,9 +78,6 @@ const expectOneResultWithError = (
     'inspecteur',
     matricule === undefined ? 'undefined' : matricule || '',
   )
-  const date = csvFileDataInJson[index].date.trim()
-  const hour = csvFileDataInJson[index].hour.trim()
-  expect(result).toHaveProperty('date', `${date} ${hour}`)
   expect(result).toHaveProperty('status', 'error')
   expect(result).toHaveProperty('message', messageFct(csvFileDataInJson, index))
 }
@@ -390,7 +387,7 @@ describe('Test import places from CSV', () => {
       },
       {
         date: '06/07/19',
-        hour: '08:00',
+        hour: '8:00',
         matricule: '01020305',
         nom: 'dupont',
         centre: 'VILLEPINTE',
@@ -413,7 +410,7 @@ describe('Test import places from CSV', () => {
 
       const date = DateTime.fromFormat(
         csvFileDataInJson[index].date + ' ' + csvFileDataInJson[index].hour,
-        'dd/MM/yy HH:mm',
+        /..:../.test(csvFileDataInJson[index].hour) ? 'dd/MM/yy HH:mm' : 'dd/MM/yy H:mm',
         FRENCH_LOCALE_INFO,
       )
       expect(result).toHaveProperty('departement', '93')

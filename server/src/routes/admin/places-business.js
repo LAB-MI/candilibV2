@@ -65,6 +65,7 @@ import {
 // TODO: Uncomment next line after 31/12/2020
 // import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
 import { isETGExpired } from './business'
+import { getDateVisibleForPlaces } from '../candidat/util/date-to-display'
 
 /**
  * Résultat d'import d'une place
@@ -76,6 +77,7 @@ import { isETGExpired } from './business'
  * @property {string} status
  * @property {string} message
  */
+
 /**
  * Formatage de la réponse d'une place suite à un import de planning d'inspecteur
  * @function
@@ -151,9 +153,8 @@ const parseRow = async ({ data, departement }) => {
     myMatricule = matricule && matricule.trim()
     const myDay = day && day.trim()
 
-    const myTime = time && time.trim()
+    let myTime = time && time.trim()
     const myNom = nom && nom.trim()
-    myDate = `${myDay} ${myTime}`
 
     const myDept = dept && dept.trim()
 
@@ -172,7 +173,8 @@ const parseRow = async ({ data, departement }) => {
       error.from = 'parseRow'
       throw error
     }
-
+    myTime = /..:../.test(myTime) ? myTime : '0' + myTime
+    myDate = `${myDay} ${myTime}`
     const date = DateTime.fromFormat(
       myDate,
       'dd/MM/yy HH:mm',
@@ -273,7 +275,8 @@ const createPlaceFromFile = async place => {
   }
   const { centre, inspecteur, date } = place
   try {
-    const leanPlace = { inspecteur, date, centre: centre._id }
+    const visibleAt = getDateVisibleForPlaces()
+    const leanPlace = { inspecteur, date, centre: centre._id, visibleAt }
     await createPlace(leanPlace)
     appLogger.info({
       ...loggerInfo,
@@ -348,11 +351,11 @@ export const importPlacesCsv = async ({ csvFile, departement }) => {
           if (data[0] === 'Date') next()
           else {
             parseRow({ data, departement }).then(result => {
-              // appLogger.debug({
-              //   ...loggerInfo,
-              //   action: 'resolve-transformCsv',
-              //   result,
-              // })
+              appLogger.debug({
+                ...loggerInfo,
+                action: 'resolve-transformCsv',
+                result,
+              })
               if (result.status && result.status === 'error') {
                 PlacesPromise.push(result)
                 next()
@@ -466,6 +469,24 @@ export const importPlacesFromFile = async ({ planningFile, departement }) => {
   throw error
 }
 
+/**
+ * Résultat d'une place non réservé
+ * @typedef {Object} PlaceWithoutCandidat
+ * @property {string} departement
+ * @property {string} centre
+ * @property {string} inspecteur
+ * @property {string} date
+ */
+
+/**
+ * Supprime la réservation du candidat par son identifiant
+ * @async
+ * @function
+ * @param {Object} param Paramètre anonyme
+ * @param {import('mongoose').Schema.Types.ObjectId|string} param._id Identifiant du candidat
+ *
+ * @return {Promise<PlaceWithoutCandidat>}
+ */
 export const releaseResa = async ({ _id }) => {
   // const loggerInfo = {
   //   func: 'releaseResa',
@@ -483,6 +504,25 @@ export const releaseResa = async ({ _id }) => {
   }
 }
 
+/**
+ * Résultat d'une place non réservé
+ * @typedef {Object} statusResultRemoveByAdmin
+ * @property {string} statusmail
+ * @property {string} message
+ * @property {object} candidat
+ * @property {object} placeUpdated
+ */
+
+/**
+* Supprimer une réservation par un admin.
+* @async
+* @function
+* @param {object} place - Place a supprimer.
+* @param {object} candidat - Candidat(e) ayant réservé la place.
+* @param {object} admin - Adminstrateur à l'origine de l'action.
+*
+* @return {statusResultRemoveByAdmin}
+*/
 export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
   const loggerInfo = {
     func: 'removeReservationPlaceByAdmin',
@@ -491,7 +531,7 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     adminId: admin._id,
   }
   // appLogger.debug(loggerInfo)
-  // TODO: Probleme posible si booked est egale a false et qu'il y a une place avec booked a true sur le meme candiddat
+
   // Annuler la place
   const placeUpdated = await removeBookedPlace(place)
   // Archive place
@@ -531,6 +571,16 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
   return { statusmail, message, candidat: candidatUpdated, placeUpdated }
 }
 
+/**
+* Créée une place pour un inspecteur.
+* @async
+* @function
+* @param {object} centre - Centre de plannification.
+* @param {string} inspecteur - Inspecteur à plannifier.
+* @param {string} date - Date et heur du crénaux.
+
+* @return {PlaceStatus}
+*/
 export const createPlaceForInspector = async (centre, inspecteur, date) => {
   const loggerInfo = {
     func: 'createPlaceForInspector',
@@ -548,8 +598,10 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
       zone: 'Europe/Paris',
       locale: 'fr',
     })
-    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id }
+    const visibleAt = getDateVisibleForPlaces()
+    const leanPlace = { inspecteur, date: formatedDate, centre: centre._id, visibleAt }
     await createPlace(leanPlace)
+
     appLogger.info({
       ...loggerInfo,
       description: `Place {${centre.departement}, ${centre.nom}, ${inspecteur}, ${myDate}} enregistrée en base`,
@@ -594,6 +646,22 @@ export const createPlaceForInspector = async (centre, inspecteur, date) => {
   }
 }
 
+/**
+ * Résultat d'une place réservable lorsque l'on souhaite modifier l'inspecteur d'une place existante.
+ * @typedef {Object} bookablePlace
+ * @property {object} resa
+ * @property {object} place
+ */
+
+/**
+* Permet de vérifier si un inspecteur peut en remplacer un autre sur le même céneau horaire.
+* @async
+* @function
+* @param {string} resaId - Identifiant de la place à comparer.
+* @param {string} inspecteur - Inspecteur potentielement disponible.
+
+* @return {bookablePlace}
+*/
 export const validUpdateResaInspector = async (resaId, inspecteur) => {
   const resa = await findPlaceById(resaId)
   if (!resa) {
@@ -621,6 +689,14 @@ export const validUpdateResaInspector = async (resaId, inspecteur) => {
   return { resa, place }
 }
 
+/**
+* Permet de changer le candidat de place.
+* @async
+* @function
+* @param {RowObjectBookedPlace} previousBookedPlace - Place initialement réservée.
+* @param {RowObjectPlace} place - Nouvelle place.
+* @return {RowObjectBookedPlace}
+*/
 export const moveCandidatInPlaces = async (previousBookedPlace, place) => {
   const placeId = place._id
   const { candidat, bookedAt, bookedByAdmin } = previousBookedPlace
@@ -667,6 +743,37 @@ export const moveCandidatInPlaces = async (previousBookedPlace, place) => {
   return newBookedPlace
 }
 
+/**
+ * @typedef {Object} StatusMail
+ * @property {boolean} status Status de l'envoi du courriel.
+ * @property {string} message Message d'informations.
+ */
+
+/**
+ * Place réservé par un candidat.
+ * @typedef {Object} RowObjectBookedPlace
+ * @property {string} departement Département sélectionné.
+ * @property {import('mongoose').Schema.Types.ObjectId|string} centre Identifiant du centre enregistré dans la base de données.
+ * @property {import('mongoose').Schema.Types.ObjectId|string} inspecteur Identifiant d'un inspecteur enregistré dans la base de données.
+ * @property {import('mongoose').Schema.Types.ObjectId|string} candidat Identifiant d'un candidat enregistré dans la base de données.
+ * @property {import('luxon').DateTime} date La date et heure de la place.
+ */
+
+/**
+ * Place réservé par un candidat et le status de l'envoi de courriel.
+ * @typedef {Object} StatusAssignationPlace
+ * @property {RowObjectBookedPlace} newBookedPlace Place réservé.
+ * @property {object} candidat Candidat affecté à la place.
+ * @property {StatusMail} statusmail Status du resultat de la réservation.
+ */
+
+/**
+* Affecter un candidat sur une place.
+* @param {string} candidatId - Identifiant du candidat.
+* @param {string} placeId - Identifiant du de la place.
+* @param {object} admin - Identifiant du candidat.
+* @return {StatusAssignationPlace}
+*/
 export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   const loggerContent = {
     section: 'admin-assign-candidat-in-places',
@@ -784,6 +891,31 @@ export const assignCandidatInPlace = async (candidatId, placeId, admin) => {
   }
 }
 
+/**
+ * Place réservé par un candidat et le status de l'envoi de courriel.
+ * @typedef {string[]} RowInspecteurIdListe
+ * @property {string} - identifiant d'inspecteur.
+ */
+
+/**
+ * Resultat de l'envoi des bordereaux.
+ * @typedef {Object} SendBordereauxResult
+ * @property {boolean} success - Status de l'action.
+ * @property {array} inspecteurs - Contient des informations liée aux erreurs, cette valeur n'existe que en cas d'erreurs.
+ */
+
+/**
+* Permet d'envoyer les bordereaux aux inspecteurs.
+* @function
+* @async
+* @param {string} departementEmail - Adresse courriel de du département.
+* @param {string} departement - Identifiant du département.
+* @param {import('luxon').DateTime} date - Date de la plannification à envoyer.
+* @param {boolean} isForInspecteurs - Si la valeur est 'true' les bordereaux seront envoyé aux inspecteurs sinon au répartiteur.
+* @param {RowInspecteurIdListe} inspecteurIdListe - Liste d'identifant d'inspecteurs.
+*
+* @return {SendBordereauxResult}
+*/
 export const sendMailSchedulesInspecteurs = async (
   departementEmail,
   departement,
@@ -879,6 +1011,22 @@ export const sendMailSchedulesInspecteurs = async (
   return { success: true }
 }
 
+/**
+ * Resultat de l'envoi d'un bordereaux pour un inspecteur.
+ * @typedef {Object} RowStatusSendBordereaux
+ * @property {boolean} success - Status de l'action.
+ * @property {import('mongoose').Schema.Types.ObjectId|string} inspecteur - Identifiant de l'inspecteur.
+ * @property {number} nbPlaces - Nombres de crénaux plannifié pour l'inspecteur.
+ */
+
+/**
+* Permet d'envoyer les bordereaux aux inspecteurs.
+* @function
+* @async
+* @param {import('luxon').DateTime} date - Date de la plannification à envoyer.
+*
+* @return {RowStatusSendBordereaux[]}
+*/
 export const sendMailSchedulesAllInspecteurs = async date => {
   const loggerContent = {
     func: 'sendMailSchedulesAllInspecteurs',

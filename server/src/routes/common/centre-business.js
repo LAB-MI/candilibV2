@@ -42,6 +42,8 @@ export async function findCentresWithNbPlaces (departement, beginDate, endDate) 
         centre._id,
         beginDate,
         endDate,
+        getDateDisplayPlaces(),
+        getFrenchLuxon(),
       )
       return { centre, count }
     }),
@@ -88,6 +90,7 @@ export async function findCentresWithNbPlacesByGeoDepartement (
           beginDate,
           endDate,
           getDateDisplayPlaces(),
+          getFrenchLuxon(),
         ),
       })),
     )
@@ -116,6 +119,7 @@ export async function findCentresWithNbPlacesByGeoDepartement (
         beginDate,
         endDate,
         getDateDisplayPlaces(),
+        getFrenchLuxon(),
       ),
     })),
   )

@@ -24,7 +24,10 @@ describe('Stats Kpi tests', () => {
     })
 
     cy.adminDisconnection()
-    cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
+    cy.updatePlaces({}, {
+      createdAt: now.minus({ days: 2 }).toUTC(),
+      visibleAt: now.minus({ days: 2 }).toUTC(),
+    }, true)
   })
 
   const nbInscrits = 4

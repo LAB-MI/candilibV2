@@ -23,7 +23,7 @@
         Suppression de {{ email }}
       </v-card-title>
 
-      <v-card-text>
+      <v-card-text class="confirmation-text">
         Voulez-vous vraiment archiver cet utilisateur <strong>{{ email }}</strong> ?
         Cette action est irréversible
       </v-card-text>
@@ -59,6 +59,7 @@ import {
   SHOW_SUCCESS,
   SHOW_ERROR,
   FETCH_USER_LIST_REQUEST,
+  FETCH_ARCHIVED_USER_LIST_REQUEST,
 } from '@/store'
 export default {
   props: {
@@ -80,6 +81,7 @@ export default {
         await this.$store.dispatch(DELETE_USER_REQUEST, this.email)
         this.$store.dispatch(SHOW_SUCCESS, 'L\'utilisateur a bien été archivé')
         this.$store.dispatch(FETCH_USER_LIST_REQUEST)
+        this.$store.dispatch(FETCH_ARCHIVED_USER_LIST_REQUEST)
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
@@ -88,3 +90,9 @@ export default {
   },
 }
 </script>
+
+<style lang="stylus" scoped>
+.confirmation-text {
+  font-size: 1.3em;
+}
+</style>

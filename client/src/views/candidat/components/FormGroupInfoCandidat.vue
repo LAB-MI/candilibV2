@@ -1,5 +1,8 @@
 <template>
-  <div class="form-group-input-candidat">
+  <div
+    class="form-group-input-candidat"
+    data-nosnippet="true"
+  >
     * Champs obligatoires
     <slot name="before" />
     <div class="form-input">
@@ -115,6 +118,7 @@
         :readonly="readonly"
         tabindex="6"
         :hint="`${getMsg('preinscription_departement_hint')}`"
+        :menu-props="{ minWidth: 150 }"
         @change-departements="setDepartement"
       />
     </div>

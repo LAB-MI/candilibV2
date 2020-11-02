@@ -56,6 +56,10 @@ export const CREATE_PLACE_REQUEST = 'CREATE_PLACE_REQUEST'
 export const CREATE_PLACE_SUCCESS = 'CREATE_PLACE_SUCCESS'
 export const CREATE_PLACE_FAILURE = 'CREATE_PLACE_FAILURE'
 
+export const CREATE_PLACES_REQUEST = 'CREATE_PLACES_REQUEST'
+export const CREATE_PLACES_SUCCESS = 'CREATE_PLACES_SUCCESS'
+export const CREATE_PLACES_FAILURE = 'CREATE_PLACES_FAILURE'
+
 export const ASSIGN_CANDIDAT_TO_CRENEAU = 'ASSIGN_CANDIDAT_TO_CRENEAU'
 
 export const DELETE_BOOKED_PLACE_REQUEST = 'DELETE_BOOKED_PLACE_REQUEST'
@@ -89,6 +93,7 @@ export const numberOfMonthsToFetch = 3
 const AUTHORIZED_ROUTES = {
   agents: ROUTE_AUTHORIZE_AGENTS,
   aurige: ROUTE_AUTHORIZE_AURIGE,
+  'unarchive-candidat': 'unarchive-candidat',
   'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
   centres: ROUTE_AUTHORIZE_CENTRES,
   departements: ROUTE_AUTHORIZE_DEPARTEMENTS,
@@ -296,6 +301,18 @@ export default {
       state.places.isCreating = false
     },
     [CREATE_PLACE_FAILURE] (state, error) {
+      state.places.created = error
+      state.places.isCreating = false
+    },
+
+    [CREATE_PLACES_REQUEST] (state) {
+      state.places.isCreating = true
+    },
+    [CREATE_PLACES_SUCCESS] (state, success) {
+      state.places.created = success
+      state.places.isCreating = false
+    },
+    [CREATE_PLACES_FAILURE] (state, error) {
       state.places.created = error
       state.places.isCreating = false
     },
@@ -565,11 +582,29 @@ export default {
       const { centre, inspecteur, date } = placeData
       commit(CREATE_PLACE_REQUEST)
       try {
-        const result = await api.admin.createPlace(centre, inspecteur, date)
-        commit(CREATE_PLACE_SUCCESS, result)
-        dispatch(SHOW_SUCCESS, result.message)
+        const response = await api.admin.createPlace(centre, inspecteur, date)
+        if (!response.success) {
+          throw new Error(response.message)
+        }
+        commit(CREATE_PLACE_SUCCESS, response)
+        dispatch(SHOW_SUCCESS, response.message)
       } catch (error) {
         commit(CREATE_PLACE_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [CREATE_PLACES_REQUEST] ({ commit, dispatch, state }, placesData = {}) {
+      commit(CREATE_PLACES_REQUEST)
+      try {
+        const response = await api.admin.createPlaces(placesData)
+        if (!response.success) {
+          throw new Error(response.error || response.message)
+        }
+        commit(CREATE_PLACES_SUCCESS, response)
+        dispatch(SHOW_SUCCESS, response.message)
+      } catch (error) {
+        commit(CREATE_PLACES_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },

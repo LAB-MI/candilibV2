@@ -7,7 +7,7 @@
 import 'cypress-file-upload'
 import './mailHogCommands'
 
-Cypress.Commands.add('adminLogin', () => {
+const connectionUserByStatus = (cypressEnvUserEmail) => {
   cy.visit(Cypress.env('frontAdmin') + 'admin-login',
     {
       onBeforeLoad: (win) => {
@@ -15,7 +15,7 @@ Cypress.Commands.add('adminLogin', () => {
       },
     })
   cy.get('.t-login-email [type=text]')
-    .type(Cypress.env('adminLogin'))
+    .type(cypressEnvUserEmail)
   cy.get('[type=password]')
     .type(Cypress.env('adminPass'))
   cy.get('.submit-btn')
@@ -23,6 +23,14 @@ Cypress.Commands.add('adminLogin', () => {
   cy.url()
     .should('not.contain', '/admin-login')
     .should('contain', '/admin')
+}
+
+Cypress.Commands.add('adminLogin', () => {
+  connectionUserByStatus(Cypress.env('adminLogin'))
+})
+
+Cypress.Commands.add('delegueLogin', () => {
+  connectionUserByStatus(Cypress.env('delegue75And93Login'))
 })
 
 Cypress.Commands.add('adminDisconnection', () => {
@@ -122,8 +130,8 @@ Cypress.Commands.add('addPlanning', (dates, fileNameTmp = 'planning.csv') => {
   // Adds the places from the created planning file
   cy.contains('calendar_today')
     .click()
-  cy.get('.t-import-places [type=checkbox]')
-    .check({ force: true })
+  cy.get('.t-import-places')
+    .click()
   cy.fixture(filePath1).then(fileContent => {
     cy.get('[type=file]').attachFile({ fileContent, fileName: fileName1, mimeType: 'text/csv' })
   })
@@ -134,7 +142,7 @@ Cypress.Commands.add('addPlanning', (dates, fileNameTmp = 'planning.csv') => {
     .click({ force: true })
   cy.get('.v-snack--active', { timeout: 10000 })
     .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
-
+  cy.get('.t-close-btn-import-places').click()
   return cy.wrap(
     { avalaiblePlaces: ((horaireMorning.length + horaireAfterNoon.length) * 2) * datePlaces.length },
   )
@@ -410,4 +418,34 @@ Cypress.Commands.add('deleteCandidat', (query) => {
   cy.request('DELETE', Cypress.env('ApiRestDB') + '/candidats', query).then((content) => {
     cy.log(JSON.stringify(content.body))
   })
+})
+Cypress.Commands.add('checkAndCloseSnackBar', (message) => {
+  cy.get('.v-snack--active')
+    .should('contain', message)
+
+  cy.get('.v-snack--active button').should('be.visible').click({ force: true })
+})
+
+Cypress.Commands.add('toGoSelectPlaces', (log) => {
+  if (log) {
+    cy.task('log', log)
+  }
+
+  cy.get('h2')
+    .should('contain', 'Choix du département')
+  cy.wait(100)
+  cy.get('.t-info-centers-75').should('be.visible')
+  cy.wait(100)
+  const classGeoDepartement = '.t-geo-departement-' + Cypress.env('geoDepartement')
+  cy.get(classGeoDepartement).contains(Cypress.env('geoDepartement'))
+    .click()
+  cy.wait(100)
+
+  cy.get('h2')
+    .should('contain', 'Choix du centre')
+  cy.wait(100)
+
+  const classCenter = `.t-centers-${Cypress.env('centre').toLowerCase().replace(/ /g, '-')}`
+  cy.get(classCenter).contains(Cypress.env('centre')).click()
+  cy.wait(100)
 })

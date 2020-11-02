@@ -17,13 +17,19 @@ export const DELETE_USER_REQUEST = 'DELETE_USER_REQUEST'
 export const DELETE_USER_SUCCESS = 'DELETE_USER_SUCCESS'
 export const DELETE_USER_FAILURE = 'DELETE_USER_FAILURE'
 
+export const FETCH_ARCHIVED_USER_LIST_REQUEST = 'FETCH_ARCHIVED_USER_LIST_REQUEST'
+export const FETCH_ARCHIVED_USER_LIST_SUCCESS = 'FETCH_ARCHIVED_USER_LIST_SUCCESS'
+export const FETCH_ARCHIVED_USER_LIST_FAILURE = 'FETCH_ARCHIVED_USER_LIST_FAILURE'
+
 export default {
   state: {
     list: [],
+    archivedUsersList: [],
     isArchive: false,
     isUpdating: false,
     isFetching: false,
     isSendingUser: false,
+    isFetchingArchivedUsers: false,
   },
 
   mutations: {
@@ -69,6 +75,17 @@ export default {
     DELETE_USER_FAILURE (state, error) {
       state.isArchive = false
     },
+
+    FETCH_ARCHIVED_USER_LIST_REQUEST (state) {
+      state.isFetchingArchivedUsers = true
+    },
+    FETCH_ARCHIVED_USER_LIST_SUCCESS (state, list) {
+      state.archivedUsersList = list
+      state.isFetchingArchivedUsers = false
+    },
+    FETCH_ARCHIVED_USER_LIST_FAILURE (state, error) {
+      state.isFetchingArchivedUsers = false
+    },
   },
 
   actions: {
@@ -104,10 +121,24 @@ export default {
       }
     },
 
-    async [UPDATE_USER_REQUEST] ({ commit, dispatch }, { email, status, departements }) {
+    async [FETCH_ARCHIVED_USER_LIST_REQUEST] ({ commit, dispatch }) {
+      commit(FETCH_ARCHIVED_USER_LIST_REQUEST)
+      try {
+        const list = await api.admin.getArchivedUsers()
+        if (!list || list.success === false) {
+          throw new Error('Vous n\'êtes pas autorisé à voir les utilisateurs')
+        }
+        commit(FETCH_ARCHIVED_USER_LIST_SUCCESS, list.users)
+      } catch (error) {
+        commit(FETCH_ARCHIVED_USER_LIST_FAILURE)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [UPDATE_USER_REQUEST] ({ commit, dispatch }, { email, status, departements, isUnArchive }) {
       commit(UPDATE_USER_REQUEST)
       try {
-        const result = await api.admin.updateUser(email, { status, departements })
+        const result = await api.admin.updateUser(email, { status, departements, isUnArchive })
         if (result.success === false) {
           throw new Error(result.message)
         }

@@ -74,10 +74,17 @@ const apiAdmin = {
     return json
   },
 
-  async updateUser (email, { status, departements }) {
+  async getArchivedUsers () {
+    const json = await apiClient.get(`${apiPaths.admin.users}?isArchivedOnly=true`, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
+  async updateUser (email, { status, departements, isUnArchive }) {
     const json = await apiClient.patch(apiPaths.admin.users, {
       headers: getHeadersForAdminJson(),
-      body: JSON.stringify({ email, status, departements }),
+      body: JSON.stringify({ email, status, departements, isUnArchive }),
     })
     return json
   },
@@ -137,6 +144,19 @@ const apiAdmin = {
         centre,
         inspecteur,
         date,
+      }),
+    })
+    return json
+  },
+
+  async createPlaces ({ centre, inspecteur, dates }) {
+    const json = await apiClient.post(`${apiPaths.admin.places}`, {
+      headers: getHeadersForAdminJson(),
+      body: JSON.stringify({
+        departement: centre.departement,
+        centre,
+        inspecteur,
+        dates,
       }),
     })
     return json

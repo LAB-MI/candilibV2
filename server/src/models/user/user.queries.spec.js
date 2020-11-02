@@ -11,7 +11,7 @@ import {
 } from './'
 import { connect, disconnect } from '../../mongo-connection'
 import config from '../../config'
-import { findAllActiveUsers } from './user.queries'
+import { findAllActiveUsers, unArchiveUserByEmail } from './user.queries'
 
 const validEmail = 'dontusethis@example.com'
 const anotherValidEmail = 'dontusethis@example.fr'
@@ -437,6 +437,23 @@ describe('User', () => {
       expect(deletedUser).toBeInstanceOf(Object)
       expect(deletedUser).toHaveProperty('deletedAt')
       expect(deletedUser).toHaveProperty('deletedBy', email)
+    })
+
+    it('Should unarchive a user by its email', async () => {
+      // Given
+      const email = 'terminator@example.com'
+      const emailToDelete = 'emailSix@example.com'
+      const password = validPassword
+      await createUser(emailToDelete, password)
+      await archiveUserByEmail(emailToDelete, email)
+
+      // When
+      await unArchiveUserByEmail(emailToDelete)
+      const unArchvedUser = await findUserByEmail(emailToDelete)
+      // Then
+      expect(unArchvedUser).toBeInstanceOf(Object)
+      expect(unArchvedUser.deletedAt).toBeUndefined()
+      expect(unArchvedUser.deletedBy).toBeUndefined()
     })
   })
 })

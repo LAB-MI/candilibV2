@@ -272,7 +272,10 @@ describe('From the mails, To go to the page Contact Us', () => {
       const withoutEq = codedLink.replace(/=\r\n/g, '')
       magicLink = withoutEq.replace(/=3D/g, '=')
     })
-    cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
+    cy.updatePlaces({}, {
+      createdAt: now.minus({ days: 2 }).toUTC(),
+      visibleAt: now.minus({ days: 2 }).toUTC(),
+    }, true)
   })
   beforeEach(() => {
     cy.deleteAllMails()

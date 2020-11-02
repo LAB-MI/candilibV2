@@ -25,8 +25,8 @@ describe('Places tests', () => {
     // Adds the places from the created planning file
     cy.contains('calendar_today')
       .click()
-    cy.get('.t-import-places [type=checkbox]')
-      .check({ force: true })
+    cy.get('.t-import-places')
+      .click()
     const filePath1 = '../../../' + Cypress.env('filePath') + '/planning.csv'
     const fileName1 = 'planning.csv'
     cy.fixture(filePath1).then(fileContent => {
@@ -38,6 +38,7 @@ describe('Places tests', () => {
       .click({ force: true })
     cy.get('.v-snack--active', { timeout: 10000 })
       .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
+    cy.get('.t-close-btn-import-places').click()
     cy.adminDisconnection()
   })
 

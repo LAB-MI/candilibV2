@@ -29,23 +29,16 @@ describe('Standard scenarios', () => {
         const withoutEq = codedLink.replace(/=\r\n/g, '')
         magicLink = withoutEq.replace(/=3D/g, '=')
       })
-      cy.updatePlaces({}, { createdAt: now.minus({ days: 2 }).toUTC() }, true)
+      cy.updatePlaces({}, {
+        createdAt: now.minus({ days: 2 }).toUTC(),
+        visibleAt: now.minus({ days: 2 }).toUTC(),
+      }, true)
     })
 
     it('The candidate chooses a place and the admin cancels it', () => {
       cy.visit(magicLink)
       // Adds the reservation
-      cy.get('h2')
-        .should('contain', 'Choix du département')
-      cy.contains(Cypress.env('geoDepartement'))
-        .click()
-      cy.wait(100)
-
-      cy.get('h2')
-        .should('contain', 'Choix du centre')
-      cy.contains(Cypress.env('centre'))
-        .click()
-      cy.wait(100)
+      cy.toGoSelectPlaces()
 
       cy.get(`[href="#tab-${date1.monthLong}"]`)
         .click()
@@ -124,7 +117,7 @@ describe('Standard scenarios', () => {
             })
         })
       cy.get('.v-snack--active')
-        .should('contain', 'a bien été créée.')
+        .should('contain', 'ont bien été créée(s).')
       // The candidate doesn't have the reservation anymore
       cy.visit(magicLink)
       cy.get('h2')
@@ -214,15 +207,7 @@ describe('Standard scenarios', () => {
     // Will only work if the places in db were cleared first.
       cy.visit(magicLink)
       // The 8:00 slot should be there
-      cy.get('h2')
-        .should('contain', 'Choix du département')
-      cy.contains(Cypress.env('geoDepartement'))
-        .click()
-      cy.wait(100)
-      cy.get('h2')
-        .should('contain', 'Choix du centre')
-      cy.contains(Cypress.env('centre'))
-        .click()
+      cy.toGoSelectPlaces()
       cy.get(`[href="#tab-${date1.monthLong}"]`)
         .click()
       cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
@@ -270,14 +255,7 @@ describe('Standard scenarios', () => {
         .click()
       cy.visit(magicLink)
       // The 8:00 slot should not be there anymore
-      cy.get('h2')
-        .should('contain', 'Choix du département')
-      cy.contains(Cypress.env('geoDepartement'))
-        .click()
-      cy.get('h2')
-        .should('contain', 'Choix du centre')
-      cy.contains(Cypress.env('centre'))
-        .click()
+      cy.toGoSelectPlaces()
       cy.get(`[href="#tab-${date1.monthLong}"]`)
         .click()
       cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')

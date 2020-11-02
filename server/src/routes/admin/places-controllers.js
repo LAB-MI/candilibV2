@@ -171,41 +171,59 @@ export const getPlaces = async (req, res) => {
   }
 }
 
+function createPlacesByAdmin ({ centre, inspecteur, date, dates }) {
+  if (dates) {
+    return Promise.all(dates.map(currentDate => createPlaceForInspector(centre, inspecteur, currentDate)))
+  }
+  return createPlaceForInspector(
+    centre,
+    inspecteur,
+    date,
+  )
+}
+
 export const createPlaceByAdmin = async (req, res) => {
-  const { centre, inspecteur, date } = req.body
+  const { centre, inspecteur, date, dates } = req.body
   const loggerInfo = {
     section: 'admin-create-place',
     admin: req.userId,
     centreId: centre._id,
     inspecteur,
     dateStr: date,
+    isMultiDates: !!dates,
   }
   try {
-    const createdPlaceResult = await createPlaceForInspector(
-      centre,
-      inspecteur,
-      date,
-    )
+    const createdPlacesResult = await createPlacesByAdmin({ centre, inspecteur, date, dates })
+    if (createdPlacesResult instanceof Array) {
+      const hasError = createdPlacesResult.find(({ status }) => status === 'error')
+      if (hasError) {
+        throw new ErrorWithStatus(400, hasError.message)
+      }
+      loggerInfo.countNumberCreatedPlaces = createdPlacesResult.length
+    }
+
+    loggerInfo.countNumberCreatedPlaces = 1
+
     appLogger.info({
       ...loggerInfo,
-      action: 'created-place',
-      description: 'create by admin place: La place a bien été créée.',
+      action: 'created-place(s)',
+      description: 'create by admin place : La ou les place(s) ont bien été créée(s).',
     })
     res.json({
       success: true,
-      message: `La place du [${createdPlaceResult.date}] a bien été créée.`,
+      message: 'La ou les places ont bien été créée(s).',
     })
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
       action: 'error',
-      description: "create by admin place: La place n'a pas été créée.",
+      description: "create by admin place : Une ou plusieurs place(s) n'ont pas été créée(s).",
       error,
     })
     res.json({
       success: false,
-      message: "La place n'a pas été créée",
-      error: error.nessage,
+      message: "Une ou plusieurs places n'ont pas été créée(s).",
+      error: error.message,
     })
   }
 }
