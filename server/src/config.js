@@ -22,6 +22,18 @@ const DEFAULT_PUBLIC_URL = isProduction
 const DEFAULT_ADMIN_URL = 'http://localhost:8080/candilib'
 
 /**
+ * Secret google permetant de vérifier la validation du Recaptcha
+ * @constant {string} GOOGLE_RECAPTCHA_SECRET
+ */
+const GOOGLE_RECAPTCHA_SECRET = process.env.GOOGLE_RECAPTCHA_SECRET || ''
+
+/**
+ * Score minimum accepté pour la validation du Recaptcha
+ * @constant {string} GOOGLE_RECAPTCHA_MINIMUM_SCORE
+ */
+const GOOGLE_RECAPTCHA_MINIMUM_SCORE = process.env.GOOGLE_RECAPTCHA_MINIMUM_SCORE || ''
+
+/**
  * Dictionnaire des différents types de statuts des utilisateurs de l'application
  * @constant {Object}
  */
@@ -163,6 +175,8 @@ const config = {
   LINE_DELAY: Number(process.env.LINE_DELAY) || 30,
   CANDIDAT_ROUTE: '/candidat',
   ADMIN_ROUTE: '/admin',
+  GOOGLE_RECAPTCHA_SECRET: GOOGLE_RECAPTCHA_SECRET,
+  GOOGLE_RECAPTCHA_MINIMUM_SCORE: GOOGLE_RECAPTCHA_MINIMUM_SCORE,
 
   delayToBook:
     process.env.DELAY_TO_BOOK !== undefined
