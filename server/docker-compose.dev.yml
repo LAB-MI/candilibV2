@@ -90,6 +90,9 @@ services:
       DELAY_TO_BOOK: 7
       TIMEOUT_TO_RETRY: 45
       DAYS_FORBID_CANCEL: 7
+
+      GOOGLE_RECAPTCHA_SECRET: ${GOOGLE_RECAPTCHA_SECRET}
+      GOOGLE_RECAPTCHA_MINIMUM_SCORE: ${GOOGLE_RECAPTCHA_MINIMUM_SCORE}
     networks:
       - candilib-network
     entrypoint: npm run dev_pm2

@@ -48,6 +48,9 @@ services:
 
       SECRET: ${SECRET}
 
+      GOOGLE_RECAPTCHA_SECRET: ${GOOGLE_RECAPTCHA_SECRET}
+      GOOGLE_RECAPTCHA_MINIMUM_SCORE: ${GOOGLE_RECAPTCHA_MINIMUM_SCORE}
+
 #    networks:
 #      - candilib-network
 #networks:
