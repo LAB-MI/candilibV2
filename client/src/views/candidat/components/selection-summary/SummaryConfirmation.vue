@@ -13,6 +13,7 @@
         :aria-disabled="disabled"
         @submit.prevent="confirmReservation"
       >
+        <big-loading-indicator :is-loading="isSelecting" />
         <div>
           <v-checkbox
             v-model="selectedCheckBox"
@@ -73,7 +74,6 @@
         check
       </v-icon>
     </h4>
-    <recaptcha />
     <v-btn @click="goToHome()">
       Retour à l'accueil
     </v-btn>
@@ -82,6 +82,8 @@
 
 <script>
 import { mapState } from 'vuex'
+
+import { BigLoadingIndicator } from '@/components'
 
 import {
   getFrenchDateFromIso,
@@ -92,12 +94,11 @@ import {
   SET_SHOW_EVALUATION,
 } from '@/store'
 
-import Recaptcha from '../reCaptcha.vue'
-
 export default {
   components: {
-    Recaptcha,
+    BigLoadingIndicator,
   },
+
   data () {
     return {
       selectedCheckBox: [],
@@ -113,8 +114,12 @@ export default {
       'timeSlots',
     ]),
 
+    isSelecting () {
+      return this.timeSlots.isSelecting
+    },
+
     disabled () {
-      return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting
+      return this.selectedCheckBox.length !== 2 || this.isSelecting
     },
 
     isModifying () {
@@ -126,6 +131,17 @@ export default {
   },
 
   methods: {
+    async recaptcha () {
+      // (optional) Wait until recaptcha has been loaded.
+      const recaptchaLoaded = await this.$recaptchaLoaded()
+
+      if (recaptchaLoaded) {
+      // Execute reCAPTCHA with action "bookPlace".
+        const token = await this.$recaptcha('bookPlace')
+        return token
+      // Do stuff with the received token.
+      }
+    },
     goToSelectTimeSlot () {
       this.$router.push({
         name: 'time-slot',
@@ -142,12 +158,16 @@ export default {
     },
 
     async confirmReservation () {
+      const recaptchaTokenResult = await this.recaptcha()
+
       this.isBackButtonDisabled = true
       const selected = {
         ...this.timeSlots.selected,
         isAccompanied: true,
         hasDualControlCar: true,
+        recaptchaTokenResult,
       }
+
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
         this.$router.push({ name: 'candidat-home' })

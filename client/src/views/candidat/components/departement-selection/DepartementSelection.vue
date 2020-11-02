@@ -55,7 +55,7 @@ export default {
       isFrom75 (state) { return (state.candidat.me?.homeDepartement || state.candidat.me?.departement) === '75' },
     }),
   },
-  mounted () {
+  async mounted () {
     this.$store.dispatch(FETCH_DEPARTEMENTS_INFOS_REQUEST)
   },
 
