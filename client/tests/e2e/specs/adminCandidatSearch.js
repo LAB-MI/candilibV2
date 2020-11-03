@@ -169,7 +169,7 @@ describe('Candidate Profile', () => {
     it('Verify candidat archived modification place', () => {
       const typeAction = 'Modification'
       candidatBookPlace(magicLink, candidatsByDepartments, nowIn1Week)
-      candidatModifyPlace(magicLink, candidatsByDepartments, nowIn1Week, undefined, 10000)
+      candidatModifyPlace(magicLink, candidatsByDepartments, nowIn1Week)
       adminCheckCandidatHystoryActionsByType(candidatsByDepartments, typeAction)
     })
 
