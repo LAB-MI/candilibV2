@@ -118,6 +118,8 @@ export const candidatModifyPlace = (magicLink, candidatsByDepartments, nowIn1Wee
   const nowIn1WeekInfo = nowIn1Week.toFormat('yyyy-MM-dd')
   cy.visit(magicLink)
   cy.get('.t-candidat-home').click()
+  cy.get('h2').should('contain', 'Ma réservation')
+
   cy.get('body').should('contain', 'Modifier ma réservation')
   cy.contains('Modifier ma réservation').click()
 
