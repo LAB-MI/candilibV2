@@ -1,12 +1,15 @@
 <template>
   <div style="max-width: 100vw;">
-    <selection-summary v-if="reservation.booked.isBooked" />
-    <departement-selection v-else />
+    <big-loading-indicator :is-loading="isFetching" />
+
+    <selection-summary v-if="!isFetching && reservation.booked.isBooked" />
+    <departement-selection v-else-if="!isFetching" />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+import { BigLoadingIndicator } from '@/components'
 
 import {
   FETCH_CANDIDAT_RESERVATION_REQUEST,
@@ -22,11 +25,14 @@ export default {
   components: {
     SelectionSummary,
     DepartementSelection,
+    BigLoadingIndicator,
+
   },
 
   data () {
     return {
       candidatStatus: true,
+      isFetching: true,
     }
   },
 
@@ -34,8 +40,9 @@ export default {
     ...mapState(['candidat', 'reservation']),
   },
 
-  async mounted () {
+  async beforeMount () {
     await this.getCandidatReservation()
+    this.isFetching = false
   },
 
   methods: {
