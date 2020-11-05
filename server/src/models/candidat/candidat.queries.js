@@ -391,6 +391,24 @@ export const updateCandidatEmail = async (candidat, email) => {
 }
 
 /**
+ * Met à jour le token du candidat
+ *
+ * @async
+ * @function
+ *
+ * @param {String} candidatId - Identifiant du Candidat
+ * @param {string} token - Nouveau token
+ *
+ * @returns {Promise}
+ */
+export const updateCandidatToken = async (candidatId, token) => {
+  if (!candidatId) {
+    throw new Error('candidat is undefined')
+  }
+  return Candidat.updateOne({ _id: candidatId }, { $set: { token } })
+}
+
+/**
  * Renvoie les candidats qui ont réservé une place d'examen le jour donné (date passé en paramètre)
  *
  * @async

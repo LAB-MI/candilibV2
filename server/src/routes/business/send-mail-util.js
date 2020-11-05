@@ -96,8 +96,8 @@ export const getUrlResetLink = async email => {
   )}&hash=${encodeURIComponent(emailValidationHash)}`
 }
 
-export const getCandidatToken = id =>
-  createToken(id, config.userStatuses.CANDIDAT)
+export const getCandidatToken = (id, candidatStatus) =>
+  createToken(id, config.userStatuses.CANDIDAT, candidatStatus)
 
 export const getUrlContactUs = token => `${config.PUBLIC_URL
 }/contact-us${
@@ -116,7 +116,7 @@ export const getUrlMagicLink = candidat => {
   const dateNow = getFrenchLuxon().startOf('day')
 
   if (!candidat.canAccessAt || dateNow >= candidatAccessDate) {
-    const token = createToken(candidat.id, config.userStatuses.CANDIDAT)
+    const token = createToken(candidat.id, config.userStatuses.CANDIDAT, candidat.status)
     const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
     return {
       url: `${authUrl}?token=${encodeURIComponent(token)}`,

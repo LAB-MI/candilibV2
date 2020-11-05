@@ -24,6 +24,7 @@ import timeSlots from './time-slots'
 import users from './users'
 import whitelist from './whitelist'
 import contactUs from './contact-us'
+import adminTech from './admin-tech'
 
 export * from './admin-bordereaux'
 export * from './admin-departements'
@@ -47,6 +48,7 @@ export * from './time-slots'
 export * from './users'
 export * from './whitelist'
 export * from './contact-us'
+export * from './admin-tech'
 
 Vue.use(Vuex)
 
@@ -74,5 +76,6 @@ export default new Vuex.Store({
     users,
     adminDepartements,
     contactUs,
+    adminTech,
   },
 })

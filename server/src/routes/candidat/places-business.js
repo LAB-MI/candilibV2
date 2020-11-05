@@ -172,7 +172,7 @@ export const getPlacesByDepartementAndCentre = async (
     .map(({ placesInfo }) => placesInfo)
     .flat(1)
     .map(place => getFrenchLuxonFromJSDate(place.date).toISO())
-
+  // console.log({ result2: [...new Set(result)].length })
   return [...new Set(result)]
 }
 

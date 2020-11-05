@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken'
 
 import config from '../config'
 
-export function createToken (id, userStatus, departements) {
+export function createToken (id, userStatus, departements, status = undefined) {
   const level = config.userStatusLevels[userStatus] || 0
   const tokenExpiration = config[`${userStatus}TokenExpiration`]
 
@@ -10,6 +10,7 @@ export function createToken (id, userStatus, departements) {
     id,
     level,
     departements,
+    status,
   }
 
   const secret = config.secret

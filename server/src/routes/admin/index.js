@@ -60,10 +60,17 @@ import {
 } from './middlewares'
 import config from '../../config'
 import { sortStatusCandilib } from './sort-candidat-status-controllers'
+import { logsByFilters } from './logs-candidat-controllers'
 
 const router = express.Router()
 
 router.use(verifyRepartiteurLevel())
+
+router.get(
+  '/logs',
+  verifyUserLevel(config.userStatusLevels.admin),
+  logsByFilters,
+)
 
 /**
  * @swagger

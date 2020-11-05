@@ -12,6 +12,7 @@ import {
   ROUTE_AUTHORIZE_AGENTS,
   ROUTE_AUTHORIZE_CENTRES,
   ROUTE_AUTHORIZE_DEPARTEMENTS,
+  ROUTE_AUTHORIZE_TECH_ADMIN,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -97,6 +98,7 @@ const AUTHORIZED_ROUTES = {
   'stats-kpi': ROUTE_AUTHORIZE_STATS_KPI,
   centres: ROUTE_AUTHORIZE_CENTRES,
   departements: ROUTE_AUTHORIZE_DEPARTEMENTS,
+  'tech-admin': ROUTE_AUTHORIZE_TECH_ADMIN,
 }
 
 export default {

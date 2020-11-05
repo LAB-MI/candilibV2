@@ -5,7 +5,7 @@
 import mongoose from 'mongoose'
 
 import Place from './place.model'
-import { techLogger } from '../../util'
+import { /* getFrenchLuxonFromJSDate , */ techLogger } from '../../util'
 import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
 import { queryPopulate } from '../util/populate-tools'
 import Centre from '../centre/centre-model'
@@ -518,6 +518,34 @@ export const findPlacesByDepartementAndCentre = async (
   createdBefore,
   visibleBefore,
 ) => {
+  // const centres = await Centre.find({ nom: nomCentre, geoDepartement })
+
+  // const result = (await Promise.all(centres.map(centre => Place.find({
+  //   centre: centre._id,
+  //   candidat: { $exists: false },
+  //   date: { $lt: endPeriod, $gte: beginPeriod },
+  //   createdAt: { $lt: createdBefore },
+  // $or: [
+  //   { visibleAt: { $lt: visibleBefore } },
+  //   { visibleAt: { $exists: false } },
+  // ],
+  // visibleAt: { $or: [{ $lt: visibleBefore }, { $exists: false }] },
+  // }),
+  // ))).flat().map(place => {
+  // const { visibleAt } = place
+  // if (
+  //   !visibleAt ||
+  //   getFrenchLuxonFromJSDate(visibleBefore) > getFrenchLuxonFromJSDate(visibleAt)
+  // ) {
+  // return place.date
+  // }
+  // })
+  // ))).flat().map(place => place.date)
+  // .map(({ placesInfo }) => placesInfo)
+  // .flat(1)
+  // .map(place => getFrenchLuxonFromJSDate(place.date).toISO())
+  // result.map(el => console.log('ellleee::', { el }))
+  // ---------------------
   const dates = await Centre.aggregate([
     {
       $match: { nom: nomCentre, geoDepartement },
@@ -567,6 +595,7 @@ export const findPlacesByDepartementAndCentre = async (
       },
     },
   ])
+  // console.log({ result: result.length, dates: dates.length })
 
   return dates
 }

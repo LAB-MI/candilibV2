@@ -8,8 +8,9 @@ import { verifyToken, getToken } from './verify-token'
 import { PLEASE_LOG_IN } from '../../messages.constants'
 
 const id = 'fakeId'
+const candidatStatus = 'fakeStatus'
 
-const validToken = createToken(id, 'candidat')
+const validToken = createToken(id, 'candidat', candidatStatus)
 
 const invalidToken = validToken + '0'
 const verifyPath = '/verify'
