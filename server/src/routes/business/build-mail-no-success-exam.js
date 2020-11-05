@@ -7,11 +7,11 @@ import {
 import config from '../../config'
 
 export const getNoSuccessAtExamBody = async (candidat, fnGetTemplate) => {
-  const { _id, nomNaissance } = candidat
+  const { _id, nomNaissance, candidatStatus } = candidat
 
   const urlFAQ = getUrlFAQ()
   const timeoutToRetry = config.timeoutToRetry
-  const token = getCandidatToken(_id)
+  const token = getCandidatToken(_id, candidatStatus)
   const urlRESA = getUrlRESAByToken(token)
   const contactezNous = getContactUs(token)
 

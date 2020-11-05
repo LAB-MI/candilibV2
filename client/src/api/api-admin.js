@@ -625,5 +625,15 @@ const apiAdmin = {
     )
     return json
   },
+
+  async getlogsPeerPages (page) {
+    const json = await apiClient.get(
+        `${apiPaths.admin.logs}?pageNumber=${page.pageNumber}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+    )
+    return json
+  },
 }
 export default apiAdmin

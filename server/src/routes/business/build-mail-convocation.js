@@ -15,14 +15,14 @@ export const getConvocationBody = place => {
   const action = 'get-body-convocation'
   const { centre, date, candidat } = place
   const { nom, adresse, geoloc, departement } = centre
-  const { _id, nomNaissance, codeNeph } = candidat
+  const { _id, nomNaissance, codeNeph, candidatStatus } = candidat
 
   const [lon, lat] = geoloc.coordinates
 
   const linkOfLocalisation = `http://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=24`
 
   const urlFAQ = getUrlFAQ()
-  const token = getCandidatToken(_id)
+  const token = getCandidatToken(_id, candidatStatus)
   const urlRESA = getUrlRESAByToken(token)
   const contactezNous = getContactUs(token)
 

@@ -161,6 +161,10 @@ export const candidatFields = {
     required: false,
   },
 
+  token: {
+    type: String,
+    default: undefined,
+  },
 }
 
 const CandidatSchema = new Schema(candidatFields, { timestamps: true })

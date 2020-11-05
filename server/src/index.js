@@ -12,10 +12,11 @@
 import http from 'http'
 
 import app from './app'
-import { connect } from './mongo-connection'
+import { connect, disconnect } from './mongo-connection'
 import { techLogger } from './util'
 import { initDB, updateDB } from './initDB/initDB'
 import pm2 from 'pm2'
+import { accumulatorLog } from './routes/middlewares'
 
 const PORT = process.env.PORT || 8000
 
@@ -47,4 +48,45 @@ async function startServer () {
   }
 }
 
+/**
+ * Handle unexpected exits to exit gracefuly (close connections to DB)
+ *
+ * @function
+ */
+export function handleExit () {
+  process.on('exit', exitGracefuly)
+
+  // This will handle kill commands, such as CTRL+C:
+  process.on('SIGINT', exitGracefuly)
+  process.on('SIGTERM', exitGracefuly)
+
+  // This will prevent dirty exit on code-fault crashes:
+  process.on('uncaughtException', exitGracefuly)
+}
+
+/**
+ * Ferme proprement les connexions à MongoDB en cas d'arrêt de l'application
+ *
+ * @async
+ * @function
+ *
+ * @param {Error=} error - Error remontée dans le cas d'un arrêt suite à une erreur non gérée
+ *
+ * @returns {void}
+ */
+export async function exitGracefuly (error) {
+  if (error instanceof Error) {
+    techLogger.error(error)
+  }
+
+  clearInterval(accumulatorLog.intervalId)
+
+  techLogger.info('Closing connections...')
+  await disconnect()
+  techLogger.info('Exiting...')
+
+  process.exit(error instanceof Error ? 1 : 0)
+}
+
 startServer()
+handleExit()
