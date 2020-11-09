@@ -84,7 +84,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         },
         {
           subTitleContent: '- Je n’ai pas accès à mon résultat d\'examen:',
-          textContent: 'Candilib me fait savoir que j’aurais réussi mon examen mais je ne vois pas le résultat sur <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire" target="_blank">le site de la Sécurité Routière</a>. Les résultats sont généralement en ligne sous 72 h (hors week-ends et jours fériés mais il y a pu y avoir un problème de remontée informatique.',
+          textContent: 'Candilib me fait savoir que j’aurais réussi mon examen mais je ne vois pas le résultat sur <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire" target="_blank">le site de la Sécurité Routière</a>. Les résultats sont généralement en ligne sous 72 h (hors week-ends et jours fériés) mais il y a pu y avoir un problème de remontée informatique.',
         },
         {
           subTitleContent: "- Je vois mon ancien résultat d'examen:",
