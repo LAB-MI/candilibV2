@@ -98,7 +98,7 @@ describe('Place', () => {
   const leanPlace = { date: date1.toJSDate(), centre, inspecteur }
   let place2
   const leanPlace2 = { date: date2.toJSDate(), centre, inspecteur }
-  const leanPlace3 = { date: date2.toJSDate(), centre2, inspecteur }
+  const leanPlace3 = { date: date2.toJSDate(), centre: centre2, inspecteur }
   let createdCentre
   let createdCentre2
   let createdInspecteur
@@ -268,7 +268,7 @@ describe('Place', () => {
       await deleteCandidats()
     })
 
-    it('Should find place with candidat Id ', async () => {
+    it('Should find place with candidat Id', async () => {
       const {
         candidat: selectedCandidat,
         centre,
@@ -551,7 +551,7 @@ describe('to book places', () => {
       createdInspecteur = await createInspecteur(inspecteurTest)
       createdInspecteur2 = await createInspecteur(inspecteurTest2)
       placeCreated = await createPlace({
-        date: commonBasePlaceDateTime.plus({ days: 1 }),
+        date: commonBasePlaceDateTime.plus({ days: 1 }).toISO(),
         centre: createdCentre._id,
         inspecteur: createdInspecteur._id,
       })
@@ -608,7 +608,7 @@ describe('to book places', () => {
     await disconnect()
   })
 
-  it('find 1 available place of centre 2 at a day 19 11h  ', async () => {
+  it('find 1 available place of centre 2 at a day 19 11h', async () => {
     const selectedCentre = createdCentre
 
     const selectedDate = placeCreated2.date
@@ -793,7 +793,7 @@ describe('Remove the booking places', () => {
     )
     createdInspecteur = await createInspecteur(inspecteurTest)
     placeCreated = await createPlace({
-      date: commonBasePlaceDateTime.plus({ days: 1 }),
+      date: commonBasePlaceDateTime.plus({ days: 1 }).toISO(),
       centre: createdCentre._id,
       inspecteur: createdInspecteur._id,
     })

@@ -6,6 +6,7 @@ import Place from '../place/place.model'
 import { getFrenchLuxon, techLogger } from '../../util'
 import { queryPopulate } from '../util/populate-tools'
 
+import { candidatValidator } from './candidat-validator'
 /**
  * Crée un candidat
  *
@@ -28,6 +29,21 @@ export const createCandidat = async ({
   departement,
   homeDepartement,
 }) => {
+  const validated = await candidatValidator.validateAsync({
+    adresse,
+    codeNeph,
+    email,
+    emailValidationHash,
+    isValidatedEmail,
+    nomNaissance,
+    portable,
+    prenom,
+    departement,
+    homeDepartement,
+  })
+
+  if (validated.error) throw new Error(validated.error)
+
   const candidat = new Candidat({
     adresse,
     codeNeph,

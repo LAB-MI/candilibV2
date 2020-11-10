@@ -19,7 +19,8 @@ RUN if [ ! -z "$http_proxy" ] ; then \
         npm config set no-proxy $no_proxy; \
    fi ; \
    [ -z "$npm_registry" ] || npm config set registry=$npm_registry; \
-   [ -z "$sass_registry" ] || npm config set sass_binary_site=$sass_registry;
+   [ -z "$npm_registry" ] || npm config set strict-ssl false ; \
+   [ -z "$sass_registry" ] || npm config set sass-binary-site=$sass_registry;
 
 ################################
 # Step 2: "development" target #
@@ -34,7 +35,8 @@ COPY package.json package-lock.json ./
 COPY cypress.json cypress.env.json ./
 COPY e2e-entrypoint.sh /e2e-entrypoint.sh
 # Install app dependencies
-RUN npm --no-git-tag-version version ${APP_VERSION} ; npm install cypress-file-upload
+RUN ssl="$(npm config get strict-ssl)" ; [ "x$ssl" = "xfalse" ] && export NODE_TLS_REJECT_UNAUTHORIZED=0 || true ; \
+    npm --no-git-tag-version version ${APP_VERSION} ; npm install cypress-file-upload
 RUN [ -f /e2e-entrypoint.sh ]&& chmod +x /e2e-entrypoint.sh
 
 #CMD ["npm","run", "cypress"]

@@ -73,9 +73,22 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           subTitleContent: '- Je n’ai pas reçu la validation de ma pré-inscription après 48h:',
           textContent: 'Un problème technique peut avoir empêché la vérification de votre pré-inscription. Si vous n’avez pas reçu de mail de validation ou de rejet après 4 jours (hors week-ends et jours fériés), vous pourrez contacter votre service Candilib.',
         },
+      ],
+    },
+    {
+      title: "Où trouver mon résultat d'examen ?",
+      content: [
+        {
+          subTitleContent: '- Où Consulter mon résultat ?',
+          textContent: 'Vous pouvez accéder à votre résultat d\'examen en consultant le lien suivant : <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire" target="_blank">www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire</a>',
+        },
         {
           subTitleContent: '- Je n’ai pas accès à mon résultat d\'examen:',
-          textContent: 'Candilib me fait savoir que j’aurais réussi mon examen mais je ne vois pas le résultat sur le site de la Sécurité Routière. Les résultats sont généralement en ligne sous 72 h (hors week-ends et jours fériés mais il y a pu y avoir un problème de remontée informatique. À noter qu’entre 2 visites sur le site, vous devez quitter votre navigateur et vous reconnecter, le simple "rafraîchissement" de la page ne permettant pas de provoquer un nouvel affichage des résultats.',
+          textContent: 'Candilib me fait savoir que j’aurais réussi mon examen mais je ne vois pas le résultat sur <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire" target="_blank">le site de la Sécurité Routière</a>. Les résultats sont généralement en ligne sous 72 h (hors week-ends et jours fériés) mais il y a pu y avoir un problème de remontée informatique.',
+        },
+        {
+          subTitleContent: "- Je vois mon ancien résultat d'examen:",
+          textContent: 'Votre ancien résultat d\'examen apparaît sur <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire" target="_blank">le site de la Sécurité Routière</a>. Les résultats sont généralement en ligne sous 72 h (hors week-ends et jours fériés) mais il y a pu y avoir un problème de remontée informatique. D\'autre part, entre 2 visites sur le site, vous devez quitter votre navigateur et vous reconnecter, le simple "rafraîchissement" de la page ne permettant pas de provoquer un nouvel affichage des résultats.',
         },
       ],
     },
