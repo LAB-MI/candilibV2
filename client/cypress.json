@@ -1,4 +1,5 @@
 {
+  "numTestsKeptInMemory": 0,
   "pluginsFile": "tests/e2e/plugins/index.js",
   "fixturesFolder": "tests/e2e/fixtures",
   "integrationFolder": "tests/e2e/specs",
