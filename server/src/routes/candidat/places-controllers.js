@@ -84,6 +84,7 @@ export const ErrorMsgArgEmpty =
 export async function getPlacesByCentre (req, res) {
   const centreId = req.params.id
   const candidatId = req.userId
+  const candidatStatus = req.userStatus
   const { nomCentre, geoDepartement, begin, end, dateTime } = req.query
 
   const loggerInfo = {
@@ -114,9 +115,9 @@ export async function getPlacesByCentre (req, res) {
   try {
     if (centreId) {
       if (dateTime) {
-        dates = await hasAvailablePlaces(centreId, dateTime, candidatId)
+        dates = await hasAvailablePlaces(centreId, dateTime, candidatStatus)
       } else {
-        dates = await getDatesByCentreId(centreId, begin, end, candidatId)
+        dates = await getDatesByCentreId(centreId, begin, end, candidatId, candidatStatus)
       }
     } else {
       if (!(geoDepartement && nomCentre)) {
@@ -127,7 +128,7 @@ export async function getPlacesByCentre (req, res) {
           geoDepartement,
           nomCentre,
           dateTime,
-          candidatId,
+          candidatStatus,
         )
       } else {
         dates = await getPlacesByDepartementAndCentre(
@@ -136,6 +137,7 @@ export async function getPlacesByCentre (req, res) {
           candidatId,
           begin,
           end,
+          candidatStatus,
         )
       }
     }
@@ -346,6 +348,8 @@ function isMissingPrerequesite (nomCentre, date, isAccompanied, hasDualControlCa
 export const bookPlaceByCandidat = async (req, res) => {
   const section = 'candidat-create-reservation'
   const candidatId = req.userId
+  const candidatStatus = req.userStatus
+
   const {
     nomCentre,
     geoDepartement,
@@ -442,6 +446,7 @@ export const bookPlaceByCandidat = async (req, res) => {
         nomCentre,
         date,
         geoDepartement,
+        candidatStatus,
       )
     } catch (error) {
       appLogger.error({
