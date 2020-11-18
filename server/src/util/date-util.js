@@ -140,6 +140,18 @@ export const getFrenchFormattedDateTime = (
   }
 }
 
+const parseFromStringHour = function (hour) {
+  const date = new Date()
+  const arrayTime = hour.split(':')
+  date.setHours(arrayTime[0], arrayTime[1], 0, 0)
+  return date
+}
+
+export const durationHours = (hour1, hour2) => {
+  const date1 = parseFromStringHour(hour1)
+  const date2 = parseFromStringHour(hour2)
+  return date2 - date1
+}
 /**
  *
  * @typedef {Object} DayAndMonth
