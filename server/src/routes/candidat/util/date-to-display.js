@@ -1,4 +1,5 @@
 import { getFrenchLuxon } from '../../../util'
+import { getDuration } from '../../common/candidat-status'
 
 /**
  * Obtenir la date pour récupérer les places créés avant cette date et quand les récupérer
@@ -20,4 +21,10 @@ export const getDateDisplayPlaces = (hour = 12) => {
 export const getDateVisibleForPlaces = (hour = 12) => {
   const newDate = getFrenchLuxon().plus({ hours: 12 })
   return newDate.set({ hour, minute: 0, second: 0, millisecond: 0 })
+}
+
+export const getDateVisibleBefore = (status) => {
+  const now = getFrenchLuxon()
+  const duration = getDuration(status)
+  return now.minus({ milliseconds: duration })
 }
