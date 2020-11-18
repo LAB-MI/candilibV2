@@ -45,6 +45,8 @@ export async function verifyAccesPlacesByCandidat (req, res, next) {
       throw error
     }
 
+    req.userStatus = candidat.status
+
     next()
     return
   } catch (error) {
