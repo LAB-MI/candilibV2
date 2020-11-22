@@ -58,6 +58,7 @@ import {
   verifyDelegueLevel,
 } from './middlewares'
 import config from '../../config'
+import { sortStatusCandilib } from './sort-candidat-status-controllers'
 
 const router = express.Router()
 
@@ -359,6 +360,11 @@ router.post(
   importCandidats,
 )
 
+router.get(
+  '/sort-status-candilib',
+  verifyUserLevel(config.userStatusLevels.admin),
+  sortStatusCandilib,
+)
 /**
  * @swagger
  *
