@@ -2,6 +2,70 @@ import { getFrenchLuxon } from '../../util'
 import { createCandidat } from '../candidat'
 import candidatModel from '../candidat/candidat.model'
 
+import faker from 'faker/locale/fr'
+
+export const generateCandidats = (params) => {
+  const users = []
+
+  params.forEach(item => {
+    const {
+      nbCandidats,
+      isValidateAurige,
+      isValideEmail,
+      canBookFrom,
+      canAccessAt,
+    } = item
+
+    for (let id = 1; id <= nbCandidats; id++) {
+      const codeNeph = `123${id}456789000`
+      const nomNaissance = faker.name.lastName()
+      const prenom = faker.name.firstName()
+      const email = faker.internet.email()
+      const portable = `06${faker.phone.phoneNumberFormat().slice(2)}`
+      const adresse = faker.address.streetAddress()
+      const dept2Digit = faker.address.zipCode()
+      const dept = `${dept2Digit[0]}${dept2Digit[1]}`
+      const creatdAt = faker.date.past()
+
+      const userData = {
+        codeNeph,
+        nomNaissance,
+        prenom,
+        email,
+        portable,
+        adresse,
+        departement: dept,
+        dateReussiteETG: getFrenchLuxon().plus({ year: -1 }).toISO(),
+        isValidatedByAurige: isValidateAurige,
+        isValidatedEmail: isValideEmail,
+        createdAt: creatdAt,
+      }
+
+      if (canBookFrom) {
+        if (canBookFrom === 'past') {
+          userData.canBookFrom = faker.date.past()
+        }
+        if (canBookFrom === 'future') {
+          userData.canBookFrom = faker.date.future()
+        }
+      }
+
+      if (canAccessAt) {
+        if (canAccessAt === 'past') {
+          userData.canAccessAt = faker.date.past()
+        }
+        if (canAccessAt === 'future') {
+          userData.canAccessAt = faker.date.future()
+        }
+      }
+
+      users.push(userData)
+    }
+  })
+
+  return users
+}
+
 export const candidats = [
   {
     codeNeph: '123456789000',
