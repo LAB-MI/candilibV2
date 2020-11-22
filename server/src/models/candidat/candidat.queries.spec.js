@@ -12,6 +12,7 @@ import {
   createCentres,
   createPlaces,
   deleteCandidats,
+  generateCandidats,
   makeResas,
   removeCentres,
   removePlaces,
@@ -27,8 +28,10 @@ import {
 } from './'
 import {
   archivePlace,
-
-  findCandidatsMatching, updateCandidatFailed,
+  countCandidatsByStatus,
+  findCandidatsMatching,
+  sortCandilibStatus,
+  updateCandidatFailed,
   updateCandidatNoReussite,
 } from './candidat.queries'
 import { ABSENT, ECHEC } from './objetDernierNonReussite.values'
@@ -60,6 +63,69 @@ describe('Candidat', () => {
 
   afterAll(async () => {
     await disconnect()
+  })
+
+  it('sort status candidats', async () => {
+    const sortableCandidat = {
+      nbCandidats: 15,
+      isValidateAurige: true,
+      isValideEmail: true,
+      canBookFrom: null,
+      canAccessAt: null,
+    }
+    const sortableCandidatCanBookInPast = {
+      nbCandidats: 2,
+      isValidateAurige: true,
+      isValideEmail: true,
+      canBookFrom: 'past',
+      canAccessAt: null,
+    }
+    const notSortableCandidatCanBookInFuture = {
+      nbCandidats: 2,
+      isValidateAurige: true,
+      isValideEmail: true,
+      canBookFrom: 'future',
+      canAccessAt: null,
+    }
+    const sortableCandidatCanAccessInFuture = {
+      nbCandidats: 2,
+      isValidateAurige: true,
+      isValideEmail: true,
+      canBookFrom: null,
+      canAccessAt: 'future',
+    }
+    const notSortableCandidatwithNothing = {
+      nbCandidats: 4,
+      isValidateAurige: false,
+      isValideEmail: true,
+      canBookFrom: null,
+      canAccessAt: null,
+    }
+
+    const allTest = [
+      sortableCandidat,
+      sortableCandidatCanBookInPast,
+      notSortableCandidatCanBookInFuture,
+      sortableCandidatCanAccessInFuture,
+      notSortableCandidatwithNothing,
+    ]
+    const data = await generateCandidats(allTest)
+
+    await Promise.all(data.map(
+      el => {
+        return createCandidat(el)
+      },
+    ))
+
+    await sortCandilibStatus()
+    const expectedCandidatByStatus = ['3', '3', '3', '3', '3', '6']
+    await Promise.all(expectedCandidatByStatus.map(
+      async (el, index) => {
+        const countStatus = await countCandidatsByStatus(`${index}`)
+        expect(countStatus).toBe(Number(el))
+        return countStatus
+      },
+    ))
   })
 
   it('Find 2 candidats', async () => {
