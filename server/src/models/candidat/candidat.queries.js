@@ -28,6 +28,10 @@ export const createCandidat = async ({
   prenom,
   departement,
   homeDepartement,
+  createdAt,
+  isValidatedByAurige,
+  canAccessAt,
+  canBookFrom,
 }) => {
   const validated = await candidatValidator.validateAsync({
     adresse,
@@ -44,7 +48,7 @@ export const createCandidat = async ({
 
   if (validated.error) throw new Error(validated.error)
 
-  const candidat = new Candidat({
+  const newCandidat = {
     adresse,
     codeNeph,
     email,
@@ -56,10 +60,102 @@ export const createCandidat = async ({
     presignedUpAt: new Date(),
     departement,
     homeDepartement: homeDepartement || departement,
-  })
+  }
+
+  if (process.env.NODE_ENV === 'test') {
+    if (createdAt) {
+      newCandidat.createdAt = createdAt
+    }
+
+    if (isValidatedByAurige) {
+      newCandidat.isValidatedByAurige = isValidatedByAurige
+    }
+    if (canAccessAt) {
+      newCandidat.canAccessAt = canAccessAt
+    }
+
+    if (canBookFrom) {
+      newCandidat.canBookFrom = canBookFrom
+    }
+  }
+
+  const candidat = new Candidat(newCandidat)
   await candidat.save()
   return candidat
 }
+
+// TODO: JSDOC
+const getSortableCandilibStatusAndSortCreatedAt = (now) => Candidat
+  .find({
+    isValidatedByAurige: true,
+    $and: [
+      {
+        $or: [
+          { canAccessAt: { $exists: false } },
+          { canAccessAt: { $lt: now } },
+        ],
+      },
+      {
+        $or: [
+          { canBookFrom: { $exists: false } },
+          { canBookFrom: { $lt: now } },
+        ],
+      },
+    ],
+  }, { _id: 1, createdAt: 1 })
+  .sort('createdAt')
+
+// TODO: JSDOC
+const getSortableCandilibInLastStatus = async (now) => Candidat.find({
+  isValidatedByAurige: true,
+  $or: [
+    { canAccessAt: { $gte: now } },
+    { canBookFrom: { $gte: now } },
+  ],
+}, { _id: 1 })
+
+// TODO: JSDOC
+export const sortCandilibStatus = async () => {
+  const countStatus = 6
+  const now = getFrenchLuxon().toJSDate()
+
+  const candidats = await getSortableCandilibStatusAndSortCreatedAt(now)
+
+  const candidatsCount = candidats.length
+  const groupeSize = Math.ceil(candidatsCount / countStatus)
+
+  const updatedCandidat = []
+  for (let index = 0; index < countStatus; index++) {
+    const ids = candidats.slice(
+      index * groupeSize,
+      index === 5 ? undefined : (groupeSize * (index + 1)),
+    ).map(el => el._id)
+
+    const statusFirst = await Candidat.updateMany(
+      { _id: { $in: ids } },
+      { $set: { status: `${index}` } },
+    )
+
+    updatedCandidat.push(statusFirst)
+  }
+
+  const candidatsLastStatus = await getSortableCandilibInLastStatus(now)
+
+  const idsLastStatus = candidatsLastStatus.map(item => item._id)
+
+  const lastStatus = await Candidat.updateMany(
+    { _id: { $in: idsLastStatus } },
+    { $set: { status: `${countStatus - 1}` } },
+  )
+
+  updatedCandidat.push(lastStatus)
+
+  return updatedCandidat
+}
+
+// TODO: JSDOC
+export const countCandidatsByStatus = async (status) =>
+  Candidat.find({ status: status }).countDocuments()
 
 /**
  * Renvoie la liste de tous les candidats sous forme d'objets non attachés à mongoose
