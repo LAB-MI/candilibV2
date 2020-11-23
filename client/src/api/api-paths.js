@@ -43,6 +43,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   generateBordereaux: `${apiPrefix}/admin/bordereaux`,
   resetLink: `${apiPrefix}/auth/admin/reset-link`,
   departements: `${apiPrefix}/admin/departements`,
+  sortStatusCandilib: `${apiPrefix}/admin/sort-status-candilib`,
 }
 
 const publicPaths = {

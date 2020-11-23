@@ -111,14 +111,15 @@ describe('Candidat', () => {
     ]
     const data = await generateCandidats(allTest)
 
-    await Promise.all(data.map(
+    const createdCandidat = await Promise.all(data.map(
       el => {
         return createCandidat(el)
       },
     ))
 
     await sortCandilibStatus()
-    const expectedCandidatByStatus = ['3', '3', '3', '3', '3', '6']
+
+    const expectedCandidatByStatus = ['2', '2', '2', '2', '2', '11']
     await Promise.all(expectedCandidatByStatus.map(
       async (el, index) => {
         const countStatus = await countCandidatsByStatus(`${index}`)
@@ -126,6 +127,8 @@ describe('Candidat', () => {
         return countStatus
       },
     ))
+
+    await Promise.all(createdCandidat.map(candidat => deleteCandidat(candidat).catch(() => true)))
   })
 
   it('Find 2 candidats', async () => {
