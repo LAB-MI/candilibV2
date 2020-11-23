@@ -122,7 +122,7 @@ export const sortCandilibStatus = async () => {
   const candidats = await getSortableCandilibStatusAndSortCreatedAt(now)
 
   const candidatsCount = candidats.length
-  const groupeSize = Math.ceil(candidatsCount / countStatus)
+  const groupeSize = Math.floor(candidatsCount / countStatus)
 
   const updatedCandidat = []
   for (let index = 0; index < countStatus; index++) {
