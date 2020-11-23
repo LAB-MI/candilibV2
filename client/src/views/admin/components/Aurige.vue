@@ -31,6 +31,7 @@
         </v-btn>
       </div>
     </div>
+    <manage-status-candilib />
     <aurige-validation />
   </div>
 </template>
@@ -46,6 +47,7 @@ import { SHOW_INFO, AURIGE_UPLOAD_CANDIDATS_REQUEST } from '@/store'
 import AurigeValidation from './AurigeValidation'
 import UploadFile from '@/components/UploadFile.vue'
 import { BigLoadingIndicator } from '@/components'
+import ManageStatusCandilib from './ManageStatusCandilib.vue'
 
 export default {
   name: 'AdminAurige',
@@ -53,6 +55,7 @@ export default {
     AurigeValidation,
     UploadFile,
     BigLoadingIndicator,
+    ManageStatusCandilib,
   },
 
   props: {

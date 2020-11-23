@@ -67,6 +67,13 @@ const apiAdmin = {
     return json
   },
 
+  async sortStatusCandilib () {
+    const json = await apiClient.get(apiPaths.admin.sortStatusCandilib, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
   async getUsers () {
     const json = await apiClient.get(apiPaths.admin.users, {
       headers: getHeadersForAdminJson(),
