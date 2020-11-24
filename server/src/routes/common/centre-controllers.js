@@ -33,6 +33,7 @@ export async function getCentres (req, res) {
   const { departement, centreId, nom } = req.query
   let beginDate = req.query.begin
   const endDate = req.query.end
+  const candidatStatus = req.userStatus
 
   const loggerContent = {
     section: 'candidat-get-centres',
@@ -75,6 +76,7 @@ export async function getCentres (req, res) {
         departement,
         beginDate,
         endDate,
+        candidatStatus,
       )
 
       appLogger.info({

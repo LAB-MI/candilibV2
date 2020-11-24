@@ -143,14 +143,14 @@ describe('Get places available and display at 12h', () => {
     setNowAtNow()
   })
 
-  describe.each` 
+  describe.each`
   status | statuses | after12hExpected | after12h20Expected | after12h40Expected | selectedAfter12h | selectedAfter12h20 | selectedAfter12h40 | canBookedAfter12h | canBookedAfter12h20 | canBookedAfter12h40 
   ${undefined} | ${undefined} | ${3} | ${3} | ${3} | ${1} | ${1} | ${1} | ${''} | ${''} | ${''} 
   ${1} | ${candidatStatuses} | ${3} | ${3} | ${3} | ${1} | ${1} | ${1} | ${''} | ${''} | ${''} 
   ${3} | ${candidatStatuses} | ${1} | ${3} | ${3} | ${0} | ${1} | ${1} | ${'not'} | ${''} | ${''} 
   ${5} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''} 
   ${6} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''} 
-`('For $status', ({ status, statuses, after12hExpected, after12h20Expected, after12h40Expected, selectedAfter12h, selectedAfter12h20, selectedAfter12h40, canBookedAfter12h, canBookedAfter12h20, canBookedAfter12h40 }) => {
+`('for $status', ({ status, statuses, after12hExpected, after12h20Expected, after12h40Expected, selectedAfter12h, selectedAfter12h20, selectedAfter12h40, canBookedAfter12h, canBookedAfter12h20, canBookedAfter12h40 }) => {
     beforeAll(() => {
       const moduleCandidatStatuses = require('../common/candidat-status-const')
       moduleCandidatStatuses.candidatStatuses = statuses
