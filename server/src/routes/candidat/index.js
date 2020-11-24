@@ -114,8 +114,8 @@ router.get('/me', getMe)
  *
  * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_centres}
  */
-
-router.get('/centres', getCentres)
+// TODO: verifyAccesPlacesByCandidat peut causer de probléme de performance
+router.get('/centres', verifyAccesPlacesByCandidat, getCentres)
 
 /**
  * @swagger
