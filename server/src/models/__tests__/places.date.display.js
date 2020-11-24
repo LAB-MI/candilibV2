@@ -8,6 +8,7 @@ export const visibleAtBefore = getFrenchLuxonFromObject({ hour: 9 })
 export const visibleAtNow12h = getFrenchLuxon().set({ hour: 12, minute: 0, second: 0, millisecond: 0 })
 export const visibleAtYesterday12h = visibleAtNow12h.minus({ days: 1 })
 export const visibleAtTomorrow12h = visibleAtNow12h.plus({ days: 1 })
+
 export const createPlacesWithVisibleAt = async () => {
   const createdCentres = await createCentres()
   centreDateDisplay = createdCentres[1]
@@ -58,4 +59,27 @@ export const createPlacesWithVisibleAt = async () => {
   // createdPlaces.push(placesUpdated)
 
   return createdPlaces
+}
+
+export const createOnePlaceVisibleAt12h = async () => {
+  const createdCentres = await createCentres()
+  const centreSelected = createdCentres[1]
+  const createdInspecteurs = await createInspecteurs()
+  const basePlaceDateTime = getFrenchLuxonFromObject({
+    day: 18,
+  })
+    .plus({ months: 1 })
+    .startOf('week')
+    .setLocale('fr')
+
+  const placeSelected = {
+    date: basePlaceDateTime.set({ hour: 11 }).toISO(),
+    centre: centreSelected._id,
+    inspecteur: createdInspecteurs[1]._id,
+    createdAt: createdAtBefore,
+    visibleAt: visibleAtNow12h,
+  }
+
+  const createdPlace = await createPlace(placeSelected)
+  return { createdPlace, centreSelected }
 }

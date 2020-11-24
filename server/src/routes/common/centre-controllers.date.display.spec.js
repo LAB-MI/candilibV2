@@ -23,17 +23,21 @@ import {
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
 jest.mock('../middlewares/verify-token')
+jest.mock('../middlewares/verify-user')
+jest.mock('../common/candidat-status-const', () => ({
+  candidatStatuses: undefined,
+}))
 
-xdescribe('Get centres with the numbers places available in departements and display at 12h', () => {
+describe('Get centres with the numbers places available in departements and display at 12h', () => {
   beforeAll(async () => {
-    setInitCreatedCentre()
-    resetCreatedInspecteurs()
-
     await connect()
     const createdCandidats = await createCandidats()
     require('../middlewares/verify-token').__setIdCandidat(
       createdCandidats[0]._id,
     )
+
+    setInitCreatedCentre()
+    resetCreatedInspecteurs()
 
     await createPlacesWithVisibleAt()
   })
@@ -60,6 +64,7 @@ xdescribe('Get centres with the numbers places available in departements and dis
     )
     expect(centre).toHaveProperty('count', 1)
   })
+
   it('Should response 200 to find 2 centres whit 3 places from departement 75 when is after 12h', async () => {
     setNowAfter12h()
 
@@ -75,6 +80,6 @@ xdescribe('Get centres with the numbers places available in departements and dis
       ({ centre: { _id } }) =>
         _id.toString() === centreDateDisplay._id.toString(),
     )
-    expect(centre).toHaveProperty('count', 3)
+    expect(centre).toHaveProperty('count', 1)
   })
 })
