@@ -74,7 +74,7 @@ describe('Login.vue', () => {
     })
     wrapper.setData({
       email: 'test@example.com',
-      password: 'Exampl3!',
+      password: 'Exampl3!', // NOSONAR
       valid: true,
     })
 
