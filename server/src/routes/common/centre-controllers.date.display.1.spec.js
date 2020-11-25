@@ -46,13 +46,13 @@ describe('For Status, Get centres with the numbers places available in departeme
   })
 
   describe.each`
-  status | after12hExpected | after12h20Expected | after12h40Expected
+  status | after12hExpected | after12h20Expected | after12h50Expected
   ${undefined} | ${0} | ${0} | ${1}
-  ${1} | ${1} | ${1} | ${1}
-  ${3} | ${0} | ${1} | ${1}
+  ${0} | ${1} | ${1} | ${1}
+  ${2} | ${0} | ${1} | ${1}
   ${5} | ${0} | ${0} | ${1}
   ${6} | ${0} | ${0} | ${1}
-  `('for $status', ({ status, after12hExpected, after12h20Expected, after12h40Expected }) => {
+  `('for $status', ({ status, after12hExpected, after12h20Expected, after12h50Expected }) => {
     beforeAll(() => {
       verifyAccesPlacesByCandidat.mockImplementation((req, res, next) => {
         req.userStatus = status
@@ -67,7 +67,7 @@ describe('For Status, Get centres with the numbers places available in departeme
     it.each([
       [after12hExpected, 0],
       [after12h20Expected, 20],
-      [after12h40Expected, 40],
+      [after12h50Expected, 50],
     ])(`Should response 200 to find centres with %i place from departement 75 when is after 12h%i for status ${status}`, async (expected, minutes) => {
       setNowAfter12h(minutes)
 
