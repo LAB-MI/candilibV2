@@ -1,5 +1,5 @@
 import { getFrenchLuxon } from '../../../util'
-import { getDuration } from '../../common/candidat-status'
+import { getDelayFromStatus } from '../../common/candidat-status'
 
 const hourForPlaceVisible = 12
 /**
@@ -26,6 +26,6 @@ export const getDateVisibleForPlaces = (hour = hourForPlaceVisible) => {
 
 export const getDateVisibleBefore = (status) => {
   const now = getFrenchLuxon()
-  const duration = getDuration(status)
+  const duration = getDelayFromStatus(status)
   return now.minus({ milliseconds: duration })
 }
