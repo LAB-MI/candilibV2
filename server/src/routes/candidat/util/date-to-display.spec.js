@@ -3,12 +3,7 @@ import { DateTime } from 'luxon'
 import { getDateVisibleBefore, getDateVisibleForPlaces } from './date-to-display'
 
 jest.mock('../../../util/date-util')
-jest.mock('../../common/candidat-status-const', () => ({
-  candidatStatuses: {
-    1: '12:00',
-    2: '12:03',
-  },
-}))
+jest.mock('../../common/candidat-status-const')
 
 const dateFct = obj =>
   DateTime.fromObject({ ...obj, zone: FRENCH_TIME_ZONE, locale: 'fr' })
@@ -41,6 +36,6 @@ describe('Date to display places', () => {
 
     const dateVisibleBefore = getDateVisibleBefore(status)
 
-    expect(dateVisibleBefore).toEqual(dateFct({ hour: 11, minute: 57, second: 0, millisecond: 0 }))
+    expect(dateVisibleBefore).toEqual(dateFct({ hour: 11, minute: 40, second: 0, millisecond: 0 }))
   })
 })

@@ -144,13 +144,13 @@ describe('Get places available and display at 12h', () => {
   })
 
   describe.each`
-  status | statuses | after12hExpected | after12h20Expected | after12h40Expected | selectedAfter12h | selectedAfter12h20 | selectedAfter12h40 | canBookedAfter12h | canBookedAfter12h20 | canBookedAfter12h40 
-  ${undefined} | ${undefined} | ${3} | ${3} | ${3} | ${1} | ${1} | ${1} | ${''} | ${''} | ${''} 
-  ${1} | ${candidatStatuses} | ${3} | ${3} | ${3} | ${1} | ${1} | ${1} | ${''} | ${''} | ${''} 
-  ${3} | ${candidatStatuses} | ${1} | ${3} | ${3} | ${0} | ${1} | ${1} | ${'not'} | ${''} | ${''} 
-  ${5} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''} 
-  ${6} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''} 
-`('for $status', ({ status, statuses, after12hExpected, after12h20Expected, after12h40Expected, selectedAfter12h, selectedAfter12h20, selectedAfter12h40, canBookedAfter12h, canBookedAfter12h20, canBookedAfter12h40 }) => {
+  status | statuses | after12hExpected | after12h20Expected | after12h50Expected | selectedAfter12h | selectedAfter12h20 | selectedAfter12h50 | canBookedAfter12h | canBookedAfter12h20 | canBookedAfter12h50
+  ${undefined} | ${undefined} | ${3} | ${3} | ${3} | ${1} | ${1} | ${1} | ${''} | ${''} | ${''}
+  ${0} | ${candidatStatuses} | ${3} | ${3} | ${3} | ${1} | ${1} | ${1} | ${''} | ${''} | ${''}
+  ${2} | ${candidatStatuses} | ${1} | ${3} | ${3} | ${0} | ${1} | ${1} | ${'not'} | ${''} | ${''}
+  ${5} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''}
+  ${6} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''}
+`('for $status', ({ status, statuses, after12hExpected, after12h20Expected, after12h50Expected, selectedAfter12h, selectedAfter12h20, selectedAfter12h50, canBookedAfter12h, canBookedAfter12h20, canBookedAfter12h50 }) => {
     beforeAll(() => {
       const moduleCandidatStatuses = require('../common/candidat-status-const')
       moduleCandidatStatuses.candidatStatuses = statuses
@@ -173,7 +173,7 @@ describe('Get places available and display at 12h', () => {
     it.each([
       [after12hExpected, 0],
       [after12h20Expected, 20],
-      [after12h40Expected, 40],
+      [after12h50Expected, 50],
     ])(`Should get %i places for 75 when now is after 12h%i for status ${status}`, async (npPlacesExpected, minutes) => {
       setNowAfter12h(minutes)
       await expectedPlaces(npPlacesExpected)
@@ -182,8 +182,8 @@ describe('Get places available and display at 12h', () => {
     it.each([
       [selectedAfter12h, 0],
       [selectedAfter12h20, 20],
-      [selectedAfter12h40, 40],
-    ])('Should 200 with an available place before 12h when it is after 12h by center name and geo-departement', async (npPlacesExpected, minutes) => {
+      [selectedAfter12h50, 50],
+    ])(`Should 200 with  %i available place before 12h when it is after 12h%i by center name and geo-departement for status ${status}`, async (npPlacesExpected, minutes) => {
       setNowAfter12h(minutes)
       await expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, npPlacesExpected)
     })
@@ -201,7 +201,7 @@ describe('Get places available and display at 12h', () => {
     it.each([
       [canBookedAfter12h, 0],
       [canBookedAfter12h20, 20],
-      [canBookedAfter12h40, 40],
+      [canBookedAfter12h50, 50],
     ])('should %s booked place by candidat with info bookedAt when it is after 12h%i', async (canBooked, minutes) => {
       setNowAfter12h(minutes)
       if (canBooked === 'not') {
