@@ -146,10 +146,10 @@ describe('Get places available and display at 12h', () => {
   describe.each`
   status | statuses | after12hExpected | after12h20Expected | after12h50Expected | selectedAfter12h | selectedAfter12h20 | selectedAfter12h50 | canBookedAfter12h | canBookedAfter12h20 | canBookedAfter12h50
   ${undefined} | ${undefined} | ${3} | ${3} | ${3} | ${1} | ${1} | ${1} | ${''} | ${''} | ${''}
-  ${0} | ${candidatStatuses} | ${3} | ${3} | ${3} | ${1} | ${1} | ${1} | ${''} | ${''} | ${''}
-  ${2} | ${candidatStatuses} | ${1} | ${3} | ${3} | ${0} | ${1} | ${1} | ${'not'} | ${''} | ${''}
-  ${5} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''}
-  ${6} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''}
+  ${'0'} | ${candidatStatuses} | ${3} | ${3} | ${3} | ${1} | ${1} | ${1} | ${''} | ${''} | ${''}
+  ${'2'} | ${candidatStatuses} | ${1} | ${3} | ${3} | ${0} | ${1} | ${1} | ${'not'} | ${''} | ${''}
+  ${'5'} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''}
+  ${'6'} | ${candidatStatuses} | ${1} | ${1} | ${3} | ${0} | ${0} | ${1} | ${'not'} | ${'not'} | ${''}
 `('for $status', ({ status, statuses, after12hExpected, after12h20Expected, after12h50Expected, selectedAfter12h, selectedAfter12h20, selectedAfter12h50, canBookedAfter12h, canBookedAfter12h20, canBookedAfter12h50 }) => {
     beforeAll(() => {
       const moduleCandidatStatuses = require('../common/candidat-status-const')

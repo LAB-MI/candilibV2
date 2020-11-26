@@ -67,35 +67,35 @@ describe('Candidat', () => {
 
   it('sort status candidats', async () => {
     const sortableCandidat = {
-      nbCandidats: 15,
+      nbCandidats: 7,
       isValidateAurige: true,
       isValideEmail: true,
       canBookFrom: null,
       canAccessAt: null,
     }
     const sortableCandidatCanBookInPast = {
-      nbCandidats: 2,
+      nbCandidats: 1,
       isValidateAurige: true,
       isValideEmail: true,
       canBookFrom: 'past',
       canAccessAt: null,
     }
     const notSortableCandidatCanBookInFuture = {
-      nbCandidats: 2,
+      nbCandidats: 1,
       isValidateAurige: true,
       isValideEmail: true,
       canBookFrom: 'future',
       canAccessAt: null,
     }
     const sortableCandidatCanAccessInFuture = {
-      nbCandidats: 2,
+      nbCandidats: 1,
       isValidateAurige: true,
       isValideEmail: true,
       canBookFrom: null,
       canAccessAt: 'future',
     }
     const notSortableCandidatwithNothing = {
-      nbCandidats: 4,
+      nbCandidats: 1,
       isValidateAurige: false,
       isValideEmail: true,
       canBookFrom: null,
@@ -119,7 +119,7 @@ describe('Candidat', () => {
 
     await sortCandilibStatus()
 
-    const expectedCandidatByStatus = ['2', '2', '2', '2', '2', '11']
+    const expectedCandidatByStatus = ['1', '1', '1', '1', '1', '5']
     await Promise.all(expectedCandidatByStatus.map(
       async (el, index) => {
         const countStatus = await countCandidatsByStatus(`${index}`)
