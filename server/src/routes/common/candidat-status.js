@@ -6,7 +6,7 @@ export const getCandidatStatuses = () => ({ nbStatus: candidatStatuses?.nbStatus
 
 export const getDelayFromStatus = (status) => {
   const { nbStatus, msec } = getCandidatStatuses()
-
+  const convertedStatus = Number(status)
   if (!nbStatus || !msec) {
     techLogger.warn({
       section: 'CALCUL DURATION',
@@ -17,8 +17,8 @@ export const getDelayFromStatus = (status) => {
   }
 
   const statusAvailable = Array.from({ length: nbStatus }).map((_, index) => index)
-  if (statusAvailable.includes(status)) {
-    return (status * msec)
+  if (statusAvailable.includes(convertedStatus)) {
+    return (convertedStatus * msec)
   }
 
   return (nbStatus - 1) * msec
