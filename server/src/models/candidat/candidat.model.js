@@ -29,6 +29,10 @@ const ArchivedPlaceFields = {
     type: String,
     default: undefined,
   },
+  candidatStatus: {
+    type: String,
+    default: undefined,
+  },
 }
 
 const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields)
