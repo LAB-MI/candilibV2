@@ -530,6 +530,7 @@ export const addPlaceToArchive = (
     isCandilib,
     bookedAt,
     bookedByAdmin,
+    candidatStatus: candidat.status,
   })
   return candidat
 }
