@@ -5,8 +5,8 @@ import Candidat from './candidat.model'
 import Place from '../place/place.model'
 import { getFrenchLuxon, techLogger } from '../../util'
 import { queryPopulate } from '../util/populate-tools'
+import { candidatValidator } from '../../util/validators/candidat-validator'
 
-import { candidatValidator } from './candidat-validator'
 /**
  * Crée un candidat
  *

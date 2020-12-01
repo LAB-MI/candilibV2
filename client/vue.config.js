@@ -10,6 +10,10 @@ module.exports = {
   productionSourceMap: false,
   runtimeCompiler: true,
 
+  css: {
+    extract: { ignoreOrder: true },
+  },
+
   devServer: {
     proxy: {
       '/candilib/api': {
