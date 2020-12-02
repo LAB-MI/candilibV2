@@ -102,7 +102,7 @@ const getSortableCandilibStatusAndSortCreatedAt = (now) => Candidat
         ],
       },
     ],
-  }, { _id: 1, createdAt: 1 })
+  }, { _id: 1, createdAt: 1, departement: 1 })
   .sort('createdAt')
 
 // TODO: JSDOC
@@ -112,7 +112,15 @@ const getSortableCandilibInLastStatus = async (now) => Candidat.find({
     { canAccessAt: { $gte: now } },
     { canBookFrom: { $gte: now } },
   ],
-}, { _id: 1 })
+}, { _id: 1, departement: 1 })
+
+// TODO: JSDOC
+function groupByAndIds (acc, el) {
+  if (!acc.countByDep[el.departement]) { acc.countByDep[el.departement] = 0 }
+  acc.countByDep[el.departement]++
+  acc.ids.push(el._id)
+  return acc
+}
 
 // TODO: JSDOC
 export const sortCandilibStatus = async () => {
@@ -125,32 +133,49 @@ export const sortCandilibStatus = async () => {
   const groupeSize = Math.floor(candidatsCount / countStatus)
 
   const updatedCandidat = []
+  const countByStatus = {}
+
   for (let index = 0; index < countStatus; index++) {
-    const ids = candidats.slice(
+    const results = candidats.slice(
       index * groupeSize,
       index === 5 ? undefined : (groupeSize * (index + 1)),
-    ).map(el => el._id)
+    ).reduce(groupByAndIds, { countByDep: {}, ids: [] })
 
-    const statusFirst = await Candidat.updateMany(
-      { _id: { $in: ids } },
-      { $set: { status: `${index}` } },
-    )
-
-    updatedCandidat.push(statusFirst)
+    if (results.ids.length) {
+      const statusFirst = await Candidat.updateMany(
+        { _id: { $in: results.ids } },
+        { $set: { status: `${index}` } },
+      )
+      updatedCandidat.push(statusFirst)
+    } else {
+      techLogger.warn({
+        section: 'SORT-CANDIDAT-BY-STATUS',
+        action: 'STATUS-EMPTY',
+        description: `status ${index} n' a aucun candidats`,
+      })
+    }
+    countByStatus[index] = results.countByDep
   }
 
   const candidatsLastStatus = await getSortableCandilibInLastStatus(now)
 
-  const idsLastStatus = candidatsLastStatus.map(item => item._id)
+  if (candidatsLastStatus && candidatsLastStatus.length) {
+    const index = countStatus - 1
+    const idsLastStatus = candidatsLastStatus.reduce(groupByAndIds, { countByDep: {}, ids: [] })
 
-  const lastStatus = await Candidat.updateMany(
-    { _id: { $in: idsLastStatus } },
-    { $set: { status: `${countStatus - 1}` } },
-  )
+    const lastStatus = await Candidat.updateMany(
+      { _id: { $in: idsLastStatus.ids } },
+      { $set: { status: `${index}` } },
+    )
+    updatedCandidat.push(lastStatus)
 
-  updatedCandidat.push(lastStatus)
+    for (const [key, value] of Object.entries(idsLastStatus.countByDep)) {
+      if (!countByStatus[index][key]) countByStatus[index][key] = 0
+      countByStatus[index][key] += value
+    }
+  }
 
-  return updatedCandidat
+  return ({ countByStatus, updatedCandidat })
 }
 
 // TODO: JSDOC
