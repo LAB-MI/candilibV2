@@ -6,6 +6,7 @@ import { parseAsync } from 'json2csv'
 
 import { appLogger, getFrenchLuxon, getFrenchLuxonFromISO } from '../../util'
 import {
+  countByStatuses,
   getAllPlacesProposeInFutureByDpt,
   getCountCandidatsLeaveRetentionArea,
   getCountCandidatsLeaveRetentionAreaByWeek,
@@ -429,6 +430,56 @@ export const getStatsPlacesExam = async (req, res) => {
       success: true,
       message: 'Les stats ont bien été mises à jour',
       statsKpi,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      action: 'ERROR GET STATS KPI',
+      description: error.message,
+      error,
+    })
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
+/**
+ * TODO: JSDOC
+ * @param {*} req
+ * @param {*} res
+ */
+export const getCountStatuses = async (req, res) => {
+  const { beginPeriod, endPeriod } = req.query
+
+  const loggerContent = {
+    section: 'admin-getStatsCountStatus',
+    admin: req.userId,
+    beginPeriod,
+    endPeriod,
+  }
+
+  try {
+    if ((!beginPeriod && endPeriod) || (beginPeriod && !endPeriod)) {
+      const message = 'Conflit dans les paramètres de la requête au serveur'
+      appLogger.warn({
+        ...loggerContent,
+        description: message,
+      })
+      res.status(400).json({
+        success: false,
+        message: message,
+      })
+      return
+    }
+    const counts = countByStatuses(beginPeriod, endPeriod)
+
+    appLogger.info({
+      ...loggerContent,
+      action: 'GET COUNT BY STATUS ',
+      counts,
+    })
+
+    return res.status(200).json({
+      success: true,
+      counts,
     })
   } catch (error) {
     appLogger.error({
