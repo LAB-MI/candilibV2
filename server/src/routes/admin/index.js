@@ -34,6 +34,7 @@ import {
 import {
   getCandidatsLeaveRetentionArea,
   getCandidatsLeaveRetentionAreaByWeekAndDepartement,
+  getCountStatuses,
   getStatsPlacesExam,
   getStatsResultsExam,
 } from './statistics-controllers'
@@ -1129,6 +1130,11 @@ router.get(
   getCandidatsLeaveRetentionAreaByWeekAndDepartement,
 )
 
+router.get(
+  '/stats-count-statuses',
+  verifyUserLevel(config.userStatusLevels.admin),
+  getCountStatuses,
+)
 /**
  * @swagger
  *
