@@ -1,4 +1,4 @@
-import { getLogsByFilter } from '../../models/log-actions-candidat'
+import { getLogsByFilter } from '../../models/logs'
 // import { appLogger } from '../../util'
 
 export const getLogsByFilters = (filters) => {

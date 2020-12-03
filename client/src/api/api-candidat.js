@@ -129,7 +129,7 @@ const apiCandidat = {
     return json
   },
 
-  async setReservations (nomCentre, geoDepartement, date, isAccompanied, hasDualControlCar) {
+  async setReservations (nomCentre, geoDepartement, date, isAccompanied, hasDualControlCar, isModification) {
     const json = await apiClient.patch(`${apiPaths.candidat.places}`, {
       body: JSON.stringify({
         nomCentre,
@@ -137,6 +137,7 @@ const apiCandidat = {
         date,
         isAccompanied,
         hasDualControlCar,
+        isModification,
       }),
       headers: getHeadersForJson(),
     })
