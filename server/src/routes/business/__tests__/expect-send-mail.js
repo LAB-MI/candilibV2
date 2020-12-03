@@ -15,13 +15,13 @@ export function expectMailConvocation (candidat, place) {
   expect(bodyMail).toHaveProperty('html', getConvocationBody(place))
 }
 
-export function expectMailCancelBooking (candidat, place) {
+export async function expectMailCancelBooking (candidat, place) {
   const bodyMail = require('../send-mail').getMail()
   expect(bodyMail).toBeDefined()
   expect(bodyMail).toHaveProperty('to', candidat.email)
   expect(bodyMail).toHaveProperty('subject', SUBJECT_CANCEL_RESA)
 
-  expect(bodyMail).toHaveProperty('html', getCancellationBody(place, candidat))
+  expect(bodyMail).toHaveProperty('html', await getCancellationBody(place, candidat))
 }
 
 export async function expectMailBordereaux (subjectParams) {

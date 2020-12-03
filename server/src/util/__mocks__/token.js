@@ -1,4 +1,4 @@
-export function createToken (id, userStatus, departements) {
+export function createToken (id, userStatus, departements, detailContentCandidat) {
   return 'fake-token'
 }
 

@@ -17,9 +17,9 @@ export const getCancellationByAdminBody = async (place, candidat) => {
     centreObject = await findCentreById(centre)
   }
   const { nom, adresse } = centreObject
-  const { _id, nomNaissance, codeNeph, status } = candidat
+  const { nomNaissance, codeNeph } = candidat
   const urlFAQ = getUrlFAQ()
-  const urlRESA = getUrlRESA(_id, status)
+  const urlRESA = await getUrlRESA(candidat)
 
   buildMailResaArgsValidation(
     date,

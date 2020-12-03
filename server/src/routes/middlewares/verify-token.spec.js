@@ -10,7 +10,7 @@ import { PLEASE_LOG_IN } from '../../messages.constants'
 const id = 'fakeId'
 const candidatStatus = 'fakeStatus'
 
-const validToken = createToken(id, 'candidat', candidatStatus)
+const validToken = createToken(id, 'candidat', undefined, candidatStatus)
 
 const invalidToken = validToken + '0'
 const verifyPath = '/verify'
