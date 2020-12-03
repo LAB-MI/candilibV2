@@ -169,7 +169,7 @@ export const sendMailToAccount = async (candidat, flag, addInQueue) => {
 export const sendMagicLink = async (candidat, addInQueue) => {
   const flag = AURIGE_OK
 
-  const url = getUrlMagicLink(candidat)
+  const url = await getUrlMagicLink(candidat)
 
   const message = await getMailData(candidat, flag, url)
   if (addInQueue) {

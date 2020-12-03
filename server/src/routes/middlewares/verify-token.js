@@ -24,7 +24,6 @@ import { PLEASE_LOG_IN } from '../../messages.constants'
 
 export async function verifyToken (req, res, next) {
   const isMagicLink = req.get('x-magic-link')
-
   try {
     const token = fctGetToken(req)
 
@@ -40,16 +39,23 @@ export async function verifyToken (req, res, next) {
       })
     }
 
-    const { id, level, departements } = token
+    const { id, level, departements, candidatStatus, departement } = token
+
     req.userId = id
     req.userLevel = level
     req.departements = departements
+    req.candidatStatus = candidatStatus
+    req.candidatDepartement = departement
 
     const isCandidat =
       !level || level === config.userStatusLevels[config.userStatuses.CANDIDAT]
 
     if (isMagicLink && isCandidat) {
       await setCandidatFirstConnection(id)
+    }
+
+    if (isCandidat && !candidatStatus) {
+      throw new Error('Erreur candidatStatus is undefined')
     }
 
     next()
@@ -89,18 +95,19 @@ function fctGetToken (req) {
     return
   }
   const decoded = checkToken(token)
-  const { id, level, departements } = decoded
-  return { id, level, departements }
+  return decoded
 }
 
 export function getToken (req, res, next) {
   try {
     const decoded = fctGetToken(req)
     if (!decoded) next()
-    const { id, level, departements } = decoded
+    const { id, level, departements, candidatStatus, departement } = decoded
     req.userId = id
     req.userLevel = level
     req.departements = departements
+    req.candidatStatus = candidatStatus
+    req.candidatDepartement = departement
   } catch (error) {
     appLogger.error({
       section: 'get-token',

@@ -41,7 +41,7 @@ const sendMailResaArgsValidation = (reservation, candidat) => {
   return email
 }
 
-export const sendMailConvocation = reservation => {
+export const sendMailConvocation = async reservation => {
   const action = 'SEND_CONVOVATION'
   // appLogger.debug({ func: 'sendMailConvocation', arg: { reservation } })
 
@@ -56,7 +56,7 @@ export const sendMailConvocation = reservation => {
   }
 
   const { email } = reservation.candidat
-  const content = getConvocationBody(reservation)
+  const content = await getConvocationBody(reservation)
   const subject = SUBJECT_CONVOCATION
 
   // appLogger.debug({ func: 'sendMailConvocation', content, subject })
@@ -64,7 +64,7 @@ export const sendMailConvocation = reservation => {
   return sendMail(email, { content, subject })
 }
 
-export const sendCancelBooking = (candidat, place) => {
+export const sendCancelBooking = async (candidat, place) => {
   // appLogger.debug({ func: 'sendMailCancellation', args: { candidat, place } })
   const action = 'SEND_CANCELLATION'
   const { email } = candidat
@@ -77,7 +77,7 @@ export const sendCancelBooking = (candidat, place) => {
     throw error
   }
 
-  const content = getCancellationBody(place, candidat)
+  const content = await getCancellationBody(place, candidat)
   const subject = SUBJECT_CANCEL_RESA
 
   // appLogger.debug({ func: 'sendMailCancellation', content, subject })

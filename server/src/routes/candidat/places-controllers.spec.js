@@ -850,7 +850,7 @@ const cancelReservationWithSuccess = async (
   expect(foundPlace).toHaveProperty('archiveReason', REASON_CANCEL)
   const place = foundPlace
   place.centre = previewPlace.centre
-  expectMailCancelBooking(candidat, place)
+  await expectMailCancelBooking(candidat, place)
 }
 
 describe('Cancel a reservation', () => {
