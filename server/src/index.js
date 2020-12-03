@@ -14,7 +14,7 @@ import http from 'http'
 import app from './app'
 import { connect, disconnect } from './mongo-connection'
 import { techLogger } from './util'
-import { initDB, updateDB } from './initDB/initDB'
+import { initDB, initStatus, updateDB } from './initDB/initDB'
 import pm2 from 'pm2'
 import { accumulatorLog } from './routes/middlewares'
 
@@ -37,7 +37,10 @@ async function startServer () {
   try {
     const pid = await asyncGetPIDPM2()
     await connect()
-    if (!pid || pid === process.pid) { await initDB() }
+    if (!pid || pid === process.pid) {
+      await initDB()
+      await initStatus()
+    }
     http.createServer(app).listen(PORT, '0.0.0.0')
     techLogger.info(`Server running at http://0.0.0.0:${PORT}/`)
 
