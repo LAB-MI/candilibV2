@@ -5,6 +5,7 @@
 import { findStatusByType } from '../models/status'
 import ModelPlace from '../models/place/place.model'
 import { techLogger } from '../util'
+import { sortCandilibStatus } from '../models/candidat'
 /**
  * Version de la base de données
  */
@@ -28,6 +29,20 @@ export const initDB = async () => {
   }
 
   await ModelPlace.syncIndexes()
+}
+/**
+ * Pour initialisés les status
+ * - Met à jour les status de la collection candidat
+ * @function
+ */
+export const initStatus = async () => {
+  const nbStatusUpdated = await sortCandilibStatus()
+  const loggerInfo = {
+    section: 'initStatus',
+    nbStatusUpdated,
+  }
+
+  techLogger.info(loggerInfo)
 }
 
 /**
