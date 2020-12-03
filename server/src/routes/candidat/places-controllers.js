@@ -356,6 +356,7 @@ export const bookPlaceByCandidat = async (req, res) => {
     date,
     isAccompanied: isAccompaniedAsBoolean,
     hasDualControlCar: hasDualControlCarAsBoolean,
+    isModification,
   } = req.body
 
   const isAccompanied = isAccompaniedAsBoolean === true
@@ -373,6 +374,7 @@ export const bookPlaceByCandidat = async (req, res) => {
     date,
     isAccompanied,
     hasDualControlCar,
+    isModification,
   })
 
   // TODO: GET CENTRE ID BY NAME AND GEODEPT

@@ -118,8 +118,15 @@ export default {
 
     async [CONFIRM_SELECT_DAY_REQUEST] ({ commit, dispatch }, selected) {
       commit(CONFIRM_SELECT_DAY_REQUEST)
-      const { slot, centre, isAccompanied, hasDualControlCar } = selected
-      const result = await api.candidat.setReservations(centre.nom, centre.geoDepartement, slot, isAccompanied, hasDualControlCar)
+      const { slot, centre, isAccompanied, hasDualControlCar, isModification } = selected
+      const result = await api.candidat.setReservations(
+        centre.nom,
+        centre.geoDepartement,
+        slot,
+        isAccompanied,
+        hasDualControlCar,
+        isModification,
+      )
       if (result && result.success) {
         commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
         dispatch(SHOW_SUCCESS, 'Votre réservation a bien été prise en compte')
