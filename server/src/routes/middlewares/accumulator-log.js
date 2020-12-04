@@ -72,14 +72,6 @@ export const accumulatorLog = {
     tmpLogValue ? tmpLogValue + 1 : 1
 
     this.isSet = true
-    console.log({
-      process: process.pid,
-      candidatStatus,
-      departementBooked,
-      candidatDepartement,
-      buffer01: stringifyJson(this.buffer),
-      bufferLogs: this.buffer[`${departementOfCandidat}`][`${candidatStatus}`].logs,
-    })
   },
 
   resetAccumulator () {

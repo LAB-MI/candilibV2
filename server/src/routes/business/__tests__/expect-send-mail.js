@@ -6,13 +6,13 @@ import { getConvocationBody } from '../build-mail-convocation'
 import { getCancellationBody } from '../build-mail-cancellation'
 import { getScheduleInspecteurBody } from '../send-mail-schedule-inspecteur'
 
-export function expectMailConvocation (candidat, place) {
+export async function expectMailConvocation (candidat, place) {
   const bodyMail = require('../send-mail').getMail()
   expect(bodyMail).toBeDefined()
   expect(bodyMail).toHaveProperty('to', candidat.email)
   expect(bodyMail).toHaveProperty('subject', SUBJECT_CONVOCATION)
   place.candidat = candidat
-  expect(bodyMail).toHaveProperty('html', getConvocationBody(place))
+  expect(bodyMail).toHaveProperty('html', await getConvocationBody(place))
 }
 
 export async function expectMailCancelBooking (candidat, place) {

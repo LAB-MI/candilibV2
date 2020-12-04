@@ -13,6 +13,7 @@ import { getCandidatConfig } from './candidat/candidat-config-controller'
 import publicRoutes from './public'
 import { contactUs } from './candidat/contact-us-controller'
 import { verifyUser } from './middlewares/verify-user'
+import { verifyCandidatStatus } from './middlewares/verify-candidat-status'
 
 const router = express.Router()
 
@@ -313,7 +314,7 @@ router.use('/public', publicRoutes)
 
 router.patch('/admin/me', resetMyPassword)
 router.post('/candidat/contact-us', getToken, contactUs)
-router.use('/candidat', verifyToken, verifyUser, candidat)
+router.use('/candidat', verifyToken, verifyCandidatStatus, verifyUser, candidat)
 router.use('/auth', auth)
 router.use('/admin', verifyToken, admin)
 
