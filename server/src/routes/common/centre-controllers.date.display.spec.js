@@ -25,7 +25,7 @@ require('../../util/logger').setWithConsole(false)
 jest.mock('../middlewares/verify-token')
 jest.mock('../middlewares/verify-user')
 jest.mock('../common/candidat-status-const', () => ({
-  candidatStatuses: undefined,
+  candidatStatuses: { nbStatus: undefined, msec: undefined },
 }))
 
 describe('Get centres with the numbers places available in departements and display at 12h', () => {

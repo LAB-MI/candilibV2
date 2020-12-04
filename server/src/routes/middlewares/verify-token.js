@@ -54,10 +54,6 @@ export async function verifyToken (req, res, next) {
       await setCandidatFirstConnection(id)
     }
 
-    if (isCandidat && !candidatStatus) {
-      throw new Error('Erreur candidatStatus is undefined')
-    }
-
     next()
   } catch (error) {
     const isTokenExpired = error.name === 'TokenExpiredError'
