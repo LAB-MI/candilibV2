@@ -635,5 +635,15 @@ const apiAdmin = {
     )
     return json
   },
+
+  async getStatsCountStatuses () {
+    const json = await apiClient.get(
+        `${apiPaths.admin.statsCountStatuses}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+    )
+    return json
+  },
 }
 export default apiAdmin

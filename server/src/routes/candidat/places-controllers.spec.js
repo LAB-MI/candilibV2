@@ -169,8 +169,8 @@ describe('Test get dates from places available when there are booked', () => {
       )
 
       .set('Accept', 'application/json')
-      // .expect(200)
-    console.log({ body })
+      .expect(200)
+
     expect(body).toBeDefined()
     expect(body).toHaveLength(1)
     expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())

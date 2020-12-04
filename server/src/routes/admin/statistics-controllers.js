@@ -469,7 +469,7 @@ export const getCountStatuses = async (req, res) => {
       })
       return
     }
-    const counts = countByStatuses(beginPeriod, endPeriod)
+    const counts = await countByStatuses(beginPeriod, endPeriod)
 
     appLogger.info({
       ...loggerContent,

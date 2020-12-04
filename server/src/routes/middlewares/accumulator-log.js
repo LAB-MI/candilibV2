@@ -81,7 +81,7 @@ export const accumulatorLog = {
 }
 
 // TODO: Changé l'emplacement du lancement la fonction suivante
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'test') {
   saveAccumulatorAsIntervalOf(accumulatorLog.timerIntervalSetting)
 }
 
