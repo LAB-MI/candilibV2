@@ -14,6 +14,8 @@ export const generateCandidats = (params) => {
       isValideEmail,
       canBookFrom,
       canAccessAt,
+      departement,
+
     } = item
 
     for (let id = 1; id <= nbCandidats; id++) {
@@ -24,7 +26,7 @@ export const generateCandidats = (params) => {
       const portable = `06${faker.phone.phoneNumberFormat().slice(2)}`
       const adresse = faker.address.streetAddress()
       const dept2Digit = faker.address.zipCode()
-      const dept = `${dept2Digit[0]}${dept2Digit[1]}`
+      const dept = departement || `${dept2Digit[0]}${dept2Digit[1]}`
       const creatdAt = faker.date.past()
 
       const userData = {
