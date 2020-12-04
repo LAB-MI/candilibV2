@@ -406,6 +406,22 @@ export const bookPlaceByCandidat = async (req, res) => {
       candidat: true,
     })
 
+    if (previousBookedPlace && !isModification) {
+      const success = false
+      const message = 'Une ou plusieurs informations sont manquantes pour cette modification'
+
+      appLogger.warn({
+        ...loggerContent,
+        success,
+        description: message,
+      })
+
+      return res.status(400).json({
+        success,
+        message,
+      })
+    }
+
     if (previousBookedPlace) {
       await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, false)
     }
