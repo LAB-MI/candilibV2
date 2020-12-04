@@ -17,6 +17,8 @@ export const sortStatusCandilib = async (req, res) => {
       summary,
     })
 
+    // permet de désactivé le cache seulment pour cette reponse
+    res.set('Cache-Control', 'no-store')
     res.status(200).send({
       success: true,
       message,

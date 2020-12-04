@@ -1,11 +1,11 @@
 import { getLogsByFilter } from '../../models/logs'
 import { getFrenchLuxonFromJSDate } from '../../util'
 // import { appLogger } from '../../util'
-
+// TODO: NEED MORE OPTIMISE
 export const getLogsByFilters = async (filters) => {
   const formatedData = {}
   const filteredLogs = await getLogsByFilter(filters)
-  filteredLogs.forEach((item, index) => {
+  filteredLogs.forEach((item) => {
     const { beginAt, savedAt, content } = item
     const parsedContent = JSON.parse(content)
     const beginHourRange = getFrenchLuxonFromJSDate(beginAt).hour

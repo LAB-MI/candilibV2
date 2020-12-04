@@ -18,7 +18,7 @@ import { setAccumulatorRequest } from '../middlewares'
 
 const router = express.Router()
 
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV !== 'test') {
   router.use(setAccumulatorRequest)
 }
 

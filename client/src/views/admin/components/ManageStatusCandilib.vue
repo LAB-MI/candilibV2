@@ -13,7 +13,7 @@
             v-bind="attrs"
             v-on="on"
           >
-            Mettre à jour les status candilib
+            Mettre à jour les statuts candilib
           </v-btn>
         </template>
         <v-card>
@@ -59,7 +59,7 @@ export default {
 
   data () {
     return {
-      title: 'Mise à jour des status candilib',
+      title: 'Mise à jour des statuts candilib',
       dialog: false,
     }
   },
