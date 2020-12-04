@@ -67,7 +67,7 @@ const router = express.Router()
 router.use(verifyRepartiteurLevel())
 
 router.get(
-  '/logs',
+  '/stats-logs',
   verifyUserLevel(config.userStatusLevels.admin),
   logsByFilters,
 )

@@ -6,6 +6,7 @@ import Place from '../place/place.model'
 import { getFrenchLuxon, techLogger } from '../../util'
 import { queryPopulate } from '../util/populate-tools'
 import { candidatValidator } from '../../util/validators/candidat-validator'
+import { candidatStatuses } from '../../routes/common/candidat-status-const'
 
 /**
  * Crée un candidat
@@ -124,7 +125,7 @@ function groupByAndIds (acc, el) {
 
 // TODO: JSDOC
 export const sortCandilibStatus = async () => {
-  const countStatus = 6
+  const countStatus = candidatStatuses.nbStatus
   const now = getFrenchLuxon().toJSDate()
 
   const candidats = await getSortableCandilibStatusAndSortCreatedAt(now)

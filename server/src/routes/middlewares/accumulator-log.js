@@ -1,22 +1,32 @@
-import { saveManyLogActionsCandidat } from '../../models/log-actions-candidat'
-import { techLogger } from '../../util'
+import { logsTypeName } from '../../config'
+import { saveManyLogActionsCandidat } from '../../models/logs'
+
+import { getFrenchLuxon, techLogger } from '../../util'
+import { candidatStatuses } from '../common/candidat-status-const'
 
 function saveAccumulatorWithBulk () {
-  const accuClone = accumulatorLog.get().slice()
-  accumulatorLog.resetAccumulator()
+  const dateTimeNow = getFrenchLuxon()
+  const datetimeNowToISO = dateTimeNow.toISO()
+  const hourNow = dateTimeNow.hour
 
-  // saveManyLogActionsCandidat(accuClone).catch((error) => {
-  //   techLogger.error({ error })
-  // })
+  if (hourNow !== accumulatorLog.lastSave && [0, 4, 6, 9, 11, 13, 17, 21].includes(hourNow)) {
+    if (accumulatorLog.isSet) {
+      const content = stringifyJson(accumulatorLog.get())
 
-  // console.log(
-  //     `--SAVE_OK_ON_PROCESS[${process.pid}]
-  //     _SIZE_ACCUMULATOR[${accuClone.length}]--`,
-  // )
-  if (accuClone.length) {
-    saveManyLogActionsCandidat(accuClone).catch((error) => {
-      techLogger.error({ error })
-    })
+      saveManyLogActionsCandidat(
+        logsTypeName,
+        content,
+        accumulatorLog.beginAt,
+        datetimeNowToISO,
+      )
+        .catch((error) => {
+          techLogger.error({ error })
+        })
+
+      accumulatorLog.resetAccumulator()
+      accumulatorLog.lastSave = hourNow
+      accumulatorLog.beginAt = datetimeNowToISO
+    }
   }
 }
 
@@ -24,72 +34,105 @@ export function saveAccumulatorAsIntervalOf (intervalInMilscd) {
   accumulatorLog.intervalId = setInterval(saveAccumulatorWithBulk, intervalInMilscd)
 }
 
+const shapedStatus = {
+  ...Array(candidatStatuses.nbStatus).fill(true).map(() => ({ logs: {} })),
+}
+
 export const accumulatorLog = {
   // timerIntervalSetting in msec
-  timerIntervalSetting: 10000,
+  beginAt: getFrenchLuxon().toISO(),
+  timerIntervalSetting: 60000 * 1,
   intervalId: undefined,
-  buffer: [],
-  // bufferRealTime: {},
-  errors: [],
+  lastSave: undefined,
+  buffer: {},
+  isSet: false,
   get () {
     return this.buffer
   },
   set (logRequest) {
-    // if (!this.bufferRealTime[`${logRequest.candidat}`]) {
-    //   this.bufferRealTime[`${logRequest.candidat}`] = {
-    //     logs: {},
-    //   }
-    // }
-    this.buffer.push(logRequest)
-    // console.log(`[ ${this.buffer.length} ]`)
-    // if (this.buffer.length > 50000) {
-    //   saveAccumulatorWithBulk()
-    // }
-    // console.log({ buffer: this.buffer })
+    const {
+      method,
+      path,
+      status,
+      candidatStatus,
+      departementBooked,
+      candidatDepartement,
+      isModification,
+    } = logRequest
+
+    const requestString = `${method}_${path}_${status}` + (isModification ? '_MODIFICATION' : '')
+    const departementOfCandidat = departementBooked || candidatDepartement
+    if (!this.buffer[`${departementOfCandidat}`]) {
+      this.buffer[`${departementOfCandidat}`] = shapedStatus
+    }
+
+    const tmpLogValue = this.buffer[`${departementOfCandidat}`][`${candidatStatus}`].logs[requestString]
+
+    this.buffer[`${departementOfCandidat}`][`${candidatStatus}`].logs[requestString] =
+    tmpLogValue ? tmpLogValue + 1 : 1
+
+    this.isSet = true
+    console.log({
+      process: process.pid,
+      candidatStatus,
+      departementBooked,
+      candidatDepartement,
+      buffer01: stringifyJson(this.buffer),
+      bufferLogs: this.buffer[`${departementOfCandidat}`][`${candidatStatus}`].logs,
+    })
   },
 
   resetAccumulator () {
-    this.buffer = []
-    // this.bufferRealTime = {}
+    this.buffer = {}
+    this.isSet = false
   },
 }
 
 // TODO: Changé l'emplacement du lancement la fonction suivante
-// 1min
-// const timerSetting = 60000 * 1
 
 saveAccumulatorAsIntervalOf(accumulatorLog.timerIntervalSetting)
 
-const strigifyQuerry = (query) => JSON.stringify(query)
-const strigifyParams = (params) => JSON.stringify(params)
+const stringifyJson = (value) => JSON.stringify(value)
+const parseJson = (value) => JSON.parse(value)
 
 export const setAccumulatorRequest = async (req, res, next) => {
   const {
     method,
-    params,
-    query,
     path,
-    userId,
-    headers,
+    candidatStatus,
+    body,
+    candidatDepartement,
   } = req
 
-  res.on('finish', () => {
-    console.log({
-      method,
-      path,
-      query: strigifyQuerry(query),
-      params: strigifyParams(params),
-    })
-    accumulatorLog.set({
-      method,
-      path,
-      query: strigifyQuerry(query),
-      params: strigifyParams(params),
-      userAgent: headers['user-agent'],
-      requestedAt: new Date().toJSON(),
-      status: res.statusCode.toString(),
-      candidat: userId,
-    })
-  })
+  const oldWrite = res.write
+  const oldEnd = res.end
+  const chunks = []
+
+  res.write = (...restArgs) => {
+    chunks.push(Buffer.from(restArgs[0]))
+    oldWrite.apply(res, restArgs)
+  }
+
+  res.end = (...restArgs) => {
+    if (restArgs[0]) {
+      chunks.push(Buffer.from(restArgs[0]))
+    }
+    const resBody = Buffer.concat(chunks).toString('utf8')
+
+    if ((method === 'PATCH' || method === 'DELETE') && path === '/places' && res.statusCode.toString() === '200') {
+      accumulatorLog.set({
+        method,
+        path,
+        status: res.statusCode.toString(),
+        candidatStatus,
+        departementBooked: parseJson(resBody)?.reservation?.departement,
+        candidatDepartement,
+        isModification: body?.isModification,
+      })
+    }
+
+    oldEnd.apply(res, restArgs)
+  }
+
   next()
 }
