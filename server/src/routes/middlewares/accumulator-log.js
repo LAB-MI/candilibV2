@@ -89,8 +89,9 @@ export const accumulatorLog = {
 }
 
 // TODO: Changé l'emplacement du lancement la fonction suivante
-
-saveAccumulatorAsIntervalOf(accumulatorLog.timerIntervalSetting)
+if (process.env.NODE_ENV === 'production') {
+  saveAccumulatorAsIntervalOf(accumulatorLog.timerIntervalSetting)
+}
 
 const stringifyJson = (value) => JSON.stringify(value)
 const parseJson = (value) => JSON.parse(value)
