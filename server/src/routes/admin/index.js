@@ -66,6 +66,7 @@ const router = express.Router()
 
 router.use(verifyRepartiteurLevel())
 
+// TODO: swaggerDOC
 router.get(
   '/stats-logs',
   verifyUserLevel(config.userStatusLevels.admin),
