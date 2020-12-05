@@ -13,12 +13,12 @@ function saveAccumulatorWithBulk () {
     if (accumulatorLog.isSet) {
       const content = stringifyJson(accumulatorLog.get())
 
-      saveManyLogActionsCandidat(
+      saveManyLogActionsCandidat({
         logsTypeName,
         content,
-        accumulatorLog.beginAt,
-        datetimeNowToISO,
-      )
+        beginAt: accumulatorLog.beginAt,
+        savedAt: datetimeNowToISO,
+      })
         .catch((error) => {
           techLogger.error({ error })
         })
@@ -38,6 +38,18 @@ const shapedStatus = {
   ...Array(candidatStatuses.nbStatus).fill(true).map(() => ({ logs: {} })),
 }
 
+const getHumanPathName = (method, isModification) => {
+  if (method === 'DELETE') {
+    return 'REMOVED'
+  }
+  if (method === 'PATCH' && !isModification) {
+    return 'RESERVATION'
+  }
+  if (method === 'PATCH' && isModification) {
+    return 'MODIFICATION'
+  }
+}
+
 export const accumulatorLog = {
   // timerIntervalSetting in msec
   beginAt: getFrenchLuxon().toISO(),
@@ -52,15 +64,13 @@ export const accumulatorLog = {
   set (logRequest) {
     const {
       method,
-      path,
-      status,
       candidatStatus,
       departementBooked,
       candidatDepartement,
       isModification,
     } = logRequest
 
-    const requestString = `${method}_${path}_${status}` + (isModification ? '_MODIFICATION' : '')
+    const requestString = getHumanPathName(method, isModification)
     const departementOfCandidat = departementBooked || candidatDepartement
     if (!this.buffer[`${departementOfCandidat}`]) {
       this.buffer[`${departementOfCandidat}`] = shapedStatus
@@ -115,8 +125,6 @@ export const setAccumulatorRequest = async (req, res, next) => {
     if ((method === 'PATCH' || method === 'DELETE') && path === '/places' && res.statusCode.toString() === '200') {
       accumulatorLog.set({
         method,
-        path,
-        status: res.statusCode.toString(),
         candidatStatus,
         departementBooked: parseJson(resBody)?.reservation?.departement,
         candidatDepartement,

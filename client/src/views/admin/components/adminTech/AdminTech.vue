@@ -50,13 +50,13 @@
                 Statut {{ Number(item.status) + 1 }}
               </v-card-title>
               <v-card-text>
-                Réservation: {{ item.logsContent['PATCH_/places_200'] || 0 }}
+                Réservation: {{ item.logsContent['RESERVATION'] || 0 }}
               </v-card-text>
               <v-card-text>
-                Modification: {{ item.logsContent['PATCH_/places_200_MODIFICATION'] || 0 }}
+                Modification: {{ item.logsContent['MODIFICATION'] || 0 }}
               </v-card-text>
               <v-card-text>
-                Annulation: {{ item.logsContent['DELETE_/places_200'] || 0 }}
+                Annulation: {{ item.logsContent['REMOVED'] || 0 }}
               </v-card-text>
             </v-card>
           </v-card>
