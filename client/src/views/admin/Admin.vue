@@ -27,6 +27,7 @@ import {
   ROUTE_AUTHORIZE_AGENTS,
   ROUTE_AUTHORIZE_CENTRES,
   ROUTE_AUTHORIZE_DEPARTEMENTS,
+  ROUTE_AUTHORIZE_TECH_ADMIN,
 } from '@/constants'
 
 import AdminHeader from './components/AdminHeader.vue'
@@ -80,6 +81,12 @@ const headerIcons = [
     routerTo: ROUTE_AUTHORIZE_DEPARTEMENTS,
     iconName: 'location_searching',
     tooltipText: 'Départements',
+    isProtected: true,
+  },
+  {
+    routerTo: ROUTE_AUTHORIZE_TECH_ADMIN,
+    iconName: 'admin_panel_settings',
+    tooltipText: 'Tech Admin',
     isProtected: true,
   },
 ]

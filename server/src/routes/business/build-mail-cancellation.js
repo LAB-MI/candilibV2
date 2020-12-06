@@ -10,7 +10,7 @@ import { getCancelBookingTemplate, getUrlFAQ } from './mail'
 
 const section = 'candidat-sendMail'
 
-export const getCancellationBody = (place, candidat) => {
+export const getCancellationBody = async (place, candidat) => {
   const action = 'get-body-cancellation'
   // appLogger.debug({ func: 'sendMailCancellation', action, place, candidat })
 
@@ -18,7 +18,7 @@ export const getCancellationBody = (place, candidat) => {
   const { nom, adresse } = centre
   const { _id, nomNaissance, codeNeph } = candidat
   const urlFAQ = getUrlFAQ()
-  const token = getCandidatToken(_id)
+  const token = await getCandidatToken(_id, candidat)
   const urlRESA = getUrlRESAByToken(token)
   const contactezNous = getContactUs(token)
 

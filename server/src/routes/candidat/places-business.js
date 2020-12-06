@@ -44,7 +44,7 @@ import {
 } from '../../models/candidat'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
-import { getDateVisibleForPlaces, getDateDisplayPlaces } from './util/date-to-display'
+import { getDateVisibleForPlaces, getDateDisplayPlaces, getDateVisibleBefore } from './util/date-to-display'
 
 /**
  * Renvoie tous les créneaux d'un centre
@@ -62,6 +62,7 @@ export const getDatesByCentreId = async (
   beginDate,
   endDate,
   candidatId,
+  candidatStatus,
 ) => {
   // appLogger.debug({
   //   func: 'getDatesByCentreId',
@@ -82,7 +83,7 @@ export const getDatesByCentreId = async (
     endPeriod.toISODate(),
     undefined,
     getDateDisplayPlaces(),
-    getFrenchLuxon(),
+    getDateVisibleBefore(candidatStatus),
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
@@ -108,6 +109,7 @@ export const getDatesByCentresNameAndGeoDepartement = async (
   beginDate,
   endDate,
   candidatId,
+  candidatStatus,
 ) => {
   // appLogger.debug({
   //   func: 'getDatesByCentreName',
@@ -135,7 +137,7 @@ export const getDatesByCentresNameAndGeoDepartement = async (
     endPeriod.toISODate(),
     undefined,
     getDateDisplayPlaces(),
-    getFrenchLuxon(),
+    getDateVisibleBefore(candidatStatus),
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
@@ -149,6 +151,7 @@ export const getPlacesByDepartementAndCentre = async (
   candidatId,
   beginDate,
   endDate,
+  candidatStatus,
 ) => {
   const { beginPeriod, endPeriod } = await candidatCanReservePlaceForThisPeriod(
     candidatId,
@@ -162,14 +165,13 @@ export const getPlacesByDepartementAndCentre = async (
     beginPeriod,
     endPeriod,
     getDateDisplayPlaces(),
-    getFrenchLuxon(),
+    getDateVisibleBefore(candidatStatus),
   )
 
   const result = dates
     .map(({ placesInfo }) => placesInfo)
     .flat(1)
     .map(place => getFrenchLuxonFromJSDate(place.date).toISO())
-
   return [...new Set(result)]
 }
 
@@ -234,13 +236,13 @@ export const getDatesByCentre = async (
  *
  * @returns {string[]} - Tableau de dates au format ISO
  */
-export const hasAvailablePlaces = async (id, date) => {
+export const hasAvailablePlaces = async (id, date, candidatStatus) => {
   const places = await findPlacesByCentreAndDate(
     id,
     date,
     undefined,
     getDateDisplayPlaces(),
-    getFrenchLuxon(),
+    getDateVisibleBefore(candidatStatus),
   )
   const dates = places.map(place =>
     getFrenchLuxonFromJSDate(place.date).toISO(),
@@ -264,6 +266,7 @@ export const hasAvailablePlacesByCentre = async (
   geoDepartement,
   nomCentre,
   date,
+  candidatStatus,
 ) => {
   const foundCentre = await findCentreByNameAndDepartement(
     nomCentre,
@@ -273,7 +276,7 @@ export const hasAvailablePlacesByCentre = async (
 
   if (!foundCentre) return []
 
-  const datePlaces = await Promise.all(foundCentre.map(({ _id }) => hasAvailablePlaces(_id, date)))
+  const datePlaces = await Promise.all(foundCentre.map(({ _id }) => hasAvailablePlaces(_id, date, candidatStatus)))
   const dates = datePlaces.flat(1)
   return dates[0] ? [dates[0]] : []
 }
@@ -345,6 +348,7 @@ export const bookPlace = async (
   nomCentre,
   date,
   geoDepartement,
+  candidatStatus,
 ) => {
   // TODO: Refactor
   const foundCentres = await findCentreByNameAndDepartement(
@@ -353,8 +357,8 @@ export const bookPlace = async (
     geoDepartement,
   )
   const centres = foundCentres.map(centre => centre._id)
-  const dateNow = getFrenchLuxon().toJSDate()
-  const bookedAt = dateNow
+  const bookedAt = getFrenchLuxon().toJSDate()
+  const visibleBefore = getDateVisibleBefore(candidatStatus).toJSDate()
   try {
     const place = await findAndbookPlace(
       candidatId,
@@ -364,7 +368,7 @@ export const bookPlace = async (
       { inspecteur: 0 },
       { centre: true, candidat: true },
       getDateDisplayPlaces(),
-      dateNow,
+      visibleBefore,
     )
     return place
   } catch (error) {

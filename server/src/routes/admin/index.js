@@ -34,6 +34,7 @@ import {
 import {
   getCandidatsLeaveRetentionArea,
   getCandidatsLeaveRetentionAreaByWeekAndDepartement,
+  getCountStatuses,
   getStatsPlacesExam,
   getStatsResultsExam,
 } from './statistics-controllers'
@@ -58,10 +59,19 @@ import {
   verifyDelegueLevel,
 } from './middlewares'
 import config from '../../config'
+import { sortStatusCandilib } from './sort-candidat-status-controllers'
+import { logsByFilters } from './logs-candidat-controllers'
 
 const router = express.Router()
 
 router.use(verifyRepartiteurLevel())
+
+// TODO: swaggerDOC
+router.get(
+  '/stats-logs',
+  verifyUserLevel(config.userStatusLevels.admin),
+  logsByFilters,
+)
 
 /**
  * @swagger
@@ -359,6 +369,12 @@ router.post(
   importCandidats,
 )
 
+// TODO: SWAGGER DOC
+router.get(
+  '/sort-status-candilib',
+  verifyUserLevel(config.userStatusLevels.admin),
+  sortStatusCandilib,
+)
 /**
  * @swagger
  *
@@ -1122,6 +1138,11 @@ router.get(
   getCandidatsLeaveRetentionAreaByWeekAndDepartement,
 )
 
+router.get(
+  '/stats-count-statuses',
+  verifyUserLevel(config.userStatusLevels.admin),
+  getCountStatuses,
+)
 /**
  * @swagger
  *

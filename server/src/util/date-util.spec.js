@@ -5,6 +5,7 @@ import {
   getFrenchLuxon,
   getFrenchLuxonFromObject,
   getFrenchFormattedDateTime,
+  durationHours,
 } from './date-util'
 
 DateTime.prototype.isHolidays = function () {
@@ -61,5 +62,10 @@ describe('Date utils', () => {
       hour12: false,
     })
     expect(dateResult).toHaveProperty('hour', '08:00')
+  })
+
+  it('should duration', () => {
+    const duration = durationHours('12:00', '12:05')
+    expect(duration).toBe(5 * 1000 * 60)
   })
 })

@@ -11,7 +11,7 @@ export const getNoSuccessAtExamBody = async (candidat, fnGetTemplate) => {
 
   const urlFAQ = getUrlFAQ()
   const timeoutToRetry = config.timeoutToRetry
-  const token = getCandidatToken(_id)
+  const token = await getCandidatToken(_id, candidat)
   const urlRESA = getUrlRESAByToken(token)
   const contactezNous = getContactUs(token)
 

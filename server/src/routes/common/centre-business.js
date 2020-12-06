@@ -25,7 +25,7 @@ import {
   updateCentreLabel,
 } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
-import { getDateDisplayPlaces } from '../candidat/util/date-to-display'
+import { getDateDisplayPlaces, getDateVisibleBefore } from '../candidat/util/date-to-display'
 
 export async function findCentresWithNbPlaces (departement, beginDate, endDate) {
   const centres = departement
@@ -66,6 +66,7 @@ export async function findCentresWithNbPlacesByGeoDepartement (
   geoDepartement,
   beginDate,
   endDate,
+  status,
   justIsCentreHaveAvailablePlace = true,
 ) {
   const centres = geoDepartement
@@ -90,7 +91,7 @@ export async function findCentresWithNbPlacesByGeoDepartement (
           beginDate,
           endDate,
           getDateDisplayPlaces(),
-          getFrenchLuxon(),
+          getDateVisibleBefore(status),
         ),
       })),
     )

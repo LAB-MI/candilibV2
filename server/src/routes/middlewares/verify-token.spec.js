@@ -6,19 +6,29 @@ import { createToken } from '../../util'
 import { verifyToken, getToken } from './verify-token'
 
 import { PLEASE_LOG_IN } from '../../messages.constants'
+import { updateCandidatToken } from '../../models/candidat'
 
 const id = 'fakeId'
+const candidatStatus = 'fakeStatus'
 
-const validToken = createToken(id, 'candidat')
-
-const invalidToken = validToken + '0'
 const verifyPath = '/verify'
 const getTokenPatch = '/token'
 const app = express()
 app.get(verifyPath, verifyToken, (req, res) => res.json({ ok: true }))
 app.get(getTokenPatch, getToken, (req, res) => res.json({ id: req.userId }))
 
+jest.mock('../../models/candidat')
+
 describe('Verify-token', () => {
+  let validToken
+  let invalidToken
+
+  beforeAll(async () => {
+    updateCandidatToken.mockResolvedValue(true)
+    validToken = await createToken(id, 'candidat', undefined, { candidatStatus })
+
+    invalidToken = validToken + '0'
+  })
   it('Should respond a json with a message for missing token', async () => {
     // When
     const { body, status } = await request(app)

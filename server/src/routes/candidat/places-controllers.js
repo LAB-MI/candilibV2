@@ -84,6 +84,7 @@ export const ErrorMsgArgEmpty =
 export async function getPlacesByCentre (req, res) {
   const centreId = req.params.id
   const candidatId = req.userId
+  const candidatStatus = req.userStatus
   const { nomCentre, geoDepartement, begin, end, dateTime } = req.query
 
   const loggerInfo = {
@@ -114,9 +115,9 @@ export async function getPlacesByCentre (req, res) {
   try {
     if (centreId) {
       if (dateTime) {
-        dates = await hasAvailablePlaces(centreId, dateTime, candidatId)
+        dates = await hasAvailablePlaces(centreId, dateTime, candidatStatus)
       } else {
-        dates = await getDatesByCentreId(centreId, begin, end, candidatId)
+        dates = await getDatesByCentreId(centreId, begin, end, candidatId, candidatStatus)
       }
     } else {
       if (!(geoDepartement && nomCentre)) {
@@ -127,7 +128,7 @@ export async function getPlacesByCentre (req, res) {
           geoDepartement,
           nomCentre,
           dateTime,
-          candidatId,
+          candidatStatus,
         )
       } else {
         dates = await getPlacesByDepartementAndCentre(
@@ -136,6 +137,7 @@ export async function getPlacesByCentre (req, res) {
           candidatId,
           begin,
           end,
+          candidatStatus,
         )
       }
     }
@@ -346,12 +348,15 @@ function isMissingPrerequesite (nomCentre, date, isAccompanied, hasDualControlCa
 export const bookPlaceByCandidat = async (req, res) => {
   const section = 'candidat-create-reservation'
   const candidatId = req.userId
+  const candidatStatus = req.userStatus
+
   const {
     nomCentre,
     geoDepartement,
     date,
     isAccompanied: isAccompaniedAsBoolean,
     hasDualControlCar: hasDualControlCarAsBoolean,
+    isModification,
   } = req.body
 
   const isAccompanied = isAccompaniedAsBoolean === true
@@ -369,6 +374,7 @@ export const bookPlaceByCandidat = async (req, res) => {
     date,
     isAccompanied,
     hasDualControlCar,
+    isModification,
   })
 
   // TODO: GET CENTRE ID BY NAME AND GEODEPT
@@ -399,6 +405,22 @@ export const bookPlaceByCandidat = async (req, res) => {
       centre: true,
       candidat: true,
     })
+
+    if (previousBookedPlace && !isModification) {
+      const success = false
+      const message = 'Une ou plusieurs informations sont manquantes pour cette modification'
+
+      appLogger.warn({
+        ...loggerContent,
+        success,
+        description: message,
+      })
+
+      return res.status(400).json({
+        success,
+        message,
+      })
+    }
 
     if (previousBookedPlace) {
       await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, false)
@@ -442,6 +464,7 @@ export const bookPlaceByCandidat = async (req, res) => {
         nomCentre,
         date,
         geoDepartement,
+        candidatStatus,
       )
     } catch (error) {
       appLogger.error({

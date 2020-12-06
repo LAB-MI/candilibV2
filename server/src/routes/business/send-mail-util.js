@@ -3,10 +3,12 @@ import {
   createToken,
   getFrenchLuxonFromJSDate,
   getFrenchLuxon,
+  checkToken,
 } from '../../util'
 import { findDepartementById } from '../../models/departement'
 import config from '../../config'
 import { addEmailValidationHash } from '../../models/user'
+import { updateCandidatToken } from '../../models/candidat'
 
 export function buildMailResaArgsValidation (
   date,
@@ -96,8 +98,8 @@ export const getUrlResetLink = async email => {
   )}&hash=${encodeURIComponent(emailValidationHash)}`
 }
 
-export const getCandidatToken = id =>
-  createToken(id, config.userStatuses.CANDIDAT)
+export const getCandidatToken = (id, detailContentCandidat) =>
+  createToken(id, config.userStatuses.CANDIDAT, undefined, detailContentCandidat)
 
 export const getUrlContactUs = token => `${config.PUBLIC_URL
 }/contact-us${
@@ -111,13 +113,21 @@ export const getUrlRESAByToken = token => {
   return `${config.PUBLIC_URL}/candidat/home?token=${token}`
 }
 
-export const getUrlMagicLink = candidat => {
+export const getUrlMagicLink = async candidat => {
   const candidatAccessDate = getFrenchLuxonFromJSDate(candidat.canAccessAt)
   const dateNow = getFrenchLuxon().startOf('day')
 
   if (!candidat.canAccessAt || dateNow >= candidatAccessDate) {
-    const token = createToken(candidat.id, config.userStatuses.CANDIDAT)
     const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
+    let token
+
+    if (isTokenAlreadyValid(candidat?.token)) {
+      token = candidat.token
+    } else {
+      token = await createToken(candidat.id, config.userStatuses.CANDIDAT, undefined, candidat)
+      await updateCandidatToken(candidat.id, token)
+    }
+
     return {
       url: `${authUrl}?token=${encodeURIComponent(token)}`,
       urlContactUs: getContactUs(token),
@@ -125,4 +135,14 @@ export const getUrlMagicLink = candidat => {
   }
 
   return null
+}
+
+const isTokenAlreadyValid = (token) => {
+  if (!token) return false
+  try {
+    checkToken(token)
+    return true
+  } catch (error) {
+    return false
+  }
 }
