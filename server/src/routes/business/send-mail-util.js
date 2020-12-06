@@ -117,7 +117,6 @@ export const getUrlMagicLink = async candidat => {
   const candidatAccessDate = getFrenchLuxonFromJSDate(candidat.canAccessAt)
   const dateNow = getFrenchLuxon().startOf('day')
 
-  // console.log({ toketo: candidat.token })
   if (!candidat.canAccessAt || dateNow >= candidatAccessDate) {
     const authUrl = `${config.PUBLIC_URL}${config.CANDIDAT_ROUTE}`
     let token

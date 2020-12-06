@@ -1,4 +1,4 @@
-import { getLogsByFilter } from '../../models/logs'
+import { getLogsByFilter } from '../../models/logs/logs-queries'
 import { getFrenchLuxonFromJSDate } from '../../util'
 // import { appLogger } from '../../util'
 // TODO: NEED MORE OPTIMISE

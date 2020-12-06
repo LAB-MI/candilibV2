@@ -1,5 +1,5 @@
 import { logsTypeName } from '../../config'
-import { saveManyLogActionsCandidat } from '../../models/logs'
+import { saveManyLogActionsCandidat } from '../../models/logs/logs-queries'
 
 import { getFrenchLuxon, techLogger } from '../../util'
 import { candidatStatuses } from '../common/candidat-status-const'
