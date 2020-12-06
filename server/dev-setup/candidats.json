@@ -8,7 +8,8 @@
         "adresse": "40 Avenue des terroirs de France 75012 Paris",
         "portable": "0612345678",
         "email": "madmax@candilib.com",
-        "departement": "75"
+        "departement": "75",
+        "status": "0"
 
     },
     {
@@ -31,7 +32,8 @@
         "adresse": "40 Avenue des terroirs de France 75012 Paris",
         "portable": "0636845721",
         "email": "toecutter@candilib.com",
-        "departement": "75"
+        "departement": "75",
+        "status": "0"
     },
     {
         "codeNeph": "093621795384",
@@ -42,7 +44,8 @@
         "adresse": "40 Avenue des terroirs de France 75012 Paris",
         "portable": "0696547812",
         "email": "jimgoose@candilib.com",
-        "departement": "75"
+        "departement": "75",
+        "status": "0"
     },
     {
         "codeNeph": "093365721896",
@@ -53,7 +56,8 @@
         "adresse": "40 Avenue des terroirs de France 75012 Paris",
         "portable": "0654762186",
         "email": "johnnyboy@candilib.com",
-        "departement": "75"
+        "departement": "75",
+        "status": "0"
     },
     {
         "codeNeph": "093631754283",
@@ -64,7 +68,8 @@
         "adresse": "40 Avenue des terroirs de France 75012 Paris",
         "portable": "0621478954",
         "email": "fifimcaffee@candilib.com",
-        "departement": "75"
+        "departement": "75",
+        "status": "0"
     },
     {
         "codeNeph": "093496239512",
@@ -75,7 +80,8 @@
         "adresse": "40 Avenue des terroirs de France 75012 Paris",
         "portable": "0603765291",
         "email": "mayswaisey@candilib.com",
-        "departement": "75"
+        "departement": "75",
+        "status": "0"
     },
     {
         "codeNeph": "093874320867",
@@ -86,7 +92,8 @@
         "adresse": "40 Avenue des terroirs de France 75012 Paris",
         "portable": "0676543986",
         "email": "timburns@candilib.com",
-        "departement": "75"
+        "departement": "75",
+        "status": "0"
     },
     {
         "codeNeph": "093874320868",
@@ -97,7 +104,8 @@
         "adresse": "40 Avenue des terroirs de France 75012 Paris",
         "portable": "0676543986",
         "email": "davidcameron@candilib.com",
-        "departement": "75"
+        "departement": "75",
+        "status": "0"
     },
     {
         "codeNeph": "093874320865",
@@ -108,6 +116,7 @@
         "adresse": "40 Avenue des terroirs de France 75012 Paris",
         "portable": "0676543986",
         "email": "bubbazanetti@candilib.com",
-        "departement": "75"
+        "departement": "75",
+        "status": "0"
     }
 ]

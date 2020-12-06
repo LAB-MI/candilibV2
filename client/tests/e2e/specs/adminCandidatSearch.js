@@ -127,8 +127,8 @@ describe('Candidate Profile', () => {
 
     const numberOfDaysBeforeDate = 7
     const arbitraryValue = 7
-    const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate + arbitraryValue })
-
+    let nowIn1Week = now.plus({ days: numberOfDaysBeforeDate + arbitraryValue })
+    if (nowIn1Week.weekday === 7) nowIn1Week = nowIn1Week.plus({ days: 1 })
     const candidatsByDepartments = [
       {
         codeNeph: '612345678901299',
@@ -141,6 +141,7 @@ describe('Candidate Profile', () => {
         isEvaluationDone: true,
         isValidatedEmail: true,
         isValidatedByAurige: true,
+        status: 0,
       },
     ]
 
