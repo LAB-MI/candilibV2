@@ -318,6 +318,8 @@ Cypress.Commands.add('candidateValidation', (candidat, filename, hasChecked = tr
       .getSubject()
       .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
   }
+
+  cy.updateCandidat({ email: candidatAurige.email }, { status: '0' })
 })
 
 Cypress.Commands.add('addCandidatToPlace', (date, candidatName) => {
