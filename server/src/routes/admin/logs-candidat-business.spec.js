@@ -1,7 +1,7 @@
 import { getFrenchLuxon } from '../../util'
 import { getLogsByFilters } from './logs-candidat-business'
-import { saveManyLogActionsCandidat } from '../../models/logs/logs-queries'
-import LogsModel from '../../models/logs/logs-model'
+import { saveManyLogActionsCandidat } from '../../models/logs-candidat/logs-queries'
+import LogsModel from '../../models/logs-candidat/logs-model'
 import { connect, disconnect } from '../../mongo-connection'
 
 describe('Test logs candidat', () => {
