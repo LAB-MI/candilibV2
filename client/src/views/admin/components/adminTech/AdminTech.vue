@@ -1,67 +1,136 @@
 <template>
   <div>
     <v-card>
-      <v-card-title
-        primary-title
-        class="bg-black"
+      <v-toolbar
+        color="black"
+        dark
       >
-        <span class="text-white">
-          Section 1
-        </span>
+        <v-toolbar-title>Informations de la journnée </v-toolbar-title>
         <v-spacer />
         <v-btn
           color="primary"
           @click="getLogs()"
         >
-          Rafrechir
+          Actualiser
         </v-btn>
-      </v-card-title>
-      <big-loading-indicator :is-loading="isFetchingLogs" />
-      <div
-        class="h-64 overflow-scroll"
-      >
-        <div
-          v-for="range in listLogs"
-          :key="`${range.begin}_${range.end}`"
-          class="pa-2 flex-wrap bg-gray-700"
-        >
-          <v-card-title>
-            <span class="text-white">
-              {{ `De ${range.begin} à ${range.end}` }}
-            </span>
-          </v-card-title>
+      </v-toolbar>
+      <v-tabs vertical>
+        <v-tab>
+          National
+        </v-tab>
+        <v-tab>
+          Par département
+        </v-tab>
+        <v-tab>
+          Par tranche
+        </v-tab>
+        <v-tab-item>
           <v-card
-            v-for="departementLogs in range.departements"
-
-            :key="departementLogs.departement"
-            class="pa-4 flex"
+            class="h-64 overflow-scroll  bg-black"
           >
-            <v-card-title
-              primary-title
-              class="mr-5"
-            >
-              {{ departementLogs.departement }}
-            </v-card-title>
             <v-card
-              v-for="item in departementLogs.statusesInfo"
+              v-for="item in listLogs.summaryNational"
               :key="item.status"
             >
-              <v-card-title primary-title>
-                Statut {{ Number(item.status) + 1 }}
-              </v-card-title>
               <v-card-text>
-                Réservation: {{ item.logsContent['RESERVATION'] || 0 }}
-              </v-card-text>
-              <v-card-text>
-                Modification: {{ item.logsContent['MODIFICATION'] || 0 }}
-              </v-card-text>
-              <v-card-text>
-                Annulation: {{ item.logsContent['REMOVED'] || 0 }}
+                <v-card-title primary-title>
+                  Groupe: {{ item.status }}
+                </v-card-title>
+                <v-card-text>
+                  Réservation: {{ item.infos['R'] }}
+                  Modification: {{ item.infos['M'] }}
+                  Annulation: {{ item.infos['A'] }}
+                </v-card-text>
               </v-card-text>
             </v-card>
           </v-card>
-        </div>
-      </div>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card
+            class="h-64 overflow-scroll  bg-black"
+          >
+            <v-card
+              v-for="logItem in listLogs.summaryByDepartement"
+              :key="logItem.dpt"
+              class="flex flex-col"
+            >
+              <v-card-title
+                primary-title
+              >
+                {{ logItem.dpt }}
+              </v-card-title>
+              <v-card-text
+                v-for="statusItem in logItem.content"
+                :key="statusItem.status"
+              >
+                <span>
+                  <v-card>
+                    <v-card-title primary-title>
+                      Groupe: {{ Number(statusItem.status) + 1 }}
+                    </v-card-title>
+                    <v-card-text>
+                      Réservation: {{ statusItem.infos['R'] }}
+                      Modification: {{ statusItem.infos['M'] }}
+                      Annulation: {{ statusItem.infos['A'] }}
+                    </v-card-text>
+                  </v-card>
+                </span>
+              </v-card-text>
+            </v-card>
+          </v-card>
+        </v-tab-item>
+        <v-tab-item>
+          <v-card>
+            <v-card-text>
+              <div
+                class="h-64 overflow-scroll"
+              >
+                <div
+                  v-for="range in listLogs.details"
+                  :key="`${range.begin}_${range.end}`"
+                  class="pa-2 flex-wrap bg-gray-700"
+                >
+                  <v-card-title>
+                    <span class="text-white">
+                      {{ `De ${range.begin} à ${range.end}` }}
+                    </span>
+                  </v-card-title>
+                  <v-card
+                    v-for="departementLogs in range.departements"
+                    :key="departementLogs.departement"
+                    class="pa-4 flex"
+                  >
+                    <v-card-title
+                      primary-title
+                      class="mr-5"
+                    >
+                      {{ departementLogs.departement }}
+                    </v-card-title>
+                    <v-card
+                      v-for="item in departementLogs.statusesInfo"
+                      :key="item.status"
+                    >
+                      <v-card-title primary-title>
+                        Statut {{ Number(item.status) + 1 }}
+                      </v-card-title>
+                      <v-card-text>
+                        Réservations: {{ item.logsContent['R'] }}
+                      </v-card-text>
+                      <v-card-text>
+                        Modifications: {{ item.logsContent['M'] }}
+                      </v-card-text>
+                      <v-card-text>
+                        Annulations: {{ item.logsContent['A'] }}
+                      </v-card-text>
+                    </v-card>
+                  </v-card>
+                </div>
+              </div>
+            </v-card-text>
+          </v-card>
+        </v-tab-item>
+      </v-tabs>
+      <big-loading-indicator :is-loading="isFetchingLogs" />
     </v-card>
 
     <v-card>
@@ -77,24 +146,27 @@
           color="primary"
           @click="getCountStatus()"
         >
-          Rafrechir
+          Actualiser
         </v-btn>
       </v-card-title>
       <big-loading-indicator :is-loading="isFetchingCountStatus" />
-
-      <v-card-title primary-title>
-        nationale
-      </v-card-title>
       <div
-        v-for="item in listCountStatus"
-        :key="item.status"
+        class="h-64 overflow-scroll pa-4 flex"
       >
         <v-card-title primary-title>
-          Status:  {{ Number(item.status) + 1 }}
+          national
         </v-card-title>
-        <v-card-title primary-title>
-          count: {{ item.count }}
-        </v-card-title>
+        <v-card
+          v-for="item in listCountStatus"
+          :key="item.status"
+        >
+          <v-card-title primary-title>
+            Groupe:  {{ Number(item.status) + 1 }}
+          </v-card-title>
+          <v-card-title primary-title>
+            valeur: {{ item.count }}
+          </v-card-title>
+        </v-card>
       </div>
     </v-card>
   </div>
@@ -117,8 +189,9 @@ export default {
     isFetchingLogs: state => state.adminTech.isFetchingLogs,
     isFetchingCountStatus: state => state.adminTech.isFetchingCountStatus,
   },
-  beforeMount () {
-    this.$store.dispatch(FETCH_LOGS_REQUEST)
+  mounted () {
+    this.getLogs()
+    this.getCountStatus()
   },
   methods: {
     getLogs () {

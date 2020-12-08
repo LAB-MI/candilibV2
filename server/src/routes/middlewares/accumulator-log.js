@@ -8,19 +8,21 @@ function saveAccumulatorWithBulk () {
   const dateTimeNow = getFrenchLuxon()
   const datetimeNowToISO = dateTimeNow.toISO()
   const hourNow = dateTimeNow.hour
-
   if (hourNow !== accumulatorLog.lastSave && [0, 4, 6, 9, 11, 13, 17, 21].includes(hourNow)) {
     if (accumulatorLog.isSet) {
       const content = stringifyJson(accumulatorLog.get())
+      const section = 'save-many-log-actions-candidat'
 
       saveManyLogActionsCandidat({
-        logsTypeName,
+        type: logsTypeName,
         content,
         beginAt: accumulatorLog.beginAt,
         savedAt: datetimeNowToISO,
+      }).then(({ savedAt }) => {
+        techLogger.info({ section, description: `Logs created at ${savedAt}` })
       })
         .catch((error) => {
-          techLogger.error({ error })
+          techLogger.error({ section, description: error.message, error })
         })
 
       accumulatorLog.resetAccumulator()
@@ -40,13 +42,13 @@ const shapedStatus = {
 
 const getHumanPathName = (method, isModification) => {
   if (method === 'DELETE') {
-    return 'REMOVED'
+    return 'A'
   }
   if (method === 'PATCH' && !isModification) {
-    return 'RESERVATION'
+    return 'R'
   }
   if (method === 'PATCH' && isModification) {
-    return 'MODIFICATION'
+    return 'M'
   }
 }
 
