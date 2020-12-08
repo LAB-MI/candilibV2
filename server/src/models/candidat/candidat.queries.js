@@ -7,6 +7,7 @@ import { getFrenchLuxon, techLogger } from '../../util'
 import { queryPopulate } from '../util/populate-tools'
 import { candidatValidator } from '../../util/validators/candidat-validator'
 import { candidatStatuses } from '../../routes/common/candidat-status-const'
+import { addArchivedCandidatStatus } from '../archived-candidat-status/archived-candidat-status-queries'
 
 /**
  * Crée un candidat
@@ -103,7 +104,7 @@ const getSortableCandilibStatusAndSortCreatedAt = (now) => Candidat
         ],
       },
     ],
-  }, { _id: 1, createdAt: 1, departement: 1 })
+  }, { _id: 1, createdAt: 1, departement: 1, status: 1 })
   .sort('createdAt')
 
 // TODO: JSDOC
@@ -113,13 +114,14 @@ const getSortableCandilibInLastStatus = async (now) => Candidat.find({
     { canAccessAt: { $gte: now } },
     { canBookFrom: { $gte: now } },
   ],
-}, { _id: 1, departement: 1 })
+}, { _id: 1, departement: 1, status: 1 })
 
 // TODO: JSDOC
-function groupByAndIds (acc, el) {
-  if (!acc.countByDep[el.departement]) { acc.countByDep[el.departement] = 0 }
-  acc.countByDep[el.departement]++
-  acc.ids.push(el._id)
+const groupByAndIds = (status) => (acc, curCandidat) => {
+  if (!acc.countByDep[curCandidat.departement]) { acc.countByDep[curCandidat.departement] = 0 }
+  acc.countByDep[curCandidat.departement]++
+  acc.ids.push(curCandidat._id)
+  acc.toArchivedStatus.push({ candidatId: curCandidat._id, hasModified: (curCandidat.status && status !== curCandidat.status) })
   return acc
 }
 
@@ -137,16 +139,19 @@ export const sortCandilibStatus = async () => {
   const countByStatus = {}
 
   for (let index = 0; index < countStatus; index++) {
+    const status = `${index}`
     const results = candidats.slice(
       index * groupeSize,
       index === 5 ? undefined : (groupeSize * (index + 1)),
-    ).reduce(groupByAndIds, { countByDep: {}, ids: [] })
+    ).reduce(groupByAndIds(status), { countByDep: {}, ids: [], toArchivedStatus: [] })
 
     if (results.ids.length) {
       const statusFirst = await Candidat.updateMany(
         { _id: { $in: results.ids } },
-        { $set: { status: `${index}` } },
+        { $set: { status } },
       )
+      await addArchivedCandidatStatus(status, results.toArchivedStatus)
+
       updatedCandidat.push(statusFirst)
     } else {
       techLogger.warn({
@@ -162,12 +167,15 @@ export const sortCandilibStatus = async () => {
 
   if (candidatsLastStatus && candidatsLastStatus.length) {
     const index = countStatus - 1
-    const idsLastStatus = candidatsLastStatus.reduce(groupByAndIds, { countByDep: {}, ids: [] })
+    const status = `${index}`
+    const idsLastStatus = candidatsLastStatus.reduce(groupByAndIds(status), { countByDep: {}, ids: [], toArchivedStatus: [] })
 
     const lastStatus = await Candidat.updateMany(
       { _id: { $in: idsLastStatus.ids } },
-      { $set: { status: `${index}` } },
+      { $set: { status } },
     )
+    await addArchivedCandidatStatus(status, idsLastStatus.toArchivedStatus)
+
     updatedCandidat.push(lastStatus)
 
     for (const [key, value] of Object.entries(idsLastStatus.countByDep)) {
