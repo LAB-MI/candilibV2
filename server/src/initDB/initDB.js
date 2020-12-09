@@ -5,7 +5,8 @@
 import { findStatusByType } from '../models/status'
 import ModelPlace from '../models/place/place.model'
 import { techLogger } from '../util'
-import { sortCandilibStatus } from '../models/candidat'
+import { sortStatus } from '../routes/admin/sort-candidat-status-business'
+
 /**
  * Version de la base de données
  */
@@ -36,7 +37,8 @@ export const initDB = async () => {
  * @function
  */
 export const initStatus = async () => {
-  const nbStatusUpdated = await sortCandilibStatus()
+  // TODO: MOOVE NEXT `sortStatus` FUNCTION IN COMMON DIRECTORY
+  const nbStatusUpdated = await sortStatus()
   const loggerInfo = {
     section: 'initStatus',
     nbStatusUpdated,
