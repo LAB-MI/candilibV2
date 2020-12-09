@@ -1,4 +1,5 @@
 import { connect, disconnect } from '../../mongo-connection'
+import archivedCandidatStatusModel from '../archived-candidat-status/archived-candidat-status-model'
 import { generateCandidats } from '../__tests__'
 import {
   sortCandilibStatus,
@@ -73,8 +74,12 @@ describe('Candidat', () => {
     const expectedCandidatByStatus = ['1', '1', '1', '1', '1', '5']
     await Promise.all(expectedCandidatByStatus.map(
       async (el, index) => {
-        const countStatus = await countCandidatsByStatus(`${index}`)
+        const status = `${index}`
+        const countStatus = await countCandidatsByStatus(status)
         expect(countStatus).toBe(Number(el))
+        // For archived candidat Status
+        const archivedStatus = await archivedCandidatStatusModel.countDocuments({ status })
+        expect(archivedStatus).toBe(Number(el))
         return countStatus
       },
     ))
