@@ -25,10 +25,11 @@ import {
   updateCandidatEmail,
   updateCandidatSignUp,
 } from './'
+
 import {
   archivePlace,
-
-  findCandidatsMatching, updateCandidatFailed,
+  findCandidatsMatching,
+  updateCandidatFailed,
   updateCandidatNoReussite,
 } from './candidat.queries'
 import { ABSENT, ECHEC } from './objetDernierNonReussite.values'
@@ -624,6 +625,21 @@ describe('Candidat', () => {
         REASON_REMOVE_RESA_ADMIN,
       )
       expect(candidat.places[0]).toHaveProperty('byUser', 'test.admin@test.com')
+    })
+    it('should add a place in archive place from candidat with status', async () => {
+      const place = createdPlaces[0]
+      const selectCandidat = createdCandidats[0]
+      const status = '10'
+
+      selectCandidat.status = status
+      await selectCandidat.save()
+
+      const candidat = await archivePlace(selectCandidat, place, REASON_CANCEL)
+
+      expect(candidat).toBeDefined()
+      expect(candidat.places).toBeDefined()
+      const count = candidat.places.length
+      expect(candidat.places[count - 1].candidatStatus).toBe(status)
     })
   })
 })

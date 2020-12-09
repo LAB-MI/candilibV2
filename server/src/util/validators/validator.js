@@ -52,3 +52,13 @@ export const nameObjValidator = Joi.string().trim().uppercase().required()
  * @type {import('joi').StringSchema}
  */
 export const phoneObjValidator = Joi.string().trim().pattern(phoneRegex).required()
+
+/**
+ *@type {import('joi').NumberSchema}
+ */
+export const countObjValidator = Joi.number()
+
+/**
+ * @type {import('joi').StringSchema}
+ */
+export const statusObjValidator = Joi.string().trim().required()

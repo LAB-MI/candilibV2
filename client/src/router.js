@@ -14,6 +14,7 @@ import {
   ROUTE_AUTHORIZE_STATS_KPI,
   ROUTE_AUTHORIZE_CENTRES,
   ROUTE_AUTHORIZE_DEPARTEMENTS,
+  ROUTE_AUTHORIZE_TECH_ADMIN,
 } from './constants'
 
 Vue.use(Router)
@@ -55,6 +56,7 @@ const AdminCandidat = () => import(/* webpackChunkName: "admin", webpackPrefetch
 const ResetPassword = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/ResetPassword.vue')
 const Agents = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/Agents.vue')
 const DepartementList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/departementsManager/DepartementList.vue')
+const AdminTech = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/adminTech/AdminTech.vue')
 const CovidMessage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/candidat/components/CovidMessage.vue')
 
 const adminRoutes = [
@@ -112,6 +114,12 @@ const adminRoutes = [
         path: 'departements',
         name: ROUTE_AUTHORIZE_DEPARTEMENTS,
         component: DepartementList,
+        beforeEnter: checkAccess,
+      },
+      {
+        path: 'tech-admin',
+        name: ROUTE_AUTHORIZE_TECH_ADMIN,
+        component: AdminTech,
         beforeEnter: checkAccess,
       },
       {

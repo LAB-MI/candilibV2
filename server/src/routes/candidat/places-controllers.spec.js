@@ -170,6 +170,7 @@ describe('Test get dates from places available when there are booked', () => {
 
       .set('Accept', 'application/json')
       .expect(200)
+
     expect(body).toBeDefined()
     expect(body).toHaveLength(1)
     expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
@@ -519,7 +520,7 @@ describe('test to get booking by candidat', () => {
       createdPlaceCanBook.centre = await findCentreById(centre && centre._id)
     }
 
-    expectMailConvocation(selectedCandidat, createdPlaceCanBook)
+    await expectMailConvocation(selectedCandidat, createdPlaceCanBook)
   })
 
   it('Should get 200 to get the candidat reservation', async () => {
@@ -569,6 +570,7 @@ const createReservationWithFailure = async (
       date: selectedPlace.date,
       isAccompanied: true,
       hasDualControlCar: true,
+      isModification: true,
     })
     .set('Accept', 'application/json')
     .expect(400)
@@ -600,6 +602,7 @@ const createReservationWithSuccess = async (
   selectedPlace,
   previewsPlaceId,
   selectedCandidat,
+  isModification = true,
 ) => {
   const { body } = await request(app)
     .patch(`${apiPrefix}/candidat/places`)
@@ -609,6 +612,7 @@ const createReservationWithSuccess = async (
       date: selectedPlace.date,
       isAccompanied: true,
       hasDualControlCar: true,
+      isModification,
     })
     .set('Accept', 'application/json')
     .expect(200)
@@ -643,7 +647,7 @@ const createReservationWithSuccess = async (
     selectedCentre.departement,
   )
 
-  expectMailConvocation(newSelectedCandidat, place)
+  await expectMailConvocation(newSelectedCandidat, place)
 }
 
 describe('test to book with the date authorize by candiat', () => {
@@ -730,6 +734,7 @@ describe('test to book with the date authorize by candiat', () => {
         date: selectedPlace.date,
         isAccompanied: true,
         hasDualControlCar: true,
+        isModification: true,
       })
       .set('Accept', 'application/json')
       .expect(400)
@@ -850,7 +855,7 @@ const cancelReservationWithSuccess = async (
   expect(foundPlace).toHaveProperty('archiveReason', REASON_CANCEL)
   const place = foundPlace
   place.centre = previewPlace.centre
-  expectMailCancelBooking(candidat, place)
+  await expectMailCancelBooking(candidat, place)
 }
 
 describe('Cancel a reservation', () => {

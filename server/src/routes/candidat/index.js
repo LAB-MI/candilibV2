@@ -14,8 +14,13 @@ import {
   unbookPlace,
 } from './places-controllers'
 import { verifyAccesPlacesByCandidat } from './middlewares/verify-candidat'
+import { setAccumulatorRequest } from '../middlewares'
 
 const router = express.Router()
+
+if (process.env.NODE_ENV !== 'test') {
+  router.use(setAccumulatorRequest)
+}
 
 /**
  * @swagger
@@ -114,8 +119,8 @@ router.get('/me', getMe)
  *
  * @see {@link http://localhost:8000/api-docs/#/default/get_candidat_centres}
  */
-
-router.get('/centres', getCentres)
+// TODO: verifyAccesPlacesByCandidat peut causer de probléme de performance
+router.get('/centres', verifyAccesPlacesByCandidat, getCentres)
 
 /**
  * @swagger

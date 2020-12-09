@@ -299,7 +299,7 @@ describe('update place by admin', () => {
     expect(newCandidat.places).toBeUndefined()
     expect(newCandidat).toHaveProperty('departement', centre1.departement)
 
-    expectMailConvocation(candidat, place)
+    await expectMailConvocation(candidat, place)
 
     await place.remove()
   })
@@ -367,7 +367,7 @@ describe('update place by admin', () => {
     )
     expect(newCandidat.places[0]).toHaveProperty('byUser', admin.email)
 
-    expectMailConvocation(candidat, place)
+    await expectMailConvocation(candidat, place)
 
     await Promise.all([oldResa, place].map(place => place.remove()))
   })

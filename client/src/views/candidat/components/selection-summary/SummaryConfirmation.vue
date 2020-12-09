@@ -141,6 +141,7 @@ export default {
         ...this.timeSlots.selected,
         isAccompanied: true,
         hasDualControlCar: true,
+        isModification: this.$route.params.modifying === 'modification',
       }
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)

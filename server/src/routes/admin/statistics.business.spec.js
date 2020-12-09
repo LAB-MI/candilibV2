@@ -10,6 +10,7 @@ import {
   getResultsExamAllDpt,
   getResultsExamByDpt,
   getCountCandidatsLeaveRetentionAreaByWeek,
+  countByStatuses,
 } from './statistics.business'
 
 import {
@@ -37,6 +38,7 @@ import {
 import { findCentresByDepartement } from '../../models/centre'
 
 import { getFrenchLuxon } from '../../util'
+import { createManyCountStatus } from '../../models/count-status/countStatus-queries'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
@@ -404,5 +406,56 @@ describe('test statistics', () => {
         return deleteCandidatsForCountRetentionByWeek(el.createdCandidats)
       }),
     )
+  })
+
+  it('Should count by status', async () => {
+    const yesterday = getFrenchLuxon().minus({ days: 1 })
+    const statuses = [{
+      departement: '93',
+      candidatStatus: '1',
+      count: 1,
+      createdAt: yesterday,
+    },
+    {
+      departement: '92',
+      candidatStatus: '1',
+      count: 1,
+      createdAt: yesterday,
+    },
+    {
+      departement: '95',
+      candidatStatus: '2',
+      count: 2,
+      createdAt: yesterday,
+    },
+    {
+      departement: '91',
+      candidatStatus: '3',
+      count: 3,
+      createdAt: yesterday,
+    },
+    {
+      departement: '95',
+      candidatStatus: '3',
+      count: 3,
+      createdAt: yesterday,
+    }]
+
+    await createManyCountStatus(statuses)
+
+    const expecteds = {
+      0: 0,
+      1: 2,
+      2: 2,
+      3: 6,
+      4: 0,
+      5: 0,
+    }
+    // console.log(await countStatusModel.find())
+    const result = await countByStatuses()
+
+    Object.entries(expecteds).forEach(([status, count]) => {
+      expect(result).toHaveProperty(status, count)
+    })
   })
 })

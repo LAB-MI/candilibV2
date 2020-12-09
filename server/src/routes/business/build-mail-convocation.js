@@ -11,7 +11,7 @@ import {
 
 const section = 'candidat-sendMail'
 
-export const getConvocationBody = place => {
+export const getConvocationBody = async place => {
   const action = 'get-body-convocation'
   const { centre, date, candidat } = place
   const { nom, adresse, geoloc, departement } = centre
@@ -22,7 +22,7 @@ export const getConvocationBody = place => {
   const linkOfLocalisation = `http://www.openstreetmap.org/?mlat=${lat}&mlon=${lon}&zoom=24`
 
   const urlFAQ = getUrlFAQ()
-  const token = getCandidatToken(_id)
+  const token = await getCandidatToken(_id, candidat)
   const urlRESA = getUrlRESAByToken(token)
   const contactezNous = getContactUs(token)
 

@@ -69,6 +69,7 @@ const features = {
   AGENTS: 'agents',
   CENTRES: 'centres',
   DEPARTEMENTS: 'departements',
+  TECH: 'tech-admin',
 }
 
 /**
@@ -90,6 +91,7 @@ const userStatusAccess = {
     features.CENTRES,
     features.DEPARTEMENTS,
     features.STATS_KPI,
+    features.TECH,
   ],
   [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI, features.UNARCHIVE_CANDIDAT],
 }
@@ -121,7 +123,10 @@ const getTokenExpiration = () => {
 
 const config = {
   secret: process.env.SECRET || 'secret',
-  candidatTokenExpiration: process.env.CANDIDAT_EXPIREDIN || '3d',
+  // TODO: Unused process.env.CANDIDAT_EXPIREDIN
+  get candidatTokenExpiration () {
+    return getTokenExpiration()
+  },
   get repartiteurTokenExpiration () {
     return getTokenExpiration()
   },
@@ -191,6 +196,12 @@ export const dbOptions = {
   user: config.dbUser,
   pass: config.dbPass,
 }
+
+/**
+ * Nom du type de logs
+ * @constant {String}
+ */
+export const logsTypeName = 'logs-requests'
 
 /**
  * Données de connexion au serveur de SMTP pour les envois de mail

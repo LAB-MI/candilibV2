@@ -49,6 +49,7 @@ describe('Connected candidate front', () => {
       isEvaluationDone: false,
       isValidatedEmail: true,
       isValidatedByAurige: true,
+      status: 0,
     },
     {
       codeNeph: '6123456789013',
@@ -61,6 +62,7 @@ describe('Connected candidate front', () => {
       isEvaluationDone: false,
       isValidatedEmail: true,
       isValidatedByAurige: true,
+      status: 0,
     }]
 
     before(() => {

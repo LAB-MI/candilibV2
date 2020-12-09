@@ -12,6 +12,7 @@ describe('Verify User level', () => {
     const basicData = {
       email: 'user@example.com',
       level: config.userStatusLevels[config.userStatuses.CANDIDAT],
+      candidatStatus: 0,
     }
 
     const basicToken = jwt.sign(basicData, config.secret, {

@@ -29,6 +29,10 @@ const ArchivedPlaceFields = {
     type: String,
     default: undefined,
   },
+  candidatStatus: {
+    type: String,
+    default: undefined,
+  },
 }
 
 const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields)
@@ -151,6 +155,15 @@ export const candidatFields = {
   canAccessAt: {
     type: Date,
     required: false,
+  },
+  status: {
+    type: String,
+    required: false,
+  },
+
+  token: {
+    type: String,
+    default: undefined,
   },
 }
 
