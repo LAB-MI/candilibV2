@@ -1,4 +1,5 @@
 import { Settings } from 'luxon'
+import { getFrenchLuxon } from '../../../util'
 
 export const setNowBefore12h = () => {
   Settings.now = () =>
@@ -11,6 +12,9 @@ export const setNowAtNow = () => {
   Settings.now = () => Date.now
 }
 
-export const setNowAfter12h = () => {
-  Settings.now = () => new Date().setHours(12, 0, 0).valueOf()
+export const setNowAfter12h = (minute = 0) => {
+  Settings.now = () => new Date().setHours(12, minute, 0).valueOf()
+  if (getFrenchLuxon().hour > 12) {
+    Settings.now = () => new Date().setHours(11, minute, 0).valueOf()
+  }
 }

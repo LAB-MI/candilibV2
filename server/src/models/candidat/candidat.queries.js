@@ -5,6 +5,9 @@ import Candidat from './candidat.model'
 import Place from '../place/place.model'
 import { getFrenchLuxon, techLogger } from '../../util'
 import { queryPopulate } from '../util/populate-tools'
+import { candidatValidator } from '../../util/validators/candidat-validator'
+import { candidatStatuses } from '../../routes/common/candidat-status-const'
+import { addArchivedCandidatStatus } from '../archived-candidat-status/archived-candidat-status-queries'
 
 /**
  * Crée un candidat
@@ -27,8 +30,27 @@ export const createCandidat = async ({
   prenom,
   departement,
   homeDepartement,
+  createdAt,
+  isValidatedByAurige,
+  canAccessAt,
+  canBookFrom,
 }) => {
-  const candidat = new Candidat({
+  const validated = await candidatValidator.validateAsync({
+    adresse,
+    codeNeph,
+    email,
+    emailValidationHash,
+    isValidatedEmail,
+    nomNaissance,
+    portable,
+    prenom,
+    departement,
+    homeDepartement,
+  })
+
+  if (validated.error) throw new Error(validated.error)
+
+  const newCandidat = {
     adresse,
     codeNeph,
     email,
@@ -40,10 +62,134 @@ export const createCandidat = async ({
     presignedUpAt: new Date(),
     departement,
     homeDepartement: homeDepartement || departement,
-  })
+  }
+
+  if (process.env.NODE_ENV === 'test') {
+    if (createdAt) {
+      newCandidat.createdAt = createdAt
+    }
+
+    if (isValidatedByAurige) {
+      newCandidat.isValidatedByAurige = isValidatedByAurige
+    }
+    if (canAccessAt) {
+      newCandidat.canAccessAt = canAccessAt
+    }
+
+    if (canBookFrom) {
+      newCandidat.canBookFrom = canBookFrom
+    }
+  }
+
+  const candidat = new Candidat(newCandidat)
   await candidat.save()
   return candidat
 }
+
+// TODO: JSDOC
+const getSortableCandilibStatusAndSortCreatedAt = (now) => Candidat
+  .find({
+    isValidatedByAurige: true,
+    $and: [
+      {
+        $or: [
+          { canAccessAt: { $exists: false } },
+          { canAccessAt: { $lt: now } },
+        ],
+      },
+      {
+        $or: [
+          { canBookFrom: { $exists: false } },
+          { canBookFrom: { $lt: now } },
+        ],
+      },
+    ],
+  }, { _id: 1, createdAt: 1, departement: 1, status: 1 })
+  .sort('createdAt')
+
+// TODO: JSDOC
+const getSortableCandilibInLastStatus = async (now) => Candidat.find({
+  isValidatedByAurige: true,
+  $or: [
+    { canAccessAt: { $gte: now } },
+    { canBookFrom: { $gte: now } },
+  ],
+}, { _id: 1, departement: 1, status: 1 })
+
+// TODO: JSDOC
+const groupByAndIds = (status) => (acc, curCandidat) => {
+  if (!acc.countByDep[curCandidat.departement]) { acc.countByDep[curCandidat.departement] = 0 }
+  acc.countByDep[curCandidat.departement]++
+  acc.ids.push(curCandidat._id)
+  acc.toArchivedStatus.push({ candidatId: curCandidat._id, hasModified: (curCandidat.status && status !== curCandidat.status) })
+  return acc
+}
+
+// TODO: JSDOC
+export const sortCandilibStatus = async () => {
+  const countStatus = candidatStatuses.nbStatus
+  const now = getFrenchLuxon().toJSDate()
+
+  const candidats = await getSortableCandilibStatusAndSortCreatedAt(now)
+
+  const candidatsCount = candidats.length
+  const groupeSize = Math.floor(candidatsCount / countStatus)
+
+  const updatedCandidat = []
+  const countByStatus = {}
+
+  for (let index = 0; index < countStatus; index++) {
+    const status = `${index}`
+    const results = candidats.slice(
+      index * groupeSize,
+      index === 5 ? undefined : (groupeSize * (index + 1)),
+    ).reduce(groupByAndIds(status), { countByDep: {}, ids: [], toArchivedStatus: [] })
+
+    if (results.ids.length) {
+      const statusFirst = await Candidat.updateMany(
+        { _id: { $in: results.ids } },
+        { $set: { status } },
+      )
+      await addArchivedCandidatStatus(status, results.toArchivedStatus)
+
+      updatedCandidat.push(statusFirst)
+    } else {
+      techLogger.warn({
+        section: 'SORT-CANDIDAT-BY-STATUS',
+        action: 'STATUS-EMPTY',
+        description: `status ${index} n' a aucun candidats`,
+      })
+    }
+    countByStatus[index] = results.countByDep
+  }
+
+  const candidatsLastStatus = await getSortableCandilibInLastStatus(now)
+
+  if (candidatsLastStatus && candidatsLastStatus.length) {
+    const index = countStatus - 1
+    const status = `${index}`
+    const idsLastStatus = candidatsLastStatus.reduce(groupByAndIds(status), { countByDep: {}, ids: [], toArchivedStatus: [] })
+
+    const lastStatus = await Candidat.updateMany(
+      { _id: { $in: idsLastStatus.ids } },
+      { $set: { status } },
+    )
+    await addArchivedCandidatStatus(status, idsLastStatus.toArchivedStatus)
+
+    updatedCandidat.push(lastStatus)
+
+    for (const [key, value] of Object.entries(idsLastStatus.countByDep)) {
+      if (!countByStatus[index][key]) countByStatus[index][key] = 0
+      countByStatus[index][key] += value
+    }
+  }
+
+  return ({ countByStatus, updatedCandidat })
+}
+
+// TODO: JSDOC
+export const countCandidatsByStatus = async (status) =>
+  Candidat.find({ status: status }).countDocuments()
 
 /**
  * Renvoie la liste de tous les candidats sous forme d'objets non attachés à mongoose
@@ -254,6 +400,24 @@ export const updateCandidatEmail = async (candidat, email) => {
 }
 
 /**
+ * Met à jour le token du candidat
+ *
+ * @async
+ * @function
+ *
+ * @param {String} candidatId - Identifiant du Candidat
+ * @param {string} token - Nouveau token
+ *
+ * @returns {Promise}
+ */
+export const updateCandidatToken = async (candidatId, token) => {
+  if (!candidatId) {
+    throw new Error('candidat is undefined')
+  }
+  return Candidat.updateOne({ _id: candidatId }, { $set: { token } })
+}
+
+/**
  * Renvoie les candidats qui ont réservé une place d'examen le jour donné (date passé en paramètre)
  *
  * @async
@@ -418,6 +582,7 @@ export const addPlaceToArchive = (
     isCandilib,
     bookedAt,
     bookedByAdmin,
+    candidatStatus: candidat.status,
   })
   return candidat
 }

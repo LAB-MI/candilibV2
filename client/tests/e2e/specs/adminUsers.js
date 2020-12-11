@@ -5,6 +5,24 @@ Cancel Archive user
 Archive user
 */
 
+const createRepartiteur = (repartiteurEmail, mustSuccess = true, notWithDepartement = false) => {
+  cy.get('.t-input-email input')
+    .type(repartiteurEmail, { force: true })
+  cy.get('.t-select-status')
+    .click()
+  cy.get('.menuable__content__active').contains(Cypress.env('repartiteur'))
+    .click()
+  if (!notWithDepartement) {
+    cy.get('.t-select-departements')
+      .click()
+    cy.get('.menuable__content__active').contains('75')
+      .click()
+  }
+  cy.get('.t-create-btn')
+    .click()
+  cy.checkAndCloseSnackBar(mustSuccess ? 'L\'utilisateur a bien été créé' : 'Impossible de créer l\'utilisateur : l\'email existe déjà')
+}
+
 describe('Create and see users', () => {
   const repartiteurEmail1 = 'repartiteur1@example.com'
   const repartiteurEmail2 = 'repartiteur2@example.com'
@@ -15,6 +33,12 @@ describe('Create and see users', () => {
 
   before(() => {
     cy.deleteAllMails()
+    cy.deleteUser({ email: repartiteurEmail1 })
+    cy.deleteUser({ email: repartiteurEmail2 })
+    cy.deleteUser({ email: repartiteurEmail3 })
+    cy.deleteUser({ email: repartiteurEmail4 })
+    cy.deleteUser({ email: repartiteurEmail5 })
+    cy.deleteUser({ email: repartiteurEmail6 })
   })
 
   beforeEach(() => {
@@ -27,22 +51,9 @@ describe('Create and see users', () => {
 
   it('Should create a new user', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
-    cy.get('.t-input-email input')
-      .type(repartiteurEmail1, { force: true })
 
-    cy.get('.t-select-status')
-      .click()
-    cy.get('.menuable__content__active').contains(Cypress.env('repartiteur'))
-      .click()
-    cy.get('.t-select-departements')
-      .click()
-    cy.contains('75')
-      .click()
-    cy.get('.t-create-btn')
-      .click()
+    createRepartiteur(repartiteurEmail1)
 
-    cy.get('.v-snack--active')
-      .should('contain', 'L\'utilisateur a bien été créé')
     cy.get('.t-list-users')
       .should('contain', repartiteurEmail1)
   })
@@ -50,52 +61,15 @@ describe('Create and see users', () => {
   it('Should not create a user with existing email', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
 
-    cy.get('.t-input-email input')
-      .type(repartiteurEmail2, { force: true })
-    cy.get('.t-select-status')
-      .click()
-    cy.get('.menuable__content__active').contains(Cypress.env('repartiteur'))
-      .click()
-    cy.get('.t-select-departements')
-      .click()
-    cy.get('.menuable__content__active').contains('75')
-      .click()
-    cy.get('.t-create-btn')
-      .click()
-    cy.get('.v-snack--active')
-      .should('contain', 'L\'utilisateur a bien été créé')
+    createRepartiteur(repartiteurEmail2)
 
-    cy.get('.t-input-email input')
-      .type(repartiteurEmail2, { force: true })
-    cy.get('.t-select-status')
-      .click()
-    cy.get('.menuable__content__active').contains(Cypress.env('repartiteur'))
-      .click()
-    cy.get('.menuable__content__active').contains('75')
-      .click()
-    cy.get('.t-create-btn')
-      .click()
-
-    cy.get('.v-snack--active')
-      .should('contain', 'Impossible de créer l\'utilisateur : l\'email existe déjà')
+    createRepartiteur(repartiteurEmail2, false)
   })
 
   it('Should not archive user if cancel archive users', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
-    cy.get('.t-input-email input')
-      .type(repartiteurEmail3, { force: true })
-    cy.get('.t-select-status')
-      .click()
-    cy.get('.menuable__content__active').contains(Cypress.env('repartiteur'))
-      .click()
-    cy.get('.t-select-departements')
-      .click()
-    cy.get('.menuable__content__active').contains('75')
-      .click()
-    cy.get('.t-create-btn')
-      .click()
-    cy.get('.v-snack--active')
-      .should('contain', 'L\'utilisateur a bien été créé')
+
+    createRepartiteur(repartiteurEmail3)
 
     cy.get('.t-list-users')
       .find('th span')
@@ -119,20 +93,8 @@ describe('Create and see users', () => {
 
   it('Should archive existing user', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
-    cy.get('.t-input-email input')
-      .type(repartiteurEmail4, { force: true })
-    cy.get('.t-select-status')
-      .click()
-    cy.get('.menuable__content__active').contains(Cypress.env('repartiteur'))
-      .click()
-    cy.get('.t-select-departements')
-      .click()
-    cy.get('.menuable__content__active').contains('75')
-      .click()
-    cy.get('.t-create-btn')
-      .click()
-    cy.get('.v-snack--active')
-      .should('contain', 'L\'utilisateur a bien été créé')
+
+    createRepartiteur(repartiteurEmail4)
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
     cy.get('.t-list-users')
@@ -199,18 +161,8 @@ describe('Create and see users', () => {
 
   it('Should update status and/or departements user', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
-    cy.get('.t-input-email input')
-      .type(repartiteurEmail5, { force: true })
-    cy.get('.t-select-status')
-      .click()
-    cy.get('.menuable__content__active').contains(Cypress.env('repartiteur'))
-      .click()
-    cy.get('.t-select-departements')
-      .click()
-    cy.get('.t-create-btn')
-      .click()
-    cy.get('.v-snack--active')
-      .should('contain', 'L\'utilisateur a bien été créé')
+
+    createRepartiteur(repartiteurEmail5, true, true)
 
     cy.get('.t-list-users')
       .find('th span')
@@ -257,20 +209,8 @@ describe('Create and see users', () => {
 
   it('Should not update status and/or departements of user', () => {
     cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
-    cy.get('.t-input-email input')
-      .type(repartiteurEmail6, { force: true })
-    cy.get('.t-select-status')
-      .click()
-    cy.get('.menuable__content__active').contains(Cypress.env('repartiteur'))
-      .click()
-    cy.get('.t-select-departements')
-      .click()
-    cy.get('.menuable__content__active').contains('75')
-      .click()
-    cy.get('.t-create-btn')
-      .click()
-    cy.get('.v-snack--active')
-      .should('contain', 'L\'utilisateur a bien été créé')
+
+    createRepartiteur(repartiteurEmail6)
 
     cy.get('.t-list-users')
       .find('th span')

@@ -5,14 +5,19 @@
 import mongoose from 'mongoose'
 
 import Place from './place.model'
-import { techLogger } from '../../util'
+import { /* getFrenchLuxonFromJSDate , */ techLogger } from '../../util'
 import { createArchivedPlaceFromPlace } from '../archived-place/archived-place-queries'
 import { queryPopulate } from '../util/populate-tools'
 import Centre from '../centre/centre-model'
+import { placeValidator } from './place-validator'
 
 export const PLACE_ALREADY_IN_DB_ERROR = 'PLACE_ALREADY_IN_DB_ERROR'
 
 export const createPlace = async leanPlace => {
+  const validated = await placeValidator.validateAsync(leanPlace)
+
+  if (validated.error) throw new Error(validated.error)
+
   const previousPlace = await Place.findOne(leanPlace)
   if (previousPlace && !(previousPlace instanceof Error)) {
     throw new Error(PLACE_ALREADY_IN_DB_ERROR)

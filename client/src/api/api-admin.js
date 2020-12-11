@@ -67,6 +67,13 @@ const apiAdmin = {
     return json
   },
 
+  async sortStatusCandilib () {
+    const json = await apiClient.get(apiPaths.admin.sortStatusCandilib, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
   async getUsers () {
     const json = await apiClient.get(apiPaths.admin.users, {
       headers: getHeadersForAdminJson(),
@@ -612,6 +619,26 @@ const apiAdmin = {
     const paramString = departementId ? `${departementId}` : ''
     const json = await apiClient.delete(
         `${apiPaths.admin.departements}/${paramString}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+    )
+    return json
+  },
+
+  async getlogsPeerPages (page = 0) {
+    const json = await apiClient.get(
+        `${apiPaths.admin.statsLogs}?pageNumber=${page.pageNumber}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+    )
+    return json
+  },
+
+  async getStatsCountStatuses () {
+    const json = await apiClient.get(
+        `${apiPaths.admin.statsCountStatuses}`,
         {
           headers: getHeadersForAdminJson(),
         },

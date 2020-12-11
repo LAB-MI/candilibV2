@@ -42,7 +42,7 @@
 import { mapState } from 'vuex'
 
 import {
-  CONFIRM_SELECT_DAY_REQUEST,
+  // CONFIRM_SELECT_DAY_REQUEST,
   DELETE_CANDIDAT_RESERVATION_REQUEST,
   FETCH_CANDIDAT_RESERVATION_REQUEST,
   FETCH_CENTER_REQUEST,
@@ -167,18 +167,18 @@ export default {
       }
     },
 
-    async confirmReservation () {
-      const selected = {
-        ...this.timeSlots.selected,
-        isAccompanied: true,
-        hasDualControlCar: true,
-      }
-      try {
-        await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
-      } catch (error) {
-        this.$store.dispatch(SHOW_ERROR, error.message)
-      }
-    },
+    // async confirmReservation () {
+    //   const selected = {
+    //     ...this.timeSlots.selected,
+    //     isAccompanied: true,
+    //     hasDualControlCar: true,
+    //   }
+    //   try {
+    // await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
+    //   } catch (error) {
+    //     this.$store.dispatch(SHOW_ERROR, error.message)
+    //   }
+    // },
 
     convertIsoDate (dateIso) {
       return `${getFrenchDateTimeFromIso(dateIso)}`

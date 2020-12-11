@@ -14,6 +14,10 @@ export const AURIGE_UPLOAD_CANDIDATS_REQUEST = 'AURIGE_UPLOAD_CANDIDATS_REQUEST'
 export const AURIGE_UPLOAD_CANDIDATS_SUCCESS = 'AURIGE_UPLOAD_CANDIDATS_SUCCESS'
 export const AURIGE_UPLOAD_CANDIDATS_FAILURE = 'AURIGE_UPLOAD_CANDIDATS_FAILURE'
 
+export const FETCH_CANDILIB_STATUS_REQUEST = 'FETCH_CANDILIB_STATUS_REQUEST'
+export const FETCH_CANDILIB_STATUS_SUCCESS = 'FETCH_CANDILIB_STATUS_SUCCESS'
+export const FETCH_CANDILIB_STATUS_FAILURE = 'FETCH_CANDILIB_STATUS_FAILURE'
+
 export const FETCH_AURIGE_LAST_DATETIME_REQUEST = 'FETCH_AURIGE_LAST_DATETIME_REQUEST'
 export const FETCH_AURIGE_LAST_DATETIME_SUCCESS = 'FETCH_AURIGE_LAST_DATETIME_SUCCESS'
 export const FETCH_AURIGE_LAST_DATETIME_FAILURE = 'FETCH_AURIGE_LAST_DATETIME_FAILURE'
@@ -25,6 +29,8 @@ export default {
     feedBack: [],
     lastSyncDateTime: 'La date du dernier batch Aurige n\'est pas encore renseigné',
     isLastSyncDateTimeLoading: false,
+    isFetchingStatusCandilib: false,
+    statusCandilibSuccess: undefined,
   },
   mutations: {
     [AURIGE_UPLOAD_CANDIDATS_REQUEST] (state) {
@@ -47,6 +53,17 @@ export default {
     },
     [FETCH_AURIGE_LAST_DATETIME_FAILURE] (state) {
       state.isLastSyncDateTimeLoading = false
+    },
+
+    [FETCH_CANDILIB_STATUS_REQUEST] (state) {
+      state.isFetchingStatusCandilib = true
+    },
+    [FETCH_CANDILIB_STATUS_SUCCESS] (state, statusCandilibSuccess) {
+      state.isFetchingStatusCandilib = false
+      state.statusCandilibSuccess = statusCandilibSuccess
+    },
+    [FETCH_CANDILIB_STATUS_FAILURE] (state) {
+      state.isFetchingStatusCandilib = false
     },
 
   },
@@ -111,6 +128,22 @@ export default {
         commit(FETCH_AURIGE_LAST_DATETIME_SUCCESS, getFrenchDateTimeFromIso(result.aurigeInfo.date))
       } catch (error) {
         commit(FETCH_AURIGE_LAST_DATETIME_FAILURE)
+      }
+    },
+
+    async [FETCH_CANDILIB_STATUS_REQUEST] ({ commit, dispatch }) {
+      commit(FETCH_CANDILIB_STATUS_REQUEST)
+      try {
+        const result = await api.admin.sortStatusCandilib()
+        if (result.success === false) {
+          throw new Error(result.message)
+        }
+
+        commit(FETCH_CANDILIB_STATUS_SUCCESS, result)
+        return dispatch(SHOW_SUCCESS, result.message)
+      } catch (error) {
+        commit(FETCH_CANDILIB_STATUS_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
       }
     },
   },

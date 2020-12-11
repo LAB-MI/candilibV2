@@ -29,7 +29,7 @@ export const getFailureExamBody = async (place, candidat) => {
   const { _id, nomNaissance, codeNeph } = candidat
 
   const urlFAQ = getUrlFAQ()
-  const token = getCandidatToken(_id)
+  const token = await getCandidatToken(_id, candidat)
   const urlRESA = getUrlRESAByToken(token)
   const contactezNous = getContactUs(token)
 

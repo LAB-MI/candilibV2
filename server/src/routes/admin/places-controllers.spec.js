@@ -88,7 +88,7 @@ jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
 jest.mock('../../util/token')
-
+require('../../util/logger').setWithConsole(false)
 describe('Test places controller', () => {
   let candidatsCreated
   let inspecteurCreated
@@ -251,7 +251,6 @@ describe('update place by admin', () => {
 
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
     // if next-line is set as true, this display logger info in console
-    require('../../util/logger').setWithConsole(false)
   })
 
   afterAll(async () => {
@@ -300,7 +299,7 @@ describe('update place by admin', () => {
     expect(newCandidat.places).toBeUndefined()
     expect(newCandidat).toHaveProperty('departement', centre1.departement)
 
-    expectMailConvocation(candidat, place)
+    await expectMailConvocation(candidat, place)
 
     await place.remove()
   })
@@ -368,7 +367,7 @@ describe('update place by admin', () => {
     )
     expect(newCandidat.places[0]).toHaveProperty('byUser', admin.email)
 
-    expectMailConvocation(candidat, place)
+    await expectMailConvocation(candidat, place)
 
     await Promise.all([oldResa, place].map(place => place.remove()))
   })
@@ -802,8 +801,6 @@ describe('Send bordereaux', () => {
     app.post(`${apiPrefix}/admin/bordereaux`, sendScheduleInspecteurs)
 
     candidatsCreatedAndUpdated = await createCandidatsAndUpdate()
-    // if next-line is set as true, this display logger info in console
-    require('../../util/logger').setWithConsole(false)
   })
 
   afterAll(async () => {
@@ -883,7 +880,6 @@ describe('Admin create places for one inspecteur', () => {
     })
     app.post(`${apiPrefix}/admin/places`, createPlaceByAdmin)
     // if next-line is set as true, this display logger info in console
-    require('../../util/logger').setWithConsole(false)
   })
 
   afterAll(async () => {
@@ -906,6 +902,7 @@ describe('Admin create places for one inspecteur', () => {
       })
       // Then
       .expect(200)
+
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('message', 'La ou les places ont bien été créée(s).')
 
