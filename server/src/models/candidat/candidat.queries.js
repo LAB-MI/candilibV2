@@ -104,7 +104,7 @@ const getSortableCandilibStatusAndSortCreatedAt = (now) => Candidat
         ],
       },
     ],
-  }, { _id: 1, createdAt: 1, departement: 1, status: 1 })
+  }, { _id: 1, createdAt: 1, departement: 1, status: 1, homeDepartement: 1 })
   .sort('createdAt')
 
 // TODO: JSDOC
@@ -118,8 +118,8 @@ const getSortableCandilibInLastStatus = async (now) => Candidat.find({
 
 // TODO: JSDOC
 const groupByAndIds = (status) => (acc, curCandidat) => {
-  if (!acc.countByDep[curCandidat.departement]) { acc.countByDep[curCandidat.departement] = 0 }
-  acc.countByDep[curCandidat.departement]++
+  if (!acc.countByDep[curCandidat.homeDepartement]) { acc.countByDep[curCandidat.homeDepartement] = 0 }
+  acc.countByDep[curCandidat.homeDepartement]++
   acc.ids.push(curCandidat._id)
   acc.toArchivedStatus.push({ candidatId: curCandidat._id, hasModified: (curCandidat.status && status !== curCandidat.status) })
   return acc
