@@ -452,8 +452,8 @@ describe('test statistics', () => {
       5: 0,
     }
     // console.log(await countStatusModel.find())
-    const result = await countByStatuses()
-
+    const results = await countByStatuses()
+    const result = results[yesterday.toISODate()]
     Object.entries(expecteds).forEach(([status, count]) => {
       expect(result).toHaveProperty(status, count)
     })

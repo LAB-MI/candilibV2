@@ -14,7 +14,7 @@ import {
   findCentresByDepartement,
   getDepartementsFromCentres,
 } from '../../models/centre'
-import { EPREUVE_PRATIQUE_OK, getFrenchLuxon, DATETIME_FULL, getFrenchLuxonFromISO } from '../../util'
+import { EPREUVE_PRATIQUE_OK, getFrenchLuxon, DATETIME_FULL, getFrenchLuxonFromISO, getFrenchLuxonFromJSDate } from '../../util'
 import { REASON_EXAM_FAILED } from '../common/reason.constants'
 import { findCountStatus } from '../../models/count-status/countStatus-queries'
 import { candidatStatuses } from '../common/candidat-status-const'
@@ -407,27 +407,40 @@ export const getCountCandidatsLeaveRetentionAreaByWeek = async departements => {
   return Promise.all(result)
 }
 
-export const countByStatuses = async (begin, end) => {
+const initResultStatus = () => {
+  const initResultStatus = {}
+  for (let i = 0; i < candidatStatuses.nbStatus; i++) {
+    initResultStatus[`${i}`] = 0
+  }
+  return initResultStatus
+}
+
+const getByNational = (foundCountStatuses) => {
+  const result = foundCountStatuses.reduce((acc, curr) => {
+    const dateCurr = getFrenchLuxonFromJSDate(curr.createdAt).toISODate()
+    if (!acc[dateCurr]) {
+      acc[dateCurr] = initResultStatus()
+    }
+    acc[dateCurr][curr.candidatStatus] += curr.count
+
+    return acc
+  }, {})
+
+  return result
+}
+
+export const countByStatuses = async (begin, end, byDepartment = false) => {
   let beginDate
   let endDate
   if (!begin || !end) {
     beginDate = getFrenchLuxon().minus({ days: 1 }).startOf('day')
     endDate = getFrenchLuxon().minus({ days: 1 }).endOf('day')
   } else {
-    beginDate = getFrenchLuxonFromISO(begin)
-    endDate = getFrenchLuxonFromISO(end)
+    beginDate = getFrenchLuxonFromISO(begin).startOf('day')
+    endDate = getFrenchLuxonFromISO(end).endOf('day')
   }
 
   const foundCountStatuses = await findCountStatus(beginDate, endDate)
 
-  const initResultStatus = {}
-  for (let i = 0; i < candidatStatuses.nbStatus; i++) {
-    initResultStatus[`${i}`] = 0
-  }
-  const result = foundCountStatuses.reduce((acc, curr) => {
-    acc[curr.candidatStatus] += curr.count
-    return acc
-  }, initResultStatus)
-
-  return result
+  return getByNational(foundCountStatuses)
 }
