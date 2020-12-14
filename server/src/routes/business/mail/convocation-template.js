@@ -32,7 +32,7 @@ Nettoyage (produit ou lingette virucide respectant la norme EN 14476), aération
   <span style="color: red;"><strong> ATTENTION:</strong></span>&nbsp;Si toutes les conditions sanitaires précitées ne peuvent être réunies, ou en cas de suspicion du covid-19 (toux, état fébrile), l’examen de conduite ne pourra avoir lieu.
 </div>
 <br>
-<p> Bureau éducation routière ${departementCentre} </p>
+<p style="text-align: right;"> <strong> Bureau éducation routière ${departementCentre}</strong> </p>
 <br>
 <p>Madame, Monsieur ${nameCandidat},</p>
 <br>
