@@ -34,7 +34,7 @@
             >
               <v-card-text>
                 <v-card-title primary-title>
-                  Groupe: {{ item.status }}
+                  Groupe: {{ Number(item.status) + 1 }}
                 </v-card-title>
                 <v-card-text>
                   Réservation: {{ item.infos['R'] }}
@@ -111,7 +111,7 @@
                       :key="item.status"
                     >
                       <v-card-title primary-title>
-                        Statut {{ Number(item.status) + 1 }}
+                        Groupe {{ Number(item.status) + 1 }}
                       </v-card-title>
                       <v-card-text>
                         Réservations: {{ item.logsContent['R'] }}

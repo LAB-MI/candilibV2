@@ -36,9 +36,9 @@ export function saveAccumulatorAsIntervalOf (intervalInMilscd) {
   accumulatorLog.intervalId = setInterval(saveAccumulatorWithBulk, intervalInMilscd)
 }
 
-const shapedStatus = {
-  ...Array(candidatStatuses.nbStatus).fill(true).map(() => ({ logs: {} })),
-}
+const createShapedStatus = () => ({
+  ...Array.from(Array(candidatStatuses.nbStatus), () => ({ logs: {} })),
+})
 
 const getHumanPathName = (method, isModification) => {
   if (method === 'DELETE') {
@@ -75,7 +75,7 @@ export const accumulatorLog = {
     const requestString = getHumanPathName(method, isModification)
     const departementOfCandidat = departementBooked || candidatDepartement
     if (!this.buffer[`${departementOfCandidat}`]) {
-      this.buffer[`${departementOfCandidat}`] = shapedStatus
+      this.buffer[`${departementOfCandidat}`] = createShapedStatus()
     }
 
     const tmpLogValue = this.buffer[`${departementOfCandidat}`][`${candidatStatus}`].logs[requestString]
