@@ -36,7 +36,7 @@ export default {
       state.isFetchingCountStatus = false
     },
     [FETCH_STATS_COUNT_STATUSES_SUCCESS] (state, list) {
-      state.listCountStatus = list
+      state.listCountStatus = list || []
       state.isFetchingCountStatus = false
     },
   },
@@ -97,8 +97,8 @@ export default {
         commit(FETCH_LOGS_SUCCESS, { details, summaryByDepartement: summaryByDept, summaryNational: sumaryNationalTmp })
         dispatch(SHOW_SUCCESS, 'Récuperation ok [section 1]')
       } else {
-        dispatch(SHOW_ERROR, 'Erreur de récuperation [section 1]')
         commit(FETCH_LOGS_FAILURE)
+        dispatch(SHOW_ERROR, 'Erreur de récuperation [section 1]')
       }
     },
 
@@ -106,11 +106,12 @@ export default {
       commit(FETCH_STATS_COUNT_STATUSES_REQUEST)
       const result = await api.admin.getStatsCountStatuses()
       if (result?.success) {
-        const shapedResult = Object.entries(result.counts).map(([status, count]) => {
+        const dateByCounts = Object.entries(result.counts)
+        const shapedResult = dateByCounts[dateByCounts.length - 1]?.map(([status, count]) => {
           return { status, count }
         })
-        dispatch(SHOW_SUCCESS, 'Récuperation ok [section 2]')
         commit(FETCH_STATS_COUNT_STATUSES_SUCCESS, shapedResult)
+        dispatch(SHOW_SUCCESS, 'Récuperation ok [section 2]')
       } else {
         commit(FETCH_STATS_COUNT_STATUSES_FAILURE)
         dispatch(SHOW_ERROR, 'Erreur de récuperation [section 2]')
