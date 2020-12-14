@@ -429,6 +429,24 @@ const getByNational = (foundCountStatuses) => {
   return result
 }
 
+const getByDepartements = (foundCountStatuses) => {
+  const result = foundCountStatuses.reduce((acc, curr) => {
+    const { createdAt, departement, candidatStatus, count } = curr
+    const dateCurr = getFrenchLuxonFromJSDate(createdAt).toISODate()
+    if (!acc[dateCurr]) {
+      acc[dateCurr] = {}
+    }
+    if (!acc[dateCurr][departement]) {
+      acc[dateCurr][departement] = initResultStatus()
+    }
+    acc[dateCurr][departement][candidatStatus] += count
+
+    return acc
+  }, {})
+
+  return result
+}
+
 export const countByStatuses = async (begin, end, byDepartment = false) => {
   let beginDate
   let endDate
@@ -442,5 +460,5 @@ export const countByStatuses = async (begin, end, byDepartment = false) => {
 
   const foundCountStatuses = await findCountStatus(beginDate, endDate)
 
-  return getByNational(foundCountStatuses)
+  return byDepartment ? getByDepartements(foundCountStatuses) : getByNational(foundCountStatuses)
 }
