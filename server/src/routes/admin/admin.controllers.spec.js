@@ -19,6 +19,8 @@ import {
 } from './message.constants'
 
 jest.mock('../business/send-mail')
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
 
 const { connect, disconnect } = require('../../mongo-connection')
 const { apiPrefix } = require('../../app')

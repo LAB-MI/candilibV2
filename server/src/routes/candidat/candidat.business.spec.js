@@ -10,6 +10,8 @@ import {
 import { v4 as uuidv4 } from 'uuid'
 
 jest.mock('../business/send-mail')
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
 
 const validEmail = 'candidat-validate-email@example.com'
 const portable = '0612345678'

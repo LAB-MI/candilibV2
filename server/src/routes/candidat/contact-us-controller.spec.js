@@ -14,6 +14,9 @@ jest.mock('../business/send-mail')
 jest.mock('../../models/departement')
 jest.mock('../../models/candidat')
 
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
+
 const contactUsPath = '/contactUs'
 const app = express()
 app.use(bodyParser.json({ limit: '20mb' }))
