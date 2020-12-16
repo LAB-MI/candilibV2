@@ -15,6 +15,8 @@ export default {
     isFetchingCountStatus: false,
     listLogs: [],
     listCountStatus: [],
+    listCountStatusByDep: [],
+    listCountStatusByDays: [],
   },
 
   mutations: {
@@ -35,8 +37,10 @@ export default {
     [FETCH_STATS_COUNT_STATUSES_FAILURE] (state) {
       state.isFetchingCountStatus = false
     },
-    [FETCH_STATS_COUNT_STATUSES_SUCCESS] (state, list) {
+    [FETCH_STATS_COUNT_STATUSES_SUCCESS] (state, { list, listByDep, listByDays }) {
       state.listCountStatus = list || []
+      state.listCountStatusByDep = listByDep || []
+      state.listCountStatusByDays = listByDays || []
       state.isFetchingCountStatus = false
     },
   },
@@ -102,15 +106,53 @@ export default {
       }
     },
 
-    async [FETCH_STATS_COUNT_STATUSES_REQUEST] ({ commit, dispatch }) {
+    async [FETCH_STATS_COUNT_STATUSES_REQUEST] ({ commit, dispatch }, { begin, end } = {}) {
       commit(FETCH_STATS_COUNT_STATUSES_REQUEST)
-      const result = await api.admin.getStatsCountStatuses()
+      const result = await api.admin.getStatsCountStatuses(begin, end, true)
       if (result?.success) {
-        const dateByCounts = Object.entries(result.counts)
-        const shapedResult = dateByCounts[dateByCounts.length - 1]?.map(([status, count]) => {
+        const dateByCounts = Object.entries(result.counts).reduce((acc, [date, countsByDep]) => {
+          if (!acc.byDays[date]) acc.byDays[date] = {}
+
+          const daysAcc = Object.entries(countsByDep).reduce((acc2, [dep, countByStatuses]) => {
+            if (!acc2.byDep[dep]) acc2.byDep[dep] = { }
+
+            const depAcc = Object.entries(countByStatuses).reduce((acc3, [status, count]) => {
+              if (!acc3.byDays[status]) acc3.byDays[status] = 0
+              acc3.byDays[status] += count
+              if (!acc3.byDep[status]) acc3.byDep[status] = 0
+              acc3.byDep[status] += count
+              if (!acc3.byNational[status]) acc3.byNational[status] = 0
+              acc3.byNational[status] += count
+              return acc3
+            }, { ...acc2, byDep: acc2.byDep[dep] })
+
+            acc2.byDep[dep] = depAcc.byDep
+
+            return acc2
+          }, { ...acc, byDays: acc.byDays[date] })
+
+          acc.byDays[date] = daysAcc.byDays
+
+          return acc
+        }, { byNational: {}, byDep: {}, byDays: {} })
+
+        const list = Object.entries(dateByCounts.byNational).map(([status, count]) => {
           return { status, count }
         })
-        commit(FETCH_STATS_COUNT_STATUSES_SUCCESS, shapedResult)
+        const listByDeps = Object.entries(dateByCounts.byDep).map(([departement, countByStatus]) => {
+          const statuses = Object.entries(countByStatus).map(([status, count]) => {
+            return { status, count }
+          })
+          return { departement, statuses }
+        })
+        const listByDates = Object.entries(dateByCounts.byNational).map(([date, countByStatus]) => {
+          const statuses = Object.entries(countByStatus).map(([status, count]) => {
+            return { status, count }
+          })
+          return { date, statuses }
+        })
+
+        commit(FETCH_STATS_COUNT_STATUSES_SUCCESS, { list, listByDeps, listByDates })
         dispatch(SHOW_SUCCESS, 'Récuperation ok [section 2]')
       } else {
         commit(FETCH_STATS_COUNT_STATUSES_FAILURE)
