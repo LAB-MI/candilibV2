@@ -852,6 +852,8 @@ describe('Remove the booking places', () => {
     expect(placeUnbookedFound).toBeDefined()
     expect(placeUnbookedFound.booked).toBeUndefined()
     expect(placeUnbookedFound.candidat).toBeUndefined()
+
+    await placeUnBooked.remove()
   })
 })
 
