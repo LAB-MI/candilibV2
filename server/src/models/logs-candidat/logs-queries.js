@@ -3,7 +3,7 @@
  * @module module:models/logs/logs-queries
  */
 
-import { logsTypeName } from '../../config'
+import { logsTypeNameForDepartement, logsTypeNameForHomeDepartement } from '../../config'
 import { getFrenchLuxon } from '../../util'
 import LogActionsCandidat from './logs-model'
 
@@ -13,12 +13,13 @@ export const saveManyLogActionsCandidat = async ({ type, content, beginAt, saved
 }
 
 export const getLogsByFilter = async (filters) => {
-  const { start, end, pageNumber } = filters
-  const limit = 200
+  const { start, end, pageNumber, isByHomeDepartement } = filters
+  const limit = 2000
   const dateNowLuxonStartOfDay = getFrenchLuxon().startOf('day')
   const dateNowLuxonEndOfDay = getFrenchLuxon().endOf('day')
+
   const shapedFilter = {
-    type: logsTypeName,
+    type: isByHomeDepartement ? logsTypeNameForHomeDepartement : logsTypeNameForDepartement,
     beginAt: { $gte: start },
     savedAt: { $lte: end },
   }
