@@ -37,8 +37,9 @@ import {
 
 import { findCentresByDepartement } from '../../models/centre'
 
-import { getFrenchLuxon } from '../../util'
+import { getFrenchLuxon, getFrenchLuxonFromISO } from '../../util'
 import { createManyCountStatus } from '../../models/count-status/countStatus-queries'
+import countStatusModel from '../../models/count-status/countStatus-model'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
@@ -451,11 +452,98 @@ describe('test statistics', () => {
       4: 0,
       5: 0,
     }
-    // console.log(await countStatusModel.find())
-    const result = await countByStatuses()
 
+    const results = await countByStatuses()
+    const result = results[yesterday.toISODate()]
     Object.entries(expecteds).forEach(([status, count]) => {
       expect(result).toHaveProperty(status, count)
     })
+
+    await countStatusModel.deleteMany({})
+  })
+
+  it('Should count by status and by departements', async () => {
+    const twoDaysAgo = getFrenchLuxon().minus({ days: 2 })
+    const yesterday = getFrenchLuxon().minus({ days: 1 })
+    const statusesYesterday = [{
+      departement: '93',
+      candidatStatus: '1',
+      count: 1,
+      createdAt: yesterday,
+    },
+    {
+      departement: '92',
+      candidatStatus: '1',
+      count: 1,
+      createdAt: yesterday,
+    },
+    {
+      departement: '95',
+      candidatStatus: '2',
+      count: 2,
+      createdAt: yesterday,
+    },
+    {
+      departement: '91',
+      candidatStatus: '3',
+      count: 3,
+      createdAt: yesterday,
+    },
+    {
+      departement: '95',
+      candidatStatus: '3',
+      count: 3,
+      createdAt: yesterday,
+    }]
+
+    const statusesTwoDaysAgo = [{
+      departement: '93',
+      candidatStatus: '1',
+      count: 1,
+      createdAt: twoDaysAgo,
+    },
+    {
+      departement: '92',
+      candidatStatus: '1',
+      count: 1,
+      createdAt: twoDaysAgo,
+    },
+    {
+      departement: '95',
+      candidatStatus: '2',
+      count: 2,
+      createdAt: twoDaysAgo,
+    },
+    {
+      departement: '91',
+      candidatStatus: '3',
+      count: 3,
+      createdAt: twoDaysAgo,
+    },
+    {
+      departement: '95',
+      candidatStatus: '3',
+      count: 3,
+      createdAt: twoDaysAgo,
+    }]
+
+    const statuses = [...statusesYesterday, ...statusesTwoDaysAgo]
+    await createManyCountStatus(statuses)
+
+    const results = await countByStatuses(twoDaysAgo, getFrenchLuxon(), true)
+    Object.entries(results).forEach(([date, byDep]) => {
+      const dateLuxon = getFrenchLuxonFromISO(date).hasSame(yesterday, 'days') ? yesterday : twoDaysAgo
+      Object.entries(byDep).forEach(([dep, byStatus]) => {
+        Object.entries(byStatus).forEach(([status, count]) => {
+          const resultStatus = statuses.find(({ departement, candidatStatus, createdAt }) => dateLuxon.equals(createdAt) && departement === dep && candidatStatus === status)
+          expect(resultStatus || {
+            count: 0,
+            candidatStatus: status,
+          }).toHaveProperty('count', count)
+        })
+      })
+    })
+
+    await countStatusModel.deleteMany({})
   })
 })

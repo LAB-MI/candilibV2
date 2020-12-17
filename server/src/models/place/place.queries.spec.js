@@ -48,6 +48,8 @@ import {
   findPlacesByCentreAndDate,
   findPlacesByDepartementAndCentre,
   removeBookedPlace,
+  unsetFalseBookedPlace,
+  findPlaceByIdAndPopulate,
 } from './place.queries'
 import { expectedArchivedPlace } from '../archived-place/__tests__/expect-archive-place'
 
@@ -792,12 +794,15 @@ describe('Remove the booking places', () => {
       departement,
     )
     createdInspecteur = await createInspecteur(inspecteurTest)
+    updatedCandidat = await createCandidatAndUpdate(candidat)
+  })
+
+  beforeEach(async () => {
     placeCreated = await createPlace({
       date: commonBasePlaceDateTime.plus({ days: 1 }).toISO(),
       centre: createdCentre._id,
       inspecteur: createdInspecteur._id,
     })
-    updatedCandidat = await createCandidatAndUpdate(candidat)
 
     placeToDelete = await bookCandidatOnSelectedPlace(
       placeCreated,
@@ -805,11 +810,12 @@ describe('Remove the booking places', () => {
       bookedAt,
     )
   })
-
+  afterEach(async () => {
+    await placeCreated.remove()
+  })
   afterAll(async () => {
     await createdCentre.remove()
     await createdInspecteur.remove()
-    await placeCreated.remove()
     await updatedCandidat.remove()
     await disconnect()
   })
@@ -821,6 +827,33 @@ describe('Remove the booking places', () => {
 
     expect(place).toBeDefined()
     expect(place.candidat).toBeUndefined()
+  })
+
+  it('Should delete the duplicate booked', async () => {
+    const now = getFrenchLuxon().minus({ hours: 1 })
+    const placeUnBooked = await createPlace({
+      date: commonBasePlaceDateTime.plus({ days: 3 }).toISO(),
+      centre: createdCentre._id,
+      inspecteur: createdInspecteur._id,
+      candidat: updatedCandidat._id,
+      booked: false,
+      bookedAt: now.minus({ hours: 1 }).toJSDate(),
+    })
+
+    const result = await unsetFalseBookedPlace(now)
+    expect(!!result).toBe(true)
+
+    const placeBookedFound = await findPlaceByIdAndPopulate(placeToDelete._id)
+    expect(placeBookedFound).toBeDefined()
+    expect(placeBookedFound).toHaveProperty('booked', true)
+    expect(placeBookedFound).toHaveProperty('candidat', updatedCandidat._id)
+
+    const placeUnbookedFound = await findPlaceByIdAndPopulate(placeUnBooked._id)
+    expect(placeUnbookedFound).toBeDefined()
+    expect(placeUnbookedFound.booked).toBeUndefined()
+    expect(placeUnbookedFound.candidat).toBeUndefined()
+
+    await placeUnBooked.remove()
   })
 })
 

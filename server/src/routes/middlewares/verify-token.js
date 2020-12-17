@@ -39,13 +39,14 @@ export async function verifyToken (req, res, next) {
       })
     }
 
-    const { id, level, departements, candidatStatus, departement } = token
+    const { id, level, departements, candidatStatus, departement, homeDepartement } = token
 
     req.userId = id
     req.userLevel = level
     req.departements = departements
     req.candidatStatus = candidatStatus
     req.candidatDepartement = departement
+    req.candidatHomeDepartement = homeDepartement
 
     const isCandidat =
       !level || level === config.userStatusLevels[config.userStatuses.CANDIDAT]

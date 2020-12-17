@@ -3,19 +3,20 @@ import { getLogsByFilters } from './logs-candidat-business'
 import { saveManyLogActionsCandidat } from '../../models/logs-candidat/logs-queries'
 import LogsModel from '../../models/logs-candidat/logs-model'
 import { connect, disconnect } from '../../mongo-connection'
+import { logsTypeNameForDepartement } from '../../config'
 
 describe('Test logs candidat', () => {
   beforeAll(async () => {
     await connect()
   })
   afterAll(async () => {
-    await LogsModel.deleteMany({ type: 'logs-requests' })
+    await LogsModel.deleteMany({ type: logsTypeNameForDepartement })
     await disconnect()
   })
   it('shoud create and get logs candidats', async () => {
     const beginAt = getFrenchLuxon().startOf('day').plus({ hours: 2 })
     const savedAt = getFrenchLuxon().startOf('day').plus({ hours: 4 })
-    const type = 'logs-requests'
+    const type = logsTypeNameForDepartement
     const fakeLog = {
       type,
       content: '',
@@ -23,9 +24,9 @@ describe('Test logs candidat', () => {
       savedAt: savedAt.toISO(),
     }
 
-    const modification = 'MODIFICATION'
-    const removed = 'REMOVED'
-    const reservation = 'RESERVATION'
+    const modification = 'M'
+    const removed = 'A'
+    const reservation = 'R'
     const template = {
       logs: {
         [modification]: 1,
@@ -42,12 +43,12 @@ describe('Test logs candidat', () => {
       5: template,
     }
     const resultlogsTemplate = {
-      0: { MODIFICATION: 2, REMOVED: 2, RESERVATION: 2 },
-      1: { MODIFICATION: 2, REMOVED: 2, RESERVATION: 2 },
-      2: { MODIFICATION: 2, REMOVED: 2, RESERVATION: 2 },
-      3: { MODIFICATION: 2, REMOVED: 2, RESERVATION: 2 },
-      4: { MODIFICATION: 2, REMOVED: 2, RESERVATION: 2 },
-      5: { MODIFICATION: 2, REMOVED: 2, RESERVATION: 2 },
+      0: { M: 2, A: 2, R: 2 },
+      1: { M: 2, A: 2, R: 2 },
+      2: { M: 2, A: 2, R: 2 },
+      3: { M: 2, A: 2, R: 2 },
+      4: { M: 2, A: 2, R: 2 },
+      5: { M: 2, A: 2, R: 2 },
     }
     const dptInitial = 89
     const nbDptNeed = 10

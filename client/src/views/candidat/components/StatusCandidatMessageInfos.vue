@@ -1,11 +1,17 @@
 <template>
   <section data-nosnippet="true">
     <v-alert
-      type="error"
+      type="info"
       class="rounded-corner"
     >
       <p data-nosnippet="true">
-        <strong>COVID-19</strong>: mesures de sécurité sanitaire à respecter
+        <strong>
+          En raison du succès de Candilib, vous êtes de plus en plus nombreux à être en attente d’une
+          réservation de place d’examen.
+          C’est pourquoi, par souci d’équité, il est mis en place un système d’accès aux places d’examen selon
+          l’ancienneté de l’inscription sur Candilib: les places sont mises graduellement en visibilité des
+          inscriptions les plus anciennes vers les plus récentes, entre midi et midi cinquante.
+        </strong>
         <v-btn
           class="t-faq"
           text
@@ -27,6 +33,7 @@
 <script>
 
 export default {
+  name: 'StatusCandidatMessageInfos',
   components: {
   },
 }

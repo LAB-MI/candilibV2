@@ -8,9 +8,9 @@ export const logsByFilters = async (req, res) => {
     admin: req.userId,
   }
 
-  const { start, end, pageNumber } = req.query
+  const { start, end, pageNumber, isByHomeDepartement } = req.query
   try {
-    const logsList = await getLogsByFilters({ start, end, pageNumber })
+    const logsList = await getLogsByFilters({ start, end, pageNumber, isByHomeDepartement })
 
     appLogger.info({ ...loggerInfo, description: 'logs candidat' })
 

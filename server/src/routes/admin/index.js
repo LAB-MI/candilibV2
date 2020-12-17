@@ -39,7 +39,7 @@ import {
   getStatsResultsExam,
 } from './statistics-controllers'
 
-import { getInfoLastSyncAurige } from './status-candilib-controllers'
+import { getInfoLastSyncAurige, getLastInfosBorneStatus } from './status-candilib-controllers'
 
 import {
   getWhitelisted,
@@ -1172,6 +1172,8 @@ router.get(
  */
 
 router.get('/last-sync-aurige-info', getInfoLastSyncAurige)
+
+router.get('/last-infos-status-candidat', getLastInfosBorneStatus)
 
 /**
  * @swagger

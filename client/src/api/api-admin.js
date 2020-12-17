@@ -67,6 +67,13 @@ const apiAdmin = {
     return json
   },
 
+  async getLastInfosStatusCandidat () {
+    const json = await apiClient.get(apiPaths.admin.lastInfosStatusCandidat, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
   async sortStatusCandilib () {
     const json = await apiClient.get(apiPaths.admin.sortStatusCandilib, {
       headers: getHeadersForAdminJson(),
@@ -490,9 +497,7 @@ const apiAdmin = {
   },
 
   async getPlacesAvailableByCentreAndDate (departement, centre, date) {
-    const queryString = `departement=${departement}&centre=${centre}&date=${encodeURIComponent(
-        date,
-      )}`
+    const queryString = `departement=${departement}&centre=${centre}&date=${encodeURIComponent(date)}`
     const json = await apiClient.get(
         `${apiPaths.admin.places}?${queryString}`,
         {
@@ -636,12 +641,16 @@ const apiAdmin = {
     return json
   },
 
-  async getStatsCountStatuses () {
+  async getStatsCountStatuses (begin, end, byDep) {
+    let queryString = `?byDep=${byDep}`
+    if (begin && end) {
+      queryString += `&begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`
+    }
     const json = await apiClient.get(
-        `${apiPaths.admin.statsCountStatuses}`,
-        {
-          headers: getHeadersForAdminJson(),
-        },
+      `${apiPaths.admin.statsCountStatuses}${queryString}`,
+      {
+        headers: getHeadersForAdminJson(),
+      },
     )
     return json
   },

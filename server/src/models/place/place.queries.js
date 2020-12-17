@@ -578,3 +578,8 @@ function filterByVisibleAt (visibleBefore, query) {
     ])
   }
 }
+
+export const unsetFalseBookedPlace = async (bookedAt) => {
+  const result = await Place.updateMany({ booked: false, bookedAt: { $lt: bookedAt } }, { $unset: { candidat: '', booked: '' } })
+  return result.nModified
+}

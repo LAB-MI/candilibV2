@@ -10,6 +10,9 @@ jest.mock('../business/send-mail')
 jest.mock('../../models/departement')
 jest.mock('../../models/candidat')
 
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
+
 const loggerContent = { section: 'test' }
 const candidat = {
   codeNeph: '012345678901',

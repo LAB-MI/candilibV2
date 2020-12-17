@@ -406,7 +406,7 @@ export const bookPlaceByCandidat = async (req, res) => {
       candidat: true,
     })
 
-    if (previousBookedPlace && !isModification) {
+    if ((previousBookedPlace && !isModification) || (!previousBookedPlace && isModification)) {
       const success = false
       const message = 'Une ou plusieurs informations sont manquantes pour cette modification'
 

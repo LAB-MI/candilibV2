@@ -201,7 +201,13 @@ export const dbOptions = {
  * Nom du type de logs
  * @constant {String}
  */
-export const logsTypeName = 'logs-requests'
+export const logsTypeNameForDepartement = 'logs-requests-departement'
+
+/**
+ * Nom du type de logs
+ * @constant {String}
+ */
+export const logsTypeNameForHomeDepartement = 'logs-requests-home-departement'
 
 /**
  * Données de connexion au serveur de SMTP pour les envois de mail

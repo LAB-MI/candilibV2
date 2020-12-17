@@ -9,7 +9,7 @@ getFrenchLuxonFromObject({
   day: 12,
 }).endOf('day')
 export const AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED = getFrenchLuxonFromObject({
-  year: 2020,
-  month: 12,
+  year: 2021,
+  month: 1,
   day: 31,
 }).endOf('day')
