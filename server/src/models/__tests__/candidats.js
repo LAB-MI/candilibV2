@@ -15,7 +15,7 @@ export const generateCandidats = (params) => {
       canBookFrom,
       canAccessAt,
       departement,
-
+      homeDepartement,
     } = item
 
     for (let id = 1; id <= nbCandidats; id++) {
@@ -41,6 +41,7 @@ export const generateCandidats = (params) => {
         isValidatedByAurige: isValidateAurige,
         isValidatedEmail: isValideEmail,
         createdAt: creatdAt,
+        homeDepartement,
       }
 
       if (canBookFrom) {
