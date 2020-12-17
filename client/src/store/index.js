@@ -25,6 +25,7 @@ import users from './users'
 import whitelist from './whitelist'
 import contactUs from './contact-us'
 import adminTech from './admin-tech'
+import adminBorneStatus from './admin-borne-status'
 
 export * from './admin-bordereaux'
 export * from './admin-departements'
@@ -49,6 +50,7 @@ export * from './users'
 export * from './whitelist'
 export * from './contact-us'
 export * from './admin-tech'
+export * from './admin-borne-status'
 
 Vue.use(Vuex)
 
@@ -77,5 +79,6 @@ export default new Vuex.Store({
     adminDepartements,
     contactUs,
     adminTech,
+    adminBorneStatus,
   },
 })

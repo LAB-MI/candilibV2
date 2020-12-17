@@ -1,6 +1,7 @@
 import { sortCandilibStatus } from '../../models/candidat'
 import { createManyCountStatus } from '../../models/count-status/countStatus-queries'
 import { appLogger } from '../../util'
+import { upsertLastInfosBormeStatus } from './status-candilib-business'
 
 /**
  * Save Count
@@ -32,7 +33,8 @@ const saveCountByStatus = async (countByStatus) => {
  */
 export const sortStatus = async () => {
   const result = await sortCandilibStatus()
-  const { countByStatus, updatedCandidat } = result
+  const { countByStatus, updatedCandidat, statusBorne } = result
+  await upsertLastInfosBormeStatus(JSON.stringify(statusBorne))
   await saveCountByStatus(countByStatus)
 
   return updatedCandidat

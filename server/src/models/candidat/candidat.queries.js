@@ -3,7 +3,7 @@ import moment from 'moment'
 import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
-import { getFrenchLuxon, techLogger } from '../../util'
+import { getFrenchFormattedDateTime, getFrenchLuxon, techLogger } from '../../util'
 import { queryPopulate } from '../util/populate-tools'
 import { candidatValidator } from '../../util/validators/candidat-validator'
 import { candidatStatuses } from '../../routes/common/candidat-status-const'
@@ -125,6 +125,12 @@ const groupByAndIds = (status) => (acc, curCandidat) => {
   return acc
 }
 
+/**
+* Parmet la recupération du nombre de mois par rapport à la date du jour.
+* @property {String} date - Date au format JSDate.
+*/
+const getDiffNowInMonthFromJsDate = (date) => getFrenchFormattedDateTime(date).date
+
 // TODO: JSDOC
 export const sortCandilibStatus = async () => {
   const countStatus = candidatStatuses.nbStatus
@@ -137,15 +143,22 @@ export const sortCandilibStatus = async () => {
 
   const updatedCandidat = []
   const countByStatus = {}
+  const statusBorne = {}
 
   for (let index = 0; index < countStatus; index++) {
     const status = `${index}`
-    const results = candidats.slice(
+    const candidatsTmp = candidats.slice(
       index * groupeSize,
       index === 5 ? undefined : (groupeSize * (index + 1)),
-    ).reduce(groupByAndIds(status), { countByDep: {}, ids: [], toArchivedStatus: [] })
+    )
+
+    const results = candidatsTmp.reduce(groupByAndIds(status), { countByDep: {}, ids: [], toArchivedStatus: [] })
 
     if (results.ids.length) {
+      statusBorne[index] = {
+        olderDate: getDiffNowInMonthFromJsDate(candidatsTmp[0].createdAt),
+        newerDate: getDiffNowInMonthFromJsDate(candidatsTmp[candidatsTmp.length - 1].createdAt),
+      }
       const statusFirst = await Candidat.updateMany(
         { _id: { $in: results.ids } },
         { $set: { status } },
@@ -184,7 +197,7 @@ export const sortCandilibStatus = async () => {
     }
   }
 
-  return ({ countByStatus, updatedCandidat })
+  return ({ countByStatus, updatedCandidat, statusBorne })
 }
 
 // TODO: JSDOC

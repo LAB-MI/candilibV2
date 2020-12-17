@@ -18,6 +18,7 @@ import { findPlaceByCandidatId } from '../../models/place'
 import { statutReasonDictionnary } from '../common/reason.constants'
 import { UNKNOWN_ERROR_GET_CANDIDAT, BAD_PARAMS } from './message.constants'
 import {
+  checkToken,
   email as emailRegex,
 } from '../../util'
 import { modifyCandidatEmail } from './candidats-business'
@@ -174,7 +175,6 @@ export const getCandidats = async (req, res) => {
         undefined,
         populate,
       )
-
       if (candidatFound) {
         const placeFound = await findPlaceByCandidatId(candidatId, true)
         const candidat = candidatFound.toObject()
@@ -188,10 +188,16 @@ export const getCandidats = async (req, res) => {
               archiveReason: humanReadableReason || place.archiveReason,
             }
           })
+        let decodedToken
+        try {
+          decodedToken = checkToken(candidat.token)
+        } catch (error) {
+          decodedToken = null
+        }
         appLogger.info({ ...loggerInfo, description: 'Candidiat trouvé' + placeFound ? 'avec une réservztion' : '' })
         res.json({
           success: true,
-          candidat: { ...candidat, place: placeFound },
+          candidat: { ...candidat, statusInToken: decodedToken?.status ? decodedToken.status : null, place: placeFound },
         })
         return
       }

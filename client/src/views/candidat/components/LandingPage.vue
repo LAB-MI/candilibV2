@@ -1,7 +1,10 @@
 <template>
   <layout-landing-page>
     <template v-slot>
-      <covid-message-exam />
+      <div>
+        <status-candidat-message-infos />
+        <covid-message-exam />
+      </div>
       <candidat-stepper />
     </template>
   </layout-landing-page>
@@ -9,6 +12,7 @@
 
 <script>
 import CovidMessageExam from '@/views/candidat/components/CovidMessageExam'
+import StatusCandidatMessageInfos from '@/views/candidat/components/StatusCandidatMessageInfos'
 import CandidatStepper from './CandidatStepper'
 import LayoutLandingPage from './LayoutLandingPage'
 
@@ -17,6 +21,7 @@ export default {
     LayoutLandingPage,
     CandidatStepper,
     CovidMessageExam,
+    StatusCandidatMessageInfos,
   },
 }
 </script>

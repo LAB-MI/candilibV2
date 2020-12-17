@@ -162,10 +162,25 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je ne trouve pas de place disponible ?',
       content: [
         {
-          textContent: `${candidat.messsage_mise_a_disposition_des_places}`,
+          textContent: `- ${candidat.messsage_mise_a_disposition_des_places}`,
         },
         {
-          textContent: 'Vous pouvez aussi réserver une place dans un autre département.',
+          textContent: '- Vous pouvez aussi réserver une place dans un autre département.',
+        },
+        {
+          subTitleContent: '- Visibilité sur les places d’examen:',
+        },
+        {
+          list: [
+            `Les candidats en attente d’une place ont été classés des plus anciennes aux plus récentes inscriptions
+            sur Candilib.`,
+            `Chaque jour, les places d’examen vont apparaitre graduellement des plus anciennes aux plus
+            récentes inscriptions toutes les 10 minutes, à partir de midi et ce jusqu’à midi cinquante.`,
+            `Attention: Les candidats qui sont dans la période des 45 jours de délai d’attente, à la suite d’un
+            échec, d’une annulation tardive ou d’une absence, sont classés durant ces 45 jours au même niveau
+            que les inscriptions les plus récentes. Au terme de ces 45 jours, ces candidats sont réintégrés selon
+            leur ancienneté d’inscription.`,
+          ],
         },
 
       ],

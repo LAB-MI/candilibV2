@@ -67,6 +67,13 @@ const apiAdmin = {
     return json
   },
 
+  async getLastInfosStatusCandidat () {
+    const json = await apiClient.get(apiPaths.admin.lastInfosStatusCandidat, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
   async sortStatusCandilib () {
     const json = await apiClient.get(apiPaths.admin.sortStatusCandilib, {
       headers: getHeadersForAdminJson(),
