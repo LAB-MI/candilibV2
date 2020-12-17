@@ -22,8 +22,8 @@
           v-for="data in borneStatus.infos.borneByStatus "
           :key="data.status"
         >
-          Groupe <strong>{{ Number(data.status) + 1 }}</strong> la borne se trouve entre
-          <strong>{{ data.infos.olderDate }}</strong> et <strong>{{ data.infos.newerDate }}</strong> mois.
+          Groupe <strong>{{ Number(data.status) + 1 }}</strong>
+          Date plus anciène: <strong>{{ data.infos.olderDate }}</strong> et Date plus récente: <strong>{{ data.infos.newerDate }}</strong>.
         </v-card-text>
       </span>
     </v-card>
