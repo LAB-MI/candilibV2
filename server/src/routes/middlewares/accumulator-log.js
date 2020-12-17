@@ -1,4 +1,4 @@
-import { logsTypeName } from '../../config'
+import { logsTypeNameForDepartement, logsTypeNameForHomeDepartement } from '../../config'
 import { saveManyLogActionsCandidat } from '../../models/logs-candidat/logs-queries'
 
 import { getFrenchLuxon, techLogger } from '../../util'
@@ -10,16 +10,29 @@ function saveAccumulatorWithBulk () {
   const hourNow = dateTimeNow.hour
   if (hourNow !== accumulatorLog.lastSave && [0, 4, 6, 9, 11, 13, 17, 21].includes(hourNow)) {
     if (accumulatorLog.isSet) {
-      const content = stringifyJson(accumulatorLog.get())
+      const contentByDepartement = stringifyJson(accumulatorLog.getContentByDepartement())
+      const contentByHomeDepartement = stringifyJson(accumulatorLog.getContentByHomeDepartement())
       const section = 'save-many-log-actions-candidat'
 
       saveManyLogActionsCandidat({
-        type: logsTypeName,
-        content,
+        type: logsTypeNameForDepartement,
+        content: contentByDepartement,
         beginAt: accumulatorLog.beginAt,
         savedAt: datetimeNowToISO,
       }).then(({ savedAt }) => {
-        techLogger.info({ section, description: `Logs created at ${savedAt}` })
+        techLogger.info({ section, description: `Logs by departement created at ${savedAt}` })
+      })
+        .catch((error) => {
+          techLogger.error({ section, description: error.message, error })
+        })
+
+      saveManyLogActionsCandidat({
+        type: logsTypeNameForHomeDepartement,
+        content: contentByHomeDepartement,
+        beginAt: accumulatorLog.beginAt,
+        savedAt: datetimeNowToISO,
+      }).then(({ savedAt }) => {
+        techLogger.info({ section, description: `Logs by home departement created at ${savedAt}` })
       })
         .catch((error) => {
           techLogger.error({ section, description: error.message, error })
@@ -27,8 +40,8 @@ function saveAccumulatorWithBulk () {
 
       accumulatorLog.resetAccumulator()
       accumulatorLog.lastSave = hourNow
-      accumulatorLog.beginAt = datetimeNowToISO
     }
+    accumulatorLog.beginAt = datetimeNowToISO
   }
 }
 
@@ -58,10 +71,14 @@ export const accumulatorLog = {
   timerIntervalSetting: 60000 * 1,
   intervalId: undefined,
   lastSave: undefined,
-  buffer: {},
+  bufferForDepartement: {},
+  bufferForHomeDepartement: {},
   isSet: false,
-  get () {
-    return this.buffer
+  getContentByDepartement () {
+    return this.bufferForDepartement
+  },
+  getContentByHomeDepartement () {
+    return this.bufferForHomeDepartement
   },
   set (logRequest) {
     const {
@@ -70,24 +87,35 @@ export const accumulatorLog = {
       departementBooked,
       candidatDepartement,
       isModification,
+      candidatHomeDepartement,
     } = logRequest
 
     const requestString = getHumanPathName(method, isModification)
     const departementOfCandidat = departementBooked || candidatDepartement
-    if (!this.buffer[`${departementOfCandidat}`]) {
-      this.buffer[`${departementOfCandidat}`] = createShapedStatus()
+    if (!this.bufferForDepartement[`${departementOfCandidat}`]) {
+      this.bufferForDepartement[`${departementOfCandidat}`] = createShapedStatus()
     }
 
-    const tmpLogValue = this.buffer[`${departementOfCandidat}`][`${candidatStatus}`].logs[requestString]
+    const tmpLogValueForDepartement = this.bufferForDepartement[`${departementOfCandidat}`][`${candidatStatus}`].logs[requestString]
 
-    this.buffer[`${departementOfCandidat}`][`${candidatStatus}`].logs[requestString] =
-    tmpLogValue ? tmpLogValue + 1 : 1
+    this.bufferForDepartement[`${departementOfCandidat}`][`${candidatStatus}`].logs[requestString] =
+      tmpLogValueForDepartement ? tmpLogValueForDepartement + 1 : 1
+
+    if (!this.bufferForHomeDepartement[`${candidatHomeDepartement}`]) {
+      this.bufferForHomeDepartement[`${candidatHomeDepartement}`] = createShapedStatus()
+    }
+
+    const tmpLogValueForHomeDepartement = this.bufferForHomeDepartement[`${candidatHomeDepartement}`][`${candidatStatus}`].logs[requestString]
+
+    this.bufferForHomeDepartement[`${candidatHomeDepartement}`][`${candidatStatus}`].logs[requestString] =
+      tmpLogValueForHomeDepartement ? tmpLogValueForHomeDepartement + 1 : 1
 
     this.isSet = true
   },
 
   resetAccumulator () {
-    this.buffer = {}
+    this.bufferForDepartement = {}
+    this.bufferForHomeDepartement = {}
     this.isSet = false
   },
 }
@@ -107,6 +135,7 @@ export const setAccumulatorRequest = async (req, res, next) => {
     candidatStatus,
     body,
     candidatDepartement,
+    candidatHomeDepartement,
   } = req
 
   const oldWrite = res.write
@@ -131,6 +160,7 @@ export const setAccumulatorRequest = async (req, res, next) => {
         departementBooked: parseJson(resBody)?.reservation?.departement,
         candidatDepartement,
         isModification: body?.isModification,
+        candidatHomeDepartement,
       })
     }
 
