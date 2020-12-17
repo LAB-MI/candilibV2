@@ -3,7 +3,7 @@ import moment from 'moment'
 import ArchivedCandidat from '../archived-candidat/archived-candidat.model'
 import Candidat from './candidat.model'
 import Place from '../place/place.model'
-import { getFrenchLuxon, getFrenchLuxonFromJSDate, techLogger } from '../../util'
+import { getFrenchFormattedDateTime, getFrenchLuxon, techLogger } from '../../util'
 import { queryPopulate } from '../util/populate-tools'
 import { candidatValidator } from '../../util/validators/candidat-validator'
 import { candidatStatuses } from '../../routes/common/candidat-status-const'
@@ -129,7 +129,7 @@ const groupByAndIds = (status) => (acc, curCandidat) => {
 * Parmet la recupération du nombre de mois par rapport à la date du jour.
 * @property {String} date - Date au format JSDate.
 */
-const getDiffNowInMonthFromJsDate = (date) => Math.floor(-getFrenchLuxonFromJSDate(date).diffNow('month').months)
+const getDiffNowInMonthFromJsDate = (date) => getFrenchFormattedDateTime(date).date
 
 // TODO: JSDOC
 export const sortCandilibStatus = async () => {
