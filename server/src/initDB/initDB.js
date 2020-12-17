@@ -6,6 +6,7 @@ import { findStatusByType } from '../models/status'
 import ModelPlace from '../models/place/place.model'
 import { techLogger } from '../util'
 import { sortStatus } from '../routes/admin/sort-candidat-status-business'
+import { removeDuplicateBooked } from './update-places'
 
 /**
  * Version de la base de données
@@ -30,7 +31,9 @@ export const initDB = async () => {
   }
 
   await ModelPlace.syncIndexes()
+  await removeDuplicateBooked()
 }
+
 /**
  * Pour initialisés les status
  * - Met à jour les status de la collection candidat
