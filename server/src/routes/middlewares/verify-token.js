@@ -39,7 +39,22 @@ export async function verifyToken (req, res, next) {
       })
     }
 
-    const { id, level, departements, candidatStatus, departement, homeDepartement } = token
+    const {
+      id,
+      level,
+      departements,
+      candidatStatus,
+      departement,
+      homeDepartement,
+      firstConnection,
+      adresse,
+      codeNeph,
+      email,
+      isEvaluationDone,
+      nomNaissance,
+      portable,
+      prenom,
+    } = token
 
     req.userId = id
     req.userLevel = level
@@ -48,10 +63,18 @@ export async function verifyToken (req, res, next) {
     req.candidatDepartement = departement
     req.candidatHomeDepartement = homeDepartement
 
+    req.adresse = adresse
+    req.codeNeph = codeNeph
+    req.email = email
+    req.isEvaluationDone = isEvaluationDone
+    req.nomNaissance = nomNaissance
+    req.portable = portable
+    req.prenom = prenom
+
     const isCandidat =
       !level || level === config.userStatusLevels[config.userStatuses.CANDIDAT]
 
-    if (isMagicLink && isCandidat) {
+    if (isMagicLink && isCandidat && firstConnection !== 'true') {
       await setCandidatFirstConnection(id)
     }
 

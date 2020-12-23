@@ -276,25 +276,52 @@ export async function preSignup (req, res) {
  */
 export async function getMe (req, res) {
   try {
-    const options = {
-      _id: 0,
-      adresse: 1,
-      codeNeph: 1,
-      homeDepartement: 1,
-      departement: 1,
-      email: 1,
-      isEvaluationDone: 1,
-      nomNaissance: 1,
-      portable: 1,
-      prenom: 1,
-    }
+    const {
+      // userId,
+      adresse,
+      codeNeph,
+      homeDepartement,
+      departement,
+      email,
+      isEvaluationDone,
+      nomNaissance,
+      portable,
+      prenom,
+    } = req
 
-    const candidat = await findCandidatById(req.userId, options)
+    // const options = {
+    //   _id: 0,
+    //   adresse: 1,
+    //   codeNeph: 1,
+    //   homeDepartement: 1,
+    //   departement: 1,
+    //   email: 1,
+    //   isEvaluationDone: 1,
+    //   nomNaissance: 1,
+    //   portable: 1,
+    //   prenom: 1,
+    // }
+
+    // const candidat = await findCandidatById(req.userId, options)
     // Pour corriger les anciennes donnés
-    candidat.homeDepartement = candidat.homeDepartement || candidat.departement
+    // candidat.homeDepartement = candidat.homeDepartement || candidat.departement
+
+    // res.json({
+    //   candidat,
+    // })
 
     res.json({
-      candidat,
+      candidat: {
+        adresse,
+        codeNeph,
+        homeDepartement: homeDepartement || departement,
+        departement,
+        email,
+        isEvaluationDone,
+        nomNaissance,
+        portable,
+        prenom,
+      },
     })
   } catch (error) {
     res.status(500).json({
