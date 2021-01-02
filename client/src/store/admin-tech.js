@@ -57,9 +57,6 @@ export default {
 
       const start = getFrenchLuxonFromObject({ year: dateStart[0], month: dateStart[1], day: dateStart[2] }).toISODate()
       const end = getFrenchLuxonFromObject({ year: dateEnd[0], month: dateEnd[1], day: dateEnd[2] }).toISODate()
-      // const dateTest = getFrenchLuxon()
-      // const start = dateTest.minus({ days: 30 }).startOf('day').toISO()
-      // const end = dateTest.endOf('day').toISO()
 
       const result = await api.admin.getlogsPeerPages({ pageNumber: 0, start, end })
 
@@ -132,7 +129,6 @@ export default {
         })
         console.log({ fullResult })
         commit(FETCH_LOGS_SUCCESS, fullResult)
-        // commit(FETCH_LOGS_SUCCESS, { details, summaryByDepartement: summaryByDept, summaryNational: sumaryNationalTmp })
         dispatch(SHOW_SUCCESS, 'Récuperation ok [section 1]')
       } else {
         commit(FETCH_LOGS_FAILURE)
