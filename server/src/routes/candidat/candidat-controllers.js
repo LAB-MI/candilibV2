@@ -287,6 +287,7 @@ export async function getMe (req, res) {
       nomNaissance,
       portable,
       prenom,
+      candidatStatus,
     } = req
 
     // const options = {
@@ -321,6 +322,7 @@ export async function getMe (req, res) {
         nomNaissance,
         portable,
         prenom,
+        visibilityHour: getVisibilityHourString(candidatStatus),
       },
     })
   } catch (error) {
@@ -332,6 +334,7 @@ export async function getMe (req, res) {
   }
 }
 
+const getVisibilityHourString = (candidatStatus) => `12H${candidatStatus}0`
 /**
  * Met à jour le candidat en marquant son adresse courriel comme validée
  *
