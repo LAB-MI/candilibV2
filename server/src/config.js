@@ -210,6 +210,12 @@ export const logsTypeNameForDepartement = 'logs-requests-departement'
 export const logsTypeNameForHomeDepartement = 'logs-requests-home-departement'
 
 /**
+ * Heures de sauvegarde des logs
+ * @constant {Array}
+ */
+export const hoursOfSavedLogs = [0, 4, 6, 9, 11, 13, 17, 21]
+
+/**
  * Données de connexion au serveur de SMTP pour les envois de mail
  * @constant {Object}
  */
