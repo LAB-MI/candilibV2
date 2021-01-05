@@ -53,8 +53,6 @@ export default {
       const dateStart = params.start.split('-')
       const dateEnd = params.end.split('-')
 
-      console.log({ year: dateStart[0], month: dateStart[1], day: dateStart[2] })
-
       const start = getFrenchLuxonFromObject({ year: dateStart[0], month: dateStart[1], day: dateStart[2] }).toISODate()
       const end = getFrenchLuxonFromObject({ year: dateEnd[0], month: dateEnd[1], day: dateEnd[2] }).toISODate()
 
@@ -76,8 +74,6 @@ export default {
         }, {})
 
         const fullResult = Object.entries(shapedDays).map(([date]) => {
-          console.log({ date })
-
           const summaryByDepartement = {}
           const summaryNational = {}
 
@@ -127,7 +123,7 @@ export default {
           const sumaryNationalTmp = Object.entries(summaryNational).map(([status, infos]) => ({ status, infos }))
           return { date, content: { details, summaryByDepartement: summaryByDept, summaryNational: sumaryNationalTmp } }
         })
-        console.log({ fullResult })
+
         commit(FETCH_LOGS_SUCCESS, fullResult)
         dispatch(SHOW_SUCCESS, 'Récuperation ok [section 1]')
       } else {
@@ -141,8 +137,6 @@ export default {
 
       const dateStart = params.start.split('-')
       const dateEnd = params.end.split('-')
-
-      console.log({ year: dateStart[0], month: dateStart[1], day: dateStart[2] })
 
       const start = getFrenchLuxonFromObject({ year: dateStart[0], month: dateStart[1], day: dateStart[2] }).toISODate()
       const end = getFrenchLuxonFromObject({ year: dateEnd[0], month: dateEnd[1], day: dateEnd[2] }).toISODate()

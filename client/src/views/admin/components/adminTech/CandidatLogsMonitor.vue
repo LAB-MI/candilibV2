@@ -1,13 +1,5 @@
 <template>
   <div>
-    <!-- <div
-      v-for="logs in listLogs"
-      :key="logs.date"
-    >
-      {{ logs.date }}
-      {{ logs.content }}
-    </div> -->
-
     <v-card>
       <!-- <wrapper-drag-and-resize
         :axe-x="5"
@@ -81,6 +73,11 @@
         </v-btn>
       </v-toolbar>
 
+      <chart-bar-vertical
+        :labels="labelsSummaryNational"
+        :datasets="datasetsSummaryNational"
+      />
+
       <v-expansion-panels
         focusable
         multiple
@@ -106,12 +103,6 @@
                 <v-card
                   class="overflow-scroll  bg-black"
                 >
-                  <!-- <chart-bar /> -->
-
-                  <!-- <chart-bar-vertical
-                    :datasets="getSummaryNationalDatasets(logs.content.summaryNational)"
-                    :labels="getSummaryNationalLabels(logs.content.summaryNational)"
-                  /> -->
                   <v-card
                     v-for="item in logs.content.summaryNational"
                     :key="item.status"
@@ -134,8 +125,6 @@
                 <v-card
                   class="overflow-scroll  bg-black"
                 >
-                  <!-- <chart-bar /> -->
-
                   <v-card
                     v-for="logItem in logs.content.summaryByDepartement"
                     :key="logItem.dpt"
@@ -172,11 +161,6 @@
                     <div
                       class="overflow-scroll"
                     >
-                      <!-- <chart-bar-vertical
-                        :labels="labels"
-                        :datasets="datasets"
-                      /> -->
-
                       <div
                         v-for="range in logs.content.details"
                         :key="`${range.begin}_${range.end}`"
@@ -226,6 +210,20 @@
         </v-expansion-panel>
       </v-expansion-panels>
       <big-loading-indicator :is-loading="isFetchingLogs" />
+      <!-- TODO: FOR THE NEXT MEP -->
+      <!-- <div
+        v-for="logs in getDataByDepartement()"
+        :key="logs.dpt"
+      >
+        <h4>
+          Département: {{ logs.dpt }}
+        </h4>
+        <chart-bar-vertical
+          :labels="getLabelsByDepartement(logs.datesInfo)"
+          :datasets="getChartDatasetsByDepartement(logs.datesInfo)"
+        />
+      </div> -->
+      <!--  -->
     </v-card>
   </div>
 </template>
@@ -236,7 +234,7 @@ import { mapState } from 'vuex'
 import { BigLoadingIndicator /*, WrapperDragAndResize */ } from '@/components'
 
 // import ChartBar from '../statsKpi/ChartBar.vue'
-// import ChartBarVertical from '../statsKpi/ChartBarVertical.vue'
+import ChartBarVertical from '../statsKpi/ChartBarVertical.vue'
 // import ActionDetailsByStatus from './ActionDetailsByStatus'
 import { getFrenchLuxonCurrentDateTime } from '@/util'
 
@@ -246,7 +244,7 @@ export default {
     BigLoadingIndicator,
     // WrapperDragAndResize,
     // ChartBar,
-    // ChartBarVertical,
+    ChartBarVertical,
     // ActionDetailsByStatus,
   },
 
@@ -255,6 +253,8 @@ export default {
     dateEnd: getFrenchLuxonCurrentDateTime().endOf('day').toISODate(),
     menuStart: false,
     menuEnd: false,
+    // TODO: FOR THE NEXT MEP
+    // model: [],
   }),
 
   computed: {
@@ -270,38 +270,13 @@ export default {
       return this.dateEnd.split('-').reverse().join('/')
     },
 
-    labels () {
-      return ['Groupe 1', 'Groupe 2', 'Groupe 3', 'Groupe 4', 'Groupe 5', 'Groupe 6']
-      // return this.listLogs
-      //   .map(el => el.date)
+    labelsSummaryNational () {
+      return this.listLogs
+        .map(el => el.date)
     },
 
-    datasets () {
-      // this.listLogs
-      return [
-        {
-          label: '# of Votes',
-          // label: 'Places disponibles',
-          borderWidth: 3,
-          data: [12, 19, 3, 5, 2, 3],
-          backgroundColor: [
-            'rgba(255, 99, 132, 0.2)',
-            'rgba(54, 162, 235, 0.2)',
-            'rgba(255, 206, 86, 0.2)',
-            'rgba(75, 192, 192, 0.2)',
-            'rgba(153, 102, 255, 0.2)',
-            'rgba(255, 159, 64, 0.2)',
-          ],
-          borderColor: [
-            'rgba(255, 99, 132, 1)',
-            'rgba(54, 162, 235, 1)',
-            'rgba(255, 206, 86, 1)',
-            'rgba(75, 192, 192, 1)',
-            'rgba(153, 102, 255, 1)',
-            'rgba(255, 159, 64, 1)',
-          ],
-        },
-      ]
+    datasetsSummaryNational () {
+      return this.getChartDatasetsNational(this.listLogs)
     },
   },
 
@@ -324,41 +299,194 @@ export default {
   },
 
   methods: {
+    getLabelsByDepartement (data) {
+      return data
+        .map(el => el.date)
+    },
+    // TODO: FOR THE NEXT MEP
+    // getDataByDepartement () {
+    //   const listLogs = this.listLogs
+    //   const allBptValues = listLogs.reduce((accu, current) => {
+    //     // console.log(current.date)
+    //     // console.log(current.content.summaryByDepartement)
+    //     const allDpt = current.content.summaryByDepartement.map(val => val.dpt)
+    //     accu = accu.concat(allDpt)
+    //     return accu
+    //   }, [])
+
+    //   const departementList = [...new Set(allBptValues)]
+    //   return departementList.map(dpt => {
+    //     return {
+    //       dpt,
+    //       datesInfo: listLogs.map(info => ({
+    //         date: info.date,
+    //         dptInfos: info.content.summaryByDepartement.find(el => el.dpt === dpt),
+    //       })),
+    //     }
+    //   })
+    // },
+
+    getDataValueFor (type, groupe, dataRaw) {
+      return dataRaw.map(el => {
+        return el.content.summaryNational.find(item => item.status === `${groupe}`)?.infos[type]
+      })
+    },
+
+    getChartDatasetsNational (data) {
+      const colorReservation = 'rgba(50,205,50)'
+      const colorModification = 'rgba(255,140,0)'
+      const colorAnnulation = 'rgba(255,0,0)'
+
+      const shapedDataSets = Array(6).fill(true).reduce((accu, _, index) => {
+        const indexNumber = Number(index)
+        const colorGroupe = this.getColorOfGroupe(indexNumber + 1)
+
+        const shapedDataSet = [
+          {
+            label: `Grp ${(indexNumber) + 1} Réservations`,
+            stack: `${indexNumber}`,
+            borderWidth: 5,
+            data: this.getDataValueFor('R', indexNumber, data),
+            backgroundColor: colorReservation,
+            borderColor: [
+              colorGroupe,
+              colorGroupe,
+              colorGroupe,
+            ],
+          },
+          {
+            label: `Grp ${(indexNumber) + 1} Modifications`,
+            stack: `${indexNumber}`,
+            borderWidth: 5,
+            data: this.getDataValueFor('M', indexNumber, data),
+            backgroundColor: colorModification,
+            borderColor: [
+              colorGroupe,
+              colorGroupe,
+              colorGroupe,
+            ],
+          },
+          {
+            label: `Grp ${(indexNumber) + 1} Annulation`,
+            stack: `${indexNumber}`,
+            borderWidth: 5,
+            data: this.getDataValueFor('A', indexNumber, data),
+            backgroundColor: colorAnnulation,
+            borderColor: [
+              colorGroupe,
+              colorGroupe,
+              colorGroupe,
+            ],
+          },
+
+        ]
+        accu = accu.concat(shapedDataSet)
+        return accu
+      }, [])
+
+      return shapedDataSets
+    },
+
+    getDataDepartementValueFor (type, groupe, dataRaw) {
+      const test = dataRaw.map(el => {
+        return el.dptInfos?.content.find(item => item.status === `${groupe}`)?.infos[type] || 0
+      })
+      console.log({ test })
+      return test
+    },
+    // TODO: FOR THE NEXT MEP
+    // getChartDatasetsByDepartement (data) {
+    //   // const data = this.getDataByDepartement()
+    //   console.log({ data })
+    //   // dptInfos
+    //   const colorReservation = 'rgba(50,205,50)'
+    //   const colorModification = 'rgba(255,140,0)'
+    //   const colorAnnulation = 'rgba(255,0,0)'
+
+    //   const shapedDataSets = Array(6).fill(true).reduce((accu, _, index) => {
+    //     const indexNumber = Number(index)
+    //     const colorGroupe = this.getColorOfGroupe(indexNumber + 1)
+
+    //     const shapedDataSet = [
+    //       {
+    //         label: `Grp ${(indexNumber) + 1} Réservations`,
+    //         stack: `${indexNumber}`,
+    //         borderWidth: 5,
+    //         data: this.getDataDepartementValueFor('R', indexNumber, data),
+    //         backgroundColor: colorReservation,
+    //         borderColor: [
+    //           colorGroupe,
+    //           colorGroupe,
+    //           colorGroupe,
+    //         ],
+    //       },
+    //       {
+    //         label: `Grp ${(indexNumber) + 1} Modifications`,
+    //         stack: `${indexNumber}`,
+    //         borderWidth: 5,
+    //         data: this.getDataDepartementValueFor('M', indexNumber, data),
+    //         backgroundColor: colorModification,
+    //         borderColor: [
+    //           colorGroupe,
+    //           colorGroupe,
+    //           colorGroupe,
+    //         ],
+    //       },
+    //       {
+    //         label: `Grp ${(indexNumber) + 1} Annulation`,
+    //         stack: `${indexNumber}`,
+    //         borderWidth: 5,
+    //         data: this.getDataDepartementValueFor('A', indexNumber, data),
+    //         backgroundColor: colorAnnulation,
+    //         borderColor: [
+    //           colorGroupe,
+    //           colorGroupe,
+    //           colorGroupe,
+    //         ],
+    //       },
+
+    //     ]
+    //     accu = accu.concat(shapedDataSet)
+    //     return accu
+    //   }, [])
+
+    //   return shapedDataSets
+    // },
+
+    getColorOfGroupe (groupe) {
+      const colorGrp1 = 'rgba(0,0,0)'
+      const colorGrp2 = 'rgba(105,105,105)'
+      const colorGrp3 = 'rgba(128,128,128)'
+      const colorGrp4 = 'rgba(169,169,169)'
+      const colorGrp5 = 'rgba(192,192,192)'
+      const colorGrp6 = 'rgba(211,211,211)'
+      if (groupe === 1) {
+        return colorGrp1
+      } else
+      if (groupe === 2) {
+        return colorGrp2
+      } else
+      if (groupe === 3) {
+        return colorGrp3
+      } else
+      if (groupe === 4) {
+        return colorGrp4
+      } else
+      if (groupe === 5) {
+        return colorGrp5
+      } else
+      if (groupe === 6) {
+        return colorGrp6
+      } else {
+        return colorGrp1
+      }
+    },
+
     getLogs () {
       this.$store.dispatch(FETCH_LOGS_REQUEST, {
         start: this.dateStart,
         end: this.dateEnd,
       })
-    },
-
-    getSummaryNationalLabels (elements) {
-      const lol = elements.map(el => `Groupe ${Number(el.status) + 1}`)
-      return lol
-    },
-
-    getSummaryNationalDatasets (elements) {
-      return elements.map(el => ({
-        label: '# of Votes',
-        // label: 'Places disponibles',
-        borderWidth: 3,
-        data: [el.infos.R || 0, el.infos.M || 0, el.infos.A || 0],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          // 'rgba(75, 192, 192, 0.2)',
-          // 'rgba(153, 102, 255, 0.2)',
-          // 'rgba(255, 159, 64, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          // 'rgba(75, 192, 192, 1)',
-          // 'rgba(153, 102, 255, 1)',
-          // 'rgba(255, 159, 64, 1)',
-        ],
-      }))
     },
   },
 }
