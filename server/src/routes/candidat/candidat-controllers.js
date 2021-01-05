@@ -449,12 +449,13 @@ export async function saveEvaluation (req, res) {
       })
     }
 
-    const evaluation = await createEvaluation({ rating, comment })
-    candidat.isEvaluationDone = true
-    await updateCandidatById(candidatId, candidat)
-
-    appLogger.info({ ...loggerInfo, description: 'Évaluation enregistrée' })
-
+    let evaluation
+    if (!candidat.isEvaluationDone) {
+      evaluation = await createEvaluation({ rating, comment })
+      candidat.isEvaluationDone = true
+      await updateCandidatById(candidatId, candidat)
+      appLogger.info({ ...loggerInfo, description: 'Évaluation enregistrée' })
+    }
     res.status(201).json({ success: true, evaluation })
   } catch (error) {
     appLogger.error({
