@@ -1,6 +1,6 @@
 import api from '@/api'
 import candidatMessages from '../candidat'
-import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '@/constants'
+import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_EVAL_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '@/constants'
 import { SHOW_ERROR, SHOW_INFO } from './'
 
 // Action names
@@ -99,6 +99,7 @@ export default {
 
       dispatch(SHOW_ERROR, message)
       localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
+      localStorage.removeItem(CANDIDAT_EVAL_STORAGE_KEY)
       commit(SIGN_OUT_CANDIDAT)
     },
 
@@ -123,6 +124,7 @@ export default {
 
     async [SIGN_OUT_CANDIDAT] ({ commit }) {
       localStorage.removeItem(CANDIDAT_TOKEN_STORAGE_KEY)
+      localStorage.removeItem(CANDIDAT_EVAL_STORAGE_KEY)
       commit(SIGN_OUT_CANDIDAT)
     },
 
