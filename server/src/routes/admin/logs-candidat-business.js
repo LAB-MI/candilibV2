@@ -8,9 +8,12 @@ export const getLogsByFilters = async (filters) => {
   filteredLogs.forEach((item) => {
     const { beginAt, savedAt, content } = item
     const parsedContent = JSON.parse(content)
-    const beginHourRange = getFrenchLuxonFromJSDate(beginAt).hour
-    const endHourRange = getFrenchLuxonFromJSDate(savedAt).hour
-    const beginAndEndHourString = `${beginHourRange}_${endHourRange}`
+    const beginDateTime = getFrenchLuxonFromJSDate(beginAt)
+    const endDateTime = getFrenchLuxonFromJSDate(savedAt)
+    const beginHourRange = beginDateTime.hour
+    const endHourRange = endDateTime.hour
+    const dateOfLogItem = endDateTime.toLocaleString()
+    const beginAndEndHourString = `${beginHourRange}_${endHourRange}_${dateOfLogItem}`
 
     if (!formatedData[beginAndEndHourString]) {
       formatedData[beginAndEndHourString] = {}
