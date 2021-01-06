@@ -29,6 +29,7 @@ before_script:
   - docker version
 script:
   - ( git fetch --unshallow || true ) && git tag -l
+  - ci/docker-access.sh
   - ci/run-tests.sh
 
 deploy:
