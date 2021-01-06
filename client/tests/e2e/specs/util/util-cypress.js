@@ -247,3 +247,9 @@ const adminAccessToPlanning = (date) => {
   cy.get('.v-tab--active')
     .should('contain', Cypress.env('centre'))
 }
+
+export const parseMagicLinkFromMailBody = (mailBody) => {
+  const codedLink = mailBody.split('href=3D"')[1].split('>')[0]
+  const withoutEq = codedLink.replace(/=\r\n/g, '')
+  return withoutEq.replace(/=3D/g, '=').slice(0, -1)
+}

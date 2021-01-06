@@ -16,6 +16,7 @@ export const createToken = async (id, userStatus, departements, detailContentCan
     portable,
     prenom,
     token,
+    firstConnection,
   } = detailContentCandidat
   const level = config.userStatusLevels[userStatus] || 0
   const tokenExpiration = config[`${userStatus}TokenExpiration`]
@@ -34,6 +35,7 @@ export const createToken = async (id, userStatus, departements, detailContentCan
     isEvaluationDone,
     portable,
     prenom,
+    firstConnection: !!firstConnection,
   }
 
   const secret = config.secret

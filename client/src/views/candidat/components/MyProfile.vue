@@ -30,6 +30,7 @@ const labelDictionary = {
   nomNaissance: 'Nom de naissance',
   portable: 'Portable',
   prenom: 'Prénom',
+  visibilityHour: 'Heure de visibilité des places d’examen :',
 }
 
 export default {

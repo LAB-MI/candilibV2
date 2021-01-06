@@ -276,25 +276,54 @@ export async function preSignup (req, res) {
  */
 export async function getMe (req, res) {
   try {
-    const options = {
-      _id: 0,
-      adresse: 1,
-      codeNeph: 1,
-      homeDepartement: 1,
-      departement: 1,
-      email: 1,
-      isEvaluationDone: 1,
-      nomNaissance: 1,
-      portable: 1,
-      prenom: 1,
-    }
+    const {
+      // userId,
+      adresse,
+      codeNeph,
+      candidatHomeDepartement: homeDepartement,
+      candidatDepartement: departement,
+      email,
+      isEvaluationDone,
+      nomNaissance,
+      portable,
+      prenom,
+      candidatStatus,
+    } = req
 
-    const candidat = await findCandidatById(req.userId, options)
+    // const options = {
+    //   _id: 0,
+    //   adresse: 1,
+    //   codeNeph: 1,
+    //   homeDepartement: 1,
+    //   departement: 1,
+    //   email: 1,
+    //   isEvaluationDone: 1,
+    //   nomNaissance: 1,
+    //   portable: 1,
+    //   prenom: 1,
+    // }
+
+    // const candidat = await findCandidatById(req.userId, options)
     // Pour corriger les anciennes donnés
-    candidat.homeDepartement = candidat.homeDepartement || candidat.departement
+    // candidat.homeDepartement = candidat.homeDepartement || candidat.departement
+
+    // res.json({
+    //   candidat,
+    // })
 
     res.json({
-      candidat,
+      candidat: {
+        adresse,
+        codeNeph,
+        homeDepartement: homeDepartement || departement,
+        departement,
+        email,
+        isEvaluationDone,
+        nomNaissance,
+        portable,
+        prenom,
+        visibilityHour: getVisibilityHourString(candidatStatus),
+      },
     })
   } catch (error) {
     res.status(500).json({
@@ -305,6 +334,7 @@ export async function getMe (req, res) {
   }
 }
 
+const getVisibilityHourString = (candidatStatus) => `12H${candidatStatus}0`
 /**
  * Met à jour le candidat en marquant son adresse courriel comme validée
  *
@@ -419,12 +449,13 @@ export async function saveEvaluation (req, res) {
       })
     }
 
-    const evaluation = await createEvaluation({ rating, comment })
-    candidat.isEvaluationDone = true
-    await updateCandidatById(candidatId, candidat)
-
-    appLogger.info({ ...loggerInfo, description: 'Évaluation enregistrée' })
-
+    let evaluation
+    if (!candidat.isEvaluationDone) {
+      evaluation = await createEvaluation({ rating, comment })
+      candidat.isEvaluationDone = true
+      await updateCandidatById(candidatId, candidat)
+      appLogger.info({ ...loggerInfo, description: 'Évaluation enregistrée' })
+    }
     res.status(201).json({ success: true, evaluation })
   } catch (error) {
     appLogger.error({

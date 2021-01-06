@@ -12,6 +12,8 @@
 - Candidate deconnection
 */
 
+import { parseMagicLinkFromMailBody } from './util/util-cypress'
+
 describe('Candidate login', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
     // Initialise magicLink
@@ -101,9 +103,7 @@ describe('Candidate login', () => {
       cy.getLastMail().getSubject()
         .should('contain', 'Validation d\'adresse courriel pour Candilib')
       cy.getLastMail().its('Content.Body').then((mailBody) => {
-        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        const validationLink = withoutEq.replace(/=3D/g, '=')
+        const validationLink = parseMagicLinkFromMailBody(mailBody)
         cy.visit(validationLink)
       })
       cy.wait(100)
@@ -161,9 +161,7 @@ describe('Candidate login', () => {
         .should('contain', 'Un lien de connexion vous a été envoyé.')
 
       cy.getLastMail().its('Content.Body').then((mailBody) => {
-        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        magicLink = withoutEq.replace(/=3D/g, '=')
+        magicLink = parseMagicLinkFromMailBody(mailBody)
         cy.visit(magicLink)
       })
       cy.wait(100)

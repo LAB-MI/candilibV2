@@ -28,7 +28,7 @@ describe('Verify-token', () => {
 
   beforeAll(async () => {
     updateCandidatToken.mockResolvedValue(true)
-    validToken = await createToken(id, 'candidat', undefined, { candidatStatus })
+    validToken = await createToken(id, 'candidat', undefined, { candidatStatus, firstConnection: true })
 
     invalidToken = validToken + '0'
   })
