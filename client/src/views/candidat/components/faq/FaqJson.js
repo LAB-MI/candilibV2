@@ -162,7 +162,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je ne trouve pas de place disponible ?',
       content: [
         {
-          textContent: `- ${candidat.messsage_mise_a_disposition_des_places}`,
+          textContent: `- ${candidat.messsage_mise_a_disposition_des_places_faq}`,
         },
         {
           textContent: '- Vous pouvez aussi réserver une place dans un autre département.',
