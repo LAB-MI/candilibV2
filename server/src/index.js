@@ -39,7 +39,11 @@ async function startServer () {
     await connect()
     if (!pid || pid === process.pid) {
       await initDB()
-      await initStatus()
+      try {
+        await initStatus()
+      } catch (error) {
+        techLogger.error(error)
+      }
     }
     http.createServer(app).listen(PORT, '0.0.0.0')
     techLogger.info(`Server running at http://0.0.0.0:${PORT}/`)
@@ -48,6 +52,7 @@ async function startServer () {
   } catch (error) {
     techLogger.error('Server could not connect to DB, exiting')
     techLogger.error(error)
+    process.exit(error instanceof Error ? 1 : 0)
   }
 }
 
