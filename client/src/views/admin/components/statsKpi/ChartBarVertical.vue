@@ -25,6 +25,9 @@ export default {
     datasets (newValue, oldValue) {
       this.renderChartBar()
     },
+    labels (newValue, oldValue) {
+      this.renderChartBar()
+    },
   },
 
   mounted () {

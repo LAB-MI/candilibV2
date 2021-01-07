@@ -177,8 +177,10 @@ CandidatSchema.index({
 })
 
 CandidatSchema.index({ codeNeph: 1, nomNaissance: 1 }, { unique: true })
-CandidatSchema.index({ email: 1 })
+CandidatSchema.index({ email: 1 }, { unique: true })
 CandidatSchema.index({ departement: 1, canAccessAt: 1 })
+CandidatSchema.index({ createdAt: 1 })
+CandidatSchema.index({ isValidatedByAurige: 1, canAccessAt: 1, canBookFrom: 1 })
 
 CandidatSchema.pre('save', async function preSave () {
   const candidat = this

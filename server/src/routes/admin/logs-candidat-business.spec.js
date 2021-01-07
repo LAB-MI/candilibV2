@@ -13,6 +13,7 @@ describe('Test logs candidat', () => {
     await LogsModel.deleteMany({ type: logsTypeNameForDepartement })
     await disconnect()
   })
+
   it('shoud create and get logs candidats', async () => {
     const beginAt = getFrenchLuxon().startOf('day').plus({ hours: 2 })
     const savedAt = getFrenchLuxon().startOf('day').plus({ hours: 4 })
@@ -75,7 +76,7 @@ describe('Test logs candidat', () => {
 
     expect(JSON.stringify(resultLogs)).toBe(
       JSON.stringify({
-        [`${beginAt.hour}_${savedAt.hour}`]: formatedDataResult,
+        [`${beginAt.hour}_${savedAt.hour}_${savedAt.toLocaleString()}`]: formatedDataResult,
       }),
     )
   })

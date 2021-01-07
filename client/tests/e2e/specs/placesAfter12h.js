@@ -1,4 +1,5 @@
-const { now } = require('../support/dateUtils')
+import { now } from '../support/dateUtils'
+import { parseMagicLinkFromMailBody } from './util/util-cypress'
 
 let dateAt3Months
 let dateAt2Months
@@ -37,9 +38,7 @@ describe('Display new place after 12h', () => {
 
     cy.candidatConnection(Cypress.env('emailCandidatFront'))
     cy.getLastMail().its('Content.Body').then((mailBody) => {
-      const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-      const withoutEq = codedLink.replace(/=\r\n/g, '')
-      magicLink = withoutEq.replace(/=3D/g, '=')
+      magicLink = parseMagicLinkFromMailBody(mailBody)
     })
 
     cy.updateCandidat({ email: Cypress.env('emailCandidatFront') }, { canBookFrom: '' })

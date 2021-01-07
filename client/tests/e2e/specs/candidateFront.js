@@ -17,6 +17,7 @@ PUBLIC CANDIDATE FRONT
 */
 
 import { now, date1 } from '../support/dateUtils'
+import { parseMagicLinkFromMailBody } from './util/util-cypress'
 
 describe('Connected candidate front', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
@@ -80,9 +81,7 @@ describe('Connected candidate front', () => {
       cy.candidatConnection(Cypress.env('emailCandidatFront'))
 
       cy.getLastMail().its('Content.Body').then((mailBody) => {
-        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        magicLink = withoutEq.replace(/=3D/g, '=')
+        magicLink = parseMagicLinkFromMailBody(mailBody)
       })
 
       cy.updatePlaces({}, {
@@ -542,11 +541,16 @@ describe('Connected candidate front', () => {
     })
 
     it('Should disconnect', () => {
-      cy.visit(magicLink)
+      cy.visit(magicLink, {
+        onBeforeLoad: (win) => {
+          win.localStorage.setItem('IsEvaluationDone', true)
+        },
+      })
       cy.url().should('contain', 'home')
       cy.get('.beta').should('be.visible')
       cy.get('.t-disconnect')
         .click()
+
       cy.url().should('contain', 'presignup')
     })
 

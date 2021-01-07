@@ -23,7 +23,7 @@
           :key="data.status"
         >
           Groupe <strong>{{ Number(data.status) + 1 }}</strong>
-          Date plus anciène: <strong>{{ data.infos.olderDate }}</strong> et Date plus récente: <strong>{{ data.infos.newerDate }}</strong>.
+          Date plus ancienne: <strong>{{ data.infos.olderDate }}</strong> et Date plus récente: <strong>{{ data.infos.newerDate }}</strong>.
         </v-card-text>
       </span>
     </v-card>

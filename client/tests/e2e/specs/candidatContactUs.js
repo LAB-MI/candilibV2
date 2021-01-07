@@ -1,4 +1,5 @@
 import { now } from '../support/dateUtils'
+import { parseMagicLinkFromMailBody } from './util/util-cypress'
 
 describe('Contact Us', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
@@ -6,9 +7,7 @@ describe('Contact Us', () => {
       cy.deleteAllMails()
       cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
       cy.getLastMail().its('Content.Body').then((mailBody) => {
-        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        const magicLink = withoutEq.replace(/=3D/g, '=')
+        const magicLink = parseMagicLinkFromMailBody(mailBody)
         cy.visit(magicLink)
       })
     })
@@ -188,9 +187,7 @@ describe('From FAQ, To go to the page Contact Us', () => {
     cy.deleteAllMails()
     cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
     cy.getLastMail().its('Content.Body').then((mailBody) => {
-      const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-      const withoutEq = codedLink.replace(/=\r\n/g, '')
-      const magicLink = withoutEq.replace(/=3D/g, '=')
+      const magicLink = parseMagicLinkFromMailBody(mailBody)
       cy.visit(magicLink)
     })
   })
@@ -268,9 +265,7 @@ describe('From the mails, To go to the page Contact Us', () => {
     cy.addPlanning()
     cy.candidatConnection(Cypress.env('emailCandidatContactUs'))
     cy.getLastMail().its('Content.Body').then((mailBody) => {
-      const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-      const withoutEq = codedLink.replace(/=\r\n/g, '')
-      magicLink = withoutEq.replace(/=3D/g, '=')
+      magicLink = parseMagicLinkFromMailBody(mailBody)
     })
     cy.updatePlaces({}, {
       createdAt: now.minus({ days: 2 }).toUTC(),

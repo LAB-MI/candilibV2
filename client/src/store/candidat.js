@@ -11,6 +11,7 @@ import {
   INFO_MESSAGE_TYPE,
   SUCCESS_MESSAGE_TYPE,
   ERROR_MESSAGE_TYPE,
+  CANDIDAT_EVAL_STORAGE_KEY,
 } from '@/constants'
 import { SHOW_SUCCESS } from './message'
 
@@ -110,6 +111,9 @@ export default {
     [FETCH_MY_PROFILE_SUCCESS] (state, candidat) {
       state.isFetchingProfile = false
       state.me = candidat
+      if (!candidat.isEvaluationDone) {
+        state.me.isEvaluationDone = !!localStorage.getItem(CANDIDAT_EVAL_STORAGE_KEY)
+      }
     },
     [FETCH_MY_PROFILE_FAILURE] (state) {
       state.isFetchingProfile = false
@@ -128,6 +132,7 @@ export default {
     [SEND_EVALUATION_SUCCESS] (state) {
       state.isSendingEvaluation = false
       state.me.isEvaluationDone = true
+      localStorage.setItem(CANDIDAT_EVAL_STORAGE_KEY, true)
       state.showEvaluation = false
     },
   },

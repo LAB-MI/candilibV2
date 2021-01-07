@@ -1,4 +1,5 @@
 import api from '@/api'
+import { getFrenchLuxonFromObject } from '@/util'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
 
 export const FETCH_LOGS_REQUEST = 'FETCH_LOGS_REQUEST'
@@ -46,59 +47,84 @@ export default {
   },
 
   actions: {
-    async [FETCH_LOGS_REQUEST] ({ commit, dispatch }) {
+    async [FETCH_LOGS_REQUEST] ({ commit, dispatch }, params) {
       commit(FETCH_LOGS_REQUEST)
 
-      const result = await api.admin.getlogsPeerPages({ pageNumber: 0 })
+      const dateStart = params.start.split('-')
+      const dateEnd = params.end.split('-')
+
+      const start = getFrenchLuxonFromObject({ year: dateStart[0], month: dateStart[1], day: dateStart[2] }).toISODate()
+      const end = getFrenchLuxonFromObject({ year: dateEnd[0], month: dateEnd[1], day: dateEnd[2] }).toISODate()
+
+      const result = await api.admin.getlogsPeerPages({ pageNumber: 0, start, end })
+
       if (result?.success) {
         const rawLogs = Object.entries(result.logs)
-        const summaryByDepartement = {}
-        const summaryNational = {}
 
-        const details = rawLogs.map(([range, content]) => {
+        const shapedDays = rawLogs.reduce((accu, contentAndRange) => {
+          const [range] = contentAndRange
           const beginAndEndHour = range.split('_')
-          const begin = beginAndEndHour[0]
-          const end = beginAndEndHour[1]
-          const formatedLogs = {
-            begin: `${begin}h`,
-            end: `${end}h`,
-            departements: Object.entries(content)
-              .map(([departement, statusesInfo]) => {
-                if (!summaryByDepartement[departement]) {
-                  summaryByDepartement[departement] = {}
-                }
-                return {
-                  departement,
-                  statusesInfo: Object.entries(statusesInfo).map(([status, logsContent]) => {
-                    if (!summaryByDepartement[departement][status]) {
-                      summaryByDepartement[departement][status] = { R: 0, M: 0, A: 0 }
-                    }
-                    summaryByDepartement[departement][status].R += (logsContent.R || 0)
-                    summaryByDepartement[departement][status].M += (logsContent.M || 0)
-                    summaryByDepartement[departement][status].A += (logsContent.A || 0)
+          const dateOfLog = beginAndEndHour[2]
 
-                    if (!summaryNational[status]) {
-                      summaryNational[status] = { R: 0, M: 0, A: 0 }
-                    }
-                    summaryNational[status].R += (logsContent.R || 0)
-                    summaryNational[status].M += (logsContent.M || 0)
-                    summaryNational[status].A += (logsContent.A || 0)
-
-                    return { status, logsContent }
-                  }),
-                }
-              }),
+          if (!accu[`${dateOfLog}`]) {
+            accu[`${dateOfLog}`] = []
           }
-          return formatedLogs
+
+          return accu
+        }, {})
+
+        const fullResult = Object.entries(shapedDays).map(([date]) => {
+          const summaryByDepartement = {}
+          const summaryNational = {}
+
+          const details = rawLogs.filter(([dateRange]) => dateRange.split('_')[2] === date).map(([range, content]) => {
+            const beginAndEndHour = range.split('_')
+            const begin = beginAndEndHour[0]
+            const end = beginAndEndHour[1]
+
+            const formatedLogs = {
+              begin: `${begin}h`,
+              end: `${end}h`,
+              departements: Object.entries(content)
+                .map(([departement, statusesInfo]) => {
+                  if (!summaryByDepartement[departement]) {
+                    summaryByDepartement[departement] = {}
+                  }
+                  return {
+                    departement,
+                    statusesInfo: Object.entries(statusesInfo).map(([status, logsContent]) => {
+                      if (!summaryByDepartement[departement][status]) {
+                        summaryByDepartement[departement][status] = { R: 0, M: 0, A: 0 }
+                      }
+                      summaryByDepartement[departement][status].R += (logsContent?.R || 0)
+                      summaryByDepartement[departement][status].M += (logsContent?.M || 0)
+                      summaryByDepartement[departement][status].A += (logsContent?.A || 0)
+
+                      if (!summaryNational[status]) {
+                        summaryNational[status] = { R: 0, M: 0, A: 0 }
+                      }
+                      summaryNational[status].R += (logsContent?.R || 0)
+                      summaryNational[status].M += (logsContent?.M || 0)
+                      summaryNational[status].A += (logsContent?.A || 0)
+
+                      return { status, logsContent }
+                    }),
+                  }
+                }),
+            }
+            return formatedLogs
+          })
+
+          const summaryByDept = Object.entries(summaryByDepartement).map(([dpt, content]) => ({
+            dpt,
+            content: Object.entries(content).map(([status, infos]) => ({ status, infos })),
+          }))
+
+          const sumaryNationalTmp = Object.entries(summaryNational).map(([status, infos]) => ({ status, infos }))
+          return { date, content: { details, summaryByDepartement: summaryByDept, summaryNational: sumaryNationalTmp } }
         })
-        const summaryByDept = Object.entries(summaryByDepartement).map(([dpt, content]) => ({
-          dpt,
-          content: Object.entries(content).map(([status, infos]) => ({ status, infos })),
-        }))
 
-        const sumaryNationalTmp = Object.entries(summaryNational).map(([status, infos]) => ({ status, infos }))
-
-        commit(FETCH_LOGS_SUCCESS, { details, summaryByDepartement: summaryByDept, summaryNational: sumaryNationalTmp })
+        commit(FETCH_LOGS_SUCCESS, fullResult)
         dispatch(SHOW_SUCCESS, 'Récuperation ok [section 1]')
       } else {
         commit(FETCH_LOGS_FAILURE)
@@ -106,9 +132,16 @@ export default {
       }
     },
 
-    async [FETCH_STATS_COUNT_STATUSES_REQUEST] ({ commit, dispatch }, { begin, end } = {}) {
+    async [FETCH_STATS_COUNT_STATUSES_REQUEST] ({ commit, dispatch }, params) {
       commit(FETCH_STATS_COUNT_STATUSES_REQUEST)
-      const result = await api.admin.getStatsCountStatuses(begin, end, true)
+
+      const dateStart = params.start.split('-')
+      const dateEnd = params.end.split('-')
+
+      const start = getFrenchLuxonFromObject({ year: dateStart[0], month: dateStart[1], day: dateStart[2] }).toISODate()
+      const end = getFrenchLuxonFromObject({ year: dateEnd[0], month: dateEnd[1], day: dateEnd[2] }).toISODate()
+
+      const result = await api.admin.getStatsCountStatuses(start, end, true)
       if (result?.success) {
         const dateByCounts = Object.entries(result.counts).reduce((acc, [date, countsByDep]) => {
           if (!acc.byDays[date]) acc.byDays[date] = {}

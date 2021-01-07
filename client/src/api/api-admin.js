@@ -631,9 +631,10 @@ const apiAdmin = {
     return json
   },
 
-  async getlogsPeerPages (page = 0) {
+  async getlogsPeerPages ({ page, start, end }) {
+    const startAnEnd = `start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`
     const json = await apiClient.get(
-        `${apiPaths.admin.statsLogs}?pageNumber=${page.pageNumber}`,
+        `${apiPaths.admin.statsLogs}?pageNumber=${page || 0}&${startAnEnd}`,
         {
           headers: getHeadersForAdminJson(),
         },
@@ -644,7 +645,7 @@ const apiAdmin = {
   async getStatsCountStatuses (begin, end, byDep) {
     let queryString = `?byDep=${byDep}`
     if (begin && end) {
-      queryString += `&begin=${encodeURIComponent(begin)}&end=${encodeURIComponent(end)}`
+      queryString += `&beginPeriod=${encodeURIComponent(begin)}&endPeriod=${encodeURIComponent(end)}`
     }
     const json = await apiClient.get(
       `${apiPaths.admin.statsCountStatuses}${queryString}`,

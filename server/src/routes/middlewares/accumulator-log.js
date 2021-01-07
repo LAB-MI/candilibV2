@@ -1,4 +1,4 @@
-import { logsTypeNameForDepartement, logsTypeNameForHomeDepartement } from '../../config'
+import { logsTypeNameForDepartement, logsTypeNameForHomeDepartement, hoursOfSavedLogs } from '../../config'
 import { saveManyLogActionsCandidat } from '../../models/logs-candidat/logs-queries'
 
 import { getFrenchLuxon, techLogger } from '../../util'
@@ -8,7 +8,7 @@ function saveAccumulatorWithBulk () {
   const dateTimeNow = getFrenchLuxon()
   const datetimeNowToISO = dateTimeNow.toISO()
   const hourNow = dateTimeNow.hour
-  if (hourNow !== accumulatorLog.lastSave && [0, 4, 6, 9, 11, 13, 17, 21].includes(hourNow)) {
+  if (hourNow !== accumulatorLog.lastSave && hoursOfSavedLogs.includes(hourNow)) {
     if (accumulatorLog.isSet) {
       const contentByDepartement = stringifyJson(accumulatorLog.getContentByDepartement())
       const contentByHomeDepartement = stringifyJson(accumulatorLog.getContentByHomeDepartement())
