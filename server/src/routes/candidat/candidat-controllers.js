@@ -290,27 +290,6 @@ export async function getMe (req, res) {
       candidatStatus,
     } = req
 
-    // const options = {
-    //   _id: 0,
-    //   adresse: 1,
-    //   codeNeph: 1,
-    //   homeDepartement: 1,
-    //   departement: 1,
-    //   email: 1,
-    //   isEvaluationDone: 1,
-    //   nomNaissance: 1,
-    //   portable: 1,
-    //   prenom: 1,
-    // }
-
-    // const candidat = await findCandidatById(req.userId, options)
-    // Pour corriger les anciennes donnés
-    // candidat.homeDepartement = candidat.homeDepartement || candidat.departement
-
-    // res.json({
-    //   candidat,
-    // })
-
     res.json({
       candidat: {
         adresse,
