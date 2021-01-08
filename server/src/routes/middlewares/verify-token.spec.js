@@ -8,6 +8,9 @@ import { verifyToken, getToken } from './verify-token'
 import { PLEASE_LOG_IN } from '../../messages.constants'
 import { updateCandidatToken } from '../../models/candidat'
 
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
+
 const id = 'fakeId'
 const candidatStatus = 'fakeStatus'
 
@@ -25,7 +28,7 @@ describe('Verify-token', () => {
 
   beforeAll(async () => {
     updateCandidatToken.mockResolvedValue(true)
-    validToken = await createToken(id, 'candidat', undefined, { candidatStatus })
+    validToken = await createToken(id, 'candidat', undefined, { candidatStatus, firstConnection: true })
 
     invalidToken = validToken + '0'
   })

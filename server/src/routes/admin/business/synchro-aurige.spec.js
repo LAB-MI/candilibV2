@@ -76,6 +76,7 @@ import archivedPlaceModel from '../../../models/archived-place/archived-place-mo
 
 import { SUBJECT_MAIL_INFO } from '../../business'
 import { ObjectLastNoReussitValues } from '../../../models/candidat/objetDernierNonReussite.values'
+import { AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED } from '../../common/constants'
 
 jest.mock('../../../util/logger')
 require('../../../util/logger').setWithConsole(false)
@@ -251,6 +252,8 @@ const synchroAurigeToPassExam = async (
   return candidatArchived
 }
 
+const forNowEndExpired = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 })
+
 describe('synchro-aurige', () => {
   let server
   beforeAll(async () => {
@@ -288,44 +291,56 @@ describe('synchro-aurige', () => {
     expect(isExpired).toBe(false)
   })
 
-  it('Should return not expired with expired ETG at 31/12/2020 because it is in range 12/03/2020 and 31/12/2020', () => {
+  it('Should return not expired with expired ETG at 31/12/2020 because it is in range 12/03/2020 and 31/01/2021', () => {
     const almostFiveYearsAgo = new Date('December 31, 2020')
-    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
-
+    almostFiveYearsAgo.setFullYear(almostFiveYearsAgo.getFullYear() - 5)
     const isExpired = isETGExpired(almostFiveYearsAgo)
-    expect(isExpired).toBe(false)
+    if (getFrenchLuxon() < forNowEndExpired) {
+      expect(isExpired).toBe(false)
+    } else {
+      expect(isExpired).toBe(true)
+    }
   })
 
-  it('Should return not expired with expired ETG at 12/03/2020 because it is in range 12/03/2020 and 31/12/2020', () => {
+  it('Should return not expired with expired ETG at 12/03/2020 because it is in range 12/03/2020 and 31/01/2021', () => {
     const almostFiveYearsAgo = new Date('March 12, 2020')
-    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
-
+    almostFiveYearsAgo.setFullYear(almostFiveYearsAgo.getFullYear() - 5)
     const isExpired = isETGExpired(almostFiveYearsAgo)
-    expect(isExpired).toBe(false)
+    if (getFrenchLuxon() < forNowEndExpired) {
+      expect(isExpired).toBe(false)
+    } else {
+      expect(isExpired).toBe(true)
+    }
   })
 
-  it('Should return not expired with expired ETG at 01/06/2020 because it is in range 12/03/2020 and 31/12/2020', () => {
+  it('Should return not expired with expired ETG at 01/06/2020 because it is in range 12/03/2020 and 31/01/2021', () => {
     const almostFiveYearsAgo = new Date('June 01, 2020')
-    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
-
+    almostFiveYearsAgo.setFullYear(almostFiveYearsAgo.getFullYear() - 5)
     const isExpired = isETGExpired(almostFiveYearsAgo)
-    expect(isExpired).toBe(false)
+    if (getFrenchLuxon() < forNowEndExpired) {
+      expect(isExpired).toBe(false)
+    } else {
+      expect(isExpired).toBe(true)
+    }
   })
 
-  it('Should return expired with expired ETG at 11/03/2020 because it is not in range 12/03/2020 and 31/12/2020', () => {
+  it('Should return expired with expired ETG at 11/03/2020 because it is not in range 12/03/2020 and 31/01/2021', () => {
     const almostFiveYearsAgo = new Date('March 11, 2020')
-    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
-
+    almostFiveYearsAgo.setFullYear(almostFiveYearsAgo.getFullYear() - 5)
     const isExpired = isETGExpired(almostFiveYearsAgo)
     expect(isExpired).toBe(true)
   })
 
   it('Should return expired with expired ETG at 01/01/2021 because it is not in range 12/03/2020 and 31/12/2020', () => {
-    const almostFiveYearsAgo = new Date('January 01, 2021')
-    almostFiveYearsAgo.setFullYear(new Date().getFullYear() - 5)
-
+    const almostFiveYearsAgo = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 }).toJSDate()
+    // new Date('January 01, 2021')
+    almostFiveYearsAgo.setFullYear(almostFiveYearsAgo.getFullYear() - 5)
     const isExpired = isETGExpired(almostFiveYearsAgo)
-    expect(isExpired).toBe(true)
+    if (getFrenchLuxon() < forNowEndExpired) {
+      expect(isExpired).toBe(false)
+    } else {
+      expect(isExpired).toBe(true)
+    }
   })
 
   it('Should return not expired with 5 years ago', () => {

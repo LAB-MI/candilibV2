@@ -561,6 +561,7 @@ const createReservationWithFailure = async (
   selectedPlace,
   previewDate,
   offsetDate,
+  isModification = true,
 ) => {
   const { body } = await request(app)
     .patch(`${apiPrefix}/candidat/places`)
@@ -570,7 +571,7 @@ const createReservationWithFailure = async (
       date: selectedPlace.date,
       isAccompanied: true,
       hasDualControlCar: true,
-      isModification: true,
+      isModification,
     })
     .set('Accept', 'application/json')
     .expect(400)
@@ -690,6 +691,7 @@ describe('test to book with the date authorize by candiat', () => {
       selectedPlace,
       getFrenchLuxon(),
       config.delayToBook,
+      false,
     )
   })
 
@@ -705,6 +707,7 @@ describe('test to book with the date authorize by candiat', () => {
       selectedPlace,
       undefined,
       selectedCandidat,
+      false,
     )
   })
 

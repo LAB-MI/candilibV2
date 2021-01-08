@@ -67,6 +67,13 @@ const apiAdmin = {
     return json
   },
 
+  async getLastInfosStatusCandidat () {
+    const json = await apiClient.get(apiPaths.admin.lastInfosStatusCandidat, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
   async sortStatusCandilib () {
     const json = await apiClient.get(apiPaths.admin.sortStatusCandilib, {
       headers: getHeadersForAdminJson(),
@@ -490,9 +497,7 @@ const apiAdmin = {
   },
 
   async getPlacesAvailableByCentreAndDate (departement, centre, date) {
-    const queryString = `departement=${departement}&centre=${centre}&date=${encodeURIComponent(
-        date,
-      )}`
+    const queryString = `departement=${departement}&centre=${centre}&date=${encodeURIComponent(date)}`
     const json = await apiClient.get(
         `${apiPaths.admin.places}?${queryString}`,
         {
@@ -626,9 +631,10 @@ const apiAdmin = {
     return json
   },
 
-  async getlogsPeerPages (page = 0) {
+  async getlogsPeerPages ({ page, start, end }) {
+    const startAnEnd = `start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`
     const json = await apiClient.get(
-        `${apiPaths.admin.statsLogs}?pageNumber=${page.pageNumber}`,
+        `${apiPaths.admin.statsLogs}?pageNumber=${page || 0}&${startAnEnd}`,
         {
           headers: getHeadersForAdminJson(),
         },
@@ -636,12 +642,16 @@ const apiAdmin = {
     return json
   },
 
-  async getStatsCountStatuses () {
+  async getStatsCountStatuses (begin, end, byDep) {
+    let queryString = `?byDep=${byDep}`
+    if (begin && end) {
+      queryString += `&beginPeriod=${encodeURIComponent(begin)}&endPeriod=${encodeURIComponent(end)}`
+    }
     const json = await apiClient.get(
-        `${apiPaths.admin.statsCountStatuses}`,
-        {
-          headers: getHeadersForAdminJson(),
-        },
+      `${apiPaths.admin.statsCountStatuses}${queryString}`,
+      {
+        headers: getHeadersForAdminJson(),
+      },
     )
     return json
   },

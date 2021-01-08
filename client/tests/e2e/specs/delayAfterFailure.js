@@ -2,7 +2,8 @@
 - The delay before trying again after failure
 */
 
-const { now } = require('../support/dateUtils')
+import { now } from '../support/dateUtils'
+import { parseMagicLinkFromMailBody } from './util/util-cypress'
 
 // Initialise magicLink
 var magicLink
@@ -70,9 +71,7 @@ describe('Test delay after failed attempt', () => {
       // The candidate gets the link
       cy.candidatConnection('candidat_delay_after_failure@candi.lib')
       cy.getLastMail().its('Content.Body').then((mailBody) => {
-        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        magicLink = withoutEq.replace(/=3D/g, '=')
+        magicLink = parseMagicLinkFromMailBody(mailBody)
       }).then(($link) => {
         cy.visit(magicLink)
       })

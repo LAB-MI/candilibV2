@@ -14,6 +14,8 @@ const {
 const { requestPasswdReset } = require('./admin-controllers')
 
 jest.mock('../business/send-mail')
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
 
 const email = 'dontusethiseither@example.com'
 const password = 'Abcdefgh1*'

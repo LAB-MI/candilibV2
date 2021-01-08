@@ -447,7 +447,7 @@ export const getStatsPlacesExam = async (req, res) => {
  * @param {*} res
  */
 export const getCountStatuses = async (req, res) => {
-  const { beginPeriod, endPeriod } = req.query
+  const { beginPeriod, endPeriod, byDep } = req.query
 
   const loggerContent = {
     section: 'admin-getStatsCountStatus',
@@ -469,12 +469,12 @@ export const getCountStatuses = async (req, res) => {
       })
       return
     }
-    const counts = await countByStatuses(beginPeriod, endPeriod)
+    const counts = await countByStatuses(beginPeriod, endPeriod, byDep === 'true')
 
     appLogger.info({
       ...loggerContent,
       action: 'GET COUNT BY STATUS ',
-      counts,
+      nbDates: Object.keys(counts).length,
     })
 
     return res.status(200).json({

@@ -1,4 +1,4 @@
-import { appLogger } from '../../util'
+import { appLogger, getFrenchLuxonFromISO } from '../../util'
 import { getLogsByFilters } from './logs-candidat-business'
 
 export const logsByFilters = async (req, res) => {
@@ -8,9 +8,13 @@ export const logsByFilters = async (req, res) => {
     admin: req.userId,
   }
 
-  const { start, end, pageNumber } = req.query
+  const { start, end, pageNumber, isByHomeDepartement } = req.query
+
+  const dateStart = getFrenchLuxonFromISO(start).toJSDate()
+  const dateEnd = getFrenchLuxonFromISO(end).toJSDate()
+
   try {
-    const logsList = await getLogsByFilters({ start, end, pageNumber })
+    const logsList = await getLogsByFilters({ start: dateStart, end: dateEnd, pageNumber, isByHomeDepartement })
 
     appLogger.info({ ...loggerInfo, description: 'logs candidat' })
 

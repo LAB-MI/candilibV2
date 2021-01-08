@@ -7,6 +7,9 @@ import { verifyRepartiteurLevel, verifyAdminLevel } from './verify-user-level'
 import { apiPrefix } from '../../../app'
 import config from '../../../config'
 
+jest.mock('../../../util/logger')
+require('../../../util/logger').setWithConsole(false)
+
 describe('Verify User level', () => {
   describe('Verify repartiteur level', () => {
     const basicData = {

@@ -1,4 +1,5 @@
 import { date1, now } from '../support/dateUtils'
+import { parseMagicLinkFromMailBody } from './util/util-cypress'
 
 /* Tests :
 - The candidate reservation is visible on the admin front
@@ -25,9 +26,7 @@ describe('Standard scenarios', () => {
       cy.candidatConnection(Cypress.env('emailCandidatInteractive'))
 
       cy.getLastMail().its('Content.Body').then((mailBody) => {
-        const codedLink = mailBody.split('href=3D"')[1].split('">')[0]
-        const withoutEq = codedLink.replace(/=\r\n/g, '')
-        magicLink = withoutEq.replace(/=3D/g, '=')
+        magicLink = parseMagicLinkFromMailBody(mailBody)
       })
       cy.updatePlaces({}, {
         createdAt: now.minus({ days: 2 }).toUTC(),

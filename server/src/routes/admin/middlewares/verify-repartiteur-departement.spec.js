@@ -9,6 +9,9 @@ import { apiPrefix } from '../../../app'
 import config from '../../../config'
 import { verifyRepartiteurDepartement } from './verify-repartiteur-departement'
 
+jest.mock('../../../util/logger')
+require('../../../util/logger').setWithConsole(false)
+
 const basicData = {
   email: 'user@example.com',
   level: config.userStatusLevels[config.userStatuses.CANDIDAT],

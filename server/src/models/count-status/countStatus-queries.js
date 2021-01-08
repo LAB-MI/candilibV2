@@ -31,7 +31,7 @@ export const findCountStatus = async (begin, end, departement) => {
     if (end) filters.createdAt.$lte = end
   }
 
-  const countStatus = await CountStatus.find(filters)
+  const countStatus = await CountStatus.find(filters).sort('createdAt')
   return countStatus
 }
 
