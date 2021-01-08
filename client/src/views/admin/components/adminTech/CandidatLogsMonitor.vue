@@ -49,44 +49,65 @@
         </v-btn>
       </v-toolbar>
 
-      <details-dialog :list-logs="listLogs" />
-
-      <big-loading-indicator :is-loading="isFetchingLogs" />
-
-      <v-card-title primary-title>
-        Nationale
-      </v-card-title>
-      <chart-bar-vertical
-        :labels="labelsSummaryNational"
-        :datasets="datasetsSummaryNational"
-      />
-
       <v-tabs
         color="primary"
         dark
         slider-color="primary"
       >
-        <v-tab
-          v-for="logs in listLogsContent"
-          :key="logs.dpt"
-          ripple
-        >
-          {{ logs.dpt }}
+        <v-tab ripple>
+          Graphique
         </v-tab>
-        <v-tab-item
-          v-for="logsDate in listLogsContent"
-          :key="`${logsDate.dpt}-item`"
-        >
+        <v-tab ripple>
+          Details
+        </v-tab>
+
+        <v-tab-item>
           <v-card flat>
-            <v-card-text>
-              <chart-bar-vertical
-                :labels="getLabelsByDepartement(logsDate.datesInfo)"
-                :datasets="getChartDatasetsByDepartement(logsDate.datesInfo)"
-              />
-            </v-card-text>
+            <v-card-title primary-title>
+              Nationale
+            </v-card-title>
+            <chart-bar-vertical
+              :labels="labelsSummaryNational"
+              :datasets="datasetsSummaryNational"
+            />
+
+            <v-tabs
+              color="primary"
+              dark
+              slider-color="primary"
+            >
+              <v-tab
+                v-for="logs in listLogsContent"
+                :key="logs.dpt"
+                ripple
+              >
+                {{ logs.dpt }}
+              </v-tab>
+              <v-tab-item
+                v-for="logsDate in listLogsContent"
+                :key="`${logsDate.dpt}-item`"
+              >
+                <v-card flat>
+                  <v-card-text>
+                    <chart-bar-vertical
+                      :labels="getLabelsByDepartement(logsDate.datesInfo)"
+                      :datasets="getChartDatasetsByDepartement(logsDate.datesInfo)"
+                    />
+                  </v-card-text>
+                </v-card>
+              </v-tab-item>
+            </v-tabs>
+          </v-card>
+        </v-tab-item>
+
+        <v-tab-item>
+          <v-card>
+            <details-content :list-logs="listLogs" />
           </v-card>
         </v-tab-item>
       </v-tabs>
+
+      <big-loading-indicator :is-loading="isFetchingLogs" />
     </v-card>
   </div>
 </template>
@@ -98,7 +119,7 @@ import { BigLoadingIndicator /*, WrapperDragAndResize */ } from '@/components'
 
 import ChartBarVertical from '../statsKpi/ChartBarVertical.vue'
 import { getFrenchLuxonCurrentDateTime } from '@/util'
-import DetailsDialog from './DetailsDialog.vue'
+import DetailsContent from './DetailsContent.vue'
 
 export default {
   name: 'AdminTech',
@@ -106,7 +127,7 @@ export default {
     BigLoadingIndicator,
     // WrapperDragAndResize,
     ChartBarVertical,
-    DetailsDialog,
+    DetailsContent,
   },
 
   data: () => ({
@@ -209,11 +230,7 @@ export default {
             borderWidth: 5,
             data: this.getDataValueFor('R', indexNumber, data),
             backgroundColor: colorReservation,
-            borderColor: [
-              colorGroupe,
-              colorGroupe,
-              colorGroupe,
-            ],
+            borderColor: colorGroupe,
           },
           {
             label: `Grp ${(indexNumber) + 1} Modifications`,
@@ -221,11 +238,7 @@ export default {
             borderWidth: 5,
             data: this.getDataValueFor('M', indexNumber, data),
             backgroundColor: colorModification,
-            borderColor: [
-              colorGroupe,
-              colorGroupe,
-              colorGroupe,
-            ],
+            borderColor: colorGroupe,
           },
           {
             label: `Grp ${(indexNumber) + 1} Annulation`,
@@ -233,11 +246,7 @@ export default {
             borderWidth: 5,
             data: this.getDataValueFor('A', indexNumber, data),
             backgroundColor: colorAnnulation,
-            borderColor: [
-              colorGroupe,
-              colorGroupe,
-              colorGroupe,
-            ],
+            borderColor: colorGroupe,
           },
 
         ]
@@ -270,11 +279,7 @@ export default {
             borderWidth: 5,
             data: this.getDataDepartementValueFor('R', indexNumber, data),
             backgroundColor: colorReservation,
-            borderColor: [
-              colorGroupe,
-              colorGroupe,
-              colorGroupe,
-            ],
+            borderColor: colorGroupe,
           },
           {
             label: `Grp ${(indexNumber) + 1} Modifications`,
@@ -282,11 +287,7 @@ export default {
             borderWidth: 5,
             data: this.getDataDepartementValueFor('M', indexNumber, data),
             backgroundColor: colorModification,
-            borderColor: [
-              colorGroupe,
-              colorGroupe,
-              colorGroupe,
-            ],
+            borderColor: colorGroupe,
           },
           {
             label: `Grp ${(indexNumber) + 1} Annulation`,
@@ -294,11 +295,7 @@ export default {
             borderWidth: 5,
             data: this.getDataDepartementValueFor('A', indexNumber, data),
             backgroundColor: colorAnnulation,
-            borderColor: [
-              colorGroupe,
-              colorGroupe,
-              colorGroupe,
-            ],
+            borderColor: colorGroupe,
           },
 
         ]
