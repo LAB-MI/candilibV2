@@ -1,5 +1,5 @@
 import api from '@/api'
-import { getFrenchLuxonFromObject } from '@/util'
+import { generateExcelFile, getFrenchLuxonFromObject } from '@/util'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
 
 export const FETCH_LOGS_REQUEST = 'FETCH_LOGS_REQUEST'
@@ -9,6 +9,10 @@ export const FETCH_LOGS_SUCCESS = 'FETCH_LOGS_SUCCESS'
 export const FETCH_STATS_COUNT_STATUSES_REQUEST = 'FETCH_STATS_COUNT_STATUSES_REQUEST'
 export const FETCH_STATS_COUNT_STATUSES_FAILURE = 'FETCH_STATS_COUNT_STATUSES_FAILURE'
 export const FETCH_STATS_COUNT_STATUSES_SUCCESS = 'FETCH_STATS_COUNT_STATUSES_SUCCESS'
+
+export const SAVE_EXCEL_FILE_REQUEST = 'SAVE_EXCEL_FILE_REQUEST'
+export const SAVE_EXCEL_FILE_FAILURE = 'SAVE_EXCEL_FILE_FAILURE'
+export const SAVE_EXCEL_FILE_SUCCESS = 'SAVE_EXCEL_FILE_SUCCESS'
 
 export default {
   state: {
@@ -43,6 +47,19 @@ export default {
       state.listCountStatusByDep = listByDep || []
       state.listCountStatusByDays = listByDays || []
       state.isFetchingCountStatus = false
+    },
+
+    [SAVE_EXCEL_FILE_REQUEST] (state) {
+      // state.isFetchingCountStatus = true
+    },
+    [SAVE_EXCEL_FILE_FAILURE] (state) {
+      // state.isFetchingCountStatus = false
+    },
+    [SAVE_EXCEL_FILE_SUCCESS] (state, { list, listByDep, listByDays }) {
+      // state.listCountStatus = list || []
+      // state.listCountStatusByDep = listByDep || []
+      // state.listCountStatusByDays = listByDays || []
+      // state.isFetchingCountStatus = false
     },
   },
 
@@ -125,10 +142,10 @@ export default {
         })
 
         commit(FETCH_LOGS_SUCCESS, fullResult)
-        dispatch(SHOW_SUCCESS, 'Récuperation ok [section 1]')
+        dispatch(SHOW_SUCCESS, 'Récuperation des informations des actions candidats ok')
       } else {
         commit(FETCH_LOGS_FAILURE)
-        dispatch(SHOW_ERROR, 'Erreur de récuperation [section 1]')
+        dispatch(SHOW_ERROR, 'Erreur de récuperation des informations des actions candidats')
       }
     },
 
@@ -193,5 +210,37 @@ export default {
       }
     },
 
+    async [SAVE_EXCEL_FILE_REQUEST] ({ commit, dispatch }, { listLogs }) {
+      commit(SAVE_EXCEL_FILE_REQUEST)
+      const shapedLogs = listLogs.reduce((accumulator, current) => {
+        current.content.summaryNational.forEach(element => {
+          accumulator.national.push([
+              `${Number(element.status) + 1}`,
+              `${element.infos.R}`,
+              `${element.infos.M}`,
+              `${element.infos.A}`,
+              `${current.date}`,
+          ])
+        })
+        current.content.summaryByDepartement.forEach(item => {
+          item.content.forEach(itm => {
+            accumulator.byDepartement.push([
+              `${item.dpt}`,
+              `${Number(itm.status) + 1}`,
+              `${itm.infos.R}`,
+              `${itm.infos.M}`,
+              `${itm.infos.A}`,
+              `${current.date}`,
+            ])
+          })
+        })
+
+        return accumulator
+      },
+      { national: [], byDepartement: [] })
+
+      console.log({ shapedLogs })
+      generateExcelFile(shapedLogs)
+    },
   },
 }
