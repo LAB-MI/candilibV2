@@ -213,7 +213,7 @@ export const resetMyPassword = async (req, res) => {
   }
 
   try {
-    updateUserPassword(user, newPassword)
+    await updateUserPassword(user, newPassword)
   } catch (error) {
     appLogger.error({
       section: 'update-password',
