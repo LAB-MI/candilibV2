@@ -165,7 +165,7 @@ export default {
         return [
           this.dateRange[0].split('-').reverse().join('/'),
           this.dateRange[1].split('-').reverse().join('/'),
-        ].join(' ~ ')
+        ].join('_au_')
       }
       return 'Selectionner une tranche de date'
     },
@@ -359,7 +359,7 @@ export default {
     },
 
     getExcelFile () {
-      this.$store.dispatch(SAVE_EXCEL_FILE_REQUEST, { listLogs: this.listLogs })
+      this.$store.dispatch(SAVE_EXCEL_FILE_REQUEST, { listLogs: this.listLogs, selectedRange: this.pickerDateRange })
     },
   },
 }

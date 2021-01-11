@@ -1,5 +1,5 @@
 import api from '@/api'
-import { generateExcelFile, getFrenchLuxonFromObject } from '@/util'
+import { generateExcelFile, getFrenchLuxonFromObject, msgByDepartement, msgNational } from '@/util'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
 
 export const FETCH_LOGS_REQUEST = 'FETCH_LOGS_REQUEST'
@@ -18,6 +18,7 @@ export default {
   state: {
     isFetchingLogs: false,
     isFetchingCountStatus: false,
+    isGeneratingExcel: false,
     listLogs: [],
     listCountStatus: [],
     listCountStatusByDep: [],
@@ -50,16 +51,13 @@ export default {
     },
 
     [SAVE_EXCEL_FILE_REQUEST] (state) {
-      // state.isFetchingCountStatus = true
+      state.isGeneratingExcel = true
     },
     [SAVE_EXCEL_FILE_FAILURE] (state) {
-      // state.isFetchingCountStatus = false
+      state.isGeneratingExcel = false
     },
-    [SAVE_EXCEL_FILE_SUCCESS] (state, { list, listByDep, listByDays }) {
-      // state.listCountStatus = list || []
-      // state.listCountStatusByDep = listByDep || []
-      // state.listCountStatusByDays = listByDays || []
-      // state.isFetchingCountStatus = false
+    [SAVE_EXCEL_FILE_SUCCESS] (state) {
+      state.isGeneratingExcel = false
     },
   },
 
@@ -210,7 +208,7 @@ export default {
       }
     },
 
-    async [SAVE_EXCEL_FILE_REQUEST] ({ commit, dispatch }, { listLogs }) {
+    async [SAVE_EXCEL_FILE_REQUEST] ({ commit, dispatch }, { listLogs, selectedRange }) {
       commit(SAVE_EXCEL_FILE_REQUEST)
       const shapedLogs = listLogs.reduce((accumulator, current) => {
         current.content.summaryNational.forEach(element => {
@@ -237,10 +235,18 @@ export default {
 
         return accumulator
       },
-      { national: [], byDepartement: [] })
+      { national: [], byDepartement: [], selectedRange })
 
-      console.log({ shapedLogs })
-      generateExcelFile(shapedLogs)
+      try {
+        await generateExcelFile(shapedLogs)
+        commit(SAVE_EXCEL_FILE_SUCCESS)
+      } catch (error) {
+        commit(SAVE_EXCEL_FILE_FAILURE, error)
+        const { message } = error
+        if (msgNational === message && msgByDepartement === message) {
+          dispatch(SHOW_ERROR, 'Erreur de récuperation du fichier Excel les données ne sont pas présente.')
+        }
+      }
     },
   },
 }

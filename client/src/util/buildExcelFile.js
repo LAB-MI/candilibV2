@@ -2,15 +2,23 @@
 import ExcelJS from 'exceljs'
 import { triggerDownloadByLink } from './download'
 
-export const generateExcelFile = ({ national, byDepartement }) => {
-  if (!national.length || !byDepartement.length) {
-    return false
+export const msgNational = 'Donnée national vide'
+export const msgByDepartement = 'Donnée par département vide'
+
+export const generateExcelFile = async ({ national, byDepartement, selectedRange }) => {
+  if (!national.length) {
+    throw new Error(msgNational)
   }
+
+  if (!byDepartement.length) {
+    throw new Error(msgByDepartement)
+  }
+  const date = new Date()
   const workbook = new ExcelJS.Workbook()
   workbook.creator = 'admin'
   workbook.lastModifiedBy = 'admin'
-  workbook.created = new Date()
-  workbook.modified = new Date()
+  workbook.created = date
+  workbook.modified = date
   const nationalSheet = workbook.addWorksheet('stats national')
   const byDepartementSheet = workbook.addWorksheet('stats par departement')
 
@@ -42,15 +50,15 @@ export const generateExcelFile = ({ national, byDepartement }) => {
     byDepartementSheet.addRow(rowValue)
   })
 
-  workbook.xlsx.writeBuffer().then(function (data) {
-    const filename = 'fileName.xlsx'
-    var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
-    const url = URL.createObjectURL(blob)
+  const data = await workbook.xlsx.writeBuffer()
 
-    triggerDownloadByLink(url, filename)
-    return {
-      filename,
-      url,
-    }
-  })
+  const filename = `infos_actions_candidats_${selectedRange}.xlsx`
+  var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+  const url = URL.createObjectURL(blob)
+
+  triggerDownloadByLink(url, filename)
+  return {
+    filename,
+    url,
+  }
 }
