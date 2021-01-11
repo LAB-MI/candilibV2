@@ -60,6 +60,21 @@
         <v-tab ripple>
           Details
         </v-tab>
+        <v-spacer />
+        <v-btn
+          color="primary"
+          @click="getExcelFile"
+        >
+          Exporter
+
+          <v-icon>
+            get_app
+          </v-icon>
+
+          <v-icon>
+            assessment
+          </v-icon>
+        </v-btn>
 
         <v-tab-item>
           <v-card flat>
@@ -113,7 +128,7 @@
 </template>
 
 <script>
-import { FETCH_LOGS_REQUEST } from '@/store'
+import { FETCH_LOGS_REQUEST, SAVE_EXCEL_FILE_REQUEST } from '@/store'
 import { mapState } from 'vuex'
 import { BigLoadingIndicator /*, WrapperDragAndResize */ } from '@/components'
 
@@ -150,7 +165,7 @@ export default {
         return [
           this.dateRange[0].split('-').reverse().join('/'),
           this.dateRange[1].split('-').reverse().join('/'),
-        ].join(' ~ ')
+        ].join('_au_')
       }
       return 'Selectionner une tranche de date'
     },
@@ -341,6 +356,10 @@ export default {
         start: startAndEnd[0],
         end: startAndEnd[1],
       })
+    },
+
+    getExcelFile () {
+      this.$store.dispatch(SAVE_EXCEL_FILE_REQUEST, { listLogs: this.listLogs, selectedRange: this.pickerDateRange })
     },
   },
 }
