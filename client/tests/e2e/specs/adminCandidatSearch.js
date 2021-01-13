@@ -48,23 +48,18 @@ describe('Search Candidate', () => {
         .should('contain', Cypress.env('emailCandidat'))
     })
 
-    it('Search candidate by filter', () => {
+    it('Search candidate by filter "finit par"', () => {
       cy.get('.t-checkbox-one')
-        .parent()
         .click()
       cy.get('.t-search-candidat [type=text]').type('DAT')
       cy.contains(Cypress.env('candidat')).click()
-      cy.get('.t-checkbox-one')
-        .parent()
-        .click()
+    })
+
+    it('Search candidate by filter "commence par"', () => {
       cy.get('.t-checkbox-two')
-        .parent()
         .click()
       cy.get('.t-search-candidat [type=text]').type('CAN')
       cy.contains(Cypress.env('candidat')).click()
-      cy.get('.t-checkbox-two')
-        .parent()
-        .click()
     })
 
     const adminGoToInfoCandidat = (nomNaissance, editEmail, emailToVerify = Cypress.env('emailCandidat')) => {
@@ -85,7 +80,7 @@ describe('Search Candidate', () => {
       adminGoToInfoCandidat(Cypress.env('candidat'), () => {
         cy.get('input').type('{selectall}{backspace}')
       })
-      cy.get('.v-btn--contained').contains('Valider').parent().should('be.disabled')
+      cy.get('.t-btn-ok').contains('Valider').parent().should('be.disabled')
       cy.get('button').contains('Retour').click()
       checkEmailValue()
     })
@@ -93,8 +88,8 @@ describe('Search Candidate', () => {
     it('Update candidat email with same email', () => {
       adminGoToInfoCandidat(Cypress.env('candidat'))
 
-      cy.get('.v-btn--contained').contains('Valider').parent().should('not.be.disabled')
-      cy.get('.v-btn--contained').contains('Valider').click()
+      cy.get('.t-btn-ok').contains('Valider').parent().should('not.be.disabled')
+      cy.get('.t-btn-ok').contains('Valider').click()
 
       cy.get('.v-snack--active')
         .should('contain', 'La nouvelle adresse courriel est identique à ')
@@ -107,8 +102,8 @@ describe('Search Candidate', () => {
           cy.get('input').type('{selectall}{backspace}')
           cy.get('input').type(newEmail)
         }, emailToVerify)
-        cy.get('.v-btn--contained').contains('Valider').parent().should('not.be.disabled')
-        cy.get('.v-btn--contained').contains('Valider').click()
+        cy.get('.t-btn-ok').contains('Valider').parent().should('not.be.disabled')
+        cy.get('.t-btn-ok').contains('Valider').click()
 
         cy.get('.v-snack--active')
           .should('contain', 'a été changé.')
