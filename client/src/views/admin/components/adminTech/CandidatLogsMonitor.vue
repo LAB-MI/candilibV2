@@ -6,7 +6,7 @@
         :axe-y="70"
       > -->
       <v-toolbar
-        color="black"
+        color="#272727"
         dark
       >
         <v-toolbar-title>Informations des actions candidats</v-toolbar-title>
@@ -24,7 +24,7 @@
             <template v-slot:activator="{ on }">
               <v-text-field
                 v-model="pickerDateRange"
-                label="Date de début de période"
+                label="Selct la date de début puis de fin"
                 prepend-icon="event"
                 readonly
                 v-on="on"
@@ -50,74 +50,152 @@
       </v-toolbar>
 
       <v-tabs
+        v-if="!isFetchingLogs"
         color="primary"
         dark
         slider-color="primary"
       >
         <v-tab ripple>
-          Graphique
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="info"
+                dark
+                v-bind="attrs"
+                v-on="on"
+              >
+                business
+              </v-icon>
+            </template>
+            <span>Graphique par département de réservation</span>
+          </v-tooltip>
         </v-tab>
         <v-tab ripple>
-          Details
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-for="icon in ['business', 'loupe']"
+                :key="icon"
+                color="info"
+                dark
+                v-bind="attrs"
+                v-on="on"
+              >
+                {{ icon }}
+              </v-icon>
+            </template>
+            <span>Details département de réservation</span>
+          </v-tooltip>
+        </v-tab>
+
+        <v-tab ripple>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                color="error"
+                dark
+                v-bind="attrs"
+                v-on="on"
+              >
+                house
+              </v-icon>
+            </template>
+            <span>Graphique par département de résidence</span>
+          </v-tooltip>
+        </v-tab>
+        <v-tab ripple>
+          <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-icon
+                v-for="icon in ['house', 'loupe']"
+                :key="icon"
+                color="error"
+                dark
+                v-bind="attrs"
+                v-on="on"
+              >
+                {{ icon }}
+              </v-icon>
+            </template>
+            <span>Details département de résidence</span>
+          </v-tooltip>
         </v-tab>
         <v-spacer />
-        <v-btn
-          color="primary"
-          @click="getExcelFile"
-        >
-          Exporter
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="info"
+              v-bind="attrs"
+              @click="getExcelFile"
+              v-on="on"
+            >
+              <v-icon>
+                business
+              </v-icon>
+              <v-icon>
+                get_app
+              </v-icon>
 
-          <v-icon>
-            get_app
-          </v-icon>
+              <v-icon>
+                assessment
+              </v-icon>
+            </v-btn>
+          </template>
 
-          <v-icon>
-            assessment
-          </v-icon>
-        </v-btn>
+          <span>Exporter les stats par département de réservation</span>
+        </v-tooltip>
+
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <v-btn
+              color="error"
+              v-bind="attrs"
+              @click="getExcelFileForHomeDepartement"
+              v-on="on"
+            >
+              <v-icon>
+                house
+              </v-icon>
+              <v-icon>
+                get_app
+              </v-icon>
+
+              <v-icon>
+                assessment
+              </v-icon>
+            </v-btn>
+          </template>
+
+          <span>Exporter les stats par département de résidence</span>
+        </v-tooltip>
 
         <v-tab-item>
-          <v-card flat>
-            <v-card-title primary-title>
-              Nationale
-            </v-card-title>
-            <chart-bar-vertical
-              :labels="labelsSummaryNational"
-              :datasets="datasetsSummaryNational"
-            />
-
-            <v-tabs
-              color="primary"
-              dark
-              slider-color="primary"
-            >
-              <v-tab
-                v-for="logs in listLogsContent"
-                :key="logs.dpt"
-                ripple
-              >
-                {{ logs.dpt }}
-              </v-tab>
-              <v-tab-item
-                v-for="logsDate in listLogsContent"
-                :key="`${logsDate.dpt}-item`"
-              >
-                <v-card flat>
-                  <v-card-text>
-                    <chart-bar-vertical
-                      :labels="getLabelsByDepartement(logsDate.datesInfo)"
-                      :datasets="getChartDatasetsByDepartement(logsDate.datesInfo)"
-                    />
-                  </v-card-text>
-                </v-card>
-              </v-tab-item>
-            </v-tabs>
-          </v-card>
+          <item-graph-stats
+            :labels-summary-national="getLabelsByDepartement(listLogs)"
+            :datasets-summary-national="getChartDatasetsNational(listLogs)"
+            :list-logs-content="listLogsContent"
+            :is-by-home-departement="false"
+          />
         </v-tab-item>
 
         <v-tab-item>
           <v-card>
             <details-content :list-logs="listLogs" />
+          </v-card>
+        </v-tab-item>
+
+        <v-tab-item>
+          <item-graph-stats
+            :labels-summary-national="getLabelsByDepartement(listLogsByHomeDepartement)"
+            :datasets-summary-national="getChartDatasetsNational(listLogsByHomeDepartement)"
+            :list-logs-content="listLogsHomeDepartementContent"
+            :is-by-home-departement="true"
+          />
+        </v-tab-item>
+
+        <v-tab-item>
+          <v-card>
+            <details-content :list-logs="listLogsByHomeDepartement" />
           </v-card>
         </v-tab-item>
       </v-tabs>
@@ -128,11 +206,11 @@
 </template>
 
 <script>
-import { FETCH_LOGS_REQUEST, SAVE_EXCEL_FILE_REQUEST } from '@/store'
+import { FETCH_LOGS_HOME_DEPARTEMENT_REQUEST, FETCH_LOGS_REQUEST, SAVE_EXCEL_FILE_REQUEST } from '@/store'
 import { mapState } from 'vuex'
 import { BigLoadingIndicator /*, WrapperDragAndResize */ } from '@/components'
 
-import ChartBarVertical from '../statsKpi/ChartBarVertical.vue'
+import ItemGraphStats from './ItemGraphStats'
 import { getFrenchLuxonCurrentDateTime } from '@/util'
 import DetailsContent from './DetailsContent.vue'
 
@@ -141,8 +219,8 @@ export default {
   components: {
     BigLoadingIndicator,
     // WrapperDragAndResize,
-    ChartBarVertical,
     DetailsContent,
+    ItemGraphStats,
   },
 
   data: () => ({
@@ -153,12 +231,14 @@ export default {
     infosOfDepartement: [],
     menuRange: false,
     listLogsContent: [],
+    listLogsHomeDepartementContent: [],
   }),
 
   computed: {
     ...mapState(['adminTech']),
     listLogs: state => state.adminTech.listLogs,
-    isFetchingLogs: state => state.adminTech.isFetchingLogs,
+    isFetchingLogs: state => state.adminTech.isFetchingLogs || state.adminTech.isFetchingLogsByHomeDepartement,
+    listLogsByHomeDepartement: state => state.adminTech.listLogsByHomeDepartement,
 
     pickerDateRange () {
       if (this.dateRange[0] && this.dateRange[1]) {
@@ -170,13 +250,12 @@ export default {
       return 'Selectionner une tranche de date'
     },
 
-    labelsSummaryNational () {
-      return this.listLogs
-        .map(el => el.date)
-    },
-
     datasetsSummaryNational () {
       return this.getChartDatasetsNational(this.listLogs)
+    },
+
+    datasetsSummaryNationalHomeDepartement () {
+      return this.getChartDatasetsNational(this.listLogsByHomeDepartement)
     },
   },
 
@@ -185,16 +264,23 @@ export default {
       if (newValue !== oldValue && newValue.length === 2) {
         this.getLogs()
         this.getDataByDepartement()
+        this.getDataByHomeDepartement()
       }
     },
-    listLogs (newValue, oldValue) {
+
+    listLogs () {
       this.getDataByDepartement()
+    },
+
+    listLogsByHomeDepartement () {
+      this.getDataByHomeDepartement()
     },
   },
 
   mounted () {
     this.getLogs()
     this.getDataByDepartement()
+    this.getDataByHomeDepartement()
   },
 
   methods: {
@@ -216,6 +302,26 @@ export default {
         return {
           dpt,
           datesInfo: listLogs.map(info => ({
+            date: info.date,
+            dptInfos: info.content.summaryByDepartement.find(el => el.dpt === dpt),
+          })),
+        }
+      })
+    },
+
+    getDataByHomeDepartement () {
+      const listLogsByHomeDepartement = this.listLogsByHomeDepartement
+      const allBptValues = listLogsByHomeDepartement.reduce((accu, current) => {
+        const allDpt = current.content.summaryByDepartement.map(val => val.dpt)
+        accu = accu.concat(allDpt)
+        return accu
+      }, [])
+
+      const departementList = [...new Set(allBptValues)]
+      this.listLogsHomeDepartementContent = departementList.map(dpt => {
+        return {
+          dpt,
+          datesInfo: listLogsByHomeDepartement.map(info => ({
             date: info.date,
             dptInfos: info.content.summaryByDepartement.find(el => el.dpt === dpt),
           })),
@@ -278,48 +384,6 @@ export default {
       })
       return value
     },
-    getChartDatasetsByDepartement (data) {
-      const colorReservation = 'rgba(50,205,50)'
-      const colorModification = 'rgba(255,140,0)'
-      const colorAnnulation = 'rgba(255,0,0)'
-
-      const shapedDataSets = Array(6).fill(true).reduce((accu, _, index) => {
-        const indexNumber = Number(index)
-        const colorGroupe = this.getColorOfGroupe(indexNumber + 1)
-
-        const shapedDataSet = [
-          {
-            label: `Grp ${(indexNumber) + 1} Réservations`,
-            stack: `${indexNumber}`,
-            borderWidth: 5,
-            data: this.getDataDepartementValueFor('R', indexNumber, data),
-            backgroundColor: colorReservation,
-            borderColor: colorGroupe,
-          },
-          {
-            label: `Grp ${(indexNumber) + 1} Modifications`,
-            stack: `${indexNumber}`,
-            borderWidth: 5,
-            data: this.getDataDepartementValueFor('M', indexNumber, data),
-            backgroundColor: colorModification,
-            borderColor: colorGroupe,
-          },
-          {
-            label: `Grp ${(indexNumber) + 1} Annulation`,
-            stack: `${indexNumber}`,
-            borderWidth: 5,
-            data: this.getDataDepartementValueFor('A', indexNumber, data),
-            backgroundColor: colorAnnulation,
-            borderColor: colorGroupe,
-          },
-
-        ]
-        accu = accu.concat(shapedDataSet)
-        return accu
-      }, [])
-
-      return shapedDataSets
-    },
 
     getColorOfGroupe (groupe) {
       const colorGrp1 = 'rgba(0,0,0)'
@@ -356,10 +420,27 @@ export default {
         start: startAndEnd[0],
         end: startAndEnd[1],
       })
+
+      this.$store.dispatch(FETCH_LOGS_HOME_DEPARTEMENT_REQUEST, {
+        start: startAndEnd[0],
+        end: startAndEnd[1],
+      })
     },
 
     getExcelFile () {
-      this.$store.dispatch(SAVE_EXCEL_FILE_REQUEST, { listLogs: this.listLogs, selectedRange: this.pickerDateRange })
+      this.$store.dispatch(SAVE_EXCEL_FILE_REQUEST, {
+        listLogs: this.listLogs,
+        selectedRange: this.pickerDateRange,
+        isByHomeDepartement: false,
+      })
+    },
+
+    getExcelFileForHomeDepartement () {
+      this.$store.dispatch(SAVE_EXCEL_FILE_REQUEST, {
+        listLogs: this.listLogsByHomeDepartement,
+        selectedRange: this.pickerDateRange,
+        isByHomeDepartement: true,
+      })
     },
   },
 }

@@ -1,11 +1,12 @@
 <template>
   <v-card>
     <v-toolbar
-      class="black"
+      class=""
+      color="#272727"
       dark
     >
       <v-toolbar-title class="text-white">
-        Section 2
+        Nombre de candidat par groupe
       </v-toolbar-title>
       <v-spacer />
       <v-toolbar-title class="u-flex pa-5 mt-10">

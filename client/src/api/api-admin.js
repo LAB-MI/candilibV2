@@ -631,10 +631,11 @@ const apiAdmin = {
     return json
   },
 
-  async getlogsPeerPages ({ page, start, end }) {
+  async getlogsPeerPages ({ page, start, end, isByHomeDepartement }) {
     const startAnEnd = `start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`
+    const isByHomeDpt = isByHomeDepartement ? `&isByHomeDepartement=${encodeURIComponent(isByHomeDepartement)}` : ''
     const json = await apiClient.get(
-        `${apiPaths.admin.statsLogs}?pageNumber=${page || 0}&${startAnEnd}`,
+        `${apiPaths.admin.statsLogs}?pageNumber=${page || 0}&${startAnEnd}${isByHomeDpt}`,
         {
           headers: getHeadersForAdminJson(),
         },
