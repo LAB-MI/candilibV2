@@ -2,27 +2,16 @@
 import ExcelJS from 'exceljs'
 import { triggerDownloadByLink } from './download'
 
-export const msgNational = 'Donnée national vide'
-export const msgByDepartement = 'Donnée par département vide'
-
-export const generateExcelFile = async ({ national, byDepartement, selectedRange }) => {
-  if (!national.length) {
-    throw new Error(msgNational)
-  }
-
-  if (!byDepartement.length) {
-    throw new Error(msgByDepartement)
-  }
+export const generateExcelFile = async ({ national, byDepartement, selectedRange, isByHomeDepartement }) => {
   const date = new Date()
   const workbook = new ExcelJS.Workbook()
   workbook.creator = 'admin'
   workbook.lastModifiedBy = 'admin'
   workbook.created = date
   workbook.modified = date
-  const nationalSheet = workbook.addWorksheet('stats national')
-  const byDepartementSheet = workbook.addWorksheet('stats par departement')
+  const statsType = `${isByHomeDepartement ? 'Dpt-Resid' : 'Dpt-Resa'}`
 
-  const nationalLogsColumns = [
+  const templateTmp = [
     { header: 'Groupe', key: 'groupe' },
     { header: 'Reservation', key: 'reservation' },
     { header: 'Modification', key: 'modification' },
@@ -30,29 +19,41 @@ export const generateExcelFile = async ({ national, byDepartement, selectedRange
     { header: 'Date', key: 'date' },
   ]
 
-  const byDepartementLogsColumns = [
-    { header: 'Departement', key: 'departement' },
-    { header: 'Groupe', key: 'groupe' },
-    { header: 'Reservation', key: 'reservation' },
-    { header: 'Modification', key: 'modification' },
-    { header: 'Annulation', key: 'annulation' },
-    { header: 'Date', key: 'date' },
-  ]
+  let nationalSheet = false
+  let byDepartementSheet = false
+  if (national.length) {
+    nationalSheet = workbook.addWorksheet(`${statsType}_stats_national`)
 
-  nationalSheet.columns = nationalLogsColumns
-  byDepartementSheet.columns = byDepartementLogsColumns
+    const nationalLogsColumns = [
+      ...templateTmp,
+    ]
 
-  national.forEach(rowValue => {
-    nationalSheet.addRow(rowValue)
-  })
+    nationalSheet.columns = nationalLogsColumns
 
-  byDepartement.forEach(rowValue => {
-    byDepartementSheet.addRow(rowValue)
-  })
+    national.forEach(rowValue => {
+      nationalSheet.addRow(rowValue)
+    })
+  }
+
+  if (byDepartement.length) {
+    byDepartementSheet = workbook.addWorksheet(`${statsType}_stats_departement`)
+    const byDepartementLogsColumns = [
+      { header: 'Departement', key: 'departement' },
+      ...templateTmp,
+    ]
+    byDepartementSheet.columns = byDepartementLogsColumns
+    byDepartement.forEach(rowValue => {
+      byDepartementSheet.addRow(rowValue)
+    })
+  }
+
+  if (!national.length && !byDepartement.length) {
+    throw new Error('Certaine stats vides')
+  }
 
   const data = await workbook.xlsx.writeBuffer()
 
-  const filename = `infos_actions_candidats_${selectedRange}.xlsx`
+  const filename = `${selectedRange}_${statsType}_infos_actions_candidats.xlsx`
   var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
   const url = URL.createObjectURL(blob)
 
