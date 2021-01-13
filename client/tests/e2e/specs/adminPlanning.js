@@ -418,7 +418,7 @@ describe('Planning tests without candidate', () => {
           })
         })
       })
-    cy.get('.u-full-width > div > .v-btn--contained').click()
+    cy.get('.u-full-width > div > .t-btn-ok').click()
   })
 })
 
