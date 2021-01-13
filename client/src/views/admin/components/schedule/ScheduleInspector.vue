@@ -266,6 +266,8 @@ import ModalAddScheduleInspecteur from './ModalAddScheduleInspecteur'
 
 import {
   creneauSetting,
+  DATETIME_SHORT,
+  getFrenchLuxon,
   getFrenchLuxonCurrentDateTime,
   getFrenchLuxonFromIso,
   getFrenchLuxonFromObject,
@@ -487,6 +489,7 @@ export default {
     },
 
     parseInspecteursPlanning () {
+      const now = getFrenchLuxon()
       this.isComputing = true
       this.inspecteursData = []
       const [, ...creneaux] = creneauTemplate
@@ -510,6 +513,9 @@ export default {
             .map(place => {
               const currentHourString = getFrenchLuxonFromIso(place.date).toFormat("HH'h'mm")
               if (creneaux.some(crn => crn === currentHourString)) {
+                const visibleAt = getFrenchLuxonFromIso(place.visibleAt)
+                place.isVisible = now >= visibleAt
+                place.visibleAtStrg = visibleAt.toLocaleString(DATETIME_SHORT)
                 return {
                   place,
                   hour: currentHourString,

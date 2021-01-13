@@ -45,16 +45,19 @@ export const getFrenchDateFromIso = isoDate => {
   return isoDate && getFrenchDateFromLuxon(getFrenchLuxonFromIso(isoDate))
 }
 
+export const formatDateTimeString = {
+  weekday: 'long',
+  month: 'long',
+  day: '2-digit',
+  year: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+}
+export const DATETIME_SHORT = DateTime.DATETIME_SHORT
+
 export const getFrenchDateTimeFromIso = isoDate =>
   isoDate &&
-  getFrenchLuxonFromIso(isoDate).toLocaleString({
-    weekday: 'long',
-    month: 'long',
-    day: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  })
+  getFrenchLuxonFromIso(isoDate).toLocaleString(formatDateTimeString)
 
 export const getFrenchLuxonCurrentDateTime = () =>
   DateTime.local()

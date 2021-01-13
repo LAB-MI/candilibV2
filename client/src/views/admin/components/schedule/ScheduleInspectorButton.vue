@@ -1,7 +1,9 @@
 <template>
   <div class="text-xs-center">
-    <v-tooltip bottom>
-      {{ tooltipContent }}
+    <v-tooltip
+      bottom
+    >
+      <div>{{ tooltipContent }} <br> {{ visibleAt }} </div>
       <template v-slot:activator="{ on }">
         <v-btn
           class="t-select-place"
@@ -11,7 +13,9 @@
           @mouseenter="getCandidat"
           @click="$emit('click', inspecteurId, content)"
         >
-          <v-icon :color="color">
+          <v-icon
+            :color="color"
+          >
             {{ icon }}
           </v-icon>
         </v-btn>
@@ -75,6 +79,12 @@ export default {
 
       return ''
     },
+    visibleAt () {
+      if (!this.place) {
+        return ''
+      }
+      return `Visible le ${this.place.visibleAtStrg}`
+    },
   },
 
   watch: {
@@ -99,7 +109,7 @@ export default {
         this.icon = 'face'
         return
       }
-      this.color = 'green'
+      this.color = place.isVisible ? 'green' : '#E65100'
       this.icon = 'check_circle'
     },
 
