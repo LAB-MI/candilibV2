@@ -1,9 +1,14 @@
 import Vuex from 'vuex'
+import Vuetify from 'vuetify'
 
 import { shallowMount, mount } from '@vue/test-utils'
 import Login from './Login.vue'
 
 describe('Login.vue', () => {
+  let vuetify
+  beforeAll(() => {
+    vuetify = new Vuetify()
+  })
   it('renders props.msg when passed', () => {
     const title = 'ADMINISTRATEUR'
     const subtitle = 'CANDILIB'
@@ -62,6 +67,7 @@ describe('Login.vue', () => {
       },
     }
     const wrapper = mount(Login, {
+      vuetify,
       stubs: {
         'bandeau-beta': true,
         'email-password-reset': true,
