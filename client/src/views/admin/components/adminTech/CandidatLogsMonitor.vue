@@ -261,10 +261,11 @@ export default {
 
   watch: {
     dateRange (newValue, oldValue) {
-      if (newValue !== oldValue && newValue.length === 2) {
+      if (newValue.length === 2) {
         this.getLogs()
         this.getDataByDepartement()
         this.getDataByHomeDepartement()
+        this.menuRange = false
       }
     },
 
