@@ -1,5 +1,6 @@
 import { createLogger, format, transports } from 'winston'
 import { getFrenchLuxonFromISO } from './date-util'
+
 const { combine, timestamp, label, printf } = format
 
 const isProd = process.env.NODE_ENV === 'production'
@@ -109,9 +110,10 @@ export function jsonFormat (tokens, req, res) {
       http_user_agent: tokens['user-agent'](req, res),
       response_time: +tokens['response-time'](req, res),
       user_id: tokens.res(req, res, 'x-user-id') || req.headers['x-user-id'],
-      request_id: req.headers['x-request-id'],
+      xrequest_id: req.headers['x-request-id'],
       client_id: req.headers['x-client-id'],
       forwarded_for: req.headers['x-forwarded-for'],
+      request_id: req.request_id,
     },
   })
 }
