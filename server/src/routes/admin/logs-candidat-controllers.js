@@ -3,6 +3,7 @@ import { getLogsByFilters } from './logs-candidat-business'
 
 export const logsByFilters = async (req, res) => {
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-logs-candidat',
     action: 'get-logs-by-filters',
     admin: req.userId,

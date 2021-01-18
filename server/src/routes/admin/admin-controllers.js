@@ -30,6 +30,7 @@ import {
  */
 export const getMe = async (req, res) => {
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-me',
     action: 'get-me',
     admin: req.userId,
@@ -103,6 +104,7 @@ const findInfoAdminById = async userId => {
 export const createUserController = async (req, res) => {
   const { email, status, departements } = req.body
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-create-user',
     action: 'post-user',
     admin: req.userId,
@@ -164,6 +166,7 @@ export const getUsers = async (req, res) => {
   const { userId } = req
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-get-user',
     action: 'get-user',
     admin: req.userId,
@@ -211,6 +214,7 @@ export const updatedInfoUser = async (req, res) => {
   const { email, departements, status, isUnArchive } = req.body
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-update-user',
     action: 'put-user',
     admin: req.userId,
@@ -276,6 +280,7 @@ export const archiveUserController = async (req, res) => {
   const { email: emailToDelete } = req.body
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-delete-user',
     action: 'delete-user',
     admin: req.userId,

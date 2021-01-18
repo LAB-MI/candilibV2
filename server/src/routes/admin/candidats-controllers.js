@@ -35,6 +35,7 @@ import { modifyCandidatEmail } from './candidats-business'
  */
 export const importCandidats = async (req, res) => {
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-import-candidats',
     admin: req.userId,
   }
@@ -96,6 +97,7 @@ export const exportCandidats = async (req, res) => {
   const filename = 'candidatsLibresPrintel.csv'
 
   appLogger.info({
+    request_id: req.request_id,
     section: 'admin-export-cvs',
     action: 'candidats',
     admin: req.userId,
@@ -123,6 +125,7 @@ export const exportBookedCandidats = async (req, res) => {
   const filename = 'candidatsLibresReserve.csv'
 
   appLogger.info({
+    request_id: req.request_id,
     section: 'admin-export-cvs',
     action: 'booked-candidats',
     admin: req.userId,
@@ -300,6 +303,7 @@ export const getBookedCandidats = async (req, res) => {
   } = req
 
   appLogger.info({
+    request_id: req.request_id,
     section: 'admin-get-booked-candidats',
     admin: req.userId,
     format,
@@ -334,6 +338,7 @@ export const updateCandidats = async (req, res) => {
   const { id: candidatId } = req.params
   const { email: newEmail } = req.body
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-update-candidats',
     candidatId,
     newEmail,

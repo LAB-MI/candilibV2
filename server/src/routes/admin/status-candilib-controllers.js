@@ -16,6 +16,7 @@ import { getLastInfosBornesStatus, getLastSyncAurigeDateTime } from './status-ca
  */
 export const getInfoLastSyncAurige = async (req, res) => {
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-last-datetime-sync-aurige',
     action: 'getLastSyncAurigeDateTime',
     admin: req.userId,
@@ -82,6 +83,7 @@ export const getInfoLastSyncAurige = async (req, res) => {
  */
 export const getLastInfosBorneStatus = async (req, res) => {
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-last-infos-bornes-status',
     action: 'getLastInfosBorneStatus',
     admin: req.userId,
