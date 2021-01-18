@@ -245,7 +245,7 @@ export default {
         return [
           this.dateRange[0].split('-').reverse().join('/'),
           this.dateRange[1].split('-').reverse().join('/'),
-        ].join('_au_')
+        ].sort().join('_au_')
       }
       return 'Selectionner une tranche de date'
     },
@@ -416,7 +416,7 @@ export default {
     },
 
     getLogs () {
-      const startAndEnd = this.dateRange
+      const startAndEnd = this.dateRange.slice().sort()
       this.$store.dispatch(FETCH_LOGS_REQUEST, {
         start: startAndEnd[0],
         end: startAndEnd[1],
