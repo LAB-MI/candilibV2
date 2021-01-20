@@ -104,3 +104,72 @@ export const formatResult = (
       return month > otherMonth ? 1 : -1
     })
 }
+
+export const formatLogsData = (data) => {
+  const rawLogs = Object.entries(data.logs)
+
+  const shapedDays = rawLogs.reduce((accu, contentAndRange) => {
+    const [range] = contentAndRange
+    const beginAndEndHour = range.split('_')
+    const dateOfLog = beginAndEndHour[2]
+
+    if (!accu[`${dateOfLog}`]) {
+      accu[`${dateOfLog}`] = []
+    }
+
+    return accu
+  }, {})
+
+  const finalResult = Object.entries(shapedDays).map(([date]) => {
+    const summaryByDepartement = {}
+    const summaryNational = {}
+
+    const details = rawLogs.filter(([dateRange]) => dateRange.split('_')[2] === date).map(([range, content]) => {
+      const beginAndEndHour = range.split('_')
+      const begin = beginAndEndHour[0]
+      const end = beginAndEndHour[1]
+
+      const formatedLogs = {
+        begin: `${begin}h`,
+        end: `${end}h`,
+        departements: Object.entries(content)
+          .map(([departement, statusesInfo]) => {
+            if (!summaryByDepartement[departement]) {
+              summaryByDepartement[departement] = {}
+            }
+            return {
+              departement,
+              statusesInfo: Object.entries(statusesInfo).map(([status, logsContent]) => {
+                if (!summaryByDepartement[departement][status]) {
+                  summaryByDepartement[departement][status] = { R: 0, M: 0, A: 0 }
+                }
+                summaryByDepartement[departement][status].R += (logsContent?.R || 0)
+                summaryByDepartement[departement][status].M += (logsContent?.M || 0)
+                summaryByDepartement[departement][status].A += (logsContent?.A || 0)
+
+                if (!summaryNational[status]) {
+                  summaryNational[status] = { R: 0, M: 0, A: 0 }
+                }
+                summaryNational[status].R += (logsContent?.R || 0)
+                summaryNational[status].M += (logsContent?.M || 0)
+                summaryNational[status].A += (logsContent?.A || 0)
+
+                return { status, logsContent }
+              }),
+            }
+          }),
+      }
+      return formatedLogs
+    })
+
+    const summaryByDept = Object.entries(summaryByDepartement).map(([dpt, content]) => ({
+      dpt,
+      content: Object.entries(content).map(([status, infos]) => ({ status, infos })),
+    }))
+
+    const sumaryNationalTmp = Object.entries(summaryNational).map(([status, infos]) => ({ status, infos }))
+    return { date, content: { details, summaryByDepartement: summaryByDept, summaryNational: sumaryNationalTmp } }
+  })
+
+  return finalResult
+}

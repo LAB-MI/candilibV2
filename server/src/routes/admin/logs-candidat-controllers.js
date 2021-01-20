@@ -10,8 +10,8 @@ export const logsByFilters = async (req, res) => {
 
   const { start, end, pageNumber, isByHomeDepartement } = req.query
 
-  const dateStart = getFrenchLuxonFromISO(start).toJSDate()
-  const dateEnd = getFrenchLuxonFromISO(end).toJSDate()
+  const dateStart = getFrenchLuxonFromISO(start).startOf('day').toJSDate()
+  const dateEnd = getFrenchLuxonFromISO(end).endOf('day').toJSDate()
 
   try {
     const logsList = await getLogsByFilters({ start: dateStart, end: dateEnd, pageNumber, isByHomeDepartement })
