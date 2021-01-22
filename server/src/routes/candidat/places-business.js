@@ -553,7 +553,7 @@ export const applyCancelRules = async (candidat, previewDateReservation) => {
  *
  * @returns {DateTime} La date à partir de laquelle le candidat peut prendre un place
  */
-export const getCandBookFrom = (candidat, datePassage) => {
+export const getCandBookFrom = (candidat, datePassage, reason = 'default') => {
   if (!datePassage) {
     throw new Error('Il manque la date de passage')
   }
@@ -563,8 +563,9 @@ export const getCandBookFrom = (candidat, datePassage) => {
   }
 
   const daysOfDatePassage = datePassage.endOf('days')
+  const timeoutToRetry = config.timeoutToRetryBy[reason] === undefined ? config.timeoutToRetryBy.default : config.timeoutToRetryBy[reason]
   const newCanBookFrom = daysOfDatePassage.plus({
-    days: config.timeoutToRetry,
+    days: timeoutToRetry,
   })
 
   const { canBookFrom } = candidat
