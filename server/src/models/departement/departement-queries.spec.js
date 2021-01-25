@@ -41,8 +41,8 @@ describe('Find Departement', () => {
   })
 
   afterAll(async () => {
-    await disconnect()
     await deleteDepartementById(departementId)
+    await disconnect()
   })
 
   it('Find departement by Id', async () => {

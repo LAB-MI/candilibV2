@@ -1,6 +1,7 @@
 import api from '@/api'
-import { getFrenchLuxonFromObject } from '@/util'
+import { generateExcelFile, getFrenchLuxonFromObject } from '@/util'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
+import { formatLogsData } from './utils'
 
 export const FETCH_LOGS_REQUEST = 'FETCH_LOGS_REQUEST'
 export const FETCH_LOGS_FAILURE = 'FETCH_LOGS_FAILURE'
@@ -10,21 +11,47 @@ export const FETCH_STATS_COUNT_STATUSES_REQUEST = 'FETCH_STATS_COUNT_STATUSES_RE
 export const FETCH_STATS_COUNT_STATUSES_FAILURE = 'FETCH_STATS_COUNT_STATUSES_FAILURE'
 export const FETCH_STATS_COUNT_STATUSES_SUCCESS = 'FETCH_STATS_COUNT_STATUSES_SUCCESS'
 
+export const FETCH_LOGS_HOME_DEPARTEMENT_REQUEST = 'FETCH_LOGS_HOME_DEPARTEMENT_REQUEST'
+export const FETCH_LOGS_HOME_DEPARTEMENT_FAILURE = 'FETCH_LOGS_HOME_DEPARTEMENT_FAILURE'
+export const FETCH_LOGS_HOME_DEPARTEMENT_SUCCESS = 'FETCH_LOGS_HOME_DEPARTEMENT_SUCCESS'
+
+export const SAVE_EXCEL_FILE_REQUEST = 'SAVE_EXCEL_FILE_REQUEST'
+export const SAVE_EXCEL_FILE_FAILURE = 'SAVE_EXCEL_FILE_FAILURE'
+export const SAVE_EXCEL_FILE_SUCCESS = 'SAVE_EXCEL_FILE_SUCCESS'
+
 export default {
   state: {
     isFetchingLogs: false,
+    isFetchingLogsByHomeDepartement: false,
     isFetchingCountStatus: false,
+    isGeneratingExcel: false,
     listLogs: [],
+    listLogsError: undefined,
     listCountStatus: [],
     listCountStatusByDep: [],
     listCountStatusByDays: [],
+    listLogsByHomeDepartement: [],
+    listLogsByHomeDepartementError: undefined,
   },
 
   mutations: {
+    [FETCH_LOGS_HOME_DEPARTEMENT_REQUEST] (state) {
+      state.isFetchingLogsByHomeDepartement = true
+    },
+    [FETCH_LOGS_HOME_DEPARTEMENT_FAILURE] (state, error) {
+      state.listLogsByHomeDepartementError = error
+      state.isFetchingLogsByHomeDepartement = false
+    },
+    [FETCH_LOGS_HOME_DEPARTEMENT_SUCCESS] (state, list) {
+      state.listLogsByHomeDepartement = list
+      state.isFetchingLogsByHomeDepartement = false
+    },
+
     [FETCH_LOGS_REQUEST] (state) {
       state.isFetchingLogs = true
     },
     [FETCH_LOGS_FAILURE] (state, error) {
+      state.listLogsError = error
       state.isFetchingLogs = false
     },
     [FETCH_LOGS_SUCCESS] (state, list) {
@@ -44,9 +71,40 @@ export default {
       state.listCountStatusByDays = listByDays || []
       state.isFetchingCountStatus = false
     },
+
+    [SAVE_EXCEL_FILE_REQUEST] (state) {
+      state.isGeneratingExcel = true
+    },
+    [SAVE_EXCEL_FILE_FAILURE] (state) {
+      state.isGeneratingExcel = false
+    },
+    [SAVE_EXCEL_FILE_SUCCESS] (state) {
+      state.isGeneratingExcel = false
+    },
   },
 
   actions: {
+    async [FETCH_LOGS_HOME_DEPARTEMENT_REQUEST] ({ commit, dispatch }, params) {
+      commit(FETCH_LOGS_HOME_DEPARTEMENT_REQUEST)
+
+      const dateStart = params.start.split('-')
+      const dateEnd = params.end.split('-')
+
+      const start = getFrenchLuxonFromObject({ year: dateStart[0], month: dateStart[1], day: dateStart[2] }).toISODate()
+      const end = getFrenchLuxonFromObject({ year: dateEnd[0], month: dateEnd[1], day: dateEnd[2] }).toISODate()
+
+      const resultForDepartement = await api.admin.getlogsPeerPages({ pageNumber: 0, start, end, isByHomeDepartement: true })
+
+      if (resultForDepartement?.success) {
+        const shapedResult = formatLogsData(resultForDepartement)
+        commit(FETCH_LOGS_HOME_DEPARTEMENT_SUCCESS, shapedResult)
+        dispatch(SHOW_SUCCESS, 'Récuperation des informations des actions candidats ok par département de résidence')
+      } else {
+        commit(FETCH_LOGS_HOME_DEPARTEMENT_FAILURE, resultForDepartement)
+        dispatch(SHOW_ERROR, 'Erreur de récuperation des informations des actions candidats')
+      }
+    },
+
     async [FETCH_LOGS_REQUEST] ({ commit, dispatch }, params) {
       commit(FETCH_LOGS_REQUEST)
 
@@ -56,79 +114,15 @@ export default {
       const start = getFrenchLuxonFromObject({ year: dateStart[0], month: dateStart[1], day: dateStart[2] }).toISODate()
       const end = getFrenchLuxonFromObject({ year: dateEnd[0], month: dateEnd[1], day: dateEnd[2] }).toISODate()
 
-      const result = await api.admin.getlogsPeerPages({ pageNumber: 0, start, end })
+      const resultForDepartement = await api.admin.getlogsPeerPages({ pageNumber: 0, start, end })
 
-      if (result?.success) {
-        const rawLogs = Object.entries(result.logs)
-
-        const shapedDays = rawLogs.reduce((accu, contentAndRange) => {
-          const [range] = contentAndRange
-          const beginAndEndHour = range.split('_')
-          const dateOfLog = beginAndEndHour[2]
-
-          if (!accu[`${dateOfLog}`]) {
-            accu[`${dateOfLog}`] = []
-          }
-
-          return accu
-        }, {})
-
-        const fullResult = Object.entries(shapedDays).map(([date]) => {
-          const summaryByDepartement = {}
-          const summaryNational = {}
-
-          const details = rawLogs.filter(([dateRange]) => dateRange.split('_')[2] === date).map(([range, content]) => {
-            const beginAndEndHour = range.split('_')
-            const begin = beginAndEndHour[0]
-            const end = beginAndEndHour[1]
-
-            const formatedLogs = {
-              begin: `${begin}h`,
-              end: `${end}h`,
-              departements: Object.entries(content)
-                .map(([departement, statusesInfo]) => {
-                  if (!summaryByDepartement[departement]) {
-                    summaryByDepartement[departement] = {}
-                  }
-                  return {
-                    departement,
-                    statusesInfo: Object.entries(statusesInfo).map(([status, logsContent]) => {
-                      if (!summaryByDepartement[departement][status]) {
-                        summaryByDepartement[departement][status] = { R: 0, M: 0, A: 0 }
-                      }
-                      summaryByDepartement[departement][status].R += (logsContent?.R || 0)
-                      summaryByDepartement[departement][status].M += (logsContent?.M || 0)
-                      summaryByDepartement[departement][status].A += (logsContent?.A || 0)
-
-                      if (!summaryNational[status]) {
-                        summaryNational[status] = { R: 0, M: 0, A: 0 }
-                      }
-                      summaryNational[status].R += (logsContent?.R || 0)
-                      summaryNational[status].M += (logsContent?.M || 0)
-                      summaryNational[status].A += (logsContent?.A || 0)
-
-                      return { status, logsContent }
-                    }),
-                  }
-                }),
-            }
-            return formatedLogs
-          })
-
-          const summaryByDept = Object.entries(summaryByDepartement).map(([dpt, content]) => ({
-            dpt,
-            content: Object.entries(content).map(([status, infos]) => ({ status, infos })),
-          }))
-
-          const sumaryNationalTmp = Object.entries(summaryNational).map(([status, infos]) => ({ status, infos }))
-          return { date, content: { details, summaryByDepartement: summaryByDept, summaryNational: sumaryNationalTmp } }
-        })
-
-        commit(FETCH_LOGS_SUCCESS, fullResult)
-        dispatch(SHOW_SUCCESS, 'Récuperation ok [section 1]')
+      if (resultForDepartement?.success) {
+        const shapedResult = formatLogsData(resultForDepartement)
+        commit(FETCH_LOGS_SUCCESS, shapedResult)
+        dispatch(SHOW_SUCCESS, 'Récuperation des informations des actions candidats ok par département de réservation')
       } else {
-        commit(FETCH_LOGS_FAILURE)
-        dispatch(SHOW_ERROR, 'Erreur de récuperation [section 1]')
+        commit(FETCH_LOGS_FAILURE, resultForDepartement)
+        dispatch(SHOW_ERROR, 'Erreur de récuperation des informations des actions candidats')
       }
     },
 
@@ -186,12 +180,51 @@ export default {
         })
 
         commit(FETCH_STATS_COUNT_STATUSES_SUCCESS, { list, listByDeps, listByDates })
-        dispatch(SHOW_SUCCESS, 'Récuperation ok [section 2]')
+        dispatch(SHOW_SUCCESS, 'Récuperation du nombre de candidat par groupe ok')
       } else {
         commit(FETCH_STATS_COUNT_STATUSES_FAILURE)
-        dispatch(SHOW_ERROR, 'Erreur de récuperation [section 2]')
+        dispatch(SHOW_ERROR, 'Erreur de récuperation du nombre de candidat par groupe')
       }
     },
 
+    async [SAVE_EXCEL_FILE_REQUEST] ({ commit, dispatch }, { listLogs, selectedRange, isByHomeDepartement }) {
+      commit(SAVE_EXCEL_FILE_REQUEST)
+      const shapedLogs = listLogs.reduce((accumulator, current) => {
+        current.content.summaryNational.forEach(element => {
+          accumulator.national.push([
+                  `${Number(element.status) + 1}`,
+                  `${element.infos.R}`,
+                  `${element.infos.M}`,
+                  `${element.infos.A}`,
+                  `${current.date}`,
+          ])
+        })
+        current.content.summaryByDepartement.forEach(item => {
+          item.content.forEach(itm => {
+            accumulator.byDepartement.push([
+                  `${item.dpt}`,
+                  `${Number(itm.status) + 1}`,
+                  `${itm.infos.R}`,
+                  `${itm.infos.M}`,
+                  `${itm.infos.A}`,
+                  `${current.date}`,
+            ])
+          })
+        })
+
+        return accumulator
+      },
+      { national: [], byDepartement: [], isByHomeDepartement, selectedRange })
+
+      try {
+        await generateExcelFile(shapedLogs)
+        commit(SAVE_EXCEL_FILE_SUCCESS)
+        dispatch(SHOW_SUCCESS, 'Export Excel ok')
+      } catch (error) {
+        commit(SAVE_EXCEL_FILE_FAILURE, error)
+        const { message } = error
+        dispatch(SHOW_ERROR, message)
+      }
+    },
   },
 }

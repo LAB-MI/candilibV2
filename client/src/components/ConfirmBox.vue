@@ -21,6 +21,7 @@
           :color="okButtonColor"
           :aria-disabled="disabled"
           :disabled="disabled || disabledOk"
+          class="t-btn-ok"
           @click="submitAction"
         >
           {{ okButtonText }}
