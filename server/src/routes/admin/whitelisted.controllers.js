@@ -121,6 +121,7 @@ const batchWhitelistStatuses = {
 export const addWhitelisted = async (req, res) => {
   const { email, emails, departement } = req.body
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-add-whitelisted',
     email,
     emails,
@@ -215,6 +216,7 @@ export const addWhitelisted = async (req, res) => {
 export const getWhitelisted = async (req, res) => {
   const { departement, matching } = req.query
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-get-whitelisted',
     departement,
     matching,
@@ -257,6 +259,7 @@ export const getWhitelisted = async (req, res) => {
 export const removeWhitelisted = async (req, res) => {
   const id = req.params.id
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-remove-whitelisted',
     whitelistedId: id,
     admin: req.userId,

@@ -4,6 +4,7 @@ import { sortStatus } from './sort-candidat-status-business'
 // TODO: JSDOC
 export const sortStatusCandilib = async (req, res) => {
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-sort-status-candilib',
     admin: req.userId,
   }

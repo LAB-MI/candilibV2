@@ -55,6 +55,7 @@ export const getInspecteurs = async (req, res) => {
   const userId = req.userId
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-get-inspecteur',
     admin: userId,
     matching,
@@ -214,6 +215,7 @@ export const createIpcsr = async (req, res) => {
   }
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-get-inspecteur',
     admin: userId,
     departement,
@@ -312,6 +314,7 @@ export const updateIpcsr = async (req, res) => {
   }
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-update-inspecteur',
     admin: userId,
     ipcsrId,

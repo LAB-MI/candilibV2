@@ -21,6 +21,7 @@ export async function getActiveGeoDepartementsInfos (req, res) {
   const { userId } = req
   const loggerContent = {
     action: 'Getting active departements infos controller',
+    request_id: req.request_id,
     section: 'candidat-departements-controllers',
     candidatId: userId,
   }

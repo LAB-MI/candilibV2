@@ -25,6 +25,7 @@ import { XUserId } from '../middlewares/verify-user'
 export const postMagicLink = async (req, res) => {
   const { email } = req.body
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'candidat-auth',
     action: 'post-magic-link',
     email,
@@ -106,6 +107,7 @@ export const postMagicLink = async (req, res) => {
 export const checkCandidat = async (req, res) => {
   const { userId: candidatId } = req
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'candidat-auth',
     action: 'CHECK-EXIST',
     candidatId,

@@ -45,6 +45,7 @@ export const getAdminToken = async (req, res) => {
   const { email, password } = req.body
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-login',
     subject: email,
   }
@@ -72,6 +73,7 @@ export const getAdminToken = async (req, res) => {
     const token = await createToken(user._id, user.status, user.departements)
 
     appLogger.info({
+      request_id: req.request_id,
       section: 'admin-login',
       subject: user._id,
       action: 'LOGGED_IN',
@@ -110,7 +112,7 @@ export const getAdminToken = async (req, res) => {
 
 export const requestPasswdReset = async (req, res) => {
   const loggerInfo = {
-    section: 'reset-password',
+    request_id: req.request_id, section: 'reset-password',
   }
   const email = req.body.email
   try {
@@ -139,6 +141,7 @@ export const requestPasswdReset = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
+      request_id: req.request_id,
       section: 'send-mail-reset-link',
       action: 'send-mail',
       description: `Impossible d'envoyer le courriel de réinitialisation à ${email}`,
@@ -177,7 +180,7 @@ export const requestPasswdReset = async (req, res) => {
 
 export const resetMyPassword = async (req, res) => {
   const loggerInfo = {
-    section: 'reset-password',
+    request_id: req.request_id, section: 'reset-password',
   }
 
   const { newPassword, confirmNewPassword, email, hash } = req.body
@@ -216,6 +219,7 @@ export const resetMyPassword = async (req, res) => {
     await updateUserPassword(user, newPassword)
   } catch (error) {
     appLogger.error({
+      request_id: req.request_id,
       section: 'update-password',
       action: 'update',
       description: 'Impossible de modifier le mot de passe',
@@ -237,6 +241,7 @@ export const resetMyPassword = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
+      request_id: req.request_id,
       section: 'send-mail-reset-confirmation',
       action: 'send-mail',
       description: `Impossible d'envoyer l'email de confirmation de changement de mot de passe à ${email}`,
