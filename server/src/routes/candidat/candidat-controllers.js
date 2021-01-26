@@ -37,6 +37,7 @@ import {
 } from './message.constants'
 import { sendErrorResponse } from '../../util/send-error-response'
 import { isDepartementExisting } from '../../models/departement'
+import { getVisibilityHourString } from './util/date-to-display'
 
 /**
  * @constant {string[]} - Liste des noms des champs requis
@@ -336,7 +337,6 @@ export async function getMe (req, res) {
   }
 }
 
-const getVisibilityHourString = (candidatStatus) => `12H${candidatStatus}0`
 /**
  * Met à jour le candidat en marquant son adresse courriel comme validée
  *

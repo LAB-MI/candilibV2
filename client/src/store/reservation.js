@@ -82,6 +82,7 @@ export default {
           throw new Error(response.message)
         }
         commit(FETCH_CANDIDAT_RESERVATION_SUCCESS, response)
+        commit(SET_CANDIDAT_VISIBLE_HOURS, response?.visibilityHour)
       } catch (error) {
         commit(FETCH_CANDIDAT_RESERVATION_FAILURE)
         throw error

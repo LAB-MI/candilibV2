@@ -44,7 +44,7 @@ import {
 } from '../../models/candidat'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
-import { getDateVisibleForPlaces, getDateDisplayPlaces, getDateVisibleBefore } from './util/date-to-display'
+import { getDateVisibleForPlaces, getDateDisplayPlaces, getDateVisibleBefore, getVisibilityHourString } from './util/date-to-display'
 import { getCandidatStatuses } from '../common/candidat-status'
 
 /**
@@ -657,8 +657,9 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
   const candidat = await findCandidatById(candidatId, {
     canBookFrom: 1,
     dateDernierEchecPratique: 1,
+    status: 1,
   })
-  const { canBookFrom, dateDernierEchecPratique } = candidat
+  const { canBookFrom, dateDernierEchecPratique, status } = candidat
 
   return {
     ...reservation,
@@ -666,6 +667,7 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
     canBookFrom,
     timeOutToRetry,
     dayToForbidCancel,
+    visibilityHour: getVisibilityHourString(status),
   }
 }
 
