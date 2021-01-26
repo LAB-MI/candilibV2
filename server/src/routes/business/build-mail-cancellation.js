@@ -42,7 +42,6 @@ export const getCancellationBody = async (place, candidat) => {
     nom,
     dateTimeResa.date,
     dateTimeResa.hour,
-    urlRESA,
     urlFAQ,
     contactezNous,
   )
