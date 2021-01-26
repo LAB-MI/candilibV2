@@ -60,6 +60,7 @@ export const importPlaces = async (req, res) => {
   const { departement } = req.body
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-import-places',
     admin: req.userId,
     departement,
@@ -127,6 +128,7 @@ export const getPlaces = async (req, res) => {
   const { departement, beginDate, endDate, centre, date } = req.query
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-get-places',
     admin: req.userId,
     departement,
@@ -185,6 +187,7 @@ function createPlacesByAdmin ({ centre, inspecteur, date, dates }) {
 export const createPlaceByAdmin = async (req, res) => {
   const { centre, inspecteur, date, dates } = req.body
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-create-place',
     admin: req.userId,
     centreId: centre._id,
@@ -253,6 +256,7 @@ export const deleteByAdmin = async (req, res) => {
 export const deletePlaceByAdmin = async (req, res) => {
   const { id } = req.params
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-delete-place',
     admin: req.userId,
     id,
@@ -317,6 +321,7 @@ export const deletePlacesByAdmin = async (req, res) => {
   const { placesToDelete } = req.body
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-delete-places',
     admin: adminId,
     placesToDelete,
@@ -430,6 +435,7 @@ export const updatePlaces = async (req, res) => {
   const { id: placeId } = req.params
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-update-place',
     admin: req.userId,
   }
@@ -547,6 +553,7 @@ export const updatePlaces = async (req, res) => {
 export const sendScheduleInspecteurs = async (req, res) => {
   const { departement, date, isForInspecteurs, inspecteurIdListe } = req.body
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-send-mail-schedule-inspecteurs',
     admin: req.userId,
     departement,
@@ -624,6 +631,7 @@ export const removeReservationByAdmin = async (req, res) => {
   const id = req.params.id
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-delete-resa',
     admin: req.userId,
     placeId: id,

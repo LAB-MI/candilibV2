@@ -185,6 +185,7 @@ export const getStatsResultsExam = async (req, res) => {
   const { departements, userId } = req
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-getStatsResultsExam',
     admin: userId,
     beginPeriod,
@@ -251,6 +252,7 @@ export const getCandidatsLeaveRetentionArea = async (req, res) => {
   const { departements, userId } = req
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-get-candidats-leave-retention-area',
     admin: userId,
     begin: beginPeriod,
@@ -336,6 +338,7 @@ export const getCandidatsLeaveRetentionAreaByWeekAndDepartement = async (
   const { departements, userId } = req
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-get-candidats-leave-retention-area-by-week-and-departement',
     admin: userId,
     selectedDepartement: departement,
@@ -393,6 +396,7 @@ export const getStatsPlacesExam = async (req, res) => {
     .toJSDate()
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-getStatsPlacesExam',
     admin: req.userId,
     beginDate,
@@ -450,6 +454,7 @@ export const getCountStatuses = async (req, res) => {
   const { beginPeriod, endPeriod, byDep } = req.query
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-getStatsCountStatus',
     admin: req.userId,
     beginPeriod,

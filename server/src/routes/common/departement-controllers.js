@@ -5,6 +5,7 @@ import { UNKNOWN_ERROR_GET_DEPARTEMENT } from '../admin/message.constants'
 export async function getActiveDepartementsId (req, res) {
   const loggerContent = {
     description: 'Getting active departements',
+    request_id: req.request_id,
     section: 'common get departements',
   }
   try {

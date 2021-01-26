@@ -12,6 +12,8 @@ import routes from './routes'
 
 import npmVersion from '../package.json'
 
+import { v4 as uuidv4 } from 'uuid'
+
 /**
  * @swagger
  *
@@ -823,7 +825,10 @@ app.use(fileupload({ limits: { fileSize: 50 * 1024 * 1024 } }))
 /**
  * Traiter toutes les requêtes dont le chemin commençe par le préfix défini correspondant à la version majeure de l'API
  */
-app.use(apiPrefix, routes)
+app.use(apiPrefix, (req, res, next) => {
+  req.request_id = uuidv4()
+  next()
+}, routes)
 
 export default app
 

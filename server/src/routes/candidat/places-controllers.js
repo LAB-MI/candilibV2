@@ -88,6 +88,7 @@ export async function getPlacesByCentre (req, res) {
   const { nomCentre, geoDepartement, begin, end, dateTime } = req.query
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'candidat-getPlacesByCentre',
     geoDepartement,
     centreId,
@@ -313,6 +314,7 @@ export const getBookedPlaces = async (req, res) => {
     }
   } catch (error) {
     appLogger.error({
+      request_id: req.request_id,
       section: 'candidat-get-reservations',
       candidatId,
       byMail,
@@ -596,6 +598,7 @@ export const unbookPlace = async (req, res) => {
   const candidatId = req.userId
 
   appLogger.info({
+    request_id: req.request_id,
     section: 'candidat-remove-reservations',
     action: 'REMOVE_RESA_ARGS',
     candidatId,
@@ -604,6 +607,7 @@ export const unbookPlace = async (req, res) => {
     const success = false
     const message = USER_INFO_MISSING
     appLogger.warn({
+      request_id: req.request_id,
       section: 'candidat-remove-reservations',
       action: 'NO_CANDIDAT',
       candidatId,
@@ -624,6 +628,7 @@ export const unbookPlace = async (req, res) => {
       const message = "Vous n'avez pas de réservation"
 
       appLogger.warn({
+        request_id: req.request_id,
         section: 'candidat-unbookPlace',
         action: 'remove-reservation',
         candidatId,
@@ -644,6 +649,7 @@ export const unbookPlace = async (req, res) => {
     })
   } catch (error) {
     appLogger.error({
+      request_id: req.request_id,
       section: 'candidat-remove-reservations',
       action: 'UNKNOWN ERROR',
       description: error.message,

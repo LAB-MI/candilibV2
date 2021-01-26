@@ -85,6 +85,7 @@ export async function preSignup (req, res) {
   const candidatData = trimEveryValue(req.body)
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'candidat-pre-signup',
     action: 'preSignup',
   }
@@ -230,6 +231,7 @@ export async function preSignup (req, res) {
       res.status(200).json(response)
     } catch (error) {
       appLogger.error({
+        request_id: req.request_id,
         section: 'candidat-pre-signup',
         description: error.message,
         error,
@@ -353,6 +355,7 @@ export async function emailValidation (req, res) {
   const { email, hash } = req.body || {}
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'candidat-validate-email',
     func: 'emailValidation',
     email,
@@ -431,7 +434,7 @@ export async function saveEvaluation (req, res) {
   const candidatId = req.userId
 
   const loggerInfo = {
-    section: 'save-evaluation',
+    request_id: req.request_id, section: 'save-evaluation',
   }
 
   try {
