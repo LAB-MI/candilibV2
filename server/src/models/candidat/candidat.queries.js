@@ -34,6 +34,7 @@ export const createCandidat = async ({
   isValidatedByAurige,
   canAccessAt,
   canBookFrom,
+  status,
 }) => {
   const validated = await candidatValidator.validateAsync({
     adresse,
@@ -78,6 +79,10 @@ export const createCandidat = async ({
 
     if (canBookFrom) {
       newCandidat.canBookFrom = canBookFrom
+    }
+
+    if (status) {
+      newCandidat.status = status
     }
   }
 

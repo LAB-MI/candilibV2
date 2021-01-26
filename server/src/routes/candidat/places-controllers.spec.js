@@ -134,6 +134,7 @@ const cancelReservationWithSuccess = async (
 describe('Test get dates from places available', () => {
   let createdCentres
   let createdPlaces
+  let selectedCandidat
   beforeAll(async () => {
     setInitCreatedCentre()
     resetCreatedInspecteurs()
@@ -143,8 +144,10 @@ describe('Test get dates from places available', () => {
     const createdCandidats = await createCandidats()
     createdCentres = await createCentres()
     createdPlaces = await createPlaces()
+    selectedCandidat = createdCandidats[0]
     require('../middlewares/verify-token').__setIdCandidat(
-      createdCandidats[0]._id,
+      selectedCandidat._id,
+      selectedCandidat.status,
     )
   })
 
@@ -165,6 +168,7 @@ describe('Test get dates from places available', () => {
     expect(body).toBeDefined()
     expect(body).toHaveProperty('timeOutToRetry', config.timeoutToRetry)
     expect(body).toHaveProperty('dayToForbidCancel', config.daysForbidCancel)
+    expect(body).toHaveProperty('visibilityHour', `12H${selectedCandidat.status}0`)
   })
 
   it('Should 200 with 2 dates from places Centre 2', async () => {
