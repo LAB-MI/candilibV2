@@ -365,6 +365,7 @@ export const bookPlaceByCandidat = async (req, res) => {
   const hasDualControlCar = hasDualControlCarAsBoolean === true
 
   const loggerContent = {
+    request_id: req.request_id,
     section,
     action: 'call-create-reservation',
     candidatId,
@@ -408,19 +409,19 @@ export const bookPlaceByCandidat = async (req, res) => {
       candidat: true,
     })
 
-    if ((previousBookedPlace && !isModification) || (!previousBookedPlace && isModification)) {
-      const success = false
-      const message = 'Une ou plusieurs informations sont manquantes pour cette modification'
+    if (previousBookedPlace) {
+      const success = true
+      const description = 'Vous avez un réservation en cours. Vous devrez annuler votre réservation pour en réserver un autre.'
 
       appLogger.warn({
         ...loggerContent,
         success,
-        description: message,
+        description,
       })
 
-      return res.status(400).json({
+      return res.status(200).json({
         success,
-        message,
+        message: description,
       })
     }
 
