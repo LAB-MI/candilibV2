@@ -66,6 +66,8 @@ describe('Connected candidate front', () => {
       status: 0,
     }]
 
+    let expectedHourBooking
+
     before(() => {
     // Delete all mails before start
       cy.deleteAllMails()
@@ -188,10 +190,11 @@ describe('Connected candidate front', () => {
           'contain',
           '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=',
         )
+      expectedHourBooking = '8:30'
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '8:30')
+        .and('contain', expectedHourBooking)
       cy.get('.t-evaluation', { timeout: 10000 }).should(
         'contain',
         'Merci de noter Candilib',
@@ -264,7 +267,7 @@ describe('Connected candidate front', () => {
       cy.get('.t-evaluation-submit').click()
     })
 
-    it('Should change the booked place', () => {
+    it.skip('Should change the booked place', () => {
       cy.visit(magicLink)
       cy.get('.t-candidat-home').click()
       cy.get('body').should('contain', 'Modifier ma réservation')
@@ -342,7 +345,7 @@ describe('Connected candidate front', () => {
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '10:00')
+        .and('contain', expectedHourBooking)
     })
 
     it('Should resend confirmation mail', () => {
@@ -365,7 +368,7 @@ describe('Connected candidate front', () => {
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '10:00')
+        .and('contain', expectedHourBooking)
     })
 
     it('Should cancel booked place', () => {
@@ -395,7 +398,7 @@ describe('Connected candidate front', () => {
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '10:00')
+        .and('contain', expectedHourBooking)
     })
 
     const expectedPenaltyCancel = () => {
@@ -419,7 +422,7 @@ describe('Connected candidate front', () => {
       cy.get(`.t-tab-${dayBefore45Days.monthLong}`).should('not.contain', dayBefore45Days.toLocaleString(FORMAT_DATE_TEXT))
     }
 
-    it('Should have a penalty when candidat change the booked place within 6 days', () => {
+    it.skip('Should have a penalty when candidat change the booked place within 6 days', () => {
       cy.adminLogin()
       cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore, Cypress.env('candidatFront'))
       cy.adminDisconnection()
