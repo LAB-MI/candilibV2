@@ -286,11 +286,11 @@ export async function getMe (req, res) {
       candidatHomeDepartement: homeDepartement,
       candidatDepartement: departement,
       email,
-      isEvaluationDone,
+      // isEvaluationDone,
       nomNaissance,
       portable,
       prenom,
-      candidatStatus,
+      // candidatStatus,
     } = req
 
     // const options = {
@@ -306,7 +306,7 @@ export async function getMe (req, res) {
     //   prenom: 1,
     // }
 
-    // const candidat = await findCandidatById(req.userId, options)
+    const foundedCandidat = await findCandidatById(req.userId, { status: 1, isEvaluationDone: 1 })
     // Pour corriger les anciennes donnés
     // candidat.homeDepartement = candidat.homeDepartement || candidat.departement
 
@@ -321,11 +321,11 @@ export async function getMe (req, res) {
         homeDepartement: homeDepartement || departement,
         departement,
         email,
-        isEvaluationDone,
+        isEvaluationDone: foundedCandidat.isEvaluationDone,
         nomNaissance,
         portable,
         prenom,
-        visibilityHour: getVisibilityHourString(candidatStatus),
+        visibilityHour: getVisibilityHourString(foundedCandidat.status),
       },
     })
   } catch (error) {
