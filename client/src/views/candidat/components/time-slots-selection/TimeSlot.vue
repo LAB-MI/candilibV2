@@ -111,6 +111,13 @@ export default {
     TimesSlotsSelector,
   },
 
+  props: {
+    isNeedUpdateResa: {
+      type: Boolean,
+      default: false,
+    },
+  },
+
   data () {
     return {
       timeoutId: undefined,
@@ -211,7 +218,9 @@ export default {
   },
 
   async mounted () {
-    await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
+    if (this.isNeedUpdateResa) {
+      await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
+    }
     await this.getTimeSlots()
     this.switchTab = this.$route.params.month ? `tab-${this.$route.params.month}` : `tab-${this.timeSlots.list[0].month}`
     if (this.timeSlots.list.length && !this.$route.params.month) {
