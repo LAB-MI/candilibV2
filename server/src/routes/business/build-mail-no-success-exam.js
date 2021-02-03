@@ -6,11 +6,11 @@ import {
 } from './send-mail-util'
 import config from '../../config'
 
-export const getNoSuccessAtExamBody = async (candidat, fnGetTemplate) => {
+export const getNoSuccessAtExamBody = async (candidat, fnGetTemplate, reason = 'default') => {
   const { _id, nomNaissance } = candidat
 
   const urlFAQ = getUrlFAQ()
-  const timeoutToRetry = config.timeoutToRetry
+  const timeoutToRetry = config.timeoutToRetryBy[reason]
   const token = await getCandidatToken(_id, candidat)
   const urlRESA = getUrlRESAByToken(token)
   const contactezNous = getContactUs(token)

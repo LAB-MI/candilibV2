@@ -110,7 +110,7 @@ export const sendFailureExam = async (
     }
     case ObjectLastNoReussitValues.ABSENT: {
       action = 'SEND_BY_AURIGE_TO_ABSENT'
-      content = await getNoSuccessAtExamBody(candidat, getAbsentAtExamTemplate)
+      content = await getNoSuccessAtExamBody(candidat, getAbsentAtExamTemplate, ObjectLastNoReussitValues.ABSENT)
       break
     }
     case ObjectLastNoReussitValues.CANCELED:

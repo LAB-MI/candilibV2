@@ -380,7 +380,7 @@ const updateValidCandidat = async (
   // Vérifier et affecter la pénalité de non-réussite
   const dateTimeEchec = lastNoReussite && lastNoReussite.date
   if (dateTimeEchec) {
-    const canBookFrom = getCandBookFrom(candidat, dateTimeEchec)
+    const canBookFrom = getCandBookFrom(candidat, dateTimeEchec, lastNoReussite.reason)
     if (canBookFrom) {
       infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
       await cancelBookingAfterExamFailure(
