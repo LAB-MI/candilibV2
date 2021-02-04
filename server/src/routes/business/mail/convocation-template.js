@@ -83,21 +83,19 @@ avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre.toUpperCase()} à l'
   pour le candidat ou l'accompagnateur, entraîne le report de l'examen à une date ultérieure.
 </p>
 <p>
-  Si besoin, vous avez la possibilité d'annuler ou modifier <a href=${urlRESA}>votre réservation</a>.
-  Si vous annulez ou modifiez ${
-    config.daysForbidCancel
-  } jours avant la date prévue,
-  vous pourrez librement choisir un autre créneau disponible.
-  Si vous annulez ou modifiez à moins de ${
-    config.daysForbidCancel
-  } jours de la date prévue,
-  un délai de repassage de ${
+  Si besoin, vous avez la possibilité d'annuler <a href=${urlRESA}>votre réservation</a>. 
+  Si vous annulez, un délai de repassage de ${
     config.timeoutToRetry
-  } jours à partir de la date de réservation annulée ou modifiée, vous sera appliqué.
-  Nous vous souhaitons une bonne préparation et le succès à l'examen.
+  } jours à partir de la date d’examen initialement réservée, vous sera appliqué.
+  <br/>
+  Si vous ne vous présentez pas à l’examen, c’est un délai de présentation de 60 jours qui vous sera appliqué. 
+  Nous avons perdu une place qui aurait dû bénéficier à un autre candidat en attente.
+</p>
+<p>
+  Nous vous souhaitons une bonne préparation et le succès à l'examen. 
   Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
   ${contactezNous}
-  </p>
+</p>
 <div  style="border: 1px solid #2196f3; padding: 10px">
 <p><strong> Résultat de votre examen: </strong></b></p>
 <p>48h après le passage de votre examen (week-end et jours fériés non inclus) vous avez la possibilité de consulter <a href='https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire'>votre résultat</a>. En cas de réussite, vous devrez solliciter par vous même la fabrication de votre permis de conduire sur le site de l'<a href='https://www.permisdeconduire.ants.gouv.fr/'>ANTS</a>.
