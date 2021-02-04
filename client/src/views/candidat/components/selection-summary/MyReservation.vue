@@ -52,36 +52,6 @@
       color-button-retour="info"
       icon-name="delete_forever"
     />
-    <modal-confirm
-      v-if="isPenaltyActive"
-      title-modal="Confirmer la modification"
-      :form-action="modifyReservation"
-      :penalty-days-number="penaltyDaysNumber"
-      :number-of-days-before-date="numberOfDaysBeforeDate"
-      :current-reservation-date-time="currentReservationDate"
-      :is-penalty-active="isPenaltyActive"
-      :can-book-from="canBookFrom"
-      :id-reservation-message="modificationReservationMessage"
-      id-button-name="recap_reservation_boutton_modifier"
-      id-message-button-retour="recap_reservation_modal_annuler_boutton_retour"
-      id-message-button-confirmer="recap_reservation_modal_modification_boutton_continuer"
-      :disabled="disabled"
-      color-button="primary"
-      color-button-confirmer="primary"
-      color-button-retour="info"
-      icon-name="edit"
-    />
-    <v-btn
-      v-else
-      color="primary"
-      @click="modifyReservation"
-    >
-      {{ $formatMessage({ id: 'recap_reservation_boutton_modifier' }) }}
-      &nbsp;
-      <v-icon>
-        edit
-      </v-icon>
-    </v-btn>
     <v-btn
       color="success"
       @click="resendEmailConfirmation"

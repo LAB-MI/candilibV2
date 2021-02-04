@@ -28,7 +28,6 @@ import {
   USER_INFO_MISSING,
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
-import { setBookedPlaceKeyToFalseOrTrue } from '../../models/place'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -365,6 +364,7 @@ export const bookPlaceByCandidat = async (req, res) => {
   const hasDualControlCar = hasDualControlCarAsBoolean === true
 
   const loggerContent = {
+    request_id: req.request_id,
     section,
     action: 'call-create-reservation',
     candidatId,
@@ -408,37 +408,27 @@ export const bookPlaceByCandidat = async (req, res) => {
       candidat: true,
     })
 
-    if ((previousBookedPlace && !isModification) || (!previousBookedPlace && isModification)) {
-      const success = false
-      const message = 'Une ou plusieurs informations sont manquantes pour cette modification'
+    if (previousBookedPlace) {
+      const success = true
+      const description = 'Vous avez un réservation en cours. Vous devrez annuler votre réservation pour en réserver un autre.'
 
       appLogger.warn({
         ...loggerContent,
         success,
-        description: message,
+        description,
       })
 
-      return res.status(400).json({
+      return res.status(200).json({
         success,
-        message,
+        message: description,
       })
     }
-
-    if (previousBookedPlace) {
-      await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, false)
-    }
-
-    appLogger.info({
-      ...loggerContent,
-      previousBookedPlaceId: previousBookedPlace && previousBookedPlace._id,
-    })
 
     loggerContent.action = 'valid-reservation'
     const statusCanBookPlace = await validCentreDateReservation(
       candidatId,
       nomCentre,
       date,
-      previousBookedPlace,
     )
 
     if (statusCanBookPlace) {
@@ -446,10 +436,6 @@ export const bookPlaceByCandidat = async (req, res) => {
         ...loggerContent,
         statusValidResa: statusCanBookPlace,
       })
-
-      if (previousBookedPlace) {
-        await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
-      }
 
       return res.status(400).json({
         success: statusCanBookPlace.success,
@@ -481,9 +467,6 @@ export const bookPlaceByCandidat = async (req, res) => {
     if (!reservation) {
       const success = false
       const message = reservationMessage || "Il n'y a pas de place pour ce créneau"
-      if (previousBookedPlace) {
-        await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
-      }
       appLogger.warn({
         ...loggerContent,
         success,
@@ -497,24 +480,7 @@ export const bookPlaceByCandidat = async (req, res) => {
 
     let statusmail
     let message = ''
-    let statusRemove
     let dateAfterBook
-
-    if (previousBookedPlace) {
-      loggerContent.action = 'remove-previous-reservation'
-      try {
-        statusRemove = await removeReservationPlace(previousBookedPlace, true)
-        dateAfterBook = statusRemove.dateAfterBook
-      } catch (error) {
-        techLogger.error({
-          ...loggerContent,
-          description: 'Échec de suppression de la réservation',
-          previousBookedPlaceId: previousBookedPlace._id,
-          error,
-        })
-        await setBookedPlaceKeyToFalseOrTrue(previousBookedPlace, true)
-      }
-    }
 
     const deptCentre = reservation.centre.departement
     if (deptCentre !== reservation.candidat.departement) {

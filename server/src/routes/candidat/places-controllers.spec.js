@@ -619,6 +619,10 @@ const createReservationWithSuccess = async (
     .expect(200)
   expect(body).toBeDefined()
   expect(body).toHaveProperty('success', true)
+  if (isModification) {
+    expect(body).toHaveProperty('message', 'Vous avez un réservation en cours. Vous devrez annuler votre réservation pour en réserver un autre.')
+    return
+  }
   expect(body).toHaveProperty('statusmail', true)
   expect(body).toHaveProperty('message', SAVE_RESA_WITH_MAIL_SENT)
   expect(body).toHaveProperty('reservation')
@@ -726,7 +730,8 @@ describe('test to book with the date authorize by candiat', () => {
     )
   })
 
-  it('Should get 400 to book a same place', async () => {
+  // TODO: A supprimer dans le v2.10.0
+  xit('Should get 400 to book a same place', async () => {
     const selectedPlace = await createTestPlace(placeCanBook)
     await makeResa(selectedPlace, selectedCandidat, bookedAt)
     const { body } = await request(app)
@@ -790,7 +795,8 @@ describe('test to change a booking, 6 days before the appointemnt, by candidat '
     await app.close()
   })
 
-  it('should 400 to book another reservation with a date no authorize', async () => {
+  // TODO: A supprimer dans le v2.10.0
+  xit('should 400 to book another reservation with a date no authorize', async () => {
     const selectedCentre = createdCentres[1]
     const selectedPlace = await createTestPlace(placeCanBook)
 
