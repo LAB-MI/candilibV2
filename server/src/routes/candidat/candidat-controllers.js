@@ -37,6 +37,7 @@ import {
 } from './message.constants'
 import { sendErrorResponse } from '../../util/send-error-response'
 import { isDepartementExisting } from '../../models/departement'
+import { getVisibilityHourString } from './util/date-to-display'
 
 /**
  * @constant {string[]} - Liste des noms des champs requis
@@ -285,11 +286,11 @@ export async function getMe (req, res) {
       candidatHomeDepartement: homeDepartement,
       candidatDepartement: departement,
       email,
-      isEvaluationDone,
+      // isEvaluationDone,
       nomNaissance,
       portable,
       prenom,
-      candidatStatus,
+      // candidatStatus,
     } = req
 
     // const options = {
@@ -305,7 +306,7 @@ export async function getMe (req, res) {
     //   prenom: 1,
     // }
 
-    // const candidat = await findCandidatById(req.userId, options)
+    const foundedCandidat = await findCandidatById(req.userId, { status: 1, isEvaluationDone: 1 })
     // Pour corriger les anciennes donnés
     // candidat.homeDepartement = candidat.homeDepartement || candidat.departement
 
@@ -320,11 +321,11 @@ export async function getMe (req, res) {
         homeDepartement: homeDepartement || departement,
         departement,
         email,
-        isEvaluationDone,
+        isEvaluationDone: foundedCandidat.isEvaluationDone,
         nomNaissance,
         portable,
         prenom,
-        visibilityHour: getVisibilityHourString(candidatStatus),
+        visibilityHour: getVisibilityHourString(foundedCandidat.status),
       },
     })
   } catch (error) {
@@ -336,7 +337,6 @@ export async function getMe (req, res) {
   }
 }
 
-const getVisibilityHourString = (candidatStatus) => `12H${candidatStatus}0`
 /**
  * Met à jour le candidat en marquant son adresse courriel comme validée
  *

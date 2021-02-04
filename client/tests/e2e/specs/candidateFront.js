@@ -405,7 +405,7 @@ describe('Connected candidate front', () => {
     // Vérifie si le message d'avertissement pour le cas de pénalité est présent
       const canBookFromAfterCancel = bookedPlaceIn45Days.toLocaleString(FORMAT_DATE_TEXT)
       cy.get('.t-warning-message')
-        .should('contain', `Vous avez annulé ou modifié votre réservation à moins de ${numberOfDaysBeforeDate} jours de la date d'examen.`)
+        .should('contain', 'Vous avez annulé votre réservation.')
         .and('contain', `Vous ne pouvez sélectionner une date qu'à partir du ${canBookFromAfterCancel}`)
       // Verifie s'il y a des places sur le 1er mois
       const nbMonthsBefore45Days = dayAfter45Days.diff(now, 'months').months | 0
@@ -499,8 +499,9 @@ describe('Connected candidate front', () => {
       }).should('have.property', 'Content')
     })
 
-    it('Should have a penalty when candidat cancel within 6 days of booked place ', () => {
+    it('Should have a penalty when candidat cancel booked place ', () => {
       cy.adminLogin()
+      cy.updateCandidat({ email: Cypress.env('emailCandidatFront') }, { canBookFrom: now.minus({ days: 2 }).toUTC() })
       cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore, Cypress.env('candidatFront'))
       cy.adminDisconnection()
 
@@ -509,8 +510,7 @@ describe('Connected candidate front', () => {
       cy.contains('Annuler ma réservation').click()
       // Vérifie si le message d'avertissement pour le cas de pénalité est présent
       cy.get('.t-confirm-suppr-text-content')
-        .should('contain', `De plus, étant à moins de ${numberOfDaysBeforeDate} jours de la date d`)
-        .and('contain', `un délai de repassage de ${numberOfDaysPenalty} jours`)
+        .should('contain', `Un délai de repassage de ${numberOfDaysPenalty} jours`)
 
       cy.get('button')
         .should('contain', 'Confirmer')

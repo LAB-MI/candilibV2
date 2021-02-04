@@ -40,6 +40,8 @@ export const SEND_EVALUATION_REQUEST = 'SEND_EVALUATION_REQUEST'
 export const SEND_EVALUATION_FAILURE = 'SEND_EVALUATION_FAILURE'
 export const SEND_EVALUATION_SUCCESS = 'SEND_EVALUATION_SUCCESS'
 
+export const SET_CANDIDAT_VISIBLE_HOURS = 'SET_CANDIDAT_STATUS'
+
 export default {
   state: {
     displayNavDrawer: false,
@@ -134,6 +136,11 @@ export default {
       state.me.isEvaluationDone = true
       localStorage.setItem(CANDIDAT_EVAL_STORAGE_KEY, true)
       state.showEvaluation = false
+    },
+    [SET_CANDIDAT_VISIBLE_HOURS] (state, visibilityHour) {
+      if (visibilityHour !== undefined) {
+        state.me.visibilityHour = visibilityHour
+      }
     },
   },
 

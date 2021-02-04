@@ -261,7 +261,7 @@ const synchroAurigeToPassExam = async (
   return candidatArchived
 }
 
-const forNowEndExpired = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 })
+const forNowEndExpired = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 }).startOf('day')
 
 describe('synchro-aurige', () => {
   let server
@@ -341,14 +341,16 @@ describe('synchro-aurige', () => {
   })
 
   it('Should return expired with expired ETG at 01/01/2021 because it is not in range 12/03/2020 and 31/12/2020', () => {
+    const expetedExpiredDate = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 })
     const almostFiveYearsAgo = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 }).toJSDate()
     // new Date('January 01, 2021')
     almostFiveYearsAgo.setFullYear(almostFiveYearsAgo.getFullYear() - 5)
     const isExpired = isETGExpired(almostFiveYearsAgo)
-    if (getFrenchLuxon() < forNowEndExpired) {
+    const now = getFrenchLuxon()
+    if (now < forNowEndExpired) {
       expect(isExpired).toBe(false)
     } else {
-      expect(isExpired).toBe(true)
+      expect(isExpired).toBe(now > expetedExpiredDate)
     }
   })
 

@@ -43,19 +43,17 @@ export default {
   preinscription_departement_hint: "Si votre département de résidence n'apparaît pas, vous pouvez néanmoins sélectionner un autre département pour y passer l'examen.",
   home_choix_du_centre: 'Choix du centre',
   home_choix_du_departement: 'Choix du département',
-  home_choix_date_creneau_message_de_penalite: `Vous avez annulé ou modifié votre réservation à moins de {numberOfDaysBeforeDate} jours de la date d'examen.
-  Vous ne pouvez sélectionner une date qu'à partir du {canBookFromAfterCancel}`,
+  home_choix_date_creneau_message_de_penalite: 'Vous avez annulé votre réservation. Vous ne pouvez sélectionner une date qu\'à partir du {canBookFromAfterCancel}',
   recap_reservation_confirmee: 'Votre réservation est confirmée',
   recap_reservation_email_confirmee: 'Un email de confirmation vous a été envoyé à l\'adresse renseignée à l\'inscription',
-  recap_reservation_last_date_to_cancel: 'Si vous annulez après le {lastDateToCancelString} vous serez pénalisé·e de {penaltyDaysNumber} jours',
+  recap_reservation_last_date_to_cancel: 'Si vous annulez, vous serez pénalisé·e de {penaltyDaysNumber} jours',
   recap_reservation_boutton_annuler: 'Annuler ma réservation',
   recap_reservation_modal_annuler_body_with_penalty:
     `<p>
       En poursuivant, votre réservation du {dateCurrentResa} sera annulée.
     </p>
     <p>
-      De plus, étant à moins de {nbOfDaysBeforeDate} jours de la date d'examen,
-      <b>un délai de repassage de {penaltyNb} jours</b>
+      <b>Un délai de repassage de {penaltyNb} jours</b>
       s'appliquera à partir de la date de votre réservation annulée.
     </p>
     <p class="red--text">
