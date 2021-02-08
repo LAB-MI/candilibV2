@@ -510,7 +510,7 @@ describe('Connected candidate front', () => {
       cy.contains('Annuler ma réservation').click()
       // Vérifie si le message d'avertissement pour le cas de pénalité est présent
       cy.get('.t-confirm-suppr-text-content')
-        .should('contain', `Un délai de repassage de ${numberOfDaysPenalty} jours`)
+        .should('contain', `Un délai de présentation de ${numberOfDaysPenalty} jours`)
 
       cy.get('button')
         .should('contain', 'Confirmer')

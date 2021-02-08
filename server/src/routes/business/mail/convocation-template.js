@@ -84,7 +84,7 @@ avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre.toUpperCase()} à l'
 </p>
 <p>
   Si besoin, vous avez la possibilité d'annuler <a href=${urlRESA}>votre réservation</a>. 
-  Si vous annulez, un délai de repassage de ${
+  Si vous annulez, un délai de présentation de ${
     config.timeoutToRetry
   } jours à partir de la date d’examen initialement réservée, vous sera appliqué.
   <br/>
