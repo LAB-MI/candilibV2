@@ -53,7 +53,7 @@ export default {
       En poursuivant, votre réservation du {dateCurrentResa} sera annulée.
     </p>
     <p>
-      <b>Un délai de repassage de {penaltyNb} jours</b>
+      <b>Un délai de présentation de {penaltyNb} jours</b>
       s'appliquera à partir de la date de votre réservation annulée.
     </p>
     <p class="red--text">
