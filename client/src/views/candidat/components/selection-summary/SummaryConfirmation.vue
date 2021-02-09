@@ -26,7 +26,6 @@
             value="doubleControlCar"
           />
         </div>
-
         <v-flex d-flex>
           <v-spacer />
           <v-btn

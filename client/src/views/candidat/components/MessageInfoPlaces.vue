@@ -11,7 +11,7 @@ export default {
   name: 'MessageInfoPlaces',
   computed: {
     hourVisibility () {
-      return this.$store.state.candidat.me.visibilityHour
+      return this.$store.state.candidat.me?.visibilityHour
     },
   },
 }

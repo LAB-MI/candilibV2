@@ -29,3 +29,5 @@ export const getDateVisibleBefore = (status) => {
   const duration = getDelayFromStatus(status)
   return now.minus({ milliseconds: duration })
 }
+
+export const getVisibilityHourString = (candidatStatus) => `12H${candidatStatus}0`

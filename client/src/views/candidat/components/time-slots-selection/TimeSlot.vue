@@ -134,6 +134,10 @@ export default {
     canCancelBooking () {
       return this.$store.getters.canCancelBooking
     },
+    havePenalty () {
+      return this.$store.getters.havePenalty
+    },
+
     isEchecPratique () {
       const { canBookFrom, dateDernierEchecPratique } = this.reservation.booked
       const dateLastEchecPlus45Days = dateDernierEchecPratique &&
@@ -177,12 +181,7 @@ export default {
       if (this.isEchecPratique) {
         return false
       }
-      const now = getFrenchLuxonCurrentDateTime()
-      const { canBookFrom } = this.reservation.booked
-      const isPenaltyActive =
-        (canBookFrom && getFrenchLuxonFromIso(canBookFrom) > now) || !this.canCancelBooking
-
-      return isPenaltyActive
+      return this.havePenalty
     },
 
     canBookFromAfterCancel () {
@@ -194,7 +193,7 @@ export default {
 
       if (canBookFrom) {
         return getFrenchDateFromIso(canBookFrom)
-      } else if (!this.canCancelBooking) {
+      } else if (!this.canCancelBooking && date) {
         return getFrenchDateFromLuxon(
           getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry }),
         )

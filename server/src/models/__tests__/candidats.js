@@ -78,6 +78,7 @@ export const candidats = [
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
     departement: '93',
+    status: '1',
   },
   {
     codeNeph: '123456789001',
@@ -87,6 +88,7 @@ export const candidats = [
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
     departement: '93',
+    status: '2',
   },
   {
     codeNeph: '123456789002',
@@ -96,6 +98,7 @@ export const candidats = [
     portable: '0612345678',
     adresse: '10 Rue Oberkampf 75011 Paris',
     departement: '93',
+    status: '3',
   },
 ]
 
@@ -111,6 +114,7 @@ export const candidats2 = [
     dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
+    status: '1',
   },
   {
     codeNeph: '123456789004',
@@ -123,6 +127,7 @@ export const candidats2 = [
     dateReussiteETG: getFrenchLuxon().plus({ year: -5, day: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
+    status: '2',
   },
   {
     codeNeph: '123456789006',
@@ -135,6 +140,7 @@ export const candidats2 = [
     dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
     isValidatedByAurige: true,
     isValidatedEmail: true,
+    status: '3',
   },
   {
     codeNeph: '123456789007',
@@ -147,6 +153,7 @@ export const candidats2 = [
     dateReussiteETG: getFrenchLuxon().plus({ year: -1 }),
     isValidatedByAurige: false,
     isValidatedEmail: true,
+    status: '4',
   },
 ]
 

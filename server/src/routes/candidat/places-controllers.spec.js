@@ -1,5 +1,4 @@
 import request from 'supertest'
-
 import { connect, disconnect } from '../../mongo-connection'
 
 import app, { apiPrefix } from '../../app'
@@ -71,9 +70,71 @@ const bookedAt = getFrenchLuxon().toJSDate()
 
 require('../../util/logger').setWithConsole(false)
 
+const cancelReservationWithSuccess = async (
+  selectedCandidatId,
+  previewPlaceId,
+  message,
+  hasCanBookFrom,
+) => {
+  const { body } = await request(app)
+    .delete(`${apiPrefix}/candidat/places`)
+    .set('Accept', 'application/json')
+    .expect(200)
+
+  expect(body).toBeDefined()
+  expect(body).toHaveProperty('success', true)
+  expect(body).toHaveProperty('statusmail', true)
+
+  const previewPlace = await findPlaceById(previewPlaceId)
+  expect(previewPlace).toBeDefined()
+  expect(previewPlace.candidat).toBeUndefined()
+
+  const candidat = await findCandidatById(selectedCandidatId)
+  expect(candidat).toBeDefined()
+
+  if (hasCanBookFrom) {
+    const expectedCanBookFrom = getFrenchLuxonFromJSDate(previewPlace.date)
+      .endOf('day')
+      .plus({
+        days: config.timeoutToRetry,
+      })
+
+    expect(body).toHaveProperty('message',
+      CANCEL_RESA_WITH_MAIL_SENT +
+      ' ' +
+      CAN_BOOK_AFTER +
+      getFrenchFormattedDateTime(
+        expectedCanBookFrom,
+      ).date,
+    )
+    expect(candidat).toHaveProperty('canBookFrom', expectedCanBookFrom.toJSDate())
+    expect(candidat).toHaveProperty('status', '5')
+  } else {
+    expect(body).toHaveProperty('message', message)
+    expect(candidat.canBookFrom).toBeUndefined()
+  }
+  expect(candidat.places).toBeDefined()
+  expect(candidat.places.length).toBeGreaterThan(0)
+
+  const foundPlace = candidat.places.find(
+    pPlace => pPlace._id.toString() === previewPlace._id.toString(),
+  )
+
+  expect(foundPlace).toBeDefined()
+  expect(foundPlace).toHaveProperty('inspecteur', previewPlace.inspecteur)
+  expect(foundPlace).toHaveProperty('centre', previewPlace.centre._id)
+  expect(foundPlace).toHaveProperty('date', previewPlace.date)
+  expect(foundPlace.archivedAt).toBeDefined()
+  expect(foundPlace).toHaveProperty('archiveReason', REASON_CANCEL)
+  const place = foundPlace
+  place.centre = previewPlace.centre
+  await expectMailCancelBooking(candidat, place)
+}
+
 describe('Test get dates from places available', () => {
   let createdCentres
   let createdPlaces
+  let selectedCandidat
   beforeAll(async () => {
     setInitCreatedCentre()
     resetCreatedInspecteurs()
@@ -83,8 +144,10 @@ describe('Test get dates from places available', () => {
     const createdCandidats = await createCandidats()
     createdCentres = await createCentres()
     createdPlaces = await createPlaces()
+    selectedCandidat = createdCandidats[0]
     require('../middlewares/verify-token').__setIdCandidat(
-      createdCandidats[0]._id,
+      selectedCandidat._id,
+      selectedCandidat.status,
     )
   })
 
@@ -105,6 +168,7 @@ describe('Test get dates from places available', () => {
     expect(body).toBeDefined()
     expect(body).toHaveProperty('timeOutToRetry', config.timeoutToRetry)
     expect(body).toHaveProperty('dayToForbidCancel', config.daysForbidCancel)
+    expect(body).toHaveProperty('visibilityHour', `12H${selectedCandidat.status}0`)
   })
 
   it('Should 200 with 2 dates from places Centre 2', async () => {
@@ -350,42 +414,20 @@ describe('Test to book and to delete reservation by candidat', () => {
     require('../middlewares/verify-token').__setIdCandidat(updatedCandidat2._id)
 
     const placeSelected = placeToDelete
-    const { centre, date } = placeSelected
 
-    const { body } = await request(app)
-      .delete(`${apiPrefix}/candidat/places`)
-      .set('Accept', 'application/json')
-      .send({
-        id: centre,
-        date: date,
-        isAccompanied: true,
-        hasDualControlCar: true,
-      })
-      .expect(200)
     const messageToReceive = 'Votre annulation a bien été prise en compte.'
-
-    expect(body).toBeDefined()
-    expect(body).toHaveProperty('success', true)
-    expect(body).toHaveProperty('statusmail', true)
-    expect(body).toHaveProperty('message', messageToReceive)
-
-    const candidatFounded = await findCandidatById(updatedCandidat2._id)
-    const place = candidatFounded.places.find(
-      elt => elt.archiveReason === 'CANCEL',
-    )
-
-    expect(place).toBeDefined()
-    expect(place).toHaveProperty('bookedAt', bookedAt)
-    expect(place).toHaveProperty('archiveReason', 'CANCEL')
-    expect(place).toHaveProperty('date', date)
-    expect(place).toHaveProperty('centre', centre)
+    await cancelReservationWithSuccess(updatedCandidat2._id,
+      placeSelected._id,
+      messageToReceive,
+      true)
 
     // To display places at 12h
     const placeUpdated = await findPlaceById(placeSelected._id)
     expect(placeUpdated).toHaveProperty('visibleAt')
     const visibleAt = getFrenchLuxonFromJSDate(placeUpdated.visibleAt).set({ millisecond: 0 })
     const now = getFrenchLuxon()
-    const expectVisibleAt = now.hour < 12 ? getFrenchLuxonFromObject({ hour: 12, minute: 0, second: 0 }) : getFrenchLuxonFromObject({ hour: 12, minute: 0, second: 0 }).plus({ days: 1 })
+    const expectedBaseVisbleAt = getFrenchLuxonFromObject({ hour: 12, minute: 0, second: 0 })
+    const expectVisibleAt = now.hour < 12 ? expectedBaseVisbleAt : expectedBaseVisbleAt.plus({ days: 1 })
     expect(visibleAt).toEqual(expectVisibleAt)
   })
 })
@@ -619,6 +661,10 @@ const createReservationWithSuccess = async (
     .expect(200)
   expect(body).toBeDefined()
   expect(body).toHaveProperty('success', true)
+  if (isModification) {
+    expect(body).toHaveProperty('message', 'Vous avez un réservation en cours. Vous devrez annuler votre réservation pour en réserver un autre.')
+    return
+  }
   expect(body).toHaveProperty('statusmail', true)
   expect(body).toHaveProperty('message', SAVE_RESA_WITH_MAIL_SENT)
   expect(body).toHaveProperty('reservation')
@@ -726,7 +772,8 @@ describe('test to book with the date authorize by candiat', () => {
     )
   })
 
-  it('Should get 400 to book a same place', async () => {
+  // TODO: A supprimer dans le v2.10.0
+  xit('Should get 400 to book a same place', async () => {
     const selectedPlace = await createTestPlace(placeCanBook)
     await makeResa(selectedPlace, selectedCandidat, bookedAt)
     const { body } = await request(app)
@@ -790,7 +837,8 @@ describe('test to change a booking, 6 days before the appointemnt, by candidat '
     await app.close()
   })
 
-  it('should 400 to book another reservation with a date no authorize', async () => {
+  // TODO: A supprimer dans le v2.10.0
+  xit('should 400 to book another reservation with a date no authorize', async () => {
     const selectedCentre = createdCentres[1]
     const selectedPlace = await createTestPlace(placeCanBook)
 
@@ -814,52 +862,6 @@ describe('test to change a booking, 6 days before the appointemnt, by candidat '
     )
   })
 })
-
-const cancelReservationWithSuccess = async (
-  selectedCandidatId,
-  previewPlaceId,
-  message,
-  hasCanBookFrom,
-) => {
-  const { body } = await request(app)
-    .delete(`${apiPrefix}/candidat/places`)
-    .set('Accept', 'application/json')
-    .expect(200)
-
-  expect(body).toBeDefined()
-  expect(body).toHaveProperty('success', true)
-  expect(body).toHaveProperty('statusmail', true)
-  expect(body).toHaveProperty('message', message)
-
-  const previewPlace = await findPlaceById(previewPlaceId)
-  expect(previewPlace).toBeDefined()
-  expect(previewPlace.candidat).toBeUndefined()
-
-  const candidat = await findCandidatById(selectedCandidatId)
-  expect(candidat).toBeDefined()
-
-  if (hasCanBookFrom) {
-    expect(candidat).toHaveProperty('canBookFrom')
-  } else {
-    expect(candidat.canBookFrom).toBeUndefined()
-  }
-  expect(candidat.places).toBeDefined()
-  expect(candidat.places.length).toBeGreaterThan(0)
-
-  const foundPlace = candidat.places.find(
-    pPlace => pPlace._id.toString() === previewPlace._id.toString(),
-  )
-
-  expect(foundPlace).toBeDefined()
-  expect(foundPlace).toHaveProperty('inspecteur', previewPlace.inspecteur)
-  expect(foundPlace).toHaveProperty('centre', previewPlace.centre._id)
-  expect(foundPlace).toHaveProperty('date', previewPlace.date)
-  expect(foundPlace.archivedAt).toBeDefined()
-  expect(foundPlace).toHaveProperty('archiveReason', REASON_CANCEL)
-  const place = foundPlace
-  place.centre = previewPlace.centre
-  await expectMailCancelBooking(candidat, place)
-}
 
 describe('Cancel a reservation', () => {
   let selectedCandidat1
@@ -888,8 +890,10 @@ describe('Cancel a reservation', () => {
     await disconnect()
     await app.close()
   })
-
-  it('Should get 200 to cancel a reservation without penalty', async () => {
+  /**
+ * @deprecated v2.10.0 une annulation une pénalité
+ */
+  xit('Should get 200 to cancel a reservation without penalty', async () => {
     const place = await createTestPlace(placeCancellable)
     await makeResa(place, selectedCandidat1, bookedAt)
 
@@ -904,17 +908,7 @@ describe('Cancel a reservation', () => {
     const place = await createTestPlace(placeNoCancellable)
     await makeResa(place, selectedCandidat1, bookedAt)
 
-    const message =
-      CANCEL_RESA_WITH_MAIL_SENT +
-      ' ' +
-      CAN_BOOK_AFTER +
-      getFrenchFormattedDateTime(
-        getFrenchLuxonFromJSDate(place.date)
-          .endOf('day')
-          .plus({
-            days: config.timeoutToRetry,
-          }),
-      ).date
+    const message = ''
 
     await cancelReservationWithSuccess(
       selectedCandidat1._id,

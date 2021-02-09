@@ -85,7 +85,7 @@ export default {
         }
 
         const anticipatedCanBookAfter =
-          !getters.canCancelBooking
+          !getters.canCancelBooking && date
             ? getFrenchLuxonFromIso(date).plus({ days: timeOutToRetry })
             : false
         const numberOfMonthToDisplay = 4

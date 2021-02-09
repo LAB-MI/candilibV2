@@ -162,7 +162,7 @@ describe('Candidate Profile', () => {
       })
     })
 
-    it('Verify candidat archived modification place', () => {
+    it.skip('Verify candidat archived modification place', () => {
       const typeAction = 'Modification'
       candidatBookPlace(magicLink, candidatsByDepartments, nowIn1Week)
       candidatModifyPlace(magicLink, candidatsByDepartments, nowIn1Week)

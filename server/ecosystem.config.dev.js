@@ -5,6 +5,7 @@ module.exports = {
     instances: 2,
     exec_mode: 'cluster',
     watch: ['src'],
+    ignore_watch : ["*.spec.js", "**/*.spec.js" ],
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     autorestart: true,
     log_file: '/dev/null',

@@ -1,6 +1,7 @@
 <template>
   <v-card class="text--center">
     <page-title :title="title" />
+    <forbid-modify-message-infos />
     <div class="text--center">
       <p>{{ $formatMessage({ id: 'confirmation_reservation_subtitle'}) }}</p>
       <reservation-info
@@ -58,12 +59,14 @@ import {
 import SummaryConfirmation from './SummaryConfirmation.vue'
 import MyReservation from './MyReservation.vue'
 import ReservationInfo from './ReservationInfo.vue'
+import ForbidModifyMessageInfos from '@/views/candidat/components/ForbidModifyMessageInfos'
 
 export default {
   components: {
     SummaryConfirmation,
     MyReservation,
     ReservationInfo,
+    ForbidModifyMessageInfos,
   },
 
   props: {

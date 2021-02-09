@@ -120,14 +120,10 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Est-ce que je peux modifier ou annuler mon rendez-vous ?',
       content: [
         {
-          textContent: 'Vous pouvez modifier ou annuler votre réservation jusqu’à 7 jours avant la date d’examen.',
-        },
-
-        {
-          textContent: 'Si vous modifiez ou annulez à moins de 7 jours de la date d\'examen, ou si vous ne vous présentez pas à l’examen, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
+          textContent: 'Je ne peux pas modifier. Si la date réservée ne me convient plus, je dois annuler ma réservation avant de pouvoir réserver de nouveau sur le site.',
         },
         {
-          textContent: 'Merci de nous prévenir en cas d\'empêchement afin de libérer le créneau pour un autre candidat.',
+          textContent: 'Si j\'annule mon rendez-vous, je peux réserver une nouvelle place d\'examen à plus de 45 jours de la date d\'examen initialement réservée.',
         },
       ],
     },
@@ -135,12 +131,11 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Je n\'ai pas réussi mon examen, puis-je reprendre une place ?',
       content: [
         {
-          textContent: 'Si vous avez échoué, avez été refusé par l’inspecteur ou avez été absent à l\'examen pratique du permis de conduire, il vous sera automatiquement appliqué une pénalité de 45 jours de délais avant de pouvoir effectuer une nouvelle réservation.',
+          textContent: 'Si j\'ai échoué ou j\'ai été refusé par l’inspecteur à l\'examen pratique du permis de conduire, je peux réserver une nouvelle place d\'examen à plus de 45 jours de la date de l\'examen où j\'ai échoué ou ai été refusé.',
         },
         {
-          textContent: 'Vous devez, sans autre formalité, retourner dans votre espace Candilib pour réserver une nouvelle place.',
+          textContent: 'Si j\'ai été absent à l\'examen pratique du permis de conduire, je peux réserver une nouvelle place d\'examen à plus de 60 jours de la date de l\'examen où je ne me suis pas présenté.',
         },
-
       ],
     },
     {

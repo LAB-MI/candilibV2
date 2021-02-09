@@ -2,6 +2,7 @@ import api from '@/api'
 
 import { SHOW_SUCCESS } from '@/store'
 import { getFrenchLuxonCurrentDateTime, getFrenchLuxonFromIso } from '@/util'
+import { SET_CANDIDAT_VISIBLE_HOURS } from './candidat'
 
 export const FETCH_CANDIDAT_RESERVATION_REQUEST = 'FETCH_CANDIDAT_RESERVATION_REQUEST'
 export const FETCH_CANDIDAT_RESERVATION_FAILURE = 'FETCH_CANDIDAT_RESERVATION_FAILURE'
@@ -81,6 +82,7 @@ export default {
           throw new Error(response.message)
         }
         commit(FETCH_CANDIDAT_RESERVATION_SUCCESS, response)
+        commit(SET_CANDIDAT_VISIBLE_HOURS, response?.visibilityHour)
       } catch (error) {
         commit(FETCH_CANDIDAT_RESERVATION_FAILURE)
         throw error
@@ -121,9 +123,11 @@ export default {
   },
   getters: {
     canCancelBooking: (state) => {
-      const { lastDateToCancel } = state.booked
-      if (!lastDateToCancel) return true
-      return getFrenchLuxonCurrentDateTime() < getFrenchLuxonFromIso(lastDateToCancel).endOf('day')
+      return false
+    },
+    havePenalty: (state) => {
+      const { canBookFrom } = state.booked
+      return canBookFrom && (getFrenchLuxonCurrentDateTime() < getFrenchLuxonFromIso(canBookFrom).endOf('day'))
     },
   },
 }
