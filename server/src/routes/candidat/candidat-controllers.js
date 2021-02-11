@@ -290,6 +290,7 @@ export async function getMe (req, res) {
       nomNaissance,
       portable,
       prenom,
+      dateETG,
       // candidatStatus,
     } = req
 
@@ -326,6 +327,7 @@ export async function getMe (req, res) {
         portable,
         prenom,
         visibilityHour: getVisibilityHourString(foundedCandidat.status),
+        dateETG,
       },
     })
   } catch (error) {
