@@ -291,7 +291,7 @@ export async function getMe (req, res) {
       portable,
       prenom,
       dateETG,
-      // candidatStatus,
+      candidatStatus,
     } = req
 
     // const options = {
@@ -326,7 +326,7 @@ export async function getMe (req, res) {
         nomNaissance,
         portable,
         prenom,
-        visibilityHour: getVisibilityHourString(foundedCandidat.status),
+        visibilityHour: getVisibilityHourString(foundedCandidat.status || candidatStatus),
         dateETG,
       },
     })

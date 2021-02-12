@@ -23,7 +23,7 @@ export const createToken = async (id, userStatus, departements, detailContentCan
   } = detailContentCandidat
   const level = config.userStatusLevels[userStatus] || 0
   const tokenExpiration = config[`${userStatus}TokenExpiration`]
-  const dateETG = getFrenchLuxonFromJSDate(dateReussiteETG).plus({ years: NB_YEARS_ETG_EXPIRED }).toISODate()
+  const dateETG = dateReussiteETG && getFrenchLuxonFromJSDate(dateReussiteETG).plus({ years: NB_YEARS_ETG_EXPIRED }).toISODate()
   const payload = {
     id,
     level,
