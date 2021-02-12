@@ -16,7 +16,7 @@ PUBLIC CANDIDATE FRONT
 - Ability to go back to the introduction page
 */
 
-import { now, date1 } from '../support/dateUtils'
+import { now, date1, getFrenchDateFromLuxon, getFrenchLuxonFromIso } from '../support/dateUtils'
 import { parseMagicLinkFromMailBody } from './util/util-cypress'
 
 describe('Connected candidate front', () => {
@@ -132,7 +132,21 @@ describe('Connected candidate front', () => {
       cy.contains('Nom de naissance')
         .parent().parent()
         .should('contain', Cypress.env('candidatFront'))
+      cy.getCandidatInDB({ email: Cypress.env('emailCandidatFront') }).then(content => {
+        cy.get('.v-chip')
+          .should('contain', 'Heure de visibilité des places d’examen')
+        cy.contains('Heure de visibilité des places d’examen')
+          .parent().parent()
+          .should('contain', `12H${content[0].status}0`)
+        const dateEtg = getFrenchDateFromLuxon(getFrenchLuxonFromIso(content[0].dateReussiteETG).plus({ years: 5 }))
+        const labelDateETG = "Date de fin de validité de l'ETG"
+        cy.get('.v-chip').should('contain', labelDateETG)
+        cy.contains(labelDateETG)
+          .parent().parent()
+          .should('contain', dateEtg)
+      })
     })
+
     it('Should book a place at 7th days', () => {
       cy.visit(magicLink)
       cy.wait(1000)
