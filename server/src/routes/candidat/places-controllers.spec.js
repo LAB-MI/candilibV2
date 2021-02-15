@@ -231,13 +231,12 @@ describe('Test get dates from places available when there are booked', () => {
       .get(
         `${apiPrefix}/candidat/places/${centreSelected}?dateTime=${placeSelected}`,
       )
-
       .set('Accept', 'application/json')
-      .expect(200)
+      .expect(400)
 
     expect(body).toBeDefined()
-    expect(body).toHaveLength(1)
-    expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', "Vous avez un réservation en cours. Vous devrez l'annuler pour en réserver une autre.")
   })
 
   it('Should 200 without places because the seleted place is booked', async () => {
@@ -250,10 +249,11 @@ describe('Test get dates from places available when there are booked', () => {
         `${apiPrefix}/candidat/places/${centreSelected}?dateTime=${placeSelected}`,
       )
       .set('Accept', 'application/json')
-      .expect(200)
+      .expect(400)
 
     expect(body).toBeDefined()
-    expect(body).toHaveLength(0)
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', "Vous avez un réservation en cours. Vous devrez l'annuler pour en réserver une autre.")
   })
 })
 
