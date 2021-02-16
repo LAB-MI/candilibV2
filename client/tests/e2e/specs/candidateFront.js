@@ -203,6 +203,27 @@ describe('Connected candidate front', () => {
       cy.get('.t-evaluation-submit').click()
     })
 
+    it('Should not display the avialable places after to book', () => {
+      cy.visit(magicLink)
+      cy.visit(`${Cypress.env('frontCandidat')}candidat/${Cypress.env('geoDepartement')}/${Cypress.env('centre')}/undefinedMonth/undefinedDay/selection/selection-place`)
+      cy.checkAndCloseSnackBar('Vous avez un réservation en cours. Vous devrez annuler votre réservation avant de réserver une autre.')
+      cy.get('h2').should('contain', 'Ma réservation')
+    })
+
+    it('Should not display confirmation page after to book', () => {
+      cy.visit(magicLink)
+      const daySelected = nowIn1Week.toLocaleString({
+        weekday: 'long',
+        month: 'long',
+        day: '2-digit',
+        year: 'numeric',
+      })
+      const daySelectedIso = nowIn1Week.toISO()
+      cy.visit(`${Cypress.env('frontCandidat')}candidat/${Cypress.env('geoDepartement')}/${Cypress.env('centre')}/undefinedMonth/${daySelected}/${daySelectedIso}/selection/selection-confirmation`)
+      cy.checkAndCloseSnackBar('Vous avez un réservation en cours. Vous devrez annuler votre réservation avant de réserver une autre.')
+      cy.get('h2').should('contain', 'Ma réservation')
+    })
+
     it.skip('Should book a place', () => {
       cy.visit(magicLink)
       cy.wait(1000)

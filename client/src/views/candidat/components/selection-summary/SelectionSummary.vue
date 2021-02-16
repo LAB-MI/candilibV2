@@ -74,6 +74,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isNeedUpdateResa: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data () {
@@ -123,7 +127,9 @@ export default {
     if (this.$route.params.modifying === 'modification') {
       await this.$store.dispatch(SET_MODIFYING_RESERVATION, true)
     }
-    await this.getCandidatReservation()
+    if (this.isNeedUpdateResa) {
+      await this.getCandidatReservation()
+    }
     await this.getSelectedCenterAndDate()
   },
 
