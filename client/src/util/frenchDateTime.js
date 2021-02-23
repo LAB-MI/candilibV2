@@ -73,3 +73,5 @@ export const getFrenchWeeksInWeekYear = year =>
 
 export const getFrenchFormattedDateFromObject = (obj, shape) =>
   obj ? getFrenchLuxonFromObject(obj, frenchOptions).toLocaleString(shape) : 'Invalid DateTime'
+
+export const getFrenchDateShort = (datetime) => datetime && datetime.toLocaleString(DateTime.DATE_SHORT)
