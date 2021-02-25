@@ -23,8 +23,13 @@ const dateDernierEchecPratique = dateTimeDernierEchecPratique
   .toISO()
   .split('T')[0]
 
-const dateDernierEchecPratiqueAncien = nowLuxon
-  .minus({ days: config.timeoutToRetry })
+// const dateDernierEchecPratiqueAncien = nowLuxon
+//   .minus({ days: config.timeoutToRetry })
+//   .startOf('day')
+//   .toISO()
+
+const dateDernierAbsent = nowLuxon
+  .minus({ days: config.timeoutToRetryBy[ObjectLastNoReussitValues.ABSENT] })
   .startOf('day')
   .toISO()
 
@@ -65,7 +70,7 @@ export const candidatFailureExamWith5Failures = {
   dateReussiteETG,
   nbEchecsPratiques: '5',
   dateDernierNonReussite: dateDernierEchecPratique,
-  objetDernierNonReussite: 'echec',
+  objetDernierNonReussite: ObjectLastNoReussitValues.ECHEC,
   reussitePratique: '',
   candidatExistant: 'OK',
   isValidatedByAurige: false,
@@ -86,6 +91,24 @@ export const candidatPassed = {
   dateDernierNonReussite: '',
   objetDernierNonReussite: '',
   reussitePratique: dateReussitePratique,
+  candidatExistant: 'OK',
+  isValidatedByAurige: false,
+  isValidatedEmail,
+  adresse,
+  portable,
+  departement,
+}
+
+export const candidatAbsent = {
+  codeNeph: '093621795384',
+  nomNaissance: 'GOOSE',
+  prenom: 'JIM',
+  email: 'jimgoose@candilib.com',
+  dateReussiteETG,
+  nbEchecsPratiques: '3',
+  dateDernierNonReussite: dateDernierAbsent,
+  objetDernierNonReussite: ObjectLastNoReussitValues.ABSENT,
+  reussitePratique: '',
   candidatExistant: 'OK',
   isValidatedByAurige: false,
   isValidatedEmail,
@@ -132,24 +155,7 @@ export const candidatsToValidAurige = [
     portable,
     departement,
   },
-  {
-    // candidat échec pratique il y a plus 45 jours
-    codeNeph: '093621795384',
-    nomNaissance: 'GOOSE',
-    prenom: 'JIM',
-    email: 'jimgoose@candilib.com',
-    dateReussiteETG,
-    nbEchecsPratiques: '3',
-    dateDernierNonReussite: dateDernierEchecPratiqueAncien,
-    objetDernierNonReussite: 'absent',
-    reussitePratique: '',
-    candidatExistant: 'OK',
-    isValidatedByAurige: false,
-    isValidatedEmail,
-    adresse,
-    portable,
-    departement,
-  },
+  candidatAbsent,
   {
     // candidat pas d'info réssuit théorique
     codeNeph: '093365721896',
@@ -305,7 +311,7 @@ export const candidatWithEtgExpiredToArchive = {
   departement,
 }
 
-export const candidatWithEtgExpiredAndFailedToArchive = {
+export const candidatWithEtgExpiredAndAbsentToArchive = {
   // candidat réussit la théorie y a plus de 5 ans
   codeNeph: '0936317542831',
   nomNaissance: 'TESTOVERETG',
@@ -313,8 +319,8 @@ export const candidatWithEtgExpiredAndFailedToArchive = {
   email: 'test.over.etg.testprenon@test.com',
   dateReussiteETG: dateReussiteETGKO,
   nbEchecsPratiques: '',
-  dateDernierNonReussite: dateDernierEchecPratiqueAncien,
-  objetDernierNonReussite: 'absent',
+  dateDernierNonReussite: dateDernierAbsent,
+  objetDernierNonReussite: ObjectLastNoReussitValues.ABSENT,
   reussitePratique: '',
   candidatExistant: 'OK',
   isValidatedByAurige: false,

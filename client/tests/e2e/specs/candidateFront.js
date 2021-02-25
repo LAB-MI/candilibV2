@@ -66,6 +66,8 @@ describe('Connected candidate front', () => {
       status: 0,
     }]
 
+    let expectedHourBooking
+
     before(() => {
     // Delete all mails before start
       cy.deleteAllMails()
@@ -188,10 +190,11 @@ describe('Connected candidate front', () => {
           'contain',
           '=?UTF-8?Q?Convocation_=C3=A0_l=27examen_pratique_d?= =?UTF-8?Q?u_permis_de_conduire?=',
         )
+      expectedHourBooking = '8:30'
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '8:30')
+        .and('contain', expectedHourBooking)
       cy.get('.t-evaluation', { timeout: 10000 }).should(
         'contain',
         'Merci de noter Candilib',
@@ -264,7 +267,7 @@ describe('Connected candidate front', () => {
       cy.get('.t-evaluation-submit').click()
     })
 
-    it('Should change the booked place', () => {
+    it.skip('Should change the booked place', () => {
       cy.visit(magicLink)
       cy.get('.t-candidat-home').click()
       cy.get('body').should('contain', 'Modifier ma réservation')
@@ -342,7 +345,7 @@ describe('Connected candidate front', () => {
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '10:00')
+        .and('contain', expectedHourBooking)
     })
 
     it('Should resend confirmation mail', () => {
@@ -365,7 +368,7 @@ describe('Connected candidate front', () => {
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '10:00')
+        .and('contain', expectedHourBooking)
     })
 
     it('Should cancel booked place', () => {
@@ -395,14 +398,14 @@ describe('Connected candidate front', () => {
       cy.getLastMail()
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
-        .and('contain', '10:00')
+        .and('contain', expectedHourBooking)
     })
 
     const expectedPenaltyCancel = () => {
     // Vérifie si le message d'avertissement pour le cas de pénalité est présent
       const canBookFromAfterCancel = bookedPlaceIn45Days.toLocaleString(FORMAT_DATE_TEXT)
       cy.get('.t-warning-message')
-        .should('contain', `Vous avez annulé ou modifié votre réservation à moins de ${numberOfDaysBeforeDate} jours de la date d'examen.`)
+        .should('contain', 'Vous avez annulé votre réservation.')
         .and('contain', `Vous ne pouvez sélectionner une date qu'à partir du ${canBookFromAfterCancel}`)
       // Verifie s'il y a des places sur le 1er mois
       const nbMonthsBefore45Days = dayAfter45Days.diff(now, 'months').months | 0
@@ -419,7 +422,7 @@ describe('Connected candidate front', () => {
       cy.get(`.t-tab-${dayBefore45Days.monthLong}`).should('not.contain', dayBefore45Days.toLocaleString(FORMAT_DATE_TEXT))
     }
 
-    it('Should have a penalty when candidat change the booked place within 6 days', () => {
+    it.skip('Should have a penalty when candidat change the booked place within 6 days', () => {
       cy.adminLogin()
       cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore, Cypress.env('candidatFront'))
       cy.adminDisconnection()
@@ -496,8 +499,9 @@ describe('Connected candidate front', () => {
       }).should('have.property', 'Content')
     })
 
-    it('Should have a penalty when candidat cancel within 6 days of booked place ', () => {
+    it('Should have a penalty when candidat cancel booked place ', () => {
       cy.adminLogin()
+      cy.updateCandidat({ email: Cypress.env('emailCandidatFront') }, { canBookFrom: now.minus({ days: 2 }).toUTC() })
       cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore, Cypress.env('candidatFront'))
       cy.adminDisconnection()
 
@@ -506,8 +510,7 @@ describe('Connected candidate front', () => {
       cy.contains('Annuler ma réservation').click()
       // Vérifie si le message d'avertissement pour le cas de pénalité est présent
       cy.get('.t-confirm-suppr-text-content')
-        .should('contain', `De plus, étant à moins de ${numberOfDaysBeforeDate} jours de la date d`)
-        .and('contain', `un délai de repassage de ${numberOfDaysPenalty} jours`)
+        .should('contain', `Un délai de présentation de ${numberOfDaysPenalty} jours`)
 
       cy.get('button')
         .should('contain', 'Confirmer')

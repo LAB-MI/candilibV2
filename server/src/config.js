@@ -3,6 +3,7 @@
  * @module config
  */
 import moment from 'moment'
+import { ObjectLastNoReussitValues } from './models/candidat/objetDernierNonReussite.values'
 
 /**
  *
@@ -121,6 +122,17 @@ const getTokenExpiration = () => {
   return duration + 's'
 }
 
+const timeoutToRetryBy = {
+  [ObjectLastNoReussitValues.ABSENT]:
+      process.env.TIMEOUT_TO_RETRY_ABSENT !== undefined
+        ? Number(process.env.TIMEOUT_TO_RETRY_ABSENT)
+        : 60,
+  default:
+    process.env.TIMEOUT_TO_RETRY !== undefined
+      ? Number(process.env.TIMEOUT_TO_RETRY)
+      : 45,
+}
+
 const config = {
   secret: process.env.SECRET || 'secret',
   // TODO: Unused process.env.CANDIDAT_EXPIREDIN
@@ -173,10 +185,7 @@ const config = {
     process.env.DELAY_TO_BOOK !== undefined
       ? Number(process.env.DELAY_TO_BOOK)
       : 7,
-  timeoutToRetry:
-    process.env.TIMEOUT_TO_RETRY !== undefined
-      ? Number(process.env.TIMEOUT_TO_RETRY)
-      : 45,
+  timeoutToRetry: timeoutToRetryBy.default,
   daysForbidCancel:
     process.env.DAYS_FORBID_CANCEL !== undefined
       ? Number(process.env.DAYS_FORBID_CANCEL)
@@ -185,6 +194,7 @@ const config = {
     process.env.NUMBER_VISIBLE_MONTHS !== undefined
       ? Number(process.env.NUMBER_VISIBLE_MONTHS)
       : 3,
+  timeoutToRetryBy,
 }
 
 /**

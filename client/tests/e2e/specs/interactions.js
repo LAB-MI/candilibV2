@@ -203,7 +203,8 @@ describe('Standard scenarios', () => {
     })
 
     it('The admin disables a time slot', () => {
-    // Will only work if the places in db were cleared first.
+      cy.updateCandidat({ email: Cypress.env('emailCandidatInteractive') }, { canBookFrom: now.minus({ days: 2 }).toUTC() })
+      // Will only work if the places in db were cleared first.
       cy.visit(magicLink)
       // The 8:00 slot should be there
       cy.toGoSelectPlaces()

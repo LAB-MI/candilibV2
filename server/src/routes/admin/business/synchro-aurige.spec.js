@@ -57,8 +57,9 @@ import {
   createCandidatToTestAurige,
   dateReussiteETG,
   dateReussiteETGKO,
-  candidatWithEtgExpiredAndFailedToArchive,
+  candidatWithEtgExpiredAndAbsentToArchive,
   DateTimeReussiteETGKO,
+  candidatAbsent,
 } from './__tests__/candidats-aurige'
 import {
   createTestPlaceAurige,
@@ -81,36 +82,43 @@ import { AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED } from '../../common/const
 jest.mock('../../../util/logger')
 require('../../../util/logger').setWithConsole(false)
 
-jest.mock('../../../config', () => ({
-  smtpMaxConnections: 1,
-  smtpRateDelta: 1000,
-  smtpRateLimit: undefined,
-  smtpMaxAttemptsToSend: 5,
-  smtpOptions: {
-    host: 'localhost',
-    port: 10025,
-    secure: false,
-    tls: {
+jest.mock('../../../config', () => {
+  const timeOutToAbs = require('../../../models/candidat/objetDernierNonReussite.values').ObjectLastNoReussitValues.ABSENT
+  return {
+    smtpMaxConnections: 1,
+    smtpRateDelta: 1000,
+    smtpRateLimit: undefined,
+    smtpMaxAttemptsToSend: 5,
+    smtpOptions: {
+      host: 'localhost',
+      port: 10025,
+      secure: false,
+      tls: {
       // do not failed with selfsign certificates
-      rejectUnauthorized: false,
+        rejectUnauthorized: false,
+      },
+      auth: {
+        user: 'test',
+        pass: 'test',
+      },
     },
-    auth: {
-      user: 'test',
-      pass: 'test',
+    dbOptions: {},
+    delayToBook: 7,
+    timeoutToRetry: 7,
+    timeoutToRetryBy: {
+      [timeOutToAbs]: 10,
+      default: 7,
     },
-  },
-  dbOptions: {},
-  delayToBook: 7,
-  timeoutToRetry: 7,
-  userStatuses: {
-    CANDIDAT: 'candidat',
-  },
-  userStatusLevels: {
-    candidat: 0,
-  },
-  secret: 'TEST',
-  LINE_DELAY: 1,
-}))
+    userStatuses: {
+      CANDIDAT: 'candidat',
+    },
+    userStatusLevels: {
+      candidat: 0,
+    },
+    secret: 'TEST',
+    LINE_DELAY: 1,
+  }
+})
 
 const bookedAt = getFrenchLuxon().toJSDate()
 const readFileAsPromise = util.promisify(fs.readFile)
@@ -191,11 +199,12 @@ async function synchroAurigeSuccess (
   const candidat = await findCandidatById(candidatCreated._id)
   if (candidatInfo.dateDernierNonReussite) {
     const { canBookFrom } = candidat
+    const timeOutToRetry = config.timeoutToRetryBy[candidatInfo.objetDernierNonReussite] || config.timeoutToRetryBy.default
     const dateTimeCanBookFrom = getFrenchLuxonFromISO(
       candidatInfo.dateDernierNonReussite,
     )
       .endOf('day')
-      .plus({ days: config.timeoutToRetry })
+      .plus({ days: timeOutToRetry })
 
     expect(canBookFrom).toBeDefined()
     expect(canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
@@ -252,7 +261,7 @@ const synchroAurigeToPassExam = async (
   return candidatArchived
 }
 
-const forNowEndExpired = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 })
+const forNowEndExpired = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 }).startOf('day')
 
 describe('synchro-aurige', () => {
   let server
@@ -332,14 +341,16 @@ describe('synchro-aurige', () => {
   })
 
   it('Should return expired with expired ETG at 01/01/2021 because it is not in range 12/03/2020 and 31/12/2020', () => {
+    const expetedExpiredDate = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 })
     const almostFiveYearsAgo = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 }).toJSDate()
     // new Date('January 01, 2021')
     almostFiveYearsAgo.setFullYear(almostFiveYearsAgo.getFullYear() - 5)
     const isExpired = isETGExpired(almostFiveYearsAgo)
-    if (getFrenchLuxon() < forNowEndExpired) {
+    const now = getFrenchLuxon()
+    if (now < forNowEndExpired) {
       expect(isExpired).toBe(false)
     } else {
-      expect(isExpired).toBe(true)
+      expect(isExpired).toBe(now > expetedExpiredDate)
     }
   })
 
@@ -550,18 +561,18 @@ describe('synchro-aurige', () => {
       await Promise.all(places.map(deletePlace))
     })
 
-    function expectNoReussites (nbEchecsPratiques, noReussites) {
+    function expectNoReussites (nbEchecsPratiques, noReussites, expectedCandidat = candidatFailureExam) {
       expect(nbEchecsPratiques).toBe(
-        Number(candidatFailureExam.nbEchecsPratiques),
+        Number(expectedCandidat.nbEchecsPratiques),
       )
       expect(noReussites).toHaveLength(1)
       expect(noReussites[0]).toHaveProperty(
         'reason',
-        candidatFailureExam.objetDernierNonReussite,
+        expectedCandidat.objetDernierNonReussite,
       )
       expect(noReussites[0].date).toEqual(
         getFrenchLuxonFromISO(
-          candidatFailureExam.dateDernierNonReussite,
+          expectedCandidat.dateDernierNonReussite,
         ).toJSDate(),
       )
     }
@@ -571,6 +582,19 @@ describe('synchro-aurige', () => {
       const { noReussites, nbEchecsPratiques } = candidat
       expectDataCandidat(candidat, candidatFailureExam)
       expectNoReussites(nbEchecsPratiques, noReussites)
+    })
+
+    it('should have penalty when candidat absent in exam', async () => {
+      const candidatAbsentCreated = await createCandidatToTestAurige(
+        candidatAbsent,
+        true,
+      )
+      const aurigeFileAbsent = toAurigeJsonBuffer(candidatAbsent)
+
+      const candidat = await synchroAurigeSuccess(aurigeFileAbsent, candidatAbsentCreated, candidatAbsent)
+      const { noReussites, nbEchecsPratiques } = candidat
+      expectDataCandidat(candidat, candidatAbsent)
+      expectNoReussites(nbEchecsPratiques, noReussites, candidatAbsent)
     })
 
     it('should have penalty when candidat failed in exam and date ETG changed', async () => {
@@ -1139,10 +1163,10 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const placeSelected = await createTestPlaceAurige(placeAtETG)
 
     const aurigeFile = toAurigeJsonBuffer(
-      candidatWithEtgExpiredAndFailedToArchive,
+      candidatWithEtgExpiredAndAbsentToArchive,
     )
     const candidatCreated = await createCandidatToTestAurige(
-      candidatWithEtgExpiredAndFailedToArchive,
+      candidatWithEtgExpiredAndAbsentToArchive,
       true,
     )
 
@@ -1151,7 +1175,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
     const candidat = await synchroAurigeSuccess(
       aurigeFile,
       candidatCreated,
-      candidatWithEtgExpiredAndFailedToArchive,
+      candidatWithEtgExpiredAndAbsentToArchive,
     )
 
     expect(candidat).toBeDefined()

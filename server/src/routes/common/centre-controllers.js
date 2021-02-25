@@ -36,6 +36,7 @@ export async function getCentres (req, res) {
   const candidatStatus = req.userStatus
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'candidat-get-centres',
     action: 'GET CANDIDAT CENTRES',
     departement,
@@ -52,6 +53,7 @@ export async function getCentres (req, res) {
   try {
     if (!departement && (!centreId || !nom)) {
       const error = {
+        request_id: req.request_id,
         section: 'candidat-get-centres',
         message: NOT_CODE_DEP_MSG,
       }
@@ -134,6 +136,7 @@ export async function getAdminCentres (req, res) {
   const { departements } = req
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-get-centres',
     action: 'GET ADMIN CENTRES',
     admin: req.userId,
@@ -187,6 +190,7 @@ export async function modifyCentre (req, res) {
   } = req.body
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-modify-centre',
     action: 'MODIFY ADMIN CENTRES',
     admin: userId,
@@ -279,6 +283,7 @@ export async function createCentre (req, res) {
   } = req.body
 
   const loggerContent = {
+    request_id: req.request_id,
     section: 'admin-add-new-centre',
     action: 'ADD A NEW CENTRE',
     admin: userId,
@@ -356,6 +361,7 @@ export async function getCentresByDepartement (req, res) {
   const { departementId, uniq } = req.query
   const loggerContent = {
     description: 'Getting candidat centers associated to a departement',
+    request_id: req.request_id,
     section: 'candidat-deptCenters',
     departementId,
     uniq,

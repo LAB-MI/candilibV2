@@ -50,6 +50,7 @@ import config from '../../config'
 export const createDepartementsController = async (req, res) => {
   const { departementId, departementEmail } = req.body
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-departement',
     action: 'create-departement',
     admin: req.userId,
@@ -160,6 +161,7 @@ export const createDepartementsController = async (req, res) => {
 export const getDepartementsController = async (req, res) => {
   const departementId = req.params.id
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-departement',
     action: 'get-departements',
     admin: req.userId,
@@ -222,6 +224,7 @@ export const getDepartementsController = async (req, res) => {
 export const deleteDepartementController = async (req, res) => {
   const departementId = req.params.id
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-departement',
     action: 'delete-departement',
     admin: req.userId,
@@ -306,6 +309,7 @@ export const updateDepartementsController = async (req, res) => {
   const { newEmail } = req.body
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'admin-departement',
     action: 'update-departement',
     admin: req.userId,

@@ -44,7 +44,8 @@ import {
 } from '../../models/candidat'
 import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
-import { getDateVisibleForPlaces, getDateDisplayPlaces, getDateVisibleBefore } from './util/date-to-display'
+import { getDateVisibleForPlaces, getDateDisplayPlaces, getDateVisibleBefore, getVisibilityHourString } from './util/date-to-display'
+import { getCandidatStatuses } from '../common/candidat-status'
 
 /**
  * Renvoie tous les créneaux d'un centre
@@ -502,6 +503,7 @@ export const isSameReservationPlace = (nomCentre, date, previewBookedPlace) => {
 }
 
 /**
+ * @deprecated v2.10.0 ajouter un pénalté dés à l'annulation
  * Détermine si un candidat peut annuler sa réservation
  *
  * @function
@@ -509,6 +511,7 @@ export const isSameReservationPlace = (nomCentre, date, previewBookedPlace) => {
  * @param {DateTime} previewDateReservation Type DateTime luxon
  *
  * @returns {boolean} Est à `true` si le candidat peut supprimer cette réservation `false` sinon
+ *
  */
 export const canCancelReservation = previewDateReservation => {
   const dateCancelAuthorize = getLastDateToCancel(previewDateReservation)
@@ -532,13 +535,10 @@ export const canCancelReservation = previewDateReservation => {
 export const applyCancelRules = async (candidat, previewDateReservation) => {
   const previewBookedPlace = getFrenchLuxonFromJSDate(previewDateReservation)
 
-  if (canCancelReservation(previewBookedPlace)) {
-    return
-  }
-
   const canBookFromDate = getCandBookFrom(candidat, previewBookedPlace)
 
-  await updateCandidatCanBookFrom(candidat, canBookFromDate)
+  const candidatStatus = (canBookFromDate.diffNow('seconds') > 0) && `${getCandidatStatuses().nbStatus - 1}`
+  await updateCandidatCanBookFrom(candidat, canBookFromDate, candidatStatus)
 
   return canBookFromDate
 }
@@ -553,7 +553,7 @@ export const applyCancelRules = async (candidat, previewDateReservation) => {
  *
  * @returns {DateTime} La date à partir de laquelle le candidat peut prendre un place
  */
-export const getCandBookFrom = (candidat, datePassage) => {
+export const getCandBookFrom = (candidat, datePassage, reason = 'default') => {
   if (!datePassage) {
     throw new Error('Il manque la date de passage')
   }
@@ -563,8 +563,9 @@ export const getCandBookFrom = (candidat, datePassage) => {
   }
 
   const daysOfDatePassage = datePassage.endOf('days')
+  const timeoutToRetry = config.timeoutToRetryBy[reason] === undefined ? config.timeoutToRetryBy.default : config.timeoutToRetryBy[reason]
   const newCanBookFrom = daysOfDatePassage.plus({
-    days: config.timeoutToRetry,
+    days: timeoutToRetry,
   })
 
   const { canBookFrom } = candidat
@@ -618,6 +619,7 @@ export const getBeginDateAuthorize = candidat => {
 }
 
 /**
+ * @deprecated v2.10.0 ajouter un pénalté dés à l'annulation
  * Renvoie la date à partir de laquelle le candidat encourrera une pénalité s'il modifie ou annule sa place
  *
  * @function
@@ -655,8 +657,9 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
   const candidat = await findCandidatById(candidatId, {
     canBookFrom: 1,
     dateDernierEchecPratique: 1,
+    status: 1,
   })
-  const { canBookFrom, dateDernierEchecPratique } = candidat
+  const { canBookFrom, dateDernierEchecPratique, status } = candidat
 
   return {
     ...reservation,
@@ -664,6 +667,7 @@ export const addInfoDateToRulesResa = async (candidatId, reservation) => {
     canBookFrom,
     timeOutToRetry,
     dayToForbidCancel,
+    visibilityHour: getVisibilityHourString(status),
   }
 }
 
