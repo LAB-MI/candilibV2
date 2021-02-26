@@ -12,7 +12,7 @@
       </span>
     </page-title>
     <message-info-places />
-
+    <warning-etg />
     <v-alert
       class="t-warning-message"
       :value="!!warningMessage"
@@ -103,12 +103,14 @@ import {
 } from '@/util/frenchDateTime.js'
 import MessageInfoPlaces from '../MessageInfoPlaces'
 import { BigLoadingIndicator } from '@/components'
+import WarningEtg from './WarningEtg'
 
 export default {
   components: {
     BigLoadingIndicator,
     MessageInfoPlaces,
     TimesSlotsSelector,
+    WarningEtg,
   },
 
   props: {

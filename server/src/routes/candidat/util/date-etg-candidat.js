@@ -4,12 +4,12 @@ import {
   getFrenchLuxon,
   getFrenchLuxonFromISO,
   getFrenchLuxonFromJSDate,
+  NB_YEARS_ETG_EXPIRED,
 } from '../../../util'
 
 import { CANDIDAT_DATE_ETG_KO } from '../message.constants'
 import { getAuthorizedDateToBook } from '../authorize.business'
 import { findCandidatById } from '../../../models/candidat'
-import { NB_YEARS_ETG_EXPIRED } from '../../common/constants'
 import { isETGExpired } from '../../admin/business'
 
 export const getDateETGExpired = async candidatId => {

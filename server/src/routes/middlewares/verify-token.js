@@ -54,6 +54,7 @@ export async function verifyToken (req, res, next) {
       nomNaissance,
       portable,
       prenom,
+      dateETG,
     } = token
 
     req.userId = id
@@ -62,7 +63,6 @@ export async function verifyToken (req, res, next) {
     req.candidatStatus = candidatStatus
     req.candidatDepartement = departement
     req.candidatHomeDepartement = homeDepartement
-
     req.adresse = adresse
     req.codeNeph = codeNeph
     req.email = email
@@ -70,6 +70,7 @@ export async function verifyToken (req, res, next) {
     req.nomNaissance = nomNaissance
     req.portable = portable
     req.prenom = prenom
+    req.dateETG = dateETG
 
     const isCandidat =
       !level || level === config.userStatusLevels[config.userStatuses.CANDIDAT]
