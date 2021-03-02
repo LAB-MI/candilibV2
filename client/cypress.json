@@ -25,6 +25,7 @@
     "candidateFront.js",
     "delayAfterFailure.js",
     "interactions.js",
-    "placesAfter12h.js"
+    "placesAfter12h.js",
+    "candidatEtg.js"
   ]
 }

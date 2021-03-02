@@ -12,7 +12,7 @@
       </span>
     </page-title>
     <message-info-places />
-
+    <warning-etg />
     <v-alert
       class="t-warning-message"
       :value="!!warningMessage"
@@ -103,12 +103,21 @@ import {
 } from '@/util/frenchDateTime.js'
 import MessageInfoPlaces from '../MessageInfoPlaces'
 import { BigLoadingIndicator } from '@/components'
+import WarningEtg from './WarningEtg'
 
 export default {
   components: {
     BigLoadingIndicator,
     MessageInfoPlaces,
     TimesSlotsSelector,
+    WarningEtg,
+  },
+
+  props: {
+    isNeedUpdateResa: {
+      type: Boolean,
+      default: false,
+    },
   },
 
   data () {
@@ -211,7 +220,9 @@ export default {
   },
 
   async mounted () {
-    await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
+    if (this.isNeedUpdateResa) {
+      await this.$store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
+    }
     await this.getTimeSlots()
     this.switchTab = this.$route.params.month ? `tab-${this.$route.params.month}` : `tab-${this.timeSlots.list[0].month}`
     if (this.timeSlots.list.length && !this.$route.params.month) {

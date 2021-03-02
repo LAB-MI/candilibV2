@@ -108,10 +108,16 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
             `Chaque jour, les places d’examen vont apparaitre graduellement des plus anciennes aux plus
             récentes inscriptions toutes les 10 minutes, à partir de midi et ce jusqu’à midi cinquante.`,
             'Pour savoir à quelle heure les places apparaissent pour vous : consultez la page "Mon profil". Vous retrouvez également cette information sur la page dédiée au planning de réservation de places.',
-            `Attention: Les candidats qui sont dans la période des 45 jours de délai d’attente, à la suite d’un
-            échec, d’une annulation tardive ou d’une absence, sont classés durant ces 45 jours au même niveau
-            que les inscriptions les plus récentes. Au terme de ces 45 jours, ces candidats sont réintégrés selon
-            leur ancienneté d’inscription.`,
+
+          ],
+        },
+        {
+          subTitleContent: 'Attention :',
+        },
+        {
+          list: [
+            'les candidats qui sont dans la période des 45 jours de délai d’attente, à la suite d’un échec, d’une annulation ou d’un refus sont classés durant ces 45 jours au même niveau que les inscriptions les plus récentes. Au terme de ces 45 jours, ces candidats sont réintégrés selon leur ancienneté d’inscription.',
+            'les candidats qui sont dans la période des 60 jours de délai d’attente, à la suite d’une absence, sont classés durant ces 60 jours au même niveau que les inscriptions les plus récentes. Au terme de ces 60 jours, ces candidats sont réintégrés selon leur ancienneté d’inscription.',
           ],
         },
       ],

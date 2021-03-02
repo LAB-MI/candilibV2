@@ -39,3 +39,4 @@ export const AUTHORIZED_HOURS = [
   '15:00',
   '15:30',
 ]
+export const NB_YEARS_ETG_EXPIRED = 5

@@ -8,6 +8,7 @@ import {
   checkCandidatToken,
   checkAccess,
   checkCandidatTokenToRedirect,
+  requireNoBooking,
 } from './router-checks'
 import {
   ROUTE_AUTHORIZE_AURIGE,
@@ -211,16 +212,19 @@ const candidatRoutes = [
       {
         path: ':departement/:center/:month/:day/:modifying/selection-place',
         name: 'time-slot',
+        beforeEnter: requireNoBooking,
         component: TimeSlot,
       },
       {
         path: ':departement/:center/:month/:day/:modifying/selection-place',
         name: 'time-slot-day',
+        beforeEnter: requireNoBooking,
         component: TimeSlot,
       },
       {
         path: ':departement/:center/:month/:day/:slot/:modifying/selection-confirmation',
         name: 'selection-summary',
+        beforeEnter: requireNoBooking,
         component: SelectionSummary,
         meta: {
           isConfirmation: true,

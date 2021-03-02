@@ -16,6 +16,7 @@ import {
   removeReservationPlace,
   validCentreDateReservation,
   canModifyReservation,
+  hasBooking,
 } from './places-business'
 
 import { sendMailConvocation } from '../business'
@@ -26,6 +27,7 @@ import {
   FAILED_SEND_MAIL_ASKED,
   SEND_MAIL_ASKED_RESA_EMPTY,
   USER_INFO_MISSING,
+  CANDIDAT_MUST_CANCEL_BOOKING,
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
 
@@ -96,6 +98,20 @@ export async function getPlacesByCentre (req, res) {
     end,
     dateTime,
     candidatId,
+  }
+
+  const hadBooking = await hasBooking(candidatId)
+  if (hadBooking) {
+    const message = CANDIDAT_MUST_CANCEL_BOOKING
+    appLogger.warn({
+      ...loggerInfo,
+      description: message,
+    })
+    res.status(400).json({
+      success: false,
+      message: message,
+    })
+    return
   }
 
   if (end && dateTime) {

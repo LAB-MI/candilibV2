@@ -22,6 +22,7 @@
 <script>
 import ProfileInfo from './ProfileInfo'
 import { FETCH_MY_PROFILE_REQUEST } from '@/store'
+import { getFrenchDateFromLuxon, getFrenchLuxonFromIso } from '@/util'
 
 const labelDictionary = {
   email: 'Courriel',
@@ -31,6 +32,10 @@ const labelDictionary = {
   portable: 'Portable',
   prenom: 'Prénom',
   visibilityHour: 'Heure de visibilité des places d’examen :',
+  dateETG: "Date de fin de validité de l'ETG",
+}
+const convertDictionary = {
+  dateETG: (value) => value && getFrenchDateFromLuxon(getFrenchLuxonFromIso(value)),
 }
 
 export default {
@@ -49,7 +54,7 @@ export default {
         .filter(el => el[0] in labelDictionary)
         .map(([key, value]) => ({
           label: labelDictionary[key],
-          value,
+          value: (key in convertDictionary) ? convertDictionary[key](value) : value,
         }))
     },
   },

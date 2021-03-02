@@ -23,9 +23,9 @@ import {
   getFrenchLuxon,
   getFrenchFormattedDateTime,
   getFrenchLuxonFromObject,
+  NB_YEARS_ETG_EXPIRED,
 } from '../../util'
 
-import { NB_YEARS_ETG_EXPIRED } from '../common/constants'
 import { CANDIDAT_DATE_ETG_KO } from './message.constants'
 
 jest.mock('../../models/candidat')
