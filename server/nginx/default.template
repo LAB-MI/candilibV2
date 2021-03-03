@@ -1,0 +1,23 @@
+server {
+  listen 80 default_server;
+  set_real_ip_from 0.0.0.0/0;
+  real_ip_header X-Real-IP;
+  real_ip_recursive on;
+
+  location / {
+    limit_req zone=api_user_id burst=<API_USER_ID_BURST>;
+    limit_req zone=api_get burst=<API_USER_GET_BURST>;
+    limit_req zone=api_post burst=<API_USER_POST_BURST>;
+    limit_req zone=api_patch burst=<API_USER_PATCH_BURST>;
+    limit_req zone=api_put burst=<API_USER_PUT_BURST>;
+    limit_req zone=api_head burst=<API_USER_HEAD_BURST>;
+    limit_req zone=api_delete burst=<API_USER_DELETE_BURST>;
+    limit_req zone=api_options burst=<API_USER_OPTIONS_BURST>;
+    limit_req_status 429;
+    add_header Access-Control-Allow-Origin '$http_origin';
+    proxy_pass http://<API_HOST>:8000;
+    proxy_redirect off;
+    proxy_buffering off;
+    proxy_http_version 1.1;
+  }
+}
