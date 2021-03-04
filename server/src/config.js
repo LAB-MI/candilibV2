@@ -2,8 +2,9 @@
  * Module de configuration de l'application
  * @module config
  */
-import moment from 'moment'
+// import moment from 'moment'
 import { ObjectLastNoReussitValues } from './models/candidat/objetDernierNonReussite.values'
+import { getNumberSecondRemainingInTheDay } from './util'
 
 /**
  *
@@ -97,31 +98,6 @@ const userStatusAccess = {
   [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI, features.UNARCHIVE_CANDIDAT],
 }
 
-/**
- * Calcule la date d'expiration du token en ajoutant un jour à la date courante
- *
- * @function getTokenExpiration
- * @returns {string} Example : '36000s'
- */
-
-const getTokenExpiration = () => {
-  const now = moment()
-  const midnight = now
-    .clone()
-    .hour(23)
-    .minute(59)
-    .second(59)
-    .millisecond(0)
-
-  if (midnight.isBefore(now)) {
-    midnight.add(1, 'days')
-  }
-
-  const duration = midnight.diff(now) / 1000
-
-  return duration + 's'
-}
-
 const timeoutToRetryBy = {
   [ObjectLastNoReussitValues.ABSENT]:
       process.env.TIMEOUT_TO_RETRY_ABSENT !== undefined
@@ -137,16 +113,16 @@ const config = {
   secret: process.env.SECRET || 'secret',
   // TODO: Unused process.env.CANDIDAT_EXPIREDIN
   get candidatTokenExpiration () {
-    return getTokenExpiration()
+    return getNumberSecondRemainingInTheDay()
   },
   get repartiteurTokenExpiration () {
-    return getTokenExpiration()
+    return getNumberSecondRemainingInTheDay()
   },
   get delegueTokenExpiration () {
-    return getTokenExpiration()
+    return getNumberSecondRemainingInTheDay()
   },
   get adminTokenExpiration () {
-    return getTokenExpiration()
+    return getNumberSecondRemainingInTheDay()
   },
   get techTokenExpiration () {
     return process.env.TECH_EXPIREDIN || '1h'

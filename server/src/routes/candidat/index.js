@@ -15,12 +15,28 @@ import {
 } from './places-controllers'
 import { verifyAccesPlacesByCandidat } from './middlewares/verify-candidat'
 import { setAccumulatorRequest } from '../middlewares'
+import { initImage, initCaptcha } from './captcha-controllers'
+import { trySubmissionCaptcha } from './middlewares/captcha-try-submission'
+
+// import session from 'express-session'
+// import connectMongo from 'connect-mongo'
 
 const router = express.Router()
 
 if (process.env.NODE_ENV !== 'test') {
   router.use(setAccumulatorRequest)
 }
+
+const routeNameCaptcha = '/captcha'
+
+// Routes definition
+router.get(`${routeNameCaptcha}/start`, initCaptcha)
+
+// router.post(`${routeNameCaptcha}/try`, trySubmission)
+
+// router.get(`${routeNameCaptcha}/audio/:type`, getAudio)
+
+router.get(`${routeNameCaptcha}/image/:index?`, initImage)
 
 /**
  * @swagger
@@ -421,7 +437,7 @@ router.get('/places/:id?', verifyAccesPlacesByCandidat, getPlaces)
  * @name Router PATCH '/candidat/places'
  * @see {@link http://localhost:8000/api-docs/#/Candidat/patch_candidat_places| swagger PATCH /candidat/places}
  */
-router.patch('/places', verifyAccesPlacesByCandidat, bookPlaceByCandidat)
+router.patch('/places', trySubmissionCaptcha, verifyAccesPlacesByCandidat, bookPlaceByCandidat)
 
 /**
  *  @swagger
