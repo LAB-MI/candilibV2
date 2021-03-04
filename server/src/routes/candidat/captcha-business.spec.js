@@ -35,11 +35,11 @@ describe('Captcha Business', () => {
 
   it('should save an session candidat', async () => {
     // Given
-    const sessionFake = {
-      userId: candidat1._id,
-      session: JSON.stringify({ key: 'value' }),
-      expires: new Date(),
-    }
+    // const sessionFake = {
+    //   userId: candidat1._id,
+    //   session: JSON.stringify({ key: 'value' }),
+    //   expires: new Date(),
+    // }
 
     const dateExpires = getFrenchLuxon()
     const dateExpiresPlus2Min = dateExpires.plus({ minutes: 2 })
