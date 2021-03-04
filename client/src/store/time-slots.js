@@ -116,9 +116,12 @@ export default {
       }
     },
 
-    async [CONFIRM_SELECT_DAY_REQUEST] ({ commit, dispatch }, selected) {
+    async [CONFIRM_SELECT_DAY_REQUEST] ({ rootState, commit, dispatch }, selected) {
       commit(CONFIRM_SELECT_DAY_REQUEST)
+
       const { slot, centre, isAccompanied, hasDualControlCar, isModification } = selected
+      const { selectedResponse } = rootState.candidatCaptcha.generatedCaptcha
+
       const result = await api.candidat.setReservations(
         centre.nom,
         centre.geoDepartement,
@@ -126,7 +129,9 @@ export default {
         isAccompanied,
         hasDualControlCar,
         isModification,
+        selectedResponse,
       )
+
       if (result && result.success) {
         commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
         dispatch(SHOW_SUCCESS, 'Votre réservation a bien été prise en compte')

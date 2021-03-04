@@ -148,7 +148,7 @@ const apiCandidat = {
     return json
   },
 
-  async setReservations (nomCentre, geoDepartement, date, isAccompanied, hasDualControlCar, isModification) {
+  async setReservations (nomCentre, geoDepartement, date, isAccompanied, hasDualControlCar, isModification, captchaResponse) {
     const json = await apiClient.patch(`${apiPaths.candidat.places}`, {
       body: JSON.stringify({
         nomCentre,
@@ -157,6 +157,7 @@ const apiCandidat = {
         isAccompanied,
         hasDualControlCar,
         isModification,
+        ...captchaResponse,
       }),
       headers: getHeadersForJson(),
     })
@@ -214,6 +215,28 @@ const apiCandidat = {
       body: JSON.stringify({
         candidat, subject, message, hadSignUp,
       }),
+    })
+    return json
+  },
+
+  async getImage (index) {
+    const json = await apiClient.getRaw(`${apiPaths.candidat.captcha}/image/${index}`, {
+      headers: getHeadersForJson(),
+    })
+    return json
+  },
+
+  async startRoute () {
+    const json = await apiClient.get(`${apiPaths.candidat.captcha}/start`, {
+      headers: getHeadersForJson(),
+    })
+    return json
+  },
+
+  async trySubmission (imageField) {
+    const json = await apiClient.post(`${apiPaths.candidat.captcha}/try`, {
+      headers: getHeadersForJson(),
+      body: JSON.stringify(imageField),
     })
     return json
   },
