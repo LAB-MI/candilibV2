@@ -7,95 +7,113 @@ import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../../util'
 // We need to make sure we generate new options after trying to validate, to avoid abuse
 export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
+  try {
+    const currentSession = await getSessionByCandidatId(userId)
 
-  const currentSession = await getSessionByCandidatId(userId)
-  const {
-    expires,
-    captchaExpireAt,
-    count,
-    canRetryAt,
-  } = currentSession
+    if (!currentSession) {
+      const statusCode = 403
+      return res.status(statusCode).json({
+        success: false,
+        statusCode,
+        message: 'Captcha Expiré',
+      })
+    }
 
-  if (!currentSession || (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon())) {
-    await updateSession({
-      userId,
-      session: {},
+    const {
       expires,
       captchaExpireAt,
       count,
-    })
+      canRetryAt,
+    } = currentSession
 
-    const statusCode = 403
-    return res.status(statusCode).json({
-      success: false,
-      statusCode,
-      message: 'Captcha Expiré',
-    })
-  }
-  const namespace = userId
+    if (!currentSession || (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon())) {
+      await updateSession({
+        userId,
+        session: {},
+        expires,
+        captchaExpireAt,
+        count,
+      })
 
-  const queryParams = []
-  let responseStatus
+      const statusCode = 403
+      return res.status(statusCode).json({
+        success: false,
+        statusCode,
+        message: 'Captcha Expiré',
+      })
+    }
 
-  // let session = {} // getSessionByUserId()
-  // Initialize visualCaptcha
-  const visualCaptcha = require('visualcaptcha')(currentSession.session, namespace)
-  const frontendData = visualCaptcha.getFrontendData()
+    const namespace = userId
 
-  // Add namespace to query params, if present
-  if (namespace && namespace.length !== 0) {
-    queryParams.push('namespace=' + namespace)
-  }
+    const queryParams = []
+    let responseStatus
 
-  if (typeof frontendData === 'undefined') {
-    queryParams.push('status=noCaptcha')
+    // let session = {} // getSessionByUserId()
+    // Initialize visualCaptcha
+    const visualCaptcha = require('visualcaptcha')(currentSession.session, namespace)
+    const frontendData = visualCaptcha.getFrontendData()
 
-    responseStatus = 404
-    const responseObject = 'Not Found'
-    console.log('Log in trySubmission::', { responseObject })
-  } else {
+    // Add namespace to query params, if present
+    if (namespace && namespace.length !== 0) {
+      queryParams.push('namespace=' + namespace)
+    }
+
+    if (typeof frontendData === 'undefined') {
+      queryParams.push('status=noCaptcha')
+
+      responseStatus = 404
+      const responseObject = 'Not Found'
+      console.log('Log in trySubmission::', { responseObject })
+    } else {
     // If an image field name was submitted, try to validate it
-    const imageAnswer = req.body[frontendData.imageFieldName]
+      const imageAnswer = req.body[frontendData.imageFieldName]
 
-    if (imageAnswer) {
-      if (visualCaptcha.validateImage(imageAnswer)) {
-        queryParams.push('status=validImage')
+      if (imageAnswer) {
+        if (visualCaptcha.validateImage(imageAnswer)) {
+          queryParams.push('status=validImage')
 
-        responseStatus = 200
+          responseStatus = 200
+        } else {
+          queryParams.push('status=failedImage')
+
+          responseStatus = 403
+        }
       } else {
-        queryParams.push('status=failedImage')
+        queryParams.push('status=failedPost')
 
         responseStatus = 403
       }
-    } else {
-      queryParams.push('status=failedPost')
-
-      responseStatus = 403
     }
-  }
 
-  if (responseStatus !== 200) {
+    if (responseStatus !== 200) {
+      await updateSession({
+        userId,
+        session: {},
+        expires,
+        captchaExpireAt,
+        count,
+      })
+      return res.status(responseStatus).json({
+        success: false,
+        status: responseStatus,
+        message: 'Réponse invalide',
+      })
+    }
+
     await updateSession({
       userId,
       session: {},
+      captchaExpireAt: getFrenchLuxon().toISO(),
+      canRetryAt,
       expires,
-      captchaExpireAt,
       count,
     })
-    return res.status(responseStatus).json({
+
+    next()
+  } catch (error) {
+    return res.status(500).json({
       success: false,
-      status: responseStatus,
-      message: 'Réponse invalide',
+      message: 'Oups ! Une erreur est survenue.',
     })
   }
-
-  await updateSession({
-    userId,
-    session: {},
-    captchaExpireAt: getFrenchLuxon().toISO(),
-    canRetryAt,
-    expires,
-    count,
-  })
-  next()
 }
