@@ -47,7 +47,11 @@ const parseFromObj = (obj) => {
 
 const parseBody = (req, res, next) => {
   try {
-    req.newBody = parseFromObj(req.body)
+    if(Array.isArray(req.body)){
+      req.newBody = req.body.map( el => parseFromObj(el) )
+    }else{
+      req.newBody = parseFromObj(req.body)
+    }
     next()
   } catch (err) {
     console.error({ err })
@@ -123,7 +127,15 @@ app.post('/:collection', parseBody, async (req, res) => {
   let dbo
   try {
     dbo = await connectDb()
-    const obj = await dbo.collection(collection).insertOne(req.newBody)
+    let obj
+    if(!Array.isArray(req.newBody)){
+      obj = await dbo.collection(collection).insertOne(req.newBody)
+    } else {
+      if(!req.newBody.length) {
+        res.send({ success: false})
+      }
+      obj = await dbo.collection(collection).insertMany(req.newBody)
+    }
     res.send({ success: true, result: obj.result, _id: obj.ops.length > 0 ? obj.ops[0]._id : undefined })
   } catch (err) {
     console.error({ collection, body: req.body, err })
