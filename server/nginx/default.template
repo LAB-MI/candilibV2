@@ -5,6 +5,17 @@ server {
   real_ip_recursive on;
 
   location / {
+
+    location /api/v2/candidat/captcha {
+      limit_req zone=api_captcha burst=5 delay=2;
+      limit_req_status 429;
+      add_header Access-Control-Allow-Origin '$http_origin';
+      proxy_pass http://<API_HOST>:8000;
+      proxy_redirect off;
+      proxy_buffering off;
+      proxy_http_version 1.1;
+    }
+
     limit_req zone=api_user_id burst=<API_USER_ID_BURST>;
     limit_req zone=api_get burst=<API_USER_GET_BURST>;
     limit_req zone=api_post burst=<API_USER_POST_BURST>;
