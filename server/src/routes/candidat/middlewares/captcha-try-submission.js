@@ -9,7 +9,12 @@ export const trySubmissionCaptcha = async (req, res, next) => {
     const currentSession = await getSessionByCandidatId(userId)
 
     // TODO: Create a function for next condition
-    if (!currentSession || Object.keys(currentSession.session).length || currentSession.count > tryLimit) {
+    if (
+      !currentSession ||
+      !Object.keys(currentSession.session).length ||
+      currentSession.count > tryLimit ||
+      (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon())
+    ) {
       const statusCode = 403
       // TODO: ADD APPLOGGER
 
