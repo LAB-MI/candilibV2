@@ -1,22 +1,38 @@
 import { getSessionByCandidatId, createSession, updateSession } from '../../models/session-candidat'
-import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../util'
+import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../util'
 import captchaTools from 'visualcaptcha'
+import { imagesSetting } from './util'
 
 // TODO: mettre dans config.js
 const tryLimit = 3
-export const getImage = async (req, res, next) => {
+export const getImage = async (req, res, appLogger) => {
+  // TODO: Authorize get Images juste 5 time
   const { userId } = req
+  const indexImage = req?.params?.index
+
+  const loggerInfo = {
+    section: 'get-image-captcha',
+    userId,
+    indexImage,
+  }
 
   const currentSession = await getSessionByCandidatId(userId)
 
   if (
     !currentSession ||
+    !Object.keys(currentSession.session).length ||
     (currentSession.count > tryLimit) ||
     (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon())
   ) {
     const statusCode = 403
-    const message = 'Unauthorize'
-    // TODO: envoyer le nombre de minute restante
+    const message = "vous n'êtes pas autorisé"
+
+    appLogger.error({
+      ...loggerInfo,
+      description: message,
+      success: false,
+      statusCode,
+    })
     return res.status(statusCode).json({ success: false, message })
   }
   let isRetina = false
@@ -28,28 +44,31 @@ export const getImage = async (req, res, next) => {
     isRetina = false
   }
 
-  visualCaptcha.streamImage(req.params.index, res, isRetina)
+  appLogger.info({ ...loggerInfo, description: 'Image captcha demandé', success: true })
+  visualCaptcha.streamImage(req?.params?.index, res, isRetina)
 }
 
-export const startRoute = async (req, res, next) => {
-  const { userId } = req
-
+export const startCaptcha = async (userId) => {
   const currentSession = await getSessionByCandidatId(userId)
 
   let visualCaptcha
+  // TODO: mettre dans config.js
+  const nbMinuteBeforeRetry = 2
   const captchaExpireMintutes = 1
   const numberOfImages = 5
+  const dateNow = getFrenchLuxon()
+  let statusCode
 
   if (!currentSession) {
     const sessionTmp = {}
-    visualCaptcha = captchaTools(sessionTmp, userId)
+    visualCaptcha = captchaTools(sessionTmp, userId, imagesSetting)
     visualCaptcha.generate(numberOfImages)
 
-    const expires = getFrenchLuxon().endOf('day').toISO()
-    const captchaExpireAt = getFrenchLuxon().plus({ minutes: captchaExpireMintutes }).toISO()
+    const expires = dateNow.endOf('day').toISO()
+    const captchaExpireAt = dateNow.plus({ minutes: captchaExpireMintutes }).toISO()
     const count = 1
 
-    const createdSession = await createSession({
+    await createSession({
       userId,
       session: sessionTmp,
       expires,
@@ -57,48 +76,76 @@ export const startRoute = async (req, res, next) => {
       count,
     })
 
-    console.log('if (!currentSession) condition::', { createdSession })
-    // TODO: envoyer le count d'essais
-    return res.status(200).send(visualCaptcha.getFrontendData())
+    statusCode = 200
+    return {
+      success: true,
+      count: 1,
+      captcha: {
+        ...visualCaptcha.getFrontendData(),
+        audioFieldName: undefined,
+      },
+      statusCode,
+    }
   }
-  // TODO: mettre dans config.js
-  const nbMinuteBeforeRetry = 2
+
   const { count, canRetryAt } = currentSession
   let tmpCount = count
 
-  if (canRetryAt && (getFrenchLuxon() > getFrenchLuxonFromJSDate(canRetryAt))) {
+  if (canRetryAt && dateNow > getFrenchLuxonFromJSDate(canRetryAt)) {
     tmpCount = 0
   }
 
-  if (tmpCount < tryLimit) {
-    const newSessionContent = {}
+  if (tmpCount >= tryLimit) {
+    if (Object.keys(currentSession.session).length) {
+      await updateSession({
+        ...currentSession,
+        count: tmpCount + 1,
+        session: {},
+      })
+    }
 
-    visualCaptcha = captchaTools(newSessionContent, userId)
-    visualCaptcha.generate(numberOfImages)
+    statusCode = 403
+    const dateTimeWhichCanTryAgain = getFrenchFormattedDateTime(
+      dateNow.plus({ minutes: nbMinuteBeforeRetry }),
+    )
+    // const message = `Dépassement de là limit, veuillez réssayer dans ${nbMinuteBeforeRetry} minutes`
+    const message = `Dépassement de là limit, veuillez réssayer à ${dateTimeWhichCanTryAgain.hour}`
+    // TODO: envoyer le nombre de minute restante
+    const error = new Error(message)
+    error.statusCode = statusCode
 
-    const captchaExpireAt = getFrenchLuxon().plus({ minutes: captchaExpireMintutes }).toISO()
-    const newCount = tmpCount + 1
-    const countAndCanRetryAt =
+    throw error
+  }
+
+  const newSessionContent = {}
+
+  visualCaptcha = captchaTools(newSessionContent, userId, imagesSetting)
+  visualCaptcha.generate(numberOfImages)
+
+  const captchaExpireAt = dateNow.plus({ minutes: captchaExpireMintutes }).toISO()
+  const newCount = tmpCount + 1
+  const countAndCanRetryAt =
         !(newCount < tryLimit) ? {
           count: newCount,
-          canRetryAt: getFrenchLuxon().plus({ minutes: nbMinuteBeforeRetry }),
+          canRetryAt: dateNow.plus({ minutes: nbMinuteBeforeRetry }).toISO(),
         }
           : { count: newCount, canRetryAt: null }
 
-    const updatedSession = await updateSession({
-      userId,
-      session: newSessionContent,
-      ...countAndCanRetryAt,
-      captchaExpireAt,
-    })
+  await updateSession({
+    userId,
+    session: newSessionContent,
+    ...countAndCanRetryAt,
+    captchaExpireAt,
+  })
 
-    console.log('else (!currentSession) condition::', { updatedSession })
-    // TODO: envoyer le count d'essais
-    return res.status(200).send(visualCaptcha.getFrontendData())
+  statusCode = 200
+  return {
+    success: true,
+    count: countAndCanRetryAt.count,
+    captcha: {
+      ...visualCaptcha.getFrontendData(),
+      audioFieldName: undefined,
+    },
+    statusCode,
   }
-
-  const statusCode = 403
-  const message = `Dépassement de là limit, veuillez réssayer dans ${nbMinuteBeforeRetry} minutes`
-  // TODO: envoyer le nombre de minute restante
-  return res.status(statusCode).json({ success: false, message })
 }

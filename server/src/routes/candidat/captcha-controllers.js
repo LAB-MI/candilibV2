@@ -1,9 +1,38 @@
-import { getImage, startRoute } from './captcha-business'
+import { getImage, startCaptcha } from './captcha-business'
 
-export const initImage = async (req, res, next) => {
-  await getImage(req, res, next)
+import { appLogger } from '../../util'
+
+export const initImage = async (req, res) => {
+  await getImage(req, res, appLogger)
 }
 
-export const initCaptcha = async (req, res, next) => {
-  await startRoute(req, res, next)
+export const initCaptcha = async (req, res) => {
+  const { userId } = req
+
+  const loggerInfo = {
+    section: 'init-captcha',
+    userId,
+  }
+
+  try {
+    const newCaptchaResult = await startCaptcha(userId)
+    const { success, statusCode, count, captcha } = newCaptchaResult
+
+    appLogger.info({ ...loggerInfo, description: 'Captcha crée', success, statusCode, count })
+    return res.status(statusCode).send({ success, count, captcha })
+  } catch (error) {
+    let message = error.message
+
+    if (!error.statusCode) {
+      message = 'Error startCaptcha'
+    }
+
+    appLogger.error({
+      ...loggerInfo,
+      description: message,
+      error,
+    })
+
+    return res.status(error.statusCode || 500).json({ success: false, message })
+  }
 }

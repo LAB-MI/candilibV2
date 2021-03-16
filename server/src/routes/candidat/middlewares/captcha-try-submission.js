@@ -1,17 +1,18 @@
-
-// Try to validate the captcha
-
 import { getSessionByCandidatId, updateSession } from '../../../models/session-candidat'
 import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../../util'
 
-// We need to make sure we generate new options after trying to validate, to avoid abuse
+// TODO: mettre dans config.js
+const tryLimit = 3
 export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
   try {
     const currentSession = await getSessionByCandidatId(userId)
 
-    if (!currentSession) {
+    // TODO: Create a function for next condition
+    if (!currentSession || Object.keys(currentSession.session).length || currentSession.count > tryLimit) {
       const statusCode = 403
+      // TODO: ADD APPLOGGER
+
       return res.status(statusCode).json({
         success: false,
         statusCode,
@@ -26,7 +27,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       canRetryAt,
     } = currentSession
 
-    if (!currentSession || (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon())) {
+    if (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon()) {
       await updateSession({
         userId,
         session: {},
@@ -34,7 +35,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
         captchaExpireAt,
         count,
       })
-
+      // TODO: ADD APPLOGGER
       const statusCode = 403
       return res.status(statusCode).json({
         success: false,
@@ -48,12 +49,9 @@ export const trySubmissionCaptcha = async (req, res, next) => {
     const queryParams = []
     let responseStatus
 
-    // let session = {} // getSessionByUserId()
-    // Initialize visualCaptcha
     const visualCaptcha = require('visualcaptcha')(currentSession.session, namespace)
     const frontendData = visualCaptcha.getFrontendData()
 
-    // Add namespace to query params, if present
     if (namespace && namespace.length !== 0) {
       queryParams.push('namespace=' + namespace)
     }
@@ -62,10 +60,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       queryParams.push('status=noCaptcha')
 
       responseStatus = 404
-      const responseObject = 'Not Found'
-      console.log('Log in trySubmission::', { responseObject })
     } else {
-    // If an image field name was submitted, try to validate it
       const imageAnswer = req.body[frontendData.imageFieldName]
 
       if (imageAnswer) {
@@ -93,6 +88,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
         captchaExpireAt,
         count,
       })
+      // TODO: ADD APPLOGGER
       return res.status(responseStatus).json({
         success: false,
         status: responseStatus,
@@ -109,11 +105,14 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       count,
     })
 
+    // TODO: ADD APPLOGGER
+
     next()
   } catch (error) {
+    // TODO: ADD APPLOGGER
     return res.status(500).json({
       success: false,
-      message: 'Oups ! Une erreur est survenue.',
+      message: '[Captcha] Oups ! Une erreur est survenue.',
     })
   }
 }
