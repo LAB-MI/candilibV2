@@ -169,8 +169,9 @@ describe('Captcha test', () => {
     const expectedValue01 = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue01)
 
+    const dateNow = getFrenchLuxon()
     const minutes = 2
-    const nowPlus2Minutes = getFrenchLuxon().plus({ minutes })
+    const nowPlus2Minutes = dateNow.plus({ minutes })
     setNowAfterSelectedHour(nowPlus2Minutes.hour, nowPlus2Minutes.minute)
 
     const expectedValueCaptcha = {
@@ -206,6 +207,26 @@ describe('Captcha test', () => {
 
     }
     await requestCaptcha(captchaPath, expectedValueNewCaptcha02)
+
+    const minutesDurringCanRetryAt = 3
+    const nowPlus2MinutesDurringCanRetryAt = dateNow.plus({ minutes: minutesDurringCanRetryAt })
+    setNowAfterSelectedHour(nowPlus2MinutesDurringCanRetryAt.hour, nowPlus2MinutesDurringCanRetryAt.minute)
+
+    const expectedValueDurringCanRetryAt = {
+      success: false,
+      message: `Dépassement de là limit, veuillez réssayer à ${getFrenchFormattedDateTime(getFrenchLuxon().plus({ minutes: 2 })).hour}`,
+      statusCode: 403,
+      isCaptcha: false,
+
+    }
+    await requestCaptcha(captchaPath, expectedValueDurringCanRetryAt)
+
+    const minutesAfterCanRetryAt = 4
+    const nowPlus2MinutesAfterCanRetryAt = dateNow.plus({ minutes: minutesAfterCanRetryAt })
+    setNowAfterSelectedHour(nowPlus2MinutesAfterCanRetryAt.hour, nowPlus2MinutesAfterCanRetryAt.minute)
+
+    const expectedValueAfterCanRetryAt = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    await requestCaptcha(captchaPath, expectedValueAfterCanRetryAt)
   })
 
   it('should get image by index', async () => {
