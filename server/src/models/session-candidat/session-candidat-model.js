@@ -41,8 +41,9 @@ const SessionCandidatSchema = new Schema(
   },
 )
 
+// TODO: ADD INDEX TO EXPIRES AND CAPTCHAEXPIREAT KEY
 SessionCandidatSchema.index({ userId: 1 }, { unique: true })
-
+SessionCandidatSchema.index({ expires: 1 }, { expireAfterSeconds: 0 })
 const model = mongoose.model('SessionCandidat', SessionCandidatSchema)
 
 /**

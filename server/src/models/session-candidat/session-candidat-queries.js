@@ -16,31 +16,59 @@ import SessionCandidatModel from './session-candidat-model'
  */
 
 export const createSession = async (sessionInfo) => {
-  console.log({ sessionInfo })
-  // const result = await SessionCandidatModel.findOneAndUpdate({ userId: sessionInfo.userId }, sessionInfo, { upsert: true, new: true })
   const result = await SessionCandidatModel.create(sessionInfo)
-
   return result
 }
 
 export const upsertSession = async (sessionInfo) => {
-  const result = await SessionCandidatModel.findOneAndUpdate({ userId: sessionInfo.userId }, sessionInfo, { upsert: true, new: true })
-  // const result = await SessionCandidatModel.create(sessionInfo)
-
+  const result = await SessionCandidatModel
+    .findOneAndUpdate({ userId: sessionInfo.userId }, sessionInfo, { upsert: true, new: true })
   return result
 }
 
+const checkKeyNeedUpdate = (sessionInfo) => {
+  const {
+    session,
+    count,
+    expires,
+    canRetryAt,
+    captchaExpireAt,
+  } = sessionInfo
+
+  const neededKey = {}
+
+  neededKey.count = count
+  neededKey.canRetryAt = canRetryAt
+
+  if (session) {
+    neededKey.session = session
+  }
+
+  if (expires) {
+    neededKey.expires = expires
+  }
+
+  if (captchaExpireAt) {
+    neededKey.captchaExpireAt = captchaExpireAt
+  }
+
+  return neededKey
+}
+
 export const updateSession = async (sessionInfo) => {
-  console.log('sessionInfo::', { sessionInfo })
-  // TODO: Create function for each key
-  const { userId, session, count, expires, canRetryAt, captchaExpireAt } = sessionInfo
-  const result = await SessionCandidatModel.updateOne({ userId: userId }, { $set: { session, count, expires, canRetryAt, captchaExpireAt } })
+  const { userId } = sessionInfo
+  const neededKey = checkKeyNeedUpdate(sessionInfo)
+  const result = await SessionCandidatModel.updateOne({ userId: userId }, { $set: neededKey })
 
   return result
 }
 
 export const getSessionByCandidatId = async (userId) => {
-  const result = await SessionCandidatModel.findOne({ userId })
-  // await departement.save()
+  const result = await SessionCandidatModel.findOne({ userId }).lean()
+  return result
+}
+
+export const deleteSessionByCandidatId = async (userId) => {
+  const result = await SessionCandidatModel.deleteOne({ userId })
   return result
 }
