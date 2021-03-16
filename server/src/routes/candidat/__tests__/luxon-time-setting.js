@@ -9,7 +9,7 @@ export const setNowBefore12h = () => {
 }
 
 export const setNowAtNow = () => {
-  Settings.now = () => Date.now
+  Settings.now = () => Date.now()
 }
 
 export const setNowAfter12h = (minute = 0) => {
@@ -17,4 +17,8 @@ export const setNowAfter12h = (minute = 0) => {
   if (getFrenchLuxon().hour > 12) {
     Settings.now = () => new Date().setHours(11, minute, 0).valueOf()
   }
+}
+
+export const setNowAfterSelectedHour = (hours, minutes = 0) => {
+  Settings.now = () => new Date().setHours(hours, minutes, 0).valueOf()
 }
