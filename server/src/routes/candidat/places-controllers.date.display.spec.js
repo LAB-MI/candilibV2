@@ -31,6 +31,7 @@ jest.mock('../middlewares/verify-token')
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-user')
 jest.mock('./middlewares/verify-candidat')
+jest.mock('./middlewares/captcha-try-submission')
 
 jest.mock('../common/candidat-status-const')
 
