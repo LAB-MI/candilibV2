@@ -17,6 +17,9 @@ export default {
     generatedCaptcha: { isReady: false, images: [], selectedResponse: false, imageFieldName: undefined },
     isGenerating: false,
     isTrying: false,
+    // TODO: Get next value from api
+    retryLimit: 3,
+    count: 0,
   },
 
   mutations: {
@@ -24,10 +27,11 @@ export default {
       state.isGenerating = true
       state.generatedCaptcha.isReady = false
     },
-    [GENERATE_CAPTCHA_SUCCESS] (state, { allImages, imageName, imageFieldName }) {
+    [GENERATE_CAPTCHA_SUCCESS] (state, { allImages, imageName, imageFieldName, count }) {
       state.generatedCaptcha.question = imageName
       state.generatedCaptcha.images = allImages
       state.generatedCaptcha.imageFieldName = imageFieldName
+      state.count = count
       state.isGenerating = false
       state.generatedCaptcha.isReady = true
     },
@@ -43,7 +47,7 @@ export default {
     [TRY_RESOLVE_CAPTCHA_SUCCESS] (state, selectedResponse) {
       state.generatedCaptcha.selectedResponse = selectedResponse
       state.isTrying = false
-      state.generatedCaptcha.isReady = false
+      state.generatedCaptcha.isReady = true
     },
     [TRY_RESOLVE_CAPTCHA_FAILURE] (state) {
       state.isTrying = false
@@ -68,11 +72,12 @@ export default {
 
       try {
         const newCaptcha = await api.candidat.startRoute()
-
-        console.log({ newCaptcha })
+        if (!newCaptcha?.success) {
+          throw new Error(newCaptcha.message)
+        }
 
         const allImages = await Promise.all(
-          newCaptcha.values.map(
+          newCaptcha.captcha.values.map(
             async (value, index) => {
               const response = await api.candidat.getImage(index)
               const data = await response.blob()
@@ -83,11 +88,15 @@ export default {
           ),
         )
 
-        commit(GENERATE_CAPTCHA_SUCCESS, { allImages, imageName: newCaptcha.imageName, imageFieldName: newCaptcha.imageFieldName })
+        commit(GENERATE_CAPTCHA_SUCCESS, {
+          allImages,
+          imageName: newCaptcha.captcha.imageName,
+          imageFieldName: newCaptcha.captcha.imageFieldName,
+          count: newCaptcha.count,
+        })
       } catch (error) {
         commit(GENERATE_CAPTCHA_FAILURE)
-        dispatch(SHOW_ERROR, 'Error Captcha generation')
-        console.log({ error })
+        dispatch(SHOW_ERROR, error.message || 'Error de récupération du captcha.')
       }
     },
 
@@ -96,11 +105,9 @@ export default {
 
       try {
         const { imageFieldName } = state.generatedCaptcha
-        console.log({ imageFieldName })
         const selectedResponse = { [imageFieldName]: imageField }
         commit(TRY_RESOLVE_CAPTCHA_SUCCESS, selectedResponse)
       } catch (error) {
-        console.log({ error })
         commit(TRY_RESOLVE_CAPTCHA_FAILURE)
         dispatch(SHOW_ERROR, 'Réponse invalide')
       }
