@@ -19,7 +19,7 @@ const candidatApiPaths = (isBuildWithAll || isBuildWithCandidat) && {
   verifyToken: `${apiPrefix}/auth/candidat/verify-token`,
   departements: `${apiPrefix}/candidat/departements`,
   contactUs: `${apiPrefix}/candidat/contact-us`,
-  captcha: `${apiPrefix}/candidat/captcha`,
+  captcha: `${apiPrefix}/candidat/verifyzone`,
 }
 
 const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
