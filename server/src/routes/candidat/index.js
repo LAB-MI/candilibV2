@@ -27,7 +27,7 @@ if (process.env.NODE_ENV !== 'test') {
   router.use(setAccumulatorRequest)
 }
 
-const routeNameCaptcha = '/captcha'
+const routeNameCaptcha = '/verifyzone'
 
 // Routes definition
 router.get(`${routeNameCaptcha}/start`, initCaptcha)
