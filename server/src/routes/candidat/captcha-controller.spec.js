@@ -48,7 +48,7 @@ const expectedBodyForCaptcha = (body, expectedValue, isCaptcha) => {
 
 const requestCaptcha = async (captchaPath, expectedValue) => {
   const { body } = await request(app)
-    .get(`${apiPrefix}/candidat/captcha/${captchaPath}`)
+    .get(`${apiPrefix}/candidat/verifyzone/${captchaPath}`)
     .set('Accept', 'application/json')
     .expect(expectedValue.statusCode)
   expectedBodyForCaptcha(body, expectedValue, expectedValue.isCaptcha)
@@ -73,7 +73,7 @@ const requestImageCaptchaByIndex = async (expectedValueImage) => {
   const { indexImage, success, message, statusCode, isMustBeBuffer } = expectedValueImage
 
   const { body: bodyImage } = await request(app)
-    .get(`${apiPrefix}/candidat/captcha/image/${indexImage}`)
+    .get(`${apiPrefix}/candidat/verifyzone/image/${indexImage}`)
     .set('Accept', 'application/json')
     .expect(statusCode)
 
