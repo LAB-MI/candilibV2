@@ -48,3 +48,4 @@ export const CANDIDAT_LAST_NAME_NOT_VALID =
   "Le nom de naissance renseigné n'est pas valide"
 export const CANDIDAT_FIRST_NAME_NOT_VALID =
   "Le prénom renseigné n'est pas valide"
+export const CANDIDAT_MUST_CANCEL_BOOKING = "Vous avez un réservation en cours. Vous devrez l'annuler pour en réserver une autre."

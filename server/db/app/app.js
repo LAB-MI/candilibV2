@@ -67,10 +67,13 @@ app.get('/version', (req, res) => {
 
 app.get('/:collection', async (req, res) => {
   const { collection } = req.params
+  let filter = {}
+  if (req.body) filter = { ...req.body }
+
   let dbo
   try {
     dbo = await connectDb()
-    const result = await dbo.collection(collection).find({}).toArray()
+    const result = await dbo.collection(collection).find(filter).toArray()
     res.json(result)
   } catch (err) {
     console.error(err)

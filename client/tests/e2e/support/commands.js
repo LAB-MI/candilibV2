@@ -449,3 +449,9 @@ Cypress.Commands.add('toGoSelectPlaces', (options = {}) => {
     .contains(Cypress.env('centre'))
     .click()
 })
+
+Cypress.Commands.add('getCandidatInDB', (query) => {
+  cy.request('GET', Cypress.env('ApiRestDB') + '/candidats', query).then((content) => {
+    return JSON.parse(JSON.stringify(content.body))
+  })
+})

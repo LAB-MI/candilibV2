@@ -138,7 +138,7 @@ export default {
       state.showEvaluation = false
     },
     [SET_CANDIDAT_VISIBLE_HOURS] (state, visibilityHour) {
-      if (visibilityHour !== undefined) {
+      if (visibilityHour !== undefined && state?.me) {
         state.me.visibilityHour = visibilityHour
       }
     },

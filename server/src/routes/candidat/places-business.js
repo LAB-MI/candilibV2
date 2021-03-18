@@ -330,6 +330,13 @@ export const canModifyReservation = async (candidatId, options) => {
   return places[0]
 }
 
+export const hasBooking = async (candidatId) => {
+  const place = await findPlaceBookedByCandidat(
+    candidatId,
+    { _id: 1 },
+  )
+  return !!place
+}
 /**
  * Associe un candidat à une place à partir d'un créneau (date et centre)
  *

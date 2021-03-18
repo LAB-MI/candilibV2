@@ -9,6 +9,9 @@ import store, {
   SIGNED_IN_AS_ADMIN,
   SIGNED_IN_AS_CANDIDAT,
   FETCH_ADMIN_INFO_REQUEST,
+  SHOW_WARNING,
+  FETCH_CANDIDAT_RESERVATION_REQUEST,
+  SHOW_ERROR,
 } from '@/store'
 
 export async function requireCandidatAuth (to, from, next) {
@@ -105,4 +108,21 @@ export async function checkCandidatTokenToRedirect (to, from, next) {
     return
   }
   next()
+}
+
+export async function requireNoBooking (to, from, next) {
+  let TypeMessage = SHOW_WARNING
+  let message = 'Vous avez un réservation en cours. Vous devrez annuler votre réservation avant de réserver une autre.'
+  try {
+    await store.dispatch(FETCH_CANDIDAT_RESERVATION_REQUEST)
+    if (!store.state.reservation.booked.isBooked) {
+      next()
+      return
+    }
+  } catch (error) {
+    TypeMessage = SHOW_ERROR
+    message = error.message
+  }
+  next({ name: 'candidat-home' })
+  await store.dispatch(TypeMessage, message)
 }

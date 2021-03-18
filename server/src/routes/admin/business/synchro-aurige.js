@@ -32,6 +32,7 @@ import {
   OK_MAIL_PB,
   OK_UPDATED,
   OK,
+  NB_YEARS_ETG_EXPIRED,
 } from '../../../util'
 import {
   sendFailureExam,
@@ -43,7 +44,6 @@ import { upsertLastSyncAurige } from '../../admin/status-candilib-business'
 import { getCandBookFrom } from '../../candidat/places-business'
 import { REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
-  NB_YEARS_ETG_EXPIRED,
   NB_DAYS_WAITING_FOR_ETG_EXPIERED,
   AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED,
   AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED,

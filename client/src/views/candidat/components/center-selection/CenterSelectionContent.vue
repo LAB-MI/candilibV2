@@ -90,7 +90,7 @@ export default {
           modifying: (this.$route.params.modifying === 'modification' || this.$store.state.reservation.isModifying)
             ? 'modification' : 'selection',
         },
-      })
+      }, () => {})
     },
   },
 }

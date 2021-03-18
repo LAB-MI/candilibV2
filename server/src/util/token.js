@@ -2,6 +2,8 @@ import jwt from 'jsonwebtoken'
 
 import config from '../config'
 import { updateCandidatToken } from '../models/candidat'
+import { NB_YEARS_ETG_EXPIRED } from './constants'
+import { getFrenchLuxonFromJSDate } from './date-util'
 
 export const createToken = async (id, userStatus, departements, detailContentCandidat = {}) => {
   const {
@@ -17,10 +19,11 @@ export const createToken = async (id, userStatus, departements, detailContentCan
     prenom,
     token,
     firstConnection,
+    dateReussiteETG,
   } = detailContentCandidat
   const level = config.userStatusLevels[userStatus] || 0
   const tokenExpiration = config[`${userStatus}TokenExpiration`]
-
+  const dateETG = dateReussiteETG && getFrenchLuxonFromJSDate(dateReussiteETG).plus({ years: NB_YEARS_ETG_EXPIRED }).toISODate()
   const payload = {
     id,
     level,
@@ -36,6 +39,7 @@ export const createToken = async (id, userStatus, departements, detailContentCan
     portable,
     prenom,
     firstConnection: !!firstConnection,
+    dateETG,
   }
 
   const secret = config.secret
