@@ -48,6 +48,7 @@
                 v-for="image in candidatCaptcha.generatedCaptcha.images"
                 :key="image.index"
                 :color="(imageField !== null && imageField === image.index ) ? 'primary' : ''"
+                :class="`t-image-index t-${image.value}`"
                 @click="tryCaptcha(image.value, image.index)"
               >
                 <img

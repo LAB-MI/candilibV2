@@ -157,9 +157,11 @@ export default {
       }
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
+        this.$store.dispatch(RESET_CAPTCHA)
         this.$router.push({ name: 'candidat-home' })
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
+        this.$store.dispatch(RESET_CAPTCHA)
       }
       this.isBackButtonDisabled = false
     },
