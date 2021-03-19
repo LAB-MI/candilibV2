@@ -46,7 +46,6 @@
             :disabled="disabled"
             type="submit"
             color="primary"
-            @click="displayEvaluation"
           >
             {{ $formatMessage({ id: 'confirmation_reservation_bouton_confirmation' } ) }}
           </v-btn>
@@ -159,6 +158,7 @@ export default {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
         this.$store.dispatch(RESET_CAPTCHA)
         this.$router.push({ name: 'candidat-home' })
+        this.displayEvaluation()
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
         this.$store.dispatch(RESET_CAPTCHA)
