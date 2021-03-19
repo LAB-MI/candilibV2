@@ -42,7 +42,7 @@ const parseFromObj = (obj) => {
       obj[property] = parseFromObj(value)
     } else if (value && dateRegexp.test(value)) {
       obj[property] = new Date(value)
-    } else if( value && objectIdRegexp.test(value) ) {
+    } else if (value && objectIdRegexp.test(value)) {
       obj[property] = ObjectID.createFromHexString(value)
     }
   }
@@ -51,10 +51,10 @@ const parseFromObj = (obj) => {
 
 const parseBody = (req, res, next) => {
   try {
-    if(!req.body) next()
-    if(Array.isArray(req.body)){
-      req.newBody = req.body.map( el => parseFromObj(el) )
-    }else{
+    if (!req.body) next()
+    if (Array.isArray(req.body)) {
+      req.newBody = req.body.map(el => parseFromObj(el))
+    } else {
       req.newBody = parseFromObj(req.body)
     }
     next()
@@ -74,7 +74,7 @@ app.get('/version', (req, res) => {
   res.send('0.0.0')
 })
 
-app.get('/:collection',parseBody, async (req, res) => {
+app.get('/:collection', parseBody, async (req, res) => {
   const { collection } = req.params
   let filter = {}
   if (req.body) filter = { ...req.newBody }
@@ -82,7 +82,7 @@ app.get('/:collection',parseBody, async (req, res) => {
   let dbo
   try {
     dbo = await connectDb()
-    console.log( 'get',  {collection, filter})
+    console.log('get', { collection, filter })
     const result = await dbo.collection(collection).find(filter).toArray()
     res.json(result)
   } catch (err) {
@@ -134,11 +134,11 @@ app.post('/:collection', parseBody, async (req, res) => {
   try {
     dbo = await connectDb()
     let obj
-    if(!Array.isArray(req.newBody)){
+    if (!Array.isArray(req.newBody)) {
       obj = await dbo.collection(collection).insertOne(req.newBody)
     } else {
-      if(!req.newBody.length) {
-        res.send({ success: false})
+      if (!req.newBody.length) {
+        res.send({ success: false })
       }
       obj = await dbo.collection(collection).insertMany(req.newBody)
     }

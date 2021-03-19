@@ -72,6 +72,7 @@ describe('Connected candidate front', () => {
     // Delete all mails before start
       cy.deleteAllMails()
       cy.deleteAllPlaces()
+      cy.deleteSessionCandidats()
       cy.adminLogin()
       cy.archiveCandidate()
       cy.addPlanning([nowIn1Week, nowIn1WeekAnd1DaysBefore, dayAfter45Days, dayBefore45Days])
@@ -96,7 +97,9 @@ describe('Connected candidate front', () => {
       candidatsByDepartments.forEach(candidat => {
         cy.deleteCandidat({ email: candidat.email })
       })
+      // cy.deleteSessionCandidats()
     })
+
     it('Should display FAQ', () => {
       cy.visit(magicLink).wait(1000)
       cy.get('i').should('contain', 'help_outline')
@@ -185,6 +188,43 @@ describe('Connected candidate front', () => {
         .check({ force: true })
       cy.get('button')
         .should('contain', 'Confirmer')
+
+      // TODO:
+      // Demander un captcha et echoué
+      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
+      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
+        .then(imageValueResponse => {
+          cy.log('imageValueResponse', imageValueResponse.value)
+
+          cy.get('.t-image-index').not(`.t-${imageValueResponse.value}`).eq(0).click()
+
+          cy.get('button')
+            .contains('Confirmer')
+            .click()
+          cy.checkAndCloseSnackBar('Réponse invalide')
+          // TODO: verifier que je ne suis pas reponse la bonne reponse
+        })
+
+      // TODO:
+      // Demander un captcha et le validé
+      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
+      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
+        .then(imageValueResponse => {
+          cy.log('imageValueResponse', imageValueResponse.value)
+
+          cy.get(`.t-${imageValueResponse.value}`).click()
+        })
+
+      // TODO: 2 next line is the factorisation needed
+      // cy.selectWrongCaptchaSoltionAndConfirm({ email: Cypress.env('emailCandidatFront') })
+      // cy.selectCaptchaSoltion({ email: Cypress.env('emailCandidatFront') })
+
+      // verifier que l'image selectionner est focus
+      // verifier que le bouton confirmer est non active
+      // verifier que le bouton confirmer est active
+
       cy.get('button')
         .contains('Confirmer')
         .click()

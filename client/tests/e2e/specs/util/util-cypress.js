@@ -51,6 +51,17 @@ export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week,
   cy.get('[type=checkbox]')
     .last()
     .check({ force: true })
+
+  // Demander un captcha
+  cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
+  cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+  cy.getSolutionCaptcha({ email: candidatsByDepartments[0].email })
+    .then(imageValueResponse => {
+      cy.log('imageValueResponse', imageValueResponse.value)
+
+      cy.get(`.t-${imageValueResponse.value}`).click()
+    })
+
   cy.get('button')
     .should('contain', 'Confirmer')
   cy.get('button')
