@@ -40,7 +40,7 @@ export const imagesSetting = [
     path: 'computer.png',
   },
   {
-    name: "L'envelope",
+    name: "L'enveloppe",
     path: 'envelope.png',
   },
   {
