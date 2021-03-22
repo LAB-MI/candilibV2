@@ -2,9 +2,10 @@ import { getSessionByCandidatId, createSession, updateSession } from '../../mode
 import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../util'
 import captchaTools from 'visualcaptcha'
 import { imagesSetting } from './util'
+import { tryLimit } from '../../config'
 
 // TODO: mettre dans config.js
-const tryLimit = 3
+// const tryLimit = 3
 export const getImage = async (req, res, appLogger) => {
   // TODO: Authorize get Images juste 5 time
   const { userId } = req

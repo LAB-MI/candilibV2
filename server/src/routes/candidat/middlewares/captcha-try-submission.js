@@ -1,10 +1,16 @@
+import { tryLimit } from '../../../config'
 import { getSessionByCandidatId, updateSession } from '../../../models/session-candidat'
-import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../../util'
+import { getFrenchLuxon, getFrenchLuxonFromJSDate, appLogger } from '../../../util'
 
 // TODO: mettre dans config.js
-const tryLimit = 3
+// const tryLimit = 3
 export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
+
+  const loggerInfo = {
+    section: 'try-submition-captcha',
+    userId,
+  }
   try {
     const currentSession = await getSessionByCandidatId(userId)
 
@@ -17,11 +23,16 @@ export const trySubmissionCaptcha = async (req, res, next) => {
     ) {
       const statusCode = 403
       // TODO: ADD APPLOGGER
-
+      const message = 'Captcha Expiré'
+      appLogger.error({
+        ...loggerInfo,
+        description: message,
+        statusCode,
+      })
       return res.status(statusCode).json({
         success: false,
         statusCode,
-        message: 'Captcha Expiré',
+        message,
       })
     }
 
@@ -31,23 +42,6 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       count,
       canRetryAt,
     } = currentSession
-
-    if (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon()) {
-      await updateSession({
-        userId,
-        session: {},
-        expires,
-        captchaExpireAt,
-        count,
-      })
-      // TODO: ADD APPLOGGER
-      const statusCode = 403
-      return res.status(statusCode).json({
-        success: false,
-        statusCode,
-        message: 'Captcha Expiré',
-      })
-    }
 
     const namespace = userId
 
@@ -86,6 +80,13 @@ export const trySubmissionCaptcha = async (req, res, next) => {
     }
 
     if (responseStatus !== 200) {
+      const message = 'Réponse invalide'
+      appLogger.error({
+        ...loggerInfo,
+        description: message,
+        statusCode: responseStatus,
+      })
+
       await updateSession({
         userId,
         session: {},
@@ -93,13 +94,15 @@ export const trySubmissionCaptcha = async (req, res, next) => {
         captchaExpireAt,
         count,
       })
-      // TODO: ADD APPLOGGER
+
       return res.status(responseStatus).json({
         success: false,
         status: responseStatus,
-        message: 'Réponse invalide',
+        message,
       })
     }
+
+    appLogger.info({ ...loggerInfo, description: 'Captcha validé', count })
 
     await updateSession({
       userId,
@@ -110,14 +113,20 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       count,
     })
 
-    // TODO: ADD APPLOGGER
-
     next()
   } catch (error) {
     // TODO: ADD APPLOGGER
+    const message = '[Captcha] Oups ! Une erreur est survenue.'
+    appLogger.error({
+      ...loggerInfo,
+      description: message,
+      statusCode: 500,
+      error,
+    })
+
     return res.status(500).json({
       success: false,
-      message: '[Captcha] Oups ! Une erreur est survenue.',
+      message,
     })
   }
 }

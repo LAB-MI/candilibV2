@@ -202,6 +202,12 @@ export const logsTypeNameForHomeDepartement = 'logs-requests-home-departement'
 export const hoursOfSavedLogs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 16, 17, 21, 22, 23]
 
 /**
+ * Nombre maximum d'éssai captcha
+ * @constant {Number}
+ */
+export const tryLimit = 3
+
+/**
  * Données de connexion au serveur de SMTP pour les envois de mail
  * @constant {Object}
  */
