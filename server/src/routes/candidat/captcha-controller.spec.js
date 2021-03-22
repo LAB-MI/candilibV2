@@ -1,10 +1,10 @@
 import { connect, disconnect } from '../../mongo-connection'
 import { createCandidat } from '../../models/candidat'
-import { getFrenchFormattedDateTime, getFrenchLuxon } from '../../util'
+import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../util'
 import app, { apiPrefix } from '../../app'
 import request from 'supertest'
 import { setNowAfterSelectedHour, setNowAtNow } from './__tests__/luxon-time-setting'
-import { deleteSessionByCandidatId } from '../../models/session-candidat'
+import { deleteSessionByCandidatId, getSessionByCandidatId } from '../../models/session-candidat'
 
 jest.mock('../middlewares/verify-token')
 jest.mock('../middlewares/verify-user')
@@ -165,14 +165,14 @@ describe('Captcha test', () => {
 
   it('should not validate captcha after expiration', async () => {
     const captchaPath = 'start'
-
+    // console.log('1er captha')
     const expectedValue01 = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue01)
 
     const dateNow = getFrenchLuxon()
     const minutes = 2
     const nowPlus2Minutes = dateNow.plus({ minutes })
-    setNowAfterSelectedHour(nowPlus2Minutes.hour, nowPlus2Minutes.minute)
+    setNowAfterSelectedHour(nowPlus2Minutes.toJSDate().getHours(), nowPlus2Minutes.minute)
 
     const expectedValueCaptcha = {
       success: false,
@@ -193,12 +193,18 @@ describe('Captcha test', () => {
 
     await requestImageCaptchaByIndex(expectedValueImage)
 
+    console.log('2er captha')
     const expectedValueNewCaptcha = { count: 2, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValueNewCaptcha)
 
+    console.log('3er captha')
     const expectedValueNewCaptcha01 = { count: 3, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValueNewCaptcha01)
 
+    const tmpSessionCandiat = await getSessionByCandidatId(candidat1._id)
+    const dateCanTryAt = getFrenchLuxonFromJSDate(tmpSessionCandiat.canRetryAt)
+
+    console.log('4er captha')
     const expectedValueNewCaptcha02 = {
       success: false,
       message: `Dépassement de là limit, veuillez réssayer à ${getFrenchFormattedDateTime(getFrenchLuxon().plus({ minutes })).hour}`,
@@ -208,10 +214,12 @@ describe('Captcha test', () => {
     }
     await requestCaptcha(captchaPath, expectedValueNewCaptcha02)
 
+    // Test should not have captcha before canRetryAt
     const minutesDurringCanRetryAt = 1
-    const nowPlus2MinutesDurringCanRetryAt = getFrenchLuxon().plus({ minutes: minutesDurringCanRetryAt })
-    setNowAfterSelectedHour(nowPlus2MinutesDurringCanRetryAt.hour, nowPlus2MinutesDurringCanRetryAt.minute)
+    const nowPlus2MinutesDurringCanRetryAt = dateCanTryAt.minus({ minutes: minutesDurringCanRetryAt })
+    setNowAfterSelectedHour(nowPlus2MinutesDurringCanRetryAt.toJSDate().getHours(), nowPlus2MinutesDurringCanRetryAt.minute)
 
+    console.log('5er captha')
     const expectedValueDurringCanRetryAt = {
       success: false,
       message: `Dépassement de là limit, veuillez réssayer à ${getFrenchFormattedDateTime(getFrenchLuxon().plus({ minutes: 2 })).hour}`,
@@ -223,8 +231,9 @@ describe('Captcha test', () => {
 
     const minutesAfterCanRetryAt = 3
     const nowPlus2MinutesAfterCanRetryAt = getFrenchLuxon().plus({ minutes: minutesAfterCanRetryAt })
-    setNowAfterSelectedHour(nowPlus2MinutesAfterCanRetryAt.hour, nowPlus2MinutesAfterCanRetryAt.minute)
+    setNowAfterSelectedHour(nowPlus2MinutesAfterCanRetryAt.toJSDate().getHours(), nowPlus2MinutesAfterCanRetryAt.minute)
 
+    console.log('6er captha')
     const expectedValueAfterCanRetryAt = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValueAfterCanRetryAt)
   })
