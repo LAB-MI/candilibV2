@@ -110,7 +110,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       captchaExpireAt: getFrenchLuxon().toISO(),
       canRetryAt,
       expires,
-      count,
+      count: 0,
     })
 
     next()

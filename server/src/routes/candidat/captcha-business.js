@@ -2,12 +2,9 @@ import { getSessionByCandidatId, createSession, updateSession } from '../../mode
 import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../util'
 import captchaTools from 'visualcaptcha'
 import { imagesSetting } from './util'
-import { tryLimit } from '../../config'
+import { captchaExpireMintutes, nbMinuteBeforeRetry, numberOfImages, tryLimit } from '../../config'
 
-// TODO: mettre dans config.js
-// const tryLimit = 3
 export const getImage = async (req, res, appLogger) => {
-  // TODO: Authorize get Images juste 5 time
   const { userId } = req
   const indexImage = req?.params?.index
 
@@ -53,10 +50,6 @@ export const startCaptcha = async (userId) => {
   const currentSession = await getSessionByCandidatId(userId)
 
   let visualCaptcha
-  // TODO: mettre dans config.js
-  const nbMinuteBeforeRetry = 2
-  const captchaExpireMintutes = 1
-  const numberOfImages = 5
   const dateNow = getFrenchLuxon()
   let statusCode
 

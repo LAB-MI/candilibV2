@@ -208,6 +208,24 @@ export const hoursOfSavedLogs = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 13, 14, 15, 
 export const tryLimit = 3
 
 /**
+ * Nombre de minute a à attendre après avoir dépassé le nombre limite d'éssai
+ * @constant {Number}
+ */
+export const nbMinuteBeforeRetry = 2
+
+/**
+ * Durée de validité du captcha en minute
+ * @constant {Number}
+ */
+export const captchaExpireMintutes = 1
+
+/**
+ * Nombre d'images pour le captcha
+ * @constant {Number}
+ */
+export const numberOfImages = 5
+
+/**
  * Données de connexion au serveur de SMTP pour les envois de mail
  * @constant {Object}
  */
