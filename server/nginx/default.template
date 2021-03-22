@@ -6,8 +6,8 @@ server {
 
   location / {
 
-    location /api/v2/candidat/captcha {
-      limit_req zone=api_captcha burst=5 delay=2;
+    location /api/v2/candidat/verifyzone {
+      limit_req zone=api_verifyzone burst=5 delay=2;
       limit_req_status 429;
       add_header Access-Control-Allow-Origin '$http_origin';
       proxy_pass http://<API_HOST>:8000;
