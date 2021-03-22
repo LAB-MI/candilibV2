@@ -2,7 +2,6 @@
   <div>
     <v-card
       elevation="3"
-      shaped
       class="pa-1 ma-1"
     >
       <div>
@@ -32,9 +31,21 @@
               <v-icon>
                 autorenew
               </v-icon>
-              {{ candidatCaptcha.count }} / {{ candidatCaptcha.retryLimit }}
             </v-btn>
           </v-card-title>
+          <v-card-text>
+            <v-alert
+              type="info"
+              :value="true"
+            >
+              <p>
+                Vous avez <strong>1</strong> minute pour repondre puis confirmer votre réservation.
+              </p>
+              <p>
+                Nombre de tentative: <strong>{{ candidatCaptcha.count }}</strong> / {{ candidatCaptcha.retryLimit }}
+              </p>
+            </v-alert>
+          </v-card-text>
           <v-card-text>
             <span class="font-medium">
               Selectionner:
