@@ -11,7 +11,7 @@ import { parseMagicLinkFromMailBody } from './util/util-cypress'
 */
 
 // Initialise magicLink
-var magicLink
+let magicLink
 
 describe('Standard scenarios', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
@@ -56,6 +56,16 @@ describe('Standard scenarios', () => {
         .first().check({ force: true })
       cy.get('[type=checkbox]')
         .last().check({ force: true })
+
+      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
+      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatInteractive') })
+        .then(imageValueResponse => {
+          cy.log('imageValueResponse', imageValueResponse.value)
+
+          cy.get(`.t-${imageValueResponse.value}`).click()
+        })
+
       cy.get('button')
         .contains('Confirmer')
         .click()

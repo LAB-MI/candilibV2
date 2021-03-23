@@ -65,6 +65,7 @@ jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
 jest.mock('../../util/token')
 jest.mock('../middlewares/verify-user')
+jest.mock('./middlewares/captcha-try-submission')
 
 const bookedAt = getFrenchLuxon().toJSDate()
 
@@ -945,6 +946,7 @@ describe('get reservation with candidat failed', () => {
     )
     await makeResa(createdPlaceToRetry, createdCandidatFailed, bookedAt)
   })
+
   afterAll(async () => {
     await removePlaces()
     await removeCentres()

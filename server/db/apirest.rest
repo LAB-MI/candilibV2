@@ -28,3 +28,33 @@ content-type: application/json
   "isValidatedEmail": "true",
   "isValidatedByAurige": "true"
 }
+###
+POST http://localhost:8090/candidats
+content-type: application/json
+
+[
+  {
+    "codeNeph": "61234567890122",
+    "prenom": "CC_FRONT",
+    "nomNaissance": "CANDIDAT_FRONT_75_2",
+    "adresse": "40 Avenue des terroirs de France 75012 Paris",
+    "portable": "0676543986",
+    "email": "candidat_front_75_2@candi.lib",
+    "departement": "75",
+    "isEvaluationDone": "false",
+    "isValidatedEmail": "true",
+    "isValidatedByAurige": "true"
+  },
+  {
+    "codeNeph": "61234567890123",
+    "prenom": "CC_FRONT",
+    "nomNaissance": "CANDIDAT_FRONT_75_1",
+    "adresse": "40 Avenue des terroirs de France 75012 Paris",
+    "portable": "0676543986",
+    "email": "candidat_front_75_3@candi.lib",
+    "departement": "75",
+    "isEvaluationDone": "false",
+    "isValidatedEmail": "true",
+    "isValidatedByAurige": "true"
+  }
+]

@@ -25,6 +25,7 @@
             :label="$formatMessage({ id: 'confirmation_reservation_checkbox_double_commande' })"
             value="doubleControlCar"
           />
+          <captcha :disabled-value="!(selectedCheckBox.length === 2)" />
         </div>
         <v-flex d-flex>
           <v-spacer />
@@ -45,7 +46,6 @@
             :disabled="disabled"
             type="submit"
             color="primary"
-            @click="displayEvaluation"
           >
             {{ $formatMessage({ id: 'confirmation_reservation_bouton_confirmation' } ) }}
           </v-btn>
@@ -88,9 +88,16 @@ import {
   SHOW_ERROR,
   CONFIRM_SELECT_DAY_REQUEST,
   SET_SHOW_EVALUATION,
+  RESET_CAPTCHA,
 } from '@/store'
 
+import Captcha from './captcha/Captcha'
+
 export default {
+  name: 'SummaryConfimation',
+  components: {
+    Captcha,
+  },
   data () {
     return {
       selectedCheckBox: [],
@@ -104,10 +111,11 @@ export default {
       'center',
       'reservation',
       'timeSlots',
+      'candidatCaptcha',
     ]),
 
     disabled () {
-      return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting
+      return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting || !this.candidatCaptcha.generatedCaptcha.selectedResponse
     },
 
     isModifying () {
@@ -116,6 +124,10 @@ export default {
       }
       return false
     },
+  },
+
+  destroyed () {
+    this.$store.dispatch(RESET_CAPTCHA)
   },
 
   methods: {
@@ -144,9 +156,12 @@ export default {
       }
       try {
         await this.$store.dispatch(CONFIRM_SELECT_DAY_REQUEST, selected)
+        this.$store.dispatch(RESET_CAPTCHA)
         this.$router.push({ name: 'candidat-home' })
+        this.displayEvaluation()
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
+        this.$store.dispatch(RESET_CAPTCHA)
       }
       this.isBackButtonDisabled = false
     },
