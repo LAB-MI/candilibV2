@@ -39,16 +39,16 @@
               :value="true"
             >
               <p>
-                Vous avez <strong>1</strong> minute pour repondre puis confirmer votre réservation.
+                Vous avez <strong>1</strong> minute pour répondre puis confirmer votre réservation.
               </p>
               <p>
-                Nombre de tentative: <strong>{{ candidatCaptcha.count }}</strong> / {{ candidatCaptcha.retryLimit }}
+                Nombre de tentatives: <strong>{{ candidatCaptcha.count }}</strong> / {{ candidatCaptcha.retryLimit }}
               </p>
             </v-alert>
           </v-card-text>
           <v-card-text>
             <span class="font-medium">
-              Selectionner:
+              Sélectionner:
             </span>
             <span class="font-semibold text-xl">
               {{ candidatCaptcha.generatedCaptcha.question }}
