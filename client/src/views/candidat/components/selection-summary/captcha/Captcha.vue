@@ -7,17 +7,27 @@
       <div>
         <v-btn
           v-show="!candidatCaptcha.generatedCaptcha.isReady"
-          :disabled="disabledValue"
+          :disabled="disabledValue || isLoading"
           color="primary"
           @click="getCaptcha('start')"
         >
-          Je ne suis pas un robot
-          <v-icon>
-            security
-          </v-icon>
+          <v-progress-circular
+            v-show="isLoading"
+            indeterminate
+            :color="isLoading ? 'primary' : 'white'"
+          />
+          <span>
+            Je ne suis pas un robot
+            <v-icon>
+              security
+            </v-icon>
+          </span>
         </v-btn>
 
         <div v-show="candidatCaptcha.generatedCaptcha.isReady">
+          <big-loading-indicator
+            :is-loading="candidatCaptcha.isGenerating"
+          />
           <v-card-title>
             <v-icon>
               security
@@ -58,6 +68,7 @@
               <v-btn
                 v-for="image in candidatCaptcha.generatedCaptcha.images"
                 :key="image.index"
+                :disabled="candidatCaptcha.isGenerating"
                 :color="(imageField !== null && imageField === image.index ) ? 'primary' : ''"
                 :class="`t-image-index t-${image.value}`"
                 @click="tryCaptcha(image.value, image.index)"
@@ -81,10 +92,13 @@ import {
   TRY_RESOLVE_CAPTCHA_REQUEST,
 } from '@/store'
 import { mapState } from 'vuex'
+import { BigLoadingIndicator } from '@/components'
 
 export default {
   name: 'Captcha',
-
+  components: {
+    BigLoadingIndicator,
+  },
   props: {
     disabledValue: {
       type: Boolean,
@@ -95,6 +109,7 @@ export default {
   data () {
     return {
       imageField: null,
+      isLoading: false,
     }
   },
 
@@ -107,7 +122,11 @@ export default {
   methods: {
     async getCaptcha () {
       this.imageField = null
+      this.isLoading = true
       await this.$store.dispatch(GENERATE_CAPTCHA_REQUEST)
+      setTimeout(() => {
+        this.isLoading = false
+      }, 1000)
     },
     async tryCaptcha (imageField, fieldIndex) {
       await this.$store.dispatch(TRY_RESOLVE_CAPTCHA_REQUEST, imageField)
