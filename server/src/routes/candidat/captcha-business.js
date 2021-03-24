@@ -100,7 +100,7 @@ export const startCaptcha = async (userId) => {
 
     statusCode = 403
     const dateTimeWhichCanTryAgain = getFrenchFormattedDateTime(
-      dateNow.plus({ minutes: nbMinuteBeforeRetry }),
+      getFrenchLuxonFromJSDate(canRetryAt),
     )
     // const message = `Dépassement de là limit, veuillez réssayer dans ${nbMinuteBeforeRetry} minutes`
     const message = `Dépassement de là limit, veuillez réssayer à ${dateTimeWhichCanTryAgain.hour}`
