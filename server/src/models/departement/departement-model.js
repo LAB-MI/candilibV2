@@ -16,7 +16,14 @@ const DepartementSchema = new Schema(
       required: true,
       unique: true,
     },
+    isAddedRecently: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true },
 )
+
+DepartementSchema.index({ isAddedRecently: 1 })
+
 export default mongoose.model('departement', DepartementSchema)
