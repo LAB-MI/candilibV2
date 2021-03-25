@@ -5,6 +5,7 @@ import { formatResult } from './utils'
 import messages from '@/candidat'
 
 import { SET_MODIFYING_RESERVATION, SIGN_OUT_CANDIDAT } from '@/store'
+import { GENERATE_CAPTCHA_REQUEST } from './candidat-captcha'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
 export const FETCH_DATES_SUCCESS = 'FETCH_DATES_SUCCESS'
@@ -120,7 +121,9 @@ export default {
       commit(CONFIRM_SELECT_DAY_REQUEST)
 
       const { slot, centre, isAccompanied, hasDualControlCar, isModification } = selected
-      const { selectedResponse } = rootState.candidatCaptcha.generatedCaptcha
+      const { selectedResponse, isReady } = rootState.candidatCaptcha.generatedCaptcha
+
+      commit(GENERATE_CAPTCHA_REQUEST, { isReady })
 
       const result = await api.candidat.setReservations(
         centre.nom,

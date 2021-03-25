@@ -56,7 +56,7 @@ export default {
     },
 
     [RESET_CAPTCHA] (state) {
-      state.generatedCaptcha = { isReady: true, images: [], selectedResponse: false, imageFieldName: undefined }
+      state.generatedCaptcha = { isReady: false, images: [], selectedResponse: false, imageFieldName: undefined }
       state.isGenerating = false
       state.isTrying = false
     },
