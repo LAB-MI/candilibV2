@@ -141,7 +141,7 @@ describe('Captcha test', () => {
 
     const expectedValue04 = {
       success: false,
-      message: `Dépassement de là limit, veuillez réssayer à ${getFrenchFormattedDateTime(dateCanTryAt).hour}`,
+      message: `Dépassement de la limite, veuillez réssayer à ${getFrenchFormattedDateTime(dateCanTryAt).hour}`,
       statusCode: 403,
       isCaptcha: false,
     }
@@ -210,7 +210,7 @@ describe('Captcha test', () => {
     // console.log('4er captha')
     const expectedValueNewCaptcha02 = {
       success: false,
-      message: `Dépassement de là limit, veuillez réssayer à ${getFrenchFormattedDateTime(dateCanTryAt).hour}`,
+      message: `Dépassement de la limite, veuillez réssayer à ${getFrenchFormattedDateTime(dateCanTryAt).hour}`,
       statusCode: 403,
       isCaptcha: false,
 
@@ -225,7 +225,7 @@ describe('Captcha test', () => {
     // console.log('5er captha')
     const expectedValueDurringCanRetryAt = {
       success: false,
-      message: `Dépassement de là limit, veuillez réssayer à ${getFrenchFormattedDateTime(dateCanTryAt).hour}`,
+      message: `Dépassement de la limite, veuillez réssayer à ${getFrenchFormattedDateTime(dateCanTryAt).hour}`,
       statusCode: 403,
       isCaptcha: false,
 

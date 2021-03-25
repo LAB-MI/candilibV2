@@ -2,15 +2,17 @@ import { tryLimit } from '../../../config'
 import { getSessionByCandidatId, updateSession } from '../../../models/session-candidat'
 import { getFrenchLuxon, getFrenchLuxonFromJSDate, appLogger } from '../../../util'
 
-// TODO: mettre dans config.js
-// const tryLimit = 3
 export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'try-submition-captcha',
     userId,
   }
+
+  const queryParams = []
+
   try {
     const currentSession = await getSessionByCandidatId(userId)
 
@@ -45,7 +47,6 @@ export const trySubmissionCaptcha = async (req, res, next) => {
 
     const namespace = userId
 
-    const queryParams = []
     let responseStatus
 
     const visualCaptcha = require('visualcaptcha')(currentSession.session, namespace)
@@ -85,6 +86,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
         ...loggerInfo,
         description: message,
         statusCode: responseStatus,
+        infoStatus: queryParams.join(),
       })
 
       await updateSession({
@@ -102,7 +104,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       })
     }
 
-    appLogger.info({ ...loggerInfo, description: 'Captcha validé', count })
+    appLogger.info({ ...loggerInfo, description: 'Captcha validé', count, infoStatus: queryParams.join() })
 
     await updateSession({
       userId,
@@ -121,6 +123,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       ...loggerInfo,
       description: message,
       statusCode: 500,
+      infoStatus: queryParams.join(),
       error,
     })
 
