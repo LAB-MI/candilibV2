@@ -27,6 +27,7 @@ describe('Saving Departement', () => {
 
     // Then
     expect(departement.isNew).toBe(false)
+
     await deleteDepartementById(departement._id)
   })
 })
@@ -56,6 +57,7 @@ describe('Find Departement', () => {
     expect(departement).toBeDefined()
     expect(departement).not.toBeNull()
     expect(departement).toHaveProperty('email', validEmail)
+    expect(departement).toHaveProperty('isAddedRecently', false)
   })
   it('Find departement by id if is existing', async () => {
     // Given
