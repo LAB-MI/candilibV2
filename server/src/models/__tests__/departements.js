@@ -13,7 +13,7 @@ export const createDepartementTest = async (
 
 export const createManyDepartementTest = async departements => {
   const createdDepartements = await Promise.all(
-    departements.map(({ _id, email }) => createDepartement({ _id, email })),
+    departements.map(({ _id, email, isAddedRecently }) => createDepartement({ _id, email, isAddedRecently })),
   )
   return createdDepartements
 }
