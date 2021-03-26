@@ -135,8 +135,8 @@ export const isDepartementAlreadyExist = async departementId => {
  *
  * @returns {Promise.<Departement>} - Retourne le département créé
  */
-export const createDepartements = async (departementId, email) => {
-  const result = await createDepartement({ _id: departementId, email })
+export const createDepartements = async (departementId, email, isAddedRecently) => {
+  const result = await createDepartement({ _id: departementId, email, isAddedRecently })
   return result
 }
 
