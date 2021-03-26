@@ -48,7 +48,7 @@ import config from '../../config'
  * @param {string} req.body.departementEmail - Adresse courriel du département
  */
 export const createDepartementsController = async (req, res) => {
-  const { departementId, departementEmail } = req.body
+  const { departementId, departementEmail, isAddedRecently } = req.body
   const loggerInfo = {
     request_id: req.request_id,
     section: 'admin-departement',
@@ -56,6 +56,7 @@ export const createDepartementsController = async (req, res) => {
     admin: req.userId,
     departementId,
     departementEmail,
+    isAddedRecently,
   }
   if (!departementId) {
     const message = INVALID_DEPARTEMENT_NUMBER
@@ -112,6 +113,7 @@ export const createDepartementsController = async (req, res) => {
     const departementCreated = await createDepartements(
       departementId,
       departementEmail,
+      isAddedRecently,
     )
     const isUsersUpdated = await updateDepartementsUsersAdminAndTech(
       departementId,
@@ -306,7 +308,7 @@ export const deleteDepartementController = async (req, res) => {
  */
 export const updateDepartementsController = async (req, res) => {
   const departementId = req.params.id
-  const { newEmail } = req.body
+  const { newEmail, isAddedRecently } = req.body
 
   const loggerInfo = {
     request_id: req.request_id,
@@ -315,6 +317,7 @@ export const updateDepartementsController = async (req, res) => {
     admin: req.userId,
     departementId,
     newEmail,
+    isAddedRecently,
   }
 
   if (!departementId) {
@@ -361,6 +364,7 @@ export const updateDepartementsController = async (req, res) => {
     const result = await updateDepartements({
       _id: departementId,
       email: newEmail,
+      isAddedRecently,
     })
     const message = `Le département ${departementId} a bien été mis à jour`
     appLogger.info({
