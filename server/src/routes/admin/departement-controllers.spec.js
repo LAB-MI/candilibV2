@@ -9,6 +9,7 @@ import {
   INVALID_DEPARTEMENT_EMAIL,
   INVALID_DEPARTEMENT_NUMBER,
 } from './message.constants'
+import { findDepartementById } from '../../models/departement'
 
 const emailAdmin = 'Admin@example.com'
 const password = 'S3cr3757uff!'
@@ -40,14 +41,17 @@ const departementList = [
   {
     _id: '35',
     email: 'emailDu35@mail.com',
+    isAddedRecently: false,
   },
   {
     _id: '36',
     email: 'emaildu36@mail.com',
+    isAddedRecently: false,
   },
   {
     _id: '37',
     email: 'emaildu37@mail.com',
+    isAddedRecently: true,
   },
 ]
 
@@ -76,6 +80,7 @@ describe('Département controllers', () => {
       .send({
         departementId: departementId01,
         departementEmail: departementEmail01,
+        isAddedRecently: true,
       })
       .expect(200)
 
@@ -84,6 +89,13 @@ describe('Département controllers', () => {
       'message',
       `Le département ${departementId01} a bien été créé avec l'adresse courriel ${departementEmail01}`,
     )
+
+    const depFound = await findDepartementById(departementId01)
+
+    expect(depFound).toHaveProperty('_id', departementId01)
+    expect(depFound).toHaveProperty('email', departementEmail01)
+    expect(depFound).toHaveProperty('isAddedRecently', true)
+
     const expected = [...departements, departementId01]
     const userInfo = await findUserByEmail(emailAdmin, true)
     expect(userInfo.departements).toEqual(expect.arrayContaining(expected))
@@ -143,6 +155,7 @@ describe('Département controllers', () => {
     expect(body.result).toHaveLength(1)
     expect(body.result[0]).toHaveProperty('_id', departementList[0]._id)
     expect(body.result[0]).toHaveProperty('email', departementList[0].email)
+    expect(body.result[0]).toHaveProperty('isAddedRecently', departementList[0].isAddedRecently)
   })
 
   it('Should get a list of departement', async () => {
@@ -154,7 +167,7 @@ describe('Département controllers', () => {
     expect(body).toHaveProperty('result')
     expect(body.result).toBeDefined()
     expect(body.result).toHaveLength(departementList.length)
-    expect(body.result.map(el => ({ _id: el._id, email: el.email }))).toEqual(
+    expect(body.result.map(el => ({ _id: el._id, email: el.email, isAddedRecently: el.isAddedRecently }))).toEqual(
       expect.arrayContaining(departementList),
     )
   })
@@ -167,6 +180,7 @@ describe('Département controllers', () => {
 
     expect(body.result).toHaveProperty('_id', departementList[2]._id)
     expect(body.result).toHaveProperty('email', newEmail)
+    expect(body.result).toHaveProperty('isAddedRecently', false)
   })
 
   it('Should not update one departement', async () => {
