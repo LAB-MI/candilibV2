@@ -9,6 +9,7 @@ export const getImage = async (req, res, appLogger) => {
   const indexImage = req?.params?.index
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'get-image-captcha',
     userId,
     indexImage,
@@ -100,10 +101,9 @@ export const startCaptcha = async (userId) => {
 
     statusCode = 403
     const dateTimeWhichCanTryAgain = getFrenchFormattedDateTime(
-      dateNow.plus({ minutes: nbMinuteBeforeRetry }),
+      getFrenchLuxonFromJSDate(canRetryAt),
     )
-    // const message = `Dépassement de là limit, veuillez réssayer dans ${nbMinuteBeforeRetry} minutes`
-    const message = `Dépassement de là limit, veuillez réssayer à ${dateTimeWhichCanTryAgain.hour}`
+    const message = `Dépassement de la limite, veuillez réssayer à ${dateTimeWhichCanTryAgain.hour}`
     // TODO: envoyer le nombre de minute restante
     const error = new Error(message)
     error.statusCode = statusCode

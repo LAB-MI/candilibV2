@@ -25,7 +25,10 @@
             :label="$formatMessage({ id: 'confirmation_reservation_checkbox_double_commande' })"
             value="doubleControlCar"
           />
-          <captcha :disabled-value="!(selectedCheckBox.length === 2)" />
+          <captcha
+            class="mb-5"
+            :disabled-value="!(selectedCheckBox.length === 2)"
+          />
         </div>
         <v-flex d-flex>
           <v-spacer />

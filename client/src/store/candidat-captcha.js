@@ -23,9 +23,9 @@ export default {
   },
 
   mutations: {
-    [GENERATE_CAPTCHA_REQUEST] (state) {
+    [GENERATE_CAPTCHA_REQUEST] (state, { isReady }) {
       state.isGenerating = true
-      state.generatedCaptcha.isReady = false
+      state.generatedCaptcha.isReady = isReady
     },
     [GENERATE_CAPTCHA_SUCCESS] (state, { allImages, imageName, imageFieldName, count }) {
       state.generatedCaptcha.question = imageName
@@ -67,8 +67,8 @@ export default {
       commit(RESET_CAPTCHA)
     },
 
-    async [GENERATE_CAPTCHA_REQUEST] ({ commit, dispatch }) {
-      commit(GENERATE_CAPTCHA_REQUEST)
+    async [GENERATE_CAPTCHA_REQUEST] ({ commit, dispatch, state }) {
+      commit(GENERATE_CAPTCHA_REQUEST, { isReady: state.generatedCaptcha.isReady })
 
       try {
         const newCaptcha = await api.candidat.startRoute()

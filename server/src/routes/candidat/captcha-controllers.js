@@ -10,6 +10,7 @@ export const initCaptcha = async (req, res) => {
   const { userId } = req
 
   const loggerInfo = {
+    request_id: req.request_id,
     section: 'init-captcha',
     userId,
   }
