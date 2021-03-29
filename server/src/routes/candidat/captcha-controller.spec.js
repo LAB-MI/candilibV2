@@ -280,4 +280,55 @@ describe('Captcha test', () => {
     }
     await requestTrySubmitionByPlaceRoute(expectedValueCaptcha)
   })
+
+  it('should can add a new captcha after last fail', async () => {
+    const captchaPath = 'start'
+
+    const expectedValue01 = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    await requestCaptcha(captchaPath, expectedValue01)
+
+    const expectedValue02 = { count: 2, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    await requestCaptcha(captchaPath, expectedValue02)
+
+    const expectedValue03 = { count: 3, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    await requestCaptcha(captchaPath, expectedValue03)
+
+    const currentSessionCandidat = await getSessionByCandidatId(candidat1._id)
+    const currentSession = currentSessionCandidat.session[`visualcaptcha_${candidat1._id}`]
+
+    const { body: bodyPlace } = await request(app)
+      .patch(`${apiPrefix}/candidat/places`)
+      .set('Accept', 'application/json')
+      .send({
+        [currentSession.frontendData.imageFieldName]: currentSession.validImageOption.value + 'badReponse',
+      })
+      .expect(403)
+
+    expect(bodyPlace).toBeDefined()
+    expect(bodyPlace).toHaveProperty('success')
+    expect(bodyPlace).toHaveProperty('success', false)
+    expect(bodyPlace).toHaveProperty('message')
+    expect(bodyPlace).toHaveProperty('message', 'Réponse invalide')
+
+    const dateCanTryAt = getFrenchLuxonFromJSDate(currentSessionCandidat.canRetryAt)
+
+    const expectedValue04 = {
+      success: false,
+      message: `Dépassement de la limite, veuillez réssayer à ${getFrenchFormattedDateTime(dateCanTryAt).hour}`,
+      statusCode: 403,
+      isCaptcha: false,
+    }
+
+    await requestCaptcha(captchaPath, expectedValue04)
+
+    const currentSessionCandidatAfterLastTry = await getSessionByCandidatId(candidat1._id)
+    const dateCanTryAtAfterLastTry = getFrenchLuxonFromJSDate(currentSessionCandidatAfterLastTry.canRetryAt)
+    const minutes = 1
+    const nowPlus2Minutes = dateCanTryAtAfterLastTry.plus({ minutes })
+    setNowAfterSelectedHour(nowPlus2Minutes.toJSDate().getHours(), nowPlus2Minutes.minute)
+
+    const expectedValue05 = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+
+    await requestCaptcha(captchaPath, expectedValue05)
+  })
 })
