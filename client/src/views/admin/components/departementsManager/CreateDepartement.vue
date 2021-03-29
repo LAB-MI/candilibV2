@@ -34,6 +34,14 @@
         />
 
         <v-spacer />
+        <v-checkbox
+          v-model="isAddedRecently"
+          label="Récent"
+          color="primary"
+          :class="`check-box-style t-checkbox-recently`"
+        >
+          {{ isAddedRecently }}
+        </v-checkbox>
 
         <v-spacer />
 
@@ -75,6 +83,7 @@ export default {
       departementPlaceholder: '',
       emailPlaceholder: '',
       departementEmail: '',
+      isAddedRecently: true,
       emailRules: [
         departementEmail => departementEmail ? (emailRegex.test(departementEmail) || "L'adresse courriel doit être valide") : true,
       ],
@@ -116,11 +125,13 @@ export default {
       const {
         departementId,
         departementEmail,
+        isAddedRecently,
       } = this
 
-      await this.$store.dispatch(CREATE_DEPARTEMENT_REQUEST, { departementId: departementId.trim(), departementEmail: departementEmail.trim() })
+      await this.$store.dispatch(CREATE_DEPARTEMENT_REQUEST, { departementId: departementId.trim(), departementEmail: departementEmail.trim(), isAddedRecently })
       this.departementId = null
       this.departementEmail = ''
+      this.isAddedRecently = true
     },
   },
 }
