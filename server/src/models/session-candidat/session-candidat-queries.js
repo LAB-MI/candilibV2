@@ -38,7 +38,9 @@ const checkKeyNeedUpdate = (sessionInfo) => {
   const neededKey = {}
 
   neededKey.count = count
-  neededKey.canRetryAt = canRetryAt
+  if (canRetryAt !== undefined) {
+    neededKey.canRetryAt = canRetryAt
+  }
 
   if (session) {
     neededKey.session = session

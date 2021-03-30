@@ -77,7 +77,7 @@ describe('Test places business: get dates from places available', () => {
 
     dateIn3Months = getFrenchLuxon().plus({
       month: 3,
-    })
+    }).minus({ days: 1 })
     if (dateIn3Months.weekday === 7) { dateIn3Months = dateIn3Months.minus({ day: 1 }) }
 
     const dateIn1Month = getFrenchLuxon().plus({ month: 1 })
