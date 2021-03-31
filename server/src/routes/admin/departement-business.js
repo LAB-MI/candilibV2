@@ -105,9 +105,9 @@ export const isContainingCentre = async departementId => {
  * @param {string} departementEmail - Adresse courriel du département
  * @returns {boolean} - Retourne `true` si le département avec cette adresse courriel existe déjà, sinon `false`
  */
-export const isEmailAlreadyUse = async departementEmail => {
+export const isEmailAlreadyUse = async (departementEmail, departementId) => {
   const departement = await findDepartementByEmail(departementEmail)
-  return !!departement
+  return !!(departement && departement._id !== departementId)
 }
 
 /**

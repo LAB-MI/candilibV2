@@ -83,7 +83,7 @@ export const createDepartementsController = async (req, res) => {
   }
 
   try {
-    const isEmailUsed = await isEmailAlreadyUse(departementEmail)
+    const isEmailUsed = await isEmailAlreadyUse(departementEmail, departementId)
 
     if (isEmailUsed) {
       const message = DEPARTEMENT_EMAIL_ALREADY_USED
@@ -346,7 +346,7 @@ export const updateDepartementsController = async (req, res) => {
     })
   }
 
-  const isEmailUsed = await isEmailAlreadyUse(newEmail)
+  const isEmailUsed = await isEmailAlreadyUse(newEmail, departementId)
   if (isEmailUsed) {
     const message = EMAIL_ALREADY_USE
 
