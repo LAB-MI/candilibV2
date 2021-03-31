@@ -38,7 +38,7 @@
           v-model="isAddedRecently"
           label="Récent"
           color="primary"
-          :class="`check-box-style t-checkbox-recently`"
+          class="check-box-style t-checkbox-recently"
         >
           {{ isAddedRecently }}
         </v-checkbox>

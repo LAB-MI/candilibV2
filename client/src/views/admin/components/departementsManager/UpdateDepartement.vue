@@ -46,7 +46,7 @@
             v-model="isAddedRecently"
             label="Récent"
             color="primary"
-            :class="`check-box-style t-checkbox-recently`"
+            class="check-box-style t-update-checkbox-recently"
           >
             {{ isAddedRecently }}
           </v-checkbox>
@@ -102,13 +102,16 @@ export default {
         newEmail => newEmail ? (emailRegex.test(newEmail) || "L'adresse courriel doit être valide") : true,
       ],
       emailPlaceholder: '',
-      isAddedRecently: this.deprt.isAddRecently,
+      isAddedRecently: this.deprt.isAddedRecently,
     }
   },
   watch: {
     deprt (newValue, oldValue) {
       this.newEmail = newValue.email
       this.isAddedRecently = newValue.isAddedRecently
+    },
+    isUpdating (newValue) {
+      console.log(newValue)
     },
   },
   methods: {
