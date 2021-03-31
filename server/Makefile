@@ -1,3 +1,4 @@
+include ../Makefile.mk
 include Makefile.mk
 
 build-dev:
@@ -26,6 +27,19 @@ api-down-dev:
 
 init-db-e2e:
 	( cd .. && bash ci/init-db-e2e.sh )
+
+up-dev-with-nginx: api-up-dev-with-nginx nginx-up-dev
+	API_PORT=8001	${DC} -f ${DC_APP_BUILD_DEV} up
+down-dev-with-nginx: nginx-down-dev
+	${DC} -f ${DC_APP_BUILD_DEV} down
+
+api-up-dev-with-nginx:
+	API_PORT=8001	${DC} -f ${DC_APP_BUILD_DEV} up
+
+nginx-up-dev:
+	API_PORT=8001	${DC} -f docker-compose.nginx.dev.yml up
+nginx-down-dev:
+	API_PORT=8001	${DC} -f docker-compose.nginx.dev.yml down
 
 mailhog-up:
 	${DC} -f ${DC_APP_BUILD_DEV} up -d mailhog

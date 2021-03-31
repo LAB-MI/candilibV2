@@ -14,6 +14,7 @@ EXPOSE 8000
 
 # use proxy & private npm registry
 # With internal npm repo (autosigned) disable strict ssl : strict-ssl false
+# ENV TZ="Europe/Paris" #Ne Pas mettre à cause des sources existant developpé sans TZ
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc/timezone ; \
     if [ ! -z "$http_proxy" ] ; then \
         npm config delete proxy; \

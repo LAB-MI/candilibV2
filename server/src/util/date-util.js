@@ -3,6 +3,7 @@
  * @module util/date-util
  */
 import { DateTime } from 'luxon'
+import moment from 'moment'
 
 /**
  * @constant {string} DATETIME_FULL Format court de la date en français avec l'heure. Ex. : `"14/10/1983 à 13:30"`
@@ -242,4 +243,29 @@ export const isHolidays = date => {
 
 export const isWorkingDay = date => {
   return !isHolidays(date) && !(date.weekday === 7)
+}
+
+/**
+ * Calcule la date d'expiration du token en ajoutant un jour à la date courante
+ *
+ * @function getTokenExpiration
+ * @returns {string} Example : '36000s'
+ */
+
+export const getNumberSecondRemainingInTheDay = () => {
+  const now = moment()
+  const midnight = now
+    .clone()
+    .hour(23)
+    .minute(59)
+    .second(59)
+    .millisecond(0)
+
+  if (midnight.isBefore(now)) {
+    midnight.add(1, 'days')
+  }
+
+  const duration = midnight.diff(now) / 1000
+
+  return duration + 's'
 }

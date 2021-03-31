@@ -455,3 +455,57 @@ Cypress.Commands.add('getCandidatInDB', (query) => {
     return JSON.parse(JSON.stringify(content.body))
   })
 })
+
+Cypress.Commands.add('getSolutionCaptcha', (query) => {
+  cy.getCandidatInDB(query)
+    .then(content => {
+      const userId = content[0]._id
+
+      cy.request('GET', Cypress.env('ApiRestDB') + '/sessioncandidats', { userId: userId })
+        .then((contentSession) => {
+          cy.log('userId', userId)
+          cy.log('contentSession', JSON.stringify(contentSession))
+          const captchaNameSpace = `visualcaptcha_${userId}`
+          const body = contentSession.body
+          cy.log('session', JSON.stringify(body))
+          if (!body.length || !body[0].session || !body[0].session[captchaNameSpace]) {
+            cy.log('Pas de session pour ce candidat')
+            return cy.wrap({ success: false })
+          } else {
+            const value = body[0].session[captchaNameSpace].validImageOption.value
+            cy.log('value', value)
+            return cy.wrap({ value: value })
+          }
+        })
+    })
+})
+
+Cypress.Commands.add('selectCaptchaSoltion', (email) => {
+  cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
+  cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+
+  cy.getSolutionCaptcha({ email: email }).then(imageValueResponse => {
+    cy.log('imageValueResponse', imageValueResponse.value)
+    cy.get(`.t-${imageValueResponse.value}`).click()
+  })
+})
+
+Cypress.Commands.add('selectWrongCaptchaSoltionAndConfirm', (email) => {
+  cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
+  cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+  cy.getSolutionCaptcha({ email: email }).then(imageValueResponse => {
+    cy.log('imageValueResponse', imageValueResponse.value)
+
+    cy.get('.t-image-index').not(`.t-${imageValueResponse.value}`).eq(0).click()
+
+    cy.get('button')
+      .contains('Confirmer')
+      .click()
+  })
+})
+
+Cypress.Commands.add('deleteSessionCandidats', (query) => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/sessioncandidats', query).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
