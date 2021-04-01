@@ -3,6 +3,7 @@
  * @module
  */
 import { findCandidatById } from '../../../models/candidat'
+import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../../util'
 import { sendErrorResponse } from '../../../util/send-error-response'
 
 /**
@@ -36,7 +37,7 @@ export async function verifyAccesPlacesByCandidat (req, res, next) {
 
   try {
     // appLogger.debug(loggerInfo)
-    const candidat = await findCandidatById(userId)
+    const candidat = await findCandidatById(userId, { status: 1, canBookFrom: 1 })
     if (!candidat) {
       const error = new Error('Candidat non trouvé')
       error.status = 401
@@ -46,7 +47,10 @@ export async function verifyAccesPlacesByCandidat (req, res, next) {
     }
 
     req.userStatus = candidat.status
-
+    // Pour la gestion de pénalité, BEGIN
+    // TODO: Trouver un regouper les calculs de pénalité
+    req.isInRecentlyDept = req.isInRecentlyDept && !(candidat.canBookFrom && getFrenchLuxonFromJSDate(candidat.canBookFrom) >= getFrenchLuxon())
+    // Pour la gestion de pénalité, END
     next()
     return
   } catch (error) {
