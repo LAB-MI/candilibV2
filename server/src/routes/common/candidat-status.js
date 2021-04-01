@@ -23,3 +23,8 @@ export const getDelayFromStatus = (status) => {
 
   return (nbStatus - 1) * msec
 }
+
+export const getStatusWithRecentlyDept = (status, geoDept, homeDept, isInRecentlyDep) => {
+  if (isInRecentlyDep && geoDept === homeDept) return '0'
+  return status
+}

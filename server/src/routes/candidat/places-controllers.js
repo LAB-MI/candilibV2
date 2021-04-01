@@ -30,6 +30,7 @@ import {
   CANDIDAT_MUST_CANCEL_BOOKING,
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
+import { getStatusWithRecentlyDept } from '../common/candidat-status'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -86,6 +87,9 @@ export async function getPlacesByCentre (req, res) {
   const centreId = req.params.id
   const candidatId = req.userId
   const candidatStatus = req.userStatus
+  const homeDepartement = req.candidatHomeDepartement
+  const isInRecentlyDept = req.isInRecentlyDept
+
   const { nomCentre, geoDepartement, begin, end, dateTime } = req.query
 
   const loggerInfo = {
@@ -131,7 +135,11 @@ export async function getPlacesByCentre (req, res) {
   try {
     if (centreId) {
       if (dateTime) {
-        dates = await hasAvailablePlaces(centreId, dateTime, candidatStatus)
+        dates = await hasAvailablePlaces(
+          centreId,
+          dateTime,
+          getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
+        )
       } else {
         dates = await getDatesByCentreId(centreId, begin, end, candidatId, candidatStatus)
       }
@@ -144,7 +152,7 @@ export async function getPlacesByCentre (req, res) {
           geoDepartement,
           nomCentre,
           dateTime,
-          candidatStatus,
+          getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
         )
       } else {
         dates = await getPlacesByDepartementAndCentre(
@@ -153,7 +161,7 @@ export async function getPlacesByCentre (req, res) {
           candidatId,
           begin,
           end,
-          candidatStatus,
+          getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
         )
       }
     }
@@ -366,6 +374,8 @@ export const bookPlaceByCandidat = async (req, res) => {
   const section = 'candidat-create-reservation'
   const candidatId = req.userId
   const candidatStatus = req.userStatus
+  const homeDepartement = req.candidatHomeDepartement
+  const isInRecentlyDept = req.isInRecentlyDept
 
   const {
     nomCentre,
@@ -468,7 +478,7 @@ export const bookPlaceByCandidat = async (req, res) => {
         nomCentre,
         date,
         geoDepartement,
-        candidatStatus,
+        getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
       )
     } catch (error) {
       appLogger.error({

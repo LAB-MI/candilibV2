@@ -25,6 +25,7 @@ import {
   UNKNOWN_ERROR_ADD_CENTRE,
   UNKNOWN_ERROR_GET_CENTRE,
 } from '../admin/message.constants'
+import { getStatusWithRecentlyDept } from './candidat-status'
 
 export const NOT_CODE_DEP_MSG =
   'Le code de département est manquant, Veuillez choisir un code département'
@@ -34,6 +35,8 @@ export async function getCentres (req, res) {
   let beginDate = req.query.begin
   const endDate = req.query.end
   const candidatStatus = req.userStatus
+  const homeDepartement = req.candidatHomeDepartement
+  const isInRecentlyDept = req.isInRecentlyDept
 
   const loggerContent = {
     request_id: req.request_id,
@@ -78,7 +81,7 @@ export async function getCentres (req, res) {
         departement,
         beginDate,
         endDate,
-        candidatStatus,
+        getStatusWithRecentlyDept(candidatStatus, departement, homeDepartement, isInRecentlyDept),
       )
 
       appLogger.info({
