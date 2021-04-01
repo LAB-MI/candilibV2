@@ -55,6 +55,7 @@ export async function verifyToken (req, res, next) {
       portable,
       prenom,
       dateETG,
+      isInRecentlyDept,
     } = token
 
     req.userId = id
@@ -71,6 +72,7 @@ export async function verifyToken (req, res, next) {
     req.portable = portable
     req.prenom = prenom
     req.dateETG = dateETG
+    req.isInRecentlyDept = isInRecentlyDept
 
     const isCandidat =
       !level || level === config.userStatusLevels[config.userStatuses.CANDIDAT]
