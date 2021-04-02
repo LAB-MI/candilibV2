@@ -314,6 +314,7 @@ export async function getMe (req, res) {
     // res.json({
     //   candidat,
     // })
+    const isInRecentlyDept = await foundedCandidat.isInRecentlyDept
 
     res.json({
       candidat: {
@@ -328,6 +329,7 @@ export async function getMe (req, res) {
         prenom,
         visibilityHour: getVisibilityHourString(foundedCandidat.status || candidatStatus),
         dateETG,
+        isInRecentlyDept,
       },
     })
   } catch (error) {
