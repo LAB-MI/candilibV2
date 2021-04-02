@@ -86,7 +86,7 @@ export const ErrorMsgArgEmpty =
 export async function getPlacesByCentre (req, res) {
   const centreId = req.params.id
   const candidatId = req.userId
-  const candidatStatus = req.userStatus
+  const candidatStatus = req.candidatStatus
   const homeDepartement = req.candidatHomeDepartement
   const isInRecentlyDept = req.isInRecentlyDept
 
@@ -373,7 +373,7 @@ function isMissingPrerequesite (nomCentre, date, isAccompanied, hasDualControlCa
 export const bookPlaceByCandidat = async (req, res) => {
   const section = 'candidat-create-reservation'
   const candidatId = req.userId
-  const candidatStatus = req.userStatus
+  const candidatStatus = req.candidatStatus
   const homeDepartement = req.candidatHomeDepartement
   const isInRecentlyDept = req.isInRecentlyDept
 

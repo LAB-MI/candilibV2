@@ -46,7 +46,7 @@ export async function verifyAccesPlacesByCandidat (req, res, next) {
       throw error
     }
 
-    req.userStatus = candidat.status
+    req.candidatStatus = candidat.status
     // Pour la gestion de pénalité, BEGIN
     // TODO: Trouver un regouper les calculs de pénalité
     req.isInRecentlyDept = req.isInRecentlyDept && !(candidat.canBookFrom && getFrenchLuxonFromJSDate(candidat.canBookFrom) >= getFrenchLuxon())

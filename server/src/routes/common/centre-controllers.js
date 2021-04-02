@@ -34,7 +34,7 @@ export async function getCentres (req, res) {
   const { departement, centreId, nom } = req.query
   let beginDate = req.query.begin
   const endDate = req.query.end
-  const candidatStatus = req.userStatus
+  const candidatStatus = req.candidatStatus
   const homeDepartement = req.candidatHomeDepartement
   const isInRecentlyDept = req.isInRecentlyDept
 
