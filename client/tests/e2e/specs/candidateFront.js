@@ -147,6 +147,14 @@ describe('Connected candidate front', () => {
         cy.contains(labelDateETG)
           .parent().parent()
           .should('contain', dateEtg)
+
+        const labelHomeDepartement = 'Département de résidence'
+        cy.get('.v-chip').should('contain', labelHomeDepartement)
+
+        const labelIsInRecentlyDept = 'exepction pour votre departement de résidence'
+        cy.get('.v-chip').should('contain', labelIsInRecentlyDept)
+
+
       })
     })
 
