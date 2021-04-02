@@ -63,7 +63,7 @@ build_and_publish_qualif_app:
   variables:
     LATEST_VERSION: qualif
     PLATEFORME: qualif
-    PLATEFORME_BRANCH: feat/gitlab-ci
+    PLATEFORME_BRANCH: $PLATEFORME_BRANCH
     OS_CONFIG: $OS_CONFIG_QUALIF
     OS_STORAGE_URL: $OS_STORAGE_URL
   only:
@@ -80,11 +80,10 @@ build_and_publish_latest_app:
   variables:
     LATEST_VERSION: latest
     PLATEFORME: dev
-    PLATEFORME_BRANCH: feat/gitlab-ci
+    PLATEFORME_BRANCH: $PLATEFORME_BRANCH
     OS_CONFIG: $OS_CONFIG_DEV
     OS_STORAGE_URL: $OS_STORAGE_URL
   only:
-    - /^devops\/*/
     - develop
   script:
     - *build_template_script
