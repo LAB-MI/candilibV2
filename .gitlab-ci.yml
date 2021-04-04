@@ -66,9 +66,8 @@ build_and_publish_qualif_app:
     PLATEFORME_BRANCH: $PLATEFORME_BRANCH
     OS_CONFIG: $OS_CONFIG_QUALIF
     OS_STORAGE_URL: $OS_STORAGE_URL
-  only:
-    - /^test\/*/
-    - /^qualif\/*/
+  rules:
+    - if: ( $CI_COMMIT_BRANCH =~ /^qualif\/*/ || $CI_COMMIT_BRANCH =~ /^devops\/*/ )
   script:
     - *build_template_script
     - *publish_template_script
@@ -83,8 +82,9 @@ build_and_publish_latest_app:
     PLATEFORME_BRANCH: $PLATEFORME_BRANCH
     OS_CONFIG: $OS_CONFIG_DEV
     OS_STORAGE_URL: $OS_STORAGE_URL
-  only:
-    - develop
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /^v*/ && $CI_COMMIT_BRANCH == null
+    - if: $CI_COMMIT_BRANCH =~ /^develop/
   script:
     - *build_template_script
     - *publish_template_script
