@@ -153,8 +153,6 @@ describe('Connected candidate front', () => {
 
         const labelIsInRecentlyDept = 'exepction pour votre departement de résidence'
         cy.get('.v-chip').should('contain', labelIsInRecentlyDept)
-
-
       })
     })
 

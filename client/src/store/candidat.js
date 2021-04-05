@@ -207,7 +207,13 @@ export default {
         if (response.success === false) {
           throw new Error(response.message)
         }
-        commit(FETCH_MY_PROFILE_SUCCESS, response.candidat)
+
+        const shapedCandidat = response.candidat
+        if (!response.candidat.isInRecentlyDept) {
+          delete shapedCandidat.isInRecentlyDept
+        }
+
+        commit(FETCH_MY_PROFILE_SUCCESS, shapedCandidat)
       } catch (error) {
         commit(FETCH_MY_PROFILE_FAILURE)
         dispatch(SHOW_ERROR, error.message)

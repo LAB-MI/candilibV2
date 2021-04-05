@@ -36,8 +36,10 @@ const labelDictionary = {
   homeDepartement: 'Département de résidence',
   isInRecentlyDept: 'exepction pour votre departement de résidence',
 }
+
 const convertDictionary = {
   dateETG: (value) => value && getFrenchDateFromLuxon(getFrenchLuxonFromIso(value)),
+  isInRecentlyDept: () => 'MESSAGE',
 }
 
 export default {
