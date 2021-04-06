@@ -1,10 +1,9 @@
-import { config } from 'winston'
-import { tryLimit } from '../../../config'
+import { tryLimit, WITHCAPTCHA } from '../../../config'
 import { getSessionByCandidatId, updateSession } from '../../../models/session-candidat'
 import { getFrenchLuxon, getFrenchLuxonFromJSDate, appLogger } from '../../../util'
 
 export const trySubmissionCaptcha = async (req, res, next) => {
-  if (!config.WITHCAPTCHA) next()
+  if (!WITHCAPTCHA) next()
   const { userId } = req
 
   const loggerInfo = {

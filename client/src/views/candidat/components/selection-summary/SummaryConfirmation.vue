@@ -95,7 +95,7 @@ import {
 } from '@/store'
 
 import Captcha from './captcha/Captcha'
-import { withcaptcha } from '@/util/withcaptha'
+import { withcaptcha } from '../../../../util/withcaptha'
 
 export default {
   name: 'SummaryConfimation',
