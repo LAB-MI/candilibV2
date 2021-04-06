@@ -73,6 +73,7 @@ http {
     add_header X-Content-Type-Options nosniff;
     add_header X-XSS-Protection "1; mode=block";
     add_header Content-Security-Policy "default-src https: 'self' 'unsafe-inline' 'unsafe-eval' data: ; base-uri 'self'; img-src 'self' blob: data:;";
+    add_header Access-Control-Allow-Origin '$http_origin';
     add_header Referrer-Policy "same-origin";
     add_header Feature-Policy "geolocation none;midi none;notifications none;push none;sync-xhr none;microphone none;camera none;magnetometer none;gyroscope self;speaker self;vibrate none;fullscreen self;payment none;";
 
