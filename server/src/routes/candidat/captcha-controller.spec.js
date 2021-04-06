@@ -88,7 +88,7 @@ const requestImageCaptchaByIndex = async (expectedValueImage) => {
   }
 }
 
-describe('Captcha test', () => {
+xdescribe('Captcha test', () => {
   let candidat1
 
   beforeAll(async () => {
