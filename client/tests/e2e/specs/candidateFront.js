@@ -189,34 +189,35 @@ describe('Connected candidate front', () => {
       cy.get('button')
         .should('contain', 'Confirmer')
 
-      // TODO:
-      // Demander un captcha et echoué
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
-      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
-        .then(imageValueResponse => {
-          cy.log('imageValueResponse', imageValueResponse.value)
+      if (Cypress.env('VUE_APP_WITHCAPTCHA')) {
+        // TODO:
+        // Demander un captcha et echoué
+        cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
+        cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+        cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
+          .then(imageValueResponse => {
+            cy.log('imageValueResponse', imageValueResponse.value)
 
-          cy.get('.t-image-index').not(`.t-${imageValueResponse.value}`).eq(0).click()
+            cy.get('.t-image-index').not(`.t-${imageValueResponse.value}`).eq(0).click()
 
-          cy.get('button')
-            .contains('Confirmer')
-            .click()
-          cy.checkAndCloseSnackBar('Réponse invalide')
+            cy.get('button')
+              .contains('Confirmer')
+              .click()
+            cy.checkAndCloseSnackBar('Réponse invalide')
           // TODO: verifier que je ne suis pas reponse la bonne reponse
-        })
+          })
 
-      // TODO:
-      // Demander un captcha et le validé
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
-      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
-        .then(imageValueResponse => {
-          cy.log('imageValueResponse', imageValueResponse.value)
+        // TODO:
+        // Demander un captcha et le validé
+        cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
+        cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+        cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
+          .then(imageValueResponse => {
+            cy.log('imageValueResponse', imageValueResponse.value)
 
-          cy.get(`.t-${imageValueResponse.value}`).click()
-        })
-
+            cy.get(`.t-${imageValueResponse.value}`).click()
+          })
+      }
       // TODO: 2 next line is the factorisation needed
       // cy.selectWrongCaptchaSoltionAndConfirm({ email: Cypress.env('emailCandidatFront') })
       // cy.selectCaptchaSoltion({ email: Cypress.env('emailCandidatFront') })

@@ -95,6 +95,7 @@ import {
 } from '@/store'
 
 import Captcha from './captcha/Captcha'
+import { withcaptcha } from '@/util/withcaptha'
 
 export default {
   name: 'SummaryConfimation',
@@ -118,7 +119,8 @@ export default {
     ]),
 
     disabled () {
-      return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting || !this.candidatCaptcha.generatedCaptcha.selectedResponse
+      if (withcaptcha) { return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting || !this.candidatCaptcha.generatedCaptcha.selectedResponse }
+      return this.selectedCheckBox.length !== 2 || this.timeSlots.isSelecting
     },
 
     isModifying () {

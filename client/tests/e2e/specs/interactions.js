@@ -57,15 +57,16 @@ describe('Standard scenarios', () => {
       cy.get('[type=checkbox]')
         .last().check({ force: true })
 
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
-      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatInteractive') })
-        .then(imageValueResponse => {
-          cy.log('imageValueResponse', imageValueResponse.value)
+      if (Cypress.env('VUE_APP_WITHCAPTCHA')) {
+        cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
+        cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+        cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatInteractive') })
+          .then(imageValueResponse => {
+            cy.log('imageValueResponse', imageValueResponse.value)
 
-          cy.get(`.t-${imageValueResponse.value}`).click()
-        })
-
+            cy.get(`.t-${imageValueResponse.value}`).click()
+          })
+      }
       cy.get('button')
         .contains('Confirmer')
         .click()

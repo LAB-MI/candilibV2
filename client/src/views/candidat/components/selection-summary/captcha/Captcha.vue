@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="withcaptcha">
     <v-card
       elevation="3"
       class="pa-1 ma-1"
@@ -93,6 +93,7 @@ import {
 } from '@/store'
 import { mapState } from 'vuex'
 import { BigLoadingIndicator } from '@/components'
+import { withcaptcha } from '../../../../../util/withcaptha'
 
 export default {
   name: 'Captcha',
@@ -110,6 +111,7 @@ export default {
     return {
       imageField: null,
       isLoading: false,
+      withcaptcha,
     }
   },
 
