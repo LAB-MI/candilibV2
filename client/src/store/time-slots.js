@@ -5,6 +5,7 @@ import { formatResult } from './utils'
 import messages from '@/candidat'
 
 import { SET_MODIFYING_RESERVATION, SIGN_OUT_CANDIDAT } from '@/store'
+import { GENERATE_CAPTCHA_REQUEST } from './candidat-captcha'
 
 export const FETCH_DATES_REQUEST = 'FETCH_DATES_REQUEST'
 export const FETCH_DATES_SUCCESS = 'FETCH_DATES_SUCCESS'
@@ -116,9 +117,14 @@ export default {
       }
     },
 
-    async [CONFIRM_SELECT_DAY_REQUEST] ({ commit, dispatch }, selected) {
+    async [CONFIRM_SELECT_DAY_REQUEST] ({ rootState, commit, dispatch }, selected) {
       commit(CONFIRM_SELECT_DAY_REQUEST)
+
       const { slot, centre, isAccompanied, hasDualControlCar, isModification } = selected
+      const { selectedResponse, isReady } = rootState.candidatCaptcha.generatedCaptcha
+
+      commit(GENERATE_CAPTCHA_REQUEST, { isReady })
+
       const result = await api.candidat.setReservations(
         centre.nom,
         centre.geoDepartement,
@@ -126,7 +132,9 @@ export default {
         isAccompanied,
         hasDualControlCar,
         isModification,
+        selectedResponse,
       )
+
       if (result && result.success) {
         commit(CONFIRM_SELECT_DAY_SUCCESS, selected)
         dispatch(SHOW_SUCCESS, 'Votre réservation a bien été prise en compte')

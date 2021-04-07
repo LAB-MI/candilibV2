@@ -1,0 +1,91 @@
+image: debian:stretch
+variables:
+## Enable under shared runner
+## In gitlab/variables : declare Variable File Variable named http_proxy_shared, and no_proxy_shared
+  http_proxy: $http_proxy_shared
+  https_proxy: $http_proxy_shared
+  no_proxy: $no_proxy_shared
+  HTTP_PROXY: $http_proxy_shared
+  HTTPS_PROXY: $http_proxy_shared
+  NO_PROXY: $no_proxy_shared
+
+## In gitlab/variables : declare Variable File Type named BUILD_CONFIG
+##  containing internal NPM_REGISTRY, SASS_REGISTRY, PYPI_URL, PYPI_HOST, RUBY_URL,, CYPRESS_DOWNLOAD_MIRROR, MIRROR_DEBIAN
+##   MIRROR_DOCKER, MIRROR_DOCKER_KEY
+  BUILD_CONFIG_FILE: $BUILD_CONFIG
+
+# GIT_CURL_VERBOSE: "1"
+# GIT_DEBUG_LOOKUP: "1"
+# GIT_TRANSLOOP_DEBUG: "1"
+# GIT_TRANSPORT_HELPER_DEBUG: "1"
+
+stages:
+  - build
+  - staging
+
+default:
+  tags:
+    - shared
+    # - docker
+    # - openstack
+  before_script:
+    - echo "# Before script"
+    - echo "$BUILD_CONFIG_FILE" > .build_config
+    - source .build_config
+    - time ci/before_scripts.sh
+
+# build template
+.build_template:
+  stage: build
+
+# build template script
+.build_template_script: &build_template_script
+    - echo "# Build"
+    - echo "$BUILD_CONFIG_FILE" > .build_config
+    - source .build_config
+    - echo "# Build"
+    - if [ -z "$CI_DRY_RUN"] ; then  time ci/build.sh ; fi
+
+# publish template script
+.publish_template_script: &publish_template_script
+    - echo "# Publish"
+    - eval "$OS_CONFIG"
+    - openstack --insecure container list
+    - if [ -z "$CI_DRY_RUN"] ; then time 'ci/run_publish.sh'; fi
+
+## staging
+.staging_template_script: &staging_template_script
+    - time 'ci/deploy_staging.sh'
+
+# build only on qualif/*
+build_and_publish_qualif_app:
+  extends: .build_template
+  variables:
+    LATEST_VERSION: qualif
+    PLATEFORME: qualif
+    PLATEFORME_BRANCH: $PLATEFORME_BRANCH
+    OS_CONFIG: $OS_CONFIG_QUALIF
+    OS_STORAGE_URL: $OS_STORAGE_URL
+  rules:
+    - if: ( $CI_COMMIT_BRANCH =~ /^qualif\/*/ || $CI_COMMIT_BRANCH =~ /^devops\/*/ )
+  script:
+    - *build_template_script
+    - *publish_template_script
+    - *staging_template_script
+
+# build only on develop
+build_and_publish_latest_app:
+  extends: .build_template
+  variables:
+    LATEST_VERSION: latest
+    PLATEFORME: dev
+    PLATEFORME_BRANCH: $PLATEFORME_BRANCH
+    OS_CONFIG: $OS_CONFIG_DEV
+    OS_STORAGE_URL: $OS_STORAGE_URL
+  rules:
+    - if: $CI_COMMIT_REF_NAME =~ /^v*/ && $CI_COMMIT_BRANCH == null
+    - if: $CI_COMMIT_BRANCH =~ /^develop/
+  script:
+    - *build_template_script
+    - *publish_template_script
+    - *staging_template_script

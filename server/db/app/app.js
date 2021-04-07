@@ -3,6 +3,7 @@ const bodyParser = require('body-parser')
 const mongoClient = require('mongodb').MongoClient
 const ObjectId = require('mongodb').ObjectID
 const morgan = require('morgan')
+const { ObjectID } = require('mongodb')
 
 const dbName = process.env.DB_NAME || 'candilib'
 const dbAdmin = process.env.DB_USER || 'adminCandilib'
@@ -33,6 +34,7 @@ const connectDb = async () => {
 }
 
 const dateRegexp = new RegExp(/\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)
+const objectIdRegexp = new RegExp(/^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i)
 const parseFromObj = (obj) => {
   for (const property in obj) {
     const value = obj[property]
@@ -40,6 +42,8 @@ const parseFromObj = (obj) => {
       obj[property] = parseFromObj(value)
     } else if (value && dateRegexp.test(value)) {
       obj[property] = new Date(value)
+    } else if (value && objectIdRegexp.test(value)) {
+      obj[property] = ObjectID.createFromHexString(value)
     }
   }
   return obj
@@ -47,7 +51,12 @@ const parseFromObj = (obj) => {
 
 const parseBody = (req, res, next) => {
   try {
-    req.newBody = parseFromObj(req.body)
+    if (!req.body) next()
+    if (Array.isArray(req.body)) {
+      req.newBody = req.body.map(el => parseFromObj(el))
+    } else {
+      req.newBody = parseFromObj(req.body)
+    }
     next()
   } catch (err) {
     console.error({ err })
@@ -65,14 +74,15 @@ app.get('/version', (req, res) => {
   res.send('0.0.0')
 })
 
-app.get('/:collection', async (req, res) => {
+app.get('/:collection', parseBody, async (req, res) => {
   const { collection } = req.params
   let filter = {}
-  if (req.body) filter = { ...req.body }
+  if (req.body) filter = { ...req.newBody }
 
   let dbo
   try {
     dbo = await connectDb()
+    console.log('get', { collection, filter })
     const result = await dbo.collection(collection).find(filter).toArray()
     res.json(result)
   } catch (err) {
@@ -123,7 +133,15 @@ app.post('/:collection', parseBody, async (req, res) => {
   let dbo
   try {
     dbo = await connectDb()
-    const obj = await dbo.collection(collection).insertOne(req.newBody)
+    let obj
+    if (!Array.isArray(req.newBody)) {
+      obj = await dbo.collection(collection).insertOne(req.newBody)
+    } else {
+      if (!req.newBody.length) {
+        res.send({ success: false })
+      }
+      obj = await dbo.collection(collection).insertMany(req.newBody)
+    }
     res.send({ success: true, result: obj.result, _id: obj.ops.length > 0 ? obj.ops[0]._id : undefined })
   } catch (err) {
     console.error({ collection, body: req.body, err })
