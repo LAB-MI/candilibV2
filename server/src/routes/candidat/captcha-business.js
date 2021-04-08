@@ -3,7 +3,8 @@ import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate } 
 import captchaTools from 'visualcaptcha'
 import { imagesSetting } from './util'
 import { captchaExpireMintutes, nbMinuteBeforeRetry, numberOfImages, tryLimit } from '../../config'
-
+import { cvt2Jpeg } from './util/manage-image-jimp'
+import crypto from 'crypto'
 export const getImage = async (req, res, appLogger) => {
   const { userId } = req
   const indexImage = req?.params?.index
@@ -44,7 +45,57 @@ export const getImage = async (req, res, appLogger) => {
   }
 
   appLogger.info({ ...loggerInfo, description: 'Image captcha demandé', success: true })
-  visualCaptcha.streamImage(req?.params?.index, res, isRetina)
+  const md5Sum = crypto.createHash('md5')
+  const md5Sum1 = crypto.createHash('md5')
+  const md5SumJpg = crypto.createHash('md5')
+  const md5SumJpg1 = crypto.createHash('md5')
+  let isFirst = false
+  const dataFile = []
+  const dataFile1 = []
+  const response = {
+    set: (...args) => {
+      res.set(args)
+    },
+    write: (data) => {
+      try {
+        md5Sum.update(data)
+        if (!isFirst) {
+          dataFile1.push(data)
+          // md5Sum1.update(data)
+          isFirst = true
+        }
+      } catch (error) {
+        console.log({ error })
+      }
+
+      dataFile.push(data)
+      // res.write(dataTmp)
+    },
+    end: async () => {
+      isFirst = false
+      const md5data = md5Sum.digest('hex')
+      console.log({ md5data, indexImage })
+      md5Sum1.update(dataFile[0].slice(0, 200))
+      console.log({ md5data1: md5Sum1.digest('hex'), indexImage })
+
+      const dataTmp = await cvt2Jpeg(dataFile[0])
+      md5SumJpg.update(dataTmp.slice(0, 200))
+      console.log({ md5SumJpg: md5SumJpg.digest('hex'), indexImage })
+      res.write(dataTmp)
+      res.write(dataFile[1])
+      res.end()
+    },
+    status: (value) => {
+      return res.status(value)
+    },
+  }
+
+  try {
+    visualCaptcha.streamImage(req?.params?.index, response, isRetina)
+  } catch (error) {
+    console.log({ error })
+    throw error
+  }
 }
 
 export const startCaptcha = async (userId) => {
