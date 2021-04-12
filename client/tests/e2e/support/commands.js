@@ -7,6 +7,7 @@
 import 'cypress-file-upload'
 import { parseMagicLinkFromMailBody } from '../specs/util/util-cypress'
 import './mailHogCommands'
+import { getFrenchDateFromLuxon, getFrenchLuxonFromIso } from './dateUtils'
 
 const connectionUserByStatus = (cypressEnvUserEmail) => {
   cy.visit(Cypress.env('frontAdmin') + 'admin-login',
@@ -542,21 +543,50 @@ Cypress.Commands.add('deleteSessionCandidats', (query) => {
   })
 })
 
-Cypress.Commands.add('checkValues', (id, email, check) => {
-  cy.get('.v-data-table').should('contain', id)
-  cy.get('.v-data-table').contains(id).parent().should('contain', email).should(check ? 'contain' : 'not.contain', 'check')
-})
-
-Cypress.Commands.add('createDepartement', ({ email, departement }) => {
+Cypress.Commands.add('createRecentDepartement', (dptId, dptEmail) => {
+  cy.adminLogin()
   cy.visit(Cypress.env('frontAdmin') + 'admin/departements')
   cy.get('.t-input-email [type=text]')
-    .type(email)
+    .type(dptEmail)
   cy.get('.t-input-departementId [type=text]')
-    .type(departement)
+    .type(dptId)
   cy.get('.t-checkbox-recently [type=checkbox]').should('be.checked')
   cy.get('.t-create-btn')
     .click()
   cy.get('.v-snack--active')
-    .should('contain', `Le département ${departement} a bien été créé avec l'adresse courriel ${email}`)
-  cy.checkValues(departement, email, true)
+    .should('contain', `Le département ${dptId} a bien été créé avec l'adresse courriel ${dptEmail}`)
+})
+
+Cypress.Commands.add('checkCandidatProfile', (magicLink, nameCandidat, emailCandidat, isInRecentlyDeptFlag) => {
+  cy.visit(magicLink)
+  cy.wait(1000)
+  cy.get('.t-my-profile')
+    .click()
+  cy.url()
+    .should('contain', 'mon-profil')
+  cy.get('h2')
+    .should('contain', 'Mon profil')
+  cy.get('.v-chip').should('contain', 'Nom de naissance')
+  cy.contains('Nom de naissance')
+    .parent().parent()
+    .should('contain', nameCandidat)
+  cy.getCandidatInDB({ email: emailCandidat }).then(content => {
+    cy.get('.v-chip')
+      .should('contain', 'Heure de visibilité des places d’examen')
+    cy.contains('Heure de visibilité des places d’examen')
+      .parent().parent()
+      .should('contain', `12H${content[0].status}0`)
+    const dateEtg = getFrenchDateFromLuxon(getFrenchLuxonFromIso(content[0].dateReussiteETG).plus({ years: 5 }))
+    const labelDateETG = "Date de fin de validité de l'ETG"
+    cy.get('.v-chip').should('contain', labelDateETG)
+    cy.contains(labelDateETG)
+      .parent().parent()
+      .should('contain', dateEtg)
+
+    const labelHomeDepartement = 'Département de résidence'
+    cy.get('.v-chip').should('contain', labelHomeDepartement)
+
+    const labelIsInRecentlyDept = 'Heure de visibilité des places d’examen département de résidence :'
+    cy.get('.v-chip').should(`${isInRecentlyDeptFlag ? '' : 'not.'}contain`, labelIsInRecentlyDept)
+  })
 })

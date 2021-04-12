@@ -28,7 +28,7 @@ describe('Candidate by group', () => {
     cy.deleteAllMails()
     cy.adminLogin()
     cy.addPlanning([nowIn1Week], 'planning01.csv')
-    cy.createDepartement({ email: '76@dept.com', departement: '76' })
+    cy.createRecentDepartement('76', '76@dept.com')
     cy.adminDisconnection()
     candidatsByDepartments.forEach(candidat => {
       cy.addCandidat(candidat)
