@@ -26,10 +26,19 @@ export const adminCheckCandidatHystoryActionsByType = (candidatsByDepartments, t
   }
 }
 
-export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week, hasCheckMail, tInfoCenters75TimeOut) => {
+export const candidatCantSelectPlace = (magicLink, candidatsByDepartments, nowIn1Week, tInfoCenters75TimeOut, homeDepartement) => {
   cy.visit(magicLink)
 
-  cy.toGoSelectPlaces({ tInfoCenters75TimeOut })
+  cy.toGoCentre({ tInfoCenters75TimeOut, homeDepartement })
+  const classCenter = `.t-centers-${Cypress.env('centre').toLowerCase().replace(/ /g, '-')}`
+  cy.get(classCenter).parent()
+    .should('contain', 'Plus de place disponible pour le moment')
+}
+
+export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week, hasCheckMail, tInfoCenters75TimeOut, deptSelected) => {
+  cy.visit(magicLink)
+
+  cy.toGoSelectPlaces({ tInfoCenters75TimeOut, homeDepartement: candidatsByDepartments[0].homeDepartement, deptSelected })
 
   cy.log('nowIn1WeekInfo.monthLong:', nowIn1Week.monthLong)
   cy.get(`[href="#tab-${nowIn1Week.monthLong}"]`).click()

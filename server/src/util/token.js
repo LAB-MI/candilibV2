@@ -21,6 +21,9 @@ export const createToken = async (id, userStatus, departements, detailContentCan
     firstConnection,
     dateReussiteETG,
   } = detailContentCandidat
+
+  const isInRecentlyDept = await detailContentCandidat.isInRecentlyDept
+
   const level = config.userStatusLevels[userStatus] || 0
   const tokenExpiration = config[`${userStatus}TokenExpiration`]
   const dateETG = dateReussiteETG && getFrenchLuxonFromJSDate(dateReussiteETG).plus({ years: NB_YEARS_ETG_EXPIRED }).toISODate()
@@ -40,6 +43,7 @@ export const createToken = async (id, userStatus, departements, detailContentCan
     prenom,
     firstConnection: !!firstConnection,
     dateETG,
+    isInRecentlyDept,
   }
 
   const secret = config.secret

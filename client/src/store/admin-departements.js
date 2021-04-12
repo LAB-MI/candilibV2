@@ -94,10 +94,10 @@ export default {
       }
     },
 
-    async [UPDATE_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }, { departementId, newEmail }) {
+    async [UPDATE_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }, { departementId, newEmail, isAddedRecently }) {
       commit(UPDATE_DEPARTEMENT_REQUEST)
       try {
-        const result = await api.admin.updateDepartement(departementId, newEmail)
+        const result = await api.admin.updateDepartement(departementId, newEmail, isAddedRecently)
         if (!result.success) {
           throw new Error(result.message)
         }
@@ -109,10 +109,10 @@ export default {
       }
     },
 
-    async [CREATE_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }, { departementId, departementEmail }) {
+    async [CREATE_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }, { departementId, departementEmail, isAddedRecently }) {
       commit(CREATE_DEPARTEMENT_REQUEST)
       try {
-        const result = await api.admin.createDepartement(departementId, departementEmail)
+        const result = await api.admin.createDepartement(departementId, departementEmail, isAddedRecently)
         if (!result.success) {
           throw new Error(result.message)
         }
