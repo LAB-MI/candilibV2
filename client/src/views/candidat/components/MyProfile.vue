@@ -34,12 +34,12 @@ const labelDictionary = {
   visibilityHour: 'Heure de visibilité des places d’examen :',
   dateETG: "Date de fin de validité de l'ETG",
   homeDepartement: 'Département de résidence',
-  isInRecentlyDept: 'exepction pour votre departement de résidence',
+  isInRecentlyDept: 'Heure de visibilité des places d’examen département de résidence :',
 }
 
 const convertDictionary = {
   dateETG: (value) => value && getFrenchDateFromLuxon(getFrenchLuxonFromIso(value)),
-  isInRecentlyDept: () => 'MESSAGE',
+  isInRecentlyDept: () => '12h00',
 }
 
 export default {

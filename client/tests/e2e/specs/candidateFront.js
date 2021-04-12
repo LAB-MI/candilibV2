@@ -16,7 +16,7 @@ PUBLIC CANDIDATE FRONT
 - Ability to go back to the introduction page
 */
 
-import { now, date1, getFrenchDateFromLuxon, getFrenchLuxonFromIso } from '../support/dateUtils'
+import { date1, now } from '../support/dateUtils'
 import { parseMagicLinkFromMailBody } from './util/util-cypress'
 
 describe('Connected candidate front', () => {
@@ -64,6 +64,21 @@ describe('Connected candidate front', () => {
       isValidatedEmail: true,
       isValidatedByAurige: true,
       status: 0,
+    },
+    {
+      codeNeph: '6123456789014',
+      prenom: 'CC_FRONT',
+      nomNaissance: 'CANDIDAT_FRONT_76',
+      adresse: '40 Avenue des terroirs de France 75012 Paris',
+      portable: '0676543986',
+      email: 'candidat_front_76@candi.lib',
+      departement: '76',
+      homeDepartement: '76',
+      isEvaluationDone: false,
+      isValidatedEmail: true,
+      isValidatedByAurige: true,
+      dateReussiteETG: now.toISO(),
+      status: 0,
     }]
 
     let expectedHourBooking
@@ -97,6 +112,7 @@ describe('Connected candidate front', () => {
       candidatsByDepartments.forEach(candidat => {
         cy.deleteCandidat({ email: candidat.email })
       })
+      cy.deleteDept({ _id: '76' })
       // cy.deleteSessionCandidats()
     })
 
@@ -122,37 +138,19 @@ describe('Connected candidate front', () => {
       cy.get('h2').should('contain', 'Mentions légales')
     })
 
-    it('Should display the profile page', () => {
-      cy.visit(magicLink)
-      cy.wait(1000)
-      cy.get('.t-my-profile')
-        .click()
-      cy.url()
-        .should('contain', 'mon-profil')
-      cy.get('h2')
-        .should('contain', 'Mon profil')
-      cy.get('.v-chip').should('contain', 'Nom de naissance')
-      cy.contains('Nom de naissance')
-        .parent().parent()
-        .should('contain', Cypress.env('candidatFront'))
-      cy.getCandidatInDB({ email: Cypress.env('emailCandidatFront') }).then(content => {
-        cy.get('.v-chip')
-          .should('contain', 'Heure de visibilité des places d’examen')
-        cy.contains('Heure de visibilité des places d’examen')
-          .parent().parent()
-          .should('contain', `12H${content[0].status}0`)
-        const dateEtg = getFrenchDateFromLuxon(getFrenchLuxonFromIso(content[0].dateReussiteETG).plus({ years: 5 }))
-        const labelDateETG = "Date de fin de validité de l'ETG"
-        cy.get('.v-chip').should('contain', labelDateETG)
-        cy.contains(labelDateETG)
-          .parent().parent()
-          .should('contain', dateEtg)
+    it('Should display the profile page for candidat not in departement recently', () => {
+      cy.checkCandidatProfile(magicLink, Cypress.env('candidatFront'), Cypress.env('emailCandidatFront'), false)
+    })
 
-        const labelHomeDepartement = 'Département de résidence'
-        cy.get('.v-chip').should('contain', labelHomeDepartement)
+    it('Should display the profile page for candidat in departement recently', () => {
+      const departement76Id = '76'
+      const departement76Email = 'departement76@example.com'
+      cy.createRecentDepartement(departement76Id, departement76Email)
 
-        const labelIsInRecentlyDept = 'exepction pour votre departement de résidence'
-        cy.get('.v-chip').should('contain', labelIsInRecentlyDept)
+      cy.addCandidat(candidatsByDepartments[2])
+      cy.getNewMagicLinkCandidat(candidatsByDepartments[2].email).then(mLink => {
+        cy.visit(mLink)
+        cy.checkCandidatProfile(mLink, candidatsByDepartments[2].nomNaissance, candidatsByDepartments[2].email, true)
       })
     })
 
@@ -195,7 +193,6 @@ describe('Connected candidate front', () => {
       cy.get('button')
         .should('contain', 'Confirmer')
 
-      // TODO:
       // Demander un captcha et echoué
       cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
       cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
