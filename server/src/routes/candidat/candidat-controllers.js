@@ -307,13 +307,14 @@ export async function getMe (req, res) {
     //   prenom: 1,
     // }
 
-    const foundedCandidat = await findCandidatById(req.userId, { status: 1, isEvaluationDone: 1 })
+    const foundedCandidat = await findCandidatById(req.userId, { status: 1, isEvaluationDone: 1, homeDepartement: 1 })
     // Pour corriger les anciennes donnés
     // candidat.homeDepartement = candidat.homeDepartement || candidat.departement
 
     // res.json({
     //   candidat,
     // })
+    const isInRecentlyDept = await foundedCandidat.isInRecentlyDept
 
     res.json({
       candidat: {
@@ -328,6 +329,7 @@ export async function getMe (req, res) {
         prenom,
         visibilityHour: getVisibilityHourString(foundedCandidat.status || candidatStatus),
         dateETG,
+        isInRecentlyDept,
       },
     })
   } catch (error) {

@@ -7,6 +7,7 @@
 import 'cypress-file-upload'
 import { parseMagicLinkFromMailBody } from '../specs/util/util-cypress'
 import './mailHogCommands'
+import { getFrenchDateFromLuxon, getFrenchLuxonFromIso } from './dateUtils'
 
 const connectionUserByStatus = (cypressEnvUserEmail) => {
   cy.visit(Cypress.env('frontAdmin') + 'admin-login',
@@ -142,7 +143,7 @@ Cypress.Commands.add('addPlanning', (dates, fileNameTmp = 'planning.csv') => {
   cy.get('.import-file-action [type=button]')
     .click({ force: true })
   cy.get('.v-snack--active', { timeout: 10000 })
-    .should('contain', 'Le fichier ' + fileName1 + ' a été traité pour le departement 75.')
+    .should('contain', `Le fichier ${fileName1} a été traité pour le departement 75.`)
   cy.get('.t-close-btn-import-places').click()
   return cy.wrap(
     { avalaiblePlaces: ((horaireMorning.length + horaireAfterNoon.length) * 2) * datePlaces.length },
@@ -381,6 +382,12 @@ Cypress.Commands.add('deleteCentres', (centres) => {
   })
 })
 
+Cypress.Commands.add('updateCentres', (query, update) => {
+  cy.request('PATCH', Cypress.env('ApiRestDB') + '/centres', { query, update }).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+
 Cypress.Commands.add('updatePlaces', (query, update) => {
   cy.request('PATCH', Cypress.env('ApiRestDB') + '/places', { query, update }).then((content) => {
     cy.log(JSON.stringify(content.body))
@@ -424,6 +431,12 @@ Cypress.Commands.add('deleteUser', (query) => {
   })
 })
 
+Cypress.Commands.add('deleteDept', (query) => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/departements', query).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+
 Cypress.Commands.add('checkAndCloseSnackBar', (message) => {
   cy.get('.v-snack--active')
     .should('contain', message)
@@ -431,15 +444,35 @@ Cypress.Commands.add('checkAndCloseSnackBar', (message) => {
   cy.get('.v-snack--active button').should('be.visible').click({ force: true })
 })
 
-Cypress.Commands.add('toGoSelectPlaces', (options = {}) => {
-  const { tInfoCenters75TimeOut } = options
+Cypress.Commands.add('toGoCentre', (options = {}) => {
+  const { tInfoCenters75TimeOut, homeDepartement } = options
   cy.get('h2')
     .should('contain', 'Choix du département')
-  cy.get('.t-info-centers-75', tInfoCenters75TimeOut ? { timeout: tInfoCenters75TimeOut } : undefined)
-    .should('be.visible')
+  if (homeDepartement === '75') {
+    cy.get('.t-info-centers-75', tInfoCenters75TimeOut ? { timeout: tInfoCenters75TimeOut } : undefined)
+      .should('be.visible')
+  }
   const classGeoDepartement = '.t-geo-departement-' + Cypress.env('geoDepartement')
   cy.get(classGeoDepartement)
     .contains(Cypress.env('geoDepartement'))
+    .click()
+  cy.get('h2')
+    .should('contain', 'Choix du centre')
+})
+
+Cypress.Commands.add('toGoSelectPlaces', (options = {}) => {
+  const { tInfoCenters75TimeOut, homeDepartement, deptSelected } = options
+  cy.get('h2')
+    .should('contain', 'Choix du département')
+  if (homeDepartement === '75') {
+    cy.get('.t-info-centers-75', tInfoCenters75TimeOut ? { timeout: tInfoCenters75TimeOut } : undefined)
+      .should('be.visible')
+  }
+  const geoDept = deptSelected || Cypress.env('geoDepartement')
+  cy.log({ geoDept, deptSelected })
+  const classGeoDepartement = '.t-geo-departement-' + geoDept
+  cy.get(classGeoDepartement)
+    .contains(geoDept)
     .click()
   cy.get('h2')
     .should('contain', 'Choix du centre')
@@ -507,5 +540,53 @@ Cypress.Commands.add('selectWrongCaptchaSoltionAndConfirm', (email) => {
 Cypress.Commands.add('deleteSessionCandidats', (query) => {
   cy.request('DELETE', Cypress.env('ApiRestDB') + '/sessioncandidats', query).then((content) => {
     cy.log(JSON.stringify(content.body))
+  })
+})
+
+Cypress.Commands.add('createRecentDepartement', (dptId, dptEmail) => {
+  cy.adminLogin()
+  cy.visit(Cypress.env('frontAdmin') + 'admin/departements')
+  cy.get('.t-input-email [type=text]')
+    .type(dptEmail)
+  cy.get('.t-input-departementId [type=text]')
+    .type(dptId)
+  cy.get('.t-checkbox-recently [type=checkbox]').should('be.checked')
+  cy.get('.t-create-btn')
+    .click()
+  cy.get('.v-snack--active')
+    .should('contain', `Le département ${dptId} a bien été créé avec l'adresse courriel ${dptEmail}`)
+})
+
+Cypress.Commands.add('checkCandidatProfile', (magicLink, nameCandidat, emailCandidat, isInRecentlyDeptFlag) => {
+  cy.visit(magicLink)
+  cy.wait(1000)
+  cy.get('.t-my-profile')
+    .click()
+  cy.url()
+    .should('contain', 'mon-profil')
+  cy.get('h2')
+    .should('contain', 'Mon profil')
+  cy.get('.v-chip').should('contain', 'Nom de naissance')
+  cy.contains('Nom de naissance')
+    .parent().parent()
+    .should('contain', nameCandidat)
+  cy.getCandidatInDB({ email: emailCandidat }).then(content => {
+    cy.get('.v-chip')
+      .should('contain', 'Heure de visibilité des places d’examen')
+    cy.contains('Heure de visibilité des places d’examen')
+      .parent().parent()
+      .should('contain', `12H${content[0].status}0`)
+    const dateEtg = getFrenchDateFromLuxon(getFrenchLuxonFromIso(content[0].dateReussiteETG).plus({ years: 5 }))
+    const labelDateETG = "Date de fin de validité de l'ETG"
+    cy.get('.v-chip').should('contain', labelDateETG)
+    cy.contains(labelDateETG)
+      .parent().parent()
+      .should('contain', dateEtg)
+
+    const labelHomeDepartement = 'Département de résidence'
+    cy.get('.v-chip').should('contain', labelHomeDepartement)
+
+    const labelIsInRecentlyDept = 'Heure de visibilité des places d’examen département de résidence :'
+    cy.get('.v-chip').should(`${isInRecentlyDeptFlag ? '' : 'not.'}contain`, labelIsInRecentlyDept)
   })
 })

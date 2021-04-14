@@ -8,8 +8,17 @@
       :items="departements"
       :items-per-page="8"
     >
-      <template v-slot:item.action="{ item }">
-        <update-departement :deprt-id="item._id" />
+      <template v-slot:[`item.isAddedRecently`]="{ item }">
+        <v-icon color="green">
+          {{ item.isAddedRecently? 'check': '' }}
+        </v-icon>
+      </template>
+
+      <template v-slot:[`item.action`]="{ item }">
+        <update-departement
+          :deprt-id="item._id"
+          :deprt="item"
+        />
         <delete-departement :departement-id="item._id" />
       </template>
     </v-data-table>
@@ -43,6 +52,7 @@ export default {
           value: '_id',
         },
         { text: 'Email', sortable: false, value: 'email' },
+        { text: 'Récent', sortable: true, value: 'isAddedRecently' },
         { text: 'Actions', sortable: false, value: 'action' },
       ],
     }
