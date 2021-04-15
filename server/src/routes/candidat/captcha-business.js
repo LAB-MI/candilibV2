@@ -5,6 +5,110 @@ import { imagesSetting } from './util'
 import { captchaExpireMintutes, nbMinuteBeforeRetry, numberOfImages, tryLimit } from '../../config'
 import { modifyImage } from './util/manage-image-jimp'
 import crypto from 'crypto'
+import { streamImages } from './util/merge-image'
+
+export const getImages = async (req, res, appLogger) => {
+  const { userId } = req
+  const loggerInfo = {
+    request_id: req.request_id,
+    section: 'get-images-captcha',
+    userId,
+  }
+
+  const currentSession = await getSessionByCandidatId(userId)
+  if (
+    !currentSession ||
+    !Object.keys(currentSession.session).length ||
+    (currentSession.count > tryLimit) ||
+    (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon())
+  ) {
+    const statusCode = 403
+    const message = "vous n'êtes pas autorisé"
+
+    appLogger.error({
+      ...loggerInfo,
+      description: message,
+      success: false,
+      statusCode,
+    })
+    return res.status(statusCode).json({ success: false, message })
+  }
+  let isRetina = false
+
+  const visualCaptcha = captchaTools(currentSession.session, userId)
+  visualCaptcha.streamImages = streamImages
+  // Default is non-retina
+  if (req.query.retina) {
+    isRetina = false
+  }
+
+  appLogger.info({ ...loggerInfo, description: 'Image captcha demandé', success: true })
+  try {
+    const result = await visualCaptcha.streamImages(isRetina)
+
+    res.set('content-type', result.mimeType)
+
+    // Make sure this is not cached
+    res.set('cache-control', 'no-cache, no-store, must-revalidate')
+    res.set('pragma', 'no-cache')
+    res.set('expires', 0)
+
+    res.send(result.newImage)
+    // res.end()
+  } catch (error) {
+    console.log({ error })
+    throw error
+  }
+
+  // const dataFile = []
+  // let status
+  // let setArgs
+  // for (let i = 0; i < 5; i++) {
+  //   const response = {
+  //     isFirst: true,
+  //     set: (...args) => {
+  //       // res.set(args)
+  //       setArgs = args
+  //     },
+  //     write (data) {
+  //       if (this.isFirst) {
+  //         this.isFirst = false
+  //         dataFile[i] = data
+  //       }
+  //     },
+  //     end: async () => {
+  //     // const dataTmp = await modifyImage(dataFile[0])
+  //     // res.write(dataTmp)
+  //     // res.write(dataFile[1])
+  //     // res.end()
+  //       if (i === 4) {
+  //         try {
+  //           res.set(setArgs)
+  //           const bufferImages = await concatImages(dataFile)
+  //           res.write(bufferImages)
+  //           res.end()
+  //           // return res.status(status)
+  //         } catch (error) {
+  //           console.log(error)
+  //         }
+  //       }
+  //     },
+  //     status: (value) => {
+  //       if (i === 4) {
+  //         return res.status(value)
+  //       }
+  //     },
+  //   }
+
+  //   try {
+  //     visualCaptcha.streamImage1(i, response, isRetina)
+  //   } catch (error) {
+  //     console.log({ error })
+  //     throw error
+  //   }
+  // }
+}
+
 export const getImage = async (req, res, appLogger) => {
   const { userId } = req
   const indexImage = req?.params?.index

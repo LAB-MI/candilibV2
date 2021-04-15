@@ -1,9 +1,10 @@
-import { getImage, startCaptcha } from './captcha-business'
+import { getImages, startCaptcha } from './captcha-business'
 
 import { appLogger } from '../../util'
 
 export const initImage = async (req, res) => {
-  await getImage(req, res, appLogger)
+//  await getImage(req, res, appLogger)
+  await getImages(req, res, appLogger)
 }
 
 export const initCaptcha = async (req, res) => {
