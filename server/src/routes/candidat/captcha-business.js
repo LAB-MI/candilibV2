@@ -6,7 +6,7 @@ import { captchaExpireMintutes, nbMinuteBeforeRetry, numberOfImages, tryLimit } 
 import { modifyImage } from './util/manage-image-jimp'
 import crypto from 'crypto'
 import { streamImages } from './util/merge-image'
-
+import jimp from 'jimp'
 export const getImages = async (req, res, appLogger) => {
   const { userId } = req
   const loggerInfo = {
@@ -202,6 +202,13 @@ export const getImage = async (req, res, appLogger) => {
   }
 }
 
+const getImageNamePic = async (frontendData) => {
+  const font = await jimp.loadFont(jimp.FONT_SANS_14_BLACK)
+  const imagename = await jimp.create(100, 100)
+  imagename.print(font, 0, 0, frontendData.imageName)
+  return imagename.getBase64Async(jimp.MIME_PNG)
+}
+
 export const startCaptcha = async (userId) => {
   const currentSession = await getSessionByCandidatId(userId)
 
@@ -227,11 +234,13 @@ export const startCaptcha = async (userId) => {
     })
 
     statusCode = 200
+    const frontendData = visualCaptcha.getFrontendData()
     return {
       success: true,
       count: 1,
       captcha: {
-        ...visualCaptcha.getFrontendData(),
+        ...frontendData,
+        imageNamePic: await getImageNamePic(frontendData),
         audioFieldName: undefined,
       },
       statusCode,
@@ -288,11 +297,13 @@ export const startCaptcha = async (userId) => {
   })
 
   statusCode = 200
+  const frontendData = visualCaptcha.getFrontendData()
   return {
     success: true,
     count: countAndCanRetryAt.count,
     captcha: {
-      ...visualCaptcha.getFrontendData(),
+      ...frontendData,
+      imageNamePic: await getImageNamePic(frontendData),
       audioFieldName: undefined,
     },
     statusCode,
