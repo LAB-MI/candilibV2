@@ -63,9 +63,13 @@
             <span class="font-semibold text-xl">
               {{ candidatCaptcha.generatedCaptcha.question }}
             </span>
+            <img
+              :src="candidatCaptcha.generatedCaptcha.imageNamePic"
+              alt="imagName"
+            >
             <v-card-text />
             <v-card-text>
-              <v-btn
+              <div
                 v-for="image in candidatCaptcha.generatedCaptcha.images"
                 :key="image.index"
                 :disabled="candidatCaptcha.isGenerating"
@@ -77,7 +81,7 @@
                   :src="image.url"
                   alt="valid"
                 >
-              </v-btn>
+              </div>
             </v-card-text>
           </v-card-text>
         </div>
