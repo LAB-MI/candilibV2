@@ -27,7 +27,7 @@ export default {
       state.isGenerating = true
       state.generatedCaptcha.isReady = isReady
     },
-    [GENERATE_CAPTCHA_SUCCESS] (state, { allImages, imageName, imageFieldName, count, imageNamePic }) {
+    [GENERATE_CAPTCHA_SUCCESS] (state, { allImages, imageName, imageFieldName, count, imageNamePic, buttonsValues }) {
       state.generatedCaptcha.question = imageName
       state.generatedCaptcha.images = allImages
       state.generatedCaptcha.imageFieldName = imageFieldName
@@ -35,6 +35,7 @@ export default {
       state.isGenerating = false
       state.generatedCaptcha.isReady = true
       state.generatedCaptcha.imageNamePic = imageNamePic
+      state.generatedCaptcha.buttonsValues = buttonsValues
     },
     [GENERATE_CAPTCHA_FAILURE] (state) {
       state.isGenerating = false
@@ -83,7 +84,7 @@ export default {
         const response = await api.candidat.getImage(0)
         const data = await response.blob()
         const url = URL.createObjectURL(data)
-        const allImages = [{ index: 0, url, value: '' }]
+        const allImages = { url }
         //       return { index, url, value }
         //     },
         //   ),
@@ -91,6 +92,7 @@ export default {
         console.log({ newCaptcha })
         commit(GENERATE_CAPTCHA_SUCCESS, {
           allImages,
+          buttonsValues: newCaptcha.captcha.values,
           imageName: newCaptcha.captcha.imageName,
           imageFieldName: newCaptcha.captcha.imageFieldName,
           count: newCaptcha.count,

@@ -60,28 +60,38 @@
             <span class="font-medium">
               Sélectionner:
             </span>
-            <span class="font-semibold text-xl">
-              {{ candidatCaptcha.generatedCaptcha.question }}
-            </span>
-            <img
-              :src="candidatCaptcha.generatedCaptcha.imageNamePic"
-              alt="imagName"
+            <div
+              class="d-flex justify-center"
+              style="height: 30px;"
             >
-            <v-card-text />
-            <v-card-text>
-              <div
-                v-for="image in candidatCaptcha.generatedCaptcha.images"
-                :key="image.index"
-                :disabled="candidatCaptcha.isGenerating"
-                :color="(imageField !== null && imageField === image.index ) ? 'primary' : ''"
-                :class="`t-image-index t-${image.value}`"
-                @click="tryCaptcha(image.value, image.index)"
+              <!-- class="w-full h-full" -->
+              <img
+                style="height: 100%;"
+                :src="candidatCaptcha.generatedCaptcha.imageNamePic"
+                alt="imagName"
               >
-                <img
-                  :src="image.url"
-                  alt="valid"
-                >
-              </div>
+            </div>
+            <!-- <span class="font-semibold text-xl">
+              {{ candidatCaptcha.generatedCaptcha.question }}
+            </span> -->
+            <v-card-text />
+            <div class="d-flex justify-center">
+              <img
+                :src="candidatCaptcha.generatedCaptcha.images.url"
+                alt="valid"
+              >
+            </div>
+            <v-card-text>
+              <v-btn
+                v-for="(image, index) in candidatCaptcha.generatedCaptcha.buttonsValues"
+                :key="index"
+                :disabled="candidatCaptcha.isGenerating"
+                :color="(imageField !== null && imageField === index ) ? 'primary' : ''"
+                :class="`t-image-index t-${image}`"
+                @click="tryCaptcha(image, index)"
+              >
+                {{ index + 1 }}
+              </v-btn>
             </v-card-text>
           </v-card-text>
         </div>
