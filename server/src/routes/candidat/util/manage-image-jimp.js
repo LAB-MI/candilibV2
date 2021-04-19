@@ -1,25 +1,27 @@
-import { read, MIME_PNG } from 'jimp'
+import { read } from 'jimp'
+
+
+const getRandomValue = (idx = 0) => {
+  const tmp = Math.floor(Math.random() * 10) * idx
+  return tmp
+}
 
 export const modifyImage = async (buffer) => {
-  console.log({ __dirname })
-  // const image = await read(path.resolve('./node_modules/visualcaptcha/images/airplane.png'))
   const image = await read(buffer)
   const rd = Math.random()
   const w = image.getWidth() + rd * 10
   const h = image.getHeight() + rd * 10
-  console.log({ w, h, rd })
+
   image.resize(w, h)
-  const vert = Math.round(Math.random())
-  const horiz = Math.round(Math.random())
-  console.log({ vert, horiz })
-  image.mirror(!horiz, !vert) // resize
 
-  image.sepia()
+  const numberTmp = () => Math.random() * (1000 - 500) + 500
+  Array(Math.floor(numberTmp())).fill(true).map((el, idx) => {
+    // TODO: Randomise color
+    const hex = 0xFFECFFEE
+    const index = Math.floor(Math.random() * 10) % idx
+    image.setPixelColor(hex, getRandomValue(index), getRandomValue(index)) // sets the colour of that pixel
+  })
 
-  return image.getBufferAsync(MIME_PNG)
+
+  return image
 }
-
-// export const md5SumPNG = () => {
-//   const md5Sum1 = crypto.createHash('md5')
-//   md5Sum1.update()
-// }
