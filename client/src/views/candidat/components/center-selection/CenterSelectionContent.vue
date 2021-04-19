@@ -1,15 +1,11 @@
 <template>
   <v-card-text
-    :class="{
-      'blue-grey  lighten-5  blue-grey--text  text--lighten-2  font-italic': !hasPlaces
-    }"
-    v-on="{ [hasPlaces && 'click']: selectCenter }"
+    v-on="{ ['click']: selectCenter }"
   >
     <div
-      class="u-flex"
-      :class="{'u-flex u-pointer': hasPlaces}"
+      class="u-flex u-pointer"
     >
-      <v-list-item-content v-ripple="hasPlaces">
+      <v-list-item-content>
         <v-list-item-title :class="`t-centers-${center.centre.nom.toLowerCase().replace(/ /g,'-')}`">
           <span class="u-uppercase">
             {{ center.centre.nom }}
@@ -75,9 +71,6 @@ export default {
   methods: {
     async selectCenter () {
       const center = this.center
-      if (!center.count) {
-        return
-      }
       await this.$store.dispatch(SELECT_CENTER, center.centre)
       this.$router.push({
         name: 'time-slot',
