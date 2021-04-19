@@ -13,7 +13,10 @@ export const concatImages = async (images) => {
       const jimpCreated = await jimp.create(15, 15)
       jimpCreated.print(jimpFont, 0, 0, `${index + 1}`)
 
-      const imageWithNumber = await mergeImg([await jimpImg.getBufferAsync(jimp.MIME_PNG), await jimpCreated.getBufferAsync(jimp.MIME_PNG)], { direction: true })
+      const bufferImage = await jimpImg.getBufferAsync(jimp.MIME_PNG)
+      const bufferImageIndex = await jimpCreated.getBufferAsync(jimp.MIME_PNG)
+
+      const imageWithNumber = await mergeImg([bufferImage, bufferImageIndex], { direction: true })
       return imageWithNumber
     } catch (error) {
       return image
