@@ -1,15 +1,14 @@
-import Jimp, {read} from 'jimp'
+import Jimp, { read } from 'jimp'
 import alignImage from './alignImage'
 import calcMargin from './calcMargin'
 
-
 const processImg = async (img) => {
-  if(img instanceof Jimp) {
-    return {img};
+  if (img instanceof Jimp) {
+    return { img }
   }
 
   const imgObj = await read(img)
-  return {img: imgObj}
+  return { img: imgObj }
 }
 
 const concatAllImages = (imgs, {
@@ -22,8 +21,8 @@ const concatAllImages = (imgs, {
   let totalX = 0
   let totalY = 0
 
-  const imgData = imgs.reduce((accu, {img, offsetX = 0, offsetY = 0}) => {
-    const {bitmap: {width, height}} = img
+  const imgData = imgs.reduce((accu, { img, offsetX = 0, offsetY = 0 }) => {
+    const { bitmap: { width, height } } = img
 
     accu.push({
       img,
@@ -39,24 +38,24 @@ const concatAllImages = (imgs, {
     return accu
   }, [])
 
-  const {top, right, bottom, left} = calcMargin(margin)
+  const { top, right, bottom, left } = calcMargin(margin)
   const marginTopBottom = top + bottom
   const marginRightLeft = right + left
 
   const totalWidth = direction
-    ? Math.max(...imgData.map(({img: {bitmap: {width}}, offsetX}) => width + offsetX))
-    : imgData.reduce((accu, {img: {bitmap: {width}}, offsetX}, index) => accu + width + offsetX + (Number(index > 0) * offset), 0)
+    ? Math.max(...imgData.map(({ img: { bitmap: { width } }, offsetX }) => width + offsetX))
+    : imgData.reduce((accu, { img: { bitmap: { width } }, offsetX }, index) => accu + width + offsetX + (Number(index > 0) * offset), 0)
 
   const totalHeight = direction
-    ? imgData.reduce((accu, {img: {bitmap: {height}}, offsetY}, index) => accu + height + offsetY + (Number(index > 0) * offset), 0)
-    : Math.max(...imgData.map(({img: {bitmap: {height}}, offsetY}) => height + offsetY))
+    ? imgData.reduce((accu, { img: { bitmap: { height } }, offsetY }, index) => accu + height + offsetY + (Number(index > 0) * offset), 0)
+    : Math.max(...imgData.map(({ img: { bitmap: { height } }, offsetY }) => height + offsetY))
 
   const baseImage = new Jimp(totalWidth + marginRightLeft, totalHeight + marginTopBottom, color)
 
   const imgDataEntries = imgData.map((data, index) => [index, data])
 
-  for (const [index, {img, x, y, offsetX, offsetY}] of imgDataEntries) {
-    const {bitmap: {width, height}} = img
+  for (const [index, { img, x, y, offsetX, offsetY }] of imgDataEntries) {
+    const { bitmap: { width, height } } = img
     const [px, py] = direction
       ? [alignImage(totalWidth, width, align) + offsetX, y + (index * offset)]
       : [x + (index * offset), alignImage(totalHeight, height, align) + offsetY]
@@ -67,7 +66,7 @@ const concatAllImages = (imgs, {
   return baseImage
 }
 
-export default async function mergeImg(images, options) {
+export default async function mergeImg (images, options) {
   if (!Array.isArray(images)) {
     throw new TypeError('`images` must be an array that contains images')
   }

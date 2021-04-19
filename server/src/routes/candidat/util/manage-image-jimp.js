@@ -1,6 +1,5 @@
 import { read } from 'jimp'
 
-
 const getRandomValue = (idx = 0) => {
   const tmp = Math.floor(Math.random() * 10) * idx
   return tmp
@@ -21,7 +20,6 @@ export const modifyImage = async (buffer) => {
     const index = Math.floor(Math.random() * 10) % idx
     image.setPixelColor(hex, getRandomValue(index), getRandomValue(index)) // sets the colour of that pixel
   })
-
 
   return image
 }

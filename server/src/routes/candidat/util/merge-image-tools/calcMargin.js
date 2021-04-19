@@ -1,11 +1,11 @@
-export default function calcMargin(obj = {}) {
+export default function calcMargin (obj = {}) {
   if (Number.isInteger(obj)) {
     return {
       top: obj,
       right: obj,
       bottom: obj,
       left: obj,
-    };
+    }
   }
 
   if (typeof obj === 'string') {
@@ -16,10 +16,10 @@ export default function calcMargin(obj = {}) {
       right: Number(right),
       bottom: Number(bottom),
       left: Number(left),
-    };
+    }
   }
 
-  const {top = 0, right = 0, bottom = 0, left = 0} = obj
+  const { top = 0, right = 0, bottom = 0, left = 0 } = obj
 
   return {
     top,

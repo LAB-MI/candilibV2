@@ -1,4 +1,4 @@
-export default function alignImage(total, size, align) {
+export default function alignImage (total, size, align) {
   if (align === 'center') {
     return (total - size) / 2
   }
