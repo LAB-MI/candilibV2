@@ -41,13 +41,6 @@ export async function streamImages (isRetina) {
     let imageFileName = imageOption ? imageOption.path : ''
     let imageFilePath = `${pathModuleImages}${imageFileName}`
 
-    // Force boolean for isRetina
-    if (!isRetina) {
-      isRetina = false
-    } else {
-      isRetina = true
-    }
-
     // If retina is requested, change the file name
     if (isRetina) {
       imageFileName = imageFileName.replace(/\.png/gi, '@2x.png')

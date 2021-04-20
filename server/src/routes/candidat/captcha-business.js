@@ -4,17 +4,10 @@ import captchaTools from 'visualcaptcha'
 import { imagesSetting } from './util'
 import { captchaExpireMintutes, nbMinuteBeforeRetry, numberOfImages, tryLimit } from '../../config'
 import { streamImages, getImageNamePic } from './util/merge-image'
-// import jimp from 'jimp'
 
-export const getImages = async (req, res, appLogger) => {
-  const { userId } = req
-  const loggerInfo = {
-    request_id: req.request_id,
-    section: 'get-images-captcha',
-    userId,
-  }
-
+export const verifyAndGetSessionByCandidatId = async (userId, message) => {
   const currentSession = await getSessionByCandidatId(userId)
+
   if (
     !currentSession ||
     !Object.keys(currentSession.session).length ||
@@ -22,51 +15,26 @@ export const getImages = async (req, res, appLogger) => {
     (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon())
   ) {
     const statusCode = 403
-    const message = "vous n'êtes pas autorisé"
-
-    appLogger.error({
-      ...loggerInfo,
-      description: message,
-      success: false,
-      statusCode,
-    })
-    return res.status(statusCode).json({ success: false, message })
+    const error = new Error(message)
+    error.statusCode = statusCode
+    throw error
   }
-  let isRetina = false
+  return currentSession
+}
+
+export const getImages = async (userId) => {
+  const message = "vous n'êtes pas autorisé"
+
+  const currentSession = await verifyAndGetSessionByCandidatId(userId, message)
 
   const visualCaptcha = captchaTools(currentSession.session, userId)
   visualCaptcha.streamImages = streamImages
+
   // Default is non-retina
-  if (req.query.retina) {
-    isRetina = false
-  }
-
-  appLogger.info({ ...loggerInfo, description: 'Image captcha demandé', success: true })
-  try {
-    const result = await visualCaptcha.streamImages(isRetina)
-
-    res.set('content-type', result.mimeType)
-
-    // Make sure this is not cached
-    res.set('cache-control', 'no-cache, no-store, must-revalidate')
-    res.set('pragma', 'no-cache')
-    res.set('expires', 0)
-
-    res.send(result.newImage)
-  } catch (error) {
-    // TODO: Refactor move some part to controller
-    console.log({ error })
-    throw error
-  }
+  const isRetina = false
+  const result = await visualCaptcha.streamImages(isRetina)
+  return result
 }
-
-// const getImageNamePic = async (frontendData) => {
-//     const font = await jimp.loadFont(`${__dirname}/../../assets/fonts/poppins-bold/poppins-bold.fnt`)
-//     const sizeText = jimp.measureText(font, frontendData.imageName)
-//     const imagename = await jimp.create(sizeText, 22)
-//     imagename.print(font, 0, 0, frontendData.imageName)
-//     return imagename.getBase64Async(jimp.MIME_PNG)
-// }
 
 export const startCaptcha = async (userId) => {
   const currentSession = await getSessionByCandidatId(userId)
