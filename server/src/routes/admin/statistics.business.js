@@ -412,26 +412,14 @@ const initResultStatus = () => {
   for (let i = 0; i < candidatStatuses.nbStatus; i++) {
     initResultStatus[`${i}`] = 0
   }
+  initResultStatus.date = ''
   return initResultStatus
-}
-
-const getByNational = (foundCountStatuses) => {
-  const result = foundCountStatuses.reduce((acc, curr) => {
-    const dateCurr = getFrenchLuxonFromJSDate(curr.createdAt).toISODate()
-    if (!acc[dateCurr]) {
-      acc[dateCurr] = initResultStatus()
-    }
-    acc[dateCurr][curr.candidatStatus] += curr.count
-
-    return acc
-  }, {})
-
-  return result
 }
 
 const getByDepartements = (foundCountStatuses) => {
   const result = foundCountStatuses.reduce((acc, curr) => {
     const { createdAt, departement, candidatStatus, count } = curr
+    const dateCreated = getFrenchLuxonFromJSDate(createdAt)
     const dateCurr = getFrenchLuxonFromJSDate(createdAt).toISODate()
     if (!acc[dateCurr]) {
       acc[dateCurr] = {}
@@ -439,26 +427,25 @@ const getByDepartements = (foundCountStatuses) => {
     if (!acc[dateCurr][departement]) {
       acc[dateCurr][departement] = initResultStatus()
     }
-    acc[dateCurr][departement][candidatStatus] += count
-
+    acc[dateCurr][departement][candidatStatus] = count
+    acc[dateCurr][departement].date = dateCreated.toISO()
     return acc
   }, {})
 
   return result
 }
 
-export const countByStatuses = async (begin, end, byDepartment = false) => {
+export const countByStatuses = async (begin, end) => {
   let beginDate
   let endDate
   if (!begin || !end) {
     beginDate = getFrenchLuxon().minus({ days: 1 }).startOf('day')
-    endDate = getFrenchLuxon().minus({ days: 1 }).endOf('day')
+    endDate = getFrenchLuxon().endOf('day')
   } else {
     beginDate = getFrenchLuxonFromISO(begin).startOf('day')
     endDate = getFrenchLuxonFromISO(end).endOf('day')
   }
 
   const foundCountStatuses = await findCountStatus(beginDate, endDate)
-
-  return byDepartment ? getByDepartements(foundCountStatuses) : getByNational(foundCountStatuses)
+  return getByDepartements(foundCountStatuses)
 }
