@@ -78,18 +78,11 @@ export default {
           throw new Error(newCaptcha.message)
         }
 
-        // const allImages = await Promise.all(
-        //   newCaptcha.captcha.values.map(
-        //     async (value, index) => {
         const response = await api.candidat.getImage(0)
         const data = await response.blob()
         const url = URL.createObjectURL(data)
         const allImages = { url }
-        //       return { index, url, value }
-        //     },
-        //   ),
-        // )
-        console.log({ newCaptcha })
+
         commit(GENERATE_CAPTCHA_SUCCESS, {
           allImages,
           buttonsValues: newCaptcha.captcha.values,
