@@ -1,5 +1,5 @@
 import api from '@/api'
-import { generateExcelFile, getFrenchLuxonFromObject } from '@/util'
+import { generateExcelFile, getFrenchDateTimeShort, getFrenchLuxonFromObject, getFrenchLuxonFromIso } from '@/util'
 import { SHOW_ERROR, SHOW_SUCCESS } from './message'
 import { formatLogsData } from './utils'
 
@@ -135,51 +135,21 @@ export default {
       const start = getFrenchLuxonFromObject({ year: dateStart[0], month: dateStart[1], day: dateStart[2] }).toISODate()
       const end = getFrenchLuxonFromObject({ year: dateEnd[0], month: dateEnd[1], day: dateEnd[2] }).toISODate()
 
-      const result = await api.admin.getStatsCountStatuses(start, end, true)
+      const result = await api.admin.getStatsCountStatuses(start, end)
       if (result?.success) {
-        const dateByCounts = Object.entries(result.counts).reduce((acc, [date, countsByDep]) => {
-          if (!acc.byDays[date]) acc.byDays[date] = {}
-
-          const daysAcc = Object.entries(countsByDep).reduce((acc2, [dep, countByStatuses]) => {
-            if (!acc2.byDep[dep]) acc2.byDep[dep] = { }
-
-            const depAcc = Object.entries(countByStatuses).reduce((acc3, [status, count]) => {
-              if (!acc3.byDays[status]) acc3.byDays[status] = 0
-              acc3.byDays[status] += count
-              if (!acc3.byDep[status]) acc3.byDep[status] = 0
-              acc3.byDep[status] += count
-              if (!acc3.byNational[status]) acc3.byNational[status] = 0
-              acc3.byNational[status] += count
-              return acc3
-            }, { ...acc2, byDep: acc2.byDep[dep] })
-
-            acc2.byDep[dep] = depAcc.byDep
-
-            return acc2
-          }, { ...acc, byDays: acc.byDays[date] })
-
-          acc.byDays[date] = daysAcc.byDays
-
-          return acc
-        }, { byNational: {}, byDep: {}, byDays: {} })
-
-        const list = Object.entries(dateByCounts.byNational).map(([status, count]) => {
-          return { status, count }
-        })
-        const listByDeps = Object.entries(dateByCounts.byDep).map(([departement, countByStatus]) => {
-          const statuses = Object.entries(countByStatus).map(([status, count]) => {
-            return { status, count }
-          })
-          return { departement, statuses }
-        })
-        const listByDates = Object.entries(dateByCounts.byNational).map(([date, countByStatus]) => {
-          const statuses = Object.entries(countByStatus).map(([status, count]) => {
-            return { status, count }
-          })
-          return { date, statuses }
+        const listByDays = Object.entries(result.counts).map(([date, countsByDep]) => {
+          let dateTmp
+          const statuses = Object.entries(countsByDep).reduce((acc, [dep, countByStatuses]) => {
+            Object.keys(acc).forEach(key => {
+              acc[key] += countByStatuses[key]
+            })
+            dateTmp = countByStatuses.date
+            return acc
+          }, { 0: 0, 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 })
+          return { date: dateTmp, dateStr: getFrenchDateTimeShort(getFrenchLuxonFromIso(dateTmp)), statuses }
         })
 
-        commit(FETCH_STATS_COUNT_STATUSES_SUCCESS, { list, listByDeps, listByDates })
+        commit(FETCH_STATS_COUNT_STATUSES_SUCCESS, { list: undefined, listByDeps: undefined, listByDays: listByDays.reverse() })
         dispatch(SHOW_SUCCESS, 'Récuperation du nombre de candidat par groupe ok')
       } else {
         commit(FETCH_STATS_COUNT_STATUSES_FAILURE)
