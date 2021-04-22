@@ -282,8 +282,8 @@ export default {
 }
 
 .chart-wrapper {
-  width: 35vw;
-  height: 25vh;
+  width: 65vw;
+  height: 55vh;
 }
 
 .chart-vertical-wrapper {
