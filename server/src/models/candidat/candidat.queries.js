@@ -35,6 +35,7 @@ export const createCandidat = async ({
   canAccessAt,
   canBookFrom,
   status,
+  token,
 }) => {
   const validated = await candidatValidator.validateAsync({
     adresse,
@@ -84,6 +85,10 @@ export const createCandidat = async ({
     if (status) {
       newCandidat.status = status
     }
+
+    if (token) {
+      newCandidat.token = token
+    }
   }
 
   const candidat = new Candidat(newCandidat)
@@ -95,6 +100,7 @@ export const createCandidat = async ({
 const getSortableCandilibStatusAndSortCreatedAt = (now) => Candidat
   .find({
     isValidatedByAurige: true,
+    token: { $exists: true },
     $and: [
       {
         $or: [
@@ -116,6 +122,7 @@ const getSortableCandilibStatusAndSortCreatedAt = (now) => Candidat
 const getSortableCandilibInLastStatus = async (now) => Candidat.find({
   isValidatedByAurige: true,
   $or: [
+    { token: { $exists: false } },
     { canAccessAt: { $gte: now } },
     { canBookFrom: { $gte: now } },
   ],
