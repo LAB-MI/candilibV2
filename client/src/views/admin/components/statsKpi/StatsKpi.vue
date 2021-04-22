@@ -3,12 +3,12 @@
     <page-title :title="'Stats Kpi'" />
 
     <v-card class="container  stats-filters">
-      <v-switch
-        v-model="isDisplayAllDepartement"
-        :label="`Afficher tous les départements`"
-      />
-
       <div class="u-flex">
+        <v-switch
+          v-model="isDisplayAllDepartement"
+          class="pr-10"
+          :label="`Tous les départements`"
+        />
         <v-menu
           v-model="menuStart"
           :close-on-content-click="false"
