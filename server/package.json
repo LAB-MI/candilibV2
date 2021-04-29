@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "prebuild": "npm run test",
-    "build": "babel src -d dist",
+    "build": "babel src -d dist --copy-files",
     "db": "docker-compose -f docker-compose.dev.db.yml up -d",
     "db:down": "docker-compose -f docker-compose.dev.db.yml down",
     "build:all": "docker-compose -f docker-compose.prod.all.yml build",
