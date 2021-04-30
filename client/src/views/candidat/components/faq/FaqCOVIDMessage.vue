@@ -105,7 +105,7 @@ export default {
     color: #212529;
 
     &-col1 {
-      text-align: right;
+      direction: rtl;
       width: 15%;
       height: 50px;
     }
@@ -128,7 +128,7 @@ export default {
 }
 
 td {
-  padding-right: 2em;
+  padding-right: 1em;
 }
 
 img {
