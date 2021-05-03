@@ -3,18 +3,9 @@ import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate } 
 import captchaTools from 'visualcaptcha'
 import { imagesSetting } from './util'
 import { captchaExpireMintutes, nbMinuteBeforeRetry, numberOfImages, tryLimit } from '../../config'
+import { streamImages, getImageNamePic } from './util/merge-image'
 
-export const getImage = async (req, res, appLogger) => {
-  const { userId } = req
-  const indexImage = req?.params?.index
-
-  const loggerInfo = {
-    request_id: req.request_id,
-    section: 'get-image-captcha',
-    userId,
-    indexImage,
-  }
-
+export const verifyAndGetSessionByCandidatId = async (userId, message) => {
   const currentSession = await getSessionByCandidatId(userId)
 
   if (
@@ -24,27 +15,25 @@ export const getImage = async (req, res, appLogger) => {
     (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon())
   ) {
     const statusCode = 403
-    const message = "vous n'êtes pas autorisé"
-
-    appLogger.error({
-      ...loggerInfo,
-      description: message,
-      success: false,
-      statusCode,
-    })
-    return res.status(statusCode).json({ success: false, message })
+    const error = new Error(message)
+    error.statusCode = statusCode
+    throw error
   }
-  let isRetina = false
+  return currentSession
+}
+
+export const getImages = async (userId) => {
+  const message = "vous n'êtes pas autorisé"
+
+  const currentSession = await verifyAndGetSessionByCandidatId(userId, message)
 
   const visualCaptcha = captchaTools(currentSession.session, userId)
+  visualCaptcha.streamImages = streamImages
 
   // Default is non-retina
-  if (req.query.retina) {
-    isRetina = false
-  }
-
-  appLogger.info({ ...loggerInfo, description: 'Image captcha demandé', success: true })
-  visualCaptcha.streamImage(req?.params?.index, res, isRetina)
+  const isRetina = false
+  const result = await visualCaptcha.streamImages(isRetina)
+  return result
 }
 
 export const startCaptcha = async (userId) => {
@@ -72,11 +61,13 @@ export const startCaptcha = async (userId) => {
     })
 
     statusCode = 200
+    const frontendData = visualCaptcha.getFrontendData()
     return {
       success: true,
       count: 1,
       captcha: {
-        ...visualCaptcha.getFrontendData(),
+        ...frontendData,
+        imageNamePic: await getImageNamePic(frontendData),
         audioFieldName: undefined,
       },
       statusCode,
@@ -133,11 +124,13 @@ export const startCaptcha = async (userId) => {
   })
 
   statusCode = 200
+  const frontendData = visualCaptcha.getFrontendData()
   return {
     success: true,
     count: countAndCanRetryAt.count,
     captcha: {
-      ...visualCaptcha.getFrontendData(),
+      ...frontendData,
+      imageNamePic: await getImageNamePic(frontendData),
       audioFieldName: undefined,
     },
     statusCode,

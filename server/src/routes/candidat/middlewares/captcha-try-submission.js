@@ -1,6 +1,6 @@
-import { tryLimit } from '../../../config'
-import { getSessionByCandidatId, updateSession } from '../../../models/session-candidat'
-import { getFrenchLuxon, getFrenchLuxonFromJSDate, appLogger } from '../../../util'
+import { updateSession } from '../../../models/session-candidat'
+import { getFrenchLuxon, appLogger } from '../../../util'
+import { verifyAndGetSessionByCandidatId } from '../captcha-business'
 
 export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
@@ -14,29 +14,9 @@ export const trySubmissionCaptcha = async (req, res, next) => {
   const queryParams = []
 
   try {
-    const currentSession = await getSessionByCandidatId(userId)
+    const message = 'Captcha Expiré'
 
-    // TODO: Create a function for next condition
-    if (
-      !currentSession ||
-      !Object.keys(currentSession.session).length ||
-      currentSession.count > tryLimit ||
-      (getFrenchLuxonFromJSDate(currentSession.captchaExpireAt) < getFrenchLuxon())
-    ) {
-      const statusCode = 403
-      // TODO: ADD APPLOGGER
-      const message = 'Captcha Expiré'
-      appLogger.error({
-        ...loggerInfo,
-        description: message,
-        statusCode,
-      })
-      return res.status(statusCode).json({
-        success: false,
-        statusCode,
-        message,
-      })
-    }
+    const currentSession = await verifyAndGetSessionByCandidatId(userId, message)
 
     const {
       expires,
@@ -117,18 +97,21 @@ export const trySubmissionCaptcha = async (req, res, next) => {
 
     next()
   } catch (error) {
-    // TODO: ADD APPLOGGER
-    const message = '[Captcha] Oups ! Une erreur est survenue.'
+    const { statusCode: status } = error
+    const message = status ? error.message : '[Captcha] Oups ! Une erreur est survenue.'
+    const statusCode = status || 500
+
     appLogger.error({
       ...loggerInfo,
       description: message,
-      statusCode: 500,
+      statusCode,
       infoStatus: queryParams.join(),
       error,
     })
 
-    return res.status(500).json({
+    return res.status(statusCode).json({
       success: false,
+      statusCode,
       message,
     })
   }

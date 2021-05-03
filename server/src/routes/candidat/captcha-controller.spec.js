@@ -5,6 +5,7 @@ import app, { apiPrefix } from '../../app'
 import request from 'supertest'
 import { setNowAfterSelectedHour, setNowAtNow } from './__tests__/luxon-time-setting'
 import { deleteSessionByCandidatId, getSessionByCandidatId } from '../../models/session-candidat'
+import { numberOfImages } from '../../config'
 
 jest.mock('../middlewares/verify-token')
 jest.mock('../middlewares/verify-user')
@@ -124,16 +125,16 @@ describe('Captcha test', () => {
   it('should generate a captcha util the limit and verify unauthorize for place and get image', async () => {
     const captchaPath = 'start'
 
-    const expectedValue01 = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValue01 = { count: 1, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue01)
 
     const expectedValueImage = { statusCode: 200, indexImage: 0, isMustBeBuffer: true }
     await requestImageCaptchaByIndex(expectedValueImage)
 
-    const expectedValue02 = { count: 2, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValue02 = { count: 2, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue02)
 
-    const expectedValue03 = { count: 3, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValue03 = { count: 3, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue03)
 
     const tmpSessionCandiat = await getSessionByCandidatId(candidat1._id)
@@ -169,7 +170,7 @@ describe('Captcha test', () => {
   it('should not validate captcha after expiration', async () => {
     const captchaPath = 'start'
     // console.log('1er captha')
-    const expectedValue01 = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValue01 = { count: 1, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue01)
 
     const dateNow = getFrenchLuxon()
@@ -197,11 +198,11 @@ describe('Captcha test', () => {
     await requestImageCaptchaByIndex(expectedValueImage)
 
     // console.log('2er captha')
-    const expectedValueNewCaptcha = { count: 2, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValueNewCaptcha = { count: 2, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValueNewCaptcha)
 
     // console.log('3er captha')
-    const expectedValueNewCaptcha01 = { count: 3, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValueNewCaptcha01 = { count: 3, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValueNewCaptcha01)
 
     const tmpSessionCandiat = await getSessionByCandidatId(candidat1._id)
@@ -237,26 +238,18 @@ describe('Captcha test', () => {
     setNowAfterSelectedHour(nowPlus2MinutesAfterCanRetryAt.toJSDate().getHours(), nowPlus2MinutesAfterCanRetryAt.minute)
 
     // console.log('6er captha')
-    const expectedValueAfterCanRetryAt = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValueAfterCanRetryAt = { count: 1, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValueAfterCanRetryAt)
   })
 
   it('should get image by index', async () => {
     const captchaPath = 'start'
 
-    const expectedValue = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValue = { count: 1, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue)
 
     const expectedValueImageValidForIndex0 = { statusCode: 200, indexImage: 0, isMustBeBuffer: true }
     await requestImageCaptchaByIndex(expectedValueImageValidForIndex0)
-    const expectedValueImageValidForIndex1 = { statusCode: 200, indexImage: 1, isMustBeBuffer: true }
-    await requestImageCaptchaByIndex(expectedValueImageValidForIndex1)
-    const expectedValueImageValidForIndex2 = { statusCode: 200, indexImage: 2, isMustBeBuffer: true }
-    await requestImageCaptchaByIndex(expectedValueImageValidForIndex2)
-    const expectedValueImageValidForIndex3 = { statusCode: 200, indexImage: 3, isMustBeBuffer: true }
-    await requestImageCaptchaByIndex(expectedValueImageValidForIndex3)
-    const expectedValueImageValidForIndex4 = { statusCode: 200, indexImage: 4, isMustBeBuffer: true }
-    await requestImageCaptchaByIndex(expectedValueImageValidForIndex4)
   })
 
   it('should not get image', async () => {
@@ -284,13 +277,13 @@ describe('Captcha test', () => {
   it('should can add a new captcha after last fail', async () => {
     const captchaPath = 'start'
 
-    const expectedValue01 = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValue01 = { count: 1, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue01)
 
-    const expectedValue02 = { count: 2, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValue02 = { count: 2, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue02)
 
-    const expectedValue03 = { count: 3, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValue03 = { count: 3, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue03)
 
     const currentSessionCandidat = await getSessionByCandidatId(candidat1._id)
@@ -327,7 +320,7 @@ describe('Captcha test', () => {
     const nowPlus2Minutes = dateCanTryAtAfterLastTry.plus({ minutes })
     setNowAfterSelectedHour(nowPlus2Minutes.toJSDate().getHours(), nowPlus2Minutes.minute)
 
-    const expectedValue05 = { count: 1, success: true, imageCount: 5, statusCode: 200, isCaptcha: true }
+    const expectedValue05 = { count: 1, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
 
     await requestCaptcha(captchaPath, expectedValue05)
   })
