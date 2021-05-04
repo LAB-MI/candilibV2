@@ -39,23 +39,6 @@ server {
     rewrite ^(.+)$ <PUBLIC_PATH>/index.html last;
   }
 
-  location ~ "^<PUBLIC_PATH>/api/v2/candidat/verifyzone" {
-    limit_req zone=api_verifyzone burst=<API_VERIFYZONE_BURST>;
-    limit_req zone=api_get burst=<API_USER_GET_BURST>;
-    limit_req zone=api_post burst=<API_USER_POST_BURST>;
-    limit_req zone=api_patch burst=<API_USER_PATCH_BURST>;
-    limit_req zone=api_put burst=<API_USER_PUT_BURST>;
-    limit_req zone=api_head burst=<API_USER_HEAD_BURST>;
-    limit_req zone=api_delete burst=<API_USER_DELETE_BURST>;
-    limit_req zone=api_options burst=<API_USER_OPTIONS_BURST>;
-    limit_req_status 429;
-    rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
-    proxy_pass http://<API_HOST>:8000;
-    proxy_redirect off;
-    proxy_buffering off;
-    proxy_http_version 1.1;
-  }
-
   location ~ "^<PUBLIC_PATH>/api/v2(/public|(/auth)?/candidat)" {
 
     limit_req zone=api_user_id burst=<API_USER_ID_BURST>;
@@ -68,7 +51,6 @@ server {
     limit_req zone=api_options burst=<API_USER_OPTIONS_BURST>;
     limit_req_status 429;
     rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
-    add_header Access-Control-Allow-Origin '$http_origin';
     proxy_pass http://<API_HOST>:<API_PORT>;
     proxy_redirect off;
     proxy_buffering off;

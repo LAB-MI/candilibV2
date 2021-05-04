@@ -64,13 +64,14 @@ export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week,
   // Demander un captcha
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+  cy.get('button').should('contain', '1')
   cy.getSolutionCaptcha({ email: candidatsByDepartments[0].email })
     .then(imageValueResponse => {
       cy.log('imageValueResponse', imageValueResponse.value)
-
+      // eslint-disable-next-line
+      expect(imageValueResponse.success).to.be.true 
       cy.get(`.t-${imageValueResponse.value}`).click()
     })
-
   cy.get('button')
     .should('contain', 'Confirmer')
   cy.get('button')

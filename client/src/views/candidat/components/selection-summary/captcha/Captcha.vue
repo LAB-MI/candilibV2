@@ -60,23 +60,37 @@
             <span class="font-medium">
               Sélectionner:
             </span>
-            <span class="font-semibold text-xl">
+            <div
+              class="d-flex justify-center"
+              style="height: 30px;"
+            >
+              <!-- class="w-full h-full" -->
+              <img
+                style="height: 100%;"
+                :src="candidatCaptcha.generatedCaptcha.imageNamePic"
+                alt="imagName"
+              >
+            </div>
+            <!-- <span class="font-semibold text-xl">
               {{ candidatCaptcha.generatedCaptcha.question }}
-            </span>
+            </span> -->
             <v-card-text />
+            <div class="d-flex justify-center">
+              <img
+                :src="candidatCaptcha.generatedCaptcha.images.url"
+                alt="valid"
+              >
+            </div>
             <v-card-text>
               <v-btn
-                v-for="image in candidatCaptcha.generatedCaptcha.images"
-                :key="image.index"
+                v-for="(image, index) in candidatCaptcha.generatedCaptcha.buttonsValues"
+                :key="index"
                 :disabled="candidatCaptcha.isGenerating"
-                :color="(imageField !== null && imageField === image.index ) ? 'primary' : ''"
-                :class="`t-image-index t-${image.value}`"
-                @click="tryCaptcha(image.value, image.index)"
+                :color="(imageField !== null && imageField === index ) ? 'primary' : ''"
+                :class="`t-image-index t-${image}`"
+                @click="tryCaptcha(image, index)"
               >
-                <img
-                  :src="image.url"
-                  alt="valid"
-                >
+                {{ index + 1 }}
               </v-btn>
             </v-card-text>
           </v-card-text>

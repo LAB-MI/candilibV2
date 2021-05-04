@@ -223,7 +223,7 @@ export const captchaExpireMintutes = 1
  * Nombre d'images pour le captcha
  * @constant {Number}
  */
-export const numberOfImages = 5
+export const numberOfImages = 6
 
 /**
  * Données de connexion au serveur de SMTP pour les envois de mail

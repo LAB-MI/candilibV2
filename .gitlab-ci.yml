@@ -26,6 +26,7 @@ stages:
 default:
   tags:
     - shared
+    - region1
     # - docker
     # - openstack
   before_script:

@@ -504,11 +504,11 @@ Cypress.Commands.add('getSolutionCaptcha', (query) => {
           if (!body.length || !body[0].session || !body[0].session[captchaNameSpace]) {
             cy.log('Pas de session pour ce candidat')
             return cy.wrap({ success: false })
-          } else {
-            const value = body[0].session[captchaNameSpace].validImageOption.value
-            cy.log('value', value)
-            return cy.wrap({ value: value })
           }
+          const value = body[0].session[captchaNameSpace].validImageOption.value
+          cy.log('value', value)
+          assert.isDefined(value, 'Valeur dans la validImage pour ce candidat')
+          return cy.wrap({ success: true, value: value })
         })
     })
 })
