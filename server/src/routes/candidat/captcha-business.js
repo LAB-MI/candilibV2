@@ -67,6 +67,7 @@ export const startCaptcha = async (userId) => {
       count: 1,
       captcha: {
         ...frontendData,
+        imageName: undefined,
         imageNamePic: await getImageNamePic(frontendData),
         audioFieldName: undefined,
       },
@@ -125,11 +126,13 @@ export const startCaptcha = async (userId) => {
 
   statusCode = 200
   const frontendData = visualCaptcha.getFrontendData()
+
   return {
     success: true,
     count: countAndCanRetryAt.count,
     captcha: {
       ...frontendData,
+      imageName: undefined,
       imageNamePic: await getImageNamePic(frontendData),
       audioFieldName: undefined,
     },
