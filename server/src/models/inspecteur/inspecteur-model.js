@@ -57,9 +57,9 @@ InspecteurSchema.index({
   matricule: 'text',
 })
 
-InspecteurSchema.index({ matricule: 1 })
+InspecteurSchema.index({ matricule: 1 }, { unique: 1 })
 InspecteurSchema.index({ departement: 1, active: 1 })
-InspecteurSchema.index({ email: 1 })
+InspecteurSchema.index({ email: 1 }, { unique: 1 })
 
 InspecteurSchema.pre('save', async function preSave () {
   const inspecteur = this
