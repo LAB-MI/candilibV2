@@ -201,6 +201,7 @@ describe('Manage centers', () => {
       .find('.t-archive-centre-submit')
       .click()
 
+    cy.checkAndCloseSnackBar('Le centre a bien été ')
     cy.get('.t-list-centres')
       .should('contain', centre3.nom)
       .contains(centre3.nom)
@@ -219,11 +220,12 @@ describe('Manage centers', () => {
       .find('.t-archive-centre-submit')
       .click()
 
+    cy.checkAndCloseSnackBar('Le centre a bien été ')
     cy.get('.t-list-centres')
       .should('contain', centre3.nom)
       .contains(centre3.nom)
       .parents('tr')
       .find('.t-archive-centre-icon')
-      .should('contain', 'trash')
+      .should('contain', 'delete')
   })
 })
