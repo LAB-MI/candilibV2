@@ -33,12 +33,8 @@ export const getFrenchDateTimeFromLuxon = dateTime =>
     .setLocale('fr')
     .setZone(FRENCH_TIME_ZONE)
     .toLocaleString({
-      weekday: 'long',
-      month: 'long',
-      day: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
+      dateStyle: 'full',
+      timeStyle: 'short',
     })
 
 export const getFrenchDateFromIso = isoDate => {
@@ -48,12 +44,8 @@ export const getFrenchDateFromIso = isoDate => {
 export const getFrenchDateTimeFromIso = isoDate =>
   isoDate &&
   getFrenchLuxonFromIso(isoDate).toLocaleString({
-    weekday: 'long',
-    month: 'long',
-    day: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+    dateStyle: 'full',
+    timeStyle: 'short',
   })
 
 export const getFrenchLuxonCurrentDateTime = () =>
