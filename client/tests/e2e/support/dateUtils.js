@@ -13,12 +13,8 @@ export const getFrenchLuxonFromIso = isoDate => isoDate && DateTime.fromISO(isoD
 export const getFrenchDateTimeFromIso = isoDate =>
   isoDate &&
   getFrenchLuxonFromIso(isoDate).toLocaleString({
-    weekday: 'long',
-    month: 'long',
-    day: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+    dateStyle: 'full',
+    timeStyle: 'short',
   })
 
 export const getFrenchLuxonFromJSDate = jsDate => jsDate && DateTime.fromJSDate(jsDate, frenchOptions)
