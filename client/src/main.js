@@ -9,7 +9,6 @@ import './registerServiceWorker'
 
 import './main.styl'
 import vuetify from './plugins/vuetify'
-import './assets/tailwind.pcss'
 
 Vue.config.productionTip = false
 
