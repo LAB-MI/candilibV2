@@ -409,59 +409,6 @@ describe('test statistics', () => {
     )
   })
 
-  it('Should count by status', async () => {
-    const yesterday = getFrenchLuxon().minus({ days: 1 })
-    const statuses = [{
-      departement: '93',
-      candidatStatus: '1',
-      count: 1,
-      createdAt: yesterday,
-    },
-    {
-      departement: '92',
-      candidatStatus: '1',
-      count: 1,
-      createdAt: yesterday,
-    },
-    {
-      departement: '95',
-      candidatStatus: '2',
-      count: 2,
-      createdAt: yesterday,
-    },
-    {
-      departement: '91',
-      candidatStatus: '3',
-      count: 3,
-      createdAt: yesterday,
-    },
-    {
-      departement: '95',
-      candidatStatus: '3',
-      count: 3,
-      createdAt: yesterday,
-    }]
-
-    await createManyCountStatus(statuses)
-
-    const expecteds = {
-      0: 0,
-      1: 2,
-      2: 2,
-      3: 6,
-      4: 0,
-      5: 0,
-    }
-
-    const results = await countByStatuses()
-    const result = results[yesterday.toISODate()]
-    Object.entries(expecteds).forEach(([status, count]) => {
-      expect(result).toHaveProperty(status, count)
-    })
-
-    await countStatusModel.deleteMany({})
-  })
-
   it('Should count by status and by departements', async () => {
     const twoDaysAgo = getFrenchLuxon().minus({ days: 2 })
     const yesterday = getFrenchLuxon().minus({ days: 1 })
@@ -530,16 +477,18 @@ describe('test statistics', () => {
     const statuses = [...statusesYesterday, ...statusesTwoDaysAgo]
     await createManyCountStatus(statuses)
 
-    const results = await countByStatuses(twoDaysAgo, getFrenchLuxon(), true)
+    const results = await countByStatuses(twoDaysAgo, getFrenchLuxon())
     Object.entries(results).forEach(([date, byDep]) => {
       const dateLuxon = getFrenchLuxonFromISO(date).hasSame(yesterday, 'days') ? yesterday : twoDaysAgo
       Object.entries(byDep).forEach(([dep, byStatus]) => {
         Object.entries(byStatus).forEach(([status, count]) => {
           const resultStatus = statuses.find(({ departement, candidatStatus, createdAt }) => dateLuxon.equals(createdAt) && departement === dep && candidatStatus === status)
-          expect(resultStatus || {
-            count: 0,
-            candidatStatus: status,
-          }).toHaveProperty('count', count)
+          if (status !== 'date') {
+            expect(resultStatus || {
+              count: 0,
+              candidatStatus: status,
+            }).toHaveProperty('count', count)
+          }
         })
       })
     })

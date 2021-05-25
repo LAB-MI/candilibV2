@@ -71,22 +71,12 @@
     </v-toolbar>
     <big-loading-indicator :is-loading="isFetchingCountStatus" />
     <div
-      class="overflow-scroll pa-4 flex"
+      class="overflow-scroll"
     >
       <v-card-title primary-title>
-        national
+        Nationale
       </v-card-title>
-      <v-card
-        v-for="item in listCountStatus"
-        :key="item.status"
-      >
-        <v-card-title primary-title>
-          Groupe:  {{ Number(item.status) + 1 }}
-        </v-card-title>
-        <v-card-title primary-title>
-          valeur: {{ item.count }}
-        </v-card-title>
-      </v-card>
+      <details-content-national :list-logs="listCountStatus" />
     </div>
   </v-card>
 </template>
@@ -94,23 +84,19 @@
 <script>
 import { FETCH_STATS_COUNT_STATUSES_REQUEST } from '@/store'
 import { mapState } from 'vuex'
-import { BigLoadingIndicator /*, WrapperDragAndResize */ } from '@/components'
-
-// import ChartBar from '../statsKpi/ChartBar.vue'
-// import ChartBarVertical from '../statsKpi/ChartBarVertical.vue'
+import { BigLoadingIndicator } from '@/components'
 import { getFrenchLuxonCurrentDateTime } from '@/util'
+import DetailsContentNational from './DetailsContentNational.vue'
 
 export default {
   name: 'CandidatCountByStatus',
   components: {
     BigLoadingIndicator,
-    // WrapperDragAndResize,
-    // ChartBar,
-    // ChartBarVertical,
+    DetailsContentNational,
   },
 
   data: () => ({
-    dateStart: getFrenchLuxonCurrentDateTime().startOf('day').toISODate(),
+    dateStart: getFrenchLuxonCurrentDateTime().minus({ days: 1 }).startOf('day').toISODate(),
     dateEnd: getFrenchLuxonCurrentDateTime().endOf('day').toISODate(),
     menuStart: false,
     menuEnd: false,
@@ -118,7 +104,7 @@ export default {
 
   computed: {
     ...mapState(['adminTech']),
-    listCountStatus: state => state.adminTech.listCountStatus,
+    listCountStatus: state => { return state.adminTech.listCountStatusByDays },
     isFetchingCountStatus: state => state.adminTech.isFetchingCountStatus,
 
     pickerDateStart () {
