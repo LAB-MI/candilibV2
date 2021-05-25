@@ -26,6 +26,17 @@ const logger = {
   },
 }
 
+export function jsonFormat (tokens, req, res) {
+  return JSON.stringify({
+    api: {
+      time_local: tokens.date(req, res, 'iso'),
+      method: tokens.method(req, res),
+      uri: tokens.url(req, res),
+      status: +tokens.status(req, res),
+      response_time: +tokens['response-time'](req, res),
+    },
+  })
+}
 export const simpleLogger = logger
 export const simplestLogger = logger
 
