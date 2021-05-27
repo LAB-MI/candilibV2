@@ -16,6 +16,7 @@ export const generateCandidats = (params) => {
       canAccessAt,
       departement,
       homeDepartement,
+      token,
     } = item
 
     for (let id = 1; id <= nbCandidats; id++) {
@@ -60,6 +61,10 @@ export const generateCandidats = (params) => {
         if (canAccessAt === 'future') {
           userData.canAccessAt = faker.date.future()
         }
+      }
+
+      if (token) {
+        userData.token = 'fake_token_valide'
       }
 
       users.push(userData)

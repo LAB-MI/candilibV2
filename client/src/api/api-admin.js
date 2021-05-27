@@ -566,10 +566,10 @@ const apiAdmin = {
     return json
   },
 
-  async createDepartement (departementId, departementEmail) {
+  async createDepartement (departementId, departementEmail, isAddedRecently) {
     const json = await apiClient.post(`${apiPaths.admin.departements}`, {
       headers: getHeadersForAdminJson(),
-      body: JSON.stringify({ departementId, departementEmail }),
+      body: JSON.stringify({ departementId, departementEmail, isAddedRecently }),
     })
     return json
   },
@@ -609,12 +609,12 @@ const apiAdmin = {
     })
     return json
   },
-  async updateDepartement (departementId, newEmail) {
+  async updateDepartement (departementId, newEmail, isAddedRecently) {
     const json = await apiClient.patch(
         `${apiPaths.admin.departements}/${departementId}`,
         {
           headers: getHeadersForAdminJson(),
-          body: JSON.stringify({ newEmail }),
+          body: JSON.stringify({ newEmail, isAddedRecently }),
         },
     )
     return json
@@ -643,10 +643,10 @@ const apiAdmin = {
     return json
   },
 
-  async getStatsCountStatuses (begin, end, byDep) {
-    let queryString = `?byDep=${byDep}`
+  async getStatsCountStatuses (begin, end) {
+    let queryString = '?'
     if (begin && end) {
-      queryString += `&beginPeriod=${encodeURIComponent(begin)}&endPeriod=${encodeURIComponent(end)}`
+      queryString += `beginPeriod=${encodeURIComponent(begin)}&endPeriod=${encodeURIComponent(end)}`
     }
     const json = await apiClient.get(
       `${apiPaths.admin.statsCountStatuses}${queryString}`,

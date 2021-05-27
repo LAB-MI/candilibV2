@@ -26,10 +26,19 @@ export const adminCheckCandidatHystoryActionsByType = (candidatsByDepartments, t
   }
 }
 
-export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week, hasCheckMail, tInfoCenters75TimeOut) => {
+export const candidatCantSelectPlace = (magicLink, candidatsByDepartments, nowIn1Week, tInfoCenters75TimeOut, homeDepartement) => {
   cy.visit(magicLink)
 
-  cy.toGoSelectPlaces({ tInfoCenters75TimeOut })
+  cy.toGoCentre({ tInfoCenters75TimeOut, homeDepartement })
+  const classCenter = `.t-centers-${Cypress.env('centre').toLowerCase().replace(/ /g, '-')}`
+  cy.get(classCenter).parent()
+    .should('contain', 'Plus de place disponible pour le moment')
+}
+
+export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week, hasCheckMail, tInfoCenters75TimeOut, deptSelected) => {
+  cy.visit(magicLink)
+
+  cy.toGoSelectPlaces({ tInfoCenters75TimeOut, homeDepartement: candidatsByDepartments[0].homeDepartement, deptSelected })
 
   cy.log('nowIn1WeekInfo.monthLong:', nowIn1Week.monthLong)
   cy.get(`[href="#tab-${nowIn1Week.monthLong}"]`).click()
@@ -55,13 +64,14 @@ export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week,
   // Demander un captcha
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+  cy.get('button').should('contain', '1')
   cy.getSolutionCaptcha({ email: candidatsByDepartments[0].email })
     .then(imageValueResponse => {
       cy.log('imageValueResponse', imageValueResponse.value)
-
+      // eslint-disable-next-line
+      expect(imageValueResponse.success).to.be.true 
       cy.get(`.t-${imageValueResponse.value}`).click()
     })
-
   cy.get('button')
     .should('contain', 'Confirmer')
   cy.get('button')

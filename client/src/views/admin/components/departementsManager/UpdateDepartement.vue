@@ -6,7 +6,7 @@
     <template v-slot:activator="{ on }">
       <v-btn
         slot="activator"
-        :class="`t-btn-update-${departementId}`"
+        :class="`t-btn-update-${deprtId}`"
         color="primary"
         icon
         v-on="on"
@@ -24,7 +24,7 @@
           class="t-title-update headline grey lighten-2"
           primary-title
         >
-          Modification de l'adresse couriel du departement &nbsp; <strong>{{ departementId }}</strong>
+          Modification de l'adresse couriel du departement &nbsp; <strong>{{ deprtId }}</strong>
         </v-card-title>
 
         <v-container class="u-flex  u-flex--between  u-full-width">
@@ -42,7 +42,15 @@
             @input="setEmailToLowerCase"
           />
           <v-spacer />
-
+          <v-checkbox
+            v-model="isAddedRecently"
+            label="Récent"
+            color="primary"
+            class="check-box-style t-update-checkbox-recently"
+          >
+            {{ isAddedRecently }}
+          </v-checkbox>
+          <v-spacer />
           <v-btn
             class="t-btn-cancel-update"
             color="#CD1338"
@@ -79,28 +87,41 @@ export default {
       type: String,
       default: '',
     },
+    deprt: {
+      type: Object,
+      default: undefined,
+    },
   },
 
   data () {
     return {
-      departementId: this.deprtId,
       isUpdating: false,
       valid: false,
-      newEmail: '',
+      newEmail: this.deprt.email,
       emailRules: [
         newEmail => newEmail ? (emailRegex.test(newEmail) || "L'adresse courriel doit être valide") : true,
       ],
       emailPlaceholder: '',
+      isAddedRecently: this.deprt.isAddedRecently,
     }
   },
-
+  watch: {
+    deprt (newValue, oldValue) {
+      this.newEmail = newValue.email
+      this.isAddedRecently = newValue.isAddedRecently
+    },
+    isUpdating (newValue) {
+      console.log(newValue)
+    },
+  },
   methods: {
     async updateDepartement () {
       const {
-        departementId,
+        deprtId,
         newEmail,
+        isAddedRecently,
       } = this
-      await this.$store.dispatch(UPDATE_DEPARTEMENT_REQUEST, { departementId, newEmail })
+      await this.$store.dispatch(UPDATE_DEPARTEMENT_REQUEST, { departementId: deprtId, newEmail, isAddedRecently })
       this.isUpdating = false
     },
     setEmailPlaceholder () {

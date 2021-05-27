@@ -18,6 +18,7 @@ describe('Candidats group by status', () => {
       canBookFrom: null,
       canAccessAt: null,
       departement: '95',
+      token: true,
     }, {
       nbCandidats: 5,
       isValidateAurige: true,
@@ -25,6 +26,7 @@ describe('Candidats group by status', () => {
       canBookFrom: null,
       canAccessAt: null,
       departement: '93',
+      token: true,
     }, {
       nbCandidats: 3,
       isValidateAurige: true,
@@ -32,6 +34,7 @@ describe('Candidats group by status', () => {
       canBookFrom: null,
       canAccessAt: null,
       departement: '92',
+      token: true,
     }, {
       nbCandidats: 3,
       isValidateAurige: true,
@@ -40,6 +43,7 @@ describe('Candidats group by status', () => {
       canAccessAt: null,
       departement: '93',
       homeDepartement: '75',
+      token: true,
     },
     ]
 
@@ -52,6 +56,7 @@ describe('Candidats group by status', () => {
     await disconnect()
   })
 
+  // TODO: Ajouter fixer nombre de candidat par groupe
   it('Should have n candidats in countStatus', async () => {
     await sortStatus()
     for (let i = 0; i < 6; i++) {

@@ -26,6 +26,7 @@
     "delayAfterFailure.js",
     "interactions.js",
     "placesAfter12h.js",
-    "candidatEtg.js"
+    "candidatEtg.js",
+    "candidatByGroup.js"
   ]
 }

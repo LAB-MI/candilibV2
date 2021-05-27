@@ -248,4 +248,21 @@ CandidatSchema.virtual('lastNoReussite')
     }
   })
 
+CandidatSchema.virtual('homeDeptDocument', {
+  ref: 'departement',
+  localField: 'homeDepartement',
+  foreignField: '_id',
+  justOne: true,
+})
+
+async function getIsInRecentlyDept () {
+  if (!this.populated('homeDeptDocument')) {
+    await this.populate('homeDeptDocument').execPopulate()
+  }
+
+  return this.homeDeptDocument?.isAddedRecently || false
+}
+
+CandidatSchema.virtual('isInRecentlyDept').get(getIsInRecentlyDept)
+
 export default mongoose.model('Candidat', CandidatSchema)

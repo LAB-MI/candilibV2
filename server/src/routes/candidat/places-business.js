@@ -366,6 +366,7 @@ export const bookPlace = async (
   )
   const centres = foundCentres.map(centre => centre._id)
   const bookedAt = getFrenchLuxon().toJSDate()
+
   const visibleBefore = getDateVisibleBefore(candidatStatus).toJSDate()
   try {
     const place = await findAndbookPlace(
