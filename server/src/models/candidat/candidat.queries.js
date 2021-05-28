@@ -439,7 +439,8 @@ export const updateCandidatToken = async (candidatId, token) => {
   if (!candidatId) {
     throw new Error('candidat is undefined')
   }
-  return Candidat.updateOne({ _id: candidatId }, { $set: { token } })
+
+  return Candidat.updateOne({ _id: candidatId }, { $set: { token, tokenAddedAt: getFrenchLuxon().toISO() } })
 }
 
 /**

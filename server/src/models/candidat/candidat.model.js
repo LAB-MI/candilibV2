@@ -160,10 +160,13 @@ export const candidatFields = {
     type: String,
     required: false,
   },
-
   token: {
     type: String,
     default: undefined,
+  },
+  tokenAddedAt: {
+    type: Date,
+    required: false,
   },
 }
 
@@ -181,6 +184,7 @@ CandidatSchema.index({ email: 1 }, { unique: true })
 CandidatSchema.index({ departement: 1, canAccessAt: 1 })
 CandidatSchema.index({ createdAt: 1 })
 CandidatSchema.index({ isValidatedByAurige: 1, canAccessAt: 1, canBookFrom: 1 })
+CandidatSchema.index({ tokenCreatedAt: 1 })
 
 CandidatSchema.pre('save', async function preSave () {
   const candidat = this
