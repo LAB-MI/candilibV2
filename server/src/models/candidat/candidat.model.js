@@ -168,6 +168,10 @@ export const candidatFields = {
     type: Date,
     required: false,
   },
+  lastConnection: {
+    type: Date,
+    required: false,
+  },
 }
 
 const CandidatSchema = new Schema(candidatFields, { timestamps: true })
@@ -185,6 +189,7 @@ CandidatSchema.index({ departement: 1, canAccessAt: 1 })
 CandidatSchema.index({ createdAt: 1 })
 CandidatSchema.index({ isValidatedByAurige: 1, canAccessAt: 1, canBookFrom: 1 })
 CandidatSchema.index({ tokenCreatedAt: 1 })
+CandidatSchema.index({ lastConnection: 1 })
 
 CandidatSchema.pre('save', async function preSave () {
   const candidat = this

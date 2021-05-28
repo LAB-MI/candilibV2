@@ -30,6 +30,7 @@ import {
   archivePlace,
   findCandidatById,
   findCandidatsMatching,
+  setCandidatLastConnection,
   updateCandidatFailed,
   updateCandidatNoReussite,
   updateCandidatToken,
@@ -334,7 +335,7 @@ describe('Candidat', () => {
       expect(candidat1).toHaveProperty('adresse', adresse1)
       expect(candidat1).toHaveProperty('email', validEmail1)
     })
-    it('should add token into a candidat', async () => {
+    it('should have a token and a date created into a candidat', async () => {
       // Given
       const token = 'test token'
       const { _id } = candidat
@@ -347,6 +348,13 @@ describe('Candidat', () => {
       expect(candidatFounded).toHaveProperty('token', token)
       expect(candidatFounded.tokenAddedAt).toBeDefined()
       expect(getFrenchLuxon().hasSame(getFrenchLuxonFromJSDate(candidatFounded.tokenAddedAt), 'day')).toBe(true)
+    })
+    it('Should have a date of the last connection', async () => {
+      const { _id } = candidat
+      await setCandidatLastConnection(_id)
+      const candidatFounded = await findCandidatById(_id, { lastConnection: 1 })
+      expect(candidatFounded.lastConnection).toBeDefined()
+      expect(getFrenchLuxon().hasSame(getFrenchLuxonFromJSDate(candidatFounded.lastConnection), 'day')).toBe(true)
     })
   })
 

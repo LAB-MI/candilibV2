@@ -572,6 +572,10 @@ export const setCandidatFirstConnection = async id => {
   return candidat
 }
 
+export const setCandidatLastConnection = async id => {
+  return await Candidat.updateOne({ _id: id }, { $set: { lastConnection: new Date() } })
+}
+
 /**
  * Ajoute dans les places archivées du candidat la place passée en paramètre
  * et renvoie le candidat mis à jour
