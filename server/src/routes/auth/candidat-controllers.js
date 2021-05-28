@@ -3,8 +3,8 @@
  * @module
  */
 
-import { appLogger } from '../../util'
-import { findCandidatByEmail, isCandidatExisting } from '../../models/candidat'
+import { appLogger, getFrenchLuxon, getFrenchLuxonFromJSDate, techLogger } from '../../util'
+import { findCandidatByEmail, isCandidatExisting, setCandidatLastConnection } from '../../models/candidat'
 import { sendMagicLink } from '../business'
 import { sendErrorResponse } from '../../util/send-error-response'
 import { XUserId } from '../middlewares/verify-user'
@@ -129,6 +129,17 @@ export const checkCandidat = async (req, res) => {
         otherData: { auth: false, isTokenValid: false },
       })
     }
+
+    if (!isExisting.lastConnection || !getFrenchLuxonFromJSDate(isExisting.lastConnection).hasSame(getFrenchLuxon(), 'day')) {
+      setCandidatLastConnection(candidatId).then().catch((error) => {
+        techLogger.error({
+          ...loggerInfo,
+          description: error.message,
+          error,
+        })
+      })
+    }
+
     appLogger.info({ ...loggerInfo, description: 'Le candidat existe bien' })
     res.set({ [XUserId]: isExisting._id })
     return res.json({ auth: true })
