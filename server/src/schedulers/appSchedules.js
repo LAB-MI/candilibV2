@@ -17,7 +17,7 @@ import { v4 as uuidv4 } from 'uuid'
   */
 export const apiPrefix = '/sdl/v2'
 
-const isDevelopment = [undefined, 'development'].includes(process.env.NODE_ENV)
+// const isDevelopment = [undefined, 'development'].includes(process.env.NODE_ENV)
 
 const appSchedules = express()
 
