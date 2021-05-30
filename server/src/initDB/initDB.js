@@ -2,17 +2,23 @@
  * Fonctionnalités pour initaliser la base de données
  * @module
  */
-import { findStatusByType } from '../models/status'
+import { findStatusByType, upsertStatusByType } from '../models/status'
 import ModelPlace from '../models/place/place.model'
 import ModelCandidat from '../models/candidat/candidat.model'
 import { techLogger } from '../util'
 import { sortStatus } from '../routes/admin/sort-candidat-status-business'
 import { removeDuplicateBooked } from './update-places'
+import npmVersion from '../../package.json'
 
+const runJobs = async () => {
+  await ModelPlace.syncIndexes()
+  await ModelCandidat.syncIndexes()
+  await removeDuplicateBooked()
+}
 /**
  * Version de la base de données
  */
-let versionDB = 0
+// let versionDB = 0
 
 /**
  * Pour initialisés la base de données
@@ -20,20 +26,42 @@ let versionDB = 0
  * @function
  */
 export const initDB = async () => {
+  const versionDB = npmVersion.version
   const statusVersion = await findStatusByType({ type: 'DB_VERSION' })
+
   const loggerInfo = {
     section: 'initDB',
     versionDB,
   }
 
   techLogger.info(loggerInfo)
-  if (statusVersion) {
-    versionDB = Number(statusVersion.message)
-  }
 
-  await ModelPlace.syncIndexes()
-  await ModelCandidat.syncIndexes()
-  await removeDuplicateBooked()
+  if (!statusVersion?.message) {
+
+    await runJobs()
+    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
+
+  } else {
+    if(statusVersion.message !== npmVersion.version) {
+    await runJobs()
+    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
+  }
+}
+
+  // }
+  // const loggerInfo = {
+  //   section: 'initDB',
+  //   versionDB,
+  // }
+
+  // techLogger.info(loggerInfo)
+  // if (statusVersion) {
+  //   versionDB = Number(statusVersion.message)
+  // }
+
+  // await ModelPlace.syncIndexes()
+  // await ModelCandidat.syncIndexes()
+  // await removeDuplicateBooked()
 }
 
 /**
