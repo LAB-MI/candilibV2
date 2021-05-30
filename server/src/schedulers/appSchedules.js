@@ -5,7 +5,6 @@
 import express from 'express'
 import morgan from 'morgan'
 import bodyParser from 'body-parser'
-//  import fileupload from 'express-fileupload'
 
 import { loggerStream, jsonFormat } from '../util/logger'
 import routes from './routes'
@@ -22,40 +21,6 @@ const isDevelopment = [undefined, 'development'].includes(process.env.NODE_ENV)
 
 const appSchedules = express()
 
-/**
-  * Use swagger-ui-express in development only
-  */
-if (isDevelopment) {
-  /**
-    * Ip de l'environnement de qualification pour l'appSchedulesli candidat
-    * @constant {string}
-    */
-  const IP_QUALIF_CANDIDAT = process.env.IP_QUALIF_CANDIDAT
-
-  /**
-    * Ip de l'environnement de qualification pour l'appSchedulesli répartiteur
-    * @constant {string}
-    */
-  const IP_QUALIF_REPARTITEUR = process.env.IP_QUALIF_REPARTITEUR
-}
-/**
-  * @swagger
-  *
-  * /version:
-  *   get:
-  *     summary: Version exacte de l'API déployée
-  *     description: Retourne la version exacte de l'API déployée
-  *     responses:
-  *       200:
-  *         description: Numéro de version détaillée de l'API déployée
-  *         content:
-  *           appScheduleslication/json:
-  *             schema:
-  *               type: string
-  *             example:
-  *               2.0.0-alpha.0
-  *
-  */
 appSchedules.get(`${apiPrefix}/version`, function getVersion (req, res) {
   res.send(npmVersion.version)
 })
