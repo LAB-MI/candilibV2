@@ -37,16 +37,14 @@ export const initDB = async () => {
   techLogger.info(loggerInfo)
 
   if (!statusVersion?.message) {
-
     await runJobs()
     await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
-
   } else {
-    if(statusVersion.message !== npmVersion.version) {
-    await runJobs()
-    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
+    if (statusVersion.message !== npmVersion.version) {
+      await runJobs()
+      await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
+    }
   }
-}
 
   // }
   // const loggerInfo = {
