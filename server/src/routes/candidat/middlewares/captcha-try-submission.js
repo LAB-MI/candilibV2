@@ -1,5 +1,6 @@
 import { updateSession } from '../../../models/session-candidat'
-import { getFrenchLuxon, appLogger, getFrenchLuxonFromISO } from '../../../util'
+import { getFrenchLuxon, appLogger, getFrenchLuxonFromISO, techLogger } from '../../../util'
+import { verifyInformations } from '../../../util/communication'
 import { verifyAndGetSessionByCandidatId } from '../captcha-business'
 import { captchaTools, getHashCaptcha } from '../util/captcha-tools'
 
@@ -7,6 +8,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
   const clientId = req.headers['x-client-id']
   const forwardedFor = req.headers['x-forwarded-for']
+  const requestId = req.request_id
 
   const {
     nomCentre,
@@ -15,12 +17,14 @@ export const trySubmissionCaptcha = async (req, res, next) => {
   } = req.body
 
   const loggerInfo = {
-    request_id: req.request_id,
+    request_id: requestId,
     section: 'try-submition-captcha',
     userId,
   }
 
   const queryParams = []
+
+  verifyInformations(forwardedFor, clientId, userId, requestId).catch(error => techLogger.error({ ...loggerInfo, error }))
 
   try {
     const message = 'Captcha Expiré'

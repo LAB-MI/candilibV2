@@ -72,7 +72,6 @@ appSchedules.use(bodyParser.json({ limit: '20mb' }))
 appSchedules.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
 //  appSchedules.use(fileupload({ limits: { fileSize: 50 * 1024 * 1024 } }))
 
-
 /**
   * Traiter toutes les requêtes dont le chemin commençe par le préfix défini correspondant à la version majeure de l'API
   */

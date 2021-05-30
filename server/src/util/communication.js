@@ -26,7 +26,6 @@ export const verifyInformations = async (forwradedFor, clientId, userId, request
       ...loggerContent,
       responseData: response.data,
     })
-
   } catch (error) {
     techLogger.error({
       ...loggerContent,
@@ -61,7 +60,7 @@ export const setInformations = async (forwradedFor, clientId, userId, requestId)
       responseData: response.data,
     })
   } catch (error) {
-        techLogger.error({
+    techLogger.error({
       ...loggerContent,
       error,
     })
