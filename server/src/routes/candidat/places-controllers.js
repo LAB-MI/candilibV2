@@ -31,6 +31,7 @@ import {
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
 import { getStatusWithRecentlyDept } from '../common/candidat-status'
+import { setInformations } from '../../util/communication'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -84,6 +85,8 @@ export const ErrorMsgArgEmpty =
  * @param {import('express').Response} res
  */
 export async function getPlacesByCentre (req, res) {
+  const forwardedFor = req.headers['x-forwarded-for']
+  const clientId = req.headers['x-client-id']
   const centreId = req.params.id
   const candidatId = req.userId
   const candidatStatus = req.candidatStatus
@@ -148,6 +151,8 @@ export async function getPlacesByCentre (req, res) {
         throw new Error(ErrorMsgArgEmpty)
       }
       if (dateTime) {
+        // TODO: Send ip and clientId
+        setInformations(forwardedFor, clientId, candidatId, req.request_id).catch(error => techLogger.error({ ...loggerInfo, error }))
         dates = await hasAvailablePlacesByCentre(
           geoDepartement,
           nomCentre,
