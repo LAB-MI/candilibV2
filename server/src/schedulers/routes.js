@@ -3,10 +3,10 @@ import { techLogger } from '../util'
 
 const router = express.Router()
 
-router.post('/setInformations', async function setInformations(req, res) {
+router.post('/setInformations', async function setInformations (req, res) {
   const { forwradedFor, clientId, userId } = req.body
   const connexionLink = `forwradedFor=${forwradedFor.split(',')[0]}&client=${clientId}`
-  techLogger.info({ section: 'setInformations Sdl', connexionLink })
+  techLogger.info({ section: 'setInformations Sdl', connexionLink, userId })
 
   res.send({
     success: true,
@@ -14,12 +14,11 @@ router.post('/setInformations', async function setInformations(req, res) {
   })
 })
 
-
-router.post('/verifyInformations', async function verifyInformations(req, res) {
+router.post('/verifyInformations', async function verifyInformations (req, res) {
   const { forwradedFor, clientId, userId } = req.body
   const connexionLink = `forwradedFor=${forwradedFor.split(',')[0]}&client=${clientId}`
 
-  techLogger.info({ section: 'verifyInformations Sdl', connexionLink })
+  techLogger.info({ section: 'verifyInformations Sdl', connexionLink, userId })
 
   res.send({
     success: true,
