@@ -4,7 +4,8 @@ import express from 'express'
 import { connect, disconnect } from '../../mongo-connection'
 import { checkCandidat } from './candidat-controllers'
 import { verifyToken } from '../middlewares'
-import { createCandidat } from '../../models/candidat'
+import { createCandidat, findCandidatById } from '../../models/candidat'
+import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../util'
 
 jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
@@ -56,5 +57,9 @@ describe('authentification of candidat', () => {
     // Then
     expect(status).toBe(200)
     expect(body).toHaveProperty('auth', true)
+
+    const candidatFounded = await findCandidatById(candidatCreated._id)
+    expect(candidatFounded.lastConnection).toBeDefined()
+    expect(getFrenchLuxon().hasSame(getFrenchLuxonFromJSDate(candidatFounded.lastConnection), 'day')).toBe(true)
   })
 })
