@@ -1,8 +1,10 @@
 import axios from 'axios'
 import { techLogger } from './logger'
 
+const isServiceActive = true
 // TODO: add ip adress to global config
 export const verifyInformations = async (forwradedFor, clientId, userId, requestId) => {
+  if (isServiceActive) return
   const pathSdl = 'http://127.0.0.1:8026'
   const forwardedAdress = forwradedFor.split(',')[0]
   const loggerContent = {
@@ -35,6 +37,7 @@ export const verifyInformations = async (forwradedFor, clientId, userId, request
 }
 
 export const setInformations = async (forwradedFor, clientId, userId, requestId) => {
+  if (isServiceActive) return
   const forwardedAdress = forwradedFor.split(',')[0]
   const loggerContent = {
     section: 'verifyInformations From main-api',

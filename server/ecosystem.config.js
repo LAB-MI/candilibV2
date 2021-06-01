@@ -2,7 +2,7 @@ module.exports = {
   apps: [{
     name: 'API',
     script: 'dist/index.js',
-    instances: -1,
+    instances: -2,
     exec_mode: 'cluster',
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     autorestart: true,
@@ -19,7 +19,7 @@ module.exports = {
   },
   {
     name: 'SDL',
-    script: 'dist/index.js',
+    script: 'dist/schedulers/index.js',
     instances: 1,
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     autorestart: true,

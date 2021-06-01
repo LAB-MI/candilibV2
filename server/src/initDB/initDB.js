@@ -5,7 +5,7 @@
 import { findStatusByType, upsertStatusByType } from '../models/status'
 import ModelPlace from '../models/place/place.model'
 import ModelCandidat from '../models/candidat/candidat.model'
-import { techLogger } from '../util'
+import { techLogger, versionSepparator } from '../util'
 import { sortStatus } from '../routes/admin/sort-candidat-status-business'
 import { removeDuplicateBooked } from './update-places'
 import npmVersion from '../../package.json'
@@ -25,8 +25,11 @@ const runJobs = async () => {
  * - Met à jour les indexes de la collection places
  * @function
  */
+// TODO: Les Jobs ne se lance que a la livraison sauf pour la qualif
+
+
 export const initDB = async () => {
-  const versionDB = npmVersion.version
+  const versionDB = npmVersion.version.split(versionSepparator)
   const statusVersion = await findStatusByType({ type: 'DB_VERSION' })
 
   const loggerInfo = {
@@ -36,30 +39,17 @@ export const initDB = async () => {
 
   techLogger.info(loggerInfo)
 
-  if (!statusVersion?.message) {
+  if (versionDB[1]) {
+    // CONCERN ONLY QUALIF
     await runJobs()
-    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
+    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB[0] })
   } else {
-    if (statusVersion.message !== npmVersion.version) {
+    // CONCERN ONLY PROD
+    if (!statusVersion?.message || (versionDB[0] > statusVersion.message)) {
       await runJobs()
-      await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
+      await upsertStatusByType({ type: 'DB_VERSION', message: versionDB[0] })
     }
   }
-
-  // }
-  // const loggerInfo = {
-  //   section: 'initDB',
-  //   versionDB,
-  // }
-
-  // techLogger.info(loggerInfo)
-  // if (statusVersion) {
-  //   versionDB = Number(statusVersion.message)
-  // }
-
-  // await ModelPlace.syncIndexes()
-  // await ModelCandidat.syncIndexes()
-  // await removeDuplicateBooked()
 }
 
 /**
