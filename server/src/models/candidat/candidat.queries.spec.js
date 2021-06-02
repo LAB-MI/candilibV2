@@ -4,7 +4,7 @@ import {
   REASON_EXAM_FAILED,
   REASON_REMOVE_RESA_ADMIN,
 } from '../../routes/common/reason.constants'
-import { getFrenchLuxon } from '../../util'
+import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../util'
 import { findArchivedCandidatByCandidatId } from '../archived-candidat/archived-candidat.queries'
 import {
   commonBasePlaceDateTime,
@@ -28,9 +28,12 @@ import {
 
 import {
   archivePlace,
+  findCandidatById,
   findCandidatsMatching,
+  setCandidatLastConnection,
   updateCandidatFailed,
   updateCandidatNoReussite,
+  updateCandidatToken,
 } from './candidat.queries'
 import { ABSENT, ECHEC } from './objetDernierNonReussite.values'
 
@@ -284,21 +287,24 @@ describe('Candidat', () => {
   })
 
   describe('Updating Candidat', () => {
-    afterAll(async () => {
-      await deleteCandidat(candidat).catch(() => true)
-    })
-
-    it('should update a candidat′s email', async () => {
-      // Given
+    beforeEach(async () => {
       const email = validEmail
       candidat = await createCandidat({
         codeNeph,
-        nomNaissance: autreNomNaissance,
+        nomNaissance,
         prenom,
         email,
         portable,
         adresse,
       })
+    })
+
+    afterEach(async () => {
+      await deleteCandidat(candidat).catch(() => true)
+    })
+
+    it('should update a candidat′s email', async () => {
+      // Given
 
       // When
       const sameCandidatDifferentEmail = await updateCandidatEmail(
@@ -316,16 +322,6 @@ describe('Candidat', () => {
 
     it('should update a candidat', async () => {
       // Given
-      const email = validEmail
-      candidat = await createCandidat({
-        codeNeph,
-        nomNaissance,
-        prenom,
-        email,
-        portable,
-        adresse,
-      })
-
       const candidat1 = await updateCandidatSignUp(candidat, {
         prenom: prenom1,
         email: validEmail1,
@@ -338,6 +334,27 @@ describe('Candidat', () => {
       expect(candidat1).toHaveProperty('portable', portable1)
       expect(candidat1).toHaveProperty('adresse', adresse1)
       expect(candidat1).toHaveProperty('email', validEmail1)
+    })
+    it('should have a token and a date created into a candidat', async () => {
+      // Given
+      const token = 'test token'
+      const { _id } = candidat
+      const response = await updateCandidatToken(_id, token)
+      expect(response).toHaveProperty('n', 1)
+      expect(response).toHaveProperty('nModified', 1)
+      expect(response).toHaveProperty('ok', 1)
+
+      const candidatFounded = await findCandidatById(_id, { token: 1, tokenAddedAt: 1 })
+      expect(candidatFounded).toHaveProperty('token', token)
+      expect(candidatFounded.tokenAddedAt).toBeDefined()
+      expect(getFrenchLuxon().hasSame(getFrenchLuxonFromJSDate(candidatFounded.tokenAddedAt), 'day')).toBe(true)
+    })
+    it('Should have a date of the last connection', async () => {
+      const { _id } = candidat
+      await setCandidatLastConnection(_id)
+      const candidatFounded = await findCandidatById(_id, { lastConnection: 1 })
+      expect(candidatFounded.lastConnection).toBeDefined()
+      expect(getFrenchLuxon().hasSame(getFrenchLuxonFromJSDate(candidatFounded.lastConnection), 'day')).toBe(true)
     })
   })
 

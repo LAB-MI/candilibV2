@@ -9,7 +9,7 @@ jest.mock('../../models/candidat')
 jest.mock('../middlewares/verify-user')
 
 jest.mock('../../util/logger')
-require('../../util/logger').setWithConsole(true)
+require('../../util/logger').setWithConsole(false)
 
 describe('Get me from candidat', () => {
   let validToken

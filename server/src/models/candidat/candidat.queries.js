@@ -439,7 +439,8 @@ export const updateCandidatToken = async (candidatId, token) => {
   if (!candidatId) {
     throw new Error('candidat is undefined')
   }
-  return Candidat.updateOne({ _id: candidatId }, { $set: { token } })
+
+  return Candidat.updateOne({ _id: candidatId }, { $set: { token, tokenAddedAt: getFrenchLuxon().toISO() } })
 }
 
 /**
@@ -569,6 +570,10 @@ export const setCandidatFirstConnection = async id => {
     return candidat.save()
   }
   return candidat
+}
+
+export const setCandidatLastConnection = async id => {
+  return await Candidat.updateOne({ _id: id }, { $set: { lastConnection: new Date() } })
 }
 
 /**
@@ -708,7 +713,7 @@ export const setCandidatToVIP = (candidat, resaCanceledByAdmin) => {
  * @returns {Promise.<boolean>} - `true` si un candidat existe avec cet identifiant
  */
 export const isCandidatExisting = async _id => {
-  const isExist = await Candidat.findOne({ _id }, { _id: 1 })
+  const isExist = await Candidat.findOne({ _id }, { _id: 1, lastConnection: 1 })
   return isExist
 }
 
