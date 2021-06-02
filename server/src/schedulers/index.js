@@ -16,9 +16,12 @@ import { connect, disconnect } from '../mongo-connection'
 import { techLogger } from '../util'
 // import { initDB, initStatus, updateDB } from './initDB/initDB'
 import pm2 from 'pm2'
+import { DEFAULT_PORT_SCHEDULERS, DEFAULT_SCHEDULERS_URL } from '../config'
 // import { accumulatorLog } from './routes/middlewares'
 
-const PORT = process.env.PORT_SCHEDULERS || 8026
+const PORT_SCHEDULERS = process.env.PORT_SCHEDULERS || DEFAULT_PORT_SCHEDULERS
+
+const BASE_URL_SCHEDULERS = process.env.URL_SCHEDULERS || DEFAULT_SCHEDULERS_URL
 
 const asyncGetPIDPM2 = () => new Promise((resolve, reject) => {
   pm2.describe('SDL', (err, processDescription) => {
@@ -37,19 +40,8 @@ async function startServer () {
   try {
     const pid = await asyncGetPIDPM2()
     await connect()
-    if (!pid || pid === process.pid) {
-      // await initDB()
-      // try {
-      //   await initStatus()
-      // } catch (error) {
-      //   techLogger.error(error)
-      // }
-    }
-    // http.createServer(app).listen(PORT)
-    http.createServer(appSchedules).listen(PORT)
-    techLogger.info(`Server SDL running at http://127.0.0.1:${PORT}/`)
-
-    // if (!pid || pid === process.pid) { await updateDB() }
+    http.createServer(appSchedules).listen(PORT_SCHEDULERS)
+    techLogger.info(`Server SDL running at ${BASE_URL_SCHEDULERS}:${PORT_SCHEDULERS}/ with PID => [${pid}]`)
   } catch (error) {
     techLogger.error('Server SDL could not connect to DB, exiting')
     techLogger.error(error)

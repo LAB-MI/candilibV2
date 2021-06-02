@@ -27,7 +27,6 @@ const runJobs = async () => {
  */
 // TODO: Les Jobs ne se lance que a la livraison sauf pour la qualif
 
-
 export const initDB = async () => {
   const versionDB = npmVersion.version.split(versionSepparator)
   const statusVersion = await findStatusByType({ type: 'DB_VERSION' })
