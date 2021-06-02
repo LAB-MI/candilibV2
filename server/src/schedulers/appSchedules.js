@@ -41,7 +41,7 @@ appSchedules.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
   * Traiter toutes les requêtes dont le chemin commençe par le préfix défini correspondant à la version majeure de l'API
   */
 appSchedules.use(apiPrefix, (req, res, next) => {
-  req.request_id = uuidv4()
+  req.request_id_for_sdl = uuidv4()
   next()
 }, routes)
 
