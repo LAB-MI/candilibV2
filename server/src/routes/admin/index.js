@@ -34,6 +34,7 @@ import {
 import {
   getCandidatsLeaveRetentionArea,
   getCandidatsLeaveRetentionAreaByWeekAndDepartement,
+  getCountLastConnection,
   getCountStatuses,
   getStatsPlacesExam,
   getStatsResultsExam,
@@ -1142,6 +1143,12 @@ router.get(
   '/stats-count-statuses',
   verifyUserLevel(config.userStatusLevels.admin),
   getCountStatuses,
+)
+
+router.get(
+  '/stats-count-last-connections',
+  verifyUserLevel(config.userStatusLevels.admin),
+  getCountLastConnection,
 )
 /**
  * @swagger

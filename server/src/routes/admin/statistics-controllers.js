@@ -7,6 +7,7 @@ import { parseAsync } from 'json2csv'
 import { appLogger, getFrenchLuxon, getFrenchLuxonFromISO } from '../../util'
 import {
   countByStatuses,
+  countLastConnection,
   getAllPlacesProposeInFutureByDpt,
   getCountCandidatsLeaveRetentionArea,
   getCountCandidatsLeaveRetentionAreaByWeek,
@@ -485,6 +486,36 @@ export const getCountStatuses = async (req, res) => {
     return res.status(200).json({
       success: true,
       counts,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerContent,
+      action: 'ERROR GET STATS KPI',
+      description: error.message,
+      error,
+    })
+    res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+export const getCountLastConnection = async (req, res) => {
+  const loggerContent = {
+    request_id: req.request_id,
+    section: 'admin-getCountLastConnection',
+    admin: req.userId,
+  }
+  try {
+    const counts = await countLastConnection()
+    appLogger.info({
+      ...loggerContent,
+      action: 'GET COUNT LAST CONNECTION ',
+      nbLastConnections: counts,
+    })
+
+    return res.status(200).json({
+      success: true,
+      counts: counts.nbByTranche,
+      total: counts.total,
     })
   } catch (error) {
     appLogger.error({

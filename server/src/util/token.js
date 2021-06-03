@@ -80,3 +80,8 @@ const isTokenAlreadyValid = (token) => {
     return false
   }
 }
+
+export const getTokenDateCreated = (token) => {
+  const payload = jwt.decode(token)
+  return payload && new Date(payload.iat * 1000)
+}

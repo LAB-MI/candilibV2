@@ -3,6 +3,7 @@ import candidatModel from '../../models/candidat/candidat.model'
 import {
   countCandidatsInscritsByDepartement,
   countCandidatsInscritsByDepartementAndWeek,
+  findCandidatsSignIn,
 } from '../../models/candidat/candidat.queries'
 import { countPlacesBookedOrNot } from '../../models/place/place.queries'
 
@@ -18,6 +19,7 @@ import { EPREUVE_PRATIQUE_OK, getFrenchLuxon, DATETIME_FULL, getFrenchLuxonFromI
 import { REASON_EXAM_FAILED } from '../common/reason.constants'
 import { findCountStatus } from '../../models/count-status/countStatus-queries'
 import { candidatStatuses } from '../common/candidat-status-const'
+import { getTokenDateCreated } from '../../util/token'
 
 export const getResultsExamAllDpt = async (
   departements,
@@ -448,4 +450,40 @@ export const countByStatuses = async (begin, end) => {
 
   const foundCountStatuses = await findCountStatus(beginDate, endDate)
   return getByDepartements(foundCountStatuses)
+}
+
+const getDaysAfterConnection = ({ token, tokenAddedAt, lastConnection, createdAt, canAccesAt }) => {
+  if (lastConnection) {
+    return -(getFrenchLuxonFromJSDate(lastConnection).diffNow('days').days | 0)
+  }
+  if (tokenAddedAt) {
+    return -(getFrenchLuxonFromJSDate(tokenAddedAt).diffNow('days').days | 0)
+  }
+  if (token) {
+    const dateFromToken = getTokenDateCreated(token)
+    return -(getFrenchLuxonFromJSDate(dateFromToken).diffNow('days').days | 0)
+  }
+  //  if(canAccesAt) {
+  //   return getFrenchLuxonFromJSDate(canAccesAt).diffNow('days')
+  //  }
+  //  if(createdAt) {
+  //   return getFrenchLuxonFromJSDate(createdAt).diffNow('days')
+  //  }
+  return 121
+}
+
+export const countLastConnection = async () => {
+  const candidats = await findCandidatsSignIn(undefined, { token: 1, tokenAddedAt: 1, lastConnection: 1, canAccesAt: 1, createdAt: 1 })
+
+  const nbByTranche = candidats.reduce((acc, candidat) => {
+    const nbDays = getDaysAfterConnection(candidat)
+    const idx = 0 + (nbDays > 60) + (nbDays > 90) + (nbDays > 120)
+    acc[idx] += 1
+    return acc
+  }, [0, 0, 0, 0])
+
+  return {
+    total: candidats.length,
+    nbByTranche,
+  }
 }
