@@ -19,24 +19,29 @@ import { addArchivedCandidatStatus } from '../archived-candidat-status/archived-
  *
  * @returns {Promise.<Candidat>}
  */
-export const createCandidat = async ({
-  adresse,
-  codeNeph,
-  email,
-  emailValidationHash,
-  isValidatedEmail,
-  nomNaissance,
-  portable,
-  prenom,
-  departement,
-  homeDepartement,
-  createdAt,
-  isValidatedByAurige,
-  canAccessAt,
-  canBookFrom,
-  status,
-  token,
-}) => {
+export const createCandidat = async (candidatFormData) => {
+  const {
+    adresse,
+    codeNeph,
+    email,
+    emailValidationHash,
+    isValidatedEmail,
+    nomNaissance,
+    portable,
+    prenom,
+    departement,
+    homeDepartement,
+    // ci dessous les arguments utilisé que pour l'enviromment de test
+    // createdAt,
+    // isValidatedByAurige,
+    // canAccessAt,
+    // canBookFrom,
+    // status,
+    // token,
+    // tokenAddedAt,
+    // lastConnection,
+  } = candidatFormData
+
   const validated = await candidatValidator.validateAsync({
     adresse,
     codeNeph,
@@ -67,28 +72,20 @@ export const createCandidat = async ({
   }
 
   if (process.env.NODE_ENV === 'test') {
-    if (createdAt) {
-      newCandidat.createdAt = createdAt
-    }
-
-    if (isValidatedByAurige) {
-      newCandidat.isValidatedByAurige = isValidatedByAurige
-    }
-    if (canAccessAt) {
-      newCandidat.canAccessAt = canAccessAt
-    }
-
-    if (canBookFrom) {
-      newCandidat.canBookFrom = canBookFrom
-    }
-
-    if (status) {
-      newCandidat.status = status
-    }
-
-    if (token) {
-      newCandidat.token = token
-    }
+    [
+      'createdAt',
+      'isValidatedByAurige',
+      'canAccessAt',
+      'canBookFrom',
+      'status',
+      'token',
+      'tokenAddedAt',
+      'lastConnection',
+    ].forEach(key => {
+      if (candidatFormData[key]) {
+        newCandidat[key] = candidatFormData[key]
+      }
+    })
   }
 
   const candidat = new Candidat(newCandidat)
