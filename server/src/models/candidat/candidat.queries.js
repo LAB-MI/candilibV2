@@ -804,6 +804,23 @@ export const updateCandidatDepartement = (candidat, departement) => {
   return candidat.save()
 }
 
+export const findCandidatsSignIn = async (filter, options) => {
+  const dateNow = getFrenchLuxon()
+  const candidats = await Candidat.find({
+    ...filter,
+    isValidatedByAurige: true,
+    $or: [
+      {
+        canAccessAt: { $lt: dateNow },
+      },
+      {
+        canAccessAt: { $exists: false },
+      },
+    ],
+  }, options)
+  return candidats
+}
+
 /**
  * @typedef {Object} CandidatUpdateData
  * @property {boolean} isEvaluationDone - `true` si le candidat à rempli le questionnaire d'évaluation
