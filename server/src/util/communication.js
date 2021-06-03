@@ -3,9 +3,9 @@ import { techLogger } from './logger'
 import { DEFAULT_PORT_SCHEDULERS, DEFAULT_SCHEDULERS_URL } from '../config'
 
 const isServiceActive = true
-// TODO: add ip adress to global config
+
 export const verifyInformations = async (forwradedFor, clientId, userId, requestId) => {
-  if (isServiceActive) return
+  if (!isServiceActive) return
   const pathSdl = `${DEFAULT_SCHEDULERS_URL}:${DEFAULT_PORT_SCHEDULERS}`
   const forwardedAdress = forwradedFor.split(',')[0]
   const loggerContent = {
@@ -38,7 +38,7 @@ export const verifyInformations = async (forwradedFor, clientId, userId, request
 }
 
 export const setInformations = async (forwradedFor, clientId, userId, requestId) => {
-  if (isServiceActive) return
+  if (!isServiceActive) return
   const forwardedAdress = forwradedFor.split(',')[0]
   const loggerContent = {
     section: 'verifyInformations From main-api',
