@@ -19,6 +19,10 @@ export const SAVE_EXCEL_FILE_REQUEST = 'SAVE_EXCEL_FILE_REQUEST'
 export const SAVE_EXCEL_FILE_FAILURE = 'SAVE_EXCEL_FILE_FAILURE'
 export const SAVE_EXCEL_FILE_SUCCESS = 'SAVE_EXCEL_FILE_SUCCESS'
 
+export const FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST = 'FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST'
+export const FETCH_STATS_COUNT_LAST_CONNECTIONS_FAILURE = 'FETCH_STATS_COUNT_LAST_CONNECTIONS_FAILURE'
+export const FETCH_STATS_COUNT_LAST_CONNECTIONS_SUCCESS = 'FETCH_STATS_COUNT_LAST_CONNECTIONS_SUCCESS'
+
 export default {
   state: {
     isFetchingLogs: false,
@@ -32,6 +36,10 @@ export default {
     listCountStatusByDays: [],
     listLogsByHomeDepartement: [],
     listLogsByHomeDepartementError: undefined,
+
+    isFetchingCountLastConnections: false,
+    listCountLastConnections: [],
+    totalCountLastConnections: 0,
   },
 
   mutations: {
@@ -80,6 +88,18 @@ export default {
     },
     [SAVE_EXCEL_FILE_SUCCESS] (state) {
       state.isGeneratingExcel = false
+    },
+
+    [FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST] (state) {
+      state.isFetchingCountLastConnections = true
+    },
+    [FETCH_STATS_COUNT_LAST_CONNECTIONS_FAILURE] (state) {
+      state.isFetchingCountLastConnections = false
+    },
+    [FETCH_STATS_COUNT_LAST_CONNECTIONS_SUCCESS] (state, { counts, total }) {
+      state.listCountLastConnections = counts || []
+      state.totalCountLastConnections = total
+      state.isFetchingCountLastConnections = false
     },
   },
 
@@ -192,6 +212,25 @@ export default {
         dispatch(SHOW_SUCCESS, 'Export Excel ok')
       } catch (error) {
         commit(SAVE_EXCEL_FILE_FAILURE, error)
+        const { message } = error
+        dispatch(SHOW_ERROR, message)
+      }
+    },
+
+    async [FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST] ({ commit, dispatch }) {
+      commit(FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST)
+
+      try {
+        const results = await api.admin.getCountsLastConnections()
+
+        if (results.success) {
+          commit(FETCH_STATS_COUNT_LAST_CONNECTIONS_SUCCESS, { counts: results.counts, total: results.total })
+          dispatch(SHOW_SUCCESS, 'Récupération des statistques des derniers connexions faite')
+          return
+        }
+        throw new Error(results.message)
+      } catch (error) {
+        commit(FETCH_STATS_COUNT_LAST_CONNECTIONS_FAILURE)
         const { message } = error
         dispatch(SHOW_ERROR, message)
       }

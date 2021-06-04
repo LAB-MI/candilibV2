@@ -656,5 +656,16 @@ const apiAdmin = {
     )
     return json
   },
+
+  async getCountsLastConnections () {
+    const json = await apiClient.get(
+        `${apiPaths.admin.statsCountLastConnections}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+    )
+    return json
+  },
+
 }
 export default apiAdmin

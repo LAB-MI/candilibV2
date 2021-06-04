@@ -48,6 +48,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   sortStatusCandilib: `${apiPrefix}/admin/sort-status-candilib`,
   statsLogs: `${apiPrefix}/admin/stats-logs`,
   statsCountStatuses: `${apiPrefix}/admin/stats-count-statuses`,
+  statsCountLastConnections: `${apiPrefix}/admin/stats-count-last-connections`,
 }
 
 const publicPaths = {
