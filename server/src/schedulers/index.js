@@ -11,17 +11,20 @@
 
 import http from 'http'
 
-import app from './app'
-import { connect, disconnect } from './mongo-connection'
-import { techLogger } from './util'
-import { initDB, initStatus, updateDB } from './initDB/initDB'
+import appSchedules from './appSchedules'
+import { connect, disconnect } from '../mongo-connection'
+import { techLogger } from '../util'
+// import { initDB, initStatus, updateDB } from './initDB/initDB'
 import pm2 from 'pm2'
-import { accumulatorLog } from './routes/middlewares'
+import { DEFAULT_PORT_SCHEDULERS, DEFAULT_SCHEDULERS_URL } from '../config'
+// import { accumulatorLog } from './routes/middlewares'
 
-const PORT = process.env.PORT || 8000
+const PORT_SCHEDULERS = process.env.PORT_SCHEDULERS || DEFAULT_PORT_SCHEDULERS
+
+const BASE_URL_SCHEDULERS = process.env.URL_SCHEDULERS || DEFAULT_SCHEDULERS_URL
 
 const asyncGetPIDPM2 = () => new Promise((resolve, reject) => {
-  pm2.describe('API', (err, processDescription) => {
+  pm2.describe('SDL', (err, processDescription) => {
     if (err) reject(err)
     resolve(processDescription[0]?.pid)
   })
@@ -37,21 +40,11 @@ async function startServer () {
   try {
     const pid = await asyncGetPIDPM2()
     await connect()
-    if (!pid || pid === process.pid) {
-      await initDB()
-      try {
-        await initStatus()
-      } catch (error) {
-        techLogger.error({ section: 'startServerInitStatus', error })
-      }
-    }
-    http.createServer(app).listen(PORT, '0.0.0.0')
-    techLogger.info(`Server running at http://0.0.0.0:${PORT}/`)
-
-    if (!pid || pid === process.pid) { await updateDB() }
+    http.createServer(appSchedules).listen(PORT_SCHEDULERS)
+    techLogger.info(`Server SDL running at ${BASE_URL_SCHEDULERS}:${PORT_SCHEDULERS}/ with PID => [${pid}]`)
   } catch (error) {
-    techLogger.error('Server could not connect to DB, exiting')
-    techLogger.error({ section: 'startServer', error })
+    techLogger.error('Server SDL could not connect to DB, exiting')
+    techLogger.error(error)
     process.exit(error instanceof Error ? 1 : 0)
   }
 }
@@ -87,7 +80,7 @@ export async function exitGracefuly (error) {
     techLogger.error(error)
   }
 
-  clearInterval(accumulatorLog.intervalId)
+  // clearInterval(accumulatorLog.intervalId)
 
   techLogger.info('Closing connections...')
   await disconnect()

@@ -36,6 +36,8 @@ services:
     ports:
       - "${WEB_PORT:-8000}:80"
       - "80:80"
+    depends_on:
+      - api
     networks:
       - candilib-network
     entrypoint: ["/run.sh"]
