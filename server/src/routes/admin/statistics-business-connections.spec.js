@@ -28,6 +28,7 @@ describe('Statistique last connection', () => {
   let candidatsTranche2
   let candidatsTranche3
   let candidatsTranche4
+  let candidatsTranche5
   beforeAll(async () => {
     await connect()
     const now = getFrenchLuxon()
@@ -53,6 +54,7 @@ describe('Statistique last connection', () => {
         ...generateCommonInfoCandidat(id++),
         createdAt: faker.date.past(),
         canAccessAt: faker.date.past(),
+        token: jwt.sign({ iat: now.minus({ days: 20 }).toSeconds() }, 'secret'),
         tokenAddedAt: now.minus({ days: 20 }),
       },
       {
@@ -60,6 +62,7 @@ describe('Statistique last connection', () => {
         ...generateCommonInfoCandidat(id++),
         createdAt: faker.date.past(),
         canAccessAt: faker.date.past(),
+        token: jwt.sign({ iat: now.minus({ days: 30 }).toSeconds() }, 'secret'),
         tokenAddedAt: faker.date.past(),
         lastConnection: now.minus({ days: 30 }),
       },
@@ -77,6 +80,7 @@ describe('Statistique last connection', () => {
         isValidatedByAurige: true,
         ...generateCommonInfoCandidat(id++),
         createdAt: faker.date.past(),
+        token: jwt.sign({ iat: now.minus({ days: 61 }).toSeconds() }, 'secret'),
         canAccessAt: faker.date.past(),
         tokenAddedAt: now.minus({ days: 61 }),
       },
@@ -85,6 +89,7 @@ describe('Statistique last connection', () => {
         ...generateCommonInfoCandidat(id++),
         createdAt: faker.date.past(),
         canAccessAt: faker.date.past(),
+        token: jwt.sign({ iat: now.minus({ days: 80 }).toSeconds() }, 'secret'),
         tokenAddedAt: faker.date.past(),
         lastConnection: now.minus({ days: 80 }),
       },
@@ -104,6 +109,7 @@ describe('Statistique last connection', () => {
         createdAt: faker.date.past(),
         canAccessAt: faker.date.past(),
         tokenAddedAt: now.minus({ days: 91 }),
+        token: jwt.sign({ iat: now.minus({ days: 91 }).toSeconds() }, 'secret'),
       },
       {
         isValidatedByAurige: true,
@@ -112,6 +118,7 @@ describe('Statistique last connection', () => {
         canAccessAt: faker.date.past(),
         tokenAddedAt: faker.date.past(),
         lastConnection: now.minus({ days: 100 }),
+        token: jwt.sign({ iat: now.minus({ days: 100 }).toSeconds() }, 'secret'),
       },
       {
         isValidatedByAurige: true,
@@ -119,6 +126,7 @@ describe('Statistique last connection', () => {
         createdAt: faker.date.past(),
         canAccessAt: faker.date.past(),
         token: jwt.sign({ iat: now.minus({ days: 119 }).toSeconds() }, 'secret'),
+
       },
     ]
 
@@ -145,6 +153,9 @@ describe('Statistique last connection', () => {
         canAccessAt: faker.date.past(),
         token: jwt.sign({ iat: now.minus({ days: 121 }).toSeconds() }, 'secret'),
       },
+    ]
+
+    candidatsTranche5 = [
       {
         isValidatedByAurige: true,
         ...generateCommonInfoCandidat(id++),
@@ -157,13 +168,13 @@ describe('Statistique last connection', () => {
         createdAt: faker.date.past(),
       },
     ]
-
     await Promise.all([
       ...candidatsTrancheNone,
       ...candidatsTranche1,
       ...candidatsTranche2,
       ...candidatsTranche3,
       ...candidatsTranche4,
+      ...candidatsTranche5,
     ].map(createCandidat))
   })
 
@@ -174,6 +185,6 @@ describe('Statistique last connection', () => {
 
   it('Should have statistique of candidats non connected', async () => {
     const result = await countLastConnection()
-    expect(result).toEqual(expect.arrayContaining([candidatsTranche1.length, candidatsTranche2.length, candidatsTranche3.length, candidatsTranche4.length]))
+    expect(result.nbByTranche).toEqual(expect.arrayContaining([candidatsTranche1.length, candidatsTranche2.length, candidatsTranche3.length, candidatsTranche4.length, candidatsTranche5.length]))
   })
 })

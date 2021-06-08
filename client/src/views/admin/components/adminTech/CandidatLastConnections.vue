@@ -51,6 +51,14 @@
             {{ counts[3] }}
           </v-card-text>
         </v-card>
+        <v-card>
+          <v-card-title primary-title>
+            Jamais connecté
+          </v-card-title>
+          <v-card-text>
+            {{ counts[4] }}
+          </v-card-text>
+        </v-card>
       </v-card>
     </div>
   </v-card>

@@ -469,7 +469,7 @@ const getDaysAfterConnection = ({ token, tokenAddedAt, lastConnection, createdAt
   //  if(createdAt) {
   //   return getFrenchLuxonFromJSDate(createdAt).diffNow('days')
   //  }
-  return 121
+  return -1
 }
 
 export const countLastConnection = async () => {
@@ -477,10 +477,14 @@ export const countLastConnection = async () => {
 
   const nbByTranche = candidats.reduce((acc, candidat) => {
     const nbDays = getDaysAfterConnection(candidat)
+    if (nbDays < 0) {
+      acc[4] += 1
+      return acc
+    }
     const idx = 0 + (nbDays > 60) + (nbDays > 90) + (nbDays > 120)
     acc[idx] += 1
     return acc
-  }, [0, 0, 0, 0])
+  }, [0, 0, 0, 0, 0])
 
   return {
     total: candidats.length,
