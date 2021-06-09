@@ -202,12 +202,15 @@ describe('Connected candidate front', () => {
 
           cy.get('.t-image-index').not(`.t-${imageValueResponse.value}`).eq(0).click()
 
-          cy.get('button')
-            .contains('Confirmer')
-            .click()
-          cy.checkAndCloseSnackBar('Réponse invalide')
           // TODO: verifier que je ne suis pas reponse la bonne reponse
         })
+
+      cy.get('button')
+        .contains('Confirmer')
+        .should('not.be.disabled')
+        .click()
+
+      cy.checkAndCloseSnackBar('Réponse invalide')
 
       // TODO:
       // Demander un captcha et le validé
