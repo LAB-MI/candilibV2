@@ -472,8 +472,8 @@ const getDaysAfterConnection = ({ token, tokenAddedAt, lastConnection, createdAt
   return -1
 }
 
-export const countLastConnection = async () => {
-  const candidats = await findCandidatsSignIn(undefined, { token: 1, tokenAddedAt: 1, lastConnection: 1, canAccesAt: 1, createdAt: 1 })
+export const countLastConnection = async (page) => {
+  const candidats = await findCandidatsSignIn(undefined, { token: 1, tokenAddedAt: 1, lastConnection: 1, canAccesAt: 1, createdAt: 1 }, page)
 
   const nbByTranche = candidats.reduce((acc, candidat) => {
     const nbDays = getDaysAfterConnection(candidat)

@@ -23,6 +23,10 @@ export const FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST = 'FETCH_STATS_COUNT_LAS
 export const FETCH_STATS_COUNT_LAST_CONNECTIONS_FAILURE = 'FETCH_STATS_COUNT_LAST_CONNECTIONS_FAILURE'
 export const FETCH_STATS_COUNT_LAST_CONNECTIONS_SUCCESS = 'FETCH_STATS_COUNT_LAST_CONNECTIONS_SUCCESS'
 
+export const FETCH_STATS_TOTAL_LOGGABLE_REQUEST = 'FETCH_STATS_TOTAL_LOGGABLE_REQUEST'
+export const FETCH_STATS_TOTAL_LOGGABLE_FAILURE = 'FETCH_STATS_TOTAL_LOGGABLE_FAILURE'
+export const FETCH_STATS_TOTAL_LOGGABLE_SUCCESS = 'FETCH_STATS_TOTAL_LOGGABLE_SUCCESS'
+
 export default {
   state: {
     isFetchingLogs: false,
@@ -40,6 +44,8 @@ export default {
     isFetchingCountLastConnections: false,
     listCountLastConnections: [],
     totalCountLastConnections: 0,
+    isFetchingTotalLoggin: false,
+
   },
 
   mutations: {
@@ -101,6 +107,18 @@ export default {
       state.totalCountLastConnections = total
       state.isFetchingCountLastConnections = false
     },
+
+    [FETCH_STATS_TOTAL_LOGGABLE_REQUEST] (state) {
+      state.isFetchingTotalLoggin = true
+    },
+    [FETCH_STATS_TOTAL_LOGGABLE_FAILURE] (state) {
+      state.isFetchingTotalLoggin = false
+    },
+    [FETCH_STATS_TOTAL_LOGGABLE_SUCCESS] (state, { total }) {
+      state.totalCountLastConnections = total
+      state.isFetchingTotalLoggin = false
+    },
+
   },
 
   actions: {
@@ -217,23 +235,52 @@ export default {
       }
     },
 
-    async [FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST] ({ commit, dispatch }) {
+    async [FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST] ({ state, commit, dispatch }) {
       commit(FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST)
 
       try {
-        const results = await api.admin.getCountsLastConnections()
-
-        if (results.success) {
-          commit(FETCH_STATS_COUNT_LAST_CONNECTIONS_SUCCESS, { counts: results.counts, total: results.total })
-          dispatch(SHOW_SUCCESS, 'Récupération des statistques des derniers connexions faite')
-          return
+        // console.time('doSomething')
+        const nbPage = state.totalCountLastConnections && Math.ceil(state.totalCountLastConnections / 1000)
+        const results = { counts: [0, 0, 0, 0, 0], total: 0 }
+        for (let i = 0; i < nbPage; i++) {
+          const resultsTmp = await api.admin.getCountsLastConnections(i)
+          if (!resultsTmp.success) throw new Error(resultsTmp.message)
+          results.counts[0] += resultsTmp.counts[0]
+          results.counts[1] += resultsTmp.counts[1]
+          results.counts[2] += resultsTmp.counts[2]
+          results.counts[3] += resultsTmp.counts[3]
+          results.counts[4] += resultsTmp.counts[4]
+          results.total += resultsTmp.total
         }
-        throw new Error(results.message)
+        // const results = await api.admin.getCountsLastConnections()
+        // if (!results.success) throw new Error(results.message)
+
+        // console.timeEnd('doSomething')
+
+        commit(FETCH_STATS_COUNT_LAST_CONNECTIONS_SUCCESS, { counts: results.counts, total: results.total })
+        dispatch(SHOW_SUCCESS, 'Récupération des statistiques des dernières connexions faite')
       } catch (error) {
         commit(FETCH_STATS_COUNT_LAST_CONNECTIONS_FAILURE)
         const { message } = error
         dispatch(SHOW_ERROR, message)
       }
     },
+    async [FETCH_STATS_TOTAL_LOGGABLE_REQUEST] ({ commit, dispatch }) {
+      commit(FETCH_STATS_TOTAL_LOGGABLE_REQUEST)
+
+      try {
+        const results = await api.admin.getTotalLoggable()
+
+        if (!results.success) throw new Error(results.message)
+
+        commit(FETCH_STATS_TOTAL_LOGGABLE_SUCCESS, { total: results.total })
+        dispatch(SHOW_SUCCESS, 'Récupération du total candidats pouvant se connecter')
+      } catch (error) {
+        commit(FETCH_STATS_TOTAL_LOGGABLE_FAILURE)
+        const { message } = error
+        dispatch(SHOW_ERROR, message)
+      }
+    },
+
   },
 }

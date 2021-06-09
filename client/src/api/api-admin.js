@@ -657,9 +657,13 @@ const apiAdmin = {
     return json
   },
 
-  async getCountsLastConnections () {
+  async getCountsLastConnections (page) {
+    let query = ''
+    if (page !== undefined) {
+      query = `?page=${page}`
+    }
     const json = await apiClient.get(
-        `${apiPaths.admin.statsCountLastConnections}`,
+        `${apiPaths.admin.statsCountLastConnections}${query}`,
         {
           headers: getHeadersForAdminJson(),
         },
@@ -667,5 +671,14 @@ const apiAdmin = {
     return json
   },
 
+  async getTotalLoggable () {
+    const json = await apiClient.get(
+      `${apiPaths.admin.statsTotalLoggable}`,
+      {
+        headers: getHeadersForAdminJson(),
+      },
+    )
+    return json
+  },
 }
 export default apiAdmin

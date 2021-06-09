@@ -801,9 +801,9 @@ export const updateCandidatDepartement = (candidat, departement) => {
   return candidat.save()
 }
 
-export const findCandidatsSignIn = async (filter, options) => {
+export const findCandidatsSignIn = async (filter, options, page) => {
   const dateNow = getFrenchLuxon()
-  const candidats = await Candidat.find({
+  const candidatsQuery = Candidat.find({
     ...filter,
     isValidatedByAurige: true,
     $or: [
@@ -815,7 +815,29 @@ export const findCandidatsSignIn = async (filter, options) => {
       },
     ],
   }, options)
+
+  if (page !== undefined) {
+    candidatsQuery.skip(1000 * page).limit(1000)
+  }
+  const candidats = await candidatsQuery.exec()
   return candidats
+}
+
+export const totalCandidatsSignIn = async (filter) => {
+  const dateNow = getFrenchLuxon()
+  const count = await Candidat.countDocuments({
+    ...filter,
+    isValidatedByAurige: true,
+    $or: [
+      {
+        canAccessAt: { $lt: dateNow },
+      },
+      {
+        canAccessAt: { $exists: false },
+      },
+    ],
+  })
+  return count
 }
 
 /**

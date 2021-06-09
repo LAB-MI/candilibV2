@@ -18,11 +18,11 @@
     </v-toolbar>
     <big-loading-indicator :is-loading="isFetching" />
     <div
-      v-show="counts.length"
+      v-show="counts.length || total"
       class="overflow-scroll"
     >
       <v-card-text>
-        Total de candidats traités: {{ total }}
+        Total de candidats: {{ total }}
       </v-card-text>
       <v-card
         class="pa-4 flex"
@@ -64,7 +64,7 @@
   </v-card>
 </template>
 <script>
-import { FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST } from '@/store'
+import { FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST, FETCH_STATS_TOTAL_LOGGABLE_REQUEST } from '@/store'
 import { mapState } from 'vuex'
 import { BigLoadingIndicator } from '@/components'
 
@@ -77,11 +77,18 @@ export default {
     ...mapState(['adminTech']),
     counts: state => state.adminTech.listCountLastConnections,
     total: state => state.adminTech.totalCountLastConnections,
-    isFetching: state => state.adminTech.isFetchingCountLastConnections,
+    isFetching: state => state.adminTech.isFetchingCountLastConnections || state.adminTech.isFetchingTotalLoggin,
+  },
+
+  mounted () {
+    this.getTotal()
   },
   methods: {
     getCounts () {
       this.$store.dispatch(FETCH_STATS_COUNT_LAST_CONNECTIONS_REQUEST)
+    },
+    getTotal () {
+      this.$store.dispatch(FETCH_STATS_TOTAL_LOGGABLE_REQUEST)
     },
   },
 }

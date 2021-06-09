@@ -187,4 +187,14 @@ describe('Statistique last connection', () => {
     const result = await countLastConnection()
     expect(result.nbByTranche).toEqual(expect.arrayContaining([candidatsTranche1.length, candidatsTranche2.length, candidatsTranche3.length, candidatsTranche4.length, candidatsTranche5.length]))
   })
+
+  it('Should have statistique of candidats non connected by page 1', async () => {
+    const result = await countLastConnection(1)
+    expect(result.nbByTranche).toEqual(expect.arrayContaining([0, 0, 0, 0, 0]))
+  })
+
+  it('Should have statistique of candidats non connected by page 0', async () => {
+    const result = await countLastConnection(0)
+    expect(result.nbByTranche).toEqual(expect.arrayContaining([candidatsTranche1.length, candidatsTranche2.length, candidatsTranche3.length, candidatsTranche4.length, candidatsTranche5.length]))
+  })
 })
