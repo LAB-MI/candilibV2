@@ -24,9 +24,15 @@ PACKAGE_CUSTOM="sudo make git unzip python-pip python-dev \
 
 # conf apt / proxy (use http_proxy_common instead of http_proxy_shared, due to latency)
 if [ -n "$http_proxy_common" ] ; then
+prefered_proxy="$http_proxy_common"
+elif [ -n "$http_proxy" ] ; then
+prefered_proxy="$http_proxy"
+fi
+
+if [ -n "$prefered_proxy" ] ; then
   cat > /etc/apt/apt.conf.d/01proxy <<EOF_PROXY
-Acquire::http::Proxy "$http_proxy_common";
-Acquire::https::Proxy "$http_proxy_common";
+Acquire::http::Proxy "$prefered_proxy";
+Acquire::https::Proxy "$prefered_proxy";
 EOF_PROXY
 fi
 

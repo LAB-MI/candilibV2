@@ -365,6 +365,7 @@ publish-$(APP_VERSION):
 publish-$(LATEST_VERSION):
 	@echo "Publish $(APP) $(LATEST_VERSION) artifacts"
 	if [ -z "${PUBLISH_URL}" -o -z "${PUBLISH_AUTH_TOKEN}" ] ; then exit 1; fi
+	set -e ; \
 	for file in \
 		"${APP}-VERSION ${APP}-VERSION" \
 		"${FILE_ARCHIVE_APP_VERSION} ${FILE_ARCHIVE_LATEST_VERSION}" \

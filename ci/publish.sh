@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+set -e -o pipefail
+set -x
 
 basename=$(basename $0)
 export SRC=${1:? $basename SRC DST VERSION}
@@ -14,6 +15,6 @@ if [ -z "${PUBLISH_URL}" -o -z "${PUBLISH_AUTH_TOKEN}" ] ; then
   exit 1
 fi
 ( cd ${BUILD_DIR} && [ -f "$SRC" ] && curl $curl_opt -k -X PUT -T $SRC -H "X-Auth-Token:${PUBLISH_AUTH_TOKEN}" ${PUBLISH_URL}/${PUBLISH_URL_BASE}/${VERSION}/$DST --progress-bar --write "Uploaded %{url_effective} %{size_upload} bytes in %{time_connect} seconds (%{speed_download} bytes/s)\n"
-)
+) || exit $?
 
 exit $?
