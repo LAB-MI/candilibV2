@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+set -o pipefail
 test -f $(dirname $0)/lib-common.sh && source $(dirname $0)/lib-common.sh
 trap clean EXIT QUIT KILL
 
@@ -23,4 +24,4 @@ echo "# Publish in progress (${source_dir})"
      LATEST_VERSION="${LATEST_VERSION:-latest}" \
      PUBLISH_AUTH_TOKEN=$OS_AUTH_TOKEN \
      PUBLISH_URL=$OS_STORAGE_URL
-)
+) || exit $?
