@@ -75,7 +75,6 @@ export const updateSession = async (sessionInfo) => {
   return result
 }
 
-
 export const updateSessionId = async (sessionInfo) => {
   const { userId, forwardedFor, clientId } = sessionInfo
   const result = await SessionCandidatModel.updateOne({ userId: userId }, { $set: { forwardedFor, clientId } })
