@@ -33,6 +33,8 @@ const checkKeyNeedUpdate = (sessionInfo) => {
     expires,
     canRetryAt,
     captchaExpireAt,
+    forwardedFor,
+    clientId,
   } = sessionInfo
 
   const neededKey = {}
@@ -54,6 +56,14 @@ const checkKeyNeedUpdate = (sessionInfo) => {
     neededKey.captchaExpireAt = captchaExpireAt
   }
 
+  if (forwardedFor) {
+    neededKey.forwardedFor = forwardedFor
+  }
+
+  if (clientId) {
+    neededKey.clientId = clientId
+  }
+
   return neededKey
 }
 
@@ -65,7 +75,20 @@ export const updateSession = async (sessionInfo) => {
   return result
 }
 
-export const getSessionByCandidatId = async (userId) => {
+
+export const updateSessionId = async (sessionInfo) => {
+  const { userId, forwardedFor, clientId } = sessionInfo
+  const result = await SessionCandidatModel.updateOne({ userId: userId }, { $set: { forwardedFor, clientId } })
+
+  return result
+}
+
+export const getSessionByCandidatIdAndInfos = async ({ userId, forwardedFor, clientId }) => {
+  const result = await SessionCandidatModel.findOne({ userId, forwardedFor, clientId }).lean()
+  return result
+}
+
+export const getSessionByCandidatId = async ({ userId }) => {
   const result = await SessionCandidatModel.findOne({ userId }).lean()
   return result
 }
