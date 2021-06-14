@@ -40,8 +40,8 @@ const expectedBodyForCaptcha = (body, expectedValue, isCaptcha) => {
     expect(captcha).toHaveProperty('values')
     expect(typeof captcha.values).toBe('object')
     expect(captcha.values.length).toBe(expectedValue.imageCount)
-    expect(captcha).toHaveProperty('imageName')
-    expect(typeof captcha.imageName).toBe('string')
+    // expect(captcha).toHaveProperty('imageName')
+    // expect(typeof captcha.imageName).toBe('string')
     expect(captcha).toHaveProperty('imageFieldName')
     expect(typeof captcha.imageFieldName).toBe('string')
   }

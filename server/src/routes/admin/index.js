@@ -34,9 +34,11 @@ import {
 import {
   getCandidatsLeaveRetentionArea,
   getCandidatsLeaveRetentionAreaByWeekAndDepartement,
+  getCountLastConnection,
   getCountStatuses,
   getStatsPlacesExam,
   getStatsResultsExam,
+  getTotalCandidatsLoggable,
 } from './statistics-controllers'
 
 import { getInfoLastSyncAurige, getLastInfosBorneStatus } from './status-candilib-controllers'
@@ -1142,6 +1144,18 @@ router.get(
   '/stats-count-statuses',
   verifyUserLevel(config.userStatusLevels.admin),
   getCountStatuses,
+)
+
+router.get(
+  '/stats-count-last-connections',
+  verifyUserLevel(config.userStatusLevels.admin),
+  getCountLastConnection,
+)
+
+router.get(
+  '/stats-total-loggable',
+  verifyUserLevel(config.userStatusLevels.admin),
+  getTotalCandidatsLoggable,
 )
 /**
  * @swagger
