@@ -1,6 +1,7 @@
 import { updateSession } from '../../../models/session-candidat'
 import { getFrenchLuxon, appLogger } from '../../../util'
 import { verifyAndGetSessionByCandidatId } from '../captcha-business'
+import { captchaTools } from '../util/captcha-tools'
 
 export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
@@ -29,7 +30,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
 
     let responseStatus
 
-    const visualCaptcha = require('visualcaptcha')(currentSession.session, namespace)
+    const visualCaptcha = captchaTools(currentSession.session, namespace)
     const frontendData = visualCaptcha.getFrontendData()
 
     if (namespace && namespace.length !== 0) {
