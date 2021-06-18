@@ -168,10 +168,10 @@ export async function getPlacesByCentre (req, res) {
 
     appLogger.info({
       ...loggerInfo,
-      description: `[${dates.length}] place(s) ont été trouvée(s)`,
+      description: `[${dates?.length}] place(s) ont été trouvée(s)`,
     })
 
-    res.status(200).json(dates)
+    res.status(200).json(dates || [])
   } catch (error) {
     appLogger.error({ ...loggerInfo, error, description: error.message })
     res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
