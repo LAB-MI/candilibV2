@@ -73,6 +73,7 @@
 import { mapGetters } from 'vuex'
 import { DISPLAY_NAV_DRAWER, SET_SHOW_EVALUATION, SIGN_OUT_CANDIDAT } from '@/store'
 import IconWithTooltip from '@/components/IconWithTooltip'
+import { callBackCatchRouter } from '@/util'
 
 export default {
   name: 'CandidatHeader',
@@ -111,7 +112,7 @@ export default {
     async showEvaluation (newValue) {
       if (newValue === false && this.wantsToDisconnect === true) {
         await this.$store.dispatch(SIGN_OUT_CANDIDAT)
-        this.$router.push({ name: 'candidat-presignup' })
+        this.$router.push({ name: 'candidat-presignup' }).catch(callBackCatchRouter)
       }
     },
 
@@ -120,7 +121,7 @@ export default {
         await this.$store.dispatch(SET_SHOW_EVALUATION, true)
       } else {
         await this.$store.dispatch(SIGN_OUT_CANDIDAT)
-        this.$router.push({ name: 'candidat-presignup' })
+        this.$router.push({ name: 'candidat-presignup' }).catch(callBackCatchRouter)
       }
     },
   },

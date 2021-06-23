@@ -68,6 +68,8 @@
 <script>
 import { mapState } from 'vuex'
 
+import { callBackCatchRouter } from '@/util'
+
 import {
   getFrenchLuxonFromIso,
   getFrenchDateFromIso,
@@ -164,14 +166,14 @@ export default {
   methods: {
     async modifyReservation () {
       await this.$store.dispatch(SET_MODIFYING_RESERVATION, true)
-      this.$router.push({ name: 'selection-departement', params: { modifying: 'modification' } })
+      this.$router.push({ name: 'selection-departement', params: { modifying: 'modification' } }).catch(callBackCatchRouter)
     },
 
     async deleteConfirm () {
       try {
         await this.$store.dispatch(DELETE_CANDIDAT_RESERVATION_REQUEST)
         this.dialog = false
-        this.$router.push({ name: 'candidat-home' })
+        this.$router.push({ name: 'candidat-home' }).catch(callBackCatchRouter)
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }

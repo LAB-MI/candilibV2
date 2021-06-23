@@ -95,6 +95,8 @@ import {
   FETCH_DATES_REQUEST,
 } from '@/store'
 
+import { callBackCatchRouter } from '@/util'
+
 import {
   getFrenchDateFromLuxon,
   getFrenchLuxonFromIso,
@@ -268,7 +270,7 @@ export default {
         params: {
           departement: `${this.$route.params.departement || this.$store.state.departements.selectedDepartement.departement}`,
         },
-      })
+      }).catch(callBackCatchRouter)
     },
   },
 }

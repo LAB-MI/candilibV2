@@ -46,6 +46,7 @@ import {
   SHOW_ERROR,
 } from '@/store'
 import { getFrenchLuxon } from '@/util/frenchDateTime'
+import { callBackCatchRouter } from '@/util'
 
 export default {
   props: {
@@ -122,12 +123,12 @@ export default {
 
     gotoDay (day) {
       if (day === this.memoDay) {
-        this.$router.push({ name: 'time-slot', params: { month: this.$route.params.month, day: 'undefinedDay' } })
+        this.$router.push({ name: 'time-slot', params: { month: this.$route.params.month, day: 'undefinedDay' } }).catch(callBackCatchRouter)
         this.memoDay = undefined
         return
       }
       this.memoDay = day
-      this.$router.push({ name: 'time-slot-day', params: { day } })
+      this.$router.push({ name: 'time-slot-day', params: { day } }).catch(callBackCatchRouter)
     },
 
     async selectSlot (slot) {
@@ -162,12 +163,12 @@ export default {
               slot: selectedSlot.slot,
               modifying: this.$store.state.reservation.isModifying ? 'modification' : 'selection',
             },
-          })
+          }).catch(callBackCatchRouter)
         } else {
           throw new Error('Le crennaux n\'est plus disponible')
         }
       } catch (error) {
-        this.$router.push({ name: 'time-slot' })
+        this.$router.push({ name: 'time-slot' }).catch(callBackCatchRouter)
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
     },
