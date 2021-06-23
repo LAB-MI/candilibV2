@@ -17,6 +17,7 @@ export const generateCandidats = (params) => {
       departement,
       homeDepartement,
       token,
+      lastConnection,
     } = item
 
     for (let id = 1; id <= nbCandidats; id++) {
@@ -43,6 +44,7 @@ export const generateCandidats = (params) => {
         isValidatedEmail: isValideEmail,
         createdAt: creatdAt,
         homeDepartement,
+        lastConnection,
       }
 
       if (canBookFrom) {

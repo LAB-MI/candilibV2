@@ -8,6 +8,9 @@ import {
   deleteCandidat,
 } from './candidat.queries'
 
+import { getFrenchLuxon } from '../../util'
+import { NbDaysInactivityDefault } from '../../config'
+
 describe('Candidat', () => {
   beforeAll(async () => {
     await connect()
@@ -18,6 +21,10 @@ describe('Candidat', () => {
   })
 
   it('sort status candidats', async () => {
+    const now = getFrenchLuxon()
+    const dayAfterIncative = now.minus({ days: NbDaysInactivityDefault })
+    const dayBeforeIncative = now.minus({ days: NbDaysInactivityDefault + 1 })
+
     const sortableCandidat = {
       nbCandidats: 7,
       isValidateAurige: true,
@@ -25,6 +32,7 @@ describe('Candidat', () => {
       canBookFrom: null,
       canAccessAt: null,
       token: true,
+      lastConnection: dayAfterIncative.toJSDate(),
     }
     const sortableCandidatCanBookInPast = {
       nbCandidats: 1,
@@ -33,6 +41,7 @@ describe('Candidat', () => {
       canBookFrom: 'past',
       canAccessAt: null,
       token: true,
+      lastConnection: dayAfterIncative.toJSDate(),
     }
     const notSortableCandidatCanBookInFuture = {
       nbCandidats: 1,
@@ -41,6 +50,7 @@ describe('Candidat', () => {
       canBookFrom: 'future',
       canAccessAt: null,
       token: true,
+      lastConnection: dayAfterIncative.toJSDate(),
     }
     const sortableCandidatCanAccessInFuture = {
       nbCandidats: 1,
@@ -49,6 +59,7 @@ describe('Candidat', () => {
       canBookFrom: null,
       canAccessAt: 'future',
       token: true,
+      lastConnection: dayAfterIncative.toJSDate(),
     }
     const notSortableCandidatwithNothing = {
       nbCandidats: 1,
@@ -67,6 +78,15 @@ describe('Candidat', () => {
       canAccessAt: null,
       token: false,
     }
+    const sortableInactiveCandidat = {
+      nbCandidats: 7,
+      isValidateAurige: true,
+      isValideEmail: true,
+      canBookFrom: null,
+      canAccessAt: null,
+      token: true,
+      lastConnection: dayBeforeIncative.toJSDate(),
+    }
 
     const allTest = [
       sortableCandidat,
@@ -75,6 +95,7 @@ describe('Candidat', () => {
       sortableCandidatCanAccessInFuture,
       notSortableCandidatwithNothing,
       notSortableCandidatwithoutToken,
+      sortableInactiveCandidat,
     ]
 
     const data = await generateCandidats(allTest)
@@ -87,7 +108,7 @@ describe('Candidat', () => {
 
     await sortCandilibStatus()
 
-    const expectedCandidatByStatus = ['1', '1', '1', '1', '1', '6']
+    const expectedCandidatByStatus = ['1', '1', '1', '1', '1', `${6 + sortableInactiveCandidat.nbCandidats}`]
     await Promise.all(expectedCandidatByStatus.map(
       async (el, index) => {
         const status = `${index}`
