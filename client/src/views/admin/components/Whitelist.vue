@@ -348,7 +348,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import { email as emailRegex } from '@/util'
+import { email as emailRegex, callBackCatchRouter } from '@/util'
 
 import Whitelisted from './Whitelisted.vue'
 import SearchEmail from './SearchEmail'
@@ -513,7 +513,7 @@ export default {
         await this.$store.dispatch(DELETE_EMAIL_REQUEST, { email: id, departement: this.departement })
       } catch (error) {
         if (error.auth === false) {
-          this.$router.push({ name: 'admin-login', nextPath: this.$route.fullPath })
+          this.$router.push({ name: 'admin-login', nextPath: this.$route.fullPath }).catch(callBackCatchRouter)
         }
       }
     },
