@@ -1,0 +1,26 @@
+name: test-ci
+on: [push]
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+env:
+  DOCKER_COMPOSE_VERSION: 1.19.0
+  DOCKER_VERSION: 18.06.0-ce
+
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-18.04
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: install docker-ce
+        run: |
+          type -a docker-compose && docker-compose version
+          docker version
+      - name: run test
+        run: |
+          ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
+          ci/docker-access.sh
+          ci/run-tests.sh
