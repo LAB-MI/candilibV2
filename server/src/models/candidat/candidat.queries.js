@@ -8,6 +8,7 @@ import { queryPopulate } from '../util/populate-tools'
 import { candidatValidator } from '../../util/validators/candidat-validator'
 import { candidatStatuses } from '../../routes/common/candidat-status-const'
 import { addArchivedCandidatStatus } from '../archived-candidat-status/archived-candidat-status-queries'
+import { NbDaysInactivityDefault } from '../../config'
 
 /**
  * Crée un candidat
@@ -94,7 +95,7 @@ export const createCandidat = async (candidatFormData) => {
 }
 
 // TODO: JSDOC
-const getSortableCandilibStatusAndSortCreatedAt = (now) => Candidat
+const getSortableCandilibStatusAndSortCreatedAt = (now, dateLastConnexion) => Candidat
   .find({
     isValidatedByAurige: true,
     token: { $exists: true },
@@ -112,16 +113,18 @@ const getSortableCandilibStatusAndSortCreatedAt = (now) => Candidat
         ],
       },
     ],
+    lastConnection: { $gte: dateLastConnexion },
   }, { _id: 1, createdAt: 1, departement: 1, status: 1, homeDepartement: 1 })
   .sort('createdAt')
 
 // TODO: JSDOC
-const getSortableCandilibInLastStatus = async (now) => Candidat.find({
+const getSortableCandilibInLastStatus = async (now, dateLastConnexion) => Candidat.find({
   isValidatedByAurige: true,
   $or: [
     { token: { $exists: false } },
     { canAccessAt: { $gte: now } },
     { canBookFrom: { $gte: now } },
+    { lastConnection: { $lt: dateLastConnexion } },
   ],
 }, { _id: 1, departement: 1, status: 1 })
 
@@ -143,9 +146,11 @@ const getDiffNowInMonthFromJsDate = (date) => getFrenchFormattedDateTime(date).d
 // TODO: JSDOC
 export const sortCandilibStatus = async () => {
   const countStatus = candidatStatuses.nbStatus
-  const now = getFrenchLuxon().toJSDate()
+  const nowLuxon = getFrenchLuxon()
+  const now = nowLuxon.toJSDate()
+  const dateLastConnexion = nowLuxon.minus({ days: NbDaysInactivityDefault }).toISODate()
 
-  const candidats = await getSortableCandilibStatusAndSortCreatedAt(now)
+  const candidats = await getSortableCandilibStatusAndSortCreatedAt(now, dateLastConnexion)
 
   const candidatsCount = candidats.length
   const groupeSize = Math.floor(candidatsCount / countStatus)
@@ -185,7 +190,7 @@ export const sortCandilibStatus = async () => {
     countByStatus[index] = results.countByDep
   }
 
-  const candidatsLastStatus = await getSortableCandilibInLastStatus(now)
+  const candidatsLastStatus = await getSortableCandilibInLastStatus(now, dateLastConnexion)
 
   if (candidatsLastStatus && candidatsLastStatus.length) {
     const index = countStatus - 1

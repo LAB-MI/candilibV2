@@ -250,4 +250,6 @@ if (config.smtpService) {
   smtpOptions.service = config.smtpService
 }
 
+export const NbDaysInactivityDefault = 60
+
 export default config
