@@ -1,7 +1,7 @@
 import jimp, { MIME_PNG } from 'jimp'
 
-import mergeImg from '../util/merge-image-tools/index.js'
-import { numberOfImages } from '../../../config.js'
+import mergeImg from './merge-image-tools/index.js'
+import { numberOfImages } from '../../../../config.js'
 import { modifyImage } from './manage-image-jimp.js'
 
 export const concatImages = async (images) => {
@@ -32,9 +32,7 @@ export const concatImages = async (images) => {
 }
 
 export async function streamImages (isRetina) {
-  const pathModule = require.resolve('visualcaptcha')
-  const lastindex = pathModule.lastIndexOf('/')
-  const pathModuleImages = `/${pathModule.slice(1, lastindex)}/images/`
+  const pathModuleImages = `/${__dirname}/images/`
   const pathImages = []
   for (let index = 0; index < numberOfImages; index++) {
     const imageOption = this.getImageOptionAtIndex(index)
@@ -63,7 +61,7 @@ export async function streamImages (isRetina) {
 }
 
 export const getImageNamePic = async (frontendData) => {
-  const font = await jimp.loadFont(`${__dirname}/../../../assets/fonts/poppins-bold/poppins-bold.fnt`)
+  const font = await jimp.loadFont(`${__dirname}/fonts/poppins-bold/poppins-bold.fnt`)
   const sizeText = jimp.measureText(font, frontendData.imageName)
   const imagename = await jimp.create(sizeText, 22)
   imagename.print(font, 0, 0, frontendData.imageName)

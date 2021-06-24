@@ -72,7 +72,7 @@
 import PasswordChecker from '@/views/admin/components/PasswordChecker.vue'
 import backgroundImgUrl from '@/assets/bg-login.jpg'
 import { SHOW_ERROR, SHOW_SUCCESS, RESET_PASSWORD_REQUEST } from '../../../store'
-import { strongEnoughPassword } from '@/util'
+import { strongEnoughPassword, callBackCatchRouter } from '@/util'
 
 export default {
   components: {
@@ -118,10 +118,10 @@ export default {
           confirmNewPassword: this.confirmNewPassword,
         })
         this.$store.dispatch(SHOW_SUCCESS, 'Votre mot de passe a bien été modifié')
-        this.$router.push({ name: 'admin-login' })
+        this.$router.push({ name: 'admin-login' }).catch(callBackCatchRouter)
       } catch (error) {
         await this.$store.dispatch(SHOW_ERROR, error.message)
-        return setTimeout(() => this.$router.push({ name: 'admin-login' }), 2000)
+        return setTimeout(() => this.$router.push({ name: 'admin-login' }).catch(callBackCatchRouter), 2000)
       }
     },
   },

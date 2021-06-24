@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { callBackCatchRouter } from '@/util'
 import { SELECT_CENTER } from '@/store/center'
 export default {
   props: {
@@ -83,7 +84,7 @@ export default {
           modifying: (this.$route.params.modifying === 'modification' || this.$store.state.reservation.isModifying)
             ? 'modification' : 'selection',
         },
-      }, () => {})
+      }, () => {}).catch(callBackCatchRouter)
     },
   },
 }

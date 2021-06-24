@@ -81,6 +81,7 @@
 <script>
 import { SIGN_OUT_ADMIN } from '@/store'
 import DepartementSelector from '@/views/admin/components/DepartementSelector'
+import { callBackCatchRouter } from '@/util'
 
 export default {
   name: 'AdminHeader',
@@ -108,7 +109,7 @@ export default {
   methods: {
     async disconnect () {
       await this.$store.dispatch(SIGN_OUT_ADMIN)
-      this.$router.push({ name: 'admin-login' })
+      this.$router.push({ name: 'admin-login' }).catch(callBackCatchRouter)
     },
   },
 }

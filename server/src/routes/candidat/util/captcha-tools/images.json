@@ -1,0 +1,150 @@
+[
+    {
+        "name": "Airplane",
+        "path": "airplane.png"
+    },
+    {
+        "name": "Balloons",
+        "path": "balloons.png"
+    },
+    {
+        "name": "Camera",
+        "path": "camera.png"
+    },
+    {
+        "name": "Car",
+        "path": "car.png"
+    },
+    {
+        "name": "Cat",
+        "path": "cat.png"
+    },
+    {
+        "name": "Chair",
+        "path": "chair.png"
+    },
+    {
+        "name": "Clip",
+        "path": "clip.png"
+    },
+    {
+        "name": "Clock",
+        "path": "clock.png"
+    },
+    {
+        "name": "Cloud",
+        "path": "cloud.png"
+    },
+    {
+        "name": "Computer",
+        "path": "computer.png"
+    },
+    {
+        "name": "Envelope",
+        "path": "envelope.png"
+    },
+    {
+        "name": "Eye",
+        "path": "eye.png"
+    },
+    {
+        "name": "Flag",
+        "path": "flag.png"
+    },
+    {
+        "name": "Folder",
+        "path": "folder.png"
+    },
+    {
+        "name": "Foot",
+        "path": "foot.png"
+    },
+    {
+        "name": "Graph",
+        "path": "graph.png"
+    },
+    {
+        "name": "House",
+        "path": "house.png"
+    },
+    {
+        "name": "Key",
+        "path": "key.png"
+    },
+    {
+        "name": "Leaf",
+        "path": "leaf.png"
+    },
+    {
+        "name": "Light Bulb",
+        "path": "light-bulb.png"
+    },
+    {
+        "name": "Lock",
+        "path": "lock.png"
+    },
+    {
+        "name": "Magnifying Glass",
+        "path": "magnifying-glass.png"
+    },
+    {
+        "name": "Man",
+        "path": "man.png"
+    },
+    {
+        "name": "Music Note",
+        "path": "music-note.png"
+    },
+    {
+        "name": "Pants",
+        "path": "pants.png"
+    },
+    {
+        "name": "Pencil",
+        "path": "pencil.png"
+    },
+    {
+        "name": "Printer",
+        "path": "printer.png"
+    },
+    {
+        "name": "Robot",
+        "path": "robot.png"
+    },
+    {
+        "name": "Scissors",
+        "path": "scissors.png"
+    },
+    {
+        "name": "Sunglasses",
+        "path": "sunglasses.png"
+    },
+    {
+        "name": "Tag",
+        "path": "tag.png"
+    },
+    {
+        "name": "Tree",
+        "path": "tree.png"
+    },
+    {
+        "name": "Truck",
+        "path": "truck.png"
+    },
+    {
+        "name": "T-Shirt",
+        "path": "t-shirt.png"
+    },
+    {
+        "name": "Umbrella",
+        "path": "umbrella.png"
+    },
+    {
+        "name": "Woman",
+        "path": "woman.png"
+    },
+    {
+        "name": "World",
+        "path": "world.png"
+    }
+]

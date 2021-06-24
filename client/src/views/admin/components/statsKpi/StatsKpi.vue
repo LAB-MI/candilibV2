@@ -140,7 +140,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { downloadContent, getFrenchLuxonCurrentDateTime } from '@/util'
+import { downloadContent, getFrenchLuxonCurrentDateTime, callBackCatchRouter } from '@/util'
 import ChartsStatsKpi from './ChartsStatsKpi.vue'
 import {
   FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_BY_WEEK_REQUEST,
@@ -256,7 +256,7 @@ export default {
           begin: `${this.dateStart}`,
           end: `${this.dateEnd}`,
         },
-      })
+      }).catch(callBackCatchRouter)
     },
 
     async getStatsKpiPlacesExams (isCsv = false) {
