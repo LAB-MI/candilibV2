@@ -60,6 +60,7 @@
     "json2csv": "^5.0.6",
     "jsonwebtoken": "^8.5.1",
     "latinize": "^0.4.1",
+    "lodash": "^4.17.21",
     "luxon": "^1.26.0",
     "mime": "^2.5.2",
     "mongoose": "^5.12.4",
