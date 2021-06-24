@@ -3,13 +3,13 @@
 module.exports = (on, config) => {
   config.mailHogUrl = config.env.mailHogUrl || 'http://localhost:8025'
 
-  on('before:browser:launch', (browser = {}, args) => {
+  on('before:browser:launch', (browser = {}, launchOptions) => {
     if (browser.name === 'chrome') {
-      args.push('--disable-dev-shm-usage')
-      return args
+      launchOptions.args.push('--disable-dev-shm-usage')
+      return launchOptions
     }
 
-    return args
+    return launchOptions
   })
   on('task', {
     log (message) {
