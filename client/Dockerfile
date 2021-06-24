@@ -55,11 +55,6 @@ EXPOSE 8080
 
 CMD ["npm","run", "serve"]
 
-FROM development as storybook
-EXPOSE 6006
-CMD ["npm", "run", "storybook:serve" ]
-
-
 ##########################
 # Step 3: "build" target #
 ##########################
@@ -79,8 +74,8 @@ ARG NPM_AUDIT_DRY_RUN
 ENV NODE_ENV=production
 ARG APP_VERSION
 # Copy the transpiled code to use in production (in /app)
-COPY --from=build /app/dist ./dist
 COPY package.json package-lock.json ./
+COPY --from=build /app/dist ./dist
 # Install production dependencies and clean cache
 RUN npm --no-git-tag-version version ${APP_VERSION} && \
     npm ci --only=production && \
