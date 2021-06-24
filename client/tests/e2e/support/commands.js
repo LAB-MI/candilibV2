@@ -590,3 +590,28 @@ Cypress.Commands.add('checkCandidatProfile', (magicLink, nameCandidat, emailCand
     cy.get('.v-chip').should(`${isInRecentlyDeptFlag ? '' : 'not.'}contain`, labelIsInRecentlyDept)
   })
 })
+
+Cypress.Commands.add('selectDateGestionPlanning', (placeDate, centerName) => {
+  // datePiker manuel Start
+  cy.get('[href="/candilib/admin/gestion-planning"]')
+    .click()
+  const neededDate = placeDate.split('-')
+  const years = Number(neededDate[0])
+  const month = Number(neededDate[1])
+  const day = Number(neededDate[2])
+  const monthDividedByThree = (month / 3)
+  const lineNumber = Math.ceil(monthDividedByThree)
+
+  cy.get('.date-input').click()
+  cy.get('.accent--text > button').click()
+  cy.get('.fade-transition-enter-active > .v-date-picker-header > .v-date-picker-header__value > .accent--text > button')
+    .click()
+  cy.get('.v-date-picker-years').should('contain', `${years}`).click()
+  cy.get(`.fade-transition-enter-active > .v-date-picker-table > table > tbody > :nth-child(${lineNumber}) > :nth-child(${(month % 3) || 3}) > .v-btn`)
+    .click()
+  cy.get('.fade-transition-enter-active > .v-date-picker-table > table > tbody').contains(`${day}`).click()
+
+  cy.get('.t-center-tabs .v-tab').eq(1).click()
+  cy.get('.t-center-tabs .v-tab').eq(0).should('contain', centerName).click()
+  // datePiker manuel End
+})
