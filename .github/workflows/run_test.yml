@@ -16,9 +16,12 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
       - name: install docker-ce
-        run: |
+        run: |          
           type -a docker-compose && docker-compose version
           docker version
+      - name: install dependency
+        run: |
+            sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
       - name: run test
         run: |
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
