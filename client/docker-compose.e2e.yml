@@ -58,6 +58,9 @@ services:
     entrypoint: ["/e2e-entrypoint.sh","$CYPRESS_ARG"]
     volumes:
       - ./tests/e2e/:/app/tests/e2e/
+    depends_on:
+      - mailhog
+      - db-rest
 
 networks:
   default:
