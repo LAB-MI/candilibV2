@@ -57,7 +57,7 @@ describe('Standard scenarios', () => {
 
       cy.intercept({
         method: 'GET',
-        url: 'http://localhost:8080/candilib/api/v2/candidat/verifyzone/image/0',
+        url: Cypress.env('frontCandidat') + 'api/v2/candidat/verifyzone/image/0',
       }).as('getImage')
 
       cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
