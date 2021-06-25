@@ -8,29 +8,28 @@ workflows:
 
 jobs:
   build:
-    docker:
-      - image: ubuntu-2004:202104-01
+    machine:
+      image: ubuntu-2004:202010-01
     steps:
-      - run: |
-          echo "before_install"
-          sudo rm -rf /usr/local/bin/docker-compose
-          curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-          chmod +x docker-compose
-          sudo mv docker-compose /usr/local/bin/
-          sudo apt-get -q update
-          sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl
-      - run: |
-          echo "before_script"
-          uname -a
-          type -a docker-compose && docker-compose version
-          docker version
-      - run: |
-          echo "script"
-          ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
-          ci/docker-access.sh
-          ci/run-tests.sh
-      - run: |
-          echo "script"
-          ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
-          ci/docker-access.sh
-          ci/run-tests.sh
+      - checkout
+      - run:
+          name: "before_install"
+          command: |
+            echo "before_install"
+            sudo apt-get -q update
+            sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl
+      - run:
+          name: "before_script"
+          command: |
+            echo "before_script"
+            uname -a
+            type -a docker-compose && docker-compose version
+            docker version
+      - run:
+          name: "script"
+          command: |
+            echo "script"
+            ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
+            ci/docker-access.sh
+            ci/run-tests.sh
+
