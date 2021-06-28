@@ -1,5 +1,5 @@
-name: test-ci
-on: [push]
+name: ci-test
+on: pull_request
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 env:
   DOCKER_COMPOSE_VERSION: 1.19.0
@@ -28,7 +28,7 @@ jobs:
           sudo apt-get update
           # sudo apt-get install docker-ce docker-ce-cli containerd.io
           # sudo apt-get install docker-ce       
-          apt-cache madison docker-ce
+          # apt-cache madison docker-ce
           sudo apt-get install docker-ce="$DOCKER_VERSION" docker-ce-cli="$DOCKER_VERSION" containerd.io
           type -a docker-compose && docker-compose version
           docker version
