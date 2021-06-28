@@ -593,7 +593,7 @@ Cypress.Commands.add('checkCandidatProfile', (magicLink, nameCandidat, emailCand
 
 Cypress.Commands.add('selectDateGestionPlanning', (placeDate, centerName) => {
   // datePiker manuel Start
-  cy.get('[href="/candilib/admin/gestion-planning"]')
+  cy.get('a[href*="gestion-planning"]')
     .click()
   const neededDate = placeDate.split('-')
   const years = Number(neededDate[0])
