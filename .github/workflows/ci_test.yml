@@ -40,3 +40,14 @@ jobs:
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
           ci/docker-access.sh
           ci/run-tests.sh
+      - name: store screenshots
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: screenshot test_e2e
+          path: client/tests/e2e/screenshots
+          retention-days: 1
+        
+
+          
+          
