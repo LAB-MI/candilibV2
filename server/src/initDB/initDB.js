@@ -43,7 +43,7 @@ export const initDB = async () => {
  */
 export const initStatus = async () => {
   // TODO: MOOVE NEXT `sortStatus` FUNCTION IN COMMON DIRECTORY
-  const nbStatusUpdated = await sortStatus()
+  const nbStatusUpdated = await sortStatus({ nbDaysInactivityNeeded: 0 })
   const loggerInfo = {
     section: 'initStatus',
     nbStatusUpdated,
