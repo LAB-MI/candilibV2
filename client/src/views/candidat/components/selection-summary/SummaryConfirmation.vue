@@ -83,6 +83,7 @@
 
 <script>
 import { mapState } from 'vuex'
+import { callBackCatchRouter } from '@/util'
 
 import {
   getFrenchDateFromIso,
@@ -142,11 +143,11 @@ export default {
           day: this.$route.params.day,
           modifying: this.$route.params.modifying,
         },
-      })
+      }).catch(callBackCatchRouter)
     },
 
     goToHome () {
-      this.$router.push({ name: 'candidat-home' })
+      this.$router.push({ name: 'candidat-home' }).catch(callBackCatchRouter)
     },
 
     async confirmReservation () {

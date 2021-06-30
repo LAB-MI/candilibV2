@@ -21,8 +21,6 @@ describe('Standard scenarios', () => {
       cy.archiveCandidate()
       cy.addPlanning()
       cy.adminDisconnection()
-      cy.adminLogin()
-      cy.adminDisconnection()
       cy.candidatConnection(Cypress.env('emailCandidatInteractive'))
 
       cy.getLastMail().its('Content.Body').then((mailBody) => {
@@ -35,63 +33,23 @@ describe('Standard scenarios', () => {
     })
 
     it('The candidate chooses a place and the admin cancels it', () => {
-      cy.visit(magicLink)
-      // Adds the reservation
-      cy.toGoSelectPlaces()
+      cy.bookPlaceBySelectedCandidat(
+        Cypress.env('emailCandidatInteractive'),
+        magicLink,
+        Cypress.env('centre'),
+        date1,
+        Cypress.env('placeDate'),
+      )
 
-      cy.get(`[href="#tab-${date1.monthLong}"]`)
-        .click()
-      cy.contains(' ' + Cypress.env('placeDate').split('-')[2] + ' ')
-        .parents('.t-time-slot-list-group')
-        .within(($date) => {
-          cy.root().click()
-          cy.contains('08h00-08h30')
-            .click()
-        })
-      cy.get('h2')
-        .should('contain', 'Confirmation')
-      cy.get('h3')
-        .should('contain', Cypress.env('centre'))
-      cy.get('[type=checkbox]')
-        .first().check({ force: true })
-      cy.get('[type=checkbox]')
-        .last().check({ force: true })
-
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
-      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatInteractive') })
-        .then(imageValueResponse => {
-          cy.log('imageValueResponse', imageValueResponse.value)
-
-          cy.get(`.t-${imageValueResponse.value}`).click()
-        })
-
-      cy.get('button')
-        .contains('Confirmer')
-        .click()
-      cy.get('.v-snack--active')
-        .should('contain', 'Votre réservation a bien été prise en compte')
-      cy.get('h2')
-        .should('contain', 'Ma réservation')
-      cy.get('h3')
-        .should('contain', Cypress.env('centre'))
-      cy.get('p')
-        .should('contain', 'à 08:00')
-      // Check candidate profile
-      cy.contains('supervised_user_circle')
-        .click()
-      cy.contains('Nom de naissance')
-        .parent().parent()
-        .should('contain', Cypress.env('candidatInteractive'))
       // The admin connects
+
       cy.adminLogin()
       // The admin find the reservation and cancels it
-      cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-      cy.get('.t-center-tabs .v-tab')
-        .contains(Cypress.env('centre'))
-        .click({ force: true })
-      cy.contains('replay')
-        .click()
+
+      // next line is the link button to gestion planning
+      // datePiker manuel Start
+      cy.selectDateGestionPlanning(Cypress.env('placeDate'), Cypress.env('centre'))
+
       cy.get('.v-window-item').not('[style="display: none;"]')
         .should('have.length', 1)
         .and('contain', Cypress.env('inspecteur')) // To ensure retry-ability
@@ -151,11 +109,9 @@ describe('Standard scenarios', () => {
         .should('contain', Cypress.env('candidatInteractive'))
       // The admin assigns the candidate to a place
       cy.adminLogin()
-      // Goes to planning
-      cy.visit(Cypress.env('frontAdmin') + 'admin/gestion-planning/*/' + Cypress.env('placeDate'))
-      cy.get('.t-center-tabs .v-tab')
-        .contains(Cypress.env('centre'))
-        .click({ force: true })
+      // datePiker manuel Start
+      cy.selectDateGestionPlanning(Cypress.env('placeDate'), Cypress.env('centre'))
+
       // Add candidate to the first place
       cy.get('.v-window-item').not('[style="display: none;"]')
         .should('have.length', 1)

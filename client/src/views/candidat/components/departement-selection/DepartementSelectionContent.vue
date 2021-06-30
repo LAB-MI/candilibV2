@@ -26,6 +26,7 @@
 
 <script>
 import { CANDIDAT_SELECT_DEPARTEMENT } from '@/store'
+import { callBackCatchRouter } from '@/util'
 
 export default {
   props: {
@@ -46,7 +47,7 @@ export default {
           modifying: (this.$route.params.modifying === 'modification' || this.$store.state.reservation.isModifying)
             ? 'modification' : 'selection',
         },
-      })
+      }).catch(callBackCatchRouter)
     },
   },
 }

@@ -32,6 +32,7 @@ import {
 import CandidatHeader from './components/CandidatHeader'
 import CandidatFooter from './components/CandidatFooter'
 import NavigationDrawer from './components/NavigationDrawer'
+import { callBackCatchRouter } from '@/util'
 
 export default {
   components: {
@@ -79,7 +80,7 @@ export default {
   watch: {
     statusCandidat (newValue) {
       if (newValue === SIGNED_OUT_CANDIDAT) {
-        this.$router.push({ name: 'candidat-presignup' })
+        this.$router.push({ name: 'candidat-presignup' }).catch(callBackCatchRouter)
       }
     },
   },

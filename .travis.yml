@@ -1,3 +1,9 @@
+branch:
+  only:
+  - master
+  - develop
+  - /^qualif\/.*/
+
 os: linux
 dist: bionic
 

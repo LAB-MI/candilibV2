@@ -45,6 +45,7 @@ import {
   getFrenchLuxonCurrentDateTime,
   getFrenchLuxonFromIso,
   validDays,
+  callBackCatchRouter,
 } from '@/util'
 
 import DataTableWeekMonitor from './DataTableWeekMonitor'
@@ -124,7 +125,7 @@ export default {
     goToGestionPlannings (currentWeek, weekDay, year) {
       this.$store.dispatch(SET_WEEK_SECTION, currentWeek)
       const date = getFrenchLuxonCurrentDateTime().set({ weekYear: year, weekNumber: currentWeek, weekday: weekDay || 1 }).toSQLDate()
-      this.$router.push({ name: 'gestion-planning', params: { center: this.centerId, date } })
+      this.$router.push({ name: 'gestion-planning', params: { center: this.centerId, date } }).catch(callBackCatchRouter)
     },
 
     getCreneauTimeAvailable (date) {

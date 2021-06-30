@@ -8,8 +8,7 @@ services:
     ports:
         - 1025:1025
         - 8025:8025
-    logging:
-      driver: none
+    entrypoint: ["/bin/sh", "-c", "MailHog &>/dev/null"]
 
   db-rest:
     image: candilib-db-rest
@@ -58,6 +57,9 @@ services:
     entrypoint: ["/e2e-entrypoint.sh","$CYPRESS_ARG"]
     volumes:
       - ./tests/e2e/:/app/tests/e2e/
+    depends_on:
+      - mailhog
+      - db-rest
 
 networks:
   default:

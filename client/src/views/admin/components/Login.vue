@@ -69,7 +69,8 @@
 
 <script>
 import backgroundImgUrl from '@/assets/bg-login.jpg'
-import { email as emailRegex } from '@/util'
+import { email as emailRegex, callBackCatchRouter } from '@/util'
+
 import {
   BAD_CREDENTIALS,
   FETCH_TOKEN_REQUEST,
@@ -136,7 +137,7 @@ export default {
       await this.$store.dispatch(FETCH_TOKEN_REQUEST, { email, password })
       if (this.authStatus === SIGNED_IN_AS_ADMIN) {
         this.showSuccess('Vous êtes identifié')
-        this.$router.push(this.$route.query.nextPath || '/admin')
+        this.$router.push(this.$route.query.nextPath || '/admin').catch(callBackCatchRouter)
       }
       if (this.authStatus === BAD_CREDENTIALS) {
         const message = 'Identifiants invalides'

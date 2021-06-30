@@ -13,7 +13,7 @@
 <script>
 import SearchInspecteur from './SearchInspecteur'
 import Monitors from './Monitors.vue'
-import { getFrenchLuxonCurrentDateTime } from '@/util'
+import { callBackCatchRouter, getFrenchLuxonCurrentDateTime } from '@/util'
 
 export default {
   components: {
@@ -30,7 +30,7 @@ export default {
           center: centre._id,
           date: getFrenchLuxonCurrentDateTime().toSQLDate(),
         },
-      })
+      }).catch(callBackCatchRouter)
     },
   },
 }
