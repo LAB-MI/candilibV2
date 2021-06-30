@@ -35,7 +35,7 @@ describe('Login.vue', () => {
     expect(componentBandeauBeta.exists()).toBe(true)
   })
 
-  it('connexion', async () => {
+  it.only('connexion', async () => {
     const FETCH_TOKEN_REQUEST = jest.fn()
 
     const store = new Vuex.Store({
@@ -56,7 +56,7 @@ describe('Login.vue', () => {
     })
 
     const $router = {
-      push: (path) => {
+      push: async (path) => {
         expect(path).toBe('/admin')
       },
     }
