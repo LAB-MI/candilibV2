@@ -1,6 +1,8 @@
+import { NB_DAYS_INACTIVITY } from '../../config'
 import { removeDuplicateBooked } from '../../initDB/update-places'
 import { sortCandilibStatus } from '../../models/candidat'
 import { createManyCountStatus } from '../../models/count-status/countStatus-queries'
+import { findStatusByType } from '../../models/status/status.queries'
 import { appLogger } from '../../util'
 import { upsertLastInfosBormeStatus } from './status-candilib-business'
 
@@ -32,12 +34,16 @@ const saveCountByStatus = async (countByStatus) => {
  * Sauvegader le resultat pour les calcul des statistiques
  * @async
  */
-export const sortStatus = async () => {
-  const result = await sortCandilibStatus()
+export const sortStatus = async ({ nbDaysInactivityNeeded }) => {
+  const result = await sortCandilibStatus({ nbDaysInactivityNeeded })
   const { countByStatus, updatedCandidat, statusBorne } = result
   await upsertLastInfosBormeStatus(JSON.stringify(statusBorne))
   await saveCountByStatus(countByStatus)
   // TODO: Create a business for this function
   await removeDuplicateBooked()
   return updatedCandidat
+}
+
+export const getStatusNbDaysInactivity = async () => {
+  await findStatusByType({ type: NB_DAYS_INACTIVITY })
 }

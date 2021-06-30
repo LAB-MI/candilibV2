@@ -3,15 +3,17 @@ import { sortStatus } from './sort-candidat-status-business'
 
 // TODO: JSDOC
 export const sortStatusCandilib = async (req, res) => {
+  const nbDaysInactivityNeeded = Number(req.query.nbDaysInactivityNeeded)
   const loggerInfo = {
     request_id: req.request_id,
     section: 'admin-sort-status-candilib',
     admin: req.userId,
+    nbDaysInactivityNeeded,
   }
 
   try {
     const message = 'Mise à jour des status éffectués'
-    const summary = await sortStatus()
+    const summary = await sortStatus({ nbDaysInactivityNeeded })
     appLogger.info({
       ...loggerInfo,
       description: message,
@@ -35,5 +37,25 @@ export const sortStatusCandilib = async (req, res) => {
       success: false,
       message: error.message,
     })
+  }
+}
+
+export const getNbDaysInactivity = async (req, res) => {
+  // const loggerInfo = {
+  //   request_id: req.request_id,
+  //   section: 'candida-status-candilib',
+  //   admin: req.userId,
+  //   nbDaysInactivityNeeded,
+  // }
+  try {
+    // appLogger.info({
+    //   ...loggerInfo,
+    //   description: message,
+    //   summary,
+    // })
+
+    await getStatusNbDaysInactivity()
+  } catch (e) {
+
   }
 }

@@ -58,7 +58,7 @@ describe('Candidats group by status', () => {
 
   // TODO: Ajouter fixer nombre de candidat par groupe
   it('Should have n candidats in countStatus', async () => {
-    await sortStatus()
+    await sortStatus({ nbDaysInactivityNeeded: 0 })
     for (let i = 0; i < 6; i++) {
       for (const departement of ['92', '93', '95', '75']) {
         const count = await candidatModel.countDocuments({ status: `${i}`, homeDepartement: `${departement}` })

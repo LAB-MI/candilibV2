@@ -377,6 +377,13 @@ router.get(
   verifyUserLevel(config.userStatusLevels.admin),
   sortStatusCandilib,
 )
+
+// TODO: SWAGGER DOC
+router.get(
+  '/number-of-days-inactivity',
+  verifyUserLevel(config.userStatusLevels.admin),
+  getNbDaysInactivity,
+)
 /**
  * @swagger
  *
