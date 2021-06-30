@@ -8,7 +8,8 @@ import { queryPopulate } from '../util/populate-tools'
 import { candidatValidator } from '../../util/validators/candidat-validator'
 import { candidatStatuses } from '../../routes/common/candidat-status-const'
 import { addArchivedCandidatStatus } from '../archived-candidat-status/archived-candidat-status-queries'
-import { NbDaysInactivityDefault } from '../../config'
+import { NbDaysInactivityDefault, NB_DAYS_INACTIVITY } from '../../config'
+import { findStatusByType, upsertStatusByType } from '../status'
 
 /**
  * Crée un candidat
@@ -143,12 +144,25 @@ const groupByAndIds = (status) => (acc, curCandidat) => {
 */
 const getDiffNowInMonthFromJsDate = (date) => getFrenchFormattedDateTime(date).date
 
+export const getOrUpsertNbDaysInactivity = async ({ nbDaysInactivityNeeded }) => {
+  if (nbDaysInactivityNeeded) {
+    await upsertStatusByType({ type: NB_DAYS_INACTIVITY, message: nbDaysInactivityNeeded })
+  }
+  const nbDaysInactivity = await findStatusByType({ type: NB_DAYS_INACTIVITY })
+  const neededNbDaysInactivity = Number(nbDaysInactivity?.message)
+  if (!neededNbDaysInactivity) {
+    return NbDaysInactivityDefault
+  }
+  return neededNbDaysInactivity
+}
+
 // TODO: JSDOC
-export const sortCandilibStatus = async () => {
+export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
+  const nbDaysInactivity = await getOrUpsertNbDaysInactivity({ nbDaysInactivityNeeded })
   const countStatus = candidatStatuses.nbStatus
   const nowLuxon = getFrenchLuxon()
   const now = nowLuxon.toJSDate()
-  const dateLastConnexion = nowLuxon.minus({ days: NbDaysInactivityDefault }).toISODate()
+  const dateLastConnexion = nowLuxon.minus({ days: nbDaysInactivity }).toISODate()
 
   const candidats = await getSortableCandilibStatusAndSortCreatedAt(now, dateLastConnexion)
 

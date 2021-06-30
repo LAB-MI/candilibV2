@@ -6,10 +6,11 @@ import {
   createCandidat,
   countCandidatsByStatus,
   deleteCandidat,
+  getOrUpsertNbDaysInactivity,
 } from './candidat.queries'
 
 import { getFrenchLuxon } from '../../util'
-import { NbDaysInactivityDefault } from '../../config'
+// import { NbDaysInactivityDefault } from '../../config'
 
 describe('Candidat', () => {
   beforeAll(async () => {
@@ -21,9 +22,10 @@ describe('Candidat', () => {
   })
 
   it('sort status candidats', async () => {
+    const nbDaysInactivity = await getOrUpsertNbDaysInactivity({ nbDaysInactivityNeeded: 0 })
     const now = getFrenchLuxon()
-    const dayAfterIncative = now.minus({ days: NbDaysInactivityDefault })
-    const dayBeforeIncative = now.minus({ days: NbDaysInactivityDefault + 1 })
+    const dayAfterIncative = now.minus({ days: nbDaysInactivity })
+    const dayBeforeIncative = now.minus({ days: nbDaysInactivity + 1 })
 
     const sortableCandidat = {
       nbCandidats: 7,
@@ -106,7 +108,7 @@ describe('Candidat', () => {
       },
     ))
 
-    await sortCandilibStatus()
+    await sortCandilibStatus({ nbDaysInactivityNeeded: 0 })
 
     const expectedCandidatByStatus = ['1', '1', '1', '1', '1', `${6 + sortableInactiveCandidat.nbCandidats}`]
     await Promise.all(expectedCandidatByStatus.map(
