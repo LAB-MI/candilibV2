@@ -19,6 +19,7 @@ describe('Candidats group by status', () => {
       canAccessAt: null,
       departement: '95',
       token: true,
+      lastConnection: true,
     }, {
       nbCandidats: 5,
       isValidateAurige: true,
@@ -27,6 +28,7 @@ describe('Candidats group by status', () => {
       canAccessAt: null,
       departement: '93',
       token: true,
+      lastConnection: true,
     }, {
       nbCandidats: 3,
       isValidateAurige: true,
@@ -35,6 +37,7 @@ describe('Candidats group by status', () => {
       canAccessAt: null,
       departement: '92',
       token: true,
+      lastConnection: true,
     }, {
       nbCandidats: 3,
       isValidateAurige: true,
@@ -44,6 +47,7 @@ describe('Candidats group by status', () => {
       departement: '93',
       homeDepartement: '75',
       token: true,
+      lastConnection: true,
     },
     ]
 

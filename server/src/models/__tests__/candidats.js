@@ -31,7 +31,7 @@ export const generateCandidats = (params) => {
       const dept2Digit = faker.address.zipCode()
       const dept = departement || `${dept2Digit[0]}${dept2Digit[1]}`
       const creatdAt = faker.date.past()
-
+      const lastDateConnection = (lastConnection && typeof lastConnection === 'boolean') ? faker.date.recent(120) : (lastConnection || undefined)
       const userData = {
         codeNeph,
         nomNaissance,
@@ -45,7 +45,7 @@ export const generateCandidats = (params) => {
         isValidatedEmail: isValideEmail,
         createdAt: creatdAt,
         homeDepartement,
-        lastConnection,
+        lastConnection: lastDateConnection,
       }
 
       if (canBookFrom) {
