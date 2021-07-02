@@ -1,31 +1,32 @@
 import { connect, disconnect } from '../../mongo-connection'
 import archivedCandidatStatusModel from '../archived-candidat-status/archived-candidat-status-model'
-import { generateCandidats } from '../__tests__'
+import { deleteCandidats, generateCandidats } from '../__tests__'
 import {
   sortCandilibStatus,
   createCandidat,
   countCandidatsByStatus,
-  deleteCandidat,
   getOrUpsertNbDaysInactivity,
 } from './candidat.queries'
 
 import { getFrenchLuxon } from '../../util'
-// import { NbDaysInactivityDefault } from '../../config'
+import { NbDaysInactivityDefault, NB_DAYS_INACTIVITY } from '../../config'
+import { createStatus, deleteStatusByType, findStatusByType } from '../status'
+import candidatModel from './candidat.model'
 
-describe('Candidat', () => {
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
+
+describe('Candidat status', () => {
+  let sortableInactiveCandidat
+  const now = getFrenchLuxon()
+
   beforeAll(async () => {
     await connect()
-  })
 
-  afterAll(async () => {
-    await disconnect()
-  })
-
-  it('sort status candidats', async () => {
-    const nbDaysInactivity = await getOrUpsertNbDaysInactivity({ nbDaysInactivityNeeded: 0 })
-    const now = getFrenchLuxon()
-    const dayAfterIncative = now.minus({ days: nbDaysInactivity })
-    const dayBeforeIncative = now.minus({ days: nbDaysInactivity + 1 })
+    // const dayAfterIncative = now.minus({ days: nbDaysInactivity })
+    // const dayBeforeIncative = now.minus({ days: nbDaysInactivity + 1 })
+    const dayAfterIncative = now.minus({ days: NbDaysInactivityDefault })
+    const dayBeforeIncative = now.minus({ days: NbDaysInactivityDefault + 1 })
 
     const sortableCandidat = {
       nbCandidats: 7,
@@ -80,7 +81,7 @@ describe('Candidat', () => {
       canAccessAt: null,
       token: false,
     }
-    const sortableInactiveCandidat = {
+    sortableInactiveCandidat = {
       nbCandidats: 7,
       isValidateAurige: true,
       isValideEmail: true,
@@ -88,6 +89,7 @@ describe('Candidat', () => {
       canAccessAt: null,
       token: true,
       lastConnection: dayBeforeIncative.toJSDate(),
+      firstName: 'inactive',
     }
 
     const allTest = [
@@ -102,13 +104,61 @@ describe('Candidat', () => {
 
     const data = await generateCandidats(allTest)
 
-    const createdCandidat = await Promise.all(data.map(
+    await Promise.all(data.map(
       el => {
         return createCandidat(el)
       },
     ))
+  })
 
-    await sortCandilibStatus({ nbDaysInactivityNeeded: 0 })
+  afterAll(async () => {
+    await deleteCandidats()
+    await disconnect()
+  })
+
+  afterEach(async () => {
+    const nbDaysFoundInDb = await findStatusByType({ type: NB_DAYS_INACTIVITY })
+    if (nbDaysFoundInDb) {
+      await deleteStatusByType(NB_DAYS_INACTIVITY)
+    }
+  })
+
+  it.each([
+    undefined,
+    0,
+    60,
+    90,
+  ])('get %i number days inactive', async (nbDaysexpected) => {
+    const nbDaysFound = await getOrUpsertNbDaysInactivity({ nbDaysInactivityNeeded: nbDaysexpected })
+    expect(nbDaysFound).toBe(nbDaysexpected || 60)
+    const nbDaysFoundInDb = await findStatusByType({ type: NB_DAYS_INACTIVITY })
+    if (nbDaysexpected) {
+      expect(nbDaysFoundInDb).toHaveProperty('message', `${nbDaysexpected}`)
+      await deleteStatusByType(NB_DAYS_INACTIVITY)
+    } else {
+      expect(nbDaysFoundInDb).toBeNull()
+    }
+  })
+
+  it.each`
+      nbDaysInactivity                | nbDaysInactivityToSet           | formInitDb
+      ${NbDaysInactivityDefault}      | ${0}                            | ${undefined}
+      ${NbDaysInactivityDefault + 30} | ${NbDaysInactivityDefault + 30} | ${undefined}
+      ${NbDaysInactivityDefault + 30} | ${0}                            | ${NbDaysInactivityDefault + 30}
+    `('sort status candidats with %nbDaysInactivity days inactives and with a set %nbDaysInactivityToSet days', ({ nbDaysInactivity, nbDaysInactivityToSet, formInitDb }, done) => {
+    testSortCandidats(nbDaysInactivity, nbDaysInactivityToSet, formInitDb).catch((error) => {
+      throw error
+    }).finally(() => {
+      done()
+    })
+  })
+
+  async function testSortCandidats (nbDaysInactivity, nbDaysInactivityToSet, formInitDb) {
+    const dayBeforeIncative = now.minus({ days: nbDaysInactivity + 1 })
+    await candidatModel.updateMany({ prenom: /inactive/ }, { lastConnection: dayBeforeIncative.toJSDate() })
+    formInitDb && await createStatus({ type: NB_DAYS_INACTIVITY, message: `${formInitDb}` })
+
+    await sortCandilibStatus({ nbDaysInactivityNeeded: nbDaysInactivityToSet })
 
     const expectedCandidatByStatus = ['1', '1', '1', '1', '1', `${6 + sortableInactiveCandidat.nbCandidats}`]
     await Promise.all(expectedCandidatByStatus.map(
@@ -118,12 +168,17 @@ describe('Candidat', () => {
         expect(countCandidatByStatusValue).toBe(Number(el))
         // For archived candidat Status
         const archivedStatus = await archivedCandidatStatusModel.countDocuments({ status })
-        // console.log({countCandidatByStatusValue, el, status, archivedStatus})
         expect(archivedStatus).toBe(Number(el))
         return countCandidatByStatusValue
       },
     ))
 
-    await Promise.all(createdCandidat.map(candidat => deleteCandidat(candidat).catch(() => true)))
-  })
+    const nbDaysFoundInDb = await findStatusByType({ type: NB_DAYS_INACTIVITY })
+    if (nbDaysInactivityToSet) {
+      expect(nbDaysFoundInDb).toHaveProperty('message', `${nbDaysInactivityToSet}`)
+      await deleteStatusByType(NB_DAYS_INACTIVITY)
+    } else if (!formInitDb) {
+      expect(nbDaysFoundInDb).toBeNull()
+    }
+  }
 })

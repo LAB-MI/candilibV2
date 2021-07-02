@@ -7,7 +7,7 @@ import faker from 'faker/locale/fr'
 export const generateCandidats = (params) => {
   const users = []
 
-  params.forEach(item => {
+  params.forEach((item, index) => {
     const {
       nbCandidats,
       isValidateAurige,
@@ -18,12 +18,13 @@ export const generateCandidats = (params) => {
       homeDepartement,
       token,
       lastConnection,
+      firstName,
     } = item
 
     for (let id = 1; id <= nbCandidats; id++) {
-      const codeNeph = `123${id}456789000`
+      const codeNeph = `123${id}456789000${index}`
       const nomNaissance = faker.name.lastName()
-      const prenom = faker.name.firstName()
+      const prenom = `${firstName + faker.name.firstName()}`
       const email = faker.internet.email()
       const portable = `06${faker.phone.phoneNumberFormat().slice(2)}`
       const adresse = faker.address.streetAddress()
