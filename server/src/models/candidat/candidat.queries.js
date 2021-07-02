@@ -128,7 +128,7 @@ const getSortableCandilibInLastStatus = async (now, dateLastConnexion) => Candid
     { lastConnection: { $lt: dateLastConnexion } },
     { lastConnection: { $exists: false } },
   ],
-}, { _id: 1, departement: 1, status: 1 })
+}, { _id: 1, departement: 1, status: 1, homeDepartement: 1 })
 
 // TODO: JSDOC
 const groupByAndIds = (status) => (acc, curCandidat) => {
