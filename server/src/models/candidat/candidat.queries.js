@@ -126,6 +126,7 @@ const getSortableCandilibInLastStatus = async (now, dateLastConnexion) => Candid
     { canAccessAt: { $gte: now } },
     { canBookFrom: { $gte: now } },
     { lastConnection: { $lt: dateLastConnexion } },
+    { lastConnection: { $exists: false } },
   ],
 }, { _id: 1, departement: 1, status: 1 })
 
@@ -144,16 +145,20 @@ const groupByAndIds = (status) => (acc, curCandidat) => {
 */
 const getDiffNowInMonthFromJsDate = (date) => getFrenchFormattedDateTime(date).date
 
-export const getOrUpsertNbDaysInactivity = async ({ nbDaysInactivityNeeded }) => {
-  if (nbDaysInactivityNeeded) {
-    await upsertStatusByType({ type: NB_DAYS_INACTIVITY, message: nbDaysInactivityNeeded })
-  }
+export const getNbDaysInactivityFronDbOrDefault = async () => {
   const nbDaysInactivity = await findStatusByType({ type: NB_DAYS_INACTIVITY })
   const neededNbDaysInactivity = Number(nbDaysInactivity?.message)
   if (!neededNbDaysInactivity) {
     return NbDaysInactivityDefault
   }
   return neededNbDaysInactivity
+}
+
+export const getOrUpsertNbDaysInactivity = async ({ nbDaysInactivityNeeded }) => {
+  if (nbDaysInactivityNeeded) {
+    await upsertStatusByType({ type: NB_DAYS_INACTIVITY, message: nbDaysInactivityNeeded })
+  }
+  return await getNbDaysInactivityFronDbOrDefault()
 }
 
 // TODO: JSDOC
