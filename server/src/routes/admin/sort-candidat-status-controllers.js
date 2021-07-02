@@ -1,3 +1,4 @@
+import { getNbDaysInactivityFronDbOrDefault } from '../../models/candidat'
 import { appLogger } from '../../util'
 import { sortStatus } from './sort-candidat-status-business'
 
@@ -41,21 +42,31 @@ export const sortStatusCandilib = async (req, res) => {
 }
 
 export const getNbDaysInactivity = async (req, res) => {
-  // const loggerInfo = {
-  //   request_id: req.request_id,
-  //   section: 'candida-status-candilib',
-  //   admin: req.userId,
-  //   nbDaysInactivityNeeded,
-  // }
+  const loggerInfo = {
+    request_id: req.request_id,
+    admin: req.userId,
+    section: 'admin-getNbDaysInactivity',
+  }
   try {
-    // appLogger.info({
-    //   ...loggerInfo,
-    //   description: message,
-    //   summary,
-    // })
+    const NbDaysInactivity = await getNbDaysInactivityFronDbOrDefault()
+    appLogger.info({
+      ...loggerInfo,
+      NbDaysInactivity,
+    })
+    res.status(200).send({
+      success: true,
+      NbDaysInactivity,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: error.message,
+      error,
+    })
 
-    await getStatusNbDaysInactivity()
-  } catch (e) {
-
+    res.status(500).send({
+      success: false,
+      message: error.message,
+    })
   }
 }

@@ -1,8 +1,6 @@
-import { NB_DAYS_INACTIVITY } from '../../config'
 import { removeDuplicateBooked } from '../../initDB/update-places'
 import { sortCandilibStatus } from '../../models/candidat'
 import { createManyCountStatus } from '../../models/count-status/countStatus-queries'
-import { findStatusByType } from '../../models/status/status.queries'
 import { appLogger } from '../../util'
 import { upsertLastInfosBormeStatus } from './status-candilib-business'
 
@@ -42,8 +40,4 @@ export const sortStatus = async ({ nbDaysInactivityNeeded }) => {
   // TODO: Create a business for this function
   await removeDuplicateBooked()
   return updatedCandidat
-}
-
-export const getStatusNbDaysInactivity = async () => {
-  await findStatusByType({ type: NB_DAYS_INACTIVITY })
 }

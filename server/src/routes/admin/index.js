@@ -61,7 +61,7 @@ import {
   verifyDelegueLevel,
 } from './middlewares'
 import config from '../../config'
-import { sortStatusCandilib } from './sort-candidat-status-controllers'
+import { getNbDaysInactivity, sortStatusCandilib } from './sort-candidat-status-controllers'
 import { logsByFilters } from './logs-candidat-controllers'
 
 const router = express.Router()
