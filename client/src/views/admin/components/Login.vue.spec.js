@@ -35,7 +35,7 @@ describe('Login.vue', () => {
     expect(componentBandeauBeta.exists()).toBe(true)
   })
 
-  it.only('connexion', async () => {
+  it('connexion', async () => {
     const FETCH_TOKEN_REQUEST = jest.fn()
 
     const store = new Vuex.Store({
