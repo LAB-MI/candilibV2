@@ -46,18 +46,7 @@ async function expectedPlaces (nbplaces) {
   expect(body).toBeDefined()
   expect(body).toHaveLength(nbplaces)
 }
-const expectedPlaceByCentreId = async (date, nbPlaces) => {
-  const placeSelected = encodeURIComponent(date)
-  const { body } = await request(app)
-    .get(
-      `${apiPrefix}/candidat/places/${centreDateDisplay._id}?dateTime=${placeSelected}`,
-    )
-    .set('Accept', 'application/json')
-    .expect(200)
-  expect(body).toBeDefined()
-  expect(body).toHaveLength(nbPlaces)
-  nbPlaces && expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
-}
+
 const expectedPlaceByNameCentreAndGeoDep = async (date, nbPlaces) => {
   const placeSelected = encodeURIComponent(date)
   const { body } = await request(app)
@@ -238,10 +227,6 @@ describe('Get places available and display at 12h', () => {
     beforeAll(async () => {
       const moduleCandidatStatuses = require('../common/candidat-status-const')
       moduleCandidatStatuses.candidatStatuses = undefined
-    })
-    it('Should 200 with an available place created before 12h when it is after 12h by centreId', async () => {
-      setNowAfter12h()
-      await expectedPlaceByCentreId(placesCreatedBefore.date, 1)
     })
   })
 })
