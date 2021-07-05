@@ -10,6 +10,16 @@ const SessionCandidatSchema = new Schema(
       required: true,
     },
 
+    forwardedFor: {
+      type: String,
+      require: true,
+    },
+
+    clientId: {
+      type: String,
+      require: true,
+    },
+
     session: {
       type: Object,
       default: {},

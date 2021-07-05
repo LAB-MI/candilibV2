@@ -137,7 +137,7 @@ describe('Captcha test', () => {
     const expectedValue03 = { count: 3, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue03)
 
-    const tmpSessionCandiat = await getSessionByCandidatId(candidat1._id)
+    const tmpSessionCandiat = await getSessionByCandidatId({ userId: candidat1._id })
     const dateCanTryAt = getFrenchLuxonFromJSDate(tmpSessionCandiat.canRetryAt)
 
     const expectedValue04 = {
@@ -205,7 +205,7 @@ describe('Captcha test', () => {
     const expectedValueNewCaptcha01 = { count: 3, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValueNewCaptcha01)
 
-    const tmpSessionCandiat = await getSessionByCandidatId(candidat1._id)
+    const tmpSessionCandiat = await getSessionByCandidatId({ userId: candidat1._id })
     const dateCanTryAt = getFrenchLuxonFromJSDate(tmpSessionCandiat.canRetryAt)
 
     // console.log('4er captha')
@@ -286,7 +286,7 @@ describe('Captcha test', () => {
     const expectedValue03 = { count: 3, success: true, imageCount: numberOfImages, statusCode: 200, isCaptcha: true }
     await requestCaptcha(captchaPath, expectedValue03)
 
-    const currentSessionCandidat = await getSessionByCandidatId(candidat1._id)
+    const currentSessionCandidat = await getSessionByCandidatId({ userId: candidat1._id })
     const currentSession = currentSessionCandidat.session[`visualcaptcha_${candidat1._id}`]
 
     const { body: bodyPlace } = await request(app)
@@ -314,7 +314,7 @@ describe('Captcha test', () => {
 
     await requestCaptcha(captchaPath, expectedValue04)
 
-    const currentSessionCandidatAfterLastTry = await getSessionByCandidatId(candidat1._id)
+    const currentSessionCandidatAfterLastTry = await getSessionByCandidatId({ userId: candidat1._id })
     const dateCanTryAtAfterLastTry = getFrenchLuxonFromJSDate(currentSessionCandidatAfterLastTry.canRetryAt)
     const minutes = 1
     const nowPlus2Minutes = dateCanTryAtAfterLastTry.plus({ minutes })

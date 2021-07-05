@@ -1,10 +1,10 @@
-import { getSessionByCandidatId, createSession, updateSession } from '../../models/session-candidat'
+import { getSessionByCandidatId, createSession, updateSession, getSessionByCandidatIdAndInfos } from '../../models/session-candidat'
 import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../util'
 import { captchaTools, imagesSetting, getImageNamePic } from './util/captcha-tools'
 import { captchaExpireMintutes, nbMinuteBeforeRetry, numberOfImages, tryLimit } from '../../config'
 
-export const verifyAndGetSessionByCandidatId = async (userId, message) => {
-  const currentSession = await getSessionByCandidatId(userId)
+export const verifyAndGetSessionByCandidatId = async ({ userId, forwardedFor, clientId }, message) => {
+  const currentSession = await getSessionByCandidatIdAndInfos({ userId, forwardedFor, clientId })
 
   if (
     !currentSession ||
@@ -20,10 +20,10 @@ export const verifyAndGetSessionByCandidatId = async (userId, message) => {
   return currentSession
 }
 
-export const getImages = async (userId) => {
+export const getImages = async ({ userId, forwardedFor, clientId }) => {
   const message = "vous n'êtes pas autorisé"
 
-  const currentSession = await verifyAndGetSessionByCandidatId(userId, message)
+  const currentSession = await verifyAndGetSessionByCandidatId({ userId, forwardedFor, clientId }, message)
 
   const visualCaptcha = captchaTools(currentSession.session, userId)
   // visualCaptcha.streamImages = streamImages
@@ -34,8 +34,8 @@ export const getImages = async (userId) => {
   return result
 }
 
-export const startCaptcha = async (userId) => {
-  const currentSession = await getSessionByCandidatId(userId)
+export const startCaptcha = async ({ userId, forwardedFor, clientId }) => {
+  const currentSession = await getSessionByCandidatId({ userId })
 
   let visualCaptcha
   const dateNow = getFrenchLuxon()
@@ -52,6 +52,8 @@ export const startCaptcha = async (userId) => {
 
     await createSession({
       userId,
+      forwardedFor,
+      clientId,
       session: sessionTmp,
       expires,
       captchaExpireAt,
@@ -117,6 +119,8 @@ export const startCaptcha = async (userId) => {
 
   await updateSession({
     userId,
+    forwardedFor,
+    clientId,
     session: newSessionContent,
     ...countAndCanRetryAt,
     captchaExpireAt,

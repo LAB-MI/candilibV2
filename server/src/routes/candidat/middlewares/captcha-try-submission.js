@@ -5,6 +5,8 @@ import { captchaTools } from '../util/captcha-tools'
 
 export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
+  const clientId = req.headers['x-client-id']
+  const forwardedFor = req.headers['x-forwarded-for']
 
   const loggerInfo = {
     request_id: req.request_id,
@@ -17,7 +19,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
   try {
     const message = 'Captcha Expiré'
 
-    const currentSession = await verifyAndGetSessionByCandidatId(userId, message)
+    const currentSession = await verifyAndGetSessionByCandidatId({ userId, forwardedFor, clientId }, message)
 
     const {
       expires,
