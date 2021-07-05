@@ -38,3 +38,10 @@ before(() => {
     cy.exec('cd ../server && npm run dev-setup')
   }
 })
+
+Cypress.on('uncaught:exception', (err, runnable) => {
+  // returning false here prevents Cypress from
+  // failing the test
+  cy.log('error in console', err)
+  return false
+})

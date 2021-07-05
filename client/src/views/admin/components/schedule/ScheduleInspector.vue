@@ -270,6 +270,7 @@ import {
   getFrenchLuxonFromIso,
   getFrenchLuxonFromObject,
   getFrenchLuxonFromSql,
+  callBackCatchRouter,
 } from '@/util'
 
 const creneauTemplate = [
@@ -481,7 +482,7 @@ export default {
     },
 
     async centreSelector (centreId) {
-      this.$router.push({ params: { center: centreId, date: this.date } })
+      this.$router.push({ params: { center: centreId, date: this.date } }).catch(callBackCatchRouter)
       this.activeCentreId = centreId
       this.reloadWeekMonitor()
     },
@@ -587,7 +588,7 @@ export default {
     },
 
     updateCenterInRoute () {
-      this.$router.push({ params: { center: this.activeCentreId, date: this.date } })
+      this.$router.push({ params: { center: this.activeCentreId, date: this.date } }).catch(callBackCatchRouter)
     },
 
     addOrRemoveCreneauInList (creneau) {

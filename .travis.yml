@@ -1,3 +1,9 @@
+branch:
+  only:
+  - master
+  - develop
+  - /^qualif\/.*/
+
 os: linux
 dist: bionic
 
@@ -28,7 +34,7 @@ before_script:
   - type -a docker-compose && docker-compose version
   - docker version
 script:
-  - ( git fetch --unshallow || true ) && git tag -l
+  - ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
   - ci/docker-access.sh
   - ci/run-tests.sh
 

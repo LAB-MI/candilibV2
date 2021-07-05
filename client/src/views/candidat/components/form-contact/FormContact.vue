@@ -77,6 +77,7 @@
 
 <script>
 import { FETCH_DEPARTEMENTS_REQUEST, SHOW_ERROR, FETCH_SEND_CONTACT_US_REQUEST } from '@/store'
+import { callBackCatchRouter } from '@/util'
 
 import FormGroupInfoCandidat from '../FormGroupInfoCandidat'
 import { mapState } from 'vuex'
@@ -145,7 +146,7 @@ export default {
           message: this.message,
           hadSignup: this.hadSingup,
         })
-        this.$router.push({ name: 'home' })
+        this.$router.push({ name: 'home' }).catch(callBackCatchRouter)
       } catch (error) {
       }
     },

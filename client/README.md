@@ -1,4 +1,4 @@
-# back-office
+# back-office.
 
 ## Project setup
 

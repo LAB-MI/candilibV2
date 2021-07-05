@@ -19,24 +19,29 @@ import { addArchivedCandidatStatus } from '../archived-candidat-status/archived-
  *
  * @returns {Promise.<Candidat>}
  */
-export const createCandidat = async ({
-  adresse,
-  codeNeph,
-  email,
-  emailValidationHash,
-  isValidatedEmail,
-  nomNaissance,
-  portable,
-  prenom,
-  departement,
-  homeDepartement,
-  createdAt,
-  isValidatedByAurige,
-  canAccessAt,
-  canBookFrom,
-  status,
-  token,
-}) => {
+export const createCandidat = async (candidatFormData) => {
+  const {
+    adresse,
+    codeNeph,
+    email,
+    emailValidationHash,
+    isValidatedEmail,
+    nomNaissance,
+    portable,
+    prenom,
+    departement,
+    homeDepartement,
+    // ci dessous les arguments utilisé que pour l'enviromment de test
+    // createdAt,
+    // isValidatedByAurige,
+    // canAccessAt,
+    // canBookFrom,
+    // status,
+    // token,
+    // tokenAddedAt,
+    // lastConnection,
+  } = candidatFormData
+
   const validated = await candidatValidator.validateAsync({
     adresse,
     codeNeph,
@@ -67,28 +72,20 @@ export const createCandidat = async ({
   }
 
   if (process.env.NODE_ENV === 'test') {
-    if (createdAt) {
-      newCandidat.createdAt = createdAt
-    }
-
-    if (isValidatedByAurige) {
-      newCandidat.isValidatedByAurige = isValidatedByAurige
-    }
-    if (canAccessAt) {
-      newCandidat.canAccessAt = canAccessAt
-    }
-
-    if (canBookFrom) {
-      newCandidat.canBookFrom = canBookFrom
-    }
-
-    if (status) {
-      newCandidat.status = status
-    }
-
-    if (token) {
-      newCandidat.token = token
-    }
+    [
+      'createdAt',
+      'isValidatedByAurige',
+      'canAccessAt',
+      'canBookFrom',
+      'status',
+      'token',
+      'tokenAddedAt',
+      'lastConnection',
+    ].forEach(key => {
+      if (candidatFormData[key]) {
+        newCandidat[key] = candidatFormData[key]
+      }
+    })
   }
 
   const candidat = new Candidat(newCandidat)
@@ -439,7 +436,8 @@ export const updateCandidatToken = async (candidatId, token) => {
   if (!candidatId) {
     throw new Error('candidat is undefined')
   }
-  return Candidat.updateOne({ _id: candidatId }, { $set: { token } })
+
+  return Candidat.updateOne({ _id: candidatId }, { $set: { token, tokenAddedAt: getFrenchLuxon().toISO() } })
 }
 
 /**
@@ -569,6 +567,10 @@ export const setCandidatFirstConnection = async id => {
     return candidat.save()
   }
   return candidat
+}
+
+export const setCandidatLastConnection = async id => {
+  return await Candidat.updateOne({ _id: id }, { $set: { lastConnection: new Date() } })
 }
 
 /**
@@ -708,7 +710,7 @@ export const setCandidatToVIP = (candidat, resaCanceledByAdmin) => {
  * @returns {Promise.<boolean>} - `true` si un candidat existe avec cet identifiant
  */
 export const isCandidatExisting = async _id => {
-  const isExist = await Candidat.findOne({ _id }, { _id: 1 })
+  const isExist = await Candidat.findOne({ _id }, { _id: 1, lastConnection: 1 })
   return isExist
 }
 
@@ -797,6 +799,45 @@ export const updateCandidatDepartement = (candidat, departement) => {
   if (!departement) throw new Error('le département est incorrect')
   candidat.departement = departement
   return candidat.save()
+}
+
+export const findCandidatsSignIn = async (filter, options, page) => {
+  const dateNow = getFrenchLuxon()
+  const candidatsQuery = Candidat.find({
+    ...filter,
+    isValidatedByAurige: true,
+    $or: [
+      {
+        canAccessAt: { $lt: dateNow },
+      },
+      {
+        canAccessAt: { $exists: false },
+      },
+    ],
+  }, options)
+
+  if (page !== undefined) {
+    candidatsQuery.skip(1000 * page).limit(1000)
+  }
+  const candidats = await candidatsQuery.exec()
+  return candidats
+}
+
+export const totalCandidatsSignIn = async (filter) => {
+  const dateNow = getFrenchLuxon()
+  const count = await Candidat.countDocuments({
+    ...filter,
+    isValidatedByAurige: true,
+    $or: [
+      {
+        canAccessAt: { $lt: dateNow },
+      },
+      {
+        canAccessAt: { $exists: false },
+      },
+    ],
+  })
+  return count
 }
 
 /**

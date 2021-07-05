@@ -53,6 +53,8 @@ import {
   SHOW_SUCCESS,
 } from '@/store'
 
+import { callBackCatchRouter } from '@/util'
+
 import {
   getFrenchDateTimeFromIso,
 } from '../../../../util/frenchDateTime.js'
@@ -142,15 +144,15 @@ export default {
           day: this.$route.params.day,
           modifying: this.$route.params.modifying,
         },
-      })
+      }).catch(callBackCatchRouter)
     },
 
     goToSelectCenter () {
-      this.$router.push({ name: 'selection-centre', params: { modifying: this.$route.params.modifying } })
+      this.$router.push({ name: 'selection-centre', params: { modifying: this.$route.params.modifying } }).catch(callBackCatchRouter)
     },
 
     goToHome () {
-      this.$router.push({ name: 'candidat-home' })
+      this.$router.push({ name: 'candidat-home' }).catch(callBackCatchRouter)
     },
 
     closeAndGoBack () {

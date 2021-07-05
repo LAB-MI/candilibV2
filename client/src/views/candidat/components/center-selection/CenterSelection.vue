@@ -32,6 +32,7 @@ import { mapState } from 'vuex'
 import { BigLoadingIndicator } from '@/components'
 import CenterSelectionContent from './CenterSelectionContent'
 import MessageInfoPlaces from '../MessageInfoPlaces'
+import { callBackCatchRouter } from '@/util'
 
 import {
   FETCH_CENTERS_REQUEST,
@@ -61,7 +62,7 @@ export default {
     goToSelectDepartement () {
       this.$router.push({
         name: 'selection-departement',
-      })
+      }).catch(callBackCatchRouter)
     },
   },
 }

@@ -1,9 +1,7 @@
 import { getSessionByCandidatId, createSession, updateSession } from '../../models/session-candidat'
 import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../util'
-import captchaTools from 'visualcaptcha'
-import { imagesSetting } from './util'
+import { captchaTools, imagesSetting, getImageNamePic } from './util/captcha-tools'
 import { captchaExpireMintutes, nbMinuteBeforeRetry, numberOfImages, tryLimit } from '../../config'
-import { streamImages, getImageNamePic } from './util/merge-image'
 
 export const verifyAndGetSessionByCandidatId = async (userId, message) => {
   const currentSession = await getSessionByCandidatId(userId)
@@ -28,7 +26,7 @@ export const getImages = async (userId) => {
   const currentSession = await verifyAndGetSessionByCandidatId(userId, message)
 
   const visualCaptcha = captchaTools(currentSession.session, userId)
-  visualCaptcha.streamImages = streamImages
+  // visualCaptcha.streamImages = streamImages
 
   // Default is non-retina
   const isRetina = false
@@ -67,6 +65,7 @@ export const startCaptcha = async (userId) => {
       count: 1,
       captcha: {
         ...frontendData,
+        imageName: undefined,
         imageNamePic: await getImageNamePic(frontendData),
         audioFieldName: undefined,
       },
@@ -125,11 +124,13 @@ export const startCaptcha = async (userId) => {
 
   statusCode = 200
   const frontendData = visualCaptcha.getFrontendData()
+
   return {
     success: true,
     count: countAndCanRetryAt.count,
     captcha: {
       ...frontendData,
+      imageName: undefined,
       imageNamePic: await getImageNamePic(frontendData),
       audioFieldName: undefined,
     },

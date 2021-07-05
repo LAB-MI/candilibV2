@@ -70,6 +70,7 @@ import AlreadySignedUp from './AlreadySignedUp'
 import CovidMessageExam from '@/views/candidat/components/CovidMessageExam'
 import StatusCandidatMessageInfos from '@/views/candidat/components/StatusCandidatMessageInfos'
 import FormGroupInfoCandidat from './FormGroupInfoCandidat'
+import { callBackCatchRouter } from '@/util'
 import { mapState } from 'vuex'
 
 export default {
@@ -146,7 +147,7 @@ export default {
           departement,
         })
         this.$refs.presignupForm.reset()
-        this.$router.push({ name: 'email-validation', params: { response } })
+        this.$router.push({ name: 'email-validation', params: { response } }).catch(callBackCatchRouter)
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
