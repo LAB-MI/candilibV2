@@ -109,7 +109,7 @@ describe('SessionCandidat', () => {
     expect(updatedStatus).toHaveProperty('nModified', 1)
     expect(updatedStatus).toHaveProperty('n', 1)
 
-    const sessionAfterUpdate = await getSessionByCandidatId(candidat1._id)
+    const sessionAfterUpdate = await getSessionByCandidatId({ userId: candidat1._id })
 
     const optionToCheck = {
       isCount: true,

@@ -7,11 +7,9 @@ import { appLogger, techLogger } from '../../util'
 import {
   addInfoDateToRulesResa,
   bookPlace,
-  getDatesByCentreId,
   getLastDateToCancel,
   getPlacesByDepartementAndCentre,
   getReservationByCandidat,
-  hasAvailablePlaces,
   hasAvailablePlacesByCentre,
   removeReservationPlace,
   validCentreDateReservation,
@@ -133,45 +131,33 @@ export async function getPlacesByCentre (req, res) {
 
   let dates = []
   try {
-    if (centreId) {
-      if (dateTime) {
-        dates = await hasAvailablePlaces(
-          centreId,
-          dateTime,
-          getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
-        )
-      } else {
-        dates = await getDatesByCentreId(centreId, begin, end, candidatId, candidatStatus)
-      }
+    if (!(geoDepartement && nomCentre)) {
+      throw new Error(ErrorMsgArgEmpty)
+    }
+    if (dateTime) {
+      dates = await hasAvailablePlacesByCentre(
+        geoDepartement,
+        nomCentre,
+        dateTime,
+        getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
+      )
     } else {
-      if (!(geoDepartement && nomCentre)) {
-        throw new Error(ErrorMsgArgEmpty)
-      }
-      if (dateTime) {
-        dates = await hasAvailablePlacesByCentre(
-          geoDepartement,
-          nomCentre,
-          dateTime,
-          getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
-        )
-      } else {
-        dates = await getPlacesByDepartementAndCentre(
-          nomCentre,
-          geoDepartement,
-          candidatId,
-          begin,
-          end,
-          getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
-        )
-      }
+      dates = await getPlacesByDepartementAndCentre(
+        nomCentre,
+        geoDepartement,
+        candidatId,
+        begin,
+        end,
+        getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
+      )
     }
 
     appLogger.info({
       ...loggerInfo,
-      description: `[${dates.length}] place(s) ont été trouvée(s)`,
+      description: `[${dates?.length}] place(s) ont été trouvée(s)`,
     })
 
-    res.status(200).json(dates)
+    res.status(200).json(dates || [])
   } catch (error) {
     appLogger.error({ ...loggerInfo, error, description: error.message })
     res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({
