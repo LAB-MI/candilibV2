@@ -36,32 +36,48 @@ jest.mock('./middlewares/captcha-try-submission')
 
 jest.mock('../common/candidat-status-const')
 
+expect.extend({
+  toBeResponseStatus (received, expected) {
+    if (received.status !== expected) {
+      return {
+        message: () => `expected ${expected}, got ${received.status}\n Body is ${JSON.stringify(received.body)}`,
+        pass: false,
+      }
+    }
+    return {
+      pass: true,
+    }
+  },
+})
+
 async function expectedPlaces (nbplaces) {
-  const { body } = await request(app)
+  const response = await request(app)
     .get(
       `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`,
     )
     .set('Accept', 'application/json')
-    .expect(200)
+  expect(response).toBeResponseStatus(200)
+  const { body } = response
   expect(body).toBeDefined()
   expect(body).toHaveLength(nbplaces)
 }
 
 const expectedPlaceByNameCentreAndGeoDep = async (date, nbPlaces) => {
   const placeSelected = encodeURIComponent(date)
-  const { body } = await request(app)
+  const response = await request(app)
     .get(
       `${apiPrefix}/candidat/places/?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}&dateTime=${placeSelected}`,
     )
     .set('Accept', 'application/json')
-    .expect(200)
+  expect(response).toBeResponseStatus(200)
+  const { body } = response
 
   expect(body).toBeDefined()
   expect(body).toHaveLength(nbPlaces)
   nbPlaces && expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
 }
 const expectedBooked = async (placeSelected, idCandidat) => {
-  const { body } = await request(app)
+  const response = await request(app)
     .patch(`${apiPrefix}/candidat/places`)
     .set('Accept', 'application/json')
     .send({
@@ -71,8 +87,9 @@ const expectedBooked = async (placeSelected, idCandidat) => {
       isAccompanied: true,
       hasDualControlCar: true,
     })
-    .expect(200)
 
+  expect(response).toBeResponseStatus(200)
+  const { body } = response
   expect(body).toBeDefined()
   expect(body).toHaveProperty('success', true)
 
@@ -110,7 +127,7 @@ const expectedBookedFailed = async (placeSelected, idCandidat) => {
   expect(placefounded).toBeNull()
 }
 
-describe('Get places available and display at 12h', () => {
+describe('Get places available and display at 12h.', () => {
   let places
   let placesCreatedBefore
   let idCandidat
@@ -140,7 +157,7 @@ describe('Get places available and display at 12h', () => {
   ${'75'}  | ${false}         |  ${false}
   ${'75'}  | ${true}          |  ${false}
   ${'75'}  | ${true}          |  ${true}
-  `('$homeDept is recently added: $isInRecentlyDept. Have penalty: $hasPenalty ', ({ homeDept, isInRecentlyDept, hasPenalty }) => {
+  `('Departement $homeDept is recently added: $isInRecentlyDept. Have penalty: $hasPenalty ', ({ homeDept, isInRecentlyDept, hasPenalty }) => {
     const isFirstStatus = isInRecentlyDept && homeDept === '75' && !hasPenalty
     describe.each`
       status       | statuses            | after12hExpected         | after12h20Expected       | after12h50Expected | selectedAfter12h         | selectedAfter12h20       | selectedAfter12h50 | canBookedAfter12h             | canBookedAfter12h20           | canBookedAfter12h50
@@ -189,44 +206,43 @@ describe('Get places available and display at 12h', () => {
         await expectedPlaces(npPlacesExpected)
       })
 
-      it.each([
-        [selectedAfter12h, 0],
-        [selectedAfter12h20, 20],
-        [selectedAfter12h50, 50],
-      ])(`Should 200 with  %i available place before 12h when it is after 12h%i by center name and geo-departement for status ${status}`, async (npPlacesExpected, minutes) => {
+      it.each`
+        npPlacesExpected        | minutes
+        ${selectedAfter12h}     | ${0}
+        ${selectedAfter12h20}   | ${20}
+        ${selectedAfter12h50}   | ${50}
+      `(`Should 200 with $npPlacesExpected available place before 12h when it is after 12h$minutes by center name and geo-departement for status ${status}`, async ({ npPlacesExpected, minutes }, done) => {
         setNowAfter12h(minutes)
-        await expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, npPlacesExpected)
+        expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, npPlacesExpected).finally(() => done())
       })
 
-      it('Should 200 with no available place before 12h when it is after 12h by center name and geo-departement', async () => {
+      it('Should 200 with no available place before 12h when it is after 12h by center name and geo-departement', (done) => {
         setNowBefore12h()
-        await expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, 0)
+        expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, 0).finally(() => done())
       })
 
-      it('should not booked place by candidat with info bookedAt when it is before 12h', async () => {
+      it('should not booked place by candidat with info bookedAt when it is before 12h', (done) => {
         setNowBefore12h()
-        await expectedBookedFailed(placesCreatedBefore, idCandidat)
+        expectedBookedFailed(placesCreatedBefore, idCandidat).finally(() => done())
       })
 
-      it.each([
-        [canBookedAfter12h, 0],
-        [canBookedAfter12h20, 20],
-        [canBookedAfter12h50, 50],
-      ])('should %s booked place by candidat with info bookedAt when it is after 12h%i', async (canBooked, minutes) => {
+      it.each`
+        canBooked               | minutes
+        ${canBookedAfter12h}    | ${0}
+        ${canBookedAfter12h20}  | ${20}
+        ${canBookedAfter12h50}  | ${50}
+      `('should $canBooked booked place by candidat with info bookedAt when it is after 12h$minutes', ({ canBooked, minutes }, done) => {
         setNowAfter12h(minutes)
         if (canBooked === 'not') {
-          await expectedBookedFailed(placesCreatedBefore, idCandidat)
+          expectedBookedFailed(placesCreatedBefore, idCandidat).finally(() => {
+            done()
+          })
         } else {
-          await expectedBooked(placesCreatedBefore, idCandidat)
+          expectedBooked(placesCreatedBefore, idCandidat).finally(() => {
+            done()
+          })
         }
       })
-    })
-  })
-
-  describe('For others', () => {
-    beforeAll(async () => {
-      const moduleCandidatStatuses = require('../common/candidat-status-const')
-      moduleCandidatStatuses.candidatStatuses = undefined
     })
   })
 })
