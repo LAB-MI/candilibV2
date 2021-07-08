@@ -178,10 +178,18 @@ describe('Planning tests without candidate', () => {
     // Goes to planning
     cy.contains('calendar_today').click()
     // Checks the center in the 93
+    cy.intercept({
+      method: 'GET',
+      url: '**/admin/inspecteurs?centreId*',
+    }).as('getPlaces')
+
     cy.get('.hexagon-wrapper').contains('93')
       .click()
+
+    cy.wait('@getPlaces')
     cy.get('.v-tab')
       .should('contain', 'BOBIGNY')
+
     // Checks if the url matches the date displayed
     cy.get('.hexagon-wrapper').contains('75')
       .click()
