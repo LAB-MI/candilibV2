@@ -533,16 +533,31 @@ Cypress.Commands.add('selectCaptchaSoltion', (email) => {
   })
 })
 
-Cypress.Commands.add('selectWrongCaptchaSoltionAndConfirm', (email) => {
+Cypress.Commands.add('selectCaptchaSoltionAndConfirm', (email, rigthAnswer = true) => {
+  cy.intercept({
+    method: 'GET',
+    url: Cypress.env('frontCandidat') + 'api/v2/candidat/verifyzone/image/0',
+  }).as('getImage')
+
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
+
+  cy.wait('@getImage')
+
   cy.getSolutionCaptcha({ email: email }).then(imageValueResponse => {
     cy.log('imageValueResponse', imageValueResponse.value)
 
-    cy.get('.t-image-index').not(`.t-${imageValueResponse.value}`).eq(0).click()
+    let domImgIndex = cy.get('.t-image-index')
+    if (!rigthAnswer) {
+      domImgIndex = domImgIndex.not(`.t-${imageValueResponse.value}`).eq(0)
+    } else {
+      domImgIndex = domImgIndex.get(`.t-${imageValueResponse.value}`)
+    }
+    domImgIndex.click()
 
     cy.get('button')
       .contains('Confirmer')
+      .should('not.be.disabled')
       .click()
   })
 })

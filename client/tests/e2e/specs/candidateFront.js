@@ -194,50 +194,16 @@ describe('Connected candidate front', () => {
         .should('contain', 'Confirmer')
 
       // Demander un captcha et echoué
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
-      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
-        .then(imageValueResponse => {
-          cy.log('imageValueResponse', imageValueResponse.value)
-
-          cy.get('.t-image-index').not(`.t-${imageValueResponse.value}`).eq(0).click()
-
-          // TODO: verifier que je ne suis pas reponse la bonne reponse
-        })
-
-      cy.get('button')
-        .contains('Confirmer')
-        .should('not.be.disabled')
-        .click()
-
+      cy.selectCaptchaSoltionAndConfirm(Cypress.env('emailCandidatFront'), false)
       cy.checkAndCloseSnackBar('Réponse invalide')
 
-      // TODO:
       // Demander un captcha et le validé
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
-      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
-        .then(imageValueResponse => {
-          cy.log('imageValueResponse', imageValueResponse.value)
-
-          cy.get(`.t-${imageValueResponse.value}`).click()
-        })
-
-      // TODO: 2 next line is the factorisation needed
-      // cy.selectWrongCaptchaSoltionAndConfirm({ email: Cypress.env('emailCandidatFront') })
-      // cy.selectCaptchaSoltion({ email: Cypress.env('emailCandidatFront') })
-
-      // verifier que l'image selectionner est focus
-      // verifier que le bouton confirmer est non active
-      // verifier que le bouton confirmer est active
-
-      cy.get('button')
-        .contains('Confirmer')
-        .click()
+      cy.selectCaptchaSoltionAndConfirm(Cypress.env('emailCandidatFront'))
       cy.get('.v-snack--active').should(
         'contain',
         'Votre réservation a bien été prise en compte',
       )
+
       cy.get('h2').should('contain', 'Ma réservation')
       cy.get('h3').should('contain', Cypress.env('centre'))
       cy.get('p').should('contain', 'à 08:30')
