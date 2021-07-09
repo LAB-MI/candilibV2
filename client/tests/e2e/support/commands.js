@@ -700,3 +700,12 @@ Cypress.Commands.add('selectDateGestionPlanning', (placeDate, centerName) => {
   cy.get('.t-center-tabs .v-tab').eq(0).should('contain', centerName).click()
   // datePiker manuel End
 })
+
+Cypress.Commands.add('connectByMagicLink', (magicLink, options) => {
+  cy.intercept({
+    method: 'GET',
+    url: '**/places',
+  }).as('getResa')
+  cy.visit(magicLink, options)
+  cy.wait('@getResa')
+})
