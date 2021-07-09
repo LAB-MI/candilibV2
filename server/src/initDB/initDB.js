@@ -9,6 +9,7 @@ import { techLogger } from '../util'
 import { sortStatus } from '../routes/admin/sort-candidat-status-business'
 import { removeDuplicateBooked } from './update-places'
 import npmVersion from '../../package.json'
+import { NB_DAYS_INACTIVITY } from '../config'
 
 const runJobs = async () => {
   await ModelPlace.syncIndexes()
@@ -32,36 +33,21 @@ export const initDB = async () => {
   const loggerInfo = {
     section: 'initDB',
     versionDB,
+    statusVersion: statusVersion?.message,
+    description: 'INIT',
+  }
+
+  const isAlwaysTrue = !statusVersion?.message
+  if (isAlwaysTrue || statusVersion.message !== npmVersion.version) {
+    await runJobs()
+
+    if (isAlwaysTrue || statusVersion.message < 'v2.11.9') await upsertStatusByType({ type: NB_DAYS_INACTIVITY, message: 90 })
+
+    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
+    loggerInfo.description = 'UPDATED'
   }
 
   techLogger.info(loggerInfo)
-
-  if (!statusVersion?.message) {
-
-    await runJobs()
-    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
-
-  } else {
-    if(statusVersion.message !== npmVersion.version) {
-    await runJobs()
-    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
-  }
-}
-
-  // }
-  // const loggerInfo = {
-  //   section: 'initDB',
-  //   versionDB,
-  // }
-
-  // techLogger.info(loggerInfo)
-  // if (statusVersion) {
-  //   versionDB = Number(statusVersion.message)
-  // }
-
-  // await ModelPlace.syncIndexes()
-  // await ModelCandidat.syncIndexes()
-  // await removeDuplicateBooked()
 }
 
 /**
