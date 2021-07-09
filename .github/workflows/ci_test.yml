@@ -47,7 +47,23 @@ jobs:
           name: screenshot test_e2e
           path: client/tests/e2e/screenshots
           retention-days: 1
-        
+      - name: deploy
+        if: startsWith(github.head_ref, 'qualif/')
+        env:
+          HEROKU_TOKEN: ${{secrets.HEROKU_TOKEN}}
+          HEROKU_EMAIL: ${{secrets.HEROKU_EMAIL}}
+          NETLIFY_AUTH_TOKEN: ${{secrets.NETLIFY_AUTH_TOKEN}}
+          HEROKU_APP_TEST: ${{secrets.HEROKU_APP_TEST}}
+          HEROKU_APP_QUALIF: ${{secrets.HEROKU_APP_QUALIF}}
+          HEROKU_APP_DEV: ${{secrets.HEROKU_APP_DEV}}
+          SLACK_CHANNEL: ${{secrets.SLACK_CHANNEL}}
+          SLACK_WEBHOOK: ${{secrets.SLACK_WEBHOOK}}
+        run: |
+          ci/deploy.sh qualif $TRAVIS_BRANCH
+      - name: end
+        run: |
+          make clean-images clean-dir
+          docker logout
 
           
           

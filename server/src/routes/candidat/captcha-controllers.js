@@ -4,6 +4,8 @@ import { appLogger } from '../../util'
 
 export const initImage = async (req, res) => {
   const { userId } = req
+  const clientId = req.headers['x-client-id']
+  const forwardedFor = req.headers['x-forwarded-for']
   const loggerInfo = {
     request_id: req.request_id,
     section: 'get-images-captcha',
@@ -11,7 +13,7 @@ export const initImage = async (req, res) => {
   }
 
   try {
-    const result = await getImages(userId)
+    const result = await getImages({ userId, forwardedFor, clientId })
 
     appLogger.info({ ...loggerInfo, description: 'Image captcha demandé', success: true })
 
@@ -40,6 +42,8 @@ export const initImage = async (req, res) => {
 
 export const initCaptcha = async (req, res) => {
   const { userId } = req
+  const clientId = req.headers['x-client-id']
+  const forwardedFor = req.headers['x-forwarded-for']
 
   const loggerInfo = {
     request_id: req.request_id,
@@ -48,7 +52,7 @@ export const initCaptcha = async (req, res) => {
   }
 
   try {
-    const newCaptchaResult = await startCaptcha(userId)
+    const newCaptchaResult = await startCaptcha({ userId, forwardedFor, clientId })
     const { success, statusCode, count, captcha } = newCaptchaResult
 
     appLogger.info({ ...loggerInfo, description: 'Captcha crée', success, statusCode, count })

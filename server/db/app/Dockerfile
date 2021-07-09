@@ -31,7 +31,8 @@ ARG APP_VERSION
 COPY app.js index.js ./
 COPY package.json package-lock.json ./
 # Install app dependencies
-RUN ssl="$(npm config get strict-ssl)" ; [ "x$ssl" = "xfalse" ] && export NODE_TLS_REJECT_UNAUTHORIZED=0 || true ; \
-    npm --no-git-tag-version version ${APP_VERSION} ; npm install
+# RUN ssl="$(npm config get strict-ssl)" ; [ "x$ssl" = "xfalse" ] && export NODE_TLS_REJECT_UNAUTHORIZED=0 || true ; \
+#     npm --no-git-tag-version version ${APP_VERSION} ; npm install
+RUN  npm --no-git-tag-version version ${APP_VERSION} ; npm install
 
 CMD ["npm", "start"]
