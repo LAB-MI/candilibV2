@@ -38,7 +38,8 @@ ARG no_proxy
 ENV CI=1
 COPY public ./public
 COPY src ./src
-COPY tests ./tests
+#COPY tests ./tests
+COPY tests/setup.js ./tests/setup.js
 COPY .env.candidat .env.admin ./
 COPY babel.config.js cypress.json jsconfig.json package-lock.json package.json vue.config.js ./
 # Install app dependencies
@@ -50,7 +51,7 @@ RUN if [ -n "$LINE_DELAY" ] && [ -f "public/config-candilib.json" ] ; then \
 # With internal npm repo (autosigned) NODE_TLS_REJECT_UNAUTHORIZED=0: to disable ssl verify  https.request (ex: cypress)
 #   in post-install steps in modules install
 RUN ssl="$(npm config get strict-ssl)" ; [ "x$ssl" = "xfalse" ] && export NODE_TLS_REJECT_UNAUTHORIZED=0 || true ; \
-    set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm ci --loglevel http
+    set -ex; npm --no-git-tag-version version ${APP_VERSION} ; npm ci --loglevel http --no-optional
 EXPOSE 8080
 
 CMD ["npm","run", "serve"]
@@ -78,7 +79,7 @@ COPY package.json package-lock.json ./
 COPY --from=build /app/dist ./dist
 # Install production dependencies and clean cache
 RUN npm --no-git-tag-version version ${APP_VERSION} && \
-    npm ci --only=production && \
+    npm ci --only=production --no-optional && \
     npm config set audit-level moderate && \
     npm audit --json --registry=https://registry.npmjs.org --production || ${NPM_AUDIT_DRY_RUN:-false} && \
     npm cache clean --force
