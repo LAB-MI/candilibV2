@@ -19,6 +19,7 @@ describe('Candidats group by status', () => {
       canAccessAt: null,
       departement: '95',
       token: true,
+      lastConnection: true,
     }, {
       nbCandidats: 5,
       isValidateAurige: true,
@@ -27,6 +28,7 @@ describe('Candidats group by status', () => {
       canAccessAt: null,
       departement: '93',
       token: true,
+      lastConnection: true,
     }, {
       nbCandidats: 3,
       isValidateAurige: true,
@@ -35,6 +37,7 @@ describe('Candidats group by status', () => {
       canAccessAt: null,
       departement: '92',
       token: true,
+      lastConnection: true,
     }, {
       nbCandidats: 3,
       isValidateAurige: true,
@@ -44,6 +47,7 @@ describe('Candidats group by status', () => {
       departement: '93',
       homeDepartement: '75',
       token: true,
+      lastConnection: true,
     },
     ]
 
@@ -58,7 +62,7 @@ describe('Candidats group by status', () => {
 
   // TODO: Ajouter fixer nombre de candidat par groupe
   it('Should have n candidats in countStatus', async () => {
-    await sortStatus()
+    await sortStatus({ nbDaysInactivityNeeded: 0 })
     for (let i = 0; i < 6; i++) {
       for (const departement of ['92', '93', '95', '75']) {
         const count = await candidatModel.countDocuments({ status: `${i}`, homeDepartement: `${departement}` })

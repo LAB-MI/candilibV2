@@ -46,6 +46,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   resetLink: `${apiPrefix}/auth/admin/reset-link`,
   departements: `${apiPrefix}/admin/departements`,
   sortStatusCandilib: `${apiPrefix}/admin/sort-status-candilib`,
+  getNbDaysInactivity: `${apiPrefix}/admin/number-of-days-inactivity`,
   statsLogs: `${apiPrefix}/admin/stats-logs`,
   statsCountStatuses: `${apiPrefix}/admin/stats-count-statuses`,
   statsCountLastConnections: `${apiPrefix}/admin/stats-count-last-connections`,

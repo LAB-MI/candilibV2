@@ -74,8 +74,15 @@ const apiAdmin = {
     return json
   },
 
-  async sortStatusCandilib () {
-    const json = await apiClient.get(apiPaths.admin.sortStatusCandilib, {
+  async sortStatusCandilib (nbDays) {
+    const json = await apiClient.get(`${apiPaths.admin.sortStatusCandilib}?nbDaysInactivityNeeded=${nbDays}`, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
+  async getNbDaysInactivity () {
+    const json = await apiClient.get(apiPaths.admin.getNbDaysInactivity, {
       headers: getHeadersForAdminJson(),
     })
     return json

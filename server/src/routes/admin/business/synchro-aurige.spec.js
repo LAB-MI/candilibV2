@@ -483,11 +483,10 @@ describe('synchro-aurige', () => {
   })
 
   describe('check candidats have valided their email', () => {
-    let candidatsToCreate
+    let candidatsCreated
     let aurigeFile
     beforeAll(async () => {
-      candidatsToCreate = candidats.map(candidat => createCandidat(candidat))
-      const candidatsCreated = await Promise.all(candidatsToCreate)
+      candidatsCreated = await Promise.all(candidats.map(createCandidat))
 
       candidatsCreated[0].isValidatedEmail = true
       await candidatsCreated[0].save()
@@ -513,7 +512,7 @@ describe('synchro-aurige', () => {
 
     afterAll(async () => {
       await Promise.all(
-        candidatsToCreate.map(candidat =>
+        candidatsCreated.map(candidat =>
           candidatModel.findByIdAndDelete(candidat._id),
         ),
       )

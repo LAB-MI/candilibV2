@@ -250,4 +250,11 @@ if (config.smtpService) {
   smtpOptions.service = config.smtpService
 }
 
+export const NbDaysInactivityDefault = 60
+
+// Status types model
+export const AURIGE_STATUS = 'AURIGE_STATUS'
+export const LAST_INFO_BORNE_STATUS = 'LAST_INFO_BORNE_STATUS'
+export const NB_DAYS_INACTIVITY = 'NB_DAYS_INACTIVITY'
+
 export default config

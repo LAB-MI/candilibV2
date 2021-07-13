@@ -61,7 +61,7 @@ import {
   verifyDelegueLevel,
 } from './middlewares'
 import config from '../../config'
-import { sortStatusCandilib } from './sort-candidat-status-controllers'
+import { getNbDaysInactivity, sortStatusCandilib } from './sort-candidat-status-controllers'
 import { logsByFilters } from './logs-candidat-controllers'
 
 const router = express.Router()
@@ -376,6 +376,13 @@ router.get(
   '/sort-status-candilib',
   verifyUserLevel(config.userStatusLevels.admin),
   sortStatusCandilib,
+)
+
+// TODO: SWAGGER DOC
+router.get(
+  '/number-of-days-inactivity',
+  verifyUserLevel(config.userStatusLevels.admin),
+  getNbDaysInactivity,
 )
 /**
  * @swagger

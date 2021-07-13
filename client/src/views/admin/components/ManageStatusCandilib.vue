@@ -12,6 +12,7 @@
             dark
             v-bind="attrs"
             v-on="on"
+            @click="nbDays=nbDaysInactive"
           >
             Mettre à jour les statuts candilib
           </v-btn>
@@ -22,6 +23,17 @@
             {{ title }}
           </v-card-title>
           <v-card-text class="text-center text-2xl pa-16">
+            <p>
+              <strong class="label">Nombre jours d'inactivité: </strong>
+              <!-- <span
+                class="value"
+              >
+                {{ nbDaysInactive }}
+              </span> -->
+              <v-text-field
+                v-model="nbDays"
+              />
+            </p>
             <span>
               Veuillez confirmer la mise à jour
             </span>
@@ -50,7 +62,7 @@
 <script>
 import { BigLoadingIndicator } from '@/components'
 import { mapState } from 'vuex'
-import { FETCH_CANDILIB_STATUS_REQUEST } from '@/store'
+import { FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST, FETCH_CANDILIB_STATUS_REQUEST } from '@/store'
 
 export default {
   components: {
@@ -61,19 +73,30 @@ export default {
     return {
       title: 'Mise à jour des statuts candilib',
       dialog: false,
+      nbDays: undefined,
     }
   },
 
   computed: {
     ...mapState({
       isLoading: state => state.aurige.isFetchingStatusCandilib,
+      nbDaysInactive: state => state.aurige.nbDaysInactive,
     }),
+  },
+  mounted () {
+    this.getNbDaysInactive()
   },
 
   methods: {
     triggerStatusCandilib () {
-      this.$store.dispatch(FETCH_CANDILIB_STATUS_REQUEST)
+      const hasModified = this.nbDaysInactive !== this.nbDays
+      console.log({ nbDaysInactive: this.nbDaysInactive, nbDays: this.nbDays, hasModified })
+      this.$store.dispatch(FETCH_CANDILIB_STATUS_REQUEST, hasModified ? this.nbDays : 0)
       this.dialog = false
+      if (hasModified) this.getNbDaysInactive()
+    },
+    getNbDaysInactive () {
+      this.$store.dispatch(FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST)
     },
   },
 }

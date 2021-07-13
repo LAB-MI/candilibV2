@@ -117,7 +117,7 @@ describe('Connected candidate front', () => {
     })
 
     it('Should display FAQ', () => {
-      cy.visit(magicLink).wait(1000)
+      cy.connectByMagicLink(magicLink)
       cy.get('i').should('contain', 'help_outline')
       cy.contains('help_outline').click()
       cy.url().should('contain', 'faq')
@@ -131,7 +131,7 @@ describe('Connected candidate front', () => {
     })
 
     it('Should display Mentions légales', () => {
-      cy.visit(magicLink).wait(1000)
+      cy.connectByMagicLink(magicLink)
       cy.get('i').should('contain', 'account_balance')
       cy.contains('account_balance').click()
       cy.url().should('contain', 'mentions-legales')
@@ -155,8 +155,7 @@ describe('Connected candidate front', () => {
     })
 
     it('Should book a place at 7th days', () => {
-      cy.visit(magicLink)
-      cy.wait(1000)
+      cy.connectByMagicLink(magicLink)
 
       cy.checkAndSelectDepartement()
       cy.wait(100)
@@ -194,50 +193,16 @@ describe('Connected candidate front', () => {
         .should('contain', 'Confirmer')
 
       // Demander un captcha et echoué
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
-      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
-        .then(imageValueResponse => {
-          cy.log('imageValueResponse', imageValueResponse.value)
-
-          cy.get('.t-image-index').not(`.t-${imageValueResponse.value}`).eq(0).click()
-
-          // TODO: verifier que je ne suis pas reponse la bonne reponse
-        })
-
-      cy.get('button')
-        .contains('Confirmer')
-        .should('not.be.disabled')
-        .click()
-
+      cy.selectCaptchaSoltionAndConfirm(Cypress.env('emailCandidatFront'), false)
       cy.checkAndCloseSnackBar('Réponse invalide')
 
-      // TODO:
       // Demander un captcha et le validé
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
-      cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').click()
-      cy.getSolutionCaptcha({ email: Cypress.env('emailCandidatFront') })
-        .then(imageValueResponse => {
-          cy.log('imageValueResponse', imageValueResponse.value)
-
-          cy.get(`.t-${imageValueResponse.value}`).click()
-        })
-
-      // TODO: 2 next line is the factorisation needed
-      // cy.selectWrongCaptchaSoltionAndConfirm({ email: Cypress.env('emailCandidatFront') })
-      // cy.selectCaptchaSoltion({ email: Cypress.env('emailCandidatFront') })
-
-      // verifier que l'image selectionner est focus
-      // verifier que le bouton confirmer est non active
-      // verifier que le bouton confirmer est active
-
-      cy.get('button')
-        .contains('Confirmer')
-        .click()
+      cy.selectCaptchaSoltionAndConfirm(Cypress.env('emailCandidatFront'))
       cy.get('.v-snack--active').should(
         'contain',
         'Votre réservation a bien été prise en compte',
       )
+
       cy.get('h2').should('contain', 'Ma réservation')
       cy.get('h3').should('contain', Cypress.env('centre'))
       cy.get('p').should('contain', 'à 08:30')
@@ -264,14 +229,14 @@ describe('Connected candidate front', () => {
     })
 
     it('Should not display the avialable places after to book', () => {
-      cy.visit(magicLink)
+      cy.connectByMagicLink(magicLink)
       cy.visit(`${Cypress.env('frontCandidat')}candidat/${Cypress.env('geoDepartement')}/${Cypress.env('centre')}/undefinedMonth/undefinedDay/selection/selection-place`)
       cy.checkAndCloseSnackBar('Vous avez un réservation en cours. Vous devrez annuler votre réservation avant de réserver une autre.')
       cy.get('h2').should('contain', 'Ma réservation')
     })
 
     it('Should not display confirmation page after to book', () => {
-      cy.visit(magicLink)
+      cy.connectByMagicLink(magicLink)
       const daySelected = nowIn1Week.toLocaleString({
         weekday: 'long',
         month: 'long',
@@ -285,8 +250,7 @@ describe('Connected candidate front', () => {
     })
 
     it.skip('Should book a place', () => {
-      cy.visit(magicLink)
-      cy.wait(1000)
+      cy.connectByMagicLink(magicLink)
 
       cy.checkAndSelectDepartement()
       cy.wait(100)
@@ -349,7 +313,7 @@ describe('Connected candidate front', () => {
     })
 
     it.skip('Should change the booked place', () => {
-      cy.visit(magicLink)
+      cy.connectByMagicLink(magicLink)
       cy.get('.t-candidat-home').click()
       cy.get('body').should('contain', 'Modifier ma réservation')
       cy.contains('Modifier ma réservation').click()
@@ -407,7 +371,7 @@ describe('Connected candidate front', () => {
     })
 
     it('Should resend convocation', () => {
-      cy.visit(magicLink)
+      cy.connectByMagicLink(magicLink)
       cy.get('body').should('contain', 'Renvoyer ma convocation')
       cy.contains('Renvoyer ma convocation').click()
       cy.get('.v-snack--active').should(
@@ -430,7 +394,7 @@ describe('Connected candidate front', () => {
     })
 
     it('Should resend confirmation mail', () => {
-      cy.visit(magicLink)
+      cy.connectByMagicLink(magicLink)
       cy.get('body').should('contain', 'Renvoyer ma convocation').click()
       cy.contains('Renvoyer ma convocation').click()
       cy.get('.v-snack--active').should(
@@ -453,7 +417,7 @@ describe('Connected candidate front', () => {
     })
 
     it('Should cancel booked place', () => {
-      cy.visit(magicLink)
+      cy.connectByMagicLink(magicLink)
       cy.get('body').should('contain', 'Annuler ma réservation')
       cy.contains('Annuler ma réservation').click()
       cy.get('button')
@@ -586,7 +550,7 @@ describe('Connected candidate front', () => {
       cy.addCandidatToPlace(nowIn1WeekAnd1DaysBefore, Cypress.env('candidatFront'))
       cy.adminDisconnection()
 
-      cy.visit(magicLink)
+      cy.connectByMagicLink(magicLink)
       cy.get('body').should('contain', 'Annuler ma réservation')
       cy.contains('Annuler ma réservation').click()
       // Vérifie si le message d'avertissement pour le cas de pénalité est présent
@@ -625,11 +589,12 @@ describe('Connected candidate front', () => {
     })
 
     it('Should disconnect', () => {
-      cy.visit(magicLink, {
+      cy.connectByMagicLink(magicLink, {
         onBeforeLoad: (win) => {
           win.localStorage.setItem('IsEvaluationDone', true)
         },
       })
+
       cy.url().should('contain', 'home')
       cy.get('.beta').should('be.visible')
       cy.get('.t-disconnect')
@@ -641,8 +606,7 @@ describe('Connected candidate front', () => {
     it('Should have alert info 75 for 75', () => {
       cy.addCandidat(candidatsByDepartments[0])
       cy.getNewMagicLinkCandidat('candidat_front_75@candi.lib').then(mLink => {
-        cy.visit(mLink)
-        cy.wait(100)
+        cy.connectByMagicLink(magicLink)
         cy.get('h2').should('contain', 'Choix du département')
         cy.get('body').should('contain', 'Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants')
       })
@@ -651,8 +615,7 @@ describe('Connected candidate front', () => {
     it('Should have not alert info 75 for 93', () => {
       cy.addCandidat(candidatsByDepartments[1])
       cy.getNewMagicLinkCandidat('candidat_front_93@candi.lib').then(mLink => {
-        cy.visit(mLink)
-        cy.wait(100)
+        cy.connectByMagicLink(magicLink)
         cy.get('h2').should('contain', 'Choix du département')
         cy.get('body').should('not.contain', 'Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants')
       })

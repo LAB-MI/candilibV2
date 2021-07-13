@@ -32,8 +32,8 @@ const saveCountByStatus = async (countByStatus) => {
  * Sauvegader le resultat pour les calcul des statistiques
  * @async
  */
-export const sortStatus = async () => {
-  const result = await sortCandilibStatus()
+export const sortStatus = async ({ nbDaysInactivityNeeded }) => {
+  const result = await sortCandilibStatus({ nbDaysInactivityNeeded })
   const { countByStatus, updatedCandidat, statusBorne } = result
   await upsertLastInfosBormeStatus(JSON.stringify(statusBorne))
   await saveCountByStatus(countByStatus)
