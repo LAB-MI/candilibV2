@@ -1,4 +1,4 @@
-import { getNbDaysInactivityFronDbOrDefault } from '../../models/candidat'
+import { getNbDaysInactivityFromDbOrDefault } from '../../models/candidat'
 import { appLogger } from '../../util'
 import { sortStatus } from './sort-candidat-status-business'
 
@@ -14,6 +14,13 @@ export const sortStatusCandilib = async (req, res) => {
 
   try {
     const message = 'Mise à jour des status éffectués'
+
+    if (!nbDaysInactivityNeeded || nbDaysInactivityNeeded < 60) {
+      const error = new Error('Valeur non autorisé')
+      error.status = 403
+      throw error
+    }
+
     const summary = await sortStatus({ nbDaysInactivityNeeded })
     appLogger.info({
       ...loggerInfo,
@@ -34,7 +41,7 @@ export const sortStatusCandilib = async (req, res) => {
       error,
     })
 
-    res.status(500).send({
+    res.status(error.status || 500).send({
       success: false,
       message: error.message,
     })
@@ -48,7 +55,7 @@ export const getNbDaysInactivity = async (req, res) => {
     section: 'admin-getNbDaysInactivity',
   }
   try {
-    const NbDaysInactivity = await getNbDaysInactivityFronDbOrDefault()
+    const NbDaysInactivity = await getNbDaysInactivityFromDbOrDefault()
     appLogger.info({
       ...loggerInfo,
       NbDaysInactivity,
