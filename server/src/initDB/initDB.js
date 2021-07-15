@@ -2,17 +2,24 @@
  * Fonctionnalités pour initaliser la base de données
  * @module
  */
-import { findStatusByType } from '../models/status'
+import { findStatusByType, upsertStatusByType } from '../models/status'
 import ModelPlace from '../models/place/place.model'
 import ModelCandidat from '../models/candidat/candidat.model'
 import { techLogger } from '../util'
 import { sortStatus } from '../routes/admin/sort-candidat-status-business'
 import { removeDuplicateBooked } from './update-places'
+import npmVersion from '../../package.json'
+import { NB_DAYS_INACTIVITY } from '../config'
 
+const runJobs = async () => {
+  await ModelPlace.syncIndexes()
+  await ModelCandidat.syncIndexes()
+  await removeDuplicateBooked()
+}
 /**
  * Version de la base de données
  */
-let versionDB = 0
+// let versionDB = 0
 
 /**
  * Pour initialisés la base de données
@@ -20,20 +27,27 @@ let versionDB = 0
  * @function
  */
 export const initDB = async () => {
+  const versionDB = npmVersion.version
   const statusVersion = await findStatusByType({ type: 'DB_VERSION' })
+
   const loggerInfo = {
     section: 'initDB',
     versionDB,
+    statusVersion: statusVersion?.message,
+    description: 'INIT',
+  }
+
+  const isAlwaysTrue = !statusVersion?.message
+  if (isAlwaysTrue || statusVersion.message !== npmVersion.version) {
+    await runJobs()
+
+    if (isAlwaysTrue || statusVersion.message < 'v2.11.9') await upsertStatusByType({ type: NB_DAYS_INACTIVITY, message: 90 })
+
+    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
+    loggerInfo.description = 'UPDATED'
   }
 
   techLogger.info(loggerInfo)
-  if (statusVersion) {
-    versionDB = Number(statusVersion.message)
-  }
-
-  await ModelPlace.syncIndexes()
-  await ModelCandidat.syncIndexes()
-  await removeDuplicateBooked()
 }
 
 /**
@@ -43,7 +57,7 @@ export const initDB = async () => {
  */
 export const initStatus = async () => {
   // TODO: MOOVE NEXT `sortStatus` FUNCTION IN COMMON DIRECTORY
-  const nbStatusUpdated = await sortStatus()
+  const nbStatusUpdated = await sortStatus({ nbDaysInactivityNeeded: 0 })
   const loggerInfo = {
     section: 'initStatus',
     nbStatusUpdated,
