@@ -145,7 +145,7 @@ const groupByAndIds = (status) => (acc, curCandidat) => {
 */
 const getDiffNowInMonthFromJsDate = (date) => getFrenchFormattedDateTime(date).date
 
-export const getNbDaysInactivityFronDbOrDefault = async () => {
+export const getNbDaysInactivityFromDbOrDefault = async () => {
   const nbDaysInactivity = await findStatusByType({ type: NB_DAYS_INACTIVITY })
   const neededNbDaysInactivity = Number(nbDaysInactivity?.message)
   if (!neededNbDaysInactivity) {
@@ -158,7 +158,7 @@ export const getOrUpsertNbDaysInactivity = async ({ nbDaysInactivityNeeded }) =>
   if (nbDaysInactivityNeeded) {
     await upsertStatusByType({ type: NB_DAYS_INACTIVITY, message: nbDaysInactivityNeeded })
   }
-  return await getNbDaysInactivityFronDbOrDefault()
+  return await getNbDaysInactivityFromDbOrDefault()
 }
 
 // TODO: JSDOC
