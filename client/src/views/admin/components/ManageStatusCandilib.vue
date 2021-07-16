@@ -7,15 +7,25 @@
         max-width="500"
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="primary"
-            dark
-            v-bind="attrs"
-            v-on="on"
-            @click="nbDays=nbDaysInactive"
-          >
-            Mettre à jour les statuts candilib
-          </v-btn>
+          <div>
+            <p>
+              <strong class="label">Nombre jours d'inactivité: </strong>
+              <span
+                class="font-bold"
+              >
+                {{ nbDaysInactive }}
+              </span>
+            </p>
+            <v-btn
+              color="primary"
+              dark
+              v-bind="attrs"
+              v-on="on"
+              @click="initNbDays"
+            >
+              Mettre à jour les statuts candilib
+            </v-btn>
+          </div>
         </template>
         <v-card>
           <big-loading-indicator :is-loading="isLoading" />
@@ -23,6 +33,10 @@
             {{ title }}
           </v-card-title>
           <v-card-text class="text-center text-2xl pa-16">
+            <p class="mb-10">
+              <v-icon>warning</v-icon>
+              <span> Le nombre doit être supérieur ou égale 60 jours</span>
+            </p>
             <p>
               <strong class="label">Nombre jours d'inactivité: </strong>
               <!-- <span
@@ -32,6 +46,7 @@
               </span> -->
               <v-text-field
                 v-model="nbDays"
+                type="number"
               />
             </p>
             <span>
@@ -83,20 +98,21 @@ export default {
       nbDaysInactive: state => state.aurige.nbDaysInactive,
     }),
   },
-  mounted () {
-    this.getNbDaysInactive()
+  async mounted () {
+    await this.getNbDaysInactive()
   },
 
   methods: {
-    triggerStatusCandilib () {
-      const hasModified = this.nbDaysInactive !== this.nbDays
-      console.log({ nbDaysInactive: this.nbDaysInactive, nbDays: this.nbDays, hasModified })
-      this.$store.dispatch(FETCH_CANDILIB_STATUS_REQUEST, hasModified ? this.nbDays : 0)
+    async triggerStatusCandilib () {
+      await this.$store.dispatch(FETCH_CANDILIB_STATUS_REQUEST, this.nbDays)
       this.dialog = false
-      if (hasModified) this.getNbDaysInactive()
+      await this.getNbDaysInactive()
     },
-    getNbDaysInactive () {
-      this.$store.dispatch(FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST)
+    async getNbDaysInactive () {
+      await this.$store.dispatch(FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST)
+    },
+    initNbDays () {
+      this.nbDays = this.nbDaysInactive
     },
   },
 }
