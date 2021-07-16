@@ -15,7 +15,7 @@ export const sortStatusCandilib = async (req, res) => {
   try {
     const message = 'Mise à jour des status éffectués'
 
-    if (!nbDaysInactivityNeeded || nbDaysInactivityNeeded < 60) {
+    if (!nbDaysInactivityNeeded || nbDaysInactivityNeeded < 60 || nbDaysInactivityNeeded > (4 * 360)) {
       const error = new Error('Valeur non autorisé')
       error.status = 403
       throw error
