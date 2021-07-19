@@ -105,12 +105,14 @@ export const postMagicLink = async (req, res) => {
  * @param {import('express').Response} res
  */
 export const checkCandidat = async (req, res) => {
+  const isMagicLink = req.get('x-magic-link')
   const { userId: candidatId } = req
   const loggerInfo = {
     request_id: req.request_id,
     section: 'candidat-auth',
     action: 'CHECK-EXIST',
     candidatId,
+    isMagicLink,
   }
 
   // appLogger.debug({
@@ -130,7 +132,7 @@ export const checkCandidat = async (req, res) => {
       })
     }
 
-    if (!isExisting.lastConnection || !getFrenchLuxonFromJSDate(isExisting.lastConnection).hasSame(getFrenchLuxon(), 'day')) {
+    if (isMagicLink && (!isExisting.lastConnection || !getFrenchLuxonFromJSDate(isExisting.lastConnection).hasSame(getFrenchLuxon(), 'day'))) {
       setCandidatLastConnection(candidatId).then().catch((error) => {
         techLogger.error({
           ...loggerInfo,
