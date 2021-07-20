@@ -52,7 +52,7 @@ describe('authentification of candidat', () => {
     require('../../util/logger').setWithConsole(false)
 
     // When
-    const { body, status } = await request(app).get('/')
+    const { body, status } = await request(app).get('/').set('x-magic-link', true)
 
     // Then
     expect(status).toBe(200)
