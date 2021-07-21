@@ -56,7 +56,7 @@ http {
 
     limit_req_zone $limit_verifyzone zone=api_verifyzone:2m rate=6r/s;
     limit_req_zone $limit_user_id zone=api_user_id:5m rate=<API_USER_ID_LIMIT_RATE>;
-    
+
     limit_req_zone $limit_get zone=api_get:2m rate=<API_USER_GET_LIMIT_RATE>;
     limit_req_zone $limit_post zone=api_post:2m rate=<API_USER_POST_LIMIT_RATE>;
     limit_req_zone $limit_patch zone=api_patch:2m rate=<API_USER_PATCH_LIMIT_RATE>;
@@ -76,7 +76,7 @@ http {
     add_header Feature-Policy "geolocation none;midi none;notifications none;push none;sync-xhr none;microphone none;camera none;magnetometer none;gyroscope self;speaker self;vibrate none;fullscreen self;payment none;";
 
     # log text format
-    log_format main_text '$http_x_forwarded_for - $remote_addr - $remote_user [$time_local] '
+    log_format main_text '$http_x_forwarded_for - $remote_addr - $remote_port - $remote_user [$time_local] '
       '"$request" $status $body_bytes_sent '
       '"$http_referer" "$http_user_agent" '
       '$request_time $upstream_response_time $pipe';
