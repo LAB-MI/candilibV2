@@ -1,12 +1,18 @@
 import { updateSession } from '../../../models/session-candidat'
 import { getFrenchLuxon, appLogger } from '../../../util'
 import { verifyAndGetSessionByCandidatId } from '../captcha-business'
-import { captchaTools } from '../util/captcha-tools'
+import { captchaTools, getHashCaptcha } from '../util/captcha-tools'
 
 export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
   const clientId = req.headers['x-client-id']
   const forwardedFor = req.headers['x-forwarded-for']
+
+  const {
+    nomCentre,
+    geoDepartement,
+    date,
+  } = req.body
 
   const loggerInfo = {
     request_id: req.request_id,
@@ -19,7 +25,16 @@ export const trySubmissionCaptcha = async (req, res, next) => {
   try {
     const message = 'Captcha Expiré'
 
-    const currentSession = await verifyAndGetSessionByCandidatId({ userId, forwardedFor, clientId }, message)
+    const currentSession = await verifyAndGetSessionByCandidatId({
+      userId,
+      forwardedFor,
+      clientId,
+      hashCaptcha: getHashCaptcha({
+        geoDepartement,
+        nomCentre,
+        placeDate: date,
+      }),
+    }, message)
 
     const {
       expires,

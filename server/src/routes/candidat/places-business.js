@@ -46,6 +46,7 @@ import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
 import { getDateVisibleForPlaces, getDateDisplayPlaces, getDateVisibleBefore, getVisibilityHourString } from './util/date-to-display'
 import { getCandidatStatuses } from '../common/candidat-status'
+import { getSessionByCandidatId } from '../../models/session-candidat'
 
 /**
  * Renvoie tous les créneaux d'un centre

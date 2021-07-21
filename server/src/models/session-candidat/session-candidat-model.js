@@ -20,6 +20,11 @@ const SessionCandidatSchema = new Schema(
       require: true,
     },
 
+    hashCaptcha: {
+      type: String,
+      require: true,
+    },
+
     session: {
       type: Object,
       default: {},
@@ -53,12 +58,17 @@ const SessionCandidatSchema = new Schema(
 
 // TODO: ADD INDEX TO EXPIRES AND CAPTCHAEXPIREAT KEY
 SessionCandidatSchema.index({ userId: 1 }, { unique: true })
+SessionCandidatSchema.index({ forwardedFor: 1, clientId: 1 }, { unique: true })
 SessionCandidatSchema.index({ expires: 1 }, { expireAfterSeconds: 0 })
 const model = mongoose.model('SessionCandidat', SessionCandidatSchema)
 
 /**
  * @typedef {Object} SessionCandidatModel
  * @property {ObjectId} userId
+ * @property {String} forwardedFor
+ * @property {String} hashCaptcha
+ * @property {String} clientId
+ * @property {String} placeDate
  * @property {Object} session
  * @property {Number} count
  * @property {date} captchaExpireAt

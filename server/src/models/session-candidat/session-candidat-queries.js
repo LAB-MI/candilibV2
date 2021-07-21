@@ -21,8 +21,9 @@ export const createSession = async (sessionInfo) => {
 }
 
 export const upsertSession = async (sessionInfo) => {
+  const neededKey = checkKeyNeedUpdate(sessionInfo)
   const result = await SessionCandidatModel
-    .findOneAndUpdate({ userId: sessionInfo.userId }, sessionInfo, { upsert: true, new: true })
+    .findOneAndUpdate({ userId: sessionInfo.userId }, neededKey, { upsert: true, new: true })
   return result
 }
 
@@ -35,6 +36,7 @@ const checkKeyNeedUpdate = (sessionInfo) => {
     captchaExpireAt,
     forwardedFor,
     clientId,
+    hashCaptcha,
   } = sessionInfo
 
   const neededKey = {}
@@ -64,6 +66,10 @@ const checkKeyNeedUpdate = (sessionInfo) => {
     neededKey.clientId = clientId
   }
 
+  if (hashCaptcha) {
+    neededKey.hashCaptcha = hashCaptcha
+  }
+
   return neededKey
 }
 
@@ -82,8 +88,9 @@ export const updateSessionId = async (sessionInfo) => {
   return result
 }
 
-export const getSessionByCandidatIdAndInfos = async ({ userId, forwardedFor, clientId }) => {
-  const result = await SessionCandidatModel.findOne({ userId, forwardedFor, clientId }).lean()
+export const getSessionByCandidatIdAndInfos = async ({ userId, forwardedFor, clientId, hashCaptcha }) => {
+  const filters = hashCaptcha ? { userId, forwardedFor, clientId, hashCaptcha } : { userId, forwardedFor, clientId }
+  const result = await SessionCandidatModel.findOne(filters).lean()
   return result
 }
 

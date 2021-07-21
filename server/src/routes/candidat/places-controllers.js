@@ -29,6 +29,8 @@ import {
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
 import { getStatusWithRecentlyDept } from '../common/candidat-status'
+import { getHashCaptcha } from './util/captcha-tools'
+import { upsertSession } from '../../models/session-candidat'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -82,6 +84,9 @@ export const ErrorMsgArgEmpty =
  * @param {import('express').Response} res
  */
 export async function getPlacesByCentre (req, res) {
+  const clientId = req.headers['x-client-id']
+  const forwardedFor = req.headers['x-forwarded-for']
+
   const centreId = req.params.id
   const candidatId = req.userId
   const candidatStatus = req.candidatStatus
@@ -141,6 +146,15 @@ export async function getPlacesByCentre (req, res) {
         dateTime,
         getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
       )
+      // TODO: set place info in session
+
+      await upsertSession({
+        userId: candidatId,
+        clientId,
+        forwardedFor,
+        hashCaptcha: getHashCaptcha({ geoDepartement, nomCentre, placeDate: dateTime }),
+        session: {},
+      })
     } else {
       dates = await getPlacesByDepartementAndCentre(
         nomCentre,
