@@ -172,7 +172,7 @@ export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
   const candidats = await getSortableCandilibStatusAndSortCreatedAt(now, dateLastConnexion)
 
   const candidatsCount = candidats.length
-  const groupeSize = Math.floor(candidatsCount / countStatus)
+  const groupeSize = candidatsCount > countStatus ? Math.floor(candidatsCount / countStatus) : 1
 
   const updatedCandidat = []
   const countByStatus = {}
