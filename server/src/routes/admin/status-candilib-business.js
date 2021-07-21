@@ -1,7 +1,5 @@
+import { AURIGE_STATUS, LAST_INFO_BORNE_STATUS } from '../../config'
 import { findStatusByType, upsertStatusByType } from '../../models/status'
-
-const AURIGE_STATUS = 'AURIGE_STATUS'
-const LAST_INFO_BORNE_STATUS = 'LAST_INFO_BORNE_STATUS'
 
 export const getLastSyncAurigeDateTime = () => {
   return findStatusByType({ type: AURIGE_STATUS })

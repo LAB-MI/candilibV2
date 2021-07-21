@@ -7,14 +7,25 @@
         max-width="500"
       >
         <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            color="primary"
-            dark
-            v-bind="attrs"
-            v-on="on"
-          >
-            Mettre à jour les statuts candilib
-          </v-btn>
+          <div>
+            <p>
+              <strong class="label">Nombre jours d'inactivité: </strong>
+              <span
+                class="font-bold"
+              >
+                {{ nbDaysInactive }}
+              </span>
+            </p>
+            <v-btn
+              color="primary"
+              dark
+              v-bind="attrs"
+              v-on="on"
+              @click="initNbDays"
+            >
+              Mettre à jour les statuts candilib
+            </v-btn>
+          </div>
         </template>
         <v-card>
           <big-loading-indicator :is-loading="isLoading" />
@@ -22,6 +33,22 @@
             {{ title }}
           </v-card-title>
           <v-card-text class="text-center text-2xl pa-16">
+            <p class="mb-10">
+              <v-icon>warning</v-icon>
+              <span> Le nombre doit être supérieur ou égale 60 jours</span>
+            </p>
+            <p>
+              <strong class="label">Nombre jours d'inactivité: </strong>
+              <!-- <span
+                class="value"
+              >
+                {{ nbDaysInactive }}
+              </span> -->
+              <v-text-field
+                v-model="nbDays"
+                type="number"
+              />
+            </p>
             <span>
               Veuillez confirmer la mise à jour
             </span>
@@ -50,7 +77,7 @@
 <script>
 import { BigLoadingIndicator } from '@/components'
 import { mapState } from 'vuex'
-import { FETCH_CANDILIB_STATUS_REQUEST } from '@/store'
+import { FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST, FETCH_CANDILIB_STATUS_REQUEST } from '@/store'
 
 export default {
   components: {
@@ -61,19 +88,31 @@ export default {
     return {
       title: 'Mise à jour des statuts candilib',
       dialog: false,
+      nbDays: undefined,
     }
   },
 
   computed: {
     ...mapState({
       isLoading: state => state.aurige.isFetchingStatusCandilib,
+      nbDaysInactive: state => state.aurige.nbDaysInactive,
     }),
+  },
+  async mounted () {
+    await this.getNbDaysInactive()
   },
 
   methods: {
-    triggerStatusCandilib () {
-      this.$store.dispatch(FETCH_CANDILIB_STATUS_REQUEST)
+    async triggerStatusCandilib () {
+      await this.$store.dispatch(FETCH_CANDILIB_STATUS_REQUEST, this.nbDays)
       this.dialog = false
+      await this.getNbDaysInactive()
+    },
+    async getNbDaysInactive () {
+      await this.$store.dispatch(FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST)
+    },
+    initNbDays () {
+      this.nbDays = this.nbDaysInactive
     },
   },
 }

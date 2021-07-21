@@ -131,7 +131,7 @@ export default {
     },
 
     setEmailToLowerCase () {
-      this.email = this.email.toLowerCase().trim()
+      this.email = this.email?.toLowerCase().trim()
     },
 
     async sendMagicLink () {
