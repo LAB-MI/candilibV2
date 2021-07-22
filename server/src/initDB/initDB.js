@@ -50,18 +50,6 @@ export const initDB = async () => {
   }
 
   techLogger.info(loggerInfo)
-
-  if (versionDB[1]) {
-    // CONCERN ONLY QUALIF
-    await runJobs()
-    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB[0] })
-  } else {
-    // CONCERN ONLY PROD
-    if (!statusVersion?.message || (versionDB[0] > statusVersion.message)) {
-      await runJobs()
-      await upsertStatusByType({ type: 'DB_VERSION', message: versionDB[0] })
-    }
-  }
 }
 
 /**
