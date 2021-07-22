@@ -14,3 +14,5 @@ export const codePostal = /([0-9AB]{2})[0-9]{3}/
 export const departement = /[0-9AB]{2}/
 
 export const firstNameAndLastName = /;/
+
+export const versionSepparator = /.-[0-9]+-g/g

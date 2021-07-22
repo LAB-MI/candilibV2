@@ -23,6 +23,10 @@ const DEFAULT_PUBLIC_URL = isProduction
 
 const DEFAULT_ADMIN_URL = 'http://localhost:8080/candilib'
 
+export const DEFAULT_SCHEDULERS_URL = 'http://127.0.0.1'
+
+export const DEFAULT_PORT_SCHEDULERS = 8026
+
 /**
  * Dictionnaire des différents types de statuts des utilisateurs de l'application
  * @constant {Object}
