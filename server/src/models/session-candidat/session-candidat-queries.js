@@ -23,7 +23,7 @@ export const createSession = async (sessionInfo) => {
 export const upsertSession = async (sessionInfo) => {
   const neededKey = checkKeyNeedUpdate(sessionInfo)
   const result = await SessionCandidatModel
-    .findOneAndUpdate({ userId: sessionInfo.userId }, neededKey, { upsert: true, new: true })
+    .findOneAndUpdate({ userId: sessionInfo.userId }, { $set: neededKey }, { upsert: true, new: true })
   return result
 }
 
@@ -41,7 +41,10 @@ const checkKeyNeedUpdate = (sessionInfo) => {
 
   const neededKey = {}
 
-  neededKey.count = count
+  if (count !== undefined) {
+    neededKey.count = count
+  }
+
   if (canRetryAt !== undefined) {
     neededKey.canRetryAt = canRetryAt
   }

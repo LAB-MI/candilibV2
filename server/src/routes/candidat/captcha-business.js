@@ -42,46 +42,11 @@ export const startCaptcha = async ({ userId, forwardedFor, clientId }) => {
     throw new Error(message)
   }
 
-  let visualCaptcha
   const dateNow = getFrenchLuxon()
   let statusCode
 
-  if (!Object.keys(currentSession.session).length) {
-    const sessionTmp = {}
-    visualCaptcha = captchaTools(sessionTmp, userId, imagesSetting)
-    visualCaptcha.generate(numberOfImages)
-
-    const expires = dateNow.endOf('day').toISO()
-    const captchaExpireAt = dateNow.plus({ minutes: captchaExpireMintutes }).toISO()
-    const count = 1
-
-    await updateSession({
-      userId,
-      // forwardedFor,
-      // clientId,
-      session: sessionTmp,
-      expires,
-      captchaExpireAt,
-      count,
-    })
-
-    statusCode = 200
-    const frontendData = visualCaptcha.getFrontendData()
-    return {
-      success: true,
-      count: 1,
-      captcha: {
-        ...frontendData,
-        imageName: undefined,
-        imageNamePic: await getImageNamePic(frontendData),
-        audioFieldName: undefined,
-      },
-      statusCode,
-    }
-  }
-
   const { count, canRetryAt } = currentSession
-  let tmpCount = count
+  let tmpCount = count || 0
 
   if (canRetryAt && dateNow > getFrenchLuxonFromJSDate(canRetryAt)) {
     tmpCount = 0
@@ -110,7 +75,7 @@ export const startCaptcha = async ({ userId, forwardedFor, clientId }) => {
 
   const newSessionContent = {}
 
-  visualCaptcha = captchaTools(newSessionContent, userId, imagesSetting)
+  const visualCaptcha = captchaTools(newSessionContent, userId, imagesSetting)
   visualCaptcha.generate(numberOfImages)
 
   const captchaExpireAt = dateNow.plus({ minutes: captchaExpireMintutes }).toISO()

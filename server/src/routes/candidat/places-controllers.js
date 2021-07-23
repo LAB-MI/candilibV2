@@ -3,7 +3,7 @@
  * @module routes/candidat/places-controllers
  */
 
-import { appLogger, techLogger } from '../../util'
+import { appLogger, getFrenchLuxon, techLogger } from '../../util'
 import {
   addInfoDateToRulesResa,
   bookPlace,
@@ -147,6 +147,8 @@ export async function getPlacesByCentre (req, res) {
         getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
       )
       // TODO: set place info in session
+      const dateNow = getFrenchLuxon()
+      const expires = dateNow.endOf('day').toISO()
 
       await upsertSession({
         userId: candidatId,
@@ -154,6 +156,7 @@ export async function getPlacesByCentre (req, res) {
         forwardedFor,
         hashCaptcha: getHashCaptcha({ geoDepartement, nomCentre, placeDate: dateTime }),
         session: {},
+        expires,
       })
     } else {
       dates = await getPlacesByDepartementAndCentre(
