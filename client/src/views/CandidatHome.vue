@@ -20,7 +20,6 @@ import SelectionSummary from './candidat/components/selection-summary/SelectionS
 import DepartementSelection from './candidat/components/departement-selection/DepartementSelection.vue'
 
 export default {
-
   name: 'CandidatHome',
   components: {
     SelectionSummary,
@@ -45,6 +44,10 @@ export default {
     this.isFetching = false
   },
 
+  created () {
+    window.addEventListener('beforeunload', this.handler)
+  },
+
   methods: {
     async getCandidatReservation () {
       try {
@@ -52,6 +55,10 @@ export default {
       } catch (error) {
         this.$store.dispatch(SHOW_ERROR, error.message)
       }
+    },
+
+    handler: (event) => {
+      event.returnValue = false
     },
   },
 }
