@@ -45,7 +45,7 @@ export default {
   },
 
   created () {
-    window.addEventListener('beforeunload', this.handler)
+    // window.addEventListener('beforeunload', this.handler)
   },
 
   methods: {
@@ -57,9 +57,9 @@ export default {
       }
     },
 
-    handler: (event) => {
-      event.returnValue = false
-    },
+    // handler: (event) => {
+    //   event.returnValue = false
+    // },
   },
 }
 </script>
