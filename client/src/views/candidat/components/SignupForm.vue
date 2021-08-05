@@ -2,6 +2,7 @@
   <div class="presignup-form">
     <div>
       <status-candidat-message-infos />
+      <message-prevent-scam />
       <covid-message-exam />
     </div>
     <v-form
@@ -69,6 +70,7 @@ import {
 import AlreadySignedUp from './AlreadySignedUp'
 import CovidMessageExam from '@/views/candidat/components/CovidMessageExam'
 import StatusCandidatMessageInfos from '@/views/candidat/components/StatusCandidatMessageInfos'
+import MessagePreventScam from '@/views/candidat/components/MessagePreventScam'
 import FormGroupInfoCandidat from './FormGroupInfoCandidat'
 import { callBackCatchRouter } from '@/util'
 import { mapState } from 'vuex'
@@ -80,6 +82,7 @@ export default {
     CovidMessageExam,
     FormGroupInfoCandidat,
     StatusCandidatMessageInfos,
+    MessagePreventScam,
   },
   props: {
     toggleForm: {
