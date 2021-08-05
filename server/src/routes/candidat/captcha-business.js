@@ -20,10 +20,10 @@ export const verifyAndGetSessionByCandidatId = async ({ userId, forwardedFor, cl
   return currentSession
 }
 
-export const getImages = async ({ userId, forwardedFor, clientId }) => {
+export const getImages = async ({ userId, forwardedFor, clientId, hashCaptcha }) => {
   const message = "vous n'êtes pas autorisé"
 
-  const currentSession = await verifyAndGetSessionByCandidatId({ userId, forwardedFor, clientId }, message)
+  const currentSession = await verifyAndGetSessionByCandidatId({ userId, forwardedFor, clientId, hashCaptcha }, message)
 
   const visualCaptcha = captchaTools(currentSession.session, userId)
   // visualCaptcha.streamImages = streamImages

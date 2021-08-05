@@ -1,5 +1,5 @@
 import { updateSession } from '../../../models/session-candidat'
-import { getFrenchLuxon, appLogger } from '../../../util'
+import { getFrenchLuxon, appLogger, getFrenchLuxonFromISO } from '../../../util'
 import { verifyAndGetSessionByCandidatId } from '../captcha-business'
 import { captchaTools, getHashCaptcha } from '../util/captcha-tools'
 
@@ -25,15 +25,19 @@ export const trySubmissionCaptcha = async (req, res, next) => {
   try {
     const message = 'Captcha Expiré'
 
+    const shapedDate = getFrenchLuxonFromISO(date).toISO()
+
+    const hashCaptcha = getHashCaptcha({
+      geoDepartement,
+      nomCentre,
+      placeDate: shapedDate,
+    })
+
     const currentSession = await verifyAndGetSessionByCandidatId({
       userId,
       forwardedFor,
       clientId,
-      hashCaptcha: getHashCaptcha({
-        geoDepartement,
-        nomCentre,
-        placeDate: date,
-      }),
+      hashCaptcha,
     }, message)
 
     const {
