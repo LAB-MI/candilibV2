@@ -219,8 +219,12 @@ const apiCandidat = {
     return json
   },
 
-  async getImage (index) {
-    const json = await apiClient.getRaw(`${apiPaths.candidat.captcha}/image/${index}`, {
+  async getImage (index, { geoDepartement, nomCentre, date }) {
+    const queryDate = `dateTime=${encodeURIComponent(date)}`
+    const queryGeoDepartement = `geoDepartement=${geoDepartement}`
+    const queryNomCentre = `nomCentre=${nomCentre}`
+    const fullQuery = `?${queryDate}&${queryNomCentre}&${queryGeoDepartement}`
+    const json = await apiClient.getRaw(`${apiPaths.candidat.captcha}/image/${index}${fullQuery}`, {
       headers: getHeadersForJson(),
     })
     return json
