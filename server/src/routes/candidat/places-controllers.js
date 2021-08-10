@@ -3,7 +3,7 @@
  * @module routes/candidat/places-controllers
  */
 
-import { appLogger, techLogger } from '../../util'
+import { appLogger, getFrenchLuxon, getFrenchLuxonFromISO, techLogger } from '../../util'
 import {
   addInfoDateToRulesResa,
   bookPlace,
@@ -29,6 +29,8 @@ import {
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
 import { getStatusWithRecentlyDept } from '../common/candidat-status'
+import { getHashCaptcha } from './util/captcha-tools'
+import { upsertSession } from '../../models/session-candidat'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -82,6 +84,9 @@ export const ErrorMsgArgEmpty =
  * @param {import('express').Response} res
  */
 export async function getPlacesByCentre (req, res) {
+  const clientId = req.headers['x-client-id']
+  const forwardedFor = req.headers['x-forwarded-for']
+
   const centreId = req.params.id
   const candidatId = req.userId
   const candidatStatus = req.candidatStatus
@@ -134,6 +139,7 @@ export async function getPlacesByCentre (req, res) {
     if (!(geoDepartement && nomCentre)) {
       throw new Error(ErrorMsgArgEmpty)
     }
+
     if (dateTime) {
       dates = await hasAvailablePlacesByCentre(
         geoDepartement,
@@ -141,6 +147,21 @@ export async function getPlacesByCentre (req, res) {
         dateTime,
         getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
       )
+
+      const dateNow = getFrenchLuxon()
+      const expires = dateNow.endOf('day').toISO()
+      const shapedDateTime = getFrenchLuxonFromISO(dateTime).toISO()
+
+      const hashCaptcha = getHashCaptcha({ geoDepartement, nomCentre, placeDate: shapedDateTime })
+
+      await upsertSession({
+        userId: candidatId,
+        clientId,
+        forwardedFor,
+        hashCaptcha,
+        session: {},
+        expires,
+      })
     } else {
       dates = await getPlacesByDepartementAndCentre(
         nomCentre,

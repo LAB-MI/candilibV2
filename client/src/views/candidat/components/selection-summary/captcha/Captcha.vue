@@ -9,7 +9,7 @@
           v-show="!candidatCaptcha.generatedCaptcha.isReady"
           :disabled="disabledValue || isLoading"
           color="primary"
-          @click="getCaptcha('start')"
+          @click="verifyAvailablePlaceAndStart()"
         >
           <v-progress-circular
             v-show="isLoading"
@@ -36,7 +36,7 @@
             <v-btn
               color="primary"
               rounded
-              @click="getCaptcha('start')"
+              @click="verifyAvailablePlaceAndStart()"
             >
               <v-icon>
                 autorenew
@@ -103,6 +103,7 @@
 <script>
 import {
   GENERATE_CAPTCHA_REQUEST,
+  SELECT_DAY,
   TRY_RESOLVE_CAPTCHA_REQUEST,
 } from '@/store'
 import { mapState } from 'vuex'
@@ -117,6 +118,10 @@ export default {
     disabledValue: {
       type: Boolean,
       default: false,
+    },
+    selectedSlot: {
+      type: Object,
+      default: () => {},
     },
   },
 
@@ -134,6 +139,15 @@ export default {
   },
 
   methods: {
+    async verifyAvailablePlaceAndStart () {
+      try {
+        await this.$store.dispatch(SELECT_DAY, this.selectedSlot)
+        await this.getCaptcha()
+      } catch (error) {
+        console.log({ error })
+      }
+    },
+
     async getCaptcha () {
       this.imageField = null
       this.isLoading = true
