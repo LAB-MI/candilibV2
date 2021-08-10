@@ -536,7 +536,7 @@ Cypress.Commands.add('selectCaptchaSoltion', (email) => {
 Cypress.Commands.add('selectCaptchaSoltionAndConfirm', (email, rigthAnswer = true) => {
   cy.intercept({
     method: 'GET',
-    url: Cypress.env('frontCandidat') + 'api/v2/candidat/verifyzone/image/0',
+    url: Cypress.env('frontCandidat') + 'api/v2/candidat/verifyzone/image/0*',
   }).as('getImage')
 
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
@@ -641,7 +641,7 @@ Cypress.Commands.add('bookPlaceBySelectedCandidat', (email, magicLink, centre, d
 
   cy.intercept({
     method: 'GET',
-    url: Cypress.env('frontCandidat') + 'api/v2/candidat/verifyzone/image/0',
+    url: Cypress.env('frontCandidat') + 'api/v2/candidat/verifyzone/image/0*',
   }).as('getImage')
 
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
