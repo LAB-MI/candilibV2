@@ -69,16 +69,22 @@ export default {
       commit(RESET_CAPTCHA)
     },
 
-    async [GENERATE_CAPTCHA_REQUEST] ({ commit, dispatch, state }) {
+    async [GENERATE_CAPTCHA_REQUEST] ({ commit, dispatch, rootState, state }) {
       commit(GENERATE_CAPTCHA_REQUEST, { isReady: state.generatedCaptcha.isReady })
+
+      const { timeSlots } = rootState
+      const { selected } = timeSlots
+      const { slot, centre } = selected
+      const { nom, geoDepartement } = centre
 
       try {
         const newCaptcha = await api.candidat.startRoute()
         if (!newCaptcha?.success) {
           throw new Error(newCaptcha.message)
         }
+        const infos = { date: slot, nomCentre: nom, geoDepartement }
 
-        const response = await api.candidat.getImage(0)
+        const response = await api.candidat.getImage(0, infos)
         const data = await response.blob()
         const url = URL.createObjectURL(data)
         const allImages = { url }

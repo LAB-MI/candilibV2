@@ -143,3 +143,7 @@ export const captchaTools = function (session, namespace, defaultImages) {
 
   return captcha
 }
+
+export const getHashCaptcha = ({ geoDepartement, nomCentre, placeDate }) => {
+  return `${geoDepartement}|${nomCentre}|${placeDate}`
+}

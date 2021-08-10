@@ -28,6 +28,7 @@
           <captcha
             class="mb-5"
             :disabled-value="!(selectedCheckBox.length === 2)"
+            :selected-slot="timeSlots.selected"
           />
         </div>
         <v-flex d-flex>
