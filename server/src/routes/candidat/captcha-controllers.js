@@ -1,17 +1,34 @@
 import { getImages, startCaptcha } from './captcha-business'
 
-import { appLogger } from '../../util'
+import { appLogger, getFrenchLuxonFromISO } from '../../util'
+import { getHashCaptcha } from './util/captcha-tools'
 
 export const initImage = async (req, res) => {
   const { userId } = req
+  const clientId = req.headers['x-client-id']
+  const forwardedFor = req.headers['x-forwarded-for']
+
+  const { nomCentre, geoDepartement, dateTime } = req.query
+
   const loggerInfo = {
     request_id: req.request_id,
     section: 'get-images-captcha',
     userId,
+    nomCentre,
+    geoDepartement,
+    dateTime,
   }
 
   try {
-    const result = await getImages(userId)
+    const shapedDate = getFrenchLuxonFromISO(dateTime).toISO()
+
+    const hashCaptcha = getHashCaptcha({
+      geoDepartement,
+      nomCentre,
+      placeDate: shapedDate,
+    })
+
+    const result = await getImages({ userId, forwardedFor, clientId, hashCaptcha })
 
     appLogger.info({ ...loggerInfo, description: 'Image captcha demandé', success: true })
 
@@ -40,6 +57,8 @@ export const initImage = async (req, res) => {
 
 export const initCaptcha = async (req, res) => {
   const { userId } = req
+  const clientId = req.headers['x-client-id']
+  const forwardedFor = req.headers['x-forwarded-for']
 
   const loggerInfo = {
     request_id: req.request_id,
@@ -48,7 +67,7 @@ export const initCaptcha = async (req, res) => {
   }
 
   try {
-    const newCaptchaResult = await startCaptcha(userId)
+    const newCaptchaResult = await startCaptcha({ userId, forwardedFor, clientId })
     const { success, statusCode, count, captcha } = newCaptchaResult
 
     appLogger.info({ ...loggerInfo, description: 'Captcha crée', success, statusCode, count })

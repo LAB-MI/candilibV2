@@ -22,6 +22,10 @@ export const FETCH_AURIGE_LAST_DATETIME_REQUEST = 'FETCH_AURIGE_LAST_DATETIME_RE
 export const FETCH_AURIGE_LAST_DATETIME_SUCCESS = 'FETCH_AURIGE_LAST_DATETIME_SUCCESS'
 export const FETCH_AURIGE_LAST_DATETIME_FAILURE = 'FETCH_AURIGE_LAST_DATETIME_FAILURE'
 
+export const FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST = 'FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST'
+export const FETCH_AURIGE_NBDAYS_INACTIVE_SUCCESS = 'FETCH_AURIGE_NBDAYS_INACTIVE_SUCCESS'
+export const FETCH_AURIGE_NBDAYS_INACTIVE_FAILURE = 'FETCH_AURIGE_NBDAYS_INACTIVE_FAILURE'
+
 export default {
   state: {
     isLoading: false,
@@ -31,6 +35,8 @@ export default {
     isLastSyncDateTimeLoading: false,
     isFetchingStatusCandilib: false,
     statusCandilibSuccess: undefined,
+    nbDaysInactive: undefined,
+    isFectingNbDaysInactive: false,
   },
   mutations: {
     [AURIGE_UPLOAD_CANDIDATS_REQUEST] (state) {
@@ -64,6 +70,17 @@ export default {
     },
     [FETCH_CANDILIB_STATUS_FAILURE] (state) {
       state.isFetchingStatusCandilib = false
+    },
+
+    [FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST] (state) {
+      state.isFectingNbDaysInactive = true
+    },
+    [FETCH_AURIGE_NBDAYS_INACTIVE_SUCCESS] (state, nbDaysInactive) {
+      state.isFectingNbDaysInactive = false
+      state.nbDaysInactive = nbDaysInactive
+    },
+    [FETCH_AURIGE_NBDAYS_INACTIVE_FAILURE] (state) {
+      state.isFectingNbDaysInactive = false
     },
 
   },
@@ -131,10 +148,10 @@ export default {
       }
     },
 
-    async [FETCH_CANDILIB_STATUS_REQUEST] ({ commit, dispatch }) {
+    async [FETCH_CANDILIB_STATUS_REQUEST] ({ commit, dispatch }, nbDays) {
       commit(FETCH_CANDILIB_STATUS_REQUEST)
       try {
-        const result = await api.admin.sortStatusCandilib()
+        const result = await api.admin.sortStatusCandilib(nbDays)
         if (result.success === false) {
           throw new Error(result.message)
         }
@@ -143,6 +160,21 @@ export default {
         return dispatch(SHOW_SUCCESS, result.message)
       } catch (error) {
         commit(FETCH_CANDILIB_STATUS_FAILURE, error)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST] ({ commit, dispatch }) {
+      commit(FETCH_AURIGE_NBDAYS_INACTIVE_REQUEST)
+      try {
+        const result = await api.admin.getNbDaysInactivity()
+        if (result.success === false) {
+          throw new Error(result.message)
+        }
+
+        commit(FETCH_AURIGE_NBDAYS_INACTIVE_SUCCESS, result.NbDaysInactivity)
+      } catch (error) {
+        commit(FETCH_AURIGE_NBDAYS_INACTIVE_FAILURE, error)
         return dispatch(SHOW_ERROR, error.message)
       }
     },

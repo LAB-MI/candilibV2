@@ -56,7 +56,7 @@ describe('Login.vue', () => {
     })
 
     const $router = {
-      push: (path) => {
+      push: async (path) => {
         expect(path).toBe('/admin')
       },
     }

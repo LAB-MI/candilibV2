@@ -3,15 +3,13 @@
  * @module routes/candidat/places-controllers
  */
 
-import { appLogger, techLogger } from '../../util'
+import { appLogger, getFrenchLuxon, getFrenchLuxonFromISO, techLogger } from '../../util'
 import {
   addInfoDateToRulesResa,
   bookPlace,
-  getDatesByCentreId,
   getLastDateToCancel,
   getPlacesByDepartementAndCentre,
   getReservationByCandidat,
-  hasAvailablePlaces,
   hasAvailablePlacesByCentre,
   removeReservationPlace,
   validCentreDateReservation,
@@ -31,6 +29,8 @@ import {
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
 import { getStatusWithRecentlyDept } from '../common/candidat-status'
+import { getHashCaptcha } from './util/captcha-tools'
+import { upsertSession } from '../../models/session-candidat'
 
 export const ErrorMsgArgEmpty =
   'Les paramètres du centre et du département sont obligatoires'
@@ -84,6 +84,9 @@ export const ErrorMsgArgEmpty =
  * @param {import('express').Response} res
  */
 export async function getPlacesByCentre (req, res) {
+  const clientId = req.headers['x-client-id']
+  const forwardedFor = req.headers['x-forwarded-for']
+
   const centreId = req.params.id
   const candidatId = req.userId
   const candidatStatus = req.candidatStatus
@@ -133,45 +136,49 @@ export async function getPlacesByCentre (req, res) {
 
   let dates = []
   try {
-    if (centreId) {
-      if (dateTime) {
-        dates = await hasAvailablePlaces(
-          centreId,
-          dateTime,
-          getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
-        )
-      } else {
-        dates = await getDatesByCentreId(centreId, begin, end, candidatId, candidatStatus)
-      }
+    if (!(geoDepartement && nomCentre)) {
+      throw new Error(ErrorMsgArgEmpty)
+    }
+
+    if (dateTime) {
+      dates = await hasAvailablePlacesByCentre(
+        geoDepartement,
+        nomCentre,
+        dateTime,
+        getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
+      )
+
+      const dateNow = getFrenchLuxon()
+      const expires = dateNow.endOf('day').toISO()
+      const shapedDateTime = getFrenchLuxonFromISO(dateTime).toISO()
+
+      const hashCaptcha = getHashCaptcha({ geoDepartement, nomCentre, placeDate: shapedDateTime })
+
+      await upsertSession({
+        userId: candidatId,
+        clientId,
+        forwardedFor,
+        hashCaptcha,
+        session: {},
+        expires,
+      })
     } else {
-      if (!(geoDepartement && nomCentre)) {
-        throw new Error(ErrorMsgArgEmpty)
-      }
-      if (dateTime) {
-        dates = await hasAvailablePlacesByCentre(
-          geoDepartement,
-          nomCentre,
-          dateTime,
-          getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
-        )
-      } else {
-        dates = await getPlacesByDepartementAndCentre(
-          nomCentre,
-          geoDepartement,
-          candidatId,
-          begin,
-          end,
-          getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
-        )
-      }
+      dates = await getPlacesByDepartementAndCentre(
+        nomCentre,
+        geoDepartement,
+        candidatId,
+        begin,
+        end,
+        getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
+      )
     }
 
     appLogger.info({
       ...loggerInfo,
-      description: `[${dates.length}] place(s) ont été trouvée(s)`,
+      description: `[${dates?.length}] place(s) ont été trouvée(s)`,
     })
 
-    res.status(200).json(dates)
+    res.status(200).json(dates || [])
   } catch (error) {
     appLogger.error({ ...loggerInfo, error, description: error.message })
     res.status(error.message === ErrorMsgArgEmpty ? 400 : 500).json({

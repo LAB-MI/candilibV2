@@ -21,8 +21,9 @@ export const createSession = async (sessionInfo) => {
 }
 
 export const upsertSession = async (sessionInfo) => {
+  const neededKey = checkKeyNeedUpdate(sessionInfo)
   const result = await SessionCandidatModel
-    .findOneAndUpdate({ userId: sessionInfo.userId }, sessionInfo, { upsert: true, new: true })
+    .findOneAndUpdate({ userId: sessionInfo.userId }, { $set: neededKey }, { upsert: true, new: true })
   return result
 }
 
@@ -33,11 +34,17 @@ const checkKeyNeedUpdate = (sessionInfo) => {
     expires,
     canRetryAt,
     captchaExpireAt,
+    forwardedFor,
+    clientId,
+    hashCaptcha,
   } = sessionInfo
 
   const neededKey = {}
 
-  neededKey.count = count
+  if (count !== undefined) {
+    neededKey.count = count
+  }
+
   if (canRetryAt !== undefined) {
     neededKey.canRetryAt = canRetryAt
   }
@@ -54,6 +61,18 @@ const checkKeyNeedUpdate = (sessionInfo) => {
     neededKey.captchaExpireAt = captchaExpireAt
   }
 
+  if (forwardedFor) {
+    neededKey.forwardedFor = forwardedFor
+  }
+
+  if (clientId) {
+    neededKey.clientId = clientId
+  }
+
+  if (hashCaptcha) {
+    neededKey.hashCaptcha = hashCaptcha
+  }
+
   return neededKey
 }
 
@@ -65,7 +84,20 @@ export const updateSession = async (sessionInfo) => {
   return result
 }
 
-export const getSessionByCandidatId = async (userId) => {
+export const updateSessionId = async (sessionInfo) => {
+  const { userId, forwardedFor, clientId } = sessionInfo
+  const result = await SessionCandidatModel.updateOne({ userId: userId }, { $set: { forwardedFor, clientId } })
+
+  return result
+}
+
+export const getSessionByCandidatIdAndInfos = async ({ userId, forwardedFor, clientId, hashCaptcha }) => {
+  const filters = hashCaptcha ? { userId, forwardedFor, clientId, hashCaptcha } : { userId, forwardedFor, clientId }
+  const result = await SessionCandidatModel.findOne(filters).lean()
+  return result
+}
+
+export const getSessionByCandidatId = async ({ userId }) => {
   const result = await SessionCandidatModel.findOne({ userId }).lean()
   return result
 }
