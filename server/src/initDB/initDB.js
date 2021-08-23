@@ -45,23 +45,11 @@ export const initDB = async () => {
 
     if (isAlwaysTrue || statusVersion.message < 'v2.11.9') await upsertStatusByType({ type: NB_DAYS_INACTIVITY, message: 90 })
 
-    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB })
+    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB[0] })
     loggerInfo.description = 'UPDATED'
   }
 
   techLogger.info(loggerInfo)
-
-  if (versionDB[1]) {
-    // CONCERN ONLY QUALIF
-    await runJobs()
-    await upsertStatusByType({ type: 'DB_VERSION', message: versionDB[0] })
-  } else {
-    // CONCERN ONLY PROD
-    if (!statusVersion?.message || (versionDB[0] > statusVersion.message)) {
-      await runJobs()
-      await upsertStatusByType({ type: 'DB_VERSION', message: versionDB[0] })
-    }
-  }
 }
 
 /**

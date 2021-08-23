@@ -15,4 +15,4 @@ export const departement = /[0-9AB]{2}/
 
 export const firstNameAndLastName = /;/
 
-export const versionSepparator = /.-[0-9]+-g/g
+export const versionSepparator = /-[0-9]+-g/g
