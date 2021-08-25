@@ -3,7 +3,6 @@
  * @module
  */
 import nodemailer from 'nodemailer'
-import smtpTransport from 'nodemailer-smtp-transport'
 import { htmlToText } from 'nodemailer-html-to-text'
 
 import getMailData from './message-templates'
@@ -124,7 +123,7 @@ async function transporterBuilder (callbackEndSend) {
 }
 
 export const sendMail = async (to, { subject, content: html }) => {
-  const transporter = nodemailer.createTransport(smtpTransport(smtpOptions))
+  const transporter = nodemailer.createTransport(smtpOptions)
   transporter.use('compile', htmlToText())
 
   const mailOptions = {
