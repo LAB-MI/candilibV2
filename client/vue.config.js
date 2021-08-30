@@ -1,3 +1,5 @@
+const StyleLintPlugin = require('stylelint-webpack-plugin')
+
 const apiHost = process.env.API_HOST || 'localhost'
 const apiPort = process.env.API_PORT || 8000
 
@@ -47,4 +49,13 @@ module.exports = {
     lintStyleOnBuild: false,
     stylelint: {},
   },
+
+  configureWebpack: {
+    plugins: [
+      new StyleLintPlugin({
+        files: ['**/*.{vue,htm,html,css,sss,less,scss,sass}'],
+      }),
+    ],
+  },
+
 }
