@@ -116,7 +116,7 @@ const candidatProfileInfoDictionary = [
     ['canAccessAt', 'Date d\'accès', convertToLegibleDate],
     ['status', 'Groupe enregistré', groupeNumber],
     ['statusInToken', 'Groupe actif (n\'éxiste que si le candidat c\'est connecté aujourd\'hui)', groupeNumber],
-    // ['createdAt', 'Date d\'inscription', convertToLegibleDateTime],
+    ['lastConnection', 'Date de la dernière connexion', convertToLegibleDate],
   ],
   [
     ['email', 'Email', (email) => {
