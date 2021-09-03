@@ -13,7 +13,7 @@
     "cypress": "cypress run",
     "format": "run-s lint:js",
     "lint:js": "vue-cli-service lint",
-    "lint:style": "stylelint src/**/*.{vue,htm,html,css,sss,less,scss,sass,styl}",
+    "lint:style": "stylelint src/**/*.{vue,css,sss,less,scss,sass,styl}",
     "prebuild:admin": "cp .env.admin .env",
     "prebuild:candidat": "cp .env.candidat .env",
     "sb": "vue-cli-service storybook:serve -p 6006 -c config/storybook",

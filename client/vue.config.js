@@ -53,7 +53,7 @@ module.exports = {
   configureWebpack: {
     plugins: [
       new StyleLintPlugin({
-        files: ['**/*.{vue,htm,html,css,sss,less,scss,sass}'],
+        files: ['**/*.{vue,css,sss,less,scss,sass}'],
       }),
     ],
   },
