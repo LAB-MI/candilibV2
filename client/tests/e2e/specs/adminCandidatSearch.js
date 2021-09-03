@@ -5,12 +5,14 @@
 import {
   now,
   getFrenchDateTimeFromIso,
+  getFrenchDateFromLuxon,
 } from '../support/dateUtils'
 
 import {
   adminBookPlaceForCandidat,
   adminCancelBookedPlace,
   adminCheckCandidatHystoryActionsByType,
+  adminLaunchSearchCandidat,
   candidatBookPlace,
   candidatCancelPlace,
   candidatModifyPlace,
@@ -196,6 +198,17 @@ describe('Candidate Profile', () => {
       adminCheckCandidatHystoryActionsByType(candidatsByDepartments, typeAction, makeBy)
       cy.get('tbody > tr > :nth-child(9)').should('contain', getFrenchDateTimeFromIso(now).split('à')[0])
       cy.get('tbody > tr > :nth-child(8)').should('contain', Cypress.env('adminLogin'))
+    })
+
+    it.only('Verify candidat last connection is now', () => {
+      const DateStr = getFrenchDateFromLuxon(now)
+      cy.visit(magicLink)
+      adminLaunchSearchCandidat(candidatsByDepartments)
+      cy.get('.label').should('contain', 'Date de la dernière connexion')
+      cy.get('.label')
+        .contains('Date de la dernière connexion')
+        .parent()
+        .should('contain', DateStr)
     })
   } else {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })

@@ -5,14 +5,17 @@ export const checkEmailValue = (email = Cypress.env('emailCandidat')) => {
     .parent()
     .should('contain', email)
 }
-
-export const adminCheckCandidatHystoryActionsByType = (candidatsByDepartments, typeAction, byThis) => {
+export const adminLaunchSearchCandidat = (candidatsByDepartments) => {
   cy.adminLogin()
   cy.visit(Cypress.env('frontAdmin') + 'admin/admin-candidat')
   cy.get('.t-search-candidat [type=text]').type(candidatsByDepartments[0].nomNaissance)
   cy.contains(candidatsByDepartments[0].nomNaissance).click()
   cy.get('h3').should('contain', 'nformations')
   checkEmailValue(candidatsByDepartments[0].email)
+}
+
+export const adminCheckCandidatHystoryActionsByType = (candidatsByDepartments, typeAction, byThis) => {
+  adminLaunchSearchCandidat(candidatsByDepartments)
   cy.get('.t-result-candidat-item').eq(4)
     .parent()
     .should('contain', Cypress.env('centre').toUpperCase())
