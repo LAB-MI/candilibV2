@@ -18,7 +18,6 @@
     "prebuild:candidat": "cp .env.candidat .env",
     "sb": "vue-cli-service storybook:serve -p 6006 -c config/storybook",
     "start": "npm run serve",
-    "pretest": "npm run lint",
     "test": "NODE_ICU_DATA=\"$(pwd)/node_modules/full-icu\" npm run -s test:unit",
     "test:e2e-local": "npm run test:e2e -- --env build=1 --config numTestsKeptInMemory=3",
     "test:e2e-local-headless": "npm run test:e2e -- --env build=1 --config numTestsKeptInMemory=3 --headless",
