@@ -200,7 +200,7 @@ describe('Candidate Profile', () => {
       cy.get('tbody > tr > :nth-child(8)').should('contain', Cypress.env('adminLogin'))
     })
 
-    it.only('Verify candidat last connection is now', () => {
+    it('Verify candidat last connection is now', () => {
       const DateStr = getFrenchDateFromLuxon(now)
       cy.visit(magicLink)
       adminLaunchSearchCandidat(candidatsByDepartments)
