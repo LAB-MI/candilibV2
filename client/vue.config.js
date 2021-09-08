@@ -42,9 +42,4 @@ module.exports = {
         args.compilerOptions.whitespace = 'condense'
       })
   },
-
-  pluginOptions: {
-    lintStyleOnBuild: false,
-    stylelint: {},
-  },
 }
