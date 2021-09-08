@@ -7,30 +7,39 @@ import {
   neph as nephRegex,
 } from '../../util'
 import { placeCommonFields } from '../place/place.model'
+import { UserFields } from '../user/user.model'
 import { ECHEC } from './objetDernierNonReussite.values'
 
 const { Schema } = mongoose
+const ObjectId = Schema.Types.ObjectId
 
-const ArchivedCanBookFromFields = {
+const canBookFromFields = {
   canBookFrom: {
     type: Date,
     default: undefined,
   },
-  canBookFromReason: {
+  reason: {
     type: String,
     default: undefined,
   },
-  archivedAt: {
+  createdAt: {
     type: Date,
-    default: undefined,
-  },
-  archiveReason: {
-    type: String,
     default: undefined,
   },
   byUser: {
     type: String,
     default: undefined,
+  },
+  byAdmin: {
+    type: {
+      ...UserFields,
+      _id: {
+        type: ObjectId,
+        required: true,
+      },
+    },
+    default: undefined,
+    required: false,
   },
   isCandilib: {
     type: Boolean,
@@ -38,7 +47,7 @@ const ArchivedCanBookFromFields = {
   },
 }
 
-const ArchivedCanBookFromSchema = new Schema(ArchivedCanBookFromFields)
+const canBookFromSchema = new Schema(canBookFromFields)
 
 const ArchivedPlaceFields = {
   ...placeCommonFields,
@@ -160,12 +169,8 @@ export const candidatFields = {
     type: Date,
     default: undefined,
   },
-  canBookFromReason: {
-    type: String,
-    default: undefined,
-  },
-  ArchivedCanBookFrom: {
-    type: [ArchivedCanBookFromSchema],
+  canBookFroms: {
+    type: [canBookFromSchema],
     default: undefined,
   },
   isEvaluationDone: {
