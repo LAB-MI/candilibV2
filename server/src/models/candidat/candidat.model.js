@@ -11,6 +11,35 @@ import { ECHEC } from './objetDernierNonReussite.values'
 
 const { Schema } = mongoose
 
+const ArchivedCanBookFromFields = {
+  canBookFrom: {
+    type: Date,
+    default: undefined,
+  },
+  canBookFromReason: {
+    type: String,
+    default: undefined,
+  },
+  archivedAt: {
+    type: Date,
+    default: undefined,
+  },
+  archiveReason: {
+    type: String,
+    default: undefined,
+  },
+  byUser: {
+    type: String,
+    default: undefined,
+  },
+  isCandilib: {
+    type: Boolean,
+    default: undefined,
+  },
+}
+
+const ArchivedCanBookFromSchema = new Schema(ArchivedCanBookFromFields)
+
 const ArchivedPlaceFields = {
   ...placeCommonFields,
   archivedAt: {
@@ -133,6 +162,10 @@ export const candidatFields = {
   },
   canBookFromReason: {
     type: String,
+    default: undefined,
+  },
+  ArchivedCanBookFrom: {
+    type: [ArchivedCanBookFromSchema],
     default: undefined,
   },
   isEvaluationDone: {
