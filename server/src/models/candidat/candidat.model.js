@@ -131,6 +131,10 @@ export const candidatFields = {
     type: Date,
     default: undefined,
   },
+  canBookFromReason: {
+    type: String,
+    default: undefined,
+  },
   isEvaluationDone: {
     type: Boolean,
   },
@@ -172,6 +176,7 @@ export const candidatFields = {
     type: Date,
     required: false,
   },
+
 }
 
 const CandidatSchema = new Schema(candidatFields, { timestamps: true })
