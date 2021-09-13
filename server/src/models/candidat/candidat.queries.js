@@ -864,6 +864,31 @@ export const totalCandidatsSignIn = async (filter) => {
   return count
 }
 
+export const addCanBookFrom = (
+  // next variable candidat is Object Mongo from parent
+  candidat,
+  canBookFrom,
+  reason,
+  byUser,
+  byAdmin,
+  isCandilib,
+) => {
+  const createdAt = getFrenchLuxon()
+  if (!candidat.canBookFroms) {
+    candidat.canBookFroms = []
+  }
+  candidat.canBookFroms.push({
+    canBookFrom,
+    reason,
+    byUser,
+    byAdmin,
+    isCandilib,
+    createdAt,
+  })
+  candidat.canBookFrom = canBookFrom
+  return candidat
+}
+
 /**
  * @typedef {Object} CandidatUpdateData
  * @property {boolean} isEvaluationDone - `true` si le candidat à rempli le questionnaire d'évaluation
