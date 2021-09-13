@@ -49,7 +49,7 @@ fi
 error_log /dev/stderr warn;\
 access_log /dev/stdout main;
 " > /etc/nginx/conf.d/default.conf
-cat /etc/nginx/nginx.template |
+cat /etc/nginx/nginx.template.conf |
  sed "s#<APP>#${APP}#g;s#<API_HOST>#${API_HOST}#g;s#<API_PORT>#${API_PORT}#g;" |
  sed "s#<APP_USER_LIMIT_RATE>#${APP_USER_LIMIT_RATE}#g;s#<APP_USER_BURST>#${APP_USER_BURST}#g;" |
  sed "s#<API_USER_SCOPE>#${API_USER_SCOPE}#g" |
