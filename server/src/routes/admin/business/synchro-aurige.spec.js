@@ -78,6 +78,7 @@ import archivedPlaceModel from '../../../models/archived-place/archived-place-mo
 import { SUBJECT_MAIL_INFO } from '../../business'
 import { ObjectLastNoReussitValues } from '../../../models/candidat/objetDernierNonReussite.values'
 import { AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED } from '../../common/constants'
+import { BY_AURIGE } from '.'
 
 jest.mock('../../../util/logger')
 require('../../../util/logger').setWithConsole(false)
@@ -198,7 +199,7 @@ async function synchroAurigeSuccess (
   expect(result[0]).toHaveProperty('status', 'success')
   const candidat = await findCandidatById(candidatCreated._id)
   if (candidatInfo.dateDernierNonReussite) {
-    const { canBookFrom } = candidat
+    const { canBookFrom, canBookFroms } = candidat
     const timeOutToRetry = config.timeoutToRetryBy[candidatInfo.objetDernierNonReussite] || config.timeoutToRetryBy.default
     const dateTimeCanBookFrom = getFrenchLuxonFromISO(
       candidatInfo.dateDernierNonReussite,
@@ -208,6 +209,17 @@ async function synchroAurigeSuccess (
 
     expect(canBookFrom).toBeDefined()
     expect(canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
+
+    const lengthPenalties = canBookFroms.length
+    expect(lengthPenalties).toBeGreaterThan(0)
+    const penalty = canBookFroms[lengthPenalties - 1]
+    expect(penalty.canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
+    expect(penalty.reason).toEqual(candidatInfo.objetDernierNonReussite)
+    expect(penalty.byUser).toEqual(BY_AURIGE)
+    expect(penalty.byAdmin).toBeUndefined()
+    const createdAt = getFrenchLuxonFromJSDate(penalty.createdAt)
+    const now = getFrenchLuxon()
+    expect(createdAt.hasSame(now, 'day')).toBe(true)
   }
 
   return candidat
