@@ -265,21 +265,17 @@ const forNowEndExpired = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ day
 
 describe('synchro-aurige', () => {
   let server
-  beforeAll(async () => {
+  beforeAll(async (done) => {
     await connect()
     await createInspecteurs()
     await createCentres()
-  })
-  beforeEach(done => {
     server = buildSmtpServer(smtpOptions.port, done)
   })
-  afterEach(done => {
-    server.close(done)
-  })
-  afterAll(async () => {
+  afterAll(async (done) => {
     await removeCentres()
     await removeInspecteur()
     await disconnect()
+    server.close(done)
   })
   it('Should return expired', () => {
     const fiveYearsAgo = new Date()
@@ -900,7 +896,7 @@ describe('Check canAccess property of aurige', () => {
   let candidatsCreated
   let aurigeFile
   let server
-  beforeAll(async () => {
+  beforeAll(async (done) => {
     await connect()
     candidatsToCreate = candidatsWithPreRequired.map(candidat =>
       createCandidatToTestAurige(candidat, candidat.isValidatedByAurige),
@@ -910,12 +906,7 @@ describe('Check canAccess property of aurige', () => {
     aurigeFile = await readFileAsPromise(
       path.resolve(__dirname, './', '__tests__', 'aurigeWithAccessAt.json'),
     )
-  })
-  beforeEach(done => {
     server = buildSmtpServer(smtpOptions.port, done)
-  })
-  afterEach(done => {
-    server.close(done)
   })
 
   it('Should apply canAccesAt to candidat not validate by aurige', async () => {
@@ -951,7 +942,7 @@ describe('Check canAccess property of aurige', () => {
     )
   })
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     await Promise.all(
       candidatsToCreate.map(async candidat => {
         const tmp = await candidatModel.findByIdAndDelete(candidat._id)
@@ -959,29 +950,26 @@ describe('Check canAccess property of aurige', () => {
       }),
     )
     await disconnect()
+    server.close(done)
   })
 })
 
 describe('Synchro-aurige candidat with etg expired', () => {
   let server
-  beforeAll(async () => {
+  beforeAll(async (done) => {
     await connect()
     await setInitCreatedInspecteurs()
     await createInspecteurs()
     await setInitCreatedCentre()
     await createCentres()
-  })
-  beforeEach(done => {
     server = buildSmtpServer(smtpOptions.port, done)
   })
-  afterEach(done => {
-    server.close(done)
-  })
 
-  afterAll(async () => {
+  afterAll(async (done) => {
     await removeCentres()
     await removeInspecteur()
     await disconnect()
+    server.close(done)
   })
 
   async function synchroAurigeETGKO (
@@ -1001,8 +989,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
     return candidat
   }
 
-  // TODO: Unskip this test when date now will over 31/12/2020
-  xit('should archive a candidat with date etg expired', async () => {
+  it('should archive a candidat with date etg expired', async () => {
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpired)
     const candidatCreated = await createCandidatToTestAurige(
       candidatWithEtgExpired,
@@ -1094,7 +1081,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
   })
 
   // TODO: Unskip this test when date now will over 31/12/2020
-  xit('should archive a candidat boooked at date etg expired, 8 ago', async () => {
+  it('should archive a candidat boooked at date etg expired, 8 ago', async () => {
     const dateTimeReussiteETGKO8 = DateTimeReussiteETGKO.minus({ days: 7 })
     const placeAtETG8 = {
       ...placeAtETG,
@@ -1136,7 +1123,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
   })
 
   // TODO: Unskip this test when date now will over 31/12/2020
-  xit('should do archive a candidat boooked at date etg expired and without resultat from Aurige', async () => {
+  it('should do archive a candidat boooked at date etg expired and without resultat from Aurige', async () => {
     const placeSelected = await createTestPlaceAurige(placeAtETG)
 
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpiredToArchive)
@@ -1158,7 +1145,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
   })
 
   // TODO: Unskip this test when date now will over 31/12/2020
-  xit('should do archive a candidat boooked at date etg expired and with resultat failed from Aurige', async () => {
+  it('should do archive a candidat boooked at date etg expired and with resultat failed from Aurige', async () => {
     const placeSelected = await createTestPlaceAurige(placeAtETG)
 
     const aurigeFile = toAurigeJsonBuffer(
@@ -1189,7 +1176,7 @@ describe('Synchro-aurige: send mail', () => {
   let server
   let candidatCreated
   let placeSelected
-  beforeAll(async () => {
+  beforeAll(async (done) => {
     await connect()
     await setInitCreatedInspecteurs()
     await createInspecteurs()
@@ -1197,11 +1184,9 @@ describe('Synchro-aurige: send mail', () => {
     await createCentres()
     const departementData = { _id: '93', email: 'email93@onepiece.com' }
     await createDepartement(departementData)
-  })
-  beforeEach(done => {
     server = buildSmtpServer(smtpOptions.port, done)
   })
-  afterEach(async done => {
+  afterEach(async () => {
     if (placeSelected) {
       const archivedPlace = await archivedPlaceModel.findOne({
         date: placeSelected.date,
@@ -1212,12 +1197,12 @@ describe('Synchro-aurige: send mail', () => {
       if (placeTmp) await placeTmp.delete()
     }
     await candidatModel.findByIdAndDelete(candidatCreated._id)
-    server.close(done)
   })
-  afterAll(async () => {
+  afterAll(async (done) => {
     await removeCentres()
     await removeInspecteur()
     await disconnect()
+    server.close(done)
   })
   it('should get mail success before validate aurige', async done => {
     candidatCreated = await createCandidatToTestAurige(candidatPassed)
