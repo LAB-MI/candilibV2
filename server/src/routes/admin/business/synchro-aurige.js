@@ -6,6 +6,8 @@ import {
   deleteCandidat,
   findCandidatByNomNeph,
   addPlaceToArchive,
+  addCanBookFrom,
+  // addCanBookFrom,
 } from '../../../models/candidat'
 // import { findWhitelistedByEmail } from '../../../models/whitelisted'
 import {
@@ -48,6 +50,8 @@ import {
   AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED,
   AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED,
 } from '../../common/constants'
+
+export const BY_AURIGE = 'AURIGE'
 
 const getCandidatStatus = (nom, neph, status, details, message) => ({
   nom,
@@ -382,13 +386,16 @@ const updateValidCandidat = async (
   if (dateTimeEchec) {
     const canBookFrom = getCandBookFrom(candidat, dateTimeEchec, lastNoReussite.reason)
     if (canBookFrom) {
-      infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
       await cancelBookingAfterExamFailure(
+        // next variable candidat is Object Mongo from parent
         candidat,
         canBookFrom,
         dateTimeEchec,
         lastNoReussite,
       )
+      infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
+      // next variable candidat is Object Mongo from parent
+      addCanBookFrom(candidat, canBookFrom.toISO(), lastNoReussite.reason, BY_AURIGE)
     }
   }
 
@@ -517,9 +524,11 @@ export const synchroAurige = async (buffer, callback) => {
         infoCandidatToUpdate,
         loggerInfoCandidat,
       )
+
       if (resultArchive) {
         return resultArchive
       }
+
       // Mettre à jour le candidat
       const resultUpdated = await updateValidCandidat(
         candidat,
@@ -576,7 +585,7 @@ const releaseAndArchivePlace = async (
     candidat,
     place,
     newReason,
-    'AURIGE',
+    BY_AURIGE,
     isCandilib,
   )
   await removeBookedPlace(place)
