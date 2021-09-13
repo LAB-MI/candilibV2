@@ -108,14 +108,14 @@ const iconAccess = (canAccessAt) => {
   return result
 }
 
-const groupeNumber = (status) => status !== null ? `${Number(status) + 1}` : 'Pas de connection aujourd\'hui pour ce candidat'
+const groupeNumber = (status) => status !== null ? `${Number(status) + 1}` : 'Pas de connexion aujourd\'hui pour ce candidat'
 
 const candidatProfileInfoDictionary = [
   [
     ['canAccessAt', 'Statut', iconAccess],
     ['canAccessAt', 'Date d\'accès', convertToLegibleDate],
     ['status', 'Groupe enregistré', groupeNumber],
-    ['statusInToken', 'Groupe actif (n\'éxiste que si le candidat c\'est connecté aujourd\'hui)', groupeNumber],
+    ['statusInToken', "Groupe actif (n'existe que si le candidat s'est connecté aujourd'hui)", groupeNumber],
     ['lastConnection', 'Date de la dernière connexion', convertToLegibleDate],
   ],
   [
