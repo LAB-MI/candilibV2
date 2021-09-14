@@ -41,7 +41,7 @@ COPY src ./src
 #COPY tests ./tests
 COPY tests/setup.js ./tests/setup.js
 COPY .env.candidat .env.admin ./
-COPY babel.config.js cypress.json jsconfig.json package-lock.json package.json vue.config.js ./
+COPY babel.config.js cypress.json jsconfig.json package-lock.json package.json vue.config.js tailwind.config.js ./
 # Install app dependencies
 
 ARG LINE_DELAY
