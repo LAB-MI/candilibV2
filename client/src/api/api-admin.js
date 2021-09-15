@@ -230,6 +230,17 @@ const apiAdmin = {
     })
     return json
   },
+
+  async updateCandidatHomeDepartement (id, homeDepartement) {
+    const url = `${apiPaths.admin.candidats}/${id}`
+    const json = await apiClient.patch(url, {
+      headers: getHeadersForAdminJson(),
+      body: JSON.stringify({
+        homeDepartement,
+      }),
+    })
+    return json
+  },
   async getInspecteurs () {
     const json = await apiClient.get(`${apiPaths.admin.inspecteurs}`, {
       headers: getHeadersForAdminJson(),

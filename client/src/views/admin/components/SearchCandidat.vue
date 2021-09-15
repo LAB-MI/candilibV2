@@ -125,6 +125,7 @@ const candidatProfileInfoDictionary = [
     }, true],
     ['portable', 'Portable'],
     ['departement', ' Département'],
+    ['homeDepartement', ' Département de résidence'],
   ],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDateTime],
