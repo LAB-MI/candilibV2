@@ -566,11 +566,15 @@ export const updateCandidatById = async (id, updatedData) => {
  *
  * @returns {Promise.<Candidat>}
  */
-export const updateCandidatCanBookFrom = async (candidat, canBookFrom, candidatStatus) => {
+export const updateCandidatCanBookFrom = async (candidat, canBookFrom, candidatStatus, reason) => {
   if (candidatStatus) {
     candidat.status = candidatStatus
   }
   candidat.canBookFrom = canBookFrom
+  addCanBookFrom(candidat,
+    canBookFrom,
+    reason,
+  )
   return candidat.save()
 }
 
@@ -864,15 +868,15 @@ export const totalCandidatsSignIn = async (filter) => {
   return count
 }
 
-export const addCanBookFrom = (
+export function addCanBookFrom (
   // next variable candidat is Object Mongo from parent
   candidat,
   canBookFrom,
   reason,
   byUser,
   byAdmin,
-  isCandilib,
-) => {
+  isCandilib = true,
+) {
   const createdAt = getFrenchLuxon()
   if (!candidat.canBookFroms) {
     candidat.canBookFroms = []

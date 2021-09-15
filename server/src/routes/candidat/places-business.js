@@ -429,7 +429,8 @@ export const removeReservationPlace = async (
 
   let dateAfterBook
   loggerInfo.action = 'CANCEL_BOOKING_RULES'
-  const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date)
+  const reason = isModified ? REASON_MODIFY : REASON_CANCEL
+  const datetimeAfterBook = await applyCancelRules(candidat, bookedPlace.date, reason)
   loggerInfo.action = 'REMOVE_BOOKING'
   bookedPlace.visibleAt = getDateVisibleForPlaces()
   await removeBookedPlace(bookedPlace)
@@ -437,7 +438,7 @@ export const removeReservationPlace = async (
   await archivePlace(
     candidat,
     bookedPlace,
-    isModified ? REASON_MODIFY : REASON_CANCEL,
+    reason,
   )
 
   let statusmail = true
@@ -540,13 +541,13 @@ export const canCancelReservation = previewDateReservation => {
  *
  * @returns {DateTime}
  */
-export const applyCancelRules = async (candidat, previewDateReservation) => {
+export const applyCancelRules = async (candidat, previewDateReservation, reason) => {
   const previewBookedPlace = getFrenchLuxonFromJSDate(previewDateReservation)
 
   const canBookFromDate = getCandBookFrom(candidat, previewBookedPlace)
 
   const candidatStatus = (canBookFromDate.diffNow('seconds') > 0) && `${getCandidatStatuses().nbStatus - 1}`
-  await updateCandidatCanBookFrom(candidat, canBookFromDate, candidatStatus)
+  await updateCandidatCanBookFrom(candidat, canBookFromDate, candidatStatus, reason)
 
   return canBookFromDate
 }
