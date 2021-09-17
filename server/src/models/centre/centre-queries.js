@@ -356,7 +356,7 @@ export const countCenterByNameAndGeoDep = async (nom, geoDepartement) => {
     geoDepartement,
   }
 
-  const countCentres = await Centre.count(filters)
+  const countCentres = await Centre.countDocuments(filters)
 
   return countCentres
 }
