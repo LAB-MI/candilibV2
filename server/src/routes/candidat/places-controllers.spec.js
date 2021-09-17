@@ -109,8 +109,16 @@ const cancelReservationWithSuccess = async (
         expectedCanBookFrom,
       ).date,
     )
-    expect(candidat).toHaveProperty('canBookFrom', expectedCanBookFrom.toJSDate())
+    const expectedCanBookFromDate = expectedCanBookFrom.toJSDate()
+    expect(candidat).toHaveProperty('canBookFrom', expectedCanBookFromDate)
     expect(candidat).toHaveProperty('status', '5')
+    expect(candidat.canBookFroms).toBeDefined()
+    expect(candidat.canBookFroms[0]).toHaveProperty('canBookFrom', expectedCanBookFromDate)
+    expect(candidat.canBookFroms[0]).toHaveProperty('reason', REASON_CANCEL)
+    const canBookFromCreatedAt = getFrenchLuxonFromJSDate(candidat.canBookFroms[0].createdAt)
+    expect(canBookFromCreatedAt.hasSame(getFrenchLuxon(), 'day')).toBe(true)
+    expect(candidat.canBookFroms[0].byUser).toBeUndefined()
+    expect(candidat.canBookFroms[0].byAdmin).toBeUndefined()
   } else {
     expect(body).toHaveProperty('message', message)
     expect(candidat.canBookFrom).toBeUndefined()
