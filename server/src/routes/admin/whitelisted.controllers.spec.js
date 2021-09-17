@@ -12,7 +12,7 @@ import {
 import { createWhitelisted } from '../../models/whitelisted'
 import whitelistedModel from '../../models/whitelisted/whitelisted.model'
 
-describe('Test get and export candidats', () => {
+xdescribe('Test get and export candidats', () => {
   const department = '93'
   beforeAll(async () => {
     await connect()
