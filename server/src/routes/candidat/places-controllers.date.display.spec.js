@@ -28,6 +28,8 @@ import { verifyAccesPlacesByCandidat } from './middlewares/verify-candidat'
 import { candidatStatuses } from '../common/__mocks__/candidat-status-const'
 import { updateCandidatById } from '../../models/candidat'
 
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
+
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
 jest.mock('../middlewares/verify-token')
@@ -146,6 +148,8 @@ describe('Get places available and display at 12h.', () => {
     placesCreatedBefore = places.find(({ visibleAt }) =>
       getFrenchLuxonFromJSDate(visibleAt).equals(visibleAtNow12h),
     )
+    await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+    await placesAndGeoDepartementsAndCentresCache.setPlaces()
   })
 
   afterAll(async () => {
@@ -154,7 +158,7 @@ describe('Get places available and display at 12h.', () => {
   })
 
   describe.each`
-  homeDept | isInRecentlyDept |  hasPenalty 
+  homeDept | isInRecentlyDept |  hasPenalty
   ${'93'}  | ${true}          |  ${false}
   ${'75'}  | ${false}         |  ${false}
   ${'75'}  | ${true}          |  ${false}

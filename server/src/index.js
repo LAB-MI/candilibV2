@@ -16,7 +16,7 @@ import { connect, disconnect } from './mongo-connection'
 import { techLogger } from './util'
 import { initDB, initStatus, updateDB } from './initDB/initDB'
 import pm2 from 'pm2'
-import { accumulatorLog } from './routes/middlewares'
+import { accumulatorLog, placesAndGeoDepartementsAndCentresCache } from './routes/middlewares'
 
 const PORT = process.env.PORT || 8000
 
@@ -45,6 +45,13 @@ async function startServer () {
         techLogger.error(error)
       }
     }
+
+    try {
+      await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+    } catch (error) {
+      techLogger.error(error)
+    }
+
     http.createServer(app).listen(PORT, '0.0.0.0')
     techLogger.info(`Server running at http://0.0.0.0:${PORT}/`)
 

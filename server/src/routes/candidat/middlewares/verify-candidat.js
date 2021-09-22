@@ -5,6 +5,7 @@
 import { findCandidatById } from '../../../models/candidat'
 import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../../util'
 import { sendErrorResponse } from '../../../util/send-error-response'
+import { getBeginDateAuthorize } from '../places-business'
 
 /**
  * Vérifier l'accès du candidat pour obtenir les places et pour réserver
@@ -45,6 +46,8 @@ export async function verifyAccesPlacesByCandidat (req, res, next) {
       error.isTokenValid = false
       throw error
     }
+
+    req.canBookFromLuxonDate = getBeginDateAuthorize(candidat)
 
     req.candidatStatus = candidat.status
     // Pour la gestion de pénalité, BEGIN
