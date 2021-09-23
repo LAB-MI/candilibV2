@@ -18,12 +18,7 @@ const mongoURL =
 let reconnectTries = 30
 const reconnectInterval = process.env.NODE_ENV === 'production' ? 2000 : 1000
 
-const mongooseOpts = {
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useCreateIndex: true,
-  useUnifiedTopology: true,
-}
+const mongooseOpts = {}
 
 export const connect = async () => {
   let mongoUri
@@ -42,8 +37,9 @@ export const connect = async () => {
   } catch (err) {
     --reconnectTries
     if (reconnectTries > 0) {
+      console.log('connect', { err })
       techLogger.warn(
-        `Could not connect to Mongo at ${mongoUri}, ${reconnectTries} tries left`,
+        `Could not connect to Mongo at ${mongoUri}, ${reconnectTries} tries left.`,
       )
       return delay(reconnectInterval).then(connect)
     } else {
