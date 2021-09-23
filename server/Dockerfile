@@ -32,13 +32,14 @@ FROM base as development
 ARG MIRROR_DEBIAN
 ARG APP_VERSION
 COPY src src/
+COPY patches patches/
 COPY babel.config.js package.json package-lock.json ./
 # Install package utils for development
 RUN (set -x && [ -z "$MIRROR_DEBIAN" ] || sed -i.orig -e "s|http://deb.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9|g ; s|http://security.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9-security|g" /etc/apt/sources.list) ; \
       buildPkgs="libcurl3 libssl1.1" ; \
       apt-get update && apt-get install -y --no-install-recommends $buildPkgs
 # Install app dependencies
-RUN npm --no-git-tag-version version ${APP_VERSION} ; npm ci
+RUN npm --no-git-tag-version version ${APP_VERSION} ; npm ci --unsafe-perm
 ENV NODE_ICU_DATA="/app/node_modules/full-icu"
 
 #CMD ["npm", "start"]

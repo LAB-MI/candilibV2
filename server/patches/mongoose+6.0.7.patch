@@ -1,0 +1,13 @@
+diff --git a/node_modules/mongoose/lib/helpers/timestamps/setupTimestamps.js b/node_modules/mongoose/lib/helpers/timestamps/setupTimestamps.js
+index 6e99b9d..8b39842 100644
+--- a/node_modules/mongoose/lib/helpers/timestamps/setupTimestamps.js
++++ b/node_modules/mongoose/lib/helpers/timestamps/setupTimestamps.js
+@@ -31,7 +31,7 @@ module.exports = function setupTimestamps(schema, timestamps) {
+   }
+ 
+   if (createdAt && !schema.paths[createdAt]) {
+-    schemaAdditions[createdAt] = { type: Date, immutable: true };
++    schemaAdditions[createdAt] = { [schema.options.typeKey || 'type']: Date, immutable: true };
+   }
+   schema.add(schemaAdditions);
+ 

@@ -4,6 +4,7 @@
   "description": "Réserver sa place d'examen pratique du permis de conduire",
   "main": "index.js",
   "scripts": {
+    "postinstall": "patch-package",
     "prebuild": "npm run test",
     "build": "babel src -d dist --copy-files",
     "db": "docker-compose -f docker-compose.dev.db.yml up -d",
@@ -67,6 +68,7 @@
     "morgan": "^1.10.0",
     "nodemailer": "^6.6.2",
     "nodemailer-html-to-text": "^3.2.0",
+    "patch-package": "^6.4.7",
     "pm2": "^5.1.0",
     "sanitize-html": "^2.4.0",
     "stream-buffers": "^3.0.2",
