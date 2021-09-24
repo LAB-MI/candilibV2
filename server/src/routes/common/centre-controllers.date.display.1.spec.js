@@ -21,6 +21,7 @@ import {
 import { verifyAccesPlacesByCandidat } from '../candidat/middlewares/verify-candidat'
 import { updateCandidatById } from '../../models/candidat'
 import { getFrenchLuxon } from '../../util'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
@@ -43,6 +44,9 @@ describe('For Status, Get centres with the numbers places available in departeme
     resetCreatedInspecteurs()
     const { centreSelected } = await createOnePlaceVisibleAt12h()
     centreSelected1 = centreSelected
+
+    await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+    await placesAndGeoDepartementsAndCentresCache.setPlaces()
   })
 
   afterAll(async () => {
@@ -50,7 +54,7 @@ describe('For Status, Get centres with the numbers places available in departeme
   })
 
   describe.each`
-  homeDept | isInRecentlyDept |  hasPenalty 
+  homeDept | isInRecentlyDept |  hasPenalty
   ${'93'}  | ${true}          |  ${false}
   ${'75'}  | ${false}         |  ${false}
   ${'75'}  | ${true}          |  ${false}

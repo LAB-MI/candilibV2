@@ -19,6 +19,7 @@ import {
   setNowAfter12h,
   setNowAtNow,
 } from '../candidat/__tests__/luxon-time-setting'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
@@ -40,6 +41,9 @@ describe('Get centres with the numbers places available in departements and disp
     resetCreatedInspecteurs()
 
     await createPlacesWithVisibleAt()
+
+    await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+    await placesAndGeoDepartementsAndCentresCache.setPlaces()
   })
 
   afterAll(async () => {
