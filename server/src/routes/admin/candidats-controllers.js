@@ -21,7 +21,7 @@ import {
   checkToken,
   email as emailRegex,
 } from '../../util'
-import { modifyCandidatEmail } from './candidats-business'
+import { getCandidat, modifyCandidatEmail } from './candidats-business'
 
 /**
  * Importe le fichier JSON d'aurige
@@ -344,9 +344,9 @@ export const updateCandidats = async (req, res) => {
     newEmail,
     admin: req.userId,
   }
-
+  const isOkForNewEmail = newEmail && emailRegex.test(newEmail)
   // Check params
-  if (!candidatId || !newEmail || !emailRegex.test(newEmail)) {
+  if (!candidatId || (!isOkForNewEmail)) {
     const message = BAD_PARAMS
     appLogger.warn({ ...loggerInfo, description: message })
     res.status(400).json({
@@ -356,11 +356,15 @@ export const updateCandidats = async (req, res) => {
     return
   }
   try {
-    const { candidat, messages } = await modifyCandidatEmail(candidatId, newEmail, loggerInfo)
-    const message = `Le courriel du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`
-    appLogger.info({ ...loggerInfo, description: message })
-
-    res.status(200).send({ success: true, message: [message, ...messages].toString() })
+    const message = []
+    const foundedCandidat = await getCandidat(candidatId)
+    if (isOkForNewEmail) {
+      const { candidat, messages } = await modifyCandidatEmail(foundedCandidat, newEmail, loggerInfo)
+      message.push(`Le courriel du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
+      message.concat(messages)
+      appLogger.info({ ...loggerInfo, description: message })
+    }
+    res.status(200).send({ success: true, message: message.toString() })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.message, error })
     res.status(error.status || 500).send({ success: false, message: error.message })

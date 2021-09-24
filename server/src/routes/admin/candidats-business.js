@@ -8,13 +8,22 @@ import { findCandidatById, updateCandidatEmail } from '../../models/candidat'
 import { sendMailUpdateCandidatEmail } from '../business'
 import { appLogger } from '../../util'
 
+export const getCandidat = async (candidatId) => {
+  const candidat = await findCandidatById(candidatId)
+  if (!candidat) {
+    const error = new Error('Candidat non trouvé')
+    error.status = 400
+    throw error
+  }
+  return candidat
+}
+
 /**
  * Modifier l'adresse mail du candidat
- * @param {*} candidatId
+ * @param {*} candidat - document mongoose d'un candidat
  * @param {string} newEmail
  */
-export const modifyCandidatEmail = async (candidatId, newEmail, loggerInfo) => {
-  let candidat = await findCandidatById(candidatId)
+export const modifyCandidatEmail = async (candidat, newEmail, loggerInfo) => {
   const { email } = candidat
   const newEmailToLower = newEmail.toLowerCase()
   if (email.toLowerCase() === newEmailToLower) {
@@ -22,22 +31,22 @@ export const modifyCandidatEmail = async (candidatId, newEmail, loggerInfo) => {
     error.status = 400
     throw error
   }
-  candidat = await updateCandidatEmail(candidat, newEmailToLower)
+  const updatedCandidat = await updateCandidatEmail(candidat, newEmailToLower)
   const messages = []
   try {
-    await sendMailUpdateCandidatEmail(candidat)
+    await sendMailUpdateCandidatEmail(updatedCandidat)
   } catch (error) {
-    const message = `Le courriel pour ${candidat.email} n'a pas pu être envoyé`
+    const message = `Le courriel pour ${updatedCandidat.email} n'a pas pu être envoyé`
     appLogger.warn({ ...loggerInfo, description: message, error })
     messages.push(message)
   }
   try {
-    await sendMailUpdateCandidatEmail(candidat, email)
+    await sendMailUpdateCandidatEmail(updatedCandidat, email)
   } catch (error) {
     const message = `Le courriel pour ${email} n'a pas pu être envoyé`
     appLogger.warn({ ...loggerInfo, description: message, error })
     messages.push(message)
   }
 
-  return { candidat, messages }
+  return { candidat: updatedCandidat, messages }
 }
