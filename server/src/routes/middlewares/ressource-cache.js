@@ -103,7 +103,7 @@ export const placesAndGeoDepartementsAndCentresCache = {
   // timerIntervalSetting in msec
   timerIntervalPlacesSetting: 1000,
   timerIntervalPlacesSettingId: null,
-  timerIntervalGeoDepartementsAndCentresSetting: 60000 * 60 * 12,
+  timerIntervalGeoDepartementsAndCentresSetting: 1000,
   timerIntervalGeoDepartementsAndCentresSettingId: null,
   bufferForPlaces: {},
   bufferForGeoDepartementsAndCentres: {},
