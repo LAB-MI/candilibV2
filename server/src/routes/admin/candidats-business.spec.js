@@ -37,7 +37,7 @@ describe('Update Email of a candidat', () => {
 
   it('should 400 when the same e-mail ', async () => {
     try {
-      const { candidat, messages } = await modifyCandidatEmail(candidatCreated._id, candidatToCreate.email)
+      const { candidat, messages } = await modifyCandidatEmail(candidatCreated, candidatToCreate.email)
       expect(candidat).toBeNull()
       expect(messages).toHaveLength(0)
     } catch (error) {
@@ -48,7 +48,7 @@ describe('Update Email of a candidat', () => {
 
   it('should update candidat email', async () => {
     const newEmail = 'test.newamil@test.com'
-    const { candidat, messages } = await modifyCandidatEmail(candidatCreated._id, newEmail)
+    const { candidat, messages } = await modifyCandidatEmail(candidatCreated, newEmail)
     expect(candidat).toBeDefined()
     expect(candidat).toHaveProperty('email', newEmail)
     expect(messages).toHaveLength(0)
