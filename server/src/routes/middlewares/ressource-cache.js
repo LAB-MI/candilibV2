@@ -13,9 +13,15 @@ const getGeoDepartementsAndCentresInfo = async () => {
       accumulator[centre.geoDepartement] = {}
     }
     accumulator[centre.geoDepartement][centre.nom] = {
-      [centre.departement]: centre,
+      _id: centre._id,
+      geoloc: centre.geoloc,
+      adresse: centre.adresse,
+      geoDepartement: centre.geoDepartement,
+      nom: centre.nom,
       places: [],
     }
+    // console.log('accumulator::!!', accumulator[centre.geoDepartement][centre.nom])
+    // console.log('accumulator!!', accumulator)
     return accumulator
   }, {})
 
@@ -38,22 +44,25 @@ const getPlacesAndCentresInfo = async () => {
   const placesAndCentreInformations = await Object.entries(rawGeoDepartementsCentresInformations).reduce(async (acc, [geoDepartement, centreInfos]) => {
     acc = await acc
 
+    if (!acc[geoDepartement]) {
+      acc[geoDepartement] = {}
+    }
+
     await Promise.all(Object.entries(centreInfos)
       .map(async ([nomCentre, centre], index) => {
-        if (!acc[geoDepartement]) {
-          acc[geoDepartement] = {}
-        }
         if (!acc[geoDepartement][nomCentre]) {
-          acc[geoDepartement][nomCentre] = { places: [] }
+          // console.log('centre::!!', centre)
+          acc[geoDepartement][nomCentre] = centre
         }
-        const rawPlaces = await findPlacesByDepartementAndCentre(
+
+        const rawPlaces = (await findPlacesByDepartementAndCentre(
           nomCentre,
           geoDepartement,
           beginDateLuxon,
           endDateLuxon,
           dateDisplayPlaces,
           dateVisibleBefore,
-        )
+        )) || []
 
         const cleanPlaces = rawPlaces.map(({ placesInfo }) => placesInfo)
           .flat(1)
@@ -75,9 +84,6 @@ const getPlacesAndCentresInfo = async () => {
 export function getPlacesAsIntervalOf (intervalInMilscd) {
   placesAndGeoDepartementsAndCentresCache.timerIntervalPlacesSettingId = setInterval(() => {
     placesAndGeoDepartementsAndCentresCache.setPlaces()
-      .then(() => {
-        techLogger.info('Places setted')
-      })
       .catch((error) => {
         techLogger.error(error)
       })
@@ -87,9 +93,6 @@ export function getPlacesAsIntervalOf (intervalInMilscd) {
 export function getGeoDepartementAndPlacesAsIntervalOf (intervalInMilscd) {
   placesAndGeoDepartementsAndCentresCache.timerIntervalGeoDepartementsAndCentresSettingId = setInterval(() => {
     placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
-      .then(() => {
-        techLogger.info('GeoDepartemens and Centres setted')
-      })
       .catch((error) => {
         techLogger.error(error)
       })
@@ -109,16 +112,46 @@ export const placesAndGeoDepartementsAndCentresCache = {
     return this.bufferForPlaces
   },
   async setPlaces () {
-    const tmpBuffer = await getPlacesAndCentresInfo()
-    this.bufferForPlaces = tmpBuffer
+    this.bufferForPlaces = await getPlacesAndCentresInfo()
   },
 
   getGeoDepartemensAndCentres () {
     return this.bufferForGeoDepartementsAndCentres
   },
   async setGeoDepartemensAndCentres () {
-    const tmpBuffer = await getGeoDepartementsAndCentresInfo()
-    this.bufferForGeoDepartementsAndCentres = tmpBuffer
+    this.bufferForGeoDepartementsAndCentres = await getGeoDepartementsAndCentresInfo()
+  },
+
+  getOnlyGeoDepartements () {
+    return Object.keys(this.bufferForGeoDepartementsAndCentres)
+  },
+
+  getOnlyCentreListWithPlaceCount ({
+    geoDepartement,
+    beginDate,
+    endDate,
+    dateDisplayPlaces,
+    dateVisibleBefore,
+  }) {
+    const centreListWithPlaceCount = Object.entries(this.bufferForPlaces[geoDepartement])
+      .map(([nomCentre, centre], index) => {
+        const count = centre.places.filter(place =>
+          place.createdAt < dateDisplayPlaces &&
+          place.visibleAt < dateVisibleBefore &&
+          place.date >= beginDate && place.date < endDate,
+        ).length ? 1 : 0
+
+        const rawCentre = {
+          ...centre,
+        }
+        delete rawCentre.places
+        return {
+          centre: rawCentre,
+          count,
+        }
+      })
+
+    return centreListWithPlaceCount
   },
 
   resetPlaces () {

@@ -4,9 +4,9 @@
  */
 
 import { appLogger } from '../../util'
-import { getGeoDepartementsFromCentres } from '../../models/centre'
 import { UNKNOWN_ERROR_GET_DEPARTEMENTS_INFOS } from '../admin/message.constants'
 import { getGeoDepartementsInfos } from './departements-business'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 /**
  * Récupérer les géo-départements actives
@@ -47,7 +47,8 @@ export async function getActiveGeoDepartementsInfos (req, res) {
 }
 
 const getGeoDepartementsOnlyIdsOrWithInfos = async (loggerContent, userId, justIsCentreHaveAvailablePlace = true) => {
-  const geoDepartementsId = await getGeoDepartementsFromCentres()
+  const geoDepartementsId = placesAndGeoDepartementsAndCentresCache.getOnlyGeoDepartements()
+
   appLogger.info({
     ...loggerContent,
     description: `nombres d'élements trouvé: ${geoDepartementsId.length ||
