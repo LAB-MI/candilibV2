@@ -29,6 +29,12 @@ jest.mock('../middlewares/verify-token')
 jest.mock('../middlewares/verify-user')
 jest.mock('../common/candidat-status-const')
 jest.mock('../candidat/middlewares/verify-candidat')
+
+const promiseForCacheRessource = async () => {
+  await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+  await placesAndGeoDepartementsAndCentresCache.setPlaces()
+}
+
 describe('For Status, Get centres with the numbers places available in departements and display at 12h by status', () => {
   let centreSelected1
   let idCandidat
@@ -101,7 +107,7 @@ describe('For Status, Get centres with the numbers places available in departeme
         [after12h50Expected, 50],
       ])(`Should response 200 to find centres with %i place from departement 75 when is after 12h%i for status ${status}`, async (expected, minutes) => {
         setNowAfter12h(minutes)
-
+        await promiseForCacheRessource()
         const departement = centreSelected1.geoDepartement
         const { body } = await request(app)
           .get(`${apiPrefix}/candidat/centres?departement=${departement}`)

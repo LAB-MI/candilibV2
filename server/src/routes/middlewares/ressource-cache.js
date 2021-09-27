@@ -20,8 +20,7 @@ const getGeoDepartementsAndCentresInfo = async () => {
       nom: centre.nom,
       places: [],
     }
-    // console.log('accumulator::!!', accumulator[centre.geoDepartement][centre.nom])
-    // console.log('accumulator!!', accumulator)
+
     return accumulator
   }, {})
 
@@ -51,7 +50,6 @@ const getPlacesAndCentresInfo = async () => {
     await Promise.all(Object.entries(centreInfos)
       .map(async ([nomCentre, centre], index) => {
         if (!acc[geoDepartement][nomCentre]) {
-          // console.log('centre::!!', centre)
           acc[geoDepartement][nomCentre] = centre
         }
 
