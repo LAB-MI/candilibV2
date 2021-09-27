@@ -26,8 +26,10 @@ export const deleteEvaluationById = async id => {
 
 export const updateEvaluationById = async (id, { rating, comment }) => {
   const evaluation = await findEvaluationById(id)
+  if (!evaluation) {
+    throw new Error('No evaluation found with id')
+  }
   evaluation.rating = rating
   evaluation.comment = comment
-  await evaluation.update()
-  return evaluation
+  return await evaluation.save()
 }

@@ -182,7 +182,7 @@ describe('Test places business: get dates from places available', () => {
   })
 
   // TODO: Unskip next 'it' test after 31/12/2020
-  xit('Should get many places from Centre2 when ETG expired in 2 months', async () => {
+  it.skip('Should get many places from Centre2 when ETG expired in 2 months', async () => {
     const dateETGExpired = getFrenchLuxon().plus({ months: 1 })
 
     findCandidatById.mockResolvedValue({

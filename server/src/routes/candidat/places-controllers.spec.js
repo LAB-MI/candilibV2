@@ -157,7 +157,7 @@ describe('Test get dates from places available', () => {
     await removeCentres()
     await deleteCandidats()
     await disconnect()
-    await app.close()
+    // await app.close()
   })
 
   it('should 200 without booking and information to custom the front', async () => {
@@ -219,7 +219,7 @@ describe('Test get dates from places available when there are booked', () => {
     await removeCentres()
     await deleteCandidats()
     await disconnect()
-    await app.close()
+    // await app.close()
   })
 
   it('Should 200 with an available place for centre 2 at a day 19 11h', async () => {
@@ -376,7 +376,7 @@ describe('Test to book and to delete reservation by candidat', () => {
       console.warn(e)
     }
     await disconnect()
-    await app.close()
+    // await app.close()
   })
 
   it('should booked place by candidat with info bookedAt', async () => {
@@ -545,7 +545,7 @@ describe('test to get booking by candidat', () => {
     await deleteCandidats()
 
     await disconnect()
-    await app.close()
+    // await app.close()
   })
 
   it('Should get 200 to send mail of convocation', async () => {
@@ -727,7 +727,7 @@ describe('test to book with the date authorize by candiat', () => {
     await deleteCandidats()
 
     await disconnect()
-    await app.close()
+    // await app.close()
   })
 
   it('Should get 400 to book one place before now', async () => {
@@ -774,7 +774,7 @@ describe('test to book with the date authorize by candiat', () => {
   })
 
   // TODO: A supprimer dans le v2.10.0
-  xit('Should get 400 to book a same place', async () => {
+  it.skip('Should get 400 to book a same place', async () => {
     const selectedPlace = await createTestPlace(placeCanBook)
     await makeResa(selectedPlace, selectedCandidat, bookedAt)
     const { body } = await request(app)
@@ -835,11 +835,11 @@ describe('test to change a booking, 6 days before the appointemnt, by candidat '
     await deleteCandidats()
 
     await disconnect()
-    await app.close()
+    // await app.close()
   })
 
   // TODO: A supprimer dans le v2.10.0
-  xit('should 400 to book another reservation with a date no authorize', async () => {
+  it.skip('should 400 to book another reservation with a date no authorize', async () => {
     const selectedCentre = createdCentres[1]
     const selectedPlace = await createTestPlace(placeCanBook)
 
@@ -889,12 +889,12 @@ describe('Cancel a reservation', () => {
     await deleteCandidats()
 
     await disconnect()
-    await app.close()
+    // await app.close()
   })
   /**
  * @deprecated v2.10.0 une annulation une pénalité
  */
-  xit('Should get 200 to cancel a reservation without penalty', async () => {
+  it.skip('Should get 200 to cancel a reservation without penalty', async () => {
     const place = await createTestPlace(placeCancellable)
     await makeResa(place, selectedCandidat1, bookedAt)
 
@@ -953,7 +953,7 @@ describe('get reservation with candidat failed', () => {
     await deleteCandidats()
 
     await disconnect()
-    await app.close()
+    // await app.close()
   })
 
   it('Should get 200 to get reservation from the candidat failed ', async () => {

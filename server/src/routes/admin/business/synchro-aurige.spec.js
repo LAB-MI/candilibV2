@@ -691,7 +691,7 @@ describe('synchro-aurige', () => {
     })
 
     it('should archive candidat who passed exam and have not already valided by aurige', async () => {
-      await candidatModel.update(
+      await candidatModel.updateOne(
         { codeNeph: candidatPassed.codeNeph },
         { $set: { isValidatedByAurige: false } },
       )
