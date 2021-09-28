@@ -307,7 +307,7 @@ export const findCandidatsMatching = async (
   const search = `${startingWith ? '^' : ''}${$search}${endingWith ? '$' : ''}`
   const searchRegex = new RegExp(`${search}`, 'i')
 
-  const nbResultsMax = await Candidat.count({
+  const nbResultsMax = await Candidat.countDocuments({
     $or: [
       { nomNaissance: searchRegex },
       { prenom: searchRegex },

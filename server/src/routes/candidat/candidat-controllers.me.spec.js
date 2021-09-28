@@ -22,9 +22,9 @@ describe('Get me from candidat', () => {
     validToken = await createToken('idCandidat', 'candidat', undefined, { status: '0', firstConnection: true, dateReussiteETG: dateETGLuxon.toJSDate() })
   })
 
-  afterAll(async () => {
-    // await disconnect()
-  })
+  // afterAll(async () => {
+  //   // await disconnect()
+  // })
 
   it('should response 200 and contetn the informations from candidat', async () => {
     findCandidatById.mockResolvedValue({ status: '1' })

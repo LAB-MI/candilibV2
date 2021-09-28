@@ -1,15 +1,17 @@
-@import './assets/tailwind.pcss'
+@import './assets/tailwind.pcss';
 
 @font-face {
   font-family: Poppins-Regular;
-  src: url('./assets/fonts/poppins/Poppins-Regular.woff2'),
-       url('./assets/fonts/poppins/Poppins-Regular.ttf');
+  src:
+    url('./assets/fonts/poppins/Poppins-Regular.woff2'),
+    url('./assets/fonts/poppins/Poppins-Regular.ttf');
 }
 
 @font-face {
   font-family: Poppins-Medium;
-  src: url('./assets/fonts/poppins/Poppins-Medium.woff2'),
-       url('./assets/fonts/poppins/Poppins-Medium.ttf');
+  src:
+    url('./assets/fonts/poppins/Poppins-Medium.woff2'),
+    url('./assets/fonts/poppins/Poppins-Medium.ttf');
 }
 
 a {
@@ -30,10 +32,12 @@ h2 {
   color: #777;
   margin-top: 1em;
 }
+
 h3 {
   font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
   color: #333;
   font-size: 1.5em;
+  /* stylelint-disable-next-line */
   @apply font-bold
 }
 
@@ -80,7 +84,6 @@ h3 {
   &--v-start {
     align-items: flex-start;
   }
-
 
   &--h-end {
     justify-content: flex-end;

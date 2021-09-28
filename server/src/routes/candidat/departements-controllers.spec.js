@@ -43,7 +43,7 @@ describe('Test get dates from places available', () => {
     await removeCentres()
     await deleteCandidats()
     await disconnect()
-    await app.close()
+    // await app.close()
   })
 
   it('should have two geoDepartements, 93 and 75', async () => {

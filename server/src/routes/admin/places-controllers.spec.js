@@ -89,6 +89,7 @@ jest.mock('../middlewares/verify-token')
 jest.mock('../../util/logger')
 jest.mock('../../util/token')
 require('../../util/logger').setWithConsole(false)
+
 describe('Test places controller', () => {
   let candidatsCreated
   let inspecteurCreated
