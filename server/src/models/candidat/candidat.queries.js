@@ -10,6 +10,7 @@ import { candidatStatuses } from '../../routes/common/candidat-status-const'
 import { addArchivedCandidatStatus } from '../archived-candidat-status/archived-candidat-status-queries'
 import { NbDaysInactivityDefault, NB_DAYS_INACTIVITY } from '../../config'
 import { findStatusByType, upsertStatusByType } from '../status'
+import { REASON_UNKNOWN } from '../../routes/common/reason.constants'
 
 /**
  * Crée un candidat
@@ -598,6 +599,26 @@ export const updateCandidatCanBookFrom = async (candidat, canBookFrom, candidatS
   return candidat.save()
 }
 
+export const deleteCandidatCanBookFrom = async (candidat, byAdmin) => {
+  const { canBookFrom: oldCanBookFrom, canBookFroms } = candidat
+  if (!oldCanBookFrom) {
+    return new Error("Le candidat n'a pas de pénalité")
+  }
+
+  if (!canBookFroms || !canBookFroms.length) {
+    addCanBookFrom(candidat,
+      oldCanBookFrom,
+      REASON_UNKNOWN,
+    )
+  }
+
+  candidat.canBookFrom = undefined
+  const archivedCanBookFrom = candidat.canBookFroms.find(({ canBookFrom }) => canBookFrom === oldCanBookFrom)
+  archivedCanBookFrom.deleteBy = byAdmin
+  archivedCanBookFrom.deletedAt = getFrenchLuxon().toISO()
+
+  return candidat.save()
+}
 /**
  * Met à jour la date de première connexion du candidat si elle existe
  *

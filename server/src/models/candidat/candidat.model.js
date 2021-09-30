@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import sanitizeHtml from 'sanitize-html'
+import { enumReasonCanbookFrom } from '../../routes/common/reason.constants'
 
 import {
   email as emailRegex,
@@ -20,6 +21,7 @@ const canBookFromFields = {
   },
   reason: {
     type: String,
+    enum: enumReasonCanbookFrom,
     default: undefined,
   },
   createdAt: {
@@ -44,6 +46,22 @@ const canBookFromFields = {
   isCandilib: {
     type: Boolean,
     default: undefined,
+  },
+  deleteBy: {
+    type: {
+      ...UserFields,
+      _id: {
+        type: ObjectId,
+        required: true,
+      },
+    },
+    default: undefined,
+    required: false,
+  },
+  deletedAt: {
+    type: Date,
+    default: undefined,
+    required: false,
   },
 }
 
