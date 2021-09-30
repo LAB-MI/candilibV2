@@ -38,7 +38,7 @@ import {
   OK_UPDATED,
   EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
 } from '../../../util'
-import { REASON_EXAM_FAILED } from '../../common/reason.constants'
+import { REASON_ABSENT_EXAM, REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
   isETGExpired,
   isMoreThan2HoursAgo,
@@ -214,7 +214,7 @@ async function synchroAurigeSuccess (
     expect(lengthPenalties).toBeGreaterThan(0)
     const penalty = canBookFroms[lengthPenalties - 1]
     expect(penalty.canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
-    expect(penalty.reason).toEqual(candidatInfo.objetDernierNonReussite)
+    expect(penalty.reason).toEqual(candidatInfo.objetDernierNonReussite === ObjectLastNoReussitValues.ABSENT ? REASON_ABSENT_EXAM : REASON_EXAM_FAILED)
     expect(penalty.byUser).toEqual(BY_AURIGE)
     expect(penalty.byAdmin).toBeUndefined()
     const createdAt = getFrenchLuxonFromJSDate(penalty.createdAt)

@@ -1,3 +1,4 @@
+// For no reussite
 export const ECHEC = 'Echec'
 export const ABSENT = 'Absent'
 export const CANCELED = 'Annulé'

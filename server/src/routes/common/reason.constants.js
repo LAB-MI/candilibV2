@@ -19,3 +19,24 @@ export const statutReasonDictionnary = {
   [REASON_REMOVE_RESA_ADMIN]: 'Annulation admin',
   [REASON_MODIFY_RESA_ADMIN]: 'Modification admin',
 }
+
+// For canBookFrom
+export const enumReasonCanbookFrom = [
+  REASON_UNKNOWN,
+  REASON_CANCEL,
+  REASON_MODIFY,
+  REASON_EXAM_FAILED,
+  REASON_ABSENT_EXAM,
+  REASON_EXAM_FAILED + NO_CANDILIB,
+  REASON_ABSENT_EXAM + NO_CANDILIB,
+]
+
+export const canBookFromReasonDictionnary = {
+  [REASON_UNKNOWN]: 'Raison inconnue',
+  [REASON_CANCEL]: 'Annulation',
+  [REASON_MODIFY]: 'Modification',
+  [REASON_EXAM_FAILED]: 'Échec',
+  [REASON_ABSENT_EXAM]: 'Absent·e',
+  [REASON_EXAM_FAILED + NO_CANDILIB]: 'Échec hors candilib',
+  [REASON_ABSENT_EXAM + NO_CANDILIB]: 'Absent·e hors candilib',
+}
