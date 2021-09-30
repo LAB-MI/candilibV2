@@ -125,7 +125,10 @@ const candidatProfileInfoDictionary = [
     }, true],
     ['portable', 'Portable'],
     ['departement', ' Département'],
-    ['homeDepartement', ' Département de résidence'],
+    ['homeDepartement', 'Département de résidence', (homeDepartement) => {
+      Vue.component('fiche-candidat-home-departement', () => import('./candidats/FicheCandidatHomeDepartement'))
+      return { name: 'fiche-candidat-home-departement', data: { homeDepartement } }
+    }, true],
   ],
   [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDateTime],
