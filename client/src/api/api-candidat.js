@@ -209,11 +209,11 @@ const apiCandidat = {
     return json
   },
 
-  async sendContactUs (candidat, subject, message, hadSignUp) {
+  async sendContactUs (candidat, subject, message, hadSignUp, isModifyHomeDepartement) {
     const json = await apiClient.post(`${apiPaths.candidat.contactUs}`, {
       headers: getHeadersForJson(),
       body: JSON.stringify({
-        candidat, subject, message, hadSignUp,
+        candidat, subject, message, hadSignUp, isModifyHomeDepartement,
       }),
     })
     return json

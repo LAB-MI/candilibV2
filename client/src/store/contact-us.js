@@ -24,10 +24,10 @@ export default {
     },
   },
   actions: {
-    async [FETCH_SEND_CONTACT_US_REQUEST] ({ commit, dispatch }, { candidat, subject, message, hadSignup }) {
+    async [FETCH_SEND_CONTACT_US_REQUEST] ({ commit, dispatch }, { candidat, subject, message, hadSignup, isModifyHomeDepartement }) {
       commit(FETCH_SEND_CONTACT_US_REQUEST)
       try {
-        const result = await api.candidat.sendContactUs(candidat, subject, message, hadSignup)
+        const result = await api.candidat.sendContactUs(candidat, subject, message, hadSignup, isModifyHomeDepartement)
         if (result.success === false) {
           throw new Error("Désolé, votre demande n'a pas pu être envoyé. Veuillez réessayer plus tard.")
         }
