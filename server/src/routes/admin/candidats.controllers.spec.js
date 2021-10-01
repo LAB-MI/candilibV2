@@ -3,6 +3,7 @@ import { getFrenchLuxon } from '../../util'
 import candidatModel from '../../models/candidat/candidat.model'
 import { createCandidat } from '../../models/candidat'
 import { BAD_PARAMS } from './message.constants'
+import { createUser } from '../../models/user'
 
 const { connect, disconnect } = require('../../mongo-connection')
 const {
@@ -67,7 +68,7 @@ xdescribe('Test get and export candidats', () => {
   })
 })
 
-describe('Test update candidat e-mail by admin', () => {
+describe('Test update candidat e-mail by admin and remove penalty', () => {
   const candidatToCreate = {
     codeNeph: '123456789000',
     nomNaissance: 'Nom à tester',
@@ -77,31 +78,54 @@ describe('Test update candidat e-mail by admin', () => {
     departement: '93',
     homeDepartement: '75',
   }
+  const user = {
+    email: 'Admin@example.com',
+    password: 'S3cr3757uff!',
+    departements: ['75', '93'],
+  }
+
+  const user76 = {
+    email: 'Admin76@example.com',
+    password: 'S3cr3757uff!',
+    departements: ['76'],
+  }
 
   let candidatCreated
+  let userCreated
+  let user76Created
   beforeAll(async () => {
     await connect()
     candidatCreated = await createCandidat(candidatToCreate)
+    userCreated = await createUser(user.email, user.password, user.departements)
+    user76Created = await createUser(user76.email, user76.password, user76.departements)
+    require('../middlewares/verify-token').__setIdAdmin(
+      userCreated._id,
+      userCreated.departements,
+    )
   })
   afterAll(async () => {
     await candidatModel.deleteOne({ _id: candidatCreated._id })
-
+    await userCreated.deleteOne()
+    await user76Created.deleteOne()
     await disconnect()
   })
 
-  const itHttpRequest = async (email, status) => {
+  const itHttpRequest = async (bodyToSend, status) => {
+    const { email, removePenalty } = bodyToSend || {}
     const { body } = await request(app)
       .patch(`${apiPrefix}/admin/candidats/${candidatCreated._id}`)
       .send({
         email,
+        removePenalty,
       })
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(status)
+
     return body
   }
-  const itWithBadParams = async (email, message) => {
-    const body = await itHttpRequest(email, 400)
+  const itWithBadParams = async (bodyToSend, message) => {
+    const body = await itHttpRequest(bodyToSend, 400)
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', message || BAD_PARAMS)
   }
@@ -110,16 +134,53 @@ describe('Test update candidat e-mail by admin', () => {
   })
 
   it('should 400 when email do not  have the good format', async () => {
-    await itWithBadParams('test.com')
+    await itWithBadParams({ email: 'test.com' })
   })
 
   it('should 400 when it is the same email ', async () => {
-    await itWithBadParams(candidatToCreate.email, "Pas de modification pour le candidat 123456789000/NOM A TESTER. La nouvelle adresse courriel est identique à l'ancienne.")
+    await itWithBadParams({ email: candidatToCreate.email }, "Pas de modification pour le candidat 123456789000/NOM A TESTER. La nouvelle adresse courriel est identique à l'ancienne.")
   })
 
   it('should 200 when update candidat email', async () => {
-    const body = await itHttpRequest('test.update@test.com', 200)
+    const body = await itHttpRequest({ email: 'test.update@test.com' }, 200)
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('message', 'Le courriel du candidat 123456789000/NOM A TESTER a été changé.')
+  })
+
+  it('should 400 when send a email and removePenalty', async () => {
+    await itWithBadParams({ email: 'test@ŧest.com', removePenalty: true })
+  })
+
+  it('should 400 when send removPenalty at false', async () => {
+    await itWithBadParams({ removePenalty: false })
+  })
+
+  it('should 400 when send removPenalty at true without canBookFrom', async () => {
+    await itWithBadParams({ removePenalty: true }, "Le candidat n'a pas de date de fin pénalité")
+  })
+
+  it('should 200 when send removPenalty at true with canBookFrom', async () => {
+    candidatCreated.canBookFrom = getFrenchLuxon().plus({ days: 10 })
+    await candidatCreated.save()
+    const body = await itHttpRequest({ removePenalty: true }, 200)
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message', `La pénalité du candidat ${candidatCreated.codeNeph}/${candidatCreated.nomNaissance} a été retirée.`)
+    candidatCreated.canBookFrom = undefined
+    await candidatCreated.save()
+  })
+
+  it('should 400 when send removPenalty at true with canBookFrom using by admin 76', async () => {
+    require('../middlewares/verify-token').__setIdAdmin(
+      user76Created._id,
+      user76Created.departements,
+    )
+
+    candidatCreated.canBookFrom = getFrenchLuxon().plus({ days: 10 })
+    await candidatCreated.save()
+
+    await itWithBadParams({ removePenalty: true }, `Vous n'êtes pas autorisé à retirer la pénalité de ce candidat. Veuillez contacter les répartiteurs du département ${candidatCreated.departement}.`)
+
+    candidatCreated.canBookFrom = undefined
+    await candidatCreated.save()
   })
 })
