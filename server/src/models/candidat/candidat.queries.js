@@ -605,15 +605,20 @@ export const deleteCandidatCanBookFrom = async (candidat, byAdmin) => {
     return new Error("Le candidat n'a pas de pénalité")
   }
 
-  if (!canBookFroms || !canBookFroms.length) {
+  let archivedCanBookFrom
+  if (canBookFroms && canBookFroms.length) {
+    archivedCanBookFrom = candidat.canBookFroms.find(({ canBookFrom }) => canBookFrom === oldCanBookFrom)
+  }
+
+  if (!archivedCanBookFrom) {
     addCanBookFrom(candidat,
       oldCanBookFrom,
       REASON_UNKNOWN,
     )
+    archivedCanBookFrom = candidat.canBookFroms[candidat.canBookFroms.length - 1]
   }
 
   candidat.canBookFrom = undefined
-  const archivedCanBookFrom = candidat.canBookFroms.find(({ canBookFrom }) => canBookFrom === oldCanBookFrom)
   archivedCanBookFrom.deleteBy = byAdmin
   archivedCanBookFrom.deletedAt = getFrenchLuxon().toISO()
 

@@ -21,7 +21,7 @@ import {
   checkToken,
   email as emailRegex,
 } from '../../util'
-import { modifyCandidatEmail, modifyCandidatHomeDepartement, getDepartements } from './candidats-business'
+import { modifyCandidatEmail, modifyCandidatHomeDepartement, getDepartements, deletePenalty } from './candidats-business'
 
 /**
  * Importe le fichier JSON d'aurige
@@ -336,19 +336,27 @@ export const getBookedCandidats = async (req, res) => {
  */
 export const updateCandidats = async (req, res) => {
   const { id: candidatId } = req.params
-  const { email: newEmail, homeDepartement } = req.body
+  const { email: newEmail, homeDepartement, removePenalty } = req.body
+  const adminId = req.userId
 
   const loggerInfo = {
     request_id: req.request_id,
     section: 'admin-update-candidats',
     candidatId,
     newEmail,
-    admin: req.userId,
+    removePenalty,
+    adminId,
   }
 
   const isOkForNewEmail = newEmail && emailRegex.test(newEmail)
+  const askRemoveCanBookFrom = (removePenalty === true)
   // Check params
-  if (!candidatId || (newEmail && homeDepartement)) {
+  if (
+    !candidatId ||
+    (newEmail && homeDepartement) ||
+    (newEmail && (removePenalty !== undefined)) ||
+    ((removePenalty !== undefined) && homeDepartement)
+  ) {
     const message = BAD_PARAMS
     appLogger.warn({ ...loggerInfo, description: message })
     res.status(400).json({
@@ -357,6 +365,7 @@ export const updateCandidats = async (req, res) => {
     })
     return
   }
+
   try {
     const message = []
     if (newEmail && isOkForNewEmail) {
@@ -373,6 +382,12 @@ export const updateCandidats = async (req, res) => {
       message.push(`Le département de résidence du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
       appLogger.info({ ...loggerInfo, description: message })
       return res.status(200).send({ success: true, message: message.toString() })
+    }
+    if (askRemoveCanBookFrom) {
+      const candidat = await deletePenalty(candidatId, adminId)
+      const message = `La pénalité du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été retirée.`
+      appLogger.info({ ...loggerInfo, description: message })
+      return res.status(200).send({ success: true, message })
     }
 
     appLogger.error({ ...loggerInfo, description: BAD_PARAMS })
