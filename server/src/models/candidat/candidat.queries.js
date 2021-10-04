@@ -587,7 +587,7 @@ export const deleteCandidatCanBookFrom = async (candidat, byAdmin) => {
 
   let archivedCanBookFrom
   if (canBookFroms && canBookFroms.length) {
-    archivedCanBookFrom = candidat.canBookFroms.find(({ canBookFrom }) => canBookFrom === oldCanBookFrom)
+    archivedCanBookFrom = candidat.canBookFroms.find(({ canBookFrom }) => canBookFrom.getTime() === oldCanBookFrom.getTime())
   }
 
   if (!archivedCanBookFrom) {
@@ -599,7 +599,7 @@ export const deleteCandidatCanBookFrom = async (candidat, byAdmin) => {
   }
 
   candidat.canBookFrom = undefined
-  archivedCanBookFrom.deleteBy = byAdmin
+  archivedCanBookFrom.deletedBy = byAdmin
   archivedCanBookFrom.deletedAt = getFrenchLuxon().toISO()
 
   return candidat.save()

@@ -47,7 +47,7 @@ const canBookFromFields = {
     type: Boolean,
     default: undefined,
   },
-  deleteBy: {
+  deletedBy: {
     type: {
       ...UserFields,
       _id: {
