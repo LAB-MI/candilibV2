@@ -2,7 +2,7 @@
   <div class="t-update-candidat-email">
     <div
       v-if="!isOnEdit"
-      class="u-flex u-flex--v-center t-update-candidat-email-read"
+      class="u-flex u-flex--v-center t-update-candidat-home-departement-read"
     >
       <strong class="label">{{ title }} :</strong>
       <span
@@ -13,7 +13,7 @@
         v-show="!isOnEdit"
         color="success"
         icon
-        class="btn-label t-update-candidat-email-edit"
+        class="btn-label t-update-candidat-home-departement-edit"
         @click="isOnEdit=true"
       >
         <v-icon>create</v-icon>
@@ -25,13 +25,19 @@
       :submit-action="updateCandidatHomeDepartement"
       :disabled-ok="!(selectedHomeDepartement !== homeDepartement)"
     >
-      <v-select
-        v-model="selectedHomeDepartement"
-        :items="adminDepartementList"
-        label="Selectionner le nouveau département de résidence"
-        dense
-        solo
-      />
+      <div>
+        <strong class="label">
+          {{ title }} :
+        </strong>
+        <v-select
+          v-model="selectedHomeDepartement"
+          class="mt-4"
+          :items="adminDepartementList"
+          label="Selectionner le nouveau département de résidence"
+          dense
+          solo
+        />
+      </div>
     </confirm-box>
   </div>
 </template>
