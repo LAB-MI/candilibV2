@@ -191,6 +191,13 @@ export const getCandidats = async (req, res) => {
               archiveReason: humanReadableReason || place.archiveReason,
             }
           })
+        if (candidat.canBookFroms && candidat.canBookFroms.length) {
+          candidat.canBookFroms = candidat.canBookFroms.map(canBookFrom => ({
+            ...canBookFrom,
+            reason: statutReasonDictionnary[canBookFrom.reason],
+          }))
+        }
+
         let decodedToken
         try {
           decodedToken = checkToken(candidat.token)
