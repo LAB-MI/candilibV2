@@ -21,6 +21,10 @@ export const FETCH_UPDATE_CANDIDAT_HOME_DEPARTEMENT_REQUEST = 'FETCH_UPDATE_CAND
 export const FETCH_UPDATE_CANDIDAT_HOME_DEPARTEMENT_SUCCESS = 'FETCH_UPDATE_CANDIDAT_HOME_DEPARTEMENT_SUCCESS'
 export const FETCH_UPDATE_CANDIDAT_HOME_DEPARTEMENT_FAILURE = 'FETCH_UPDATE_CANDIDAT_HOME_DEPARTEMENT_FAILURE'
 
+export const FETCH_REMOVE_CANDIDAT_CANBOOK_REQUEST = 'FETCH_REMOVE_CANDIDAT_CANBOOK_REQUEST'
+export const FETCH_REMOVE_CANDIDAT_CANBOOK_SUCCESS = 'FETCH_REMOVE_CANDIDAT_CANBOOK_SUCCESS'
+export const FETCH_REMOVE_CANDIDAT_CANBOOK_FAILURE = 'FETCH_REMOVE_CANDIDAT_CANBOOK_REQUEST'
+
 export default {
   state: {
     candidats: {
@@ -93,6 +97,17 @@ export default {
     FETCH_UPDATE_CANDIDAT_HOME_DEPARTEMENT_FAILURE (state) {
       state.candidats.isFetching = false
     },
+
+    FETCH_REMOVE_CANDIDAT_CANBOOK_REQUEST (state) {
+      state.candidats.isFetching = true
+    },
+    FETCH_REMOVE_CANDIDAT_CANBOOK_SUCCESS (state) {
+      state.candidats.isFetching = false
+    },
+    FETCH_REMOVE_CANDIDAT_CANBOOK_FAILURE (state) {
+      state.candidats.isFetching = false
+    },
+
   },
 
   actions: {
@@ -157,13 +172,16 @@ export default {
       try {
         commit(FETCH_UPDATE_CANDIDAT_HOME_DEPARTEMENT_REQUEST)
         const id = state.candidats.selected?._id
+
         if (!id) {
           throw new Error('Informations manquante pour ce candidat')
         }
+
         const { success, message } = await api.admin.updateCandidatHomeDepartement(id, homeDepartement)
         if (!success) {
           throw new Error(message)
         }
+
         dispatch(SHOW_SUCCESS, message)
         commit(FETCH_UPDATE_CANDIDAT_HOME_DEPARTEMENT_SUCCESS)
         dispatch(FETCH_CANDIDAT_INFO_REQUEST, id)
@@ -173,5 +191,31 @@ export default {
         throw error
       }
     },
+
+    async FETCH_REMOVE_CANDIDAT_CANBOOK_REQUEST ({ commit, dispatch, rootState: { admin: { departements } }, state }) {
+      try {
+        commit(FETCH_REMOVE_CANDIDAT_CANBOOK_REQUEST)
+        const id = state.candidats.selected?._id
+
+        if (!id) {
+          throw new Error('Informations manquante pour ce candidat')
+        }
+
+        const { success, message } = await api.admin.removeCandidatPenalty(id)
+
+        if (!success) {
+          throw new Error(message)
+        }
+
+        dispatch(SHOW_SUCCESS, message)
+        commit(FETCH_REMOVE_CANDIDAT_CANBOOK_SUCCESS)
+        dispatch(FETCH_CANDIDAT_INFO_REQUEST, id)
+      } catch (error) {
+        dispatch(SHOW_ERROR, error.message)
+        commit(FETCH_REMOVE_CANDIDAT_CANBOOK_FAILURE, error)
+        throw error
+      }
+    },
+
   },
 }
