@@ -42,6 +42,22 @@
             :items="getActionsHistory()"
           />
         </v-card>
+
+        <v-card class="t-result-candidat-historique-des-penalites">
+          <v-card-title primary-title>
+            Les pénalités&nbsp;:
+          </v-card-title>
+          <v-card-text>
+            <div>
+              <v-data-table
+                :headers="headersPenalties"
+                :items="getPenalties()"
+                hide-default-footer
+                class="elevation-1 t-history-penalties"
+              />
+            </div>
+          </v-card-text>
+        </v-card>
       </profile-info>
     </v-expand-transition>
   </div>
@@ -134,7 +150,6 @@ const candidatProfileInfoDictionary = [
       Vue.component('fiche-candidat-can-book-from', () => import('./candidats/FicheCandidatCanBookFrom'))
       return { name: 'fiche-candidat-can-book-from', data: { canBookFromLegible: convertToLegibleDate(canBookFrom), canBookFrom } }
     }, true],
-    // convertToLegibleDate],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
     ['noReussites', 'Non réussites', legibleNoReussites],
     ['nbEchecsPratiques', 'Nombre d\'échec(s)'],
@@ -157,6 +172,13 @@ export default {
       icon: '',
       profileInfo: undefined,
       fetchAutocompleteAction: FETCH_AUTOCOMPLETE_CANDIDATS_REQUEST,
+      headersPenalties: [
+        { text: 'A partir du', value: 'createdAt' },
+        { text: 'Finit le', value: 'canBookFrom' },
+        { text: 'Dû à ', value: 'reason' },
+        { text: 'Retiré par', value: 'deletedBy' },
+        { text: 'Retiré le', value: 'deletedAt' },
+      ],
     }
   },
 
@@ -229,6 +251,20 @@ export default {
           bookedAt: actionBookedAtDate,
         }
       }).reverse()
+    },
+
+    getPenalties () {
+      const { canBookFroms } = this.candidat
+      if (!canBookFroms || !(canBookFroms.length)) {
+        return []
+      }
+      return canBookFroms.map(item => ({
+        ...item,
+        canBookFrom: convertToLegibleDate(item.canBookFrom),
+        deletedAt: item.deletedAt && getFrenchDateTimeFromIso(item.deletedAt),
+        deletedBy: item.deletedBy?.email,
+        createdAt: convertToLegibleDate(item.createdAt),
+      })).reverse()
     },
   },
 }
