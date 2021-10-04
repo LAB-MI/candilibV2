@@ -130,7 +130,11 @@ const candidatProfileInfoDictionary = [
     ['presignedUpAt', 'Inscrit le', convertToLegibleDateTime],
     ['isValidatedEmail', 'Email validé', transformBoolean],
     ['isValidatedByAurige', 'Statut Aurige', transformBoolean],
-    ['canBookFrom', 'Réservation possible dès le', convertToLegibleDate],
+    ['canBookFrom', 'Réservation possible dès le', (canBookFrom) => {
+      Vue.component('fiche-candidat-can-book-from', () => import('./candidats/FicheCandidatCanBookFrom'))
+      return { name: 'fiche-candidat-can-book-from', data: { canBookFromLegible: convertToLegibleDate(canBookFrom), canBookFrom } }
+    }, true],
+    // convertToLegibleDate],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
     ['noReussites', 'Non réussites', legibleNoReussites],
     ['nbEchecsPratiques', 'Nombre d\'échec(s)'],
