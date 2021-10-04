@@ -446,6 +446,26 @@ export const updateCandidatEmail = async (candidat, email) => {
 }
 
 /**
+ * Met à jour le département de résidence du candidat
+ *
+ * @async
+ * @function
+ *
+ * @param {Candidat} candidat - Candidat
+ * @param {string} homeDepartement - Département de résidence
+ *
+ * @returns {Promise.<Candidat>}
+ */
+export const updateCandidatHomeDepartement = async (candidat, homeDepartement) => {
+  if (!candidat) {
+    throw new Error('candidat is undefined')
+  }
+  await candidat.updateOne({ homeDepartement })
+  const updatedCandidat = await Candidat.findById(candidat._id)
+  return updatedCandidat
+}
+
+/**
  * Met à jour le token du candidat
  *
  * @async

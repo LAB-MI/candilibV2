@@ -4,7 +4,7 @@
  * @module
  */
 
-import { findCandidatById, updateCandidatEmail } from '../../models/candidat'
+import { findCandidatById, updateCandidatEmail, updateCandidatHomeDepartement } from '../../models/candidat'
 import { sendMailUpdateCandidatEmail } from '../business'
 import { appLogger } from '../../util'
 
@@ -40,4 +40,24 @@ export const modifyCandidatEmail = async (candidatId, newEmail, loggerInfo) => {
   }
 
   return { candidat, messages }
+}
+
+/**
+ * Modifier le département de résidence du candidat
+ * @param {*} candidatId
+ * @param {string} homeDepartement
+ */
+export const modifyCandidatHomeDepartement = async (candidatId, newHomeDepartement) => {
+  let candidat = await findCandidatById(candidatId)
+  const { homeDepartement } = candidat
+
+  if (homeDepartement === newHomeDepartement) {
+    const error = new Error(`Pas de modification pour le candidat ${candidat.codeNeph}/${candidat.nomNaissance}. Le nouveau département de résidence est identique à l'ancien.`)
+    error.status = 400
+    throw error
+  }
+
+  candidat = await updateCandidatHomeDepartement(candidat, newHomeDepartement)
+
+  return { candidat }
 }
