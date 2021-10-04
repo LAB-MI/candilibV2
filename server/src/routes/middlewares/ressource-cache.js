@@ -83,7 +83,11 @@ export function getPlacesAsIntervalOf (intervalInMilscd) {
   placesAndGeoDepartementsAndCentresCache.timerIntervalPlacesSettingId = setInterval(() => {
     placesAndGeoDepartementsAndCentresCache.setPlaces()
       .catch((error) => {
-        techLogger.error(error)
+        techLogger.error({
+          section: 'get-places-as-interval-of',
+          description: error.message,
+          error,
+        })
       })
   }, intervalInMilscd)
 }
@@ -92,7 +96,11 @@ export function getGeoDepartementAndPlacesAsIntervalOf (intervalInMilscd) {
   placesAndGeoDepartementsAndCentresCache.timerIntervalGeoDepartementsAndCentresSettingId = setInterval(() => {
     placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
       .catch((error) => {
-        techLogger.error(error)
+        techLogger.error({
+          section: 'get-geo-departement-and-places-as-interval-of',
+          description: error.message,
+          error,
+        })
       })
   }, intervalInMilscd)
 }
