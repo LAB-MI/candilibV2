@@ -32,8 +32,8 @@ describe('Candidat penalty queries', () => {
     expect(candidatUpdated.canBookFroms[0]).toHaveProperty('canBookFrom', canBookFrom)
     expect(candidatUpdated.canBookFroms[0]).toHaveProperty('reason', REASON_UNKNOWN)
     expect(candidatUpdated.canBookFroms[0]).toHavePropertyAtNow('deletedAt')
-    expect(candidatUpdated.canBookFroms[0].deleteBy).toBeDefined()
-    expect(candidatUpdated.canBookFroms[0].deleteBy.email).toBe(admin.email)
+    expect(candidatUpdated.canBookFroms[0].deletedBy).toBeDefined()
+    expect(candidatUpdated.canBookFroms[0].deletedBy.email).toBe(admin.email)
   })
 
   it('should remove penalty and add a history ', async () => {
@@ -56,7 +56,7 @@ describe('Candidat penalty queries', () => {
     expect(lastCanBookFrom).toHaveProperty('canBookFrom', canBookFrom)
     expect(lastCanBookFrom).toHaveProperty('reason', REASON_EXAM_FAILED)
     expect(lastCanBookFrom).toHavePropertyAtNow('deletedAt')
-    expect(lastCanBookFrom.deleteBy).toBeDefined()
-    expect(lastCanBookFrom.deleteBy.email).toBe(admin.email)
+    expect(lastCanBookFrom.deletedBy).toBeDefined()
+    expect(lastCanBookFrom.deletedBy.email).toBe(admin.email)
   })
 })
