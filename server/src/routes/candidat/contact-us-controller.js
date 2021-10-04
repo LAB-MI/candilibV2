@@ -4,11 +4,12 @@ import { sendMessageByContactUs } from './contact-us-business'
 
 export const contactUs = async (req, res) => {
   const candidatId = req.userId
-  const { candidat, subject, hasSignUp, message } = req.body
+  const { candidat, subject, hasSignUp, message, isModifyHomeDepartement } = req.body
 
   const loggerInfo = {
     section: 'contact-us',
     candidatId,
+    isModifyHomeDepartement,
   }
   try {
     const { codeNeph, nomNaissance, email, departement } = candidat || {}
@@ -38,6 +39,7 @@ export const contactUs = async (req, res) => {
       hasSignUp,
       subject,
       message,
+      isModifyHomeDepartement,
     )
 
     appLogger.info({ ...loggerInfo, description })
