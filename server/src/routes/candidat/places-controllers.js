@@ -93,6 +93,8 @@ export async function getPlacesByCentre (req, res) {
   const homeDepartement = req.candidatHomeDepartement
   const isInRecentlyDept = req.isInRecentlyDept
 
+  const beginDate = req.canBookFromLuxonDate.toISO()
+
   const { nomCentre, geoDepartement, begin, end, dateTime } = req.query
 
   const loggerInfo = {
@@ -102,6 +104,7 @@ export async function getPlacesByCentre (req, res) {
     centreId,
     nomCentre,
     begin,
+    beginDate,
     end,
     dateTime,
     candidatId,
@@ -167,7 +170,7 @@ export async function getPlacesByCentre (req, res) {
         nomCentre,
         geoDepartement,
         candidatId,
-        begin,
+        beginDate,
         end,
         getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
       )

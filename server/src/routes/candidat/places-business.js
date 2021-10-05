@@ -20,7 +20,6 @@ import {
   findAvailablePlacesByCentres,
   findPlaceBookedByCandidat,
   findPlacesByCentreAndDate,
-  findPlacesByDepartementAndCentre,
   removeBookedPlace,
   findPlacesByCandidat,
 } from '../../models/place'
@@ -46,6 +45,7 @@ import { REASON_CANCEL, REASON_MODIFY } from '../common/reason.constants'
 import { candidatCanReservePlaceForThisPeriod } from './util'
 import { getDateVisibleForPlaces, getDateDisplayPlaces, getDateVisibleBefore, getVisibilityHourString } from './util/date-to-display'
 import { getCandidatStatuses } from '../common/candidat-status'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 /**
  * Renvoie tous les créneaux d'un centre
@@ -160,20 +160,24 @@ export const getPlacesByDepartementAndCentre = async (
     endDate,
   )
 
-  const dates = await findPlacesByDepartementAndCentre(
-    nomCentre,
-    geoDepartement,
-    beginPeriod,
-    endPeriod,
-    getDateDisplayPlaces(),
-    getDateVisibleBefore(candidatStatus),
-  )
+  const placesCache = placesAndGeoDepartementsAndCentresCache.getPlaces()
+  let dates = []
 
-  const result = dates
-    .map(({ placesInfo }) => placesInfo)
-    .flat(1)
-    .map(place => getFrenchLuxonFromJSDate(place.date).toISO())
-  return [...new Set(result)]
+  if (placesCache[geoDepartement] && placesCache[geoDepartement][nomCentre] && placesCache[geoDepartement][nomCentre]?.places.length) {
+    const visibleBeforeDate = getDateVisibleBefore(candidatStatus)
+    const dateDisplayPlaces = getDateDisplayPlaces()
+
+    const tmp = placesCache[geoDepartement][nomCentre].places
+      .filter(
+        place => place.createdAt < dateDisplayPlaces &&
+        place.visibleAt < visibleBeforeDate &&
+        place.date >= beginPeriod && place.date < endPeriod,
+      ).map(item => item.date.toISO())
+
+    dates = [...new Set(tmp)]
+  }
+
+  return dates
 }
 
 /**

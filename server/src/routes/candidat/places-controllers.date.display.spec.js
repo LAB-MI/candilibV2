@@ -28,6 +28,8 @@ import { verifyAccesPlacesByCandidat } from './middlewares/verify-candidat'
 import { candidatStatuses } from '../common/__mocks__/candidat-status-const'
 import { updateCandidatById } from '../../models/candidat'
 
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
+
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
 jest.mock('../middlewares/verify-token')
@@ -52,7 +54,13 @@ expect.extend({
   },
 })
 
-async function expectedPlaces (nbplaces) {
+const promiseForCacheRessource = async () => {
+  await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+  await placesAndGeoDepartementsAndCentresCache.setPlaces()
+}
+
+const expectedPlaces = async (nbplaces) => {
+  await promiseForCacheRessource()
   const response = await request(app)
     .get(
       `${apiPrefix}/candidat/places?geoDepartement=${centreDateDisplay.geoDepartement}&nomCentre=${centreDateDisplay.nom}`,
@@ -65,6 +73,7 @@ async function expectedPlaces (nbplaces) {
 }
 
 const expectedPlaceByNameCentreAndGeoDep = async (date, nbPlaces) => {
+  await promiseForCacheRessource()
   const placeSelected = encodeURIComponent(date)
   const response = await request(app)
     .get(
@@ -79,6 +88,7 @@ const expectedPlaceByNameCentreAndGeoDep = async (date, nbPlaces) => {
   nbPlaces && expect(body[0]).toBe(getFrenchLuxonFromJSDate(date).toISO())
 }
 const expectedBooked = async (placeSelected, idCandidat) => {
+  await promiseForCacheRessource()
   const response = await request(app)
     .patch(`${apiPrefix}/candidat/places`)
     .set('Accept', 'application/json')
@@ -105,7 +115,9 @@ const expectedBooked = async (placeSelected, idCandidat) => {
   placefounded.booked = undefined
   await placefounded.save()
 }
+
 const expectedBookedFailed = async (placeSelected, idCandidat) => {
+  await promiseForCacheRessource()
   const { body } = await request(app)
     .patch(`${apiPrefix}/candidat/places`)
     .set('Accept', 'application/json')
@@ -146,6 +158,8 @@ describe('Get places available and display at 12h.', () => {
     placesCreatedBefore = places.find(({ visibleAt }) =>
       getFrenchLuxonFromJSDate(visibleAt).equals(visibleAtNow12h),
     )
+    // await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+    // await placesAndGeoDepartementsAndCentresCache.setPlaces()
   })
 
   afterAll(async () => {
@@ -154,7 +168,7 @@ describe('Get places available and display at 12h.', () => {
   })
 
   describe.each`
-  homeDept | isInRecentlyDept |  hasPenalty 
+  homeDept | isInRecentlyDept |  hasPenalty
   ${'93'}  | ${true}          |  ${false}
   ${'75'}  | ${false}         |  ${false}
   ${'75'}  | ${true}          |  ${false}
@@ -193,6 +207,7 @@ describe('Get places available and display at 12h.', () => {
           done()
         })
       })
+
       afterEach((done) => {
         PlaceModel.updateMany({ candidat: { $exists: true } }, { $set: { candidat: undefined, booked: undefined } }).exec().finally(() => {
           done()

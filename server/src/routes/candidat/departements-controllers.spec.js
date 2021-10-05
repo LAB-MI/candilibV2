@@ -14,6 +14,7 @@ import {
   resetCreatedInspecteurs,
   setInitCreatedPlaces,
 } from '../../models/__tests__'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -36,6 +37,9 @@ describe('Test get dates from places available', () => {
     require('../middlewares/verify-token').__setIdCandidat(
       createdCandidats[0]._id,
     )
+
+    await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+    await placesAndGeoDepartementsAndCentresCache.setPlaces()
   })
 
   afterAll(async () => {

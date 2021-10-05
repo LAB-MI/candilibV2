@@ -560,6 +560,8 @@ export const findPlacesByDepartementAndCentre = async (
             $project: {
               _id: 0,
               date: 1,
+              createdAt: 1,
+              visibleAt: 1,
             },
           },
         ],
