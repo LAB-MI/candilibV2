@@ -3,6 +3,7 @@ import { getFrenchLuxon } from '../../util'
 import candidatModel from '../../models/candidat/candidat.model'
 import { createCandidat } from '../../models/candidat'
 import { BAD_PARAMS } from './message.constants'
+import { createDepartement } from '../../models/departement'
 
 const { connect, disconnect } = require('../../mongo-connection')
 const {
@@ -67,7 +68,7 @@ xdescribe('Test get and export candidats', () => {
   })
 })
 
-describe('Test update candidat e-mail by admin', () => {
+describe('Test update candidat e-mail and homeDepartement by admin', () => {
   const candidatToCreate = {
     codeNeph: '123456789000',
     nomNaissance: 'Nom à tester',
@@ -81,6 +82,7 @@ describe('Test update candidat e-mail by admin', () => {
   let candidatCreated
   beforeAll(async () => {
     await connect()
+    await createDepartement({ _id: '78', email: '78@dep.com', isAddedRecently: false })
     candidatCreated = await createCandidat(candidatToCreate)
   })
   afterAll(async () => {
@@ -89,19 +91,26 @@ describe('Test update candidat e-mail by admin', () => {
     await disconnect()
   })
 
-  const itHttpRequest = async (email, status) => {
+  const itHttpRequest = async (homeDepartement, email, status) => {
+    const params = { email, homeDepartement }
+    if (!homeDepartement) {
+      delete params.homeDepartement
+    }
+    if (!email) {
+      delete params.email
+    }
     const { body } = await request(app)
       .patch(`${apiPrefix}/admin/candidats/${candidatCreated._id}`)
       .send({
-        email,
+        ...params,
       })
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(status)
     return body
   }
-  const itWithBadParams = async (email, message) => {
-    const body = await itHttpRequest(email, 400)
+  const itWithBadParams = async (homeDepartement, email, message) => {
+    const body = await itHttpRequest(homeDepartement, email, 400)
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', message || BAD_PARAMS)
   }
@@ -110,16 +119,31 @@ describe('Test update candidat e-mail by admin', () => {
   })
 
   it('should 400 when email do not  have the good format', async () => {
-    await itWithBadParams('test.com')
+    await itWithBadParams(null, 'test.com')
   })
 
   it('should 400 when it is the same email ', async () => {
-    await itWithBadParams(candidatToCreate.email, "Pas de modification pour le candidat 123456789000/NOM A TESTER. La nouvelle adresse courriel est identique à l'ancienne.")
+    await itWithBadParams(null, candidatToCreate.email, "Pas de modification pour le candidat 123456789000/NOM A TESTER. La nouvelle adresse courriel est identique à l'ancienne.")
   })
 
   it('should 200 when update candidat email', async () => {
-    const body = await itHttpRequest('test.update@test.com', 200)
+    const body = await itHttpRequest(null, 'test.update@test.com', 200)
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('message', 'Le courriel du candidat 123456789000/NOM A TESTER a été changé.')
+  })
+
+  it('should 400 when homeDepartement is undefined', async () => {
+    await itWithBadParams()
+  })
+
+  it('should 400 when homeDepartement does not exist', async () => {
+    await itWithBadParams('11', null)
+  })
+
+  it('should 200 when update candidat homeDepartement', async () => {
+    const body = await itHttpRequest('78', null, 200)
+    expect(body).toHaveProperty('success', true)
+    console.log(body.message)
+    expect(body).toHaveProperty('message', 'Le département de résidence du candidat 123456789000/NOM A TESTER a été changé.')
   })
 })
