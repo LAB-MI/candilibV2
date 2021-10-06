@@ -8,11 +8,11 @@
         class="value"
       > {{ canBookFromLegible }}</span>
       <v-btn
-        v-if="isDisplay"
         v-show="!isOnEdit"
         color="error"
         icon
         class="btn-label t-update-candidat-can-book-from-edit"
+        :disabled="!isValid"
         @click="isOnEdit=true"
       >
         <v-icon>delete</v-icon>
@@ -26,7 +26,7 @@
       ok-button-color="error"
       cancel-button-text="Annuler"
     >
-      <p class="text-center">
+      <p class="text-center t-update-candidat-can-book-text">
         <v-icon color="error">
           warning
         </v-icon>
@@ -40,6 +40,7 @@
 <script>
 import ConfirmBox from '@/components/ConfirmBox.vue'
 import { FETCH_REMOVE_CANDIDAT_CANBOOK_REQUEST } from '@/store'
+import { mapState } from 'vuex'
 
 export default {
   name: 'FicheCandidatCanBookFrom',
@@ -60,12 +61,14 @@ export default {
     return {
       canBookFromLegible: this.info.canBookFromLegible,
       isOnEdit: false,
-      isDisplay: !!this.info.canBookFrom,
     }
   },
   computed: {
+    ...mapState({
+      inDep: state => { return state.admin.departements.list.includes(state.adminSearch.candidats.selected.departement) },
+    }),
     isValid () {
-      return this.isDisplay
+      return !!this.info.canBookFrom && this.inDep
     },
   },
   methods: {
