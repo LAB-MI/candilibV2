@@ -21,7 +21,8 @@ import {
   checkToken,
   email as emailRegex,
 } from '../../util'
-import { modifyCandidatEmail, modifyCandidatHomeDepartement, getDepartements, deletePenalty } from './candidats-business'
+import { modifyCandidatEmail, modifyCandidatHomeDepartement, deletePenalty } from './candidats-business'
+import { getDepartements } from './departement-business'
 
 /**
  * Importe le fichier JSON d'aurige

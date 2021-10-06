@@ -112,14 +112,10 @@ describe('Test update candidat e-mail and homeDepartement by admin and remove pe
     await disconnect()
   })
 
-  const itHttpRequest = async (bodyToSend, status) => {
-    const { email, removePenalty, homeDepartement } = bodyToSend || {}
+  const itHttpRequest = async (bodyToSend = {}, status) => {
     const { body } = await request(app)
       .patch(`${apiPrefix}/admin/candidats/${candidatCreated._id}`)
-      .send({
-        email,
-        removePenalty,
-      })
+      .send(bodyToSend)
       .set('Accept', 'application/json')
       .expect('Content-Type', 'application/json; charset=utf-8')
       .expect(status)
@@ -156,7 +152,6 @@ describe('Test update candidat e-mail and homeDepartement by admin and remove pe
   it('should 200 when update candidat homeDepartement', async () => {
     const body = await itHttpRequest({ homeDepartement: '78' }, 200)
     expect(body).toHaveProperty('success', true)
-    console.log(body.message)
     expect(body).toHaveProperty('message', 'Le département de résidence du candidat 123456789000/NOM A TESTER a été changé.')
   })
   it('should 400 when send a email and removePenalty', async () => {
