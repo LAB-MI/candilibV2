@@ -13,6 +13,7 @@
     :rules="departementsRules"
     required
     :readonly="readonly"
+    :disabled="readonly"
     :menu-props="menuProps"
     @change="$emit('change-departements', departements)"
   />
@@ -73,6 +74,13 @@ export default {
           'Veuillez renseigner au moins un département',
       ],
     }
+  },
+  watch: {
+    defaultDepartement (newValue) {
+      this.$nextTick(() => {
+        this.departements = newValue
+      })
+    },
   },
 }
 </script>

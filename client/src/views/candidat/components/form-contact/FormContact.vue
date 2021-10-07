@@ -36,6 +36,7 @@
         >
           <v-checkbox
             v-model="isModifyHomeDepartement"
+            class="form-input"
             label="Je souhaite modifier mon département de résidence"
           />
         </template>
