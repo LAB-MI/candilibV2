@@ -64,7 +64,7 @@ export const sendMessageByContactUs = async (
     selectDepartement = candidat.departement
     subjectEmail = 'Demande de modification de département de résidence'
     messageEmail =
-      `Le candidat souhaite changer son département de résidence actuel qui est le ${candidatData.homeDepartement}, pour être affecté au département de résidence ${selectDepartement}, pour cela un justificatif est necessaire.`
+      `Le candidat souhaite changer son département de résidence actuel qui est le ${candidatData.homeDepartement}, pour être affecté au département de résidence ${selectDepartement}.`
   }
 
   const infoDepartement = await findDepartementById(selectDepartement)
