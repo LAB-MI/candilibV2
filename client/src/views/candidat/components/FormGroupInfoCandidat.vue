@@ -205,6 +205,7 @@ export default {
       email: this.value && this.value.email,
       portable: this.value && this.value.portable,
       departement: this.value && this.value.departement,
+      intialDepartement: '',
     }
   },
   computed: {
@@ -215,6 +216,16 @@ export default {
         return this.readonly
       }
     },
+  },
+  watch: {
+    isModifyHomeDepartement (newValue) {
+      if (!newValue) {
+        this.setDepartement(this.intialDepartement)
+      }
+    },
+  },
+  mounted () {
+    this.intialDepartement = this.value.departement
   },
   methods: {
     getMsg (id) {
