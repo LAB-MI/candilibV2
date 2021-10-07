@@ -117,7 +117,7 @@ function fctGetToken (req, loggerContent) {
   const authHeader = req.headers.authorization
   const tokenInAuthHeader = authHeader && authHeader.replace('Bearer ', '')
   const token = tokenInAuthHeader || req.query.token
-  if (!token) {
+  if (!token || token === 'undefined') {
     return
   }
   loggerContent.userToken = token
@@ -133,7 +133,7 @@ export function getToken (req, res, next) {
 
   try {
     const decoded = fctGetToken(req, loggerContent)
-    if (!decoded) next()
+    if (!decoded) return next()
     const { id, level, departements, candidatStatus, departement } = decoded
     req.userId = id
     req.userLevel = level
