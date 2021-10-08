@@ -256,7 +256,7 @@ describe('Candidate Profile', () => {
       cy.get('.t-update-candidat-can-book-from-edit').should('not.be.disabled')
       cy.get('.t-update-candidat-can-book-from-edit').contains('delete').click()
 
-      cy.get('.t-update-candidat-can-book-text').should('contain', 'Voulez-vous vraiment supprimer de la pénalité de ce candidat?')
+      cy.get('.t-update-candidat-can-book-text').should('contain', 'Voulez-vous vraiment supprimer la pénalité de ce candidat?')
       cy.get('.t-btn-ok').contains('Valider').click()
       const nowTextDateTime = getFrenchDateTimeFromLuxon(getNow())
 
@@ -286,7 +286,7 @@ describe('Candidate Profile', () => {
       cy.get('.t-update-candidat-can-book-from-edit').should('not.be.disabled')
       cy.get('.t-update-candidat-can-book-from-edit').contains('delete').click()
 
-      cy.get('.t-update-candidat-can-book-text').should('contain', 'Voulez-vous vraiment supprimer de la pénalité de ce candidat?')
+      cy.get('.t-update-candidat-can-book-text').should('contain', 'Voulez-vous vraiment supprimer la pénalité de ce candidat?')
       cy.get('.t-btn-ok').contains('Valider').click()
       const nowTextDateTime = getFrenchDateTimeFromLuxon(getNow())
 

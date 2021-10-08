@@ -15,7 +15,9 @@
         :disabled="!isValid"
         @click="isOnEdit=true"
       >
-        <v-icon>delete</v-icon>
+        <v-icon class="pb-3">
+          delete
+        </v-icon>
       </v-btn>
     </div>
     <confirm-box
@@ -30,7 +32,7 @@
         <v-icon color="error">
           warning
         </v-icon>
-        Voulez-vous vraiment supprimer de la pénalité de ce candidat?<br>
+        Voulez-vous vraiment supprimer la pénalité de ce candidat?<br>
         Cette action est irréversible.
       </p>
     </confirm-box>
