@@ -1,3 +1,4 @@
+import { DateTime } from 'luxon'
 import { getFrenchDateFromLuxon, getFrenchDateTimeFromLuxon, getNow } from '../../support/dateUtils'
 
 export const checkEmailValue = (email = Cypress.env('emailCandidat')) => {
@@ -282,11 +283,14 @@ export const parseMagicLinkFromMailBody = (mailBody) => {
   return withoutEq.replace(/=3D/g, '=').slice(0, -1)
 }
 
-export const adminCheckCandidatPenaltyHystory = (candidatsByDepartments, canBookFrom, reason, byWho) => {
-  const canBookFromTextDate = getFrenchDateFromLuxon(canBookFrom)
-  const nowTextDateTime = getFrenchDateTimeFromLuxon(getNow())
+export const adminCheckCandidatPenaltyHystory = (candidatsByDepartments, canBookFrom, reason, byWho, needConnection = true) => {
+  const canBookFromTextDate = canBookFrom instanceof DateTime ? getFrenchDateFromLuxon(canBookFrom) : canBookFrom
 
-  adminLaunchSearchCandidat(candidatsByDepartments)
+  if (needConnection) {
+    cy.adminLogin()
+  }
+  adminCheckSearchCandidat(candidatsByDepartments)
+
   const lineCanBookFrom = cy.get('.t-result-candidat').contains('Réservation possible dès le').parent()
   lineCanBookFrom.should('contain', canBookFromTextDate)
 
@@ -295,6 +299,7 @@ export const adminCheckCandidatPenaltyHystory = (candidatsByDepartments, canBook
     cy.get('tbody > tr > :nth-child(3)').should('contain', reason)// 'Annulation')
     if (byWho) {
       cy.get('tbody > tr > :nth-child(4)').should('contain', byWho) // Cypress.env('adminLogin'))
+      const nowTextDateTime = getFrenchDateTimeFromLuxon(getNow())
       cy.get('tbody > tr > :nth-child(5)').should('contain', nowTextDateTime.substring(0, nowTextDateTime.length - 1))
     }
   })
