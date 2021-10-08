@@ -113,6 +113,25 @@ describe('Search Candidate', () => {
         emailToVerify = newEmail
       }
     })
+
+    const adminGoToInfoCandidatAndUpdateHomeDepartement = (nomNaissance, homeDepartement) => {
+      cy.get('.t-search-candidat [type=text]').type(nomNaissance)
+      cy.contains(nomNaissance).click()
+      cy.get('h3').should('contain', 'nformations')
+
+      cy.get('.t-update-candidat-home-departement-edit').click()
+      cy.get('.t-select-departements-to-edit .v-input__slot').click()
+      cy.get('.v-list-item')
+        .contains(homeDepartement)
+        .click()
+
+      cy.get('.t-btn-ok').contains('Valider').click()
+      cy.get('.t-home-departement-value').should('contain', homeDepartement)
+    }
+    it('Update candidat homeDepartement', () => {
+      adminGoToInfoCandidatAndUpdateHomeDepartement(Cypress.env('candidat'), '93')
+      adminGoToInfoCandidatAndUpdateHomeDepartement(Cypress.env('candidat'), '75')
+    })
   } else {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
   }
