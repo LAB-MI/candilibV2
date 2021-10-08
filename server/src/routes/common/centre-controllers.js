@@ -17,7 +17,7 @@ import {
   findCentresByDepartement,
   findCentresUniqByDepartement,
 } from '../../models/centre'
-import { appLogger } from '../../util'
+import { appLogger, getFrenchLuxon } from '../../util'
 import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
 import {
@@ -74,13 +74,13 @@ export async function getCentres (req, res) {
     if (!centreId && !nom) {
       if (req.userLevel === config.userStatusLevels.candidat) {
         const beginDateTime = getAuthorizedDateToBook()
-        beginDate = beginDateTime.toISODate()
+        beginDate = beginDateTime
       }
 
       const centres = await findCentresWithNbPlacesByGeoDepartement(
         departement,
         beginDate,
-        endDate,
+        getFrenchLuxon().plus({ months: config.numberOfVisibleMonths }).endOf('month'),
         getStatusWithRecentlyDept(candidatStatus, departement, homeDepartement, isInRecentlyDept),
       )
 

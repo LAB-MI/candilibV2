@@ -59,6 +59,7 @@ import {
   expectMailConvocation,
   expectMailCancelBooking,
 } from '../business/__tests__/expect-send-mail'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -150,6 +151,11 @@ describe('Test get dates from places available', () => {
       selectedCandidat._id,
       selectedCandidat.status,
     )
+  })
+
+  beforeEach(async () => {
+    await placesAndGeoDepartementsAndCentresCache.setPlaces()
+    await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
   })
 
   afterAll(async () => {

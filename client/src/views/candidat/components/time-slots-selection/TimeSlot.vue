@@ -127,6 +127,7 @@ export default {
       timeoutId: undefined,
       statusDayBlock: false,
       switchTab: null,
+      getTimeSlotsCount: 0,
     }
   },
 
@@ -255,6 +256,11 @@ export default {
             departement,
           })
         }
+        if (this.getTimeSlotsCount > 10) {
+          this.goToSelectCenter()
+          return
+        }
+        this.getTimeSlotsCount++
         this.timeoutId = setTimeout(this.getTimeSlots, 100)
         return
       }
