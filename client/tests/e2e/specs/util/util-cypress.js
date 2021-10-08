@@ -1,3 +1,4 @@
+import { getFrenchDateFromLuxon, getFrenchDateTimeFromLuxon, getNow } from '../../support/dateUtils'
 
 export const checkEmailValue = (email = Cypress.env('emailCandidat')) => {
   cy.get('.t-result-candidat')
@@ -5,13 +6,16 @@ export const checkEmailValue = (email = Cypress.env('emailCandidat')) => {
     .parent()
     .should('contain', email)
 }
-export const adminLaunchSearchCandidat = (candidatsByDepartments) => {
-  cy.adminLogin()
+export const adminCheckSearchCandidat = (candidatsByDepartments) => {
   cy.visit(Cypress.env('frontAdmin') + 'admin/admin-candidat')
   cy.get('.t-search-candidat [type=text]').type(candidatsByDepartments[0].nomNaissance)
   cy.contains(candidatsByDepartments[0].nomNaissance).click()
   cy.get('h3').should('contain', 'nformations')
   checkEmailValue(candidatsByDepartments[0].email)
+}
+export const adminLaunchSearchCandidat = (candidatsByDepartments) => {
+  cy.adminLogin()
+  adminCheckSearchCandidat(candidatsByDepartments)
 }
 
 export const adminCheckCandidatHystoryActionsByType = (candidatsByDepartments, typeAction, byThis) => {
@@ -276,4 +280,22 @@ export const parseMagicLinkFromMailBody = (mailBody) => {
   const codedLink = mailBody.split('href=3D"')[1].split('>')[0]
   const withoutEq = codedLink.replace(/=\r\n/g, '')
   return withoutEq.replace(/=3D/g, '=').slice(0, -1)
+}
+
+export const adminCheckCandidatPenaltyHystory = (candidatsByDepartments, canBookFrom, reason, byWho) => {
+  const canBookFromTextDate = getFrenchDateFromLuxon(canBookFrom)
+  const nowTextDateTime = getFrenchDateTimeFromLuxon(getNow())
+
+  adminLaunchSearchCandidat(candidatsByDepartments)
+  const lineCanBookFrom = cy.get('.t-result-candidat').contains('Réservation possible dès le').parent()
+  lineCanBookFrom.should('contain', canBookFromTextDate)
+
+  cy.get('.t-history-penalties').within((tableauHistory) => {
+    cy.get('tbody > tr > :nth-child(2)').should('contain', canBookFromTextDate)
+    cy.get('tbody > tr > :nth-child(3)').should('contain', reason)// 'Annulation')
+    if (byWho) {
+      cy.get('tbody > tr > :nth-child(4)').should('contain', byWho) // Cypress.env('adminLogin'))
+      cy.get('tbody > tr > :nth-child(5)').should('contain', nowTextDateTime.substring(0, nowTextDateTime.length - 1))
+    }
+  })
 }
