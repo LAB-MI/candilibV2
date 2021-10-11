@@ -71,8 +71,8 @@ describe('Contact Us', () => {
           { label: 'Message', value: message },
         ]
         dataInfos.forEach(({ label, value }, index) => {
-          cy.get('label').eq(index + 6).should('contain', label)
-          cy.get('input, textarea').eq(index + 7).type(value)
+          cy.get('label').eq(index + 7).should('contain', label)
+          cy.get('input, textarea').eq(index + 8).type(value)
         })
         cy.get('.contact-us-button').should('contain', 'Envoyer').click()
       })
