@@ -467,6 +467,26 @@ export const updateCandidatHomeDepartement = async (candidat, homeDepartement) =
 }
 
 /**
+ * Met à jour le numéro de téléphone du candidat
+ *
+ * @async
+ * @function
+ *
+ * @param {Candidat} candidat - Candidat
+ * @param {string} phoneNumber - Numéro de téléphone
+ *
+ * @returns {Promise.<Candidat>}
+ */
+export const updateCandidatPhoneNumber = async (candidat, phoneNumber) => {
+  if (!candidat) {
+    throw new Error('candidat is undefined')
+  }
+  await candidat.updateOne({ portable: phoneNumber })
+  const updatedCandidat = await Candidat.findById(candidat._id)
+  return updatedCandidat
+}
+
+/**
  * Met à jour le token du candidat
  *
  * @async

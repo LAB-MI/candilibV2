@@ -21,7 +21,7 @@ import {
   checkToken,
   email as emailRegex,
 } from '../../util'
-import { modifyCandidatEmail, modifyCandidatHomeDepartement, deletePenalty } from './candidats-business'
+import { modifyCandidatEmail, modifyCandidatHomeDepartement, deletePenalty, modifyCandidatPhoneNumber } from './candidats-business'
 import { getDepartements } from './departement-business'
 
 /**
@@ -344,7 +344,7 @@ export const getBookedCandidats = async (req, res) => {
  */
 export const updateCandidats = async (req, res) => {
   const { id: candidatId } = req.params
-  const { email: newEmail, homeDepartement, removePenalty } = req.body
+  const { email: newEmail, homeDepartement, removePenalty, phoneNumber } = req.body
   const adminId = req.userId
 
   const loggerInfo = {
@@ -363,7 +363,10 @@ export const updateCandidats = async (req, res) => {
     !candidatId ||
     (newEmail && homeDepartement) ||
     (newEmail && (removePenalty !== undefined)) ||
-    ((removePenalty !== undefined) && homeDepartement)
+    ((removePenalty !== undefined) && homeDepartement) ||
+    (phoneNumber && homeDepartement) ||
+    (phoneNumber && newEmail) ||
+    (phoneNumber && (removePenalty !== undefined))
   ) {
     const message = BAD_PARAMS
     appLogger.warn({ ...loggerInfo, description: message })
@@ -391,6 +394,14 @@ export const updateCandidats = async (req, res) => {
       appLogger.info({ ...loggerInfo, description: message })
       return res.status(200).send({ success: true, message: message.toString() })
     }
+
+    if (phoneNumber) {
+      const { candidat } = await modifyCandidatPhoneNumber(candidatId, phoneNumber)
+      message.push(`Le numéro de téléphone du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
+      appLogger.info({ ...loggerInfo, description: message })
+      return res.status(200).send({ success: true, message: message.toString() })
+    }
+
     if (askRemoveCanBookFrom) {
       const candidat = await deletePenalty(candidatId, adminId)
       const message = `La pénalité du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été retirée.`
