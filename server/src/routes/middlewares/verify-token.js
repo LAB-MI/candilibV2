@@ -24,12 +24,17 @@ import { PLEASE_LOG_IN } from '../../messages.constants'
 
 export async function verifyToken (req, res, next) {
   const isMagicLink = req.get('x-magic-link')
+  const loggerContent = {
+    request_id: req.request_id,
+    section: 'verify-token',
+    isMagicLink,
+  }
   try {
-    const token = fctGetToken(req)
+    const token = fctGetToken(req, loggerContent)
 
     if (!token) {
       appLogger.error({
-        section: 'verify-token',
+        ...loggerContent,
         action: 'ABSENT',
         description: 'Token absent',
       })
@@ -95,7 +100,7 @@ export async function verifyToken (req, res, next) {
     }
 
     appLogger.error({
-      section: 'verify-token',
+      ...loggerContent,
       action: 'CHECK',
       description: `Could not checkToken or find candidat: ${error.message}`,
       error,
@@ -104,27 +109,31 @@ export async function verifyToken (req, res, next) {
       isTokenValid: false,
       message: message,
       success: false,
-      errorMessage: error.message,
-      error,
     })
   }
 }
 
-function fctGetToken (req) {
+function fctGetToken (req, loggerContent) {
   const authHeader = req.headers.authorization
   const tokenInAuthHeader = authHeader && authHeader.replace('Bearer ', '')
   const token = tokenInAuthHeader || req.query.token
-  if (!token) {
+  if (!token || token === 'undefined') {
     return
   }
+  loggerContent.userToken = token
   const decoded = checkToken(token)
   return decoded
 }
 
 export function getToken (req, res, next) {
+  const loggerContent = {
+    request_id: req.request_id,
+    section: 'get-token',
+  }
+
   try {
-    const decoded = fctGetToken(req)
-    if (!decoded) next()
+    const decoded = fctGetToken(req, loggerContent)
+    if (!decoded) return next()
     const { id, level, departements, candidatStatus, departement } = decoded
     req.userId = id
     req.userLevel = level
@@ -133,7 +142,7 @@ export function getToken (req, res, next) {
     req.candidatDepartement = departement
   } catch (error) {
     appLogger.error({
-      section: 'get-token',
+      ...loggerContent,
       action: 'GET',
       description: `Could not getToken: ${error.message}`,
       error,

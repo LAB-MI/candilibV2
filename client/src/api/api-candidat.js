@@ -22,10 +22,11 @@ const getHeadersForJson = () => {
 
   const headers = {
     'Content-Type': 'application/json',
-    Authorization,
     'X-USER-ID': xuserid,
     ...getHeadersClientId(),
   }
+
+  if (Authorization) { headers.Authorization = Authorization }
 
   return headers
 }
