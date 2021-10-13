@@ -9,6 +9,20 @@
           color="primary"
         />
       </div>
+
+      <v-btn
+        outlined
+        color="info"
+        class="mb-8 w-64"
+        href="./contact-us"
+      >
+        <v-icon>
+          info
+        </v-icon>
+        &nbsp;
+        Contactez-nous
+      </v-btn>
+
       <profile-info
         v-for="info in profileInfo"
         :key="info.label"

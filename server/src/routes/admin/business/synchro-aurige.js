@@ -6,6 +6,8 @@ import {
   deleteCandidat,
   findCandidatByNomNeph,
   addPlaceToArchive,
+  addCanBookFrom,
+  // addCanBookFrom,
 } from '../../../models/candidat'
 // import { findWhitelistedByEmail } from '../../../models/whitelisted'
 import {
@@ -42,12 +44,15 @@ import {
 } from '../../business'
 import { upsertLastSyncAurige } from '../../admin/status-candilib-business'
 import { getCandBookFrom } from '../../candidat/places-business'
-import { REASON_EXAM_FAILED } from '../../common/reason.constants'
+import { REASON_ABSENT_EXAM, REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
   NB_DAYS_WAITING_FOR_ETG_EXPIERED,
   AUTHORIZE_DATE_START_OF_RANGE_FOR_ETG_EXPIERED,
   AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED,
 } from '../../common/constants'
+import { ABSENT } from '../../../models/candidat/objetDernierNonReussite.values'
+
+export const BY_AURIGE = 'AURIGE'
 
 const getCandidatStatus = (nom, neph, status, details, message) => ({
   nom,
@@ -382,13 +387,21 @@ const updateValidCandidat = async (
   if (dateTimeEchec) {
     const canBookFrom = getCandBookFrom(candidat, dateTimeEchec, lastNoReussite.reason)
     if (canBookFrom) {
-      infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
-      await cancelBookingAfterExamFailure(
+      const { dateTimeResa } = await cancelBookingAfterExamFailure(
+        // next variable candidat is Object Mongo from parent
         candidat,
         canBookFrom,
         dateTimeEchec,
         lastNoReussite,
       )
+      infoCandidatToUpdate.canBookFrom = canBookFrom.toISO()
+      // TODO: A améliorer vérification est faite dans 2 fois pour cette fonctionnalité
+      let isCandilib = false
+      if (dateTimeResa) {
+        isCandilib = dateTimeEchec.hasSame(dateTimeResa, 'day')
+      }
+      // next variable candidat is Object Mongo from parent
+      addCanBookFrom(candidat, canBookFrom.toISO(), lastNoReussite.reason === ABSENT ? REASON_ABSENT_EXAM : REASON_EXAM_FAILED, BY_AURIGE, undefined, isCandilib)
     }
   }
 
@@ -517,9 +530,11 @@ export const synchroAurige = async (buffer, callback) => {
         infoCandidatToUpdate,
         loggerInfoCandidat,
       )
+
       if (resultArchive) {
         return resultArchive
       }
+
       // Mettre à jour le candidat
       const resultUpdated = await updateValidCandidat(
         candidat,
@@ -576,7 +591,7 @@ const releaseAndArchivePlace = async (
     candidat,
     place,
     newReason,
-    'AURIGE',
+    BY_AURIGE,
     isCandilib,
   )
   await removeBookedPlace(place)
@@ -628,7 +643,7 @@ const cancelBookingAfterExamFailure = async (
   const dateTimeResa = getFrenchLuxonFromJSDate(date)
   const diffDateResaAndCanBook = dateTimeResa.diff(canBookFrom, 'days')
 
-  if (diffDateResaAndCanBook.days > 0) return candidat
+  if (diffDateResaAndCanBook.days > 0) return { candidat }
 
   const updatedCandidat = await releaseAndArchivePlace(
     dateEchec,
@@ -647,7 +662,7 @@ const cancelBookingAfterExamFailure = async (
       error,
     })
   }
-  return updatedCandidat
+  return { candidat: updatedCandidat, dateTimeResa }
 }
 
 export const updateCandidatLastNoReussite = (

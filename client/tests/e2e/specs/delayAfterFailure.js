@@ -3,7 +3,7 @@
 */
 
 import { now } from '../support/dateUtils'
-import { parseMagicLinkFromMailBody } from './util/util-cypress'
+import { adminCheckCandidatPenaltyHystory, parseMagicLinkFromMailBody } from './util/util-cypress'
 
 // Initialise magicLink
 var magicLink
@@ -66,6 +66,9 @@ describe('Test delay after failed attempt', () => {
         .should('contain', 'CANDIDAT_DELAY_AFTER_FAILURE')
       cy.get('.ag-cell')
         .should('contain', 'Pour le 75, ce candidat ' + 'candidat_delay_after_failure@candi.lib' + ' a été mis à jour')
+      // Check penalty history
+      adminCheckCandidatPenaltyHystory([{ email: Cypress.env('emailCandidatDelayAfterFailure'), nomNaissance: Cypress.env('candidatDelayAfterFailure') }], Cypress.env('timeoutToRetry'), 'Échec', undefined, false)
+
       // Disconnects from the app
       cy.adminDisconnection()
       // The candidate gets the link
