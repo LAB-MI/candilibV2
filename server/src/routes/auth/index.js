@@ -10,6 +10,7 @@ import { verifyToken } from '../middlewares'
 import { verifyRepartiteurLevel } from '../admin/middlewares/verify-user-level'
 import { postMagicLink, checkCandidat } from './candidat-controllers'
 import { verifyCandidatStatus } from '../middlewares/verify-candidat-status'
+import { triggerCache } from '../middlewares/triggerCache'
 
 const router = express.Router()
 /**
@@ -301,6 +302,6 @@ router.post('/candidat/magic-link', postMagicLink)
  * @see [checkCandidat]{@link module:routes/auth/candidat-controllers.checkCandidat}
  * @see {@link http://localhost:8000/api-docs/#/Authentification/get_auth_candidat_verify_token}
  */
-router.get('/candidat/verify-token', verifyToken, verifyCandidatStatus, checkCandidat)
+router.get('/candidat/verify-token', triggerCache, verifyToken, verifyCandidatStatus, checkCandidat)
 
 export default router
