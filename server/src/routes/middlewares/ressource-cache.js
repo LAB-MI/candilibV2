@@ -81,6 +81,7 @@ const getPlacesAndCentresInfo = async () => {
 
 export function getPlacesAsIntervalOf (intervalInMilscd) {
   placesAndGeoDepartementsAndCentresCache.timerIntervalPlacesSettingId = setInterval(() => {
+    if (!placesAndGeoDepartementsAndCentresCache.isActive) return
     placesAndGeoDepartementsAndCentresCache.setPlaces()
       .catch((error) => {
         techLogger.error({
@@ -94,6 +95,7 @@ export function getPlacesAsIntervalOf (intervalInMilscd) {
 
 export function getGeoDepartementAndPlacesAsIntervalOf (intervalInMilscd) {
   placesAndGeoDepartementsAndCentresCache.timerIntervalGeoDepartementsAndCentresSettingId = setInterval(() => {
+    if (!placesAndGeoDepartementsAndCentresCache.isActive) return
     placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
       .catch((error) => {
         techLogger.error({
@@ -113,6 +115,14 @@ export const placesAndGeoDepartementsAndCentresCache = {
   timerIntervalGeoDepartementsAndCentresSettingId: null,
   bufferForPlaces: {},
   bufferForGeoDepartementsAndCentres: {},
+  isActive: false,
+
+  enableCache () {
+    this.isActive = true
+  },
+  disableCache () {
+    this.isActive = false
+  },
 
   getPlaces () {
     return this.bufferForPlaces
