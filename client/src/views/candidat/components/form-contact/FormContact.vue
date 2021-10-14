@@ -12,6 +12,7 @@
         is-contact
         :readonly="readonly"
         :available-departements="availableDepartements"
+        :is-modify-home-departement="isModifyHomeDepartement"
       >
         <template
           v-if="withHadSingup"
@@ -28,8 +29,23 @@
             />
           </div>
         </template>
+
+        <template
+          v-if="readonly"
+          v-slot:modifyHomeDepartement
+        >
+          <v-checkbox
+            v-model="isModifyHomeDepartement"
+            class="form-input"
+            label="Je souhaite modifier mon département de résidence"
+          />
+        </template>
       </form-group-info-candidat>
-      <div class="form-input">
+
+      <div
+        v-if="!isModifyHomeDepartement"
+        class="form-input"
+      >
         <v-text-field
           v-model="subject"
           :label="`${$formatMessage({ id:'contact_us_subject'}) } *`"
@@ -43,7 +59,10 @@
         />
       </div>
 
-      <div class="form-input">
+      <div
+        v-if="!isModifyHomeDepartement"
+        class="form-input"
+      >
         <v-textarea
           v-model="message"
           outlined
@@ -56,6 +75,7 @@
           :rules="messageRules"
         />
       </div>
+
       <div class="form-input  form-input-group">
         <v-btn
           type="submit"
@@ -107,6 +127,8 @@ export default {
   },
   data: function () {
     return {
+      initialHomeDepartement: this.defaultCandidat?.departement,
+      isModifyHomeDepartement: false,
       valid: false,
       candidat: this.defaultCandidat,
       hadSingup: false,
@@ -124,7 +146,24 @@ export default {
       isSending: state => state.contactUs && state.contactUs.isFetching,
     }),
     isCompleted: function () {
-      return this.valid && this.candidat && this.candidat.codeNeph && this.candidat.nomNaissance && this.candidat.email && this.candidat.departement && this.subject && this.message
+      let isSubmitable = false
+      if (this.readonly) {
+        if (this.isModifyHomeDepartement && this.candidat.departement !== this.initialHomeDepartement) {
+          isSubmitable = true
+        } else {
+          isSubmitable = this.subject && this.message
+        }
+      } else {
+        isSubmitable = this.valid &&
+        this.candidat &&
+        this.candidat.codeNeph &&
+        this.candidat.nomNaissance &&
+        this.candidat.email &&
+        this.candidat.departement &&
+        this.subject &&
+        this.message
+      }
+      return isSubmitable
     },
     labelMessage: function () {
       return this.$formatMessage({ id: 'contact_us_message' }) + '*' + ` (${messageMaxLength - this.message.length} caractéres restant)`
@@ -145,6 +184,7 @@ export default {
           subject: this.subject,
           message: this.message,
           hadSignup: this.hadSingup,
+          isModifyHomeDepartement: this.isModifyHomeDepartement,
         })
         this.$router.push({ name: 'home' }).catch(callBackCatchRouter)
       } catch (error) {

@@ -21,7 +21,8 @@ import {
   checkToken,
   email as emailRegex,
 } from '../../util'
-import { modifyCandidatEmail } from './candidats-business'
+import { modifyCandidatEmail, modifyCandidatHomeDepartement, deletePenalty } from './candidats-business'
+import { getDepartements } from './departement-business'
 
 /**
  * Importe le fichier JSON d'aurige
@@ -191,6 +192,13 @@ export const getCandidats = async (req, res) => {
               archiveReason: humanReadableReason || place.archiveReason,
             }
           })
+        if (candidat.canBookFroms && candidat.canBookFroms.length) {
+          candidat.canBookFroms = candidat.canBookFroms.map(canBookFrom => ({
+            ...canBookFrom,
+            reason: statutReasonDictionnary[canBookFrom.reason],
+          }))
+        }
+
         let decodedToken
         try {
           decodedToken = checkToken(candidat.token)
@@ -336,17 +344,27 @@ export const getBookedCandidats = async (req, res) => {
  */
 export const updateCandidats = async (req, res) => {
   const { id: candidatId } = req.params
-  const { email: newEmail } = req.body
+  const { email: newEmail, homeDepartement, removePenalty } = req.body
+  const adminId = req.userId
+
   const loggerInfo = {
     request_id: req.request_id,
     section: 'admin-update-candidats',
     candidatId,
     newEmail,
-    admin: req.userId,
+    removePenalty,
+    adminId,
   }
 
+  const isOkForNewEmail = newEmail && emailRegex.test(newEmail)
+  const askRemoveCanBookFrom = (removePenalty === true)
   // Check params
-  if (!candidatId || !newEmail || !emailRegex.test(newEmail)) {
+  if (
+    !candidatId ||
+    (newEmail && homeDepartement) ||
+    (newEmail && (removePenalty !== undefined)) ||
+    ((removePenalty !== undefined) && homeDepartement)
+  ) {
     const message = BAD_PARAMS
     appLogger.warn({ ...loggerInfo, description: message })
     res.status(400).json({
@@ -355,12 +373,33 @@ export const updateCandidats = async (req, res) => {
     })
     return
   }
-  try {
-    const { candidat, messages } = await modifyCandidatEmail(candidatId, newEmail, loggerInfo)
-    const message = `Le courriel du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`
-    appLogger.info({ ...loggerInfo, description: message })
 
-    res.status(200).send({ success: true, message: [message, ...messages].toString() })
+  try {
+    const message = []
+    if (newEmail && isOkForNewEmail) {
+      const { candidat, messages } = await modifyCandidatEmail(candidatId, newEmail, loggerInfo)
+      message.push(`Le courriel du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
+      message.concat(messages)
+      appLogger.info({ ...loggerInfo, description: message })
+      return res.status(200).send({ success: true, message: message.toString() })
+    }
+
+    const isDepartementExist = await getDepartements(homeDepartement)
+    if (homeDepartement && isDepartementExist) {
+      const { candidat } = await modifyCandidatHomeDepartement(candidatId, homeDepartement)
+      message.push(`Le département de résidence du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
+      appLogger.info({ ...loggerInfo, description: message })
+      return res.status(200).send({ success: true, message: message.toString() })
+    }
+    if (askRemoveCanBookFrom) {
+      const candidat = await deletePenalty(candidatId, adminId)
+      const message = `La pénalité du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été retirée.`
+      appLogger.info({ ...loggerInfo, description: message })
+      return res.status(200).send({ success: true, message })
+    }
+
+    appLogger.error({ ...loggerInfo, description: BAD_PARAMS })
+    res.status(400).send({ success: false, message: BAD_PARAMS })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.message, error })
     res.status(error.status || 500).send({ success: false, message: error.message })

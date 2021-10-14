@@ -17,7 +17,7 @@ PUBLIC CANDIDATE FRONT
 */
 
 import { date1, now } from '../support/dateUtils'
-import { parseMagicLinkFromMailBody } from './util/util-cypress'
+import { adminCheckCandidatPenaltyHystory, parseMagicLinkFromMailBody } from './util/util-cypress'
 
 describe('Connected candidate front', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
@@ -465,6 +465,7 @@ describe('Connected candidate front', () => {
       cy.get(`.t-tab-${dayAfter45Days.monthLong}`).should('contain', dayAfter45Days.toLocaleString(FORMAT_DATE_TEXT))
       cy.get(`[href="#tab-${dayBefore45Days.monthLong}"]`).click()
       cy.get(`.t-tab-${dayBefore45Days.monthLong}`).should('not.contain', dayBefore45Days.toLocaleString(FORMAT_DATE_TEXT))
+      return canBookFromAfterCancel
     }
 
     it.skip('Should have a penalty when candidat change the booked place within 6 days', () => {
@@ -572,7 +573,7 @@ describe('Connected candidate front', () => {
       cy.get('h2').should('contain', 'Choix du centre')
       cy.get('body').should('contain', Cypress.env('centre'))
       cy.contains(Cypress.env('centre')).click()
-      expectedPenaltyCancel()
+      const canBookFromAfterCancel = expectedPenaltyCancel()
       cy.getLastMail()
         .getRecipients()
         .should('contain', Cypress.env('emailCandidatFront'))
@@ -586,6 +587,9 @@ describe('Connected candidate front', () => {
         .its('Content.Body')
         .should('contain', Cypress.env('centre').toUpperCase())
         .and('contain', '7:00')
+
+      // Check penalty history
+      adminCheckCandidatPenaltyHystory([{ email: Cypress.env('emailCandidatFront'), nomNaissance: Cypress.env('candidatFront') }], canBookFromAfterCancel, 'Annulation')
     })
 
     it('Should disconnect', () => {

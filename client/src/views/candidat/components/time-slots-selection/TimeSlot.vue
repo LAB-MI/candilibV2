@@ -164,6 +164,8 @@ export default {
     },
 
     warningMessage () {
+      const { canBookFrom } = this.reservation.booked
+      if (!canBookFrom || getFrenchLuxonFromIso(canBookFrom) < getFrenchLuxonCurrentDateTime()) { return }
       if (this.isPenaltyActive) {
         return this.$formatMessage(
           {

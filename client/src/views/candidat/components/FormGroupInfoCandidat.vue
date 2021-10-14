@@ -5,6 +5,7 @@
   >
     * Champs obligatoires
     <slot name="before" />
+
     <div class="form-input">
       <v-text-field
         v-model="codeNeph"
@@ -25,6 +26,7 @@
         @change="removeSpaceCodeNeph"
       />
     </div>
+
     <div class="form-input">
       <v-text-field
         v-model="nomNaissance"
@@ -44,6 +46,7 @@
         @input="setNomNaissance"
       />
     </div>
+
     <div class="form-input">
       <v-text-field
         v-model="prenom"
@@ -62,6 +65,7 @@
         @blur="removePrenomPlaceholder"
       />
     </div>
+
     <div class="form-input">
       <v-text-field
         v-model="email"
@@ -102,6 +106,9 @@
         @blur="removePortablePlaceholder"
       />
     </div>
+
+    <slot name="modifyHomeDepartement" />
+
     <div class="form-input">
       <select-departement
         :dark="dark"
@@ -115,7 +122,7 @@
         :rules="departementRules"
         required
         :default-departement="departement"
-        :readonly="readonly"
+        :readonly="isReadonly"
         tabindex="6"
         :hint="`${getMsg('preinscription_departement_hint')}`"
         :menu-props="{ minWidth: 150 }"
@@ -157,6 +164,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    isModifyHomeDepartement: {
+      type: Boolean,
+      default: undefined,
+    },
   },
   data: function () {
     return {
@@ -194,7 +205,27 @@ export default {
       email: this.value && this.value.email,
       portable: this.value && this.value.portable,
       departement: this.value && this.value.departement,
+      intialDepartement: '',
     }
+  },
+  computed: {
+    isReadonly () {
+      if (this.readonly && typeof this.isModifyHomeDepartement === 'boolean' && this.isModifyHomeDepartement) {
+        return false
+      } else {
+        return this.readonly
+      }
+    },
+  },
+  watch: {
+    isModifyHomeDepartement (newValue) {
+      if (!newValue) {
+        this.setDepartement(this.intialDepartement)
+      }
+    },
+  },
+  mounted () {
+    this.intialDepartement = this.value.departement
   },
   methods: {
     getMsg (id) {

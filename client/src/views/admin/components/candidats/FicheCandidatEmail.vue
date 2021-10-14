@@ -24,6 +24,7 @@
       :close-action="onCancel"
       :submit-action="updateCandidatEmail"
       :disabled-ok="!isValidEmail"
+      cancel-button-text="Annuler"
     >
       <v-text-field
         v-model="email"

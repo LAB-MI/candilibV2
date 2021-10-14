@@ -20,6 +20,7 @@ export const sendMessageByContactUs = async (
   hasSignUp,
   subject,
   message,
+  isModifyHomeDepartement,
 ) => {
   let candidatData = candidat
   candidatData.homeDepartement = candidat.departement
@@ -56,7 +57,17 @@ export const sendMessageByContactUs = async (
     throw error
   }
 
-  const infoDepartement = await findDepartementById(candidatData.departement)
+  let selectDepartement = candidatData.departement
+  let subjectEmail = subject
+  let messageEmail = message
+  if (hasSignUpData && isModifyHomeDepartement) {
+    selectDepartement = candidat.departement
+    subjectEmail = 'Demande de modification de département de résidence'
+    messageEmail =
+      `Le candidat souhaite changer son département de résidence actuel qui est le ${candidatData.homeDepartement}, pour être affecté au département de résidence ${selectDepartement}.`
+  }
+
+  const infoDepartement = await findDepartementById(selectDepartement)
 
   if (!infoDepartement || !infoDepartement.email) {
     throw new Error(DEPARTEMENT_EMAIL_MISSING)
@@ -67,12 +78,13 @@ export const sendMessageByContactUs = async (
       infoDepartement.email,
       candidatData,
       hasSignUpData,
-      subject,
-      message,
+      subjectEmail,
+      messageEmail,
     )
   } catch (error) {
     throw new Error(CONTACT_US_SEND_TO_ADMIN_FAILED)
   }
+
   try {
     await sendMailContactUsForCandidat(candidatData)
   } catch (error) {
