@@ -41,7 +41,6 @@ xdescribe('Test centre candidat controllers', () => {
 
   afterAll(async () => {
     await disconnect()
-    await app.close()
   })
 
   describe('Find centres', () => {
@@ -192,7 +191,6 @@ describe('Centre controllers admin', () => {
   afterAll(async () => {
     await removeCentres()
     await disconnect()
-    await mockApp.close()
   })
 
   it('Get all centers from the 93 for admin', async () => {
@@ -394,7 +392,6 @@ describe('Test centres of departement', () => {
     // await deleteCentre(createdCentre)
     await removeCentres()
     await disconnect()
-    // await app.close()
   })
 
   it('should get departement centers', async () => {

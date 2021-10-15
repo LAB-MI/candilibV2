@@ -37,7 +37,6 @@ describe('Test the auth admin', () => {
   afterAll(async () => {
     await archiveUserByEmail(email)
     await disconnect()
-    await app.close()
   })
 
   it('Should response the POST method with a 401 for an unknown user', async () => {
@@ -89,7 +88,6 @@ describe('Email on call to /reset-link', () => {
   afterAll(async () => {
     await archiveUserByEmail(email)
     await disconnect()
-    await app.close()
   })
 
   it('Should not validate email ', async () => {
@@ -138,7 +136,6 @@ describe('Reset my password', () => {
   afterAll(async () => {
     await archiveUserByEmail(email)
     await disconnect()
-    app.close()
   })
 
   it('Should not validate password change when password dont match', async () => {

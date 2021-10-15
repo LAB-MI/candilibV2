@@ -42,7 +42,6 @@ xdescribe('Test get and export candidats', () => {
     await removeCentres()
     await deleteCandidats()
     await disconnect()
-    await app.close()
   })
 
   it('Should response 200 with list candidats', async () => {

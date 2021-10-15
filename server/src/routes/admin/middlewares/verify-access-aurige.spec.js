@@ -37,10 +37,6 @@ app.get(apiPrefix, (req, res) => res.json({ ok: true }))
 jest.mock('../../../util/logger')
 
 describe('Verify-access-aurige', () => {
-  afterAll(async () => {
-    await app.close()
-  })
-
   it('Should respond a 200 with admin no ask aurige', async () => {
     // When
     const { body, status } = await request(app)

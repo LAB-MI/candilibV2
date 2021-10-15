@@ -58,6 +58,5 @@ describe('Check canAccess property of aurige', () => {
 
   afterAll(async () => {
     await disconnect()
-    await app.close()
   })
 })
