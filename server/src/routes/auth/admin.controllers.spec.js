@@ -35,7 +35,9 @@ describe('Test the auth admin', () => {
   })
 
   afterAll(async () => {
-    await archiveUserByEmail(email)
+    try {
+      await archiveUserByEmail(email)
+    } catch (error) { }
     await disconnect()
   })
 
@@ -86,7 +88,9 @@ describe('Email on call to /reset-link', () => {
   })
 
   afterAll(async () => {
-    await archiveUserByEmail(email)
+    try {
+      await archiveUserByEmail(email)
+    } catch (error) {}
     await disconnect()
   })
 
@@ -134,7 +138,9 @@ describe('Reset my password', () => {
   })
 
   afterAll(async () => {
-    await archiveUserByEmail(email)
+    try {
+      await archiveUserByEmail(email)
+    } catch (error) { }
     await disconnect()
   })
 
