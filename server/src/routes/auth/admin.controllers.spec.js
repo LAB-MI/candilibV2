@@ -107,7 +107,9 @@ describe('Email on call to /reset-link', () => {
   it('Should validate email', async () => {
     const { body } = await request(app)
       .post('/reset-link')
-      .send(user)
+      .send({
+        email: user.email,
+      })
       .set('Accept', 'application/json')
       .expect(200)
     expect(body).toHaveProperty('success', true)

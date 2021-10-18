@@ -111,10 +111,12 @@ export const getAdminToken = async (req, res) => {
  */
 
 export const requestPasswdReset = async (req, res) => {
-  const loggerInfo = {
-    request_id: req.request_id, section: 'reset-password',
-  }
   const email = req.body.email
+  const loggerInfo = {
+    request_id: req.request_id,
+    section: 'reset-password',
+    email,
+  }
   try {
     const user = await findUserByEmail(email)
     if (!user) {
