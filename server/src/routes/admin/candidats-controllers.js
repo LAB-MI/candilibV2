@@ -20,6 +20,7 @@ import { UNKNOWN_ERROR_GET_CANDIDAT, BAD_PARAMS } from './message.constants'
 import {
   checkToken,
   email as emailRegex,
+  phone as phoneRegex,
 } from '../../util'
 import { modifyCandidatEmail, modifyCandidatHomeDepartement, deletePenalty, modifyCandidatPhoneNumber } from './candidats-business'
 import { getDepartements } from './departement-business'
@@ -357,6 +358,7 @@ export const updateCandidats = async (req, res) => {
   }
 
   const isOkForNewEmail = newEmail && emailRegex.test(newEmail)
+  const isOkForNewPhoneNumber = phoneNumber && phoneRegex.test(phoneNumber)
   const askRemoveCanBookFrom = (removePenalty === true)
   // Check params
   if (
@@ -387,17 +389,19 @@ export const updateCandidats = async (req, res) => {
       return res.status(200).send({ success: true, message: message.toString() })
     }
 
-    const isDepartementExist = await getDepartements(homeDepartement)
-    if (homeDepartement && isDepartementExist) {
-      const { candidat } = await modifyCandidatHomeDepartement(candidatId, homeDepartement)
-      message.push(`Le département de résidence du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
+    if (isOkForNewPhoneNumber) {
+      const { candidat } = await modifyCandidatPhoneNumber(candidatId, phoneNumber)
+      message.push(`Le numéro de téléphone du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
       appLogger.info({ ...loggerInfo, description: message })
       return res.status(200).send({ success: true, message: message.toString() })
     }
 
-    if (phoneNumber) {
-      const { candidat } = await modifyCandidatPhoneNumber(candidatId, phoneNumber)
-      message.push(`Le numéro de téléphone du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
+    const isDepartementExist = await getDepartements(homeDepartement)
+    const isOkForNewHomeDepartement = homeDepartement && isDepartementExist
+
+    if (isOkForNewHomeDepartement) {
+      const { candidat } = await modifyCandidatHomeDepartement(candidatId, homeDepartement)
+      message.push(`Le département de résidence du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
       appLogger.info({ ...loggerInfo, description: message })
       return res.status(200).send({ success: true, message: message.toString() })
     }
