@@ -35,7 +35,7 @@ describe('test send mail', () => {
     server.close(done)
   })
 
-  it('test send mails', async done => {
+  it('test send mails', done => {
     let countMailsRcpt = 0
     server.onData = function (stream, session, callback) {
       const chunks = []
@@ -59,8 +59,9 @@ describe('test send mail', () => {
       })
     }
 
-    await sendMails(args => {
+    sendMails(args => {
       expect(countMailsRcpt).toBe(10)
+    }).then(() => {
       done()
     })
   })
