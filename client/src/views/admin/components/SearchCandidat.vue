@@ -139,7 +139,10 @@ const candidatProfileInfoDictionary = [
       Vue.component('fiche-candidat-email', () => import('./candidats/FicheCandidatEmail'))
       return { name: 'fiche-candidat-email', data: { email } }
     }, true],
-    ['portable', 'Portable'],
+    ['portable', 'Portable', (phoneNumber) => {
+      Vue.component('fiche-candidat-phone-number', () => import('./candidats/FicheCandidatPhoneNumber'))
+      return { name: 'fiche-candidat-phone-number', data: { phoneNumber } }
+    }, true],
     ['departement', ' Département'],
     ['homeDepartement', 'Département de résidence', (homeDepartement) => {
       Vue.component('fiche-candidat-home-departement', () => import('./candidats/FicheCandidatHomeDepartement'))
