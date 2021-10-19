@@ -7,6 +7,14 @@ export const checkEmailValue = (email = Cypress.env('emailCandidat')) => {
     .parent()
     .should('contain', email)
 }
+
+export const checkPhoneNumberValue = (phoneNumber = Cypress.env('phoneNumberCandidat')) => {
+  cy.get('.t-result-candidat')
+    .contains('Portable :')
+    .parent()
+    .should('contain', phoneNumber)
+}
+
 export const adminCheckSearchCandidat = (candidatsByDepartments) => {
   cy.visit(Cypress.env('frontAdmin') + 'admin/admin-candidat')
   cy.get('.t-search-candidat [type=text]').type(candidatsByDepartments[0].nomNaissance)
@@ -77,7 +85,7 @@ export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week,
     .then(imageValueResponse => {
       cy.log('imageValueResponse', imageValueResponse.value)
       // eslint-disable-next-line
-      expect(imageValueResponse.success).to.be.true 
+      expect(imageValueResponse.success).to.be.true
       cy.get(`.t-${imageValueResponse.value}`).click()
     })
   cy.get('button')
