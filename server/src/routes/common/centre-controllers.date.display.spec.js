@@ -51,6 +51,16 @@ describe('Get centres with the numbers places available in departements and disp
     setNowAtNow()
   })
 
+  it('Should response 200 and empty result to find centres which a departement do not existe', async () => {
+    const { body } = await request(app)
+      .get(`${apiPrefix}/candidat/centres?departement=AA`)
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toBeDefined()
+    expect(body).toEqual([])
+  })
+
   it('Should response 200 to find 2 centres with one place from departement 75 when is before 12h', async () => {
     setNowBefore12h()
 

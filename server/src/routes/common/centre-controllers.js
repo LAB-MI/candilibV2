@@ -46,6 +46,7 @@ export async function getCentres (req, res) {
     centreId,
     beginDate,
     endDate,
+    nomCentre: nom,
   }
   if (req.userLevel === config.userStatusLevels.candidat) {
     loggerContent.candidatId = req.userId
@@ -120,7 +121,6 @@ export async function getCentres (req, res) {
     res.status(500).json({
       success: false,
       message: error.message,
-      error: JSON.stringify(error),
     })
   }
 }

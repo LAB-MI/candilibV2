@@ -149,6 +149,8 @@ export const placesAndGeoDepartementsAndCentresCache = {
     dateDisplayPlaces,
     dateVisibleBefore,
   }) {
+    if (!this.bufferForPlaces[geoDepartement]) return []
+
     const centreListWithPlaceCount = Object.entries(this.bufferForPlaces[geoDepartement])
       .map(([nomCentre, centre], index) => {
         const count = centre.places.filter(place =>
