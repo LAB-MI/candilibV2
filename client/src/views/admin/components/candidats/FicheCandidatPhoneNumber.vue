@@ -75,7 +75,7 @@ export default {
   methods: {
     onCancel () {
       this.isOnEdit = false
-      this.selectedPhoneNumber = this.info.phoneNumber
+      this.phoneNumber = this.info.phoneNumber
     },
     async updateCandidatPhoneNumber () {
       try {
