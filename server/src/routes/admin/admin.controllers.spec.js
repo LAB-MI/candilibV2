@@ -52,7 +52,6 @@ describe('Admin controller', () => {
 
   afterAll(async () => {
     await disconnect()
-    await app.close()
   })
 
   it('Should response 200 with user admin infos', async () => {
@@ -125,7 +124,6 @@ describe('Create user', () => {
 
   afterAll(async () => {
     await disconnect()
-    await app.close()
   })
 
   it('Should respond 201 create "répartiteur" by "délégué"', async () => {
@@ -310,7 +308,6 @@ describe('Get users', () => {
 
   afterAll(async () => {
     await disconnect()
-    app.close()
   })
 
   it('Should respond 200 retrieve users by admin', async () => {
@@ -399,7 +396,6 @@ describe('Update User by admin', () => {
 
   afterAll(async () => {
     await disconnect()
-    app.close()
   })
 
   it('Should respond 200 update user by admin', async () => {
@@ -500,7 +496,6 @@ describe('Update User by delegue', () => {
 
   afterAll(async () => {
     await disconnect()
-    app.close()
   })
 
   it('Should respond 200 update user by delegue', async () => {
@@ -615,7 +610,6 @@ describe(' Delete user by delegue', () => {
 
   afterAll(async () => {
     await disconnect()
-    app.close()
   })
 
   it('Should respond 200 delete user by delegue', async () => {
@@ -729,7 +723,6 @@ describe(' Delete user by admin', () => {
 
   afterAll(async () => {
     await disconnect()
-    await app.close()
   })
 
   it('Should respond 200 delete user by admin', async () => {

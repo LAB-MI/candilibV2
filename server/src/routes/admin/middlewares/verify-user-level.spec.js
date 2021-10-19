@@ -35,10 +35,6 @@ describe('Verify User level', () => {
     app.use(verifyToken, verifyRepartiteurLevel())
     app.get(apiPrefix, (req, res) => res.json({ ok: true }))
 
-    afterAll(async () => {
-      await app.close()
-    })
-
     it('Should respond a 401', async () => {
       // When
       const { body, status } = await request(app)
@@ -95,10 +91,6 @@ describe('Verify User level', () => {
     const app = express()
     app.use(verifyToken, verifyAdminLevel())
     app.get(apiPrefix, (req, res) => res.json({ ok: true }))
-
-    afterAll(async () => {
-      await app.close()
-    })
 
     it('Should respond a 401 for basic ', async () => {
       // When

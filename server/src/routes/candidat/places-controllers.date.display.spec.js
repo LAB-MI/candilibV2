@@ -246,7 +246,7 @@ describe('Get places available and display at 12h.', () => {
         ${selectedAfter12h}     | ${0}
         ${selectedAfter12h20}   | ${20}
         ${selectedAfter12h50}   | ${50}
-      `(`Should 200 with $npPlacesExpected available place before 12h when it is after 12h$minutes by center name and geo-departement for status ${status}`, async ({ npPlacesExpected, minutes }, done) => {
+      `(`Should 200 with $npPlacesExpected available place before 12h when it is after 12h$minutes by center name and geo-departement for status ${status}`, ({ npPlacesExpected, minutes }, done) => {
         setNowAfter12h(minutes)
         expectedPlaceByNameCentreAndGeoDep(placesCreatedBefore.date, npPlacesExpected).catch((error) => {
           throw error

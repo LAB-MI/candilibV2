@@ -132,7 +132,6 @@ describe('Test the candidat signup', () => {
   afterAll(async () => {
     await deleteDepartementById(departementData._id)
     await disconnect()
-    await app.close()
   })
 
   it('Should response 400 and a list of fields for an incomplete form', async () => {
