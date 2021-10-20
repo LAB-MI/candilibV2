@@ -353,6 +353,8 @@ export const updateCandidats = async (req, res) => {
     section: 'admin-update-candidats',
     candidatId,
     newEmail,
+    homeDepartement,
+    phoneNumber,
     removePenalty,
     adminId,
   }
@@ -396,7 +398,7 @@ export const updateCandidats = async (req, res) => {
       return res.status(200).send({ success: true, message: message.toString() })
     }
 
-    const isDepartementExist = await getDepartements(homeDepartement)
+    const isDepartementExist = homeDepartement && await getDepartements(homeDepartement)
     const isOkForNewHomeDepartement = homeDepartement && isDepartementExist
 
     if (isOkForNewHomeDepartement) {

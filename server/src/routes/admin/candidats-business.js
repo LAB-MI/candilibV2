@@ -59,7 +59,7 @@ export const modifyCandidatEmail = async (candidatId, newEmail, loggerInfo) => {
  * @param {string} homeDepartement
  */
 export const modifyCandidatHomeDepartement = async (candidatId, newHomeDepartement) => {
-  let candidat = await findCandidatById(candidatId)
+  let candidat = await getCandidat(candidatId)
   const { homeDepartement } = candidat
 
   if (homeDepartement === newHomeDepartement) {
@@ -79,7 +79,7 @@ export const modifyCandidatHomeDepartement = async (candidatId, newHomeDeparteme
  * @param {string} homeDepartement
  */
 export const modifyCandidatPhoneNumber = async (candidatId, newPhoneNumber) => {
-  let candidat = await findCandidatById(candidatId)
+  let candidat = await getCandidat(candidatId)
   const { portable } = candidat
 
   if (portable === newPhoneNumber) {
