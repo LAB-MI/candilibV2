@@ -4,7 +4,7 @@
  * @module
  */
 
-import { findCandidatById, updateCandidatEmail, updateCandidatHomeDepartement, deleteCandidatCanBookFrom } from '../../models/candidat'
+import { findCandidatById, updateCandidatEmail, updateCandidatHomeDepartement, deleteCandidatCanBookFrom, updateCandidatPhoneNumber } from '../../models/candidat'
 import { sendMailUpdateCandidatEmail } from '../business'
 import { appLogger } from '../../util'
 import { findUserById } from '../../models/user'
@@ -59,7 +59,7 @@ export const modifyCandidatEmail = async (candidatId, newEmail, loggerInfo) => {
  * @param {string} homeDepartement
  */
 export const modifyCandidatHomeDepartement = async (candidatId, newHomeDepartement) => {
-  let candidat = await findCandidatById(candidatId)
+  let candidat = await getCandidat(candidatId)
   const { homeDepartement } = candidat
 
   if (homeDepartement === newHomeDepartement) {
@@ -69,6 +69,26 @@ export const modifyCandidatHomeDepartement = async (candidatId, newHomeDeparteme
   }
 
   candidat = await updateCandidatHomeDepartement(candidat, newHomeDepartement)
+
+  return { candidat }
+}
+
+/**
+ * Modifier le numéro de téléphone du candidat
+ * @param {*} candidatId
+ * @param {string} homeDepartement
+ */
+export const modifyCandidatPhoneNumber = async (candidatId, newPhoneNumber) => {
+  let candidat = await getCandidat(candidatId)
+  const { portable } = candidat
+
+  if (portable === newPhoneNumber) {
+    const error = new Error(`Pas de modification pour le candidat ${candidat.codeNeph}/${candidat.nomNaissance}. Le nouveau numéro de  téléphone est identique à l'ancien.`)
+    error.status = 400
+    throw error
+  }
+
+  candidat = await updateCandidatPhoneNumber(candidat, newPhoneNumber)
 
   return { candidat }
 }

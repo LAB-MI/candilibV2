@@ -25,6 +25,10 @@ export const FETCH_REMOVE_CANDIDAT_CANBOOK_REQUEST = 'FETCH_REMOVE_CANDIDAT_CANB
 export const FETCH_REMOVE_CANDIDAT_CANBOOK_SUCCESS = 'FETCH_REMOVE_CANDIDAT_CANBOOK_SUCCESS'
 export const FETCH_REMOVE_CANDIDAT_CANBOOK_FAILURE = 'FETCH_REMOVE_CANDIDAT_CANBOOK_REQUEST'
 
+export const FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_REQUEST = 'FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_REQUEST'
+export const FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_SUCCESS = 'FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_SUCCESS'
+export const FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_FAILURE = 'FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_FAILURE'
+
 export default {
   state: {
     candidats: {
@@ -108,6 +112,15 @@ export default {
       state.candidats.isFetching = false
     },
 
+    FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_REQUEST (state) {
+      state.candidats.isFetching = true
+    },
+    FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_SUCCESS (state) {
+      state.candidats.isFetching = false
+    },
+    FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_FAILURE (state) {
+      state.candidats.isFetching = false
+    },
   },
 
   actions: {
@@ -217,5 +230,28 @@ export default {
       }
     },
 
+    async FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_REQUEST ({ commit, dispatch, rootState: { admin: { departements } }, state }, phoneNumber) {
+      try {
+        commit(FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_REQUEST)
+        const id = state.candidats.selected?._id
+
+        if (!id) {
+          throw new Error('Informations manquante pour ce candidat')
+        }
+
+        const { success, message } = await api.admin.updateCandidatPhoneNumber(id, phoneNumber)
+        if (!success) {
+          throw new Error(message)
+        }
+
+        dispatch(SHOW_SUCCESS, message)
+        commit(FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_SUCCESS)
+        dispatch(FETCH_CANDIDAT_INFO_REQUEST, id)
+      } catch (error) {
+        dispatch(SHOW_ERROR, error.message)
+        commit(FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_FAILURE, error)
+        throw error
+      }
+    },
   },
 }
