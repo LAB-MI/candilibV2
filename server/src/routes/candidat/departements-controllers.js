@@ -5,7 +5,6 @@
 
 import { appLogger } from '../../util'
 import { UNKNOWN_ERROR_GET_DEPARTEMENTS_INFOS } from '../admin/message.constants'
-import { getGeoDepartementsInfos } from './departements-business'
 import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 /**
@@ -46,7 +45,7 @@ export async function getActiveGeoDepartementsInfos (req, res) {
   }
 }
 
-const getGeoDepartementsOnlyIdsOrWithInfos = async (loggerContent, userId, justIsCentreHaveAvailablePlace = true) => {
+const getGeoDepartementsOnlyIdsOrWithInfos = async (loggerContent, userId) => {
   const geoDepartementsId = placesAndGeoDepartementsAndCentresCache.getOnlyGeoDepartements()
 
   appLogger.info({
@@ -55,17 +54,9 @@ const getGeoDepartementsOnlyIdsOrWithInfos = async (loggerContent, userId, justI
       0}`,
   })
 
-  if (justIsCentreHaveAvailablePlace) {
-    return geoDepartementsId.map(geoDepartement => ({
-      geoDepartement,
-      centres: null,
-      count: null,
-    }))
-  }
-
-  const geoDepartementsInfos = await getGeoDepartementsInfos(
-    geoDepartementsId,
-    userId,
-  )
-  return geoDepartementsInfos
+  return geoDepartementsId.map(geoDepartement => ({
+    geoDepartement,
+    centres: null,
+    count: null,
+  }))
 }
