@@ -51,7 +51,7 @@ async function startServer () {
     }
 
     try {
-      await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+      await placesAndGeoDepartementsAndCentresCache.initCache()
     } catch (error) {
       techLogger.error({
         section: 'start-server-set-geo-departemens-and-centres',

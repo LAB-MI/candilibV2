@@ -499,6 +499,27 @@ export const setBookedPlaceKeyToFalseOrTrue = async (place, booked) => {
   return result.nModified === 1 && result.ok === 1
 }
 
+export const findAllVisiblePlaces = async (
+  beginPeriod,
+  endDateLuxon,
+  createdBefore,
+  visibleBefore,
+) => {
+  return await Place.find({
+    candidat: { $exists: false },
+    createdAt: { $lt: createdBefore },
+    date: {
+      $gte: beginPeriod,
+      $lt: endDateLuxon,
+    },
+    visibleAt: { $lt: visibleBefore },
+  }, {
+    createdAt: 1,
+    visibleAt: 1,
+    date: 1,
+    centre: 1,
+  })
+}
 /**
  * Permet de récupérer les places disponibles pour le candidat
  *
