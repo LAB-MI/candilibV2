@@ -1,6 +1,6 @@
 import config from '../../config'
 import { findAllActiveCentres } from '../../models/centre'
-import { findPlacesByDepartementAndCentre } from '../../models/place'
+import { findAllVisiblePlaces } from '../../models/place'
 
 import { getFrenchLuxon, getFrenchLuxonFromJSDate, techLogger } from '../../util'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
@@ -12,7 +12,17 @@ const getGeoDepartementsAndCentresInfo = async () => {
     if (!accumulator[centre.geoDepartement]) {
       accumulator[centre.geoDepartement] = {}
     }
+
+    if (accumulator[centre.geoDepartement][centre.nom]) {
+      accumulator[centre.geoDepartement][centre.nom].idList = [
+        centre._id.toString(),
+        ...accumulator[centre.geoDepartement][centre.nom].idList,
+      ]
+      return accumulator
+    }
+
     accumulator[centre.geoDepartement][centre.nom] = {
+      idList: [centre._id.toString()],
       _id: centre._id,
       geoloc: centre.geoloc,
       adresse: centre.adresse,
@@ -40,38 +50,34 @@ const getPlacesAndCentresInfo = async () => {
 
   const dateVisibleBefore = getDateVisibleBefore(0)
 
-  const placesAndCentreInformations = await Object.entries(rawGeoDepartementsCentresInformations).reduce(async (acc, [geoDepartement, centreInfos]) => {
-    acc = await acc
+  const rawPlaces = await findAllVisiblePlaces(
+    beginDateLuxon.toISO(),
+    endDateLuxon.toISO(),
+    dateDisplayPlaces.toISO(),
+    dateVisibleBefore.toISO(),
+  )
 
+  const placesAndCentreInformations = Object.entries(rawGeoDepartementsCentresInformations).reduce((acc, [geoDepartement, centreInfos]) => {
     if (!acc[geoDepartement]) {
       acc[geoDepartement] = {}
     }
 
-    await Promise.all(Object.entries(centreInfos)
-      .map(async ([nomCentre, centre], index) => {
+    Object.entries(centreInfos)
+      .map(async ([nomCentre, centre]) => {
         if (!acc[geoDepartement][nomCentre]) {
           acc[geoDepartement][nomCentre] = centre
         }
 
-        const rawPlaces = (await findPlacesByDepartementAndCentre(
-          nomCentre,
-          geoDepartement,
-          beginDateLuxon,
-          endDateLuxon,
-          dateDisplayPlaces,
-          dateVisibleBefore,
-        )) || []
-
-        const cleanPlaces = rawPlaces.map(({ placesInfo }) => placesInfo)
-          .flat(1)
+        const shapedPlaces = rawPlaces
+          .filter(plce => acc[geoDepartement][nomCentre].idList.includes(plce.centre.toString()))
           .map(place => ({
             createdAt: getFrenchLuxonFromJSDate((place.createdAt)),
             visibleAt: getFrenchLuxonFromJSDate((place.visibleAt)),
             date: getFrenchLuxonFromJSDate(place.date),
           }))
 
-        acc[geoDepartement][nomCentre].places = cleanPlaces
-      }))
+        acc[geoDepartement][nomCentre].places = shapedPlaces
+      })
 
     return acc
   }, {})
@@ -149,8 +155,10 @@ export const placesAndGeoDepartementsAndCentresCache = {
     dateDisplayPlaces,
     dateVisibleBefore,
   }) {
+    if (!this.bufferForPlaces[geoDepartement]) return []
+
     const centreListWithPlaceCount = Object.entries(this.bufferForPlaces[geoDepartement])
-      .map(([nomCentre, centre], index) => {
+      .map(([nomCentre, centre]) => {
         const count = centre.places.filter(place =>
           place.createdAt < dateDisplayPlaces &&
           place.visibleAt < dateVisibleBefore &&
@@ -173,8 +181,14 @@ export const placesAndGeoDepartementsAndCentresCache = {
   resetPlaces () {
     this.bufferForPlaces = {}
   },
+
   resetGeoDepartemensAndCentres () {
     this.bufferForGeoDepartementsAndCentres = {}
+  },
+
+  async initCache () {
+    await this.setGeoDepartemensAndCentres()
+    await this.setPlaces()
   },
 }
 

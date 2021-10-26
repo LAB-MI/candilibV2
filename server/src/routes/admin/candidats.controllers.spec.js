@@ -42,7 +42,6 @@ xdescribe('Test get and export candidats', () => {
     await removeCentres()
     await deleteCandidats()
     await disconnect()
-    await app.close()
   })
 
   it('Should response 200 with list candidats', async () => {
@@ -154,6 +153,17 @@ describe('Test update candidat e-mail and homeDepartement by admin and remove pe
     expect(body).toHaveProperty('success', true)
     expect(body).toHaveProperty('message', 'Le département de résidence du candidat 123456789000/NOM A TESTER a été changé.')
   })
+
+  it('should 400 when update candidat with same portable', async () => {
+    await itWithBadParams({ phoneNumber: candidatToCreate.portable }, "Pas de modification pour le candidat 123456789000/NOM A TESTER. Le nouveau numéro de  téléphone est identique à l'ancien.")
+  })
+
+  it('should 200 when update candidat portable', async () => {
+    const body = await itHttpRequest({ phoneNumber: '0621323445' }, 200)
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message', 'Le numéro de téléphone du candidat 123456789000/NOM A TESTER a été changé.')
+  })
+
   it('should 400 when send a email and removePenalty', async () => {
     await itWithBadParams({ email: 'test@ŧest.com', removePenalty: true })
   })

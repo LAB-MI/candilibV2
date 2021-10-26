@@ -82,7 +82,7 @@ export async function verifyToken (req, res, next) {
     const isCandidat =
       !level || level === config.userStatusLevels[config.userStatuses.CANDIDAT]
 
-    if (isMagicLink && isCandidat && firstConnection !== 'true') {
+    if (isMagicLink && isCandidat && firstConnection !== true) {
       await setCandidatFirstConnection(id)
     }
 

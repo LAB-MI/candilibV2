@@ -242,6 +242,17 @@ const apiAdmin = {
     return json
   },
 
+  async updateCandidatPhoneNumber (id, phoneNumber) {
+    const url = `${apiPaths.admin.candidats}/${id}`
+    const json = await apiClient.patch(url, {
+      headers: getHeadersForAdminJson(),
+      body: JSON.stringify({
+        phoneNumber,
+      }),
+    })
+    return json
+  },
+
   async removeCandidatPenalty (id) {
     const url = `${apiPaths.admin.candidats}/${id}`
     const json = await apiClient.patch(url, {

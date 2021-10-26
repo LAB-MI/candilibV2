@@ -39,10 +39,6 @@ app.get(apiPrefix, (req, res) => res.json({ ok: true }))
 app.post(apiPrefix, (req, res) => res.json({ ok: true }))
 
 describe('Verify-repartiteur-departement', () => {
-  afterAll(async () => {
-    await app.close()
-  })
-
   it('Should respond a 401', async () => {
     // When
     const { body, status } = await request(app)

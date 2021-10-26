@@ -19,6 +19,7 @@ import {
   candidatCancelPlace,
   candidatModifyPlace,
   checkEmailValue,
+  checkPhoneNumberValue,
 } from './util/util-cypress'
 
 describe('Search Candidate', () => {
@@ -116,6 +117,63 @@ describe('Search Candidate', () => {
           .should('contain', 'a été changé.')
         checkEmailValue(newEmail)
         emailToVerify = newEmail
+      }
+    })
+
+    const adminGoToInfoCandidatPhoneNumber = (nomNaissance, phoneNumberToVerify = Cypress.env('phoneNumberCandidat')) => {
+      cy.get('.t-search-candidat [type=text]').type(nomNaissance)
+      cy.contains(nomNaissance).click()
+      cy.get('h3').should('contain', 'nformations')
+
+      checkPhoneNumberValue(phoneNumberToVerify)
+    }
+
+    const adminGoToInfoCandidatAndUpdatePhoneNumber = (nomNaissance, editPhoneNumber, phoneNumberToVerify = Cypress.env('phoneNumberCandidat')) => {
+      adminGoToInfoCandidatPhoneNumber(nomNaissance, phoneNumberToVerify)
+      cy.get('.t-update-candidat-phone-number-edit').click()
+      cy.get('.t-update-candidat-phone-number-write').within(updatetowrite => {
+        cy.get('input').should('have.value', phoneNumberToVerify)
+        editPhoneNumber && editPhoneNumber()
+      })
+    }
+
+    it('Update candidat PhoneNumber with incorrect format', () => {
+      adminGoToInfoCandidatAndUpdatePhoneNumber(Cypress.env('candidat'), () => {
+        cy.get('input').type('{selectall}{backspace}')
+        cy.get('input').type('060708')
+      })
+      cy.get('.t-btn-ok').contains('Valider').parent().should('be.disabled')
+      cy.get('button').contains('Annuler').click()
+      checkPhoneNumberValue(Cypress.env('phoneNumberCandidat'))
+    })
+
+    it('Update candidat PhoneNumber with same PhoneNumber', () => {
+      adminGoToInfoCandidatAndUpdatePhoneNumber(Cypress.env('candidat'), () => {
+        cy.get('input').type('{selectall}{backspace}')
+        cy.get('input').type(Cypress.env('phoneNumberCandidat'))
+      })
+
+      cy.get('.t-btn-ok').contains('Valider').parent().should('not.be.disabled')
+      cy.get('.t-btn-ok').contains('Valider').click()
+
+      cy.get('.v-snack--active')
+        .should('contain', 'Pas de modification pour le candidat')
+    })
+
+    it('Update candidat PhoneNumber', () => {
+      let PhoneNumberToVerify
+      for (const newPhoneNumber of ['0742424242', Cypress.env('phoneNumberCandidat')]) {
+        adminGoToInfoCandidatAndUpdatePhoneNumber(Cypress.env('candidat'), () => {
+          cy.get('input').type('{selectall}{backspace}')
+          cy.get('input').type(newPhoneNumber)
+        }, PhoneNumberToVerify || '0716253443')
+        cy.get('.t-btn-ok').contains('Valider').parent().should('not.be.disabled')
+        cy.get('.t-btn-ok').contains('Valider').click()
+
+        cy.get('.v-snack--active')
+          .should('contain', 'a été changé.')
+        checkPhoneNumberValue(newPhoneNumber)
+        PhoneNumberToVerify = newPhoneNumber
       }
     })
 

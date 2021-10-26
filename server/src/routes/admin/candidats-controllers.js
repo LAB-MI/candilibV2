@@ -20,8 +20,9 @@ import { UNKNOWN_ERROR_GET_CANDIDAT, BAD_PARAMS } from './message.constants'
 import {
   checkToken,
   email as emailRegex,
+  phone as phoneRegex,
 } from '../../util'
-import { modifyCandidatEmail, modifyCandidatHomeDepartement, deletePenalty } from './candidats-business'
+import { modifyCandidatEmail, modifyCandidatHomeDepartement, deletePenalty, modifyCandidatPhoneNumber } from './candidats-business'
 import { getDepartements } from './departement-business'
 
 /**
@@ -344,7 +345,7 @@ export const getBookedCandidats = async (req, res) => {
  */
 export const updateCandidats = async (req, res) => {
   const { id: candidatId } = req.params
-  const { email: newEmail, homeDepartement, removePenalty } = req.body
+  const { email: newEmail, homeDepartement, removePenalty, phoneNumber } = req.body
   const adminId = req.userId
 
   const loggerInfo = {
@@ -352,18 +353,24 @@ export const updateCandidats = async (req, res) => {
     section: 'admin-update-candidats',
     candidatId,
     newEmail,
+    homeDepartement,
+    phoneNumber,
     removePenalty,
     adminId,
   }
 
   const isOkForNewEmail = newEmail && emailRegex.test(newEmail)
+  const isOkForNewPhoneNumber = phoneNumber && phoneRegex.test(phoneNumber)
   const askRemoveCanBookFrom = (removePenalty === true)
   // Check params
   if (
     !candidatId ||
     (newEmail && homeDepartement) ||
     (newEmail && (removePenalty !== undefined)) ||
-    ((removePenalty !== undefined) && homeDepartement)
+    ((removePenalty !== undefined) && homeDepartement) ||
+    (phoneNumber && homeDepartement) ||
+    (phoneNumber && newEmail) ||
+    (phoneNumber && (removePenalty !== undefined))
   ) {
     const message = BAD_PARAMS
     appLogger.warn({ ...loggerInfo, description: message })
@@ -384,13 +391,23 @@ export const updateCandidats = async (req, res) => {
       return res.status(200).send({ success: true, message: message.toString() })
     }
 
-    const isDepartementExist = await getDepartements(homeDepartement)
-    if (homeDepartement && isDepartementExist) {
+    if (isOkForNewPhoneNumber) {
+      const { candidat } = await modifyCandidatPhoneNumber(candidatId, phoneNumber)
+      message.push(`Le numéro de téléphone du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
+      appLogger.info({ ...loggerInfo, description: message })
+      return res.status(200).send({ success: true, message: message.toString() })
+    }
+
+    const isDepartementExist = homeDepartement && await getDepartements(homeDepartement)
+    const isOkForNewHomeDepartement = homeDepartement && isDepartementExist
+
+    if (isOkForNewHomeDepartement) {
       const { candidat } = await modifyCandidatHomeDepartement(candidatId, homeDepartement)
       message.push(`Le département de résidence du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été changé.`)
       appLogger.info({ ...loggerInfo, description: message })
       return res.status(200).send({ success: true, message: message.toString() })
     }
+
     if (askRemoveCanBookFrom) {
       const candidat = await deletePenalty(candidatId, adminId)
       const message = `La pénalité du candidat ${candidat.codeNeph}/${candidat.nomNaissance} a été retirée.`
