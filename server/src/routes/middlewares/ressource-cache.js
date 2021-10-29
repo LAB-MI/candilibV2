@@ -86,7 +86,7 @@ const getPlacesAndCentresInfo = async () => {
 }
 
 export function getPlacesAsIntervalOf (intervalInMilscd) {
-  placesAndGeoDepartementsAndCentresCache.timerIntervalPlacesSettingId = setInterval(() => {
+  const id = setInterval(() => {
     if (!placesAndGeoDepartementsAndCentresCache.isActive) return
     placesAndGeoDepartementsAndCentresCache.setPlaces()
       .catch((error) => {
@@ -97,6 +97,16 @@ export function getPlacesAsIntervalOf (intervalInMilscd) {
         })
       })
   }, intervalInMilscd)
+  placesAndGeoDepartementsAndCentresCache.timerIntervalPlacesSettingId = id
+  const { _idleStart } = id
+  techLogger.info({
+    section: 'get-places-as-interval-of',
+    action: 'IS LAUNCHED',
+    interval: {
+      _idleStart,
+      delay: intervalInMilscd,
+    },
+  })
 }
 
 export function getGeoDepartementAndPlacesAsIntervalOf (intervalInMilscd) {
@@ -111,6 +121,14 @@ export function getGeoDepartementAndPlacesAsIntervalOf (intervalInMilscd) {
         })
       })
   }, intervalInMilscd)
+  techLogger.info({
+    section: 'get-geo-departement-and-places-as-interval-of',
+    action: 'IS LAUNCHED',
+    interval: {
+      _idleStart: placesAndGeoDepartementsAndCentresCache.timerIntervalGeoDepartementsAndCentresSettingId._idleStart,
+      delay: intervalInMilscd,
+    },
+  })
 }
 
 export const placesAndGeoDepartementsAndCentresCache = {
