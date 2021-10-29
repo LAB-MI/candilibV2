@@ -1,5 +1,6 @@
-function startServer () {
-  console.log('Start Automate')
-}
+import dotenv from 'dotenv'
+import jobs from './job-list'
+import startScheduler from './automate.js'
 
-startServer()
+dotenv.config()
+startScheduler(jobs)
