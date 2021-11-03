@@ -5,7 +5,7 @@
 
 import getConfig from './config'
 import * as adminJobs from './jobs'
-import { GET_API_VERSION_JOB, HELLO_JOB } from './jobs'
+import { GET_API_VERSION_JOB, HELLO_JOB, SORT_STATUS_CANDIDATS_JOB } from './jobs'
 
 /**
  * @const {Object}
@@ -20,6 +20,11 @@ const allJobs = {
     name: 'GET_API_VERSION',
     fn: adminJobs.getApiVersion,
     repeatInterval: '*/3 * * * *',
+  },
+  [SORT_STATUS_CANDIDATS_JOB]: {
+    name: SORT_STATUS_CANDIDATS_JOB,
+    fn: adminJobs.jobStatusCandidats,
+    repeatInterval: '0 23 * * *',
   },
 }
 

@@ -19,7 +19,7 @@
  * @property {string} api.apiPass Mot de passe de l'utilisateur de l'API
  */
 
-import { GET_API_VERSION_JOB, HELLO_JOB } from './jobs'
+import { GET_API_VERSION_JOB, HELLO_JOB, SORT_STATUS_CANDIDATS_JOB } from './jobs'
 
 /**
  * @returns {SchedulerConfig}
@@ -43,10 +43,12 @@ export default () => {
     DISABLE_SCHEDULE,
     DISABLE_DEFINE,
     JOB_LIST,
+    TIMEOUT_START,
+    TENANTNAME,
   } = process.env
-  const list = [HELLO_JOB, GET_API_VERSION_JOB]
+  let list = [HELLO_JOB, GET_API_VERSION_JOB, SORT_STATUS_CANDIDATS_JOB]
   if (JOB_LIST) {
-    list.concat(process.env.JOB_LIST.split(','))
+    list = list.concat(process.env.JOB_LIST.split(','))
   }
   return {
     jobs: {
@@ -56,8 +58,10 @@ export default () => {
     },
 
     scheduler: {
-      schedulerName: SCHEDULER_NAME || process.env.HOSTNAME + '-' + process.pid,
+      schedulerName: SCHEDULER_NAME || TENANTNAME + '-' + process.pid,
       defaultConcurrency: 1,
+      TIMEOUT_START: TIMEOUT_START || 10000,
+      defaultLockLifetime: 10000,
     },
 
     db: {

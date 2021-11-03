@@ -6,8 +6,16 @@ import getAgenda from './get-agenda.js'
 import getConfig from './config'
 import { appLogger } from '../util'
 import { defineJobs, scheduleJobs } from './libs'
-import { connect, disconnect } from '../mongo-connection.js'
+import { disconnect } from '../mongo-connection.js'
+import { LOGGER_INFO } from './constants.js'
+import { getConnectDB } from './get-connect-db.js'
+// import { findStatusByType } from '../models/status/status.queries.js'
 
+let agenda
+let mongoose
+let isStarted
+// let agenda
+// let mongoose
 /**
  * Stops gracefully the agenda
  *
@@ -16,11 +24,40 @@ import { connect, disconnect } from '../mongo-connection.js'
  *
  * @param {import('agenda').Agenda} agenda
  */
-const graceful = async (agenda, mongoose) => {
+const graceful = async () => {
   appLogger.info({ description: 'Stopping Scheduler' })
   agenda && await agenda.stop()
   mongoose && await disconnect()
   process.exit(0)
+}
+
+export async function startAgendaAndJobs (jobs, loggerInfo) {
+  appLogger.info({ ...loggerInfo, description: 'Starting Scheduler' })
+  await agenda.start()
+  isStarted = true
+  // TODO; factoriser dans une fonciton
+  if (getConfig().jobs.define) {
+    appLogger.debug({ ...loggerInfo, description: 'Defining jobs', jobs: getConfig().jobs.define })
+    await defineJobs(agenda, jobs)
+  }
+  appLogger.info({ ...loggerInfo, description: 'Scheduler started' })
+
+  if (getConfig().jobs.schedule) {
+    await scheduleJobs(agenda, jobs)
+  }
+}
+
+export async function stopAgenda () {
+  await agenda.stop()
+  isStarted = false
+}
+
+export function getIntanceAgenda () {
+  return agenda
+}
+
+export function isAgendaStarted () {
+  return isStarted
 }
 
 /**
@@ -30,31 +67,36 @@ const graceful = async (agenda, mongoose) => {
  * @async
  * @function
  */
-let agenda
-let mongoose
 export default async (jobs) => {
   const loggerInfo = {
-    section: 'Automate',
-    action: 'START',
+    ...LOGGER_INFO,
+    action: 'NEW INSTANCE',
   }
   try {
     process.on('SIGTERM', () => graceful())
     process.on('SIGINT', () => graceful())
-    mongoose = await connect()
+    mongoose = await getConnectDB()
     agenda = await getAgenda(mongoose)
-    if (getConfig().jobs.define) {
-      appLogger.debug({ ...loggerInfo, description: 'Defining jobs', jobs: getConfig().jobs.define })
-      await defineJobs(agenda, jobs)
-    }
 
-    appLogger.debug({ ...loggerInfo, description: 'Starting Scheduler' })
-    await agenda.start()
+    // setTimeout(async () => {
+    //   try {
+    //     const tenantNamme = await findStatusByType({ type: 'TENANTNAME' })
 
-    appLogger.info({ ...loggerInfo, description: 'Scheduler started' })
-
-    if (getConfig().jobs.schedule) {
-      await scheduleJobs(agenda, jobs)
-    }
+    // if (tenantNamme === getConfig().TENANTNAME && !isStarted) {
+    // await startAgendaAndJobs(jobs, loggerInfo)
+    //     }
+    //   } catch (error) {
+    //     appLogger.error({
+    //       ...loggerInfo,
+    //       action: 'START JOBS',
+    //       description: error.message,
+    //       error,
+    //     })
+    //   }
+    // }
+    // ,
+    // getConfig().TIMEOUT_START,
+    // )
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
