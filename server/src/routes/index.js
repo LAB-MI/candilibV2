@@ -7,6 +7,7 @@ import express from 'express'
 import auth from './auth'
 import admin from './admin'
 import candidat, { preSignup, emailValidation } from './candidat'
+import tech from './tech'
 import { verifyToken, getToken } from './middlewares'
 import { resetMyPassword } from './auth/admin-controllers'
 import { getCandidatConfig } from './candidat/candidat-config-controller'
@@ -319,5 +320,6 @@ router.use('/candidat', triggerCache, verifyToken, verifyCandidatStatus, verifyU
 router.use('/auth', auth)
 router.use('/admin', verifyToken, admin)
 
+router.use('/tech/automate', verifyToken, tech)
 /** Routeur principal */
 export default router

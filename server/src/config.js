@@ -257,4 +257,12 @@ export const AURIGE_STATUS = 'AURIGE_STATUS'
 export const LAST_INFO_BORNE_STATUS = 'LAST_INFO_BORNE_STATUS'
 export const NB_DAYS_INACTIVITY = 'NB_DAYS_INACTIVITY'
 
+//
+export const automateApiConfig = {
+  urlBase: `${process.env.AUTOMATE_URL || 'http://localhost:' + (process.env.AUTOMATE_PORT || '9000')}`,
+  apiPrefix: '/api/automate',
+}
+
+export const DEFAULT_PORT_SCHEDULERS = 8026
+
 export default config

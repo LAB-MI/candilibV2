@@ -46,6 +46,7 @@
   "license": "ISC",
   "dependencies": {
     "agenda": "^4.2.1",
+    "axios": "^0.24.0",
     "bcryptjs": "^2.4.3",
     "connect": "^3.7.0",
     "cookie-parser": "^1.4.5",
