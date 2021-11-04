@@ -80,7 +80,7 @@ export async function checkAccess (to, from, next) {
   next({ name: redirectIfIsAdminTech(from) })
 }
 
-export async function redirectIfIsAdminTech (from) {
+export function redirectIfIsAdminTech (from) {
   if (store.state.admin.status && store.state.admin.status === 'tech') {
     return 'admin-tech-home'
   }

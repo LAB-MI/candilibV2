@@ -745,8 +745,8 @@ export default {
     async [FETCH_STATUS_AUTOMATE_REQUEST] ({ commit, dispatch }, data) {
       try {
         const result = await api.admin.getStatusAutomate()
-        console.log(result)
         dispatch(SHOW_SUCCESS, 'Status Automate')
+        return result
       } catch (error) {
         return dispatch(SHOW_ERROR, error.message)
       }
