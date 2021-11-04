@@ -1,14 +1,11 @@
 import http from 'http'
 import app from './app'
-import dotenv from 'dotenv'
 
 import jobs from './job-list'
 import startScheduler from './automate.js'
 
 import { techLogger } from '../util'
 import { LOGGER_INFO } from './constants'
-
-dotenv.config()
 
 const PORT = process.env.AUTOMATE_PORT || 9000
 
