@@ -8,6 +8,7 @@ import {
   archiveUserController,
   updatedInfoUser,
   createUserController,
+  createTechnicalUserController,
   getUsers,
 } from './admin-controllers'
 import { createUser } from '../../models/user'
@@ -28,6 +29,7 @@ const { apiPrefix } = require('../../app')
 const email = 'test@example.com'
 const emailAdmin = 'Admin@example.com'
 const emailTech = 'testTech@example.com'
+const emailTech2 = 'testTech2@example.com'
 const emailDelegue = 'delegue@example.com'
 const emailInvalid = 'emailInvalidexample.com'
 const password = 'S3cr3757uff!'
@@ -96,6 +98,75 @@ describe('Admin controller', () => {
       'features',
       config.userStatusFeatures[config.userStatuses.TECH],
     )
+  })
+
+  it('Should respond 401 create technical user by "tech"', async () => {
+    app = express()
+    app.use((req, res, next) => {
+      req.userId = adminTech._id
+      next()
+    })
+    app.use(bodyParser.json({ limit: '20mb' }))
+    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    app.post(`${apiPrefix}/admin/tech-users`, createTechnicalUserController)
+
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/tech-users`)
+      .send({
+        email: emailTech2,
+      })
+      .set('Accept', 'application/json')
+      .expect(401)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message')
+  })
+
+  it('Should respond 201 create technical user by "admin"', async () => {
+    app = express()
+    app.use((req, res, next) => {
+      req.userId = admin._id
+      next()
+    })
+    app.use(bodyParser.json({ limit: '20mb' }))
+    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    app.post(`${apiPrefix}/admin/tech-users`, createTechnicalUserController)
+
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/tech-users`)
+      .send({
+        email: emailTech2,
+      })
+      .set('Accept', 'application/json')
+      .expect(201)
+
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message')
+  })
+
+  it('Should respond 400 if email is not valid', async () => {
+    app = express()
+    app.use((req, res, next) => {
+      req.userId = admin._id
+      next()
+    })
+    app.use(bodyParser.json({ limit: '20mb' }))
+    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    app.post(`${apiPrefix}/admin/tech-users`, createTechnicalUserController)
+
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/tech-users`)
+      .send({
+        email: emailInvalid,
+      })
+      .set('Accept', 'application/json')
+      .expect(400)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', INVALID_EMAIL)
   })
 })
 

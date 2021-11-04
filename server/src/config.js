@@ -65,6 +65,11 @@ const userStatusLevels = userStatusesOrderedList.reduce((acc, value, index) => {
  * @constant {Object}
  */
 const features = {
+  ADMIN_TECH_HOME: 'admin-tech-home',
+  ADMIN_HOME: 'admin-home',
+  GESTION_PLANNING: 'gestion-planning',
+  ADMIN_CANDIDAT: 'admin-candidat',
+
   AURIGE: 'aurige',
   UNARCHIVE_CANDIDAT: 'unarchive-candidat',
   STATS_KPI: 'stats-kpi',
@@ -74,19 +79,29 @@ const features = {
   TECH: 'tech-admin',
 }
 
+const defaultAdministrationStatusAccess = [
+  features.ADMIN_HOME,
+  features.GESTION_PLANNING,
+  features.ADMIN_CANDIDAT,
+]
+
 /**
  * Dictionnaire des différentes fonctionnalités accessibles selon le type d'utilisateurs de l'application
  * @constant {Object}
  */
 const userStatusAccess = {
   [userStatuses.CANDIDAT]: [],
-  [userStatuses.REPARTITEUR]: [],
+  [userStatuses.REPARTITEUR]: [
+    ...defaultAdministrationStatusAccess,
+  ],
   [userStatuses.DELEGUE]: [
+    ...defaultAdministrationStatusAccess,
     features.AGENTS,
     features.CENTRES,
     features.STATS_KPI,
   ],
   [userStatuses.ADMIN]: [
+    ...defaultAdministrationStatusAccess,
     features.AGENTS,
     features.AURIGE,
     features.UNARCHIVE_CANDIDAT,
@@ -95,7 +110,12 @@ const userStatusAccess = {
     features.STATS_KPI,
     features.TECH,
   ],
-  [userStatuses.TECH]: [features.AURIGE, features.STATS_KPI, features.UNARCHIVE_CANDIDAT],
+  [userStatuses.TECH]: [
+    features.ADMIN_TECH_HOME,
+    // features.AURIGE,
+    // features.STATS_KPI,
+    // features.UNARCHIVE_CANDIDAT,
+  ],
 }
 
 const timeoutToRetryBy = {
