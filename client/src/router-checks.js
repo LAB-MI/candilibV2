@@ -77,7 +77,14 @@ export async function checkAccess (to, from, next) {
   if (store.state.admin.features && store.state.admin.features.includes(name)) {
     return next()
   }
-  next({ name: from.name || 'admin-home' })
+  next({ name: redirectIfIsAdminTech(from) })
+}
+
+export async function redirectIfIsAdminTech (from) {
+  if (store.state.admin.status && store.state.admin.status === 'tech') {
+    return 'admin-tech-home'
+  }
+  return from.name || 'admin-home'
 }
 
 export async function checkCandidatToken (to, from, next) {

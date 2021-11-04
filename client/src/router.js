@@ -9,6 +9,7 @@ import {
   checkAccess,
   checkCandidatTokenToRedirect,
   requireNoBooking,
+  // redirectIfIsAdminTech,
 } from './router-checks'
 import {
   ROUTE_AUTHORIZE_AURIGE,
@@ -81,11 +82,19 @@ const adminRoutes = [
         path: '',
         name: 'admin-home',
         component: HomeAdminPage,
+        beforeEnter: checkAccess,
+      },
+      {
+        path: 'admin-tech-home',
+        name: 'admin-tech-home',
+        // component: HomeAdminPage,
+        beforeEnter: checkAccess,
       },
       {
         path: 'gestion-planning/:center?/:date?',
         name: 'gestion-planning',
         component: ScheduleManager,
+        beforeEnter: checkAccess,
       },
       {
         path: 'aurige',
@@ -127,8 +136,8 @@ const adminRoutes = [
         path: 'admin-candidat',
         name: 'admin-candidat',
         component: AdminCandidat,
+        beforeEnter: checkAccess,
       },
-
     ],
   },
 ]
