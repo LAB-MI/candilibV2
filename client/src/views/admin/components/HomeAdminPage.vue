@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div v-if="isAdminTech">
+    <tech-dashboard />
+  </div>
+  <div v-else>
     <page-title>
       {{ $formatMessage({ id: 'Recherche'}) }}
     </page-title>
@@ -13,12 +16,20 @@
 <script>
 import SearchInspecteur from './SearchInspecteur'
 import Monitors from './Monitors.vue'
+import TechDashboard from './technicalDashboard/TechnicalDashboard.vue'
 import { callBackCatchRouter, getFrenchLuxonCurrentDateTime } from '@/util'
 
 export default {
   components: {
     Monitors,
     SearchInspecteur,
+    TechDashboard,
+  },
+
+  computed: {
+    isAdminTech () {
+      return this.$store.state.admin.status === 'tech'
+    },
   },
 
   methods: {
