@@ -19,7 +19,7 @@ const allJobs = {
   [GET_API_VERSION_JOB]: {
     name: 'GET_API_VERSION',
     fn: adminJobs.getApiVersion,
-    repeatInterval: '*/3 * * * *',
+    repeatInterval: '50 22 * * *',
   },
   [SORT_STATUS_CANDIDATS_JOB]: {
     name: SORT_STATUS_CANDIDATS_JOB,

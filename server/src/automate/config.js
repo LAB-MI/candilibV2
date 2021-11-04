@@ -19,7 +19,7 @@
  * @property {string} api.apiPass Mot de passe de l'utilisateur de l'API
  */
 
-import { GET_API_VERSION_JOB, HELLO_JOB, SORT_STATUS_CANDIDATS_JOB } from './jobs'
+import { GET_API_VERSION_JOB, SORT_STATUS_CANDIDATS_JOB } from './jobs'
 
 /**
  * @returns {SchedulerConfig}
@@ -46,7 +46,7 @@ export default () => {
     TIMEOUT_START,
     TENANTNAME,
   } = process.env
-  let list = [HELLO_JOB, GET_API_VERSION_JOB, SORT_STATUS_CANDIDATS_JOB]
+  let list = [GET_API_VERSION_JOB, SORT_STATUS_CANDIDATS_JOB]
   if (JOB_LIST) {
     list = list.concat(process.env.JOB_LIST.split(','))
   }
