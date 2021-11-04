@@ -19,7 +19,7 @@ module.exports = {
   },
   {
     name: 'AUTOMATE',
-    script: 'dist/automate/boot-dev.js',
+    script: 'dist/automate/index.js',
     instances: 1,
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     autorestart: true,
