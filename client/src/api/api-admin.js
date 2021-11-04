@@ -118,6 +118,57 @@ const apiAdmin = {
     return json
   },
 
+  async createTechnicalUser (user) {
+    const json = await apiClient.post(apiPaths.admin.techUsers, {
+      headers: getHeadersForAdminJson(),
+      body: JSON.stringify(user),
+    })
+    return json
+  },
+
+  async getTechnicalUsers () {
+    const json = await apiClient.get(apiPaths.admin.techUsers, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
+  async getArchivedTechnicalUsers () {
+    const json = await apiClient.get(`${apiPaths.admin.users}?isArchivedOnly=true`, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
+  async deleteTechnicalUser (emailToDelete) {
+    const json = await apiClient.delete(apiPaths.admin.users, {
+      headers: getHeadersForAdminJson(),
+      body: JSON.stringify({ email: emailToDelete }),
+    })
+    return json
+  },
+
+  async startAutomate () {
+    const json = await apiClient.post(`${apiPaths.admin.techAutomate}/start`, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
+  async stopAutomate () {
+    const json = await apiClient.post(`${apiPaths.admin.techAutomate}/stop`, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
+  async getStatusAutomate () {
+    const json = await apiClient.get(`${apiPaths.admin.techAutomate}/status`, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
   async sendMailResetLink (email) {
     const json = await apiClient.post(apiPaths.admin.resetLink, {
       headers: {

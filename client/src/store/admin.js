@@ -13,6 +13,10 @@ import {
   ROUTE_AUTHORIZE_CENTRES,
   ROUTE_AUTHORIZE_DEPARTEMENTS,
   ROUTE_AUTHORIZE_TECH_ADMIN,
+  ROUTE_AUTHORIZE_ADMIN_HOME,
+  ROUTE_AUTHORIZE_GESTION_PLANNING,
+  ROUTE_AUTHORIZE_ADMIN_CANDIDAT,
+  ROUTE_AUTHORIZE_ADMIN_TECH_HOME,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -91,6 +95,10 @@ export const DELETE_TOTAL_PLACES_FOR_ALL_CENTERS = 'DELETE_TOTAL_PLACES_FOR_ALL_
 
 export const numberOfMonthsToFetch = 3
 
+export const START_AUTOMATE_REQUEST = 'START_AUTOMATE_REQUEST'
+export const STOP_AUTOMATE_REQUEST = 'STOP_AUTOMATE_REQUEST'
+export const FETCH_STATUS_AUTOMATE_REQUEST = 'FETCH_STATUS_AUTOMATE_REQUEST'
+
 const AUTHORIZED_ROUTES = {
   agents: ROUTE_AUTHORIZE_AGENTS,
   aurige: ROUTE_AUTHORIZE_AURIGE,
@@ -99,6 +107,11 @@ const AUTHORIZED_ROUTES = {
   centres: ROUTE_AUTHORIZE_CENTRES,
   departements: ROUTE_AUTHORIZE_DEPARTEMENTS,
   'tech-admin': ROUTE_AUTHORIZE_TECH_ADMIN,
+
+  'admin-home': ROUTE_AUTHORIZE_ADMIN_HOME,
+  'gestion-planning': ROUTE_AUTHORIZE_GESTION_PLANNING,
+  'admin-candidat': ROUTE_AUTHORIZE_ADMIN_CANDIDAT,
+  'admin-tech-home': ROUTE_AUTHORIZE_ADMIN_TECH_HOME,
 }
 
 export default {
@@ -707,6 +720,36 @@ export default {
 
     [SET_WEEK_SECTION] ({ commit }, currentWeek) {
       commit(SET_WEEK_SECTION, currentWeek)
+    },
+
+    async [START_AUTOMATE_REQUEST] ({ commit, dispatch }, data) {
+      try {
+        const result = await api.admin.startAutomate()
+        console.log(result)
+        dispatch(SHOW_SUCCESS, 'Automate Lancé')
+      } catch (error) {
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [STOP_AUTOMATE_REQUEST] ({ commit, dispatch }, data) {
+      try {
+        const result = await api.admin.stopAutomate()
+        console.log(result)
+        dispatch(SHOW_SUCCESS, 'Automate Stopé')
+      } catch (error) {
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [FETCH_STATUS_AUTOMATE_REQUEST] ({ commit, dispatch }, data) {
+      try {
+        const result = await api.admin.getStatusAutomate()
+        console.log(result)
+        dispatch(SHOW_SUCCESS, 'Status Automate')
+      } catch (error) {
+        return dispatch(SHOW_ERROR, error.message)
+      }
     },
   },
 }
