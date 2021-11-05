@@ -99,14 +99,14 @@ export default {
   },
 
   async mounted () {
-    if (this.activeDepartement) {
-      await this.reloadWeekMonitor()
-    }
+    await this.reloadWeekMonitor()
   },
 
   methods: {
     async reloadWeekMonitor () {
-      await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
+      if (this.activeDepartement) {
+        await this.$store.dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST)
+      }
     },
   },
 }

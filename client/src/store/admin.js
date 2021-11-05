@@ -99,6 +99,8 @@ export const START_AUTOMATE_REQUEST = 'START_AUTOMATE_REQUEST'
 export const STOP_AUTOMATE_REQUEST = 'STOP_AUTOMATE_REQUEST'
 export const FETCH_STATUS_AUTOMATE_REQUEST = 'FETCH_STATUS_AUTOMATE_REQUEST'
 
+export const CLEAR_INFO_ADMIN = 'CLEAR_INFO_ADMIN'
+
 const AUTHORIZED_ROUTES = {
   agents: ROUTE_AUTHORIZE_AGENTS,
   aurige: ROUTE_AUTHORIZE_AURIGE,
@@ -398,9 +400,23 @@ export default {
     [CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS] (state, coutCenterPlaces) {
       state.countPlacesForAllCenters = coutCenterPlaces
     },
+
+    [CLEAR_INFO_ADMIN] (state) {
+      state.departements.list = []
+      state.email = undefined
+      state.status = undefined
+      state.features = undefined
+      state.departements.active = undefined
+      state.departements.emails = []
+      state.departements.isFetching = false
+    },
   },
 
   actions: {
+    async [CLEAR_INFO_ADMIN] ({ commit, dispatch }) {
+      commit(CLEAR_INFO_ADMIN)
+    },
+
     async [FETCH_ADMIN_INFO_REQUEST] ({ commit, dispatch }) {
       commit(FETCH_ADMIN_INFO_REQUEST)
       try {

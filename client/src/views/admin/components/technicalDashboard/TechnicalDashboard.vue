@@ -3,23 +3,38 @@
     <page-title>
       tech admin dashboard
     </page-title>
-    <div class="u-flex  u-flex--center  u-flex--v-start">
-      <v-btn
-        class="primary"
-        @click="startAutomate"
-      >
-        START
-      </v-btn>
-      <v-btn
-        class="error"
-        @click="stopAutomate"
-      >
-        STOP
-      </v-btn>
-    </div>
-    <page-title>
-      {{ automateStatus.success ? automateStatus.status : automateStatus.massage }}
-    </page-title>
+    <v-container>
+      <v-row dense>
+        <v-col cols="12">
+          <v-card
+            color="#385F73"
+            dark
+          >
+            <v-card-title class="text-h5">
+              {{ statusAutomate.status || 'Empty' }}
+            </v-card-title>
+
+            <v-card-subtitle>Listen to your favorite artists and albums whenever and wherever, online and offline.</v-card-subtitle>
+
+            <v-card-actions>
+              <v-spacer />
+              <v-btn
+                class="primary"
+                @click="startAutomate"
+              >
+                START
+              </v-btn>
+              <v-btn
+                class="error"
+                @click="stopAutomate"
+              >
+                STOP
+              </v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-col>
+      </v-row>
+    </v-container>
   </div>
 </template>
 
@@ -31,7 +46,7 @@ export default {
 
   data () {
     return {
-      automateStatus: { success: false, message: 'Pending...', status: 'Not define' },
+      statusAutomate: { status: 'empty' },
     }
   },
 
@@ -49,7 +64,7 @@ export default {
       await this.getStatusAutomate()
     },
     async getStatusAutomate () {
-      this.automateStatus = await this.$store.dispatch(FETCH_STATUS_AUTOMATE_REQUEST)
+      this.statusAutomate = await this.$store.dispatch(FETCH_STATUS_AUTOMATE_REQUEST)
     },
 
   },

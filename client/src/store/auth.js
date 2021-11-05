@@ -2,6 +2,7 @@ import api from '@/api'
 import candidatMessages from '../candidat'
 import { ADMIN_TOKEN_STORAGE_KEY, CANDIDAT_EVAL_STORAGE_KEY, CANDIDAT_TOKEN_STORAGE_KEY } from '@/constants'
 import { SHOW_ERROR, SHOW_INFO } from './'
+import { CLEAR_INFO_ADMIN } from './admin'
 
 // Action names
 export const CHECK_ADMIN_TOKEN = 'CHECK_ADMIN_TOKEN'
@@ -132,6 +133,7 @@ export default {
       localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
       commit(SIGN_OUT_ADMIN)
       await dispatch(SHOW_INFO, candidatMessages.deconexion_message)
+      dispatch(CLEAR_INFO_ADMIN)
     },
     async [UNAUTHORIZED] ({ commit, dispatch, rootState }) {
       const isCandidat = rootState.candidat && rootState.candidat.me

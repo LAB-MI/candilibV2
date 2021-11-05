@@ -70,18 +70,22 @@ export async function checkAdminToken (to, from, next) {
 }
 
 export async function checkAccess (to, from, next) {
+  const storeAdmin = store.state.admin
+
   const { name } = to
-  if (!store.state.admin.features) {
+  if (!storeAdmin.features) {
     await store.dispatch(FETCH_ADMIN_INFO_REQUEST)
   }
-  if (store.state.admin.features && store.state.admin.features.includes(name)) {
+
+  if (storeAdmin.features && storeAdmin.features.includes(name)) {
     return next()
   }
-  next({ name: redirectIfIsAdminTech(from) })
+  const nameTmp = redirectIfIsAdminTech(from, storeAdmin)
+  next({ name: nameTmp })
 }
 
-export function redirectIfIsAdminTech (from) {
-  if (store.state.admin.status && store.state.admin.status === 'tech') {
+export function redirectIfIsAdminTech (from, storeAdmin) {
+  if (storeAdmin.status && storeAdmin.status === 'tech') {
     return 'admin-tech-home'
   }
   return from.name || 'admin-home'
