@@ -19,7 +19,6 @@ export const start = async (req, res) => {
       return res.status(200).json({ success: true, message: "L'automate a été déjà lancé" })
     }
     await startAgendaAndJobs(jobs, loggerInfo)
-    // const tenantNamme = await upsertStatusByType({ type: 'TENANTNAME' })
     appLogger.info({ ...loggerInfo, description: 'Started' })
     res.status(200).json({ success: true, message: getStatus() })
   } catch (error) {

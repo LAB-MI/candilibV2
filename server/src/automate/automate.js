@@ -9,7 +9,7 @@ import { defineJobs, scheduleJobs } from './libs'
 import { disconnect } from '../mongo-connection.js'
 import { LOGGER_INFO } from './constants.js'
 import { getConnectDB } from './get-connect-db.js'
-// import { findStatusByType } from '../models/status/status.queries.js'
+import { findStatusByType, upsertStatusByType } from '../models/status/status.queries.js'
 
 let agenda
 let mongoose
@@ -45,6 +45,7 @@ export async function startAgendaAndJobs (jobs, loggerInfo) {
   if (getConfig().jobs.schedule) {
     await scheduleJobs(agenda, jobs)
   }
+  await upsertStatusByType({ type: 'TENANTNAME', message: getConfig().TENANTNAME })
 }
 
 export async function stopAgenda () {
@@ -58,6 +59,12 @@ export function getIntanceAgenda () {
 
 export function isAgendaStarted () {
   return isStarted
+}
+
+export async function isReadyToOnAir () {
+  const statusFromDB = await findStatusByType({ type: 'TENANTNAME' })
+  const tenantName = statusFromDB && statusFromDB.message
+  return tenantName === getConfig().TENANTNAME
 }
 
 /**
@@ -78,25 +85,9 @@ export default async (jobs) => {
     mongoose = await getConnectDB()
     agenda = await getAgenda(mongoose)
 
-    // setTimeout(async () => {
-    //   try {
-    //     const tenantNamme = await findStatusByType({ type: 'TENANTNAME' })
-
-    // if (tenantNamme === getConfig().TENANTNAME && !isStarted) {
-    // await startAgendaAndJobs(jobs, loggerInfo)
-    //     }
-    //   } catch (error) {
-    //     appLogger.error({
-    //       ...loggerInfo,
-    //       action: 'START JOBS',
-    //       description: error.message,
-    //       error,
-    //     })
-    //   }
-    // }
-    // ,
-    // getConfig().TIMEOUT_START,
-    // )
+    if (await isReadyToOnAir() && !isStarted) {
+      await startAgendaAndJobs(jobs, loggerInfo)
+    }
   } catch (error) {
     appLogger.error({
       ...loggerInfo,

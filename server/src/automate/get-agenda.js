@@ -12,12 +12,12 @@ async function getAgenda (mongoose) {
     const config = getConfig()
 
     const { agendaCollectionName } = config.db
-    const { schedulerName, defaultConcurrency } = config.scheduler
+    const { schedulerName, defaultConcurrency, defaultLockLifetime } = config.scheduler
 
     const agenda = new Agenda({
       name: schedulerName,
       defaultConcurrency: defaultConcurrency,
-      defaultLockLifetime: 10000,
+      defaultLockLifetime,
     })
 
     agenda.mongo(mongoose.connection, agendaCollectionName, (error, collection) => {
