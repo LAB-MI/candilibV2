@@ -44,7 +44,7 @@ export default () => {
     DISABLE_DEFINE,
     JOB_LIST,
     TIMEOUT_START,
-    TENANTNAME,
+    TENANT_NAME,
   } = process.env
   let list = [GET_API_VERSION_JOB, SORT_STATUS_CANDIDATS_JOB]
   if (JOB_LIST) {
@@ -58,7 +58,7 @@ export default () => {
     },
 
     scheduler: {
-      schedulerName: SCHEDULER_NAME || TENANTNAME + '-' + process.pid,
+      schedulerName: SCHEDULER_NAME || TENANT_NAME + '-' + process.pid,
       defaultConcurrency: 1,
       TIMEOUT_START: TIMEOUT_START || 10000,
       defaultLockLifetime: 10000,
@@ -77,5 +77,6 @@ export default () => {
       apiLogin: API_LOGIN,
       apiPass: API_PASS,
     },
+    TENANT_NAME,
   }
 }

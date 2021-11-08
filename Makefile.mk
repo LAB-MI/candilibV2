@@ -99,7 +99,7 @@ NPM_AUDIT_DRY_RUN  := $(shell echo $$NPM_AUDIT_DRY_RUN )
 
 # Run env
 LINE_DELAY := $(shell [ -n "$$LINE_DELAY" ] && echo $$LINE_DELAY )
-TENANTNAME := $(shell hostname)
+TENANT_NAME := $(shell hostname)
 
 # Reverse proxy (nginx)
 APP_USER_LIMIT_RATE=30r/s
