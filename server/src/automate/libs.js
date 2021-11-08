@@ -1,5 +1,6 @@
 import { appLogger } from '../util'
 import { onStart } from './automate'
+import { LOGGER_INFO } from './constants'
 
 /**
  * Schedule jobs in agenda
@@ -23,7 +24,7 @@ export const scheduleJobs = async (agenda, jobs) => {
 
   const jobsScheduled = await Promise.all(jobPromises)
 
-  appLogger.info({ description: 'Jobs scheduled!' })
+  appLogger.info({ ...LOGGER_INFO, description: 'Jobs scheduled!', jobNames: jobs.map(job => job.name) })
 
   return jobsScheduled
 }
