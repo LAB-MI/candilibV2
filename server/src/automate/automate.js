@@ -47,7 +47,7 @@ export async function startAgendaAndJobs (jobs, loggerInfo) {
   if (getConfig().jobs.schedule) {
     await scheduleJobs(agenda, jobs)
   }
-  await upsertStatusByType({ type: 'TENANTNAME', message: getConfig().TENANTNAME })
+  await upsertStatusByType({ type: 'TENANT_NAME', message: getConfig().TENANT_NAME })
 }
 
 export async function stopAgenda () {
@@ -64,9 +64,9 @@ export function isAgendaStarted () {
 }
 
 export async function isReadyToOnAir () {
-  const statusFromDB = await findStatusByType({ type: 'TENANTNAME' })
+  const statusFromDB = await findStatusByType({ type: 'TENANT_NAME' })
   const tenantName = statusFromDB && statusFromDB.message
-  return tenantName === getConfig().TENANTNAME
+  return tenantName === getConfig().TENANT_NAME
 }
 
 /**
