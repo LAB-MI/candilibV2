@@ -752,7 +752,7 @@ export default {
       try {
         const result = await api.admin.stopAutomate()
         console.log(result)
-        dispatch(SHOW_SUCCESS, 'Automate Stopé')
+        dispatch(SHOW_SUCCESS, 'Automate arreté')
       } catch (error) {
         return dispatch(SHOW_ERROR, error.message)
       }
@@ -761,7 +761,6 @@ export default {
     async [FETCH_STATUS_AUTOMATE_REQUEST] ({ commit, dispatch }, data) {
       try {
         const result = await api.admin.getStatusAutomate()
-        dispatch(SHOW_SUCCESS, 'Status Automate')
         return result
       } catch (error) {
         return dispatch(SHOW_ERROR, error.message)
