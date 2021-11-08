@@ -36,7 +36,7 @@ export const stop = async (req, res) => {
   try {
     if (!isAgendaStarted()) {
       appLogger.info({ ...loggerInfo, description: 'Already stopped' })
-      return res.status(200).json({ succes: true, message: "L'automate a été déjà arrété" })
+      return res.status(200).json({ success: true, message: "L'automate a été déjà arrété" })
     }
     await stopAgenda()
     appLogger.info({ ...loggerInfo, description: 'Stopped' })
