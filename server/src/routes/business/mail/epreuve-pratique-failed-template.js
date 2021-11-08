@@ -8,7 +8,7 @@ export const getFailedAtExamTemplate = (
 <br>
 <p>
     Vous venez de passer l'examen du permis de conduire.
-<br>Votre certificat d'examen sera disponible sous 48 heures (hors week-end et jours fériés) <a href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire#/step-connexion">ici</a>.
+<br>Votre résultat est disponible entre 2 et 4 jours ouvrables après le passage de l'examen (week-end et jours fériés non inclus) <a href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire#/step-connexion">ici</a>.
 </p>
 <p>
 En-cas de réussite, félicitations!

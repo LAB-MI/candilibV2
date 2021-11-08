@@ -84,11 +84,11 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
         },
         {
           subTitleContent: '- Je n’ai pas accès à mon résultat d\'examen:',
-          textContent: 'Candilib me fait savoir que j’aurais réussi mon examen mais je ne vois pas le résultat sur <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire" target="_blank">le site de la Sécurité Routière</a>. Les résultats sont généralement en ligne sous 72 h (hors week-ends et jours fériés) mais il y a pu y avoir un problème de remontée informatique.',
+          textContent: 'Candilib me fait savoir que j’aurais réussi mon examen mais je ne vois pas le résultat sur <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire" target="_blank">le site de la Sécurité Routière</a>. Votre résultat est disponible entre 2 et 4 jours ouvrables après le passage de l\'examen (week-end et jours fériés non inclus).',
         },
         {
           subTitleContent: "- Je vois mon ancien résultat d'examen:",
-          textContent: 'Votre ancien résultat d\'examen apparaît sur <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire" target="_blank">le site de la Sécurité Routière</a>. Les résultats sont généralement en ligne sous 72 h (hors week-ends et jours fériés) mais il y a pu y avoir un problème de remontée informatique.<br><div style="display: flex; align-items: center;"> <span class="material-icons"> warning </span> <span style="padding-left: 5px"> D\'autre part, entre 2 visites sur le site, vous devez quitter votre navigateur et vous reconnecter, le simple "rafraîchissement" de la page ne permettant pas de provoquer un nouvel affichage des résultats.</span></div>',
+          textContent: 'Votre ancien résultat d\'examen apparaît sur <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire" target="_blank">le site de la Sécurité Routière</a>. Votre résultat est disponible entre 2 et 4 jours ouvrables après le passage de l\'examen (week-end et jours fériés non inclus).<br><div style="display: flex; align-items: center;"> <span class="material-icons"> warning </span> <span style="padding-left: 5px"> D\'autre part, entre 2 visites sur le site, vous devez quitter votre navigateur et vous reconnecter, le simple "rafraîchissement" de la page ne permettant pas de provoquer un nouvel affichage des résultats.</span></div>',
         },
       ],
     },
