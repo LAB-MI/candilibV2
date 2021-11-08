@@ -9,10 +9,6 @@ export const FETCH_TECHNICAL_USER_LIST_REQUEST = 'FETCH_TECHNICAL_USER_LIST_REQU
 export const FETCH_TECHNICAL_USER_LIST_SUCCESS = 'FETCH_TECHNICAL_USER_LIST_SUCCESS'
 export const FETCH_TECHNICAL_USER_LIST_FAILURE = 'FETCH_TECHNICAL_USER_LIST_FAILURE'
 
-export const UPDATE_TECHNICAL_USER_REQUEST = 'UPDATE_TECHNICAL_USER_REQUEST'
-export const UPDATE_TECHNICAL_USER_SUCCESS = 'UPDATE_TECHNICAL_USER_SUCCESS'
-export const UPDATE_TECHNICAL_USER_FAILURE = 'UPDATE_TECHNICAL_USER_FAILURE'
-
 export const DELETE_TECHNICAL_USER_REQUEST = 'DELETE_TECHNICAL_USER_REQUEST'
 export const DELETE_TECHNICAL_USER_SUCCESS = 'DELETE_TECHNICAL_USER_SUCCESS'
 export const DELETE_TECHNICAL_USER_FAILURE = 'DELETE_TECHNICAL_USER_FAILURE'
@@ -113,32 +109,16 @@ export default {
       }
     },
 
-    async [UPDATE_TECHNICAL_USER_REQUEST] ({ commit, dispatch }, { email, status, departements, isUnArchive }) {
-      commit(UPDATE_TECHNICAL_USER_REQUEST)
-      try {
-        const result = await api.admin.updateUser(email, { status, departements, isUnArchive })
-        if (result.success === false) {
-          throw new Error(result.message)
-        }
-        commit(UPDATE_TECHNICAL_USER_SUCCESS)
-        dispatch(SHOW_SUCCESS, `L'utilisateur ${email} a bien été modifié`)
-      } catch (error) {
-        commit(UPDATE_TECHNICAL_USER_FAILURE)
-        dispatch(SHOW_ERROR, error.message)
-        throw error
-      }
-    },
-
-    async [DELETE_TECHNICAL_USER_REQUEST] ({ commit, dispatch }, email) {
-      commit(DELETE_TECHNICAL_USER_REQUEST)
-      try {
-        const result = await api.admin.deleteUser(email)
-        commit(DELETE_TECHNICAL_USER_SUCCESS, email)
-        dispatch(SHOW_SUCCESS, `${result.email} supprimé de la liste et archivé`)
-      } catch (error) {
-        commit(DELETE_TECHNICAL_USER_FAILURE)
-        return dispatch(SHOW_ERROR, error.message)
-      }
-    },
+    // async [DELETE_TECHNICAL_USER_REQUEST] ({ commit, dispatch }, email) {
+    //   commit(DELETE_TECHNICAL_USER_REQUEST)
+    //   try {
+    //     const result = await api.admin.deleteUser(email)
+    //     commit(DELETE_TECHNICAL_USER_SUCCESS, email)
+    //     dispatch(SHOW_SUCCESS, `${result.email} supprimé de la liste et archivé`)
+    //   } catch (error) {
+    //     commit(DELETE_TECHNICAL_USER_FAILURE)
+    //     return dispatch(SHOW_ERROR, error.message)
+    //   }
+    // },
   },
 }

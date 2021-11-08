@@ -47,7 +47,7 @@ describe('Admin controller', () => {
     adminTech = await createUser(
       emailTech,
       password,
-      departements,
+      [],
       config.userStatuses.TECH,
     )
   })
@@ -93,7 +93,7 @@ describe('Admin controller', () => {
       .expect(200)
 
     expect(body).toHaveProperty('email', emailTech)
-    expect(body.departements).toHaveLength(departements.length)
+    expect(body.departements).toHaveLength(0)
     expect(body).toHaveProperty(
       'features',
       config.userStatusFeatures[config.userStatuses.TECH],

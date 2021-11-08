@@ -204,7 +204,6 @@ export default {
         features && features.map(feature => AUTHORIZED_ROUTES[feature])
 
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
-
       state.departements.active = activeDepartement || departements[0]
       state.departements.emails = emailsDepartements || []
       state.departements.isFetching = false
@@ -406,7 +405,7 @@ export default {
       state.email = undefined
       state.status = undefined
       state.features = undefined
-      state.departements.active = undefined
+      // state.departements.active = undefined
       state.departements.emails = []
       state.departements.isFetching = false
     },
@@ -505,12 +504,12 @@ export default {
           begin,
           end,
         )
-        const newList = list.map(elem => {
+        const newList = list.length ? list.map(elem => {
           return {
             ...elem,
             creneau: getters.creneauSetup,
           }
-        })
+        }) : []
         commit(FETCH_INSPECTEURS_BY_CENTRE_SUCCESS, newList)
       } catch (error) {
         commit(FETCH_INSPECTEURS_BY_CENTRE_FAILURE, error)
@@ -761,6 +760,7 @@ export default {
     async [FETCH_STATUS_AUTOMATE_REQUEST] ({ commit, dispatch }, data) {
       try {
         const result = await api.admin.getStatusAutomate()
+        console.log(result)
         return result
       } catch (error) {
         return dispatch(SHOW_ERROR, error.message)

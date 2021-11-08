@@ -6,7 +6,7 @@
       :items-per-page="10"
       :class="`elevation-1 ${isArchivedTechnicalUsers ? 't-list-archive-technical-users' : 't-list-technical-users'}`"
     >
-      <template v-slot:[`item.action`]="{ item }">
+      <!-- <template v-slot:[`item.action`]="{ item }">
         <update-technical-user
           :is-archived-technical-users="isArchivedTechnicalUsers"
           :email="item.email"
@@ -15,21 +15,14 @@
           v-if="!isArchivedTechnicalUsers"
           :email="item.email"
         />
-      </template>
+      </template> -->
     </v-data-table>
   </div>
 </template>
 
 <script>
-import DeleteTechnicalUser from './DeleteTechnicalUser'
-import UpdateTechnicalUser from './UpdateTechnicalUser'
 export default {
   name: 'TechnicalUsersList',
-
-  components: {
-    DeleteTechnicalUser,
-    UpdateTechnicalUser,
-  },
 
   props: {
     technicalUsers: {

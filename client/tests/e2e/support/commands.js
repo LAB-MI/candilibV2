@@ -22,19 +22,27 @@ const connectionUserByStatus = (cypressEnvUserEmail) => {
   cy.get('[type=password]')
     .type(Cypress.env('adminPass'))
 
-  // intercept the last call of admin places when home page is ready
-  cy.intercept({
-    method: 'GET',
-    url: Cypress.env('frontAdmin') + 'api/v2/admin/places*',
-  }).as('homeAdminRequest')
+  if (Cypress.env('adminTechLogin') !== cypressEnvUserEmail) {
+    // intercept the last call of admin places when home page is ready
+    cy.intercept({
+      method: 'GET',
+      url: Cypress.env('frontAdmin') + 'api/v2/admin/places*',
+    }).as('homeAdminRequest')
 
-  cy.get('.submit-btn')
-    .click()
+    cy.get('.submit-btn')
+      .click()
 
-  cy.wait('@homeAdminRequest')
-  cy.url()
-    .should('not.contain', '/admin-login')
-    .should('contain', '/admin')
+    cy.wait('@homeAdminRequest')
+    cy.url()
+      .should('not.contain', '/admin-login')
+      .should('contain', '/admin')
+  } else {
+    cy.get('.submit-btn')
+      .click()
+
+    cy.url()
+      .should('contain', '/admin-tech-home')
+  }
 }
 
 Cypress.Commands.add('adminLogin', () => {
@@ -43,6 +51,10 @@ Cypress.Commands.add('adminLogin', () => {
 
 Cypress.Commands.add('delegueLogin', () => {
   connectionUserByStatus(Cypress.env('delegue75And93Login'))
+})
+
+Cypress.Commands.add('adminTechLogin', () => {
+  connectionUserByStatus(Cypress.env('adminTechLogin'))
 })
 
 Cypress.Commands.add('adminDisconnection', () => {

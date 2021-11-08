@@ -27,7 +27,6 @@ export default {
       return (this.$store.state.technicalUser.list || []).map(user => (
         {
           ...user,
-          departementsAsString: (user.departements || []).join(', '),
         }
       ))
     },

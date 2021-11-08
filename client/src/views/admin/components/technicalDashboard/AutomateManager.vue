@@ -42,7 +42,6 @@ export default {
   },
 
   async mounted () {
-    console.log('mounted CHILLDREN')
     await this.getStatusAutomate()
   },
   methods: {

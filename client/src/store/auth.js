@@ -133,7 +133,7 @@ export default {
       localStorage.removeItem(ADMIN_TOKEN_STORAGE_KEY)
       commit(SIGN_OUT_ADMIN)
       await dispatch(SHOW_INFO, candidatMessages.deconexion_message)
-      dispatch(CLEAR_INFO_ADMIN)
+      await dispatch(CLEAR_INFO_ADMIN)
     },
     async [UNAUTHORIZED] ({ commit, dispatch, rootState }) {
       const isCandidat = rootState.candidat && rootState.candidat.me

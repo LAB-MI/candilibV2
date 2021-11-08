@@ -7,7 +7,7 @@
     <v-container class="u-flex  u-flex--between  u-full-width">
       <v-text-field
         v-model="email"
-        class="t-input-email"
+        class="t-input-tech-email"
         prepend-icon="email"
         :aria-placeholder="emailPlaceholder"
         :hint="`ex. : ${emailPlaceholder}`"
@@ -24,7 +24,7 @@
       <v-spacer />
 
       <v-btn
-        class="t-create-btn"
+        class="t-create-tech-btn"
         type="submit"
         :disabled="!valid || isSendingTechnicalUser"
         :aria-disabled="!valid || isSendingTechnicalUser"
@@ -42,8 +42,6 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
-
 import { email as emailRegex } from '@/util'
 
 import {
@@ -67,11 +65,8 @@ export default {
   },
 
   computed: {
-    ...mapState({
-      // availableDepartements: state => state.admin.departements.list,
-    }),
     isSendingTechnicalUser () {
-      return this.$store.state.technicalUser.isSendingTechnicalUser || false
+      return this.$store.state.technicalUser.isSendingTechnicalUser
     },
   },
 
