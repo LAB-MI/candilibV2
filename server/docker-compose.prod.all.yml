@@ -45,7 +45,7 @@ services:
       PUBLIC_URL: ${PUBLIC_URL:-http://localhost:8080}
       ADMIN_URL: ${ADMIN_URL:-http://localhost:8080}
       LINE_DELAY: ${LINE_DELAY}
-      TENANTNAME: ${TENANTNAME}
+      TENANT_NAME: ${TENANT_NAME}
       SECRET: ${SECRET}
 
 #    networks:
