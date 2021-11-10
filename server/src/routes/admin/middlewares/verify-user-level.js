@@ -2,6 +2,15 @@ import config from '../../../config'
 import { appLogger } from '../../../util'
 import { ACCESS_FORBIDDEN } from '../message.constants'
 
+const responseErrorAndLogger = {
+  statusCode: 401,
+  content: {
+    isTokenValid: false,
+    message: ACCESS_FORBIDDEN,
+    success: false,
+  },
+}
+
 export function verifyUserLevel (minimumUserLevel) {
   return function (req, res, next) {
     const userLevel = req.userLevel
@@ -10,11 +19,12 @@ export function verifyUserLevel (minimumUserLevel) {
       section: 'admin-token',
       action: 'check-level',
       admin: req.userId,
+      userLevel,
+      minimumUserLevel,
     }
 
     try {
-      // TODO: IF TECH REJECT USER
-      if (userLevel >= minimumUserLevel) {
+      if (userLevel !== config.userStatusLevels.tech && userLevel >= minimumUserLevel) {
         return next()
       }
       appLogger.warn({
@@ -28,11 +38,7 @@ export function verifyUserLevel (minimumUserLevel) {
         error: err,
       })
     }
-    return res.status(401).send({
-      isTokenValid: false,
-      message: ACCESS_FORBIDDEN,
-      success: false,
-    })
+    return res.status(responseErrorAndLogger.statusCode).json(responseErrorAndLogger.content)
   }
 }
 
@@ -46,4 +52,26 @@ export function verifyDelegueLevel () {
 
 export function verifyAdminLevel () {
   return verifyUserLevel(config.userStatusLevels.admin)
+}
+
+const verifyTechUserLevel = () => {
+  return function (req, res, next) {
+    const userLevel = req.userLevel
+
+    const loggerInfo = {
+      section: 'admin-tech-token',
+      action: 'check-tech-level',
+      admin: req.userId,
+    }
+
+    if (userLevel !== config.userStatusLevels.tech) {
+      appLogger.info({ ...loggerInfo, description: ACCESS_FORBIDDEN })
+      return res.status(responseErrorAndLogger.statusCode).json(responseErrorAndLogger.content)
+    }
+    return next()
+  }
+}
+
+export function verifyTechAdminLevel () {
+  return verifyTechUserLevel()
 }
