@@ -13,6 +13,10 @@ import {
   ROUTE_AUTHORIZE_CENTRES,
   ROUTE_AUTHORIZE_DEPARTEMENTS,
   ROUTE_AUTHORIZE_TECH_ADMIN,
+  ROUTE_AUTHORIZE_ADMIN_HOME,
+  ROUTE_AUTHORIZE_GESTION_PLANNING,
+  ROUTE_AUTHORIZE_ADMIN_CANDIDAT,
+  ROUTE_AUTHORIZE_ADMIN_TECH_HOME,
 } from '@/constants'
 
 import { SHOW_ERROR, SHOW_SUCCESS } from '@/store'
@@ -91,6 +95,12 @@ export const DELETE_TOTAL_PLACES_FOR_ALL_CENTERS = 'DELETE_TOTAL_PLACES_FOR_ALL_
 
 export const numberOfMonthsToFetch = 3
 
+export const START_AUTOMATE_REQUEST = 'START_AUTOMATE_REQUEST'
+export const STOP_AUTOMATE_REQUEST = 'STOP_AUTOMATE_REQUEST'
+export const FETCH_STATUS_AUTOMATE_REQUEST = 'FETCH_STATUS_AUTOMATE_REQUEST'
+
+export const CLEAR_INFO_ADMIN = 'CLEAR_INFO_ADMIN'
+
 const AUTHORIZED_ROUTES = {
   agents: ROUTE_AUTHORIZE_AGENTS,
   aurige: ROUTE_AUTHORIZE_AURIGE,
@@ -99,6 +109,11 @@ const AUTHORIZED_ROUTES = {
   centres: ROUTE_AUTHORIZE_CENTRES,
   departements: ROUTE_AUTHORIZE_DEPARTEMENTS,
   'tech-admin': ROUTE_AUTHORIZE_TECH_ADMIN,
+
+  'admin-home': ROUTE_AUTHORIZE_ADMIN_HOME,
+  'gestion-planning': ROUTE_AUTHORIZE_GESTION_PLANNING,
+  'admin-candidat': ROUTE_AUTHORIZE_ADMIN_CANDIDAT,
+  'admin-tech-home': ROUTE_AUTHORIZE_ADMIN_TECH_HOME,
 }
 
 export default {
@@ -189,7 +204,6 @@ export default {
         features && features.map(feature => AUTHORIZED_ROUTES[feature])
 
       const activeDepartement = localStorage.getItem(DEPARTEMENT_STORAGE_KEY)
-
       state.departements.active = activeDepartement || departements[0]
       state.departements.emails = emailsDepartements || []
       state.departements.isFetching = false
@@ -385,9 +399,23 @@ export default {
     [CALCULATE_TOTAL_PLACES_FOR_ALL_CENTERS] (state, coutCenterPlaces) {
       state.countPlacesForAllCenters = coutCenterPlaces
     },
+
+    [CLEAR_INFO_ADMIN] (state) {
+      state.departements.list = []
+      state.email = undefined
+      state.status = undefined
+      state.features = undefined
+      // state.departements.active = undefined
+      state.departements.emails = []
+      state.departements.isFetching = false
+    },
   },
 
   actions: {
+    async [CLEAR_INFO_ADMIN] ({ commit, dispatch }) {
+      commit(CLEAR_INFO_ADMIN)
+    },
+
     async [FETCH_ADMIN_INFO_REQUEST] ({ commit, dispatch }) {
       commit(FETCH_ADMIN_INFO_REQUEST)
       try {
@@ -476,12 +504,12 @@ export default {
           begin,
           end,
         )
-        const newList = list.map(elem => {
+        const newList = list.length ? list.map(elem => {
           return {
             ...elem,
             creneau: getters.creneauSetup,
           }
-        })
+        }) : []
         commit(FETCH_INSPECTEURS_BY_CENTRE_SUCCESS, newList)
       } catch (error) {
         commit(FETCH_INSPECTEURS_BY_CENTRE_FAILURE, error)
@@ -707,6 +735,36 @@ export default {
 
     [SET_WEEK_SECTION] ({ commit }, currentWeek) {
       commit(SET_WEEK_SECTION, currentWeek)
+    },
+
+    async [START_AUTOMATE_REQUEST] ({ commit, dispatch }, data) {
+      try {
+        const result = await api.admin.startAutomate()
+        console.log(result)
+        dispatch(SHOW_SUCCESS, 'Automate Lancé')
+      } catch (error) {
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [STOP_AUTOMATE_REQUEST] ({ commit, dispatch }, data) {
+      try {
+        const result = await api.admin.stopAutomate()
+        console.log(result)
+        dispatch(SHOW_SUCCESS, 'Automate arreté')
+      } catch (error) {
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [FETCH_STATUS_AUTOMATE_REQUEST] ({ commit, dispatch }, data) {
+      try {
+        const result = await api.admin.getStatusAutomate()
+        console.log(result)
+        return result
+      } catch (error) {
+        return dispatch(SHOW_ERROR, error.message)
+      }
     },
   },
 }

@@ -9,6 +9,7 @@ import {
   checkAccess,
   checkCandidatTokenToRedirect,
   requireNoBooking,
+  // redirectIfIsAdminTech,
 } from './router-checks'
 import {
   ROUTE_AUTHORIZE_AURIGE,
@@ -59,6 +60,7 @@ const Agents = () => import(/* webpackChunkName: "admin", webpackPrefetch: true 
 const DepartementList = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/departementsManager/DepartementList.vue')
 const AdminTech = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/adminTech/AdminTech.vue')
 const CovidMessage = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/candidat/components/CovidMessage.vue')
+const TechDashboard = () => import(/* webpackChunkName: "admin", webpackPrefetch: true */ '@/views/admin/components/technicalDashboard/TechnicalDashboard.vue')
 
 const adminRoutes = [
   {
@@ -81,11 +83,19 @@ const adminRoutes = [
         path: '',
         name: 'admin-home',
         component: HomeAdminPage,
+        beforeEnter: checkAccess,
+      },
+      {
+        path: 'admin-tech-home',
+        name: 'admin-tech-home',
+        component: TechDashboard,
+        beforeEnter: checkAccess,
       },
       {
         path: 'gestion-planning/:center?/:date?',
         name: 'gestion-planning',
         component: ScheduleManager,
+        beforeEnter: checkAccess,
       },
       {
         path: 'aurige',
@@ -127,8 +137,8 @@ const adminRoutes = [
         path: 'admin-candidat',
         name: 'admin-candidat',
         component: AdminCandidat,
+        beforeEnter: checkAccess,
       },
-
     ],
   },
 ]

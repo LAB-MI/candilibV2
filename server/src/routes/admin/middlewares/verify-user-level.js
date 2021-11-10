@@ -13,6 +13,7 @@ export function verifyUserLevel (minimumUserLevel) {
     }
 
     try {
+      // TODO: IF TECH REJECT USER
       if (userLevel >= minimumUserLevel) {
         return next()
       }
