@@ -25,7 +25,7 @@ export const startAutomate = async (req, res) => {
     admin: req.userId,
   }
   try {
-    const { data, status } = await callStartAutomate(loggerInfo)
+    const { data, status } = await callStartAutomate(loggerInfo, true)
     const { success, message } = data
     appLogger.info({ ...loggerInfo, message })
     return res.status(status).json({ success, message })

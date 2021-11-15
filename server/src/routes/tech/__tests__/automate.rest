@@ -31,4 +31,5 @@ Authorization: {{accessToken}}
 
 ###
 {{remote-server}}/version
-Authorization: {{accessToken}}
+#Authorization: {{accessToken}}
+
