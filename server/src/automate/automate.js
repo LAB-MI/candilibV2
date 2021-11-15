@@ -14,8 +14,8 @@ import { findStatusByType, upsertStatusByType } from '../models/status/status.qu
 let agenda
 let mongoose
 let isStarted
-// let agenda
-// let mongoose
+let canAutoStart
+
 /**
  * Stops gracefully the agenda
  *
@@ -33,8 +33,13 @@ export const graceful = async () => {
   }
 }
 
-export async function startAgendaAndJobs (jobs, loggerInfo) {
+export async function startAgendaAndJobs (jobs, loggerInfo, autoStart) {
   appLogger.info({ ...loggerInfo, description: 'Starting Scheduler' })
+
+  if (autoStart !== undefined) {
+    canAutoStart = autoStart
+  }
+
   await agenda.start()
   isStarted = true
   // TODO; factoriser dans une fonciton
@@ -63,6 +68,14 @@ export function isAgendaStarted () {
   return isStarted
 }
 
+export function canAgendaAutoStart () {
+  return canAutoStart
+}
+
+export function setAgendaAutoStop (autoStart) {
+  canAutoStart = autoStart
+}
+
 export async function isReadyToOnAir () {
   const statusFromDB = await findStatusByType({ type: 'TENANT_NAME' })
   const tenantName = statusFromDB && statusFromDB.message
@@ -86,7 +99,7 @@ export default async (jobs) => {
     process.on('SIGINT', () => graceful())
     mongoose = await getConnectDB()
     agenda = await getAgenda(mongoose)
-
+    canAutoStart = true
     agenda.on('start', (job) => {
       appLogger.info({ ...loggerInfo, action: 'JOB STARTING', description: `Job ${job.attrs.name} starting` })
     })

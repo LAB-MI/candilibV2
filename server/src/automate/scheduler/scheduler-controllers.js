@@ -1,5 +1,5 @@
 import { appLogger } from '../../util'
-import { startAgendaAndJobs, isAgendaStarted, stopAgenda } from '../automate'
+import { startAgendaAndJobs, isAgendaStarted, stopAgenda, canAgendaAutoStart, setAgendaAutoStop } from '../automate'
 import { LOGGER_INFO } from '../constants'
 import jobs from '../job-list'
 
@@ -14,11 +14,17 @@ export const start = async (req, res) => {
     action: `${loggerInfoSchedule.action}: Starting`,
   }
   try {
+    const { autoStart } = req.body
+    loggerInfo.autoStart = autoStart
     if (isAgendaStarted()) {
       appLogger.info({ ...loggerInfo, description: 'Already started' })
       return res.status(200).json({ success: true, message: "L'automate a été déjà lancé" })
     }
-    await startAgendaAndJobs(jobs, loggerInfo)
+    if (autoStart === undefined && !canAgendaAutoStart()) {
+      appLogger.info({ ...loggerInfo, description: 'autoStart is stopped' })
+      return res.status(200).json({ success: true, message: "L'auto-démarage est arreté " })
+    }
+    await startAgendaAndJobs(jobs, loggerInfo, autoStart)
     appLogger.info({ ...loggerInfo, description: 'Started' })
     res.status(200).json({ success: true, message: getStatus() })
   } catch (error) {
@@ -34,11 +40,15 @@ export const stop = async (req, res) => {
     action: `${loggerInfoSchedule.action}: Stopping`,
   }
   try {
+    const { autoStart } = req.body
+    loggerInfo.autoStart = autoStart
+
     if (!isAgendaStarted()) {
       appLogger.info({ ...loggerInfo, description: 'Already stopped' })
       return res.status(200).json({ success: true, message: "L'automate a été déjà arrété" })
     }
     await stopAgenda()
+    setAgendaAutoStop(autoStart)
     appLogger.info({ ...loggerInfo, description: 'Stopped' })
     res.status(200).json({ success: true, message: getStatus() })
   } catch (error) {
