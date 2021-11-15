@@ -11,6 +11,15 @@ const responseErrorAndLogger = {
   },
 }
 
+const techAdminPathAccessList = [
+  '/me',
+  '/admin/verify-token',
+]
+
+const isUserCanAccessToPath = (userLevel, requestPath, minimumUserLevel) => {
+  return (userLevel !== config.userStatusLevels.tech || techAdminPathAccessList.includes(requestPath)) && (userLevel >= minimumUserLevel)
+}
+
 export function verifyUserLevel (minimumUserLevel) {
   return function (req, res, next) {
     const userLevel = req.userLevel
@@ -24,7 +33,7 @@ export function verifyUserLevel (minimumUserLevel) {
     }
 
     try {
-      if (userLevel !== config.userStatusLevels.tech && userLevel >= minimumUserLevel) {
+      if (isUserCanAccessToPath(userLevel, req.path, minimumUserLevel)) {
         return next()
       }
       appLogger.warn({
