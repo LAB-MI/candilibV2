@@ -19,7 +19,6 @@ export const start = async (req, res) => {
       return res.status(200).json({ success: true, message: "L'automate a été déjà lancé" })
     }
     await startAgendaAndJobs(jobs, loggerInfo)
-    // const tenantNamme = await upsertStatusByType({ type: 'TENANTNAME' })
     appLogger.info({ ...loggerInfo, description: 'Started' })
     res.status(200).json({ success: true, message: getStatus() })
   } catch (error) {
@@ -37,7 +36,7 @@ export const stop = async (req, res) => {
   try {
     if (!isAgendaStarted()) {
       appLogger.info({ ...loggerInfo, description: 'Already stopped' })
-      return res.status(200).json({ succes: true, message: "L'automate a été déjà arrété" })
+      return res.status(200).json({ success: true, message: "L'automate a été déjà arrété" })
     }
     await stopAgenda()
     appLogger.info({ ...loggerInfo, description: 'Stopped' })

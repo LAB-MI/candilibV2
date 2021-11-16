@@ -9,7 +9,7 @@ import { defineJobs, scheduleJobs } from './libs'
 import { disconnect } from '../mongo-connection.js'
 import { LOGGER_INFO } from './constants.js'
 import { getConnectDB } from './get-connect-db.js'
-// import { findStatusByType } from '../models/status/status.queries.js'
+import { findStatusByType, upsertStatusByType } from '../models/status/status.queries.js'
 
 let agenda
 let mongoose
@@ -24,11 +24,13 @@ let isStarted
  *
  * @param {import('agenda').Agenda} agenda
  */
-const graceful = async () => {
+export const graceful = async () => {
   appLogger.info({ description: 'Stopping Scheduler' })
   agenda && await agenda.stop()
   mongoose && await disconnect()
-  process.exit(0)
+  if (process.env.NODE_ENV !== 'test') {
+    process.exit(0)
+  }
 }
 
 export async function startAgendaAndJobs (jobs, loggerInfo) {
@@ -37,7 +39,7 @@ export async function startAgendaAndJobs (jobs, loggerInfo) {
   isStarted = true
   // TODO; factoriser dans une fonciton
   if (getConfig().jobs.define) {
-    appLogger.debug({ ...loggerInfo, description: 'Defining jobs', jobs: getConfig().jobs.define })
+    appLogger.debug({ ...loggerInfo, description: 'Defining jobs', jobs: getConfig().jobs.define && jobs })
     await defineJobs(agenda, jobs)
   }
   appLogger.info({ ...loggerInfo, description: 'Scheduler started' })
@@ -45,6 +47,7 @@ export async function startAgendaAndJobs (jobs, loggerInfo) {
   if (getConfig().jobs.schedule) {
     await scheduleJobs(agenda, jobs)
   }
+  await upsertStatusByType({ type: 'TENANT_NAME', message: getConfig().TENANT_NAME })
 }
 
 export async function stopAgenda () {
@@ -58,6 +61,12 @@ export function getIntanceAgenda () {
 
 export function isAgendaStarted () {
   return isStarted
+}
+
+export async function isReadyToOnAir () {
+  const statusFromDB = await findStatusByType({ type: 'TENANT_NAME' })
+  const tenantName = statusFromDB && statusFromDB.message
+  return tenantName === getConfig().TENANT_NAME
 }
 
 /**
@@ -78,25 +87,20 @@ export default async (jobs) => {
     mongoose = await getConnectDB()
     agenda = await getAgenda(mongoose)
 
-    // setTimeout(async () => {
-    //   try {
-    //     const tenantNamme = await findStatusByType({ type: 'TENANTNAME' })
+    agenda.on('start', (job) => {
+      appLogger.info({ ...loggerInfo, action: 'JOB STARTING', description: `Job ${job.attrs.name} starting` })
+    })
+    agenda.on('fail', (err, job) => {
+      appLogger.info({ ...loggerInfo, action: 'JOB FAILED', description: `Job ${job.attrs.name} failed with error: ${err.message}` })
+    })
+    agenda.on('success', (job) => {
+      appLogger.info({ ...loggerInfo, action: 'JOB SUCCEEDED', description: `Job ${job.attrs.name} succeeded` })
+    })
 
-    // if (tenantNamme === getConfig().TENANTNAME && !isStarted) {
-    // await startAgendaAndJobs(jobs, loggerInfo)
-    //     }
-    //   } catch (error) {
-    //     appLogger.error({
-    //       ...loggerInfo,
-    //       action: 'START JOBS',
-    //       description: error.message,
-    //       error,
-    //     })
-    //   }
-    // }
-    // ,
-    // getConfig().TIMEOUT_START,
-    // )
+    if (await isReadyToOnAir() && !isStarted) {
+      await startAgendaAndJobs(jobs, loggerInfo)
+    }
+    return agenda
   } catch (error) {
     appLogger.error({
       ...loggerInfo,
@@ -104,6 +108,18 @@ export default async (jobs) => {
       description: error.message,
       error,
     })
-    process.exit(0)
+    if (process.env.NODE_ENV !== 'test') {
+      process.exit(0)
+    }
   }
+}
+
+export async function onStart () {
+  appLogger.debug({ ...LOGGER_INFO, action: 'Before Job start', descrition: 'agenda check', now: Date.now() })
+  if (!await isReadyToOnAir()) {
+    await stopAgenda()
+    appLogger.debug({ ...LOGGER_INFO, action: 'Before Job start', descrition: 'agenda is stopping', now: Date.now() })
+    return false
+  }
+  return true
 }

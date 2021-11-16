@@ -6,6 +6,7 @@
 import getConfig from './config'
 import * as adminJobs from './jobs'
 import { GET_API_VERSION_JOB, HELLO_JOB, SORT_STATUS_CANDIDATS_JOB } from './jobs'
+import { STOP_AGENDA_JOB } from './jobs/stop-agenda'
 
 /**
  * @const {Object}
@@ -25,6 +26,11 @@ const allJobs = {
     name: SORT_STATUS_CANDIDATS_JOB,
     fn: adminJobs.jobStatusCandidats,
     repeatInterval: '0 23 * * *',
+  },
+  [STOP_AGENDA_JOB]: {
+    name: STOP_AGENDA_JOB,
+    fn: adminJobs.jobStatusCandidats,
+    repeatInterval: '0 22 * * *',
   },
 }
 

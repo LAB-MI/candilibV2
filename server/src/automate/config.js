@@ -46,11 +46,15 @@ export default () => {
     TIMEOUT_START,
     TENANT_NAME,
   } = process.env
+
   let list = [GET_API_VERSION_JOB, SORT_STATUS_CANDIDATS_JOB]
+
   if (JOB_LIST) {
     list = list.concat(process.env.JOB_LIST.split(','))
   }
+
   return {
+
     jobs: {
       schedule: !(DISABLE_SCHEDULE === 'true'),
       define: !(DISABLE_DEFINE === 'true'),
