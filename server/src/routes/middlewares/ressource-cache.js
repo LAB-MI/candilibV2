@@ -54,7 +54,7 @@ const getPlacesAndCentresInfo = async () => {
     beginDateLuxon.toISO(),
     endDateLuxon.toISO(),
     dateDisplayPlaces.toISO(),
-    dateVisibleBefore.toISO(),
+    dateVisibleBefore.plus({ hours: 1 }).toISO(),
   )
 
   const placesAndCentreInformations = Object.entries(rawGeoDepartementsCentresInformations).reduce((acc, [geoDepartement, centreInfos]) => {
