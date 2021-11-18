@@ -5,7 +5,7 @@ export const getEpreuvePratiqueOKTemplate = (
 ) => `<p>Madame, Monsieur ${nomMaj},</p>
   <br>
   <p>Selon nos informations, vous avez réussi l'examen que vous venez de passer.</p>
-  <p>Votre certificat d'examen sera disponible sous 48 heures (hors week-end et jours fériés) <a href='https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire#/step-connexion'> ici</a>.
+  <p>Votre résultat est disponible entre 2 et 4 jours ouvrables après le passage de l'examen (week-end et jours fériés non inclus) <a href='https://www.securite-routiere.gouv.fr/resultats-du-permis-de-conduire#/step-connexion'> ici</a>.
   </p>
   <br>
   <p><b>Attention :</b></p>
