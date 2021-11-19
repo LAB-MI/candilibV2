@@ -3,6 +3,7 @@ import { connect } from '../mongo-connection'
 import startScheduler, { isAgendaStarted, graceful, stopAgenda } from './automate.js'
 import { HELLO_JOB } from './jobs'
 import { getConnectDB } from './get-connect-db'
+import { wait1s } from './__test__/utils'
 
 jest.mock('../util/logger')
 require('../util/logger').setWithConsole(false)
@@ -23,10 +24,6 @@ jest.mock('./config', () => {
     },
     TENANT_NAME: 'hostname_test',
   })
-})
-
-const wait1s = () => new Promise((resolve) => {
-  setTimeout(() => { resolve() }, 1000)
 })
 
 describe('Test automate', () => {
