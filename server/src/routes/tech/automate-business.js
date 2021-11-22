@@ -25,8 +25,10 @@ export const callDoAutomate = async (loggerInfo, axiosMetod, action, autoStart) 
   }
 }
 
-export const callStopAutomate = (loggerInfo) => callDoAutomate(loggerInfo, 'post', 'stop', false)
+export const callStopAutomate = (loggerInfo) => callDoAutomate(loggerInfo, 'post', 'scheduler/stop', false)
 
-export const callStartAutomate = (loggerInfo, autoStart) => callDoAutomate(loggerInfo, 'post', 'start', autoStart)
+export const callStartAutomate = (loggerInfo, autoStart) => callDoAutomate(loggerInfo, 'post', 'scheduler/start', autoStart)
 
-export const callStatusAutomate = (loggerInfo) => callDoAutomate(loggerInfo, 'get', 'status')
+export const callStatusAutomate = (loggerInfo) => callDoAutomate(loggerInfo, 'get', 'scheduler/status')
+
+export const callJobsAutomate = async (loggerInfo) => callDoAutomate(loggerInfo, 'get', 'jobs')
