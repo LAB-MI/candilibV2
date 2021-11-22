@@ -27,7 +27,7 @@ export const startAutomate = async (req, res) => {
   try {
     const { data, status } = await callStartAutomate(loggerInfo, true)
     const { success, message } = data
-    appLogger.info({ ...loggerInfo, message })
+    appLogger.info({ ...loggerInfo, description: message })
     return res.status(status).json({ success, message })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.messsage, error })
@@ -44,7 +44,7 @@ export const stopAutomate = async (req, res) => {
   try {
     const { data, status } = await callStopAutomate(loggerInfo)
     const { success, message } = data
-    appLogger.info({ ...loggerInfo, message })
+    appLogger.info({ ...loggerInfo, description: message })
     return res.status(status).json({ success, message })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.messsage, error })
