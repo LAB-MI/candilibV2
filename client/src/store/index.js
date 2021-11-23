@@ -27,6 +27,7 @@ import contactUs from './contact-us'
 import adminTech from './admin-tech'
 import adminBorneStatus from './admin-borne-status'
 import candidatCaptcha from './candidat-captcha'
+import technicalUser from './technical-user'
 
 export * from './admin-bordereaux'
 export * from './admin-departements'
@@ -53,6 +54,7 @@ export * from './contact-us'
 export * from './admin-tech'
 export * from './admin-borne-status'
 export * from './candidat-captcha'
+export * from './technical-user'
 
 Vue.use(Vuex)
 
@@ -83,5 +85,6 @@ export default new Vuex.Store({
     adminTech,
     adminBorneStatus,
     candidatCaptcha,
+    technicalUser,
   },
 })

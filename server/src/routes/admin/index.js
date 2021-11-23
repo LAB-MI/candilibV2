@@ -12,6 +12,8 @@ import {
   getMe,
   getUsers,
   updatedInfoUser,
+  createTechnicalUserController,
+  getTechnicalUsers,
 } from './admin-controllers'
 import {
   createIpcsr,
@@ -1522,6 +1524,8 @@ router
  */
 router.post('/users', verifyDelegueLevel(), createUserController)
 
+router.post('/tech-users', verifyUserLevel(config.userStatusLevels.admin), createTechnicalUserController)
+
 /**
  * @swagger
  *
@@ -1581,6 +1585,8 @@ router.post('/users', verifyDelegueLevel(), createUserController)
  *
  */
 router.get('/users', verifyDelegueLevel(), getUsers)
+
+router.get('/tech-users', verifyUserLevel(config.userStatusLevels.admin), getTechnicalUsers)
 
 /**
  * @swagger

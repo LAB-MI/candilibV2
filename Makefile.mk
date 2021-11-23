@@ -99,6 +99,7 @@ NPM_AUDIT_DRY_RUN  := $(shell echo $$NPM_AUDIT_DRY_RUN )
 
 # Run env
 LINE_DELAY := $(shell [ -n "$$LINE_DELAY" ] && echo $$LINE_DELAY )
+TENANT_NAME := $(shell hostname)
 
 # Reverse proxy (nginx)
 APP_USER_LIMIT_RATE=30r/s
@@ -125,7 +126,8 @@ API_VERIFYZONE_LIMIT_RATE=6r/s
 API_VERIFYZONE_BURST=5 delay=2
 
 # e2e
-
 CYPRESS_ARG  := $(shell echo $$CYPRESS_ARG )
+
+
 # export all variables in subshell
 export

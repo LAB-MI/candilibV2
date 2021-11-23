@@ -416,15 +416,12 @@ export default {
   },
 
   async mounted () {
-    if (this.placesByCentreList && this.placesByCentreList.length) {
-      const centerId = this.$route.params.center
-      this.activeCentreId = centerId || this.firstCentreId
-      this.activeCentreInfos = {
-
-      }
-      this.lastActiveCenters[this.activeDepartement] = this.activeCentreId
-      this.reloadWeekMonitor()
-    }
+    await this.reloadWeekMonitor()
+    const centerId = this.$route.params.center
+    this.activeCentreId = centerId || this.firstCentreId
+    this.updateCenterInRoute()
+    this.activeCentreInfos = {}
+    this.lastActiveCenters[this.activeDepartement] = this.activeCentreId
   },
 
   async beforeMount () {

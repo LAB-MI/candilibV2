@@ -16,6 +16,9 @@ import {
   archiveUserBusiness,
   getArchivedUsersByAdmin,
   unArchiveUserBusiness,
+  createTechnicalUser,
+  getAppropriateTechnicalUsers,
+  getArchivedTechnicalUsersByAdmin,
 } from './business'
 
 /**
@@ -149,6 +152,60 @@ export const createUserController = async (req, res) => {
 }
 
 /**
+ * Crée un utilisateur technique
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId - Id de l'utilisateur souhaitant créér un délégué ou un répartiteur
+ * @param {string} req.body.email - Adresse courriel de l'utilisateur créér
+ * @param {import('express').Response} res
+ */
+export const createTechnicalUserController = async (req, res) => {
+  const { email } = req.body
+  const loggerInfo = {
+    request_id: req.request_id,
+    section: 'admin-create-technical-user',
+    action: 'post-technical-user',
+    admin: req.userId,
+    email,
+  }
+
+  try {
+    const user = await createTechnicalUser(
+      req.userId,
+      email,
+    )
+
+    await sendMailCreateAccount(email)
+    appLogger.info({
+      ...loggerInfo,
+      action: 'created-technical-user',
+      description:
+        "L'utilisateur a bien été créé et un courriel lui a été envoyé",
+    })
+
+    return res.status(201).json({
+      success: true,
+      message: `L'utilisateur a bien été créé et un courriel de mise à jour de mot passe a été envoyé à ${email}`,
+      user,
+    })
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: error.message,
+      error,
+    })
+
+    return res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    })
+  }
+}
+
+/**
  * Récupère un utilisateur
  *
  * @async
@@ -186,6 +243,54 @@ export const getUsers = async (req, res) => {
     appLogger.error({
       ...loggerInfo,
       description: `Impossible de récupérer les utilisateurs : ${error.message}`,
+      error,
+    })
+
+    return res.status(error.status || 500).json({
+      success: false,
+      message: error.message,
+    })
+  }
+}
+
+/**
+ * Récupère un utilisateur
+ *
+ * @async
+ * @function
+ *
+ * @param {import('express').Request} req
+ * @param {string} req.userId - Id de l'utilisateur souhaitant créér un délégué ou un répartiteur
+ * @param {string} req.body.email - Adresse courriel de l'utilisateur trouvé
+ * @param {string} req.body.departements - Départements de l'utilisateur trouvé
+ * @param {string} req.body.status - Statut de l'utilisateur trouvé
+ * @param {import('express').Response} res
+ */
+export const getTechnicalUsers = async (req, res) => {
+  const { isArchivedOnly } = req.query
+  const { userId } = req
+
+  const loggerInfo = {
+    request_id: req.request_id,
+    section: 'admin-get-technical-user',
+    action: 'get-technical-user',
+    admin: req.userId,
+    isArchivedOnly,
+  }
+
+  try {
+    const users = isArchivedOnly === 'true' ? await getArchivedTechnicalUsersByAdmin(userId) : await getAppropriateTechnicalUsers(userId)
+
+    appLogger.info({
+      ...loggerInfo,
+      nbOfFoundUsers: users.length,
+    })
+
+    return res.status(200).json({ success: true, users })
+  } catch (error) {
+    appLogger.error({
+      ...loggerInfo,
+      description: `Impossible de récupérer les utilisateurs techniques : ${error.message}`,
       error,
     })
 

@@ -47,6 +47,7 @@ const headerIcons = [
     routerTo: 'gestion-planning',
     iconName: 'calendar_today',
     tooltipText: 'Gestion planning',
+    isProtected: true,
   },
   {
     routerTo: ROUTE_AUTHORIZE_AURIGE,
@@ -64,6 +65,7 @@ const headerIcons = [
     routerTo: 'admin-candidat',
     iconName: 'face',
     tooltipText: 'Recherche Candidat',
+    isProtected: true,
   },
   {
     routerTo: ROUTE_AUTHORIZE_AGENTS,

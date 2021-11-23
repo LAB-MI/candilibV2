@@ -7,12 +7,14 @@ import morgan from 'morgan'
 import bodyParser from 'body-parser'
 import fileupload from 'express-fileupload'
 
-import { loggerStream, jsonFormat } from './util/logger'
+import { loggerStream, jsonFormat, techLogger } from './util/logger'
 import routes from './routes'
 
 import npmVersion from '../package.json'
 
 import { v4 as uuidv4 } from 'uuid'
+
+import { callStartAutomate } from './routes/tech/automate-business'
 
 /**
  * @swagger
@@ -806,7 +808,18 @@ if (isDevelopment) {
  *               2.0.0-alpha.0
  *
  */
-app.get(`${apiPrefix}/version`, function getVersion (req, res) {
+app.get(`${apiPrefix}/version`, async (req, res, next) => {
+  const loggerInfo = {
+    section: 'GET VERSION',
+    action: 'START AUTOMATE',
+  }
+  try {
+    await callStartAutomate(loggerInfo)
+  } catch (error) {
+    techLogger.error({ ...loggerInfo, description: error.message, error })
+  }
+  next()
+}, function getVersion (req, res) {
   res.send(npmVersion.version)
 })
 
