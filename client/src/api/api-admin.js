@@ -169,6 +169,13 @@ const apiAdmin = {
     return json
   },
 
+  async getJobsAutomate () {
+    const json = await apiClient.get(`${apiPaths.admin.techAutomate}/jobs`, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
   async sendMailResetLink (email) {
     const json = await apiClient.post(apiPaths.admin.resetLink, {
       headers: {
