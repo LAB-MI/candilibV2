@@ -9,9 +9,9 @@ export const getAutomateStatus = async (req, res) => {
   }
   try {
     const { data, status: responseStatus } = await callStatusAutomate(loggerInfo)
-    const { success, status } = data
+    const { success, status, message } = data
     appLogger.info({ ...loggerInfo, description: status })
-    res.status(responseStatus).json({ success, status })
+    res.status(responseStatus).json({ success, status, message })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.messsage, error })
     return res.status(500).json({ success: false, message: error.message })
@@ -60,9 +60,9 @@ export const getJobsAutomate = async (req, res) => {
   }
   try {
     const { data, status } = await callJobsAutomate(loggerInfo)
-    const { success, jobs } = data
+    const { success, jobs, message } = data
     appLogger.info({ ...loggerInfo, description: `${jobs?.length} jobs trouvés` })
-    return res.status(status).json({ success, jobs })
+    return res.status(status).json({ success, jobs, message })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.messsage, error })
     return res.status(500).json({ success: false, message: error.message })
