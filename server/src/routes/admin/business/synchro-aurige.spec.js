@@ -106,7 +106,7 @@ jest.mock('../../../config', () => {
       },
     },
     dbOptions: {},
-    delayToBook: 7,
+    delayToBook: 3,
     timeoutToRetry: 7,
     timeoutToRetryBy: {
       [timeOutToAbs]: 10,
