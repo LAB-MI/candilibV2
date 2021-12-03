@@ -13,7 +13,7 @@ import { departementValidator } from './departement-validator'
  *
  * @returns {Promise.<DepartementMongooseDocument>} - Le département créé
  */
-export const createDepartement = async ({ _id, email, isAddedRecently = false }) => {
+export const createDepartement = async ({ _id, email, isAddedRecently = false, disableAt }) => {
   const validated = await departementValidator.validateAsync({
     _id,
     email,
@@ -25,6 +25,7 @@ export const createDepartement = async ({ _id, email, isAddedRecently = false })
     _id,
     email,
     isAddedRecently,
+    disableAt,
   })
   await departement.save()
   return departement
@@ -112,15 +113,20 @@ export const findAllDepartements = async () => Departement.find({}, '-__v')
  *
  * @returns {Promise.<DepartementMongooseDocument>} - Le département modifié
  */
-export const updateDepartementById = async ({ _id, email, isAddedRecently }) => {
+export const updateDepartementById = async ({ _id, email, isAddedRecently, disableAt }) => {
   const departement = await findDepartementById(_id)
   if (!departement) {
     throw new Error(`No departement found with this id: ${_id}`)
   }
   departement.email = email
   departement.isAddedRecently = !!isAddedRecently
+  if (disableAt) {
+    departement.disableAt = disableAt
+  }
+
   const updatedDepartement = await departement.save()
   return updatedDepartement
 }
+
 export const findDepartements = async () => Departement.find({}, '_id')
 export const findAllDepartementsId = async () => Departement.find({}, '_id')
