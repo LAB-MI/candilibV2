@@ -35,9 +35,10 @@ describe('Test the auth admin', () => {
   })
 
   afterAll(async () => {
-    await archiveUserByEmail(email)
+    try {
+      await archiveUserByEmail(email)
+    } catch (error) { }
     await disconnect()
-    await app.close()
   })
 
   it('Should response the POST method with a 401 for an unknown user', async () => {
@@ -87,9 +88,10 @@ describe('Email on call to /reset-link', () => {
   })
 
   afterAll(async () => {
-    await archiveUserByEmail(email)
+    try {
+      await archiveUserByEmail(email)
+    } catch (error) {}
     await disconnect()
-    await app.close()
   })
 
   it('Should not validate email ', async () => {
@@ -105,7 +107,9 @@ describe('Email on call to /reset-link', () => {
   it('Should validate email', async () => {
     const { body } = await request(app)
       .post('/reset-link')
-      .send(user)
+      .send({
+        email: user.email,
+      })
       .set('Accept', 'application/json')
       .expect(200)
     expect(body).toHaveProperty('success', true)
@@ -136,9 +140,10 @@ describe('Reset my password', () => {
   })
 
   afterAll(async () => {
-    await archiveUserByEmail(email)
+    try {
+      await archiveUserByEmail(email)
+    } catch (error) { }
     await disconnect()
-    app.close()
   })
 
   it('Should not validate password change when password dont match', async () => {

@@ -12,6 +12,8 @@ import {
   archiveUserByEmail,
   findAllArchivedUsers,
   unArchiveUserByEmail,
+  findAllActiveTechnicalUsers,
+  findAllArchivedTechnicalUsers,
 } from '../../../models/user'
 import config from '../../../config'
 import { email as regexEmail } from '../../../util'
@@ -143,6 +145,98 @@ export const createAppropriateUser = async (
 
   const password = createPassword()
   const savedUser = await createUser(email, password, departements, status)
+  return savedUser
+}
+
+/**
+ * Récupère les utilisateurs techniques
+ *
+ * @async
+ * @function
+ *
+ * @param {string} userId - ID de l'utilisateur qui demande la liste des utilisateurs
+ *
+ * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
+ */
+
+export const getAppropriateTechnicalUsers = async userId => {
+  const user = await findUserById(userId)
+  const status = user.status
+
+  const isAdmin = status === config.userStatuses.ADMIN
+
+  if (!isAdmin) {
+    const error = new Error(
+      "Vous n'êtes pas autorisé à accéder à cette ressource",
+    )
+    error.status = 401
+    throw error
+  }
+
+  const users = await findAllActiveTechnicalUsers(config.userStatuses.TECH)
+  return users
+}
+
+/**
+ * Récupère les utilisateurs techniques archivés
+ *
+ * @async
+ * @function
+ *
+ * @param {string} userId - ID de l'utilisateur qui demande la liste des utilisateurs archivés
+ *
+ * @returns {Promise.<import('../../../models/user/user.model.js').User[]>}
+ */
+
+export const getArchivedTechnicalUsersByAdmin = async userId => {
+  const user = await findUserById(userId)
+  const status = user.status
+
+  if (config.userStatuses.ADMIN === status) {
+    const users = await findAllArchivedTechnicalUsers(config.userStatuses.TECH)
+    return users
+  }
+  const error = new Error(
+    "Vous n'êtes pas autorisé à accéder à cette ressource",
+  )
+  error.status = 401
+  throw error
+}
+
+/**
+ * Crée un utilisateur technique
+ *
+ * @async
+ * @function
+ *
+ * @param {string} userId - ID de l'utilisateur qui crée l' utilisateur
+ * @param {string} email - Adresse courriel de l'utilisateur créé
+ *
+ * @returns {Promise.<UserMongooseDocument[]>}
+ */
+export const createTechnicalUser = async (
+  userId,
+  email,
+) => {
+  const isValidEmail = regexEmail.test(email)
+  if (!isValidEmail) {
+    const error = new Error(INVALID_EMAIL)
+    error.status = 400
+    throw error
+  }
+
+  const user = await findUserById(userId)
+
+  if (
+    !(user && user.status === config.userStatuses.ADMIN)
+  ) {
+    const error = new Error(CANNOT_ACTION_USER)
+    error.status = 401
+    throw error
+  }
+
+  const password = createPassword()
+  const savedUser = await createUser(email, password, [], config.userStatuses.TECH)
   return savedUser
 }
 

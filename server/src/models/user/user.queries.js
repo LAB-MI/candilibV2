@@ -64,6 +64,39 @@ export const findAllArchivedUsers = async (departements, statuses) => {
 }
 
 /**
+ * Recherche tous les utilisateurs techniques actifs (non archivés)
+ * @returns {Promise.<import('./user.model.js').User[]>} - Liste de documents d'utilisateurs
+ */
+export const findAllActiveTechnicalUsers = async (status) => {
+  const filters = { deletedAt: { $exists: false } }
+
+  if (status) {
+    filters.status = { $eq: status }
+  }
+
+  const users = await User.find(filters)
+  return users
+}
+
+/**
+ * Recherche tous les utilisateurs techniques archivés (non actifs)
+ *
+ * @param {string} [status] - Statut maximum
+ *
+ * @returns {Promise.<import('./user.model.js').User[]>} - Liste de documents d'utilisateurs
+ */
+
+export const findAllArchivedTechnicalUsers = async (status) => {
+  const filters = { deletedAt: { $exists: true } }
+
+  if (status) {
+    filters.status = { $eq: status }
+  }
+  const users = await User.find(filters)
+  return users
+}
+
+/**
  * Recherche et retourne le document de l'utilisateur par son ID
  *
  * @param {string} id - ID mongo de l'utilisateur

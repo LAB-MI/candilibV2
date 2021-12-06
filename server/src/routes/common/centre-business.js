@@ -7,7 +7,6 @@
 import {
   countAvailablePlacesByCentre,
   findAllPlacesByCentre,
-  verifyIsAvailablePlacesByCentre,
 } from '../../models/place'
 
 import { findUserById } from '../../models/user'
@@ -16,7 +15,6 @@ import {
   createCentre,
   findAllActiveCentres,
   findAllCentres,
-  findCentreByGeoDepartement,
   findCentreById,
   findCentreByNameAndDepartement,
   findCentreByNameAndGeoDepartement,
@@ -26,6 +24,7 @@ import {
 } from '../../models/centre'
 import { getFrenchLuxon } from '../../util'
 import { getDateDisplayPlaces, getDateVisibleBefore } from '../candidat/util/date-to-display'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 export async function findCentresWithNbPlaces (departement, beginDate, endDate) {
   const centres = departement
@@ -67,79 +66,22 @@ export async function findCentresWithNbPlacesByGeoDepartement (
   beginDate,
   endDate,
   status,
-  justIsCentreHaveAvailablePlace = true,
 ) {
-  const centres = geoDepartement
-    ? await findCentreByGeoDepartement(geoDepartement, {
-      nom: 1,
-      geoDepartement: 1,
-      _id: 1,
-      geoloc: 1,
-    })
-    : await findAllActiveCentres()
-
+  if (!geoDepartement) {
+    throw new Error('Paramètre(s) manquant(s)')
+  }
   if (!beginDate) {
     beginDate = getFrenchLuxon().toISODate()
   }
 
-  if (justIsCentreHaveAvailablePlace) {
-    const centresWithNbPlaces = await Promise.all(
-      centres.map(async centre => ({
-        centre,
-        count: await verifyIsAvailablePlacesByCentre(
-          centre._id,
-          beginDate,
-          endDate,
-          getDateDisplayPlaces(),
-          getDateVisibleBefore(status),
-        ),
-      })),
-    )
-
-    const result = [
-      ...Object.values(
-        centresWithNbPlaces.reduce((accu, { centre, count }) => {
-          if (!accu[centre.nom]) {
-            accu[centre.nom] = { count: 0 }
-          }
-          accu[centre.nom].centre = centre
-          accu[centre.nom].count = !accu[centre.nom].count ? count : accu[centre.nom].count
-          return accu
-        }, {}),
-      ),
-    ]
-
-    return result
-  }
-
-  const centresWithNbPlaces = await Promise.all(
-    centres.map(async centre => ({
-      centre,
-      count: await countAvailablePlacesByCentre(
-        centre._id,
-        beginDate,
-        endDate,
-        getDateDisplayPlaces(),
-        getFrenchLuxon(),
-      ),
-    })),
-  )
-
-  // TODO: Refactor next block
-  const result = [
-    ...Object.values(
-      centresWithNbPlaces.reduce((accu, { centre, count }) => {
-        if (!accu[centre.nom]) {
-          accu[centre.nom] = { count: 0 }
-        }
-        accu[centre.nom].centre = centre
-        accu[centre.nom].count += count
-        return accu
-      }, {}),
-    ),
-  ]
-
-  return result
+  return placesAndGeoDepartementsAndCentresCache
+    .getOnlyCentreListWithPlaceCount({
+      geoDepartement,
+      beginDate,
+      endDate,
+      dateDisplayPlaces: getDateDisplayPlaces(),
+      dateVisibleBefore: getDateVisibleBefore(status),
+    })
 }
 
 export async function findCentresWithPlaces (departement, beginDate, endDate) {

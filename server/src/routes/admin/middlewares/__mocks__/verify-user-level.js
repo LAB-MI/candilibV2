@@ -21,3 +21,9 @@ export function verifyAdminLevel () {
     return next()
   }
 }
+
+export function verifyTechAdminLevel () {
+  return function (req, res, next) {
+    return next()
+  }
+}

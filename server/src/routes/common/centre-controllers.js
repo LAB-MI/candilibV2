@@ -17,7 +17,7 @@ import {
   findCentresByDepartement,
   findCentresUniqByDepartement,
 } from '../../models/centre'
-import { appLogger } from '../../util'
+import { appLogger, getFrenchLuxon } from '../../util'
 import config from '../../config'
 import { getAuthorizedDateToBook } from '../candidat/authorize.business'
 import {
@@ -46,6 +46,7 @@ export async function getCentres (req, res) {
     centreId,
     beginDate,
     endDate,
+    nomCentre: nom,
   }
   if (req.userLevel === config.userStatusLevels.candidat) {
     loggerContent.candidatId = req.userId
@@ -74,13 +75,13 @@ export async function getCentres (req, res) {
     if (!centreId && !nom) {
       if (req.userLevel === config.userStatusLevels.candidat) {
         const beginDateTime = getAuthorizedDateToBook()
-        beginDate = beginDateTime.toISODate()
+        beginDate = beginDateTime
       }
 
       const centres = await findCentresWithNbPlacesByGeoDepartement(
         departement,
         beginDate,
-        endDate,
+        getFrenchLuxon().plus({ months: config.numberOfVisibleMonths }).endOf('month'),
         getStatusWithRecentlyDept(candidatStatus, departement, homeDepartement, isInRecentlyDept),
       )
 
@@ -120,7 +121,6 @@ export async function getCentres (req, res) {
     res.status(500).json({
       success: false,
       message: error.message,
-      error: JSON.stringify(error),
     })
   }
 }

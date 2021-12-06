@@ -1,5 +1,6 @@
 import mongoose from 'mongoose'
 import sanitizeHtml from 'sanitize-html'
+import { enumReasonCanbookFrom } from '../../routes/common/reason.constants'
 
 import {
   email as emailRegex,
@@ -7,9 +8,64 @@ import {
   neph as nephRegex,
 } from '../../util'
 import { placeCommonFields } from '../place/place.model'
+import { UserFields } from '../user/user.model'
 import { ECHEC } from './objetDernierNonReussite.values'
 
 const { Schema } = mongoose
+const ObjectId = Schema.Types.ObjectId
+
+const canBookFromFields = {
+  canBookFrom: {
+    type: Date,
+    default: undefined,
+  },
+  reason: {
+    type: String,
+    enum: enumReasonCanbookFrom,
+    default: undefined,
+  },
+  createdAt: {
+    type: Date,
+    default: undefined,
+  },
+  byUser: {
+    type: String,
+    default: undefined,
+  },
+  byAdmin: {
+    type: {
+      ...UserFields,
+      _id: {
+        type: ObjectId,
+        required: true,
+      },
+    },
+    default: undefined,
+    required: false,
+  },
+  isCandilib: {
+    type: Boolean,
+    default: undefined,
+  },
+  deletedBy: {
+    type: {
+      ...UserFields,
+      _id: {
+        type: ObjectId,
+        required: true,
+      },
+    },
+    default: undefined,
+    required: false,
+  },
+  deletedAt: {
+    type: Date,
+    default: undefined,
+    required: false,
+  },
+}
+
+const canBookFromSchema = new Schema(canBookFromFields)
 
 const ArchivedPlaceFields = {
   ...placeCommonFields,
@@ -131,6 +187,10 @@ export const candidatFields = {
     type: Date,
     default: undefined,
   },
+  canBookFroms: {
+    type: [canBookFromSchema],
+    default: undefined,
+  },
   isEvaluationDone: {
     type: Boolean,
   },
@@ -172,6 +232,7 @@ export const candidatFields = {
     type: Date,
     required: false,
   },
+
 }
 
 const CandidatSchema = new Schema(candidatFields, { timestamps: true })

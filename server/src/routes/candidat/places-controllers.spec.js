@@ -59,6 +59,7 @@ import {
   expectMailConvocation,
   expectMailCancelBooking,
 } from '../business/__tests__/expect-send-mail'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -108,8 +109,16 @@ const cancelReservationWithSuccess = async (
         expectedCanBookFrom,
       ).date,
     )
-    expect(candidat).toHaveProperty('canBookFrom', expectedCanBookFrom.toJSDate())
+    const expectedCanBookFromDate = expectedCanBookFrom.toJSDate()
+    expect(candidat).toHaveProperty('canBookFrom', expectedCanBookFromDate)
     expect(candidat).toHaveProperty('status', '5')
+    expect(candidat.canBookFroms).toBeDefined()
+    expect(candidat.canBookFroms[0]).toHaveProperty('canBookFrom', expectedCanBookFromDate)
+    expect(candidat.canBookFroms[0]).toHaveProperty('reason', REASON_CANCEL)
+    const canBookFromCreatedAt = getFrenchLuxonFromJSDate(candidat.canBookFroms[0].createdAt)
+    expect(canBookFromCreatedAt.hasSame(getFrenchLuxon(), 'day')).toBe(true)
+    expect(candidat.canBookFroms[0].byUser).toBeUndefined()
+    expect(candidat.canBookFroms[0].byAdmin).toBeUndefined()
   } else {
     expect(body).toHaveProperty('message', message)
     expect(candidat.canBookFrom).toBeUndefined()
@@ -152,12 +161,16 @@ describe('Test get dates from places available', () => {
     )
   })
 
+  beforeEach(async () => {
+    await placesAndGeoDepartementsAndCentresCache.setPlaces()
+    await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+  })
+
   afterAll(async () => {
     await removePlaces()
     await removeCentres()
     await deleteCandidats()
     await disconnect()
-    // await app.close()
   })
 
   it('should 200 without booking and information to custom the front', async () => {
@@ -219,7 +232,6 @@ describe('Test get dates from places available when there are booked', () => {
     await removeCentres()
     await deleteCandidats()
     await disconnect()
-    // await app.close()
   })
 
   it('Should 200 with an available place for centre 2 at a day 19 11h', async () => {
@@ -376,7 +388,6 @@ describe('Test to book and to delete reservation by candidat', () => {
       console.warn(e)
     }
     await disconnect()
-    // await app.close()
   })
 
   it('should booked place by candidat with info bookedAt', async () => {
@@ -545,7 +556,6 @@ describe('test to get booking by candidat', () => {
     await deleteCandidats()
 
     await disconnect()
-    // await app.close()
   })
 
   it('Should get 200 to send mail of convocation', async () => {
@@ -727,7 +737,6 @@ describe('test to book with the date authorize by candiat', () => {
     await deleteCandidats()
 
     await disconnect()
-    // await app.close()
   })
 
   it('Should get 400 to book one place before now', async () => {
@@ -835,7 +844,6 @@ describe('test to change a booking, 6 days before the appointemnt, by candidat '
     await deleteCandidats()
 
     await disconnect()
-    // await app.close()
   })
 
   // TODO: A supprimer dans le v2.10.0
@@ -889,7 +897,6 @@ describe('Cancel a reservation', () => {
     await deleteCandidats()
 
     await disconnect()
-    // await app.close()
   })
   /**
  * @deprecated v2.10.0 une annulation une pénalité
@@ -953,7 +960,6 @@ describe('get reservation with candidat failed', () => {
     await deleteCandidats()
 
     await disconnect()
-    // await app.close()
   })
 
   it('Should get 200 to get reservation from the candidat failed ', async () => {

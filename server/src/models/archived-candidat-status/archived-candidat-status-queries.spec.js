@@ -26,7 +26,7 @@ describe('archived candidat status', () => {
   it('Should create archived candidat status', async () => {
     const result = await createManyArchivedCandidatStatus('2', candidatsIds)
     expect(result).toBeDefined()
-    expect(result).toHaveProperty('n', 4)
+    expect(result).toHaveProperty('nInserted', 4)
   })
 
   it('Should update lastSavedAt archived candidat status', async () => {

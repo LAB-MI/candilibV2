@@ -127,6 +127,7 @@ export default {
       timeoutId: undefined,
       statusDayBlock: false,
       switchTab: null,
+      getTimeSlotsCount: 0,
     }
   },
 
@@ -163,6 +164,8 @@ export default {
     },
 
     warningMessage () {
+      const { canBookFrom } = this.reservation.booked
+      if (!canBookFrom || getFrenchLuxonFromIso(canBookFrom) < getFrenchLuxonCurrentDateTime()) { return }
       if (this.isPenaltyActive) {
         return this.$formatMessage(
           {
@@ -255,6 +258,11 @@ export default {
             departement,
           })
         }
+        if (this.getTimeSlotsCount > 10) {
+          this.goToSelectCenter()
+          return
+        }
+        this.getTimeSlotsCount++
         this.timeoutId = setTimeout(this.getTimeSlots, 100)
         return
       }

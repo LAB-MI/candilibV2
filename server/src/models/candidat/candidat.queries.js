@@ -10,6 +10,7 @@ import { candidatStatuses } from '../../routes/common/candidat-status-const'
 import { addArchivedCandidatStatus } from '../archived-candidat-status/archived-candidat-status-queries'
 import { NbDaysInactivityDefault, NB_DAYS_INACTIVITY } from '../../config'
 import { findStatusByType, upsertStatusByType } from '../status'
+import { REASON_UNKNOWN } from '../../routes/common/reason.constants'
 
 /**
  * Crée un candidat
@@ -446,6 +447,46 @@ export const updateCandidatEmail = async (candidat, email) => {
 }
 
 /**
+ * Met à jour le département de résidence du candidat
+ *
+ * @async
+ * @function
+ *
+ * @param {Candidat} candidat - Candidat
+ * @param {string} homeDepartement - Département de résidence
+ *
+ * @returns {Promise.<Candidat>}
+ */
+export const updateCandidatHomeDepartement = async (candidat, homeDepartement) => {
+  if (!candidat) {
+    throw new Error('candidat is undefined')
+  }
+  await candidat.updateOne({ homeDepartement })
+  const updatedCandidat = await Candidat.findById(candidat._id)
+  return updatedCandidat
+}
+
+/**
+ * Met à jour le numéro de téléphone du candidat
+ *
+ * @async
+ * @function
+ *
+ * @param {Candidat} candidat - Candidat
+ * @param {string} phoneNumber - Numéro de téléphone
+ *
+ * @returns {Promise.<Candidat>}
+ */
+export const updateCandidatPhoneNumber = async (candidat, phoneNumber) => {
+  if (!candidat) {
+    throw new Error('candidat is undefined')
+  }
+  await candidat.updateOne({ portable: phoneNumber })
+  const updatedCandidat = await Candidat.findById(candidat._id)
+  return updatedCandidat
+}
+
+/**
  * Met à jour le token du candidat
  *
  * @async
@@ -566,14 +607,43 @@ export const updateCandidatById = async (id, updatedData) => {
  *
  * @returns {Promise.<Candidat>}
  */
-export const updateCandidatCanBookFrom = async (candidat, canBookFrom, candidatStatus) => {
+export const updateCandidatCanBookFrom = async (candidat, canBookFrom, candidatStatus, reason) => {
   if (candidatStatus) {
     candidat.status = candidatStatus
   }
   candidat.canBookFrom = canBookFrom
+  addCanBookFrom(candidat,
+    canBookFrom,
+    reason,
+  )
   return candidat.save()
 }
 
+export const deleteCandidatCanBookFrom = async (candidat, byAdmin) => {
+  const { canBookFrom: oldCanBookFrom, canBookFroms } = candidat
+  if (!oldCanBookFrom) {
+    return new Error("Le candidat n'a pas de pénalité")
+  }
+
+  let archivedCanBookFrom
+  if (canBookFroms && canBookFroms.length) {
+    archivedCanBookFrom = candidat.canBookFroms.find(({ canBookFrom }) => canBookFrom.getTime() === oldCanBookFrom.getTime())
+  }
+
+  if (!archivedCanBookFrom) {
+    addCanBookFrom(candidat,
+      oldCanBookFrom,
+      REASON_UNKNOWN,
+    )
+    archivedCanBookFrom = candidat.canBookFroms[candidat.canBookFroms.length - 1]
+  }
+
+  candidat.canBookFrom = undefined
+  archivedCanBookFrom.deletedBy = byAdmin
+  archivedCanBookFrom.deletedAt = getFrenchLuxon().toISO()
+
+  return candidat.save()
+}
 /**
  * Met à jour la date de première connexion du candidat si elle existe
  *
@@ -862,6 +932,31 @@ export const totalCandidatsSignIn = async (filter) => {
     ],
   })
   return count
+}
+
+export function addCanBookFrom (
+  // next variable candidat is Object Mongo from parent
+  candidat,
+  canBookFrom,
+  reason,
+  byUser,
+  byAdmin,
+  isCandilib = true,
+) {
+  const createdAt = getFrenchLuxon()
+  if (!candidat.canBookFroms) {
+    candidat.canBookFroms = []
+  }
+  candidat.canBookFroms.push({
+    canBookFrom,
+    reason,
+    byUser,
+    byAdmin,
+    isCandilib,
+    createdAt,
+  })
+  candidat.canBookFrom = canBookFrom
+  return candidat
 }
 
 /**

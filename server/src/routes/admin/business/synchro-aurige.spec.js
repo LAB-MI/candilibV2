@@ -38,7 +38,7 @@ import {
   OK_UPDATED,
   EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
 } from '../../../util'
-import { REASON_EXAM_FAILED } from '../../common/reason.constants'
+import { REASON_ABSENT_EXAM, REASON_EXAM_FAILED } from '../../common/reason.constants'
 import {
   isETGExpired,
   isMoreThan2HoursAgo,
@@ -78,7 +78,10 @@ import archivedPlaceModel from '../../../models/archived-place/archived-place-mo
 import { SUBJECT_MAIL_INFO } from '../../business'
 import { ObjectLastNoReussitValues } from '../../../models/candidat/objetDernierNonReussite.values'
 import { AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED } from '../../common/constants'
+import { BY_AURIGE } from '.'
+import { upsertLastSyncAurige } from '../../admin/status-candilib-business'
 
+jest.mock('../../admin/status-candilib-business')
 jest.mock('../../../util/logger')
 require('../../../util/logger').setWithConsole(false)
 
@@ -120,6 +123,7 @@ jest.mock('../../../config', () => {
   }
 })
 
+upsertLastSyncAurige.mockResolvedValue(true)
 const bookedAt = getFrenchLuxon().toJSDate()
 const readFileAsPromise = util.promisify(fs.readFile)
 
@@ -198,7 +202,7 @@ async function synchroAurigeSuccess (
   expect(result[0]).toHaveProperty('status', 'success')
   const candidat = await findCandidatById(candidatCreated._id)
   if (candidatInfo.dateDernierNonReussite) {
-    const { canBookFrom } = candidat
+    const { canBookFrom, canBookFroms } = candidat
     const timeOutToRetry = config.timeoutToRetryBy[candidatInfo.objetDernierNonReussite] || config.timeoutToRetryBy.default
     const dateTimeCanBookFrom = getFrenchLuxonFromISO(
       candidatInfo.dateDernierNonReussite,
@@ -208,6 +212,17 @@ async function synchroAurigeSuccess (
 
     expect(canBookFrom).toBeDefined()
     expect(canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
+
+    const lengthPenalties = canBookFroms.length
+    expect(lengthPenalties).toBeGreaterThan(0)
+    const penalty = canBookFroms[lengthPenalties - 1]
+    expect(penalty.canBookFrom).toEqual(dateTimeCanBookFrom.toJSDate())
+    expect(penalty.reason).toEqual(candidatInfo.objetDernierNonReussite === ObjectLastNoReussitValues.ABSENT ? REASON_ABSENT_EXAM : REASON_EXAM_FAILED)
+    expect(penalty.byUser).toEqual(BY_AURIGE)
+    expect(penalty.byAdmin).toBeUndefined()
+    const createdAt = getFrenchLuxonFromJSDate(penalty.createdAt)
+    const now = getFrenchLuxon()
+    expect(createdAt.hasSame(now, 'day')).toBe(true)
   }
 
   return candidat
@@ -263,23 +278,30 @@ const synchroAurigeToPassExam = async (
 
 const forNowEndExpired = AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED.plus({ days: 1 }).startOf('day')
 
-describe('synchro-aurige', () => {
+const buildSmtpServerAsync = async () => {
+  let server
+  await (new Promise(resolve => {
+    server = buildSmtpServer(smtpOptions.port, done => resolve(done))
+  }))
+  return server
+}
+const smtpServerCloseAsync = async (server) => new Promise(resolve => {
+  server.close(done => resolve(done))
+})
+
+describe('synchro-aurige 1', () => {
   let server
   beforeAll(async () => {
     await connect()
     await createInspecteurs()
     await createCentres()
-  })
-  beforeEach(done => {
-    server = buildSmtpServer(smtpOptions.port, done)
-  })
-  afterEach(done => {
-    server.close(done)
+    server = await buildSmtpServerAsync()
   })
   afterAll(async () => {
     await removeCentres()
     await removeInspecteur()
     await disconnect()
+    await smtpServerCloseAsync(server)
   })
   it('Should return expired', () => {
     const fiveYearsAgo = new Date()
@@ -687,7 +709,7 @@ describe('synchro-aurige', () => {
     })
     afterAll(async () => {
       await deleteDepartementById(departementData._id)
-      await placesCreated.delete()
+      await Promise.all(placesCreated.map(place => place.delete()))
     })
 
     it('should archive candidat who passed exam and have not already valided by aurige', async () => {
@@ -910,12 +932,7 @@ describe('Check canAccess property of aurige', () => {
     aurigeFile = await readFileAsPromise(
       path.resolve(__dirname, './', '__tests__', 'aurigeWithAccessAt.json'),
     )
-  })
-  beforeEach(done => {
-    server = buildSmtpServer(smtpOptions.port, done)
-  })
-  afterEach(done => {
-    server.close(done)
+    server = await buildSmtpServerAsync()
   })
 
   it('Should apply canAccesAt to candidat not validate by aurige', async () => {
@@ -959,6 +976,7 @@ describe('Check canAccess property of aurige', () => {
       }),
     )
     await disconnect()
+    await smtpServerCloseAsync(server)
   })
 })
 
@@ -970,18 +988,14 @@ describe('Synchro-aurige candidat with etg expired', () => {
     await createInspecteurs()
     await setInitCreatedCentre()
     await createCentres()
-  })
-  beforeEach(done => {
-    server = buildSmtpServer(smtpOptions.port, done)
-  })
-  afterEach(done => {
-    server.close(done)
+    server = await buildSmtpServerAsync()
   })
 
   afterAll(async () => {
     await removeCentres()
     await removeInspecteur()
     await disconnect()
+    await smtpServerCloseAsync(server)
   })
 
   async function synchroAurigeETGKO (
@@ -1001,8 +1015,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
     return candidat
   }
 
-  // TODO: Unskip this test when date now will over 31/12/2020
-  xit('should archive a candidat with date etg expired', async () => {
+  it('should archive a candidat with date etg expired', async () => {
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpired)
     const candidatCreated = await createCandidatToTestAurige(
       candidatWithEtgExpired,
@@ -1094,7 +1107,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
   })
 
   // TODO: Unskip this test when date now will over 31/12/2020
-  xit('should archive a candidat boooked at date etg expired, 8 ago', async () => {
+  it('should archive a candidat boooked at date etg expired, 8 ago', async () => {
     const dateTimeReussiteETGKO8 = DateTimeReussiteETGKO.minus({ days: 7 })
     const placeAtETG8 = {
       ...placeAtETG,
@@ -1136,7 +1149,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
   })
 
   // TODO: Unskip this test when date now will over 31/12/2020
-  xit('should do archive a candidat boooked at date etg expired and without resultat from Aurige', async () => {
+  it('should do archive a candidat boooked at date etg expired and without resultat from Aurige', async () => {
     const placeSelected = await createTestPlaceAurige(placeAtETG)
 
     const aurigeFile = toAurigeJsonBuffer(candidatWithEtgExpiredToArchive)
@@ -1158,7 +1171,7 @@ describe('Synchro-aurige candidat with etg expired', () => {
   })
 
   // TODO: Unskip this test when date now will over 31/12/2020
-  xit('should do archive a candidat boooked at date etg expired and with resultat failed from Aurige', async () => {
+  it('should do archive a candidat boooked at date etg expired and with resultat failed from Aurige', async () => {
     const placeSelected = await createTestPlaceAurige(placeAtETG)
 
     const aurigeFile = toAurigeJsonBuffer(
@@ -1197,11 +1210,9 @@ describe('Synchro-aurige: send mail', () => {
     await createCentres()
     const departementData = { _id: '93', email: 'email93@onepiece.com' }
     await createDepartement(departementData)
+    server = await buildSmtpServerAsync()
   })
-  beforeEach(done => {
-    server = buildSmtpServer(smtpOptions.port, done)
-  })
-  afterEach(async done => {
+  afterEach(async () => {
     if (placeSelected) {
       const archivedPlace = await archivedPlaceModel.findOne({
         date: placeSelected.date,
@@ -1212,16 +1223,14 @@ describe('Synchro-aurige: send mail', () => {
       if (placeTmp) await placeTmp.delete()
     }
     await candidatModel.findByIdAndDelete(candidatCreated._id)
-    server.close(done)
   })
   afterAll(async () => {
     await removeCentres()
     await removeInspecteur()
     await disconnect()
+    await smtpServerCloseAsync(server)
   })
-  it('should get mail success before validate aurige', async done => {
-    candidatCreated = await createCandidatToTestAurige(candidatPassed)
-    const aurigeFile = toAurigeJsonBuffer(candidatPassed)
+  it('should get mail success before validate aurige', done => {
     server.onData = function (stream, session, callback) {
       const chunks = []
       stream.on('data', function (chunk) {
@@ -1242,20 +1251,23 @@ describe('Synchro-aurige: send mail', () => {
         return callback()
       })
     }
-    const result = await synchroAurige(aurigeFile)
-    expect(result).toBeDefined()
+
+    expectGetMailSuccessBeforeValid()
   })
 
-  it('should no send mail failed exam when candidat failed exam', async done => {
+  async function expectGetMailSuccessBeforeValid () {
+    candidatCreated = await createCandidatToTestAurige(candidatPassed)
+    const aurigeFile = toAurigeJsonBuffer(candidatPassed)
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+  }
+
+  it('should no send mail failed exam when candidat failed exam', done => {
     let isDone = false
-    candidatCreated = await createCandidatToTestAurige(
-      candidatFailureExam,
-      true,
-    )
-    const aurigeFile = toAurigeJsonBuffer(candidatFailureExam)
     server.onData = function (stream, session, callback) {
       const chunks = []
       stream.on('data', function (chunk) {
+        console.log('data')
         chunks.push(chunk)
       })
 
@@ -1266,27 +1278,26 @@ describe('Synchro-aurige: send mail', () => {
         return callback()
       })
     }
-    const result = await synchroAurige(aurigeFile)
-    expect(result).toBeDefined()
+
+    expectedNoMailForExamFailed()
+
     setTimeout(() => {
       expect(isDone).toBe(false)
       done()
     }, 1000)
   })
 
-  it('should send mail failed exam when candidat have booking and failed exam', async done => {
+  async function expectedNoMailForExamFailed () {
+    const aurigeFile = toAurigeJsonBuffer(candidatFailureExam)
     candidatCreated = await createCandidatToTestAurige(
       candidatFailureExam,
       true,
     )
-    placeSelected = await createTestPlaceAurige(
-      placeSameDateDernierEchecPratique,
-    )
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+  }
 
-    await makeResa(placeSelected, candidatCreated, bookedAt)
-
-    const aurigeFile = toAurigeJsonBuffer(candidatFailureExam)
-
+  it('should send mail failed exam when candidat have booking and failed exam', done => {
     server.onData = function (stream, session, callback) {
       const chunks = []
       stream.on('data', function (chunk) {
@@ -1305,13 +1316,25 @@ describe('Synchro-aurige: send mail', () => {
         return callback()
       })
     }
-    const result = await synchroAurige(aurigeFile)
-    expect(result).toBeDefined()
+    expectedSendMailForExamFaliedBooked()
   })
 
-  it('should get mail success already validate aurige', async done => {
-    candidatCreated = await createCandidatToTestAurige(candidatPassed, true)
-    const aurigeFile = toAurigeJsonBuffer(candidatPassed)
+  async function expectedSendMailForExamFaliedBooked () {
+    candidatCreated = await createCandidatToTestAurige(
+      candidatFailureExam,
+      true,
+    )
+    placeSelected = await createTestPlaceAurige(
+      placeSameDateDernierEchecPratique,
+    )
+
+    await makeResa(placeSelected, candidatCreated, bookedAt)
+    const aurigeFile = toAurigeJsonBuffer(candidatFailureExam)
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+  }
+
+  it('should get mail success already validate aurige', done => {
     server.onData = function (stream, session, callback) {
       const chunks = []
       stream.on('data', function (chunk) {
@@ -1332,25 +1355,17 @@ describe('Synchro-aurige: send mail', () => {
         return callback()
       })
     }
-    const result = await synchroAurige(aurigeFile)
-    expect(result).toBeDefined()
+    expectedGetMailForAurigeValid()
   })
 
-  it('should send mail absent exam when candidat have booking and absent at exam', async done => {
-    const candidat = {
-      ...candidatFailureExam,
-      objetDernierNonReussite: ObjectLastNoReussitValues.ABSENT,
-    }
+  async function expectedGetMailForAurigeValid () {
+    candidatCreated = await createCandidatToTestAurige(candidatPassed, true)
+    const aurigeFile = toAurigeJsonBuffer(candidatPassed)
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+  }
 
-    candidatCreated = await createCandidatToTestAurige(candidat, true)
-    placeSelected = await createTestPlaceAurige(
-      placeSameDateDernierEchecPratique,
-    )
-
-    await makeResa(placeSelected, candidatCreated, bookedAt)
-
-    const aurigeFile = toAurigeJsonBuffer(candidat)
-
+  it('should send mail absent exam when candidat have booking and absent at exam', done => {
     server.onData = function (stream, session, callback) {
       const chunks = []
       stream.on('data', function (chunk) {
@@ -1371,15 +1386,15 @@ describe('Synchro-aurige: send mail', () => {
         return callback()
       })
     }
-    const result = await synchroAurige(aurigeFile)
-    expect(result).toBeDefined()
+    expectedForAbsentMail()
   })
 
-  it('should send mail no examine at exam when candidat have booking and is no examinable at exam', async done => {
+  async function expectedForAbsentMail () {
     const candidat = {
       ...candidatFailureExam,
-      objetDernierNonReussite: ObjectLastNoReussitValues.NO_EXAMINABLE,
+      objetDernierNonReussite: ObjectLastNoReussitValues.ABSENT,
     }
+
     candidatCreated = await createCandidatToTestAurige(candidat, true)
     placeSelected = await createTestPlaceAurige(
       placeSameDateDernierEchecPratique,
@@ -1389,6 +1404,11 @@ describe('Synchro-aurige: send mail', () => {
 
     const aurigeFile = toAurigeJsonBuffer(candidat)
 
+    const result = await synchroAurige(aurigeFile)
+    expect(result).toBeDefined()
+  }
+
+  it('should send mail no examine at exam when candidat have booking and is no examinable at exam', done => {
     server.onData = function (stream, session, callback) {
       const chunks = []
       stream.on('data', function (chunk) {
@@ -1409,7 +1429,24 @@ describe('Synchro-aurige: send mail', () => {
         return callback()
       })
     }
+    expectedSendMailNoExam()
+  })
+
+  async function expectedSendMailNoExam () {
+    const candidat = {
+      ...candidatFailureExam,
+      objetDernierNonReussite: ObjectLastNoReussitValues.NO_EXAMINABLE,
+    }
+    candidatCreated = await createCandidatToTestAurige(candidat, true)
+    placeSelected = await createTestPlaceAurige(
+      placeSameDateDernierEchecPratique,
+    )
+
+    await makeResa(placeSelected, candidatCreated, bookedAt)
+
+    const aurigeFile = toAurigeJsonBuffer(candidat)
+
     const result = await synchroAurige(aurigeFile)
     expect(result).toBeDefined()
-  })
+  }
 })

@@ -1,0 +1,12 @@
+
+http://localhost:9000/api/automate/version
+
+###
+http://localhost:9000/api/automate/scheduler/status
+
+###
+POST http://localhost:9000/api/automate/scheduler/stop
+
+###
+POST http://localhost:9000/api/automate/scheduler/start
+

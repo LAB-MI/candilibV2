@@ -8,6 +8,7 @@ import {
   archiveUserController,
   updatedInfoUser,
   createUserController,
+  createTechnicalUserController,
   getUsers,
 } from './admin-controllers'
 import { createUser } from '../../models/user'
@@ -28,6 +29,7 @@ const { apiPrefix } = require('../../app')
 const email = 'test@example.com'
 const emailAdmin = 'Admin@example.com'
 const emailTech = 'testTech@example.com'
+const emailTech2 = 'testTech2@example.com'
 const emailDelegue = 'delegue@example.com'
 const emailInvalid = 'emailInvalidexample.com'
 const password = 'S3cr3757uff!'
@@ -45,14 +47,13 @@ describe('Admin controller', () => {
     adminTech = await createUser(
       emailTech,
       password,
-      departements,
+      [],
       config.userStatuses.TECH,
     )
   })
 
   afterAll(async () => {
     await disconnect()
-    await app.close()
   })
 
   it('Should response 200 with user admin infos', async () => {
@@ -92,11 +93,80 @@ describe('Admin controller', () => {
       .expect(200)
 
     expect(body).toHaveProperty('email', emailTech)
-    expect(body.departements).toHaveLength(departements.length)
+    expect(body.departements).toHaveLength(0)
     expect(body).toHaveProperty(
       'features',
       config.userStatusFeatures[config.userStatuses.TECH],
     )
+  })
+
+  it('Should respond 401 create technical user by "tech"', async () => {
+    app = express()
+    app.use((req, res, next) => {
+      req.userId = adminTech._id
+      next()
+    })
+    app.use(bodyParser.json({ limit: '20mb' }))
+    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    app.post(`${apiPrefix}/admin/tech-users`, createTechnicalUserController)
+
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/tech-users`)
+      .send({
+        email: emailTech2,
+      })
+      .set('Accept', 'application/json')
+      .expect(401)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message')
+  })
+
+  it('Should respond 201 create technical user by "admin"', async () => {
+    app = express()
+    app.use((req, res, next) => {
+      req.userId = admin._id
+      next()
+    })
+    app.use(bodyParser.json({ limit: '20mb' }))
+    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    app.post(`${apiPrefix}/admin/tech-users`, createTechnicalUserController)
+
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/tech-users`)
+      .send({
+        email: emailTech2,
+      })
+      .set('Accept', 'application/json')
+      .expect(201)
+
+    expect(body).toHaveProperty('success', true)
+    expect(body).toHaveProperty('message')
+  })
+
+  it('Should respond 400 if email is not valid', async () => {
+    app = express()
+    app.use((req, res, next) => {
+      req.userId = admin._id
+      next()
+    })
+    app.use(bodyParser.json({ limit: '20mb' }))
+    app.use(bodyParser.urlencoded({ limit: '20mb', extended: false }))
+
+    app.post(`${apiPrefix}/admin/tech-users`, createTechnicalUserController)
+
+    const { body } = await request(app)
+      .post(`${apiPrefix}/admin/tech-users`)
+      .send({
+        email: emailInvalid,
+      })
+      .set('Accept', 'application/json')
+      .expect(400)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', INVALID_EMAIL)
   })
 })
 
@@ -125,7 +195,6 @@ describe('Create user', () => {
 
   afterAll(async () => {
     await disconnect()
-    await app.close()
   })
 
   it('Should respond 201 create "répartiteur" by "délégué"', async () => {
@@ -310,7 +379,6 @@ describe('Get users', () => {
 
   afterAll(async () => {
     await disconnect()
-    app.close()
   })
 
   it('Should respond 200 retrieve users by admin', async () => {
@@ -399,7 +467,6 @@ describe('Update User by admin', () => {
 
   afterAll(async () => {
     await disconnect()
-    app.close()
   })
 
   it('Should respond 200 update user by admin', async () => {
@@ -500,7 +567,6 @@ describe('Update User by delegue', () => {
 
   afterAll(async () => {
     await disconnect()
-    app.close()
   })
 
   it('Should respond 200 update user by delegue', async () => {
@@ -615,7 +681,6 @@ describe(' Delete user by delegue', () => {
 
   afterAll(async () => {
     await disconnect()
-    app.close()
   })
 
   it('Should respond 200 delete user by delegue', async () => {
@@ -729,7 +794,6 @@ describe(' Delete user by admin', () => {
 
   afterAll(async () => {
     await disconnect()
-    await app.close()
   })
 
   it('Should respond 200 delete user by admin', async () => {

@@ -12,3 +12,5 @@ DC_APP_BUILD_DEV := docker-compose.dev.yml
 
 DB_CONTAINER_NAME := candilib_db.${APP_VERSION}
 API_CONTAINER_NAME := candilib_api.${APP_VERSION}
+
+TENANT_NAME := $(shell hostname)

@@ -74,6 +74,7 @@ services:
     ports:
       - "${API_PORT:-8000}:8000"
       - "9229:9229"
+      - "9000:9000"
 #    env_file:
 #      - ${cnf:-.env}
     environment:
@@ -85,11 +86,12 @@ services:
       CANDIDAT_EXPIREDIN: 72h
       PUBLIC_URL: http://localhost:8080/candilib
       ADMIN_URL: http://localhost:8080/candilib
-
       LINE_DELAY: ${LINE_DELAY:-0}
       DELAY_TO_BOOK: 7
       TIMEOUT_TO_RETRY: 45
       DAYS_FORBID_CANCEL: 7
+      TENANT_NAME: ${TENANT_NAME}
+      JOB_LIST: 'HELLO'
     networks:
       - candilib-network
     entrypoint: npm run dev_pm2

@@ -6,6 +6,8 @@ import {
   now,
   getFrenchDateTimeFromIso,
   getFrenchDateFromLuxon,
+  getFrenchDateTimeFromLuxon,
+  getNow,
 } from '../support/dateUtils'
 
 import {
@@ -17,6 +19,7 @@ import {
   candidatCancelPlace,
   candidatModifyPlace,
   checkEmailValue,
+  checkPhoneNumberValue,
 } from './util/util-cypress'
 
 describe('Search Candidate', () => {
@@ -64,13 +67,16 @@ describe('Search Candidate', () => {
       cy.contains(Cypress.env('candidat')).click()
     })
 
-    const adminGoToInfoCandidat = (nomNaissance, editEmail, emailToVerify = Cypress.env('emailCandidat')) => {
+    const adminGoToInfoCandidat = (nomNaissance, emailToVerify = Cypress.env('emailCandidat')) => {
       cy.get('.t-search-candidat [type=text]').type(nomNaissance)
       cy.contains(nomNaissance).click()
       cy.get('h3').should('contain', 'nformations')
 
       checkEmailValue(emailToVerify)
+    }
 
+    const adminGoToInfoCandidatAndUpdateEmail = (nomNaissance, editEmail, emailToVerify = Cypress.env('emailCandidat')) => {
+      adminGoToInfoCandidat(nomNaissance, emailToVerify)
       cy.get('.t-update-candidat-email-edit').click()
       cy.get('.t-update-candidat-email-write').within(updatetowrite => {
         cy.get('input').should('have.value', emailToVerify)
@@ -79,16 +85,16 @@ describe('Search Candidate', () => {
     }
 
     it('Update candidat email with incorrect format', () => {
-      adminGoToInfoCandidat(Cypress.env('candidat'), () => {
+      adminGoToInfoCandidatAndUpdateEmail(Cypress.env('candidat'), () => {
         cy.get('input').type('{selectall}{backspace}')
       })
       cy.get('.t-btn-ok').contains('Valider').parent().should('be.disabled')
-      cy.get('button').contains('Retour').click()
+      cy.get('button').contains('Annuler').click()
       checkEmailValue()
     })
 
     it('Update candidat email with same email', () => {
-      adminGoToInfoCandidat(Cypress.env('candidat'))
+      adminGoToInfoCandidatAndUpdateEmail(Cypress.env('candidat'))
 
       cy.get('.t-btn-ok').contains('Valider').parent().should('not.be.disabled')
       cy.get('.t-btn-ok').contains('Valider').click()
@@ -100,7 +106,7 @@ describe('Search Candidate', () => {
     it('Update candidat email', () => {
       let emailToVerify
       for (const newEmail of ['test@test.com', Cypress.env('emailCandidat')]) {
-        adminGoToInfoCandidat(Cypress.env('candidat'), () => {
+        adminGoToInfoCandidatAndUpdateEmail(Cypress.env('candidat'), () => {
           cy.get('input').type('{selectall}{backspace}')
           cy.get('input').type(newEmail)
         }, emailToVerify)
@@ -112,6 +118,82 @@ describe('Search Candidate', () => {
         checkEmailValue(newEmail)
         emailToVerify = newEmail
       }
+    })
+
+    const adminGoToInfoCandidatPhoneNumber = (nomNaissance, phoneNumberToVerify = Cypress.env('phoneNumberCandidat')) => {
+      cy.get('.t-search-candidat [type=text]').type(nomNaissance)
+      cy.contains(nomNaissance).click()
+      cy.get('h3').should('contain', 'nformations')
+
+      checkPhoneNumberValue(phoneNumberToVerify)
+    }
+
+    const adminGoToInfoCandidatAndUpdatePhoneNumber = (nomNaissance, editPhoneNumber, phoneNumberToVerify = Cypress.env('phoneNumberCandidat')) => {
+      adminGoToInfoCandidatPhoneNumber(nomNaissance, phoneNumberToVerify)
+      cy.get('.t-update-candidat-phone-number-edit').click()
+      cy.get('.t-update-candidat-phone-number-write').within(updatetowrite => {
+        cy.get('input').should('have.value', phoneNumberToVerify)
+        editPhoneNumber && editPhoneNumber()
+      })
+    }
+
+    it('Update candidat PhoneNumber with incorrect format', () => {
+      adminGoToInfoCandidatAndUpdatePhoneNumber(Cypress.env('candidat'), () => {
+        cy.get('input').type('{selectall}{backspace}')
+        cy.get('input').type('060708')
+      })
+      cy.get('.t-btn-ok').contains('Valider').parent().should('be.disabled')
+      cy.get('button').contains('Annuler').click()
+      checkPhoneNumberValue(Cypress.env('phoneNumberCandidat'))
+    })
+
+    it('Update candidat PhoneNumber with same PhoneNumber', () => {
+      adminGoToInfoCandidatAndUpdatePhoneNumber(Cypress.env('candidat'), () => {
+        cy.get('input').type('{selectall}{backspace}')
+        cy.get('input').type(Cypress.env('phoneNumberCandidat'))
+      })
+
+      cy.get('.t-btn-ok').contains('Valider').parent().should('not.be.disabled')
+      cy.get('.t-btn-ok').contains('Valider').click()
+
+      cy.get('.v-snack--active')
+        .should('contain', 'Pas de modification pour le candidat')
+    })
+
+    it('Update candidat PhoneNumber', () => {
+      let PhoneNumberToVerify
+      for (const newPhoneNumber of ['0742424242', Cypress.env('phoneNumberCandidat')]) {
+        adminGoToInfoCandidatAndUpdatePhoneNumber(Cypress.env('candidat'), () => {
+          cy.get('input').type('{selectall}{backspace}')
+          cy.get('input').type(newPhoneNumber)
+        }, PhoneNumberToVerify || '0716253443')
+        cy.get('.t-btn-ok').contains('Valider').parent().should('not.be.disabled')
+        cy.get('.t-btn-ok').contains('Valider').click()
+
+        cy.get('.v-snack--active')
+          .should('contain', 'a été changé.')
+        checkPhoneNumberValue(newPhoneNumber)
+        PhoneNumberToVerify = newPhoneNumber
+      }
+    })
+
+    const adminGoToInfoCandidatAndUpdateHomeDepartement = (nomNaissance, homeDepartement) => {
+      cy.get('.t-search-candidat [type=text]').type(nomNaissance)
+      cy.contains(nomNaissance).click()
+      cy.get('h3').should('contain', 'nformations')
+
+      cy.get('.t-update-candidat-home-departement-edit').click()
+      cy.get('.t-select-departements-to-edit .v-input__slot').click()
+      cy.get('.v-list-item')
+        .contains(homeDepartement)
+        .click()
+
+      cy.get('.t-btn-ok').contains('Valider').click()
+      cy.get('.t-home-departement-value').should('contain', homeDepartement)
+    }
+    it('Update candidat homeDepartement', () => {
+      adminGoToInfoCandidatAndUpdateHomeDepartement(Cypress.env('candidat'), '93')
+      adminGoToInfoCandidatAndUpdateHomeDepartement(Cypress.env('candidat'), '75')
     })
   } else {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
@@ -209,6 +291,69 @@ describe('Candidate Profile', () => {
         .contains('Date de la dernière connexion')
         .parent()
         .should('contain', DateStr)
+    })
+
+    it('Should not have penalty for candidat', () => {
+      adminLaunchSearchCandidat(candidatsByDepartments)
+      const lineCanBookFrom = cy.get('.t-result-candidat').contains('Réservation possible dès le').parent()
+      lineCanBookFrom.should('contain', 'Non renseignée')
+      lineCanBookFrom.should('contain', 'delete')
+      cy.get('.t-update-candidat-can-book-from-edit').should('be.disabled')
+    })
+
+    it('Should have penalty for candidat without penalty history', () => {
+      const canBookFrom = now.plus({ days: 2 })
+      const canBookFromTextDate = getFrenchDateFromLuxon(canBookFrom)
+
+      cy.updateCandidat({ email: candidatsByDepartments.email }, { canBookFrom: canBookFrom.toUTC() })
+      adminLaunchSearchCandidat(candidatsByDepartments)
+
+      const lineCanBookFrom = cy.get('.t-result-candidat').contains('Réservation possible dès le').parent()
+      lineCanBookFrom.should('contain', canBookFromTextDate)
+      lineCanBookFrom.should('contain', 'delete')
+      cy.get('.t-update-candidat-can-book-from-edit').should('not.be.disabled')
+      cy.get('.t-update-candidat-can-book-from-edit').contains('delete').click()
+
+      cy.get('.t-update-candidat-can-book-text').should('contain', 'Voulez-vous vraiment supprimer la pénalité de ce candidat?')
+      cy.get('.t-btn-ok').contains('Valider').click()
+      const nowTextDateTime = getFrenchDateTimeFromLuxon(getNow())
+
+      cy.get('.t-history-penalties').within((tableauHistory) => {
+        cy.get('tbody > tr > :nth-child(2)').should('contain', canBookFromTextDate)
+        cy.get('tbody > tr > :nth-child(3)').should('contain', 'Raison inconnue')
+        cy.get('tbody > tr > :nth-child(4)').should('contain', Cypress.env('adminLogin'))
+        cy.get('tbody > tr > :nth-child(5)').should('contain', nowTextDateTime.substring(0, nowTextDateTime.length - 1))
+      })
+    })
+
+    it('Should have penalty for candidat many penalty penalty in history ', () => {
+      const canBookFrom = now.plus({ days: 2 })
+      const canBookFromTextDate = getFrenchDateFromLuxon(canBookFrom)
+
+      cy.updateCandidat({ email: candidatsByDepartments.email }, {
+        canBookFrom: canBookFrom.toUTC(),
+        canBookFroms: [
+          { canBookFrom: canBookFrom.minus({ days: 45 }).toUTC(), reason: 'EXAM_ABSENT', createdAt: now.minus({ days: 60 }).toUTC() },
+          { canBookFrom: canBookFrom.toUTC(), reason: 'CANCEL', createdAt: now.minus({ days: 10 }).toUTC() }],
+      })
+      adminLaunchSearchCandidat(candidatsByDepartments)
+
+      const lineCanBookFrom = cy.get('.t-result-candidat').contains('Réservation possible dès le').parent()
+      lineCanBookFrom.should('contain', canBookFromTextDate)
+      lineCanBookFrom.should('contain', 'delete')
+      cy.get('.t-update-candidat-can-book-from-edit').should('not.be.disabled')
+      cy.get('.t-update-candidat-can-book-from-edit').contains('delete').click()
+
+      cy.get('.t-update-candidat-can-book-text').should('contain', 'Voulez-vous vraiment supprimer la pénalité de ce candidat?')
+      cy.get('.t-btn-ok').contains('Valider').click()
+      const nowTextDateTime = getFrenchDateTimeFromLuxon(getNow())
+
+      cy.get('.t-history-penalties').within((tableauHistory) => {
+        cy.get('tbody > tr > :nth-child(2)').should('contain', canBookFromTextDate)
+        cy.get('tbody > tr > :nth-child(3)').should('contain', 'Annulation')
+        cy.get('tbody > tr > :nth-child(4)').should('contain', Cypress.env('adminLogin'))
+        cy.get('tbody > tr > :nth-child(5)').should('contain', nowTextDateTime.substring(0, nowTextDateTime.length - 1))
+      })
     })
   } else {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })

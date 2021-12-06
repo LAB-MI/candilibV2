@@ -22,10 +22,11 @@ const getHeadersForJson = () => {
 
   const headers = {
     'Content-Type': 'application/json',
-    Authorization,
     'X-USER-ID': xuserid,
     ...getHeadersClientId(),
   }
+
+  if (Authorization) { headers.Authorization = Authorization }
 
   return headers
 }
@@ -209,11 +210,11 @@ const apiCandidat = {
     return json
   },
 
-  async sendContactUs (candidat, subject, message, hadSignUp) {
+  async sendContactUs (candidat, subject, message, hadSignUp, isModifyHomeDepartement) {
     const json = await apiClient.post(`${apiPaths.candidat.contactUs}`, {
       headers: getHeadersForJson(),
       body: JSON.stringify({
-        candidat, subject, message, hadSignUp,
+        candidat, subject, message, hadSignUp, isModifyHomeDepartement,
       }),
     })
     return json

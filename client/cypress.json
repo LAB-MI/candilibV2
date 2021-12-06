@@ -27,6 +27,7 @@
     "interactions.js",
     "placesAfter12h.js",
     "candidatEtg.js",
-    "candidatByGroup.js"
+    "candidatByGroup.js",
+    "technicalAdmin.js"
   ]
 }

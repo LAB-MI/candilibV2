@@ -14,6 +14,7 @@ import {
   resetCreatedInspecteurs,
   setInitCreatedPlaces,
 } from '../../models/__tests__'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 
 jest.mock('../business/send-mail')
 jest.mock('../middlewares/verify-token')
@@ -36,6 +37,9 @@ describe('Test get dates from places available', () => {
     require('../middlewares/verify-token').__setIdCandidat(
       createdCandidats[0]._id,
     )
+
+    await placesAndGeoDepartementsAndCentresCache.setGeoDepartemensAndCentres()
+    await placesAndGeoDepartementsAndCentresCache.setPlaces()
   })
 
   afterAll(async () => {
@@ -43,7 +47,6 @@ describe('Test get dates from places available', () => {
     await removeCentres()
     await deleteCandidats()
     await disconnect()
-    // await app.close()
   })
 
   it('should have two geoDepartements, 93 and 75', async () => {

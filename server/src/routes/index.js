@@ -7,6 +7,7 @@ import express from 'express'
 import auth from './auth'
 import admin from './admin'
 import candidat, { preSignup, emailValidation } from './candidat'
+import tech from './tech'
 import { verifyToken, getToken } from './middlewares'
 import { resetMyPassword } from './auth/admin-controllers'
 import { getCandidatConfig } from './candidat/candidat-config-controller'
@@ -14,6 +15,7 @@ import publicRoutes from './public'
 import { contactUs } from './candidat/contact-us-controller'
 import { verifyUser } from './middlewares/verify-user'
 import { verifyCandidatStatus } from './middlewares/verify-candidat-status'
+import { triggerCache } from './middlewares/triggerCache'
 
 const router = express.Router()
 
@@ -314,9 +316,10 @@ router.use('/public', publicRoutes)
 
 router.patch('/admin/me', resetMyPassword)
 router.post('/candidat/contact-us', getToken, contactUs)
-router.use('/candidat', verifyToken, verifyCandidatStatus, verifyUser, candidat)
+router.use('/candidat', triggerCache, verifyToken, verifyCandidatStatus, verifyUser, candidat)
 router.use('/auth', auth)
 router.use('/admin', verifyToken, admin)
 
+router.use('/tech/automate', verifyToken, tech)
 /** Routeur principal */
 export default router

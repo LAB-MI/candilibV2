@@ -26,3 +26,10 @@ export const getFrenchDateFromLuxon = dateLuxon =>
     day: '2-digit',
     year: 'numeric',
   })
+
+export const getFrenchDateTimeFromLuxon = dateTime =>
+  dateTime &&
+  dateTime
+    .setLocale('fr')
+    .setZone(FRENCH_TIME_ZONE)
+    .toFormat('DDDD à T')

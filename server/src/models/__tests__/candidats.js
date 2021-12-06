@@ -3,6 +3,8 @@ import { createCandidat } from '../candidat'
 import candidatModel from '../candidat/candidat.model'
 
 import faker from 'faker/locale/fr'
+import { ECHEC } from '../candidat/objetDernierNonReussite.values'
+import { BY_AURIGE } from '../../routes/admin/business'
 
 export const generateCandidats = (params) => {
   const users = []
@@ -164,6 +166,29 @@ export const candidats2 = [
     status: '4',
   },
 ]
+
+export const candidatWithPenaltyAndNoHistory = {
+  ...candidats2[0],
+  codeNeph: `${candidats2[0].codeNeph + 1}`,
+  nomNaissance: 'PenaltyNoHistory',
+  email: 'PenaltyNoHistory.test@test.com',
+  canBookFrom: getFrenchLuxon().plus({ days: 45 }),
+}
+
+export const candidatWithPenaltyAndHistory = {
+  ...candidatWithPenaltyAndNoHistory,
+  codeNeph: `${candidatWithPenaltyAndNoHistory.codeNeph + 1}`,
+  nomNaissance: 'PenaltyHistory',
+  email: 'PenaltyHistory.test@test.com',
+  canBookFroms: [
+    {
+      canBookFrom: getFrenchLuxon().plus({ days: 45 }),
+      reason: ECHEC,
+      byUser: BY_AURIGE,
+      createAt: getFrenchLuxon(),
+    },
+  ],
+}
 
 export const createCandidats = async () => {
   return Promise.all(candidats.map(candidat => createCandidat(candidat)))

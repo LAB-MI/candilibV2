@@ -23,6 +23,14 @@ const createRepartiteur = (repartiteurEmail, mustSuccess = true, notWithDepartem
   cy.checkAndCloseSnackBar(mustSuccess ? 'L\'utilisateur a bien été créé' : 'Impossible de créer l\'utilisateur : l\'email existe déjà')
 }
 
+const createTechAdmin = (techAdminEmail, mustSuccess = true) => {
+  cy.get('.t-input-tech-email input')
+    .type(techAdminEmail, { force: true })
+  cy.get('.t-create-tech-btn')
+    .click()
+  // cy.checkAndCloseSnackBar(mustSuccess ? 'L\'utilisateur a bien été créé' : 'Impossible de créer l\'utilisateur : l\'email existe déjà')
+}
+
 describe('Create and see users', () => {
   const repartiteurEmail1 = 'repartiteur1@example.com'
   const repartiteurEmail2 = 'repartiteur2@example.com'
@@ -30,6 +38,7 @@ describe('Create and see users', () => {
   const repartiteurEmail4 = 'repartiteur4@example.com'
   const repartiteurEmail5 = 'repartiteur5@example.com'
   const repartiteurEmail6 = 'repartiteur6@example.com'
+  const technicalAdminEmail = 'tech1@example.com'
 
   before(() => {
     cy.deleteAllMails()
@@ -228,5 +237,14 @@ describe('Create and see users', () => {
 
     cy.get('.t-list-users')
       .should('contain', repartiteurEmail6)
+  })
+
+  it('Should create a new technical user', () => {
+    cy.visit(Cypress.env('frontAdmin') + 'admin/agents')
+
+    createTechAdmin(technicalAdminEmail)
+
+    cy.get('.t-list-technical-users')
+      .should('contain', technicalAdminEmail)
   })
 })

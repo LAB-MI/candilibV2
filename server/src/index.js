@@ -16,7 +16,7 @@ import { connect, disconnect } from './mongo-connection'
 import { techLogger } from './util'
 import { initDB, initStatus, updateDB } from './initDB/initDB'
 import pm2 from 'pm2'
-import { accumulatorLog } from './routes/middlewares'
+import { accumulatorLog, placesAndGeoDepartementsAndCentresCache } from './routes/middlewares'
 
 const PORT = process.env.PORT || 8000
 
@@ -42,16 +42,35 @@ async function startServer () {
       try {
         await initStatus()
       } catch (error) {
-        techLogger.error(error)
+        techLogger.error({
+          section: 'start-server-init-status',
+          description: error.message,
+          error,
+        })
       }
     }
+
+    try {
+      await placesAndGeoDepartementsAndCentresCache.initCache()
+    } catch (error) {
+      techLogger.error({
+        section: 'start-server-set-geo-departemens-and-centres',
+        description: error.message,
+        error,
+      })
+    }
+
     http.createServer(app).listen(PORT, '0.0.0.0')
     techLogger.info(`Server running at http://0.0.0.0:${PORT}/`)
 
     if (!pid || pid === process.pid) { await updateDB() }
   } catch (error) {
     techLogger.error('Server could not connect to DB, exiting')
-    techLogger.error(error)
+    techLogger.error({
+      section: 'start-server-connect-exiting-db',
+      description: error.message,
+      error,
+    })
     process.exit(error instanceof Error ? 1 : 0)
   }
 }
@@ -84,7 +103,11 @@ export function handleExit () {
  */
 export async function exitGracefuly (error) {
   if (error instanceof Error) {
-    techLogger.error(error)
+    techLogger.error({
+      section: 'exit-gracefuly',
+      description: error.message,
+      error,
+    })
   }
 
   clearInterval(accumulatorLog.intervalId)
