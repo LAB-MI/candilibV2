@@ -1,6 +1,6 @@
 import request from 'supertest'
 import { connect, disconnect } from '../../mongo-connection'
-
+import '../../__tests__/jest.utils'
 import { createUser, deleteUser, findUserByEmail } from '../../models/user'
 import config from '../../config'
 
@@ -10,6 +10,7 @@ import {
   INVALID_DEPARTEMENT_NUMBER,
 } from './message.constants'
 import { findDepartementById } from '../../models/departement'
+import { getFrenchLuxon } from '../../util'
 
 const emailAdmin = 'Admin@example.com'
 const password = 'S3cr3757uff!'
@@ -190,5 +191,23 @@ describe('Département controllers', () => {
 
     expect(body).toHaveProperty('success', false)
     expect(body).toHaveProperty('message', BAD_PARAMS)
+  })
+
+  it('Should update disable departement', async () => {
+    const disableAt = getFrenchLuxon().plus({ days: 10 })
+
+    const { body } = await request(app)
+      .patch(`${apiPrefix}/admin/departements/${departementList[2]._id}`)
+      .send({
+        newEmail,
+        disableAt: disableAt.toISO(),
+      })
+      .expect(200)
+
+    console.log(body.result)
+    expect(body.result).toHaveProperty('_id', departementList[2]._id)
+    expect(body.result).toHaveProperty('email', newEmail)
+    expect(body.result).toHaveProperty('isAddedRecently', false)
+    expect(body.result).toHaveDateProperty('disableAt', disableAt)
   })
 })

@@ -1,4 +1,4 @@
-import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../util'
+import { getFrenchLuxon, getFrenchLuxonFromISO, getFrenchLuxonFromJSDate } from '../util'
 
 expect.extend({
   toHaveDateProperty (received, expectedProperty, expectedValue) {
@@ -9,7 +9,13 @@ expect.extend({
         pass: false,
       }
     }
-    const dateReceivedLuxon = getFrenchLuxonFromJSDate(dateReceived)
+    let dateReceivedLuxon
+    if (dateReceived instanceof Date) {
+      dateReceivedLuxon = getFrenchLuxonFromJSDate(dateReceived)
+    } else {
+      dateReceivedLuxon = getFrenchLuxonFromISO(dateReceived)
+    }
+
     if (dateReceivedLuxon.hasSame(expectedValue, 'seconds')) {
       return {
         pass: true,
