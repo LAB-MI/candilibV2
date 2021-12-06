@@ -20,7 +20,7 @@ expect.extend({
       pass: false,
     }
   },
-  toHavePropertyAtNow (received, expectedProperty, expectedValue) {
+  toHavePropertyAtNow (received, expectedProperty) {
     const dateReceived = received[expectedProperty]
     if (!dateReceived) {
       return {
@@ -36,7 +36,20 @@ expect.extend({
       }
     }
     return {
-      message: () => `expected ${expectedProperty} error,\n Expected date: ${expectedValue.toISO()}\n Received date: ${dateReceivedLuxon.toISO()}`,
+      message: () => `expected ${expectedProperty} error,\n Expected date: ${now.toISO()}\n Received date: ${dateReceivedLuxon.toISO()}`,
+      pass: false,
+    }
+  },
+  toBeNow (dateReceived) {
+    const dateReceivedLuxon = getFrenchLuxonFromJSDate(dateReceived)
+    const now = getFrenchLuxon()
+    if (now.minus({ second: 1 }) < dateReceivedLuxon && now.plus({ second: 1 }) > dateReceivedLuxon) {
+      return {
+        pass: true,
+      }
+    }
+    return {
+      message: () => `expected ${dateReceived} error,\n Expected date: ${now.toISO()}\n Received date: ${dateReceivedLuxon.toISO()}`,
       pass: false,
     }
   },

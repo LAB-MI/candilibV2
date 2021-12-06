@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import { FETCH_STATUS_AUTOMATE_REQUEST, START_AUTOMATE_REQUEST, STOP_AUTOMATE_REQUEST } from '@/store'
+import { FETCH_JOBS_AUTOMATE_REQUEST, FETCH_STATUS_AUTOMATE_REQUEST, START_AUTOMATE_REQUEST, STOP_AUTOMATE_REQUEST } from '@/store'
 
 export default {
   name: 'AutomateManager',
@@ -40,7 +40,11 @@ export default {
       statusAutomate: '',
     }
   },
-
+  watch: {
+    async statusAutomate (newValue, oldValue) {
+      await this.$store.dispatch(FETCH_JOBS_AUTOMATE_REQUEST)
+    },
+  },
   async mounted () {
     await this.getStatusAutomate()
   },
@@ -56,6 +60,7 @@ export default {
     async getStatusAutomate () {
       const response = await this.$store.dispatch(FETCH_STATUS_AUTOMATE_REQUEST)
       this.statusAutomate = response?.status
+      await this.$store.dispatch(FETCH_JOBS_AUTOMATE_REQUEST)
     },
   },
 }

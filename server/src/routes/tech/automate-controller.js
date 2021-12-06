@@ -1,5 +1,5 @@
 import { appLogger } from '../../util'
-import { callStartAutomate, callStatusAutomate, callStopAutomate } from './automate-business'
+import { callJobsAutomate, callStartAutomate, callStatusAutomate, callStopAutomate } from './automate-business'
 
 export const getAutomateStatus = async (req, res) => {
   const loggerInfo = {
@@ -9,9 +9,9 @@ export const getAutomateStatus = async (req, res) => {
   }
   try {
     const { data, status: responseStatus } = await callStatusAutomate(loggerInfo)
-    const { success, status } = data
+    const { success, status, message } = data
     appLogger.info({ ...loggerInfo, description: status })
-    res.status(responseStatus).json({ success, status })
+    res.status(responseStatus).json({ success, status, message })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.messsage, error })
     return res.status(500).json({ success: false, message: error.message })
@@ -27,7 +27,7 @@ export const startAutomate = async (req, res) => {
   try {
     const { data, status } = await callStartAutomate(loggerInfo, true)
     const { success, message } = data
-    appLogger.info({ ...loggerInfo, message })
+    appLogger.info({ ...loggerInfo, description: message })
     return res.status(status).json({ success, message })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.messsage, error })
@@ -44,8 +44,25 @@ export const stopAutomate = async (req, res) => {
   try {
     const { data, status } = await callStopAutomate(loggerInfo)
     const { success, message } = data
-    appLogger.info({ ...loggerInfo, message })
+    appLogger.info({ ...loggerInfo, description: message })
     return res.status(status).json({ success, message })
+  } catch (error) {
+    appLogger.error({ ...loggerInfo, description: error.messsage, error })
+    return res.status(500).json({ success: false, message: error.message })
+  }
+}
+
+export const getJobsAutomate = async (req, res) => {
+  const loggerInfo = {
+    section: 'GET-JOBS-AUTOMATE',
+    request_id: req.request_id,
+    admin: req.userId,
+  }
+  try {
+    const { data, status } = await callJobsAutomate(loggerInfo)
+    const { success, jobs, message } = data
+    appLogger.info({ ...loggerInfo, description: `${jobs?.length} jobs trouvés` })
+    return res.status(status).json({ success, jobs, message })
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.messsage, error })
     return res.status(500).json({ success: false, message: error.message })

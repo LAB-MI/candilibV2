@@ -1,12 +1,18 @@
-
-http://localhost:9000/api/automate/version
-
-###
-http://localhost:9000/api/automate/scheduler/status
+@remote-server = http://localhost:9000/api/automate 
 
 ###
-POST http://localhost:9000/api/automate/scheduler/stop
+{{remote-server}}/version
 
 ###
-POST http://localhost:9000/api/automate/scheduler/start
+{{remote-server}}/scheduler/status
 
+###
+POST {{remote-server}}/scheduler/stop
+
+###
+POST {{remote-server}}/scheduler/start
+
+###
+{{remote-server}}/jobs
+###
+{{remote-server}}/jobs/HELLO
