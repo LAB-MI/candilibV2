@@ -55,7 +55,8 @@ const getGeoDepartementsOnlyIdsOrWithInfos = async (loggerContent, userId) => {
   })
 
   return geoDepartementsId.map(geoDepartement => ({
-    geoDepartement,
+    geoDepartement: geoDepartement._id,
+    disableAt: geoDepartement.disableAt,
     centres: null,
     count: null,
   }))
