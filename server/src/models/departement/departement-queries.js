@@ -128,5 +128,10 @@ export const updateDepartementById = async ({ _id, email, isAddedRecently, disab
   return updatedDepartement
 }
 
+export const updateDisableAtDepartementById = async (_id, disableAt) => {
+  const result = await Departement.updateOne({ _id }, { disableAt })
+  return result
+}
+
 export const findDepartements = async () => Departement.find({}, '_id')
 export const findAllDepartementsId = async () => Departement.find({}, '_id')
