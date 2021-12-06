@@ -4,7 +4,7 @@
  * @module
  */
 
-import { findCandidatById, updateCandidatEmail, updateCandidatHomeDepartement, deleteCandidatCanBookFrom, updateCandidatPhoneNumber } from '../../models/candidat'
+import { findCandidatById, updateCandidatEmail, updateCandidatHomeDepartement, deleteCandidatCanBookFrom, updateCandidatPhoneNumber, findAllCandidatsLean } from '../../models/candidat'
 import { sendMailUpdateCandidatEmail } from '../business'
 import { appLogger } from '../../util'
 import { findUserById } from '../../models/user'
@@ -115,4 +115,12 @@ export const deletePenalty = async (candidatId, adminId) => {
 
   const candidatUpdated = await deleteCandidatCanBookFrom(candidat, admin)
   return candidatUpdated
+}
+
+export const extractCandidatsByDepartement = async (departement) => {
+  const filters = {
+    departement,
+  }
+  const candidats = await findAllCandidatsLean(filters)
+  return candidats
 }

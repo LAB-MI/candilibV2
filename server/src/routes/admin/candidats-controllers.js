@@ -22,7 +22,7 @@ import {
   email as emailRegex,
   phone as phoneRegex,
 } from '../../util'
-import { modifyCandidatEmail, modifyCandidatHomeDepartement, deletePenalty, modifyCandidatPhoneNumber } from './candidats-business'
+import { modifyCandidatEmail, modifyCandidatHomeDepartement, deletePenalty, modifyCandidatPhoneNumber, extractCandidatsByDepartement } from './candidats-business'
 import { getDepartements } from './departement-business'
 
 /**
@@ -420,6 +420,31 @@ export const updateCandidats = async (req, res) => {
   } catch (error) {
     appLogger.error({ ...loggerInfo, description: error.message, error })
     res.status(error.status || 500).send({ success: false, message: error.message })
+  }
+}
+
+export const exportCandidatsByDepartement = async (req, res) => {
+  const { departement } = req.params
+  const { departements, userId } = req
+
+  const loggerContent = {
+    request_id: req.request_id,
+    section: 'admin-export-candidats-by-departement',
+    admin: userId,
+    selectedDepartement: departement,
+  }
+  console.log('TEEESTTTT!!!', { departement, departements, userId })
+  try {
+    if (departement && departements.includes(departement)) {
+      appLogger.info({ ...loggerContent })
+      const fileToConvert = await extractCandidatsByDepartement(departement)
+      console.log(fileToConvert)
+      return res.status(200).send({ success: true, fileToConvert })
+    }
+  } catch (error) {
+    console.log(error)
+    appLogger.error({ ...loggerContent, description: error.message, error })
+    res.status(500).send({ success: false, message: error.message })
   }
 }
 
