@@ -2,6 +2,8 @@ import { appLogger } from '../../util'
 import { getDepartementsFromCentres } from '../../models/centre'
 import { UNKNOWN_ERROR_GET_DEPARTEMENT } from '../admin/message.constants'
 
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
+
 export async function getActiveDepartementsId (req, res) {
   const loggerContent = {
     description: 'Getting active departements',
@@ -9,7 +11,10 @@ export async function getActiveDepartementsId (req, res) {
     section: 'common get departements',
   }
   try {
-    const departementsId = await getDepartementsFromCentres()
+    const dictoDeps = placesAndGeoDepartementsAndCentresCache.getDepartementInfos()
+    const departementsIdTmp = await getDepartementsFromCentres()
+    const departementsId = departementsIdTmp.filter(dep => !dictoDeps[dep]?.disableAt)
+
     appLogger.info({
       ...loggerContent,
       departementsId,
