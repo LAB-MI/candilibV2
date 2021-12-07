@@ -204,7 +204,6 @@ describe('Département controllers', () => {
       })
       .expect(200)
 
-    console.log(body.result)
     expect(body.result).toHaveProperty('_id', departementList[2]._id)
     expect(body.result).toHaveProperty('email', newEmail)
     expect(body.result).toHaveProperty('isAddedRecently', false)
