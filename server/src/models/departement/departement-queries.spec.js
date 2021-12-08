@@ -1,10 +1,11 @@
 import { connect, disconnect } from '../../mongo-connection'
-import { createDepartement, findDepartementById } from '.'
+import { createDepartement, findDepartementById, updateDepartementById } from '.'
 import {
   deleteDepartementById,
   findDepartementByEmail,
   isDepartementExisting,
 } from './departement-queries'
+import { getFrenchLuxon } from '../../util'
 
 const validEmail = 'candidat@example.com'
 const _id = '95'
@@ -29,6 +30,19 @@ describe('Saving Departement', () => {
     expect(departement.isNew).toBe(false)
 
     await deleteDepartementById(departement._id)
+  })
+
+  it('Add disable', async () => {
+    // Given
+    const leanDepartement = { _id, email: validEmail }
+    await createDepartement(leanDepartement)
+
+    leanDepartement.disableAt = getFrenchLuxon().plus({ days: 2 }).toJSDate()
+
+    const departementUpdated = await updateDepartementById(leanDepartement)
+
+    expect(departementUpdated).toHaveProperty('disableAt')
+    await deleteDepartementById(departementUpdated._id)
   })
 })
 
