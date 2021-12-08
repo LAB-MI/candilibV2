@@ -54,5 +54,13 @@
     "lat": "48.837378",
     "label": "Centre d'examen du permis de conduire de Noisy le Grand",
     "lon": "2.579699"
+  },
+  {
+    "departement": "94",
+    "nom": "CRETEIL",
+    "adresse": "5 rue du shinsekai 94000 Créteil",
+    "lat": "48.837378",
+    "label": "Centre d'examen accessible avec un logpose.",
+    "lon": "2.579699"
   }
 ]
