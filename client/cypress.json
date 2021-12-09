@@ -28,6 +28,7 @@
     "placesAfter12h.js",
     "candidatEtg.js",
     "candidatByGroup.js",
-    "technicalAdmin.js"
+    "technicalAdmin.js",
+    "candidatInDisableDepartement.js"
   ]
 }
