@@ -8,7 +8,7 @@
     {
         "email": "admin@example.com",
         "password": "Admin*78",
-        "departements": ["75", "93", "94"],
+        "departements": ["75", "93"],
         "status": "admin"
     },
     {
