@@ -12,6 +12,7 @@
     <form-contact
       v-else
       :default-candidat="candidat"
+      :available-deps="availableDeps"
       readonly
     />
   </div>
@@ -24,16 +25,25 @@ export default {
     FormContact,
   },
   computed: {
+    availableDepartements () {
+      const state = this.$store.state
+      return state.departements && state.departements.list
+    },
     isFetchingProfile () {
       return this.$store.state.candidat.isFetchingProfile
     },
-
     candidat () {
       const me = this.$store.state.candidat.me
       return me && {
         ...me,
         departement: me.homeDepartement,
       }
+    },
+    availableDeps () {
+      if (this.availableDepartements.includes(this.candidat.departement)) {
+        return this.availableDepartements
+      }
+      return [...this.availableDepartements, this.candidat.departement]
     },
   },
 }

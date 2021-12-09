@@ -11,7 +11,7 @@
         :dark="dark"
         is-contact
         :readonly="readonly"
-        :available-departements="availableDepartements"
+        :available-departements="availableDeps || availableDepartements"
         :is-modify-home-departement="isModifyHomeDepartement"
       >
         <template
@@ -123,6 +123,10 @@ export default {
     withHadSingup: {
       type: Boolean,
       default: false,
+    },
+    availableDeps: {
+      type: Array,
+      default: undefined,
     },
   },
   data: function () {
