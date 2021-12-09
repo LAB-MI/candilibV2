@@ -63,3 +63,8 @@ export const getFrenchFormattedDateFromObject = (obj, shape) =>
 
 export const getFrenchDateShort = (datetime) => datetime && datetime.toLocaleString(DateTime.DATE_SHORT)
 export const getFrenchDateTimeShort = (datetime) => datetime && datetime.toLocaleString(DateTime.DATETIME_SHORT)
+
+export const getFrenchDateTimeTechFromIso = isoDate =>
+  isoDate &&
+  getFrenchLuxonFromIso(isoDate)
+    .toFormat('F.SSS')

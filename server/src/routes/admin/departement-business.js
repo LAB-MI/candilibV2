@@ -164,7 +164,10 @@ export const getDepartements = departementId => {
  *
  * @param {object} departement - Contient toute les information du département
  */
-export const updateDepartements = async departement => {
+export const updateDepartements = async (departement, disableAt) => {
+  if (disableAt !== undefined) {
+    departement.disableAt = disableAt
+  }
   const result = await updateDepartementById(departement)
   return result
 }

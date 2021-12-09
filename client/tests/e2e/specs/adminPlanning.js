@@ -51,7 +51,9 @@ describe('Planning tests', () => {
         cy.get('tr').eq(1).within(($inTr) => {
           cy.get('button').eq(1).click()
           cy.get('[type=text]')
-            .type(Cypress.env('inspecteur2') + '{enter}')
+            .type(Cypress.env('inspecteur2'))
+          cy.root().parents().contains(Cypress.env('inspecteur2') + ' |')
+            .click()
           cy.get('.t-inspecteur-confirm-box')
             .find('.t-inspecteur-detail')
             .should('contain', Cypress.env('inspecteurPrenom') + ', ' + Cypress.env('inspecteur2'))

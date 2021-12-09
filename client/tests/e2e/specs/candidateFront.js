@@ -157,6 +157,8 @@ describe('Connected candidate front', () => {
     it('Should book a place at 7th days', () => {
       cy.connectByMagicLink(magicLink)
 
+      cy.get('.t-info-disable-departement').should('not.exist')
+
       cy.checkAndSelectDepartement()
       cy.wait(100)
       cy.get('h2').should('contain', 'Choix du centre')

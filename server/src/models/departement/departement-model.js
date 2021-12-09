@@ -20,6 +20,10 @@ const DepartementSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    disableAt: {
+      type: Date,
+      default: undefined,
+    },
   },
   { timestamps: true },
 )

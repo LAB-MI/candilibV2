@@ -4,7 +4,7 @@ POST {{remote-server}}/auth/admin/token
 content-type: application/json
 
 {
-    "email":"admin@example.com",
+    "email":"tech@example.com",
     "password":"Admin*78"
 }
 
@@ -33,3 +33,10 @@ Authorization: {{accessToken}}
 {{remote-server}}/version
 #Authorization: {{accessToken}}
 
+
+###
+@accessToken = Bearer {{login.response.body.token}}
+
+#
+{{remote-server}}/tech/automate/jobs
+Authorization: {{accessToken}}
