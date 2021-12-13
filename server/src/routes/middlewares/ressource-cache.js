@@ -164,7 +164,8 @@ export const placesAndGeoDepartementsAndCentresCache = {
   async setDepartementInfos () {
     const departements = await findAllDepartements()
     this.bufferDepartementInfos = departements.reduce((dptsTmp, dpt) => {
-      dptsTmp[dpt._id] = { disableAt: dpt?.disableAt }
+      const disableAt = dpt?.disableAt && getFrenchLuxonFromJSDate(dpt?.disableAt).minus({ days: 1 }).endOf('day').toJSDate()
+      dptsTmp[dpt._id] = { disableAt }
       return dptsTmp
     }, {})
   },
