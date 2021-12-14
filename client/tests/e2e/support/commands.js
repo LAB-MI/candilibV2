@@ -5,7 +5,7 @@
 // ***********************************************
 
 import 'cypress-file-upload'
-import { parseMagicLinkFromMailBody } from '../specs/util/util-cypress'
+import { parseMagicLinkFromMailBody, parseValidationLinkFromMailBody } from '../specs/util/util-cypress'
 import './mailHogCommands'
 import { getFrenchDateFromLuxon, getFrenchLuxonFromIso } from './dateUtils'
 
@@ -223,7 +223,7 @@ Cypress.Commands.add('candidatePreSignUp', (candidat) => {
   cy.getLastMail().getSubject()
     .should('contain', 'Validation d\'adresse courriel pour Candilib')
   cy.getLastMail().its('Content.Body').then((mailBody) => {
-    const validationLink = parseMagicLinkFromMailBody(mailBody)
+    const validationLink = parseValidationLinkFromMailBody(mailBody)
     cy.visit(validationLink)
   })
   cy.get('h3')

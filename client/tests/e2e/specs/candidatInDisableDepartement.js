@@ -17,6 +17,6 @@ describe('Connected candidat in a departement with disableAt', () => {
   it('Should display message in selection departement view for disableAt departement', () => {
     cy.connectByMagicLink(magicLink)
 
-    cy.get('.t-info-disable-departement').contains('En raison du déploiement de RdvPermis dans votre département (94), l’application Candilib ne proposera plus de places d’examens après la date du 30/01/2022')
+    cy.get('.t-info-disable-departement').contains('En raison du déploiement de RdvPermis dans votre département (94), l’application Candilib ne proposera plus de places d’examens après la date du 29/01/2022')
   })
 })
