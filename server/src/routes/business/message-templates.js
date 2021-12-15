@@ -10,6 +10,7 @@ import {
   VALIDATION_EMAIL,
   NB_FAILURES_KO,
   EPREUVE_PRATIQUE_OK_BEFORE_SING_UP,
+  getFrenchLuxonFromJSDate,
 } from '../../util'
 import { SUBJECT_MAIL_INFO } from '../business/send-message-constants'
 import config from '../../config'
@@ -25,6 +26,9 @@ import {
   getEpreuvePratiqueOKBeforeTemplate,
 } from './mail'
 import { getContactUs } from './send-mail-util'
+import { getMessageTransistionRdvPermis } from './mail/transition-rdvpermis'
+import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
+import { DateTime } from 'luxon'
 
 const getMailData = async (candidat, flag, urlMagicLink) => {
   const urlFAQ = getUrlFAQ()
@@ -36,6 +40,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     email,
     emailValidationHash,
     canAccessAt,
+    homeDepartement,
   } = candidat
 
   const contactezNous = getContactUs()
@@ -119,6 +124,13 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
       return message
     }
     case AURIGE_OK: {
+      let warningMessage = ''
+      const deps = placesAndGeoDepartementsAndCentresCache.getDepartementInfos()
+      if (deps[homeDepartement]?.disableAt) {
+        // warningMessage = getMessageTransistionRdvPermis('69, 38 et 26', '31/01/2022')
+        const date = getFrenchLuxonFromJSDate(deps[homeDepartement].disableAt).toLocaleString(DateTime.DATE_SHORT)
+        warningMessage = getMessageTransistionRdvPermis(homeDepartement, date)
+      }
       const INSCRIPTION_OK_MSG = getInscriptionOkTemplate(
         nomMaj,
         urlMagicLink ? urlMagicLink.url : undefined,
@@ -126,6 +138,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
         email,
         urlMagicLink ? urlMagicLink.urlContactUs : contactezNous,
         canAccessAt,
+        warningMessage,
       )
       message.content = getHtmlBody(INSCRIPTION_OK_MSG)
       message.subject = 'Validation de votre inscription à Candilib'

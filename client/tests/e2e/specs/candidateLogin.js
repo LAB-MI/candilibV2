@@ -12,7 +12,7 @@
 - Candidate deconnection
 */
 
-import { parseMagicLinkFromMailBody } from './util/util-cypress'
+import { parseMagicLinkFromMailBody, parseValidationLinkFromMailBody } from './util/util-cypress'
 
 describe('Candidate login', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
@@ -103,7 +103,7 @@ describe('Candidate login', () => {
       cy.getLastMail().getSubject()
         .should('contain', 'Validation d\'adresse courriel pour Candilib')
       cy.getLastMail().its('Content.Body').then((mailBody) => {
-        const validationLink = parseMagicLinkFromMailBody(mailBody)
+        const validationLink = parseValidationLinkFromMailBody(mailBody)
         cy.visit(validationLink)
       })
       cy.wait(100)

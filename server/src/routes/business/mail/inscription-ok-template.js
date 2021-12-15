@@ -14,11 +14,13 @@ export const getInscriptionOkTemplate = (
   email,
   contactezNous,
   accessDate,
+  warningMessage,
 ) => {
   const header = `
     <p>Madame, Monsieur ${nomMaj},</p>
     <br>
     <p>Bienvenue sur Candilib !</p>
+    ${warningMessage}
     <br>
     <p>
       Vous êtes inscrit sur
