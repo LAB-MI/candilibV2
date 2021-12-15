@@ -318,7 +318,7 @@ export default {
 
     selectStatsKpiPlacesExamsByDpt (departement) {
       return this.statsPlacesExams
-        ? this.statsPlacesExams.statsKpi.find(el => el.departement === departement)
+        ? this.statsPlacesExams?.statsKpi?.find(el => el.departement === departement)
         : {}
     },
 
