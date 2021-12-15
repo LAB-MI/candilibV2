@@ -35,7 +35,7 @@ COPY src src/
 COPY babel.config.js package.json package-lock.json ./
 # Install package utils for development
 RUN (set -x && [ -z "$MIRROR_DEBIAN" ] || sed -i.orig -e "s|http://deb.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9|g ; s|http://security.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9-security|g" /etc/apt/sources.list) ; \
-      buildPkgs="libcurl3 libssl1.1" ; \
+      buildPkgs="libcurl4 libssl1.1" ; \
       apt-get update && apt-get install -y --no-install-recommends $buildPkgs
 # Install app dependencies
 RUN npm --no-git-tag-version version ${APP_VERSION} ; npm ci
@@ -51,7 +51,7 @@ FROM development as build
 ENV NPM_CONFIG_LOGLEVEL warn
 # Transpile the code with babel
 RUN npm run build
-RUN buildPkgs="libcurl3 libssl1.1" ; \
+RUN buildPkgs="libcurl4 libssl1.1" ; \
       apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false $buildPkgs ; \
       rm -rf /var/lib/apt/lists/* # remove the cached files
 
