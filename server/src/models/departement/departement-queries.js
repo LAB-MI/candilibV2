@@ -120,7 +120,7 @@ export const updateDepartementById = async ({ _id, email, isAddedRecently, disab
   }
   departement.email = email
   departement.isAddedRecently = !!isAddedRecently
-  if (disableAt) {
+  if (disableAt !== undefined) {
     departement.disableAt = disableAt
   }
 
