@@ -50,6 +50,7 @@
           >
             {{ isAddedRecently }}
           </v-checkbox>
+
           <v-spacer />
           <v-btn
             class="t-btn-cancel-update"
@@ -76,7 +77,6 @@
 </template>
 
 <script>
-import { UPDATE_DEPARTEMENT_REQUEST } from '@/store'
 import { email as emailRegex } from '@/util'
 
 export default {
@@ -103,6 +103,7 @@ export default {
       ],
       emailPlaceholder: '',
       isAddedRecently: this.deprt.isAddedRecently,
+      disableAt: undefined,
     }
   },
   watch: {
@@ -120,8 +121,15 @@ export default {
         deprtId,
         newEmail,
         isAddedRecently,
+        disableAt,
       } = this
-      await this.$store.dispatch(UPDATE_DEPARTEMENT_REQUEST, { departementId: deprtId, newEmail, isAddedRecently })
+
+      this.$emit('update-departement', {
+        departementId: deprtId,
+        newEmail,
+        isAddedRecently,
+        disableAt,
+      })
       this.isUpdating = false
     },
     setEmailPlaceholder () {
