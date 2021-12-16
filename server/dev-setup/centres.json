@@ -62,5 +62,21 @@
     "lat": "48.837378",
     "label": "Centre d'examen accessible avec un logpose.",
     "lon": "2.579699"
+  },
+  {
+    "departement": "01",
+    "nom": "OYONNAX",
+    "adresse": "125, cours de Verdun 01100 OYONNAX",
+    "lat": "48.837378",
+    "label": "Centre Omnisports Léon Emin",
+    "lon": "2.579699"
+  },
+  {
+    "departement": "25",
+    "nom": "MAICHE",
+    "adresse": "Place de l'église 25120 MAICHE",
+    "lat": "47",
+    "label": "Centre de MAICHE",
+    "lon": "6"
   }
 ]

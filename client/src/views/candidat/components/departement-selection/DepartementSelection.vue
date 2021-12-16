@@ -57,7 +57,7 @@ export default {
   computed: {
     ...mapState({
       departements (state) {
-        return state.departements.geoDepartementsInfos
+        return state.departements.geoDepartementsInfosActive
           .filter(item => this.filtre ? (item.geoDepartement === this.filtre) : item)
       },
       isFrom75 (state) { return (state.candidat.me?.homeDepartement || state.candidat.me?.departement) === '75' },
