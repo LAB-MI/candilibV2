@@ -31,6 +31,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo "Europe/Paris" > /etc
 FROM base as development
 ARG MIRROR_DEBIAN
 ARG APP_VERSION
+ARG MONGOMS_VERSION
 COPY src src/
 COPY babel.config.js package.json package-lock.json ./
 # Install package utils for development
@@ -48,6 +49,7 @@ CMD ["npm","run",  "dev"]
 # Step 3: "build" target #
 ##########################
 FROM development as build
+ARG MONGOMS_VERSION
 ENV NPM_CONFIG_LOGLEVEL warn
 # Transpile the code with babel
 RUN npm run build
