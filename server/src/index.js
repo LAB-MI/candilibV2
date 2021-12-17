@@ -15,17 +15,24 @@ import app from './app'
 import { connect, disconnect } from './mongo-connection'
 import { techLogger } from './util'
 import { initDB, initStatus, updateDB } from './initDB/initDB'
-import pm2 from 'pm2'
+import { addListener, asyncGetPIDPM2, initBus, sendMessageIPC } from './util/pm2-util'
 import { accumulatorLog, placesAndGeoDepartementsAndCentresCache } from './routes/middlewares'
 
 const PORT = process.env.PORT || 8000
 
-const asyncGetPIDPM2 = () => new Promise((resolve, reject) => {
-  pm2.describe('API', (err, processDescription) => {
-    if (err) reject(err)
-    resolve(processDescription[0]?.pid)
-  })
-})
+async function initCache (data) {
+  try {
+    await placesAndGeoDepartementsAndCentresCache.initCache()
+  } catch (error) {
+    techLogger.error({
+      section: 'start-server-set-geo-departemens-and-centres',
+      pid: process.pid,
+      description: error.message,
+      error,
+      data,
+    })
+  }
+}
 
 /**
  * Démarre le serveur (API),
@@ -36,11 +43,14 @@ const asyncGetPIDPM2 = () => new Promise((resolve, reject) => {
 async function startServer () {
   try {
     const pid = await asyncGetPIDPM2()
+    addListener('INIT_CACHE', initCache)
+    initBus()
     await connect()
     if (!pid || pid === process.pid) {
       await initDB()
       try {
         await initStatus()
+        sendMessageIPC('INIT_CACHE')
       } catch (error) {
         techLogger.error({
           section: 'start-server-init-status',
@@ -50,15 +60,7 @@ async function startServer () {
       }
     }
 
-    try {
-      await placesAndGeoDepartementsAndCentresCache.initCache()
-    } catch (error) {
-      techLogger.error({
-        section: 'start-server-set-geo-departemens-and-centres',
-        description: error.message,
-        error,
-      })
-    }
+    await initCache()
 
     http.createServer(app).listen(PORT, '0.0.0.0')
     techLogger.info(`Server running at http://0.0.0.0:${PORT}/`)
