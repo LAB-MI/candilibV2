@@ -37,6 +37,9 @@ import {
 } from './candidat.queries'
 import { ABSENT, ECHEC } from './objetDernierNonReussite.values'
 
+jest.mock('../../util/logger')
+require('../../util/logger').setWithConsole(false)
+
 const validEmail = 'candidat@example.com'
 const anotherValidEmail = 'candidat@example.fr'
 const invalidEmail = 'candidatexample.com'
