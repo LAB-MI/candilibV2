@@ -42,11 +42,16 @@ export const connect = async () => {
   } catch (err) {
     --reconnectTries
     if (reconnectTries > 0) {
-      techLogger.warn(
-        `Could not connect to Mongo at ${mongoUri}, ${reconnectTries} tries left`,
+      techLogger.warn({
+        section: 'mongo-connection',
+        action: 'connection',
+        description: `Could not connect to Mongo at ${mongoUri}, ${reconnectTries} tries left.`,
+        err,
+      },
       )
       return delay(reconnectInterval).then(connect)
     } else {
+      console.log(err)
       const errorMessage =
         'Could not connect to Mongo, make sure it is started and listening on the appropriate port'
       throw new Error(errorMessage)
