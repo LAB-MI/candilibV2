@@ -17,12 +17,49 @@ import { techLogger } from './util'
 import { initDB, initStatus, updateDB } from './initDB/initDB'
 import { addListener, asyncGetPIDPM2, initBus, sendMessageIPC } from './util/pm2-util'
 import { accumulatorLog, placesAndGeoDepartementsAndCentresCache } from './routes/middlewares'
+import { wait1s } from './automate/__test__/utils'
 
 const PORT = process.env.PORT || 8000
 
+function sleep (milliseconds) {
+  var start = new Date().getTime()
+  for (var i = 0; i < 1e7; i++) {
+    if ((new Date().getTime() - start) > milliseconds) {
+      break
+    }
+  }
+}
+let countTestIPC = 0
+function testIPC (data) {
+  const countTestIpc = countTestIPC++
+  console.log({ test: 'TEST IPC: BEGINNG', pid: process.pid, countTestIpc })
+  sleep(5000)
+  console.log({ test: 'TEST IPC: END', pid: process.pid, countTestIpc })
+}
+
+const callTest = async () => {
+  sendMessageIPC('INIT_CACHE')
+  sendMessageIPC('INIT_CACHE')
+  sendMessageIPC('INIT_CACHE')
+  sendMessageIPC('INIT_CACHE')
+  sendMessageIPC('TEST_IPC')
+  sendMessageIPC('TEST_IPC')
+  sendMessageIPC('TEST_IPC')
+  sendMessageIPC('TEST_IPC')
+
+  console.log('wait 10s')
+  await wait1s(10)
+  sendMessageIPC('TEST_IPC')
+  sendMessageIPC('INIT_CACHE')
+}
+
+let countINITCACHE = 0
 async function initCache (data) {
+  const countInitCache = countINITCACHE++
   try {
+    console.log('TEST', { data, pid: process.pid, countInitCache })
     await placesAndGeoDepartementsAndCentresCache.initCache()
+    await wait1s(5)
   } catch (error) {
     techLogger.error({
       section: 'start-server-set-geo-departemens-and-centres',
@@ -32,6 +69,7 @@ async function initCache (data) {
       data,
     })
   }
+  console.log('TEST-END', { data, pid: process.pid, countInitCache })
 }
 
 /**
@@ -45,12 +83,14 @@ async function startServer () {
     const pid = await asyncGetPIDPM2()
     addListener('INIT_CACHE', initCache)
     initBus()
+    addListener('TEST_IPC', testIPC)
     await connect()
     if (!pid || pid === process.pid) {
       await initDB()
       try {
         await initStatus()
         sendMessageIPC('INIT_CACHE')
+        await callTest()
       } catch (error) {
         techLogger.error({
           section: 'start-server-init-status',
@@ -64,6 +104,8 @@ async function startServer () {
 
     http.createServer(app).listen(PORT, '0.0.0.0')
     techLogger.info(`Server running at http://0.0.0.0:${PORT}/`)
+
+    await callTest()
 
     if (!pid || pid === process.pid) { await updateDB() }
   } catch (error) {
