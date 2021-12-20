@@ -49,16 +49,58 @@ export const sendMessageIPC = (type, message) => {
   })
 }
 
+function HandlerFn (handler) {
+  let isRunning = false
+  let count = 0
+  return function (data) {
+    console.log('HandlerFn', process.pid, isRunning, handler, ++count)
+    try {
+      if (isRunning) {
+        return
+      }
+      isRunning = true
+
+      data.numero = count
+      const asyncfn = new Promise((resolve) => resolve(handler(data)))
+      asyncfn.finally(() => {
+        isRunning = false
+      })
+      // if (typeof (handler) === 'function') {
+      //   // if (!(handler.constructor instanceof Function)) {
+      //   const result = handler(data)
+      //   if (result instanceof Promise) {
+      //     result.finally(() => {
+      //       isRunning = false
+      //     })
+      //   } else {
+      //     isRunning = false
+      //   }
+      //   return result
+      // } else {
+      //   const result = handler(data)
+      //   isRunning = false
+      //   return result
+      // }
+      // }
+    } catch (error) {
+      techLogger.error({ section: 'IPC', action: 'function handler', description: error.message, error })
+      isRunning = false
+    }
+  }
+}
+
 export const addListener = (type, handler = consoleLogHandler) => {
   if (!eventTypes) {
     eventTypes = []
   }
   eventTypes.push(type)
-  getEventEmitter().on(type, handler)
+  getEventEmitter().on(type, HandlerFn(handler))
 }
 
 const consoleLogHandler = function (data) {
   techLogger.warn({
+    section: 'IPC',
+    action: 'LOG',
     listener: 'consoleLogHandler',
     data,
   })
