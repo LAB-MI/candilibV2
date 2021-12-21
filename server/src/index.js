@@ -23,6 +23,12 @@ const PORT = process.env.PORT || 8000
 async function initCache (data) {
   try {
     await placesAndGeoDepartementsAndCentresCache.initCache()
+    techLogger.info({
+      section: 'start-server-set-geo-departemens-and-centres',
+      pid: process.pid,
+      description: 'init-cache lancé',
+      data,
+    })
   } catch (error) {
     techLogger.error({
       section: 'start-server-set-geo-departemens-and-centres',

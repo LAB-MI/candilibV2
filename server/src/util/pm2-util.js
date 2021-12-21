@@ -2,6 +2,9 @@ import pm2 from 'pm2'
 import { EventEmitter } from 'events'
 import { techLogger } from '.'
 
+const loggerInfo = {
+  section: 'PM2 Module',
+}
 export const asyncGetPIDPM2 = () => new Promise((resolve, reject) => {
   pm2.describe('API', (err, processDescription) => {
     if (err) reject(err)
@@ -9,7 +12,7 @@ export const asyncGetPIDPM2 = () => new Promise((resolve, reject) => {
   })
 })
 
-const IPCMSG = 'candilib-api:msg'
+export const IPCMSG = 'process:msg'// 'candilib-api:msg'
 let eventEmitter
 let eventTypes
 
@@ -21,19 +24,30 @@ function getEventEmitter () {
 }
 
 const unsignedType = 'IPC:unsignedtype'
-export const initBus = () => {
+export const initBus = (done) => {
   addListener(unsignedType)
   pm2.launchBus(function (err, pm2Bus) {
     if (err) {
       techLogger.error({ section: 'INIT_BUS', pid: process.pid, err })
       return
     }
+    // console.log({ err, pm2Bus })
     pm2Bus.on(IPCMSG, function (packet) {
-      // console.log({ packet, pid, receiveAt: Date() })
+      // console.log({ packet, pid: process.pid, receiveAt: Date() })
       const { data } = packet
       const { type } = data
       getEventEmitter().emit(eventTypes.includes(type) ? type : unsignedType, data)
     })
+
+    techLogger.info({
+      ...loggerInfo,
+      action: 'INTTBUS',
+      description: 'pm2 bus lancé',
+      IPCMSG,
+      pid: process.pid,
+    })
+
+    done && done()
   })
 }
 
@@ -55,6 +69,7 @@ export const addListener = (type, handler = consoleLogHandler) => {
   }
   eventTypes.push(type)
   getEventEmitter().on(type, handler)
+  techLogger.info({ ...loggerInfo, action: 'ADD_LISTENER', pid: process.pid, description: `listener ajouté sur ${type}` })
 }
 
 const consoleLogHandler = function (data) {
