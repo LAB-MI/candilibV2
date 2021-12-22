@@ -49,7 +49,7 @@ import {
   FRENCH_LOCALE_INFO,
   AUTHORIZED_HOURS,
 } from '../../util'
-import { sendCancelBookingByAdmin, sendMailConvocation } from '../business'
+import { sendCancelBookingByAdmin, sendMailConvocation, sendMails } from '../business'
 import {
   sendMailForScheduleInspecteurFailed,
   sendScheduleInspecteur,
@@ -1027,8 +1027,9 @@ export const sendMailSchedulesInspecteurs = async (
 *
 * @return {RowStatusSendBordereaux[]}
 */
-export const sendMailSchedulesAllInspecteurs = async date => {
+export const sendMailSchedulesAllInspecteurs = async (date, loggerInfo = {}) => {
   const loggerContent = {
+    ...loggerInfo,
     func: 'sendMailSchedulesAllInspecteurs',
     date,
   }
@@ -1047,10 +1048,10 @@ export const sendMailSchedulesAllInspecteurs = async date => {
     if (places && places.length > 0) {
       nbPlaces = places.length
       try {
-        await sendScheduleInspecteur(email, places, inspecteur)
+        await sendScheduleInspecteur(email, places, inspecteur, undefined, true)
         appLogger.info({
           ...loggerContent,
-          inspecteur: _id,
+          inspecteurId: _id,
           nbPlaces: places.length,
           email,
           description: 'Bordereau envoyé',
@@ -1075,5 +1076,6 @@ export const sendMailSchedulesAllInspecteurs = async date => {
   //   results,
   // })
 
+  sendMails()
   return results
 }
