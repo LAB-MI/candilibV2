@@ -248,9 +248,7 @@ export const countCandidatsByStatus = async (status) =>
  */
 export const findAllCandidatsLean = async (filters = {}) => {
   const projectTemplate = {
-    nom: 1,
-    prenom: 1,
-    codeNeph: 1,
+    token: 0,
   }
   const candidats = await Candidat.find(filters, projectTemplate).lean()
   return candidats

@@ -11,6 +11,6 @@ content-type: application/json
 ###
 @accessToken = Bearer {{login.response.body.token}}
 #
-GET {{remote-server}}/admin/export-candidat-by-departement/93
+GET {{remote-server}}/admin/export-candidat-by-departement/75
 content-type: application/json
 Authorization: {{accessToken}}
