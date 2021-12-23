@@ -1,6 +1,7 @@
 import api from '@/api'
 
 import { SHOW_ERROR } from '@/store'
+import { generateExcelCandidatListFile } from '@/util'
 
 export const FETCH_CANDIDAT_REQUEST = 'FETCH_CANDIDAT_REQUEST'
 export const FETCH_CANDIDAT_FAILURE = 'FETCH_CANDIDAT_FAILURE'
@@ -14,6 +15,10 @@ export const FETCH_CANDIDATS_REQUEST = 'FETCH_CANDIDATS_REQUEST'
 export const FETCH_CANDIDATS_FAILURE = 'FETCH_CANDIDATS_FAILURE'
 export const FETCH_CANDIDATS_SUCCESS = 'FETCH_CANDIDATS_SUCCESS'
 
+export const FETCH_CANDIDATS_BY_DEPARTEMENT_REQUEST = 'FETCH_CANDIDATS_BY_DEPARTEMENT_REQUEST'
+export const FETCH_CANDIDATS_BY_DEPARTEMENT_FAILURE = 'FETCH_CANDIDATS_BY_DEPARTEMENT_FAILURE'
+export const FETCH_CANDIDATS_BY_DEPARTEMENT_SUCCESS = 'FETCH_CANDIDATS_BY_DEPARTEMENT_SUCCESS'
+
 export const RESET_CANDIDAT = 'RESET_CANDIDAT'
 
 export default {
@@ -24,6 +29,8 @@ export default {
     list: [],
     candidat: undefined,
     tooltipCandidat: undefined,
+    candidatsByDepartement: [],
+    isFetchingCandidatsByDepartement: false,
   },
 
   mutations: {
@@ -61,6 +68,17 @@ export default {
     },
     [FETCH_CANDIDATS_FAILURE] (state) {
       state.isFetchingList = false
+    },
+
+    [FETCH_CANDIDATS_BY_DEPARTEMENT_REQUEST] (state) {
+      state.isFetchingCandidatsByDepartement = true
+    },
+    [FETCH_CANDIDATS_BY_DEPARTEMENT_FAILURE] (state, list) {
+      state.isFetchingCandidatsByDepartement = false
+      state.candidatsByDepartement = list
+    },
+    [FETCH_CANDIDATS_BY_DEPARTEMENT_SUCCESS] (state) {
+      state.isFetchingCandidatsByDepartement = false
     },
 
     [RESET_CANDIDAT] (state) {
@@ -106,6 +124,22 @@ export default {
       } catch (error) {
         commit(FETCH_CANDIDATS_FAILURE)
         return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [FETCH_CANDIDATS_BY_DEPARTEMENT_REQUEST] ({ commit, dispatch }, { departement }) {
+      commit(FETCH_CANDIDATS_BY_DEPARTEMENT_REQUEST)
+      try {
+        const { success, fileToConvert } = await api.admin.getCandidatsByDepartement(departement)
+        console.log({ success, fileToConvert })
+        if (!success) {
+          throw new Error()
+        }
+        generateExcelCandidatListFile({ departement, candidats: fileToConvert })
+        commit(FETCH_CANDIDAT_SUCCESS, fileToConvert)
+      } catch (error) {
+        commit(FETCH_CANDIDAT_FAILURE)
+        return dispatch(SHOW_ERROR, 'Erreur lors de la récupération des candidats du département')
       }
     },
   },

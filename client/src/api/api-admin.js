@@ -264,6 +264,16 @@ const apiAdmin = {
     return json
   },
 
+  async getCandidatsByDepartement (departement) {
+    const json = await apiClient.get(
+        `${apiPaths.admin.exportCandidatByDepartement}/${departement}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+    )
+    return json
+  },
+
   async searchCandidats (search, departement, startingWith, endingWith) {
     let url = `${apiPaths.admin.candidats}?matching=${search || ''}&departement=${departement}`
     if (startingWith) {

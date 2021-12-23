@@ -82,7 +82,7 @@ export const generateExcelCandidatListFile = async ({ departement, candidats }) 
 
   const templateTmp = [
     { header: 'Prenom', key: 'prenom' },
-    { header: 'Nom', key: 'nom' },
+    { header: 'Nom', key: 'nomNaissance' },
     { header: 'Neph', key: 'codeNeph' },
   ]
 
@@ -102,7 +102,7 @@ export const generateExcelCandidatListFile = async ({ departement, candidats }) 
   }
 
   const data = await workbook.xlsx.writeBuffer()
-  // TODO: Update filename
+
   const filename = `${departement}_candidats.xlsx`
   var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
   const url = URL.createObjectURL(blob)
