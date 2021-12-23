@@ -57,6 +57,7 @@ import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
  * @param {string} endDate - Date maximale au format ISO pour laquelle il faut retourner les places
  *
  * @returns {string[]} Tableau de dates au format ISO
+ * @deprecated
  */
 export const getDatesByCentreId = async (
   _id,
@@ -103,6 +104,7 @@ export const getDatesByCentreId = async (
  * @param {string} endDate - Date maximale au format ISO pour laquelle il faut retourner les places
  *
  * @returns {string[]} Tableau de dates au format ISO
+ * @deprecated
  */
 export const getDatesByCentresNameAndGeoDepartement = async (
   nomCentre,
@@ -146,6 +148,21 @@ export const getDatesByCentresNameAndGeoDepartement = async (
   return [...new Set(dates)]
 }
 
+/**
+ * Renvoie tous les créneaux d'un centre
+ *
+ * @async
+ * @function
+ *
+ * @param {string} nomCentre -
+ * @param {string} geoDepartement -
+ * @param {string} candidatId -
+ * @param {string} beginDate -
+ * @param {string} endDate - Date maximale au format ISO pour laquelle il faut retourner les places
+ * @param {string} candidatStatus -
+ *
+ * @returns {string[]} Tableau de dates au format ISO
+ */
 export const getPlacesByDepartementAndCentre = async (
   nomCentre,
   geoDepartement,
@@ -192,6 +209,7 @@ export const getPlacesByDepartementAndCentre = async (
  * @param {string} endDate - Date au format ISO
  *
  * @returns {string[]} - Tableau de dates au format ISO
+ * @deprecated
  */
 export const getDatesByCentre = async (
   departement,

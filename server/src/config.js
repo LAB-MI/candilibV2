@@ -180,7 +180,7 @@ const config = {
   delayToBook:
     process.env.DELAY_TO_BOOK !== undefined
       ? Number(process.env.DELAY_TO_BOOK)
-      : 7,
+      : 3,
   timeoutToRetry: timeoutToRetryBy.default,
   daysForbidCancel:
     process.env.DAYS_FORBID_CANCEL !== undefined
