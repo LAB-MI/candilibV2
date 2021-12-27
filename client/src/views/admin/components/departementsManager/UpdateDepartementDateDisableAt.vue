@@ -9,6 +9,7 @@
     <template v-slot:activator="{ on, attrs }">
       <v-btn
         v-model="dateFormatted"
+        :class="`t-btn-disable-at-${departement._id}`"
         label="Date"
         hint="MM/DD/YYYY format"
         persistent-hint
@@ -38,6 +39,7 @@
       <v-spacer />
       <div class="flex flex-wrap">
         <v-btn
+          :class="`t-btn-disaplly-disable-at-${departement._id}`"
           text
           outlined
           color="warning"
@@ -47,6 +49,7 @@
         </v-btn>
 
         <v-btn
+          :class="`t-btn-unmodify-disable-at-${departement._id}`"
           text
           outlined
           color="error"
@@ -56,6 +59,7 @@
         </v-btn>
 
         <v-btn
+          :class="`t-btn-apply-disable-at-${departement._id}`"
           text
           outlined
           color="primary"
