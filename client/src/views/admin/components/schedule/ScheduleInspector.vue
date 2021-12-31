@@ -159,7 +159,7 @@
                   <tr>
                     <th
                       class="inspecteur-button"
-                      :class="{ active: deleteMode && activeInspecteurRow === inspecteurData._id }"
+                      :class="{ active: (deleteMode || permuteMode) && activeInspecteurRow === inspecteurData._id }"
                     >
                       <v-layout row>
                         <v-tooltip bottom>
@@ -174,6 +174,25 @@
                             </span>
                           </template>
                         </v-tooltip>
+
+                        <v-tooltip bottom>
+                          Permuter l'inspecteur
+                          <template v-slot:activator="{ on }">
+                            <v-btn
+                              icon
+                              v-on="on"
+                              @click="activePermuteMode(inspecteurData._id, inspecteurData)"
+                            >
+                              <v-icon
+                                size="20"
+                                color="#A9A9A9"
+                              >
+                                import_export
+                              </v-icon>
+                            </v-btn>
+                          </template>
+                        </v-tooltip>
+
                         <v-btn
                           icon
                           @click="activeDeleteMode(inspecteurData._id, inspecteurData)"
@@ -218,7 +237,7 @@
                         :class="{ active: activeInspecteurRow === inspecteurData._id }"
                       >
                         <schedule-inspector-details
-                          v-if="!deleteMode"
+                          v-if="!deleteMode && !permuteMode"
                           :place="activePlace"
                           :content="selectedPlaceInfo"
                           :close-dialog="closeDetails"
@@ -228,11 +247,37 @@
                           :centre-info="placesByCentre.centre"
                         />
                         <delete-schedule-inspector
-                          v-if="deleteMode"
+                          v-if="deleteMode && !permuteMode"
                           :place-info="inspecteurData"
                           :inspecteur-id="inspecteurData._id"
                           :close-details="closeDetails"
                           @reloadWeekMonitor="reloadWeekMonitor"
+                        />
+                      </div>
+                    </td>
+                  </tr>
+
+                  <tr>
+                    <td
+                      v-if="permuteMode && !deleteMode"
+                      class="inspecteur-button"
+                      :class="{ active: permuteMode && activeInspecteurRow === inspecteurData._id }"
+                    />
+
+                    <td colspan="20">
+                      <div
+                        class="place-details  u-flex  u-flex--center"
+                        :class="{ active: permuteMode && activeInspecteurRow === inspecteurData._id }"
+                      >
+                        <permute-inspector
+                          v-if="(permuteMode && !deleteMode) && activeInspecteurRow === inspecteurData._id"
+                          :inspecteur-id="inspecteurData._id"
+                          :centre-id="activeCentreId"
+                          :inspecteurs-data="inspecteursData"
+                          :is-editing="permuteMode"
+                          :active-departement="activeDepartement"
+                          :update-content="reloadWeekMonitor"
+                          :close-dialog="closeDetails"
                         />
                       </div>
                     </td>
@@ -263,6 +308,7 @@ import GenerateInspecteurBordereaux from './GenerateInspecteurBordereaux'
 import ScheduleInspectorButton from './ScheduleInspectorButton'
 import ScheduleInspectorDetails from './ScheduleInspectorDetails'
 import ModalAddScheduleInspecteur from './ModalAddScheduleInspecteur'
+import PermuteInspector from './PermuteInspector'
 
 import {
   creneauSetting,
@@ -290,6 +336,7 @@ export default {
     ScheduleInspectorButton,
     ScheduleInspectorDetails,
     ModalAddScheduleInspecteur,
+    PermuteInspector,
   },
 
   data () {
@@ -303,6 +350,7 @@ export default {
       date: this.$route.params.date || getFrenchLuxonCurrentDateTime().toISODate(),
       datePicker: false,
       deleteMode: false,
+      permuteMode: false,
       headers: undefined,
       inspecteursData: [],
       isAvailable: true,
@@ -551,6 +599,7 @@ export default {
 
     async setActiveInspecteurRow (inspecteurId, placeInfo) {
       this.deleteMode = false
+      this.permuteMode = false
       const hour = placeInfo && placeInfo.hour
       const place = placeInfo && placeInfo.place
       if (this.activeInspecteurRow === inspecteurId && hour === this.activeHour) {
@@ -580,7 +629,19 @@ export default {
         this.activeInspecteurRow = undefined
         return
       }
+      this.permuteMode = false
       this.deleteMode = true
+      this.activeInspecteurRow = inspecteurId
+    },
+
+    activePermuteMode (inspecteurId, placeInfo) {
+      this.activeHour = undefined
+      if (this.permuteMode && this.activeInspecteurRow === inspecteurId) {
+        this.activeInspecteurRow = undefined
+        return
+      }
+      this.deleteMode = false
+      this.permuteMode = true
       this.activeInspecteurRow = inspecteurId
     },
 
@@ -658,7 +719,7 @@ export default {
 }
 
 .name-ipcsr-wrap {
-  margin-left: 10%;
+  margin-left: 5%;
   margin-top: 7%;
   min-width: 60%;
 }
