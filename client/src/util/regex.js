@@ -16,3 +16,5 @@ export const strongEnoughPassword = Object.values(strongEnoughPasswordObject)
 export const departementRegex = /^(([\d]{2})|(2[abAB]))$/
 export const codePostalRegex = /([0-9AB]{2})[0-9]{3}/
 export const firstNameAndLastName = /;/
+
+export const checkForHexRegexp = /^(?=[a-f\d]{24}$)(\d+[a-f]|[a-f]+\d)/i
