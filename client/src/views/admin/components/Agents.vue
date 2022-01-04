@@ -3,7 +3,7 @@
     <candilib-users />
     <candilib-archived-users v-if="isCurrentUserCanUnarchivedOtherUsers" />
     <candilib-ipcsr />
-    <technical-users />
+    <technical-users v-if="isCanManageTechUsers" />
   </div>
 </template>
 
@@ -26,6 +26,7 @@ export default {
   computed: {
     ...mapState({
       isCurrentUserCanUnarchivedOtherUsers: state => state.admin.features.includes('unarchive-candidat'),
+      isCanManageTechUsers: state => state.admin.status === 'admin',
     }),
   },
 }
