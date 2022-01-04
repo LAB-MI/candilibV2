@@ -97,7 +97,6 @@ export default {
 
   computed: {
     formatedDate () {
-      console.log(this.departement.disableAt, getFrenchLuxonFromIso(this.departement.disableAt)?.toISODate())
       const shapedDate = this.formatDate(getFrenchLuxonFromIso(this.departement.disableAt)?.toISODate())
       return shapedDate || 'Indéfini'
     },
