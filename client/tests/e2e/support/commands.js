@@ -704,10 +704,12 @@ Cypress.Commands.add('selectDateGestionPlanning', (placeDate, centerName) => {
   cy.get('.fade-transition-enter-active > .v-date-picker-header > .v-date-picker-header__value > .accent--text > button')
     .click()
   cy.get('.v-date-picker-years').should('contain', `${years}`).contains(`${years}`).click()
-
+  cy.get('.v-date-picker-header').should('contain', `${years}`).should('be.visible')
   cy.get(`.fade-transition-enter-active > .v-date-picker-table > table > tbody > :nth-child(${lineNumber}) > :nth-child(${(month % 3) || 3}) > .v-btn`)
     .click()
-  cy.get('.fade-transition-enter-active > .v-date-picker-table > table > tbody').contains(`${day}`).click()
+  cy.get('.fade-transition-enter-active > .v-date-picker-table > table > tbody td')
+    .should('contain', `${day}`)
+    .contains(`${day}`).should('be.visible').click()
 
   cy.get('.t-center-tabs .v-tab').eq(1).click()
   cy.get('.t-center-tabs .v-tab').eq(0).should('contain', centerName).click()
