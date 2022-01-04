@@ -336,7 +336,7 @@ describe('Planning tests without candidate', () => {
       .should('not.contain', 'block')
       .within(($row) => {
         // Removes the morning
-        cy.get('tr').eq(1).within(($inTr) => {
+        cy.get('tr').eq(0).within(($inTr) => {
           cy.get('th').within(($inTh) => {
             cy.get('button').should('contain', 'delete').click().wait(500)
           })
