@@ -179,6 +179,7 @@
                           Permuter l'inspecteur
                           <template v-slot:activator="{ on }">
                             <v-btn
+                              :class="`t-permute-btn-${inspecteurData.nom}`"
                               icon
                               v-on="on"
                               @click="activePermuteMode(inspecteurData._id, inspecteurData)"

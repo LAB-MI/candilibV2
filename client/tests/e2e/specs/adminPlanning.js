@@ -164,6 +164,78 @@ describe('Planning tests', () => {
     cy.get('.v-snack--active')
       .should('contain', 'La ou les places ont bien été créée(s).')
   })
+
+  it('Assigns a candidates, and permute inspecteur', () => {
+    cy.adminLogin()
+
+    // book 3 places for the candidate
+    cy.addCandidatToPlace(undefined, 'CANDIDAT_FRONT')
+    cy.wait(500)
+    cy.addCandidatToPlace(undefined, 'CANDIDAT_STATS_KPI')
+    cy.wait(500)
+    cy.addCandidatToPlace(undefined, 'CANDIDAT_CONTACT_US')
+    cy.wait(800)
+
+    cy.get(`.t-permute-btn-${Cypress.env('inspecteur')}`).click()
+
+    cy.get('[slot="title"] > .v-input').click()
+    cy.get('.v-list-item__title').contains(Cypress.env('inspecteur2')).click()
+    cy.get('.t-btn-ok').click()
+
+    cy.wait(200)
+
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(Cypress.env('inspecteur'))
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button').eq(0)
+          .contains('block').should('be.visible')
+        cy.get('.place-button').eq(1)
+          .contains('block').should('be.visible')
+        cy.get('.place-button').eq(2)
+          .contains('block').should('be.visible')
+      })
+
+    cy.get(`.t-permute-btn-${Cypress.env('inspecteur2')}`).click()
+
+    cy.checkAndCloseSnackBar('Aucun inspecteur disponible, Il vous faut un inspecteur avec la totalité de ses créneaux disponibles.')
+
+    cy.get(`.t-permute-btn-${Cypress.env('inspecteur2')}`).click()
+
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(Cypress.env('inspecteur'))
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button').eq(0)
+          .contains('block')
+          .click()
+        cy.contains('Rendre le créneau disponible')
+          .click()
+
+        cy.wait(200)
+
+        cy.get('.place-button').eq(1)
+          .contains('block')
+          .click()
+        cy.contains('Rendre le créneau disponible')
+          .click()
+
+        cy.wait(200)
+
+        cy.get('.place-button').eq(2)
+          .contains('block')
+          .click()
+        cy.contains('Rendre le créneau disponible')
+          .click()
+        cy.wait(200)
+      })
+
+    cy.checkAndCloseSnackBar('La ou les places ont bien été créée(s).')
+    cy.checkAndCloseSnackBar('La ou les places ont bien été créée(s).')
+
+    cy.get(`.t-permute-btn-${Cypress.env('inspecteur2')}`).click()
+    cy.get('[slot="title"] > .v-input').click()
+    cy.get('.v-list-item__title').contains(Cypress.env('inspecteur')).click()
+    cy.get('.t-btn-ok').click()
+  })
 })
 
 describe('Planning tests without candidate', () => {
