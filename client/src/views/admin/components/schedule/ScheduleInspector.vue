@@ -195,6 +195,7 @@
                         </v-tooltip>
 
                         <v-btn
+                          :class="`t-delete-btn-${inspecteurData.nom}`"
                           icon
                           @click="activeDeleteMode(inspecteurData._id, inspecteurData)"
                         >
