@@ -1,5 +1,6 @@
 import config from '../../config'
 import { findAllActiveCentres } from '../../models/centre'
+import { findAllDepartements } from '../../models/departement'
 import { findAllVisiblePlaces } from '../../models/place'
 
 import { getFrenchLuxon, getFrenchLuxonFromJSDate, techLogger } from '../../util'
@@ -139,6 +140,7 @@ export const placesAndGeoDepartementsAndCentresCache = {
   timerIntervalGeoDepartementsAndCentresSettingId: null,
   bufferForPlaces: {},
   bufferForGeoDepartementsAndCentres: {},
+  bufferDepartementInfos: {},
   isActive: false,
 
   enableCache () {
@@ -155,15 +157,35 @@ export const placesAndGeoDepartementsAndCentresCache = {
     this.bufferForPlaces = await getPlacesAndCentresInfo()
   },
 
+  getDepartementInfos () {
+    return this.bufferDepartementInfos
+  },
+
+  async setDepartementInfos () {
+    const departements = await findAllDepartements()
+    this.bufferDepartementInfos = departements.reduce((dptsTmp, dpt) => {
+      const disableAt = dpt?.disableAt && getFrenchLuxonFromJSDate(dpt?.disableAt).minus({ days: 1 }).endOf('day').toJSDate()
+      dptsTmp[dpt._id] = { disableAt }
+      return dptsTmp
+    }, {})
+  },
+
   getGeoDepartemensAndCentres () {
     return this.bufferForGeoDepartementsAndCentres
   },
+
   async setGeoDepartemensAndCentres () {
     this.bufferForGeoDepartementsAndCentres = await getGeoDepartementsAndCentresInfo()
   },
 
   getOnlyGeoDepartements () {
-    return Object.keys(this.bufferForGeoDepartementsAndCentres)
+    const departementInfos = this.getDepartementInfos()
+    return Object.keys(this.bufferForGeoDepartementsAndCentres).map(departement => {
+      return {
+        _id: departement,
+        disableAt: departementInfos[departement]?.disableAt,
+      }
+    })
   },
 
   getOnlyCentreListWithPlaceCount ({
@@ -205,6 +227,7 @@ export const placesAndGeoDepartementsAndCentresCache = {
   },
 
   async initCache () {
+    await this.setDepartementInfos()
     await this.setGeoDepartemensAndCentres()
     await this.setPlaces()
   },

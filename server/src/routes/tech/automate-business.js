@@ -5,7 +5,7 @@ import { appLogger } from '../../util'
 
 export const callDoAutomate = async (loggerInfo, axiosMetod, action, autoStart) => {
   try {
-    const url = `${automateApiConfig.urlBase + automateApiConfig.apiPrefix}/scheduler/${action}`
+    const url = `${automateApiConfig.urlBase + automateApiConfig.apiPrefix}/${action}`
     const axiosContent = {
       method: axiosMetod,
       url,
@@ -18,15 +18,17 @@ export const callDoAutomate = async (loggerInfo, axiosMetod, action, autoStart) 
   } catch (error) {
     const { response } = error
     if (response) {
-      appLogger.error({ ...loggerInfo, action: 'RESPONSE FROM AUTOMATE', ...response.data })
+      appLogger.error({ ...loggerInfo, action: 'RESPONSE FROM AUTOMATE', dataFromAutmate: response.data })
       return { data: response.data, status: response.status }
     }
     throw error
   }
 }
 
-export const callStopAutomate = (loggerInfo) => callDoAutomate(loggerInfo, 'post', 'stop', false)
+export const callStopAutomate = (loggerInfo) => callDoAutomate(loggerInfo, 'post', 'scheduler/stop', false)
 
-export const callStartAutomate = (loggerInfo, autoStart) => callDoAutomate(loggerInfo, 'post', 'start', autoStart)
+export const callStartAutomate = (loggerInfo, autoStart) => callDoAutomate(loggerInfo, 'post', 'scheduler/start', autoStart)
 
-export const callStatusAutomate = (loggerInfo) => callDoAutomate(loggerInfo, 'get', 'status')
+export const callStatusAutomate = (loggerInfo) => callDoAutomate(loggerInfo, 'get', 'scheduler/status')
+
+export const callJobsAutomate = async (loggerInfo) => callDoAutomate(loggerInfo, 'get', 'jobs')

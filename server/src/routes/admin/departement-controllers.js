@@ -308,7 +308,7 @@ export const deleteDepartementController = async (req, res) => {
  */
 export const updateDepartementsController = async (req, res) => {
   const departementId = req.params.id
-  const { newEmail, isAddedRecently } = req.body
+  const { newEmail, isAddedRecently, disableAt } = req.body
 
   const loggerInfo = {
     request_id: req.request_id,
@@ -365,7 +365,7 @@ export const updateDepartementsController = async (req, res) => {
       _id: departementId,
       email: newEmail,
       isAddedRecently,
-    })
+    }, disableAt)
     const message = `Le département ${departementId} a bien été mis à jour`
     appLogger.info({
       ...loggerInfo,

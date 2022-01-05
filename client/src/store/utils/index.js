@@ -25,16 +25,16 @@ export const formatResult = (
     const timeslotLuxon = getFrenchLuxonFromIso(timeslot)
 
     // Gestion du délai de réservation (Un candidat ne peut pas réserver avant x jours)
-    if (dayToForbidCancel) {
-      const goToNext =
-        timeslotLuxon.startOf('day') <
-        getFrenchLuxonCurrentDateTime()
-          .plus({ days: dayToForbidCancel })
-          .startOf('day')
-      if (goToNext) {
-        return timeslotsByMonth
-      }
-    }
+    // if (dayToForbidCancel) {
+    //   const goToNext =
+    //     timeslotLuxon.startOf('day') <
+    //     getFrenchLuxonCurrentDateTime()
+    //       .plus({ days: dayToForbidCancel })
+    //       .startOf('day')
+    //   if (goToNext) {
+    //     return timeslotsByMonth
+    //   }
+    // }
 
     // Gestion de la pénalité en cas de modification de la réservation actuelle du candidat
     if (anticipatedCanBookAfter) {

@@ -26,4 +26,8 @@ app.use(bodyParser.json({ limit: '20mb' }))
 
 app.use(apiPrefix, schedulerRouter)
 
+app.use(function (req, res, next) {
+  res.status(404).send({ success: false, message: `${req.path} not found` })
+})
+
 export default app

@@ -3,6 +3,7 @@ import {
   SHOW_ERROR,
 } from '@/store'
 
+import { getFrenchLuxon, getFrenchLuxonFromIso } from '@/util'
 export const FETCH_DEPARTEMENTS_REQUEST = 'FETCH_DEPARTEMENTS_REQUEST'
 export const FETCH_DEPARTEMENTS_FAILURE = 'FETCH_DEPARTEMENTS_FAILURE'
 export const FETCH_DEPARTEMENTS_SUCCESS = 'FETCH_DEPARTEMENTS_SUCCESS'
@@ -18,6 +19,7 @@ export default {
     isFetchingDepartements: false,
     list: [],
     geoDepartementsInfos: [],
+    geoDepartementsInfosActive: [],
     isFetchingGeoDepartementsInfos: false,
     selectedDepartement: undefined,
   },
@@ -38,8 +40,10 @@ export default {
       state.isFetchingGeoDepartementsInfos = true
     },
     [FETCH_DEPARTEMENTS_INFOS_SUCCESS] (state, geoDepartementsInfos) {
+      const now = getFrenchLuxon()
       state.geoDepartementsInfos = geoDepartementsInfos
       state.isFetchingGeoDepartementsInfos = false
+      state.geoDepartementsInfosActive = geoDepartementsInfos.filter(dep => !dep.disableAt || now < getFrenchLuxonFromIso(dep.disableAt))
     },
     [FETCH_DEPARTEMENTS_INFOS_FAILURE] (state) {
       state.isFetchingGeoDepartementsInfos = false

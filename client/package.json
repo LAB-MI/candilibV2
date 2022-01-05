@@ -28,6 +28,7 @@
     "ag-grid-vue": "^23.2.1",
     "chart.js": "^2.9.3",
     "core-js": "^3.8.2",
+    "cronstrue": "^1.122.0",
     "delay": "^4.4.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",

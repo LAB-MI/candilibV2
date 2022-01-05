@@ -271,6 +271,7 @@ import {
   getFrenchLuxonFromObject,
   getFrenchLuxonFromSql,
   callBackCatchRouter,
+  checkForHexRegexp,
 } from '@/util'
 
 const creneauTemplate = [
@@ -417,8 +418,6 @@ export default {
 
   async mounted () {
     await this.reloadWeekMonitor()
-    const centerId = this.$route.params.center
-    this.activeCentreId = centerId || this.firstCentreId
     this.updateCenterInRoute()
     this.activeCentreInfos = {}
     this.lastActiveCenters[this.activeDepartement] = this.activeCentreId
@@ -470,11 +469,12 @@ export default {
     },
 
     async reloadWeekMonitor () {
-      const centerId = this.$route.params.center
-      this.activeCentreId = (centerId) || this.firstCentreId
-      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin: this.beginDate, end: this.endDate })
       await this.$store
         .dispatch(FETCH_ADMIN_DEPARTEMENT_ACTIVE_INFO_REQUEST, { begin: this.beginDate, end: this.endDate })
+      const centerId = checkForHexRegexp.test(this.$route.params.center) && this.$route.params.center
+      this.activeCentreId = centerId || this.firstCentreId
+
+      await this.$store.dispatch(FETCH_INSPECTEURS_BY_CENTRE_REQUEST, { centreId: this.activeCentreId, begin: this.beginDate, end: this.endDate })
       this.parseInspecteursPlanning()
     },
 

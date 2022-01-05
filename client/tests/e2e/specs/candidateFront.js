@@ -23,9 +23,9 @@ describe('Connected candidate front', () => {
   if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
     // Initialise magicLink
     let magicLink
-    const numberOfDaysBeforeDate = 7
+    const numberOfDaysBeforeDate = 3
     const numberOfDaysPenalty = 45 // 45éme jours inclus et 46 eme jours reservable //TODO: A vérifier
-    const arbitraryValue = 7
+    const arbitraryValue = 1
     const nowIn1Week = now.plus({ days: numberOfDaysBeforeDate + arbitraryValue })
     const nowIn1WeekAnd1DaysBefore = now.plus({ days: (numberOfDaysBeforeDate - 1) })
     const bookedPlaceIn45Days = nowIn1WeekAnd1DaysBefore.plus({ days: numberOfDaysPenalty })
@@ -156,6 +156,8 @@ describe('Connected candidate front', () => {
 
     it('Should book a place at 7th days', () => {
       cy.connectByMagicLink(magicLink)
+
+      cy.get('.t-info-disable-departement').should('not.exist')
 
       cy.checkAndSelectDepartement()
       cy.wait(100)

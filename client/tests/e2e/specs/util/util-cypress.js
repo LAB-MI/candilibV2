@@ -286,11 +286,18 @@ const adminAccessToPlanning = (date) => {
 }
 
 export const parseMagicLinkFromMailBody = (mailBody) => {
-  const codedLink = mailBody.split('href=3D"')[1].split('>')[0]
-  const withoutEq = codedLink.replace(/=\r\n/g, '')
-  return withoutEq.replace(/=3D/g, '=').slice(0, -1)
+  const mailBodySplitted = mailBody.replace(/=\r\n/g, '').matchAll(/href=3D"([^"]*candidat[^"]*token[^"]*)"/g)
+  const codedLink = [...mailBodySplitted].flat()[1]
+  const withoutEq = codedLink
+  return withoutEq.replace(/=3D/g, '=')
 }
 
+export const parseValidationLinkFromMailBody = (mailBody) => {
+  const mailBodySplitted = mailBody.replace(/=\r\n/g, '').matchAll(/href=3D"([^"]*validation[^"]*)"/g)
+  const codedLink = [...mailBodySplitted].flat()[1]
+  const withoutEq = codedLink
+  return withoutEq.replace(/=3D/g, '=')
+}
 export const adminCheckCandidatPenaltyHystory = (candidatsByDepartments, canBookFrom, reason, byWho, needConnection = true) => {
   const canBookFromTextDate = canBookFrom instanceof DateTime ? getFrenchDateFromLuxon(canBookFrom) : canBookFrom
 

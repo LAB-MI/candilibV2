@@ -4,6 +4,11 @@ export const NB_FOR_CENTERS_75 = (parisCenters = []) => {
   return `Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants : ${parisCenters.join(', ')}`
 }
 
+export const DEPARTEMENT_HAVE_DISABLE_DATE = (homeDepartement, disableDate) => `<p class="text-black">En raison du déploiement de RdvPermis dans votre département
+(${homeDepartement}), l’application Candilib ne proposera plus de places d’examens
+après la date du ${disableDate}.</p> <p class="text-black"> Pour plus d’informations sur les modalités
+d’inscription sur RdvPermis, vous pouvez consulter la page suivante <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/passer-son-permis-de-conduire/inscription-et-formation/reserver-en-ligne-sa-place-pour-le" target="_blank" >Réserver en ligne sa place pour le permis | Sécurité Routière </a>.</p>`
+
 export function faqJson (lineDelay, departements = [], parisCenters = []) {
   const returnArray = [
     {
