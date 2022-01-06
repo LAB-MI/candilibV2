@@ -224,15 +224,21 @@ jobs:
           SLACK_WEBHOOK: ${{secrets.SLACK_WEBHOOK}}
         run: |
           ci/deploy.sh qualif $TRAVIS_BRANCH
-      - name:
-        uses: geekyeggo/delete-artifact@v1
+      - name: end
+        run: |
+          make clean-images clean-dir
+          docker logout
+  clean:
+    runs-on: ubuntu-18.04
+    if: ${{ always() }}
+    needs: build-test
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: geekyeggo/delete-artifact@v1
         with:
           name: |
             action_image_artifact_candilib_front_candidat
             action_image_artifact_candilib_api
             action_image_artifact_candilib_front_admin
             action_image_artifact_mongo
-      - name: end
-        run: |
-          make clean-images clean-dir
-          docker logout
