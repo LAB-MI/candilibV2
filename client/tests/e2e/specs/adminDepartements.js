@@ -114,14 +114,14 @@ describe('Create, see, update and delete departement', () => {
 
   it('Should add date to disable a departement', () => {
     const disableAtBtn = `.t-btn-disable-at-${departement75Id}`
-    const datePickerSlot = ':nth-child(3) > :nth-child(5) > .v-btn > .v-btn__content > span'
+    const datePickerSlot = `${disableAtBtn} > .v-btn__content > span`
 
     cy.visit(Cypress.env('frontAdmin') + 'admin/departements')
     cy.get(disableAtBtn)
       .click()
 
-    cy.get('.flex > .error--text > .v-btn__content').click()
-    // cy.get(`t-btn-unmodify-disable-at-${departement75Id}`).click()
+    // cy.get('.flex > .error--text > .v-btn__content').click()
+    cy.get(`.t-btn-unmodify-disable-at-${departement75Id}`).click()
     cy.get(datePickerSlot).should('contain', 'Indéfini')
 
     cy.get(disableAtBtn).click()
@@ -130,14 +130,14 @@ describe('Create, see, update and delete departement', () => {
     cy.wait(500)
 
     cy.get('.v-date-picker-table > table > tbody > :nth-child(3) > :nth-child(1) > .v-btn > .v-btn__content').click()
-    cy.get('.flex > .primary--text > .v-btn__content').click()
-    // cy.get(`t-btn-apply-disable-at-${departement75Id}`).click()
+    // cy.get('.flex > .primary--text > .v-btn__content').click()
+    cy.get(`.t-btn-apply-disable-at-${departement75Id}`).click()
     cy.get(datePickerSlot).should('not.contain', 'Indéfini')
 
     cy.get(disableAtBtn)
       .click()
-    cy.get('.flex > .warning--text > .v-btn__content').click()
-    // cy.get(`t-btn-disaplly-disable-at-${departement75Id}`).click()
+    // cy.get('.flex > .warning--text > .v-btn__content').click()
+    cy.get(`.t-btn-disaplly-disable-at-${departement75Id}`).click()
     cy.get(datePickerSlot).should('contain', 'Indéfini')
   })
 })
