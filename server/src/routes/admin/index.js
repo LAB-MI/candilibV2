@@ -5,7 +5,7 @@
 
 import express from 'express'
 
-import { getCandidats, importCandidats, updateCandidats } from './candidats-controllers'
+import { exportCandidatsByDepartement, getCandidats, importCandidats, updateCandidats } from './candidats-controllers'
 import {
   createUserController,
   archiveUserController,
@@ -1197,6 +1197,8 @@ router.get(
 router.get('/last-sync-aurige-info', getInfoLastSyncAurige)
 
 router.get('/last-infos-status-candidat', getLastInfosBorneStatus)
+
+router.get('/export-candidat-by-departement/:departement', exportCandidatsByDepartement)
 
 /**
  * @swagger

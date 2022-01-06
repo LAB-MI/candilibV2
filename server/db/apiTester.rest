@@ -1,0 +1,16 @@
+@remote-server = http://localhost:8000/api/v2
+# @name login
+POST {{remote-server}}/auth/admin/token
+content-type: application/json
+
+{
+    "email":"admin@example.com",
+    "password":"Admin*78"
+}
+
+###
+@accessToken = Bearer {{login.response.body.token}}
+#
+GET {{remote-server}}/admin/export-candidat-by-departement/75
+content-type: application/json
+Authorization: {{accessToken}}
