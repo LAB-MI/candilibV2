@@ -17,6 +17,7 @@ import { updateManyUser } from '../../models/user'
 import { findCentresByDepartement } from '../../models/centre'
 
 import config from '../../config'
+import { getFrenchLuxonFromISO } from '../../util'
 
 /**
  * Met à jour les départements de chaque utilisateur ayant les statut admin et tech
@@ -166,7 +167,8 @@ export const getDepartements = departementId => {
  */
 export const updateDepartements = async (departement, disableAt) => {
   if (disableAt !== undefined) {
-    departement.disableAt = disableAt
+    const tmpDisableAt = getFrenchLuxonFromISO(disableAt)
+    departement.disableAt = tmpDisableAt.isValid ? tmpDisableAt : null
   }
   const result = await updateDepartementById(departement)
   return result

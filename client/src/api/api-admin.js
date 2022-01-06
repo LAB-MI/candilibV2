@@ -708,12 +708,12 @@ const apiAdmin = {
     })
     return json
   },
-  async updateDepartement (departementId, newEmail, isAddedRecently) {
+  async updateDepartement (departementId, newEmail, isAddedRecently, disableAt) {
     const json = await apiClient.patch(
         `${apiPaths.admin.departements}/${departementId}`,
         {
           headers: getHeadersForAdminJson(),
-          body: JSON.stringify({ newEmail, isAddedRecently }),
+          body: JSON.stringify({ newEmail, isAddedRecently, disableAt }),
         },
     )
     return json
