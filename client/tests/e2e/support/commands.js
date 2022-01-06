@@ -363,6 +363,9 @@ Cypress.Commands.add('addCandidatToPlace', (date, candidatName) => {
         .click()
       cy.get('.search-input [type=text]')
         .type(candidatName || Cypress.env('candidat'))
+
+      cy.wait(300)
+
       cy.root().parents().contains(candidatName || Cypress.env('candidat'))
         .click()
       cy.get('.place-details')
