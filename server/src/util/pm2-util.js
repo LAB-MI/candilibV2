@@ -13,15 +13,9 @@ export const asyncGetPIDPM2 = () => new Promise((resolve, reject) => {
 })
 
 export const IPCMSG = 'process:msg'// 'candilib-api:msg'
-let eventEmitter
-let eventTypes
 
-function getEventEmitter () {
-  if (!eventEmitter) {
-    eventEmitter = new EventEmitter()
-  }
-  return eventEmitter
-}
+const eventTypes = []
+const eventEmitter = new EventEmitter()
 
 const unsignedType = 'IPC:unsignedtype'
 export const initBus = (done) => {
@@ -36,7 +30,7 @@ export const initBus = (done) => {
       // console.log({ packet, pid: process.pid, receiveAt: Date() })
       const { data } = packet
       const { type } = data
-      getEventEmitter().emit(eventTypes.includes(type) ? type : unsignedType, data)
+      eventEmitter.emit(eventTypes.includes(type) ? type : unsignedType, data)
     })
 
     techLogger.info({
@@ -64,11 +58,8 @@ export const sendMessageIPC = (type, message) => {
 }
 
 export const addListener = (type, handler = consoleLogHandler) => {
-  if (!eventTypes) {
-    eventTypes = []
-  }
   eventTypes.push(type)
-  getEventEmitter().on(type, handler)
+  eventEmitter.on(type, handler)
   techLogger.info({ ...loggerInfo, action: 'ADD_LISTENER', pid: process.pid, description: `listener ajouté sur ${type}` })
 }
 
