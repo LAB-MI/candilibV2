@@ -18,6 +18,7 @@ import { findCentresByDepartement } from '../../models/centre'
 
 import config from '../../config'
 import { getFrenchLuxonFromISO } from '../../util'
+import { sendMessageIPC } from '../../util/pm2-util'
 
 /**
  * Met à jour les départements de chaque utilisateur ayant les statut admin et tech
@@ -171,6 +172,7 @@ export const updateDepartements = async (departement, disableAt) => {
     departement.disableAt = tmpDisableAt.isValid ? tmpDisableAt : null
   }
   const result = await updateDepartementById(departement)
+  sendMessageIPC('INIT_CACHE_DEPARTEMENT_INFOS')
   return result
 }
 
