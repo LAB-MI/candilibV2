@@ -1,5 +1,9 @@
 name: ci-test
-on: pull_request
+on:
+  push:
+    branches:
+      - 'qualif/**'
+      - 'develop'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 env:
   DOCKER_COMPOSE_VERSION: 1.19.0
@@ -13,7 +17,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ubuntu-18.04
-  
+
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -27,7 +31,7 @@ jobs:
           echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
           sudo apt-get update
           # sudo apt-get install docker-ce docker-ce-cli containerd.io
-          # sudo apt-get install docker-ce       
+          # sudo apt-get install docker-ce
           # apt-cache madison docker-ce
           sudo apt-get install docker-ce="$DOCKER_VERSION" docker-ce-cli="$DOCKER_VERSION" containerd.io
           type -a docker-compose && docker-compose version
@@ -65,5 +69,4 @@ jobs:
           make clean-images clean-dir
           docker logout
 
-          
-          
+
