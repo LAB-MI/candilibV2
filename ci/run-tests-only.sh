@@ -56,7 +56,7 @@ fi
 
 ret=1
 echo "# e2e tests"
-time make up-e2e
+time make up-e2e CYPRESS_ARG="--spec tests/e2e/specs/$1"
 ret=$?
 if [ "$ret" -gt 0 ] ; then
   echo "$basename up-e2e ERROR"

@@ -1,7 +1,7 @@
 name: ci-test-multi-jobs
 on:
   push:
-     branches-ignore:
+    branches-ignore:
       - 'qualif/**'
       - 'develop'
   pull_request:
@@ -41,16 +41,16 @@ jobs:
           docker version
       - name: install dependency
         run: |
-            sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
+          sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
       - name: run test
         run: |
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
           ci/docker-access.sh
           ci/run-tests-api.sh
-      - name:  Upload image
+      - name: Upload image
         uses: ishworkh/docker-image-artifact-upload@v1
         with:
-          image: "candilib_api"
+          image: 'candilib_api'
       - name: end
         run: |
           docker logout
@@ -78,16 +78,16 @@ jobs:
           docker version
       - name: install dependency
         run: |
-            sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
+          sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
       - name: run test
         run: |
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
           ci/docker-access.sh
           ci/run-tests-front-admin.sh
-      - name:  Upload image
+      - name: Upload image
         uses: ishworkh/docker-image-artifact-upload@v1
         with:
-          image: "candilib_front_admin"
+          image: 'candilib_front_admin'
       - name: end
         run: |
           docker logout
@@ -115,16 +115,16 @@ jobs:
           docker version
       - name: install dependency
         run: |
-            sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
+          sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
       - name: run test
         run: |
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
           ci/docker-access.sh
           ci/run-tests-front-candidat.sh
-      - name:  Upload image
+      - name: Upload image
         uses: ishworkh/docker-image-artifact-upload@v1
         with:
-          image: "candilib_front_candidat"
+          image: 'candilib_front_candidat'
       - name: end
         run: |
           docker logout
@@ -152,24 +152,49 @@ jobs:
           docker version
       - name: install dependency
         run: |
-            sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
+          sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
       - name: run test
         run: |
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
           ci/docker-access.sh
           ci/run-tests-db.sh
-      - name:  Upload image
+      - name: Upload image
         uses: ishworkh/docker-image-artifact-upload@v1
         with:
-          image: "mongo"
+          image: 'mongo'
       - name: end
         run: |
           docker logout
 
+  prepare_test:
+    runs-on: ubuntu-18.04
+    needs: [build-mongodb, build-api, build-front-admin, build-front-candidat]
+    outputs:
+      testFiles: ${{ steps.getTeste2e.outputs.test }}
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+      - name: get test-e2e
+        id: getTeste2e
+        run: |
+          TESTFILES=$(jq '.testFiles' client/cypress.json)
+          echo ${TESTFILES}
+          echo ::set-output name=test::${TESTFILES}
+
   build-test:
     # The type of runner that the job will run on
     runs-on: ubuntu-18.04
-    needs: [build-mongodb, build-api, build-front-admin, build-front-candidat]
+    needs:
+      [
+        prepare_test,
+        build-mongodb,
+        build-api,
+        build-front-admin,
+        build-front-candidat,
+      ]
+    strategy:
+      matrix:
+        testFile: ${{ fromJSON(needs.prepare_test.outputs.testFiles) }}
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -190,28 +215,28 @@ jobs:
           docker version
       - name: install dependency
         run: |
-            sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
+          sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
       - name: Download image api
         uses: ishworkh/docker-image-artifact-download@v1
         with:
-          image: "mongo"
+          image: 'mongo'
       - name: Download image api
         uses: ishworkh/docker-image-artifact-download@v1
         with:
-          image: "candilib_api"
+          image: 'candilib_api'
       - name: Download image front admin
         uses: ishworkh/docker-image-artifact-download@v1
         with:
-          image: "candilib_front_admin"
+          image: 'candilib_front_admin'
       - name: Download image front candidat
         uses: ishworkh/docker-image-artifact-download@v1
         with:
-          image: "candilib_front_candidat"
+          image: 'candilib_front_candidat'
       - name: run test
         run: |
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
           ci/docker-access.sh
-          ci/run-tests-only.sh
+          ci/run-tests-only.sh ${{ matrix.testFile }}
       - name: store screenshots
         if: ${{ failure() }}
         uses: actions/upload-artifact@v2
