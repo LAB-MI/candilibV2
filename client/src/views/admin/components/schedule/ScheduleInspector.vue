@@ -176,7 +176,7 @@
                         </v-tooltip>
 
                         <v-tooltip bottom>
-                          Permuter l'inspecteur
+                          Réaffecter les places de l'inspecteur
                           <template v-slot:activator="{ on }">
                             <v-btn
                               :class="`t-permute-btn-${inspecteurData.nom}`"
@@ -188,7 +188,7 @@
                                 size="20"
                                 color="#A9A9A9"
                               >
-                                import_export
+                                schedule_send
                               </v-icon>
                             </v-btn>
                           </template>
