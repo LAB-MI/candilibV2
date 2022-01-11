@@ -36,9 +36,18 @@ jobs:
             image: "candilib_front_candidat"
           },
           {
-
             name: "db",
             image: "mongo"
+          },
+          {
+            name: "e2e",
+            image: "candilib_e2e",
+            arg: "e2e"
+          },
+          {
+            name: "e2e",
+            arg: 'db-rest',
+            image: "candilib-db-rest"
           }
         ]
     steps:
@@ -65,7 +74,7 @@ jobs:
         run: |
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
           ci/docker-access.sh
-          ci/run-tests-${{ matrix.components.name }}.sh
+          ci/run-tests-${{ matrix.components.name }}.sh ${{ matrix.components.arg }}
       - name: Upload image
         uses: ishworkh/docker-image-artifact-upload@v1
         with:
@@ -73,154 +82,6 @@ jobs:
       - name: end
         run: |
           docker logout
-
-  # build-api:
-  #   # The type of runner that the job will run on
-  #   runs-on: ubuntu-18.04
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #     - uses: actions/checkout@v2
-  #     - name: install docker-ce
-  #       run: |
-  #         # sudo apt-get remove docker docker-engine docker.io containerd runc
-  #         sudo apt-get update
-  #         # sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release
-  #         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  #         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  #         sudo apt-get update
-  #         # sudo apt-get install docker-ce docker-ce-cli containerd.io
-  #         # sudo apt-get install docker-ce
-  #         # apt-cache madison docker-ce
-  #         sudo apt-get install docker-ce="$DOCKER_VERSION" docker-ce-cli="$DOCKER_VERSION" containerd.io
-  #         type -a docker-compose && docker-compose version
-  #         docker version
-  #     - name: install dependency
-  #       run: |
-  #         sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
-  #     - name: run test
-  #       run: |
-  #         ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
-  #         ci/docker-access.sh
-  #         ci/run-tests-api.sh
-  #     - name: Upload image
-  #       uses: ishworkh/docker-image-artifact-upload@v1
-  #       with:
-  #         image: 'candilib_api'
-  #     - name: end
-  #       run: |
-  #         docker logout
-
-  # build-front-admin:
-  #   # The type of runner that the job will run on
-  #   runs-on: ubuntu-18.04
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #     - uses: actions/checkout@v2
-  #     - name: install docker-ce
-  #       run: |
-  #         # sudo apt-get remove docker docker-engine docker.io containerd runc
-  #         sudo apt-get update
-  #         # sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release
-  #         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  #         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  #         sudo apt-get update
-  #         # sudo apt-get install docker-ce docker-ce-cli containerd.io
-  #         # sudo apt-get install docker-ce
-  #         # apt-cache madison docker-ce
-  #         sudo apt-get install docker-ce="$DOCKER_VERSION" docker-ce-cli="$DOCKER_VERSION" containerd.io
-  #         type -a docker-compose && docker-compose version
-  #         docker version
-  #     - name: install dependency
-  #       run: |
-  #         sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
-  #     - name: run test
-  #       run: |
-  #         ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
-  #         ci/docker-access.sh
-  #         ci/run-tests-front-admin.sh
-  #     - name: Upload image
-  #       uses: ishworkh/docker-image-artifact-upload@v1
-  #       with:
-  #         image: 'candilib_front_admin'
-  #     - name: end
-  #       run: |
-  #         docker logout
-
-  # build-front-candidat:
-  #   # The type of runner that the job will run on
-  #   runs-on: ubuntu-18.04
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #     - uses: actions/checkout@v2
-  #     - name: install docker-ce
-  #       run: |
-  #         # sudo apt-get remove docker docker-engine docker.io containerd runc
-  #         sudo apt-get update
-  #         # sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release
-  #         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  #         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  #         sudo apt-get update
-  #         # sudo apt-get install docker-ce docker-ce-cli containerd.io
-  #         # sudo apt-get install docker-ce
-  #         # apt-cache madison docker-ce
-  #         sudo apt-get install docker-ce="$DOCKER_VERSION" docker-ce-cli="$DOCKER_VERSION" containerd.io
-  #         type -a docker-compose && docker-compose version
-  #         docker version
-  #     - name: install dependency
-  #       run: |
-  #         sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
-  #     - name: run test
-  #       run: |
-  #         ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
-  #         ci/docker-access.sh
-  #         ci/run-tests-front-candidat.sh
-  #     - name: Upload image
-  #       uses: ishworkh/docker-image-artifact-upload@v1
-  #       with:
-  #         image: 'candilib_front_candidat'
-  #     - name: end
-  #       run: |
-  #         docker logout
-
-  # build-mongodb:
-  #   # The type of runner that the job will run on
-  #   runs-on: ubuntu-18.04
-  #   # Steps represent a sequence of tasks that will be executed as part of the job
-  #   steps:
-  #     # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-  #     - uses: actions/checkout@v2
-  #     - name: install docker-ce
-  #       run: |
-  #         # sudo apt-get remove docker docker-engine docker.io containerd runc
-  #         sudo apt-get update
-  #         # sudo apt-get install apt-transport-https ca-certificates curl gnupg lsb-release
-  #         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
-  #         echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-  #         sudo apt-get update
-  #         # sudo apt-get install docker-ce docker-ce-cli containerd.io
-  #         # sudo apt-get install docker-ce
-  #         # apt-cache madison docker-ce
-  #         sudo apt-get install docker-ce="$DOCKER_VERSION" docker-ce-cli="$DOCKER_VERSION" containerd.io
-  #         type -a docker-compose && docker-compose version
-  #         docker version
-  #     - name: install dependency
-  #       run: |
-  #         sudo apt-get install -qy make apt-transport-https ca-certificates curl software-properties-common gawk jq parallel curl language-pack-fr
-  #     - name: run test
-  #       run: |
-  #         ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
-  #         ci/docker-access.sh
-  #         ci/run-tests-db.sh
-  #     - name: Upload image
-  #       uses: ishworkh/docker-image-artifact-upload@v1
-  #       with:
-  #         image: 'mongo'
-  #     - name: end
-  #       run: |
-  #         docker logout
 
   prepare_test:
     runs-on: ubuntu-18.04
@@ -285,6 +146,14 @@ jobs:
         uses: ishworkh/docker-image-artifact-download@v1
         with:
           image: 'candilib_front_candidat'
+      - name: Download image front db_rest
+        uses: ishworkh/docker-image-artifact-download@v1
+        with:
+          image: 'candilib-db-rest'
+      - name: Download image e2e
+        uses: ishworkh/docker-image-artifact-download@v1
+        with:
+          image: 'candilib_e2e'
       - name: run test
         run: |
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
@@ -328,3 +197,6 @@ jobs:
             action_image_artifact_candilib_api
             action_image_artifact_candilib_front_admin
             action_image_artifact_mongo
+            action_image_artifact_candilib-db-rest
+            action_image_artifact_candilib_e2e
+

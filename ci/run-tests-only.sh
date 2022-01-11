@@ -45,14 +45,14 @@ if [ "$ret" -gt 0 ] ; then
   exit $ret
 fi
 
-ret=1
-echo "# build e2e images"
-time make build-e2e
-ret=$?
-if [ "$ret" -gt 0 ] ; then
-  echo "$basename build-e2e ERROR"
-  exit $ret
-fi
+# ret=1
+# echo "# build e2e images"
+# time make build-e2e
+# ret=$?
+# if [ "$ret" -gt 0 ] ; then
+#   echo "$basename build-e2e ERROR"
+#   exit $ret
+# fi
 
 ret=1
 echo "# e2e tests"
