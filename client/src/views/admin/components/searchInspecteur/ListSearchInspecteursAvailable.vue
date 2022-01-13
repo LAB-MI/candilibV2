@@ -2,6 +2,7 @@
   <div>
     <v-autocomplete
       v-model="select"
+      clearable
       :items="inspecteurs"
       :loading="isLoading"
       label="Inspecteur..."
@@ -24,6 +25,14 @@ export default {
     date: {
       type: String,
       default: '',
+    },
+    inspecteurId: {
+      type: String,
+      default: '',
+    },
+    inspecteursData: {
+      type: Array,
+      default: undefined,
     },
     isEditing: Boolean,
   },
@@ -48,7 +57,7 @@ export default {
   },
   watch: {
     select (newValue, oldValue) {
-      if (newValue !== oldValue) {
+      if (newValue && (newValue !== oldValue) && this.inspecteurs.length) {
         const inspecteur = this.inspecteurs.find(elt => elt.value === newValue)
         this.$emit('select-inspecteur', inspecteur.inspecteur)
       }
@@ -59,7 +68,20 @@ export default {
   },
   methods: {
     async getInspecteurs () {
-      await this.$store.dispatch(FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST, { departement: this.activeDepartement, centre: this.centre, date: this.date })
+      if (this.inspecteursData) {
+        await this.getInspecteursToPermute()
+      } else {
+        await this.$store.dispatch(FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST, { departement: this.activeDepartement, centre: this.centre, date: this.date })
+      }
+    },
+
+    async getInspecteursToPermute () {
+      await this.$store.dispatch(FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST, {
+        departement: this.activeDepartement,
+        slectedInspecteurId: this.inspecteurId,
+        inspecteursData: this.inspecteursData,
+        centre: this.centre,
+      })
     },
   },
 }

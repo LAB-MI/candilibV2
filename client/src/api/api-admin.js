@@ -264,6 +264,16 @@ const apiAdmin = {
     return json
   },
 
+  async getCandidatsByDepartement (departement) {
+    const json = await apiClient.get(
+        `${apiPaths.admin.exportCandidatByDepartement}/${departement}`,
+        {
+          headers: getHeadersForAdminJson(),
+        },
+    )
+    return json
+  },
+
   async searchCandidats (search, departement, startingWith, endingWith) {
     let url = `${apiPaths.admin.candidats}?matching=${search || ''}&departement=${departement}`
     if (startingWith) {
@@ -708,12 +718,12 @@ const apiAdmin = {
     })
     return json
   },
-  async updateDepartement (departementId, newEmail, isAddedRecently) {
+  async updateDepartement (departementId, newEmail, isAddedRecently, disableAt) {
     const json = await apiClient.patch(
         `${apiPaths.admin.departements}/${departementId}`,
         {
           headers: getHeadersForAdminJson(),
-          body: JSON.stringify({ newEmail, isAddedRecently }),
+          body: JSON.stringify({ newEmail, isAddedRecently, disableAt }),
         },
     )
     return json

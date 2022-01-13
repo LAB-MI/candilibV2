@@ -121,6 +121,7 @@ describe('Planning tests', () => {
         cy.get('[type=text]').type(Cypress.env('inspecteur2'))
       })
     cy.get('.menuable__content__active .v-select-list').contains(Cypress.env('inspecteur2')).click()
+    cy.wait(200)
     cy.get('@dialogContent').within(() => {
       cy.get('[type=submit]')
         .contains('Recevoir')
@@ -163,6 +164,65 @@ describe('Planning tests', () => {
       })
     cy.get('.v-snack--active')
       .should('contain', 'La ou les places ont bien été créée(s).')
+  })
+
+  it('Assigns a candidates, and permute inspecteur', () => {
+    cy.adminLogin()
+
+    // book 3 places for the candidate
+    cy.addCandidatToPlace(undefined, 'CANDIDAT_FRONT')
+    cy.wait(500)
+    cy.addCandidatToPlace(undefined, 'VINSMOKE')
+    cy.wait(800)
+
+    cy.get(`.t-permute-btn-${Cypress.env('inspecteur')}`).click()
+
+    cy.get('[slot="title"] > .v-input').click()
+    cy.get('.v-list-item__title').contains(Cypress.env('inspecteur2')).click()
+    cy.get('.t-btn-ok').click()
+
+    cy.wait(200)
+
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(Cypress.env('inspecteur'))
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button').eq(0)
+          .contains('block').should('be.visible')
+        cy.get('.place-button').eq(1)
+          .contains('block').should('be.visible')
+      })
+
+    cy.get(`.t-permute-btn-${Cypress.env('inspecteur2')}`).click()
+
+    cy.checkAndCloseSnackBar('Aucun inspecteur disponible, Il vous faut un inspecteur avec la totalité de ses créneaux disponibles.')
+
+    cy.get(`.t-permute-btn-${Cypress.env('inspecteur2')}`).click()
+
+    cy.get('.v-window-item').not('[style="display: none;"]')
+      .contains(Cypress.env('inspecteur'))
+      .parents('tbody').within(($row) => {
+        cy.get('.place-button').eq(0)
+          .contains('block')
+          .click()
+        cy.contains('Rendre le créneau disponible')
+          .click()
+
+        cy.wait(200)
+
+        cy.get('.place-button').eq(1)
+          .contains('block')
+          .click()
+        cy.contains('Rendre le créneau disponible')
+          .click()
+        cy.wait(200)
+      })
+
+    cy.checkAndCloseSnackBar('La ou les places ont bien été créée(s).')
+
+    cy.get(`.t-permute-btn-${Cypress.env('inspecteur2')}`).click()
+    cy.get('[slot="title"] > .v-input').click()
+    cy.get('.v-list-item__title').contains(Cypress.env('inspecteur')).click()
+    cy.get('.t-btn-ok').click()
   })
 })
 
@@ -255,6 +315,7 @@ describe('Planning tests without candidate', () => {
       .contains(Cypress.env('centre'))
       .click({ force: true })
 
+    cy.get(`.t-delete-btn-${Cypress.env('inspecteur')}`).click().wait(500)
     // Removes the inspector's places
     cy.get('.v-window-item').not('[style="display: none;"]')
       .should('have.length', 1, { timeout: 10000 })
@@ -263,12 +324,6 @@ describe('Planning tests without candidate', () => {
       .parents('tbody')
       .should('not.contain', 'block')
       .within(($row) => {
-        // Removes the morning
-        cy.get('tr').eq(0).within(($inTr) => {
-          cy.get('th').within(($inTh) => {
-            cy.get('button').should('contain', 'delete').click().wait(500)
-          })
-        })
         cy.get('tr').eq(1).within(($inTr) => {
           cy.get('td').eq(1).within(($inTd) => {
             cy.get('button').eq(1).should('contain', 'Supprimer la matinée').click().wait(500)
@@ -279,17 +334,13 @@ describe('Planning tests without candidate', () => {
 
     cy.checkAndCloseSnackBar('La suppression des places sélectionnées a bien été effectuée')
 
+    cy.get(`.t-delete-btn-${Cypress.env('inspecteur2')}`).click().wait(500)
+
     cy.get('.v-window-item').not('[style="display: none;"]')
       .contains(Cypress.env('inspecteur2'))
       .parents('tbody')
       .should('not.contain', 'block')
       .within(($row) => {
-        // Removes the morning
-        cy.get('tr').eq(0).within(($inTr) => {
-          cy.get('th').within(($inTh) => {
-            cy.get('button').should('contain', 'delete').click().wait(500)
-          })
-        })
         cy.get('tr').eq(1).within(($inTr) => {
           cy.get('td').eq(1).within(($inTd) => {
             cy.get('button').eq(2).should('contain', 'Supprimer l\'après-midi').click().wait(500)

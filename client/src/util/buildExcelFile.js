@@ -63,3 +63,53 @@ export const generateExcelFile = async ({ national, byDepartement, selectedRange
     url,
   }
 }
+
+export const generateExcelCandidatListFile = async ({ departement, candidats }) => {
+  if (!departement) {
+    throw new Error(`Departement "${departement}" est invalide`)
+  }
+
+  if (!candidats.length) {
+    throw new Error(`Departement "${departement}" est invalide`)
+  }
+  const date = new Date()
+  const workbook = new ExcelJS.Workbook()
+  workbook.creator = 'admin'
+  workbook.lastModifiedBy = 'admin'
+  workbook.created = date
+  workbook.modified = date
+  const candidatListTitle = `Candidats_du_departement_${departement}`
+
+  const templateTmp = [
+    { header: 'Prenom', key: 'prenom' },
+    { header: 'Nom', key: 'nomNaissance' },
+    { header: 'Neph', key: 'codeNeph' },
+  ]
+
+  let candidatListSheet = null
+  if (!departement || candidats.length) {
+    candidatListSheet = workbook.addWorksheet(candidatListTitle)
+
+    const candidatListColumns = [
+      ...templateTmp,
+    ]
+
+    candidatListSheet.columns = candidatListColumns
+
+    candidats.forEach(rowValue => {
+      candidatListSheet.addRow(rowValue)
+    })
+  }
+
+  const data = await workbook.xlsx.writeBuffer()
+
+  const filename = `${departement}_candidats.xlsx`
+  var blob = new Blob([data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' })
+  const url = URL.createObjectURL(blob)
+
+  triggerDownloadByLink(url, filename)
+  return {
+    filename,
+    url,
+  }
+}

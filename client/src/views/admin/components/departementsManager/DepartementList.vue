@@ -16,10 +16,19 @@
 
       <template v-slot:[`item.action`]="{ item }">
         <update-departement
+          :is-disable-at="false"
           :deprt-id="item._id"
           :deprt="item"
+          @update-departement="updateDepartement"
         />
         <delete-departement :departement-id="item._id" />
+      </template>
+
+      <template v-slot:[`item.disableAt`]="{ item }">
+        <update-departement-date-disable-at
+          :departement="item"
+          @update-departement="updateDepartement"
+        />
       </template>
     </v-data-table>
   </div>
@@ -28,10 +37,11 @@
 <script>
 import { mapState } from 'vuex'
 
-import { FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST } from '@/store'
+import { FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST, UPDATE_DEPARTEMENT_REQUEST } from '@/store'
 import CreateDepartement from './CreateDepartement'
 import UpdateDepartement from './UpdateDepartement'
 import DeleteDepartement from './DeleteDepartement'
+import UpdateDepartementDateDisableAt from './UpdateDepartementDateDisableAt'
 
 export default {
   name: 'DepartementList',
@@ -40,6 +50,7 @@ export default {
     CreateDepartement,
     UpdateDepartement,
     DeleteDepartement,
+    UpdateDepartementDateDisableAt,
   },
 
   data () {
@@ -54,6 +65,7 @@ export default {
         { text: 'Email', sortable: false, value: 'email' },
         { text: 'Récent', sortable: true, value: 'isAddedRecently' },
         { text: 'Actions', sortable: false, value: 'action' },
+        { text: 'Date de désactivation', sortable: false, value: 'disableAt' },
       ],
     }
   },
@@ -95,6 +107,21 @@ export default {
   methods: {
     getAllDepartement () {
       this.$store.dispatch(FETCH_DEPARTEMENTS_BY_ADMIN_REQUEST)
+    },
+    async updateDepartement (event) {
+      const {
+        departementId,
+        newEmail,
+        isAddedRecently,
+        disableAt,
+      } = event
+
+      await this.$store.dispatch(UPDATE_DEPARTEMENT_REQUEST, {
+        departementId,
+        newEmail,
+        isAddedRecently,
+        disableAt,
+      })
     },
   },
 }

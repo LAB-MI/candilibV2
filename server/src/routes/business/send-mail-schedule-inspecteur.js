@@ -9,6 +9,7 @@ import { findInspecteurById } from '../../models/inspecteur'
 import { findCentreById } from '../../models/centre'
 import { findCandidatById } from '../../models/candidat'
 import { getFailedScheduleInspecteurTemplate } from './mail/failed-mail-schelude-inspecteurs-template'
+import { addMailToSend } from '.'
 
 export const getScheduleInspecteurBody = async (
   inspecteurName,
@@ -78,6 +79,7 @@ export const sendScheduleInspecteur = async (
   places,
   inspecteur,
   centre,
+  addInQueue,
 ) => {
   // const loggerInfo = {
   //   func: 'sendScheduleInspecteur',
@@ -145,8 +147,11 @@ export const sendScheduleInspecteur = async (
   const subject = `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`
 
   // appLogger.debug({ func: 'sendScheduleInspecteur', content, subject })
-
-  return sendMail(email, { content, subject })
+  if (addInQueue) {
+    return addMailToSend(email, { content, subject })
+  } else {
+    return sendMail(email, { content, subject })
+  }
 }
 
 export const sendMailForScheduleInspecteurFailed = async (

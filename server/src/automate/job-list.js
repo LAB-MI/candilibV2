@@ -5,7 +5,7 @@
 
 import getConfig from './config'
 import * as adminJobs from './jobs'
-import { GET_API_VERSION_JOB, HELLO_JOB, SORT_STATUS_CANDIDATS_JOB } from './jobs'
+import { GET_API_VERSION_JOB, HELLO_JOB, SEND_SCHEDULE_IPCSR, SORT_STATUS_CANDIDATS_JOB } from './jobs'
 import { STOP_AGENDA_JOB } from './jobs/stop-agenda'
 
 /**
@@ -26,6 +26,11 @@ const allJobs = {
     name: SORT_STATUS_CANDIDATS_JOB,
     fn: adminJobs.jobStatusCandidats,
     repeatInterval: '0 23 * * *',
+  },
+  [SEND_SCHEDULE_IPCSR]: {
+    name: SEND_SCHEDULE_IPCSR,
+    fn: adminJobs.jobSendScheduleIPCSR,
+    repeatInterval: '0 13 * * *',
   },
   [STOP_AGENDA_JOB]: {
     name: STOP_AGENDA_JOB,

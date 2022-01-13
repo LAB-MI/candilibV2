@@ -53,6 +53,7 @@ const adminApiPaths = (isBuildWithAll || isBuildWithAdmin) && {
   statsCountStatuses: `${apiPrefix}/admin/stats-count-statuses`,
   statsCountLastConnections: `${apiPrefix}/admin/stats-count-last-connections`,
   statsTotalLoggable: `${apiPrefix}/admin/stats-total-loggable`,
+  exportCandidatByDepartement: `${apiPrefix}/admin/export-candidat-by-departement`,
 }
 
 const publicPaths = {

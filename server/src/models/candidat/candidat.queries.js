@@ -246,8 +246,11 @@ export const countCandidatsByStatus = async (status) =>
  *
  * @returns {Promise.<Candidat>}
  */
-export const findAllCandidatsLean = async () => {
-  const candidats = await Candidat.find({}).lean()
+export const findAllCandidatsLean = async (filters = {}) => {
+  const projectTemplate = {
+    token: 0,
+  }
+  const candidats = await Candidat.find(filters, projectTemplate).lean()
   return candidats
 }
 

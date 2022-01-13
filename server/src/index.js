@@ -24,14 +24,14 @@ async function initCache (data) {
   try {
     await placesAndGeoDepartementsAndCentresCache.initCache()
     techLogger.info({
-      section: 'start-server-set-geo-departemens-and-centres',
+      section: 'start-server-set-geo-departemens-and-centres-and-places',
       pid: process.pid,
       description: 'init-cache lancé',
       data,
     })
   } catch (error) {
     techLogger.error({
-      section: 'start-server-set-geo-departemens-and-centres',
+      section: 'start-server-set-geo-departemens-and-centres-and-places',
       pid: process.pid,
       description: error.message,
       error,
@@ -40,6 +40,25 @@ async function initCache (data) {
   }
 }
 
+async function initCacheDepartement (data) {
+  try {
+    await placesAndGeoDepartementsAndCentresCache.setDepartementInfos()
+    techLogger.info({
+      section: 'start-server-set-departemens-infos',
+      pid: process.pid,
+      description: 'init-cache-departement-infos lancé',
+      data,
+    })
+  } catch (error) {
+    techLogger.error({
+      section: 'start-server-set-departemens-infos',
+      pid: process.pid,
+      description: error.message,
+      error,
+      data,
+    })
+  }
+}
 /**
  * Démarre le serveur (API),
  * mais uniquement si la connexion à la base de données MongoDB s'est effectuée
@@ -50,6 +69,7 @@ async function startServer () {
   try {
     const pid = await asyncGetPIDPM2()
     addListener('INIT_CACHE', initCache)
+    addListener('INIT_CACHE_DEPARTEMENT_INFOS', initCacheDepartement)
     initBus()
     await connect()
     if (!pid || pid === process.pid) {
