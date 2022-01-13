@@ -1,10 +1,10 @@
 name: ci-test-multi-jobs
 on:
-  pull_request
-  # push:
-  #   branches-ignore:
-  #     - 'qualif/**'
-  #     - 'develop'
+  # pull_request
+  push:
+    branches-ignore:
+      - 'qualif/**'
+      - 'develop'
   # pull_request:
   #   branches:
   #     - '!qualif/**'
