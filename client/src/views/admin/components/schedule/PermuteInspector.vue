@@ -1,7 +1,7 @@
 <template>
   <v-card class="m-3 p-6 pt-1">
     <v-card-title>
-      Permuter l'inspecteur avec ?
+      Réaffecter les places de l'inspecteur à ?
     </v-card-title>
     <v-card-actions class="flex flex-wrap">
       <list-search-inspecteurs-available
