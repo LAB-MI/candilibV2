@@ -95,8 +95,9 @@
     "stylus": "^0.54.8",
     "stylus-loader": "^3.0.2",
     "svg-inline-loader": "^0.8.2",
+    "tailwindcss": "npm:@tailwindcss/postcss7-compat@^2.2.17",
     "typeface-roboto": "0.0.75",
-    "vue-cli-plugin-tailwind": "~1.5.0",
+    "vue-cli-plugin-tailwind": "^2.2.18",
     "vue-cli-plugin-vuetify": "^2.0.9",
     "vue-template-compiler": "^2.6.12",
     "vuetify-loader": "^1.6.0"
