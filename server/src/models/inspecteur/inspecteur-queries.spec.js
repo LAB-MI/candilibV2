@@ -100,7 +100,7 @@ describe('Inspecteur', () => {
       },
     )
 
-    it('should not save 2 inspecteurs with a second e-mail which is same e-mail of second inspecteur  ', async () => {
+    it('should not save 2 inspecteurs with a second e-mail which is same e-mail of second inspecteur', async () => {
       await createInspecteur(defaultInspecteur2)
 
       const inspecteur = {
@@ -110,7 +110,7 @@ describe('Inspecteur', () => {
       await testCreateInspeteurWithDuplicateSecondMail(inspecteur, defaultInspecteur2.email)
     })
 
-    it('should not save 2 inspecteurs with a e-mail which is same second e-mail of second inspecteur  ', async () => {
+    it('should not save 2 inspecteurs with a e-mail which is same second e-mail of second inspecteur', async () => {
       const inspecteur2 = {
         ...defaultInspecteur2,
         secondEmail: [defaultInspecteur.email, 'dontusethis@example2.fr'],
@@ -121,7 +121,7 @@ describe('Inspecteur', () => {
       await testCreateInspeteurWithDuplicateSecondMail(inspecteur, inspecteur.email)
     })
 
-    it('should not save 2 inspecteurs with a second e-mail which is same second e-mail of second inspecteur  ', async () => {
+    it('should not save 2 inspecteurs with a second e-mail which is same second e-mail of second inspecteur', async () => {
       const inspecteur2 = {
         ...defaultInspecteur2,
         secondEmail: [defaultInspecteur.email, 'dontusethis@example2.fr'],
