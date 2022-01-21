@@ -130,8 +130,9 @@ describe('Connected candidate front', () => {
       cy.get('.question-content').should('be.visible')
     })
 
-    it('Should display Mentions légales', () => {
+    it('Should display Mentions légales when candidat connected', () => {
       cy.connectByMagicLink(magicLink)
+      // cy.wait(200)
       cy.get('i').should('contain', 'account_balance')
       cy.contains('account_balance').click()
       cy.url().should('contain', 'mentions-legales')
