@@ -49,6 +49,11 @@ const SessionCandidatSchema = new Schema(
       type: Date,
       required: true,
     },
+
+    pathsVisited: {
+      type: Array,
+      default: [],
+    },
   },
 
   {

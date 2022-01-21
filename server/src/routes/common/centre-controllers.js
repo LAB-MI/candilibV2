@@ -26,12 +26,14 @@ import {
   UNKNOWN_ERROR_GET_CENTRE,
 } from '../admin/message.constants'
 import { getStatusWithRecentlyDept } from './candidat-status'
+import { setCandidatIdSession } from '../candidat/util/captcha-tools'
 
 export const NOT_CODE_DEP_MSG =
   'Le code de département est manquant, Veuillez choisir un code département'
 
 export async function getCentres (req, res) {
   const { departement, centreId, nom } = req.query
+
   let beginDate = req.query.begin
   const endDate = req.query.end
   const candidatStatus = req.candidatStatus
@@ -48,6 +50,9 @@ export async function getCentres (req, res) {
     endDate,
     nomCentre: nom,
   }
+
+  await setCandidatIdSession(req)
+
   if (req.userLevel === config.userStatusLevels.candidat) {
     loggerContent.candidatId = req.userId
   } else {

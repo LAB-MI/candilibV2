@@ -1,7 +1,7 @@
 import { updateSession } from '../../../models/session-candidat'
 import { getFrenchLuxon, appLogger, getFrenchLuxonFromISO } from '../../../util'
 import { verifyAndGetSessionByCandidatId } from '../captcha-business'
-import { captchaTools, getHashCaptcha } from '../util/captcha-tools'
+import { captchaTools, getHashCaptcha, isValidRef } from '../util/captcha-tools'
 
 export const trySubmissionCaptcha = async (req, res, next) => {
   const { userId } = req
@@ -66,10 +66,12 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       const imageAnswer = req.body[frontendData.imageFieldName]
 
       if (imageAnswer) {
+        // const isValid = (visualCaptcha.validateImage(imageAnswer))
         if (visualCaptcha.validateImage(imageAnswer)) {
           queryParams.push('status=validImage')
-
-          responseStatus = 200
+          const isRefValid = await isValidRef(req)
+          responseStatus = isRefValid ? queryParams.push('status=refValid') && 200 : queryParams.push('status=refInvalid') && 400
+          console.log('isRefValid-responseStatus', responseStatus)
         } else {
           queryParams.push('status=failedImage')
 

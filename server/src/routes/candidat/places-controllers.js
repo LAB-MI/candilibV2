@@ -29,7 +29,7 @@ import {
 } from './message.constants'
 import { updateCandidatDepartement } from '../../models/candidat'
 import { getStatusWithRecentlyDept } from '../common/candidat-status'
-import { getHashCaptcha } from './util/captcha-tools'
+import { getHashCaptcha, setCandidatIdSession } from './util/captcha-tools'
 import { upsertSession } from '../../models/session-candidat'
 
 export const ErrorMsgArgEmpty =
@@ -175,6 +175,8 @@ export async function getPlacesByCentre (req, res) {
         getStatusWithRecentlyDept(candidatStatus, geoDepartement, homeDepartement, isInRecentlyDept),
       )
     }
+
+    await setCandidatIdSession(req)
 
     appLogger.info({
       ...loggerInfo,

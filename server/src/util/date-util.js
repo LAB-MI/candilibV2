@@ -269,3 +269,15 @@ export const getNumberSecondRemainingInTheDay = () => {
 
   return duration + 's'
 }
+
+export const getFrenchDateFromLuxon = dateTime =>
+  dateTime &&
+  dateTime
+    .setLocale('fr')
+    .setZone(FRENCH_TIME_ZONE)
+    .toLocaleString({
+      weekday: 'long',
+      month: 'long',
+      day: '2-digit',
+      year: 'numeric',
+    })

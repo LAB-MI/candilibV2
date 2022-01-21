@@ -6,6 +6,7 @@
 import { appLogger } from '../../util'
 import { UNKNOWN_ERROR_GET_DEPARTEMENTS_INFOS } from '../admin/message.constants'
 import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
+import { setCandidatIdSession, setOrCreateCandidatIdSession } from './util/captcha-tools'
 
 /**
  * Récupérer les géo-départements actives
@@ -23,6 +24,11 @@ export async function getActiveGeoDepartementsInfos (req, res) {
     request_id: req.request_id,
     section: 'candidat-departements-controllers',
     candidatId: userId,
+  }
+
+  const isSet = await setCandidatIdSession(req)
+  if (!isSet) {
+    await setOrCreateCandidatIdSession(req)
   }
 
   try {

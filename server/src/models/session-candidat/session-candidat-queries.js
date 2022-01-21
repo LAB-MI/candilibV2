@@ -37,6 +37,7 @@ const checkKeyNeedUpdate = (sessionInfo) => {
     forwardedFor,
     clientId,
     hashCaptcha,
+    pathsVisited,
   } = sessionInfo
 
   const neededKey = {}
@@ -73,6 +74,10 @@ const checkKeyNeedUpdate = (sessionInfo) => {
     neededKey.hashCaptcha = hashCaptcha
   }
 
+  if (pathsVisited) {
+    neededKey.pathsVisited = pathsVisited
+  }
+
   return neededKey
 }
 
@@ -87,6 +92,12 @@ export const updateSession = async (sessionInfo) => {
 export const updateSessionId = async (sessionInfo) => {
   const { userId, forwardedFor, clientId } = sessionInfo
   const result = await SessionCandidatModel.updateOne({ userId: userId }, { $set: { forwardedFor, clientId } })
+
+  return result
+}
+
+export const updateSessionPathsVisistedById = async (userId, pathVisited) => {
+  const result = await SessionCandidatModel.updateOne({ userId }, { $push: { pathsVisited: pathVisited } })
 
   return result
 }
