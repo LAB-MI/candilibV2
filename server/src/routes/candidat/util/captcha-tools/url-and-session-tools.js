@@ -47,7 +47,7 @@ const getRefPatern = ({
 }
 
 export const isValidRef = async (req) => {
-  const { userId } = req
+  const { userId, currentSession } = req
 
   const {
     nomCentre,
@@ -55,7 +55,7 @@ export const isValidRef = async (req) => {
     date,
   } = req.body
 
-  const session = await getSessionByCandidatId({ userId })
+  const session = currentSession || (await getSessionByCandidatId({ userId }))
   const refList = session.pathsVisited || []
   if (!refList.length) return false
 
