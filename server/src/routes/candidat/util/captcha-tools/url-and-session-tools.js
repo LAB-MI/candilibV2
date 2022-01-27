@@ -1,5 +1,5 @@
 import { IS_CHECK_REF_DISABLE } from '../../../../config'
-import { getSessionByCandidatId, updateSessionPathsVisistedById, upsertSession } from '../../../../models/session-candidat'
+import { getSessionByCandidatId, pushSessionPathsVisistedById, upsertSession } from '../../../../models/session-candidat'
 import { getFrenchDateFromLuxon, getFrenchLuxon, getFrenchLuxonFromISO } from '../../../../util'
 
 export const splitPatern = 'candilib/candidat/'
@@ -83,7 +83,7 @@ export const setCandidatIdSession = async (req) => {
   const session = await getSessionByCandidatId({ userId })
   if (!session || !session?.pathsVisited) return false
   if (!session.pathsVisited.includes(refererPath)) {
-    await updateSessionPathsVisistedById(
+    await pushSessionPathsVisistedById(
       userId,
       refererPath,
     )

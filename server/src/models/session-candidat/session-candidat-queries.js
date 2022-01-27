@@ -96,7 +96,7 @@ export const updateSessionId = async (sessionInfo) => {
   return result
 }
 
-export const updateSessionPathsVisistedById = async (userId, pathVisited) => {
+export const pushSessionPathsVisistedById = async (userId, pathVisited) => {
   const result = await SessionCandidatModel.updateOne({ userId }, { $push: { pathsVisited: pathVisited } })
 
   return result
