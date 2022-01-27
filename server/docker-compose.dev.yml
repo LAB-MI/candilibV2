@@ -92,6 +92,7 @@ services:
       DAYS_FORBID_CANCEL: 7
       TENANT_NAME: ${TENANT_NAME}
       JOB_LIST: 'HELLO'
+      IS_CHECK_REF_ENABLE: ${IS_CHECK_REF_ENABLE:-undefined}
     networks:
       - candilib-network
     entrypoint: npm run dev_pm2

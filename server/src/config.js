@@ -285,4 +285,6 @@ export const automateApiConfig = {
 
 export const DEFAULT_PORT_SCHEDULERS = 8026
 
+export const IS_CHECK_REF_DISABLE = process.env.IS_CHECK_REF_DISABLE
+
 export default config

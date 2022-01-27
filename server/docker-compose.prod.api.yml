@@ -32,6 +32,7 @@ services:
       LINE_DELAY: ${LINE_DELAY}
       TENANT_NAME: ${TENANT_NAME}
       SECRET: ${SECRET}
+      IS_CHECK_REF_ENABLE: ${IS_CHECK_REF_ENABLE:-undefined}
 
 networks:
   default:
