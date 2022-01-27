@@ -1,7 +1,8 @@
+import { IS_CHECK_REF_DISABLE } from '../../../../config'
 import { getSessionByCandidatId, updateSessionPathsVisistedById, upsertSession } from '../../../../models/session-candidat'
 import { getFrenchDateFromLuxon, getFrenchLuxon, getFrenchLuxonFromISO } from '../../../../util'
 
-const splitPatern = 'candilib/candidat/'
+export const splitPatern = 'candilib/candidat/'
 const HOME = 'home'
 const SELECTION = 'selection'
 const SELECTION_CENTRE = 'selection-centre'
@@ -17,7 +18,7 @@ const PATERN_BASE_UNDEF_DAY = `/${UNDEFINED_DAY}${PATERN_BASE_PLACE}`
 const PATERN_BASE_PLACE_MONTH_DAY = `${PATERN_BASE_MONTH_DAY}${PATERN_BASE_PLACE}`
 const PATERN_BASE_CONFIRMATION = `/${SELECTION}/${SELECTION_CONFIRMATION}`
 
-const getRefPatern = ({
+export const getRefPatern = ({
   geoDepartement,
   nomCentre,
   date,
@@ -47,6 +48,7 @@ const getRefPatern = ({
 }
 
 export const isValidRef = async (req) => {
+  if (IS_CHECK_REF_DISABLE) return true
   const { userId, currentSession } = req
 
   const {
@@ -79,7 +81,7 @@ export const setCandidatIdSession = async (req) => {
   const refererPath = decodeURI(req.get('referer'))
 
   const session = await getSessionByCandidatId({ userId })
-  if (!session) return false
+  if (!session || !session?.pathsVisited) return false
   if (!session.pathsVisited.includes(refererPath)) {
     await updateSessionPathsVisistedById(
       userId,

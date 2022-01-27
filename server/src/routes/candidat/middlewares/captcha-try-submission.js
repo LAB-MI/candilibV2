@@ -68,6 +68,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
       if (imageAnswer) {
         if (visualCaptcha.validateImage(imageAnswer)) {
           queryParams.push('status=validImage')
+
           req.currentSession = currentSession
           const isRefValid = await isValidRef(req)
           responseStatus = isRefValid ? queryParams.push('status=refValid') && 200 : queryParams.push('status=refInvalid') && 400
