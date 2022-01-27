@@ -1,11 +1,13 @@
 import { connect, disconnect } from '../../mongo-connection'
 import { createCandidat } from '../../models/candidat'
-import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate, getFrenchLuxonFromObject } from '../../util'
+import { getFrenchFormattedDateTime, getFrenchLuxon, getFrenchLuxonFromJSDate, getFrenchLuxonFromObject, getFrenchLuxonFromISO } from '../../util'
 import app, { apiPrefix } from '../../app'
 import request from 'supertest'
 import { setNowAfterSelectedHour, setNowAtNow } from './__tests__/luxon-time-setting'
-import { deleteSessionByCandidatId, getSessionByCandidatId } from '../../models/session-candidat'
+import { deleteSessionByCandidatId, getSessionByCandidatId, createSession } from '../../models/session-candidat'
 import config, { numberOfImages } from '../../config'
+import { getRefPatern, splitPatern } from './util/captcha-tools'
+import { startCaptcha } from './captcha-business'
 
 import {
   createCentres,
@@ -60,6 +62,73 @@ const expectedBodyForCaptcha = (body, expectedValue, isCaptcha) => {
     expect(captcha).toHaveProperty('imageFieldName')
     expect(typeof captcha.imageFieldName).toBe('string')
   }
+}
+
+const getReservationResult = (date, nomCentre, geoDepartement) => ({
+  date: getFrenchLuxonFromISO(date).toUTC().toISO(),
+  centre: nomCentre,
+  departement: geoDepartement,
+  isBooked: true,
+})
+
+const requestCaptchaSuccessOrNot = async (candidat, { date, geoDepartement, nomCentre }, departement) => {
+  const dateNow = getFrenchLuxon()
+
+  const prefixCaptcha = 'visualcaptcha_'
+  const refPatern = (getRefPatern({
+    geoDepartement,
+    nomCentre,
+    date,
+  })).map(el => `/${splitPatern}${el}`)
+
+  const shapedSession = {
+    session: {},
+    expires: dateNow.endOf('day').toISO(),
+    captchaExpireAt: dateNow.plus({ minutes: 3 }).toISO(),
+    count: 0,
+    userId: candidat._id,
+    forwardedFor: '127.0.0.1',
+    clientId: 'FAKE_CLIENT_ID',
+    pathsVisited: refPatern,
+    hashCaptcha: `${geoDepartement}|${nomCentre}|${date}`,
+  }
+
+  await createSession(shapedSession)
+
+  const startCaptchaResult = await startCaptcha({
+    userId: candidat._id,
+    forwardedFor: '127.0.0.1',
+    clientId: 'FAKE_CLIENT_ID',
+  })
+  const currentSession = await getSessionByCandidatId({ userId: candidat._id })
+  const responseCaptcha = { [startCaptchaResult.captcha.imageFieldName]: currentSession.session[`${prefixCaptcha}${candidat._id}`].validImageOption.value }
+
+  const { body } = await request(app)
+    .patch(`${apiPrefix}/candidat/places`)
+    .send({
+      nomCentre,
+      geoDepartement,
+      date,
+      isAccompanied: true,
+      hasDualControlCar: true,
+      isModification: false,
+      ...responseCaptcha,
+    })
+    .set('Accept', 'application/json')
+    .set('x-forwarded-for', '127.0.0.1')
+    .set('x-client-id', 'FAKE_CLIENT_ID')
+    .expect(200)
+
+  const expetedReservation = getReservationResult(date, nomCentre, departement)
+  const message = "Votre réservation à l'examen a été prise en compte. Votre convocation n'a pas pu être envoyée dans votre boîte mail."
+  const statusmail = false
+
+  expect(body).toBeDefined()
+  expect(body).toHaveProperty('success', true)
+  expect(body).toHaveProperty('message', message)
+  expect(body).toHaveProperty('statusmail', statusmail)
+  expect(body).toHaveProperty('reservation')
+  expect(body.reservation).toMatchObject(expetedReservation)
 }
 
 const requestCaptcha = async (captchaPath, expectedValue, { date, geoDepartement, nomCentre }) => {
@@ -142,6 +211,7 @@ const placeCanBook = {
   createdAt: dateYesterday,
   visibleAt: dateYesterday,
 }
+
 describe('Captcha test', () => {
   let candidat1
   let createdCentres
@@ -182,14 +252,18 @@ describe('Captcha test', () => {
   afterEach(async () => {
     setNowAtNow()
     await deleteSessionByCandidatId(candidat1._id)
+    await removePlaces()
   })
 
   afterAll(async () => {
-    await removePlaces()
     await removeCentres()
     await deleteCandidats()
 
     await disconnect()
+  })
+
+  it('should valid a captcha with place', async () => {
+    await requestCaptchaSuccessOrNot(candidat1, infosPlace, createdCentres[1].departement)
   })
 
   it('should generate a captcha util the limit and verify unauthorize for place and get image', async () => {

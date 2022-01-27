@@ -66,7 +66,7 @@ describe('SessionCandidat', () => {
 
     sessionFake = {
       userId: candidat1._id,
-      session: JSON.stringify({ key: 'value' }),
+      session: { key: 'value' },
       expires: dateNow.toISO(),
       captchaExpireAt: dateNow.toISO(),
       count: 0,
