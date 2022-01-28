@@ -2,7 +2,9 @@ import request from 'supertest'
 
 import app, { apiPrefix } from '../../app'
 import config from '../../config'
+import { createInspecteur } from '../../models/inspecteur'
 import Inspecteur from '../../models/inspecteur/inspecteur-model'
+import { EMAIL_EXISTE } from '../../models/inspecteur/inspecteur.constants'
 import { createUser } from '../../models/user'
 import { connect, disconnect } from '../../mongo-connection'
 
@@ -20,6 +22,7 @@ const departements = ['75', '93']
 // inspecteur
 const validEmail = 'dontusethis@example.fr'
 const anotherValidEmail = 'dontusethis@example.com'
+const anotherValidEmail1 = 'dontusethis@example.eu'
 
 const email = validEmail
 const matricule = '153424'
@@ -98,5 +101,67 @@ describe('inspecteurs controllers', () => {
     expect(ipcsr).toHaveProperty('matricule', matricule)
     expect(ipcsr).toHaveProperty('email', email)
     expect(ipcsr).toHaveProperty('secondEmail', [anotherValidEmail])
+  })
+
+  it('Should update a inspecteur email with second email', async () => {
+    const inspecteur = await createInspecteur({
+      departement: '93',
+      email,
+      matricule,
+      nom,
+      prenom,
+    })
+
+    const bodyToSend = {
+      departement: '75',
+      email: anotherValidEmail,
+      matricule,
+      nom,
+      prenom,
+      secondEmail: [anotherValidEmail1],
+    }
+
+    const { body } = await request(app)
+      .put(`${apiPrefix}/admin/inspecteurs/${inspecteur._id}`)
+      .send(bodyToSend)
+      .set('Accept', 'application/json')
+      .expect(200)
+
+    expect(body).toHaveProperty('success', true)
+    expect(body.ipcsr).toBeDefined()
+    const { ipcsr } = body
+    expect(ipcsr).toHaveProperty('nom', nom.toUpperCase())
+    expect(ipcsr).toHaveProperty('prenom', prenom)
+    expect(ipcsr).toHaveProperty('matricule', matricule)
+    expect(ipcsr).toHaveProperty('email', anotherValidEmail)
+    expect(ipcsr).toHaveProperty('secondEmail', [anotherValidEmail1])
+  })
+
+  it('Should not update a inspecteur email with second email', async () => {
+    const inspecteur = await createInspecteur({
+      departement: '93',
+      email,
+      matricule,
+      nom,
+      prenom,
+    })
+
+    const bodyToSend = {
+      departement: '75',
+      email: anotherValidEmail,
+      matricule,
+      nom,
+      prenom,
+      secondEmail: [inspecteur.email],
+    }
+
+    const { body } = await request(app)
+      .put(`${apiPrefix}/admin/inspecteurs/${inspecteur._id}`)
+      .send(bodyToSend)
+      .set('Accept', 'application/json')
+      .expect(409)
+
+    expect(body).toHaveProperty('success', false)
+    expect(body).toHaveProperty('message', EMAIL_EXISTE(inspecteur.email))
   })
 })
