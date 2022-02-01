@@ -153,9 +153,18 @@ Cypress.Commands.add('addPlanning', (dates, fileNameTmp = 'planning.csv') => {
 
   // Creates the csv file
   cy.writeFile(Cypress.env('filePath') + `/${fileName1}`, placesArray)
+
+  cy.intercept({
+    method: 'GET',
+    url: '**/admin/inspecteurs?centreId*',
+  }).as('goToGestionPlanning')
   // Adds the places from the created planning file
   cy.contains('calendar_today')
     .click()
+
+  cy.wait('@goToGestionPlanning')
+  // TODO: maybe wait(5000) => find other solution
+  cy.wait(5000)
   cy.get('.t-import-places')
     .click()
   cy.fixture(filePath1).then(fileContent => {

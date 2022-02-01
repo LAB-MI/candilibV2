@@ -14,7 +14,7 @@ const SELECTION_CONFIRMATION = 'selection-confirmation'
 const PATERN_BASE_MONTH_DAY = `/${UNDEFINED_MONTH}/${UNDEFINED_DAY}`
 const PATERN_BASE_CENTRE = `/${SELECTION}/${SELECTION_CENTRE}`
 const PATERN_BASE_PLACE = `/${SELECTION}/${SELECTION_PLACE}`
-const PATERN_BASE_UNDEF_DAY = `/${UNDEFINED_DAY}${PATERN_BASE_PLACE}`
+// const PATERN_BASE_UNDEF_DAY = `/${UNDEFINED_DAY}${PATERN_BASE_PLACE}`
 const PATERN_BASE_PLACE_MONTH_DAY = `${PATERN_BASE_MONTH_DAY}${PATERN_BASE_PLACE}`
 const PATERN_BASE_CONFIRMATION = `/${SELECTION}/${SELECTION_CONFIRMATION}`
 
@@ -33,7 +33,7 @@ export const getRefPatern = ({
   const PATERN_HOME = HOME
   const PATERN_CENTRE = `${geoDepartement}${PATERN_BASE_CENTRE}`
   const PATERN_PLACE = `${departementAnNomCentre}${PATERN_BASE_PLACE_MONTH_DAY}`
-  const PATERN_PLACE_MONTH = `${departementAnNomCentre}/${HUMAN_MONTH}${PATERN_BASE_UNDEF_DAY}`
+  // const PATERN_PLACE_MONTH = `${departementAnNomCentre}/${HUMAN_MONTH}${PATERN_BASE_UNDEF_DAY}`
   const PATERN_PLACE_MONTH_DAY = `${departementAnNomCentre}/${humanMonthAndDay}${PATERN_BASE_PLACE}`
   const PATERN_CONFIRMATION = `${departementAnNomCentre}/${humanMonthAndDay}/${date}${PATERN_BASE_CONFIRMATION}`
 
@@ -41,7 +41,7 @@ export const getRefPatern = ({
     PATERN_HOME,
     PATERN_CENTRE,
     PATERN_PLACE,
-    PATERN_PLACE_MONTH,
+    // PATERN_PLACE_MONTH,
     PATERN_PLACE_MONTH_DAY,
     PATERN_CONFIRMATION,
   ]
@@ -74,7 +74,6 @@ export const isValidRef = async (req) => {
   return filteredRef.length === expetedRefList.length
 }
 
-// TODO: Define dateTime of ref
 // TODO: Rename next function
 export const setCandidatIdSession = async (req) => {
   const { userId } = req
