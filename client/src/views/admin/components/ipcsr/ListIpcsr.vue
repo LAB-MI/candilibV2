@@ -10,6 +10,7 @@
         <update-ipcsr
           :key="item._id"
           :default-email="item.email"
+          :default-email2="item.secondEmail.toString()"
           :default-matricule="item.matricule"
           :default-nom="item.nom"
           :default-prenom="item.prenom"
@@ -46,6 +47,7 @@ export default {
         { text: 'Nom', value: 'nom', class: 'text-uppercase' },
         { text: 'Matricule', value: 'matricule', class: 'text-uppercase', align: 'right' },
         { text: 'Dépt', value: 'departement', width: '8em', class: 'text-uppercase', align: 'right' },
+        { text: 'Adresse courriel secondaire', value: 'secondEmail', class: 'text-uppercase' },
         { text: 'Actions', value: 'action', align: 'center', sortable: false, filterable: false, width: '15em', class: 'text-uppercase' },
       ],
       editedIpcsr: {},
