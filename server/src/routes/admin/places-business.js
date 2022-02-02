@@ -967,7 +967,7 @@ export const sendMailSchedulesInspecteurs = async (
         let inspecteurMail
         if (isForInspecteurs) {
           const inspecteurToMail = await findInspecteurById(inspecteurId)
-          inspecteurMail = inspecteurToMail.email
+          inspecteurMail = [inspecteurToMail.secondEmail, inspecteurToMail.email].flat()
         }
         await sendScheduleInspecteur(
           isForInspecteurs ? inspecteurMail : departementEmail,
@@ -1042,13 +1042,13 @@ export const sendMailSchedulesAllInspecteurs = async (date, loggerInfo = {}) => 
   const inspecteurs = await findAllInspecteurs()
 
   const resultsAsync = inspecteurs.map(async inspecteur => {
-    const { _id, email } = inspecteur
+    const { _id, email, secondEmail } = inspecteur
     let nbPlaces = 0
     const places = await findPlaceBookedByInspecteur(_id, begin, end)
     if (places && places.length > 0) {
       nbPlaces = places.length
       try {
-        await sendScheduleInspecteur(email, places, inspecteur, undefined, true)
+        await sendScheduleInspecteur([email, secondEmail].flat(), places, inspecteur, undefined, true)
         appLogger.info({
           ...loggerContent,
           inspecteurId: _id,

@@ -36,7 +36,7 @@ export async function expectMailBordereaux (subjectParams) {
   } = subjectParams
   const bodyMail = require('../send-mail').getMail()
   expect(bodyMail).toBeDefined()
-  expect(bodyMail).toHaveProperty('to', emailInspecteur)
+  expect(bodyMail).toHaveProperty('to', [emailInspecteur])
   expect(bodyMail).toHaveProperty(
     'subject',
     `Bordereau de l'inspecteur ${inspecteurName}/${inspecteurMatricule} pour le ${dateToString} au centre de ${centreNom} du département ${departement}`,
