@@ -361,6 +361,7 @@ const apiAdmin = {
     matricule,
     nom,
     prenom,
+    email2,
   }) {
     const json = await apiClient.put(
         `${apiPaths.admin.inspecteurs}/${ipcsrId}`,
@@ -372,6 +373,7 @@ const apiAdmin = {
             matricule,
             nom,
             prenom,
+            secondEmail: email2,
           }),
         },
     )

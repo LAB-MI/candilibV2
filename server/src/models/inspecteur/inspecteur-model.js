@@ -92,7 +92,9 @@ InspecteurSchema.pre('save', async function preSave () {
     secondEmail: inspecteur.email,
   })
   if (foundInspecteur) {
-    throw new Error(EMAIL_EXISTE(inspecteur.email))
+    const error = new Error(EMAIL_EXISTE(inspecteur.email))
+    error.status = 409
+    throw error
   }
 
   if (!inspecteur.secondEmail || !inspecteur.secondEmail.length) return
@@ -115,7 +117,9 @@ InspecteurSchema.pre('save', async function preSave () {
   }, { secondEmail: [], invalid: [], doublons: [] })
 
   if (resultCheck.invalid.length) {
-    throw new Error(INVALID_EMAIL_FOR(resultCheck.invalid))
+    const error = new Error(INVALID_EMAIL_FOR(resultCheck.invalid))
+    error.status = 409
+    throw error
   }
 
   if (resultCheck.secondEmail.includes(inspecteur.email) && !resultCheck.doublons.includes(inspecteur.email)) {
@@ -123,7 +127,9 @@ InspecteurSchema.pre('save', async function preSave () {
   }
 
   if (resultCheck.doublons.length) {
-    throw new Error(EMAIL_ALREADY_SET(resultCheck.doublons))
+    const error = new Error(EMAIL_ALREADY_SET(resultCheck.doublons))
+    error.status = 409
+    throw error
   }
 
   inspecteur.secondEmail = resultCheck.secondEmail
@@ -133,7 +139,9 @@ InspecteurSchema.pre('save', async function preSave () {
   })
 
   if (foundInspecteur) {
-    throw new Error(EMAIL_EXISTE(foundInspecteur.email))
+    const error = new Error(EMAIL_EXISTE(foundInspecteur.email))
+    error.status = 409
+    throw error
   }
 
   const emails = [...inspecteur.secondEmail, inspecteur.email]
@@ -142,7 +150,9 @@ InspecteurSchema.pre('save', async function preSave () {
   })
 
   if (foundInspecteur) {
-    throw new Error(EMAIL_EXISTE(foundInspecteur.secondEmail.filter(email => emails.includes(email))))
+    const error = new Error(EMAIL_EXISTE(foundInspecteur.secondEmail.filter(email => emails.includes(email))))
+    error.status = 409
+    throw error
   }
 })
 
