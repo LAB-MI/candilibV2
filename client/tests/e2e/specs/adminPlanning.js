@@ -104,8 +104,17 @@ describe('Planning tests', () => {
     cy.getLastMail().its('Content.Body')
       .should('contain', Cypress.env('centre'))
       .and('contain', 'CANDIDAT_FRONT')
+
+    cy.getLastMail().getRecipients()
+      .should('contain', Cypress.env('secondEmailInspecteur'))
+    cy.getLastMail().getSubject()
+      .should('contain', '=?UTF-8?Q?Bordereau_de_l=27inspecteur_')
+    cy.getLastMail().its('Content.Body')
+      .should('contain', Cypress.env('centre'))
+      .and('contain', 'CANDIDAT_FRONT')
+
     // Receive the mail for the inspectors
-    cy.deleteAllMails()
+    // cy.deleteAllMails()
     cy.get('button')
       .contains('Recevoir les bordereaux des IPCSR du')
       .click().wait(500)
