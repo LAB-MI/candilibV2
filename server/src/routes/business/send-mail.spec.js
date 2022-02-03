@@ -75,13 +75,47 @@ describe('test send mail', () => {
       })
       stream.on('end', function () {
         var body = Buffer.concat(chunks)
-        expect(body.toString()).toMatch('<html> Test Transport </html>')
-
-        return callback()
+        try {
+          expect(body.toString()).toMatch('<html> Test Transport </html>')
+        } finally {
+          callback()
+        }
       })
     }
 
     await sendMail('test@email.com', {
+      subject: 'test',
+      content: '<html> Test Transport </html>',
+    })
+  })
+
+  it('should send one mail to many e-mails', async () => {
+    const eMails = ['test@email.com', 'test1@email.com']
+    server.onData = function (stream, session, callback) {
+      const chunks = []
+      // let callCallback = true
+      stream.on('data', function (chunk) {
+        chunks.push(chunk)
+      })
+      stream.on('end', function () {
+        var body = Buffer.concat(chunks)
+        try {
+          expect(body.toString()).toMatch('<html> Test Transport </html>')
+        } finally {
+          callback()
+        }
+      })
+    }
+
+    server.onRcptTo = function (address, session, callback) {
+      try {
+        expect(eMails).toContain(address.address)
+      } finally {
+        callback()
+      }
+    }
+
+    await sendMail(eMails, {
       subject: 'test',
       content: '<html> Test Transport </html>',
     })

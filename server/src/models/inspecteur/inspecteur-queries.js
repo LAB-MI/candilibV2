@@ -28,6 +28,7 @@ export const createInspecteur = async ({
   nom,
   prenom,
   departement,
+  secondEmail,
 }) => {
   const validated = await inspecteurValidator.validateAsync({
     email,
@@ -45,6 +46,7 @@ export const createInspecteur = async ({
     nom,
     prenom,
     departement,
+    secondEmail,
   })
   await inspecteur.save()
   return inspecteur

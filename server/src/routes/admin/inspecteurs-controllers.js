@@ -204,7 +204,7 @@ export const getInspecteurs = async (req, res) => {
  * @param {import('express').Response} res
  */
 export const createIpcsr = async (req, res) => {
-  const { departement, email, matricule, nom, prenom } = req.body
+  const { departement, email, matricule, nom, prenom, secondEmail } = req.body
   const userId = req.userId
 
   if ([departement, email, matricule, nom, prenom].some(w => !w)) {
@@ -223,6 +223,7 @@ export const createIpcsr = async (req, res) => {
     nom,
     matricule,
     prenom,
+    secondEmail,
   }
 
   const isAllowed = await isUserAllowedToCreateIpcsr(userId, departement)
@@ -245,8 +246,10 @@ export const createIpcsr = async (req, res) => {
       matricule,
       nom,
       prenom,
+      secondEmail,
     })
 
+    appLogger.info({ ...loggerInfo, description: 'IPCSR est créé' })
     return res.status(201).json({
       success: true,
       ipcsr,
@@ -264,6 +267,8 @@ export const createIpcsr = async (req, res) => {
         message = `Cette adresse courriel existe déjà : ${email}`
       }
     }
+
+    appLogger.error({ ...loggerInfo, description: message })
 
     return res.status(status).json({
       success: false,
@@ -300,6 +305,7 @@ export const updateIpcsr = async (req, res) => {
     matricule = '',
     nom = '',
     prenom = '',
+    secondEmail = [],
   } = req.body
   const userId = req.userId
   const { id: ipcsrId } = req.params
@@ -323,6 +329,8 @@ export const updateIpcsr = async (req, res) => {
     nom,
     matricule,
     prenom,
+    secondEmail,
+    active,
   }
 
   const isAllowed = await isUserAllowedToUpdateIpcsr(
@@ -344,15 +352,20 @@ export const updateIpcsr = async (req, res) => {
 
   if (typeof active === 'boolean') {
     if (active === false && (await isInspecteurBooked(ipcsrId)).length) {
+      const message = "Impossible d'archiver cet inspecteur : il est associé à des places d'examens"
+
+      appLogger.warn({ ...loggerInfo, description: message })
+
       return res.status(409).json({
         success: false,
-        message:
-          "Impossible d'archiver cet inspecteur : il est associé à des places d'examens",
+        message,
       })
     }
 
     try {
       const ipcsr = await updateInspecteur(ipcsrId, { active })
+      appLogger.info({ ...loggerInfo, description: 'IPCSR modifé' })
+
       return res.status(200).json({
         success: true,
         ipcsr,
@@ -370,7 +383,7 @@ export const updateIpcsr = async (req, res) => {
           message = `Cette adresse courriel existe déjà : ${email}`
         }
       }
-
+      appLogger.error({ ...loggerInfo, description: message })
       return res.status(status).json({
         success: false,
         message,
@@ -384,7 +397,9 @@ export const updateIpcsr = async (req, res) => {
     matricule,
     nom,
     prenom,
+    secondEmail,
   })
+  appLogger.info({ ...loggerInfo, description: 'IPCSR modifé' })
 
   return res.status(200).json({
     success: true,
