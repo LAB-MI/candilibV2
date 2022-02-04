@@ -1224,35 +1224,45 @@ describe('Synchro-aurige: send mail', () => {
     }
     await candidatModel.findByIdAndDelete(candidatCreated._id)
   })
+
   afterAll(async () => {
     await removeCentres()
     await removeInspecteur()
     await disconnect()
     await smtpServerCloseAsync(server)
   })
-  it('should get mail success before validate aurige', done => {
-    server.onData = function (stream, session, callback) {
-      const chunks = []
-      stream.on('data', function (chunk) {
-        chunks.push(chunk)
-      })
-      stream.on('end', async function () {
-        const body = Buffer.concat(chunks)
-        const mail = await simpleParser(body)
-        expect(mail.headers.get('to')).toHaveProperty(
-          'text',
-          candidatPassed.email,
-        )
-        expect(mail.headers.get('subject')).toBe(SUBJECT_MAIL_INFO)
-        expect(mail.text).toMatch(
-          /Selon nos informations vous avez déjà réussi votre examen du permis de conduire,[\n ]notre service ne vous est plus utile/,
-        )
-        done()
-        return callback()
-      })
-    }
+
+  it('should get mail success before validate aurige', async () => {
+    const expectSMTP = new Promise((resolve, reject) => {
+      server.onData = function (stream, session, callback) {
+        const chunks = []
+        stream.on('data', function (chunk) {
+          chunks.push(chunk)
+        })
+        stream.on('end', async function () {
+          try {
+            const body = Buffer.concat(chunks)
+            const mail = await simpleParser(body)
+            resolve(mail)
+            return callback(null, mail)
+          } catch (error) {
+            reject(error)
+            return callback(error)
+          }
+        })
+      }
+    })
 
     expectGetMailSuccessBeforeValid()
+    const mail = await expectSMTP
+    expect(mail.headers.get('to')).toHaveProperty(
+      'text',
+      candidatPassed.email,
+    )
+    expect(mail.headers.get('subject')).toBe(SUBJECT_MAIL_INFO)
+    expect(mail.text).toMatch(
+      /Selon nos informations vous avez déjà réussi votre examen du permis de conduire,[\n ]notre service ne vous est plus utile/,
+    )
   })
 
   async function expectGetMailSuccessBeforeValid () {
