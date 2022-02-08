@@ -33,6 +33,11 @@ describe('Candidate by group', () => {
     candidatsByDepartments.forEach(candidat => {
       cy.addCandidat(candidat)
     })
+    cy.updatePlaces({}, {
+      createdAt: now.minus({ days: 2 }).toUTC(),
+      visibleAt: getNow().toUTC(),
+    }, true)
+    cy.wait(1000) // because cache places
   })
 
   after(() => {
@@ -45,20 +50,12 @@ describe('Candidate by group', () => {
   })
 
   it('should get and book places for group1', () => {
-    cy.updatePlaces({}, {
-      createdAt: now.minus({ days: 2 }).toUTC(),
-      visibleAt: getNow().toUTC(),
-    }, true)
     cy.getNewMagicLinkCandidat(candidatsByDepartments[0].email).then(mLink => {
       candidatBookPlace(mLink, candidatsByDepartments, nowIn1Week)
     })
   })
 
   it('should not get and not book places for group5', () => {
-    cy.updatePlaces({}, {
-      createdAt: now.minus({ days: 2 }).toUTC(),
-      visibleAt: getNow().toUTC(),
-    }, true)
     cy.getNewMagicLinkCandidat(candidatsByDepartments[5].email).then(mLink => {
       candidatCantSelectPlace(mLink, candidatsByDepartments, nowIn1Week)
     })
@@ -66,12 +63,7 @@ describe('Candidate by group', () => {
 
   it('should get and book places for group5 with is departement 76 is recent', () => {
     cy.updateCentres({ nom: Cypress.env('centre') }, { geoDepartement: '76' })
-
-    cy.updatePlaces({}, {
-      createdAt: now.minus({ days: 2 }).toUTC(),
-      visibleAt: getNow().toUTC(),
-    }, true)
-
+    cy.wait(1000) // because cache places
     cy.getNewMagicLinkCandidat(candidatsByDepartments[5].email).then(mLink => {
       candidatBookPlace(mLink, [candidatsByDepartments[5]], nowIn1Week, undefined, undefined, '76')
     })

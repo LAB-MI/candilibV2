@@ -30,6 +30,7 @@ describe('Standard scenarios', () => {
         createdAt: now.minus({ days: 2 }).toUTC(),
         visibleAt: now.minus({ days: 2 }).toUTC(),
       }, true)
+      cy.wait(1000) // because cache
     })
 
     it('The candidate chooses a place and the admin cancels it', () => {

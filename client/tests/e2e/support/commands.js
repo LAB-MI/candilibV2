@@ -498,6 +498,7 @@ Cypress.Commands.add('toGoCentre', (options = {}) => {
 
 Cypress.Commands.add('toGoSelectPlaces', (options = {}) => {
   const { tInfoCenters75TimeOut, homeDepartement, deptSelected } = options
+
   cy.get('h2')
     .should('contain', 'Choix du département')
   if (homeDepartement === '75') {
@@ -507,16 +508,31 @@ Cypress.Commands.add('toGoSelectPlaces', (options = {}) => {
   const geoDept = deptSelected || Cypress.env('geoDepartement')
   cy.log({ geoDept, deptSelected })
   const classGeoDepartement = '.t-geo-departement-' + geoDept
+  cy.intercept({
+    method: 'GET',
+    url: Cypress.env('frontCandidat') + 'api/v2/candidat/centres?departement*',
+  }).as('getCentres')
+
   cy.get(classGeoDepartement)
     .contains(geoDept)
     .click()
+
+  cy.wait('@getCentres')
+  cy.url().should('contain', 'selection/selection-centre')
   cy.get('h2')
     .should('contain', 'Choix du centre')
 
   const classCenter = `.t-centers-${Cypress.env('centre').toLowerCase().replace(/ /g, '-')}`
+  cy.intercept({
+    method: 'GET',
+    url: Cypress.env('frontCandidat') + 'api/v2/candidat/places?begin=*',
+  }).as('getPlaces')
+
   cy.get(classCenter)
     .contains(Cypress.env('centre'))
     .click()
+  cy.wait('@getPlaces')
+  cy.url().should('contain', 'selection/selection-place')
 })
 
 Cypress.Commands.add('getCandidatInDB', (query) => {
