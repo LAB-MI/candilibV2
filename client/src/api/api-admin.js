@@ -339,7 +339,7 @@ const apiAdmin = {
     return json
   },
 
-  async createInspecteur ({ departement, email, matricule, nom, prenom }) {
+  async createInspecteur ({ departement, email, matricule, nom, prenom, email2 }) {
     const json = await apiClient.post(`${apiPaths.admin.inspecteurs}`, {
       headers: getHeadersForAdminJson(),
       body: JSON.stringify({
@@ -348,6 +348,7 @@ const apiAdmin = {
         matricule,
         nom,
         prenom,
+        secondEmail: email2,
       }),
     })
     return json
@@ -360,6 +361,7 @@ const apiAdmin = {
     matricule,
     nom,
     prenom,
+    email2,
   }) {
     const json = await apiClient.put(
         `${apiPaths.admin.inspecteurs}/${ipcsrId}`,
@@ -371,6 +373,7 @@ const apiAdmin = {
             matricule,
             nom,
             prenom,
+            secondEmail: email2,
           }),
         },
     )

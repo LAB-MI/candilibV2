@@ -3,11 +3,11 @@
  *
  * @module
  */
-
 import mongoose from 'mongoose'
 import sanitizeHtml from 'sanitize-html'
 
 import { email as emailRegex, matricule as matriculeRegex } from '../../util'
+import { EMAIL_ALREADY_SET, EMAIL_EXISTE, INVALID_EMAIL_FOR } from './inspecteur.constants'
 
 const { Schema } = mongoose
 
@@ -33,6 +33,14 @@ export const inspecteurFields = {
     required: true,
     unique: true,
     match: emailRegex,
+    lowercase: true,
+  },
+
+  secondEmail: {
+    type: [String],
+    required: false,
+    match: emailRegex,
+    lowercase: true,
   },
 
   matricule: {
@@ -79,9 +87,77 @@ InspecteurSchema.pre('save', async function preSave () {
     inspecteur.nom.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
 
   inspecteur.email = inspecteur.email.toLowerCase()
+
+  let foundInspecteur = await Inspecteur.findOne({
+    secondEmail: inspecteur.email,
+  })
+  if (foundInspecteur) {
+    const error = new Error(EMAIL_EXISTE(inspecteur.email))
+    error.status = 409
+    throw error
+  }
+
+  if (!inspecteur.secondEmail || !inspecteur.secondEmail.length) return
+
+  const resultCheck = inspecteur.secondEmail.reduce((acc, current) => {
+    if (!emailRegex.test(current)) {
+      // throw new Error(INVALID_EMAIL_FOR(current))
+      acc.invalid.push(current)
+      return acc
+    }
+    if (!acc.invalid.length) {
+      const email = current.toLowerCase()
+      if (acc.secondEmail.includes(email)) {
+        acc.doublons.push(email)
+        return acc
+      }
+      acc.secondEmail.push(email)
+      return acc
+    }
+  }, { secondEmail: [], invalid: [], doublons: [] })
+
+  if (resultCheck.invalid.length) {
+    const error = new Error(INVALID_EMAIL_FOR(resultCheck.invalid))
+    error.status = 409
+    throw error
+  }
+
+  if (resultCheck.secondEmail.includes(inspecteur.email) && !resultCheck.doublons.includes(inspecteur.email)) {
+    resultCheck.doublons.push(inspecteur.email)
+  }
+
+  if (resultCheck.doublons.length) {
+    const error = new Error(EMAIL_ALREADY_SET(resultCheck.doublons))
+    error.status = 409
+    throw error
+  }
+
+  inspecteur.secondEmail = resultCheck.secondEmail
+
+  foundInspecteur = await Inspecteur.findOne({
+    email: { $in: inspecteur.secondEmail },
+  })
+
+  if (foundInspecteur) {
+    const error = new Error(EMAIL_EXISTE(foundInspecteur.email))
+    error.status = 409
+    throw error
+  }
+
+  const emails = [...inspecteur.secondEmail, inspecteur.email]
+  foundInspecteur = await Inspecteur.findOne({
+    secondEmail: { $in: emails },
+  })
+
+  if (foundInspecteur) {
+    const error = new Error(EMAIL_EXISTE(foundInspecteur.secondEmail.filter(email => emails.includes(email))))
+    error.status = 409
+    throw error
+  }
 })
 
-export default mongoose.model('Inspecteur', InspecteurSchema)
+const Inspecteur = mongoose.model('Inspecteur', InspecteurSchema)
+export default Inspecteur
 
 /**
  * @typedef {Object} InspecteurMongooseDocument

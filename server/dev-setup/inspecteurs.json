@@ -130,7 +130,8 @@
     "nom": "dupont04Du75",
     "prenom":"Jean",
     "matricule": "7501020308",
-    "departement": "75"
+    "departement": "75",
+    "secondEmail":["dupont04Du75.jacques@email.com"]
   },
   {
     "email":"dupont05Du75.jacques@email.fr",

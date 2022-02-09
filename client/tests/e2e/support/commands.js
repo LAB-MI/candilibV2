@@ -33,6 +33,7 @@ const connectionUserByStatus = (cypressEnvUserEmail) => {
       .click()
 
     cy.wait('@homeAdminRequest')
+
     cy.url()
       .should('not.contain', '/admin-login')
       .should('contain', '/admin')
@@ -61,7 +62,8 @@ Cypress.Commands.add('adminDisconnection', () => {
   cy.get('.home-link')
     .click()
   cy.get('.t-disconnect')
-    .click()
+    .click({ force: true })
+  cy.checkAndCloseSnackBar('Vous êtes déconnecté')
   cy.url()
     .should('contain', '/admin-login')
 })
@@ -726,4 +728,10 @@ Cypress.Commands.add('connectByMagicLink', (magicLink, options) => {
   }).as('getResa')
   cy.visit(magicLink, options)
   cy.wait('@getResa')
+})
+
+Cypress.Commands.add('deleteInspecteur', (query) => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/inspecteurs', query).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
 })

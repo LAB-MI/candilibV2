@@ -28,6 +28,7 @@ export const createInspecteur = async ({
   nom,
   prenom,
   departement,
+  secondEmail,
 }) => {
   const validated = await inspecteurValidator.validateAsync({
     email,
@@ -45,6 +46,7 @@ export const createInspecteur = async ({
     nom,
     prenom,
     departement,
+    secondEmail,
   })
   await inspecteur.save()
   return inspecteur
@@ -207,7 +209,7 @@ export const findInspecteurByName = async (prenom, nom) => {
  * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR correspondant
  */
 export const findInspecteurByEmail = async email =>
-  Inspecteur.findOne({ email })
+  Inspecteur.findOne({ $or: [{ email }, { secondEmail: email }] })
 
 /**
  * Supprime l'IPCSR de la base de données à partir de son matricule
@@ -258,7 +260,7 @@ export const deleteInspecteurById = async id => {
  * @returns {Promise.<InspecteurMongooseDocument>} - Objet mongoose de l'IPCSR modifié
  */
 export const updateIpcsr = (ipcsrId, newData) => {
-  return Inspecteur.findByIdAndUpdate(ipcsrId, newData)
+  return Inspecteur.findByIdAndUpdate(ipcsrId, newData, { new: true })
 }
 
 /**
