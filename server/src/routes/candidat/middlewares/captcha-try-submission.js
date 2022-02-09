@@ -71,6 +71,7 @@ export const trySubmissionCaptcha = async (req, res, next) => {
 
           req.currentSession = currentSession
           const isRefValid = await isValidRef(req)
+          queryParams.push(`isRefValid=${isRefValid}`)
           responseStatus = isRefValid ? queryParams.push('status=refValid') && 200 : queryParams.push('status=refInvalid') && 400
         } else {
           queryParams.push('status=failedImage')
