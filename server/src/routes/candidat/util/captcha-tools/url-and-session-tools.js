@@ -1,6 +1,6 @@
 import { IS_CHECK_REF_DISABLE } from '../../../../config'
 import { getSessionByCandidatId, pushSessionPathsVisistedById, upsertSession } from '../../../../models/session-candidat'
-import { getFrenchDateFromLuxon, getFrenchLuxon, getFrenchLuxonFromISO } from '../../../../util'
+import { appLogger, getFrenchDateFromLuxon, getFrenchLuxon, getFrenchLuxonFromISO } from '../../../../util'
 
 export const splitPatern = 'candilib/candidat/'
 const HOME = 'home'
@@ -47,7 +47,7 @@ export const getRefPatern = ({
   ]
 }
 
-export const isValidRef = async (req) => {
+export const isValidRef = async (req, loggerInfo) => {
   if (IS_CHECK_REF_DISABLE) return true
   const { userId, currentSession } = req
 
@@ -58,8 +58,12 @@ export const isValidRef = async (req) => {
   } = req.body
 
   const session = currentSession || (await getSessionByCandidatId({ userId }))
-  const refList = session.pathsVisited || []
-  if (!refList.length) return false
+  console.log({ session })
+  const refList = session?.pathsVisited || []
+  if (!refList.length) {
+    appLogger.warn({ ...loggerInfo, action: 'VALID_REF', description: 'No referrer' })
+    return false
+  }
 
   const expetedRefList = getRefPatern({
     geoDepartement,
@@ -71,6 +75,7 @@ export const isValidRef = async (req) => {
     expetedRefList.includes(refItem.split(splitPatern)[1]),
   )
 
+  appLogger.info({ ...loggerInfo, action: 'VALID_REF', refList, filteredRef, expetedRefList, description: 'test' })
   return filteredRef.length === expetedRefList.length
 }
 

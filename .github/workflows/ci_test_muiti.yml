@@ -161,6 +161,18 @@ jobs:
           ( git fetch --unshallow || true ) && git tag -l --sort=creatordate | tail -1
           ci/docker-access.sh
           ci/run-tests-only.sh ${{ matrix.testFile }}
+      - name: get logs of api
+        if: ${{ failure() }}
+        run: |
+          mkdir logs
+          docker logs candilib_api > logs/api.log
+      - name: store logs of api
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v2
+        with:
+          name: api logs
+          path: logs
+          retention-days: 1
       - name: store screenshots
         if: ${{ failure() }}
         uses: actions/upload-artifact@v2
