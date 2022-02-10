@@ -10,9 +10,12 @@ import {
   findInspecteurByMatricule,
   findAllInspecteurs,
 } from './inspecteur-queries'
+import { EMAIL_ALREADY_SET, EMAIL_EXISTE, INVALID_EMAIL_FOR } from './inspecteur.constants'
 
 const validEmail = 'dontusethis@example.fr'
 const anotherValidEmail = 'dontusethis@example.com'
+
+const invalidEmail = 'dontusethisexamplefr'
 
 let email = validEmail
 let matricule = '153424'
@@ -26,6 +29,9 @@ nom = 'Dupond'
 prenom = 'Jean'
 const defaultInspecteur2 = { email, matricule, nom, prenom }
 
+const validEmail2 = 'dontusethis@example2.fr'
+const validEmail3 = 'dontusethis@example3.fr'
+
 describe('Inspecteur', () => {
   beforeAll(async () => {
     await connect()
@@ -36,23 +42,94 @@ describe('Inspecteur', () => {
   })
 
   describe('Saving Inspecteur', () => {
+    const testCreateInspeteurWithDuplicateSecondMail = async (inspecteur, email, isDoublons) => {
+      try {
+        const savedInspecteur = await createInspecteur(inspecteur)
+        expect(savedInspecteur).toBeUndefined()
+      } catch (error) {
+        expect(error).toHaveProperty('message', isDoublons ? EMAIL_ALREADY_SET(email) : EMAIL_EXISTE(email))
+      }
+    }
+
     afterEach(async () => {
-      await Promise.all([
-        deleteInspecteurByMatricule(defaultInspecteur.matricule).catch(
+      await Promise.all([defaultInspecteur.matricule, defaultInspecteur2.matricule].map(
+        matricule => deleteInspecteurByMatricule(matricule).catch(
           () => true,
         ),
-      ])
+      ))
     })
 
-    it('should save an inspecteur', async () => {
-      // Given
-      const inspecteur = defaultInspecteur
+    it('should not save an inspecteur with invalid email', async () => {
+      const inspecteur = {
+        ...defaultInspecteur,
+        secondEmail: [invalidEmail],
+      }
+      try {
+        const savedInspecteur = await createInspecteur(inspecteur)
+        expect(savedInspecteur).toBeUndefined()
+      } catch (error) {
+        expect(error).toHaveProperty('message', INVALID_EMAIL_FOR(invalidEmail))
+      }
+    })
 
-      // When
+    it.each([
+      undefined,
+      [validEmail2],
+      [validEmail2, validEmail3],
+    ])('should save an inspecteur with second e-mail which is: %s', async (secondEmail) => {
+      const inspecteur = {
+        ...defaultInspecteur,
+        secondEmail,
+      }
       const savedInspecteur = await createInspecteur(inspecteur)
-
       // Then
       expect(savedInspecteur).toHaveProperty('isNew', false)
+      expectInspecteurFn(savedInspecteur, inspecteur)
+    })
+
+    it.each([
+      { secondEmail: [validEmail] },
+      { secondEmail: [validEmail2, validEmail2] },
+    ])('should not save an inspecteur with second e-mail exist in info inspecteur: %j',
+      async ({ secondEmail }) => {
+        const inspecteur = {
+          ...defaultInspecteur,
+          secondEmail,
+        }
+        await testCreateInspeteurWithDuplicateSecondMail(inspecteur, secondEmail[0], true)
+      },
+    )
+
+    it('should not save 2 inspecteurs with a second e-mail which is same e-mail of second inspecteur', async () => {
+      await createInspecteur(defaultInspecteur2)
+
+      const inspecteur = {
+        ...defaultInspecteur,
+        secondEmail: [defaultInspecteur2.email, 'dontusethis@example2.fr'],
+      }
+      await testCreateInspeteurWithDuplicateSecondMail(inspecteur, defaultInspecteur2.email)
+    })
+
+    it('should not save 2 inspecteurs with a e-mail which is same second e-mail of second inspecteur', async () => {
+      const inspecteur2 = {
+        ...defaultInspecteur2,
+        secondEmail: [defaultInspecteur.email, 'dontusethis@example2.fr'],
+      }
+      await createInspecteur(inspecteur2)
+
+      const inspecteur = { ...defaultInspecteur }
+      await testCreateInspeteurWithDuplicateSecondMail(inspecteur, inspecteur.email)
+    })
+
+    it('should not save 2 inspecteurs with a second e-mail which is same second e-mail of second inspecteur', async () => {
+      const inspecteur2 = {
+        ...defaultInspecteur2,
+        secondEmail: [defaultInspecteur.email, 'dontusethis@example2.fr'],
+      }
+      await createInspecteur(inspecteur2)
+
+      const inspecteur = { ...defaultInspecteur, secondEmail: [defaultInspecteur.email] }
+      await testCreateInspeteurWithDuplicateSecondMail(inspecteur, defaultInspecteur.email)
     })
   })
 
@@ -240,3 +317,12 @@ describe('Inspecteur', () => {
     })
   })
 })
+
+function expectInspecteurFn (inspecteur, expectedInspecteur) {
+  expect(inspecteur).toHaveProperty('nom', expectedInspecteur.nom.toUpperCase())
+  expect(inspecteur).toHaveProperty('prenom', expectedInspecteur.prenom)
+  expect(inspecteur).toHaveProperty('matricule', expectedInspecteur.matricule)
+  expect(inspecteur).toHaveProperty('departement', expectedInspecteur.departement)
+  expect(inspecteur).toHaveProperty('email', expectedInspecteur.email)
+  expect(inspecteur.secondEmail).toEqual(expect.arrayContaining(expectedInspecteur.secondEmail || []))
+}

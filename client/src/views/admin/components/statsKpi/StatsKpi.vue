@@ -61,7 +61,7 @@
         </v-menu>
       </div>
 
-      <div class="u-flex  u-flex--center">
+      <div class="flex u-flex--center flex-wrap">
         <v-btn
           color="primary"
           @click="getStatsKpiResultsExams(true)"
@@ -106,6 +106,20 @@
             assessment
           </v-icon>
         </v-btn>
+        <v-btn
+          color="primary"
+          @click="getCandidatsListByDeparement()"
+        >
+          {{ $formatMessage({ id: 'export_candidats_list_excel' }) }}
+
+          <v-icon>
+            get_app
+          </v-icon>
+
+          <v-icon>
+            face
+          </v-icon>
+        </v-btn>
       </div>
     </v-card>
 
@@ -147,6 +161,7 @@ import {
   FETCH_STATS_KPI_CANDIDAT_IN_RETENTION_REQUEST,
   FETCH_STATS_KPI_PLACES_EXAMS_REQUEST,
   FETCH_STATS_KPI_RESULTS_EXAMS_REQUEST,
+  FETCH_CANDIDATS_BY_DEPARTEMENT_REQUEST,
 } from '@/store'
 
 export default {
@@ -318,7 +333,7 @@ export default {
 
     selectStatsKpiPlacesExamsByDpt (departement) {
       return this.statsPlacesExams
-        ? this.statsPlacesExams.statsKpi.find(el => el.departement === departement)
+        ? this.statsPlacesExams?.statsKpi?.find(el => el.departement === departement)
         : {}
     },
 
@@ -328,6 +343,9 @@ export default {
       return statsKpiCandidatsLeaveRetention
         ? statsKpiCandidatsLeaveRetention.find(el => el._id === departement)
         : {}
+    },
+    getCandidatsListByDeparement () {
+      this.$store.dispatch(FETCH_CANDIDATS_BY_DEPARTEMENT_REQUEST, { departement: this.departementSelected })
     },
   },
 }

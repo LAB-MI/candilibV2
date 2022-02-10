@@ -27,17 +27,18 @@
 
       <v-form
         v-model="valid"
+        class="t-update-ipcsr-form"
       >
-        <v-container class="u-flex  u-flex--between  u-full-width">
+        <v-container class="pa-5 flex flex-wrap">
           <v-text-field
             v-model="email"
-            class="t-input-ipcsr-email"
+            class="t-input-ipcsr-email pa-3"
             prepend-icon="email"
             aria-placeholder="jean@dupont.fr"
             hint="ex. : jean@dupont.fr"
             tabindex="0"
             :rules="emailRules"
-            label="Adresse courriel"
+            label="Adresse courriel principale"
             :placeholder="emailPlaceholder"
             required
             @focus="setEmailPlaceholder"
@@ -49,7 +50,7 @@
 
           <v-text-field
             v-model="prenom"
-            class="t-input-prenom"
+            class="pa-3 t-input-prenom"
             prepend-icon="perm_identity"
             hint="ex. : Jean"
             tabindex="0"
@@ -65,7 +66,7 @@
 
           <v-text-field
             v-model="nom"
-            class="t-input-nom"
+            class="pa-3 t-input-nom"
             prepend-icon="account_box"
             hint="ex. : Dupont"
             tabindex="0"
@@ -81,7 +82,7 @@
 
           <v-text-field
             v-model="matricule"
-            class="t-input-matricule"
+            class="pa-3 t-input-matricule"
             prepend-icon="confirmation_number"
             hint="ex. : 0954390439"
             tabindex="0"
@@ -97,7 +98,7 @@
           <v-spacer />
 
           <select-departements
-            class="select-departement  t-select-update-ipcsr-departements"
+            class="pa-3 select-departement  t-select-update-ipcsr-departements"
             :available-departements="availableDepartements"
             :multiple="false"
             :default-departement="departement"
@@ -107,25 +108,46 @@
 
           <v-spacer />
 
-          <v-btn
-            class="t-btn-cancel-update"
-            color="#CD1338"
+          <v-text-field
+            ref="email2"
+            v-model="email2"
+            class="t-input-ipcsr-email2"
+            prepend-icon="email"
+            aria-placeholder="jean2@dupont.fr"
+            hint="ex. : jean2@dupont.fr"
             tabindex="0"
-            outlined
-            @click="close"
-          >
-            Annuler
-          </v-btn>
+            :rules="email2Rules"
+            label="Adresse courriel secondaire"
+            :placeholder="emailPlaceholder"
+            width="100"
+            @focus="setEmailPlaceholder"
+            @blur="removeEmailPlaceholder"
+            @input="setEmail2ToLowerCase"
+          />
 
-          <v-btn
-            class="t-btn-update-ipcsr-confirm"
-            color="primary"
-            :disabled="isUpdatingIpcsr || !valid"
-            :aria-disabled="isUpdatingIpcsr || !valid"
-            @click="updateIpcsr"
-          >
-            Modifier
-          </v-btn>
+          <v-spacer />
+
+          <div class="mt-2">
+            <v-btn
+              class="t-btn-cancel-update"
+              color="#CD1338"
+              tabindex="0"
+              outlined
+              @click="close"
+            >
+              Annuler
+            </v-btn>
+
+            <v-btn
+              class="t-btn-update-ipcsr-confirm"
+              color="primary"
+              :disabled="isUpdatingIpcsr || !valid"
+              :aria-disabled="isUpdatingIpcsr || !valid"
+              @click="updateIpcsr"
+            >
+              Modifier
+            </v-btn>
+          </div>
         </v-container>
       </v-form>
     </v-card>
@@ -158,6 +180,11 @@ export default {
       type: String,
       default: '',
     },
+    defaultEmail2: {
+      type: String,
+      default: '',
+    },
+
     defaultMatricule: {
       type: String,
       default: '',
@@ -186,6 +213,11 @@ export default {
         email => emailRegex.test(email) || "L'adresse courriel doit être valide",
       ],
       emailPlaceholder: '',
+      email2: this.defaultEmail2,
+      email2Rules: [
+        email => !email || emailRegex.test(email) || "L'adresse courriel doit être valide",
+      ],
+
       status: 'repartiteur',
       matricule: this.defaultMatricule,
       matriculePlaceholder: '',
@@ -234,6 +266,9 @@ export default {
     setEmailToLowerCase () {
       this.email = this.email && this.email.toLowerCase()
     },
+    setEmail2ToLowerCase () {
+      this.email2 = this.email2 && this.email2.toLowerCase()
+    },
 
     setMatriculePlaceholder () {
       this.matriculePlaceholder = '038448502534'
@@ -264,10 +299,20 @@ export default {
         matricule,
         nom,
         prenom,
+        email2,
       } = this
 
       try {
-        await this.$store.dispatch(UPDATE_IPCSR_REQUEST, { ipcsrId, departement, email, matricule, nom, prenom })
+        await this.$store.dispatch(UPDATE_IPCSR_REQUEST, {
+          ipcsrId,
+          departement,
+          email,
+          matricule,
+          nom,
+          prenom,
+          email2: email2 || undefined,
+        })
+
         this.$store.dispatch(FETCH_IPCSR_LIST_REQUEST)
         this.updating = false
       } catch (error) {
@@ -286,6 +331,7 @@ export default {
       this.matricule = this.defaultMatricule
       this.nom = this.defaultNom
       this.prenom = this.defaultPrenom
+      this.email2 = this.defaultEmail2
     },
   },
 }

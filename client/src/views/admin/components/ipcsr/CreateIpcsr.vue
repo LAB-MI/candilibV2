@@ -4,7 +4,7 @@
     v-model="valid"
     @submit.prevent="createIpcsr"
   >
-    <v-container class="u-flex  u-flex--between  u-full-width">
+    <v-container class="pa-5 flex flex-wrap">
       <v-text-field
         ref="email"
         v-model="email"
@@ -14,7 +14,7 @@
         hint="ex. : jean@dupont.fr"
         tabindex="0"
         :rules="emailRules"
-        label="Adresse courriel"
+        label="Adresse courriel principale"
         :placeholder="emailPlaceholder"
         required
         @focus="setEmailPlaceholder"
@@ -82,6 +82,24 @@
         :menu-props="{ minWidth: 150 }"
         @change-departements="newDep => departement = newDep"
       />
+      <v-spacer />
+
+      <v-text-field
+        ref="email2"
+        v-model="email2"
+        class="t-input-ipcsr-email2"
+        prepend-icon="email"
+        aria-placeholder="jean2@dupont.fr"
+        hint="ex. : jean2@dupont.fr"
+        tabindex="0"
+        :rules="email2Rules"
+        label="Adresse courriel secondaire"
+        :placeholder="emailPlaceholder"
+        width="100"
+        @focus="setEmailPlaceholder"
+        @blur="removeEmailPlaceholder"
+        @input="setEmail2ToLowerCase"
+      />
 
       <v-spacer />
 
@@ -131,10 +149,15 @@ export default {
       status: 'repartiteur',
       valid: false,
       email: '',
+      email2: '',
       emailRules: [
         email => !!email || 'Veuillez renseigner votre adresse courriel',
         email => emailRegex.test(email) || "L'adresse courriel doit être valide",
       ],
+      email2Rules: [
+        email => !email || emailRegex.test(email) || "L'adresse courriel doit être valide",
+      ],
+
       emailPlaceholder: '',
       matricule: '',
       matriculePlaceholder: '',
@@ -178,6 +201,9 @@ export default {
     setEmailToLowerCase () {
       this.email = this.email && this.email.toLowerCase()
     },
+    setEmail2ToLowerCase () {
+      this.email2 = this.email2 && this.email2.toLowerCase()
+    },
 
     setMatriculePlaceholder () {
       this.matriculePlaceholder = '038448502534'
@@ -207,6 +233,7 @@ export default {
         matricule,
         nom,
         prenom,
+        email2,
       } = this
 
       try {
@@ -216,6 +243,7 @@ export default {
           matricule,
           nom,
           prenom,
+          email2: email2 || undefined,
         })
         this.$store.dispatch(SHOW_SUCCESS, "L'IPCSR a bien été créé")
         this.$refs.createIpcsrForm.reset()

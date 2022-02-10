@@ -5,7 +5,6 @@
 import {
   findInspecteurById,
   findInspecteursByDepartements,
-  updateIpcsr,
   disableIpcsr,
   findActiveInspecteursByDepartements,
 } from '../../models/inspecteur'
@@ -165,8 +164,31 @@ export const isUserAllowedToUpdateIpcsr = async (
  *
  * @returns {Promise.<Inspecteur>} - Inspecteur modifié
  */
-export const updateInspecteur = (ipcsrId, newData) => {
-  return updateIpcsr(ipcsrId, newData)
+export const updateInspecteur = async (ipcsrId, newData) => {
+  const inspecteur = await findInspecteurById(ipcsrId)
+  if (!inspecteur) {
+    const error = new Error('Inspecteur non trouvé')
+    error.status = 404
+    throw error
+  }
+
+  const authorizekey = [
+    'email',
+    'departement',
+    'matricule',
+    'nom',
+    'prenom',
+    'secondEmail',
+    'active',
+  ]
+
+  for (const key in newData) {
+    if (authorizekey.includes(key)) {
+      inspecteur[key] = newData[key]
+    }
+  }
+
+  return inspecteur.save()
 }
 
 /**

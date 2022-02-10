@@ -36,6 +36,7 @@ export default {
   export_stats_csv: 'Export Stats CSV',
   export_places_stats_csv: 'Export places Stats CSV',
   export_candidats_retention_stats_csv: 'Export candidats rétention Stats CSV',
+  export_candidats_list_excel: 'Export candidats du département',
   departement: 'Département : ', // eslint-disable-line no-irregular-whitespace
   resultats_des_examens: 'Résultats des examens',
   candidats_sortant_de_retention_par_semaine: 'Candidats sortant de la zone rétention',

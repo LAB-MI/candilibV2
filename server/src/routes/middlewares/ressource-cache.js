@@ -132,12 +132,36 @@ export function getGeoDepartementAndPlacesAsIntervalOf (intervalInMilscd) {
   })
 }
 
+export function getDepartementInfosAsIntervalOf (intervalInMilscd) {
+  placesAndGeoDepartementsAndCentresCache.timerIntervalSetDepartementInfosSettingId = setInterval(() => {
+    if (!placesAndGeoDepartementsAndCentresCache.isActive) return
+    placesAndGeoDepartementsAndCentresCache.setDepartementInfos()
+      .catch((error) => {
+        techLogger.error({
+          section: 'get-departement-infos-as-interval-of',
+          description: error.message,
+          error,
+        })
+      })
+  }, intervalInMilscd)
+  techLogger.info({
+    section: 'get-departement-infos-as-interval-of',
+    action: 'IS LAUNCHED',
+    interval: {
+      _idleStart: placesAndGeoDepartementsAndCentresCache.timerIntervalSetDepartementInfosSettingId._idleStart,
+      delay: intervalInMilscd,
+    },
+  })
+}
+
 export const placesAndGeoDepartementsAndCentresCache = {
   // timerIntervalSetting in msec
   timerIntervalPlacesSetting: 1000,
   timerIntervalPlacesSettingId: null,
   timerIntervalGeoDepartementsAndCentresSetting: 1000,
   timerIntervalGeoDepartementsAndCentresSettingId: null,
+  timerIntervalSetDepartementInfosSetting: 1000 * 28800, // 8 hours
+  timerIntervalSetDepartementInfosSettingId: null,
   bufferForPlaces: {},
   bufferForGeoDepartementsAndCentres: {},
   bufferDepartementInfos: {},
@@ -231,6 +255,10 @@ export const placesAndGeoDepartementsAndCentresCache = {
     await this.setGeoDepartemensAndCentres()
     await this.setPlaces()
   },
+}
+
+if (process.env.NODE_ENV !== 'test') {
+  getDepartementInfosAsIntervalOf(placesAndGeoDepartementsAndCentresCache.timerIntervalSetDepartementInfosSetting)
 }
 
 if (process.env.NODE_ENV !== 'test') {

@@ -204,7 +204,7 @@ export const getInspecteurs = async (req, res) => {
  * @param {import('express').Response} res
  */
 export const createIpcsr = async (req, res) => {
-  const { departement, email, matricule, nom, prenom } = req.body
+  const { departement, email, matricule, nom, prenom, secondEmail } = req.body
   const userId = req.userId
 
   if ([departement, email, matricule, nom, prenom].some(w => !w)) {
@@ -216,13 +216,14 @@ export const createIpcsr = async (req, res) => {
 
   const loggerInfo = {
     request_id: req.request_id,
-    section: 'admin-get-inspecteur',
+    section: 'admin-create-inspecteur',
     admin: userId,
     departement,
     email,
     nom,
     matricule,
     prenom,
+    secondEmail,
   }
 
   const isAllowed = await isUserAllowedToCreateIpcsr(userId, departement)
@@ -245,15 +246,17 @@ export const createIpcsr = async (req, res) => {
       matricule,
       nom,
       prenom,
+      secondEmail,
     })
 
+    appLogger.info({ ...loggerInfo, description: 'IPCSR est créé' })
     return res.status(201).json({
       success: true,
       ipcsr,
     })
   } catch (error) {
     let message = error.message
-    let status = 500
+    let status = error.status || 500
 
     if (message.includes('duplicate')) {
       status = 409
@@ -264,6 +267,8 @@ export const createIpcsr = async (req, res) => {
         message = `Cette adresse courriel existe déjà : ${email}`
       }
     }
+
+    appLogger.error({ ...loggerInfo, description: message })
 
     return res.status(status).json({
       success: false,
@@ -300,18 +305,10 @@ export const updateIpcsr = async (req, res) => {
     matricule = '',
     nom = '',
     prenom = '',
+    secondEmail = [],
   } = req.body
   const userId = req.userId
   const { id: ipcsrId } = req.params
-
-  const fieldsWithErrors = checkIpcsrData(req.body)
-
-  if (fieldsWithErrors.length) {
-    return res.status(400).json({
-      success: false,
-      message: `Des champs sont incorrects : ${fieldsWithErrors.join(', ')}`,
-    })
-  }
 
   const loggerInfo = {
     request_id: req.request_id,
@@ -323,73 +320,102 @@ export const updateIpcsr = async (req, res) => {
     nom,
     matricule,
     prenom,
+    secondEmail,
+    active,
   }
 
-  const isAllowed = await isUserAllowedToUpdateIpcsr(
-    userId,
-    ipcsrId,
-    departement,
-  )
+  try {
+    const fieldsWithErrors = checkIpcsrData(req.body)
 
-  if (!isAllowed) {
-    appLogger.warn({
-      ...loggerInfo,
-      description: `Utilisateur non autorisé à modifier cet IPCSR ${ipcsrId}`,
-    })
-    return res.status(403).json({
-      success: false,
-      message: `Vous n'êtes pas autorisé à modifier cet IPCSR ${prenom} ${nom} ${matricule} (${ipcsrId})`,
-    })
-  }
-
-  if (typeof active === 'boolean') {
-    if (active === false && (await isInspecteurBooked(ipcsrId)).length) {
-      return res.status(409).json({
+    if (fieldsWithErrors.length) {
+      return res.status(400).json({
         success: false,
-        message:
-          "Impossible d'archiver cet inspecteur : il est associé à des places d'examens",
+        message: `Des champs sont incorrects : ${fieldsWithErrors.join(', ')}`,
       })
     }
 
-    try {
-      const ipcsr = await updateInspecteur(ipcsrId, { active })
-      return res.status(200).json({
-        success: true,
-        ipcsr,
-      })
-    } catch (error) {
-      let message = error.message
-      let status = 500
+    const isAllowed = await isUserAllowedToUpdateIpcsr(
+      userId,
+      ipcsrId,
+      departement,
+    )
 
-      if (message.includes('duplicate')) {
-        status = 409
-        if (message.includes('matricule')) {
-          message = `Ce matricule existe déjà : ${matricule}`
-        }
-        if (message.includes('email')) {
-          message = `Cette adresse courriel existe déjà : ${email}`
-        }
+    if (!isAllowed) {
+      appLogger.warn({
+        ...loggerInfo,
+        description: `Utilisateur non autorisé à modifier cet IPCSR ${ipcsrId}`,
+      })
+      return res.status(403).json({
+        success: false,
+        message: `Vous n'êtes pas autorisé à modifier cet IPCSR ${prenom} ${nom} ${matricule} (${ipcsrId})`,
+      })
+    }
+
+    if (typeof active === 'boolean') {
+      if (active === false && (await isInspecteurBooked(ipcsrId)).length) {
+        const message = "Impossible d'archiver cet inspecteur : il est associé à des places d'examens"
+
+        appLogger.warn({ ...loggerInfo, description: message })
+
+        return res.status(409).json({
+          success: false,
+          message,
+        })
       }
 
-      return res.status(status).json({
-        success: false,
-        message,
-      })
+      try {
+        const ipcsr = await updateInspecteur(ipcsrId, { active })
+        appLogger.info({ ...loggerInfo, description: 'IPCSR modifé' })
+
+        return res.status(200).json({
+          success: true,
+          ipcsr,
+        })
+      } catch (error) {
+        let message = error.message
+        let status = 500
+
+        if (message.includes('duplicate')) {
+          status = 409
+          if (message.includes('matricule')) {
+            message = `Ce matricule existe déjà : ${matricule}`
+          }
+          if (message.includes('email')) {
+            message = `Cette adresse courriel existe déjà : ${email}`
+          }
+        }
+        appLogger.error({ ...loggerInfo, description: message })
+        return res.status(status).json({
+          success: false,
+          message,
+        })
+      }
     }
+
+    const ipcsr = await updateInspecteur(ipcsrId, {
+      email,
+      departement,
+      matricule,
+      nom,
+      prenom,
+      secondEmail,
+    })
+    appLogger.info({ ...loggerInfo, description: 'IPCSR modifé' })
+
+    return res.status(200).json({
+      success: true,
+      ipcsr,
+    })
+  } catch (error) {
+    const message = error.message
+    const status = error.status || 500
+    appLogger.error({ ...loggerInfo, description: message })
+
+    return res.status(status).json({
+      success: false,
+      message,
+    })
   }
-
-  const ipcsr = await updateInspecteur(ipcsrId, {
-    email,
-    departement,
-    matricule,
-    nom,
-    prenom,
-  })
-
-  return res.status(200).json({
-    success: true,
-    ipcsr,
-  })
 }
 
 const mandatoryIpcsrFields = [

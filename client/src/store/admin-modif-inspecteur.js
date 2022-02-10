@@ -47,11 +47,42 @@ export default {
   },
 
   actions: {
-    async FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST ({ state, commit, dispatch }, { departement, centre, date }) {
+    async FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST ({ state, commit, dispatch }, { departement, centre, date, slectedInspecteurId, inspecteursData }) {
       try {
         commit(FETCH_GET_INSPECTEURS_AVAILABLE_REQUEST)
-        const places = await api.admin.getPlacesAvailableByCentreAndDate(departement, centre, date)
-        const list = places.map(place => place.inspecteur)
+
+        let list
+
+        if (slectedInspecteurId && inspecteursData && inspecteursData.length) {
+          const selectedInspecteur = inspecteursData.find(inspecteur => inspecteur._id === slectedInspecteurId)
+
+          const ipscrCreneauHour = selectedInspecteur.creneau
+            .filter(itm => itm?.place?.candidat)
+            .map(itm => itm.hour)
+
+          list = inspecteursData
+            .filter(el => el._id !== slectedInspecteurId)
+            .reduce((accu, inspecteur) => {
+              const hourToCheck = inspecteur.creneau
+                .filter(itm => itm?.place && !itm?.place?.candidat)
+                .map(item => item.hour)
+
+              const isHaveAllPlaces = !ipscrCreneauHour.filter(hour => !hourToCheck.includes(hour)).length
+              if (isHaveAllPlaces) {
+                accu.push(inspecteur)
+              }
+              return accu
+            }, [])
+
+          if (!list.length) {
+            commit(FETCH_GET_INSPECTEURS_AVAILABLE_SUCCESS, [])
+            throw new Error('Aucun inspecteur disponible, Il vous faut un inspecteur avec la totalité de ses créneaux disponibles.')
+          }
+        } else {
+          const places = await api.admin.getPlacesAvailableByCentreAndDate(departement, centre, date)
+          list = places.map(place => place.inspecteur)
+        }
+
         commit(FETCH_GET_INSPECTEURS_AVAILABLE_SUCCESS, list)
       } catch (error) {
         commit(FETCH_GET_INSPECTEURS_AVAILABLE_FAILURE, error)
@@ -62,9 +93,15 @@ export default {
     async FETCH_UPDATE_INSPECTEUR_IN_RESA_REQUEST ({ state, commit, dispatch }, { departement, resa, inspecteur }) {
       try {
         commit(FETCH_UPDATE_INSPECTEUR_IN_RESA_FAILURE)
-        const result = await api.admin.updateInspecteurForResa(departement, resa, inspecteur)
-        commit(FETCH_UPDATE_INSPECTEUR_IN_RESA_SUCCESS)
-        dispatch(result.success ? SHOW_SUCCESS : SHOW_ERROR, result.message)
+
+        if (resa instanceof Array) {
+          // TODO: If is needed get result of patch request
+          await Promise.all(resa.map(async itemResa => (await api.admin.updateInspecteurForResa(departement, itemResa._id, inspecteur._id))))
+        } else {
+          const result = await api.admin.updateInspecteurForResa(departement, resa, inspecteur)
+          commit(FETCH_UPDATE_INSPECTEUR_IN_RESA_SUCCESS)
+          dispatch(result.success ? SHOW_SUCCESS : SHOW_ERROR, result.message)
+        }
       } catch (error) {
         commit(FETCH_GET_INSPECTEURS_AVAILABLE_FAILURE, error)
         dispatch(SHOW_ERROR, error.message)

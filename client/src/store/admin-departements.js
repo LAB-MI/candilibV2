@@ -94,10 +94,10 @@ export default {
       }
     },
 
-    async [UPDATE_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }, { departementId, newEmail, isAddedRecently }) {
+    async [UPDATE_DEPARTEMENT_REQUEST] ({ commit, dispatch, state, getters }, { departementId, newEmail, isAddedRecently, disableAt }) {
       commit(UPDATE_DEPARTEMENT_REQUEST)
       try {
-        const result = await api.admin.updateDepartement(departementId, newEmail, isAddedRecently)
+        const result = await api.admin.updateDepartement(departementId, newEmail, isAddedRecently, disableAt)
         if (!result.success) {
           throw new Error(result.message)
         }
