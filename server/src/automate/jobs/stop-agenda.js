@@ -4,7 +4,7 @@ import { LOGGER_INFO } from '../constants'
 
 export const STOP_AGENDA_JOB = 'STOP_AGENDA_JOB'
 
-export async function jobStopAdenda () {
+export async function jobStopAgenda () {
   const loggerInfo = {
     ...LOGGER_INFO,
     action: STOP_AGENDA_JOB,
