@@ -62,12 +62,19 @@ export const candidatBookPlace = (magicLink, candidatsByDepartments, nowIn1Week,
   cy.get('body').should('contain', ' ' + daySelected + ' ')
   cy.contains(' ' + daySelected + ' ')
     .parents('.v-list-group').click()
+  cy.intercept({
+    method: 'GET',
+    url: Cypress.env('frontCandidat') + 'api/v2/candidat/places?dateTime=',
+  }).as('getPlaceDateTime')
+
   cy.get('.v-list-group--active')
     .within($date => {
       cy.get('.container')
         .should('contain', '08h30-09h00')
       cy.contains('08h30-09h00').click()
     })
+
+  cy.wait('@getPlaceDateTime')
   cy.get('h2').should('contain', 'Confirmation')
   cy.get('h3').should('contain', Cypress.env('centre'))
   cy.get('[type=checkbox]')

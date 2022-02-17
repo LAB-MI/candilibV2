@@ -444,9 +444,17 @@ Cypress.Commands.add('checkAndSelectDepartement', (NbCreneaux) => {
   cy.get('h2').should('contain', 'Choix du département')
   cy.get('[role="list"]').should('contain', Cypress.env('geoDepartement'))
   // cy.get('[role="list"]').contains(Cypress.env('geoDepartement')).click()
+  cy.intercept({
+    method: 'GET',
+    url: Cypress.env('frontCandidat') + 'api/v2/candidat/centres?departement*',
+  }).as('getCentres')
+
   cy.get('[role="list"]').contains(Cypress.env('geoDepartement')).parent('div').within(($div) => {
     if (NbCreneaux) cy.root().should('contain', `${NbCreneaux} places`)
   }).click()
+
+  cy.wait('@getCentres')
+  cy.url().should('contain', 'selection/selection-centre')
 })
 
 Cypress.Commands.add('addCandidat', (candidat) => {
@@ -663,6 +671,11 @@ Cypress.Commands.add('bookPlaceBySelectedCandidat', (email, magicLink, centre, d
   // Adds the reservation
   cy.toGoSelectPlaces()
 
+  cy.intercept({
+    method: 'GET',
+    url: Cypress.env('frontCandidat') + 'api/v2/candidat/places?dateTime=',
+  }).as('getPlaceDateTime')
+
   cy.get(`[href="#tab-${date.monthLong}"]`)
     .click()
   cy.contains(' ' + placeDate.split('-')[2] + ' ')
@@ -672,6 +685,9 @@ Cypress.Commands.add('bookPlaceBySelectedCandidat', (email, magicLink, centre, d
       cy.contains('08h00-08h30')
         .click()
     })
+
+  cy.wait('@getPlaceDateTime')
+
   cy.get('h2')
     .should('contain', 'Confirmation')
   cy.get('h3')
