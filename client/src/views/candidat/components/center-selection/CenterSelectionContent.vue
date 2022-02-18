@@ -65,7 +65,7 @@ export default {
 
     firstMonthOfTimeSlotsList () {
       const { list } = this.$store.state.timeSlots
-      return list.length ? list[0].month : 'undefinedMonth'
+      return list.length ? list[0].label : 'undefinedMonth'
     },
   },
 
