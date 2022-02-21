@@ -21,12 +21,17 @@ export const FETCH_CANDIDATS_BY_DEPARTEMENT_SUCCESS = 'FETCH_CANDIDATS_BY_DEPART
 
 export const RESET_CANDIDAT = 'RESET_CANDIDAT'
 
+export const FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST = 'FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST'
+export const FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE = 'FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE'
+export const FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS = 'FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS'
+
 export default {
   state: {
     isFetching: false,
     isFetchingTooltip: false,
     isFetchingList: false,
     list: [],
+    listWithCrenau: [],
     candidat: undefined,
     tooltipCandidat: undefined,
     candidatsByDepartement: [],
@@ -84,6 +89,18 @@ export default {
     [RESET_CANDIDAT] (state) {
       state.candidat = undefined
     },
+
+    [FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST] (state) {
+      state.isFetchingList = true
+    },
+    [FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS] (state, list) {
+      state.isFetchingList = false
+      state.listWithCrenau = list
+    },
+    [FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE] (state) {
+      state.isFetchingList = false
+    },
+
   },
 
   actions: {
@@ -142,5 +159,24 @@ export default {
         return dispatch(SHOW_ERROR, 'Erreur lors de la récupération des candidats du département')
       }
     },
+
+    async [FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST] ({ commit, dispatch }, { creneauCandidatIds, departement } = {}) {
+      commit(FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST)
+      try {
+        const list = await Promise.all(creneauCandidatIds.map(async crenauCandidatId => {
+          const { hour, candidat: candidatId } = crenauCandidatId
+          const { candidat } = await api.admin.getCandidats(candidatId, departement)
+          return {
+            hour,
+            candidat,
+          }
+        }))
+        commit(FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS, list)
+      } catch (error) {
+        commit(FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
   },
 }
