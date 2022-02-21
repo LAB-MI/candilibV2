@@ -8,13 +8,7 @@
       </strong>
     </h4>
 
-    <div v-if="isFetchingCandidat">
-      {{ $formatMessage({ id: 'loading'}) }}...
-    </div>
-    <div
-      v-else
-      class="flex-col"
-    >
+    <div>
       <div>
         <strong class="label">{{ $formatMessage({ id: 'nom'}) }}:</strong>
         <span>{{ candidat.nomNaissance }}</span>
