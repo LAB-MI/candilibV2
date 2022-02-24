@@ -41,7 +41,7 @@ import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
 import FaqCovidMessage from './FaqCOVIDMessage'
 export default {
-  name: 'Faq',
+  name: 'CandilibFaq',
   components: {
     FaqContent,
     FaqCovidMessage,

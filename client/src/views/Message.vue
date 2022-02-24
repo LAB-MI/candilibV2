@@ -45,6 +45,7 @@ import logoSR from '@/assets/images/logo_securite_routiere.png'
 import AppVersion from '@/components/AppVersion.vue'
 
 export default {
+  name: 'CandilibMessage',
   components: {
     AppVersion,
   },

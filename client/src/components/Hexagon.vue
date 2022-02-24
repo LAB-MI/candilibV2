@@ -18,6 +18,7 @@
 import hexagon from '@/assets/images/hexagon.svg'
 
 export default {
+  name: 'CandilibHexagon',
   props: {
     active: {
       type: Boolean,

@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  name: 'CandilibChecker',
   props: {
     valid: Boolean,
     text: {

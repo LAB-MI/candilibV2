@@ -35,6 +35,7 @@ import NavigationDrawer from './components/NavigationDrawer'
 import { callBackCatchRouter } from '@/util'
 
 export default {
+  name: 'CandilibCanditat',
   components: {
     CandidatHeader,
     CandidatFooter,

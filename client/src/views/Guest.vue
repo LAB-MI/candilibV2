@@ -9,6 +9,8 @@
 import CandidatHeader from '@/views/candidat/components/CandidatHeader.vue'
 
 export default {
+  name: 'CandilibGuest',
+
   components: {
     CandidatHeader,
   },

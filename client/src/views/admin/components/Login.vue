@@ -84,7 +84,7 @@ import AdminVersion from '@/components/AppVersion.vue'
 import EmailPasswordReset from './EmailPasswordReset'
 
 export default {
-  name: 'Login',
+  name: 'CandilibLogin',
 
   components: {
     AdminVersion,

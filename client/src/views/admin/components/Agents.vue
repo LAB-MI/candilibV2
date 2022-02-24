@@ -15,7 +15,7 @@ import { mapState } from 'vuex'
 import TechnicalUsers from './technicalUser/TechnicalUsers.vue'
 
 export default {
-  name: 'Agents',
+  name: 'CandilibAgents',
 
   components: {
     CandilibUsers,

@@ -94,6 +94,8 @@ const headerIcons = [
 ]
 
 export default {
+  name: 'CandilibAdmin',
+
   components,
 
   data () {

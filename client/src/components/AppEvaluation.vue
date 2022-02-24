@@ -57,6 +57,7 @@
 import { SET_SHOW_EVALUATION, SEND_EVALUATION_REQUEST } from '@/store'
 
 export default {
+  name: 'AppEvaluation',
   data () {
     return {
       rating: 4,

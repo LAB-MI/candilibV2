@@ -16,6 +16,7 @@ import UserCreate from './UserCreate'
 import { FETCH_USER_LIST_REQUEST } from '@/store'
 
 export default {
+  name: 'CandilibUsers',
   components: {
     UsersList,
     UserCreate,
