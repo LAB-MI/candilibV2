@@ -324,7 +324,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-:deep(.check-box-style) {
+::v-deep .check-box-style {
   margin: 0.4em;
 
   & .v-input__slot {

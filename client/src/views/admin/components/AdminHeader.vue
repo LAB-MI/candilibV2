@@ -126,7 +126,7 @@ export default {
   padding: 0 1em;
   background-color: black;
 
-  & :deep(.v-toolbar__content) {
+  &::v-deep .v-toolbar__content {
     padding-right: 0;
     width: 100%;
   }
@@ -154,7 +154,7 @@ export default {
   }
 }
 
-:deep(.theme--dark.v-tabs > .v-tabs-bar) {
+::v-deep .theme--dark.v-tabs > .v-tabs-bar {
   background-color: transparent;
 }
 

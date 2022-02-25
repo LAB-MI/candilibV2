@@ -142,7 +142,7 @@ export default {
 </script>
 
 <style scoped>
-:deep(.no-margin-left) {
+::v-deep .no-margin-left {
   margin-left: 0 !important;
   padding-left: 0 !important;
 
@@ -159,7 +159,7 @@ export default {
   justify-content: center;
   align-items: center;
 
-  & :deep(.v-toolbar__content) {
+  &::v-deep .v-toolbar__content {
     padding-right: 0;
   }
 }
