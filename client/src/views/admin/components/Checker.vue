@@ -25,7 +25,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .expand-transition-leave {
   transition-duration: 1s;
 }

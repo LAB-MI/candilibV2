@@ -1,7 +1,7 @@
 import Vue from 'vue'
 
 export default function getHistoryData () {
-  return Vue.component('candidat-action-history-tab', {
+  return Vue.component('CandidatActionHistoryTab', {
     props: {
       items: {
         type: Array,

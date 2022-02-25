@@ -136,17 +136,17 @@ const candidatProfileInfoDictionary = [
   ],
   [
     ['email', 'Email', (email) => {
-      Vue.component('fiche-candidat-email', () => import('./candidats/FicheCandidatEmail'))
-      return { name: 'fiche-candidat-email', data: { email } }
+      Vue.component('FicheCandidatEmail', () => import('./candidats/FicheCandidatEmail'))
+      return { name: 'FicheCandidatEmail', data: { email } }
     }, true],
     ['portable', 'Portable', (phoneNumber) => {
-      Vue.component('fiche-candidat-phone-number', () => import('./candidats/FicheCandidatPhoneNumber'))
-      return { name: 'fiche-candidat-phone-number', data: { phoneNumber } }
+      Vue.component('FicheCandidatPhoneNumber', () => import('./candidats/FicheCandidatPhoneNumber'))
+      return { name: 'FicheCandidatPhoneNumber', data: { phoneNumber } }
     }, true],
     ['departement', ' Département'],
     ['homeDepartement', 'Département de résidence', (homeDepartement) => {
-      Vue.component('fiche-candidat-home-departement', () => import('./candidats/FicheCandidatHomeDepartement'))
-      return { name: 'fiche-candidat-home-departement', data: { homeDepartement } }
+      Vue.component('FicheCandidatHomeDepartement', () => import('./candidats/FicheCandidatHomeDepartement'))
+      return { name: 'FicheCandidatHomeDepartement', data: { homeDepartement } }
     }, true],
   ],
   [
@@ -154,8 +154,8 @@ const candidatProfileInfoDictionary = [
     ['isValidatedEmail', 'Email validé', transformBoolean],
     ['isValidatedByAurige', 'Statut Aurige', transformBoolean],
     ['canBookFrom', 'Réservation possible dès le', (canBookFrom) => {
-      Vue.component('fiche-candidat-can-book-from', () => import('./candidats/FicheCandidatCanBookFrom'))
-      return { name: 'fiche-candidat-can-book-from', data: { canBookFromLegible: convertToLegibleDate(canBookFrom), canBookFrom } }
+      Vue.component('FicheCandidatCanBookFrom', () => import('./candidats/FicheCandidatCanBookFrom'))
+      return { name: 'FicheCandidatCanBookFrom', data: { canBookFromLegible: convertToLegibleDate(canBookFrom), canBookFrom } }
     }, true],
     ['dateReussiteETG', 'ETG', convertToLegibleDate],
     ['noReussites', 'Non réussites', legibleNoReussites],

@@ -70,7 +70,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .c-candidat-wrapper {
   position: relative;
   min-height: 100vh;
@@ -104,7 +104,7 @@ export default {
   &__title {
     margin: 0.2em 0;
     line-height: 1;
-    font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
+    font-family: Poppins-Regular, Arial, Helvetica, sans-serif;
     font-size: 40px;
     letter-spacing: 5px;
     color: #fff;
@@ -115,9 +115,9 @@ export default {
   }
 
   &__subtitle {
-    padding: 5px 0 15px 0;
+    padding: 5px 0 15px;
     line-height: 1;
-    font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
+    font-family: Poppins-Medium, Arial, Helvetica, sans-serif;
     font-size: 14px;
     color: #fff;
     letter-spacing: 3px;

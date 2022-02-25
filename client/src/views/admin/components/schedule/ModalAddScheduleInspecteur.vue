@@ -4,7 +4,7 @@
     fullscreen
     hide-overlay
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-btn
         class="t-import-places"
         color="primary"
@@ -324,7 +324,7 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
->>> .check-box-style {
+:deep(.check-box-style) {
   margin: 0.4em;
 
   & .v-input__slot {

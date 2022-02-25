@@ -27,7 +27,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .beta {
   height: 4.1em;
   position: relative;

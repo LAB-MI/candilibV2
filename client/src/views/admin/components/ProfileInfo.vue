@@ -64,7 +64,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 p {
   display: flex;
   color: black;
@@ -73,7 +73,7 @@ p {
 .title {
   margin: auto;
   text-align: center;
-  font-family: 'Raleway', sans-serif;
+  font-family: Raleway, sans-serif;
   font-size: 1 rem;
   text-transform: uppercase;
   font-weight: 600;

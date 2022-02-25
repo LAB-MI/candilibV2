@@ -6,7 +6,7 @@
       :items-per-page="10"
       :class="`elevation-1 ${isArchivedTechnicalUsers ? 't-list-archive-technical-users' : 't-list-technical-users'}`"
     >
-      <!-- <template v-slot:[`item.action`]="{ item }">
+      <!-- <template #[`item.action`]="{ item }">
         <update-technical-user
           :is-archived-technical-users="isArchivedTechnicalUsers"
           :email="item.email"

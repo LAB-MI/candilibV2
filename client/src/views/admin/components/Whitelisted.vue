@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: 'Whitelisted',
+  name: 'CandilbWhitelisted',
   props: {
     whitelisted: {
       type: Object,

@@ -21,7 +21,7 @@
             readonly
             min-width="290px"
           >
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-text-field
                 v-model="pickerDateRange"
                 label="Selct la date de début puis de fin"
@@ -57,7 +57,7 @@
       >
         <v-tab ripple>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-icon
                 color="info"
                 dark
@@ -72,7 +72,7 @@
         </v-tab>
         <v-tab ripple>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-icon
                 v-for="icon in ['business', 'loupe']"
                 :key="icon"
@@ -90,7 +90,7 @@
 
         <v-tab ripple>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-icon
                 color="error"
                 dark
@@ -105,7 +105,7 @@
         </v-tab>
         <v-tab ripple>
           <v-tooltip bottom>
-            <template v-slot:activator="{ on, attrs }">
+            <template #activator="{ on, attrs }">
               <v-icon
                 v-for="icon in ['house', 'loupe']"
                 :key="icon"
@@ -122,7 +122,7 @@
         </v-tab>
         <v-spacer />
         <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn
               color="info"
               v-bind="attrs"
@@ -146,7 +146,7 @@
         </v-tooltip>
 
         <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
+          <template #activator="{ on, attrs }">
             <v-btn
               color="error"
               v-bind="attrs"

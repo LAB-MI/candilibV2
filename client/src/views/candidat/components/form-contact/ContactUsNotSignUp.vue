@@ -1,14 +1,12 @@
 <template>
   <layout-landing-page class="contact-us">
-    <template v-slot>
-      <h3 class="contact-us-title">
-        {{ $formatMessage({ id: 'contact_us_title' }) }}
-      </h3>
-      <form-contact
-        dark
-        with-had-singup
-      />
-    </template>
+    <h3 class="contact-us-title">
+      {{ $formatMessage({ id: 'contact_us_title' }) }}
+    </h3>
+    <form-contact
+      dark
+      with-had-singup
+    />
   </layout-landing-page>
 </template>
 

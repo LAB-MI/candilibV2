@@ -86,7 +86,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .no-resize {
   resize: none;
 }

@@ -6,7 +6,7 @@
     persistent
     width="590px"
   >
-    <template v-slot:activator="{ on, attrs }">
+    <template #activator="{ on, attrs }">
       <v-btn
         v-model="dateFormatted"
         :class="`t-btn-disable-at-${departement._id}`"

@@ -79,7 +79,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
   .section-header {
     margin-top: 5%;
     margin-bottom: 0;
@@ -93,7 +93,7 @@ export default {
     margin-bottom: 10px;
     padding: 0;
     color: #0e1b4d;
-    font-family: "Raleway", sans-serif;
+    font-family: Raleway, sans-serif;
   }
 
   .subtitle {

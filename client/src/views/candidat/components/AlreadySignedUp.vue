@@ -4,7 +4,7 @@
     width="500"
     class="already-signed-up"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         depressed
         color="#fff"
@@ -153,7 +153,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .already-signed-up {
   @media (max-width: 599px) {
     order: -1;

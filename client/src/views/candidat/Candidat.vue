@@ -122,7 +122,7 @@ export default {
 
   @media (max-width: 599px) {
     order: 2;
-    margin: 1em auto 0 auto;
+    margin: 1em auto 0;
   }
 }
 </style>

@@ -66,7 +66,7 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style scoped>
 .with-margin {
   margin: 1em;
 }

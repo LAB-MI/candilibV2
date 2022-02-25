@@ -39,7 +39,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .link-color {
   color: white;
   text-decoration: underline;

@@ -96,11 +96,11 @@ export default {
   filter: invert(100%);
 }
 
-.ag-theme-material >>> .ag-header {
+.ag-theme-material :deep(.ag-header) {
   background-color: unset;
 }
 
-.ag-theme-material >>> .ag-menu {
+.ag-theme-material :deep(.ag-menu) {
   min-width: 100px !important;
 }
 </style>
