@@ -72,11 +72,13 @@
     "@vue/cli-service": "^5.0.1",
     "@vue/eslint-config-standard": "^5.1.2",
     "@vue/test-utils": "^1.1.2",
+    "@vue/vue2-jest": "^v27.0.0-alpha.4",
     "cross-env": "^7.0.3",
     "eslint": "^8.9.0",
     "eslint-plugin-import": "^2.25.4",
     "eslint-plugin-vue": "^8.5.0",
     "full-icu": "^1.4.0",
+    "jest": "^27.1.0",
     "lint-staged": "^12.3.4",
     "material-design-icons-iconfont": "^6.4.2",
     "npm-run-all": "^4.1.5",
@@ -177,7 +179,7 @@
       "vue"
     ],
     "transform": {
-      "^.+\\.vue$": "vue-jest",
+      "^.+\\.vue$": "@vue/vue2-jest",
       ".+\\.(css|styl|less|sass|scss|svg|png|jpg|ttf|woff|woff2)$": "jest-transform-stub",
       "^.+\\.jsx?$": "babel-jest"
     },
