@@ -712,7 +712,6 @@ export default {
     },
 
     getCreneauCandidatIds (inspecteurData) {
-      console.log({ creneau: inspecteurData.creneau })
       return inspecteurData.creneau.map(creneau => ({ hour: creneau?.hour, candidat: creneau?.place?.candidat })).filter(elt => elt.candidat)
     },
   },
