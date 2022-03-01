@@ -7,7 +7,7 @@ import { wait1s } from '../__test__/utils.js'
 import { getAutomateJobs } from './scheduler-job-business'
 
 jest.mock('../../util/logger')
-require('../../util/logger').setWithConsole(false)
+require('../../util/logger').setWithConsole('error')
 
 const TEST_JOB = 'TEST_JOB'
 jest.mock('../config', () => {

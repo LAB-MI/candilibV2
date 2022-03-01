@@ -34,7 +34,7 @@ const allJobs = {
   },
   [STOP_AGENDA_JOB]: {
     name: STOP_AGENDA_JOB,
-    fn: adminJobs.jobStatusCandidats,
+    fn: adminJobs.jobStopAgenda,
     repeatInterval: '0 22 * * *',
   },
 }
