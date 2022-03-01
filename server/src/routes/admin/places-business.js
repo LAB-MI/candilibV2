@@ -568,7 +568,20 @@ export const removeReservationPlaceByAdmin = async (place, candidat, admin) => {
     message = DELETE_PLACE_ERROR
   }
 
-  return { statusmail, message, candidat: candidatUpdated, placeUpdated }
+  const { _id, email, nomNaissance, prenom, portable } = candidatUpdated
+
+  return {
+    statusmail,
+    message,
+    candidat: {
+      _id,
+      email,
+      nomNaissance,
+      prenom,
+      portable,
+    },
+    placeUpdated,
+  }
 }
 
 /**
