@@ -42,7 +42,7 @@ export default {
   },
   computed: {
     ...mapState({
-      candidats: (state) => state?.candidats?.listWithCrenau || [],
+      candidats: (state) => state?.candidats?.listWithCreneau || [],
       isFetching: (state) => state?.candidats?.isFetchingList,
     }),
   },

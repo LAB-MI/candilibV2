@@ -2,6 +2,7 @@ import api from '@/api'
 
 import { SHOW_ERROR } from '@/store'
 import { generateExcelCandidatListFile } from '@/util'
+import { transformToCsv } from '@/util/createfileCSV'
 
 export const FETCH_CANDIDAT_REQUEST = 'FETCH_CANDIDAT_REQUEST'
 export const FETCH_CANDIDAT_FAILURE = 'FETCH_CANDIDAT_FAILURE'
@@ -24,6 +25,7 @@ export const RESET_CANDIDAT = 'RESET_CANDIDAT'
 export const FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST = 'FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST'
 export const FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE = 'FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE'
 export const FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS = 'FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS'
+export const FETCH_DOWNLOAD_CRENEAU_CANDIDATS_REQUEST = 'FETCH_DOWNLOAD_CRENEAU_CANDIDATS_REQUEST'
 
 export default {
   state: {
@@ -31,7 +33,7 @@ export default {
     isFetchingTooltip: false,
     isFetchingList: false,
     list: [],
-    listWithCrenau: [],
+    listWithCreneau: [],
     candidat: undefined,
     tooltipCandidat: undefined,
     candidatsByDepartement: [],
@@ -95,7 +97,7 @@ export default {
     },
     [FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS] (state, list) {
       state.isFetchingList = false
-      state.listWithCrenau = list
+      state.listWithCreneau = list
     },
     [FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE] (state) {
       state.isFetchingList = false
@@ -172,11 +174,29 @@ export default {
           }
         }))
         commit(FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS, list)
+        // dispatch(FETCH_DOWNLOAD_CRENEAU_CANDIDATS_REQUEST)
       } catch (error) {
         commit(FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE)
         return dispatch(SHOW_ERROR, error.message)
       }
     },
 
+    async [FETCH_DOWNLOAD_CRENEAU_CANDIDATS_REQUEST] ({ commit, dispatch, state }, { candidatsBooking } = {}) {
+      let creneauxCandidats = candidatsBooking
+      if (!candidatsBooking) {
+        const { listWithCreneau } = state
+        creneauxCandidats = listWithCreneau
+      }
+      const headers = [
+        { text: ' ', value: 'hour' },
+        { text: 'NEPH', value: 'candidat.codeNeph' },
+        { text: 'Nom', value: 'candidat.nomNaissance' },
+        { text: 'Prénom', value: 'candidat.prenom' },
+        { text: 'Courriel', value: 'candidat.email' },
+        { text: 'Portable', value: 'candidat.portable' },
+      ]
+      const candidats = creneauxCandidats.map(creneau => headers.map(header => header.value.split('.').reduce((value, ref) => value[ref], creneau)))
+      transformToCsv(headers.map(header => header.text), candidats)
+    },
   },
 }
