@@ -98,7 +98,7 @@
     "stylus": "^0.56.0",
     "stylus-loader": "^3.0.2",
     "svg-inline-loader": "^0.8.2",
-    "tailwindcss": "^2.2.16",
+    "tailwindcss": "^3.0.23",
     "typeface-roboto": "1.1.13",
     "vue-cli-plugin-tailwind": "^2.2.18",
     "vue-cli-plugin-vuetify": "^2.4.6",
@@ -145,6 +145,7 @@
   },
   "postcss": {
     "plugins": {
+      "tailwindcss/nesting": {},
       "tailwindcss": {},
       "autoprefixer": {},
       "postcss-preset-env": {},
