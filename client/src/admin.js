@@ -15,6 +15,7 @@ export default {
   sur_ladresse_courriel: 'sur l\'adresse courriel :', // eslint-disable-line no-irregular-whitespace
   nom: 'Nom',
   neph: 'Neph',
+  adresse_courriel: 'Adresse courriel',
   mobile: 'Portable',
   loading: 'Chargement en cours',
   gestion_des_plannings: 'Gestion des plannings',

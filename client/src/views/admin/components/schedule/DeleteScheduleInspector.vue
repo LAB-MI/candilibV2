@@ -25,7 +25,13 @@
       v-if="!isCancel"
       :close-action="cancelAction"
       :submit-action="deleteInspecteurPlaces"
-    />
+    >
+      <v-checkbox
+        v-if="haveCandidats"
+        v-model="downloadInfoCandidats"
+        label="Télécharger les infomastions des candidats"
+      />
+    </confirm-box>
   </v-card>
 </template>
 
@@ -69,7 +75,15 @@ export default {
       isCancel: true,
       deleteType: undefined,
       buttonsInfos: [],
+      downloadInfoCandidats: false,
     }
+  },
+
+  computed: {
+    haveCandidats () {
+      return !!this.placeInfo.creneau
+        .filter(this.getTypeFilterPlace()).find(el => el.place.candidat)
+    },
   },
 
   mounted () {
@@ -94,7 +108,6 @@ export default {
       },
     ]
   },
-
   methods: {
     cancelAction () {
       this.isCancel = true
@@ -143,8 +156,7 @@ export default {
         return true
       }
     },
-
-    async deleteInspecteurPlaces () {
+    getTypeFilterPlace () {
       let typeFilter
       if (this.deleteType === DELETE_ALL_PLACES) {
         typeFilter = el => el.place
@@ -155,9 +167,15 @@ export default {
       if (this.deleteType === DELETE_AFTERNOON_PLACES) {
         typeFilter = el => this.getMorningOrAfternoonTimeSlots(el, DELETE_AFTERNOON_PLACES)
       }
-      const toDispatch = this.placeInfo.creneau
-        .filter(typeFilter).map(el => el.place._id)
-      await this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, toDispatch)
+      return typeFilter
+    },
+
+    async deleteInspecteurPlaces () {
+      console.log(this.placeInfo)
+      const toFilterCreneaux = this.placeInfo.creneau
+        .filter(this.getTypeFilterPlace())
+      const toDispatch = toFilterCreneaux.map(el => el.place._id)
+      await this.$store.dispatch(DELETE_INSPECTEUR_PLACES_REQUEST, { placesToDelete: toDispatch, askDownload: this.downloadInfoCandidats, date: toFilterCreneaux[0]?.place?.date, matricule: this.placeInfo.matricule })
       this.deleteType = undefined
       this.isCancel = true
       this.closeDetails()
