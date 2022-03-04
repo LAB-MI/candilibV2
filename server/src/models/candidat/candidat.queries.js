@@ -164,6 +164,12 @@ export const getOrUpsertNbDaysInactivity = async ({ nbDaysInactivityNeeded }) =>
 
 // TODO: JSDOC
 export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
+  techLogger.info({
+    section: 'SORT-CANDIDAT-BY-STATUS',
+    action: 'CALL',
+    description: `call with ${nbDaysInactivityNeeded}`,
+  })
+
   const nbDaysInactivity = await getOrUpsertNbDaysInactivity({ nbDaysInactivityNeeded })
   const countStatus = candidatStatuses.nbStatus
   const nowLuxon = getFrenchLuxon()
@@ -230,6 +236,16 @@ export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
       countByStatus[index][key] += value
     }
   }
+
+  techLogger.info({
+    section: 'SORT-CANDIDAT-BY-STATUS',
+    action: 'END',
+    description: `end operations with candidats total: ${candidatsCount}`,
+    countByStatus,
+    updatedCandidat,
+    statusBorne,
+    nbDaysInactivityNeeded,
+  })
 
   return ({ countByStatus, updatedCandidat, statusBorne })
 }
