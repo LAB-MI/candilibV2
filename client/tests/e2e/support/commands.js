@@ -58,14 +58,19 @@ Cypress.Commands.add('adminTechLogin', () => {
   connectionUserByStatus(Cypress.env('adminTechLogin'))
 })
 
-Cypress.Commands.add('adminDisconnection', () => {
-  cy.intercept({
-    method: 'GET',
-    url: Cypress.env('frontAdmin') + 'api/v2/admin/places*',
-  }).as('homeAdminRequest')
+Cypress.Commands.add('adminDisconnection', (isTech) => {
+  if (!isTech) {
+    cy.intercept({
+      method: 'GET',
+      url: Cypress.env('frontAdmin') + 'api/v2/admin/places*',
+    }).as('homeAdminRequest')
+  }
+
   cy.get('.home-link')
     .click()
-  cy.wait('@homeAdminRequest')
+  if (!isTech) {
+    cy.wait('@homeAdminRequest')
+  }
   cy.get('.t-disconnect')
     .click({ force: true })
   cy.checkAndCloseSnackBar('Vous êtes déconnecté')
