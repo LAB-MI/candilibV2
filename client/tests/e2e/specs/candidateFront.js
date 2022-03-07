@@ -612,7 +612,7 @@ describe('Connected candidate front', () => {
     it('Should have alert info 75 for 75', () => {
       cy.addCandidat(candidatsByDepartments[0])
       cy.getNewMagicLinkCandidat('candidat_front_75@candi.lib').then(mLink => {
-        cy.connectByMagicLink(magicLink)
+        cy.connectByMagicLink(mLink)
         cy.get('h2').should('contain', 'Choix du département')
         cy.get('body').should('contain', 'Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants')
       })
@@ -621,7 +621,7 @@ describe('Connected candidate front', () => {
     it('Should have not alert info 75 for 93', () => {
       cy.addCandidat(candidatsByDepartments[1])
       cy.getNewMagicLinkCandidat('candidat_front_93@candi.lib').then(mLink => {
-        cy.connectByMagicLink(magicLink)
+        cy.connectByMagicLink(mLink)
         cy.get('h2').should('contain', 'Choix du département')
         cy.get('body').should('not.contain', 'Les centres utilisés par le département 75 sont localisés hors 75 et sont les suivants')
       })

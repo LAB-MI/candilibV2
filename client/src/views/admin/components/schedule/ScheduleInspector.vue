@@ -206,6 +206,25 @@
                             delete
                           </v-icon>
                         </v-btn>
+                        <v-tooltip bottom>
+                          Information candidats
+                          <template v-slot:activator="{ on }">
+                            <v-btn
+                              v-if="getCreneauCandidatIds(inspecteurData).length"
+                              :class="`t-info-candidat-btn-${inspecteurData.nom}`"
+                              icon
+                              v-on="on"
+                              @click="activeInofCandidatsMode(inspecteurData._id, inspecteurData)"
+                            >
+                              <v-icon
+                                size="20"
+                                color="#A9A9A9"
+                              >
+                                face
+                              </v-icon>
+                            </v-btn>
+                          </template>
+                        </v-tooltip>
                       </v-layout>
                     </th>
                     <td
@@ -239,7 +258,7 @@
                         :class="{ active: activeInspecteurRow === inspecteurData._id }"
                       >
                         <schedule-inspector-details
-                          v-if="!deleteMode && !permuteMode"
+                          v-if="!deleteMode && !permuteMode && !infosCandidatsMode"
                           :place="activePlace"
                           :content="selectedPlaceInfo"
                           :close-dialog="closeDetails"
@@ -284,6 +303,23 @@
                       </div>
                     </td>
                   </tr>
+                  <tr
+                    v-if="infosCandidatsMode && !permuteMode && !deleteMode && activeInspecteurRow === inspecteurData._id"
+                  >
+                    <td
+                      class="inspecteur-button"
+                      :class="{ active: infosCandidatsMode && activeInspecteurRow === inspecteurData._id }"
+                    />
+
+                    <td colspan="20">
+                      <div
+                        class="place-details  u-flex  u-flex--center overflow-auto"
+                        :class="{ active: infosCandidatsMode && activeInspecteurRow === inspecteurData._id }"
+                      >
+                        <schedule-ipcsr-info-candidats :creneau-candidat-ids="getCreneauCandidatIds(inspecteurData)" />
+                      </div>
+                    </td>
+                  </tr>
                 </tbody>
               </table>
             </v-card>
@@ -311,6 +347,7 @@ import ScheduleInspectorButton from './ScheduleInspectorButton'
 import ScheduleInspectorDetails from './ScheduleInspectorDetails'
 import ModalAddScheduleInspecteur from './ModalAddScheduleInspecteur'
 import PermuteInspector from './PermuteInspector'
+import ScheduleIpcsrInfoCandidats from './ScheduleIpcsrInfoCandidats.vue'
 
 import {
   creneauSetting,
@@ -339,6 +376,7 @@ export default {
     ScheduleInspectorDetails,
     ModalAddScheduleInspecteur,
     PermuteInspector,
+    ScheduleIpcsrInfoCandidats,
   },
 
   data () {
@@ -353,6 +391,7 @@ export default {
       datePicker: false,
       deleteMode: false,
       permuteMode: false,
+      infosCandidatsMode: false,
       headers: undefined,
       inspecteursData: [],
       isAvailable: true,
@@ -602,6 +641,7 @@ export default {
     async setActiveInspecteurRow (inspecteurId, placeInfo) {
       this.deleteMode = false
       this.permuteMode = false
+      this.infosCandidatsMode = false
       const hour = placeInfo && placeInfo.hour
       const place = placeInfo && placeInfo.place
       if (this.activeInspecteurRow === inspecteurId && hour === this.activeHour) {
@@ -633,6 +673,7 @@ export default {
       }
       this.permuteMode = false
       this.deleteMode = true
+      this.infosCandidatsMode = false
       this.activeInspecteurRow = inspecteurId
     },
 
@@ -644,6 +685,19 @@ export default {
       }
       this.deleteMode = false
       this.permuteMode = true
+      this.infosCandidatsMode = false
+      this.activeInspecteurRow = inspecteurId
+    },
+
+    activeInofCandidatsMode (inspecteurId, placeInfo) {
+      this.activeHour = undefined
+      if (this.infosCandidatsMode && this.activeInspecteurRow === inspecteurId) {
+        this.activeInspecteurRow = undefined
+        return
+      }
+      this.permuteMode = false
+      this.deleteMode = false
+      this.infosCandidatsMode = true
       this.activeInspecteurRow = inspecteurId
     },
 
@@ -655,6 +709,10 @@ export default {
       this.selectedCreneau = this.selectedCreneau.find(el => el === creneau)
         ? this.selectedCreneau.filter(el => el !== creneau)
         : this.selectedCreneau.concat(creneau)
+    },
+
+    getCreneauCandidatIds (inspecteurData) {
+      return inspecteurData.creneau.map(creneau => ({ hour: creneau?.hour, candidat: creneau?.place?.candidat })).filter(elt => elt.candidat)
     },
   },
 }

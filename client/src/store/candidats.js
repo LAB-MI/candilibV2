@@ -2,6 +2,7 @@ import api from '@/api'
 
 import { SHOW_ERROR } from '@/store'
 import { generateExcelCandidatListFile } from '@/util'
+import { transformToCsv } from '@/util/createfileCSV'
 
 export const FETCH_CANDIDAT_REQUEST = 'FETCH_CANDIDAT_REQUEST'
 export const FETCH_CANDIDAT_FAILURE = 'FETCH_CANDIDAT_FAILURE'
@@ -21,12 +22,18 @@ export const FETCH_CANDIDATS_BY_DEPARTEMENT_SUCCESS = 'FETCH_CANDIDATS_BY_DEPART
 
 export const RESET_CANDIDAT = 'RESET_CANDIDAT'
 
+export const FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST = 'FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST'
+export const FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE = 'FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE'
+export const FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS = 'FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS'
+export const FETCH_DOWNLOAD_CRENEAU_CANDIDATS_REQUEST = 'FETCH_DOWNLOAD_CRENEAU_CANDIDATS_REQUEST'
+
 export default {
   state: {
     isFetching: false,
     isFetchingTooltip: false,
     isFetchingList: false,
     list: [],
+    listWithCreneau: [],
     candidat: undefined,
     tooltipCandidat: undefined,
     candidatsByDepartement: [],
@@ -84,6 +91,18 @@ export default {
     [RESET_CANDIDAT] (state) {
       state.candidat = undefined
     },
+
+    [FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST] (state) {
+      state.isFetchingList = true
+    },
+    [FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS] (state, list) {
+      state.isFetchingList = false
+      state.listWithCreneau = list
+    },
+    [FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE] (state) {
+      state.isFetchingList = false
+    },
+
   },
 
   actions: {
@@ -141,6 +160,43 @@ export default {
         commit(FETCH_CANDIDAT_FAILURE)
         return dispatch(SHOW_ERROR, 'Erreur lors de la récupération des candidats du département')
       }
+    },
+
+    async [FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST] ({ commit, dispatch }, { creneauCandidatIds, departement } = {}) {
+      commit(FETCH_CRENEAU_CANDIDATS_BY_ID_REQUEST)
+      try {
+        const list = await Promise.all(creneauCandidatIds.map(async crenauCandidatId => {
+          const { hour, candidat: candidatId } = crenauCandidatId
+          const { candidat } = await api.admin.getCandidats(candidatId, departement)
+          return {
+            hour,
+            candidat,
+          }
+        }))
+        commit(FETCH_CRENEAU_CANDIDATS_BY_ID_SUCCESS, list)
+        // dispatch(FETCH_DOWNLOAD_CRENEAU_CANDIDATS_REQUEST)
+      } catch (error) {
+        commit(FETCH_CRENEAU_CANDIDATS_BY_ID_FAILURE)
+        return dispatch(SHOW_ERROR, error.message)
+      }
+    },
+
+    async [FETCH_DOWNLOAD_CRENEAU_CANDIDATS_REQUEST] ({ commit, dispatch, state }, { candidatsBooking } = {}) {
+      let creneauxCandidats = candidatsBooking
+      if (!candidatsBooking) {
+        const { listWithCreneau } = state
+        creneauxCandidats = listWithCreneau
+      }
+      const headers = [
+        { text: ' ', value: 'hour' },
+        { text: 'NEPH', value: 'candidat.codeNeph' },
+        { text: 'Nom', value: 'candidat.nomNaissance' },
+        { text: 'Prénom', value: 'candidat.prenom' },
+        { text: 'Courriel', value: 'candidat.email' },
+        { text: 'Portable', value: 'candidat.portable' },
+      ]
+      const candidats = creneauxCandidats.map(creneau => headers.map(header => header.value.split('.').reduce((value, ref) => value[ref], creneau)))
+      transformToCsv(headers.map(header => header.text), candidats)
     },
   },
 }

@@ -14,7 +14,7 @@ describe('Admin login', () => {
     cy.get('h3')
       .should('contain', Cypress.env('adminLogin').split('@')[0])
     // Disconnects from the app
-    cy.adminDisconnection()
+    cy.adminDisconnection(true)
     cy.url()
       .should('eq', Cypress.env('frontAdmin') + 'admin-login')
   })
