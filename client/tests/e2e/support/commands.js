@@ -59,8 +59,13 @@ Cypress.Commands.add('adminTechLogin', () => {
 })
 
 Cypress.Commands.add('adminDisconnection', () => {
+  cy.intercept({
+    method: 'GET',
+    url: Cypress.env('frontAdmin') + 'api/v2/admin/places*',
+  }).as('homeAdminRequest')
   cy.get('.home-link')
     .click()
+  cy.wait('@homeAdminRequest')
   cy.get('.t-disconnect')
     .click({ force: true })
   cy.checkAndCloseSnackBar('Vous êtes déconnecté')
@@ -370,11 +375,20 @@ Cypress.Commands.add('addCandidatToPlace', (date, candidatName) => {
 
       cy.root().parents().contains(candidatName || Cypress.env('candidat'))
         .click()
+
+      cy.intercept({
+        method: 'GET',
+        url: Cypress.env('frontAdmin') + 'api/v2/admin/inspecteurs?*',
+      }).as('getInspecteur')
+
       cy.get('.place-details')
         .should('contain', Cypress.env('centre'))
       cy.contains('Valider')
         .click()
+
+      cy.wait('@getInspecteur')
     })
+  // cy.checkAndCloseSnackBar(candidatName || Cypress.env('candidat'))
 })
 
 Cypress.Commands.add('removeCandidatOnPlace', (inspecteur) => {
