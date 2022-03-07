@@ -11,7 +11,7 @@ describe('Tech Admin Dashboard tests', () => {
   })
 
   after(() => {
-    cy.adminDisconnection()
+    cy.adminDisconnection(true)
   })
 
   // TODO: to update for next feature 'manage jobs'

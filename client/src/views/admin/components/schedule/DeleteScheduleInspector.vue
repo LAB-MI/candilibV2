@@ -29,7 +29,7 @@
       <v-checkbox
         v-if="haveCandidats"
         v-model="downloadInfoCandidats"
-        label="Télécharger les infomastions des candidats"
+        label="Télécharger les informations des candidats"
       />
     </confirm-box>
   </v-card>
