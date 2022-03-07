@@ -58,8 +58,8 @@ Cypress.Commands.add('adminTechLogin', () => {
   connectionUserByStatus(Cypress.env('adminTechLogin'))
 })
 
-Cypress.Commands.add('adminDisconnection', (isTech) => {
-  if (!isTech) {
+Cypress.Commands.add('adminDisconnection', (noRequestPlaces) => {
+  if (!noRequestPlaces) {
     cy.intercept({
       method: 'GET',
       url: Cypress.env('frontAdmin') + 'api/v2/admin/places*',
@@ -68,7 +68,7 @@ Cypress.Commands.add('adminDisconnection', (isTech) => {
 
   cy.get('.home-link')
     .click()
-  if (!isTech) {
+  if (!noRequestPlaces) {
     cy.wait('@homeAdminRequest')
   }
   cy.get('.t-disconnect')
