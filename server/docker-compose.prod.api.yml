@@ -32,6 +32,8 @@ services:
       LINE_DELAY: ${LINE_DELAY}
       TENANT_NAME: ${TENANT_NAME}
       SECRET: ${SECRET}
+    volumes:
+      - /tmp/var/log/pm2:$HOME/.pm2/logs
 
 networks:
   default:
