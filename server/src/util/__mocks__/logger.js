@@ -5,22 +5,22 @@ export const setWithConsole = value => {
 
 const logger = {
   debug (msg) {
-    if (withConsole) {
+    if (withConsole && (typeof withConsole === 'boolean' || withConsole === 'debug')) {
       console.debug(msg)
     }
   },
   info (msg) {
-    if (withConsole) {
+    if (withConsole && (typeof withConsole === 'boolean' || withConsole === 'info')) {
       console.info(msg)
     }
   },
   warn (msg) {
-    if (withConsole) {
+    if (withConsole && (typeof withConsole === 'boolean' || withConsole === 'warn')) {
       console.warn(msg)
     }
   },
   error (msg) {
-    if (withConsole) {
+    if (withConsole && (typeof withConsole === 'boolean' || withConsole === 'error')) {
       console.error(msg)
     }
   },

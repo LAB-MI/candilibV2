@@ -235,6 +235,9 @@ describe('Get places available and display at 12h.', () => {
       `(`Should get $npPlacesExpected places for 75 when now is after 12h$minutes for status ${status}`, ({ npPlacesExpected, minutes }, done) => {
         setNowAfter12h(minutes)
         expectedPlaces(npPlacesExpected).catch((error) => {
+          const date = getFrenchLuxon()
+          expect(date).toHaveProperty('hour', 12)
+          expect(date).toHaveProperty('minute', minutes)
           throw error
         }).finally(() => {
           done()

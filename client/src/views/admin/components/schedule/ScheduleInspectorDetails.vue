@@ -25,7 +25,7 @@
         ok-button-text="Supprimer réservation"
         ok-button-color="warning"
       >
-        <!-- TODO: Refactor Create composant for each subcontent dialogs -->
+        <!-- TODO: Refactor Create composant for each subcontent dialogs
         <div v-if="isFetchingCandidat">
           {{ $formatMessage({ id: 'loading'}) }}...
         </div>
@@ -50,7 +50,7 @@
               {{ candidat.portable }}
             </strong>
           </p>
-        </div>
+        </div> -->
       </confirm-box>
     </place-action>
     <place-action

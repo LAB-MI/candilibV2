@@ -5,6 +5,7 @@ on:
     branches-ignore:
       - 'qualif/**'
       - 'develop'
+      - 'master'
   # pull_request:
   #   branches:
   #     - '!qualif/**'

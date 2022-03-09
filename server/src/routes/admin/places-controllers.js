@@ -355,7 +355,7 @@ export const deletePlacesByAdmin = async (req, res) => {
   })
 
   try {
-    await Promise.all(
+    const candidatsBookingRemoved = await Promise.all(
       placesToDelete.map(async placeId => {
         const placeFound = await findPlaceById(placeId)
         if (!placeFound) {
@@ -371,10 +371,7 @@ export const deletePlacesByAdmin = async (req, res) => {
         if (candidat) {
           const candidatFound = await findCandidatById(candidat)
           if (candidatFound) {
-            const {
-              statusmail,
-              messsage,
-            } = await removeReservationPlaceByAdmin(
+            const resaRemoved = await removeReservationPlaceByAdmin(
               placeFound,
               candidatFound,
               admin,
@@ -387,11 +384,11 @@ export const deletePlacesByAdmin = async (req, res) => {
               description:
                 'Remove booked Place By Admin and send email to candidat',
               result: {
-                statusmail,
-                messsage,
+                statusmail: resaRemoved.statusmail,
+                messsage: resaRemoved.messsage,
               },
             })
-            return
+            return resaRemoved.candidat
           }
         }
         const removedPlace = await deletePlace(placeFound)
@@ -415,9 +412,11 @@ export const deletePlacesByAdmin = async (req, res) => {
       description: DELETE_PLACES_BY_ADMIN_SUCCESS,
     })
 
+    const candidats = candidatsBookingRemoved.filter(candidat => candidat)
     res.status(200).json({
       success: true,
       message: DELETE_PLACES_BY_ADMIN_SUCCESS,
+      candidats,
     })
   } catch (error) {
     appLogger.error({

@@ -2,6 +2,16 @@
   <div class="text-xs-center">
     <v-tooltip bottom>
       {{ tooltipContent }}
+      <div v-show="showMoreInfo">
+        <v-icon small>
+          smartphone
+        </v-icon>
+        {{ candidatPhone }}
+        <v-icon small>
+          email
+        </v-icon>
+        {{ candidatEmail }}
+      </div>
       <template v-slot:activator="{ on }">
         <v-btn
           class="t-select-place"
@@ -73,6 +83,28 @@ export default {
         return 'place disponible'
       }
 
+      return ''
+    },
+    showMoreInfo () {
+      return !!this.place?.candidat
+    },
+    candidatPhone () {
+      if (this.place?.candidat) {
+        return `${this.candidat.portable}`
+      }
+      return ''
+    },
+    candidatEmail () {
+      if (this.place?.candidat) {
+        return this.candidat.email
+      }
+      return ''
+    },
+
+    tooltipContentInfoComplemenatire () {
+      if (this.place?.candidat) {
+        return `${this.candidat.portable} - ${this.candidat.email}`
+      }
       return ''
     },
   },

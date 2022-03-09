@@ -6,6 +6,7 @@ export const createPassword = () =>
     numbers: true,
     symbols: true,
     uppercase: true,
+    lowercase: true,
     excludeSimilarCharacters: true,
     strict: true,
   })
