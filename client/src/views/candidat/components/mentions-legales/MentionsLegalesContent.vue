@@ -81,7 +81,7 @@ export default {
   margin-top: 1rem;
   margin-bottom: 1rem;
   border: 0;
-  border-top: 1px solid rgba(0, 0, 0, 0.1);
+  border-top: 1px solid rgba(0, 0, 0, 10%);
 }
 
 ul {
@@ -112,9 +112,9 @@ ul {
 }
 
 .sub-title-style {
-  font-family: "Raleway", sans-serif;
+  font-family: Raleway, sans-serif;
   font-weight: 400;
-  margin: 20px 0 20px 0;
+  margin: 20px 0;
   padding: 0;
   color: #0e1b4d;
   font-size: 1.25rem;
@@ -129,7 +129,7 @@ ul {
   color: #112363;
   font-size: 15px;
   padding: 0;
-  margin: 0 0 30px 0;
-  font-family: "Poppins", sans-serif;
+  margin: 0 0 30px;
+  font-family: Poppins, sans-serif;
 }
 </style>

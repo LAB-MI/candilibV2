@@ -57,6 +57,7 @@
 import { SET_SHOW_EVALUATION, SEND_EVALUATION_REQUEST } from '@/store'
 
 export default {
+  name: 'AppEvaluation',
   data () {
     return {
       rating: 4,
@@ -85,7 +86,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .no-resize {
   resize: none;
 }

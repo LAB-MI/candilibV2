@@ -70,7 +70,7 @@ export default {
     text-align: center;
     font-weight: 700;
     margin-bottom: 10px;
-    font-family: "Raleway", sans-serif;
+    font-family: Raleway, sans-serif;
     color: #0e1b4d;
     padding: 0;
   }
@@ -87,7 +87,7 @@ export default {
   .container {
     position: relative;
     height: auto;
-    font-family: "Poppins", sans-serif;
+    font-family: Poppins, sans-serif;
     line-height: 1.5;
     color: #212529;
     padding-top: 0;

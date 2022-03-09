@@ -15,6 +15,7 @@ import ListIpcsr from './ListIpcsr'
 import CreateIpcsr from './CreateIpcsr'
 
 export default {
+  name: 'CandilibIpcsr',
   components: {
     CreateIpcsr,
     ListIpcsr,

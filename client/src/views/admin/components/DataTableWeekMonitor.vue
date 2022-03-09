@@ -38,7 +38,7 @@
                 <v-tooltip
                   bottom
                 >
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <div>
                       <strong v-on="on">{{ getStartOfWeek(week.numWeek, week.numYear) }}</strong>
                     </div>
@@ -54,7 +54,7 @@
                 <v-tooltip
                   bottom
                 >
-                  <template v-slot:activator="{ on }">
+                  <template #activator="{ on }">
                     <div v-on="on">
                       <strong>{{ week.bookedPlaces }}</strong>
                       &nbsp;
@@ -115,7 +115,7 @@
           left
           max-width="300"
         >
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <div>
               <v-btn
                 icon
@@ -329,7 +329,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .text-free-places {
   color: #008000;
 }

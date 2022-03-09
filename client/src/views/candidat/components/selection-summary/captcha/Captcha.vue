@@ -110,7 +110,7 @@ import { mapState } from 'vuex'
 import { BigLoadingIndicator } from '@/components'
 
 export default {
-  name: 'Captcha',
+  name: 'CandilibCaptcha',
   components: {
     BigLoadingIndicator,
   },

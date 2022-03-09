@@ -85,7 +85,7 @@ export default {
 
 <style lang="postcss" scoped>
 .u-border-bottom {
-  border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+  border-bottom: 1px solid rgba(0, 0, 0, 12.5%);
 }
 
 .info-container {

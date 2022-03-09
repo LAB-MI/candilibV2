@@ -6,7 +6,7 @@
       :items-per-page="5"
       class="elevation-1 t-list-ipcsr"
     >
-      <template v-slot:[`item.action`]="{ item }">
+      <template #[`item.action`]="{ item }">
         <update-ipcsr
           :key="item._id"
           :default-email="item.email"
@@ -62,7 +62,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .ipcsr-list {
   margin-top: 2em;
   margin-bottom: 2em;

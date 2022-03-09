@@ -3,7 +3,7 @@
     <page-title>
       {{ $formatMessage({ id: 'tableau_de_bord'}) }}
       <v-tooltip bottom>
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <div
             v-on="on"
           >
@@ -75,6 +75,8 @@ import WeekMonitor from './WeekMonitor.vue'
 import { RefreshButton } from '@/components'
 
 export default {
+
+  name: 'CandilibMonitors',
   components: {
     RefreshButton,
     WeekMonitor,

@@ -1,0 +1,24 @@
+{
+  "root": true,
+  "extends": ["stylelint-config-standard", "stylelint-plugin-stylus/standard"],
+  "rules": {
+    "declaration-colon-newline-after": "always-multi-line",
+    "string-quotes":"single",
+    "font-family-name-quotes": "always-where-recommended",
+    "selector-class-pattern": "^[-_a-z0-9]+$",
+    "max-line-length": 140,
+    "color-function-notation": "legacy",
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global", "deep"]
+      }
+    ],
+    "selector-pseudo-element-no-unknown":[
+      true,
+      {
+        "ignorePseudoElements": [ "v-deep"]
+      }
+    ]
+  }
+}

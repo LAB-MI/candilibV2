@@ -33,7 +33,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .loading-indicator {
   position: relative;
   width: 100%;

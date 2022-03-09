@@ -269,7 +269,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .stats {
   padding: 1em;
 }

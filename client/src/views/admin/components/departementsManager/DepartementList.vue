@@ -8,13 +8,13 @@
       :items="departements"
       :items-per-page="8"
     >
-      <template v-slot:[`item.isAddedRecently`]="{ item }">
+      <template #[`item.isAddedRecently`]="{ item }">
         <v-icon color="green">
           {{ item.isAddedRecently? 'check': '' }}
         </v-icon>
       </template>
 
-      <template v-slot:[`item.action`]="{ item }">
+      <template #[`item.action`]="{ item }">
         <update-departement
           :is-disable-at="false"
           :deprt-id="item._id"
@@ -24,7 +24,7 @@
         <delete-departement :departement-id="item._id" />
       </template>
 
-      <template v-slot:[`item.disableAt`]="{ item }">
+      <template #[`item.disableAt`]="{ item }">
         <update-departement-date-disable-at
           :departement="item"
           @update-departement="updateDepartement"
@@ -127,8 +127,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-
+<style scoped>
 table {
   margin-top: 30px;
   width: 90%;

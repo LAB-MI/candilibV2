@@ -42,7 +42,7 @@
             bottom
             fixed
           >
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-icon
                 :class="`opaque-on-hover  px-0  mx-0  t-icon-header-${icon.routerTo}`"
                 v-on="on"
@@ -56,7 +56,7 @@
       </v-tabs>
 
       <v-tooltip bottom>
-        <template v-slot:activator="{ on: tooltip }">
+        <template #activator="{ on: tooltip }">
           <v-btn
             class="t-disconnect"
             icon
@@ -115,7 +115,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .admin-header {
   position: sticky;
   top: 0;
@@ -126,7 +126,7 @@ export default {
   padding: 0 1em;
   background-color: black;
 
-  & >>> .v-toolbar__content {
+  &::v-deep .v-toolbar__content {
     padding-right: 0;
     width: 100%;
   }
@@ -154,7 +154,7 @@ export default {
   }
 }
 
->>> .theme--dark.v-tabs > .v-tabs-bar {
+::v-deep .theme--dark.v-tabs > .v-tabs-bar {
   background-color: transparent;
 }
 

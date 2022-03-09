@@ -6,7 +6,7 @@
       :items-per-page="10"
       :class="`elevation-1 ${isArchivedUsers ? 't-list-archive-users' : 't-list-users'}`"
     >
-      <template v-slot:[`item.action`]="{ item }">
+      <template #[`item.action`]="{ item }">
         <update-user
           :is-archived-users="isArchivedUsers"
           :email="item.email"
