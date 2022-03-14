@@ -90,7 +90,7 @@ export default {
 }
 </script>
 
-<style  lang="stylus" scoped>
+<style scoped>
 .btn-label {
   height: 1em;
 }

@@ -3,7 +3,7 @@
     bottom
     fixed
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         icon
         v-on="on"

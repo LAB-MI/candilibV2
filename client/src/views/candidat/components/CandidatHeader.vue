@@ -52,7 +52,7 @@
         v-if="isCandidatSignedIn"
         bottom
       >
-        <template v-slot:activator="{ on }">
+        <template #activator="{ on }">
           <v-btn
             class="disconnect-btn  t-disconnect"
             icon
@@ -141,7 +141,17 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
+::v-deep .no-margin-left {
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+
+  & .v-btn {
+    margin-left: 0;
+    margin-right: 0;
+  }
+}
+
 .candidat-toolbar {
   position: sticky;
   top: 0;
@@ -149,7 +159,7 @@ export default {
   justify-content: center;
   align-items: center;
 
-  & >>> .v-toolbar__content {
+  &::v-deep .v-toolbar__content {
     padding-right: 0;
   }
 }
@@ -174,16 +184,6 @@ export default {
     font-size: 0.725em;
     position: relative;
     top: -0.1em;
-  }
-}
-
->>> .no-margin-left {
-  margin-left: 0 !important;
-  padding-left: 0 !important;
-
-  & .v-btn {
-    margin-left: 0;
-    margin-right: 0;
   }
 }
 

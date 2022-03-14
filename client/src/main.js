@@ -1,22 +1,23 @@
 import 'normalize.css'
 import Vue from 'vue'
-import './plugins'
+
+import './plugins/index.js'
 
 import App from './App.vue'
-import router from './router'
-import store from './store'
-import './registerServiceWorker'
+import router from './router.js'
+import store from './store/index.js'
+import './registerServiceWorker.js'
 
-import './main.styl'
-import vuetify from './plugins/vuetify'
+import './main.css'
+import vuetify from './plugins/vuetify.js'
 
 Vue.config.productionTip = false
 
 const PageTitle = () => import(/* webpackChunkName: "header", webpackPreload: true */ '@/components/PageTitle')
 const BandeauBeta = () => import(/* webpackChunkName: "header", webpackPreload: true */ '@/components/BandeauBeta')
 
-Vue.component('page-title', PageTitle)
-Vue.component('bandeau-beta', BandeauBeta)
+Vue.component('PageTitle', PageTitle)
+Vue.component('BandeauBeta', BandeauBeta)
 
 const runMyApp = () => {
   new Vue({

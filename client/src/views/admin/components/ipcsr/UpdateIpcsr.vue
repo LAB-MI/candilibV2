@@ -5,7 +5,7 @@
     width="1040"
     @click:outside="close"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         slot="activator"
         class="t-btn-update"
@@ -337,7 +337,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .select-departement {
   flex-basis: 4em;
 }

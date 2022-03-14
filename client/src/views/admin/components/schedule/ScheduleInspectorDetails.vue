@@ -420,7 +420,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .details {
   padding: 1em;
   margin: 1em;

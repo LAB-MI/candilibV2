@@ -3,7 +3,7 @@
     v-model="deleting"
     width="500"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         slot="activator"
         class="t-btn-delete"
@@ -91,7 +91,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .confirmation-text {
   font-size: 1.3em;
 }

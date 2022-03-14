@@ -3,9 +3,9 @@
     <v-menu
       bottom
     >
-      <template v-slot:activator="{ on: menu }">
+      <template #activator="{ on: menu }">
         <v-tooltip bottom>
-          <template v-slot:activator="{ on: tooltip }">
+          <template #activator="{ on: tooltip }">
             <v-btn
               fab
               outlined
@@ -81,7 +81,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .c-two-hexagons {
   position: relative;
   width: 3em;
@@ -93,13 +93,13 @@ export default {
     height: 2.5em;
   }
 
-  .hexagon-wrapper:first-child {
+  & .hexagon-wrapper:first-child {
     position: absolute;
     top: -0.5em;
     left: 0;
   }
 
-  .hexagon-wrapper:last-child {
+  & .hexagon-wrapper:last-child {
     position: absolute;
     bottom: -0.25em;
     right: -0.5em;

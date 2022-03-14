@@ -18,7 +18,7 @@
           readonly
           min-width="290px"
         >
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-text-field
               v-model="pickerDateStart"
               label="Date de début de période"
@@ -43,7 +43,7 @@
           readonly
           min-width="290px"
         >
-          <template v-slot:activator="{ on }">
+          <template #activator="{ on }">
             <v-text-field
               v-model="pickerDateEnd"
               label="Date de fin de période"

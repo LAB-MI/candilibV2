@@ -87,7 +87,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .question-covid {
   border-bottom: 1px solid #ddd;
   padding-bottom: 1em;
@@ -95,7 +95,7 @@ export default {
   &-title {
     padding: 1em 0;
     font-size: 16px;
-    font-family: "Raleway", sans-serif;
+    font-family: Raleway, sans-serif;
     color: #891329;
     cursor: pointer;
     text-align: center;
@@ -122,7 +122,7 @@ export default {
   color: #000;
   margin-bottom: 1em;
 
-  .item {
+  & .item {
     line-height: 2em;
   }
 }

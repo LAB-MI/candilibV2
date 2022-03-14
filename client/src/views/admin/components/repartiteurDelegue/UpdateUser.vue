@@ -3,7 +3,7 @@
     v-model="updating"
     :width="!isArchivedUsers ? '800' : '500'"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         v-if="!isArchivedUsers"
         slot="activator"
@@ -186,7 +186,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .confirmation-text {
   font-size: 1.3em;
 }

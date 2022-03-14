@@ -31,11 +31,8 @@ export default {
 </script>
 
 <style scoped>
-
 .import-places {
-  flex-grow: 0;
-  flex-shrink: 1;
-  flex-basis: 40%;
+  flex: 0 1 40%;
 }
 
 </style>

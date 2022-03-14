@@ -31,8 +31,8 @@ import { AgGridVue } from 'ag-grid-vue'
 import 'ag-grid-community/dist/styles/ag-grid.css'
 import 'ag-grid-community/dist/styles/ag-theme-material.css'
 
-import { FETCH_CANDIDATS_REQUEST } from '@/store'
-import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './ag-grid-utils'
+import { FETCH_CANDIDATS_REQUEST } from '@/store/index.js'
+import { AgGridLocaleText, valueDateFormatter, filterDateParams } from './ag-grid-utils.js'
 import { getFrenchLuxonCurrentDateTime } from '@/util/frenchDateTime.js'
 
 export default {
@@ -110,6 +110,6 @@ export default {
 
 <style lang="postcss">
 .ag-theme-material .ag-menu {
-  box-shadow: 0 2px 2px 1px rgba(50, 50, 50, 0.2);
+  box-shadow: 0 2px 2px 1px rgba(50, 50, 50, 20%);
 }
 </style>

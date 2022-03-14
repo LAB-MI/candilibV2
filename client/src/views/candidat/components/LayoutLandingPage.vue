@@ -69,8 +69,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-
+<style scoped>
 .actions {
   display: grid;
   justify-content: center;

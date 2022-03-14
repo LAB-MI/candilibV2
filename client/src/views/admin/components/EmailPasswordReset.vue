@@ -3,7 +3,7 @@
     v-model="showDialog"
     width="500"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         slot="activator"
         class="reset-password-btn"
@@ -133,13 +133,13 @@ export default {
 }
 </script>
 
-<style lang="stylus">
+<style>
 .reset-password {
   padding: 1em 4em;
 }
 
 .reset-password-btn {
-  font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
+  font-family: Poppins-Medium, Arial, Helvetica, sans-serif;
   font-size: 15px;
   color: #fff;
   line-height: 1.2;

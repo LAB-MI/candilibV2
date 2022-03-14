@@ -25,6 +25,7 @@ import { mapState } from 'vuex'
 import { HIDE_MESSAGE } from '@/store'
 
 export default {
+  name: 'AppSnacbar',
   computed: {
     ...mapState([
       'message',

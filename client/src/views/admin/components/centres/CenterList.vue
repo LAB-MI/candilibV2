@@ -19,7 +19,7 @@
           class="elevation-1  centre-grid  t-list-centres"
         >
           <template
-            v-slot:item.nom="{ item: centre }"
+            #[`item.nom`]="{ item: centre }"
           >
             <div class="u-flex">
               <v-list-item-content>
@@ -41,7 +41,7 @@
             </div>
           </template>
           <template
-            v-slot:item.geoloc="{ item: centre }"
+            #[`item.geoloc`]="{ item: centre }"
           >
             <a
               class="pa-2 "
@@ -56,7 +56,7 @@
             </a>
           </template>
           <template
-            v-slot:item.active="{ item: centre }"
+            #[`item.active`]="{ item: centre }"
           >
             <div
               class="u-flex"

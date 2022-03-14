@@ -1,6 +1,8 @@
 name: ci-test-multi-jobs
 on:
   # pull_request
+  workflow_dispatch:
+
   push:
     branches-ignore:
       - 'qualif/**'

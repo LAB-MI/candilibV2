@@ -12,7 +12,7 @@
         </v-icon>
         {{ candidatEmail }}
       </div>
-      <template v-slot:activator="{ on }">
+      <template #activator="{ on }">
         <v-btn
           class="t-select-place"
           color="white"

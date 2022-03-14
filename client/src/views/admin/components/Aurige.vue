@@ -135,11 +135,11 @@ export default {
 
     &--export {
       @media (max-width: 1169px) {
-        border-top: 1px solid rgba(200, 200, 200, 0.3);
+        border-top: 1px solid rgba(200, 200, 200, 30%);
       }
 
       @media (min-width: 1170px) {
-        border-left: 1px solid rgba(200, 200, 200, 0.3);
+        border-left: 1px solid rgba(200, 200, 200, 30%);
       }
     }
   }

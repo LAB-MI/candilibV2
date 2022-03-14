@@ -1,9 +1,12 @@
 name: ci-test
 on:
+  workflow_dispatch:
+
   pull_request:
     branches:
      - 'qualif/**'
      - develop
+
   # push:
   #   branches:
   #     - 'qualif/**'

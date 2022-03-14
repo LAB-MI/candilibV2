@@ -84,7 +84,7 @@ import AdminVersion from '@/components/AppVersion.vue'
 import EmailPasswordReset from './EmailPasswordReset'
 
 export default {
-  name: 'Login',
+  name: 'CandilibLogin',
 
   components: {
     AdminVersion,
@@ -163,7 +163,7 @@ export default {
 }
 
 .login::before {
-  content: "";
+  content: '';
   display: block;
   position: absolute;
   width: 100%;
@@ -178,8 +178,8 @@ export default {
   z-index: 1;
   background: #fff;
   border-radius: 10px;
-  padding: 3.5em 3.5em 2em 3.5em;
-  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.9);
+  padding: 3.5em 3.5em 2em;
+  box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 90%);
 }
 
 .form-input {
@@ -188,7 +188,7 @@ export default {
 
 .submit-btn {
   position: relative;
-  font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
+  font-family: Poppins-Medium, Arial, Helvetica, sans-serif;
   font-size: 15px;
   color: #fff;
   line-height: 1.2;

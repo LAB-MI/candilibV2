@@ -4,7 +4,7 @@
     persistent
     max-width="290"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         dark
         :aria-disabled="disabled"

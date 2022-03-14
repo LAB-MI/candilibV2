@@ -6,7 +6,7 @@
         v-model="dialog"
         max-width="500"
       >
-        <template v-slot:activator="{ on, attrs }">
+        <template #activator="{ on, attrs }">
           <div>
             <p>
               <strong class="label">Nombre jours d'inactivité: </strong>
@@ -119,7 +119,6 @@ export default {
 </script>
 
 <style lang="postcss" scoped>
-
 .content {
   display: flex;
   color: #fff;
@@ -144,11 +143,11 @@ export default {
 
     &--export {
       @media (max-width: 1169px) {
-        border-top: 1px solid rgba(200, 200, 200, 0.3);
+        border-top: 1px solid rgba(200, 200, 200, 30%);
       }
 
       @media (min-width: 1170px) {
-        border-left: 1px solid rgba(200, 200, 200, 0.3);
+        border-left: 1px solid rgba(200, 200, 200, 30%);
       }
     }
   }
