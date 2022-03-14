@@ -297,13 +297,16 @@ export const findCandidatByEmail = async email => {
  *
  * @returns {Promise.<Candidat>}
  */
-export const findCandidatById = async (id, options, populate) => {
+export const findCandidatById = async (id, options, populate, withLean) => {
   if (options && options.dateDernierEchecPratique) {
     options.noReussites = 1
   }
 
   const query = Candidat.findById(id, options)
   queryPopulate(populate, query)
+  if (withLean) {
+    query.lean()
+  }
   const candidat = await query.exec()
   return candidat
 }

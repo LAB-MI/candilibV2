@@ -105,8 +105,7 @@ const noReussiteFields = {
     required: false,
   },
 }
-
-export const candidatFields = {
+export const candidatInfoFields = {
   nomNaissance: {
     type: String,
     required: true,
@@ -132,15 +131,6 @@ export const candidatFields = {
     type: String,
     trim: true,
   },
-  dateReussiteETG: {
-    type: Date,
-    required: false,
-  },
-  reussitePratique: {
-    type: Date,
-    required: false,
-    trim: true,
-  },
   email: {
     type: String,
     required: true,
@@ -156,6 +146,19 @@ export const candidatFields = {
   },
   adresse: {
     type: String,
+    trim: true,
+  },
+}
+
+export const candidatFields = {
+  ...candidatInfoFields,
+  dateReussiteETG: {
+    type: Date,
+    required: false,
+  },
+  reussitePratique: {
+    type: Date,
+    required: false,
     trim: true,
   },
   // retourAurige
