@@ -3,7 +3,7 @@
     v-model="showDialog"
     width="500"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         slot="activator"
         :color="isActive ? '#DC143C' : 'primary'"

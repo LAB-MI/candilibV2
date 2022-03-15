@@ -19,14 +19,14 @@ a {
 }
 
 body {
-  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
+  font-family: Poppins-Regular, Arial, Helvetica, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
 }
 
 h2 {
-  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
+  font-family: Poppins-Regular, Arial, Helvetica, sans-serif;
   font-size: 2.5em;
   font-weight: normal;
   color: #777;
@@ -34,7 +34,7 @@ h2 {
 }
 
 h3 {
-  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
+  font-family: Poppins-Regular, Arial, Helvetica, sans-serif;
   color: #333;
   font-size: 1.5em;
   /* stylelint-disable-next-line */
@@ -147,8 +147,8 @@ h3 {
     bottom: -1px;
     height: 2px;
     background: #fff;
-    background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 0.09) 35%, rgba(255, 255, 255, 0.09) 70%, transparent 100%);
-    content: "";
+    background: linear-gradient(to right, transparent 0%, rgba(255, 255, 255, 9%) 35%, rgba(255, 255, 255, 9%) 70%, transparent 100%);
+    content: '';
   }
 }
 
@@ -204,7 +204,7 @@ h3 {
 }
 
 .candidat-section-header {
-  font-family: 'Poppins-Regular', Arial, Helvetica, sans-serif;
+  font-family: Poppins-Regular, Arial, Helvetica, sans-serif;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -243,11 +243,11 @@ h3 {
 }
 
 .c-icon-hexagon {
-  fill: rgba(200, 200, 200, 0.5);
+  fill: rgba(200, 200, 200, 50%);
 
   .active & {
-    fill: rgba(100, 100, 100, 0.8);
-    stroke: rgba(200, 0, 0, 1);
+    fill: rgba(100, 100, 100, 80%);
+    stroke: rgba(200, 0, 0, 100%);
   }
 }
 

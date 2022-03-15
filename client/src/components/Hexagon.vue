@@ -3,10 +3,9 @@
     :class="{'hexagon-wrapper': true, active}"
     @click="$emit('click', value)"
   >
-    <div
+    <hexagon
       class="icon"
       :class="{active}"
-      v-html="hexagon"
     />
     <span class="inner-text">
       {{ value }}
@@ -15,9 +14,13 @@
 </template>
 
 <script>
-import hexagon from '@/assets/images/hexagon.svg'
+import Hexagon from '@/assets/images/hexagon.svg'
 
 export default {
+  name: 'CandilibHexagon',
+  components: {
+    Hexagon,
+  },
   props: {
     active: {
       type: Boolean,
@@ -33,16 +36,10 @@ export default {
       default () {},
     },
   },
-
-  data () {
-    return {
-      hexagon,
-    }
-  },
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .icon {
   position: absolute;
   top: 0;

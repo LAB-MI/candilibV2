@@ -48,7 +48,7 @@
             max-width="290px"
             min-width="290px"
           >
-            <template v-slot:activator="{ on }">
+            <template #activator="{ on }">
               <v-text-field
                 v-model="pickerDate"
                 class="t-date-picker"
@@ -164,7 +164,7 @@
                       <v-layout row>
                         <v-tooltip bottom>
                           {{ inspecteurData.prenom + ' ' + inspecteurData.nom }}
-                          <template v-slot:activator="{ on }">
+                          <template #activator="{ on }">
                             <span
                               class="name-ipcsr-wrap"
                               v-on="on"
@@ -177,7 +177,7 @@
 
                         <v-tooltip bottom>
                           Réaffecter les places de l'inspecteur
-                          <template v-slot:activator="{ on }">
+                          <template #activator="{ on }">
                             <v-btn
                               :class="`t-permute-btn-${inspecteurData.nom}`"
                               icon
@@ -208,7 +208,7 @@
                         </v-btn>
                         <v-tooltip bottom>
                           Information candidats
-                          <template v-slot:activator="{ on }">
+                          <template #activator="{ on }">
                             <v-btn
                               v-if="getCreneauCandidatIds(inspecteurData).length"
                               :class="`t-info-candidat-btn-${inspecteurData.nom}`"
@@ -718,7 +718,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .container {
   max-width: 100%;
   padding: 1px;

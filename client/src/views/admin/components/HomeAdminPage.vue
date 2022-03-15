@@ -38,7 +38,7 @@ export default {
 
 <style lang="postcss" scoped>
 .search-input {
-  margin: 1em 1em;
+  margin: 1em;
 }
 
 .stats-card {

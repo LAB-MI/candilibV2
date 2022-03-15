@@ -3,7 +3,7 @@
     bottom
     fixed
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <router-link
         class="d-block"
         :to="{ name: routerTo}"

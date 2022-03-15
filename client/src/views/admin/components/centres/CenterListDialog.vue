@@ -4,7 +4,7 @@
     width="500"
     @click:outside="close"
   >
-    <template v-slot:activator="{ on }">
+    <template #activator="{ on }">
       <v-btn
         slot="activator"
         icon

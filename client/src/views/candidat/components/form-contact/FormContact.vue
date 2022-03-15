@@ -16,7 +16,7 @@
       >
         <template
           v-if="withHadSingup"
-          v-slot:before
+          #before
         >
           <div
             class="form-input"
@@ -32,7 +32,7 @@
 
         <template
           v-if="readonly"
-          v-slot:modifyHomeDepartement
+          #modifyHomeDepartement
         >
           <v-checkbox
             v-model="isModifyHomeDepartement"
@@ -221,9 +221,9 @@ export default {
 }
 
 .c-candidat-message__subtitle {
-  padding: 5px 0 15px 0;
+  padding: 5px 0 15px;
   line-height: 1;
-  font-family: 'Poppins-Medium', Arial, Helvetica, sans-serif;
+  font-family: Poppins-Medium, Arial, Helvetica, sans-serif;
   font-size: 14px;
   color: #fff;
   letter-spacing: 3px;

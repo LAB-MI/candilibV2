@@ -24,16 +24,8 @@ module.exports = {
       },
     },
   },
-
-  chainWebpack (config) {
-    const svgRule = config.module.rule('svg')
-
-    svgRule.uses.clear()
-
-    svgRule
-      .use('svg-inline-loader')
-      .loader('svg-inline-loader')
-
+  chainWebpack: config => {
+    config.module.rules.delete('svg')
     const vueRule = config.module.rule('vue')
 
     vueRule
@@ -41,5 +33,15 @@ module.exports = {
       .tap(args => {
         args.compilerOptions.whitespace = 'condense'
       })
+  },
+  configureWebpack: {
+    module: {
+      rules: [
+        {
+          test: /\.svg$/,
+          loader: 'vue-svg-loader',
+        },
+      ],
+    },
   },
 }

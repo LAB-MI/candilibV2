@@ -92,7 +92,7 @@ export default {
 
 <style lang="postcss" scoped>
 .location-icon {
-  border-left: 1px solid rgba(150, 150, 150, 0.5);
+  border-left: 1px solid rgba(150, 150, 150, 50%);
   height: 3em;
   padding: 0 1.5em;
   text-decoration: none;

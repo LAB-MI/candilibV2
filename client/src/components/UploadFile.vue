@@ -105,13 +105,10 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
     padding: 1em;
     margin: 1em;
-    flex-wrap: wrap;
-    flex-grow: 1;
-    flex-basis: 250px;
-    flex-shrink: 0;
+    flex-flow: column wrap;
+    flex: 1 0 250px;
 
     &--file {
       flex-grow: 1;

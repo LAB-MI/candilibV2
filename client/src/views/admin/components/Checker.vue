@@ -14,6 +14,7 @@
 
 <script>
 export default {
+  name: 'CandilibChecker',
   props: {
     valid: Boolean,
     text: {
@@ -24,7 +25,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 .expand-transition-leave {
   transition-duration: 1s;
 }

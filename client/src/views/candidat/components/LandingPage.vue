@@ -1,13 +1,11 @@
 <template>
   <layout-landing-page>
-    <template v-slot>
-      <div>
-        <status-candidat-message-infos />
-        <message-prevent-scam />
-        <covid-message-exam />
-      </div>
-      <candidat-stepper />
-    </template>
+    <div>
+      <status-candidat-message-infos />
+      <message-prevent-scam />
+      <covid-message-exam />
+    </div>
+    <candidat-stepper />
   </layout-landing-page>
 </template>
 

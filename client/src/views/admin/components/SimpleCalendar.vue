@@ -58,9 +58,7 @@ export default {
 }
 
 .calendar-day {
-  flex-basis: 14%;
-  flex-grow: 1;
-  flex-shrink: 0;
+  flex: 1 0 14%;
   height: 10em;
   border-width: 0 1px 1px 0;
   border-color: #bbb;

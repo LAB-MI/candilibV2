@@ -9,7 +9,7 @@
       no-action
       @click="gotoDay(timeSlot.label)"
     >
-      <template v-slot:activator>
+      <template #activator>
         <keep-alive>
           <v-list-item-content>
             <v-list-item-title>

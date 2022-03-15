@@ -108,11 +108,11 @@ export default {
   background-color: unset;
 }
 
-.ag-theme-material >>> .ag-header {
+.ag-theme-material::v-deep .ag-header {
   background-color: unset;
 }
 
-.ag-theme-material >>> .ag-menu {
+.ag-theme-material::v-deep .ag-menu {
   min-width: 100px !important;
 }
 </style>

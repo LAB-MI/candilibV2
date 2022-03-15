@@ -286,7 +286,7 @@
                 >
                 <label
                   for="batch-email-file"
-                  @click="() => this.$refs.batchEmailFile.click()"
+                  @click="() => $refs.batchEmailFile.click()"
                 >
                   <v-btn
                     v-ripple
@@ -370,7 +370,7 @@ const codeMessageDictionary = {
 }
 
 export default {
-  name: 'Whitelist',
+  name: 'CandilibWhitelist',
   components: {
     Whitelisted,
     SearchEmail,
@@ -548,7 +548,7 @@ export default {
 }
 
 .drag-over {
-  outline: 5px dashed rgba(23, 162, 184, 0.5);
+  outline: 5px dashed rgba(23, 162, 184, 50%);
 }
 
 .whitelist-grid {

@@ -52,7 +52,7 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
+<style scoped>
 h4 {
   text-align: center;
 }

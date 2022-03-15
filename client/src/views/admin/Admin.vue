@@ -94,6 +94,8 @@ const headerIcons = [
 ]
 
 export default {
+  name: 'CandilibAdmin',
+
   components,
 
   data () {
@@ -117,9 +119,9 @@ export default {
 }
 </script>
 
-<style lang="stylus" scoped>
-  .admin-wrapper {
-    max-width: 100vw;
-    padding: 0;
-  }
+<style scoped>
+.admin-wrapper {
+  max-width: 100vw;
+  padding: 0;
+}
 </style>
