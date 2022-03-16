@@ -74,7 +74,11 @@ export const findArchivedPlaceByPlaceId = async placeId => {
  * @param {*} end
  * @returns
  */
-export const findArchivedPlaceByIpcsrIdAndDates = async (ipcsrId, begin, end) => {
-  const archivedPlace = await ArchivedPlace.find({ inspecteur: ipcsrId, date: { $gte: begin, $lte: end } })
+export const findArchivedPlaceByIpcsrIdAndDates = async (ipcsrId, begin, end, withLean) => {
+  const query = ArchivedPlace.find({ inspecteur: ipcsrId, date: { $gte: begin, $lte: end } })
+  if (withLean) {
+    query.lean()
+  }
+  const archivedPlace = await query.exec()
   return archivedPlace
 }

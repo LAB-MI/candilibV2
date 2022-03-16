@@ -123,7 +123,6 @@ const placeExpect = (place, expectPlace) => {
 
 const archivedPlaceExpect = async (place, candidat, reason, isCandilib) => {
   const archivedPlaceFound = await findArchivedPlaceByPlaceId(place._id)
-  console.log({ archivedPlaceFound })
 
   expect(archivedPlaceFound).toHaveProperty('placeId', place._id)
   expect(archivedPlaceFound).toHaveProperty('date', place.date)
