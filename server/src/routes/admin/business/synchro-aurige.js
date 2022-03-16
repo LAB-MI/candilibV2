@@ -51,6 +51,7 @@ import {
   AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED,
 } from '../../common/constants'
 import { ABSENT } from '../../../models/candidat/objetDernierNonReussite.values'
+import { createArchivedPlaceFromPlace } from '../../../models/archived-place/archived-place-queries'
 
 export const BY_AURIGE = 'AURIGE'
 
@@ -594,6 +595,7 @@ const releaseAndArchivePlace = async (
     BY_AURIGE,
     isCandilib,
   )
+  await createArchivedPlaceFromPlace(place, newReason, BY_AURIGE, isCandilib)
   await removeBookedPlace(place)
   return updatedCandiat
 }

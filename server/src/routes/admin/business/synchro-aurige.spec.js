@@ -5,6 +5,7 @@ import { BY_AURIGE } from '.'
 import config, { smtpOptions } from '../../../config'
 import archivedCandidatModel from '../../../models/archived-candidat/archived-candidat.model'
 import { findArchivedCandidatByNomNeph } from '../../../models/archived-candidat/archived-candidat.queries'
+import { findArchivedPlaceByPlaceId } from '../../../models/archived-place/archived-place-queries'
 import { createCandidat, findCandidatById } from '../../../models/candidat'
 import candidatModel from '../../../models/candidat/candidat.model'
 import { ObjectLastNoReussitValues } from '../../../models/candidat/objetDernierNonReussite.values'
@@ -118,6 +119,23 @@ const placeExpect = (place, expectPlace) => {
   expect(place).toHaveProperty('inspecteur', expectPlace.inspecteur)
   expect(place).toHaveProperty('centre', expectPlace.centre)
   expect(place).toHaveProperty('bookedAt', bookedAt)
+}
+
+const archivedPlaceExpect = async (place, candidat, reason, isCandilib) => {
+  const archivedPlaceFound = await findArchivedPlaceByPlaceId(place._id)
+  console.log({ archivedPlaceFound })
+
+  expect(archivedPlaceFound).toHaveProperty('placeId', place._id)
+  expect(archivedPlaceFound).toHaveProperty('date', place.date)
+  expect(archivedPlaceFound).toHaveProperty('inspecteur', place.inspecteur)
+  expect(archivedPlaceFound).toHaveProperty('centre', place.centre)
+  expect(archivedPlaceFound).toHaveProperty('bookedAt', place.bookedAt)
+  expect(archivedPlaceFound).toHaveProperty('candidat')
+  expect(archivedPlaceFound.candidat).toHaveProperty('_id', candidat._id)
+  expect(archivedPlaceFound.candidat).toHaveProperty('codeNeph', candidat.codeNeph)
+  expect(archivedPlaceFound.candidat).toHaveProperty('email', candidat.email)
+  expect(archivedPlaceFound.candidat).toHaveProperty('nomNaissance', candidat.nomNaissance)
+  expect(archivedPlaceFound.candidat).toHaveProperty('portable', candidat.portable)
 }
 
 function expectDataCandidat (candidat, candidatInfo) {
@@ -749,6 +767,8 @@ describe('synchro-aurige 1', () => {
         EPREUVE_PRATIQUE_OK,
       )
       expect(candidatArchived.places[0]).toHaveProperty('isCandilib', true)
+
+      archivedPlaceExpect(placeSelected, candidatCreated, EPREUVE_PRATIQUE_OK, true)
 
       const place = await findPlaceById(placeSelected._id)
       expect(place.candidat).toBeUndefined()
