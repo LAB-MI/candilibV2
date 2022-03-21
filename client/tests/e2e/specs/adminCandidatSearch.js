@@ -359,3 +359,102 @@ describe('Candidate Profile', () => {
     it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
   }
 })
+
+describe('Search candidat nby ipcsr and date', () => {
+  // let nbPlaces = 0
+  const datesPlaces = Array(6).fill(true).map((_, index) => now.minus({ days: index + 1 }))
+  const candidats = Array(6).fill(true).map((_, index) => ({
+    codeNeph: `75612345678901299${index + 1}`,
+    prenom: '75CC_FRONT',
+    nomNaissance: `75CANDIDAT_GROUP${index + 1}`,
+    adresse: '40 Avenue des terroirs de France 75012 Paris',
+    portable: '0676543986',
+    email: `75candidat_group${index + 1}@candi.lib`,
+    departement: '75',
+    homeDepartement: '75',
+    isEvaluationDone: true,
+    isValidatedEmail: true,
+    isValidatedByAurige: true,
+    status: `${index}`,
+  }))
+
+  before(() => {
+    cy.deleteAllMails()
+    cy.adminLogin()
+    cy.addPlanning(datesPlaces)
+    // .its('avalaiblePlaces').then(el => {
+    //   nbPlaces = el
+    // })
+
+    candidats.forEach(candidat => {
+      cy.addCandidat(candidat)
+    })
+    const aurigeInfos = []
+    const cases = ['Echec', 'Absent', 'Non examinable', 'Annulé', 'Non recevable']
+    datesPlaces.forEach((date, index) => {
+      const candidat = candidats[index]
+      cy.addCandidatToPlace(date, candidat.nomNaissance)
+
+      aurigeInfos.push({
+        codeNeph: candidat.codeNeph,
+        nomNaissance: candidat.nomNaissance,
+        email: candidat.email,
+        dateReussiteETG: now.minus({ years: 3 }).toISODate(),
+        nbEchecsPratiques: '1',
+        dateDernierNonReussite: cases[index] ? date.toISODate() : '',
+        objetDernierNonReussite: cases[index] ?? '',
+        reussitePratique: cases[index] ? '' : date.toISODate(),
+        candidatExistant: 'OK',
+      })
+    })
+    cy.updatePlaces({}, {
+      createdAt: now.minus({ days: 2 }).toUTC(),
+      visibleAt: now.minus({ days: 2 }).toUTC(),
+    }, true)
+
+    candidats.forEach((candidat, index) => {
+    })
+    cy.archiveCandidats(aurigeInfos)
+
+    // cy.adminDisconnection()
+  })
+
+  after(() => {
+    // cy.deleteCandidat({ prenom: '75CC_FRONT' })
+  })
+
+  it('should find info candidats passed exam', () => {
+    // cy.adminLogin()
+    cy.visit(Cypress.env('frontAdmin') + 'admin/admin-candidat')
+    cy.get('.v-tab').should('contain', 'Par inspecteur et date').contains('Par inspecteur et date').click()
+    cy.get('.t-input-search-candidat-inspecteur [type=text]').type(Cypress.env('inspecteur'))
+    cy.contains(Cypress.env('inspecteur')).click()
+
+    // const neededDate = datesPlaces[0].split('-')
+    datesPlaces.forEach((datePlace, index) => {
+      const candidat = candidats[index]
+      const years = datePlace.year
+      cy.log(datePlace, years)
+      const month = datePlace.month
+      const day = datePlace.day
+      const monthDividedByThree = (month / 3)
+      const lineNumber = Math.ceil(monthDividedByThree)
+
+      cy.get('.t-date-input').click()
+      cy.get('.accent--text > button').click()
+      cy.get('.fade-transition-enter-active > .v-date-picker-header > .v-date-picker-header__value > .accent--text > button')
+        .click()
+      cy.get('.v-date-picker-years').should('contain', `${years}`).contains(`${years}`).click()
+      cy.get('.v-date-picker-header').should('contain', `${years}`).should('be.visible')
+      cy.get(`.fade-transition-enter-active > .v-date-picker-table > table > tbody > :nth-child(${lineNumber}) > :nth-child(${(month % 3) || 3}) > .v-btn`)
+        .click()
+      cy.get('.fade-transition-enter-active > .v-date-picker-table > table > tbody td')
+        .should('contain', `${day}`)
+        .contains(`${day}`).should('be.visible').click()
+
+      ;['codeNeph', 'nomNaissance', 'prenom', 'portable', 'email'].forEach(key => {
+        cy.get('td').should('contain', candidat[key])
+      })
+    })
+  })
+})

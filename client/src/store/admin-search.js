@@ -29,6 +29,10 @@ export const FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_REQUEST = 'FETCH_UPDATE_CANDIDAT
 export const FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_SUCCESS = 'FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_SUCCESS'
 export const FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_FAILURE = 'FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_FAILURE'
 
+export const FETCH_CANDIDATS_BY_IPCSR_DATE_REQUEST = 'FETCH_CANDIDATS_BY_IPCSR_DATE_REQUEST'
+export const FETCH_CANDIDATS_BY_IPCSR_DATE_SUCCESS = 'FETCH_CANDIDATS_BY_IPCSR_DATE_SUCCESS'
+export const FETCH_CANDIDATS_BY_IPCSR_DATE_FAILURE = 'FETCH_CANDIDATS_BY_IPCSR_DATE_FAILURE'
+
 export default {
   state: {
     candidats: {
@@ -39,6 +43,12 @@ export default {
     },
 
     inspecteurs: {
+      isFetching: false,
+      list: [],
+      error: undefined,
+    },
+
+    candidatsByIpcsrDate: {
       isFetching: false,
       list: [],
       error: undefined,
@@ -120,6 +130,16 @@ export default {
     },
     FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_FAILURE (state) {
       state.candidats.isFetching = false
+    },
+    FETCH_CANDIDATS_BY_IPCSR_DATE_REQUEST (state) {
+      state.candidatsByIpcsrDate.isFetching = true
+    },
+    FETCH_CANDIDATS_BY_IPCSR_DATE_SUCCESS (state, list) {
+      state.candidatsByIpcsrDate.list = list
+      state.candidatsByIpcsrDate.isFetching = false
+    },
+    FETCH_CANDIDATS_BY_IPCSR_DATE_FAILURE (state) {
+      state.candidatsByIpcsrDate.isFetching = false
     },
   },
 
@@ -250,6 +270,23 @@ export default {
       } catch (error) {
         dispatch(SHOW_ERROR, error.message)
         commit(FETCH_UPDATE_CANDIDAT_PHONE_NUMBER_FAILURE, error)
+        throw error
+      }
+    },
+
+    async FETCH_CANDIDATS_BY_IPCSR_DATE_REQUEST ({ commit, dispatch }, { ipcsr, date }) {
+      try {
+        commit(FETCH_CANDIDATS_BY_IPCSR_DATE_REQUEST)
+        const { success, message, archivedPlaces } = await api.admin.getInfoPlacesExamByIpcsrAndDate(ipcsr, date)
+        if (!success) {
+          throw new Error(message)
+        }
+
+        dispatch(SHOW_SUCCESS, message)
+        commit(FETCH_CANDIDATS_BY_IPCSR_DATE_SUCCESS, archivedPlaces)
+      } catch (error) {
+        dispatch(SHOW_ERROR, error.message)
+        commit(FETCH_CANDIDATS_BY_IPCSR_DATE_FAILURE, error)
         throw error
       }
     },
