@@ -791,3 +791,9 @@ Cypress.Commands.add('deleteInspecteur', (query) => {
     cy.log(JSON.stringify(content.body))
   })
 })
+
+Cypress.Commands.add('deleteAllArchivedPlaces', (query) => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/archivedplaces', query).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})

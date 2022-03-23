@@ -362,13 +362,13 @@ describe('Candidate Profile', () => {
 
 describe('Search candidat nby ipcsr and date', () => {
   // let nbPlaces = 0
-  const datesPlaces = Array(6).fill(true).map((_, index) => now.minus({ days: index + 1 }))
-  const candidats = Array(6).fill(true).map((_, index) => ({
+  const datesPlaces = Array(2).fill(true).map((_, index) => now.minus({ days: index + 1 }))
+  const candidats = Array(30).fill(true).map((_, index) => ({
     codeNeph: `75612345678901299${index + 1}`,
-    prenom: '75CC_FRONT',
+    prenom: `75CC_FRONT${index + 1}`,
     nomNaissance: `75CANDIDAT_GROUP${index + 1}`,
     adresse: '40 Avenue des terroirs de France 75012 Paris',
-    portable: '0676543986',
+    portable: `06${(`00000000${index + 1}`).slice(-8)}`,
     email: `75candidat_group${index + 1}@candi.lib`,
     departement: '75',
     homeDepartement: '75',
@@ -378,7 +378,18 @@ describe('Search candidat nby ipcsr and date', () => {
     status: `${index}`,
   }))
 
+  const casesEchec = ['Echec', 'Absent', 'Non examinable', 'Annulé', 'Non recevable']
+  const caseNBFailure = 'maxFailed'
+  const caseETG = 'ETG'
+  const caseSuccess = 'Réussi'
+  const cases = [casesEchec, caseNBFailure, caseETG, caseSuccess].flat()
+
+  const datePassage = datesPlaces.slice(-1)[0]
+
   before(() => {
+    cy.deleteCandidat({ prenom: { $regex: '75CC_FRONT' } })
+    cy.deleteAllPlaces({ })
+    cy.deleteAllArchivedPlaces({ })
     cy.deleteAllMails()
     cy.adminLogin()
     cy.addPlanning(datesPlaces)
@@ -389,38 +400,38 @@ describe('Search candidat nby ipcsr and date', () => {
     candidats.forEach(candidat => {
       cy.addCandidat(candidat)
     })
-    const aurigeInfos = []
-    const cases = ['Echec', 'Absent', 'Non examinable', 'Annulé', 'Non recevable']
-    datesPlaces.forEach((date, index) => {
-      const candidat = candidats[index]
-      cy.addCandidatToPlace(date, candidat.nomNaissance)
 
-      aurigeInfos.push({
-        codeNeph: candidat.codeNeph,
-        nomNaissance: candidat.nomNaissance,
-        email: candidat.email,
-        dateReussiteETG: now.minus({ years: 3 }).toISODate(),
-        nbEchecsPratiques: '1',
-        dateDernierNonReussite: cases[index] ? date.toISODate() : '',
-        objetDernierNonReussite: cases[index] ?? '',
-        reussitePratique: cases[index] ? '' : date.toISODate(),
-        candidatExistant: 'OK',
+    const aurigeInfos = []
+    let idxCandidat = 0
+
+    datesPlaces.forEach((date) => {
+      cases.forEach((caseEchec) => {
+        const candidat = candidats[idxCandidat++]
+        cy.log(JSON.stringify(candidat))
+        cy.addCandidatToPlace(date, candidat.nomNaissance)
+
+        aurigeInfos.push({
+          codeNeph: candidat.codeNeph,
+          nomNaissance: candidat.nomNaissance,
+          email: candidat.email,
+          dateReussiteETG: now.minus({ years: caseNBFailure === caseEchec ? 3 : 6 }).toISODate(),
+          nbEchecsPratiques: caseNBFailure === caseEchec ? '5' : '1',
+          dateDernierNonReussite: casesEchec.includes(caseEchec) ? datePassage.toISODate() : '',
+          objetDernierNonReussite: casesEchec.includes(caseEchec) ? caseEchec : '',
+          reussitePratique: caseSuccess === caseEchec ? datePassage.toISODate() : '',
+          candidatExistant: 'OK',
+        })
       })
     })
+
     cy.updatePlaces({}, {
       createdAt: now.minus({ days: 2 }).toUTC(),
       visibleAt: now.minus({ days: 2 }).toUTC(),
     }, true)
 
-    candidats.forEach((candidat, index) => {
-    })
     cy.archiveCandidats(aurigeInfos)
 
     // cy.adminDisconnection()
-  })
-
-  after(() => {
-    // cy.deleteCandidat({ prenom: '75CC_FRONT' })
   })
 
   it('should find info candidats passed exam', () => {
@@ -430,11 +441,10 @@ describe('Search candidat nby ipcsr and date', () => {
     cy.get('.t-input-search-candidat-inspecteur [type=text]').type(Cypress.env('inspecteur'))
     cy.contains(Cypress.env('inspecteur')).click()
 
+    let idxCandidat = 0
     // const neededDate = datesPlaces[0].split('-')
     datesPlaces.forEach((datePlace, index) => {
-      const candidat = candidats[index]
       const years = datePlace.year
-      cy.log(datePlace, years)
       const month = datePlace.month
       const day = datePlace.day
       const monthDividedByThree = (month / 3)
@@ -446,14 +456,19 @@ describe('Search candidat nby ipcsr and date', () => {
         .click()
       cy.get('.v-date-picker-years').should('contain', `${years}`).contains(`${years}`).click()
       cy.get('.v-date-picker-header').should('contain', `${years}`).should('be.visible')
-      cy.get(`.fade-transition-enter-active > .v-date-picker-table > table > tbody > :nth-child(${lineNumber}) > :nth-child(${(month % 3) || 3}) > .v-btn`)
-        .click()
-      cy.get('.fade-transition-enter-active > .v-date-picker-table > table > tbody td')
+      cy.get(`.v-date-picker-table > table > tbody > :nth-child(${lineNumber}) > :nth-child(${(month % 3) || 3}) > .v-btn`).click()
+      cy.get('.v-date-picker-table > table > tbody td')
         .should('contain', `${day}`)
         .contains(`${day}`).should('be.visible').click()
 
-      ;['codeNeph', 'nomNaissance', 'prenom', 'portable', 'email'].forEach(key => {
-        cy.get('td').should('contain', candidat[key])
+      const isDateResa = datePlace.hasSame(datePassage, 'days')
+      cases.forEach((caseEchec) => {
+        const isCaseDisplay = ![caseETG, caseNBFailure].includes(caseEchec)
+        const candidat = candidats[idxCandidat++]
+        ;['codeNeph', 'nomNaissance', 'portable', 'email'].forEach(key => {
+          cy.get('td').should(`${isDateResa && isCaseDisplay ? '' : 'not.'}contain`, candidat[key])
+        })
+        cy.get('td').should(`${isDateResa && isCaseDisplay ? '' : 'not.'}contain`, caseEchec)
       })
     })
   })

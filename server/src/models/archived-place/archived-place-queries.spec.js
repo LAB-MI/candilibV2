@@ -112,7 +112,7 @@ describe('Archive place', () => {
     const begin = dateSelected.startOf('day')
     const end = dateSelected.endOf('day')
 
-    const archivedPlacesFound = await findArchivedPlaceByIpcsrIdAndDates(inspecteurSelected, begin.toJSDate(), end.toJSDate())
+    const archivedPlacesFound = await findArchivedPlaceByIpcsrIdAndDates({ ipcsrId: inspecteurSelected, begin: begin.toJSDate(), end: end.toJSDate() })
 
     const expecteds = places.filter(({ inspecteur, date }) => inspecteur.toString() === inspecteurSelected.toString() && date >= begin && date <= end)
 

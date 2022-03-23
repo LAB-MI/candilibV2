@@ -76,7 +76,7 @@ export default {
       })),
       examsPlaces: state => {
         const list = state.adminSearch.candidatsByIpcsrDate.list || []
-        return list.map(place => ({ hour: getFrenchDateTimeFromIso(place.date), candidat: place.candidat, reason: place.archiveReasons }))
+        return list.map(place => ({ hour: getFrenchDateTimeFromIso(place.date), candidat: place.candidat, reason: place.archiveReasons.slice(-1) }))
       },
     }),
     pickerDateExmen () {
@@ -99,7 +99,6 @@ export default {
     async getPlacesExam () {
       try {
         if (!this.ipcsrSelected) return
-
         await this.$store.dispatch(FETCH_CANDIDATS_BY_IPCSR_DATE_REQUEST, { ipcsr: this.ipcsrSelected, date: this.dateExam })
       } catch (error) {
       }
