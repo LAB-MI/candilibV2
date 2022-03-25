@@ -26,6 +26,7 @@
         </v-btn>
       </candilib-autocomplete>
     </div>
+
     <v-expand-transition>
       <profile-info
         v-if="profileInfo"

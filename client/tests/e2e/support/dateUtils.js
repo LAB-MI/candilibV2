@@ -17,6 +17,12 @@ export const getFrenchDateTimeFromIso = isoDate =>
     timeStyle: 'short',
   })
 
+export const getFrenchDateShortFromIso = isoDate =>
+  isoDate &&
+  getFrenchLuxonFromIso(isoDate).toLocaleString({
+    dateStyle: 'short',
+  })
+
 export const getFrenchLuxonFromJSDate = jsDate => jsDate && DateTime.fromJSDate(jsDate, frenchOptions)
 export const getFrenchDateFromLuxon = dateLuxon =>
   dateLuxon &&
