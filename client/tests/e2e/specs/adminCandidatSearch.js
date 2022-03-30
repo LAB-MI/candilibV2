@@ -434,7 +434,7 @@ describe('Search candidat nby ipcsr and date', () => {
     // cy.adminDisconnection()
   })
 
-  it.only('should find info candidats passed exam', () => {
+  it('should find info candidats passed exam', () => {
     // cy.adminLogin()
     cy.visit(Cypress.env('frontAdmin') + 'admin/admin-candidat')
     cy.get('.v-tab').should('contain', 'Par inspecteur et date').contains('Par inspecteur et date').click()
