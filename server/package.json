@@ -91,7 +91,7 @@
     "agent-base": "^6.0.2",
     "babel-jest": "^27.2.5",
     "babel-plugin-dynamic-import-node": "^2.3.3",
-    "browser-sync": "^2.27.7",
+    "browser-sync": "^2.27.9",
     "dotenv": "^8.6.0",
     "eslint": "^7.30.0",
     "eslint-config-standard": "^14.1.1",

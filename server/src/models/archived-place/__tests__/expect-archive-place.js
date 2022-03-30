@@ -1,6 +1,8 @@
 import { getFrenchLuxon, getFrenchLuxonFromJSDate } from '../../../util'
+import { findCandidatById } from '../../candidat'
+import { candidatInfoFields } from '../../candidat/candidat.model'
 
-export const expectedArchivedPlace = (
+export const expectedArchivedPlace = async (
   archivedPlace,
   place,
   reason,
@@ -25,4 +27,12 @@ export const expectedArchivedPlace = (
   const now = getFrenchLuxon()
   const archivedAt = getFrenchLuxonFromJSDate(archivedPlace.archivedAt)
   expect(now.hasSame(archivedAt, 'day')).toBeTruthy()
+
+  if (place.candidat) {
+    const candidatTmp = await findCandidatById(place.candidat, undefined, undefined, true)
+    const candidat = Object.keys(candidatInfoFields).reduce((obj, key) => ({ ...obj, [key]: candidatTmp[key] }), {})
+    expect(archivedPlace.candidat).toMatchObject(candidat)
+  } else {
+    expect(archivedPlace.candidat).toBeUndefined()
+  }
 }

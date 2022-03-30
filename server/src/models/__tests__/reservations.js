@@ -104,6 +104,7 @@ export const removeAllResas = async () => {
   const places = await placeModel.find({ candidat: { $ne: undefined } })
   const promsieSaves = places.map(place => {
     place.candidat = undefined
+    place.booked = undefined
     return place.save()
   })
   const removesResas = await Promise.all(promsieSaves)
