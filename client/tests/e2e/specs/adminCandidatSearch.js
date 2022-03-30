@@ -434,12 +434,14 @@ describe('Search candidat nby ipcsr and date', () => {
     // cy.adminDisconnection()
   })
 
-  it('should find info candidats passed exam', () => {
+  it.only('should find info candidats passed exam', () => {
     // cy.adminLogin()
     cy.visit(Cypress.env('frontAdmin') + 'admin/admin-candidat')
     cy.get('.v-tab').should('contain', 'Par inspecteur et date').contains('Par inspecteur et date').click()
     cy.get('.t-input-search-candidat-inspecteur [type=text]').type(Cypress.env('inspecteur'))
     cy.contains(Cypress.env('inspecteur')).click()
+
+    cy.get('.v-snack--active button').should('be.visible').click({ force: true })
 
     let idxCandidat = 0
     // const neededDate = datesPlaces[0].split('-')
