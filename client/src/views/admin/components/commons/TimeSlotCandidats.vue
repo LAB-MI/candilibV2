@@ -24,7 +24,7 @@ export default {
         { text: 'Prénom', value: 'candidat.prenom' },
         { text: 'Courriel', value: 'candidat.email' },
         { text: 'Portable', value: 'candidat.portable' },
-        { text: 'resultat', value: 'reason' },
+        { text: 'Résultat', value: 'reason' },
       ],
     }
   },
