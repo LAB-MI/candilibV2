@@ -23,7 +23,7 @@ export const users = [
 ]
 
 export const createUsers = async () => {
-  return Promise.all(users.map(user => createUser(user)))
+  return Promise.all(users.map(user => createUser(user.email, user.password, user.departements, user.status)))
 }
 
 export const deleteUsers = async () => {

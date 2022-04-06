@@ -66,6 +66,7 @@ import config from '../../config'
 import { getNbDaysInactivity, sortStatusCandilib } from './sort-candidat-status-controllers'
 import { logsByFilters } from './logs-candidat-controllers'
 
+import { getArchivePlaces } from './archived-places-controllers'
 const router = express.Router()
 
 router.use(verifyRepartiteurLevel())
@@ -2226,4 +2227,7 @@ router.delete(
   verifyUserLevel(config.userStatusLevels.admin),
   deleteDepartementController,
 )
+
+router.get('/archived-places', getArchivePlaces)
+
 export default router

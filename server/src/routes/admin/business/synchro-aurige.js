@@ -51,6 +51,7 @@ import {
   AUTHORIZE_DATE_END_OF_RANGE_FOR_ETG_EXPIERED,
 } from '../../common/constants'
 import { ABSENT } from '../../../models/candidat/objetDernierNonReussite.values'
+import { createArchivedPlaceFromPlace } from '../../../models/archived-place/archived-place-queries'
 
 export const BY_AURIGE = 'AURIGE'
 
@@ -584,6 +585,7 @@ const releaseAndArchivePlace = async (
   reason,
   candidat,
   place,
+  lastNoReussite,
 ) => {
   const isCandilib = dateAurige.hasSame(datePlace, 'day')
   const newReason = reason + (isCandilib ? '' : NO_CANDILIB)
@@ -594,6 +596,9 @@ const releaseAndArchivePlace = async (
     BY_AURIGE,
     isCandilib,
   )
+  const reasons = [newReason]
+  if (lastNoReussite) reasons.push(lastNoReussite.reason)
+  await createArchivedPlaceFromPlace(place, reasons, BY_AURIGE, isCandilib)
   await removeBookedPlace(place)
   return updatedCandiat
 }
@@ -651,6 +656,7 @@ const cancelBookingAfterExamFailure = async (
     REASON_EXAM_FAILED,
     candidat,
     place,
+    lastNoReussite,
   )
 
   try {

@@ -792,5 +792,14 @@ const apiAdmin = {
     )
     return json
   },
+
+  async getInfoPlacesExamByIpcsrAndDate (ipcsrId, date) {
+    const url = `${apiPaths.admin.placesExam}?ipcsr=${ipcsrId}&date=${encodeURIComponent(date)}`
+    const json = await apiClient.get(url, {
+      headers: getHeadersForAdminJson(),
+    })
+    return json
+  },
+
 }
 export default apiAdmin

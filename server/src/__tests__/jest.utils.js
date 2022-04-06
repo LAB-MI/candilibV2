@@ -3,6 +3,12 @@ import { getFrenchLuxon, getFrenchLuxonFromISO, getFrenchLuxonFromJSDate } from 
 expect.extend({
   toHaveDateProperty (received, expectedProperty, expectedValue) {
     const dateReceived = received[expectedProperty]
+    let dateExpected = expectedValue
+    if (expectedValue instanceof Date) {
+      dateExpected = getFrenchLuxonFromJSDate(expectedValue)
+    } else if (expectedValue instanceof String) {
+      dateExpected = getFrenchLuxonFromISO(expectedValue)
+    }
     if (!dateReceived) {
       return {
         message: () => `expected ${expectedProperty}, value of property ${expectedProperty} is undefined`,
@@ -16,13 +22,13 @@ expect.extend({
       dateReceivedLuxon = getFrenchLuxonFromISO(dateReceived)
     }
 
-    if (dateReceivedLuxon.hasSame(expectedValue, 'seconds')) {
+    if (dateReceivedLuxon.hasSame(dateExpected, 'seconds')) {
       return {
         pass: true,
       }
     }
     return {
-      message: () => `expected ${expectedProperty} error,\n Expected date: ${expectedValue.toISO()}\n Received date: ${dateReceivedLuxon.toISO()}`,
+      message: () => `expected ${expectedProperty} error,\n Expected date: ${dateExpected.toISO()}\n Received date: ${dateReceivedLuxon.toISO()}`,
       pass: false,
     }
   },

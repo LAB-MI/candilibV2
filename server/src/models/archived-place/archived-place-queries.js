@@ -2,6 +2,9 @@
  * Ensemble des actions sur les places archivées dans la base de données
  * @module
  */
+import { isValidObjectId } from 'mongoose'
+import { findCandidatById } from '../candidat'
+import { candidatInfoFields } from '../candidat/candidat.model'
 import ArchivedPlace from './archived-place-model'
 
 /**
@@ -33,12 +36,18 @@ export const createArchivedPlaceFromPlace = async (
   byUser,
   isCandilib,
 ) => {
-  const { _id: placeId, date, centre, inspecteur } = placeData
+  const { _id: placeId, ...infoPlace } = placeData._doc
+  const { candidat } = infoPlace
+  let candidatDoc
+  if (candidat && isValidObjectId(candidat)) {
+    const options = Object.keys(candidatInfoFields).reduce((obj, key) => ({ ...obj, [key]: 1 }), {})
+    candidatDoc = await findCandidatById(candidat, options, undefined, true)
+  }
+
   const archivedPlaceData = {
     placeId,
-    date,
-    centre,
-    inspecteur,
+    ...infoPlace,
+    candidat: candidatDoc || candidat,
     archiveReasons,
     isCandilib,
     byUser,
@@ -55,5 +64,22 @@ export const createArchivedPlaceFromPlace = async (
  */
 export const findArchivedPlaceByPlaceId = async placeId => {
   const archivedPlace = await ArchivedPlace.findOne({ placeId })
+  return archivedPlace
+}
+
+/**
+ *
+ * @param {*} ipcsrId
+ * @param {*} begin
+ * @param {*} end
+ * @returns
+ */
+export const findArchivedPlaceByIpcsrIdAndDates = async (filters, withLean) => {
+  const { ipcsrId, begin, end } = filters
+  const query = ArchivedPlace.find({ inspecteur: ipcsrId.toString(), date: { $gte: begin.toString(), $lte: end.toString() } })
+  if (withLean) {
+    query.lean()
+  }
+  const archivedPlace = await query.exec()
   return archivedPlace
 }

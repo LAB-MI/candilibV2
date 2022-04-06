@@ -3,9 +3,11 @@
  * @module
  */
 import mongoose from 'mongoose'
+import { candidatInfoFields } from '../candidat/candidat.model'
 import { placeCommonFields } from '../place/place.model'
 
 const { Schema } = mongoose
+const ObjectId = Schema.Types.ObjectId
 
 const ArchivedPlaceFields = {
   ...placeCommonFields,
@@ -29,6 +31,17 @@ const ArchivedPlaceFields = {
     type: String,
     default: undefined,
   },
+  candidat: {
+    type: {
+      ...candidatInfoFields,
+      _id: {
+        type: ObjectId,
+        required: true,
+      },
+    },
+    required: false,
+  },
+
 }
 
 /**
@@ -38,6 +51,9 @@ const ArchivedPlaceFields = {
 const ArchivedPlaceSchema = new Schema(ArchivedPlaceFields, {
   timestamps: true,
 })
+
+ArchivedPlaceSchema.index({ date: 1, inspecteur: 1 })
+ArchivedPlaceSchema.index({ placeId: 1 })
 
 ArchivedPlaceSchema.pre('save', async function preSave () {
   const archivedPlace = this

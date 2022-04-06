@@ -78,7 +78,7 @@ Cypress.Commands.add('adminDisconnection', (noRequestPlaces) => {
     .should('contain', '/admin-login')
 })
 
-Cypress.Commands.add('archiveCandidate', (candidat) => {
+Cypress.Commands.add('archiveCandidate', (candidat, aurigeInfo) => {
   // Creates the aurige file
   cy.writeFile(Cypress.env('filePath') + '/aurige.end.json',
     [
@@ -86,18 +86,55 @@ Cypress.Commands.add('archiveCandidate', (candidat) => {
         codeNeph: candidat ? candidat.codeNeph : Cypress.env('NEPH'),
         nomNaissance: candidat ? candidat.nomNaissance : Cypress.env('candidat'),
         email: candidat ? candidat.email : Cypress.env('emailCandidat'),
-        dateReussiteETG: '',
-        nbEchecsPratiques: '',
-        dateDernierNonReussite: '',
-        objetDernierNonReussite: '',
-        reussitePratique: '',
-        candidatExistant: 'NOK',
+        dateReussiteETG: aurigeInfo?.dateReussiteETG || '',
+        nbEchecsPratiques: aurigeInfo?.nbEchecsPratiques || '',
+        dateDernierNonReussite: aurigeInfo?.dateDernierNonReussite || '',
+        objetDernierNonReussite: aurigeInfo?.objetDernierNonReussite || '',
+        reussitePratique: aurigeInfo?.reussitePratique || '',
+        candidatExistant: aurigeInfo?.candidatExistant || 'NOK',
       },
     ])
   // Archives the candidate
   cy.contains('import_export')
     .click()
   const filePath = '../../../' + Cypress.env('filePath') + '/aurige.end.json'
+  const fileName = 'aurige.json'
+  cy.get('.input-file-container [type=file]')
+    .attachFile({
+      filePath,
+      fileName,
+      mimeType: 'application/json',
+    })
+
+  cy.get('.v-snack--active')
+    .should('contain', fileName + ' prêt à être synchronisé')
+  cy.get('.import-file-action [type=button]')
+    .click()
+  cy.get('.v-snack--active')
+    .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
+})
+
+/**
+ * aurigInfos:   [
+      {
+        codeNeph: "123456789",
+        nomNaissance: "nom",
+        email: "email@test.com",
+        dateReussiteETG: '2022-03-23',
+        nbEchecsPratiques: '0',
+        dateDernierNonReussite: '2022-03-23',
+        objetDernierNonReussite: 'ECHEC',
+        reussitePratique: '2022-03-23',
+        candidatExistant: 'OK',
+      },
+    ]
+ */
+Cypress.Commands.add('archiveCandidats', aurigInfos => {
+  cy.writeFile(Cypress.env('filePath') + '/aurige.archiveplaces.json', aurigInfos)
+  // Archives the candidate
+  cy.contains('import_export')
+    .click()
+  const filePath = '../../../' + Cypress.env('filePath') + '/aurige.archiveplaces.json'
   const fileName = 'aurige.json'
   cy.get('.input-file-container [type=file]')
     .attachFile({
@@ -751,6 +788,12 @@ Cypress.Commands.add('connectByMagicLink', (magicLink, options) => {
 
 Cypress.Commands.add('deleteInspecteur', (query) => {
   cy.request('DELETE', Cypress.env('ApiRestDB') + '/inspecteurs', query).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+
+Cypress.Commands.add('deleteAllArchivedPlaces', (query) => {
+  cy.request('DELETE', Cypress.env('ApiRestDB') + '/archivedplaces', query).then((content) => {
     cy.log(JSON.stringify(content.body))
   })
 })
