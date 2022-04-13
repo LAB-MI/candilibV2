@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:16.13.1-slim as base
+FROM node:16.14.2-slim as base
 ARG http_proxy
 ARG https_proxy
 ARG npm_registry
@@ -11,7 +11,6 @@ ARG no_proxy
 WORKDIR /app
 # Expose the listening port of your app
 EXPOSE 8000
-
 # use proxy & private npm registry
 # With internal npm repo (autosigned) disable strict ssl : strict-ssl false
 # ENV TZ="Europe/Paris" #Ne Pas mettre à cause des sources existant developpé sans TZ
@@ -42,6 +41,7 @@ RUN (set -x && [ -z "$MIRROR_DEBIAN" ] || sed -i.orig -e "s|http://deb.debian.or
 RUN npm --no-git-tag-version version ${APP_VERSION} ; npm ci
 ENV NODE_ICU_DATA="/app/node_modules/full-icu"
 
+USER node
 #CMD ["npm", "start"]
 CMD ["npm","run",  "dev"]
 
