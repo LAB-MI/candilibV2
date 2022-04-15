@@ -181,5 +181,10 @@
         "always-multiline"
       ]
     }
+  },
+  "config": {
+    "mongodbMemoryServer": {
+      "runtimeDownload": false
+    }
   }
 }
