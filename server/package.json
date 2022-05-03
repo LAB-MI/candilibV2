@@ -69,7 +69,7 @@
     "morgan": "^1.10.0",
     "nodemailer": "^6.6.2",
     "nodemailer-html-to-text": "^3.2.0",
-    "pm2": "^5.1.0",
+    "pm2": "^5.2.0",
     "sanitize-html": "^2.4.0",
     "stream-buffers": "^3.0.2",
     "svg-captcha-express": "^1.0.8",
@@ -107,7 +107,7 @@
     "jsdoc-plugin-typescript": "^2.0.6",
     "lint-staged": "^11.2.3",
     "mailparser": "^3.4.0",
-    "mongodb-memory-server": "^6.9.6",
+    "mongodb-memory-server": "^8.0.4",
     "nodemon": "^2.0.12",
     "npm-run-all": "^4.1.5",
     "regenerator-runtime": "^0.13.7",
@@ -180,6 +180,13 @@
         2,
         "always-multiline"
       ]
+    }
+  },
+  "config": {
+    "mongodbMemoryServer": {
+      "runtimeDownload": false,
+      "mongomsVersion": "4.0.6",
+      "downloadDir": "projectRoot/node_modules/.cache/mongodb-binaries"
     }
   }
 }

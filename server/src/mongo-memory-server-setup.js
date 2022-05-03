@@ -1,7 +1,16 @@
-const MongoMemoryServer = require('mongodb-memory-server').default
-const mongoServer = new MongoMemoryServer()
-
+import { MongoMemoryServer } from 'mongodb-memory-server'
+let mongoServer
+// const mongoServer = new MongoMemoryServer({ binary: { version: '4.0.6' } })
 module.exports = {
-  getMongoServerConnectionString: () => mongoServer.getUri(),
-  stopMongoMemoryServer: () => mongoServer.stop(),
+  getMongoServerConnectionString: async () => {
+    if (!mongoServer) {
+      mongoServer = await MongoMemoryServer.create({ binary: { version: '4.0.6' } })
+    }
+    // await mongoServer.start()
+    return mongoServer.getUri()
+  },
+  stopMongoMemoryServer: () => {
+    mongoServer.stop()
+    mongoServer = undefined
+  },
 }

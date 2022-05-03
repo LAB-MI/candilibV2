@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:14.15.0-slim as base
+FROM node:16.14.2-stretch-slim as base
 ARG http_proxy
 ARG https_proxy
 ARG npm_registry
