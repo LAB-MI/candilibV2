@@ -28,6 +28,7 @@ services:
         https_proxy: ${http_proxy}
         no_proxy: ${no_proxy}
         npm_registry: ${NPM_REGISTRY}
+        MONGOMS_VERSION: 4.0.6
     container_name: candilib_api
     depends_on:
       - db
