@@ -16,6 +16,7 @@ services:
         MIRROR_DEBIAN: ${MIRROR_DEBIAN}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         APP_VERSION: ${APP_VERSION}
+        MONGOMS_VERSION: 4.0.6
     ports:
       - "${API_PORT:-8000}:8000"
 #    env_file:
