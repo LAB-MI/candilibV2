@@ -65,7 +65,6 @@ export default {
         const { geoDepartementsInfos } = state.departements
         const homeDepartement = state.candidat.me?.homeDepartement
         const isHaveDisableDate = geoDepartementsInfos.find(item => (item.geoDepartement === homeDepartement) && item?.disableAt)
-        console.log(isHaveDisableDate)
         return { isHaveDisableDate: (isHaveDisableDate?.disableAt ? getFrenchLuxonFromIso(isHaveDisableDate.disableAt).toLocaleString('DATE_SHORT') : ''), homeDepartement }
       },
     }),
