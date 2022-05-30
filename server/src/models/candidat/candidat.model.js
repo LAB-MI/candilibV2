@@ -235,7 +235,10 @@ export const candidatFields = {
     type: Date,
     required: false,
   },
-
+  reasonStatus: {
+    type: String,
+    required: false,
+  },
 }
 
 const CandidatSchema = new Schema(candidatFields, { timestamps: true })
