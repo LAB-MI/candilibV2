@@ -162,6 +162,20 @@ export const getOrUpsertNbDaysInactivity = async ({ nbDaysInactivityNeeded }) =>
   return await getNbDaysInactivityFromDbOrDefault()
 }
 
+/**
+ *
+ * @param {Array} ids
+ * @param {String} status
+ * @param {String} reason
+ * @returns
+ */
+const updateCandidatsStatus = async (ids, status) => {
+  return await Candidat.updateMany(
+    { _id: { $in: ids } },
+    { $set: { status } },
+  )
+}
+
 // TODO: JSDOC
 export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
   techLogger.info({
@@ -199,10 +213,8 @@ export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
         olderDate: getDiffNowInMonthFromJsDate(candidatsTmp[0].createdAt),
         newerDate: getDiffNowInMonthFromJsDate(candidatsTmp[candidatsTmp.length - 1].createdAt),
       }
-      const statusFirst = await Candidat.updateMany(
-        { _id: { $in: results.ids } },
-        { $set: { status } },
-      )
+      const statusFirst = updateCandidatsStatus(results.ids, status)
+
       await addArchivedCandidatStatus(status, results.toArchivedStatus)
 
       updatedCandidat.push(statusFirst)
@@ -223,10 +235,8 @@ export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
     const status = `${index}`
     const idsLastStatus = candidatsLastStatus.reduce(groupByAndIds(status), { countByDep: {}, ids: [], toArchivedStatus: [] })
 
-    const lastStatus = await Candidat.updateMany(
-      { _id: { $in: idsLastStatus.ids } },
-      { $set: { status } },
-    )
+    const lastStatus = updateCandidatsStatus(idsLastStatus.ids, status)
+
     await addArchivedCandidatStatus(status, idsLastStatus.toArchivedStatus)
 
     updatedCandidat.push(lastStatus)
