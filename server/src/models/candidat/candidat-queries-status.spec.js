@@ -145,7 +145,7 @@ describe('Candidat status', () => {
       ${NbDaysInactivityDefault}      | ${0}                            | ${undefined}
       ${NbDaysInactivityDefault + 30} | ${NbDaysInactivityDefault + 30} | ${undefined}
       ${NbDaysInactivityDefault + 30} | ${0}                            | ${NbDaysInactivityDefault + 30}
-    `('sort status candidats with %nbDaysInactivity days inactives and with a set %nbDaysInactivityToSet days', ({ nbDaysInactivity, nbDaysInactivityToSet, formInitDb }, done) => {
+    `('sort status candidats with $nbDaysInactivity days inactives and with a set $nbDaysInactivityToSet days', ({ nbDaysInactivity, nbDaysInactivityToSet, formInitDb }, done) => {
     testSortCandidats(nbDaysInactivity, nbDaysInactivityToSet, formInitDb).catch((error) => {
       throw error
     }).finally(() => {
