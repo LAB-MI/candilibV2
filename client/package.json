@@ -56,9 +56,9 @@
     "whatwg-fetch": "^3.5.0"
   },
   "optionalDependencies": {
+    "@vue/cli-plugin-e2e-cypress": "^5.0.1",
     "cypress": "^9.5.0",
-    "cypress-file-upload": "^5.0.8",
-    "@vue/cli-plugin-e2e-cypress": "^5.0.1"
+    "cypress-file-upload": "^5.0.8"
   },
   "devDependencies": {
     "@babel/core": "7.13.15",

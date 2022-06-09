@@ -1,7 +1,7 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM cypress/browsers:node14.16.0-chrome89-ff86 as base
+FROM cypress/browsers:node16.14.0-chrome99-ff97 as base
 ARG http_proxy
 ARG https_proxy
 ARG npm_registry
@@ -41,4 +41,3 @@ RUN [ -f /e2e-entrypoint.sh ]&& chmod +x /e2e-entrypoint.sh
 
 #CMD ["npm","run", "cypress"]
 ENTRYPOINT ["/e2e-entrypoint.sh"]
-
