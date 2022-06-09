@@ -11,6 +11,7 @@ import { addArchivedCandidatStatus } from '../archived-candidat-status/archived-
 import { NbDaysInactivityDefault, NB_DAYS_INACTIVITY } from '../../config'
 import { findStatusByType, upsertStatusByType } from '../status'
 import { REASON_UNKNOWN } from '../../routes/common/reason.constants'
+import { STATUS_CANDIDAT_NO_ACTIF, STATUS_CANDIDAT_OTHER, STATUS_CANDIDAT_PENALTY } from './candidat-reason-status'
 
 /**
  * Crée un candidat
@@ -129,15 +130,31 @@ const getSortableCandilibInLastStatus = async (now, dateLastConnexion) => Candid
     { lastConnection: { $lt: dateLastConnexion } },
     { lastConnection: { $exists: false } },
   ],
-}, { _id: 1, departement: 1, status: 1, homeDepartement: 1 })
+}, { _id: 1, departement: 1, status: 1, homeDepartement: 1, canBookFrom: 1, lastConnection: 1 })
 
 // TODO: JSDOC
-const groupByAndIds = (status) => (acc, curCandidat) => {
-  if (!acc.countByDep[curCandidat.homeDepartement]) { acc.countByDep[curCandidat.homeDepartement] = 0 }
-  acc.countByDep[curCandidat.homeDepartement]++
-  acc.ids.push(curCandidat._id)
-  acc.toArchivedStatus.push({ candidatId: curCandidat._id, hasModified: (curCandidat.status && status !== curCandidat.status) })
-  return acc
+const groupByAndIds = (status, dateLastConnection) => {
+  const now = Date.now()
+  return (acc, curCandidat) => {
+    if (!acc.countByDep[curCandidat.homeDepartement]) { acc.countByDep[curCandidat.homeDepartement] = 0 }
+    acc.countByDep[curCandidat.homeDepartement]++
+    acc.ids.push(curCandidat._id)
+    acc.toArchivedStatus.push({ candidatId: curCandidat._id, hasModified: (curCandidat.status && status !== curCandidat.status) })
+
+    if (dateLastConnection && acc.idsNoConnected && acc.idsOtherReason && acc.idsPenalty) {
+      if (curCandidat?.canBookFrom?.getTime() >= now) {
+        acc.idsPenalty.push(curCandidat._id)
+        return acc
+      }
+      if (dateLastConnection?.valueOf() > curCandidat.lastConnection?.getTime()) {
+        acc.idsNoConnected.push(curCandidat._id)
+        return acc
+      }
+      acc.idsOtherReason.push(curCandidat._id)
+    }
+
+    return acc
+  }
 }
 
 /**
@@ -162,6 +179,20 @@ export const getOrUpsertNbDaysInactivity = async ({ nbDaysInactivityNeeded }) =>
   return await getNbDaysInactivityFromDbOrDefault()
 }
 
+/**
+ *
+ * @param {Array} ids
+ * @param {String} status
+ * @param {String} reason
+ * @returns
+ */
+const updateCandidatsStatus = async (ids, status, reasonStatus) => {
+  return await Candidat.updateMany(
+    { _id: { $in: ids } },
+    { $set: { status, reasonStatus } },
+  )
+}
+
 // TODO: JSDOC
 export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
   techLogger.info({
@@ -174,9 +205,10 @@ export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
   const countStatus = candidatStatuses.nbStatus
   const nowLuxon = getFrenchLuxon()
   const now = nowLuxon.toJSDate()
-  const dateLastConnexion = nowLuxon.minus({ days: nbDaysInactivity }).toISODate()
+  const dateLastConnectionLuxon = nowLuxon.minus({ days: nbDaysInactivity }).startOf('day')
+  const dateLastConnection = dateLastConnectionLuxon.toISODate()
 
-  const candidats = await getSortableCandilibStatusAndSortCreatedAt(now, dateLastConnexion)
+  const candidats = await getSortableCandilibStatusAndSortCreatedAt(now, dateLastConnection)
 
   const candidatsCount = candidats.length
   const groupeSize = candidatsCount > countStatus ? Math.floor(candidatsCount / countStatus) : 1
@@ -199,10 +231,8 @@ export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
         olderDate: getDiffNowInMonthFromJsDate(candidatsTmp[0].createdAt),
         newerDate: getDiffNowInMonthFromJsDate(candidatsTmp[candidatsTmp.length - 1].createdAt),
       }
-      const statusFirst = await Candidat.updateMany(
-        { _id: { $in: results.ids } },
-        { $set: { status } },
-      )
+      const statusFirst = updateCandidatsStatus(results.ids, status)
+
       await addArchivedCandidatStatus(status, results.toArchivedStatus)
 
       updatedCandidat.push(statusFirst)
@@ -216,20 +246,23 @@ export const sortCandilibStatus = async ({ nbDaysInactivityNeeded }) => {
     countByStatus[index] = results.countByDep
   }
 
-  const candidatsLastStatus = await getSortableCandilibInLastStatus(now, dateLastConnexion)
+  const candidatsLastStatus = await getSortableCandilibInLastStatus(now, dateLastConnection)
 
   if (candidatsLastStatus && candidatsLastStatus.length) {
     const index = countStatus - 1
     const status = `${index}`
-    const idsLastStatus = candidatsLastStatus.reduce(groupByAndIds(status), { countByDep: {}, ids: [], toArchivedStatus: [] })
+    const idsLastStatus = candidatsLastStatus.reduce(groupByAndIds(status, dateLastConnectionLuxon), { countByDep: {}, ids: [], toArchivedStatus: [], idsNoConnected: [], idsOtherReason: [], idsPenalty: [] })
 
-    const lastStatus = await Candidat.updateMany(
-      { _id: { $in: idsLastStatus.ids } },
-      { $set: { status } },
-    )
+    // const lastStatus = await updateCandidatsStatus(idsLastStatus.ids, status)
+    const lastStatusPenalty = await updateCandidatsStatus(idsLastStatus.idsPenalty, status, STATUS_CANDIDAT_PENALTY)
+    const lastStatusNoConnected = await updateCandidatsStatus(idsLastStatus.idsNoConnected, status, STATUS_CANDIDAT_NO_ACTIF)
+    const lastStatusOther = await updateCandidatsStatus(idsLastStatus.idsOtherReason, status, STATUS_CANDIDAT_OTHER)
+
     await addArchivedCandidatStatus(status, idsLastStatus.toArchivedStatus)
 
-    updatedCandidat.push(lastStatus)
+    updatedCandidat.push(lastStatusPenalty)
+    updatedCandidat.push(lastStatusNoConnected)
+    updatedCandidat.push(lastStatusOther)
 
     for (const [key, value] of Object.entries(idsLastStatus.countByDep)) {
       if (!countByStatus[index][key]) countByStatus[index][key] = 0
