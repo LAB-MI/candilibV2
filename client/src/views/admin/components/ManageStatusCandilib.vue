@@ -65,7 +65,7 @@
               color="success"
               @click="triggerStatusCandilib"
             >
-              Confimer
+              Confirmer
             </v-btn>
           </v-card-actions>
         </v-card>

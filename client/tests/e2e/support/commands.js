@@ -317,11 +317,33 @@ Cypress.Commands.add('getNewMagicLinkCandidat', (candidatEmail) => {
   cy.wait(500)
   cy.getLastMail().getRecipients()
     .should('contain', candidatEmail)
-  cy.getLastMail()
+  cy.getLastMail({ recipient: candidatEmail })
     .getSubject()
     .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
-  cy.getLastMail().its('Content.Body').then((mailBody) => {
+  cy.getLastMail({ recipient: candidatEmail }).its('Content.Body').then((mailBody) => {
     return parseMagicLinkFromMailBody(mailBody)
+  })
+})
+
+Cypress.Commands.add('getMailConnectionCandidat', (candidatEmail) => {
+  cy.visit(Cypress.env('frontCandidat') + 'qu-est-ce-que-candilib', {
+    onBeforeLoad: (win) => {
+      win.localStorage.clear()
+    },
+  })
+
+  cy.contains('Déjà')
+    .click()
+  cy.get('input').type(candidatEmail)
+  cy.get('form').find('button').click()
+  cy.wait(500)
+  cy.getLastMail().getRecipients()
+    .should('contain', candidatEmail)
+  cy.getLastMail({ recipient: candidatEmail })
+    .getSubject()
+    .should('contain', '=?UTF-8?Q?Validation_de_votre_inscription_=C3=A0_C?= =?UTF-8?Q?andilib?=')
+  cy.getLastMail({ recipient: candidatEmail }).its('Content.Body').then((mailBody) => {
+    return mailBody
   })
 })
 

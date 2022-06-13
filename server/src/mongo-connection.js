@@ -51,7 +51,7 @@ export const connect = async () => {
       )
       return delay(reconnectInterval).then(connect)
     } else {
-      console.log(err)
+      techLogger.error({ section: 'CONNECTION MONGO', description: err.message, error: err })
       const errorMessage =
         'Could not connect to Mongo, make sure it is started and listening on the appropriate port'
       throw new Error(errorMessage)

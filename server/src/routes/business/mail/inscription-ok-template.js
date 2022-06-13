@@ -15,6 +15,7 @@ export const getInscriptionOkTemplate = (
   contactezNous,
   accessDate,
   warningMessage,
+  isNoActive,
 ) => {
   const header = `
     <p>Madame, Monsieur ${nomMaj},</p>
@@ -36,6 +37,10 @@ export const getInscriptionOkTemplate = (
     <p align="right">L'équipe Candilib</p>
   `
 
+  const msgCandidatsInactifs = isNoActive ? `<li>
+  Les candidats inactifs sur une période de 60 jours verront les places à 12h50. Au-delà de ces 60 jours, lorsqu’ils se reconnectent sur Candilib, ces candidats sont réintégrés selon leur ancienneté d’inscription dès le lendemain.
+  </li>` : ''
+
   const contentForAllowedCandidat = `
     <p>
       <a href="${urlMagicLink}">
@@ -54,7 +59,13 @@ export const getInscriptionOkTemplate = (
     </p>
     <br/>
     <p>
-    <strong>Attention : </strong>vous ne devez transmettre cet email à personne. Il permet d'accéder à votre compte personnel, de créer ou modifier votre réservation.
+    <strong>Attention : </strong>
+    <ul>
+    <li>
+    Vous ne devez transmettre cet email à personne. Il permet d'accéder à votre compte personnel, de créer ou modifier votre réservation.
+    </li>
+    ${msgCandidatsInactifs}
+    </ul>
     </p>
   `
 

@@ -12,12 +12,14 @@ import { getFrenchLuxon } from '../../util'
 import { NbDaysInactivityDefault, NB_DAYS_INACTIVITY } from '../../config'
 import { createStatus, deleteStatusByType, findStatusByType } from '../status'
 import candidatModel from './candidat.model'
+import { STATUS_CANDIDAT_NO_ACTIF, STATUS_CANDIDAT_OTHER, STATUS_CANDIDAT_PENALTY } from './candidat-reason-status'
 
 jest.mock('../../util/logger')
 require('../../util/logger').setWithConsole(false)
 
 describe('Candidat status', () => {
   let sortableInactiveCandidat
+  let allTest
   const now = getFrenchLuxon()
 
   beforeAll(async () => {
@@ -36,6 +38,8 @@ describe('Candidat status', () => {
       canAccessAt: null,
       token: true,
       lastConnection: dayAfterIncative.toJSDate(),
+      firstName: 'Sortable',
+      reasonStatus: null,
     }
     const sortableCandidatCanBookInPast = {
       nbCandidats: 1,
@@ -45,6 +49,8 @@ describe('Candidat status', () => {
       canAccessAt: null,
       token: true,
       lastConnection: dayAfterIncative.toJSDate(),
+      firstName: 'canBooking',
+      reasonStatus: null,
     }
     const notSortableCandidatCanBookInFuture = {
       nbCandidats: 1,
@@ -54,6 +60,8 @@ describe('Candidat status', () => {
       canAccessAt: null,
       token: true,
       lastConnection: dayAfterIncative.toJSDate(),
+      firstName: 'cannotBooking',
+      reasonStatus: STATUS_CANDIDAT_PENALTY,
     }
     const sortableCandidatCanAccessInFuture = {
       nbCandidats: 1,
@@ -63,6 +71,8 @@ describe('Candidat status', () => {
       canAccessAt: 'future',
       token: true,
       lastConnection: dayAfterIncative.toJSDate(),
+      firstName: 'noAccess',
+      reasonStatus: STATUS_CANDIDAT_OTHER,
     }
     const notSortableCandidatwithNothing = {
       nbCandidats: 1,
@@ -71,6 +81,7 @@ describe('Candidat status', () => {
       canBookFrom: null,
       canAccessAt: null,
       token: false,
+      firstName: 'noAurige',
     }
 
     const notSortableCandidatwithoutToken = {
@@ -80,6 +91,8 @@ describe('Candidat status', () => {
       canBookFrom: null,
       canAccessAt: null,
       token: false,
+      firstName: 'withoutToken',
+      reasonStatus: STATUS_CANDIDAT_OTHER,
     }
     sortableInactiveCandidat = {
       nbCandidats: 7,
@@ -90,9 +103,10 @@ describe('Candidat status', () => {
       token: true,
       lastConnection: dayBeforeIncative.toJSDate(),
       firstName: 'inactive',
+      reasonStatus: STATUS_CANDIDAT_NO_ACTIF,
     }
 
-    const allTest = [
+    allTest = [
       sortableCandidat,
       sortableCandidatCanBookInPast,
       notSortableCandidatCanBookInFuture,
@@ -145,7 +159,7 @@ describe('Candidat status', () => {
       ${NbDaysInactivityDefault}      | ${0}                            | ${undefined}
       ${NbDaysInactivityDefault + 30} | ${NbDaysInactivityDefault + 30} | ${undefined}
       ${NbDaysInactivityDefault + 30} | ${0}                            | ${NbDaysInactivityDefault + 30}
-    `('sort status candidats with %nbDaysInactivity days inactives and with a set %nbDaysInactivityToSet days', ({ nbDaysInactivity, nbDaysInactivityToSet, formInitDb }, done) => {
+    `('sort status candidats with $nbDaysInactivity days inactives and with a set $nbDaysInactivityToSet days', ({ nbDaysInactivity, nbDaysInactivityToSet, formInitDb }, done) => {
     testSortCandidats(nbDaysInactivity, nbDaysInactivityToSet, formInitDb).catch((error) => {
       throw error
     }).finally(() => {
@@ -153,12 +167,16 @@ describe('Candidat status', () => {
     })
   })
 
-  async function testSortCandidats (nbDaysInactivity, nbDaysInactivityToSet, formInitDb) {
+  async function runSortCandidats (nbDaysInactivity, formInitDb, nbDaysInactivityToSet) {
     const dayBeforeIncative = now.minus({ days: nbDaysInactivity + 1 })
     await candidatModel.updateMany({ prenom: /inactive/ }, { lastConnection: dayBeforeIncative.toJSDate() })
     formInitDb && await createStatus({ type: NB_DAYS_INACTIVITY, message: `${formInitDb}` })
 
     await sortCandilibStatus({ nbDaysInactivityNeeded: nbDaysInactivityToSet })
+  }
+
+  async function testSortCandidats (nbDaysInactivity, nbDaysInactivityToSet, formInitDb) {
+    await runSortCandidats(nbDaysInactivity, formInitDb, nbDaysInactivityToSet)
 
     const expectedCandidatByStatus = ['1', '1', '1', '1', '1', `${6 + sortableInactiveCandidat.nbCandidats}`]
     await Promise.all(expectedCandidatByStatus.map(
@@ -172,6 +190,14 @@ describe('Candidat status', () => {
         return countCandidatByStatusValue
       },
     ))
+
+    for (const { firstName, nbCandidats, reasonStatus } of allTest) {
+      const candidatsFounds = await candidatModel.find({ prenom: firstName }, { _id: 0, prenom: 1, reasonStatus: 1 })
+
+      expect(candidatsFounds).toEqual(expect.arrayContaining(
+        Array(nbCandidats).fill(expect.objectContaining({ prenom: firstName, reasonStatus: reasonStatus })),
+      ))
+    }
 
     const nbDaysFoundInDb = await findStatusByType({ type: NB_DAYS_INACTIVITY })
     if (nbDaysInactivityToSet) {
