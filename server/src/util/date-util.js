@@ -125,6 +125,9 @@ export const getFrenchFormattedDateTime = (
   } else if (pDate instanceof String || typeof pDate === 'string') {
     datetime = DateTime.fromISO(pDate, FRENCH_LOCALE_INFO)
   }
+  if (!datetime) {
+    throw new Error(`Date invalide: ${pDate}`)
+  }
 
   let date
   if (dateFormat instanceof Object) {

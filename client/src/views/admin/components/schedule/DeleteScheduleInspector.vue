@@ -171,7 +171,6 @@ export default {
     },
 
     async deleteInspecteurPlaces () {
-      console.log(this.placeInfo)
       const toFilterCreneaux = this.placeInfo.creneau
         .filter(this.getTypeFilterPlace())
       const toDispatch = toFilterCreneaux.map(el => el.place._id)

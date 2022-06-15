@@ -29,6 +29,7 @@ import { getContactUs } from './send-mail-util'
 import { getMessageTransistionRdvPermis } from './mail/transition-rdvpermis'
 import { placesAndGeoDepartementsAndCentresCache } from '../middlewares'
 import { DateTime } from 'luxon'
+import { STATUS_CANDIDAT_NO_ACTIF } from '../../models/candidat/candidat-reason-status'
 
 const getMailData = async (candidat, flag, urlMagicLink) => {
   const urlFAQ = getUrlFAQ()
@@ -41,6 +42,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
     emailValidationHash,
     canAccessAt,
     homeDepartement,
+    reasonStatus,
   } = candidat
 
   const contactezNous = getContactUs()
@@ -139,6 +141,7 @@ const getMailData = async (candidat, flag, urlMagicLink) => {
         urlMagicLink ? urlMagicLink.urlContactUs : contactezNous,
         canAccessAt,
         warningMessage,
+        reasonStatus === STATUS_CANDIDAT_NO_ACTIF,
       )
       message.content = getHtmlBody(INSCRIPTION_OK_MSG)
       message.subject = 'Validation de votre inscription à Candilib'
