@@ -15,7 +15,9 @@ import {
   updateCentre,
 } from './centre-business'
 import { createUser } from '../../models/user'
-import { findCentreByNameAndDepartement } from '../../models/centre'
+import { createCentre, deleteCentre, findCentreByNameAndDepartement } from '../../models/centre'
+import { createInspecteurs, createTestPlace, inspecteursTests } from '../../models/__tests__'
+import { getFrenchLuxonFromObject } from '../../util'
 
 describe('Centres business', () => {
   let admin
@@ -26,6 +28,7 @@ describe('Centres business', () => {
     const email = 'admin@example.com'
     const password = 'S3cr3757uff!'
     admin = await createUser(email, password, departements)
+    await createInspecteurs()
     setInitCreatedCentre()
     await createCentres()
   })
@@ -48,46 +51,6 @@ describe('Centres business', () => {
     expect(centresResult).toBeDefined()
     expect(centresResult).not.toBeNull()
     expect(centresResult).toHaveLength(nbCentres())
-  })
-
-  it('Should disable one centre', async () => {
-    const allCentres = await findAllCentresForAdmin([centres[0].departement])
-    const testCentre = allCentres.filter(
-      centre => centre.nom === centres[0].nom,
-    )[0]
-
-    const disabledCentre = await updateCentreStatus(
-      testCentre._id,
-      false,
-      admin._id,
-    )
-
-    expect(disabledCentre).toBeDefined()
-    expect(disabledCentre).not.toBeNull()
-    expect(disabledCentre).toHaveProperty('nom', centres[0].nom)
-    expect(disabledCentre).toHaveProperty('label', centres[0].label)
-    expect(disabledCentre).toHaveProperty('active', false)
-    expect(disabledCentre).toHaveProperty('disabledBy', admin.email)
-    expect(disabledCentre.disabledAt).toBeInstanceOf(Date)
-  })
-
-  it('Should enable one centre', async () => {
-    const allCentres = await findAllCentresForAdmin([centres[0].departement])
-    const testCentre = allCentres.filter(
-      centre => centre.nom === centres[0].nom,
-    )[0]
-
-    const disabledCentre = await updateCentreStatus(
-      testCentre._id,
-      true,
-      admin._id,
-    )
-
-    expect(disabledCentre).toBeDefined()
-    expect(disabledCentre).not.toBeNull()
-    expect(disabledCentre).toHaveProperty('nom', centres[0].nom)
-    expect(disabledCentre).toHaveProperty('label', centres[0].label)
-    expect(disabledCentre).toHaveProperty('active', true)
   })
 
   it('Should add one centre', async () => {
@@ -132,5 +95,122 @@ describe('Centres business', () => {
     expect(updatedCentre.geoloc).toHaveProperty('coordinates')
     expect(updatedCentre.geoloc.coordinates).toHaveProperty('0', 45.3)
     expect(updatedCentre.geoloc.coordinates).toHaveProperty('1', 8)
+  })
+
+  describe('Test disable and enable centre', () => {
+    const centreTest = {
+      departement: '93',
+      nom: 'CENTRE STATUS',
+      label: "Centre d'examen pour la modification de status ",
+      adresse: '3 Avenue test, ville test 3, FR, 93000',
+      lon: 49,
+      lat: 2.5,
+      geoDepartement: '75',
+    }
+    let testCentre
+
+    const dateYesterday = getFrenchLuxonFromObject({ hour: 11 })
+      .minus({ days: 1 })
+      .toISO()
+
+    beforeEach(async () => {
+      const {
+        nom,
+        label,
+        adresse,
+        lon,
+        lat,
+        departement,
+        geoDepartement,
+      } = centreTest
+
+      testCentre = await createCentre(nom,
+        label,
+        adresse,
+        lon,
+        lat,
+        departement,
+        geoDepartement,
+      )
+    })
+
+    afterEach(async () => {
+      await deleteCentre(testCentre)
+    })
+
+    it('Should disable one centre', async () => {
+      const disabledCentre = await updateCentreStatus(
+        testCentre._id,
+        false,
+        admin._id,
+      )
+
+      expect(disabledCentre).toBeDefined()
+      expect(disabledCentre).not.toBeNull()
+      expect(disabledCentre).toHaveProperty('nom', testCentre.nom)
+      expect(disabledCentre).toHaveProperty('label', testCentre.label)
+      expect(disabledCentre).toHaveProperty('active', false)
+      expect(disabledCentre).toHaveProperty('disabledBy', admin.email)
+      expect(disabledCentre.disabledAt).toBeInstanceOf(Date)
+    })
+
+    it('Should enable one centre', async () => {
+      testCentre.active = false
+      await testCentre.save()
+      const disabledCentre = await updateCentreStatus(
+        testCentre._id,
+        true,
+        admin._id,
+      )
+
+      expect(disabledCentre).toBeDefined()
+      expect(disabledCentre).not.toBeNull()
+      expect(disabledCentre).toHaveProperty('nom', testCentre.nom)
+      expect(disabledCentre).toHaveProperty('label', testCentre.label)
+      expect(disabledCentre).toHaveProperty('active', true)
+    })
+
+    it('Should can not disable one centre with one place on the future', async () => {
+      const placeBeforeMonth = {
+        date: (() => getFrenchLuxonFromObject({ hour: 9 }).plus({ days: 1, hour: 1 }).toISO())(),
+        centre: testCentre.nom,
+        inspecteur: inspecteursTests[1],
+        createdAt: dateYesterday,
+        visibleAt: dateYesterday,
+      }
+
+      await createTestPlace(placeBeforeMonth)
+      await expect(updateCentreStatus(
+        testCentre._id,
+        false,
+        admin._id,
+      )).rejects.toThrow('Le centre possède des places à venir, il ne peut pas être archivé.')
+    })
+
+    it('Should disable one centre with the places in past', async () => {
+      const placeBeforeMonth = {
+        date: (() => getFrenchLuxonFromObject({ hour: 9 }).minus({ days: 1, hour: 1 }).toISO())(),
+        centre: testCentre.nom,
+        inspecteur: inspecteursTests[1],
+        createdAt: dateYesterday,
+        visibleAt: dateYesterday,
+      }
+
+      await createTestPlace(placeBeforeMonth)
+
+      const disabledCentre = await updateCentreStatus(
+        testCentre._id,
+        false,
+        admin._id,
+      )
+
+      expect(disabledCentre).toBeDefined()
+      expect(disabledCentre).not.toBeNull()
+      expect(disabledCentre).toHaveProperty('nom', testCentre.nom)
+      expect(disabledCentre).toHaveProperty('label', testCentre.label)
+      expect(disabledCentre).toHaveProperty('active', false)
+      expect(disabledCentre).toHaveProperty('disabledBy', admin.email)
+      expect(disabledCentre.disabledAt).toBeInstanceOf(Date)
+    })
   })
 })
