@@ -1,6 +1,9 @@
+import {
+  now,
+} from '../support/dateUtils'
 
 describe('Manage centers', () => {
-  const centre = {
+  const centre1 = {
     nom: 'BOBO',
     label: 'Infos complémentaires bloblo',
     adresse: 'Adresse précise du centre avec un code postale en 2A000',
@@ -29,20 +32,21 @@ describe('Manage centers', () => {
   }
 
   before(() => {
-    cy.deleteCentres([centre, centre2, centre3, { nom: centre2.nom + ' UPDATED' }])
+    cy.deleteCentres([centre1, centre2, centre3, { nom: centre2.nom + ' UPDATED' }])
   })
 
+  beforeEach(() => {
+    cy.deleteAllPlaces()
+  })
   afterEach(() => {
     cy.adminDisconnection()
   })
 
   after(() => {
-    cy.deleteCentres([centre, centre2, centre3, { nom: centre2.nom + ' UPDATED' }])
+    cy.deleteCentres([centre1, centre2, centre3, { nom: centre2.nom + ' UPDATED' }])
   })
 
-  it('Ajouter un centre', () => {
-    cy.delegueLogin()
-    cy.visit(Cypress.env('frontAdmin') + 'admin/centres')
+  const cyCreateCentre = (centre) => {
     cy.get('.t-create-centre-form')
       .find('[name=nom-centre]')
       .type(centre.nom)
@@ -52,6 +56,11 @@ describe('Manage centers', () => {
     cy.get('.t-create-centre-form')
       .find('[name=adresse-centre]')
       .type(centre.adresse)
+    if (centre.geoDepartement) {
+      cy.get('.t-create-centre-form')
+        .find('[name=geo-departement-centre]')
+        .type(centre2.geoDepartement)
+    }
     cy.get('.t-create-centre-form')
       .find('[name=lon-centre]')
       .type(centre.lon)
@@ -66,8 +75,14 @@ describe('Manage centers', () => {
       .contains(centre.departement)
       .click()
 
-    cy.get('.t-create-centre-submit')
-      .click()
+    cy.get('.t-create-centre-submit').click()
+  }
+
+  it('Ajouter un centre', () => {
+    const centre = centre1
+    cy.delegueLogin()
+    cy.visit(Cypress.env('frontAdmin') + 'admin/centres')
+    cyCreateCentre(centre)
 
     cy.get('.t-list-centres')
       .find('th span')
@@ -90,42 +105,18 @@ describe('Manage centers', () => {
   })
 
   it('Modifier un centre', () => {
+    const centre = centre2
     cy.adminLogin()
     cy.visit(Cypress.env('frontAdmin') + 'admin/centres')
-    cy.get('.t-create-centre-form')
-      .find('[name=nom-centre]')
-      .type(centre2.nom)
-    cy.get('.t-create-centre-form')
-      .find('[name=label-centre]')
-      .type(centre2.label)
-    cy.get('.t-create-centre-form')
-      .find('[name=adresse-centre]')
-      .type(centre2.adresse)
-    cy.get('.t-create-centre-form')
-      .find('[name=geo-departement-centre]')
-      .type(centre2.geoDepartement)
-    cy.get('.t-create-centre-form')
-      .find('[name=lon-centre]')
-      .type(centre2.lon)
-    cy.get('.t-create-centre-form')
-      .find('[name=lat-centre]')
-      .type(centre2.lat)
-    cy.get(
-      '.t-create-centre-form  .t-create-center-select-departement  .v-input__slot',
-    ).click()
-    cy.get('.v-list-item')
-      .contains(centre2.departement)
-      .click()
-
-    cy.get('.t-create-centre-submit').click()
+    cyCreateCentre(centre)
 
     cy.get('.t-list-centres')
       .find('.t-centre-list-header-name')
       .click({ force: true })
 
     cy.get('.t-list-centres')
-      .should('contain', centre2.nom)
-      .contains(centre2.nom)
+      .should('contain', centre.nom)
+      .contains(centre.nom)
       .parents('tr')
       .find('.t-centre-edit-btn')
       .click({ force: true })
@@ -133,12 +124,12 @@ describe('Manage centers', () => {
     cy.get('.v-dialog--active  .t-update-centre-form')
       .within(($inForm) => {
         cy.get('[name=nom-centre]')
-          .should('have.value', centre2.nom)
+          .should('have.value', centre.nom)
           .type('{selectall}{backspace}')
-          .type(centre2.nom + ' UPDATED')
+          .type(centre.nom + ' UPDATED')
           .blur()
         cy.get('[name=geo-departement-centre]')
-          .should('have.value', centre2.geoDepartement)
+          .should('have.value', centre.geoDepartement)
           .type('{selectall}{backspace}')
           .type('2B')
           .blur()
@@ -147,85 +138,81 @@ describe('Manage centers', () => {
       .find('.t-update-centre-submit')
       .click()
 
-    cy.get('.t-list-centres').should('contain', centre2.nom + ' UPDATED')
+    cy.get('.t-list-centres').should('contain', centre.nom + ' UPDATED')
     cy.get('.t-list-centres')
-      .should('contain', centre2.departement)
+      .should('contain', centre.departement)
     cy.get('.t-list-centres')
-      .should('contain', centre2.nom)
+      .should('contain', centre.nom)
     cy.get('.t-list-centres')
-      .should('contain', centre2.adresse)
+      .should('contain', centre.adresse)
     cy.get('.t-list-centres')
       .should('contain', '2B')
   })
 
-  it('Archiver/désarchiver un centre', () => {
-    cy.adminLogin()
-    cy.visit(Cypress.env('frontAdmin') + 'admin/centres')
-    cy.get('.t-create-centre-form')
-      .find('[name=nom-centre]')
-      .type(centre3.nom)
-    cy.get('.t-create-centre-form')
-      .find('[name=label-centre]')
-      .type(centre3.label)
-    cy.get('.t-create-centre-form')
-      .find('[name=adresse-centre]')
-      .type(centre3.adresse)
-    cy.get('.t-create-centre-form')
-      .find('[name=lon-centre]')
-      .type(centre3.lon)
-    cy.get('.t-create-centre-form')
-      .find('[name=lat-centre]')
-      .type(centre3.lat)
+  context("Deactivation d'un centre", () => {
+    const cyClickAndCheckArchiveCentre = (centre, message, iconName) => {
+      cy.get('.t-list-centres')
+        .should('contain', centre.nom)
+        .contains(centre.nom)
+        .parents('tr')
+        .find('.t-archive-centre-icon')
+        .click({ force: true })
 
-    cy.get(
-      '.t-create-centre-form  .t-create-center-select-departement  .v-input__slot',
-    ).click()
-    cy.get('.v-list-item')
-      .contains(centre3.departement)
-      .click()
+      cy.get('.v-dialog--active')
+        .find('.t-archive-centre-submit')
+        .click()
 
-    cy.get('.t-create-centre-submit').click()
+      cy.checkAndCloseSnackBar(message)
+      cy.get('.t-list-centres')
+        .should('contain', centre.nom)
+        .contains(centre.nom)
+        .parents('tr')
+        .find('.t-archive-centre-icon')
+        .should('contain', iconName)
+    }
+    it('Archiver/désarchiver un centre', () => {
+      const centre = centre3
+      cy.adminLogin()
+      cy.visit(Cypress.env('frontAdmin') + 'admin/centres')
+      cyCreateCentre(centre)
 
-    cy.get('.t-list-centres')
-      .find('.t-centre-list-header-name')
-      .click({ force: true })
+      cy.get('.t-list-centres')
+        .find('.t-centre-list-header-name')
+        .click({ force: true })
 
-    cy.get('.t-list-centres')
-      .should('contain', centre3.nom)
-      .contains(centre3.nom)
-      .parents('tr')
-      .find('.t-archive-centre-icon')
-      .click({ force: true })
+      cyClickAndCheckArchiveCentre(centre, 'Le centre a bien été ', 'restore_from_trash')
+      cyClickAndCheckArchiveCentre(centre, 'Le centre a bien été ', 'delete')
+    })
 
-    cy.get('.v-dialog--active')
-      .find('.t-archive-centre-submit')
-      .click()
+    const cyArchiveCentre = (centre, date, filename, defaultPlaces, message, iconName) => {
+      cy.adminLogin()
+      cy.addPlanning(
+        date,
+        filename,
+        centre.nom,
+        defaultPlaces,
+      )
 
-    cy.checkAndCloseSnackBar('Le centre a bien été ')
-    cy.get('.t-list-centres')
-      .should('contain', centre3.nom)
-      .contains(centre3.nom)
-      .parents('tr')
-      .find('.t-archive-centre-icon')
-      .should('contain', 'restore_from_trash')
+      cy.visit(Cypress.env('frontAdmin') + 'admin/centres')
 
-    cy.get('.t-list-centres')
-      .should('contain', centre3.nom)
-      .contains(centre3.nom)
-      .parents('tr')
-      .find('.t-archive-centre-icon')
-      .click({ force: true })
+      cyClickAndCheckArchiveCentre(centre, message, iconName)
+    }
+    // suite de 'Archiver/désarchiver un centre'
+    it("Echec d'archivage d'un centre avec un place dans le future", () => {
+      cyArchiveCentre(centre3,
+        undefined,
+        'planningArchvieCentre.csv',
+        true,
+        'Le centre possède des places à venir', 'delete')
+    })
 
-    cy.get('.v-dialog--active')
-      .find('.t-archive-centre-submit')
-      .click()
-
-    cy.checkAndCloseSnackBar('Le centre a bien été ')
-    cy.get('.t-list-centres')
-      .should('contain', centre3.nom)
-      .contains(centre3.nom)
-      .parents('tr')
-      .find('.t-archive-centre-icon')
-      .should('contain', 'delete')
+    it('Archiver un centre avec un place dans le passé', () => {
+      cyArchiveCentre(centre3,
+        [now.minus({ days: 1 })],
+        'planningArchvieCentre1.csv',
+        false,
+        'Le centre a bien été ',
+        'restore_from_trash')
+    })
   })
 })

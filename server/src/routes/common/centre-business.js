@@ -149,7 +149,8 @@ export async function updateCentreStatus (id, status, userId) {
     throw error
   }
 
-  const places = await findAllPlacesByCentre(id)
+  const begin = getFrenchLuxon().startOf('day')
+  const places = await findAllPlacesByCentre(id, begin.toISO())
 
   if (places.length && !status) {
     const error = new Error(

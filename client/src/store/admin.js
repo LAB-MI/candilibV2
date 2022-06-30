@@ -708,7 +708,7 @@ export default {
       } catch (error) {
         commit(MODIFY_CENTER_FAILURE, error)
         dispatch(SHOW_ERROR, error.message)
-        throw error
+        // throw error
       }
     },
 
