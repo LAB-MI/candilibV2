@@ -3,10 +3,14 @@
     :class="{'hexagon-wrapper': true, active}"
     @click="$emit('click', value)"
   >
-    <hexagon
+    <div
       class="icon"
       :class="{active}"
-    />
+    >
+      <inline-svg
+        :src="hexagon"
+      />
+    </div>
     <span class="inner-text">
       {{ value }}
     </span>
@@ -15,12 +19,13 @@
 
 <script>
 import Hexagon from '@/assets/images/hexagon.svg'
-
+import InlineSvg from 'vue-inline-svg'
 export default {
   name: 'CandilibHexagon',
   components: {
-    Hexagon,
+    InlineSvg,
   },
+
   props: {
     active: {
       type: Boolean,
@@ -35,6 +40,11 @@ export default {
       type: Function,
       default () {},
     },
+  },
+  data () {
+    return {
+      hexagon: Hexagon,
+    }
   },
 }
 </script>
