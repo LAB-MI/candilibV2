@@ -16,6 +16,8 @@ DIST_DIR      := ${APP_PATH}/${APP}-${APP_VERSION}-dist
 # binaries
 DOCKER   := $(shell type -p docker)
 DC       := $(shell type -p docker-compose)
+DC := $(if $(DC),$(DC),${DOCKER} compose)
+
 http_proxy    := $(shell echo $$http_proxy)
 https_proxy    := $(shell echo $$https_proxy)
 no_proxy := $(shell echo $$no_proxy)

@@ -93,6 +93,7 @@ services:
       DAYS_FORBID_CANCEL: 7
       TENANT_NAME: ${TENANT_NAME}
       JOB_LIST: 'HELLO'
+      MONGOMS_VERSION: 4.0.6
     networks:
       - candilib-network
     entrypoint: npm run dev_pm2
