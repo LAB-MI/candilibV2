@@ -1,9 +1,12 @@
 
 import jimp, { MIME_PNG } from 'jimp'
 
-// import mergeImg from './merge-image-tools/index.js'
+import mergeImg from './merge-image-tools/index.js'
 import { numberOfImages } from '../../../../config.js'
-// import { drawTextInImage, modifyImage } from './manage-image-jimp.js'
+import {
+  drawTextInImage,
+  // modifyImage
+} from './manage-image-jimp.js'
 import joinImages from 'join-images'
 
 export const concatImages = async (images) => {
@@ -67,9 +70,11 @@ export async function streamImages (isRetina) {
 }
 
 export const getImageNamePic = async (frontendData) => {
-  const font = await jimp.loadFont(`${__dirname}/fonts/poppins-bold/poppins-bold.fnt`)
-  const sizeText = jimp.measureText(font, frontendData.imageName)
-  const imagename = await jimp.create(sizeText, 22)
-  imagename.print(font, 0, 0, frontendData.imageName)
-  return imagename.getBase64Async(jimp.MIME_PNG)
+  // const font = await jimp.loadFont(`${__dirname}/fonts/poppins-bold/poppins-bold.fnt`)
+  // const sizeText = jimp.measureText(font, frontendData.imageName)
+  // const imagename = await jimp.create(sizeText, 22)
+  // imagename.print(font, 0, 0, frontendData.imageName)
+  // return imagename.getBase64Async(jimp.MIME_PNG)
+  const bufferTextImg = await drawTextInImage(undefined, frontendData.imageName)
+  return `data:image/png;base64,${bufferTextImg.toString('base64')}`
 }
