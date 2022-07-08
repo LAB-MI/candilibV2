@@ -114,7 +114,7 @@ describe('Candidate by group', () => {
 
       const btnContentOk = 'Confirmer'
       cy.get('.v-dialog--active').should('contain', 'Veuillez confirmer la mise à jour')
-        .find('input').type(60)
+        .find('input').type('{selectall}{backspace}').type(60)
       cy.get('.v-dialog--active')
         .find('button')
         .should('contain', btnContentOk)
