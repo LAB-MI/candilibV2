@@ -11,6 +11,7 @@ services:
     volumes:
       - mongodata:/data/db
       - ./db/init-mongo.sh:/docker-entrypoint-initdb.d/init-mongo.sh:ro
+  
     environment:
       MONGO_INITDB_ROOT_USERNAME: ${DB_ROOT_USER:-admin}
       MONGO_INITDB_ROOT_PASSWORD: ${DB_ROOT_PASS:-changeme}
@@ -93,6 +94,7 @@ services:
       DAYS_FORBID_CANCEL: 7
       TENANT_NAME: ${TENANT_NAME}
       JOB_LIST: 'HELLO'
+      MONGOMS_VERSION: 4.0.6
     networks:
       - candilib-network
     entrypoint: npm run dev_pm2
@@ -122,6 +124,8 @@ services:
       ME_CONFIG_MONGODB_AUTH_DATABASE : ${DB_NAME:-candilib}
       ME_CONFIG_MONGODB_AUTH_USERNAME : ${DB_USER:-adminCandilib}
       ME_CONFIG_MONGODB_AUTH_PASSWORD : ${DB_PASS:-changeme78}
+    depends_on:
+      - db
 
 networks:
   candilib-network:
