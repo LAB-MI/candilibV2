@@ -16,6 +16,8 @@ export const getInscriptionOkTemplate = (
   accessDate,
   warningMessage,
   isNoActive,
+  nbDaysInactivityNeeded = 60,
+  lastVisibilityHour = '12h50',
 ) => {
   const header = `
     <p>Madame, Monsieur ${nomMaj},</p>
@@ -38,7 +40,7 @@ export const getInscriptionOkTemplate = (
   `
 
   const msgCandidatsInactifs = isNoActive ? `<li>
-  Les candidats inactifs sur une période de 60 jours verront les places à 12h50. Au-delà de ces 60 jours, lorsqu’ils se reconnectent sur Candilib, ces candidats sont réintégrés selon leur ancienneté d’inscription dès le lendemain.
+  Les candidats inactifs sur une période de ${nbDaysInactivityNeeded} jours verront les places à ${lastVisibilityHour}. Au-delà de ces ${nbDaysInactivityNeeded} jours, lorsqu’ils se reconnectent sur Candilib, ces candidats sont réintégrés selon leur ancienneté d’inscription dès le lendemain.
   </li>` : ''
 
   const contentForAllowedCandidat = `

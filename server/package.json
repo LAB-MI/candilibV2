@@ -44,6 +44,7 @@
   ],
   "author": "Ministère de l'intérieur",
   "license": "ISC",
+
   "dependencies": {
     "agenda": "^4.2.1",
     "axios": "^0.24.0",
@@ -76,6 +77,11 @@
     "uuid": "^8.3.2",
     "winston": "^3.3.3",
     "xlsx-stream-reader": "^1.1.1"
+  },
+  "overrides":{
+    "@jimp/jpeg": {
+      "jpeg-js": "^0.4.4"
+    }
   },
   "devDependencies": {
     "@babel/cli": "^7.15.7",
@@ -184,9 +190,10 @@
   },
   "config": {
     "mongodbMemoryServer": {
-      "runtimeDownload": false,
-      "mongomsVersion": "4.0.6",
-      "downloadDir": "projectRoot/node_modules/.cache/mongodb-binaries"
+      "disablePostinstall": false,
+      "runtimeDownload": true,
+      "version": "4.0.6",
+      "downloadDir": "./node_modules/.cache/mongodb-binaries"
     }
   }
 }
