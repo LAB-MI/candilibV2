@@ -819,3 +819,9 @@ Cypress.Commands.add('deleteAllArchivedPlaces', (query) => {
     cy.log(JSON.stringify(content.body))
   })
 })
+
+Cypress.Commands.add('updateDep', (query, update) => {
+  cy.request('PATCH', Cypress.env('ApiRestDB') + '/departements', { query, update }).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
