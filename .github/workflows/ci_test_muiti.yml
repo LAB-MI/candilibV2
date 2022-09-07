@@ -21,6 +21,30 @@ env:
   DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
 
 jobs:
+  build_env:
+    runs-on: ubuntu-20.04
+    outputs:
+      candeploy: ${{ steps.checkenv.outputs.candeploy }}
+    steps:
+      - name: check env
+        id: checkenv
+        run: |
+          begindate=$(date +%s)
+          enddate=$(date -d "2022-11-15" +%s)
+          if [[ $begindate < $enddate ]]
+          then
+            candeploy=1
+          else
+            candeploy=0
+          fi
+          echo "::set-output name=canDeploy::${candeploy}"
+      - name: 'test date'
+        run: |
+          echo 'test date -' date
+          echo ${{ steps.checkenv.outputs.candeploy }}
+      - name: 'test condition'
+        if: ${{ steps.checkenv.outputs.candeploy == 1 }}
+        run: echo 'test run'
   # This workflow contains a single job called "build"
   build:
     runs-on: ubuntu-20.04
@@ -179,9 +203,10 @@ jobs:
     needs: [
       prepare_test,
       build,
-      test-e2e
+      test-e2e,
+      build_env
       ]
-    if: startsWith(github.head_ref, 'qualif/')
+    if: ${{ startsWith(github.head_ref, 'qualif/') && needs.build_env.outputs.candeploy == 1 }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
