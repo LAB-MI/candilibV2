@@ -20,12 +20,38 @@ env:
   DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
 
 jobs:
+  buidl-env:
+    if: ${{startsWith(github.head_ref, 'qualif/') || startsWith(github.head_ref, 'develop')}}
+    runs-on: ubuntu-20.04
+    outputs:
+      candeploy: ${{ steps.checkenv.outputs.candeploy }}
+    steps:
+      - name: check env
+        id: checkenv
+        run: |
+          begindate=$(date +%s)
+          enddate=$(date -d "2022-11-15" +%s)
+          if [[ $begindate < $enddate ]]
+          then
+            candeploy=1
+          else
+            candeploy=0
+          fi
+          echo "::set-output name=canDeploy::${candeploy}"
+      - name: 'test date'
+        run: |
+          echo 'test date -' date
+          echo ${{ steps.checkenv.outputs.candeploy }}
+      - name: 'test condition'
+        if: ${{ steps.checkenv.outputs.candeploy == 1 }}
+        run: echo 'test run'
+
   # This workflow contains a single job called "build"
   build:
     if: ${{startsWith(github.head_ref, 'qualif/') || startsWith(github.head_ref, 'develop')}}
     # The type of runner that the job will run on
     runs-on: ubuntu-20.04
-
+    needs: buidl-env
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -60,7 +86,7 @@ jobs:
           path: client/tests/e2e/screenshots
           retention-days: 1
       - name: deploy
-        if: startsWith(github.head_ref, 'qualif/')
+        if: ${{ startsWith(github.head_ref, 'qualif/') && needs.buidl-env.outputs.candeploy == 1 }}
         env:
           HEROKU_TOKEN: ${{secrets.HEROKU_TOKEN}}
           HEROKU_EMAIL: ${{secrets.HEROKU_EMAIL}}
