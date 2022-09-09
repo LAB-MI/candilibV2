@@ -29,7 +29,7 @@ export const getImages = async ({ userId, forwardedFor, clientId, hashCaptcha })
   // visualCaptcha.streamImages = streamImages
 
   // Default is non-retina
-  const isRetina = false
+  const isRetina = true
   const result = await visualCaptcha.streamImages(isRetina)
   return result
 }
