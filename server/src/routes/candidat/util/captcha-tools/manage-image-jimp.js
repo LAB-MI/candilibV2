@@ -21,8 +21,8 @@ export const drawTextInImage = async (image, text) => {
       newImage = sharp(image)
       const metadata = await newImage.metadata()
       width = metadata.width
-      height = 10
-      fontSize = '10px'
+      height = 25
+      fontSize = '20px'
     }
     newImage = await sharp(
       {
