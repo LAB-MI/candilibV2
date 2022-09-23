@@ -41,10 +41,20 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
           textContent: `Cependant, seuls les départements de la liste suivante proposent actuellement des places via ce service : ${departements.join(', ')}`,
         },
         {
-          textContent: 'NB : ' + NB_FOR_CENTERS_75(parisCenters),
+          textContent: 'En raison du déploiement de RdvPermis sur les départements 45 – 75 – 77 – 78 – 91 – 92 – 93 – 94 et 95, l’application Candilib n’accepte plus d’inscription pour les départements concernés. Candilib ne proposera plus aucune place examen au-delà du 31/10/2022 pour ces neuf départements.',
         },
         {
-          textContent: "Pour rappel, il n'existe pas de centre d'examen localisé à Paris.",
+          textContent: 'Si vous êtes lié à une auto-école (en ligne ou de proximité), vous devez vous rapprocher de la structure concernée afin d’être pris sous mandat, inscrit sur RdvPermis, et positionné sur une place d’examen.',
+        },
+        {
+          textContent: 'Si vous êtes candidat libre (sans auto-école et formé par un proche), vous pouvez sur RdvPermis :',
+          list: [
+            'Prendre directement rendez-vous pour l’examen du permis de conduire accompagné par un de vos proches titulaire du permis de conduire ;',
+            "Attention : <strong> l'accompagnement par un professionnel est interdit </strong> pour une prise de rendez-vous via ce site d'inscription et vous devrez fournir le jour de l'examen un véhicule assuré et équipé de double-commande",
+          ],
+        },
+        {
+          textContent: 'Pour plus d’informations sur les modalités d’inscription sur RdvPermis, vous pouvez consulter la page suivante <a class="link-in-text-style" href="https://www.securite-routiere.gouv.fr/passer-son-permis-de-conduire/inscription-et-formation/reserver-en-ligne-sa-place-pour-le" target="_blank"> Réserver en ligne sa place pour le permis | Sécurité Routière </a>',
         },
       ],
     },
