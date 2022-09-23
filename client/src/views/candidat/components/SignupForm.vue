@@ -68,7 +68,6 @@ import {
 } from '@/store'
 
 import AlreadySignedUp from './AlreadySignedUp'
-import CovidMessageExam from '@/views/candidat/components/CovidMessageExam'
 import StatusCandidatMessageInfos from '@/views/candidat/components/StatusCandidatMessageInfos'
 import MessagePreventScam from '@/views/candidat/components/MessagePreventScam'
 import FormGroupInfoCandidat from './FormGroupInfoCandidat'
@@ -79,7 +78,6 @@ export default {
   name: 'SignupForm',
   components: {
     AlreadySignedUp,
-    CovidMessageExam,
     FormGroupInfoCandidat,
     StatusCandidatMessageInfos,
     MessagePreventScam,
