@@ -39,12 +39,10 @@ import { mapState } from 'vuex'
 import { FETCH_CONFIG_REQUEST, FETCH_DEPARTEMENTS_REQUEST, FETCH_PARIS_CENTERS_REQUEST } from '@/store'
 import FaqContent from './FaqContent.vue'
 import { faqJson } from './FaqJson'
-import FaqCovidMessage from './FaqCOVIDMessage'
 export default {
   name: 'CandilibFaq',
   components: {
     FaqContent,
-    FaqCovidMessage,
   },
 
   data () {

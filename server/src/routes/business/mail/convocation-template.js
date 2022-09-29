@@ -14,24 +14,6 @@ export const getConvocationTemplate = (
   linkOfLocalisation,
 ) => `<p>Le présent mail vaut convocation.</p>
 <br>
-<div style="border: 5px solid red; padding:5px;">
-<ul>
-<li>
-Port obligatoire d'un masque à usage médical (vous et votre accompagnateur).
-</li>
-<li>
-Climatisation coupée et véhicule aéré pendant l'examen.
-</li>
-<li>
-Ventilation autorisée en position basse et sans recyclage d'air.
-</li>
-<li>
-Nettoyage (produit ou lingette virucide respectant la norme EN 14476), aération et désinfection du véhicule avant l’examen.
-</li>
-</ul>
-  <span style="color: red;"><strong> ATTENTION:</strong></span>&nbsp;Si toutes les conditions sanitaires précitées ne peuvent être réunies, ou en cas de suspicion du covid-19 (toux, état fébrile), l’examen de conduite ne pourra avoir lieu.
-</div>
-<br>
 <p style="text-align: right;"> <strong> Bureau éducation routière ${departementCentre}</strong> </p>
 <br>
 <p>Madame, Monsieur ${nameCandidat},</p>
@@ -83,16 +65,16 @@ avec le numéro NEPH ${codeNeph} sur le centre ${nameCentre.toUpperCase()} à l'
   pour le candidat ou l'accompagnateur, entraîne le report de l'examen à une date ultérieure.
 </p>
 <p>
-  Si besoin, vous avez la possibilité d'annuler <a href=${urlRESA}>votre réservation</a>. 
+  Si besoin, vous avez la possibilité d'annuler <a href=${urlRESA}>votre réservation</a>.
   Si vous annulez, un délai de présentation de ${
     config.timeoutToRetry
   } jours à partir de la date d’examen initialement réservée, vous sera appliqué.
   <br/>
-  Si vous ne vous présentez pas à l’examen, c’est un délai de présentation de 60 jours qui vous sera appliqué. 
+  Si vous ne vous présentez pas à l’examen, c’est un délai de présentation de 60 jours qui vous sera appliqué.
   Nous avons perdu une place qui aurait dû bénéficier à un autre candidat en attente.
 </p>
 <p>
-  Nous vous souhaitons une bonne préparation et le succès à l'examen. 
+  Nous vous souhaitons une bonne préparation et le succès à l'examen.
   Pour toute information, vous pouvez consulter <a href=${urlFAQ}>notre aide en ligne</a>.
   ${contactezNous}
 </p>
