@@ -3,6 +3,7 @@
     <div>
       <status-candidat-message-infos />
       <message-prevent-scam />
+      <MessageDepDisabled />
       <covid-message-exam />
     </div>
     <v-form
@@ -71,6 +72,7 @@ import AlreadySignedUp from './AlreadySignedUp'
 import StatusCandidatMessageInfos from '@/views/candidat/components/StatusCandidatMessageInfos'
 import MessagePreventScam from '@/views/candidat/components/MessagePreventScam'
 import FormGroupInfoCandidat from './FormGroupInfoCandidat'
+import MessageDepDisabled from './MessageDepDisabled.vue'
 import { callBackCatchRouter } from '@/util'
 import { mapState } from 'vuex'
 
@@ -81,6 +83,7 @@ export default {
     FormGroupInfoCandidat,
     StatusCandidatMessageInfos,
     MessagePreventScam,
+    MessageDepDisabled,
   },
   props: {
     toggleForm: {

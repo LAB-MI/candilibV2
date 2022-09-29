@@ -3,6 +3,7 @@
     <div>
       <status-candidat-message-infos />
       <message-prevent-scam />
+      <MessageDepDisabled />
     </div>
     <candidat-stepper />
   </layout-landing-page>
@@ -13,6 +14,7 @@ import StatusCandidatMessageInfos from '@/views/candidat/components/StatusCandid
 import MessagePreventScam from '@/views/candidat/components/MessagePreventScam'
 import CandidatStepper from './CandidatStepper'
 import LayoutLandingPage from './LayoutLandingPage'
+import MessageDepDisabled from './MessageDepDisabled.vue'
 
 export default {
   components: {
@@ -20,6 +22,7 @@ export default {
     CandidatStepper,
     StatusCandidatMessageInfos,
     MessagePreventScam,
+    MessageDepDisabled,
   },
 }
 </script>
