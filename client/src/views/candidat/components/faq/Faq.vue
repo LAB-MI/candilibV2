@@ -19,9 +19,6 @@
       Foire aux questions
     </h3>
     <ul class="list-faq">
-      <li class="question-wrapper">
-        <faq-covid-message />
-      </li>
       <li
         v-for="question in faqQuestions"
         :key="question.title"
