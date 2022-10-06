@@ -1,7 +1,7 @@
 <template>
   <section data-nosnippet="true">
     <v-alert
-      type="warning"
+      type="error"
       class="rounded-corner"
     >
       <p><strong>Attention:</strong></p>

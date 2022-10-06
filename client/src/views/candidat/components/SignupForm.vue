@@ -1,10 +1,9 @@
 <template>
   <div class="presignup-form">
     <div>
+      <MessageDepDisabled />
       <status-candidat-message-infos />
       <message-prevent-scam />
-      <MessageDepDisabled />
-      <covid-message-exam />
     </div>
     <v-form
       ref="presignupForm"
