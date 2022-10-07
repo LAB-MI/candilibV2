@@ -1,9 +1,9 @@
 <template>
   <layout-landing-page>
     <div>
+      <MessageDepDisabled />
       <status-candidat-message-infos />
       <message-prevent-scam />
-      <MessageDepDisabled />
     </div>
     <candidat-stepper />
   </layout-landing-page>
