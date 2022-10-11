@@ -3,7 +3,6 @@
     <v-container :style="{ maxWidth: '100vw', paddingLeft: 0, paddingRight: 0, flexGrow: 1}">
       <div>
         <candidat-header :links="links" />
-        <covid-message-exam />
       </div>
       <div class="u-flex  with-top-margin  u-max-width">
         <div class="u-flex  u-flex__item--grow  u-flex--column-on-mobile  u-flex--center-on-mobile">
@@ -23,7 +22,7 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import CovidMessageExam from '@/views/candidat/components/CovidMessageExam'
+
 import {
   SIGNED_OUT_CANDIDAT,
   FETCH_MY_PROFILE_REQUEST,
@@ -40,7 +39,6 @@ export default {
     CandidatHeader,
     CandidatFooter,
     NavigationDrawer,
-    CovidMessageExam,
   },
 
   data () {
