@@ -78,5 +78,20 @@
     "isValidatedEmail": true,
     "isValidatedByAurige": true,
     "status": "0"
+},
+{
+  "codeNeph": "093874320875",
+  "prenom": "SANJI",
+  "nomNaissance": "VINSMOKE75",
+  "adresse": "40 Avenue des terroirs de France 75012 Paris",
+  "portable": "0676543986",
+  "email": "sanji.vinsmoke75@candi.lib",
+  "departement": "94",
+  "homeDepartement": "75",
+  "isEvaluationDone": false,
+  "isValidatedEmail": true,
+  "isValidatedByAurige": true,
+  "status": "0"
 }
+
 ]

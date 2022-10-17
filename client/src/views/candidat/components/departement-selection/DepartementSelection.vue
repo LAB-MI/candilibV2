@@ -1,7 +1,7 @@
 <template>
   <v-card>
     <page-title :title="$formatMessage({ id: 'home_choix_du_departement' })" />
-    <message-info-centers-75 v-if="isFrom75" />
+    <message-info-centers-75 v-if="isFrom75 && isNot75Disabled" />
     <message-info-departement-disable
       v-if="isCandidatHomeDepartementHaveDisableDate.isHaveDisableDate"
       :home-departement="isCandidatHomeDepartementHaveDisableDate.homeDepartement"
@@ -64,8 +64,11 @@ export default {
       isCandidatHomeDepartementHaveDisableDate (state) {
         const { geoDepartementsInfos } = state.departements
         const homeDepartement = state.candidat.me?.homeDepartement
-        const isHaveDisableDate = geoDepartementsInfos.find(item => (item.geoDepartement === homeDepartement) && item?.disableAt)
+        const isHaveDisableDate = geoDepartementsInfos.find(item => (item.geoDepartement === (homeDepartement === '75' ? '93' : homeDepartement)) && item?.disableAt)
         return { isHaveDisableDate: (isHaveDisableDate?.disableAt ? getFrenchLuxonFromIso(isHaveDisableDate.disableAt).toLocaleString('DATE_SHORT') : ''), homeDepartement }
+      },
+      isNot75Disabled (state) {
+        return !!state.departements.geoDepartementsInfosActive.find(item => (item.geoDepartement === '93'))
       },
     }),
   },
