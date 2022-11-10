@@ -5,6 +5,8 @@ APP_VERSION := v1.bis.dev
 
 DOCKER := $(shell type -p docker)
 DC     := $(shell type -p docker-compose)
+DC := $(if $(DC),$(DC),${DOCKER} compose)
+
 http_proxy := $(shell echo $$http_proxy)
 no_proxy := $(shell echo $$no_proxy)
 NPM_REGISTRY := $(shell echo $$NPM_REGISTRY)

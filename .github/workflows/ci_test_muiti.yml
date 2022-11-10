@@ -14,16 +14,40 @@ on:
   #     - '!develop'
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 env:
-  DOCKER_COMPOSE_VERSION: 1.19.0
+  # DOCKER_COMPOSE_VERSION: 1.19.0
   # DOCKER_VERSION: 18.06.0-ce
-  DOCKER_VERSION: 5:19.03.11~3-0~ubuntu-bionic
+  DOCKER_VERSION: 5:20.10.17~3-0~ubuntu-focal
   DOCKER_PWD: ${{ secrets.DOCKER_PWD }}
   DOCKER_LOGIN: ${{ secrets.DOCKER_LOGIN }}
 
 jobs:
+  build_env:
+    runs-on: ubuntu-20.04
+    outputs:
+      candeploy: ${{ steps.checkenv.outputs.candeploy }}
+    steps:
+      - name: check env
+        id: checkenv
+        run: |
+          begindate=$(date +%s)
+          enddate=$(date -d "2022-11-15" +%s)
+          if [[ $begindate < $enddate ]]
+          then
+            candeploy=1
+          else
+            candeploy=0
+          fi
+          echo "::set-output name=canDeploy::${candeploy}"
+      - name: 'test date'
+        run: |
+          echo 'test date -' date
+          echo ${{ steps.checkenv.outputs.candeploy }}
+      - name: 'test condition'
+        if: ${{ steps.checkenv.outputs.candeploy == 1 }}
+        run: echo 'test run'
   # This workflow contains a single job called "build"
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     strategy:
       matrix:
         components: [
@@ -88,7 +112,7 @@ jobs:
           docker logout
 
   prepare_test:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: build
     outputs:
       testFiles: ${{ steps.getTeste2e.outputs.test }}
@@ -104,7 +128,7 @@ jobs:
 
   test-e2e:
     # The type of runner that the job will run on
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: [
       prepare_test,
       build
@@ -175,13 +199,14 @@ jobs:
           make clean-images clean-dir
           docker logout
   deploy:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     needs: [
       prepare_test,
       build,
-      test-e2e
+      test-e2e,
+      build_env
       ]
-    if: startsWith(github.head_ref, 'qualif/')
+    if: ${{ startsWith(github.head_ref, 'qualif/') && needs.build_env.outputs.candeploy == 1 }}
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
@@ -235,7 +260,7 @@ jobs:
           make clean-images clean-dir
           docker logout
   clean:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     if: ${{ always() }}
     needs: [ test-e2e, deploy]
     # Steps represent a sequence of tasks that will be executed as part of the job

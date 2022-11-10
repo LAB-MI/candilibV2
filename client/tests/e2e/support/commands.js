@@ -151,7 +151,7 @@ Cypress.Commands.add('archiveCandidats', aurigInfos => {
     .should('contain', 'Le fichier ' + fileName + ' a été synchronisé.')
 })
 
-Cypress.Commands.add('addPlanning', (dates, fileNameTmp = 'planning.csv') => {
+Cypress.Commands.add('addPlanning', (dates, fileNameTmp, centre, useAddPlacesDefault = true) => {
   const csvHeaders = 'Date,Heure,Inspecteur,Non,Centre,Departement'
 
   const horaireMorning = [
@@ -186,16 +186,16 @@ Cypress.Commands.add('addPlanning', (dates, fileNameTmp = 'planning.csv') => {
   ]
 
   const datePlaces = (dates && dates.length) ? dates.map(date => date.toFormat('dd/MM/yy')) : []
-  datePlaces.push(Cypress.env('datePlace'))
+  useAddPlacesDefault && datePlaces.push(Cypress.env('datePlace'))
   const placesInspecteurs = datePlaces.reduce((acc, datePlace) => {
-    const csvRowBuilder = (inspecteur, matricule) => horaire => `${datePlace},${horaire},${matricule},${inspecteur},${Cypress.env('centre')},75`
+    const csvRowBuilder = (inspecteur, matricule) => horaire => `${datePlace},${horaire},${matricule},${inspecteur},${centre ?? Cypress.env('centre')},75`
     const placesInspecteur1 = horaires.map(csvRowBuilder(Cypress.env('inspecteur'), Cypress.env('matricule')))
     const placesInspecteur2 = horaires.map(csvRowBuilder(Cypress.env('inspecteur2'), Cypress.env('matricule2')))
     return acc.concat(placesInspecteur1).concat(placesInspecteur2)
   }, [])
   const placesArray = [csvHeaders].concat(placesInspecteurs).join('\n')
 
-  const fileName1 = fileNameTmp
+  const fileName1 = fileNameTmp ?? 'planning.csv'
   const filePath1 = '../../../' + Cypress.env('filePath') + `/${fileName1}`
 
   // Creates the csv file
@@ -816,6 +816,12 @@ Cypress.Commands.add('deleteInspecteur', (query) => {
 
 Cypress.Commands.add('deleteAllArchivedPlaces', (query) => {
   cy.request('DELETE', Cypress.env('ApiRestDB') + '/archivedplaces', query).then((content) => {
+    cy.log(JSON.stringify(content.body))
+  })
+})
+
+Cypress.Commands.add('updateDep', (query, update) => {
+  cy.request('PATCH', Cypress.env('ApiRestDB') + '/departements', { query, update }).then((content) => {
     cy.log(JSON.stringify(content.body))
   })
 })
