@@ -41,7 +41,7 @@ export default {
   },
   computed: {
     departements () {
-      const deps = [45, 75, 77, 78, 91, 92, 93, 94, 95]
+      const deps = [45, 75, 76, 77, 78, 91, 92, 93, 94, 95]
       return `${deps.slice(0, -1).join(' - ')} et ${deps.slice(-1)}`
     },
   },
