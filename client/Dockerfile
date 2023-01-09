@@ -85,14 +85,24 @@ RUN npm --no-git-tag-version version ${APP_VERSION} && \
     npm cache clean --force
 
 # Deliver the dist folder with Nginx
-FROM nginx:stable
+FROM bitnami/nginx:latest
 ARG CLIENT_BUILD_TARGET
 ARG PUBLIC_PATH
 COPY --from=production /app/dist /usr/share/nginx/html
-COPY nginx/nginx-run-${CLIENT_BUILD_TARGET}.template /etc/nginx/conf.d/default.template
-COPY nginx/nginx.template /etc/nginx/nginx.template
+# COPY nginx/nginx-run-${CLIENT_BUILD_TARGET}.template /etc/nginx/conf.d/default.template
+# COPY nginx/nginx.template /etc/nginx/nginx.template
+ENV BITNAMI_ROOT_DIR="/opt/bitnami"
+ENV NGINX_BASE_DIR="${BITNAMI_ROOT_DIR}/nginx"
+ENV NGINX_CONF_DIR="${NGINX_BASE_DIR}/conf"
+
+COPY nginx/nginx-run-${CLIENT_BUILD_TARGET}.template ${NGINX_CONF_DIR}/conf.d/default.template
+COPY nginx/nginx.template ${NGINX_CONF_DIR}/nginx.template
 COPY nginx/run.sh /run.sh
-RUN [ -f "/run.sh" ] && chmod +x /run.sh ; sed -i -e "s|<PUBLIC_PATH>|${PUBLIC_PATH}|g;" /etc/nginx/conf.d/default.template
-
+USER root
+RUN mkdir /var/log/nginx
+RUN find / -xdev -exec chmod g=u {} \; -exec chown :0 {} \;
+RUN [ -f "/run.sh" ] && chmod +x /run.sh ; \
+          sed -i -e "s|<PUBLIC_PATH>|${PUBLIC_PATH}|g;" ${NGINX_CONF_DIR}/conf.d/default.template; \
+          sed -i -e "s|<NGINX_CONF_DIR>|${NGINX_CONF_DIR}|g;" ${NGINX_CONF_DIR}/nginx.template;
+USER 1001
 CMD ["/run.sh"]
-
