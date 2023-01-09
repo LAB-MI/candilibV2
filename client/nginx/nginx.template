@@ -12,7 +12,7 @@ events {
 
 
 http {
-    include       /etc/nginx/mime.types;
+    include       <NGINX_CONF_DIR>/mime.types;
     default_type  application/octet-stream;
 
     server_tokens off;
@@ -128,5 +128,5 @@ http {
     gzip_http_version 1.1;
     gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
 
-    include /etc/nginx/conf.d/*.conf;
+    include <NGINX_CONF_DIR>/conf.d/*.conf;
 }

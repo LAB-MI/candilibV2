@@ -18,6 +18,8 @@ EOF
   )
 fi
 
+echo ${NGINX_BASE_DIR}
+
 # Set nginx env variables
 [ -z "${APP}" -o -z "${API_HOST}" -o -z "${API_PORT}" \
   -o -z "${APP_USER_LIMIT_RATE}"  \
@@ -32,7 +34,8 @@ fi
   -o -z "${API_USER_OPTIONS_LIMIT_RATE}" -o -z "${API_USER_OPTIONS_BURST}" ] \
   && exit 1
 (
- cat /etc/nginx/conf.d/default.template | \
+#  cat /etc/nginx/conf.d/default.template | \
+cat ${NGINX_CONF_DIR}/conf.d/default.template | \
  sed "s#<APP>#${APP}#g;s#<API_HOST>#${API_HOST}#g;s#<API_PORT>#${API_PORT}#g;" |
  sed "s#<APP_USER_LIMIT_RATE>#${APP_USER_LIMIT_RATE}#g;s#<APP_USER_BURST>#${APP_USER_BURST}#g;" |
  sed "s#<API_USER_SCOPE>#${API_USER_SCOPE}#g" |
@@ -48,8 +51,10 @@ fi
  sed "/^server {/a\
 error_log /dev/stderr warn;\
 access_log /dev/stdout main;
-" > /etc/nginx/conf.d/default.conf
-cat /etc/nginx/nginx.template |
+ " > ${NGINX_CONF_DIR}/conf.d/default.conf
+ #> /etc/nginx/conf.d/default.conf
+# cat /etc/nginx/nginx.template |
+cat ${NGINX_CONF_DIR}/nginx.template |
  sed "s#<APP>#${APP}#g;s#<API_HOST>#${API_HOST}#g;s#<API_PORT>#${API_PORT}#g;" |
  sed "s#<APP_USER_LIMIT_RATE>#${APP_USER_LIMIT_RATE}#g;s#<APP_USER_BURST>#${APP_USER_BURST}#g;" |
  sed "s#<API_USER_SCOPE>#${API_USER_SCOPE}#g" |
@@ -62,6 +67,6 @@ cat /etc/nginx/nginx.template |
  sed "s#<API_USER_DELETE_LIMIT_RATE>#${API_USER_DELETE_LIMIT_RATE}#g;s#<API_USER_DELETE_BURST>#${API_USER_DELETE_BURST}#g;" |
  sed "s#<API_USER_OPTIONS_LIMIT_RATE>#${API_USER_OPTIONS_LIMIT_RATE}#g;s#<API_USER_OPTIONS_BURST>#${API_USER_OPTIONS_BURST}#g;" |
  sed "s#<API_VERIFYZONE_LIMIT_RATE>#${API_VERIFYZONE_LIMIT_RATE}#g;s#<API_VERIFYZONE_BURST>#${API_VERIFYZONE_BURST}#g;" \
- > /etc/nginx/nginx.conf
-
+ > ${NGINX_CONF_DIR}/nginx.conf
+#  > /etc/nginx/nginx.conf
 ) && nginx -g "daemon off;"

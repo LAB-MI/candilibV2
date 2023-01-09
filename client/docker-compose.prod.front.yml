@@ -47,10 +47,12 @@ services:
       API_VERIFYZONE_LIMIT_RATE: ${API_VERIFYZONE_LIMIT_RATE}
       API_VERIFYZONE_BURST: ${API_VERIFYZONE_BURST}
     ports:
-      - "${FRONT_CANDIDAT_PORT:-80}:80"
+      - "${FRONT_CANDIDAT_PORT:-80}:8080"
     restart: always
 #    networks:
 #      - candilib-network
+    # command: sleep infinity
+
   front_admin:
     image: candilib_front_admin:${APP_VERSION:-latest}
     container_name: ${CONTAINER_NAME_ADMIN:-candilib_front_admin}
@@ -95,7 +97,7 @@ services:
       API_VERIFYZONE_LIMIT_RATE: ${API_VERIFYZONE_LIMIT_RATE}
       API_VERIFYZONE_BURST: ${API_VERIFYZONE_BURST}
     ports:
-      - "${FRONT_ADMIN_PORT:-80}:80"
+      - "${FRONT_ADMIN_PORT:-80}:8080"
     restart: always
 #    networks:
 #      - candilib-network
