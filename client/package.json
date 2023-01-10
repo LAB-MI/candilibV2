@@ -34,7 +34,7 @@
     "html-loader": "^1.3.0",
     "intl": "^1.2.5",
     "lodash-es": "^4.17.20",
-    "luxon": "^1.25.0",
+    "luxon": "^1.28.1",
     "normalize.css": "^8.0.1",
     "p-debounce": "^2.1.0",
     "register-service-worker": "^1.7.2",
