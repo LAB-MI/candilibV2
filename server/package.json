@@ -64,7 +64,7 @@
     "jsonwebtoken": "^8.5.1",
     "latinize": "^0.4.1",
     "lodash": "^4.17.21",
-    "luxon": "^1.28.0",
+    "luxon": "^1.28.1",
     "mime": "^2.5.2",
     "mongoose": "^5.13.11",
     "morgan": "^1.10.0",
