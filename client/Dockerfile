@@ -88,11 +88,15 @@ RUN npm --no-git-tag-version version ${APP_VERSION} && \
 FROM nginx:stable
 ARG CLIENT_BUILD_TARGET
 ARG PUBLIC_PATH
+USER root
 COPY --from=production /app/dist /usr/share/nginx/html
 COPY nginx/nginx-run-${CLIENT_BUILD_TARGET}.template /etc/nginx/conf.d/default.template
 COPY nginx/nginx.template /etc/nginx/nginx.template
 COPY nginx/run.sh /run.sh
 RUN [ -f "/run.sh" ] && chmod +x /run.sh ; sed -i -e "s|<PUBLIC_PATH>|${PUBLIC_PATH}|g;" /etc/nginx/conf.d/default.template
-
+# RUN grep -rlw http /etc |while read i ;do sed -ri 's#\b80\b#8080#' \${i} ; sed -ri 's#\b443\b#6443#' \${i} ;done
+RUN find / -xdev -exec chmod -f -c g=u {} \; -exec chown -f -c 1001:root {} \; >/dev/null 2>&1
+RUN grep -w 1001 /etc/passwd ||echo "rootless:x:1001:0:rootless:/root:/bin/bash" >>/etc/passwd
+USER 1001
 CMD ["/run.sh"]
 
