@@ -11,14 +11,12 @@ default:
 
 
 variables:
-  ## Enable under shared runner
-  ## In gitlab/variables : declare Variable File Variable named http_proxy_shared, and no_proxy_shared
-  http_proxy: $http_proxy_shared
-  https_proxy: $http_proxy_shared
-  no_proxy: $no_proxy_shared
-  HTTP_PROXY: $http_proxy_shared
-  HTTPS_PROXY: $http_proxy_shared
-  NO_PROXY: $no_proxy_shared
+  http_proxy: $http_proxy
+  https_proxy: $http_proxy
+  no_proxy: $no_proxy
+  HTTP_PROXY: $http_proxy
+  HTTPS_PROXY: $http_proxy
+  NO_PROXY: $no_proxy
   PROJECT_NAME: "candilib"
   PROJECT_REPOSITORY: "candilib"
   PROJECT_ORGANISATION: "ministere-interieur"
