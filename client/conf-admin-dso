@@ -1,0 +1,37 @@
+# conf front admin
+
+
+server {
+  listen 0.0.0.0:8080;
+  set_real_ip_from 0.0.0.0/0;
+  real_ip_header X-Real-IP;
+  real_ip_recursive on;
+
+  client_max_body_size 10m;
+
+  root /opt/bitnami/nginx/html/;
+
+  location /admin {
+    expires 24h;
+    try_files $uri $uri/ /admin/index.html;
+
+    location ~ "^/admin/config-candilib.json" {
+      expires -1;
+      add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+    }
+  }
+
+  location @rewrites {
+    rewrite ^(.+)$ /admin/index.html last;
+  }
+
+  location /admin/api/ {
+proxy_pass http://candilibv2-back:8000/api/;
+}
+
+location /api/ {
+proxy_pass http://candilibv2-back:8000/api/;
+}
+
+}
+

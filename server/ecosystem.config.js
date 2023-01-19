@@ -2,13 +2,12 @@ module.exports = {
   apps: [{
     name: 'API',
     script: 'dist/index.js',
-    instances: -1,
-    exec_mode: 'cluster',
+    instances: 2,
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
-    autorestart: true,
-    log_file: '/dev/null',
-    out_file: '/dev/null',
-    error_file: '/dev/null',
+    autorestart: false,
+    log_file: '/dev/stdout',
+    out_file: '/dev/stdout',
+    error_file: '/dev/stdout',
     merge_logs: true,
     env: {
       NODE_ENV: 'development',
@@ -23,9 +22,9 @@ module.exports = {
     instances: 1,
     // Options reference: https://pm2.io/doc/en/runtime/reference/ecosystem-file/
     autorestart: true,
-    log_file: '/dev/null',
-    out_file: '/dev/null',
-    error_file: '/dev/null',
+    log_file: '/dev/stdout',
+    out_file: '/dev/stdout',
+    error_file: '/dev/stdout',
     merge_logs: true,
     env: {
       NODE_ENV: 'development',

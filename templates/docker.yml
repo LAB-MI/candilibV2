@@ -1,0 +1,100 @@
+.docker:test:
+  image: docker:stable
+  services:
+    - name: docker:dind
+      alias: dindservice
+      entrypoint: ["env", "-u", "DOCKER_HOST"]
+      command: ["dockerd-entrypoint.sh"]
+  variables:
+    DOCKER_HOST: tcp://dindservice:2375
+    DOCKER_DRIVER: overlay2
+    # See https://github.com/docker-library/docker/pull/166
+    DOCKER_TLS_CERTDIR: ""
+    IMAGE: $IMAGE_NAME:$TAG
+    TRIVY_NO_PROGRESS: "true"
+    TRIVY_CACHE_DIR: "./trivycache/"
+  before_script:
+    - export TRIVY_VERSION=$(wget -qO - "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+    - echo $TRIVY_VERSION
+    - wget --no-verbose https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz -O - | tar -zxvf -
+  allow_failure: true
+  script:
+    - "cd $WORKING_DIR"
+    # Build image
+    - docker build -f $DOCKER_FILE -t $IMAGE_NAME:$TAG .
+    - cd ..
+    - ./trivy image --clear-cache
+    - ./trivy image --exit-code 0 --format template --template "@contrib/html.tpl" -o trivy-${WORKING_DIR}-image.html $IMAGE
+    - ./trivy filesystem --security-checks config,vuln --exit-code 0 --format template --template "@contrib/html.tpl" -o trivy-${WORKING_DIR}-fs.html ./$WORKING_DIR
+    - ./trivy filesystem --severity CRITICAL --security-checks config,vuln --exit-code 1 --format template --template "@contrib/html.tpl" -o trivy-${WORKING_DIR}-fs-critical.html ./$WORKING_DIR
+    - ./trivy image --severity CRITICAL --exit-code 1 --format template --template "@contrib/html.tpl" -o trivy-${WORKING_DIR}-image-critical.html $IMAGE
+    # Combine report
+    # - apk update && apk add jq
+    # - jq -s 'add' gl-codeclimate-image.json gl-codeclimate-fs.json > gl-codeclimate.json
+  cache:
+    paths:
+      - .trivycache/
+  artifacts:
+    when: always
+    paths:
+      - trivy*.html
+
+.docker:build:
+  image: docker:stable
+  variables:
+    DOCKER_HOST: tcp://dindservice:2375
+    DOCKER_TLS_CERTDIR: ""
+  services:
+    - name: docker:stable-dind
+      alias: dindservice
+  before_script:
+    - docker info
+  script:
+    - "cd $WORKING_DIR"
+    - docker login $REGISTRY_URL -u="${QUAY_ROBOT_USERNAME}" -p $QUAY_ROBOT_TOKEN
+    - docker build -f $DOCKER_FILE -t $REGISTRY_URL/$IMAGE_NAME:$TAG .
+    - docker push $REGISTRY_URL/$IMAGE_NAME:$TAG
+
+.buildah:build:
+  image: quay.io/buildah/stable:v1.18.0
+  script:
+    - "cd $WORKING_DIR"
+    - buildah login --username "\$app" --password "${QUAY_ROBOT_TOKEN}" "${REGISTRY_URL}"
+    - buildah bud -t ${IMAGE_NAME}:${TAG} .
+    - buildah push ${IMAGE_NAME}:${TAG} $REGISTRY_URL/$IMAGE_NAME:$TAG
+
+.buildah:test:
+  image: quay.io/buildah/stable:v1.18.0
+  before_script:
+    - export TRIVY_VERSION=$(wget -qO - "https://api.github.com/repos/aquasecurity/trivy/releases/latest" | grep '"tag_name":' | sed -E 's/.*"v([^"]+)".*/\1/')
+    - echo $TRIVY_VERSION
+    - wget --no-verbose https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz -O - | tar -zxvf -
+  script:
+    - "cd $WORKING_DIR"
+    - buildah login --username "\$app" --password "${QUAY_ROBOT_TOKEN}" "${REGISTRY_URL}"
+    - buildah bud -t ${IMAGE_NAME}:${TAG} .
+    - buildah push ${IMAGE_NAME}:${TAG} $REGISTRY_URL/$IMAGE_NAME:$TAG
+    - ./trivy image --clear-cache
+    - ./trivy image --exit-code 0 --format template --template "@contrib/html.tpl" -o trivy-${WORKING_DIR}-image.html $REGISTRY_URL/$IMAGE_NAME:$TAG
+    - ./trivy filesystem --security-checks config,vuln --exit-code 0 --format template --template "@contrib/html.tpl" -o trivy-${WORKING_DIR}-fs.html ./$WORKING_DIR
+    - ./trivy filesystem --severity CRITICAL --security-checks config,vuln --exit-code 1 --format template --template "@contrib/html.tpl" -o trivy-${WORKING_DIR}-fs-critical.html ./$WORKING_DIR
+    - ./trivy image --severity CRITICAL --exit-code 1 --format template --template "@contrib/html.tpl" -o trivy-${WORKING_DIR}-image-critical.html $REGISTRY_URL/$IMAGE_NAME:$TAG
+  cache:
+    paths:
+      - .trivycache/
+  artifacts:
+    when: always
+    paths:
+      - trivy*.html
+
+
+.kaniko:build:
+  image:
+    name: gcr.io/kaniko-project/executor:debug
+    entrypoint: [""]
+  script:
+    - mkdir -p /kaniko/.docker
+    - echo "{\"auths\":{\"$REGISTRY_URL\":{\"username\":\"$QUAY_ROBOT_USERNAME\",\"password\":\"$QUAY_ROBOT_TOKEN\"}}}" > /kaniko/.docker/config.json
+    - cat /kaniko/.docker/config.json
+    - echo "/kaniko/executor --context="$CI_PROJECT_DIR/$WORKING_DIR" --dockerfile="$CI_PROJECT_DIR/$WORKING_DIR/$DOCKERFILE" --destination $REGISTRY_URL/$IMAGE_NAME:$TAG"
+    - /kaniko/executor --build-arg http_proxy=$http_proxy --build-arg https_proxy=$https_proxy --build-arg no_proxy=$no_proxy --context="$CI_PROJECT_DIR/$WORKING_DIR" --dockerfile="$CI_PROJECT_DIR/$WORKING_DIR/$DOCKERFILE" --destination $REGISTRY_URL/$IMAGE_NAME:$TAG

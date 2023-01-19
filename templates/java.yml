@@ -1,0 +1,29 @@
+.java:build:
+  image:
+    name: maven:3.8.4-openjdk-17
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - .m2/repository/
+  script:
+    - cd $WORKING_DIR
+    - mvn $MAVEN_CLI_OPTS clean deploy -s $MVN_CONFIG_FILE -DaltReleaseDeploymentRepository=nexus::default::https://nexus-openshift-infra.apps.ocp4-8.infocepo.com/repository/maven-releases/ -DaltSnapshotDeploymentRepository=nexus::default::https://nexus-openshift-infra.apps.ocp4-8.infocepo.com/repository/maven-snapshots/
+  artifacts:
+    paths:
+      - $WORKING_DIR/target/
+    expire_in: 1 seconds
+  interruptible: true
+
+.java:sonar:
+  image:
+    name: maven:3.8.4-openjdk-17
+  cache:
+    key: "$CI_COMMIT_REF_SLUG"
+    paths:
+      - .m2/repository/
+  variables:
+    GIT_DEPTH: "0"
+  script:
+    - cd $WORKING_DIR
+    - mvn $MAVEN_CLI_OPTS clean package sonar:sonar -Dsonar.qualitygate.wait=true -s $MVN_CONFIG_FILE
+  allow_failure: true
