@@ -6,7 +6,8 @@ include:
   - local: '/templates/vault.yml'
 
 default:
-  image: node:14.17-slim
+#  image: node:14.17-slim
+  image: node:16.14.2-stretch-slim
 
 
 variables:
