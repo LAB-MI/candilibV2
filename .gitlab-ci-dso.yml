@@ -17,15 +17,15 @@ variables:
   HTTP_PROXY: $http_proxy
   HTTPS_PROXY: $http_proxy
   NO_PROXY: $no_proxy
-  PROJECT_NAME: "candilib"
-  PROJECT_REPOSITORY: "candilib"
+  PROJECT_NAME: "candilib-forge-dso"
+  PROJECT_REPOSITORY: "candilib-forge-dso"
   PROJECT_ORGANISATION: "ministere-interieur"
   ## In gitlab/variables : declare Variable File Type named BUILD_CONFIG
   ##  containing internal NPM_REGISTRY, SASS_REGISTRY, PYPI_URL, PYPI_HOST, RUBY_URL,, CYPRESS_DOWNLOAD_MIRROR, MIRROR_DEBIAN
   ##   MIRROR_DOCKER, MIRROR_DOCKER_KEY
   BUILD_CONFIG_FILE: $BUILD_CONFIG
   REGISTRY_URL: "${QUAY_ROOT_URL}/${PROJECT_ORGANISATION}-${PROJECT_NAME}"
-  TAG: '0.3'
+  TAG: '0.4'
   #TAG: "${CI_COMMIT_REF_SLUG}"
   DOCKERFILE: 'Dockerfile'
 
