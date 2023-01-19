@@ -1,0 +1,9 @@
+FROM bitnami/nginx
+
+# Deliver the dist folder with Nginx
+ARG CLIENT_BUILD_TARGET
+ARG PUBLIC_PATH
+COPY conf-admin-dso /etc/nginx/conf.d/default.conf
+COPY conf-admin-dso /opt/bitnami/nginx/conf/server_blocks/conf-admin.conf
+COPY dist-admin /opt/bitnami/nginx/html/admin
+

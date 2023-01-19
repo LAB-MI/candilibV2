@@ -1,0 +1,175 @@
+include:
+  - local: '/templates/java.yml'
+  - local: '/templates/docker.yml'
+  - local: '/templates/rules.yml'
+  - local: '/templates/npm.yml'
+  - local: '/templates/vault.yml'
+
+default:
+  image: node:14.17-slim
+
+
+variables:
+  ## Enable under shared runner
+  ## In gitlab/variables : declare Variable File Variable named http_proxy_shared, and no_proxy_shared
+  http_proxy: $http_proxy_shared
+  https_proxy: $http_proxy_shared
+  no_proxy: $no_proxy_shared
+  HTTP_PROXY: $http_proxy_shared
+  HTTPS_PROXY: $http_proxy_shared
+  NO_PROXY: $no_proxy_shared
+  PROJECT_NAME: "candilib"
+  PROJECT_REPOSITORY: "candilib"
+  PROJECT_ORGANISATION: "ministere-interieur"
+  ## In gitlab/variables : declare Variable File Type named BUILD_CONFIG
+  ##  containing internal NPM_REGISTRY, SASS_REGISTRY, PYPI_URL, PYPI_HOST, RUBY_URL,, CYPRESS_DOWNLOAD_MIRROR, MIRROR_DEBIAN
+  ##   MIRROR_DOCKER, MIRROR_DOCKER_KEY
+  BUILD_CONFIG_FILE: $BUILD_CONFIG
+  REGISTRY_URL: "${QUAY_ROOT_URL}/${PROJECT_ORGANISATION}-${PROJECT_NAME}"
+  TAG: '0.3'
+  #TAG: "${CI_COMMIT_REF_SLUG}"
+  DOCKERFILE: 'Dockerfile'
+
+# GIT_CURL_VERBOSE: "1"
+# GIT_DEBUG_LOOKUP: "1"
+# GIT_TRANSLOOP_DEBUG: "1"
+# GIT_TRANSPORT_HELPER_DEBUG: "1"
+
+stages:
+  - read-secret
+  - test-app
+  - build-app
+  - test-docker
+  - build-docker
+
+read_secret:
+  stage: read-secret
+  extends:
+    - .vault:read_secret
+
+test_front:
+  variables:
+    WORKING_DIR: 'client'
+    IMAGE_NAME: 'candilibv2-devops-front-candidat'
+    DOCKERFILE: 'Dockerfile-front-candidat-devops'
+  cache:
+    paths:
+      - $WORKING_DIR/node_modules
+  stage: test-app
+  allow_failure: true
+  script:
+    - 'cd client'
+    - 'npm ci'
+    - 'npm run test'
+
+sonar_front:
+  variables:
+    WORKING_DIR: 'client'
+    IMAGE_NAME: 'candilibv2-devops-front-candidat'
+    DOCKERFILE: 'Dockerfile-front-candidat-devops'
+  cache:
+    paths:
+      - $WORKING_DIR/node_modules
+  stage: test-app
+  extends:
+    - .npm:sonar
+
+# test_back:
+#   variables:
+#     WORKING_DIR: 'server'
+#     IMAGE_NAME: 'candilibv2-devops-front-candidat'
+#     DOCKERFILE: 'Dockerfile-front-candidat-devops'
+#   cache:
+#     paths:
+#       - $WORKING_DIR/node_modules
+#   stage: test-app
+#   script:
+#     - 'cd $WORKING_DIR'
+#     - 'apt-get update && apt-get install -y libcurl3 libssl1.1'
+#     - 'npm ci'
+#     - 'npm run test'
+
+build_app_front:
+  stage: build-app
+  artifacts:
+    paths:
+      - client/dist-*
+  script:
+    - 'cd client'
+    - 'npm cache clean --force'
+    - 'npm ci'
+    - 'npm run prebuild:admin'
+    - 'npm run build'
+    - 'mv dist dist-admin'
+    - 'npm run prebuild:candidat'
+    - 'npm run build'
+    - 'mv dist dist-candidat'
+
+build_app_back:
+  stage: build-app
+  artifacts:
+    paths:
+      - server/node_modules
+    untracked: true
+  script:
+    - 'cd server'
+    - 'npm ci'
+    - 'npm run build-devops'
+
+test_docker_front:
+  variables:
+    WORKING_DIR: 'client'
+    IMAGE_NAME: 'candilibv2-devops-front-candidat'
+    DOCKERFILE: 'Dockerfile-front-candidat-devops'
+  stage: test-docker
+  allow_failure: true
+  extends:
+    - .docker:test
+
+test_docker_back:
+  image: docker:stable
+  variables:
+    WORKING_DIR: 'server'
+    IMAGE_NAME: 'candilibv2-devops'
+    DOCKERFILE: 'Dockerfile-devops'
+  stage: test-docker
+  allow_failure: true
+  extends:
+    - .docker:test
+
+build_docker_front_admin:
+  variables:
+    WORKING_DIR: 'client'
+    IMAGE_NAME: 'candilibv2-devops-front-admin'
+    DOCKERFILE: 'Dockerfile-front-admin-devops'
+  stage: build-docker
+  extends:
+    - .kaniko:build
+
+build_docker_front_candidat:
+  variables:
+    WORKING_DIR: 'client'
+    IMAGE_NAME: 'candilibv2-devops-front-candidat'
+    DOCKERFILE: 'Dockerfile-front-candidat-devops'
+  stage: build-docker
+  extends:
+    - .kaniko:build
+
+build_docker_back:
+  variables:
+    WORKING_DIR: 'server'
+    IMAGE_NAME: 'candilibv2-devops'
+    DOCKERFILE: 'Dockerfile-devops'
+  stage: build-docker
+  extends:
+    - .kaniko:build
+
+build_docker_back_db:
+  variables:
+    WORKING_DIR: 'server'
+    IMAGE_NAME: 'candilibv2-devops-db'
+    DOCKERFILE: 'Dockerfile-devops'
+  stage: build-docker
+  extends:
+    - .kaniko:build
+

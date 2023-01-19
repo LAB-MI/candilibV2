@@ -1,0 +1,38 @@
+#######################
+# Step 1: Base target #
+#######################
+FROM bitnami/node
+
+# Base dir /app
+WORKDIR /app
+
+COPY dist dist/
+
+COPY package.json .
+
+COPY package-lock.json .
+
+COPY ecosystem.config.js .
+
+#COPY node_modules node_modules/
+##RUN npm install pm2 -g
+
+# Install production dependencies and clean cache
+RUN unset NODE_ICU_DATA && \
+   npm --no-git-tag-version version ${APP_VERSION} && \
+   npm ci --production && \
+   npm config set audit-level moderate && \
+   npm audit --json --registry=https://registry.npmjs.org --production || ${NPM_AUDIT_DRY_RUN:-false} && \
+   npm cache clean --force ; \
+   npm install pm2 -g
+
+RUN mkdir /.pm2
+
+RUN chmod -R 777 /.pm2
+
+ENV NODE_ICU_DATA="/app/node_modules/full-icu"
+
+CMD [ "pm2-runtime", "start", "ecosystem.config.js", "--env", "production" ]
+
+# Expose the listening port of your app
+EXPOSE 8000
