@@ -10,10 +10,10 @@ server {
   client_max_body_size 10m;
 
   root /opt/bitnami/nginx/html/;
-  
-  
+
+
   location = / {
-    rewrite "^.*$" /candidat;    
+    rewrite "^.*$" /candidat;
 }
 
   location /candidat {
