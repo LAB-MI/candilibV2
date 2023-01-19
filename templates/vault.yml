@@ -1,0 +1,18 @@
+.vault:read_secret:
+  image:
+    name: vault:latest
+  script:
+    - export VAULT_ADDR=$VAULT_SERVER_URL
+    - export VAULT_TOKEN="$(vault write -field=token auth/jwt/login role=default-ci jwt=$CI_JOB_JWT)"
+    - |
+      cat <<EOF > vault.env
+      NEXUS_PASSWORD=`vault kv get -field=NEXUS_PASSWORD forge-dso/${CI_PROJECT_NAMESPACE}/NEXUS`
+      NEXUS_USERNAME=`vault kv get -field=NEXUS_USERNAME forge-dso/${CI_PROJECT_NAMESPACE}/NEXUS`
+      QUAY_ROBOT_TOKEN=`vault kv get -field=QUAY_ROBOT_TOKEN forge-dso/${CI_PROJECT_NAMESPACE}/QUAY`
+      QUAY_ROBOT_USERNAME=`vault kv get -field=QUAY_ROBOT_USERNAME forge-dso/${CI_PROJECT_NAMESPACE}/QUAY`
+      SONAR_TOKEN=`vault kv get -field=SONAR_TOKEN forge-dso/${CI_PROJECT_NAMESPACE}/SONAR`
+      EOF
+  artifacts:
+    reports:
+      dotenv: vault.env
+    expire_in: 1 seconds
