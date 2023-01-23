@@ -279,7 +279,7 @@ export const NB_DAYS_INACTIVITY = 'NB_DAYS_INACTIVITY'
 
 //
 export const automateApiConfig = {
-  urlBase: `${process.env.AUTOMATE_URL || 'http://localhost:' + (process.env.AUTOMATE_PORT || '9000')}`,
+  urlBase: `${process.env.AUTOMATE_URL || 'http://127.0.0.1:' + (process.env.AUTOMATE_PORT || '9000')}`,
   apiPrefix: '/api/automate',
 }
 
