@@ -31,8 +31,7 @@ default:
     # - openstack
   before_script:
     - echo "# Before script"
-    - echo "$BUILD_CONFIG_FILE" > .build_config
-    - source .build_config
+    - source $BUILD_CONFIG
     - time ci/before_scripts.sh
 
 # build template
@@ -42,8 +41,7 @@ default:
 # build template script
 .build_template_script: &build_template_script
     - echo "# Build"
-    - echo "$BUILD_CONFIG_FILE" > .build_config
-    - source .build_config
+    - source $BUILD_CONFIG
     - echo "# Build"
     - if [ -z "$CI_DRY_RUN"] ; then  time ci/build.sh ; fi
 
