@@ -172,3 +172,11 @@ build_docker_back_db:
   extends:
     - .kaniko:build
 
+build_docker_backup_curl:
+  variables:
+    WORKING_DIR: 'server'
+    IMAGE_NAME: 'candilibv2-backup-curl'
+    DOCKERFILE: 'Dockerfile-backup-curl'
+  stage: build-docker
+  extends:
+    - .kaniko:build
