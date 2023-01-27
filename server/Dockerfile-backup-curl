@@ -1,0 +1,8 @@
+FROM alpine:edge
+
+WORKDIR /tmp
+RUN apk upgrade --update-cache --available && \
+    apk add openssl curl && \
+    rm -rf /var/cache/apk/*
+
+CMD [ "sleep", "10000"]
