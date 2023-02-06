@@ -19,7 +19,6 @@ COPY ecosystem.config.js .
 
 # Install production dependencies and clean cache
 RUN unset NODE_ICU_DATA && \
-   npm --no-git-tag-version version ${APP_VERSION} && \
    npm ci --production && \
    npm config set audit-level moderate && \
    npm audit --json --registry=https://registry.npmjs.org --production || ${NPM_AUDIT_DRY_RUN:-false} && \
