@@ -11,7 +11,7 @@ include:
 
 default:
 #  image: node:14.17-slim
-  image: node:16.14.2-stretch-slim
+  image: node:16.14.2
 
 
 variables:
@@ -99,6 +99,8 @@ build_app_front:
       - client/dist-*
   script:
     - 'cd client'
+    - APP_VERSION=$(git describe --tags --always)
+    - npm --no-git-tag-version version ${APP_VERSION}
     - 'npm cache clean --force'
     - 'npm ci'
     - 'npm run prebuild:admin'
@@ -112,10 +114,13 @@ build_app_back:
   stage: build-app
   artifacts:
     paths:
-      - server/node_modules
-    untracked: true
+      - server/package-lock.json
+      - server/package.json
+      - server/dist
   script:
     - 'cd server'
+    - APP_VERSION=$(git describe --tags --always)
+    - npm --no-git-tag-version version ${APP_VERSION}
     - 'npm ci'
     - 'npm run build-devops'
 
