@@ -26,7 +26,7 @@ const connectionUserByStatus = (cypressEnvUserEmail) => {
     // intercept the last call of admin places when home page is ready
     cy.intercept({
       method: 'GET',
-      url: Cypress.env('frontAdmin') + 'api/v2/admin/places*',
+      url: Cypress.env('frontAdminApi') + 'api/v2/admin/places*',
     }).as('homeAdminRequest')
 
     cy.get('.submit-btn')
@@ -62,7 +62,7 @@ Cypress.Commands.add('adminDisconnection', (noRequestPlaces) => {
   if (!noRequestPlaces) {
     cy.intercept({
       method: 'GET',
-      url: Cypress.env('frontAdmin') + 'api/v2/admin/places*',
+      url: Cypress.env('frontAdminApi') + 'api/v2/admin/places*',
     }).as('homeAdminRequest')
   }
 
@@ -442,7 +442,7 @@ Cypress.Commands.add('addCandidatToPlace', (date, candidatName) => {
 
       cy.intercept({
         method: 'GET',
-        url: Cypress.env('frontAdmin') + 'api/v2/admin/inspecteurs?*',
+        url: Cypress.env('frontAdminApi') + 'api/v2/admin/inspecteurs?*',
       }).as('getInspecteur')
 
       cy.get('.place-details')
@@ -631,7 +631,7 @@ Cypress.Commands.add('selectCaptchaSoltion', (email) => {
 Cypress.Commands.add('selectCaptchaSoltionAndConfirm', (email, rigthAnswer = true) => {
   cy.intercept({
     method: 'GET',
-    url: Cypress.env('frontCandidat') + 'api/v2/candidat/verifyzone/image/0*',
+    url: Cypress.env('frontCandidatApi') + 'api/v2/candidat/verifyzone/image/0*',
   }).as('getImage')
 
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
@@ -736,7 +736,7 @@ Cypress.Commands.add('bookPlaceBySelectedCandidat', (email, magicLink, centre, d
 
   cy.intercept({
     method: 'GET',
-    url: Cypress.env('frontCandidat') + 'api/v2/candidat/verifyzone/image/0*',
+    url: Cypress.env('frontCandidatApi') + 'api/v2/candidat/verifyzone/image/0*',
   }).as('getImage')
 
   cy.get('.pa-1 > :nth-child(1) > :nth-child(1)').should('contain', 'Je ne suis pas un robot')
