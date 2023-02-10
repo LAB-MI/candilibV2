@@ -39,8 +39,8 @@ server {
     rewrite ^(.+)$ <PUBLIC_PATH>/index.html last;
   }
 
-  location ~ "^<PUBLIC_PATH>/api/v2" {
-    rewrite "^<PUBLIC_PATH>(.*)$" $1 break;
+  location ~ "^<PUBLIC_PATH_FOR_API>/api/v2" {
+    rewrite "^<PUBLIC_PATH_FOR_API>(.*)$" $1 break;
     add_header Access-Control-Allow-Origin '$http_origin';
     proxy_pass http://<API_HOST>:<API_PORT>;
     proxy_redirect off;
