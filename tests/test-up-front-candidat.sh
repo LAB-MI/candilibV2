@@ -19,7 +19,7 @@ echo "# $basename ${APP} ${APP_VERSION}"
 
 ret=0
 container_name=front_candidat
-public_path=/candilib
+public_path=/candidat
 
 echo "# Test ${APP}-$container_name up"
 dirname=$(dirname $0)
