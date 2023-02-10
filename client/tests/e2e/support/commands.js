@@ -17,6 +17,7 @@ const connectionUserByStatus = (cypressEnvUserEmail) => {
       },
     })
 
+  cy.get('h2').should('contain', 'ADMINISTRATEUR')
   cy.get('.t-login-email [type=text]')
     .type(cypressEnvUserEmail)
   cy.get('[type=password]')
