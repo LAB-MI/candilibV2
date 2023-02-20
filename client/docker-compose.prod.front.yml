@@ -16,7 +16,7 @@ services:
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         CLIENT_BUILD_TARGET: candidat
-        PUBLIC_PATH: /candilib
+        PUBLIC_PATH: /candidat
         APP_VERSION: ${APP_VERSION}
         LINE_DELAY: ${LINE_DELAY}
 #    env_file:
@@ -66,12 +66,12 @@ services:
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
         NPM_AUDIT_DRY_RUN: ${NPM_AUDIT_DRY_RUN}
         CLIENT_BUILD_TARGET: admin
-        PUBLIC_PATH: /candilib-repartiteur
+        PUBLIC_PATH: /admin
         APP_VERSION: ${APP_VERSION}
 #    env_file:
 #      - ${cnf:-.env}
     environment:
-      API_HOST: ${API_HOST:-candilib_api}
+      API_HOST: ${API_HOST:-api}
       API_PORT: ${API_PORT:-8000}
       APP_USER_LIMIT_RATE: ${APP_USER_LIMIT_RATE}
       APP_USER_BURST: ${APP_USER_BURST}
@@ -105,6 +105,7 @@ services:
 #    driver: bridge
 #    driver_opts:
 #      com.docker.network.driver.mtu: 1450
+
 networks:
   default:
     external:
