@@ -95,7 +95,7 @@ build_app_front:
       - client/dist-*
   script:
     - 'cd client'
-    - APP_VERSION=$(TAG)
+    - APP_VERSION=${TAG}
     - npm --no-git-tag-version version ${APP_VERSION}
     - 'npm cache clean --force'
     - 'npm ci'
@@ -115,7 +115,7 @@ build_app_back:
       - server/dist
   script:
     - 'cd server'
-    - APP_VERSION=$(TAG)
+    - APP_VERSION=${TAG}
     - npm --no-git-tag-version version ${APP_VERSION}
     - 'npm ci'
     - 'npm run build-devops'
