@@ -13,27 +13,27 @@ server {
   
   
   location = / {
-    rewrite "^.*$" /candidat;    
+    rewrite "^.*$" /candilib;    
 }
 
-  location /candidat {
+  location /candilib {
     expires 24h;
-    try_files $uri $uri/ /candidat/index.html;
+    try_files $uri $uri/ /candilib/index.html;
 
-    location ~ "^/candidat/config-candilib.json" {
+    location ~ "^/candilib/config-candilib.json" {
       expires -1;
       add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
     }
   }
 
   location @rewrites {
-    rewrite ^(.+)$ /candidat/index.html last;
+    rewrite ^(.+)$ /candilib/index.html last;
   }
 
 
 
 
-location /candidat/api/ {
+location /candilib/api/ {
 proxy_pass http://candilibv2-back/;
 }
 

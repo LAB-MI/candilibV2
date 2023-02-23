@@ -11,7 +11,7 @@ server {
 
   root /opt/bitnami/nginx/html/;
 
-  location /admin {
+  location /candilib-repartiteur {
     expires 24h;
     try_files $uri $uri/ /admin/index.html;
 
