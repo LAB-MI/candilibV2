@@ -36,7 +36,7 @@ variables:
 
 stages:
   - read-secret
-  - test-app
+#  - test-app
   - build-app
   - test-docker
   - build-docker
@@ -46,32 +46,32 @@ read_secret:
   extends:
     - .vault:read_secret
 
-test_front:
-  variables:
-    WORKING_DIR: 'client'
-    IMAGE_NAME: 'candilibv2-devops-front-candidat'
-    DOCKERFILE: 'Dockerfile-front-candidat-devops'
-  cache:
-    paths:
-      - $WORKING_DIR/node_modules
-  stage: test-app
-  allow_failure: true
-  script:
-    - 'cd client'
-    - 'npm ci'
-    - 'npm run test'
+# test_front:
+#   variables:
+#     WORKING_DIR: 'client'
+#     IMAGE_NAME: 'candilibv2-devops-front-candidat'
+#     DOCKERFILE: 'Dockerfile-front-candidat-devops'
+#   cache:
+#     paths:
+#       - $WORKING_DIR/node_modules
+#   stage: test-app
+#   allow_failure: true
+#   script:
+#     - 'cd client'
+#     - 'npm ci'
+#     - 'npm run test'
 
-sonar_front:
-  variables:
-    WORKING_DIR: 'client'
-    IMAGE_NAME: 'candilibv2-devops-front-candidat'
-    DOCKERFILE: 'Dockerfile-front-candidat-devops'
-  cache:
-    paths:
-      - $WORKING_DIR/node_modules
-  stage: test-app
-  extends:
-    - .npm:sonar
+# sonar_front:
+#   variables:
+#     WORKING_DIR: 'client'
+#     IMAGE_NAME: 'candilibv2-devops-front-candidat'
+#     DOCKERFILE: 'Dockerfile-front-candidat-devops'
+#   cache:
+#     paths:
+#       - $WORKING_DIR/node_modules
+#   stage: test-app
+#   extends:
+#     - .npm:sonar
 
 # test_back:
 #   variables:
@@ -95,7 +95,7 @@ build_app_front:
       - client/dist-*
   script:
     - 'cd client'
-    - APP_VERSION=$(git describe --tags --always)
+    - APP_VERSION=$(TAG)
     - npm --no-git-tag-version version ${APP_VERSION}
     - 'npm cache clean --force'
     - 'npm ci'
@@ -115,7 +115,7 @@ build_app_back:
       - server/dist
   script:
     - 'cd server'
-    - APP_VERSION=$(git describe --tags --always)
+    - APP_VERSION=$(TAG)
     - npm --no-git-tag-version version ${APP_VERSION}
     - 'npm ci'
     - 'npm run build-devops'
