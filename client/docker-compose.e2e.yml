@@ -45,8 +45,8 @@ services:
         CYPRESS_DOWNLOAD_MIRROR: ${CYPRESS_DOWNLOAD_MIRROR}
     environment:
       CYPRESS_ApiRestDB: http://candilib_db_rest:8090
-      CYPRESS_frontCandidat: http://candidat.candilib.local/candidat/
-      CYPRESS_frontAdmin: http://admin.candilib.local/admin/
+      CYPRESS_frontCandidat: http://candidat.candilib.local/candilib/
+      CYPRESS_frontAdmin: http://admin.candilib.local/candilib-repartiteur/
       CYPRESS_frontCandidatApi: http://candidat.candilib.local/
       CYPRESS_frontAdminApi: http://admin.candilib.local/
       CYPRESS_mailHogUrl: http://mailhog:8025
