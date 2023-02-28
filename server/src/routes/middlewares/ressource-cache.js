@@ -70,7 +70,16 @@ const getPlacesAndCentresInfo = async () => {
         }
 
         const shapedPlaces = rawPlaces
-          .filter(plce => acc[geoDepartement][nomCentre].idList.includes(plce.centre.toString()))
+          .filter(plce => {
+            if (!plce?.centre) {
+              techLogger.error({
+                section: 'get-places-as-interval-of',
+                description: 'Error data place is incorrect',
+                place: JSON.stringify(plce),
+              })
+            }
+            return acc[geoDepartement][nomCentre].idList.includes(plce?.centre?.toString())
+          })
           .map(place => ({
             createdAt: getFrenchLuxonFromJSDate((place.createdAt)),
             visibleAt: getFrenchLuxonFromJSDate((place.visibleAt)),
