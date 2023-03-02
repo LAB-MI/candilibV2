@@ -1,0 +1,24 @@
+name: Repo sync with Cloud π Native
+
+on:
+  push:
+    branches:
+      - "develop-dso"
+  workflow_dispatch:
+
+jobs:
+  mirror:
+    name: Sync repo with Cloud π Native
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checks-out repository
+        uses: actions/checkout@v3
+      - name: Send a sync request to DSO api
+        run |
+          curl -X POST --fail -F token=${{ secrets.GITLAB_TRIGGER_TOKEN }} -F ref=${{vars.BRANCH_SYNC}} ${{vars.URL_MIRROR}}
+        # run: |
+        #   sh ./path/to/script-mirror.sh \
+        #     -a ${{ secrets.API_DOMAIN }} \
+        #     -g ${{ secrets.GITLAB_TRIGGER_TOKEN }} \
+        #     -k ${{ secrets.CONSUMER_KEY }} \
+        #     -s ${{ secrets.CONSUMER_SECRET }}
