@@ -14,7 +14,7 @@ jobs:
       - name: Checks-out repository
         uses: actions/checkout@v3
       - name: Send a sync request to DSO api
-        run |
+        run: |
           curl -X POST --fail -F token=${{ secrets.GITLAB_TRIGGER_TOKEN }} -F ref=${{vars.BRANCH_SYNC}} ${{vars.URL_MIRROR}}
         # run: |
         #   sh ./path/to/script-mirror.sh \
