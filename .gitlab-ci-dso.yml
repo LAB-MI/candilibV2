@@ -1,0 +1,10 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop-dso"
+
+default:
+  - image: node:16.14.2-slim
+
+check:
+  script:
+    - echo "Test"
