@@ -1,3 +1,7 @@
+workflow:
+  rules:
+    - if: $CI_COMMIT_BRANCH == "develop-dso"
+
 include:
   - local: '/templates/java.yml'
   - local: '/templates/docker.yml'
