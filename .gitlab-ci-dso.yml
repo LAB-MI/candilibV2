@@ -13,7 +13,6 @@ default:
 #  image: node:14.17-slim
   image: node:16.14.2
 
-
 variables:
   http_proxy: $http_proxy
   https_proxy: $http_proxy
@@ -32,6 +31,7 @@ variables:
   TAG: '0.4'
   #TAG: "${CI_COMMIT_REF_SLUG}"
   DOCKERFILE: 'Dockerfile'
+  GIT_DEPTH: "0"
 
 # GIT_CURL_VERBOSE: "1"
 # GIT_DEBUG_LOOKUP: "1"
@@ -99,7 +99,7 @@ build_app_front:
       - client/dist-*
   script:
     - 'cd client'
-    - APP_VERSION=$(git describe --tags --always)
+    - APP_VERSION=$(git describe --always --tags)
     - npm --no-git-tag-version version ${APP_VERSION}
     - 'npm cache clean --force'
     - 'npm ci'
@@ -119,6 +119,7 @@ build_app_back:
       - server/dist
   script:
     - 'cd server'
+    - git describe --always --tags --debug
     - APP_VERSION=$(git describe --tags --always)
     - npm --no-git-tag-version version ${APP_VERSION}
     - 'npm ci'
