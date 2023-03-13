@@ -122,7 +122,6 @@ build_app_back:
       - server/dist
   script:
     - 'cd server'
-    - git describe --always --tags --debug
     - APP_VERSION=$(git describe --tags --always)
     - npm --no-git-tag-version version ${APP_VERSION}
     - 'npm ci'
