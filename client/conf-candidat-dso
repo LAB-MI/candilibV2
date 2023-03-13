@@ -14,7 +14,7 @@ server {
   
   location = / {
     rewrite "^.*$" /candilib;    
-}
+  }
 
   location /candilib {
     expires 24h;
