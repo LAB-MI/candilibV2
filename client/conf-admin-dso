@@ -11,21 +11,21 @@ server {
 
   root /opt/bitnami/nginx/html/;
 
-  location /admin {
+  location /candilib-repartiteur {
     expires 24h;
-    try_files $uri $uri/ /admin/index.html;
+    try_files $uri $uri/ /candilib-repartiteur/index.html;
 
-    location ~ "^/admin/config-candilib.json" {
+    location ~ "^/candilib-repartiteur/config-candilib.json" {
       expires -1;
       add_header 'Cache-Control' 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
     }
   }
 
   location @rewrites {
-    rewrite ^(.+)$ /admin/index.html last;
+    rewrite ^(.+)$ /candilib-repartiteur/index.html last;
   }
 
-  location /admin/api/ {
+  location /candilib-repartiteur/api/ {
 proxy_pass http://candilibv2-back:8000/api/;
 }
 

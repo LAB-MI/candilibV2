@@ -6,4 +6,4 @@ ARG CLIENT_BUILD_TARGET
 ARG PUBLIC_PATH
 COPY conf-candidat-dso /etc/nginx/conf.d/default.conf
 COPY conf-candidat-dso /opt/bitnami/nginx/conf/server_blocks/conf-candidat.conf
-COPY dist-candidat /opt/bitnami/nginx/html/candidat
+COPY dist-candidat /opt/bitnami/nginx/html/candilib
