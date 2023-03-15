@@ -1,7 +1,3 @@
-workflow:
-  rules:
-    - if: $CI_COMMIT_BRANCH == "develop-dso"
-
 include:
   - local: '/templates/java.yml'
   - local: '/templates/docker.yml'
@@ -22,10 +18,9 @@ variables:
   HTTP_PROXY: $http_proxy
   HTTPS_PROXY: $http_proxy
   NO_PROXY: $no_proxy
-  PROJECT_NAME: $CI_PROJECT_NAME
-  # PROJECT_NAME: "candilib-forge-dso"
-  # PROJECT_REPOSITORY: "candilib-forge-dso"
-  # PROJECT_ORGANISATION: "ministere-interieur"
+  PROJECT_NAME: "candilib-forge-dso"
+  PROJECT_REPOSITORY: "candilib-forge-dso"
+  PROJECT_ORGANISATION: "ministere-interieur"
   ## In gitlab/variables : declare Variable File Type named BUILD_CONFIG
   ##  containing internal NPM_REGISTRY, SASS_REGISTRY, PYPI_URL, PYPI_HOST, RUBY_URL,, CYPRESS_DOWNLOAD_MIRROR, MIRROR_DEBIAN
   ##   MIRROR_DOCKER, MIRROR_DOCKER_KEY
