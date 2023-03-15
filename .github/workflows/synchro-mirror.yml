@@ -1,9 +1,10 @@
 name: Repo sync with Cloud π Native
 
 on:
-  push:
-    branches:
-      - "develop-dso"
+  workflow_run:
+    workflows: ["ci-test", "ci-test-multi-jobs"]
+    types: [completed]
+    branches: ["develop-dso"]
   workflow_dispatch:
 
 jobs:
