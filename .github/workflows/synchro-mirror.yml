@@ -17,6 +17,12 @@ jobs:
       - name: Send a sync request to DSO api
         run: |
           curl -X POST --fail -F token=${{ secrets.GITLAB_TRIGGER_TOKEN }} -F ref=${{vars.BRANCH_SYNC}} ${{vars.URL_MIRROR}}
+          curl -X POST \
+            --fail \
+            --form token=${{ secrets.GITLAB_TRIGDER_TOKEN_DSO }} \
+            --form ref=${{vars.BRANCH_SYNC_DSO}} \
+            --form "variables[GIT_BRANCH_DEPLOY]=${{vars.GIT_BRANCH_DEPLOY_DSO}}" \
+            ${{vars.URL_MIRROR_DSO}}
         # run: |
         #   sh ./path/to/script-mirror.sh \
         #     -a ${{ secrets.API_DOMAIN }} \
