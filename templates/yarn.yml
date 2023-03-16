@@ -1,0 +1,27 @@
+.yarn:build:
+  image:
+    name: node:17
+  cache:
+    paths:
+      - $WORKING_DIR/node_modules
+  script:
+    - cd $WORKING_DIR
+    - echo "export BUILD_VAR_SENTRY_RELEASE=$CI_COMMIT_REF_SLUG-$CI_COMMIT_SHORT_SHA" >> .variables
+    - yarn
+    - yarn build
+  artifacts:
+    paths:
+      - $WORKING_DIR/.dist
+      - $WORKING_DIR/node_modules
+      - $WORKING_DIR/yarn.lock
+    expire_in: 2 hrs
+  interruptible: true
+
+.yarn:sonar:
+  image:
+    name: sonarsource/sonar-scanner-cli:latest
+    entrypoint: [""]
+  script:
+    - cd $WORKING_DIR
+    - sonar-scanner -Dsonar.qualitygate.wait=true -Dsonar.projectKey=$IMAGE_NAME
+  allow_failure: true

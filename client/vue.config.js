@@ -16,7 +16,7 @@ module.exports = {
 
   devServer: {
     proxy: {
-      '/candilib/api': {
+      '/api': {
         pathRewrite: {
           [publicPath]: '',
         },

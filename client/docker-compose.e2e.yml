@@ -47,6 +47,8 @@ services:
       CYPRESS_ApiRestDB: http://candilib_db_rest:8090
       CYPRESS_frontCandidat: http://candidat.candilib.local/candilib/
       CYPRESS_frontAdmin: http://admin.candilib.local/candilib-repartiteur/
+      CYPRESS_frontCandidatApi: http://candidat.candilib.local/
+      CYPRESS_frontAdminApi: http://admin.candilib.local/
       CYPRESS_mailHogUrl: http://mailhog:8025
       CYPRESS_build: 1
       CYPRESS_screenshotsFolder: 'tests/e2e/screenshots'
