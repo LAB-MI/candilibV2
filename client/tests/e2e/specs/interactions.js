@@ -14,7 +14,7 @@ import { parseMagicLinkFromMailBody } from './util/util-cypress'
 let magicLink
 
 describe('Standard scenarios', () => {
-  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
+  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'END') {
     before(() => {
       cy.deleteAllMails()
       cy.adminLogin()
@@ -233,6 +233,6 @@ describe('Standard scenarios', () => {
         })
     })
   } else {
-    it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
+    it('skip for message END', () => { cy.log('skip for message END') })
   }
 })

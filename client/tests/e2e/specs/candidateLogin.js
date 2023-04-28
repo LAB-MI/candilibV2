@@ -15,7 +15,7 @@
 import { parseMagicLinkFromMailBody, parseValidationLinkFromMailBody } from './util/util-cypress'
 
 describe('Candidate login', () => {
-  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
+  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'END') {
     // Initialise magicLink
     let magicLink
 
@@ -284,6 +284,6 @@ describe('Candidate login', () => {
         .should('contain', 'Veuillez remplir le formulaire')
     })
   } else {
-    it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
+    it('skip for message END', () => { cy.log('skip for message END') })
   }
 })
