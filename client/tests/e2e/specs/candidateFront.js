@@ -20,7 +20,7 @@ import { date1, now } from '../support/dateUtils'
 import { adminCheckCandidatPenaltyHystory, parseMagicLinkFromMailBody } from './util/util-cypress'
 
 describe('Connected candidate front', () => {
-  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
+  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'END') {
     // Initialise magicLink
     let magicLink
     const numberOfDaysBeforeDate = 3
@@ -627,7 +627,7 @@ describe('Connected candidate front', () => {
       })
     })
   } else {
-    it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
+    it('skip for message END', () => { cy.log('skip for message END') })
   }
 })
 
@@ -645,7 +645,7 @@ describe('Public candidate front', () => {
       .click()
     cy.get('.question-content').should('be.visible')
     cy.get('.home-link').click()
-    if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
+    if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'END') {
       cy.url().should('contain', 'qu-est-ce-que-candilib')
     }
   })
