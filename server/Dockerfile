@@ -1,7 +1,8 @@
 #######################
 # Step 1: Base target #
 #######################
-FROM node:16.14.2-stretch-slim as base
+#FROM node:16.15.1-stretch-slim as base
+FROM node:16-stretch-slim as base
 ARG http_proxy
 ARG https_proxy
 ARG npm_registry
@@ -34,9 +35,13 @@ ARG MIRROR_DEBIAN
 ARG APP_VERSION
 ARG MONGOMS_VERSION
 
-RUN (set -x && [ -z "$MIRROR_DEBIAN" ] || sed -i.orig -e "s|http://deb.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9|g ; s|http://security.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9-security|g" /etc/apt/sources.list) ; \
-      buildPkgs="libcurl3 libssl1.1" ; \
-      apt-get update && apt-get install -y --no-install-recommends $buildPkgs
+# RUN (set -x && [ -z "$MIRROR_DEBIAN" ] || sed -i.orig -e "s|http://deb.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9|g ; s|http://security.debian.org\([^[:space:]]*\)|$MIRROR_DEBIAN/debian9-security|g" /etc/apt/sources.list) ; \
+      # buildPkgs="libcurl3 libssl1.1" ; \
+      # apt-get update && apt-get install -y --no-install-recommends $buildPkgs
+
+RUN (set -x && sed -i.orig -e "s|deb.debian.org|archive.debian.org|g ; s|security.debian.org|archive.debian.org/|g ; /stretch-updates/d" /etc/apt/sources.list); \
+  buildPkgs="libcurl3 libssl1.1" ; \
+  apt-get update -y && apt-get install -y --no-install-recommends $buildPkgs
 
 COPY src src/
 COPY babel.config.js package.json package-lock.json ./
