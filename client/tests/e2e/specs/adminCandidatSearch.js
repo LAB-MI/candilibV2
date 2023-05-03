@@ -23,7 +23,7 @@ import {
 } from './util/util-cypress'
 
 describe('Search Candidate', () => {
-  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
+  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'END') {
     before(() => {
     // Delete all mails before start
       cy.deleteAllMails()
@@ -196,12 +196,12 @@ describe('Search Candidate', () => {
       adminGoToInfoCandidatAndUpdateHomeDepartement(Cypress.env('candidat'), '75')
     })
   } else {
-    it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
+    it('skip for message END', () => { cy.log('skip for message END') })
   }
 })
 
 describe('Candidate Profile', () => {
-  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
+  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'END') {
     let magicLink
 
     const numberOfDaysBeforeDate = 7
@@ -356,7 +356,7 @@ describe('Candidate Profile', () => {
       })
     })
   } else {
-    it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
+    it('skip for message END', () => { cy.log('skip for message END') })
   }
 })
 
