@@ -35,13 +35,7 @@ export function faqJson (lineDelay, departements = [], parisCenters = []) {
       title: 'Qui peut utiliser le service ?',
       content: [
         {
-          textContent: 'Tout « candidat libre » peut utiliser le service.',
-        },
-        {
-          textContent: `Cependant, seuls les départements de la liste suivante proposent actuellement des places via ce service : ${departements.join(', ')}`,
-        },
-        {
-          textContent: 'En raison du déploiement de RdvPermis sur les départements 45 – 75 – 76 – 77 – 78 – 91 – 92 – 93 – 94 et 95, l’application Candilib n’accepte plus d’inscription pour les départements concernés. <br> Pour les départements 45 – 75 – 77 – 78 – 91 – 92 – 93 – 94 et 95, Candilib ne propose plus aucune place examen. <br> Pour le département 76, Candilib ne proposera plus aucune place examen au-delà du 31/12/2022.',
+          textContent: 'En raison du déploiement national de RdvPermis, l’application Candilib n’accepte plus d’inscription pour l’ensemble des départements.',
         },
         {
           textContent: 'Si vous êtes lié à une auto-école (en ligne ou de proximité), vous devez vous rapprocher de la structure concernée afin d’être pris sous mandat, inscrit sur RdvPermis, et positionné sur une place d’examen.',

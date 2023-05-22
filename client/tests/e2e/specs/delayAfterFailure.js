@@ -9,7 +9,7 @@ import { adminCheckCandidatPenaltyHystory, parseMagicLinkFromMailBody } from './
 var magicLink
 
 describe('Test delay after failed attempt', () => {
-  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'COVID') {
+  if (Cypress.env('VUE_APP_CLIENT_BUILD_INFO') !== 'END') {
     before(() => {
     // Delete all mails before start
       cy.deleteAllMails()
@@ -92,6 +92,6 @@ describe('Test delay after failed attempt', () => {
         .should('contain', 'candidat-presignup')
     })
   } else {
-    it('skip for message CODIV 19', () => { cy.log('skip for message CODIV 19') })
+    it('skip for message END', () => { cy.log('skip for message END') })
   }
 })
